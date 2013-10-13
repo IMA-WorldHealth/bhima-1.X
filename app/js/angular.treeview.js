@@ -1,10 +1,10 @@
-(function ( angular ) {
+(function (angular) {
 	'use strict';
 
-	angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', function( $compile ) {
+	angular.module('angularTreeview', []).directive('treeModel', ['$compile', function($compile) {
 		return {
 			restrict: 'A',
-			link: function ( scope, element, attrs ) {
+			link: function (scope, element, attrs) {
 				var treeId = attrs.treeId;
 				var treeModel = attrs.treeModel;
 				var nodeId = attrs.nodeId || 'id';
@@ -24,23 +24,23 @@
 					'</ul>';  
 
 
-				if( treeId && treeModel ) {
-					if( attrs.angularTreeview ) {
+				if(treeId && treeModel) {
+					if(ttrs.angularTreeview) {
 						scope[treeId] = scope[treeId] || {};
-						scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function( selectedNode ){
+						scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function(selectedNode){
 							selectedNode.collapsed = !selectedNode.collapsed;
 						};
-						scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function( selectedNode ){
-							if( scope[treeId].currentNode && scope[treeId].currentNode.selected ) {
+						scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function(selectedNode){
+							if(scope[treeId].currentNode && scope[treeId].currentNode.selected) {
 								scope[treeId].currentNode.selected = undefined;
 							}
 							selectedNode.selected = 'selected'
 							scope[treeId].currentNode = selectedNode;
 						};
 					}
-					element.html('').append( $compile( template )( scope ) );
+					element.html('').append($compile(template)(scope));
 				}
 			}
 		};
 	}]);
-})( angular );
+})(angular);
