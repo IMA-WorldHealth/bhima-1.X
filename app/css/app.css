@@ -1,7 +1,8 @@
-/* app css stylesheet */
-
+/*
+  TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
+ */
 #bika-sidebar { 
-  width: 22.5em;
+  width: 20%;
   height: 100%;
   position: fixed;
   right: 0;
@@ -41,11 +42,11 @@
 }
 
 #bika-container { 
-  width: 100%;
+  width: 80%;
   position: fixed;
   height: 100%;
   background: white;
-  overflow-y: auto;
+  overflow: auto;
 }
 
 #bika-view { 
