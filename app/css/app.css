@@ -1,0 +1,62 @@
+/* app css stylesheet */
+
+#bika-sidebar { 
+  width: 22.5em;
+  height: 100%;
+  position: fixed;
+  right: 0;
+  border-left: 1px solid #DADADA;
+  background: #F3F3F3;
+}
+
+#bika-sidebar h2 { 
+  font-family: "Lucida Sans Unicode";
+  padding-left: 0em;
+  font-size: 5em;
+  letter-spacing: 0.2em;
+  text-align: center;
+}   
+
+#bika-sidebar h2 span { 
+   color: #01AC07;
+}
+
+#bika-header { 
+  /*background: #E3E3E3;*/
+  padding-bottom: 20px;
+  box-shadow: 0 2px 6px -3px black;
+ 
+}
+
+#bika-util { 
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+#bika-tree { 
+  height: 100%;
+  padding-top: 20px;
+
+}
+
+#bika-container { 
+  width: 100%;
+  position: fixed;
+  height: 100%;
+  background: white;
+  overflow-y: auto;
+}
+
+#bika-view { 
+  /*
+  Idea being to seperate the view (unit) and outside, can't figure this out
+  */
+  /*
+  background: white;
+  height: 100%;
+  margin-top: 5px;
+  margin-right: 8px;
+  margin-left: 8px;
+  margin-bottom: 5px;*/
+} 

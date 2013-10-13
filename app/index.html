@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>bika /angularproto/</title>
+  <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="css/bootstrap/bootstrap.css"/>
+  <link rel="stylesheet" type="text/css" href="css/tree.css">
+</head>
+<body ng-app="bika">
+  <!--not required in placeholder rewrite-->
+  <div ng-controller="appController">
+
+    <div id="bika-container" ng-controller="viewController">
+      
+        <div ng-view id="bika-view"><!--Content populated with angular--></div>
+    </div>
+    <!--Bootstrap container, any content inside div can be split into 12 columns-->
+    
+    <div id="bika-sidebar" class="container">
+      <div class="row" id="bika-header">
+        <div class="col-xs-12">
+            <h2>bika<span class="glyphicon glyphicon-leaf"></span></h2>
+        </div>
+      </div>
+
+      <div class="row" id="bika-tree" ng-controller="treeController">
+        <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treedata" data-node-id="id" data-node-label="label" data-node-children="children" > </div>
+      </div>
+
+      <div class="row" id="bika-util">
+        <div class="col-xs-12"><!--class="btn-group"-->
+            <button type="button" class="btn btn-default">
+              <span class="glyphicon glyphicon-user"></span>
+            </button>
+            <button type="button" class="btn btn-default">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <button type="button" class="btn btn-default">
+              <span class="glyphicon glyphicon-log-out"></span>
+            </button>
+        </div>
+      </div>
+
+        <!--Could indicate position in bika (currently active tab)
+        <ol class="breadcrumb">
+          <li><a href='#'>bika</a></li>
+          <li>finance</li>
+          <li>budgeting</li>
+        </ol>
+        -->
+    </div>
+
+
+  </div>
+
+  <!--Scripts loaded body to prevent page form 'hanging'-->
+  <script src="lib/angular/angular.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/angular.treeview.js"></script>
+
+</body>
+</html>
