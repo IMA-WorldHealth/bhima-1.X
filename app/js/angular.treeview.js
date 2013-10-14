@@ -34,7 +34,7 @@
 							if(scope[treeId].currentNode && scope[treeId].currentNode.selected) {
 								scope[treeId].currentNode.selected = undefined;
 							}
-							selectedNode.selected = 'selected'
+							selectedNode.selected = 'selected';
 							scope[treeId].currentNode = selectedNode;
 						};
 					}
