@@ -121,6 +121,7 @@ bika.controller('debtorsController', function($scope, bikaConnect) {
 		console.log(index, "selected");
 		console.log($scope.org_model[index]);
 		$scope.selected = $scope.org_model[index];
+    $scope.selectedIndex = index;
 	}
 
 	$scope.isSelected = function() { 
