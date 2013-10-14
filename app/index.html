@@ -12,20 +12,19 @@
   <div ng-controller="appController">
 
     <div id="bika-container" ng-controller="viewController">
-      
-        <div ng-view id="bika-view"><!--Content populated with angular--></div>
+      <div ng-view id="bika-view"><!--Content populated with angular--></div>
     </div>
     <!--Bootstrap container, any content inside div can be split into 12 columns-->
     
     <div id="bika-sidebar" class="container">
       <div class="row" id="bika-header">
         <div class="col-xs-12">
-            <h2>bika<span class="glyphicon glyphicon-leaf"></span></h2>
+          <h2>Bika<span class="glyphicon glyphicon-leaf"></span></h2>
         </div>
       </div>
 
       <div class="row" id="bika-tree" ng-controller="treeController">
-        <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treedata" data-node-id="id" data-node-label="label" data-node-children="children" > </div>
+        <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treedata" data-node-id="id" data-node-label="label" data-node-children="children"></div>
       </div>
 
       <div class="row" id="bika-util">
