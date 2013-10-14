@@ -153,6 +153,7 @@ controllers.controller('debtorsController', function($scope, bikaConnect) {
 
 controllers.controller('chartController', function($scope, bikaConnect, $q) {
 
+  // loads data and returns a promise evaluated when both requests are complete.
 	function loadData() {
 		return $q.all([
 			bikaConnect.raw_fetch({
@@ -171,14 +172,16 @@ controllers.controller('chartController', function($scope, bikaConnect, $q) {
 		$scope.accountTypeTable = tables[1];
 	});
 
+  $scope.log = function(value) { console.log("row.rowIndex:", value); };
+
   $scope.gridOptions = {
       data: 'accountTable',
       columnDefs: [
-      	{field:'id', displayName: 'Account Number'},
-      	{field:'account_txt', displayName: 'Text'},
-      	{field: 'account_type_id', displayName: 'AccountTypeId', template: '<select ng-options="row.type for row in accountTypeTable" ng-model="accountTableType"></select>'},
-      	{field: 'locked', displayName: "Locked?"}
-  		]
+        {field:'id', displayName: 'Account Number'},
+        {field:'account_txt', displayName: 'Text'},
+        {field: 'account_type_id', displayName: 'AccountTypeId', cellTemplate: '<select class="form-control" ng-options="row.type for row in accountTypeTable" ng-model="accountTypeTable[row.getProperty(col.field)]"></select>'},
+        {field: 'locked', displayName: "Locked?"}
+      ]
   };
 
 });
