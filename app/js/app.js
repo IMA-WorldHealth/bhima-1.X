@@ -24,11 +24,22 @@ bika.config(bikaconfig);
 var bikaConnect = function($http) { 
 	console.log("bikaConnect initialised.");
 	//TODO: Define API for getting data from the server - providing query data, simple table names, etc.
+	this.send = function(table, columns, values) { 
+
+	}
+
 	this.fetch = function(table, columns, where, value) { 
+
 		var query = { 
-			e: [{t : table, c : columns}], 
-			c: [{t : table, cl : where, v : value, z : '='}]
+			e: [{t : table, c : columns}]
 		}
+
+		if(where) { 
+			query.c = [{t : table, cl : where, v : value, z : '='}];
+		}
+
+		console.log("query", query);
+		
 
 		var promise = $http.get('/data/?' + JSON.stringify(query)).then(function(result) { 
 			//I can now manipulate the data before returning it if needed
@@ -78,8 +89,38 @@ bika.controller('budgetController', function($scope) {
 	console.log("Budget loaded");
 });
 
-bika.controller('userController', function($scope) { 
-	console.log("user loaded");
+bika.controller('userController', function($scope, bikaConnect) { 
+	console.log("userController", $scope);
+
+	$scope.selected = null;
+
+	bikaConnect.fetch("user", ["id", "username", "password", "first", "last", "email"]).then(function(data) { 
+		$scope.model = data;
+		console.log($scope.model);
+	});
+
+	bikaConnect.fetch("unit", ["id", "name", "desc"]).then(function(data) { 
+		$scope.units = data;
+	});
+
+	$scope.select = function(index) { 
+		console.log("Selected", index);
+		$scope.selected = $scope.model[index];
+	}
+
+	$scope.isSelected = function() { 
+		return !!($scope.selected);
+	}
+
+	$scope.createUser = function() { 
+		$scope.selected = {};
+		$scope.model.push($scope.selected);
+	}
+
+	$scope.updateUser = function() {
+		console.log($scope.selected);
+		console.log($scope.selected.first, $scope.selected.last, $scope.selected.email);
+	}
 });
 
 bika.controller('debtorsController', function($scope, bikaConnect) { 
