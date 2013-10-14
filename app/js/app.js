@@ -1,7 +1,7 @@
 'use strict';
 
 //FIXME: Format code correctly in seperate files/modules etc.
-var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview']);
+var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview', 'ngGrid']);
 
 function bikaconfig($routeProvider) { 
 	$routeProvider.
@@ -20,6 +20,10 @@ function bikaconfig($routeProvider) {
 	when('/fiscal', {
 		controller: 'fiscalController',
 		templateUrl: 'partials/fiscal.html'
+	}).
+	when('/chartofaccounts', {
+		controller: 'chartController',
+		templateUrl: 'partials/chartofaccounts.html'
 	});
 }
 
