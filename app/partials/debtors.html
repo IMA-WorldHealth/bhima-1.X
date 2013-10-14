@@ -13,7 +13,8 @@
 				</thead>
 				<tbody ng-repeat="org in org_model">
 				<!--Populted with angular-->
-				<tr ng-click="select($index)"><td>{{org.id}}</td><td>{{org.name}}</td></tr>
+        <!--FIXME: ng-selected optimisation, oh lawd oh lawd-->
+				<tr ng-class="{selected: $index==selectedIndex}" ng-click="select($index)"><td>{{org.id}}</td><td>{{org.name}}</td></tr>
 				</tbody>
 			</table>
 			
