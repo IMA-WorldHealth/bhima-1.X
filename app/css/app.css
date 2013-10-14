@@ -61,3 +61,7 @@
   margin-left: 8px;
   margin-bottom: 5px;*/
 } 
+
+.selected { 
+  background-color: #eeeeee;
+}
