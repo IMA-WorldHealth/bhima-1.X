@@ -25,7 +25,7 @@
 
 
 				if(treeId && treeModel) {
-					if(ttrs.angularTreeview) {
+					if(attrs.angularTreeview) {
 						scope[treeId] = scope[treeId] || {};
 						scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function(selectedNode){
 							selectedNode.collapsed = !selectedNode.collapsed;
@@ -34,7 +34,7 @@
 							if(scope[treeId].currentNode && scope[treeId].currentNode.selected) {
 								scope[treeId].currentNode.selected = undefined;
 							}
-							selectedNode.selected = 'selected'
+							selectedNode.selected = 'selected';
 							scope[treeId].currentNode = selectedNode;
 						};
 					}
