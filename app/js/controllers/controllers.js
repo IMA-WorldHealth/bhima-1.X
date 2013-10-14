@@ -20,16 +20,45 @@ controllers.controller('treeController', function($scope) {
 	}, false);
 });
 
-bika.controller('appController', function($scope) { 
+controllers.controller('appController', function($scope) { 
 
 });
 
-bika.controller('viewController', function($scope) { 
+controllers.controller('viewController', function($scope) { 
 
-})
+});
+
+controllers.controller('fiscalController', function($scope, bikaConnect) { 
+	console.log("Fiscal controller initialised.");
+
+	//TODO: This data can be fetched from the application level service
+	$scope.fiscal = {
+		id : 2013001
+	}
+	$scope.enterprise = {
+		name : "IMA",
+		city : "Kinshasa",
+		country : "RDC",
+		id : 101
+	}
+
+	bikaConnect.fetch("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
+		$scope.fiscal_model = data;
+		//$scope.select($scope.fiscal.id);
+	});
+
+	fetchPeriods($scope.fiscal.id);
+
+	function fetchPeriods(fiscal_id) { 
+		bikaConnect.fetch("period", ["id", "period_start", "period_stop"], "fiscal_year_id", $scope.fiscal.id).then(function(data) { 
+			$scope.period_model = data;
+		});
+	}
 
 
-bika.controller('budgetController', function($scope) { 
+});
+
+controllers.controller('budgetController', function($scope) { 
 	console.log("Budget loaded");
 });
 

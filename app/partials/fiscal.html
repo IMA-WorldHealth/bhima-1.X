@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="css/fiscal.css"/>
+
+<div class="container" id="bika-units-fiscal">
+	<div class="row">
+		<div class="col-xs-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
+          <span class="panel-title">{{enterprise.city}}</span>
+        </div>
+        <table class="table table-hover">
+          <!--tr><td><input class="form-control input-sm"ng-model="fiscal_filter"></td></tr-->
+          <tr ng-repeat="year in fiscal_model"><td>{{year.fiscal_year_txt}}</td></tr>
+        </table>
+      </div>
+		</div>
+    <div class="col-xs-5">
+      <!--Fiscal year form-->
+    </div>
+    <div class="col-xs-4">
+      <table class="table table-hover table-bordered">
+        <tbody>
+          <!--Populated with angular-->
+          <tr ng-repeat="period in period_model">
+            <!--Format period, should recieve period month, start, and stop-->
+            <td>{{period.period_start}}</td>
+            <td>{{period.period_stop}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+	</div>
+</div>

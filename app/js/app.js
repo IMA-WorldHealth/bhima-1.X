@@ -16,6 +16,10 @@ function bikaconfig($routeProvider) {
 	when('/debtors', { 
 		controller: 'debtorsController',
 		templateUrl: 'partials/debtors.html'
+	}).
+	when('/fiscal', {
+		controller: 'fiscalController',
+		templateUrl: 'partials/fiscal.html'
 	});
 }
 
