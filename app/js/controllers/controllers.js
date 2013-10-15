@@ -185,7 +185,7 @@
     ];
   
     //$scope.log = function(value) { console.log("row.rowIndex:", value); };
-    /*
+    
     $scope.gridOptions = {
         data: 'accountTable',
         columnDefs: [
@@ -194,7 +194,7 @@
           {field: 'account_type_id', displayName: 'AccountTypeId', cellTemplate: '<select class="form-control" ng-options="row.type for row in accountTypeTable" ng-model="accountTypeTable[row.getProperty(col.field)]"></select>'},
           {field: 'locked', displayName: "Locked?"}
         ]
-    };*/
+    };
   
   });
 })(angular);
