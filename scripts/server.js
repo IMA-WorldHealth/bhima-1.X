@@ -112,6 +112,7 @@ app.post('/data/', function (req, res) {
   };
 
   var insertsql = db.insert(req.body.t, req.body.data);
+  console.log(insertsql);
   db.execute(insertsql, cb);
 });
 

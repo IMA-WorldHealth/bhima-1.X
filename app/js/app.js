@@ -1,6 +1,5 @@
 'use strict';
 
-
 //FIXME: Format code correctly in seperate files/modules etc.
 var bika = angular.module('bika', ['angularTreeview']);
 
@@ -22,10 +21,17 @@ function bikaconfig($routeProvider) {
 bika.config(bikaconfig);
 
 var bikaConnect = function($http) { 
-	console.log("bikaConnect initialised.");
 	//TODO: Define API for getting data from the server - providing query data, simple table names, etc.
-	this.send = function(table, columns, values) { 
+	this.send = function(table, data) { 
+		var sql= {t:table, data:data};
+		$http.post('/data/',sql);
+	}
 
+	this.get = function(requestObject){
+		var promise = $http.get('/data/?' + JSON.stringify(requestObject)).then(function(result) { 
+			return result.data;
+		});
+		return promise;
 	}
 
 	this.fetch = function(table, columns, where, value) { 
@@ -38,7 +44,6 @@ var bikaConnect = function($http) {
 			query.c = [{t : table, cl : where, v : value, z : '='}];
 		}
 
-		console.log("query", query);
 		
 
 		var promise = $http.get('/data/?' + JSON.stringify(query)).then(function(result) { 
@@ -47,7 +52,6 @@ var bikaConnect = function($http) {
 		});
 		return promise;
 	}
-
 	//Because TODO
 	this.raw_fetch = function(qeury_object) { 
 		var promise = $http.get('/data/?' + JSON.stringify(qeury_object)).then(function(result) { 
@@ -56,6 +60,7 @@ var bikaConnect = function($http) {
 		return promise;
 	}
 }
+
 
 bika.service('bikaConnect', ['$http', bikaConnect]);
 
@@ -79,32 +84,35 @@ bika.controller('treeController', function($scope) {
 
 	$scope.$watch( 'abc.currentNode', function( newObj, oldObj ) {
 	    if( $scope.abc && angular.isObject($scope.abc.currentNode) ) {
-	        console.log( 'Node Selected' );
-	        console.log( $scope.abc.currentNode );
 	    }
 	}, false);
 });
 
 bika.controller('budgetController', function($scope) { 
-	console.log("Budget loaded");
 });
 
 bika.controller('userController', function($scope, bikaConnect) { 
-	console.log("userController", $scope);
-
 	$scope.selected = null;
-
-	bikaConnect.fetch("user", ["id", "username", "password", "first", "last", "email"]).then(function(data) { 
+	$scope.chkTous = false;
+	var request = {}; 
+    request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
+	bikaConnect.get(request).then(function(data) { 
 		$scope.model = data;
-		console.log($scope.model);
 	});
 
-	bikaConnect.fetch("unit", ["id", "name", "desc"]).then(function(data) { 
+	bikaConnect.fetch("unit", ["id", "name"], 'parent', 0).then(function(data){
+		$scope.roles = data;
+	});
+
+	bikaConnect.fetch("unit", ["id", "name", "desc", "parent"]).then(function(data) { 
 		$scope.units = data;
+		for(var i=0; i<$scope.units.length; i++){
+			$scope.units[i].chkUnitModel = false;
+		}
+		
 	});
 
 	$scope.select = function(index) { 
-		console.log("Selected", index);
 		$scope.selected = $scope.model[index];
 	}
 
@@ -113,18 +121,103 @@ bika.controller('userController', function($scope, bikaConnect) {
 	}
 
 	$scope.createUser = function() { 
-		$scope.selected = {};
-		$scope.model.push($scope.selected);
+		$scope.selected = {};		
 	}
 
-	$scope.updateUser = function() {
-		console.log($scope.selected);
-		console.log($scope.selected.first, $scope.selected.last, $scope.selected.email);
+	$scope.changeAll = function(){
+		($scope.chkTous)?checkAll(): unCheckAll();
 	}
+
+	$scope.getUnits = function(idRole){
+		$scope.tabUnits = [];
+		if($scope.units) { 
+			for(var i = 0; i < $scope.units.length; i++){
+				if($scope.units[i].parent == idRole){
+					$scope.tabUnits.push($scope.units[i]);
+				}
+			}
+
+			return $scope.tabUnits;
+		}
+
+		return [];
+		
+	}
+
+	$scope.valider = function (){
+		bikaConnect.send('user', [{id:'',
+								   username: $scope.selected.username,
+								   password: $scope.selected.password,
+								   first: $scope.selected.first,
+								   last: $scope.selected.last,
+								   email: $scope.selected.email,
+								   logged_in:0}]);
+
+		var request = {}; 
+        request.e = [{t : 'user', c : ['id']}];
+        request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
+        bikaConnect.get(request).then(function(data) { 
+        	
+		
+		});
+
+
+		var request = {}; 
+        request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
+		bikaConnect.get(request).then(function(data) { 
+		$scope.model = data;
+		});
+
+	}
+    function checkAll(){
+    	for(var i=0; i<$scope.units.length; i++){
+			$scope.units[i].chkUnitModel = true;
+		}
+    }
+
+    function unCheckAll(){
+    	for(var i=0; i<$scope.units.length; i++){
+			$scope.units[i].chkUnitModel = false;
+		}
+    }
+
+    function isAllChecked(){
+    	var rep = true;
+    	for(var i = 0; i< $scope.units.length; i++){
+    		if(!$scope.units[i].chkUnitModel){
+    			rep = false;
+    			break;
+    		}
+    	}
+    	return rep;
+    }
+
+    $scope.manageClickUnit = function(id){
+    	var value = null;
+    	for(var i=0; i<$scope.units.length; i++){
+    		if($scope.units[i].id == id){
+    			value = $scope.units[i].chkUnitModel;
+    			break;
+    		}
+    	}
+    	if(value === true){
+    		//tester si tous sont checkes
+    		if(isAllChecked()){
+    			$scope.chkTous=true;
+    		}else{
+    			$scope.chkTous = false;
+    		}
+
+    	}else{
+    		$scope.chkTous=false;
+
+    	}
+
+
+    }
 });
 
 bika.controller('debtorsController', function($scope, bikaConnect) { 
-	console.log("Debtors initialised.");
 		
 	$scope.selected = null;
 	
@@ -136,7 +229,6 @@ bika.controller('debtorsController', function($scope, bikaConnect) {
 		101
 	).then(function(data) { 
 		$scope.org_model = data;
-		console.log(data);
 		$scope.select(0);
 	});*/
 
@@ -159,8 +251,6 @@ bika.controller('debtorsController', function($scope, bikaConnect) {
 	});
 
 	$scope.select = function(index) { 
-		console.log(index, "selected");
-		console.log($scope.org_model[index]);
 		$scope.selected = $scope.org_model[index];
     $scope.selectedIndex = index;
 	}
