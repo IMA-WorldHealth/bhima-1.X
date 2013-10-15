@@ -1,0 +1,24 @@
+<!-- 
+NOTE: Steven thinks these rendering times are due to my i7.
+      I think <i>he's weak</i> 
+-->
+
+<link rel="stylesheet" href="css/chartofaccounts.css">
+<!-- FIXME: change this styling -->
+
+<div style="position:relative; height: 300px; width: 100%;">
+  <div style="position:absolute; top:0; right: 0; left: 0; bottom:0;" ng-grid="gridOptions"></div>
+</div>
+
+<!-- rendering times for ng-grid -->
+<!-- run1: DOMContentLoaded: 223ms -->
+<!-- run2: DOMContentLoaded: 206ms -->
+<!-- run3: DOMContentLoaded: 202ms -->
+<!-- run4: DOMContentLoaded: 226ms -->
+<!-- run5: DOMContentLoaded: 273ms -->
+<!-- run6: DOMContentLoaded: 201ms -->
+<!-- avg: 221.8334 ms -->
+
+<!-- smart table tests >
+<smart-table columns="columnCollection" rows="accountTable"></smart-table-->
+

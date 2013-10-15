@@ -14,8 +14,8 @@
     <div id="bika-container" ng-controller="viewController">
       <div ng-view id="bika-view"><!--Content populated with angular--></div>
     </div>
+
     <!--Bootstrap container, any content inside div can be split into 12 columns-->
-    
     <div id="bika-sidebar" class="container">
       <div class="row" id="bika-header">
         <div class="col-xs-12">
@@ -49,14 +49,21 @@
         </ol>
         -->
     </div>
-
-
   </div>
 
-  <!--Scripts loaded body to prevent page form 'hanging'-->
+  <!-- required for ng-grid -->
+  <link rel="stylesheet" type="text/css" href="lib/ng-grid/ng-grid.min.css">
+  <script src="lib/jquery-1.10.2.js"></script>
+
+
+  <!--Scripts loaded in body to prevent page form 'hanging'-->
   <script src="lib/angular/angular.min.js"></script>
   <script src="js/app.js"></script>
-  <script src="js/angular.treeview.js"></script>
+  <script src="js/services/services.js"></script>
+  <script src="js/controllers/controllers.js"></script>
+  <script src="js/directives/angular.treeview.js"></script>
+  <!-- necessary for ng-grid -->
+  <script src="lib/ng-grid/build/ng-grid.debug.js"></script>
 
 </body>
 </html>

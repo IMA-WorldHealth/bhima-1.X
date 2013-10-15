@@ -1,7 +1,7 @@
 'use strict';
 
 //FIXME: Format code correctly in seperate files/modules etc.
-var bika = angular.module('bika', ['angularTreeview']);
+var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview', 'ngGrid']);
 
 function bikaconfig($routeProvider) { 
 	$routeProvider.
@@ -16,8 +16,17 @@ function bikaconfig($routeProvider) {
 	when('/debtors', { 
 		controller: 'debtorsController',
 		templateUrl: 'partials/debtors.html'
+	}).
+	when('/fiscal', {
+		controller: 'fiscalController',
+		templateUrl: 'partials/fiscal.html'
+	}).
+	when('/chartofaccounts', {
+		controller: 'chartController',
+		templateUrl: 'partials/chartofaccounts.html'
 	});
 }
+<<<<<<< HEAD
 bika.config(bikaconfig);
 
 var bikaConnect = function($http) { 
@@ -254,13 +263,9 @@ bika.controller('debtorsController', function($scope, bikaConnect) {
 		$scope.selected = $scope.org_model[index];
     $scope.selectedIndex = index;
 	}
+=======
 
-	$scope.isSelected = function() { 
-		if($scope.selected) { 
-			return true;
-		} else { 	
-			return false;
-		}
-	}
+bika.config(bikaconfig);
+>>>>>>> fd589b5f9440bd9e5918562d2ce3651605a3d8b3
 
-});
+
