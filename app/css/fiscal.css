@@ -16,8 +16,9 @@
 }
 
 .bika-header { 
-	margin-bottom: 20px;
-    border-bottom: 1px solid #eeeeee;
+  padding-bottom: 9px;
+  margin: 0px 0 45px;
+  border-bottom: 1px solid #eeeeee;
 }
 
 
