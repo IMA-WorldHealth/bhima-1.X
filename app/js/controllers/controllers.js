@@ -118,3 +118,38 @@ controllers.controller('debtorsController', function($scope, bikaConnect) {
 	}
 
 });
+
+
+// Chart of Accounts controllers
+
+controllers.controller('chartController', function($scope, bikaConnect, $q) {
+
+	function loadData() {
+		return $q.all([
+			bikaConnect.raw_fetch({
+  			e: [{t:'account', c: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}],
+  			c: [{t: 'account', cl: 'enterprise_id', z: '=', v: 101}]
+  		}),
+  		bikaConnect.raw_fetch({
+  			e: [{t: 'account_type', c:['id', 'type']}]
+  		})
+  	]);
+	}
+
+	var promise = loadData();
+	promise.then(function(tables){
+		$scope.accountTable = tables[0];
+		$scope.accountTypeTable = tables[1];
+	});
+
+  $scope.gridOptions = {
+      data: 'accountTable',
+      columnDefs: [
+      	{field:'id', displayName: 'Account Number'},
+      	{field:'account_txt', displayName: 'Text'},
+      	{field: 'account_type_id', displayName: 'AccountTypeId', template: '<select ng-options="row.type for row in accountTypeTable" ng-model="accountTableType"></select>'},
+      	{field: 'locked', displayName: "Locked?"}
+  		]
+  };
+
+});
