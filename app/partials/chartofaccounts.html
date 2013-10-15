@@ -10,7 +10,7 @@ NOTE: Steven thinks these rendering times are due to my i7.
   <div style="position:absolute; top:0; right: 0; left: 0; bottom:0;" ng-grid="gridOptions"></div>
 </div>
 -->
-<!-- rendering times for ng-grid -->
+<!-- rendering times for ng-grid [i7 vPro Thinkpad Carbon X1] -->
 <!-- run1: DOMContentLoaded: 223ms -->
 <!-- run2: DOMContentLoaded: 206ms -->
 <!-- run3: DOMContentLoaded: 202ms -->
@@ -20,5 +20,11 @@ NOTE: Steven thinks these rendering times are due to my i7.
 <!-- avg: 221.8334 ms -->
 
 <!-- smart table tests -->
-<smart-table columns="columnCollection" rows="accountTable"></smart-table>
-
+<h2>Chart of Accounts</h2>
+<div class="table-container"><!-- FIXME: make this 100% height -->
+<smart-table class="table table-bordered" columns="columns" rows="accounts"></smart-table>
+<div class="btn-group">
+  <div class="btn btn-primary" ng-click="openModal()">Create Account</div>
+  <div class="btn btn-primary" ng-click="lockSelect()">Lock Selected</div>
+</div>
+</div>
