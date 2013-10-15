@@ -5,3 +5,17 @@
 #bika-units-fiscal-list { 
 	text-align: center;
 }
+
+#fiscal-lock { 
+	float: right;
+}
+
+.bika-header { 
+	margin-bottom: 20px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+.selected { 
+  background-color: #eeeeee;
+}
