@@ -1,0 +1,85 @@
+<link rel="stylesheet" href="css/fiscal.css"/>
+
+<div class="container" id="bika-units-fiscal">
+	<div class="row">
+		<div class="col-xs-3">
+      <!--Enterprise fiscal year selection-->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
+          <span class="panel-title">{{enterprise.city}}</span>
+        </div>
+        <table class="table table-hover" id="bika-units-fiscal-list">
+          <!--tr><td><input class="form-control input-sm"ng-model="fiscal_filter"></td></tr-->
+          <tr ng-repeat="year in fiscal_model"><td>{{year.fiscal_year_txt}}</td></tr>
+        </table>
+      </div>
+		</div>
+    <div class="col-xs-9">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="col-xs-7">
+          <!--Fiscal year form-->
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <div class="form-group">
+                  <label for="fiscal-name" class="col-xs-4 control-label">Name</label>
+                  <div class="col-xs-7">
+                    <input type="text" class="form-control" id="fiscal-name">
+                  </div>
+              </div>
+              <div class="form-group">
+                <label for="fiscal-months" class="col-xs-4 control-label">Total Months</label>
+                  <div class="col-xs-3">
+                    <input type="text" class="form-control" id="fiscal-months">
+                  </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-group">
+                <label for="first-voucher" class="col-xs-4 control-label">First Voucher No.</label>
+                <div class="col-xs-4">
+                  <input type="text" class="form-control" id="first-voucher">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="last-voucher" class="col-xs-4 control-label">Last Voucher No.</label>
+                <div class="col-xs-4">
+                  <input type="text" class="form-control" id="last-voucher">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-group">
+                <label for="posting-from" class="col-xs-4 control-label">Posting from</label>
+                <div class="col-xs-4">
+                  <input type="text" class="form-control" id="posting-from">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="posting-to" class="col-xs-4 control-label">Posting to</label>
+                <div class="col-xs-4">
+                  <input type="text" class="form-control" id="posting-to">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-xs-5">
+          <table class="table table-hover table-bordered">
+            <tbody>
+              <!--Populated with angular-->
+              <tr ng-repeat="period in period_model">
+                <!--Format period, should recieve period month, start, and stop-->
+                <td>{{period.period_start}}</td>
+                <td>{{period.period_stop}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!--Close panel body-->
+      <div class="panel-footer">Panel footer</div>
+    </div><!--Close panel-->
+    </div>
+	</div>
+</div>
