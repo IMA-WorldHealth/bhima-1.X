@@ -156,45 +156,75 @@
   
   // Chart of Accounts controllers
   
-  controllers.controller('chartController', function($scope, bikaConnect, $q) {
+  controllers.controller('chartController', function($scope, bikaConnect, $q, $modal) {
   
     // loads data and returns a promise evaluated when both requests are complete.
-  	function loadData() {
-  		return $q.all([
-  			bikaConnect.raw_fetch({
-    			e: [{t:'account', c: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}],
-    			c: [{t: 'account', cl: 'enterprise_id', z: '=', v: 101}]
-    		}),
-    		bikaConnect.raw_fetch({
-    			e: [{t: 'account_type', c:['id', 'type']}]
-    		})
-    	]);
-  	}
-  
-  	var promise = loadData();
-  	promise.then(function(tables){
-  		$scope.accountTable = tables[0];
-  		$scope.accountTypeTable = tables[1];
-  	});
-  
-    $scope.columnCollection = [
+    function loadData() {
+      return $q.all([
+        bikaConnect.raw_fetch({
+          e: [{t:'account', c: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}],
+          c: [{t: 'account', cl: 'enterprise_id', z: '=', v: 101}]
+        }),
+        bikaConnect.raw_fetch({
+          e: [{t: 'account_type', c:['id', 'type']}]
+        })
+      ]);
+    }
+    
+    var promise = loadData();
+    
+    promise.then(function(tables) {
+      $scope.accounts = tables[0];
+      $scope.accounttypes = tables[1];
+    });
+    
+    $scope.columns = [
       {label: "Account Number", map: "id"},
       {label: "Account Text", map: "account_txt"},
-      {label: "Account Type", map: "account_type_id"},
+      {label: "Account Type", map: "account_type_id", cellTemplateUrl: "/partials/templates/cellselect.html"},
       {label: "Locked?", map: "locked"}
     ];
   
-    //$scope.log = function(value) { console.log("row.rowIndex:", value); };
-    /*
-    $scope.gridOptions = {
-        data: 'accountTable',
-        columnDefs: [
-          {field:'id', displayName: 'Account Number'},
-          {field:'account_txt', displayName: 'Text'},
-          {field: 'account_type_id', displayName: 'AccountTypeId', cellTemplate: '<select class="form-control" ng-options="row.type for row in accountTypeTable" ng-model="accountTypeTable[row.getProperty(col.field)]"></select>'},
-          {field: 'locked', displayName: "Locked?"}
-        ]
-    };*/
-  
+    $scope.openModal = function() {
+      console.log('Called OpenModal');
+
+      var instance = $modal.open({
+        templateUrl: "/partials/templates/chart-modal.html",
+        backdrop: true,
+        controller: function($scope, $modalInstance, columns, selected){
+          // NOTE: THIS IS A DIFFERENT SCOPE 
+          $scope.formvalues = {};
+          $scope.columns = columns;
+          $scope.selected = selected;
+      
+          $scope.ok = function() {
+            $modalInstance.close($scope.formvalues);
+          };
+      
+          $scope.cancel = function() {
+            $modalInstance.dismiss('cancel');
+          };
+
+        },
+
+        resolve: {
+          columns: function() {
+            return $scope.columns;
+          },
+          selected: function() {
+            return $scope.selected;
+          }
+        }
+      });
+
+      instance.result.then(function(values) {
+        console.log('Values:', values);
+      }, function() {
+        console.log('Canceled at '+new Date());
+      });
+
+    };
+
   });
+
 })(angular);

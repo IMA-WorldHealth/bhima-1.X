@@ -1,0 +1,21 @@
+<script type="text/ng-template" id="chart-modal.html">
+<div class="modal-header"><h3>New Account</h3></div>
+
+<div class="modal-body">
+  <form class="simple-form">
+    <div class="form-group" ng-repeat="columns in columns">
+      <label for="{{column.map}}">{{column.label}}</label>
+      <input id="modal-{{column.map}}" ng-model="formvalues">
+    </div>
+  
+   <div ng-model="formvalues">{{formvalues}}</div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <div class="form-group">
+    <div class="btn btn-default" ng-click="ok()">Ok</div>
+    <div class="btn btn-default" ng-click="cancel()">Cancel</div>
+  </div>
+</div>
+</script>
