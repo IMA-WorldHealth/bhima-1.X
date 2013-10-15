@@ -1,15 +1,23 @@
 <!--FIXME: Clean up markup, tags closed and not openend etc.-->
+<!--TODO: Add a header above fiscal year panel. EDIT/CREATE *Fiscal year name*
+          Add a sort row on top of the Fiscal Year selection - A-Z, year, etc.-->
+
 <link rel="stylesheet" href="css/fiscal.css"/>
 
 <div class="container" id="bika-units-fiscal">
+
 	<div class="row">
 		<div class="col-xs-3">
       <!--Enterprise fiscal year selection-->
+
       <div class="panel panel-default">
         <div class="panel-heading">
+
           <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
           <span class="panel-title">{{enterprise.city}}</span>
+
         </div>
+        <button id="create-btn" class="btn btn-success" ng-click="createFiscal()"><span class="glyphicon glyphicon-pencil"></span></button>
         <table class="table table-hover" id="bika-units-fiscal-list">
           <!--tr><td><input class="form-control input-sm"ng-model="fiscal_filter"></td></tr-->
           <tr ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}" ng-repeat="year in fiscal_model"><td>{{year.fiscal_year_txt}}</td></tr>
@@ -17,7 +25,7 @@
       </div>
 		</div>
     <div class="col-xs-9">
-    <div class="panel panel-default">
+    <div class="panel panel-default" ng-show="isSelected()">
       <div class="panel-body">
       <div class="bika-header">
         <form class="form-horizontal" role="form">
@@ -100,8 +108,8 @@
       <div class="panel-footer">
         <div class="btn-group">
           <button class="btn btn-default" disabled>Save Changes</button>
-          <button class="btn btn-danger" disabled>Delete Fiscal Year</button>
-          <button class="btn btn-danger" disabled>Recalculate</button>
+          <button class="btn btn-danger" ng-disabled="create">Delete Fiscal Year</button>
+          <button class="btn btn-danger">Recalculate</button>
         </div>
       </div>
     </div><!--Close panel-->
