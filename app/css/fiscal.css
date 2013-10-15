@@ -1,3 +1,29 @@
 #bika-units-fiscal { 
 	margin-top: 10px;
 }
+
+#bika-units-fiscal-list { 
+	text-align: center;
+}
+
+#fiscal-lock { 
+	float: right;
+}
+
+#create-btn { 
+	width: 100%;
+	border-radius: 0px;
+}
+
+.bika-header { 
+  padding-bottom: 9px;
+  margin: 0px 0 45px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+
+.selected { 
+ 	/*border-left: 4px solid #01AC07;
+ 	background: #eeeeee;*/
+ 	font-weight: bold;
+}

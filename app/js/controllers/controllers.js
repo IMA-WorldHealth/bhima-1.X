@@ -34,9 +34,11 @@
   });
   
   controllers.controller('fiscalController', function($scope, bikaConnect) { 
-    
+          
+    $scope.selected = null;
+    $scope.create = false;
     //TODO: This data can be fetched from the application level service
-    $scope.fiscal = {
+    $scope.current_fiscal = {
       id : 2013001
     };
 
@@ -47,18 +49,60 @@
       id : 101
     };
     
+    //FIXME: This should by default select the fiscal year selected at the application level
     bikaConnect.fetch("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
       $scope.fiscal_model = data;
-      //$scope.select($scope.fiscal.id);
+      $scope.select($scope.fiscal_model[0].id);
     });
-    
-    fetchPeriods($scope.fiscal.id);
+
+    $scope.select = function(fiscal_id) { 
+      fetchPeriods(fiscal_id);
+      $scope.selected = modelGet($scope.fiscal_model, fiscal_id);
+    }
+
+    $scope.isSelected = function() { 
+      console.log("isSelected called, returned", !!($scope.selected));
+      return !!($scope.selected);
+    }
+
+    $scope.createFiscal = function() { 
+      $scope.selected = null;
+    }
+
+    $scope.getFiscalStart = function() { 
+      if($scope.period_model) {
+        return $scope.period_model[0].period_start;
+      }
+    }
+
+    $scope.getFiscalEnd = function() {
+      if($scope.period_model) { 
+        var l = $scope.period_model;
+        return l[l.length-1].period_stop;
+      }
+    }
+
+    //FIXME: Date IN object should be formated, this function is called every time any part of the model is updated
+
+    //This should be encapsulated in a 'model'
+    function modelGet(model, id) { 
+      //Keep an index of item ID's so a Get can directly index without searching (index maintained by model)
+      var search = null;
+      model.forEach(function(entry) { 
+        if(entry.id==id){
+          search=entry;
+        }
+      });
+      return search;
+    }
     
     function fetchPeriods(fiscal_id) { 
-      bikaConnect.fetch("period", ["id", "period_start", "period_stop"], "fiscal_year_id", $scope.fiscal.id).then(function(data) { 
+      bikaConnect.fetch("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(data) { 
         $scope.period_model = data;
       });
     }
+
+    
   
   
   });
@@ -185,6 +229,7 @@
       {label: "Locked?", map: "locked"}
     ];
   
+<<<<<<< HEAD
     $scope.openModal = function() {
       console.log('Called OpenModal');
 
