@@ -229,7 +229,6 @@
       {label: "Locked?", map: "locked"}
     ];
   
-<<<<<<< HEAD
     $scope.openModal = function() {
       console.log('Called OpenModal');
 
