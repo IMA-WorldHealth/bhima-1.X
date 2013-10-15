@@ -36,8 +36,7 @@ function logUserIn(id, username, password, req, res, next) {
         res.redirect('/');
     return;
       }
-    });
-    
+    });    
   });
 //fin augmentation auth.js
 }
@@ -78,7 +77,7 @@ var auth = function (req, res, next) {
   }
 
   if (req.url === "/login.html") {
-    res.sendfile('./public/login.html');
+    res.sendfile('./app/login.html');
     return;
   }
 
@@ -105,7 +104,7 @@ var auth = function (req, res, next) {
 var checkPermission = function (req,res,next){
   var chemin = url.parse(req.url).path;
   //test sur le chemin predefini
-  if(chemin.match(new RegExp("/js/dojoos/")) ||
+  if(chemin.match(new RegExp("/js/")) ||
      chemin.match(new RegExp("/css/")) ||
      chemin.match(new RegExp("/html/")) ||
      chemin.match(new RegExp("data/")) ||
