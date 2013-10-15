@@ -10,6 +10,11 @@
 	float: right;
 }
 
+#create-btn { 
+	width: 100%;
+	border-radius: 0px;
+}
+
 .bika-header { 
 	margin-bottom: 20px;
     border-bottom: 1px solid #eeeeee;
@@ -17,5 +22,7 @@
 
 
 .selected { 
-  background-color: #eeeeee;
+ 	/*border-left: 4px solid #01AC07;
+ 	background: #eeeeee;*/
+ 	font-weight: bold;
 }

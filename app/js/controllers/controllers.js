@@ -36,6 +36,7 @@
   controllers.controller('fiscalController', function($scope, bikaConnect) { 
           
     $scope.selected = null;
+    $scope.create = false;
     //TODO: This data can be fetched from the application level service
     $scope.current_fiscal = {
       id : 2013001
@@ -60,7 +61,12 @@
     }
 
     $scope.isSelected = function() { 
+      console.log("isSelected called, returned", !!($scope.selected));
       return !!($scope.selected);
+    }
+
+    $scope.createFiscal = function() { 
+      $scope.selected = null;
     }
 
     $scope.getFiscalStart = function() { 

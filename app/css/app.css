@@ -2,7 +2,7 @@
   TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
  */
 #bika-sidebar { 
-  width: 25%;
+  width: 20%;
   height: 100%;
   position: fixed;
   right: 0;
@@ -42,7 +42,7 @@
 }
 
 #bika-container { 
-  width: 75%;
+  width: 80%;
   position: fixed;
   height: 100%;
   background: white;
@@ -61,10 +61,6 @@
   margin-left: 8px;
   margin-bottom: 5px;*/
 } 
-
-.selected { 
-  background-color: #eeeeee;
-}
 
 .bika-panel-body { 
 
