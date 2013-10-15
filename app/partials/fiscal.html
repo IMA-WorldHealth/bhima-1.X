@@ -27,15 +27,20 @@
     <div class="col-xs-9">
     <div class="panel panel-default" ng-show="isSelected()">
       <div class="panel-body">
-      <div class="bika-header">
-        <form class="form-horizontal" role="form">
+      <div class="page-header">
+        <h1>Edit Fiscal Year <small>{{selected.fiscal_year_txt}}</small></h1>
+        </div>
+        <div class="col-xs-6">
+          <!--Fiscal year form-->
+          <form class="form-horizontal" role="form">
             <div class="form-group">
                 <!--TODO: -->
-                <div class="col-lg-8">
+                <label for="fiscal-name" class="col-xs-5 control-label">Name</label>
+                <div class="col-xs-7">
                   <input type="text" class="form-control" id="fiscal-name" ng-model="selected.fiscal_year_txt">
                 </div>
                  <!--xs doesn't have offset for some reason?-->
-                <div class="col-lg-8">
+                <div class="col-lg-offset-5 col-lg-7">
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" ng-model="selected.locked"> Lock this Fiscal Year
@@ -43,14 +48,9 @@
                   </div>
                 </div>
             </div>
-          </form>
-        </div>
-        <div class="col-xs-7">
-          <!--Fiscal year form-->
-          <form class="form-horizontal" role="form">
             <div class="form-group">
               <div class="form-group">
-                <label for="fiscal-months" class="col-xs-4 control-label">Total Months</label>
+                <label for="fiscal-months" class="col-xs-5 control-label">Total Months</label>
                   <div class="col-xs-3">
                     <input type="text" class="form-control" id="fiscal-months" ng-model="selected.number_of_months">
                   </div>
@@ -58,13 +58,13 @@
             </div>
             <div class="form-group">
               <div class="form-group">
-                <label for="first-voucher" class="col-xs-4 control-label">First Voucher No.</label>
+                <label for="first-voucher" class="col-xs-5 control-label">First Voucher No.</label>
                 <div class="col-xs-4">
                   <input type="text" class="form-control" id="first-voucher" ng-model="selected.transaction_start_number">
                 </div>
               </div>
               <div class="form-group">
-                <label for="last-voucher" class="col-xs-4 control-label">Last Voucher No.</label>
+                <label for="last-voucher" class="col-xs-5 control-label">Last Voucher No.</label>
                 <div class="col-xs-4">
                   <input type="text" class="form-control" id="last-voucher" ng-model="selected.transaction_stop_number">
                 </div>
@@ -72,7 +72,7 @@
             </div>
             <div class="form-group">
               <div class="form-group">
-                <label for="posting-from" class="col-xs-4 control-label">Posting from</label>
+                <label for="posting-from" class="col-xs-5 control-label">Posting from</label>
                 <div class="col-xs-4">
                   <!--TODO: This is temporary data - logic should be implemented-->
                   <!--FIXME: Logic should all be taken care of in controller-->
@@ -80,7 +80,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="posting-to" class="col-xs-4 control-label">Posting to</label>
+                <label for="posting-to" class="col-xs-5 control-label">Posting to</label>
                 <div class="col-xs-4">
                   <input type="text" class="form-control" id="posting-to" readonly value="{{getFiscalEnd() | date:'dd/MM/yyyy'}}">
                 </div>
@@ -88,7 +88,7 @@
             </div>
           </form>
         </div>
-        <div class="col-xs-5">
+        <div class="col-xs-6">
           <table class="table table-hover table-bordered">
             <thead>
               <tr><th colspan=3>Fiscal Periods</th></tr>
