@@ -3,8 +3,19 @@
 <div class="container" id="bika-units-budget">
 	<div class="row">
 		<div class="panel panel-default">
-			<select multiple class="form-control">
-			</select>
+			<div class="row">
+				<div class="col-xs-8">
+					<div class="page-header">
+						<h1>Budget Report <small>{{a_select[0].account_txt}}</small></h1>
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<input type="text" class="form-control" ng-model="filter_account" placeholder="Search Accounts">
+					<select multiple class="form-control" size="10" ng-model="a_select" ng-options="account.account_txt for account in account_model | filter: filter_account">
+					</select>
+				</div>
+				
+			</div>
 		</div>
 	</div>
 	<div class="row">
