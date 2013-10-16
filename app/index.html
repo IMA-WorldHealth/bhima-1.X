@@ -27,17 +27,25 @@
         <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treedata" data-node-id="id" data-node-label="label" data-node-children="children"></div>
       </div>
 
-      <div class="row" id="bika-util">
-        <div class="col-xs-12"><!--class="btn-group"-->
-            <button type="button" class="btn btn-default">
+      <div class="row" id="bika-util" ng-controller="utilController">
+        <div id="bika-app-select">
+          <select class="form-control">
+            <option>First</option>
+          </select>
+          <select class="form-control">
+            <option>Second</option>
+          </select>
+        </div>
+         <div class="btn-group-justified"><!--class="btn-group"-->
+            <a type="button" class="btn btn-default">
               <span class="glyphicon glyphicon-user"></span>
-            </button>
-            <button type="button" class="btn btn-default">
+            </a>
+            <a type="button" class="btn btn-default">
               <span class="glyphicon glyphicon-cog"></span>
-            </button>
-            <button type="button" class="btn btn-default">
+            </a>
+            <a type="button" class="btn btn-default">
               <span class="glyphicon glyphicon-log-out"></span>
-            </button>
+            </a>
         </div>
       </div>
 

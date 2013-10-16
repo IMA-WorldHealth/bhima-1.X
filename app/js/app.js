@@ -26,6 +26,10 @@
     when('/chartofaccounts', {
       controller: 'chartController',
       templateUrl: 'partials/chartofaccounts.html'
+    }).
+    when('/connect', {
+      controller: 'connectController',
+      templateUrl: 'partials/connect.html'
     });
   }
   
