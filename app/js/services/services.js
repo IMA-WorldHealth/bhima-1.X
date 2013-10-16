@@ -39,7 +39,7 @@
   });
 
   services.service('connect', function($http) { 
-
+    
   });
 
 })(angular);

@@ -27,7 +27,12 @@
   
   controllers.controller('appController', function($scope) { 
     // TODO/FIXME
+    console.log("Application controller fired");
   });
+
+  controllers.controller('utilController', function($scope, bikaConnect) { 
+    console.log("Util controller fired");
+  })
   
   controllers.controller('viewController', function($scope) { 
     // TODO
@@ -243,7 +248,6 @@
           $scope.cancel = function() {
             $modalInstance.dismiss('cancel');
           };
-
         },
 
         resolve: {
@@ -265,5 +269,9 @@
     };
 
   });
+
+  controllers.controller('connectController', function($scope) { 
+    console.log("Connect initialised");
+  })
 
 })(angular);
