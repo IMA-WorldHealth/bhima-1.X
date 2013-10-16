@@ -10,16 +10,16 @@
     $scope.treedata = 
     [
       { "label" : "Finance", "id" : "role1", "children" : [
-          { "label" : "Budgeting", "id" : "role11", "children" : [] },
-          { "label" : "Accounts", "id" : "role2", "children" : [] },
-          { "label" : "Debtors", "id" : "role3", "children" : [] }]
+          { "label" : "Budgeting", "id" : "first", "children" : [] },
+          { "label" : "Accounts", "id" : "second", "children" : [] },
+          { "label" : "Debtors", "id" : "third", "children" : [] }]
       }
     ];   
     
-    $scope.$watch( 'abc.currentNode', function( newObj, oldObj ) {
-        if( $scope.abc && angular.isObject($scope.abc.currentNode) ) {
-            console.log( 'Node Selected' );
-            console.log( $scope.abc.currentNode );
+    $scope.$watch('navtree.currentNode', function(newObj, oldObj) {
+        if( $scope.navtree && angular.isObject($scope.navtree.currentNode)) {
+            console.log('Node Selected');
+            console.log($scope.navtree.currentNode);
         }
     }, false);
 
@@ -30,8 +30,38 @@
     console.log("Application controller fired");
   });
 
-  controllers.controller('utilController', function($scope, bikaConnect) { 
+  controllers.controller('utilController', function($scope, bikaConnect, appService) { 
     console.log("Util controller fired");
+
+    $scope.enterprise_model = {};
+    $scope.fiscal_model = {};
+    $scope.e_select = {};
+    $scope.f_select = {};
+
+    //redo with $q
+    bikaConnect.fetch("enterprise", ["id", "name", "region"]).then(function(data) {
+      $scope.enterprise_model = data;
+      //Should select previously selected (see indexedb storage)
+      $scope.e_select = $scope.enterprise_model[0];
+
+      console.log("e-selected", $scope.e_selected); 
+
+      appService.set($scope.e_select);
+
+      bikaConnect.fetch("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", $scope.e_select.id).then(function(data) { 
+        $scope.fiscal_model = data;
+        $scope.f_select = $scope.fiscal_model[0];
+        console.log($scope.fiscal_model);
+      });
+    });
+
+    $scope.$watch('e_selected.id', function(newObj, oldObj) { 
+      console.log("Watch registered change", newObj);
+      bikaConnect.fetch("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", newObj).then(function(data) { 
+        $scope.fiscal_model = data;
+        $scope.f_select = $scope.fiscal_model[0];
+      });
+    });
   })
   
   controllers.controller('viewController', function($scope) { 
@@ -107,8 +137,25 @@
     }
   });
   
-  controllers.controller('budgetController', function($scope) { 
+  controllers.controller('budgetController', function($scope, bikaConnect) { 
     console.log("Budget loaded");
+    $scope.account_model = {};
+
+    //TODO: This data can be fetched from the application level service
+    $scope.current_fiscal = {
+      id : 2013001
+    };
+
+    $scope.enterprise = {
+      name : "IMA",
+      city : "Kinshasa",
+      country : "RDC",
+      id : 101
+    };
+
+    bikaConnect.fetch("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
+      $scope.accont_model = data;
+    })
   });
   
   controllers.controller('userController', function($scope, bikaConnect) { 
@@ -240,6 +287,7 @@
           $scope.formvalues = {};
           $scope.columns = columns;
           $scope.selected = selected;
+          $scope.CANYOUSEEME = "HI";
       
           $scope.ok = function() {
             $modalInstance.close($scope.formvalues);

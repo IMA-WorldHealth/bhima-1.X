@@ -28,11 +28,11 @@
       </div>
 
       <div class="row" id="bika-util" ng-controller="utilController">
+        <span>#sfount - not good</span>
         <div id="bika-app-select">
-          <select class="form-control">
-            <option>First</option>
+          <select class="form-control" ng-model="e_select" ng-options="enterprise.name for enterprise in enterprise_model">
           </select>
-          <select class="form-control">
+          <select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">
             <option>Second</option>
           </select>
         </div>
@@ -74,6 +74,7 @@
   <!-- necessary for Smart-Table -->
   <script src="lib/Smart-Table.min.js"></script>
   <script src="js/directives/bika.cellselect.js"></script>
-  <script src="lib/ui-bootstrap-custom-tpls-0.6.0.min.js"></script>
+  <!--script src="lib/ui-bootstrap-custom-tpls-0.6.0.min.js"></script-->
+  <script src="lib/ui-bootstrap/ui-bootstrap-custom-tpls-0.6.0.js"></script>
 </body>
 </html>
