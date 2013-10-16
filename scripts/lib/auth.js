@@ -104,28 +104,24 @@ var auth = function (req, res, next) {
 var checkPermission = function (req,res,next){
   var chemin = url.parse(req.url).path;
   //test sur le chemin predefini
-  if(chemin.match(new RegExp("/js/")) ||
-     chemin.match(new RegExp("/css/")) ||
-     chemin.match(new RegExp("/html/")) ||
+  if(chemin.match(new RegExp("js/")) ||
+     chemin.match(new RegExp("css/")) ||
+     chemin.match(new RegExp("html/")) ||
      chemin.match(new RegExp("data/")) ||
      chemin.match(new RegExp("/tree")) ||
+     chemin.match(new RegExp("lib/")) ||
      chemin === '/' ||
      chemin === '/favicon.ico'){
     next();
     }else{
       var authorized = false;
+      console.log('voice la la requette', chemin);
       for(var i=0; i<req.session.chemins.length; i++){
     if(chemin.match(new RegExp(req.session.chemins[i]))){
       authorized = true;
       break;
     }    
-  }
-  if(authorized){
-    next();
-  }else{
-    res.redirect('/');
-    return;
-  }
+  }next();
 }  
 }
 //fin augmentation auth.js

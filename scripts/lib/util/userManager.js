@@ -4,6 +4,7 @@ var db = require('../database/db')({config: {user: 'bika', database: 'bika', hos
   , url = require('url');
 
 exports.manageUser = function(req, res, next) {
+  console.log(url.parse(req.url).query);
   var myRequest = decodeURIComponent(url.parse(req.url).query);
   var jsRequest = JSON.parse(myRequest);  
   var Qo = queryHandler.getQueryObj(jsRequest); //Qo est la requette envoyee par l'arbre

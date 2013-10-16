@@ -7,10 +7,8 @@
   var services = angular.module('bika.services', []);
   
   services.service('bikaConnect', function($http) { 
-    console.log("bikaConnect initialised.");
     //TODO: Define API for getting data from the server - providing query data, simple table names, etc.
-    this.fetch = function(table, columns, where, value) { 
-    
+    this.fetch = function(table, columns, where, value) {     
     var query = { 
       e: [{t : table, c : columns}]
     };
@@ -36,6 +34,14 @@
       });
       return promise;
     };
+
+    
+    this.get = function(target, requestObject){
+    var promise = $http.get(target + JSON.stringify(requestObject)).then(function(result) { 
+      return result.data;
+    });
+    return promise;
+  };
   });
 
 

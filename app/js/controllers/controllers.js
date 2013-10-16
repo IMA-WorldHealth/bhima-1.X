@@ -6,31 +6,68 @@
   
   var controllers = angular.module('bika.controllers', []);
   
-  controllers.controller('treeController', function($scope) { 
-    $scope.treedata = 
-    [
-      { "label" : "Finance", "id" : "role1", "children" : [
-          { "label" : "Budgeting", "id" : "role11", "children" : [] },
-          { "label" : "Accounts", "id" : "role2", "children" : [] },
-          { "label" : "Debtors", "id" : "role3", "children" : [] }]
+  controllers.controller('treeController', function($scope, $q, bikaConnect) {    
+    var deferred = $q.defer();
+    var result = getRoles();
+    $scope.treeData = [];
+    var cb = function(role, units){
+      var element = {};
+      element.label = role.name;
+      element.id = role.id;
+      element.children = [];
+      for(var i = 0; i<units.length; i++){
+        element.children.push({"label":units[i].name, "id":units[i].id, "url":units[i].url, "children":[]});
       }
-    ];   
+      $scope.treeData.push(element);
+
+    }
+    result.then(function(values){
+      for(var i = 0; i<values.length; i++){
+        getChildren(values[i], cb);
+      }
+    });
+
+    $scope.click = function(){
+      console.log('un click');
+    }  
     
-    $scope.$watch( 'abc.currentNode', function( newObj, oldObj ) {
-        if( $scope.abc && angular.isObject($scope.abc.currentNode) ) {
-            console.log( 'Node Selected' );
-            console.log( $scope.abc.currentNode );
+    $scope.$watch( 'navtree.currentNode', function( newObj, oldObj ) {
+        if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
+            //$location.path('/');
         }
     }, false);
+
+    function getRoles(){
+      var request = {}; 
+      request.e = [{t : 'unit', c : ['id', 'name']}];
+      request.c = [{t:'unit', cl:'parent', v:0, z:'='}];
+      bikaConnect.get('/tree?',request).then(function(data) { 
+        deferred.resolve(data);
+      });
+      return deferred.promise;
+    };
+
+    function getChildren(role, callback){
+      var request = {}; 
+      request.e = [{t : 'unit', c : ['id', 'name', 'url']}];
+      request.c = [{t:'unit', cl:'parent', v:role.id, z:'='}];
+      bikaConnect.get('/tree?',request).then(function(data) {
+          callback(role, data); 
+        
+      });
+
+    };
 
   });
   
   controllers.controller('appController', function($scope) { 
     // TODO/FIXME
+    console.log('je suis le app controller');
   });
   
   controllers.controller('viewController', function($scope) { 
     // TODO
+    console.log('view ',$scope);
   });
   
   controllers.controller('fiscalController', function($scope, bikaConnect) { 
@@ -70,7 +107,7 @@
   controllers.controller('userController', function($scope, bikaConnect) { 
     console.log("userController", $scope);
     
-    $scope.selected = null;
+    /*$scope.selected = null;
     
     bikaConnect.fetch("user", ["id", "username", "password", "first", "last", "email"]).then(function(data) { 
       $scope.model = data;
@@ -98,7 +135,7 @@
     $scope.updateUser = function() {
       console.log($scope.selected);
       console.log($scope.selected.first, $scope.selected.last, $scope.selected.email);
-    };
+    };*/
   });
   
   controllers.controller('debtorsController', function($scope, bikaConnect) { 
