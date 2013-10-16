@@ -9,9 +9,9 @@ function bikaconfig($routeProvider) {
 		controller: 'budgetController',
 		templateUrl: 'partials/budgeting.html'
 	}).
-	when('/permission', { 
+	when('/partials/permission', { 
 		controller: 'userController',
-		templateUrl: '/partials/userpermissions.html'
+		templateUrl: 'partials/permission/permissions.html'
 	}).
 	when('/debtors', { 
 		controller: 'debtorsController',
