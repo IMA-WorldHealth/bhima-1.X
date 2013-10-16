@@ -83,7 +83,6 @@
     }
 
     //FIXME: Date IN object should be formated, this function is called every time any part of the model is updated
-
     //This should be encapsulated in a 'model'
     function modelGet(model, id) { 
       //Keep an index of item ID's so a Get can directly index without searching (index maintained by model)
@@ -101,10 +100,6 @@
         $scope.period_model = data;
       });
     }
-
-    
-  
-  
   });
   
   controllers.controller('budgetController', function($scope) { 
