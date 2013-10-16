@@ -1,5 +1,17 @@
 .nav, .pagination, .carousel a { cursor: pointer; }
 
+.modal { 
+  display: block;
+}
+
+.smart-table .selected {
+  background: #E3E3E3;
+}
+
+.hide {
+  display: none;
+}
+
 .smart-table-footer-row .pagination {
   border-radius: 0;
   float: right;

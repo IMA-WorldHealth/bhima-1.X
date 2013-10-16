@@ -3,8 +3,8 @@
 
 (function(angular) {
   'use strict';
-  
-  var controllers = angular.module('bika.controllers', []);
+ 
+  var controllers = angular.module('bika.controllers', ['$strap.directives']);
   
   controllers.controller('treeController', function($scope) { 
     $scope.treedata = 
@@ -141,61 +141,60 @@
   });
   
   controllers.controller('debtorsController', function($scope, bikaConnect) { 
-  	console.log("Debtors initialised.");
-  		
-  	$scope.selected = null;
-  	
-  	//Populate data - maybe there's a psuedo synchronous way of doing this?
-  	/*bikaConnect.fetch(
-  		"organisation", 
-  		["id", "name", "account_number", "address_1", "address_2", "location_id", "payment_id", "email", "phone", "locked", "note", "contact_id", "tax_id", "max_credit"], 
-  		'enterprise_id', 
-  		101
-  	).then(function(data) { 
-  		$scope.org_model = data;
-  		console.log(data);
-  		$scope.select(0);
-  	});*/
-  
-  	bikaConnect.raw_fetch({
-  	    e: [
-  	      {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
-  	      {t: 'location', c: ['city', 'region'] },
-  	      {t: 'payment', c: ['text']}
-  	    ],
-  	    jc: [
-  	      {ts: ['organisation', 'location'], c: ['location_id', 'id'], l: 'AND'},
-  	      {ts: ['organisation', 'payment'], c: ['payment_id', 'id'], l: 'AND'}
-  	    ],
-  	    c: [
-  	      {t: 'organisation', cl: 'enterprise_id', z: '=', v: 101}
-  	    ]
+    console.log("Debtors initialised.");
+    	
+    $scope.selected = null;
+    
+    //Populate data - maybe there's a psuedo synchronous way of doing this?
+    /*bikaConnect.fetch(
+    	"organisation", 
+    	["id", "name", "account_number", "address_1", "address_2", "location_id", "payment_id", "email", "phone", "locked", "note", "contact_id", "tax_id", "max_credit"], 
+    	'enterprise_id', 
+    	101
+    ).then(function(data) { 
+    	$scope.org_model = data;
+    	console.log(data);
+    	$scope.select(0);
+    });*/
+    
+    bikaConnect.raw_fetch({
+        e: [
+          {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
+          {t: 'location', c: ['city', 'region'] },
+          {t: 'payment', c: ['text']}
+        ],
+        jc: [
+          {ts: ['organisation', 'location'], c: ['location_id', 'id'], l: 'AND'},
+          {ts: ['organisation', 'payment'], c: ['payment_id', 'id'], l: 'AND'}
+        ],
+        c: [
+          {t: 'organisation', cl: 'enterprise_id', z: '=', v: 101}
+        ]
     	}).then(function(data) { 
     		$scope.org_model = data;
     		$scope.select(0);
-  	});
-  
-  	$scope.select = function(index) { 
-  		console.log(index, "selected");
-  		console.log($scope.org_model[index]);
-  		$scope.selected = $scope.org_model[index];
+    });
+    
+    $scope.select = function(index) { 
+    	console.log(index, "selected");
+    	console.log($scope.org_model[index]);
+    	$scope.selected = $scope.org_model[index];
       $scope.selectedIndex = index;
-  	}
-  
-  	$scope.isSelected = function() { 
-  		if($scope.selected) { 
-  			return true;
-  		} else { 	
-  			return false;
-  		}
-  	}
+    }
+    
+    $scope.isSelected = function() { 
+    	if($scope.selected) { 
+    		return true;
+    	} else { 	
+    		return false;
+    	}
+    }
   
   });
   
   
   // Chart of Accounts controllers
-  
-  controllers.controller('chartController', function($scope, bikaConnect, $q, $modal) {
+  controllers.controller('chartController', function($scope, $q, $modal, bikaConnect) {
   
     // loads data and returns a promise evaluated when both requests are complete.
     function loadData() {
@@ -209,7 +208,7 @@
         })
       ]);
     }
-    
+
     var promise = loadData();
     
     promise.then(function(tables) {
@@ -223,45 +222,61 @@
       {label: "Account Type", map: "account_type_id", cellTemplateUrl: "/partials/templates/cellselect.html"},
       {label: "Locked?", map: "locked"}
     ];
-  
-    $scope.openModal = function() {
-      console.log('Called OpenModal');
 
-      var instance = $modal.open({
-        templateUrl: "/partials/templates/chart-modal.html",
-        backdrop: true,
-        controller: function($scope, $modalInstance, columns, selected){
-          // NOTE: THIS IS A DIFFERENT SCOPE 
-          $scope.formvalues = {};
-          $scope.columns = columns;
-          $scope.selected = selected;
-      
-          $scope.ok = function() {
-            $modalInstance.close($scope.formvalues);
-          };
-      
-          $scope.cancel = function() {
-            $modalInstance.dismiss('cancel');
-          };
 
-        },
 
-        resolve: {
-          columns: function() {
-            return $scope.columns;
-          },
-          selected: function() {
-            return $scope.selected;
-          }
-        }
-      });
+    // TODO: Much of this code is in preparation for multi-select feature,
+    // however it works fine with 'single' selection.  To impliment multiselect
+    // functionality, must have a way of registering objects dynamically into a
+    // collection, and add/delete based on their hash.  See TODO.md.
 
-      instance.result.then(function(values) {
-        console.log('Values:', values);
-      }, function() {
-        console.log('Canceled at '+new Date());
-      });
+    // Used for showing next lock state of toggleLock()
+    $scope.lockLabel = "Lock";
 
+    function getLockLabel(rows) {
+      // if multiple selected items default to
+      // "Lock"
+      if (rows.length > 1) {
+        return "Lock";
+      }
+      // Return 'Lock' if not locked; else, 'Unlock'
+      return (rows[0].locked === 0) ? "Lock"  : "Unlock";
+    }
+
+    $scope.selectedRows = [];
+
+    // FIXME: make this work with multiselect
+    $scope.$on('selectionChange', function(event, args) {
+      if ($scope.config.selectionMode == "multiple" && args.item.isSelected == "true") {
+        $scope.selectedRows.push(args.item);
+      } else {
+        // selected is an array
+        $scope.selectedRows = [args.item];
+      }
+      // re-calculate the lock label.
+      $scope.lockLabel = getLockLabel($scope.selectedRows);
+      console.log('$scope.selectedRows', $scope.selectedRows);
+    });
+
+    // toggles the lock on the current row
+    $scope.toggleLock = function() {
+      if ($scope.lockLabel == "Lock") {
+        $scope.selectedRows.forEach(function(row) {
+          row.locked = 1;
+        });
+      } else {
+        $scope.selectedRows.forEach(function(row) {
+          row.locked = 0;
+        });
+      }
+      // Switch label
+      $scope.lockLabel = ($scope.lockLabel == "Lock") ? "Unlock" : "Lock";
+    };
+
+    $scope.config = {
+      isPaginationEnabled: true,
+      itemsByPage: 16,
+      selectionMode: 'single'
     };
 
   });
