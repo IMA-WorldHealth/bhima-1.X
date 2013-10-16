@@ -27,17 +27,25 @@
         <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treedata" data-node-id="id" data-node-label="label" data-node-children="children"></div>
       </div>
 
-      <div class="row" id="bika-util">
-        <div class="col-xs-12"><!--class="btn-group"-->
-            <button type="button" class="btn btn-default">
+      <div class="row" id="bika-util" ng-controller="utilController">
+        <span>#sfount - not good</span>
+        <div id="bika-app-select">
+          <select class="form-control" ng-model="e_select" ng-options="enterprise.name for enterprise in enterprise_model">
+          </select>
+          <select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">
+            <option>Second</option>
+          </select>
+        </div>
+         <div class="btn-group-justified"><!--class="btn-group"-->
+            <a type="button" class="btn btn-default">
               <span class="glyphicon glyphicon-user"></span>
-            </button>
-            <button type="button" class="btn btn-default">
+            </a>
+            <a type="button" class="btn btn-default">
               <span class="glyphicon glyphicon-cog"></span>
-            </button>
-            <button type="button" class="btn btn-default">
+            </a>
+            <a type="button" class="btn btn-default">
               <span class="glyphicon glyphicon-log-out"></span>
-            </button>
+            </a>
         </div>
       </div>
 
@@ -58,7 +66,6 @@
   <!--Scripts loaded in body to prevent page form 'hanging'-->
   <script src="lib/angular/angular.min.js"></script>
   <script src="js/app.js"></script>
-  <script src="lib/angular-strap.js"></script>
   <script src="js/services/services.js"></script>
   <script src="js/controllers/controllers.js"></script>
   <script src="js/directives/angular.treeview.js"></script>
@@ -67,5 +74,7 @@
   <!-- necessary for Smart-Table -->
   <script src="lib/Smart-Table.min.js"></script>
   <script src="js/directives/bika.cellselect.js"></script>
+  <!--script src="lib/ui-bootstrap-custom-tpls-0.6.0.min.js"></script-->
+  <script src="lib/ui-bootstrap/ui-bootstrap-custom-tpls-0.6.0.js"></script>
 </body>
 </html>
