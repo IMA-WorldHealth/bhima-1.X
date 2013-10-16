@@ -81,16 +81,23 @@ controllers.controller('userController', function($scope, bikaConnect) {
       console.log($scope.selected);
       console.log($scope.selected.first, $scope.selected.last, $scope.selected.email);
     };
+
+    $scope.getUnits = function(idRole){
+      var request = {}; 
+      request.e = [{t : 'unit', c : ['id', 'name']}];
+      request.c = [{t:'unit', cl:'parent', v:idRole, z:'='}];
+      bikaConnect.get('/data/?',request).then(function(data) { 
+        $scope.units = data;
+      });
+      return deferred.promise;
+
+    }
   });
   
   controllers.controller('appController', function($scope) { 
-    // TODO/FIXME
-    console.log('je suis le app controller');
   });
   
   controllers.controller('viewController', function($scope) { 
-    // TODO
-    console.log('view ',$scope);
   });
   
   controllers.controller('fiscalController', function($scope, bikaConnect) { 
@@ -124,7 +131,6 @@ controllers.controller('userController', function($scope, bikaConnect) {
   });
   
   controllers.controller('budgetController', function($scope) { 
-    console.log("Budget loaded");
   });
   
   
