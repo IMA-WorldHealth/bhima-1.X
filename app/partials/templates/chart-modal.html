@@ -2,10 +2,12 @@
   <h3>New Account</h3>
 </div>
 <div class="modal-body">
-  <form class="simple-form">
+  <form role="form" class="form-horizontal">
     <div class="form-group" ng-repeat="input in values">
-      <label for="{{input.map}}">{{input.label}}</label>
-      <input required ng-model="input.value">
+      <label class="col-xs-2 control-label" for="{{input.map}}">{{input.label}}</label>
+      <div class="col-xs-10">
+        <input class="form-control" placeholder="{{input.label}}" id="{{input.map}}" required ng-model="input.value">
+      </div>
     </div>
   </form>
 </div>

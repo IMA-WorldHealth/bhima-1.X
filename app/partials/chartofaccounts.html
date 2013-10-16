@@ -11,7 +11,7 @@
 <!-- smart table tests -->
 <h2>Chart of Accounts</h2>
 <div class="table-container"><!-- FIXME: make this 100% height -->
-  <smart-table class="table table-bordered" config="config" columns="columns" rows="accounts"></smart-table>
+  <smart-table class="table table-bordered table-condensed table-hover" config="config" columns="columns" rows="accounts"></smart-table>
   <div type="button" class="btn btn-primary" ng-click="showDialog()">Create Account</div>
   <div type="button" class="btn btn-primary" ng-click="toggleLock()">{{lockLabel}} Selected</div>
   <div type="button" class="btn btn-primary" ng-click="toggleSelectionMode()">Selection Mode: {{config.selectionMode}}</div>

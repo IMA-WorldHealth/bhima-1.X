@@ -104,7 +104,7 @@
 
     $scope.createFiscal = function() { 
       //Do some session checking to see if any values need to be saved/ flushed to server
-      $scope.active = "create"
+      $scope.active = "create";
       $scope.selected = null;
     };
 
@@ -159,15 +159,10 @@
     };
 
     bikaConnect.fetch("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
-<<<<<<< HEAD
-      $scope.accont_model = data;
-    });
-=======
       $scope.account_model = data;
       $scope.a_select = [$scope.account_model[0]];
       console.log("AM", $scope.account_model[0]);
-    })
->>>>>>> a7c542876279a12961376f7af779e475a5cdc5fb
+    });
   });
   
   controllers.controller('userController', function($scope, bikaConnect) { 
