@@ -60,21 +60,11 @@
 
   });
 controllers.controller('userController', function($scope, bikaConnect) { 
-    console.log("userController", $scope);
-    
-    $scope.selected = null;
-    
+    $scope.selected = null;    
     bikaConnect.fetch("user", ["id", "username", "password", "first", "last", "email"]).then(function(data) { 
       $scope.model = data;
-      console.log($scope.model);
-    });
-    
-    bikaConnect.fetch("unit", ["id", "name", "desc"]).then(function(data) { 
-      $scope.units = data;
-    });
-    
+    });    
     $scope.select = function(index) { 
-      console.log("Selected", index);
       $scope.selected = $scope.model[index];
     };
     
