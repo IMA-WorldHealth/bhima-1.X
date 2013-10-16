@@ -12,7 +12,7 @@
  ** util.mixin(object1, object2) -- mixes (deep copy) two objects together.
  
 ### data.js ###
- * Createa a file called data.js to keep "stores" in.
+ * Create a file called data.js to keep "stores" in.
  ** data.objectstore() -- Essentially a clone of the Dojo Memory store,
      perhaps with an updated API.
   

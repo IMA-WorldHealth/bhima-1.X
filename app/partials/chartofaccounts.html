@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="/css/chartofaccounts.css">
-<link rel="stylesheet" href="/css/bootstrap-modal.min.css">
 <!-- rendering times for ng-grid -->
 <!-- run1: DOMContentLoaded: 223ms -->
 <!-- run2: DOMContentLoaded: 206ms -->
@@ -13,7 +12,7 @@
 <h2>Chart of Accounts</h2>
 <div class="table-container"><!-- FIXME: make this 100% height -->
   <smart-table class="table table-bordered" config="config" columns="columns" rows="accounts"></smart-table>
-  <div type="button" class="btn btn-primary">Create Account</div>
+  <div type="button" class="btn btn-primary" ng-click="showDialog()">Create Account</div>
   <div type="button" class="btn btn-primary" ng-click="toggleLock()">{{lockLabel}} Selected</div>
   <div type="button" class="btn btn-primary" ng-click="toggleSelectionMode()">Selection Mode: {{config.selectionMode}}</div>
 </div>
