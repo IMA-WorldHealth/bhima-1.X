@@ -4,7 +4,7 @@
 (function(angular) {
   'use strict';
  
-  var controllers = angular.module('bika.controllers', ['$strap.directives']);
+  var controllers = angular.module('bika.controllers', []);
   
   controllers.controller('treeController', function($scope) { 
     $scope.treedata = 
@@ -274,30 +274,40 @@
       {label: "Locked?", map: "locked"}
     ];
 
-    var instance = $modal.open({
-      templateUrl: "/partials/templates/chart-modal.html",
-      backdrop: true,
-      controller: function($scope, $modalInstance, columns, selected){
-        // NOTE: THIS IS A DIFFERENT SCOPE 
-        $scope.formvalues = {};
-        $scope.columns = columns;
-        $scope.selected = selected;
-        $scope.CANYOUSEEME = "HI";
-    
-        $scope.ok = function() {
-          $modalInstance.close($scope.formvalues);
-        };
-    
-        $scope.cancel = function() {
-          $modalInstance.dismiss('cancel');
-        };
-      },
-      resolve: {
-        selected: function() {
-          return $scope.selected;
+    $scope.showDialog = function() {
+      var instance = $modal.open({
+        templateUrl: "/partials/templates/chart-modal.html",
+        backdrop: true,
+        controller: function($scope, $modalInstance, columns) {
+          // NOTE: THIS IS A DIFFERENT SCOPE 
+          var values = angular.copy(columns);
+          $scope.values = values;
+          // dismiss
+          $scope.close = function() {
+            $modalInstance.dismiss();
+          };
+          // submit
+          $scope.submit = function() {
+            // TODO: include validation
+            $modalInstance.close($scope.values);
+          };
+        },
+        resolve: {
+          columns: function() {
+            return $scope.columns;
+          },
         }
-      }
-    });
+      });
+
+      instance.result.then(function(values) {
+        // add to the grid
+        $scope.accounts.push(values);
+      }, function() {
+        console.log("Form closed on:", new Date());
+      });
+    };
+
+    
 
     // TODO: Much of this code is in preparation for multi-select feature,
     // however it works fine with 'single' selection.  To impliment multiselect
