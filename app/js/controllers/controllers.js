@@ -6,7 +6,7 @@
   
   var controllers = angular.module('bika.controllers', []);
   
-  controllers.controller('treeController', function($scope, $q, bikaConnect) {    
+  controllers.controller('treeController', function($scope, $q, bikaConnect, $location) {    
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
@@ -33,7 +33,7 @@
     
     $scope.$watch( 'navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
-            //$location.path('/');
+            $location.path($scope.navtree.currentNode.url);
         }
     }, false);
 
@@ -58,6 +58,39 @@
 
     };
 
+  });
+controllers.controller('userController', function($scope, bikaConnect) { 
+    console.log("userController", $scope);
+    
+    $scope.selected = null;
+    
+    bikaConnect.fetch("user", ["id", "username", "password", "first", "last", "email"]).then(function(data) { 
+      $scope.model = data;
+      console.log($scope.model);
+    });
+    
+    bikaConnect.fetch("unit", ["id", "name", "desc"]).then(function(data) { 
+      $scope.units = data;
+    });
+    
+    $scope.select = function(index) { 
+      console.log("Selected", index);
+      $scope.selected = $scope.model[index];
+    };
+    
+    $scope.isSelected = function() { 
+      return !!($scope.selected);
+    };
+    
+    $scope.createUser = function() { 
+      $scope.selected = {};
+      $scope.model.push($scope.selected);
+    };
+    
+    $scope.updateUser = function() {
+      console.log($scope.selected);
+      console.log($scope.selected.first, $scope.selected.last, $scope.selected.email);
+    };
   });
   
   controllers.controller('appController', function($scope) { 
@@ -104,39 +137,7 @@
     console.log("Budget loaded");
   });
   
-  controllers.controller('userController', function($scope, bikaConnect) { 
-    console.log("userController", $scope);
-    
-    /*$scope.selected = null;
-    
-    bikaConnect.fetch("user", ["id", "username", "password", "first", "last", "email"]).then(function(data) { 
-      $scope.model = data;
-      console.log($scope.model);
-    });
-    
-    bikaConnect.fetch("unit", ["id", "name", "desc"]).then(function(data) { 
-      $scope.units = data;
-    });
-    
-    $scope.select = function(index) { 
-      console.log("Selected", index);
-      $scope.selected = $scope.model[index];
-    };
-    
-    $scope.isSelected = function() { 
-      return !!($scope.selected);
-    };
-    
-    $scope.createUser = function() { 
-      $scope.selected = {};
-      $scope.model.push($scope.selected);
-    };
-    
-    $scope.updateUser = function() {
-      console.log($scope.selected);
-      console.log($scope.selected.first, $scope.selected.last, $scope.selected.email);
-    };*/
-  });
+  
   
   controllers.controller('debtorsController', function($scope, bikaConnect) { 
   	console.log("Debtors initialised.");
