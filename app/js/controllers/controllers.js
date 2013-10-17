@@ -330,6 +330,7 @@
     connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
       console.log("Returned model", model);
       console.log(model.get(2013001));
+      model.delete(2013001);
     });
   })
 

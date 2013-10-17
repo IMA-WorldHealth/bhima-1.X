@@ -73,6 +73,10 @@
     
     //TODO: 
     //  -data is assumed to be indentifiable with 'id'
+    
+    //keep track of requests thus far 
+    var requests = {};
+
     function req(table, columns, where, value) { 
       console.log("Module requested", table);
       var deferred = $q.defer();
@@ -87,11 +91,12 @@
       }
     
       var handle = $http.get('/data/?' + JSON.stringify(query)).then(function(returned) { 
-        deferred.resolve(packageModel(model, returned.data));
+        var m = packageModel(model, returned.data);
+        requests[m] = {table: table, column: columns, where: where, value: value};
+        deferred.resolve(m);
       });
 
       return deferred.promise;
-
     }
 
     function packageModel(model, data) { 
@@ -101,6 +106,7 @@
 
       //determine indexs
       model.calculateIndex = function() { 
+        this.index = {};
         for (var i = this.data.length - 1; i >= 0; i--) {
             this.index[this.data[i]["id"]] = i;
         };
@@ -112,10 +118,18 @@
       }
 
       model.delete = function(id) { 
-        if(id in this.index) { 
-          this.data.splice(index[id], 1);
+        var i = this.index;
+        if(id in i) { 
+          this.data.splice(i[id], 1);
+          this.calculateIndex();
+          //Check if changes should be automatically reflected in server etc.
+          connect_delete(this, id);
           return true;
         }
+      }
+
+      model.flush = function() { 
+
       }
 
       //initialise index
@@ -127,6 +141,11 @@
     //-verify version numbers of data if it has been cached (see priority levels etc.)
     function referenceQuery(query) { 
 
+    }
+
+    function connect_delete(model, id) { 
+      var meta = requests[model];
+      console.log(meta);
     }
 
     return { 
