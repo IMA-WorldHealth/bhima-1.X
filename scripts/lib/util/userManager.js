@@ -54,6 +54,7 @@ var processMetadata = function(id_user, field, value, client_request, res){
                                   'cond' : [{t : 'unit',cl: 'parent',z : '=',v : value,l:'AND'},{t:'unit',cl:'id',z:'IN',v:"(" + tab_id_role.toString() + ")"}]
                                  };
         var sql = db.select(requette_approprie);
+        console.log('le tableau est ',tab_id_role.toString());
         console.log('usermanager:57',sql);
         db.execute(sql, function(err, results){
           if(err){
