@@ -244,9 +244,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       //Should select previously selected (see indexedb storage)
       $scope.e_select = $scope.enterprise_model[0];
 
-      console.log("e-selected", $scope.e_selected); 
-
-      //appService.set($scope.e_select);
+      appstate.set("enterprise", $scope.e_select);
 
       bikaConnect.fetch("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", $scope.e_select.id).then(function(data) { 
         $scope.fiscal_model = data;
@@ -544,7 +542,13 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     };
   });
 
-  controllers.controller('connectController', function($scope, connect) { 
+  controllers.controller('connectController', function($scope, connect, appstate) { 
+    appstate.get("enterprise").then(function(data) { 
+      console.log("Connect received", data);
+      console.log("Connect received", data);
+      console.log("Connect received", data);
+      console.log("Connect received", data);
+    });
     console.log("ConnectController initialised.");
     connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
       console.log("Returned model", model);
