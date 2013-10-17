@@ -11,7 +11,7 @@
       controller: 'budgetController',
       templateUrl: 'partials/budgeting.html'
     }).
-    when('/user', { 
+    when('/partials/permission', { 
       controller: 'userController',
       templateUrl: 'partials/permission/permissions.html'
     }).
