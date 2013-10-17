@@ -68,7 +68,7 @@
     // TODO
   });
   
-  controllers.controller('fiscalController', function($scope, bikaConnect) { 
+  controllers.controller('fiscalController', function($scope, connect) { 
 
     $scope.active = "select";
     $scope.selected = null;
@@ -84,16 +84,18 @@
       country : "RDC",
       id : 101
     };
+
+    $scope.fiscal_model = {};
     
     //FIXME: This should by default select the fiscal year selected at the application level
-    bikaConnect.fetch("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
-      $scope.fiscal_model = data;
-      $scope.select($scope.fiscal_model[0].id);
+    connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+      $scope.fiscal_model = model;
+      $scope.select($scope.current_fiscal.id);
     });
 
     $scope.select = function(fiscal_id) { 
       fetchPeriods(fiscal_id);
-      $scope.selected = modelGet($scope.fiscal_model, fiscal_id);
+      $scope.selected = $scope.fiscal_model.get(fiscal_id);
       $scope.active = "update";
     }
 
@@ -123,6 +125,7 @@
 
     //FIXME: Date IN object should be formated, this function is called every time any part of the model is updated
     //This should be encapsulated in a 'model'
+    /*
     function modelGet(model, id) { 
       //Keep an index of item ID's so a Get can directly index without searching (index maintained by model)
       var search = null;
@@ -132,7 +135,7 @@
         }
       });
       return search;
-    }
+    }*/
     
     function fetchPeriods(fiscal_id) { 
       bikaConnect.fetch("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(data) { 
