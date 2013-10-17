@@ -88,7 +88,6 @@ app.get('/data/', function (req, res) {
   db.execute(sql, cb);
   } else {
     var sql = db.delete(Qo.table, Qo.ids); //en attendant une meilleure solution
-    console.log(sql);
     var cbDEL = function (err, ans) {
       if (err) throw err;
       res.send("succes!");
