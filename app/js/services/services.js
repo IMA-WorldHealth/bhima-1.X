@@ -54,6 +54,7 @@
       var deferred = $q.defer();
 
       if(comp[id]) { 
+        console.log("appstate ")
         deferred.resolve(comp[id]);
       } else { 
         register(id, deferred);

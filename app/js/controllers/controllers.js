@@ -30,7 +30,7 @@
     console.log("Application controller fired");
   });
 
-  controllers.controller('utilController', function($scope, bikaConnect, appService) { 
+  controllers.controller('utilController', function($scope, bikaConnect, appstate) { 
     console.log("Util controller fired");
 
     $scope.enterprise_model = {};
@@ -46,7 +46,7 @@
 
       console.log("e-selected", $scope.e_selected); 
 
-      appService.set($scope.e_select);
+      //appService.set($scope.e_select);
 
       bikaConnect.fetch("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", $scope.e_select.id).then(function(data) { 
         $scope.fiscal_model = data;
@@ -68,7 +68,7 @@
     // TODO
   });
   
-  controllers.controller('fiscalController', function($scope, connect) { 
+  controllers.controller('fiscalController', function($scope, connect, bikaConnect) { 
 
     $scope.active = "select";
     $scope.selected = null;
@@ -86,10 +86,12 @@
     };
 
     $scope.fiscal_model = {};
+    $scope.fiscal_data = {};
     
     //FIXME: This should by default select the fiscal year selected at the application level
     connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.fiscal_model = model;
+      $scope.fiscal_data = $scope.fiscal_model.data;
       $scope.select($scope.current_fiscal.id);
     });
 
@@ -144,7 +146,7 @@
     }
   });
   
-  controllers.controller('budgetController', function($scope, bikaConnect) { 
+  controllers.controller('budgetController', function($scope, connect) { 
     console.log("Budget loaded");
 
     $scope.account_model = {};
@@ -161,10 +163,9 @@
       id : 101
     };
 
-    bikaConnect.fetch("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
-      $scope.account_model = data;
-      $scope.a_select = [$scope.account_model[0]];
-      console.log("AM", $scope.account_model[0]);
+    connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+      $scope.account_model = model;
+      $scope.a_select = [$scope.account_model.data[0]];
     })
   });
   

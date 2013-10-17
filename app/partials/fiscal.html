@@ -20,7 +20,7 @@
         <button id="create-btn" class="btn btn-success" ng-click="createFiscal()"><span class="glyphicon glyphicon-pencil"></span></button>
         <table class="table table-hover" id="bika-units-fiscal-list">
           <!--tr><td><input class="form-control input-sm"ng-model="fiscal_filter"></td></tr-->
-          <tr ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}" ng-repeat="year in fiscal_model"><td>{{year.fiscal_year_txt}}</td></tr>
+          <tr ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}" ng-repeat="year in fiscal_model.data"><td>{{year.fiscal_year_txt}}</td></tr>
         </table>
       </div>
 		</div>

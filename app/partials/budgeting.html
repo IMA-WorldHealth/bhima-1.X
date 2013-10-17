@@ -3,7 +3,30 @@
 
 <div class="container" id="bika-units-budget">
 	<div class="row">
-		<div class="panel panel-default">
+		<div class="col-xs-3">
+      <!--Enterprise fiscal year selection-->
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+
+          <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
+          <span class="panel-title">{{enterprise.city}}</span>
+
+        </div>
+
+        Search Accounts
+        <input type="search" class="form-control" ng-model="filterAccounts">
+        <div class="pre-scrollable">
+        <br>
+        <table class="table table-hover table-bordered" id="bika-units-budgeting-list">
+          <tr ng-click="select(account.id)" ng-class="{selected: account.id==selected.id}" ng-repeat="account in account_model.data | filter: filterAccounts"><td>{{account.id}}</td><td>{{account.account_txt}}</td></tr>
+        </table>
+        </div>
+      </div>
+		</div>
+    <div class="col-xs-9">
+    </div>
+		<!--div class="panel panel-default">
 			<div class="row">
 				<div class="col-xs-8">
 					<div class="page-header">
@@ -46,6 +69,6 @@
 					<th>Budget</th>
 				</tr>
 			</table>
-		</div>
+		</div-->
 	</div>
 </div>
