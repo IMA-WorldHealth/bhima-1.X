@@ -21,52 +21,6 @@ app.configure('production', function () {
   app.use(error);
 });
 
-// work in progress for logger
-// FIXME: will move this to middleware
-// to be more unobtrusive
-/*
-app.all('/data/', function(req, res, next) {
-  
-  function decode(req) {
-    var query = decodeURIComponent(url.parse(req.url).query);
-    return JSON.parse(query);
-  }
-
-  function decodeGet(req) {
-    var query = decode(req); 
-    var sql = db.select(query);
-  }
-
-  function decodePost(req) {
-    var query = decode(req);
-    var body = req.body;
-    var sql = db.insert(query);
-  }
-
-  function decodePut(req) {
-    var query = decode(req);
-    var body = req.body;
-    var sql = db.update(query);
-  }
-
-  function decodeDelete(req) {
-    var query = decode(req);
-    var sql = db.delete(query);
-  }
-
-  var methodmap = {
-    'GET' : decodeGet,
-    'PUT' : decodePut,
-    'DELETE' : decodeDelete,
-    'INSERT' : decodeSelect
-  };
-  // methodmap[req.method](req);
-  console.log(req.method);
-  console.log(req.url);
-  next();
-});
-*/
-
 app.get('/data/', function (req, res) {
   var cb = function (err, ans) {
     if (err) throw err;
