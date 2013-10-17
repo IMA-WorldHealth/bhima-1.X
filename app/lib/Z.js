@@ -131,7 +131,7 @@ var data = (function() {
     return this;
   }
 
-  // SocketConnection
+  // SocketStore
   // options = {
   //  id: 1,
   //  identifier: 'id',  // equivilent to idProperty
@@ -148,9 +148,9 @@ var data = (function() {
         ready      = false,
         autosync   = options.autosync || false, // autosync defaults to false
         store      = new Store({idProperty: identifier}),
-        socket     = new WebSocket('ws://127.0.0.1:' + port),
-        changes    = [];
- 
+        connection = new WebSocket('ws://127.0.0.1:' + port),
+        changes    = []; // TODO: Impliment this using a Queue?
+
     // helper functions
     function serialize (input) {
       return JSON.stringify(input);
@@ -160,18 +160,29 @@ var data = (function() {
       return JSON.parse(input);
     }
 
+    // test to see how the connections work
+    var open = connection.onopen = function () {
+      console.log('Sending data to the server...');
+      console.log(connection);
+      send({method: 'PUT'});
+    };
+ 
     // first method anything from the server encounters
-    var receive = socket.onmessage = function (rawpacket) {
+    var receive = connection.onmessage = function (rawpacket) {
       // deserialize and route
       var packet = deserialize(rawpacket);
       return router(packet);
     };
-    
+
+    var error = connection.onerror = function (errorpacket) {
+      console.log("WebSocket Error:", errorpacket); 
+    };
+   
     // send data to the server
     function send (rawpacket) {
       // serialize and send
       var packet =  serialize(rawpacket);
-      socket.send(packet);
+      connection.send(packet);
     }
 
     // To initialize the connection
@@ -258,7 +269,7 @@ var data = (function() {
       var success, parameters;
       success = store.remove(id);
       parameters = {
-        socketid: socketid,
+        socketid : socketid,
         method: 'REMOVE',
         data: id
       };
