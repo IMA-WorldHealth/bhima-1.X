@@ -26,10 +26,7 @@
         getChildren(values[i], cb);
       }
     });
-
-    $scope.click = function(){
-      console.log('un click');
-    }  
+ 
     
     $scope.$watch( 'navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
@@ -59,33 +56,67 @@
     };
 
   });
-controllers.controller('userController', function($scope, bikaConnect) { 
-
+controllers.controller('userController', function($scope, $q, bikaConnect) {
+  //initilaisation var
+  
   $scope.selected = null;
   $scope.chkTous = false;
+
+  //population model de table
   var request = {}; 
   request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
   bikaConnect.get('/data/?',request).then(function(data) { 
     $scope.model = data;
   });
 
+  //population model de role
   bikaConnect.fetch("unit", ["id", "name"], 'parent', 0).then(function(data){
     $scope.roles = data;
   });
 
+  //population model d'unite
   bikaConnect.fetch("unit", ["id", "name", "desc", "parent"]).then(function(data) { 
     $scope.units = data;
     for(var i=0; i<$scope.units.length; i++){
       $scope.units[i].chkUnitModel = false;
-    }
-    
+    }    
   });
 
-  $scope.select = function(index) { 
+  //**************** les fonctions *****************
+  $scope.cancel = function(){
+    $scope.selected = {};
+    unCheckAll();
+  };
+
+  $scope.select = function(index) {
+    unCheckAll();
     $scope.selected = $scope.model[index];
+    var result = getUserUnits($scope.selected.id);    
+    result.then(function(vals){
+      console.log(vals);
+      for(var i=0; i<vals.length; i++){
+        for(var j = 0; j<$scope.units.length; j++){
+          if($scope.units[j].id == vals[i].id_unit){
+            $scope.units[j].chkUnitModel = true;
+          }
+        }
+      }
+
+    });
+
+  }
+  function getUserUnits(idUser){
+    var def = $q.defer();
+    var request = {}; 
+    request.e = [{t : 'permission', c : ['id_unit']}];
+    request.c = [{t:'permission', cl:'id_user', v:idUser, z:'='}];
+    bikaConnect.get('/data/?', request).then(function (data){      
+      def.resolve(data);
+    });
+    return def.promise;
   }
 
-  $scope.isSelected = function() { 
+  $scope.isSelected = function() {    
     return !!($scope.selected);
   }
 
@@ -108,9 +139,7 @@ controllers.controller('userController', function($scope, bikaConnect) {
 
       return $scope.tabUnits;
     }
-
-    return [];
-    
+    return [];    
   }
 
   $scope.valider = function (){
@@ -125,15 +154,19 @@ controllers.controller('userController', function($scope, bikaConnect) {
     var request = {}; 
         request.e = [{t : 'user', c : ['id']}];
         request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
-        bikaConnect.get(request).then(function(data) { 
-          
+        bikaConnect.get('data/?',request).then(function(data) { 
+          for(var i = 0; i<$scope.units.length; i++){
+            if($scope.units[i].chkUnitModel === true){
+              bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
+            }
+          }         
     
     });
 
 
     var request = {}; 
-        request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
-    bikaConnect.get(request).then(function(data) { 
+    request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
+    bikaConnect.get('data/?',request).then(function(data) { 
     $scope.model = data;
     });
 
@@ -159,6 +192,10 @@ controllers.controller('userController', function($scope, bikaConnect) {
         }
       }
       return rep;
+    }
+
+    $scope.updateUser = function(){
+
     }
 
     $scope.manageClickUnit = function(id){
@@ -264,8 +301,6 @@ controllers.controller('userController', function($scope, bikaConnect) {
   	});
   
   	$scope.select = function(index) { 
-  		console.log(index, "selected");
-  		console.log($scope.org_model[index]);
   		$scope.selected = $scope.org_model[index];
       $scope.selectedIndex = index;
   	}

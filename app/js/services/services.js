@@ -17,9 +17,6 @@
         query.c = [{t : table, cl : where, v : value, z : '='}];
       }
       
-      console.log("query", query);
-      
-      
       var promise = $http.get('/data/?' + JSON.stringify(query)).then(function(result) { 
           // I can now manipulate the data before returning it if needed
           return result.data;
@@ -43,10 +40,10 @@
       return promise;
   };
 
-  this.send = function(table, data){
-    
-
-  }
+  this.send = function(table, data) { 
+    var sql= {t:table, data:data};
+    $http.post('data/',sql);
+  }  
   });
 
 

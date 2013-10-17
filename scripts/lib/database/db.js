@@ -256,7 +256,6 @@ function db(options) {
       }
 
       base = "UPDATE " + table + " SET " + sets.join(", ") + " WHERE " + where.join(" AND ") + ";";
-      console.log(base); 
       return base;
     },
 

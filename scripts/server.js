@@ -84,6 +84,7 @@ app.get('/data/', function (req, res) {
   var Qo = queryHandler.getQueryObj(jsRequest);  
   if(!Qo.action){
     var sql = db.select(Qo);
+    console.log('JSON:'+Qo+' sql :'+sql);
   db.execute(sql, cb);
   } else {
     var sql = db.delete(Qo.table, Qo.ids); //en attendant une meilleure solution
