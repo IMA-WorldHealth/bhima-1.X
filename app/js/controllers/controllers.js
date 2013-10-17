@@ -30,7 +30,7 @@
     console.log("Application controller fired");
   });
 
-  controllers.controller('utilController', function($scope, bikaConnect, appService) { 
+  controllers.controller('utilController', function($scope, bikaConnect, appstate) { 
     console.log("Util controller fired");
 
     $scope.enterprise_model = {};
@@ -46,7 +46,7 @@
 
       console.log("e-selected", $scope.e_selected); 
 
-      appService.set($scope.e_select);
+      //appService.set($scope.e_select);
 
       bikaConnect.fetch("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", $scope.e_select.id).then(function(data) { 
         $scope.fiscal_model = data;
@@ -68,7 +68,7 @@
     // TODO
   });
   
-  controllers.controller('fiscalController', function($scope, bikaConnect) { 
+  controllers.controller('fiscalController', function($scope, connect, bikaConnect) { 
 
     $scope.active = "select";
     $scope.selected = null;
@@ -84,16 +84,20 @@
       country : "RDC",
       id : 101
     };
+
+    $scope.fiscal_model = {};
+    $scope.fiscal_data = {};
     
     //FIXME: This should by default select the fiscal year selected at the application level
-    bikaConnect.fetch("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
-      $scope.fiscal_model = data;
-      $scope.select($scope.fiscal_model[0].id);
+    connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+      $scope.fiscal_model = model;
+      $scope.fiscal_data = $scope.fiscal_model.data;
+      $scope.select($scope.current_fiscal.id);
     });
 
     $scope.select = function(fiscal_id) { 
       fetchPeriods(fiscal_id);
-      $scope.selected = modelGet($scope.fiscal_model, fiscal_id);
+      $scope.selected = $scope.fiscal_model.get(fiscal_id);
       $scope.active = "update";
     };
 
@@ -123,6 +127,7 @@
 
     //FIXME: Date IN object should be formated, this function is called every time any part of the model is updated
     //This should be encapsulated in a 'model'
+    /*
     function modelGet(model, id) { 
       //Keep an index of item ID's so a Get can directly index without searching (index maintained by model)
       var search = null;
@@ -132,7 +137,7 @@
         }
       });
       return search;
-    }
+    }*/
     
     function fetchPeriods(fiscal_id) { 
       bikaConnect.fetch("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(data) { 
@@ -141,7 +146,7 @@
     }
   });
   
-  controllers.controller('budgetController', function($scope, bikaConnect) { 
+  controllers.controller('budgetController', function($scope, connect) { 
     console.log("Budget loaded");
 
     $scope.account_model = {};
@@ -158,11 +163,11 @@
       id : 101
     };
 
-    bikaConnect.fetch("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(data) { 
-      $scope.account_model = data;
-      $scope.a_select = [$scope.account_model[0]];
-      console.log("AM", $scope.account_model[0]);
+    connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+      $scope.account_model = model;
+      $scope.a_select = [$scope.account_model.data[0]];
     });
+
   });
   
   controllers.controller('userController', function($scope, bikaConnect) { 
@@ -314,8 +319,6 @@
       });
     };
 
-    
-
     // TODO: Much of this code is in preparation for multi-select feature,
     // however it works fine with 'single' selection.  To impliment multiselect
     // functionality, must have a way of registering objects dynamically into a
@@ -369,7 +372,16 @@
       itemsByPage: 16,
       selectionMode: 'single'
     };
-
   });
+
+  controllers.controller('connectController', function($scope, connect) { 
+    console.log("ConnectController initialised.");
+    connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
+      console.log("Returned model", model);
+      console.log(model.get(2013001));
+      model.delete(2013001);
+    });
+  });
+
 
 })(angular);
