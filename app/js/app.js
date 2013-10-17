@@ -1,9 +1,9 @@
 
 (function(angular) {
   'use strict';
-  
+
   //FIXME: Format code correctly in seperate files/modules etc.
-  var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview', 'ngGrid', 'smartTable.table', 'bikaCellSelect', "ui.bootstrap"]);
+  var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview', 'ngGrid', 'smartTable.table', 'bikaCellSelect', 'ui.bootstrap']);
   
   function bikaconfig($routeProvider) { 
     $routeProvider.

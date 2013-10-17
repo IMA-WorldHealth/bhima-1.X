@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="css/budget.css"/>
 
 <div class="container" id="bika-units-budget">
@@ -17,7 +16,6 @@
         Search Accounts
         <input type="search" class="form-control" ng-model="filterAccounts">
         <div class="pre-scrollable">
-        <br>
         <table class="table table-hover table-bordered" id="bika-units-budgeting-list">
           <tr ng-click="select(account.id)" ng-class="{selected: account.id==selected.id}" ng-repeat="account in account_model.data | filter: filterAccounts"><td>{{account.id}}</td><td>{{account.account_txt}}</td></tr>
         </table>

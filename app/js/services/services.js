@@ -38,8 +38,6 @@
     };
   });
 
-  //FIXME: written with a truly naive understanding of angular and services
-  //       ++(can't think right now, don't even think this stuff makes sense)
   services.factory('appstate', function($q) { 
     var comp = {};
     var queue = {};

@@ -1,20 +1,15 @@
-<div class="modal-header"><h3>New Account</h3></div>
-
+<div class="modal-header">
+  <h3>New Account</h3>
+</div>
 <div class="modal-body">
   <form class="simple-form">
-    <div class="form-group" ng-repeat="columns in columns">
-      {{CANYOUSEEME}}
-      <label for="{{column.map}}">{{column.label}}</label>
-      <input id="modal-{{column.map}}" ng-model="formvalues">
+    <div class="form-group" ng-repeat="input in values">
+      <label for="{{input.map}}">{{input.label}}</label>
+      <input required ng-model="input.value">
     </div>
-  
-   <div ng-model="formvalues">{{formvalues}}</div>
   </form>
 </div>
-
 <div class="modal-footer">
-  <div class="form-group">
-    <div class="btn btn-default" ng-click="ok()">Ok</div>
-    <div class="btn btn-default" ng-click="cancel()">Cancel</div>
-  </div>
+  <button type="button" class="btn btn-danger" ng-click="close()">Close</button>
+  <button class="btn btn-primary" ng-click="submit()">Save changes</button>
 </div>
