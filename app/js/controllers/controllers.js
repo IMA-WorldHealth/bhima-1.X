@@ -307,7 +307,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
     $scope.createFiscal = function() { 
       //Do some session checking to see if any values need to be saved/ flushed to server
-      $scope.active = "create"
+      $scope.active = "create";
       $scope.selected = null;
     };
 
@@ -486,8 +486,6 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         console.log("Form closed on:", new Date());
       });
     };
-
-    
 
     // TODO: Much of this code is in preparation for multi-select feature,
     // however it works fine with 'single' selection.  To impliment multiselect
