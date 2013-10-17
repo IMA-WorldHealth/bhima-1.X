@@ -28,17 +28,6 @@ app.configure('production', function () {
 function serialize(json) { return JSON.stringify(json); }
 function deserialize(json) { return JSON.parse(json); }
 
-var store = new data.Store({ idProperty: 'socketid'});
-
-
-// routes definition
-var wsrouter = {
-  'create' : wscreate,
-  'update' : wsupdate,
-  'delete' : wsdelete,
-  'read'   : wsread
-};
-
 // wserror
 //    Fired upon unsuccessful completion of
 // a websocket request. Fired with method 'error'
@@ -192,6 +181,33 @@ function wsread(msg, socket) {
   });
 }
 
+// Web Sockets Area
+// FIXME/TODO: Put this in a module somewhere hidden
+var namespaces = new data.Store(); // idProperty: 'id'
+var incrimentor = 0; // ids for sockets
+
+// define routes
+var router = {
+  'PUT' : put,
+  'REMOVE' : remove,
+  'INIT' : init
+};
+
+// initialize namespaces and connection
+function init (msg, socket) {
+  var space = {
+    id: incrimentor++,
+    table: msg.table,
+    columns: msg.columns,
+    socket: socket
+  };
+  
+  namespaces.push(space);
+
+  socket.send(serialize({method: 'INIT'}));
+}
+
+
 // Set up web sockets connection
 ws.on('connection', function(socket) {
   // onconnection
@@ -199,9 +215,6 @@ ws.on('connection', function(socket) {
   // sure to register the socket's database representation
   // in some form of namespace to be able to push to 
   // it if the underlying data changes.
-
-  // What does a socket look like?
-  console.log("Socket Connected:", socket);
 
   // onmessage
   //    The bulk of the work is done here. All the socket
@@ -212,7 +225,7 @@ ws.on('connection', function(socket) {
 
     console.log('Received a new socket! The method is :', msg.method);
     // route the message appropriately.
-    wsrouter[msg.method](msg, socket);
+    router[msg.method](msg, socket);
   });
 
   socket.on('close', function() {
