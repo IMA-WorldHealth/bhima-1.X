@@ -60,38 +60,131 @@
 
   });
 controllers.controller('userController', function($scope, bikaConnect) { 
-    $scope.selected = null;    
-    bikaConnect.fetch("user", ["id", "username", "password", "first", "last", "email"]).then(function(data) { 
-      $scope.model = data;
-    });    
-    $scope.select = function(index) { 
-      $scope.selected = $scope.model[index];
-    };
-    
-    $scope.isSelected = function() { 
-      return !!($scope.selected);
-    };
-    
-    $scope.createUser = function() { 
-      $scope.selected = {};
-      $scope.model.push($scope.selected);
-    };
-    
-    $scope.updateUser = function() {
-      console.log($scope.selected);
-      console.log($scope.selected.first, $scope.selected.last, $scope.selected.email);
-    };
 
-    $scope.getUnits = function(idRole){
-      var request = {}; 
-      request.e = [{t : 'unit', c : ['id', 'name']}];
-      request.c = [{t:'unit', cl:'parent', v:idRole, z:'='}];
-      bikaConnect.get('/data/?',request).then(function(data) { 
-        $scope.units = data;
-      });
-      return deferred.promise;
+  $scope.selected = null;
+  $scope.chkTous = false;
+  var request = {}; 
+  request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
+  bikaConnect.get('/data/?',request).then(function(data) { 
+    $scope.model = data;
+  });
+
+  bikaConnect.fetch("unit", ["id", "name"], 'parent', 0).then(function(data){
+    $scope.roles = data;
+  });
+
+  bikaConnect.fetch("unit", ["id", "name", "desc", "parent"]).then(function(data) { 
+    $scope.units = data;
+    for(var i=0; i<$scope.units.length; i++){
+      $scope.units[i].chkUnitModel = false;
+    }
+    
+  });
+
+  $scope.select = function(index) { 
+    $scope.selected = $scope.model[index];
+  }
+
+  $scope.isSelected = function() { 
+    return !!($scope.selected);
+  }
+
+  $scope.createUser = function() { 
+    $scope.selected = {};   
+  }
+
+  $scope.changeAll = function(){
+    ($scope.chkTous)?checkAll(): unCheckAll();
+  }
+
+  $scope.getUnits = function(idRole){
+    $scope.tabUnits = [];
+    if($scope.units) { 
+      for(var i = 0; i < $scope.units.length; i++){
+        if($scope.units[i].parent == idRole){
+          $scope.tabUnits.push($scope.units[i]);
+        }
+      }
+
+      return $scope.tabUnits;
+    }
+
+    return [];
+    
+  }
+
+  $scope.valider = function (){
+    bikaConnect.send('user', [{id:'',
+                   username: $scope.selected.username,
+                   password: $scope.selected.password,
+                   first: $scope.selected.first,
+                   last: $scope.selected.last,
+                   email: $scope.selected.email,
+                   logged_in:0}]);
+
+    var request = {}; 
+        request.e = [{t : 'user', c : ['id']}];
+        request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
+        bikaConnect.get(request).then(function(data) { 
+          
+    
+    });
+
+
+    var request = {}; 
+        request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
+    bikaConnect.get(request).then(function(data) { 
+    $scope.model = data;
+    });
+
+  }
+    function checkAll(){
+      for(var i=0; i<$scope.units.length; i++){
+      $scope.units[i].chkUnitModel = true;
+    }
+    }
+
+    function unCheckAll(){
+      for(var i=0; i<$scope.units.length; i++){
+      $scope.units[i].chkUnitModel = false;
+    }
+    }
+
+    function isAllChecked(){
+      var rep = true;
+      for(var i = 0; i< $scope.units.length; i++){
+        if(!$scope.units[i].chkUnitModel){
+          rep = false;
+          break;
+        }
+      }
+      return rep;
+    }
+
+    $scope.manageClickUnit = function(id){
+      var value = null;
+      for(var i=0; i<$scope.units.length; i++){
+        if($scope.units[i].id == id){
+          value = $scope.units[i].chkUnitModel;
+          break;
+        }
+      }
+      if(value === true){
+        //tester si tous sont checkes
+        if(isAllChecked()){
+          $scope.chkTous=true;
+        }else{
+          $scope.chkTous = false;
+        }
+
+      }else{
+        $scope.chkTous=false;
+
+      }
+
 
     }
+  
   });
   
   controllers.controller('appController', function($scope) { 
