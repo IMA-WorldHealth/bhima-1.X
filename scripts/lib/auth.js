@@ -121,7 +121,13 @@ var checkPermission = function (req,res,next){
       authorized = true;
       break;
     }    
-  }next();
+  }
+  if(authorized){
+    next();
+  }else{
+    res.redirect('/');
+    return;
+  }
 }  
 }
 //fin augmentation auth.js
