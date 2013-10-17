@@ -363,6 +363,8 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       id : 101
     };
 
+    $scope.current_fiscal_model = new Array(12);
+
     connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.account_model = model;
       $scope.a_select = [$scope.account_model.data[0]];
