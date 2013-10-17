@@ -156,8 +156,9 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         request.e = [{t : 'user', c : ['id']}];
         request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
         bikaConnect.get('data/?',request).then(function(data) { 
+          console.log($scope.units);
           for(var i = 0; i<$scope.units.length; i++){
-            if($scope.units[i].chkUnitModel === true){
+            if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !=0 && $scope.units[i].id != 0){
               bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
             }
           }         
