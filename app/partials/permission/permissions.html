@@ -3,8 +3,9 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-6" id="divuserID">
-				<button ng-click="createUser()">Create User</button>
+				<button ng-click="valider()">Create User</button>
 				<button ng-click="updateUser()" ng-disabled='!isSelected()'>Update User</button>
+				<button ng-click="cancel()">Cancel</button>
 				<table class="table-bordered table-striped table">
 					<thead>
 					<tr><th>First Name</th><th>Second Name</th><th>Email</th></tr>
@@ -20,7 +21,7 @@
 				</table>
 			</div>
 
-			<div class="col-xs-6" ng-show="isSelected()">
+			<div class="col-xs-6">
 				<div class="form-group">
 				<label for="first">First Name:</label>
 				<input ng-model="selected.first" id="first">
@@ -49,10 +50,6 @@
 				<div class="form-group">
 				<label for="cpw">Confirm Password:</label>
 				<input id="cpw" type="password">
-				</div>
-
-				<div class="form-group">
-				<button ng-click="valider()">valider</button>
 				</div>
 
 				<div class="role">

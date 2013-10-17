@@ -4,7 +4,6 @@ var db = require('../database/db')({config: {user: 'bika', database: 'bika', hos
   , url = require('url');
 
 exports.manageUser = function(req, res, next) {
-  console.log(url.parse(req.url).query);
   var myRequest = decodeURIComponent(url.parse(req.url).query);
   var jsRequest = JSON.parse(myRequest);  
   var Qo = queryHandler.getQueryObj(jsRequest); //Qo est la requette envoyee par l'arbre
@@ -55,6 +54,7 @@ var processMetadata = function(id_user, field, value, client_request, res){
                                   'cond' : [{t : 'unit',cl: 'parent',z : '=',v : value,l:'AND'},{t:'unit',cl:'id',z:'IN',v:"(" + tab_id_role.toString() + ")"}]
                                  };
         var sql = db.select(requette_approprie);
+        console.log('usermanager:57',sql);
         db.execute(sql, function(err, results){
           if(err){
             throw err;
@@ -66,7 +66,7 @@ var processMetadata = function(id_user, field, value, client_request, res){
   }
   //on demande la racine elle meme
   else{
-    var sql = db.select(client_request);
+    var sql = db.select(client_request);    
     db.execute(sql, function(err, results){
       if(err){
         throw err;
@@ -98,6 +98,7 @@ var processData = function(id_user, value, res){
                                   'cond' : [{t : 'unit',cl: 'parent',z : '=',v : value,l:'AND'},{t:'unit',cl:'id',z:'IN',v:"(" + tab_ids.toString() + ")"}]
                                  };
         var sql = db.select(requette_approprie);
+        console.log('usermanager:101',sql);
         db.execute(sql, function(err, results){
           if(err){
             throw err;
