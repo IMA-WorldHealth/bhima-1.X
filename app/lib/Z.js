@@ -18,7 +18,7 @@ var data = (function() {
   //    
   //    Optimized for fast lookups, writes can
   //    be a bit slower.
-  function store(options) {
+  function Store(options) {
     options = options || {};
 
     // idProperty : String
@@ -131,11 +131,268 @@ var data = (function() {
     return this;
   }
 
+  // SocketConnection
+  // options = {
+  //  id: 1,
+  //  identifier: 'id',  // equivilent to idProperty
+  //  table: 'account',  // or "account-account_type"
+  //  columns: ['id', 'account_txt'],
+  // }
+  //  
+  function SocketStore(options) {
+    var port       = options.port || 8000, // default to port 8000
+        socketid   = options.id,
+        identifier = options.identifier,
+        table      = options.table,
+        columns    = options.columns,
+        ready      = false,
+        autosync   = options.autosync || false, // autosync defaults to false
+        store      = new Store({idProperty: identifier}),
+        socket     = new WebSocket('ws://127.0.0.1:' + port),
+        changes    = [];
+ 
+    // helper functions
+    function serialize (input) {
+      return JSON.stringify(input);
+    }
+
+    function deserialize (input) {
+      return JSON.parse(input);
+    }
+
+    // first method anything from the server encounters
+    var receive = socket.onmessage = function (rawpacket) {
+      // deserialize and route
+      var packet = deserialize(rawpacket);
+      return router(packet);
+    };
+    
+    // send data to the server
+    function send (rawpacket) {
+      // serialize and send
+      var packet =  serialize(rawpacket);
+      socket.send(packet);
+    }
+
+    // To initialize the connection
+    function init () {
+      var parameters = {
+        socketid   : socketid,
+        method     : 'INIT',
+        table      : table,
+        columns    : columns,
+        identifier : identifier
+      };
+      send(parameters);
+    }
+  
+    function router (packet) {
+      var methods = {
+        'PUT'    : route_put,
+        'REMOVE' : route_remove,
+        'INIT'   : route_init
+      };
+      // call the appropriate method with the packet
+      methods[packet.method](packet.data);
+    }
+
+    // puts data from the server into the store
+    function route_put (data) {
+      store.put(data);
+    }
+
+    // removes data from the store on server's request
+    function route_remove(id) {
+      store.remove(id);
+    }
+
+    // populates data in the store from the server
+    function route_init (data) {
+       store.setData(data);
+       ready = true; // set ready to be true
+    }
+
+    // External API
+    function get (id) {
+      // summary
+      //    Queries the store. The store is assumed to
+      //    always be up to date with the server.
+      return store.get(id);
+    }
+  
+    // External API
+    function put (object, opts) {
+      // summary:
+      //    Puts an object in the local store and 
+      //    either records changes or syncs them
+      //    back to the server, depending on how the
+      //    script was initialized.
+      // returns: Boolean
+      var success, parameters;
+      if (!(identifier in object)) {
+        throw new Error("No identifying property supplied.");
+      }
+      
+      success = store.put(object, opts);
+
+      parameters = {
+        socketid : socketid,
+        method   : 'PUT',
+        data     : object
+      };
+      if (success && autosync) {
+        // Success! Now send the query to the server
+        send(parameters);
+        return true;
+      }
+      if (success && !autosync) {
+        // Success! Now push to changes to a list for later syncing
+        return true;
+      }
+      // something strange happened.
+      return false;
+    }
+  
+    // External API
+    function remove (id) {
+      var success, parameters;
+      success = store.remove(id);
+      parameters = {
+        socketid: socketid,
+        method: 'REMOVE',
+        data: id
+      };
+
+      if (success && autosync) {
+        // local store delete succeeded
+        send(parameters);
+        return true;
+      }
+      if (success && !autosync) {
+        changes.push(parameters);
+      }
+      return false;
+    }
+
+    // External API
+    function sync () {
+      // summary:
+      //    Loop through all the directives in 
+      //    "changes" and send each one to the
+      //    server.  No roll-back supported yet,
+      //    but the structure is here.
+      for (var i = 0, l = changes.length; i < l; i++){
+        send(changes[i]);
+      }
+    }
+
+    // Return external API
+    return {
+      put: put,
+      remove: remove,
+      get: get,
+      sync: sync,
+      ready: ready
+    };
+  
+  }
 
   // returns to global namespace
   return {
-    store : store
+    Store : Store,
+    SocketStore : SocketStore
   };
 })();
 
 
+
+
+// FIXME: improve this, it looks gross.
+// util: namespace
+//
+// Currently Supports:
+//  util.mixin()
+var util = (function() {
+
+  function isArray (obj) {
+    // test whether object is an array
+    return (obj && obj.length && Object.prototype.toString.call(obj) == '[object Array]');
+  }
+
+  // copy object properties 
+  function mixObject (object) {
+    var copy = {}, key, value;
+    // catch typeof null == object
+    if (!object) { return null; }
+    for (key in object) {
+      // faster lookups
+      value = object[key];
+      if (object.hasOwnProperty(key) && object.propertyIsEnumerable(key)) {
+        if (typeof value == "object") {
+          // complex value: mix in either array or another object
+          copy[key] = (isArray(value)) ? mixArray(value) : mixObject(value);
+        } else {
+          // simple value
+          copy[key] = value;
+        }
+      }
+    }
+    return copy;
+  }
+
+  // copy array properties
+  function mixArray (array) {
+    var l = array.length, i = 0, copy = Array(l), value;
+    for (i; i < l; i++) {
+      value = array[i];
+      if (value && typeof value == 'object') {
+        copy[i] = (isArray(value)) ? mixArray(value) : mixObject(value);
+      } else {
+        copy[i] = value;
+      }
+    }
+    return copy;
+  }
+
+  // mixin two objects, optionally preserving the first
+  // object's properties
+  function mixin(primary, secondary, safeMixin) {
+    // Mixes two objects together by copying over properties
+    // safeMixin does not overried properties of primary
+    var mixed = {}, key, value;
+    for (key in primary) {
+      value = primary[key];
+      // skip prototypes and mix deeply for arrays
+      if (primary.hasOwnProperty(key) && primary.propertyIsEnumerable(key)) {
+        if (typeof value == "object") {
+          // complex value - array or object
+          mixed[key] = (isArray(value)) ? mixArray(value) : mixObject(value);
+        } else {
+          // simple value
+          mixed[key] = value;
+        }
+      }
+    }
+    for (key in secondary) {
+      value = secondary[key];
+      // Make sure we skip if safeMixin is defined
+      // and mixed[key] exists
+      if (!(safeMixin && mixed[key])) {
+        if (secondary.hasOwnProperty(key) && secondary.propertyIsEnumerable(key)) {
+          if (typeof value == "object") {
+            // complex value - array or object
+            mixed[key] = (isArray(value)) ? mixArray(value) : mixObject(value);
+          } else {
+            // simple value
+            mixed[key] = value;
+          }
+        }
+      }
+    }
+    return mixed;
+  }
+  return {
+    mixin: mixin
+  };
+
+})();
