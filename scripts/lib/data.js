@@ -113,8 +113,8 @@ var data = (function() {
     (function constructor () {
       for (var key in options) {
         self[key] = options[key];
-        self.setData(options.data || []);
       }
+      self.setData(options.data || []);
     })();
 
     return this;

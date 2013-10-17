@@ -124,8 +124,8 @@ var data = (function() {
     (function constructor () {
       for (var key in options) {
         self[key] = options[key];
-        self.setData(options.data || []);
       }
+      self.setData(options.data || []);
     })();
 
     return this;
@@ -162,15 +162,15 @@ var data = (function() {
 
     // test to see how the connections work
     var open = connection.onopen = function () {
-      console.log('Sending data to the server...');
       console.log(connection);
-      send({method: 'PUT'});
+      // initialize
+      init();
     };
  
     // first method anything from the server encounters
     var receive = connection.onmessage = function (rawpacket) {
       // deserialize and route
-      var packet = deserialize(rawpacket);
+      var packet = deserialize(rawpacket.data);
       return router(packet);
     };
 
@@ -192,7 +192,6 @@ var data = (function() {
         method     : 'INIT',
         table      : table,
         columns    : columns,
-        identifier : identifier
       };
       send(parameters);
     }
@@ -219,8 +218,8 @@ var data = (function() {
 
     // populates data in the store from the server
     function route_init (data) {
-       store.setData(data);
-       ready = true; // set ready to be true
+      store.setData(data);
+      ready = true; // set ready to be true
     }
 
     // External API

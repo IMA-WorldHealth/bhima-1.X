@@ -188,10 +188,13 @@ var incrimentor = 0; // ids for sockets
 
 // define routes
 var router = {
-  'PUT' : put,
+  'PUT'    : put,
   'REMOVE' : remove,
-  'INIT' : init
+  'INIT'   : init
 };
+
+function put () {}
+function remove() {}
 
 // initialize namespaces and connection
 function init (msg, socket) {
@@ -202,9 +205,23 @@ function init (msg, socket) {
     socket: socket
   };
   
-  namespaces.push(space);
+  namespaces.put(space);
 
-  socket.send(serialize({method: 'INIT'}));
+  // compose an sql query here
+  var query = "SELECT %columns% FROM %table%";
+  query = query.replace('%columns%', msg.columns.join()).replace('%table%', msg.table);
+  console.log("Received query:", query);
+
+  db.execute(query, function(err, res) {
+    if (err) { throw err ;}
+    else { 
+      socket.send(serialize({
+        method: 'INIT',
+        data: res
+      }));
+      console.log('sent');
+    }
+  });
 }
 
 
