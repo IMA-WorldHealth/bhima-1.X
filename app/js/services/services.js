@@ -66,8 +66,72 @@
 
   });
 
-  services.service('connect', function($http) { 
+  services.factory('connect', function($http, $q) { 
+    //return object with get/put/delete/update functions 
+    //index ids for quick get
+    //maintain scope in functions for either pushing straight to server or keeping ttrack of changes (flag)
+    
+    //TODO: 
+    //  -data is assumed to be indentifiable with 'id'
+    function req(table, columns, where, value) { 
+      console.log("Module requested", table);
+      var deferred = $q.defer();
+      var model = {};
 
+      var query = { 
+        e: [{t : table, c : columns}]
+      };
+
+      if(where) { 
+        query.c = [{t : table, cl : where, v : value, z : '='}];
+      }
+    
+      var handle = $http.get('/data/?' + JSON.stringify(query)).then(function(returned) { 
+        deferred.resolve(packageModel(model, returned.data));
+      });
+
+      return deferred.promise;
+
+    }
+
+    function packageModel(model, data) { 
+
+      model.index = {};
+      model.data = data;
+
+      //determine indexs
+      model.calculateIndex = function() { 
+        for (var i = this.data.length - 1; i >= 0; i--) {
+            this.index[this.data[i]["id"]] = i;
+        };
+      }
+
+      //data manipulation
+      model.get = function(id) { 
+        return this.data[this.index[id]];
+      }
+
+      model.delete = function(id) { 
+        if(id in this.index) { 
+          this.data.splice(index[id], 1);
+          return true;
+        }
+      }
+
+      //initialise index
+      model.calculateIndex();
+      return model;
+    }
+
+    //Check we haven't made this query before this session, check we don't have the data stored in local storage
+    //-verify version numbers of data if it has been cached (see priority levels etc.)
+    function referenceQuery(query) { 
+
+    }
+
+    return { 
+      req : req
+    };
   });
 
 })(angular);
