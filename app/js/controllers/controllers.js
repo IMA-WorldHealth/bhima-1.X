@@ -383,5 +383,8 @@
     });
   });
 
+  controllers.controller('socketController', function() {
+     console.log('[controllers.js] SocketController initialized.');
+  });
 
 })(angular);
