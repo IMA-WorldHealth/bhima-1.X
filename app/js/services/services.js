@@ -40,29 +40,47 @@
 
   //FIXME: written with a truly naive understanding of angular and services
   //       ++(can't think right now, don't even think this stuff makes sense)
-  services.service('appService', function(bikaConnect, $q) { 
+  services.factory('appstate', function($q) { 
     var comp = {};
-    var handle = {};
+    var queue = {};
 
-    //Use defereds to return the value of something (get) WHEN it is set, vs. returning null
-    function link(id) { 
-      return function(newObj, oldObj) { 
-        console.log("Service tracking", id, newObj);
+    //reference to the value (bound with ng-model) of a component
+    function set(id, ref) { 
+      comp[id] = ref;
+      notifyQueue(id);
+    }
+
+    function get(id) { 
+      var deferred = $q.defer();
+
+      if(comp[id]) { 
+        deferred.resolve(comp[id]);
+      } else { 
+        register(id, deferred);
+      }
+
+      return deferred.promise;
+    }
+
+    function register(id, deferred) { 
+      if(!queue[id]) { 
+        queue[id] = [];
+      }
+      queue[id].push(deferred);
+    }
+
+    function notifyQueue(id) { 
+      if(queue[id]) { 
+        queue[id].forEach(function(deferred) { 
+          deferred.resolve(comp[id]);
+        });
       }
     }
-    //reference to the value (bound with ng-model) of a component
-    this.set = function(id, ref) { 
-      comp[id] = ref;
-      //handle[id] = $watch('comp[id]', link(id)); 
-    }
 
-    this.get = function(id) { 
-      return comp[id];
-    }
-
-    this.register = function(id, callback) { 
-
-    }
+    return {
+      set : set, 
+      get : get
+    };
 
   });
 
@@ -146,6 +164,8 @@
     function connect_delete(model, id) { 
       var meta = requests[model];
       console.log(meta);
+
+      //create delete query and pass to server with $http
     }
 
     return { 
