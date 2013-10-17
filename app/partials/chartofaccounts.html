@@ -1,15 +1,4 @@
-<!-- 
-NOTE: Steven thinks these rendering times are due to my i7.
-      I think <i>he's weak</i> 
--->
-
-<link rel="stylesheet" href="css/chartofaccounts.css">
-<!-- FIXME: change this styling -->
-
-<div style="position:relative; height: 300px; width: 100%;">
-  <div style="position:absolute; top:0; right: 0; left: 0; bottom:0;" ng-grid="gridOptions"></div>
-</div>
-
+<link rel="stylesheet" href="/css/chartofaccounts.css">
 <!-- rendering times for ng-grid -->
 <!-- run1: DOMContentLoaded: 223ms -->
 <!-- run2: DOMContentLoaded: 206ms -->
@@ -19,6 +8,11 @@ NOTE: Steven thinks these rendering times are due to my i7.
 <!-- run6: DOMContentLoaded: 201ms -->
 <!-- avg: 221.8334 ms -->
 
-<!-- smart table tests >
-<smart-table columns="columnCollection" rows="accountTable"></smart-table-->
-
+<!-- smart table tests -->
+<h2>Chart of Accounts</h2>
+<div class="table-container"><!-- FIXME: make this 100% height -->
+  <smart-table class="table table-bordered" config="config" columns="columns" rows="accounts"></smart-table>
+  <div type="button" class="btn btn-primary" ng-click="showDialog()">Create Account</div>
+  <div type="button" class="btn btn-primary" ng-click="toggleLock()">{{lockLabel}} Selected</div>
+  <div type="button" class="btn btn-primary" ng-click="toggleSelectionMode()">Selection Mode: {{config.selectionMode}}</div>
+</div>
