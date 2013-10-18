@@ -6,16 +6,17 @@
   var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview', 'ngGrid', 'smartTable.table', 'bikaCellSelect', 'ui.bootstrap']);
   
   function bikaconfig($routeProvider) { 
+    //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
     when('/budgeting', {
       controller: 'budgetController',
       templateUrl: 'partials/budgeting.html'
     }).
-    when('/partials/permission', { 
+    when('/permission', { 
       controller: 'userController',
       templateUrl: 'partials/permission/permissions.html'
     }).
-    when('/debtors', { 
+    when('/debitors', { 
       controller: 'debtorsController',
       templateUrl: 'partials/debtors.html'
     }).
@@ -23,7 +24,7 @@
       controller: 'fiscalController',
       templateUrl: 'partials/fiscal.html'
     }).
-    when('/chartofaccounts', {
+    when('/accounts', {
       controller: 'chartController',
       templateUrl: 'partials/chartofaccounts.html'
     }).
