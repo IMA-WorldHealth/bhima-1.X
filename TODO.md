@@ -29,3 +29,5 @@
 -- What is the API?
 --- Is everything wrapped in $q.get()'s?
 --- Do we use Node.js style, SocketService.get(function(data, err) { ... }) ?
+-- Add flag for `fragmented` or `non-fragmented` synchronization
+----> Fragmented implies that [{packet1}, {packet2}, {packet3}] will each get a separate socket.send()
