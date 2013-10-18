@@ -141,15 +141,15 @@ var data = (function() {
   //  
   function SocketStore(options) {
     var port       = options.port || 8000, // default to port 8000
-        socketid   = options.id,
         identifier = options.identifier,
         table      = options.table,
         columns    = options.columns,
-        ready      = false,
         autosync   = options.autosync || false, // autosync defaults to false
         store      = new Store({idProperty: identifier}),
         connection = new WebSocket('ws://127.0.0.1:' + port),
-        changes    = []; // TODO: Impliment this using a Queue?
+        ready      = false,
+        socketid   = null, // this is set in a server-response to init()
+        changes    = [];
 
     // helper functions
     function serialize (input) {
@@ -162,7 +162,6 @@ var data = (function() {
 
     // test to see how the connections work
     var open = connection.onopen = function () {
-      console.log(connection);
       // initialize
       init();
     };
@@ -188,7 +187,6 @@ var data = (function() {
     // To initialize the connection
     function init () {
       var parameters = {
-        socketid   : socketid,
         method     : 'INIT',
         table      : table,
         columns    : columns,
@@ -202,7 +200,12 @@ var data = (function() {
         'REMOVE' : route_remove,
         'INIT'   : route_init
       };
-      // call the appropriate method with the packet
+
+      // only fired one. FIXME: make this better/standardized
+      if (!socketid) { socketid = packet.socketid; }
+
+      // call the appropriate method with the packet's data
+      // DISCUSS: Should this use the whole packet?
       methods[packet.method](packet.data);
     }
 
@@ -218,8 +221,8 @@ var data = (function() {
 
     // populates data in the store from the server
     function route_init (data) {
-      store.setData(data);
-      ready = true; // set ready to be true
+      store.setData(data);      // set the store data
+      ready = true;             // set ready to be true
     }
 
     // External API
@@ -245,18 +248,23 @@ var data = (function() {
       
       success = store.put(object, opts);
 
+      console.log("socketid:", socketid);
       parameters = {
         socketid : socketid,
         method   : 'PUT',
         data     : object
       };
+      console.log("Autosync:", autosync);
       if (success && autosync) {
         // Success! Now send the query to the server
+        console.log("sending params");
         send(parameters);
         return true;
       }
       if (success && !autosync) {
         // Success! Now push to changes to a list for later syncing
+        console.log("Pushing params");
+        changes.push(parameters);
         return true;
       }
       // something strange happened.
@@ -275,11 +283,14 @@ var data = (function() {
 
       if (success && autosync) {
         // local store delete succeeded
+        console.log('sending params');
         send(parameters);
         return true;
       }
       if (success && !autosync) {
+        console.log('Pushing params');
         changes.push(parameters);
+        return true;
       }
       return false;
     }
@@ -291,6 +302,7 @@ var data = (function() {
       //    "changes" and send each one to the
       //    server.  No roll-back supported yet,
       //    but the structure is here.
+      console.log("Changes:", changes);
       for (var i = 0, l = changes.length; i < l; i++){
         send(changes[i]);
       }
