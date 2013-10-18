@@ -102,18 +102,24 @@
   });
 
   services.factory('connect', function($http, $q) { 
-    //return object with get/put/delete/update functions 
-    //index ids for quick get
-    //maintain scope in functions for either pushing straight to server or keeping ttrack of changes (flag)
-    
+    //summary: 
+    //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
+    //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to 
+    //  update the server.
+
     //TODO: 
-    //  -data is assumed to be indentifiable with 'id'
+    //  -generic id property should be injected, currently set as ID
+    //  -set flag for automatically flushing model updates to server
     
-    //keep track of requests thus far 
+    //keep track of requests, model can use connect API without re-stating request
+    //  model : request
     var requests = {};
 
+    //TODO: doesn't support joins or advanced conditions, socket API should solve this
     function req(table, columns, where, value) { 
-      console.log("Module requested", table);
+      //summary: 
+      //  Attempt at a more more managable API for modules requesting tables from the server, implementation
+      //  still needs to be finalised, should be deprecated with sockets
       var deferred = $q.defer();
       var model = {};
 
@@ -126,6 +132,19 @@
       }
     
       var handle = $http.get('/data/?' + JSON.stringify(query)).then(function(returned) { 
+        var m = packageModel(model, returned.data);
+        requests[m] = {table: table, column: columns, where: where, value: value};
+        deferred.resolve(m);
+      });
+
+      return deferred.promise;
+    }
+
+    function basicReq(reqobj) { 
+      //summary: 
+      //  return a packaged model given a straight request object
+      var deferred = $q.defer();
+      var handle = $http.get('/data/?' + JSON.stringify(reqobj)).then(function(returned) { 
         var m = packageModel(model, returned.data);
         requests[m] = {table: table, column: columns, where: where, value: value};
         deferred.resolve(m);

@@ -1,6 +1,4 @@
 // Controller.js
-
-
 (function(angular) {
   'use strict';
  
@@ -283,12 +281,10 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     };
 
     $scope.fiscal_model = {};
-    $scope.fiscal_data = {};
     
     //FIXME: This should by default select the fiscal year selected at the application level
     connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.fiscal_model = model;
-      $scope.fiscal_data = $scope.fiscal_model.data;
       $scope.select($scope.current_fiscal.id);
     });
 
@@ -297,6 +293,14 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       $scope.selected = $scope.fiscal_model.get(fiscal_id);
       $scope.active = "update";
     };
+
+    $scope.delete = function(fiscal_id) { 
+      //validate deletion before performing
+      $scope.active = "select";
+      $scope.selected = null;
+      $scope.fiscal_model.delete(fiscal_id);
+
+    }
 
     $scope.isSelected = function() { 
       console.log("isSelected called, returned", !!($scope.selected));
@@ -348,6 +352,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     console.log("Budget loaded");
 
     $scope.account_model = {};
+    $scope.budget_model = {};
 
     //TODO: This data can be fetched from the application level service
     $scope.current_fiscal = {
@@ -361,12 +366,19 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       id : 101
     };
 
+    $scope.selected = {};
+
     $scope.current_fiscal_model = new Array(12);
 
     connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.account_model = model;
-      $scope.a_select = [$scope.account_model.data[0]];
+      $scope.a_select = [$scope.account_model.data[0]]; 
+
     });
+
+    function fetchBudget(account_id) { 
+      
+    }
   });
   
   
