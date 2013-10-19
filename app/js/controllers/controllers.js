@@ -387,23 +387,12 @@
 
     console.log('[controllers.js] SocketController initialized.');
 
-    var options = {identifier: 'id', table: 'account', columns: ['id', 'account_txt']};
+    var options = {identifier: 'id', table: 'account', columns: ['id', 'account_txt'], autosync: true};
     var store = data.register(options);
+    store.ready().then(function() {
+      $scope.model = store.data;
 
-    $scope.model = store.data;
-    setTimeout(function() {
-      $scope.model = store.data; 
-      $scope.$apply(); // Why is this necessary?
-    }, 500);
-
-    $scope.get = store.get(100000).then(function(data) { 
-      console.log("data:", data);
     });
-
-    $scope.removeOne = function() {
-      store.remove(100000);
-    };
-
 
   });
 
