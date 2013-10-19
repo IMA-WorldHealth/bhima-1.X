@@ -144,9 +144,11 @@
       //summary: 
       //  return a packaged model given a straight request object
       var deferred = $q.defer();
+      var model = {};
       var handle = $http.get('/data/?' + JSON.stringify(reqobj)).then(function(returned) { 
         var m = packageModel(model, returned.data);
-        requests[m] = {table: table, column: columns, where: where, value: value};
+        //unable to uniformly set request object, this will cause a problem
+        requests[m] = reqobj;
         deferred.resolve(m);
       });
 
@@ -205,7 +207,8 @@
     }
 
     return { 
-      req : req
+      req : req,
+      basicReq : basicReq
     };
   });
 
