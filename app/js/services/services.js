@@ -81,7 +81,7 @@
 
   });
 
-  services.factory('data', function($q) {
+  services.factory('data', function($q, $rootScope) {
 
     function serialize (input) { return JSON.stringify(input); }
     function deserialize (input) { return JSON.parse(input); }
@@ -94,14 +94,13 @@
           columns    = options.columns,
           autosync   = options.autosync || false, // autosync defaults to false
           connection = new WebSocket('ws://127.0.0.1:' + port),
-          ready = $q.defer(),
+          q          = $q.defer(),
           socketid   = null, // this is set in a server-response to init()
           changes    = [];
       
       this.identifier = identifier;
       this.data = null;
       this.index = null;
-      this.ready = ready; // refers to ready above
 
       this.setData = function (data) {
         this.data = data;
@@ -111,10 +110,10 @@
         }
       };
 
-      var open = connection.onopen = function () { init(); };
+      var open = connection.onopen = function () { init(); }; // may hit conflicts with this
       var receive = connection.onmessage = function (rawpacket) { return router(deserialize(rawpacket.data));};
       function send (rawpacket) { connection.send(serialize(rawpacket)); }
-  
+ 
       function init () {
         var parameters = {
           method     : 'INIT',
@@ -124,6 +123,10 @@
         };
         send(parameters);
       }
+      
+      this.ready = function () {
+        return q.promise;
+      };
     
       function router (packet) {
         var methods = {
@@ -141,18 +144,13 @@
       function route_init (data) { 
         self.setData(data);
         console.log("Received data. Resolving...");
-        self.ready.resolve();
+        q.resolve();
+        console.log("Calling $rootScope.$apply()");
+        $rootScope.$apply();
       }
   
       this.get = function (id) {
-        var q = $q.defer(),
-            promise = this.ready.promise,
-            self = this;
-        promise.then(function() { console.log("Resolved."); });
-        promise.then(function(res) {
-          q.resolve(self.data[self.index[id]]);
-        }); 
-        return q.promise;
+        return self.data[self.index[id]];
       };
 
       this.put = function (object, opts) {
@@ -197,7 +195,7 @@
           data.splice(index[id], 1);
           this.setData(data);
 
-          parameters = {
+          var parameters = {
             socketid : socketid,
             method: 'REMOVE',
             data: id
