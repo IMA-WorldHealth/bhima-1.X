@@ -142,10 +142,9 @@
       function route_put (data) { self.put(data); }
       function route_remove(id) { self.remove(id); }
       function route_init (data) { 
+        // initialize
         self.setData(data);
-        console.log("Received data. Resolving...");
         q.resolve();
-        console.log("Calling $rootScope.$apply()");
         $rootScope.$apply();
       }
   
