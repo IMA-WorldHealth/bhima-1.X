@@ -1,6 +1,19 @@
 <div>
-  <script src="/lib/Z.js"></script>
   <div class="container"> 
-    This is some default text.
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <td>Index</td>
+          <td>Account Text</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="data in model">
+          <td>{{data.id}}</td>
+          <td>{{data.account_txt}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-default" ng-click="removeOne()">Remove Row 100000</button>
   </div>
 </div>

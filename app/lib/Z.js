@@ -127,7 +127,7 @@ var data = (function() {
       }
       self.setData(options.data || []);
     })();
-
+    
     return this;
   }
 
@@ -150,6 +150,7 @@ var data = (function() {
         ready      = false,
         socketid   = null, // this is set in a server-response to init()
         changes    = [];
+        datastate = store.data;
 
     // helper functions
     function serialize (input) {
@@ -190,6 +191,7 @@ var data = (function() {
         method     : 'INIT',
         table      : table,
         columns    : columns,
+        identifier : identifier
       };
       send(parameters);
     }
@@ -245,25 +247,27 @@ var data = (function() {
       if (!(identifier in object)) {
         throw new Error("No identifying property supplied.");
       }
-      
+     
+      // this is fast: don't worry about it
+      var exists = store.get(object[identifier]);
+      var method = (exists) ? 'UPDATE' : 'INSERT';
+
       success = store.put(object, opts);
 
       console.log("socketid:", socketid);
       parameters = {
         socketid : socketid,
-        method   : 'PUT',
+        method   : method,
         data     : object
       };
       console.log("Autosync:", autosync);
       if (success && autosync) {
         // Success! Now send the query to the server
-        console.log("sending params");
         send(parameters);
         return true;
       }
       if (success && !autosync) {
         // Success! Now push to changes to a list for later syncing
-        console.log("Pushing params");
         changes.push(parameters);
         return true;
       }
@@ -283,12 +287,10 @@ var data = (function() {
 
       if (success && autosync) {
         // local store delete succeeded
-        console.log('sending params');
         send(parameters);
         return true;
       }
       if (success && !autosync) {
-        console.log('Pushing params');
         changes.push(parameters);
         return true;
       }
@@ -302,7 +304,6 @@ var data = (function() {
       //    "changes" and send each one to the
       //    server.  No roll-back supported yet,
       //    but the structure is here.
-      console.log("Changes:", changes);
       for (var i = 0, l = changes.length; i < l; i++){
         send(changes[i]);
       }
@@ -314,7 +315,6 @@ var data = (function() {
       remove: remove,
       get: get,
       sync: sync,
-      ready: ready
     };
   
   }

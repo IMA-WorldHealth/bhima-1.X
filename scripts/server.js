@@ -32,19 +32,24 @@ var incrimentor = 0;          // ids for sockets
 
 // define routes
 var router = {
-  'PUT'    : put,
+  'UPDATE' : update,
+  'INSERT' : insert,
   'REMOVE' : remove,
   'INIT'   : init
 };
 
 // initialize namespaces and connection
 function init (msg, socket) {
-  var socketid = incrimentor++; // generate a "unique" id for a socket
-  var space = {
-    id      : socketid,
-    table   : msg.table,
-    columns : msg.columns,
-    socket  : socket
+  var socketid = incrimentor++, // generate a "unique" id for a socket
+      space,
+      query;
+  
+  space = {
+    id         : socketid,
+    table      : msg.table,
+    columns    : msg.columns,
+    identifier : msg.identifier,
+    socket     : socket
   };
  
   // store the socket
@@ -55,9 +60,9 @@ function init (msg, socket) {
   else namespaces[msg.table] = [socketid];
 
   // compose an sql query here
-  var query = "SELECT %columns% FROM %table%";
-  query = query.replace('%columns%', msg.columns.join()).replace('%table%', msg.table);
-  console.log("Received query:", query);
+  query = "SELECT %columns% FROM %table%";
+  query = query.replace('%columns%', msg.columns.join(', '))
+               .replace('%table%', msg.table) + ';';
 
   db.execute(query, function(err, res) {
     if (err) { throw err ;}
@@ -66,32 +71,97 @@ function init (msg, socket) {
   });
 }
 
+function update (msg, socket) {
+  var defn = store.get(msg.socketid),
+      table = defn.table,
+      columns = defn.columns,
+      identifier = defn.identifier,
+      data = msg.data,
+      expressions = [],
+      identifiers = [],
+      query;
+
+  query = "UPDATE %table% SET %expressions% WHERE %identifiers%";
+
+  // this should be filtered in the final analysis
+  // this is also a cool expression, but overly complicated.
+  // maybe back in the day when string concatonation was a problem
+  // but now it just looks like I'm a nerd.
+  // Sigh...
+  for (var k in data) {
+    if (k != identifier) { expressions.push([k, data[k]].join('=')); }
+    else { identifiers.push([k, data[k]].join('=')); }
+  }
+
+  query = query.replace('%table%', table)
+               .replace('%expressions%', expressions.join(', '))
+               .replace('%identifiers%', identifiers.join(', ')) + ";";
+
+  console.log("query:", query);
+  /*
+  db.execute(query, function (err, res) {
+    if (err) { throw err; } 
+    console.log('Updated successfully!');
+  });*/
+}
+
+function insert (msg, socket) {
+  var defn = store.get(msg.socketid),
+      table = defn.table,
+      columns = defn.columns,
+      data = msg.data,
+      values = [],
+      query;
+
+  query = "INSERT INTO %table% (%columns%) VALUES (%values%)";
+
+  for (var k in data) { values.push(data[k]); }
+  query = query.replace('%table%', table)
+               .replace('%columns%', columns.join(', '))
+               .replace('%values%', values.join(', ')) + ";";
+
+  console.log("query:", query);
+
+  // uncomment this when you are ready for awesomeness
+  /*
+  db.execute(query, function (err, res) {
+     if (err) throw err;
+     console.log("Insert Success!");
+  });
+  */
+}
+
+// DELETE from the database
+function remove (msg, socket) {
+  var defn = store.get(msg.socketid),
+      table = defn.table,
+      columns = defn.columns,
+      identifier = defn.identifier,
+      data = msg.data,
+      condition = '', // at the moment, we are deleting only by ids.
+      query;
+
+  query = "DELETE FROM %table% WHERE %condition%";
+
+  condition = [identifier, msg.data].join('=');
+
+  query = query.replace('%table%', table)
+               .replace('%condition%', condition) + ';';
+
+  console.log("query:", query);
+  /*
+  db.execute(query, function (err, res) {
+    if (err) throw err;
+    console.log("Delete Successful.");
+  });
+  */
+}
 
 function send (msg, socket) {
   // summary
   //    Serializes and sends the data to the client
   socket.send(serialize(msg));
 }
-
-
-function put (msg, socket) {
-  var table = store.get(msg.socketid).table;
-  console.log("Stored Socket Table:", table);
- 
-  console.log("Namespaces with this table:", namespaces[table]);
-  console.log("PUT Data:", msg.data);
-
-  var query = ""; // DISCUSS: What about distinguishing between UPDATE and INSERT?
-                  // The socket store can change the methods base on whether or not 
-                  // it found that data when store.put() fires, but is this necessary?
-                  // Is there not a general method?  Is that bad programming?
-
-}
-
-function remove (msg, socket) {
-  console.log("stored socket:", store.get(msg.socketid));
-}
-
 
 // Set up web sockets connection
 ws.on('connection', function(socket) {
@@ -121,6 +191,7 @@ ws.on('connection', function(socket) {
     console.log('err:', err);
   });
 });
+
 
 // HTTP Server
 
