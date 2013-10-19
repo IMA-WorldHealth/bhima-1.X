@@ -348,11 +348,13 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   });
   
 
-  controllers.controller('budgetController', function($scope, connect) { 
+  controllers.controller('budgetController', function($scope, $q, connect) { 
     console.log("Budget loaded");
 
+    $scope.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
     $scope.account_model = {};
-    $scope.budget_model = {};
+    $scope.selected = null;
+    $scope.active = "select";
 
     //TODO: This data can be fetched from the application level service
     $scope.current_fiscal = {
@@ -368,16 +370,78 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
     $scope.selected = {};
 
-    $scope.current_fiscal_model = new Array(12);
 
     connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.account_model = model;
-      $scope.a_select = [$scope.account_model.data[0]]; 
-
+      //FIXME: This doesn't make sense - see templates use of a_select
+      select($scope.account_model.data[0].id);
     });
 
+    function select(account_id) { 
+      $scope.selected = $scope.account_model.get(account_id);
+      fetchBudget(account_id).then(function(model) { 
+        $scope.budget_model = indexMonths(model);   
+        $scope.active = "report";
+      });
+    }
+
     function fetchBudget(account_id) { 
-      
+      //FIXME: request object should be formed using connect API, or straight table downloaded etc - implementation decision
+      var deferred = $q.defer();
+      var budget_query = {
+        'e' : [{
+          t : 'period',
+          c : ['period_start', 'period_stop'] 
+        }, {
+          t : 'budget',
+          c : ['id', 'enterprise_id', 'account_id', 'period_id', 'budget']
+        }],
+        'jc': [{
+          ts: ['period', 'budget'],
+          c: ['id', 'period_id'],
+          l: 'AND'
+        }],
+        'c': [{
+          t: 'budget',
+          cl: 'account_id',
+          z: '=', 
+          v: account_id, 
+          l: 'AND' 
+        }, 
+        {
+          t: 'period',
+          cl: 'fiscal_year_id', 
+          z: '=',
+          v: $scope.current_fiscal.id
+      }]};
+
+      connect.basicReq(budget_query).then(function(model) { 
+        deferred.resolve(model);
+      });
+      return deferred.promise;
+    }
+
+    var filter_calls = 0;
+    //Not sure this is the best way - this is called one herck of a lot
+    $scope.filterMonth = function(index) {
+      var l = $scope.budget_model.month_index[index];
+      if(l) { 
+        return $scope.budget_model.get(l);
+      }
+    } 
+
+    function indexMonths(model) { 
+      var month_index = {};
+      var d = model.data;
+      for(var i = d.length - 1; i >= 0; i--) {
+          var month = (new Date(d[i].period_start).getMonth());
+          console.log("indexMonths", month);
+          month_index[month] = d[i]["id"];
+      }
+      console.log(month_index);
+      model.month_index = month_index;
+
+      return model;
     }
   });
   
