@@ -19,7 +19,8 @@
       }
       $scope.treeData.push(element);
 
-    }
+    };
+
     result.then(function(values){
       for(var i = 0; i<values.length; i++){
         getChildren(values[i], cb);
@@ -447,23 +448,15 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   
   
   
-  controllers.controller('debtorsController', function($scope, bikaConnect) { 
+  controllers.controller('debtorsController', function($scope, data) { 
+    
+    var options = {
+      identifier : '',
+      table      : '',
+      columns    : [],
+      autosync   : false
+    };
 
-    console.log("Debtors initialised.");
-    $scope.selected = null;
-    
-    //Populate data - maybe there's a psuedo synchronous way of doing this?
-    /*bikaConnect.fetch(
-      "organisation", 
-      ["id", "name", "account_number", "address_1", "address_2", "location_id", "payment_id", "email", "phone", "locked", "note", "contact_id", "tax_id", "max_credit"], 
-      'enterprise_id', 
-      101
-    ).then(function(data) { 
-      $scope.org_model = data;
-      console.log(data);
-      $scope.select(0);
-    });*/
-    
     bikaConnect.raw_fetch({
         e: [
           {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
@@ -481,6 +474,8 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         $scope.org_model = data;
         $scope.select(0);
     });
+
+    
     
     $scope.select = function(index) { 
       console.log(index, "selected");
@@ -633,5 +628,35 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     });
   });
 
+
+  controllers.controller('socketController', function($scope, data) {
+
+    var options = {
+      identifier : 'id',
+      table      : 'account',
+      columns    : ['id', 'account_txt']
+    };
+
+    var store = data.register(options);
+
+    store.ready().then(function() {
+      // data loaded
+      $scope.model = store.data;
+
+      $scope.removeOne = function() {
+        store.remove($scope.selected);
+      };
+
+      $scope.sync = function () {
+        store.sync(); 
+      };
+
+      $scope.select = function(id) {
+        $scope.selected = id;
+      };
+
+    });
+
+  });
 
 })(angular);
