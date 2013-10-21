@@ -15,6 +15,10 @@
       controller: 'userController',
       templateUrl: 'partials/permission/permissions.html'
     }).
+    when('/partials/transaction', { 
+      controller: 'transactionController',
+      templateUrl: 'partials/transaction/transaction.html'
+    }).
     when('/debtors', { 
       controller: 'debtorsController',
       templateUrl: 'partials/debtors.html'

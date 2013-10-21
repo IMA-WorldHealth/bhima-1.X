@@ -2,11 +2,13 @@
 
 
 (function(angular) {
-  'use strict';
- 
+  'use strict'; 
   var controllers = angular.module('bika.controllers', []);
-  
-  controllers.controller('treeController', function($scope, $q, bikaConnect, $location) {    
+
+//************************************************************************************
+//******************************* TREE CONTROLLER ************************************
+//************************************************************************************  
+controllers.controller('treeController', function($scope, $q, bikaConnect, $location) {    
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
@@ -56,12 +58,19 @@
 
     };
 
-  });
+});
+
+//************************************************************************************
+//******************************* USER CONTROLLER ************************************
+//************************************************************************************
 controllers.controller('userController', function($scope, $q, bikaConnect) {
   //initilaisation var
   
-  $scope.selected = null;
+  $scope.selected = {};
   $scope.chkTous = false;
+  $scope.showbadpassword=false;
+  $scope.showbademail = false;
+  $scope.showbadusername = false;
 
   //population model de table
   var request = {}; 
@@ -144,7 +153,41 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   }
 
   $scope.valider = function (){
-    bikaConnect.send('user', [{id:'',
+    if($scope.selected.email){
+      var email = $scope.selected.email;
+      var indexAt = email.indexOf('@',0);
+      var indexDot = email.lastIndexOf('.',email.length);
+      //verification email
+      if(indexAt!=-1 && indexDot!=-1 && indexAt<indexDot) {
+        $scope.showbademail = false; 
+      }else{
+        $scope.showbademail = true;
+      }
+    }else{
+      $scope.showbademail = true;
+    }
+     if($scope.selected.password){
+        //verification mot de passe    
+        if ($scope.selected.password!= $scope.confirmpw){
+          $scope.showbadpassword = true;
+        }else{
+          $scope.showbadpassword = false;
+        }
+      }else{
+        $scope.showbadpassword = true;
+      }
+
+    if($scope.showbademail !== true && $scope.showbadpassword!==true){
+      ($scope.selected.id)?updateUser():creer();
+    }
+  }
+
+  function creer (){
+    var result = existe();
+    result.then(function(resp){
+      if(resp !== true){
+        $scope.showbadusername = false;
+        bikaConnect.send('user', [{id:'',
                    username: $scope.selected.username,
                    password: $scope.selected.password,
                    first: $scope.selected.first,
@@ -155,8 +198,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     var request = {}; 
         request.e = [{t : 'user', c : ['id']}];
         request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
-        bikaConnect.get('data/?',request).then(function(data) { 
-          console.log($scope.units);
+        bikaConnect.get('data/?',request).then(function(data) {           
           for(var i = 0; i<$scope.units.length; i++){
             if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !=0 && $scope.units[i].id != 0){
               bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
@@ -164,14 +206,13 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
           }         
     
     });
+    refreshUserModel();
+      }else{
+        $scope.showbadusername = true;
+      }
 
-
-    var request = {}; 
-    request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
-    bikaConnect.get('data/?',request).then(function(data) { 
-    $scope.model = data;
     });
-
+    
   }
     function checkAll(){
       for(var i=0; i<$scope.units.length; i++){
@@ -196,10 +237,54 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       return rep;
     }
 
-    $scope.updateUser = function(){
+    function refreshUserModel(){
+    var request = {}; 
+    request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
+    bikaConnect.get('data/?',request).then(function(data) { 
+    $scope.model = data;
+    $scope.selected={};
+    $scope.confirmpw = "";
+    $scope.showbadpassword = false;
+    $scope.showbademail = false;
+    });
+    }
+
+    function updateUser(){
+      $scope.showbadusername = false;
+      bikaConnect.get('data/?', {t:'permission', ids:{id_user:[$scope.selected.id]}, action:'DEL'});
+      var sql_update = {t:'user', 
+                        data:[{id:$scope.selected.id,
+                               username: $scope.selected.username,
+                               password: $scope.selected.password,
+                               first: $scope.selected.first,
+                               last: $scope.selected.last,
+                               email:$scope.selected.email}
+                             ], 
+                        pk:["id"]
+                       };
+      bikaConnect.update(sql_update);
+      for(var i = 0; i<$scope.units.length; i++){
+          if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !=0 && $scope.units[i].id != 0){
+            bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
+          }
+          } 
+
+      
+
+      refreshUserModel();
 
     }
 
+    function existe(){
+      var def = $q.defer();
+      var request = {}; 
+      request.e = [{t : 'user', c : ['id']}];
+      request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'='}];
+      bikaConnect.get('data/?',request).then(function(data) {
+       (data.length > 0)?def.resolve(true):def.resolve(false);    
+    });
+      return def.promise;
+    }
     $scope.manageClickUnit = function(id){
       var value = null;
       for(var i=0; i<$scope.units.length; i++){
@@ -220,55 +305,165 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         $scope.chkTous=false;
 
       }
+    }  
+});
 
-
+//************************************************************************************
+//************************* TRANSACTION CONTROLLER ***********************************
+//************************************************************************************
+controllers.controller('transactionController', function($scope, bikaConnect, bikaUtilitaire, appstate) { 
+  $scope.account_model = {};
+  $scope.a_select = {};
+  $scope.periods = {};
+  $scope.df_select = {};
+  //remplissage select
+  var enterpriseID = 101;
+  var fiscalID = 2013001;
+  var periodID = 1;
+    function fillAccount(enterprise_id){
+      var req_db = {};
+      req_db.e = [{t:'account', c:['id', 'account_txt']}];
+      req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:enterprise_id}];
+      bikaConnect.get('/data/?', req_db).then(function(data){
+        $scope.account_model = data;
+      });
     }
-  
-  });
-  
-  controllers.controller('appController', function($scope) { 
-    // TODO/FIXME
-    console.log("Application controller fired");
-  });
 
-  controllers.controller('utilController', function($scope, bikaConnect, appstate) { 
-    console.log("Util controller fired");
+    function fillDateFrom(fiscal_id){
+      var req_db = {};
+      req_db.e = [{t:'period', c:['period_start']}];
+      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+      bikaConnect.get('/data/?', req_db).then(function(data){
+        for(var i = 0; i<data.length; i++){
+          data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
+        }
+        $scope.periodFroms = data;
+      });
+    }
 
+    function fillDateTo(fiscal_id){
+      var req_db = {};
+      req_db.e = [{t:'period', c:['period_stop']}];
+      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+      bikaConnect.get('/data/?', req_db).then(function(data){
+        for(var i = 0; i<data.length; i++){
+          data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
+        }
+        $scope.periodTos = data;
+      });
+    }
+  if(enterpriseID && fiscalID && periodID){
+    fillAccount(enterpriseID);
+    fillDateFrom(fiscalID);
+    fillDateTo(fiscalID);
+  }
+    
+  
+});
+
+//***********************************************************************************
+//********************** UTIL CONTROLLER ********************************************
+//***********************************************************************************
+ 
+controllers.controller('utilController', function($scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
     $scope.enterprise_model = {};
     $scope.fiscal_model = {};
     $scope.e_select = {};
     $scope.f_select = {};
+    $scope.period_model = {};
+    $scope.p_select = {};
 
-    //redo with $q
-    bikaConnect.fetch("enterprise", ["id", "name", "region"]).then(function(data) {
-      $scope.enterprise_model = data;
-      //Should select previously selected (see indexedb storage)
-      $scope.e_select = $scope.enterprise_model[0];
-
-      console.log("e-selected", $scope.e_selected); 
-
-      //appService.set($scope.e_select);
-
-      bikaConnect.fetch("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", $scope.e_select.id).then(function(data) { 
-        $scope.fiscal_model = data;
-        $scope.f_select = $scope.fiscal_model[0];
-        console.log($scope.fiscal_model);
-      });
+    var resp = fillEntrepriseSelect();
+    resp.then(function(enterprise_id){
+      if(enterprise_id){
+        var resp2 = fillFiscalSelect(enterprise_id);
+        resp2.then(function(fiscal_id){
+          fillPeriod(fiscal_id);
+        });
+      }
     });
 
-    $scope.$watch('e_selected.id', function(newObj, oldObj) { 
-      console.log("Watch registered change", newObj);
-      bikaConnect.fetch("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", newObj).then(function(data) { 
-        $scope.fiscal_model = data;
-        $scope.f_select = $scope.fiscal_model[0];
+    /*$scope.$watch('e_select', function(newObj, oldObj) { 
+      console.log("Watch registered change", $scope.e_select);    
+    });*/
+    
+    $scope.select = function(id) {
+      console.log(id);
+    }
+
+    //remplissage selects
+    function fillEntrepriseSelect(){
+      var deferred = $q.defer();
+      var req_db = {};
+      req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
+      bikaConnect.get('/data/?', req_db).then(function(data){
+        $scope.enterprise_model = data;
+        deferred.resolve(data[0].id);
       });
-    });
-  });
+      return deferred.promise;
+    }
+    function fillFiscalSelect(enterprise_id){
+      var deferred = $q.defer();
+      var req_db = {};
+      req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
+      req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
+      bikaConnect.get('/data/?',req_db).then(function(data){
+        $scope.fiscal_model = data;
+        deferred.resolve(data[0].id);
+      });
+      return deferred.promise;
+    }
+
+    function fillPeriod(fiscal_id){
+      var req_db = {};
+      req_db.e = [{t:'period', c:['id', 'period_start', 'period_stop']}];
+      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+      bikaConnect.get('/data/?',req_db).then(function(data){
+        for(var i = 0; i<data.length; i++){
+          data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
+          data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
+        }
+        $scope.period_model = data;
+      });
+    }
+    //fin remplissage selects
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+controllers.controller('appController', function($scope) { 
+  console.log("transaction controllers init");
+});
+
+
+controllers.controller('appController', function($scope) { 
+    // TODO/FIXME
+    console.log("Application controller fired");
+});
+
+
   
-  controllers.controller('viewController', function($scope) { 
-  });
+controllers.controller('viewController', function($scope) { 
+});
   
-  controllers.controller('fiscalController', function($scope, connect, bikaConnect) { 
+controllers.controller('fiscalController', function($scope, connect, bikaConnect) { 
 
     $scope.active = "select";
     $scope.selected = null;
@@ -344,10 +539,10 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         $scope.period_model = data;
       });
     }
-  });
+});
   
 
-  controllers.controller('budgetController', function($scope, connect) { 
+controllers.controller('budgetController', function($scope, connect) { 
     console.log("Budget loaded");
 
     $scope.account_model = {};
@@ -368,7 +563,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       $scope.account_model = model;
       $scope.a_select = [$scope.account_model.data[0]];
     });
-  });
+});
   
   
   
