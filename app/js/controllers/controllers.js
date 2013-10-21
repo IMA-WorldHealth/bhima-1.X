@@ -382,15 +382,12 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
         });
       }
     });
-
     /*$scope.$watch('e_select', function(newObj, oldObj) { 
       console.log("Watch registered change", $scope.e_select);    
-    });*/
-    
+    });*/    
     $scope.select = function(id) {
       console.log(id);
     }
-
     //remplissage selects
     function fillEntrepriseSelect(){
       var deferred = $q.defer();
@@ -398,6 +395,7 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
       req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
       bikaConnect.get('/data/?', req_db).then(function(data){
         $scope.enterprise_model = data;
+        appstate.set("enterprise", $scope.e_select);
         deferred.resolve(data[0].id);
       });
       return deferred.promise;
@@ -558,6 +556,8 @@ controllers.controller('budgetController', function($scope, connect) {
       country : "RDC",
       id : 101
     };
+
+    $scope.current_fiscal_model = new Array(12);
 
     connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.account_model = model;
@@ -738,7 +738,13 @@ controllers.controller('budgetController', function($scope, connect) {
     };
   });
 
-  controllers.controller('connectController', function($scope, connect) { 
+  controllers.controller('connectController', function($scope, connect, appstate) { 
+    appstate.get("enterprise").then(function(data) { 
+      console.log("Connect received", data);
+      console.log("Connect received", data);
+      console.log("Connect received", data);
+      console.log("Connect received", data);
+    });
     console.log("ConnectController initialised.");
     connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
       console.log("Returned model", model);

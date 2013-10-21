@@ -1,13 +1,13 @@
 // Services.js
-
+//TODO: Define API for getting data from the server - providing query data, simple table names, etc.
 
 (function (angular) {
   'use strict';
   
   var services = angular.module('bika.services', []);
-  
+    
+  //FIXME: depricated - yo
   services.service('bikaConnect', function($http) { 
-    //TODO: Define API for getting data from the server - providing query data, simple table names, etc.
     this.fetch = function(table, columns, where, value) {     
       var query = { 
         e: [{t : table, c : columns}]
@@ -57,20 +57,28 @@
   });
 
   services.factory('appstate', function($q) { 
+    /////
+    // summary: 
+    //  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
+    //  to allow asynchronous loading
+    /////
     var comp = {};
     var queue = {};
 
-    //reference to the value (bound with ng-model) of a component
     function set(id, ref) { 
+      //summary: 
+      //  assign reference to id, notify anyone waiting on id
       comp[id] = ref;
       notifyQueue(id);
     }
 
     function get(id) { 
+      //summary: 
+      //  get reference to a value/ model by id, if the id exists it is returned, otherwise deferred is added to a queue to be 
+      //  resolved later
       var deferred = $q.defer();
 
       if(comp[id]) { 
-        console.log("appstate ")
         deferred.resolve(comp[id]);
       } else { 
         register(id, deferred);
@@ -95,6 +103,8 @@
     }
 
     return {
+      //summary: 
+      //  expose required function to Angular modules, all other functions are considered private
       set : set, 
       get : get
     };
