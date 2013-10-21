@@ -3,9 +3,7 @@
           Add a sort row on top of the Fiscal Year selection - A-Z, year, etc.-->
 
 <link rel="stylesheet" href="css/fiscal.css"/>
-
 <div class="container" id="bika-units-fiscal">
-
 	<div class="row">
 		<div class="col-xs-3">
       <!--Enterprise fiscal year selection-->
@@ -125,7 +123,7 @@
       <div class="panel-footer">
         <div class="btn-group">
           <button class="btn btn-default" disabled>Save Changes</button>
-          <button class="btn btn-danger" ng-disabled="create">Delete Fiscal Year</button>
+          <button class="btn btn-danger" ng-disabled="create" ng-click="delete(selected.id)">Delete Fiscal Year</button>
           <button class="btn btn-danger">Recalculate</button>
         </div>
       </div>

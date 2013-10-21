@@ -1,4 +1,3 @@
-
 (function(angular) {
   'use strict';
 
@@ -35,9 +34,12 @@
     when('/connect', {
       controller: 'connectController',
       templateUrl: 'partials/connect.html'
+    }). // for Socket Test
+    when('/socket', {
+      controller: 'socketController',
+      templateUrl: 'partials/socket.html'
     });
   }  
   bika.config(bikaconfig);
 
 })(angular);
-

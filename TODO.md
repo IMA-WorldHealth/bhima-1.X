@@ -19,3 +19,15 @@
  ** data.objectstore() -- Essentially a clone of the Dojo Memory store,
      perhaps with an updated API.
 
+### Notifications ### 
+ * use new Notification() (supported by Chrome and FireFox) to send the client messages!
+
+### Design decisions ###
+- SocketService: Use `factory` function.
+-- Should we be optimistic and expect to never have data corruption?
+-- Should we embed error methods?
+-- What is the API?
+--- Is everything wrapped in $q.get()'s?
+--- Do we use Node.js style, SocketService.get(function(data, err) { ... }) ?
+-- Add flag for `fragmented` or `non-fragmented` synchronization
+----> Fragmented implies that [{packet1}, {packet2}, {packet3}] will each get a separate socket.send()
