@@ -21,6 +21,8 @@ fieldset {
   border-bottom: 1px solid #eeeeee;
 }
 
-.uniform { 
-  height: 100px;
+.uniform td { 
+  height: 30px;
+  text-align: center;
+  vertical-align: middle;
 }

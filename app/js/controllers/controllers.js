@@ -263,7 +263,8 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   controllers.controller('viewController', function($scope) { 
   });
   
-  controllers.controller('fiscalController', function($scope, connect, bikaConnect) { 
+  controllers.controller('fiscalController', function($scope, connect, bikaConnect, appstate) { 
+
 
     $scope.active = "select";
     $scope.selected = null;
@@ -281,7 +282,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     };
 
     $scope.fiscal_model = {};
-    
+
     //FIXME: This should by default select the fiscal year selected at the application level
     connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.fiscal_model = model;
@@ -349,12 +350,20 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   
 
   controllers.controller('budgetController', function($scope, $q, connect) { 
-    console.log("Budget loaded");
+
+    /////
+    // TODO
+    //  -memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
+    /////
 
     $scope.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
     $scope.account_model = {};
     $scope.selected = null;
     $scope.active = "select";
+    $scope.budget_model = {reports: []};
+    console.log($scope.budget_model);
+
+    var no_report = 0;
 
     //TODO: This data can be fetched from the application level service
     $scope.current_fiscal = {
@@ -370,19 +379,82 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
     $scope.selected = {};
 
+    init();
 
-    connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
-      $scope.account_model = model;
-      //FIXME: This doesn't make sense - see templates use of a_select
-      select($scope.account_model.data[0].id);
-    });
+    function init() { 
+      createBudget($scope.enterprise.id);
+    }
 
-    function select(account_id) { 
-      $scope.selected = $scope.account_model.get(account_id);
-      fetchBudget(account_id).then(function(model) { 
-        $scope.budget_model = indexMonths(model);   
-        $scope.active = "report";
+    function createBudget(e_id) { 
+      var account_model = {};
+      var fiscal_model = {};
+      var budget_model = {reports: [{}]}; //Placeholder model in reports, write explanation for this
+
+      var selected = {};
+
+      var promise = fetchAccount(e_id);
+      promise
+      .then(function(model) { 
+        console.log("first resolve", model);
+        account_model = model;
+        selected = account_model.data[0]; //default select - not required
+        return fetchFiscal(e_id);
+      })
+      .then(function(model) { 
+        console.log("second resolve", model);
+        fiscal_model = model;
+        return updateReport(selected.id, budget_model);
+      })
+      .then(function(model))
+    }
+
+    function fetchAccount(e_id) { 
+      var deferred = $q.defer();
+      connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+        deferred.resolve(model);
+        //$scope.account_model = model;
+        
+        //Move this
+        //$scope.budget_model.reports.push({});
+        //$scope.select($scope.account_model.data[0].id);
       });
+      return deferred.promise;
+    }
+
+    function fetchFiscal(e_id) { 
+      /////
+      // summary:  
+      //  Create model with all fiscal years for budget comparison 
+      // ~
+      //  Fiscal year data for a given enterprise already exists in the outside application, this could either be used directly (very 
+      //  specific example) or the data downloaded could be cached using the connect service (ref: connect, sockets)
+      /////
+      var deferred = $q.defer();
+      connect.req("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", e_id).then(function(model) { 
+        deferred.resolve(model);
+      });
+      return deferred.promise;
+    }
+
+    $scope.select = function(account_id) { 
+      $scope.selected = $scope.account_model.get(account_id);
+      updateReport(account_id, $scope.budget_model.reports);
+      
+    }
+
+    function updateReport(account_id, model_arr) { 
+      var deferred = $q.defer();
+      //array of models enabling multiple reports 
+      for(var i = 0, l = model_arr.length; i < l; i++){ 
+        var cache_i = i;
+        fetchBudget(account_id).then(function(model) { 
+          model_arr[cache_i] = indexMonths(model);  
+          //$scope.active = "report";
+        });
+        console.log($scope.budget_model);
+      }
+
+      return deferred.promise;
     }
 
     function fetchBudget(account_id) { 
@@ -423,22 +495,34 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
     var filter_calls = 0;
     //Not sure this is the best way - this is called one herck of a lot
-    $scope.filterMonth = function(index) {
-      var l = $scope.budget_model.month_index[index];
+    $scope.filterMonth = function(model, index) {
+      console.log($scope.budget_model);
+      console.log("filter", model);
+
+      var l = model.month_index[index];
       if(l) { 
-        return $scope.budget_model.get(l);
+        return model.get(l);
       }
     } 
 
-    function indexMonths(model) { 
+    /*This isn't optimal*/
+    $scope.sum = function(model) { 
+      var total = 0;
+      console.log("sum", model);
+      model.data.forEach(function(line) { 
+        total += Number(line.budget);
+      });
+      return total;
+    }
+
+    function indexMonths(model) {
+      //not ideal as it changes the model? can be updated 
       var month_index = {};
       var d = model.data;
       for(var i = d.length - 1; i >= 0; i--) {
           var month = (new Date(d[i].period_start).getMonth());
-          console.log("indexMonths", month);
           month_index[month] = d[i]["id"];
       }
-      console.log(month_index);
       model.month_index = month_index;
 
       return model;
@@ -450,7 +534,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   controllers.controller('debtorsController', function($scope, bikaConnect) { 
 
     console.log("Debtors initialised.");
-    $scope.selected = null;
+    $scope.selected = null;sele
     
     //Populate data - maybe there's a psuedo synchronous way of doing this?
     /*bikaConnect.fetch(
