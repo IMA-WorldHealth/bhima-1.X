@@ -168,6 +168,34 @@ function selectbuilder (options) {
   return statement;
 }
 
+function createpreparedstatements (msg) {
+  var sqlselect, sqlupdate, sqldelete, sqlinsert;
+
+  sqlselect = "SELECT ?select_expr FROM ?tbl_refs"; // minimal
+  sqlupdate = "UPDATE ?tbl_refs SET ?expr WHERE ?whr";
+  sqldelete = "DELETE ?tbl_refs FROM ?tbl_refs WHERE ?whr";
+  sqlinsert = "INSERT INTO ?tbl_name VALUES ?values";
+
+  if (msg.where && msg.join) {
+    sqlselect += " WHERE ?join AND ?whr"; 
+  } else if (msg.where) {
+      sqlselect += " WHERE ?whr";
+  } else if (msg.join) {
+      sqlselect += " WHERE ?join";
+  }
+
+  return {
+    "SELECT" : sqlselect,
+    "UPDATE" : sqlupdate,
+    "DELETE" : sqldelete,
+    "INSERT" : sqlinsert
+  };
+}
+
+function escapeincoming (tables) {
+
+}
+
 // helper functions
 function serialize(json) { return JSON.stringify(json); }
 function deserialize(json) { return JSON.parse(json); }
@@ -189,11 +217,15 @@ var router = {
 function init (msg, socket) {
   var socketid = incrimentor++, // generate a "unique" id for a socket
       space,
-      query;
-      tables = parsetables(msg.tables);
+      query,
+      statements = createpreparedstatements(msg),
+      tables = escapeincoming(msg.tables);
+
+  
   
   space = {
     id         : socketid,
+    statements : statements,
     tables     : tables,
     identifier : msg.identifier,
     socket     : socket
