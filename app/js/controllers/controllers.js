@@ -863,6 +863,20 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       columns    : ['id', 'account_txt']
     };
 
+    options = {
+      identifier: 'id',
+      tables : {
+        'account' : {
+          columns: ['id', 'account_txt']
+        },
+        'account_type' : {
+          columns: ['type']
+        }
+      },
+      join : ["account.id=account_type.id"],
+      where:['account.id>3', "OR", 'account.account_txt="hi"']
+    };
+
     var store = data.register(options);
 
     store.ready().then(function() {
