@@ -13,7 +13,11 @@
       <div id="bika-container" ng-controller="viewController">
         <div ng-view id="bika-view"><!--Content populated with angular--></div>
       </div>
+      <!-- user controller -->
       <div ng-controller = "userController"></div>
+
+      <!-- transaction div-->
+      <div ng-controller = "transactionController"></div>
 
 
     <!--Bootstrap container, any content inside div can be split into 12 columns-->
@@ -34,6 +38,8 @@
           </select>
           <select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">
             <option>Second</option>
+          </select>
+          <select class="form-control" ng-model="p_select" ng-options="'Du '+period.period_start+' A '+period.period_stop for period in period_model" ng-click="select($index)">
           </select>
         </div>
          <div class="btn-group-justified"><!--class="btn-group"-->

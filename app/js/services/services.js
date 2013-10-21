@@ -43,7 +43,17 @@
   this.send = function(table, data) { 
     var sql= {t:table, data:data};
     $http.post('data/',sql);
-  }  
+  };
+
+  this.update = function(objectRequest) { 
+    $http.put('data/',objectRequest);
+  }   
+  });
+
+  services.service('bikaUtilitaire', function() { 
+    this.formatDate = function(dateString) {
+      return new Date(dateString).toDateString();
+    };      
   });
 
   services.factory('appstate', function($q) { 

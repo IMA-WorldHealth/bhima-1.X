@@ -97,7 +97,7 @@ app.get('/data/', function (req, res) {
 });
 
 //dojo store forces an ID to be passed with a PUT request, the server must match this pattern, even if the db.js API doesn't require it
-app.put('/data/:id', function(req, res) { 
+app.put('/data/', function(req, res) { 
   var updatesql = db.update(req.body.t, req.body.data, req.body.pk);
   db.execute(updatesql, function(err, ans) { 
     if(err) throw err;
