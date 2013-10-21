@@ -1,3 +1,16 @@
 #bika-units-budget { 
 	margin-top: 10px;
 }
+
+.bika-scrollable { 
+  /*This shouldn't be a forced number - differing screen sizes etc.*/
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+fieldset { 
+  display: inline-block;
+  vertical-align: middle;
+  /*what*/
+  width: 33%;
+}
