@@ -319,6 +319,21 @@ controllers.controller('transactionController', function($scope, bikaConnect, bi
   var enterpriseID = 101;
   var fiscalID = 2013001;
   var periodID = 1;
+  var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+           {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
+           {t:'currency', c:['symbol']},
+           {t:'account', c:['account_type_id']}
+          ],
+      jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
+            {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
+            {ts: ['currency', 'transaction'], c:['id', 'currency_id']}
+           ];/*,
+      c = [{t : 'infotransaction', cl: 'account_id', v : param.IDAccount, z : '=', l : 'AND'},
+           {t : 'transaction', cl : 'date', v : convertToMysqlDate(param.dateFrom), z : '>=', l : 'AND'},
+           {t : 'transaction', cl : 'date', v : convertToMysqlDate(param.dateTo), z : '<='}
+          ]*/;
+
+
     function fillAccount(enterprise_id){
       var req_db = {};
       req_db.e = [{t:'account', c:['id', 'account_txt']}];
@@ -351,10 +366,33 @@ controllers.controller('transactionController', function($scope, bikaConnect, bi
         $scope.periodTos = data;
       });
     }
+
+  function fillTable(period_id){
+      var req_db = {};
+      req_db.e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+                  {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
+                  {t:'currency', c:['symbol']},
+                  {t:'account', c:['account_type_id']}
+                 ];
+
+      req_db.jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
+                   {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
+                   {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
+                  ];
+      req_db.c = [{t : 'transaction', cl : 'period_id', v : period_id, z : '='}];
+      bikaConnect.get('/data/?', req_db).then(function(data){
+        for(var i = 0; i<data.length; i++){
+          data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+        }
+        $scope.infostran = data;
+        console.log($scope.infostran);
+      });
+    }
   if(enterpriseID && fiscalID && periodID){
     fillAccount(enterpriseID);
     fillDateFrom(fiscalID);
     fillDateTo(fiscalID);
+    fillTable(periodID);
   }
     
   

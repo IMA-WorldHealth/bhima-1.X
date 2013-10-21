@@ -3,7 +3,7 @@
 	Accounts : <select class="selects" ng-model="a_select" ng-options="account.id+' - '+account.account_txt for account in account_model"></select>
 	Date From : <select class="selects" ng-model="df_select" ng-options="period.period_start for period in periodFroms"></select>
 	Date To : <select class="selects" ng-model="dt_select" ng-options="period.period_stop for period in periodTos"></select>
-</div>
+</div><br/>
 <div class="row">
 	<div class="col-md-12">
 		<div class="table-responsive">
@@ -17,20 +17,22 @@
 						<th>Debit</th>
 						<th>Credit</th>
 						<th>Symbol</th>
+						<th>Rate</th>
 						<th>Date</th>
 					</tr>
 				</thead>
 				<tbody>
 				<!--This is populated with angular-->
 					<tr ng-repeat="infotrans in infostran">
-						<td>i</td>
-						<td>d</td>
-						<td>f</td>
-						<td>i</td>
-						<td>d</td>
-						<td>f</td>
-						<td>i</td>
-						<td>d</td>
+						<td>{{infotrans.transaction_id}}</td>
+						<td>{{infotrans.id}}</td>
+						<td>{{infotrans.desc}}</td>
+						<td>{{infotrans.account_id}}</td>
+						<td>{{infotrans.debit}}</td>
+						<td>{{infotrans.credit}}</td>
+						<td>{{infotrans.symbol}}</td>
+						<td>{{infotrans.rate}}</td>
+						<td>{{infotrans.date}}</td>
 					</tr>
 				</tbody>
 			</table>
