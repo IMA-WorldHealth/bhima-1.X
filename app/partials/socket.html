@@ -1,0 +1,26 @@
+<div>
+  <style>
+  .selectedRow {
+    background: rgba(0,0,0,0.4);
+  }
+  </style>
+
+  <div class="container"> 
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <td>Index</td>
+          <td>Account Text</td>
+        </tr>
+      </thead>
+      <tbody>
+      <tr ng-class="{selectedRow: data.id==selected}"  ng-repeat="data in model" ng-click="select(data.id)">
+          <td>{{data.id}}</td>
+          <td>{{data.account_txt}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-default" ng-click="removeOne()">Delete Account: {{selected}}</button>
+    <button class="btn btn-default" ng-click="sync()">Sync</button>
+  </div>
+</div>

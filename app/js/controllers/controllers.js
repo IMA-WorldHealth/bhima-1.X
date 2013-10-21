@@ -1,6 +1,4 @@
 // Controller.js
-
-
 (function(angular) {
   'use strict'; 
   var controllers = angular.module('bika.controllers', []);
@@ -23,7 +21,8 @@ controllers.controller('treeController', function($scope, $q, bikaConnect, $loca
       }
       $scope.treeData.push(element);
 
-    }
+    };
+
     result.then(function(values){
       for(var i = 0; i<values.length; i++){
         getChildren(values[i], cb);
@@ -479,12 +478,10 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     };
 
     $scope.fiscal_model = {};
-    $scope.fiscal_data = {};
     
     //FIXME: This should by default select the fiscal year selected at the application level
     connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.fiscal_model = model;
-      $scope.fiscal_data = $scope.fiscal_model.data;
       $scope.select($scope.current_fiscal.id);
     });
 
@@ -493,6 +490,14 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       $scope.selected = $scope.fiscal_model.get(fiscal_id);
       $scope.active = "update";
     };
+
+    $scope.delete = function(fiscal_id) { 
+      //validate deletion before performing
+      $scope.active = "select";
+      $scope.selected = null;
+      $scope.fiscal_model.delete(fiscal_id);
+
+    }
 
     $scope.isSelected = function() { 
       console.log("isSelected called, returned", !!($scope.selected));
@@ -540,10 +545,14 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 });
   
 
-controllers.controller('budgetController', function($scope, connect) { 
+
+  controllers.controller('budgetController', function($scope, $q, connect) { 
     console.log("Budget loaded");
 
+    $scope.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
     $scope.account_model = {};
+    $scope.selected = null;
+    $scope.active = "select";
 
     //TODO: This data can be fetched from the application level service
     $scope.current_fiscal = {
@@ -557,33 +566,94 @@ controllers.controller('budgetController', function($scope, connect) {
       id : 101
     };
 
-    $scope.current_fiscal_model = new Array(12);
+    $scope.selected = {};
+
 
     connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.account_model = model;
-      $scope.a_select = [$scope.account_model.data[0]];
+      //FIXME: This doesn't make sense - see templates use of a_select
+      select($scope.account_model.data[0].id);
     });
-});
-  
-  
-  
-  controllers.controller('debtorsController', function($scope, bikaConnect) { 
 
-    console.log("Debtors initialised.");
-    $scope.selected = null;
+    function select(account_id) { 
+      $scope.selected = $scope.account_model.get(account_id);
+      fetchBudget(account_id).then(function(model) { 
+        $scope.budget_model = indexMonths(model);   
+        $scope.active = "report";
+      });
+    }
+
+    function fetchBudget(account_id) { 
+      //FIXME: request object should be formed using connect API, or straight table downloaded etc - implementation decision
+      var deferred = $q.defer();
+      var budget_query = {
+        'e' : [{
+          t : 'period',
+          c : ['period_start', 'period_stop'] 
+        }, {
+          t : 'budget',
+          c : ['id', 'enterprise_id', 'account_id', 'period_id', 'budget']
+        }],
+        'jc': [{
+          ts: ['period', 'budget'],
+          c: ['id', 'period_id'],
+          l: 'AND'
+        }],
+        'c': [{
+          t: 'budget',
+          cl: 'account_id',
+          z: '=', 
+          v: account_id, 
+          l: 'AND' 
+        }, 
+        {
+          t: 'period',
+          cl: 'fiscal_year_id', 
+          z: '=',
+          v: $scope.current_fiscal.id
+      }]};
+
+      connect.basicReq(budget_query).then(function(model) { 
+        deferred.resolve(model);
+      });
+      return deferred.promise;
+    }
+
+    var filter_calls = 0;
+    //Not sure this is the best way - this is called one herck of a lot
+    $scope.filterMonth = function(index) {
+      var l = $scope.budget_model.month_index[index];
+      if(l) { 
+        return $scope.budget_model.get(l);
+      }
+    } 
+
+    function indexMonths(model) { 
+      var month_index = {};
+      var d = model.data;
+      for(var i = d.length - 1; i >= 0; i--) {
+          var month = (new Date(d[i].period_start).getMonth());
+          console.log("indexMonths", month);
+          month_index[month] = d[i]["id"];
+      }
+      console.log(month_index);
+      model.month_index = month_index;
+
+      return model;
+    }
+  });
+  
+  
+  
+  controllers.controller('debtorsController', function($scope, data) { 
     
-    //Populate data - maybe there's a psuedo synchronous way of doing this?
-    /*bikaConnect.fetch(
-      "organisation", 
-      ["id", "name", "account_number", "address_1", "address_2", "location_id", "payment_id", "email", "phone", "locked", "note", "contact_id", "tax_id", "max_credit"], 
-      'enterprise_id', 
-      101
-    ).then(function(data) { 
-      $scope.org_model = data;
-      console.log(data);
-      $scope.select(0);
-    });*/
-    
+    var options = {
+      identifier : '',
+      table      : '',
+      columns    : [],
+      autosync   : false
+    };
+
     bikaConnect.raw_fetch({
         e: [
           {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
@@ -601,6 +671,8 @@ controllers.controller('budgetController', function($scope, connect) {
         $scope.org_model = data;
         $scope.select(0);
     });
+
+    
     
     $scope.select = function(index) { 
       console.log(index, "selected");
@@ -753,5 +825,35 @@ controllers.controller('budgetController', function($scope, connect) {
     });
   });
 
+
+  controllers.controller('socketController', function($scope, data) {
+
+    var options = {
+      identifier : 'id',
+      table      : 'account',
+      columns    : ['id', 'account_txt']
+    };
+
+    var store = data.register(options);
+
+    store.ready().then(function() {
+      // data loaded
+      $scope.model = store.data;
+
+      $scope.removeOne = function() {
+        store.remove($scope.selected);
+      };
+
+      $scope.sync = function () {
+        store.sync(); 
+      };
+
+      $scope.select = function(id) {
+        $scope.selected = id;
+      };
+
+    });
+
+  });
 
 })(angular);
