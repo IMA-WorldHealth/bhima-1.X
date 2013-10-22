@@ -11,10 +11,11 @@
       controller: 'budgetController',
       templateUrl: 'partials/budgeting.html'
     }).
-    when('/permission', { 
+    when('/partials/permission', { 
       controller: 'userController',
       templateUrl: 'partials/permission/permissions.html'
-    }).
+    }). // FIXME: Take out patient billing routes to local routes
+        // Maybe use angular-router?
     when('/patientbilling', { 
       templateUrl: 'partials/patientbilling/index.html'
     }).
@@ -29,6 +30,10 @@
     when('/patientbilling/config/', {
       templateUrl: 'partials/patientbilling/organisation/config.html',
       controller: 'patientbillingConfig'
+    }).
+    when('/partials/transaction', { 
+      controller: 'transactionController',
+      templateUrl: 'partials/transaction/transaction.html'
     }).
     when('/fiscal', {
       controller: 'fiscalController',
