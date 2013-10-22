@@ -722,35 +722,41 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
   
   
   // Chart of Accounts controllers
-  controllers.controller('chartController', function($scope, $q, $modal, bikaConnect) {
-  
-    // loads data and returns a promise evaluated when both requests are complete.
-    function loadData() {
-      return $q.all([
-        bikaConnect.raw_fetch({
-          e: [{t:'account', c: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}],
-          c: [{t: 'account', cl: 'enterprise_id', z: '=', v: 101}]
-        }),
-        bikaConnect.raw_fetch({
-          e: [{t: 'account_type', c:['id', 'type']}]
-        })
-      ]);
-    }
+  controllers.controller('chartController', function($scope, $q, $modal, data) {
 
-    var promise = loadData();
-    
-    promise.then(function(tables) {
-      $scope.accounts = tables[0];
-      $scope.accounttypes = tables[1];
+    var spec = {
+      identifier: 'id',
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id'],
+        },
+        'account_type': {
+          columns: ['type'] 
+        }
+      },
+      join: ['account.account_type_id=account_type.id'],
+      where: ["account.enterprise_id=" + 101]
+    };
+
+    var store = data.register(spec);
+
+    store.ready().then(function() {
+      $scope.model = store.data;
+      
+      $scope.columns = [
+        {label: "Account Number", map: "id"},
+        {label: "Account Text", map: "account_txt"},
+        {label: "Account Type", map: "account_type_id", cellTemplateUrl: "/partials/templates/cellselect.html"},
+        {label: "Locked?", map: "locked"}
+      ];
+      $scope.config = {
+        isPaginationEnabled: true,
+        itemsByPage: 18,
+        selectionMode: 'single'
+      };
     });
     
-    $scope.columns = [
-      {label: "Account Number", map: "id"},
-      {label: "Account Text", map: "account_txt"},
-      {label: "Account Type", map: "account_type_id", cellTemplateUrl: "/partials/templates/cellselect.html"},
-      {label: "Locked?", map: "locked"}
-    ];
-
+    // dialog controller
     $scope.showDialog = function() {
       var instance = $modal.open({
         templateUrl: "/partials/templates/chart-modal.html",
@@ -778,7 +784,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
       instance.result.then(function(values) {
         // add to the grid
-        $scope.accounts.push(values);
+        $scope.model.push(values);
       }, function() {
         console.log("Form closed on:", new Date());
       });
@@ -832,11 +838,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       $scope.lockLabel = ($scope.lockLabel == "Lock") ? "Unlock" : "Lock";
     };
 
-    $scope.config = {
-      isPaginationEnabled: true,
-      itemsByPage: 16,
-      selectionMode: 'single'
-    };
+
   });
 
   controllers.controller('connectController', function($scope, connect, appstate) { 
@@ -858,13 +860,8 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
   controllers.controller('socketController', function($scope, data) {
 
     var options = {
-      identifier : 'id',
-      table      : 'account',
-      columns    : ['id', 'account_txt']
-    };
-
-    options = {
       identifier: 'id',
+      primary: 'account',
       tables : {
         'account' : {
           columns: ['id', 'account_txt']
@@ -874,8 +871,9 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         }
       },
       join : ["account.id=account_type.id"],
-      where:['account.id>3', "OR", 'account.account_txt="hi"']
     };
+
+    console.log("Sending data...");
 
     var store = data.register(options);
 
