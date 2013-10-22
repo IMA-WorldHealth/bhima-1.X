@@ -362,6 +362,17 @@
         return this.data[this.index[id]];
       }
 
+      model.put = function(object) { 
+        var id = object["id"];
+        if(id in this.index) { 
+          //TODO: Implement overwrite flag/ behaviour
+          throw new Error("Object overwrite attempted.");
+        } else { 
+          //update index and insert object
+          this.index[id] = this.data.push(object) - 1;
+        }
+      }
+
       model.delete = function(id) { 
         var i = this.index;
         if(id in i) { 
