@@ -498,8 +498,8 @@ controllers.controller('appController', function($scope) {
 controllers.controller('viewController', function($scope) { 
 });
   
-controllers.controller('fiscalController', function($scope, connect, bikaConnect) { 
 
+controllers.controller('fiscalController', function($scope, connect, bikaConnect, appstate) { 
     $scope.active = "select";
     $scope.selected = null;
     $scope.create = false;
@@ -516,7 +516,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     };
 
     $scope.fiscal_model = {};
-    
+
     //FIXME: This should by default select the fiscal year selected at the application level
     connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
       $scope.fiscal_model = model;
@@ -585,18 +585,15 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
 
   controllers.controller('budgetController', function($scope, $q, connect) { 
-    console.log("Budget loaded");
+
+    /////
+    // TODO
+    //  -memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
+    /////
 
     $scope.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
-    $scope.account_model = {};
-    $scope.selected = null;
-    $scope.active = "select";
 
     //TODO: This data can be fetched from the application level service
-    $scope.current_fiscal = {
-      id : 2013001
-    };
-
     $scope.enterprise = {
       name : "IMA",
       city : "Kinshasa",
@@ -604,24 +601,105 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       id : 101
     };
 
-    $scope.selected = {};
+    var current_fiscal = {
+      id : 2013001
+    };
 
 
-    connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
-      $scope.account_model = model;
-      //FIXME: This doesn't make sense - see templates use of a_select
-      select($scope.account_model.data[0].id);
-    });
+    init();
 
-    function select(account_id) { 
-      $scope.selected = $scope.account_model.get(account_id);
-      fetchBudget(account_id).then(function(model) { 
-        $scope.budget_model = indexMonths(model);   
-        $scope.active = "report";
+    function init() { 
+      createBudget($scope.enterprise.id);
+    }
+
+    function createBudget(e_id) { 
+      var account_model = {};
+      var fiscal_model = {};
+      var budget_model = {reports: []};
+
+      var default_account_select;
+
+      var promise = fetchAccount(e_id);
+      promise
+      .then(function(model) { 
+        account_model = model;
+        default_account_select = account_model.data[0].id; //First account in list, could be loaded from cache (model.get(cache_id))
+        return fetchFiscal(e_id);
+      })
+      .then(function(model) { 
+        fiscal_model = model;
+
+        //set the first budget report - this will be populated in updateReport
+        var default_fiscal = fiscal_model.get(current_fiscal.id);
+        budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}})
+        fiscal_model.delete(default_fiscal.id);
+        return updateReport(default_account_select, budget_model.reports);
+      })
+      .then(function(model) { 
+        //All models populated - expose to $scope
+        $scope.account_model = account_model;
+        $scope.fiscal_model = fiscal_model;
+        //TODO: Util function to check if there are any fiscal years left
+        //Default select
+        $scope.selected_fiscal = $scope.fiscal_model.data[0];
+        $scope.selected_account = $scope.account_model.get(default_account_select); 
+        $scope.budget_model = budget_model;
+
+        console.log(budget_model);
+        //Model has already been populated by default
+        setSelected(default_account_select); //optional/ can expose default to $scope, or wait for user selection
       });
     }
 
-    function fetchBudget(account_id) { 
+    function fetchAccount(e_id) { 
+      var deferred = $q.defer();
+      connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+        deferred.resolve(model);
+      });
+      return deferred.promise;
+    }
+
+    function fetchFiscal(e_id) { 
+      /////
+      // summary:  
+      //  Create model with all fiscal years for budget comparison 
+      // ~
+      //  Fiscal year data for a given enterprise already exists in the outside application, this could either be used directly (very 
+      //  specific example) or the data downloaded could be cached using the connect service (ref: connect, sockets)
+      /////
+      var deferred = $q.defer();
+      connect.req("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", e_id).then(function(model) { 
+        deferred.resolve(model);
+      });
+      return deferred.promise;
+    }
+
+    function updateReport(account_id, reports) { 
+      console.log("uR", reports);
+      var deferred = $q.defer();
+
+      for(var i = 0, l = reports.length; i < l; i++) { 
+
+        var y = reports[i];
+
+        console.log("y", y);
+        (function(i, y) { 
+          fetchBudget(account_id, y.id).then(function(model) { 
+            y.model = indexMonths(model);
+            y.display = formatBudget(y.model);
+            console.log("fetchBudget", i, l);
+            if(i==l-1) { 
+              console.log("resolving", reports);
+              deferred.resolve(reports);
+            }
+          });
+        })(i, y);
+      }
+      return deferred.promise;
+    }
+
+   
+    function fetchBudget(account_id, fiscal_year) { 
       //FIXME: request object should be formed using connect API, or straight table downloaded etc - implementation decision
       var deferred = $q.defer();
       var budget_query = {
@@ -648,7 +726,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
           t: 'period',
           cl: 'fiscal_year_id', 
           z: '=',
-          v: $scope.current_fiscal.id
+          v: fiscal_year
       }]};
 
       connect.basicReq(budget_query).then(function(model) { 
@@ -657,27 +735,107 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       return deferred.promise;
     }
 
-    var filter_calls = 0;
-    //Not sure this is the best way - this is called one herck of a lot
-    $scope.filterMonth = function(index) {
-      var l = $scope.budget_model.month_index[index];
-      if(l) { 
-        return $scope.budget_model.get(l);
-      }
-    } 
-
-    function indexMonths(model) { 
+    function indexMonths(model) {
+      //not ideal as it changes the model? can be updated 
       var month_index = {};
       var d = model.data;
       for(var i = d.length - 1; i >= 0; i--) {
           var month = (new Date(d[i].period_start).getMonth());
-          console.log("indexMonths", month);
           month_index[month] = d[i]["id"];
       }
-      console.log(month_index);
       model.month_index = month_index;
-
       return model;
+    }
+
+    function setSelected(account_id) { 
+      //Selection has been successful - update $scope
+      //Set account as selected
+      $scope.selected_account = $scope.account_model.get(account_id);
+      //Set flag for DOM, displaying the report
+      $scope.active = "report";
+    }
+
+    function formatBudget(model) { 
+      var format = [];
+      for (var i = 0, c = $scope.months.length; i < c; i++) {
+        var l = model.month_index[i];
+        if(l) { 
+          var data = model.get(l);
+          //FIXME: repeated data in model and period
+          data.actual = 0; //actual placeholder
+          format.push(data);
+          console.log("format", data);
+        } else { 
+          format.push(null);
+        }
+      };
+      console.log("f return", format);
+      return format;
+    }
+
+    $scope.select = function(account_id) { 
+      //see $scope.$evalAsync() - ng-init not updating      
+      var promise = updateReport(account_id, $scope.budget_model.reports);
+      promise
+      .then(function(model) { 
+        //Report models updated - expose to $scope
+        $scope.budget_model.reports = model;
+        setSelected(account_id);
+      });      
+    }
+
+    $scope.filterMonth = function(report, index) {
+      console.log("filterMonth request", report);
+      console.log("month_index", report.model.month_index);
+      console.log("index", index);
+      if(report.model.month_index) {
+      var l = report.model.month_index[index];
+      if(l) { 
+        return report.model.get(l);
+      }
+      }
+    } 
+
+    /*This isn't optimal*/
+    $scope.sum = function(report) { 
+      //TODO: check if line.budget exists or something
+      if(report.model.data) { 
+        var total = 0;
+        report.model.data.forEach(function(line) { 
+          total += Number(line.budget);
+        });
+        return total;
+      }
+      return null;
+    }
+
+    $scope.compare = function() { 
+      console.log("compare");
+      $scope.budget_model.reports.push({id : $scope.selected_fiscal.id, desc : $scope.selected_fiscal.fiscal_year_txt, model : {}});
+      $scope.select($scope.selected_account.id);
+      console.log("cmp", $scope.selected_fiscal);
+      $scope.fiscal_model.delete($scope.selected_fiscal.id);
+      $scope.selected_fiscal = $scope.fiscal_model.data[0];
+    }
+
+    $scope.deleteCompare = function(report) { 
+      var arr = $scope.budget_model.reports;
+      arr.splice(arr.indexOf(report), 1);
+      //update fiscal select
+      //hard coded bad-ness
+      $scope.fiscal_model.put({id : report.id, fiscal_year_txt : report.desc});
+      $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
+    }
+
+    $scope.validSelect = function() { 
+      //ugly
+      if($scope.fiscal_model) { 
+        if($scope.fiscal_model.data.length > 0) { 
+          return false;
+        } 
+      }
+      
+      return true;
     }
   });
   
