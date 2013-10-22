@@ -357,19 +357,8 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     /////
 
     $scope.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
-    $scope.account_model = {};
-    $scope.selected = null;
-    $scope.active = "select";
-    $scope.budget_model = {reports: []};
-    console.log($scope.budget_model);
-
-    var no_report = 0;
 
     //TODO: This data can be fetched from the application level service
-    $scope.current_fiscal = {
-      id : 2013001
-    };
-
     $scope.enterprise = {
       name : "IMA",
       city : "Kinshasa",
@@ -377,7 +366,10 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       id : 101
     };
 
-    $scope.selected = {};
+    var current_fiscal = {
+      id : 2013001
+    };
+
 
     init();
 
@@ -388,35 +380,42 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     function createBudget(e_id) { 
       var account_model = {};
       var fiscal_model = {};
-      var budget_model = {reports: [{}]}; //Placeholder model in reports, write explanation for this
+      var budget_model = {reports: []};
 
-      var selected = {};
+      var default_account_select;
+      var default_fiscal_select;
 
       var promise = fetchAccount(e_id);
       promise
       .then(function(model) { 
-        console.log("first resolve", model);
         account_model = model;
-        selected = account_model.data[0]; //default select - not required
+        default_account_select = account_model.data[0].id; //First account in list, could be loaded from cache (model.get(cache_id))
         return fetchFiscal(e_id);
       })
       .then(function(model) { 
-        console.log("second resolve", model);
         fiscal_model = model;
-        return updateReport(selected.id, budget_model);
+        default_fiscal_select = current_fiscal.id; //should be loaded from application
+        //set the first budget report - this will be populated in updateReport
+        budget_model.reports.push({id : default_fiscal_select, model :  {}})
+        //budget_model.reports.push({id : 2013011, model : {}});
+        return updateReport(default_account_select, budget_model.reports);
       })
-      .then(function(model))
+      .then(function(model) { 
+        //All models populated - expose to $scope
+        $scope.account_model = account_model;
+        $scope.fiscal_model = fiscal_model;
+        $scope.budget_model = budget_model;
+
+        console.log(budget_model);
+        //Model has already been populated by default
+        setSelected(default_account_select); //optional/ can expose default to $scope, or wait for user selection
+      });
     }
 
     function fetchAccount(e_id) { 
       var deferred = $q.defer();
       connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
         deferred.resolve(model);
-        //$scope.account_model = model;
-        
-        //Move this
-        //$scope.budget_model.reports.push({});
-        //$scope.select($scope.account_model.data[0].id);
       });
       return deferred.promise;
     }
@@ -436,28 +435,31 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       return deferred.promise;
     }
 
-    $scope.select = function(account_id) { 
-      $scope.selected = $scope.account_model.get(account_id);
-      updateReport(account_id, $scope.budget_model.reports);
-      
-    }
-
-    function updateReport(account_id, model_arr) { 
+    function updateReport(account_id, reports) { 
+      console.log("uR", reports);
       var deferred = $q.defer();
-      //array of models enabling multiple reports 
-      for(var i = 0, l = model_arr.length; i < l; i++){ 
-        var cache_i = i;
-        fetchBudget(account_id).then(function(model) { 
-          model_arr[cache_i] = indexMonths(model);  
-          //$scope.active = "report";
-        });
-        console.log($scope.budget_model);
-      }
 
+      for(var i = 0, l = reports.length; i < l; i++) { 
+
+        var y = reports[i];
+
+        console.log("y", y);
+        (function(i, y) { 
+          fetchBudget(account_id, y.id).then(function(model) { 
+            y.model = indexMonths(model);
+            console.log("fetchBudget", i, l);
+            if(i==l-1) { 
+              console.log("resolving", reports);
+              deferred.resolve(reports);
+            }
+          });
+        })(i, y);
+      }
       return deferred.promise;
     }
 
-    function fetchBudget(account_id) { 
+   
+    function fetchBudget(account_id, fiscal_year) { 
       //FIXME: request object should be formed using connect API, or straight table downloaded etc - implementation decision
       var deferred = $q.defer();
       var budget_query = {
@@ -484,35 +486,13 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
           t: 'period',
           cl: 'fiscal_year_id', 
           z: '=',
-          v: $scope.current_fiscal.id
+          v: fiscal_year
       }]};
 
       connect.basicReq(budget_query).then(function(model) { 
         deferred.resolve(model);
       });
       return deferred.promise;
-    }
-
-    var filter_calls = 0;
-    //Not sure this is the best way - this is called one herck of a lot
-    $scope.filterMonth = function(model, index) {
-      console.log($scope.budget_model);
-      console.log("filter", model);
-
-      var l = model.month_index[index];
-      if(l) { 
-        return model.get(l);
-      }
-    } 
-
-    /*This isn't optimal*/
-    $scope.sum = function(model) { 
-      var total = 0;
-      console.log("sum", model);
-      model.data.forEach(function(line) { 
-        total += Number(line.budget);
-      });
-      return total;
     }
 
     function indexMonths(model) {
@@ -524,8 +504,43 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
           month_index[month] = d[i]["id"];
       }
       model.month_index = month_index;
-
       return model;
+    }
+
+    function setSelected(account_id) { 
+      //Selection has been successful - update $scope
+      //Set account as selected
+      $scope.selected = $scope.account_model.get(account_id);
+      //Set flag for DOM, displaying the report
+      $scope.active = "report";
+    }
+
+    $scope.select = function(account_id) { 
+      //see $scope.$evalAsync() - ng-init not updating      
+      var promise = updateReport(account_id, $scope.budget_model.reports);
+      promise
+      .then(function(model) { 
+        //Report models updated - expose to $scope
+        $scope.budget_model.reports = model;
+        setSelected(account_id);
+      });      
+    }
+
+    $scope.filterMonth = function(report, index) {
+      console.log("filterMonth request", report);
+      var l = report.model.month_index[index];
+      if(l) { 
+        return report.model.get(l);
+      }
+    } 
+
+    /*This isn't optimal*/
+    $scope.sum = function(report) { 
+      var total = 0;
+      report.model.data.forEach(function(line) { 
+        total += Number(line.budget);
+      });
+      return total;
     }
   });
   
