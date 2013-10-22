@@ -397,7 +397,6 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         default_fiscal_select = current_fiscal.id; //should be loaded from application
         //set the first budget report - this will be populated in updateReport
         budget_model.reports.push({id : default_fiscal_select, model :  {}})
-        //budget_model.reports.push({id : 2013011, model : {}});
         return updateReport(default_account_select, budget_model.reports);
       })
       .then(function(model) { 

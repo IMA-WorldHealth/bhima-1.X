@@ -69,7 +69,7 @@
                                         <!--TODO: implement 'actual'-->
                                         <td><span ng-show="row">{{0 | currency}}</span></td>
                                         <!--Use ng-if vs ng-hide (only available in latest RC)-->
-                                        <td><input type="text" ng-show="row" ng-model="row.budget"></td> <!--FILTERmONTH(REPORT, $INDEX)-->
+                                        <td><input type="text" ng-show="row" ng-model="filterMonth(report, $index).budget"></td> <!--FIXME: Use row from ng-init, currently not updated given scoping issues-->
                                         </span>
                                       </tr>
                                       <tr><td colspan="2">total</td><td>{{sum(report) | currency}}</td></tr>
