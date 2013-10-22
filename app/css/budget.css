@@ -9,6 +9,8 @@
 }
 
 fieldset { 
+  /*FIXME*/
+  margin-top: -20px;
   display: inline-block;
   vertical-align: middle;
   /*what*/
@@ -21,8 +23,45 @@ fieldset {
   border-bottom: 1px solid #eeeeee;
 }
 
+.uniform table{ 
+  table-layout: fixed;
+}
+
 .uniform td { 
-  height: 60px;
+  /*Everything is bad*/
+  height: 43px;
   text-align: center;
   vertical-align: middle;
+}
+
+.column-big { 
+  width: 100px;
+  max-width: 100px;
+  min-width: 100px;
+
+}
+
+.column-small { 
+
+  width: 20px;
+  max-width: 20px;
+  min-width: 20px;
+
+}
+
+.budget-field { 
+  display: block;
+  width: 100%;
+  padding: 4px 4px;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+}
+
+.budget-close { 
+  margin-right: 6px;
 }
