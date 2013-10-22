@@ -431,7 +431,7 @@ REPLACE INTO `unit` (`id`, `name`, `desc`, `parent`, `has_children`, `url`) VALU
   (1, 'Admin', 'The Administration Super-Category', 0, 1, ''),
   (2, 'Enterprises', 'Manage the registered enterprises from here', 1, 0, '/units/enterprise/'),
   (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/'),
-  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, 'permission'),
+  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission'),
   (5, 'Finance', 'The Finance Super-Category', 0, 1, ''),
   (6, 'Accounts', 'The chart of accounts', 5, 0, 'accounts'),
   (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/'),
@@ -451,7 +451,7 @@ REPLACE INTO `unit` (`id`, `name`, `desc`, `parent`, `has_children`, `url`) VALU
   (22, 'Billing B', 'Deuxieme fils de Billing', 20, 0, '/html/deux'),
   (23, 'Billing C', '3 Fils', 20, 0, 'Lien hypertext'),
   (24, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/'),
-  (25, 'Transaction', 'The Transaction Page', 5, 0, 'transaction'),
+  (25, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction'),
   (26, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors'),
   (27, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal');
 /*!40000 ALTER TABLE `unit` ENABLE KEYS */;
@@ -5873,40 +5873,45 @@ CREATE TABLE IF NOT EXISTS `patient` (
 INSERT INTO `patient` (`id`, `organisation_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `addr_1`, `addr_2`, `village`, `zone`, `city`, `country`) VALUES 
   (1, 3, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", null, null, "Vanga", "Vanga", "Kikwit", "Republic Democratic du Congo"),
   (2, 3, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", null, null, "Cafu La Mour", "Nord", "Cap Haitian", "Haiti"),
-  (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Deiu", "m", "catholic", "single", null, "kitamuka@example.com", null, null, "Kinshasa", "Ngili", "Kinshasa", "Republic Democratic du Congo"),
+  (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", null, null, "Kinshasa", "Ngili", "Kinshasa", "Republic Democratic du Congo"),
   (4, 3, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", null, null, "Vanga", "Vanga", "Kikwit", "Republic Democratic du Congo");
 
 --
 -- table `bika`.`transaction`
 --
+
+-- augmentation de dedrick 
 DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE IF NOT EXISTS `transaction` (
-  `enterprise_id` smallint unsigned NOT NULL,
-  `fiscal_year_id` mediumint unsigned NOT NULL,
-  `id` int unsigned NOT NULL,
-  `invoice_number` int unsigned NOT NULL,
-  `journal_id` mediumint unsigned NOT NULL,
-  `account_number` mediumint unsigned NOT NULL,
-  `debit` mediumint unsigned NOT NULL,
-  `credit` mediumint unsigned NOT NULL,
-  `currency` tinyint unsigned NOT NULL,
-  `organisation_id` smallint unsigned NOT NULL,
-  `text` text,
+  `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+  `currency_id` tinyint unsigned NOT NULL,
+  `rate` DOUBLE,
+  `period_id` smallint(6),
+  `desc` text,
   `date` date NOT NULL,
+  `opd` int,
   PRIMARY KEY (`id`),
-  KEY `enterprise_id` (`enterprise_id`),
-  KEY `fiscal_year_id` (`fiscal_year_id`),
-  KEY `journal_id` (`journal_id`),
-  KEY `account_number` (`account_number`),
-  KEY `currency` (`currency`),
-  KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT `transaction_ibfk_2` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `transaction_ibfk_3` FOREIGN KEY (`journal_id`) REFERENCES `journal` (`id`),
-  CONSTRAINT `transaction_ibfk_4` FOREIGN KEY (`account_number`) REFERENCES `account` (`id`),
-  CONSTRAINT `transaction_ibfk_5` FOREIGN KEY (`currency`) REFERENCES `currency` (`id`),
-  CONSTRAINT `transaction_ibfk_6` FOREIGN KEY (`organisation_id`) REFERENCES `organisation` (`id`)
-) ENGINE=InnoDB;
+  KEY `currency_id` (`currency_id`),
+  KEY `period_id`(`period_id`),
+  CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `transaction_ibfk_2` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `infotransaction`;
+CREATE TABLE IF NOT EXISTS `infotransaction` (
+  `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+  `account_id` mediumint unsigned NOT NULL,
+  `transaction_id` int(20) unsigned NOT NULL,
+  `debit` DOUBLE,
+  `credit` DOUBLE,
+  PRIMARY KEY (`id`),
+  KEY `account_id` (`account_id`),
+  KEY `transaction_id`(`transaction_id`),
+  CONSTRAINT `infotransaction_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `infotransaction_ibfk_2` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  ) ENGINE=InnoDB;
+
+-- fin augmentation
 
 
 --

@@ -1,4 +1,9 @@
-#divuserID{
-	height:500px;
-	overflow: auto;
+#divuserIDggg{
+	height: 370px;
+	overflow-y: scroll;
+}
+
+#divformIDgg{
+	height: 370px;
+	overflow-y: scroll;
 }
