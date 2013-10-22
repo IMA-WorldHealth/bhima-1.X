@@ -11,7 +11,7 @@
           <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
           <span class="panel-title">{{enterprise.city}}</span>
 
-        </div>
+        </div>  
 
         Search Accounts
         <input type="search" class="form-control" ng-model="filterAccounts">
@@ -32,15 +32,12 @@
                
               <h1>Budget Report <small>{{selected.account_txt}}</small></h1>
               <div class="row">
-              <div class="col-lg-offset-8">
+              <div class="col-lg-offset-7">
                 <div class="input-group">
                  
-                  <select class="form-control">
-                    <option>Year 1</option>
-                    <option>Yeaer 2</option>
-                  </select>
+                  <select class="form-control" ng-model="selected_fiscal" ng-options="f.fiscal_year_txt for f in fiscal_model.data"></select>
                    <span class="input-group-btn">
-                    <btn class="btn btn-default" type="button">Compare Year</btn>
+                    <btn class="btn btn-default" ng-click="compare()" type="button">Compare Year</btn>
                   </span>
                 </div>
               </div>
@@ -50,8 +47,7 @@
 
            <fieldset ng-repeat="report in budget_model.reports" ng-init="r_index = $index">    
                     <select class="form-control">
-                    <option>Fiscal 1</option>
-                    <option>Fiscal 2</option>
+
                     </select>
 
                      <table class="table table-bordered uniform">
@@ -64,13 +60,15 @@
                                 </thead>
                                 <tbody>
                                      <tr ng-repeat="month in months" ng-init="row=filterMonth(report, $index)">
+                                        <!--Use ng-init equivalent here, filterMonth is getting called a billion times-->
+
                                         <!--Make one function call instead of 3-->
-                                        <td>{{row.period_start | date:'MMM yyyy'}}</td>
+                                        <td>{{filterMonth(report, $index).period_start | date:'MMM yyyy'}}</td>
                                         <!--TODO: implement 'actual'-->
-                                        <td><span ng-show="row">{{0 | currency}}</span></td>
+                                        <td><span ng-show="filterMonth(report, $index)">{{0 | currency}}</span></td>
                                         <!--Use ng-if vs ng-hide (only available in latest RC)-->
-                                        <td><input type="text" ng-show="row" ng-model="filterMonth(report, $index).budget"></td> <!--FIXME: Use row from ng-init, currently not updated given scoping issues-->
-                                        </span>
+                                        <td><input type="text" ng-show="filterMonth(report, $index)" ng-model="filterMonth(report, $index).budget"></td> <!--FIXME: Use row from ng-init, currently not updated given scoping issues-->
+
                                       </tr>
                                       <tr><td colspan="2">total</td><td>{{sum(report) | currency}}</td></tr>
                                 </tbody>

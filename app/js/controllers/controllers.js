@@ -395,6 +395,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       .then(function(model) { 
         fiscal_model = model;
         default_fiscal_select = current_fiscal.id; //should be loaded from application
+        fiscal_model.delete(default_fiscal_select);
         //set the first budget report - this will be populated in updateReport
         budget_model.reports.push({id : default_fiscal_select, model :  {}})
         return updateReport(default_account_select, budget_model.reports);
@@ -403,6 +404,10 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         //All models populated - expose to $scope
         $scope.account_model = account_model;
         $scope.fiscal_model = fiscal_model;
+        //TODO: Util function to check if there are any fiscal years left
+        //Default select
+        $scope.selected_fiscal = $scope.fiscal_model.data[0];
+        $scope.selected_account = $scope.account_model.get(default_account_select); 
         $scope.budget_model = budget_model;
 
         console.log(budget_model);
@@ -514,6 +519,10 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       $scope.active = "report";
     }
 
+    function formBudget(report) { 
+
+    }
+
     $scope.select = function(account_id) { 
       //see $scope.$evalAsync() - ng-init not updating      
       var promise = updateReport(account_id, $scope.budget_model.reports);
@@ -527,9 +536,13 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
     $scope.filterMonth = function(report, index) {
       console.log("filterMonth request", report);
+      console.log("month_index", report.model.month_index);
+      console.log("index", index);
+      if(report.model.month_index) {
       var l = report.model.month_index[index];
       if(l) { 
         return report.model.get(l);
+      }
       }
     } 
 
@@ -540,6 +553,12 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         total += Number(line.budget);
       });
       return total;
+    }
+
+    $scope.compare = function() { 
+      console.log("compare");
+      $scope.budget_model.reports.push({id : $scope.selected_fiscal.id, model : {}});
+      $scope.select($scope.selected_account.id);
     }
   });
   
