@@ -383,7 +383,6 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       var budget_model = {reports: []};
 
       var default_account_select;
-      var default_fiscal_select;
 
       var promise = fetchAccount(e_id);
       promise
@@ -394,10 +393,11 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       })
       .then(function(model) { 
         fiscal_model = model;
-        default_fiscal_select = current_fiscal.id; //should be loaded from application
-        fiscal_model.delete(default_fiscal_select);
+
         //set the first budget report - this will be populated in updateReport
-        budget_model.reports.push({id : default_fiscal_select, model :  {}})
+        var default_fiscal = fiscal_model.get(current_fiscal.id);
+        budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}})
+        fiscal_model.delete(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
       })
       .then(function(model) { 
@@ -451,6 +451,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         (function(i, y) { 
           fetchBudget(account_id, y.id).then(function(model) { 
             y.model = indexMonths(model);
+            y.display = formatBudget(y.model);
             console.log("fetchBudget", i, l);
             if(i==l-1) { 
               console.log("resolving", reports);
@@ -514,13 +515,27 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     function setSelected(account_id) { 
       //Selection has been successful - update $scope
       //Set account as selected
-      $scope.selected = $scope.account_model.get(account_id);
+      $scope.selected_account = $scope.account_model.get(account_id);
       //Set flag for DOM, displaying the report
       $scope.active = "report";
     }
 
-    function formBudget(report) { 
-
+    function formatBudget(model) { 
+      var format = [];
+      for (var i = 0, c = $scope.months.length; i < c; i++) {
+        var l = model.month_index[i];
+        if(l) { 
+          var data = model.get(l);
+          //FIXME: repeated data in model and period
+          data.actual = 0; //actual placeholder
+          format.push(data);
+          console.log("format", data);
+        } else { 
+          format.push(null);
+        }
+      };
+      console.log("f return", format);
+      return format;
     }
 
     $scope.select = function(account_id) { 
@@ -548,17 +563,44 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
     /*This isn't optimal*/
     $scope.sum = function(report) { 
-      var total = 0;
-      report.model.data.forEach(function(line) { 
-        total += Number(line.budget);
-      });
-      return total;
+      //TODO: check if line.budget exists or something
+      if(report.model.data) { 
+        var total = 0;
+        report.model.data.forEach(function(line) { 
+          total += Number(line.budget);
+        });
+        return total;
+      }
+      return null;
     }
 
     $scope.compare = function() { 
       console.log("compare");
-      $scope.budget_model.reports.push({id : $scope.selected_fiscal.id, model : {}});
+      $scope.budget_model.reports.push({id : $scope.selected_fiscal.id, desc : $scope.selected_fiscal.fiscal_year_txt, model : {}});
       $scope.select($scope.selected_account.id);
+      console.log("cmp", $scope.selected_fiscal);
+      $scope.fiscal_model.delete($scope.selected_fiscal.id);
+      $scope.selected_fiscal = $scope.fiscal_model.data[0];
+    }
+
+    $scope.deleteCompare = function(report) { 
+      var arr = $scope.budget_model.reports;
+      arr.splice(arr.indexOf(report), 1);
+      //update fiscal select
+      //hard coded bad-ness
+      $scope.fiscal_model.put({id : report.id, fiscal_year_txt : report.desc});
+      $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
+    }
+
+    $scope.validSelect = function() { 
+      //ugly
+      if($scope.fiscal_model) { 
+        if($scope.fiscal_model.data.length > 0) { 
+          return false;
+        } 
+      }
+      
+      return true;
     }
   });
   
@@ -567,7 +609,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   controllers.controller('debtorsController', function($scope, bikaConnect) { 
 
     console.log("Debtors initialised.");
-    $scope.selected = null;sele
+    $scope.selected = null;
     
     //Populate data - maybe there's a psuedo synchronous way of doing this?
     /*bikaConnect.fetch(
