@@ -1,0 +1,105 @@
+<link rel="stylesheet" href="/partials/patientbilling/organisation/index.css">
+<div class="container" id="bika-units-patientbilling">
+  <h3>Organisation Config</h3>
+  <hr></hr>
+	<div class="row">
+		<div class="col-xs-3">
+      <h4>All Organisations</h4>
+      <hr></hr>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th ng-click="sort('id')">Id</th>
+						<th ng-click="sort('name')">Name</th>
+					</tr>
+				</thead>
+				<tbody ng-repeat="org in org_model">
+				<!--Populated with angular-->
+        <!--FIXME: ng-selected optimisation, oh lawd oh lawd-->
+				<tr ng-class="{selected: $index==selectedIndex}" ng-click="select($index)"><td>{{org.id}}</td><td>{{org.name}}</td></tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-xs-9">
+			<div ng-show="!!selected">
+        <tabset>
+          <tab heading="General">
+            <fieldset>
+              <form class="form-horizontal" role="form">
+
+                <div class="form-group">
+                  <label for="org-id">Organisation ID</label>
+                  <input type="text" class="form-control" id="org-id" readonly value="{{selected.id}}">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="selected.locked"> Locked
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="org-id">Organisation Name</label>
+                  <input type="text" class="form-control" id="org-id" ng-model="selected.name">
+                </div>
+                <div class="form-group">
+                  <label for="org-id">City</label>
+                  <input type="text" class="form-control" id="org-id" ng-model="selected.city">
+                </div>
+                <div class="form-group">
+                  <label for="org-id">Region</label>
+                  <input type="text" class="form-control" id="org-id" ng-model="selected.region">
+                </div>
+                <div class="form-group">
+                  <label for="org-id">Email</label>
+                  <input type="text" class="form-control" ng-model="selected.email">
+                </div>
+                <div class="form-group">
+                  <label for="org-id">Country</label>
+                  <input type="text" class="form-control" ng-model="selected.phone">
+                </div>
+
+              </form>
+            </fieldset>
+          </tab>
+          <tab heading="Invoice">
+            <fieldset>
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label for="org-id">Payment</label>
+                <select class="form-control" id="payment">
+                <option>ERMERGERD</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="contact">Contact Persion</label>
+                <select class="form-control" id="contact">
+                <option>ERMERGERD</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="org-id">Tax Registration Number</label>
+                <input type="text" class="form-control" ng-model="selected.tax_id">
+              </div>
+              <div class="form-group">
+                <label for="org-id">Max Credit</label>
+                <input type="text" class="form-control" ng-model="selected.max_credit">
+              </div>
+
+            </form>
+
+            </fieldset>
+          </tab>
+          <tab heading="Note">
+            <fieldset>
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+              <textarea class="form-control">{{selected.note}}</textarea>
+              </div>
+            </form>
+            </fieldset>
+          </tab>
+        </tabset>
+      </div>
+		</div>
+	</div>
+</div>

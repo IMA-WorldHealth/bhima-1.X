@@ -448,34 +448,25 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   
   
   
-  controllers.controller('debtorsController', function($scope, data) { 
-    
-    var options = {
-      identifier : '',
-      table      : '',
-      columns    : [],
-      autosync   : false
-    };
+  controllers.controller('organisationController', function($scope, connect) { 
 
-    bikaConnect.raw_fetch({
-        e: [
-          {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
-          {t: 'location', c: ['city', 'region'] },
-          {t: 'payment', c: ['text']}
-        ],
-        jc: [
-          {ts: ['organisation', 'location'], c: ['location_id', 'id'], l: 'AND'},
-          {ts: ['organisation', 'payment'], c: ['payment_id', 'id'], l: 'AND'}
-        ],
-        c: [
-          {t: 'organisation', cl: 'enterprise_id', z: '=', v: 101}
-        ]
-      }).then(function(data) { 
-        $scope.org_model = data;
-        $scope.select(0);
+    connect.basicReq({
+      e: [
+        {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
+        {t: 'location', c: ['city', 'region'] },
+        {t: 'payment', c: ['text']}
+      ],
+      jc: [
+        {ts: ['organisation', 'location'], c: ['location_id', 'id'], l: 'AND'},
+        {ts: ['organisation', 'payment'], c: ['payment_id', 'id'], l: 'AND'}
+      ],
+      c: [
+        {t: 'organisation', cl: 'enterprise_id', z: '=', v: 101}
+      ]
+    }).then(function(res) {
+      $scope.org_model = res.data;
     });
 
-    
     
     $scope.select = function(index) { 
       console.log(index, "selected");
@@ -483,15 +474,15 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       $scope.selected = $scope.org_model[index];
       $scope.selectedIndex = index;
     };
-    
-    $scope.isSelected = function() { 
-      if($scope.selected) { 
-        return true;
-      } else {
-        return false;
-      }
+
+    $scope.sort = function (col) {
+      console.log('model:', $scope.org_model);
+
     };
-  
+
+
+
+    
   });
   
   
