@@ -13,12 +13,11 @@
       <div id="bika-container" ng-controller="viewController">
         <div ng-view id="bika-view"><!--Content populated with angular--></div>
       </div>
-      <div ng-controller="userController"></div>
       <!-- user controller -->
-      <div ng-controller = "userController"></div>
+      <div ng-controller="userController"></div>
 
       <!-- transaction div-->
-      <div ng-controller = "transactionController"></div>
+      <div ng-controller="transactionController"></div>
 
     <!--Bootstrap container, any content inside div can be split into 12 columns-->
     <div id="bika-sidebar" class="container">
@@ -50,7 +49,7 @@
             <a type="button" class="btn btn-default">
               <span class="glyphicon glyphicon-cog"></span>
             </a>
-            <a type="button" class="btn btn-default">
+            <a type="button" class="btn btn-default" href="/logout">
               <span class="glyphicon glyphicon-log-out"></span>
             </a>
         </div>
