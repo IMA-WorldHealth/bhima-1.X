@@ -585,14 +585,15 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
 
   controllers.controller('budgetController', function($scope, $q, connect) { 
-
     /////
-    // TODO
-    //  -memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
+    //  summary: 
+    //    Controller behaviour for the budgeting unit, fetches displays and allows updates on data joined from 
+    //    enterprise, account, fiscal year, period and budget
+    //  TODO
+    //    -Split budgeting unit into 3 or 4  controllers, one for each component
+    //    -Memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
     /////
-
-    $scope.months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
-
+    
     //TODO: This data can be fetched from the application level service
     $scope.enterprise = {
       name : "IMA",
@@ -604,7 +605,6 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     var current_fiscal = {
       id : 2013001
     };
-
 
     init();
 
@@ -674,15 +674,14 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       return deferred.promise;
     }
 
+    //FIXME: seperate complete update from fetching individudal model (call populateModel() loopping through reports.length)
+    // Models should not be updated or refreshed on a new comparison
     function updateReport(account_id, reports) { 
-      console.log("uR", reports);
       var deferred = $q.defer();
 
       for(var i = 0, l = reports.length; i < l; i++) { 
-
         var y = reports[i];
 
-        console.log("y", y);
         (function(i, y) { 
           fetchBudget(account_id, y.id).then(function(model) { 
             y.model = indexMonths(model);
@@ -698,6 +697,9 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       return deferred.promise;
     }
 
+    function populateModel() { 
+
+    }
    
     function fetchBudget(account_id, fiscal_year) { 
       //FIXME: request object should be formed using connect API, or straight table downloaded etc - implementation decision
@@ -756,8 +758,10 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     }
 
     function formatBudget(model) { 
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dev"];
+
       var format = [];
-      for (var i = 0, c = $scope.months.length; i < c; i++) {
+      for (var i = 0, c = months.length; i < c; i++) {
         var l = model.month_index[i];
         if(l) { 
           var data = model.get(l);
@@ -838,9 +842,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       return true;
     }
   });
-  
-  
-  
+
   controllers.controller('organisationController', function($scope, connect) { 
 
     connect.basicReq({
