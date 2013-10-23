@@ -311,135 +311,132 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 //************************************************************************************
 controllers.controller('transactionController', function($scope, $rootScope, bikaConnect, bikaUtilitaire, appstate) { 
     //les variables
-  $scope.account_model;
-  $scope.a_select = {};
-  $scope.periods = {};
-  $scope.df_select =  {};
-  $scope.dt_select = {};
-  var dependacies ={};
+    $scope.account_model;
+    $scope.a_select = {};
+    $scope.periods = {};
+    $scope.df_select =  {};
+    $scope.dt_select = {};
+    var dependacies ={};
 
-    //les fonctions
+      //les fonctions
 
-  function fillAccount(enterprise_id){
+    function fillAccount(enterprise_id){
+        var req_db = {};
+        req_db.e = [{t:'account', c:['id', 'account_txt']}];
+        req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:enterprise_id}];
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          $scope.account_model = data;
+        });
+    }
+
+    function fillDateFrom(fiscal_id){
+        var req_db = {};
+        req_db.e = [{t:'period', c:['period_start']}];
+        req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          for(var i = 0; i<data.length; i++){
+            data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
+          }
+          $scope.periodFroms = data;
+        });
+    }
+
+    function fillDateTo(fiscal_id){
+        var req_db = {};
+        req_db.e = [{t:'period', c:['period_stop']}];
+        req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          for(var i = 0; i<data.length; i++){
+            data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
+          }
+          $scope.periodTos = data;
+        });
+    }
+
+    function fillTable(period_id){
       var req_db = {};
-      req_db.e = [{t:'account', c:['id', 'account_txt']}];
-      req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:enterprise_id}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        $scope.account_model = data;
-      });
-  }
+      req_db.e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+                  {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
+                  {t:'currency', c:['symbol']},
+                  {t:'account', c:['account_type_id']}
+                 ];
 
-  function fillDateFrom(fiscal_id){
-      var req_db = {};
-      req_db.e = [{t:'period', c:['period_start']}];
-      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+      req_db.jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
+                   {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
+                   {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
+                  ];
+      req_db.c = [{t : 'transaction', cl : 'period_id', v : period_id, z : '='}];
       bikaConnect.get('/data/?', req_db).then(function(data){
         for(var i = 0; i<data.length; i++){
-          data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
-        }
-        $scope.periodFroms = data;
-      });
-  }
-
-  function fillDateTo(fiscal_id){
-      var req_db = {};
-      req_db.e = [{t:'period', c:['period_stop']}];
-      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        for(var i = 0; i<data.length; i++){
-          data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
-        }
-        $scope.periodTos = data;
-      });
-  }
-
-  function fillTable(period_id){
-    var req_db = {};
-    req_db.e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
-                {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
-                {t:'currency', c:['symbol']},
-                {t:'account', c:['account_type_id']}
-               ];
-
-    req_db.jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
-                 {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
-                 {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
-                ];
-    req_db.c = [{t : 'transaction', cl : 'period_id', v : period_id, z : '='}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
-      for(var i = 0; i<data.length; i++){
-      data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
-      }
-      $scope.infostran = data;
-    });
-  }
-
-  function refreshTable(dep){
-    console.log("I can't use this keyboard")
-    if(dep.accountID && Object.keys(dep.df).length && Object.keys(dep.dt).length) {
-      var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
-               {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
-               {t:'currency', c:['symbol']},
-               {t:'account', c:['account_type_id']}
-              ],
-      jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
-            {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
-            {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
-           ],
-      c = [{t : 'infotransaction', cl: 'account_id', v : dep.accountID, z : '=', l : 'AND'},
-           {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.df.period_start), z : '>=', l : 'AND'},
-           {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.dt.period_stop), z : '<='}
-          ];
-      var req_db={};
-      req_db.e=e;
-      req_db.jc = jc;
-      req_db.c = c;
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        for(var i = 0; i<data.length; i++){
-          data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+        data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
         }
         $scope.infostran = data;
-        console.log("data:", data);
       });
-  }
-    
+    }
 
-  }
+    function refreshTable(dep){
+      if(dep.accountID && dep.df && dep.dt) {
+        var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+                 {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
+                 {t:'currency', c:['symbol']},
+                 {t:'account', c:['account_type_id']}
+                ],
+        jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
+              {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
+              {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
+             ],
+        c = [{t : 'infotransaction', cl: 'account_id', v : dep.accountID, z : '=', l : 'AND'},
+             {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.df), z : '>=', l : 'AND'},
+             {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.dt), z : '<='}
+            ];
+        var req_db={};
+        req_db.e=e;
+        req_db.jc = jc;
+        req_db.c = c;
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          for(var i = 0; i<data.length; i++){
+            data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+          }
+          $scope.infostran = data;
+          console.log("data:", data);
+        });
+      }
+    }
 
-  $scope.$watch('a_select', function(oval, nval){
-    if(Object.keys($scope.a_select).length){
-      dependacies.accountID = $scope.a_select.id;
+    appstate.register('period', function(res) { 
+      fillTable(res.id);
+    });
+
+    appstate.register('enterprise', function(res) { 
+      fillAccount(res.id);
+    });
+
+    appstate.register('fiscal', function(res) { 
+      fillDateFrom(res.id);
+      fillDateTo(res.id);
+    });
+    $scope.$watch('a_select', function(nval, oval){
+      if(Object.keys(nval).length){
+        dependacies.accountID = nval.id;
+        refreshTable(dependacies);
+      }
+    });
+
+    $scope.$watch('df_select', function(nval, oval){
+      if(Object.keys(nval).length){
+      dependacies.df = nval.period_start;
       refreshTable(dependacies);
-    }    
-  });
+      }
+    });
 
-  $scope.$watch('df_select', function(oval, nval){
-    if(Object.keys($scope.df_select).length){
-      dependacies.df = $scope.df_select;
-      refreshTable(dependacies);
-    }    
-  });
+    $scope.$watch('dt_select', function(nval, oval){
+      if(Object.keys(nval).length){
+        dependacies.dt = nval.period_stop;
+        refreshTable(dependacies);
+      }      
+    });
 
-  $scope.$watch('dt_select', function(oval, nval){
-    if(Object.keys($scope.dt_select).length){
-      dependacies.dt = $scope.dt_select;
-      refreshTable(dependacies);
-    }    
-  });
 
-  $rootScope.$on('e_selectEmit', function(event, msg){
-    fillAccount(msg.id);  
-  });
-
-  $rootScope.$on('f_selectEmit', function(event, msg){
-      fillDateFrom(msg.id);
-      fillDateTo(msg.id);
-  });
-
-  $rootScope.$on('p_selectEmit', function(event, msg){
-    fillTable(msg.id);
-    //event.stopPropagation()
-  });
 });
 
 //***********************************************************************************
@@ -451,12 +448,17 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
     $scope.enterprise_model = {};
     $scope.fiscal_model = {};
     $scope.period_model = {};
-    $scope.e_select = {};
-    $scope.f_select = {};    
-    $scope.p_select = {};
   //fin varible du scope
 
-    
+    var resp = fillEntrepriseSelect();
+    resp.then(function(enterprise_id){
+       if(enterprise_id){
+        var resp2 = fillFiscalSelect(enterprise_id);
+        resp2.then(function(fiscal_id){
+          fillPeriodSelect(fiscal_id);
+        });
+      }
+    });
     //debut functions
     $scope.select = function(id) {
     }
@@ -487,7 +489,7 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
       return deferred.promise;
     }
 
-    function fillPeriod(fiscal_id){
+    function fillPeriodSelect(fiscal_id){
       var req_db = {};
       req_db.e = [{t:'period', c:['id', 'period_start', 'period_stop']}];
       req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
@@ -504,57 +506,24 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
     //fin remplissage selects
     
     $scope.$watch('e_select', function(nval, oval) { 
-      console.log("updating e_select with", $scope.e_select);
-      appstate.update('enterprise', nval);
+      if(nval){
+        appstate.update('enterprise', nval);
+        fillFiscalSelect(nval.id);
+      }
     });
 
     $scope.$watch('f_select', function(nval, oval) { 
-      console.log("updating f_select with", $scope.f_select);
-      appstate.update('fiscal', nval);
+      if(nval){
+        appstate.update('fiscal', nval);
+        fillPeriodSelect(nval.id);
+      }
+    });
+
+    $scope.$watch('p_select', function(nval, oval) { 
+      appstate.update('period', nval);
     });
 });
     //fin fonction
-
-
-    //debut remplissage selects
-   /* var resp = fillEntrepriseSelect();
-    resp.then(function(enterprise_id){
-=======
-    //debut remplissage selects   
-
-    $scope.$watch('p_select', function(newObj, oldObj) {
-      if(Object.keys($scope.f_select).length){
-        $scope.$emit('p_selectEmit',$scope.p_select);
-      }       
-    });
-    $scope.$watch('e_select', function(newObj, oldObj) {
-      if(Object.keys($scope.e_select).length){
-        $scope.$emit('e_selectEmit',$scope.e_select);
-        fillFiscalSelect($scope.e_select.id);
-      }
-      
-    });
-    $scope.$watch('f_select', function(newObj, oldObj){
-      if(Object.keys($scope.f_select).length){
-        $scope.$emit('f_selectEmit', $scope.f_select);
-        fillPeriod($scope.f_select.id);
-      }
-      
-    });
-    var resp = fillEntrepriseSelect();
-    /* resp.then(function(enterprise_id){
->>>>>>> fixing transaction continous
-      if(enterprise_id){
-        var resp2 = fillFiscalSelect(enterprise_id);
-        resp2.then(function(fiscal_id){
-          fillPeriod(fiscal_id);
-        });
-      }
-    });*/
-    //fin remplissage select
-
-
-
 
 controllers.controller('appController', function($scope) { 
     // TODO/FIXME
