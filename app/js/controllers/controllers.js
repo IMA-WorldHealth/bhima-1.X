@@ -444,6 +444,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
       req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
       bikaConnect.get('/data/?',req_db).then(function(data){
         $scope.fiscal_model = data;
+        $scope.f_select = $scope.fiscal_model[0];
         deferred.resolve(data[0].id);
       });
       return deferred.promise;
@@ -464,7 +465,13 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     //fin remplissage selects
     
     $scope.$watch('e_select', function(nval, oval) { 
+      console.log("updating e_select with", $scope.e_select);
       appstate.update('enterprise', nval);
+    });
+
+    $scope.$watch('f_select', function(nval, oval) { 
+      console.log("updating f_select with", $scope.f_select);
+      appstate.update('fiscal', nval);
     });
 });
 
@@ -497,7 +504,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     $scope.current_fiscal = {
       id : 2013001
     };
-    
+
     $scope.fiscal_model = {};
 
     init();
@@ -509,6 +516,8 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         //Reveal to scope for info display
         $scope.enterprise = res;
       });
+
+      console.log("init", appstate.get("fiscal"));
     }
 
     function loadEnterprise(enterprise_id) { 
