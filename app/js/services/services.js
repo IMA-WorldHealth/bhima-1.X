@@ -80,21 +80,40 @@
     // summary: 
     //  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
     //  to allow asynchronous loading
+    // 
+    // example:
+    //  ensuring multiple values are set before loading a page (vs. only registering one dependency)
+    /*  function fetch() { 
+          var promise = fechFirst();
+          //see also: $q.all()
+          fetchFirst.then(function(res) { 
+
+            return fetchSecond();
+          })
+          .then(function(res) { 
+
+          });
+        }
+        function fetchFirst() { 
+
+        }
+
+        function fetchSecond() { 
+
+        }
+    */
+    //  
     /////
+    
+  
     console.log("appstate initialised");
 
     var instance = {
       //summary: 
       //  expose required function to Angular modules, all other functions are considered private
       id: Date.now(),
-      model: { 
-
-      },
       get: get,
       set: set,
-      notify: function() { 
-        console.log("instance has been triggored");
-      },
       register: register,
       update: update
     };
@@ -134,14 +153,6 @@
       if(l) { 
         l.forEach(function(recept) { 
           recept.callback(comp[comp_id]);
-        });
-      }
-    }
-
-    function notifyQueue(id) { 
-      if(queue[id]) { 
-        queue[id].forEach(function(deferred) { 
-          deferred.resolve(comp[id]);
         });
       }
     }

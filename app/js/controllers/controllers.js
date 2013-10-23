@@ -405,8 +405,6 @@ controllers.controller('transactionController', function($scope, bikaConnect, bi
 controllers.controller('utilController', function($rootScope, $scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
     $scope.enterprise_model = {};
     $scope.fiscal_model = {};
-    $scope.e_select = {};
-    $scope.f_select = {};
     $scope.period_model = {};
     $scope.p_select = {};
 
@@ -486,26 +484,11 @@ controllers.controller('viewController', function($scope) {
 });
   
 
-controllers.controller('fiscalController', function($scope, connect, bikaConnect, appstate) { 
-
-
-    console.log("appstate->");
-    var t = appstate.get("enterprise");
-    console.log("t", t);
-    appstate.register("enterprise", function(value) { 
-      console.log("Registered, recieved", value);
-    });
-    console.log("__");
+controllers.controller('fiscalController', function($scope, $q, connect, bikaConnect, appstate) { 
 
     $scope.active = "select";
     $scope.selected = null;
     $scope.create = false;
-    //TODO: This data can be fetched from the application level service
-    $scope.current_fiscal = {
-      id : 2013001
-    };
-
-    $scope.fiscal_model = {};
 
     init();
 
@@ -517,23 +500,44 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         $scope.enterprise = res;
       });
 
-      console.log("init", appstate.get("fiscal"));
+      //This isn't required - should this be included?
+      appstate.register("fiscal", function(res) { 
+        console.log("resolving", res);
+        $scope.select(res.id);
+      })
     }
 
     function loadEnterprise(enterprise_id) { 
+      var fiscal_model = {};
 
+      var promise = loadFiscal(enterprise_id);
+      promise
+      .then(function(res) { 
+        fiscal_model = res;
+        //FIXME: select should be a local function (returning a promise), it can then be exposed (/used) by a method on $scope
+        //expose model
+        $scope.fiscal_model = fiscal_model;
+        //select default
+        $scope.select(fiscal_model.data[0].id);
+
+      })
     }
 
-    //FIXME: This should by default select the fiscal year selected at the application level
-    connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
-      $scope.fiscal_model = model;
-      $scope.select($scope.current_fiscal.id);
-    });
+    function loadFiscal(enterprise_id) {  
+      var deferred = $q.defer();
+      connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", enterprise_id).then(function(model) { 
+        deferred.resolve(model);
+      });
+      return deferred.promise;
+    }
+    
 
-    $scope.select = function(fiscal_id) { 
-      fetchPeriods(fiscal_id);
-      $scope.selected = $scope.fiscal_model.get(fiscal_id);
-      $scope.active = "update";
+    $scope.select = function(fiscal_id) {
+      if($scope.fiscal_model) { 
+        fetchPeriods(fiscal_id);
+        $scope.selected = $scope.fiscal_model.get(fiscal_id);
+        $scope.active = "update";
+      } 
     };
 
     $scope.delete = function(fiscal_id) { 
