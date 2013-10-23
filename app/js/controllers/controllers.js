@@ -805,7 +805,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         return report.model.get(l);
       }
       }
-    } 
+    };
 
     /*This isn't optimal*/
     $scope.sum = function(report) { 
@@ -818,7 +818,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         return total;
       }
       return null;
-    }
+    };
 
     $scope.compare = function() { 
       console.log("compare");
@@ -827,7 +827,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       console.log("cmp", $scope.selected_fiscal);
       $scope.fiscal_model.delete($scope.selected_fiscal.id);
       $scope.selected_fiscal = $scope.fiscal_model.data[0];
-    }
+    };
 
     $scope.deleteCompare = function(report) { 
       var arr = $scope.budget_model.reports;
@@ -836,7 +836,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       //hard coded bad-ness
       $scope.fiscal_model.put({id : report.id, fiscal_year_txt : report.desc});
       $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
-    }
+    };
 
     $scope.validSelect = function() { 
       //ugly
@@ -847,7 +847,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       }
       
       return true;
-    }
+    };
   });
 
   controllers.controller('organisationController', function($scope, connect) { 
@@ -882,45 +882,86 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
     };
 
-
-
-    
   });
   
-  
   // Chart of Accounts controllers
-  controllers.controller('chartController', function($scope, $q, $modal, bikaConnect) {
-  
-    // loads data and returns a promise evaluated when both requests are complete.
-    function loadData() {
-      return $q.all([
-        bikaConnect.raw_fetch({
-          e: [{t:'account', c: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}],
-          c: [{t: 'account', cl: 'enterprise_id', z: '=', v: 101}]
-        }),
-        bikaConnect.raw_fetch({
-          e: [{t: 'account_type', c:['id', 'type']}]
-        })
-      ]);
+  controllers.controller('chartController', function($scope, $q, $modal, data, appstate) {
+
+    // import account
+    var account_spec = {
+      identifier: 'id',
+      primary: 'account',
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id'],
+        },
+        'account_type': {
+          columns: ['type'] 
+        }
+      },
+      join: ['account.account_type_id=account_type.id'],
+      where: ["account.enterprise_id=" + 101] //FIXME
+    };
+
+    // import account_type 
+    var account_type_spec = {
+      identifier: 'id',
+      tables: {
+        'account_type' : {
+          columns: ['id', 'type']
+        }
+      }
+    };
+
+    // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
+
+    // FIXME: have ready() return the store instance.
+    var account_store = data.register(account_spec);
+    var type_store = data.register(account_type_spec);
+
+    // OMG SYNTAX
+    $q.all([
+      account_store.ready(),
+      type_store.ready()
+    ]).then(init);
+
+    function init () {
+      $scope.account_model = account_store.data;
+      $scope.type_model = type_store.data;
+      console.log($scope.account_model);
     }
 
-    var promise = loadData();
-    
-    promise.then(function(tables) {
-      $scope.accounts = tables[0];
-      $scope.accounttypes = tables[1];
-    });
-    
-    $scope.columns = [
-      {label: "Account Number", map: "id"},
-      {label: "Account Text", map: "account_txt"},
-      {label: "Account Type", map: "account_type_id", cellTemplateUrl: "/partials/templates/cellselect.html"},
-      {label: "Locked?", map: "locked"}
-    ];
+    // ng-grid options
+    $scope.gridOptions = {
+      data: 'account_model',
+      columnDefs: [
+        {field: 'id', displayName: "Account Number"},
+        {field: 'account_txt', displayName: "Account Text"},
+        {field: 'account_type_id', displayName: "Account Type",
+          cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
+          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
+          sortable: false,
+          enableCellEdit: true
+        },
+        {field: 'locked', displayName: "Locked",
+          cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
+          sortable: false
+        }
+      ],
+      enableRowSelection:false,
+      enableColumnResize: true
+    };
 
+    $scope.updateRow = function(row) {
+      // HACK HACK HACK
+      row.entity.type = type_store.get(row.entity.account_type_id).type;
+      console.log($scope.account_model[row.rowIndex]);
+    };
+
+    // dialog controller
     $scope.showDialog = function() {
       var instance = $modal.open({
-        templateUrl: "/partials/templates/chart-modal.html",
+        templateUrl: "/partials/chart/templates/chart-modal.html",
         backdrop: true,
         controller: function($scope, $modalInstance, columns) {
           // NOTE: THIS IS A DIFFERENT SCOPE 
@@ -945,110 +986,11 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
       instance.result.then(function(values) {
         // add to the grid
-        $scope.accounts.push(values);
+        $scope.model.push(values);
       }, function() {
         console.log("Form closed on:", new Date());
       });
     };
-
-    // TODO: Much of this code is in preparation for multi-select feature,
-    // however it works fine with 'single' selection.  To impliment multiselect
-    // functionality, must have a way of registering objects dynamically into a
-    // collection, and add/delete based on their hash.  See TODO.md.
-
-    // Used for showing next lock state of toggleLock()
-    $scope.lockLabel = "Lock";
-
-    function getLockLabel(rows) {
-      // if multiple selected items default to
-      // "Lock"
-      if (rows.length > 1) {
-        return "Lock";
-      }
-      // Return 'Lock' if not locked; else, 'Unlock'
-      return (rows[0].locked === 0) ? "Lock"  : "Unlock";
-    }
-
-    $scope.selectedRows = [];
-
-    // FIXME: make this work with multiselect
-    $scope.$on('selectionChange', function(event, args) {
-      if ($scope.config.selectionMode == "multiple" && args.item.isSelected == "true") {
-        $scope.selectedRows.push(args.item);
-      } else {
-        // selected is an array
-        $scope.selectedRows = [args.item];
-      }
-      // re-calculate the lock label.
-      $scope.lockLabel = getLockLabel($scope.selectedRows);
-      console.log('$scope.selectedRows', $scope.selectedRows);
-    });
-
-    // toggles the lock on the current row
-    $scope.toggleLock = function() {
-      if ($scope.lockLabel == "Lock") {
-        $scope.selectedRows.forEach(function(row) {
-          row.locked = 1;
-        });
-      } else {
-        $scope.selectedRows.forEach(function(row) {
-          row.locked = 0;
-        });
-      }
-      // Switch label
-      $scope.lockLabel = ($scope.lockLabel == "Lock") ? "Unlock" : "Lock";
-    };
-
-    $scope.config = {
-      isPaginationEnabled: true,
-      itemsByPage: 16,
-      selectionMode: 'single'
-    };
-  });
-
-  controllers.controller('connectController', function($scope, connect, appstate) { 
-    appstate.get("enterprise").then(function(data) { 
-      console.log("Connect received", data);
-      console.log("Connect received", data);
-      console.log("Connect received", data);
-      console.log("Connect received", data);
-    });
-    console.log("ConnectController initialised.");
-    connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
-      console.log("Returned model", model);
-      console.log(model.get(2013001));
-      model.delete(2013001);
-    });
-  });
-
-
-  controllers.controller('socketController', function($scope, data) {
-
-    var options = {
-      identifier : 'id',
-      table      : 'account',
-      columns    : ['id', 'account_txt']
-    };
-
-    var store = data.register(options);
-
-    store.ready().then(function() {
-      // data loaded
-      $scope.model = store.data;
-
-      $scope.removeOne = function() {
-        store.remove($scope.selected);
-      };
-
-      $scope.sync = function () {
-        store.sync(); 
-      };
-
-      $scope.select = function(id) {
-        $scope.selected = id;
-      };
-
-    });
 
   });
 

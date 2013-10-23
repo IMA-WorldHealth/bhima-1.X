@@ -183,12 +183,11 @@
       function send (rawpacket) { connection.send(serialize(rawpacket)); }
  
       function init () {
-        var parameters = {
-          method     : 'INIT',
-          table      : table,
-          columns    : columns,
-          identifier : identifier
-        };
+        var parameters = {};
+        for (var k in options) {
+          parameters[k] = options[k]; 
+        }
+        parameters.method = "INIT";
         send(parameters);
       }
       
@@ -290,7 +289,7 @@
     var registry = {};
 
     function register(options) {
-      var table = options.table,
+      var table = options.primary || Object.keys(options.tables)[0],
           store;
 
       if (registry[table]) {
