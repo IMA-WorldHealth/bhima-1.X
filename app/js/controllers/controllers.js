@@ -403,74 +403,86 @@ controllers.controller('transactionController', function($scope, bikaConnect, bi
 //***********************************************************************************
  
 controllers.controller('utilController', function($rootScope, $scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
-    $scope.enterprise_model = {};
-    $scope.fiscal_model = {};
-    $scope.period_model = {};
-    $scope.p_select = {};
+  /////
+  // summary: 
+  //  Responsible for all utilities (buttons/ selects etc.) on the application side bar
+  //  
+  // TODO 
+  //  -All operations on models should be local, and then exposed to scope
+  /////
+  $scope.enterprise_model = {};
+  $scope.fiscal_model = {};
+  $scope.period_model = {};
+  $scope.p_select = {};
 
-    var resp = fillEntrepriseSelect();
-    resp.then(function(enterprise_id){
-      if(enterprise_id){
-        var resp2 = fillFiscalSelect(enterprise_id);
-        resp2.then(function(fiscal_id){
-          fillPeriod(fiscal_id);
-        });
+  var resp = fillEntrepriseSelect();
+
+  resp
+  .then(function(enterprise_id) { 
+    return fillFiscalSelect(enterprise_id);
+  })
+  .then(function(fiscal_id) { 
+    fillPeriod(fiscal_id);
+  });
+
+  //remplissage selects
+  function fillEntrepriseSelect(){
+    var deferred = $q.defer();
+    var req_db = {};
+    req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
+    bikaConnect.get('/data/?', req_db).then(function(data){
+      $scope.enterprise_model = data;
+      $scope.e_select = $scope.enterprise_model[0];
+      deferred.resolve(data[0].id);
+    });
+    return deferred.promise;
+  }
+  function fillFiscalSelect(enterprise_id){
+    var deferred = $q.defer();
+    var req_db = {};
+    req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
+    req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
+    bikaConnect.get('/data/?',req_db).then(function(data){
+      $scope.fiscal_model = data;
+      $scope.f_select = $scope.fiscal_model[0];
+      deferred.resolve(data[0].id);
+    });
+    return deferred.promise;
+  }
+
+  function fillPeriod(fiscal_id){
+    var req_db = {};
+    req_db.e = [{t:'period', c:['id', 'period_start', 'period_stop']}];
+    req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+    bikaConnect.get('/data/?',req_db).then(function(data){
+      for(var i = 0; i<data.length; i++){
+        data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
+        data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
       }
+      $scope.period_model = data;
+      $scope.p_select = $scope.period_model[0];
     });
-    /*$scope.$watch('e_select', function(newObj, oldObj) { 
-      console.log("Watch registered change", $scope.e_select);    
-    });*/    
-    $scope.select = function(id) {
-      console.log(id);
-    }
-    //remplissage selects
-    function fillEntrepriseSelect(){
-      var deferred = $q.defer();
-      var req_db = {};
-      req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        $scope.enterprise_model = data;
-        $scope.e_select = $scope.enterprise_model[0];
-        deferred.resolve(data[0].id);
-      });
-      return deferred.promise;
-    }
-    function fillFiscalSelect(enterprise_id){
-      var deferred = $q.defer();
-      var req_db = {};
-      req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
-      req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
-      bikaConnect.get('/data/?',req_db).then(function(data){
-        $scope.fiscal_model = data;
-        $scope.f_select = $scope.fiscal_model[0];
-        deferred.resolve(data[0].id);
-      });
-      return deferred.promise;
-    }
-
-    function fillPeriod(fiscal_id){
-      var req_db = {};
-      req_db.e = [{t:'period', c:['id', 'period_start', 'period_stop']}];
-      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-      bikaConnect.get('/data/?',req_db).then(function(data){
-        for(var i = 0; i<data.length; i++){
-          data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
-          data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
-        }
-        $scope.period_model = data;
-      });
-    }
-    //fin remplissage selects
-    
-    $scope.$watch('e_select', function(nval, oval) { 
-      console.log("updating e_select with", $scope.e_select);
+  }
+  //fin remplissage selects
+  
+  //FIXME: ideally all of logic should be within appstate, simply setting this value would keep it updated
+  $scope.$watch('e_select', function(nval, oval) { 
+    if(nval) { 
+      //Update appstate
       appstate.update('enterprise', nval);
-    });
+      //Update other selects
+      fillFiscalSelect(nval.id);
+    }
+  });
 
-    $scope.$watch('f_select', function(nval, oval) { 
-      console.log("updating f_select with", $scope.f_select);
+  $scope.$watch('f_select', function(nval, oval) { 
+    if(nval) { 
+      //Update appstate
       appstate.update('fiscal', nval);
-    });
+      //Update other selects
+      fillPeriod(nval.id);
+    }
+  });
 });
 
 controllers.controller('appController', function($scope) { 
@@ -478,8 +490,6 @@ controllers.controller('appController', function($scope) {
     console.log("Application controller fired");
 });
 
-
-  
 controllers.controller('viewController', function($scope) { 
 });
   
@@ -490,7 +500,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
     $scope.selected = null;
     $scope.create = false;
 
-    init();
 
     function init() { 
       //Resposible for getting the current values of selects
@@ -518,6 +527,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
         //expose model
         $scope.fiscal_model = fiscal_model;
         //select default
+        console.log("s", $scope);
         $scope.select(fiscal_model.data[0].id);
 
       })
@@ -591,6 +601,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
         $scope.period_model = data;
       });
     }
+
+    //Initialise after scope etc. has been set
+    init();
 });
   
 
