@@ -402,7 +402,7 @@ controllers.controller('transactionController', function($scope, bikaConnect, bi
 //********************** UTIL CONTROLLER ********************************************
 //***********************************************************************************
  
-controllers.controller('utilController', function($scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
+controllers.controller('utilController', function($rootScope, $scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
     $scope.enterprise_model = {};
     $scope.fiscal_model = {};
     $scope.e_select = {};
@@ -432,7 +432,7 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
       req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
       bikaConnect.get('/data/?', req_db).then(function(data){
         $scope.enterprise_model = data;
-        appstate.set("enterprise", $scope.e_select);
+        $scope.e_select = $scope.enterprise_model[0];
         deferred.resolve(data[0].id);
       });
       return deferred.promise;
@@ -462,31 +462,11 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
       });
     }
     //fin remplissage selects
+    
+    $scope.$watch('e_select', function(nval, oval) { 
+      appstate.update('enterprise', nval);
+    });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-controllers.controller('appController', function($scope) { 
-  console.log("transaction controllers init");
-});
-
 
 controllers.controller('appController', function($scope) { 
     // TODO/FIXME
@@ -500,6 +480,16 @@ controllers.controller('viewController', function($scope) {
   
 
 controllers.controller('fiscalController', function($scope, connect, bikaConnect, appstate) { 
+
+
+    console.log("appstate->");
+    var t = appstate.get("enterprise");
+    console.log("t", t);
+    appstate.register("enterprise", function(value) { 
+      console.log("Registered, recieved", value);
+    });
+    console.log("__");
+
     $scope.active = "select";
     $scope.selected = null;
     $scope.create = false;
@@ -507,15 +497,23 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     $scope.current_fiscal = {
       id : 2013001
     };
-
-    $scope.enterprise = {
-      name : "IMA",
-      city : "Kinshasa",
-      country : "RDC",
-      id : 101
-    };
-
+    
     $scope.fiscal_model = {};
+
+    init();
+
+    function init() { 
+      //Resposible for getting the current values of selects
+      appstate.register("enterprise", function(res) { 
+        loadEnterprise(res.id);
+        //Reveal to scope for info display
+        $scope.enterprise = res;
+      });
+    }
+
+    function loadEnterprise(enterprise_id) { 
+
+    }
 
     //FIXME: This should by default select the fiscal year selected at the application level
     connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
@@ -599,11 +597,11 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       name : "IMA",
       city : "Kinshasa",
       country : "RDC",
-      id : 101
+      id : 102
     };
 
     var current_fiscal = {
-      id : 2013001
+      id : 2013011
     };
 
     init();
