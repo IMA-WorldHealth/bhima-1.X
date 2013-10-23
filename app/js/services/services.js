@@ -75,7 +75,71 @@
     }
   });
 
-  services.factory('appstate', function($q, $rootScope) { 
+  services.factory('appcache', function($q) { 
+    /////
+    // //
+    /////
+    console.log("appcache initialised");
+
+    var cache_supported;
+    if("indexedDB" in window) { 
+      cache_supported = true;
+    }
+
+    //variables inside if(cache_supported)? no need to initialise otherwise
+    var db;
+    var version = 2;
+
+    function init() { 
+      var req = indexedDB.open("bika", version);
+
+      req.onupgradeneeded = function(e) { 
+        console.log("[appcache] upgrading indexed");
+        var checkDB = e.target.result;
+
+        if(!checkDB.objectStoreNames.contains("session")) { 
+          checkDB.createObjectStore("session",  {autoIncrement: true});
+        }
+      }
+
+      req.onsuccess = function(e) { 
+        db = e.target.result;
+      }
+
+      req.onerror = function(e) { 
+        throw new Error(e);
+      }
+    }
+
+    function add(store, object) { 
+      if(db) { 
+        var transaction = db.transaction(["session"], "readwrite");
+        var store = transaction.objectStore("session");
+
+        var req = db.add(object);
+
+        req.onerror = function(e) { 
+          console.log("[appcache] Failed to write", e);
+          return;
+        }
+
+        req.onsuccess = function(e) { 
+          //success
+        }
+      }
+    }
+
+    if(cache_supported) { 
+      init();
+    }
+
+    return { 
+      add: add
+    }
+
+  });
+
+  services.factory('appstate', function($q) { 
     /////
     // summary: 
     //  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
@@ -104,10 +168,7 @@
     */
     //  
     /////
-    
   
-    console.log("appstate initialised");
-
     var instance = {
       //summary: 
       //  expose required function to Angular modules, all other functions are considered private
@@ -117,7 +178,6 @@
       register: register,
       update: update
     };
-
 
     var comp = {};
     var queue = {};

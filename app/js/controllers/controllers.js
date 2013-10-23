@@ -409,6 +409,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
   //  
   // TODO 
   //  -All operations on models should be local, and then exposed to scope
+  //  -Should use connect instead of bikaConnect (soon to be deleted)
   /////
   $scope.enterprise_model = {};
   $scope.fiscal_model = {};
@@ -483,11 +484,16 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
       fillPeriod(nval.id);
     }
   });
+
+
+  //Logout button logic - page currently being viewed can be saved
 });
 
-controllers.controller('appController', function($scope) { 
-    // TODO/FIXME
+controllers.controller('appController', function($scope, appcache) { 
     console.log("Application controller fired");
+
+    //Navigate to page that was previously open
+    //Listen for page exit and save page
 });
 
 controllers.controller('viewController', function($scope) { 
@@ -608,7 +614,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
   
 
 
-  controllers.controller('budgetController', function($scope, $q, connect) { 
+  controllers.controller('budgetController', function($scope, $q, connect, appstate) { 
     /////
     //  summary: 
     //    Controller behaviour for the budgeting unit, fetches displays and allows updates on data joined from 
@@ -618,22 +624,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
     //    -Memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
     /////
     
-    //TODO: This data can be fetched from the application level service
-    $scope.enterprise = {
-      name : "IMA",
-      city : "Kinshasa",
-      country : "RDC",
-      id : 102
-    };
-
-    var current_fiscal = {
-      id : 2013011
-    };
-
-    init();
-
     function init() { 
-      createBudget($scope.enterprise.id);
+      appstate.register("enterprise", function(res) { 
+        createBudget(res.id);
+
+        //Expose to scope for view
+        $scope.enterprise = res;
+      });
     }
 
     function createBudget(e_id) { 
@@ -654,7 +651,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
         fiscal_model = model;
 
         //set the first budget report - this will be populated in updateReport
-        var default_fiscal = fiscal_model.get(current_fiscal.id);
+        var default_fiscal = appstate.get("fiscal") //Risky with validation checks
         budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}})
         fiscal_model.delete(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
@@ -677,7 +674,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
 
     function fetchAccount(e_id) { 
       var deferred = $q.defer();
-      connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+      connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", e_id).then(function(model) { 
         deferred.resolve(model);
       });
       return deferred.promise;
@@ -865,6 +862,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
       
       return true;
     }
+
+    init();
   });
 
   controllers.controller('organisationController', function($scope, connect) { 
