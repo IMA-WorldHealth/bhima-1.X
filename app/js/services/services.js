@@ -75,42 +75,67 @@
     }
   });
 
-  services.factory('appstate', function($q) { 
+  services.factory('appstate', function($q, $rootScope) { 
     /////
     // summary: 
     //  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
     //  to allow asynchronous loading
     /////
+    console.log("appstate initialised");
+
+    var instance = {
+      //summary: 
+      //  expose required function to Angular modules, all other functions are considered private
+      id: Date.now(),
+      model: { 
+
+      },
+      get: get,
+      set: set,
+      notify: function() { 
+        console.log("instance has been triggored");
+      },
+      register: register,
+      update: update
+    };
+
+
     var comp = {};
     var queue = {};
 
-    function set(id, ref) { 
+    function set(comp_id, ref) { 
       //summary: 
-      //  assign reference to id, notify anyone waiting on id
-      comp[id] = ref;
-      notifyQueue(id);
+      //  Assign id reference to value
+      comp[comp_id] = ref;
     }
 
-    function get(id) { 
+    function get(comp_id) { 
       //summary: 
-      //  get reference to a value/ model by id, if the id exists it is returned, otherwise deferred is added to a queue to be 
-      //  resolved later
-      var deferred = $q.defer();
-
-      if(comp[id]) { 
-        deferred.resolve(comp[id]);
-      } else { 
-        register(id, deferred);
-      }
-
-      return deferred.promise;
+      //  Reference to value by di
+      return comp[comp_id];
     }
 
-    function register(id, deferred) { 
-      if(!queue[id]) { 
-        queue[id] = [];
+    function register(comp_id, callback) { 
+      var id = this.id;
+      if(!queue[comp_id]) { 
+        queue[comp_id] = [];
       }
-      queue[id].push(deferred);
+
+      queue[comp_id].push({ref: this, callback: callback});
+      //init call to pass current value
+      if(comp[comp_id]) { 
+        callback(comp[comp_id]);
+      }
+    }
+
+    function update(comp_id, value) { 
+      comp[comp_id] = value;
+      var l = queue[comp_id];
+      if(l) { 
+        l.forEach(function(recept) { 
+          recept.callback(comp[comp_id]);
+        });
+      }
     }
 
     function notifyQueue(id) { 
@@ -121,13 +146,7 @@
       }
     }
 
-    return {
-      //summary: 
-      //  expose required function to Angular modules, all other functions are considered private
-      set : set, 
-      get : get
-    };
-
+    return instance;
   });
 
   services.factory('data', function($q, $rootScope) {
