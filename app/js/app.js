@@ -2,7 +2,7 @@
   'use strict';
 
   //FIXME: Format code correctly in seperate files/modules etc.
-  var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview', 'ngGrid', 'smartTable.table', 'bikaCellSelect', 'ui.bootstrap', 'ui.bootstrap.tabs']);
+  var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'bika.directives', 'bika.filters', 'angularTreeview', 'ngGrid', 'ui.bootstrap', 'ui.bootstrap.tabs']);
   
   function bikaconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
@@ -41,15 +41,7 @@
     }).
     when('/accounts', {
       controller: 'chartController',
-      templateUrl: 'partials/chartofaccounts.html'
-    }).
-    when('/connect', {
-      controller: 'connectController',
-      templateUrl: 'partials/connect.html'
-    }). // for Socket Test
-    when('/socket', {
-      controller: 'socketController',
-      templateUrl: 'partials/socket.html'
+      templateUrl: '/partials/chart/index.html'
     });
   }  
   bika.config(bikaconfig);
