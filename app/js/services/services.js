@@ -270,7 +270,7 @@
     var registry = {};
 
     function register(options) {
-      var table = options.table,
+      var table = options.primary || Object.keys(options.tables)[0],
           store;
 
       if (registry[table]) {

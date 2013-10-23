@@ -4,45 +4,18 @@
   display: block;
 }
 
-.smart-table .selected {
-  background: #E3E3E3;
-}
-
 .hide {
   display: none;
 }
 
-.smart-table-footer-row .pagination {
-  border-radius: 0;
-  float: right;
-  padding: 0;
-  margin: 0;
-  border: 1px solid rgba(0,0,0,0.2);
+.table-container {
+  height: 100%;
 }
 
-.smart-table-footer-row .pagination ul {
-  display: inline;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.maxheight {
+  height: 100%;
 }
 
-.smart-table-footer-row ul li {
-  display: block;
-  float: left;
-  padding: 0.5em;
-  margin: auto;
-}
-
-.smart-table-footer-row ul li:hover {
-  cursor: pointer;
-  background:#E3E3E3;
-}
-
-/* 
- * FIXME: improve this so that the <a> tags are 
- * big enough to click on.
-*/
-.smart-table-footer-row ul li a {
-  text-decoration: none;
+#bika-view {
+  height: 675px;
 }
