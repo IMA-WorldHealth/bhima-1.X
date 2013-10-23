@@ -30,11 +30,11 @@ controllers.controller('treeController', function($scope, $q, bikaConnect, $loca
     });
  
     
-    $scope.$watch( 'navtree.currentNode', function( newObj, oldObj ) {
+    $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
             $location.path($scope.navtree.currentNode.url);
         }
-    }, false);
+    }, true);
 
     function getRoles(){
       var request = {}; 
@@ -311,7 +311,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 //************************************************************************************
 controllers.controller('transactionController', function($scope, $rootScope, bikaConnect, bikaUtilitaire, appstate) { 
     //les variables
-  $scope.account_model = {};
+  $scope.account_model;
   $scope.a_select = {};
   $scope.periods = {};
   $scope.df_select =  {};
@@ -375,9 +375,8 @@ controllers.controller('transactionController', function($scope, $rootScope, bik
   }
 
   function refreshTable(dep){
+    console.log("I can't use this keyboard")
     if(dep.accountID && Object.keys(dep.df).length && Object.keys(dep.dt).length) {
-      console.log("Calling convertTo MYSQL");
-      console.log("dep:", dep);
       var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
                {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
                {t:'currency', c:['symbol']},
@@ -395,12 +394,12 @@ controllers.controller('transactionController', function($scope, $rootScope, bik
       req_db.e=e;
       req_db.jc = jc;
       req_db.c = c;
-      console.log(req_db.c);
       bikaConnect.get('/data/?', req_db).then(function(data){
         for(var i = 0; i<data.length; i++){
           data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
         }
         $scope.infostran = data;
+        console.log("data:", data);
       });
   }
     
@@ -408,18 +407,24 @@ controllers.controller('transactionController', function($scope, $rootScope, bik
   }
 
   $scope.$watch('a_select', function(oval, nval){
-    dependacies.accountID = $scope.a_select.id;
-    refreshTable(dependacies);
+    if(Object.keys($scope.a_select).length){
+      dependacies.accountID = $scope.a_select.id;
+      refreshTable(dependacies);
+    }    
   });
 
   $scope.$watch('df_select', function(oval, nval){
-    dependacies.df = $scope.df_select;
-    refreshTable(dependacies);
+    if(Object.keys($scope.df_select).length){
+      dependacies.df = $scope.df_select;
+      refreshTable(dependacies);
+    }    
   });
 
   $scope.$watch('dt_select', function(oval, nval){
-    dependacies.dt = $scope.dt_select;
-    refreshTable(dependacies);
+    if(Object.keys($scope.dt_select).length){
+      dependacies.dt = $scope.dt_select;
+      refreshTable(dependacies);
+    }    
   });
 
   $rootScope.$on('e_selectEmit', function(event, msg){
@@ -431,7 +436,7 @@ controllers.controller('transactionController', function($scope, $rootScope, bik
       fillDateTo(msg.id);
   });
 
-  $rootScope.$on('p_selectEmit', function(event, msg){    
+  $rootScope.$on('p_selectEmit', function(event, msg){
     fillTable(msg.id);
     //event.stopPropagation()
   });
@@ -445,9 +450,9 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
   //variablesd u scope
     $scope.enterprise_model = {};
     $scope.fiscal_model = {};
-    $scope.e_select = {};
-    $scope.f_select = {};
     $scope.period_model = {};
+    $scope.e_select = {};
+    $scope.f_select = {};    
     $scope.p_select = {};
   //fin varible du scope
 
@@ -514,26 +519,41 @@ controllers.controller('utilController', function($scope, $q, bikaConnect, appst
     //debut remplissage selects
    /* var resp = fillEntrepriseSelect();
     resp.then(function(enterprise_id){
+=======
+    //debut remplissage selects   
+
+    $scope.$watch('p_select', function(newObj, oldObj) {
+      if(Object.keys($scope.f_select).length){
+        $scope.$emit('p_selectEmit',$scope.p_select);
+      }       
+    });
+    $scope.$watch('e_select', function(newObj, oldObj) {
+      if(Object.keys($scope.e_select).length){
+        $scope.$emit('e_selectEmit',$scope.e_select);
+        fillFiscalSelect($scope.e_select.id);
+      }
+      
+    });
+    $scope.$watch('f_select', function(newObj, oldObj){
+      if(Object.keys($scope.f_select).length){
+        $scope.$emit('f_selectEmit', $scope.f_select);
+        fillPeriod($scope.f_select.id);
+      }
+      
+    });
+    var resp = fillEntrepriseSelect();
+    /* resp.then(function(enterprise_id){
+>>>>>>> fixing transaction continous
       if(enterprise_id){
         var resp2 = fillFiscalSelect(enterprise_id);
         resp2.then(function(fiscal_id){
           fillPeriod(fiscal_id);
         });
       }
-    });
-    $scope.$watch('p_select', function(newObj, oldObj) {
-      $scope.$emit('p_selectEmit',$scope.p_select); 
-    });
-    $scope.$watch('e_select', function(newObj, oldObj) {
-      $scope.$emit('e_selectEmit',$scope.e_select);
-      fillFiscalSelect($scope.e_select.id);
-    });
-    $scope.$watch('f_select', function(newObj, oldObj){
-      $scope.$emit('f_selectEmit', $scope.f_select);
-      fillPeriod($scope.f_select.id);
-    });
+    });*/
     //fin remplissage select
-});*/
+
+
 
 
 controllers.controller('appController', function($scope) { 
