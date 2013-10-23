@@ -120,7 +120,6 @@
       var id = this.id;
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
-
       }
 
       queue[comp_id].push({ref: this, callback: callback});
