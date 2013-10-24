@@ -6,7 +6,7 @@
 //************************************************************************************
 //******************************* TREE CONTROLLER ************************************
 //************************************************************************************  
-controllers.controller('treeController', function($scope, $q, bikaConnect, $location) {    
+controllers.controller('treeController', function($scope, $q, $location, appcache, bikaConnect) {    
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
@@ -33,6 +33,11 @@ controllers.controller('treeController', function($scope, $q, bikaConnect, $loca
     $scope.$watch( 'navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
             $location.path($scope.navtree.currentNode.url);
+            //Move cacheNav to logout routine
+            if(!$scope.navtree.currentNode.url=="") { 
+              appcache.cacheNav($scope.navtree.currentNode.url);  
+            }
+
         }
     }, false);
 
@@ -489,11 +494,15 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
   //Logout button logic - page currently being viewed can be saved
 });
 
-controllers.controller('appController', function($scope, appcache) { 
+controllers.controller('appController', function($scope, $location, appcache) { 
     console.log("Application controller fired");
 
     //Navigate to page that was previously open
     //Listen for page exit and save page
+    appcache.getNav().then(function(res) { 
+      console.log("appController got", res);
+      $location.path(res);
+    })
 });
 
 controllers.controller('viewController', function($scope) { 
