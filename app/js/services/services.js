@@ -81,7 +81,8 @@
     //  Used to interface with indexedDB store, providing methods to read and write to local storage
     //  
     // TODO:
-    //  -continue implementing methods, simple read/write functionality and error handling
+    //  -Formalise inner working functions, and expose high level requests (storage for page save, namespacing etc.)
+    //  -Use promises instead of callbacks
     /////
     console.log("appcache initialised");
 
@@ -95,8 +96,36 @@
     var version = 2;
 
     var instance = { 
-      add: add
+      add: add,
+      getNav: getNav,
+      cacheNav: cacheNav
     };
+
+    var queue = [];
+
+    //Methods for storing navigation data - FIXME: Should service be more abstract than this?
+    function getNav() { 
+      //FIXME: Redo this function/ queue system
+      var deferred = $q.defer();
+
+      if(!db) { 
+        queue.push(fetch);
+      } else { 
+        fetch();
+      }
+
+      function fetch() { 
+        getByIndex("cache_nav").then(function(res) { 
+          deferred.resolve(res.value);
+        });
+      }
+
+      return deferred.promise;
+    }
+
+    function cacheNav(nav_string) {
+      update("cache_nav", "value", nav_string);
+    }
 
     function init() { 
       var req = indexedDB.open("bika", version);
@@ -115,15 +144,19 @@
 
       req.onsuccess = function(e) { 
         db = e.target.result;
-        //add({ref: "cache_nav", value: null});
-        get("cache_nav");
+
+        //Call all methods requested befored db init
+        queue.forEach(function(callback) { 
+          callback();
+          //delete callback
+        });
+        
       }
 
       req.onerror = function(e) { 
         throw new Error(e);
       }
     }
-
 
     function add(object) { 
       if(db) { 
@@ -144,6 +177,51 @@
       }
     }
 
+    function put(object) { 
+      if(db) { 
+        var transaction = db.transaction(["session"], "readwrite");
+        var store = transaction.objectStore("session");
+        
+        var req = store.put(object);
+
+        req.onsuccess = function(e) { 
+          console.log("Value updated", object);
+        }
+
+        req.onerror = function(e) { 
+          console.log("[appcache] Failed to put", e);
+        }
+      }
+    }
+
+    function update(key, field, value) { 
+      if(db) { 
+        var transaction = db.transaction(["session"], "readwrite");
+        var store = transaction.objectStore("session");
+        var index = store.index("ref");
+        var key_range = IDBKeyRange.only(key);
+        
+        var req = index.openCursor(key_range);
+
+        req.onsuccess = function(e) { 
+          var cursor = e.target.result;
+          if(cursor) { 
+            //gauranteed to only be one object given key range / key
+            var res = cursor.value;
+            res[field] = value;
+            console.log(cursor);
+            console.log(cursor.update);
+            cursor.update(res);
+          }
+          console.log("[appcache] updated", key);
+        }
+
+        req.onerror = function(e) { 
+          console.log("[appcache] Failed to update");
+        }
+      }
+    }
+
     function get(key) { 
       var transaction = db.transaction(["session"], "readonly");
       var store = transaction.objectStore("session");
@@ -152,12 +230,35 @@
 
       req.onsuccess = function(e) { 
         console.log("[appcache] Read success", e);
+        console.log("[appcache] Result", e.target.result);
         return e.target.result;
       }
 
       req.onerror = function(e) { 
         console.log("[appcache] Failed to read", e);
       }
+
+    }
+
+    function getByIndex(key) { 
+      var deferred = $q.defer();
+      var transaction = db.transaction(["session"], "readonly");
+      var store = transaction.objectStore("session");
+      var index = store.index("ref");
+      
+      var req = index.get(key);
+
+      req.onsuccess = function(e) { 
+        console.log("[appcache] Read success", e);
+        console.log("[appcache] Result", e.target.result);
+        deferred.resolve(e.target.result);
+      }
+
+      req.onerror = function(e) { 
+        console.log("[appcache] Failed to read", e);
+      }
+
+      return deferred.promise;
     }
 
     function requestAll() { 
