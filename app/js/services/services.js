@@ -77,7 +77,11 @@
 
   services.factory('appcache', function($q) { 
     /////
-    // //
+    // summary: 
+    //  Used to interface with indexedDB store, providing methods to read and write to local storage
+    //  
+    // TODO:
+    //  -continue implementing methods, simple read/write functionality and error handling
     /////
     console.log("appcache initialised");
 
