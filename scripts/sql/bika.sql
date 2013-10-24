@@ -5801,11 +5801,10 @@ INSERT INTO `employee` (`id`, `name`, `title`, `location_id`, `department_id`, `
   (1, "Dodi", "Chief Accountant", 11, 4, "DK"),
   (2, "Jon", "MCZ", 11, 3, "JN");
 --
--- Table `bika`.`organisation`
+-- Table `bika`.`billing_group`
 --
--- NOTE the british spelling.  This one's for you, steve.
-DROP TABLE IF EXISTS `organisation`;
-CREATE TABLE IF NOT EXISTS `organisation` (
+DROP TABLE IF EXISTS `billing_group`;
+CREATE TABLE IF NOT EXISTS `billing_group` (
   `id`  smallint unsigned NOT NULL,
   `enterprise_id` smallint unsigned NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -5828,15 +5827,15 @@ CREATE TABLE IF NOT EXISTS `organisation` (
   KEY `payment_id` (`payment_id`),
   KEY `contact_id` (`contact_id`),
   KEY `tax_id` (`tax_id`),
-  CONSTRAINT `organisation_ibfk_1` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_2` FOREIGN KEY (`account_number`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_3` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_4` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_5` FOREIGN KEY (`contact_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_6` FOREIGN KEY (`tax_id`) REFERENCES `taxinfo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`account_number`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`contact_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`tax_id`) REFERENCES `taxinfo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-INSERT INTO `organisation` (`id`, `enterprise_id`, `name`, `account_number`, `location_id`, `address_1`, `address_2`, `payment_id`, `phone`, `email`, `note`, `locked`, `contact_id`, `tax_id`, `max_credit`) VALUES
+INSERT INTO `billing_group` (`id`, `enterprise_id`, `name`, `account_number`, `location_id`, `address_1`, `address_2`, `payment_id`, `phone`, `email`, `note`, `locked`, `contact_id`, `tax_id`, `max_credit`) VALUES
   (1, 101, "Bureau Centrale de Zone", 410100, 11, "BCZ Rd.", "Kikwit", 2, "0823431677", "bcz@congo.cd", "The BCZ for Vanga's zone", 0, 1, 1, 1000),
   (2, 101, "ITM Vanga", 410200, 11, "ITM Rd.", "Vanga", 1, "0811546234", "vanga@itm.cd", "Note1", 0, 1, 1, 0),
   (3, 101, "All Patients", 600100, 11, null, null, 1, null, null, "Note2", 0, 1, 2, 100);
@@ -5844,11 +5843,10 @@ INSERT INTO `organisation` (`id`, `enterprise_id`, `name`, `account_number`, `lo
 --
 -- Table `bika`.`patient`
 --
--- NOTE the british spelling of organisation.  It's still for you, steve.
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
   `id` int unsigned NOT NULL,
-  `organisation_id` smallint unsigned NOT NULL,
+  `group_id` smallint unsigned NOT NULL, -- references billing_group
   `first_name` varchar(150) NOT NULL,
   `last_name` varchar(150) NOT NULL,
   `dob` date NOT NULL,
@@ -5866,11 +5864,11 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `country` varchar(100),
   PRIMARY KEY (`id`),
   KEY `first_name` (`first_name`),
-  KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `patient_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `organisation` (`id`) ON UPDATE CASCADE
+  KEY `group_id` (`group_id`),
+  CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `billing_group` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-INSERT INTO `patient` (`id`, `organisation_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `addr_1`, `addr_2`, `village`, `zone`, `city`, `country`) VALUES 
+INSERT INTO `patient` (`id`, `group_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `addr_1`, `addr_2`, `village`, `zone`, `city`, `country`) VALUES 
   (1, 3, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", null, null, "Vanga", "Vanga", "Kikwit", "Republic Democratic du Congo"),
   (2, 3, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", null, null, "Cafu La Mour", "Nord", "Cap Haitian", "Haiti"),
   (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", null, null, "Kinshasa", "Ngili", "Kinshasa", "Republic Democratic du Congo"),
@@ -5913,7 +5911,6 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
 
 -- fin augmentation
 
-
 --
 -- table `bika`.`pricegroup`
 --
@@ -5927,4 +5924,4 @@ CREATE TABLE IF NOT EXISTS `pricegroup` (
 INSERT INTO `pricegroup` (`id`, `note`) VALUES 
   (1, "Vanga ITM"),
   (2, "Vanga ISTM"),
-  (3, "Employees"); 
+  (3, "Employees");

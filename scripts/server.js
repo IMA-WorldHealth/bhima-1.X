@@ -19,7 +19,7 @@ app.configure('production', function () {
   app.use(app.router);
 });
 
-
+// TODO: Deprecate this code and use sockets
 app.get('/data/', function (req, res) {
   var cb = function (err, ans) {
     if (err) throw err;
