@@ -500,12 +500,12 @@ controllers.controller('viewController', function($scope) {
 });
   
 
-controllers.controller('fiscalController', function($scope, $q, connect, bikaConnect, appstate) { 
+controllers.controller('fiscalController', function($scope, $q, connect, appstate) { 
+
 
     $scope.active = "select";
     $scope.selected = null;
     $scope.create = false;
-
 
     function init() { 
       //Resposible for getting the current values of selects
@@ -588,23 +588,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, bikaCon
       }
     };
 
-    //FIXME: Date IN object should be formated, this function is called every time any part of the model is updated
-    //This should be encapsulated in a 'model'
-    /*
-    function modelGet(model, id) { 
-      //Keep an index of item ID's so a Get can directly index without searching (index maintained by model)
-      var search = null;
-      model.forEach(function(entry) { 
-        if(entry.id==id){
-          search=entry;
-        }
-      });
-      return search;
-    }*/
-    
     function fetchPeriods(fiscal_id) { 
-      bikaConnect.fetch("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(data) { 
-        $scope.period_model = data;
+      connect.req("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(model) { 
+        $scope.period_model = model.data;
       });
     }
 

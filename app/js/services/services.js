@@ -94,20 +94,29 @@
     var db;
     var version = 2;
 
+    var instance = { 
+      add: add
+    };
+
     function init() { 
       var req = indexedDB.open("bika", version);
 
       req.onupgradeneeded = function(e) { 
+        //summary: 
+        //  user is either new, or a newer version of the database is available, run database settup 
         console.log("[appcache] upgrading indexed");
         var checkDB = e.target.result;
 
         if(!checkDB.objectStoreNames.contains("session")) { 
-          checkDB.createObjectStore("session",  {autoIncrement: true});
+          var store = checkDB.createObjectStore("session",  {autoIncrement: true});
+          store.createIndex("ref", "ref", {unique:true});
         }
       }
 
       req.onsuccess = function(e) { 
         db = e.target.result;
+        //add({ref: "cache_nav", value: null});
+        get("cache_nav");
       }
 
       req.onerror = function(e) { 
@@ -115,12 +124,13 @@
       }
     }
 
-    function add(store, object) { 
+
+    function add(object) { 
       if(db) { 
         var transaction = db.transaction(["session"], "readwrite");
         var store = transaction.objectStore("session");
 
-        var req = db.add(object);
+        var req = store.add(object);
 
         req.onerror = function(e) { 
           console.log("[appcache] Failed to write", e);
@@ -129,7 +139,45 @@
 
         req.onsuccess = function(e) { 
           //success
+          console.log("[appcache] object written");
         }
+      }
+    }
+
+    function get(key) { 
+      var transaction = db.transaction(["session"], "readonly");
+      var store = transaction.objectStore("session");
+
+      var req = store.get(key);
+
+      req.onsuccess = function(e) { 
+        console.log("[appcache] Read success", e);
+        return e.target.result;
+      }
+
+      req.onerror = function(e) { 
+        console.log("[appcache] Failed to read", e);
+      }
+    }
+
+    function requestAll() { 
+      //summary: 
+      //  indexedDB cursor demonstration
+      var transaction = db.transaction(["session"], "readonly");
+      var store = transaction.objectStore("session");
+
+      var cursor = store.openCursor();
+
+      cursor.onsuccess = function(e) { 
+        var res = e.target.result;
+        if(res) { 
+          console.log("key", res.key, "data", res.value);
+          res.continue();
+        }
+      }
+
+      cursor.onerror = function(e) { 
+        console.log("[appcache] Failed to read cursor");
       }
     }
 
@@ -137,9 +185,7 @@
       init();
     }
 
-    return { 
-      add: add
-    }
+    return instance;
 
   });
 
