@@ -116,9 +116,12 @@
       }
 
       function fetch() { 
-        getByIndex("cache_nav").then(function(res) {
-        if(res) 
-          deferred.resolve(res.value);
+        getByIndex("cache_nav").then(function(res) { 
+          if(res) { 
+            deferred.resolve(res.value);
+          } else { 
+            deferred.resolve(res);
+          }
         });
       }
 
@@ -126,6 +129,23 @@
     }
 
     function cacheNav(nav_string) {
+
+      if(!db) { 
+        queue.push(commit);
+      } else { 
+        commit();
+      }
+
+      function commit() { 
+        var promise = getByIndex("cache_nav");
+        promise
+        .then(function(res) { 
+          if(!res) { 
+            return add({"ref": "cache_nav", "value" : ""});
+          }
+        });
+      }
+      
       update("cache_nav", "value", nav_string);
     }
 
@@ -161,6 +181,7 @@
     }
 
     function add(object) { 
+      var deferred = $q.defer();
       if(db) { 
         var transaction = db.transaction(["session"], "readwrite");
         var store = transaction.objectStore("session");
@@ -175,8 +196,10 @@
         req.onsuccess = function(e) { 
           //success
           console.log("[appcache] object written");
+          deferred.resolve(e.target.value);
         }
       }
+      return deferred;
     }
 
     function put(object) { 
