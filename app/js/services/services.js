@@ -614,6 +614,11 @@
       return deferred.promise;
     }
 
+    function basicPut(table, object) { 
+      var format_object = {t: table, data: object};
+      return $http.post('data/', format_object);
+    }
+
     function packageModel(model, data) { 
 
       model.index = {};
@@ -678,7 +683,8 @@
 
     return { 
       req : req,
-      basicReq : basicReq
+      basicReq : basicReq,
+      basicPut : basicPut
     };
   });
 
