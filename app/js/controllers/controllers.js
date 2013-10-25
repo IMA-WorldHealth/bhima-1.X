@@ -1087,7 +1087,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.outOfSync = false;
 
     var store = data.register(query);
-    store.ready().then(function() {
+    store.then(function() {
       $scope.grp_model = store.data;
     });
     
@@ -1170,8 +1170,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     // OMG SYNTAX
     $q.all([
-      account_store.ready(),
-      type_store.ready()
+      account_store,
+      type_store
     ]).then(init);
 
     function init () {
@@ -1316,11 +1316,21 @@ controllers.controller('salesController', function($scope, $q, data) {
     var inventory = data.register(inventory_prices);
     var patient = data.register(patient_table);
 
-    sales.ready().then(function() { $scope.sales = sales.data; });
-    payment.ready().then(function() { $scope.payment = payment.data; });
-    inventory.ready().then(function() { $scope.inventory = inventory.data; });
-    employee.ready().then(function() { $scope.employees = employee.data; });
-    patient.ready().then(function() { $scope.patients = patient.data; console.log('patients:', $scope.patients); });
+    $q.all([
+      sales,
+      payment,
+      employee,
+      inventory,
+      patient
+    ]).then(init);
+
+    function init () {
+     $scope.payment = payment.data;
+     $scope.sales = sales.data;
+     $scope.inventory = inventory.data;
+     $scope.employees = employee.data;
+     $scope.patients = patient.data;
+    }
 
     // this will be a new sale.
     $scope.sale = {
@@ -1345,8 +1355,6 @@ controllers.controller('salesController', function($scope, $q, data) {
       return maxid + 1; // incriment
     }
 
-
-    
 
   });
 

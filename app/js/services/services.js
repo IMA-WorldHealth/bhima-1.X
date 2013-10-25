@@ -394,7 +394,7 @@
     return instance;
   });
 
-  services.factory('data', function($q, $rootScope) {
+  services.factory('data', function($q) {
 
     function serialize (input) { return JSON.stringify(input); }
     function deserialize (input) { return JSON.parse(input); }
@@ -438,10 +438,6 @@
         send(parameters);
       }
       
-      this.ready = function () {
-        return q.promise;
-      };
-    
       function router (packet) {
         var methods = {
           'PUT'    : route_put,
@@ -458,8 +454,7 @@
       function route_init (data) { 
         // initialize
         self.setData(data);
-        q.resolve();
-        $rootScope.$apply();
+        q.resolve(self);
       }
   
       this.get = function (id) {
@@ -530,6 +525,8 @@
       (function constructor() {
         self.setData(options.data || []); 
       })();
+
+      return q.promise;
 
     }
 
