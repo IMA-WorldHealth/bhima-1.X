@@ -5914,7 +5914,7 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
 --
  DROP TABLE IF EXISTS `sales`;
  CREATE TABLE IF NOT EXISTS `sales` (
-  enterprise_id   mediumint unsigned NOT NULL,
+  enterprise_id   smallint unsigned NOT NULL,
   id              int unsigned NOT NULL, -- saleid number
   cost            int  unsigned NOT NULL,
   currency        varchar(3) NOT NULL,
@@ -5934,11 +5934,11 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
   KEY `seller_id` (`seller_id`),
   KEY `group_id` (`group_id`),
   KEY `payment_id` (`payment_id`),
-  CONSTRAINT FORIEGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  CONSTRAINT FORIEGN KEY (`seller_id`) REFERENCES `employee` (`id`),
-  CONSTRAINT FORIEGN KEY (`group_id`) REFERENCES `group` (`id`),
-  CONSTRAINT FORIEGN KEY (`payment_id`) REFERENCES `payment` (`id`)
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT FOREIGN KEY (`seller_id`) REFERENCES `employee` (`id`),
+  CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `billing_group` (`id`),
+  CONSTRAINT FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`)
  ) ENGINE=InnoDB;
 
- INSERT INTO `sales` (`enterprise_id`, `id`, `cost`, `currency`, `group_id` `seller_id`, `delivery`, `delivery_date`, `discount`, `invoice_number`, `invoice_date`, `note`, `payment_id`, `posted`) VALUES 
+ INSERT INTO `sales` (`enterprise_id`, `id`, `cost`, `currency`, `group_id`, `seller_id`, `delivery`, `delivery_date`, `discount`, `invoice_number`, `invoice_date`, `note`, `payment_id`, `posted`) VALUES 
   (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02', null, 100001, '2013-01-02', 'A NEW SALE', 1, 0);
