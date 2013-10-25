@@ -5912,8 +5912,8 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
 --
 -- table `bika`.`sales`
 --
- DROP TABLE IF EXISTS `sales`;
- CREATE TABLE IF NOT EXISTS `sales` (
+DROP TABLE IF EXISTS `sales`;
+CREATE TABLE IF NOT EXISTS `sales` (
   enterprise_id   smallint unsigned NOT NULL,
   id              int unsigned NOT NULL, -- saleid number
   cost            int  unsigned NOT NULL,
@@ -5938,7 +5938,58 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
   CONSTRAINT FOREIGN KEY (`seller_id`) REFERENCES `employee` (`id`),
   CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `billing_group` (`id`),
   CONSTRAINT FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`)
- ) ENGINE=InnoDB;
+) ENGINE=InnoDB;
 
- INSERT INTO `sales` (`enterprise_id`, `id`, `cost`, `currency`, `group_id`, `seller_id`, `delivery`, `delivery_date`, `discount`, `invoice_number`, `invoice_date`, `note`, `payment_id`, `posted`) VALUES 
+INSERT INTO `sales` (`enterprise_id`, `id`, `cost`, `currency`, `group_id`, `seller_id`, `delivery`, `delivery_date`, `discount`, `invoice_number`, `invoice_date`, `note`, `payment_id`, `posted`) VALUES 
   (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02', null, 100001, '2013-01-02', 'A NEW SALE', 1, 0);
+
+
+--
+-- table `bika`.`service_types`
+--
+DROP TABLE IF EXISTS `inv_type`;
+CREATE TABLE IF NOT EXISTS `inv_type` (
+  id      smallint NOT NULL,
+  type    varchar(30) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+INSERT INTO `inv_type` VALUES
+  (1, "Service"),
+  (2, "Good");
+
+
+-- 
+-- table `bika`.`inventory`
+--    Goods & Services
+--
+DROP TABLE IF EXISTS `inventory`;
+CREATE TABLE IF NOT EXISTS `inventory` (
+  enterprise_id     smallint unsigned NOT NULL,
+  id                int unsigned NOT NULL,
+  inv_code          varchar(10) NOT NULL,
+  text              text,
+  price             int NOT NULL, -- what it was bought for
+  creditor_id       int, -- TOBE FKed
+  inv_group_id      int, -- same
+  inv_type          smallint NOT NULL,
+  stock             int NOT NULL,
+  stock_max         int NOT NULL,
+  stock_min         int NOT NULL default 0,
+  consumable        boolean NOT NULL default 0,
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  UNIQUE KEY `inv_code` (`inv_code`),
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT FOREIGN KEY (`inv_type`) REFERENCES `inv_type` (`id`)
+) ENGINE=InnoDB;
+
+INSERT INTO `inventory` (`enterprise_id`, `id`, `inv_code`, `text`, `price`, `inv_type`, `stock`, `stock_min`, `stock_max`, `consumable`) VALUES
+  (101, 1, "CHCRAN", "Craniotomie", 53195, 1, -1, -1, -1, 1),
+  (101, 2, "CHGLOB", "Goitre Lobectomie/Hemithyroidect", 53195, 1, -1, -1, -1, 1),
+  (101, 3, "CHGTHY", "Goitre Thyroidectomie Sobtotale", 79852, 1, -1, -1, -1, 1),
+  (101, 4, "CHEXKY", "Excision De Kyste Thyroiglosse", 38399, 1, -1, -1, -1, 1),
+  (101, 5, "CHPASU", "Parotidectomie Superficielle", 51785, 1, -1, -1, -1, 1),
+  (101, 6, "CHTRAC", "Trachectome", 26103, 1, -1, -1, -1, 1),
+  (101, 7, "EXKYSB", "Kyste Sublingual", 39555, 1, -1, -1, -1, 1),
+  (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 26357, 1, -1, -1, -1, 1);
