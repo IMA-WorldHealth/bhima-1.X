@@ -2,7 +2,7 @@
   'use strict';
 
   //FIXME: Format code correctly in seperate files/modules etc.
-  var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'angularTreeview', 'ngGrid', 'smartTable.table', 'bikaCellSelect', 'ui.bootstrap', 'ui.bootstrap.tabs']);
+  var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'bika.directives', 'bika.filters', 'angularTreeview', 'ngGrid', 'ui.bootstrap', 'ui.bootstrap.tabs']);
   
   function bikaconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
@@ -19,20 +19,16 @@
       templateUrl:'partials/transaction/transactionform.html'
     }).// FIXME: Take out patient billing routes to local routes
         // Maybe use angular-router?
-    when('/patientbilling', { 
-      templateUrl: 'partials/patientbilling/index.html'
+    when('/billing', { 
+      templateUrl: 'partials/billing/index.html'
     }).
-    when('/patientbilling/patient/', {
-      templateUrl: 'partials/patientbilling/patient/index.html',
+    when('/billing/patient/', {
+      templateUrl: 'partials/billing/patient/index.html',
       controller: 'patientController'
     }).
-    when('/patientbilling/organisation/', {
-      templateUrl: 'partials/patientbilling/organisation/index.html',
-      controller: 'organisationController'
-    }).
-    when('/patientbilling/config/', {
-      templateUrl: 'partials/patientbilling/organisation/config.html',
-      controller: 'patientbillingConfig'
+    when('/billing/groups/', {
+      templateUrl: 'partials/billing/groups/index.html',
+      controller: 'billingGroupsController'
     }).
     when('/partials/transaction', { 
       controller: 'transactionController',
@@ -42,17 +38,13 @@
       controller: 'fiscalController',
       templateUrl: 'partials/fiscal.html'
     }).
+    when('/sales', {
+      controller: 'salesController',
+      templateUrl: 'partials/sales/index.html'
+    }).
     when('/accounts', {
       controller: 'chartController',
-      templateUrl: 'partials/chartofaccounts.html'
-    }).
-    when('/connect', {
-      controller: 'connectController',
-      templateUrl: 'partials/connect.html'
-    }). // for Socket Test
-    when('/socket', {
-      controller: 'socketController',
-      templateUrl: 'partials/socket.html'
+      templateUrl: '/partials/chart/index.html'
     });
   }  
   bika.config(bikaconfig);
