@@ -114,8 +114,7 @@ var checkPermission = function (req,res,next){
      chemin === '/favicon.ico'){
     next();
     }else{
-      var authorized = false;
-      console.log('voice la la requette', chemin);
+      var authorized = false;      
       for(var i=0; i<req.session.chemins.length; i++){
         if(chemin.match(new RegExp(req.session.chemins[i]))){
         authorized = true;
@@ -123,8 +122,12 @@ var checkPermission = function (req,res,next){
         }    
   }
   if(authorized){
+    console.log('voice la la requette', chemin);
+    console.log('ok, passe');
     next();
   }else{
+    console.log('voice la la requette', chemin);
+    console.log('ko, block');
     res.redirect('/');
     return;
   }
