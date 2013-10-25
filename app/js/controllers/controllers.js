@@ -1,4 +1,4 @@
-// Controller.js
+ // Controller.js
 (function(angular) {
   'use strict'; 
   var controllers = angular.module('bika.controllers', []);
@@ -30,11 +30,11 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
     });
  
     
-    $scope.$watch( 'navtree.currentNode', function( newObj, oldObj ) {
+    $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
             $location.path($scope.navtree.currentNode.url);
         }
-    }, false);
+    }, true);
 
     function getRoles(){
       var request = {}; 
@@ -102,7 +102,6 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     $scope.selected = $scope.model[index];
     var result = getUserUnits($scope.selected.id);    
     result.then(function(vals){
-      console.log(vals);
       for(var i=0; i<vals.length; i++){
         for(var j = 0; j<$scope.units.length; j++){
           if($scope.units[j].id == vals[i].id_unit){
@@ -307,67 +306,59 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     }  
 });
 
-//************************************************************************************
+//***********************************TRANSACTION**************************************
 //************************* TRANSACTION CONTROLLER ***********************************
 //************************************************************************************
-controllers.controller('transactionController', function($scope, bikaConnect, bikaUtilitaire, appstate) { 
-  $scope.account_model = {};
-  $scope.a_select = {};
-  $scope.periods = {};
-  $scope.df_select = {};
-  //remplissage select
-  var enterpriseID = 101;
-  var fiscalID = 2013001;
-  var periodID = 1;
-  var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
-           {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
-           {t:'currency', c:['symbol']},
-           {t:'account', c:['account_type_id']}
-          ],
-      jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
-            {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
-            {ts: ['currency', 'transaction'], c:['id', 'currency_id']}
-           ];/*,
-      c = [{t : 'infotransaction', cl: 'account_id', v : param.IDAccount, z : '=', l : 'AND'},
-           {t : 'transaction', cl : 'date', v : convertToMysqlDate(param.dateFrom), z : '>=', l : 'AND'},
-           {t : 'transaction', cl : 'date', v : convertToMysqlDate(param.dateTo), z : '<='}
-          ]*/;
+controllers.controller('transactionController', function($scope, $rootScope, $location, bikaConnect, bikaUtilitaire, appstate) { 
+    //les variables
+    $scope.account_model = {};
+    $scope.a_select = {};
+    $scope.periods = {};
+    $scope.df_select =  {};
+    $scope.dt_select = {};
+    var dependacies ={};
 
+      //les fonctions
+
+    $scope.redirect = function(){
+      $location.path("/p");
+
+    }
 
     function fillAccount(enterprise_id){
-      var req_db = {};
-      req_db.e = [{t:'account', c:['id', 'account_txt']}];
-      req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:enterprise_id}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        $scope.account_model = data;
-      });
+        var req_db = {};
+        req_db.e = [{t:'account', c:['id', 'account_txt']}];
+        req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:enterprise_id}];
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          $scope.account_model = data;
+        });
     }
 
     function fillDateFrom(fiscal_id){
-      var req_db = {};
-      req_db.e = [{t:'period', c:['period_start']}];
-      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        for(var i = 0; i<data.length; i++){
-          data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
-        }
-        $scope.periodFroms = data;
-      });
+        var req_db = {};
+        req_db.e = [{t:'period', c:['period_start']}];
+        req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          for(var i = 0; i<data.length; i++){
+            data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
+          }
+          $scope.periodFroms = data;
+        });
     }
 
     function fillDateTo(fiscal_id){
-      var req_db = {};
-      req_db.e = [{t:'period', c:['period_stop']}];
-      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        for(var i = 0; i<data.length; i++){
-          data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
-        }
-        $scope.periodTos = data;
-      });
+        var req_db = {};
+        req_db.e = [{t:'period', c:['period_stop']}];
+        req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          for(var i = 0; i<data.length; i++){
+            data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
+          }
+          $scope.periodTos = data;
+        });
     }
 
-  function fillTable(period_id){
+    function fillTable(period_id){
       var req_db = {};
       req_db.e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
                   {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
@@ -382,20 +373,73 @@ controllers.controller('transactionController', function($scope, bikaConnect, bi
       req_db.c = [{t : 'transaction', cl : 'period_id', v : period_id, z : '='}];
       bikaConnect.get('/data/?', req_db).then(function(data){
         for(var i = 0; i<data.length; i++){
-          data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+        data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
         }
         $scope.infostran = data;
-        console.log($scope.infostran);
       });
     }
-  if(enterpriseID && fiscalID && periodID){
-    fillAccount(enterpriseID);
-    fillDateFrom(fiscalID);
-    fillDateTo(fiscalID);
-    fillTable(periodID);
-  }
-    
-  
+
+      function refreshTable(dep){
+        if(dep.accountID && dep.df && dep.dt) {
+          var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+                   {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
+                   {t:'currency', c:['symbol']},
+                   {t:'account', c:['account_type_id']}
+                  ],
+          jc = [{ts:['transaction', 'infotransaction'], c:['id', 'transaction_id'], l:'AND'},
+                {ts: ['account', 'infotransaction'], c:['id', 'account_id'], l:'AND'},
+                {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
+               ],
+          c = [{t : 'infotransaction', cl: 'account_id', v : dep.accountID, z : '=', l : 'AND'},
+               {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.df), z : '>=', l : 'AND'},
+               {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.dt), z : '<='}
+              ];
+          var req_db={};
+          req_db.e=e;
+          req_db.jc = jc;
+          req_db.c = c;
+          bikaConnect.get('/data/?', req_db).then(function(data){
+            for(var i = 0; i<data.length; i++){
+              data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+            }
+            $scope.infostran = data;
+          });
+        }
+      }
+
+      appstate.register('period', function(res) { 
+        if(res)
+        fillTable(res.id);
+      });
+
+      appstate.register('enterprise', function(res) { 
+        fillAccount(res.id);
+      });
+
+      appstate.register('fiscal', function(res) { 
+        fillDateFrom(res.id);
+        fillDateTo(res.id);
+      });
+      $scope.$watch('a_select', function(nval, oval){
+        if(Object.keys(nval).length){
+          dependacies.accountID = nval.id;
+          refreshTable(dependacies);
+        }
+      });
+
+      $scope.$watch('df_select', function(nval, oval){
+        if(Object.keys(nval).length){
+        dependacies.df = nval.period_start;
+        refreshTable(dependacies);
+        }
+      });
+
+      $scope.$watch('dt_select', function(nval, oval){
+        if(Object.keys(nval).length){
+          dependacies.dt = nval.period_stop;
+          refreshTable(dependacies);
+        }      
+      });
 });
 
 //***********************************************************************************
@@ -427,29 +471,6 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
   });
 
   //remplissage selects
-  function fillEntrepriseSelect(){
-    var deferred = $q.defer();
-    var req_db = {};
-    req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
-      $scope.enterprise_model = data;
-      $scope.e_select = $scope.enterprise_model[0];
-      deferred.resolve(data[0].id);
-    });
-    return deferred.promise;
-  }
-  function fillFiscalSelect(enterprise_id){
-    var deferred = $q.defer();
-    var req_db = {};
-    req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
-    req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
-    bikaConnect.get('/data/?',req_db).then(function(data){
-      $scope.fiscal_model = data;
-      $scope.f_select = $scope.fiscal_model[0];
-      deferred.resolve(data[0].id);
-    });
-    return deferred.promise;
-  }
 
   function fillPeriod(fiscal_id){
     var req_db = {};
@@ -464,30 +485,130 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
       $scope.p_select = $scope.period_model[0];
     });
   }
-  //fin remplissage selects
-  
-  //FIXME: ideally all of logic should be within appstate, simply setting this value would keep it updated
+    //debut functions
+  $scope.select = function(id) {
+  }
+  function fillEntrepriseSelect(){
+    var deferred = $q.defer();
+    var req_db = {};
+    req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
+    bikaConnect.get('/data/?', req_db).then(function(data){
+      $scope.enterprise_model = data;
+      $scope.e_select = $scope.enterprise_model[0]; //Select first as default
+      deferred.resolve($scope.e_select.id);
+    });
+    return deferred.promise;
+  }
+
+  function fillFiscalSelect(enterprise_id){
+    var deferred = $q.defer();
+    var req_db = {};
+    req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
+    req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
+    bikaConnect.get('/data/?',req_db).then(function(data){
+      $scope.fiscal_model = data;
+      $scope.f_select = $scope.fiscal_model[0];
+      deferred.resolve($scope.f_select.id);
+    });
+    return deferred.promise;
+  }
+    //fin remplissage selects
+    
   $scope.$watch('e_select', function(nval, oval) { 
-    if(nval) { 
-      //Update appstate
+    if(nval){
       appstate.update('enterprise', nval);
-      //Update other selects
       fillFiscalSelect(nval.id);
     }
   });
 
   $scope.$watch('f_select', function(nval, oval) { 
-    if(nval) { 
-      //Update appstate
+    if(nval){
       appstate.update('fiscal', nval);
-      //Update other selects
       fillPeriod(nval.id);
     }
   });
 
+  $scope.$watch('p_select', function(nval, oval) { 
+    appstate.update('period', nval);
+  });
+});
+
+
+controllers.controller('appController', function($scope) { 
+    // TODO/FIXME
+});
+
+//*************************************************************************
+//********************* ADD CONTROLLER ************************************
+//*************************************************************************
+
+controllers.controller('addController', function($scope, $modal, bikaConnect, appstate) { 
+  appstate.register('enterprise', function(res){
+    console.log(res);
+
+  });
+  fillCurrencies();
+  fillAccounts();
+
+  function fillCurrencies(){
+      var req_db = {};
+      req_db.e = [{t:'currency', c:['id', 'name', 'symbol']}];
+      bikaConnect.get('/data/?', req_db).then(function(data){
+        $scope.currencies = data;
+      });
+  }
+
+  function fillAccounts(idEnterprise){
+    var req_db = {};
+    req_db.e = [{t:'account', c:['account_txt', 'id']}];
+    bikaConnect.get('/data/?', req_db).then(function(data){
+      $scope.comptes = data;
+      for(var i=0; i < $scope.comptes.length; i++){
+        $scope.comptes[i].sltd = false;
+      }
+    });
+
+  }
+
+      $scope.showDialog = function() {
+      var instance = $modal.open({
+        templateUrl: "/partials/transaction/transaction-modal.html",
+        backdrop: true,
+        controller: function($scope, $modalInstance, columns) {
+          // NOTE: THIS IS A DIFFERENT SCOPE 
+          //var values = angular.copy(columns);
+          //$scope.values = values;
+          // dismiss
+          $scope.close = function() {
+            $modalInstance.dismiss();
+          };
+          // submit
+          $scope.submit = function() {
+            // TODO: include validation
+            //$modalInstance.close($scope.values);
+            $modalInstance.close({});
+          };
+        },
+        resolve: {
+          columns: function() {
+            //return $scope.columns;
+          },
+        }
+      });
+
+      instance.result.then(function(values) {
+        // add to the grid
+       // $scope.accounts.push(values);
+       console.log('ok');
+      }, function() {
+      });
+    };
+});
+
+
 
   //Logout button logic - page currently being viewed can be saved
-});
+
 
 controllers.controller('appController', function($scope, $location, appcache) { 
     console.log("Application controller fired");
@@ -581,7 +702,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.isSelected = function() { 
-      console.log("isSelected called, returned", !!($scope.selected));
       return !!($scope.selected);
     };
 
@@ -635,6 +755,21 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //    -Memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
     /////
     
+
+    //TODO: This data can be fetched from the application level service
+    $scope.enterprise = {
+      name : "IMA",
+      city : "Kinshasa",
+      country : "RDC",
+      id : 102
+    };
+
+    var current_fiscal = {
+      id : 2013011
+    };
+
+    init();
+
     function init() { 
       appstate.register("enterprise", function(res) { 
         createBudget(res.id);
@@ -830,7 +965,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         return report.model.get(l);
       }
       }
-    } 
+    };
 
     /*This isn't optimal*/
     $scope.sum = function(report) { 
@@ -843,7 +978,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         return total;
       }
       return null;
-    }
+    };
 
     $scope.compare = function() { 
       console.log("compare");
@@ -852,7 +987,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       console.log("cmp", $scope.selected_fiscal);
       $scope.fiscal_model.delete($scope.selected_fiscal.id);
       $scope.selected_fiscal = $scope.fiscal_model.data[0];
-    }
+    };
 
     $scope.deleteCompare = function(report) { 
       var arr = $scope.budget_model.reports;
@@ -861,7 +996,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //hard coded bad-ness
       $scope.fiscal_model.put({id : report.id, fiscal_year_txt : report.desc});
       $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
-    }
+    };
 
     $scope.validSelect = function() { 
       //ugly
@@ -872,82 +1007,161 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       }
       
       return true;
-    }
+    };
 
     init();
   });
 
-  controllers.controller('organisationController', function($scope, connect) { 
+  controllers.controller('billingGroupsController', function($scope, appstate, data) { 
 
-    connect.basicReq({
-      e: [
-        {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
-        {t: 'location', c: ['city', 'region'] },
-        {t: 'payment', c: ['text']}
-      ],
-      jc: [
-        {ts: ['organisation', 'location'], c: ['location_id', 'id'], l: 'AND'},
-        {ts: ['organisation', 'payment'], c: ['payment_id', 'id'], l: 'AND'}
-      ],
-      c: [
-        {t: 'organisation', cl: 'enterprise_id', z: '=', v: 101}
-      ]
-    }).then(function(res) {
-      $scope.org_model = res.data;
+    var query = {
+      primary: 'billing_group',
+      tables : {
+        'billing_group' : {
+          columns: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']
+        },
+        'location': { 
+          columns: ['city', 'region']
+        }
+      },
+      join : ["billing_group.location_id=location.id"],
+    };
+
+    appstate.register('enterprise', function(res) {
+      var condition = "billing_group.enterprise_id=",
+          enterpriseid = res.id;
+      query.where = [condition + enterpriseid];
+      $scope.selected = false;
     });
 
+    $scope.outOfSync = false;
+
+    var store = data.register(query);
+    store.ready().then(function() {
+      $scope.grp_model = store.data;
+    });
     
-    $scope.select = function(index) { 
-      console.log(index, "selected");
-      console.log($scope.org_model[index]);
-      $scope.selected = $scope.org_model[index];
+    $scope.select = function(index) {
+      $scope.selected = $scope.grp_model[index];
       $scope.selectedIndex = index;
     };
 
-    $scope.sort = function (col) {
-      console.log('model:', $scope.org_model);
-
-    };
-
-
-
-    
-  });
-  
-  
-  // Chart of Accounts controllers
-  controllers.controller('chartController', function($scope, $q, $modal, bikaConnect) {
-  
-    // loads data and returns a promise evaluated when both requests are complete.
-    function loadData() {
-      return $q.all([
-        bikaConnect.raw_fetch({
-          e: [{t:'account', c: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}],
-          c: [{t: 'account', cl: 'enterprise_id', z: '=', v: 101}]
-        }),
-        bikaConnect.raw_fetch({
-          e: [{t: 'account_type', c:['id', 'type']}]
-        })
-      ]);
+    function generateId (model) {
+      var maxid = model.reduce(function(max, right) {
+        max = max.id || max; // for the first iteration
+        return Math.max(max, right.id);
+      });
+      return maxid + 1; // incriment
     }
 
-    var promise = loadData();
-    
-    promise.then(function(tables) {
-      $scope.accounts = tables[0];
-      $scope.accounttypes = tables[1];
-    });
-    
-    $scope.columns = [
-      {label: "Account Number", map: "id"},
-      {label: "Account Text", map: "account_txt"},
-      {label: "Account Type", map: "account_type_id", cellTemplateUrl: "/partials/templates/cellselect.html"},
-      {label: "Locked?", map: "locked"}
-    ];
+    $scope.addGroup = function () {
+      var id = generateId($scope.grp_model);
+      var idx = $scope.grp_model.push({id: id});
+      $scope.select(idx - 1);
+    };
 
+    $scope.$watch('grp_model', function() {
+      // FIXME:  This doesn't work for some reason
+      $scope.outOfSync = true; 
+    });
+
+    $scope.sync = function() {
+      //store.sync();
+      $scope.outOfSync = false;
+    };
+
+    $scope.removeGroup = function () {
+      $scope.grp_model.splice($scope.selectedIndex, 1);
+      $scope.selected = false;
+    };
+
+    $scope.sort = function (col) {
+      // FIXME: Impliment quicksort for arrays of objects
+    };
+
+  });
+  
+  // Chart of Accounts controllers
+  controllers.controller('chartController', function($scope, $q, $modal, data, appstate) {
+
+    // import account
+    var account_spec = {
+      identifier: 'id',
+      primary: 'account',
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id'],
+        },
+        'account_type': {
+          columns: ['type'] 
+        }
+      },
+      join: ['account.account_type_id=account_type.id'],
+      where: ["account.enterprise_id=" + 101], //FIXME
+      autosync: true
+    };
+
+    // import account_type 
+    var account_type_spec = {
+      identifier: 'id',
+      tables: {
+        'account_type' : {
+          columns: ['id', 'type']
+        }
+      },
+      autosync: true
+    };
+
+    // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
+
+    // FIXME: have ready() return the store instance.
+    var account_store = data.register(account_spec);
+    var type_store = data.register(account_type_spec);
+
+    // OMG SYNTAX
+    $q.all([
+      account_store.ready(),
+      type_store.ready()
+    ]).then(init);
+
+    function init () {
+      $scope.account_model = account_store.data;
+      $scope.type_model = type_store.data;
+      console.log($scope.account_model);
+    }
+
+    // ng-grid options
+    $scope.gridOptions = {
+      data: 'account_model',
+      columnDefs: [
+        {field: 'id', displayName: "Account Number"},
+        {field: 'account_txt', displayName: "Account Text"},
+        {field: 'account_type_id', displayName: "Account Type",
+          cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
+          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
+          sortable: false,
+          enableCellEdit: true
+        },
+        {field: 'locked', displayName: "Locked",
+          cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
+          sortable: false
+        }
+      ],
+      enableRowSelection:false,
+      enableColumnResize: true
+    };
+
+    $scope.updateRow = function(row) {
+      // HACK HACK HACK
+      row.entity.type = type_store.get(row.entity.account_type_id).type;
+      account_store.put(row.entity);
+      console.log($scope.account_model[row.rowIndex]);
+    };
+
+    // dialog controller
     $scope.showDialog = function() {
       var instance = $modal.open({
-        templateUrl: "/partials/templates/chart-modal.html",
+        templateUrl: "/partials/chart/templates/chart-modal.html",
         backdrop: true,
         controller: function($scope, $modalInstance, columns) {
           // NOTE: THIS IS A DIFFERENT SCOPE 
@@ -972,58 +1186,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       instance.result.then(function(values) {
         // add to the grid
-        $scope.accounts.push(values);
+        $scope.model.push(values);
       }, function() {
-        console.log("Form closed on:", new Date());
       });
-    };
-
-    // TODO: Much of this code is in preparation for multi-select feature,
-    // however it works fine with 'single' selection.  To impliment multiselect
-    // functionality, must have a way of registering objects dynamically into a
-    // collection, and add/delete based on their hash.  See TODO.md.
-
-    // Used for showing next lock state of toggleLock()
-    $scope.lockLabel = "Lock";
-
-    function getLockLabel(rows) {
-      // if multiple selected items default to
-      // "Lock"
-      if (rows.length > 1) {
-        return "Lock";
-      }
-      // Return 'Lock' if not locked; else, 'Unlock'
-      return (rows[0].locked === 0) ? "Lock"  : "Unlock";
-    }
-
-    $scope.selectedRows = [];
-
-    // FIXME: make this work with multiselect
-    $scope.$on('selectionChange', function(event, args) {
-      if ($scope.config.selectionMode == "multiple" && args.item.isSelected == "true") {
-        $scope.selectedRows.push(args.item);
-      } else {
-        // selected is an array
-        $scope.selectedRows = [args.item];
-      }
-      // re-calculate the lock label.
-      $scope.lockLabel = getLockLabel($scope.selectedRows);
-      console.log('$scope.selectedRows', $scope.selectedRows);
-    });
-
-    // toggles the lock on the current row
-    $scope.toggleLock = function() {
-      if ($scope.lockLabel == "Lock") {
-        $scope.selectedRows.forEach(function(row) {
-          row.locked = 1;
-        });
-      } else {
-        $scope.selectedRows.forEach(function(row) {
-          row.locked = 0;
-        });
-      }
-      // Switch label
-      $scope.lockLabel = ($scope.lockLabel == "Lock") ? "Unlock" : "Lock";
     };
 
     $scope.config = {
@@ -1033,49 +1198,52 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
   });
 
-  controllers.controller('connectController', function($scope, connect, appstate) { 
-    appstate.get("enterprise").then(function(data) { 
-      console.log("Connect received", data);
-      console.log("Connect received", data);
-      console.log("Connect received", data);
-      console.log("Connect received", data);
-    });
-    console.log("ConnectController initialised.");
-    connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
-      console.log("Returned model", model);
-      console.log(model.get(2013001));
-      model.delete(2013001);
-    });
-  });
-
-
-  controllers.controller('socketController', function($scope, data) {
-
-    var options = {
-      identifier : 'id',
-      table      : 'account',
-      columns    : ['id', 'account_txt']
+controllers.controller('salesController', function($scope, data) {
+    // definitions
+    
+    var sales_table = {
+      identifier: 'id',
+      primary: 'sales',
+      tables: {
+        'sales': {
+          columns: ['id', 'cost', 'currency', 'group_id', 'seller_id', 'delivery', 'delivery_date', 'discount', 'invoice_number', 'invoice_date', 'note', 'payment_id', 'posted'] 
+        },
+      },
+      where : ['sales.enterprise_id='+101] // FIXME: temporary until I have a re-query method
     };
 
-    var store = data.register(options);
+    var payment_table = {
+      identifier: 'id',
+      tables : {
+        'payment' : {
+        columns: ['id', 'days', 'months', 'text', 'note'] 
+        }
+      }
+    };
 
-    store.ready().then(function() {
-      // data loaded
-      $scope.model = store.data;
+    var employee_table = {
+      identifier: 'id',
+      tables: {
+        'employee' : {
+          columns: ['id', 'name']
+        }  
+      }
+    };
 
-      $scope.removeOne = function() {
-        store.remove($scope.selected);
-      };
-
-      $scope.sync = function () {
-        store.sync(); 
-      };
-
-      $scope.select = function(id) {
-        $scope.selected = id;
-      };
-
-    });
+    var inventory_prices = {
+      identifier: 'id',
+      primary: 'inventory',
+      tables : {
+        'inventory' : {
+           columns: ['id', 'inv_code', 'text', 'price', 'inv_type']
+        } 
+      },
+      where: [
+        "inventory.enterprise_id="+101,
+        "AND",
+        "inventory.stock<>0" // services are -1
+      ]
+    };
 
   });
 

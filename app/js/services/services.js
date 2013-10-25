@@ -56,6 +56,7 @@
     };
 
     Date.prototype.toMySqlDate = function (dateParam) {
+      console.log("dateParam:", dateParam);
       var date = new Date(dateParam), annee, mois, jour;
       annee = String(date.getFullYear());
       mois = String(date.getMonth() + 1);
@@ -66,7 +67,7 @@
       jour = String(date.getDate());
         if (jour.length === 1) {
           jour = "0" + jour;
-      }
+      }      
       return annee + "-" + mois + "-" + jour;
     };
 
@@ -424,15 +425,16 @@
 
       var open = connection.onopen = function () { init(); }; // may hit conflicts with this
       var receive = connection.onmessage = function (rawpacket) { return router(deserialize(rawpacket.data));};
-      function send (rawpacket) { connection.send(serialize(rawpacket)); }
+      function send (rawpacket) {
+        connection.send(serialize(rawpacket));
+      }
  
       function init () {
-        var parameters = {
-          method     : 'INIT',
-          table      : table,
-          columns    : columns,
-          identifier : identifier
-        };
+        var parameters = {};
+        for (var k in options) {
+          parameters[k] = options[k]; 
+        }
+        parameters.method = "INIT";
         send(parameters);
       }
       
@@ -485,10 +487,10 @@
         }
 
         //FIXME: update this
-        var exists = store.get(object[identifier]);
+        var exists = this.get(object[identifier]);
         var method = (exists) ? 'UPDATE' : 'INSERT';
   
-        parameters = {
+        var parameters = {
           socketid : socketid,
           method   : method,
           data     : object
@@ -531,24 +533,29 @@
 
     }
 
-    var registry = {};
+    var namespaceRegistry = {};
 
     function register(options) {
-      var table = options.table,
+      var table = options.primary || Object.keys(options.tables)[0],
           store;
 
-      if (registry[table]) {
+      if (namespaceRegistry[table]) {
         // this is a store currently in use 
-        return registry[table];
+        return namespaceRegistry[table];
       } else {
         store = new SocketStore(options);
-        registry[table] = store;
+        namespaceRegistry[table] = store;
         return store;
       }
     }
 
+    function registrations (options) {
+      return Object.keys(namespaceRegistry);
+    }
+
     return {
       register: register,
+      registrations: registrations
     };
 
   });
