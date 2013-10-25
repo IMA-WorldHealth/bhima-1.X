@@ -5803,11 +5803,10 @@ INSERT INTO `employee` (`id`, `name`, `title`, `location_id`, `department_id`, `
   (1, "Dodi", "Chief Accountant", 11, 4, "DK"),
   (2, "Jon", "MCZ", 11, 3, "JN");
 --
--- Table `bika`.`organisation`
+-- Table `bika`.`billing_group`
 --
--- NOTE the british spelling.  This one's for you, steve.
-DROP TABLE IF EXISTS `organisation`;
-CREATE TABLE IF NOT EXISTS `organisation` (
+DROP TABLE IF EXISTS `billing_group`;
+CREATE TABLE IF NOT EXISTS `billing_group` (
   `id`  smallint unsigned NOT NULL,
   `enterprise_id` smallint unsigned NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -5830,15 +5829,15 @@ CREATE TABLE IF NOT EXISTS `organisation` (
   KEY `payment_id` (`payment_id`),
   KEY `contact_id` (`contact_id`),
   KEY `tax_id` (`tax_id`),
-  CONSTRAINT `organisation_ibfk_1` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_2` FOREIGN KEY (`account_number`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_3` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_4` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_5` FOREIGN KEY (`contact_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `organisation_ibfk_6` FOREIGN KEY (`tax_id`) REFERENCES `taxinfo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`account_number`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`contact_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`tax_id`) REFERENCES `taxinfo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-INSERT INTO `organisation` (`id`, `enterprise_id`, `name`, `account_number`, `location_id`, `address_1`, `address_2`, `payment_id`, `phone`, `email`, `note`, `locked`, `contact_id`, `tax_id`, `max_credit`) VALUES
+INSERT INTO `billing_group` (`id`, `enterprise_id`, `name`, `account_number`, `location_id`, `address_1`, `address_2`, `payment_id`, `phone`, `email`, `note`, `locked`, `contact_id`, `tax_id`, `max_credit`) VALUES
   (1, 101, "Bureau Centrale de Zone", 410100, 11, "BCZ Rd.", "Kikwit", 2, "0823431677", "bcz@congo.cd", "The BCZ for Vanga's zone", 0, 1, 1, 1000),
   (2, 101, "ITM Vanga", 410200, 11, "ITM Rd.", "Vanga", 1, "0811546234", "vanga@itm.cd", "Note1", 0, 1, 1, 0),
   (3, 101, "All Patients", 600100, 11, null, null, 1, null, null, "Note2", 0, 1, 2, 100);
@@ -5846,11 +5845,10 @@ INSERT INTO `organisation` (`id`, `enterprise_id`, `name`, `account_number`, `lo
 --
 -- Table `bika`.`patient`
 --
--- NOTE the british spelling of organisation.  It's still for you, steve.
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
   `id` int unsigned NOT NULL,
-  `organisation_id` smallint unsigned NOT NULL,
+  `group_id` smallint unsigned NOT NULL, -- references billing_group
   `first_name` varchar(150) NOT NULL,
   `last_name` varchar(150) NOT NULL,
   `dob` date NOT NULL,
@@ -5868,11 +5866,11 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `country` varchar(100),
   PRIMARY KEY (`id`),
   KEY `first_name` (`first_name`),
-  KEY `organisation_id` (`organisation_id`),
-  CONSTRAINT `patient_ibfk_1` FOREIGN KEY (`organisation_id`) REFERENCES `organisation` (`id`) ON UPDATE CASCADE
+  KEY `group_id` (`group_id`),
+  CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `billing_group` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-INSERT INTO `patient` (`id`, `organisation_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `addr_1`, `addr_2`, `village`, `zone`, `city`, `country`) VALUES 
+INSERT INTO `patient` (`id`, `group_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `addr_1`, `addr_2`, `village`, `zone`, `city`, `country`) VALUES 
   (1, 3, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", null, null, "Vanga", "Vanga", "Kikwit", "Republic Democratic du Congo"),
   (2, 3, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", null, null, "Cafu La Mour", "Nord", "Cap Haitian", "Haiti"),
   (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", null, null, "Kinshasa", "Ngili", "Kinshasa", "Republic Democratic du Congo"),
@@ -5913,20 +5911,87 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
   CONSTRAINT `infotransaction_ibfk_2` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
   ) ENGINE=InnoDB;
 
--- fin augmentation
+--
+-- table `bika`.`sales`
+--
+DROP TABLE IF EXISTS `sales`;
+CREATE TABLE IF NOT EXISTS `sales` (
+  enterprise_id   smallint unsigned NOT NULL,
+  id              int unsigned NOT NULL, -- saleid number
+  cost            int  unsigned NOT NULL,
+  currency        varchar(3) NOT NULL,
+  group_id        smallint unsigned NOT NULL,    
+  seller_id       smallint unsigned NOT NULL,
+  delivery        boolean NOT NULL,
+  delivery_date   date NOT NULL,
+  discount        mediumint unsigned,
+  -- department not implimented from SANRU TRACKER
+  invoice_number  int unsigned NOT NULL,
+  invoice_date    date NOT NULL,
+  note            text,
+  payment_id      tinyint unsigned NOT NULL,
+  posted          boolean NOT NULL default '0',
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `seller_id` (`seller_id`),
+  KEY `group_id` (`group_id`),
+  KEY `payment_id` (`payment_id`),
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT FOREIGN KEY (`seller_id`) REFERENCES `employee` (`id`),
+  CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `billing_group` (`id`),
+  CONSTRAINT FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`)
+) ENGINE=InnoDB;
+
+INSERT INTO `sales` (`enterprise_id`, `id`, `cost`, `currency`, `group_id`, `seller_id`, `delivery`, `delivery_date`, `discount`, `invoice_number`, `invoice_date`, `note`, `payment_id`, `posted`) VALUES 
+  (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02', null, 100001, '2013-01-02', 'A NEW SALE', 1, 0);
 
 
 --
--- table `bika`.`pricegroup`
+-- table `bika`.`service_types`
 --
-DROP TABLE IF EXISTS `pricegroup`;
-CREATE TABLE IF NOT EXISTS `pricegroup` (
-  `id`    smallint unsigned NOT NULL AUTO_INCREMENT,
-  `note`  varchar(100) NOT NULL,
+DROP TABLE IF EXISTS `inv_type`;
+CREATE TABLE IF NOT EXISTS `inv_type` (
+  id      smallint NOT NULL,
+  type    varchar(30) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=Innodb;
+) ENGINE=InnoDB;
 
-INSERT INTO `pricegroup` (`id`, `note`) VALUES 
-  (1, "Vanga ITM"),
-  (2, "Vanga ISTM"),
-  (3, "Employees"); 
+INSERT INTO `inv_type` VALUES
+  (1, "Service"),
+  (2, "Good");
+
+
+-- 
+-- table `bika`.`inventory`
+--    Goods & Services
+--
+DROP TABLE IF EXISTS `inventory`;
+CREATE TABLE IF NOT EXISTS `inventory` (
+  enterprise_id     smallint unsigned NOT NULL,
+  id                int unsigned NOT NULL,
+  inv_code          varchar(10) NOT NULL,
+  text              text,
+  price             int NOT NULL, -- what it was bought for
+  creditor_id       int, -- TOBE FKed
+  inv_group_id      int, -- same
+  inv_type          smallint NOT NULL,
+  stock             int NOT NULL,
+  stock_max         int NOT NULL,
+  stock_min         int NOT NULL default 0,
+  consumable        boolean NOT NULL default 0,
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  UNIQUE KEY `inv_code` (`inv_code`),
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT FOREIGN KEY (`inv_type`) REFERENCES `inv_type` (`id`)
+) ENGINE=InnoDB;
+
+INSERT INTO `inventory` (`enterprise_id`, `id`, `inv_code`, `text`, `price`, `inv_type`, `stock`, `stock_min`, `stock_max`, `consumable`) VALUES
+  (101, 1, "CHCRAN", "Craniotomie", 53195, 1, -1, -1, -1, 1),
+  (101, 2, "CHGLOB", "Goitre Lobectomie/Hemithyroidect", 53195, 1, -1, -1, -1, 1),
+  (101, 3, "CHGTHY", "Goitre Thyroidectomie Sobtotale", 79852, 1, -1, -1, -1, 1),
+  (101, 4, "CHEXKY", "Excision De Kyste Thyroiglosse", 38399, 1, -1, -1, -1, 1),
+  (101, 5, "CHPASU", "Parotidectomie Superficielle", 51785, 1, -1, -1, -1, 1),
+  (101, 6, "CHTRAC", "Trachectome", 26103, 1, -1, -1, -1, 1),
+  (101, 7, "EXKYSB", "Kyste Sublingual", 39555, 1, -1, -1, -1, 1),
+  (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 26357, 1, -1, -1, -1, 1);

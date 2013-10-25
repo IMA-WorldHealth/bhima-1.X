@@ -1,0 +1,10 @@
+#tabcompteID{
+	height:300px;
+	overflow-y: scroll;
+}
+
+#divactionID{
+	float: right;
+	bottom: 3px;
+}
+

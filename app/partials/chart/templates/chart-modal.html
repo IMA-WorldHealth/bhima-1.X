@@ -1,0 +1,59 @@
+<div class="modal-content" style="width: 50%; margin: 10% auto; z-index: 99999999;">
+  <div class="modal-header">
+    <h3>New Account</h3>
+  </div>
+  <div class="modal-body">
+    <form role="form" class="form-horizontal" name="addAccount" novalidate>
+      <div class="form-group">
+        <label class="col-xs-2 control-label" for="coa-accn">Account Number:</label>
+        <div class="col-xs-10">
+          <input 
+            class="form-control"
+            placeholder="e.g. 100000"
+            type="number"
+            model="values.accn"
+            id="coa-accn"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-2 control-label" for="coa-acctxt">Account Text:</label>
+        <div class="col-xs-10">
+          <input
+            class="form-control"
+            placeholder="e.g. Capital Social"
+            model="values.acctxt"
+            id="coa-acctxt"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-2 control-label" for="coa-acctype">Account Type:</label>
+        <div class="col-xs-10">  <!-- FIXME: Do with ng-select -->
+          <input 
+            class="form-control"
+            placeholder="e.g. Balance"
+            model="values.acctype"
+            id="coa-acctype"
+          >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-xs-2 control-label" for="coa-locked">Locked</label>
+        <div class="col-xs-10">
+          <input
+            class="form-control"
+            placeholder="e.g. 1"
+            type="number"
+            model="values.locked"
+            id="coa-locked"
+          >
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" ng-click="close()">Close</button>
+    <button class="btn btn-primary" ng-click="submit()">Save changes</button>
+  </div>
+</div>
