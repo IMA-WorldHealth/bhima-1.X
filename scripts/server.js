@@ -62,7 +62,9 @@ app.post('/data/', function (req, res) {
   var cb = function (err, ans) {
     if (err) throw err;
     res.send("succes!;");
-  };
+  };  
+  
+  console.log("Request for", req.body.t, req.body.data);
 
   var insertsql = db.insert(req.body.t, req.body.data);
   console.log(insertsql);

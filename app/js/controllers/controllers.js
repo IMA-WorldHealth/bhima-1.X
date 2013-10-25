@@ -734,14 +734,37 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
     
-  controllers.controller('patientRegController', function($scope, $q, connect, appstate) { 
+  controllers.controller('patientRegController', function($scope, $q, connect) { 
     console.log("Patient init");
     var patient_model = {};
-    $scope.patient = patient_model;
+    var submitted = false;
    
     function init() { 
       
     }
+
+    $scope.update = function(patient) { 
+      var PATIENT_ORGANISATION = 3;
+      patient_model = patient;
+
+      //validate model 
+      
+      //assing patient organisation account - currenlty 3
+      patient_model.organisation_id = PATIENT_ORGANISATION; 
+      connect.basicPut("patient", [patient_model]);
+      submitted = true;
+      
+    }
+
+    $scope.checkChanged = function(model) { 
+        return angular.equals(model, $scope.master);
+    };
+
+    $scope.checkSubmitted = function() { 
+      return submitted;
+    }
+
+
     init();
   });
 
