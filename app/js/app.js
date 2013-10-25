@@ -39,6 +39,10 @@
       controller: 'fiscalController',
       templateUrl: 'partials/fiscal.html'
     }).
+    when('/patient', { 
+      controller: 'patientRegController',
+      templateUrl: 'partials/patient.html'
+    }).
     when('/accounts', {
       controller: 'chartController',
       templateUrl: 'partials/chartofaccounts.html'

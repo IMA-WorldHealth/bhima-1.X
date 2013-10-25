@@ -453,7 +453,8 @@ REPLACE INTO `unit` (`id`, `name`, `desc`, `parent`, `has_children`, `url`) VALU
   (24, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/'),
   (25, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction'),
   (26, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors'),
-  (27, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal');
+  (27, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal'),
+  (28, 'Patient Registration', 'Register patients', 15, 0, 'patient');
 /*!40000 ALTER TABLE `unit` ENABLE KEYS */;
 
 -- Dumping structure for table bika.permission
@@ -485,7 +486,8 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (12, 7, 1),
     (13, 26, 1),
     (14, 26, 13),
-    (15, 27, 13);
+    (15, 27, 13),
+    (16, 28, 13);
     
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE IF NOT EXISTS `budget` (

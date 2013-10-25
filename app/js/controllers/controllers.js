@@ -33,11 +33,6 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
     $scope.$watch( 'navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
             $location.path($scope.navtree.currentNode.url);
-            //Move cacheNav to logout routine
-            if(!$scope.navtree.currentNode.url=="") { 
-              appcache.cacheNav($scope.navtree.currentNode.url);  
-            }
-
         }
     }, false);
 
@@ -497,12 +492,24 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
 controllers.controller('appController', function($scope, $location, appcache) { 
     console.log("Application controller fired");
 
-    //Navigate to page that was previously open
-    //Listen for page exit and save page
-    appcache.getNav().then(function(res) { 
-      console.log("appController got", res);
-      $location.path(res);
-    })
+    var url = $location.url();
+    
+    //Assuming initial page load
+    if(url=='') { 
+      //only navigate to cached page if no page was requested
+      appcache.getNav().then(function(res) { 
+        if(res) { 
+          $location.path(res);
+        }
+      });
+    }
+    
+    //Log URL changes and cache locations - for @jniles
+    $scope.$on('$locationChangeStart', function(e, n_url) { 
+      //Split url target - needs to be more general to allow for multiple routes?
+      var target = n_url.split('/#/')[1];
+      appcache.cacheNav(target);
+    });
 });
 
 controllers.controller('viewController', function($scope) { 
@@ -605,9 +612,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     //Initialise after scope etc. has been set
     init();
-});
-  
-
+  });
+    
+  controllers.controller('patientRegController', function($scope, $q, connect, appstate) { 
+    console.log("Patient init");
+    var patient_model = {};
+    $scope.patient = patient_model;
+   
+    function init() { 
+      
+    }
+    init();
+  });
 
   controllers.controller('budgetController', function($scope, $q, connect, appstate) { 
     /////
