@@ -56,6 +56,7 @@
     };
 
     Date.prototype.toMySqlDate = function (dateParam) {
+      console.log("dateParam:", dateParam);
       var date = new Date(dateParam), annee, mois, jour;
       annee = String(date.getFullYear());
       mois = String(date.getMonth() + 1);
@@ -66,7 +67,7 @@
       jour = String(date.getDate());
         if (jour.length === 1) {
           jour = "0" + jour;
-      }
+      }      
       return annee + "-" + mois + "-" + jour;
     };
 
@@ -115,7 +116,8 @@
       }
 
       function fetch() { 
-        getByIndex("cache_nav").then(function(res) { 
+        getByIndex("cache_nav").then(function(res) {
+        if(res) 
           deferred.resolve(res.value);
         });
       }

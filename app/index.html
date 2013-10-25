@@ -10,16 +10,8 @@
   <body ng-app="bika">
     <!--not required in placeholder rewrite-->
     <div ng-controller="appController">
-      <div id="bika-container" ng-controller="viewController">
-        <div ng-view id="bika-view"><!--Content populated with angular--></div>
-      </div>
-      <!-- user controller -->
-      <div ng-controller="userController"></div>
 
-      <!-- transaction div-->
-      <div ng-controller="transactionController"></div>
-
-    <!--Bootstrap container, any content inside div can be split into 12 columns-->
+          <!--Bootstrap container, any content inside div can be split into 12 columns-->
     <div id="bika-sidebar" class="container">
       <div class="row" id="bika-header">
         <div class="col-xs-12">
@@ -51,17 +43,12 @@
               <span class="glyphicon glyphicon-log-out"></span>
             </a>
         </div>
-
-          <!--Could indicate position in bika (currently active tab)
-          <ol class="breadcrumb">
-            <li><a href='#'>bika</a></li>
-            <li>finance</li>
-            <li>budgeting</li>
-          </ol>
-          -->
       </div>
     </div>
-
+    <div id="bika-container" ng-controller="viewController">
+      <div ng-view id="bika-view"><!--Content populated with angular--></div>
+       <div ng-controller="userController"></div>
+  </div>
     <!-- required for ng-grid -->
     <link rel="stylesheet" type="text/css" href="css/ng-grid.css"/>
     <script src="lib/jquery-1.10.2.js"></script>
