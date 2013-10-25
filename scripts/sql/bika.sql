@@ -5693,7 +5693,7 @@ CREATE TABLE `location` (
   `village` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `country_code` (`country_code`)
---  CONSTRAINT `location_ibfk_1` FOREIGN KEY `country_code` REFERENCES `country` (`code`)
+--  CONSTRAINT FOREIGN KEY (`country_code`) REFERENCES `country` (`code`)
 ) ENGINE=InnoDB;
 
 /*Data for the table `location` */
@@ -5860,21 +5860,20 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `email` varchar(20),
   `addr_1` varchar(100),
   `addr_2` varchar(100),
-  `village` varchar(100),
-  `zone` varchar(100),
-  `city` varchar(100),
-  `country` varchar(100),
+  `location_id` smallint unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `first_name` (`first_name`),
   KEY `group_id` (`group_id`),
-  CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `billing_group` (`id`) ON UPDATE CASCADE
+  KEY `location_id` (`location_id`),
+  CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `billing_group` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-INSERT INTO `patient` (`id`, `group_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `addr_1`, `addr_2`, `village`, `zone`, `city`, `country`) VALUES 
-  (1, 3, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", null, null, "Vanga", "Vanga", "Kikwit", "Republic Democratic du Congo"),
-  (2, 3, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", null, null, "Cafu La Mour", "Nord", "Cap Haitian", "Haiti"),
-  (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", null, null, "Kinshasa", "Ngili", "Kinshasa", "Republic Democratic du Congo"),
-  (4, 3, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", null, null, "Vanga", "Vanga", "Kikwit", "Republic Democratic du Congo");
+INSERT INTO `patient` (`id`, `group_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `addr_1`, `addr_2`) VALUES 
+  (1, 3, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", null, null, 1),
+  (2, 3, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", null, null, 1),
+  (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", null, null, 1),
+  (4, 3, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", null, null, 1);
 
 --
 -- table `bika`.`transaction`
