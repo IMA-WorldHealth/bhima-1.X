@@ -1295,19 +1295,58 @@ controllers.controller('salesController', function($scope, $q, data) {
         "inventory.stock<>0" // services are -1
       ]
     };
+    
+    var patient_table = {
+      identifier: 'id',
+      primary: 'patient',
+      tables: {
+        'patient': {
+          columns: ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email'] 
+        },
+        'location' : {
+          columns: ['village', 'city', 'zone', 'country_code']
+        }
+      },
+      join: ["patient.location_id=location.id"]
+    };
 
     var sales = data.register(sales_table);
     var payment = data.register(payment_table);
-    var employee = data.register(employee);
-    var inventory = data.register(inventory);
+    var employee = data.register(employee_table);
+    var inventory = data.register(inventory_prices);
+    var patient = data.register(patient_table);
 
     sales.ready().then(function() { $scope.sales = sales.data; });
     payment.ready().then(function() { $scope.payment = payment.data; });
     inventory.ready().then(function() { $scope.inventory = inventory.data; });
-    employee.ready().then(function() { $scope.employee = employee.data; });
+    employee.ready().then(function() { $scope.employees = employee.data; });
+    patient.ready().then(function() { $scope.patients = patient.data; console.log('patients:', $scope.patients); });
 
     // this will be a new sale.
-    $scope.sale = {};
+    $scope.sale = {
+      sale_type: 1 
+    };
+
+    $scope.items = [];
+
+    $scope.saledetailoptions = {
+      data: 'items'
+    };
+
+    $scope.salejournaloptions = {
+      data: 'sales'
+    };
+
+    function generateUniqueInvoice () {
+      var maxid = sales.reduce(function(max, right) {
+        max = max.id || max; // for the first iteration
+        return Math.max(max, right.id);
+      });
+      return maxid + 1; // incriment
+    }
+
+
+    
 
   });
 
