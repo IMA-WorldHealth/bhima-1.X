@@ -117,10 +117,10 @@ var checkPermission = function (req,res,next){
       var authorized = false;
       console.log('voice la la requette', chemin);
       for(var i=0; i<req.session.chemins.length; i++){
-    if(chemin.match(new RegExp(req.session.chemins[i]))){
-      authorized = true;
-      break;
-    }    
+        if(chemin.match(new RegExp(req.session.chemins[i]))){
+        authorized = true;
+        break;
+        }    
   }
   if(authorized){
     next();
