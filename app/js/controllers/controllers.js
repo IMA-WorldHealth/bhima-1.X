@@ -1045,7 +1045,52 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   controllers.controller('salesController', function($scope, data) {
 
-  
+    // definitions
+    
+    var sales_table = {
+      identifier: 'id',
+      primary: 'sales',
+      tables: {
+        'sales': {
+          columns: ['id', 'cost', 'currency', 'group_id', 'seller_id', 'delivery', 'delivery_date', 'discount', 'invoice_number', 'invoice_date', 'note', 'payment_id', 'posted'] 
+        },
+      },
+      where : ['sales.enterprise_id='+101] // FIXME: temporary until I have a re-query method
+    };
+
+    var payment_table = {
+      identifier: 'id',
+      tables : {
+        'payment' : {
+        columns: ['id', 'days', 'months', 'text', 'note'] 
+        }
+      }
+    };
+
+    var employee_table = {
+      identifier: 'id',
+      tables: {
+        'employee' : {
+          columns: ['id', 'name']
+        }  
+      }
+    };
+
+    var inventory_prices = {
+      identifier: 'id',
+      primary: 'inventory',
+      tables : {
+        'inventory' : {
+           columns: ['id', 'inv_code', 'text', 'price', 'inv_type']
+        } 
+      },
+      where: [
+        "inventory.enterprise_id="+101,
+        "AND",
+        "inventory.stock<>0" // services are -1
+      ]
+    };
+
 
   });
 

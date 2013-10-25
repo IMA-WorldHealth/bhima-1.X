@@ -35,7 +35,7 @@
       controller: 'fiscalController',
       templateUrl: 'partials/fiscal.html'
     }).
-    where('/sales', {
+    when('/sales', {
       controller: 'salesController',
       templateUrl: 'partials/sales/index.html'
     }).
