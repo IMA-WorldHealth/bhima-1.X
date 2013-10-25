@@ -656,7 +656,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       appstate.register("fiscal", function(res) { 
         console.log("resolving", res);
         $scope.select(res.id);
-      })
+      });
     }
 
     function loadEnterprise(enterprise_id) { 
@@ -734,13 +734,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
     
-  controllers.controller('patientRegController', function($scope, $q, connect) { 
+  controllers.controller('patientRegController', function($scope, $q, connect, appcache) { 
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
    
     function init() { 
-      
+      //register patient for appcahce namespace
     }
 
     $scope.update = function(patient) { 
@@ -753,7 +753,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       patient_model.organisation_id = PATIENT_ORGANISATION; 
       connect.basicPut("patient", [patient_model]);
       submitted = true;
-      
+
     }
 
     $scope.checkChanged = function(model) { 
