@@ -129,7 +129,7 @@ composer.select = function(spec) {
 
   // d is DISTINCT
   base = "SELECT %d%%select_item% FROM %table%";
-  join = "%table1% LEFT JOIN %table2% ON %value%"; // default left join
+  join = "%table1% JOIN %table2% ON %value%"; // default left join
   where = " WHERE %search_conditions%";
   groupby = " GROUP BY %choice%";
   having = " HAVING %search_conditions%";
@@ -143,7 +143,7 @@ composer.select = function(spec) {
 
   select_item = [];
   for (t in tables) {
-    select_item.push(createdotmap(t, tables[t]['columns']));
+    select_item.push(createdotmap(t, tables[t].columns));
   }
 
   base = base.replace('%d%', hasDistinct ? "DISTINCT " : " ").replace("%select_item%", select_item.join(", "));
