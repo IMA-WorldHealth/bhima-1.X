@@ -82,7 +82,7 @@
     //  
     // TODO:
     //  -Formalise inner working functions, and expose high level requests (storage for page save, namespacing etc.)
-    //  -Use promises instead of callbacks
+    //  -Use multiple indexs (injected on request)
     /////
     console.log("appcache initialised");
 
@@ -209,8 +209,6 @@
             //gauranteed to only be one object given key range / key
             var res = cursor.value;
             res[field] = value;
-            console.log(cursor);
-            console.log(cursor.update);
             cursor.update(res);
           }
           console.log("[appcache] updated", key);
