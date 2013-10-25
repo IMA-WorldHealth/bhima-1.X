@@ -33,11 +33,6 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
             $location.path($scope.navtree.currentNode.url);
-            //Move cacheNav to logout routine
-            if(!$scope.navtree.currentNode.url=="") { 
-              appcache.cacheNav($scope.navtree.currentNode.url);  
-            }
-
         }
     }, true);
 
@@ -667,12 +662,25 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
 
 controllers.controller('appController', function($scope, $location, appcache) { 
     console.log("Application controller fired");
-    //Navigate to page that was previously open
-    //Listen for page exit and save page
-    appcache.getNav().then(function(res) { 
-      console.log("appController got", res);
-      $location.path(res);
-    })
+
+    var url = $location.url();
+    
+    //Assuming initial page load
+    if(url=='') { 
+      //only navigate to cached page if no page was requested
+      appcache.getNav().then(function(res) { 
+        if(res) { 
+          $location.path(res);
+        }
+      });
+    }
+    
+    //Log URL changes and cache locations - for @jniles
+    $scope.$on('$locationChangeStart', function(e, n_url) { 
+      //Split url target - needs to be more general to allow for multiple routes?
+      var target = n_url.split('/#/')[1];
+      appcache.cacheNav(target);
+    });
 });
 
 controllers.controller('viewController', function($scope) { 
@@ -774,9 +782,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     //Initialise after scope etc. has been set
     init();
-});
-  
-
+  });
+    
+  controllers.controller('patientRegController', function($scope, $q, connect, appstate) { 
+    console.log("Patient init");
+    var patient_model = {};
+    $scope.patient = patient_model;
+   
+    function init() { 
+      
+    }
+    init();
+  });
 
   controllers.controller('budgetController', function($scope, $q, connect, appstate) { 
     /////
@@ -1224,70 +1241,60 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       });
     };
 
-    // TODO: Much of this code is in preparation for multi-select feature,
-    // however it works fine with 'single' selection.  To impliment multiselect
-    // functionality, must have a way of registering objects dynamically into a
-    // collection, and add/delete based on their hash.  See TODO.md.
-
-    // Used for showing next lock state of toggleLock()
-    $scope.lockLabel = "Lock";
-
-    function getLockLabel(rows) {
-      // if multiple selected items default to
-      // "Lock"
-      if (rows.length > 1) {
-        return "Lock";
-      }
-      // Return 'Lock' if not locked; else, 'Unlock'
-      return (rows[0].locked === 0) ? "Lock"  : "Unlock";
-    }
-
-    $scope.selectedRows = [];
-
-    // FIXME: make this work with multiselect
-    $scope.$on('selectionChange', function(event, args) {
-      if ($scope.config.selectionMode == "multiple" && args.item.isSelected == "true") {
-        $scope.selectedRows.push(args.item);
-      } else {
-        // selected is an array
-        $scope.selectedRows = [args.item];
-      }
-      // re-calculate the lock label.
-      $scope.lockLabel = getLockLabel($scope.selectedRows);
-    });
-
-    // toggles the lock on the current row
-    $scope.toggleLock = function() {
-      if ($scope.lockLabel == "Lock") {
-        $scope.selectedRows.forEach(function(row) {
-          row.locked = 1;
-        });
-      } else {
-        $scope.selectedRows.forEach(function(row) {
-          row.locked = 0;
-        });
-      }
-      // Switch label
-      $scope.lockLabel = ($scope.lockLabel == "Lock") ? "Unlock" : "Lock";
-    };
-
     $scope.config = {
       isPaginationEnabled: true,
       itemsByPage: 16,
       selectionMode: 'single'
     };
-});
-
-  controllers.controller('connectController', function($scope, connect, appstate) { 
-    appstate.get("enterprise").then(function(data) { 
-    });
-    connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
-      model.delete(2013001);
-    });
-
   });
 
 controllers.controller('salesController', function($scope, data) {
-});
+    // definitions
+    
+    var sales_table = {
+      identifier: 'id',
+      primary: 'sales',
+      tables: {
+        'sales': {
+          columns: ['id', 'cost', 'currency', 'group_id', 'seller_id', 'delivery', 'delivery_date', 'discount', 'invoice_number', 'invoice_date', 'note', 'payment_id', 'posted'] 
+        },
+      },
+      where : ['sales.enterprise_id='+101] // FIXME: temporary until I have a re-query method
+    };
+
+    var payment_table = {
+      identifier: 'id',
+      tables : {
+        'payment' : {
+        columns: ['id', 'days', 'months', 'text', 'note'] 
+        }
+      }
+    };
+
+    var employee_table = {
+      identifier: 'id',
+      tables: {
+        'employee' : {
+          columns: ['id', 'name']
+        }  
+      }
+    };
+
+    var inventory_prices = {
+      identifier: 'id',
+      primary: 'inventory',
+      tables : {
+        'inventory' : {
+           columns: ['id', 'inv_code', 'text', 'price', 'inv_type']
+        } 
+      },
+      where: [
+        "inventory.enterprise_id="+101,
+        "AND",
+        "inventory.stock<>0" // services are -1
+      ]
+    };
+
+  });
 
 })(angular);
