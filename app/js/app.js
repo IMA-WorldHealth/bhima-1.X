@@ -16,20 +16,16 @@
       templateUrl: 'partials/permission/permissions.html'
     }). // FIXME: Take out patient billing routes to local routes
         // Maybe use angular-router?
-    when('/patientbilling', { 
-      templateUrl: 'partials/patientbilling/index.html'
+    when('/billing', { 
+      templateUrl: 'partials/billing/index.html'
     }).
-    when('/patientbilling/patient/', {
-      templateUrl: 'partials/patientbilling/patient/index.html',
+    when('/billing/patient/', {
+      templateUrl: 'partials/billing/patient/index.html',
       controller: 'patientController'
     }).
-    when('/patientbilling/organisation/', {
-      templateUrl: 'partials/patientbilling/organisation/index.html',
-      controller: 'organisationController'
-    }).
-    when('/patientbilling/config/', {
-      templateUrl: 'partials/patientbilling/organisation/config.html',
-      controller: 'patientbillingConfig'
+    when('/billing/groups/', {
+      templateUrl: 'partials/billing/groups/index.html',
+      controller: 'billingGroupsController'
     }).
     when('/partials/transaction', { 
       controller: 'transactionController',
@@ -38,6 +34,10 @@
     when('/fiscal', {
       controller: 'fiscalController',
       templateUrl: 'partials/fiscal.html'
+    }).
+    where('/sales', {
+      controller: 'salesController',
+      templateUrl: 'partials/sales/index.html'
     }).
     when('/accounts', {
       controller: 'chartController',

@@ -9,7 +9,6 @@ var WebSocketServer = require('ws').Server,
 function serialize(json) { return JSON.stringify(json); }
 function deserialize(json) { return JSON.parse(json); }
 
-
 var store = new data.Store(), // idProperty: 'id'
     namespaces = {},          // {'table': [{},{},..]} maps to socket ids
     incrimentor = 0;          // ids for sockets
@@ -28,27 +27,31 @@ function init (msg, socket) {
       space,
       query;
 
-  console.log("msg:", msg);
-  
   space = {
     id         : socketid,
     identifier : msg.identifier,
     socket     : socket,
+    namespace  : msg.primary || Object.keys(msg.tables)[0],
     insert     : composer.insert(msg),
     delete     : composer.delete(msg),
     select     : composer.select(msg),
     update     : composer.update(msg)
   };
- 
+
   // store the socket
   store.put(space);
   
   // register it's namespace and push the socket there
-  if (namespaces[msg.table]) namespaces[msg.table].push(socketid);
-  else namespaces[msg.table] = [socketid];
+  if (!namespaces[space.namespace]) { namespaces[space.namespace] = []; }
+  namespaces[space.namespace].push(space.id);
+
+  console.log("Initializing socket with namespace:", space.namespace);
+  console.log("All namespaces:", namespaces);
+
+  
+  console.log("Executing...", space.select);
 
   // execute an sql query here
-  console.log("SQL:", space.select);
   db.execute(space.select, function(err, res) {
     if (err) { throw err ;}
     // assign the socket id, and send inital dataset
@@ -57,9 +60,11 @@ function init (msg, socket) {
 }
 
 function update (msg, socket) {
-  var sql = store.get(msg.socketid).update;
+  var meta = store.get(msg.socketid),
+      sql = meta.update;
 
   console.log("update data:", msg.data);
+  console.log("Socket NameSpaces:", namespaces[meta.namespace]);
 
   /*db.execute(sql, function (err, res) {
     if (err) { throw err; } 
@@ -68,7 +73,8 @@ function update (msg, socket) {
 }
 
 function insert (msg, socket) {
-  var sql = store.get(msg.socketid).insert;
+  var meta = store.get(msg.socketid),
+      sql = meta.insert;
 
   console.log("insert data:", msg.data);
 
@@ -114,13 +120,12 @@ ws.on('connection', function(socket) {
     // deserialize the message for general consumption
     msg = deserialize(msg);
 
-    console.log("Socket:", msg.socketid, "Method:", msg.method);
     // route the message appropriately.
     router[msg.method](msg, socket);
   });
 
   socket.on('close', function() {
-    console.log('Socket:', socket.sessionid, 'is closing!');
+    console.log('Socket is closing!');
   });
 
   socket.on('error', function(err) {

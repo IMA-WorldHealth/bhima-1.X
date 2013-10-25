@@ -1,0 +1,19 @@
+.selected {
+  background : #47a447;
+  color      : white;
+}
+
+
+.btn-square {
+  border-radius: 0;
+}
+
+.green:hover {
+  background: green;
+  color: white;
+}
+
+.red:hover {
+  background: red; 
+  color: white;
+}

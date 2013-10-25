@@ -861,36 +861,71 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('organisationController', function($scope, connect) { 
+  controllers.controller('billingGroupsController', function($scope, appstate, data) { 
 
-    connect.basicReq({
-      e: [
-        {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
-        {t: 'location', c: ['city', 'region'] },
-        {t: 'payment', c: ['text']}
-      ],
-      jc: [
-        {ts: ['organisation', 'location'], c: ['location_id', 'id'], l: 'AND'},
-        {ts: ['organisation', 'payment'], c: ['payment_id', 'id'], l: 'AND'}
-      ],
-      c: [
-        {t: 'organisation', cl: 'enterprise_id', z: '=', v: 101}
-      ]
-    }).then(function(res) {
-      $scope.org_model = res.data;
+    var query = {
+      primary: 'billing_group',
+      tables : {
+        'billing_group' : {
+          columns: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']
+        },
+        'location': { 
+          columns: ['city', 'region']
+        }
+      },
+      join : ["billing_group.location_id=location.id"],
+    };
+
+    appstate.register('enterprise', function(res) {
+      var condition = "billing_group.enterprise_id=",
+          enterpriseid = res.id;
+      query.where = [condition + enterpriseid];
+      $scope.selected = false;
     });
 
+    $scope.outOfSync = false;
+
+    var store = data.register(query);
+    store.ready().then(function() {
+      $scope.grp_model = store.data;
+    });
     
-    $scope.select = function(index) { 
-      console.log(index, "selected");
-      console.log($scope.org_model[index]);
-      $scope.selected = $scope.org_model[index];
+    $scope.select = function(index) {
+      $scope.selected = $scope.grp_model[index];
       $scope.selectedIndex = index;
     };
 
-    $scope.sort = function (col) {
-      console.log('model:', $scope.org_model);
+    function generateId (model) {
+      var maxid = model.reduce(function(max, right) {
+        max = max.id || max; // for the first iteration
+        return Math.max(max, right.id);
+      });
+      return maxid + 1; // incriment
+    }
 
+    $scope.addGroup = function () {
+      var id = generateId($scope.grp_model);
+      var idx = $scope.grp_model.push({id: id});
+      $scope.select(idx - 1);
+    };
+
+    $scope.$watch('grp_model', function() {
+      // FIXME:  This doesn't work for some reason
+      $scope.outOfSync = true; 
+    });
+
+    $scope.sync = function() {
+      //store.sync();
+      $scope.outOfSync = false;
+    };
+
+    $scope.removeGroup = function () {
+      $scope.grp_model.splice($scope.selectedIndex, 1);
+      $scope.selected = false;
+    };
+
+    $scope.sort = function (col) {
+      // FIXME: Impliment quicksort for arrays of objects
     };
 
   });
@@ -911,7 +946,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         }
       },
       join: ['account.account_type_id=account_type.id'],
-      where: ["account.enterprise_id=" + 101] //FIXME
+      where: ["account.enterprise_id=" + 101], //FIXME
+      autosync: true
     };
 
     // import account_type 
@@ -921,7 +957,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         'account_type' : {
           columns: ['id', 'type']
         }
-      }
+      },
+      autosync: true
     };
 
     // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
@@ -966,6 +1003,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.updateRow = function(row) {
       // HACK HACK HACK
       row.entity.type = type_store.get(row.entity.account_type_id).type;
+      account_store.put(row.entity);
       console.log($scope.account_model[row.rowIndex]);
     };
 
@@ -1002,6 +1040,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         console.log("Form closed on:", new Date());
       });
     };
+
+  });
+
+  controllers.controller('salesController', function($scope, data) {
+
+  
 
   });
 
