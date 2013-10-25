@@ -1032,4 +1032,10 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
   });
 
+  controllers.controller('salesController', function($scope, data) {
+
+  
+
+  });
+
 })(angular);
