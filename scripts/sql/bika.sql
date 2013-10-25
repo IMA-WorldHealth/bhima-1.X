@@ -308,7 +308,7 @@ INSERT INTO `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_ye
     (101, 2013001, 5, '[Company 101] Year 1', 0, 100, 1, 7, 2013, NULL, 2014001),
     (102, 2013011, 5, '[Company 102] Year 1', 1000, 1100, 1, 7, 2013, NULL, 2014011),
     (101, 2014001, 3, '[Company 101] Year 2', 1200, 5000, 1, 10, 2014, 2013001, NULL),
-    (102, 2014011, 12, '[Company 101] Year 2', 1200, 5000, 1, 1, 2014, 2013011, NULL);
+    (102, 2014011, 12, '[Company 102] Year 2', 1200, 5000, 1, 1, 2014, 2013011, NULL);
 /*!40000 ALTER TABLE `fiscal_year` ENABLE KEYS */;
 
 -- Dumping structure for table bika.user

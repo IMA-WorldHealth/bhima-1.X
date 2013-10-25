@@ -23,7 +23,7 @@
     <div id="bika-sidebar" class="container">
       <div class="row" id="bika-header">
         <div class="col-xs-12">
-          <h2><span class="glyphicon glyphicon-ban-circle"></span></h2>
+          <h2><span class="glyphicon glyphicon-ban-circle ban"></span></h2>
         </div>
         </div>
 
@@ -32,12 +32,10 @@
         </div>
 
       <div class="row" id="bika-util" ng-controller="utilController">
-        <span>#sfount - not good</span>
         <div id="bika-app-select">
           <select class="form-control" ng-model="e_select" ng-options="enterprise.name for enterprise in enterprise_model">
           </select>
           <select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">
-            <option>Second</option>
           </select>
           <select class="form-control" ng-model="p_select" ng-options="'Du '+period.period_start+' A '+period.period_stop for period in period_model" ng-click="select($index)">
           </select>
