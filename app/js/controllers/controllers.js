@@ -1181,7 +1181,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
   });
 
-controllers.controller('salesController', function($scope, data) {
+controllers.controller('salesController', function($scope, $q, data) {
     // definitions
     
     var sales_table = {
@@ -1221,12 +1221,26 @@ controllers.controller('salesController', function($scope, data) {
            columns: ['id', 'inv_code', 'text', 'price', 'inv_type']
         } 
       },
+      // TODO: Allow for () by nesting arrays[].
       where: [
         "inventory.enterprise_id="+101,
         "AND",
         "inventory.stock<>0" // services are -1
       ]
     };
+
+    var sales = data.register(sales_table);
+    var payment = data.register(payment_table);
+    var employee = data.register(employee);
+    var inventory = data.register(inventory);
+
+    sales.ready().then(function() { $scope.sales = sales.data; });
+    payment.ready().then(function() { $scope.payment = payment.data; });
+    inventory.ready().then(function() { $scope.inventory = inventory.data; });
+    employee.ready().then(function() { $scope.employee = employee.data; });
+
+    // this will be a new sale.
+    $scope.sale = {};
 
   });
 
