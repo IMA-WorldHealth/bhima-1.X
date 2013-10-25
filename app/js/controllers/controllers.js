@@ -6,7 +6,7 @@
 //************************************************************************************
 //******************************* TREE CONTROLLER ************************************
 //************************************************************************************  
-controllers.controller('treeController', function($scope, $q, bikaConnect, $location) {    
+controllers.controller('treeController', function($scope, $q, $location, appcache, bikaConnect) {    
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
@@ -33,6 +33,11 @@ controllers.controller('treeController', function($scope, $q, bikaConnect, $loca
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
             $location.path($scope.navtree.currentNode.url);
+            //Move cacheNav to logout routine
+            if(!$scope.navtree.currentNode.url=="") { 
+              appcache.cacheNav($scope.navtree.currentNode.url);  
+            }
+
         }
     }, true);
 
@@ -445,84 +450,92 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 //***********************************************************************************
 //********************** UTIL CONTROLLER ********************************************
 //***********************************************************************************
+ 
+controllers.controller('utilController', function($rootScope, $scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
+  /////
+  // summary: 
+  //  Responsible for all utilities (buttons/ selects etc.) on the application side bar
+  //  
+  // TODO 
+  //  -All operations on models should be local, and then exposed to scope
+  //  -Should use connect instead of bikaConnect (soon to be deleted)
+  /////
+  $scope.enterprise_model = {};
+  $scope.fiscal_model = {};
+  $scope.period_model = {};
+  $scope.p_select = {};
 
-controllers.controller('utilController', function($scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
-  //variablesd u scope
-    $scope.enterprise_model = {};
-    $scope.fiscal_model = {};
-    $scope.period_model = {};
-  //fin varible du scope
+  var resp = fillEntrepriseSelect();
 
-    var resp = fillEntrepriseSelect();
-    resp.then(function(enterprise_id){
-       if(enterprise_id){
-        var resp2 = fillFiscalSelect(enterprise_id);
-        resp2.then(function(fiscal_id){
-          fillPeriodSelect(fiscal_id);
-        });
+  resp
+  .then(function(enterprise_id) { 
+    return fillFiscalSelect(enterprise_id);
+  })
+  .then(function(fiscal_id) { 
+    fillPeriod(fiscal_id);
+  });
+
+  //remplissage selects
+
+  function fillPeriod(fiscal_id){
+    var req_db = {};
+    req_db.e = [{t:'period', c:['id', 'period_start', 'period_stop']}];
+    req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
+    bikaConnect.get('/data/?',req_db).then(function(data){
+      for(var i = 0; i<data.length; i++){
+        data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
+        data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
       }
+      $scope.period_model = data;
+      $scope.p_select = $scope.period_model[0];
     });
+  }
     //debut functions
-    $scope.select = function(id) {
-    }
-    function fillEntrepriseSelect(){
-      var deferred = $q.defer();
-      var req_db = {};
-      req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
-        $scope.enterprise_model = data;
-        $scope.e_select = $scope.enterprise_model[0]; //Select first as default
-        deferred.resolve($scope.e_select.id);
-      });
-      return deferred.promise;
-    }
+  $scope.select = function(id) {
+  }
+  function fillEntrepriseSelect(){
+    var deferred = $q.defer();
+    var req_db = {};
+    req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
+    bikaConnect.get('/data/?', req_db).then(function(data){
+      $scope.enterprise_model = data;
+      $scope.e_select = $scope.enterprise_model[0]; //Select first as default
+      deferred.resolve($scope.e_select.id);
+    });
+    return deferred.promise;
+  }
 
-    function fillFiscalSelect(enterprise_id){
-      var deferred = $q.defer();
-      var req_db = {};
-      req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
-      req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
-      bikaConnect.get('/data/?',req_db).then(function(data){
-        $scope.fiscal_model = data;
-        $scope.f_select = $scope.fiscal_model[0];
-        deferred.resolve($scope.f_select.id);
-      });
-      return deferred.promise;
-    }
-
-    function fillPeriodSelect(fiscal_id){
-      var req_db = {};
-      req_db.e = [{t:'period', c:['id', 'period_start', 'period_stop']}];
-      req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-      bikaConnect.get('/data/?',req_db).then(function(data){
-        for(var i = 0; i<data.length; i++){
-          data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
-          data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
-        }
-        $scope.period_model = data;
-        $scope.p_select = $scope.period_model[0];
-        //appstate.set("period", $scope.p_select);
-      });
-    }
+  function fillFiscalSelect(enterprise_id){
+    var deferred = $q.defer();
+    var req_db = {};
+    req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
+    req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
+    bikaConnect.get('/data/?',req_db).then(function(data){
+      $scope.fiscal_model = data;
+      $scope.f_select = $scope.fiscal_model[0];
+      deferred.resolve($scope.f_select.id);
+    });
+    return deferred.promise;
+  }
     //fin remplissage selects
     
-    $scope.$watch('e_select', function(nval, oval) { 
-      if(nval){
-        appstate.update('enterprise', nval);
-        fillFiscalSelect(nval.id);
-      }
-    });
+  $scope.$watch('e_select', function(nval, oval) { 
+    if(nval){
+      appstate.update('enterprise', nval);
+      fillFiscalSelect(nval.id);
+    }
+  });
 
-    $scope.$watch('f_select', function(nval, oval) { 
-      if(nval){
-        appstate.update('fiscal', nval);
-        fillPeriodSelect(nval.id);
-      }
-    });
+  $scope.$watch('f_select', function(nval, oval) { 
+    if(nval){
+      appstate.update('fiscal', nval);
+      fillPeriod(nval.id);
+    }
+  });
 
-    $scope.$watch('p_select', function(nval, oval) { 
-      appstate.update('period', nval);
-    });
+  $scope.$watch('p_select', function(nval, oval) { 
+    appstate.update('period', nval);
+  });
 });
 
 
@@ -598,33 +611,30 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
 });
 
 
-  
+
+  //Logout button logic - page currently being viewed can be saved
+
+
+controllers.controller('appController', function($scope, $location, appcache) { 
+    console.log("Application controller fired");
+    //Navigate to page that was previously open
+    //Listen for page exit and save page
+    appcache.getNav().then(function(res) { 
+      console.log("appController got", res);
+      $location.path(res);
+    })
+});
+
 controllers.controller('viewController', function($scope) { 
 });
   
 
-controllers.controller('fiscalController', function($scope, connect, bikaConnect, appstate) { 
+controllers.controller('fiscalController', function($scope, $q, connect, appstate) { 
 
-
-    console.log("appstate->");
-    var t = appstate.get("enterprise");
-    console.log("t", t);
-    appstate.register("enterprise", function(value) { 
-      console.log("Registered, recieved", value);
-    });
-    console.log("__");
 
     $scope.active = "select";
     $scope.selected = null;
     $scope.create = false;
-    //TODO: This data can be fetched from the application level service
-    $scope.current_fiscal = {
-      id : 2013001
-    };
-
-    $scope.fiscal_model = {};
-
-    init();
 
     function init() { 
       //Resposible for getting the current values of selects
@@ -634,23 +644,45 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         $scope.enterprise = res;
       });
 
-      console.log("init", appstate.get("fiscal"));
+      //This isn't required - should this be included?
+      appstate.register("fiscal", function(res) { 
+        console.log("resolving", res);
+        $scope.select(res.id);
+      })
     }
 
     function loadEnterprise(enterprise_id) { 
+      var fiscal_model = {};
 
+      var promise = loadFiscal(enterprise_id);
+      promise
+      .then(function(res) { 
+        fiscal_model = res;
+        //FIXME: select should be a local function (returning a promise), it can then be exposed (/used) by a method on $scope
+        //expose model
+        $scope.fiscal_model = fiscal_model;
+        //select default
+        console.log("s", $scope);
+        $scope.select(fiscal_model.data[0].id);
+
+      })
     }
 
-    //FIXME: This should by default select the fiscal year selected at the application level
-    connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
-      $scope.fiscal_model = model;
-      $scope.select($scope.current_fiscal.id);
-    });
+    function loadFiscal(enterprise_id) {  
+      var deferred = $q.defer();
+      connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", enterprise_id).then(function(model) { 
+        deferred.resolve(model);
+      });
+      return deferred.promise;
+    }
+    
 
-    $scope.select = function(fiscal_id) { 
-      fetchPeriods(fiscal_id);
-      $scope.selected = $scope.fiscal_model.get(fiscal_id);
-      $scope.active = "update";
+    $scope.select = function(fiscal_id) {
+      if($scope.fiscal_model) { 
+        fetchPeriods(fiscal_id);
+        $scope.selected = $scope.fiscal_model.get(fiscal_id);
+        $scope.active = "update";
+      } 
     };
 
     $scope.delete = function(fiscal_id) { 
@@ -684,30 +716,19 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       }
     };
 
-    //FIXME: Date IN object should be formated, this function is called every time any part of the model is updated
-    //This should be encapsulated in a 'model'
-    /*
-    function modelGet(model, id) { 
-      //Keep an index of item ID's so a Get can directly index without searching (index maintained by model)
-      var search = null;
-      model.forEach(function(entry) { 
-        if(entry.id==id){
-          search=entry;
-        }
-      });
-      return search;
-    }*/
-    
     function fetchPeriods(fiscal_id) { 
-      bikaConnect.fetch("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(data) { 
-        $scope.period_model = data;
+      connect.req("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(model) { 
+        $scope.period_model = model.data;
       });
     }
+
+    //Initialise after scope etc. has been set
+    init();
 });
   
 
 
-  controllers.controller('budgetController', function($scope, $q, connect) { 
+  controllers.controller('budgetController', function($scope, $q, connect, appstate) { 
     /////
     //  summary: 
     //    Controller behaviour for the budgeting unit, fetches displays and allows updates on data joined from 
@@ -717,7 +738,6 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     //    -Memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
     /////
     
-
 
     //TODO: This data can be fetched from the application level service
     $scope.enterprise = {
@@ -734,7 +754,12 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     init();
 
     function init() { 
-      createBudget($scope.enterprise.id);
+      appstate.register("enterprise", function(res) { 
+        createBudget(res.id);
+
+        //Expose to scope for view
+        $scope.enterprise = res;
+      });
     }
 
     function createBudget(e_id) { 
@@ -755,7 +780,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         fiscal_model = model;
 
         //set the first budget report - this will be populated in updateReport
-        var default_fiscal = fiscal_model.get(current_fiscal.id);
+        var default_fiscal = appstate.get("fiscal") //Risky with validation checks
         budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}})
         fiscal_model.delete(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
@@ -778,7 +803,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
     function fetchAccount(e_id) { 
       var deferred = $q.defer();
-      connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", $scope.enterprise.id).then(function(model) { 
+      connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", e_id).then(function(model) { 
         deferred.resolve(model);
       });
       return deferred.promise;
@@ -923,7 +948,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         return report.model.get(l);
       }
       }
-    } 
+    };
 
     /*This isn't optimal*/
     $scope.sum = function(report) { 
@@ -936,7 +961,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
         return total;
       }
       return null;
-    }
+    };
 
     $scope.compare = function() { 
       console.log("compare");
@@ -945,7 +970,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       console.log("cmp", $scope.selected_fiscal);
       $scope.fiscal_model.delete($scope.selected_fiscal.id);
       $scope.selected_fiscal = $scope.fiscal_model.data[0];
-    }
+    };
 
     $scope.deleteCompare = function(report) { 
       var arr = $scope.budget_model.reports;
@@ -954,7 +979,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       //hard coded bad-ness
       $scope.fiscal_model.put({id : report.id, fiscal_year_txt : report.desc});
       $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
-    }
+    };
 
     $scope.validSelect = function() { 
       //ugly
@@ -965,77 +990,161 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       }
       
       return true;
-    }
+    };
+
+    init();
   });
 
-  controllers.controller('organisationController', function($scope, connect) { 
+  controllers.controller('billingGroupsController', function($scope, appstate, data) { 
 
-    connect.basicReq({
-      e: [
-        {t: 'organisation', c: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']},
-        {t: 'location', c: ['city', 'region'] },
-        {t: 'payment', c: ['text']}
-      ],
-      jc: [
-        {ts: ['organisation', 'location'], c: ['location_id', 'id'], l: 'AND'},
-        {ts: ['organisation', 'payment'], c: ['payment_id', 'id'], l: 'AND'}
-      ],
-      c: [
-        {t: 'organisation', cl: 'enterprise_id', z: '=', v: 101}
-      ]
-    }).then(function(res) {
-      $scope.org_model = res.data;
+    var query = {
+      primary: 'billing_group',
+      tables : {
+        'billing_group' : {
+          columns: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']
+        },
+        'location': { 
+          columns: ['city', 'region']
+        }
+      },
+      join : ["billing_group.location_id=location.id"],
+    };
+
+    appstate.register('enterprise', function(res) {
+      var condition = "billing_group.enterprise_id=",
+          enterpriseid = res.id;
+      query.where = [condition + enterpriseid];
+      $scope.selected = false;
     });
 
+    $scope.outOfSync = false;
+
+    var store = data.register(query);
+    store.ready().then(function() {
+      $scope.grp_model = store.data;
+    });
     
-    $scope.select = function(index) { 
-      $scope.selected = $scope.org_model[index];
+    $scope.select = function(index) {
+      $scope.selected = $scope.grp_model[index];
       $scope.selectedIndex = index;
     };
 
-    $scope.sort = function (col) {
-
-    };
-
-
-
-    
-  });
-  
-  
-  // Chart of Accounts controllers
-  controllers.controller('chartController', function($scope, $q, $modal, bikaConnect) {
-  
-    // loads data and returns a promise evaluated when both requests are complete.
-    function loadData() {
-      return $q.all([
-        bikaConnect.raw_fetch({
-          e: [{t:'account', c: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}],
-          c: [{t: 'account', cl: 'enterprise_id', z: '=', v: 101}]
-        }),
-        bikaConnect.raw_fetch({
-          e: [{t: 'account_type', c:['id', 'type']}]
-        })
-      ]);
+    function generateId (model) {
+      var maxid = model.reduce(function(max, right) {
+        max = max.id || max; // for the first iteration
+        return Math.max(max, right.id);
+      });
+      return maxid + 1; // incriment
     }
 
-    var promise = loadData();
-    
-    promise.then(function(tables) {
-      $scope.accounts = tables[0];
-      $scope.accounttypes = tables[1];
-    });
-    
-    $scope.columns = [
-      {label: "Account Number", map: "id"},
-      {label: "Account Text", map: "account_txt"},
-      {label: "Account Type", map: "account_type_id", cellTemplateUrl: "/partials/templates/cellselect.html"},
-      {label: "Locked?", map: "locked"}
-    ];
+    $scope.addGroup = function () {
+      var id = generateId($scope.grp_model);
+      var idx = $scope.grp_model.push({id: id});
+      $scope.select(idx - 1);
+    };
 
+    $scope.$watch('grp_model', function() {
+      // FIXME:  This doesn't work for some reason
+      $scope.outOfSync = true; 
+    });
+
+    $scope.sync = function() {
+      //store.sync();
+      $scope.outOfSync = false;
+    };
+
+    $scope.removeGroup = function () {
+      $scope.grp_model.splice($scope.selectedIndex, 1);
+      $scope.selected = false;
+    };
+
+    $scope.sort = function (col) {
+      // FIXME: Impliment quicksort for arrays of objects
+    };
+
+  });
+  
+  // Chart of Accounts controllers
+  controllers.controller('chartController', function($scope, $q, $modal, data, appstate) {
+
+    // import account
+    var account_spec = {
+      identifier: 'id',
+      primary: 'account',
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id'],
+        },
+        'account_type': {
+          columns: ['type'] 
+        }
+      },
+      join: ['account.account_type_id=account_type.id'],
+      where: ["account.enterprise_id=" + 101], //FIXME
+      autosync: true
+    };
+
+    // import account_type 
+    var account_type_spec = {
+      identifier: 'id',
+      tables: {
+        'account_type' : {
+          columns: ['id', 'type']
+        }
+      },
+      autosync: true
+    };
+
+    // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
+
+    // FIXME: have ready() return the store instance.
+    var account_store = data.register(account_spec);
+    var type_store = data.register(account_type_spec);
+
+    // OMG SYNTAX
+    $q.all([
+      account_store.ready(),
+      type_store.ready()
+    ]).then(init);
+
+    function init () {
+      $scope.account_model = account_store.data;
+      $scope.type_model = type_store.data;
+      console.log($scope.account_model);
+    }
+
+    // ng-grid options
+    $scope.gridOptions = {
+      data: 'account_model',
+      columnDefs: [
+        {field: 'id', displayName: "Account Number"},
+        {field: 'account_txt', displayName: "Account Text"},
+        {field: 'account_type_id', displayName: "Account Type",
+          cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
+          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
+          sortable: false,
+          enableCellEdit: true
+        },
+        {field: 'locked', displayName: "Locked",
+          cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
+          sortable: false
+        }
+      ],
+      enableRowSelection:false,
+      enableColumnResize: true
+    };
+
+    $scope.updateRow = function(row) {
+      // HACK HACK HACK
+      row.entity.type = type_store.get(row.entity.account_type_id).type;
+      account_store.put(row.entity);
+      console.log($scope.account_model[row.rowIndex]);
+    };
+
+    // dialog controller
     $scope.showDialog = function() {
       var instance = $modal.open({
-        templateUrl: "/partials/templates/chart-modal.html",
+        templateUrl: "/partials/chart/templates/chart-modal.html",
         backdrop: true,
         controller: function($scope, $modalInstance, columns) {
           // NOTE: THIS IS A DIFFERENT SCOPE 
@@ -1060,7 +1169,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
 
       instance.result.then(function(values) {
         // add to the grid
-        $scope.accounts.push(values);
+        $scope.model.push(values);
       }, function() {
       });
     };
@@ -1117,7 +1226,7 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
       itemsByPage: 16,
       selectionMode: 'single'
     };
-  });
+});
 
   controllers.controller('connectController', function($scope, connect, appstate) { 
     appstate.get("enterprise").then(function(data) { 
@@ -1125,37 +1234,10 @@ controllers.controller('fiscalController', function($scope, connect, bikaConnect
     connect.req("fiscal_year", ["id", "fiscal_year_txt"]).then(function(model) { 
       model.delete(2013001);
     });
-  });
-
-
-  controllers.controller('socketController', function($scope, data) {
-
-    var options = {
-      identifier : 'id',
-      table      : 'account',
-      columns    : ['id', 'account_txt']
-    };
-
-    var store = data.register(options);
-
-    store.ready().then(function() {
-      // data loaded
-      $scope.model = store.data;
-
-      $scope.removeOne = function() {
-        store.remove($scope.selected);
-      };
-
-      $scope.sync = function () {
-        store.sync(); 
-      };
-
-      $scope.select = function(id) {
-        $scope.selected = id;
-      };
-
-    });
 
   });
+
+controllers.controller('salesController', function($scope, data) {
+});
 
 })(angular);

@@ -76,30 +76,259 @@
     }
   });
 
-  services.factory('appstate', function($q, $rootScope) { 
+  services.factory('appcache', function($q) { 
+    /////
+    // summary: 
+    //  Used to interface with indexedDB store, providing methods to read and write to local storage
+    //  
+    // TODO:
+    //  -Formalise inner working functions, and expose high level requests (storage for page save, namespacing etc.)
+    //  -Use multiple indexs (injected on request)
+    /////
+    console.log("appcache initialised");
+
+    var cache_supported;
+    if("indexedDB" in window) { 
+      cache_supported = true;
+    }
+
+    //variables inside if(cache_supported)? no need to initialise otherwise
+    var db;
+    var version = 2;
+
+    var instance = { 
+      add: add,
+      getNav: getNav,
+      cacheNav: cacheNav
+    };
+
+    var queue = [];
+
+    //Methods for storing navigation data - FIXME: Should service be more abstract than this?
+    function getNav() { 
+      //FIXME: Redo this function/ queue system
+      var deferred = $q.defer();
+
+      if(!db) { 
+        queue.push(fetch);
+      } else { 
+        fetch();
+      }
+
+      function fetch() { 
+        getByIndex("cache_nav").then(function(res) {
+        if(res) 
+          deferred.resolve(res.value);
+        });
+      }
+
+      return deferred.promise;
+    }
+
+    function cacheNav(nav_string) {
+      update("cache_nav", "value", nav_string);
+    }
+
+    function init() { 
+      var req = indexedDB.open("bika", version);
+
+      req.onupgradeneeded = function(e) { 
+        //summary: 
+        //  user is either new, or a newer version of the database is available, run database settup 
+        console.log("[appcache] upgrading indexed");
+        var checkDB = e.target.result;
+
+        if(!checkDB.objectStoreNames.contains("session")) { 
+          var store = checkDB.createObjectStore("session",  {autoIncrement: true});
+          store.createIndex("ref", "ref", {unique:true});
+        }
+      }
+
+      req.onsuccess = function(e) { 
+        db = e.target.result;
+
+        //Call all methods requested befored db init
+        queue.forEach(function(callback) { 
+          callback();
+          //delete callback
+        });
+        
+      }
+
+      req.onerror = function(e) { 
+        throw new Error(e);
+      }
+    }
+
+    function add(object) { 
+      if(db) { 
+        var transaction = db.transaction(["session"], "readwrite");
+        var store = transaction.objectStore("session");
+
+        var req = store.add(object);
+
+        req.onerror = function(e) { 
+          console.log("[appcache] Failed to write", e);
+          return;
+        }
+
+        req.onsuccess = function(e) { 
+          //success
+          console.log("[appcache] object written");
+        }
+      }
+    }
+
+    function put(object) { 
+      if(db) { 
+        var transaction = db.transaction(["session"], "readwrite");
+        var store = transaction.objectStore("session");
+        
+        var req = store.put(object);
+
+        req.onsuccess = function(e) { 
+          console.log("Value updated", object);
+        }
+
+        req.onerror = function(e) { 
+          console.log("[appcache] Failed to put", e);
+        }
+      }
+    }
+
+    function update(key, field, value) { 
+      if(db) { 
+        var transaction = db.transaction(["session"], "readwrite");
+        var store = transaction.objectStore("session");
+        var index = store.index("ref");
+        var key_range = IDBKeyRange.only(key);
+        
+        var req = index.openCursor(key_range);
+
+        req.onsuccess = function(e) { 
+          var cursor = e.target.result;
+          if(cursor) { 
+            //gauranteed to only be one object given key range / key
+            var res = cursor.value;
+            res[field] = value;
+            cursor.update(res);
+          }
+          console.log("[appcache] updated", key);
+        }
+
+        req.onerror = function(e) { 
+          console.log("[appcache] Failed to update");
+        }
+      }
+    }
+
+    function get(key) { 
+      var transaction = db.transaction(["session"], "readonly");
+      var store = transaction.objectStore("session");
+
+      var req = store.get(key);
+
+      req.onsuccess = function(e) { 
+        console.log("[appcache] Read success", e);
+        console.log("[appcache] Result", e.target.result);
+        return e.target.result;
+      }
+
+      req.onerror = function(e) { 
+        console.log("[appcache] Failed to read", e);
+      }
+
+    }
+
+    function getByIndex(key) { 
+      var deferred = $q.defer();
+      var transaction = db.transaction(["session"], "readonly");
+      var store = transaction.objectStore("session");
+      var index = store.index("ref");
+      
+      var req = index.get(key);
+
+      req.onsuccess = function(e) { 
+        console.log("[appcache] Read success", e);
+        console.log("[appcache] Result", e.target.result);
+        deferred.resolve(e.target.result);
+      }
+
+      req.onerror = function(e) { 
+        console.log("[appcache] Failed to read", e);
+      }
+
+      return deferred.promise;
+    }
+
+    function requestAll() { 
+      //summary: 
+      //  indexedDB cursor demonstration
+      var transaction = db.transaction(["session"], "readonly");
+      var store = transaction.objectStore("session");
+
+      var cursor = store.openCursor();
+
+      cursor.onsuccess = function(e) { 
+        var res = e.target.result;
+        if(res) { 
+          console.log("key", res.key, "data", res.value);
+          res.continue();
+        }
+      }
+
+      cursor.onerror = function(e) { 
+        console.log("[appcache] Failed to read cursor");
+      }
+    }
+
+    if(cache_supported) { 
+      init();
+    }
+
+    return instance;
+
+  });
+
+  services.factory('appstate', function($q) { 
     /////
     // summary: 
     //  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
     //  to allow asynchronous loading
-    /////
-    console.log("appstate initialised");
+    // 
+    // example:
+    //  ensuring multiple values are set before loading a page (vs. only registering one dependency)
+    /*  function fetch() { 
+          var promise = fechFirst();
+          //see also: $q.all()
+          fetchFirst.then(function(res) { 
 
+            return fetchSecond();
+          })
+          .then(function(res) { 
+
+          });
+        }
+        function fetchFirst() { 
+
+        }
+
+        function fetchSecond() { 
+
+        }
+    */
+    //  
+    /////
+  
     var instance = {
       //summary: 
       //  expose required function to Angular modules, all other functions are considered private
       id: Date.now(),
-      model: { 
-
-      },
       get: get,
       set: set,
-      notify: function() { 
-        console.log("instance has been triggored");
-      },
       register: register,
       update: update
     };
-
 
     var comp = {};
     var queue = {};
@@ -139,14 +368,6 @@
       }
     }
 
-    function notifyQueue(id) { 
-      if(queue[id]) { 
-        queue[id].forEach(function(deferred) { 
-          deferred.resolve(comp[id]);
-        });
-      }
-    }
-
     return instance;
   });
 
@@ -181,15 +402,16 @@
 
       var open = connection.onopen = function () { init(); }; // may hit conflicts with this
       var receive = connection.onmessage = function (rawpacket) { return router(deserialize(rawpacket.data));};
-      function send (rawpacket) { connection.send(serialize(rawpacket)); }
+      function send (rawpacket) {
+        connection.send(serialize(rawpacket));
+      }
  
       function init () {
-        var parameters = {
-          method     : 'INIT',
-          table      : table,
-          columns    : columns,
-          identifier : identifier
-        };
+        var parameters = {};
+        for (var k in options) {
+          parameters[k] = options[k]; 
+        }
+        parameters.method = "INIT";
         send(parameters);
       }
       
@@ -242,10 +464,10 @@
         }
 
         //FIXME: update this
-        var exists = store.get(object[identifier]);
+        var exists = this.get(object[identifier]);
         var method = (exists) ? 'UPDATE' : 'INSERT';
   
-        parameters = {
+        var parameters = {
           socketid : socketid,
           method   : method,
           data     : object
@@ -288,24 +510,29 @@
 
     }
 
-    var registry = {};
+    var namespaceRegistry = {};
 
     function register(options) {
-      var table = options.table,
+      var table = options.primary || Object.keys(options.tables)[0],
           store;
 
-      if (registry[table]) {
+      if (namespaceRegistry[table]) {
         // this is a store currently in use 
-        return registry[table];
+        return namespaceRegistry[table];
       } else {
         store = new SocketStore(options);
-        registry[table] = store;
+        namespaceRegistry[table] = store;
         return store;
       }
     }
 
+    function registrations (options) {
+      return Object.keys(namespaceRegistry);
+    }
+
     return {
       register: register,
+      registrations: registrations
     };
 
   });

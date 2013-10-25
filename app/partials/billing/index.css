@@ -1,0 +1,49 @@
+
+/* TODO: Clean this up */
+
+#bika-view {
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+}
+
+.glyphrow {
+  height: 50%;
+}
+
+.glyphrow a {
+  color           : #47a447;
+  text-decoration : none;
+}
+
+.glyph-center {
+  height     : 50%;
+  position   : absolute;
+  margin     : auto;
+  left       : 0; right  : 0; top : 0; bottom : 0;
+  text-align : center;
+}
+
+.glyphblock {
+  background : rgba(0,0,0,0.2);
+  cursor     : pointer;
+  margin     : 1em;
+  position   : relative;
+  height     : 85%;
+  box-shadow : 5px 5px 1px rgba(0,0,0,0.15);
+  border     : 1px solid #333333;
+}
+
+
+.glyphblock .glyphicon {
+  font-size   : 3em;
+  text-align  : center;
+  line-height : 100%;
+}
+
+.glyphblock:hover {
+  background: #333333;
+}
+

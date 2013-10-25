@@ -15,7 +15,7 @@
     <div id="bika-sidebar" class="container">
       <div class="row" id="bika-header">
         <div class="col-xs-12">
-          <h2><span class="glyphicon glyphicon-ban-circle"></span></h2>
+          <h2><span class="glyphicon glyphicon-ban-circle ban"></span></h2>
         </div>
         </div>
 
@@ -24,12 +24,10 @@
         </div>
 
       <div class="row" id="bika-util" ng-controller="utilController">
-        <span>#sfount - not good</span>
         <div id="bika-app-select">
           <select class="form-control" ng-model="e_select" ng-options="enterprise.name for enterprise in enterprise_model">
           </select>
           <select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">
-            <option>Second</option>
           </select>
           <select class="form-control" ng-model="p_select" ng-options="'Du '+period.period_start+' A '+period.period_stop for period in period_model" ng-click="select($index)">
           </select>
@@ -52,21 +50,18 @@
        <div ng-controller="userController"></div>
   </div>
     <!-- required for ng-grid -->
-    <link rel="stylesheet" type="text/css" href="lib/ng-grid/ng-grid.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/ng-grid.css"/>
     <script src="lib/jquery-1.10.2.js"></script>
-
-  <!--Scripts loaded in body to prevent page form 'hanging'-->
-  <script src="lib/angular/angular.min.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/services/services.js"></script>
-  <script src="js/controllers/controllers.js"></script>
-  <script src="js/directives/angular.treeview.js"></script>
-  <!-- necessary for ng-grid  -->
-  <script src="lib/ng-grid/build/ng-grid.debug.js"></script>
-  <!-- necessary for Smart-Table -->
-  <script src="lib/Smart-Table.min.js"></script>
-  <script src="js/directives/bika.cellselect.js"></script>
-  <!--script src="lib/ui-bootstrap-custom-tpls-0.6.0.min.js"></script-->
-  <script src="lib/ui-bootstrap-custom-tpls-0.6.0.js"></script>
-</body>
+    <!--Scripts loaded in body to prevent page form 'hanging'-->
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/ng-grid-2.0.7.debug.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/services/services.js"></script>
+    <script src="js/filters/filters.js"></script>
+    <script src="js/controllers/controllers.js"></script>
+    <script src="js/directives/angular.chkbox.js"></script>
+    <script src="js/directives/angular.treeview.js"></script>
+    <!--script src="lib/ui-bootstrap-custom-tpls-0.6.0.min.js"></script-->
+    <script src="lib/ui-bootstrap-custom-tpls-0.6.0.js"></script>
+  </body>
 </html>
