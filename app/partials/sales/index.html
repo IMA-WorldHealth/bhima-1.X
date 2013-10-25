@@ -1,0 +1,56 @@
+
+<h2>Sales</h2>
+<form>
+  <div class="metadata">
+    <select 
+      ng-model="sales.recipient"
+      ng-options="patient.name for patient in debitors">
+    </select>
+    <input ng-model="sales.order">
+    <select ng-model="sales.sale_type">
+      <option id="1">Sale</option>
+      <option id="2">Credit Note</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <div class="address">
+      {{sales.address}}
+    </div>
+    <div class="form-group">
+      <label for="soldby">Sold By:</label>
+      <select
+        ng-model="sales.seller"
+        ng-options="employee.name for employee in employees">
+      </select>
+    </div>
+    <div class="form-group">
+      <select
+        ng-model="sales.department"
+        ng-options="dept.name for dept in departments">
+      </select>
+    </div>
+    <div class="form-group">
+      <select
+        ng-model="sales.payable"
+        ng-options="pay.text for pay in payables">
+      </select>
+    </div>
+    <div class="invoice">
+      <table>
+        <tbody>
+          <tr><td>Sales Num</td><td>{{sales.invoice_num}}</td></tr>
+          <tr><td>Sales Date</td><td>{{sales.sale_date | date}}</td></tr> 
+          <tr><td>Delivery Date</td><td>{{sales.delivery_date | date}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="detail">
+    <div class="table table-bordered" ng-grid="sales.detail_options"></div>
+    <div class="totals">
+      {{totals.detail_total}}
+    </div>
+  </div>
+  <hr></hr>
+  <div class="table table-bordered" ng-grid="salesjournaloptions"></div>
+</form>
