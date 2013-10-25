@@ -542,15 +542,14 @@ controllers.controller('appController', function($scope) {
 //********************* ADD CONTROLLER ************************************
 //*************************************************************************
 
-controllers.controller('addController', function($scope, $modal, bikaConnect, appstate) { 
-  /*appstate.register('enterprise', function(res){
-    console.log(res);
+controllers.controller('addController', function($scope, $modal, bikaConnect, appstate) {
 
-  });*/
- $scope.selectedAccounts = {};
-  fillCurrencies();
-  fillAccounts();
+  $scope.selectedAccounts = {};  
   $scope.rep = false;
+  fillCurrencies();
+  appstate.register('enterprise', function(res){
+    fillAccounts(res.id);
+  });
 
   function fillCurrencies(){
       var req_db = {};
@@ -563,6 +562,7 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
   function fillAccounts(idEnterprise){
     var req_db = {};
     req_db.e = [{t:'account', c:['account_txt', 'id']}];
+    req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:idEnterprise}];
     bikaConnect.get('/data/?', req_db).then(function(data){
       $scope.comptes = data;
       for(var i=0; i < $scope.comptes.length; i++){
