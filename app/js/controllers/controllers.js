@@ -548,12 +548,14 @@ controllers.controller('appController', function($scope) {
 //*************************************************************************
 
 controllers.controller('addController', function($scope, $modal, bikaConnect, appstate) { 
-  appstate.register('enterprise', function(res){
+  /*appstate.register('enterprise', function(res){
     console.log(res);
 
-  });
+  });*/
+ $scope.selectedAccounts = {};
   fillCurrencies();
   fillAccounts();
+  $scope.rep = false;
 
   function fillCurrencies(){
       var req_db = {};
@@ -575,15 +577,63 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
 
   }
 
+  function getSelectedAccountCount(){
+    console.log('on est la');
+    var number = 0;
+    for(var i = 0; i<$scope.comptes.length; i++){
+      if($scope.comptes[i].sltd)
+        number++;
+    }
+    return number;
+  }
+
+  function isActive(){
+    $scope.rep = getSelectedAccountCount()>1;
+
+  }
+
+  $scope.populer = function(id){
+    $scope.selectedAccounts[$scope.comptes[id].id]=$scope.comptes[id].sltd+";"+ $scope.comptes[id].account_txt;
+    isActive();
+  }
+
       $scope.showDialog = function() {
       var instance = $modal.open({
         templateUrl: "/partials/transaction/transaction-modal.html",
         backdrop: true,
-        controller: function($scope, $modalInstance, columns) {
+        controller: function($scope, $modalInstance, selectedAcc) {
           // NOTE: THIS IS A DIFFERENT SCOPE 
-          //var values = angular.copy(columns);
-          //$scope.values = values;
-          // dismiss
+          var champs = new Array(Object.keys(selectedAcc).length);          
+          var  i = 0;
+          for(var item in selectedAcc){
+            var element = {};
+            var tab = selectedAcc[item].split(";");
+            if(tab[0]== 'true')
+              {
+                element.text = tab[1];
+                element.id = item;
+                champs[i] = element;
+                i++;
+              }
+          }
+          var finalChamps = new Array(finalChampsCount());
+          var j= 0;
+          for(var i=0; i<champs.length; i++){
+            if(champs[i]){
+              finalChamps[j++] = champs[i];
+            }
+
+          }
+          $scope.champs = finalChamps;
+
+          function finalChampsCount (){
+            var count = 0;
+            for(var i = 0; i<champs.length; i++){
+              if(champs[i])
+                count++;
+            }
+            return count;
+          }
           $scope.close = function() {
             $modalInstance.dismiss();
           };
@@ -595,8 +645,8 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
           };
         },
         resolve: {
-          columns: function() {
-            //return $scope.columns;
+          selectedAcc: function() {
+            return $scope.selectedAccounts;
           },
         }
       });

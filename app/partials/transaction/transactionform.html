@@ -29,7 +29,7 @@
 					<tbody>
 						<tr ng-repeat="compte in comptes">
 							<td align="center">
-								<input ng-model="compte.sltd" type="checkbox"/>
+								<input ng-model="compte.sltd" type="checkbox" ng-click="populer($index)"/>
 							</td>
 							<td>
 								{{compte.account_txt}}
@@ -42,7 +42,7 @@
 				</table>
 			</div>			
 		</div>	
-		<div id="divactionID"><button class="btn btn-success btn-sm" ng-click="showDialog()">suivant</button></div>
+		<div id="divactionID"><button class="btn btn-success btn-sm" ng-click="showDialog()" ng-disabled="!rep">suivant</button></div>
 	</div>	
 </div>
 
