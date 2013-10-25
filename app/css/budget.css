@@ -65,3 +65,7 @@ fieldset {
 .budget-close { 
   margin-right: 6px;
 }
+
+.selected { 
+  font-weight: bold;
+}
