@@ -5909,19 +5909,36 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
   CONSTRAINT `infotransaction_ibfk_2` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
   ) ENGINE=InnoDB;
 
--- fin augmentation
-
 --
--- table `bika`.`pricegroup`
+-- table `bika`.`sales`
 --
-DROP TABLE IF EXISTS `pricegroup`;
-CREATE TABLE IF NOT EXISTS `pricegroup` (
-  `id`    smallint unsigned NOT NULL AUTO_INCREMENT,
-  `note`  varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=Innodb;
+ DROP TABLE IF EXISTS `sales`;
+ CREATE TABLE IF NOT EXISTS `sales` (
+  enterprise_id   mediumint unsigned NOT NULL,
+  id              int unsigned NOT NULL, -- saleid number
+  cost            int  unsigned NOT NULL,
+  currency        varchar(3) NOT NULL,
+  group_id        smallint unsigned NOT NULL,    
+  seller_id       smallint unsigned NOT NULL,
+  delivery        boolean NOT NULL,
+  delivery_date   date NOT NULL,
+  discount        mediumint unsigned,
+  -- department not implimented from SANRU TRACKER
+  invoice_number  int unsigned NOT NULL,
+  invoice_date    date NOT NULL,
+  note            text,
+  payment_id      tinyint unsigned NOT NULL,
+  posted          boolean NOT NULL default '0',
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `seller_id` (`seller_id`),
+  KEY `group_id` (`group_id`),
+  KEY `payment_id` (`payment_id`),
+  CONSTRAINT FORIEGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT FORIEGN KEY (`seller_id`) REFERENCES `employee` (`id`),
+  CONSTRAINT FORIEGN KEY (`group_id`) REFERENCES `group` (`id`),
+  CONSTRAINT FORIEGN KEY (`payment_id`) REFERENCES `payment` (`id`)
+ ) ENGINE=InnoDB;
 
-INSERT INTO `pricegroup` (`id`, `note`) VALUES 
-  (1, "Vanga ITM"),
-  (2, "Vanga ISTM"),
-  (3, "Employees");
+ INSERT INTO `sales` (`enterprise_id`, `id`, `cost`, `currency`, `group_id` `seller_id`, `delivery`, `delivery_date`, `discount`, `invoice_number`, `invoice_date`, `note`, `payment_id`, `posted`) VALUES 
+  (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02', null, 100001, '2013-01-02', 'A NEW SALE', 1, 0);
