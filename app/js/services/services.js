@@ -394,7 +394,7 @@
     return instance;
   });
 
-  services.factory('data', function($q) {
+  services.factory('data', function($q, $timeout) {
 
     function serialize (input) { return JSON.stringify(input); }
     function deserialize (input) { return JSON.parse(input); }
@@ -442,7 +442,8 @@
         var methods = {
           'PUT'    : route_put,
           'REMOVE' : route_remove,
-          'INIT'   : route_init
+          'INIT'   : route_init,
+          'REFRESH' : route_refresh,
         };
         if (!socketid) { socketid = packet.socketid; }
         methods[packet.method](packet.data);
@@ -450,15 +451,31 @@
  
       var self = this;
       function route_put (data) { self.put(data); }
-      function route_remove(id) { self.remove(id); }
-      function route_init (data) { 
-        // initialize
+      function route_remove (id) { self.remove(id); }
+      function route_init (data) {
+        // FIXME: we should be setting socket ids here.
         self.setData(data);
-        q.resolve(self);
+        $timeout(function() { // THIS IS STRANGE
+          q.resolve(self);
+        });
+      }
+      function route_refresh (data) {
+        self.setData(data); 
       }
   
       this.get = function (id) {
         return self.data[self.index[id]];
+      };
+
+      // Re-Query Method
+      this.where = function (clause) {
+        parameters = {};
+        for (var k in options) {
+          parameters[k] = options[k];
+        }
+        parameters.where = clause;
+        parameters.method = "REFRESH";
+        send(parameters);
       };
 
       this.put = function (object, opts) {
