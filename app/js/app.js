@@ -49,7 +49,12 @@
     when('/accounts', {
       controller: 'chartController',
       templateUrl: '/partials/chart/index.html'
-    });
+    }).
+    when('/inventory', {
+      controller: 'inventoryController',
+      templateUrl: '/partials/inventory/index.html'
+    })
+    ;
   }  
   bika.config(bikaconfig);
 
