@@ -1164,9 +1164,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
 
-    // FIXME: have ready() return the store instance.
     var account_store = data.register(account_spec);
     var type_store = data.register(account_type_spec);
+    console.log("account_store", account_store);
+    console.log("type_store", type_store);
 
     // OMG SYNTAX
     $q.all([
@@ -1174,9 +1175,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       type_store
     ]).then(init);
 
-    function init () {
-      $scope.account_model = account_store.data;
-      $scope.type_model = type_store.data;
+    function init (arr) {
+      $scope.account_model = arr[0].data;
+      $scope.type_model = arr[1].data;
       console.log($scope.account_model);
     }
 
