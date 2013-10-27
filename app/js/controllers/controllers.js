@@ -17,7 +17,6 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
       element.children = [];
       for(var i = 0; i<units.length; i++){
         element.children.push({"label":units[i].name, "id":units[i].id, "url":units[i].url, "children":[]});
-
       }
       $scope.treeData.push(element);
 
@@ -1355,6 +1354,21 @@ controllers.controller('salesController', function($scope, $q, data) {
       });
       return maxid + 1; // incriment
     }
+
+
+  });
+
+  controllers.controller('inventoryController', function($scope) {
+ 
+    $scope.fields = {
+      'stock'  : false,
+      'admin'  : false,
+      'report' : false
+    };
+
+    $scope.slide = function (tag) {
+      $scope.fields[tag] = !$scope.fields[tag];
+    };
 
 
   });
