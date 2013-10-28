@@ -694,6 +694,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.selected = null;
     $scope.create = false;
 
+    
+
     function init() { 
       //Resposible for getting the current values of selects
       appstate.register("enterprise", function(res) { 
@@ -748,7 +750,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.active = "select";
       $scope.selected = null;
       $scope.fiscal_model.delete(fiscal_id);
-
     }
 
     $scope.isSelected = function() { 
