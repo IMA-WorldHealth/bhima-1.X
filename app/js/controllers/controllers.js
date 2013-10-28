@@ -693,6 +693,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.selected = null;
     $scope.create = false;
 
+    
+
     function init() { 
       //Resposible for getting the current values of selects
       appstate.register("enterprise", function(res) { 
@@ -705,7 +707,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       appstate.register("fiscal", function(res) { 
         console.log("resolving", res);
         $scope.select(res.id);
-      })
+      });
     }
 
     function loadEnterprise(enterprise_id) { 
@@ -747,7 +749,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.active = "select";
       $scope.selected = null;
       $scope.fiscal_model.delete(fiscal_id);
-
     }
 
     $scope.isSelected = function() { 
@@ -783,14 +784,37 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
     
-  controllers.controller('patientRegController', function($scope, $q, connect, appstate) { 
+  controllers.controller('patientRegController', function($scope, $q, connect, appcache) { 
     console.log("Patient init");
     var patient_model = {};
-    $scope.patient = patient_model;
+    var submitted = false;
    
     function init() { 
-      
+      //register patient for appcahce namespace
     }
+
+    $scope.update = function(patient) { 
+      var PATIENT_ORGANISATION = 3;
+      patient_model = patient;
+
+      //validate model 
+      
+      //assing patient organisation account - currenlty 3
+      patient_model.group_id = PATIENT_ORGANISATION; 
+      connect.basicPut("patient", [patient_model]);
+      submitted = true;
+
+    }
+
+    $scope.checkChanged = function(model) { 
+        return angular.equals(model, $scope.master);
+    };
+
+    $scope.checkSubmitted = function() { 
+      return submitted;
+    }
+
+
     init();
   });
 

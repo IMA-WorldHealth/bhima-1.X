@@ -1,39 +1,40 @@
 <link rel="stylesheet" href="css/patient.css"/>
 <div class="container">
-      <code>{{patient}}</code>
-
   <div class="row">
     <div class="col-xs-5">
       <div class="page-header">
-        <h1>Register new patient</h1>
+        <h1>Register Patient <small>{{patient.first_name}} {{patient.last_name}}</small></h1>
       </div>
     </div> 
+  </div>
+  <div class="row">
+    <code>{{patient}}</code>
   </div>
   <div class="row">
     <div class="col-xs-3">
       <div class="panel panel-primary">
         <div class="panel-body">
-          <form role="form">
+          <form role="form" name="form">
             <div class="form-group">
               <label for="first-name">First Name</label>
-              <input type="text" class="form-control" id="first-name" ng-model="patient.first">
+              <input type="text" class="form-control" id="first-name" ng-model="patient.first_name" required>
             </div>
 
             <div class="form-group">
               <label for="second-name">Second Name</label>
-              <input type="text" class="form-control" id="second-name" ng-model="patient.second">
+              <input type="text" class="form-control" id="second-name" ng-model="patient.last_name" required>
             </div>
 
             <div class="form-group">
               <div class="radio-inline">
                 <label>
-                  <input type="radio" name="sex_select" id="male" value="male" checked ng-model="patient.sex">
+                  <input type="radio" name="sex_select" id="male" value="male" checked ng-model="patient.sex" required>
                   Male
                 </label>
               </div>
               <div class="radio-inline">
                 <label>
-                  <input type="radio" name="sex_select" id="female" value="female" ng-model="patient.sex">
+                  <input type="radio" name="sex_select" id="female" value="female" ng-model="patient.sex" required>
                   Female
                 </label>
               </div>
@@ -41,17 +42,17 @@
 
             <div class="form-group">
               <label for="village">Village</label>
-              <input type="text" class="form-control" id="village" ng-model="patient.village">
+              <input type="text" class="form-control" id="village" ng-model="patient.village" required>
             </div>
 
             <div class="form-group">
               <label for="region">Region</label>
-              <input type="text" class="form-control" id="region" ng-model="patient.region">
+              <input type="text" class="form-control" id="region" ng-model="patient.zone" required>
             </div>
           </form>
         </div>
       </div>
-      <button class="btn btn-lg btn-default" disabled>Register <span class="glyphicon glyphicon-tree-conifer"></span></button>
+      <button class="btn btn-lg btn-default" ng-click="update(patient)" ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()">Register</button>
     </div>
     <div class="col-xs-5">
       <div class="panel panel-default">
@@ -74,7 +75,7 @@
             </div>
             <div class="form-group">
               <label for="parent">Parent's Name</label>
-              <input type="text" class="form-control" id="parent" ng-model="patient.parent">
+              <input type="text" class="form-control" id="parent" ng-model="patient.parent_name">
             </div>
             <div class="form-group">
               <label for="religion">Religion</label>
@@ -82,7 +83,7 @@
             </div>
             <div class="form-group">
               <label for="marital">Marital Status</label>
-              <input type="text" class="form-control" id="marital" ng-model="patient.marital">
+              <input type="text" class="form-control" id="marital" ng-model="patient.marital_status">
             </div>
           </form> 
         </div>
