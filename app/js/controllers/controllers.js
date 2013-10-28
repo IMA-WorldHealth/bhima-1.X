@@ -793,6 +793,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     function init() { 
       var promise = fetchRecords();
 
+
       $scope.patient_model = {};
       $scope.gridOptions = {};
       $scope.patient_filter = {
@@ -849,7 +850,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.$on('ngGridEventData', function(){
-       if(patient >= 0) $scope.select(patient);
+      if(patient >= 0) $scope.select(patient);
     });
 
     $scope.select = function(id) { 

@@ -14,31 +14,8 @@
     </div>  
   </div>
   <div class="row">
-   <div id="tableContent">
+    <div id="tableContent">
       <div ng-grid="gridOptions" class="table table-default p-grid"></div>
     </div>
-    
-    <!--table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>DOB</th>
-          <th>Gender</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Parent</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="patient in patient_model.data | filter: search.patient" ng-class="{row-selected: patient.id==selected.id}" ng-click="select(patient.id)">
-          <td>{{patient.name}}</td>
-          <td>{{patient.dob | date:'dd/MM/yyyy'}}</td>
-          <td>{{patient.sex}}</td>
-          <td>{{patient.email}}</td>
-          <td>{{patient.phone}}</td>
-          <td>{{patient.parent_name}}</td>
-        </tr>
-      </tbody>
-    </table-->
   </div>
 </div>
