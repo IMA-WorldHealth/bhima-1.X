@@ -785,8 +785,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('patientSearchController', function($scope, $q, connect) { 
+  controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
     console.log("Patient Search init");
+
+    var patient = ($routeParams.patientID || -1);
 
     function init() { 
       var promise = fetchRecords();
@@ -802,6 +804,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //$scope.patient_model = model.data; //ng-grid
         $scope.patient_model = filterNames(model);
         //$scope.patient_options = {data: 'patient_model'}; //ng-grid
+        
+        //Select default
+        if(patient >= 0) $scope.select(patient);
       }); 
     }
 
