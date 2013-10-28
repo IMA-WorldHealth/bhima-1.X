@@ -801,7 +801,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //validate model 
       
       //assing patient organisation account - currenlty 3
-      patient_model.organisation_id = PATIENT_ORGANISATION; 
+      patient_model.group_id = PATIENT_ORGANISATION; 
       connect.basicPut("patient", [patient_model]);
       submitted = true;
 
