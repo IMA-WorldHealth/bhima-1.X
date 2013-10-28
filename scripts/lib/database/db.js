@@ -290,6 +290,8 @@ function db(options) {
       table = escape_id(table);
       statement += table+' ';
 
+      console.log("insert:", table, rows);
+
       rows.forEach(function (row) {
         var key;
         vals = [];

@@ -149,6 +149,11 @@
       update("cache_nav", "value", nav_string);
     }
 
+    //TODO
+    function registerNamespace(unit) { 
+
+    }
+
     function init() { 
       var req = indexedDB.open("bika", version);
 
@@ -340,7 +345,8 @@
 
         }
     */
-    //  
+    //  TODO
+    //    -Unregister callbacks form unit/module, these could be auto unhooked from application controller?
     /////
   
     var instance = {
@@ -386,6 +392,7 @@
       var l = queue[comp_id];
       if(l) { 
         l.forEach(function(recept) { 
+          console.log("Attempting callback", comp[comp_id]);
           recept.callback(comp[comp_id]);
         });
       }
@@ -628,6 +635,11 @@
       return deferred.promise;
     }
 
+    function basicPut(table, object) { 
+      var format_object = {t: table, data: object};
+      return $http.post('data/', format_object);
+    }
+
     function packageModel(model, data) { 
 
       model.index = {};
@@ -692,7 +704,8 @@
 
     return { 
       req : req,
-      basicReq : basicReq
+      basicReq : basicReq,
+      basicPut : basicPut
     };
   });
 
