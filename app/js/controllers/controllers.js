@@ -784,8 +784,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //Initialise after scope etc. has been set
     init();
   });
+
+  controllers.controller('patientSearchController', function($scope, $q, connect) { 
+    console.log("Patient Search init");
+  });
     
-  controllers.controller('patientRegController', function($scope, $q, connect, appcache) { 
+  controllers.controller('patientRegController', function($scope, $q, connect) { 
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
