@@ -794,18 +794,30 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var promise = fetchRecords();
 
       $scope.patient_model = {};
-      $scope.patient_options = { data : 'patient_model'};
+      $scope.gridOptions = { 
+        data : 'patient_model.data',
+        multiSelect: false,
+        filterOptions: {filterText:"",useExternalFilter:false},
+        columnDefs : [{field:'name', display:'name'},
+                      {field:'dob', display:'dob', cellFilter: 'date: "dd/MM/yyyy"'},
+                      {field:'sex', display:'gender'},
+                      {field:'religion', display:'religion'},
+                      {field:'marital_status', display:'marital status'},
+                      {field:'phone', display:'phone'},
+                      {field:'email', display:'email'},
+                      {field:'village', display:'village'},
+                      {field:'city', display:'city'}]
+      };
 
       promise
       .then(function(model) { 
         //FIXME configure locally, then expose
         
         //expose scope 
-        $scope.patient_model = filterNames(model).data; //ng-grid
-        $scope.patient_options = {data: 'patient_model'}; //ng-grid
-        
+        $scope.patient_model = filterNames(model); //ng-grid
+        $scope.gridOptions.selectRow(1, true);
+        console.log($scope.gridOptions);
         //Select default
-        if(patient >= 0) $scope.select(patient);
       }); 
     }
 
@@ -830,8 +842,21 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return model;
     }
 
+    $scope.$on('ngGridEventData', function(){
+       if(patient >= 0) $scope.select(patient);
+    });
+
     $scope.select = function(id) { 
-      //$scope.selected = $scope.patient_model.get(id);
+      //model.get() would not provide index in an un-ordered object
+      angular.forEach($scope.patient_model.data, function(item, index) {
+        console.log(item.id, id); 
+        if(item.id==id) { 
+          $scope.gridOptions.selectRow(index, true);
+          var g = $scope.gridOptions.ngGrid;
+          g.$viewport.focus();
+          return;
+        }   
+      });
     }
 
     init();
