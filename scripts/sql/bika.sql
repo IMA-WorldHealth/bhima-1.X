@@ -5853,7 +5853,7 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `group_id` smallint unsigned NOT NULL, -- references billing_group
   `first_name` varchar(150) NOT NULL,
   `last_name` varchar(150) NOT NULL,
-  `dob` date NOT NULL,
+  `dob` date,
   `parent_name` varchar(150),
   `sex` char(1) NOT NULL, -- 'm' or 'f'
   `religion` varchar(50) NOT NULL,
