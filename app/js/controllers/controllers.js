@@ -794,10 +794,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var promise = fetchRecords();
 
       $scope.patient_model = {};
+      $scope.gridOptions = {};
+      $scope.patient_filter = {
+        filterText: ""
+      };
+
       $scope.gridOptions = { 
-        data : 'patient_model.data',
         multiSelect: false,
-        filterOptions: {filterText:"",useExternalFilter:false},
         columnDefs : [{field:'name', display:'name'},
                       {field:'dob', display:'dob', cellFilter: 'date: "dd/MM/yyyy"'},
                       {field:'sex', display:'gender'},
@@ -806,7 +809,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
                       {field:'phone', display:'phone'},
                       {field:'email', display:'email'},
                       {field:'village', display:'village'},
-                      {field:'city', display:'city'}]
+                      {field:'city', display:'city'}],
+      data : 'patient_model.data',
+      //FIXME Search seems unpredictable - check filter settings
+      filterOptions: $scope.patient_filter
       };
 
       promise

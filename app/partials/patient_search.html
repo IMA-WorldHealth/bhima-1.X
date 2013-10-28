@@ -10,11 +10,14 @@
   <div class="row">
     <div class="form-group">
       <label for="patient_search">Search Patients</label>
-      <input type="text" id="patient_search" ng-model="search.patient">
+      <input type="text" id="patient_search" ng-model="patient_filter.filterText">
     </div>  
   </div>
   <div class="row">
-    <div ng-grid="gridOptions" class="p-grid"></div>
+   <div id="tableContent">
+      <div ng-grid="gridOptions" class="table table-default p-grid"></div>
+    </div>
+    
     <!--table class="table table-bordered">
       <thead>
         <tr>
