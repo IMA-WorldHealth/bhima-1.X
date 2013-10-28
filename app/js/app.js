@@ -50,7 +50,7 @@
       controller: 'chartController',
       templateUrl: '/partials/chart/index.html'
     }).
-    when('/patient_records', { 
+    when('/patient_records/:patientID', { 
       controller: 'patientSearchController', 
       templateUrl: '/partials/patient_search.html'
     });

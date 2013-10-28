@@ -455,7 +455,7 @@ REPLACE INTO `unit` (`id`, `name`, `desc`, `parent`, `has_children`, `url`) VALU
   (26, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors'),
   (27, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal'),
   (28, 'Patient Registration', 'Register patients', 15, 0, 'patient'),
-  (29, 'Patient Records', 'Search for patient', 15, 0, 'patient_records');
+  (29, 'Patient Records', 'Search for patient', 15, 0, 'patient_records/'); --'/' sets the patientID parameter to null, client route will not match without
 /*!40000 ALTER TABLE `unit` ENABLE KEYS */;
 
 -- Dumping structure for table bika.permission
