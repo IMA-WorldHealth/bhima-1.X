@@ -41,28 +41,36 @@ function parsewhr (expr) {
   //  expr = "a.id=b.id";
   //  parsewhr(expr)
   //    => "`a`.`id`=`b`.`id`"
-  var splitters =['>=', '<=', '!=', '<>', '=', '<', '>'],
-    splitter,
-    exprarr;
+  var res;
+  if (expr.length && Object.prototype.toString.call(expr) === '[object Array]') {
+    // this is an array
+    // recursively compile the condition
+    res = whr(expr, "(%search_conditions%)");
+  } else { 
+    var splitters =['>=', '<=', '!=', '<>', '=', '<', '>'],
+      splitter,
+      exprarr;
 
-  splitters.some(function (sym) {
-    if (~expr.indexOf(sym)) {
-      exprarr = expr.split(sym);
-      splitter = sym;
-      return true;
-    }
-  });
+    splitters.some(function (sym) {
+      if (~expr.indexOf(sym)) {
+        exprarr = expr.split(sym);
+        splitter = sym;
+        return true;
+      }
+    });
 
-  exprarr = exprarr.map(function (exp) {
-    if (~exp.indexOf('.')) {
-      // this is a table.col
-      exp = exp.split('.').map(function (e) { return escapeid(e); }).join('.');
-    } else {
-      exp = escapestr(exp); // this will check for numbers
-    }
-    return exp;
-  });
-  return exprarr.join(splitter);
+    exprarr = exprarr.map(function (exp) {
+      if (~exp.indexOf('.')) {
+        // this is a table.col
+        exp = exp.split('.').map(function (e) { return escapeid(e); }).join('.');
+      } else {
+        exp = escapestr(exp); // this will check for numbers
+      }
+      return exp;
+    });
+    res = exprarr.join(splitter);
+  }
+  return res;
 }
 
 function whr (whrlist, template) {
@@ -76,7 +84,6 @@ function whr (whrlist, template) {
   //    whr(whrlist, template);
   //    =>    '`a`.`id`<5 AND `a`.`c`="jon"';
   var operators, whrs = [];
-
   operators = ["AND", "OR"];
   whrlist.forEach(function (str) {
     if (~operators.indexOf(str)) { return whrs.push(str); }
