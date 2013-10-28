@@ -53,6 +53,10 @@
     when('/inventory', {
       controller: 'inventoryController',
       templateUrl: '/partials/inventory/index.html'
+    }).
+    when('/inventory/register', {
+      controller: 'inventoryRegisterController',
+      templateUrl: '/partials/inventory/register/index.html'
     })
     ;
   }  
