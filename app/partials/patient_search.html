@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="css/patient.css"/>
+<link rel="stylesheet" href="css/patient_search.css"/>
 <div class="container">
   <div class="row">
     <div class="col-xs-5">
@@ -8,5 +8,34 @@
     </div> 
   </div>
   <div class="row">
+    <div class="form-group">
+      <label for="patient_search">Search Patients</label>
+      <input type="text" id="patient_search" ng-model="search.patient">
+    </div>  
+  </div>
+  <div class="row">
+    <!--div ng-grid="patient_options" class="gridStyle"></div-->
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>DOB</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Parent</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="patient in patient_model.data | filter: search.patient" ng-class="{selected: patient.id==selected.id}" ng-click="select(patient.id)">
+          <td>{{patient.name}}</td>
+          <td>{{patient.dob | date:'dd/MM/yyyy'}}</td>
+          <td>{{patient.sex}}</td>
+          <td>{{patient.email}}</td>
+          <td>{{patient.phone}}</td>
+          <td>{{patient.parent_name}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

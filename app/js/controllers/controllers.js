@@ -787,6 +787,50 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   controllers.controller('patientSearchController', function($scope, $q, connect) { 
     console.log("Patient Search init");
+
+    function init() { 
+      var promise = fetchRecords();
+
+      $scope.patient_model = {};
+      //$scope.patient_options = { data : 'patient_model'};
+
+      promise
+      .then(function(model) { 
+        //FIXME configure locally, then expose
+        
+        //expose scope 
+        //$scope.patient_model = model.data; //ng-grid
+        $scope.patient_model = filterNames(model);
+        //$scope.patient_options = {data: 'patient_model'}; //ng-grid
+      }); 
+    }
+
+    function fetchRecords() { 
+      var deferred = $q.defer();
+
+      $scope.selected = {};
+
+      connect.req('patient', ['id', 'group_id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'village', 'zone', 'city', 'country'])
+      .then(function(model) { 
+        deferred.resolve(model);
+      });
+
+      return deferred.promise;
+    }
+
+    function filterNames(model) { 
+      var d = model.data;
+      for(var i=0, l=d.length; i<l; i++) { 
+        d[i]["name"] = d[i].first_name + " " + d[i].last_name;
+      }
+      return model;
+    }
+
+    $scope.select = function(id) { 
+      $scope.selected = $scope.patient_model.get(id);
+    }
+
+    init();
   });
     
   controllers.controller('patientRegController', function($scope, $q, connect) { 
