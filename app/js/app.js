@@ -49,6 +49,10 @@
     when('/accounts', {
       controller: 'chartController',
       templateUrl: '/partials/chart/index.html'
+    }).
+    when('/patient_records', { 
+      controller: 'patientSearchController', 
+      templateUrl: '/partials/patient_search.html'
     });
   }  
   bika.config(bikaconfig);
