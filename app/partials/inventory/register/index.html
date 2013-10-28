@@ -1,0 +1,205 @@
+<link rel="stylesheet" href="partials/inventory/register/index.css">
+<div class="top-bar">
+  <h2>Stock Registration</h2>
+</div>
+
+<div class="container content">
+  <div class="col-xs-4">
+    <h3>Quick Search</h3>
+    <hr></hr>
+    <input ng-model="search" class="form-control">
+    #TODO
+    <h3>Results</h3>
+    <hr></hr>
+    #TODO
+  </div>
+ 
+  <div class="col-xs-8">
+    <form name="registrationForm" class="form-horizontal" ng-submit="validate()" novalidate>
+      
+      <div class="form-group">
+        <label for="inventory-registration-code" class="col-xs-2 control-label">
+          Inventory Code:
+        </label>
+        <div class="col-xs-10">
+          <input 
+            class="form-control"
+            ng-model="item.code"
+            id="inventory-registration-code"
+          >
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="inventory-registration-description" class="col-xs-2 control-label">
+          Description:
+        </label>
+        <div class="col-xs-10">
+          <input
+            class="form-control"
+            ng-model="item.description"
+            id="inventory-registration-description" 
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inventory-registration-group" class="col-xs-2 control-label">
+          Inventory Group:
+        </label>
+        <div class="col-xs-10 input-group">
+          <div class="input-group-btn">
+            <button ng-click="addGroup()" class="btn btn-default square">
+              <i class="glyphicon glyphicon-plus"></i>
+            </button>
+          </div>
+          <select 
+            class="form-control"
+            id="inventory-registration-group"
+            ng-model="item.group"
+            ng-options="group.type as group.id for group in groups">
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inventory-registration-pricegroup" class="col-xs-2 control-label">
+          Price Group:
+        </label>
+        <div class="col-xs-10 input-group">
+          <div class="input-group-btn">
+            <button ng-click="addGroup()" class="btn btn-default square">
+              <i class="glyphicon glyphicon-plus"></i>
+            </button>
+          </div>
+          <select 
+            class="form-control"
+            id="inventory-registration-pricegroup"
+            ng-model="item.pricegroup"
+            ng-options="pg.type as pg.id for pg in pricegroup">
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inventory-registration-unit" class="col-xs-2 control-label">
+          Unit:
+        </label>
+        <div class="col-xs-10 input-group">
+         <div class="input-group-btn">
+            <button ng-click="addGroup()" class="btn btn-default square">
+              <i class="glyphicon glyphicon-plus"></i>
+            </button>
+          </div>
+           <select
+            class="form-control"
+            id="inventory-registration-unit"
+            ng-model="item.unit"
+            ng-options="unit.type as unit.id for unit in units">
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inventory-registration-type" class="col-xs-2 control-label">
+          Inventory Type:
+        </label>
+        <div class="col-xs-10 input-group">
+         <div class="input-group-btn">
+            <button ng-click="addGroup()" class="btn btn-default square">
+              <i class="glyphicon glyphicon-plus"></i>
+            </button>
+         </div>
+         <select
+           class="form-control"
+           id="inventory-registration-type"
+           ng-model="item.type"
+           ng-options="type.type as type.id for type in types">
+         </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inventory-registration-weight" class="col-xs-2 control-label">
+          Unit Weight:
+        </label>
+        <div class="col-xs-10">
+          <input 
+            class="form-control"
+            id="inventory-registration-weight"
+            ng-model="item.weight"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inventory-registration-volume" class="col-xs-2 control-label">
+          Unit Volume:
+        </label>
+        <div class="col-xs-10">
+          <input 
+            class="form-control"
+            id="inventory-registration-volume"
+            ng-model="item.volume"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inventory-registration-freightaccnt" class="col-xs-2 control-label">
+          Freight Account:
+        </label>
+        <div class="col-xs-10 input-group">
+         <div class="input-group-btn">
+            <button ng-click="addGroup()" class="btn btn-default square">
+              <i class="glyphicon glyphicon-plus"></i>
+            </button>
+          </div>
+            <select 
+            class="form-control"
+            id="inventory-registration-freightaccnt"
+            ng-model="item.freight_account"
+            ng-options="accnt.type as accnt.id for accnt in accounts">
+          </select>
+       </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2">
+          <div class="radio">
+            <label>
+              <input
+                name="consumable-durable"
+                type="radio"
+                id="inventory-registration-consumable"
+                value="1"
+                ng-model="item.consumable"
+                checked
+              >
+              Consumable
+            </label>
+          </div>
+
+          <div class="radio">
+            <label for="inventory-registration-durable">
+              <input
+                name="consumable-durable"
+                type="radio"
+                id="inventory-registration-durable"
+                value="0"
+                ng-model="item.consumable"
+              >
+              Durable
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-offset-2">
+        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="reset" class="btn btn-danger">Reset</button>
+      </div>
+    </form>
+    <div>{{item}}</div>
+  </div>
+</div>

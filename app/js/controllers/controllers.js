@@ -1393,7 +1393,57 @@ controllers.controller('salesController', function($scope, $q, data) {
     $scope.slide = function (tag) {
       $scope.fields[tag] = !$scope.fields[tag];
     };
+  });
 
+
+  controllers.controller('inventoryRegisterController', function ($scope, data, $q) {
+
+    var account_spec = {
+      identifier: 'id',
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']
+        }
+      },
+      where: ["account.enterprise_id=" + 101], // FIXME
+    };
+
+    var group_spec = {
+      identifier: 'id',
+      tables: {
+        'inventory_group': {
+          columns: ["id", "text", "purchase_account", "sales_account", "stock_increase_account", "stock_increase_account"]  
+        }
+      },
+    };
+
+    var price_spec = {
+      identifier: 'id',
+      tables: {
+        'price_group' : {
+          columns: ["id", "text"] 
+        } 
+      }
+    };
+
+    var inv_type_spec = {
+      identifier: 'id',
+      tables : {
+        'inventory_type': {
+          columns: ["id", "text"]
+        } 
+      }
+    };
+
+
+    /*$q.all([
+      data.register(account_spec),
+      data.register(group_spec),
+      data.register(price_spec),
+      data.register(inv_type_spec)
+    ]);*/
+
+    $scope.item = {};
 
   });
 
