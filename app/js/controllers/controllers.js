@@ -794,16 +794,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var promise = fetchRecords();
 
       $scope.patient_model = {};
-      //$scope.patient_options = { data : 'patient_model'};
+      $scope.patient_options = { data : 'patient_model'};
 
       promise
       .then(function(model) { 
         //FIXME configure locally, then expose
         
         //expose scope 
-        //$scope.patient_model = model.data; //ng-grid
-        $scope.patient_model = filterNames(model);
-        //$scope.patient_options = {data: 'patient_model'}; //ng-grid
+        $scope.patient_model = filterNames(model).data; //ng-grid
+        $scope.patient_options = {data: 'patient_model'}; //ng-grid
         
         //Select default
         if(patient >= 0) $scope.select(patient);
@@ -832,13 +831,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.select = function(id) { 
-      $scope.selected = $scope.patient_model.get(id);
+      //$scope.selected = $scope.patient_model.get(id);
     }
 
     init();
   });
     
-  controllers.controller('patientRegController', function($scope, $q, connect) { 
+  controllers.controller('patientRegController', function($scope, $q, $location, connect) { 
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
@@ -855,8 +854,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       
       //assing patient organisation account - currenlty 3
       patient_model.group_id = PATIENT_ORGANISATION; 
-      connect.basicPut("patient", [patient_model]);
-      submitted = true;
+      //TODO Add error handling
+      connect.basicPut("patient", [patient_model])
+      .then(function(res) { 
+        $location.path("patient_records/" + res.data.insertId);
+        submitted = true;
+      });
 
     }
 

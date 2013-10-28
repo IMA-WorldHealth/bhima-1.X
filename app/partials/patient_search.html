@@ -14,8 +14,8 @@
     </div>  
   </div>
   <div class="row">
-    <!--div ng-grid="patient_options" class="gridStyle"></div-->
-    <table class="table table-bordered">
+    <div ng-grid="patient_options" class="p-grid"></div>
+    <!--table class="table table-bordered">
       <thead>
         <tr>
           <th>Name</th>
@@ -27,7 +27,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="patient in patient_model.data | filter: search.patient" ng-class="{rowSelected: patient.id==selected.id}" ng-click="select(patient.id)">
+        <tr ng-repeat="patient in patient_model.data | filter: search.patient" ng-class="{row-selected: patient.id==selected.id}" ng-click="select(patient.id)">
           <td>{{patient.name}}</td>
           <td>{{patient.dob | date:'dd/MM/yyyy'}}</td>
           <td>{{patient.sex}}</td>
@@ -36,6 +36,6 @@
           <td>{{patient.parent_name}}</td>
         </tr>
       </tbody>
-    </table>
+    </table-->
   </div>
 </div>
