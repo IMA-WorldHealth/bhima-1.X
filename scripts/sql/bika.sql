@@ -1,4 +1,4 @@
--- NOTE: We are going completely to _underscore_ syntax --
+-- notE: We are going completely to _underscore_ syntax --
 
 DROP DATABASE IF EXISTS `bika`;
 CREATE DATABASE `bika`;
@@ -33,7 +33,7 @@ REPLACE INTO `enterprise` (`id`, `region`, `country`, `city`, `name`, `phone`, `
 --
 DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
-  `id` mediumint(8) unsigned not null,
+  `id` mediumint unsigned not null,
   `type` varchar(35) not null,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB; 
@@ -50,9 +50,9 @@ DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `enterprise_id` smallint unsigned not null,
   `id` mediumint unsigned not null AUTO_INCREMENT,
-  `locked` tinyint(1) not null default '0',
+  `locked` boolean not null default '0',
   `account_txt` text,
-  `account_type_id` mediumint(8) unsigned not null,
+  `account_type_id` mediumint unsigned not null,
   `account_category` text not null,
   `fixed` boolean default '0',
   PRIMARY KEY (`id`),
@@ -265,7 +265,7 @@ INSERT INTO `account` (`enterprise_id`, `id`, `locked`, `account_txt`, `account_
 -- `bika`.`currency`
 --
 DROP TABLE IF EXISTS `currency`;
-CREATE TABLE IF NOT EXISTS `currency` (
+CREATE TABLE IF not EXISTS `currency` (
   `id` tinyint unsigned not null,
   `name` text not null,
   `symbol` varchar(15) not null,
@@ -280,23 +280,23 @@ CREATE TABLE IF NOT EXISTS `currency` (
 -- table `bika`.`fiscal_year`
 --
 DROP TABLE IF EXISTS `fiscal_year`;
-CREATE TABLE IF NOT EXISTS `fiscal_year` (
+CREATE TABLE IF not EXISTS `fiscal_year` (
   `enterprise_id` smallint unsigned not null,
   `id` mediumint unsigned not null,
-  `number_of_months` mediumint(8) unsigned not null,
+  `number_of_months` mediumint unsigned not null,
   `fiscal_year_txt` text not null,
-  `transaction_start_number` int(10) unsigned not null,
-  `transaction_stop_number` int(10) unsigned not null,
-  `fiscal_year_number` mediumint(9) not null,
-  `start_month` int(10) unsigned not null,
-  `start_year` int(10) unsigned not null,
+  `transaction_start_number` int unsigned not null,
+  `transaction_stop_number` int unsigned not null,
+  `fiscal_year_number` mediumint not null,
+  `start_month` int unsigned not null,
+  `start_year` int unsigned not null,
   -- making baby databases cry - TODO: improve this in the future (columns from S. Tracker)
-  `previous_fiscal_year` mediumint(8) unsigned,
-  `next_fiscal_year` mediumint(8) unsigned,
+  `previous_fiscal_year` mediumint unsigned,
+  `next_fiscal_year` mediumint unsigned,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
   CONSTRAINT `fiscal_year_ibfk_1` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
-) ENGINE=InnoDB default CHARSET=latin1;
+) ENGINE=InnoDB;
 
 INSERT INTO `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_year_txt`, `transaction_start_number`, `transaction_stop_number`, `fiscal_year_number`, `start_month`, `start_year`, `previous_fiscal_year`, `next_fiscal_year`) VALUES
     (101, 2013001, 5, '[Company 101] Year 1', 0, 100, 1, 7, 2013, null, 2014001),
@@ -309,56 +309,27 @@ INSERT INTO `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_ye
 --
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `id` smallint(5) unsigned not null AUTO_INCREMENT,
+  `id` smallint unsigned not null AUTO_INCREMENT,
   `username` varchar(80) not null,
   `password` varchar(100) not null,
   `first` text not null,
   `last` text not null,
   `email` varchar(100) default null,
-  `logged_in` tinyint(1) not null default '0',
+  `logged_in` boolean not null default '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 REPLACE INTO `user` (`id`, `username`, `password`, `first`, `last`, `email`, `logged_in`) VALUES
-    (1, 'jniles', 'malamumoke', 'Jonathan', 'Niles', 'jonathanwniles@gmail.com', 0),
-    (2, 'chris', 'c', 'CHRIS ', 'LOMAME', 'chris@ima.org', 0),
-    (3, 'rdc', 'r', 'CONGO', 'DEMOCRATIQUE', 'rdc@rdc.cd', 0),
-    (4, 'docta', 'd', 'Docteur House', 'Machine', 'd@his.cd', 0),
-    (5, 'compta', 'c', 'Comptable', 'Analytique', 'c@his.cd', 0),
-    (6, 'manager', 'm', 'Manager', 'Nationale', 'm@his.cd', 0),
-    (7, 'admin', 'his', 'Simple', 'ADMINISTRATOR', 'admin@his', 0),
-    (8, 'd1', 'd', 'Docteur Comptable', 'Médecin Economiste', 'dm@his.com', 0),
-    (9, 'm1', 'm', 'Manager Administrateur', 'Gerant Systeme', 'manage@his.cd', 0),
-    (10, 'docta1', 'dd', 'Docteur Simple', 'Limité', 'doctasimple@his.cd', 0),
-    (11, 'admin', 'lmt', 'Administrateur', 'Limite', 'adminlimit@his.com', 0),
-    (12, 'fin', 'f', 'Financier subalterne', 'Sous Financier', 'finance@his.com', 0),
-    (13, 'sfount', '1', 'Steven', 'Fountain', 'StevenFountain@live.co.uk', 0);
+  (1, 'jniles', 'malamumoke', 'Jonathan', 'Niles', 'jonathanwniles@gmail.com', 0),
+  (2, 'delva', '1', 'Dedrick', 'kitamuka', 'kitamuka@gmail.com', 0),
+  (13, 'sfount', '1', 'Steven', 'Fountain', 'StevenFountain@live.co.uk', 0);
 
---
--- table `bika`.`journal`
---
-DROP TABLE IF EXISTS `journal`;
-CREATE TABLE `journal` (
-  `fiscal_year_id` mediumint unsigned not null,
-  `id` mediumint unsigned not null,
-  `date` date not null,
-  `user_id` smallint unsigned not null,
-  PRIMARY KEY (`id`),
-  KEY `fiscal_year_id` (`fiscal_year_id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `journal_ibfk_1` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
-  CONSTRAINT `journal_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB;
-
-REPLACE INTO `journal` (`fiscal_year_id`, `id`, `date`, `user_id`) VALUES
-    (2013001, 1000, '2013-07-23', 1);
-
---
+  --
 -- table `bika`.`period`
 --
 DROP TABLE IF EXISTS `period`;
-CREATE TABLE IF NOT EXISTS `period` (
-  `fiscal_year_id` mediumint(8) unsigned not null,
+CREATE TABLE IF not EXISTS `period` (
+  `fiscal_year_id` mediumint unsigned not null,
   `id` mediumint unsigned not null,
   `period_start` date not null,
   `period_stop` date not null,
@@ -402,46 +373,52 @@ ALTER TABLE `enterprise`
 -- table `bika`.`unit`
 --
 DROP TABLE IF EXISTS `unit`;
-CREATE TABLE IF NOT EXISTS `unit` (
-  `id` mediumint(9) not null,
+CREATE TABLE IF not EXISTS `unit` (
+  `id` mediumint not null,
   `name` varchar(30) not null,
-  `desc` text not null,
-  `parent` smallint(6) default null,
-  `has_children` tinyint(1) not null,
+  `description` text not null,
+  `parent` smallint default null,
+  `has_children` tinyint not null,
   `url` tinytext,
+  `p_url` tinytext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB default CHARSET=latin1;
 
-REPLACE INTO `unit` (`id`, `name`, `desc`, `parent`, `has_children`, `url`) VALUES
-  (0, 'Root', 'The unseen root node', null, 1, ''),
-  (1, 'Admin', 'The Administration Super-Category', 0, 1, ''),
-  (2, 'Enterprises', 'Manage the registered enterprises from here', 1, 0, '/units/enterprise/'),
-  (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/'),
-  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission'),
-  (5, 'Finance', 'The Finance Super-Category', 0, 1, ''),
-  (6, 'Accounts', 'The chart of accounts', 5, 0, 'accounts'),
-  (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/'),
-  (8, 'Budgeting', 'Plan your next move', 5, 0, 'budgeting'),
-  (9, 'Journal', 'Daily Log', 5, 0, 'journal'),
-  (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/'),
-  (11, 'Inventory', 'The Inventory Super-Category', 0, 1, ''),
-  (12, 'Orders', 'Manage your purchase orders', 11, 0, '/units/orders/'),
-  (13, 'Stock', 'What is in stock?', 11, 0, '/units/stock/'),
-  (15, 'Hospital', 'The Hospital Super-Category', 0, 1, ''),
-  (16, 'Pharmacy', 'What\'s in your pharmacy?', 15, 0, '/units/pharmacy/'),
-  (17, 'Laboratory', 'Analyze lab results', 15, 0, '/units/laboratory/'),
-  (18, 'Surgery', 'Best cuttlery here!', 15, 0, '/units/surgery'),
-  (19, 'Radiology', 'X-rays, anyone?', 15, 0, '/units/radiology/'),
-  (20, 'Billing', 'Test pour le sous enfant', 5, 1, null),
-  (21, 'Billing A', 'Sous enfant de Billing', 20, 0, '/html/com'),
-  (22, 'Billing B', 'Deuxieme fils de Billing', 20, 0, '/html/deux'),
-  (23, 'Billing C', '3 Fils', 20, 0, 'Lien hypertext'),
-  (24, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/'),
-  (25, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction'),
-  (26, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors'),
-  (27, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal'),
-  (28, 'Patient Registration', 'Register patients', 15, 0, 'patient'),
-  (29, 'Patient Records', 'Search for patient', 15, 0, 'patient_records/');
+/*p_url will be used by tree for the rootprovider, e.g look at the achat unit the table unit*/
+REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url`, `p_url`) VALUES
+  (0, 'Root', 'The unseen root node', null, 1, '',''),
+  (1, 'Admin', 'The Administration Super-Category', 0, 1, '',''),
+  (2, 'Enterprises', 'Manage the registered enterprises from here', 1, 0, '/units/enterprise/',''),
+  (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/', ''),
+  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission', '/permission'),
+  (5, 'Finance', 'The Finance Super-Category', 0, 1, '', ''),  
+  (6, 'Accounts', 'The chart of accounts', 5, 0, 'accounts',''),
+  (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/',''),
+  (8, 'Budgeting', 'Plan your next move', 5, 0, 'budgeting',''),
+  (9, 'Journal', 'Daily Log', 5, 0, 'journal',''),
+  (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/',''),
+  (11, 'Inventory', 'The Inventory Super-Category', 0, 1, '',''),
+  (12, 'Orders', 'Manage your purchase orders', 11, 0, '/units/orders/',''),
+  (13, 'Stock', 'What is in stock?', 0, 1, '',''),
+  (14, 'Achats', 'Achats de stock', 13, 0, '/partials/achat','/achat'),
+  (15, 'Livraison', 'Livraison du stock', 13, 0, '/partials/livraison',''),
+  (16, 'Pertes', 'Perte en stock', 13, 0, '/partials/perte',''),
+  (17, 'Ventes', 'Ventes des biens et services', 0, 1, '',''),
+  (18, 'Malades', 'services rendus aux malades', 17, 0, '/partials/malade',''),
+  (19, 'Pharmacie', 'vente des medicaments', 17, 0, '/partials/pharmacie',''),
+  (20, 'Autre service', 'Autre service vendus', 17, 0, '/partials/autre',''),
+  (21, 'Hospital', 'The Hospital Super-Category', 0, 1, '',''),
+  (22, 'Pharmacy', 'What\'s in your pharmacy?', 21, 0, '/units/pharmacy/',''),
+  (23, 'Laboratory', 'Analyze lab results', 21, 0, '/units/laboratory/',''),
+  (24, 'Surgery', 'Best cuttlery here!', 21, 0, '/units/surgery',''),
+  (25, 'Radiology', 'X-rays, anyone?', 21, 0, '/units/radiology/',''),
+  (26, 'Creancier', 'Tous les creancier', 5, 0,'/partials/creancier',''),
+  (27, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/',''),
+  (28, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction',''),
+  (29, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors',''),
+  (30, 'Fiscal Yeapermissionr', 'Fiscal year configuration page', 1, 0, 'fiscal',''),
+  (31, 'Patient Registration', 'Register patients', 21, 0, 'patient',''),
+  (32, 'Essaie journal', 'essaie journal', 17, 0, '/partials/vente','/essaie');
 
 -- 
 -- table `bika`.`permission`
@@ -476,7 +453,7 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (15, 27, 13),
     (16, 28, 13),
     (17, 29, 13);
-    
+
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
   `id`              int not null AUTO_INCREMENT,
@@ -5738,7 +5715,7 @@ INSERT INTO `payment` (`id`, `days`, `months`, `text`, `note`) VALUES
 -- table `bika`.`tax`
 --
 DROP TABLE IF EXISTS `tax`;
-CREATE TABLE IF NOT EXISTS `tax` (
+CREATE TABLE IF not EXISTS `tax` (
   `id`            smallint unsigned not null AUTO_INCREMENT,
   `registration`  mediumint unsigned not null,
   `note`          text,
@@ -5800,7 +5777,7 @@ CREATE TABLE `debitor_group` (
   CONSTRAINT FOREIGN KEY (`type_id`) REFERENCES `debitor_group_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- NOTE: For business logic, must make sure enterprise actually owns the account.
+-- notE: For business logic, must make sure enterprise actually owns the account.
 INSERT INTO `debitor_group` (`id`, `enterprise_id`, `name`, `account_number`, `location_id`, `phone`, `email`, `note`, `locked`, `contact_id`, `tax_id`, `max_credit`, `type_id`) VALUES
   (1, 1, 'Employees', 420000, 1, "", "", "The employees of hospital X", 0, 1, 1, 1, 1),
   (2, 1, 'Fr Rienheart Conv.', 410400, 1, "", "", "Frere Rienheart's conventionees", 1, 1, 2, 1, 2),
@@ -5876,7 +5853,7 @@ CREATE TABLE `employee` (
   CONSTRAINT FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=Innodb;
 
--- NOTE: business logic should not register debitor ids to more than one person
+-- notE: business logic should not register debitor ids to more than one person
 INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `department_id`, `initials`) VALUES
   (1, "Dodi", "Chief Accountant", 6, 11, 4, "DK"),
   (2, "Jon", "MCZ", 8, 11, 3, "JN");
@@ -5885,7 +5862,7 @@ INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `dep
 -- Table `bika`.`patient`
 --
 DROP TABLE IF EXISTS `patient`;
-CREATE TABLE IF NOT EXISTS `patient` (
+CREATE TABLE IF not EXISTS `patient` (
   `id` int unsigned not null AUTO_INCREMENT,
   `debitor_id` int unsigned not null, -- references debitors 
   `first_name` varchar(150) not null,
@@ -5945,7 +5922,7 @@ INSERT INTO `sale` (`enterprise_id`, `id`, `cost`, `currency`, `debitor_id`, `se
 -- table `bika`.`inv_types`
 --
 DROP TABLE IF EXISTS `inv_type`;
-CREATE TABLE IF NOT EXISTS `inv_type` (
+CREATE TABLE IF not EXISTS `inv_type` (
   id      smallint not null,
   type    varchar(30) not null,
   PRIMARY KEY (`id`)
@@ -5960,7 +5937,7 @@ INSERT INTO `inv_type` VALUES
 --    Goods & Services
 --
 DROP TABLE IF EXISTS `inventory`;
-CREATE TABLE IF NOT EXISTS `inventory` (
+CREATE TABLE IF not EXISTS `inventory` (
   enterprise_id     smallint unsigned not null,
   id                int unsigned not null,
   inv_code          varchar(10) not null,
@@ -6042,6 +6019,29 @@ INSERT INTO `inventory_unit` VALUES
   (2, "Pill"),
   (3, "Box"),
   (4, "Lot");
+
+--
+-- table `bika`.`journal`
+--
+DROP TABLE IF EXISTS `journal`;
+CREATE TABLE `journal` (
+  `id`                mediumint unsigned not null AUTO_INCREMENT,
+  `enterprise_id`     smallint unsigned not null,  
+  `fiscal_id`         mediumint unsigned not null,
+  `user_id`           smallint unsigned not null,
+  `sale_id`           int unsigned not null,  
+  `date`              date not null,
+  `description`       text,  
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `fiscal_id`(`fiscal_id`),
+  KEY `user_id` (`user_id`),
+  KEY `sale_id` (`sale_id`),
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`fiscal_id`) REFERENCES `fiscal_year` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB;
 
 --
 -- table `bika`.`gl`
