@@ -785,6 +785,37 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
+  controllers.controller('salesController', function($scope, $q, connect) { 
+    console.log("Sales initialised");
+
+    //Default selection for invoice payable 
+    $scope.invoice = {payable: "false"};
+    //TODO perform logic with local variables and expose once complete
+    $scope.sale_date = getDate();
+    $scope.inventory = [];
+
+    function getDate() { 
+      //Format the current date according to RFC3339 (for HTML input[type=="date"])
+      var now = new Date();
+      return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+    } 
+
+    $scope.updateInventory = function() { 
+      console.log("Update called");
+      $scope.inventory.push({});
+    }
+
+    $scope.isPayable = function() { 
+      if($scope.invoice.payable=="true") return true;
+      return false;
+    }
+  });
+
+  controllers.controller('salesRecordsController', function($scope, $q, connect) { 
+    console.log("Sale records initialised");
+    $scope.thing = 5;
+  })
+
   controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
     console.log("Patient Search init");
 
@@ -1360,6 +1391,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
   });
 
+//FIXME legacy sales controller, can be removed?
+/*
 controllers.controller('salesController', function($scope, data) {
     // definitions
     
@@ -1407,6 +1440,6 @@ controllers.controller('salesController', function($scope, data) {
       ]
     };
 
-  });
+  });*/
 
 })(angular);
