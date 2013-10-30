@@ -43,7 +43,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
         deferred.resolve(data);
       });
       return deferred.promise;
-    };
+    }
 
     function getChildren(role, callback){
       var request = {}; 
@@ -486,7 +486,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
   }
     //debut functions
   $scope.select = function(id) {
-  }
+  };
   function fillEntrepriseSelect(){
     var deferred = $q.defer();
     var req_db = {};
@@ -1481,7 +1481,91 @@ controllers.controller('salesController', function($scope, $q, data) {
     $scope.slide = function (tag) {
       $scope.fields[tag] = !$scope.fields[tag];
     };
+  });
 
+
+  controllers.controller('inventoryRegisterController', function ($scope, data, $q) {
+
+    var account_spec = {
+      identifier: 'id',
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']
+        }
+      },
+      where: ["account.enterprise_id=" + 101], // FIXME
+    };
+
+    var group_spec = {
+      identifier: 'id',
+      tables: {
+        'inventory_group': {
+          columns: ["id", "text", "purchase_account", "sales_account", "stock_increase_account", "stock_increase_account"]  
+        }
+      },
+    };
+
+    var price_spec = {
+      identifier: 'id',
+      tables: {
+        'price_group' : {
+          columns: ["id", "text"] 
+        } 
+      }
+    };
+
+    var inv_type_spec = {
+      identifier: 'id',
+      tables : {
+        'inventory_type': {
+          columns: ["id", "text"]
+        } 
+      }
+    };
+
+    var inv_unit_spec = {
+      identifier: 'id',
+      tables : {
+        'inventory_unit': {
+          columns: ["id", "text"] 
+        } 
+      }
+    };
+
+    $q.all([
+      data.register(account_spec),
+      data.register(group_spec),
+      data.register(price_spec),
+      data.register(inv_type_spec),
+      data.register(inv_unit_spec)
+    ]).then(init);
+
+    function init(arr) {
+      var account_store = arr[0],
+        group_store = arr[1],
+        price_store = arr[2],
+        type_store = arr[3],
+        unit_store = arr[4];
+
+      $scope.types = type_store.data;
+      $scope.accounts = account_store.data;
+      $scope.groups = group_store.data;
+      $scope.prices = price_store.data;
+      $scope.units = unit_store.data;
+
+      console.log("types", type_store.data);
+
+    }
+
+    $scope.validate = function() {
+      $scope.validated = true; 
+    };
+
+    $scope.item = {};
+
+    $scope.label = function(obj) {
+      return obj.id + " - " + obj.account_txt;
+    };
 
   });
 

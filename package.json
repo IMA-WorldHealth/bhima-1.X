@@ -1,0 +1,32 @@
+{
+  "name": "bika",
+  "version": "0.0.0",
+  "description": "A rural hospital information management system.",
+  "main": "scripts/server.js",
+  "scripts": {
+    "test": "node scripts/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IMA-WorldHealth/Bika.git"
+  },
+  "keywords": [
+    "bika",
+    "health",
+    "HIS",
+    "hospital"
+  ],
+  "author": "IMA World Health",
+  "license": "Beerware",
+  "bugs": {
+    "url": "https://github.com/IMA-WorldHealth/Bika/issues"
+  },
+  "dependencies": {
+    "mysql": "2.x.x",
+    "express": "3.x.x",
+    "ws": "0.4.31"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1"
+  }
+}

@@ -5996,3 +5996,100 @@ INSERT INTO `inventory` (`enterprise_id`, `id`, `inv_code`, `text`, `price`, `in
   (101, 6, "CHTRAC", "Trachectome", 26103, 1, -1, -1, -1, 1),
   (101, 7, "EXKYSB", "Kyste Sublingual", 39555, 1, -1, -1, -1, 1),
   (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 26357, 1, -1, -1, -1, 1);
+
+
+-- 
+-- table `bika`.`inventory_group`
+--
+DROP TABLE IF EXISTS `inventory_group`;
+CREATE TABLE `inventory_group` (
+  id                      smallint unsigned NOT NULL,
+  text                    varchar(100) NOT NULL,
+  purchase_account        mediumint unsigned NOT NULL,
+  sales_account           mediumint unsigned NOT NULL,
+  stock_increase_account  mediumint unsigned NOT NULL,
+  stock_decrease_account  mediumint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `purchase_account` (`purchase_account`),
+  KEY `sales_account` (`sales_account`),
+  KEY `stock_increase_account` (`stock_increase_account`),
+  KEY `stock_decrease_account` (`stock_decrease_account`),
+  CONSTRAINT FOREIGN KEY (`purchase_account`) REFERENCES `account` (`id`),
+  CONSTRAINT FOREIGN KEY (`sales_account`) REFERENCES `account` (`id`),
+  CONSTRAINT FOREIGN KEY (`stock_increase_account`) REFERENCES `account` (`id`),
+  CONSTRAINT FOREIGN KEY (`stock_decrease_account`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB;
+
+-- 
+-- table `bika`.`price_group`
+--
+DROP TABLE IF EXISTS `price_group`;
+CREATE TABLE `price_group` (
+  id              smallint unsigned NOT NULL,
+  text            varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+INSERT INTO `price_group` VALUES
+  (1, "Imports"),
+  (2, "Locals");
+
+--
+-- table `bika`.`inventory_type`
+-- 
+DROP TABLE IF EXISTS `inventory_type`;
+CREATE TABLE `inventory_type` (
+  id            smallint unsigned NOT NULL,
+  text          varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB; 
+
+INSERT INTO `inventory_type` VALUES
+  (1, "Service"),
+  (2, "Good");
+
+-- 
+-- table `bika`.`inventory_unit`
+--
+DROP TABLE IF EXISTS `inventory_unit`;
+CREATE TABLE `inventory_unit` (
+  id          smallint unsigned AUTO_INCREMENT NOT NULL,
+  text        varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+INSERT INTO `inventory_unit` VALUES
+  (1, "Pallet"),
+  (2, "Pill"),
+  (3, "Box"),
+  (4, "Lot");
+
+--
+-- table `bika`.`gl`
+-- 
+DROP TABLE IF EXISTS `gl`;
+CREATE TABLE `gl` (
+  id              int NOT NULL,
+  enterprise_id   int NOT NULL,
+  journal_id      int NOT NULL,
+  fiscal_year_id  int NOT NULL,
+  transaction_id  int NOT NULL,
+  account_id      int NOT NULL,
+  credit          int NOT NULL,
+  debit           int NOT NULL,
+  currency_txt    varchar(3) NOT NULL,
+  entity          char(10) NOT NULL,  -- replaces debitor or creditor
+  date            date NOT NULL,
+  invoice_number  int NOT NULL,
+  period_id       int NOT NULL,
+  text            text,
+  PRIMARY KEY (`id`),
+  KEY `jounral_id` (`journal_id`),
+  KEY `transaction_id` (`transaction_id`),
+  KEY `account_id` (`account_id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `invoice_number` (`invoice_number`),
+  KEY `period_id` (`period_id`),
+  CONSTRAINT FOREIGN KEY  `` -- TODO: FINISH THIS!!
+  
+) ENGINE=InnoDB;
