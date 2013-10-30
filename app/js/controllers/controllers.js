@@ -783,8 +783,92 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //Initialise after scope etc. has been set
     init();
   });
+
+  controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
+    console.log("Patient Search init");
+
+    var patient = ($routeParams.patientID || -1);
+
+    function init() { 
+      var promise = fetchRecords();
+
+
+      $scope.patient_model = {};
+      $scope.gridOptions = {};
+      $scope.patient_filter = {
+        filterText: ""
+      };
+
+      $scope.gridOptions = { 
+        multiSelect: false,
+        columnDefs : [{field:'name', display:'name'},
+                      {field:'dob', display:'dob', cellFilter: 'date: "dd/MM/yyyy"'},
+                      {field:'sex', display:'gender'},
+                      {field:'religion', display:'religion'},
+                      {field:'marital_status', display:'marital status'},
+                      {field:'phone', display:'phone'},
+                      {field:'email', display:'email'},
+                      {field:'village', display:'village'},
+                      {field:'city', display:'city'}],
+      data : 'patient_model.data',
+      //FIXME Search seems unpredictable - check filter settings
+      filterOptions: $scope.patient_filter
+      };
+
+      promise
+      .then(function(model) { 
+        //FIXME configure locally, then expose
+        
+        //expose scope 
+        $scope.patient_model = filterNames(model); //ng-grid
+        $scope.gridOptions.selectRow(1, true);
+        console.log($scope.gridOptions);
+        //Select default
+      }); 
+    }
+
+    function fetchRecords() { 
+      var deferred = $q.defer();
+
+      $scope.selected = {};
+
+      connect.req('patient', ['id', 'group_id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'village', 'zone', 'city', 'country'])
+      .then(function(model) { 
+        deferred.resolve(model);
+      });
+
+      return deferred.promise;
+    }
+
+    function filterNames(model) { 
+      var d = model.data;
+      for(var i=0, l=d.length; i<l; i++) { 
+        d[i]["name"] = d[i].first_name + " " + d[i].last_name;
+      }
+      return model;
+    }
+
+    $scope.$on('ngGridEventData', function(){
+      if(patient >= 0) $scope.select(patient);
+    });
+
+    $scope.select = function(id) { 
+      //model.get() would not provide index in an un-ordered object
+      angular.forEach($scope.patient_model.data, function(item, index) {
+        console.log(item.id, id); 
+        if(item.id==id) { 
+          $scope.gridOptions.selectRow(index, true);
+          var g = $scope.gridOptions.ngGrid;
+          g.$viewport.focus();
+          return;
+        }   
+      });
+    }
+
+    init();
+  });
     
-  controllers.controller('patientRegController', function($scope, $q, connect, appcache) { 
+  controllers.controller('patientRegController', function($scope, $q, $location, connect) { 
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
@@ -801,8 +885,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       
       //assing patient organisation account - currenlty 3
       patient_model.group_id = PATIENT_ORGANISATION; 
-      connect.basicPut("patient", [patient_model]);
-      submitted = true;
+      //TODO Add error handling
+      connect.basicPut("patient", [patient_model])
+      .then(function(res) { 
+        $location.path("patient_records/" + res.data.insertId);
+        submitted = true;
+      });
 
     }
 
