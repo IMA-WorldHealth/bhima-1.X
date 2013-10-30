@@ -455,7 +455,9 @@ REPLACE INTO `unit` (`id`, `name`, `desc`, `parent`, `has_children`, `url`) VALU
   (26, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors'),
   (27, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal'),
   (28, 'Patient Registration', 'Register patients', 15, 0, 'patient'),
-  (29, 'Patient Records', 'Search for patient', 15, 0, 'patient_records/'); --'/' sets the patientID parameter to null, client route will not match without
+  (29, 'Patient Records', 'Search for patient', 15, 0, 'patient_records/'),
+  (30, 'Sales', 'Create an invoice for a sale', 15, 0, 'sales'),
+  (31, 'Sale Records', 'Search for a sale', 5, 0, 'sale_records/');
 /*!40000 ALTER TABLE `unit` ENABLE KEYS */;
 
 -- Dumping structure for table bika.permission
@@ -476,9 +478,7 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (1, 8, 13),
     (2, 1, 13), 
     (3, 4, 13),
-    (4, 3, 13),
     (5, 6, 13),
-    (6, 7, 13),
     (7, 8, 1),
     (8, 1, 1), 
     (9, 4, 1),
@@ -486,10 +486,11 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (11, 6, 1),
     (12, 7, 1),
     (13, 26, 1),
-    (14, 26, 13),
     (15, 27, 13),
     (16, 28, 13),
-    (17, 29, 13);
+    (17, 29, 13),
+    (18, 30, 13),
+    (19, 31, 13);
     
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE IF NOT EXISTS `budget` (

@@ -1,0 +1,29 @@
+.invoice-table { 
+  table-layout: fixed;
+}
+
+.invoice-item { 
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.invoice-desc { 
+  min-width: 50px;
+  max-width: 50px;
+}
+
+.invoice-quantity { 
+  min-width: 30px;
+  max-width: 30 px;
+}
+
+.invoice-price { 
+  min-width: 50px;
+  max-width: 50px;
+}
+
+.invoice-amount { 
+  min-width: 50px;
+  max-width: 50px;
+}

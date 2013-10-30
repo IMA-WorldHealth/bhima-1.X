@@ -1,0 +1,95 @@
+<link href="css/sales.css" rel="stylesheet"/>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-5">
+      <div class="page-header">
+        <h1>Record new Sale</h1>
+      </div>
+    </div>
+  </div> 
+  <div class="row">
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label for="debitor">Debtor Account</label>
+        <select id="debitor" class="form-control"></select>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h2>Debtor Name</h2>
+          <p>Debtor Location</p>
+          <p>Debtor Country</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label for="salesid">Sales Number</label>
+        <input disabled id="salesid" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="saledate">Sale Date</label>
+        <input type="date" id="saledate" class="form-control" ng-model="sale_date">
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label for="department">TODO Department</label>
+        <select id="department" class="form-control" disabled></select>
+      </div>
+
+      <div class="form-group">
+      <div class="radio">
+        <label>
+          <input type="radio" name="option_payable" id="immediate" value="true" ng-model="invoice.payable">
+          Payable Immediately
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="option_payable" id="payable" value="false" checked ng-model="invoice.payable">
+          Payable by
+        </label>
+      </div>
+      <div class="input-group">
+        <select id="payable" class="form-control" ng-disabled="isPayable()">
+          <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
+          <option>14</option>
+          <option>30</option>
+        </select>
+        <span class="input-group-addon">days</span>
+      </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <span>Invoice Items</span>
+      </div>
+
+        <table class="table invoice-table">
+          <thead>
+            <tr>
+              <td class="invoice-item">Item</td>
+              <td class="invoice-desc">Description</td>
+              <td>Qty</td>
+              <td>Unit Price</td>
+              <td>Amount</td>
+            </tr>
+          </thead>
+          <tbody> 
+            <tr ng-repeat="item in inventory">
+              <td class="invoice-item"><select class="form-control"></select></td>
+              <td class="invoice-desc"><input type="text" class="form-control" id="item_description"></td>
+              <td class="invoice-quantity"><input type="number" class="form-control" id="item_quantity"></td>
+              <td class="invoice-price"><input type="number" class="form-control" id="item_price"></td>
+              <td class="invoice-amount"><span></span></td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <button ng-click="updateInventory()">+</button>
+
+    </div>
+  </div>
+</div>
