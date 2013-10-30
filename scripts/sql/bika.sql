@@ -327,19 +327,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 REPLACE INTO `user` (`id`, `username`, `password`, `first`, `last`, `email`, `logged_in`) VALUES
     (1, 'jniles', 'malamumoke', 'Jonathan', 'Niles', 'jonathanwniles@gmail.com', 0),
-    (2, 'chris', 'c', 'CHRIS ', 'LOMAME', 'chris@ima.org', 0),
-    (3, 'rdc', 'r', 'CONGO', 'DEMOCRATIQUE', 'rdc@rdc.cd', 0),
-    (4, 'docta', 'd', 'Docteur House', 'Machine', 'd@his.cd', 0),
-    (5, 'compta', 'c', 'Comptable', 'Analytique', 'c@his.cd', 0),
-    (6, 'manager', 'm', 'Manager', 'Nationale', 'm@his.cd', 0),
-    (7, 'admin', 'his', 'Simple', 'ADMINISTRATOR', 'admin@his', 0),
-    (8, 'd1', 'd', 'Docteur Comptable', 'Médecin Economiste', 'dm@his.com', 0),
-    (9, 'm1', 'm', 'Manager Administrateur', 'Gerant Systeme', 'manage@his.cd', 0),
-    (10, 'docta1', 'dd', 'Docteur Simple', 'Limité', 'doctasimple@his.cd', 0),
-    (11, 'admin', 'lmt', 'Administrateur', 'Limite', 'adminlimit@his.com', 0),
-    (12, 'fin', 'f', 'Financier subalterne', 'Sous Financier', 'finance@his.com', 0),
+    (2, 'delva', '1', 'Dedrick', 'kitamuka', 'kitamuka@gmail.com', 0),
     (13, 'sfount', '1', 'Steven', 'Fountain', 'StevenFountain@live.co.uk', 0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+/*
 
 --
 -- table `bika`.`journal`
@@ -356,11 +347,11 @@ CREATE TABLE IF NOT EXISTS `journal` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `journal_ibfk_1` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   CONSTRAINT `journal_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB;*/
 
 /*!40000 ALTER TABLE `journal` DISABLE KEYS */;
-REPLACE INTO `journal` (`fiscal_year_id`, `id`, `date`, `user_id`) VALUES
-    (2013001, 1000, '2013-07-23', 1);
+/*REPLACE INTO `journal` (`fiscal_year_id`, `id`, `date`, `user_id`) VALUES
+    (2013001, 1000, '2013-07-23', 1);*/
 /*!40000 ALTER TABLE `journal` ENABLE KEYS */;
 
 --
@@ -417,45 +408,50 @@ DROP TABLE IF EXISTS `unit`;
 CREATE TABLE IF NOT EXISTS `unit` (
   `id` mediumint(9) NOT NULL,
   `name` varchar(30) NOT NULL,
-  `desc` text NOT NULL,
+  `description` text NOT NULL,
   `parent` smallint(6) DEFAULT NULL,
   `has_children` tinyint(1) NOT NULL,
   `url` tinytext,
+  `pseudourl` tinytext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Dumping data for table bika.unit: ~25 rows (environ)
 /*!40000 ALTER TABLE `unit` DISABLE KEYS */;
-REPLACE INTO `unit` (`id`, `name`, `desc`, `parent`, `has_children`, `url`) VALUES
-  (0, 'Root', 'The unseen root node', NULL, 1, ''),
-  (1, 'Admin', 'The Administration Super-Category', 0, 1, ''),
-  (2, 'Enterprises', 'Manage the registered enterprises from here', 1, 0, '/units/enterprise/'),
-  (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/'),
-  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission'),
-  (5, 'Finance', 'The Finance Super-Category', 0, 1, ''),
-  (6, 'Accounts', 'The chart of accounts', 5, 0, 'accounts'),
-  (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/'),
-  (8, 'Budgeting', 'Plan your next move', 5, 0, 'budgeting'),
-  (9, 'Journal', 'Daily Log', 5, 0, 'journal'),
-  (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/'),
+/*p_url will be used by tree for the rootprovider, e.g look at the achat unit the table unit*/
+REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url`, 'p_url') VALUES
+  (0, 'Root', 'The unseen root node', NULL, 1, '',''),
+  (1, 'Admin', 'The Administration Super-Category', 0, 1, '',''),
+  (2, 'Enterprises', 'Manage the registered enterprises from here', 1, 0, '/units/enterprise/',''),
+  (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/', ''),
+  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission', ''),
+  (5, 'Finance', 'The Finance Super-Category', 0, 1, '', ''),  
+  (6, 'Accounts', 'The chart of accounts', 5, 0, 'accounts',''),
+  (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/',''),
+  (8, 'Budgeting', 'Plan your next move', 5, 0, 'budgeting',''),
+  (9, 'Journal', 'Daily Log', 5, 0, 'journal',''),
+  (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/',''),
   (11, 'Inventory', 'The Inventory Super-Category', 0, 1, ''),
-  (12, 'Orders', 'Manage your purchase orders', 11, 0, '/units/orders/'),
-  (13, 'Stock', 'What is in stock?', 11, 0, '/units/stock/'),
-  (15, 'Hospital', 'The Hospital Super-Category', 0, 1, ''),
-  (16, 'Pharmacy', 'What\'s in your pharmacy?', 15, 0, '/units/pharmacy/'),
-  (17, 'Laboratory', 'Analyze lab results', 15, 0, '/units/laboratory/'),
-  (18, 'Surgery', 'Best cuttlery here!', 15, 0, '/units/surgery'),
-  (19, 'Radiology', 'X-rays, anyone?', 15, 0, '/units/radiology/'),
-  (20, 'Billing', 'Test pour le sous enfant', 5, 1, NULL),
-  (21, 'Billing A', 'Sous enfant de Billing', 20, 0, '/html/com'),
-  (22, 'Billing B', 'Deuxieme fils de Billing', 20, 0, '/html/deux'),
-  (23, 'Billing C', '3 Fils', 20, 0, 'Lien hypertext'),
-  (24, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/'),
-  (25, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction'),
-  (26, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors'),
-  (27, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal'),
-  (28, 'Patient Registration', 'Register patients', 15, 0, 'patient'),
-  (29, 'Patient Records', 'Search for patient', 15, 0, 'patient_records/'); --'/' sets the patientID parameter to null, client route will not match without
+  (12, 'Orders', 'Manage your purchase orders', 11, 0, '/units/orders/',''),
+  (13, 'Stock', 'What is in stock?', 0, 1, '',''),
+  (14, 'Achats', 'Achats de stock', 13, 0, '/partials/achat','/achat'),
+  (15, 'Livraison', 'Livraison du stock', 13, 0, '/partials/livraison',''),
+  (16, 'Pertes', 'Perte en stock', 13, 0, '/partials/perte',''),
+  (17, 'Ventes', 'Ventes des biens et services', 0, 1, '',''),
+  (18, 'Malades', 'services rendus aux malades', 17, 0, '/partials/malade',''),
+  (19, 'Pharmacie', 'vente des medicaments', 17, 0, '/partials/pharmacie',''),
+  (20, 'Autre service', 'Autre service vendus', 17, 0, '/partials/autre',''),
+  (21, 'Hospital', 'The Hospital Super-Category', 0, 1, '',''),
+  (22, 'Pharmacy', 'What\'s in your pharmacy?', 21, 0, '/units/pharmacy/',''),
+  (23, 'Laboratory', 'Analyze lab results', 21, 0, '/units/laboratory/',''),
+  (24, 'Surgery', 'Best cuttlery here!', 21, 0, '/units/surgery',''),
+  (25, 'Radiology', 'X-rays, anyone?', 21, 0, '/units/radiology/',''),
+  (26, 'Creancier', 'Tous les creancier', 5, 0,'/partials/creancier',''),
+  (27, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/',''),
+  (28, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction',''),
+  (29, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors',''),
+  (30, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal',''),
+  (31, 'Patient Registration', 'Register patients', 21, 0, 'patient','');
 /*!40000 ALTER TABLE `unit` ENABLE KEYS */;
 
 -- Dumping structure for table bika.permission
@@ -472,24 +468,10 @@ CREATE TABLE IF NOT EXISTS `permission` (
 ) ENGINE=InnoDB;
 
 
-INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
-    (1, 8, 13),
-    (2, 1, 13), 
-    (3, 4, 13),
-    (4, 3, 13),
-    (5, 6, 13),
-    (6, 7, 13),
-    (7, 8, 1),
-    (8, 1, 1), 
-    (9, 4, 1),
-    (10, 3, 1),
-    (11, 6, 1),
-    (12, 7, 1),
-    (13, 26, 1),
-    (14, 26, 13),
-    (15, 27, 13),
-    (16, 28, 13),
-    (17, 29, 13);
+--INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
+    --(1, 4, 2),
+    --(2, 4, 13), 
+    --(3, 4, 1);
     
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE IF NOT EXISTS `budget` (
@@ -5849,11 +5831,11 @@ INSERT INTO `billing_group` (`id`, `enterprise_id`, `name`, `account_number`, `l
 --
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL,
   `group_id` smallint unsigned NOT NULL, -- references billing_group
   `first_name` varchar(150) NOT NULL,
   `last_name` varchar(150) NOT NULL,
-  `dob` date,
+  `dob` date NOT NULL,
   `parent_name` varchar(150),
   `sex` char(1) NOT NULL, -- 'm' or 'f'
   `religion` varchar(50) NOT NULL,
@@ -5878,7 +5860,7 @@ INSERT INTO `patient` (`id`, `group_id`, `first_name`, `last_name`, `dob`, `pare
   (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", null, null, "Kinshasa", "Ngili", "Kinshasa", "Republic Democratic du Congo"),
   (4, 3, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", null, null, "Vanga", "Vanga", "Kikwit", "Republic Democratic du Congo");
 
---
+/*--
 -- table `bika`.`transaction`
 --
 
@@ -5889,7 +5871,7 @@ CREATE TABLE IF NOT EXISTS `transaction` (
   `currency_id` tinyint unsigned NOT NULL,
   `rate` DOUBLE,
   `period_id` smallint(6),
-  `desc` text,
+  `description` text,
   `date` date NOT NULL,
   `opd` int,
   PRIMARY KEY (`id`),
@@ -5911,7 +5893,27 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
   KEY `transaction_id`(`transaction_id`),
   CONSTRAINT `infotransaction_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT `infotransaction_ibfk_2` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  ) ENGINE=InnoDB;*/
+
+--
+-- creation table journal
+--
+
+DROP TABLE IF EXISTS `journal`;
+CREATE TABLE IF NOT EXISTS `journal` (
+  `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+  `currency_id` tinyint unsigned NOT NULL,
+  `rate` DOUBLE,
+  `period_id` smallint(6),
+  `description` text,
+  `date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `currency_id` (`currency_id`),
+  KEY `period_id`(`period_id`),
+  CONSTRAINT `journal_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `journal_ibfk_2` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
   ) ENGINE=InnoDB;
+
 
 --
 -- table `bika`.`sales`
