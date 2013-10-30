@@ -412,26 +412,26 @@ CREATE TABLE IF NOT EXISTS `unit` (
   `parent` smallint(6) DEFAULT NULL,
   `has_children` tinyint(1) NOT NULL,
   `url` tinytext,
-  `pseudourl` tinytext,
+  `p_url` tinytext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Dumping data for table bika.unit: ~25 rows (environ)
 /*!40000 ALTER TABLE `unit` DISABLE KEYS */;
 /*p_url will be used by tree for the rootprovider, e.g look at the achat unit the table unit*/
-REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url`, 'p_url') VALUES
+REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url`, `p_url`) VALUES
   (0, 'Root', 'The unseen root node', NULL, 1, '',''),
   (1, 'Admin', 'The Administration Super-Category', 0, 1, '',''),
   (2, 'Enterprises', 'Manage the registered enterprises from here', 1, 0, '/units/enterprise/',''),
   (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/', ''),
-  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission', ''),
+  (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission', '/permission'),
   (5, 'Finance', 'The Finance Super-Category', 0, 1, '', ''),  
   (6, 'Accounts', 'The chart of accounts', 5, 0, 'accounts',''),
   (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/',''),
   (8, 'Budgeting', 'Plan your next move', 5, 0, 'budgeting',''),
   (9, 'Journal', 'Daily Log', 5, 0, 'journal',''),
   (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/',''),
-  (11, 'Inventory', 'The Inventory Super-Category', 0, 1, ''),
+  (11, 'Inventory', 'The Inventory Super-Category', 0, 1, '',''),
   (12, 'Orders', 'Manage your purchase orders', 11, 0, '/units/orders/',''),
   (13, 'Stock', 'What is in stock?', 0, 1, '',''),
   (14, 'Achats', 'Achats de stock', 13, 0, '/partials/achat','/achat'),
@@ -450,8 +450,9 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (27, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/',''),
   (28, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction',''),
   (29, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors',''),
-  (30, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, 'fiscal',''),
-  (31, 'Patient Registration', 'Register patients', 21, 0, 'patient','');
+  (30, 'Fiscal Yeapermissionr', 'Fiscal year configuration page', 1, 0, 'fiscal',''),
+  (31, 'Patient Registration', 'Register patients', 21, 0, 'patient',''),
+  (32, 'Essaie journal', 'essaie journal', 17, 0, '/partials/vente','/essaie');
 /*!40000 ALTER TABLE `unit` ENABLE KEYS */;
 
 -- Dumping structure for table bika.permission
@@ -468,10 +469,10 @@ CREATE TABLE IF NOT EXISTS `permission` (
 ) ENGINE=InnoDB;
 
 
---INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
-    --(1, 4, 2),
-    --(2, 4, 13), 
-    --(3, 4, 1);
+/*INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
+    (1, 4, 2),
+    (2, 4, 13), 
+    (3, 4, 1);*/
     
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE IF NOT EXISTS `budget` (
@@ -5895,24 +5896,7 @@ CREATE TABLE IF NOT EXISTS `infotransaction` (
   CONSTRAINT `infotransaction_ibfk_2` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
   ) ENGINE=InnoDB;*/
 
---
--- creation table journal
---
 
-DROP TABLE IF EXISTS `journal`;
-CREATE TABLE IF NOT EXISTS `journal` (
-  `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
-  `currency_id` tinyint unsigned NOT NULL,
-  `rate` DOUBLE,
-  `period_id` smallint(6),
-  `description` text,
-  `date` date NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `currency_id` (`currency_id`),
-  KEY `period_id`(`period_id`),
-  CONSTRAINT `journal_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT `journal_ibfk_2` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-  ) ENGINE=InnoDB;
 
 
 --
@@ -5999,3 +5983,26 @@ INSERT INTO `inventory` (`enterprise_id`, `id`, `inv_code`, `text`, `price`, `in
   (101, 6, "CHTRAC", "Trachectome", 26103, 1, -1, -1, -1, 1),
   (101, 7, "EXKYSB", "Kyste Sublingual", 39555, 1, -1, -1, -1, 1),
   (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 26357, 1, -1, -1, -1, 1);
+--
+-- creation table journal
+--
+
+DROP TABLE IF EXISTS `journal`;
+CREATE TABLE IF NOT EXISTS `journal` (
+  `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `enterprise_id` smallint unsigned NOT NULL,  
+  `fiscal_id` mediumint(8) unsigned NOT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `sales_id` int unsigned NOT NULL,  
+  `date` date NOT NULL,
+  `description` text,  
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `fiscal_id`(`fiscal_id`),
+  KEY `user_id` (`user_id`),
+  KEY `sales_id` (`sales_id`),
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`fiscal_id`) REFERENCES `fiscal_year` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`sales_id`) REFERENCES `sales` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  ) ENGINE=InnoDB;
