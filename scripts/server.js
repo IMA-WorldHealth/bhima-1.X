@@ -61,7 +61,8 @@ app.post('/data/', function (req, res) {
   
   var cb = function (err, ans) {
     if (err) throw err;
-    res.send("succes!;");
+    console.log("Post success", ans);
+    res.send({status: 200, insertId: ans.insertId});
   };  
   
   console.log("Request for", req.body.t, req.body.data);
