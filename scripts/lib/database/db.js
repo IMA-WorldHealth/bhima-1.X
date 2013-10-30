@@ -328,6 +328,10 @@ function db(options) {
       }
     
       return parts.join("") + ";";
+    },
+
+    escape: function (id) {
+      return escape_id(id);
     }
   };
 }
