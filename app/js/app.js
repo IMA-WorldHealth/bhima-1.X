@@ -57,6 +57,10 @@
     when('/patient_records/:patientID', { 
       controller: 'patientSearchController', 
       templateUrl: '/partials/patient_search.html'
+    }).
+    when('/inventory/register', {
+      controller: 'inventoryRegisterController',
+      templateUrl: '/partials/inventory/register/index.html'
     });
   }  
   bika.config(bikaconfig);
