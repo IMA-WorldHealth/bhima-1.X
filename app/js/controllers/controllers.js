@@ -16,7 +16,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
       element.id = role.id;
       element.children = [];
       for(var i = 0; i<units.length; i++){
-        element.children.push({"label":units[i].name, "id":units[i].id, "url":units[i].url, "children":[]});
+        element.children.push({"label":units[i].name, "id":units[i].id, "p_url":units[i].p_url, "children":[]});
 
       }
       $scope.treeData.push(element);
@@ -32,7 +32,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
     
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
-            $location.path($scope.navtree.currentNode.url);
+            $location.path($scope.navtree.currentNode.p_url);
         }
     }, true);
 
@@ -84,7 +84,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   });
 
   //population model d'unite
-  bikaConnect.fetch("unit", ["id", "name", "desc", "parent"]).then(function(data) { 
+  bikaConnect.fetch("unit", ["id", "name", "description", "parent"]).then(function(data) { 
     $scope.units = data;
     for(var i=0; i<$scope.units.length; i++){
       $scope.units[i].chkUnitModel = false;
@@ -360,7 +360,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 
     function fillTable(period_id){
       var req_db = {};
-      req_db.e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+      req_db.e = [{t : 'transaction', c : ['description', 'date', 'rate']},
                   {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
                   {t:'currency', c:['symbol']},
                   {t:'account', c:['account_type_id']}
@@ -381,7 +381,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 
       function refreshTable(dep){
         if(dep.accountID && dep.df && dep.dt) {
-          var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+          var e = [{t : 'transaction', c : ['description', 'date', 'rate']},
                    {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
                    {t:'currency', c:['symbol']},
                    {t:'account', c:['account_type_id']}
