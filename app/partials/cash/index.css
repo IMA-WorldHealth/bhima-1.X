@@ -25,6 +25,17 @@
   position: relative;
 }
 
+.input-group-btn .dropdown-menu {
+  display: none;
+}
+
+/* Work in Progress .. */
+.input-group-btn.open .dropdown-menu {
+  display: block;
+  z-index: 99999;
+  clear: none;
+  list-style-type: none;
+}
 
 
 /* Warning: this breaks w/o bootstrap */
