@@ -6021,6 +6021,25 @@ INSERT INTO `inventory_unit` VALUES
   (3, "Box"),
   (4, "Lot");
 
+-- 
+-- table sale_item
+-- TODO columns for discount etc.
+--
+DROP TABLE IF EXISTS `sale_item`;
+CREATE TABLE `sale_item` (
+  sale_id         int unsigned not null,
+  id              int unsigned not null,
+  inventory_id    int unsigned not null,
+  quantity        int unsigned default '0',
+  unit_price      int unsigned not null, -- This is duplicated from inventory, but allows for prices to change etc.
+  total           int unsigned, -- Probably don't need to keep track of total - enables much less processing
+  PRIMARY KEY(`id`),
+  KEY `sale_id` (`sale_id`),
+  KEY `inventory_id` (`inventory_id`),
+  CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`),
+  CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
+) ENGINE=InnoDB;
+
 --
 -- table `bika`.`journal`
 --
