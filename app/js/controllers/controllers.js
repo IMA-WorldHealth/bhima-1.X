@@ -787,6 +787,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
   controllers.controller('salesController', function($scope, $q, connect) { 
+    // TODO
+    //  - selecting a debitor should either be done through id or name search (Typeahead select)
+    //  - An Invoice should not be able to include the same item (removed from options for future line items)
     console.log("Sales initialised");
 
     //Default selection for invoice payable 
@@ -795,27 +798,55 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.sale_date = getDate();
     $scope.inventory = [];
 
+    var inventory_request = connect.req('inventory', ['id', 'inv_code', 'text', 'price']);
+    var sales_request = connect.req('sale', ['id']);
+    //FIXME should probably look up debitor table and then patients
+    //var debtor_request = connect.req('patient', ['debitor_id', 'first_name', 'last_name', 'location_id']);
+    //cache location table to look up debitor details
+    //var location_request = connect.req('location', ['id', 'city', 'region', 'country_code']);
+
+    var debtor_query = { 
+      'e' : [{
+        t : 'patient',
+        c : ['debitor_id', 'first_name', 'last_name', 'location_id']
+      }, { 
+        t : 'location',
+        c : ['id', 'city', 'region', 'country_code']
+      }],
+      'jc' : [{
+        ts : ['patient', 'location'],
+        c : ['location_id', 'id']
+      }]
+    };
+
+    var debtor_request = connect.basicReq(debtor_query);
+     
     function init() { 
-      var inventory_model = {};
 
-      var promise = fetchInventory();
-      promise
-      .then(function(res) { 
-        inventory_model = res;
+      //FIXME requests shouldn't be dependent on order
+      $q.all([
+        inventory_request,
+        sales_request,
+        debtor_request
+      ]).then(function(a) { 
+        console.log(a);
+        $scope.inventory_model = a[0];
+        $scope.sales_model = a[1];
+        $scope.debtor_model = a[2];
 
-        //expose to scope
-        $scope.inventory_model = res;
-      });
+        $scope.debtor = $scope.debtor_model.data[0]; // select default debtor
+
+        var invoice_id = createId($scope.sales_model.data);
+        $scope.invoice_id = invoice_id;
+      })      
+
     }
 
-    function fetchInventory() { 
-      var deferred = $q.defer();
-
-      connect.req('inventory', ['id', 'inv_code', 'text', 'price']).then(function(model) { 
-        deferred.resolve(model);
-      });
-
-      return deferred.promise;
+    //FIXME Shouldn't need to download every all invoices in this module, only take top few?
+    function createId(list) { 
+      var default_id = 100000;
+      if(list.length < 1) return default_id; //No invoices have been created
+      return list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)}).id + 1;
     }
 
     function getDate() { 
@@ -847,8 +878,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.updateInventory = function() { 
       console.log("Update called");
-      var new_line = {};
+      var new_line = {item: $scope.inventory_model.data[0]}; //select default item
       $scope.inventory.push(new_line);
+      $scope.updateItem(new_line); //force updates of fields
       /* 
       Watching a variable that isn't in angular's scope, return the variable in a function
       $scope.$watch(function() { return new_line.item; }, function(nval, oval, scope) { 
@@ -864,6 +896,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.itemsInInv = function() { 
       if($scope.inventory.length>0) return true;
       return false;
+    }
+
+    $scope.formatDebtor = function(debtor) { 
+      console.log("Formatting", debtor);
+      return "[" + debtor.debitor_id + "] " + debtor.first_name + " " + debtor.last_name;
     }
 
     init();

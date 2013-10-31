@@ -10,6 +10,8 @@
   - Register any changes in module with a service, this should be checked before any navigation is allowed
   - Style for Fiscal Year, Enterprise Select and Application Utility buttons (This should not just be default bootstrap)
 
+### invoicing module ###
+ * Currenly only supports invoicing patient debitors and not debitors in general, looking up and processing debitors should be reworked
 ### util.js ###
  * Create a file called util.js with utility functions including:
  ** util.mixin(object1, object2) -- mixes (deep copy) two objects together.
