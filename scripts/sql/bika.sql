@@ -392,9 +392,9 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/', ''),
   (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission', '/permission'),
   (5, 'Finance', 'The Finance Super-Category', 0, 1, '', ''),  
-  (6, 'Accounts', 'The chart of accounts', 5, 0, 'accounts',''),
+  (6, 'Accounts', 'The chart of accounts', 5, 0, '/partials/accounts','accounts'),
   (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/',''),
-  (8, 'Budgeting', 'Plan your next move', 5, 0, 'budgeting',''),
+  (8, 'Budgeting', 'Plan your next move', 5, 0, '/partials/budgeting','budgeting'),
   (9, 'Journal', 'Daily Log', 5, 0, 'journal',''),
   (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/',''),
   (11, 'Inventory', 'The Inventory Super-Category', 0, 1, '',''),
@@ -416,12 +416,12 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (27, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/',''),
   (28, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction',''),
   (29, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors',''),
-  (30, 'Fiscal Yeapermissionr', 'Fiscal year configuration page', 1, 0, 'fiscal',''),
-  (31, 'Patient Registration', 'Register patients', 21, 0, 'patient',''),
+  (30, 'Fiscal Year', 'Fiscal year configuration page', 1, 0, '/partials/fiscal','fiscal'),
+  (31, 'Patient Registration', 'Register patients', 21, 0, '/partials/patient','patient'),
   (32, 'Essaie journal', 'essaie journal', 17, 0, '/partials/vente','/essaie'),
-  (33, 'Patient Records', 'Search for patient', 15, 0, 'patient_records/', ''),
-  (34, 'Sales', 'Create an invoice for a sale', 15, 0, 'sales', ''),
-  (35, 'Sale Records', 'Search for a sale', 5, 0, 'sale_records/', '');
+  (33, 'Patient Records', 'Search for patient', 21, 0, '/partials/patient_records/', 'patient_records/'),
+  (34, 'Sales', 'Create an invoice for a sale', 5, 0, '/partials/sales', 'sales'),
+  (35, 'Sale Records', 'Search for a sale', 5, 0, '/partials/sale_records/', 'sale_records/');
 -- 
 -- table `bika`.`permission`
 --
@@ -449,12 +449,11 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (11, 6, 1),
     (12, 7, 1),
     (13, 26, 1),
-    (15, 27, 13),
-    (16, 28, 13),
-    (17, 29, 13),
-    (18, 30, 13),
-    (19, 31, 13),
-    (20, 29, 13);
+    (14, 30, 13),
+    (15, 31, 13),
+    (16, 34, 13),
+    (17, 35, 13),
+    (18, 33, 13);
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
