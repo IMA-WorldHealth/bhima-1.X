@@ -461,6 +461,8 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
 
   var resp = fillEntrepriseSelect();
 
+  //FIXME Errors are thrown if no fiscal years are assigned to an enterprise, this should be handled
+  //TODO period is used very rarely, probably doesn't need a selection on the application
   resp
   .then(function(enterprise_id) { 
     return fillFiscalSelect(enterprise_id);
@@ -493,7 +495,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
     bikaConnect.get('/data/?', req_db).then(function(data){
       $scope.enterprise_model = data;
-      $scope.e_select = $scope.enterprise_model[0]; //Select first as default
+      $scope.e_select = $scope.enterprise_model[1]; //Select default enterprise (should be taken from appcache if multiple enterprises are used)
       deferred.resolve($scope.e_select.id);
     });
     return deferred.promise;
