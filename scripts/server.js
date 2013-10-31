@@ -16,8 +16,8 @@ app.configure('production', function () {
   app.use(express.session({secret: 'open blowfish', cookie: {httpOnly: false}}));
   app.use(auth);
   app.use(express.static('app'));
-  app.use(app.router);
 });
+  app.use(app.router);
 
 // TODO: Deprecate this code and use sockets
 app.get('/data/', function (req, res) {

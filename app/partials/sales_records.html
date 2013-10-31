@@ -1,3 +1,21 @@
+<!--link rel="stylesheet" href="css/sales_records.css"/-->
 <div class="container">
-records{{thing}}
+  <div class="row">
+    <div class="col-xs-5">
+      <div class="page-header">
+        <h1>Invoice Records</h1>
+      </div>
+    </div> 
+  </div>
+  <div class="row">
+    <div class="form-group">
+      <label for="patient_search">Search Invoices</label>
+      <input type="text" id="patient_search" ng-model="patient_filter.filterText">
+    </div>  
+  </div>
+  <div class="row">
+    <div id="tableContent">
+      <div ng-grid="gridOptions" class="table table-default p-grid"></div>
+    </div>
+  </div>
 </div>
