@@ -16,8 +16,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
       element.id = role.id;
       element.children = [];
       for(var i = 0; i<units.length; i++){
-        element.children.push({"label":units[i].name, "id":units[i].id, "url":units[i].url, "children":[]});
-
+        element.children.push({"label":units[i].name, "id":units[i].id, "p_url":units[i].p_url, "children":[]});
       }
       $scope.treeData.push(element);
 
@@ -32,7 +31,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
     
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
-            $location.path($scope.navtree.currentNode.url);
+            $location.path($scope.navtree.currentNode.p_url);
         }
     }, true);
 
@@ -44,7 +43,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
         deferred.resolve(data);
       });
       return deferred.promise;
-    };
+    }
 
     function getChildren(role, callback){
       var request = {}; 
@@ -84,7 +83,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   });
 
   //population model d'unite
-  bikaConnect.fetch("unit", ["id", "name", "desc", "parent"]).then(function(data) { 
+  bikaConnect.fetch("unit", ["id", "name", "description", "parent"]).then(function(data) { 
     $scope.units = data;
     for(var i=0; i<$scope.units.length; i++){
       $scope.units[i].chkUnitModel = false;
@@ -360,7 +359,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 
     function fillTable(period_id){
       var req_db = {};
-      req_db.e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+      req_db.e = [{t : 'transaction', c : ['description', 'date', 'rate']},
                   {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
                   {t:'currency', c:['symbol']},
                   {t:'account', c:['account_type_id']}
@@ -381,7 +380,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 
       function refreshTable(dep){
         if(dep.accountID && dep.df && dep.dt) {
-          var e = [{t : 'transaction', c : ['desc', 'date', 'rate']},
+          var e = [{t : 'transaction', c : ['description', 'date', 'rate']},
                    {t:'infotransaction', c:['id', 'account_id', 'transaction_id', 'debit', 'credit']},
                    {t:'currency', c:['symbol']},
                    {t:'account', c:['account_type_id']}
@@ -487,7 +486,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
   }
     //debut functions
   $scope.select = function(id) {
-  }
+  };
   function fillEntrepriseSelect(){
     var deferred = $q.defer();
     var req_db = {};
@@ -1287,7 +1286,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.outOfSync = false;
 
     var store = data.register(query);
-    store.ready().then(function() {
+    store.then(function() {
       $scope.grp_model = store.data;
     });
     
@@ -1364,19 +1363,20 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
 
-    // FIXME: have ready() return the store instance.
     var account_store = data.register(account_spec);
     var type_store = data.register(account_type_spec);
+    console.log("account_store", account_store);
+    console.log("type_store", type_store);
 
     // OMG SYNTAX
     $q.all([
-      account_store.ready(),
-      type_store.ready()
+      account_store,
+      type_store
     ]).then(init);
 
-    function init () {
-      $scope.account_model = account_store.data;
-      $scope.type_model = type_store.data;
+    function init (arr) {
+      $scope.account_model = arr[0].data;
+      $scope.type_model = arr[1].data;
       console.log($scope.account_model);
     }
 
@@ -1450,7 +1450,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
 //FIXME legacy sales controller, can be removed?
 /*
-controllers.controller('salesController', function($scope, data) {
+controllers.controller('salesController', function($scope, $q data) {
     // definitions
     
     var sales_table = {
@@ -1490,13 +1490,173 @@ controllers.controller('salesController', function($scope, data) {
            columns: ['id', 'inv_code', 'text', 'price', 'inv_type']
         } 
       },
+      // TODO: Allow for () by nesting arrays[].
       where: [
         "inventory.enterprise_id="+101,
         "AND",
         "inventory.stock<>0" // services are -1
       ]
     };
+    
+    var patient_table = {
+      identifier: 'id',
+      primary: 'patient',
+      tables: {
+        'patient': {
+          columns: ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email'] 
+        },
+        'location' : {
+          columns: ['village', 'city', 'zone', 'country_code']
+        }
+      },
+      join: ["patient.location_id=location.id"]
+    };
+
+    var sales = data.register(sales_table);
+    var payment = data.register(payment_table);
+    var employee = data.register(employee_table);
+    var inventory = data.register(inventory_prices);
+    var patient = data.register(patient_table);
+
+    $q.all([
+      sales,
+      payment,
+      employee,
+      inventory,
+      patient
+    ]).then(init);
+
+    function init () {
+     $scope.payment = payment.data;
+     $scope.sales = sales.data;
+     $scope.inventory = inventory.data;
+     $scope.employees = employee.data;
+     $scope.patients = patient.data;
+    }
+
+    // this will be a new sale.
+    $scope.sale = {
+      sale_type: 1 
+    };
+
+    $scope.items = [];
+
+    $scope.saledetailoptions = {
+      data: 'items'
+    };
+
+    $scope.salejournaloptions = {
+      data: 'sales'
+    };
+
+    function generateUniqueInvoice () {
+      var maxid = sales.reduce(function(max, right) {
+        max = max.id || max; // for the first iteration
+        return Math.max(max, right.id);
+      });
+      return maxid + 1; // incriment
+    }
+
 
   });*/
+
+  controllers.controller('inventoryController', function($scope) {
+ 
+    $scope.fields = {
+      'stock'  : false,
+      'admin'  : false,
+      'report' : false
+    };
+
+    $scope.slide = function (tag) {
+      $scope.fields[tag] = !$scope.fields[tag];
+    };
+  });
+
+
+  controllers.controller('inventoryRegisterController', function ($scope, data, $q) {
+
+    var account_spec = {
+      identifier: 'id',
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']
+        }
+      },
+      where: ["account.enterprise_id=" + 101], // FIXME
+    };
+
+    var group_spec = {
+      identifier: 'id',
+      tables: {
+        'inventory_group': {
+          columns: ["id", "text", "purchase_account", "sales_account", "stock_increase_account", "stock_increase_account"]  
+        }
+      },
+    };
+
+    var price_spec = {
+      identifier: 'id',
+      tables: {
+        'price_group' : {
+          columns: ["id", "text"] 
+        } 
+      }
+    };
+
+    var inv_type_spec = {
+      identifier: 'id',
+      tables : {
+        'inventory_type': {
+          columns: ["id", "text"]
+        } 
+      }
+    };
+
+    var inv_unit_spec = {
+      identifier: 'id',
+      tables : {
+        'inventory_unit': {
+          columns: ["id", "text"] 
+        } 
+      }
+    };
+
+    $q.all([
+      data.register(account_spec),
+      data.register(group_spec),
+      data.register(price_spec),
+      data.register(inv_type_spec),
+      data.register(inv_unit_spec)
+    ]).then(init);
+
+    function init(arr) {
+      var account_store = arr[0],
+        group_store = arr[1],
+        price_store = arr[2],
+        type_store = arr[3],
+        unit_store = arr[4];
+
+      $scope.types = type_store.data;
+      $scope.accounts = account_store.data;
+      $scope.groups = group_store.data;
+      $scope.prices = price_store.data;
+      $scope.units = unit_store.data;
+
+      console.log("types", type_store.data);
+
+    }
+
+    $scope.validate = function() {
+      $scope.validated = true; 
+    };
+
+    $scope.item = {};
+
+    $scope.label = function(obj) {
+      return obj.id + " - " + obj.account_txt;
+    };
+
+  });
 
 })(angular);
