@@ -1251,7 +1251,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: 'account',
       tables: {
         'account': {
-          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id'],
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed'],
         },
         'account_type': {
           columns: ['type'] 
@@ -1292,6 +1292,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       console.log($scope.account_model);
     }
 
+    $scope.map = function (id) {
+      return (id == 1) ? "Fixed" : "Relative";
+    };
+
     // ng-grid options
     $scope.gridOptions = {
       data: 'account_model',
@@ -1300,13 +1304,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         {field: 'account_txt', displayName: "Account Text"},
         {field: 'account_type_id', displayName: "Account Type",
           cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
-          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
-          sortable: false,
+          editableCellTemplate: '<div><select style="padding:0;margin:0;height:100%;width:100%;" ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
+          enableCellEdit: true
+        },
+        {field: 'fixed', displayName: 'Fixed/Relative',
+          cellTemplate: '<div class="ngCellText">{{map(row.getProperty("fixed"))}}</div>',
+          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.fixed" ng-change="fixedRow(row)"><option value="0">Relative</option><option value="1">Fixed</option></select></div>',
           enableCellEdit: true
         },
         {field: 'locked', displayName: "Locked",
           cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
-          sortable: false
         }
       ],
       enableRowSelection:false,
@@ -1567,6 +1574,12 @@ controllers.controller('salesController', function($scope, $q, data) {
       return obj.id + " - " + obj.account_txt;
     };
 
+  });
+
+  controllers.controller('cashController', function($scope) {
+  
+    
+  
   });
 
 })(angular);

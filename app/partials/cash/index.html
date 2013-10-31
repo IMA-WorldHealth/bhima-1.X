@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="partials/cash/index.css">
+<div class="container">
+  <tabset>
+    <tab header="Dispersement">
+      <form>
+        <div class="row">
+          <div class="form-group">
+            <label for="cash-cash_number">
+              Num
+            </label>
+            <input 
+              type="number"
+              name="cash-cash_number"
+              id="cash-cash_number"
+              ng-model="receipt.number"
+            >
+          </div>
+          <div class="form-group">
+            <label for="cash-bon">
+              Bon d'Entree
+            </label>
+            <input
+              type="number"
+              name="cash-bon"
+              id="cash-bon" 
+              ng-model="receipt.bon"
+            >
+          </div>
+          <div class="form-group">
+            <label for="cash-cash_account">
+              Cash Account
+            </label>
+            <input 
+              type="number"
+              name="cash-cash_account"
+              id="cash-cash_account"
+              ng-model="receipt.cash_account"
+            >
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label for="cash-invoice_text">
+              Text:
+            </label>
+            <input
+              id="cash-invoice_text"
+              name="cash-invoice_text"
+              type="text"
+              ng-model="receipt.text"
+              typeahead="invoice.text for invoice in invoices"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="cash-amount">
+              Amount
+            </label>
+            <input
+              id="cash-amount"
+              name="cash-amount" 
+              ng-model="receipt.amount"
+              required
+            >
+          </div>
+        </div>
+      </form>
+    </tab>
+    <tab header="Receipt">
+      Hello world!
+    </tab>
+  </tabset>
+</div>
