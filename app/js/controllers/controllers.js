@@ -461,6 +461,8 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
 
   var resp = fillEntrepriseSelect();
 
+  //FIXME Errors are thrown if no fiscal years are assigned to an enterprise, this should be handled
+  //TODO period is used very rarely, probably doesn't need a selection on the application
   resp
   .then(function(enterprise_id) { 
     return fillFiscalSelect(enterprise_id);
@@ -493,7 +495,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
     bikaConnect.get('/data/?', req_db).then(function(data){
       $scope.enterprise_model = data;
-      $scope.e_select = $scope.enterprise_model[0]; //Select first as default
+      $scope.e_select = $scope.enterprise_model[1]; //Select default enterprise (should be taken from appcache if multiple enterprises are used)
       deferred.resolve($scope.e_select.id);
     });
     return deferred.promise;
@@ -784,6 +786,94 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
+  controllers.controller('salesController', function($scope, $q, connect) { 
+    console.log("Sales initialised");
+
+    //Default selection for invoice payable 
+    $scope.invoice = {payable: "false"};
+    //TODO perform logic with local variables and expose once complete
+    $scope.sale_date = getDate();
+    $scope.inventory = [];
+
+    function init() { 
+      var inventory_model = {};
+
+      var promise = fetchInventory();
+      promise
+      .then(function(res) { 
+        inventory_model = res;
+
+        //expose to scope
+        $scope.inventory_model = res;
+      });
+    }
+
+    function fetchInventory() { 
+      var deferred = $q.defer();
+
+      connect.req('inventory', ['id', 'inv_code', 'text', 'price']).then(function(model) { 
+        deferred.resolve(model);
+      });
+
+      return deferred.promise;
+    }
+
+    function getDate() { 
+      //Format the current date according to RFC3339 (for HTML input[type=="date"])
+      var now = new Date();
+      return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+    } 
+
+    $scope.$watch('inventory', function(nval, oval, diff) { 
+      console.log("watch for inventory called", nval, oval, diff);
+    });
+
+    $scope.invoiceTotal = function() { 
+      var total = 0;
+      $scope.inventory.forEach(function(item) {
+        if(item.quantity && item.price) { 
+          //FIXME this could probably be calculated less somewhere else (only when they change)
+          total += (item.quantity * item.price);
+        }
+      });
+      return total;
+    }
+
+    $scope.updateItem = function(item) { 
+      if(!item.quantity) item.quantity = 1;
+      item.text = item.item.text;
+      item.price = item.item.price;
+    }
+
+    $scope.updateInventory = function() { 
+      console.log("Update called");
+      var new_line = {};
+      $scope.inventory.push(new_line);
+      /* 
+      Watching a variable that isn't in angular's scope, return the variable in a function
+      $scope.$watch(function() { return new_line.item; }, function(nval, oval, scope) { 
+        console.log(nval);
+      });*/
+    }
+
+    $scope.isPayable = function() { 
+      if($scope.invoice.payable=="true") return true;
+      return false;
+    }
+
+    $scope.itemsInInv = function() { 
+      if($scope.inventory.length>0) return true;
+      return false;
+    }
+
+    init();
+  });
+
+  controllers.controller('salesRecordsController', function($scope, $q, connect) { 
+    console.log("Sale records initialised");
+    $scope.thing = 5;
+  })
+
   controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
     console.log("Patient Search init");
 
@@ -807,9 +897,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
                       {field:'religion', display:'religion'},
                       {field:'marital_status', display:'marital status'},
                       {field:'phone', display:'phone'},
-                      {field:'email', display:'email'},
-                      {field:'village', display:'village'},
-                      {field:'city', display:'city'}],
+                      {field:'email', display:'email'}],
       data : 'patient_model.data',
       //FIXME Search seems unpredictable - check filter settings
       filterOptions: $scope.patient_filter
@@ -832,7 +920,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $scope.selected = {};
 
-      connect.req('patient', ['id', 'group_id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'village', 'zone', 'city', 'country'])
+      connect.req('patient', ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2'])
       .then(function(model) { 
         deferred.resolve(model);
       });
@@ -868,6 +956,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
     
+  //FIXME updates to patient and location broke everything here, update to use that instead
   controllers.controller('patientRegController', function($scope, $q, $location, connect) { 
     console.log("Patient init");
     var patient_model = {};
@@ -1038,7 +1127,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           c : ['period_start', 'period_stop'] 
         }, {
           t : 'budget',
-          c : ['id', 'enterprise_id', 'account_id', 'period_id', 'budget']
+          c : ['id', 'account_id', 'period_id', 'budget']
         }],
         'jc': [{
           ts: ['period', 'budget'],
@@ -1367,7 +1456,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
   });
 
-controllers.controller('salesController', function($scope, $q, data) {
+//FIXME legacy sales controller, can be removed?
+/*
+controllers.controller('salesController', function($scope, $q data) {
     // definitions
     
     var sales_table = {
@@ -1475,7 +1566,7 @@ controllers.controller('salesController', function($scope, $q, data) {
     }
 
 
-  });
+  });*/
 
   controllers.controller('inventoryController', function($scope) {
  
