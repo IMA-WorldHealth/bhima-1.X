@@ -897,9 +897,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
                       {field:'religion', display:'religion'},
                       {field:'marital_status', display:'marital status'},
                       {field:'phone', display:'phone'},
-                      {field:'email', display:'email'},
-                      {field:'village', display:'village'},
-                      {field:'city', display:'city'}],
+                      {field:'email', display:'email'}],
       data : 'patient_model.data',
       //FIXME Search seems unpredictable - check filter settings
       filterOptions: $scope.patient_filter
@@ -922,7 +920,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $scope.selected = {};
 
-      connect.req('patient', ['id', 'group_id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'village', 'zone', 'city', 'country'])
+      connect.req('patient', ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2'])
       .then(function(model) { 
         deferred.resolve(model);
       });
@@ -958,6 +956,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
     
+  //FIXME updates to patient and location broke everything here, update to use that instead
   controllers.controller('patientRegController', function($scope, $q, $location, connect) { 
     console.log("Patient init");
     var patient_model = {};
@@ -1128,7 +1127,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           c : ['period_start', 'period_stop'] 
         }, {
           t : 'budget',
-          c : ['id', 'enterprise_id', 'account_id', 'period_id', 'budget']
+          c : ['id', 'account_id', 'period_id', 'budget']
         }],
         'jc': [{
           ts: ['period', 'budget'],
