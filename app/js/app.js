@@ -11,9 +11,13 @@
       controller: 'budgetController',
       templateUrl: 'partials/budgeting.html'
     }).
-    when('/partials/permission', { 
+    when('/permission', { 
       controller: 'userController',
       templateUrl: 'partials/permission/permissions.html'
+    }).
+    when('/essaie', { 
+      controller: 'userController',
+      templateUrl: 'partials/vente/essaie.html'
     }). when('/p', {
       controller: 'addController',
       templateUrl:'partials/transaction/transactionform.html'
@@ -46,6 +50,10 @@
       controller: 'chartController',
       templateUrl: '/partials/chart/index.html'
     }).
+    when('/inventory', {
+      controller: 'inventoryController',
+      templateUrl: '/partials/inventory/index.html'
+    }).
     when('/patient_records/:patientID', { 
       controller: 'patientSearchController', 
       templateUrl: '/partials/patient_search.html'
@@ -57,6 +65,10 @@
     when('/sale_records/:recordID', { 
       controller: 'salesRecordsController',
       templateUrl: '/partials/sales_records.html'
+    }).
+    when('/inventory/register', {
+      controller: 'inventoryRegisterController',
+      templateUrl: '/partials/inventory/register/index.html'
     });
   }  
   bika.config(bikaconfig);

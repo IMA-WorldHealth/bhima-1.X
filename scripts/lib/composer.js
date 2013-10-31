@@ -41,28 +41,36 @@ function parsewhr (expr) {
   //  expr = "a.id=b.id";
   //  parsewhr(expr)
   //    => "`a`.`id`=`b`.`id`"
-  var splitters =['>=', '<=', '!=', '<>', '=', '<', '>'],
-    splitter,
-    exprarr;
+  var res;
+  if (expr.length && Object.prototype.toString.call(expr) === '[object Array]') {
+    // this is an array
+    // recursively compile the condition
+    res = whr(expr, "(%search_conditions%)");
+  } else { 
+    var splitters =['>=', '<=', '!=', '<>', '=', '<', '>'],
+      splitter,
+      exprarr;
 
-  splitters.some(function (sym) {
-    if (~expr.indexOf(sym)) {
-      exprarr = expr.split(sym);
-      splitter = sym;
-      return true;
-    }
-  });
+    splitters.some(function (sym) {
+      if (~expr.indexOf(sym)) {
+        exprarr = expr.split(sym);
+        splitter = sym;
+        return true;
+      }
+    });
 
-  exprarr = exprarr.map(function (exp) {
-    if (~exp.indexOf('.')) {
-      // this is a table.col
-      exp = exp.split('.').map(function (e) { return escapeid(e); }).join('.');
-    } else {
-      exp = escapestr(exp); // this will check for numbers
-    }
-    return exp;
-  });
-  return exprarr.join(splitter);
+    exprarr = exprarr.map(function (exp) {
+      if (~exp.indexOf('.')) {
+        // this is a table.col
+        exp = exp.split('.').map(function (e) { return escapeid(e); }).join('.');
+      } else {
+        exp = escapestr(exp); // this will check for numbers
+      }
+      return exp;
+    });
+    res = exprarr.join(splitter);
+  }
+  return res;
 }
 
 function whr (whrlist, template) {
@@ -76,7 +84,6 @@ function whr (whrlist, template) {
   //    whr(whrlist, template);
   //    =>    '`a`.`id`<5 AND `a`.`c`="jon"';
   var operators, whrs = [];
-
   operators = ["AND", "OR"];
   whrlist.forEach(function (str) {
     if (~operators.indexOf(str)) { return whrs.push(str); }
@@ -129,7 +136,7 @@ composer.select = function(spec) {
 
   // d is DISTINCT
   base = "SELECT %d%%select_item% FROM %table%";
-  join = "%table1% LEFT JOIN %table2% ON %value%"; // default left join
+  join = "%table1% JOIN %table2% ON %value%"; // default left join
   where = " WHERE %search_conditions%";
   groupby = " GROUP BY %choice%";
   having = " HAVING %search_conditions%";
@@ -143,7 +150,7 @@ composer.select = function(spec) {
 
   select_item = [];
   for (t in tables) {
-    select_item.push(createdotmap(t, tables[t]['columns']));
+    select_item.push(createdotmap(t, tables[t].columns));
   }
 
   base = base.replace('%d%', hasDistinct ? "DISTINCT " : " ").replace("%select_item%", select_item.join(", "));

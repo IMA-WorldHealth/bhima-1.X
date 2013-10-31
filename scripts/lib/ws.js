@@ -15,11 +15,25 @@ var store = new data.Store(), // idProperty: 'id'
 
 // define routes
 var router = {
-  'UPDATE' : update,
-  'INSERT' : insert,
-  'REMOVE' : remove,
-  'INIT'   : init
+  'UPDATE'  : update,
+  'INSERT'  : insert,
+  'REMOVE'  : remove,
+  'INIT'    : init,
+  'REFRESH' : refresh
 };
+
+function refresh (msg, socket) {
+  var meta = store.get(msg.socketid);
+  meta.select = composer.select(msg);
+
+  // replace the old query
+  store.put(meta);
+
+  db.execute(meta.select, function (err, res){
+    if (err) { throw err; }
+    else { send ({socketid: msg.socketid, method: 'REFRESH', data: res}, socket); }
+  });
+}
 
 // initialize namespaces and connection
 function init (msg, socket) {
@@ -35,7 +49,8 @@ function init (msg, socket) {
     insert     : composer.insert(msg),
     delete     : composer.delete(msg),
     select     : composer.select(msg),
-    update     : composer.update(msg)
+    update     : composer.update(msg),
+    tables     : msg.tables
   };
 
   // store the socket
@@ -64,7 +79,7 @@ function update (msg, socket) {
       sql = meta.update;
 
   console.log("update data:", msg.data);
-  console.log("Socket NameSpaces:", namespaces[meta.namespace]);
+  console.log("sql:", meta.update);
 
   /*db.execute(sql, function (err, res) {
     if (err) { throw err; } 
@@ -77,6 +92,7 @@ function insert (msg, socket) {
       sql = meta.insert;
 
   console.log("insert data:", msg.data);
+  console.log("SQL:", meta.insert);
 
   /*db.execute(query, function (err, res) {
      if (err) throw err;
@@ -89,7 +105,7 @@ function remove (msg, socket) {
   var sql = store.get(msg.socketid).delete;
 
   console.log("remove data:", msg.data);
-  console.log(sql.replace("%id%", msg.data));
+  console.log('SQL:', sql.replace("%id%", msg.data));
 
   /*
   db.execute(query, function (err, res) {

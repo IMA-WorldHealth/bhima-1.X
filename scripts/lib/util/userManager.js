@@ -50,7 +50,7 @@ var processMetadata = function(id_user, field, value, client_request, res){
           }
         }
         //les fils a retourner se trouve dans le tableau tab_id_role, donc requette appropriee
-        var requette_approprie = {'entities' : [{t : 'unit',c : ['id', 'name', 'desc', 'parent', 'has_children', 'url']}],
+        var requette_approprie = {'entities' : [{t : 'unit',c : ['id', 'name', 'description', 'parent', 'has_children', 'p_url']}],
                                   'cond' : [{t : 'unit',cl: 'parent',z : '=',v : value,l:'AND'},{t:'unit',cl:'id',z:'IN',v:"(" + tab_id_role.toString() + ")"}]
                                  };
         var sql = db.select(requette_approprie);
@@ -95,7 +95,7 @@ var processData = function(id_user, value, res){
           tab_ids.push(results[i].id_unit);
         }
         //une requette appropriee pour l'arbre
-        var requette_approprie = {'entities' : [{t : 'unit',c : ['id', 'name', 'desc', 'parent', 'has_children', 'url']}],
+        var requette_approprie = {'entities' : [{t : 'unit',c : ['id', 'name', 'description', 'parent', 'has_children', 'p_url']}],
                                   'cond' : [{t : 'unit',cl: 'parent',z : '=',v : value,l:'AND'},{t:'unit',cl:'id',z:'IN',v:"(" + tab_ids.toString() + ")"}]
                                  };
         var sql = db.select(requette_approprie);
