@@ -129,11 +129,11 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
   $scope.createUser = function() { 
     $scope.selected = {};   
-  }
+  };
 
   $scope.changeAll = function(){
     ($scope.chkTous)?checkAll(): unCheckAll();
-  }
+  };
 
   $scope.getUnits = function(idRole){
     $scope.tabUnits = [];
@@ -147,7 +147,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       return $scope.tabUnits;
     }
     return [];    
-  }
+  };
 
   $scope.valider = function (){
     if($scope.selected.email){
@@ -177,7 +177,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     if($scope.showbademail !== true && $scope.showbadpassword!==true){
       ($scope.selected.id)?updateUser():creer();
     }
-  }
+  };
 
   function creer (){
     var result = existe();
@@ -197,7 +197,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
         bikaConnect.get('data/?',request).then(function(data) {           
           for(var i = 0; i<$scope.units.length; i++){
-            if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !=0 && $scope.units[i].id != 0){
+            if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
               bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
             }
           }         
@@ -261,7 +261,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
                        };
       bikaConnect.update(sql_update);
       for(var i = 0; i<$scope.units.length; i++){
-          if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !=0 && $scope.units[i].id != 0){
+          if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
             bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
           }
           } 
@@ -372,7 +372,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
       req_db.c = [{t : 'transaction', cl : 'period_id', v : period_id, z : '='}];
       bikaConnect.get('/data/?', req_db).then(function(data){
         for(var i = 0; i<data.length; i++){
-        data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+        data[i].date = bikaUtilitaire.formatDate(data[i].date);
         }
         $scope.infostran = data;
       });
@@ -399,7 +399,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
           req_db.c = c;
           bikaConnect.get('/data/?', req_db).then(function(data){
             for(var i = 0; i<data.length; i++){
-              data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+              data[i].date = bikaUtilitaire.formatDate(data[i].date);
             }
             $scope.infostran = data;
           });
@@ -479,8 +479,8 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
     bikaConnect.get('/data/?',req_db).then(function(data){
       for(var i = 0; i<data.length; i++){
-        data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
-        data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
+        data[i].period_start = bikaUtilitaire.formatDate(data[i].period_start);
+        data[i].period_stop = bikaUtilitaire.formatDate(data[i].period_stop);
       }
       $scope.period_model = data;
       $scope.p_select = $scope.period_model[0];
@@ -591,7 +591,7 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
   $scope.populer = function(id){
     $scope.selectedAccounts[$scope.comptes[id].id]=$scope.comptes[id].sltd+";"+ $scope.comptes[id].account_txt;
     isActive();
-  }
+  };
 
       $scope.showDialog = function() {
       var instance = $modal.open({
@@ -614,7 +614,7 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
           }
           var finalChamps = new Array(finalChampsCount());
           var j= 0;
-          for(var i=0; i<champs.length; i++){
+          for(i=0; i<champs.length; i++){
             if(champs[i]){
               finalChamps[j++] = champs[i];
             }
@@ -667,7 +667,7 @@ controllers.controller('appController', function($scope, $location, appcache) {
     var url = $location.url();
     
     //Assuming initial page load
-    if(url=='') { 
+    if (url === '') {
       //only navigate to cached page if no page was requested
       appcache.getNav().then(function(res) { 
         if(res) { 
@@ -751,7 +751,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.active = "select";
       $scope.selected = null;
       $scope.fiscal_model.delete(fiscal_id);
-    }
+    };
 
     $scope.isSelected = function() { 
       return !!($scope.selected);
@@ -940,17 +940,17 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.$watch(function() { return new_line.item; }, function(nval, oval, scope) { 
         console.log(nval);
       });*/
-    }
+    };
 
     $scope.isPayable = function() { 
       if($scope.invoice.payable=="true") return true;
       return false;
-    }
+    };
 
     $scope.itemsInInv = function() { 
       if($scope.inventory.length>0) return true;
       return false;
-    }
+    };
 
     $scope.formatDebtor = function(debtor) { 
       return "[" + debtor.debitor_id + "] " + debtor.first_name + " " + debtor.last_name;
@@ -962,7 +962,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   controllers.controller('salesRecordsController', function($scope, $q, connect) { 
     console.log("Sale records initialised");
     $scope.thing = 5;
-  })
+  });
 
   controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
     console.log("Patient Search init");
@@ -1071,7 +1071,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         submitted = true;
       });
 
-    }
+    };
 
     $scope.checkChanged = function(model) { 
         return angular.equals(model, $scope.master);
@@ -1079,7 +1079,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.checkSubmitted = function() { 
       return submitted;
-    }
+    };
 
 
     init();
@@ -1471,6 +1471,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       console.log($scope.account_model);
     }
 
+    // FIXME: Find a better name, etc.
     $scope.map = function (id) {
       return (id == 1) ? "Fixed" : "Relative";
     };
@@ -1545,118 +1546,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       selectionMode: 'single'
     };
   });
-
-//FIXME legacy sales controller, can be removed?
-/*
-controllers.controller('salesController', function($scope, $q data) {
-    // definitions
-    
-    var sales_table = {
-      identifier: 'id',
-      primary: 'sales',
-      tables: {
-        'sales': {
-          columns: ['id', 'cost', 'currency', 'group_id', 'seller_id', 'delivery', 'delivery_date', 'discount', 'invoice_number', 'invoice_date', 'note', 'payment_id', 'posted'] 
-        },
-      },
-      where : ['sales.enterprise_id='+101] // FIXME: temporary until I have a re-query method
-    };
-
-    var payment_table = {
-      identifier: 'id',
-      tables : {
-        'payment' : {
-        columns: ['id', 'days', 'months', 'text', 'note'] 
-        }
-      }
-    };
-
-    var employee_table = {
-      identifier: 'id',
-      tables: {
-        'employee' : {
-          columns: ['id', 'name']
-        }  
-      }
-    };
-
-    var inventory_prices = {
-      identifier: 'id',
-      primary: 'inventory',
-      tables : {
-        'inventory' : {
-           columns: ['id', 'inv_code', 'text', 'price', 'inv_type']
-        } 
-      },
-      // TODO: Allow for () by nesting arrays[].
-      where: [
-        "inventory.enterprise_id="+101,
-        "AND",
-        "inventory.stock<>0" // services are -1
-      ]
-    };
-    
-    var patient_table = {
-      identifier: 'id',
-      primary: 'patient',
-      tables: {
-        'patient': {
-          columns: ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email'] 
-        },
-        'location' : {
-          columns: ['village', 'city', 'zone', 'country_code']
-        }
-      },
-      join: ["patient.location_id=location.id"]
-    };
-
-    var sales = data.register(sales_table);
-    var payment = data.register(payment_table);
-    var employee = data.register(employee_table);
-    var inventory = data.register(inventory_prices);
-    var patient = data.register(patient_table);
-
-    $q.all([
-      sales,
-      payment,
-      employee,
-      inventory,
-      patient
-    ]).then(init);
-
-    function init () {
-     $scope.payment = payment.data;
-     $scope.sales = sales.data;
-     $scope.inventory = inventory.data;
-     $scope.employees = employee.data;
-     $scope.patients = patient.data;
-    }
-
-    // this will be a new sale.
-    $scope.sale = {
-      sale_type: 1 
-    };
-
-    $scope.items = [];
-
-    $scope.saledetailoptions = {
-      data: 'items'
-    };
-
-    $scope.salejournaloptions = {
-      data: 'sales'
-    };
-
-    function generateUniqueInvoice () {
-      var maxid = sales.reduce(function(max, right) {
-        max = max.id || max; // for the first iteration
-        return Math.max(max, right.id);
-      });
-      return maxid + 1; // incriment
-    }
-
-
-  });*/
 
   controllers.controller('inventoryController', function($scope) {
  
@@ -1757,9 +1646,119 @@ controllers.controller('salesController', function($scope, $q data) {
 
   });
 
-  controllers.controller('cashController', function($scope) {
-  
+  controllers.controller('cashController', function($scope, data, $q) {
     
+    var account_spec = {
+      tables: {
+        'account': {
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed'],
+        }
+      },
+      where: ["account.enterprise_id=" + 101] //FIXME
+    };
+    
+    var invoice_spec = {
+      tables: {
+        'sale': {
+          columns: ["cost", "currency", "debitor_id", "discount", "invoice_date", "note", "paid"] 
+        }
+      },
+      where: ["sale.enterprise_id="+101, "AND", "sale.paid=0"] //FIXME
+    };
+
+    var debitor_spec = {
+      primary: "patient",
+      tables: {
+        "debitor": {
+          columns: ["id"]
+        },
+        "debitor_group" : {
+          columns: ["id", "name", "account_number", "note"] 
+        }
+      },
+      join: ["debitor.group_id=debitor_group.id"],
+    };
+
+    var cash_spec = {
+      tables: {
+        "cash" : { //FIXME: Have a service that holds the current user information
+          columns: ["id", "bon", "date", "debit", "credit", "currency_id", "cashier_id"] 
+        }
+      } 
+    };
+
+    var currency_spec = {
+      tables: {
+        "currency" : {
+          columns: ["id", "symbol"]
+        }
+      } 
+    };  
+
+    $q.all([
+      data.register(account_spec),
+      data.register(invoice_spec),
+      data.register(debitor_spec),
+      data.register(cash_spec),
+      data.register(currency_spec)
+    ]).then(init);
+    
+    $scope.receipt = {};
+    $scope.disperse = {};
+
+    function init (arr) {
+      var account_store, invoice_store, debitor_store, cash_store, currency_store;
+      account_store = arr.shift();
+      invoice_store = arr.shift();
+      debitor_store = arr.shift(); // maybe this isn't the best way of doing this..
+      cash_store = arr.shift();
+      currency_store = arr.shift();
+      $scope.accounts = account_store.data;
+      $scope.debitors = debitor_store.data;
+      $scope.invoices = invoice_store.data; // outstanding invoices
+      $scope.currencies = currency_store.data;
+      console.log("currencies:", $scope.currencies);
+      console.log('invoices:', invoice_store);
+
+      console.log([].concat([{id:0}], cash_store.data));
+      $scope.receipt.bon = $scope.disperse.bon = generateId([].concat([{id:0}], cash_store.data));
+      console.log("bon:", $scope.receipt.bon);
+    }
+
+    function generateId (model) {
+      var maxid = model.reduce(function(max, right) {
+        max = max.id || max; // for the first iteration
+        return Math.max(max, right.id);
+      });
+      return maxid + 1; // incriment
+    }
+
+    $scope.receipt.currency = "USD";
+    $scope.disperse.currency = "FC";
+
+    $scope.focusManager = function(tab) {
+      $scope.focused = tab; 
+    };
+
+    $scope.formatAcc = function (obj) {
+      return obj.id + " - " + obj.account_txt; 
+    };
+
+
+    $scope.submit = function() {
+      console.log("Called Submit");
+    };
+
+    // still suffers from potential exploitation, but
+    // w/e
+    $scope.wipe = function () {
+      if ($scope.focused === "disperse") {
+        $scope.disperse = {};
+      } else {
+        $scope.receipt = {};
+      }
+    };
+
   
   });
 
