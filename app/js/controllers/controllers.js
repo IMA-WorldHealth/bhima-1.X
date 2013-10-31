@@ -794,21 +794,78 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.sale_date = getDate();
     $scope.inventory = [];
 
+    function init() { 
+      var inventory_model = {};
+
+      var promise = fetchInventory();
+      promise
+      .then(function(res) { 
+        inventory_model = res;
+
+        //expose to scope
+        $scope.inventory_model = res;
+      });
+    }
+
+    function fetchInventory() { 
+      var deferred = $q.defer();
+
+      connect.req('inventory', ['id', 'inv_code', 'text', 'price']).then(function(model) { 
+        deferred.resolve(model);
+      });
+
+      return deferred.promise;
+    }
+
     function getDate() { 
       //Format the current date according to RFC3339 (for HTML input[type=="date"])
       var now = new Date();
       return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
     } 
 
+    $scope.$watch('inventory', function(nval, oval, diff) { 
+      console.log("watch for inventory called", nval, oval, diff);
+    });
+
+    $scope.invoiceTotal = function() { 
+      var total = 0;
+      $scope.inventory.forEach(function(item) {
+        if(item.quantity && item.price) { 
+          //FIXME this could probably be calculated less somewhere else (only when they change)
+          total += (item.quantity * item.price);
+        }
+      });
+      return total;
+    }
+
+    $scope.updateItem = function(item) { 
+      if(!item.quantity) item.quantity = 1;
+      item.text = item.item.text;
+      item.price = item.item.price;
+    }
+
     $scope.updateInventory = function() { 
       console.log("Update called");
-      $scope.inventory.push({});
+      var new_line = {};
+      $scope.inventory.push(new_line);
+      /* 
+      Watching a variable that isn't in angular's scope, return the variable in a function
+      $scope.$watch(function() { return new_line.item; }, function(nval, oval, scope) { 
+        console.log(nval);
+      });*/
     }
 
     $scope.isPayable = function() { 
       if($scope.invoice.payable=="true") return true;
       return false;
     }
+
+    $scope.itemsInInv = function() { 
+      if($scope.inventory.length>0) return true;
+      return false;
+    }
+
+    init();
   });
 
   controllers.controller('salesRecordsController', function($scope, $q, connect) { 
