@@ -786,7 +786,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('salesController', function($scope, $q, connect) { 
+  controllers.controller('salesController', function($scope, $q, connect, appstate) { 
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
@@ -855,9 +855,63 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
     } 
 
-    $scope.$watch('inventory', function(nval, oval, diff) { 
-      console.log("watch for inventory called", nval, oval, diff);
-    });
+    $scope.generateInvoice = function() { 
+      //Client validation logic goes here - should be complimented with server integrity checks etc.
+        
+      //use reduce here 
+      var t = 0;
+      for(var i = 0, l = $scope.inventory.length; i < l; i++) { 
+        t += $scope.inventory[i].quantity * $scope.inventory[i].price;
+      }
+
+      
+      //create invoice record
+      var format_invoice = {
+        enterprise_id : appstate.get("enterprise").id, //not safe
+        id : $scope.invoice_id,
+        cost : t,
+        currency : 'USD', //ohgd
+        debitor_id : $scope.debtor.id,
+        seller_id : '1', //TODO placeholder - this should be derived from appstate (session) or equivelant
+        discount: '0', //placeholder
+        note : '',
+        posted : '0'
+      }
+
+      connect.basicPut('sale', [format_invoice]).then(function(res) { 
+        if(res.status==200) { 
+          var promise = generateInvoiceItems();
+          promise.then(function(res) { 
+            console.log("Invoice successfully generated", res);
+          })
+        }
+      })
+
+      /*
+      */
+    }
+
+    function generateInvoiceItems() { 
+      var deferred = $q.defer();
+      var promise_arr = [];
+
+      //iterate through invoice items and create an entry to sale_item
+      $scope.inventory.forEach(function(item) { 
+        var format_item = {
+          sale_id : $scope.invoice_id,
+          inventory_id : item.item.id,
+          quantity : item.quantity,
+          unit_price : item.price,
+          total : item.quantity * item.price
+        }
+        console.log("Generating sale item for ", item);
+
+        promise_arr.push(connect.basicPut('sale_item', [format_item]));
+      });
+
+      $q.all(promise_arr).then(function(res) { deferred.resolve(res)});
+      return deferred.promise;
+    }
 
     $scope.invoiceTotal = function() { 
       var total = 0;
@@ -899,7 +953,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.formatDebtor = function(debtor) { 
-      console.log("Formatting", debtor);
       return "[" + debtor.debitor_id + "] " + debtor.first_name + " " + debtor.last_name;
     }
 

@@ -6022,11 +6022,11 @@ INSERT INTO `inventory_unit` VALUES
   (4, "Lot");
 
 -- 
--- table sale_items
+-- table sale_item
 -- TODO columns for discount etc.
 --
-DROP TABLE IF EXISTS `sale_items`;
-CREATE TABLE `sale_items` (
+DROP TABLE IF EXISTS `sale_item`;
+CREATE TABLE `sale_item` (
   sale_id         int unsigned not null,
   id              int unsigned not null,
   inventory_id    int unsigned not null,
