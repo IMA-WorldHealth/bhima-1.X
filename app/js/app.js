@@ -46,10 +46,6 @@
       controller: 'patientRegController',
       templateUrl: 'partials/patient.html'
     }).
-    when('/sales', {
-      controller: 'salesController',
-      templateUrl: 'partials/sales/index.html'
-    }).
     when('/accounts', {
       controller: 'chartController',
       templateUrl: '/partials/chart/index.html'
@@ -61,6 +57,14 @@
     when('/patient_records/:patientID', { 
       controller: 'patientSearchController', 
       templateUrl: '/partials/patient_search.html'
+    }).
+    when('/sales', { 
+      controller: 'salesController',
+      templateUrl: '/partials/sales.html'
+    }).
+    when('/sale_records/:recordID', { 
+      controller: 'salesRecordsController',
+      templateUrl: '/partials/sales_records.html'
     }).
     when('/inventory/register', {
       controller: 'inventoryRegisterController',
