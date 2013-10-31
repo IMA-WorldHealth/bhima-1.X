@@ -95,9 +95,8 @@
                   {{disperse.currency}}
                 </button>
                 <ul class="dropdown-menu">
-                  <li ng-repeat="currency for currency in currencies">
+                  <li ng-repeat="currency in currencies">
                     <a href="" ng-click="selectCurrency($index)">
-                      hi
                       {{currency.symbol}}
                     </a>
                   </li>
@@ -227,7 +226,7 @@
                   {{receipt.currency}}
                 </button>
                 <ul class="dropdown-menu">
-                  <li ng-repeat="currency for currency in currencies" ng-click="setCurrency($index)">
+                  <li ng-repeat="currency in currencies" ng-click="setCurrency($index)">
                     <a href="">{{currency.symbol}}</a>
                   </li>
                 </ul>
