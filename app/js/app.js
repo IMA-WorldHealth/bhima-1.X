@@ -18,9 +18,9 @@
     when('/essaie', { 
       controller: 'userController',
       templateUrl: 'partials/vente/essaie.html'
-    }). when('/p', {
+    }). when('/journal', {
       controller: 'addController',
-      templateUrl:'partials/transaction/transactionform.html'
+      templateUrl:'partials/journal/index.html'
     }).// FIXME: Take out patient billing routes to local routes
         // Maybe use angular-router?
     when('/billing', { 
