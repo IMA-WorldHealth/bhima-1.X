@@ -5906,10 +5906,10 @@ CREATE TABLE `sale` (
   posted          boolean not null default '0',
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `seller_id` (`seller_id`),
+--  KEY `seller_id` (`seller_id`),
   KEY `debitor_id` (`debitor_id`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  CONSTRAINT FOREIGN KEY (`seller_id`) REFERENCES `employee` (`id`),
+--  CONSTRAINT FOREIGN KEY (`seller_id`) REFERENCES `employee` (`id`),
   CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`)
 ) ENGINE=InnoDB;
 
