@@ -6048,6 +6048,7 @@ CREATE TABLE `journal` (
   `sale_id`           int unsigned not null,  
   `date`              date not null,
   `description`       text,  
+  `posted`            tinyint,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `user_id` (`user_id`),
