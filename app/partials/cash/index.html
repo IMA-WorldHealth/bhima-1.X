@@ -30,7 +30,7 @@
                 type="number"
                 name="cash-bon"
                 id="cash-bon" 
-                ng-model="slip.bon"
+                ng-model="slip.bon_num"
                 required
                 disabled
               >
@@ -73,9 +73,6 @@
                 id="cash-invoice_text"
                 name="cash-invoice_text"
                 type="text"
-                ng-model="slip.text"
-                typeahead="inv.note for inv in invoices"
-                ng-change="updateForm()"
                 required
               >
             </div>
@@ -110,7 +107,7 @@
           <div class="row">
             <div class="col-xs-2">
               <label for="cash-debit_account">
-                Debit Account
+                Credit Account
               </label>
               <select
                 class="form-control cash-input"
@@ -130,7 +127,7 @@
                 type="submit"
                 value="Sign"
                 class="form-control cash-input btn btn-default"
-                ng-click="submit()"
+                ng-click="sign()"
               >
             </div>
           </div>
@@ -164,7 +161,7 @@
                 type="number"
                 name="cash-bon"
                 id="cash-bon" 
-                ng-model="slip.bon"
+                ng-model="slip.bon_num"
                 required
                 disabled
               >
@@ -175,24 +172,26 @@
               </label>
               <input
                 class="form-control cash-input"
-                id="cash-date"
-                name=cash-date
+                id="cash-date1"
+                name="cash-date"
                 type="date" 
+                value="{{slip.date | date: 'yyyy-MM-dd'}}"
                 ng-model="slip.date"
+                ng-change="log()"
                 required
               >
             </div>
             <div class="col-sm-offset-4 col-xs-2">
-              <label for="cash-cash_account">
+              <label for="cash-debit_account">
                 Cash Account
               </label>
               <select
                 class="form-control cash-input"
                 type="number"
-                name="cash-cash_account"
-                id="cash-cash_account"
-                ng-model="slip.cash_account"
-                ng-options="formatAcc(acc) for acc in accounts"
+                name="cash-debit_account"
+                id="cash-debit_account"
+                ng-model="slip.credit_account"
+                ng-options="acc.id as formatAcc(acc) for acc in accounts"
                 required
               ></select>
             </div>
@@ -208,7 +207,8 @@
                 name="cash-invoice_text"
                 type="text"
                 ng-model="slip.text"
-                typeahead="invoice.note for invoice in invoices"
+                typeahead="inv as inv.note for inv in invoices"
+                typeahead-on-select="taSelect()"
                 required
               >
             </div>
@@ -248,7 +248,7 @@
                 id="cash-debit_account" 
                 name="cash-debit_account"
                 ng-model="slip.debit_account"
-                ng-options="formatAcc(acc) for acc in accounts"
+                ng-options="acc.id as formatAcc(acc) for acc in accounts"
                 required
               ></select>
             </div>
@@ -261,7 +261,7 @@
                 type="submit"
                 value="Sign"
                 class="form-control cash-input btn btn-default"
-                ng-click="submit()"
+                ng-click="sign()"
               >
             </div>
           </div>
@@ -269,8 +269,4 @@
       </div>
     </tab>
   </tabset>
-  <br /> <!-- FIXME -->
-  <button ng-click="wipe()" class="btn btn-warning">
-    Wipe
-  </button>
 </div>
