@@ -44,6 +44,10 @@
     var sql= {t:table, data:data};
     $http.post('data/',sql);
   };
+  this.sendTo = function(target, table, data) { 
+    var sql= {t:table, data:data};
+    $http.post(target,sql);
+  };
 
   this.update = function(objectRequest) { 
     $http.put('data/',objectRequest);
