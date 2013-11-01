@@ -1,3 +1,6 @@
+### Important ###
+ # Debtor ID is currently numeric, and is the same as Patient ID, it should be alpha numeric to allow debitors and patients to be debtor (? p12, e13 etc.)
+
 #Temporary TODO
   -Register any changes in module with a service, this should be checked before any navigation is allowed
   -/Remove Bootstrap.css (yw @jniles), too much padding and white space, design simple and compact layout using normalise etc. (see the GNU thing)/

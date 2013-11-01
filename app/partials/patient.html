@@ -40,6 +40,12 @@
               </div>
             </div>
 
+            <div class="form-group">
+              <label for="location_select">location</label>
+              <select required class="form-control" id="location_select" ng-model="patient.location_id" ng-options="l.id as formatLocation(l) for l in location_model.data">
+                <option value="">--Select Location--</option>
+              </select>
+            </div>
             <!--div class="form-group">
               <label for="village">Village</label>
               <input type="text" class="form-control" id="village" ng-model="patient.village" required>
