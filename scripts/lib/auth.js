@@ -110,6 +110,8 @@ var checkPermission = function (req,res,next){
      chemin.match(new RegExp("data/")) ||
      chemin.match(new RegExp("/tree")) ||
      chemin.match(new RegExp("lib/")) ||
+     chemin.match(new RegExp("/journal")) ||
+     chemin.match(new RegExp("/gl")) ||
      chemin === '/' ||
      chemin === '/favicon.ico'){
     next();
