@@ -1,53 +1,51 @@
 //ce module a pour role de transformer une requette tres generale de l'arbre en un requette approprie, tenant compte de l'utilisateur et ses droits
 var db = require('../database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}})
   , queryHandler = require('../database/myQueryHandler')
-  , url = require('url');
+  , url = require('url')
+  , util = require('../util/util.js');
 
 exports.poster = function(req, res) {
-  /*
-  1. Le numero de facture ne doit pas exister dans la table
-  2. Voir si le seller peut effectuer la vente
-  3. Disacount doit etre superieur a zero
-  4. date facure n'est pas etre posterieure a la date du jour
-  5. Posted doit etre a false
-  */
-  //insertion
-  insert(req.body); 
-
+  insert(req.body, res);
 }
 
-var insert = function(obj){
-  var journalRecords = [];
+
+
+
+
+
+var insert = function(obj,res){
   var cb = function (err, ans) {
     if (err) throw err;
     console.log("Post success", ans);
-  }
-  //var insertsql = db.insert(obj.t, obj.data);
-  //db.execute(insertsql, cb);
-  //console.log(obj.data[0]); 
-  var date = new Date();
-  for(var i=0; i<obj.data.length; i++){
+    res.send({status: 200, insertId: ans.insertId});
+  }; 
+  var date = util.convertToMysqlDate(new Date());
+  var journalRecords = [];
+  for(var i = 0; i<obj.length; i++){
+    getData(obj[i], function(err, data){
+      if(err) throw err;
+      //insertion
+      var sql = db.insert('journal', [{id:'',
+                           enterprise_id: data[0].enterprise_id,
+                           user_id: data[0].seller_id,
+                           sale_id:data[0].id,
+                           date:date,
+                           description:data[0].note
+                          }]);
+      db.execute(sql, cb);
+    });
+  } 
 
-    journalRecords.push({id:'',
-                        enterprise_id:obj.data[i].enterprise_id,
-                        fiscal_id:2013001,
-                        user_id:obj.data[i].seller_id,
-                        sales_id:obj.data[i].id,
-                        date:obj.data[i].invoice_date,
-                        description:'rien'
-                       });
-  }
-  var insertsql = db.insert(obj.t, journalRecords);
-  console.log(insertsql);
-  db.execute(insertsql, cb);
+}
 
-
-  //console.log(journalRecord);
-  //console.log(insertsql);
-  //console.log(insertsql);
-    //console.log(obj.data[i]);
-    //console.log(insertsql);
-  //
+var getData = function(id, callback){
+  var sql = {};
+  var entities = [{t:'sale', c:['id', 'enterprise_id', 'seller_id', 'note']}];
+  var cond = [{t:'sale', cl:'id', z:'=', v:id}];
+  sql.entities = entities;
+  sql.cond = cond;
+  var request = db.select(sql);
+  db.execute(request, callback);
 }
 
 
