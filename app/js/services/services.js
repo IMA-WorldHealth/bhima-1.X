@@ -47,7 +47,7 @@
 
   this.update = function(objectRequest) { 
     $http.put('data/',objectRequest);
-  }   
+  };
   });
 
   services.service('bikaUtilitaire', function() { 
@@ -491,8 +491,10 @@
           index = this.index,
           identifier = this.identifier;
         var id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ? object[identifier] : Math.random();
-        
+
+        var method;
         if (id in index) {
+          method = "UPDATE";
           var ref = data[index[id]];
           if (opts && opts.replace === false) {
             data[index[id]] = object;
@@ -502,13 +504,10 @@
             }
           }
         } else {
+          method = "INSERT";
           index[id] = data.push(object) - 1;
         }
 
-        //FIXME: update this
-        var exists = this.get(object[identifier]);
-        var method = (exists) ? 'UPDATE' : 'INSERT';
-  
         var parameters = {
           socketid : socketid,
           method   : method,

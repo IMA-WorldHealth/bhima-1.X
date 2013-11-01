@@ -91,13 +91,25 @@ function insert (msg, socket) {
   var meta = store.get(msg.socketid),
       sql = meta.insert;
 
-  console.log("insert data:", msg.data);
-  console.log("SQL:", meta.insert);
+  // FIXME: take this out.
+  function isInt (v) {
+    return Math.number(v) === Math.floor(v);
+  }
 
-  /*db.execute(query, function (err, res) {
+  // FIXME: security
+  var expr = [];
+  for (var k in msg.data) {
+    expr.push('`' + k + '`' + '=' + "'" + msg.data[k] + "'");
+  }
+
+  sql = sql.replace('%expressions%', expr.join(', '));
+
+  console.log('sql:', sql);
+
+  db.execute(sql, function (err, res) {
      if (err) throw err;
      console.log("Insert Success!");
-  });*/
+  });
 }
 
 // DELETE from the database
