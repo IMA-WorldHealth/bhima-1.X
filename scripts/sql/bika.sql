@@ -6104,6 +6104,7 @@ DROP TABLE IF EXISTS `cash`;
 CREATE TABLE `cash` (
   id              int unsigned not null,
   bon             char(1) not null,
+  bon_num         int unsigned not null, -- what is this for?
   date            date not null,
   debit_account   mediumint unsigned not null,
   credit_account  mediumint unsigned not null,

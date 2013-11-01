@@ -1726,12 +1726,19 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   });
 
-  controllers.controller('cashController', function($scope, data, $q) {
+  controllers.controller('cashController', function($scope, data, $q, $filter) {
 
     var account_spec, invoice_spec, debitor_spec,
-      cash_spec, currency_spec;
+      cash_spec, currency_spec, enterprise_spec;
+
+    enterprise_spec = {
+      identifier: "id",
+      tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
+      where: ["enterprise.id="+101] // FIXME
+    };
     
     account_spec = {
+      identifier: "id",
       tables: {
         'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed']}
       },
@@ -1739,6 +1746,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
     
     invoice_spec = {
+      identifier: "id",
       tables: {
         'sale': {columns: ["id", "cost", "currency", "debitor_id", "discount", "invoice_date", "note", "paid"]}
       },
@@ -1746,6 +1754,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     debitor_spec = {
+      identifier: "id",
       primary: "patient",
       tables: {
         "debitor": {columns: ["id"]},
@@ -1755,6 +1764,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     cash_spec = {
+      identifier: "id",
       tables: {
         "cash" : { //FIXME: Have a service that holds the current user information
           columns: ["id", "bon", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id"] 
@@ -1763,31 +1773,35 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     currency_spec = {
+      identifier: "id",
       tables: {"currency" : {columns: ["id", "symbol"]}} 
     };
 
     $q.all([
+      data.register(enterprise_spec),
       data.register(account_spec),
       data.register(invoice_spec),
       data.register(debitor_spec),
       data.register(cash_spec),
       data.register(currency_spec)
     ]).then(init);
+
+
+    var es, as, is, ds, cs, cus;
     
     function init (arr) {
       // init all data connections
-      var account_store, invoice_store, debitor_store,
-          cash_store, currency_store;
-      account_store = arr.shift();
-      invoice_store = arr.shift();
-      debitor_store = arr.shift(); // maybe this isn't the best way of doing this..
-      cash_store = arr.shift();
-      currency_store = arr.shift();
-      $scope.accounts = account_store.data;
-      $scope.debitors = debitor_store.data;
-      $scope.invoices = invoice_store.data; // outstanding invoices
-      $scope.currencies = currency_store.data;
-      $scope.cash = cash_store.data;
+      es = arr.shift();
+      as = arr.shift();
+      is = arr.shift();
+      ds = arr.shift(); // maybe this isn't the best way of doing this..
+      cs = arr.shift();
+      cus = arr.shift();
+      $scope.accounts = as.data;
+      $scope.debitors = ds.data;
+      $scope.invoices = is.data; // outstanding invoices
+      $scope.currencies = cus.data;
+      $scope.cash = cs.data;
 
       // Defaults for currency drop-downs
       setDefaults();
@@ -1795,10 +1809,19 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function setDefaults () {
       // create objects for the receipt and dispersement and final
-      $scope.slip = {};
+      var slip = $scope.slip = {};
 
       // experimental view
       $scope.view = {};
+
+      // default debit account is cash box
+      slip.credit_account = es.get(101).cash_account;
+
+      // default date is today
+      slip.date = $filter('date')(new Date(), 'yyyy-MM-dd');
+
+      // we start up as entree
+      slip.bon = "E";
 
       // get filtered lists of bons by type    
       $scope.bon_r = filterBon($scope.cash, function(d) { return d.bon == "D"; }); // depense
@@ -1807,10 +1830,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       console.log("bon", $scope.bon_r);
     
       // create a new invoice id
-      $scope.slip.id = get_max($scope.cash, 'id') + 1;
+      slip.id = get_max($scope.cash, 'id') + 1;
+
+      // TODO/FIXME: What is this for?
+      slip.bon_num = 1;
 
       // set the default currency
-      $scope.slip.currency = $scope.currencies[0].id;
+      slip.currency = $scope.currencies[0].id;
       $scope.view.currency = $scope.currencies[0].symbol;
     }
 
@@ -1824,8 +1850,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     // set the currency
     $scope.setCurrency = function (idx) {
-      $scope.slip.currency = $scope.currencies[idx].id;
-      $scope.view.currency = $scope.currencies[idx].symbol;
+      var id = $scope.currencies[idx].id;
+      $scope.slip.currency = id;
+      $scope.view.currency = cus.get(id).symbol;
     };
 
     // loop through a model on 'property' and return 
@@ -1842,21 +1869,27 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       console.log("e:", e);
     };
 
-    // submit/sign the book
-    $scope.submit = function() {
-      console.log("Called Submit.");
-    };
-
-    // reset data in the current form 
-    $scope.wipe = function () {
-      setDefaults();
-    };
-
     // format account display
     // FIXME: find a better way of doing this:
     // called ~= 6 times per refresh per item
     $scope.formatAcc = function (obj) {
       return obj.id + " - " + obj.account_txt; 
+    };
+
+    // TODO: differentiate btwn credit/debit accout depending on sortie
+    // or entree.
+    $scope.taSelect = function () {
+      var slip = $scope.slip;
+      slip.amount = slip.text.cost;
+      var debitor_id = slip.text.debitor_id;
+      slip.debit_account = ds.get(debitor_id).account_number;
+      slip.text = slip.text.note;
+    };
+
+    $scope.sign = function () {
+      // do any last minute checks
+      console.log('signing...');
+      cs.put($scope.slip);
     };
 
 
