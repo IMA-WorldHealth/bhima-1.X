@@ -1,4 +1,4 @@
-<!--link rel="stylesheet" href="css/sales_records.css"/-->
+<link rel="stylesheet" href="css/sales_records.css"/>
 <div class="container">
   <div class="row">
     <div class="col-xs-5">
@@ -10,7 +10,10 @@
   <div class="row">
     <div class="form-group">
       <label for="patient_search">Search Invoices</label>
-      <input type="text" id="patient_search" ng-model="patient_filter.filterText">
+
+      <input type="text" id="invoice_search" ng-model="invoice_filter.filterText">
+      <button class="btn btn-default" ng-click="post()">Post Selected</button>
+
     </div>  
   </div>
   <div class="row">
@@ -18,4 +21,5 @@
       <div ng-grid="gridOptions" class="table table-default p-grid"></div>
     </div>
   </div>
+
 </div>
