@@ -1,4 +1,15 @@
 
+.hide {
+  display: none;
+}
+
+.post-success {
+  font-weight: bold;
+  padding: 1em;
+  border:1px solid #d6e9c6;
+  background:#dff0d8;
+}
+
 .cash-book {
   border: 1px solid #dddddd;
   padding: 2%;

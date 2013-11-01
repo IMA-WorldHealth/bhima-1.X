@@ -1792,7 +1792,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: "patient",
       tables: {
         "debitor": {columns: ["id"]},
-        "debitor_group" : {columns: ["id", "name", "account_number", "note"]}
+        "debitor_group" : {columns: ["name", "account_number", "note"]}
       },
       join: ["debitor.group_id=debitor_group.id"],
     };
@@ -1836,6 +1836,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.invoices = is.data; // outstanding invoices
       $scope.currencies = cus.data;
       $scope.cash = cs.data;
+
+      console.log(is);
 
       // Defaults for currency drop-downs
       setDefaults();
@@ -1920,6 +1922,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var slip = $scope.slip;
       slip.amount = slip.text.cost;
       var debitor_id = slip.text.debitor_id;
+      console.log("di:", debitor_id);
       slip.debit_account = ds.get(debitor_id).account_number;
       slip.text = null;
       delete slip.text; // FIXME: organise code better
@@ -1931,6 +1934,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       console.log('cs:', cs);
       cs.put($scope.slip);
       cs.sync();
+      $scope.sent = "Signed the invoice successfully!";
+      setDefaults();
     };
 
 
