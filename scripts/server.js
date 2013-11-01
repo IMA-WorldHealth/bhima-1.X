@@ -78,8 +78,7 @@ app.get('/tree', function(req, res, next) {
 });
 
 app.post('/journal', function(req, res) {
-  jr.poster(req, res);
- 
+  jr.poster(req, res); 
 });
 
 app.post('/gl', function(req, res) {
