@@ -850,11 +850,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var search_max = list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
       //reduce returns an object if only one element is in the array for some reason
       //TODOSET
-      if(search_max.id) {
-        return search_max.id +1;
-      } else { 
-        return search_max +1;
-      }
+      if(search_max.id) search_max = search_max.id;
+      return search_max + 1;
       //return list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)}).id + 1;
     }
 
@@ -1134,24 +1131,49 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
    
     function init() { 
       //register patient for appcahce namespace
+      
+      var location_request = connect.req('location', ['id', 'city', 'region']);
+      //for creating patient ID - this isn't ideal
+      var patient_request = connect.req('patient', ['id']);
+
+      $q.all([location_request, patient_request])
+      .then(function(res) { 
+        $scope.location_model = res[0];
+        $scope.patient_model = res[1];
+        //$scope.location = $scope.location_model.data[0]; //select default
+      });
+    }
+
+    function createId(data) { 
+      var search = data.reduce(function(a, b) {a = a.id || a; b = b.id || b; return Math.max(a, b);});
+      if(search.id) search = search.id;
+      return search + 1;
     }
 
     $scope.update = function(patient) { 
-      var PATIENT_ORGANISATION = 3;
       patient_model = patient;
 
       //validate model 
-      
-      //assing patient organisation account - currenlty 3
-      patient_model.group_id = PATIENT_ORGANISATION; 
-      //TODO Add error handling
-      connect.basicPut("patient", [patient_model])
+      patient_model.id = createId($scope.patient_model.data);
+      patient_model.debitor_id = patient_model.id;
+
+      //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
+      //1 - default group_id, should be properly defined
+      connect.basicPut("debitor", [{id: patient_model.id, group_id: 1}])
       .then(function(res) { 
-        $location.path("patient_records/" + res.data.insertId);
-        submitted = true;
+        //Create patient record
+        connect.basicPut("patient", [patient_model])
+        .then(function(res) {
+          $location.path("patient_records/" + res.data.insertId);
+          submitted = true;
+        });
       });
 
     };
+
+    $scope.formatLocation = function(l) { 
+      return l.city + ", " + l.region;
+    }
 
     $scope.checkChanged = function(model) { 
         return angular.equals(model, $scope.master);
