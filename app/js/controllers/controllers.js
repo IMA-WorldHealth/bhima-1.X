@@ -1862,4 +1862,69 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   });
 
+ //***************************************************************************************
+//******************** JOURNAL CONTROLLER ************************************************
+//***************************************************************************************
+controllers.controller('journalController', function($scope, $q, bikaConnect, bikaUtilitaire){
+  var postingListe={};
+  $scope.infosJournal = [];  
+   var e = [{t : 'journal', c : ['description', 'date', 'posted']},
+            {t:'sale', c:['id','currency', 'cost', 'discount', 'invoice_date', 'note']},
+            {t:'employee', c:['name']},
+            {t:'user', c:['first']},
+            {t:'enterprise', c:['type']},
+            {t:'sale', c:['debitor']}
+           ],
+       jc = [{ts:['journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
+             {ts: ['journal', 'user'], c:['user_id', 'id'], l:'AND'},
+             {ts: ['journal', 'sale'], c:['sales_id', 'id'], l:'AND'},
+             {ts: ['sale', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
+             {ts: ['sale', 'debitor'], c:['debitor_id', 'id'], l:'AND'},
+             {ts: ['sale', 'employee'], c:['seller_id', 'id']}
+            ], req_db = {};
+   req_db.e = e;
+   req_db.jc = jc;
+   bikaConnect.get('/journal?', req_db).then(function(data){
+    $scope.infosJournal=data;
+    for(var i = 0; i<data.length; i++){
+     $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
+     $scope.infosJournal[i].date = bikaUtilitaire.formatDate($scope.infosJournal[i].date);
+     $scope.infosJournal[i].invoice_date = bikaUtilitaire.formatDate($scope.infosJournal[i].invoice_date); 
+    }
+  });
+
+   $scope.tryChecking = function(index){
+    var res = isCheckingValide(index);
+    res.then(function(response){
+      if(!response){
+        $scope.infosJournal[index].posted = true;
+      }else{
+        postingListe[index] = $scope.infosJournal[index].posted;
+      }
+    });
+   }
+
+   function isCheckingValide(index){
+    var def = $q.defer();
+    var req_db = {};
+    req_db.e = [{t:'journal', c:['posted']}];
+    req_db.c = [{t:'journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
+    bikaConnect.get('/data/?', req_db).then(function(data){
+      (data[0].posted == 1)?def.resolve(false):def.resolve(true);
+    });
+    return def.promise;
+   }
+
+   $scope.poster = function(){
+    var tabJournalID = [];
+    for(var cle in postingListe){
+      if(postingListe[cle]){
+        tabJournalID.push($scope.infosJournal[cle].id);
+      }
+    }
+    bikaConnect.sendTo('gl/', 'gl',tabJournalID);
+
+   }
+});
+
 })(angular);
