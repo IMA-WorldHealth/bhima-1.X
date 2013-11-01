@@ -3,7 +3,7 @@
 DROP DATABASE IF EXISTS `bika`;
 CREATE DATABASE `bika`;
 USE `bika`;
-GRANT ALL ON `bika`.* TO 'bika'@'%' IDENTIFIED BY 'HISCongo2013';
+/*GRANT ALL ON `bika`.* TO 'bika'@'%' IDENTIFIED BY 'HISCongo2013';*/
 
 --
 -- table `bika`.`enterprise`
@@ -5902,7 +5902,7 @@ INSERT INTO `patient` (`id`, `debitor_id`, `first_name`, `last_name`, `dob`, `pa
 DROP TABLE IF EXISTS `sale`;
 CREATE TABLE `sale` (
   enterprise_id   smallint unsigned not null,
-  id              int unsigned not null, -- saleid number
+  id              int unsigned not null AUTO_INCREMENT, -- saleid number
   cost            int unsigned not null,
   currency        varchar(3) not null, -- 'USD', 'FC', 'EUR', 'GBP'
   debitor_id      int unsigned not null,    
@@ -5921,8 +5921,8 @@ CREATE TABLE `sale` (
   CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `sale` (`enterprise_id`, `id`, `cost`, `currency`, `debitor_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`) VALUES 
-  (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02','A NEW SALE', 0);
+-- INSERT INTO `sale` (`enterprise_id`, `id`, `cost`, `currency`, `debitor_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`) VALUES 
+--  (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02','A NEW SALE', 0);
 
 --
 -- table `bika`.`inv_types`
@@ -6033,7 +6033,7 @@ INSERT INTO `inventory_unit` VALUES
 DROP TABLE IF EXISTS `sale_item`;
 CREATE TABLE `sale_item` (
   sale_id         int unsigned not null,
-  id              int unsigned not null,
+  id              int unsigned not null AUTO_INCREMENT,
   inventory_id    int unsigned not null,
   quantity        int unsigned default '0',
   unit_price      int unsigned not null, -- This is duplicated from inventory, but allows for prices to change etc.
@@ -6041,7 +6041,7 @@ CREATE TABLE `sale_item` (
   PRIMARY KEY(`id`),
   KEY `sale_id` (`sale_id`),
   KEY `inventory_id` (`inventory_id`),
-  CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`), -- TODO Add ONDELETE CASCADE
+  CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`) ON DELETE CASCADE,
   CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB;
 

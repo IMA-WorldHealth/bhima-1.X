@@ -5,6 +5,7 @@ var express         = require('express')
   , url             = require('url')
   , auth            = require('./lib/auth')
   , um              = require('./lib/util/userManager')
+  , jr              = require('./lib/logic/journal')
   , ws              = require("./lib/ws") // This is the socket server
   , app             = express();
 
@@ -16,8 +17,8 @@ app.configure('production', function () {
   app.use(express.session({secret: 'open blowfish', cookie: {httpOnly: false}}));
   app.use(auth);
   app.use(express.static('app'));
-});
   app.use(app.router);
+});
 
 // TODO: Deprecate this code and use sockets
 app.get('/data/', function (req, res) {
@@ -75,5 +76,38 @@ app.post('/data/', function (req, res) {
 app.get('/tree', function(req, res, next) {
   um.manageUser(req, res, next);
 });
+
+app.post('/journal', function(req, res) {
+  jr.poster(req, res);
+ 
+});
+
+app.post('/gl', function(req, res) {
+  console.log('ok', req.body);
+ 
+});
+
+app.get('/journal', function(req,res){
+  var cb = function (err, ans) {
+    if (err) throw err;
+    for(var i = 0; i<ans.length; i++){
+      console.log('journal record :', ans[i]);
+    }
+    res.json(ans);
+  };
+  var myRequest = decodeURIComponent(url.parse(req.url).query);
+  var jsRequest;  
+  try{
+    jsRequest = JSON.parse(myRequest);
+  }catch(e){
+    jsRequest = JSON.parse(JSON.stringify(myRequest));
+  }  
+  var Qo = queryHandler.getQueryObj(jsRequest);
+  var sql = db.select(Qo);
+  console.log('JSON:'+Qo+' sql :'+sql);
+  db.execute(sql, cb);  
+});
+
+
 
 app.listen(8080, console.log('Environment:', app.get('env'), "/angularproto:8080"));
