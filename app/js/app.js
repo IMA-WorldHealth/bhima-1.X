@@ -69,6 +69,10 @@
     when('/inventory/register', {
       controller: 'inventoryRegisterController',
       templateUrl: '/partials/inventory/register/index.html'
+    }).
+    when('/cash', {
+      controller: 'cashController',
+      templateUrl: '/partials/cash/index.html'
     });
   }  
   bika.config(bikaconfig);
