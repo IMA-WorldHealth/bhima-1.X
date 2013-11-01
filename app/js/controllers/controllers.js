@@ -1868,16 +1868,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 controllers.controller('journalController', function($scope, $q, bikaConnect, bikaUtilitaire){
   var postingListe={};
   $scope.infosJournal = [];  
-   var e = [{t : 'journal', c : ['description', 'date', 'posted']},
-            {t:'sale', c:['id','currency', 'cost', 'discount', 'invoice_date', 'note']},
+   var e = [{t : 'journal', c : ['id','description', 'date', 'posted']},
+            {t:'sale', c:['currency', 'cost', 'discount', 'invoice_date', 'note']},
             {t:'employee', c:['name']},
             {t:'user', c:['first']},
             {t:'enterprise', c:['type']},
-            {t:'sale', c:['debitor']}
+            {t:'debitor', c:['text']}
            ],
        jc = [{ts:['journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
              {ts: ['journal', 'user'], c:['user_id', 'id'], l:'AND'},
-             {ts: ['journal', 'sale'], c:['sales_id', 'id'], l:'AND'},
+             {ts: ['journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
              {ts: ['sale', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
              {ts: ['sale', 'debitor'], c:['debitor_id', 'id'], l:'AND'},
              {ts: ['sale', 'employee'], c:['seller_id', 'id']}
