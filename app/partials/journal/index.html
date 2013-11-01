@@ -1,0 +1,58 @@
+<link rel="stylesheet" type="text/css" href="../../../css/journal.css"/>
+<div class="container" id="divcontainerID">
+	<div class="row" id ="divinfosID">
+		<div class="col-md-12">
+			<table class="table table-bordered  table-striped table-hover">
+				<thead>
+					<td>Date</td>
+					<td>ID</td>
+					<td>Description</td>
+					<td>Monnaie</td>
+					<td>Vendeur</td>
+					<td>Cout</td>
+					<td>Decompte</td>
+					<td>Date Facturation</td>
+					<td>Ecrit par</td>
+					<td>Poster</td>
+				</thead>
+				<tbody>
+					<tr ng-repeat="infoJournal in infosJournal">
+						<td>
+							{{infoJournal.date}}
+						</td>
+						<td>
+							{{infoJournal.id}}
+						</td>
+						<td>
+							{{infoJournal.description}}
+						</td>
+						<td>
+							{{infoJournal.currency}}
+						</td>
+						<td>
+							{{infoJournal.name}}
+						</td>
+						<td>
+							{{infoJournal.cost}}
+						</td>
+						<td>
+							{{infoJournal.discount}}
+						</td>
+						<td>
+							{{infoJournal.invoice_date}}
+						</td>
+						<td>
+							{{infoJournal.first}}
+						</td>
+						<td>
+							<label><input type="checkbox" ng-model="infoJournal.posted" ng-click="tryChecking($index)"/></label>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div><br/>
+	<div class="container" id="divactionID">
+		<button class="btn btn-info btn-sm" ng-click="poster()"> Poster</button>
+	</div>
+</div>
