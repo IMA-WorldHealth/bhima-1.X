@@ -30,7 +30,8 @@ var insert = function(obj,res){
                            user_id: data[0].seller_id,
                            sale_id:data[0].id,
                            date:date,
-                           description:data[0].note
+                           description:data[0].note,
+                           posted: 0
                           }]);
       db.execute(sql, cb);
     });

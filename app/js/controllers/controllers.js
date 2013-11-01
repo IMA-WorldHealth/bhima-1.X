@@ -1949,7 +1949,7 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
   $scope.infosJournal = [];  
    var e = [{t : 'journal', c : ['id','description', 'date', 'posted']},
             {t:'sale', c:['currency', 'cost', 'discount', 'invoice_date', 'note']},
-            {t:'employee', c:['name']},
+            /*{t:'employee', c:['name']},*/
             {t:'user', c:['first']},
             {t:'enterprise', c:['type']},
             {t:'debitor', c:['text']}
@@ -1958,12 +1958,13 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
              {ts: ['journal', 'user'], c:['user_id', 'id'], l:'AND'},
              {ts: ['journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
              {ts: ['sale', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
-             {ts: ['sale', 'debitor'], c:['debitor_id', 'id'], l:'AND'},
-             {ts: ['sale', 'employee'], c:['seller_id', 'id']}
+             {ts: ['sale', 'debitor'], c:['debitor_id', 'id']}/*,
+             {ts: ['sale', 'user'], c:['seller_id', 'id']}*/
             ], req_db = {};
    req_db.e = e;
    req_db.jc = jc;
    bikaConnect.get('/journal?', req_db).then(function(data){
+    console.log("data", data);
     $scope.infosJournal=data;
     for(var i = 0; i<data.length; i++){
      $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
