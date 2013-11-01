@@ -6044,18 +6044,15 @@ DROP TABLE IF EXISTS `journal`;
 CREATE TABLE `journal` (
   `id`                mediumint unsigned not null AUTO_INCREMENT,
   `enterprise_id`     smallint unsigned not null,  
-  `fiscal_id`         mediumint unsigned not null,
   `user_id`           smallint unsigned not null,
   `sale_id`           int unsigned not null,  
   `date`              date not null,
   `description`       text,  
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `fiscal_id`(`fiscal_id`),
   KEY `user_id` (`user_id`),
   KEY `sale_id` (`sale_id`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT FOREIGN KEY (`fiscal_id`) REFERENCES `fiscal_year` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB;
