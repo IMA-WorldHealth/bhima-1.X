@@ -6036,7 +6036,7 @@ CREATE TABLE `sale_item` (
   PRIMARY KEY(`id`),
   KEY `sale_id` (`sale_id`),
   KEY `inventory_id` (`inventory_id`),
-  CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`),
+  CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`), -- TODO Add ONDELETE CASCADE
   CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB;
 
