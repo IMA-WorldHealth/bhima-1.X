@@ -5807,15 +5807,7 @@ INSERT INTO `debitor` (`id`, `group_id`) VALUES
   (1, 1),
   (2, 1),
   (3, 2),
-  (4, 2),
-  (5, 2),
-  (6, 2),
-  (7, 3),
-  (8, 3),
-  (9, 3),
-  (10, 4),
-  (11, 4),
-  (12, 5);
+  (4, 2);
 
 --
 -- table `bika`.`department`
@@ -5859,9 +5851,9 @@ CREATE TABLE `employee` (
 ) ENGINE=Innodb;
 
 -- notE: business logic should not register debitor ids to more than one person
-INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `department_id`, `initials`) VALUES
-  (1, "Dodi", "Chief Accountant", 6, 11, 4, "DK"),
-  (2, "Jon", "MCZ", 8, 11, 3, "JN");
+-- INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `department_id`, `initials`) VALUES
+--  (1, "Dodi", "Chief Accountant", 6, 11, 4, "DK"),
+--  (2, "Jon", "MCZ", 8, 11, 3, "JN");
 
 --
 -- Table `bika`.`patient`
