@@ -24,7 +24,8 @@
         </div>
 
       <div class="row" id="bika-util" ng-controller="utilController">
-        <div id="bika-app-select">
+      <!--FIXME decide buttons and features that need to sit here-->
+        <div hidden id="bika-app-select">
           <select class="form-control" ng-model="e_select" ng-options="enterprise.name for enterprise in enterprise_model">
           </select>
           <select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">
