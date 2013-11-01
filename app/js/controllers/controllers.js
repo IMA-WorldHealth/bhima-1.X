@@ -786,7 +786,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('salesController', function($scope, $q, connect, appstate) { 
+  controllers.controller('salesController', function($scope, $q, $location, connect, appstate) { 
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
@@ -846,13 +846,22 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     function createId(list) { 
       var default_id = 100000;
       if(list.length < 1) return default_id; //No invoices have been created
-      return list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)}).id + 1;
+      console.log("Sales list", list);
+      var search_max = list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
+      //reduce returns an object if only one element is in the array for some reason
+      //TODOSET
+      if(search_max.id) {
+        return search_max.id +1;
+      } else { 
+        return search_max +1;
+      }
+      //return list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)}).id + 1;
     }
 
     function getDate() { 
       //Format the current date according to RFC3339 (for HTML input[type=="date"])
       var now = new Date();
-      return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+      return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + ('0' + now.getDate()).slice(-2);
     } 
 
     $scope.generateInvoice = function() { 
@@ -864,6 +873,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         t += $scope.inventory[i].quantity * $scope.inventory[i].price;
       }
 
+
+
       
       //create invoice record
       var format_invoice = {
@@ -871,7 +882,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         id : $scope.invoice_id,
         cost : t,
         currency : 'USD', //ohgd
-        debitor_id : $scope.debtor.id,
+        debitor_id : $scope.debtor.debitor_id,
+        invoice_date: $scope.sale_date,
         seller_id : '1', //TODO placeholder - this should be derived from appstate (session) or equivelant
         discount: '0', //placeholder
         note : '',
@@ -883,6 +895,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           var promise = generateInvoiceItems();
           promise.then(function(res) { 
             console.log("Invoice successfully generated", res);
+            $location.path('/sale_records/' + $scope.invoice_id);
           })
         }
       })
@@ -959,9 +972,76 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('salesRecordsController', function($scope, $q, connect) { 
+  controllers.controller('salesRecordsController', function($scope, $q, $routeParams, connect) { 
     console.log("Sale records initialised");
-    $scope.thing = 5;
+
+    var invoice = ($routeParams.recordID || -1);
+    console.log("Got invoice", invoice);
+
+    function init() { 
+      var promise = fetchRecords();
+
+
+      $scope.invoice_model = {};
+      $scope.invoice_filter = {
+        filterText: ""
+      };
+
+      $scope.gridOptions = { 
+        multiSelect: false,
+        selectedItems: [],
+        columnDefs : [{field:'id', display:'id'},
+                      {field:'cost', display:'total', cellFilter: 'currency'},
+                      {field:'debitor_id', display:'debtor'},
+                      {field:'invoice_date', display:'date', cellFilter: 'date: "dd/MM/yyyy"'},
+                      {field:'posted', display:'posted'}],
+      data : 'invoice_model.data',
+      //FIXME Search seems unpredictable - check filter settings
+      filterOptions: $scope.invoice_filter
+      };
+
+      promise
+      .then(function(model) { 
+        //FIXME configure locally, then expose
+        
+        //expose scope 
+        $scope.invoice_model = model; //ng-grid
+        $scope.gridOptions.selectRow(1, true);
+        //Select default
+      }); 
+
+      $scope.post = function() { 
+        console.log("Request for post");
+        console.log($scope.gridOptions.selectedItems);
+        var selected = $scope.gridOptions.selectedItems;
+        var request = [];
+        if(selected.length>0) { 
+          selected.forEach(function(item) { 
+            if(item.posted==0) { 
+              request.push(item.id);
+            }
+          });
+        }
+
+        connect.journal(request);
+        console.log("request should be made for", request);
+      }
+    }
+
+    function fetchRecords() { 
+      var deferred = $q.defer();
+
+      $scope.selected = {};
+
+      connect.req('sale', ['id', 'cost', 'currency', 'debitor_id', 'discount', 'invoice_date', 'posted'])
+      .then(function(model) { 
+        deferred.resolve(model);
+      });
+
+      return deferred.promise;
+    }
+
+    init();
   });
 
   controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
@@ -974,13 +1054,14 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
 
       $scope.patient_model = {};
-      $scope.gridOptions = {};
       $scope.patient_filter = {
         filterText: ""
       };
 
       $scope.gridOptions = { 
         multiSelect: false,
+        data : 'patient_model.data',
+
         columnDefs : [{field:'name', display:'name'},
                       {field:'dob', display:'dob', cellFilter: 'date: "dd/MM/yyyy"'},
                       {field:'sex', display:'gender'},
@@ -988,7 +1069,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
                       {field:'marital_status', display:'marital status'},
                       {field:'phone', display:'phone'},
                       {field:'email', display:'email'}],
-      data : 'patient_model.data',
       //FIXME Search seems unpredictable - check filter settings
       filterOptions: $scope.patient_filter
       };

@@ -620,6 +620,10 @@
       return deferred.promise;
     }
 
+    function journal(invoice_ids) { 
+      return $http.post('/journal/', invoice_ids);
+    }
+
     function basicReq(reqobj) { 
       //summary: 
       //  return a packaged model given a straight request object
@@ -634,6 +638,7 @@
 
       return deferred.promise;
     }
+
 
     function basicPut(table, object) { 
       var format_object = {t: table, data: object};
@@ -705,7 +710,8 @@
     return { 
       req : req,
       basicReq : basicReq,
-      basicPut : basicPut
+      basicPut : basicPut,
+      journal : journal
     };
   });
 
