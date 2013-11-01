@@ -1,0 +1,17 @@
+#divcontainerID{
+	position:relative;
+	height: 100%;
+}
+#divinfosID{
+	position:absolute;
+	height:80%;
+	top:5px;
+}
+
+#divactionID{
+	position:absolute;
+	top: 600px;
+	right: 5px;
+	
+
+}
