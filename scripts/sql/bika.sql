@@ -265,7 +265,7 @@ INSERT INTO `account` (`enterprise_id`, `id`, `locked`, `account_txt`, `account_
 -- `bika`.`currency`
 --
 DROP TABLE IF EXISTS `currency`;
-CREATE TABLE IF not EXISTS `currency` (
+CREATE TABLE `currency` (
   `id` tinyint unsigned not null,
   `name` text not null,
   `symbol` varchar(15) not null,
@@ -276,11 +276,15 @@ CREATE TABLE IF not EXISTS `currency` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+INSERT INTO `currency` (`id`, `name`, `symbol`, `current_rate`, `last_rate`, `updated`) VALUES
+  (1, 'Congolese Francs', 'FC', 900, 910, '2013-01-03'),
+  (2, 'United State Dollars', 'USD', 1, 1, '2013-01-03');
+
 --
 -- table `bika`.`fiscal_year`
 --
 DROP TABLE IF EXISTS `fiscal_year`;
-CREATE TABLE IF not EXISTS `fiscal_year` (
+CREATE TABLE `fiscal_year` (
   `enterprise_id` smallint unsigned not null,
   `id` mediumint unsigned not null,
   `number_of_months` mediumint unsigned not null,
@@ -328,7 +332,7 @@ REPLACE INTO `user` (`id`, `username`, `password`, `first`, `last`, `email`, `lo
 -- table `bika`.`period`
 --
 DROP TABLE IF EXISTS `period`;
-CREATE TABLE IF not EXISTS `period` (
+CREATE TABLE `period` (
   `fiscal_year_id` mediumint unsigned not null,
   `id` mediumint unsigned not null,
   `period_start` date not null,
@@ -373,7 +377,7 @@ ALTER TABLE `enterprise`
 -- table `bika`.`unit`
 --
 DROP TABLE IF EXISTS `unit`;
-CREATE TABLE IF not EXISTS `unit` (
+CREATE TABLE `unit` (
   `id` mediumint not null,
   `name` varchar(30) not null,
   `description` text not null,
@@ -5716,7 +5720,7 @@ INSERT INTO `payment` (`id`, `days`, `months`, `text`, `note`) VALUES
 -- table `bika`.`tax`
 --
 DROP TABLE IF EXISTS `tax`;
-CREATE TABLE IF not EXISTS `tax` (
+CREATE TABLE `tax` (
   `id`            smallint unsigned not null AUTO_INCREMENT,
   `registration`  mediumint unsigned not null,
   `note`          text,
@@ -5863,7 +5867,7 @@ INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `dep
 -- Table `bika`.`patient`
 --
 DROP TABLE IF EXISTS `patient`;
-CREATE TABLE IF not EXISTS `patient` (
+CREATE TABLE `patient` (
   `id` int unsigned not null AUTO_INCREMENT,
   `debitor_id` int unsigned not null, -- references debitors 
   `first_name` varchar(150) not null,
@@ -5906,6 +5910,7 @@ CREATE TABLE `sale` (
   discount        mediumint unsigned default '0',
   invoice_date    date not null,
   note            text,
+  paid            boolean not null default '0',
   posted          boolean not null default '0',
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
@@ -5923,7 +5928,7 @@ CREATE TABLE `sale` (
 -- table `bika`.`inv_types`
 --
 DROP TABLE IF EXISTS `inv_type`;
-CREATE TABLE IF not EXISTS `inv_type` (
+CREATE TABLE `inv_type` (
   id      smallint not null,
   type    varchar(30) not null,
   PRIMARY KEY (`id`)
@@ -5938,7 +5943,7 @@ INSERT INTO `inv_type` VALUES
 --    Goods & Services
 --
 DROP TABLE IF EXISTS `inventory`;
-CREATE TABLE IF not EXISTS `inventory` (
+CREATE TABLE `inventory` (
   enterprise_id     smallint unsigned not null,
   id                int unsigned not null,
   inv_code          varchar(10) not null,
@@ -6094,3 +6099,25 @@ CREATE TABLE `gl` (
   CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`),
   CONSTRAINT FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `cash`;
+CREATE TABLE `cash` (
+  id              int unsigned not null,
+  bon             char(1) not null,
+  date            date not null,
+  debit_account   mediumint unsigned not null,
+  credit_account  mediumint unsigned not null,
+  amount          int unsigned not null,
+  currency_id     tinyint unsigned not null,
+  cashier_id      smallint unsigned not null,
+  PRIMARY KEY (`id`),
+  KEY `currency_id` (`currency_id`),
+  KEY `cashier_id` (`cashier_id`),
+  KEY `debit_account` (`debit_account`),
+  KEY `credit_account` (`credit_account`),
+  CONSTRAINT FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT FOREIGN KEY (`cashier_id`) REFERENCES `user` (`id`),
+  CONSTRAINT FOREIGN KEY (`debit_account`) REFERENCES `account` (`id`),
+  CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB;
+

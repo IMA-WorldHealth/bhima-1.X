@@ -129,11 +129,11 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
   $scope.createUser = function() { 
     $scope.selected = {};   
-  }
+  };
 
   $scope.changeAll = function(){
     ($scope.chkTous)?checkAll(): unCheckAll();
-  }
+  };
 
   $scope.getUnits = function(idRole){
     $scope.tabUnits = [];
@@ -147,7 +147,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       return $scope.tabUnits;
     }
     return [];    
-  }
+  };
 
   $scope.valider = function (){
     if($scope.selected.email){
@@ -177,7 +177,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     if($scope.showbademail !== true && $scope.showbadpassword!==true){
       ($scope.selected.id)?updateUser():creer();
     }
-  }
+  };
 
   function creer (){
     var result = existe();
@@ -197,7 +197,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
         request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
         bikaConnect.get('data/?',request).then(function(data) {           
           for(var i = 0; i<$scope.units.length; i++){
-            if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !=0 && $scope.units[i].id != 0){
+            if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
               bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
             }
           }         
@@ -261,7 +261,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
                        };
       bikaConnect.update(sql_update);
       for(var i = 0; i<$scope.units.length; i++){
-          if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !=0 && $scope.units[i].id != 0){
+          if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
             bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
           }
           } 
@@ -372,7 +372,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
       req_db.c = [{t : 'transaction', cl : 'period_id', v : period_id, z : '='}];
       bikaConnect.get('/data/?', req_db).then(function(data){
         for(var i = 0; i<data.length; i++){
-        data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+        data[i].date = bikaUtilitaire.formatDate(data[i].date);
         }
         $scope.infostran = data;
       });
@@ -399,7 +399,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
           req_db.c = c;
           bikaConnect.get('/data/?', req_db).then(function(data){
             for(var i = 0; i<data.length; i++){
-              data[i]['date'] = bikaUtilitaire.formatDate(data[i].date);
+              data[i].date = bikaUtilitaire.formatDate(data[i].date);
             }
             $scope.infostran = data;
           });
@@ -479,8 +479,8 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
     bikaConnect.get('/data/?',req_db).then(function(data){
       for(var i = 0; i<data.length; i++){
-        data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
-        data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
+        data[i].period_start = bikaUtilitaire.formatDate(data[i].period_start);
+        data[i].period_stop = bikaUtilitaire.formatDate(data[i].period_stop);
       }
       $scope.period_model = data;
       $scope.p_select = $scope.period_model[0];
@@ -591,7 +591,7 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
   $scope.populer = function(id){
     $scope.selectedAccounts[$scope.comptes[id].id]=$scope.comptes[id].sltd+";"+ $scope.comptes[id].account_txt;
     isActive();
-  }
+  };
 
       $scope.showDialog = function() {
       var instance = $modal.open({
@@ -614,7 +614,7 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
           }
           var finalChamps = new Array(finalChampsCount());
           var j= 0;
-          for(var i=0; i<champs.length; i++){
+          for(i=0; i<champs.length; i++){
             if(champs[i]){
               finalChamps[j++] = champs[i];
             }
@@ -667,7 +667,7 @@ controllers.controller('appController', function($scope, $location, appcache) {
     var url = $location.url();
     
     //Assuming initial page load
-    if(url=='') { 
+    if (url === '') {
       //only navigate to cached page if no page was requested
       appcache.getNav().then(function(res) { 
         if(res) { 
@@ -751,7 +751,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.active = "select";
       $scope.selected = null;
       $scope.fiscal_model.delete(fiscal_id);
-    }
+    };
 
     $scope.isSelected = function() { 
       return !!($scope.selected);
@@ -953,17 +953,17 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.$watch(function() { return new_line.item; }, function(nval, oval, scope) { 
         console.log(nval);
       });*/
-    }
+    };
 
     $scope.isPayable = function() { 
       if($scope.invoice.payable=="true") return true;
       return false;
-    }
+    };
 
     $scope.itemsInInv = function() { 
       if($scope.inventory.length>0) return true;
       return false;
-    }
+    };
 
     $scope.formatDebtor = function(debtor) { 
       return "[" + debtor.debitor_id + "] " + debtor.first_name + " " + debtor.last_name;
@@ -1151,7 +1151,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         submitted = true;
       });
 
-    }
+    };
 
     $scope.checkChanged = function(model) { 
         return angular.equals(model, $scope.master);
@@ -1159,7 +1159,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.checkSubmitted = function() { 
       return submitted;
-    }
+    };
 
 
     init();
@@ -1510,7 +1510,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: 'account',
       tables: {
         'account': {
-          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id'],
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed'],
         },
         'account_type': {
           columns: ['type'] 
@@ -1551,6 +1551,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       console.log($scope.account_model);
     }
 
+    // FIXME: Find a better name, etc.
+    $scope.map = function (id) {
+      return (id == 1) ? "Fixed" : "Relative";
+    };
+
     // ng-grid options
     $scope.gridOptions = {
       data: 'account_model',
@@ -1559,13 +1564,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         {field: 'account_txt', displayName: "Account Text"},
         {field: 'account_type_id', displayName: "Account Type",
           cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
-          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
-          sortable: false,
+          editableCellTemplate: '<div><select style="padding:0;margin:0;height:100%;width:100%;" ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
+          enableCellEdit: true
+        },
+        {field: 'fixed', displayName: 'Fixed/Relative',
+          cellTemplate: '<div class="ngCellText">{{map(row.getProperty("fixed"))}}</div>',
+          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.fixed" ng-change="fixedRow(row)"><option value="0">Relative</option><option value="1">Fixed</option></select></div>',
           enableCellEdit: true
         },
         {field: 'locked', displayName: "Locked",
           cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
-          sortable: false
         }
       ],
       enableRowSelection:false,
@@ -1715,6 +1723,142 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.label = function(obj) {
       return obj.id + " - " + obj.account_txt;
     };
+
+  });
+
+  controllers.controller('cashController', function($scope, data, $q) {
+
+    var account_spec, invoice_spec, debitor_spec,
+      cash_spec, currency_spec;
+    
+    account_spec = {
+      tables: {
+        'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed']}
+      },
+      where: ["account.enterprise_id=" + 101] //FIXME
+    };
+    
+    invoice_spec = {
+      tables: {
+        'sale': {columns: ["id", "cost", "currency", "debitor_id", "discount", "invoice_date", "note", "paid"]}
+      },
+      where: ["sale.enterprise_id="+101, "AND", "sale.paid=0"] //FIXME
+    };
+
+    debitor_spec = {
+      primary: "patient",
+      tables: {
+        "debitor": {columns: ["id"]},
+        "debitor_group" : {columns: ["id", "name", "account_number", "note"]}
+      },
+      join: ["debitor.group_id=debitor_group.id"],
+    };
+
+    cash_spec = {
+      tables: {
+        "cash" : { //FIXME: Have a service that holds the current user information
+          columns: ["id", "bon", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id"] 
+        }
+      } 
+    };
+
+    currency_spec = {
+      tables: {"currency" : {columns: ["id", "symbol"]}} 
+    };
+
+    $q.all([
+      data.register(account_spec),
+      data.register(invoice_spec),
+      data.register(debitor_spec),
+      data.register(cash_spec),
+      data.register(currency_spec)
+    ]).then(init);
+    
+    function init (arr) {
+      // init all data connections
+      var account_store, invoice_store, debitor_store,
+          cash_store, currency_store;
+      account_store = arr.shift();
+      invoice_store = arr.shift();
+      debitor_store = arr.shift(); // maybe this isn't the best way of doing this..
+      cash_store = arr.shift();
+      currency_store = arr.shift();
+      $scope.accounts = account_store.data;
+      $scope.debitors = debitor_store.data;
+      $scope.invoices = invoice_store.data; // outstanding invoices
+      $scope.currencies = currency_store.data;
+      $scope.cash = cash_store.data;
+
+      // Defaults for currency drop-downs
+      setDefaults();
+    }
+
+    function setDefaults () {
+      // create objects for the receipt and dispersement and final
+      $scope.slip = {};
+
+      // experimental view
+      $scope.view = {};
+
+      // get filtered lists of bons by type    
+      $scope.bon_r = filterBon($scope.cash, function(d) { return d.bon == "D"; }); // depense
+      $scope.bon_d = filterBon($scope.cash, function(d) { return d.bon == "S"; }); // sortie
+
+      console.log("bon", $scope.bon_r);
+    
+      // create a new invoice id
+      $scope.slip.id = get_max($scope.cash, 'id') + 1;
+
+      // set the default currency
+      $scope.slip.currency = $scope.currencies[0].id;
+      $scope.view.currency = $scope.currencies[0].symbol;
+    }
+
+    // filters the function based on the filter function
+    // (fx) passed in.  fx should be a function.
+    function filterBon (model, fx) {
+      return model.filter(function (d) {
+        return fx(d);
+      });
+    }
+
+    // set the currency
+    $scope.setCurrency = function (idx) {
+      $scope.slip.currency = $scope.currencies[idx].id;
+      $scope.view.currency = $scope.currencies[idx].symbol;
+    };
+
+    // loop through a model on 'property' and return 
+    // the max value.
+    function get_max(model, property) {
+      if (model.length < 1) { return 0; }
+      return model.reduce(function(max, right) {
+        max = max[property] || max; // for the first iteration
+        return Math.max(max, right[property]);
+      });
+    }
+
+    $scope.updateForm = function(e) {
+      console.log("e:", e);
+    };
+
+    // submit/sign the book
+    $scope.submit = function() {
+      console.log("Called Submit.");
+    };
+
+    // reset data in the current form 
+    $scope.wipe = function () {
+      setDefaults();
+    };
+
+    // format account display
+    // FIXME: find a better way of doing this:
+    // called ~= 6 times per refresh per item
+    $scope.formatAcc = function (obj) {
+      return obj.id + " - " + obj.account_txt; 
+    };
+
 
   });
 

@@ -1,0 +1,76 @@
+
+.cash-book {
+  border: 1px solid #dddddd;
+  padding: 2%;
+}
+
+.cash-book-container.dispersement {
+  background-color: #dff0d8;
+  border: 1px solid #d6e9c6;
+}
+
+.cash-book-container.receipt {
+  background-color: #f2dede;
+  border: 1px solid #eed3d7;
+}
+
+.cash-book-container h2 {
+  padding: 0.25em;
+}
+
+.cash-input {
+  border-radius: 0;
+}
+
+.cash input::-webkit-outer-spin-button,
+.cash input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: none; 
+}
+
+.cash-collapse-left {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.cash-select {
+  position: relative;
+}
+
+.input-group-btn .dropdown-menu {
+  display: none;
+}
+
+/* Work in Progress .. */
+.input-group-btn.open .dropdown-menu {
+  display: block;
+  z-index: 99999;
+  clear: none;
+  list-style-type: none;
+}
+
+
+/* Warning: this breaks w/o bootstrap */
+/* follow:http://cssdeck.com/labs/styling-select-box-with-css3  */
+/*
+.cash-select:after {
+  font-family: "Glyphicons Halflings";
+  content: "\e114"; /* chevron down 
+  -webkit-font-smoothing: antialiased;
+  right: 8px;
+  top: 2px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid #ddd;
+  position: absolute;
+  pointer-events: none;
+}
+
+.cash-select:before {
+  content: "",
+  right: 6px; top 0;
+  width: 20px; height: 20px;
+  position: absolute;
+  pointer-events: none;
+  display: block;  
+}
+*/
