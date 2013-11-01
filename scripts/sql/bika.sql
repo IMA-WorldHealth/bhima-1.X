@@ -3,7 +3,7 @@
 DROP DATABASE IF EXISTS `bika`;
 CREATE DATABASE `bika`;
 USE `bika`;
-GRANT ALL ON `bika`.* TO 'bika'@'%' IDENTIFIED BY 'HISCongo2013';
+/*GRANT ALL ON `bika`.* TO 'bika'@'%' IDENTIFIED BY 'HISCongo2013';*/
 
 --
 -- table `bika`.`enterprise`
