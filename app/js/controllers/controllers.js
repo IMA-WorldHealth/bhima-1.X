@@ -1647,53 +1647,44 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
   controllers.controller('cashController', function($scope, data, $q) {
+
+    var account_spec, invoice_spec, debitor_spec,
+      cash_spec, currency_spec;
     
-    var account_spec = {
+    account_spec = {
       tables: {
-        'account': {
-          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed'],
-        }
+        'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed']}
       },
       where: ["account.enterprise_id=" + 101] //FIXME
     };
     
-    var invoice_spec = {
+    invoice_spec = {
       tables: {
-        'sale': {
-          columns: ["cost", "currency", "debitor_id", "discount", "invoice_date", "note", "paid"] 
-        }
+        'sale': {columns: ["id", "cost", "currency", "debitor_id", "discount", "invoice_date", "note", "paid"]}
       },
       where: ["sale.enterprise_id="+101, "AND", "sale.paid=0"] //FIXME
     };
 
-    var debitor_spec = {
+    debitor_spec = {
       primary: "patient",
       tables: {
-        "debitor": {
-          columns: ["id"]
-        },
-        "debitor_group" : {
-          columns: ["id", "name", "account_number", "note"] 
-        }
+        "debitor": {columns: ["id"]},
+        "debitor_group" : {columns: ["id", "name", "account_number", "note"]}
       },
       join: ["debitor.group_id=debitor_group.id"],
     };
 
-    var cash_spec = {
+    cash_spec = {
       tables: {
         "cash" : { //FIXME: Have a service that holds the current user information
-          columns: ["id", "bon", "date", "debit", "credit", "currency_id", "cashier_id"] 
+          columns: ["id", "bon", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id"] 
         }
       } 
     };
 
-    var currency_spec = {
-      tables: {
-        "currency" : {
-          columns: ["id", "symbol"]
-        }
-      } 
-    };  
+    currency_spec = {
+      tables: {"currency" : {columns: ["id", "symbol"]}} 
+    };
 
     $q.all([
       data.register(account_spec),
@@ -1703,11 +1694,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       data.register(currency_spec)
     ]).then(init);
     
-    $scope.receipt = {};
-    $scope.disperse = {};
-
     function init (arr) {
-      var account_store, invoice_store, debitor_store, cash_store, currency_store;
+      // init all data connections
+      var account_store, invoice_store, debitor_store,
+          cash_store, currency_store;
       account_store = arr.shift();
       invoice_store = arr.shift();
       debitor_store = arr.shift(); // maybe this isn't the best way of doing this..
@@ -1717,49 +1707,79 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.debitors = debitor_store.data;
       $scope.invoices = invoice_store.data; // outstanding invoices
       $scope.currencies = currency_store.data;
-      console.log("currencies:", $scope.currencies);
-      console.log('invoices:', invoice_store);
+      $scope.cash = cash_store.data;
 
-      console.log([].concat([{id:0}], cash_store.data));
-      $scope.receipt.bon = $scope.disperse.bon = generateId([].concat([{id:0}], cash_store.data));
-      console.log("bon:", $scope.receipt.bon);
+      // Defaults for currency drop-downs
+      setDefaults();
     }
 
-    function generateId (model) {
-      var maxid = model.reduce(function(max, right) {
-        max = max.id || max; // for the first iteration
-        return Math.max(max, right.id);
+    function setDefaults () {
+      // create objects for the receipt and dispersement and final
+      $scope.slip = {};
+
+      // experimental view
+      $scope.view = {};
+
+      // get filtered lists of bons by type    
+      $scope.bon_r = filterBon($scope.cash, function(d) { return d.bon == "D"; }); // depense
+      $scope.bon_d = filterBon($scope.cash, function(d) { return d.bon == "S"; }); // sortie
+
+      console.log("bon", $scope.bon_r);
+    
+      // create a new invoice id
+      $scope.slip.id = get_max($scope.cash, 'id') + 1;
+
+      // set the default currency
+      $scope.slip.currency = $scope.currencies[0].id;
+      $scope.view.currency = $scope.currencies[0].symbol;
+    }
+
+    // filters the function based on the filter function
+    // (fx) passed in.  fx should be a function.
+    function filterBon (model, fx) {
+      return model.filter(function (d) {
+        return fx(d);
       });
-      return maxid + 1; // incriment
     }
 
-    $scope.receipt.currency = "USD";
-    $scope.disperse.currency = "FC";
-
-    $scope.focusManager = function(tab) {
-      $scope.focused = tab; 
+    // set the currency
+    $scope.setCurrency = function (idx) {
+      $scope.slip.currency = $scope.currencies[idx].id;
+      $scope.view.currency = $scope.currencies[idx].symbol;
     };
 
+    // loop through a model on 'property' and return 
+    // the max value.
+    function get_max(model, property) {
+      if (model.length < 1) { return 0; }
+      return model.reduce(function(max, right) {
+        max = max[property] || max; // for the first iteration
+        return Math.max(max, right[property]);
+      });
+    }
+
+    $scope.updateForm = function(e) {
+      console.log("e:", e);
+    };
+
+    // submit/sign the book
+    $scope.submit = function() {
+      console.log("Called Submit.");
+    };
+
+    // reset data in the current form 
+    $scope.wipe = function () {
+      setDefaults();
+    };
+
+    // format account display
+    // FIXME: find a better way of doing this:
+    // called ~= 6 times per refresh per item
     $scope.formatAcc = function (obj) {
       return obj.id + " - " + obj.account_txt; 
     };
 
 
-    $scope.submit = function() {
-      console.log("Called Submit");
-    };
-
-    // still suffers from potential exploitation, but
-    // w/e
-    $scope.wipe = function () {
-      if ($scope.focused === "disperse") {
-        $scope.disperse = {};
-      } else {
-        $scope.receipt = {};
-      }
-    };
-
-  
   });
 
 })(angular);

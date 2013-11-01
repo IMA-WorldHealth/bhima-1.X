@@ -4,7 +4,19 @@
   padding: 2%;
 }
 
-.submit {}
+.cash-book-container.dispersement {
+  background-color: #dff0d8;
+  border: 1px solid #d6e9c6;
+}
+
+.cash-book-container.receipt {
+  background-color: #f2dede;
+  border: 1px solid #eed3d7;
+}
+
+.cash-book-container h2 {
+  padding: 0.25em;
+}
 
 .cash-input {
   border-radius: 0;

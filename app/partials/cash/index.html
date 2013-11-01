@@ -3,270 +3,274 @@
 <hr>
 <div class="container cash">
   <tabset>
-    <tab heading="Dispersement" select="focusManager(disperse)">
-    <h2>Dispersement</h2>
-      <form class="cash-book">
-        <div class="row">
-          <div class="col-xs-1">
-            <label for="cash-cash_number">
-              Num
-            </label>
-            <input 
-              class="form-control cash-input"
-              type="number"
-              name="cash-cash_number"
-              id="cash-cash_number"
-              ng-model="disperse.number"
-              required
-            >
-          </div>
-          <div class="col-xs-2">
-            <label for="cash-bon">
-              Bon d'Entree
-            </label>
-            <input
-              class="form-control cash-input"
-              type="number"
-              name="cash-bon"
-              id="cash-bon" 
-              ng-model="disperse.bon"
-              required
-              disabled
-            >
-          </div>
-          <div class="col-xs-2">
-            <label for="cash-date">
-              Date
-            </label>
-            <input
-              class="form-control cash-input"
-              id="cash-date"
-              name=cash-date
-              type="date" 
-              ng-model="disperse.date"
-              required
-            >
-          </div>
-          <div class="col-sm-offset-4 col-xs-2">
-            <label for="cash-cash_account">
-              Cash Account
-            </label>
-            <select
-              class="form-control cash-input"
-              type="number"
-              name="cash-cash_account"
-              id="cash-cash_account"
-              ng-model="disperse.cash_account"
-              ng-options="formatAcc(acc) for acc in accounts"
-              required
-            ></select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-9">
-            <label for="cash-invoice_text">
-              Text
-            </label>
-            <input
-              class="form-control cash-input"
-              id="cash-invoice_text"
-              name="cash-invoice_text"
-              type="text"
-              ng-model="disperse.text"
-              typeahead="invoice.text for invoice in invoices"
-              required
-            >
-          </div>
-          <div class="col-xs-3">
-            <label for="cash-amount">
-              Amount
-            </label>
-            <div class="input-group">
-              <input
-                class="form-control"
-                id="cash-amount"
-                name="cash-amount" 
+    <tab heading="Dispersement" select="slip.bon='S'">
+      <div class="cash-book-container dispersement">
+        <h2>Dispersement</h2>
+        <form class="cash-book">
+          <div class="row">
+            <div class="col-xs-1">
+              <label for="cash-cash_number">
+                Num
+              </label>
+              <input 
+                class="form-control cash-input"
                 type="number"
-                ng-model="disperse.amount"
+                name="cash-cash_id"
+                id="cash-cash_id"
+                ng-model="slip.id"
                 required
               >
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle">
-                  {{disperse.currency}}
-                </button>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="currency in currencies">
-                    <a href="" ng-click="selectCurrency($index)">
-                      {{currency.symbol}}
-                    </a>
-                  </li>
-                </ul>
+            </div>
+            <div class="col-xs-2">
+              <label for="cash-bon">
+                Bon d'Entree
+              </label>
+              <input
+                class="form-control cash-input"
+                type="number"
+                name="cash-bon"
+                id="cash-bon" 
+                ng-model="slip.bon"
+                required
+                disabled
+              >
+            </div>
+            <div class="col-xs-2">
+              <label for="cash-date">
+                Date
+              </label>
+              <input
+                class="form-control cash-input"
+                id="cash-date"
+                name=cash-date
+                type="date" 
+                ng-model="slip.date"
+                required
+              >
+            </div>
+            <div class="col-sm-offset-4 col-xs-2">
+              <label for="cash-cash_account">
+                Cash Account
+              </label>
+              <select
+                class="form-control cash-input"
+                type="number"
+                name="cash-cash_account"
+                id="cash-cash_account"
+                ng-model="slip.cash_account"
+                ng-options="formatAcc(acc) for acc in accounts"
+                required
+              ></select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-9">
+              <label for="cash-invoice_text">
+                Text
+              </label>
+              <input
+                class="form-control cash-input"
+                id="cash-invoice_text"
+                name="cash-invoice_text"
+                type="text"
+                ng-model="slip.text"
+                typeahead="inv.note for inv in invoices"
+                ng-change="updateForm()"
+                required
+              >
+            </div>
+            <div class="col-xs-3">
+              <label for="cash-amount">
+                Amount
+              </label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="cash-amount"
+                  name="cash-amount" 
+                  type="number"
+                  ng-model="slip.amount"
+                  required
+                >
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-default dropdown-toggle">
+                    {{view.currency}}
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="currency in currencies">
+                      <a href="" ng-click="setCurrency($index)">
+                        {{currency.symbol}}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-2">
-            <label for="cash-debit_account">
-              Debit Account
-            </label>
-            <select
-              class="form-control cash-input"
-              id="cash-debit_account" 
-              name="cash-debit_account"
-              ng-model="disperse.debit_account"
-              ng-options="formatAcc(acc) for acc in accounts"
-              required
-            ></select>
+          <div class="row">
+            <div class="col-xs-2">
+              <label for="cash-debit_account">
+                Debit Account
+              </label>
+              <select
+                class="form-control cash-input"
+                id="cash-debit_account" 
+                name="cash-debit_account"
+                ng-model="slip.debit_account"
+                ng-options="formatAcc(acc) for acc in accounts"
+                required
+              ></select>
+            </div>
+            <div class="col-sm-offset-8 col-xs-2">
+              <label for="cash-submit">
+                <br /> 
+              </label>
+              <input 
+                id="cash-submit"
+                type="submit"
+                value="Sign"
+                class="form-control cash-input btn btn-default"
+                ng-click="submit()"
+              >
+            </div>
           </div>
-          <div class="col-sm-offset-8 col-xs-2">
-            <label for="cash-submit">
-              <br /> 
-            </label>
-            <input 
-              id="cash-submit"
-              type="submit"
-              value="Sign"
-              class="form-control cash-input btn btn-default"
-              ng-click="submit()"
-            >
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </tab>
-    <tab heading="Receipt" select="focusManager(receipt)">
-    <h2>Receipt</h2>
-      <form class="cash-book">
-        <div class="row">
-          <div class="col-xs-1">
-            <label for="cash-cash_number">
-              Num
-            </label>
-            <input 
-              class="form-control cash-input"
-              type="number"
-              name="cash-cash_number"
-              id="cash-cash_number"
-              ng-model="receipt.number"
-              required
-            >
-          </div>
-          <div class="col-xs-2">
-            <label for="cash-bon">
-              Bon d'Entree
-            </label>
-            <input
-              class="form-control cash-input"
-              type="number"
-              name="cash-bon"
-              id="cash-bon" 
-              ng-model="receipt.bon"
-              required
-              disabled
-            >
-          </div>
-          <div class="col-xs-2">
-            <label for="cash-date">
-              Date
-            </label>
-            <input
-              class="form-control cash-input"
-              id="cash-date"
-              name=cash-date
-              type="date" 
-              ng-model="receipt.date"
-              required
-            >
-          </div>
-          <div class="col-sm-offset-4 col-xs-2">
-            <label for="cash-cash_account">
-              Cash Account
-            </label>
-            <select
-              class="form-control cash-input"
-              type="number"
-              name="cash-cash_account"
-              id="cash-cash_account"
-              ng-model="receipt.cash_account"
-              ng-options="formatAcc(acc) for acc in accounts"
-              required
-            ></select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-9">
-            <label for="cash-invoice_text">
-              Text
-            </label>
-            <input
-              class="form-control cash-input"
-              id="cash-invoice_text"
-              name="cash-invoice_text"
-              type="text"
-              ng-model="receipt.text"
-              typeahead="invoice.text for invoice in invoices"
-              required
-            >
-          </div>
-          <div class="col-xs-3">
-            <label for="cash-amount">
-              Amount
-            </label>
-            <div class="input-group">
-              <input
-                class="form-control"
-                id="cash-amount"
-                name="cash-amount" 
+    <tab heading="Receipt" select="slip.bon='E'">
+      <div class="cash-book-container receipt"> 
+        <h2>Receipt</h2>
+        <form class="cash-book">
+          <div class="row">
+            <div class="col-xs-1">
+              <label for="cash-cash_number">
+                Num
+              </label>
+              <input 
+                class="form-control cash-input"
                 type="number"
-                ng-model="receipt.amount"
+                name="cash-cash_id"
+                id="cash-cash_id"
+                ng-model="slip.id"
                 required
               >
-              <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle">
-                  {{receipt.currency}}
-                </button>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="currency in currencies" ng-click="setCurrency($index)">
-                    <a href="">{{currency.symbol}}</a>
-                  </li>
-                </ul>
+            </div>
+            <div class="col-xs-2">
+              <label for="cash-bon">
+                Bon de Sortie
+              </label>
+              <input
+                class="form-control cash-input"
+                type="number"
+                name="cash-bon"
+                id="cash-bon" 
+                ng-model="slip.bon"
+                required
+                disabled
+              >
+            </div>
+            <div class="col-xs-2">
+              <label for="cash-date">
+                Date
+              </label>
+              <input
+                class="form-control cash-input"
+                id="cash-date"
+                name=cash-date
+                type="date" 
+                ng-model="slip.date"
+                required
+              >
+            </div>
+            <div class="col-sm-offset-4 col-xs-2">
+              <label for="cash-cash_account">
+                Cash Account
+              </label>
+              <select
+                class="form-control cash-input"
+                type="number"
+                name="cash-cash_account"
+                id="cash-cash_account"
+                ng-model="slip.cash_account"
+                ng-options="formatAcc(acc) for acc in accounts"
+                required
+              ></select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-9">
+              <label for="cash-invoice_text">
+                Text
+              </label>
+              <input
+                class="form-control cash-input"
+                id="cash-invoice_text"
+                name="cash-invoice_text"
+                type="text"
+                ng-model="slip.text"
+                typeahead="invoice.note for invoice in invoices"
+                required
+              >
+            </div>
+            <div class="col-xs-3">
+              <label for="cash-amount">
+                Amount
+              </label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="cash-amount"
+                  name="cash-amount" 
+                  type="number"
+                  ng-model="slip.amount"
+                  required
+                >
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-default dropdown-toggle">
+                    {{view.currency}}
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="currency in currencies" ng-click="setCurrency($index)">
+                      <a href="">{{currency.symbol}}</a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-2">
-            <label for="cash-debit_account">
-              Debit Account
-            </label>
-            <select
-              class="form-control cash-input"
-              id="cash-debit_account" 
-              name="cash-debit_account"
-              ng-model="receipt.debit_account"
-              ng-options="formatAcc(acc) for acc in accounts"
-              required
-            ></select>
+          <div class="row">
+            <div class="col-xs-2">
+              <label for="cash-debit_account">
+                Debit Account
+              </label>
+              <select
+                class="form-control cash-input"
+                id="cash-debit_account" 
+                name="cash-debit_account"
+                ng-model="slip.debit_account"
+                ng-options="formatAcc(acc) for acc in accounts"
+                required
+              ></select>
+            </div>
+            <div class="col-sm-offset-8 col-xs-2">
+              <label for="cash-submit">
+                <br /> 
+              </label>
+              <input 
+                id="cash-submit"
+                type="submit"
+                value="Sign"
+                class="form-control cash-input btn btn-default"
+                ng-click="submit()"
+              >
+            </div>
           </div>
-          <div class="col-sm-offset-8 col-xs-2">
-            <label for="cash-submit">
-              <br /> 
-            </label>
-            <input 
-              id="cash-submit"
-              type="submit"
-              value="Sign"
-              class="form-control cash-input btn btn-default"
-              ng-click="submit()"
-            >
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </tab>
   </tabset>
   <br /> <!-- FIXME -->
   <button ng-click="wipe()" class="btn btn-warning">
     Wipe
   </button>
-
 </div>
