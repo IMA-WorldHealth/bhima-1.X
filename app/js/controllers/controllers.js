@@ -1750,6 +1750,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   controllers.controller('cashController', function($scope, data, $q, $filter) {
 
+    // TODO:
+    // - Organize code better
+    //   - keep track of the currently selected invoice, so we always know what we are PAYING.
+    //   - Either fully separate VIEW and what is being POSTED, or fully combine them.
+    //   - Make text a field in the database
+    //   - add in support for getting the selects via appstate
+    // - Clean up sockets
+    //   - Make sure that the "paid" invoice is then "paid" in the database
+    //   - Find a way to reduce the number of sockets
+    //   - use the store's .get() methods instead of indexing into objects.
+    //   - reduce the size of the store's requires
+
     var account_spec, invoice_spec, debitor_spec,
       cash_spec, currency_spec, enterprise_spec;
 
@@ -1858,8 +1870,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip.bon_num = 1;
 
       // set the default currency
-      slip.currency = $scope.currencies[0].id;
+      slip.currency_id = $scope.currencies[0].id;
       $scope.view.currency = $scope.currencies[0].symbol;
+
+      // set a default cashier
+      // FIXME
+      slip.cashier_id = 1;
     }
 
     // filters the function based on the filter function
@@ -1873,7 +1889,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     // set the currency
     $scope.setCurrency = function (idx) {
       var id = $scope.currencies[idx].id;
-      $scope.slip.currency = id;
+      $scope.slip.currency_id = id;
       $scope.view.currency = cus.get(id).symbol;
     };
 
@@ -1905,13 +1921,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip.amount = slip.text.cost;
       var debitor_id = slip.text.debitor_id;
       slip.debit_account = ds.get(debitor_id).account_number;
-      slip.text = slip.text.note;
+      slip.text = null;
+      delete slip.text; // FIXME: organise code better
     };
 
     $scope.sign = function () {
       // do any last minute checks
       console.log('signing...');
+      console.log('cs:', cs);
       cs.put($scope.slip);
+      cs.sync();
     };
 
 
