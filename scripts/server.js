@@ -6,7 +6,7 @@ var express         = require('express')
   , auth            = require('./lib/auth')
   , um              = require('./lib/util/userManager')
   , jr              = require('./lib/logic/journal')
-  , ws              = require("./lib/ws") // This is the socket server
+  , ws              = require("./lib/ws/ws") // This is the socket server
   , app             = express();
 
 app.set('env', 'production'); // Change this to change application behavior
