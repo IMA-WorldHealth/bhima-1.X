@@ -104,10 +104,18 @@ function extract (str) {
   return {tables : tables, columns: columns};
 }
 
-function jn (specs, template) {
-  var join = [], extracted, tables,
-      columns, expr, fin;
-  
+function jn (specs, tables) {
+  // FIXME: Clean this up.
+  var join = [], extracted,
+      columns, expr, fin,
+      template = "JOIN ";
+
+  template = tables.map(function (t) {
+    return escapeid(t);
+  }).join(' JOIN ');
+
+  template = template + " ON ";
+
   specs.forEach(function (jnstr) {
     extracted = extract(jnstr);
     tables = extracted.tables;
@@ -116,13 +124,13 @@ function jn (specs, template) {
     for (i = 0, l = 2; i < l; i++) {
       expr.push(tables[i] + "." + columns[i]); 
     }
-
-    fin = template.replace("%table1%", tables[0]).replace("%table2%", tables[1]).replace("%value%", expr.join("="));
-
+    fin = expr.join('=');
     join.push(fin);
-  
   });
-  return join.join(', ');
+
+  template = template + join.join(' AND ');
+
+  return template;
 }
 
 composer.select = function(spec) {
@@ -136,7 +144,6 @@ composer.select = function(spec) {
 
   // d is DISTINCT
   base = "SELECT %d%%select_item% FROM %table%";
-  join = "%table1% JOIN %table2% ON %value%"; // default left join
   where = " WHERE %search_conditions%";
   groupby = " GROUP BY %choice%";
   having = " HAVING %search_conditions%";
@@ -160,7 +167,7 @@ composer.select = function(spec) {
     base = base.replace("%table%", Object.keys(spec.tables).map(function (t) { return escapeid(t); }).join());
   } else {
     base = base.replace("%table%", "");
-    join = jn(spec.join, join);
+    join = jn(spec.join, Object.keys(tables)); // FIXME: clean this up
     base += join;
   }
 

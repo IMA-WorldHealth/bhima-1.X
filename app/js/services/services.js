@@ -413,7 +413,7 @@
     // Socket Store
     function SocketStore(options) {
       var port       = options.port || 8000, // default to port 8000
-          identifier = options.identifier,
+          identifier = options.identifier || "id", // default to id
           table      = options.table,
           columns    = options.columns,
           autosync   = options.autosync || false, // autosync defaults to false

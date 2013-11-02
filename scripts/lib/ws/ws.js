@@ -61,8 +61,6 @@ function init (msg, socket) {
   namespaces[space.namespace].push(space.id);
 
   console.log("Initializing socket with namespace:", space.namespace);
-  console.log("All namespaces:", namespaces);
-
   
   console.log("Executing...", space.select);
 
@@ -108,7 +106,6 @@ function insert (msg, socket) {
 
   db.execute(sql, function (err, res) {
      if (err) throw err;
-     console.log("Insert Success!");
   });
 }
 
