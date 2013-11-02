@@ -1,40 +1,50 @@
-
 .hide {
   display: none;
 }
 
-.post-success {
+.bk-box {
+  background-color: ghostwhite;
+}
+
+.bk-box .bk-box-head {
   font-weight: bold;
-  padding: 1em;
-  border:1px solid #d6e9c6;
-  background:#dff0d8;
+  font-size: 1.5em;
+  height: 100%;
+  width: 100%;
+  background-color: darkgreen;
 }
 
-.cash-book {
-  border: 1px solid #dddddd;
-  padding: 2%;
+.bk-box-head .title {
+  color: white;
+  padding: 1%;
+  margin-bottom: 0;
 }
 
-.cash-book-container.dispersement {
-  background-color: #dff0d8;
-  border: 1px solid #d6e9c6;
+.bk-box-content table {
+  border-left: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-.cash-book-container.receipt {
-  background-color: #f2dede;
-  border: 1px solid #eed3d7;
+.bk-box-content:not(.list) {
+  padding: 2.5%;
 }
 
-.cash-book-container h2 {
-  padding: 0.25em;
+.bk-box-content table td {
+  border-bottom: 1px solid #dddddd;
+}
+
+.bk-box-content {
+  background-color: inherit;
 }
 
 .cash-input {
   border-radius: 0;
 }
 
-.cash input::-webkit-outer-spin-button,
-.cash input::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: none; 
 }
