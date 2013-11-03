@@ -31,11 +31,17 @@ var processMetadata = function(id_user, field, value, client_request, res){
   //on demande les fils de la racine
   if(field == 'parent'){
      //checking permission dans la base des donnees
-    var permission_req = {'entities':[{t:'unit', c:['parent']},{t:'permission', c:['id']},{t:'user', c:['id']}],
+    var sql = 'SELECT `unit`.`parent`, `permission`.`id`, `user`.`id` ' + 
+               'FROM `unit` JOIN `permission` JOIN `user` ' + 
+               'ON `permission`.`id_unit`=`unit`.`id` ' +
+                  'AND `permission`.`id_user`=`user`.`id` ' +
+                  'AND `permission`.`id_user`='+id_user; 
+
+   /* var permission_req = {'entities':[{t:'unit', c:['parent']},{t:'permission', c:['id']},{t:'user', c:['id']}],
                         'jcond':[{ts:['permission','unit'], c:['id_unit', 'id'], l:'AND'}, {ts:['permission','user'], c:['id_user', 'id'], l:'AND'}],
                         'cond':[{t:'permission', cl:'id_user', z:'=', v:id_user}]
                        };
-    var sql = db.select(permission_req);
+    var sql = db.select(permission_req);*/
     db.execute(sql, function(err, results){
       if(err){
         throw err;

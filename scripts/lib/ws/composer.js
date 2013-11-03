@@ -1,5 +1,8 @@
 // builds the sql queries prior to socket initialization
 
+// ECMAScript 5 strict mode
+'use strict';
+
 // module: Composer
 var composer = {};
 
@@ -52,6 +55,7 @@ function parsewhr (expr) {
       exprarr;
 
     splitters.some(function (sym) {
+      // trick to halt on first expression 
       if (~expr.indexOf(sym)) {
         exprarr = expr.split(sym);
         splitter = sym;
@@ -78,6 +82,8 @@ function whr (whrlist, template) {
   //    Runs through an array of where conditions
   //    and calls parsewhr() on each one, then concats
   //    them all together and splices them into a template.
+  //    Supports nested conditions (e.g. 'WHERE (1 OR 2) AND 3')
+  //    by using nested arrays.
   // eg:
   //    whrlist = ["a.id<5", "AND", 'a.c="jon"'];
   //    template = "WHERE %search_conditions%";
@@ -92,52 +98,40 @@ function whr (whrlist, template) {
   return template.replace("%search_conditions%", whrs.join(" "));
 }
 
-function extract (str) {
-  var combo = str.split("="), arr,
-      tables = [],
-      columns = [];
-  combo.forEach(function (cbo) {
-    arr = cbo.split('.');
-    tables.push(escapeid(arr[0]));
-    columns.push(escapeid(arr[1]));
-  });
-  return {tables : tables, columns: columns};
-}
-
 function jn (specs, tables) {
-  // FIXME: Clean this up.
-  var join = [], extracted,
-      columns, expr, fin,
-      template = "JOIN ";
+  // summary:
+  //    creates the join condition using MYSQL JOIN
+  //    syntax 't1 JOIN t2 ON t1.col1=t2.col2'.  Supports
+  //    creation of many join statements.
+  var tmpl, t;
 
-  template = tables.map(function (t) {
-    return escapeid(t);
-  }).join(' JOIN ');
+  // construct tables part
+  tmpl = tables.map(function (t) { return escapeid(t); }).join(' JOIN ');
+  tmpl += " ON ";
 
-  template = template + " ON ";
-
-  specs.forEach(function (jnstr) {
-    extracted = extract(jnstr);
-    tables = extracted.tables;
-    columns = extracted.columns;
-    expr = [];
-    for (i = 0, l = 2; i < l; i++) {
-      expr.push(tables[i] + "." + columns[i]); 
-    }
-    fin = expr.join('=');
-    join.push(fin);
+  // escape column specification
+  t = specs.map(function (t) { 
+    // first split on equality
+    return t.split('=').map(function (s) {
+      // then on the full stop
+      return s.split('.').map(function(v) {
+        // then escape the value 
+        return escapeid(v);
+      }).join('.');
+    }).join('=');
   });
 
-  template = template + join.join(' AND ');
+  // glue column defns together
+  tmpl += t.join(' AND ');
 
-  return template;
+  return tmpl;
 }
 
 composer.select = function(spec) {
   // summary:
   //    builds a select statement from a defn object.
   var base, join, where, groupby, having, limit,
-      tables, hasDistinct, hasLimit, t, hasJoin,
+      tables, hasDistinct, hasLimit, hasWhr, t, hasJoin,
       select_item = [],
       table_list = [],
       search_conditions = [];
@@ -167,7 +161,7 @@ composer.select = function(spec) {
     base = base.replace("%table%", Object.keys(spec.tables).map(function (t) { return escapeid(t); }).join());
   } else {
     base = base.replace("%table%", "");
-    join = jn(spec.join, Object.keys(tables)); // FIXME: clean this up
+    join = jn(spec.join, Object.keys(spec.tables));
     base += join;
   }
 
@@ -190,7 +184,7 @@ composer.select = function(spec) {
 composer.delete = function (spec) {
   // summary:
   //   builds a delete statement from a defn object.
-  var base, tables, id;
+  var base, tables, id, table;
   base = "DELETE FROM %table% WHERE %key%;";
 
   if (!!spec.join) {
