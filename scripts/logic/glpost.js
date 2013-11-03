@@ -15,7 +15,6 @@ function post_to_gl(arr) {
 
   arr.forEach(function(v) {
     id = db.escape(v);
-    <F4>
   }); 
 }
 
