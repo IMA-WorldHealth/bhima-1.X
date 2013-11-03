@@ -1811,7 +1811,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //   - reduce the size of the store's requires
 
     var enterprise_spec, account_spec,
-        cash_currency_spec, sales_debitor_spec;
+        cash_currency_spec, sales_debitor_spec, currency_spec;
 
     enterprise_spec = {
       tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
@@ -1855,16 +1855,21 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       join: ["cash.currency_id=currency.id"]
     };
 
+    currency_spec = {
+      tables : { "currency" : { columns: ["id", "symbol"] } } 
+    };
+
     $q.all([
       data.register(enterprise_spec),
       data.register(account_spec),
       data.register(sales_debitor_spec),
       data.register(cash_currency_spec),
+      data.register(currency_spec)
     ]).then(init);
 
 
     var stores = {},
-        models = ['enterprise', 'account', 'sales-debitor', 'cash-currency'],
+        models = ['enterprise', 'account', 'sales-debitor', 'cash-currency', 'currency'],
         slip = {};
 
 
@@ -1885,13 +1890,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip.id = 1;
 
       // default debit account is cash box
-      slip.credit_account = stores.enterprise.get(101).cash_account;
+      slip.debit_account = stores.enterprise.get(101).cash_account;
 
       // default date is today
       slip.date = $filter('date')(new Date(), 'yyyy-MM-dd');
 
       // default currency
-      slip.currency = "FC";
+      slip.currency_id = 1;
 
       // we start up as entree
       slip.bon = "E";
@@ -1908,47 +1913,38 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.select = function (id) {
       slip.text = "Payment"; // FIXME: find a way to wipe clicks
       var selected_invoice = stores['sales-debitor'].get(id);
-
       // fill in selected data
-      slip.debit_account = selected_invoice.account_number;
-      console.log("selected_invoice:", selected_invoice.debitor_id);
+      slip.credit_account = selected_invoice.account_number;
       slip.text += " of invoice " + selected_invoice.id + " for " + $filter('currency')(selected_invoice.cost);
     };
 
+    $scope.formatCurrency = function (id) {
+      // deal the the asynchronous case where store is not
+      // defined.
+      if (stores.currency) {
+        return stores.currency.get(id).symbol;
+      }
+    };
+
+    $scope.setCurrency = function (idx) {
+      // store indexing starts from 0.  DB ids start from 1
+      slip.currency_id = idx + 1; 
+    };
+
+    $scope.validate = function () {
+      stores['cash-currency'].put(slip);
+      $scope.submitted = true;
+    };
+
+    // for bon calc
     function maxArray (arr) {
       return Math.max.apply(Math.max, arr); 
     }
 
-    // loop through a model on 'property' and return 
-    // the max value.
-    function get_max(model, property) {
-      if (model.length < 1) { return 0; }
-      return model.reduce(function(max, right) {
-        max = max[property] || max; // for the first iteration
-        return Math.max(max, right[property]);
-      });
-    }
-
-    // format account display
-    // FIXME: find a better way of doing this:
-    // called ~= 6 times per refresh per item
-    $scope.formatAcc = function (obj) {
-      return obj.id + " - " + obj.account_txt; 
-    };
-
-    $scope.new = function () {
+    $scope.clear = function () {
+      console.log("Clicked Clear!");
+      slip = {};
       defaults();
-    };
-
-    // TODO: differentiate btwn credit/debit accout depending on sortie
-    // or entree.
-    $scope.taSelect = function () {
-      var slip = $scope.slip;
-      slip.amount = slip.text.cost;
-      var debitor_id = slip.text.debitor_id;
-      slip.debit_account = ds.get(debitor_id).account_number;
-      slip.text = null;
-      delete slip.text; // FIXME: organise code better
     };
 
   });
