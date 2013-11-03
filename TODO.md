@@ -14,4 +14,5 @@
 
 
 * Have a service that holds the current user information
-
+Ask Manunga how the accounting works in the hospital.
+ - How billing of patients in beds in hospital wards takes place.
