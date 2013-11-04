@@ -1811,7 +1811,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //   - reduce the size of the store's requires
 
     var enterprise_spec, account_spec,
-        cash_currency_spec, sales_debitor_spec, currency_spec;
+        cash_currency_spec, sale_debitor_spec, currency_spec;
 
     enterprise_spec = {
       tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
@@ -1825,7 +1825,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       where: ["account.enterprise_id=" + 101] //FIXME
     };
     
-    sales_debitor_spec = {
+    sale_debitor_spec = {
       primary: "sale",
       tables: {
         "sale" : {
@@ -1846,7 +1846,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: "cash",
       tables: {
         "cash" : {
-          columns: ["id", "bon", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id"]
+          columns: ["id", "bon", "bon_num", "invoice_id", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id", "text"]
         },
         "currency": {
           columns: ["symbol"] 
@@ -1862,14 +1862,14 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $q.all([
       data.register(enterprise_spec),
       data.register(account_spec),
-      data.register(sales_debitor_spec),
+      data.register(sale_debitor_spec),
       data.register(cash_currency_spec),
       data.register(currency_spec)
     ]).then(init);
 
 
     var stores = {},
-        models = ['enterprise', 'account', 'sales-debitor', 'cash-currency', 'currency'],
+        models = ['enterprise', 'account', 'sale-debitor', 'cash-currency', 'currency'],
         slip = {};
 
 
@@ -1886,8 +1886,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     function defaults () {
-      // FIXME: Register this as cashbox_id 
-      slip.id = 1;
+      // incriment the max id in the store
+      var id  = Math.max.apply(Math.max, Object.keys(stores['cash-currency'].index)) + 1;
+      if (id < 0) { id = 0; }
+      slip.id = id;
+
+      // Module-dependent flag to say what cashbox this is
+      slip.cashbox_id = 1;
 
       // default debit account is cash box
       slip.debit_account = stores.enterprise.get(101).cash_account;
@@ -1901,18 +1906,24 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       // we start up as entree
       slip.bon = "E";
 
-      // TODO/FIXME: What is this for?
-      slip.bon_num = 1;
+      // generate a new number for the bons 
+      slip.bon_num = getBonNumber($scope.models['cash-currency'], slip.bon);
 
+      // default text
       slip.text = "Payment";
 
-      // FIXME
+      // FIXME: get this from a service
       slip.cashier_id = 1;
     }
 
-    $scope.select = function (id) {
+    $scope.select = function (id, idx) {
+      if (id !== undefined) {
+        // only if chosen by left hand side list
+        slip.invoice_id = id;
+        $scope.chosen = idx; // for CSS
+      }
       slip.text = "Payment"; // FIXME: find a way to wipe clicks
-      var selected_invoice = stores['sales-debitor'].get(id);
+      var selected_invoice = stores['sale-debitor'].get(slip.invoice_id);
       // fill in selected data
       slip.credit_account = selected_invoice.account_number;
       slip.text += " of invoice " + selected_invoice.id + " for " + $filter('currency')(selected_invoice.cost);
@@ -1933,17 +1944,28 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.validate = function () {
       stores['cash-currency'].put(slip);
+      stores['cash-currency'].sync();
       $scope.submitted = true;
     };
 
-    // for bon calc
-    function maxArray (arr) {
-      return Math.max.apply(Math.max, arr); 
+    function getBonNumber (model, bon_type) {
+      // filter by bon type, then gather ids.
+      var ids = model.filter(function(row) {
+        return row.bon === bon_type; 
+      }).map(function(row) {
+        return row.bon_num;
+      });
+
+      if (ids.length < 1) { return 1; }
+      else {
+        // Maximum of the bon number, incrimented
+        return Math.max.apply(Math.max, ids) + 1;
+      }
     }
 
     $scope.clear = function () {
-      console.log("Clicked Clear!");
-      slip = {};
+      slip = $scope.slip = {};
+      $scope.chosen = -1;
       defaults();
     };
 
