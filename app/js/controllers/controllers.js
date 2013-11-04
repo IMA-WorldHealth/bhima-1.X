@@ -1863,6 +1863,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.models[models[i]] = arr[i].data;
       }
       defaults();
+
     }
 
     function defaults () {
