@@ -1911,7 +1911,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 controllers.controller('journalController', function($scope, $q, bikaConnect, bikaUtilitaire){
   var postingListe={};
   $scope.infosJournal = [];  
-   var e = [{t : 'journal', c : ['id','description', 'date', 'posted']},
+   var e = [{t : 'journal', c : ['id','description', 'date', 'posted', 'sale_id']},
             {t:'sale', c:['currency', 'cost', 'discount', 'invoice_date', 'note']},
             /*{t:'employee', c:['name']},*/
             {t:'user', c:['first']},
