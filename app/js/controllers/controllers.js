@@ -974,8 +974,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   controllers.controller('salesRecordsController', function($scope, $q, $routeParams, connect) { 
     console.log("Sale records initialised");
 
-    var invoice = ($routeParams.recordID || -1);
-    console.log("Got invoice", invoice);
+    var default_invoice = ($routeParams.recordID || -1);
+    console.log("Got invoice", default_invoice);
 
     function init() { 
 
@@ -1033,6 +1033,23 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       }
     }
 
+    $scope.$on('ngGridEventData', function(){
+      if(default_invoice >= 0) $scope.select(default_invoice);
+    });
+
+    $scope.select = function(id) {
+      //model.get() would not provide index in an un-ordered object
+      angular.forEach($scope.invoice_model.data, function(item, index) {
+        console.log(item.id, id);
+        if(item.id==id) {
+          $scope.gridOptions.selectRow(index, true);
+          var g = $scope.gridOptions.ngGrid;
+          g.$viewport.focus();
+          return;
+        }
+      });
+    }
+
     function invoicePosted(ids) {
       var deferred = $q.defer();
       var promise_update = [];
@@ -1072,7 +1089,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
+  controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) {
     console.log("Patient Search init");
 
     var patient = ($routeParams.patientID || -1);
