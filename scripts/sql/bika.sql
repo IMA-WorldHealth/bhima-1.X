@@ -396,10 +396,10 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (3, 'Form Manager', 'Manage your forms', 1, 0, '/units/formmanager/', ''),
   (4, 'Users & Permissions', 'Manage user privileges and permissions', 1, 0, '/partials/permission', '/permission'),
   (5, 'Finance', 'The Finance Super-Category', 0, 1, '', ''),  
-  (6, 'Accounts', 'The chart of accounts', 5, 0, '/partials/accounts','accounts'),
+  (6, 'Accounts', 'The chart of accounts', 5, 0, '/partials/chart','/accounts'),
   (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/',''),
   (8, 'Budgeting', 'Plan your next move', 5, 0, '/partials/budgeting','budgeting'),
-  (9, 'Journal', 'Daily Log', 5, 0, '/partials/journal/','/journal'),
+  (9, 'Posting Journal', 'Daily Log', 5, 0, '/partials/postingjournal/','/posting_journal'),
   (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/',''),
   (11, 'Inventory', 'The Inventory Super-Category', 0, 1, '',''),
   (12, 'Orders', 'Manage your purchase orders', 11, 0, '/units/orders/',''),
@@ -6040,8 +6040,8 @@ CREATE TABLE `sale_item` (
 --
 -- table `bika`.`journal`
 --
-DROP TABLE IF EXISTS `journal`;
-CREATE TABLE `journal` (
+DROP TABLE IF EXISTS `posting_journal`;
+CREATE TABLE `posting_journal` (
   `id`                mediumint unsigned not null AUTO_INCREMENT,
   `enterprise_id`     smallint unsigned not null,  
   `user_id`           smallint unsigned not null,
@@ -6083,7 +6083,7 @@ CREATE TABLE `gl` (
   KEY `enterprise_id` (`enterprise_id`),
   KEY `sale_id` (`sale_id`),
   KEY `period_id` (`period_id`),
-  CONSTRAINT FOREIGN KEY (`journal_id`) REFERENCES `journal` (`id`),
+  CONSTRAINT FOREIGN KEY (`journal_id`) REFERENCES `posting_journal` (`id`),
   CONSTRAINT FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
   CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`),
