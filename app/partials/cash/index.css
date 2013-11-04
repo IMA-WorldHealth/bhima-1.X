@@ -2,51 +2,13 @@
   display: none;
 }
 
-.bk-box {
-  background-color: ghostwhite;
-}
-
-.bk-box .bk-box-head {
-  font-weight: bold;
-  font-size: 1.5em;
-  height: 100%;
-  width: 100%;
-  background-color: darkgreen;
-}
-
-.bk-box-head .title {
-  color: white;
-  padding: 1%;
-  margin-bottom: 0;
-}
-
-.bk-box-content table {
-  border-left: 1px solid #dddddd;
-  border-right: 1px solid #dddddd;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.bk-box-content:not(.list) {
-  padding: 2.5%;
-}
-
-.bk-box-content table td {
-  border-bottom: 1px solid #dddddd;
-}
-
-.bk-box-content {
-  background-color: inherit;
+.chosen {
+  border-left: 3px solid forestgreen;
+  padding-left: 3px;
 }
 
 .cash-input {
   border-radius: 0;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: none; 
 }
 
 .cash-collapse-left {
@@ -57,20 +19,7 @@ input::-webkit-inner-spin-button {
 .cash-select {
   position: relative;
 }
-
-.input-group-btn .dropdown-menu {
-  display: none;
-}
-
-/* Work in Progress .. */
-.input-group-btn.open .dropdown-menu {
-  display: block;
-  z-index: 99999;
-  clear: none;
-  list-style-type: none;
-}
-
-
+ 
 /* Warning: this breaks w/o bootstrap */
 /* follow:http://cssdeck.com/labs/styling-select-box-with-css3  */
 /*

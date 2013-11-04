@@ -5,33 +5,43 @@
 
   <!-- search for invoice by invoice number or patient id -->
   <div class="row">
-
+    <div class="col-xs-12" style="padding-right: 0;">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span>Find by Invoice Note:</span>
+        </div>
+        <input
+          class="form-control cash-input"
+          type="text"
+          ng-model="slip.invoice_id"
+          typeahead="invoice.id as invoice.note for invoice in models['sale-debitor'] | limitTo: 8"
+          typeahead-on-select="select()"
+        >
+      </div>
+    </div>
   </div>
-
+  
   <div class="row">
-
     <!-- make a list of outstanding invoices -->
     <div class="col-xs-2">
       <div class="panel panel-default">
         <div class="panel-heading">
           <span>Outstanding Invoices</span>  
         </div>
-        <div class="panel-body" style="padding:0;"> <!-- FIXME: Make this css -->
-          <table class="table">
-            <thead>
-              <tr>
-                <td>ID</td>
-                <td>Amount</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="inv in models['sales-debitor']" ng-click="select(inv.id)">
-                <td>{{inv.id}}</td>
-                <td>{{inv.cost | currency }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <td>ID</td>
+              <td>Amount</td>
+            </tr>
+          </thead>
+          <tbody style="max-height: 200px; overflow-y: scroll;">
+          <tr ng-repeat="inv in models['sale-debitor']" ng-click="select(inv.id,$index)" ng-class="{'chosen': $index==chosen}">
+              <td>{{inv.id}}</td>
+              <td>{{inv.cost | currency }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -47,7 +57,7 @@
               <div class="row">
                 <div class="col-xs-1">
                   <label>No:</label>
-                  <div>{{slip.id}}</div>
+                  <div>{{slip.cashbox_id}}</div>
                 </div>
                 <div class="col-xs-2">
                   <label for="cash-bon">
@@ -106,7 +116,7 @@
                       <button type="button" class="btn btn-default dropdown-toggle">
                         {{formatCurrency(slip.currency_id)}}
                       </button>
-                      <ul class="dropdown-menu">
+                      <ul class="dropdown-menu pull-right">
                         <li ng-repeat="currency in models['currency']" ng-click="setCurrency($index)">
                           <a href="">{{currency.symbol}}</a>
                         </li>
