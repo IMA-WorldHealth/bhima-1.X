@@ -859,7 +859,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //Format the current date according to RFC3339 (for HTML input[type=="date"])
       var now = new Date();
       return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + ('0' + now.getDate()).slice(-2);
-    } 
+    }
+
+    $scope.formatText = function() {
+//      FIXME String functions within digest will take hours
+      if($scope.debtor) return "PI " + $scope.invoice_id + "/" + $scope.debtor.last_name + "/" + $scope.debtor.first_name + "/" + $scope.sale_date;
+    }
 
     $scope.generateInvoice = function() { 
       //Client validation logic goes here - should be complimented with server integrity checks etc.
@@ -869,9 +874,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       for(var i = 0, l = $scope.inventory.length; i < l; i++) { 
         t += $scope.inventory[i].quantity * $scope.inventory[i].price;
       }
-
-
-
       
       //create invoice record
       var format_invoice = {
@@ -883,7 +885,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         invoice_date: $scope.sale_date,
         seller_id : '1', //TODO placeholder - this should be derived from appstate (session) or equivelant
         discount: '0', //placeholder
-        note : '',
+        note : $scope.formatText(),
         posted : '0'
       }
 
@@ -1681,7 +1683,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         'inventory_group': {
           columns: ["id", "text", "purchase_account", "sales_account", "stock_increase_account", "stock_increase_account"]  
         }
-      },
+      }
     };
 
     var price_spec = {
