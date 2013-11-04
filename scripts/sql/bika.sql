@@ -6095,20 +6095,24 @@ CREATE TABLE `cash` (
   id              int unsigned not null,
   bon             char(1) not null,
   bon_num         int unsigned not null, -- what is this for?
+  invoice_id      int unsigned not null,
   date            date not null,
   debit_account   mediumint unsigned not null,
   credit_account  mediumint unsigned not null,
   amount          int unsigned not null,
   currency_id     tinyint unsigned not null,
   cashier_id      smallint unsigned not null,
+  cashbox_id      smallint unsigned not null,
+  text            text,
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
   KEY `cashier_id` (`cashier_id`),
   KEY `debit_account` (`debit_account`),
   KEY `credit_account` (`credit_account`),
+  KEY `invoice_id` (`invoice_id`),
   CONSTRAINT FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
   CONSTRAINT FOREIGN KEY (`cashier_id`) REFERENCES `user` (`id`),
   CONSTRAINT FOREIGN KEY (`debit_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`)
+  CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`),
+  CONSTRAINT FOREIGN KEY (`invoice_id`) REFERENCES `sale` (`id`) -- FIXME: Change this so that we can pull from multiple tables.
 ) ENGINE=InnoDB;
-
