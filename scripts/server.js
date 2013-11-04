@@ -72,6 +72,11 @@ app.post('/data/', function (req, res) {
   db.execute(insertsql, cb);
 });
 
+//TODO Server should set user details like this in a non-editable cookie
+app.get('/user_session', function(req, res, next) {
+  res.send({id: req.session.user_id});
+})
+
 app.get('/tree', function(req, res, next) {
   um.manageUser(req, res, next);
 });
