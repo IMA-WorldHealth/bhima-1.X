@@ -821,19 +821,23 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     var debtor_request = connect.basicReq(debtor_query);
+    var user_request = connect.basicGet("user_session");
      
     function init() { 
 
-      //FIXME requests shouldn't be dependent on order
+//      FIXME requests shouldn't be dependent on order
+//      FIXME should verify user ID at the time of submitting invoice, less time to manipulate it I guess
       $q.all([
         inventory_request,
         sales_request,
-        debtor_request
+        debtor_request,
+        user_request
       ]).then(function(a) { 
         console.log(a);
         $scope.inventory_model = a[0];
         $scope.sales_model = a[1];
         $scope.debtor_model = a[2];
+        $scope.verify = a[3].data.id;
 
         $scope.debtor = $scope.debtor_model.data[0]; // select default debtor
 
@@ -870,7 +874,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.generateInvoice = function() { 
       //Client validation logic goes here - should be complimented with server integrity checks etc.
         
-      //use reduce here 
+//      FIXME use reduce here
       var t = 0;
       for(var i = 0, l = $scope.inventory.length; i < l; i++) { 
         t += $scope.inventory[i].quantity * $scope.inventory[i].price;
@@ -884,12 +888,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         currency : 'USD', //ohgd
         debitor_id : $scope.debtor.debitor_id,
         invoice_date: $scope.sale_date,
-        seller_id : '1', //TODO placeholder - this should be derived from appstate (session) or equivelant
+        seller_id : $scope.verify, //TODO placeholder - this should be derived from appstate (session) or equivelant
         discount: '0', //placeholder
         note : $scope.formatText(),
         posted : '0'
       }
 
+//      Generate Invoice first for foreign key constraints, then create invoice items individually
       connect.basicPut('sale', [format_invoice]).then(function(res) { 
         if(res.status==200) { 
           var promise = generateInvoiceItems();

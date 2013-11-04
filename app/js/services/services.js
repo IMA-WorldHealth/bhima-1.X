@@ -627,6 +627,10 @@
       return $http.post('/journal/', invoice_ids);
     }
 
+    function basicGet(url) {
+      return $http.get(url);
+    }
+
     function basicReq(reqobj) { 
       //summary: 
       //  return a packaged model given a straight request object
@@ -721,6 +725,7 @@
       basicReq : basicReq,
       basicPut : basicPut,
       basicPost : basicPost,
+      basicGet : basicGet,
       journal : journal
     };
   });
