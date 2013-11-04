@@ -859,7 +859,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //Format the current date according to RFC3339 (for HTML input[type=="date"])
       var now = new Date();
       return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + ('0' + now.getDate()).slice(-2);
-    } 
+    }
+
+    $scope.formatText = function() {
+//      FIXME String functions within digest will take hours
+      if($scope.debtor) return "PI " + $scope.invoice_id + "/" + $scope.debtor.last_name + "/" + $scope.debtor.first_name + "/" + $scope.sale_date;
+    }
 
     $scope.generateInvoice = function() { 
       //Client validation logic goes here - should be complimented with server integrity checks etc.
@@ -869,9 +874,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       for(var i = 0, l = $scope.inventory.length; i < l; i++) { 
         t += $scope.inventory[i].quantity * $scope.inventory[i].price;
       }
-
-
-
       
       //create invoice record
       var format_invoice = {
@@ -883,7 +885,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         invoice_date: $scope.sale_date,
         seller_id : '1', //TODO placeholder - this should be derived from appstate (session) or equivelant
         discount: '0', //placeholder
-        note : '',
+        note : $scope.formatText(),
         posted : '0'
       }
 
@@ -972,11 +974,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   controllers.controller('salesRecordsController', function($scope, $q, $routeParams, connect) { 
     console.log("Sale records initialised");
 
-    var invoice = ($routeParams.recordID || -1);
-    console.log("Got invoice", invoice);
+    var default_invoice = ($routeParams.recordID || -1);
+    console.log("Got invoice", default_invoice);
 
     function init() { 
-      var promise = fetchRecords();
 
 
       $scope.invoice_model = {};
@@ -985,7 +986,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       };
 
       $scope.gridOptions = { 
-        multiSelect: false,
+//        multiSelect: false,
         selectedItems: [],
         columnDefs : [{field:'id', display:'id'},
                       {field:'cost', display:'total', cellFilter: 'currency'},
@@ -997,6 +998,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       filterOptions: $scope.invoice_filter
       };
 
+      var promise = fetchRecords();
       promise
       .then(function(model) { 
         //FIXME configure locally, then expose
@@ -1020,9 +1022,55 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           });
         }
 
-        connect.journal(request);
+        connect.journal(request)
+          .then(function(res) {
+            console.log(res);
+//            returns a promise
+            if(res.status==200) invoicePosted(request);
+          });
+
         console.log("request should be made for", request);
       }
+    }
+
+    $scope.$on('ngGridEventData', function(){
+      if(default_invoice >= 0) $scope.select(default_invoice);
+    });
+
+    $scope.select = function(id) {
+      //model.get() would not provide index in an un-ordered object
+      angular.forEach($scope.invoice_model.data, function(item, index) {
+        console.log(item.id, id);
+        if(item.id==id) {
+          $scope.gridOptions.selectRow(index, true);
+          var g = $scope.gridOptions.ngGrid;
+          g.$viewport.focus();
+          return;
+        }
+      });
+    }
+
+    function invoicePosted(ids) {
+      var deferred = $q.defer();
+      var promise_update = [];
+      /*summary
+      *   Updates all records in the database with posted flag set to true
+      */
+      ids.forEach(function(invoice_id) {
+        var current_invoice = $scope.invoice_model.get(invoice_id);
+        console.log("Updating 'posted'", invoice_id, current_invoice);
+        current_invoice.posted = 1;
+        promise_update.push(connect.basicPost("sale", [current_invoice], ["id"]));
+      });
+
+      console.log(promise_update);
+      $q.all(promise_update)
+        .then(function(res) {
+          console.log("All ids posted");
+          deferred.resolve(res);
+        });
+
+      return deferred.promise;
     }
 
     function fetchRecords() { 
@@ -1041,7 +1089,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) { 
+  controllers.controller('patientSearchController', function($scope, $q, $routeParams, connect) {
     console.log("Patient Search init");
 
     var patient = ($routeParams.patientID || -1);
@@ -1681,7 +1729,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         'inventory_group': {
           columns: ["id", "text", "purchase_account", "sales_account", "stock_increase_account", "stock_increase_account"]  
         }
-      },
+      }
     };
 
     var price_spec = {

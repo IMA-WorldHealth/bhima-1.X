@@ -454,7 +454,7 @@
           'PUT'    : route_put,
           'REMOVE' : route_remove,
           'INIT'   : route_init,
-          'REFRESH' : route_refresh,
+          'REFRESH' : route_refresh
         };
         if (!socketid) { socketid = packet.socketid; }
         methods[packet.method](packet.data);
@@ -643,9 +643,15 @@
     }
 
 
+//    TODO reverse these two methods? I have no idea
     function basicPut(table, object) { 
       var format_object = {t: table, data: object};
       return $http.post('data/', format_object);
+    }
+
+    function basicPost(table, object, primary) {
+      var format_object = {t: table, data: object, pk: primary};
+      return $http.put('data/', format_object);
     }
 
     function packageModel(model, data) { 
@@ -714,6 +720,7 @@
       req : req,
       basicReq : basicReq,
       basicPut : basicPut,
+      basicPost : basicPost,
       journal : journal
     };
   });
