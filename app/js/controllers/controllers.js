@@ -986,7 +986,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       };
 
       $scope.gridOptions = { 
-        multiSelect: false,
+//        multiSelect: false,
         selectedItems: [],
         columnDefs : [{field:'id', display:'id'},
                       {field:'cost', display:'total', cellFilter: 'currency'},
