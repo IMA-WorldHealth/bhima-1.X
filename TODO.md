@@ -12,3 +12,6 @@
 ### invoicing module ###
  * Currenly only supports invoicing patient debitors and not debitors in general, looking up and processing debitors should be reworked
 
+
+* Have a service that holds the current user information
+
