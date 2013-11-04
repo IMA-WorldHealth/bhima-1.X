@@ -1,3 +1,6 @@
+// ECMAScript 5 strict mode
+'use strict';
+
 var WebSocketServer = require('ws').Server,
     ws              = new WebSocketServer({port: 8000}),
     db              = require('../database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}}),
@@ -61,8 +64,6 @@ function init (msg, socket) {
   namespaces[space.namespace].push(space.id);
 
   console.log("Initializing socket with namespace:", space.namespace);
-  console.log("All namespaces:", namespaces);
-
   
   console.log("Executing...", space.select);
 
@@ -104,11 +105,8 @@ function insert (msg, socket) {
 
   sql = sql.replace('%expressions%', expr.join(', '));
 
-  console.log('sql:', sql);
-
   db.execute(sql, function (err, res) {
      if (err) throw err;
-     console.log("Insert Success!");
   });
 }
 
@@ -116,7 +114,7 @@ function insert (msg, socket) {
 function remove (msg, socket) {
   var sql = store.get(msg.socketid).delete;
 
-  console.log("remove data:", msg.data);
+  console.log("Remove data:", msg.data);
   console.log('SQL:', sql.replace("%id%", msg.data));
 
   /*
