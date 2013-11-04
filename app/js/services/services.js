@@ -454,7 +454,7 @@
           'PUT'    : route_put,
           'REMOVE' : route_remove,
           'INIT'   : route_init,
-          'REFRESH' : route_refresh,
+          'REFRESH' : route_refresh
         };
         if (!socketid) { socketid = packet.socketid; }
         methods[packet.method](packet.data);
