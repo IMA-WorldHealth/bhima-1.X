@@ -62,13 +62,11 @@
 
         </div>
         </div>
-
-        <!--div class="col-xs-6">
-          <div class="form-group">
-            <label for="department">TODO Department</label>
-            <select id="department" class="form-control" disabled></select>
-          </div>
-        </div-->
+        <div class="col-xs-6">
+          <label for="invoicetext">Sale Text</label>
+          <!--FIXME This shouldn't be making a call to a function - too many digests run on this page-->
+          <textarea class="form-control" id="invoicetext">{{formatText()}}</textarea>
+        </div>
       </div>
     </div>
   </div>
