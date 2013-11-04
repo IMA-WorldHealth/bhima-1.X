@@ -5807,7 +5807,9 @@ INSERT INTO `debitor` (`id`, `group_id`) VALUES
   (1, 1),
   (2, 1),
   (3, 2),
-  (4, 2);
+  (4, 2),
+  (5, 3),
+  (6, 3);
 
 --
 -- table `bika`.`department`
@@ -5850,10 +5852,9 @@ CREATE TABLE `employee` (
   CONSTRAINT FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=Innodb;
 
--- notE: business logic should not register debitor ids to more than one person
--- INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `department_id`, `initials`) VALUES
---  (1, "Dodi", "Chief Accountant", 6, 11, 4, "DK"),
---  (2, "Jon", "MCZ", 8, 11, 3, "JN");
+INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `department_id`, `initials`) VALUES
+  (1, "Dodi", "Chief Accountant", 5, 11, 4, "DK"),
+  (2, "Jon", "MCZ", 6, 11, 3, "JN");
 
 --
 -- Table `bika`.`patient`

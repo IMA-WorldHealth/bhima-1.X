@@ -790,9 +790,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
+    //  - Invoice ID should be updated if an invoice is created in the time since invoice creation - see sockets
     console.log("Sales initialised");
 
-    //Default selection for invoice payable 
+    //Default selection for invoice payable
     $scope.invoice = {payable: "false"};
     //TODO perform logic with local variables and expose once complete
     $scope.sale_date = getDate();
@@ -1181,13 +1182,17 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //register patient for appcahce namespace
       
       var location_request = connect.req('location', ['id', 'city', 'region']);
-      //for creating patient ID - this isn't ideal
+      //This was if we needed to create alpha-numeric (specific) ID's
       var patient_request = connect.req('patient', ['id']);
+      //Used to generate debtor ID for patient
+//      FIXME just take the most recent items from the database, vs everything?
+      var debtor_request = connect.req('debitor', ['id']);
 
-      $q.all([location_request, patient_request])
+      $q.all([location_request, patient_request, debtor_request])
       .then(function(res) { 
         $scope.location_model = res[0];
         $scope.patient_model = res[1];
+        $scope.debtor_model = res[2];
         //$scope.location = $scope.location_model.data[0]; //select default
       });
     }
@@ -1198,15 +1203,32 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return search + 1;
     }
 
-    $scope.update = function(patient) { 
+    $scope.update = function(patient) {
+//      download latest patient and debtor tables, calc ID's and update
+      var patient_request = connect.req('patient', ['id']);
+      var debtor_request = connect.req('debitor', ['id']);
+
+      var patient_model, debtor_model;
+
+//      TODO verify patient data is valid
+
+      $q.all([debtor_request, patient_request])
+        .then(function(res) {
+          patient_model = res[0];
+          debtor_model = res[0];
+
+          patient.id = createId(patient_model.data);
+          patient.debitor_id = createId(debtor_model.data);
+
+          commit(patient);
+        });
+    }
+
+    function commit(patient) {
       patient_model = patient;
 
-      //validate model 
-      patient_model.id = createId($scope.patient_model.data);
-      patient_model.debitor_id = patient_model.id;
-
       //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
-      //1 - default group_id, should be properly defined
+      // FIXME 1 - default group_id, should be properly defined
       connect.basicPut("debitor", [{id: patient_model.id, group_id: 1}])
       .then(function(res) { 
         //Create patient record
