@@ -11,7 +11,7 @@
           <span>Find by Invoice Note:</span>
         </div>
         <input
-          class="form-control cash-input"
+          class="form-control"
           type="text"
           ng-model="slip.invoice_id"
           typeahead="invoice.id as invoice.note for invoice in models['sale-debitor'] | limitTo: 8"
@@ -64,12 +64,13 @@
                     Bon de Sortie
                   </label>
                   <input
-                    class="form-control cash-input"
+                    class="form-control"
                     type="number"
                     name="cash-bon"
                     id="cash-bon" 
                     ng-model="slip.bon_num"
                     required
+                    ng-disabled="submitted"
                   >
                 </div>
                 <div class="col-xs-2">
@@ -91,12 +92,13 @@
                     Text
                   </label>
                   <input
-                    class="form-control cash-input"
+                    class="form-control"
                     id="cash-invoice_text"
                     name="cash-invoice_text"
                     type="text"
                     ng-model="slip.text"
                     required
+                    ng-disabled="submitted"
                   >
                 </div>
                 <div class="col-xs-3">
@@ -111,6 +113,7 @@
                       type="number"
                       ng-model="slip.amount"
                       required
+                      ng-disabled="submitted"
                     >
                     <div class="input-group-btn">
                       <button type="button" class="btn btn-default dropdown-toggle">
@@ -143,9 +146,7 @@
           <button form="receipt" type="submit" class="btn btn-default" ng-disabled="!receipt.$valid || !slip.credit_account || submitted" ng-click="validate()">
             Submit
           </button>
-          <button form="receipt" type="button" class="btn btn-default" ng-disabled="!receipt.$valid">
-            Review 
-          </button>
+          <!-- TODO: Make a review button hooked up to the 'review' subform -->
           <button form="receipt" type="reset" class="btn btn-default" ng-click="clear()">
             Clear
           </button>
