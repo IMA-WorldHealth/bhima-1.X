@@ -978,7 +978,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     console.log("Got invoice", invoice);
 
     function init() { 
-      var promise = fetchRecords();
 
 
       $scope.invoice_model = {};
@@ -999,6 +998,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       filterOptions: $scope.invoice_filter
       };
 
+      var promise = fetchRecords();
       promise
       .then(function(model) { 
         //FIXME configure locally, then expose
@@ -1022,9 +1022,38 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           });
         }
 
-        connect.journal(request);
+        connect.journal(request)
+          .then(function(res) {
+            console.log(res);
+//            returns a promise
+            if(res.status==200) invoicePosted(request);
+          });
+
         console.log("request should be made for", request);
       }
+    }
+
+    function invoicePosted(ids) {
+      var deferred = $q.defer();
+      var promise_update = [];
+      /*summary
+      *   Updates all records in the database with posted flag set to true
+      */
+      ids.forEach(function(invoice_id) {
+        var current_invoice = $scope.invoice_model.get(invoice_id);
+        console.log("Updating 'posted'", invoice_id, current_invoice);
+        current_invoice.posted = 1;
+        promise_update.push(connect.basicPost("sale", [current_invoice], ["id"]));
+      });
+
+      console.log(promise_update);
+      $q.all(promise_update)
+        .then(function(res) {
+          console.log("All ids posted");
+          deferred.resolve(res);
+        });
+
+      return deferred.promise;
     }
 
     function fetchRecords() { 
