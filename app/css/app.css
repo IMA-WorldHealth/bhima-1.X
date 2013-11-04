@@ -76,3 +76,14 @@
 .bika-panel-body { 
 
 }
+
+/* Hide in webkit the number spinners 
+ * for both date and number.
+ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: none; 
+}
+
+

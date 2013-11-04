@@ -5,61 +5,72 @@
 
   <!-- search for invoice by invoice number or patient id -->
   <div class="row">
-
+    <div class="col-xs-12" style="padding-right: 0;">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span>Find by Invoice Note:</span>
+        </div>
+        <input
+          class="form-control"
+          type="text"
+          ng-model="slip.invoice_id"
+          typeahead="invoice.id as invoice.note for invoice in models['sale-debitor'] | limitTo: 8"
+          typeahead-on-select="select()"
+        >
+      </div>
+    </div>
   </div>
-
+  
   <div class="row">
-
     <!-- make a list of outstanding invoices -->
     <div class="col-xs-2">
       <div class="panel panel-default">
         <div class="panel-heading">
           <span>Outstanding Invoices</span>  
         </div>
-        <div class="panel-body" style="padding:0;"> <!-- FIXME: Make this css -->
-          <table class="table">
-            <thead>
-              <tr>
-                <td>ID</td>
-                <td>Amount</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="inv in models['sales-debitor']" ng-click="select(inv.id)">
-                <td>{{inv.id}}</td>
-                <td>{{inv.cost | currency }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <td>ID</td>
+              <td>Amount</td>
+            </tr>
+          </thead>
+          <tbody style="max-height: 200px; overflow-y: scroll;">
+          <tr ng-repeat="inv in models['sale-debitor']" ng-click="select(inv.id,$index)" ng-class="{'chosen': $index==chosen}">
+              <td>{{inv.id}}</td>
+              <td>{{inv.cost | currency }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <!-- Register a receipt -->
     <div class="col-xs-10">
       <div class="row">
-        <div class="panel panel-success"> 
+        <div class="panel" ng-class="{'panel-success': !submitted, 'panel-danger': submitted}"> 
           <div class="panel-heading">
             <span>Receipt</span> 
           </div>
           <div class="panel-body">
-            <form>
+            <form name="receipt">
               <div class="row">
                 <div class="col-xs-1">
                   <label>No:</label>
-                  <div>{{slip.id}}</div>
+                  <div>{{slip.cashbox_id}}</div>
                 </div>
                 <div class="col-xs-2">
                   <label for="cash-bon">
                     Bon de Sortie
                   </label>
                   <input
-                    class="form-control cash-input"
+                    class="form-control"
                     type="number"
                     name="cash-bon"
                     id="cash-bon" 
                     ng-model="slip.bon_num"
                     required
+                    ng-disabled="submitted"
                   >
                 </div>
                 <div class="col-xs-2">
@@ -81,12 +92,13 @@
                     Text
                   </label>
                   <input
-                    class="form-control cash-input"
+                    class="form-control"
                     id="cash-invoice_text"
                     name="cash-invoice_text"
                     type="text"
                     ng-model="slip.text"
                     required
+                    ng-disabled="submitted"
                   >
                 </div>
                 <div class="col-xs-3">
@@ -101,13 +113,14 @@
                       type="number"
                       ng-model="slip.amount"
                       required
+                      ng-disabled="submitted"
                     >
                     <div class="input-group-btn">
                       <button type="button" class="btn btn-default dropdown-toggle">
-                        {{slip.currency}}
+                        {{formatCurrency(slip.currency_id)}}
                       </button>
-                      <ul class="dropdown-menu">
-                        <li ng-repeat="currency in models['cash-currency']" ng-click="setCurrency($index)">
+                      <ul class="dropdown-menu pull-right">
+                        <li ng-repeat="currency in models['currency']" ng-click="setCurrency($index)">
                           <a href="">{{currency.symbol}}</a>
                         </li>
                       </ul>
@@ -119,7 +132,7 @@
                 <div class="col-xs-2">
                   <label>
                     Credit Account:
-                  </label>
+                  </label> 
                   <div><i>{{slip.credit_account}}</i></div>
                 </div>
               </div>
@@ -129,12 +142,13 @@
       </div>
       <!-- under form buttons -->
       <div class="row">
-        <div class="col-sm-offset-10 col-xs-2">
-          <button form="" type="button" class="btn btn-default">
-            <i class="glyphicon glyphicon-plus"></i> 
+        <div class="col-sm-offset-9 col-xs-3">
+          <button form="receipt" type="submit" class="btn btn-default" ng-disabled="!receipt.$valid || !slip.credit_account || submitted" ng-click="validate()">
+            Submit
           </button>
-          <button form="" type="button" class="btn btn-default">
-            <i class="glyphicon glyphicon-minus"></i> 
+          <!-- TODO: Make a review button hooked up to the 'review' subform -->
+          <button form="receipt" type="reset" class="btn btn-default" ng-click="clear()">
+            Clear
           </button>
         </div>
       </div>
@@ -149,4 +163,3 @@
     </pre>
   </div>
 </div>
-

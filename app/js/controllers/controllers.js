@@ -843,7 +843,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
         var invoice_id = createId($scope.sales_model.data);
         $scope.invoice_id = invoice_id;
-      })      
+      });
 
     }
 
@@ -1825,34 +1825,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   controllers.controller('cashController', function($scope, data, $q, $filter) {
 
-    // TODO:
-    // - Organize code better
-    //   - keep track of the currently selected invoice, so we always know what we are PAYING.
-    //   - Either fully separate VIEW and what is being POSTED, or fully combine them.
-    //   - Make text a field in the database
-    //   - add in support for getting the selects via appstate
-    // - Clean up sockets
-    //   - Make sure that the "paid" invoice is then "paid" in the database
-    //   - Find a way to reduce the number of sockets
-    //   - use the store's .get() methods instead of indexing into objects.
-    //   - reduce the size of the store's requires
-
     var enterprise_spec, account_spec,
-        cash_currency_spec, sales_debitor_spec;
+        cash_currency_spec, sale_debitor_spec, currency_spec;
 
     enterprise_spec = {
       tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
       where: ["enterprise.id="+101] // FIXME
     };
     
-    account_spec = {
-      tables: {
-        'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed']}
-      },
-      where: ["account.enterprise_id=" + 101] //FIXME
-    };
-    
-    sales_debitor_spec = {
+    sale_debitor_spec = {
       primary: "sale",
       tables: {
         "sale" : {
@@ -1873,7 +1854,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: "cash",
       tables: {
         "cash" : {
-          columns: ["id", "bon", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id"]
+          columns: ["id", "bon", "bon_num", "invoice_id", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id", "text"]
         },
         "currency": {
           columns: ["symbol"] 
@@ -1882,16 +1863,20 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       join: ["cash.currency_id=currency.id"]
     };
 
+    currency_spec = {
+      tables : { "currency" : { columns: ["id", "symbol"] } } 
+    };
+
     $q.all([
       data.register(enterprise_spec),
-      data.register(account_spec),
-      data.register(sales_debitor_spec),
+      data.register(sale_debitor_spec),
       data.register(cash_currency_spec),
+      data.register(currency_spec)
     ]).then(init);
 
 
     var stores = {},
-        models = ['enterprise', 'account', 'sales-debitor', 'cash-currency'],
+        models = ['enterprise', 'sale-debitor', 'cash-currency', 'currency'],
         slip = {};
 
 
@@ -1905,77 +1890,92 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.models[models[i]] = arr[i].data;
       }
       defaults();
+
     }
 
     function defaults () {
-      // FIXME: Register this as cashbox_id 
-      slip.id = 1;
+      // incriment the max id in the store
+      var id  = Math.max.apply(Math.max, Object.keys(stores['cash-currency'].index)) + 1;
+      if (id < 0) { id = 0; }
+      slip.id = id;
+
+      // Module-dependent flag to say what cashbox this is
+      slip.cashbox_id = 1;
 
       // default debit account is cash box
-      slip.credit_account = stores.enterprise.get(101).cash_account;
+      slip.debit_account = stores.enterprise.get(101).cash_account;
 
       // default date is today
       slip.date = $filter('date')(new Date(), 'yyyy-MM-dd');
 
       // default currency
-      slip.currency = "FC";
+      slip.currency_id = 1;
 
       // we start up as entree
       slip.bon = "E";
 
-      // TODO/FIXME: What is this for?
-      slip.bon_num = 1;
+      // generate a new number for the bons 
+      slip.bon_num = getBonNumber($scope.models['cash-currency'], slip.bon);
 
+      // default text
       slip.text = "Payment";
 
-      // FIXME
+      // FIXME: get this from a service
       slip.cashier_id = 1;
     }
 
-    $scope.select = function (id) {
+    $scope.select = function (id, idx) {
+      if (id !== undefined) {
+        // only if chosen by left hand side list
+        slip.invoice_id = id;
+        $scope.chosen = idx; // for CSS
+      }
       slip.text = "Payment"; // FIXME: find a way to wipe clicks
-      var selected_invoice = stores['sales-debitor'].get(id);
-
+      var selected_invoice = stores['sale-debitor'].get(slip.invoice_id);
       // fill in selected data
-      slip.debit_account = selected_invoice.account_number;
-      console.log("selected_invoice:", selected_invoice.debitor_id);
+      slip.credit_account = selected_invoice.account_number;
       slip.text += " of invoice " + selected_invoice.id + " for " + $filter('currency')(selected_invoice.cost);
     };
 
-    function maxArray (arr) {
-      return Math.max.apply(Math.max, arr); 
-    }
+    $scope.formatCurrency = function (id) {
+      // deal the the asynchronous case where store is not
+      // defined.
+      if (stores.currency) {
+        return stores.currency.get(id).symbol;
+      }
+    };
 
-    // loop through a model on 'property' and return 
-    // the max value.
-    function get_max(model, property) {
-      if (model.length < 1) { return 0; }
-      return model.reduce(function(max, right) {
-        max = max[property] || max; // for the first iteration
-        return Math.max(max, right[property]);
+    $scope.setCurrency = function (idx) {
+      // store indexing starts from 0.  DB ids start from 1
+      slip.currency_id = idx + 1; 
+    };
+
+    $scope.validate = function () {
+      stores['cash-currency'].put(slip);
+      stores['cash-currency'].sync();
+      $scope.submitted = true;
+    };
+
+    function getBonNumber (model, bon_type) {
+      // filter by bon type, then gather ids.
+      var ids = model.filter(function(row) {
+        return row.bon === bon_type; 
+      }).map(function(row) {
+        return row.bon_num;
       });
+
+      if (ids.length < 1) { return 1; }
+      else {
+        // Maximum of the bon number, incrimented
+        return Math.max.apply(Math.max, ids) + 1;
+      }
     }
 
-    // format account display
-    // FIXME: find a better way of doing this:
-    // called ~= 6 times per refresh per item
-    $scope.formatAcc = function (obj) {
-      return obj.id + " - " + obj.account_txt; 
-    };
-
-    $scope.new = function () {
+    $scope.clear = function () {
+      slip = $scope.slip = {};
+      $scope.chosen = -1;
       defaults();
-    };
-
-    // TODO: differentiate btwn credit/debit accout depending on sortie
-    // or entree.
-    $scope.taSelect = function () {
-      var slip = $scope.slip;
-      slip.amount = slip.text.cost;
-      var debitor_id = slip.text.debitor_id;
-      slip.debit_account = ds.get(debitor_id).account_number;
-      slip.text = null;
-      delete slip.text; // FIXME: organise code better
+      $scope.submitted = false;
     };
 
   });
@@ -1986,16 +1986,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 controllers.controller('journalController', function($scope, $q, bikaConnect, bikaUtilitaire){
   var postingListe={};
   $scope.infosJournal = [];  
-   var e = [{t : 'journal', c : ['id','description', 'date', 'posted']},
+   var e = [{t : 'posting_journal', c : ['id','description', 'date', 'posted', 'sale_id']},
             {t:'sale', c:['currency', 'cost', 'discount', 'invoice_date', 'note']},
             /*{t:'employee', c:['name']},*/
             {t:'user', c:['first']},
             {t:'enterprise', c:['type']},
             {t:'debitor', c:['text']}
            ],
-       jc = [{ts:['journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
-             {ts: ['journal', 'user'], c:['user_id', 'id'], l:'AND'},
-             {ts: ['journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
+       jc = [{ts:['posting_journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
+             {ts: ['posting_journal', 'user'], c:['user_id', 'id'], l:'AND'},
+             {ts: ['posting_journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
              {ts: ['sale', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
              {ts: ['sale', 'debitor'], c:['debitor_id', 'id']}/*,
              {ts: ['sale', 'user'], c:['seller_id', 'id']}*/
@@ -2026,8 +2026,8 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
    function isCheckingValide(index){
     var def = $q.defer();
     var req_db = {};
-    req_db.e = [{t:'journal', c:['posted']}];
-    req_db.c = [{t:'journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
+    req_db.e = [{t:'posting_journal', c:['posted']}];
+    req_db.c = [{t:'posting_journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
     bikaConnect.get('/data/?', req_db).then(function(data){
       (data[0].posted == 1)?def.resolve(false):def.resolve(true);
     });
