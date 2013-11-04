@@ -1959,16 +1959,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 controllers.controller('journalController', function($scope, $q, bikaConnect, bikaUtilitaire){
   var postingListe={};
   $scope.infosJournal = [];  
-   var e = [{t : 'journal', c : ['id','description', 'date', 'posted', 'sale_id']},
+   var e = [{t : 'posting_journal', c : ['id','description', 'date', 'posted', 'sale_id']},
             {t:'sale', c:['currency', 'cost', 'discount', 'invoice_date', 'note']},
             /*{t:'employee', c:['name']},*/
             {t:'user', c:['first']},
             {t:'enterprise', c:['type']},
             {t:'debitor', c:['text']}
            ],
-       jc = [{ts:['journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
-             {ts: ['journal', 'user'], c:['user_id', 'id'], l:'AND'},
-             {ts: ['journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
+       jc = [{ts:['posting_journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
+             {ts: ['posting_journal', 'user'], c:['user_id', 'id'], l:'AND'},
+             {ts: ['posting_journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
              {ts: ['sale', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
              {ts: ['sale', 'debitor'], c:['debitor_id', 'id']}/*,
              {ts: ['sale', 'user'], c:['seller_id', 'id']}*/
@@ -1999,8 +1999,8 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
    function isCheckingValide(index){
     var def = $q.defer();
     var req_db = {};
-    req_db.e = [{t:'journal', c:['posted']}];
-    req_db.c = [{t:'journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
+    req_db.e = [{t:'posting_journal', c:['posted']}];
+    req_db.c = [{t:'posting_journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
     bikaConnect.get('/data/?', req_db).then(function(data){
       (data[0].posted == 1)?def.resolve(false):def.resolve(true);
     });

@@ -20,7 +20,7 @@ var process = function(data){
   var callback = function(err, record){
     if(record.length<1){
       //insertion
-      var sql = db.insert('journal', [{id:'',
+      var sql = db.insert('posting_journal', [{id:'',
                                        enterprise_id: data.enterprise_id,
                                        user_id: data.seller_id,
                                        sale_id:data.id,
@@ -39,8 +39,8 @@ var process = function(data){
     }
   }
   var sql = {};
-  var entities = [{t:'journal', c:['sale_id']}];
-  var cond = [{t:'journal', cl:'sale_id', z:'=', v:data.id}];
+  var entities = [{t:'posting_journal', c:['sale_id']}];
+  var cond = [{t:'posting_journal', cl:'sale_id', z:'=', v:data.id}];
   sql.entities = entities;
   sql.cond = cond;
   var request = db.select(sql);
