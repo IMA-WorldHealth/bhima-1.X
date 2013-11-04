@@ -73,6 +73,10 @@
     when('/cash', {
       controller: 'cashController',
       templateUrl: '/partials/cash/index.html'
+    }).
+    when('/cash/review/:id', {
+      controller: 'cashReviewController',
+      templateUrl: '/partials/cash/review/index.html' 
     });
   }  
   bika.config(bikaconfig);

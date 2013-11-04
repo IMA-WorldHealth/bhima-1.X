@@ -838,7 +838,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
         var invoice_id = createId($scope.sales_model.data);
         $scope.invoice_id = invoice_id;
-      })      
+      });
 
     }
 
@@ -1798,31 +1798,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   controllers.controller('cashController', function($scope, data, $q, $filter) {
 
-    // TODO:
-    // - Organize code better
-    //   - keep track of the currently selected invoice, so we always know what we are PAYING.
-    //   - Either fully separate VIEW and what is being POSTED, or fully combine them.
-    //   - Make text a field in the database
-    //   - add in support for getting the selects via appstate
-    // - Clean up sockets
-    //   - Make sure that the "paid" invoice is then "paid" in the database
-    //   - Find a way to reduce the number of sockets
-    //   - use the store's .get() methods instead of indexing into objects.
-    //   - reduce the size of the store's requires
-
     var enterprise_spec, account_spec,
         cash_currency_spec, sale_debitor_spec, currency_spec;
 
     enterprise_spec = {
       tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
       where: ["enterprise.id="+101] // FIXME
-    };
-    
-    account_spec = {
-      tables: {
-        'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed']}
-      },
-      where: ["account.enterprise_id=" + 101] //FIXME
     };
     
     sale_debitor_spec = {
@@ -1861,7 +1842,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $q.all([
       data.register(enterprise_spec),
-      data.register(account_spec),
       data.register(sale_debitor_spec),
       data.register(cash_currency_spec),
       data.register(currency_spec)
@@ -1869,7 +1849,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
 
     var stores = {},
-        models = ['enterprise', 'account', 'sale-debitor', 'cash-currency', 'currency'],
+        models = ['enterprise', 'sale-debitor', 'cash-currency', 'currency'],
         slip = {};
 
 
@@ -1967,6 +1947,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip = $scope.slip = {};
       $scope.chosen = -1;
       defaults();
+      $scope.submitted = false;
     };
 
   });
