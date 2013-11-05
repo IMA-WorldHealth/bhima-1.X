@@ -1,222 +1,313 @@
 <link rel="stylesheet" href="partials/inventory/register/index.css">
-<div class="top-bar">
-  <h2>Stock Registration</h2>
-</div>
+<h2>Stock Registration</h2>
+<hr />
 
-<div class="container content">
-  <div class="col-xs-4">
-    <h3>Quick Search</h3>
-    <hr></hr>
-    <input ng-model="search" class="form-control">
-    #TODO
-    <h3>Results</h3>
-    <hr></hr>
-    #TODO
+<div class="container">
+  <div class="row">
+    <div class="col-xs-6">
+      <!-- general panel -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          General 
+        </div>
+        <div class="panel-body">
+          <form novalidate>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="inventory-registration-code">
+                  Inventory Code:
+                </label>
+                <input
+                  name="inv_code"
+                  id="inventory-registration-code"
+                  class="form-control"
+                  ng-model="item.code"
+                  required
+                >
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="inventory-registration-type">
+                  Inventory Type:
+                </label>
+                <select
+                  name="inv_type"
+                  id="inventory-registration-type"
+                  class="form-control"
+                  ng-model="item.type"
+                  ng-options="type.id as type.text for type in types"
+                  required
+                  >
+                </select>
+            </div>
+          </div>
+          
+            <div class="form-group">
+              <label for="inventory-registration-description">
+                Description:
+              </label>
+              <textarea
+                name="inv_descr"
+                id="inventory-registration-description" 
+                class="form-control"
+                rows="3"
+                ng-model="item.description"
+                required
+                >
+             </textarea>
+            </div>
+          </form> 
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <!-- classification panel -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Classification
+        </div>
+        <div class="panel-body">
+          <form novalidate>
+              <div class="form-group">
+                <label for="inventory-registration-group">
+                  Inventory Group:
+                </label>
+                <div class="input-group">
+                  <div class="input-group-btn">
+                    <a ng-click="open()" class="btn btn-default">
+                      <i class="glyphicon glyphicon-plus"></i>
+                    </a>
+                  </div>
+                  <select 
+                    name="inv_group"
+                    id="inventory-registration-group"
+                    class="form-control"
+                    ng-model="item.group"
+                    ng-options="group.id as group.text for group in groups"
+                    required>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group"> 
+                <label for="inventory-registration-pricegroup">
+                  Price Group:
+                </label>
+                <div class="input-group">
+                  <div class="input-group-btn">
+                    <a ng-click="addPriceGroup()" class="btn btn-default">
+                      <i class="glyphicon glyphicon-plus"></i>
+                    </a>
+                  </div>
+                  <select 
+                    name="inv_pg"
+                    id="inventory-registration-pricegroup"
+                    class="form-control"
+                    ng-model="item.pricegroup"
+                    ng-options="p.id as p.text for p in prices"
+                    required
+                    >
+                  </select>
+                </div>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  <!-- </row> -->
   </div>
- 
-  <div class="col-xs-8">
-    <form name="registrationForm" class="form-horizontal" ng-submit="validate()" novalidate>
-
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_code.$invalid}">
-        <label for="inventory-registration-code" class="col-xs-2 control-label">
-          Inventory Code:
-        </label>
-        <div class="col-xs-10">
-          <input
-            name="inv_code"
-            id="inventory-registration-code"
-            class="form-control"
-            ng-model="item.code"
-            required
-          >
-        </div>
+  
+  <div class="row">
+    <!-- Shipping and Billing Information -->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Shipping &amp Billing Information
       </div>
-      
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_descr.$invalid}">
-        <label for="inventory-registration-description" class="col-xs-2 control-label">
-          Description:
-        </label>
-        <div class="col-xs-10">
-          <input
-            name="inv_descr"
-            id="inventory-registration-description" 
-            class="form-control"
-            ng-model="item.description"
-            required
-          >
-        </div>
-      </div>
+      <div class="panel-body">
+        <form>
+          <!-- left hand side of split -->
+          <div class="col-xs-6">
+            <div class="form-group" >
+              <label for="inventory-registration-freightaccnt">
+                Freight Account:
+              </label>
+              <select 
+                name="inv_fa"
+                id="inventory-registration-freightaccnt"
+                class="form-control"
+                ng-model="item.freight_account"
+                ng-options="accnt.id as label(accnt) for accnt in accounts"
+                required
+                >
+              </select>
+            </div>
 
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_group.$invalid}">
-        <label for="inventory-registration-group" class="col-xs-2 control-label">
-          Inventory Group:
-        </label>
-        <div class="col-xs-10 input-group">
-          <div class="input-group-btn">
-            <button ng-click="addGroup()" class="btn btn-default square">
-              <i class="glyphicon glyphicon-plus"></i>
-            </button>
+
+            <div class="radio">
+              <label>
+                <input
+                  name="consumable_durable"
+                  type="radio"
+                  id="inventory-registration-consumable"
+                  value="1"
+                  ng-model="item.consumable"
+                >
+                Consumable
+              </label>
+            </div>
+
+            <div class="radio">
+              <label for="inventory-registration-durable">
+                <input
+                  name="consumable_durable"
+                  type="radio"
+                  id="inventory-registration-durable"
+                  value="0"
+                  ng-model="item.consumable"
+                >
+                Durable
+              </label>
+            </div>
           </div>
-          <select 
-            name="inv_group"
-            id="inventory-registration-group"
-            class="form-control"
-            ng-model="item.group"
-            ng-options="group.id as group.text for group in groups"
-            required>
-          </select>
-        </div>
-      </div>
 
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_pg.$invalid}"> 
-        <label for="inventory-registration-pricegroup" class="col-xs-2 control-label">
-          Price Group:
-        </label>
-        <div class="col-xs-10 input-group">
-          <div class="input-group-btn">
-            <button ng-click="addPriceGroup()" class="btn btn-default square">
-              <i class="glyphicon glyphicon-plus"></i>
-            </button>
-          </div>
-          <select 
-            name="inv_pg"
-            id="inventory-registration-pricegroup"
-            class="form-control"
-            ng-model="item.pricegroup"
-            ng-options="p.id as p.text for p in prices"
-            required
-            >
-          </select>
-        </div>
-      </div>
+          <!-- right hand side of split -->
+          <div class="col-xs-6">
+            <div class="form-group" >
+              <label for="inventory-registration-unit" >
+                Unit:
+              </label>
+              <div class="input-group">
+               <div class="input-group-btn">
+                  <a ng-click="addUnitGroup()" class="btn btn-default">
+                    <i class="glyphicon glyphicon-plus"></i>
+                  </a>
+                </div>
+                <select
+                  name="inv_unit"
+                  id="inventory-registration-unit"
+                  class="form-control"
+                  ng-model="item.unit"
+                  ng-options="unit.id as unit.text for unit in units"
+                  required
+                >
+                </select>
+              </div>
+            </div>
 
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_unit.$invalid}">
-        <label for="inventory-registration-unit" class="col-xs-2 control-label">
-          Unit:
-        </label>
-        <div class="col-xs-10 input-group">
-         <div class="input-group-btn">
-            <button ng-click="addUnitGroup()" class="btn btn-default square">
-              <i class="glyphicon glyphicon-plus"></i>
-            </button>
-          </div>
-          <select
-            name="inv_unit"
-            id="inventory-registration-unit"
-            class="form-control"
-            ng-model="item.unit"
-            ng-options="unit.id as unit.text for unit in units"
-            required
-          >
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_type.$invalid}">
-        <label for="inventory-registration-type" class="col-xs-2 control-label">
-          Inventory Type:
-        </label>
-        <div class="col-xs-10 input-group">
-         <div class="input-group-btn">
-            <button ng-click="addType()" class="btn btn-default square">
-              <i class="glyphicon glyphicon-plus"></i>
-            </button>
-         </div>
-         <select
-           name="inv_type"
-           id="inventory-registration-type"
-           class="form-control"
-           ng-model="item.type"
-           ng-options="type.id as type.text for type in types"
-           required
-           >
-         </select>
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_weight.$invalid}">
-        <label for="inventory-registration-weight" class="col-xs-2 control-label">
-          Unit Weight:
-        </label>
-        <div class="col-xs-10">
-          <input 
-            name="inv_weight"
-            id="inventory-registration-weight"
-            class="form-control"
-            ng-model="item.weight"
-            required
-          >
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_vol.$invalid}">
-        <label for="inventory-registration-volume" class="col-xs-2 control-label">
-          Unit Volume:
-        </label>
-        <div class="col-xs-10">
-          <input 
-            name="inv_vol"
-            id="inventory-registration-volume"
-            class="form-control"
-            ng-model="item.volume"
-            required
-          >
-        </div>
-      </div>
-
-      <div class="form-group" ng-class="{'has-error': validated && registrationForm.inv_fa.$invalid}">
-        <label for="inventory-registration-freightaccnt" class="col-xs-2 control-label">
-          Freight Account:
-        </label>
-        <div class="col-xs-10 input-group">
-          <select 
-            name="inv_fa"
-            id="inventory-registration-freightaccnt"
-            class="form-control"
-            ng-model="item.freight_account"
-            ng-options="accnt.id as label(accnt) for accnt in accounts"
-            required
-            >
-          </select>
-        </div>
-      </div>
-
-
-      <div class="col-sm-offset-2">
-        <div class="form-group" ng-class="{'has-error': validated && registrationForm.consumable_durable.$invalid}">
-          <div class="radio">
-            <label>
-              <input
-                name="consumable_durable"
-                type="radio"
-                id="inventory-registration-consumable"
-                value="1"
-                ng-model="item.consumable"
+            <div class="form-group" >
+              <label for="inventory-registration-weight">
+                Unit Weight:
+              </label>
+              <input 
+                name="inv_weight"
+                type="number"
+                id="inventory-registration-weight"
+                class="form-control"
+                ng-model="item.weight"
+                required
               >
-              Consumable
-            </label>
-          </div>
+            </div>
 
-          <div class="radio">
-            <label for="inventory-registration-durable">
-              <input
-                name="consumable_durable"
-                type="radio"
-                id="inventory-registration-durable"
-                value="0"
-                ng-model="item.consumable"
+            <div class="form-group" >
+              <label for="inventory-registration-volume">
+                Unit Volume:
+              </label>
+              <input 
+                name="inv_vol"
+                type="number"
+                id="inventory-registration-volume"
+                class="form-control"
+                ng-model="item.volume"
+                required
               >
-              Durable
-            </label>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
-
-      <div class="col-sm-offset-2">
-        <button type="submit" class="btn btn-default">Submit</button>
-        <button type="reset" class="btn btn-danger">Reset</button>
-      </div>
-    </form>
-    <pre>form: {{registrationForm}}</pre>
+    </div>
+  <!-- </row> -->
   </div>
+
+  <!-- modal popup for creating inventory groups -->
+  <script type="text/ng-template" id="inventory_groups.html">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Create a new inventory group</h3> 
+        </div>
+        <div class="model-body">
+          <form>
+
+            <div class="form-control">
+              <label for="">
+                Group Name:
+              </label>
+              <input
+                
+                required
+              >
+            </div>
+
+            <div class="form-control">
+              <label for="">
+                Inventory Sales Account:
+              </label>
+              <input>
+            </div>
+
+            <div class="form-control">
+              <label for="">
+                Purchase Account:
+              </label>
+              <input>
+            </div>
+
+            <div class="form-control">
+              <label for="">
+                Discount Article Sales:
+              </label>
+              <input>
+            </div>
+
+            <div class="form-control">
+              <label for="">
+                Discount Article Purchases:
+              </label>
+              <input>
+            </div>
+
+            <div class="form-control">
+              <label for="">
+                Sales Stock Account:
+              </label>
+              <input>
+            </div>
+
+            <div class="form-control">
+              <label for="">
+                Purchase Stock Account:
+              </label>
+              <input>
+            </div>
+
+          </form>
+        </div>
+        <div class="model-footer">
+          <button class="btn btn-default" ng-click="ok()">Submit</button>
+          <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- submit and clear -->
+  <div class="row">
+    <div>
+      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="reset" class="btn btn-default">Reset</button>
+    </div>
+  </div>
+<!-- </container> -->
 </div>
