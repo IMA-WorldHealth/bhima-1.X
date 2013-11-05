@@ -5942,7 +5942,6 @@ CREATE TABLE `inventory` (
   inv_code          varchar(10) not null,
   text              text,
   price             int not null, -- what it was bought for
-  creditor_id       int, -- TOBE FKed
   inv_group_id      int, -- same
   inv_type          smallint not null,
   stock             int not null,
