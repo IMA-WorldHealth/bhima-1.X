@@ -2211,6 +2211,22 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
   }
  });
 
+controllers.controller('notifyController', function($scope, $q, appnotify) {
+  /*summary
+  *   Displays the model for any notification pushed to the appnotify service
+  */
+  console.log("notify controller initialised");
+//  Allows for multiple notifications - if that's your thing
+  $scope.notification = [];
+  $scope.isNote = true;
+
+
+  $scope.removeNotification = function() {
+    $scope.notification.pop();
+    $scope.isNote = false;
+  }
+});
+
 controllers.controller('invInvController', function($scope, $q, connect) {
   console.log("Inventory invoice initialised");
 });

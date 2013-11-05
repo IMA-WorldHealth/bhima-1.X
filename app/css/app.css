@@ -60,6 +60,27 @@
   overflow: auto;
 }
 
+#bika-notify {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.notification {
+  color: #ffffff;
+  padding: 10px;
+  background: #d9534f;
+  border-top: 1px solid #d43f3a;
+}
+
+#bika-notify .notify-icon{
+  float: left;
+}
+
+#bika-notify h3 {
+
+}
+
 #bika-view { 
   /*
   Idea being to seperate the view (unit) and outside, can't figure this out
@@ -76,6 +97,7 @@
 .bika-panel-body { 
 
 }
+
 
 /* Hide in webkit the number spinners 
  * for both date and number.
