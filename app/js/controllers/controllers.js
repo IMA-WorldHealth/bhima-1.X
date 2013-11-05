@@ -2046,4 +2046,8 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
    }
 });
 
+controllers.controller('invInvController', function($scope, $q, connect) {
+  console.log("Inventory invoice initialised");
+});
+
 })(angular);
