@@ -154,7 +154,7 @@
     }
 
     //TODO
-    function registerNamespace(unit) { 
+    function saveSessionModel(unit, model) {
 
     }
 
