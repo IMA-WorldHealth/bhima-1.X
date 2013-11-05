@@ -2045,5 +2045,12 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
 
    }
 });
+//***************************************************************************************
+//***************************** CREDITORS CONTROLLER ************************************
+//***************************************************************************************
+ controllers.controller('creditorsController', function($scope){
+  console.log('Bonjour creditors');
+
+ });
 
 })(angular);
