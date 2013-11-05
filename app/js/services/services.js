@@ -84,6 +84,23 @@
     }
   });
 
+  services.factory('appnotify', function($q, $timeout) {
+
+    function init() {
+//    initialise session variables etc.
+    }
+
+    function setNotification(type, header, body, delay) {
+
+    }
+
+    init();
+
+    return {
+      setNotification : setNotification
+    }
+  });
+
   services.factory('appcache', function($q) { 
     /////
     // summary: 
