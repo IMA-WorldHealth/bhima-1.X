@@ -6126,6 +6126,7 @@ CREATE  TABLE `bika`.`creditor` (
   `address1` TEXT NULL ,
   `address2` TEXT NULL ,
   `country_id` smallint unsigned not null ,
+  `account_id` mediumint unsigned not null,
   `email` VARCHAR(45) NULL ,
   `fax` VARCHAR(45) NULL ,
   `note` VARCHAR(50) NULL ,
@@ -6134,5 +6135,7 @@ CREATE  TABLE `bika`.`creditor` (
   `locked` TINYINT(1) NULL ,
   PRIMARY KEY (`id`),
   KEY `country_id` (`country_id`),
-  CONSTRAINT FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `account_id` (`account_id`),
+  CONSTRAINT FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    )ENGINE = InnoDB;
