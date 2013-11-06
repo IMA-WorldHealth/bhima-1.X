@@ -416,7 +416,7 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (23, 'Laboratory', 'Analyze lab results', 21, 0, '/units/laboratory/',''),
   (24, 'Surgery', 'Best cuttlery here!', 21, 0, '/units/surgery',''),
   (25, 'Radiology', 'X-rays, anyone?', 21, 0, '/units/radiology/',''),
-  (26, 'Creancier', 'Tous les creancier', 5, 0,'/partials/creancier',''),
+  (26, 'Creditors', 'Tous les creanciers', 5, 0,'/partials/creditor','/creditors'),
   (27, 'Balance', 'The Balance Sheet', 5, 0, '/units/balance/',''),
   (28, 'Transaction', 'The Transaction Page', 5, 0, '/partials/transaction',''),
   (29, 'Debitors', 'The debitors configuraiton page', 5, 0, 'debitors',''),
@@ -6116,3 +6116,23 @@ CREATE TABLE `cash` (
   CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`),
   CONSTRAINT FOREIGN KEY (`invoice_id`) REFERENCES `sale` (`id`) -- FIXME: Change this so that we can pull from multiple tables.
 ) ENGINE=InnoDB;
+
+
+
+DROP TABLE IF EXISTS `creditor`;
+CREATE  TABLE `bika`.`creditor` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `address1` TEXT NULL ,
+  `address2` TEXT NULL ,
+  `country_id` smallint unsigned not null ,
+  `email` VARCHAR(45) NULL ,
+  `fax` VARCHAR(45) NULL ,
+  `note` VARCHAR(50) NULL ,
+  `phone` VARCHAR(15) NULL ,
+  `international` TINYINT(1) NULL ,
+  `locked` TINYINT(1) NULL ,
+  PRIMARY KEY (`id`),
+  KEY `country_id` (`country_id`),
+  CONSTRAINT FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+   )ENGINE = InnoDB;

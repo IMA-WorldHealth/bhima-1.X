@@ -58,6 +58,9 @@
     when('/cash', {
       controller: 'cashController',
       templateUrl: '/partials/cash/index.html'
+    }).when('/creditors', {
+      controller: 'creditorsController',
+      templateUrl: '/partials/creditor/index.html'
     }).
     when('/cash/review/:id', {
       controller: 'cashReviewController',
