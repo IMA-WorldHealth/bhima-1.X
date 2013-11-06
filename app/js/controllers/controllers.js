@@ -1740,26 +1740,73 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   controllers.controller('inventoryRegisterController', function ($scope, data, $q, $modal) {
 
-    var account_spec = {
+    var account_spec, inv_unit_spec, inv_group_spec, inv_type_spec, price_list_spec, inv_spec;
+
+    account_spec = {
       tables: {'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}},
       where: ["account.enterprise_id=" + 101], // FIXME
     };
 
-    var inv_unit_spec = {
-      tables : {'inventory_unit': { columns: ["id", "text"] }}
+    inv_unit_spec = {
+      tables : {'inv_unit': { columns: ["id", "text"] }}
+    };
+
+    price_list_spec= {
+      tables: {'price_list': { columns: ['id', 'price'] } }
+    };
+
+    inv_group_spec = {
+      tables: {'inv_group': { columns: ['id', 'name', 'symbol', 'serial_number', 'purchase_account', 'sales_account', 'stock_increase_account', 'stock_decrease_account', 'tax_account']}}
+    };
+
+    inv_spec = {
+      tables: {'inventory': { columns: ['enterprise_id', 'id', 'inv_code', 'text', 'price', 'inv_group_id', 'inv_unit_id', 'price_list_id', 'unit_weight', 'unit_volume', 'service_account_id', 'stock', 'stock_max', 'stock_min', 'consumable']}},
+      where: ["inventory.enterprise_id="+101]
     };
 
     $q.all([
       data.register(account_spec),
-      data.register(inv_unit_spec)
+      data.register(inv_unit_spec),
+      data.register(price_list_spec),
+      data.register(inv_group_spec),
+      data.register(inv_spec)
     ]).then(init);
 
+    var stores = {},
+      models = ['account', 'inv_unit', 'price_list', 'inv_group', 'inventory'],
+      item;
+    $scope.models = {};
+    $scope.item = item = {}; 
+
     function init(arr) {
-      console.log("[inventory/register] Init fired!");
+      for (var i = 0, l = arr.length; i < l; i++) {
+        stores[models[i]] = arr[i];
+        $scope.models[models[i]] = arr[i].data;
+      }
+
+      $scope.inv_switch = false;
+      console.log("[Inventory Register Controller]: Data Loaded!");
+
+      initmodel();
     }
 
-    $scope.items = [1,2,3,4];
 
+
+    function initmodel () {
+      item = {};
+    }
+
+    $scope.submit = function () {
+      console.log("Item:", item);
+    };
+
+    $scope.reset = function () {
+      initmodel(); 
+    };
+
+    
+
+    // Modal stuff
     $scope.open = function () {
       var instance = $modal.open({
         templateUrl: "inventory_groups.html",

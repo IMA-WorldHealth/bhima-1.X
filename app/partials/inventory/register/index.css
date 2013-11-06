@@ -1,8 +1,19 @@
-
 .top-bar {
   padding-bottom: 0.25em;
 }
 
 .content {
   margin:0;
+}
+
+.list-vertical > .btn {
+  border: none;
+  border-radius: 0;
+  width: 100%;
+  margin: 0;
+  float: left;
+}
+
+.list-vertical > .btn:first-child:not(:last-child) {
+  border-radius: 0;
 }
