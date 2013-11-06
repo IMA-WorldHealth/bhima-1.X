@@ -1,0 +1,7 @@
+.modal-content {
+  width: 40%;
+  top: 10em; /* to float vertically */
+  margin: 0 auto;
+  height: auto;
+  z-index: 1055; /* background is 1050 generally */
+}
