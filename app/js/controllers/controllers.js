@@ -2232,6 +2232,9 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   $scope.sale_date = getDate();
   $scope.inventory = [];
 
+  $scope.process = ["PO", "QUOTE"];
+  $scope.current_process = $scope.process[0];
+
   $scope.purchase_order = {payable: "false"};
 
   var inventory_request = connect.req('inventory', ['id', 'inv_code', 'text', 'price']);
@@ -2268,6 +2271,10 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     return search_max + 1;
   }
 
+  $scope.updateInventory = function() {
+    $scope.inventory.push({});
+  }
+
   $scope.formatText = function() {
 //      FIXME String functions within digest will take hours and years
     var c = "PO " + $scope.invoice_id + "/" + $scope.sale_date;
@@ -2280,6 +2287,15 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     if($scope.purchase_order.payable=="true") return true;
     return false;
   };
+
+  $scope.itemsInInv = function() {
+    if($scope.inventory.length>0) return true;
+    return false;
+  }
+
+  $scope.select = function(index) {
+    $scope.current_process = $scope.process[index];
+  }
 
   init();
 
