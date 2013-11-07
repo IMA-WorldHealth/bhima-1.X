@@ -806,18 +806,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //cache location table to look up debitor details
     //var location_request = connect.req('location', ['id', 'city', 'region', 'country_code']);
 
-    var debtor_query = { 
-      'e' : [{
-        t : 'patient',
-        c : ['debitor_id', 'first_name', 'last_name', 'location_id']
-      }, { 
-        t : 'location',
-        c : ['id', 'city', 'region', 'country_code']
-      }],
-      'jc' : [{
-        ts : ['patient', 'location'],
-        c : ['location_id', 'id']
-      }]
+    var debtor_query = {
+        'e' : [{
+          t : 'patient',
+          c : ['debitor_id', 'first_name', 'last_name', 'location_id']
+        }, {
+          t : 'location',
+          c : ['id', 'city', 'region', 'country_code']
+        }],
+        'jc' : [{
+          ts : ['patient', 'location'],
+          c : ['location_id', 'id']
+        }]
     };
 
     var debtor_request = connect.basicReq(debtor_query);
@@ -969,7 +969,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return false;
     };
 
-    $scope.formatDebtor = function(debtor) { 
+    $scope.formatDebtor = function(debtor) {
       return "[" + debtor.debitor_id + "] " + debtor.first_name + " " + debtor.last_name;
     }
 
@@ -2240,13 +2240,35 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   var inventory_request = connect.req('inventory', ['id', 'inv_code', 'text', 'price']);
   var sales_request = connect.req('sale', ['id']);
 
+  var creditor_query = {
+    'e' : [{
+      t : 'creditor',
+      c : ['id', 'name', 'country_id', 'account_id']
+    }, {
+      t : 'location',
+      c : ['id', 'city', 'region', 'country_code']
+    }],
+    'jc' : [{
+      ts : ['location', 'creditor'],
+      c : [ 'id', 'country_id']
+    }]
+  };
+
+  var creditor_request = connect.basicReq(creditor_query);
+  var user_request = connect.basicGet("user_session");
+
   function init() {
     $q.all([
       inventory_request,
-      sales_request
+      sales_request,
+      creditor_request,
+      user_request
+
     ]).then(function(a) {
       $scope.inventory_model = a[0];
       $scope.sales_model = a[1];
+      $scope.creditor_model = a[2];
+      $scope.verify = a[3].data.id;
 
       var invoice_id = createId($scope.sales_model.data);
       $scope.invoice_id = invoice_id;
@@ -2284,7 +2306,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   $scope.formatText = function() {
 //      FIXME String functions within digest will take hours and years
     var c = "PO " + $scope.invoice_id + "/" + $scope.sale_date;
-    if($scope.creditor) c += "/" + $scope.creditor.last_name + "/" + $scope.creditor.first_name;
+    if($scope.creditor) c += "/" + $scope.creditor.name + "/";
     return c;
   }
 
@@ -2315,6 +2337,10 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
   $scope.select = function(index) {
     $scope.current_process = $scope.process[index];
+  }
+
+  $scope.formatCreditor = function(creditor) {
+    return creditor.name;
   }
 
   init();
