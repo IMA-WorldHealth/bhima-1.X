@@ -2,10 +2,36 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-12">
-      <div class="page-header">
+      <div class="bika-header">
         <h1>Create Purchase Order</h1>
       </div>
     </div>
+  </div>
+
+  <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util">
+        <div class="row">
+          <div class="col-xs-12">
+            <!--This could all be dynamic based on the process options, it would be beatiful, but I'm not allowed to anything
+            but accounting this week-->
+            <!--There are also only likely to be two options, probably not worth the processing overhead-->
+            <div class="btn-group">
+              <button class="btn btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase Order</button>
+              <button class="btn btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">Quote</button>
+            </div>
+          <div class="pull-right">
+            <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
+            </a>
+            <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
+
+          </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="row">
@@ -25,7 +51,7 @@
           <div class="form-group">
             <label for="select-cred">Supplier</label>
             <select id="select-cred" class="form-control">
-              <option value=""">--Select Creditor--</option>
+              <option value="">--Select Creditor--</option>
             </select>
           </div>
           <div class="form-group">
@@ -37,7 +63,8 @@
             </div>
             <div class="radio">
               <label>
-                <input type="radio" name="option_payable" id="pay" value="false" checked ng-model="purchase_order.payable">
+                <input type="radio" name="option_payable" id="pay" value="false" checked
+                       ng-model="purchase_order.payable">
                 Payable by
               </label>
             </div>
@@ -67,28 +94,38 @@
 
               <table class="table table-bordered">
                 <thead>
-                  <tr><th>P.O</th><th>Date</th><th>Note</th></tr>
+                <tr>
+                  <th>P.O</th>
+                  <th>Date</th>
+                  <th>Note</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <tr><td>{{invoice_id}}</td><td>{{sale_date}}</td><td>{{formatText()}}</td></tr>
+                <tr>
+                  <td>{{invoice_id}}</td>
+                  <td>{{sale_date}}</td>
+                  <td>{{formatText()}}</td>
+                </tr>
                 </tbody>
               </table>
-          </div>
-
             </div>
+
+          </div>
 
           <div class="row">
             <div class="col-xs-12">
-            <table class="table table-bordered">
-              <thead>
-                <tr><th>Supplier</th></tr>
-              </thead>
-              <tbody>
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <th>Supplier</th>
+                </tr>
+                </thead>
+                <tbody>
 
-              </tbody>
-            </table>
+                </tbody>
+              </table>
             </div>
-            </div>
+          </div>
 
         </div>
       </div>
@@ -101,8 +138,34 @@
     <div class="col-xs-12">
       <div class="panel panel-success">
         <div class="panel-heading">
-          Inventory Items
+          <span>Inventory Items</span>
+          <button class="pull-right" ng-click="updateInventory()">+</button>
+
         </div>
+
+        <table class="table invoice-table" ng-show="itemsInInv()">
+          <thead>
+          <tr>
+            <td class="invoice-item">Item</td>
+            <td class="invoice-desc">Description</td>
+            <td>Qty</td>
+            <td>Unit Price</td>
+            <td>Amount</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="item in inventory">
+            <td class="invoice-item"><select class="form-control" ng-change="updateItem(item)" ng-model="item.item" ng-options="l.inv_code for l in inventory_model.data"></select></td>
+            <td class="invoice-desc"><input type="text" class="form-control" ng-model="item.text"></td>
+            <td class="invoice-quantity"><input type="number" class="form-control" ng-model="item.quantity"></td>
+            <td class="invoice-price"><input type="number" class="form-control" ng-model="item.price"></td>
+            <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
+          </tr>
+          <tr>
+            <td colspan="4"></td>
+            <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

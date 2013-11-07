@@ -9,3 +9,24 @@
 .purchase-header {
   height: 300px;
 }
+
+/*Not optimal to control utils layout on two different elements*/
+.util {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.bika-header {
+  padding-bottom: 9px;
+  margin: 40px 0 5px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.current {
+  background-color: #ebebeb;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  border: 1px solid #a2a2a2;
+
+}
