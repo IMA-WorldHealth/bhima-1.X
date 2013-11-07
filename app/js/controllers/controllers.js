@@ -2216,19 +2216,23 @@ controllers.controller('notifyController', function($scope, $q, appnotify) {
   *   Displays the model for any notification pushed to the appnotify service
   */
   console.log("notify controller initialised");
-//  Allows for multiple notifications - if that's your thing
-  $scope.notification = [];
-  $scope.isNote = true;
 
+//  Notify controller must watch the model from the service and display accordingly
+  $scope.notification = appnotify.notification;
 
   $scope.removeNotification = function() {
-    $scope.notification.pop();
-    $scope.isNote = false;
+//    Would need to remove with ID for multiple notifications
+    appnotify.clearAll();
   }
 });
 
-controllers.controller('invInvController', function($scope, $q, connect) {
+controllers.controller('purchaseOrderController', function($scope, $q, connect, appnotify) {
   console.log("Inventory invoice initialised");
+
+  $scope.notify = function() {
+    appnotify.setNotification("first", "second", "third", "fourth");
+  }
+
 });
 
 })(angular);
