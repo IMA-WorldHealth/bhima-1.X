@@ -1,6 +1,6 @@
 var WebSocketServer = require('ws').Server,
     ws              = new WebSocketServer({port: 8000}),
-    db              = require('../database/db'),
+    db              = require('../database/db')(),
     composer        = require('./composer'),
     data            = require('./data.js');
 
@@ -9,7 +9,7 @@ var WebSocketServer = require('ws').Server,
 function serialize(json) { return JSON.stringify(json); }
 function deserialize(json) { return JSON.parse(json); }
 
-module.exports = (function init () {
+module.exports = (function init (cfg) {
   'use strict';
 
   var store = new data.Store(), // idProperty: 'id'
@@ -159,4 +159,6 @@ module.exports = (function init () {
     });
   });
 
-})(options);
+  return ws;
+
+});

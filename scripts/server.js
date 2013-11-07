@@ -1,12 +1,12 @@
 // server.js
 var express         = require('express')
-  , db              = require('./lib/database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}})
+  , db              = require('./lib/database/db')()
   , queryHandler    = require('./lib/database/myQueryHandler')
   , url             = require('url')
   , auth            = require('./lib/auth')
   , um              = require('./lib/util/userManager')
   , jr              = require('./lib/logic/journal')
-  , ws              = require("./lib/ws/ws") // This is the socket server
+  , ws              = require("./lib/ws/ws")({}) // This is the socket server
   , app             = express();
 
 app.set('env', 'production'); // Change this to change application behavior
