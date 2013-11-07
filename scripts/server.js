@@ -72,6 +72,14 @@ app.post('/data/', function (req, res) {
   db.execute(insertsql, cb);
 });
 
+app.delete('/data/:id/:table', function(req, res){
+  console.log('delete appele',req.params.id);
+  var deleteSql = db.delete(req.params.table, {id:[req.params.id]});//{id:[selectedUserId]}
+  console.log(deleteSql);
+
+
+});
+
 //TODO Server should set user details like this in a non-editable cookie
 app.get('/user_session', function(req, res, next) {
   res.send({id: req.session.user_id});
