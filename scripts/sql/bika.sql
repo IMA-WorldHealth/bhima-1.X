@@ -5963,6 +5963,21 @@ INSERT INTO `inv_unit` VALUES
   (4, "Box"),
   (5, "Lot");
 
+--
+-- table `bika`.`inv_type`
+--
+DROP TABLE IF EXISTS `inv_type`;
+CREATE TABLE `inv_type` (
+  `id`      tinyint unsigned not null,
+  `text`    varchar(150) not null,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+INSERT INTO `inv_type` VALUES 
+  (0, "Article"),
+  (1, "Assembly"),
+  (2, "Service");
+
 -- 
 -- table `bika`.`inventory`
 --
@@ -5970,38 +5985,41 @@ DROP TABLE IF EXISTS `inventory`;
 CREATE TABLE `inventory` (
   enterprise_id       smallint unsigned not null,
   id                  int unsigned not null,
-  inv_code            varchar(10) not null,
+  code                varchar(10) not null,
   text                text,
-  price               decimal (10, 2) unsigned not null, -- what it was bought for
-  inv_group_id        smallint unsigned not null, 
-  inv_unit_id         smallint unsigned, 
+  price               decimal (10, 2) unsigned not null default 0, -- what it was bought for
+  group_id            smallint unsigned not null, 
+  unit_id             smallint unsigned, 
   unit_weight         mediumint default 0,
   unit_volume         mediumint default 0,
-  stock               int unsigned not null,
-  stock_max           int unsigned not null,
+  stock               int unsigned not null default 0,
+  stock_max           int unsigned not null default 0,
   stock_min           int unsigned not null default 0,
+  type_id             tinyint unsigned not null default 0,
   consumable          boolean not null default 0,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `inv_group_id` (`inv_group_id`),
-  KEY `inv_unit_id` (`inv_unit_id`),
-  UNIQUE KEY `inv_code` (`inv_code`),
+  KEY `group_id` (`group_id`),
+  KEY `unit_id` (`unit_id`),
+  KEY `type_id` (`type_id`),
+  UNIQUE KEY `code` (`code`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  CONSTRAINT FOREIGN KEY (`inv_group_id`) REFERENCES `inv_group` (`id`),
-  CONSTRAINT FOREIGN KEY (`inv_unit_id`) REFERENCES `inv_unit` (`id`)
+  CONSTRAINT FOREIGN KEY (`group_id`) REFERENCES `inv_group` (`id`),
+  CONSTRAINT FOREIGN KEY (`unit_id`) REFERENCES `inv_unit` (`id`),
+  CONSTRAINT FOREIGN KEY (`type_id`) REFERENCES `inv_type` (`id`)
 ) ENGINE=InnoDB;
 
 INSERT INTO `inventory` 
-(`enterprise_id`, `id`, `inv_code`, `text`, `price`, `inv_group_id`, `inv_unit_id`, `unit_volume`, `unit_weight`, `stock`, `stock_min`, `stock_max`, `consumable`) VALUES
-  (101, 1, "CHCRAN", "Craniotomie", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 2, "CHGLOB", "Goitre Lobectomie/Hemithyroidect", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 3, "CHGTHY", "Goitre Thyroidectomie Sobtotale", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 4, "CHEXKY", "Excision De Kyste Thyroiglosse",  20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 5, "CHPASU", "Parotidectomie Superficielle", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 6, "CHTRAC", "Trachectome", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 7, "EXKYSB", "Kyste Sublingual", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
-  (101, 9, "BICNOI", "Bic Noire", 1, 3, 4, 0, 0, 0, 0, 0, 1);
+(`enterprise_id`, `id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_volume`, `unit_weight`, `stock`, `stock_min`, `stock_max`, `type_id`, `consumable`) VALUES
+  (101, 1, "CHCRAN", "Craniotomie", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 2, "CHGLOB", "Goitre Lobectomie/Hemithyroidect", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 3, "CHGTHY", "Goitre Thyroidectomie Sobtotale", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 4, "CHEXKY", "Excision De Kyste Thyroiglosse",  20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 5, "CHPASU", "Parotidectomie Superficielle", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 6, "CHTRAC", "Trachectome", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 7, "EXKYSB", "Kyste Sublingual", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+  (101, 9, "BICNOI", "Bic Noire", 1, 3, 4, 0, 0, 0, 0, 0, 0, 1);
   
 --
 -- table `bika`.`price_list`
