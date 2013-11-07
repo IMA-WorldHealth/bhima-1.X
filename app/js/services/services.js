@@ -489,6 +489,14 @@
         send(parameters);
       };
 
+      // generate a new id
+      this.generateid = function () {
+        var ids, id, idx = this.index;
+        ids = Object.keys(idx);
+        id = Math.max.apply(Math.max, ids) + 1;
+        return (id > 0) ? id : 1;
+      };
+
       this.put = function (object, opts) {
         // store put
         var data = this.data,
