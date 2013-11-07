@@ -1,0 +1,106 @@
+<link rel="stylesheet" href="../css/creditor.css"/>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-5">
+      <div class="page-header">
+        <h1>Register Creditor</h1>
+      </div>
+    </div> 
+  </div>
+  <div class="row">
+  </div>
+  <div class="row">
+    <div class="col-xs-3">
+      <div class="panel panel-primary">
+        <div class="panel-body">
+          <form role="form" name="form">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" ng-model="creditor.name" ng-change="verifyExisting()" required>
+            </div>
+             <div class="form-group">
+              <label for="Account">Account</label>
+              <select required class="form-control" ng-change="verifyExisting()" id="accountselectID" ng-model="creditor.account_id" ng-options="account.id+' -- '+account.account_txt for account in accounts">
+                <option value="">--Select Account--</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="Country">Country</label>
+              <select required class="form-control" id="countryselectID" ng-model="creditor.country_id" ng-options="country.id+' -- '+country.country_en for country in countries">
+                <option value="">--Select Country--</option>
+              </select>
+            </div>
+            <div class="checkbox">
+				<label>International
+					<input type="checkbox" id="internationalID" ng-model = "creditor.international">
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>Locked
+					<input type="checkbox" id="lockedID" ng-model = "creditor.locked">
+				</label>
+			</div>
+        </div>
+      </div>
+      <button class="btn btn-lg btn-default" ng-click="save(creditor)" ng-disabled="form.$invalid">Save</button>
+      <button class="btn btn-lg btn-default" ng-click="update(patient)" ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()">Delete</button>
+    </div>
+    <div class="col-xs-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Optional Information
+        </div>
+        <div class="panel-body">
+          <form role="form">
+            <div class="form-group">
+              <label for="ad1">Address 1</label>
+              <input type="text" class="form-control" id="ad1ID" ng-model="creditor.address1">
+            </div>
+            <div class="form-group">
+              <label for="ad1">Address 2</label>
+              <input type="text" class="form-control" id="ad2ID" ng-model="creditor.address2">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="text" class="form-control" id="phoneID" ng-model="creditor.phone">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="emailID" ng-model="creditor.email">
+            </div>
+            <div class="form-group">
+              <label for="fax">Fax</label>
+              <input type="text" class="form-control" id="faxID" ng-model="creditor.fax">
+            </div>                        
+          </form> 
+          <div>
+            <label for="note">Note</label>
+            <textarea ng-model = "creditor.note" class="form-control note"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-5">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Registered Creditors
+        </div>
+        <div class="table-responsive">
+			<table class="table table-bordered  table-striped table-hover">
+				<thead>
+					<tr><th>ID</th><th>Name</th></tr>
+				</thead>
+				<tbody>
+				<!--This is populated with angular-->
+					<tr ng-click="fill($index)" ng-repeat="creditor in creditors">
+						<td>{{creditor.id}}</td>
+						<td>{{creditor.name}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+
