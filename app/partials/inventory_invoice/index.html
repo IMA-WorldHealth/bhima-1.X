@@ -18,20 +18,23 @@
             but accounting this week-->
             <!--There are also only likely to be two options, probably not worth the processing overhead-->
             <div class="btn-group">
-              <button class="btn btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase Order</button>
-              <button class="btn btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">Quote</button>
+              <button class="btn btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase
+                Order
+              </button>
+              <button class="btn btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">
+                Quote
+              </button>
             </div>
-          <div class="pull-right">
-            <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
-            </a>
-            <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
+            <div class="pull-right">
+              <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
+              </a>
+              <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
 
-          </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="row">
@@ -143,7 +146,7 @@
 
         </div>
 
-        <table class="table invoice-table" ng-show="itemsInInv()">
+        <table class="table table-condensed" ng-show="itemsInInv()">
           <thead>
           <tr>
             <td class="invoice-item">Item</td>
@@ -155,10 +158,11 @@
           </thead>
           <tbody>
           <tr ng-repeat="item in inventory">
-            <td class="invoice-item"><select class="form-control" ng-change="updateItem(item)" ng-model="item.item" ng-options="l.inv_code for l in inventory_model.data"></select></td>
-            <td class="invoice-desc"><input type="text" class="form-control" ng-model="item.text"></td>
-            <td class="invoice-quantity"><input type="number" class="form-control" ng-model="item.quantity"></td>
-            <td class="invoice-price"><input type="number" class="form-control" ng-model="item.price"></td>
+            <td class="invoice-item"><select class="form-invoice" ng-change="updateItem(item)" ng-model="item.item"
+                                             ng-options="l.inv_code for l in inventory_model.data"><option value=""">--Select Item--</option></select></td>
+            <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
+            <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
+            <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
             <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
           </tr>
           <tr>
@@ -166,6 +170,21 @@
             <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util-bottom">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="pull-right">
+              <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
+
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
