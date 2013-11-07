@@ -17,6 +17,13 @@
   margin-bottom: 10px;
 }
 
+.util-bottom {
+  border-top: 1px solid #eeeeee;
+  padding-top: 5px;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px
+}
+
 .bika-header {
   padding-bottom: 9px;
   margin: 40px 0 5px;
@@ -29,4 +36,18 @@
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   border: 1px solid #a2a2a2;
 
+}
+
+.form-invoice {
+
+  diplay: block;
+  width: 100%;
+  height: 30px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
 }

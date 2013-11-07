@@ -2271,6 +2271,12 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     return search_max + 1;
   }
 
+  $scope.updateItem = function(item) {
+    if(!item.quantity) item.quantity = 1;
+    item.text = item.item.text;
+    item.price = item.item.price;
+  }
+
   $scope.updateInventory = function() {
     $scope.inventory.push({});
   }
@@ -2282,11 +2288,25 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     return c;
   }
 
+
+
 //  Radio inputs only accept string true/false? boolean value as payable doesn't work
   $scope.isPayable = function() {
     if($scope.purchase_order.payable=="true") return true;
     return false;
   };
+
+  // FIXME Again - evaluated every digest, this is a bad thing
+  $scope.invoiceTotal = function() {
+    var total = 0;
+    $scope.inventory.forEach(function(item) {
+      if(item.quantity && item.price) {
+        //FIXME this could probably be calculated less somewhere else (only when they change)
+        total += (item.quantity * item.price);
+      }
+    });
+    return total;
+  }
 
   $scope.itemsInInv = function() {
     if($scope.inventory.length>0) return true;
