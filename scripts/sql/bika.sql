@@ -464,7 +464,7 @@ CREATE TABLE `budget` (
   `id`              int not null AUTO_INCREMENT,
   `account_id`      mediumint unsigned not null default 0,
   `period_id`       mediumint unsigned not null,
-  `budget`          DOUBLE,
+  `budget`          decimal (10, 2) unsigned,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -5924,29 +5924,27 @@ DROP TABLE IF EXISTS `inv_group`;
 CREATE TABLE `inv_group` (
   id                      smallint unsigned not null,
   name                    varchar(100) not null,
-  symbol                  varchar(2) not null,
-  serial_number           varchar (150) not null, -- FROM SANRU TRACKER'S `inventoryclass`
-  purchase_account        mediumint unsigned,
-  sales_account           mediumint unsigned,
-  stock_increase_account  mediumint unsigned,
-  stock_decrease_account  mediumint unsigned,
+  symbol                  char(1) not null,
+  sales_account           mediumint unsigned not null,
+  cogs_account            mediumint unsigned,
+  stock_account           mediumint unsigned,
   tax_account             mediumint unsigned,
   PRIMARY KEY (`id`),
-  KEY `purchase_account` (`purchase_account`),
   KEY `sales_account` (`sales_account`),
-  KEY `stock_increase_account` (`stock_increase_account`),
-  KEY `stock_decrease_account` (`stock_decrease_account`),
-  CONSTRAINT FOREIGN KEY (`purchase_account`) REFERENCES `account` (`id`),
+  KEY `cogs_account` (`cogs_account`),
+  KEY `stock_account` (`stock_account`),
+  KEY `tax_account` (`tax_account`),
   CONSTRAINT FOREIGN KEY (`sales_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`stock_increase_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`stock_decrease_account`) REFERENCES `account` (`id`),
+  CONSTRAINT FOREIGN KEY (`cogs_account`) REFERENCES `account` (`id`),
+  CONSTRAINT FOREIGN KEY (`stock_account`) REFERENCES `account` (`id`),
   CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `inv_group` (`id`, `name`, `symbol`, `serial_number`, `purchase_account`, `sales_account`, `stock_increase_account`, `stock_decrease_account`, `tax_account`) VALUES
-  (0, "Services", "S", 0, null, null, null, null, null),
-  (1, "Office Supplies", "O", 0, 310700, null, null, null, null),
-  (2, "Diverse Stock", "D", 0, 310900, null, null, null, null);
+INSERT INTO `inv_group` (`id`, `name`, `symbol`, `sales_account`, `cogs_account`, `stock_account`, `tax_account`) VALUES
+  (0, "Services", "S", 700000, null, null, null),
+  (1, "Medicines", "M", 700000, 700100, null, null),
+  (2, "Surgery", "C", 710400, null, null, null),
+  (3, "Office Supplies", "O", 310000, 310900, null, null);
 
 -- 
 -- table `bika`.`inv_unit`
@@ -5965,21 +5963,6 @@ INSERT INTO `inv_unit` VALUES
   (4, "Box"),
   (5, "Lot");
 
---
--- table `bika`.`price_list`
---
-DROP TABLE IF EXISTS `price_list`;
-CREATE TABLE `price_list` (
-  id        int unsigned not null,
-  text      text,
-  price     decimal (10,2) unsigned not null,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-INSERT INTO `price_list` VALUES 
-  (1, "Medicines", 10000022.50),
-  (2, "Surgery", 1.20);
-
 -- 
 -- table `bika`.`inventory`
 --
@@ -5990,12 +5973,10 @@ CREATE TABLE `inventory` (
   inv_code            varchar(10) not null,
   text                text,
   price               decimal (10, 2) unsigned not null, -- what it was bought for
-  inv_group_id        smallint unsigned not null, -- TODO link 
-  inv_unit_id         smallint unsigned, -- TODO link 
-  price_list_id       int unsigned not null,
+  inv_group_id        smallint unsigned not null, 
+  inv_unit_id         smallint unsigned, 
   unit_weight         mediumint default 0,
   unit_volume         mediumint default 0,
-  service_account_id  mediumint unsigned default null,
   stock               int unsigned not null,
   stock_max           int unsigned not null,
   stock_min           int unsigned not null default 0,
@@ -6004,28 +5985,38 @@ CREATE TABLE `inventory` (
   KEY `enterprise_id` (`enterprise_id`),
   KEY `inv_group_id` (`inv_group_id`),
   KEY `inv_unit_id` (`inv_unit_id`),
-  KEY `price_list_id` (`price_list_id`),
-  KEY `service_account_id` (`service_account_id`),
   UNIQUE KEY `inv_code` (`inv_code`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   CONSTRAINT FOREIGN KEY (`inv_group_id`) REFERENCES `inv_group` (`id`),
-  CONSTRAINT FOREIGN KEY (`inv_unit_id`) REFERENCES `inv_unit` (`id`),
-  CONSTRAINT FOREIGN KEY (`price_list_id`) REFERENCES `price_list` (`id`),
-  CONSTRAINT FOREIGN KEY (`service_account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT FOREIGN KEY (`inv_unit_id`) REFERENCES `inv_unit` (`id`)
 ) ENGINE=InnoDB;
 
 INSERT INTO `inventory` 
-(`enterprise_id`, `id`, `inv_code`, `text`, `price`, `inv_group_id`, `inv_unit_id`, `price_list_id`,
-  `unit_volume`, `unit_weight`, `service_account_id`, `stock`, `stock_min`, `stock_max`, `consumable`) VALUES
-  (101, 1, "CHCRAN", "Craniotomie", 20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 2, "CHGLOB", "Goitre Lobectomie/Hemithyroidect", 20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 3, "CHGTHY", "Goitre Thyroidectomie Sobtotale", 20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 4, "CHEXKY", "Excision De Kyste Thyroiglosse",  20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 5, "CHPASU", "Parotidectomie Superficielle", 20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 6, "CHTRAC", "Trachectome", 20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 7, "EXKYSB", "Kyste Sublingual", 20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 20000, 0, 1, 1, null, null, 710400, 0, 0, 0, 0),
-  (101, 9, "BICNOI", "Bic Noire", 1, 1, 4, 2, 1, 1, null, 10, 0, 0, 1);
+(`enterprise_id`, `id`, `inv_code`, `text`, `price`, `inv_group_id`, `inv_unit_id`, `unit_volume`, `unit_weight`, `stock`, `stock_min`, `stock_max`, `consumable`) VALUES
+  (101, 1, "CHCRAN", "Craniotomie", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 2, "CHGLOB", "Goitre Lobectomie/Hemithyroidect", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 3, "CHGTHY", "Goitre Thyroidectomie Sobtotale", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 4, "CHEXKY", "Excision De Kyste Thyroiglosse",  20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 5, "CHPASU", "Parotidectomie Superficielle", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 6, "CHTRAC", "Trachectome", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 7, "EXKYSB", "Kyste Sublingual", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 20000, 2, 1, 0, 0, 0, 0, 0, 0),
+  (101, 9, "BICNOI", "Bic Noire", 1, 3, 4, 0, 0, 0, 0, 0, 1);
+  
+--
+-- table `bika`.`price_list`
+--
+DROP TABLE IF EXISTS `price_list`;
+CREATE TABLE `price_list` (
+  id        int unsigned not null,
+  list_id   mediumint unsigned not null,
+  inv_id    int unsigned not null,
+  price     decimal (10,2) unsigned not null,
+  discount  decimal (2, 2) unsigned not null,
+  PRIMARY KEY (`id`),
+  KEY `inv_id` (`inv_id`),
+  FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`id`)
+) ENGINE=InnoDB;
 
 --
 -- table `bika`.`inv_detail`
