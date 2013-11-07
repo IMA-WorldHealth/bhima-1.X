@@ -1,7 +1,11 @@
 .po-header {
-  margin-top: 1px;
+  margin-top: 3px;
 }
 
 .po-note {
   margin-top: 8px;
+}
+
+.purchase-header {
+  height: 300px;
 }

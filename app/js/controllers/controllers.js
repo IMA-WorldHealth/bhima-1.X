@@ -786,7 +786,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('salesController', function($scope, $q, $location, connect, appstate) { 
+  controllers.controller('salesController', function($scope, $q, $location, connect, appstate) {
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
@@ -857,7 +857,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //TODOSET
       if(search_max.id) search_max = search_max.id;
       return search_max + 1;
-      //return list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)}).id + 1;
     }
 
     function getDate() { 
@@ -2229,9 +2228,61 @@ controllers.controller('notifyController', function($scope, $q, appnotify) {
 controllers.controller('purchaseOrderController', function($scope, $q, connect, appnotify) {
   console.log("Inventory invoice initialised");
 
-  $scope.notify = function() {
-    appnotify.setNotification("first", "second", "third", "fourth");
+//  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
+  $scope.sale_date = getDate();
+  $scope.inventory = [];
+
+  $scope.purchase_order = {payable: "false"};
+
+  var inventory_request = connect.req('inventory', ['id', 'inv_code', 'text', 'price']);
+  var sales_request = connect.req('sale', ['id']);
+
+  function init() {
+    $q.all([
+      inventory_request,
+      sales_request
+    ]).then(function(a) {
+      $scope.inventory_model = a[0];
+      $scope.sales_model = a[1];
+
+      var invoice_id = createId($scope.sales_model.data);
+      $scope.invoice_id = invoice_id;
+    });
   }
+
+  function getDate() {
+    //Format the current date according to RFC3339 (for HTML input[type=="date"])
+    var now = new Date();
+    return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + ('0' + now.getDate()).slice(-2);
+  }
+
+  //FIXME Shouldn't need to download every all invoices in this module, only take top few?
+  function createId(list) {
+    var default_id = 100000;
+    if(list.length < 1) return default_id; //No invoices have been created
+    console.log("Sales list", list);
+    var search_max = list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
+    //reduce returns an object if only one element is in the array for some reason
+    //TODOSET
+    if(search_max.id) search_max = search_max.id;
+    return search_max + 1;
+  }
+
+  $scope.formatText = function() {
+//      FIXME String functions within digest will take hours and years
+    var c = "PO " + $scope.invoice_id + "/" + $scope.sale_date;
+    if($scope.creditor) c += "/" + $scope.creditor.last_name + "/" + $scope.creditor.first_name;
+    return c;
+  }
+
+//  Radio inputs only accept string true/false? boolean value as payable doesn't work
+  $scope.isPayable = function() {
+    if($scope.purchase_order.payable=="true") return true;
+    return false;
+  };
+
+  init();
+
 
 });
 

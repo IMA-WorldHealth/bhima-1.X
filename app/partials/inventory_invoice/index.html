@@ -16,7 +16,7 @@
           Details
         </div>
 
-        <div class="panel-body">
+        <div class="panel-body purchase-header">
 
           <div class="form-group">
             <label for="saledate">Sale Date</label>
@@ -24,18 +24,20 @@
           </div>
           <div class="form-group">
             <label for="select-cred">Supplier</label>
-            <select id="select-cred" class="form-control"></select>
+            <select id="select-cred" class="form-control">
+              <option value=""">--Select Creditor--</option>
+            </select>
           </div>
           <div class="form-group">
             <div class="radio">
               <label>
-                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="invoice.payable">
+                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="purchase_order.payable">
                 Payable Immediately
               </label>
             </div>
             <div class="radio">
               <label>
-                <input type="radio" name="option_payable" id="payable" value="false" checked ng-model="invoice.payable">
+                <input type="radio" name="option_payable" id="pay" value="false" checked ng-model="purchase_order.payable">
                 Payable by
               </label>
             </div>
@@ -58,26 +60,36 @@
           Purchase Order
         </div>
 
-        <div class="panel-body">
+        <div class="panel-body purchase-header">
           <div class="row">
 
-            <div class="col-xs-7">
-              <input class="form-control" value="00000000">
-              <input class="form-control po-note">
+            <div class="col-xs-12">
 
-            </div>
-            <div class="col-xs-5">
-              <h3 class="po-header">Supplier Name</h3>
-              <h4>Supplier info 1</h4>
-              <h4>Supplier info 2</h4>
-            </div>
-
-
+              <table class="table table-bordered">
+                <thead>
+                  <tr><th>P.O</th><th>Date</th><th>Note</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>{{invoice_id}}</td><td>{{sale_date}}</td><td>{{formatText()}}</td></tr>
+                </tbody>
+              </table>
           </div>
+
+            </div>
+
           <div class="row">
             <div class="col-xs-12">
+            <table class="table table-bordered">
+              <thead>
+                <tr><th>Supplier</th></tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
             </div>
-          </div>
+            </div>
+
         </div>
       </div>
     </div>
