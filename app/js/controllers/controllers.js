@@ -799,7 +799,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.sale_date = getDate();
     $scope.inventory = [];
 
-    var inventory_request = connect.req('inventory', ['id', 'inv_code', 'text', 'price']);
+    var inventory_request = connect.req('inventory', ['id', 'code', 'text', 'price']);
     var sales_request = connect.req('sale', ['id']);
     //FIXME should probably look up debitor table and then patients
     //var debtor_request = connect.req('patient', ['debitor_id', 'first_name', 'last_name', 'location_id']);
@@ -1738,58 +1738,85 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
 
-  controllers.controller('inventoryRegisterController', function ($scope, data, $q, $modal) {
+  controllers.controller('inventoryRegisterController', function ($scope, data, $q) {
 
-    var account_spec = {
+    var account_spec, inv_unit_spec, inv_group_spec, inv_spec, inv_type_spec;
+
+    account_spec = {
       tables: {'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}},
       where: ["account.enterprise_id=" + 101], // FIXME
     };
 
-    var inv_unit_spec = {
-      tables : {'inventory_unit': { columns: ["id", "text"] }}
+    inv_unit_spec = {
+      tables : {'inv_unit': { columns: ["id", "text"] }}
+    };
+
+    inv_group_spec = {
+      tables: {'inv_group': { columns: ['id', 'name', 'symbol', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']}}
+    };
+
+    inv_spec = {
+      tables: {'inventory': { columns: ['enterprise_id', 'id', 'code', 'text', 'price', 'group_id', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'stock_max', 'stock_min', 'consumable']}},
+      where: ["inventory.enterprise_id="+101]
+    };
+
+    inv_type_spec = {
+      tables: {'inv_type': { columns: ['id', 'text']}}
     };
 
     $q.all([
       data.register(account_spec),
-      data.register(inv_unit_spec)
+      data.register(inv_unit_spec),
+      data.register(inv_group_spec),
+      data.register(inv_type_spec),
+      data.register(inv_spec)
     ]).then(init);
 
+    var stores = {},
+      models = ['account', 'inv_unit', 'inv_group', 'inv_type', 'inventory'],
+      item;
+    $scope.models = {};
+    $scope.item = item = {};
+
     function init(arr) {
-      console.log("[inventory/register] Init fired!");
+      for (var i = 0, l = arr.length; i < l; i++) {
+        stores[models[i]] = arr[i];
+        $scope.models[models[i]] = arr[i].data;
+      }
+
+      console.log("[Inventory Register Controller]: Data Loaded!");
+
+      item.unit_weight = 0;
+      item.unit_volume = 0;
+      item.enterprise_id = 101; // FIXME:
     }
 
-    $scope.items = [1,2,3,4];
+    function reset () {
+      console.log("Called reset!");
+      $scope.item = item = {};
+      item.unit_weight = 0;
+      item.unit_volume = 0;
+    }
 
-    $scope.open = function () {
-      var instance = $modal.open({
-        templateUrl: "inventory_groups.html",
-        controller: function ($scope, $modalInstance, items) {
-          console.log("ITEMS:", items);
-          $scope.ok = function () {
-            console.log("Hi from modal");
-            return true;  
-          };
-        },
-        resolve: {
-          items: function () {
-            return $scope.items; 
+    $scope.submit = function () {
+      if ($scope.inventory.$valid) {
+        item.id = stores.inventory.generateid(); 
+        stores.inventory.put(item);
+        stores.inventory.sync();
+        reset();
+      } else {
+        for (var k in $scope.inventory) {
+          if ($scope.inventory[k].$invalid) {
+            $scope.invalid[k] = "true"; 
+            // TODO: make css classes depend on this. Color
+            // red for error on each input if $invalid.
           } 
         }
-      });
-
-      instance.result.then(function (item) {
-        console.log("Hi!");
-      });
+      }
     };
 
-    $scope.validate = function() {
-      $scope.validated = true; 
-    };
-
-    $scope.item = {};
-
-    $scope.label = function(obj) {
-      return obj.id + " - " + obj.account_txt;
+    $scope.reset = function () {
+      reset(); 
     };
 
   });
