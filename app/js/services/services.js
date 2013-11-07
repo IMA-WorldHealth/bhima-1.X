@@ -86,18 +86,40 @@
 
   services.factory('appnotify', function($q, $timeout) {
 
+//    Allows for multiple notifications - if that's your thing
+//    var notifications = [];
+    var notification = [];
+
+    var default_timeout = 3000;
+
     function init() {
 //    initialise session variables etc.
     }
 
     function setNotification(type, header, body, delay) {
-
+//      only one notification allowed at this time
+      notification.pop();
+      notification.push({'type' : type, 'header' : header, 'body' : body, 'delay' : delay});
+      var handle = $timeout(clearAll, default_timeout);
     }
+
+    function clearAll() {
+      notification.pop();
+    }
+
+    /*function registerDisplay()
+    *   summary
+    *     Any controller can register as a notification display - a callback would be registered
+    *     for every time an update is made to notification state
+    */
 
     init();
 
     return {
-      setNotification : setNotification
+//      Is it a good idea to expose this?
+      notification : notification,
+      setNotification : setNotification,
+      clearAll : clearAll
     }
   });
 

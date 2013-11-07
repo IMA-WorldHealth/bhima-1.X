@@ -425,7 +425,8 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (32, 'Essaie journal', 'essaie journal', 17, 0, '/partials/vente','/essaie'),
   (33, 'Patient Records', 'Search for patient', 21, 0, '/partials/patient_records/', 'patient_records/'),
   (34, 'Sales', 'Create an invoice for a sale', 5, 0, '/partials/sales', 'sales'),
-  (35, 'Sale Records', 'Search for a sale', 5, 0, '/partials/sale_records/', 'sale_records/');
+  (35, 'Sale Records', 'Search for a sale', 5, 0, '/partials/sale_records/', 'sale_records/'),
+  (36, 'Purchase Order', 'Create a new Purchase Order', 11, 0, 'partials/inventory_purchase_order', 'inventory/purchase');
 -- 
 -- table `bika`.`permission`
 --
@@ -457,7 +458,8 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (15, 31, 13),
     (16, 34, 13),
     (17, 35, 13),
-    (18, 33, 13);
+    (18, 33, 13),
+    (19, 36, 13);
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (

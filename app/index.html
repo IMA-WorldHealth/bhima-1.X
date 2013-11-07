@@ -59,15 +59,18 @@
     <div id="bika-notify" ng-controller="notifyController" ng-cloak>
       <!--Content populated with appnotify service-->
 
-      <div class="notification" ng-show="isNote">
+      <div class="notification animate-show" ng-show="notification[0]" ng-cloak>
         <div class="content">
+
+          <!--Display a single notification by default - use custom directive for multiple-->
         <button ng-click="removeNotification()" type="button" class="close" aria-hidden="true">&times;</button>
-        <h3><span id="notify-icon"> <!--class="glyphicon glyphicon-thumbs-down"--></span> This could be a notification</h3>
+        <h3><span id="notify-icon"><!--class="glyphicon glyphicon-thumbs-down"--></span>{{notification[0].body}}</h3>
       </div>
       </div>
     </div>
 
   </div>
+</div>
 
 
   <!-- required for ng-grid -->
