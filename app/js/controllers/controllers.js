@@ -1738,7 +1738,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
 
-  controllers.controller('inventoryRegisterController', function ($scope, data, $q) {
+  controllers.controller('inventoryRegisterController', function ($scope, data, $q, $modal) {
 
     var account_spec, inv_unit_spec, inv_group_spec, inv_spec, inv_type_spec;
 
@@ -1813,6 +1813,79 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           } 
         }
       }
+    };
+
+    $scope.logStore = function () {
+      console.log(stores.inv_group.data); 
+    };
+
+    // New Type Instance Modal/Controller
+    $scope.newUnitType = function () {
+      var instance = $modal.open({
+        templateUrl: 'unitmodal.html',
+        controller: function($scope, $modalInstance, unitStore) {
+          var unit = $scope.unit = {};
+          
+
+          $scope.submit = function () {
+            // validate
+            $scope.unit.id = unitStore.generateid();
+            if (unit.text) {
+              // process
+              var text = unit.text.toLowerCase();
+              text = text[0].toUpperCase() + text.slice(1);
+              unit.text = text;
+              unitStore.put(unit);
+              $modalInstance.close();
+            }
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss(); 
+          };
+
+        },
+        resolve: {
+          unitStore: function() { return stores.inv_unit; }
+        }
+      });
+
+      instance.result.then(function () {
+        console.log("Submitted Successfully.");
+      }, function () {
+        console.log("Closed Successfully."); 
+      });
+    };
+
+    $scope.newInventoryGroup = function () {
+      var instance = $modal.open({
+        templateUrl: "inventorygroupmodal.html",
+        controller: function ($scope, $modalInstance, groupStore, accountModel) {
+          var group = $scope.group = {};
+          $scope.accounts = accountModel;
+
+          $scope.submit = function () {
+            group.id = groupStore.generateid();
+            groupStore.put(group);
+            $modalInstance.close();
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss(); 
+          };
+
+        },
+        resolve: {
+          groupStore: function () { return stores.inv_group; },
+          accountModel: function () { return $scope.models.account; }
+        }
+      });
+
+      instance.result.then(function () {
+        console.log("Submitted Successfully.");
+      }, function () {
+        console.log("Closed Successfully."); 
+      });
     };
 
     $scope.reset = function () {
