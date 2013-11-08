@@ -2237,7 +2237,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
   $scope.purchase_order = {payable: "false"};
 
-  var inventory_request = connect.req('inventory', ['id', 'inv_code', 'text', 'price']);
+  var inventory_request = connect.req('inventory', ['id', 'code', 'text', 'price', 'type_id'], 'type_id', 0);
   var sales_request = connect.req('sale', ['id']);
 
   var creditor_query = {
@@ -2294,9 +2294,17 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   }
 
   $scope.updateItem = function(item) {
-    if(!item.quantity) item.quantity = 1;
-    item.text = item.item.text;
-    item.price = item.item.price;
+
+    if(item.item) {
+      if(!item.quantity) item.quantity = 1;
+      item.text = item.item.text;
+      item.price = item.item.price;
+    } else {
+//      Reset
+      item.text = "";
+      item.price = "";
+      item.quantity = "";
+    }
   }
 
   $scope.updateInventory = function() {
