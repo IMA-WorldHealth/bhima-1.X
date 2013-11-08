@@ -89,8 +89,9 @@
 //    Allows for multiple notifications - if that's your thing
 //    var notifications = [];
     var notification = [];
-
-    var default_timeout = 3000;
+//    FIXME This is horrible - CSS styles should be applied conditioanally with ng-class
+    var style = ["notification-success"];
+    var timeout = 3000;
 
     function init() {
 //    initialise session variables etc.
@@ -98,9 +99,11 @@
 
     function setNotification(type, header, body, delay) {
 //      only one notification allowed at this time
+      if(delay) timeout = delay;
+      if(type) style[0] = "notification-" + type;
       notification.pop();
       notification.push({'type' : type, 'header' : header, 'body' : body, 'delay' : delay});
-      var handle = $timeout(clearAll, default_timeout);
+      var handle = $timeout(clearAll, timeout);
     }
 
     function clearAll() {
@@ -119,7 +122,8 @@
 //      Is it a good idea to expose this?
       notification : notification,
       setNotification : setNotification,
-      clearAll : clearAll
+      clearAll : clearAll,
+      style: style
     }
   });
 

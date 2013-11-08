@@ -2218,11 +2218,13 @@ controllers.controller('notifyController', function($scope, $q, appnotify) {
 
 //  Notify controller must watch the model from the service and display accordingly
   $scope.notification = appnotify.notification;
+  $scope.style = appnotify.style[0];
 
   $scope.removeNotification = function() {
 //    Would need to remove with ID for multiple notifications
     appnotify.clearAll();
   }
+
 });
 
 controllers.controller('purchaseOrderController', function($scope, $q, connect, appstate, appnotify) {
@@ -2260,6 +2262,11 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   var user_request = connect.basicGet("user_session");
 
   function init() {
+
+    $scope.inventory = [];
+    $scope.purchase_order.payable = "false";
+    $scope.creditor = "";
+
     $q.all([
       inventory_request,
       sales_request,
@@ -2359,6 +2366,9 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
             .then(function(res) {
               console.log("Purchase order successfully generated", res);
 //              Navigate to Purchase Order review || Reset form
+//              Reset form
+                init();
+
             });
         }
       });
