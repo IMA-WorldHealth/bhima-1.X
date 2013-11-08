@@ -5916,6 +5916,7 @@ CREATE TABLE `sale` (
   CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`)
 ) ENGINE=InnoDB;
 
+
 -- INSERT INTO `sale` (`enterprise_id`, `id`, `cost`, `currency`, `debitor_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`) VALUES 
 --  (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02','A NEW SALE', 0);
 
@@ -6100,6 +6101,7 @@ CREATE TABLE `sale_item` (
   CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB;
 
+
 --
 -- table `bika`.`journal`
 --
@@ -6202,3 +6204,42 @@ CREATE  TABLE `bika`.`creditor` (
   CONSTRAINT FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    )ENGINE = InnoDB;
+
+
+
+DROP TABLE IF EXISTS `purchase`;
+CREATE TABLE `purchase` (
+  `id` int(11) unsigned NOT NULL,
+  `enterprise_id` smallint unsigned not null,
+  `cost` int(10) unsigned NOT NULL DEFAULT '0',
+  `currency` varchar(3) NOT NULL,
+  `creditor_id` int NOT NULL,
+  `purchaser_id`  smallint unsigned NOT NULL,
+  `discount` mediumint(8) unsigned DEFAULT '0',
+  `invoice_date` date NOT NULL,
+  `note` text,
+  `posted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `creditor_id` (`creditor_id`),
+  KEY `purchaser_id` (`purchaser_id`),
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`),
+  CONSTRAINT FOREIGN KEY (`purchaser_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB;
+
+
+DROP TABLE IF EXISTS `purchase_item`;
+CREATE TABLE `purchase_item` (
+  purchase_id         int unsigned not null,
+  id              int unsigned not null AUTO_INCREMENT,
+  inventory_id    int unsigned not null,
+  quantity        int unsigned default '0',
+  unit_price      int unsigned not null, -- This is duplicated from inventory, but allows for prices to change etc.
+  total           int unsigned, -- Probably don't need to keep track of total - enables much less processing
+  PRIMARY KEY(`id`),
+  KEY `purchase_id` (`purchase_id`),
+  KEY `inventory_id` (`inventory_id`),
+  CONSTRAINT FOREIGN KEY (`purchase_id`) REFERENCES `purchase` (`id`) ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
+) ENGINE=InnoDB;

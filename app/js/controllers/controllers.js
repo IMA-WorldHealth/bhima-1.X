@@ -2225,7 +2225,7 @@ controllers.controller('notifyController', function($scope, $q, appnotify) {
   }
 });
 
-controllers.controller('purchaseOrderController', function($scope, $q, connect, appnotify) {
+controllers.controller('purchaseOrderController', function($scope, $q, connect, appstate, appnotify) {
   console.log("Inventory invoice initialised");
 
 //  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
@@ -2246,7 +2246,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       c : ['id', 'name', 'country_id', 'account_id']
     }, {
       t : 'location',
-      c : ['id', 'city', 'region', 'country_code']
+      c : ['city', 'region', 'country_code']
     }],
     'jc' : [{
       ts : ['location', 'creditor'],
@@ -2269,6 +2269,8 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       $scope.sales_model = a[1];
       $scope.creditor_model = a[2];
       $scope.verify = a[3].data.id;
+
+      console.log($scope.creditor_model);
 
       var invoice_id = createId($scope.sales_model.data);
       $scope.invoice_id = invoice_id;
@@ -2305,7 +2307,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       id : $scope.invoice_id,
       cost : t,
       currency : 'USD', // FIXME
-      creditor_id : $scope.creditor_id,
+      creditor_id : $scope.creditor.id,
       invoice_date : $scope.sale_date,
       purchaser_id : $scope.verify,
       note : $scope.formatText(),
@@ -2330,27 +2332,31 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       }
       console.log("Generating sale item for ", item);
 
-      promise_arr.push(connect.basicPut('purchase_item', [format_item]));
+//      promise_arr.push(connect.basicPut('purchase_item', [format_item]));
     });
 
     $q.all(promise_arr).then(function(res) { deferred.resolve(res)});
+    deferred.resolve();
     return deferred.promise;
   }
 
   $scope.submitPurchase = function() {
     var purchase = formatInvoice();
 
-    connect.basicPut('purchase', [purchase])
-      .then(function(res) {
-        if(res.status==200) {
+    console.log("Posting", purchase, "to 'purchase table");
+
+//    connect.basicPut('purchase', [purchase])
+//      .then(function(res) {
+//        if(res.status==200) {
           var promise = generateItems();
           promise
             .then(function(res) {
               console.log("Purchase order successfully generated", res);
 //              Navigate to Purchase Order review || Reset form
             });
-        }
-      });
+//            });
+//        }
+//      });
   }
 
   $scope.updateItem = function(item) {
