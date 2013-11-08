@@ -1,23 +1,23 @@
 // server.js
-var express         = require('express')
-  , db              = require('./lib/database/db')()
-  , queryHandler    = require('./lib/database/myQueryHandler')
-  , url             = require('url')
-  , auth            = require('./lib/auth')
-  , um              = require('./lib/util/userManager')
-  , jr              = require('./lib/logic/journal')
-  , ws              = require("./lib/ws/ws")({}) // This is the socket server
-  , app             = express();
+var express      = require('express')
+  , fs           = require('fs')
+  , queryHandler = require('./lib/database/myQueryHandler')
+  , url          = require('url')
+  , cfg          = JSON.parse(fs.readFileSync("scripts/config.json"))
+  , db           = require('./lib/database/db')(cfg.db)
+  , auth         = require('./lib/auth')(db)
+  , um           = require('./lib/util/userManager')
+  , jr           = require('./lib/logic/journal')
+  , ws           = require("./lib/ws/ws")(db)
+  , app          = express();
 
-app.set('env', 'production'); // Change this to change application behavior
-
-app.configure('production', function () {
+app.configure(function () {
   app.use(express.compress());
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
-  app.use(express.session({secret: 'open blowfish', cookie: {httpOnly: false}}));
+  app.use(express.session(cfg.session));
   app.use(auth);
-  app.use(express.static('app'));
+  app.use(express.static(cfg.static));
   app.use(app.router);
 });
 
@@ -77,14 +77,12 @@ app.delete('/data/:id/:table', function(req, res){
   console.log('delete appele',req.params.id);
   var deleteSql = db.delete(req.params.table, {id:[req.params.id]});//{id:[selectedUserId]}
   console.log(deleteSql);
-
-
 });
 
 //TODO Server should set user details like this in a non-editable cookie
 app.get('/user_session', function(req, res, next) {
   res.send({id: req.session.user_id});
-})
+});
 
 app.get('/tree', function(req, res, next) {
   um.manageUser(req, res, next);
@@ -96,7 +94,6 @@ app.post('/journal', function(req, res) {
 
 app.post('/gl', function(req, res) {
   console.log('ok', req.body);
- 
 });
 
 app.get('/journal', function(req,res){
@@ -120,6 +117,4 @@ app.get('/journal', function(req,res){
   db.execute(sql, cb);  
 });
 
-
-
-app.listen(8080, console.log('Environment:', app.get('env'), "/angularproto:8080"));
+app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));

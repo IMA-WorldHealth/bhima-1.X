@@ -1,16 +1,16 @@
 var WebSocketServer = require('ws').Server,
     ws              = new WebSocketServer({port: 8000}),
-    db              = require('../database/db')(),
     composer        = require('./composer'),
     data            = require('./data.js');
-
 
 // helper functions
 function serialize(json) { return JSON.stringify(json); }
 function deserialize(json) { return JSON.parse(json); }
 
-module.exports = (function init (cfg) {
+module.exports = (function (db, cfg) {
   'use strict';
+
+  cfg = cfg || {};
 
   var store = new data.Store(), // idProperty: 'id'
       namespaces = {},          // {'table': [{},{},..]} maps to socket ids
