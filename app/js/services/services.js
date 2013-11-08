@@ -52,6 +52,10 @@
   this.update = function(objectRequest) { 
     $http.put('data/',objectRequest);
   };
+
+  this.delete = function(table, id) { 
+    $http.delete('data/'+id+'/'+table);
+  };
   });
 
   services.service('bikaUtilitaire', function() { 
