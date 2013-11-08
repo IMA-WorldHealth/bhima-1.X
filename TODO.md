@@ -16,3 +16,8 @@
 * Have a service that holds the current user information
 Ask Manunga how the accounting works in the hospital.
  - How billing of patients in beds in hospital wards takes place.
+
+* Pick one: sockets or http
+* Migrate to using grunt for building
+* Serve static content from a cookieless domains.
+* 
