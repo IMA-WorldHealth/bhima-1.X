@@ -12,6 +12,7 @@ var express         = require('express')
 app.set('env', 'production'); // Change this to change application behavior
 
 app.configure('production', function () {
+  app.use(express.compress());
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
   app.use(express.session({secret: 'open blowfish', cookie: {httpOnly: false}}));
