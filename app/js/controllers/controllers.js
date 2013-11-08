@@ -2238,7 +2238,9 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   $scope.purchase_order = {payable: "false"};
 
   var inventory_request = connect.req('inventory', ['id', 'code', 'text', 'price', 'type_id'], 'type_id', 0);
+
   var sales_request = connect.req('sale', ['id']);
+  var purchase_request = connect.req('purchase', ['id']);
 
   var creditor_query = {
     'e' : [{
@@ -2261,18 +2263,23 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     $q.all([
       inventory_request,
       sales_request,
+      purchase_request,
       creditor_request,
       user_request
 
     ]).then(function(a) {
       $scope.inventory_model = a[0];
       $scope.sales_model = a[1];
-      $scope.creditor_model = a[2];
-      $scope.verify = a[3].data.id;
+      $scope.purchase_model = a[2];
+      $scope.creditor_model = a[3];
+      $scope.verify = a[4].data.id;
 
-      console.log($scope.creditor_model);
+      console.log($scope.verify, a[4]);
+//      Raw hacks - #sorry, these might be the same entity anyway
+//      TODO use SQL to determine highest ID - NOT pulling down all ids and manually parsing
+      var ids = $scope.sales_model.data.concat($scope.purchase_model.data);
 
-      var invoice_id = createId($scope.sales_model.data);
+      var invoice_id = createId(ids);
       $scope.invoice_id = invoice_id;
     });
   }
@@ -2324,7 +2331,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     //iterate through invoice items and create an entry to sale_item
     $scope.inventory.forEach(function(item) {
       var format_item = {
-        sale_id : $scope.invoice_id,
+        purchase_id : $scope.invoice_id,
         inventory_id : item.item.id,
         quantity : item.quantity,
         unit_price : item.price,
@@ -2332,11 +2339,10 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       }
       console.log("Generating sale item for ", item);
 
-//      promise_arr.push(connect.basicPut('purchase_item', [format_item]));
+      promise_arr.push(connect.basicPut('purchase_item', [format_item]));
     });
 
     $q.all(promise_arr).then(function(res) { deferred.resolve(res)});
-    deferred.resolve();
     return deferred.promise;
   }
 
@@ -2345,18 +2351,17 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
     console.log("Posting", purchase, "to 'purchase table");
 
-//    connect.basicPut('purchase', [purchase])
-//      .then(function(res) {
-//        if(res.status==200) {
+    connect.basicPut('purchase', [purchase])
+      .then(function(res) {
+        if(res.status==200) {
           var promise = generateItems();
           promise
             .then(function(res) {
               console.log("Purchase order successfully generated", res);
 //              Navigate to Purchase Order review || Reset form
             });
-//            });
-//        }
-//      });
+        }
+      });
   }
 
   $scope.updateItem = function(item) {
