@@ -1,17 +1,18 @@
 // server.js
 var express         = require('express')
-  , db              = require('./lib/database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}})
+  , db              = require('./lib/database/db')()
   , queryHandler    = require('./lib/database/myQueryHandler')
   , url             = require('url')
   , auth            = require('./lib/auth')
   , um              = require('./lib/util/userManager')
   , jr              = require('./lib/logic/journal')
-  , ws              = require("./lib/ws/ws") // This is the socket server
+  , ws              = require("./lib/ws/ws")({}) // This is the socket server
   , app             = express();
 
 app.set('env', 'production'); // Change this to change application behavior
 
 app.configure('production', function () {
+  app.use(express.compress());
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
   app.use(express.session({secret: 'open blowfish', cookie: {httpOnly: false}}));
@@ -70,6 +71,14 @@ app.post('/data/', function (req, res) {
   var insertsql = db.insert(req.body.t, req.body.data);
   console.log(insertsql);
   db.execute(insertsql, cb);
+});
+
+app.delete('/data/:id/:table', function(req, res){
+  console.log('delete appele',req.params.id);
+  var deleteSql = db.delete(req.params.table, {id:[req.params.id]});//{id:[selectedUserId]}
+  console.log(deleteSql);
+
+
 });
 
 //TODO Server should set user details like this in a non-editable cookie
