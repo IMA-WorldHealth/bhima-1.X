@@ -6,9 +6,9 @@
       Actions <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-      <li><a href=""><i class="glyphicon glyphicon-barcode"></i>Add Inventory Group</a></li>
-      <li><a href=""><i class="glyphicon glyphicon-tags"></i>Add Price Group</a></li>
-      <li><a href=""><i class="glyphicon glyphicon-list-alt"></i>Add Unit Type</a></li>
+      <li><a href="" ng-click="newInventoryGroup()"><i class="glyphicon glyphicon-barcode"></i>Add Inventory Group</a></li>
+      <li><a href=""><i class="glyphicon glyphicon-tags"></i>Add Price List</a></li>
+      <li><a href="" ng-click="newUnitType()"><i class="glyphicon glyphicon-list-alt"></i>Add Unit Type</a></li>
     </ul>
   </div>
 </header>
@@ -183,8 +183,124 @@
       <div>
         <input type="submit" class="btn btn-default" ng-click="submit()" ng-disabled="inventory.$invalid">
         <input type="reset" class="btn btn-default" ng-click="reset()" ng-disabled="inventory.$invalid">
+        <button class="btn btn-default" ng-click="logStore()">Log</button>
       </div>
     </div>
   </form>
+
+  <!-- Unit Modal -->
+  <script type="text/ng-template" id="unitmodal.html">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Unit Type</h3>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" name="addUnit" novalidate>
+          <div class="form-group">
+            <label class="col-xs-2 control-label" for="unit-text">New Unit:</label>
+            <div class="col-xs-10">
+              <input 
+                id="unit-text"
+                class="form-control"
+                placeholder="e.g. 'Box'"
+                ng-model="unit.text"
+              >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="discard()">Discard</button>
+        <button type="button" class="btn btn-default" ng-click="submit()">Save changes</button>
+      </div>
+    </div>
+  </script>
+
+  <!-- Inventory Group Modal -->
+  <script type="text/ng-template" id="inventorygroupmodal.html">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Inventory Group</h3>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" name="addInventoryGroup" novalidate>
+          <div class="form-group">
+            <label class="col-xs-2 control-label" for="group-name">Name:</label>
+            <div class="col-xs-8">
+              <input 
+                id="group-name"
+                class="form-control"
+                placeholder="e.g. Products"
+                ng-model="group.name"
+                required
+              >
+            </div>
+            <div class="col-xs-2">
+              <input 
+                id="group-name"
+                class="form-control"
+                placeholder="Symbol"
+                ng-model="group.symbol"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label" for="group-sales-account">Sales Account:</label>
+            <div class="col-xs-10">
+              <select
+                id="group-sales-account"
+                class="form-control"
+                ng-model="group.sales_account"
+                ng-options="account.id as account.id for account in accounts"
+                required
+              ></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label" for="group-cogs-account">COGS Account:</label>
+            <div class="col-xs-10">
+              <select
+                id="group-cogs-account"
+                class="form-control"
+                ng-model="group.cogs_account"
+                ng-options="account.id as account.id for account in accounts"
+              ></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label" for="group-stock-account">Stock Account:</label>
+            <div class="col-xs-10">
+              <select
+                id="group-stock-account"
+                class="form-control"
+                ng-model="group.stock_account"
+                ng-options="account.id as account.id for account in accounts"
+              ></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label" for="group-tax-account">Tax Account:</label>
+            <div class="col-xs-10">
+              <select
+                id="group-tax-account"
+                class="form-control"
+                ng-model="group.tax_account"
+                ng-options="account.id as account.id for account in accounts"
+              ></select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="discard()">Discard</button>
+        <button type="button" class="btn btn-default" ng-click="submit()">Save changes</button>
+      </div>
+    </div>
+  </script>
+
 <!-- </container> -->
 </div>
