@@ -69,20 +69,17 @@
 .notification {
   color: #ffffff;
   padding: 10px;
-  background: #ffffff;
-  border-top: 2px solid;
-  /*border-top: 1px solid #d43f3a;*/
+  background: #d9534f;
+  border-top: 1px solid #d43f3a;
+}
 
-.notification-error {
-  background-color: red;
-  color: white;
-  border-color: darkred;
-}
+/*
 .notification-success {
-  background-color: green;
-  color: white:
-  border-color: black;
+
 }
+etc.
+*/
+
 
 #bika-notify .notify-icon{
   float: left;
