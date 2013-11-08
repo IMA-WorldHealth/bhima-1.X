@@ -2293,6 +2293,66 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     return search_max + 1;
   }
 
+  function formatInvoice() {
+    var t = 0;
+    for(var i= 0, l = $scope.inventory.length; i < l; i++) {
+      t += $scope.inventory[i].quantity * $scope.inventory[i].price;
+    }
+//    verify total
+
+    var format = {
+      enterprise_id : appstate.get("enterprise").id, //Not async safe - may return null
+      id : $scope.invoice_id,
+      cost : t,
+      currency : 'USD', // FIXME
+      creditor_id : $scope.creditor_id,
+      invoice_date : $scope.sale_date,
+      purchaser_id : $scope.verify,
+      note : $scope.formatText(),
+      posted : '0'
+    }
+//    verify format
+    return format;
+  }
+
+  function generateItems() {
+    var deferred = $q.defer();
+    var promise_arr = [];
+
+    //iterate through invoice items and create an entry to sale_item
+    $scope.inventory.forEach(function(item) {
+      var format_item = {
+        sale_id : $scope.invoice_id,
+        inventory_id : item.item.id,
+        quantity : item.quantity,
+        unit_price : item.price,
+        total : item.quantity * item.price
+      }
+      console.log("Generating sale item for ", item);
+
+      promise_arr.push(connect.basicPut('purchase_item', [format_item]));
+    });
+
+    $q.all(promise_arr).then(function(res) { deferred.resolve(res)});
+    return deferred.promise;
+  }
+
+  $scope.submitPurchase = function() {
+    var purchase = formatInvoice();
+
+    connect.basicPut('purchase', [purchase])
+      .then(function(res) {
+        if(res.status==200) {
+          var promise = generateItems();
+          promise
+            .then(function(res) {
+              console.log("Purchase order successfully generated", res);
+//              Navigate to Purchase Order review || Reset form
+            });
+        }
+      });
+  }
+
   $scope.updateItem = function(item) {
 
     if(item.item) {
