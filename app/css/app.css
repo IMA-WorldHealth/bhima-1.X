@@ -60,6 +60,38 @@
   overflow: auto;
 }
 
+#bika-notify {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.notification {
+  color: #ffffff;
+  padding: 10px;
+  background: #ffffff;
+  border-top: 2px solid;
+  /*border-top: 1px solid #d43f3a;*/
+
+.notification-error {
+  background-color: red;
+  color: white;
+  border-color: darkred;
+}
+.notification-success {
+  background-color: green;
+  color: white:
+  border-color: black;
+}
+
+#bika-notify .notify-icon{
+  float: left;
+}
+
+#bika-notify h3 {
+
+}
+
 #bika-view { 
   /*
   Idea being to seperate the view (unit) and outside, can't figure this out

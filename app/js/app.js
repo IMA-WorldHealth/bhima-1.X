@@ -67,7 +67,7 @@
       templateUrl: '/partials/cash/review/index.html' 
     }).
     when('/inventory/purchase', {
-      controller: 'invInvController',
+      controller: 'purchaseOrderController',
       templateUrl: 'partials/inventory_invoice/index.html'
     });
   }  
