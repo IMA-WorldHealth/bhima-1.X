@@ -2304,6 +2304,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   console.log("Inventory invoice initialised");
 
 //  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
+//  FIXME Resetting the form maintains the old invoice ID - this causes a unique ID error, resolve this
   $scope.sale_date = getDate();
   $scope.inventory = [];
 
@@ -2360,6 +2361,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       var ids = $scope.sales_model.data.concat($scope.purchase_model.data);
 
       var invoice_id = createId(ids);
+        console.log("got new ID", invoice_id);
       $scope.invoice_id = invoice_id;
     });
   }
@@ -2438,6 +2440,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
           promise
             .then(function(res) {
               console.log("Purchase order successfully generated", res);
+              appnotify.setNotification("error", "tilte", "Purchase order generated - link", 3000);
 //              Navigate to Purchase Order review || Reset form
 //              Reset form
                 init();
