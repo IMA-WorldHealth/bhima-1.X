@@ -65,6 +65,10 @@
     when('/cash/review/:id', {
       controller: 'cashReviewController',
       templateUrl: '/partials/cash/review/index.html' 
+    }).
+    when('/inventory/purchase', {
+      controller: 'purchaseOrderController',
+      templateUrl: 'partials/inventory_invoice/index.html'
     });
   }  
   bika.config(bikaconfig);

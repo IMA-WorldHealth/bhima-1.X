@@ -786,7 +786,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('salesController', function($scope, $q, $location, connect, appstate) { 
+  controllers.controller('salesController', function($scope, $q, $location, connect, appstate) {
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
@@ -806,18 +806,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //cache location table to look up debitor details
     //var location_request = connect.req('location', ['id', 'city', 'region', 'country_code']);
 
-    var debtor_query = { 
-      'e' : [{
-        t : 'patient',
-        c : ['debitor_id', 'first_name', 'last_name', 'location_id']
-      }, { 
-        t : 'location',
-        c : ['id', 'city', 'region', 'country_code']
-      }],
-      'jc' : [{
-        ts : ['patient', 'location'],
-        c : ['location_id', 'id']
-      }]
+    var debtor_query = {
+        'e' : [{
+          t : 'patient',
+          c : ['debitor_id', 'first_name', 'last_name', 'location_id']
+        }, {
+          t : 'location',
+          c : ['id', 'city', 'region', 'country_code']
+        }],
+        'jc' : [{
+          ts : ['patient', 'location'],
+          c : ['location_id', 'id']
+        }]
     };
 
     var debtor_request = connect.basicReq(debtor_query);
@@ -857,7 +857,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //TODOSET
       if(search_max.id) search_max = search_max.id;
       return search_max + 1;
-      //return list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)}).id + 1;
     }
 
     function getDate() { 
@@ -970,7 +969,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return false;
     };
 
-    $scope.formatDebtor = function(debtor) { 
+    $scope.formatDebtor = function(debtor) {
       return "[" + debtor.debitor_id + "] " + debtor.first_name + " " + debtor.last_name;
     }
 
@@ -1738,7 +1737,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
 
-  controllers.controller('inventoryRegisterController', function ($scope, data, $q) {
+  controllers.controller('inventoryRegisterController', function ($scope, data, $q, $modal) {
 
     var account_spec, inv_unit_spec, inv_group_spec, inv_spec, inv_type_spec;
 
@@ -1813,6 +1812,79 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           } 
         }
       }
+    };
+
+    $scope.logStore = function () {
+      console.log(stores.inv_group.data); 
+    };
+
+    // New Type Instance Modal/Controller
+    $scope.newUnitType = function () {
+      var instance = $modal.open({
+        templateUrl: 'unitmodal.html',
+        controller: function($scope, $modalInstance, unitStore) {
+          var unit = $scope.unit = {};
+          
+
+          $scope.submit = function () {
+            // validate
+            $scope.unit.id = unitStore.generateid();
+            if (unit.text) {
+              // process
+              var text = unit.text.toLowerCase();
+              text = text[0].toUpperCase() + text.slice(1);
+              unit.text = text;
+              unitStore.put(unit);
+              $modalInstance.close();
+            }
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss(); 
+          };
+
+        },
+        resolve: {
+          unitStore: function() { return stores.inv_unit; }
+        }
+      });
+
+      instance.result.then(function () {
+        console.log("Submitted Successfully.");
+      }, function () {
+        console.log("Closed Successfully."); 
+      });
+    };
+
+    $scope.newInventoryGroup = function () {
+      var instance = $modal.open({
+        templateUrl: "inventorygroupmodal.html",
+        controller: function ($scope, $modalInstance, groupStore, accountModel) {
+          var group = $scope.group = {};
+          $scope.accounts = accountModel;
+
+          $scope.submit = function () {
+            group.id = groupStore.generateid();
+            groupStore.put(group);
+            $modalInstance.close();
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss(); 
+          };
+
+        },
+        resolve: {
+          groupStore: function () { return stores.inv_group; },
+          accountModel: function () { return $scope.models.account; }
+        }
+      });
+
+      instance.result.then(function () {
+        console.log("Submitted Successfully.");
+      }, function () {
+        console.log("Closed Successfully."); 
+      });
     };
 
     $scope.reset = function () {
@@ -2211,5 +2283,235 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
 
   }
  });
+
+controllers.controller('notifyController', function($scope, $q, appnotify) {
+  /*summary
+  *   Displays the model for any notification pushed to the appnotify service
+  */
+  console.log("notify controller initialised");
+
+//  Notify controller must watch the model from the service and display accordingly
+  $scope.notification = appnotify.notification;
+  $scope.style = appnotify.style[0];
+
+  $scope.removeNotification = function() {
+//    Would need to remove with ID for multiple notifications
+    appnotify.clearAll();
+  }
+
+});
+
+controllers.controller('purchaseOrderController', function($scope, $q, connect, appstate, appnotify) {
+  console.log("Inventory invoice initialised");
+
+//  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
+//  FIXME Resetting the form maintains the old invoice ID - this causes a unique ID error, resolve this
+  $scope.sale_date = getDate();
+  $scope.inventory = [];
+
+  $scope.process = ["PO", "QUOTE"];
+  $scope.current_process = $scope.process[0];
+
+  $scope.purchase_order = {payable: "false"};
+
+  var inventory_request = connect.req('inventory', ['id', 'code', 'text', 'price', 'type_id'], 'type_id', 0);
+
+  var sales_request = connect.req('sale', ['id']);
+  var purchase_request = connect.req('purchase', ['id']);
+
+  var creditor_query = {
+    'e' : [{
+      t : 'creditor',
+      c : ['id', 'name', 'country_id', 'account_id']
+    }, {
+      t : 'location',
+      c : ['city', 'region', 'country_code']
+    }],
+    'jc' : [{
+      ts : ['location', 'creditor'],
+      c : [ 'id', 'country_id']
+    }]
+  };
+
+  var creditor_request = connect.basicReq(creditor_query);
+  var user_request = connect.basicGet("user_session");
+
+  function init() {
+
+    $scope.inventory = [];
+    $scope.purchase_order.payable = "false";
+    $scope.creditor = "";
+
+    $q.all([
+      inventory_request,
+      sales_request,
+      purchase_request,
+      creditor_request,
+      user_request
+
+    ]).then(function(a) {
+      $scope.inventory_model = a[0];
+      $scope.sales_model = a[1];
+      $scope.purchase_model = a[2];
+      $scope.creditor_model = a[3];
+      $scope.verify = a[4].data.id;
+
+      console.log($scope.verify, a[4]);
+//      Raw hacks - #sorry, these might be the same entity anyway
+//      TODO use SQL to determine highest ID - NOT pulling down all ids and manually parsing
+      var ids = $scope.sales_model.data.concat($scope.purchase_model.data);
+
+      var invoice_id = createId(ids);
+        console.log("got new ID", invoice_id);
+      $scope.invoice_id = invoice_id;
+    });
+  }
+
+  function getDate() {
+    //Format the current date according to RFC3339 (for HTML input[type=="date"])
+    var now = new Date();
+    return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + ('0' + now.getDate()).slice(-2);
+  }
+
+  //FIXME Shouldn't need to download every all invoices in this module, only take top few?
+  function createId(list) {
+    var default_id = 100000;
+    if(list.length < 1) return default_id; //No invoices have been created
+    console.log("Sales list", list);
+    var search_max = list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
+    //reduce returns an object if only one element is in the array for some reason
+    //TODOSET
+    if(search_max.id) search_max = search_max.id;
+    return search_max + 1;
+  }
+
+  function formatInvoice() {
+    var t = 0;
+    for(var i= 0, l = $scope.inventory.length; i < l; i++) {
+      t += $scope.inventory[i].quantity * $scope.inventory[i].price;
+    }
+//    verify total
+
+    var format = {
+      enterprise_id : appstate.get("enterprise").id, //Not async safe - may return null
+      id : $scope.invoice_id,
+      cost : t,
+      currency : 'USD', // FIXME
+      creditor_id : $scope.creditor.id,
+      invoice_date : $scope.sale_date,
+      purchaser_id : $scope.verify,
+      note : $scope.formatText(),
+      posted : '0'
+    }
+//    verify format
+    return format;
+  }
+
+  function generateItems() {
+    var deferred = $q.defer();
+    var promise_arr = [];
+
+    //iterate through invoice items and create an entry to sale_item
+    $scope.inventory.forEach(function(item) {
+      var format_item = {
+        purchase_id : $scope.invoice_id,
+        inventory_id : item.item.id,
+        quantity : item.quantity,
+        unit_price : item.price,
+        total : item.quantity * item.price
+      }
+      console.log("Generating sale item for ", item);
+
+      promise_arr.push(connect.basicPut('purchase_item', [format_item]));
+    });
+
+    $q.all(promise_arr).then(function(res) { deferred.resolve(res)});
+    return deferred.promise;
+  }
+
+  $scope.submitPurchase = function() {
+    var purchase = formatInvoice();
+
+    console.log("Posting", purchase, "to 'purchase table");
+
+    connect.basicPut('purchase', [purchase])
+      .then(function(res) {
+        if(res.status==200) {
+          var promise = generateItems();
+          promise
+            .then(function(res) {
+              console.log("Purchase order successfully generated", res);
+              appnotify.setNotification("error", "tilte", "Purchase order generated - link", 3000);
+//              Navigate to Purchase Order review || Reset form
+//              Reset form
+                init();
+
+            });
+        }
+      });
+  }
+
+  $scope.updateItem = function(item) {
+
+    if(item.item) {
+      if(!item.quantity) item.quantity = 1;
+      item.text = item.item.text;
+      item.price = item.item.price;
+    } else {
+//      Reset
+      item.text = "";
+      item.price = "";
+      item.quantity = "";
+    }
+  }
+
+  $scope.updateInventory = function() {
+    $scope.inventory.push({});
+  }
+
+  $scope.formatText = function() {
+//      FIXME String functions within digest will take hours and years
+    var c = "PO " + $scope.invoice_id + "/" + $scope.sale_date;
+    if($scope.creditor) c += "/" + $scope.creditor.name + "/";
+    return c;
+  }
+
+
+
+//  Radio inputs only accept string true/false? boolean value as payable doesn't work
+  $scope.isPayable = function() {
+    if($scope.purchase_order.payable=="true") return true;
+    return false;
+  };
+
+  // FIXME Again - evaluated every digest, this is a bad thing
+  $scope.invoiceTotal = function() {
+    var total = 0;
+    $scope.inventory.forEach(function(item) {
+      if(item.quantity && item.price) {
+        //FIXME this could probably be calculated less somewhere else (only when they change)
+        total += (item.quantity * item.price);
+      }
+    });
+    return total;
+  }
+
+  $scope.itemsInInv = function() {
+    if($scope.inventory.length>0) return true;
+    return false;
+  }
+
+  $scope.select = function(index) {
+    $scope.current_process = $scope.process[index];
+  }
+
+  $scope.formatCreditor = function(creditor) {
+    return creditor.name;
+  }
+
+  init();
+
+
+});
 
 })(angular);

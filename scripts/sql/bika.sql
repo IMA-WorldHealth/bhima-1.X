@@ -425,7 +425,8 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (32, 'Essaie journal', 'essaie journal', 17, 0, '/partials/vente','/essaie'),
   (33, 'Patient Records', 'Search for patient', 21, 0, '/partials/patient_records/', 'patient_records/'),
   (34, 'Sales', 'Create an invoice for a sale', 5, 0, '/partials/sales', 'sales'),
-  (35, 'Sale Records', 'Search for a sale', 5, 0, '/partials/sale_records/', 'sale_records/');
+  (35, 'Sale Records', 'Search for a sale', 5, 0, '/partials/sale_records/', 'sale_records/'),
+  (36, 'Purchase Order', 'Create a new Purchase Order', 11, 0, 'partials/inventory_purchase_order', 'inventory/purchase');
 -- 
 -- table `bika`.`permission`
 --
@@ -457,7 +458,8 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (15, 31, 13),
     (16, 34, 13),
     (17, 35, 13),
-    (18, 33, 13);
+    (18, 33, 13),
+    (19, 36, 13);
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
@@ -5914,6 +5916,7 @@ CREATE TABLE `sale` (
   CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`)
 ) ENGINE=InnoDB;
 
+
 -- INSERT INTO `sale` (`enterprise_id`, `id`, `cost`, `currency`, `debitor_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`) VALUES 
 --  (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02','A NEW SALE', 0);
 
@@ -6098,6 +6101,7 @@ CREATE TABLE `sale_item` (
   CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB;
 
+
 --
 -- table `bika`.`journal`
 --
@@ -6219,6 +6223,39 @@ CREATE  TABLE `supplier` (
   CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    )ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS `purchase`;
+CREATE TABLE `purchase` (
+  `id` int(11) unsigned NOT NULL,
+  `enterprise_id` smallint unsigned not null,
+  `cost` int(10) unsigned NOT NULL DEFAULT '0',
+  `currency` varchar(3) NOT NULL,
+  `creditor_id` int NOT NULL,
+  `purchaser_id`  smallint unsigned NOT NULL,
+  `discount` mediumint(8) unsigned DEFAULT '0',
+  `invoice_date` date NOT NULL,
+  `note` text,
+  `posted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `enterprise_id` (`enterprise_id`),
+  KEY `creditor_id` (`creditor_id`),
+  KEY `purchaser_id` (`purchaser_id`),
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`),
+  CONSTRAINT FOREIGN KEY (`purchaser_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB;
 
 
-
+DROP TABLE IF EXISTS `purchase_item`;
+CREATE TABLE `purchase_item` (
+  purchase_id         int unsigned not null,
+  id              int unsigned not null AUTO_INCREMENT,
+  inventory_id    int unsigned not null,
+  quantity        int unsigned default '0',
+  unit_price      int unsigned not null, -- This is duplicated from inventory, but allows for prices to change etc.
+  total           int unsigned, -- Probably don't need to keep track of total - enables much less processing
+  PRIMARY KEY(`id`),
+  KEY `purchase_id` (`purchase_id`),
+  KEY `inventory_id` (`inventory_id`),
+  CONSTRAINT FOREIGN KEY (`purchase_id`) REFERENCES `purchase` (`id`) ON DELETE CASCADE,
+  CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
+) ENGINE=InnoDB;
