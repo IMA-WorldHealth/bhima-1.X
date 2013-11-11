@@ -2118,7 +2118,7 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
 //***************************************************************************************
 //***************************** CREDITORS CONTROLLER ************************************
 //***************************************************************************************
- controllers.controller('creditorsController', function($scope, $q, bikaConnect){
+ controllers.controller('creditorsController', function($scope, $q, $modal, bikaConnect){
 
   //initialisations
   $scope.creditor={};
@@ -2127,38 +2127,75 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
   //populating creditors
   getCreditors();
 
-  //populating accountselect
-  getAccounts();
+  //populating group
+  getGroups();
 
-  //populating countries
-  getCountries();
+  //populating location
+  getLocations();
 
   //les fonctions
   function getCreditors(){
     var req_db = {};
-    req_db.e = [{t:'creditor', c:['id', 'name', 'address1', 'address2', 'country_id', 'account_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
+    req_db.e = [{t:'supplier', c:['id', 'name', 'address1', 'address2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
     bikaConnect.get('/data/?', req_db).then(function(data){
       $scope.creditors = data;
     });
   }
-  function getAccounts(){
+  function getGroups(){
     var req_db = {};
-    req_db.e = [{t:'account', c:['id', 'account_txt']}];
-    req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'id', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'id', z:'<', v:500000}];
+    req_db.e = [{t:'creditor_group', c:['id', 'group_txt', 'account_id']}];
     bikaConnect.get('/data/?', req_db).then(function(data){
-      $scope.accounts = data;
+      $scope.groups = data;
     });
   }
 
-  function getCountries(){
+  function getLocations(){
     var req_db = {};
-    req_db.e = [{t:'country', c:['id', 'country_en', 'country_fr']}];
+    req_db.e = [{t:'location', c:['id', 'city', 'region']}];
     bikaConnect.get('/data/?', req_db).then(function(data){
-      $scope.countries = data;
+      $scope.locations = data;
     });
   }
 
-  $scope.verifyExisting = function(){
+  $scope.showDialog = function() {
+    var instance = $modal.open({
+    templateUrl: "/partials/creditor/creditor-modal.html",
+    backdrop: true,
+    controller: function($scope, $modalInstance, selectedAcc, bikaConnect) {
+      $scope.group = {};
+      //populating accounts
+      getAccounts();
+      function getAccounts(){
+        var req_db = {};
+        req_db.e = [{t:'account', c:['id', 'account_txt']}];
+        req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'id', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'id', z:'<', v:500000}];
+        bikaConnect.get('/data/?', req_db).then(function(data){
+          $scope.accounts = data;
+        });
+      }       
+        
+      $scope.close = function() {
+        $modalInstance.dismiss();
+      };
+      $scope.submit = function() {
+        $modalInstance.close({group:$scope.group.group, account:$scope.group.account_id});
+      };
+    },
+    resolve: {
+      selectedAcc: function() {
+        return 'hello';
+      },
+    }
+    });
+    instance.result.then(function(values) {
+      bikaConnect.send('creditor_group', [{id:'', group_txt:values.group, account_id:values.account.id}]);
+      getGroups();
+    }, function() {
+      //console.log('dedrick');
+    });
+  };
+
+  /*$scope.verifyExisting = function(){
    if($scope.creditorExiste ==0){
        if($scope.creditor.account_id && $scope.creditor.name){
         if(isThere($scope.creditors, 'name', $scope.creditor.name)){
@@ -2178,34 +2215,55 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
         }
       }
    }
-  }
+  }*/
 
   $scope.fill = function(index){
-    getCreditors();
+    //getCreditors();
     $scope.creditorExiste = 0;
     $scope.creditor = $scope.creditors[index];
     $scope.creditor.international = toBoolean($scope.creditor.international);
     $scope.creditor.locked = toBoolean($scope.creditor.locked);
-    $scope.creditor.country_id = getCreditorCountry($scope.creditors[index].country_id);
-    $scope.creditor.account_id = getCreditorAccount($scope.creditors[index].account_id);
+    $scope.creditor.location_id = getCreditorLocation($scope.creditors[index].location_id);
+    $scope.creditor_group = getCreditorGroup($scope.creditors[index].creditor_id);
   }
 
-  $scope.save = function(creditor){
-    creditor.country_id = extractId(creditor.country_id);
-    creditor.account_id = extractId(creditor.account_id);
+  $scope.save = function(creditor, creditor_group){
+    creditor.location_id = extractId(creditor.location_id);
+    var creditor_group_id = extractId(creditor_group);
     var result = existe(creditor.id);
     result.then(function(response){
       if(response){               
-        var sql_update = {t:'creditor', data:[creditor],pk:["id"]};
+        var sql_update = {t:'supplier', data:[creditor],pk:["id"]};
         bikaConnect.update(sql_update);
-        getCreditors();
       }else{
         //on insert
-        bikaConnect.send('creditor', [creditor]);
+        var creditor_id_promise = getCreditorId(creditor_group_id);
+        creditor_id_promise.then(function(value){
+          console.log('id creditor est ', value);
+          creditor.creditor_id = value;
+          bikaConnect.send('supplier', [creditor]);
+        $scope.creditor={};
+        $scope.creditor_group = {};
+        $scope.creditorExiste = 0;
+        getCreditors();
+        });
       }
-      $scope.creditor={};
-      $scope.creditorExiste = 0;
+      
     });
+  }
+
+  function getCreditorId(id){
+    var def = $q.defer();
+    bikaConnect.send('creditor', [{id:'', creditor_group_id:id}]);
+    var request = {}; 
+    request.e = [{t : 'creditor', c : ['id']}];
+    request.c = [{t:'creditor', cl:'id', v:'LAST_INSERT_ID()', z:'='}];
+    bikaConnect.get('data/?',request).then(function(data) {
+      console.log(data);
+      def.resolve(data[0].id);
+
+    });
+    return def.promise;
   }
 
   function existe(id){
@@ -2231,34 +2289,38 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
     return obj.id;
   }
 
-  function getCreditorCountry(idCountry){
+  function getCreditorLocation(idLocation){
     var indice = -1;
-    for(var i = 0; i<$scope.countries.length; i++){
-      if($scope.countries[i].id == idCountry){
+    for(var i = 0; i<$scope.locations.length; i++){
+      if($scope.locations[i].id == idLocation){
         indice = i;
         break;
       }
     }
     if (indice!=-1){
-      return $scope.countries[indice];
+      return $scope.locations[indice];
     }else{
-      return {id:-1, country_en:'rien', country_fr:'rien'};
+      return {};
     }
   }
 
-  function getCreditorAccount(idAccount){
-    var indice = -1;
-    for(var i = 0; i<$scope.accounts.length; i++){
-      if($scope.accounts[i].id == idAccount){
-        indice = i;
-        break;
-      }
-    }
-    if (indice!=-1){
-      return $scope.accounts[indice];
-    }else{
-      return {id:-1, account_txt:'rien'};
-    }
+  function getCreditorGroup(idCreditor){    
+    var req_db = {};
+    req_db.e = [{t:'creditor', c:['creditor_group_id']}];
+    req_db.c = [{t:'creditor', cl:'id', z:'=', v:idCreditor}];
+    bikaConnect.get('/data/?', req_db).then(function(data){
+      var groupID = data[0].id;
+      req_db.e = [{t:'creditor_group', c:['id', 'group_txt', 'account_id']}];
+
+      $scope.groups = data;
+    });
+
+
+    req_db.c = [{t:'creditor_group', c:['id', 'group_txt', 'account_id']}];
+    bikaConnect.get('/data/?', req_db).then(function(data){
+      $scope.groups = data;
+    });
+  
   }
 
   function isThere(jsontab, cle, value){
@@ -2280,7 +2342,6 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
     bikaConnect.delete('creditor', creditor.id);
     $scope.creditor = {};
     getCreditors();
-
   }
  });
 
