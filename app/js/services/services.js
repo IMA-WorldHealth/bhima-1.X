@@ -650,7 +650,7 @@
 
 //    TODO generic id property should be injected, currently set as ID
 //    TODO set flag for automatically flushing model updates to server
-//    FIXME
+//    TODO anonymous functions make for bad stack traces - name those bad boys
 
     //keep track of requests, model can use connect API without re-stating request
     //  model : request
@@ -693,7 +693,7 @@
       return $http.get(url);
     }
 
-//    FIXME accepts any request (temporarily making up for 'req()' shortcommings) this should be deprecated
+//    FIXME accepts any request (temporarily making up for 'req()' shortcomings) this should be deprecated
     function basicReq(reqobj) {
       //summary: 
       //  return a packaged model given a straight request object
