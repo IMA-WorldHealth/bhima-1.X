@@ -1632,29 +1632,27 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     var account_store = data.register(account_spec);
     var type_store = data.register(account_type_spec);
-    console.log("account_store", account_store);
-    console.log("type_store", type_store);
 
-    // OMG SYNTAX
     $q.all([
       account_store,
       type_store
     ]).then(init);
 
     function init (arr) {
-      $scope.account_model = arr[0].data;
-      $scope.type_model = arr[1].data;
+      $scope.models = {};
+      $scope.models.accounts = arr[0].data;
+      $scope.models.types = arr[1].data;
       console.log($scope.account_model);
     }
 
-    // FIXME: Find a better name, etc.
     $scope.map = function (id) {
-      return (id == 1) ? "Fixed" : "Relative";
+      return (id == 1) ? "Fixed" : "Variable";
     };
 
+    
     // ng-grid options
     $scope.gridOptions = {
-      data: 'account_model',
+      data: 'models.accounts',
       columnDefs: [
         {field: 'id', displayName: "Account Number"},
         {field: 'account_txt', displayName: "Account Text"},
@@ -1663,7 +1661,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           editableCellTemplate: '<div><select style="padding:0;margin:0;height:100%;width:100%;" ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
           enableCellEdit: true
         },
-        {field: 'fixed', displayName: 'Fixed/Relative',
+        {field: 'fixed', displayName: 'Fixed/Variable',
           cellTemplate: '<div class="ngCellText">{{map(row.getProperty("fixed"))}}</div>',
           editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.fixed" ng-change="fixedRow(row)"><option value="0">Relative</option><option value="1">Fixed</option></select></div>',
           enableCellEdit: true
