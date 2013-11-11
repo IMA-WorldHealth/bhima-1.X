@@ -8,13 +8,37 @@
 
 // PRIVATE METHODS
 
+//FIXME mysqlInit() is called every time a new instance of db is used - all config should happen just once
+
 function mysqlInit(config) {
   var connectConfig, db, con; //FIXME: Look up connection pooling in MySQL.
+
   if (config) connectConfig = config;
   db = require('mysql');
   con = db.createConnection(connectConfig);
   con.connect();
+
+//  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
+  flushUsers(con);
+
   return con;  // c'est pas necessaire pour mysql de retourne cette variable, mais peut-etre ca va necessaire pour autre base des donnees
+}
+
+function flushUsers(db_con) {
+  var permissions, reset;
+
+//  Disable safe mode #420blazeit
+  permissions = 'SET SQL_SAFE_UPDATES = 0;';
+  reset = 'UPDATE `bika`.`user` SET `logged_in`="0" WHERE `logged_in`="1";';
+
+//  Update columns that are set to logged in
+  db_con.query(permissions, function(err, res) {
+    if(err) return err;
+    db_con.query(reset, function(err, res) {
+      if(err) return err;
+      console.log('[db.js] (*) user . logged_in set to 0');
+    });
+  });
 }
 
 
@@ -185,10 +209,11 @@ function formatLimit(l) {
   return base + l;
 }
 
+var con;
 
 // main db module
 function db(options) {
-  var supported_databases, con, config;
+  var supported_databases, config;
   options = options || {};
 
   // Select the system's database with this variable.
@@ -214,7 +239,7 @@ function db(options) {
 
   // The database connection for all data interactions
   // FIXME: researdh connection pooling in MySQL
-  con = supported_databases[sgbd](config); //on a l'objet connection
+  if(!con) con = supported_databases[sgbd](config); //on a l'objet connection
 
   return {
     // return all supported databases

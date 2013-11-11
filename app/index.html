@@ -17,7 +17,7 @@
   <div id="bika-sidebar" class="container">
     <div class="row" id="bika-header">
       <div class="col-xs-12">
-        <h2><span class="glyphicon glyphicon-pushpin ban"></span></h2>
+        <h2><span class="glyphicon glyphicon-backward ban"></span></h2>
       </div>
     </div>
 
@@ -54,8 +54,26 @@
   </div>
   <div id="bika-container" ng-controller="viewController">
     <div ng-view id="bika-view"><!--Content populated with angular--></div>
-    <div ng-controller="userController"></div>
+
+    <!--ng-cloak applies CSS to keep ng-show elements from being rendered as the page is drawn-->
+    <div id="bika-notify" ng-controller="notifyController" ng-cloak>
+      <!--Content populated with appnotify service-->
+
+      <!--Defining a style with a variable is pretty much the devil I guess?-->
+      <!--<div class="notification"  ng-show="notification[0]" ng-cloak>-->
+        <!--<div class="content">-->
+
+          <!--&lt;!&ndash;Display a single notification by default - use custom directive for multiple&ndash;&gt;-->
+        <!--<button ng-click="removeNotification()" type="button" class="close" aria-hidden="true">&times;</button>-->
+        <!--<h3><span id="notify-icon">&lt;!&ndash;class="glyphicon glyphicon-thumbs-down"&ndash;&gt;</span>{{notification[0].body}}</h3>-->
+      <!--</div>-->
+      <!--</div>-->
+    </div>
+
   </div>
+</div>
+
+
   <!-- required for ng-grid -->
   <script src="lib/jquery-1.10.2.js"></script>
   <!-- scripts loaded in body to prevent page form 'hanging'-->

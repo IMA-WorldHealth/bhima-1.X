@@ -1,0 +1,16 @@
+{
+  "static": "app",
+  "port" : 8080,
+  "db" : {
+    "host"     : "localhost",
+    "user"     : "bika",
+    "password" : "HISCongo2013",
+    "database" : "bika"
+  },
+  "session" : {
+    "secret" : "open blowfish",
+    "cookie" : {
+      "httpOnly" : false
+    }
+  }
+}
