@@ -5657,17 +5657,17 @@ CREATE TABLE `location` (
   `id` smallint unsigned not null AUTO_INCREMENT,
   `city` varchar(45) default null,
   `region` varchar(45) default null,
-  `country_code` smallint unsigned not null,
+  `country_id` smallint unsigned not null,
   `zone` varchar(45) default null,
   `village` varchar(45) default null,
   PRIMARY KEY (`id`),
-  KEY `country_code` (`country_code`)
---  CONSTRAINT FOREIGN KEY (`country_code`) REFERENCES `country` (`code`)
+  KEY `country_id` (`country_id`),
+ CONSTRAINT FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 /*Data for the table `location` */
 
-INSERT INTO `location`(`id`,`city`,`region`,`country_code`, `zone`, `village`) VALUES 
+INSERT INTO `location`(`id`,`city`,`region`,`country_id`, `zone`, `village`) VALUES 
   (1,'Kinshasa','Kinshasa',52, null, null),
   (2,'Lubumbashi','Katanga',52, null, null),
   (3,'Mbuji-Mayi','Kasaï-Oriental',52, null, null),
@@ -6178,16 +6178,36 @@ CREATE TABLE `cash` (
   CONSTRAINT FOREIGN KEY (`invoice_id`) REFERENCES `sale` (`id`) -- FIXME: Change this so that we can pull from multiple tables.
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `creditor_group`;
+CREATE  TABLE `bika`.`creditor_group` (
+  `id` INT NOT NULL ,
+  `group` VARCHAR(45) NULL ,
+  `account_id` mediumint unsigned NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  KEY `account_id` (`account_id`),
+  CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE = InnoDB;
 
 
 DROP TABLE IF EXISTS `creditor`;
-CREATE  TABLE `bika`.`creditor` (
+CREATE TABLE `creditor` (
+`id` int not null AUTO_INCREMENT,
+`creditor_group_id` int not null,
+PRIMARY KEY (`id`),
+KEY `creditor_group_id` (`creditor_group_id`),
+CONSTRAINT FOREIGN KEY (`creditor_group_id`) REFERENCES `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+
+
+
+DROP TABLE IF EXISTS `supplier`;
+CREATE  TABLE `supplier` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NOT NULL ,
   `address1` TEXT NULL ,
   `address2` TEXT NULL ,
-  `country_id` smallint unsigned not null ,
-  `account_id` mediumint unsigned not null,
+  `location_id` smallint unsigned not null ,
   `email` VARCHAR(45) NULL ,
   `fax` VARCHAR(45) NULL ,
   `note` VARCHAR(50) NULL ,
@@ -6195,8 +6215,10 @@ CREATE  TABLE `bika`.`creditor` (
   `international` TINYINT(1) NULL ,
   `locked` TINYINT(1) NULL ,
   PRIMARY KEY (`id`),
-  KEY `country_id` (`country_id`),
-  KEY `account_id` (`account_id`),
-  CONSTRAINT FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `location_id` (`location_id`),
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    )ENGINE = InnoDB;
+
+
+
+
