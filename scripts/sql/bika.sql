@@ -5833,63 +5833,6 @@ INSERT INTO `department` (`enterprise_id`, `id`, `name`, `note`) VALUES
   (101, 3, "Vanga Pharamacy", null),
   (101, 4, "Vanga Accounting", "Keeping track of accounts");
 
---
--- table `bika`.`employee`
---
-DROP TABLE IF EXISTS `employee`;
-CREATE TABLE `employee` (
-  `id`                smallint unsigned not null,
-  `name`              varchar(50) not null,
-  `title`             varchar(50),
-  `debitor_id`        int unsigned not null, 
-  `location_id`       smallint unsigned not null,
-  `department_id`     smallint unsigned not null,
-  `initials`          varchar(3) not null,
-  PRIMARY KEY (`id`),
-  KEY `debitor_id` (`debitor_id`),
-  KEY `location_id` (`location_id`),
-  KEY `department_id` (`department_id`),
-  CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=Innodb;
-
-INSERT INTO `employee` (`id`, `name`, `title`, `debitor_id`, `location_id`, `department_id`, `initials`) VALUES
-  (1, "Dodi", "Chief Accountant", 5, 11, 4, "DK"),
-  (2, "Jon", "MCZ", 6, 11, 3, "JN");
-
---
--- Table `bika`.`patient`
---
-DROP TABLE IF EXISTS `patient`;
-CREATE TABLE `patient` (
-  `id` int unsigned not null AUTO_INCREMENT,
-  `debitor_id` int unsigned not null, -- references debitors 
-  `first_name` varchar(150) not null,
-  `last_name` varchar(150) not null,
-  `dob` date,
-  `parent_name` varchar(150),
-  `sex` char(1) not null,       -- 'm' or 'f'
-  `religion` varchar(50) not null,
-  `marital_status` varchar(50),
-  `phone` varchar(12),
-  `email` varchar(20),
-  `addr_1` varchar(100),
-  `addr_2` varchar(100),
-  `location_id` smallint unsigned not null,
-  PRIMARY KEY (`id`),
-  KEY `first_name` (`first_name`),
-  KEY `debitor_id` (`debitor_id`),
-  KEY `location_id` (`location_id`),
-  CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-INSERT INTO `patient` (`id`, `debitor_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `location_id`) VALUES 
-  (1, 1, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", 1),
-  (2, 2, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", 1),
-  (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", 1),
-  (4, 4, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", 1);
 
 --
 -- table `bika`.`sale`
@@ -6202,9 +6145,6 @@ KEY `creditor_group_id` (`creditor_group_id`),
 CONSTRAINT FOREIGN KEY (`creditor_group_id`) REFERENCES `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 )ENGINE=InnoDB;
 
-
-
-
 DROP TABLE IF EXISTS `supplier`;
 CREATE  TABLE `supplier` (
   `id` INT NOT NULL AUTO_INCREMENT ,
@@ -6218,9 +6158,12 @@ CREATE  TABLE `supplier` (
   `phone` VARCHAR(15) NULL ,
   `international` TINYINT(1) NULL ,
   `locked` TINYINT(1) NULL ,
+  `creditor_id` int not null,
   PRIMARY KEY (`id`),
+  KEY `creditor_id` (`creditor_id`),
   KEY `location_id` (`location_id`),
-  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
    )ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `purchase`;
@@ -6259,3 +6202,64 @@ CREATE TABLE `purchase_item` (
   CONSTRAINT FOREIGN KEY (`purchase_id`) REFERENCES `purchase` (`id`) ON DELETE CASCADE,
   CONSTRAINT FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
 ) ENGINE=InnoDB;
+
+--
+-- table `bika`.`employee`
+--
+DROP TABLE IF EXISTS `employee`;
+CREATE TABLE `employee` (
+  `id`                smallint unsigned not null,
+  `name`              varchar(50) not null,
+  `title`             varchar(50),
+  `debitor_id`        int unsigned not null,
+  `creditor_id`       int not null, 
+  `location_id`       smallint unsigned not null,
+  `department_id`     smallint unsigned not null,
+  `initials`          varchar(3) not null,
+  PRIMARY KEY (`id`),
+  KEY `debitor_id` (`debitor_id`),
+  KEY `location_id` (`location_id`),
+  KEY `department_id` (`department_id`),
+  KEY `creditor_id` (`creditor_id`),
+  CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=Innodb;
+
+--
+-- Table `bika`.`patient`
+--
+DROP TABLE IF EXISTS `patient`;
+CREATE TABLE `patient` (
+  `id` int unsigned not null AUTO_INCREMENT,
+  `debitor_id` int unsigned not null, -- references debitors
+  `creditor_id` int not null, 
+  `first_name` varchar(150) not null,
+  `last_name` varchar(150) not null,
+  `dob` date,
+  `parent_name` varchar(150),
+  `sex` char(1) not null,       -- 'm' or 'f'
+  `religion` varchar(50) not null,
+  `marital_status` varchar(50),
+  `phone` varchar(12),
+  `email` varchar(20),
+  `addr_1` varchar(100),
+  `addr_2` varchar(100),
+  `location_id` smallint unsigned not null,
+  PRIMARY KEY (`id`),
+  KEY `first_name` (`first_name`),
+  KEY `debitor_id` (`debitor_id`),
+  KEY `location_id` (`location_id`),
+  KEY `creditor_id` (`creditor_id`),
+  CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+/*--INSERT INTO `patient` (`id`, `debitor_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `location_id`) VALUES 
+ -- (1, 1, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", 1),
+ -- (2, 2, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", 1),
+  --(3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", 1),
+  --(4, 4, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", 1);*/
+
