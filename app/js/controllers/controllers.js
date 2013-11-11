@@ -2275,8 +2275,9 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
   }
 
   $scope.delete = function(creditor){
-    console.log('crediteur a effacer', creditor);
     bikaConnect.delete('creditor', creditor.id);
+    $scope.creditor = {};
+    getCreditors();
 
   }
  });

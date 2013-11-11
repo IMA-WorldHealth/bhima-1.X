@@ -84,12 +84,12 @@
     }
   });
 
-  services.factory('appnotify', function($q, $timeout) {
+  services.factory('appnotify', function ($q, $timeout) {
 
 //    Allows for multiple notifications - if that's your thing
 //    var notifications = [];
     var notification = [];
-//    FIXME This is horrible - CSS styles should be applied conditioanally with ng-class
+//    FIXME This is horrible - CSS styles should be applied conditionally with ng-class
     var style = ["notification-success"];
     var timeout = 3000;
 
@@ -99,30 +99,33 @@
 
     function setNotification(type, header, body, delay) {
 //      only one notification allowed at this time
-      if(delay) timeout = delay;
-      if(type) style[0] = "notification-" + type;
-      notification.pop();
-      notification.push({'type' : type, 'header' : header, 'body' : body, 'delay' : delay});
+      if (delay) timeout = delay;
+
+      /*if(type) style[0] = "notification-" + type;
+       notification.pop();
+       notification.push({'type' : type, 'header' : header, 'body' : body, 'delay' : delay});*/
+      console.log('[appnotify] setNotification(); populate notification model')
       var handle = $timeout(clearAll, timeout);
     }
 
     function clearAll() {
+      console.log('[appnotify] clearAll(); clear notification model');
       notification.pop();
     }
 
     /*function registerDisplay()
-    *   summary
-    *     Any controller can register as a notification display - a callback would be registered
-    *     for every time an update is made to notification state
-    */
+     *   summary
+     *     Any controller can register as a notification display - a callback would be registered
+     *     for every time an update is made to notification state
+     */
 
     init();
 
     return {
 //      Is it a good idea to expose this?
-      notification : notification,
-      setNotification : setNotification,
-      clearAll : clearAll,
+      notification: notification,
+      setNotification: setNotification,
+      clearAll: clearAll,
       style: style
     }
   });
@@ -639,37 +642,41 @@
 
   });
 
-  services.factory('connect', function($http, $q) { 
+  services.factory('connect', function ($http, $q) {
     //summary: 
     //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
     //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to 
     //  update the server.
 
-    //TODO: 
-    //  -generic id property should be injected, currently set as ID
-    //  -set flag for automatically flushing model updates to server
-    
+//    TODO generic id property should be injected, currently set as ID
+//    TODO set flag for automatically flushing model updates to server
+//    TODO anonymous functions make for bad stack traces - name those bad boys
+
     //keep track of requests, model can use connect API without re-stating request
     //  model : request
     var requests = {};
 
     //TODO: doesn't support joins or advanced conditions, socket API should solve this
-    function req(table, columns, where, value) { 
+    function req(table, columns, where, value) {
       //summary: 
       //  Attempt at a more more managable API for modules requesting tables from the server, implementation
       //  still needs to be finalised, should be deprecated with sockets
       var deferred = $q.defer();
       var model = {};
 
-      var query = { 
-        e: [{t : table, c : columns}]
+      var query = {
+        e: [
+          {t: table, c: columns}
+        ]
       };
 
-      if(where) { 
-        query.c = [{t : table, cl : where, v : value, z : '='}];
+      if (where) {
+        query.c = [
+          {t: table, cl: where, v: value, z: '='}
+        ];
       }
-    
-      var handle = $http.get('/data/?' + JSON.stringify(query)).then(function(returned) { 
+
+      var handle = $http.get('/data/?' + JSON.stringify(query)).then(function (returned) {
         var m = packageModel(model, returned.data);
         requests[m] = {table: table, column: columns, where: where, value: value};
         deferred.resolve(m);
@@ -678,7 +685,7 @@
       return deferred.promise;
     }
 
-    function journal(invoice_ids) { 
+    function journal(invoice_ids) {
       return $http.post('/journal/', invoice_ids);
     }
 
@@ -686,12 +693,13 @@
       return $http.get(url);
     }
 
-    function basicReq(reqobj) { 
+//    FIXME accepts any request (temporarily making up for 'req()' shortcomings) this should be deprecated
+    function basicReq(reqobj) {
       //summary: 
       //  return a packaged model given a straight request object
       var deferred = $q.defer();
       var model = {};
-      var handle = $http.get('/data/?' + JSON.stringify(reqobj)).then(function(returned) { 
+      var handle = $http.get('/data/?' + JSON.stringify(reqobj)).then(function (returned) {
         var m = packageModel(model, returned.data);
         //unable to uniformly set request object, this will cause a problem
         requests[m] = reqobj;
@@ -701,9 +709,8 @@
       return deferred.promise;
     }
 
-
-//    TODO reverse these two methods? I have no idea
-    function basicPut(table, object) { 
+//    TODO reverse these two methods? I have no idea how this happened
+    function basicPut(table, object) {
       var format_object = {t: table, data: object};
       return $http.post('data/', format_object);
     }
@@ -713,38 +720,39 @@
       return $http.put('data/', format_object);
     }
 
-    function packageModel(model, data) { 
+    function packageModel(model, data) {
 
       model.index = {};
       model.data = data;
 
       //determine indexs
-      model.calculateIndex = function() { 
+      model.calculateIndex = function () {
         this.index = {};
         for (var i = this.data.length - 1; i >= 0; i--) {
-            this.index[this.data[i]["id"]] = i;
-        };
+          this.index[this.data[i]["id"]] = i;
+        }
+        ;
       }
 
       //data manipulation
-      model.get = function(id) { 
+      model.get = function (id) {
         return this.data[this.index[id]];
       }
 
-      model.put = function(object) { 
+      model.put = function (object) {
         var id = object["id"];
-        if(id in this.index) { 
+        if (id in this.index) {
           //TODO: Implement overwrite flag/ behaviour
           throw new Error("Object overwrite attempted.");
-        } else { 
+        } else {
           //update index and insert object
           this.index[id] = this.data.push(object) - 1;
         }
       }
 
-      model.delete = function(id) { 
+      model.delete = function (id) {
         var i = this.index;
-        if(id in i) { 
+        if (id in i) {
           this.data.splice(i[id], 1);
           this.calculateIndex();
           //Check if changes should be automatically reflected in server etc.
@@ -753,7 +761,7 @@
         }
       }
 
-      model.flush = function() { 
+      model.flush = function () {
 
       }
 
@@ -764,24 +772,24 @@
 
     //Check we haven't made this query before this session, check we don't have the data stored in local storage
     //-verify version numbers of data if it has been cached (see priority levels etc.)
-    function referenceQuery(query) { 
+    function referenceQuery(query) {
 
     }
 
-    function connect_delete(model, id) { 
+    function connect_delete(model, id) {
       var meta = requests[model];
       console.log(meta);
 
       //create delete query and pass to server with $http
     }
 
-    return { 
-      req : req,
-      basicReq : basicReq,
-      basicPut : basicPut,
-      basicPost : basicPost,
-      basicGet : basicGet,
-      journal : journal
+    return {
+      req: req,
+      basicReq: basicReq,
+      basicPut: basicPut,
+      basicPost: basicPost,
+      basicGet: basicGet,
+      journal: journal
     };
   });
 
