@@ -1,6 +1,19 @@
 <link rel="stylesheet" href="/partials/chart/index.css">
 <h2>Chart of Accounts</h2>
 <div class="table-container">
-  <div class="table table-bordered maxheight" ng-grid="gridOptions"></div>
+  <table class="table table-bordered" style="width:100%;">
+    <thead style="display: block; position:relative; width: 100%;">
+      <tr>
+        <th>Account Number</th>
+        <th>Account Text</th>
+        <th>Account Type</th>
+        <th>Fixed/Variable</th>
+        <th>Locked</th>
+      </tr>
+    </thead>
+    <tbody class="tbody" v-scroller vs-model="models.accounts" vs-init-number="25"  style="width: 100%">
+      <tr><td>{{row.id}}</td><td>{{row.account_txt}}</td><td>{{row.type}}</td><td>{{row.fixed}}</td><td>{{row.locked}}</td></tr>
+    </tbody>
+  </table>
   <div type="button" class="btn btn-primary" ng-click="showDialog()">Create Account</div>
 </div>

@@ -14,8 +14,9 @@
           class="form-control"
           type="text"
           ng-model="slip.invoice_id"
-          typeahead="invoice.id as invoice.note for invoice in models['sale-debitor'] | limitTo: 8"
-          typeahead-on-select="select()"
+          list="invoices"
+          typeahead="invoice.id as invoice.note for invoice in models['sale-debitor']"
+          typeahead-on-select="select(invoice.id)"
         >
       </div>
     </div>
