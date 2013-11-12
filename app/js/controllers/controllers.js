@@ -1606,7 +1606,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: 'account',
       tables: {
         'account': {
-          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed'],
+          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
         },
         'account_type': {
           columns: ['type'] 
@@ -1649,23 +1649,39 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var grid, columns, options;
 
       columns = [
-        {id: "id"       , name: "Account Number"   , field: "id"},
-        {id: "txt"      , name: "Account Text"     , field: "account_txt"},
+        {id: "id"       , name: "Account Number"   , field: "id", sortable: true},
+        {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
         {id: "type"     , name: "Account Type"     , field: "type"},
         {id: "category" , name: "Account Category" , field: "account_category"},
         {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"},
-        {id: "locked"   , name: "Locked"           , field: "locked"}
+        {id: "locked"   , name: "Locked"           , field: "locked", sortable: true}
       ];
 
       options = {
+        editable: true,
+        autoEdit: false,
         enableCellNavigation: true,
-        enableColumnReorder: false,
         multiColumnSort: true,
-        asyncEditorLoading: true,
+        asyncEditorLoading: false,
         forceFitColumns: true
       };
-      
+
       grid = new Slick.Grid("#kpk-accounts-grid", data, columns, options);
+
+      grid.onSort.subscribe(function (e, args) {
+        var field = args.sortCol.field;
+  
+        rows.sort(function (a, b) {
+          var result = 
+            a[field] > b[field] ? 1 :
+            a[field] < b[field] ? -1 :
+           0;
+          return args.sortAsc ? result : -result; 
+        });
+
+        grid.invalidate();
+
+      });
     }
 
     $scope.map = function (id) {
