@@ -37,7 +37,9 @@
   border: 1px solid #a2a2a2;
 
 }
-
+.filter {
+  max-width: 10px;
+}
 .form-invoice {
 
   diplay: block;
