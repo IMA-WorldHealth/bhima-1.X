@@ -1646,7 +1646,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function renderGrid (data) {
       // slick grid configs
-      var grid, columns, options;
+      var grid, columns, options, dataview;
 
       columns = [
         {id: "id"       , name: "Account Number"   , field: "id", sortable: true},
@@ -1661,23 +1661,32 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         editable: true,
         autoEdit: false,
         enableCellNavigation: true,
-        multiColumnSort: true,
         asyncEditorLoading: false,
         forceFitColumns: true
       };
 
-      grid = new Slick.Grid("#kpk-accounts-grid", data, columns, options);
+      dataview = new Slick.Data.DataView();
+
+      grid = new Slick.Grid("#kpk-accounts-grid", dataview, columns, options);
+
+      dataview.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render(); 
+      });
+
+      dataview.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidate(args.rows);
+        grid.render();
+      });
+
+      dataview.setItems(data);
 
       grid.onSort.subscribe(function (e, args) {
         var field = args.sortCol.field;
   
-        rows.sort(function (a, b) {
-          var result = 
-            a[field] > b[field] ? 1 :
-            a[field] < b[field] ? -1 :
-           0;
-          return args.sortAsc ? result : -result; 
-        });
+        dataview.sort(function (a, b) {
+          return (a[field] > b[field]) ? 1 : -1;
+        }, args.sortAsc);
 
         grid.invalidate();
 
