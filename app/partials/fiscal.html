@@ -3,7 +3,7 @@
           Add a sort row on top of the Fiscal Year selection - A-Z, year, etc.-->
 
 <link rel="stylesheet" href="css/fiscal.css"/>
-<div class="container" id="bika-units-fiscal">
+<div class="container" id="kpk-units-fiscal">
 	<div class="row">
 		<div class="col-xs-3">
       <!--Enterprise fiscal year selection-->
@@ -16,7 +16,7 @@
 
         </div>
         <button id="create-btn" class="btn btn-success" ng-click="createFiscal()"><span class="glyphicon glyphicon-pencil"></span></button>
-        <table class="table table-hover" id="bika-units-fiscal-list">
+        <table class="table table-hover" id="kpk-units-fiscal-list">
           <!--tr><td><input class="form-control input-sm"ng-model="fiscal_filter"></td></tr-->
           <tr ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}" ng-repeat="year in fiscal_model.data"><td>{{year.fiscal_year_txt}}</td></tr>
         </table>
@@ -30,7 +30,7 @@
 
       <div class="panel panel-default" ng-switch-when="create">
         <div class="panel-body">
-          <div class="bika-header">
+          <div class="kpk-header">
             <h1>Create Fiscal Year</h1>
           </div>
           <div class="col-xs-6">
@@ -40,7 +40,7 @@
 
       <div class="panel panel-default" ng-switch-when="update">
       <div class="panel-body">
-      <div class="bika-header">
+      <div class="kpk-header">
         <h1>Edit Fiscal Year <small>{{selected.fiscal_year_txt}}</small></h1>
         </div>
         <div class="col-xs-6">

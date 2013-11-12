@@ -1,7 +1,7 @@
 // js/directives/directive.js
 
 (function (angular) {
-  angular.module('bika.directives', [])
+  angular.module('kpk.directives', [])
     .directive('vScroller', function () {
       return {
         restrict: "A",
