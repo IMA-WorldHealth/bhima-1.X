@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="css/budget.css"/>
 
-<div class="container" id="bika-units-budget">
+<div class="container" id="kpk-units-budget">
   <div class="row">
     <div class="col-xs-3">
       <div class="panel panel-default">
@@ -11,8 +11,8 @@
         <span>Search Accounts</span>
         <input type="search" class="form-control" ng-model="filterAccounts">
 
-        <div class="bika-scrollable">
-          <table class="table table-hover table-bordered" id="bika-units-budgeting-list">
+        <div class="kpk-scrollable">
+          <table class="table table-hover table-bordered" id="kpk-units-budgeting-list">
             <tr ng-click="select(account.id)" ng-class="{selected: account.id==selected_account.id}"
                 ng-repeat="account in account_model.data | filter: filterAccounts">
               <td width="65px">{{account.id}}</td>
@@ -26,7 +26,7 @@
       <div ng-switch on="active"><!--Report view-->
         <div ng-switch-default></div>
         <div ng-switch-when="report">
-          <div class="bika-header">
+          <div class="kpk-header">
             <div class="row">
               <h1>Budget Report
                 <small>{{selected_account.account_txt}}</small>
