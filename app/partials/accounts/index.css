@@ -1,0 +1,16 @@
+.nav, .pagination, .carousel a { cursor: pointer; }
+
+#kpk-accounts-grid {
+  height: 650px;
+  width: 100%;
+}
+
+.slick-header-columns {
+    height: 30px;
+}
+
+.slick-header-column.ui-state-default {
+  height: 100%;
+}
+
+
