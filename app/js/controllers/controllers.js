@@ -1599,75 +1599,53 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   
   // Chart of Accounts controllers
   controllers.controller('accountController', function($scope, $q, $modal, data, appstate) {
+    var pre = "[Accounts Ctlr]"; // for DEBUGGING
+    
+    function getData () {
+      console.log(pre, "getData fired.");
 
-    // import account
-    var account_spec = {
-      identifier: 'id',
-      primary: 'account',
-      tables: {
-        'account': {
-          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
+      var account_defn, account_type_defn, 
+          account_store, type_store,
+          enterpriseid = appstate.get("enterprise").id;
+
+      account_defn = {
+        identifier: 'id',
+        primary: 'account',
+        tables: {
+          'account': {
+            columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
+          },
+          'account_type': {
+            columns: ['type'] 
+          }
         },
-        'account_type': {
-          columns: ['type'] 
-        }
-      },
-      join: ['account.account_type_id=account_type.id'],
-      where: ["account.enterprise_id=" + 101], //FIXME
-      autosync: true
-    };
-
-    // import account_type 
-    var account_type_spec = {
-      identifier: 'id',
-      tables: {
-        'account_type' : {
-          columns: ['id', 'type']
-        }
-      },
-      autosync: true
-    };
-
-    // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
-    var account_store = data.register(account_spec);
-    var type_store = data.register(account_type_spec);
-
-    $q.all([
-      account_store,
-      type_store
-    ]).then(init);
-
-    function init (arr) {
-      $scope.models = {};
-      $scope.models.accounts = arr[0].data;
-      $scope.models.types = arr[1].data;
-      renderGrid($scope.models.accounts);
-    }
-
-    function renderGrid (data) {
-      // slick grid configs
-      var grid, columns, options, dataview;
-
-      columns = [
-        {id: "id"       , name: "Account Number"   , field: "id", sortable: true},
-        {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
-        {id: "type"     , name: "Account Type"     , field: "type"},
-        {id: "category" , name: "Account Category" , field: "account_category"},
-        {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"},
-        {id: "locked"   , name: "Locked"           , field: "locked", sortable: true}
-      ];
-
-      options = {
-        editable: true,
-        autoEdit: false,
-        enableCellNavigation: true,
-        asyncEditorLoading: false,
-        forceFitColumns: true
+        join: ['account.account_type_id=account_type.id'],
+        where: ["account.enterprise_id=" + enterpriseid],
+        autosync: true
       };
 
-      dataview = new Slick.Data.DataView();
+      account_type_defn = {
+        identifier: 'id',
+        tables: {
+          'account_type' : {
+            columns: ['id', 'type']
+          }
+        },
+        autosync: false 
+      };
+        
+      account_store = data.register(account_defn);
+      type_store = data.register(account_type_defn);
 
-      grid = new Slick.Grid("#kpk-accounts-grid", dataview, columns, options);
+      return $q.all([account_store, type_store]);
+    }
+
+    function initGrid () {
+      console.log(pre, "initGrid fired.");
+      var grid, columns, options, dataview;
+     
+      // dataview config 
+      dataview = new Slick.Data.DataView();
 
       dataview.onRowCountChanged.subscribe(function (e, args) {
         grid.updateRowCount();
@@ -1679,25 +1657,59 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         grid.render();
       });
 
-      dataview.setItems(data);
+      columns = [
+        {id: "id"       , name: "Account Number"   , field: "id", sortable: true},
+        {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
+        {id: "type"     , name: "Account Type"     , field: "type"},
+        {id: "category" , name: "Account Category" , field: "account_category"},
+        {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"},
+        {id: "locked"   , name: "Locked"           , field: "locked", sortable: true}
+      ];
 
-      grid.onSort.subscribe(function (e, args) {
+      options = {
+        editable             : true,
+        autoEdit             : false,
+        asyncEditorLoading   : false,
+        enableCellNavigation : true,
+        forceFitColumns      : true
+      };
+
+      grid = new Slick.Grid("#kpk-accounts-grid", dataview, columns, options);
+
+      function sorter (e, args) {
         var field = args.sortCol.field;
-  
-        dataview.sort(function (a, b) {
-          return (a[field] > b[field]) ? 1 : -1;
-        }, args.sortAsc);
-
+        function sort (a, b) { return (a[field] > b[field]) ? 1 : -1; }
+        dataview.sort(sort, args.sortAsc);
         grid.invalidate();
+      }
 
-      });
+      grid.onSort.subscribe(sorter);
+
+      return {grid: grid, dataview: dataview};
+
     }
 
-    $scope.map = function (id) {
-      return (id == 1) ? "Fixed" : "Variable";
-    };
+    var promise = getData();
+ 
+    $scope.models = {};
+    var dataview, grid;
 
-    // dialog controller
+    promise.then(function (a) {
+      console.log(pre, "Promise fulfilled.");
+      $scope.models.accounts = a[0].data;
+      $scope.models.types = a[1].data;
+      var setup = initGrid(); 
+      grid = setup.grid;
+      dataview = setup.dataview;
+      
+      $scope.$watch('models.accounts', function () {
+        console.log(pre, "Rebuilding dataview...");
+        dataview.setItems($scope.models.accounts);
+      });
+    });
+
+
+    // Create a new account dialog
     $scope.showDialog = function() {
       var instance = $modal.open({
         templateUrl: "/partials/chart/templates/chart-modal.html",
@@ -1724,18 +1736,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       });
 
       instance.result.then(function(values) {
-        // add to the grid
         $scope.model.push(values);
-      }, function() {
-      });
+      }, function() {});
     };
 
-    $scope.config = {
-      isPaginationEnabled: true,
-      itemsByPage: 16,
-      selectionMode: 'single'
-    };
   });
+
+
 
   controllers.controller('inventoryController', function($scope) {
  
