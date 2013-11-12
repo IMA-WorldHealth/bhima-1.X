@@ -1598,7 +1598,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
   
   // Chart of Accounts controllers
-  controllers.controller('chartController', function($scope, $q, $modal, data, appstate) {
+  controllers.controller('accountController', function($scope, $q, $modal, data, appstate) {
 
     // import account
     var account_spec = {
@@ -1629,7 +1629,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
-
     var account_store = data.register(account_spec);
     var type_store = data.register(account_type_spec);
 
@@ -1642,43 +1641,35 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.models = {};
       $scope.models.accounts = arr[0].data;
       $scope.models.types = arr[1].data;
-      console.log($scope.account_model);
+      renderGrid($scope.models.accounts);
+    }
+
+    function renderGrid (data) {
+      // slick grid configs
+      var grid, columns, options;
+
+      columns = [
+        {id: "id"       , name: "Account Number"   , field: "id"},
+        {id: "txt"      , name: "Account Text"     , field: "account_txt"},
+        {id: "type"     , name: "Account Type"     , field: "type"},
+        {id: "category" , name: "Account Category" , field: "account_category"},
+        {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"},
+        {id: "locked"   , name: "Locked"           , field: "locked"}
+      ];
+
+      options = {
+        enableCellNavigation: true,
+        enableColumnReorder: false,
+        multiColumnSort: true,
+        asyncEditorLoading: true,
+        forceFitColumns: true
+      };
+      
+      grid = new Slick.Grid("#kpk-accounts-grid", data, columns, options);
     }
 
     $scope.map = function (id) {
       return (id == 1) ? "Fixed" : "Variable";
-    };
-
-    
-    // ng-grid options
-    $scope.gridOptions = {
-      data: 'models.accounts',
-      columnDefs: [
-        {field: 'id', displayName: "Account Number"},
-        {field: 'account_txt', displayName: "Account Text"},
-        {field: 'account_type_id', displayName: "Account Type",
-          cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
-          editableCellTemplate: '<div><select style="padding:0;margin:0;height:100%;width:100%;" ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
-          enableCellEdit: true
-        },
-        {field: 'fixed', displayName: 'Fixed/Variable',
-          cellTemplate: '<div class="ngCellText">{{map(row.getProperty("fixed"))}}</div>',
-          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.fixed" ng-change="fixedRow(row)"><option value="0">Relative</option><option value="1">Fixed</option></select></div>',
-          enableCellEdit: true
-        },
-        {field: 'locked', displayName: "Locked",
-          cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
-        }
-      ],
-      enableRowSelection:false,
-      enableColumnResize: true
-    };
-
-    $scope.updateRow = function(row) {
-      // HACK HACK HACK
-      row.entity.type = type_store.get(row.entity.account_type_id).type;
-      account_store.put(row.entity);
-      console.log($scope.account_model[row.rowIndex]);
     };
 
     // dialog controller
