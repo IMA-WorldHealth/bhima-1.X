@@ -7,8 +7,6 @@
   font-size: 8pt;
 }
 
-
-
 * {
 }
 
@@ -30,7 +28,7 @@ ul {
 }
 
 li {
-  background: url("../images/arrow_right_spearmint.png") no-repeat center left;
+  background: url("css/grid/images/arrow_right_spearmint.png") no-repeat center left;
   padding: 0 0 0 14px;
 
   list-style: none;
@@ -47,7 +45,7 @@ li {
   border: 1px solid gray;
   border-bottom: 0;
   border-top: 0;
-  background: url('../images/header-bg.gif') repeat-x center top;
+  background: url('css/grid/images/header-bg.gif') repeat-x center top;
   color: black;
   height: 24px;
   line-height: 24px;
