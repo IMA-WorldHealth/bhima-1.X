@@ -812,7 +812,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           c : ['debitor_id', 'first_name', 'last_name', 'location_id']
         }, {
           t : 'location',
-          c : ['id', 'city', 'region', 'country_code']
+          c : ['id', 'city', 'region', 'country_id']
         }],
         'jc' : [{
           ts : ['patient', 'location'],
@@ -984,34 +984,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function init() { 
 
-
-      $scope.invoice_model = {};
-      $scope.invoice_filter = {
-        filterText: ""
-      };
-
-      $scope.gridOptions = { 
-//        multiSelect: false,
-        selectedItems: [],
-        columnDefs : [{field:'id', display:'id'},
-                      {field:'cost', display:'total', cellFilter: 'currency'},
-                      {field:'debitor_id', display:'debtor'},
-                      {field:'invoice_date', display:'date', cellFilter: 'date: "dd/MM/yyyy"'},
-                      {field:'posted', display:'posted'}],
-      data : 'invoice_model.data',
-      //FIXME Search seems unpredictable - check filter settings
-      filterOptions: $scope.invoice_filter
-      };
-
       var promise = fetchRecords();
       promise
       .then(function(model) { 
-        //FIXME configure locally, then expose
-        
-        //expose scope 
-        $scope.invoice_model = model; //ng-grid
-        $scope.gridOptions.selectRow(1, true);
+        //expose scope
+        $scope.invoice_model = model;
         //Select default
+
       }); 
 
       $scope.post = function() { 
@@ -1037,10 +1016,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         console.log("request should be made for", request);
       }
     }
-
-    $scope.$on('ngGridEventData', function(){
-      if(default_invoice >= 0) $scope.select(default_invoice);
-    });
 
     $scope.select = function(id) {
       //model.get() would not provide index in an un-ordered object
