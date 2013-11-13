@@ -90,7 +90,7 @@
           </thead>
           <tbody> 
             <tr ng-repeat="item in inventory">
-              <td class="invoice-item"><select class="form-control" ng-change="updateItem(item)" ng-model="item.item" ng-options="l.inv_code for l in inventory_model.data"></select></td>
+              <td class="invoice-item"><select class="form-control" ng-change="updateItem(item)" ng-model="item.item" ng-options="l.code for l in inventory_model.data"></select></td>
               <td class="invoice-desc"><input type="text" class="form-control" ng-model="item.text"></td>
               <td class="invoice-quantity"><input type="number" class="form-control" ng-model="item.quantity"></td>
               <td class="invoice-price"><input type="number" class="form-control" ng-model="item.price"></td>

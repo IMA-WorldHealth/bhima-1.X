@@ -4,10 +4,10 @@
 (function (angular) {
   'use strict';
   
-  var services = angular.module('bika.services', []);
+  var services = angular.module('kpk.services', []);
     
   //FIXME: depricated - yo
-  services.service('bikaConnect', function($http) { 
+  services.service('kpkConnect', function($http) { 
     this.fetch = function(table, columns, where, value) {     
       var query = { 
         e: [{t : table, c : columns}]
@@ -58,7 +58,7 @@
   };
   });
 
-  services.service('bikaUtilitaire', function() { 
+  services.service('kpkUtilitaire', function() { 
     this.formatDate = function(dateString) {
       return new Date(dateString).toDateString();
     };
@@ -209,7 +209,7 @@
     }
 
     function init() { 
-      var req = indexedDB.open("bika", version);
+      var req = indexedDB.open("kpk", version);
 
       req.onupgradeneeded = function(e) { 
         //summary: 

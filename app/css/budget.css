@@ -1,8 +1,8 @@
-#bika-units-budget { 
+#kpk-units-budget { 
 	margin-top: 10px;
 }
 
-.bika-scrollable { 
+.kpk-scrollable { 
   /*This shouldn't be a forced number - differing screen sizes etc.*/
   max-height: 600px;
   overflow-y: scroll;
@@ -17,7 +17,7 @@ fieldset {
   width: 33%;
 }
 
-.bika-header { 
+.kpk-header { 
   padding-bottom: 9px;
   margin: 0px 0 45px;
   border-bottom: 1px solid #eeeeee;
