@@ -742,7 +742,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function loadFiscal(enterprise_id) {  
       var deferred = $q.defer();
-      connect.req("fiscal_year", ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"], "enterprise_id", enterprise_id).then(function(model) { 
+      var fiscal_query = {
+        'tables' : {
+          'fiscal_year' : {
+            'columns' : ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"]
+          }
+        },
+        'where' : ['fiscal_year.enterprise_id=' + enterprise_id]
+      }
+      connect.req(fiscal_query).then(function(model) {
         deferred.resolve(model);
       });
       return deferred.promise;
@@ -787,8 +795,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       }
     };
 
-    function fetchPeriods(fiscal_id) { 
-      connect.req("period", ["id", "period_start", "period_stop"], "fiscal_year_id", fiscal_id).then(function(model) { 
+    function fetchPeriods(fiscal_id) {
+      var period_query = {
+        'tables' : {
+          'period' : {
+            'columns' : ["id", "period_start", "period_stop"]
+          }
+        },
+        'where' : ['period.fiscal_year_id=' + fiscal_id]
+      }
+      connect.req(period_query).then(function(model) {
         $scope.period_model = model.data;
       });
     }
@@ -810,8 +826,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.sale_date = getDate();
     $scope.inventory = [];
 
-    var inventory_request = connect.req('inventory', ['id', 'code', 'text', 'price']);
-    var sales_request = connect.req('sale', ['id']);
+    var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
+    var sales_request = connect.req({'tables' : { 'sale' : {columns : ['id']}}});
+
     //FIXME should probably look up debitor table and then patients
     //var debtor_request = connect.req('patient', ['debitor_id', 'first_name', 'last_name', 'location_id']);
     //cache location table to look up debitor details
@@ -1069,7 +1086,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $scope.selected = {};
 
-      connect.req('sale', ['id', 'cost', 'currency', 'debitor_id', 'discount', 'invoice_date', 'posted'])
+      connect.req({'tables' : {'sale' : {'columns' : ['id', 'cost', 'currency', 'debitor_id', 'discount', 'invoice_date', 'posted']}}})
       .then(function(model) { 
         deferred.resolve(model);
       });
@@ -1101,6 +1118,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //expose scope 
         $scope.patient_model = filterNames(model); //ng-grid
         //Select default
+        if(patient>0) $scope.select(patient);
 
       }); 
     }
@@ -1110,8 +1128,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $scope.selected = {};
 
-      connect.req('patient', ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2'])
-      .then(function(model) { 
+      connect.req({'tables' : {'patient' : {'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2']}}})
+        .then(function(model) {
         deferred.resolve(model);
       });
 
@@ -1141,13 +1159,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
    
     function init() { 
       //register patient for appcahce namespace
-      
-      var location_request = connect.req('location', ['id', 'city', 'region']);
+
+      var location_request = connect.req({'tables' : {'location' : {'columns' : ['id', 'city', 'region']}}});
       //This was if we needed to create alpha-numeric (specific) ID's
-      var patient_request = connect.req('patient', ['id']);
+      var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
       //Used to generate debtor ID for patient
 //      FIXME just take the most recent items from the database, vs everything?
-      var debtor_request = connect.req('debitor', ['id']);
+      var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
 
       $q.all([location_request, patient_request, debtor_request])
       .then(function(res) { 
@@ -1166,8 +1184,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.update = function(patient) {
 //      download latest patient and debtor tables, calc ID's and update
-      var patient_request = connect.req('patient', ['id']);
-      var debtor_request = connect.req('debitor', ['id']);
+      var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
+      var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
 
       var patient_model, debtor_model;
 
@@ -1293,7 +1311,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function fetchAccount(e_id) { 
       var deferred = $q.defer();
-      connect.req("account", ["id", "account_txt", "account_category"], "enterprise_id", e_id).then(function(model) { 
+      var account_query = {
+        'tables' : {
+          'account' : {
+            'columns' : ["id", "account_txt", "account_category"]
+            }
+        },
+        'where' : ['account.enterprise_id=' + e_id]
+      }
+      connect.req(account_query).then(function(model) {
         deferred.resolve(model);
       });
       return deferred.promise;
@@ -1307,8 +1333,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //  Fiscal year data for a given enterprise already exists in the outside application, this could either be used directly (very 
       //  specific example) or the data downloaded could be cached using the connect service (ref: connect, sockets)
       /////
+      var fiscal_query = {
+        'tables' : {
+          'fiscal_year' : {
+            'columns' : ["id", "fiscal_year_txt"]
+          }
+        },
+        'where' : ['fiscal_year.enterprise_id=' + e_id]
+      }
       var deferred = $q.defer();
-      connect.req("fiscal_year", ["id", "fiscal_year_txt"], "enterprise_id", e_id).then(function(model) { 
+      connect.req(fiscal_query).then(function(model) {
         deferred.resolve(model);
       });
       return deferred.promise;
@@ -2296,10 +2330,27 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
   $scope.purchase_order = {payable: "false"};
 
-  var inventory_request = connect.req('inventory', ['id', 'code', 'text', 'price', 'type_id'], 'type_id', 0);
+  var inventory_query = {
+    'tables' : {
+      'inventory' : {
+        'columns' : [
+          'id',
+          'code',
+          'text',
+          'price',
+          'type_id'
+        ]
+      }
+    },
+    'where' : [
+      'inventory.type_id=0'
+    ]
+  }
+  var inventory_request = connect.req(inventory_query);
 
-  var sales_request = connect.req('sale', ['id']);
-  var purchase_request = connect.req('purchase', ['id']);
+
+  var sales_request = connect.req({'tables' : {'sale' : { 'columns' : ['id']}}});
+  var purchase_request = connect.req({'tables' : {'purchase' : { 'columns' : ['id']}}});
 
   var creditor_query = {
     'e' : [{

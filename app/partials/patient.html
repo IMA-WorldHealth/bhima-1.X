@@ -1,107 +1,161 @@
 <link rel="stylesheet" href="css/patient.css"/>
 <div class="container">
   <div class="row">
-    <div class="col-xs-5">
-      <div class="page-header">
-        <h1>Register Patient <small>{{patient.first_name}} {{patient.last_name}}</small></h1>
+    <div class="col-xs-12">
+      <div class="bika-header">
+        <h1>Register Patient
+          <small>{{patient.first_name}} {{patient.last_name}}</small>
+        </h1>
       </div>
-    </div> 
+    </div>
   </div>
   <div class="row">
-    <code>{{patient}}</code>
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util">
+        <div class="row">
+          <div class="col-xs-12">
+
+            <div class="pull-right">
+
+              <a href='/#/patient_records/' class="btn btn-default"><span class="glyphicon glyphicon-list"></span> View
+                Patient Records</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="content">
+      <div class="col-xs-7">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-user"></span> Details
+          </div>
+          <div class="panel-body" style="overflow: auto">
+            <div class="col-xs-6 hack-left">
+            <form role="form" name="form">
+              <div class="form-group">
+                <label for="first-name">First Name</label>
+                <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name" required>
+              </div>
+
+              <div class="form-group">
+                <label for="second-name">Second Name</label>
+                <input type="text" class="form-kapok" id="second-name" ng-model="patient.last_name" required>
+              </div>
+
+              <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" class="form-kapok" id="dob" ng-model="patient.dob">
+              </div>
+
+              <div class="form-group">
+                <div class="radio-inline">
+                  <label>
+                    <input type="radio" name="sex_select" id="male" value="male" checked ng-model="patient.sex"
+                           required>
+                    Male
+                  </label>
+                </div>
+                <div class="radio-inline">
+                  <label>
+                    <input type="radio" name="sex_select" id="female" value="female" ng-model="patient.sex" required>
+                    Female
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="location_select">location</label>
+                <select required class="form-kapok" id="location_select" ng-model="patient.location_id"
+                        ng-options="l.id as formatLocation(l) for l in location_model.data">
+                  <option value="">--Select Location--</option>
+                </select>
+              </div>
+              <!--div class="form-group">
+                <label for="village">Village</label>
+                <input type="text" class="form-kapok" id="village" ng-model="patient.village" required>
+              </div>
+
+              <div class="form-group">
+                <label for="region">Region</label>
+                <input type="text" class="form-kapok" id="region" ng-model="patient.zone" required>
+              </div>
+            </form-->
+            </form>
+              </div>
+
+            <div class="col-xs-6">
+
+              <div id="image-placeholder">
+                <img src="assets/placeholder.gif"  width="300" height="300">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-xs-5">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Optional Information
+          </div>
+          <div class="panel-body">
+            <form role="form">
+              <div class="form-group">
+                <label for="phone">Phone No.</label>
+                <input type="text" class="form-kapok" id="phone" ng-model="patient.phone">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-kapok" id="email" ng-model="patient.email">
+              </div>
+
+              <div class="form-group">
+                <label for="parent">Parent's Name</label>
+                <input type="text" class="form-kapok" id="parent" ng-model="patient.parent_name">
+              </div>
+              <div class="form-group">
+                <label for="religion">Religion</label>
+                <input type="text" class="form-kapok" id="religion" ng-model="patient.religion">
+              </div>
+              <div class="form-group">
+                <label for="marital">Marital Status</label>
+                <input type="text" class="form-kapok" id="marital" ng-model="patient.marital_status">
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Notes
+          </div>
+          <textarea class="form-kapok note"></textarea>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="row">
-    <div class="col-xs-3">
-      <div class="panel panel-primary">
-        <div class="panel-body">
-          <form role="form" name="form">
-            <div class="form-group">
-              <label for="first-name">First Name</label>
-              <input type="text" class="form-control" id="first-name" ng-model="patient.first_name" required>
-            </div>
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util-bottom">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="pull-right">
 
-            <div class="form-group">
-              <label for="second-name">Second Name</label>
-              <input type="text" class="form-control" id="second-name" ng-model="patient.last_name" required>
-            </div>
+              <a ng-click="update(patient)"
+                 ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil"></span> Register Patient
+              </a>
 
-            <div class="form-group">
-              <div class="radio-inline">
-                <label>
-                  <input type="radio" name="sex_select" id="male" value="male" checked ng-model="patient.sex" required>
-                  Male
-                </label>
-              </div>
-              <div class="radio-inline">
-                <label>
-                  <input type="radio" name="sex_select" id="female" value="female" ng-model="patient.sex" required>
-                  Female
-                </label>
-              </div>
             </div>
-
-            <div class="form-group">
-              <label for="location_select">location</label>
-              <select required class="form-control" id="location_select" ng-model="patient.location_id" ng-options="l.id as formatLocation(l) for l in location_model.data">
-                <option value="">--Select Location--</option>
-              </select>
-            </div>
-            <!--div class="form-group">
-              <label for="village">Village</label>
-              <input type="text" class="form-control" id="village" ng-model="patient.village" required>
-            </div>
-
-            <div class="form-group">
-              <label for="region">Region</label>
-              <input type="text" class="form-control" id="region" ng-model="patient.zone" required>
-            </div>
-          </form-->
+          </div>
         </div>
-      </div>
-      <button class="btn btn-lg btn-default" ng-click="update(patient)" ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()">Register</button>
-    </div>
-    <div class="col-xs-5">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Optional Information
-        </div>
-        <div class="panel-body">
-          <form role="form">
-            <div class="form-group">
-              <label for="phone">Phone No.</label>
-              <input type="text" class="form-control" id="phone" ng-model="patient.phone">
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" class="form-control" id="email" ng-model="patient.email">
-            </div>
-            <div class="form-group">
-              <label for="dob">Date of Birth</label>
-              <input type="date" class="form-control" id="dob" ng-model="patient.dob">
-            </div>
-            <div class="form-group">
-              <label for="parent">Parent's Name</label>
-              <input type="text" class="form-control" id="parent" ng-model="patient.parent_name">
-            </div>
-            <div class="form-group">
-              <label for="religion">Religion</label>
-              <input type="text" class="form-control" id="religion" ng-model="patient.religion">
-            </div>
-            <div class="form-group">
-              <label for="marital">Marital Status</label>
-              <input type="text" class="form-control" id="marital" ng-model="patient.marital_status">
-            </div>
-          </form> 
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Notes
-        </div>
-        <textarea class="form-control note"></textarea>
       </div>
     </div>
   </div>
+
 </div>

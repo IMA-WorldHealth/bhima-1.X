@@ -80,10 +80,10 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="pull-right">
-              <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
-                <span class="glyphicon glyphicon-floppy-open"></span> Invoice for registration</a>
-              <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
-                <span class="glyphicon glyphicon-floppy-open"></span> Generate consultation papers</a>
+              <a ng-disabled='!selected' ng-click="post()" class="btn btn-default">
+                <span class="glyphicon glyphicon-list-alt"></span> Registration invoice</a>
+              <a ng-disabled='!selected' ng-click="post()" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil"></span> Generate consultation form</a>
             </div>
           </div>
         </div>

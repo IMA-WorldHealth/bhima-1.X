@@ -29,7 +29,7 @@
 
 .patient-table {
   /*FIXME pretty gross*/
-  max-height: 600px;
+  max-height: 580px;
   overflow-y: auto;
 }
 
