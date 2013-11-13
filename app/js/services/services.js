@@ -756,8 +756,6 @@
         return obj;
       }
 
-      console.log("[connect] Sending request:", JSON.stringify(query));
-
       var handle = $http.get('/data/?' + JSON.stringify(query)).then(function (returned) {
         var m = packageModel(model, returned.data);
         requests[m] = defn;
@@ -840,6 +838,14 @@
           connect_delete(this, id);
           return true;
         }
+      };
+
+      // generate id
+      model.generateid = function () {
+        var ids, id, idx = this.index;
+        ids = Object.keys(idx);
+        id = Math.max.apply(Math.max, ids) + 1;
+        return (id > 0) ? id : 1;
       };
 
       model.flush = function () {
