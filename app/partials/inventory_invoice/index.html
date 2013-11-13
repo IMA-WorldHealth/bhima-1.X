@@ -186,7 +186,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="pull-right">
-              <a ng-click="submitPurchase()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
+              <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
 
             </div>
           </div>
