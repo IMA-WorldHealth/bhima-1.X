@@ -1,17 +1,144 @@
 <link href="css/sales.css" rel="stylesheet"/>
 <div class="container">
   <div class="row">
-    <div class="col-xs-5">
-      <div class="page-header">
-        <h1>Record new Sale</h1>
+    <div class="col-xs-12">
+      <div class="bika-header">
+        <h1>Create Patient Invoice</h1>
       </div>
     </div>
-  </div> 
+  </div>
+
   <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="btn-group">
+
+            </div>
+            <div class="pull-right">
+              <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import prescription
+              </a>
+              <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-xs-5">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Detail
+        </div>
+
+        <div class="panel-body purchase-header">
+
+          <div class="form-group">
+            <label for="saledate">Invoice Date</label>
+            <input type="date" id="saledate" class="form-control" ng-model="sale_date">
+          </div>
+          <div class="form-group">
+            <label for="select-cred">Patient</label>
+            <select id="select-cred" ng-model="debtor" ng-options="formatDebtor(d) for d in debtor_model.data" class="form-control">
+              <option value="">--Select Patient--</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="radio">
+              <label>
+                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="invoice.payable">
+                Payable Immediately
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="option_payable" id="pay" value="false" checked
+                       ng-model="invoice.payable">
+                Payable by
+              </label>
+            </div>
+            <div class="input-group">
+              <select id="payable" class="form-control" ng-disabled="isPayable()">
+                <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
+                <option>14</option>
+                <option>30</option>
+              </select>
+              <span class="input-group-addon">days</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-xs-7">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Patient Invoice
+        </div>
+
+        <div class="panel-body purchase-header">
+          <div class="row">
+
+            <div class="col-xs-12">
+
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>Date</th>
+                  <th>Note</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>{{invoice_id}}</td>
+                  <td>{{sale_date}}</td>
+                  <td>{{formatText()}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <th>Patient</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>
+                    <h4><strong>{{debtor.first_name}} {{debtor.last_name}}</strong></h4>
+                    <h4>{{debtor.city}}</h4>
+                    <h4>{{debtor.region}}</h4>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <!-- <div class="row">
     <div class="col-xs-4">
       <div class="form-group">
         <label for="debitor">Debtor Account</label>
-        <select id="debitor" class="form-control" ng-options="formatDebtor(d) for d in debtor_model.data" ng_model="debtor"></select>
+        <select id="debitor" class="form-control" ng-options="formatDebtor(d) for d in debtor_model.data"
+                ng_model="debtor"></select>
       </div>
       <div class="panel panel-default">
         <div class="panel-body">
@@ -25,20 +152,20 @@
       <div class="row">
         <div class="col-lg-offset-10">
           <div class="input-group">
-              <span class="input-group-addon">#</span>
-              <input id="salesid" class="form-control" ng-model="invoice_id">
+            <span class="input-group-addon">#</span>
+            <input id="salesid" class="form-control" ng-model="invoice_id">
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-6">
-          
+
           <div class="form-group">
             <label for="saledate">Sale Date</label>
             <input type="date" id="saledate" class="form-control" ng-model="sale_date">
           </div>
 
-            <div class="form-group">
+          <div class="form-group">
             <div class="radio">
               <label>
                 <input type="radio" name="option_payable" id="immediate" value="true" ng-model="invoice.payable">
@@ -52,25 +179,25 @@
               </label>
             </div>
             <div class="input-group">
-            <select id="payable" class="form-control" ng-disabled="isPayable()">
-              <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
-              <option>14</option>
-              <option>30</option>
-            </select>
-            <span class="input-group-addon">days</span>
-          </div>
+              <select id="payable" class="form-control" ng-disabled="isPayable()">
+                &lt;!&ndash;FIXME Currently hardcoded - should these be pulled from a data set?&ndash;&gt;
+                <option>14</option>
+                <option>30</option>
+              </select>
+              <span class="input-group-addon">days</span>
+            </div>
 
-        </div>
+          </div>
         </div>
         <div class="col-xs-6">
           <label for="invoicetext">Sale Text</label>
-          <!--FIXME This shouldn't be making a call to a function - too many digests run on this page-->
+          &lt;!&ndash;FIXME This shouldn't be making a call to a function - too many digests run on this page&ndash;&gt;
           <textarea class="form-control" id="invoicetext">{{formatText()}}</textarea>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row">
+  </div>-->
+  <!--<div class="row">
     <div class="panel panel-success">
       <div class="panel-heading">
         <span>Invoice Items</span>
@@ -78,33 +205,86 @@
 
       </div>
 
-        <table class="table invoice-table">
-          <thead>
-            <tr>
-              <td class="invoice-item">Item</td>
-              <td class="invoice-desc">Description</td>
-              <td>Qty</td>
-              <td>Unit Price</td>
-              <td>Amount</td>
-            </tr>
-          </thead>
-          <tbody> 
-            <tr ng-repeat="item in inventory">
-              <td class="invoice-item"><select class="form-control" ng-change="updateItem(item)" ng-model="item.item" ng-options="l.code for l in inventory_model.data"></select></td>
-              <td class="invoice-desc"><input type="text" class="form-control" ng-model="item.text"></td>
-              <td class="invoice-quantity"><input type="number" class="form-control" ng-model="item.quantity"></td>
-              <td class="invoice-price"><input type="number" class="form-control" ng-model="item.price"></td>
-              <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
-            </tr>
-            <tr ng-show="itemsInInv()">
-              <td colspan="4"></td>
-              <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
-          </tbody>
-        </table>
+      <table class="table invoice-table">
+        <thead>
+        <tr>
+          <td class="invoice-item">Item</td>
+          <td class="invoice-desc">Description</td>
+          <td>Qty</td>
+          <td>Unit Price</td>
+          <td>Amount</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in inventory">
+          <td class="invoice-item"><select class="form-control" ng-change="updateItem(item)" ng-model="item.item"
+                                           ng-options="l.code for l in inventory_model.data"></select></td>
+          <td class="invoice-desc"><input type="text" class="form-control" ng-model="item.text"></td>
+          <td class="invoice-quantity"><input type="number" class="form-control" ng-model="item.quantity"></td>
+          <td class="invoice-price"><input type="number" class="form-control" ng-model="item.price"></td>
+          <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
+        </tr>
+        <tr ng-show="itemsInInv()">
+          <td colspan="4"></td>
+          <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
+        </tbody>
+      </table>
 
     </div>
   </div>
   <div class="row">
-      <button ng-click="generateInvoice()" class="btn btn-default btn">Generate Invoice</button>
+    <button ng-click="generateInvoice()" class="btn btn-default btn">Generate Invoice</button>
+  </div>-->
+  <div class="row">
+
+    <div class="col-xs-12">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <span>Invoice Items</span>
+          <button class="pull-right" ng-click="updateInventory()">+</button>
+
+        </div>
+
+        <table class="table table-condensed" ng-show="itemsInInv()">
+          <thead>
+          <tr>
+            <td class="invoice-item">Item</td>
+            <td class="invoice-desc">Description</td>
+            <td>Qty</td>
+            <td>Unit Price</td>
+            <td>Amount</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="item in inventory">
+            <td class="invoice-item"><select class="form-invoice" ng-change="updateItem(item)" ng-model="item.item"
+                                             ng-options="l.code for l in inventory_model.data"><option value=""">--Select Item--</option></select></td>
+            <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
+            <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
+            <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
+            <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
+          </tr>
+          <tr>
+            <td colspan="4"></td>
+            <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util-bottom">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="pull-right">
+              <a ng-disabled="!debtor || inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

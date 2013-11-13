@@ -850,7 +850,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.debtor_model = a[2];
         $scope.verify = a[3].data.id;
 
-        $scope.debtor = $scope.debtor_model.data[0]; // select default debtor
+        //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
 
         var invoice_id = createId($scope.sales_model.data);
         $scope.invoice_id = invoice_id;
@@ -878,7 +878,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.formatText = function() {
 //      FIXME String functions within digest will take hours
-      if($scope.debtor) return "PI " + $scope.invoice_id + "/" + $scope.debtor.last_name + "/" + $scope.debtor.first_name + "/" + $scope.sale_date;
+      var debtor_text = '';
+      if($scope.debtor) debtor_text = $scope.debtor.last_name + '/' + $scope.debtor.first_name;
+      return "PI " + $scope.invoice_id + "/" + debtor_text + "/" + $scope.sale_date;
     }
 
     $scope.generateInvoice = function() { 
@@ -993,7 +995,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var default_invoice = ($routeParams.recordID || -1);
     console.log("Got invoice", default_invoice);
 
-    function init() { 
+
+    function init() {
+
+      $scope.selected = null;
 
       var promise = fetchRecords();
       promise
@@ -1001,21 +1006,24 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //expose scope
         $scope.invoice_model = model;
         //Select default
+        if(default_invoice>0) $scope.select(default_invoice);
 
       }); 
 
       $scope.post = function() { 
         console.log("Request for post");
-        console.log($scope.gridOptions.selectedItems);
-        var selected = $scope.gridOptions.selectedItems;
+//        This could be an arry
+        var selected = $scope.selected;
         var request = [];
-        if(selected.length>0) { 
-          selected.forEach(function(item) { 
-            if(item.posted==0) { 
+       /* support multiple rows selected
+       if(selected.length>0) {
+          selected.forEach(function(item) {
+            if(item.posted==0) {
               request.push(item.id);
             }
           });
-        }
+        }*/
+        if(selected) request.push(selected.id);
 
         connect.journal(request)
           .then(function(res) {
@@ -1029,16 +1037,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.select = function(id) {
-      //model.get() would not provide index in an un-ordered object
-      angular.forEach($scope.invoice_model.data, function(item, index) {
-        console.log(item.id, id);
-        if(item.id==id) {
-          $scope.gridOptions.selectRow(index, true);
-          var g = $scope.gridOptions.ngGrid;
-          g.$viewport.focus();
-          return;
-        }
-      });
+      $scope.selected = $scope.invoice_model.get(id);
+      console.log('selected', $scope.selected);
     }
 
     function invoicePosted(ids) {
@@ -1077,6 +1077,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return deferred.promise;
     }
 
+
     init();
   });
 
@@ -1085,29 +1086,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     var patient = ($routeParams.patientID || -1);
 
+
     function init() { 
       var promise = fetchRecords();
 
-
       $scope.patient_model = {};
-      $scope.patient_filter = {
-        filterText: ""
-      };
-
-      $scope.gridOptions = { 
-        multiSelect: false,
-        data : 'patient_model.data',
-
-        columnDefs : [{field:'name', display:'name'},
-                      {field:'dob', display:'dob', cellFilter: 'date: "dd/MM/yyyy"'},
-                      {field:'sex', display:'gender'},
-                      {field:'religion', display:'religion'},
-                      {field:'marital_status', display:'marital status'},
-                      {field:'phone', display:'phone'},
-                      {field:'email', display:'email'}],
-      //FIXME Search seems unpredictable - check filter settings
-      filterOptions: $scope.patient_filter
-      };
+      $scope.selected = null;
+      $scope.patient_filter = {};
 
       promise
       .then(function(model) { 
@@ -1115,9 +1100,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         
         //expose scope 
         $scope.patient_model = filterNames(model); //ng-grid
-        $scope.gridOptions.selectRow(1, true);
-        console.log($scope.gridOptions);
         //Select default
+
       }); 
     }
 
@@ -1142,21 +1126,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return model;
     }
 
-    $scope.$on('ngGridEventData', function(){
-      if(patient >= 0) $scope.select(patient);
-    });
-
     $scope.select = function(id) { 
-      //model.get() would not provide index in an un-ordered object
-      angular.forEach($scope.patient_model.data, function(item, index) {
-        console.log(item.id, id); 
-        if(item.id==id) { 
-          $scope.gridOptions.selectRow(index, true);
-          var g = $scope.gridOptions.ngGrid;
-          g.$viewport.focus();
-          return;
-        }   
-      });
+      $scope.selected = $scope.patient_model.get(id);
     }
 
     init();

@@ -40,3 +40,22 @@
 .hack-left {
   margin-left: -15px; !important
 }
+
+.posting {
+  color: #018107;
+}
+
+.invoice-table {
+  /*FIXME pretty gross*/
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/*ng-cloak fix*/
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
+.rowSelected {
+  background-color: #dff0d8;
+}

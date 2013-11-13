@@ -19,10 +19,12 @@
 #kpk-sidebar h2 { 
   font-family: "Lucida Sans Unicode";
   padding-left: 0em;
-  font-size: 5em;
-  letter-spacing: 0.2em;
+  font-size: 4em;
+  letter-spacing: 0.1em;
   text-align: center;
-}   
+
+
+}
 
 #kpk-sidebar h2 span { 
    color: #01AC07;
