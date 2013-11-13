@@ -2402,15 +2402,15 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
   var creditor_query = {
     'e' : [{
-      t : 'creditor',
-      c : ['id', 'name', 'country_id', 'account_id']
+      t : 'supplier',
+      c : ['id', 'name', 'location_id', 'creditor_id']
     }, {
       t : 'location',
-      c : ['city', 'region', 'country_code']
+      c : ['city', 'region', 'country_id']
     }],
     'jc' : [{
-      ts : ['location', 'creditor'],
-      c : [ 'id', 'country_id']
+      ts : ['location', 'supplier'],
+      c : [ 'id', 'location_id']
     }]
   };
 
