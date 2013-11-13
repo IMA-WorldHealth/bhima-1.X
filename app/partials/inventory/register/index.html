@@ -1,18 +1,17 @@
 <link rel="stylesheet" href="partials/inventory/register/index.css">
-<header>
-  <h2 style="display: inline;">Stock Registration</h2>
-  <div class="btn-group pull-right">
-    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-      Actions <span class="caret"></span>
+<header class="kpk-header">
+  <h2>Stock Registration</h2>
+  <div class="dropdown pull-right">
+    <button type="button" class="btn btn-default dropdown-toggle">
+      <i class="glyphicon glyphicon-th"></i>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu kpk-menu">
       <li><a href="" ng-click="newInventoryGroup()"><i class="glyphicon glyphicon-barcode"></i>Add Inventory Group</a></li>
       <li><a href=""><i class="glyphicon glyphicon-tags"></i>Add Price List</a></li>
       <li><a href="" ng-click="newUnitType()"><i class="glyphicon glyphicon-list-alt"></i>Add Unit Type</a></li>
     </ul>
   </div>
 </header>
-<hr />
 
 <div class="container">
   <form name="inventory" novalidate>

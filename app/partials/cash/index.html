@@ -1,8 +1,19 @@
 <link rel="stylesheet" href="partials/cash/index.css">
-<h2>Cash Box</h2>
-<hr />
-<div class="container">
 
+<header class="kpk-header">
+  <h2>Cash Box</h2>
+  <div class="dropdown pull-right">
+    <button type="button" class="btn btn-default dropdown-toggle">
+      <i class="glyphicon glyphicon-th"></i>
+    </button>
+    <ul class="dropdown-menu kpk-menu">
+      <li><a href=""><i class="glyphicon glyphicon-search"></i>Search</a></li>
+      <li><a href=""><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="container">
   <!-- search for invoice by invoice number or patient id -->
   <div class="row">
     <div class="col-xs-12" style="padding-right: 0;">
@@ -17,6 +28,7 @@
           list="invoices"
           typeahead="invoice.id as invoice.note for invoice in models['sale-debitor']"
           typeahead-on-select="select(invoice.id)"
+          ng-disabled="submitted"
         >
       </div>
     </div>
@@ -25,24 +37,28 @@
   <div class="row">
     <!-- make a list of outstanding invoices -->
     <div class="col-xs-2">
-      <div class="panel panel-default">
+      <div ng-switch on="hasSale" class="panel panel-default">
         <div class="panel-heading">
           <span>Outstanding Invoices</span>  
         </div>
-        <table class="table">
+        <table ng-switch-when="true" class="table table-hover">
           <thead>
             <tr>
               <td>ID</td>
               <td>Amount</td>
             </tr>
           </thead>
-          <tbody style="max-height: 200px; overflow-y: scroll;">
-          <tr ng-repeat="inv in models['sale-debitor']" ng-click="select(inv.id,$index)" ng-class="{'chosen': $index==chosen}">
+          <tbody>
+            <tr ng-repeat="inv in models['sale-debitor'] | limitTo: 8" ng-click="select(inv.id)" ng-class="{'kpk-nav-select': inv.id==slip.invoice_id}">
               <td>{{inv.id}}</td>
               <td>{{inv.cost | currency }}</td>
             </tr>
           </tbody>
         </table>
+        
+        <div ng-switch-when="false" class="alert alert-info">
+          <b>No Outstanding Invoices:</b>  You can create more invoices in <a href="#/sales/">Sales</a>
+        </div>
       </div>
     </div>
 
@@ -141,18 +157,70 @@
           </div>
         </div>
       </div>
+
+
+      <br />
+
+      <!-- past invoices -->
+      <div class="row">
+        <div ng-switch on="hasCash" class="panel panel-default">
+          <div class="panel-heading">
+            Paid Invoices
+          </div>
+          <table class="table table-bordered" ng-switch-when="true">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Bon Type</th>
+                <th>Bon Number</th>
+                <th>Text</th>
+                <th>Date</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Amount</th>
+                <th>Currency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="row in models['cash-currency'] | limitTo: 5" ng-click="selectPaid(row.invoice_id)" ng-class="{'kpk-selected': row.invoice_id==paid_id }">
+                <td>{{row.invoice_id}}</td>
+                <td>{{row.bon}}</td>
+                <td>{{row.bon_num}}</td>
+                <td>{{row.text}}</td>
+                <td>{{row.date}}</td>
+                <td>{{row.debit_account}}</td>
+                <td>{{row.credit_account}}</td>
+                <td>{{row.amount}}</td>
+                <td>{{row.currency_id}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div ng-switch-when="false" class="alert alert-info">
+            <b>No paid invoices found.</b>  You can <b>add</b> a new one above.
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
       <!-- under form buttons -->
       <div class="row">
-        <div class="col-sm-offset-9 col-xs-3">
+        <div class="col-sm-offset-8 col-xs-4">
+          <button type="button" class="btn btn-default" ng-click="clear()">
+            <i class="glyphicon glyphicon-plus" style="padding-right: 0.5em"></i>New
+          </button>
           <button form="receipt" type="submit" class="btn btn-default" ng-disabled="!receipt.$valid || !slip.credit_account || submitted" ng-click="validate()">
-            Submit
+            <i class="glyphicon glyphicon-save" style="padding-right: 0.5em;"></i>Submit
           </button>
           <!-- TODO: Make a review button hooked up to the 'review' subform -->
           <button form="receipt" type="reset" class="btn btn-default" ng-click="clear()">
-            Clear
+            <i class="glyphicon glyphicon-trash" style="padding-right: 0.5em;"></i>Clear
           </button>
         </div>
       </div>
+      
+      <hr />
+
     </div>
   </div>
 </div>

@@ -1,20 +1,4 @@
 
-header {
-  padding: 0.75em;
-}
-
-header > h2 {
-  display: inline;
-}
-
-header li i {
-  padding-right: 0.5em;
-}
-
-.top-bar {
-  padding-bottom: 0.25em;
-}
-
 .content {
   margin:0;
 }
