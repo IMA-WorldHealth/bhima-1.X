@@ -58,7 +58,7 @@
         </thead>
 
         <tbody>
-          <tr ng-repeat="invoice in invoice_model.data | filter: invoice_filter.filter">
+          <tr ng-class='{rowSelected: selected.id==invoice.id}' ng-click="select(invoice.id)" ng-repeat="invoice in invoice_model.data | filter: invoice_filter.filter">
 
             <td>{{invoice.id}}</td><td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td><td>{{invoice.cost | currency}}</td>
             <td>{{invoice.debitor_id}}</td>
@@ -82,7 +82,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="pull-right">
-              <a disabled ng-click="" class="btn btn-default">
+              <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
               <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
 
             </div>

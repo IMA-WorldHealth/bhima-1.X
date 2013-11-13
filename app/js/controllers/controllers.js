@@ -982,7 +982,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var default_invoice = ($routeParams.recordID || -1);
     console.log("Got invoice", default_invoice);
 
-    function init() { 
+
+    function init() {
+
+      $scope.selected = null;
 
       var promise = fetchRecords();
       promise
@@ -990,21 +993,24 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //expose scope
         $scope.invoice_model = model;
         //Select default
+        if(default_invoice>0) $scope.select(default_invoice);
 
       }); 
 
       $scope.post = function() { 
         console.log("Request for post");
-        console.log($scope.gridOptions.selectedItems);
-        var selected = $scope.gridOptions.selectedItems;
+//        This could be an arry
+        var selected = $scope.selected;
         var request = [];
-        if(selected.length>0) { 
-          selected.forEach(function(item) { 
-            if(item.posted==0) { 
+       /* support multiple rows selected
+       if(selected.length>0) {
+          selected.forEach(function(item) {
+            if(item.posted==0) {
               request.push(item.id);
             }
           });
-        }
+        }*/
+        if(selected) request.push(selected.id);
 
         connect.journal(request)
           .then(function(res) {
@@ -1018,16 +1024,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.select = function(id) {
-      //model.get() would not provide index in an un-ordered object
-      angular.forEach($scope.invoice_model.data, function(item, index) {
-        console.log(item.id, id);
-        if(item.id==id) {
-          $scope.gridOptions.selectRow(index, true);
-          var g = $scope.gridOptions.ngGrid;
-          g.$viewport.focus();
-          return;
-        }
-      });
+      $scope.selected = $scope.invoice_model.get(id);
+      console.log('selected', $scope.selected);
     }
 
     function invoicePosted(ids) {
@@ -1066,6 +1064,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return deferred.promise;
     }
 
+
     init();
   });
 
@@ -1074,16 +1073,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     var patient = ($routeParams.patientID || -1);
 
+    $scope.selected = null;
+
     function init() { 
       var promise = fetchRecords();
 
 
       $scope.patient_model = {};
-      $scope.patient_filter = {
-        filterText: ""
-      };
+      $scope.patient_filter = {};
 
-      $scope.gridOptions = { 
+      $scope.gridOptions = {
         multiSelect: false,
         data : 'patient_model.data',
 
@@ -1136,16 +1135,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     });
 
     $scope.select = function(id) { 
-      //model.get() would not provide index in an un-ordered object
-      angular.forEach($scope.patient_model.data, function(item, index) {
-        console.log(item.id, id); 
-        if(item.id==id) { 
-          $scope.gridOptions.selectRow(index, true);
-          var g = $scope.gridOptions.ngGrid;
-          g.$viewport.focus();
-          return;
-        }   
-      });
+      $scope.selected = $scope.patient_model.get(id);
     }
 
     init();

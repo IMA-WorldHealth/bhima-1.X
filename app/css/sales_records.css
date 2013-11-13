@@ -55,3 +55,8 @@
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
 }
+
+.rowSelected {
+  background-color: #dff0d8;
+
+}
