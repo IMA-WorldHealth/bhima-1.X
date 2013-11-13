@@ -1,12 +1,12 @@
- // Controller.js
+// Controller.js
 (function(angular) {
   'use strict'; 
-  var controllers = angular.module('bika.controllers', []);
+  var controllers = angular.module('kpk.controllers', []);
 
 //************************************************************************************
 //******************************* TREE CONTROLLER ************************************
 //************************************************************************************  
-controllers.controller('treeController', function($scope, $q, $location, appcache, bikaConnect) {    
+controllers.controller('treeController', function($scope, $q, $location, appcache, kpkConnect) {    
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
@@ -39,7 +39,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
       var request = {}; 
       request.e = [{t : 'unit', c : ['id', 'name']}];
       request.c = [{t:'unit', cl:'parent', v:0, z:'='}];
-      bikaConnect.get('/tree?',request).then(function(data) { 
+      kpkConnect.get('/tree?',request).then(function(data) { 
         deferred.resolve(data);
       });
       return deferred.promise;
@@ -49,7 +49,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
       var request = {}; 
       request.e = [{t : 'unit', c : ['id', 'name', 'url']}];
       request.c = [{t:'unit', cl:'parent', v:role.id, z:'='}];
-      bikaConnect.get('/tree?',request).then(function(data) {
+      kpkConnect.get('/tree?',request).then(function(data) {
           callback(role, data); 
         
       });
@@ -61,7 +61,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
 //************************************************************************************
 //******************************* USER CONTROLLER ************************************
 //************************************************************************************
-controllers.controller('userController', function($scope, $q, bikaConnect) {
+controllers.controller('userController', function($scope, $q, kpkConnect) {
   //initilaisation var
   
   $scope.selected = {};
@@ -73,17 +73,17 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
   //population model de table
   var request = {}; 
   request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
-  bikaConnect.get('/data/?',request).then(function(data) { 
+  kpkConnect.get('/data/?',request).then(function(data) { 
     $scope.model = data;
   });
 
   //population model de role
-  bikaConnect.fetch("unit", ["id", "name"], 'parent', 0).then(function(data){
+  kpkConnect.fetch("unit", ["id", "name"], 'parent', 0).then(function(data){
     $scope.roles = data;
   });
 
   //population model d'unite
-  bikaConnect.fetch("unit", ["id", "name", "description", "parent"]).then(function(data) { 
+  kpkConnect.fetch("unit", ["id", "name", "description", "parent"]).then(function(data) { 
     $scope.units = data;
     for(var i=0; i<$scope.units.length; i++){
       $scope.units[i].chkUnitModel = false;
@@ -117,7 +117,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     var request = {}; 
     request.e = [{t : 'permission', c : ['id_unit']}];
     request.c = [{t:'permission', cl:'id_user', v:idUser, z:'='}];
-    bikaConnect.get('/data/?', request).then(function (data){      
+    kpkConnect.get('/data/?', request).then(function (data){      
       def.resolve(data);
     });
     return def.promise;
@@ -184,7 +184,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     result.then(function(resp){
       if(resp !== true){
         $scope.showbadusername = false;
-        bikaConnect.send('user', [{id:'',
+        kpkConnect.send('user', [{id:'',
                    username: $scope.selected.username,
                    password: $scope.selected.password,
                    first: $scope.selected.first,
@@ -195,10 +195,10 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     var request = {}; 
         request.e = [{t : 'user', c : ['id']}];
         request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
-        bikaConnect.get('data/?',request).then(function(data) {           
+        kpkConnect.get('data/?',request).then(function(data) {           
           for(var i = 0; i<$scope.units.length; i++){
             if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
-              bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
+              kpkConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
             }
           }         
     
@@ -237,7 +237,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
     function refreshUserModel(){
     var request = {}; 
     request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
-    bikaConnect.get('data/?',request).then(function(data) { 
+    kpkConnect.get('data/?',request).then(function(data) { 
     $scope.model = data;
     $scope.selected={};
     $scope.confirmpw = "";
@@ -248,7 +248,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 
     function updateUser(){
       $scope.showbadusername = false;
-      bikaConnect.get('data/?', {t:'permission', ids:{id_user:[$scope.selected.id]}, action:'DEL'});
+      kpkConnect.get('data/?', {t:'permission', ids:{id_user:[$scope.selected.id]}, action:'DEL'});
       var sql_update = {t:'user', 
                         data:[{id:$scope.selected.id,
                                username: $scope.selected.username,
@@ -259,10 +259,10 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
                              ], 
                         pk:["id"]
                        };
-      bikaConnect.update(sql_update);
+      kpkConnect.update(sql_update);
       for(var i = 0; i<$scope.units.length; i++){
           if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
-            bikaConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
+            kpkConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
           }
           } 
 
@@ -277,7 +277,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
       var request = {}; 
       request.e = [{t : 'user', c : ['id']}];
       request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'='}];
-      bikaConnect.get('data/?',request).then(function(data) {
+      kpkConnect.get('data/?',request).then(function(data) {
        (data.length > 0)?def.resolve(true):def.resolve(false);    
     });
       return def.promise;
@@ -308,7 +308,7 @@ controllers.controller('userController', function($scope, $q, bikaConnect) {
 //***********************************TRANSACTION**************************************
 //************************* TRANSACTION CONTROLLER ***********************************
 //************************************************************************************
-controllers.controller('transactionController', function($scope, $rootScope, $location, bikaConnect, bikaUtilitaire, appstate) { 
+controllers.controller('transactionController', function($scope, $rootScope, $location, kpkConnect, kpkUtilitaire, appstate) { 
     //les variables
     $scope.account_model = {};
     $scope.a_select = {};
@@ -328,7 +328,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
         var req_db = {};
         req_db.e = [{t:'account', c:['id', 'account_txt']}];
         req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:enterprise_id}];
-        bikaConnect.get('/data/?', req_db).then(function(data){
+        kpkConnect.get('/data/?', req_db).then(function(data){
           $scope.account_model = data;
         });
     }
@@ -337,9 +337,9 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
         var req_db = {};
         req_db.e = [{t:'period', c:['period_start']}];
         req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-        bikaConnect.get('/data/?', req_db).then(function(data){
+        kpkConnect.get('/data/?', req_db).then(function(data){
           for(var i = 0; i<data.length; i++){
-            data[i]['period_start'] = bikaUtilitaire.formatDate(data[i].period_start);
+            data[i]['period_start'] = kpkUtilitaire.formatDate(data[i].period_start);
           }
           $scope.periodFroms = data;
         });
@@ -349,9 +349,9 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
         var req_db = {};
         req_db.e = [{t:'period', c:['period_stop']}];
         req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-        bikaConnect.get('/data/?', req_db).then(function(data){
+        kpkConnect.get('/data/?', req_db).then(function(data){
           for(var i = 0; i<data.length; i++){
-            data[i]['period_stop'] = bikaUtilitaire.formatDate(data[i].period_stop);
+            data[i]['period_stop'] = kpkUtilitaire.formatDate(data[i].period_stop);
           }
           $scope.periodTos = data;
         });
@@ -370,9 +370,9 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
                    {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
                   ];
       req_db.c = [{t : 'transaction', cl : 'period_id', v : period_id, z : '='}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
+      kpkConnect.get('/data/?', req_db).then(function(data){
         for(var i = 0; i<data.length; i++){
-        data[i].date = bikaUtilitaire.formatDate(data[i].date);
+        data[i].date = kpkUtilitaire.formatDate(data[i].date);
         }
         $scope.infostran = data;
       });
@@ -390,16 +390,16 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
                 {ts: ['currency', 'transaction'], c:['id', 'currency_id'], l:'AND'}
                ],
           c = [{t : 'infotransaction', cl: 'account_id', v : dep.accountID, z : '=', l : 'AND'},
-               {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.df), z : '>=', l : 'AND'},
-               {t : 'transaction', cl : 'date', v : bikaUtilitaire.convertToMysqlDate(dep.dt), z : '<='}
+               {t : 'transaction', cl : 'date', v : kpkUtilitaire.convertToMysqlDate(dep.df), z : '>=', l : 'AND'},
+               {t : 'transaction', cl : 'date', v : kpkUtilitaire.convertToMysqlDate(dep.dt), z : '<='}
               ];
           var req_db={};
           req_db.e=e;
           req_db.jc = jc;
           req_db.c = c;
-          bikaConnect.get('/data/?', req_db).then(function(data){
+          kpkConnect.get('/data/?', req_db).then(function(data){
             for(var i = 0; i<data.length; i++){
-              data[i].date = bikaUtilitaire.formatDate(data[i].date);
+              data[i].date = kpkUtilitaire.formatDate(data[i].date);
             }
             $scope.infostran = data;
           });
@@ -445,14 +445,14 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 //********************** UTIL CONTROLLER ********************************************
 //***********************************************************************************
  
-controllers.controller('utilController', function($rootScope, $scope, $q, bikaConnect, appstate, bikaUtilitaire) { 
+controllers.controller('utilController', function($rootScope, $scope, $q, kpkConnect, appstate, kpkUtilitaire) { 
   /////
   // summary: 
   //  Responsible for all utilities (buttons/ selects etc.) on the application side bar
   //  
   // TODO 
   //  -All operations on models should be local, and then exposed to scope
-  //  -Should use connect instead of bikaConnect (soon to be deleted)
+  //  -Should use connect instead of kpkConnect (soon to be deleted)
   /////
   $scope.enterprise_model = {};
   $scope.fiscal_model = {};
@@ -477,10 +477,10 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     var req_db = {};
     req_db.e = [{t:'period', c:['id', 'period_start', 'period_stop']}];
     req_db.c = [{t:'period', cl:'fiscal_year_id', z:'=', v:fiscal_id}];
-    bikaConnect.get('/data/?',req_db).then(function(data){
+    kpkConnect.get('/data/?',req_db).then(function(data){
       for(var i = 0; i<data.length; i++){
-        data[i].period_start = bikaUtilitaire.formatDate(data[i].period_start);
-        data[i].period_stop = bikaUtilitaire.formatDate(data[i].period_stop);
+        data[i].period_start = kpkUtilitaire.formatDate(data[i].period_start);
+        data[i].period_stop = kpkUtilitaire.formatDate(data[i].period_stop);
       }
       $scope.period_model = data;
       $scope.p_select = $scope.period_model[0];
@@ -493,7 +493,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     var deferred = $q.defer();
     var req_db = {};
     req_db.e = [{t:'enterprise', c:['id', 'name', 'region']}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
+    kpkConnect.get('/data/?', req_db).then(function(data){
       $scope.enterprise_model = data;
       $scope.e_select = $scope.enterprise_model[1]; //Select default enterprise (should be taken from appcache if multiple enterprises are used)
       deferred.resolve($scope.e_select.id);
@@ -506,7 +506,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, bikaCo
     var req_db = {};
     req_db.e = [{t:'fiscal_year', c:['id', 'fiscal_year_txt']}];
     req_db.c = [{t:'fiscal_year', cl:'enterprise_id', z:'=', v:enterprise_id}];
-    bikaConnect.get('/data/?',req_db).then(function(data){
+    kpkConnect.get('/data/?',req_db).then(function(data){
       $scope.fiscal_model = data;
       $scope.f_select = $scope.fiscal_model[0];
       deferred.resolve($scope.f_select.id);
@@ -543,7 +543,7 @@ controllers.controller('appController', function($scope) {
 //********************* ADD CONTROLLER ************************************
 //*************************************************************************
 
-controllers.controller('addController', function($scope, $modal, bikaConnect, appstate) {
+controllers.controller('addController', function($scope, $modal, kpkConnect, appstate) {
 
   $scope.selectedAccounts = {};  
   $scope.rep = false;
@@ -555,7 +555,7 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
   function fillCurrencies(){
       var req_db = {};
       req_db.e = [{t:'currency', c:['id', 'name', 'symbol']}];
-      bikaConnect.get('/data/?', req_db).then(function(data){
+      kpkConnect.get('/data/?', req_db).then(function(data){
         $scope.currencies = data;
       });
   }
@@ -564,7 +564,7 @@ controllers.controller('addController', function($scope, $modal, bikaConnect, ap
     var req_db = {};
     req_db.e = [{t:'account', c:['account_txt', 'id']}];
     req_db.c = [{t:'account', cl:'enterprise_id', z:'=', v:idEnterprise}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
+    kpkConnect.get('/data/?', req_db).then(function(data){
       $scope.comptes = data;
       for(var i=0; i < $scope.comptes.length; i++){
         $scope.comptes[i].sltd = false;
@@ -1573,110 +1573,121 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
   
   // Chart of Accounts controllers
-  controllers.controller('chartController', function($scope, $q, $modal, data, appstate) {
+  controllers.controller('accountController', function($scope, $q, $modal, data, appstate) {
+    var pre = "[Accounts Ctlr]"; // for DEBUGGING
+    
+    function getData () {
+      console.log(pre, "getData fired.");
 
-    // import account
-    var account_spec = {
-      identifier: 'id',
-      primary: 'account',
-      tables: {
-        'account': {
-          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed'],
+      var account_defn, account_type_defn, 
+          account_store, type_store,
+          enterpriseid = appstate.get("enterprise").id;
+
+      account_defn = {
+        identifier: 'id',
+        primary: 'account',
+        tables: {
+          'account': {
+            columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
+          },
+          'account_type': {
+            columns: ['type'] 
+          }
         },
-        'account_type': {
-          columns: ['type'] 
-        }
-      },
-      join: ['account.account_type_id=account_type.id'],
-      where: ["account.enterprise_id=" + 101], //FIXME
-      autosync: true
-    };
+        join: ['account.account_type_id=account_type.id'],
+        where: ["account.enterprise_id=" + enterpriseid],
+        autosync: true
+      };
 
-    // import account_type 
-    var account_type_spec = {
-      identifier: 'id',
-      tables: {
-        'account_type' : {
-          columns: ['id', 'type']
-        }
-      },
-      autosync: true
-    };
+      account_type_defn = {
+        identifier: 'id',
+        tables: {
+          'account_type' : {
+            columns: ['id', 'type']
+          }
+        },
+        autosync: false 
+      };
+        
+      account_store = data.register(account_defn);
+      type_store = data.register(account_type_defn);
 
-    // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
-
-    var account_store = data.register(account_spec);
-    var type_store = data.register(account_type_spec);
-    console.log("account_store", account_store);
-    console.log("type_store", type_store);
-
-    // OMG SYNTAX
-    $q.all([
-      account_store,
-      type_store
-    ]).then(init);
-
-    function init (arr) {
-      $scope.account_model = arr[0].data;
-      $scope.type_model = arr[1].data;
-      console.log($scope.account_model);
+      return $q.all([account_store, type_store]);
     }
 
-    // FIXME: Find a better name, etc.
-    $scope.map = function (id) {
-      return (id == 1) ? "Fixed" : "Relative";
-    };
+    function initGrid () {
+      console.log(pre, "initGrid fired.");
+      var grid, columns, options, dataview;
+     
+      // dataview config 
+      dataview = new Slick.Data.DataView();
 
-    // ng-grid options
-    $scope.gridOptions = {
-      data: 'account_model',
-      columnDefs: [
-        {field: 'id', displayName: "Account Number"},
-        {field: 'account_txt', displayName: "Account Text"},
-        {field: 'account_type_id', displayName: "Account Type",
-          cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
-          editableCellTemplate: '<div><select style="padding:0;margin:0;height:100%;width:100%;" ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
-          enableCellEdit: true
-        },
-        {field: 'fixed', displayName: 'Fixed/Relative',
-          cellTemplate: '<div class="ngCellText">{{map(row.getProperty("fixed"))}}</div>',
-          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.fixed" ng-change="fixedRow(row)"><option value="0">Relative</option><option value="1">Fixed</option></select></div>',
-          enableCellEdit: true
-        },
-        {field: 'locked', displayName: "Locked",
-          cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
-        }
-      ],
-      enableRowSelection:false,
-      enableColumnResize: true
-    };
+      dataview.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render(); 
+      });
 
-    $scope.updateRow = function(row) {
-      // HACK HACK HACK
-      row.entity.type = type_store.get(row.entity.account_type_id).type;
-      account_store.put(row.entity);
-      console.log($scope.account_model[row.rowIndex]);
-    };
+      dataview.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidate(args.rows);
+        grid.render();
+      });
 
-    // dialog controller
-    $scope.showDialog = function() {
+      columns = [
+        {id: "id"       , name: "Account Number"   , field: "id", sortable: true},
+        {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
+        {id: "type"     , name: "Account Type"     , field: "type"},
+        {id: "category" , name: "Account Category" , field: "account_category"},
+        {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"},
+        {id: "locked"   , name: "Locked"           , field: "locked", sortable: true}
+      ];
+
+      options = {
+        editable             : true,
+        autoEdit             : false,
+        asyncEditorLoading   : false,
+        enableCellNavigation : true,
+        forceFitColumns      : true
+      };
+
+      grid = new Slick.Grid("#kpk-accounts-grid", dataview, columns, options);
+
+      function sorter (e, args) {
+        var field = args.sortCol.field;
+        function sort (a, b) { return (a[field] > b[field]) ? 1 : -1; }
+        dataview.sort(sort, args.sortAsc);
+        grid.invalidate();
+      }
+
+      grid.onSort.subscribe(sorter);
+
+      return {grid: grid, dataview: dataview};
+
+    }
+
+    var promise = getData();
+ 
+    $scope.models = {};
+    var dataview, grid;
+
+    promise.then(function (a) {
+      console.log(pre, "Promise fulfilled.");
+      $scope.models.accounts = a[0].data;
+      $scope.models.types = a[1].data;
+      var setup = initGrid(); 
+      grid = setup.grid;
+      dataview = setup.dataview;
+      
+      $scope.$watch('models.accounts', function () {
+        console.log(pre, "Rebuilding dataview...");
+        dataview.setItems($scope.models.accounts);
+      });
+    });
+
+    $scope.create = function () {
       var instance = $modal.open({
-        templateUrl: "/partials/chart/templates/chart-modal.html",
+        templateUrl: "/partials/accounts/templates/chart-modal.html",
         backdrop: true,
-        controller: function($scope, $modalInstance, columns) {
-          // NOTE: THIS IS A DIFFERENT SCOPE 
-          var values = angular.copy(columns);
-          $scope.values = values;
-          // dismiss
-          $scope.close = function() {
-            $modalInstance.dismiss();
-          };
-          // submit
-          $scope.submit = function() {
-            // TODO: include validation
-            $modalInstance.close($scope.values);
-          };
-        },
+        controller: newAccountCtrl,
         resolve: {
           columns: function() {
             return $scope.columns;
@@ -1685,18 +1696,26 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       });
 
       instance.result.then(function(values) {
-        // add to the grid
         $scope.model.push(values);
-      }, function() {
-      });
+      }, function() {});
     };
 
-    $scope.config = {
-      isPaginationEnabled: true,
-      itemsByPage: 16,
-      selectionMode: 'single'
-    };
+
+    function newAccountCtrl ($scope, $modalInstance, columns) {
+       var values = angular.copy(columns);
+      $scope.values = values;
+      $scope.close = function() {
+        $modalInstance.dismiss();
+      };
+      $scope.submit = function() {
+        // TODO: include validation
+        $modalInstance.close($scope.values);
+      };
+    }
+
   });
+
+
 
   controllers.controller('inventoryController', function($scope) {
  
@@ -2028,7 +2047,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $q, bikaConnect, bikaUtilitaire){
+controllers.controller('journalController', function($scope, $q, kpkConnect, kpkUtilitaire){
   var postingListe={};
   $scope.infosJournal = [];  
    var e = [{t : 'posting_journal', c : ['id','description', 'date', 'posted', 'sale_id']},
@@ -2047,13 +2066,13 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
             ], req_db = {};
    req_db.e = e;
    req_db.jc = jc;
-   bikaConnect.get('/journal?', req_db).then(function(data){
+   kpkConnect.get('/journal?', req_db).then(function(data){
     console.log("data", data);
     $scope.infosJournal=data;
     for(var i = 0; i<data.length; i++){
      $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
-     $scope.infosJournal[i].date = bikaUtilitaire.formatDate($scope.infosJournal[i].date);
-     $scope.infosJournal[i].invoice_date = bikaUtilitaire.formatDate($scope.infosJournal[i].invoice_date); 
+     $scope.infosJournal[i].date = kpkUtilitaire.formatDate($scope.infosJournal[i].date);
+     $scope.infosJournal[i].invoice_date = kpkUtilitaire.formatDate($scope.infosJournal[i].invoice_date); 
     }
   });
 
@@ -2073,7 +2092,7 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
     var req_db = {};
     req_db.e = [{t:'posting_journal', c:['posted']}];
     req_db.c = [{t:'posting_journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
+    kpkConnect.get('/data/?', req_db).then(function(data){
       (data[0].posted == 1)?def.resolve(false):def.resolve(true);
     });
     return def.promise;
@@ -2086,14 +2105,15 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
         tabJournalID.push($scope.infosJournal[cle].id);
       }
     }
-    bikaConnect.sendTo('gl/', 'gl',tabJournalID);
+    kpkConnect.sendTo('gl/', 'gl',tabJournalID);
 
    }
 });
 //***************************************************************************************
 //***************************** CREDITORS CONTROLLER ************************************
 //***************************************************************************************
- controllers.controller('creditorsController', function($scope, $q, bikaConnect){
+
+controllers.controller('creditorsController', function($scope, $q, $modal, kpkConnect){
 
   //initialisations
   $scope.creditor={};
@@ -2102,52 +2122,94 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
   //populating creditors
   getCreditors();
 
-  //populating accountselect
-  getAccounts();
+  //populating group
+  getGroups();
 
-  //populating countries
-  getCountries();
+  //populating location
+  getLocations();
 
   //les fonctions
   function getCreditors(){
     var req_db = {};
-    req_db.e = [{t:'creditor', c:['id', 'name', 'address1', 'address2', 'country_id', 'account_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
+
+    req_db.e = [{t:'supplier', c:['id', 'name', 'address1', 'address2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
+    kpkConnect.get('/data/?', req_db).then(function(data){
       $scope.creditors = data;
     });
   }
-  function getAccounts(){
+  function getGroups(){
     var req_db = {};
-    req_db.e = [{t:'account', c:['id', 'account_txt']}];
-    req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'id', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'id', z:'<', v:500000}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
-      $scope.accounts = data;
+    req_db.e = [{t:'creditor_group', c:['id', 'group_txt', 'account_id']}];
+    kpkConnect.get('/data/?', req_db).then(function(data){
+      $scope.groups = data;
     });
   }
 
-  function getCountries(){
+  function getLocations(){
     var req_db = {};
-    req_db.e = [{t:'country', c:['id', 'country_en', 'country_fr']}];
-    bikaConnect.get('/data/?', req_db).then(function(data){
-      $scope.countries = data;
+
+    req_db.e = [{t:'location', c:['id', 'city', 'region']}];
+    kpkConnect.get('/data/?', req_db).then(function(data){
+      $scope.locations = data;
     });
   }
+
+  $scope.showDialog = function() {
+    var instance = $modal.open({
+    templateUrl: "/partials/creditor/creditor-modal.html",
+    backdrop: true,
+    controller: function($scope, $modalInstance, selectedAcc, kpkConnect) {
+      $scope.group = {};
+      //populating accounts
+      getAccounts();
+      function getAccounts(){
+        var req_db = {};
+        req_db.e = [{t:'account', c:['id', 'account_txt']}];
+        req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'id', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'id', z:'<', v:500000}];
+        kpkConnect.get('/data/?', req_db).then(function(data){
+          $scope.accounts = data;
+        });
+      }       
+        
+      $scope.close = function() {
+        $modalInstance.dismiss();
+      };
+      $scope.submit = function() {
+        $modalInstance.close({group:$scope.group.group, account:$scope.group.account_id});
+      };
+    },
+    resolve: {
+      selectedAcc: function() {
+        return 'hello';
+      },
+    }
+    });
+    instance.result.then(function(values) {
+      kpkConnect.send('creditor_group', [{id:'', group_txt:values.group, account_id:values.account.id}]);
+      getGroups();
+    }, function() {
+      //console.log('dedrick');
+    });
+  };
 
   $scope.verifyExisting = function(){
    if($scope.creditorExiste ==0){
-       if($scope.creditor.account_id && $scope.creditor.name){
+       if($scope.creditor.name){
         if(isThere($scope.creditors, 'name', $scope.creditor.name)){
           var req_db = {};
-          req_db.e = [{t:'creditor', c:['id', 'name', 'address1', 'address2', 'country_id', 'account_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
-          req_db.c = [{t:'creditor', cl:'name', z:'=', v:$scope.creditor.name, l:'AND'}, {t:'creditor', cl:'account_id', z:'=', v:$scope.creditor.account_id.id}];
-          bikaConnect.get('/data/?', req_db).then(function(data){
+          req_db.e = [{t:'supplier', c:['id', 'name', 'address1', 'address2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
+          req_db.c = [{t:'supplier', cl:'name', z:'=', v:$scope.creditor.name}];
+          kpkConnect.get('/data/?', req_db).then(function(data){
            if(data.length>0){
-             data[0].account_id = getCreditorAccount(data[0].account_id);
-             data[0].country_id = getCreditorCountry(data[0].country_id);
-             data[0].international = toBoolean(data[0].international);
-             data[0].locked = toBoolean(data[0].locked);
-             $scope.creditor = data[0];
-             $scope.creditorExiste = 1;
+            var id_promise = getCreditorGroupId(data[0].creditor_id);
+            id_promise.then(function(value){
+              $scope.creditor_group = getCreditorGroup(value.id);
+            });
+            data[0].location_id = getCreditorLocation(data[0].location_id);
+            data[0].international = toBoolean(data[0].international);
+            data[0].locked = toBoolean(data[0].locked);
+            $scope.creditor = data[0];
+            $scope.creditorExiste = 1;
            }        
           });
         }
@@ -2156,31 +2218,59 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
   }
 
   $scope.fill = function(index){
-    getCreditors();
+    //getCreditors();
     $scope.creditorExiste = 0;
     $scope.creditor = $scope.creditors[index];
     $scope.creditor.international = toBoolean($scope.creditor.international);
     $scope.creditor.locked = toBoolean($scope.creditor.locked);
-    $scope.creditor.country_id = getCreditorCountry($scope.creditors[index].country_id);
-    $scope.creditor.account_id = getCreditorAccount($scope.creditors[index].account_id);
+    $scope.creditor.location_id = getCreditorLocation($scope.creditors[index].location_id);
+    var id_promise = getCreditorGroupId($scope.creditors[index].creditor_id);
+    id_promise.then(function(value){
+      $scope.creditor_group = getCreditorGroup(value.id);
+    });
   }
 
-  $scope.save = function(creditor){
-    creditor.country_id = extractId(creditor.country_id);
-    creditor.account_id = extractId(creditor.account_id);
+  $scope.save = function(creditor, creditor_group){
+    creditor.location_id = extractId(creditor.location_id);
+    var creditor_group_id = extractId(creditor_group);
     var result = existe(creditor.id);
     result.then(function(response){
-      if(response){               
-        var sql_update = {t:'creditor', data:[creditor],pk:["id"]};
-        bikaConnect.update(sql_update);
+      if(response){             
+
+        var sql_update = {t:'supplier', data:[creditor],pk:["id"]};
+        kpkConnect.update(sql_update);
+        $scope.creditor={};
+        $scope.creditor_group = {};
+        $scope.creditorExiste = 0;
         getCreditors();
       }else{
         //on insert
-        bikaConnect.send('creditor', [creditor]);
+        var creditor_id_promise = getCreditorId(creditor_group_id);
+        creditor_id_promise.then(function(value){
+          creditor.creditor_id = value;
+          kpkConnect.send('supplier', [creditor]);
+        $scope.creditor={};
+        $scope.creditor_group = {};
+        $scope.creditorExiste = 0;
+        getCreditors();
+        });
       }
-      $scope.creditor={};
-      $scope.creditorExiste = 0;
+      
     });
+  }
+
+  function getCreditorId(id){
+    var def = $q.defer();
+    kpkConnect.send('creditor', [{id:'', creditor_group_id:id}]);
+    var request = {}; 
+    request.e = [{t : 'creditor', c : ['id']}];
+    request.c = [{t:'creditor', cl:'id', v:'LAST_INSERT_ID()', z:'='}];
+    kpkConnect.get('data/?',request).then(function(data) {
+      console.log(data);
+      def.resolve(data[0].id);
+
+    });
+    return def.promise;
   }
 
   function existe(id){
@@ -2189,7 +2279,7 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
       var request = {}; 
       request.e = [{t : 'creditor', c : ['id']}];
       request.c = [{t:'creditor', cl:'id', v:id, z:'='}];
-      bikaConnect.get('data/?',request).then(function(data) {
+      kpkConnect.get('data/?',request).then(function(data) {
        (data.length > 0)?def.resolve(true):def.resolve(false);    
       });
     }else{
@@ -2206,34 +2296,50 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
     return obj.id;
   }
 
-  function getCreditorCountry(idCountry){
+  function getCreditorLocation(idLocation){
     var indice = -1;
-    for(var i = 0; i<$scope.countries.length; i++){
-      if($scope.countries[i].id == idCountry){
+    for(var i = 0; i<$scope.locations.length; i++){
+      if($scope.locations[i].id == idLocation){
         indice = i;
         break;
       }
     }
     if (indice!=-1){
-      return $scope.countries[indice];
+      return $scope.locations[indice];
     }else{
-      return {id:-1, country_en:'rien', country_fr:'rien'};
+      return {};
     }
   }
 
-  function getCreditorAccount(idAccount){
+  function getCreditorGroup(idGroup){
     var indice = -1;
-    for(var i = 0; i<$scope.accounts.length; i++){
-      if($scope.accounts[i].id == idAccount){
+    for(var i = 0; i<$scope.groups.length; i++){
+      if($scope.groups[i].id == idGroup){
         indice = i;
         break;
       }
     }
     if (indice!=-1){
-      return $scope.accounts[indice];
+      return $scope.groups[indice];
     }else{
-      return {id:-1, account_txt:'rien'};
+      return {};
     }
+  }
+
+  function getCreditorGroupId(idCreditor){
+    var def = $q.defer();    
+    var req_db = {};
+    req_db.e = [{t:'creditor', c:['creditor_group_id']}];
+    req_db.c = [{t:'creditor', cl:'id', z:'=', v:idCreditor}];
+    kpkConnect.get('/data/?', req_db).then(function(data){
+      var groupID = data[0].creditor_group_id;
+      req_db.e = [{t:'creditor_group', c:['id']}];
+      req_db.c = [{t:'creditor_group', cl:'id', z:'=', v:groupID}];
+      kpkConnect.get('/data/?', req_db).then(function(data){
+      def.resolve(data[0]);
+      });
+    });
+    return def.promise;
   }
 
   function isThere(jsontab, cle, value){
@@ -2252,10 +2358,10 @@ controllers.controller('journalController', function($scope, $q, bikaConnect, bi
   }
 
   $scope.delete = function(creditor){
-    bikaConnect.delete('creditor', creditor.id);
+
+    kpkConnect.delete('supplier', creditor.id);
     $scope.creditor = {};
     getCreditors();
-
   }
  });
 

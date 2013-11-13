@@ -1,8 +1,6 @@
 ### Important ###
  # Debtor ID is currently numeric, and is the same as Patient ID, it should be alpha numeric to allow debitors and patients to be debtor (? p12, e13 etc.)
  # Attempt to remove ALL functions from templates (performed on every digest)
- # TODO decide if purchase orders require a separate table, or if they can be posted to the sale table
- # Creditor table currently stores meta infromation vs. debtor table that simple links entities to debtor accounts - this should probably be uniform (one way or the other)
 
 #Temporary TODO
   -Register any changes in module with a service, this should be checked before any navigation is allowed
@@ -15,12 +13,10 @@
 ### invoicing module ###
  * Currenly only supports invoicing patient debitors and not debitors in general, looking up and processing debitors should be reworked
 
-
 * Have a service that holds the current user information
-Ask Manunga how the accounting works in the hospital.
+ - Ask Manunga how the accounting works in the hospital.
  - How billing of patients in beds in hospital wards takes place.
 
-* Pick one: sockets or http
 * Migrate to using grunt for building
+* Migrate to using HTTP only
 * Serve static content from a cookieless domains.
-* 

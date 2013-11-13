@@ -6127,8 +6127,8 @@ CREATE TABLE `cash` (
 
 DROP TABLE IF EXISTS `creditor_group`;
 CREATE  TABLE `bika`.`creditor_group` (
-  `id` INT NOT NULL ,
-  `group` VARCHAR(45) NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `group_txt` VARCHAR(45) NULL ,
   `account_id` mediumint unsigned NOT NULL ,
   PRIMARY KEY (`id`) ,
   KEY `account_id` (`account_id`),
@@ -6140,6 +6140,7 @@ DROP TABLE IF EXISTS `creditor`;
 CREATE TABLE `creditor` (
 `id` int not null AUTO_INCREMENT,
 `creditor_group_id` int not null,
+`creditor_txt` varchar(45),
 PRIMARY KEY (`id`),
 KEY `creditor_group_id` (`creditor_group_id`),
 CONSTRAINT FOREIGN KEY (`creditor_group_id`) REFERENCES `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

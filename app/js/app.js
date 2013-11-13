@@ -2,9 +2,9 @@
   'use strict';
 
   //FIXME: Format code correctly in seperate files/modules etc.
-  var bika = angular.module('bika', ['bika.services', 'bika.controllers', 'bika.directives', 'bika.filters', 'angularTreeview', 'ngGrid', 'ui.bootstrap', 'ui.bootstrap.tabs']);
+  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'angularTreeview', 'ui.bootstrap', 'ui.bootstrap.tabs']);
   
-  function bikaconfig($routeProvider) { 
+  function kpkconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
     when('/budgeting', {
@@ -32,8 +32,8 @@
       templateUrl: 'partials/patient.html'
     }).
     when('/accounts', {
-      controller: 'chartController',
-      templateUrl: '/partials/chart/index.html'
+      controller: 'accountController',
+      templateUrl: '/partials/accounts/index.html'
     }).
     when('/inventory', {
       controller: 'inventoryController',
@@ -71,6 +71,6 @@
       templateUrl: 'partials/inventory_invoice/index.html'
     });
   }  
-  bika.config(bikaconfig);
+  kpk.config(kpkconfig);
 
 })(angular);
