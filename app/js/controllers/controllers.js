@@ -1586,7 +1586,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   // Chart of Accounts controllers
   controllers.controller('accountController', function($scope, $q, $modal, connect, appstate) {
     var pre = "[Accounts Ctlr]"; // for DEBUGGING
-    
+    console.log(pre, "Initialize..."); 
+
     function getData () {
       console.log(pre, "getData() fired.");
 
@@ -1615,7 +1616,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         },
       };
       
-      return $q.all([connect.req(account_defn), connect.req(accout_type_defn)]);
+      return $q.all([connect.req(account_defn), connect.req(account_type_defn)]);
     }
 
     function initGrid () {

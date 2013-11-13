@@ -691,16 +691,19 @@
           hasWhere = !!defn.where;
 
       if (hasJoin) {
-        var join = query.jc = [];
-          l = defn.join.length;
+        var join = query.jc = [],
+          l = defn.join.length || 1,
           i = 1;
+          if (hasWhere) {
+            l += 1;
+          }
         defn.join.forEach(function (str) {
           var obj = splitJoin(str);
           if (i < l) {
             obj.l = "AND";
             i++; 
           }
-          join.push(splitJoin(str)); 
+          join.push(obj); 
         });
       }
 
@@ -719,8 +722,9 @@
 
       if (hasWhere) {
         var where = query.c = [],
-          l = defn.where.length,
+          l = defn.where.length || 1,
           i = 1; // HACK HACK HACK 
+
         defn.where.forEach(function (str) {
           var obj = splitWhr(str);
           if (i < l) {
@@ -734,7 +738,8 @@
       function splitWhr (str) {
         var obj = {t: '', cl: '', z: '', v: ''},
             splitters =['>=', '<=', '!=', '<>', '=', '<', '>'],
-            arr;
+            arr,
+            cnv;
         
         arr   = str.split('.');
         obj.t = arr[0];
@@ -755,7 +760,7 @@
 
       var handle = $http.get('/data/?' + JSON.stringify(query)).then(function (returned) {
         var m = packageModel(model, returned.data);
-        requests[m] = {table: table, column: columns, where: where, value: value};
+        requests[m] = defn;
         deferred.resolve(m);
       });
 
