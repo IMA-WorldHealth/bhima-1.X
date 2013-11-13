@@ -839,7 +839,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.debtor_model = a[2];
         $scope.verify = a[3].data.id;
 
-        $scope.debtor = $scope.debtor_model.data[0]; // select default debtor
+        //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
 
         var invoice_id = createId($scope.sales_model.data);
         $scope.invoice_id = invoice_id;
@@ -867,7 +867,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.formatText = function() {
 //      FIXME String functions within digest will take hours
-      if($scope.debtor) return "PI " + $scope.invoice_id + "/" + $scope.debtor.last_name + "/" + $scope.debtor.first_name + "/" + $scope.sale_date;
+      var debtor_text = '';
+      if($scope.debtor) debtor_text = $scope.debtor.last_name + '/' + $scope.debtor.first_name;
+      return "PI " + $scope.invoice_id + "/" + debtor_text + "/" + $scope.sale_date;
     }
 
     $scope.generateInvoice = function() { 
@@ -1073,29 +1075,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     var patient = ($routeParams.patientID || -1);
 
-    $scope.selected = null;
 
     function init() { 
       var promise = fetchRecords();
 
-
       $scope.patient_model = {};
+      $scope.selected = null;
       $scope.patient_filter = {};
-
-      $scope.gridOptions = {
-        multiSelect: false,
-        data : 'patient_model.data',
-
-        columnDefs : [{field:'name', display:'name'},
-                      {field:'dob', display:'dob', cellFilter: 'date: "dd/MM/yyyy"'},
-                      {field:'sex', display:'gender'},
-                      {field:'religion', display:'religion'},
-                      {field:'marital_status', display:'marital status'},
-                      {field:'phone', display:'phone'},
-                      {field:'email', display:'email'}],
-      //FIXME Search seems unpredictable - check filter settings
-      filterOptions: $scope.patient_filter
-      };
 
       promise
       .then(function(model) { 
@@ -1103,9 +1089,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         
         //expose scope 
         $scope.patient_model = filterNames(model); //ng-grid
-        $scope.gridOptions.selectRow(1, true);
-        console.log($scope.gridOptions);
         //Select default
+
       }); 
     }
 
@@ -1129,10 +1114,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       }
       return model;
     }
-
-    $scope.$on('ngGridEventData', function(){
-      if(patient >= 0) $scope.select(patient);
-    });
 
     $scope.select = function(id) { 
       $scope.selected = $scope.patient_model.get(id);

@@ -3,6 +3,52 @@
     height: 600px;
 }
 
-.rowSelected { 
-  background-color: green;
+.rowSelected {
+  background-color: #dff0d8;
+}
+
+.bika-header {
+  padding-bottom: 9px;
+  margin: 40px 0 5px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+/*Not optimal to control utils layout on two different elements*/
+.util {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.util-bottom {
+  border-top: 1px solid #eeeeee;
+  padding-top: 5px;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px
+}
+
+.patient-table {
+  /*FIXME pretty gross*/
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/*FIXME*/
+.hack-left {
+  margin-left: -15px; !important
+}
+
+
+.form-kapok {
+
+  diplay: block;
+  width: 100%;
+  height: 30px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
 }

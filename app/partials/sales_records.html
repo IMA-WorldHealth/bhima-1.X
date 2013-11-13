@@ -5,7 +5,7 @@
       <div class="bika-header">
         <h1>Patient Invoice Records</h1>
       </div>
-    </div> 
+    </div>
   </div>
   <!--TODO Make this a directive or something, re-usable etc. -->
   <!--FIXME cleanup-->
@@ -15,9 +15,9 @@
       <div class="util">
         <div class="row">
           <div class="col-xs-12">
-           <!--FIXME btn group is a big hack - should be done with col-->
+            <!--FIXME btn group is a big hack - should be done with col-->
             <div class="col-xs-4 hack-left">
-                <input type="text" ng-model="invoice_filter.filter" class="form-kapok" placeholder="Filter Invoices">
+              <input type="text" ng-model="invoice_filter.filter" class="form-kapok" placeholder="Filter Invoices">
             </div>
             <div class="pull-right">
 
@@ -41,13 +41,17 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <div class="alert alert-info ng-cloak" ng-cloak ng-hide="invoice_model.data.length">
-        No patient transactions found. Reference <strong><a href="/#/sales">Patient Sales</a></strong> to generate an invoice.
+      <div ng-switch on="invoice_model.data.length">
+        <div class="alert alert-info" ng-switch-when="0">
+          No patient transactions found. Reference <strong><a href="/#/sales">Patient Sales</a></strong> to generate an
+          invoice.
+        </div>
+        <div ng-switch-default></div>
       </div>
       <div class="invoice-table">
-      <table class="table table-bordered table-hover">
+        <table class="table table-bordered">
 
-        <thead>
+          <thead>
           <tr>
             <th>ID</th>
             <th>Date</th>
@@ -55,19 +59,25 @@
             <th>Debtor ID</th>
             <th>Posted</th>
           </tr>
-        </thead>
+          </thead>
 
-        <tbody>
-          <tr ng-class='{rowSelected: selected.id==invoice.id}' ng-click="select(invoice.id)" ng-repeat="invoice in invoice_model.data | filter: invoice_filter.filter">
+          <tbody>
+          <tr ng-class='{rowSelected: selected.id==invoice.id}' ng-click="select(invoice.id)"
+              ng-repeat="invoice in invoice_model.data | filter: invoice_filter.filter">
 
-            <td>{{invoice.id}}</td><td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td><td>{{invoice.cost | currency}}</td>
+            <td>{{invoice.id}}</td>
+            <td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+            <td>{{invoice.cost | currency}}</td>
             <td>{{invoice.debitor_id}}</td>
             <!--Multiple ng-shows - mutually exclusive but not good practice-->
-            <td><span  ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span><div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div></td>
+            <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
+
+              <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
+            </td>
           </tr>
-        </tbody>
-      </table>
-        </div>
+          </tbody>
+        </table>
+      </div>
 
     </div>
     <!--div id="tableContent">
@@ -83,7 +93,7 @@
           <div class="col-xs-12">
             <div class="pull-right">
               <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
-              <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
+                <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
 
             </div>
           </div>
@@ -91,7 +101,6 @@
       </div>
     </div>
   </div>
-
 
 
 </div>
