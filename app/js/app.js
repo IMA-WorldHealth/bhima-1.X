@@ -32,8 +32,8 @@
       templateUrl: 'partials/patient.html'
     }).
     when('/accounts', {
-      controller: 'chartController',
-      templateUrl: '/partials/chart/index.html'
+      controller: 'accountController',
+      templateUrl: '/partials/accounts/index.html'
     }).
     when('/inventory', {
       controller: 'inventoryController',

@@ -43,24 +43,23 @@ module.exports = (function (db) {
       if (req.url === '/login.html' || req.url === '/login') {
         res.redirect('/');
         return;
-      }else{
+      } else {
         checkPermission(req, res, next);
-
       }
-     
     }
 
     if (req.url === "/login") {
-      var u = req.body.username;
-      var p = req.body.password;
-      var dbquery = {
+      var u, p, dbquery, composed_query;
+      u = req.body.username;
+      p = req.body.password;
+      dbquery = {
         'entities': [{t: 'user', c: ['id', 'logged_in']}],      
         'cond': [
           {t: 'user', cl: 'username', 'z': '=', v: u, l: 'AND'},
           {t: 'user', cl: 'password', 'z': '=', v: p}
         ]
       };
-      var composed_query = db.select(dbquery);
+      composed_query = db.select(dbquery);
       db.execute(composed_query, function (err, results) {
         if (err) { next(err); }
         if (results.length > 0) {
