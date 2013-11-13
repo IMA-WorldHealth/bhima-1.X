@@ -1514,74 +1514,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     init();
   });
 
-  controllers.controller('billingGroupsController', function($scope, appstate, data) { 
-
-    var query = {
-      primary: 'billing_group',
-      tables : {
-        'billing_group' : {
-          columns: ['id', 'name', 'account_number', 'address_1', 'address_2', 'location_id', 'payment_id', 'email', 'phone', 'locked', 'note', 'contact_id', 'tax_id', 'max_credit']
-        },
-        'location': { 
-          columns: ['city', 'region']
-        }
-      },
-      join : ["billing_group.location_id=location.id"],
-    };
-
-    appstate.register('enterprise', function(res) {
-      var condition = "billing_group.enterprise_id=",
-          enterpriseid = res.id;
-      query.where = [condition + enterpriseid];
-      $scope.selected = false;
-    });
-
-    $scope.outOfSync = false;
-
-    var store = data.register(query);
-    store.then(function() {
-      $scope.grp_model = store.data;
-    });
-    
-    $scope.select = function(index) {
-      $scope.selected = $scope.grp_model[index];
-      $scope.selectedIndex = index;
-    };
-
-    function generateId (model) {
-      var maxid = model.reduce(function(max, right) {
-        max = max.id || max; // for the first iteration
-        return Math.max(max, right.id);
-      });
-      return maxid + 1; // incriment
-    }
-
-    $scope.addGroup = function () {
-      var id = generateId($scope.grp_model);
-      var idx = $scope.grp_model.push({id: id});
-      $scope.select(idx - 1);
-    };
-
-    $scope.$watch('grp_model', function() {
-      // FIXME:  This doesn't work for some reason
-      $scope.outOfSync = true; 
-    });
-
-    $scope.sync = function() {
-      //store.sync();
-      $scope.outOfSync = false;
-    };
-
-    $scope.removeGroup = function () {
-      $scope.grp_model.splice($scope.selectedIndex, 1);
-      $scope.selected = false;
-    };
-
-    $scope.sort = function (col) {
-      // FIXME: Impliment quicksort for arrays of objects
-    };
-
-  });
   
   // Chart of Accounts controllers
   controllers.controller('accountController', function($scope, $q, $modal, connect, appstate) {
@@ -1735,38 +1667,38 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
 
-  controllers.controller('inventoryRegisterController', function ($scope, data, $q, $modal) {
+  controllers.controller('inventoryRegisterController', function ($scope, connect, $q, $modal) {
 
-    var account_spec, inv_unit_spec, inv_group_spec, inv_spec, inv_type_spec;
+    var account_defn, inv_unit_defn, inv_group_defn, inv_defn, inv_type_defn;
 
-    account_spec = {
+    account_defn= {
       tables: {'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}},
       where: ["account.enterprise_id=" + 101], // FIXME
     };
 
-    inv_unit_spec = {
+    inv_unit_defn = {
       tables : {'inv_unit': { columns: ["id", "text"] }}
     };
 
-    inv_group_spec = {
+    inv_group_defn = {
       tables: {'inv_group': { columns: ['id', 'name', 'symbol', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']}}
     };
 
-    inv_spec = {
+    inv_defn = {
       tables: {'inventory': { columns: ['enterprise_id', 'id', 'code', 'text', 'price', 'group_id', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'stock_max', 'stock_min', 'consumable']}},
       where: ["inventory.enterprise_id="+101]
     };
 
-    inv_type_spec = {
+    inv_type_defn = {
       tables: {'inv_type': { columns: ['id', 'text']}}
     };
 
     $q.all([
-      data.register(account_spec),
-      data.register(inv_unit_spec),
-      data.register(inv_group_spec),
-      data.register(inv_type_spec),
-      data.register(inv_spec)
+      connect.req(account_defn),
+      connect.req(inv_unit_defn),
+      connect.req(inv_group_defn),
+      connect.req(inv_type_defn),
+      connect.req(inv_defn)
     ]).then(init);
 
     var stores = {},
@@ -1781,15 +1713,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.models[models[i]] = arr[i].data;
       }
 
-      console.log("[Inventory Register Controller]: Data Loaded!");
-
       item.unit_weight = 0;
       item.unit_volume = 0;
       item.enterprise_id = 101; // FIXME:
     }
 
     function reset () {
-      console.log("Called reset!");
       $scope.item = item = {};
       item.unit_weight = 0;
       item.unit_volume = 0;
@@ -1891,17 +1820,19 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   });
 
-  controllers.controller('cashController', function($scope, data, $q, $filter) {
+  controllers.controller('cashController', function($scope, connect, $q, $filter, appstate) {
 
-    var enterprise_spec, account_spec,
-        cash_currency_spec, sale_debitor_spec, currency_spec;
+    var enterprise_defn, account_spec,
+        cash_currency_defn, sale_debitor_defn,
+        currency_defn, 
+        eid = appstate.get('enterprise').id;
 
-    enterprise_spec = {
+    enterprise_defn= {
       tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
-      where: ["enterprise.id="+101] // FIXME
+      where: ["enterprise.id="+eid] 
     };
     
-    sale_debitor_spec = {
+    sale_debitor_defn = {
       primary: "sale",
       tables: {
         "sale" : {
@@ -1915,31 +1846,28 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         }
       },
       join: ["sale.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"],
-      where: ["sale.enterprise_id=101", "AND", "sale.paid=0"]
+      where: ["sale.enterprise_id=101", "sale.paid=0"]
     };
 
-    cash_currency_spec = {
-      primary: "cash",
+    cash_currency_defn = {
       tables: {
         "cash" : {
           columns: ["id", "bon", "bon_num", "invoice_id", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id", "text"]
         },
-        "currency": {
-          columns: ["symbol"] 
-        }
+        "currency": { columns: ["symbol"] }
       },
       join: ["cash.currency_id=currency.id"]
     };
 
-    currency_spec = {
+    currency_defn = {
       tables : { "currency" : { columns: ["id", "symbol"] } } 
     };
 
     $q.all([
-      data.register(enterprise_spec),
-      data.register(sale_debitor_spec),
-      data.register(cash_currency_spec),
-      data.register(currency_spec)
+      connect.req(enterprise_defn),
+      connect.req(sale_debitor_defn),
+      connect.req(cash_currency_defn),
+      connect.req(currency_defn)
     ]).then(init);
 
 
@@ -1958,7 +1886,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.models[models[i]] = arr[i].data;
       }
       defaults();
-
     }
 
     function defaults () {
@@ -2020,7 +1947,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.validate = function () {
       stores['cash-currency'].put(slip);
-      stores['cash-currency'].sync();
       $scope.submitted = true;
     };
 
@@ -2487,7 +2413,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       purchaser_id : $scope.verify,
       note : $scope.formatText(),
       posted : '0'
-    }
+    };
 //    verify format
     return format;
   }
@@ -2504,7 +2430,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
         quantity : item.quantity,
         unit_price : item.price,
         total : item.quantity * item.price
-      }
+      };
       console.log("Generating sale item for ", item);
 
       promise_arr.push(connect.basicPut('purchase_item', [format_item]));
