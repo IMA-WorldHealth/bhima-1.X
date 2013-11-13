@@ -1,4 +1,4 @@
- // Controller.js
+// Controller.js
 (function(angular) {
   'use strict'; 
   var controllers = angular.module('kpk.controllers', []);
@@ -1708,26 +1708,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       });
     });
 
-
-    // Create a new account dialog
-    $scope.showDialog = function() {
+    $scope.create = function () {
       var instance = $modal.open({
-        templateUrl: "/partials/chart/templates/chart-modal.html",
+        templateUrl: "/partials/accounts/templates/chart-modal.html",
         backdrop: true,
-        controller: function($scope, $modalInstance, columns) {
-          // NOTE: THIS IS A DIFFERENT SCOPE 
-          var values = angular.copy(columns);
-          $scope.values = values;
-          // dismiss
-          $scope.close = function() {
-            $modalInstance.dismiss();
-          };
-          // submit
-          $scope.submit = function() {
-            // TODO: include validation
-            $modalInstance.close($scope.values);
-          };
-        },
+        controller: newAccountCtrl,
         resolve: {
           columns: function() {
             return $scope.columns;
@@ -1739,6 +1724,19 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.model.push(values);
       }, function() {});
     };
+
+
+    function newAccountCtrl ($scope, $modalInstance, columns) {
+       var values = angular.copy(columns);
+      $scope.values = values;
+      $scope.close = function() {
+        $modalInstance.dismiss();
+      };
+      $scope.submit = function() {
+        // TODO: include validation
+        $modalInstance.close($scope.values);
+      };
+    }
 
   });
 
