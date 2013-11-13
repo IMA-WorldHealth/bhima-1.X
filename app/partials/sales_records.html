@@ -41,9 +41,10 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <div class="alert alert-info" ng-cloak ng-show="invoice_model">
+      <div class="alert alert-info ng-cloak" ng-cloak ng-hide="invoice_model.data.length">
         No patient transactions found. Reference <strong><a href="/#/sales">Patient Sales</a></strong> to generate an invoice.
       </div>
+      <div class="invoice-table">
       <table class="table table-bordered table-hover">
 
         <thead>
@@ -55,21 +56,42 @@
             <th>Posted</th>
           </tr>
         </thead>
+
         <tbody>
           <tr ng-repeat="invoice in invoice_model.data | filter: invoice_filter.filter">
 
             <td>{{invoice.id}}</td><td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td><td>{{invoice.cost | currency}}</td>
             <td>{{invoice.debitor_id}}</td>
             <!--Multiple ng-shows - mutually exclusive but not good practice-->
-            <td><span  ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span><p ng-show="invoice.posted"><span class="glyphicon glyphicon-book"></span> Posting Journal</p></td>
+            <td><span  ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span><div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div></td>
           </tr>
         </tbody>
       </table>
+        </div>
 
     </div>
     <!--div id="tableContent">
       <div ng-grid="gridOptions" class="table table-default p-grid"></div>
     </div-->
   </div>
+
+  <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util-bottom">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="pull-right">
+              <a disabled ng-click="" class="btn btn-default">
+              <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
 </div>
