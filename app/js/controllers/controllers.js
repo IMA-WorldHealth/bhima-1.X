@@ -71,11 +71,7 @@ controllers.controller('userController', function($scope, $q, kpkConnect) {
   $scope.showbadusername = false;
 
   //population model de table
-  var request = {}; 
-  request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
-  kpkConnect.get('/data/?',request).then(function(data) { 
-    $scope.model = data;
-  });
+  getUsers();
 
   //population model de role
   kpkConnect.fetch("unit", ["id", "name"], 'parent', 0).then(function(data){
@@ -91,6 +87,13 @@ controllers.controller('userController', function($scope, $q, kpkConnect) {
   });
 
   //**************** les fonctions *****************
+  function getUsers(){
+    var request = {}; 
+  request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
+  kpkConnect.get('/data/?',request).then(function(data) { 
+    $scope.model = data;
+  });
+  }
   $scope.cancel = function(){
     $scope.selected = {};
     unCheckAll();
@@ -210,6 +213,14 @@ controllers.controller('userController', function($scope, $q, kpkConnect) {
 
     });
     
+  }
+
+    $scope.delete = function(){
+      if($scope.selected.id){
+        kpkConnect.delete('user', $scope.selected.id);
+        $scope.selected = {};
+        getUsers();
+      }    
   }
     function checkAll(){
       for(var i=0; i<$scope.units.length; i++){
