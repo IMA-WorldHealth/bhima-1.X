@@ -648,19 +648,20 @@
     //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to 
     //  update the server.
 
-//    TODO generic id property should be injected, currently set as ID
-//    TODO set flag for automatically flushing model updates to server
-//    TODO anonymous functions make for bad stack traces - name those bad boys
+    //  TODO generic id property should be injected, currently set as ID
+    //  TODO set flag for automatically flushing model updates to server
+    //  TODO anonymous functions make for bad stack traces - name those bad boys
 
     //keep track of requests, model can use connect API without re-stating request
     //  model : request
     var requests = {};
 
     //TODO: doesn't support joins or advanced conditions, socket API should solve this
-    function req(table, columns, where, value) {
+    function req(table, columns, where, value, opts) {
       //summary: 
       //  Attempt at a more more managable API for modules requesting tables from the server, implementation
-      //  still needs to be finalised, should be deprecated with sockets
+      //  still needs to be finalised, should be deprecated with sockets     opts = opts || {};
+      opts = opts || {};
       var deferred = $q.defer();
       var model = {};
 

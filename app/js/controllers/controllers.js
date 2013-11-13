@@ -1,4 +1,4 @@
- // Controller.js
+// Controller.js
 (function(angular) {
   'use strict'; 
   var controllers = angular.module('kpk.controllers', []);
@@ -823,7 +823,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           c : ['debitor_id', 'first_name', 'last_name', 'location_id']
         }, {
           t : 'location',
-          c : ['id', 'city', 'region', 'country_code']
+          c : ['id', 'city', 'region', 'country_id']
         }],
         'jc' : [{
           ts : ['patient', 'location'],
@@ -995,34 +995,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function init() { 
 
-
-      $scope.invoice_model = {};
-      $scope.invoice_filter = {
-        filterText: ""
-      };
-
-      $scope.gridOptions = { 
-//        multiSelect: false,
-        selectedItems: [],
-        columnDefs : [{field:'id', display:'id'},
-                      {field:'cost', display:'total', cellFilter: 'currency'},
-                      {field:'debitor_id', display:'debtor'},
-                      {field:'invoice_date', display:'date', cellFilter: 'date: "dd/MM/yyyy"'},
-                      {field:'posted', display:'posted'}],
-      data : 'invoice_model.data',
-      //FIXME Search seems unpredictable - check filter settings
-      filterOptions: $scope.invoice_filter
-      };
-
       var promise = fetchRecords();
       promise
       .then(function(model) { 
-        //FIXME configure locally, then expose
-        
-        //expose scope 
-        $scope.invoice_model = model; //ng-grid
-        $scope.gridOptions.selectRow(1, true);
+        //expose scope
+        $scope.invoice_model = model;
         //Select default
+
       }); 
 
       $scope.post = function() { 
@@ -1048,10 +1027,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         console.log("request should be made for", request);
       }
     }
-
-    $scope.$on('ngGridEventData', function(){
-      if(default_invoice >= 0) $scope.select(default_invoice);
-    });
 
     $scope.select = function(id) {
       //model.get() would not provide index in an un-ordered object
@@ -1609,108 +1584,121 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
   
   // Chart of Accounts controllers
-  controllers.controller('chartController', function($scope, $q, $modal, data, appstate) {
+  controllers.controller('accountController', function($scope, $q, $modal, data, appstate) {
+    var pre = "[Accounts Ctlr]"; // for DEBUGGING
+    
+    function getData () {
+      console.log(pre, "getData fired.");
 
-    // import account
-    var account_spec = {
-      identifier: 'id',
-      primary: 'account',
-      tables: {
-        'account': {
-          columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id', 'fixed'],
+      var account_defn, account_type_defn, 
+          account_store, type_store,
+          enterpriseid = appstate.get("enterprise").id;
+
+      account_defn = {
+        identifier: 'id',
+        primary: 'account',
+        tables: {
+          'account': {
+            columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
+          },
+          'account_type': {
+            columns: ['type'] 
+          }
         },
-        'account_type': {
-          columns: ['type'] 
-        }
-      },
-      join: ['account.account_type_id=account_type.id'],
-      where: ["account.enterprise_id=" + 101], //FIXME
-      autosync: true
-    };
+        join: ['account.account_type_id=account_type.id'],
+        where: ["account.enterprise_id=" + enterpriseid],
+        autosync: true
+      };
 
-    // import account_type 
-    var account_type_spec = {
-      identifier: 'id',
-      tables: {
-        'account_type' : {
-          columns: ['id', 'type']
-        }
-      },
-      autosync: true
-    };
+      account_type_defn = {
+        identifier: 'id',
+        tables: {
+          'account_type' : {
+            columns: ['id', 'type']
+          }
+        },
+        autosync: false 
+      };
+        
+      account_store = data.register(account_defn);
+      type_store = data.register(account_type_defn);
 
-    // NOTE/FIXME: Use appstate.get().then() to work out the enterprise_id
-
-    var account_store = data.register(account_spec);
-    var type_store = data.register(account_type_spec);
-
-    $q.all([
-      account_store,
-      type_store
-    ]).then(init);
-
-    function init (arr) {
-      $scope.models = {};
-      $scope.models.accounts = arr[0].data;
-      $scope.models.types = arr[1].data;
-      console.log($scope.account_model);
+      return $q.all([account_store, type_store]);
     }
 
-    $scope.map = function (id) {
-      return (id == 1) ? "Fixed" : "Variable";
-    };
+    function initGrid () {
+      console.log(pre, "initGrid fired.");
+      var grid, columns, options, dataview;
+     
+      // dataview config 
+      dataview = new Slick.Data.DataView();
 
-    
-    // ng-grid options
-    $scope.gridOptions = {
-      data: 'models.accounts',
-      columnDefs: [
-        {field: 'id', displayName: "Account Number"},
-        {field: 'account_txt', displayName: "Account Text"},
-        {field: 'account_type_id', displayName: "Account Type",
-          cellTemplate: '<div class="ngCellText">{{row.getProperty("type")}}</div>',
-          editableCellTemplate: '<div><select style="padding:0;margin:0;height:100%;width:100%;" ng-input="COL_FIELD" ng-model="row.entity.account_type_id" ng-change="updateRow(row)" ng-options="acc.id as acc.type for acc in type_model"></select></div>',
-          enableCellEdit: true
-        },
-        {field: 'fixed', displayName: 'Fixed/Variable',
-          cellTemplate: '<div class="ngCellText">{{map(row.getProperty("fixed"))}}</div>',
-          editableCellTemplate: '<div><select ng-input="COL_FIELD" ng-model="row.entity.fixed" ng-change="fixedRow(row)"><option value="0">Relative</option><option value="1">Fixed</option></select></div>',
-          enableCellEdit: true
-        },
-        {field: 'locked', displayName: "Locked",
-          cellTemplate: '<div class="ngCellText"><chkbox model="row.entity.locked"></chkbox></div>', 
-        }
-      ],
-      enableRowSelection:false,
-      enableColumnResize: true
-    };
+      dataview.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render(); 
+      });
 
-    $scope.updateRow = function(row) {
-      // HACK HACK HACK
-      row.entity.type = type_store.get(row.entity.account_type_id).type;
-      account_store.put(row.entity);
-      console.log($scope.account_model[row.rowIndex]);
-    };
+      dataview.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidate(args.rows);
+        grid.render();
+      });
 
-    // dialog controller
-    $scope.showDialog = function() {
+      columns = [
+        {id: "id"       , name: "Account Number"   , field: "id", sortable: true},
+        {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
+        {id: "type"     , name: "Account Type"     , field: "type"},
+        {id: "category" , name: "Account Category" , field: "account_category"},
+        {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"},
+        {id: "locked"   , name: "Locked"           , field: "locked", sortable: true}
+      ];
+
+      options = {
+        editable             : true,
+        autoEdit             : false,
+        asyncEditorLoading   : false,
+        enableCellNavigation : true,
+        forceFitColumns      : true
+      };
+
+      grid = new Slick.Grid("#kpk-accounts-grid", dataview, columns, options);
+
+      function sorter (e, args) {
+        var field = args.sortCol.field;
+        function sort (a, b) { return (a[field] > b[field]) ? 1 : -1; }
+        dataview.sort(sort, args.sortAsc);
+        grid.invalidate();
+      }
+
+      grid.onSort.subscribe(sorter);
+
+      return {grid: grid, dataview: dataview};
+
+    }
+
+    var promise = getData();
+ 
+    $scope.models = {};
+    var dataview, grid;
+
+    promise.then(function (a) {
+      console.log(pre, "Promise fulfilled.");
+      $scope.models.accounts = a[0].data;
+      $scope.models.types = a[1].data;
+      var setup = initGrid(); 
+      grid = setup.grid;
+      dataview = setup.dataview;
+      
+      $scope.$watch('models.accounts', function () {
+        console.log(pre, "Rebuilding dataview...");
+        dataview.setItems($scope.models.accounts);
+      });
+    });
+
+    $scope.create = function () {
       var instance = $modal.open({
-        templateUrl: "/partials/chart/templates/chart-modal.html",
+        templateUrl: "/partials/accounts/templates/chart-modal.html",
         backdrop: true,
-        controller: function($scope, $modalInstance, columns) {
-          // NOTE: THIS IS A DIFFERENT SCOPE 
-          var values = angular.copy(columns);
-          $scope.values = values;
-          // dismiss
-          $scope.close = function() {
-            $modalInstance.dismiss();
-          };
-          // submit
-          $scope.submit = function() {
-            // TODO: include validation
-            $modalInstance.close($scope.values);
-          };
-        },
+        controller: newAccountCtrl,
         resolve: {
           columns: function() {
             return $scope.columns;
@@ -1719,18 +1707,26 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       });
 
       instance.result.then(function(values) {
-        // add to the grid
         $scope.model.push(values);
-      }, function() {
-      });
+      }, function() {});
     };
 
-    $scope.config = {
-      isPaginationEnabled: true,
-      itemsByPage: 16,
-      selectionMode: 'single'
-    };
+
+    function newAccountCtrl ($scope, $modalInstance, columns) {
+       var values = angular.copy(columns);
+      $scope.values = values;
+      $scope.close = function() {
+        $modalInstance.dismiss();
+      };
+      $scope.submit = function() {
+        // TODO: include validation
+        $modalInstance.close($scope.values);
+      };
+    }
+
   });
+
+
 
   controllers.controller('inventoryController', function($scope) {
  
@@ -2417,15 +2413,15 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
   var creditor_query = {
     'e' : [{
-      t : 'creditor',
-      c : ['id', 'name', 'country_id', 'account_id']
+      t : 'supplier',
+      c : ['id', 'name', 'location_id', 'creditor_id']
     }, {
       t : 'location',
-      c : ['city', 'region', 'country_code']
+      c : ['city', 'region', 'country_id']
     }],
     'jc' : [{
-      ts : ['location', 'creditor'],
-      c : [ 'id', 'country_id']
+      ts : ['location', 'supplier'],
+      c : [ 'id', 'location_id']
     }]
   };
 

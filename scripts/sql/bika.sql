@@ -6230,12 +6230,12 @@ CREATE TABLE `employee` (
 
 --
 -- Table `bika`.`patient`
---
+-- TODO removed foreign key to creditor table until fully implemented (with test data)
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE `patient` (
   `id` int unsigned not null AUTO_INCREMENT,
   `debitor_id` int unsigned not null, -- references debitors
-  `creditor_id` int not null, 
+  `creditor_id` int, -- not null
   `first_name` varchar(150) not null,
   `last_name` varchar(150) not null,
   `dob` date,
@@ -6254,13 +6254,13 @@ CREATE TABLE `patient` (
   KEY `location_id` (`location_id`),
   KEY `creditor_id` (`creditor_id`),
   CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON UPDATE CASCADE,
+  -- CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON UPDATE CASCADE,
   CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-/*--INSERT INTO `patient` (`id`, `debitor_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `location_id`) VALUES 
- -- (1, 1, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", 1),
- -- (2, 2, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", 1),
-  --(3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", 1),
-  --(4, 4, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", 1);*/
+INSERT INTO `patient` (`id`, `debitor_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `location_id`) VALUES
+ (1, 1, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", 1),
+ (2, 2, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", 1),
+ (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", 1),
+ (4, 4, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", 1);
 
