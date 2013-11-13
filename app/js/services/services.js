@@ -657,25 +657,101 @@
     var requests = {};
 
     //TODO: doesn't support joins or advanced conditions, socket API should solve this
-    function req(table, columns, where, value, opts) {
+    function req (defn) {
       //summary: 
       //  Attempt at a more more managable API for modules requesting tables from the server, implementation
-      //  still needs to be finalised, should be deprecated with sockets     opts = opts || {};
-      opts = opts || {};
-      var deferred = $q.defer();
-      var model = {};
+      //  still needs to be finalised, should be deprecated with sockets
+      //
+      //  defn should be an object like
+      //  defn =  {
+      //    tables : {
+      //      'account' : {
+      //        columns: [ 'enterprise_id', 'id', 'locked', 'account_text']
+      //      },
+      //      'account_type' : {
+      //        columns: ['type']
+      //      }
+      //    },
+      //    join: ['account.account_type_id=account_type.id'],
+      //    where: ['account.enterprise_id=101']
+      //  };
+      //
+      //  where conditions can also be specified:
+      //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
+      var deferred = $q.defer(),
+          model = {},
+          query = {};
 
-      var query = {
-        e: [
-          {t: table, c: columns}
-        ]
-      };
+      var entities = query.e = [];
 
-      if (where) {
-        query.c = [
-          {t: table, cl: where, v: value, z: '='}
-        ];
+      for (var table in defn.tables) {
+        entities.push({t: table, c: defn.tables[table].columns}); 
       }
+      var hasJoin = !!defn.join,
+          hasWhere = !!defn.where;
+
+      if (hasJoin) {
+        var join = query.jc = [];
+          l = defn.join.length;
+          i = 1;
+        defn.join.forEach(function (str) {
+          var obj = splitJoin(str);
+          if (i < l) {
+            obj.l = "AND";
+            i++; 
+          }
+          join.push(splitJoin(str)); 
+        });
+      }
+
+      function splitJoin (str) {
+        var obj = { ts: [], c: []};
+        str.split('=')                // split on equality
+          .map(function (substr) {
+            return substr.split('.'); // then on the periods
+          })
+          .forEach(function (arr) {
+            obj.ts.push(arr[0]);
+            obj.c.push(arr[1]); 
+          });
+        return obj;
+      }
+
+      if (hasWhere) {
+        var where = query.c = [],
+          l = defn.where.length,
+          i = 1; // HACK HACK HACK 
+        defn.where.forEach(function (str) {
+          var obj = splitWhr(str);
+          if (i < l) {
+            obj.l = "AND";
+            i++;
+          }
+          where.push(obj);
+        });
+      }
+
+      function splitWhr (str) {
+        var obj = {t: '', cl: '', z: '', v: ''},
+            splitters =['>=', '<=', '!=', '<>', '=', '<', '>'],
+            arr;
+        
+        arr   = str.split('.');
+        obj.t = arr[0];
+        cnv   = arr[1];
+        splitters.some(function (sp) { // some halts on return true
+          if (~cnv.indexOf(sp)) {
+            obj.z = sp;
+            var temp = cnv.split(sp);
+            obj.cl = temp[0];
+            obj.v = temp[1];
+            return true; // halt
+          } 
+        });
+        return obj;
+      }
+
+      console.log("[connect] Sending request:", JSON.stringify(query));
 
       var handle = $http.get('/data/?' + JSON.stringify(query)).then(function (returned) {
         var m = packageModel(model, returned.data);
@@ -732,13 +808,12 @@
         for (var i = this.data.length - 1; i >= 0; i--) {
           this.index[this.data[i]["id"]] = i;
         }
-        ;
-      }
+      };
 
       //data manipulation
       model.get = function (id) {
         return this.data[this.index[id]];
-      }
+      };
 
       model.put = function (object) {
         var id = object["id"];
@@ -749,7 +824,7 @@
           //update index and insert object
           this.index[id] = this.data.push(object) - 1;
         }
-      }
+      };
 
       model.delete = function (id) {
         var i = this.index;
@@ -760,11 +835,11 @@
           connect_delete(this, id);
           return true;
         }
-      }
+      };
 
       model.flush = function () {
 
-      }
+      };
 
       //initialise index
       model.calculateIndex();

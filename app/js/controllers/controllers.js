@@ -1584,19 +1584,17 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
   
   // Chart of Accounts controllers
-  controllers.controller('accountController', function($scope, $q, $modal, data, appstate) {
+  controllers.controller('accountController', function($scope, $q, $modal, connect, appstate) {
     var pre = "[Accounts Ctlr]"; // for DEBUGGING
     
     function getData () {
-      console.log(pre, "getData fired.");
+      console.log(pre, "getData() fired.");
 
       var account_defn, account_type_defn, 
           account_store, type_store,
           enterpriseid = appstate.get("enterprise").id;
 
       account_defn = {
-        identifier: 'id',
-        primary: 'account',
         tables: {
           'account': {
             columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
@@ -1607,23 +1605,17 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         },
         join: ['account.account_type_id=account_type.id'],
         where: ["account.enterprise_id=" + enterpriseid],
-        autosync: true
       };
 
       account_type_defn = {
-        identifier: 'id',
         tables: {
           'account_type' : {
             columns: ['id', 'type']
           }
         },
-        autosync: false 
       };
-        
-      account_store = data.register(account_defn);
-      type_store = data.register(account_type_defn);
-
-      return $q.all([account_store, type_store]);
+      
+      return $q.all([connect.req(account_defn), connect.req(accout_type_defn)]);
     }
 
     function initGrid () {
