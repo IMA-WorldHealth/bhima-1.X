@@ -1,42 +1,9 @@
-.hide {
-  display: none;
-}
-
-.chosen {
+.kpk-nav-select {
   border-left: 3px solid forestgreen;
-  padding-left: 3px;
+  font-weight: bold;
 }
 
-.cash-collapse-left {
-  margin-left: 0;
-  padding-left: 0;
+.kpk-selected {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
 }
-
-.cash-select {
-  position: relative;
-}
- 
-/* Warning: this breaks w/o bootstrap */
-/* follow:http://cssdeck.com/labs/styling-select-box-with-css3  */
-/*
-.cash-select:after {
-  font-family: "Glyphicons Halflings";
-  content: "\e114"; /* chevron down 
-  -webkit-font-smoothing: antialiased;
-  right: 8px;
-  top: 2px;
-  padding: 0 0 2px;
-  border-bottom: 1px solid #ddd;
-  position: absolute;
-  pointer-events: none;
-}
-
-.cash-select:before {
-  content: "",
-  right: 6px; top 0;
-  width: 20px; height: 20px;
-  position: absolute;
-  pointer-events: none;
-  display: block;  
-}
-*/

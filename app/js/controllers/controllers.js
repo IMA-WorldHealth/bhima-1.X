@@ -1872,11 +1872,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
 
     var stores = {},
-        models = ['enterprise', 'sale-debitor', 'cash-currency', 'currency'],
-        slip = {};
+        models = ['enterprise', 'sale-debitor', 'cash-currency', 'currency'];
 
 
-    $scope.slip = slip;
+    var slip = $scope.slip = {};
     $scope.models = {};
 
     function init (arr) {
@@ -1885,11 +1884,22 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         stores[models[i]] = arr[i];
         $scope.models[models[i]] = arr[i].data;
       }
+
+      // FIXME: doesn't work yet
+      $scope.$watch("models['cash-currency']", function () {
+        $scope.hasCash = $scope.models['cash-currency'].length > 0;
+      });
+
+      $scope.$watch("models['sale-debitor']", function () {
+        $scope.hasSale = $scope.models['sale-debitor'].length > 0;
+      });
+       
       defaults();
     }
 
     function defaults () {
       // incriment the max id in the store
+
       var id  = Math.max.apply(Math.max, Object.keys(stores['cash-currency'].index)) + 1;
       if (id < 0) { id = 0; }
       slip.id = id;
@@ -1919,12 +1929,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip.cashier_id = 1;
     }
 
-    $scope.select = function (id, idx) {
-      if (id !== undefined) {
-        // only if chosen by left hand side list
-        slip.invoice_id = id;
-        $scope.chosen = idx; // for CSS
-      }
+    $scope.select = function (id) {
+      slip.invoice_id = id;
       slip.text = "Payment"; // FIXME: find a way to wipe clicks
       var selected_invoice = stores['sale-debitor'].get(slip.invoice_id);
       // fill in selected data
@@ -1947,7 +1953,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.validate = function () {
       stores['cash-currency'].put(slip);
+      stores['sale-debitor'].delete(slip.invoice_id);
+      // FIXME: Model isn't changing on put...
+      $scope.hasCash = true;
       $scope.submitted = true;
+      $scope.clear();
     };
 
     function getBonNumber (model, bon_type) {
@@ -1970,6 +1980,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.chosen = -1;
       defaults();
       $scope.submitted = false;
+    };
+
+    $scope.selectPaid = function (id) {
+      $scope.paid_id = id;
     };
 
   });
