@@ -1,11 +1,10 @@
-#divuserIDggg{
-	height: 370px;
+#divuserID{
+	height: 460px;
 	overflow-y: scroll;
 }
 
-#divformIDgg{
-	height: 370px;
-	overflow-y: scroll;
+#divformID{
+	height: 480px;	
 }
 #divroleID{
 	height: 220px;
