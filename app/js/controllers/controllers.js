@@ -1672,13 +1672,14 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
 
-  controllers.controller('inventoryRegisterController', function ($scope, connect, $q, $modal) {
+  controllers.controller('inventoryRegisterController', function ($scope, appstate, connect, $q, $modal) {
 
     var account_defn, inv_unit_defn, inv_group_defn, inv_defn, inv_type_defn;
+    var eid = appstate.get('enterprise').id;
 
     account_defn= {
       tables: {'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}},
-      where: ["account.enterprise_id=" + 101], // FIXME
+      where: ["account.enterprise_id=" + eid]
     };
 
     inv_unit_defn = {
@@ -1691,7 +1692,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     inv_defn = {
       tables: {'inventory': { columns: ['enterprise_id', 'id', 'code', 'text', 'price', 'group_id', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'stock_max', 'stock_min', 'consumable']}},
-      where: ["inventory.enterprise_id="+101]
+      where: ["inventory.enterprise_id=" + eid]
     };
 
     inv_type_defn = {
@@ -1756,6 +1757,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         templateUrl: 'unitmodal.html',
         controller: function($scope, $modalInstance, unitStore) {
           var unit = $scope.unit = {};
+          $scope.units = unitStore.data;
+          console.log(unitStore);
           
 
           $scope.submit = function () {
@@ -1877,11 +1880,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
 
     var stores = {},
-        models = ['enterprise', 'sale-debitor', 'cash-currency', 'currency'],
-        slip = {};
+        models = ['enterprise', 'sale-debitor', 'cash-currency', 'currency'];
 
 
-    $scope.slip = slip;
+    var slip = $scope.slip = {};
     $scope.models = {};
 
     function init (arr) {
@@ -1890,11 +1892,22 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         stores[models[i]] = arr[i];
         $scope.models[models[i]] = arr[i].data;
       }
+
+      // FIXME: doesn't work yet
+      $scope.$watch("models['cash-currency']", function () {
+        $scope.hasCash = $scope.models['cash-currency'].length > 0;
+      });
+
+      $scope.$watch("models['sale-debitor']", function () {
+        $scope.hasSale = $scope.models['sale-debitor'].length > 0;
+      });
+       
       defaults();
     }
 
     function defaults () {
       // incriment the max id in the store
+
       var id  = Math.max.apply(Math.max, Object.keys(stores['cash-currency'].index)) + 1;
       if (id < 0) { id = 0; }
       slip.id = id;
@@ -1924,12 +1937,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip.cashier_id = 1;
     }
 
-    $scope.select = function (id, idx) {
-      if (id !== undefined) {
-        // only if chosen by left hand side list
-        slip.invoice_id = id;
-        $scope.chosen = idx; // for CSS
-      }
+    $scope.select = function (id) {
+      slip.invoice_id = id;
       slip.text = "Payment"; // FIXME: find a way to wipe clicks
       var selected_invoice = stores['sale-debitor'].get(slip.invoice_id);
       // fill in selected data
@@ -1952,7 +1961,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.validate = function () {
       stores['cash-currency'].put(slip);
+      stores['sale-debitor'].delete(slip.invoice_id);
+      // FIXME: Model isn't changing on put...
+      $scope.hasCash = true;
       $scope.submitted = true;
+      $scope.clear();
     };
 
     function getBonNumber (model, bon_type) {
@@ -1975,6 +1988,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.chosen = -1;
       defaults();
       $scope.submitted = false;
+    };
+
+    $scope.selectPaid = function (id) {
+      $scope.paid_id = id;
     };
 
   });

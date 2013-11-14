@@ -3,6 +3,32 @@
   outline: none;
 }
 
+/*
+ * Complete App Stylesheet
+ *
+*/
+
+/* for header/title elements. See /#/cash */
+.kpk-header {
+  width: 100%;
+  padding: 1em;
+  border-bottom: 1px solid #E3E3E3;
+  margin-bottom: 1em;
+}
+
+.kpk-header h2 {
+  width: 33.33333%;
+  display: inline;
+}
+
+/* for dropdown menus w/ glyphicons see /#/cash */
+.kpk-menu {
+  border-radius: 2px;
+}
+
+.kpk-menu i {
+  padding-right: 0.75em;
+}
 
 /*
   TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
@@ -116,5 +142,6 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: none; 
 }
+
 
 

@@ -1,18 +1,17 @@
 <link rel="stylesheet" href="partials/inventory/register/index.css">
-<header>
-  <h2 style="display: inline;">Stock Registration</h2>
-  <div class="btn-group pull-right">
-    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-      Actions <span class="caret"></span>
+<header class="kpk-header">
+  <h2>Stock Registration</h2>
+  <div class="dropdown pull-right">
+    <button type="button" class="btn btn-default dropdown-toggle">
+      <i class="glyphicon glyphicon-th"></i>
     </button>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu kpk-menu">
       <li><a href="" ng-click="newInventoryGroup()"><i class="glyphicon glyphicon-barcode"></i>Add Inventory Group</a></li>
       <li><a href=""><i class="glyphicon glyphicon-tags"></i>Add Price List</a></li>
       <li><a href="" ng-click="newUnitType()"><i class="glyphicon glyphicon-list-alt"></i>Add Unit Type</a></li>
     </ul>
   </div>
 </header>
-<hr />
 
 <div class="container">
   <form name="inventory" novalidate>
@@ -195,19 +194,37 @@
         <h3>Add Unit Type</h3>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" name="addUnit" novalidate>
-          <div class="form-group">
-            <label class="col-xs-2 control-label" for="unit-text">New Unit:</label>
-            <div class="col-xs-10">
-              <input 
-                id="unit-text"
-                class="form-control"
-                placeholder="e.g. 'Box'"
-                ng-model="unit.text"
-              >
+        <div class="row">
+          <div class="col-xs-8">
+            <form class="form-horizontal" name="addUnit" novalidate>
+              <div class="form-group">
+                <label class="col-xs-2 control-label" for="unit-text">New Unit:</label>
+                <div class="col-xs-10">
+                  <input 
+                    id="unit-text"
+                    class="form-control"
+                    placeholder="e.g. 'Box'"
+                    ng-model="unit.text"
+                  >
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-xs-4">
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                Registered:
+              </div>
+              <div class="panel-body" style="max-height: 100px; overflow: auto; padding:0;">
+                <table class="table table-bordered table-hover"> 
+                  <tbody>
+                    <tr ng-repeat="unit in units"><td>{{unit.text}}</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </form>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="discard()">Discard</button>
