@@ -400,7 +400,7 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/',''),
   (8, 'Budgeting', 'Plan your next move', 5, 0, '/partials/budgeting','budgeting'),
   (9, 'Posting Journal', 'Daily Log', 5, 0, '/partials/postingjournal/','/posting_journal'),
-  (10, 'Reports', 'Do stuff and tell people about it', 5, 0, '/units/reports/',''),
+  (10, 'Reports', 'Do stuff and tell people about it', 0, 1, '/units/reports/',''),
   (11, 'Inventory', 'The Inventory Super-Category', 0, 1, '',''),
   (12, 'Orders', 'Manage your purchase orders', 11, 0, '/units/orders/',''),
   (13, 'Stock', 'What is in stock?', 0, 1, '',''),
