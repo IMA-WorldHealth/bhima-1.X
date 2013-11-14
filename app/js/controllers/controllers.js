@@ -1975,7 +1975,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       stores['cash-currency'].put(obj);
       connect.basicPut('cash', [obj]);
       stores['sale-debitor'].delete(slip.invoice_id);
-      // FIXME: Model isn't changing on put...
+      connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
       $scope.hasCash = true;
       $scope.submitted = true;
       $scope.clear();
@@ -1983,7 +1983,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function getBonNumber (model, bon_type) {
       // filter by bon type, then gather ids.
-      var ids = mode/data/l.filter(function(row) {
+      var ids = model.filter(function(row) {
         return row.bon === bon_type; 
       }).map(function(row) {
         return row.bon_num;
