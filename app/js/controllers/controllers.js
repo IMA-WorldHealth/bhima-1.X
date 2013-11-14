@@ -1734,6 +1734,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       if ($scope.inventory.$valid) {
         item.id = stores.inventory.generateid(); 
         stores.inventory.put(item);
+        console.log("item:", item);
+        connect.basicPut('inventory', [item]);
         reset();
       } else {
         for (var k in $scope.inventory) {
