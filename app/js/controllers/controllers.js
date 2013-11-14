@@ -1734,7 +1734,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       if ($scope.inventory.$valid) {
         item.id = stores.inventory.generateid(); 
         stores.inventory.put(item);
-        stores.inventory.sync();
         reset();
       } else {
         for (var k in $scope.inventory) {
@@ -1984,7 +1983,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function getBonNumber (model, bon_type) {
       // filter by bon type, then gather ids.
-      var ids = model.filter(function(row) {
+      var ids = mode/data/l.filter(function(row) {
         return row.bon === bon_type; 
       }).map(function(row) {
         return row.bon_num;
