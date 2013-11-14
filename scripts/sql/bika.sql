@@ -430,7 +430,8 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (37, 'Budget by Account', 'Budgeting by account', 8, 0, 'partials/budgeting', 'budgeting'),
   (38, 'Cash Box', 'Pay invoices', 5, 0, '/partials/cash', 'cash'),
   (39, 'Register Stock', '', 11, 0, 'partials/inventory/register', 'inventory/register'),
-  (40, 'Register Supplier', '', 11, 0, 'partials/inventory/creditors', 'creditors');
+  (40, 'Register Supplier', '', 11, 0, 'partials/inventory/creditors', 'creditors'),
+  (41, 'Purchase Order Records', '', 5, 0, 'partials/purchase_records/', 'purchase_records/');
 -- 
 -- table `bika`.`permission`
 --
@@ -467,7 +468,8 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (21, 38, 13),
     (22, 39, 13),
     (23, 40, 13),
-    (24, 9, 13);
+    (24, 9, 13),
+    (25, 41, 13);
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
