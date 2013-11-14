@@ -3,6 +3,7 @@ var db = require('../database/db')({config: {user: 'bika', database: 'bika', hos
   , util = require('../util/util.js');
 
 exports.poster = function(req, res) {
+  console.log('ok');
   insert(req.body, res);
 }
 
@@ -34,11 +35,9 @@ var process = function(data, res){
       );
       db.execute(sql, function (err, ans) {
         if (err) throw err;
-        console.log("Post success", ans);
         res.send({status: 200, insertId: ans.insertId});
       });
     } else {
-      console.log('on insert pas');
     }
   }
   var sql = {};
