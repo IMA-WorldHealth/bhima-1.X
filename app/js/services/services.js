@@ -791,7 +791,7 @@
 
     function basicDelete (table, id) {
       // deletes something from the table `table` where id is `id` 
-      //$http.delete('/data/')
+      $http.delete('/data/'+id+'/'+table);
     }
 
 //    TODO reverse these two methods? I have no idea how this happened
@@ -881,6 +881,7 @@
       basicPut: basicPut,
       basicPost: basicPost,
       basicGet: basicGet,
+      basicDelete: basicDelete,
       journal: journal
     };
   });
