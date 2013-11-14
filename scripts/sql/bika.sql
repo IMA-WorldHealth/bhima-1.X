@@ -398,7 +398,7 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (5, 'Finance', 'The Finance Super-Category', 0, 1, '', ''),  
   (6, 'Accounts', 'The chart of accounts', 5, 0, '/partials/chart','/accounts'),
   (7, 'Charts', 'Analyze how your company is doing', 5, 0, '/units/charts/',''),
-  (8, 'Budgeting', 'Plan your next move', 5, 0, '/partials/budgeting','budgeting'),
+  (8, 'Budgeting', 'Plan your next move', 0, 1, '/partials/budgeting','budgeting'),
   (9, 'Posting Journal', 'Daily Log', 5, 0, '/partials/postingjournal/','/posting_journal'),
   (10, 'Reports', 'Do stuff and tell people about it', 0, 1, '/units/reports/',''),
   (11, 'Inventory', 'The Inventory Super-Category', 0, 1, '',''),
@@ -426,7 +426,11 @@ REPLACE INTO `unit` (`id`, `name`, `description`, `parent`, `has_children`, `url
   (33, 'Patient Records', 'Search for patient', 21, 0, '/partials/patient_records/', 'patient_records/'),
   (34, 'Sales', 'Create an invoice for a sale', 5, 0, '/partials/sales', 'sales'),
   (35, 'Sale Records', 'Search for a sale', 5, 0, '/partials/sale_records/', 'sale_records/'),
-  (36, 'Purchase Order', 'Create a new Purchase Order', 11, 0, 'partials/inventory_purchase_order', 'inventory/purchase');
+  (36, 'Purchase Order', 'Create a new Purchase Order', 11, 0, 'partials/inventory_purchase_order', 'inventory/purchase'),
+  (37, 'Budget by Account', 'Budgeting by account', 8, 0, 'partials/budgeting', 'budgeting'),
+  (38, 'Cash Box', 'Pay invoices', 5, 0, '/partials/cash', 'cash'),
+  (39, 'Register Stock', '', 11, 0, 'partials/inventory/register', 'inventory/register'),
+  (40, 'Register Supplier', '', 11, 0, 'partials/inventory/creditors', 'creditors');
 -- 
 -- table `bika`.`permission`
 --
@@ -443,8 +447,7 @@ CREATE TABLE `permission` (
 ) ENGINE=InnoDB;
 
 INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
-    (1, 8, 13),
-    (2, 1, 13), 
+    (2, 1, 13),
     (3, 4, 13),
     (5, 6, 13),
     (7, 8, 1),
@@ -459,7 +462,12 @@ INSERT INTO `permission` (`id`, `id_unit`, `id_user`) VALUES
     (16, 34, 13),
     (17, 35, 13),
     (18, 33, 13),
-    (19, 36, 13);
+    (19, 36, 13),
+    (20, 37, 13),
+    (21, 38, 13),
+    (22, 39, 13),
+    (23, 40, 13),
+    (24, 9, 13);
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
@@ -6259,7 +6267,7 @@ CREATE TABLE `patient` (
 ) ENGINE=InnoDB;
 
 INSERT INTO `patient` (`id`, `debitor_id`, `first_name`, `last_name`, `dob`, `parent_name`, `sex`, `religion`, `marital_status`, `phone`, `email`, `location_id`) VALUES
- (1, 1, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", 1),
+ -- (1, 1, "Steven", "Fountain", '1993-02-08', "Paul", "m", "christian", "single", null, "sfount@example.com", 1),
  (2, 2, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", 1),
  (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", 1),
  (4, 4, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", 1);
