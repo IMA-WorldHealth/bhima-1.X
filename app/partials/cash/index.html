@@ -27,7 +27,7 @@
           ng-model="slip.invoice_id"
           list="invoices"
           typeahead="invoice.id as invoice.note for invoice in models['sale-debitor']"
-          typeahead-on-select="select(invoice.id)"
+          typeahead-on-select="select()"
           ng-disabled="submitted"
         >
       </div>

@@ -789,6 +789,11 @@
       return deferred.promise;
     }
 
+    function basicDelete (table, id) {
+      // deletes something from the table `table` where id is `id` 
+      $http.delete('/data/'+id+'/'+table);
+    }
+
 //    TODO reverse these two methods? I have no idea how this happened
     function basicPut(table, object) {
       var format_object = {t: table, data: object};
@@ -876,6 +881,7 @@
       basicPut: basicPut,
       basicPost: basicPost,
       basicGet: basicGet,
+      basicDelete: basicDelete,
       journal: journal
     };
   });
