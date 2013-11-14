@@ -2019,7 +2019,6 @@ controllers.controller('journalController', function($scope, $q, kpkConnect, kpk
    req_db.e = e;
    req_db.jc = jc;
    kpkConnect.get('/journal?', req_db).then(function(data){
-    console.log("data", data);
     $scope.infosJournal=data;
     for(var i = 0; i<data.length; i++){
      $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
@@ -2052,12 +2051,14 @@ controllers.controller('journalController', function($scope, $q, kpkConnect, kpk
 
    $scope.poster = function(){
     var tabJournalID = [];
-    for(var cle in postingListe){
+    for(var cle in postingListe){      
       if(postingListe[cle]){
         tabJournalID.push($scope.infosJournal[cle].id);
       }
     }
-    kpkConnect.sendTo('gl/', 'gl',tabJournalID);
+    console.log(tabJournalID);
+
+    kpkConnect.sendTo('/gl', 'gl',tabJournalID);
 
    }
 });

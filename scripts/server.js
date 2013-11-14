@@ -36,7 +36,6 @@ app.get('/data/', function (req, res) {
   var Qo = queryHandler.getQueryObj(jsRequest);  
   if(!Qo.action){
     var sql = db.select(Qo);
-    console.log('JSON:'+Qo+' sql :'+sql);
   db.execute(sql, cb);
   } else {
     var sql = db.delete(Qo.table, Qo.ids); //en attendant une meilleure solution
@@ -61,14 +60,11 @@ app.post('/data/', function (req, res) {
   
   var cb = function (err, ans) {
     if (err) throw err;
-    console.log("Post success", ans);
     res.send({status: 200, insertId: ans.insertId});
   };
   
-  console.log("Request for", req.body.t, req.body.data);
 
   var insertsql = db.insert(req.body.t, req.body.data);
-  console.log(insertsql);
   db.execute(insertsql, cb);
 });
 
@@ -76,7 +72,6 @@ app.delete('/data/:id/:table', function(req, res){
   var deleteSql = db.delete(req.params.table, {id:[req.params.id]});
   var cbDEL = function (err, ans) {
       if (err) throw err;
-      console.log('suppression reussie');
   };
   db.execute(deleteSql, cbDEL);
 });
@@ -95,15 +90,12 @@ app.post('/journal', function(req, res) {
 });
 
 app.post('/gl', function(req, res) {
-  console.log('ok', req.body);
+  console.log('le tableau recu est ', req.body);
 });
 
 app.get('/journal', function(req,res){
   var cb = function (err, ans) {
     if (err) throw err;
-    for(var i = 0; i<ans.length; i++){
-      console.log('journal record :', ans[i]);
-    }
     res.json(ans);
   };
   var myRequest = decodeURIComponent(url.parse(req.url).query);
@@ -115,7 +107,6 @@ app.get('/journal', function(req,res){
   }  
   var Qo = queryHandler.getQueryObj(jsRequest);
   var sql = db.select(Qo);
-  console.log('JSON:'+Qo+' sql :'+sql);
   db.execute(sql, cb);  
 });
 
