@@ -1824,6 +1824,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       if ($scope.inventory.$valid) {
         item.id = stores.inventory.generateid(); 
         stores.inventory.put(item);
+        console.log("item:", item);
+        connect.basicPut('inventory', [item]);
         reset();
       } else {
         for (var k in $scope.inventory) {
@@ -1847,8 +1849,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         controller: function($scope, $modalInstance, unitStore) {
           var unit = $scope.unit = {};
           $scope.units = unitStore.data;
-          console.log(unitStore);
-          
 
           $scope.submit = function () {
             // validate
@@ -1859,6 +1859,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
               text = text[0].toUpperCase() + text.slice(1);
               unit.text = text;
               unitStore.put(unit);
+              connect.basicPut('inv_unit', [{id: unit.id, text: unit.text}]); //FIXME: AUGHAUGH
               $modalInstance.close();
             }
           };
@@ -1884,12 +1885,17 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var instance = $modal.open({
         templateUrl: "inventorygroupmodal.html",
         controller: function ($scope, $modalInstance, groupStore, accountModel) {
-          var group = $scope.group = {};
+          var group = $scope.group = {},
+            clean = {},
+            cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
+
           $scope.accounts = accountModel;
 
           $scope.submit = function () {
             group.id = groupStore.generateid();
+            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
             groupStore.put(group);
+            connect.basicPut('inv_group', [clean]);
             $modalInstance.close();
           };
 
@@ -2049,19 +2055,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     $scope.validate = function () {
+      var fields = ["bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
       var obj = {};
-      obj.bon = slip.bon;
-      obj.bon_num = slip.bon_num;
-      obj.text = slip.text;
-      obj.cashier_id = slip.cashier_id;
-      obj.currency_id = slip.currency_id;
-      obj.date = slip.date;
-      obj.cashbox_id = slip.cashbox_id;
-      obj.id = slip.id;
-      obj.invoice_id = slip.invoice_id;
-      obj.amount = slip.amount;
-      obj.credit_account = slip.credit_account;
-      obj.debit_account = slip.debit_account;
+      fields.forEach(function (f) { obj[f] = slip[f]; });
       stores['cash-currency'].put(obj);
       connect.basicPut('cash', [obj]);
       stores['sale-debitor'].delete(slip.invoice_id);
