@@ -1938,7 +1938,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.select = function (id) {
-      slip.invoice_id = id;
+      slip.invoice_id = id || slip.invoice_id;
       slip.text = "Payment"; // FIXME: find a way to wipe clicks
       var selected_invoice = stores['sale-debitor'].get(slip.invoice_id);
       // fill in selected data
