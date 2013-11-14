@@ -33,8 +33,8 @@
 /*
   TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
  */
-#kpk-sidebar { 
-  width: 20%;
+#kpk-sidebar {
+  width: 18%;
   height: 100%;
   position: fixed;
   right: 0;
@@ -81,7 +81,7 @@
 }
 
 #kpk-container { 
-  width: 80%;
+  width: 82%;
   position: fixed;
   height: 100%;
   background: white;
