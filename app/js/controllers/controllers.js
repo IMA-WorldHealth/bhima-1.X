@@ -1667,13 +1667,14 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
 
-  controllers.controller('inventoryRegisterController', function ($scope, connect, $q, $modal) {
+  controllers.controller('inventoryRegisterController', function ($scope, appstate, connect, $q, $modal) {
 
     var account_defn, inv_unit_defn, inv_group_defn, inv_defn, inv_type_defn;
+    var eid = appstate.get('enterprise').id;
 
     account_defn= {
       tables: {'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}},
-      where: ["account.enterprise_id=" + 101], // FIXME
+      where: ["account.enterprise_id=" + eid]
     };
 
     inv_unit_defn = {
@@ -1686,7 +1687,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     inv_defn = {
       tables: {'inventory': { columns: ['enterprise_id', 'id', 'code', 'text', 'price', 'group_id', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'stock_max', 'stock_min', 'consumable']}},
-      where: ["inventory.enterprise_id="+101]
+      where: ["inventory.enterprise_id=" + eid]
     };
 
     inv_type_defn = {
@@ -1751,6 +1752,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         templateUrl: 'unitmodal.html',
         controller: function($scope, $modalInstance, unitStore) {
           var unit = $scope.unit = {};
+          $scope.units = unitStore.data;
+          console.log(unitStore);
           
 
           $scope.submit = function () {

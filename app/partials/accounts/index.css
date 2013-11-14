@@ -7,27 +7,13 @@
   font-size: 8pt;
 }
 
-* {
-}
-
-body {
-  background: beige;
-  padding: 0;
-  margin: 8;
-}
-
-h2 {
-  font-size: 10pt;
-  border-bottom: 1px dotted gray;
-}
-
-ul {
+.kpk-grid ul {
   margin-left: 0;
   padding: 0;
   cursor: default;
 }
 
-li {
+.kpk-grid li {
   background: url("css/grid/images/arrow_right_spearmint.png") no-repeat center left;
   padding: 0 0 0 14px;
 
@@ -35,7 +21,7 @@ li {
   margin: 0;
 }
 
-#myGrid {
+.kpk-grid {
   background: white;
   outline: 0;
   border: 1px solid gray;
@@ -231,5 +217,3 @@ input.editor-checkbox {
   padding: 0;
   border: 0;
 }
-
-
