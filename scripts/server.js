@@ -48,7 +48,9 @@ app.get('/data/', function (req, res) {
 });
 
 app.put('/data/', function(req, res) {
+  console.log("KEY:", req.body.pk);
   var updatesql = db.update(req.body.t, req.body.data, req.body.pk);
+  console.log("UPDATE:", updatesql);
   db.execute(updatesql, function(err, ans) { 
     if(err) throw err;
     res.send({status: 200, insertId: ans.insertId});
@@ -72,6 +74,8 @@ app.delete('/data/:id/:table', function(req, res){
   var deleteSql = db.delete(req.params.table, {id:[req.params.id]});
   var cbDEL = function (err, ans) {
       if (err) throw err;
+      res.status(200);
+      res.send();
   };
   db.execute(deleteSql, cbDEL);
 });

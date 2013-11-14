@@ -1734,7 +1734,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       if ($scope.inventory.$valid) {
         item.id = stores.inventory.generateid(); 
         stores.inventory.put(item);
-        stores.inventory.sync();
         reset();
       } else {
         for (var k in $scope.inventory) {
@@ -1938,7 +1937,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.select = function (id) {
-      slip.invoice_id = id;
+      slip.invoice_id = id || slip.invoice_id;
       slip.text = "Payment"; // FIXME: find a way to wipe clicks
       var selected_invoice = stores['sale-debitor'].get(slip.invoice_id);
       // fill in selected data
@@ -1960,9 +1959,23 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     $scope.validate = function () {
-      stores['cash-currency'].put(slip);
+      var obj = {};
+      obj.bon = slip.bon;
+      obj.bon_num = slip.bon_num;
+      obj.text = slip.text;
+      obj.cashier_id = slip.cashier_id;
+      obj.currency_id = slip.currency_id;
+      obj.date = slip.date;
+      obj.cashbox_id = slip.cashbox_id;
+      obj.id = slip.id;
+      obj.invoice_id = slip.invoice_id;
+      obj.amount = slip.amount;
+      obj.credit_account = slip.credit_account;
+      obj.debit_account = slip.debit_account;
+      stores['cash-currency'].put(obj);
+      connect.basicPut('cash', [obj]);
       stores['sale-debitor'].delete(slip.invoice_id);
-      // FIXME: Model isn't changing on put...
+      connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
       $scope.hasCash = true;
       $scope.submitted = true;
       $scope.clear();
