@@ -1242,7 +1242,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
     
   //FIXME updates to patient and location broke everything here, update to use that instead
-  controllers.controller('patientRegController', function($scope, $q, $location, connect) {
+  controllers.controller('patientRegController', function($scope, $q, $location, connect, $modal) {
 //    FIXME patient and debtor objects just appear magically in the code - they should be defined and commented with link to template
     console.log("Patient init");
     var patient_model = {};
@@ -1292,8 +1292,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $q.all([debtor_request, patient_request])
         .then(function(res) {
-          patient_model = res[0];
           debtor_model = res[0];
+          patient_model = res[1];
+
 
           patient.id = createId(patient_model.data);
           patient.debitor_id = createId(debtor_model.data);
@@ -1337,6 +1338,36 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.checkSubmitted = function() { 
       return submitted;
     };
+
+    $scope.createGroup = function () {
+      var instance = $modal.open({
+        templateUrl: "debtorgroupmodal.html",
+        controller: function ($scope, $modalInstance, groupStore, accountModel) {
+          var group = $scope.group = {},
+            clean = {},
+            cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
+
+          $scope.accounts = accountModel;
+
+          $scope.submit = function () {
+            group.id = groupStore.generateid();
+            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
+            groupStore.put(group);
+            connect.basicPut('inv_group', [clean]);
+            $modalInstance.close();
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss();
+          };
+
+        },
+        resolve: {
+          groupStore: function () { return stores.inv_group; },
+          accountModel: function () { return $scope.models.account; }
+        }
+      });
+    }
 
 
     init();
