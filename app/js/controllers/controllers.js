@@ -1242,13 +1242,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
     
   //FIXME updates to patient and location broke everything here, update to use that instead
-  controllers.controller('patientRegController', function($scope, $q, $location, connect) { 
+  controllers.controller('patientRegController', function($scope, $q, $location, connect) {
+//    FIXME patient and debtor objects just appear magically in the code - they should be defined and commented with link to template
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
    
     function init() { 
       //register patient for appcahce namespace
+      var default_group = 3 //internal patient
 
       var location_request = connect.req({'tables' : {'location' : {'columns' : ['id', 'city', 'region']}}});
       //This was if we needed to create alpha-numeric (specific) ID's
@@ -1256,18 +1258,25 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //Used to generate debtor ID for patient
 //      FIXME just take the most recent items from the database, vs everything?
       var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
+      var debtor_group_request = connect.req({'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}});
 
-      $q.all([location_request, patient_request, debtor_request])
+      $q.all([location_request, patient_request, debtor_request, debtor_group_request])
       .then(function(res) { 
         $scope.location_model = res[0];
         $scope.patient_model = res[1];
         $scope.debtor_model = res[2];
+        $scope.debtor_group_model = res[3];
         //$scope.location = $scope.location_model.data[0]; //select default
+
+        $scope.debtor = {};
+        $scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
       });
     }
 
-    function createId(data) { 
-      var search = data.reduce(function(a, b) {a = a.id || a; b = b.id || b; return Math.max(a, b);});
+    function createId(data) {
+      console.log(data);
+      var search = data.reduce(function(a, b) {a = a.id || a; return Math.max(a, b.id);});
+      console.log("found", search);
       if(search.id) search = search.id;
       return search + 1;
     }
@@ -1288,19 +1297,26 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
           patient.id = createId(patient_model.data);
           patient.debitor_id = createId(debtor_model.data);
+          console.log("created p_id", patient.id);
+          console.log("created id", patient.debitor_id);
 
           commit(patient);
         });
     }
 
     function commit(patient) {
+
+      var debtor = $scope.debtor;
       patient_model = patient;
 
+      var format_debtor = {id: patient_model.debitor_id, group_id: $scope.debtor.debtor_group.id};
+      console.log("requesting debtor", format_debtor);
       //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
       // FIXME 1 - default group_id, should be properly defined
-      connect.basicPut("debitor", [{id: patient_model.id, group_id: 1}])
+      connect.basicPut("debitor", [format_debtor])
       .then(function(res) { 
         //Create patient record
+        console.log("Debtor record added", res);
         connect.basicPut("patient", [patient_model])
         .then(function(res) {
           $location.path("patient_records/" + res.data.insertId);
