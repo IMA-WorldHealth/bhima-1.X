@@ -5976,6 +5976,17 @@ INSERT INTO `inventory`
   (101, 7, "EXKYSB", "Kyste Sublingual", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
   (101, 8, "EXKYPB", "Petite Kyste De La Bouche", 20000, 2, 1, 0, 0, 0, 0, 0, 2, 0),
   (101, 9, "BICNOI", "Bic Noire", 1, 3, 4, 0, 0, 0, 0, 0, 0, 1);
+
+
+
+ DROP TABLE IF EXISTS `service`;
+ CREATE TABLE `service`(
+  `id` int unsigned not null AUTO_INCREMENT,
+  `service_txt` varchar(45) not null,
+  PRIMARY KEY (`id`))ENGINE=InnoDB;
+ INSERT INTO `service` VALUES (1, 'Cash');
+
+
   
 --
 -- table `bika`.`price_list`
@@ -6055,25 +6066,93 @@ CREATE TABLE `sale_item` (
 ) ENGINE=InnoDB;
 
 
+
+DROP TABLE IF EXISTS `creditor_group`;
+CREATE  TABLE `bika`.`creditor_group` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `group_txt` VARCHAR(45) NULL ,
+  `account_id` mediumint unsigned NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  KEY `account_id` (`account_id`),
+  CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE = InnoDB;
+
+
+
+
+DROP TABLE IF EXISTS `creditor`;
+CREATE TABLE `creditor` (
+`id` int not null AUTO_INCREMENT,
+`creditor_group_id` int not null,
+`creditor_txt` varchar(45),
+PRIMARY KEY (`id`),
+KEY `creditor_group_id` (`creditor_group_id`),
+CONSTRAINT FOREIGN KEY (`creditor_group_id`) REFERENCES `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+)ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `supplier`;
+CREATE  TABLE `supplier` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `address1` TEXT NULL ,
+  `address2` TEXT NULL ,
+  `location_id` smallint unsigned not null ,
+  `email` VARCHAR(45) NULL ,
+  `fax` VARCHAR(45) NULL ,
+  `note` VARCHAR(50) NULL ,
+  `phone` VARCHAR(15) NULL ,
+  `international` TINYINT(1) NULL ,
+  `locked` TINYINT(1) NULL ,
+  `creditor_id` int not null,
+  PRIMARY KEY (`id`),
+  KEY `creditor_id` (`creditor_id`),
+  KEY `location_id` (`location_id`),
+  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+   )ENGINE = InnoDB;
+
+
 --
 -- table `bika`.`journal`
 --
 DROP TABLE IF EXISTS `posting_journal`;
 CREATE TABLE `posting_journal` (
   `id`                mediumint unsigned not null AUTO_INCREMENT,
-  `enterprise_id`     smallint unsigned not null,  
-  `user_id`           smallint unsigned not null,
-  `sale_id`           int unsigned not null,  
   `date`              date not null,
-  `description`       text,  
-  `posted`            tinyint,
+  `description`       text null,
+  `posted`            tinyint null,
+  `cost`              int unsigned not null,
+  `discount`          mediumint unsigned default '0',
+  `perform_date`      date not null,
+  `paid`              boolean null,
+  `bon_num`           int unsigned null,
+  `debit_account`     mediumint unsigned null,
+  `credit_account`    mediumint unsigned null,
+  `origin_id`         int unsigned not null,
+  `enterprise_id`     smallint unsigned not null,
+  `line_id`           int unsigned not null,  
+  `currency_id`       tinyint unsigned not null,
+  `creditor_id`       int null,
+  `debitor_id`        int unsigned null,
+  `document_id`       int unsigned not null,
+  `user_id`           smallint unsigned not null,  
   PRIMARY KEY (`id`),
+  KEY `debit_account` (`debit_account`),
+  KEY `credit_account` (`credit_account`),
+  KEY `origin_id` (`origin_id`),
   KEY `enterprise_id` (`enterprise_id`),
+  KEY `currency_id` (`currency_id`),
+  KEY `creditor_id` (`creditor_id`),
+  KEY `debitor_id` (`debitor_id`),
   KEY `user_id` (`user_id`),
-  KEY `sale_id` (`sale_id`),
-  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT FOREIGN KEY (`debit_account`) REFERENCES `account` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`origin_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 --
@@ -6134,48 +6213,6 @@ CREATE TABLE `cash` (
   CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`),
   CONSTRAINT FOREIGN KEY (`invoice_id`) REFERENCES `sale` (`id`) -- FIXME: Change this so that we can pull from multiple tables.
 ) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `creditor_group`;
-CREATE  TABLE `bika`.`creditor_group` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `group_txt` VARCHAR(45) NULL ,
-  `account_id` mediumint unsigned NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  KEY `account_id` (`account_id`),
-  CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)ENGINE = InnoDB;
-
-
-DROP TABLE IF EXISTS `creditor`;
-CREATE TABLE `creditor` (
-`id` int not null AUTO_INCREMENT,
-`creditor_group_id` int not null,
-`creditor_txt` varchar(45),
-PRIMARY KEY (`id`),
-KEY `creditor_group_id` (`creditor_group_id`),
-CONSTRAINT FOREIGN KEY (`creditor_group_id`) REFERENCES `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `supplier`;
-CREATE  TABLE `supplier` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(45) NOT NULL ,
-  `address1` TEXT NULL ,
-  `address2` TEXT NULL ,
-  `location_id` smallint unsigned not null ,
-  `email` VARCHAR(45) NULL ,
-  `fax` VARCHAR(45) NULL ,
-  `note` VARCHAR(50) NULL ,
-  `phone` VARCHAR(15) NULL ,
-  `international` TINYINT(1) NULL ,
-  `locked` TINYINT(1) NULL ,
-  `creditor_id` int not null,
-  PRIMARY KEY (`id`),
-  KEY `creditor_id` (`creditor_id`),
-  KEY `location_id` (`location_id`),
-  CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (`creditor_id`) REFERENCES `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-   )ENGINE = InnoDB;
 
 DROP TABLE IF EXISTS `purchase`;
 CREATE TABLE `purchase` (
@@ -6273,4 +6310,3 @@ INSERT INTO `patient` (`id`, `debitor_id`, `first_name`, `last_name`, `dob`, `pa
  (2, 2, "Jonathan", "Niles", '1992-06-07', "Wayne", "m", "christian", "single", null, "jniles@example.com", 1),
  (3, 3, "Dedrick", "Kitamuka", '1988-05-16', "Dieu", "m", "catholic", "single", null, "kitamuka@example.com", 1),
  (4, 4, "Chris", "Niles", '1990-05-19', "Wayne", "m", "christian", "divorced", null, "cniles@example.com", 1);
-
