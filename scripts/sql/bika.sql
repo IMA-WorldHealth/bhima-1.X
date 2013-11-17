@@ -5852,7 +5852,7 @@ CREATE TABLE `sale` (
   enterprise_id   smallint unsigned not null,
   id              int unsigned not null AUTO_INCREMENT, -- saleid number
   cost            int unsigned not null,
-  currency        varchar(3) not null, -- 'USD', 'FC', 'EUR', 'GBP'
+  currency_id     tinyint unsigned not null,
   debitor_id      int unsigned not null,    
   seller_id       smallint unsigned not null,
   discount        mediumint unsigned default '0',
@@ -5864,14 +5864,17 @@ CREATE TABLE `sale` (
   KEY `enterprise_id` (`enterprise_id`),
 --  KEY `seller_id` (`seller_id`),
   KEY `debitor_id` (`debitor_id`),
+  KEY `currency_id` (`currency_id`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
 --  CONSTRAINT FOREIGN KEY (`seller_id`) REFERENCES `employee` (`id`),
-  CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`)
+  CONSTRAINT FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`),
+  CONSTRAINT FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
+
 ) ENGINE=InnoDB;
 
 
--- INSERT INTO `sale` (`enterprise_id`, `id`, `cost`, `currency`, `debitor_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`) VALUES 
---  (101, 100001, 100, "USD", 1, 1, 0, '2013-01-02','A NEW SALE', 0);
+-- INSERT INTO `sale` (`enterprise_id`, `id`, `cost`, `currency_id`, `debitor_id`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`) VALUES 
+--  (101, 100001, 100, 1, 1, 1, 0, '2013-01-02','A NEW SALE', 0);
 
 -- 
 -- table `bika`.`inv_group`
@@ -6119,7 +6122,6 @@ DROP TABLE IF EXISTS `posting_journal`;
 CREATE TABLE `posting_journal` (
   `id`                mediumint unsigned not null AUTO_INCREMENT,
   `date`              date not null,
-  `description`       text null,
   `posted`            tinyint null,
   `cost`              int unsigned not null,
   `discount`          mediumint unsigned default '0',

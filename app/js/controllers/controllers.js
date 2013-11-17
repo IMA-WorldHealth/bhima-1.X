@@ -914,7 +914,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         enterprise_id : appstate.get("enterprise").id, //not safe
         id : $scope.invoice_id,
         cost : t,
-        currency : 'USD', //ohgd
+        currency : 1, //ohgd
         debitor_id : $scope.debtor.debitor_id,
         invoice_date: $scope.sale_date,
         seller_id : $scope.verify, //TODO placeholder - this should be derived from appstate (session) or equivelant
@@ -1039,6 +1039,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
          });
          }*/
         if(selected) request.push(selected.id);
+        //if(selected) request.push({transaction_id:1, service_id:1, user_id:1});
+
 
         connect.journal(request)
           .then(function(res) {
@@ -1176,7 +1178,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $scope.selected = {};
 
-      connect.req({'tables' : {'sale' : {'columns' : ['id', 'cost', 'currency', 'debitor_id', 'discount', 'invoice_date', 'posted']}}})
+      connect.req({'tables' : {'sale' : {'columns' : ['id', 'cost', 'currency_id', 'debitor_id', 'discount', 'invoice_date', 'posted']}}})
       .then(function(model) { 
         deferred.resolve(model);
       });
