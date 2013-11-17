@@ -119,12 +119,8 @@ module.exports = (function (db) {
           }    
       }
       if (authorized) {
-        console.log('voice la la requette', chemin);
-        console.log('ok, passe');
         next();
       } else {
-        console.log('voice la la requette', chemin);
-        console.log('ko, block');
         res.redirect('/');
         return;
       }
