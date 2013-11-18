@@ -120,6 +120,7 @@ CREATE TABLE `sale` (
   `note` text,
   `paid` tinyint(1) NOT NULL DEFAULT '0',
   `posted` tinyint(1) NOT NULL DEFAULT '0',
+  `fyearID` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `debitor_id` (`debitor_id`),
@@ -127,7 +128,7 @@ CREATE TABLE `sale` (
   CONSTRAINT `sale_ibfk_1` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   CONSTRAINT `sale_ibfk_2` FOREIGN KEY (`debitor_id`) REFERENCES `debitor` (`id`),
   CONSTRAINT `sale_ibfk_3` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100003 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=100006 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +137,7 @@ CREATE TABLE `sale` (
 
 LOCK TABLES `sale` WRITE;
 /*!40000 ALTER TABLE `sale` DISABLE KEYS */;
-INSERT INTO `sale` VALUES (101,100000,3000,1,1,1,0,'2013-10-10','bien',0,1),(101,100001,4000,1,1,1,0,'2013-10-10','bieen',0,1),(101,100002,4544,1,1,1,0,'2013-02-12','bien',0,0);
+INSERT INTO `sale` VALUES (101,100000,3000,1,1,1,0,'2013-10-10','bien',0,1,NULL),(101,100001,4000,1,1,1,0,'2013-10-10','bieen',0,1,NULL),(101,100002,4544,1,1,1,0,'2013-02-12','bien',0,0,NULL),(101,100003,20000,1,3,13,0,'2013-11-18','PI 100003/Kitamuka/Dedrick/2013-11-18',0,0,NULL),(101,100004,40000,1,4,13,0,'2013-11-18','PI 100004/Niles/Chris/2013-11-18',0,0,NULL),(101,100005,40000,1,4,13,0,'2013-11-18','PI 100005/Niles/Chris/2013-11-18',0,0,NULL);
 /*!40000 ALTER TABLE `sale` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -767,7 +768,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'jniles','malamumoke','Jonathan','Niles','jonathanwniles@gmail.com',0),(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0);
+INSERT INTO `user` VALUES (1,'jniles','malamumoke','Jonathan','Niles','jonathanwniles@gmail.com',0),(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -790,7 +791,7 @@ CREATE TABLE `sale_item` (
   KEY `inventory_id` (`inventory_id`),
   CONSTRAINT `sale_item_ibfk_1` FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`) ON DELETE CASCADE,
   CONSTRAINT `sale_item_ibfk_2` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -799,6 +800,7 @@ CREATE TABLE `sale_item` (
 
 LOCK TABLES `sale_item` WRITE;
 /*!40000 ALTER TABLE `sale_item` DISABLE KEYS */;
+INSERT INTO `sale_item` VALUES (100003,1,1,1,20000,20000),(100004,2,1,1,20000,20000),(100004,3,1,1,20000,20000),(100005,4,5,1,20000,20000),(100005,5,1,1,20000,20000);
 /*!40000 ALTER TABLE `sale_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1019,13 +1021,12 @@ CREATE TABLE `posting_journal` (
   KEY `enterprise_id` (`enterpriseID`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `posting_journal_ibfk_1` FOREIGN KEY (`debitAmount`) REFERENCES `account` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `posting_journal_ibfk_2` FOREIGN KEY (`creditAmount`) REFERENCES `account` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `posting_journal_ibfk_3` FOREIGN KEY (`origin_id`) REFERENCES `transaction_type` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `posting_journal_ibfk_4` FOREIGN KEY (`enterpriseID`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `posting_journal_ibfk_5` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `posting_journal_ibfk_8` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1034,7 +1035,7 @@ CREATE TABLE `posting_journal` (
 
 LOCK TABLES `posting_journal` WRITE;
 /*!40000 ALTER TABLE `posting_journal` DISABLE KEYS */;
-INSERT INTO `posting_journal` VALUES (1,101,NULL,100000,'2013-11-17',100000,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,0,'2013-10-10','3000',1,1,NULL),(2,101,NULL,100001,'2013-11-17',100001,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,0,'2013-10-10','4000',1,1,NULL);
+INSERT INTO `posting_journal` VALUES (1,101,NULL,100000,'2013-11-17',100000,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,0,'2013-10-10','3000',1,1,NULL),(2,101,NULL,100001,'2013-11-17',100001,NULL,NULL,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,0,'2013-10-10','4000',1,1,NULL),(5,101,NULL,100005,'2013-11-18',0,'PI 100005/Niles/Chris/2013-11-18',410400,40000,NULL,1,'4',NULL,'100005',NULL,NULL,NULL,NULL,'','',1,1,0);
 /*!40000 ALTER TABLE `posting_journal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1247,4 +1248,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-18 11:26:20
+-- Dump completed on 2013-11-18 13:49:06
