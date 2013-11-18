@@ -2166,14 +2166,14 @@ controllers.controller('journalController', function($scope, $q, kpkConnect, kpk
             ], req_db = {};
    req_db.e = e;
    req_db.jc = jc;
-   kpkConnect.get('/journal?', req_db).then(function(data){
+   /*kpkConnect.get('/journal?', req_db).then(function(data){
     $scope.infosJournal=data;
     for(var i = 0; i<data.length; i++){
      $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
      $scope.infosJournal[i].date = kpkUtilitaire.formatDate($scope.infosJournal[i].date);
-     $scope.infosJournal[i].invoice_date = kpkUtilitaire.formatDate($scope.infosJournal[i].invoice_date); 
+     $scope.infosJournal[i].invoice_date = kpkUtilitaire.formatDate($scope.infosJournal[i].invoice_date);
     }
-  });
+  });*/
 
    $scope.tryChecking = function(index){
     var res = isCheckingValide(index);
