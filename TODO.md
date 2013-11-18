@@ -1,4 +1,5 @@
 ### Important ###
+ # FIXME Any modules that generate IDs have a risk of clashing if two executed at the same time
  # Debtor ID is currently numeric, and is the same as Patient ID, it should be alpha numeric to allow debitors and patients to be debtor (? p12, e13 etc.)
  # Attempt to remove ALL functions from templates (performed on every digest)
 

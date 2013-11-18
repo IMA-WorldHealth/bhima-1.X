@@ -1,16 +1,38 @@
 <link rel="stylesheet" type="text/css" href="../../../css/journal.css"/>
 <div class="container">
 	<div class="row">
-		<div class="col-xs-5">
-			<div class="page-header">
-				<h1>Journal Records</h1>
+		<div class="col-xs-12">
+			<div class="bika-header">
+				<h1>Posting Journal</h1>
 			</div>
 		</div>
 	</div>
+
+  <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util">
+        <div class="row">
+          <div class="col-xs-12">
+            <!--FIXME btn group is a big hack - should be done with col-->
+            <div class="col-xs-4 hack-left">
+              <input type="text" ng-model="journal_filter.filter" class="form-kapok" placeholder="Filter Journal">
+            </div>
+            <div class="pull-right">
+              <a class="btn btn-default"><span class="glyphicon glyphicon-stats"></span> Trial Balance</a>
+              <a class="btn btn-default"><span class="glyphicon glyphicon-cog"></span> Configure</a>
+              <a class="btn btn-default"><span class="glyphicon glyphicon-print"></span> Print</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 	<div class="row">
 		<div class="col-xs-12">
 			<div class = "journal-table">
-				<table class="table table-bordered">
+				<table class="table table-bordered table-condensed">
 					<thead>
 						<td>Date</td>
 						<td>ID</td>
@@ -60,14 +82,16 @@
 				</table>
 			</div>
 		</div>
+    </div>
 		  <div class="row">
     <!--There's a better way of doing this somewhere out there-->
     <div class="col-xs-12">
       <div class="util-bottom">
         <div class="row">
           <div class="col-xs-12">
+
             <div class="pull-right">
-            	<button class="btn btn-lg btn-default" ng-click="poster()"> Post to General Ledger</button>         
+            	<button class="btn btn-default" ng-click="poster()"><span class="glyphicon glyphicon-floppy-open"></span> General Ledger</button>
 
             </div>
           </div>
@@ -78,4 +102,3 @@
 
 	</div>
 	
-</div>
