@@ -1342,8 +1342,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.createGroup = function () {
       var instance = $modal.open({
         templateUrl: "debtorgroupmodal.html",
-        controller: function ($scope, $modalInstance, groupStore, accountModel) {
-          var group = $scope.group = {},
+        controller: function ($scope, $modalInstance) { //groupStore, accountModel
+          console.log("Group module initialised");
+          /*var group = $scope.group = {},
             clean = {},
             cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
 
@@ -1359,12 +1360,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
           $scope.discard = function () {
             $modalInstance.dismiss();
-          };
+          };*/
 
         },
         resolve: {
-          groupStore: function () { return stores.inv_group; },
-          accountModel: function () { return $scope.models.account; }
+          //groupStore: function () { return stores.inv_group; },
+          //accountModel: function () { return $scope.models.account; }
         }
       });
     }

@@ -18,7 +18,7 @@
 
             <div class="pull-right">
               <!--TODO This is very limiting - you can only add a debtor group through patient registration - consider changing this-->
-              <a ng-click="createGroup()" clas="btn btn-default">New Group thing</a>
+              <a ng-click="createGroup()" class="btn btn-default"><span class="glyphicon glyphicon-tag"></span> Create Patient Group</a>
 
               <a href='/#/patient_records/' class="btn btn-default"><span class="glyphicon glyphicon-list"></span> View
                 Patient Records</a>
@@ -175,7 +175,7 @@
 <script type="text/ng-template" id="debtorgroupmodal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Add Inventory Group</h3>
+      <h3>Create Patient Group</h3>
     </div>
     <div class="modal-body">
       <form class="form-horizontal" name="addInventoryGroup" novalidate>
@@ -184,7 +184,7 @@
           <div class="col-xs-8">
             <input
                 id="group-name"
-                class="form-control"
+                class="form-kapok"
                 placeholder="e.g. Products"
                 ng-model="group.name"
                 required
@@ -193,7 +193,7 @@
           <div class="col-xs-2">
             <input
                 id="group-name"
-                class="form-control"
+                class="form-kapok"
                 placeholder="Symbol"
                 ng-model="group.symbol"
                 >
@@ -205,7 +205,7 @@
           <div class="col-xs-10">
             <select
                 id="group-sales-account"
-                class="form-control"
+                class="form-kapok"
                 ng-model="group.sales_account"
                 ng-options="account.id as account.id for account in accounts"
                 required
@@ -218,7 +218,7 @@
           <div class="col-xs-10">
             <select
                 id="group-cogs-account"
-                class="form-control"
+                class="form-kapok"
                 ng-model="group.cogs_account"
                 ng-options="account.id as account.id for account in accounts"
                 ></select>
@@ -230,7 +230,7 @@
           <div class="col-xs-10">
             <select
                 id="group-stock-account"
-                class="form-control"
+                class="form-kapok"
                 ng-model="group.stock_account"
                 ng-options="account.id as account.id for account in accounts"
                 ></select>
@@ -242,7 +242,7 @@
           <div class="col-xs-10">
             <select
                 id="group-tax-account"
-                class="form-control"
+                class="form-kapok"
                 ng-model="group.tax_account"
                 ng-options="account.id as account.id for account in accounts"
                 ></select>
