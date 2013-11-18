@@ -914,7 +914,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         enterprise_id : appstate.get("enterprise").id, //not safe
         id : $scope.invoice_id,
         cost : t,
-        currency : 1, //ohgd
+        currency_id : 1, //ohgd
         debitor_id : $scope.debtor.debitor_id,
         invoice_date: $scope.sale_date,
         seller_id : $scope.verify, //TODO placeholder - this should be derived from appstate (session) or equivelant
@@ -1104,45 +1104,49 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var default_invoice = ($routeParams.recordID || -1);
     console.log("Got invoice", default_invoice);
 
+    var user_request = connect.basicGet("user_session");
+
 
     function init() {
 
       $scope.selected = null;
 
-      var promise = fetchRecords();
-      promise
-      .then(function(model) { 
-        //expose scope
-        $scope.invoice_model = model;
-        //Select default
-        if(default_invoice>0) $scope.select(default_invoice);
+      $q.all([fetchRecords(), user_request])
+        .then(function(res) {
+//          expose scope
+          console.log('debug', res[0], res[1])
+          $scope.invoice_model = res[0];
+          $scope.posting_user = res[1].data.id;
+//          select default
+          if(default_invoice>0) $scope.select(default_invoice);
+        });
+    }
 
-      }); 
-
-      $scope.post = function() { 
-        console.log("Request for post");
+    $scope.post = function() {
+      console.log("Request for post");
+      var INVOICE_TRANSACTION = 2;
 //        This could be an arry
-        var selected = $scope.selected;
-        var request = [];
-       /* support multiple rows selected
+      var selected = $scope.selected;
+      var request = [];
+      /* support multiple rows selected
        if(selected.length>0) {
-          selected.forEach(function(item) {
-            if(item.posted==0) {
-              request.push(item.id);
-            }
-          });
-        }*/
-        if(selected) request.push(selected.id);
+       selected.forEach(function(item) {
+       if(item.posted==0) {
+       request.push(item.id);
+       }
+       });
+       }*/
+//      FIXME 2 is transaction ID for sales - hardcoded probably isn't the best way
+      if(selected) request.push({id: selected.id, transaction_type: INVOICE_TRANSACTION, user: $scope.posting_user});
 
-        connect.journal(request)
-          .then(function(res) {
-            console.log(res);
+      connect.journal(request)
+        .then(function(res) {
+          console.log(res);
 //            returns a promise
-            if(res.status==200) invoicePosted(request);
-          });
+          if(res.status==200) invoicePosted(request);
+        });
 
-        console.log("request should be made for", request);
-      }
+      console.log("request should be made for", request);
     }
 
     $scope.select = function(id) {
