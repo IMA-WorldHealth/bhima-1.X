@@ -914,7 +914,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         enterprise_id : appstate.get("enterprise").id, //not safe
         id : $scope.invoice_id,
         cost : t,
-        currency : 1, //ohgd
+        currency_id : 1, //ohgd
         debitor_id : $scope.debtor.debitor_id,
         invoice_date: $scope.sale_date,
         seller_id : $scope.verify, //TODO placeholder - this should be derived from appstate (session) or equivelant
@@ -1104,45 +1104,49 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var default_invoice = ($routeParams.recordID || -1);
     console.log("Got invoice", default_invoice);
 
+    var user_request = connect.basicGet("user_session");
+
 
     function init() {
 
       $scope.selected = null;
 
-      var promise = fetchRecords();
-      promise
-      .then(function(model) { 
-        //expose scope
-        $scope.invoice_model = model;
-        //Select default
-        if(default_invoice>0) $scope.select(default_invoice);
+      $q.all([fetchRecords(), user_request])
+        .then(function(res) {
+//          expose scope
+          console.log('debug', res[0], res[1])
+          $scope.invoice_model = res[0];
+          $scope.posting_user = res[1].data.id;
+//          select default
+          if(default_invoice>0) $scope.select(default_invoice);
+        });
+    }
 
-      }); 
-
-      $scope.post = function() { 
-        console.log("Request for post");
+    $scope.post = function() {
+      console.log("Request for post");
+      var INVOICE_TRANSACTION = 2;
 //        This could be an arry
-        var selected = $scope.selected;
-        var request = [];
-       /* support multiple rows selected
+      var selected = $scope.selected;
+      var request = [];
+      /* support multiple rows selected
        if(selected.length>0) {
-          selected.forEach(function(item) {
-            if(item.posted==0) {
-              request.push(item.id);
-            }
-          });
-        }*/
-        if(selected) request.push(selected.id);
+       selected.forEach(function(item) {
+       if(item.posted==0) {
+       request.push(item.id);
+       }
+       });
+       }*/
+//      FIXME 2 is transaction ID for sales - hardcoded probably isn't the best way
+      if(selected) request.push({id: selected.id, transaction_type: INVOICE_TRANSACTION, user: $scope.posting_user});
 
-        connect.journal(request)
-          .then(function(res) {
-            console.log(res);
+      connect.journal(request)
+        .then(function(res) {
+          console.log(res);
 //            returns a promise
-            if(res.status==200) invoicePosted(request);
-          });
+          if(res.status==200) invoicePosted(request);
+        });
 
-        console.log("request should be made for", request);
-      }
+      console.log("request should be made for", request);
     }
 
     $scope.select = function(id) {
@@ -1244,13 +1248,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
     
   //FIXME updates to patient and location broke everything here, update to use that instead
-  controllers.controller('patientRegController', function($scope, $q, $location, connect) { 
+  controllers.controller('patientRegController', function($scope, $q, $location, connect, $modal) {
+//    FIXME patient and debtor objects just appear magically in the code - they should be defined and commented with link to template
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
    
     function init() { 
       //register patient for appcahce namespace
+      var default_group = 3 //internal patient
 
       var location_request = connect.req({'tables' : {'location' : {'columns' : ['id', 'city', 'region']}}});
       //This was if we needed to create alpha-numeric (specific) ID's
@@ -1258,18 +1264,25 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //Used to generate debtor ID for patient
 //      FIXME just take the most recent items from the database, vs everything?
       var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
+      var debtor_group_request = connect.req({'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}});
 
-      $q.all([location_request, patient_request, debtor_request])
+      $q.all([location_request, patient_request, debtor_request, debtor_group_request])
       .then(function(res) { 
         $scope.location_model = res[0];
         $scope.patient_model = res[1];
         $scope.debtor_model = res[2];
+        $scope.debtor_group_model = res[3];
         //$scope.location = $scope.location_model.data[0]; //select default
+
+        $scope.debtor = {};
+        $scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
       });
     }
 
-    function createId(data) { 
-      var search = data.reduce(function(a, b) {a = a.id || a; b = b.id || b; return Math.max(a, b);});
+    function createId(data) {
+      console.log(data);
+      var search = data.reduce(function(a, b) {a = a.id || a; return Math.max(a, b.id);});
+      console.log("found", search);
       if(search.id) search = search.id;
       return search + 1;
     }
@@ -1285,24 +1298,32 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $q.all([debtor_request, patient_request])
         .then(function(res) {
-          patient_model = res[0];
           debtor_model = res[0];
+          patient_model = res[1];
+
 
           patient.id = createId(patient_model.data);
           patient.debitor_id = createId(debtor_model.data);
+          console.log("created p_id", patient.id);
+          console.log("created id", patient.debitor_id);
 
           commit(patient);
         });
     }
 
     function commit(patient) {
+
+      var debtor = $scope.debtor;
       patient_model = patient;
 
+      var format_debtor = {id: patient_model.debitor_id, group_id: $scope.debtor.debtor_group.id};
+      console.log("requesting debtor", format_debtor);
       //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
       // FIXME 1 - default group_id, should be properly defined
-      connect.basicPut("debitor", [{id: patient_model.id, group_id: 1}])
+      connect.basicPut("debitor", [format_debtor])
       .then(function(res) { 
         //Create patient record
+        console.log("Debtor record added", res);
         connect.basicPut("patient", [patient_model])
         .then(function(res) {
           $location.path("patient_records/" + res.data.insertId);
@@ -1323,6 +1344,37 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.checkSubmitted = function() { 
       return submitted;
     };
+
+    $scope.createGroup = function () {
+      var instance = $modal.open({
+        templateUrl: "debtorgroupmodal.html",
+        controller: function ($scope, $modalInstance) { //groupStore, accountModel
+          console.log("Group module initialised");
+          /*var group = $scope.group = {},
+            clean = {},
+            cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
+
+          $scope.accounts = accountModel;
+
+          $scope.submit = function () {
+            group.id = groupStore.generateid();
+            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
+            groupStore.put(group);
+            connect.basicPut('inv_group', [clean]);
+            $modalInstance.close();
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss();
+          };*/
+
+        },
+        resolve: {
+          //groupStore: function () { return stores.inv_group; },
+          //accountModel: function () { return $scope.models.account; }
+        }
+      });
+    }
 
 
     init();
@@ -2120,14 +2172,14 @@ controllers.controller('journalController', function($scope, $q, kpkConnect, kpk
             ], req_db = {};
    req_db.e = e;
    req_db.jc = jc;
-   kpkConnect.get('/journal?', req_db).then(function(data){
+   /*kpkConnect.get('/journal?', req_db).then(function(data){
     $scope.infosJournal=data;
     for(var i = 0; i<data.length; i++){
      $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
      $scope.infosJournal[i].date = kpkUtilitaire.formatDate($scope.infosJournal[i].date);
-     $scope.infosJournal[i].invoice_date = kpkUtilitaire.formatDate($scope.infosJournal[i].invoice_date); 
+     $scope.infosJournal[i].invoice_date = kpkUtilitaire.formatDate($scope.infosJournal[i].invoice_date);
     }
-  });
+  });*/
 
    $scope.tryChecking = function(index){
     var res = isCheckingValide(index);
