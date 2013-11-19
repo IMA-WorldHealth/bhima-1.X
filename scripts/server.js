@@ -88,6 +88,7 @@ app.get('/tree', function(req, res, next) {
 });
 
 app.post('/journal', function(req, res) {
+  console.log(req.body);
   jr.poster(req, res); 
 });
 
