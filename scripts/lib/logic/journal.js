@@ -5,6 +5,7 @@ var map = {
   'sale_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debitAmount':'cost', 'invPoNum':'id'},
 
   'sale_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID', 'creditAmount':'total'*/, 'invPoNum':'id', 'creditAmount':'total'},
+
   'cash':{},
   'purchase_order':{}
 }; //at left posting_journal property, at right service property such as sale, cash, purchase_order
@@ -32,8 +33,8 @@ var insert = function(obj,res){
   } 
 }
 
-
 var saleDebit = function (obj, data, posting){
+
   var journalRecord = {};
   var objDebit = map[obj.t+'_debit'];
 
@@ -115,7 +116,6 @@ var getData = function(posting, res){
   //request for knowing the service
   var sql = {
              'entities':[{'t':'transaction_type', 'c':['service_txt']}],
-
              'cond':[{'t':'transaction_type', 'cl':'id', 'z':'=', 'v':posting.transaction_type}]
             };
   db.execute(db.select(sql), function(err, data){
@@ -132,7 +132,6 @@ var getData = function(posting, res){
       var sql = {
         'entities':[
                     {'t':obj.t, 'c':cle_tab},
-
                     {'t':'sale_item', 'c':['inventory_id', 'total']},
                     {'t':'inventory', 'c':['group_id']}
                    ],
@@ -155,27 +154,7 @@ var getData = function(posting, res){
 
 
 
-    }else{
-      /* var obj = map[service_name];
-    var cle_tab = [];
-    for (var cle in obj){
-      if(cle!='t'){
-        cle_tab.push(obj[cle]);
-      }
     }
-
-    //request for getting data
-    var sql = {
-                'entities':[{'t':obj.t, 'c':cle_tab}],
-                'cond':[{'t':obj.t, 'cl':'id', 'z':'=', 'v':100001}] //in tead of 100000 posting will provide id
-              };
-    db.execute(db.select(sql), function(err, data){
-      if(err) throw err;
-      process(data[0], posting, res); //verification et insertion eventuelle
-    });*/
-
-    }
-   
   });
 }
 
