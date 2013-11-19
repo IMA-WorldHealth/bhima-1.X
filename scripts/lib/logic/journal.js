@@ -3,10 +3,8 @@ var db = require('../database/db')({config: {user: 'bika', database: 'bika', hos
 var map = {
   'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note','fyearID':'fyearID', 'debitAmount':'cost'},
   'sale_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debitAmount':'cost', 'invPoNum':'id'},
-
-  'sale_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID', 'creditAmount':'total'*/, 'invPoNum':'id', 'creditAmount':'total'},
-
-  'cash':{},
+  'sale_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'invPoNum':'id', 'creditAmount':'total'},
+  'cash':{'t':'cash', 'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'date', 'description':'text'},
   'purchase_order':{}
 }; //at left posting_journal property, at right service property such as sale, cash, purchase_order
 var service_name = '';
