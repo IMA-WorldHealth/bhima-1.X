@@ -1978,7 +1978,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   });
 
-  controllers.controller('cashController', function($scope, connect, $q, $filter, appstate) {
+  controllers.controller('cashController', function($scope, connect, $q, $filter, $http, appstate) {
 
     var enterprise_defn, account_spec,
         cash_currency_defn, sale_debitor_defn,
@@ -2118,7 +2118,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       stores['sale-debitor'].delete(slip.invoice_id);
       connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
       $scope.hasCash = true;
-      $scope.submitted = true;
+      $scope.submitted = true; 
+      // FIXME: make this formal for posting to the journal
+      // FIXME: fiscal year
+      $http.post('/journal/', {id: slip.id, fiscal_year: 2013001, transaction_type: 1, user_id: 13});
       $scope.clear();
     };
 
