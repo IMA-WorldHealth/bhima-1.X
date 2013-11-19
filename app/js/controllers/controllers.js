@@ -1994,7 +1994,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: "sale",
       tables: {
         "sale" : {
-          columns: ["id", "cost", "currency", "debitor_id", "seller_id", "discount", "invoice_date", "note", "paid"] 
+          columns: ["id", "cost", "currency_id", "debitor_id", "seller_id", "discount", "invoice_date", "note", "paid"] 
         },
         "debitor" : {
           columns: ["group_id"] 
