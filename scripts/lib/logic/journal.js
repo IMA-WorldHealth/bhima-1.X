@@ -46,7 +46,6 @@ var saleDebit = function (obj, data, posting){
   journalRecord.id = '';
   journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
 
-  console.log('data :',data);
   var callback = function (err, ans) {
         if (err) throw err;
         //res.send({status: 200, insertId: ans.insertId});
@@ -69,40 +68,38 @@ var saleDebit = function (obj, data, posting){
   });
 }
 
-var saleCredit = function(obj, data, posting){ 
-  console.log('data', data);
-  var journalRecord = {};  
+var saleCredit = function(obj, data, posting){
+   
   var objCredit = map[obj.t+'_credit'];
   var callback = function (err, ans) {
         if (err) throw err;
         //res.send({status: 200, insertId: ans.insertId});
   }
-  for(var i=0; i<data.length; i++){
-    for(var cle in objCredit){
-      journalRecord[cle] = data[i][objCredit[cle]];    
-    }
-    journalRecord.posted = 0;
-    journalRecord.origin_id = posting.transaction_type;
-    journalRecord.user_id = posting.user;
-    journalRecord.id = '';
-    journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+  data.forEach(function(item){
+    var journalRecord = {}; 
     var sql = {
                'entities':[{'t':'inv_group', 'c':['sales_account']}],
-               'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':data[i].group_id}]
+               'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
     };
-    var req = db.select(sql);
-    db.execute(req, function(err, data2){
+    db.execute(db.select(sql), function(err, data2){      
       journalRecord.account_id = data2[0].sales_account;
-      var sql = db.insert('posting_journal', [journalRecord]);
+      for(var cle in objCredit){
+      journalRecord[cle] = item[objCredit[cle]];    
+      }
+      journalRecord.posted = 0;
+      journalRecord.origin_id = posting.transaction_type;
+      journalRecord.user_id = posting.user;
+      journalRecord.id = '';
+      journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+      var sql = db.insert('posting_journal', [journalRecord]); 
+      console.log(sql);     
       db.execute(sql, callback);      
     });
 
-  }
-
+  });
 }
 
 var process = function(data, posting, res){
-  console.log('les donnee data', data);
   var obj = map[service_name];
   if(service_name == 'sale'){
     saleDebit(obj, data[0], posting);
