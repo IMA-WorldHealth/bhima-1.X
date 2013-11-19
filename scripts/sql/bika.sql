@@ -222,50 +222,6 @@ INSERT INTO `account_type` VALUES (1,'income/expense'),(2,'balance'),(3,'title')
 /*!40000 ALTER TABLE `account_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `gl`
---
-
-DROP TABLE IF EXISTS `gl`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `gl` (
-  `id` int(10) unsigned NOT NULL,
-  `enterprise_id` smallint(5) unsigned NOT NULL,
-  `journal_id` mediumint(8) unsigned NOT NULL,
-  `fiscal_year_id` mediumint(8) unsigned NOT NULL,
-  `account_id` mediumint(8) unsigned NOT NULL,
-  `credit` int(10) unsigned NOT NULL,
-  `debit` int(10) unsigned NOT NULL,
-  `currency_txt` varchar(3) NOT NULL,
-  `entity` char(10) NOT NULL,
-  `date` date NOT NULL,
-  `sale_id` int(10) unsigned NOT NULL,
-  `period_id` mediumint(8) unsigned NOT NULL,
-  `text` text,
-  PRIMARY KEY (`id`),
-  KEY `journal_id` (`journal_id`),
-  KEY `fiscal_year_id` (`fiscal_year_id`),
-  KEY `account_id` (`account_id`),
-  KEY `enterprise_id` (`enterprise_id`),
-  KEY `sale_id` (`sale_id`),
-  KEY `period_id` (`period_id`),
-  CONSTRAINT `gl_ibfk_1` FOREIGN KEY (`journal_id`) REFERENCES `posting_journal` (`id`),
-  CONSTRAINT `gl_ibfk_2` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
-  CONSTRAINT `gl_ibfk_3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  CONSTRAINT `gl_ibfk_4` FOREIGN KEY (`sale_id`) REFERENCES `sale` (`id`),
-  CONSTRAINT `gl_ibfk_5` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `gl`
---
-
-LOCK TABLES `gl` WRITE;
-/*!40000 ALTER TABLE `gl` DISABLE KEYS */;
-/*!40000 ALTER TABLE `gl` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `unit`
@@ -1225,6 +1181,50 @@ CREATE TABLE `inv_group` (
   `stock_account` mediumint(8) unsigned DEFAULT NULL,
   `tax_account` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
+INSERT INTO `country` VALUES (1,4,'Afghanistan','Afghanistan'),(2,8,'Albania','Albanie'),(3,10,'Antarctica','Antarctique'),(4,12,'Algeria','Algérie'),(5,16,'American Samoa','Samoa Américaines'),(6,20,'Andorra','Andorre'),(7,24,'Angola','Angola'),(8,28,'Antigua and Barbuda','Antigua-et-Barbuda'),(9,31,'Azerbaijan','Azerbaïdjan'),(10,32,'Argentina','Argentine'),(11,36,'Australia','Australie'),(12,40,'Austria','Autriche'),(13,44,'Bahamas','Bahamas'),(14,48,'Bahrain','Bahreïn'),(15,50,'Bangladesh','Bangladesh'),(16,51,'Armenia','Arménie'),(17,52,'Barbados','Barbade'),(18,56,'Belgium','Belgique'),(19,60,'Bermuda','Bermudes'),(20,64,'Bhutan','Bhoutan'),(21,68,'Bolivia','Bolivie'),(22,70,'Bosnia and Herzegovina','Bosnie-Herzégovine'),(23,72,'Botswana','Botswana'),(24,74,'Bouvet Island','Île Bouvet'),(25,76,'Brazil','Brésil'),(26,84,'Belize','Belize'),(27,86,'British Indian Ocean Territory','Territoire Britannique de l\'Océan Indien'),(28,90,'Solomon Islands','Îles Salomon'),(29,92,'British Virgin Islands','Îles Vierges Britanniques'),(30,96,'Brunei Darussalam','Brunéi Darussalam'),(31,100,'Bulgaria','Bulgarie'),(32,104,'Myanmar','Myanmar'),(33,108,'Burundi','Burundi'),(34,112,'Belarus','Bélarus'),(35,116,'Cambodia','Cambodge'),(36,120,'Cameroon','Cameroun'),(37,124,'Canada','Canada'),(38,132,'Cape Verde','Cap-vert'),(39,136,'Cayman Islands','Îles Caïmanes'),(40,140,'Central African','République Centrafricaine'),(41,144,'Sri Lanka','Sri Lanka'),(42,148,'Chad','Tchad'),(43,152,'Chile','Chili'),(44,156,'China','Chine'),(45,158,'Taiwan','Taïwan'),(46,162,'Christmas Island','Île Christmas'),(47,166,'Cocos (Keeling) Islands','Îles Cocos (Keeling)'),(48,170,'Colombia','Colombie'),(49,174,'Comoros','Comores'),(50,175,'Mayotte','Mayotte'),(51,178,'Republic of the Congo','République du Congo'),(52,180,'The Democratic Republic Of The Congo','République Démocratique du Congo'),(53,184,'Cook Islands','Îles Cook'),(54,188,'Costa Rica','Costa Rica'),(55,191,'Croatia','Croatie'),(56,192,'Cuba','Cuba'),(57,196,'Cyprus','Chypre'),(58,203,'Czech Republic','République Tchèque'),(59,204,'Benin','Bénin'),(60,208,'Denmark','Danemark'),(61,212,'Dominica','Dominique'),(62,214,'Dominican Republic','République Dominicaine'),(63,218,'Ecuador','Équateur'),(64,222,'El Salvador','El Salvador'),(65,226,'Equatorial Guinea','Guinée Équatoriale'),(66,231,'Ethiopia','Éthiopie'),(67,232,'Eritrea','Érythrée'),(68,233,'Estonia','Estonie'),(69,234,'Faroe Islands','Îles Féroé'),(70,238,'Falkland Islands','Îles (malvinas) Falkland'),(71,239,'South Georgia and the South Sandwich Islands','Géorgie du Sud et les Îles Sandwich du Sud'),(72,242,'Fiji','Fidji'),(73,246,'Finland','Finlande'),(74,248,'Åland Islands','Îles Åland'),(75,250,'France','France'),(76,254,'French Guiana','Guyane Française'),(77,258,'French Polynesia','Polynésie Française'),(78,260,'French Southern Territories','Terres Australes Françaises'),(79,262,'Djibouti','Djibouti'),(80,266,'Gabon','Gabon'),(81,268,'Georgia','Géorgie'),(82,270,'Gambia','Gambie'),(83,275,'Occupied Palestinian Territory','Territoire Palestinien Occupé'),(84,276,'Germany','Allemagne'),(85,288,'Ghana','Ghana'),(86,292,'Gibraltar','Gibraltar'),(87,296,'Kiribati','Kiribati'),(88,300,'Greece','Grèce'),(89,304,'Greenland','Groenland'),(90,308,'Grenada','Grenade'),(91,312,'Guadeloupe','Guadeloupe'),(92,316,'Guam','Guam'),(93,320,'Guatemala','Guatemala'),(94,324,'Guinea','Guinée'),(95,328,'Guyana','Guyana'),(96,332,'Haiti','Haïti'),(97,334,'Heard Island and McDonald Islands','Îles Heard et Mcdonald'),(98,336,'Vatican City State','Saint-Siège (état de la Cité du Vatican)'),(99,340,'Honduras','Honduras'),(100,344,'Hong Kong','Hong-Kong'),(101,348,'Hungary','Hongrie'),(102,352,'Iceland','Islande'),(103,356,'India','Inde'),(104,360,'Indonesia','Indonésie'),(105,364,'Islamic Republic of Iran','République Islamique d\'Iran'),(106,368,'Iraq','Iraq'),(107,372,'Ireland','Irlande'),(108,376,'Israel','Israël'),(109,380,'Italy','Italie'),(110,384,'Côte d\'Ivoire','Côte d\'Ivoire'),(111,388,'Jamaica','Jamaïque'),(112,392,'Japan','Japon'),(113,398,'Kazakhstan','Kazakhstan'),(114,400,'Jordan','Jordanie'),(115,404,'Kenya','Kenya'),(116,408,'Democratic People\'s Republic of Korea','République Populaire Démocratique de Corée'),(117,410,'Republic of Korea','République de Corée'),(118,414,'Kuwait','Koweït'),(119,417,'Kyrgyzstan','Kirghizistan'),(120,418,'Lao People\'s Democratic Republic','République Démocratique Populaire Lao'),(121,422,'Lebanon','Liban'),(122,426,'Lesotho','Lesotho'),(123,428,'Latvia','Lettonie'),(124,430,'Liberia','Libéria'),(125,434,'Libyan Arab Jamahiriya','Jamahiriya Arabe Libyenne'),(126,438,'Liechtenstein','Liechtenstein'),(127,440,'Lithuania','Lituanie'),(128,442,'Luxembourg','Luxembourg'),(129,446,'Macao','Macao'),(130,450,'Madagascar','Madagascar'),(131,454,'Malawi','Malawi'),(132,458,'Malaysia','Malaisie'),(133,462,'Maldives','Maldives'),(134,466,'Mali','Mali'),(135,470,'Malta','Malte'),(136,474,'Martinique','Martinique'),(137,478,'Mauritania','Mauritanie'),(138,480,'Mauritius','Maurice'),(139,484,'Mexico','Mexique'),(140,492,'Monaco','Monaco'),(141,496,'Mongolia','Mongolie'),(142,498,'Republic of Moldova','République de Moldova'),(143,500,'Montserrat','Montserrat'),(144,504,'Morocco','Maroc'),(145,508,'Mozambique','Mozambique'),(146,512,'Oman','Oman'),(147,516,'Namibia','Namibie'),(148,520,'Nauru','Nauru'),(149,524,'Nepal','Népal'),(150,528,'Netherlands','country-Bas'),(151,530,'Netherlands Antilles','Antilles Néerlandaises'),(152,533,'Aruba','Aruba'),(153,540,'New Caledonia','Nouvelle-Calédonie'),(154,548,'Vanuatu','Vanuatu'),(155,554,'New Zealand','Nouvelle-Zélande'),(156,558,'Nicaragua','Nicaragua'),(157,562,'Niger','Niger'),(158,566,'Nigeria','Nigéria'),(159,570,'Niue','Niué'),(160,574,'Norfolk Island','Île Norfolk'),(161,578,'Norway','Norvège'),(162,580,'Northern Mariana Islands','Îles Mariannes du Nord'),(163,581,'United States Minor Outlying Islands','Îles Mineures Éloignées des États-Unis'),(164,583,'Federated States of Micronesia','États Fédérés de Micronésie'),(165,584,'Marshall Islands','Îles Marshall'),(166,585,'Palau','Palaos'),(167,586,'Pakistan','Pakistan'),(168,591,'Panama','Panama'),(169,598,'Papua New Guinea','Papouasie-Nouvelle-Guinée'),(170,600,'Paraguay','Paraguay'),(171,604,'Peru','Pérou'),(172,608,'Philippines','Philippines'),(173,612,'Pitcairn','Pitcairn'),(174,616,'Poland','Pologne'),(175,620,'Portugal','Portugal'),(176,624,'Guinea-Bissau','Guinée-Bissau'),(177,626,'Timor-Leste','Timor-Leste'),(178,630,'Puerto Rico','Porto Rico'),(179,634,'Qatar','Qatar'),(180,638,'Réunion','Réunion'),(181,642,'Romania','Roumanie'),(182,643,'Russian Federation','Fédération de Russie'),(183,646,'Rwanda','Rwanda'),(184,654,'Saint Helena','Sainte-Hélène'),(185,659,'Saint Kitts and Nevis','Saint-Kitts-et-Nevis'),(186,660,'Anguilla','Anguilla'),(187,662,'Saint Lucia','Sainte-Lucie'),(188,666,'Saint-Pierre and Miquelon','Saint-Pierre-et-Miquelon'),(189,670,'Saint Vincent and the Grenadines','Saint-Vincent-et-les Grenadines'),(190,674,'San Marino','Saint-Marin'),(191,678,'Sao Tome and Principe','Sao Tomé-et-Principe'),(192,682,'Saudi Arabia','Arabie Saoudite'),(193,686,'Senegal','Sénégal'),(194,690,'Seychelles','Seychelles'),(195,694,'Sierra Leone','Sierra Leone'),(196,702,'Singapore','Singapour'),(197,703,'Slovakia','Slovaquie'),(198,704,'Vietnam','Viet Nam'),(199,705,'Slovenia','Slovénie'),(200,706,'Somalia','Somalie'),(201,710,'South Africa','Afrique du Sud'),(202,716,'Zimbabwe','Zimbabwe'),(203,724,'Spain','Espagne'),(204,732,'Western Sahara','Sahara Occidental'),(205,736,'Sudan','Soudan'),(206,740,'Suriname','Suriname'),(207,744,'Svalbard and Jan Mayen','Svalbard etÎle Jan Mayen'),(208,748,'Swaziland','Swaziland'),(209,752,'Sweden','Suède'),(210,756,'Switzerland','Suisse'),(211,760,'Syrian Arab Republic','République Arabe Syrienne'),(212,762,'Tajikistan','Tadjikistan'),(213,764,'Thailand','Thaïlande'),(214,768,'Togo','Togo'),(215,772,'Tokelau','Tokelau'),(216,776,'Tonga','Tonga'),(217,780,'Trinidad and Tobago','Trinité-et-Tobago'),(218,784,'United Arab Emirates','Émirats Arabes Unis'),(219,788,'Tunisia','Tunisie'),(220,792,'Turkey','Turquie'),(221,795,'Turkmenistan','Turkménistan'),(222,796,'Turks and Caicos Islands','Îles Turks et Caïques'),(223,798,'Tuvalu','Tuvalu'),(224,800,'Uganda','Ouganda'),(225,804,'Ukraine','Ukraine'),(226,807,'The Former Yugoslav Republic of Macedonia','L\'ex-République Yougoslave de Macédoine'),(227,818,'Egypt','Égypte'),(228,826,'United Kingdom','Royaume-Uni'),(229,833,'Isle of Man','Île de Man'),(230,834,'United Republic Of Tanzania','République-Unie de Tanzanie'),(231,840,'United States','États-Unis'),(232,850,'U.S. Virgin Islands','Îles Vierges des États-Unis'),(233,854,'Burkina Faso','Burkina Faso'),(234,858,'Uruguay','Uruguay'),(235,860,'Uzbekistan','Ouzbékistan'),(236,862,'Venezuela','Venezuela'),(237,876,'Wallis and Futuna','Wallis et Futuna'),(238,882,'Samoa','Samoa'),(239,887,'Yemen','Yémen'),(240,891,'Serbia and Montenegro','Serbie-et-Monténégro'),(241,894,'Zambia','Zambie');
+/*!40000 ALTER TABLE `country` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `debitor_group_type`
+--
+
+DROP TABLE IF EXISTS `debitor_group_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `debitor_group_type` (
+  `id` smallint(5) unsigned NOT NULL,
+  `type` varchar(80) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `debitor_group_type`
+--
+
+LOCK TABLES `debitor_group_type` WRITE;
+/*!40000 ALTER TABLE `debitor_group_type` DISABLE KEYS */;
+INSERT INTO `debitor_group_type` VALUES (1,'Employees'),(2,'Conventionnees'),(3,'Malades Ambulatoire'),(4,'Malades Interne');
+/*!40000 ALTER TABLE `debitor_group_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `inv_group`
+--
+
+DROP TABLE IF EXISTS `inv_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `inv_group` (
+  `id` smallint(5) unsigned NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `symbol` char(1) NOT NULL,
+  `sales_account` mediumint(8) unsigned NOT NULL,
+  `cogs_account` mediumint(8) unsigned DEFAULT NULL,
+  `stock_account` mediumint(8) unsigned DEFAULT NULL,
+  `tax_account` mediumint(8) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `sales_account` (`sales_account`),
   KEY `cogs_account` (`cogs_account`),
   KEY `stock_account` (`stock_account`),
@@ -1246,6 +1246,264 @@ INSERT INTO `inv_group` VALUES (0,'Services','S',700000,NULL,NULL,NULL),(1,'Medi
 /*!40000 ALTER TABLE `inv_group` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+drop table if exists `gl`;
+create table `gl` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `enterpriseID` smallint(5) unsigned NOT NULL,
+  `fyearID` mediumint(8) DEFAULT NULL,
+  `transID` int(10) unsigned NOT NULL,
+  `transDate` date NOT NULL,
+  `docNum` int(10) unsigned NOT NULL,
+  `description` varchar(45) DEFAULT NULL,
+  `account_id` mediumint(8) DEFAULT NULL,
+  `debitAmount` mediumint(8) unsigned DEFAULT NULL,
+  `creditAmount` mediumint(8) unsigned DEFAULT NULL,
+  `currency_id` tinyint(3) unsigned NOT NULL,
+  `arapAccount` varchar(45) DEFAULT NULL COMMENT 'creditor or debitor id',
+  `arapType` varchar(45) DEFAULT NULL,
+  `invPoNum` varchar(45) DEFAULT NULL,
+  `debitEquiv` varchar(45) DEFAULT NULL,
+  `creditEquiv` varchar(45) DEFAULT NULL,
+  `comment` varchar(45) DEFAULT NULL,
+  `month` tinyint(10) DEFAULT NULL,
+  `costCtr2ID` varchar(10) NOT NULL,
+  `costCtr1ID` varchar(10) NOT NULL,
+  `origin_id` int(10) unsigned NOT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `posted` int(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `debit_account` (`debitAmount`),
+  KEY `credit_account` (`creditAmount`),
+  KEY `origin_id` (`origin_id`),
+  KEY `enterprise_id` (`enterpriseID`),
+  KEY `currency_id` (`currency_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT FOREIGN KEY (`creditAmount`) REFERENCES `account` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`origin_id`) REFERENCES `transaction_type` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`enterpriseID`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+drop table if exists `month_total`;
+create table `month_total` (
+  `enterprise_id`     smallint unsigned not null,
+  `id`                mediumint unsigned not null,
+  `fiscal_year_id`    mediumint unsigned not null,
+  `month`             mediumint unsigned not null,
+  `account_id`        mediumint unsigned not null,
+  `credit`            decimal(19, 2) unsigned,
+  `debit`             decimal (19,2) unsigned,
+  `difference`        decimal (19, 2) unsigned, 
+  `locked`            boolean not null default 0,
+  primary key (`id`),
+  key `fiscal_year_id` (`fiscal_year_id`),
+  key `account_id` (`account_id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
+  constraint foreign key (`account_id`) references `account` (`id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+) engine=innodb;
+
+insert into `month_total` values
+(101, 0, 2013001, 201300, 100000, 0, 0, 0, 0),
+(101, 1, 2013001, 201300, 110000, 0, 0, 0, 0),
+(101, 2, 2013001, 201300, 120000, 0, 0, 0, 0),
+(101, 3, 2013001, 201300, 130000, 0, 0, 0, 0),
+(101, 4, 2013001, 201300, 130100, 0, 0, 0, 0),
+(101, 5, 2013001, 201300, 130200, 0, 0, 0, 0),
+(101, 6, 2013001, 201300, 150000, 0, 0, 0, 0),
+(101, 7, 2013001, 201300, 150100, 0, 0, 0, 0),
+(101, 8, 2013001, 201300, 150200, 0, 0, 0, 0),
+(101, 9, 2013001, 201300, 160000, 0, 0, 0, 0),
+(101, 10, 2013001, 201300, 170000, 0, 0, 0, 0),
+(101, 11, 2013001, 201300, 180000, 0, 0, 0, 0),
+(101, 12, 2013001, 201300, 210000, 0, 0, 0, 0),
+(101, 13, 2013001, 201300, 220000, 0, 0, 0, 0),
+(101, 14, 2013001, 201300, 220100, 0, 0, 0, 0),
+(101, 15, 2013001, 201300, 220200, 0, 0, 0, 0),
+(101, 16, 2013001, 201300, 220300, 0, 0, 0, 0),
+(101, 17, 2013001, 201300, 220400, 0, 0, 0, 0),
+(101, 18, 2013001, 201300, 220500, 0, 0, 0, 0),
+(101, 19, 2013001, 201300, 220600, 0, 0, 0, 0),
+(101, 20, 2013001, 201300, 220700, 0, 0, 0, 0),
+(101, 21, 2013001, 201300, 220800, 0, 0, 0, 0),
+(101, 22, 2013001, 201300, 220900, 0, 0, 0, 0),
+(101, 23, 2013001, 201300, 221000, 0, 0, 0, 0),
+(101, 24, 2013001, 201300, 221100, 0, 0, 0, 0),
+(101, 25, 2013001, 201300, 230000, 0, 0, 0, 0),
+(101, 26, 2013001, 201300, 230100, 0, 0, 0, 0),
+(101, 27, 2013001, 201300, 230200, 0, 0, 0, 0),
+(101, 28, 2013001, 201300, 240000, 0, 0, 0, 0),
+(101, 29, 2013001, 201300, 240100, 0, 0, 0, 0),
+(101, 30, 2013001, 201300, 240200, 0, 0, 0, 0),
+(101, 31, 2013001, 201300, 240300, 0, 0, 0, 0),
+(101, 32, 2013001, 201300, 280000, 0, 0, 0, 0),
+(101, 33, 2013001, 201300, 280100, 0, 0, 0, 0),
+(101, 34, 2013001, 201300, 300000, 0, 0, 0, 0),
+(101, 35, 2013001, 201300, 300100, 0, 0, 0, 0),
+(101, 36, 2013001, 201300, 300200, 0, 0, 0, 0),
+(101, 37, 2013001, 201300, 300300, 0, 0, 0, 0),
+(101, 38, 2013001, 201300, 300400, 0, 0, 0, 0),
+(101, 39, 2013001, 201300, 300500, 0, 0, 0, 0),
+(101, 40, 2013001, 201300, 310000, 0, 0, 0, 0),
+(101, 41, 2013001, 201300, 310100, 0, 0, 0, 0),
+(101, 42, 2013001, 201300, 310200, 0, 0, 0, 0),
+(101, 43, 2013001, 201300, 310300, 0, 0, 0, 0),
+(101, 44, 2013001, 201300, 310400, 0, 0, 0, 0),
+(101, 45, 2013001, 201300, 310500, 0, 0, 0, 0),
+(101, 46, 2013001, 201300, 310600, 0, 0, 0, 0),
+(101, 47, 2013001, 201300, 310700, 0, 0, 0, 0),
+(101, 48, 2013001, 201300, 310800, 0, 0, 0, 0),
+(101, 49, 2013001, 201300, 310900, 0, 0, 0, 0),
+(101, 50, 2013001, 201300, 311000, 0, 0, 0, 0),
+(101, 51, 2013001, 201300, 311100, 0, 0, 0, 0),
+(101, 52, 2013001, 201300, 360000, 0, 0, 0, 0),
+(101, 53, 2013001, 201300, 380000, 0, 0, 0, 0),
+(101, 54, 2013001, 201300, 400000, 0, 0, 0, 0),
+(101, 55, 2013001, 201300, 400100, 0, 0, 0, 0),
+(101, 56, 2013001, 201300, 400200, 0, 0, 0, 0),
+(101, 57, 2013001, 201300, 400300, 0, 0, 0, 0),
+(101, 58, 2013001, 201300, 410000, 0, 0, 0, 0),
+(101, 59, 2013001, 201300, 410100, 0, 0, 0, 0),
+(101, 60, 2013001, 201300, 410200, 0, 0, 0, 0),
+(101, 61, 2013001, 201300, 410300, 0, 0, 0, 0),
+(101, 62, 2013001, 201300, 410400, 0, 0, 0, 0),
+(101, 63, 2013001, 201300, 410600, 0, 0, 0, 0),
+(101, 64, 2013001, 201300, 410700, 0, 0, 0, 0),
+(101, 65, 2013001, 201300, 410800, 0, 0, 0, 0),
+(101, 66, 2013001, 201300, 410900, 0, 0, 0, 0),
+(101, 67, 2013001, 201300, 411000, 0, 0, 0, 0),
+(101, 68, 2013001, 201300, 411100, 0, 0, 0, 0),
+(101, 69, 2013001, 201300, 411200, 0, 0, 0, 0),
+(101, 70, 2013001, 201300, 420000, 0, 0, 0, 0),
+(101, 71, 2013001, 201300, 420100, 0, 0, 0, 0),
+(101, 72, 2013001, 201300, 420200, 0, 0, 0, 0),
+(101, 73, 2013001, 201300, 420300, 0, 0, 0, 0),
+(101, 74, 2013001, 201300, 430000, 0, 0, 0, 0),
+(101, 75, 2013001, 201300, 430100, 0, 0, 0, 0),
+(101, 76, 2013001, 201300, 430200, 0, 0, 0, 0),
+(101, 77, 2013001, 201300, 460000, 0, 0, 0, 0),
+(101, 78, 2013001, 201300, 460100, 0, 0, 0, 0),
+(101, 79, 2013001, 201300, 460200, 0, 0, 0, 0),
+(101, 80, 2013001, 201300, 460300, 0, 0, 0, 0),
+(101, 81, 2013001, 201300, 460400, 0, 0, 0, 0),
+(101, 82, 2013001, 201300, 460500, 0, 0, 0, 0),
+(101, 83, 2013001, 201300, 460600, 0, 0, 0, 0),
+(101, 84, 2013001, 201300, 470000, 0, 0, 0, 0),
+(101, 85, 2013001, 201300, 470100, 0, 0, 0, 0),
+(101, 86, 2013001, 201300, 470200, 0, 0, 0, 0),
+(101, 87, 2013001, 201300, 470300, 0, 0, 0, 0),
+(101, 88, 2013001, 201300, 480000, 0, 0, 0, 0),
+(101, 89, 2013001, 201300, 490000, 0, 0, 0, 0),
+(101, 90, 2013001, 201300, 510000, 0, 0, 0, 0),
+(101, 91, 2013001, 201300, 550000, 0, 0, 0, 0),
+(101, 92, 2013001, 201300, 560000, 0, 0, 0, 0),
+(101, 93, 2013001, 201300, 560100, 0, 0, 0, 0),
+(101, 94, 2013001, 201300, 560200, 0, 0, 0, 0),
+(101, 95, 2013001, 201300, 560300, 0, 0, 0, 0),
+(101, 96, 2013001, 201300, 560400, 0, 0, 0, 0),
+(101, 97, 2013001, 201300, 570000, 0, 0, 0, 0),
+(101, 98, 2013001, 201300, 590000, 0, 0, 0, 0),
+(101, 99, 2013001, 201300, 600000, 0, 0, 0, 0),
+(101, 100, 2013001, 201300, 600100, 0, 0, 0, 0),
+(101, 101, 2013001, 201300, 600200, 0, 0, 0, 0),
+(101, 102, 2013001, 201300, 600300, 0, 0, 0, 0),
+(101, 103, 2013001, 201300, 600400, 0, 0, 0, 0),
+(101, 104, 2013001, 201300, 610000, 0, 0, 0, 0),
+(101, 105, 2013001, 201300, 610100, 0, 0, 0, 0),
+(101, 106, 2013001, 201300, 610200, 0, 0, 0, 0),
+(101, 107, 2013001, 201300, 610300, 0, 0, 0, 0),
+(101, 108, 2013001, 201300, 610400, 0, 0, 0, 0),
+(101, 109, 2013001, 201300, 610500, 0, 0, 0, 0),
+(101, 110, 2013001, 201300, 610600, 0, 0, 0, 0),
+(101, 111, 2013001, 201300, 610700, 0, 0, 0, 0),
+(101, 112, 2013001, 201300, 610800, 0, 0, 0, 0),
+(101, 113, 2013001, 201300, 610900, 0, 0, 0, 0),
+(101, 114, 2013001, 201300, 611000, 0, 0, 0, 0),
+(101, 115, 2013001, 201300, 611100, 0, 0, 0, 0),
+(101, 116, 2013001, 201300, 611200, 0, 0, 0, 0),
+(101, 117, 2013001, 201300, 620000, 0, 0, 0, 0),
+(101, 118, 2013001, 201300, 620100, 0, 0, 0, 0),
+(101, 119, 2013001, 201300, 620200, 0, 0, 0, 0),
+(101, 120, 2013001, 201300, 620300, 0, 0, 0, 0),
+(101, 121, 2013001, 201300, 630000, 0, 0, 0, 0),
+(101, 122, 2013001, 201300, 630100, 0, 0, 0, 0),
+(101, 123, 2013001, 201300, 630200, 0, 0, 0, 0),
+(101, 124, 2013001, 201300, 630300, 0, 0, 0, 0),
+(101, 125, 2013001, 201300, 630400, 0, 0, 0, 0),
+(101, 126, 2013001, 201300, 630500, 0, 0, 0, 0),
+(101, 127, 2013001, 201300, 630600, 0, 0, 0, 0),
+(101, 128, 2013001, 201300, 630700, 0, 0, 0, 0),
+(101, 129, 2013001, 201300, 630800, 0, 0, 0, 0),
+(101, 130, 2013001, 201300, 630900, 0, 0, 0, 0),
+(101, 131, 2013001, 201300, 631000, 0, 0, 0, 0),
+(101, 132, 2013001, 201300, 640000, 0, 0, 0, 0),
+(101, 133, 2013001, 201300, 640100, 0, 0, 0, 0),
+(101, 134, 2013001, 201300, 640200, 0, 0, 0, 0),
+(101, 135, 2013001, 201300, 640300, 0, 0, 0, 0),
+(101, 136, 2013001, 201300, 640400, 0, 0, 0, 0),
+(101, 137, 2013001, 201300, 640500, 0, 0, 0, 0),
+(101, 138, 2013001, 201300, 640600, 0, 0, 0, 0),
+(101, 139, 2013001, 201300, 640800, 0, 0, 0, 0),
+(101, 140, 2013001, 201300, 640900, 0, 0, 0, 0),
+(101, 141, 2013001, 201300, 641000, 0, 0, 0, 0),
+(101, 142, 2013001, 201300, 650000, 0, 0, 0, 0),
+(101, 143, 2013001, 201300, 650100, 0, 0, 0, 0),
+(101, 144, 2013001, 201300, 650200, 0, 0, 0, 0),
+(101, 145, 2013001, 201300, 650300, 0, 0, 0, 0),
+(101, 146, 2013001, 201300, 650400, 0, 0, 0, 0),
+(101, 147, 2013001, 201300, 650500, 0, 0, 0, 0),
+(101, 148, 2013001, 201300, 650600, 0, 0, 0, 0),
+(101, 149, 2013001, 201300, 650700, 0, 0, 0, 0),
+(101, 150, 2013001, 201300, 650800, 0, 0, 0, 0),
+(101, 151, 2013001, 201300, 650900, 0, 0, 0, 0),
+(101, 152, 2013001, 201300, 651000, 0, 0, 0, 0),
+(101, 153, 2013001, 201300, 651100, 0, 0, 0, 0),
+(101, 154, 2013001, 201300, 660000, 0, 0, 0, 0),
+(101, 155, 2013001, 201300, 660100, 0, 0, 0, 0),
+(101, 156, 2013001, 201300, 660200, 0, 0, 0, 0),
+(101, 157, 2013001, 201300, 660300, 0, 0, 0, 0),
+(101, 158, 2013001, 201300, 670000, 0, 0, 0, 0),
+(101, 159, 2013001, 201300, 680000, 0, 0, 0, 0),
+(101, 160, 2013001, 201300, 680100, 0, 0, 0, 0),
+(101, 161, 2013001, 201300, 680200, 0, 0, 0, 0),
+(101, 162, 2013001, 201300, 681200, 0, 0, 0, 0),
+(101, 163, 2013001, 201300, 700000, 0, 0, 0, 0),
+(101, 164, 2013001, 201300, 700100, 0, 0, 0, 0),
+(101, 165, 2013001, 201300, 700200, 0, 0, 0, 0),
+(101, 166, 2013001, 201300, 710000, 0, 0, 0, 0),
+(101, 167, 2013001, 201300, 710100, 0, 0, 0, 0),
+(101, 168, 2013001, 201300, 710200, 0, 0, 0, 0),
+(101, 169, 2013001, 201300, 710300, 0, 0, 0, 0),
+(101, 170, 2013001, 201300, 710400, 0, 0, 0, 0),
+(101, 171, 2013001, 201300, 710500, 0, 0, 0, 0),
+(101, 172, 2013001, 201300, 710600, 0, 0, 0, 0),
+(101, 173, 2013001, 201300, 710700, 0, 0, 0, 0),
+(101, 174, 2013001, 201300, 710800, 0, 0, 0, 0),
+(101, 175, 2013001, 201300, 710900, 0, 0, 0, 0),
+(101, 176, 2013001, 201300, 711000, 0, 0, 0, 0),
+(101, 177, 2013001, 201300, 711100, 0, 0, 0, 0),
+(101, 178, 2013001, 201300, 711200, 0, 0, 0, 0),
+(101, 179, 2013001, 201300, 711300, 0, 0, 0, 0),
+(101, 180, 2013001, 201300, 711400, 0, 0, 0, 0),
+(101, 181, 2013001, 201300, 711500, 0, 0, 0, 0),
+(101, 182, 2013001, 201300, 711619, 0, 0, 0, 0),
+(101, 183, 2013001, 201300, 711720, 0, 0, 0, 0),
+(101, 184, 2013001, 201300, 730000, 0, 0, 0, 0),
+(101, 185, 2013001, 201300, 730100, 0, 0, 0, 0),
+(101, 186, 2013001, 201300, 730200, 0, 0, 0, 0),
+(101, 187, 2013001, 201300, 740000, 0, 0, 0, 0),
+(101, 188, 2013001, 201300, 740100, 0, 0, 0, 0),
+(101, 189, 2013001, 201300, 740200, 0, 0, 0, 0),
+(101, 190, 2013001, 201300, 740300, 0, 0, 0, 0),
+(101, 191, 2013001, 201300, 760000, 0, 0, 0, 0),
+(101, 192, 2013001, 201300, 760100, 0, 0, 0, 0),
+(101, 193, 2013001, 201300, 760200, 0, 0, 0, 0),
+(101, 194, 2013001, 201300, 760300, 0, 0, 0, 0),
+(101, 195, 2013001, 201300, 760400, 0, 0, 0, 0),
+(101, 196, 2013001, 201300, 760500, 0, 0, 0, 0);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
