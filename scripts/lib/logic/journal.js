@@ -4,6 +4,7 @@ var map = {
   'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note','fyearID':'fyearID', 'debitAmount':'cost'},
   'sale_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debitAmount':'cost', 'invPoNum':'id'},
   'sale_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID', 'creditAmount':'total'*/, 'invPoNum':'id', 'creditAmount':'total'},
+
   'cash':{},
   'purchase_order':{}
 }; //at left posting_journal property, at right service property such as sale, cash, purchase_order
@@ -32,6 +33,7 @@ var insert = function(obj,res){
 }
 
 var saleDebit = function (obj, data, posting){
+
   var journalRecord = {};
   var objDebit = map[obj.t+'_debit'];
 
@@ -67,7 +69,6 @@ var saleDebit = function (obj, data, posting){
 }
 
 var saleCredit = function(obj, data, posting){ 
-  console.log('data', data);
   var journalRecord = {};  
   var objCredit = map[obj.t+'_credit'];
   var callback = function (err, ans) {
@@ -76,7 +77,7 @@ var saleCredit = function(obj, data, posting){
   }
   for(var i=0; i<data.length; i++){
     for(var cle in objCredit){
-      journalRecord[cle] = data[i][objCredit[cle]];    
+      journalRecord[cle] = data[i][objCredit[cle]];
     }
     journalRecord.posted = 0;
     journalRecord.origin_id = posting.transaction_type;
@@ -93,20 +94,16 @@ var saleCredit = function(obj, data, posting){
       var sql = db.insert('posting_journal', [journalRecord]);
       db.execute(sql, callback);      
     });
-
   }
 }
 
 var process = function(data, posting, res){
-  console.log('les donnee data', data);
   var obj = map[service_name];
   if(service_name == 'sale'){
     saleDebit(obj, data[0], posting);
     saleCredit(obj, data, posting);
   }else if(service_name == 'cash'){
-
   }
-   
 }
 
 var getData = function(posting, res){
@@ -116,6 +113,7 @@ var getData = function(posting, res){
   var sql = {
              'entities':[{'t':'transaction_type', 'c':['service_txt']}],
              'cond':[{'t':'transaction_type', 'cl':'id', 'z':'=', 'v':posting.transaction_type}]
+
             };
   db.execute(db.select(sql), function(err, data){
     service_name = data[0].service_txt.toLowerCase();
@@ -140,40 +138,14 @@ var getData = function(posting, res){
                    ],
         'cond' :   [
                     {'t':obj.t, 'cl':'id', 'z':'=', 'v':posting.id}
+
                    ]
                 };
       db.execute(db.select(sql), function(err, data){
       if(err) throw err;
       process(data, posting, res); //verification et insertion eventuelle
     });
-
-
-
-
-
-
-
-    }else{
-      /* var obj = map[service_name];
-    var cle_tab = [];
-    for (var cle in obj){
-      if(cle!='t'){
-        cle_tab.push(obj[cle]);
-      }
-    }
-
-    //request for getting data
-    var sql = {
-                'entities':[{'t':obj.t, 'c':cle_tab}],
-                'cond':[{'t':obj.t, 'cl':'id', 'z':'=', 'v':100001}] //in tead of 100000 posting will provide id
-              };
-    db.execute(db.select(sql), function(err, data){
-      if(err) throw err;
-      process(data[0], posting, res); //verification et insertion eventuelle
-    });*/
-
-    }
-   
+      }   
   });
 }
 
