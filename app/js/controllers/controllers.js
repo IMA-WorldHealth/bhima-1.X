@@ -1994,7 +1994,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       primary: "sale",
       tables: {
         "sale" : {
-          columns: ["id", "cost", "currency", "debitor_id", "seller_id", "discount", "invoice_date", "note", "paid"] 
+          columns: ["id", "cost", "currency_id", "debitor_id", "seller_id", "discount", "invoice_date", "note", "paid"] 
         },
         "debitor" : {
           columns: ["group_id"] 
@@ -2085,6 +2085,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       // FIXME: get this from a service
       slip.cashier_id = 1;
+
+      //just for the test
+      slip.enterprise_id = 101;
     }
 
     $scope.select = function (id) {
@@ -2110,13 +2113,14 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     $scope.validate = function () {
-      var fields = ["bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
+      var fields = ["enterprise_id","bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
       var obj = {};
       fields.forEach(function (f) { obj[f] = slip[f]; });
       stores['cash-currency'].put(obj);
       connect.basicPut('cash', [obj]);
       stores['sale-debitor'].delete(slip.invoice_id);
       connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
+      connect.journal([{id:1, transaction_type:1, user:1}]); //a effacer
       $scope.hasCash = true;
       $scope.submitted = true;
       $scope.clear();
