@@ -142,14 +142,3 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: none; 
 }
-
-/*Temporary fix for border-box bootstrap collision*/
-[class^="slickgrid_"],
-[class^="slickgrid_"] div {
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-}
-
-
-

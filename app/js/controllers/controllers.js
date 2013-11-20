@@ -2160,68 +2160,96 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $q, kpkConnect, kpkUtilitaire){
-  var postingListe={};
-  $scope.infosJournal = [];  
-   var e = [{t : 'posting_journal', c : ['id','description', 'date', 'posted', 'sale_id']},
-            {t:'sale', c:['currency', 'cost', 'discount', 'invoice_date', 'note']},
-            /*{t:'employee', c:['name']},*/
-            {t:'user', c:['first']},
-            {t:'enterprise', c:['type']},
-            {t:'debitor', c:['text']}
-           ],
-       jc = [{ts:['posting_journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
-             {ts: ['posting_journal', 'user'], c:['user_id', 'id'], l:'AND'},
-             {ts: ['posting_journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
-             {ts: ['sale', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
-             {ts: ['sale', 'debitor'], c:['debitor_id', 'id']}/*,
-             {ts: ['sale', 'user'], c:['seller_id', 'id']}*/
-            ], req_db = {};
-   req_db.e = e;
-   req_db.jc = jc;
-   /*kpkConnect.get('/journal?', req_db).then(function(data){
-    $scope.infosJournal=data;
-    for(var i = 0; i<data.length; i++){
-     $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
-     $scope.infosJournal[i].date = kpkUtilitaire.formatDate($scope.infosJournal[i].date);
-     $scope.infosJournal[i].invoice_date = kpkUtilitaire.formatDate($scope.infosJournal[i].invoice_date);
+controllers.controller('journalController', function($scope, $timeout, $q, kpkConnect, kpkUtilitaire){
+  //  Table
+  //
+  $scope.page_id = 0;
+  $scope.page_limit = 20;
+
+//  Model
+  $scope.model = {};
+  $scope.model['journal'] = {};
+
+//  Request
+  var journal_request = {
+    'tables' : {
+//      TODO
     }
-  });*/
+  }
 
-   $scope.tryChecking = function(index){
-    var res = isCheckingValide(index);
-    res.then(function(response){
-      if(!response){
-        $scope.infosJournal[index].posted = true;
-      }else{
-        postingListe[index] = $scope.infosJournal[index].posted;
-      }
-    });
-   }
+  function init() {
+    fakePopulate($scope.model['journal']);
 
-   function isCheckingValide(index){
-    var def = $q.defer();
-    var req_db = {};
-    req_db.e = [{t:'posting_journal', c:['posted']}];
-    req_db.c = [{t:'posting_journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
-    kpkConnect.get('/data/?', req_db).then(function(data){
-      (data[0].posted == 1)?def.resolve(false):def.resolve(true);
-    });
-    return def.promise;
-   }
+    var grid;
+    var columns = [
+      {id: 'trans_id', name: 'ID', field: 'trans_id'},
+      {id: 'trans_date', name: 'Date', field: 'trans_date'},
+      {id: 'doc_no', name: 'Doc No.', field: 'doc_no'},
+      {id: 'desc', name: 'Description', field: 'desc'},
+      {id: 'account', name: 'Account ID', field: 'account'},
+      {id: 'debit_total', name: 'Debit', field: 'debit_total'},
+      {id: 'credit_total', name: 'Credit', field: 'credit_total'},
+      {id: 'currency', name: 'Currency', field: 'currency'},
+  {id: '', name: 'AR/AP Account', field: ''},
+      {id: '', name: 'AR/AP Type', field: ''},
+      {id: '', name: 'Inv/PO Number', field: ''},
+      {id: '', name: 'Debit Equiv.', field: ''},
+      {id: '', name: 'Credit Equiv', field: ''}
 
-   $scope.poster = function(){
-    var tabJournalID = [];
-    for(var cle in postingListe){      
-      if(postingListe[cle]){
-        tabJournalID.push($scope.infosJournal[cle].id);
-      }
+
+    ];
+    var options = {
+      enableCellNavigation: true,
+      enableColumnReorder: true,
+      forceFitColumns: true,
+      rowHeight: 35
+    };
+
+    /*var data = [];
+
+    //populate data
+    for(var i = 0; i < 500; i++) {
+      data[i] = {
+        title: 'Entry ' + i,
+        value: i
+      };
+    }*/
+
+
+    console.log("Called");
+    grid = new Slick.Grid('#journal_grid', $scope.model['journal'].data, columns, options);
+  }
+
+//  TEMP
+  function fakePopulate(model) {
+    model.data = [];
+
+    for(var i = 0; i < 1; i++) {
+      model.data.push({trans_id: 101, trans_date: '08/12/2003', account: 10000, debit_total: 1000, credit_total: 0});
+      model.data.push({trans_id: 101, trans_date: '08/12/2003', account: 10050, debit_total: 0, credit_total: 600});
+      model.data.push({trans_id: 101, trans_date: '08/12/2003', account: 10060, debit_total: 0, credit_total: 400});
+
+      model.data.push({trans_id: 102, trans_date: '04/12/2003', account: 10000, debit_total: 8000, credit_total: 0});
+      model.data.push({trans_id: 102, trans_date: '04/12/2003', account: 10050, debit_total: 0, credit_total: 8000});
+
+      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10000, debit_total: 300000, credit_total: 0});
+      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10050, debit_total: 0, credit_total: 50000});
+      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10060, debit_total: 0, credit_total: 50000});
+      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10070, debit_total: 0, credit_total: 50000});
+      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10080, debit_total: 0, credit_total: 50000});
+      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10090, debit_total: 0, credit_total: 50000});
+      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10100, debit_total: 0, credit_total: 50000});
     }
-    console.log(tabJournalID);
+  }
 
-    kpkConnect.sendTo('/gl', 'gl',tabJournalID);
+//  Functions available to the view
+  $scope.totalPages = function() {
+    return Math.ceil($scope.model['journal'].data.length / $scope.page_limit);
+  }
 
-   }
+  //good lawd hacks
+  $timeout(init, 100);
+//  init();
 });
 //***************************************************************************************
 //***************************** CREDITORS CONTROLLER ************************************
