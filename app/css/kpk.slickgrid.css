@@ -152,3 +152,32 @@ body .grid .slick-header-columns .slick-header-column.ui-state-default {
 .info-col {
   padding: 20px;
 }
+
+/*Style for column picker - should be elsewhere*/
+.slick-columnpicker {
+  background: white;
+  border: 1px solid #dddddd;
+  list-style: none;
+  padding: 8px;
+}
+
+.slick-group {
+
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.slick-group-toggle {
+  /*width: 9px;*/
+  /*height: 9px;*/
+  margin-right: 5px;
+}
+
+.slick-group-toggle.expanded {
+  /*background: url("../lib/SlickGrid/images/collapse.gif") no-repeat center center;*/
+}
+
+.slick-group-toggle.collapsed {
+  /*background: url("../lib/SlickGrid/images/expand.gif") no-repeat center center;*/
+}
