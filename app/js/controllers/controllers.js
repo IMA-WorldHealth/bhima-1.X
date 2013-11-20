@@ -2727,4 +2727,10 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
 });
 
+
+controllers.controller('pricelistController', function ($scope, connect) {
+// TODO
+
+});
+
 })(angular);
