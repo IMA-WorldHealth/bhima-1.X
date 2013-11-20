@@ -7,76 +7,114 @@
     <div class="col-xs-2">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          Current Price Lists
+          <i class="glyphicon glyphicon-list-alt"></i> Price Lists
+          <button type="button" class="pull-right" ng-click="addList()">+</button>
         </div>
         <table class="table table-hover">
           <thead>
             <tr><th>Lists</th></tr>
           </thead>
           <tbody>
-            <tr ng-repeat="list in models.plnames" ng-click="load(list.id)">
-              <td ng-dblclick="editList(list.id)" ng-hide="flags.listeditid==list.id">{{list.name}}</td>
+            <tr ng-repeat="list in models.plnames" ng-click="loadList(list.id)">
+              <!-- display template -->
+              <td ng-dblclick="editList(list.id)" ng-hide="flags.edit.list==list.id" ng-class="{'success' : flags.list==list.id}">
+                {{list.name}}
+              </td>
               <!-- editing template -->
-              <td ng-show="flags.listeditid==list.id">
-                <input type="text" ng-model="list.name" ng-blur="blurList()" class="form-control" autofocus>
+              <td ng-show="flags.edit.list==list.id">
+                <input type="text" ng-model="list.name" ng-blur="saveList()" class="form-control" autofocus>
               </td>
             </tr>
           </tbody>
         </table>
-        <div class="panel-footer">
-          <button class="btn btn-default" ng-click="addList()"><i class="glyphicon glyphicon-plus"></i> New</button>
-        </div>
-      </div>
-
-      <div class="btn-group-vertical">
-        <button class="btn btn-default" ng-click="addItem()" ng-disabled="!models.pl"><i class="glyphicon glyphicon-plus"></i> Add Item</button>
-        <button class="btn btn-default" ng-click="removeItem()" ng-disabled="!selected"><i class="glyphicon glyphicon-minus"></i> Remove Item</button>
       </div>
     </div>
 
-    <div class="col-xs-10" style="max-height: 600px; overflow: auto;">
+    <div class="col-xs-10" style="max-height: 600px; min-height: 600px; overflow: auto;">
       <div class="panel panel-info">
         <div class="panel-heading">
-          Price List Details
+          <i class="glyphicon glyphicon-list"></i> Price List Details
+          <button class="pull-right" type="button" ng-click="addItem()" ng-disabled="!flags.add">+</button>
         </div>
         <div class="panel-body">
-          <table ng-hide="!models.pl" class="table table-striped" >
+          <table ng-hide="!models.pl" class="table table-condensed table-hover">
             <thead>
               <tr>
-                <th>Inventory ID</th>
-                <th>Price</th>
-                <th>Discount</th>
+                <th style="width: 33%;">Inventory ID</th>
+                <th style="width: 15%;">Price</th>
+                <th style="width: 15%;">Discount</th>
                 <th>Note</th>
-                <th>Edit</th>
+                <th style="width: 5%; ">Edit</th>
+                <th style="width: 5%;"><i class="glyphicon glyphicon-trash"></i></th>
               </tr>
             </thead>
-            <tbody ng-blur="blurItem()">
-              <tr ng-repeat="item in models.pl" ng-click="selectItem(item.id)">
-                <td ng-hide="item.id==flags.itemeditid">{{label(item.inv_id)}}</td>
-                <td ng-show="item.id==flags.itemeditid">
-                  <select ng-model="item.inv_id" ng-options="inv.id as inv.text for inv in models.inv" class="form-control"></select>
+            <tbody>
+              <tr ng-repeat="item in models.pl" ng-class="{'danger' : !validate.item(item)}">
+                <td ng-hide="item.id==flags.edit.item">{{label(item.inventory_id)}}</td>
+                <td ng-show="item.id==flags.edit.item">
+                  <div class="input-group">
+                    <select 
+                      ng-model="item.inventory_id"
+                      ng-options="inv.id as inv.text for inv in models.inv"
+                      class="form-control">
+                    </select>
+                    <div class="input-group-btn dropdown">
+                      <button class="btn btn-default dropdown-toggle">
+                        <i class="glyphicon glyphicon-filter"></i> {{flags.filter}} 
+                      </button>
+                      <ul class="dropdown-menu pull-left">
+                        <li class="dropdown-header"><b>Filter on:</b></li>
+                        <li><a href="" ng-click="filter()">None</a></li>
+                        <li ng-repeat="group in models.grp"><a href="" ng-click="filter(group.id)">{{group.symbol}} | {{group.name}}</a></li>
+                      </ul>
+                    </div>
+                  </div>
                 </td>
 
-                <td ng-hide="item.id==flags.itemeditid" >{{item.price}}</td>
-                <td ng-show="item.id==flags.itemeditid">
-                  <input type="number" ng-model="item.price" class="form-control">
+                <td ng-hide="item.id==flags.edit.item">{{item.price | currency }}</td>
+                <td ng-show="item.id==flags.edit.item">
+                  <div class="input-group">
+                    <input type="number" ng-model="item.price" class="form-control">
+                    <span class="input-group-addon">$</span>
+                  </div>
                 </td>
 
-                <td ng-hide="item.id==flags.itemeditid" >{{item.discount}}</td>
-                <td ng-show="item.id==flags.itemeditid">
-                  <input type="number" ng-model="item.discount" class="form-control"> 
+                <td ng-hide="item.id==flags.edit.item">{{item.discount}}</td>
+                <td ng-show="item.id==flags.edit.item">
+                  <div class="input-group">
+                    <input 
+                      type="number" 
+                      ng-model="item.discount"
+                      class="form-control"
+                      min="0"
+                      max="100"
+                      > 
+                    <span class="input-group-addon">%</span>
+                  </div>
                 </td>
 
-                <td ng-hide="item.id==flags.itemeditid">{{item.note}}</td>
-                <td ng-show="item.id==flags.itemeditid">
+                <td ng-hide="item.id==flags.edit.item">{{item.note}}</td>
+                <td ng-show="item.id==flags.edit.item">
                   <input type="text" ng-model="item.note" class="form-control">
                 </td>
-                <td ng-click="editItem(item.id)"><a href="" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></a></i></td>
+                <td ng-hide="item.id==flags.edit.item" ng-click="editItem(item.id)"><i class="glyphicon glyphicon-pencil"></i></td>
+                <td ng-show="item.id==flags.edit.item" ng-click="saveEdit()"><i class="glyphicon glyphicon-ok"></i></td>
+
+                <td ng-click="removeItem(item.id)"><i class="glyphicon glyphicon-remove"></i></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
+  </div>
+  <hr />
+  <div class="col-sm-offset-9 col-xs-3">
+    <button class="btn btn-default" type="button" ng-click="save()" ng-disabled="!flags.add">
+      <i class="glyphicon glyphicon-floppy-save"></i> Save
+    </button>
+    <button class="btn btn-default" type="button" ng-click="erase()">
+      <i class="glyphicon glyphicon-floppy-remove"></i> Erase
+    </button>
   </div>
 </div>
