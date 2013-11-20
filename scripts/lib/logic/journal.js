@@ -1,3 +1,4 @@
+ //at left posting_journal property, at right service property such as sale, cash, purchase_order : map
 var db = require('../database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}})
   , util = require('../util/util.js');
 var map = {
@@ -10,10 +11,11 @@ var map = {
   'purchase':{'t':'purchase', 'transID':'id','enterpriseID':'enterprise_id','creditAmount':'cost','currency_id':'currency_id','arapAccount':'creditor_id','transDate':'invoice_date','description':'note'},
   'purchase_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'docNum':'id', 'debitAmount':'total'},
   'purchase_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'creditor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'creditAmount':'cost', 'docNum':'id'}
-}; //at left posting_journal property, at right service property such as sale, cash, purchase_order
-var service_name = '';
+};
+var service_name = '', opDibitState, opCreditState;
 
 exports.poster = function(req, res) {
+  opDibitState = false; opCreditState = false;
   var callback = function (err, record) {
     if (record.length < 1) {
       insert(req.body, res);    
@@ -27,7 +29,6 @@ exports.poster = function(req, res) {
       db.execute(db.select(sql), callback);
   }  
 }
-
 // FIXME Temporary fix, pass a reference to res through to process - this should be done with a callback/ promise
 var insert = function(obj,res){  
   for(var i = 0; i<obj.length; i++){
@@ -35,7 +36,7 @@ var insert = function(obj,res){
   } 
 }
 
-var saleDebit = function (obj, data, posting){
+var saleDebit = function (obj, data, posting, res){
 
   var journalRecord = {};
   var objDebit = map[obj.t+'_debit'];
@@ -52,7 +53,8 @@ var saleDebit = function (obj, data, posting){
 
   var callback = function (err, ans) {
         if (err) throw err;
-        //res.send({status: 200, insertId: ans.insertId});
+        opDibitState = true;
+        if(opCreditState) res.send({status: 200, insertId: ans.insertId});
   }  
   var sql = {
              'entities':[{'t':'debitor', 'c':['group_id']}],
@@ -73,12 +75,13 @@ var saleDebit = function (obj, data, posting){
   });
 }
 
-var saleCredit = function(obj, data, posting){
+var saleCredit = function(obj, data, posting, res){
    
   var objCredit = map[obj.t+'_credit'];
   var callback = function (err, ans) {
         if (err) throw err;
-        //res.send({status: 200, insertId: ans.insertId});
+        opCreditState = true
+        if(opDibitState) res.send({status: 200, insertId: ans.insertId});
   }
   data.forEach(function(item){
     var journalRecord = {}; 
@@ -104,10 +107,11 @@ var saleCredit = function(obj, data, posting){
   });
 }
 
-var cashDebit = function (obj, data, posting){
+var cashDebit = function (obj, data, posting, res){
   var callback = function (err, ans) {
     if (err) throw err;
-    //res.send({status: 200, insertId: ans.insertId});
+    opDibitState = true;
+    if(opCreditState) res.send({status: 200, insertId: ans.insertId});
   } 
   var journalRecord = {};
   var objDebit = map[obj.t+'_debit'];
@@ -130,10 +134,11 @@ var cashDebit = function (obj, data, posting){
   });
 }
 
-var cashCredit = function (obj, data, posting){
+var cashCredit = function (obj, data, posting, res){
   var callback = function (err, ans) {
     if (err) throw err;
-    //res.send({status: 200, insertId: ans.insertId});
+    opCreditState = true;
+    if(opDibitState) res.send({status: 200, insertId: ans.insertId});
   } 
   var journalRecord = {};
   var objCredit = map[obj.t+'_credit'];
@@ -156,11 +161,12 @@ var cashCredit = function (obj, data, posting){
   });
 }
 
-var purchaseDebit = function(obj, data, posting){
+var purchaseDebit = function(obj, data, posting, res){
   var objDebit = map[obj.t+'_debit'];
   var callback = function (err, ans) {
         if (err) throw err;
-        //res.send({status: 200, insertId: ans.insertId});
+        opDibitState = true;
+        if(opCreditState) res.send({status: 200, insertId: ans.insertId});
   }
   data.forEach(function(item){
     var journalRecord = {}; 
@@ -185,7 +191,7 @@ var purchaseDebit = function(obj, data, posting){
   });
 }
 
-var purchaseCredit = function(obj, data, posting){
+var purchaseCredit = function(obj, data, posting, res){
   var journalRecord = {};
   var objCredit = map[obj.t+'_credit'];
 
@@ -199,7 +205,8 @@ var purchaseCredit = function(obj, data, posting){
   journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
   var callback = function (err, ans) {
         if (err) throw err;
-        //res.send({status: 200, insertId: ans.insertId});
+        opCreditState = true;
+        if(opDibitState) res.send({status: 200, insertId: ans.insertId});
   }  
   var sql = {
              'entities':[{'t':'creditor', 'c':['creditor_group_id']}],
@@ -223,20 +230,19 @@ var purchaseCredit = function(obj, data, posting){
 var process = function(data, posting, res){
   var obj = map[service_name];
   if(service_name == 'sale'){
-    saleDebit(obj, data[0], posting);
-    saleCredit(obj, data, posting);
+    saleDebit(obj, data[0], posting, res);
+    saleCredit(obj, data, posting, res);
   }else if(service_name == 'cash'){
-    cashDebit(obj, data, posting);
-    cashCredit(obj, data, posting);
+    cashDebit(obj, data, posting, res);
+    cashCredit(obj, data, posting, res);
 
   }else if(service_name == 'purchase'){
-    purchaseDebit(obj, data, posting);
-    purchaseCredit(obj, data[0], posting);
+    purchaseDebit(obj, data, posting, res);
+    purchaseCredit(obj, data[0], posting, res);
   }
 }
 
 var getData = function(posting, res){
-
   //each posting object contains transaction_id, service_id, user_id properties
   //request for knowing the service
   var sql = {

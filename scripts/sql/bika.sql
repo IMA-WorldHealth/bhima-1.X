@@ -1111,7 +1111,7 @@ CREATE TABLE `transaction_type` (
 
 LOCK TABLES `transaction_type` WRITE;
 /*!40000 ALTER TABLE `transaction_type` DISABLE KEYS */;
-INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale');
+INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase');
 /*!40000 ALTER TABLE `transaction_type` ENABLE KEYS */;
 UNLOCK TABLES;
 

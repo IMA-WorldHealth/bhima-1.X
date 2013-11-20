@@ -2086,7 +2086,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       // FIXME: get this from a service
       slip.cashier_id = 1;
 
-      //just for the test, we will fix it
+      //just for the test, it will be changed
       slip.enterprise_id = 101;
     }
 
@@ -2120,12 +2120,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       connect.basicPut('cash', [obj]);
       stores['sale-debitor'].delete(slip.invoice_id);
       connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
-      connect.journal([{id:0, transaction_type:1, user:1}]); //a effacer just for the test
+      connect.journal([{id:slip.id, transaction_type:1, user:1}]); //a effacer just for the test
       $scope.hasCash = true;
       $scope.submitted = true; 
       // FIXME: make this formal for posting to the journal
       // FIXME: fiscal year
-      $http.post('/journal/', {id: slip.id, fiscal_year: 2013001, transaction_type: 1, user_id: 13});
+      //$http.post('/journal/', {id: slip.id, transaction_type: 1, user_id: 13});
       $scope.clear();
     };
 
@@ -2654,7 +2654,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
             .then(function(res) {
               console.log("Purchase order successfully generated", res);
               appnotify.setNotification("error", "tilte", "Purchase order generated - link", 3000);
-              connect.journal([{id:100000, transaction_type:3, user:1}]); //just for the test, send data to the journal traget server-side
+              connect.journal([{id:$scope.invoice_id, transaction_type:3, user:1}]); //just for the test, send data to the journal traget server-side
 //              Navigate to Purchase Order review || Reset form
 //              Reset form
                 init();
