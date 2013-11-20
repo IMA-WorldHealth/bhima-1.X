@@ -7,7 +7,11 @@
   <link rel="stylesheet" href="css/bootstrap/bootstrap.css"/>
   <link rel="stylesheet" href="css/tree.css"/>
   <link rel="stylesheet" href="css/modal_fix.css">
-  <link rel="stylesheet" href="css/grid/slick.grid.css">
+
+  <!--Slick grid application styles-->
+  <link href="css/grid/slick.grid.css" rel="stylesheet" type="text/css">
+  <link href="css/kpk.slickgrid.css" rel="stylesheet" type="text/css">
+
 </head>
 <body ng-app="kpk">
 <!--not required in placeholder rewrite-->
@@ -74,19 +78,35 @@
 </div>
 
 
-  <script src="lib/jquery-1.10.2.js"></script>
   <!-- scripts loaded in body to prevent page form 'hanging'-->
-  <script src="lib/angular/angular.min.js"></script>
-  <script src="lib/jquery-ui-1.10.3.custom.js"></script>
+
+  <!--jquery-->
+  <script src="lib/jquery-1.10.2.js"></script>
   <script src="lib/jquery.event.drag-2.2.js"></script>
+
+  <!--jquery-ui (required modules)-->
+  <script src="lib/jquery-ui/jquery.ui.core.js"></script>
+  <script src="lib/jquery-ui/jquery.ui.widget.js"></script>
+  <script src="lib/jquery-ui/jquery.ui.mouse.js"></script>
+  <script src="lib/jquery-ui/jquery.ui.resizable.js"></script>
+  <script src="lib/jquery-ui/jquery.ui.sortable.js"></script>
+
+  <!--slickgrid (required modules)-->
   <script src="lib/SlickGrid/slick.core.js"></script>
-  <script src="lib/SlickGrid/slick.dataview.js"></script>
   <script src="lib/SlickGrid/slick.grid.js"></script>
+  <script src="lib/SlickGrid/slick.dataview.js"></script>
+
+  <!--angular-->
+  <script src="lib/angular/angular.min.js"></script>
+
+  <!--kapok-->
   <script src="js/app.js"></script>
   <script src="js/services/services.js"></script>
   <script src="js/filters/filters.js"></script>
   <script src="js/controllers/controllers.js"></script>
   <script src="js/directives/directives.js"></script>
+
+  <!--lib-->
   <script src="js/directives/angular.treeview.js"></script>
   <script src="lib/ui-bootstrap-custom-tpls-0.6.0.js"></script>
 </body>
