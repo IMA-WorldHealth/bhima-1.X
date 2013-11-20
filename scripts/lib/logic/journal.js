@@ -7,7 +7,9 @@ var map = {
   'cash':{'t':'cash', 'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'date', 'description':'text', 'invPoNum':'invoice_id', 'debitAmount':'amount', 'creditAmount':'amount'},
   'cash_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'date', 'description':'text', 'invPoNum':'invoice_id', 'debitAmount':'amount'/*, 'account_id':'debit_account'*/},
   'cash_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'date', 'description':'text', 'invPoNum':'invoice_id', 'creditAmount':'amount'}, 
-  'purchase_order':{}
+  'purchase':{'t':'purchase', 'transID':'id','enterpriseID':'enterprise_id','creditAmount':'cost','currency_id':'currency_id','arapAccount':'creditor_id','transDate':'invoice_date','description':'note'},
+  'purchase_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'docNum':'id', 'debitAmount':'total'},
+  'purchase_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'creditor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'creditAmount':'cost', 'docNum':'id'}
 }; //at left posting_journal property, at right service property such as sale, cash, purchase_order
 var service_name = '';
 
@@ -154,6 +156,70 @@ var cashCredit = function (obj, data, posting){
   });
 }
 
+var purchaseDebit = function(obj, data, posting){
+  var objDebit = map[obj.t+'_debit'];
+  var callback = function (err, ans) {
+        if (err) throw err;
+        //res.send({status: 200, insertId: ans.insertId});
+  }
+  data.forEach(function(item){
+    var journalRecord = {}; 
+    var sql = {
+               'entities':[{'t':'inv_group', 'c':['sales_account']}],
+               'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
+    };
+    db.execute(db.select(sql), function(err, data2){      
+      journalRecord.account_id = data2[0].sales_account;
+      for(var cle in objDebit){
+      journalRecord[cle] = item[objDebit[cle]];    
+      }
+      journalRecord.posted = 0;
+      journalRecord.origin_id = posting.transaction_type;
+      journalRecord.user_id = posting.user;
+      journalRecord.id = '';
+      journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+      var sql = db.insert('posting_journal', [journalRecord]); 
+      console.log(sql);     
+      db.execute(sql, callback);      
+    });
+  });
+}
+
+var purchaseCredit = function(obj, data, posting){
+  var journalRecord = {};
+  var objCredit = map[obj.t+'_credit'];
+
+  for(var cle in objCredit){
+    journalRecord[cle] = data[objCredit[cle]];
+  }
+  journalRecord.posted = 0;
+  journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
+  journalRecord.user_id = posting.user;
+  journalRecord.id = '';
+  journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+  var callback = function (err, ans) {
+        if (err) throw err;
+        //res.send({status: 200, insertId: ans.insertId});
+  }  
+  var sql = {
+             'entities':[{'t':'creditor', 'c':['creditor_group_id']}],
+             'cond':[{'t':'creditor', 'cl':'id', 'z':'=', 'v':journalRecord.arapAccount}]
+            };
+  var req = db.select(sql);
+  db.execute(req, function(err, data){
+    var sql = {
+     'entities':[{'t':'creditor_group', 'c':['account_id']}],
+     'cond':[{'t':'creditor_group', 'cl':'id', 'z':'=', 'v':data[0].creditor_group_id}]
+    };
+    db.execute(db.select(sql), function(err, data){
+      journalRecord.account_id = data[0].account_id;      
+      console.log('journal purchase credit' , journalRecord);
+      var sql = db.insert('posting_journal', [journalRecord]);
+      db.execute(sql, callback); 
+    });
+  });
+}
+
 var process = function(data, posting, res){
   var obj = map[service_name];
   if(service_name == 'sale'){
@@ -163,6 +229,9 @@ var process = function(data, posting, res){
     cashDebit(obj, data, posting);
     cashCredit(obj, data, posting);
 
+  }else if(service_name == 'purchase'){
+    purchaseDebit(obj, data, posting);
+    purchaseCredit(obj, data[0], posting);
   }
 }
 
@@ -217,6 +286,26 @@ var getData = function(posting, res){
       //console.log('data :', data, 'posting :', posting);
       process(data, posting, res); //verification et insertion eventuelle
       });
+    }else if(service_name == 'purchase'){
+      var sql = {
+        'entities':[
+                    {'t':obj.t, 'c':cle_tab},
+                    {'t':'purchase_item', 'c':['inventory_id', 'total']},
+                    {'t':'inventory', 'c':['group_id']}
+                   ],
+        'jcond':   [
+                    {ts: ['purchase', 'purchase_item'], c: ['id', 'purchase_id'],l: 'AND'},
+                    {ts: ['inventory', 'purchase_item'], c: ['id', 'inventory_id'],l: 'AND'}
+                   ],
+        'cond' :   [
+                    {'t':obj.t, 'cl':'id', 'z':'=', 'v':posting.id}
+                   ]
+                };
+      db.execute(db.select(sql), function(err, data){
+      if(err) throw err;
+      process(data, posting, res); //verification et insertion eventuelle
+      });
+
     }
   });
 }
