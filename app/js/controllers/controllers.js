@@ -2175,14 +2175,15 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
 
 //  grid options
   var grid;
+  var dataview;
   var columns = [
-    {id: 'transID', name: 'ID', field: 'transID'},
+    {id: 'transID', name: 'ID', field: 'transID', sortable: true},
     {id: 'transDate', name: 'Date', field: 'transDate'},
     {id: 'docNum', name: 'Doc No.', field: 'docNum'},
     {id: 'description', name: 'Description', field: 'description'},
     {id: 'account_id', name: 'Account ID', field: 'account_id'},
-    {id: 'debitAmount', name: 'Debit', field: 'debitAmount'},
-    {id: 'creditAmount', name: 'Credit', field: 'creditAmount'},
+    {id: 'debitAmount', name: 'Debit', field: 'debitAmount', groupTotalsFormatter: totalFormat},
+    {id: 'creditAmount', name: 'Credit', field: 'creditAmount', groupTotalsFormatter: totalFormat},
     {id: 'arapAccount', name: 'AR/AP Account', field: 'arapAccount'},
     {id: 'arapType', name: 'AR/AP Type', field: 'arapType'},
     {id: 'invPoNum', name: 'Inv/PO Number', field: 'invPoNum'}
@@ -2198,15 +2199,90 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
 
     connect.req(journal_request).then(function(res) {
       $scope.model['journal'] = res;
-      grid = new Slick.Grid('#journal_grid', $scope.model['journal'].data, columns, options);
+
+      var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+      dataview = new Slick.Data.DataView({
+        groupItemMetadataProvider: groupItemMetadataProvider,
+        inlineFilter: true
+      });
+      grid = new Slick.Grid('#journal_grid', dataview, columns, options);
+
+      grid.registerPlugin(groupItemMetadataProvider);
+//      Cell selection
+//      grid.setSelectionModel(new Slick.CellSelectionModel());
+
+      dataview.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render();
+      });
+
+      dataview.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidateRows(args.rows);
+        grid.render();
+      });
+
+//      Set for context menu column selection
+//      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
+      dataview.beginUpdate();
+      dataview.setItems($scope.model['journal'].data);
+//      $scope.groupByID()
+      dataview.endUpdate();
+      console.log("d", dataview);
+      console.log("d.g", dataview.getItems());
 
     })
 
   }
 
+  $scope.groupByID = function groupByID() {
+    dataview.setGrouping({
+      getter: "transID",
+      formatter: function (g) {
+        return "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
+      },
+      aggregators: [
+        new Slick.Data.Aggregators.Sum("debitAmount"),
+        new Slick.Data.Aggregators.Sum("creditAmount")
+      ],
+      aggregateCollapsed: false
+    });
+  }
+
+  $scope.groupByAccount = function groupByAccount() {
+    dataview.setGrouping({
+      getter: "account_id",
+      formatter: function(g) {
+        return "<span style='font-weight: bold'>" + g.value + "</span>"
+      },
+      aggregators: [
+        new Slick.Data.Aggregators.Sum("debitAmount"),
+        new Slick.Data.Aggregators.Sum("creditAmount")
+      ],
+      aggregateCollapsed: false
+    });
+  }
+
+  $scope.removeGroup = function removeGroup() {
+    dataview.setGrouping({});
+  }
+
+  function totalFormat(totals, column) {
+
+    var format = {};
+    format['Credit'] = '#02BD02';
+    format['Debit'] = '#F70303';
+
+    var val = totals.sum && totals.sum[column.field];
+    if (val != null) {
+      return "<span style='font-weight: bold; color:" + format[column.name] + "'>" + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
+    }
+    return "";
+  }
+
   //good lawd hacks
-  $timeout(init, 100);
-//  init();
+  //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
+//  $timeout(init, 100);
+  init();
 });
 //***************************************************************************************
 //***************************** CREDITORS CONTROLLER ************************************
