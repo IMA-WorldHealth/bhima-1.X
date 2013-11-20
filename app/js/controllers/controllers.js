@@ -1039,8 +1039,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
          });
          }*/
         if(selected) request.push(selected.id);
-        //if(selected) request.push({transaction_id:1, service_id:1, user_id:1});
-
+        //if(selected) request.push({transact ion_id:1, service_id:1, user_id:1});
 
         connect.journal(request)
           .then(function(res) {
@@ -2160,91 +2159,49 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $timeout, $q, kpkConnect, kpkUtilitaire){
-  //  Table
-  //
-  $scope.page_id = 0;
-  $scope.page_limit = 20;
+controllers.controller('journalController', function($scope, $timeout, $q, connect){
 
-//  Model
   $scope.model = {};
-  $scope.model['journal'] = {};
+  $scope.model['journal'] = {'data' : []};
 
 //  Request
   var journal_request = {
     'tables' : {
-//      TODO
+      'posting_journal' : {
+        'columns' : ["id", "transID", "transDate", "docNum", "description", "account_id", "debitAmount", "creditAmount", "currency_id", "arapAccount", "arapType", "invPoNum", "debitEquiv", "creditEquiv"]
+      }
     }
   }
+
+//  grid options
+  var grid;
+  var columns = [
+    {id: 'transID', name: 'ID', field: 'transID'},
+    {id: 'transDate', name: 'Date', field: 'transDate'},
+    {id: 'docNum', name: 'Doc No.', field: 'docNum'},
+    {id: 'description', name: 'Description', field: 'description'},
+    {id: 'account_id', name: 'Account ID', field: 'account_id'},
+    {id: 'debitAmount', name: 'Debit', field: 'debitAmount'},
+    {id: 'creditAmount', name: 'Credit', field: 'creditAmount'},
+    {id: 'arapAccount', name: 'AR/AP Account', field: 'arapAccount'},
+    {id: 'arapType', name: 'AR/AP Type', field: 'arapType'},
+    {id: 'invPoNum', name: 'Inv/PO Number', field: 'invPoNum'}
+  ];
+  var options = {
+    enableCellNavigation: true,
+    enableColumnReorder: true,
+    forceFitColumns: true,
+    rowHeight: 35
+  };
 
   function init() {
-    fakePopulate($scope.model['journal']);
 
-    var grid;
-    var columns = [
-      {id: 'trans_id', name: 'ID', field: 'trans_id'},
-      {id: 'trans_date', name: 'Date', field: 'trans_date'},
-      {id: 'doc_no', name: 'Doc No.', field: 'doc_no'},
-      {id: 'desc', name: 'Description', field: 'desc'},
-      {id: 'account', name: 'Account ID', field: 'account'},
-      {id: 'debit_total', name: 'Debit', field: 'debit_total'},
-      {id: 'credit_total', name: 'Credit', field: 'credit_total'},
-      {id: 'currency', name: 'Currency', field: 'currency'},
-  {id: '', name: 'AR/AP Account', field: ''},
-      {id: '', name: 'AR/AP Type', field: ''},
-      {id: '', name: 'Inv/PO Number', field: ''},
-      {id: '', name: 'Debit Equiv.', field: ''},
-      {id: '', name: 'Credit Equiv', field: ''}
+    connect.req(journal_request).then(function(res) {
+      $scope.model['journal'] = res;
+      grid = new Slick.Grid('#journal_grid', $scope.model['journal'].data, columns, options);
 
+    })
 
-    ];
-    var options = {
-      enableCellNavigation: true,
-      enableColumnReorder: true,
-      forceFitColumns: true,
-      rowHeight: 35
-    };
-
-    /*var data = [];
-
-    //populate data
-    for(var i = 0; i < 500; i++) {
-      data[i] = {
-        title: 'Entry ' + i,
-        value: i
-      };
-    }*/
-
-
-    console.log("Called");
-    grid = new Slick.Grid('#journal_grid', $scope.model['journal'].data, columns, options);
-  }
-
-//  TEMP
-  function fakePopulate(model) {
-    model.data = [];
-
-    for(var i = 0; i < 1; i++) {
-      model.data.push({trans_id: 101, trans_date: '08/12/2003', account: 10000, debit_total: 1000, credit_total: 0});
-      model.data.push({trans_id: 101, trans_date: '08/12/2003', account: 10050, debit_total: 0, credit_total: 600});
-      model.data.push({trans_id: 101, trans_date: '08/12/2003', account: 10060, debit_total: 0, credit_total: 400});
-
-      model.data.push({trans_id: 102, trans_date: '04/12/2003', account: 10000, debit_total: 8000, credit_total: 0});
-      model.data.push({trans_id: 102, trans_date: '04/12/2003', account: 10050, debit_total: 0, credit_total: 8000});
-
-      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10000, debit_total: 300000, credit_total: 0});
-      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10050, debit_total: 0, credit_total: 50000});
-      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10060, debit_total: 0, credit_total: 50000});
-      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10070, debit_total: 0, credit_total: 50000});
-      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10080, debit_total: 0, credit_total: 50000});
-      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10090, debit_total: 0, credit_total: 50000});
-      model.data.push({trans_id: 103, trans_date: '04/12/2003', account: 10100, debit_total: 0, credit_total: 50000});
-    }
-  }
-
-//  Functions available to the view
-  $scope.totalPages = function() {
-    return Math.ceil($scope.model['journal'].data.length / $scope.page_limit);
   }
 
   //good lawd hacks
