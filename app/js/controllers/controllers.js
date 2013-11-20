@@ -2085,6 +2085,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       // FIXME: get this from a service
       slip.cashier_id = 1;
+
+      //just for the test, we will fix it
+      slip.enterprise_id = 101;
     }
 
     $scope.select = function (id) {
@@ -2110,13 +2113,14 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     $scope.validate = function () {
-      var fields = ["bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
+      var fields = ["enterprise_id","bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
       var obj = {};
       fields.forEach(function (f) { obj[f] = slip[f]; });
       stores['cash-currency'].put(obj);
       connect.basicPut('cash', [obj]);
       stores['sale-debitor'].delete(slip.invoice_id);
       connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
+      connect.journal([{id:0, transaction_type:1, user:1}]); //a effacer just for the test
       $scope.hasCash = true;
       $scope.submitted = true; 
       // FIXME: make this formal for posting to the journal
@@ -2604,7 +2608,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
       enterprise_id : appstate.get("enterprise").id, //Not async safe - may return null
       id : $scope.invoice_id,
       cost : t,
-      currency : 'USD', // FIXME
+      currency_id : 1, // FIXME
       creditor_id : $scope.creditor.id,
       invoice_date : $scope.sale_date,
       purchaser_id : $scope.verify,
@@ -2650,6 +2654,7 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
             .then(function(res) {
               console.log("Purchase order successfully generated", res);
               appnotify.setNotification("error", "tilte", "Purchase order generated - link", 3000);
+              connect.journal([{id:100000, transaction_type:3, user:1}]); //just for the test, send data to the journal traget server-side
 //              Navigate to Purchase Order review || Reset form
 //              Reset form
                 init();

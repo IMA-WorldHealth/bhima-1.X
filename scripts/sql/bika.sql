@@ -884,12 +884,12 @@ CREATE TABLE `purchase` (
   `id` int(11) unsigned NOT NULL,
   `enterprise_id` smallint(5) unsigned NOT NULL,
   `cost` int(10) unsigned NOT NULL DEFAULT '0',
-  `currency` varchar(3) NOT NULL,
+  `currency_id` tinyint(3) unsigned NOT NULL,
   `creditor_id` int(11) NOT NULL,
   `purchaser_id` smallint(5) unsigned NOT NULL,
   `discount` mediumint(8) unsigned DEFAULT '0',
   `invoice_date` date NOT NULL,
-  `note` text,
+  `note` text default null,
   `posted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
@@ -1056,6 +1056,7 @@ DROP TABLE IF EXISTS `cash`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cash` (
   `id` int(10) unsigned NOT NULL,
+  `enterprise_id` smallint(5) null,
   `bon` char(1) NOT NULL,
   `bon_num` int(10) unsigned NOT NULL,
   `invoice_id` int(10) unsigned NOT NULL,
