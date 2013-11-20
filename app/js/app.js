@@ -73,6 +73,10 @@
     when('/purchase_records/:purchaseID', {
       controller: 'purchaseRecordsController',
       templateUrl: 'partials/purchase_records.html'
+    }).
+    when('/price_list', {
+      controller: 'priceListController',
+      templateUrl: 'partials/pricelist/index.html'
     });
   }  
   kpk.config(kpkconfig);

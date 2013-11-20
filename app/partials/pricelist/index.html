@@ -15,9 +15,9 @@
           </thead>
           <tbody>
             <tr ng-repeat="list in models.plnames" ng-click="load(list.id)">
-              <td ng-dblclick="editList(list.id)" ng-hide="listeditid==list.id">{{list.name}}</td>
+              <td ng-dblclick="editList(list.id)" ng-hide="flags.listeditid==list.id">{{list.name}}</td>
               <!-- editing template -->
-              <td ng-show="listeditid==list.id">
+              <td ng-show="flags.listeditid==list.id">
                 <input type="text" ng-model="list.name" ng-blur="blurList()" class="form-control" autofocus>
               </td>
             </tr>
@@ -52,23 +52,23 @@
             </thead>
             <tbody ng-blur="blurItem()">
               <tr ng-repeat="item in models.pl" ng-click="selectItem(item.id)">
-                <td ng-hide="item.id==itemeditid">{{label(item.inv_id)}}</td>
-                <td ng-show="item.id==itemeditid">
+                <td ng-hide="item.id==flags.itemeditid">{{label(item.inv_id)}}</td>
+                <td ng-show="item.id==flags.itemeditid">
                   <select ng-model="item.inv_id" ng-options="inv.id as inv.text for inv in models.inv" class="form-control"></select>
                 </td>
 
-                <td ng-hide="item.id==itemeditid" >{{item.price}}</td>
-                <td ng-show="item.id==itemeditid">
+                <td ng-hide="item.id==flags.itemeditid" >{{item.price}}</td>
+                <td ng-show="item.id==flags.itemeditid">
                   <input type="number" ng-model="item.price" class="form-control">
                 </td>
 
-                <td ng-hide="item.id==itemeditid" >{{item.discount}}</td>
-                <td ng-show="item.id==itemeditid">
+                <td ng-hide="item.id==flags.itemeditid" >{{item.discount}}</td>
+                <td ng-show="item.id==flags.itemeditid">
                   <input type="number" ng-model="item.discount" class="form-control"> 
                 </td>
 
-                <td ng-hide="item.id==itemeditid">{{item.note}}</td>
-                <td ng-show="item.id==itemeditid">
+                <td ng-hide="item.id==flags.itemeditid">{{item.note}}</td>
+                <td ng-show="item.id==flags.itemeditid">
                   <input type="text" ng-model="item.note" class="form-control">
                 </td>
                 <td ng-click="editItem(item.id)"><a href="" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></a></i></td>

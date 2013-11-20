@@ -2125,7 +2125,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.submitted = true; 
       // FIXME: make this formal for posting to the journal
       // FIXME: fiscal year
-      $http.post('/journal/', {id: slip.id, fiscal_year: 2013001, transaction_type: 1, user_id: 13});
+      console.log("sending post to journal");
+      $http.post('/journal/', {id: slip.id, fiscal_year: 2013001, transaction_type: 1, user_id: 13}).then(function () { console.log("hasdfasdfadsf"); });
       $scope.clear();
     };
 
@@ -2728,8 +2729,80 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 });
 
 
-controllers.controller('pricelistController', function ($scope, connect) {
-// TODO
+controllers.controller('priceListController', function ($scope, $q, connect, appstate) {
+  var pln, pl, eid, models, stores, flags;
+
+  eid = appstate.get('enterprise').id;
+
+  pln = {
+    tables: {
+      'price_list_name' : {
+        columns :  ["id", "name"]
+      }
+    },
+    where : ["enterprise_id="+eid]
+  };
+
+  pl = {
+    tables: {
+      'price_list' : {
+        columns : ["id", "inventory_id", "price", "discount", "note"] 
+      } 
+    },
+    where : []
+  };
+
+  connect.req(pln).then(init);
+
+  models = $scope.models = {};
+  flags = $scope.flags = {};
+  stores = {};
+
+  function init (res) {
+    models.plnames = res.data;
+    stores.plnames = res;
+  }
+
+  // load price list data
+  $scope.load = function (id) {
+    pl.where = ["list_id="+id];
+    connect.req(pl).then(function (res) {
+      models.pl = res.data;
+      stores.pl = res;    
+    });
+  }
+
+  $scope.addList = function () {
+    var id = stores.pl.generateid();
+    var list = {id: id};
+    stores.pl.put(list);
+    // after creating, immediately edit
+    $scope.editList(id);
+  };
+
+  $scope.editList = function (id) {
+     flags.listeditid = id;
+  };
+
+  $scope.blurList = function () {
+    flags.listeditid = false; 
+  };
+
+  $scope.removeItem = function () {
+  
+  };
+
+  $scope.addItem = function () {
+  
+  };
+  
+  $scope.editItem = function (id) {
+    flags.itemeditid = id;
+  };
+
+  $scope.blurItem = function () {
+    flags.itemeditid = false;
+  };
 
 });
 

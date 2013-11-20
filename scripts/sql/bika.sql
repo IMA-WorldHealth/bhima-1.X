@@ -1508,6 +1508,33 @@ insert into `month_total` values
 (101, 195, 2013001, 201300, 760400, 0, 0, 0, 0),
 (101, 196, 2013001, 201300, 760500, 0, 0, 0, 0);
 
+drop table if exists `price_list_name`;
+create table `price_list_name` (
+  enterprise_id   smallint not null,
+  id        smallint not null,
+  name      varchar(100) not null,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+) engine=innodb;
+
+insert into `price_list_name` values
+  (101, 0, 'DEFAULT');
+
+drop table if exists `price_list`;
+create table `price_list` (
+  id              int not null,
+  list_id         smallint not null,
+  inventory_id    int not null,
+  price           decimal(19, 2) not null default 0,
+  discount        decimal(3, 2) not null default 0,
+  note            text, 
+  primary key (`id`),
+  key `inventory_id` (`inventory_id`),
+  constraint foreign key (`inventory_id`) references `inventory` (`id`)
+) engine=innodb;
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
