@@ -556,34 +556,6 @@ INSERT INTO `enterprise` VALUES (1,'Kinshasa','RDC','Kinshasa','DEFAULT','180023
 UNLOCK TABLES;
 
 --
--- Table structure for table `price_list`
---
-
-DROP TABLE IF EXISTS `price_list`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `price_list` (
-  `id` int(10) unsigned NOT NULL,
-  `list_id` mediumint(8) unsigned NOT NULL,
-  `inv_id` int(10) unsigned NOT NULL,
-  `price` decimal(10,2) unsigned NOT NULL,
-  `discount` decimal(2,2) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `inv_id` (`inv_id`),
-  CONSTRAINT `price_list_ibfk_1` FOREIGN KEY (`inv_id`) REFERENCES `inventory` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `price_list`
---
-
-LOCK TABLES `price_list` WRITE;
-/*!40000 ALTER TABLE `price_list` DISABLE KEYS */;
-/*!40000 ALTER TABLE `price_list` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `inv_unit`
 --
 
@@ -1510,8 +1482,8 @@ insert into `month_total` values
 
 drop table if exists `price_list_name`;
 create table `price_list_name` (
-  enterprise_id   smallint not null,
-  id        smallint not null,
+  enterprise_id   smallint unsigned not null,
+  id        smallint  unsigned not null,
   name      varchar(100) not null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
@@ -1523,11 +1495,11 @@ insert into `price_list_name` values
 
 drop table if exists `price_list`;
 create table `price_list` (
-  id              int not null,
-  list_id         smallint not null,
-  inventory_id    int not null,
-  price           decimal(19, 2) not null default 0,
-  discount        decimal(3, 2) not null default 0,
+  id              int unsigned not null,
+  list_id         smallint unsigned not null,
+  inventory_id    int unsigned not null,
+  price           decimal(19, 2) unsigned not null default 0,
+  discount        decimal(3, 2) unsigned not null default 0,
   note            text, 
   primary key (`id`),
   key `inventory_id` (`inventory_id`),
@@ -1544,4 +1516,3 @@ create table `price_list` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2013-11-19  0:29:56
-
