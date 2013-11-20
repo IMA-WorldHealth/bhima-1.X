@@ -1,0 +1,82 @@
+<header class="kpk-header">
+  <h2>Price Lists</h2>
+</header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-2">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          Current Price Lists
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr><th>Lists</th></tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="list in models.plnames" ng-click="load(list.id)">
+              <td ng-dblclick="editList(list.id)" ng-hide="listeditid==list.id">{{list.name}}</td>
+              <!-- editing template -->
+              <td ng-show="listeditid==list.id">
+                <input type="text" ng-model="list.name" ng-blur="blurList()" class="form-control" autofocus>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="panel-footer">
+          <button class="btn btn-default" ng-click="addList()"><i class="glyphicon glyphicon-plus"></i> New</button>
+        </div>
+      </div>
+
+      <div class="btn-group-vertical">
+        <button class="btn btn-default" ng-click="addItem()" ng-disabled="!models.pl"><i class="glyphicon glyphicon-plus"></i> Add Item</button>
+        <button class="btn btn-default" ng-click="removeItem()" ng-disabled="!selected"><i class="glyphicon glyphicon-minus"></i> Remove Item</button>
+      </div>
+    </div>
+
+    <div class="col-xs-10" style="max-height: 600px; overflow: auto;">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          Price List Details
+        </div>
+        <div class="panel-body">
+          <table ng-hide="!models.pl" class="table table-striped" >
+            <thead>
+              <tr>
+                <th>Inventory ID</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Note</th>
+                <th>Edit</th>
+              </tr>
+            </thead>
+            <tbody ng-blur="blurItem()">
+              <tr ng-repeat="item in models.pl" ng-click="selectItem(item.id)">
+                <td ng-hide="item.id==itemeditid">{{label(item.inv_id)}}</td>
+                <td ng-show="item.id==itemeditid">
+                  <select ng-model="item.inv_id" ng-options="inv.id as inv.text for inv in models.inv" class="form-control"></select>
+                </td>
+
+                <td ng-hide="item.id==itemeditid" >{{item.price}}</td>
+                <td ng-show="item.id==itemeditid">
+                  <input type="number" ng-model="item.price" class="form-control">
+                </td>
+
+                <td ng-hide="item.id==itemeditid" >{{item.discount}}</td>
+                <td ng-show="item.id==itemeditid">
+                  <input type="number" ng-model="item.discount" class="form-control"> 
+                </td>
+
+                <td ng-hide="item.id==itemeditid">{{item.note}}</td>
+                <td ng-show="item.id==itemeditid">
+                  <input type="text" ng-model="item.note" class="form-control">
+                </td>
+                <td ng-click="editItem(item.id)"><a href="" class="btn btn-default"><i class="glyphicon glyphicon-pencil"></a></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
