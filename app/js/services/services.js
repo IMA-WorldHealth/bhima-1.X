@@ -416,6 +416,14 @@
     var comp = {};
     var queue = {};
 
+    function init() {
+      // summary
+      // FIXME set required variables manually - this is a temporary hack until fiscal/enterprise select decisions have been made
+      console.log("Init called");
+      set("enterprise", {id: 101, name: 'IMA', cash_account: 570000});
+      set("fiscal", {id: 2013001, fiscal_year_txt: '[Company 101] Year 1'});
+    }
+
     function set(comp_id, ref) { 
       //summary: 
       //  Assign id reference to value
@@ -451,6 +459,8 @@
         });
       }
     }
+
+    init();
 
     return instance;
   });
@@ -547,8 +557,8 @@
       this.put = function (object, opts) {
         var data = this.data,
             index = this.index,
-            id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identfier] : false;
-      
+            id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
+
         if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;  
 
         // merge or overwrite
@@ -581,7 +591,8 @@
             index = this.index;
         
         if (id in index) {
-          data.split(index[id], 1);
+          console.log("Trying to split on ",data);
+          data.splice(index[id], 1);
           this.setData(data);
           queue.push({method: 'DELETE', url: tgt + target + '/' + id});
         }
