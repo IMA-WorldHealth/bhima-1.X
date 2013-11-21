@@ -545,11 +545,6 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   });*/
 });
 
-
-controllers.controller('appController', function($scope) { 
-    // TODO/FIXME
-});
-
 //*************************************************************************
 //********************* ADD CONTROLLER ************************************
 //*************************************************************************
@@ -676,12 +671,15 @@ controllers.controller('appController', function($scope, $location, appcache) {
     console.log("Application controller fired");
 
     var url = $location.url();
-    
+
+
+    console.log("url", url);
+
     //Assuming initial page load
     if (url === '') {
       //only navigate to cached page if no page was requested
-      appcache.getNav().then(function(res) { 
-        if(res) { 
+      appcache.getNav().then(function(res) {
+        if(res) {
           $location.path(res);
         }
       });
@@ -690,8 +688,8 @@ controllers.controller('appController', function($scope, $location, appcache) {
     //Log URL changes and cache locations - for @jniles
     $scope.$on('$locationChangeStart', function(e, n_url) { 
       //Split url target - needs to be more general to allow for multiple routes?
-      var target = n_url.split('/#/')[1];
-      appcache.cacheNav(target);
+      var target = n_url.split('/#')[1];
+      if(target) appcache.cacheNav(target);
     });
 });
 
@@ -1086,7 +1084,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $scope.selected = {};
 
-      connect.req({'tables' : {'purchase' : {'columns' : ['id', 'cost', 'currency', 'creditor_id', 'discount', 'invoice_date', 'posted']}}})
+      connect.req({'tables' : {'purchase' : {'columns' : ['id', 'cost', 'currency_id', 'creditor_id', 'discount', 'invoice_date', 'posted']}}})
         .then(function(model) {
           deferred.resolve(model);
         });
