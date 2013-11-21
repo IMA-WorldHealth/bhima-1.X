@@ -656,11 +656,9 @@
     //  model : request
     var requests = {};
 
-    //TODO: doesn't support joins or advanced conditions, socket API should solve this
     function req (defn) {
       //summary: 
-      //  Attempt at a more more managable API for modules requesting tables from the server, implementation
-      //  still needs to be finalised, should be deprecated with sockets
+      //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
       //
       //  defn should be an object like
       //  defn =  {
@@ -678,91 +676,136 @@
       //
       //  where conditions can also be specified:
       //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
-      var deferred = $q.defer(),
-          model = {},
-          query = {};
+      var handle, deferred = $q.defer();
 
-      var entities = query.e = [];
-
-      for (var table in defn.tables) {
-        entities.push({t: table, c: defn.tables[table].columns}); 
-      }
-      var hasJoin = !!defn.join,
-          hasWhere = !!defn.where;
-
-      if (hasJoin) {
-        var join = query.jc = [],
-          l = defn.join.length || 1,
-          i = 1;
-          if (hasWhere) {
-            l += 1;
-          }
-        defn.join.forEach(function (str) {
-          var obj = splitJoin(str);
-          if (i < l) {
-            obj.l = "AND";
-            i++; 
-          }
-          join.push(obj); 
-        });
-      }
-
-      function splitJoin (str) {
-        var obj = { ts: [], c: []};
-        str.split('=')                // split on equality
-          .map(function (substr) {
-            return substr.split('.'); // then on the periods
-          })
-          .forEach(function (arr) {
-            obj.ts.push(arr[0]);
-            obj.c.push(arr[1]); 
-          });
-        return obj;
-      }
-
-      if (hasWhere) {
-        var where = query.c = [],
-          l = defn.where.length || 1,
-          i = 1; // HACK HACK HACK 
-
-        defn.where.forEach(function (str) {
-          var obj = splitWhr(str);
-          if (i < l) {
-            obj.l = "AND";
-            i++;
-          }
-          where.push(obj);
-        });
-      }
-
-      function splitWhr (str) {
-        var obj = {t: '', cl: '', z: '', v: ''},
-            splitters =['>=', '<=', '!=', '<>', '=', '<', '>'],
-            arr,
-            cnv;
-        
-        arr   = str.split('.');
-        obj.t = arr[0];
-        cnv   = arr[1];
-        splitters.some(function (sp) { // some halts on return true
-          if (~cnv.indexOf(sp)) {
-            obj.z = sp;
-            var temp = cnv.split(sp);
-            obj.cl = temp[0];
-            obj.v = temp[1];
-            return true; // halt
-          } 
-        });
-        return obj;
-      }
-
-      var handle = $http.get('/data/?' + JSON.stringify(query)).then(function (returned) {
-        var m = packageModel(model, returned.data);
+      handle = $http.get('/temp/?' + JSON.stringify(defn));
+      handle.then(function (returned) {
+        var table = defn.primary || Object.keys(defn.tables)[0];
+        var m = new Model(returned, table);
         requests[m] = defn;
         deferred.resolve(m);
       });
 
       return deferred.promise;
+    }
+
+    function Model (options, target) {
+      // the data store, similar to Dojo's Memory Store.
+      options = options || {};
+
+      // globals
+      this.index = {};
+      this.data = {};
+
+      // locals
+      var queue = [];
+      var identifier = options.identifier || 'id'; // id property
+      var pprint = '[connect] ';
+      var tgt = "/temp/"; // temporary target until we standardize connect.
+      var refreshrate = options.refreshrate || 500;
+
+      // set an array of data
+      this.setData = function (data) {
+        var index, identifier;
+        this.data = data;
+        index = this.index = {};
+
+        for (var i = 0, l = data.length; i < l; i++) {
+          index[data[i][identifier]] = i;
+        }
+      };
+
+      // constructor function
+      var self = this;
+      (function contructor () {
+        for (var k in options) {
+          self[k] = options[k]; 
+        }
+        // set data if it is defined
+        if (options.data) self.setData(options.data);
+        // set up refreshrate
+      })();
+
+      // get an item from the local store
+      this.get = function (id) {
+        return this.data[this.index[id]];
+      };
+
+      // put is for UPDATES 
+      this.put = function (object, opts) {
+        var data = this.data,
+            index = this.index,
+            id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identfier] : false;
+      
+        if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;  
+
+        // merge or overwrite
+        if (opts && opts.overwrite) {
+          data[index[id]] = object; // overwrite
+        } else {
+          var ref = data[index[id]];
+          for (var k in object) {
+            ref[k] = object[k]; // merge
+          }
+        }
+        // enqueue item for sync
+        queue.push({method: 'PUT', url: tgt + target});
+      };
+
+      // post is for INSERTS
+      this.post = function (object, opts) {
+
+        var data = this.data,
+            index = this.index,
+            id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identfier] : Math.random();
+        if (id in index) throw pprint + 'Attempted to overwrite data with id: ' + id + '.';
+        index[id] = data.push(object) - 1;
+        // enqueue item for sync
+        queue.push({method: 'POST', url: tgt + target, data: object});
+      };
+
+      this.remove = function (id) {
+        var data = this.data,
+            index = this.index;
+        
+        if (id in index) {
+          data.split(index[id], 1);
+          this.setData(data);
+          queue.push({method: 'DELETE', url: tgt + target + '/' + id});
+        }
+      };
+
+      this.generateid = function () {
+        // generate a new id by incrimenting the last id
+        // in the store
+        var id = Math.max.apply(Math.max, Object.keys(this.index)) + 1;
+        return (id > 0)  ? id : 1;
+      };
+
+      this.contains = function (id) {
+        // check to see if an object with
+        // this id exists in the store.
+        return !!this.get(id);
+      };
+
+      this.sync = function () {
+        // sync the data from the client to the server
+        var fail = [];
+        queue.forEach(function (req) {
+          console.log(pprint, 'Executing: ', req);
+          $http(req)
+            .success(function () {
+              console.log(req.data.id, "synced successfully."); 
+            }) 
+            .error(function (data, status, headers, config) {
+              alert("An error in data transferred occured with status:", status); 
+              fail.push(req);
+            });
+        });
+        queue = fail;
+      };
+
+      return this;
     }
 
     function journal(invoice_ids) {
@@ -805,75 +848,9 @@
       return $http.put('data/', format_object);
     }
 
-    function packageModel(model, data) {
-
-      model.index = {};
-      model.data = data;
-
-      //determine indexs
-      model.calculateIndex = function () {
-        this.index = {};
-        for (var i = this.data.length - 1; i >= 0; i--) {
-          this.index[this.data[i]["id"]] = i;
-        }
-      };
-
-      //data manipulation
-      model.get = function (id) {
-        return this.data[this.index[id]];
-      };
-
-      model.put = function (object) {
-        var id = object["id"];
-        if (id in this.index) {
-          //TODO: Implement overwrite flag/ behaviour
-          throw new Error("Object overwrite attempted.");
-        } else {
-          //update index and insert object
-          this.index[id] = this.data.push(object) - 1;
-        }
-      };
-
-      model.delete = function (id) {
-        var i = this.index;
-        if (id in i) {
-          this.data.splice(i[id], 1);
-          this.calculateIndex();
-          //Check if changes should be automatically reflected in server etc.
-          connect_delete(this, id);
-          return true;
-        }
-      };
-
-      // generate id
-      model.generateid = function () {
-        var ids, id, idx = this.index;
-        ids = Object.keys(idx);
-        id = Math.max.apply(Math.max, ids) + 1;
-        return (id > 0) ? id : 1;
-      };
-
-      model.flush = function () {
-
-      };
-
-      //initialise index
-      model.calculateIndex();
-      return model;
-    }
-
     //Check we haven't made this query before this session, check we don't have the data stored in local storage
     //-verify version numbers of data if it has been cached (see priority levels etc.)
-    function referenceQuery(query) {
-
-    }
-
-    function connect_delete(model, id) {
-      var meta = requests[model];
-      console.log(meta);
-
-      //create delete query and pass to server with $http
-    }
+    function referenceQuery (query) {}
 
     return {
       req: req,
