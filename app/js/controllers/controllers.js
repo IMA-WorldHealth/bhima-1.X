@@ -2983,8 +2983,40 @@ controllers.controller('priceListController', function ($scope, $q, connect, app
 });
 
 
-controllers.controller('exchangeRate', function ($scope, connect) {
-// TODO
+controllers.controller('exchangeRateController', function ($scope, connect) {
+  var currency, currencies, exchange;
+
+  currency = {
+    tables : {
+      'currency' : {
+        columns: ["id", "name", "symbol", "note", "current_rate", "last_rate", "updated"]
+      }
+    }
+  };
+
+  exchange = $scope.exchange = {};
+  var model;
+  connect.req(currency).then(function (response) {
+    model = $scope.currency = response.data;
+  });
+
+  $scope.changeTo = function (idx) {
+    if (exchange.to) model.push(exchange.to);
+    console.log("idx:", idx);
+  };
+
+  $scope.changeFrom = function (idx) {
+    if (exchange.from) model.push(exchange.from);
+    console.log("idx:", idx);
+  };
+
+  $scope.formatCurrencyList = function (curr) {
+    return [curr.symbol, "|", curr.name].join(' ');
+  };
+
+  $scope.submit = function () {
+    console.log($scope); 
+  };
 
 });
 

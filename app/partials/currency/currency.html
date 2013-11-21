@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="partials/currency/currency.css">
+<div class="container">
+  <div class="panel panel-default" id="exchange">
+    <div class="panel-heading">
+      <h5>Set Today's Exchange Rate:</h5>
+    </div>
+    <div class="panel-body">
+      <form name="exchange" class="form-horizontal">
+        <div class="form-group">
+          <div class="col-xs-5">
+            <select 
+              class="form-control"
+              id="from"
+              name="from"
+              ng-model="exchange.from"
+              ng-options="curr.id as formatCurrencyList(curr) for curr in currency"
+              ng-change="changeFrom()"
+              >
+            </select>
+          </div>
+          <label for="to" class="col-xs-1 control-label">
+            <i class="glyphicon glyphicon-arrow-right"></i>
+          </label>
+          <div class="col-xs-5">
+            <select 
+              class="form-control"
+              id="to"
+              name="to"
+              ng-model="exchange.to"
+              ng-options="curr.id as formatCurrencyList(curr) for curr in currency"
+              ng-change="changeTo($index)"
+              >
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-5 input-group">
+            <input class="form-control" ng-model="exchange.fromValue" min="0" required>
+            <span class="input-group-addon">
+              {{exchange.fromSymbol}}
+            </span>
+          </div>
+          <label for="to" class="col-xs-1 control-label">
+            <i class="glyphicon glyphicon-arrow-right"></i>
+          </label>
+          <div class="col-xs-5 input-group">
+            <input class="form-control" ng-model="exchange.toValue" min="0" required>
+            <span class="input-group-addon">
+              {{exchange.toSymbol}}
+            </span> 
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="panel-footer">
+      <input type="submit" form="exchange" class="btn btn-default" ng-click="submit()">
+      <input type="reset" form="exchange" class="btn btn-default">
+    </div>
+  </div>
+</div>
