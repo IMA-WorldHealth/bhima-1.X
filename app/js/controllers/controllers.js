@@ -545,11 +545,6 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   });*/
 });
 
-
-controllers.controller('appController', function($scope) { 
-    // TODO/FIXME
-});
-
 //*************************************************************************
 //********************* ADD CONTROLLER ************************************
 //*************************************************************************
@@ -1086,7 +1081,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $scope.selected = {};
 
-      connect.req({'tables' : {'purchase' : {'columns' : ['id', 'cost', 'currency', 'creditor_id', 'discount', 'invoice_date', 'posted']}}})
+      connect.req({'tables' : {'purchase' : {'columns' : ['id', 'cost', 'currency_id', 'creditor_id', 'discount', 'invoice_date', 'posted']}}})
         .then(function(model) {
           deferred.resolve(model);
         });
