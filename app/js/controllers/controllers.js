@@ -2922,4 +2922,10 @@ controllers.controller('priceListController', function ($scope, $q, connect, app
 
 });
 
+
+controllers.controller('exchangeRate', function ($scope, connect) {
+// TODO
+
+});
+
 })(angular);
