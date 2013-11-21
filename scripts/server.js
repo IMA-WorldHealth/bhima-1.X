@@ -5,11 +5,11 @@ var express      = require('express')
   , url          = require('url')
   , cfg          = JSON.parse(fs.readFileSync("scripts/config.json"))
   , db           = require('./lib/database/db')(cfg.db)
+  , parser       = require('./lib/database/parser')(db)
   , auth         = require('./lib/auth')(db)
 //  , balance      = require('./lib/logic/balance')(db)
   , um           = require('./lib/util/userManager')
   , jr           = require('./lib/logic/journal')
-  , ws           = require("./lib/ws/ws")(db)
   , app          = express();
 
 app.configure(function () {
@@ -39,7 +39,7 @@ app.get('/data/', function (req, res) {
     var sql = db.select(Qo);
   db.execute(sql, cb);
   } else {
-    var sql = db.delete(Qo.table, Qo.ids); //en attendant une meilleure solution
+    var sql = db.delete(Qo.table, Qo.ids); // en attendant une meilleure solution
     var cbDEL = function (err, ans) {
       if (err) throw err;
       res.send("succes!");
@@ -63,7 +63,6 @@ app.post('/data/', function (req, res) {
     if (err) throw err;
     res.send({status: 200, insertId: ans.insertId});
   };
-  
 
   var insertsql = db.insert(req.body.t, req.body.data);
   db.execute(insertsql, cb);
@@ -112,6 +111,32 @@ app.get('/journal', function(req,res){
   var Qo = queryHandler.getQueryObj(jsRequest);
   var sql = db.select(Qo);
   db.execute(sql, cb);  
+});
+
+// repeat paths but for new connect.req() method
+
+app.get('/temp/', function (req, res, next) {
+  var dec = JSON.parse(decodeURI(url.parse(req.url).query));
+  var sql = parser.select(dec);
+  console.log(['[sql] Executing : ', sql].join(''));
+  db.execute(sql, function (err, rows) {
+    if (err) next(err);
+    res.send(rows); 
+  });
+});
+
+app.post('/temp/:table/', function (req, res, next) {
+  var tmp = {};
+  var sql = parser.post(tmp);
+  console.log(['[sql] Executing : ', sql]);
+});
+
+app.put('/temp/:table/:id', function (req, res, next) {
+  // TODO:
+});
+
+app.delete('/temp/:table/:id', function (req, res, next) {
+  // TODO:
 });
 
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));
