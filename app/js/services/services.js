@@ -579,7 +579,7 @@
 
         var data = this.data,
             index = this.index,
-            id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identfier] : Math.random();
+            id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : Math.random();
         if (id in index) throw pprint + 'Attempted to overwrite data with id: ' + id + '.';
         index[id] = data.push(object) - 1;
         // enqueue item for sync

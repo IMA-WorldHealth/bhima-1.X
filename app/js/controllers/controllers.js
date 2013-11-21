@@ -1645,7 +1645,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       arr.splice(arr.indexOf(report), 1);
       //update fiscal select
       //hard coded bad-ness
-      $scope.fiscal_model.put({id : report.id, fiscal_year_txt : report.desc});
+      $scope.fiscal_model.post({id : report.id, fiscal_year_txt : report.desc});
       $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
     };
 
