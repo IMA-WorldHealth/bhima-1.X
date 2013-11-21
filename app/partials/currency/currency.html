@@ -1,4 +1,17 @@
 <link rel="stylesheet" href="partials/currency/currency.css">
+<header class="kpk-header">
+  <h2>Daily Exchange Rate</h2>
+  <div class="dropdown pull-right">
+    <button type="button" class="btn btn-default dropdown-toggle">
+      <i class="glyphicon glyphicon-th"></i>
+    </button>
+    <ul class="dropdown-menu kpk-menu">
+      <li><a href=""><i class="glyphicon glyphicon-search"></i>Search</a></li>
+      <li><a href=""><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>
+    </ul>
+  </div>
+</header>
+
 <div class="container">
   <div class="panel panel-default" id="exchange">
     <div class="panel-heading">
@@ -12,9 +25,9 @@
               class="form-control"
               id="from"
               name="from"
-              ng-model="exchange.from"
-              ng-options="curr.id as formatCurrencyList(curr) for curr in currency"
-              ng-change="changeFrom()"
+              ng-model="from.currency_id"
+              ng-options="curr.id as label(curr) for curr in currencies"
+              ng-change="updateFrom()"
               >
             </select>
           </div>
@@ -26,9 +39,9 @@
               class="form-control"
               id="to"
               name="to"
-              ng-model="exchange.to"
-              ng-options="curr.id as formatCurrencyList(curr) for curr in currency"
-              ng-change="changeTo($index)"
+              ng-model="to.currency_id"
+              ng-options="curr.id as label(curr) for curr in currencies | filter:filter"
+              ng-change="updateTo()"
               >
             </select>
           </div>
@@ -36,27 +49,25 @@
 
         <div class="form-group">
           <div class="col-xs-5 input-group">
-            <input class="form-control" ng-model="exchange.fromValue" min="0" required>
+            <input class="form-control" min="0" value="1" disabled>
             <span class="input-group-addon">
-              {{exchange.fromSymbol}}
+              {{from.symbol}}
             </span>
           </div>
           <label for="to" class="col-xs-1 control-label">
             <i class="glyphicon glyphicon-arrow-right"></i>
           </label>
           <div class="col-xs-5 input-group">
-            <input class="form-control" ng-model="exchange.toValue" min="0" required>
+            <input class="form-control" ng-model="from.current_rate" min="0" required>
             <span class="input-group-addon">
-              {{exchange.toSymbol}}
+              {{getToSymbol()}}
             </span> 
           </div>
         </div>
-
       </form>
     </div>
     <div class="panel-footer">
-      <input type="submit" form="exchange" class="btn btn-default" ng-click="submit()">
-      <input type="reset" form="exchange" class="btn btn-default">
+      <input type="submit" form="exchange" class="btn btn-default" ng-click="submit()" ng-disabled="valid()">
     </div>
   </div>
 </div>
