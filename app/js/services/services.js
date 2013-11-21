@@ -644,6 +644,63 @@
       return deferred.promise;
     }
 
+    function packageModel(model, data) {
+
+      model.index = {};
+      model.data = data;
+
+      //determine indexs
+      model.calculateIndex = function () {
+        this.index = {};
+        for (var i = this.data.length - 1; i >= 0; i--) {
+          this.index[this.data[i]["id"]] = i;
+        }
+      };
+
+      //data manipulation
+      model.get = function (id) {
+        return this.data[this.index[id]];
+      };
+
+      model.put = function (object) {
+        var id = object["id"];
+        if (id in this.index) {
+          //TODO: Implement overwrite flag/ behaviour
+          throw new Error("Object overwrite attempted.");
+        } else {
+          //update index and insert object
+          this.index[id] = this.data.push(object) - 1;
+        }
+      };
+
+      model.delete = function (id) {
+        var i = this.index;
+        if (id in i) {
+          this.data.splice(i[id], 1);
+          this.calculateIndex();
+          //Check if changes should be automatically reflected in server etc.
+          connect_delete(this, id);
+          return true;
+        }
+      };
+
+      // generate id
+      model.generateid = function () {
+        var ids, id, idx = this.index;
+        ids = Object.keys(idx);
+        id = Math.max.apply(Math.max, ids) + 1;
+        return (id > 0) ? id : 1;
+      };
+
+      model.flush = function () {
+
+      };
+
+      //initialise index
+      model.calculateIndex();
+      return model;
+    }
+
     function basicDelete (table, id) {
       // deletes something from the table `table` where id is `id` 
       $http.delete('/data/'+id+'/'+table);
