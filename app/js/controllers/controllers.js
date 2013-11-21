@@ -2114,9 +2114,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var fields = ["enterprise_id","bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
       var obj = {};
       fields.forEach(function (f) { obj[f] = slip[f]; });
-      stores['cash-currency'].put(obj);
+      //stores['cash-currency'].put(obj);
       connect.basicPut('cash', [obj]);
-      stores['sale-debitor'].delete(slip.invoice_id);
+      stores['sale-debitor'].remove(slip.invoice_id);
       connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
       // FIXME: improve this
       connect.journal([{id:slip.id, transaction_type:1, user:1}]); //a effacer just for the test

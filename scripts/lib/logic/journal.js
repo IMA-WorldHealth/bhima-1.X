@@ -1,6 +1,6 @@
  //at left posting_journal property, at right service property such as sale, cash, purchase_order : map
 var db = require('../database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}})
-  , util = require('../util/util.js');
+  , util = require('../util/util.js'), Q = require('q');
 var map = {
   'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note','fyearID':'fyearID', 'debitAmount':'cost'},
   'sale_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debitAmount':'cost', 'invPoNum':'id'},
@@ -36,11 +36,10 @@ var insert = function(obj,res){
   } 
 }
 
-var saleDebit = function (obj, data, posting, res){
-
+var saleDebit = function (obj, data, posting, res){ 
+  var deffer = Q.defer(); 
   var journalRecord = {};
   var objDebit = map[obj.t+'_debit'];
-
   for(var cle in objDebit){
     journalRecord[cle] = data[objDebit[cle]];
   }
@@ -49,12 +48,12 @@ var saleDebit = function (obj, data, posting, res){
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
   journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
-
-
-  var callback = function (err, ans) {
-        if (err) throw err;
-        opDibitState = true;
-        if(opCreditState) res.send({status: 200, insertId: ans.insertId});
+  var callback = function (err, ans) {    
+    if (err){
+      deffer.resolve({succes :false, info:ans});
+    }else{
+    deffer.resolve({succes:true, info:ans});
+    }    
   }  
   var sql = {
              'entities':[{'t':'debitor', 'c':['group_id']}],
@@ -68,20 +67,22 @@ var saleDebit = function (obj, data, posting, res){
     };
     db.execute(db.select(sql), function(err, data){
       journalRecord.account_id = data[0].account_number;      
-      console.log('journal sale debit' , journalRecord);
       var sql = db.insert('posting_journal', [journalRecord]);
       db.execute(sql, callback); 
     });
   });
+  return deffer.promise;
 }
 
-var saleCredit = function(obj, data, posting, res){
-   
+var saleCredit = function(obj, data, posting, res){ 
+  var deffer = Q.defer();  
   var objCredit = map[obj.t+'_credit'];
-  var callback = function (err, ans) {
-        if (err) throw err;
-        opCreditState = true
-        if(opDibitState) res.send({status: 200, insertId: ans.insertId});
+  var callback = function (err, ans) {    
+    if (err){
+      deffer.resolve({succes :false, info:ans});
+    }else{
+      deffer.resolve({succes:true, info:ans});
+    } 
   }
   data.forEach(function(item){
     var journalRecord = {}; 
@@ -100,18 +101,20 @@ var saleCredit = function(obj, data, posting, res){
       journalRecord.id = '';
       journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
       var sql = db.insert('posting_journal', [journalRecord]); 
-      console.log(sql);     
       db.execute(sql, callback);      
     });
-
   });
+  return deffer.promise;
 }
 
 var cashDebit = function (obj, data, posting, res){
+  var deffer = Q.defer(); 
   var callback = function (err, ans) {
-    if (err) throw err;
-    opDibitState = true;
-    if(opCreditState) res.send({status: 200, insertId: ans.insertId});
+    if (err){
+      deffer.resolve({succes :false, info:ans});
+    }else{
+    deffer.resolve({succes:true, info:ans});
+    } 
   } 
   var journalRecord = {};
   var objDebit = map[obj.t+'_debit'];
@@ -132,13 +135,17 @@ var cashDebit = function (obj, data, posting, res){
     var sql = db.insert('posting_journal', [journalRecord]);
     db.execute(sql, callback); 
   });
+  return deffer.promise;
 }
 
 var cashCredit = function (obj, data, posting, res){
+  var deffer = Q.defer(); 
   var callback = function (err, ans) {
-    if (err) throw err;
-    opCreditState = true;
-    if(opDibitState) res.send({status: 200, insertId: ans.insertId});
+    if (err){
+      deffer.resolve({succes :false, info:ans});
+    }else{
+      deffer.resolve({succes:true, info:ans});
+    } 
   } 
   var journalRecord = {};
   var objCredit = map[obj.t+'_credit'];
@@ -159,14 +166,17 @@ var cashCredit = function (obj, data, posting, res){
     var sql = db.insert('posting_journal', [journalRecord]);
     db.execute(sql, callback); 
   });
+  return deffer.promise;
 }
 
 var purchaseDebit = function(obj, data, posting, res){
+  var deffer = Q.defer(); 
   var objDebit = map[obj.t+'_debit'];
-  var callback = function (err, ans) {
-        if (err) throw err;
-        opDibitState = true;
-        if(opCreditState) res.send({status: 200, insertId: ans.insertId});
+  var callback = function (err, ans) {if (err){
+      deffer.resolve({succes :false, info:ans});
+    }else{
+    deffer.resolve({succes:true, info:ans});
+    } 
   }
   data.forEach(function(item){
     var journalRecord = {}; 
@@ -185,13 +195,14 @@ var purchaseDebit = function(obj, data, posting, res){
       journalRecord.id = '';
       journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
       var sql = db.insert('posting_journal', [journalRecord]); 
-      console.log(sql);     
       db.execute(sql, callback);      
     });
   });
+  return deffer.promise;
 }
 
 var purchaseCredit = function(obj, data, posting, res){
+  var deffer = Q.defer(); 
   var journalRecord = {};
   var objCredit = map[obj.t+'_credit'];
 
@@ -204,9 +215,11 @@ var purchaseCredit = function(obj, data, posting, res){
   journalRecord.id = '';
   journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
   var callback = function (err, ans) {
-        if (err) throw err;
-        opCreditState = true;
-        if(opDibitState) res.send({status: 200, insertId: ans.insertId});
+    if (err){
+      deffer.resolve({succes :false, info:ans});
+    }else{
+    deffer.resolve({succes:true, info:ans});
+    } 
   }  
   var sql = {
              'entities':[{'t':'creditor', 'c':['creditor_group_id']}],
@@ -220,25 +233,33 @@ var purchaseCredit = function(obj, data, posting, res){
     };
     db.execute(db.select(sql), function(err, data){
       journalRecord.account_id = data[0].account_id;      
-      console.log('journal purchase credit' , journalRecord);
       var sql = db.insert('posting_journal', [journalRecord]);
       db.execute(sql, callback); 
     });
   });
+  return deffer.promise;
 }
 
 var process = function(data, posting, res){
   var obj = map[service_name];
   if(service_name == 'sale'){
-    saleDebit(obj, data[0], posting, res);
-    saleCredit(obj, data, posting, res);
-  }else if(service_name == 'cash'){
-    cashDebit(obj, data, posting, res);
-    cashCredit(obj, data, posting, res);
-
+    Q.all([saleDebit(obj, data[0], posting, res), saleCredit(obj, data, posting, res)]).then(function(arr) {    
+      if(arr[0].succes==true && arr[1].succes==true){
+        res.send({status: 200, insertId: arr[1].info.insertId});
+      }
+    });
+  }else if(service_name == 'cash'){ 
+    Q.all([cashDebit(obj, data, posting, res), cashCredit(obj, data, posting, res)]).then(function(arr) {    
+      if(arr[0].succes==true && arr[1].succes==true){
+        res.send({status: 200, insertId: arr[1].info.insertId});
+      }
+    });
   }else if(service_name == 'purchase'){
-    purchaseDebit(obj, data, posting, res);
-    purchaseCredit(obj, data[0], posting, res);
+    Q.all([purchaseDebit(obj, data, posting, res), purchaseCredit(obj, data[0], posting, res)]).then(function(arr) { 
+      if(arr[0].succes==true && arr[1].succes==true){
+        res.send({status: 200, insertId: arr[1].info.insertId});
+      }
+    });
   }
 }
 
@@ -289,7 +310,6 @@ var getData = function(posting, res){
                 };
       db.execute(db.select(sql), function(err, data){
       if(err) throw err;
-      //console.log('data :', data, 'posting :', posting);
       process(data, posting, res); //verification et insertion eventuelle
       });
     }else if(service_name == 'purchase'){
