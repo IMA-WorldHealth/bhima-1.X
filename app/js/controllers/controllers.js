@@ -465,7 +465,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   //  -All operations on models should be local, and then exposed to scope
   //  -Should use connect instead of kpkConnect (soon to be deleted)
   /////
-  $scope.enterprise_model = {};
+  /*$scope.enterprise_model = {};
   $scope.fiscal_model = {};
   $scope.period_model = {};
   $scope.p_select = {};
@@ -475,10 +475,10 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   //FIXME Errors are thrown if no fiscal years are assigned to an enterprise, this should be handled
   //TODO period is used very rarely, probably doesn't need a selection on the application
   resp
-  .then(function(enterprise_id) { 
+  .then(function(enterprise_id) {
     return fillFiscalSelect(enterprise_id);
   })
-  .then(function(fiscal_id) { 
+  .then(function(fiscal_id) {
     fillPeriod(fiscal_id);
   });
 
@@ -525,24 +525,24 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
     return deferred.promise;
   }
     //fin remplissage selects
-    
-  $scope.$watch('e_select', function(nval, oval) { 
+
+  $scope.$watch('e_select', function(nval, oval) {
     if(nval){
       appstate.update('enterprise', nval);
       fillFiscalSelect(nval.id);
     }
   });
 
-  $scope.$watch('f_select', function(nval, oval) { 
+  $scope.$watch('f_select', function(nval, oval) {
     if(nval){
       appstate.update('fiscal', nval);
       fillPeriod(nval.id);
     }
   });
 
-  $scope.$watch('p_select', function(nval, oval) { 
+  $scope.$watch('p_select', function(nval, oval) {
     appstate.update('period', nval);
-  });
+  });*/
 });
 
 
@@ -714,6 +714,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         loadEnterprise(res.id);
         //Reveal to scope for info display
         $scope.enterprise = res;
+        console.log("Appstate returned", res);
       });
 
       //This isn't required - should this be included?
@@ -1039,8 +1040,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
          });
          }*/
         if(selected) request.push(selected.id);
-        //if(selected) request.push({transaction_id:1, service_id:1, user_id:1});
-
+        //if(selected) request.push({transact ion_id:1, service_id:1, user_id:1});
 
         connect.journal(request)
           .then(function(res) {
@@ -1434,7 +1434,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //set the first budget report - this will be populated in updateReport
         var default_fiscal = appstate.get("fiscal") //Risky with validation checks
         budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}})
-        fiscal_model.delete(default_fiscal.id);
+        fiscal_model.remove(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
       })
       .then(function(model) { 
@@ -1636,7 +1636,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.budget_model.reports.push({id : $scope.selected_fiscal.id, desc : $scope.selected_fiscal.fiscal_year_txt, model : {}});
       $scope.select($scope.selected_account.id);
       console.log("cmp", $scope.selected_fiscal);
-      $scope.fiscal_model.delete($scope.selected_fiscal.id);
+      $scope.fiscal_model.remove($scope.selected_fiscal.id);
       $scope.selected_fiscal = $scope.fiscal_model.data[0];
     };
 
@@ -1645,7 +1645,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       arr.splice(arr.indexOf(report), 1);
       //update fiscal select
       //hard coded bad-ness
-      $scope.fiscal_model.put({id : report.id, fiscal_year_txt : report.desc});
+      $scope.fiscal_model.post({id : report.id, fiscal_year_txt : report.desc});
       $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
     };
 
@@ -2160,68 +2160,130 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $q, kpkConnect, kpkUtilitaire){
-  var postingListe={};
-  $scope.infosJournal = [];  
-   var e = [{t : 'posting_journal', c : ['id','description', 'date', 'posted', 'sale_id']},
-            {t:'sale', c:['currency', 'cost', 'discount', 'invoice_date', 'note']},
-            /*{t:'employee', c:['name']},*/
-            {t:'user', c:['first']},
-            {t:'enterprise', c:['type']},
-            {t:'debitor', c:['text']}
-           ],
-       jc = [{ts:['posting_journal', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
-             {ts: ['posting_journal', 'user'], c:['user_id', 'id'], l:'AND'},
-             {ts: ['posting_journal', 'sale'], c:['sale_id', 'id'], l:'AND'},
-             {ts: ['sale', 'enterprise'], c:['enterprise_id', 'id'], l:'AND'},
-             {ts: ['sale', 'debitor'], c:['debitor_id', 'id']}/*,
-             {ts: ['sale', 'user'], c:['seller_id', 'id']}*/
-            ], req_db = {};
-   req_db.e = e;
-   req_db.jc = jc;
-   /*kpkConnect.get('/journal?', req_db).then(function(data){
-    $scope.infosJournal=data;
-    for(var i = 0; i<data.length; i++){
-     $scope.infosJournal[i].posted = ($scope.infosJournal[i].posted == 1)?true:false;
-     $scope.infosJournal[i].date = kpkUtilitaire.formatDate($scope.infosJournal[i].date);
-     $scope.infosJournal[i].invoice_date = kpkUtilitaire.formatDate($scope.infosJournal[i].invoice_date);
-    }
-  });*/
+controllers.controller('journalController', function($scope, $timeout, $q, connect){
 
-   $scope.tryChecking = function(index){
-    var res = isCheckingValide(index);
-    res.then(function(response){
-      if(!response){
-        $scope.infosJournal[index].posted = true;
-      }else{
-        postingListe[index] = $scope.infosJournal[index].posted;
-      }
-    });
-   }
+  $scope.model = {};
+  $scope.model['journal'] = {'data' : []};
 
-   function isCheckingValide(index){
-    var def = $q.defer();
-    var req_db = {};
-    req_db.e = [{t:'posting_journal', c:['posted']}];
-    req_db.c = [{t:'posting_journal', cl:'id', z:'=', v:$scope.infosJournal[index].id}];
-    kpkConnect.get('/data/?', req_db).then(function(data){
-      (data[0].posted == 1)?def.resolve(false):def.resolve(true);
-    });
-    return def.promise;
-   }
-
-   $scope.poster = function(){
-    var tabJournalID = [];
-    for(var cle in postingListe){      
-      if(postingListe[cle]){
-        tabJournalID.push($scope.infosJournal[cle].id);
+//  Request
+  var journal_request = {
+    'tables' : {
+      'posting_journal' : {
+        'columns' : ["id", "transID", "transDate", "docNum", "description", "account_id", "debitAmount", "creditAmount", "currency_id", "arapAccount", "arapType", "invPoNum", "debitEquiv", "creditEquiv"]
       }
     }
-    console.log(tabJournalID);
+  }
 
-    kpkConnect.sendTo('/gl', 'gl',tabJournalID);
+//  grid options
+  var grid;
+  var dataview;
+  var columns = [
+    {id: 'transID', name: 'ID', field: 'transID', sortable: true},
+    {id: 'transDate', name: 'Date', field: 'transDate'},
+    {id: 'docNum', name: 'Doc No.', field: 'docNum'},
+    {id: 'description', name: 'Description', field: 'description'},
+    {id: 'account_id', name: 'Account ID', field: 'account_id'},
+    {id: 'debitAmount', name: 'Debit', field: 'debitAmount', groupTotalsFormatter: totalFormat},
+    {id: 'creditAmount', name: 'Credit', field: 'creditAmount', groupTotalsFormatter: totalFormat},
+    {id: 'arapAccount', name: 'AR/AP Account', field: 'arapAccount'},
+    {id: 'arapType', name: 'AR/AP Type', field: 'arapType'},
+    {id: 'invPoNum', name: 'Inv/PO Number', field: 'invPoNum'}
+  ];
+  var options = {
+    enableCellNavigation: true,
+    enableColumnReorder: true,
+    forceFitColumns: true,
+    rowHeight: 35
+  };
 
-   }
+  function init() {
+
+    connect.req(journal_request).then(function(res) {
+      $scope.model['journal'] = res;
+
+      var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+      dataview = new Slick.Data.DataView({
+        groupItemMetadataProvider: groupItemMetadataProvider,
+        inlineFilter: true
+      });
+      grid = new Slick.Grid('#journal_grid', dataview, columns, options);
+
+      grid.registerPlugin(groupItemMetadataProvider);
+//      Cell selection
+//      grid.setSelectionModel(new Slick.CellSelectionModel());
+
+      dataview.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render();
+      });
+
+      dataview.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidateRows(args.rows);
+        grid.render();
+      });
+
+//      Set for context menu column selection
+//      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
+      dataview.beginUpdate();
+      dataview.setItems($scope.model['journal'].data);
+//      $scope.groupByID()
+      dataview.endUpdate();
+      console.log("d", dataview);
+      console.log("d.g", dataview.getItems());
+
+    })
+
+  }
+
+  $scope.groupByID = function groupByID() {
+    dataview.setGrouping({
+      getter: "transID",
+      formatter: function (g) {
+        return "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
+      },
+      aggregators: [
+        new Slick.Data.Aggregators.Sum("debitAmount"),
+        new Slick.Data.Aggregators.Sum("creditAmount")
+      ],
+      aggregateCollapsed: false
+    });
+  }
+
+  $scope.groupByAccount = function groupByAccount() {
+    dataview.setGrouping({
+      getter: "account_id",
+      formatter: function(g) {
+        return "<span style='font-weight: bold'>" + g.value + "</span>"
+      },
+      aggregators: [
+        new Slick.Data.Aggregators.Sum("debitAmount"),
+        new Slick.Data.Aggregators.Sum("creditAmount")
+      ],
+      aggregateCollapsed: false
+    });
+  }
+
+  $scope.removeGroup = function removeGroup() {
+    dataview.setGrouping({});
+  }
+
+  function totalFormat(totals, column) {
+
+    var format = {};
+    format['Credit'] = '#02BD02';
+    format['Debit'] = '#F70303';
+
+    var val = totals.sum && totals.sum[column.field];
+    if (val != null) {
+      return "<span style='font-weight: bold; color:" + format[column.name] + "'>" + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
+    }
+    return "";
+  }
+
+  //good lawd hacks
+  //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
+//  $timeout(init, 100);
+  init();
 });
 //***************************************************************************************
 //***************************** CREDITORS CONTROLLER ************************************

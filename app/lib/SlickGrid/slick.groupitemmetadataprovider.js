@@ -48,7 +48,13 @@
 
       var indentation = item.level * 15 + "px";
 
-      return "<span class='" + options.toggleCssClass + " " +
+      // sfount
+      // support for bootstrap 3 icons
+      var toggleGlyphicon = {};
+      toggleGlyphicon[0] = "glyphicon glyphicon-collapse-up";
+      toggleGlyphicon[1] = "glyphicon glyphicon-collapse-down";
+
+      return "<span class='" + toggleGlyphicon[item.collapsed] + " " + options.toggleCssClass + " " +
           (item.collapsed ? options.toggleCollapsedCssClass : options.toggleExpandedCssClass) +
           "' style='margin-left:" + indentation +"'>" +
           "</span>" +

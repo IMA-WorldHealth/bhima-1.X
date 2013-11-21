@@ -1,12 +1,12 @@
-<link rel="stylesheet" type="text/css" href="../../../css/journal.css"/>
+<link rel="stylesheet" type="text/css" href="css/journal.css"/>
 <div class="container">
-	<div class="row">
-		<div class="col-xs-12">
-			<div class="bika-header">
-				<h1>Posting Journal</h1>
-			</div>
-		</div>
-	</div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="bika-header">
+        <h1>Posting Journal</h1>
+      </div>
+    </div>
+  </div>
 
   <div class="row">
     <!--There's a better way of doing this somewhere out there-->
@@ -16,7 +16,8 @@
           <div class="col-xs-12">
             <!--FIXME btn group is a big hack - should be done with col-->
             <div class="col-xs-4 hack-left">
-              <input type="text" ng-model="journal_filter.filter" class="form-kapok" placeholder="Filter Journal">
+              <button ng-click="groupByID()" class="btn btn-default"><span class="glyphicon glyphicon-sort-by-attributes"></span> Transaction</button>
+              <button ng-click="groupByAccount()" class="btn btn-default"><span class="glyphicon glyphicon-sort-by-attributes"></span> Account</button>
             </div>
             <div class="pull-right">
               <a class="btn btn-default"><span class="glyphicon glyphicon-stats"></span> Trial Balance</a>
@@ -29,61 +30,13 @@
     </div>
   </div>
 
-	<div class="row">
-		<div class="col-xs-12">
-			<div class = "journal-table">
-				<table class="table table-bordered table-condensed">
-					<thead>
-						<td>Date</td>
-						<td>ID</td>
-						<td>Num Facture</td>
-						<td>Description</td>
-						<td>Monnaie</td>
-						<td>Cout</td>
-						<td>Decompte</td>
-						<td>Date Facturation</td>
-						<td>Ecrit par</td>
-						<td>Poster</td>
-					</thead>
-					<tbody>
-						<tr ng-repeat="infoJournal in infosJournal">
-							<td>
-								{{infoJournal.date}}
-							</td>
-							<td>
-								{{infoJournal.id}}
-							</td>
-							<td>
-								{{infoJournal.sale_id}}
-							</td>
-							<td>
-								{{infoJournal.description}}
-							</td>
-							<td>
-								{{infoJournal.currency}}
-							</td>
-							<td>
-								{{infoJournal.cost}}
-							</td>
-							<td>
-								{{infoJournal.discount}}
-							</td>
-							<td>
-								{{infoJournal.invoice_date}}
-							</td>
-							<td>
-								{{infoJournal.first}}
-							</td>
-							<td>
-								<label><input type="checkbox" ng-model="infoJournal.posted" ng-click="tryChecking($index)"/></label>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div id="journal_grid" class="grid" style="height: 600px; max-height: 600px; overflow: hidden; outline: 0px; position: relative;"><!--Content populated with controller--></div>
     </div>
-		  <div class="row">
+  </div>
+
+  <div class="row">
     <!--There's a better way of doing this somewhere out there-->
     <div class="col-xs-12">
       <div class="util-bottom">
@@ -91,7 +44,9 @@
           <div class="col-xs-12">
 
             <div class="pull-right">
-            	<button class="btn btn-default" ng-click="poster()"><span class="glyphicon glyphicon-floppy-open"></span> General Ledger</button>
+              <button class="btn btn-default" ng-click="poster()"><span class="glyphicon glyphicon-floppy-open"></span>
+                General Ledger
+              </button>
 
             </div>
           </div>
@@ -100,5 +55,4 @@
     </div>
   </div>
 
-	</div>
-	
+</div>

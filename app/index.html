@@ -4,10 +4,15 @@
   <meta charset="utf-8"/>
   <title>kpk /angularproto/</title>
   <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="css/font.css"/>
   <link rel="stylesheet" href="css/bootstrap/bootstrap.css"/>
   <link rel="stylesheet" href="css/tree.css"/>
   <link rel="stylesheet" href="css/modal_fix.css">
-  <link rel="stylesheet" href="css/grid/slick.grid.css">
+
+  <!--Slick grid application styles-->
+  <link href="css/grid/slick.grid.css" rel="stylesheet" type="text/css">
+  <link href="css/kpk.slickgrid.css" rel="stylesheet" type="text/css">
+
 </head>
 <body ng-app="kpk">
 <!--not required in placeholder rewrite-->
@@ -27,24 +32,25 @@
            data-node-label="label" data-node-children="children"></div>
     </div>
 
-    <div class="row" id="kpk-util" ng-controller="utilController">
-      <!--FIXME decide buttons and features that need to sit here-->
-      <div hidden id="kpk-app-select">
-        <select class="form-control" ng-model="e_select"
-                ng-options="enterprise.name for enterprise in enterprise_model">
-        </select>
-        <select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">
-        </select>
-        <select class="form-control" ng-model="p_select"
-                ng-options="'Du '+period.period_start+' A '+period.period_stop for period in period_model"
-                ng-click="select($index)">
-        </select>
-      </div>
+    <div class="row" id="kpk-util">
+      <!--TODO Might not be needed (set in settings) decided on this-->
+
+      <!--<div id="kpk-app-select">-->
+        <!--<select class="form-control" ng-model="e_select"-->
+                <!--ng-options="enterprise.name for enterprise in enterprise_model">-->
+        <!--</select>-->
+        <!--<select class="form-control" ng-model="f_select" ng-options="year.fiscal_year_txt for year in fiscal_model">-->
+        <!--</select>-->
+        <!--<select class="form-control" ng-model="p_select"-->
+                <!--ng-options="'Du '+period.period_start+' A '+period.period_stop for period in period_model"-->
+                <!--ng-click="select($index)">-->
+        <!--</select>-->
+      <!--</div>-->
       <div class="btn-group-justified"><!--class="btn-group"-->
-        <a type="button" class="btn btn-default">
-          <span class="glyphicon glyphicon-user"></span>
-        </a>
-        <a type="button" class="btn btn-default">
+        <!--<a type="button" class="btn btn-default">-->
+          <!--<span class="glyphicon glyphicon-user"></span>-->
+        <!--</a>-->
+        <a href="/#/settings" type="button" class="btn btn-default">
           <span class="glyphicon glyphicon-cog"></span>
         </a>
         <a type="button" class="btn btn-default" href="/logout">
@@ -74,20 +80,47 @@
 </div>
 
 
-  <script src="lib/jquery-1.10.2.js"></script>
-  <!-- scripts loaded in body to prevent page form 'hanging'-->
-  <script src="lib/angular/angular.min.js"></script>
-  <script src="lib/jquery-ui-1.10.3.custom.js"></script>
-  <script src="lib/jquery.event.drag-2.2.js"></script>
-  <script src="lib/SlickGrid/slick.core.js"></script>
-  <script src="lib/SlickGrid/slick.dataview.js"></script>
-  <script src="lib/SlickGrid/slick.grid.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/services/services.js"></script>
-  <script src="js/filters/filters.js"></script>
-  <script src="js/controllers/controllers.js"></script>
-  <script src="js/directives/directives.js"></script>
-  <script src="js/directives/angular.treeview.js"></script>
-  <script src="lib/ui-bootstrap-custom-tpls-0.6.0.js"></script>
+<!-- scripts loaded in body to prevent page form 'hanging'-->
+
+<!--jquery-->
+<script src="lib/jquery-1.10.2.js"></script>
+<script src="lib/jquery.event.drag-2.2.js"></script>
+
+<!--jquery-ui (required modules)-->
+<script src="lib/jquery-ui/jquery.ui.core.js"></script>
+<script src="lib/jquery-ui/jquery.ui.widget.js"></script>
+<script src="lib/jquery-ui/jquery.ui.mouse.js"></script>
+<script src="lib/jquery-ui/jquery.ui.resizable.js"></script>
+<script src="lib/jquery-ui/jquery.ui.sortable.js"></script>
+
+
+<!--slickgrid (required modules)-->
+<script src="lib/SlickGrid/slick.core.js"></script>
+<script src="lib/SlickGrid/slick.grid.js"></script>
+<!--<script src="lib/SlickGrid/cutom.slickgrid.js" type="text/javascript"></script>-->
+<script src="lib/SlickGrid/slick.dataview.js"></script>
+
+<!--slickgrid plugins-->
+<script src="lib/SlickGrid/slick.formatters.js"></script>
+<script src="lib/SlickGrid/slick.groupitemmetadataprovider.js"></script>
+
+<script src="lib/SlickGrid/plugins/slick.cellselectionmodel.js"></script>
+<script src="lib/SlickGrid/plugins/slick.cellrangedecorator.js"></script>
+<script src="lib/SlickGrid/plugins/slick.cellrangeselector.js"></script>
+<script src="lib/SlickGrid/controls/slick.columnpicker.js"></script>
+
+<!--angular-->
+<script src="lib/angular/angular.min.js"></script>
+
+<!--kapok-->
+<script src="js/app.js"></script>
+<script src="js/services/services.js"></script>
+<script src="js/filters/filters.js"></script>
+<script src="js/controllers/controllers.js"></script>
+<script src="js/directives/directives.js"></script>
+
+<!--lib-->
+<script src="js/directives/angular.treeview.js"></script>
+<script src="lib/ui-bootstrap-custom-tpls-0.6.0.js"></script>
 </body>
 </html>
