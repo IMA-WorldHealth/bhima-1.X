@@ -465,7 +465,7 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   //  -All operations on models should be local, and then exposed to scope
   //  -Should use connect instead of kpkConnect (soon to be deleted)
   /////
-  $scope.enterprise_model = {};
+  /*$scope.enterprise_model = {};
   $scope.fiscal_model = {};
   $scope.period_model = {};
   $scope.p_select = {};
@@ -475,10 +475,10 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   //FIXME Errors are thrown if no fiscal years are assigned to an enterprise, this should be handled
   //TODO period is used very rarely, probably doesn't need a selection on the application
   resp
-  .then(function(enterprise_id) { 
+  .then(function(enterprise_id) {
     return fillFiscalSelect(enterprise_id);
   })
-  .then(function(fiscal_id) { 
+  .then(function(fiscal_id) {
     fillPeriod(fiscal_id);
   });
 
@@ -525,24 +525,24 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
     return deferred.promise;
   }
     //fin remplissage selects
-    
-  $scope.$watch('e_select', function(nval, oval) { 
+
+  $scope.$watch('e_select', function(nval, oval) {
     if(nval){
       appstate.update('enterprise', nval);
       fillFiscalSelect(nval.id);
     }
   });
 
-  $scope.$watch('f_select', function(nval, oval) { 
+  $scope.$watch('f_select', function(nval, oval) {
     if(nval){
       appstate.update('fiscal', nval);
       fillPeriod(nval.id);
     }
   });
 
-  $scope.$watch('p_select', function(nval, oval) { 
+  $scope.$watch('p_select', function(nval, oval) {
     appstate.update('period', nval);
-  });
+  });*/
 });
 
 
@@ -714,6 +714,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         loadEnterprise(res.id);
         //Reveal to scope for info display
         $scope.enterprise = res;
+        console.log("Appstate returned", res);
       });
 
       //This isn't required - should this be included?
@@ -1433,7 +1434,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //set the first budget report - this will be populated in updateReport
         var default_fiscal = appstate.get("fiscal") //Risky with validation checks
         budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}})
-        fiscal_model.delete(default_fiscal.id);
+        fiscal_model.remove(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
       })
       .then(function(model) { 
@@ -1635,7 +1636,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $scope.budget_model.reports.push({id : $scope.selected_fiscal.id, desc : $scope.selected_fiscal.fiscal_year_txt, model : {}});
       $scope.select($scope.selected_account.id);
       console.log("cmp", $scope.selected_fiscal);
-      $scope.fiscal_model.delete($scope.selected_fiscal.id);
+      $scope.fiscal_model.remove($scope.selected_fiscal.id);
       $scope.selected_fiscal = $scope.fiscal_model.data[0];
     };
 
