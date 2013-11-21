@@ -671,12 +671,15 @@ controllers.controller('appController', function($scope, $location, appcache) {
     console.log("Application controller fired");
 
     var url = $location.url();
-    
+
+
+    console.log("url", url);
+
     //Assuming initial page load
     if (url === '') {
       //only navigate to cached page if no page was requested
-      appcache.getNav().then(function(res) { 
-        if(res) { 
+      appcache.getNav().then(function(res) {
+        if(res) {
           $location.path(res);
         }
       });
@@ -685,8 +688,8 @@ controllers.controller('appController', function($scope, $location, appcache) {
     //Log URL changes and cache locations - for @jniles
     $scope.$on('$locationChangeStart', function(e, n_url) { 
       //Split url target - needs to be more general to allow for multiple routes?
-      var target = n_url.split('/#/')[1];
-      appcache.cacheNav(target);
+      var target = n_url.split('/#')[1];
+      if(target) appcache.cacheNav(target);
     });
 });
 
