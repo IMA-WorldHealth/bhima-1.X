@@ -1985,9 +1985,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         currency_defn, 
         eid = appstate.get('enterprise').id;
 
-    enterprise_defn= {
+    enterprise_defn = {
       tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
-      where: ["enterprise.id="+eid] 
+      where: ["enterprise.id=" + eid] 
     };
     
     sale_debitor_defn = {
@@ -2004,7 +2004,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         }
       },
       join: ["sale.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"],
-      where: ["sale.enterprise_id=101", "sale.paid=0"]
+      where: ["sale.enterprise_id=101", "AND", "sale.paid=0"]
     };
 
     cash_currency_defn = {
@@ -2066,7 +2066,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip.cashbox_id = 1;
 
       // default debit account is cash box
-      slip.debit_account = stores.enterprise.get(101).cash_account;
+      slip.debit_account = stores.enterprise.get(eid).cash_account;
 
       // default date is today
       slip.date = $filter('date')(new Date(), 'yyyy-MM-dd');
