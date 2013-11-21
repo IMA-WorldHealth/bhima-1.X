@@ -2175,14 +2175,15 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
 //  grid options
   var grid;
   var dataview;
+  var sort_column = "transID";
   var columns = [
     {id: 'transID', name: 'ID', field: 'transID', sortable: true},
     {id: 'transDate', name: 'Date', field: 'transDate'},
     {id: 'docNum', name: 'Doc No.', field: 'docNum'},
     {id: 'description', name: 'Description', field: 'description'},
-    {id: 'account_id', name: 'Account ID', field: 'account_id'},
-    {id: 'debitAmount', name: 'Debit', field: 'debitAmount', groupTotalsFormatter: totalFormat},
-    {id: 'creditAmount', name: 'Credit', field: 'creditAmount', groupTotalsFormatter: totalFormat},
+    {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
+    {id: 'debitAmount', name: 'Debit', field: 'debitAmount', groupTotalsFormatter: totalFormat, sortable: true},
+    {id: 'creditAmount', name: 'Credit', field: 'creditAmount', groupTotalsFormatter: totalFormat, sortable: true},
     {id: 'arapAccount', name: 'AR/AP Account', field: 'arapAccount'},
     {id: 'arapType', name: 'AR/AP Type', field: 'arapType'},
     {id: 'invPoNum', name: 'Inv/PO Number', field: 'invPoNum'}
@@ -2210,6 +2211,11 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
 //      Cell selection
 //      grid.setSelectionModel(new Slick.CellSelectionModel());
 
+      grid.onSort.subscribe(function(e, args) {
+        sort_column = args.sortCol.field;
+        dataview.sort(compareSort, args.sortAsc);
+      })
+
       dataview.onRowCountChanged.subscribe(function (e, args) {
         grid.updateRowCount();
         grid.render();
@@ -2220,8 +2226,11 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
         grid.render();
       });
 
+
+
 //      Set for context menu column selection
 //      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
+
       dataview.beginUpdate();
       dataview.setItems($scope.model['journal'].data);
 //      $scope.groupByID()
@@ -2263,6 +2272,11 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
 
   $scope.removeGroup = function removeGroup() {
     dataview.setGrouping({});
+  }
+
+  function compareSort(a, b) {
+    var x = a[sort_column], y = b[sort_column];
+    return (x == y) ? 0 : (x > y ? 1 : -1);
   }
 
   function totalFormat(totals, column) {
