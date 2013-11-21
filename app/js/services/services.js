@@ -130,7 +130,7 @@
     }
   });
 
-  services.factory('appcache', function($q) { 
+  services.factory('appcache', function($q, $rootScope) {
     /////
     // summary: 
     //  Used to interface with indexedDB store, providing methods to read and write to local storage
@@ -163,14 +163,18 @@
       //FIXME: Redo this function/ queue system
       var deferred = $q.defer();
 
-      if(!db) { 
+      if(!db) {
+        console.log("Adding fetch to queue");
         queue.push(fetch);
       } else { 
         fetch();
       }
 
-      function fetch() { 
-        getByIndex("cache_nav").then(function(res) { 
+
+      function fetch() {
+        console.log("fetch called");
+        getByIndex("cache_nav").then(function(res) {
+          console.log("getByIndex returned", res);
           if(res) { 
             deferred.resolve(res.value);
           } else { 
@@ -330,10 +334,9 @@
       
       var req = index.get(key);
 
-      req.onsuccess = function(e) { 
-        console.log("[appcache] Read success", e);
-        console.log("[appcache] Result", e.target.result);
-        deferred.resolve(e.target.result);
+      req.onsuccess = function(e) {
+//        temporary wrap in $apply, resolve was not being received
+        $rootScope.$apply(deferred.resolve(e.target.result));
       }
 
       req.onerror = function(e) { 
