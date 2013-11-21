@@ -2158,7 +2158,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $timeout, $q, connect){
+controllers.controller('journalController', function($scope, $timeout, $q, $modal, connect){
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
@@ -2186,7 +2186,8 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
     {id: 'creditAmount', name: 'Credit', field: 'creditAmount', groupTotalsFormatter: totalFormat, sortable: true},
     {id: 'arapAccount', name: 'AR/AP Account', field: 'arapAccount'},
     {id: 'arapType', name: 'AR/AP Type', field: 'arapType'},
-    {id: 'invPoNum', name: 'Inv/PO Number', field: 'invPoNum'}
+    {id: 'invPoNum', name: 'Inv/PO Number', field: 'invPoNum'},
+    {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
   var options = {
     enableCellNavigation: true,
@@ -2279,6 +2280,10 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
     return (x == y) ? 0 : (x > y ? 1 : -1);
   }
 
+  function formatBtn() {
+    return "<a ng-click='splitTransaction()'><span class='glyphicon glyphicon-th-list'></span></a>";
+  }
+
   function totalFormat(totals, column) {
 
     var format = {};
@@ -2292,9 +2297,26 @@ controllers.controller('journalController', function($scope, $timeout, $q, conne
     return "";
   }
 
+  $scope.splitTransaction = function splitTransaction() {
+    console.log("func is called");
+    var instance = $modal.open({
+      templateUrl: "split.html",
+      controller: function ($scope, $modalInstance) { //groupStore, accountModel
+        console.log("Group module initialised");
+
+      },
+      resolve: {
+        //groupStore: function () { return stores.inv_group; },
+        //accountModel: function () { return $scope.models.account; }
+      }
+    });
+  }
+
   //good lawd hacks
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
 //  $timeout(init, 100);
+
+
   init();
 });
 //***************************************************************************************
