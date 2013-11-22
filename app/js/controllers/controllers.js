@@ -15,6 +15,11 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
       element.label = role.name;
       element.id = role.id;
       element.children = [];
+
+//      Set default element state
+      element.collapsed = true;
+      console.log(appcache.checkDB());
+
       for(var i = 0; i<units.length; i++){
         element.children.push({"label":units[i].name, "id":units[i].id, "p_url":units[i].p_url, "children":[]});
       }

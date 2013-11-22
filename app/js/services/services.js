@@ -153,10 +153,15 @@
     var instance = { 
       add: add,
       getNav: getNav,
-      cacheNav: cacheNav
+      cacheNav: cacheNav,
+      checkDB: checkDB
     };
 
     var queue = [];
+
+    function checkDB() {
+      return db;
+    }
 
     //Methods for storing navigation data - FIXME: Should service be more abstract than this?
     function getNav() { 
@@ -168,6 +173,30 @@
         queue.push(fetch);
       } else { 
         fetch();
+      }
+
+      function treeAttribute(name, value) {
+        //FIXME
+        //Encapsulate this in a method - checking and creating partition if !exist
+        //Add all required caches on database creation - then this check is essentially redundant
+        //Add entry for each attribute vs. storing in one big object
+        var promise = getByIndex("cache_tree");
+        //literally gross code - it's late
+        promise
+          .then(function(res) {
+            if(!res) {
+            add({"ref": "cache_tree", elements: {}})
+              .then(function(con) {
+                setAttr();
+              });
+            } else {
+              setAttr();
+            }
+          })
+
+        function setAttr() {
+          update("cache_tree", "elements", value);
+        }
       }
 
 
