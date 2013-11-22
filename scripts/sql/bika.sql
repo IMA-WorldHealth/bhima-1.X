@@ -75,7 +75,7 @@ DROP TABLE IF EXISTS `fiscal_year`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `fiscal_year` (
   `enterprise_id` smallint(5) unsigned NOT NULL,
-  `id` mediumint(8) unsigned NOT NULL,
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `number_of_months` mediumint(8) unsigned NOT NULL,
   `fiscal_year_txt` text NOT NULL,
   `transaction_start_number` int(10) unsigned NOT NULL,
