@@ -1111,7 +1111,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $q.all([fetchRecords(), user_request])
         .then(function(res) {
-//          expose scope
+    //          expose scope
           console.log('debug', res[0], res[1])
           $scope.invoice_model = res[0];
           $scope.posting_user = res[1].data.id;
