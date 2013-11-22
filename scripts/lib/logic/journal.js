@@ -243,20 +243,20 @@ var purchaseCredit = function(obj, data, posting, res){
 var process = function(data, posting, res){
   var obj = map[service_name];
   if(service_name == 'sale'){
-    Q.all([saleDebit(obj, data[0], posting, res), saleCredit(obj, data, posting, res)]).then(function(arr) {    
-      if(arr[0].succes==true && arr[1].succes==true){
+    Q.all([saleDebit(obj, data[0], posting, res), saleCredit(obj, data, posting, res), check(obj.t, posting.id)]).then(function(arr) {    
+      if(arr[0].succes==true && arr[1].succes==true && arr[2] == true){
         res.send({status: 200, insertId: arr[1].info.insertId});
       }
     });
   }else if(service_name == 'cash'){ 
-    Q.all([cashDebit(obj, data, posting, res), cashCredit(obj, data, posting, res)]).then(function(arr) {    
-      if(arr[0].succes==true && arr[1].succes==true){
+    Q.all([cashDebit(obj, data, posting, res), cashCredit(obj, data, posting, res), check(obj.t, posting.id)]).then(function(arr) {    
+      if(arr[0].succes==true && arr[1].succes==true && arr[2] == true){
         res.send({status: 200, insertId: arr[1].info.insertId});
       }
     });
   }else if(service_name == 'purchase'){
-    Q.all([purchaseDebit(obj, data, posting, res), purchaseCredit(obj, data[0], posting, res)]).then(function(arr) { 
-      if(arr[0].succes==true && arr[1].succes==true){
+    Q.all([purchaseDebit(obj, data, posting, res), purchaseCredit(obj, data[0], posting, res), check(obj.t, posting.id)]).then(function(arr) { 
+      if(arr[0].succes == true && arr[1].succes == true && arr[2] == true){        
         res.send({status: 200, insertId: arr[1].info.insertId});
       }
     });
@@ -334,6 +334,18 @@ var getData = function(posting, res){
 
     }
   });
+}
+
+var check = function(table, id){
+  var deffer = Q.defer();
+  db.execute(db.update(table, [{id:id, posted:1}], ["id"]), function(err, data){
+    if(err){
+      deffer.resolve(false);
+    }else{
+      deffer.resolve(true);
+    }
+  });
+  return deffer.promise;
 }
 
 
