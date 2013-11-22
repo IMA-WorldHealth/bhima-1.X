@@ -33,9 +33,9 @@ function flushUsers(db_con) {
 
 //  Update columns that are set to logged in
   db_con.query(permissions, function(err, res) {
-    if(err) return err;
+    if (err) throw err;
     db_con.query(reset, function(err, res) {
-      if(err) return err;
+      if (err) throw err;
       console.log('[db.js] (*) user . logged_in set to 0');
     });
   });
