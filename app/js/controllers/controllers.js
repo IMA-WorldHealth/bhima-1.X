@@ -18,7 +18,7 @@ controllers.controller('treeController', function($scope, $q, $location, appcach
 
 //      Set default element state
       element.collapsed = true;
-      console.log(appcache.checkDB());
+//      console.log(appcache.checkDB());
 
       for(var i = 0; i<units.length; i++){
         element.children.push({"label":units[i].name, "id":units[i].id, "p_url":units[i].p_url, "children":[]});
@@ -709,7 +709,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.selected = null;
     $scope.create = false;
 
-    
+//   Temporary output vars
+    var out_count = 0;
 
     function init() { 
       //Resposible for getting the current values of selects
@@ -799,6 +800,44 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       }
     };
 
+    $scope.generateFiscal = function generateFiscal(model) {
+      var enterprise = $scope.enterprise;
+      var transaction_start_number, transaction_stop_number, fiscal_year_number;
+
+//      extract month data
+      var start = new Date(model.start);
+      var end = new Date(model.end);
+
+//      TODO default for now
+      transaction_start_number = 0;
+      transaction_stop_number = 0;
+      fiscal_year_number = 1;
+
+      console.log('Generating Fiscal Year', start, end);
+      console.log(diff_month(start, end));
+
+//      create fiscal year record in database
+      var fiscal_object = {
+        enterprise_id: enterprise.id,
+        number_of_months: diff_month(start, end),
+        fiscal_year_txt: model.note,
+        start_month: start.getMonth() + 1,
+        start_year: start.getFullYear()
+      }
+
+      updateProgress('Fiscal year object packaged');
+      connect.basicPut('fiscal_year', [fiscal_object])
+        .then(function(res) {
+          updateProgress('Record created in "fiscal_year" table');
+          
+        })
+//      create period records assigned to fiscal year
+
+//      create budget records assigned to periods and accounts
+
+//      create required monthTotal records
+    }
+
     function fetchPeriods(fiscal_id) {
       var period_query = {
         'tables' : {
@@ -812,6 +851,26 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.period_model = model.data;
       });
     }
+
+//  Utilities
+    function diff_month(d1, d2) {
+//      ohgawd rushing
+      var res;
+
+//      Diff months
+      res = d2.getMonth() - d1.getMonth();
+
+//      Account for year
+      res += (d2.getFullYear() - d1.getFullYear()) * 12;
+      res = Math.abs(res);
+      return res <=0 ? 0 : res;
+    }
+
+  function updateProgress(body) {
+    if(!$scope.progress) $scope.progress = {};
+    out_count++;
+    $scope.progress[out_count] =  body;
+  }
 
     //Initialise after scope etc. has been set
     init();
