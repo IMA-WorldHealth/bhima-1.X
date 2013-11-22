@@ -39,20 +39,36 @@
             </div>
             <div class="col-xs-6">
               <form novalidate name="form">
-                <div id="form-group">
+                <div class="form-group">
                   <label for="fiscalNote">Year Desc.</label>
                   <input required type="text" id="fiscalNote" class="form-control" ng-model="new_model.note">
                 </div>
 
-                <div id="form-group">
+                <div class="form-group">
                   <label for="startMonth">Start Month</label>
                   <input required type="month" id="startMonth" class="form-control" ng-model="new_model.start">
                 </div>
 
                 <div class="form-group">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="option_year" id="one" value="true" ng-model="new_model.year" checked>
+                      One Year
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="option_year" id="custom" value="false"
+                             ng-model="new_model.year">
+                      Specify
+                    </label>
+                  </div>
+                </div>
 
-                  <label for="startMonth">End Month</label>
-                  <input required type="month" id="endMonth" class="form-control" ng-model="new_model.end">
+                <div class="form-group">
+
+                  <label for="endMonth">End Month</label>
+                  <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-control" ng-model="new_model.end">
                 </div>
 
                 <button ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-default">Submit</button>

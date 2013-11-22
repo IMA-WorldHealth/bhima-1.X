@@ -709,6 +709,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.selected = null;
     $scope.create = false;
 
+    $scope.new_model = {'year' : 'true'};
+
 //   Temporary output vars
     var out_count = 0;
 
@@ -781,6 +783,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return !!($scope.selected);
     };
 
+    $scope.isFullYear = function() {
+      if($scope.new_model.year == "true") return true;
+      return false;
+    }
+
+    $scope.$watch('new_model.start', function(oval, nval) {
+      console.log("start month updated!");
+    })
+
     $scope.createFiscal = function() { 
       //Do some session checking to see if any values need to be saved/ flushed to server
       $scope.active = "create";
@@ -813,10 +824,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       transaction_stop_number = 0;
       fiscal_year_number = 1;
 
-      console.log('Generating Fiscal Year', start, end);
-      console.log(diff_month(start, end));
+//      Temporary output
+      $scope.progress = {};
 
-//      create fiscal year record in database
+//      Validation
+
+//      Years must be
+      if(!(start < end)) {
+        updateProgress("Start date must be before end date");
+        return;
+      }
+
+//      validation complete - wrap object
       var fiscal_object = {
         enterprise_id: enterprise.id,
         number_of_months: diff_month(start, end),
@@ -824,18 +843,47 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         start_month: start.getMonth() + 1,
         start_year: start.getFullYear()
       }
-
       updateProgress('Fiscal year object packaged');
+
+//      create fiscal year record in database
+      var promise = putFiscal(fiscal_object);
+      promise
+        .then(function(res) {
+
+//        generate periods and write records to database
+          return generatePeriods(res.data.insertID, start, end);
+        })
+    }
+
+    function putFiscal(fiscal_object) {
+      var deferred = $q.defer();
       connect.basicPut('fiscal_year', [fiscal_object])
         .then(function(res) {
           updateProgress('Record created in "fiscal_year" table');
-          
-        })
-//      create period records assigned to fiscal year
-
+          deferred.resolve(res);
+        });
 //      create budget records assigned to periods and accounts
 
 //      create required monthTotal records
+
+      return deferred.promise;
+    }
+
+    function generatePeriods(fiscal_id, start, end) {
+      var deferred = $q.defer();
+      //      create period records assigned to fiscal year
+      //201308
+      var request = [];
+      var total = diff_month(start, end);
+
+      console.log(start);
+
+      for(var i = 0; i < total; i++) {
+        var next_month = new Date(start.getFullYear(), start.getMonth() + (i), start.getDay());
+        console.log(next_month);
+
+      }
+      return deferred.promise;
     }
 
     function fetchPeriods(fiscal_id) {
