@@ -711,6 +711,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     $scope.new_model = {'year' : 'true'};
 
+//    $scope.previous_fiscal
+
 //   Temporary output vars
     var out_count = 0;
 
@@ -742,7 +744,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         $scope.fiscal_model = fiscal_model;
         //select default
         console.log("s", $scope);
-        $scope.select(fiscal_model.data[0].id);
+        if(fiscal_model.data[0]) $scope.select(fiscal_model.data[0].id);
 
       })
     }
@@ -789,31 +791,54 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.$watch('new_model.start', function(oval, nval) {
-      console.log("start month updated!");
+      if($scope.isFullYear()) updateEnd();
     })
+
+    function updateEnd() {
+      var s = $scope.new_model.start;
+      if(s) {
+//        Pretty gross
+        var ds = new Date(s);
+        var iterate = new Date(ds.getFullYear() + 1, ds.getMonth() - 1);
+//        Correct format for HTML5 date element
+        $scope.new_model.end = inputDate(iterate);
+        console.log($scope.new_model.end);
+      }
+
+    }
 
     $scope.createFiscal = function() { 
       //Do some session checking to see if any values need to be saved/ flushed to server
       $scope.active = "create";
       $scope.selected = null;
+
+      //Fetch data about previous fiscal year if it doesn't already exist
+
     };
 
     $scope.getFiscalStart = function() { 
       if($scope.period_model) {
-        return $scope.period_model[0].period_start;
+        var t = $scope.period_model[0];
+        if(t) return t.period_start;
       }
     };
 
     $scope.getFiscalEnd = function() {
       if($scope.period_model) { 
         var l = $scope.period_model;
-        return l[l.length-1].period_stop;
+        var t = l[l.length-1];
+        if(t) return t.period_stop;
       }
     };
 
+
     $scope.generateFiscal = function generateFiscal(model) {
+//      temporary defer
+      var deferred = $q.defer();
+
       var enterprise = $scope.enterprise;
       var transaction_start_number, transaction_stop_number, fiscal_year_number;
+      var insertId;
 
 //      extract month data
       var start = new Date(model.start);
@@ -838,7 +863,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 //      validation complete - wrap object
       var fiscal_object = {
         enterprise_id: enterprise.id,
-        number_of_months: diff_month(start, end),
+        number_of_months: diff_month(start, end) + 1, //hacky - change diff_month
         fiscal_year_txt: model.note,
         start_month: start.getMonth() + 1,
         start_year: start.getFullYear()
@@ -846,13 +871,41 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       updateProgress('Fiscal year object packaged');
 
 //      create fiscal year record in database
-      var promise = putFiscal(fiscal_object);
+      var promise = getPrevious();
       promise
+        .then(function(res) {
+          console.log(res.previous_fiscal_year == null);
+          if(res.previous_fiscal_year != null) fiscal_object.previous_fiscal_year = res.previous_fiscal_year;
+          return putFiscal(fiscal_object);
+        })
         .then(function(res) {
 
 //        generate periods and write records to database
-          return generatePeriods(res.data.insertID, start, end);
-        })
+          insertId = res.data.insertId;
+          return generatePeriods(insertId, start, end);
+        }).then(function(res) {
+          updateProgress("[Transaction Success] All required records created");
+//          TODO add to local model temporarily, commit to server should be made through local model
+          fiscal_object.id = insertId;
+          $scope.fiscal_model.post(fiscal_object);
+          deferred.resolve();
+
+          // generate budget for account/ period
+          // ?generate period totals
+        });
+
+        return deferred.promise;
+    }
+
+    function getPrevious() {
+      var deferred = $q.defer();
+
+      connect.basicGet("/fiscal/101/")
+        .then(function(res) {
+          deferred.resolve(res.data);
+        });
+
+      return deferred.promise;
     }
 
     function putFiscal(fiscal_object) {
@@ -874,15 +927,32 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //      create period records assigned to fiscal year
       //201308
       var request = [];
-      var total = diff_month(start, end);
-
-      console.log(start);
-
+      var total = diff_month(start, end) + 1;
       for(var i = 0; i < total; i++) {
-        var next_month = new Date(start.getFullYear(), start.getMonth() + (i), start.getDay());
-        console.log(next_month);
+//        oh lawd, so many Dates
+        var next_month = new Date(start.getFullYear(), start.getMonth() + i);
+        var max_month = new Date(next_month.getFullYear(), next_month.getMonth() + 1, 0);
 
+        var period_start = mysqlDate(next_month);
+        var period_stop = mysqlDate(max_month);
+
+        var period_object = {
+          fiscal_year_id: fiscal_id,
+          period_start: period_start,
+          period_stop: period_stop
+        }
+        updateProgress('Period object ' + period_start + ' packaged');
+        request.push(connect.basicPut('period', [period_object]));
       }
+      updateProgress('Request made for [' + request.length + '] period records');
+
+      $q.all(request)
+        .then(function(res) {
+          updateProgress('All period records written successfully');
+          deferred.resolve(res);
+        })
+
+
       return deferred.promise;
     }
 
@@ -913,6 +983,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       res = Math.abs(res);
       return res <=0 ? 0 : res;
     }
+
+  function inputDate(date) {
+    //Format the current date according to RFC3339 (for HTML input[type=="date"])
+    return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2);
+  }
+
+  function mysqlDate(date) {
+    return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
+  }
 
   function updateProgress(body) {
     if(!$scope.progress) $scope.progress = {};
