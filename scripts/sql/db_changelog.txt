@@ -1,0 +1,64 @@
+CHANGELOG
+
+Database Changes:
+  bika --> kpk
+
+Table Changes:
+  month_total --> period_total
+  gl --> general_ledger
+
+Column Changes:
+  sale:
+    paid --> DELETE
+    fyearId --> DELETE
+  period:
+    order --> DELETE
+  debitor_group:
+      account_number --> account_id
+  cash:
+      amount --> cost
+  fiscal_year:
+    next_fiscal_year --> DELETE
+  general_ledger/journal:
+    arapAccount   --> deb_cred_id
+    arapType      --> deb_cred_type
+    invPoNum      --> inv_po_id
+    debitEquiv    --> debit_equiv
+    creditEquiv   --> credit_equiv
+    costCtrl2ID   --> DELETE
+    costCtrl1ID   --> cost_ctrl_id
+    docNum        --> doc_num
+    transDate     --> trans_date
+    fYearID       --> fiscal_year_id
+    transID       --> trans_id
+    enterpriseID  --> enterprise_id
+    debitAmount   --> debit
+    creditAmount  --> credit
+    month         --> period_id
+    posted        --> DELETE
+  price_list:
+    @ key list_id --> price_list_name.id
+  period_total:
+    month --> period_id
+    @ key period_id --> period.id
+  supplier:
+    address1 --> address_1
+    address2 --> address_2
+
+
+Datatype Changes:
+  general_ledger::description::VARCHAR(45) --> TEXT
+  general_ledger::posted::INT(1) --> BOOLEAN
+  general_ledger::comment::varchar(45) --> text
+  general_ledger::credit_equiv::varchar(45) --> int
+  general_ledger::debit_equiv::varchar(45) --> int
+  transaction_type::id::int(10) --> tinyint
+  purchase::posted::tinyint(1) --> boolean
+  sale::posted::tinyint(1) --> boolean
+  sale::cost::int --> decimal(19,2)
+  creditor::id::int --> int unsigned
+  supplier::id::int --> int unsigned
+  permission::id::int --> mediumint unsigned
+  user::logged_in::tinyint(1) --> boolean
+
+question : what does doc_num do?
