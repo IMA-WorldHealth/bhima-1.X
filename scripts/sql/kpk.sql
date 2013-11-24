@@ -1376,8 +1376,8 @@ DROP TABLE IF EXISTS `posting_journal`;
 CREATE TABLE `posting_journal` (
   `id`                mediumint unsigned NOT NULL AUTO_INCREMENT,
   `enterprise_id`     smallint unsigned NOT NULL,
-  `fiscal_year_id`    mediumint unsigned not null,
-  `period_id`         mediumint unsigned not null,
+  `fiscal_year_id`    mediumint unsigned, -- not null,
+  `period_id`         mediumint unsigned, -- not null,
   `trans_id`          int unsigned NOT NULL,
   `trans_date`        date NOT NULL,
   `doc_num`           int unsigned NOT NULL, -- what does this do?
