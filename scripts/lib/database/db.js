@@ -6,6 +6,9 @@
 * 3. Interfaces de manipulation des bases des donnees  (A generic interface for all database actions)
 */
 
+// TODO:
+//   Make this 'use strict'
+
 // PRIVATE METHODS
 
 //FIXME mysqlInit() is called every time a new instance of db is used - all config should happen just once
@@ -212,12 +215,13 @@ function formatLimit(l) {
 var con;
 
 // main db module
-function db(options) {
+function db(cfg) {
+  // TODO: update cfg type
   var supported_databases, config;
-  options = options || {};
+  cfg = cfg || {};
 
   // Select the system's database with this variable.
-  sgbd = options.sgbd || 'mysql';
+  sgbd = cfg.sgbd || 'mysql';
 
   // All supported dabases and their initialization
   supported_databases = {
@@ -229,17 +233,9 @@ function db(options) {
 
   // load external configuration if it exists.
   // Else, default to this configuration
-  var default_config = {
-    host     : 'localhost',
-    user     : 'bika',
-    password : 'HISCongo2013',
-    database : 'bika'
-  };
-  config = options.config || default_config;
-
   // The database connection for all data interactions
   // FIXME: researdh connection pooling in MySQL
-  if(!con) con = supported_databases[sgbd](config); //on a l'objet connection
+  if(!con) con = supported_databases[sgbd](cfg); //on a l'objet connection
 
   return {
     // return all supported databases
