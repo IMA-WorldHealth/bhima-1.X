@@ -1452,7 +1452,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var patient_model = {};
     var submitted = false;
 
-    var default_patientID = 0;
+    var default_patientID = 1;
 
 
     function init() { 
@@ -1483,7 +1483,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     function createId(data) {
       console.log(data);
       if(data.length===0) return default_patientID;
-      var search = data.reduce(function(a, b) {a = a.id || a; return Math.max(a, b.id);});
+      var search = data.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
       console.log("found", search);
       if(search.id) search = search.id;
       return search + 1;
