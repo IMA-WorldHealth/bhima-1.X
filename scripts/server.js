@@ -10,6 +10,7 @@ var express      = require('express')
 //  , balance      = require('./lib/logic/balance')(db)
   , um           = require('./lib/util/userManager')
   , jr           = require('./lib/logic/journal')
+  , ledger      = require('./lib/logic/ledger')(db)
   , app          = express();
 
 app.configure(function () {
@@ -191,6 +192,10 @@ app.put('/temp/:table/:id', function (req, res, next) {
 
 app.delete('/temp/:table/:id', function (req, res, next) {
   // TODO:
+});
+
+app.get('/ledgers/debitor/:id', function (req, res, next) {
+  ledger.debitor(req.params.id, res);
 });
 
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));

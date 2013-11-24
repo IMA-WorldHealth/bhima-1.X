@@ -2181,94 +2181,63 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
 
   controllers.controller('cashController', function($scope, connect, $q, $filter, $http, appstate) {
-
-    var enterprise_defn, account_spec,
-        cash_currency_defn, sale_debitor_defn,
-        currency_defn, 
-        eid = appstate.get('enterprise').id;
-
-    enterprise_defn = {
-      tables: { 'enterprise' : {columns: ["id", "cash_account"]}},
-      where: ["enterprise.id=" + eid] 
-    };
+    var enterprise, debitors, cash_items, cash,
+        currency, enterprise_id, cash_account;
     
-    sale_debitor_defn = {
-      primary: "sale",
+    cash_account = appstate.get('enterprise').cash_account;
+
+    debitors = {
       tables: {
-        "sale" : {
-          columns: ["id", "cost", "currency_id", "debitor_id", "seller_id", "discount", "invoice_date", "note", "paid"] 
-        },
-        "debitor" : {
-          columns: ["group_id"] 
-        },
-        "debitor_group" : {
-          columns: ["account_number"] 
-        }
+        'debitor' : {columns: ["id", "text"]},
+        'debitor_group' : {columns: ['name', 'account_number', 'max_credit']}
       },
-      join: ["sale.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"],
-      where: ["sale.enterprise_id=101", "AND", "sale.paid=0"]
+      join: ['debitor.group_id=debitor_group.id'],
+      where: ['debitor_group.locked<>0']
     };
 
-    cash_currency_defn = {
-      tables: {
-        "cash" : {
-          columns: ["id", "bon", "bon_num", "invoice_id", "date", "debit_account", "credit_account", "amount", "currency_id", "cashier_id", "text"]
-        },
-        "currency": { columns: ["symbol"] }
-      },
-      join: ["cash.currency_id=currency.id"]
-    };
-
-    currency_defn = {
+    currency = {
       tables : { "currency" : { columns: ["id", "symbol"] } } 
     };
 
+    cash = {
+      tables: { "cash" : { columns: ["id", "bon", "bon_num", "invoice_id", "date", "debit_account", "credit_account", "currency_id", "cashier_id", "text"] }},
+    };
+
+    cash_items = {
+      tables: { 'cash_item' : { columns: ["id", "cash_id", "invoice_id", "cost"] }}, 
+    };
+
     $q.all([
-      connect.req(enterprise_defn),
-      connect.req(sale_debitor_defn),
-      connect.req(cash_currency_defn),
-      connect.req(currency_defn)
+      connect.req(debitors),
+      connect.req(currency),
+      connect.req(cash),
     ]).then(init);
 
-
-    var stores = {},
-        models = ['enterprise', 'sale-debitor', 'cash-currency', 'currency'];
-
-
+    var model_names = ['debitors', 'currency', 'cash'];
+    var models = $scope.models = {};
+    var stores = $scope.stores = {};
     var slip = $scope.slip = {};
-    $scope.models = {};
+    var meta = $scope.meta = {};
 
     function init (arr) {
       // init all data connections & models
-      for (var i = 0, l = arr.length; i < l; i++) {
-        stores[models[i]] = arr[i];
-        $scope.models[models[i]] = arr[i].data;
-      }
-
-      // FIXME: doesn't work yet
-      $scope.$watch("models['cash-currency']", function () {
-        $scope.hasCash = $scope.models['cash-currency'].length > 0;
+      arr.forEach(function (model, idx) {
+        stores[model_names[idx]] = model;
+        models[model_names[idx]] = model.data;
       });
 
-      $scope.$watch("models['sale-debitor']", function () {
-        $scope.hasSale = $scope.models['sale-debitor'].length > 0;
-      });
-       
-      defaults();
     }
 
     function defaults () {
       // incriment the max id in the store
 
-      var id  = Math.max.apply(Math.max, Object.keys(stores['cash-currency'].index)) + 1;
-      if (id < 0) { id = 0; }
-      slip.id = id;
+      slip.id = stores.cash.generateid();
 
       // Module-dependent flag to say what cashbox this is
       slip.cashbox_id = 1;
 
       // default debit account is cash box
-      slip.debit_account = stores.enterprise.get(eid).cash_account;
+      slip.debit_account = cash_account;
 
       // default date is today
       slip.date = $filter('date')(new Date(), 'yyyy-MM-dd');
@@ -2279,8 +2248,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       // we start up as entree
       slip.bon = "E";
 
-      // generate a new number for the bons 
-      slip.bon_num = getBonNumber($scope.models['cash-currency'], slip.bon);
+      slip.bon_num = getBonNumber(models.cash, slip.bon);
 
       // default text
       slip.text = "Payment";
@@ -2292,21 +2260,28 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       slip.enterprise_id = 101;
     }
 
-    $scope.select = function (id) {
-      slip.invoice_id = id || slip.invoice_id;
-      slip.text = "Payment"; // FIXME: find a way to wipe clicks
-      var selected_invoice = stores['sale-debitor'].get(slip.invoice_id);
-      // fill in selected data
-      slip.credit_account = selected_invoice.account_number;
-      slip.text += " of invoice " + selected_invoice.id + " for " + $filter('currency')(selected_invoice.cost);
-    };
+    function selectDebitor () {
+      // populate the outstanding invoices
+      $http.get('/ledgers/debitor/' + meta.debitor)
+        .then(function (response) {
+          if (response.data) {
+            models.outstanding = response.data.filter(function (row) {
+              // filter only those that do not balance
+              return (row.credit - row.debit > 0); 
+            });
+          }
+        });
+
+      slip.credit_account = stores.debitors.get(meta.debitor).account;
+      defaults();
+    }
+
+    $scope.selectDebitor = selectDebitor;
 
     $scope.formatCurrency = function (id) {
       // deal the the asynchronous case where store is not
       // defined.
-      if (stores.currency) {
-        return stores.currency.get(id).symbol;
-      }
+      return (stores.currency && stores.currency.get(id)) ? stores.currency.get(id).symbol: "";
     };
 
     $scope.setCurrency = function (idx) {
