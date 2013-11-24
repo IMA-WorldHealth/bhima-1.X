@@ -5,6 +5,8 @@ CREATE DATABASE `kpk`;
 USE `kpk`;
 UNLOCK TABLES;
 
+GRANT ALL ON `kpk` TO 'kpk'@'%' IDENTIFIED BY 'HISCongo2013';
+
 --
 -- Table structure for table `kpk`.`tax`
 --
