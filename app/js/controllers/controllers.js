@@ -1485,7 +1485,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       if(data.length===0) return default_patientID;
       var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id)});
       console.log("found", search);
-      if(search.id) search = search.id;
+      // quick fix
+      search  = (search.id !== undefined) ? search.id : search;
+      //if(search.id) search = search.id;
       return search + 1;
     }
 
@@ -2188,11 +2190,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     debitors = {
       tables: {
-        'debitor' : {columns: ["id", "text"]},
+        'patient' : {columns: ["first_name", "last_name"]},
+        'debitor' : {columns: ["id"]},
         'debitor_group' : {columns: ['name', 'account_number', 'max_credit']}
       },
-      join: ['debitor.group_id=debitor_group.id'],
-      where: ['debitor_group.locked<>0']
+      join: ['patient.debitor_id=debitor.id', 'debitor.group_id=debitor_group.id'],
+      where: ['debitor_group.locked<>1']
     };
 
     currency = {
@@ -2225,7 +2228,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         stores[model_names[idx]] = model;
         models[model_names[idx]] = model.data;
       });
-
     }
 
     function defaults () {
@@ -2262,6 +2264,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       // populate the outstanding invoices
       $http.get('/ledgers/debitor/' + meta.debitor)
         .then(function (response) {
+          console.log("RESPONSE:", response);
           if (response.data) {
             models.outstanding = response.data.filter(function (row) {
               // filter only those that do not balance
@@ -2285,6 +2288,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.setCurrency = function (idx) {
       // store indexing starts from 0.  DB ids start from 1
       slip.currency_id = idx + 1; 
+    };
+
+    $scope.formatName = function (deb) {
+      return [deb.first_name, deb.last_name].join(' ');
     };
 
     $scope.validate = function () {

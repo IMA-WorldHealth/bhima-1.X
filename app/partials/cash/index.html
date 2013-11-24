@@ -25,7 +25,7 @@
           class="form-control"
           type="text"
           ng-model="meta.debitor"
-          typeahead="debitor.id as debitor.text for debitor in models.debitors"
+          typeahead="debitor.id as debitor.first_name for debitor in models.debitors"
           typeahead-on-select="selectDebitor(debitor.id)"
           ng-disabled="submitted"
           required
