@@ -1328,6 +1328,12 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         });
     }
 
+    $scope.select = function(id) {
+      console.log($scope.invoice_model);
+      $scope.selected = $scope.invoice_model.get(id);
+      console.log('selected', $scope.selected);
+    }
+
     /*$scope.post = function() {
       console.log("Request for post");
       var INVOICE_TRANSACTION = 2;
@@ -1354,12 +1360,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         });
 
       console.log("request should be made for", request);
-    }
-
-    $scope.select = function(id) {
-      console.log($scope.invoice_model);
-      $scope.selected = $scope.invoice_model.get(id);
-      console.log('selected', $scope.selected);
     }
 
     function invoicePosted(ids) {
