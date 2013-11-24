@@ -3,9 +3,9 @@
   "port" : 8080,
   "db" : {
     "host"     : "localhost",
-    "user"     : "bika",
+    "user"     : "kpk",
     "password" : "HISCongo2013",
-    "database" : "bika"
+    "database" : "kpk"
   },
   "session" : {
     "secret" : "open blowfish",

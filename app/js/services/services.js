@@ -515,6 +515,19 @@
       return deferred.promise;
     }
 
+    function fetch (defn) {
+      //summary: 
+      //  Exactly the same as req() but now returns only
+      //  data.  Think of it as a `readonly` store.
+      var handle, deferred = $q.defer();
+
+      handle = $http.get('/temp/?' + JSON.stringify(defn));
+      handle.then(function (returned) {
+        deferred.resolve(returned.data);
+      });
+      return deferred.promise;
+    }
+
     function Model (options, target) {
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
