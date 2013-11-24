@@ -80,7 +80,11 @@
     }).
     when('/exchange_rate/', {
       controller : 'exchangeRateController',
-      templateUrl: 'partials/currency/currency.html' 
+      templateUrl: 'partials/currency/currency.html'
+    }).
+    when('/create_account', {
+      controller: 'createAccountController',
+      templateUrl: 'partials/create_account.html'
     });
   }  
   kpk.config(kpkconfig);
