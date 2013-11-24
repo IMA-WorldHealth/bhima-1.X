@@ -825,6 +825,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.sale_date = getDate();
     $scope.inventory = [];
 
+    var INVOICE_TYPE = 2;
+
     var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
     var sales_request = connect.req({'tables' : { 'sale' : {columns : ['id']}}});
 
@@ -928,13 +930,27 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           var promise = generateInvoiceItems();
           promise.then(function(res) { 
             console.log("Invoice successfully generated", res);
-            $location.path('/sale_records/' + $scope.invoice_id);
+            // assuming success - if an error occurs sale should be removed etc.
+            journalPost($scope.invoice_id).then(function(res) {
+              //everything is good - if there is an error here, sale should be undone (refused from posting journal)
+              console.log("posting returned", res);
+              $location.path('/sale_records/' + $scope.invoice_id);
+            });
           })
         }
       })
 
       /*
       */
+    }
+
+    function journalPost(id) {
+      var deferred = $q.defer();
+      var request = {id: id, transaction_type: INVOICE_TYPE, user: $scope.verify};
+      connect.journal([request]).then(function(res) {
+        deferred.resolve(res);
+      });
+      return deferred.promise;
     }
 
     function generateInvoiceItems() { 
@@ -1114,26 +1130,27 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     //          expose scope
           console.log('debug', res[0], res[1])
           $scope.invoice_model = res[0];
+          console.log("invoice_model", $scope.invoice_model);
           $scope.posting_user = res[1].data.id;
 //          select default
           if(default_invoice>0) $scope.select(default_invoice);
         });
     }
 
-    $scope.post = function() {
+    /*$scope.post = function() {
       console.log("Request for post");
       var INVOICE_TRANSACTION = 2;
 //        This could be an arry
       var selected = $scope.selected;
       var request = [];
-      /* support multiple rows selected
+      *//* support multiple rows selected
        if(selected.length>0) {
        selected.forEach(function(item) {
        if(item.posted==0) {
        request.push(item.id);
        }
        });
-       }*/
+       }*//*
 //      FIXME 2 is transaction ID for sales - hardcoded probably isn't the best way
       if(selected) request.push({id: selected.id, transaction_type: INVOICE_TRANSACTION, user: $scope.posting_user});
 
@@ -1141,6 +1158,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         .then(function(res) {
           console.log(res);
 //            returns a promise
+          // TODO error handling
           if(res.status==200) invoicePosted(request);
         });
 
@@ -1148,32 +1166,23 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.select = function(id) {
+      console.log($scope.invoice_model);
       $scope.selected = $scope.invoice_model.get(id);
       console.log('selected', $scope.selected);
     }
 
     function invoicePosted(ids) {
-      var deferred = $q.defer();
-      var promise_update = [];
-      /*summary
-      *   Updates all records in the database with posted flag set to true
-      */
+      *//*summary
+      *   Updates all affected records
+      *//*
+      console.log('ids', ids);
       ids.forEach(function(invoice_id) {
-        var current_invoice = $scope.invoice_model.get(invoice_id);
-        console.log("Updating 'posted'", invoice_id, current_invoice);
-        current_invoice.posted = 1;
-        promise_update.push(connect.basicPost("sale", [current_invoice], ["id"]));
+        console.log($scope.invoice_model);
+        console.log(invoice_id);
+        console.log($scope.invoice_model.get(invoice_id.id));
+        $scope.invoice_model.get(invoice_id.id).posted = true;
       });
-
-      console.log(promise_update);
-      $q.all(promise_update)
-        .then(function(res) {
-          console.log("All ids posted");
-          deferred.resolve(res);
-        });
-
-      return deferred.promise;
-    }
+    }*/
 
     function fetchRecords() { 
       var deferred = $q.defer();
@@ -1251,7 +1260,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
-   
+
+    var default_patientID = 0;
+
+
     function init() { 
       //register patient for appcahce namespace
       var default_group = 3 //internal patient
@@ -1279,6 +1291,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
     function createId(data) {
       console.log(data);
+      if(data.length===0) return default_patientID;
       var search = data.reduce(function(a, b) {a = a.id || a; return Math.max(a, b.id);});
       console.log("found", search);
       if(search.id) search = search.id;
@@ -2168,7 +2181,7 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
   var journal_request = {
     'tables' : {
       'posting_journal' : {
-        'columns' : ["id", "transID", "transDate", "docNum", "description", "account_id", "debitAmount", "creditAmount", "currency_id", "arapAccount", "arapType", "invPoNum", "debitEquiv", "creditEquiv"]
+        'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv"]
       }
     }
   }
@@ -2176,18 +2189,18 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
 //  grid options
   var grid;
   var dataview;
-  var sort_column = "transID";
+  var sort_column = "trans_id";
   var columns = [
-    {id: 'transID', name: 'ID', field: 'transID', sortable: true},
-    {id: 'transDate', name: 'Date', field: 'transDate'},
-    {id: 'docNum', name: 'Doc No.', field: 'docNum'},
+    {id: 'trans_id', name: 'ID', field: 'trans_id', sortable: true},
+    {id: 'trans_date', name: 'Date', field: 'trans_date'},
+    {id: 'doc_num', name: 'Doc No.', field: 'doc_num'},
     {id: 'description', name: 'Description', field: 'description'},
     {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
-    {id: 'debitAmount', name: 'Debit', field: 'debitAmount', groupTotalsFormatter: totalFormat, sortable: true},
-    {id: 'creditAmount', name: 'Credit', field: 'creditAmount', groupTotalsFormatter: totalFormat, sortable: true},
-    {id: 'arapAccount', name: 'AR/AP Account', field: 'arapAccount'},
-    {id: 'arapType', name: 'AR/AP Type', field: 'arapType'},
-    {id: 'invPoNum', name: 'Inv/PO Number', field: 'invPoNum'},
+    {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true},
+    {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true},
+    {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
+    {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
+    {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},
     {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
   var options = {
@@ -2246,13 +2259,13 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
 
   $scope.groupByID = function groupByID() {
     dataview.setGrouping({
-      getter: "transID",
+      getter: "trans_id",
       formatter: function (g) {
         return "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
       },
       aggregators: [
-        new Slick.Data.Aggregators.Sum("debitAmount"),
-        new Slick.Data.Aggregators.Sum("creditAmount")
+        new Slick.Data.Aggregators.Sum("debit"),
+        new Slick.Data.Aggregators.Sum("credit")
       ],
       aggregateCollapsed: false
     });
@@ -2265,8 +2278,8 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
         return "<span style='font-weight: bold'>" + g.value + "</span>"
       },
       aggregators: [
-        new Slick.Data.Aggregators.Sum("debitAmount"),
-        new Slick.Data.Aggregators.Sum("creditAmount")
+        new Slick.Data.Aggregators.Sum("debit"),
+        new Slick.Data.Aggregators.Sum("credit")
       ],
       aggregateCollapsed: false
     });

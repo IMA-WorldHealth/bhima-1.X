@@ -1,5 +1,11 @@
 CHANGELOG
 
+Temporary Hacks:
+  posting_journal:
+    /*FIXME journal should determine and inject period/fiscal year ID based on transaction date*/
+    fiscal_year_id::NotNull  --> false
+    period_id::NotNull       --> false
+
 Database Changes:
   bika --> kpk
 
