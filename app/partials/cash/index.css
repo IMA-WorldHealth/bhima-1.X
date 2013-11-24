@@ -7,3 +7,16 @@
   background-color: #dff0d8;
   border-color: #d6e9c6;
 }
+
+.util {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.util-bottom {
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+  padding-top: 5px;
+  padding-bottom: 5px
+}
