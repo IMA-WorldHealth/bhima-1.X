@@ -77,6 +77,10 @@
     when('/price_list', {
       controller: 'priceListController',
       templateUrl: 'partials/pricelist/index.html'
+    }).
+    when('/exchange_rate/', {
+      controller : 'exchangeRateController',
+      templateUrl: 'partials/currency/currency.html' 
     });
   }  
   kpk.config(kpkconfig);

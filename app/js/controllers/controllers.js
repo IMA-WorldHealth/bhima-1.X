@@ -1111,7 +1111,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       $q.all([fetchRecords(), user_request])
         .then(function(res) {
-//          expose scope
+    //          expose scope
           console.log('debug', res[0], res[1])
           $scope.invoice_model = res[0];
           $scope.posting_user = res[1].data.id;
@@ -2114,9 +2114,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var fields = ["enterprise_id","bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
       var obj = {};
       fields.forEach(function (f) { obj[f] = slip[f]; });
-      stores['cash-currency'].put(obj);
+      // FIXME: this should use post, i guess
+      //stores['cash-currency'].put(obj);
       connect.basicPut('cash', [obj]);
-      stores['sale-debitor'].delete(slip.invoice_id);
+      stores['sale-debitor'].remove(slip.invoice_id);
       connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
       // FIXME: improve this
       connect.journal([{id:slip.id, transaction_type:1, user:1}]); //a effacer just for the test
@@ -3014,6 +3015,70 @@ controllers.controller('priceListController', function ($scope, $q, connect, app
     models.pl.forEach(function (i) {
       stores.pl.delete(i.id); 
     });
+  };
+
+});
+
+
+controllers.controller('exchangeRateController', function ($scope, connect) {
+  var currency;
+
+  currency = {
+    tables : {
+      'currency' : {
+        columns: ["id", "name", "symbol", "note", "current_rate", "last_rate", "updated"]
+      }
+    }
+  };
+
+  var model, store, from, to;
+  from = $scope.from = {};
+  to = $scope.to = {};
+  $scope.form = {};
+  connect.req(currency).then(function (response) {
+    store = response;
+    $scope.currencies = response.data;
+    to.data = angular.copy(response.data);
+    from.data = angular.copy(response.data);
+  });
+
+  $scope.filter = function (v) {
+    return v.id !== from.currency_id;
+  };
+  
+  $scope.updateTo = function () {
+    to.symbol = store.get(to.currency_id).symbol;
+  };
+
+  $scope.updateFrom = function () {
+    from.symbol = store.get(from.currency_id).symbol;
+  };
+
+  $scope.getToSymbol = function () {
+    var data = (store && store.get(from.currency_id)) ? store.get(from.currency_id) : {};
+    return (data.id === to.currency_id) ? "" : to.symbol; 
+  };
+  
+  $scope.submit = function () {
+    // transform to MySQL date
+    var date = new Date();
+    var updated = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay();
+    var data = {
+      id: from.currency_id,
+      current_rate: from.current_rate,
+      last_rate : store.get(from.currency_id).current_rate,
+      updated: updated 
+    };
+    connect.basicPost('currency', [data], ['id']);
+  };
+
+  $scope.valid = function () {
+    // OMG
+    return !(!!to.currency_id && !!from.currency_id && !!from.current_rate);
+  };
+
+  $scope.label = function (curr) {
+    return [curr.symbol, '|', curr.name].join(' '); 
   };
 
 });
