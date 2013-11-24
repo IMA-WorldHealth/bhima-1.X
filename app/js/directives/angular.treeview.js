@@ -11,6 +11,7 @@
 				var nodeLabel = attrs.nodeLabel || 'label';
 				var nodeChildren = attrs.nodeChildren || 'children';
 
+
 				var template = 
 					'<ul>' + 
 						'<li data-ng-repeat="node in ' + treeModel + '">' + 
@@ -21,9 +22,12 @@
 							'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' + 
 							'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' + 
 						'</li>' + 
-					'</ul>';  
+					'</ul>';
 
+//        Collapse by default
+//        if(scope.node) scope.node.collapsed = true;
 
+//        Assign select/ collapse methods - should only occur once
 				if(treeId && treeModel) {
 					if(attrs.angularTreeview) {
 						scope[treeId] = scope[treeId] || {};
