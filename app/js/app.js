@@ -77,6 +77,10 @@
     when('/price_list', {
       controller: 'priceListController',
       templateUrl: 'partials/pricelist/index.html'
+    }).
+    when('/create_account', {
+      controller: 'createAccountController',
+      templateUrl: 'partials/create_account.html'
     });
   }  
   kpk.config(kpkconfig);
