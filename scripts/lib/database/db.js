@@ -29,7 +29,7 @@ function flushUsers(db_con) {
 
 //  Disable safe mode #420blazeit
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
-  reset = 'UPDATE `bika`.`user` SET `logged_in`="0" WHERE `logged_in`="1";';
+  reset = 'UPDATE `kpk`.`user` SET `logged_in`="0" WHERE `logged_in`="1";';
 
 //  Update columns that are set to logged in
   db_con.query(permissions, function(err, res) {
