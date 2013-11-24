@@ -1483,7 +1483,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     function createId(data) {
       console.log(data);
       if(data.length===0) return default_patientID;
-      var search = data.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
+      var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id)});
       console.log("found", search);
       if(search.id) search = search.id;
       return search + 1;
