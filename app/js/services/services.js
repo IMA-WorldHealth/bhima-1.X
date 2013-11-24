@@ -784,7 +784,8 @@
       basicPost: basicPost,
       basicGet: basicGet,
       basicDelete: basicDelete,
-      journal: journal
+      journal: journal,
+      fetch: fetch
     };
   });
 
