@@ -2175,7 +2175,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     };
 
     $scope.reset = function () {
-      reset(); 
+      reset();
     };
 
   });
@@ -2229,8 +2229,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     function defaults () {
-      // incriment the max id in the store
-
       slip.id = stores.cash.generateid();
 
       // Module-dependent flag to say what cashbox this is

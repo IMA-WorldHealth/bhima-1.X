@@ -1000,7 +1000,7 @@ CREATE TABLE `patient` (
   `dob`             date,
   `parent_name`     varchar(150),
   `sex`             char(1) NOT NULL,
-  `religion`        varchar(50) NOT NULL,
+  `religion`        varchar(50),
   `marital_status`  varchar(50),
   `phone`           varchar(12),
   `email`           varchar(20),
