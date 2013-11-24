@@ -2,21 +2,22 @@
 var db = require('../database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}})
   , util = require('../util/util.js'), Q = require('q');
 var map = {
-  'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note','fyearID':'fyearID', 'debitAmount':'cost'},
-  'sale_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'debitor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debitAmount':'cost', 'invPoNum':'id'},
-  'sale_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'invPoNum':'id', 'creditAmount':'total'},
-  'cash':{'t':'cash', 'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'date', 'description':'text', 'invPoNum':'invoice_id', 'debitAmount':'amount', 'creditAmount':'amount'},
-  'cash_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'date', 'description':'text', 'invPoNum':'invoice_id', 'debitAmount':'amount'/*, 'account_id':'debit_account'*/},
-  'cash_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'date', 'description':'text', 'invPoNum':'invoice_id', 'creditAmount':'amount'}, 
-  'purchase':{'t':'purchase', 'transID':'id','enterpriseID':'enterprise_id','creditAmount':'cost','currency_id':'currency_id','arapAccount':'creditor_id','transDate':'invoice_date','description':'note'},
-  'purchase_debit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'docNum':'id', 'debitAmount':'total'},
-  'purchase_credit':{'enterpriseID':'enterprise_id', 'transID':'id', 'currency_id':'currency_id', 'arapAccount':'creditor_id', 'transDate':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'creditAmount':'cost', 'docNum':'id'}
+  'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debit':'cost'},
+  'sale_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debit':'cost', 'inv_po_id':'id'},
+  'sale_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'inv_po_id':'id', 'credit':'total'},
+  'cash':{'t':'cash', 'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'debit':'amount', 'credit':'amount'},
+  'cash_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'debit':'amount'/*, 'account_id':'debit_account'*/},
+  'cash_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'credit':'amount'}, 
+  'purchase':{'t':'purchase', 'trans_id':'id','enterprise_id':'enterprise_id','credit':'cost','currency_id':'currency_id','deb_cred_id':'creditor_id','trans_date':'invoice_date','description':'note'},
+  'purchase_debit': {'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'doc_num':'id', 'debit':'total'},
+  'purchase_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'credit':'cost', 'doc_num':'id'}
 };
 var service_name = '', opDibitState, opCreditState;
 
 exports.poster = function(req, res) {
   opDibitState = false; opCreditState = false;
   var callback = function (err, record) {
+    console.log("catch the error: ", err, record);
     if (record.length < 1) {
       insert(req.body, res);    
     }
@@ -24,7 +25,7 @@ exports.poster = function(req, res) {
   for(var i = 0; i<req.body.length; i++){
       var sql = {
                   'entities' : [{'t':'posting_journal', 'c':['id']}],
-                  'cond' : [{'t':'posting_journal', 'cl':'transID', 'z':'=', 'v':req.body[i].id, l:'AND'}, {'t':'posting_journal', 'cl':'origin_id', 'z':'=', 'v':req.body[i].transaction_type}]
+                  'cond' : [{'t':'posting_journal', 'cl':'trans_id', 'z':'=', 'v':req.body[i].id, l:'AND'}, {'t':'posting_journal', 'cl':'origin_id', 'z':'=', 'v':req.body[i].transaction_type}]
             };
       db.execute(db.select(sql), callback);
   }  
@@ -43,21 +44,21 @@ var saleDebit = function (obj, data, posting, res){
   for(var cle in objDebit){
     journalRecord[cle] = data[objDebit[cle]];
   }
-  journalRecord.posted = 0;
+//  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
-  journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+  journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   var callback = function (err, ans) {    
     if (err){
-      deffer.resolve({succes :false, info:ans});
+      deffer.resolve({succes :false, info:err});
     }else{
     deffer.resolve({succes:true, info:ans});
     }    
   }  
   var sql = {
              'entities':[{'t':'debitor', 'c':['group_id']}],
-             'cond':[{'t':'debitor', 'cl':'id', 'z':'=', 'v':journalRecord.arapAccount}]
+             'cond':[{'t':'debitor', 'cl':'id', 'z':'=', 'v':journalRecord.deb_cred_id}]
             };
   var req = db.select(sql);
   db.execute(req, function(err, data){
@@ -79,7 +80,7 @@ var saleCredit = function(obj, data, posting, res){
   var objCredit = map[obj.t+'_credit'];
   var callback = function (err, ans) {    
     if (err){
-      deffer.resolve({succes :false, info:ans});
+      deffer.resolve({succes :false, info:err});
     }else{
       deffer.resolve({succes:true, info:ans});
     } 
@@ -95,11 +96,11 @@ var saleCredit = function(obj, data, posting, res){
       for(var cle in objCredit){
       journalRecord[cle] = item[objCredit[cle]];    
       }
-      journalRecord.posted = 0;
+//      journalRecord.posted = 0;
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
       journalRecord.id = '';
-      journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+      journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
       var sql = db.insert('posting_journal', [journalRecord]); 
       db.execute(sql, callback);      
     });
@@ -111,7 +112,7 @@ var cashDebit = function (obj, data, posting, res){
   var deffer = Q.defer(); 
   var callback = function (err, ans) {
     if (err){
-      deffer.resolve({succes :false, info:ans});
+      deffer.resolve({succes :false, info:err});
     }else{
     deffer.resolve({succes:true, info:ans});
     } 
@@ -121,11 +122,11 @@ var cashDebit = function (obj, data, posting, res){
   for(var cle in objDebit){
     journalRecord[cle] = data[0][objDebit[cle]];
   }
-  journalRecord.posted = 0;
+//  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
-  journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+  journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   var sql = {
     'entities':[{'t':'cash', 'c':['debit_account']}],
     'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
@@ -142,7 +143,7 @@ var cashCredit = function (obj, data, posting, res){
   var deffer = Q.defer(); 
   var callback = function (err, ans) {
     if (err){
-      deffer.resolve({succes :false, info:ans});
+      deffer.resolve({succes :false, info:err});
     }else{
       deffer.resolve({succes:true, info:ans});
     } 
@@ -156,7 +157,7 @@ var cashCredit = function (obj, data, posting, res){
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
-  journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+  journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   var sql = {
     'entities':[{'t':'cash', 'c':['credit_account']}],
     'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
@@ -173,7 +174,7 @@ var purchaseDebit = function(obj, data, posting, res){
   var deffer = Q.defer(); 
   var objDebit = map[obj.t+'_debit'];
   var callback = function (err, ans) {if (err){
-      deffer.resolve({succes :false, info:ans});
+      deffer.resolve({succes :false, info:err});
     }else{
     deffer.resolve({succes:true, info:ans});
     } 
@@ -189,11 +190,11 @@ var purchaseDebit = function(obj, data, posting, res){
       for(var cle in objDebit){
       journalRecord[cle] = item[objDebit[cle]];    
       }
-      journalRecord.posted = 0;
+//      journalRecord.posted = 0;
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
       journalRecord.id = '';
-      journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+      journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
       var sql = db.insert('posting_journal', [journalRecord]); 
       db.execute(sql, callback);      
     });
@@ -209,21 +210,21 @@ var purchaseCredit = function(obj, data, posting, res){
   for(var cle in objCredit){
     journalRecord[cle] = data[objCredit[cle]];
   }
-  journalRecord.posted = 0;
+//  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
-  journalRecord.transDate = util.convertToMysqlDate(journalRecord.transDate);
+  journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   var callback = function (err, ans) {
     if (err){
-      deffer.resolve({succes :false, info:ans});
+      deffer.resolve({succes :false, info:err});
     }else{
     deffer.resolve({succes:true, info:ans});
     } 
   }  
   var sql = {
              'entities':[{'t':'creditor', 'c':['creditor_group_id']}],
-             'cond':[{'t':'creditor', 'cl':'id', 'z':'=', 'v':journalRecord.arapAccount}]
+             'cond':[{'t':'creditor', 'cl':'id', 'z':'=', 'v':journalRecord.deb_cred_id}]
             };
   var req = db.select(sql);
   db.execute(req, function(err, data){
@@ -242,8 +243,11 @@ var purchaseCredit = function(obj, data, posting, res){
 
 var process = function(data, posting, res){
   var obj = map[service_name];
+
+
   if(service_name == 'sale'){
-    Q.all([saleDebit(obj, data[0], posting, res), saleCredit(obj, data, posting, res), check(obj.t, posting.id)]).then(function(arr) {    
+    Q.all([saleDebit(obj, data[0], posting, res), saleCredit(obj, data, posting, res), check(obj.t, posting.id)]).then(function(arr) {
+      console.log("Received, ", arr);
       if(arr[0].succes==true && arr[1].succes==true && arr[2] == true){
         res.send({status: 200, insertId: arr[1].info.insertId});
       }
