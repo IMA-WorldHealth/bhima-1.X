@@ -1,0 +1,15 @@
+.content {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+header {
+  padding-top: 7px;
+  font-size: 2em;
+}
+
+header :after {
+  border-bottom: 1px solid #dddddd;
+}
