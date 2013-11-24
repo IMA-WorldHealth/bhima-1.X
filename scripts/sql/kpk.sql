@@ -207,27 +207,6 @@ INSERT INTO `permission` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `kpk`.`debitor_group_type`
---
-DROP TABLE IF EXISTS `debitor_group_type`;
-CREATE TABLE `debitor_group_type` (
-  `id` smallint unsigned NOT NULL,
-  `type` varchar(80) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
---
--- Dumping data for table `kpk`.`debitor_group_type`
---
-LOCK TABLES `debitor_group_type` WRITE;
-INSERT INTO `debitor_group_type` VALUES
-  (1, 'Employees'),
-	(2, 'Conventionnees'),
-	(3, 'Malades Ambulatoire'),
-	(4, 'Malades Interne');
-UNLOCK TABLES;
-
---
 -- Table structure for table `kpk`.`enterprise`
 --
 DROP TABLE IF EXISTS `enterprise`;
