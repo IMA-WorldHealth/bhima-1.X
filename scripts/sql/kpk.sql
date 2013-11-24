@@ -1055,7 +1055,7 @@ UNLOCK TABLES;
 --
 DROP TABLE IF EXISTS `period`;
 CREATE TABLE `period` (
-  `id`              mediumint unsigned NOT NULL,
+  `id`              mediumint unsigned NOT NULL AUTO_INCREMENT,
   `fiscal_year_id`  mediumint unsigned NOT NULL,
   `period_start`    date NOT NULL,
   `period_stop`     date NOT NULL,
