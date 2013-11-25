@@ -8,5 +8,6 @@
 #account_grid {
   /*FIXME pretty gross*/
   height: 600px;
+  font-size: 12px;
 }
 
