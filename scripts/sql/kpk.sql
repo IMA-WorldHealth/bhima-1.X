@@ -43,7 +43,7 @@ CREATE TABLE `currency` (
 
 --
 -- Dumping data for table `kpk`.`currency`
-
+--
 LOCK TABLES `currency` WRITE;
 INSERT INTO `currency` VALUES
   (1,'Congolese Francs','FC',NULL,900,910,'2013-01-03'),
@@ -211,18 +211,16 @@ UNLOCK TABLES;
 --
 DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
-  `id`            smallint unsigned NOT NULL AUTO_INCREMENT,
-  `region`        varchar(70) NOT NULL,
-  `country`       varchar(70) NOT NULL,
-  `city`          varchar(70) NOT NULL,
-  `name`          varchar(70) NOT NULL,
-  `phone`         varchar(20) NOT NULL,
-  `email`         varchar(70) NOT NULL,
-  `type`          varchar(70) NOT NULL,
-  `cash_account`  mediumint unsigned NOT NULL,
+  `id`                  smallint unsigned NOT NULL AUTO_INCREMENT,
+  `region`              varchar(70) NOT NULL,
+  `country`             varchar(70) NOT NULL,
+  `city`                varchar(70) NOT NULL,
+  `name`                varchar(70) NOT NULL,
+  `phone`               varchar(20) NOT NULL,
+  `email`               varchar(70) NOT NULL,
+  `type`                varchar(70) NOT NULL,
+  `account_definition`  mediumint unsigned NOT NULL,
   PRIMARY KEY (`id`)
---  KEY `cash_account` (`cash_account`),
---  CONSTRAINT FOREIGN KEY (`cash_account`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB;
 
 --
