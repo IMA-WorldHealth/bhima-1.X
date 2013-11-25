@@ -33,7 +33,7 @@
            data-node-label="label" data-node-children="children"></div>
     </div>
 
-    <div class="row" id="kpk-util">
+    <div class="row" id="kpk-util" ng-controller="utilController">
       <!--TODO Might not be needed (set in settings) decided on this-->
 
       <!--<div id="kpk-app-select">-->
@@ -48,10 +48,20 @@
         <!--</select>-->
       <!--</div>-->
       <div class="btn-group-justified"><!--class="btn-group"-->
-        <!--<a type="button" class="btn btn-default">-->
-          <!--<span class="glyphicon glyphicon-user"></span>-->
-        <!--</a>-->
-        <a href="/#/settings" type="button" class="btn btn-default">
+        <!-- href="/#/settings" -->
+        <a ng-click="toggleTranslate('en')" type="button" class="btn btn-default"> 
+          en
+        </a>
+        <a ng-click="toggleTranslate('fr')" type="button" class="btn btn-default"> 
+          fr
+        </a>
+        <a ng-click="toggleTranslate('ln')" type="button" class="btn btn-default"> 
+          ln
+        </a>
+      </div>
+      <div class="btn-group-justified"><!--class="btn-group"-->
+        <!-- href="/#/settings" -->
+        <a href="/#/settings" type="button" class="btn btn-default"> 
           <span class="glyphicon glyphicon-cog"></span>
         </a>
         <a type="button" class="btn btn-default" href="/logout">
@@ -113,6 +123,9 @@
 <!--angular-->
 <script src="lib/angular/angular.min.js"></script>
 
+<!--i18n-->
+<script src="lib/angular-translate/angular-translate.js"></script>
+
 <!--kapok-->
 <script src="js/app.js"></script>
 <script src="js/services/services.js"></script>
@@ -123,5 +136,7 @@
 <!--lib-->
 <script src="js/directives/angular.treeview.js"></script>
 <script src="lib/ui-bootstrap-custom-tpls-0.6.0.js"></script>
+
+
 </body>
 </html>

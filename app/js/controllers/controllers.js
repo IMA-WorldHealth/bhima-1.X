@@ -461,7 +461,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 //********************** UTIL CONTROLLER ********************************************
 //***********************************************************************************
  
-controllers.controller('utilController', function($rootScope, $scope, $q, kpkConnect, appstate, kpkUtilitaire) { 
+controllers.controller('utilController', function($rootScope, $scope, $q, $translate, kpkConnect, appstate, kpkUtilitaire) { 
   /////
   // summary: 
   //  Responsible for all utilities (buttons/ selects etc.) on the application side bar
@@ -470,6 +470,11 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   //  -All operations on models should be local, and then exposed to scope
   //  -Should use connect instead of kpkConnect (soon to be deleted)
   /////
+
+  $scope.toggleTranslate = function toggleTranslate(key) { 
+
+    $translate.uses(key);
+  }
   /*$scope.enterprise_model = {};
   $scope.fiscal_model = {};
   $scope.period_model = {};
@@ -2398,7 +2403,7 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
     enableCellNavigation: true,
     enableColumnReorder: true,
     forceFitColumns: true,
-    rowHeight: 35
+    rowHeight: 30
   };
 
   function init() {

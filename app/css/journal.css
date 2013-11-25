@@ -1,28 +1,3 @@
-#divcontainerID{
-	position:relative;
-	height: 100%;
-}
-#divinfosID{
-	position:absolute;
-	height:80%;
-	top:5px;
-}
-
-#divactionID{
-	position:absolute;
-	top: 600px;
-	right: 5px;
-	
-
-}
-
-.journal-table {
-  /*FIXME pretty gross*/
-  max-height: 600px;
-  overflow-y: auto;
-}
-
-
 .bika-header {
   padding-bottom: 9px;
   margin: 40px 0 5px;
@@ -71,4 +46,9 @@
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
+}
+
+
+#journal_grid { 
+  font-size: 12px;
 }
