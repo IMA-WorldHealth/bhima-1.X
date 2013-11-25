@@ -217,8 +217,8 @@ CREATE TABLE `enterprise` (
   `country`             varchar(70) NOT NULL,
   `city`                varchar(70) NOT NULL,
   `name`                varchar(70) NOT NULL,
-  `phone`               varchar(20) NOT NULL,
-  `email`               varchar(70) NOT NULL,
+  `phone`               varchar(20),
+  `email`               varchar(70),
   `type`                varchar(70) NOT NULL,
   `cash_account`        int unsigned,
   PRIMARY KEY (`id`)
@@ -900,7 +900,7 @@ UNLOCK TABLES;
 --
 DROP TABLE IF EXISTS `debitor_group_type`;
 CREATE TABLE `debitor_group_type` (
-  `id` smallint unsigned NOT NULL,
+  `id` smallint unsigned NOT NULL auto_increment,
   `type` varchar(80) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -956,7 +956,7 @@ CREATE TABLE `debitor_group` (
 --
 DROP TABLE IF EXISTS `debitor`;
 CREATE TABLE `debitor` (
-  `id`        int unsigned NOT NULL,
+  `id`        int unsigned NOT NULL auto_increment,
   `group_id`  smallint unsigned NOT NULL,
   `text`      text,
   PRIMARY KEY (`id`),
