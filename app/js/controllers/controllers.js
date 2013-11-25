@@ -3287,4 +3287,8 @@ controllers.controller('exchangeRateController', function ($scope, connect) {
 
 });
 
+controllers.controller('createAccountController', function($scope, $q) { 
+  console.log("createAccountController initialised");
+});
+
 })(angular);

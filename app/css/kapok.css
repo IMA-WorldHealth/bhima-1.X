@@ -20,6 +20,9 @@ section {
   padding-right: 15px;
   padding-bottom: 3px;
   padding-top: 3px;
+
+  /*Fixes pull-right only menus, should not be needed*/
+  min-height: 37px;
 }
 
 .content {
