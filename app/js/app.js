@@ -101,15 +101,20 @@
       GENERAL_LEDGER: "general ledger",
       DEBIT: "debit",
       CREDIT: "credit",
+      FISCAL_YEAR: "fiscal year",
 
       //Application functions
       CONFIGURE: "configure",
       PRINT: "print",
+      CREATE: "create",
 
       //Generic database
       ID: "id",
       DATE: "date",
       DESCRIPTION: "description",
+
+      //Titles
+      MANAGEMENT: "management",
 
       //Journal database
       DOC_NO: "doc no.",
