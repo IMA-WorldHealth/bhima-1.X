@@ -3,7 +3,7 @@ CREATE DATABASE `kpk`;
 USE `kpk`;
 UNLOCK TABLES;
 
-GRANT EXECUTE, PROCESS, SELECT, SHOW DATABASES, SHOW VIEW, ALTER, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TABLESPACE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, INDEX, INSERT, REFERENCES, TRIGGER, UPDATE, CREATE USER, FILE, LOCK TABLES, RELOAD, REPLICATION CLIENT, REPLICATION SLAVE, SHUTDOWN, SUPER  ON *.* TO 'kpk'@'%' IDENTIFIED BY 'HISCongo2013';
+GRANT ALL ON `kpk`.* TO 'kpk'@'%' IDENTIFIED BY 'HISCongo2013';
 FLUSH PRIVILEGES;
 
 --
@@ -1000,7 +1000,7 @@ CREATE TABLE `patient` (
   `dob`             date,
   `parent_name`     varchar(150),
   `sex`             char(1) NOT NULL,
-  `religion`        varchar(50) NOT NULL,
+  `religion`        varchar(50),
   `marital_status`  varchar(50),
   `phone`           varchar(12),
   `email`           varchar(20),
@@ -1350,7 +1350,6 @@ CREATE TABLE `cash` (
   `date`            date NOT NULL,
   `debit_account`   mediumint unsigned NOT NULL,
   `credit_account`  mediumint unsigned NOT NULL,
-  `cost`            int unsigned NOT NULL,
   `currency_id`     tinyint unsigned NOT NULL,
   `cashier_id`      smallint unsigned NOT NULL,
   `cashbox_id`      smallint unsigned NOT NULL,
@@ -1368,6 +1367,19 @@ CREATE TABLE `cash` (
   CONSTRAINT FOREIGN KEY (`invoice_id`) REFERENCES `sale` (`id`)
 ) ENGINE=InnoDB;
 
+--
+-- table `kpk`.`cash_item`
+--
+DROP TABLE IF EXISTS `cash_item`;
+CREATE TABLE `cash_item` (
+  `id`              int unsigned not null,
+  `cash_id`         int unsigned not null,
+  `cost`            decimal(19,2) unsigned not null default 0.00,
+  `invoice_id`      int unsigned not null,
+  primary key (`id`),
+  key `cash_id` (`cash_id`),
+  constraint foreign key (`cash_id`) references `cash` (`id`)
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `kpk`.`posting_journal`
