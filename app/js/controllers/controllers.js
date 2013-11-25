@@ -2187,6 +2187,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         currency, enterprise_id, cash_account;
     
     cash_account = appstate.get('enterprise').cash_account;
+    enterprise_id = appstate.get('enterprise').id;
 
     debitors = {
       tables: {
@@ -2214,13 +2215,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       connect.req(debitors),
       connect.req(currency),
       connect.req(cash),
+      connect.req(cash_items)
     ]).then(init);
 
-    var model_names = ['debitors', 'currency', 'cash'];
+    var model_names = ['debitors', 'currency', 'cash', 'cash_items'];
     var models = $scope.models = {};
     var stores = $scope.stores = {};
     var slip = $scope.slip = {};
     var meta = $scope.meta = {};
+    meta.invoices = [];
 
     function init (arr) {
       // init all data connections & models
@@ -2236,6 +2239,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       // Module-dependent flag to say what cashbox this is
       slip.cashbox_id = 1;
 
+      //just for the test, it will be changed
+      slip.enterprise_id = enterprise_id;
+
       // default debit account is cash box
       slip.debit_account = cash_account;
 
@@ -2250,21 +2256,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       slip.bon_num = getBonNumber(models.cash, slip.bon);
 
-      // default text
-      slip.text = "Payment";
-
       // FIXME: get this from a service
       slip.cashier_id = 1;
 
-      //just for the test, it will be changed
-      slip.enterprise_id = 101;
     }
+
 
     function selectDebitor () {
       // populate the outstanding invoices
       $http.get('/ledgers/debitor/' + meta.debitor)
         .then(function (response) {
-          console.log("RESPONSE:", response);
           if (response.data) {
             models.outstanding = response.data.filter(function (row) {
               // filter only those that do not balance
@@ -2273,7 +2274,16 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           }
         });
 
-      slip.credit_account = stores.debitors.get(meta.debitor).account;
+      slip.credit_account = stores.debitors.get(meta.debitor).account_number;
+      // update the text automatically
+      // This doesn't work yet.
+      $scope.$watch([meta.invoices, meta.debitors, meta.amount], function () {
+        // default text
+        slip.text = "Payment of invoice(s) %s for patient %p totaling %a."
+            .replace('%s', meta.invoices.join().toUpperCase())
+            .replace('%p', stores.debitors.get(meta.debitor).first_name.toUpperCase())
+            .replace('%a', meta.amount || '');
+      })
       defaults();
     }
 
@@ -2294,21 +2304,37 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return [deb.first_name, deb.last_name].join(' ');
     };
 
-    $scope.validate = function () {
-      var fields = ["enterprise_id","bon", "bon_num", "text", "cashier_id", "date", "currency_id", "cashbox_id", "invoice_id", "id", "credit_account", "debit_account", "amount"];
-      var obj = {};
-      fields.forEach(function (f) { obj[f] = slip[f]; });
-      // FIXME: this should use post, i guess
-      //stores['cash-currency'].put(obj);
-      connect.basicPut('cash', [obj]);
-      stores['sale-debitor'].remove(slip.invoice_id);
-      connect.basicPost('sale', [{id: slip.invoice_id, paid: 1}], ["id"]);
+    function createCashItems (cost) {
+      var item, debt, i = 0,
+          model = meta.invoices,
+          store = stores.cash_items;
+      while (cost > 0 && model[i]) {
+        debt = model[i].credit - model[i].credit;
+        item = {};
+        item.id = store.generateid();
+        item.cash_id = slip.id;
+        item.invoice_id = model[i].id;
+        item.cost = (cost - debt >= 0) ? cost - debt : debt - cost;
+        cost = cost - item.cost;
+        store.post(item);
+        console.log("created:", item);
+        i++;
+      }
+    }
+
+    $scope.submit = function () {
+      // clean off the object of $hashkey and the like
+      var cleaned = connect.clean(slip);
+      if (meta.invoices.length < 1) { 
+        $scope.noinvoices = true;
+        return; 
+      } else {
+        createCashItems(meta.amount);
+        stores.cash.put(cleaned); 
+      }
       // FIXME: improve this
       connect.journal([{id:slip.id, transaction_type:1, user:1}]); //a effacer just for the test
-      $scope.hasCash = true;
-      $scope.submitted = true; 
       // FIXME: make this formal for posting to the journal
-      // FIXME: fiscal year
       $scope.clear();
     };
 
@@ -2319,23 +2345,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       }).map(function(row) {
         return row.bon_num;
       });
-
-      if (ids.length < 1) { return 1; }
-      else {
-        // Maximum of the bon number, incrimented
-        return Math.max.apply(Math.max, ids) + 1;
-      }
+      return (ids.length < 1) ? 1 : Math.max.apply(Math.max, ids) + 1;
     }
+
+    $scope.valid = function () {
+      var receipt = $scope.receipt;
+      var bool = receipt.bon_num.$valid && receipt.amount.$valid && !!slip.credit_account;
+      return bool; 
+    };
 
     $scope.clear = function () {
       slip = $scope.slip = {};
-      $scope.chosen = -1;
       defaults();
-      $scope.submitted = false;
-    };
-
-    $scope.selectPaid = function (id) {
-      $scope.paid_id = id;
     };
 
   });
