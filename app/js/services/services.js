@@ -777,7 +777,7 @@
       // clean off the $hashkey and other angular bits
       var cleaned = {};
       for (var k in obj) {
-        if (obj[k] !== '$hashkey') cleaned[k] = obj[k];
+        if (obj[k] !== '$$hashkey') cleaned[k] = obj[k];
       } 
       return cleaned;
     }

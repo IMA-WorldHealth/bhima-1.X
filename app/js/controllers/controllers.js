@@ -2183,7 +2183,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
   });
 
-  controllers.controller('cashController', function($scope, connect, $q, $filter, $http, appstate) {
+  controllers.controller('cashController', function($scope, $q, $modal, $filter, $http, connect, appstate) {
     var enterprise, debitors, cash_items, cash,
         currency, enterprise_id, cash_account;
     
@@ -2194,9 +2194,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       tables: {
         'patient' : {columns: ["first_name", "last_name"]},
         'debitor' : {columns: ["id"]},
-        'debitor_group' : {columns: ['name', 'account_number', 'max_credit']}
+        'debitor_group' : {columns: ['name', 'account_id', 'max_credit']},
+        'account' : {columns: ['account_number']}
       },
-      join: ['patient.debitor_id=debitor.id', 'debitor.group_id=debitor_group.id'],
+      join: ['patient.debitor_id=debitor.id', 'debitor.group_id=debitor_group.id', 'debitor_group.account_id=account.id'],
       where: ['debitor_group.locked<>1']
     };
 
@@ -2224,6 +2225,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var stores = $scope.stores = {};
     var slip = $scope.slip = {};
     var meta = $scope.meta = {};
+    var cash_items = $scope.cash_items = [];
     meta.invoices = [];
 
     function init (arr) {
@@ -2232,6 +2234,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         stores[model_names[idx]] = model;
         models[model_names[idx]] = model.data;
       });
+      slip.currency_id = 1;
     }
 
     function defaults () {
@@ -2288,6 +2291,35 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       defaults();
     }
 
+    $scope.breakdown= function () {
+      var instance = $modal.open({
+        templateUrl: 'paymentbreakdown.html',
+        controller : function ($scope, $modalInstance, outstanding, amount) {
+          var invoices = $scope.invoices = outstanding;
+          $scope.total = 0;
+
+          $scope.$watch('invoices', function () {
+            var filtered = invoices.filter(function (item) { return item.cost !== undefined; });
+            console.log(filtered);
+            $scope.total = (filtered.length > 0) ? filtered.map(function(item) { return item.cost; }).reduce(function(a,b) {return a + b;}) : 0;
+          }, true);
+
+          $scope.submit = function () {
+             $modalInstance.close(invoices);
+          };
+
+        },
+        resolve: {
+          outstanding: function () { return models.outstanding; },
+          amount: function () { return meta.amount; }
+        }
+      });
+
+      instance.result.then(function (res) {
+        cash_items = res;
+      });
+    };
+
     $scope.selectDebitor = selectDebitor;
 
     $scope.formatCurrency = function (id) {
@@ -2299,6 +2331,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     $scope.setCurrency = function (idx) {
       // store indexing starts from 0.  DB ids start from 1
       slip.currency_id = idx + 1; 
+    };
+
+    $scope.log = function () {
+      //debuggin 
+      console.log(meta.invoices);
     };
 
     $scope.formatName = function (deb) {

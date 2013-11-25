@@ -1374,10 +1374,10 @@ CREATE TABLE `posting_journal` (
   `doc_num`           int unsigned, -- what does this do? -- why would this be NOT NULL if we don't know what it does? -- as a reminder to ask dedrick...
   `description`       text,
   `account_id`        int unsigned not null,
-  `debit`             int unsigned,
-  `credit`            int unsigned,
-  `debit_equiv`       int unsigned,
-  `credit_equiv`      int unsigned,
+  `debit`             decimal (19,2) unsigned not null default 0,
+  `credit`            decimal (19,2) unsigned not null default 0,
+  `debit_equiv`       decimal (19,2) unsigned not null default 0,
+  `credit_equiv`      decimal (19,2) unsigned not null default 0,
   `currency_id`       tinyint unsigned NOT NULL,
   `deb_cred_id`       varchar(45), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
