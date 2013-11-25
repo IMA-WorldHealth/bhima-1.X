@@ -773,6 +773,15 @@
       return $http.put('data/', format_object);
     }
 
+    function clean (obj) {
+      // clean off the $hashkey and other angular bits
+      var cleaned = {};
+      for (var k in obj) {
+        if (obj[k] !== '$hashkey') cleaned[k] = obj[k];
+      } 
+      return cleaned;
+    }
+
     //Check we haven't made this query before this session, check we don't have the data stored in local storage
     //-verify version numbers of data if it has been cached (see priority levels etc.)
     function referenceQuery (query) {}
@@ -784,7 +793,9 @@
       basicPost: basicPost,
       basicGet: basicGet,
       basicDelete: basicDelete,
-      journal: journal
+      journal: journal,
+      fetch: fetch,
+      clean: clean
     };
   });
 
