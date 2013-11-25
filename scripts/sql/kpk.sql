@@ -1371,7 +1371,7 @@ CREATE TABLE `posting_journal` (
   `period_id`         mediumint unsigned, -- not null,
   `trans_id`          int unsigned NOT NULL,
   `trans_date`        date NOT NULL,
-  `doc_num`           int unsigned NOT NULL, -- what does this do?
+  `doc_num`           int unsigned, -- what does this do?
   `description`       text,
   `account_id`        int unsigned not null,
   `debit`             int unsigned,
