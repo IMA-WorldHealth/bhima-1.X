@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS `tax`;
 CREATE TABLE `tax` (
   `id`            smallint unsigned NOT NULL AUTO_INCREMENT,
   `registration`  mediumint unsigned NOT NULL,
-  `note` text,
+  `note`          text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -206,6 +206,7 @@ INSERT INTO `permission` VALUES
 	(45,41,2);
 UNLOCK TABLES;
 
+
 --
 -- Table structure for table `kpk`.`enterprise`
 --
@@ -219,7 +220,7 @@ CREATE TABLE `enterprise` (
   `phone`               varchar(20) NOT NULL,
   `email`               varchar(70) NOT NULL,
   `type`                varchar(70) NOT NULL,
-  `account_definition`  mediumint unsigned NOT NULL,
+  `cash_account`        int unsigned,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -232,6 +233,7 @@ INSERT INTO `enterprise` VALUES
 	(101,'Kinshasa','RDC','Kinshasa','IMA','18004743201','jniles@example.com','1',570000),
 	(102,'Bandundu','RDC','Kikwit','IMAKik','--','jniles@example.com','1',570000);
 UNLOCK TABLES;
+
 
 --
 -- Table structure for table `kpk`.`price_group`
@@ -279,7 +281,7 @@ CREATE TABLE `fiscal_year` (
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `account_id` mediumint unsigned NOT NULL DEFAULT '0',
+  `account_id` int unsigned NOT NULL DEFAULT '0',
   `period_id` mediumint unsigned NOT NULL,
   `budget` decimal(10,2) unsigned,
   PRIMARY KEY (`id`)
@@ -622,13 +624,14 @@ UNLOCK TABLES;
 --
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
-  `enterprise_id` smallint unsigned NOT NULL,
-  `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `locked` boolean NOT NULL DEFAULT '0',
-  `account_txt` text,
-  `account_type_id` mediumint unsigned NOT NULL,
-  `account_category` text NOT NULL,
-  `fixed` boolean DEFAULT '0',
+  `id`                  int unsigned not null AUTO_INCREMENT, -- id is now primary key
+  `enterprise_id`       smallint unsigned NOT NULL,
+  `account_number`      mediumint unsigned NOT NULL,
+  `account_txt`         text,
+  `account_type_id`     mediumint unsigned NOT NULL,
+  `account_category`    text NOT NULL,
+  `fixed`               boolean DEFAULT '0',
+  `locked`              boolean NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `account_type_id` (`account_type_id`),
@@ -640,7 +643,7 @@ CREATE TABLE `account` (
 -- Dumping data for table `kpk`.`account`
 --
 LOCK TABLES `account` WRITE;
-INSERT INTO `account` VALUES
+INSERT INTO `account` (`enterprise_id`, `account_number`, `fixed`, `account_txt`, `account_type_id`, `account_category`, `locked`) VALUES
   (101,100000,0,'capital social',1,'300',0),
 	(101,110000,0,'reserves',1,'300',0),
 	(101,120000,0,'report',1,'300',0),
@@ -848,7 +851,7 @@ DROP TABLE IF EXISTS `creditor_group`;
 CREATE TABLE `creditor_group` (
   `id`          smallint NOT NULL AUTO_INCREMENT,
   `group_txt`   varchar(45),
-  `account_id`  mediumint unsigned NOT NULL,
+  `account_id`  int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `account_id` (`account_id`),
   CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -921,7 +924,7 @@ CREATE TABLE `debitor_group` (
   `enterprise_id`       smallint unsigned NOT NULL,
   `id`                  smallint unsigned NOT NULL,
   `name`                varchar(100) NOT NULL,
-  `account_number`      mediumint unsigned NOT NULL,
+  `account_id`          int unsigned NOT NULL,
   `location_id`         smallint unsigned NOT NULL,
   `payment_id`          tinyint unsigned NOT NULL DEFAULT '3',
   `phone`               varchar(10) DEFAULT '',
@@ -934,14 +937,14 @@ CREATE TABLE `debitor_group` (
   `type_id`             smallint unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `account_number` (`account_number`),
+  KEY `account_id` (`account_id`),
   KEY `location_id` (`location_id`),
   KEY `payment_id` (`payment_id`),
   KEY `contact_id` (`contact_id`),
   KEY `tax_id` (`tax_id`),
   KEY `type_id` (`type_id`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT FOREIGN KEY (`account_number`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FOREIGN KEY (`tax_id`) REFERENCES `tax` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1014,17 +1017,6 @@ CREATE TABLE `patient` (
   CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
---
--- Dumping data for table `kpk`.`debitor_group`
---
-LOCK TABLES `debitor_group` WRITE;
-INSERT INTO `debitor_group` VALUES 
-  (1,1,'Employees',420000,1,3,'','','The employees of hospital X',0,1,1,1,1),
-	(1,2,'Fr Rienheart Conv.',410400,1,3,'','','Frere Rienheart\'s conventionees',1,1,2,1,2),
-	(1,3,'Malades Interne',410800,1,3,'','','Outpatient sick folks',0,1,1,1,4),
-	(1,4,'Malades Ambulatoire',410000,1,3,'','','Inpatient sick folks',0,1,2,1,3),
-	(1,5,'Pauvres',410700,1,3,'','','Poor people who cannot pay.  (i.e. tax write-offs)',0,1,1,1,2);
-UNLOCK TABLES;
 
 --
 -- Table structure for table `kpk`.`inv_unit`
@@ -1139,10 +1131,10 @@ CREATE TABLE `inv_group` (
   `id`              smallint unsigned NOT NULL,
   `name`            varchar(100) NOT NULL,
   `symbol`          char(1) NOT NULL,
-  `sales_account`   mediumint unsigned NOT NULL,
-  `cogs_account`    mediumint unsigned,
-  `stock_account`   mediumint unsigned,
-  `tax_account`     mediumint unsigned,
+  `sales_account`   int unsigned NOT NULL,
+  `cogs_account`    int unsigned,
+  `stock_account`   int unsigned,
+  `tax_account`     int unsigned,
   PRIMARY KEY (`id`),
   KEY `sales_account` (`sales_account`),
   KEY `cogs_account` (`cogs_account`),
@@ -1153,17 +1145,6 @@ CREATE TABLE `inv_group` (
   CONSTRAINT FOREIGN KEY (`stock_account`) REFERENCES `account` (`id`),
   CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `kpk`.`inv_group`
---
-LOCK TABLES `inv_group` WRITE;
-INSERT INTO `inv_group` VALUES
-  (0,'Services','S',700000,NULL,NULL,NULL),
-	(1,'Medicines','M',700000,700100,NULL,NULL),
-	(2,'Surgery','C',710400,NULL,NULL,NULL),
-	(3,'Office Supplies','O',310000,310900,NULL,NULL);
-UNLOCK TABLES;
 
 --
 -- Table structure for table `kpk`.`inventory`
@@ -1195,22 +1176,6 @@ CREATE TABLE `inventory` (
   CONSTRAINT FOREIGN KEY (`unit_id`) REFERENCES `inv_unit` (`id`),
   CONSTRAINT FOREIGN KEY (`type_id`) REFERENCES `inv_type` (`id`)
 ) ENGINE=InnoDB;
-
---
--- Dumping data for table `kpk`.`inventory`
---
-LOCK TABLES `inventory` WRITE;
-INSERT INTO `inventory` VALUES 
-  (101,1,'CHCRAN','Craniotomie',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,2,'CHGLOB','Goitre Lobectomie/Hemithyroidect',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,3,'CHGTHY','Goitre Thyroidectomie Sobtotale',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,4,'CHEXKY','Excision De Kyste Thyroiglosse',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,5,'CHPASU','Parotidectomie Superficielle',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,6,'CHTRAC','Trachectome',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,7,'EXKYSB','Kyste Sublingual',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,8,'EXKYPB','Petite Kyste De La Bouche',20000.00,2,1,0,0,0,0,0,2,0),
-	(101,9,'BICNOI','Bic Noire',1.00,3,4,0,0,0,0,0,0,1);
-UNLOCK TABLES;
 
 --
 -- Table structure for table `kpk`.`sale`
@@ -1336,6 +1301,22 @@ INSERT INTO `transaction_type` VALUES
 UNLOCK TABLES;
 
 --
+-- table `kpk`.`account_group`
+--
+-- TODO: when we can discuss this as a group
+-- drop table if exists `account_group`;
+-- create table `account_group` (
+--   `id`              int not null auto_increment,
+--   `account_id`      int not null,
+--   `enterprise_id`   smallint not null,
+--   primary key (`id`),
+--   key (`account_id`),
+--   key (`enterprise_id`),
+--   constraint foreign key (`account_id`) references `account` (`id`),
+--   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+-- ) engine=innodb;
+
+--
 -- Table structure for table `kpk`.`cash`
 --
 DROP TABLE IF EXISTS `cash`;
@@ -1346,8 +1327,8 @@ CREATE TABLE `cash` (
   `bon_num`         int unsigned NOT NULL,
   `invoice_id`      int unsigned NOT NULL,
   `date`            date NOT NULL,
-  `debit_account`   mediumint unsigned NOT NULL,
-  `credit_account`  mediumint unsigned NOT NULL,
+  `debit_account`   int unsigned NOT NULL,
+  `credit_account`  int unsigned NOT NULL,
   `currency_id`     tinyint unsigned NOT NULL,
   `cashier_id`      smallint unsigned NOT NULL,
   `cashbox_id`      smallint unsigned NOT NULL,
@@ -1392,7 +1373,7 @@ CREATE TABLE `posting_journal` (
   `trans_date`        date NOT NULL,
   `doc_num`           int unsigned NOT NULL, -- what does this do?
   `description`       text,
-  `account_id`        mediumint unsigned,
+  `account_id`        int unsigned not null,
   `debit`             int unsigned,
   `credit`            int unsigned,
   `debit_equiv`       int unsigned,
@@ -1433,7 +1414,7 @@ create table `kpk`.`general_ledger` (
   `trans_date`        date NOT NULL,
   `doc_num`           int unsigned NOT NULL, -- what does this do?
   `description`       text,
-  `account_id`        mediumint unsigned,
+  `account_id`        int unsigned not null,
   `debit`             int unsigned,
   `credit`            int unsigned,
   `debit_equiv`       int unsigned,
@@ -1470,7 +1451,7 @@ create table `kpk`.`period_total` (
   `id`                mediumint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
-  `account_id`        mediumint unsigned not null,
+  `account_id`        int unsigned not null,
   `credit`            decimal(19, 2) unsigned,
   `debit`             decimal(19, 2) unsigned,
   `difference`        decimal(19, 2) unsigned, 
