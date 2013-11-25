@@ -116,10 +116,9 @@ controllers.controller('userController', function($scope, $q, kpkConnect) {
           }
         }
       }
-
     });
-
   }
+
   function getUserUnits(idUser){
     var def = $q.defer();
     var request = {}; 
