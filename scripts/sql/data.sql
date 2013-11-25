@@ -1,9 +1,9 @@
 use `kpk`;
 
-insert into `enterprise` values 
-  (200, 'Kinshasa', 'RDC', 'Test', 0824741022, 1, 57000);
+insert into `enterprise` (`id`, `region`, `city`, `country`, `name`, `phone`, `type`, `cash_account`) values 
+  (200, 'Kinshasa', 'Kinshasa', 'RDC', 'Test', 0824741022, 1, null);
 
-insert into `account` (`enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `account_category`, `fixed`) values 
+insert into `account` (`enterprise_id`, `account_number`, `fixed`, `account_txt`, `account_type_id`, `account_category`, `locked`) values 
   (200, 100000, 0,'capital social',1,'300',0),
 	(200, 110000, 0,'reserves',1,'300',0),
 	(200, 120000, 0,'report',1,'300',0),
@@ -197,14 +197,44 @@ insert into `account` (`enterprise_id`, `account_number`, `account_txt`, `accoun
 	(200, 760000, 0,'Subvention d\'exploitation',1,'300',0),
 	(200, 760100, 0,'Salaire de d\'etat',1,'300',0),
 	(200, 760200, 0,'Autres subventions de l\'etat',1,'300',0),
-	(200, 760300, 0,'Subventions organismes prives',1,'300',0),
+	(200, 760300, 0,'Subventions organismes prives',1,'300',0);
+
+update `enterprise` set `cash_account`=294 where `id`=200;
 
 insert into `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_year_txt`, `transaction_start_number`, `transaction_stop_number`, `fiscal_year_number`, `start_month`, `start_year`, `previous_fiscal_year`) values 
   (200, 1, 12, 'First test Fiscal Year', 100, 10000, 1, 06, 2012, null);
 
-insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`) values 
-  (1, 1, );
+-- These values are already in the database and not linked to an enterprise
+-- insert into `country` values
+-- 	(52,180,'The Democratic Republic Of The Congo','République Démocratique du Congo');
+-- 
+-- insert into `location` (`id`, `city`, `region`, `country_id`, `zone`, `village`) values 
+--   (1,'Kinshasa','Kinshasa',52,NULL,NULL);
+-- 
+-- insert into `debitor_group_type` (`id`, `type`) values
+--   (1, 'Employees'),
+--   (2, 'Conventionees'),
+--   (3, 'Malades Ambulatoire'),
+--   (4, 'Malades Interne');
 
+insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `contact_id`, `tax_id`, `type_id`) values 
+  (200, 1, "Employees", 65, 1, 1, 1, 1, 1),
+  (200, 2, "Fr. Reinhart Conventionees", 63, 1, 1, 1, 1, 2),
+  (200, 3, "Normal Debitors", 59, 1, 1, 1, 1, 3),
+  (200, 4, "Central Pharmacy", 56, 1, 1, 1, 1, 3),
+  (200, 5, "Other Clients", 66, 1, 1, 1, 1, 4);
+
+insert into `debitor` (`id`, `group_id`, `text`) values 
+  (1, 3, "Debitor 1"),
+  (2, 1, "Debitor 2"),
+  (3, 3, "Debitor 3"),
+  (4, 3, "Debitor 4"),
+  (5, 3, "Debitor 5"),
+  (6, 3, "Debitor 6"),
+  (7, 3, "Debitor 7");
+
+insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
+  (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
 
 -- INSERT INTO `debitor_group` VALUES 
 --   (1,1,'Employees' ,,1,3,'','','The employees of hospital X',0,1,1,1,1),
