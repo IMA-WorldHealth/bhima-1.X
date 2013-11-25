@@ -1,61 +1,37 @@
 <link rel="stylesheet" type="text/css" href="css/journal.css"/>
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="bika-header">
-        <h1>Posting Journal</h1>
-      </div>
-    </div>
-  </div>
+ 
+<header>
+  <span class="capital">{{'POSTING_JOURNAL' | translate}}</span>
+</header>
 
-  <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util">
-        <div class="row">
-          <div class="col-xs-12">
-            <!--FIXME btn group is a big hack - should be done with col-->
-            <div class="col-xs-4 hack-left">
-              <button ng-click="groupByID()" class="btn btn-default"><span class="glyphicon glyphicon-sort-by-attributes"></span> Transaction</button>
-              <button ng-click="groupByAccount()" class="btn btn-default"><span class="glyphicon glyphicon-sort-by-attributes"></span> Account</button>
-            </div>
-            <div class="pull-right">
-              <a class="btn btn-default"><span class="glyphicon glyphicon-stats"></span> Trial Balance</a>
-              <a class="btn btn-default"><span class="glyphicon glyphicon-cog"></span> Configure</a>
-              <a class="btn btn-default"><span class="glyphicon glyphicon-print"></span> Print</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<section class="underline">
+  <button ng-click="groupByID()" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> {{'TRANSACTION' | translate}}</button>
+  <button ng-click="groupByAccount()" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> {{'ACCOUNT' | translate}}</button>
+            
+  <div class="pull-right">
+    <a class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}}</a>
+    <a class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
+    <a class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</a>
   </div>
+</section>
+
+<div class="content">
 
   <div class="row">
     <div class="col-xs-12">
-      <div id="journal_grid" class="grid" style="height: 600px; max-height: 600px; overflow: hidden; outline: 0px; position: relative;"><!--Content populated with controller--></div>
+      <div id="journal_grid" class="grid" style="height: 650px; overflow: hidden; outline: 0px; position: relative;"><!--Content populated with controller--></div>
     </div>
   </div>
-
-  <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util-bottom">
-        <div class="row">
-          <div class="col-xs-12">
-
-            <div class="pull-right">
-              <button class="btn btn-default" ng-click="poster()"><span class="glyphicon glyphicon-floppy-open"></span>
-                General Ledger
-              </button>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
+
+<section class="underline overline">
+  <div class="pull-right">
+    <button class="capital btn btn-default btn-sm" ng-click="poster()"><span class="glyphicon glyphicon-floppy-open"></span>
+      {{'GENERAL_LEDGER' | translate}}
+    </button>
+
+  </div>
+</section>
 
 
 <script type="text/ng-template" id="split.html">
