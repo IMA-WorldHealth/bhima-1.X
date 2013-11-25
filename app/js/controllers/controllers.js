@@ -2368,7 +2368,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $timeout, $q, $modal, connect){
+controllers.controller('journalController', function($scope,  $timeout, $q, $modal, connect){
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
@@ -2389,7 +2389,7 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
   var columns = [
     {id: 'trans_id', name: 'ID', field: 'trans_id', sortable: true},
     {id: 'trans_date', name: 'Date', field: 'trans_date'},
-    {id: 'doc_num', name: 'Doc No.', field: 'doc_num'},
+    {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
     {id: 'description', name: 'Description', field: 'description'},
     {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
     {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true},
@@ -3322,7 +3322,7 @@ controllers.controller('createAccountController', function($scope, $q, connect) 
     enableColumnReorder: true,
     forceFitColumns: true,
     /*Bootstrap style row height*/
-    rowHeight: 35
+    rowHeight: 30
   };
 
   function init() { 
