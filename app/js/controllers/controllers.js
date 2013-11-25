@@ -2547,7 +2547,7 @@ controllers.controller('creditorsController', function($scope, $q, $modal, kpkCo
   function getCreditors(){
     var req_db = {};
 
-    req_db.e = [{t:'supplier', c:['id', 'name', 'address1', 'address2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
+    req_db.e = [{t:'supplier', c:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
     kpkConnect.get('/data/?', req_db).then(function(data){
       $scope.creditors = data;
     });
@@ -2612,7 +2612,7 @@ controllers.controller('creditorsController', function($scope, $q, $modal, kpkCo
        if($scope.creditor.name){
         if(isThere($scope.creditors, 'name', $scope.creditor.name)){
           var req_db = {};
-          req_db.e = [{t:'supplier', c:['id', 'name', 'address1', 'address2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
+          req_db.e = [{t:'supplier', c:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
           req_db.c = [{t:'supplier', cl:'name', z:'=', v:$scope.creditor.name}];
           kpkConnect.get('/data/?', req_db).then(function(data){
            if(data.length>0){
