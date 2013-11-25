@@ -263,9 +263,9 @@ CREATE TABLE `fiscal_year` (
   `id`                        mediumint unsigned NOT NULL AUTO_INCREMENT,
   `number_of_months`          mediumint unsigned NOT NULL,
   `fiscal_year_txt`           text NOT NULL,
-  `transaction_start_number`  int unsigned NOT NULL,
-  `transaction_stop_number`   int unsigned NOT NULL,
-  `fiscal_year_number`        mediumint(9) NOT NULL,
+  `transaction_start_number`  int unsigned,
+  `transaction_stop_number`   int unsigned,
+  `fiscal_year_number`        mediumint(9),
   `start_month`               int unsigned NOT NULL,
   `start_year`                int unsigned NOT NULL,
   `previous_fiscal_year`      mediumint unsigned,
@@ -1392,7 +1392,7 @@ CREATE TABLE `posting_journal` (
   `period_id`         mediumint unsigned, -- not null,
   `trans_id`          int unsigned NOT NULL,
   `trans_date`        date NOT NULL,
-  `doc_num`           int unsigned NOT NULL, -- what does this do?
+  `doc_num`           int unsigned, -- what does this do? -- why would this be NOT NULL if we don't know what it does?
   `description`       text,
   `account_id`        mediumint unsigned,
   `debit`             int unsigned,
