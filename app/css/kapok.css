@@ -1,15 +1,40 @@
+header {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 2em;
+  border-bottom: 1px solid #dddddd;
+
+  /*Avoid having nested styles with content*/
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-right: auto;
+  margin-left: auto;
+
+  /*Not sure about this*/
+  /*margin-bottom: 10px;*/
+}
+
+section { 
+  maring-top: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+}
+
 .content {
   margin-right: auto;
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
-header {
-  padding-top: 7px;
-  font-size: 2em;
-}
-
-header :after {
+.underline { 
   border-bottom: 1px solid #dddddd;
+}
+
+.overline { 
+  border-top: 1px solid #dddddd;
 }
