@@ -2368,7 +2368,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope,  $timeout, $q, $modal, connect){
+controllers.controller('journalController', function($scope, $translate,  $timeout, $q, $modal, connect){
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
@@ -2382,12 +2382,16 @@ controllers.controller('journalController', function($scope,  $timeout, $q, $mod
     }
   }
 
+  $scope.$on('$translateChangeSuccess', function () {
+    grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
+  });
+
 //  grid options
   var grid;
   var dataview;
   var sort_column = "trans_id";
   var columns = [
-    {id: 'trans_id', name: 'ID', field: 'trans_id', sortable: true},
+    {id: 'trans_id', name: $translate('GENERAL_LEDGER'), field: 'trans_id', sortable: true},
     {id: 'trans_date', name: 'Date', field: 'trans_date'},
     {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
     {id: 'description', name: 'Description', field: 'description'},

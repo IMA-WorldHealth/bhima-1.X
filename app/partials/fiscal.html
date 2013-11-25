@@ -1,9 +1,17 @@
-<!--FIXME: Clean up markup, tags closed and not openend etc.-->
-<!--TODO: Add a header above fiscal year panel. EDIT/CREATE *Fiscal year name*
-          Add a sort row on top of the Fiscal Year selection - A-Z, year, etc.-->
-
 <link rel="stylesheet" href="css/fiscal.css"/>
-<div class="container" id="kpk-units-fiscal">
+
+<header>
+  <span class="capital">{{'FISCAL_YEAR' | translate}} {{'MANAGEMENT' | translate}}</span>
+</header>
+
+<section class="underline">
+  <div class="pull-right">
+    <button class="capital btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span> {{'CREATE' | translate}} {{'FISCAL_YEAR' | translate}}</button>
+    <button class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
+  </div>
+</section>
+
+<div class="content" id="kpk-units-fiscal">
   <div class="row">
     <div class="col-xs-3">
       <!--Enterprise fiscal year selection-->
