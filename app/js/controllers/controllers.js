@@ -1874,11 +1874,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   
   // Chart of Accounts controllers
   controllers.controller('accountController', function($scope, $q, $modal, connect, appstate) {
-    var pre = "[Accounts Ctlr]"; // for DEBUGGING
-    console.log(pre, "Initialize..."); 
 
     function getData () {
-      console.log(pre, "getData() fired.");
 
       var account_defn, account_type_defn, 
           account_store, type_store,
@@ -1887,7 +1884,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       account_defn = {
         tables: {
           'account': {
-            columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
+            columns: ['enterprise_id', 'id', 'account_number', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
           },
           'account_type': {
             columns: ['type'] 
@@ -1909,7 +1906,6 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     function initGrid () {
-      console.log(pre, "initGrid fired.");
       var grid, columns, options, dataview;
      
       // dataview config 
@@ -1926,7 +1922,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       });
 
       columns = [
-        {id: "id"       , name: "Account Number"   , field: "id", sortable: true},
+        {id: "account_number"       , name: "Account Number"   , field: "account_number", sortable: true},
         {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
         {id: "type"     , name: "Account Type"     , field: "type"},
         {id: "category" , name: "Account Category" , field: "account_category"},
@@ -1960,19 +1956,20 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var promise = getData();
  
     $scope.models = {};
+    $scope.stores = {};
     var dataview, grid;
 
     promise.then(function (a) {
-      console.log(pre, "Promise fulfilled.");
       $scope.models.accounts = a[0].data;
+      $scope.stores.accounts = a[0];
       $scope.models.types = a[1].data;
       var setup = initGrid(); 
       grid = setup.grid;
-      dataview = setup.dataview;
+      $scope.dataview = setup.dataview;
       
       $scope.$watch('models.accounts', function () {
-        console.log(pre, "Rebuilding dataview...");
-        dataview.setItems($scope.models.accounts);
+        console.log("model changed!");
+        $scope.dataview.setItems($scope.models.accounts);
       });
     });
 
@@ -1980,35 +1977,40 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       var instance = $modal.open({
         templateUrl: "/partials/accounts/templates/chart-modal.html",
         backdrop: true,
-        controller: newAccountCtrl,
+        controller: function ($scope, $modalInstance, types) {
+          // work around because of issue #969
+          $scope.$modalInstance = $modalInstance;
+          $scope.types = types;
+        },
         resolve: {
-          columns: function() {
-            return $scope.columns;
+          types: function() {
+            return $scope.models.types;
           },
         }
       });
 
-      instance.result.then(function(values) {
-        $scope.model.push(values);
+      instance.result.then(function(account) {
+        account.id = $scope.stores.accounts.generateid();
+        account.enterprise_id = appstate.get('enterprise').id;
+        $scope.stores.accounts.post(account);
+        // TODO: This works, but have to refresh grid to make it work.
+        $scope.dataview.setItems($scope.models.accounts);
       }, function() {});
     };
 
-
-    function newAccountCtrl ($scope, $modalInstance, columns) {
-       var values = angular.copy(columns);
-      $scope.values = values;
-      $scope.close = function() {
-        $modalInstance.dismiss();
-      };
-      $scope.submit = function() {
-        // TODO: include validation
-        $modalInstance.close($scope.values);
-      };
-    }
-
   });
 
-
+  controllers.controller('accountFormController', function ($scope) {
+      $scope.account = {};
+      $scope.account.locked = 0;
+      $scope.close = function () {
+        $scope.$modalInstance.dismiss(); 
+      };
+      $scope.submit = function () {
+        if ($scope.accountForm.$invalid) $scope.invalid = true;
+        else $scope.$modalInstance.close($scope.account);
+      };
+  });
 
   controllers.controller('inventoryController', function($scope) {
  
