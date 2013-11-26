@@ -124,3 +124,15 @@ angular.module('kpk.controllers').controller('accountController', function($scop
     };
 
   });
+
+angular.module('kpk.controllers').controller('accountFormController', function ($scope) {
+      $scope.account = {};
+      $scope.account.locked = 0;
+      $scope.close = function () {
+        $scope.$modalInstance.dismiss(); 
+      };
+      $scope.submit = function () {
+        if ($scope.accountForm.$invalid) $scope.invalid = true;
+        else $scope.$modalInstance.close($scope.account);
+      };
+  });
