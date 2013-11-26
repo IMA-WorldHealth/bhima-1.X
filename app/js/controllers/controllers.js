@@ -1458,7 +1458,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     
   //FIXME updates to patient and location broke everything here, update to use that instead
   controllers.controller('patientRegController', function($scope, $q, $location, connect, $modal, kpkConnect, appstate) {
-//    FIXME patient and debtor objects just appear magically in the code - they should be defined and commented with link to template
+    //    FIXME patient and debtor objects just appear magically in the code - they should be defined and commented with link to template
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
@@ -2882,7 +2882,12 @@ controllers.controller('creditorsController', function($scope, $q, $modal, kpkCo
     $scope.creditor = {};
     getCreditors();
   }
- });
+});
+
+
+//******************************************************************************************
+//****************************** NOTIFY CONTROLLER *****************************************
+//******************************************************************************************
 
 controllers.controller('notifyController', function($scope, $q, appnotify) {
   /*summary
@@ -2890,12 +2895,12 @@ controllers.controller('notifyController', function($scope, $q, appnotify) {
   */
   console.log("notify controller initialised");
 
-//  Notify controller must watch the model from the service and display accordingly
+  //  Notify controller must watch the model from the service and display accordingly
   $scope.notification = appnotify.notification;
   $scope.style = appnotify.style[0];
 
   $scope.removeNotification = function() {
-//    Would need to remove with ID for multiple notifications
+  //    Would need to remove with ID for multiple notifications
     appnotify.clearAll();
   }
 
