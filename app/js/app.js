@@ -40,8 +40,8 @@
       templateUrl: '/partials/inventory/index.html'
     }).
     when('/patient_records/:patientID', { 
-      controller: 'patientSearchController', 
-      templateUrl: '/partials/patient_search.html'
+      controller: 'patientRecordsController', 
+      templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
     when('/sales', { 
       controller: 'salesController',
@@ -49,7 +49,7 @@
     }).
     when('/sale_records/:recordID', { 
       controller: 'salesRecordsController',
-      templateUrl: '/partials/sales_records.html'
+      templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
     when('/inventory/register', {
       controller: 'inventoryRegisterController',
