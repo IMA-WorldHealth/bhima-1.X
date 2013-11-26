@@ -599,10 +599,11 @@
       };
 
       // put is for UPDATES 
-      this.put = function (object, opts) {
+      this.put = function (object, opts) {        
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
+            console.log('this data', this.data, 'this index ', this.index);
 
         if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;  
 
@@ -611,6 +612,7 @@
           data[index[id]] = object; // overwrite
         } else {
           var ref = data[index[id]];
+          if(!ref) ref = {};
           for (var k in object) {
             ref[k] = object[k]; // merge
           }
