@@ -7,8 +7,11 @@ module.exports = function(grunt) {
 
         // defaults to new line
         // separator: ';'
+
+        //version/timestamp - probably shouldn't include angular logic but I'm tired
         banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" + 
-                "'use strict'\n\n",
+                "'use strict'\n\n" + 
+                "angular.module('kpk.controllers', []);\n\n",
 
         //label each segment of controllers file, remove any instances of use strict
         process: function(src, filepath) { 
@@ -19,7 +22,7 @@ module.exports = function(grunt) {
       dist: {
         src: ['app/partials/**/*.js'],
         //Should compile to distribution folder when this exists
-        dest: 'app/js/controllers/controller2.js'
+        dest: 'app/js/controllers/controller.js'
       }
     },
     watch: { 
