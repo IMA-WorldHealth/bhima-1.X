@@ -9,7 +9,7 @@
     $routeProvider.
     when('/budgeting', {
       controller: 'budgetController',
-      templateUrl: 'partials/budgeting.html'
+      templateUrl: 'partials/budget/budget.html'
     }).
     when('/permission', { 
       controller: 'userController',
