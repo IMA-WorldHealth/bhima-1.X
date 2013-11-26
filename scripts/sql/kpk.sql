@@ -1135,15 +1135,16 @@ CREATE TABLE `inv_group` (
   `cogs_account`    int unsigned,
   `stock_account`   int unsigned,
   `tax_account`     int unsigned,
-  PRIMARY KEY (`id`),
-  KEY `sales_account` (`sales_account`),
-  KEY `cogs_account` (`cogs_account`),
-  KEY `stock_account` (`stock_account`),
-  KEY `tax_account` (`tax_account`),
-  CONSTRAINT FOREIGN KEY (`sales_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`cogs_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`stock_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`id`)
+  PRIMARY KEY (`id`)
+  --,
+  --KEY `sales_account` (`sales_account`),
+  --KEY `cogs_account` (`cogs_account`),
+  --KEY `stock_account` (`stock_account`),
+  --KEY `tax_account` (`tax_account`),
+  --CONSTRAINT FOREIGN KEY (`sales_account`) REFERENCES `account` (`id`),
+  --CONSTRAINT FOREIGN KEY (`cogs_account`) REFERENCES `account` (`id`),
+  --CONSTRAINT FOREIGN KEY (`stock_account`) REFERENCES `account` (`id`),
+  --CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB;
 
 --
