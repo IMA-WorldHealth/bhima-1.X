@@ -64,7 +64,7 @@
     }).
     when('/inventory/purchase', {
       controller: 'purchaseOrderController',
-      templateUrl: 'partials/inventory_invoice/index.html'
+      templateUrl: 'partials/purchase_order/purchase.html'
     }).
     when('/purchase_records/:purchaseID', {
       controller: 'purchaseRecordsController',
