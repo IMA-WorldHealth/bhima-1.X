@@ -2382,8 +2382,10 @@ controllers.controller('journalController', function($scope, $translate,  $timeo
     }
   }
 
+  //TODO iterate thorugh columns array - apply translate to each heading and update
+  //(each should go through translate initially as well)
   $scope.$on('$translateChangeSuccess', function () {
-    grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
+    //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
   });
 
 //  grid options
@@ -2391,13 +2393,13 @@ controllers.controller('journalController', function($scope, $translate,  $timeo
   var dataview;
   var sort_column = "trans_id";
   var columns = [
-    {id: 'trans_id', name: $translate('GENERAL_LEDGER'), field: 'trans_id', sortable: true},
+    {id: 'trans_id', name: "ID", field: 'trans_id', sortable: true},
     {id: 'trans_date', name: 'Date', field: 'trans_date'},
     {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
-    {id: 'description', name: 'Description', field: 'description'},
+    {id: 'description', name: 'Description', field: 'description', width: 110},
     {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
-    {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true},
-    {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true},
+    {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
+    {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
     {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
     {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
     {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},
