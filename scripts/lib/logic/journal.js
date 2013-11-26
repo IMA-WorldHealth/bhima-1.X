@@ -44,7 +44,7 @@ var saleDebit = function (obj, data, posting, res){
   for(var cle in objDebit){
     journalRecord[cle] = data[objDebit[cle]];
   }
-//  journalRecord.posted = 0;
+  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
@@ -96,7 +96,7 @@ var saleCredit = function(obj, data, posting, res){
       for(var cle in objCredit){
       journalRecord[cle] = item[objCredit[cle]];    
       }
-//      journalRecord.posted = 0;
+  //      journalRecord.posted = 0;
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
       journalRecord.id = '';
@@ -122,7 +122,7 @@ var cashDebit = function (obj, data, posting, res){
   for(var cle in objDebit){
     journalRecord[cle] = data[0][objDebit[cle]];
   }
-//  journalRecord.posted = 0;
+  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
@@ -190,7 +190,7 @@ var purchaseDebit = function(obj, data, posting, res){
       for(var cle in objDebit){
       journalRecord[cle] = item[objDebit[cle]];    
       }
-//      journalRecord.posted = 0;
+  //      journalRecord.posted = 0;
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
       journalRecord.id = '';
@@ -210,7 +210,7 @@ var purchaseCredit = function(obj, data, posting, res){
   for(var cle in objCredit){
     journalRecord[cle] = data[objCredit[cle]];
   }
-//  journalRecord.posted = 0;
+  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
@@ -243,8 +243,6 @@ var purchaseCredit = function(obj, data, posting, res){
 
 var process = function(data, posting, res){
   var obj = map[service_name];
-
-
   if(service_name == 'sale'){
     Q.all([saleDebit(obj, data[0], posting, res), saleCredit(obj, data, posting, res), check(obj.t, posting.id)]).then(function(arr) {
       console.log("Received, ", arr);
