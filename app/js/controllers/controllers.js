@@ -1030,7 +1030,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var INVOICE_TYPE = 2;
 
     var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
-    var sales_request = connect.req({'tables' : { 'sale' : {columns : ['id']}}});
+
+    var max_sales_request = connect.basicGet('/max/id/sale');
+    var max_purchase_request = connect.basicGet('/max/id/purchase');
 
     //FIXME should probably look up debitor table and then patients
     //var debtor_request = connect.req('patient', ['debitor_id', 'first_name', 'last_name', 'location_id']);
@@ -1061,36 +1063,33 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       $q.all([
         inventory_request,
         // sales_request,
-        // debtor_request,
-        user_request
+        debtor_request,
+        user_request,
+        max_sales_request,
+        max_purchase_request
       ]).then(function(a) { 
-        console.log(a);
         $scope.inventory_model = a[0];
-        // $scope.sales_model = a[1];
-        // $scope.debtor_model = a[2];
-        $scope.verify = a[1].data.id;
+        $scope.debtor_model = a[1];
+        $scope.verify = a[2].data.id;
+        $scope.max_sales = a[3].data.max;
+        $scope.max_purchase = a[4].data.max;
+
 
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
-
-        var invoice_id = createId($scope.sales_model.data);
-        $scope.invoice_id = invoice_id;
+        var id = Math.max($scope.max_sales, $scope.max_purchase);
+        $scope.invoice_id = createId(id);
       });
 
     }
 
 
-
     //FIXME Shouldn't need to download every all invoices in this module, only take top few?
-    function createId(list) { 
+    function createId(current) { 
       var default_id = 100000;
-      if(list.length < 1) return default_id; //No invoices have been created
-      console.log("Sales list", list);
-      var search_max = list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
-      //reduce returns an object if only one element is in the array for some reason
-      //TODOSET
-      if(search_max.id) search_max = search_max.id;
-      return search_max + 1;
+      if(!current) return default_id;
+      return current + 1;
     }
+
 
     function getDate() { 
       //Format the current date according to RFC3339 (for HTML input[type=="date"])
@@ -2463,7 +2462,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $translate,  $timeout, $q, $modal, connect){
+controllers.controller('journalController', function($scope, $translate, $compile, $timeout, $q, $modal, connect){
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
@@ -2592,7 +2591,7 @@ controllers.controller('journalController', function($scope, $translate,  $timeo
   }
 
   function formatBtn() {
-    return "<a ng-click='splitTransaction()'><span class='glyphicon glyphicon-th-list'></span></a>";
+    return "<a class='ng-scope' ng-click='splitTransaction()'><span class='glyphicon glyphicon-th-list'></span></a>";
   }
 
   function totalFormat(totals, column) {
@@ -2972,18 +2971,14 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
     ]).then(function(a) {
       $scope.inventory_model = a[0];
-      $scope.max_sales = a[1];
-      $scope.max_purchase = a[2];
+      $scope.max_sales = a[1].data.max;
+      $scope.max_purchase = a[2].data.max;
       $scope.creditor_model = a[3];
       $scope.verify = a[4].data.id;
 
-      console.log($scope.verify, a[4]);
 //      Raw hacks - #sorry, these might be the same entity anyway
       var id = Math.max($scope.max_sales, $scope.max_purchase);
-
-      var invoice_id = createId(id);
-        console.log("got new ID", invoice_id);
-      $scope.invoice_id = invoice_id;
+      $scope.invoice_id = createId(id);
     });
   }
 
@@ -3059,7 +3054,6 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
           promise
             .then(function(res) {
               console.log("Purchase order successfully generated", res);
-              appnotify.setNotification("error", "tilte", "Purchase order generated - link", 3000);
               connect.journal([{id:$scope.invoice_id, transaction_type:3, user:1}]); //just for the test, send data to the journal traget server-side
 //              Navigate to Purchase Order review || Reset form
 //              Reset form

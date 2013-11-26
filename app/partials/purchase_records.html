@@ -69,9 +69,9 @@
             <td>{{purchase.cost | currency}}</td>
             <td>{{purchase.creditor_id}}</td>
             <!--Multiple ng-shows - mutually exclusive but not good practice-->
-            <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
+            <td><span ng-hide="purchase.posted" class="glyphicon glyphicon-minus"></span>
 
-              <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
+              <div ng-show="purchase.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
             </td>
           </tr>
           </tbody>
