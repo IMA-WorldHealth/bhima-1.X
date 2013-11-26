@@ -21,7 +21,7 @@
     }).
     when('/partials/transaction', { 
       controller: 'transactionController',
-      templateUrl: 'partials/transaction/transaction.html'
+      templateUrl: 'partials/transaction/transaction.html'  
     }).
     when('/fiscal', {
       controller: 'fiscalController',
@@ -45,7 +45,7 @@
     }).
     when('/sales', { 
       controller: 'salesController',
-      templateUrl: '/partials/sales.html'
+      templateUrl: '/partials/sales/sales.html'
     }).
     when('/sale_records/:recordID', { 
       controller: 'salesRecordsController',
@@ -72,7 +72,7 @@
     }).
     when('/purchase_records/:purchaseID', {
       controller: 'purchaseRecordsController',
-      templateUrl: 'partials/purchase_records.html'
+      templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
     }).
     when('/price_list', {
       controller: 'priceListController',
