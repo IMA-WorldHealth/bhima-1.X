@@ -12,195 +12,99 @@
     </ul>
   </div>
 </header>
-
 <div class="container">
-  <!-- search for invoice by invoice number or patient id -->
   <div class="row">
-    <div class="col-xs-12" style="padding-right: 0;">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <span>Find by Debitor:</span>
-        </div>
-        <input
-          class="form-control"
-          type="text"
-          ng-model="meta.debitor"
-          typeahead="debitor.id as debitor.first_name for debitor in models.debitors"
-          typeahead-on-select="selectDebitor(debitor.id)"
-          ng-disabled="submitted"
-          required
-        >
+    <section class="kpk-util">
+      <div class="pull-left">
+        <button class="btn btn-default" type="button">
+          Current Payment 
+        </button>
+        <button class="btn btn-default" type="button">
+          Balances
+        </button>
       </div>
-    </div>
+      <div class="pull-right">
+        <button class="btn btn-default" type="button">
+          Close Register
+        </button>
+      </div>
+    </section>
   </div>
-  
-  <div class="row">
-    <!-- make a list of outstanding invoices -->
-    <div class="col-xs-2">
-      <div ng-switch on="models.outstanding.length > 0" class="panel panel-default">
-        <div class="panel-heading">
-          <span>Outstanding Invoices: </span>  
-        </div>
-        <table ng-switch-when="true" class="table table-bordered">
-          <tbody>
-            <tr ng-repeat="item in models.outstanding | limitTo: 10"><td>{{item.inv_po_id}}</td></tr>
-          </tbody>
-        </table>
-        <div ng-switch-default class="alert alert-info">
-          <b>No Outstanding Invoices.</b>  Make sure you've selected a <b>Patient</b> from above.  If there is a patient, you can create a new invoice in <a href="#/sales/">Sales</a>.
-        </div>
-      </div>
-    </div>
 
-    <!-- Register a receipt -->
-    <div class="col-xs-10">
-      <div class="row">
-        <div class="panel" ng-class="{'panel-success': !submitted, 'panel-danger': submitted}"> 
+  <br />
+
+  <!-- search panel -->
+  <div class="row">
+    <section>
+      <div class="col-xs-6">
+        <div class="panel panel-info">
           <div class="panel-heading">
-            <span>Receipt</span> 
+            <span>Invoice &amp Patient Search</span>
+            <span class="pull-right" title="Toggle Search Panel" ng-click="toggleFilterRow()">
+              <i class="glyphicon glyphicon-search"></i>
+            </span>
           </div>
-          <div class="panel-body">
-            <form name="receipt">
-              <div class="row">
-                <div class="col-xs-1">
-                  <label>No:</label>
-                  <div>{{slip.cashbox_id}}</div>
-                </div>
-                <div class="col-xs-2">
-                  <label for="cash-bon">
-                    Bon de Sortie
-                  </label>
-                  <input
-                    id="kpk-cash-bon_num" 
-                    name="bon_num"
-                    class="form-control"
-                    type="number"
-                    ng-model="slip.bon_num"
-                    ng-disabled="submitted"
-                    required
-                  >
-                </div>
-                <div class="col-xs-2">
-                  <label>
-                    Date:
-                  </label>
-                  <div>{{slip.date | date }}</div>
-                </div>
-                <div class="col-sm-offset-4 col-xs-2">
-                  <label>
-                    Cash Account
-                  </label>
-                  <div><i>{{slip.debit_account}}</i></div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xs-9">
-                  <label for="cash-invoice_text">
-                    Text
-                  </label>
-                  <input
-                    id="kpk-cash-text"
-                    name="text"
-                    class="form-control"
-                    type="text"
-                    ng-model="slip.text"
-                    placeholder="e.g. Payment of invoice X for patient Y totaling $100.00"
-                    ng-disabled="submitted"
-                    required
-                  >
-                </div>
-                <div class="col-xs-3">
-                  <label for="cash-amount">
-                    Amount
-                  </label>
-                  <div class="input-group">
-                    <input
-                      id="kpk-cash-amount"
-                      name="amount" 
-                      class="form-control"
-                      type="number"
-                      ng-model="meta.amount"
-                      ng-disabled="submitted"
-                      required
-                    >
-                    <div class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="breakdown()">
-                        <i class="glyphicon glyphicon-transfer"></i>
-                      </button>
-                      <button type="button" class="btn btn-default dropdown-toggle">
-                        {{formatCurrency(slip.currency_id)}}
-                      </button>
-                      <ul class="dropdown-menu pull-right">
-                        <li ng-repeat="currency in models['currency']" ng-click="setCurrency($index)">
-                          <a href="">{{currency.symbol}}</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <br />
-              <div class="row">
-                <div class="col-xs-2">
-                  <label>
-                    Credit Account:
-                  </label> 
-                  <div><i>{{slip.credit_account}}</i></div>
-                </div>
-              </div>
+          <div id="kpk-cash-grid" style="height: 550px;" class="grid"></div>
+          <div id="kpk-cash-filter" style="display:none;">
+            <form class="form-inline" name="search" role="form">
+              <label>Filter invoices:</label>
+              <input type="search" id="kpk-cash-filter-invoices" ng-model="data.invoice">
+              <label>Filter debitors:</label>
+              <input type="search" id="kpk-cash-filter-debitors" ng-model="data.debitor">
             </form>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="util-bottom">
-      <div class="row">
-        <div class="pull-right">
-          <button form="receipt" type="submit" class="btn btn-default" ng-disabled="!valid()" ng-click="submit()">
-            <i class="glyphicon glyphicon-save" style="padding-right: 0.5em;"></i>Submit
-          </button>
-          <!-- TODO: Make a review button hooked up to the 'review' subform -->
-          <button form="receipt" type="reset" class="btn btn-default" ng-click="clear()">
-            <i class="glyphicon glyphicon-trash" style="padding-right: 0.5em;"></i>Clear
-          </button>
+      <div class="col-xs-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span>Payment | <small>{{data.debitor}}</small></span>
+            <span class="pull-right"><i class="glyphicon glyphicon-usd"></i></span>
+          </div>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <td><label>Invoice Number</label></td>
+                <td><label>Date</label></td>
+                <td><label>Balance</label></td>
+                <td style="width: 20%;"><label>Paid</label></td>
+                <td><label>Remaining</label></td>
+                <td style="width:10px;"></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="invoice in data.paying">
+                <td>{{invoice.inv_po_id}}</td>
+                <td>{{invoice.trans_date | date }}</td>
+                <td>{{invoice.balance | currency }}</td>
+                <td><input type="number" class="form-control" ng-model="invoice.allocated" required></td>
+                <td>{{invoice.remaining | currency }}</td>
+                <td ng-click="removeInvoice($index)"><i class="glyphicon glyphicon-remove"></i></td>
+              </tr>
+            </tbody>
+          </table>
+          <hr style="padding:0;margin:0;" />
+          <div class="panel-body">
+            <label>Total Due: {{data.total | currency }}</label>
+            <label class="pull-right" ng-show="data.excess > 0">Overdue: {{data.excess | currency }}</label>
+            <div class="input-group">
+              <input placehoder="$0.00" type="number" ng-model="data.payment" ng-change="allocate()" class="form-control">
+              <span class="input-group-addon">
+                {{formatCurrency(data.currency)}}
+              </span>
+            </div>
+          </div>
+          <div class="panel-footer">
+            <button type="button" class="btn btn-default" ng-click="submitSelection()">
+              Pay Invoice(s)
+            </button>
+            <button type="button" class="btn btn-default" ng-click="clearSelection()">
+              Clear Selection
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </div>
-
-<script type="text/ng-template" id="paymentbreakdown.html">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Add Invoices</h3>
-    </div>
-    <div class="modal-body">
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th style="width:20%;">Invoice ID</th>
-            <th>Debt</th>
-            <th>Payment</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="inv in invoices| limitTo: 12">
-            <td>{{inv.inv_po_id}}</td>
-            <td>{{inv.debit - inv.credit | currency}} </td>
-            <td>
-              <div class="input-group">
-                <input type="number" ng-model="inv.cost" class="form-control">
-                <span class="input-group-addon">FC</span>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="modal-footer">
-      <h3>Total: {{total | currency }}</h3>
-      <button class="btn btn-primary" ng-click="submit()">Accept</button>
-    </div>
-  </div>
-</script>

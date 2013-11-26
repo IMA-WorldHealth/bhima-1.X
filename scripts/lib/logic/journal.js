@@ -63,11 +63,12 @@ var saleDebit = function (obj, data, posting, res){
   var req = db.select(sql);
   db.execute(req, function(err, data){
     var sql = {
-     'entities':[{'t':'debitor_group', 'c':['account_number']}],
+     'entities':[{'t':'debitor_group', 'c':['account_id']}],
      'cond':[{'t':'debitor_group', 'cl':'id', 'z':'=', 'v':data[0].group_id}]
     };
     db.execute(db.select(sql), function(err, data){
-      journalRecord.account_id = data[0].account_number;      
+      if (err) throw err;
+      journalRecord.account_id = data[0].account_id;
       var sql = db.insert('posting_journal', [journalRecord]);
       db.execute(sql, callback); 
     });
@@ -79,9 +80,9 @@ var saleCredit = function(obj, data, posting, res){
   var deffer = Q.defer();  
   var objCredit = map[obj.t+'_credit'];
   var callback = function (err, ans) {    
-    if (err){
+    if (err) {
       deffer.resolve({succes :false, info:err});
-    }else{
+    } else {
       deffer.resolve({succes:true, info:ans});
     } 
   }
