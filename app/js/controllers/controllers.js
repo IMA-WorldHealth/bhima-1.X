@@ -1474,7 +1474,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //$scope.location = $scope.location_model.data[0]; //select default
 
         $scope.debtor = {};
-        $scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
+        //$scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
       });
     }
 
@@ -1552,7 +1552,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       req_db.e = [{t:'debitor_group', c:['id', 'name']}];
       req_db.c = [{t:'debitor_group', cl:'locked', z:'=', v:0}];
       kpkConnect.get('/data/?', req_db).then(function(data){
-        $scope.debtor_group_model.datas = data;
+        $scope.debtor_group_model.data = data;
       });
       
     }
@@ -1603,6 +1603,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           $scope.submit = function(){
             $modalInstance.close($scope.group);
           }
+
+          $scope.discard = function () {
+            $modalInstance.dismiss();
+          };
           /*var group = $scope.group = {},
             clean = {},
             cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
@@ -1615,11 +1619,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
             groupStore.put(group);
             connect.basicPut('inv_group', [clean]);
             $modalInstance.close();
-          };
-
-          $scope.discard = function () {
-            $modalInstance.dismiss();
           };*/
+
+          
 
         },
         resolve: {
@@ -2646,8 +2648,8 @@ controllers.controller('creditorsController', function($scope, $q, $modal, kpkCo
       getAccounts();
       function getAccounts(){
         var req_db = {};
-        req_db.e = [{t:'account', c:['id', 'account_txt']}];
-        req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'id', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'id', z:'<', v:500000}];
+        req_db.e = [{t:'account', c:['id', 'account_number', 'account_txt']}];
+        req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
         kpkConnect.get('/data/?', req_db).then(function(data){
           $scope.accounts = data;
         });
