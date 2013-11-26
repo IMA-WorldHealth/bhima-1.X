@@ -17,7 +17,7 @@
     }).
     when('/posting_journal', {
       controller: 'journalController',
-      templateUrl:'partials/postingjournal/journal.html'
+      templateUrl:'partials/journal/journal.html'
     }).
     when('/partials/transaction', { 
       controller: 'transactionController',
@@ -25,11 +25,11 @@
     }).
     when('/fiscal', {
       controller: 'fiscalController',
-      templateUrl: 'partials/fiscal.html'
+      templateUrl: 'partials/fiscal/fiscal.html'
     }).
     when('/patient', { 
       controller: 'patientRegController',
-      templateUrl: 'partials/patient.html'
+      templateUrl: 'partials/patient_registration/patient.html'
     }).
     when('/accounts', {
       controller: 'accountController',
