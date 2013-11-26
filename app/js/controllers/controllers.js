@@ -858,7 +858,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
 //      Validation
 
-//      Years must be
+//      Years must be valid
       if(!(start < end)) {
         updateProgress("Start date must be before end date");
         return;
@@ -896,6 +896,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
           // generate budget for account/ period
           // ?generate period totals
+          
+          //Reset model
+          $scope.new_model = {};
+
+          //Select year
+          $scope.select(fiscal_object.id);
+          $scope.progress = {};
         });
 
         return deferred.promise;
