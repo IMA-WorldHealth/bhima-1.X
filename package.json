@@ -1,6 +1,6 @@
 {
-  "name": "bika",
-  "version": "0.0.0",
+  "name": "kapok",
+  "version": "0.0.1",
   "description": "A rural hospital information management system.",
   "main": "scripts/server.js",
   "scripts": {

@@ -4,8 +4,17 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: { 
       options: { 
-        // defaults to new line I think
+
+        // defaults to new line
         // separator: ';'
+        banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" + 
+                "'use strict'\n\n",
+
+        //label each segment of controllers file, remove any instances of use strict
+        process: function(src, filepath) { 
+          return '//src: ' + filepath + '\n' + 
+            src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+        }
       },
       dist: {
         src: ['app/partials/**/*.js'],

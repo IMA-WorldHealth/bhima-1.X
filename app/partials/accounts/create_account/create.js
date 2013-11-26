@@ -1,3 +1,4 @@
+'use strict'
 angular.module('kpk.controllers').controller('createAccountController', function($scope, $q, connect) { 
   console.log("createAccountController initialised");
 
