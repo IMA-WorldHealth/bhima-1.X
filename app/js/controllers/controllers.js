@@ -1459,12 +1459,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
   });
     
   //FIXME updates to patient and location broke everything here, update to use that instead
-  controllers.controller('patientRegController', function($scope, $q, $location, connect, $modal) {
+  controllers.controller('patientRegController', function($scope, $q, $location, connect, $modal, kpkConnect, appstate) {
 //    FIXME patient and debtor objects just appear magically in the code - they should be defined and commented with link to template
     console.log("Patient init");
     var patient_model = {};
     var submitted = false;
-
     var default_patientID = 1;
 
 
@@ -1476,7 +1475,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       //This was if we needed to create alpha-numeric (specific) ID's
       var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
       //Used to generate debtor ID for patient
-//      FIXME just take the most recent items from the database, vs everything?
+      //      FIXME just take the most recent items from the database, vs everything?
       var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
       var debtor_group_request = connect.req({'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}});
 
@@ -1489,7 +1488,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         //$scope.location = $scope.location_model.data[0]; //select default
 
         $scope.debtor = {};
-        $scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
+        //$scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
       });
     }
 
@@ -1505,13 +1504,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     }
 
     $scope.update = function(patient) {
-//      download latest patient and debtor tables, calc ID's and update
+      //      download latest patient and debtor tables, calc ID's and update
       var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
       var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
 
       var patient_model, debtor_model;
 
-//      TODO verify patient data is valid
+      //      TODO verify patient data is valid
 
       $q.all([debtor_request, patient_request])
         .then(function(res) {
@@ -1562,11 +1561,66 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       return submitted;
     };
 
+    function getGroups(){
+      var req_db = {};
+      req_db.e = [{t:'debitor_group', c:['id', 'name']}];
+      req_db.c = [{t:'debitor_group', cl:'locked', z:'=', v:0}];
+      kpkConnect.get('/data/?', req_db).then(function(data){
+        $scope.debtor_group_model.data = data;
+      });
+      
+    }
+
     $scope.createGroup = function () {
       var instance = $modal.open({
         templateUrl: "debtorgroupmodal.html",
         controller: function ($scope, $modalInstance) { //groupStore, accountModel
           console.log("Group module initialised");
+          $scope.group = {};
+          getAccounts();
+          getLocations();
+          getPayments();
+          getTypes();
+          function getAccounts(){
+            var req_db = {};
+            req_db.e = [{t:'account', c:['id', 'account_number','account_txt']}];
+            req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
+            kpkConnect.get('/data/?', req_db).then(function(data){
+              $scope.accounts = data;
+            });
+          }
+
+          function getLocations(){
+            var req_db = {};
+            req_db.e = [{t:'location', c:['id', 'city', 'region']}];
+            kpkConnect.get('/data/?', req_db).then(function(data){
+            $scope.locations = data;
+            });
+          }
+
+          function getPayments(){
+            var req_db = {};
+            req_db.e = [{t:'payment', c:['id', 'text']}];
+            kpkConnect.get('/data/?', req_db).then(function(data){
+            $scope.payments = data;
+            });
+          }
+
+          function getTypes(){
+            var req_db = {};
+            req_db.e = [{t:'debitor_group_type', c:['id', 'type']}];
+            kpkConnect.get('/data/?', req_db).then(function(data){
+            $scope.types = data;
+            });
+          }
+
+          $scope.submit = function(){
+            $modalInstance.close($scope.group);
+          }
+
+          $scope.discard = function () {
+            $modalInstance.dismiss();
+          };
           /*var group = $scope.group = {},
             clean = {},
             cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
@@ -1579,11 +1633,9 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
             groupStore.put(group);
             connect.basicPut('inv_group', [clean]);
             $modalInstance.close();
-          };
-
-          $scope.discard = function () {
-            $modalInstance.dismiss();
           };*/
+
+          
 
         },
         resolve: {
@@ -1591,6 +1643,21 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
           //accountModel: function () { return $scope.models.account; }
         }
       });
+      instance.result.then(function(value) {
+        //kpkConnect.send('creditor_group', [{id:'', group_txt:values.group, account_id:values.account.id}]);
+        //getGroups();
+        console.log(value);
+        value.enterprise_id = appstate.get("enterprise").id;
+        value.account_number = value.account_number.account_number;
+        value.type_id = value.type_id.id;
+        value.location_id = value.location_id.id;
+        value.payment_id = value.payment_id.id;
+        kpkConnect.send('debitor_group', [value]);
+        getGroups();
+
+    }, function() {
+      console.log('dedrick');
+    });
     }
 
 
@@ -2041,7 +2108,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     var eid = appstate.get('enterprise').id;
 
     account_defn= {
-      tables: {'account': {columns: ['enterprise_id', 'id', 'locked', 'account_txt', 'account_type_id']}},
+      tables: {'account': {columns: ['enterprise_id', 'id', 'account_number', 'locked', 'account_txt', 'account_type_id']}},
       where: ["account.enterprise_id=" + eid]
     };
 
@@ -2061,14 +2128,18 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
     inv_type_defn = {
       tables: {'inv_type': { columns: ['id', 'text']}}
     };
-
-    $q.all([
+    initia();
+    function initia(){
+      $q.all([
       connect.req(account_defn),
       connect.req(inv_unit_defn),
       connect.req(inv_group_defn),
       connect.req(inv_type_defn),
       connect.req(inv_defn)
     ]).then(init);
+    }
+
+    
 
     var stores = {},
       models = ['account', 'inv_unit', 'inv_group', 'inv_type', 'inventory'],
@@ -2084,8 +2155,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
       item.unit_weight = 0;
       item.unit_volume = 0;
-      item.enterprise_id = 101; // FIXME:
+      item.enterprise_id = eid; //101; // FIXME: maybe
+      //console.log('line 2144', stores.account); console.log('line 2144', stores.inv_unit);
+      //console.log($scope.models.account);
     }
+
 
     function reset () {
       $scope.item = item = {};
@@ -2097,7 +2171,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       if ($scope.inventory.$valid) {
         item.id = stores.inventory.generateid(); 
         stores.inventory.put(item);
-        console.log("item:", item);
+        console.log("line 2151 controllerjs item:", item);
         item.enterprise_id = appstate.get("enterprise").id;
         connect.basicPut('inventory', [item]);
         reset();
@@ -2123,6 +2197,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         controller: function($scope, $modalInstance, unitStore) {
           var unit = $scope.unit = {};
           $scope.units = unitStore.data;
+          console.log('line 2177 units', unitStore);
 
           $scope.submit = function () {
             // validate
@@ -2132,9 +2207,10 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
               var text = unit.text.toLowerCase();
               text = text[0].toUpperCase() + text.slice(1);
               unit.text = text;
-              unitStore.put(unit);
-              connect.basicPut('inv_unit', [{id: unit.id, text: unit.text}]); //FIXME: AUGHAUGH
-              $modalInstance.close();
+
+              /*unitStore.put(unit);
+              connect.basicPut('inv_unit', [{id: unit.id, text: unit.text}]); //FIXME: AUGHAUGH*/
+              $modalInstance.close({id: unit.id, text: unit.text});
             }
           };
 
@@ -2148,8 +2224,11 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
         }
       });
 
-      instance.result.then(function () {
-        console.log("Submitted Successfully.");
+      instance.result.then(function (value) {
+        //unitStore.put(unit);
+        connect.basicPut('inv_unit', [value]);
+        initia();
+        //console.log("Submitted Successfully.");
       }, function () {
         console.log("Closed Successfully."); 
       });
@@ -2167,8 +2246,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
           $scope.submit = function () {
             group.id = groupStore.generateid();
-            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
+            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA            
             groupStore.put(group);
+            //fix me for writting this in a good way
+            clean.sales_account = clean.sales_account.account_number;
+            clean.cogs_account = clean.cogs_account.account_number;
+            clean.stock_account = clean.stock_account.account_number;
+            clean.tax_account = clean.tax_account.account_number;
             connect.basicPut('inv_group', [clean]);
             $modalInstance.close();
           };
@@ -2569,7 +2653,7 @@ controllers.controller('creditorsController', function($scope, $q, $modal, kpkCo
   function getCreditors(){
     var req_db = {};
 
-    req_db.e = [{t:'supplier', c:['id', 'name', 'address1', 'address2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
+    req_db.e = [{t:'supplier', c:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
     kpkConnect.get('/data/?', req_db).then(function(data){
       $scope.creditors = data;
     });
@@ -2601,8 +2685,8 @@ controllers.controller('creditorsController', function($scope, $q, $modal, kpkCo
       getAccounts();
       function getAccounts(){
         var req_db = {};
-        req_db.e = [{t:'account', c:['id', 'account_txt']}];
-        req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'id', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'id', z:'<', v:500000}];
+        req_db.e = [{t:'account', c:['id', 'account_number', 'account_txt']}];
+        req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
         kpkConnect.get('/data/?', req_db).then(function(data){
           $scope.accounts = data;
         });
@@ -2634,7 +2718,7 @@ controllers.controller('creditorsController', function($scope, $q, $modal, kpkCo
        if($scope.creditor.name){
         if(isThere($scope.creditors, 'name', $scope.creditor.name)){
           var req_db = {};
-          req_db.e = [{t:'supplier', c:['id', 'name', 'address1', 'address2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
+          req_db.e = [{t:'supplier', c:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
           req_db.c = [{t:'supplier', cl:'name', z:'=', v:$scope.creditor.name}];
           kpkConnect.get('/data/?', req_db).then(function(data){
            if(data.length>0){
