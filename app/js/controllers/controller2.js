@@ -418,6 +418,183 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
 
     init();
   });
+angular.module('kpk.controllers').controller('cashController', function($scope, connect, $q, $filter, $http, appstate) {
+    var enterprise, debitors, cash_items, cash,
+        currency, enterprise_id, cash_account;
+    cash_account = appstate.get('enterprise').cash_account;
+    enterprise_id = appstate.get('enterprise').id;
+
+    debitors = {
+      tables: {
+        'patient' : {columns: ["first_name", "last_name"]},
+        'debitor' : {columns: ["id"]},
+        'debitor_group' : {columns: ['name', 'account_number', 'max_credit']}
+      },
+      join: ['patient.debitor_id=debitor.id', 'debitor.group_id=debitor_group.id'],
+      where: ['debitor_group.locked<>1']
+    };
+
+    currency = {
+      tables : { "currency" : { columns: ["id", "symbol"] } } 
+    };
+
+    cash = {
+      tables: { "cash" : { columns: ["id", "bon", "bon_num", "invoice_id", "date", "debit_account", "credit_account", "currency_id", "cashier_id", "text"] }},
+    };
+
+    cash_items = {
+      tables: { 'cash_item' : { columns: ["id", "cash_id", "invoice_id", "cost"] }}, 
+    };
+
+    $q.all([
+      connect.req(debitors),
+      connect.req(currency),
+      connect.req(cash),
+      connect.req(cash_items)
+    ]).then(init);
+
+    var model_names = ['debitors', 'currency', 'cash', 'cash_items'];
+    var models = $scope.models = {};
+    var stores = $scope.stores = {};
+    var slip = $scope.slip = {};
+    var meta = $scope.meta = {};
+    meta.invoices = [];
+
+    function init (arr) {
+      // init all data connections & models
+      arr.forEach(function (model, idx) {
+        stores[model_names[idx]] = model;
+        models[model_names[idx]] = model.data;
+      });
+    }
+
+    function defaults () {
+      slip.id = stores.cash.generateid();
+
+      // Module-dependent flag to say what cashbox this is
+      slip.cashbox_id = 1;
+
+      //just for the test, it will be changed
+      slip.enterprise_id = enterprise_id;
+
+      // default debit account is cash box
+      slip.debit_account = cash_account;
+
+      // default date is today
+      slip.date = $filter('date')(new Date(), 'yyyy-MM-dd');
+
+      // default currency
+      slip.currency_id = 1;
+
+      // we start up as entree
+      slip.bon = "E";
+
+      slip.bon_num = getBonNumber(models.cash, slip.bon);
+
+      // FIXME: get this from a service
+      slip.cashier_id = 1;
+
+    }
+
+
+    function selectDebitor () {
+      // populate the outstanding invoices
+      $http.get('/ledgers/debitor/' + meta.debitor)
+        .then(function (response) {
+          if (response.data) {
+            models.outstanding = response.data.filter(function (row) {
+              // filter only those that do not balance
+              return (row.credit - row.debit > 0); 
+            });
+          }
+        });
+
+      slip.credit_account = stores.debitors.get(meta.debitor).account_number;
+      // update the text automatically
+      // This doesn't work yet.
+      $scope.$watch([meta.invoices, meta.debitors, meta.amount], function () {
+        // default text
+        slip.text = "Payment of invoice(s) %s for patient %p totaling %a."
+            .replace('%s', meta.invoices.join().toUpperCase())
+            .replace('%p', stores.debitors.get(meta.debitor).first_name.toUpperCase())
+            .replace('%a', meta.amount || '');
+      })
+      defaults();
+    }
+
+    $scope.selectDebitor = selectDebitor;
+
+    $scope.formatCurrency = function (id) {
+      // deal the the asynchronous case where store is not
+      // defined.
+      return (stores.currency && stores.currency.get(id)) ? stores.currency.get(id).symbol: "";
+    };
+
+    $scope.setCurrency = function (idx) {
+      // store indexing starts from 0.  DB ids start from 1
+      slip.currency_id = idx + 1; 
+    };
+
+    $scope.formatName = function (deb) {
+      return [deb.first_name, deb.last_name].join(' ');
+    };
+
+    function createCashItems (cost) {
+      var item, debt, i = 0,
+          model = meta.invoices,
+          store = stores.cash_items;
+      while (cost > 0 && model[i]) {
+        debt = model[i].credit - model[i].credit;
+        item = {};
+        item.id = store.generateid();
+        item.cash_id = slip.id;
+        item.invoice_id = model[i].id;
+        item.cost = (cost - debt >= 0) ? cost - debt : debt - cost;
+        cost = cost - item.cost;
+        store.post(item);
+        console.log("created:", item);
+        i++;
+      }
+    }
+
+    $scope.submit = function () {
+      // clean off the object of $hashkey and the like
+      var cleaned = connect.clean(slip);
+      if (meta.invoices.length < 1) { 
+        $scope.noinvoices = true;
+        return; 
+      } else {
+        createCashItems(meta.amount);
+        stores.cash.put(cleaned); 
+      }
+      // FIXME: improve this
+      connect.journal([{id:slip.id, transaction_type:1, user:1}]); //a effacer just for the test
+      // FIXME: make this formal for posting to the journal
+      $scope.clear();
+    };
+
+    function getBonNumber (model, bon_type) {
+      // filter by bon type, then gather ids.
+      var ids = model.filter(function(row) {
+        return row.bon === bon_type; 
+      }).map(function(row) {
+        return row.bon_num;
+      });
+      return (ids.length < 1) ? 1 : Math.max.apply(Math.max, ids) + 1;
+    }
+
+    $scope.valid = function () {
+      var receipt = $scope.receipt;
+      var bool = receipt.bon_num.$valid && receipt.amount.$valid && !!slip.credit_account;
+      return bool; 
+    };
+
+    $scope.clear = function () {
+      slip = $scope.slip = {};
+      defaults();
+    };
+
+  });
 angular.module('kpk.controllers').controller('fiscalController', function($scope, $q, connect, appstate) { 
     $scope.active = "select";
     $scope.selected = null;
@@ -722,6 +899,196 @@ angular.module('kpk.controllers').controller('fiscalController', function($scope
 
     //Initialise after scope etc. has been set
     init();
+  });
+angular.module('kpk.controllers').controller('inventoryController', function($scope) {
+ 
+    $scope.fields = {
+      'stock'  : false,
+      'admin'  : false,
+      'report' : false
+    };
+
+    $scope.slide = function (tag) {
+      $scope.fields[tag] = !$scope.fields[tag];
+    };
+  });
+angular.module('kpk.controllers').controller('inventoryRegisterController', function ($scope, appstate, connect, $q, $modal) {
+
+    var account_defn, inv_unit_defn, inv_group_defn, inv_defn, inv_type_defn;
+    var eid = appstate.get('enterprise').id;
+
+    account_defn= {
+      tables: {'account': {columns: ['enterprise_id', 'id', 'account_number', 'locked', 'account_txt', 'account_type_id']}},
+      where: ["account.enterprise_id=" + eid]
+    };
+
+    inv_unit_defn = {
+      tables : {'inv_unit': { columns: ["id", "text"] }}
+    };
+
+    inv_group_defn = {
+      tables: {'inv_group': { columns: ['id', 'name', 'symbol', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']}}
+    };
+
+    inv_defn = {
+      tables: {'inventory': { columns: ['enterprise_id', 'id', 'code', 'text', 'price', 'group_id', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'stock_max', 'stock_min', 'consumable']}},
+      where: ["inventory.enterprise_id=" + eid]
+    };
+
+    inv_type_defn = {
+      tables: {'inv_type': { columns: ['id', 'text']}}
+    };
+    initia();
+    function initia(){
+      $q.all([
+      connect.req(account_defn),
+      connect.req(inv_unit_defn),
+      connect.req(inv_group_defn),
+      connect.req(inv_type_defn),
+      connect.req(inv_defn)
+    ]).then(init);
+    }
+
+    
+
+    var stores = {},
+      models = ['account', 'inv_unit', 'inv_group', 'inv_type', 'inventory'],
+      item;
+    $scope.models = {};
+    $scope.item = item = {};
+
+    function init(arr) {
+      for (var i = 0, l = arr.length; i < l; i++) {
+        stores[models[i]] = arr[i];
+        $scope.models[models[i]] = arr[i].data;
+      }
+
+      item.unit_weight = 0;
+      item.unit_volume = 0;
+      item.enterprise_id = eid; //101; // FIXME: maybe
+      //console.log('line 2144', stores.account); console.log('line 2144', stores.inv_unit);
+      //console.log($scope.models.account);
+    }
+
+
+    function reset () {
+      $scope.item = item = {};
+      item.unit_weight = 0;
+      item.unit_volume = 0;
+    }
+
+    $scope.submit = function () {
+      if ($scope.inventory.$valid) {
+        item.id = stores.inventory.generateid(); 
+        stores.inventory.put(item);
+        console.log("line 2151 controllerjs item:", item);
+        item.enterprise_id = appstate.get("enterprise").id;
+        connect.basicPut('inventory', [item]);
+        reset();
+      } else {
+        for (var k in $scope.inventory) {
+          if ($scope.inventory[k].$invalid) {
+            $scope.invalid[k] = "true"; 
+            // TODO: make css classes depend on this. Color
+            // red for error on each input if $invalid.
+          } 
+        }
+      }
+    };
+
+    $scope.logStore = function () {
+      console.log(stores.inv_group.data); 
+    };
+
+    // New Type Instance Modal/Controller
+    $scope.newUnitType = function () {
+      var instance = $modal.open({
+        templateUrl: 'unitmodal.html',
+        controller: function($scope, $modalInstance, unitStore) {
+          var unit = $scope.unit = {};
+          $scope.units = unitStore.data;
+          console.log('line 2177 units', unitStore);
+
+          $scope.submit = function () {
+            // validate
+            $scope.unit.id = unitStore.generateid();
+            if (unit.text) {
+              // process
+              var text = unit.text.toLowerCase();
+              text = text[0].toUpperCase() + text.slice(1);
+              unit.text = text;
+
+              /*unitStore.put(unit);
+              connect.basicPut('inv_unit', [{id: unit.id, text: unit.text}]); //FIXME: AUGHAUGH*/
+              $modalInstance.close({id: unit.id, text: unit.text});
+            }
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss(); 
+          };
+
+        },
+        resolve: {
+          unitStore: function() { return stores.inv_unit; }
+        }
+      });
+
+      instance.result.then(function (value) {
+        //unitStore.put(unit);
+        connect.basicPut('inv_unit', [value]);
+        initia();
+        //console.log("Submitted Successfully.");
+      }, function () {
+        console.log("Closed Successfully."); 
+      });
+    };
+
+    $scope.newInventoryGroup = function () {
+      var instance = $modal.open({
+        templateUrl: "inventorygroupmodal.html",
+        controller: function ($scope, $modalInstance, groupStore, accountModel) {
+          var group = $scope.group = {},
+            clean = {},
+            cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
+
+          $scope.accounts = accountModel;
+
+          $scope.submit = function () {
+            group.id = groupStore.generateid();
+            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA            
+            groupStore.put(group);
+            //fix me for writting this in a good way
+            clean.sales_account = clean.sales_account.account_number;
+            clean.cogs_account = clean.cogs_account.account_number;
+            clean.stock_account = clean.stock_account.account_number;
+            clean.tax_account = clean.tax_account.account_number;
+            connect.basicPut('inv_group', [clean]);
+            $modalInstance.close();
+          };
+
+          $scope.discard = function () {
+            $modalInstance.dismiss(); 
+          };
+
+        },
+        resolve: {
+          groupStore: function () { return stores.inv_group; },
+          accountModel: function () { return $scope.models.account; }
+        }
+      });
+
+      instance.result.then(function () {
+        console.log("Submitted Successfully.");
+      }, function () {
+        console.log("Closed Successfully."); 
+      });
+    };
+
+    $scope.reset = function () {
+      reset();
+    };
+
   });
 angular.module('kpk.controllers').controller('journalController', function($scope, $translate, $compile, $timeout, $q, $modal, connect){
 
