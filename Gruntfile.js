@@ -22,7 +22,7 @@ module.exports = function(grunt) {
       dist: {
         src: ['app/partials/**/*.js'],
         //Should compile to distribution folder when this exists
-        dest: 'app/js/controllers/controller.js'
+        dest: 'app/js/controllers/controllers.js'
       }
     },
     watch: { 
