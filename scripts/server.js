@@ -92,12 +92,10 @@ app.get('/tree', function(req, res, next) {
 });
 
 app.post('/journal', function(req, res) {
-  console.log(req.body);
   jr.poster(req, res); 
 });
 
 app.post('/gl', function(req, res) {
-  console.log('le tableau recu est ', req.body);
 });
 
 app.get('/journal', function(req,res){
@@ -173,7 +171,6 @@ app.get('/fiscal/:enterprise/', function(req, res) {
 app.get('/temp/', function (req, res, next) {
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
-  console.log(['[sql] Executing : ', sql].join(''));
   db.execute(sql, function (err, rows) {
     if (err) next(err);
     res.send(rows); 
@@ -183,7 +180,6 @@ app.get('/temp/', function (req, res, next) {
 app.post('/temp/:table/', function (req, res, next) {
   var tmp = {};
   var sql = parser.post(tmp);
-  console.log(['[sql] Executing : ', sql]);
 });
 
 app.put('/temp/:table/:id', function (req, res, next) {
