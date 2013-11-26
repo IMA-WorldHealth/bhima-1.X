@@ -11,12 +11,18 @@ module.exports = function(grunt) {
         //Should compile to distribution folder when this exists
         dest: 'app/js/controllers/controller2.js'
       }
+    },
+    watch: { 
+      //concat files
+      files: ['<%= concat.dist.src %>'],
+      tasks: ['concat']
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('build', ['concat']);
+  grunt.registerTask('build', ['concat', 'watch']);
 
   grunt.registerTask('default', ['concat']);
 };
