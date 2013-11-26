@@ -13,15 +13,11 @@
     }).
     when('/permission', { 
       controller: 'userController',
-      templateUrl: 'partials/permission/permissions.html'
+      templateUrl: 'partials/user_permission/permissions.html'
     }).
     when('/posting_journal', {
       controller: 'journalController',
       templateUrl:'partials/journal/journal.html'
-    }).
-    when('/partials/transaction', { 
-      controller: 'transactionController',
-      templateUrl: 'partials/transaction/transaction.html'  
     }).
     when('/fiscal', {
       controller: 'fiscalController',
