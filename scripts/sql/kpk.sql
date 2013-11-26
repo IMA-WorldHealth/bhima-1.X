@@ -937,14 +937,14 @@ CREATE TABLE `debitor_group` (
   `type_id`             smallint unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
-  --KEY `account_id` (`account_id`),
+  /*--KEY `account_id` (`account_id`),*/
   KEY `location_id` (`location_id`),
   KEY `payment_id` (`payment_id`),
   KEY `contact_id` (`contact_id`),
   KEY `tax_id` (`tax_id`),
   KEY `type_id` (`type_id`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  --CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  /*--CONSTRAINT FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,*/
   CONSTRAINT FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT FOREIGN KEY (`tax_id`) REFERENCES `tax` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1136,7 +1136,7 @@ CREATE TABLE `inv_group` (
   `stock_account`   int unsigned,
   `tax_account`     int unsigned,
   PRIMARY KEY (`id`)
-  --,
+ /* --,
   --KEY `sales_account` (`sales_account`),
   --KEY `cogs_account` (`cogs_account`),
   --KEY `stock_account` (`stock_account`),
@@ -1144,7 +1144,7 @@ CREATE TABLE `inv_group` (
   --CONSTRAINT FOREIGN KEY (`sales_account`) REFERENCES `account` (`id`),
   --CONSTRAINT FOREIGN KEY (`cogs_account`) REFERENCES `account` (`id`),
   --CONSTRAINT FOREIGN KEY (`stock_account`) REFERENCES `account` (`id`),
-  --CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`id`)
+  --CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`id`)*/
 ) ENGINE=InnoDB;
 
 --
