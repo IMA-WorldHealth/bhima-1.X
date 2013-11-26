@@ -1,6 +1,5 @@
 angular.module('kpk.controllers').controller('journalController', function($scope, $translate, $compile, $timeout, $q, $modal, connect){
 
-  console.log("ERMERGERD");
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
 
