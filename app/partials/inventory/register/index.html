@@ -283,7 +283,7 @@
                 id="group-sales-account"
                 class="form-control"
                 ng-model="group.sales_account"
-                ng-options="account.id as account.id for account in accounts"
+                ng-options="account.account_number for account in accounts"
                 required
               ></select>
             </div>
@@ -296,7 +296,7 @@
                 id="group-cogs-account"
                 class="form-control"
                 ng-model="group.cogs_account"
-                ng-options="account.id as account.id for account in accounts"
+                ng-options="account.account_number for account in accounts"
               ></select>
             </div>
           </div>
@@ -308,7 +308,7 @@
                 id="group-stock-account"
                 class="form-control"
                 ng-model="group.stock_account"
-                ng-options="account.id as account.id for account in accounts"
+                ng-options="account.account_number for account in accounts"
               ></select>
             </div>
           </div>
@@ -320,7 +320,7 @@
                 id="group-tax-account"
                 class="form-control"
                 ng-model="group.tax_account"
-                ng-options="account.id as account.id for account in accounts"
+                ng-options="account.account_number for account in accounts"
               ></select>
             </div>
           </div>
