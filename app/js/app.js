@@ -17,7 +17,7 @@
     }).
     when('/posting_journal', {
       controller: 'journalController',
-      templateUrl:'partials/postingjournal/index.html'
+      templateUrl:'partials/postingjournal/journal.html'
     }).
     when('/partials/transaction', { 
       controller: 'transactionController',

@@ -1,36 +1,22 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
-    pkg: {
-      pkg: grunt.file.readJSON('package.json')
-    },
-    lint: {
-      files: ["Gruntfile.js", "app/js/*.js"] 
-    },
-    jshint: {
-      options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        browser: true
+    pkg: grunt.file.readJSON('package.json'),
+    concat: { 
+      options: { 
+        separator: ';'
       },
-      globals: {
-        require: true,
-        define: true,
-        requirejs: true,
-        describe: true,
-        expect: true,
-        it: true
+      dist: {
+        src: ['app/partials/**/*.js'],
+        //Should compile to distribution folder when this exists
+        dest: 'app/js/controllers/controller2.js'
       }
     }
   });
 
-  grunt.registerTask('default', 'lint');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+
+  grunt.registerTask('build', ['concat']);
+
+  grunt.registerTask('default', ['concat']);
 };
