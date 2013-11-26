@@ -1,52 +1,42 @@
-<!--FIXME: Clean up markup, tags closed and not openend etc.-->
-<!--TODO: Add a header above fiscal year panel. EDIT/CREATE *Fiscal year name*
-          Add a sort row on top of the Fiscal Year selection - A-Z, year, etc.-->
-
 <link rel="stylesheet" href="css/fiscal.css"/>
-<div class="container" id="kpk-units-fiscal">
+
+<header>
+  <span class="capital">{{'FISCAL_YEAR' | translate}} {{'MANAGEMENT' | translate}}</span>
+</header>
+
+<section class="underline">
+  <div class="pull-right">
+    <button ng-click="createFiscal()" class="capital btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span> {{'CREATE' | translate}} {{'FISCAL_YEAR' | translate}}</button>
+    <button class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
+  </div>
+</section>
+
+<div class="content">
   <div class="row">
-    <div class="col-xs-3">
-      <!--Enterprise fiscal year selection-->
 
-      <div class="panel panel-default">
-        <div class="panel-heading">
+  <div class="col-xs-8">
 
-          <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
-          <span class="panel-title">{{enterprise.city}}</span>
-
-        </div>
-        <button id="create-btn" class="btn btn-success" ng-click="createFiscal()"><span
-            class="glyphicon glyphicon-pencil"></span></button>
-        <table class="table table-hover" id="kpk-units-fiscal-list">
-          <!--tr><td><input class="form-control input-sm"ng-model="fiscal_filter"></td></tr-->
-          <tr ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}"
-              ng-repeat="year in fiscal_model.data">
-            <td>{{year.fiscal_year_txt}}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="col-xs-9">
-      <!--FIXME: default of nothing seems pretty hacky?-->
       <div ng-switch on="active">
 
         <div ng-switch-when="select"></div>
 
-        <div class="panel panel-default" ng-switch-when="create">
-          <div class="panel-body">
-            <div class="kpk-header">
-              <h1>Create Fiscal Year</h1>
-            </div>
-            <div class="col-xs-6">
+        <div ng-switch-when="create">
+          <div class="row">
+    <div class="col-xs-12">
+    <h3>New Fiscal Year<h3>
+    </div>
+  </div>
+      <div class="row">
+      <div class="col-xs-6">
               <form novalidate name="form">
                 <div class="form-group">
                   <label for="fiscalNote">Year Desc.</label>
-                  <input required type="text" id="fiscalNote" class="form-control" ng-model="new_model.note">
+                  <input required type="text" id="fiscalNote" class="form-kapok" ng-model="new_model.note">
                 </div>
 
                 <div class="form-group">
                   <label for="startMonth">Start Month</label>
-                  <input required type="month" id="startMonth" class="form-control" ng-model="new_model.start">
+                  <input required type="month" id="startMonth" class="form-kapok" ng-model="new_model.start">
                 </div>
 
                 <div class="form-group">
@@ -68,7 +58,7 @@
                 <div class="form-group">
 
                   <label for="endMonth">End Month</label>
-                  <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-control" ng-model="new_model.end">
+                  <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-kapok" ng-model="new_model.end">
                 </div>
                 <button ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-default">Submit</button>
               </form>
@@ -76,116 +66,120 @@
             <div class="col-xs-6">
               <code ng-repeat="item in progress">{{item}}<br></code>
             </div>
-          </div>
+      </div>
         </div>
 
-        <div class="panel panel-default" ng-switch-when="update">
-          <div class="panel-body">
-            <div class="kpk-header">
-              <h1>Edit Fiscal Year
-                <small>{{selected.fiscal_year_txt}}</small>
-              </h1>
-            </div>
-            <div class="col-xs-6">
+      <div ng-switch-when="update">
+      <div class="row">
+        <div class="col-xs-12">
+      <h3>Fiscal Year <small>{{selected.fiscal_year_txt}}</small></h3>
+      </div>
+      </div>
+      <div class="row">
+       <div class="col-xs-6">
 
 
               <!--Fiscal year form-->
-              <form class="form-horizontal" role="form">
+              <form role="form">
                 <div class="form-group">
                   <!--TODO: -->
-                  <label for="fiscal-name" class="col-xs-5 control-label">Name</label>
-
-                  <div class="col-xs-7">
-                    <input type="text" class="form-control" id="fiscal-name" ng-model="selected.fiscal_year_txt">
-                  </div>
+                  <label for="fiscal-name" class="control-label">Name</label>
+                  <input type="text" class="form-kapok" id="fiscal-name" ng-model="selected.fiscal_year_txt">
                   <!--xs doesn't have offset for some reason?-->
-                  <div class="col-lg-offset-5 col-lg-7">
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" ng-model="selected.locked"> Lock this Fiscal Year
-                      </label>
-                    </div>
+                  
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="selected.locked"> Lock this Fiscal Year
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="fiscal-months" class="control-label">Total Months</label>
+                    <input type="text" class="form-kapok" id="fiscal-months" ng-model="selected.number_of_months">
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="form-group">
-                    <label for="fiscal-months" class="col-xs-5 control-label">Total Months</label>
+                    <label for="first-voucher" class="control-label">First Voucher No.</label>
 
-                    <div class="col-xs-4">
-                      <input type="text" class="form-control" id="fiscal-months" ng-model="selected.number_of_months">
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="form-group">
-                    <label for="first-voucher" class="col-xs-5 control-label">First Voucher No.</label>
-
-                    <div class="col-xs-4">
-                      <input type="text" class="form-control" id="first-voucher"
-                             ng-model="selected.transaction_start_number">
-                    </div>
+                    <input type="text" class="form-kapok" id="first-voucher"
+                           ng-model="selected.transaction_start_number">
                   </div>
                   <div class="form-group">
-                    <label for="last-voucher" class="col-xs-5 control-label">Last Voucher No.</label>
+                    <label for="last-voucher" class="control-label">Last Voucher No.</label>
 
-                    <div class="col-xs-4">
-                      <input type="text" class="form-control" id="last-voucher"
+                      <input type="text" class="form-kapok" id="last-voucher"
                              ng-model="selected.transaction_stop_number">
-                    </div>
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="form-group">
-                    <label for="posting-from" class="col-xs-5 control-label">Posting from</label>
+                    <label for="posting-from" class="control-label">Posting from</label>
 
-                    <div class="col-xs-4">
                       <!--TODO: This is temporary data - logic should be implemented-->
                       <!--FIXME: Logic should all be taken care of in controller-->
-                      <input type="text" class="form-control" id="posting-from" readonly
+                      <input type="text" class="form-kapok" id="posting-from" readonly
                              value="{{getFiscalStart() | date:'dd/MM/yyyy'}}">
-                    </div>
                   </div>
                   <div class="form-group">
-                    <label for="posting-to" class="col-xs-5 control-label">Posting to</label>
+                    <label for="posting-to" class="control-label">Posting to</label>
 
-                    <div class="col-xs-4">
-                      <input type="text" class="form-control" id="posting-to" readonly
+                      <input type="text" class="form-kapok" id="posting-to" readonly
                              value="{{getFiscalEnd() | date:'dd/MM/yyyy'}}">
-                    </div>
                   </div>
                 </div>
               </form>
             </div>
-            <div class="col-xs-6">
+
+        <div class="col-xs-6">
               <table class="table table-hover table-bordered">
                 <thead>
                 <tr>
-                  <th colspan=3>Fiscal Periods</th>
+                  <th colspan=3>Periods</th>
                 </tr>
                 </thead>
                 <tbody>
                 <!--Populated with angular-->
                 <tr ng-repeat="period in period_model">
                   <!--FIXME: passing full date object to each table data seems extravagant (read: fabulous)-->
-                  <td>{{period.period_start | date: 'MMM'}}
+                  <td>{{period.period_start | date: 'MMM'}}</td>
                   <td>{{period.period_start | date:'dd/MM/yyyy'}}</td>
                   <td>{{period.period_stop | date:'dd/MM/yyyy'}}</td>
                 </tr>
                 </tbody>
               </table>
             </div>
-          </div>
-          <!--Close panel body-->
-          <div class="panel-footer">
-            <div class="btn-group">
-              <button class="btn btn-default" disabled>Save Changes</button>
-              <button class="btn btn-danger" ng-disabled="create" ng-click="delete(selected.id)">Delete Fiscal Year
-              </button>
-              <button class="btn btn-danger">Recalculate</button>
-            </div>
+      
           </div>
         </div>
-        <!--Close panel-->
+      </div>
+    </div>
+    <div class="col-xs-4">
+    <div class="row">
+    <div class="col-xs-12">
+    <h3>{{enterprise.name}} <small>Fiscal Year Selection</small></h3>
+    </div>
+  </div>
+      <div class="row">
+      <div class="col-xs-12">
+      <table class="table table-bordered">
+        <thead>
+          <tr><th>Description</th><th></th></tr>
+        </thead>
+        <tbody>
+          <!-- TODO Review this, not sure about it -->
+          <tr ng-switch on="fiscal_model.data.length">
+             <td ng-switch-when="0" colspan=2><div class="alert alert-info">There are no Fiscal Years recorded for the enterprise {{enterprise.name}}. Fiscal Years are required to group transactions and provide reports.</div></tr>
+          </tr>
+          <tr ng-repeat="year in fiscal_model.data" ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}">
+            <td>{{year.fiscal_year_txt}}</td>
+            <td>{{year.start_month}}/{{year.start_year}}</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
       </div>
     </div>
   </div>

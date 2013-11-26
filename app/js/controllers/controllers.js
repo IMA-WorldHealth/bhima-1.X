@@ -460,7 +460,7 @@ controllers.controller('transactionController', function($scope, $rootScope, $lo
 //********************** UTIL CONTROLLER ********************************************
 //***********************************************************************************
  
-controllers.controller('utilController', function($rootScope, $scope, $q, kpkConnect, appstate, kpkUtilitaire) { 
+controllers.controller('utilController', function($rootScope, $scope, $q, $translate, kpkConnect, appstate, kpkUtilitaire) { 
   /////
   // summary: 
   //  Responsible for all utilities (buttons/ selects etc.) on the application side bar
@@ -469,6 +469,11 @@ controllers.controller('utilController', function($rootScope, $scope, $q, kpkCon
   //  -All operations on models should be local, and then exposed to scope
   //  -Should use connect instead of kpkConnect (soon to be deleted)
   /////
+
+  $scope.toggleTranslate = function toggleTranslate(key) { 
+
+    $translate.uses(key);
+  }
   /*$scope.enterprise_model = {};
   $scope.fiscal_model = {};
   $scope.period_model = {};
@@ -853,7 +858,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
 //      Validation
 
-//      Years must be
+//      Years must be valid
       if(!(start < end)) {
         updateProgress("Start date must be before end date");
         return;
@@ -891,6 +896,13 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 
           // generate budget for account/ period
           // ?generate period totals
+          
+          //Reset model
+          $scope.new_model = {};
+
+          //Select year
+          $scope.select(fiscal_object.id);
+          $scope.progress = {};
         });
 
         return deferred.promise;
@@ -2432,7 +2444,7 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
  //***************************************************************************************
 //******************** JOURNAL CONTROLLER ************************************************
 //***************************************************************************************
-controllers.controller('journalController', function($scope, $timeout, $q, $modal, connect){
+controllers.controller('journalController', function($scope, $translate,  $timeout, $q, $modal, connect){
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
@@ -2446,18 +2458,24 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
     }
   }
 
+  //TODO iterate thorugh columns array - apply translate to each heading and update
+  //(each should go through translate initially as well)
+  $scope.$on('$translateChangeSuccess', function () {
+    //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
+  });
+
 //  grid options
   var grid;
   var dataview;
   var sort_column = "trans_id";
   var columns = [
-    {id: 'trans_id', name: 'ID', field: 'trans_id', sortable: true},
+    {id: 'trans_id', name: "ID", field: 'trans_id', sortable: true},
     {id: 'trans_date', name: 'Date', field: 'trans_date'},
-    {id: 'doc_num', name: 'Doc No.', field: 'doc_num'},
-    {id: 'description', name: 'Description', field: 'description'},
+    {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
+    {id: 'description', name: 'Description', field: 'description', width: 110},
     {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
-    {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true},
-    {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true},
+    {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
+    {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
     {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
     {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
     {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},
@@ -2467,7 +2485,7 @@ controllers.controller('journalController', function($scope, $timeout, $q, $moda
     enableCellNavigation: true,
     enableColumnReorder: true,
     forceFitColumns: true,
-    rowHeight: 35
+    rowHeight: 30
   };
 
   function init() {
@@ -3354,6 +3372,51 @@ controllers.controller('exchangeRateController', function ($scope, connect) {
     return [curr.symbol, '|', curr.name].join(' '); 
   };
 
+});
+
+controllers.controller('createAccountController', function($scope, $q, connect) { 
+  console.log("createAccountController initialised");
+
+  $scope.model = {};
+  $scope.model['accounts'] = {'data' : []};
+
+//  Request
+  var account_request = {
+    'tables' : {
+      'account' : {
+        'columns' : ["id", "account_txt", "account_type_id", "fixed"]
+      }
+    }
+  }
+
+  //  grid options
+  var grid;
+  var dataview;
+  var sort_column = "id";
+  var columns = [
+    {id: 'id', name: 'No.', field: 'id', sortable: true, maxWidth: 80},
+    {id: 'account_txt', name: 'Text', field: 'account_txt'},
+    {id: 'account_type_id', name: 'Type', field: 'account_type_id', maxWidth: 60},
+    {id: 'fixed', name: 'Fixed', field: 'fixed', maxWidth: 60}
+  ];
+  var options = {
+    enableCellNavigation: true,
+    enableColumnReorder: true,
+    forceFitColumns: true,
+    /*Bootstrap style row height*/
+    rowHeight: 30
+  };
+
+  function init() { 
+
+    connect.req(account_request).then(function(res) { 
+      $scope.model['accounts'] = res;
+      console.log($scope.model['accounts'].data);
+      grid = new Slick.Grid('#account_grid', $scope.model['accounts'].data, columns, options);
+    })
+  }
+
+  init();
 });
 
 })(angular);
