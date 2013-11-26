@@ -2,7 +2,7 @@
   'use strict';
 
   //FIXME: Format code correctly in seperate files/modules etc.
-  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'angularTreeview', 'ui.bootstrap', 'ui.bootstrap.tabs']);
+  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'angularTreeview', 'ui.bootstrap', 'ui.bootstrap.tabs', 'pascalprecht.translate']);
   
   function kpkconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
@@ -87,6 +87,60 @@
       templateUrl: 'partials/create_account.html'
     });
   }  
-  kpk.config(kpkconfig);
 
+  function translateConfig($translateProvider) { 
+    //TODO Configurations loaded from files on the server (pointed to by database?)
+    //TODO Review how translations should be split - functionality, unit, etc.
+    //TODO Review i18n and determine if this it the right solution
+    $translateProvider.translations('en', {
+      //Accounting terminology
+      POSTING_JOURNAL: "posting journal",
+      TRANSACTION: "transaction",
+      ACCOUNT: "account",
+      TRIAL_BALANCE: "trial balance",
+      GENERAL_LEDGER: "general ledger",
+      DEBIT: "debit",
+      CREDIT: "credit",
+      FISCAL_YEAR: "fiscal year",
+
+      //Application functions
+      CONFIGURE: "configure",
+      PRINT: "print",
+      CREATE: "create",
+
+      //Generic database
+      ID: "id",
+      DATE: "date",
+      DESCRIPTION: "description",
+
+      //Titles
+      MANAGEMENT: "management",
+
+      //Journal database
+      DOC_NO: "doc no.",
+      DEB_CRED_ACCOUNT: "debitor/creditor account",
+      DEB_CRED_TYPE: "debitor/creditor type",
+      INV_PO_NO: "inv/PO no."
+    });
+
+    $translateProvider.translations('fr', {
+      //Accounting terminology
+      POSTING_JOURNAL: "journal d'Affichage",
+      TRANSACTION: "opération",
+      ACCOUNT: "compte",
+      TRIAL_BALANCE: "balance de vérification",
+      GENERAL_LEDGER: "grand livre général",
+      DEBIT: "débit",
+      CREDIT: "crédit",
+
+      //Application functions
+      CONFIGURE: "configurer",
+      PRINT: "imprimer"
+    });
+
+    $translateProvider.preferredLanguage('en');
+  }
+
+  kpk.config(kpkconfig);
+  kpk.config(translateConfig);
 })(angular);
