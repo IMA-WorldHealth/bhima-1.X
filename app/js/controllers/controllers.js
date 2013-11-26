@@ -1060,15 +1060,15 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
 //      FIXME should verify user ID at the time of submitting invoice, less time to manipulate it I guess
       $q.all([
         inventory_request,
-        sales_request,
-        debtor_request,
+        // sales_request,
+        // debtor_request,
         user_request
       ]).then(function(a) { 
         console.log(a);
         $scope.inventory_model = a[0];
-        $scope.sales_model = a[1];
-        $scope.debtor_model = a[2];
-        $scope.verify = a[3].data.id;
+        // $scope.sales_model = a[1];
+        // $scope.debtor_model = a[2];
+        $scope.verify = a[1].data.id;
 
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
 
@@ -1077,6 +1077,8 @@ controllers.controller('fiscalController', function($scope, $q, connect, appstat
       });
 
     }
+
+
 
     //FIXME Shouldn't need to download every all invoices in this module, only take top few?
     function createId(list) { 
@@ -2849,8 +2851,8 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
   var inventory_request = connect.req(inventory_query);
 
 
-  var sales_request = connect.req({'tables' : {'sale' : { 'columns' : ['id']}}});
-  var purchase_request = connect.req({'tables' : {'purchase' : { 'columns' : ['id']}}});
+  var max_sales_request = connect.basicGet('/max/id/sale');
+  var max_purchase_request = connect.basicGet('/max/id/purchase');
 
   var creditor_query = {
     'e' : [{
@@ -2877,24 +2879,25 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
 
     $q.all([
       inventory_request,
-      sales_request,
-      purchase_request,
+      // sales_request,
+      // purchase_request,
+      max_sales_request,
+      max_purchase_request,
       creditor_request,
       user_request
 
     ]).then(function(a) {
       $scope.inventory_model = a[0];
-      $scope.sales_model = a[1];
-      $scope.purchase_model = a[2];
+      $scope.max_sales = a[1];
+      $scope.max_purchase = a[2];
       $scope.creditor_model = a[3];
       $scope.verify = a[4].data.id;
 
       console.log($scope.verify, a[4]);
 //      Raw hacks - #sorry, these might be the same entity anyway
-//      TODO use SQL to determine highest ID - NOT pulling down all ids and manually parsing
-      var ids = $scope.sales_model.data.concat($scope.purchase_model.data);
+      var id = Math.max($scope.max_sales, $scope.max_purchase);
 
-      var invoice_id = createId(ids);
+      var invoice_id = createId(id);
         console.log("got new ID", invoice_id);
       $scope.invoice_id = invoice_id;
     });
@@ -2906,16 +2909,14 @@ controllers.controller('purchaseOrderController', function($scope, $q, connect, 
     return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + ('0' + now.getDate()).slice(-2);
   }
 
-  //FIXME Shouldn't need to download every all invoices in this module, only take top few?
-  function createId(list) {
+  function createId(current) {
+    /*
+    *summary 
+    *  Format and increment according to transaction ID format
+    */
     var default_id = 100000;
-    if(list.length < 1) return default_id; //No invoices have been created
-    console.log("Sales list", list);
-    var search_max = list.reduce(function(a, b) { a = a.id || a; b = b.id || b; return Math.max(a, b)});
-    //reduce returns an object if only one element is in the array for some reason
-    //TODOSET
-    if(search_max.id) search_max = search_max.id;
-    return search_max + 1;
+    if(!current) return default_id;
+    return current+1;
   }
 
   function formatInvoice() {
