@@ -550,6 +550,8 @@
       //  data.  Think of it as a `readonly` store.
       var handle, deferred = $q.defer();
 
+      if (angular.isString(defn)) return $http.get(defn);
+
       handle = $http.get('/temp/?' + JSON.stringify(defn));
       handle.then(function (returned) {
         deferred.resolve(returned.data);
