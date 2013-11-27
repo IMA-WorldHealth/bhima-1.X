@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="partials/budget/budget.css"/>
+
+<div class="container" id="kpk-units-budget">
+  <div class="row">
+    <div class="col-xs-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
+          <span class="panel-title">{{enterprise.city}}</span>
+        </div>
+        <span>Search Accounts</span>
+        <input type="search" class="form-control" ng-model="filterAccounts">
+
+        <div class="kpk-scrollable">
+          <table class="table table-hover table-bordered" id="kpk-units-budgeting-list">
+            <tr ng-click="select(account.id)" ng-class="{selected: account.id==selected_account.id}"
+                ng-repeat="account in account_model.data | filter: filterAccounts">
+              <td width="65px">{{account.id}}</td>
+              <td>{{account.account_txt}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-9">
+      <div ng-switch on="active"><!--Report view-->
+        <div ng-switch-default></div>
+        <div ng-switch-when="report">
+          <div class="kpk-header">
+            <div class="row">
+              <h1>Budget Report
+                <small>{{selected_account.account_txt}}</small>
+              </h1>
+            </div>
+            <div class="row">
+              <div class="col-lg-offset-7">
+                <div class="input-group">
+                  <select ng-disabled="validSelect()" class="form-control" ng-model="$parent.selected_fiscal"
+                          ng-options="f.fiscal_year_txt for f in fiscal_model.data"></select>
+                <span class="input-group-btn">
+                  <btn ng-disabled="validSelect()" class="btn btn-default" ng-click="compare()" type="button">Compare
+                    Year
+                  </btn>
+                </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <fieldset ng-repeat="report in budget_model.reports">
+            <!--Use a select here, allow selecting any of the available fiscal years-->
+            <span>{{report.desc}}</span>
+            <button ng-click="deleteCompare(report)" type="button" class="close budget-close">&times;</button>
+            <table class="table table-bordered uniform">
+              <thead>
+              <tr>
+                <th>Period</th>
+                <th>Actual</th>
+                <th>Budget</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="row in report.display">
+                <td class="column-big">{{row.period_start | date : 'MMM yyyy'}}</td>
+                <td class="column-small"><span ng-show="row">{{row.actual | currency}}</span></td>
+                <td><span ng-show="row"><input ng-model="row.budget" class="budget-field"></span></td>
+              </tr>
+              </tr>
+              <!--FIXME: This logic should be in controller, total can simply be displayed-->
+              <tr>
+                <td colspan="2">total</td>
+                <td>{{sum(report) | currency}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

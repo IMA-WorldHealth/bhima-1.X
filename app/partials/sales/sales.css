@@ -1,0 +1,55 @@
+.po-header {
+  margin-top: 3px;
+}
+
+.po-note {
+  margin-top: 8px;
+}
+
+.purchase-header {
+  height: 300px;
+}
+
+/*Not optimal to control utils layout on two different elements*/
+.util {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.util-bottom {
+  border-top: 1px solid #eeeeee;
+  padding-top: 5px;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px
+}
+
+.bika-header {
+  padding-bottom: 9px;
+  margin: 40px 0 5px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.current {
+  background-color: #ebebeb;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  border: 1px solid #a2a2a2;
+
+}
+.filter {
+  max-width: 10px;
+}
+.form-invoice {
+
+  diplay: block;
+  width: 100%;
+  height: 30px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+}

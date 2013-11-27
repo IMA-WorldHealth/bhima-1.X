@@ -9,27 +9,23 @@
     $routeProvider.
     when('/budgeting', {
       controller: 'budgetController',
-      templateUrl: 'partials/budgeting.html'
+      templateUrl: 'partials/budget/budget.html'
     }).
     when('/permission', { 
       controller: 'userController',
-      templateUrl: 'partials/permission/permissions.html'
+      templateUrl: 'partials/user_permission/permissions.html'
     }).
     when('/posting_journal', {
       controller: 'journalController',
-      templateUrl:'partials/postingjournal/index.html'
-    }).
-    when('/partials/transaction', { 
-      controller: 'transactionController',
-      templateUrl: 'partials/transaction/transaction.html'
+      templateUrl:'partials/journal/journal.html'
     }).
     when('/fiscal', {
       controller: 'fiscalController',
-      templateUrl: 'partials/fiscal.html'
+      templateUrl: 'partials/fiscal/fiscal.html'
     }).
     when('/patient', { 
       controller: 'patientRegController',
-      templateUrl: 'partials/patient.html'
+      templateUrl: 'partials/patient_registration/patient.html'
     }).
     when('/accounts', {
       controller: 'accountController',
@@ -40,16 +36,16 @@
       templateUrl: '/partials/inventory/index.html'
     }).
     when('/patient_records/:patientID', { 
-      controller: 'patientSearchController', 
-      templateUrl: '/partials/patient_search.html'
+      controller: 'patientRecordsController', 
+      templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
     when('/sales', { 
       controller: 'salesController',
-      templateUrl: '/partials/sales.html'
+      templateUrl: '/partials/sales/sales.html'
     }).
     when('/sale_records/:recordID', { 
       controller: 'salesRecordsController',
-      templateUrl: '/partials/sales_records.html'
+      templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
     when('/inventory/register', {
       controller: 'inventoryRegisterController',
@@ -68,11 +64,11 @@
     }).
     when('/inventory/purchase', {
       controller: 'purchaseOrderController',
-      templateUrl: 'partials/inventory_invoice/index.html'
+      templateUrl: 'partials/purchase_order/purchase.html'
     }).
     when('/purchase_records/:purchaseID', {
       controller: 'purchaseRecordsController',
-      templateUrl: 'partials/purchase_records.html'
+      templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
     }).
     when('/price_list', {
       controller: 'priceListController',

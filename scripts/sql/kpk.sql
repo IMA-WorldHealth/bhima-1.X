@@ -1131,20 +1131,19 @@ CREATE TABLE `inv_group` (
   `id`              smallint unsigned NOT NULL,
   `name`            varchar(100) NOT NULL,
   `symbol`          char(1) NOT NULL,
-  `sales_account`   int unsigned NOT NULL,
-  `cogs_account`    int unsigned,
-  `stock_account`   int unsigned,
-  `tax_account`     int unsigned,
+  `sales_account`   mediumint unsigned NOT NULL,
+  `cogs_account`    mediumint unsigned,
+  `stock_account`   mediumint unsigned,
+  `tax_account`     mediumint unsigned,
   PRIMARY KEY (`id`)
- /* --,
-  --KEY `sales_account` (`sales_account`),
-  --KEY `cogs_account` (`cogs_account`),
-  --KEY `stock_account` (`stock_account`),
-  --KEY `tax_account` (`tax_account`),
-  --CONSTRAINT FOREIGN KEY (`sales_account`) REFERENCES `account` (`id`),
-  --CONSTRAINT FOREIGN KEY (`cogs_account`) REFERENCES `account` (`id`),
-  --CONSTRAINT FOREIGN KEY (`stock_account`) REFERENCES `account` (`id`),
-  --CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`id`)*/
+  -- KEY `sales_account` (`sales_account`),
+  -- KEY `cogs_account` (`cogs_account`),
+  -- KEY `stock_account` (`stock_account`),
+  -- KEY `tax_account` (`tax_account`),
+  -- CONSTRAINT FOREIGN KEY (`sales_account`) REFERENCES `account` (`account_number`),
+  -- CONSTRAINT FOREIGN KEY (`cogs_account`) REFERENCES `account` (`account_number`),
+  -- CONSTRAINT FOREIGN KEY (`stock_account`) REFERENCES `account` (`account_number`),
+  -- CONSTRAINT FOREIGN KEY (`tax_account`) REFERENCES `account` (`account_number`)
 ) ENGINE=InnoDB;
 
 --
