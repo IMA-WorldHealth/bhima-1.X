@@ -5,6 +5,11 @@ module.exports = function(grunt) {
       options : { 
         banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" + 
                 "angular.module('kpk.controllers', []);\n\n",
+        //strip any strict definitions (single in banner), label source
+        process: function(src, filepath) {
+          return '//src: ' + filepath + '\n' +
+            src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+        }
       },
       kapok: { 
         src: ['app/partials/**/*.js'],
@@ -19,13 +24,7 @@ module.exports = function(grunt) {
         //version/timestamp - probably shouldn't include angular logic but I'm tired
         banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" + 
                 "'use strict'\n\n" +
-                "angular.module('kpk.controllers', []);\n\n",
-
-        //strip any strict definitions (single in banner), label source
-        process: function(src, filepath) {
-          return '//src: ' + filepath + '\n' +
-            src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
-        }
+                "angular.module('kpk.controllers', []);\n\n"
       },
       kapok: { 
         options: { 
