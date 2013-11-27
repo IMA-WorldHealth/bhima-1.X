@@ -1,6 +1,8 @@
  //at left posting_journal property, at right service property such as sale, cash, purchase_order : map
-var db = require('../database/db')({config: {user: 'bika', database: 'bika', host: 'localhost', password: 'HISCongo2013'}})
-  , util = require('../util/util.js'), Q = require('q');
+var db = require('../database/db')()
+  , util = require('../util/util.js')
+  , Q = require('q');
+
 var map = {
   'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debit':'cost'},
   'sale_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'debit':'cost', 'inv_po_id':'id'},
@@ -21,7 +23,8 @@ exports.poster = function(req, res) {
     if (record.length < 1) {
       insert(req.body, res);    
     }
-  } 
+  };
+
   for(var i = 0; i<req.body.length; i++){
       var sql = {
                   'entities' : [{'t':'posting_journal', 'c':['id']}],
@@ -29,13 +32,14 @@ exports.poster = function(req, res) {
             };
       db.execute(db.select(sql), callback);
   }  
-}
+};
+
 // FIXME Temporary fix, pass a reference to res through to process - this should be done with a callback/ promise
 var insert = function(obj,res){  
   for(var i = 0; i<obj.length; i++){
       getData(obj[i], res);      
   } 
-}
+};
 
 var saleDebit = function (obj, data, posting, res){ 
   var deffer = Q.defer(); 
@@ -44,7 +48,7 @@ var saleDebit = function (obj, data, posting, res){
   for(var cle in objDebit){
     journalRecord[cle] = data[objDebit[cle]];
   }
-//  journalRecord.posted = 0;
+  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
@@ -55,7 +59,7 @@ var saleDebit = function (obj, data, posting, res){
     }else{
     deffer.resolve({succes:true, info:ans});
     }    
-  }  
+  };
   var sql = {
              'entities':[{'t':'debitor', 'c':['group_id']}],
              'cond':[{'t':'debitor', 'cl':'id', 'z':'=', 'v':journalRecord.deb_cred_id}]
@@ -63,28 +67,29 @@ var saleDebit = function (obj, data, posting, res){
   var req = db.select(sql);
   db.execute(req, function(err, data){
     var sql = {
-     'entities':[{'t':'debitor_group', 'c':['account_number']}],
+     'entities':[{'t':'debitor_group', 'c':['account_id']}],
      'cond':[{'t':'debitor_group', 'cl':'id', 'z':'=', 'v':data[0].group_id}]
     };
     db.execute(db.select(sql), function(err, data){
-      journalRecord.account_id = data[0].account_number;      
+      if (err) throw err;
+      journalRecord.account_id = data[0].account_id;
       var sql = db.insert('posting_journal', [journalRecord]);
       db.execute(sql, callback); 
     });
   });
   return deffer.promise;
-}
+};
 
 var saleCredit = function(obj, data, posting, res){ 
   var deffer = Q.defer();  
   var objCredit = map[obj.t+'_credit'];
   var callback = function (err, ans) {    
-    if (err){
+    if (err) {
       deffer.resolve({succes :false, info:err});
-    }else{
+    } else {
       deffer.resolve({succes:true, info:ans});
     } 
-  }
+  };
   data.forEach(function(item){
     var journalRecord = {}; 
     var sql = {
@@ -96,7 +101,7 @@ var saleCredit = function(obj, data, posting, res){
       for(var cle in objCredit){
       journalRecord[cle] = item[objCredit[cle]];    
       }
-//      journalRecord.posted = 0;
+  //      journalRecord.posted = 0;
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
       journalRecord.id = '';
@@ -122,7 +127,7 @@ var cashDebit = function (obj, data, posting, res){
   for(var cle in objDebit){
     journalRecord[cle] = data[0][objDebit[cle]];
   }
-//  journalRecord.posted = 0;
+  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
@@ -161,14 +166,14 @@ var cashCredit = function (obj, data, posting, res){
   var sql = {
     'entities':[{'t':'cash', 'c':['credit_account']}],
     'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
-  }
+  };
   db.execute(db.select(sql),function(err, data2){
     journalRecord.account_id = data2[0].credit_account;
     var sql = db.insert('posting_journal', [journalRecord]);
     db.execute(sql, callback); 
   });
   return deffer.promise;
-}
+};
 
 var purchaseDebit = function(obj, data, posting, res){
   var deffer = Q.defer(); 
@@ -190,7 +195,7 @@ var purchaseDebit = function(obj, data, posting, res){
       for(var cle in objDebit){
       journalRecord[cle] = item[objDebit[cle]];    
       }
-//      journalRecord.posted = 0;
+  //      journalRecord.posted = 0;
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
       journalRecord.id = '';
@@ -210,7 +215,7 @@ var purchaseCredit = function(obj, data, posting, res){
   for(var cle in objCredit){
     journalRecord[cle] = data[objCredit[cle]];
   }
-//  journalRecord.posted = 0;
+  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
@@ -243,8 +248,6 @@ var purchaseCredit = function(obj, data, posting, res){
 
 var process = function(data, posting, res){
   var obj = map[service_name];
-
-
   if(service_name == 'sale'){
     Q.all([saleDebit(obj, data[0], posting, res), saleCredit(obj, data, posting, res), check(obj.t, posting.id)]).then(function(arr) {
       console.log("Received, ", arr);

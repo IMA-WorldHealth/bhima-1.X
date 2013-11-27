@@ -20,3 +20,11 @@
   padding-top: 5px;
   padding-bottom: 5px
 }
+
+#kpk-cash-grid, #kpk-cash-grid div {
+  box-sizing: content-box;
+}
+
+.rowSelected {
+  background-color: #dff0d8;
+}

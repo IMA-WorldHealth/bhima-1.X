@@ -1321,15 +1321,15 @@ UNLOCK TABLES;
 --
 DROP TABLE IF EXISTS `cash`;
 CREATE TABLE `cash` (
-  `id`              int unsigned NOT NULL,
+  `id`              int unsigned NOT NULL auto_increment,
   `enterprise_id`   smallint null,
   `bon`             char(1) NOT NULL,
   `bon_num`         int unsigned NOT NULL,
-  `invoice_id`      int unsigned NOT NULL,
   `date`            date NOT NULL,
   `debit_account`   int unsigned NOT NULL,
   `credit_account`  int unsigned NOT NULL,
   `currency_id`     tinyint unsigned NOT NULL,
+  `cost`            decimal(19,2) unsigned not null default 0,
   `cashier_id`      smallint unsigned NOT NULL,
   `cashbox_id`      smallint unsigned NOT NULL,
   `text`            text,
@@ -1338,12 +1338,10 @@ CREATE TABLE `cash` (
   KEY `cashier_id` (`cashier_id`),
   KEY `debit_account` (`debit_account`),
   KEY `credit_account` (`credit_account`),
-  KEY `invoice_id` (`invoice_id`),
   CONSTRAINT FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
   CONSTRAINT FOREIGN KEY (`cashier_id`) REFERENCES `user` (`id`),
   CONSTRAINT FOREIGN KEY (`debit_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`),
-  CONSTRAINT FOREIGN KEY (`invoice_id`) REFERENCES `sale` (`id`)
+  CONSTRAINT FOREIGN KEY (`credit_account`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -1351,13 +1349,15 @@ CREATE TABLE `cash` (
 --
 DROP TABLE IF EXISTS `cash_item`;
 CREATE TABLE `cash_item` (
-  `id`              int unsigned not null,
+  `id`              int unsigned not null auto_increment,
   `cash_id`         int unsigned not null,
-  `cost`            decimal(19,2) unsigned not null default 0.00,
+  `allocated_cost`  decimal(19,2) unsigned not null default 0.00,
   `invoice_id`      int unsigned not null,
   primary key (`id`),
   key `cash_id` (`cash_id`),
-  constraint foreign key (`cash_id`) references `cash` (`id`)
+  key `invoice_id` (`invoice_id`),
+  constraint foreign key (`cash_id`) references `cash` (`id`),
+  constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) ENGINE=InnoDB;
 
 --
@@ -1374,10 +1374,10 @@ CREATE TABLE `posting_journal` (
   `doc_num`           int unsigned, -- what does this do? -- why would this be NOT NULL if we don't know what it does? -- as a reminder to ask dedrick...
   `description`       text,
   `account_id`        int unsigned not null,
-  `debit`             int unsigned,
-  `credit`            int unsigned,
-  `debit_equiv`       int unsigned,
-  `credit_equiv`      int unsigned,
+  `debit`             decimal (19,2) unsigned not null default 0,
+  `credit`            decimal (19,2) unsigned not null default 0,
+  `debit_equiv`       decimal (19,2) unsigned not null default 0,
+  `credit_equiv`      decimal (19,2) unsigned not null default 0,
   `currency_id`       tinyint unsigned NOT NULL,
   `deb_cred_id`       varchar(45), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
