@@ -40,7 +40,7 @@ module.exports = function(grunt) {
     watch: { 
       //FIXME reference uglify files
       files: ['app/partials/**/*.js'],
-      tasks: ['uglify']
+      tasks: ['concat']
     }
   });
 
