@@ -32,7 +32,7 @@ module.exports = function(grunt) {
           sourceMapRoot: 'http://localhost:8080/partials/'
         },
         files: {
-          'app/js/controllers/controllers.js' : ['app/partials/**/*.js']
+          'app/js/controllers/controllers.min.js' : ['app/partials/**/*.js']
         }
       }
     },
