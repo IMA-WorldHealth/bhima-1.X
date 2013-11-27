@@ -115,7 +115,24 @@ app.get('/journal', function(req,res){
   db.execute(sql, cb);  
 });
 
-app.get('/fiscal/:enterprise/', function(req, res) {
+app.get('/max/:id/:table', function(req, res) { 
+  var id = req.params.id;
+  var table = req.params.table;
+
+  var max_request = "SELECT MAX(" + id + ") FROM " + table;
+
+  db.execute(max_request, function(err, ans) { 
+    if(err) {
+      res.send(500, {info: "SQL", detail: err});
+      console.error(err);
+      return;
+    }
+    //dodgy as ass
+    res.send({max: ans[0]['MAX(' + id + ')']});
+  })
+});
+
+app.get('/fiscal/:enterprise', function(req, res) {
   /*
   * summary:
   *   calculate the 'previous' fiscal given an enterprise, return null if no fiscal year exists

@@ -1,0 +1,105 @@
+<link rel="stylesheet" href="partials/records/purchase_order_records/purchase_records.css"/>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="bika-header">
+        <h1>Purchase Order Records</h1>
+      </div>
+    </div>
+  </div>
+  <!--TODO Make this a directive or something, re-usable etc. -->
+  <!--FIXME cleanup-->
+  <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util">
+        <div class="row">
+          <div class="col-xs-12">
+            <!--FIXME btn group is a big hack - should be done with col-->
+            <div class="col-xs-4 hack-left">
+              <input type="text" ng-model="purchase_filter.filter" class="form-kapok" placeholder="Filter Purchase Orders">
+            </div>
+            <div class="pull-right">
+
+              <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--div class="row">
+    <div class="form-group">
+      <label for="invoice_search">Search Invoices</label>
+
+      <input type="text" id="invoice_search" ng-model="invoice_filter.filterText">
+      <button class="btn btn-default" ng-click="post()">Post Selected</button>
+
+    </div>
+  </div-->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <div ng-switch on="invoice_model.data.length">
+        <div class="alert alert-info" ng-switch-when="0">
+          No purchase orders found. Reference <strong><a href="/#/inventory/purchase">Purchase Orders</a></strong> to request a purchase order.
+        </div>
+        <div ng-switch-default></div>
+      </div>
+      <div class="invoice-table">
+        <table class="table table-bordered">
+
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Creditor ID</th>
+            <th>Posted</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr ng-class='{rowSelected: selected.id==purchase.id}' ng-click="select(purchase.id)"
+              ng-repeat="purchase in purchase_model.data | filter: purchase_filter.filter">
+
+            <td>{{purchase.id}}</td>
+            <td>{{purchase.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+            <td>{{purchase.cost | currency}}</td>
+            <td>{{purchase.creditor_id}}</td>
+            <!--Multiple ng-shows - mutually exclusive but not good practice-->
+            <td><span ng-hide="purchase.posted" class="glyphicon glyphicon-minus"></span>
+
+              <div ng-show="purchase.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <!--div id="tableContent">
+      <div ng-grid="gridOptions" class="table table-default p-grid"></div>
+    </div-->
+  </div>
+
+  <div class="row">
+    <!--There's a better way of doing this somewhere out there-->
+    <div class="col-xs-12">
+      <div class="util-bottom">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="pull-right">
+              <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
+                <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
