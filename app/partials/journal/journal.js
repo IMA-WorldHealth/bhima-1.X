@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('journalController', function($scope, $translate, $compile, $timeout, $q, $modal, connect){
+angular.module('kpk.controllers').controller('journalController', function($scope, $translate, $compile, $timeout, $q, $modal, $http, connect) {
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
@@ -10,7 +10,7 @@ angular.module('kpk.controllers').controller('journalController', function($scop
         'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv"]
       }
     }
-  }
+  };
 
   //TODO iterate thorugh columns array - apply translate to each heading and update
   //(each should go through translate initially as well)
@@ -101,13 +101,13 @@ angular.module('kpk.controllers').controller('journalController', function($scop
       ],
       aggregateCollapsed: false
     });
-  }
+  };
 
   $scope.groupByAccount = function groupByAccount() {
     dataview.setGrouping({
       getter: "account_id",
       formatter: function(g) {
-        return "<span style='font-weight: bold'>" + g.value + "</span>"
+        return "<span style='font-weight: bold'>" + g.value + "</span>";
       },
       aggregators: [
         new Slick.Data.Aggregators.Sum("debit"),
@@ -115,11 +115,27 @@ angular.module('kpk.controllers').controller('journalController', function($scop
       ],
       aggregateCollapsed: false
     });
-  }
+  };
 
   $scope.removeGroup = function removeGroup() {
     dataview.setGrouping({});
-  }
+  };
+
+  $scope.trial = function () {
+    // in Sanru Tracker, posting encompasses the entire posting journal.
+    // This code assumes you are posting everything in the posting journal
+    // with your user name.
+    // DECISION: Should we allow you to post only some transactions?
+    connect.req('/trailbalance')
+    .success(function (data, status) {
+      console.log('posting success!');
+      // logic 
+      // Reload page?
+    })
+    .error(function (data, status) {
+      alert("Posting err:", status);
+    });
+  };
 
   function compareSort(a, b) {
     var x = a[sort_column], y = b[sort_column];
@@ -137,7 +153,7 @@ angular.module('kpk.controllers').controller('journalController', function($scop
     format['Debit'] = '#F70303';
 
     var val = totals.sum && totals.sum[column.field];
-    if (val != null) {
+    if (val !== null) {
       return "<span style='font-weight: bold; color:" + format[column.name] + "'>" + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
     }
     return "";
@@ -149,14 +165,13 @@ angular.module('kpk.controllers').controller('journalController', function($scop
       templateUrl: "split.html",
       controller: function ($scope, $modalInstance) { //groupStore, accountModel
         console.log("Group module initialised");
-
       },
       resolve: {
         //groupStore: function () { return stores.inv_group; },
         //accountModel: function () { return $scope.models.account; }
       }
     });
-  }
+  };
 
   //good lawd hacks
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
