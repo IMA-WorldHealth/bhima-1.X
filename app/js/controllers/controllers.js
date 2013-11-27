@@ -1,9 +1,7 @@
-/*kapok v0.0.1 - Tuesday, November 26th, 2013, 11:16:26 PM */
-'use strict'
-
+/*kapok v0.0.1 - Wednesday, November 27th, 2013, 9:03:42 AM */
 angular.module('kpk.controllers', []);
-d
-//src: app/partials/accounts/create_account/create.js
+
+'use strict'
 angular.module('kpk.controllers').controller('createAccountController', function($scope, $q, connect) { 
   console.log("createAccountController initialised");
 
@@ -48,7 +46,6 @@ angular.module('kpk.controllers').controller('createAccountController', function
 
   init();
 });
-//src: app/partials/accounts/index.js
 angular.module('kpk.controllers').controller('accountController', function($scope, $q, $modal, connect, appstate) {
 
     function getData () {
@@ -187,7 +184,6 @@ angular.module('kpk.controllers').controller('accountFormController', function (
         else $scope.$modalInstance.close($scope.account);
       };
   });
-//src: app/partials/budget/budget.js
 angular.module('kpk.controllers').controller('budgetController', function($scope, $q, connect, appstate) { 
     /////
     //  summary: 
@@ -470,7 +466,6 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
 
     init();
   });
-//src: app/partials/cash/index.js
 angular.module('kpk.controllers').controller('cashController', function($scope, connect, $q, $filter, $http, appstate) {
     var enterprise, debitors, cash_items, cash,
         currency, enterprise_id, cash_account;
@@ -648,7 +643,6 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
     };
 
   });
-//src: app/partials/creditor/index.js
 angular.module('kpk.controllers').controller('creditorsController', function($scope, $q, $modal, kpkConnect){
 
   //initialisations
@@ -900,7 +894,6 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
     getCreditors();
   }
  });
-//src: app/partials/currency/currency.js
 angular.module('kpk.controllers').controller('exchangeRateController', function ($scope, connect) {
   var currency;
 
@@ -963,7 +956,6 @@ angular.module('kpk.controllers').controller('exchangeRateController', function 
   };
 
 });
-//src: app/partials/fiscal/fiscal.js
 angular.module('kpk.controllers').controller('fiscalController', function($scope, $q, connect, appstate) { 
     $scope.active = "select";
     $scope.selected = null;
@@ -1269,7 +1261,6 @@ angular.module('kpk.controllers').controller('fiscalController', function($scope
     //Initialise after scope etc. has been set
     init();
   });
-//src: app/partials/inventory/index.js
 angular.module('kpk.controllers').controller('inventoryController', function($scope) {
  
     $scope.fields = {
@@ -1282,7 +1273,6 @@ angular.module('kpk.controllers').controller('inventoryController', function($sc
       $scope.fields[tag] = !$scope.fields[tag];
     };
   });
-//src: app/partials/inventory/register/index.js
 angular.module('kpk.controllers').controller('inventoryRegisterController', function ($scope, appstate, connect, $q, $modal) {
 
     var account_defn, inv_unit_defn, inv_group_defn, inv_defn, inv_type_defn;
@@ -1461,7 +1451,6 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
     };
 
   });
-//src: app/partials/journal/journal.js
 angular.module('kpk.controllers').controller('journalController', function($scope, $translate, $compile, $timeout, $q, $modal, connect){
 
   $scope.model = {};
@@ -1629,7 +1618,6 @@ angular.module('kpk.controllers').controller('journalController', function($scop
 
   init();
 });
-//src: app/partials/kapok/application.js
 angular.module('kpk.controllers').controller('appController', function($scope, $location, appcache) { 
     
     //Cache URL's to maintain user session
@@ -1651,7 +1639,6 @@ angular.module('kpk.controllers').controller('appController', function($scope, $
       if(target) appcache.cacheNav(target);
     });
 });
-//src: app/partials/kapok/tree.js
 angular.module('kpk.controllers').controller('treeController', function($scope, $q, $location, appcache, kpkConnect) {    
     var deferred = $q.defer();
     var result = getRoles();
@@ -1708,7 +1695,6 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
     };
 
 });
-//src: app/partials/kapok/util.js
 angular.module('kpk.controllers').controller('utilController', function($scope, $translate) { 
   ////
   // summary: 
@@ -1721,7 +1707,6 @@ angular.module('kpk.controllers').controller('utilController', function($scope, 
   
   //removed select code - downloaded Enterprises/Fiscal Years and populated selects
 });
-//src: app/partials/patient_registration/patient.js
 angular.module('kpk.controllers').controller('patientRegController', function($scope, $q, $location, connect, $modal, kpkConnect, appstate) {
     console.log("Patient init");
     var patient_model = {};
@@ -1925,7 +1910,6 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
 
     init();
   });
-//src: app/partials/pricelist/index.js
 angular.module('kpk.controllers').controller('priceListController', function ($scope, $q, connect, appstate) {
   var pln, pl, grp, inv, eid, models, validate, stores, dirty, flags, dependencies, changes;
 
@@ -2119,7 +2103,6 @@ angular.module('kpk.controllers').controller('priceListController', function ($s
   };
 
 });
-//src: app/partials/purchase_order/purchase.js
 angular.module('kpk.controllers').controller('purchaseOrderController', function($scope, $q, connect, appstate, appnotify) {
   console.log("Inventory invoice initialised");
 
@@ -2344,7 +2327,6 @@ angular.module('kpk.controllers').controller('purchaseOrderController', function
 
 
 });
-//src: app/partials/records/patient_records/patient_records.js
 angular.module('kpk.controllers').controller('patientRecordsController', function($scope, $q, $routeParams, connect) {
     console.log("Patient Search init");
 
@@ -2397,7 +2379,6 @@ angular.module('kpk.controllers').controller('patientRecordsController', functio
 
     init();
   });
-//src: app/partials/records/purchase_order_records/purchase_records.js
 angular.module('kpk.controllers').controller('purchaseRecordsController', function($scope, $q, $routeParams, connect) {
 
     var default_purchase = ($routeParams.purchaseID || -1);
@@ -2487,7 +2468,6 @@ angular.module('kpk.controllers').controller('purchaseRecordsController', functi
 
     init();
   });
-//src: app/partials/records/sales_records/sales_records.js
 angular.module('kpk.controllers').controller('salesRecordsController', function($scope, $q, $routeParams, connect) { 
     console.log("Sale records initialised");
 
@@ -2576,7 +2556,6 @@ angular.module('kpk.controllers').controller('salesRecordsController', function(
 
     init();
   });
-//src: app/partials/sales/sales.js
 angular.module('kpk.controllers').controller('salesController', function($scope, $q, $location, connect, appstate) {
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
@@ -2786,7 +2765,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 
     init();
   });
-//src: app/partials/user_permission/permissions.js
 angular.module('kpk.controllers').controller('userController', function($scope, $q, kpkConnect) {
   //initilaisation var
   
