@@ -18,6 +18,8 @@
  - Ask Manunga how the accounting works in the hospital.
  - How billing of patients in beds in hospital wards takes place.
 
-* Migrate to using grunt for building
 * Migrate to using HTTP only
 * Serve static content from a cookieless domains.
+
+## Other
+ - Fix up journal code 
