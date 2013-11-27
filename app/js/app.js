@@ -29,11 +29,11 @@
     }).
     when('/accounts', {
       controller: 'accountController',
-      templateUrl: '/partials/accounts/index.html'
+      templateUrl: '/partials/accounts/accounts.html'
     }).
     when('/inventory', {
       controller: 'inventoryController',
-      templateUrl: '/partials/inventory/index.html'
+      templateUrl: '/partials/inventory/inventory.html'
     }).
     when('/patient_records/:patientID', { 
       controller: 'patientRecordsController', 
@@ -49,18 +49,14 @@
     }).
     when('/inventory/register', {
       controller: 'inventoryRegisterController',
-      templateUrl: '/partials/inventory/register/index.html'
+      templateUrl: '/partials/inventory/register/register.html'
     }).
     when('/cash', {
       controller: 'cashController',
-      templateUrl: '/partials/cash/index.html'
+      templateUrl: '/partials/cash/cash.html'
     }).when('/creditors', {
       controller: 'creditorsController',
-      templateUrl: '/partials/creditor/index.html'
-    }).
-    when('/cash/review/:id', {
-      controller: 'cashReviewController',
-      templateUrl: '/partials/cash/review/index.html' 
+      templateUrl: '/partials/creditor/creditor.html'
     }).
     when('/inventory/purchase', {
       controller: 'purchaseOrderController',
@@ -72,7 +68,7 @@
     }).
     when('/price_list', {
       controller: 'priceListController',
-      templateUrl: 'partials/pricelist/index.html'
+      templateUrl: 'partials/pricelist/pricelist.html'
     }).
     when('/exchange_rate/', {
       controller : 'exchangeRateController',
