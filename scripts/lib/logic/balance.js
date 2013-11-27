@@ -49,7 +49,7 @@ module.exports = (function (db) {
  
   var self = {};
 
-  self.check = function (req, res, next) {
+  self.trial = function (req, res, next) {
 
     var errors = [];
 
@@ -150,15 +150,23 @@ module.exports = (function (db) {
       return d.promise; 
     }
 
-    return [
+    return q.all([
       account(),
       defined(),
       invpo(),
       period(),
       fiscal(),
       balance()
-    ];
+    ]);
 
   };
 
+  return self;
+
 });
+
+/*
+var cfg = JSON.parse(fs.readFileSync('scripts/config.json', 'utf8'));
+var db = require('./scripts/lib/database/db')(cfg.db);
+var balance = require('./scripts/lib/logic/balance')(db);
+*/
