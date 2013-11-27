@@ -281,6 +281,7 @@ function db(cfg) {
     },
 
     execute: function(sql, callback) {
+      console.log("[db] [execute]: ", sql);
       return con.query(sql, callback);
     },
 
