@@ -76,7 +76,7 @@
     }).
     when('/create_account', {
       controller: 'createAccountController',
-      templateUrl: 'partials/create_account.html'
+      templateUrl: 'partials/accounts/create_account/create.html'
     });
   }  
 
