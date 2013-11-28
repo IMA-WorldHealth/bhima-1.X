@@ -144,8 +144,7 @@ app.get('/fiscal/:enterprise', function(req, res) {
   /*
   * summary:
   *   calculate the 'previous' fiscal given an enterprise, return null if no fiscal year exists
-  * TODO replace literal SQL commands with db interface - does not support multiple databases
-  */
+  * TODO replace literal SQL commands with db interface - does not support multiple databases */
   var enterprise = req.params.enterprise;
 
   var head_request = "SELECT `id` FROM `fiscal_year` WHERE `previous_fiscal_year` IS NULL";
@@ -159,13 +158,10 @@ app.get('/fiscal/:enterprise', function(req, res) {
   //find head of list (if it exists)
   db.execute(head_request, function(err, ans) {
     if(ans.length > 1) {
-      console.log("Invalid data set - multiple fiscal years without previous_id - contact an IT admin for this shi");
       return;
     };
     if(ans.length < 1) {
       //no fiscal years - create the first one
-      console.log("No fiscal years found - create the first one");
-      console.log("Required iterations [", iterations, "]", Date.now() - time_stamp);
       res.send({previous_fiscal_year: null});
       return;
     }
@@ -177,7 +173,6 @@ app.get('/fiscal/:enterprise', function(req, res) {
     db.execute(iterate_request + id, function(err, ans) {
       if(err) return;
       if(ans.length===0) {
-        console.log("Required iterations [", iterations, "]", Date.now() - time_stamp);
         return respond(id);
       }
       return iterateList(ans[0].id);
@@ -185,7 +180,6 @@ app.get('/fiscal/:enterprise', function(req, res) {
   }
 
   function respond(previous_id) {
-    console.log('returning final', previous_id);
     res.send({previous_fiscal_year: previous_id});
   }
 
