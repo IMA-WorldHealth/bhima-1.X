@@ -4,7 +4,7 @@ USE `kpk`;
 UNLOCK TABLES;
 
 GRANT ALL ON `kpk`.* TO 'kpk'@'%' IDENTIFIED BY 'HISCongo2013';
-FLUSH PRIVILEGES;
+FLUSH PRIVILEGES; 
 
 --
 -- Table structure for table `kpk`.`tax`
