@@ -8,7 +8,7 @@
 
 <!--Uses ng-switch at the moment, team should discuss the best way to do this-->
 <div ng-switch on="session_error.valid">
-<section ng-switch-when="false" class="alert alert-danger">
+<section ng-switch-when="false" class="alert {{session_error.type}}"> <!--Type mapped in JS, not ideal but works for now-->
   <span>{{session_error.body}}</span>
 </section>
 </div>
