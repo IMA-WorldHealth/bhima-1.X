@@ -38,13 +38,13 @@ module.exports = (function (db) {
     // do the accounts balance?
     balance : "SELECT SUM(`posting_journal`.`credit`) AS `credit`, SUM(`posting_journal`.`debit`) AS `debit`, SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`, SUM(`posting_journal`.`credit_equiv`) AS `credit_equv` FROM `posting_journal`;",
     // are all the creditor/debitor groups + accounts defined
-    defined : "SELECT `posting_journal`.`id`, `posting_journal`.`deb_cred_id` FROM `posting_journal` WHERE NOT EXISTS (SELECT `creditor_group`.`id` FROM `creditor_group` WHERE `creditor_group`.`account_id`=`posting_journal`.`deb_cred_id`) UNION (SELECT `debitor_group`.`id` FROM `debitor_group` WHERE `debitor_group`.`account_id`=`posting_journal`.`deb_cred_id`);",
+    defined : "SELECT `posting_journal`.`id`, `posting_journal`.`deb_cred_id` FROM `posting_journal` WHERE NOT EXISTS ((SELECT `creditor`.`id`, `posting_journal`.`deb_cred_id` FROM `creditor`, `posting_journal` WHERE `creditor`.`id`=`posting_journal`.`deb_cred_id`) UNION (SELECT `debitor`.`id`, `posting_journal`.`deb_cred_id` FROM `debitor`, `posting_journal` WHERE `debitor`.`id`=`posting_journal`.`deb_cred_id`));",
     // are all fiscal years defined and not locked?
     fiscal  : "SELECT `fiscal_year`.`id`, `posting_journal`.`fiscal_year_id` FROM `posting_journal` LEFT JOIN `fiscal_year` ON `posting_journal`.`fiscal_year_id`=`fiscal_year`.`id` WHERE `fiscal_year`.`locked`<>1;",
     // are all periods defined and not locked?
-    period  : "SELECT `period`.`id`, `posting_journal`.`period` FROM `posting_journal` LEFT JOIN `fiscal_year` ON `posting_journal`.`period`=`period`.`id` WHERE `period`.`locked`<>1;",
+    period  : "SELECT `period`.`id`, `posting_journal`.`period_id` FROM `posting_journal` LEFT JOIN `period` ON `posting_journal`.`period_id`=`period`.`id` WHERE `period`.`locked`<>1;",
     // do the invoice/purchase orders exist?
-    invpo   : "SELECT `posting_journal`.`id`, `posting_journal`.`invPoNum` FROM `posting_journal` WHERE NOT EXISTS (SELECT `purchase`.`id` FROM `purchase` WHERE `purchase`.`id`=`posting_journal`.`invPoNum`) UNION (SELECT `sale`.`id` FROM `sale` WHERE `sale`.`id`=`posting_journal`.`invPoNum`);"
+    invpo   : "SELECT `posting_journal`.`id`, `posting_journal`.`inv_po_id` FROM `posting_journal` WHERE NOT EXISTS ((SELECT `purchase`.`id`, `posting_journal`.`inv_po_id` FROM `purchase`, `posting_journal` WHERE `purchase`.`id`=`posting_journal`.`inv_po_id`) UNION (SELECT `sale`.`id`, `posting_journal`.`inv_po_id` FROM `sale`, `posting_journal` WHERE `sale`.`id`=`posting_journal`.`inv_po_id`));"
   };
  
   var self = {};
