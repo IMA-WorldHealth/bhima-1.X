@@ -202,7 +202,7 @@ insert into `account` (`enterprise_id`, `account_number`, `fixed`, `account_txt`
 update `enterprise` set `cash_account`=294 where `id`=200;
 
 insert into `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_year_txt`, `transaction_start_number`, `transaction_stop_number`, `fiscal_year_number`, `start_month`, `start_year`, `previous_fiscal_year`) values 
-  (200, 1, 12, 'First test Fiscal Year', 100, 10000, 1, 06, 2012, null);
+  (200, 1, 12, 'First test Fiscal Year', 100, 10000, 1, 06, 2013, null);
 
 -- These values are already in the database and not linked to an enterprise
 -- insert into `country` values
