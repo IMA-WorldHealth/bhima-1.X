@@ -184,9 +184,8 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
       instance.result.then(function(value) {
         //kpkConnect.send('creditor_group', [{id:'', group_txt:values.group, account_id:values.account.id}]);
         //getGroups();
-        console.log(value);
         value.enterprise_id = appstate.get("enterprise").id;
-        value.account_number = value.account_number.account_number;
+        value.account_id = value.account_id.id;
         value.type_id = value.type_id.id;
         value.location_id = value.location_id.id;
         value.payment_id = value.payment_id.id;
