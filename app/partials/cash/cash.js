@@ -2,7 +2,8 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
     var imports = {},
       models = $scope.models = {},
       stores = $scope.stores = {},
-      data = $scope.data = {};
+      data = $scope.data = {},
+      TRANSACTION_TYPE = 1;
 
     // FIXME: this is the correct account (for enterprise 101), until we fix our enterprise
     // dependencies.
@@ -268,6 +269,15 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       }
     }, true);
 
+    function journalPost (id, user) {
+      var d = $q.defer();
+      var request = {id: id, transaction_type: TRANSACTION_TYPE, user: user};
+      connect.journal([request]).then(function(res) {
+        d.resolve(res);
+      });
+      return d.promise;
+    }
+
     function pay () {
       // FIXME: add a "would you like to credit or pay back" line/check here for excess
       var doc, items;
@@ -289,12 +299,23 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       // should this API be post().then() to make sure a transaction
       // completes?
       // stores.cash.post(doc);
-      connect.basicPut('cash', [doc]).then(function (res) {
+      connect.basicPut('cash', [doc])
+      .then(function (res) {
         if (res.status != 200) return;
         var items = processItems(doc);
         var promise = $q.all(items.map(function (item) { return connect.basicPut('cash_item', [item]); }));
         promise.then(function (res) { 
           console.log("Invoice successfully paid", res);
+        });
+      })
+      .then(function () {
+        connect.basicGet("user_session")
+        .then(function (res) {
+          console.log("res is:", res);
+          journalPost(doc.id, res.id)
+          .then(function (response) {
+            console.log("posting returned:", response);
+          });
         });
       });
       

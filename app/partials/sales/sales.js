@@ -12,7 +12,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     $scope.inventory = [];
 
     var INVOICE_TYPE = 2;
-    var DEB_CRED_TYPE = 'D'; // Inserts the debitor_creditor type into the journal
+    var DEB_CRED_TYPE = 'D'; // FIXME: Inserts the debitor_creditor type into the journal
 
     var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
 
