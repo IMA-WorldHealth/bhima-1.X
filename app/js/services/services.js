@@ -532,17 +532,16 @@
       //  where conditions can also be specified:
       //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
       var handle, deferred = $q.defer();
+      var table = defn.primary || Object.keys(defn.tables)[0];
 
       handle = $http.get('/temp/?' + JSON.stringify(defn));
       handle.then(function (returned) {
-        var table = defn.primary || Object.keys(defn.tables)[0];
         var m = new Model(returned, table);
         requests[m] = defn;
         deferred.resolve(m);
       }, function(err) { 
         //package error object with request parameters for error routing
-        err.table = defn.primary || Object.keys(defn.tables)[0];
-        deferred.reject(err);
+        deferred.reject(packageError(err, table));
       });
 
       return deferred.promise;
@@ -703,6 +702,9 @@
         //unable to uniformly set request object, this will cause a problem
         requests[m] = reqobj;
         deferred.resolve(m);
+      }, function(err) { 
+        //oh lawd
+        deferred.reject(packageError(err, reqobj.e.t));
       });
 
       return deferred.promise;
@@ -790,9 +792,12 @@
       return cleaned;
     }
 
-    //Check we haven't made this query before this session, check we don't have the data stored in local storage
-    //-verify version numbers of data if it has been cached (see priority levels etc.)
-    function referenceQuery (query) {}
+    function packageError(err, table) { 
+      //I'm sure this is literally gross, should do reading up on this
+      err.http = true;
+      err.table = table || null;
+      return err;
+    }
 
     return {
       req: req,

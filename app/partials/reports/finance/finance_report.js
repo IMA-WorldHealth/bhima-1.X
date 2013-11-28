@@ -1,5 +1,6 @@
 angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect) {
-
+  //TODO required model - if the model has no data, the page should not load and report this to the user
+  
   //Models
   var models = {};
   models['fiscal'] = {
@@ -7,7 +8,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     request: {
       tables: {
         'fiscal_year': { 
-          columns: ['enterpfrise_id', 'id', 'start_month', 'start_year', 'previous_fiscal_year']
+          columns: ['enterprise_id', 'id', 'start_month', 'start_year', 'previous_fiscal_year']
         }
       }
     }
@@ -27,7 +28,6 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     }, 
     //Populate Models - Error
     function(err) { 
-      console.log("Top level recieved err:", err);
       handleError(err);
     })
     //Verify Models - Success
@@ -35,9 +35,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     },
     //Veryify Models - Error
     function(err) { 
-      console.log("Top level recieved err:", err);
-
-      handleError();
+      handleError(err);
     });
   }
 
@@ -63,7 +61,6 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
       }
       deferred.resolve(model_list);
     }, function(err) { 
-      //Error
       deferred.reject(err);
     });
     return deferred.promise;
@@ -76,9 +73,22 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     */
     var deferred = $q.defer();
 
-    //Fiscal years should exist in the system
-    if(model_list['fiscal'].model.data.length===0) {
-      deferred.reject();
+    var test_list = {};
+    test_list['fiscal'] = {
+      method: function verifyFiscal() { 
+        if(model_list['fiscal'].model.data.length===0) return false;
+        return true;
+      },
+      err: { 
+        //Arbitrarily means test fails (see handleError)
+        status: 800,
+        fail_body: "No Fiscal Year records located, Fiscal Years are required to group transactions and provide reports."
+      }
+    }
+
+    //iterate through tests
+    for(test in test_list) { 
+      if(!test_list[test].method()) deferred.reject(test_list[test].err);
     }
     
     //All tests passed
@@ -88,21 +98,65 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   //TODO renmae handleError()
   function handleError(err) { 
+    if(!err) err = {};
+
+    //only account for two types of error - could use numbered system to allow for more
+    var HTTP_ERROR = true;
+    var CLIENT_ERROR = false;
 
     var error_status = err.status || null;
-    var error_body;
 
-    if(error_status) { 
-      //Route error
-    } else { 
-      //Default - unknown error
-      error_body = "Unkown error - shit's serious";
+    //Assume the error is HTTP 
+    var error_type = err.http || CLIENT_ERROR;
+    var error_body, error_title;
+
+    var default_error = { 
+      type: "error", 
+      body: "Unkonwn error",
+      title: ""
     }
 
+    //This is bad and wrong and ...
+    var style_map = { 
+      "info" : "alert-info",
+      "error" : "alert-danger",
+      "default" : "alert-warning"
+    }
+
+    var error_map = {};
+    error_map[HTTP_ERROR] = {
+      500: {
+        type: "error",
+        body:  "The server encountered an error processing `" + err.table + "`. If this problem persists please contact the sysadmin.", 
+        title: ""
+      },
+      404: { 
+        type: "error",
+        body: "The server could not find `" + err.table + "`. If this problem persists please contact the sysadmin.",
+        title: ""
+      }
+    }
+
+    error_map[CLIENT_ERROR] = {
+      //Arbitrarily means a test didn't pass
+      800: { 
+        type: "info",
+        body: err.fail_body,
+        title: err.fail_title
+      }
+    }
+
+    //Default
+    var e = error_map[error_type][error_status];
+    if(!e) e = default_error;
+
     //Expose error to view
-    $scope.session_error.body = error_body;
+    $scope.session_error.type = style_map[e.type] || style_map["default"];
+    $scope.session_error.body = e.body;
     $scope.session_error.valid = false;
   }
+
+
 
   init();
 });
