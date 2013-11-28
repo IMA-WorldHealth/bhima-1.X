@@ -311,7 +311,7 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
     function processItems (ref) {
       var items = [];
       // FIXME: raw hacks!
-      var id = stores.cash_items.generateid() - 1;
+      var id = stores.cash_items.generateid();
       data.paying.forEach(function (invoice) {
         items.push({
           id: id++,
