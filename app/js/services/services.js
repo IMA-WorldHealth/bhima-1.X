@@ -452,7 +452,7 @@
       // summary
       // FIXME set required variables manually - this is a temporary hack until fiscal/enterprise select decisions have been made
       console.log("Init called");
-      set("enterprise", {id: 101, name: 'IMA', cash_account: 570000});
+      set("enterprise", {id: 200, name: 'IMA', cash_account: 570000});
       set("fiscal", {id: 2013001, fiscal_year_txt: '[Company 101] Year 1'});
     }
 
