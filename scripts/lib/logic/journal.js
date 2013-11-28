@@ -53,6 +53,8 @@ var saleDebit = function (obj, data, posting, res){
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
+  //FIXME: This code is deprecated.  Actually do this properly using a post from the client.
+  journalRecord.deb_cred_type = 'D'; // TODO/FIXME
   journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   var callback = function (err, ans) {    
     if (err){
