@@ -78,9 +78,10 @@
                 <td>{{invoice.inv_po_id}}</td>
                 <td>{{invoice.trans_date | date }}</td>
                 <td>{{invoice.balance | currency }}</td>
-                <td><input type="number" class="form-control" ng-model="invoice.allocated" required></td>
+                <td><input type="number" class="form-control" ng-class="{'has-error' : invoice.allocated > data.payment}"ng-model="invoice.allocated" required ng-change="freeze(invoice)"></td>
                 <td>{{invoice.remaining | currency }}</td>
                 <td ng-click="removeInvoice($index)"><i class="glyphicon glyphicon-remove"></i></td>
+                <td ng-click="thaw(invoice)"><i ng-class="{'glyphicon glyphicon-stop' : invoice.frozen}"></i></td>
               </tr>
             </tbody>
           </table>
