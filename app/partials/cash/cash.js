@@ -4,7 +4,9 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       stores = $scope.stores = {},
       data = $scope.data = {};
 
-    imports.cash_account = appstate.get('enterprise').cash_account;
+    // FIXME: this is the correct account (for enterprise 101), until we fix our enterprise
+    // dependencies.
+    imports.cash_account = 98 || appstate.get('enterprise').cash_account;
     imports.enterprise_id = appstate.get('enterprise').id;
     imports.model_names = ['debitors', 'currency', 'cash', 'cash_items'];
 
@@ -133,8 +135,8 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
             models.ledger = response.data.map(function (row) {
               // filter only those that do not balance
               var cp = row;
-              cp.balance = row.credit - row.debit;
-              var deb = stores.debitors.get(row.deb_cred_id)
+              cp.balance = row.debit - row.credit;
+              var deb = stores.debitors.get(row.deb_cred_id);
               cp.debitor = [deb.first_name, deb.last_name].join(' ');
               return cp;
             });
@@ -157,17 +159,17 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
 
     function toggleFilterRow () {
       grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
-    };
+    }
 
     function filterInvoice (item, args) {
-      if (item.searchInvoice != "" && item["inv_po_id"].indexOf(args.searchInvoice) == -1) {
+      if (item.searchInvoice !== "" && item.inv_po_id.indexOf(args.searchInvoice) === -1) {
         return false;
       }
       return true;
     }
 
     function filterDebitor (item, args) {
-      if (item.searchDebitor != "" && item["debitor"].indexOf(args.searchDebitor) == -1) {
+      if (item.searchDebitor !== "" && item.debitor.indexOf(args.searchDebitor) === -1) {
         return false;
       }
       return true;
@@ -199,13 +201,15 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       $scope.$apply(function () {
         invoice.allocated = 0.00;
         invoice.remaining = invoice.balance;
-        data.paying.push(invoice); 
+        data.paying.push(invoice);
+        digestInvoice();
       }); 
       return true;
     }
 
     function removeInvoice (idx) {
       dataview.addItem(data.paying.splice(idx, 1)[0]);
+      digestInvoice();
     }
 
     function digestTotal () {
@@ -228,7 +232,7 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       var c = (data.payment) ? data.payment : 0;
       var arr = data.paying;
       var index = 0;
-      if (!isPositive(arr.length)) return;
+      if (!isPositive(arr.length)) data.excess = c;
 
       if (isPositive(c)) {
         // this is a loop to allocate the
@@ -260,44 +264,57 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
         var deb = stores.debitors.get(data.paying[0].deb_cred_id);
         // FIXME: all this assumes a patient
         data.debitor = [deb.first_name, deb.last_name].join(' ');
+        data.debitor_id = deb.id;
       }
     }, true);
 
-    function pay () { 
+    function pay () {
+      // FIXME: add a "would you like to credit or pay back" line/check here for excess
       var doc, items;
       // gather data
       doc = {
-        id : store.cash.generateid(),
+        id : stores.cash.generateid(),
         enterprise_id : imports.enterprise_id,
         bon : 'E', // FIXME: impliment crediting
         bon_num : generateBonNumber(models.cash, 'E'),
-        date : $filter('date')(new Date()), // TODO: make this mysql
+        date : $filter('date')(new Date(), 'yyyy-MM-dd'),
         debit_account : imports.cash_account,
-        credit_account : stores.debitor.get(data.debitor).account_id,
+        credit_account : stores.debitors.get(data.debitor_id).account_id,
         currency_id : data.currency,
         cost: data.payment,
         cashier_id : 1, // TODO
         cashbox_id : 1  // TODO
       };
-  
+
       // should this API be post().then() to make sure a transaction
       // completes?
-      stores.cash.post(doc);
-
-      items = processItems(doc);
-      items.forEach(function (item) {
-        stores.cash_items.post(item);
+      // stores.cash.post(doc);
+      connect.basicPut('cash', [doc]).then(function (res) {
+        if (res.status != 200) return;
+        var items = processItems(doc);
+        var promise = $q.all(items.map(function (item) { return connect.basicPut('cash_item', [item]); }));
+        promise.then(function (res) { 
+          console.log("Invoice successfully paid", res);
+        });
       });
+      
+      // TODO
+      //items = processItems(doc);
+      //items.forEach(function (item) {
+      //  stores.cash_items.post(item);
+      //});
 
-      stores.cash.sync();
-      stores.cash_items.sync();
+      //stores.cash.sync();
+      //stores.cash_items.sync();
     }
 
     function processItems (ref) {
       var items = [];
-      data.payment.forEach(function (invoice) {
+      // FIXME: raw hacks!
+      var id = stores.cash_items.generateid() - 1;
+      data.paying.forEach(function (invoice) {
         items.push({
-          id: stores.cash_items.generateid(),
+          id: id++,
           cash_id : ref.id,
           allocated_cost : invoice.allocated,
           invoice_id : invoice.inv_po_id
@@ -310,14 +327,14 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       // deal the the asynchronous case where store is not
       // defined.
       return (stores.currency && stores.currency.get(id)) ? stores.currency.get(id).symbol: "";
-    };
+    }
 
     function setCurrency (idx) {
       // store indexing starts from 0.  DB ids start from 1
       slip.currency_id = idx + 1; 
-    };
+    }
 
-    function getBonNumber (model, bon_type) {
+    function generateBonNumber (model, bon_type) {
       // filter by bon type, then gather ids.
       var ids = model.filter(function(row) {
         return row.bon === bon_type; 
@@ -332,4 +349,5 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
     $scope.toggleFilterRow = toggleFilterRow;
     $scope.removeInvoice = removeInvoice;
     $scope.digestInvoice = digestInvoice;
+    $scope.pay = pay;
   });
