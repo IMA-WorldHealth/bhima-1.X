@@ -126,7 +126,7 @@ angular.module('kpk.controllers').controller('journalController', function($scop
     // This code assumes you are posting everything in the posting journal
     // with your user name.
     // DECISION: Should we allow you to post only some transactions?
-    connect.req('/trailbalance')
+    connect.fetch('/trailbalance')
     .success(function (data, status) {
       console.log('posting success!');
       // logic 
