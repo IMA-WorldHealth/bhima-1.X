@@ -1,0 +1,22 @@
+<header>
+  <span>Finance Report</span>
+</header>
+
+<section class="underline">
+
+</section>
+
+<!--Uses ng-switch at the moment, team should discuss the best way to do this-->
+<div ng-switch on="session_error.valid">
+<section ng-switch-when="false" class="alert alert-danger">
+  <span>{{session_error.body}}</span>
+</section>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div id="report_grid" class="grid"><!--Populated with JS--></div>
+    </div>
+  </div>
+</div>
