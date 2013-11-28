@@ -539,6 +539,10 @@
         var m = new Model(returned, table);
         requests[m] = defn;
         deferred.resolve(m);
+      }, function(err) { 
+        //package error object with request parameters for error routing
+        err.table = defn.primary || Object.keys(defn.tables)[0];
+        deferred.reject(err);
       });
 
       return deferred.promise;
