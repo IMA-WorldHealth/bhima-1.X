@@ -233,15 +233,8 @@ var purchaseDebit = function(obj, data, posting, res, periodExerciceIdObject){
                'entities':[{'t':'inv_group', 'c':['sales_account']}],
                'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
     };
-    db.execute(db.select(sql), function(err, data2){ 
-      var sql = {
-                  'entities':[{'t':'account', 'c':['id']}],
-                  'cond':[{'t':'account', 'cl':'account_number', 'z':'=', 'v':data2[0].sales_account, 'l':'AND'},
-                          {'t':'account', 'cl':'enterprise_id', 'z':'=', 'v':item.enterprise_id}
-                         ]
-                };
-      db.execute(db.select(sql), function(err, data3){        
-        journalRecord.account_id = data3[0].id;
+    db.execute(db.select(sql), function(err, data2){
+       journalRecord.account_id = data2[0].sales_account;
         for(var cle in objDebit){
         journalRecord[cle] = item[objDebit[cle]];    
         }
@@ -252,8 +245,7 @@ var purchaseDebit = function(obj, data, posting, res, periodExerciceIdObject){
       journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
       journalRecord.period_id = periodExerciceIdObject.pid;
       var sql = db.insert('posting_journal', [journalRecord]); 
-      db.execute(sql, callback);     
-      });
+      db.execute(sql, callback);
             
     });
   });
