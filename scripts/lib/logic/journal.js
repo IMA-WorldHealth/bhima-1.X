@@ -107,20 +107,27 @@ var saleCredit = function(obj, data, posting, res, periodExerciceIdObject){
                'entities':[{'t':'inv_group', 'c':['sales_account']}],
                'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
     };
-    db.execute(db.select(sql), function(err, data2){      
-      journalRecord.account_id = data2[0].sales_account;
-      for(var cle in objCredit){
-      journalRecord[cle] = item[objCredit[cle]];    
-      }
-    //      journalRecord.posted = 0;
-      journalRecord.origin_id = posting.transaction_type;
-      journalRecord.user_id = posting.user;
-      journalRecord.id = '';
-      journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-      journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-      journalRecord.period_id = periodExerciceIdObject.pid;
-      var sql = db.insert('posting_journal', [journalRecord]); 
-      db.execute(sql, callback);      
+    db.execute(db.select(sql), function(err, data2){
+       var sql = {
+                  'entities':[{'t':'account', 'c':['id']}],
+                  'cond':[{'t':'account', 'cl':'account_number', 'z':'=', 'v':data2[0].sales_account, 'l':'AND'},
+                          {'t':'account', 'cl':'enterprise_id', 'z':'=', 'v':item.enterprise_id}
+                         ]
+                };
+      db.execute(db.select(sql), function(err, data3){
+        for(var cle in objCredit){
+          journalRecord[cle] = item[objCredit[cle]];    
+        }
+        journalRecord.origin_id = posting.transaction_type;
+        journalRecord.user_id = posting.user;
+        journalRecord.id = '';
+        journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
+        journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
+        journalRecord.period_id = periodExerciceIdObject.pid;
+        journalRecord.account_id = data3[0].id;
+        var sql = db.insert('posting_journal', [journalRecord]); 
+        db.execute(sql, callback);         
+      });           
     });
   });
   return deffer.promise;
@@ -140,7 +147,6 @@ var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
   for(var cle in objDebit){
     journalRecord[cle] = data[0][objDebit[cle]];
   }
-  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
@@ -152,9 +158,17 @@ var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
     'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
   }
   db.execute(db.select(sql),function(err, data2){
-    journalRecord.account_id = data2[0].debit_account;
-    var sql = db.insert('posting_journal', [journalRecord]);
-    db.execute(sql, callback); 
+      var sql = {
+                  'entities':[{'t':'account', 'c':['id']}],
+                  'cond':[{'t':'account', 'cl':'account_number', 'z':'=', 'v':data2[0].debit_account, 'l':'AND'},
+                          {'t':'account', 'cl':'enterprise_id', 'z':'=', 'v':journalRecord.enterprise_id}
+                         ]
+                };
+      db.execute(db.select(sql), function(err, data3){
+        journalRecord.account_id = data3[0].id;
+        var sql = db.insert('posting_journal', [journalRecord]);
+        db.execute(sql, callback);
+      });
   });
   return deffer.promise;
 }
@@ -168,31 +182,40 @@ var cashCredit = function (obj, data, posting, res, periodExerciceIdObject){
       deffer.resolve({succes:true, info:ans});
     } 
   } 
-  var journalRecord = {};
-  var objCredit = map[obj.t+'_credit'];
-  for(var cle in objCredit){
-    journalRecord[cle] = data[0][objCredit[cle]];
-  }
-  journalRecord.posted = 0;
-  journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
-  journalRecord.user_id = posting.user;
-  journalRecord.id = '';
-  journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-  journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-  journalRecord.period_id = periodExerciceIdObject.pid;
+
   var sql = {
     'entities':[{'t':'cash', 'c':['credit_account']}],
     'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
   };
   db.execute(db.select(sql),function(err, data2){
-    journalRecord.account_id = data2[0].credit_account;
-    var sql = db.insert('posting_journal', [journalRecord]);
-    db.execute(sql, callback); 
+       var sql = {
+                  'entities':[{'t':'account', 'c':['id']}],
+                  'cond':[{'t':'account', 'cl':'account_number', 'z':'=', 'v':data2[0].credit_account, 'l':'AND'},
+                          {'t':'account', 'cl':'enterprise_id', 'z':'=', 'v':data[0].enterprise_id}
+                         ]
+                };
+      db.execute(db.select(sql), function(err, data3){
+          var journalRecord = {};
+          var objCredit = map[obj.t+'_credit'];
+          for(var cle in objCredit){
+            journalRecord[cle] = data[0][objCredit[cle]];
+          }
+          journalRecord.posted = 0;
+          journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
+          journalRecord.user_id = posting.user;
+          journalRecord.id = '';
+          journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
+          journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
+          journalRecord.period_id = periodExerciceIdObject.pid;
+          journalRecord.account_id = data3[0].id;
+          var sql = db.insert('posting_journal', [journalRecord]);  
+          db.execute(sql, callback);         
+      });
   });
   return deffer.promise;
 };
 
-var purchaseDebit = function(obj, data, posting, res){
+var purchaseDebit = function(obj, data, posting, res, periodExerciceIdObject){
   var deffer = Q.defer(); 
   var objDebit = map[obj.t+'_debit'];
   var callback = function (err, ans) {if (err){
@@ -207,12 +230,18 @@ var purchaseDebit = function(obj, data, posting, res){
                'entities':[{'t':'inv_group', 'c':['sales_account']}],
                'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
     };
-    db.execute(db.select(sql), function(err, data2){      
-      journalRecord.account_id = data2[0].sales_account;
-      for(var cle in objDebit){
-      journalRecord[cle] = item[objDebit[cle]];    
-      }
-  //      journalRecord.posted = 0;
+    db.execute(db.select(sql), function(err, data2){ 
+      var sql = {
+                  'entities':[{'t':'account', 'c':['id']}],
+                  'cond':[{'t':'account', 'cl':'account_number', 'z':'=', 'v':data2[0].sales_account, 'l':'AND'},
+                          {'t':'account', 'cl':'enterprise_id', 'z':'=', 'v':item.enterprise_id}
+                         ]
+                };
+      db.execute(db.select(sql), function(err, data3){        
+        journalRecord.account_id = data3[0].id;
+        for(var cle in objDebit){
+        journalRecord[cle] = item[objDebit[cle]];    
+        }
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
       journalRecord.id = '';
@@ -220,13 +249,15 @@ var purchaseDebit = function(obj, data, posting, res){
       journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
       journalRecord.period_id = periodExerciceIdObject.pid;
       var sql = db.insert('posting_journal', [journalRecord]); 
-      db.execute(sql, callback);      
+      db.execute(sql, callback);     
+      });
+            
     });
   });
   return deffer.promise;
 }
 
-var purchaseCredit = function(obj, data, posting, res){
+var purchaseCredit = function(obj, data, posting, res, periodExerciceIdObject){
   var deffer = Q.defer(); 
   var journalRecord = {};
   var objCredit = map[obj.t+'_credit'];
@@ -234,7 +265,6 @@ var purchaseCredit = function(obj, data, posting, res){
   for(var cle in objCredit){
     journalRecord[cle] = data[objCredit[cle]];
   }
-  //  journalRecord.posted = 0;
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
