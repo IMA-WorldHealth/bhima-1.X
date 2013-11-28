@@ -1,6 +1,6 @@
  //at left posting_journal property, at right service property such as sale, cash, purchase_order : map
 var db = require('../database/db')()
-  , util = require('../util/util.js')
+  , util = require('../util/util')
   , Q = require('q');
 
 var map = {
@@ -14,6 +14,7 @@ var map = {
   'purchase_debit': {'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'doc_num':'id', 'debit':'total'},
   'purchase_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'credit':'cost', 'doc_num':'id'}
 };
+
 var service_name = '', opDibitState, opCreditState;
 
 exports.poster = function(req, res) {
@@ -52,6 +53,8 @@ var saleDebit = function (obj, data, posting, res, periodExerciceIdObject){
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
+  //FIXME: This code is deprecated.  Actually do this properly using a post from the client.
+  journalRecord.deb_cred_type = 'D'; // TODO/FIXME
   journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
   journalRecord.period_id = periodExerciceIdObject.pid;
