@@ -1,5 +1,5 @@
 // scripts/lib/logic/balance.js
-var q = require('q');
+var async = require('async');
 
 // module: Balance
 
@@ -12,10 +12,6 @@ var q = require('q');
 // If there are not errors,  
 
 
-function assert (statement) {
-  return statement ? true : false;
-}
-
 module.exports = (function (db) {
   'use strict';
 
@@ -23,6 +19,7 @@ module.exports = (function (db) {
       "account" : "invalid accounts detected: %s. account either not found in chart of accounts or locked.",
       "balance" : "credits and debits do not balance. credits: %c != debits: %d",
       "fiscal"  : "invalid fiscal year detected: %s. fiscal year either not found in fiscal years or locked.",
+      "period"  : "invalid period detected: %s. Period either not found in periods or locked.",
       "invpo"   : "invalid invoice or purchase order number: %s.",
       "defined" : "invalid debitor/creditor group: %s.",
       "general" : "internal server error.  Please examine the logs for further details."
@@ -55,110 +52,96 @@ module.exports = (function (db) {
 
     // dirty checking
     
-    function account () { 
-      var d = q.defer(); 
+    function account (callback) { 
       db.execute(sql.account, function (err, res) {
-        if (err) throw err;
+        var detail;
         if (res.length) {  // invalid accounts
-          var detail = res.map(function (row) {
-            console.log(row);
+          detail = res.map(function (row) {
             return row.id;
           }).join();
-          errors.push(dict.account.replace("%s", detail));
-          d.resolve(true);
         }
+        callback(err, res, dict.account.replace("%s", detail));
       });
-      return d.promise;
     }
 
-    function defined () {
-      var d = q.defer();
+    function defined (callback) {
       db.execute(sql.defined, function (err, res) {
-        if (err) throw err;
+        var detail;
         if (res.length) {
-          var detail = res.map(function (row) {
-            console.log(row);
+          detail = res.map(function (row) {
             return row.id;
           }).join();
-          errors.push(dict.defined.replace("%s", detail));
-          d.resolve(true);
         }
+        callback(err, res, dict.defined.replace("%s", detail));
       });
-      return d.promise;
     }
 
-    function fiscal () {
-      var d = q.defer();
+    function fiscal (callback) {
       db.execute(sql.fiscal, function (err, res) {
-        if (err) throw err;
+        var detail;
         if (res.length) {
-          var detail = res.map(function (row) {
-            console.log(row);
+          detail = res.map(function (row) {
             return row.id;
           }).join();
-          errors.push(dict.fiscal.replace("%s", detail));
-          d.resolve(true);
         }
+        callback(err, res, dict.fiscal.replace("%s", detail));
       });
-      return d.promise;
     }
 
-    function period () {
-      var d = q.defer();
+    function period (callback) {
       db.execute(sql.period, function (err, res) {
-        if (err) throw err;
+        var detail;
         if (res.length) {
-          var detail = res.map(function (row) {
-            console.log(row);
+          detail = res.map(function (row) {
             return row.id;
           }).join();
-          errors.push(dict.period.replace("%s", detail));
-          d.resolve(true);
         }
+        callback(err, res, dict.period.replace('%s', detail));
       });
-      return d.promise;
     }
 
-    function invpo () {
-      var d = q.defer();
+    function invpo (callback) {
       db.execute(sql.invpo, function (err, res) {
-        if (err) throw err;
+        var detail;
         if (res.length) {
-          var detail = res.map(function (row) {
-            console.log(row);
+          detail = res.map(function (row) {
             return row.id;
           }).join();
-          errors.push(dict.invpo.replace("%s", detail));
-          d.resolve(true);
         }
+        callback(err, res, dict.invpo.replace("%s", detail));
       });
-      return d.promise; 
     }
 
     // logic checking
 
-    function balance () {
-      var d = q.defer();
+    function balance (callback) {
       db.execute(sql.balance, function (err, res) {
-        if (err) throw err;
         if (res.debit !== res.credit) {
-          errors.push(dict.balance.replace('%c', res.debit).replace('%d', res.credit));
-          d.resolve(false);
+          callback(err, res, dict.balance.replace('%c', res.debit).replace('%d', res.credit));
         }
-        d.resolve(true);
+        callback(err, res, null);
       });
-      return d.promise; 
     }
 
-    return q.all([
-      account(),
-      defined(),
-      invpo(),
-      period(),
-      fiscal(),
-      balance()
-    ]);
 
+    // reporting
+    
+    (function report () {
+      async.parallel([
+        account,
+        defined,
+        invpo,
+        period,
+        fiscal,
+        balance,
+      ], function (err, response, str) {
+         if (err) throw err;
+         console.log("response:",response);
+         console.log("str:", str);
+         // res.send(200);
+      });
+    })();
+    
   };
 
   return self;
