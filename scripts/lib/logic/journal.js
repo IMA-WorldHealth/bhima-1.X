@@ -107,22 +107,16 @@ var saleCredit = function(obj, data, posting, res, periodExerciceIdObject){
 }
 
 var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
-  var deffer = Q.defer(); 
-  var callback = function (err, ans) {
-    if (err){
-      deffer.resolve({succes :false, info:err});
-    }else{
-    deffer.resolve({succes:true, info:ans});
-    } 
-  } 
+  var deffer = Q.defer();
   var journalRecord = {};
-  var objDebit = map[obj.t+'_debit'];
+  var objDebit = map[obj.t+'_debit']; 
+  journalRecord.id = '';
   for(var cle in objDebit){
     journalRecord[cle] = data[0][objDebit[cle]];
   }
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
-  journalRecord.user_id = posting.user;
-  journalRecord.id = '';
+  journalRecord.user_id = posting.user;  
+  delete(journalRecord.description);
   journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
   journalRecord.period_id = periodExerciceIdObject.pid;
@@ -131,25 +125,28 @@ var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
     'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
   }
   db.execute(db.select(sql),function(err, record){
+
+    console.log("SQL1! ", err, record);
     journalRecord.account_id = record[0].debit_account;
     var sql = db.insert('posting_journal', [journalRecord]);
     console.log('ligne debit ', journalRecord);
-    db.execute(sql, callback);
+    db.execute(sql, function (err, ans) {
+      console.log("SQL2! ", err, ans);
+      if (err){
+        deffer.resolve({succes :false, info:err});
+      }else{
+      deffer.resolve({succes:true, info:ans});
+      } 
+    });
   });
   return deffer.promise;
 }
 
 var cashCredit = function (obj, data, posting, res, periodExerciceIdObject){
   var deffer = Q.defer();   
-  var callback = function (err, ans) {
-    if (err){
-      deffer.resolve({succes :false, info:err});
-    }else{
-      deffer.resolve({succes:true, info:ans});
-    } 
-  }
   var objCredit = map[obj.t+'_credit'];
   var journalRecord = {};
+  journalRecord.id = '';
   var sql = {
               'entities':[{'t':'cash', 'c':['credit_account']}],
               'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
@@ -162,13 +159,19 @@ var cashCredit = function (obj, data, posting, res, periodExerciceIdObject){
       }
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
-      journalRecord.id = '';
+      delete(journalRecord.description);
       journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
       journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
       journalRecord.period_id = periodExerciceIdObject.pid;
       var sql = db.insert('posting_journal', [journalRecord]); 
       console.log('ligne credit ', journalRecord);
-      db.execute(sql, callback);
+      db.execute(sql, function (err, ans) {
+        if (err){
+          deffer.resolve({succes :false, info:err});
+        }else{
+          deffer.resolve({succes:true, info:ans});
+        } 
+      });
     });  
   });
   return deffer.promise;
@@ -257,9 +260,12 @@ var process = function(data, posting, res, periodExerciceIdObject){
       }
     });
   }else if(service_name == 'cash'){ 
-    Q.all([cashDebit(obj, data, posting, res, periodExerciceIdObject), cashCredit(obj, data, posting, res, periodExerciceIdObject), check(obj.t, posting.id)]).then(function(arr) {    
-      if(arr[0].succes==true && arr[1].succes==true && arr[2] == true){
+    Q.all([cashDebit(obj, data, posting, res, periodExerciceIdObject), cashCredit(obj, data, posting, res, periodExerciceIdObject)]).then(function(arr) {    
+      if(arr[0].succes==true && arr[1].succes==true){
+        console.log('******************* on a gagne ***********************');
         res.send({status: 200, insertId: arr[1].info.insertId});
+      } else {
+        console.log("Something wrong: ", arr);
       }
     });
   }else if(service_name == 'purchase'){

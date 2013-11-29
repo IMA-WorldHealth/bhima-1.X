@@ -145,10 +145,10 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
             cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA            
             groupStore.put(group);
             //fix me for writting this in a good way
-            clean.sales_account = clean.sales_account.account_number;
-            clean.cogs_account = clean.cogs_account.account_number;
-            clean.stock_account = clean.stock_account.account_number;
-            clean.tax_account = clean.tax_account.account_number;
+            clean.sales_account = clean.sales_account.id;
+            clean.cogs_account = clean.cogs_account.id;
+            clean.stock_account = clean.stock_account.id;
+            clean.tax_account = clean.tax_account.id;
             connect.basicPut('inv_group', [clean]);
             $modalInstance.close();
           };
