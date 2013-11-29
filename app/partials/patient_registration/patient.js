@@ -186,7 +186,7 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
         //getGroups();
         console.log(value);
         value.enterprise_id = appstate.get("enterprise").id;
-        value.account_number = value.account_number.account_number;
+        value.account_id = value.account_id.id;
         value.type_id = value.type_id.id;
         value.location_id = value.location_id.id;
         value.payment_id = value.payment_id.id;
