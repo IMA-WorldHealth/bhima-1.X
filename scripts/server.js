@@ -92,6 +92,7 @@ app.get('/tree', function(req, res, next) {
 });
 
 app.post('/journal', function(req, res) {
+  console.log("recieved post");
   jr.poster(req, res); 
 });
 
