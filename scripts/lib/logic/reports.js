@@ -29,8 +29,8 @@ module.exports = (function(db) {
     //SUM(case when thing.fiscal_id = 2 then SUM(budget.budget) else 0 end)
     var initial_query = "SELECT account.id," +
                                "account.account_number," + 
-                               "SUM(case when posting_journal.fiscal_year_id = 2 then posting_journal.credit else 0 end)," +
-                               "SUM(case when posting_journal.fiscal_year_id = 2 then posting_journal.debit else 0 end)," +
+                               "SUM(case when posting_journal.fiscal_year_id = 1 then posting_journal.credit else 0 end) AS account_credit," +
+                               "SUM(case when posting_journal.fiscal_year_id = 1 then posting_journal.debit else 0 end) AS account_debit," +
                                "posting_journal.period_id " +
                         "FROM account " +
                         "LEFT JOIN posting_journal " +

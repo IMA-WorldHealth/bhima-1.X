@@ -26,7 +26,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   models['finance'] = {
     model: {},
-    request: 'reports/finance'
+    request: '/reports/finance/'
   }
 
   //Error handling 
@@ -47,7 +47,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     })
     //Verify Models - Success
     .then(function(res) { 
-
+      renderGrid(models['finance'].model.data);
     },
     //Veryify Models - Error
     function(err) { 
@@ -55,17 +55,32 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     });
   }
 
-  function renderGrid() {
+  function renderGrid(data) {
+    var grid;
+    var dataview;
+    var columns = [
+      {id: 'account_number', name: 'Account', field: 'account_number'},
+      {id: 'account_credit', name: 'Credit', field: 'account_credit'},
+      {id: 'account_debit', name: 'Credit', field: 'account_debit'}
+    ];
+    var options = { 
+      enableCellNavigation: true,
+      enableColumnReorder: true,
+      forceFitColumns: true,
+      rowHeight: 30
+    };
+
+    console.log(data);
+
+    grid = new Slick.Grid('#report_grid', data, columns, options);
 
   }
 
   function populateRequests(model_list) { 
     var deferred = $q.defer();
 
-    console.log("requesting");
-    connect.basicGet(model_list['finance'].request, function(res) {
+    connect.basicGet(model_list['finance'].request).then(function(res) {
       model_list['finance'].model = res;
-      console.log("LFKJ");
       deferred.resolve(model_list);
     }, function(err) { 
       deferred.reject(err);
@@ -133,7 +148,6 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
         fail_body: "No Debitors located."
       }
     }*/
-    }
 
     //iterate through tests
     for(test in test_list) { 
