@@ -130,50 +130,46 @@ var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
     'entities':[{'t':'cash', 'c':['debit_account']}],
     'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
   }
-  db.execute(db.select(sql),function(err, data2){
-    journalRecord.account_id = data2[0].debit_account;
-    //console.log('reponse cache debit :', journalRecord, 'posting', posting);
+  db.execute(db.select(sql),function(err, record){
+    journalRecord.account_id = record[0].debit_account;
     var sql = db.insert('posting_journal', [journalRecord]);
+    console.log('ligne debit ', journalRecord);
     db.execute(sql, callback);
   });
   return deffer.promise;
 }
 
 var cashCredit = function (obj, data, posting, res, periodExerciceIdObject){
-  var deffer = Q.defer(); 
+  var deffer = Q.defer();   
   var callback = function (err, ans) {
     if (err){
       deffer.resolve({succes :false, info:err});
     }else{
       deffer.resolve({succes:true, info:ans});
     } 
-  } 
-   /*var sql = {
-                    'entities':[{'t':'cash', 'c':['debit_account']}],
-                    'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
-                  }
-  db.execute(db.select(sql),function(err, data2){
-    journalRecord.account_id = data2[0].id;
-    console.log('reponse cache debit :', journalRecord);
-    //var sql = db.insert('posting_journal', [journalRecord]);
-    //db.execute(sql, callback);
-  });*/
-  data.forEach(function(item){
-    var journalRecord = {}; 
-    for(var cle in objCredit){
-          journalRecord[cle] = item[objCredit[cle]];    
-        }
-        journalRecord.origin_id = posting.transaction_type;
-        journalRecord.user_id = posting.user;
-        journalRecord.id = '';
-        journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-        journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-        journalRecord.period_id = periodExerciceIdObject.pid;
-        journalRecord.account_id = item.credit_account;
-              
-        //var sql = db.insert('posting_journal', [journalRecord]); 
-        //db.execute(sql, callback); 
-
+  }
+  var objCredit = map[obj.t+'_credit'];
+  var journalRecord = {};
+  var sql = {
+              'entities':[{'t':'cash', 'c':['credit_account']}],
+              'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
+            }  
+  db.execute(db.select(sql),function(err, data2){     
+    journalRecord.account_id = data2[0].credit_account;
+    data.forEach(function(item){    
+      for(var cle in objCredit){
+        journalRecord[cle] = item[objCredit[cle]];    
+      }
+      journalRecord.origin_id = posting.transaction_type;
+      journalRecord.user_id = posting.user;
+      journalRecord.id = '';
+      journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
+      journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
+      journalRecord.period_id = periodExerciceIdObject.pid;
+      var sql = db.insert('posting_journal', [journalRecord]); 
+      console.log('ligne credit ', journalRecord);
+      db.execute(sql, callback);
+    });  
   });
   return deffer.promise;
 };
