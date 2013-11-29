@@ -1,7 +1,7 @@
 use `kpk`;
 
 insert into `enterprise` (`id`, `region`, `city`, `country`, `name`, `phone`, `type`, `cash_account`) values 
-  (200, 'Kinshasa', 'Kinshasa', 'RDC', 'Test', 0824741022, 1, null);
+  (101, 'Kinshasa', 'Kinshasa', 'RDC', 'Test', 0824741022, 1, null);
 
 insert into `account` (`enterprise_id`, `account_number`, `fixed`, `account_txt`, `account_type_id`, `account_category`, `locked`) values 
   (200, 100000, 0,'capital social',1,'300',0),
