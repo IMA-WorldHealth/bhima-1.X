@@ -107,7 +107,9 @@ var saleCredit = function(obj, data, posting, res, periodExerciceIdObject){
 }
 
 var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
-  var deffer = Q.defer(); 
+  var deffer = Q.defer();
+  var journalRecord = {};
+  var objDebit = map[obj.t+'_debit']; 
   var callback = function (err, ans) {
     if (err){
       deffer.resolve({succes :false, info:err});
@@ -115,8 +117,7 @@ var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
     deffer.resolve({succes:true, info:ans});
     } 
   } 
-  var journalRecord = {};
-  var objDebit = map[obj.t+'_debit'];
+
   for(var cle in objDebit){
     journalRecord[cle] = data[0][objDebit[cle]];
   }
