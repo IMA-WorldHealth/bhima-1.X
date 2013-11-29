@@ -35,6 +35,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   function init() { 
     //TODO rename promise
     var promise = populateRequests(models);
+ 
     promise
     //Populate Models - Success
     .then(function(model_list) { 
@@ -132,6 +133,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
         fail_body: "No Debitors located."
       }
     }*/
+    }
 
     //iterate through tests
     for(test in test_list) { 
@@ -202,6 +204,5 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     $scope.session_error.body = e.body;
     $scope.session_error.valid = false;
   }
-  
   init();
 });
