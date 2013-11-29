@@ -13,6 +13,16 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
       }
     }
   }
+  models['debitor'] = {
+    model: {},
+    request: {
+      tables: { 
+        'debitor': { 
+          columns: ['id', 'group_id', 'text']
+        }
+      }
+    }
+  }
 
   //Error handling 
   $scope.session_error = {valid: true};
@@ -32,11 +42,16 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     })
     //Verify Models - Success
     .then(function(res) { 
+
     },
     //Veryify Models - Error
     function(err) { 
       handleError(err);
     });
+  }
+
+  function renderGrid() {
+
   }
 
   function populateModels(model_list) { 
@@ -72,8 +87,8 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     *   verify that data recieved from the server is correct and usable - if not inform the user
     */
     var deferred = $q.defer();
-
     var test_list = {};
+
     test_list['fiscal'] = {
       method: function verifyFiscal() { 
         if(model_list['fiscal'].model.data.length===0) return false;
@@ -83,6 +98,18 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
         //Arbitrarily means test fails (see handleError)
         status: 800,
         fail_body: "No Fiscal Year records located, Fiscal Years are required to group transactions and provide reports."
+      }
+    }
+
+    test_list['debitor'] = {
+      method: function verifyDebitor() { 
+        if(model_list['debitor'].model.data.length===0) return false;
+        return true;
+      },
+      err: { 
+        //Arbitrarily means test fails (see handleError)
+        status: 800,
+        fail_body: "No Debitors located."
       }
     }
 
