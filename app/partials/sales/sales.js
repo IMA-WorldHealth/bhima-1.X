@@ -12,6 +12,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     $scope.inventory = [];
 
     var INVOICE_TYPE = 2;
+    var DEB_CRED_TYPE = 'D'; // FIXME: Inserts the debitor_creditor type into the journal
 
     var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
 
@@ -109,7 +110,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         discount: '0', //placeholder
         note : $scope.formatText(),
         posted : '0'
-      }
+      };
 
 //      Generate Invoice first for foreign key constraints, then create invoice items individually
       connect.basicPut('sale', [format_invoice]).then(function(res) { 
@@ -123,17 +124,17 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
               console.log("posting returned", res);
               $location.path('/sale_records/' + $scope.invoice_id);
             });
-          })
+          });
         }
-      })
+      });
 
       /*
       */
-    }
+    };
 
     function journalPost(id) {
       var deferred = $q.defer();
-      var request = {id: id, transaction_type: INVOICE_TYPE, user: $scope.verify};
+      var request = {id: id, transaction_type: INVOICE_TYPE, user: $scope.verify, deb_cred_type: DEB_CRED_TYPE};
       connect.journal([request]).then(function(res) {
         deferred.resolve(res);
       });
@@ -152,13 +153,13 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
           quantity : item.quantity,
           unit_price : item.price,
           total : item.quantity * item.price
-        }
+        };
         console.log("Generating sale item for ", item);
 
         promise_arr.push(connect.basicPut('sale_item', [format_item]));
       });
 
-      $q.all(promise_arr).then(function(res) { deferred.resolve(res)});
+      $q.all(promise_arr).then(function(res) { deferred.resolve(res); });
       return deferred.promise;
     }
 
@@ -171,13 +172,13 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         }
       });
       return total;
-    }
+    };
 
     $scope.updateItem = function(item) { 
       if(!item.quantity) item.quantity = 1;
       item.text = item.item.text;
       item.price = item.item.price;
-    }
+    };
 
     $scope.updateInventory = function() { 
       console.log("Update called");

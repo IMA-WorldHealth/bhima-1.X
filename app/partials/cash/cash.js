@@ -2,9 +2,12 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
     var imports = {},
       models = $scope.models = {},
       stores = $scope.stores = {},
-      data = $scope.data = {};
+      data = $scope.data = {},
+      TRANSACTION_TYPE = 1;
 
-    imports.cash_account = appstate.get('enterprise').cash_account;
+    // FIXME: this is the correct account (for enterprise 101), until we fix our enterprise
+    // dependencies.
+    imports.cash_account = 98 || appstate.get('enterprise').cash_account;
     imports.enterprise_id = appstate.get('enterprise').id;
     imports.model_names = ['debitors', 'currency', 'cash', 'cash_items'];
 
@@ -38,6 +41,7 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
 
     // paying list
     data.paying = [];
+    data.payment = 0;
     data.total = 0;
     data.currency = 1;
 
@@ -85,6 +89,7 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       });
 
       grid.onClick.subscribe(function (e, args) {
+        // FIXME: this should only work on the plus sign
         var item = grid.getDataItem(args.row);
         if (addInvoice(item)) dataview.deleteItem(item.inv_po_id);
       });
@@ -124,8 +129,10 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       });
     }
 
-
     function loadDebitor (id) {
+      // this currently fires with id = '*' to load
+      // all outstanding debitors.  This can be
+      // adjusted for security as needed.
       // populate the outstanding invoices
       $http.get('/ledgers/debitor/' + id)
         .then(function (response) {
@@ -133,8 +140,8 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
             models.ledger = response.data.map(function (row) {
               // filter only those that do not balance
               var cp = row;
-              cp.balance = row.credit - row.debit;
-              var deb = stores.debitors.get(row.deb_cred_id)
+              cp.balance = row.debit - row.credit;
+              var deb = stores.debitors.get(row.deb_cred_id);
               cp.debitor = [deb.first_name, deb.last_name].join(' ');
               return cp;
             });
@@ -157,17 +164,17 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
 
     function toggleFilterRow () {
       grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
-    };
+    }
 
     function filterInvoice (item, args) {
-      if (item.searchInvoice != "" && item["inv_po_id"].indexOf(args.searchInvoice) == -1) {
+      if (item.searchInvoice !== "" && item.inv_po_id.indexOf(args.searchInvoice) === -1) {
         return false;
       }
       return true;
     }
 
     function filterDebitor (item, args) {
-      if (item.searchDebitor != "" && item["debitor"].indexOf(args.searchDebitor) == -1) {
+      if (item.searchDebitor !== "" && item.debitor.indexOf(args.searchDebitor) === -1) {
         return false;
       }
       return true;
@@ -199,13 +206,15 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       $scope.$apply(function () {
         invoice.allocated = 0.00;
         invoice.remaining = invoice.balance;
-        data.paying.push(invoice); 
+        data.paying.push(invoice);
+        $scope.digestInvoice();
       }); 
       return true;
     }
 
     function removeInvoice (idx) {
       dataview.addItem(data.paying.splice(idx, 1)[0]);
+      $scope.digestInvoice();
     }
 
     function digestTotal () {
@@ -224,19 +233,42 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       return x > 0; 
     }
 
+    function freeze (invoice) {
+      invoice.frozen = true;
+      $scope.digestInvoice();
+    }
+    
+    function thaw (invoice) {
+      invoice.frozen = false;
+      $scope.digestInvoice(); // reset frozentotal
+    }
+
     function digestInvoice () {
       var c = (data.payment) ? data.payment : 0;
-      var arr = data.paying;
-      var index = 0;
-      if (!isPositive(arr.length)) return;
+      var arr = data.paying,
+          frozentotal = 0;
+
+      if (!isPositive(arr.length)) data.excess = c;
+
+      // calculate frozen totals
+      arr.forEach(function (invoice) {
+        if (invoice.frozen) {
+          frozentotal += invoice.allocated;
+          var remaining = invoice.balance - invoice.allocated;
+          invoice.remaining = remaining > 0 ? remaining : 0;
+        }
+      });
+      
+      // frozen values take precedence
+      c = c - frozentotal;
 
       if (isPositive(c)) {
         // this is a loop to allocate the
         // amount in data.payment to each
         // item in the invoice.
         arr = arr.map(function (invoice, idx) {
+          if (invoice.frozen) return invoice; // escape frozen vlaues
           var trial = c - invoice.balance;
-          index = idx;
           if (trial >= 0) { 
             // more than enough. Allocate it all.
             c = trial;
@@ -248,8 +280,17 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
             invoice.allocated = c;
             c = 0;
           }
+          // calculate remaining cost
+          invoice.remaining = invoice.balance - invoice.allocated;
+        });
+      } else {
+        arr = arr.map(function (invoice) { 
+          if (invoice.frozen) return invoice;
+          invoice.allocated = 0;
+          return invoice;
         });
       }
+     
       // if c is still positive, add it to excess;
       data.excess = c;
     }
@@ -258,50 +299,87 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       if (isPositive(data.paying.length)) {
         digestTotal();
         var deb = stores.debitors.get(data.paying[0].deb_cred_id);
-        // FIXME: all this assumes a patient
+        // FIXME: all this assumes a patient, debitors don't have first_names and last_names
         data.debitor = [deb.first_name, deb.last_name].join(' ');
+        data.debitor_id = deb.id;
       }
     }, true);
 
-    function pay () { 
+    function journalPost (id, user) {
+      var d = $q.defer();
+      var request = {id: id, transaction_type: TRANSACTION_TYPE, user: user};
+      connect.journal([request]).then(function(res) {
+        d.resolve(res);
+      });
+      return d.promise;
+    }
+
+    function pay () {
+      // FIXME: add a "would you like to credit or pay back" line/check here for excess
+      // run digestInvoice once more to stabilize.
+      $scope.digestInvoice();
       var doc, items;
       // gather data
       doc = {
-        id : store.cash.generateid(),
+        id : stores.cash.generateid(),
         enterprise_id : imports.enterprise_id,
         bon : 'E', // FIXME: impliment crediting
         bon_num : generateBonNumber(models.cash, 'E'),
-        date : $filter('date')(new Date()), // TODO: make this mysql
+        date : $filter('date')(new Date(), 'yyyy-MM-dd'),
         debit_account : imports.cash_account,
-        credit_account : stores.debitor.get(data.debitor).account_id,
+        credit_account : stores.debitors.get(data.debitor_id).account_id,
         currency_id : data.currency,
         cost: data.payment,
         cashier_id : 1, // TODO
         cashbox_id : 1  // TODO
       };
-  
+
       // should this API be post().then() to make sure a transaction
       // completes?
-      stores.cash.post(doc);
-
-      items = processItems(doc);
-      items.forEach(function (item) {
-        stores.cash_items.post(item);
+      // stores.cash.post(doc);
+      connect.basicPut('cash', [doc])
+      .then(function (res) {
+        if (res.status != 200) return;
+        var items = processItems(doc);
+        var promise = $q.all(items.map(function (item) { return connect.basicPut('cash_item', [item]); }));
+        promise.then(function (res) { 
+          console.log("Invoice successfully paid", res);
+        });
+      })
+      .then(function () {
+        connect.basicGet("user_session")
+        .then(function (res) {
+          console.log("res is:", res);
+          journalPost(doc.id, res.data.id)
+          .then(function (response) {
+            console.log("posting returned:", response);
+          });
+        });
       });
+      
+      // TODO
+      //items = processItems(doc);
+      //items.forEach(function (item) {
+      //  stores.cash_items.post(item);
+      //});
 
-      stores.cash.sync();
-      stores.cash_items.sync();
+      //stores.cash.sync();
+      //stores.cash_items.sync();
     }
 
     function processItems (ref) {
       var items = [];
-      data.payment.forEach(function (invoice) {
-        items.push({
-          id: stores.cash_items.generateid(),
-          cash_id : ref.id,
-          allocated_cost : invoice.allocated,
-          invoice_id : invoice.inv_po_id
-        });
+      // FIXME: raw hacks!
+      var id = stores.cash_items.generateid();
+      data.paying.forEach(function (invoice) {
+        if (invoice.allocated > 0) {
+          items.push({
+            id: id++,
+            cash_id : ref.id,
+            allocated_cost : invoice.allocated,
+            invoice_id : invoice.inv_po_id
+          });
+        }
       });
       return items;
     }
@@ -310,14 +388,14 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       // deal the the asynchronous case where store is not
       // defined.
       return (stores.currency && stores.currency.get(id)) ? stores.currency.get(id).symbol: "";
-    };
+    }
 
     function setCurrency (idx) {
       // store indexing starts from 0.  DB ids start from 1
       slip.currency_id = idx + 1; 
-    };
+    }
 
-    function getBonNumber (model, bon_type) {
+    function generateBonNumber (model, bon_type) {
       // filter by bon type, then gather ids.
       var ids = model.filter(function(row) {
         return row.bon === bon_type; 
@@ -332,4 +410,7 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
     $scope.toggleFilterRow = toggleFilterRow;
     $scope.removeInvoice = removeInvoice;
     $scope.digestInvoice = digestInvoice;
+    $scope.pay = pay;
+    $scope.freeze = freeze;
+    $scope.thaw = thaw;
   });

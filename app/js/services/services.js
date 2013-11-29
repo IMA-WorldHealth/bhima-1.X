@@ -452,7 +452,7 @@
       // summary
       // FIXME set required variables manually - this is a temporary hack until fiscal/enterprise select decisions have been made
       console.log("Init called");
-      set("enterprise", {id: 101, name: 'IMA', cash_account: 570000});
+      set("enterprise", {id: 200, name: 'IMA', cash_account: 570000});
       set("fiscal", {id: 2013001, fiscal_year_txt: '[Company 101] Year 1'});
     }
 
@@ -549,6 +549,8 @@
       //  Exactly the same as req() but now returns only
       //  data.  Think of it as a `readonly` store.
       var handle, deferred = $q.defer();
+
+      if (angular.isString(defn)) return $http.get(defn);
 
       handle = $http.get('/temp/?' + JSON.stringify(defn));
       handle.then(function (returned) {

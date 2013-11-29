@@ -269,6 +269,7 @@ CREATE TABLE `fiscal_year` (
   `start_month`               int unsigned NOT NULL,
   `start_year`                int unsigned NOT NULL,
   `previous_fiscal_year`      mediumint unsigned,
+  `locked`                    boolean not null default 0,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),
   CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
@@ -1049,6 +1050,7 @@ CREATE TABLE `period` (
   `fiscal_year_id`  mediumint unsigned NOT NULL,
   `period_start`    date NOT NULL,
   `period_stop`     date NOT NULL,
+  `locked`          boolean not null default 0,
   PRIMARY KEY (`id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   CONSTRAINT FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`)
