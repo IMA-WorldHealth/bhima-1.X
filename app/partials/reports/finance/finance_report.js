@@ -24,6 +24,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     }
   }
 
+
   //Error handling 
   $scope.session_error = {valid: true};
 
@@ -182,8 +183,6 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     $scope.session_error.body = e.body;
     $scope.session_error.valid = false;
   }
-
-
-
+  
   init();
 });
