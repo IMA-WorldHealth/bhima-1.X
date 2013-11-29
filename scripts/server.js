@@ -95,6 +95,14 @@ app.post('/journal', function(req, res) {
   jr.poster(req, res); 
 });
 
+app.get('/trialbalance/', function (req, res, next) {
+  // temp API
+  balance(function (err, result) {
+    if (err) throw err;
+    else res.send(result); 
+  });
+});
+
 app.post('/gl', function(req, res) {
 });
 
