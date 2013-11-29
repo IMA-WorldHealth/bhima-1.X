@@ -3,7 +3,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   
   //Models
   var models = {};
-  models['fiscal'] = {
+  /*models['fiscal'] = {
     model: {}, 
     request: {
       tables: {
@@ -22,16 +22,19 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
         }
       }
     }
-  }
+  }*/
 
+  models['finance'] = {
+    model: {},
+    request: 'reports/finance'
+  }
 
   //Error handling 
   $scope.session_error = {valid: true};
 
   function init() { 
     //TODO rename promise
-
-    var promise = populateModels(models);
+    var promise = populateRequests(models);
     promise
     //Populate Models - Success
     .then(function(model_list) { 
@@ -55,6 +58,22 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   }
 
+  function populateRequests(model_list) { 
+    var deferred = $q.defer();
+
+    console.log("requesting");
+    connect.basicGet(model_list['finance'].request, function(res) {
+      model_list['finance'].model = res;
+      console.log("LFKJ");
+      deferred.resolve(model_list);
+    }, function(err) { 
+      deferred.reject(err);
+    });
+
+    return deferred.promise;
+  }
+
+  //legacy function - may be a good example for other units though
   function populateModels(model_list) { 
     /*summary
     *   generic method to request data for any number of provided models
@@ -90,7 +109,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     var deferred = $q.defer();
     var test_list = {};
 
-    test_list['fiscal'] = {
+    /*test_list['fiscal'] = {
       method: function verifyFiscal() { 
         if(model_list['fiscal'].model.data.length===0) return false;
         return true;
@@ -112,7 +131,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
         status: 800,
         fail_body: "No Debitors located."
       }
-    }
+    }*/
 
     //iterate through tests
     for(test in test_list) { 
