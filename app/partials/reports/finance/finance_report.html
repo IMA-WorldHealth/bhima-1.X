@@ -1,9 +1,13 @@
+<link href="partials/reports/finance/finance_report.css" rel="stylesheet">
+
 <header>
   <span>Finance Report</span>
 </header>
 
 <section class="underline">
-
+  <div class="pull-right">
+    <button ng-click="groupByAccountNumber()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> Group: Resolution 1</button>
+  </div>
 </section>
 
 <!--Uses ng-switch at the moment, team should discuss the best way to do this-->
@@ -16,7 +20,7 @@
 <div class="content">
   <div class="row">
     <div class="col-xs-12">
-      <div id="report_grid" class="grid" style="height: 600px"><!--Populated with JS--></div>
+      <div id="report_grid" class="grid" style="width: 300px; height: 650px"><!--Populated with JS--></div>
     </div>
   </div>
 </div>
