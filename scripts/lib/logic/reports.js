@@ -16,6 +16,8 @@ module.exports = (function(db) {
   }
 
   function finance() { 
+    //TODO realisation should be a combination of credits - debits (or the other way around) - NOT two columns
+
     //TODO discuss how wasteful requesting a full new table / calculation is when one could just get the new columns (new fiscal year etc.)
     //could we calculate for all fiscal years every time, and then just pull from that - send all data at once, check version on client, if it matches current version on server don't re-send, just filter accordingly
     var deferred = q.defer();

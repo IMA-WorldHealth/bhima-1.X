@@ -1,3 +1,4 @@
+//TODO rethink all names
 angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect) {
   //TODO required model - if the model has no data, the page should not load and report this to the user
   
@@ -24,6 +25,20 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     }
   }*/
 
+  //TODO rething name
+  const DEFAULT_FILTER_RESOLUTION = 2;
+
+  //Should be derived from enterprise configuration - i.e 6 is debits and 7 credits
+  //AND from title accounts
+  var groupTitles = { 
+    '6' : 'Income',
+    '7' : 'Expenses'
+  }
+
+  var grid;
+  var dataview;
+
+
   models['finance'] = {
     model: {},
     request: '/reports/finance/'
@@ -47,7 +62,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     })
     //Verify Models - Success
     .then(function(res) { 
-      renderGrid(models['finance'].model.data);
+      settupPage();
     },
     //Veryify Models - Error
     function(err) { 
@@ -55,13 +70,21 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     });
   }
 
+  function settupPage() {
+
+    var sessionData = models['finance'].model.data;
+
+    //parse model to allow grouping by account number
+    parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
+    renderGrid(sessionData);
+  }
+
+
   function renderGrid(data) {
-    var grid;
-    var dataview;
     var columns = [
-      {id: 'account_number', name: 'Account', field: 'account_number'},
+      {id: 'account_number', name: 'Account', field: 'account_number', maxWidth: 90},
       {id: 'account_credit', name: 'Credit', field: 'account_credit'},
-      {id: 'account_debit', name: 'Credit', field: 'account_debit'}
+      {id: 'account_debit', name: 'Debit', field: 'account_debit'}
     ];
     var options = { 
       enableCellNavigation: true,
@@ -72,8 +95,48 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
     console.log(data);
 
-    grid = new Slick.Grid('#report_grid', data, columns, options);
+    var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+    dataview = new Slick.Data.DataView({
+      groupItemMetadataProvider: groupItemMetadataProvider,
+      inlineFilter: true
+    });
+    grid = new Slick.Grid('#report_grid', dataview, columns, options);
 
+    grid.registerPlugin(groupItemMetadataProvider);
+
+    dataview.onRowCountChanged.subscribe(function(e, args) { 
+      grid.updateRowCount();
+      grid.render();
+    });
+
+    dataview.onRowsChanged.subscribe(function(e, args) { 
+      grid.invalidateRows(args.rows);
+      grid.render();
+    });
+
+    dataview.beginUpdate();
+    dataview.setItems(data);
+    dataview.endUpdate();
+
+    $scope.groupByAccountNumber();
+  }
+
+  $scope.groupByAccountNumber = function groupByAccountNumber() { 
+    console.log('filtering');
+    dataview.setGrouping({
+      getter: 'filterAccountNumber',
+      formatter: function(g) { 
+        console.log('formatter', g);
+        return "<span style='font-weight: bold'>" + g.value + "</span>";
+      }
+    });
+  }
+
+  function parseAccountGroup(data, resolution) { 
+    //This method is particularly cryptic to non-developers, clean up and restructure
+    data.forEach(function(item) { 
+      item.filterAccountNumber = item.account_number.toString().substr(0, resolution);
+    })  
   }
 
   function populateRequests(model_list) { 
