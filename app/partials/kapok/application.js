@@ -1,5 +1,5 @@
 angular.module('kpk.controllers').controller('appController', function($scope, $location, appcache) { 
-    
+    /*
     //Cache URL's to maintain user session
     var url = $location.url();
 
@@ -18,4 +18,4 @@ angular.module('kpk.controllers').controller('appController', function($scope, $
       var target = n_url.split('/#')[1];
       if(target) appcache.cacheNav(target);
     });
-});
+*/});
