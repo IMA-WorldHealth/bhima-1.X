@@ -97,7 +97,7 @@ LOCK TABLES `unit` WRITE;
 INSERT INTO `unit` VALUES
   (0,'Root','The unseen root node',NULL,1,'',''),
 	(1,'Admin','The Administration Super-Category',0,1,'',''),
-	(2,'Enterprises','Manage the registered enterprises from here',1,0,'/units/enterprise/',''),
+	(2,'Enterprises','Manage the registered enterprises from here',1,0,'/partials/enterprise/','/enterprise'),
 	(3,'Form Manager','Manage your forms',1,0,'/units/formmanager/',''),
 	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/permission','/permission'),
 	(5,'Finance','The Finance Super-Category',0,1,'',''),
