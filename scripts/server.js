@@ -7,7 +7,7 @@ var express      = require('express')
   , db           = require('./lib/database/db')(cfg.db)
   , parser       = require('./lib/database/parser')(db)
   , auth         = require('./lib/auth')(db)
-  , reports      = require('./lib/logic/reports')(db)
+  , reports      = require('./lib/logic/report')(db)
 //  , balance      = require('./lib/logic/balance')(db)
   , um           = require('./lib/util/userManager')
   , jr           = require('./lib/logic/journal')
@@ -215,7 +215,7 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, res);
 });
 
-app.get('/reports/:route', function(req, res) { 
+app.get('/reports/:route/:', function(req, res) { 
   var route = req.params.route;
 
   //TODO update to err, ans standard of callback methods
