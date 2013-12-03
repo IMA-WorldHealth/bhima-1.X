@@ -1,6 +1,23 @@
-module.exports = function(grunt) {
+  module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    jshint: { 
+      all: ['app/partials/**/*.js'],
+      dev: { 
+        options: { 
+          curly: true,
+          eqeqeq: true,
+          eqnull: true,
+          browser: true,
+          globals: {
+            jQuery: true
+          }
+        },
+        files: {
+          src: ['/app/partials/**/*.js']
+        }
+      }
+    },
     concat: { 
       options : { 
         banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" + 
@@ -44,11 +61,10 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('build', ['concat']);
-  grunt.registerTask('dev', ['concat', 'watch']);
-
+  grunt.registerTask('build', ['jshint', 'concat']);
   grunt.registerTask('default', ['concat', 'watch']);
 };
