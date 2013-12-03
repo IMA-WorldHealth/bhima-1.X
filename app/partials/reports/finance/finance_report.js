@@ -35,22 +35,31 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     '7' : 'Expenses'
   }
 
+  //default for now
+  var requiredYears = [1, 2, 3, 4, 5];
+
   var grid;
   var dataview;
-
-
-  models['finance'] = {
-    model: {},
-    request: '/reports/finance/'
-  }
 
   //Error handling 
   $scope.session_error = {valid: true};
 
   function init() { 
+
+    var params = { 
+      fiscal: requiredYears
+    }
+
+    //Settup models
+    models['finance'] = {
+      model: {},
+      request: '/reports/finance/?' + JSON.stringify(params)
+    }
+
     //TODO rename promise
     var promise = populateRequests(models);
  
+    //Something is wrong with this promise chain - error function does not stop the chain
     promise
     //Populate Models - Success
     .then(function(model_list) { 
@@ -58,7 +67,8 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     }, 
     //Populate Models - Error
     function(err) { 
-      handleError(err);
+      //propogates error down chain 
+      throw err;
     })
     //Verify Models - Success
     .then(function(res) { 
@@ -66,6 +76,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     },
     //Veryify Models - Error
     function(err) { 
+      //handle error
       handleError(err);
     });
   }
@@ -74,6 +85,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
     var sessionData = models['finance'].model.data;
 
+    console.log("settupPage called");
     //parse model to allow grouping by account number
     parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
     renderGrid(sessionData);
@@ -83,9 +95,13 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   function renderGrid(data) {
     var columns = [
       {id: 'account_number', name: 'Account', field: 'account_number', maxWidth: 90},
-      {id: 'account_credit', name: 'Credit', field: 'account_credit'},
-      {id: 'account_debit', name: 'Debit', field: 'account_debit'}
     ];
+
+    requiredYears.forEach(function(year) { 
+      columns.push({id: 'realisation ' + year, name: 'FISCAL_YEAR_NAME||DESCRIPTION id(' + year + ')', field: 'realisation ' + year});
+      //add columns for budget
+    });
+
     var options = { 
       enableCellNavigation: true,
       enableColumnReorder: true,
@@ -218,7 +234,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     }
     
     //All tests passed
-    deferred.resolve();
+    deferred.resolve(true);
     return deferred.promise;
   }
 
@@ -233,7 +249,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     var error_status = err.status || null;
 
     //Assume the error is HTTP 
-    var error_type = err.http || CLIENT_ERROR;
+    var error_type = err.http || HTTP_ERROR;
     var error_body, error_title;
 
     var default_error = { 

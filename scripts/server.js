@@ -31,6 +31,8 @@ app.get('/data/', function (req, res) {
   };
   var myRequest = decodeURIComponent(url.parse(req.url).query);
   var jsRequest;  
+
+  //sfount FIXME - this will NOT always return a JSON object, if the object sent in the URL is not valid JSON (the catch case) it will be stringified and parsed - returning a string
   try{
     jsRequest = JSON.parse(myRequest);
   }catch(e){
@@ -215,11 +217,15 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, res);
 });
 
-app.get('/reports/:route/:', function(req, res) { 
+app.get('/reports/:route/', function(req, res) { 
   var route = req.params.route;
 
+  //parse the URL for data following the '?' character
+  var query = decodeURIComponent(url.parse(req.url).query);
+  console.log('query', query);
+
   //TODO update to err, ans standard of callback methods
-  reports.generate(route, function(report) { 
+  reports.generate(route, query, function(report) { 
     if(report) return res.send(report);
     res.send(500, 'Server could not produce report');
   });

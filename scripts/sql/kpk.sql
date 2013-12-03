@@ -211,6 +211,32 @@ INSERT INTO `permission` VALUES
   (46, 43, 13);
 UNLOCK TABLES;
 
+drop table if exists `account_collection`;
+create table `account_collection` (
+  `id`               tinyint not null,
+  `leading_number`   tinyint not null,
+  `title`            varchar(120) not null,
+  primary key (`id`)
+) engine=innodb;
+
+insert into `account_collection` (`id`, `leading_number`, `title`) values
+  (1, 6, 'Income/Debit Accounts'),
+  (2, 7, 'Expense/Credit Accounts');
+
+-- Foreign key should reference account_collection
+drop table if exists `account_category`;
+create table `account_category` (
+  `id`        tinyint not null,
+  `title`     varchar(120) not null,
+  `collection_id` tinyint not null,
+  primary key (`id`)
+) engine=innodb;
+insert into `account_category` (`id`, `title`, `collection_id`) values 
+  (1, 'Biens et Materiels', 1),
+  (2, 'Depenses de prestations', 1),
+  (3, 'Salaires', 1),
+  (4, 'Production Local', 2),
+  (5, 'Subvention', 2);
 
 --
 -- Table structure for table `kpk`.`enterprise`
@@ -232,12 +258,12 @@ CREATE TABLE `enterprise` (
 --
 -- Dumping data for table `kpk`.`enterprise`
 --
-LOCK TABLES `enterprise` WRITE;
-INSERT INTO `enterprise` VALUES
-  (1,'Kinshasa','RDC','Kinshasa','DEFAULT','18002324576','default@default.org','1',570000),
-	(101,'Kinshasa','RDC','Kinshasa','IMA','18004743201','jniles@example.com','1',570000),
-	(102,'Bandundu','RDC','Kikwit','IMAKik','--','jniles@example.com','1',570000);
-UNLOCK TABLES;
+-- LOCK TABLES `enterprise` WRITE;
+-- INSERT INTO `enterprise` VALUES
+--   (1,'Kinshasa','RDC','Kinshasa','DEFAULT','18002324576','default@default.org','1',570000),
+-- 	(101,'Kinshasa','RDC','Kinshasa','IMA','18004743201','jniles@example.com','1',570000),
+-- 	(102,'Bandundu','RDC','Kikwit','IMAKik','--','jniles@example.com','1',570000);
+-- UNLOCK TABLES;
 
 
 --
@@ -629,225 +655,21 @@ UNLOCK TABLES;
 -- Table structure for table `kpk`.`account`
 --
 DROP TABLE IF EXISTS `account`;
-CREATE TABLE `account` (
-  `id`                  int unsigned not null AUTO_INCREMENT, -- id is now primary key
-  `enterprise_id`       smallint unsigned NOT NULL,
-  `account_number`      mediumint unsigned NOT NULL,
-  `account_txt`         text,
-  `account_type_id`     mediumint unsigned NOT NULL,
-  `account_category`    text NOT NULL,
-  `fixed`               boolean DEFAULT '0',
-  `locked`              boolean NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `enterprise_id` (`enterprise_id`),
-  KEY `account_type_id` (`account_type_id`),
-  CONSTRAINT FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  CONSTRAINT FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`)
-) ENGINE=InnoDB;
-
---
--- Dumping data for table `kpk`.`account`
---
-LOCK TABLES `account` WRITE;
-INSERT INTO `account` (`enterprise_id`, `account_number`, `fixed`, `account_txt`, `account_type_id`, `account_category`, `locked`) VALUES
-  (101,100000,0,'capital social',1,'300',0),
-	(101,110000,0,'reserves',1,'300',0),
-	(101,120000,0,'report',1,'300',0),
-	(101,130000,0,'resultat',1,'300',0),
-	(101,130100,0,'benefice',1,'300',0),
-	(101,130200,0,'perte',1,'300',0),
-	(101,150000,0,'subventions d\'equipement',1,'300',0),
-	(101,150100,0,'etat',1,'300',0),
-	(101,150200,0,'organismes prives outre-mer',1,'300',0),
-	(101,160000,0,'emprunts et dettes a long terme',1,'300',0),
-	(101,170000,0,'emprunts et dettes a moyen terme',1,'300',0),
-	(101,180000,0,'provisions pour charges et pertes',1,'300',0),
-	(101,210000,1,'terrains',1,'300',0),
-	(101,220000,1,'immobilisations corporelles',1,'300',0),
-	(101,220100,1,'batiments et constructions (d\'exploitation)',1,'300',0),
-	(101,220200,1,'batiments residentiels',1,'300',0),
-	(101,220300,1,'installations d\'utilisation generale',1,'300',0),
-	(101,220400,1,'ambulances',1,'300',0),
-	(101,220500,1,'autres vehicules',1,'300',0),
-	(101,220600,1,'motos',1,'300',0),
-	(101,220700,1,'grands materiels hospitaliers',1,'300',0),
-	(101,220800,1,'centrales electriques',1,'300',0),
-	(101,220900,1,'autres materiels hospitaliers (radios,autoclaves)',1,'300',0),
-	(101,221000,1,'mobiliers de services',1,'300',0),
-	(101,221100,1,'mobiliers residentiels',1,'300',0),
-	(101,230000,1,'immobilisations corporelles en cours',1,'300',0),
-	(101,230100,1,'batiment en construction',1,'300',0),
-	(101,230200,1,'batiment residentiels en construction',1,'300',0),
-	(101,240000,1,'avances et acomptes sur immobilisations en commande',1,'300',0),
-	(101,240100,1,'batiments (tous)',1,'300',0),
-	(101,240200,1,'materiels (tous)',1,'300',0),
-	(101,240300,1,'mobiliers (tous)',1,'300',0),
-	(101,280000,1,'amortissemnts et provisions pour depreciation de la classe 2',1,'300',0),
-	(101,280100,1,'provision pour depreciation',1,'300',0),
-	(101,300000,1,'stocks medicaments et fiches',1,'300',0),
-	(101,300100,1,'pharmacie des stocks',1,'300',0),
-	(101,300200,1,'pharmacie d\'usage',1,'300',0),
-	(101,300300,1,'stock des fiches des malades',1,'300',0),
-	(101,300400,1,'fardes chemises pour des malades',1,'300',0),
-	(101,300500,1,'materiels',1,'300',0),
-	(101,310000,1,'autres matieres et fournitures',1,'300',0),
-	(101,310100,1,'planches',1,'300',0),
-	(101,310200,1,'toles',1,'300',0),
-	(101,310300,1,'ciments',1,'300',0),
-	(101,310400,1,'linges (literie)',1,'300',0),
-	(101,310500,1,'petrole',1,'300',0),
-	(101,310600,1,'carburants et huiles',1,'300',0),
-	(101,310700,1,'fournitures de bureau',1,'300',0),
-	(101,310800,1,'denrees alimentaires (a distribuer aux malades)',1,'300',0),
-	(101,310900,1,'divers stock',1,'300',0),
-	(101,311000,1,'pieces des rechanges',1,'300',0),
-	(101,311100,1,'cantine HEV',1,'300',0),
-	(101,360000,1,'socks a l\'exterieur',1,'300',0),
-	(101,380000,1,'provision pour depreciation de la classe 3',1,'300',0),
-	(101,400000,1,'fournisseur',1,'300',0),
-	(101,400100,1,'pharmacie centrale',1,'300',0),
-	(101,400200,1,'VEE',1,'300',0),
-	(101,400300,1,'autres fournisseurs',1,'300',0),
-	(101,410000,1,'clents',1,'300',0),
-	(101,410100,1,'bureau centrale de zone',1,'300',0),
-	(101,410200,1,'ITM Vanga',1,'300',0),
-	(101,410300,1,'pharmacie centrale',1,'300',0),
-	(101,410400,1,'frere CT',1,'300',0),
-	(101,410600,1,NULL,1,'300',0),
-	(101,410700,1,'personnel de l\'HE',1,'300',0),
-	(101,410800,1,'autres clents',1,'300',0),
-	(101,410900,1,'construction vanga',1,'300',0),
-	(101,411000,1,'PAEV/Vanga',1,'300',0),
-	(101,411100,1,'ACDI/Lusekele',1,'300',0),
-	(101,411200,1,'MAF/Vanga',1,'300',0),
-	(101,420000,1,'personnel',1,'300',0),
-	(101,420100,1,'avances sur salaires au personnel',1,'300',0),
-	(101,420200,1,'remunerations dues',1,'300',0),
-	(101,420300,1,'toles pour agents',1,'300',0),
-	(101,430000,1,'Etat',1,'300',0),
-	(101,430100,1,'CPR',1,'300',0),
-	(101,430200,1,'autres taxes',1,'300',0),
-	(101,460000,0,'debiteurs et crediteurs divers',1,'300',0),
-	(101,460100,0,'INSS',1,'300',0),
-	(101,460200,0,'syndicat',1,'300',0),
-	(101,460300,0,'debiteurs divers',1,'300',0),
-	(101,460400,0,'crediteurs divers',1,'300',0),
-	(101,460500,0,'location des livres',1,'300',0),
-	(101,460600,0,'salaire agents clemmer',1,'300',0),
-	(101,470000,0,'regularisations et charges a etaler',1,'300',0),
-	(101,470100,0,'regularisations actives',1,'300',0),
-	(101,470200,0,'regularisations passives',1,'300',0),
-	(101,470300,0,'compte d\'attente a regulariser',1,'300',0),
-	(101,480000,0,'provision pour depreciation de la classe 3',1,'300',0),
-	(101,490000,0,'compte d\'attente a regulariser',1,'300',0),
-	(101,510000,0,'pret social du personnel',1,'300',0),
-	(101,550000,0,'cheque a encaisser (remise cheque)',1,'300',0),
-	(101,560000,0,'banque et coopec',1,'300',0),
-	(101,560100,0,'BCZ Kikwit',1,'300',0),
-	(101,560200,0,'Tresorerie generale',1,'300',0),
-	(101,560300,0,'COOPEC',1,'300',0),
-	(101,560400,0,'Pharmacie centrale compte epargne',1,'300',0),
-	(101,570000,0,'caisse',1,'300',0),
-	(101,590000,0,'virement interne',1,'300',0),
-	(101,600000,0,'stocks vendus',1,'300',0),
-	(101,600100,0,'Medicaments vendus aux malades',1,'300',0),
-	(101,600200,0,'Medicaments transferes aux services hospitaliers',1,'300',0),
-	(101,600300,0,'fiches vendues(fiches malades et fardes)',1,'300',0),
-	(101,600400,0,'Materiels(Rx,...)',1,'300',0),
-	(101,610000,0,'Matieres et fournitures consommees',1,'300',0),
-	(101,610100,0,'planches consommees',1,'300',0),
-	(101,610200,0,'toles consommees',1,'300',0),
-	(101,610300,0,'ciments consommes',1,'300',0),
-	(101,610400,0,'linges consommees',1,'300',0),
-	(101,610500,0,'petrole consomme',1,'300',0),
-	(101,610600,0,'carburants et huiles consommes',1,'300',0),
-	(101,610700,0,'fourniture de bureau consommees',1,'300',0),
-	(101,610800,0,'denrhees alimentaires aux malades',1,'300',0),
-	(101,610900,0,'divers consommes',1,'300',0),
-	(101,611000,0,'pieces de rechange consommes',1,'300',0),
-	(101,611100,0,'Electricite',1,'300',0),
-	(101,611200,0,'white cross',1,'300',0),
-	(101,620000,0,'transport consomme',1,'300',0),
-	(101,620100,0,'transport routier',1,'300',0),
-	(101,620200,0,'transport aerien',1,'300',0),
-	(101,620300,0,'Transport fluvial',1,'300',0),
-	(101,630000,0,'autres services consommes',1,'300',0),
-	(101,630100,0,'Honraires des medecins',1,'300',0),
-	(101,630200,0,'Entretien des batiments',1,'300',0),
-	(101,630300,0,'salaires des journaliers',1,'300',0),
-	(101,630400,0,'autres services consommes',1,'300',0),
-	(101,630500,0,'frais de mission',1,'300',0),
-	(101,630600,0,'Frais bancaires',1,'300',0),
-	(101,630700,0,'Frais de reparation',1,'300',0),
-	(101,630800,0,'loyers payes',1,'300',0),
-	(101,630900,0,'Publicite et annoces',1,'300',0),
-	(101,631000,0,'PTT',1,'300',0),
-	(101,640000,0,'charges et pertes diverses',1,'300',0),
-	(101,640100,0,'soins medicaux aux pensionnes',1,'300',0),
-	(101,640200,0,'Assurances de vehicules',1,'300',0),
-	(101,640300,0,'Assurances de motos',1,'300',0),
-	(101,640400,0,'Dons et liberalites(charges et pertes diverses)',1,'300',0),
-	(101,640500,0,'Perte de change',1,'300',0),
-	(101,640600,0,'Autres charges et pertes',1,'300',0),
-	(101,640800,0,'Contributions',1,'300',0),
-	(101,640900,0,'Receptions',1,'300',0),
-	(101,641000,0,'Soins aux pauvres',1,'300',0),
-	(101,650000,0,'Charge du personnel',1,'300',0),
-	(101,650100,0,'Salaires bruts',1,'300',0),
-	(101,650200,0,'Decompte final',1,'300',0),
-	(101,650300,0,'Soins medicaux aux personnels',1,'300',0),
-	(101,650400,0,'Complement slaires aux medecins',1,'300',0),
-	(101,650500,1,'Autres personnels missionnaires',1,'300',0),
-	(101,650600,0,'INSS(Quote part natiional)',1,'300',0),
-	(101,650700,0,'Autres charges du personnel',1,'300',0),
-	(101,650800,0,'Conges payes',1,'300',0),
-	(101,650900,0,'Pecules de conge',1,'300',0),
-	(101,651000,0,'Salaires agents Directeur Clemmer',1,'300',0),
-	(101,651100,0,'Subvention CS',1,'300',0),
-	(101,660000,0,'Taxes divers',1,'300',0),
-	(101,660100,0,'TAxes sur vehicules',1,'300',0),
-	(101,660200,0,'Taxes sur motos',1,'300',0),
-	(101,660300,0,'Taxes diverses',1,'300',0),
-	(101,670000,0,'Interets payes',1,'300',0),
-	(101,680000,0,'Dotations aux amortissements et provisions',1,'300',0),
-	(101,680100,0,'Batiments et constructions',1,'300',0),
-	(101,680200,0,'Batiments residentiels',1,'300',0),
-	(101,681200,0,'Autrea dotations et provisions',1,'300',0),
-	(101,700000,0,'Vente des medicaments et fiches',1,'300',0),
-	(101,700100,0,'Pharmacie d\'usage',1,'300',0),
-	(101,700200,0,'Ventes fiches',1,'300',0),
-	(101,710000,0,'Recettes d\'activites',1,'300',0),
-	(101,710100,0,'Pavillion(medical et chirurgical)',1,'300',0),
-	(101,710200,0,'Laboratoire',1,'300',0),
-	(101,710300,0,'Radiologie',1,'300',0),
-	(101,710400,0,'Chirurgie',1,'300',0),
-	(101,710500,0,'Pediatrie',1,'300',0),
-	(101,710600,0,'Maternite',1,'300',0),
-	(101,710700,0,'consultation polyclinique',1,'300',0),
-	(101,710800,0,'Clinique privee',1,'300',0),
-	(101,710900,0,'Dentisterie',1,'300',0),
-	(101,711000,0,'Ophtalmologie',1,'300',0),
-	(101,711100,0,'Administration',1,'300',0),
-	(101,711200,0,'Kinesitherapie',1,'300',0),
-	(101,711300,0,'Sanatorium',1,'300',0),
-	(101,711400,0,'Centre nutritionnel',1,'300',0),
-	(101,711500,0,'Sions intensifs',1,'300',0),
-	(101,711619,0,'Echographie',1,'300',0),
-	(101,711720,0,'ECG',1,'300',0),
-	(101,730000,0,'Travail propre et charge a etaler',1,'300',0),
-	(101,730100,0,'Travail propre',1,'300',0),
-	(101,730200,0,'Charges a etaler',1,'300',0),
-	(101,740000,0,'Produits et profits divers',1,'300',0),
-	(101,740100,0,'produits divers',1,'300',0),
-	(101,740200,0,'Profits divers',1,'300',0),
-	(101,740300,0,'Frais de formation',1,'300',0),
-	(101,760000,0,'Subvention d\'exploitation',1,'300',0),
-	(101,760100,0,'Salaire de d\'etat',1,'300',0),
-	(101,760200,0,'Autres subventions de l\'etat',1,'300',0),
-	(101,760300,0,'Subventions organismes prives',1,'300',0),
-	(102,760400,0,'Subventions locales',1,'300',0),
-	(102,760500,0,'Autres subventions',1,'300',0);
-UNLOCK TABLES;
+create table `account` (
+  `id`                int unsigned not null,
+  `account_type_id`      mediumint unsigned not null,
+  `enterprise_id`     smallint unsigned not null,
+  `account_number`    int not null,
+  `text`              text,
+  `account_category_id` tinyint not null,
+  primary key (`id`),
+  key `account_type` (`account_type_id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `account_category_id` (`account_category_id`),
+  constraint foreign key (`account_type_id`) references `account_type` (`id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`account_category_id`) references `account_category` (`id`)
+) engine=innodb;
 
 
 --
@@ -1078,13 +900,13 @@ CREATE TABLE `department` (
 --
 -- Dumping data for table `kpk`.`department`
 --
-LOCK TABLES `department` WRITE;
-INSERT INTO `department` VALUES
-  (101,1,'Vanga Admin',NULL),
-	(101,2,'Vanga Atelier','The workforce at Vanga'),
-	(101,3,'Vanga Pharamacy',NULL),
-	(101,4,'Vanga Accounting','Keeping track of accounts');
-UNLOCK TABLES;
+-- LOCK TABLES `department` WRITE;
+-- INSERT INTO `department` VALUES
+--   (101,1,'Vanga Admin',NULL),
+-- 	(101,2,'Vanga Atelier','The workforce at Vanga'),
+-- 	(101,3,'Vanga Pharamacy',NULL),
+-- 	(101,4,'Vanga Accounting','Keeping track of accounts');
+-- UNLOCK TABLES;
 
 --
 -- Table structure for table `kpk`.`employee`
