@@ -10,16 +10,18 @@ module.exports = (function (db) {
     var composed_query = db.update('user', [{id: id, logged_in: 1}], ['id']);
 
     db.execute(composed_query, function (err, results) {
-      if (err) { next(err); }
+      if (err) next(err); 
       req.session.chemins = [];
       req.session.logged_in = true;
       req.session.user_id = id;
       users[req.session.id] = [id, username, password];    
       
-      var right_request = {'entities':[{t:'unit', c:['url']},{t:'permission', c:['id']},{t:'user', c:['id']}], 
-                           'jcond':[{ts:['permission', 'user'], c:['id_user', 'id'], l:'AND'},{ts:['permission','unit'], c:['id_unit', 'id'], l:'AND'}],
-                           'cond':[{t:'user', cl:'id', z:'=', v:req.session.user_id}]
-                          };    
+      var right_request = {
+        'entities':[{t:'unit', c:['url']},{t:'permission', c:['id']},{t:'user', c:['id']}], 
+        'jcond':[{ts:['permission', 'user'], c:['id_user', 'id'], l:'AND'},{ts:['permission','unit'], c:['id_unit', 'id'], l:'AND'}],
+        'cond':[{t:'user', cl:'id', z:'=', v:req.session.user_id}]
+      };    
+
       var composed_query = db.select(right_request);
       db.execute(composed_query, function(err, results){
         if(err){
@@ -33,7 +35,7 @@ module.exports = (function (db) {
           res.redirect('/');
           return;
         }
-      });    
+      });
     });
   }
 
@@ -61,8 +63,9 @@ module.exports = (function (db) {
       };
       composed_query = db.select(dbquery);
       db.execute(composed_query, function (err, results) {
-        if (err) { next(err); }
+        if (err) next(err);
         if (results.length > 0) {
+          // FIXME: Syntax
           (results[0].logged_in > 0) ? next(new Error('User already logged In')) : logUserIn(results[0].id, u, p, req, res, next);
         } else {
           res.redirect('/login.html');
