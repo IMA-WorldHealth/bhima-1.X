@@ -331,8 +331,12 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
         currency_id : data.currency,
         cost: data.payment,
         cashier_id : 1, // TODO
-        cashbox_id : 1  // TODO
+        cashbox_id : 1,  // TODO,
+        deb_cred_id : data.debitor_id,//FIXME: Do it goodly
+        deb_cred_type : 'D' //FIXME: Do it goodly
       };
+
+
 
       // should this API be post().then() to make sure a transaction
       // completes?
