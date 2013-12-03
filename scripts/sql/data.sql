@@ -180,7 +180,7 @@ insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `locat
   (200, 5, "Other Clients", 66, 1, 1, 1, 1, 4);
 
 insert into `debitor` (`id`, `group_id`, `text`) values 
-  (1, 3, "Debitor account for patient 1"),
+  (1, 3, "Debitor account for patient 1");
 --   (2, 1, "Debitor 2"),
 --   (3, 3, "Debitor 3"),
 --   (4, 3, "Debitor 4"),
@@ -192,10 +192,10 @@ insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `do
   (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
 
 insert into `inv_group` values 
-  (0,'Services','S', 164, NULL, NULL, NULL), --164
-	(1,'Medicines','M', 164, 167, NULL, NULL), --164
-	(2,'Surgery','C',171,NULL,NULL, NULL), --171
-	(3,'Office Supplies','O', 41, 48, NULL,NULL); --41
+  (0,'Services','S', 90, NULL, NULL, NULL), -- 164
+	(1,'Medicines','M', 80, NULL, NULL, NULL), -- 164, 167
+	(2,'Surgery','C',88,NULL,NULL, NULL); -- 171
+	-- (3,'Office Supplies','O', 41, 48, NULL,NULL); --41
 
 
 insert into `inventory` values 
@@ -206,5 +206,5 @@ insert into `inventory` values
  	(101,5,'CHPASU','Parotidectomie Superficielle',20000.00,2,1,0,0,0,0,0,2,0),
  	(101,6,'CHTRAC','Trachectome',20000.00,2,1,0,0,0,0,0,2,0),
  	(101,7,'EXKYSB','Kyste Sublingual',20000.00,2,1,0,0,0,0,0,2,0),
- 	(101,8,'EXKYPB','Petite Kyste De La Bouche',20000.00,2,1,0,0,0,0,0,2,0),
- 	(101,9,'BICNOI','Bic Noire',1.00,3,4,0,0,0,0,0,0,1);
+ 	(101,8,'EXKYPB','Petite Kyste De La Bouche',20000.00,2,1,0,0,0,0,0,2,0);
+ 	-- (101,9,'BICNOI','Bic Noire',1.00,3,4,0,0,0,0,0,0,1);
