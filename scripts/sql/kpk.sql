@@ -136,7 +136,11 @@ INSERT INTO `unit` VALUES
 	(38,'Cash Box','Pay invoices',5,0,'/partials/cash','cash'),
 	(39,'Register Stock','',11,0,'partials/inventory/register','inventory/register'),
 	(40,'Register Supplier','',11,0,'partials/inventory/creditors','creditors'),
-	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/');
+	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/'),
+  (42,'Income/Expense', '', 10, 0, 'partials/reports/income_expense', 'reports/income_expense'),
+  (43,'Financial Report', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
+  (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget');
+
 UNLOCK TABLES;
 
 --
@@ -203,7 +207,8 @@ INSERT INTO `permission` VALUES
 	(42,39,2),
 	(43,40,2),
 	(44,9,2),
-	(45,41,2);
+	(45,41,2),
+  (46, 43, 13);
 UNLOCK TABLES;
 
 

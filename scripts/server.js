@@ -7,6 +7,7 @@ var express      = require('express')
   , db           = require('./lib/database/db')(cfg.db)
   , parser       = require('./lib/database/parser')(db)
   , auth         = require('./lib/auth')(db)
+  , reports      = require('./lib/logic/reports')(db)
 //  , balance      = require('./lib/logic/balance')(db)
   , um           = require('./lib/util/userManager')
   , jr           = require('./lib/logic/journal')
@@ -212,6 +213,16 @@ app.delete('/temp/:table/:id', function (req, res, next) {
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, res);
+});
+
+app.get('/reports/:route', function(req, res) { 
+  var route = req.params.route;
+
+  //TODO update to err, ans standard of callback methods
+  reports.generate(route, function(report) { 
+    if(report) return res.send(report);
+    res.send(500, 'Server could not produce report');
+  });
 });
 
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));
