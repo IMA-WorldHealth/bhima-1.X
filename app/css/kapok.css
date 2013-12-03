@@ -46,6 +46,7 @@ section {
   text-transform: capitalize;
 }
 
+/*Form-control direvative (spelt wrong) add more CSSness*/
 .form-kapok {
   diplay: block;
   width: 100%;
