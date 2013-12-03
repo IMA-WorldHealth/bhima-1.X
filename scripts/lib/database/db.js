@@ -353,6 +353,10 @@ function db(cfg) {
 
     escape: function (id) {
       return escape_id(id);
+    },
+    
+    escapestr : function (str) {
+      return escape_str(str); 
     }
   };
 }

@@ -7,10 +7,10 @@ var express      = require('express')
   , db           = require('./lib/database/db')(cfg.db)
   , parser       = require('./lib/database/parser')(db)
   , auth         = require('./lib/auth')(db)
+  , tree         = require('./lib/tree')(db)
 //  , balance      = require('./lib/logic/balance')(db)
-  , um           = require('./lib/util/userManager')
   , jr           = require('./lib/logic/journal')
-  , ledger      = require('./lib/logic/ledger')(db)
+  , ledger       = require('./lib/logic/ledger')(db)
   , app          = express();
 
 app.configure(function () {
@@ -87,8 +87,17 @@ app.get('/user_session', function(req, res, next) {
   res.send({id: req.session.user_id});
 });
 
-app.get('/tree', function(req, res, next) {
-  um.manageUser(req, res, next);
+app.get('/tree', function (req, res, next) {
+  // format and process request
+  var reqObj, query, userid = req.session.user_id;
+  reqObj = JSON.parse(decodeURIComponent(url.parse(req.url).query));
+  query = queryHandler.getQueryObj(reqObj);
+
+  // load tree
+  tree.loadTree(userid, query, function (err, result) {
+    if (err) next(err);
+    res.json(result); 
+  });
 });
 
 app.post('/journal', function(req, res) {
@@ -101,9 +110,6 @@ app.get('/trialbalance/', function (req, res, next) {
     if (err) throw err;
     else res.send(result); 
   });
-});
-
-app.post('/gl', function(req, res) {
 });
 
 app.get('/journal', function(req,res){
@@ -130,14 +136,14 @@ app.get('/max/:id/:table', function(req, res) {
   var max_request = "SELECT MAX(" + id + ") FROM " + table;
 
   db.execute(max_request, function(err, ans) { 
-    if(err) {
+    if (err) {
       res.send(500, {info: "SQL", detail: err});
       console.error(err);
       return;
     }
     //dodgy as ass
     res.send({max: ans[0]['MAX(' + id + ')']});
-  })
+  });
 });
 
 app.get('/fiscal/:enterprise', function(req, res) {
