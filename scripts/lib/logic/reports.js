@@ -1,4 +1,5 @@
 var q = require('Q');
+
 module.exports = (function(db) { 
   'use strict'
 
