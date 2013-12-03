@@ -2,10 +2,11 @@ var q = require('Q');
 
 module.exports = (function(db) { 
   'use strict'
-
+  
   function generate(request, callback) { 
     /*summary 
     *   Route request for reports, if no report matches given request, return null  
+    *   --This might be overly complex, it was much simpler but was decided one file was messy
     */
     var route = {
       'finance' : finance
