@@ -6,7 +6,8 @@ var express      = require('express')
   , cfg          = JSON.parse(fs.readFileSync("scripts/config.json"))
   , db           = require('./lib/database/db')(cfg.db)
   , parser       = require('./lib/database/parser')(db)
-  , auth         = require('./lib/auth')(db)
+  , authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths)
+  , authenticate = require('./lib/auth/authentication')(db)
   , tree         = require('./lib/tree')(db)
 //  , balance      = require('./lib/logic/balance')(db)
   , jr           = require('./lib/logic/journal')
@@ -18,9 +19,17 @@ app.configure(function () {
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
   app.use(express.session(cfg.session));
-  app.use(auth);
+  // These are in correct order.  We want to authenticate
+  // then authorize access.
+  app.use(authenticate);
+  app.use(authorize);
   app.use(express.static(cfg.static));
   app.use(app.router);
+});
+
+app.get('/', function (req, res, next) {
+  // This is to preserve the /#/ path in the url
+  res.sendfile('/index.html');
 });
 
 app.get('/data/', function (req, res) {
@@ -160,14 +169,12 @@ app.get('/fiscal/:enterprise', function(req, res) {
   var iterations = 0;
   var time_stamp = Date.now();
 
-
-
   //find head of list (if it exists)
   db.execute(head_request, function(err, ans) {
     if(ans.length > 1) {
       console.log("Invalid data set - multiple fiscal years without previous_id - contact an IT admin for this shi");
       return;
-    };
+    }
     if(ans.length < 1) {
       //no fiscal years - create the first one
       console.log("No fiscal years found - create the first one");
