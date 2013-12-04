@@ -15,6 +15,10 @@
       controller: 'userController',
       templateUrl: 'partials/user_permission/permissions.html'
     }).
+    when('/enterprise', { 
+      controller: 'enterpriseController',
+      templateUrl: 'partials/enterprise/enterprise.html'
+    }).
     when('/posting_journal', {
       controller: 'journalController',
       templateUrl:'partials/journal/journal.html'
