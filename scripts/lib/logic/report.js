@@ -1,3 +1,5 @@
+// scripts/lib/logic/report.js
+
 /*
  * TODISCUSS
  *   Reports currently joining accounts with account group and collection to get account group information, two things:
@@ -7,6 +9,16 @@
  */
 
 var q = require('Q');
+var PDF = require('pdfkit');
+
+function print () {
+  // prints to a particular location
+  // amd returns the hashed name to
+  // be sent to the browser to load.
+  var doc = new PDF();
+  var hashed = 'app/reports/user-date-123.pdf';
+  return hashed;
+}
 
 module.exports = (function (db) { 
   'use strict';
@@ -17,7 +29,8 @@ module.exports = (function (db) {
     *   --This might be overly complex, it was much simpler but was decided one file was messy
     */
     var route = {
-      'finance' : finance
+      'finance' : finance,
+      'stock'   : stock
     };
 
     route[request](params).then(function(report) { 
@@ -74,10 +87,6 @@ module.exports = (function (db) {
     return deferred.promise;
   }
 
-  return { 
-    generate: generate
-  };
-
   function buildFinanceQuery(requiredFiscalYears) { 
 
     var query;
@@ -106,5 +115,13 @@ module.exports = (function (db) {
 
     return query;
   }
+
+  function stock () {
+    // TODO 
+  }
+
+  return { 
+    generate: generate
+  };
 
 });

@@ -9,7 +9,7 @@ var express      = require('express')
   , authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths)
   , authenticate = require('./lib/auth/authentication')(db)
   , tree         = require('./lib/tree')(db)
-  , reports      = require('./lib/logic/report')(db)
+  , report       = require('./lib/logic/report')(db)
   , balance      = require('./lib/logic/balance')(db) // TODO
   , jr           = require('./lib/logic/journal')
   , ledger       = require('./lib/logic/ledger')(db)
@@ -239,7 +239,7 @@ app.get('/reports/:route/', function(req, res) {
 
   //TODO update to err, ans standard of callback methods
   reports.generate(route, query, function(report) { 
-    if(report) return res.send(report);
+    if (report) return res.send(report);
     res.send(500, 'Server could not produce report');
   });
 });
