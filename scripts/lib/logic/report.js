@@ -8,8 +8,8 @@
 
 var q = require('Q');
 
-module.exports = (function(db) { 
-  'use strict'
+module.exports = (function (db) { 
+  'use strict';
 
   function generate(request, params, callback) { 
     /*summary 
@@ -18,7 +18,7 @@ module.exports = (function(db) {
     */
     var route = {
       'finance' : finance
-    }
+    };
 
     route[request](params).then(function(report) { 
       callback(report);
@@ -76,7 +76,7 @@ module.exports = (function(db) {
 
   return { 
     generate: generate
-  }
+  };
 
   function buildFinanceQuery(requiredFiscalYears) { 
 
@@ -105,7 +105,6 @@ module.exports = (function(db) {
             "GROUP BY account.account_number;";
 
     return query;
-
-
   }
+
 });
