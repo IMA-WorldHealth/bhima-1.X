@@ -99,7 +99,7 @@ INSERT INTO `unit` VALUES
 	(1,'Admin','The Administration Super-Category',0,1,'',''),
 	(2,'Enterprises','Manage the registered enterprises from here',1,0,'/units/enterprise/',''),
 	(3,'Form Manager','Manage your forms',1,0,'/units/formmanager/',''),
-	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/permission','/permission'),
+	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/user_permission/','/permission'),
 	(5,'Finance','The Finance Super-Category',0,1,'',''),
 	(6,'Accounts','The chart of accounts',5,0,'/partials/chart','/accounts'),
 	(7,'Charts','Analyze how your company is doing',5,0,'/units/charts/',''),
