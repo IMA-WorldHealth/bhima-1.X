@@ -1,9 +1,10 @@
-angular.module('kpk.controllers').controller('cashController', function($scope, $q, $modal, $filter, $http, connect, appstate) {
+angular.module('kpk.controllers')
+.controller('cashController', function($scope, $q, $modal, $filter, $http, connect, appstate) {
     var imports = {},
-      models = $scope.models = {},
-      stores = $scope.stores = {},
-      data = $scope.data = {},
-      TRANSACTION_TYPE = 1;
+        models = $scope.models = {},
+        stores = $scope.stores = {},
+        data = $scope.data = {},
+        TRANSACTION_TYPE = 1;
 
     // FIXME: this is the correct account (for enterprise 101), until we fix our enterprise
     // dependencies.
@@ -34,8 +35,7 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
     ]).then(initialize);
 
     var grid, dataview, columns, options;
-    var searchInvoice = "";
-    var searchDebitor = "";
+    var search = "";
     var sortcol = "inv_po_id";
     var sortdir = 1;
 
@@ -100,11 +100,9 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       dataview.beginUpdate();
       dataview.setItems(data);
       dataview.setFilterArgs({
-        searchInvoice : searchInvoice,
-        searchDebitor : searchDebitor 
+        search: search
       });
-      dataview.setFilter(filterInvoice);
-      dataview.setFilter(filterDebitor);
+      dataview.setFilter(filter);
       dataview.endUpdate();
 
       dataview.syncGridSelection(grid, true);
@@ -116,15 +114,9 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
         if (models.ledger) dataview.setItems(models.ledger, "inv_po_id");
       }, true);
 
-      $scope.$watch('data.invoice', function () {
-        if (!data.invoice) data.invoice = ""; // prevent default
-        searchInvoice = data.invoice;
-        updateFilter();
-      });
-
-      $scope.$watch('data.debitor', function () {
-        if (!data.debitor) data.debitor = ""; //prevent default
-        searchDebitor = data.debitor;
+      $scope.$watch('data.search', function () {
+        if (!data.search) data.search = ""; //prevent default
+        search = data.search;
         updateFilter();
       });
     }
@@ -156,8 +148,7 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
   
     function updateFilter () {
       dataview.setFilterArgs({
-        searchInvoice: searchInvoice,
-        searchDebitor: searchDebitor
+        search: search 
       });
       dataview.refresh();
     }
@@ -166,15 +157,8 @@ angular.module('kpk.controllers').controller('cashController', function($scope, 
       grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
     }
 
-    function filterInvoice (item, args) {
-      if (item.searchInvoice !== "" && item.inv_po_id.indexOf(args.searchInvoice) === -1) {
-        return false;
-      }
-      return true;
-    }
-
-    function filterDebitor (item, args) {
-      if (item.searchDebitor !== "" && item.debitor.indexOf(args.searchDebitor) === -1) {
+    function filter (item, args) {
+      if (item.search !== "" && item.inv_po_id.indexOf(args.search) === -1 && item.debitor.indexOf(args.search) === -1) {
         return false;
       }
       return true;
