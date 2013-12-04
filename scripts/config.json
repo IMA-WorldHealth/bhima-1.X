@@ -12,5 +12,18 @@
     "cookie" : {
       "httpOnly" : false
     }
+  },
+  "auth" : {
+    "paths" : [
+      "/login",
+      "/css",
+      "/data",
+      "/tree",
+      "/temp",
+      "/partials",
+      "/lib",
+      "/journal",
+      "/favicon"
+    ] 
   }
 }
