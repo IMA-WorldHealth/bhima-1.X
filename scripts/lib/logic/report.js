@@ -1,3 +1,11 @@
+/*
+ * TODISCUSS
+ *   Reports currently joining accounts with account group and collection to get account group information, two things:
+ *     -should the client download these two table seperately and filter on the grid, this avoids 3 joins
+ *     -should the entire string of the account group titles be sent and grouped on - or just the ID (with a further look up for the title), grouping may be more expensive with large strings
+ * 
+ */
+
 var q = require('Q');
 
 module.exports = (function(db) { 
@@ -56,6 +64,7 @@ module.exports = (function(db) {
     db.execute(initial_query, function(err, ans) {
       if(err) {
         console.log("finance report, initial query failed");
+        console.log(err);
         // deferred.reject(err);
         return;
       }
@@ -76,16 +85,22 @@ module.exports = (function(db) {
 
     //add budget columns
     requiredFiscalYears.forEach(function(year) { 
-      fiscalColumns += "(SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.credit else 0 end) - SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.debit else 0 end)) AS 'realisation "+year+"',";
+      fiscalColumns += "(SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.debit else 0 end) - SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.credit else 0 end)) AS 'realisation "+year+"',";
     });
 
     query = "SELECT account.id," +
                    "account.account_number," +
+                   "account.account_txt," + 
                    fiscalColumns + 
-                   "posting_journal.period_id " +
+                   "account_category.title as 'category_title', " + 
+                   "account_collection.title as 'collection_title' " +
             "FROM account " +
             "LEFT JOIN posting_journal " +
             "ON account.id = posting_journal.account_id " + 
+            "LEFT JOIN account_category " + 
+            "ON account.account_category_id = account_category.id " + 
+            "LEFT JOIN account_collection " + 
+            "ON account_category.collection_id = account_collection.id " +
             // "AND posting_journal.period_id = 3 " +
             "GROUP BY account.account_number;";
 

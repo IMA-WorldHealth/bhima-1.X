@@ -30,13 +30,9 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   //Should be derived from enterprise configuration - i.e 6 is debits and 7 credits
   //AND from title accounts
-  var groupTitles = { 
-    '6' : 'Income',
-    '7' : 'Expenses'
-  }
 
   //default for now
-  var requiredYears = [1, 2, 3, 4, 5];
+  var requiredYears = [1];
 
   var grid;
   var dataview;
@@ -94,11 +90,12 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   function renderGrid(data) {
     var columns = [
-      {id: 'account_number', name: 'Account', field: 'account_number', maxWidth: 90},
+      {id: 'account_number', name: 'Account', field: 'account_number', maxWidth: 85},
+      {id: 'account_txt', name: 'Title', field: 'account_txt', maxWidth: 90},
     ];
 
     requiredYears.forEach(function(year) { 
-      columns.push({id: 'realisation ' + year, name: 'FISCAL_YEAR_NAME||DESCRIPTION id(' + year + ')', field: 'realisation ' + year});
+      columns.push({id: 'realisation ' + year, name: 'Realisation 2013', field: 'realisation ' + year, groupTotalsFormatter: realisationTotalFormatter});
       //add columns for budget
     });
 
@@ -137,15 +134,39 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     $scope.groupByAccountNumber();
   }
 
+  function realisationTotalFormatter(totals, column) { 
+    var val = totals.sum && totals.sum[column.field];
+    if(val !== null) { 
+      return "<span style='font-weight: bold;'>" + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
+    }
+    return "";
+  }
+
   $scope.groupByAccountNumber = function groupByAccountNumber() { 
     console.log('filtering');
-    dataview.setGrouping({
-      getter: 'filterAccountNumber',
-      formatter: function(g) { 
-        console.log('formatter', g);
-        return "<span style='font-weight: bold'>" + g.value + "</span>";
-      }
+
+    var financeAggregators = [];
+    //FIXME include id, feild title in requiredYears - populate dynamically
+    requiredYears.forEach(function(year) { 
+      financeAggregators.push(new Slick.Data.Aggregators.Sum("realisation " + year));
     });
+
+    dataview.setGrouping([{
+        getter: 'collection_title',
+        formatter: function(g) { 
+          console.log('formatter', g);
+          return "<span style='font-weight: bold'>" + g.value + "</span>";
+        },
+        aggregators: financeAggregators
+      },
+      {
+        getter: 'category_title',
+        formatter: function(g) { 
+          return "<span style='font-weight: bold'>" + g.value + "</span>";
+      },
+      aggregators: financeAggregators
+
+    }]);
   }
 
   function parseAccountGroup(data, resolution) { 
