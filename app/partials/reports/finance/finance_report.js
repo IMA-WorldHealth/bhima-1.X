@@ -32,7 +32,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   //AND from title accounts
 
   //default for now
-  var requiredYears = [1];
+  var requiredYears = [1, 2];
 
   var grid;
   var dataview;
@@ -95,7 +95,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     ];
 
     requiredYears.forEach(function(year) { 
-      columns.push({id: 'realisation ' + year, name: 'Realisation 2013', field: 'realisation ' + year, groupTotalsFormatter: realisationTotalFormatter});
+      columns.push({id: 'realisation ' + year, name: 'Realisation ' + year, field: 'realisation ' + year, groupTotalsFormatter: realisationTotalFormatter});
       //add columns for budget
     });
 
@@ -135,9 +135,10 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   }
 
   function realisationTotalFormatter(totals, column) { 
+    console.log('format', totals, column);
     var val = totals.sum && totals.sum[column.field];
     if(val !== null) { 
-      return "<span style='font-weight: bold;'>" + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
+      return "<span style='font-weight: bold;'> Total " + totals.group.value + ": " + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
     }
     return "";
   }
