@@ -1,0 +1,26 @@
+<link href="partials/reports/finance/finance_report.css" rel="stylesheet">
+
+<header>
+  <span>Finance Report</span>
+</header>
+
+<section class="underline">
+  <div class="pull-right">
+    <button ng-click="groupByAccountNumber()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> Group: Resolution 1</button>
+  </div>
+</section>
+
+<!--Uses ng-switch at the moment, team should discuss the best way to do this-->
+<div ng-switch on="session_error.valid">
+<section ng-switch-when="false" class="alert {{session_error.type}}"> <!--Type mapped in JS, not ideal but works for now-->
+  <span>{{session_error.body}}</span>
+</section>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div id="report_grid" class="grid" style="height: 650px"><!--Populated with JS--></div>
+    </div>
+  </div>
+</div>

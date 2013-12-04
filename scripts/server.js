@@ -9,7 +9,8 @@ var express      = require('express')
   , authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths)
   , authenticate = require('./lib/auth/authentication')(db)
   , tree         = require('./lib/tree')(db)
-//  , balance      = require('./lib/logic/balance')(db)
+  , reports      = require('./lib/logic/report')(db)
+  , balance      = require('./lib/logic/balance')(db)
   , jr           = require('./lib/logic/journal')
   , ledger       = require('./lib/logic/ledger')(db)
   , app          = express();
@@ -39,6 +40,8 @@ app.get('/data/', function (req, res) {
   };
   var myRequest = decodeURIComponent(url.parse(req.url).query);
   var jsRequest;  
+
+  //sfount FIXME - this will NOT always return a JSON object, if the object sent in the URL is not valid JSON (the catch case) it will be stringified and parsed - returning a string
   try{
     jsRequest = JSON.parse(myRequest);
   }catch(e){
@@ -110,6 +113,7 @@ app.get('/tree', function (req, res, next) {
 });
 
 app.post('/journal', function(req, res) {
+  console.log("recieved post");
   jr.poster(req, res); 
 });
 
@@ -159,8 +163,7 @@ app.get('/fiscal/:enterprise', function(req, res) {
   /*
   * summary:
   *   calculate the 'previous' fiscal given an enterprise, return null if no fiscal year exists
-  * TODO replace literal SQL commands with db interface - does not support multiple databases
-  */
+  * TODO replace literal SQL commands with db interface - does not support multiple databases */
   var enterprise = req.params.enterprise;
 
   var head_request = "SELECT `id` FROM `fiscal_year` WHERE `previous_fiscal_year` IS NULL";
@@ -172,13 +175,10 @@ app.get('/fiscal/:enterprise', function(req, res) {
   //find head of list (if it exists)
   db.execute(head_request, function(err, ans) {
     if(ans.length > 1) {
-      console.log("Invalid data set - multiple fiscal years without previous_id - contact an IT admin for this shi");
       return;
     }
     if(ans.length < 1) {
       //no fiscal years - create the first one
-      console.log("No fiscal years found - create the first one");
-      console.log("Required iterations [", iterations, "]", Date.now() - time_stamp);
       res.send({previous_fiscal_year: null});
       return;
     }
@@ -190,7 +190,6 @@ app.get('/fiscal/:enterprise', function(req, res) {
     db.execute(iterate_request + id, function(err, ans) {
       if(err) return;
       if(ans.length===0) {
-        console.log("Required iterations [", iterations, "]", Date.now() - time_stamp);
         return respond(id);
       }
       return iterateList(ans[0].id);
@@ -198,7 +197,6 @@ app.get('/fiscal/:enterprise', function(req, res) {
   }
 
   function respond(previous_id) {
-    console.log('returning final', previous_id);
     res.send({previous_fiscal_year: previous_id});
   }
 
@@ -230,6 +228,20 @@ app.delete('/temp/:table/:id', function (req, res, next) {
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, res);
+});
+
+app.get('/reports/:route/', function(req, res) { 
+  var route = req.params.route;
+
+  //parse the URL for data following the '?' character
+  var query = decodeURIComponent(url.parse(req.url).query);
+  console.log('query', query);
+
+  //TODO update to err, ans standard of callback methods
+  reports.generate(route, query, function(report) { 
+    if(report) return res.send(report);
+    res.send(500, 'Server could not produce report');
+  });
 });
 
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));

@@ -134,6 +134,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 
     function journalPost(id) {
       var deferred = $q.defer();
+      console.log("POSTING");
       var request = {id: id, transaction_type: INVOICE_TYPE, user: $scope.verify, deb_cred_type: DEB_CRED_TYPE};
       connect.journal([request]).then(function(res) {
         deferred.resolve(res);

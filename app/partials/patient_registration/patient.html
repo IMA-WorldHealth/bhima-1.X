@@ -1,37 +1,19 @@
 <link rel="stylesheet" href="partials/patient_registration/patient.css"/>
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="bika-header">
-        <h1>Register Patient
-          <small>{{patient.first_name}} {{patient.last_name}}</small>
-        </h1>
-      </div>
-    </div>
+
+<header> 
+  <span>Register Patient</span> <small>{{patient.first_name}} {{patient.last_name}}</small>
+</header>
+
+<section class="underline">
+  <div class="pull-right">
+    <a ng-click="createGroup()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Create Patient Group</a>
+    <a href='/#/patient_records/' class="btn btn-default"><span class="glyphicon glyphicon-list"></span> View Patient Records</a>
   </div>
+</section>
+
+<div class="content">
   <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util">
-        <div class="row">
-          <div class="col-xs-12">
-
-            <div class="pull-right">
-              <!--TODO This is very limiting - you can only add a debtor group through patient registration - consider changing this-->
-              <a ng-click="createGroup()" class="btn btn-default"><span class="glyphicon glyphicon-tag"></span> Create Patient Group</a>
-
-              <a href='/#/patient_records/' class="btn btn-default"><span class="glyphicon glyphicon-list"></span> View
-                Patient Records</a>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="content">
-      <div class="col-xs-4">
+    <div class="col-xs-4">
         <div class="panel panel-primary">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-user"></span> Details
@@ -148,29 +130,17 @@
           <textarea class="form-kapok note"></textarea>
         </div>
       </div>
-    </div>
   </div>
-  <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util-bottom">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="pull-right">
+</div>
 
-              <a ng-click="update(patient)"
-                 ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()" class="btn btn-default">
+<section class="underline overline">
+<div class="pull-right">
+  <a ng-click="update(patient)"
+                 ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()" class="btn btn-default btn-sm">
                 <span class="glyphicon glyphicon-pencil"></span> Register Patient
               </a>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
+              </div>
+</section>
 
 <script type="text/ng-template" id="debtorgroupmodal.html">
   <div class="modal-content">
@@ -197,7 +167,7 @@
             <select
                 id="group-account"
                 class="form-kapok"
-                ng-model="group.account_number"
+                ng-model="group.account_id"
                 ng-options="account.account_number+'--'+account.account_txt for account in accounts"
                 required
                 ></select>
