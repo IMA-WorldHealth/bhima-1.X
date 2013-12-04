@@ -1,3 +1,8 @@
+/*Overrides a lot of CSS - check this is the best place for this rule*/
+body { 
+  font-size: 12px;
+}
+
 header {
   padding-top: 7px;
   padding-bottom: 7px;
@@ -12,6 +17,12 @@ header {
 
   /*Not sure about this*/
   /*margin-bottom: 10px;*/
+}
+
+header small { 
+  font-weight: normal;
+  line-height: 1;
+  color: #999999;
 }
 
 section { 
@@ -46,6 +57,7 @@ section {
   text-transform: capitalize;
 }
 
+/*Form-control direvative (spelt wrong) add more CSSness*/
 .form-kapok {
   diplay: block;
   width: 100%;

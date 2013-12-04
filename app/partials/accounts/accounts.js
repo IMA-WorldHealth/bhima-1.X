@@ -9,7 +9,7 @@ angular.module('kpk.controllers').controller('accountController', function($scop
       account_defn = {
         tables: {
           'account': {
-            columns: ['enterprise_id', 'id', 'account_number', 'locked', 'account_txt', 'account_category', 'account_type_id', 'fixed'],
+            columns: ['enterprise_id', 'id', 'account_number', 'account_txt', 'account_category_id', 'account_type_id', 'fixed'],
           },
           'account_type': {
             columns: ['type'] 
@@ -50,9 +50,9 @@ angular.module('kpk.controllers').controller('accountController', function($scop
         {id: "account_number"       , name: "Account Number"   , field: "account_number", sortable: true},
         {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
         {id: "type"     , name: "Account Type"     , field: "type"},
-        {id: "category" , name: "Account Category" , field: "account_category"},
-        {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"},
-        {id: "locked"   , name: "Locked"           , field: "locked", sortable: true}
+        {id: "category" , name: "Account Category" , field: "account_category_id"},
+        {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed"}
+        // {id: "locked"   , name: "Locked"           , field: "locked", sortable: true}
       ];
 
       options = {
@@ -127,7 +127,7 @@ angular.module('kpk.controllers').controller('accountController', function($scop
 
 angular.module('kpk.controllers').controller('accountFormController', function ($scope) {
       $scope.account = {};
-      $scope.account.locked = 0;
+      // $scope.account.locked = 0;
       $scope.close = function () {
         $scope.$modalInstance.dismiss(); 
       };

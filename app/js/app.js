@@ -76,7 +76,11 @@
     }).
     when('/create_account', {
       controller: 'createAccountController',
-      templateUrl: 'partials/create_account.html'
+      templateUrl: 'partials/accounts/create_account/create.html'
+    }).
+    when('/reports/finance', { 
+      controller: 'reportFinanceController',
+      templateUrl: 'partials/reports/finance/finance_report.html'
     });
   }  
 
