@@ -105,7 +105,7 @@ INSERT INTO `unit` VALUES
 	(7,'Charts','Analyze how your company is doing',5,0,'/units/charts/',''),
 	(8,'Budgeting','Plan your next move',0,10,'/partials/budgeting','budgeting'),
 	(9,'Posting Journal','Daily Log',5,0,'/partials/postingjournal/','/posting_journal'),
-	(10,'Reports','Do stuff and tell people about it',0,1,'/units/reports/',''),
+	(10,'Reports','Do stuff and tell people about it',0,1,'',''),
 	(11,'Inventory','The Inventory Super-Category',0,1,'',''),
 	(12,'Orders','Manage your purchase orders',11,0,'/units/orders/',''),
 	(13,'Stock','What is in stock?',0,1,'',''),
@@ -139,7 +139,9 @@ INSERT INTO `unit` VALUES
 	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/'),
   (42,'Income/Expense', '', 10, 0, 'partials/reports/income_expense', 'reports/income_expense'),
   (43,'Financial Report', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
-  (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget');
+  (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget'),
+  (45,'Transaction', '',10, 0, 'partials/reports/transaction', 'reports/transaction_report');
+
 
 UNLOCK TABLES;
 

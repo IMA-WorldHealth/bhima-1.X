@@ -109,24 +109,24 @@ module.exports = (function (db) {
         chemin.match(new RegExp("/gl")) ||
         chemin.match(new RegExp("/temp/")) ||
         chemin.match(new RegExp("/assets")) ||
+        chemin.match(new RegExp("/reports/"))||
         chemin === '/' ||
         chemin === '/favicon.ico') {
       next();
     } else {
-      console.log('tous les chemin sont :', req.session.chemins);
-      console.log('******************chemin demandes************', chemin);
+      //console.log('tous les chemin sont :', req.session.chemins);
+      //console.log('******************chemin demandes************', chemin);
         var authorized = false;      
         for(var i=0; i<req.session.chemins.length; i++){
-          if(chemin.match(new RegExp(req.session.chemins[i]))){
+          if(chemin.match(new RegExp(req.session.chemins[i])) && req.session.chemins[i] != ''){
           authorized = true;
           break;
           }    
       }
-      if (authorized) {
-        console.log('****************DECISION OK');
+      if (authorized === true) {
         next();        
       } else {
-        console.log('****************DECISION NON');
+        //console.log('****************DECISION NON');
         res.redirect('/');        
         return;
       }
