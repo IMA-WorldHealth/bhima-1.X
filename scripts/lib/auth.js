@@ -107,10 +107,14 @@ module.exports = (function (db) {
         chemin.match(new RegExp("lib/")) ||
         chemin.match(new RegExp("/journal")) ||
         chemin.match(new RegExp("/gl")) ||
+        chemin.match(new RegExp("/temp/")) ||
+        chemin.match(new RegExp("/assets")) ||
         chemin === '/' ||
         chemin === '/favicon.ico') {
       next();
     } else {
+      console.log('tous les chemin sont :', req.session.chemins);
+      console.log('******************chemin demandes************', chemin);
         var authorized = false;      
         for(var i=0; i<req.session.chemins.length; i++){
           if(chemin.match(new RegExp(req.session.chemins[i]))){
@@ -119,9 +123,11 @@ module.exports = (function (db) {
           }    
       }
       if (authorized) {
-        next();
+        console.log('****************DECISION OK');
+        next();        
       } else {
-        res.redirect('/');
+        console.log('****************DECISION NON');
+        res.redirect('/');        
         return;
       }
     }  
