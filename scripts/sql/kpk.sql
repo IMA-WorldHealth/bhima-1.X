@@ -88,7 +88,7 @@ create table `account_collection` (
 -- Foreign key should reference account_collection
 drop table if exists `account_category`;
 create table `account_category` (
-  `id`        tinyint not null,
+  `id`        tinyint unsigned not null,
   `title`     varchar(120) not null,
   `collection_id` tinyint not null,
   primary key (`id`)
@@ -228,8 +228,8 @@ create table `account` (
   key `enterprise_id` (`enterprise_id`),
   key `account_category_id` (`account_category_id`),
   constraint foreign key (`account_type_id`) references `account_type` (`id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`account_category_id`) references `account_category` (`id`)
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+  -- constraint foreign key (`account_category_id`) references `account_category` (`id`)
 ) engine=innodb;
 
 --
