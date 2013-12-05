@@ -13,7 +13,7 @@ var PDF = require('pdfkit');
 
 function print () {
   // prints to a particular location
-  // amd returns the hashed name to
+  // and returns the hashed name to
   // be sent to the browser to load.
   var doc = new PDF();
   var hashed = 'app/reports/user-date-123.pdf';
@@ -116,8 +116,25 @@ module.exports = (function (db) {
     return query;
   }
 
-  function stock () {
-    // TODO 
+  function stock (reportParams) {
+    var query, enterprise, group, groupby,
+      defer = q.defer();
+
+    enterprise = reportParams.enterprise;
+    group = reportParams.group;
+    groupby = reportParams.groupby;
+    
+    query = ["SELECT inventory.code, inventory.text, inv_group.symbol, inv_group.name, inventory.stock, inv_unit.text ",
+             "FROM inventory JOIN inv_group JOIN inv_unit ON ", 
+                "inventory.group_id = inv_group.id AND ",
+                "inventory.unit_id = inv_unit.id ",
+             "WHERE inventory.enterprise_id = ", db.escapestr(enterprise), " ",
+             "ORDER BY inventory.group_id;"
+            ];
+
+    // db.execute(blah);
+
+    return defer.promise;
   }
 
   return { 
