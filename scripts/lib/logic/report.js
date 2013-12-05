@@ -26,7 +26,6 @@ module.exports = (function (db) {
   function generate(request, params, callback) { 
     /*summary 
     *   Route request for reports, if no report matches given request, return null  
-    *   --This might be overly complex, it was much simpler but was decided one file was messy
     */
     var route = {
       'finance' : finance,
@@ -101,6 +100,7 @@ module.exports = (function (db) {
                    "account.account_number," +
                    "account.account_txt," + 
                    fiscalColumns + 
+                   "account_category.collection_id, " + 
                    "account_category.title as 'category_title', " + 
                    "account_collection.title as 'collection_title' " +
             "FROM account " +

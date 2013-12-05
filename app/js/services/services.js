@@ -40,6 +40,15 @@
       return promise;
   };
 
+  this.basicGet = function(target, param){
+    if(!param){
+      var promise = $http.get(target).then(function(result) { 
+        return result.data;
+      });
+    }      
+    return promise;
+  };
+
   this.send = function(table, data) { 
     var sql= {t:table, data:data};
     $http.post('data/',sql);

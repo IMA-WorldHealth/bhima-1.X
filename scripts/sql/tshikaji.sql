@@ -445,19 +445,20 @@ insert into `account_type` values
   (2,'balance'),
   (3,'title');
 
-insert into `account_category` (`id`, `title`) values 
-  (0, "Misc."),
-  (1, 'Biens et Materiels'),
-  (2, 'Depenses de prestations'),
-  (3, 'Salaires'),
-  (4, 'Production Local'),
-  (5, 'Subvention');
+insert into `account_category` (`id`, `title`, `collection_id`) values 
+  (0, "Misc.", 1),
+  (1, 'Biens et Materiels', 2),
+  (2, 'Depenses de prestations', 2),
+  (3, 'Salaires', 2),
+  (4, 'Production Local', 3),
+  (5, 'Subvention', 3);
 
 insert into `account_collection` (`id`, `leading_number`, `title`) values
-  (1, 6, 'Income/Debit Accounts'),
-  (2, 7, 'Expense/Credit Accounts');
+  (1, 4, 'Fournisseurs'),
+  (2, 6, 'Income/Debit Accounts'),
+  (3, 7, 'Expense/Credit Accounts');
 
-insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `account_category`) values 
+insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `account_category_id`) values 
   (0  , 1, 0, 200, 60111000, "Medicaments"                               , 1, 1),
   (1  , 1, 0, 200, 60111200, "Perfusion"                                 , 1, 1),
   (2  , 1, 0, 200, 60211000, "Achat sang"                                , 1, 1),

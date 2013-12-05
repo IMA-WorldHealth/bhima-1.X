@@ -62,6 +62,7 @@ create table `unit` (
   primary key (`id`)
 ) engine=innodb;
 
+
 --
 -- Table structure for table `kpk`.`permission`
 --
@@ -75,23 +76,6 @@ create table `permission` (
   key `id_user` (`id_user`),
   constraint foreign key (`id_unit`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   constraint foreign key (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) engine=innodb;
-
-drop table if exists `account_collection`;
-create table `account_collection` (
-  `id`               tinyint not null,
-  `leading_number`   tinyint not null,
-  `title`            varchar(120) not null,
-  primary key (`id`)
-) engine=innodb;
-
--- Foreign key should reference account_collection
-drop table if exists `account_category`;
-create table `account_category` (
-  `id`        tinyint not null,
-  `title`     varchar(120) not null,
-  `collection_id` tinyint not null,
-  primary key (`id`)
 ) engine=innodb;
 
 --
@@ -200,6 +184,7 @@ drop table if exists `account_category`;
 create table `account_category` (
   `id`        tinyint not null,
   `title`     varchar(120) not null,
+  `collection_id` tinyint not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -221,15 +206,16 @@ create table `account` (
   `enterprise_id`       smallint unsigned not null,
   `account_number`      int not null,
   `account_txt`         text,
-  `account_category_id` tinyint unsigned not null,
+  `account_category_id` tinyint not null,
   `fixed`               boolean default 0,
+  `locked`              tinyint unsigned default 0,
   primary key (`id`),
   key `account_type` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
   key `account_category_id` (`account_category_id`),
   constraint foreign key (`account_type_id`) references `account_type` (`id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`account_category_id`) references `account_category` (`id`)
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+  -- constraint foreign key (`account_category_id`) references `account_category` (`id`)
 ) engine=innodb;
 
 --
@@ -653,6 +639,8 @@ create table `cash` (
   `date`            date NOT NULL,
   `debit_account`   int unsigned NOT NULL,
   `credit_account`  int unsigned NOT NULL,
+  `deb_cred_id`     int unsigned not null,
+  `deb_cred_type`   varchar(1) not null,
   `currency_id`     tinyint unsigned NOT NULL,
   `cost`            decimal(19,2) unsigned not null default 0,
   `cashier_id`      smallint unsigned NOT NULL,
