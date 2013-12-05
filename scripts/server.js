@@ -238,7 +238,7 @@ app.get('/reports/:route/', function(req, res) {
   console.log('query', query);
 
   //TODO update to err, ans standard of callback methods
-  reports.generate(route, query, function(report) { 
+  report.generate(route, query, function(report) { 
     if (report) return res.send(report);
     res.send(500, 'Server could not produce report');
   });

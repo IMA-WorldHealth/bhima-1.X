@@ -15,6 +15,10 @@
       controller: 'userController',
       templateUrl: 'partials/user_permission/permissions.html'
     }).
+    when('/enterprise', { 
+      controller: 'enterpriseController',
+      templateUrl: 'partials/enterprise/enterprise.html'
+    }).
     when('/posting_journal', {
       controller: 'journalController',
       templateUrl:'partials/journal/journal.html'
@@ -81,6 +85,10 @@
     when('/reports/finance', { 
       controller: 'reportFinanceController',
       templateUrl: 'partials/reports/finance/finance_report.html'
+    }).
+    when('/reports/transaction_report', { 
+      controller: 'reportTransactionController',
+      templateUrl: 'partials/reports/transaction/transaction_report.html'
     });
   }  
 
