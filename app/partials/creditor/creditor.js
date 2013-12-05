@@ -159,7 +159,7 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
   }
 
   function existe(id){
-    var def = $q.defer();
+    var def = $q.defer(); // Best to do: if (id === undefined) def.resolve(false);
     if(id){
       var request = {}; 
       request.e = [{t : 'creditor', c : ['id']}];
@@ -174,7 +174,7 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
   }
 
   function toBoolean(number){
-    return number>0;
+    return number>0; // or !!number, if number is nonnegative
   }
 
   function extractId(obj){
@@ -235,6 +235,7 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
         break;
       }
     }
+    // this can be return indice != -1;
     if (indice!=-1){
       return true;
     }else{
