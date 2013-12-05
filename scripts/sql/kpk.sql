@@ -62,6 +62,7 @@ create table `unit` (
   primary key (`id`)
 ) engine=innodb;
 
+
 --
 -- Table structure for table `kpk`.`permission`
 --
@@ -638,6 +639,8 @@ create table `cash` (
   `date`            date NOT NULL,
   `debit_account`   int unsigned NOT NULL,
   `credit_account`  int unsigned NOT NULL,
+  `deb_cred_id`     int unsigned not null,
+  `deb_cred_type`   varchar(1) not null,
   `currency_id`     tinyint unsigned NOT NULL,
   `cost`            decimal(19,2) unsigned not null default 0,
   `cashier_id`      smallint unsigned NOT NULL,

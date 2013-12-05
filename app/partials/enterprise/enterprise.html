@@ -1,0 +1,33 @@
+<link rel="stylesheet" type="text/css" href="partials/journal/journal.css"/>
+ 
+<header>
+  <span class="capital">{{'ENTER' | translate}}</span>
+</header>
+
+<section class="underline">
+  <button ng-click="groupByID()" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> {{'TRANSACTION' | translate}}</button>
+  <button ng-click="groupByAccount()" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> {{'ACCOUNT' | translate}}</button>
+            
+  <div class="pull-right">
+    <a class="capital btn btn-default btn-sm" ng-click="trial()"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}}</a>
+    <a class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
+    <a class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</a>
+  </div>
+</section>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div id="journal_grid" class="grid" style="height: 650px; overflow: hidden; outline: 0px; position: relative;"><!--Content populated with controller--></div>
+    </div>
+  </div>
+</div>
+
+<section class="underline overline">
+  <div class="pull-right">
+    <button class="capital btn btn-default btn-sm" ng-click="poster()"><span class="glyphicon glyphicon-floppy-open"></span>
+      {{'GENERAL_LEDGER' | translate}}
+    </button>
+
+  </div>
+</section>

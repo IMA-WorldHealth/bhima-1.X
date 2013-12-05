@@ -7,9 +7,9 @@ var map = {
   'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note', 'debit':'cost'},
   'sale_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note', 'debit':'cost', 'inv_po_id':'id'},
   'sale_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'invoice_date', 'description':'note','inv_po_id':'id', 'credit':'total'},
-  'cash':{'t':'cash', 'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'debit':'cost'},
+  'cash':{'t':'cash', 'enterprise_id':'enterprise_id', 'trans_id':'id','deb_cred_id':'deb_cred_id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'debit':'cost'},
   'cash_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'debit':'cost', 'doc_num':'id'},
-  'cash_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'credit':'allocated_cost'}, 
+  'cash_credit':{'enterprise_id':'enterprise_id','deb_cred_id':'deb_cred_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'credit':'allocated_cost'}, 
   'purchase':{'t':'purchase', 'trans_id':'id','enterprise_id':'enterprise_id','credit':'cost','currency_id':'currency_id','deb_cred_id':'creditor_id','trans_date':'invoice_date','description':'note'},
   'purchase_debit': {'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'doc_num':'id', 'debit':'total'},
   'purchase_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'credit':'cost', 'doc_num':'id'}
@@ -115,7 +115,8 @@ var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
     journalRecord[cle] = data[0][objDebit[cle]];
   }
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
-  journalRecord.user_id = posting.user;  
+  journalRecord.user_id = posting.user;
+  journalRecord.deb_cred_type = 'D';  
   delete(journalRecord.description);
   journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
@@ -159,6 +160,7 @@ var cashCredit = function (obj, data, posting, res, periodExerciceIdObject){
       }
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
+      journalRecord.deb_cred_type = 'C';
       delete(journalRecord.description);
       journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
       journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
@@ -222,6 +224,7 @@ var purchaseCredit = function(obj, data, posting, res, periodExerciceIdObject){
   journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
   journalRecord.user_id = posting.user;
   journalRecord.id = '';
+  journalRecord.deb_cred_type = 'C'; // TODO/FIXME
   journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
   journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
   journalRecord.period_id = periodExerciceIdObject.pid;
