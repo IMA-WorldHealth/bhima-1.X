@@ -77,23 +77,6 @@ create table `permission` (
   constraint foreign key (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb;
 
-drop table if exists `account_collection`;
-create table `account_collection` (
-  `id`               tinyint not null,
-  `leading_number`   tinyint not null,
-  `title`            varchar(120) not null,
-  primary key (`id`)
-) engine=innodb;
-
--- Foreign key should reference account_collection
-drop table if exists `account_category`;
-create table `account_category` (
-  `id`        tinyint unsigned not null,
-  `title`     varchar(120) not null,
-  `collection_id` tinyint not null,
-  primary key (`id`)
-) engine=innodb;
-
 --
 -- Table structure for table `kpk`.`country`
 --
@@ -200,6 +183,7 @@ drop table if exists `account_category`;
 create table `account_category` (
   `id`        tinyint not null,
   `title`     varchar(120) not null,
+  `collection_id` tinyint not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -221,7 +205,7 @@ create table `account` (
   `enterprise_id`       smallint unsigned not null,
   `account_number`      int not null,
   `account_txt`         text,
-  `account_category_id` tinyint unsigned not null,
+  `account_category_id` tinyint not null,
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
   primary key (`id`),
