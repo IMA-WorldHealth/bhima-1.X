@@ -100,6 +100,7 @@ module.exports = (function (db) {
                    "account.account_number," +
                    "account.account_txt," + 
                    fiscalColumns + 
+                   "account_category.collection_id, " + 
                    "account_category.title as 'category_title', " + 
                    "account_collection.title as 'collection_title' " +
             "FROM account " +

@@ -223,6 +223,7 @@ create table `account` (
   `account_txt`         text,
   `account_category_id` tinyint unsigned not null,
   `fixed`               boolean default 0,
+  `locked`              tinyint unsigned default 0,
   primary key (`id`),
   key `account_type` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
