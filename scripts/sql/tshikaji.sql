@@ -89,7 +89,8 @@ INSERT INTO `unit` VALUES
 	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/'),
   (42,'Income/Expense', '', 10, 0, 'partials/reports/income_expense', 'reports/income_expense'),
   (43,'Financial Report', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
-  (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget');
+  (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget')
+  (45, 'Transaction Report', '', 10, 0, 'partials/reports/transaction_report', 'reports/transaction_report');
 
 insert into `permission` values
   (1,1,13),

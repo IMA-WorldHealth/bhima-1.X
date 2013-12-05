@@ -77,6 +77,10 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 		return "";
     }
     $scope.refreshChoose = function(){
-    	console.log($scope.report);
+    	if($scope.report.deb_cred_type.toUpperCase() == 'D'){
+    		
+
+
+    	}
     }
 });

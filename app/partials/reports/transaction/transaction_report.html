@@ -1,11 +1,21 @@
 <link href="partials/reports/transaction/transaction_report.css" rel="stylesheet">
 
 <header>
-  <span class="capital">{{'TRANSACTION REPORT'}}</span>
+  <span class="capital">TRANSACTION REPORT</span>
 </header>
 
 <section class="underline">
-Operation Type :<select class="form-control" ng-change="refreshChoose()" id="typeID" ng-model="report.deb_cred_type">
+<label class="radio">
+  <input type="radio" name="radio" id="debitorradioID" ng-model="radio1" checked>
+  Debitor
+</label>
+
+<label class="radio">
+  <input type="radio" name="radio" id="creditorradioID" ng-model="radio2">
+  Creditor
+</label>
+
+Operation Type :<select  ng-change="refreshChoose()" id="typeID" ng-model="report.deb_cred_type">
   <option>D</option>
   <option>C</option>
   </select>
