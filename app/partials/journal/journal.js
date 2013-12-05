@@ -99,7 +99,7 @@ angular.module('kpk.controllers').controller('journalController', function($scop
         new Slick.Data.Aggregators.Sum("debit"),
         new Slick.Data.Aggregators.Sum("credit")
       ],
-      aggregateCollapsed: false
+      aggregateCollapsed: true
     });
   };
 
