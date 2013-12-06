@@ -2,6 +2,10 @@
 	margin-top: 10px;
 }
 
+.content { 
+  margin-top: 30px;
+}
+
 .kpk-scrollable { 
   /*This shouldn't be a forced number - differing screen sizes etc.*/
   max-height: 600px;
