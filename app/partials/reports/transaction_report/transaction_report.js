@@ -1,4 +1,5 @@
 angular.module('kpk.controllers').controller('reportTransactionController', function($scope, kpkConnect){
+	//$scope.deb_cred_type = 'D';
 	$scope.model = {};	
 	$scope.report = {};
 	var grid;
@@ -22,11 +23,8 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 	    rowHeight: 30
   	};
 
-  	kpkConnect.basicGet('/reports/transReport').then(function(value){
-  		$scope.model['transReport'] = value;
-		init();
-	});
-  	function init() {  		
+  	function init() {
+  		//refreshChoose();
   		var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
       	dataview = new Slick.Data.DataView({
 	        groupItemMetadataProvider: groupItemMetadataProvider,
@@ -51,11 +49,19 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
       	groupByService();
     }
 
+    function fill(table){
+    	var sql = {
+    			'entities':[{'t':table, 'c':['id', 'text']}],
+    	}
+		kpkConnect.get('/data/?', sql).then(function(value){
+				$scope.chooses = value;
+		});
+    }
+
     function groupByService() {
 	    dataview.setGrouping({
 	      getter: "service_txt",
 	      formatter: function (g) {
-	      	console.log('**************', g);
 	        return "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
 	      },
 	      aggregators: [
@@ -64,7 +70,8 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 	      ],
 	      aggregateCollapsed: false
 	    });
-  	};
+  	}
+
     function totalFormat(totals, column) {
 		var format = {};
 		format['Credit'] = '#02BD02';
@@ -76,11 +83,34 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 		}
 		return "";
     }
-    $scope.refreshChoose = function(){
-    	if($scope.report.deb_cred_type.toUpperCase() == 'D'){
-    		
 
-
+    /*function refreshChoose(){
+    	if($scope.deb_cred_type.toUpperCase() == 'D'){
+    		var sql = {
+    			'entities':[{'t':'debitor', 'c':['id', 'text']}],
+    		}
+    		kpkConnect.get('/data/?', sql).then(function(value){
+  				$scope.chooses = value;
+			});
     	}
+    }*/
+
+
+    $scope.refresh = function (){
+    	console.log('**********************',$scope.report.deb_cred_type);
+    	if($scope.report.deb_cred_type.toUpperCase() == 'DEBITOR'){
+    		fill('debitor');
+    	}else if($scope.report.deb_cred_type.toUpperCase() == 'CREDITOR'){
+    		fill('creditor');
+    	}
+    }
+
+    $scope.fillRecords = function(){    	
+    	var type = $scope.report.deb_cred_type.toUpperCase().substring(0,1);
+    	console.log('**********************',type);
+	  	kpkConnect.basicGet('/reports/transReport/?'+JSON.stringify({id:$scope.report.choosen.id, type:type})).then(function(value){
+	  		$scope.model['transReport'] = value;
+			init();
+		});
     }
 });
