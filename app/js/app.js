@@ -70,13 +70,13 @@
       controller: 'purchaseRecordsController',
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
     }).
-    when('/price_list', {
+    when('/inventory/price_list', {
       controller: 'priceListController',
       templateUrl: 'partials/pricelist/pricelist.html'
     }).
-    when('/exchange_rate/', {
+    when('/exchange_rate', {
       controller : 'exchangeRateController',
-      templateUrl: 'partials/currency/currency.html'
+      templateUrl: 'partials/exchange_rate/exchange_rate.html'
     }).
     when('/create_account', {
       controller: 'createAccountController',
