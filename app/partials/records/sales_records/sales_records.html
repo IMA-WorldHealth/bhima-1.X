@@ -1,45 +1,22 @@
 <link rel="stylesheet" href="partials/records/sales_records/sales_records.css"/>
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="bika-header">
-        <h1>Patient Invoice Records</h1>
-      </div>
+
+<header>
+<span>Patient Invoice Records</span>
+</header>
+
+<section class="underline">
+<div class="col-xs-4">
+  <input type="text" ng-model="invoice_filter.filter" class="form-kapok" placeholder="Filter Invoices">
+</div>
+    <div class="pull-right">
+
+      <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
+
     </div>
-  </div>
-  <!--TODO Make this a directive or something, re-usable etc. -->
-  <!--FIXME cleanup-->
-  <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util">
-        <div class="row">
-          <div class="col-xs-12">
-            <!--FIXME btn group is a big hack - should be done with col-->
-            <div class="col-xs-4 hack-left">
-              <input type="text" ng-model="invoice_filter.filter" class="form-kapok" placeholder="Filter Invoices">
-            </div>
-            <div class="pull-right">
+</section>
 
-              <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--div class="row">
-    <div class="form-group">
-      <label for="invoice_search">Search Invoices</label>
-
-      <input type="text" id="invoice_search" ng-model="invoice_filter.filterText">
-      <button class="btn btn-default" ng-click="post()">Post Selected</button>
-
-    </div>  
-  </div-->
-  <div class="row">
-    <div class="col-xs-12">
+<div class="content">
+<div class="col-xs-12">
 
       <div ng-switch on="invoice_model.data.length">
         <div class="alert alert-info" ng-switch-when="0">
@@ -82,27 +59,12 @@
       </div>
 
     </div>
-    <!--div id="tableContent">
-      <div ng-grid="gridOptions" class="table table-default p-grid"></div>
-    </div-->
-  </div>
+</div>
 
-  <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util-bottom">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="pull-right">
-              <!--<a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">-->
-                <!--<span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>-->
+<section class="underline overline">
+<div class="pull-right">
+              <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
+                <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
 
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-</div>
+</section>
