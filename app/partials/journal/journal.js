@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, connect) {
+angular.module('kpk.controllers')
+.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, connect) {
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};

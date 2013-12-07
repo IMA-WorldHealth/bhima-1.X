@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('fiscalController', function($scope, $q, connect, appstate) { 
+angular.module('kpk.controllers')
+.controller('fiscalController', function($scope, $q, connect, appstate) { 
     $scope.active = "select";
     $scope.selected = null;
     $scope.create = false;
