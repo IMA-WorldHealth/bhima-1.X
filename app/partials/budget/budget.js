@@ -113,6 +113,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           fetchBudget(account_id, y.id).then(function(model) { 
             y.model = indexMonths(model);
             y.display = formatBudget(y.model);
+            console.log('display - ', y.display);
             console.log("fetchBudget", i, l);
             if(i==l-1) { 
               console.log("resolving", reports);
@@ -159,6 +160,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       }]};
 
       connect.basicReq(budget_query).then(function(model) { 
+        console.log("Retrieved model", model);
         deferred.resolve(model);
       });
       return deferred.promise;
