@@ -4,6 +4,18 @@
 
 
 module.exports = (function (db, global_paths) {
+  
+  // This middleware concerns itself with simply
+  // validating that each request has the appropriate
+  // session data.  It should naturally be placed high
+  // in the middleware stack, but after authentication.
+  //
+  // We first check if a request is authenticated.  If
+  // the session is valid and live, then we make sure
+  // that the req.url matches a RegExp of all global
+  // paths allowable (defined in the server's config.json)
+  // and personal paths outlined in the database based on
+  // the user's particular permissions level.
 
   function authorize (req, res, next) {
 
