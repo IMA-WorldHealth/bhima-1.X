@@ -19,7 +19,7 @@ module.exports = (function (db, global_paths) {
 
   function authorize (req, res, next) {
 
-    if (req.session.logged_in) {
+    if (req.session.authenticated) {
 
       // all paths for this user
       var paths = [].concat(global_paths, req.session.paths);
@@ -28,13 +28,13 @@ module.exports = (function (db, global_paths) {
       if (match(req.url, paths)) next();
       else {
         console.log('Prohibited url blocked by authorization.js :', req.url);
-        res.send(403, {error: "Access prohibited."});
+        res.send(403, {error: "Access prohibited.", fix: "Change config.json or paths in the database"});
       }
       return;
     }
 
 
-    if (req.url === "/login") res.sendfile('./app/login.html');
+    if (req.url == "/login") res.sendfile('./app/login.html');
     else res.redirect('/login');
     
   }

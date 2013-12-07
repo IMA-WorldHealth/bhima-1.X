@@ -70,3 +70,13 @@ section {
   background-color: #ffffff;
   border: 1px solid #cccccc;
 }
+
+/* trololololol */
+.loading {
+  transition: all 2.0s ease;
+}
+
+.loading:hover {
+  transform: rotate(360deg);
+  -webkit-transform: rotate(360deg);
+}
