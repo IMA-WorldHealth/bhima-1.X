@@ -70,13 +70,13 @@
       controller: 'purchaseRecordsController',
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
     }).
-    when('/price_list', {
+    when('/inventory/price_list', {
       controller: 'priceListController',
       templateUrl: 'partials/pricelist/pricelist.html'
     }).
-    when('/exchange_rate/', {
+    when('/exchange_rate', {
       controller : 'exchangeRateController',
-      templateUrl: 'partials/currency/currency.html'
+      templateUrl: 'partials/exchange_rate/exchange_rate.html'
     }).
     when('/create_account', {
       controller: 'createAccountController',
@@ -117,6 +117,11 @@
       DATE: "date",
       DESCRIPTION: "description",
 
+      // Actions
+      SAVE: 'save',
+      DELETE : 'delete',
+      CANCEL : 'cancel',
+
       //Titles
       MANAGEMENT: "management",
 
@@ -124,12 +129,30 @@
       DOC_NO: "doc no.",
       DEB_CRED_ACCOUNT: "debitor/creditor account",
       DEB_CRED_TYPE: "debitor/creditor type",
-      INV_PO_NO: "inv/PO no."
+      INV_PO_NO: "inv/PO no.",
+
+      // Users and Permissions
+      UP_TITLE : 'users & permissions management', // FIXME: namespaces
+      FIRST_NAME : 'first name',
+      LAST_NAME : 'last name',
+      EMAIL : 'email',
+      USER_NAME : 'username',
+      PASSWORD : 'password',
+      CONFIRM : 'confirm',
+      ALL : 'all',
+      REGISTERED_USERS : 'registered users',
+      CHECK : 'check',
+      UNITS : 'units',
+      USER : 'user',
+      PERMISSION: 'permission',
+      UP_DIALOGUE : 'check units which user ', // This token is non-normative
+      UP_DIALOGUE_2 : 'will access',
+
     });
 
     $translateProvider.translations('fr', {
       //Accounting terminology
-      POSTING_JOURNAL: "journal d'Affichage",
+      POSTING_JOURNAL: "journal de saisie",
       TRANSACTION: "opération",
       ACCOUNT: "compte",
       TRIAL_BALANCE: "balance de vérification",
@@ -137,9 +160,47 @@
       DEBIT: "débit",
       CREDIT: "crédit",
 
-      //Application functions
+      // Application functions
       CONFIGURE: "configurer",
-      PRINT: "imprimer"
+      PRINT: "imprimer",
+      CREATE: "crée",
+
+      // Generic database
+      ID: "id",
+      DATE: "date",
+      DESCRIPTION: "description",
+
+      // Actions
+      SAVE: 'enregistre',
+      DELETE : 'souplimer',
+      CANCEL : 'retourner',
+
+      //Titles
+      MANAGEMENT: "gestion",
+
+      //Journal database
+      DOC_NO: "doc no.",
+      DEB_CRED_ACCOUNT: "debitor/creditor account",
+      DEB_CRED_TYPE: "debitor/creditor type",
+      INV_PO_NO: "inv/PO no.",
+
+      // Users and Permissions
+      UP_TITLE : 'gestion de utilisateurs et permissions',
+      FIRST_NAME : 'prenom',
+      LAST_NAME : 'postnom',
+      EMAIL : 'email',
+      USER_NAME : 'nom de utilisateur',
+      PASSWORD : 'mots de pass',
+      CONFIRM : 'confirmer',
+      ALL : 'tous',
+      REGISTERED_USERS : 'utilisateurs',
+      CHECK : 'crocher',
+      UNITS : 'modules',
+      USER : 'utilisateur',
+      PERMISSION: 'permission',
+      UP_DIALOGUE : 'crocher les modules utilisateur ', // This token is non-normative
+      UP_DIALOGUE_2 : 'peut acceder',
+
     });
 
     $translateProvider.preferredLanguage('en');

@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('journalController', function($scope, $translate, $compile, $timeout, $q, $modal, $http, connect) {
+angular.module('kpk.controllers')
+.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, connect) {
 
   $scope.model = {};
   $scope.model['journal'] = {'data' : []};
@@ -24,7 +25,7 @@ angular.module('kpk.controllers').controller('journalController', function($scop
   var sort_column = "trans_id";
   var columns = [
     {id: 'trans_id', name: "ID", field: 'trans_id', sortable: true},
-    {id: 'trans_date', name: 'Date', field: 'trans_date'},
+    {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
     {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
     {id: 'description', name: 'Description', field: 'description', width: 110},
     {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
@@ -140,6 +141,10 @@ angular.module('kpk.controllers').controller('journalController', function($scop
   function compareSort(a, b) {
     var x = a[sort_column], y = b[sort_column];
     return (x == y) ? 0 : (x > y ? 1 : -1);
+  }
+
+  function formatDate (row, col, item) {
+    return $filter('date')(item);
   }
 
   function formatBtn() {

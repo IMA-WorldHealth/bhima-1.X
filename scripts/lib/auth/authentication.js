@@ -29,7 +29,12 @@ module.exports = (function (db) {
         else {
           logout(req.session.user_id, function (err, result) {
             if (err) next(err);
-            else req.session = null; 
+            else {
+              req.session.destroy(function () {
+                res.clearCookie('connect.sid', {path : '/'});
+                res.redirect('/');
+              });
+            }
           });
         }
         break;
@@ -57,7 +62,7 @@ module.exports = (function (db) {
               login(user.id, usr, pwd, function (err, results) {
                 if (err) next (err);
                 if (results.length) {
-                  req.session.logged_in = true;
+                  req.session.authenticated = true;
                   req.session.user_id = user.id;
                   req.session.paths = results.map(function (row) {
                     return row.url;
