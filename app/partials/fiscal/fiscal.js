@@ -134,6 +134,8 @@ angular.module('kpk.controllers').controller('fiscalController', function($scope
       var transaction_start_number, transaction_stop_number, fiscal_year_number;
       var insertId;
 
+      var period_ids = [];
+
 //      extract month data
       var start = new Date(model.start);
       var end = new Date(model.end);
@@ -180,6 +182,15 @@ angular.module('kpk.controllers').controller('fiscalController', function($scope
         }).then(function(res) {
           updateProgress("[Transaction Success] All required records created");
 //          TODO add to local model temporarily, commit to server should be made through local model
+          
+          //MOVE ALL LOGIC TO SERVER FROM THIS POINT (AND LOOK AT PREVIOUS TO MOVE AS WELL)
+          //res contains preiovusly inserted periods
+          res.forEach(function(period) { 
+            period_ids.push(period.data.insertId);
+          });
+          return generateBudget(period_ids);
+        }).then(function(res) { 
+          updateProgress("[Fiscal year and budget successfully configured]");
           fiscal_object.id = insertId;
           $scope.fiscal_model.post(fiscal_object);
           deferred.resolve();
@@ -197,6 +208,60 @@ angular.module('kpk.controllers').controller('fiscalController', function($scope
 
         return deferred.promise;
     }
+
+    /////
+    // Everything in these blocks should be done on the server - this is just a test for spamming HTTP requests
+    // START
+    /////
+    function generateBudget(period_ids) { 
+      var deferred = $q.defer();
+      //allowed to be hacky because this will be done on the server
+      getAccounts().then(function(res) { 
+        var accounts = res.data;
+        var periods = period_ids;
+
+        console.time("HTTP");
+        var budgetPromise = [];
+
+        accounts.forEach(function(account) { 
+          periods.forEach(function(period) { 
+            budgetPromise.push(connect.basicPut('budget', [{account_id: account.id, period_id: period, budget: 0}]));
+          })
+        })
+
+        $q.all(budgetPromise).then(function(res) { 
+          console.log("All budgets written");
+          deferred.resolve(res);
+          console.timeEnd("HTTP");
+        }, function(err) { 
+          console.log("ERRRR", err);
+        })
+      });
+
+      return deferred.promise;
+    }
+
+    function getAccounts() { 
+      var deferred = $q.defer();
+
+      var account_query = { 
+        'tables' : {
+          'account' : {
+            'columns' : ["id"]
+          }
+        }
+      }
+
+      connect.req(account_query).then(function(res) { 
+        deferred.resolve(res);
+      })
+      return deferred.promise;
+    }
+
+    /////
+    // Everything in these blocks should be done on the server - this is just a test for spamming HTTP requests
+    // STOP
+    /////
 
     function getPrevious() {
       var deferred = $q.defer();
