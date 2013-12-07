@@ -129,7 +129,7 @@
 
     $translateProvider.translations('fr', {
       //Accounting terminology
-      POSTING_JOURNAL: "journal d'Affichage",
+      POSTING_JOURNAL: "journal de saisie",
       TRANSACTION: "opération",
       ACCOUNT: "compte",
       TRIAL_BALANCE: "balance de vérification",
