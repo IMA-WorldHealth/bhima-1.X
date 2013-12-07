@@ -1,12 +1,17 @@
 <link rel="stylesheet" type="text/css" href="partials/user_permission/permissions.css"/>
-<div class="container">
-	<div class="row">
-		<div class="col-xs-5">
-			<div class="page-header">
-				<h1>User Permission Management</h1>
-			</div>
-		</div>
+<header>
+	<span>User Permission Management</span>
+</header>
+
+<section class="underline">
+	<div class="pull-right">
+		<button ng-click="cancel()" class="btn btn-sm btn-default" ng-disabled="form.$invalid">Cancel</button>
+		<button ng-click="delete()" class="btn btn-sm btn-danger" ng-disabled="form.$invalid">Delete User</button>
+		<button ng-click="valider()" class="btn btn-sm btn-default" ng-disabled="form.$invalid">Save User</button>
 	</div>
+</section>
+
+<div class="content">
 	<div class="row">
 		<div class="col-xs-4" id="divformID">
 			<div class="panel panel-primary">
@@ -101,14 +106,7 @@
 				</table>
 			</div>
 		</div>
-			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-xs-12">
-			<button ng-click="valider()" class="btn btn-lg btn-default" ng-disabled="form.$invalid">Save</button>
-			<button ng-click="delete()" class="btn btn-lg btn-default" ng-disabled="form.$invalid">Delete</button>
-			<button ng-click="cancel()" class="btn btn-lg btn-default" ng-disabled="form.$invalid">Cancel</button>
-		</div>
-	</div>
-	</div>
+</div>
+</div>

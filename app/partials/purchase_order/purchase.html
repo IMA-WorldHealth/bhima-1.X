@@ -1,23 +1,10 @@
 <link rel="stylesheet" href="partials/purchase_order/purchase.css"/>
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="bika-header">
-        <h1>Create Purchase Order</h1>
-      </div>
-    </div>
-  </div>
+<header>
+  <span>Create Purchase Order</span>
+</header>
 
-  <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util">
-        <div class="row">
-          <div class="col-xs-12">
-            <!--This could all be dynamic based on the process options, it would be beatiful, but I'm not allowed to anything
-            but accounting this week-->
-            <!--There are also only likely to be two options, probably not worth the processing overhead-->
-            <div class="btn-group">
+<section class="underline">
+  <div class="btn-group">
               <button class="btn btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase
                 Order
               </button>
@@ -31,13 +18,11 @@
               <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
 
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+</section>
 
-  <div class="row">
+<div class="content">
+
+<div class="row">
 
     <div class="col-xs-5">
       <div class="panel panel-default">
@@ -165,7 +150,7 @@
           <tbody>
           <tr ng-repeat="item in inventory">
             <td class="invoice-item"><select class="form-invoice" ng-change="updateItem(item)" ng-model="item.item"
-                                             ng-options="l.code for l in inventory_model.data"><option value=""">--Select Item--</option></select></td>
+                                             ng-options="l.code for l in inventory_model.data"><option value="">--Select Item--</option></select></td>
             <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
             <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
             <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
@@ -179,20 +164,11 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    <!--There's a better way of doing this somewhere out there-->
-    <div class="col-xs-12">
-      <div class="util-bottom">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="pull-right">
-              <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </div>
+
+<section class="underline overline">
+  <div class="pull-right">
+    <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
+  </div>
+</section>
