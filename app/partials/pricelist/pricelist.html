@@ -27,6 +27,9 @@
             </tr>
           </tbody>
         </table>
+        <div class="panel-footer">
+          <button type="button" class="btn btn-default" ng-disabled="flags.list==0 || !flags.list" ng-click="removeList()">Delete List</button>
+        </div>
       </div>
     </div>
 
@@ -113,7 +116,7 @@
     <button class="btn btn-default" type="button" ng-click="save()" ng-disabled="!flags.add">
       <i class="glyphicon glyphicon-floppy-save"></i> Save
     </button>
-    <button class="btn btn-default" type="button" ng-click="erase()">
+    <button class="btn btn-default" type="button" ng-click="erase()" ng-disabled="flags.list==0 || !flags.list">
       <i class="glyphicon glyphicon-floppy-remove"></i> Erase
     </button>
   </div>

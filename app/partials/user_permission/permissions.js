@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('userController', function($scope, $q, kpkConnect) {
+angular.module('kpk.controllers')
+.controller('userController', function($scope, $q, $translate, kpkConnect) {
   //initilaisation var
   
   $scope.selected = {};

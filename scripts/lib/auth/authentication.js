@@ -1,11 +1,20 @@
 // scripts/lib/auth/authentication.js
 
-var url = require('url');
-
 // Middleware: authenticate
 
 module.exports = (function (db) {
 
+  // This is the first middleware hit by any incoming
+  // request, yet it will only act on AUTHENTICATION
+  // paths -- those with req.url : { '/logout' | '/login' }
+  //
+  // The idea is that authentication should come before
+  // authorization.  A first request, if it is trying
+  // to get authenticated will be recieved at this level,
+  // then proceed on to be authorized as correct.
+  //
+  // All other paths are welcome to continue on to be 
+  // validated by the authorization middleware.
 
   function authenticate (req, res, next) {
 
@@ -20,7 +29,12 @@ module.exports = (function (db) {
         else {
           logout(req.session.user_id, function (err, result) {
             if (err) next(err);
-            else req.session = null; 
+            else {
+              req.session.destroy(function () {
+                res.clearCookie('connect.sid', {path : '/'});
+                res.redirect('/');
+              });
+            }
           });
         }
         break;
@@ -48,7 +62,7 @@ module.exports = (function (db) {
               login(user.id, usr, pwd, function (err, results) {
                 if (err) next (err);
                 if (results.length) {
-                  req.session.logged_in = true;
+                  req.session.authenticated = true;
                   req.session.user_id = user.id;
                   req.session.paths = results.map(function (row) {
                     return row.url;
@@ -83,6 +97,8 @@ module.exports = (function (db) {
   }
 
   function logout (id, callback) {
+    // takes an id and callback of the form
+    // function (err, results) {};
     var sql = "UPDATE `user` SET `user`.`logged_in`=0 WHERE `user`.`id`=" + db.escapestr(id);
     return db.execute(sql, callback);
   }

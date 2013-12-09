@@ -1,6 +1,6 @@
 #divuserID{
 	height: 460px;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 #divformID{
@@ -8,5 +8,5 @@
 }
 #divroleID{
 	height: 220px;
-	overflow-y: scroll;
+	overflow-y: auto;
 }

@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="partials/inventory/register/register.css">
-<header class="kpk-header">
-  <h2>Stock Registration</h2>
-  <div class="dropdown pull-right">
+
+<header>
+<span>Stock Registration</span>
+<div class="dropdown pull-right">
     <button type="button" class="btn btn-default dropdown-toggle">
       <i class="glyphicon glyphicon-th"></i>
     </button>
@@ -13,7 +14,8 @@
   </div>
 </header>
 
-<div class="container">
+
+<div class="content">
   <form name="inventory" novalidate>
     <div class="row">
       <!-- Pick a type -->
@@ -190,16 +192,15 @@
       </div>
     <!-- </row> -->
     </div>
-      
-    <!-- submit and clear -->
-    <div class="row">
-      <div>
+  </form>
+</div>
+<section class="underline overline">
+  <div>
         <input type="submit" class="btn btn-default" ng-click="submit()" ng-disabled="inventory.$invalid">
         <input type="reset" class="btn btn-default" ng-click="reset()" ng-disabled="inventory.$invalid">
         <button class="btn btn-default" ng-click="logStore()">Log</button>
       </div>
-    </div>
-  </form>
+  </section>
 
   <!-- Unit Modal -->
   <script type="text/ng-template" id="unitmodal.html">
@@ -332,6 +333,3 @@
       </div>
     </div>
   </script>
-
-<!-- </container> -->
-</div>
