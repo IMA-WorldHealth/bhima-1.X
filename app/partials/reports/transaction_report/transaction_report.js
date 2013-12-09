@@ -6,15 +6,15 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 	var dataview;
 	var sort_column = "trans_id";
 	var columns = [
-		{id: 'id', name: "LINE ID", field: 'id', sortable: true},
-	    {id: 'trans_id', name: "TRANS ID", field: 'trans_id', sortable: true},
+		{id: 'id', name: "ID", field: 'id', sortable: true},
+	    {id: 'trans_id', name: "Transaction ID", field: 'trans_id', sortable: true},
 	    {id: 'trans_date', name: 'Date', field: 'trans_date'},
 	    {id:'account_number', name:'Account', field:'account_number'},
 	    {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
 	    {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
-	    {id: 'monnaie', name: 'CURRENCY', field: 'name'},
-	    {id: 'service', name: 'SERVICE', field: 'service_txt'},
-	    {id: 'names', name: 'NAMES', field: 'names'}
+	    {id: 'monnaie', name: 'Currency', field: 'name'},
+	    {id: 'service', name: 'Service', field: 'service_txt'},
+	    {id: 'names', name: 'Posted By', field: 'names'}
 	];
   	var options = {
 	    enableCellNavigation: true,
