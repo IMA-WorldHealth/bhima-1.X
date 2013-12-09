@@ -1,13 +1,16 @@
 <link rel="stylesheet" href="partials/creditor/creditor.css"/>
-<div class="container">
-  <div class="row">
-    <div class="col-xs-5">
-      <div class="page-header">
-        <h1>Register Supplier</h1>
-      </div>
-    </div> 
-  </div>  
-  <div class="row">
+<header>
+  <span>Register Supplier</span>
+</header>
+
+<section class="underline">
+  <div class="pull-right">
+    <button ng-click ="showDialog()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Create Creditor Group</button>
+  </div>
+</section>
+
+<div class="content">
+<div class="row">
     <div class="col-xs-3">
       <div class="panel panel-primary">
         <div class="panel-body">
@@ -21,7 +24,6 @@
               <select required class="form-control" ng-change="verifyExisting()" id="groupselectID" ng-model="creditor_group" ng-options="group.id+' -- '+group.group_txt for group in groups">
                 <option value="">--Select Group--</option>
               </select>
-              <button class="form-control btn btn-primary" ng-click ="showDialog()">add</button>
             </div>
             <div class="form-group">
               <label for="Location">Location</label>
@@ -30,19 +32,17 @@
               </select>
             </div>
             <div class="checkbox">
-				<label>International
-					<input type="checkbox" id="internationalID" ng-model = "creditor.international">
-				</label>
-			</div>
-			<div class="checkbox">
-				<label>Locked
-					<input type="checkbox" id="lockedID" ng-model = "creditor.locked">
-				</label>
-			</div>
+        <label>International
+          <input type="checkbox" id="internationalID" ng-model = "creditor.international">
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>Locked
+          <input type="checkbox" id="lockedID" ng-model = "creditor.locked">
+        </label>
+      </div>
         </div>
       </div>
-      <button class="btn btn-lg btn-default" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save</button>
-      <button class="btn btn-lg btn-default" ng-click="delete(creditor)" ng-disabled="form.$invalid">Delete</button>
     </div>
     <div class="col-xs-4">
       <div class="panel panel-default">
@@ -85,21 +85,28 @@
           Registered Suppliers
         </div>
         <div class="table-responsive">
-			<table class="table table-bordered  table-striped table-hover">
-				<thead>
-					<tr><th>ID</th><th>Name</th></tr>
-				</thead>
-				<tbody>
-				<!--This is populated with angular-->
-					<tr ng-click="fill($index)" ng-repeat="creditor in creditors">
-						<td>{{creditor.id}}</td>
-						<td>{{creditor.name}}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+      <table class="table table-bordered  table-striped table-hover">
+        <thead>
+          <tr><th>ID</th><th>Name</th></tr>
+        </thead>
+        <tbody>
+        <!--This is populated with angular-->
+          <tr ng-click="fill($index)" ng-repeat="creditor in creditors">
+            <td>{{creditor.id}}</td>
+            <td>{{creditor.name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
       </div>
     </div>
   </div>
 </div>
+
+<section class="underline overline">
+  <div class="pull-right">
+    <button class="btn btn-danger btn-sm" ng-click="delete(creditor)" ng-disabled="form.$invalid">Delete Group</button>
+    <button class="btn btn-default btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save Group</button>
+  </div>
+</section>
 

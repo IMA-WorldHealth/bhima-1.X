@@ -142,15 +142,22 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
 
           $scope.submit = function () {
             group.id = groupStore.generateid();
-            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA            
+            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
             groupStore.put(group);
             //fix me for writting this in a good way
             clean.sales_account = clean.sales_account.id;
-            clean.cogs_account = clean.cogs_account.id;
-            clean.stock_account = clean.stock_account.id;
-            clean.tax_account = clean.tax_account.id;
+            if (clean.cogs_account) {
+              clean.cogs_account = clean.cogs_account.id;
+            }
+            if (clean.stock_account) {
+              clean.stock_account = clean.stock_account.id;
+            }
+            if (clean.tax_account) {
+              clean.tax_account = clean.tax_account.id;
+            }
+            clean.symbol = clean.symbol[0];
             connect.basicPut('inv_group', [clean]);
-            $modalInstance.close();
+            $modalInstance.close(clean);
           };
 
           $scope.discard = function () {
@@ -164,7 +171,9 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
         }
       });
 
-      instance.result.then(function () {
+      instance.result.then(function (model) {
+        console.log("Closed with:", model);
+        stores.inv_group.post(model);
         console.log("Submitted Successfully.");
       }, function () {
         console.log("Closed Successfully."); 

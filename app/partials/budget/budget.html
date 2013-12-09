@@ -1,51 +1,30 @@
 <link rel="stylesheet" href="partials/budget/budget.css"/>
 
-<div class="container" id="kpk-units-budget">
-  <div class="row">
-    <div class="col-xs-3">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h1 class="panel-title"><b>{{enterprise.name}}</b></h1>
-          <span class="panel-title">{{enterprise.city}}</span>
-        </div>
-        <span>Search Accounts</span>
-        <input type="search" class="form-control" ng-model="filterAccounts">
-
-        <div class="kpk-scrollable">
-          <table class="table table-hover table-bordered" id="kpk-units-budgeting-list">
-            <tr ng-click="select(account.id)" ng-class="{selected: account.id==selected_account.id}"
-                ng-repeat="account in account_model.data | filter: filterAccounts">
-              <td width="65px">{{account.id}}</td>
-              <td>{{account.account_txt}}</td>
-            </tr>
-          </table>
-        </div>
-      </div>
+<header>
+  <span>Budet by Period</span> <small>{{selected_account.account_txt}}</small>
+</header>
+<section class="underline">
+  <!-- <div class="pull-right"> -->
+    <div class="col-lg-offset-8">
+    <div class="input-group">
+    <select  ng-model="selected_fiscal" ng-options="f.fiscal_year_txt for f in fiscal_model.data" ng-disabled="validSelect()" id="select-fiscal" class="form-kapok">
+    </select>
+    <span class="input-group-btn">
+      <btn ng-disabled="validSelect()" class="btn btn-default btn-sm" ng-click="compare()" type="button">Compare
+        Year
+      </btn>
+    </span>
     </div>
-    <div class="col-xs-9">
+  <!-- </div> -->
+  </div>
+</section>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-12">
       <div ng-switch on="active"><!--Report view-->
         <div ng-switch-default></div>
         <div ng-switch-when="report">
-          <div class="kpk-header">
-            <div class="row">
-              <h1>Budget Report
-                <small>{{selected_account.account_txt}}</small>
-              </h1>
-            </div>
-            <div class="row">
-              <div class="col-lg-offset-7">
-                <div class="input-group">
-                  <select ng-disabled="validSelect()" class="form-control" ng-model="$parent.selected_fiscal"
-                          ng-options="f.fiscal_year_txt for f in fiscal_model.data"></select>
-                <span class="input-group-btn">
-                  <btn ng-disabled="validSelect()" class="btn btn-default btn-sm" ng-click="compare()" type="button">Compare
-                    Year
-                  </btn>
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
           <fieldset ng-repeat="report in budget_model.reports">
             <!--Use a select here, allow selecting any of the available fiscal years-->
             <span>{{report.desc}}</span>

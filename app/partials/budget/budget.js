@@ -10,16 +10,6 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     
 
     //TODO: This data can be fetched from the application level service
-    $scope.enterprise = {
-      name : "IMA",
-      city : "Kinshasa",
-      country : "RDC",
-      id : 102
-    };
-
-    var current_fiscal = {
-      id : 2013011
-    };
 
     init();
 
@@ -27,6 +17,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       appstate.register("enterprise", function(res) { 
         createBudget(res.id);
 
+        // fetchAccount(1).then(function(res) { console.log(res)})
         //Expose to scope for view
         $scope.enterprise = res;
       });
@@ -76,7 +67,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       var account_query = {
         'tables' : {
           'account' : {
-            'columns' : ["id", "account_txt", "account_category"]
+            'columns' : ["id", "account_txt", "account_category_id"]
             }
         },
         'where' : ['account.enterprise_id=' + e_id]
@@ -122,6 +113,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           fetchBudget(account_id, y.id).then(function(model) { 
             y.model = indexMonths(model);
             y.display = formatBudget(y.model);
+            console.log('display - ', y.display);
             console.log("fetchBudget", i, l);
             if(i==l-1) { 
               console.log("resolving", reports);
@@ -168,6 +160,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       }]};
 
       connect.basicReq(budget_query).then(function(model) { 
+        console.log("Retrieved model", model);
         deferred.resolve(model);
       });
       return deferred.promise;
