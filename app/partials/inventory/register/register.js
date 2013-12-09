@@ -70,6 +70,7 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
         console.log("line 2151 controllerjs item:", item);
         item.enterprise_id = appstate.get("enterprise").id;
         connect.basicPut('inventory', [item]);
+        stores.inventory.post(item);
         reset();
       } else {
         for (var k in $scope.inventory) {
