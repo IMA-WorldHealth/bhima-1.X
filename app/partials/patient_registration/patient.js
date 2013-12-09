@@ -1,5 +1,5 @@
-angular.module('kpk.controllers').controller('patientRegController', function($scope, $q, $location, connect, $modal, kpkConnect, appstate) {
-    console.log("Patient init");
+angular.module('kpk.controllers')
+.controller('patientRegController', function($scope, $q, $location, connect, $modal, kpkConnect, appstate) {
     var patient_model = {};
     var submitted = false;
     var default_patientID = 1;
@@ -31,13 +31,12 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
     }
 
     function createId(data) {
-      console.log(data);
       if(data.length===0) return default_patientID;
-      var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id)});
+      var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id); });
       console.log("found", search);
       // quick fix
-      search  = (search.id !== undefined) ? search.id : search;
-      //if(search.id) search = search.id;
+      search = (search.id !== undefined) ? search.id : search;
+      //if (search.id) search = search.id;
       return search + 1;
     }
 
@@ -63,7 +62,7 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
 
           commit(patient);
         });
-    }
+    };
 
     function commit(patient) {
 
@@ -71,7 +70,7 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
       patient_model = patient;
 
       var format_debtor = {id: patient_model.debitor_id, group_id: $scope.debtor.debtor_group.id};
-      console.log("requesting debtor", format_debtor);
+      console.log("requesting debtor;", format_debtor);
       //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
       // FIXME 1 - default group_id, should be properly defined
       connect.basicPut("debitor", [format_debtor])
@@ -85,11 +84,11 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
         });
       });
 
-    };
+    }
 
     $scope.formatLocation = function(l) { 
       return l.city + ", " + l.region;
-    }
+    };
 
     $scope.checkChanged = function(model) { 
         return angular.equals(model, $scope.master);
@@ -119,12 +118,13 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
           getLocations();
           getPayments();
           getTypes();
+          getPriceLists();
           function getAccounts(){
-            var req_db = {};
-            req_db.e = [{t:'account', c:['id', 'account_number','account_txt']}];
-            req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
-            kpkConnect.get('/data/?', req_db).then(function(data){
-              $scope.accounts = data;
+            connect.req({
+              tables : {'account' : {columns : ["id", "account_number", "account_txt"]}},
+              where : ["account.id<>1"]
+            }).then(function (store) {
+              $scope.accounts = store.data;
             });
           }
 
@@ -136,7 +136,7 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
             });
           }
 
-          function getPayments(){
+          function getPayments () {
             var req_db = {};
             req_db.e = [{t:'payment', c:['id', 'text']}];
             kpkConnect.get('/data/?', req_db).then(function(data){
@@ -144,37 +144,42 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
             });
           }
 
-          function getTypes(){
+          function getTypes () {
             var req_db = {};
             req_db.e = [{t:'debitor_group_type', c:['id', 'type']}];
             kpkConnect.get('/data/?', req_db).then(function(data){
-            $scope.types = data;
+              $scope.types = data;
             });
           }
 
+          function getPriceLists () {
+            connect.req({
+              tables: {'price_list_name':{ columns: ["id", "name"]}},
+              where: ["price_list_name.enterprise_id="+appstate.get('enterprise').id]
+            }).then(function (store) {
+              $scope.lists = store.data;
+            });
+          }
+
+          $scope.formatAccount = function (account) {
+            return [account.account_number, account.account_txt].join(' -- ');
+          };
+
+          $scope.formatLocation = function (location) {
+            return [location.id, location.city, location.region].join(' -- ');
+          };
+
+          $scope.formatPayment = function (payment) {
+            return [payment.id, payment.text].join(' -- ');
+          };
+
           $scope.submit = function(){
             $modalInstance.close($scope.group);
-          }
+          };
 
           $scope.discard = function () {
             $modalInstance.dismiss();
           };
-          /*var group = $scope.group = {},
-            clean = {},
-            cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
-
-          $scope.accounts = accountModel;
-
-          $scope.submit = function () {
-            group.id = groupStore.generateid();
-            cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
-            groupStore.put(group);
-            connect.basicPut('inv_group', [clean]);
-            $modalInstance.close();
-          };*/
-
-          
-
         },
         resolve: {
           //groupStore: function () { return stores.inv_group; },
@@ -191,12 +196,10 @@ angular.module('kpk.controllers').controller('patientRegController', function($s
         value.payment_id = value.payment_id.id;
         kpkConnect.send('debitor_group', [value]);
         getGroups();
-
-    }, function() {
-      console.log('dedrick');
-    });
-    }
-
+      }, function() {
+        console.log('dedrick');
+      });
+    };
 
     init();
   });
