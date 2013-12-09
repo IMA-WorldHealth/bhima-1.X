@@ -13,7 +13,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     var INVOICE_TYPE = 2;
     var DEB_CRED_TYPE = 'D'; // FIXME: Inserts the debitor_creditor type into the journal
 
-    var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
+    //var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
 
     var max_sales_request = connect.basicGet('/max/id/sale');
     var max_purchase_request = connect.basicGet('/max/id/purchase');
@@ -23,9 +23,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     //cache location table to look up debitor details
     //var location_request = connect.req('location', ['id', 'city', 'region', 'country_code']);
 
-    var price_list_query = {
-      tables: {"price_list" : {columns: ["list_id", "inventory_id", "price", "discount", "note"]}}
-    };
 
     var debitor_query = {
       tables : {
@@ -38,8 +35,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     };
     
 
-    var price_list_request = connect.req(price_list_query);
-
     var debtor_request = connect.req(debitor_query);
     var user_request = connect.basicGet("user_session");
      
@@ -48,21 +43,20 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 //      FIXME requests shouldn't be dependent on order
 //      FIXME should verify user ID at the time of submitting invoice, less time to manipulate it I guess
       $q.all([
-        inventory_request,
+        //inventory_request,
         // sales_request,
         debtor_request,
         user_request,
         max_sales_request,
         max_purchase_request,
-        price_list_request
       ]).then(function(a) {
-        $scope.inventory_model = a[0];
-        $scope.debitor_store = a[1];
-        $scope.debtor_model = a[1].data;
-        $scope.verify = a[2].data.id;
-        $scope.max_sales = a[3].data.max;
-        $scope.max_purchase = a[4].data.max;
-        $scope.price_list_data= a[5].data;
+        //$scope.inventory_model = a[0];
+        $scope.debitor_store = a[0];
+        $scope.debtor_model = a[0].data;
+        $scope.verify = a[1].data.id;
+        $scope.max_sales = a[2].data.max;
+        $scope.max_purchase = a[3].data.max;
+        $scope.inventory = [];
         
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
@@ -91,6 +85,41 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       return "PI " + [$scope.invoice_id, debtor_text, $scope.sale_date].join('/');
     };
 
+    $scope.loadInventory = function () {
+      // FIXME
+      // THIS CODE NEEDS MAJOR REFACTORING TO MAKE MORE COMPLETE.
+      // Current implimentation works fine, but has a ridiculous branch
+      var inventory = {
+        tables: {"inventory" : {columns: ["id", "code", "text", "price"]}}
+      };
+
+      var price_list;
+      $scope.inventory = [];
+      if (angular.isNumber($scope.debtor.price_list_id)) {
+        price_list = {
+          identifier: "inventory_id",
+          tables : { "price_list" : {columns: ["id", "list_id", "inventory_id", "list_price", "discount"]}},
+          where: ["price_list.list_id="+$scope.debtor.price_list_id]
+        };
+
+        $q.all([connect.req(inventory), connect.req(price_list)]).then(function (arr) {
+          var inv_store = arr[0];
+          var data = arr[0].data; // inventory data
+          var store = arr[1]; // price_list store
+          inv_store.setData(data.map(function (item) {
+            var adjusted = store.get(item.id);
+            if (adjusted) item.price = adjusted.list_price;
+            return item;
+          }));
+          $scope.inventory_model = inv_store;
+        });
+      } else {
+        connect.req(inventory).then(function (store) {
+          $scope.inventory_model = store;
+        });
+      }
+    };
+
     $scope.generateInvoice = function() { 
       //Client validation logic goes here - should be complimented with server integrity checks etc.
 //      FIXME use reduce here
@@ -99,27 +128,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         t += $scope.inventory[i].quantity * $scope.inventory[i].price;
       }
 
-      $scope.customPriceList = function (model) {
-        var plid = $scope.debtor.price_list_id;
-        var data = $scope.price_list_data.filter(function (list) {
-          // filter out irrelevant price list data
-          return list.list_id === plid;
-        }).map(function (item) {
-          // map prices onto the sale items
-          var saleitem = model.filter(function (sale_item) {
-            // find the correct item
-            return sale_item.id === item.inventory_id;
-          })[0];
-
-          item.price = saleitem ? saleitem.price : item.price;
-
-          return item;
-        });
-
-        return data;
-        
-      };
-      
       //create invoice record
       var format_invoice = {
         enterprise_id : appstate.get("enterprise").id, //not safe
@@ -196,17 +204,16 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       return total;
     };
 
-    $scope.updateItem = function(item) { 
-      if(!item.quantity) item.quantity = 1;
-      item.text = item.item.text;
-      item.price = item.item.price;
+    $scope.updateRow = function (row) { 
+      if(!row.quantity) row.quantity = 1;
+      row.text = row.item.text;
+      row.price = row.item.price;
     };
 
-    $scope.updateInventory = function() { 
-      console.log("Update called");
+    $scope.updateInventory = function() {
       var new_line = {item: $scope.inventory_model.data[0]}; //select default item
       $scope.inventory.push(new_line);
-      $scope.updateItem(new_line); //force updates of fields
+      $scope.updateRow(new_line); //force updates of fields
       /* 
       Watching a variable that isn't in angular's scope, return the variable in a function
       $scope.$watch(function() { return new_line.item; }, function(nval, oval, scope) { 

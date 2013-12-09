@@ -112,7 +112,6 @@ angular.module('kpk.controllers')
       var instance = $modal.open({
         templateUrl: "debtorgroupmodal.html",
         controller: function ($scope, $modalInstance) { //groupStore, accountModel
-          console.log("Group module initialised");
           $scope.group = {};
           getAccounts();
           getLocations();
@@ -197,7 +196,7 @@ angular.module('kpk.controllers')
         kpkConnect.send('debitor_group', [value]);
         getGroups();
       }, function() {
-        console.log('dedrick');
+        console.log('dismissed');
       });
     };
 
