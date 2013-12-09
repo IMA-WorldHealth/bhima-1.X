@@ -238,7 +238,7 @@ drop table if exists `creditor`;
 create table `creditor` (
   `id`                int unsigned NOT NULL AUTO_INCREMENT,
   `creditor_group_id` smallint NOT NULL,
-  `creditor_txt`      varchar(45),
+  `text`      varchar(45),
   primary key (`id`),
   key `creditor_group_id` (`creditor_group_id`),
   constraint foreign key (`creditor_group_id`) references `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
