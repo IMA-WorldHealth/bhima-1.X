@@ -29,8 +29,8 @@
             <input type="date" id="saledate" class="form-control" ng-model="sale_date">
           </div>
           <div class="form-group">
-            <label for="select-cred">Patient</label>
-            <select id="select-cred" ng-model="debtor" ng-options="formatDebtor(d) for d in debtor_model" class="form-control">
+            <label for="select-deb">Patient</label>
+            <select id="select-deb" ng-model="debtor" ng-options="formatDebtor(d) for d in debtor_model" class="form-control" ng-change="loadInventory()">
               <option value="">--Select Patient--</option>
             </select>
           </div>
@@ -66,12 +66,9 @@
         <div class="panel-heading">
           Patient Invoice
         </div>
-
         <div class="panel-body purchase-header">
           <div class="row">
-
             <div class="col-xs-12">
-
               <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -111,7 +108,6 @@
               </table>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -123,9 +119,7 @@
         <div class="panel-heading">
           <span>Invoice Items</span>
           <button class="pull-right" ng-click="updateInventory()">+</button>
-
         </div>
-
         <table class="table table-condensed" ng-show="itemsInInv()">
           <thead>
           <tr>
@@ -139,7 +133,7 @@
           <tbody>
           <!-- FIXME: strange filter -->
           <tr ng-repeat="item in inventory">
-            <td class="invoice-item"><select class="form-invoice" ng-change="updateItem(item)" ng-model="item.item"
+            <td class="invoice-item"><select class="form-invoice" ng-change="updateRow(item)" ng-model="item.item"
                                              ng-options="l.code for l in inventory_model.data"><option value="">--Select Item--</option></select></td>
             <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
             <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>

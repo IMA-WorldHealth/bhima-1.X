@@ -19,7 +19,7 @@ angular.module('kpk.controllers')
   };
   imports.inv = {tables : { 'inventory' : { columns: ["id", "code", "text"] }}};
   imports.grp = {tables : { 'inv_group' : { columns: ["id", "name", "symbol"] }}};
-  imports.pl = {tables: { 'price_list' : { columns : ["id", "list_id", "inventory_id", "price", "discount", "note"] }}};
+  imports.pl = {tables: { 'price_list' : { columns : ["id", "list_id", "inventory_id", "list_price", "discount", "note"] }}};
 
   // initialize models
 
@@ -150,7 +150,7 @@ angular.module('kpk.controllers')
   validate.item = function (item) {
     // an item must have ether a price or a 
     // discount, but not both
-    var bool = !!item.id && !!item.inventory_id && ((!!item.price || !!item.discount) && !(!!item.price && !!item.discount));
+    var bool = !!item.id && !!item.inventory_id && ((!!item.list_price || !!item.discount) && !(!!item.list_price && !!item.discount));
     return bool;
   };
 
