@@ -8,7 +8,7 @@
  * 
  */
 
-var q = require('Q');
+var q = require('q');
 var PDF = require('pdfkit');
 
 function print () {
