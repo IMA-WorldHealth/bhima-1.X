@@ -23,21 +23,24 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     //cache location table to look up debitor details
     //var location_request = connect.req('location', ['id', 'city', 'region', 'country_code']);
 
-    var debtor_query = {
-        'e' : [{
-          t : 'patient',
-          c : ['debitor_id', 'first_name', 'last_name', 'location_id']
-        }, {
-          t : 'location',
-          c : ['id', 'city', 'region', 'country_id']
-        }],
-        'jc' : [{
-          ts : ['patient', 'location'],
-          c : ['location_id', 'id']
-        }]
+    var price_list_query = {
+      tables: {"price_list" : {columns: ["list_id", "inventory_id", "price", "discount", "note"]}}
     };
 
-    var debtor_request = connect.basicReq(debtor_query);
+    var debitor_query = {
+      tables : {
+        "patient" : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id"]},
+        "debitor" : { columns : ["text"]},
+        "debitor_group" : {columns : ["price_list_id"]},
+        "location" : {columns: ["city", "region", "country_id"]}
+      },
+      join : ["patient.location_id=location.id", "patient.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"]
+    };
+    
+
+    var price_list_request = connect.req(price_list_query);
+
+    var debtor_request = connect.req(debitor_query);
     var user_request = connect.basicGet("user_session");
      
     function init() { 
@@ -50,14 +53,17 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         debtor_request,
         user_request,
         max_sales_request,
-        max_purchase_request
-      ]).then(function(a) { 
+        max_purchase_request,
+        price_list_request
+      ]).then(function(a) {
         $scope.inventory_model = a[0];
-        $scope.debtor_model = a[1];
+        $scope.debitor_store = a[1];
+        $scope.debtor_model = a[1].data;
         $scope.verify = a[2].data.id;
         $scope.max_sales = a[3].data.max;
         $scope.max_purchase = a[4].data.max;
-
+        $scope.price_list_data= a[5].data;
+        
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
         $scope.invoice_id = createId(id);
@@ -65,14 +71,12 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 
     }
 
-
     //FIXME Shouldn't need to download every all invoices in this module, only take top few?
     function createId(current) { 
       var default_id = 100000;
       if(!current) return default_id;
       return current + 1;
     }
-
 
     function getDate() { 
       //Format the current date according to RFC3339 (for HTML input[type=="date"])
@@ -84,17 +88,37 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 //      FIXME String functions within digest will take hours
       var debtor_text = '';
       if($scope.debtor) debtor_text = $scope.debtor.last_name + '/' + $scope.debtor.first_name;
-      return "PI " + $scope.invoice_id + "/" + debtor_text + "/" + $scope.sale_date;
-    }
+      return "PI " + [$scope.invoice_id, debtor_text, $scope.sale_date].join('/');
+    };
 
     $scope.generateInvoice = function() { 
       //Client validation logic goes here - should be complimented with server integrity checks etc.
-        
 //      FIXME use reduce here
       var t = 0;
       for(var i = 0, l = $scope.inventory.length; i < l; i++) { 
         t += $scope.inventory[i].quantity * $scope.inventory[i].price;
       }
+
+      $scope.customPriceList = function (model) {
+        var plid = $scope.debtor.price_list_id;
+        var data = $scope.price_list_data.filter(function (list) {
+          // filter out irrelevant price list data
+          return list.list_id === plid;
+        }).map(function (item) {
+          // map prices onto the sale items
+          var saleitem = model.filter(function (sale_item) {
+            // find the correct item
+            return sale_item.id === item.inventory_id;
+          })[0];
+
+          item.price = saleitem ? saleitem.price : item.price;
+
+          return item;
+        });
+
+        return data;
+        
+      };
       
       //create invoice record
       var format_invoice = {
@@ -132,7 +156,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 
     function journalPost(id) {
       var deferred = $q.defer();
-      console.log("POSTING");
       var request = {id: id, transaction_type: INVOICE_TYPE, user: $scope.verify, deb_cred_type: DEB_CRED_TYPE};
       connect.journal([request]).then(function(res) {
         deferred.resolve(res);
