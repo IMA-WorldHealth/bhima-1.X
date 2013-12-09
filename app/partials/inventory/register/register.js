@@ -38,8 +38,8 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
     
 
     var stores = {},
-      models = ['account', 'inv_unit', 'inv_group', 'inv_type', 'inventory'],
-      item;
+        models = ['account', 'inv_unit', 'inv_group', 'inv_type', 'inventory'],
+        item;
     $scope.models = {};
     $scope.item = item = {};
 
@@ -67,7 +67,6 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
       if ($scope.inventory.$valid) {
         item.id = stores.inventory.generateid(); 
         stores.inventory.put(item);
-        console.log("line 2151 controllerjs item:", item);
         item.enterprise_id = appstate.get("enterprise").id;
         connect.basicPut('inventory', [item]);
         reset();
@@ -82,10 +81,6 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
       }
     };
 
-    $scope.logStore = function () {
-      console.log(stores.inv_group.data); 
-    };
-
     // New Type Instance Modal/Controller
     $scope.newUnitType = function () {
       var instance = $modal.open({
@@ -93,7 +88,6 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
         controller: function($scope, $modalInstance, unitStore) {
           var unit = $scope.unit = {};
           $scope.units = unitStore.data;
-          console.log('line 2177 units', unitStore);
 
           $scope.submit = function () {
             // validate
@@ -126,7 +120,7 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
         initia();
         //console.log("Submitted Successfully.");
       }, function () {
-        console.log("Closed Successfully."); 
+        console.log("Dismissed Successfully."); 
       });
     };
 
@@ -172,7 +166,6 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
       });
 
       instance.result.then(function (model) {
-        console.log("Closed with:", model);
         stores.inv_group.post(model);
         console.log("Submitted Successfully.");
       }, function () {
