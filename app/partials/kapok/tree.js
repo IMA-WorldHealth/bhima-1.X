@@ -11,6 +11,9 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
 //      Set default element state
       element.collapsed = true;
 //      console.log(appcache.checkDB());
+      
+      if(role.p_url !== '') element.p_url = role.p_url;
+
 
       for(var i = 0; i<units.length; i++){
         element.children.push({"label":units[i].name, "id":units[i].id, "p_url":units[i].p_url, "children":[]});
@@ -28,7 +31,9 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
     
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
-            $location.path($scope.navtree.currentNode.p_url);
+            var path = $scope.navtree.currentNode.p_url;
+            if(path) $location.path(path);
+            
         }
     }, true);
 
