@@ -6,12 +6,12 @@ var db = require('../database/db')()
 var map = {
   'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note', 'debit':'cost'},
   'sale_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note', 'debit':'cost', 'inv_po_id':'id'},
-  'sale_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'invoice_date', 'description':'note','inv_po_id':'id', 'credit':'total'},
+  'sale_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id','deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note','inv_po_id':'id', 'credit':'total'},
   'cash':{'t':'cash', 'enterprise_id':'enterprise_id', 'trans_id':'id','deb_cred_id':'deb_cred_id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'debit':'cost'},
-  'cash_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'debit':'cost', 'doc_num':'id'},
+  'cash_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id','deb_cred_id':'deb_cred_id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'debit':'cost', 'doc_num':'id'},
   'cash_credit':{'enterprise_id':'enterprise_id','deb_cred_id':'deb_cred_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'credit':'allocated_cost'}, 
   'purchase':{'t':'purchase', 'trans_id':'id','enterprise_id':'enterprise_id','credit':'cost','currency_id':'currency_id','deb_cred_id':'creditor_id','trans_date':'invoice_date','description':'note'},
-  'purchase_debit': {'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'doc_num':'id', 'debit':'total'},
+  'purchase_debit': {'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id','deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'doc_num':'id', 'debit':'total'},
   'purchase_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'credit':'cost', 'doc_num':'id'}
 };
 
@@ -95,6 +95,7 @@ var saleCredit = function(obj, data, posting, res, periodExerciceIdObject){
         journalRecord.origin_id = posting.transaction_type;
         journalRecord.user_id = posting.user;
         journalRecord.id = '';
+        journalRecord.deb_cred_type = 'D'; 
         journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
         journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
         journalRecord.period_id = periodExerciceIdObject.pid;
@@ -160,7 +161,7 @@ var cashCredit = function (obj, data, posting, res, periodExerciceIdObject){
       }
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
-      journalRecord.deb_cred_type = 'C';
+      journalRecord.deb_cred_type = 'D';
       delete(journalRecord.description);
       journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
       journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
@@ -201,6 +202,7 @@ var purchaseDebit = function(obj, data, posting, res, periodExerciceIdObject){
         }
       journalRecord.origin_id = posting.transaction_type;
       journalRecord.user_id = posting.user;
+      journalRecord.deb_cred_type = 'C'; 
       journalRecord.id = '';
       journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
       journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
@@ -332,8 +334,8 @@ var getData = function(posting, res){
                    ]
                 };
       db.execute(db.select(sql), function(err, data){
-      if(err) throw err;
-      
+        if(err) throw err;
+        console.log('*************************', data);      
         Q.all([getPeriodExerciceId(data[0].date, data[0].enterprise_id)]).then(function(result){
           if(result[0].succes) process(data, posting, res, result[0]); //verification et insertion eventuelle
         });
@@ -377,36 +379,21 @@ var check = function(table, id){
 }
 
 var getPeriodExerciceId = function(date, eid){
-  var deffer = Q.defer(); 
-  var year = new Date(date).getFullYear();
+  var deffer = Q.defer();
   var mysqlDate = util.convertToMysqlDate(date);
-  var sql = {'entities':[{'t':'fiscal_year', c:['id']}],
+  var sql = {'entities':[{'t':'period', c:['id', 'fiscal_year_id']}],
              'cond':[
-                      {'t':'fiscal_year', 'cl':'start_year', 'z':'=','v':year, l:'AND'}, 
-                      {'t':'fiscal_year', 'cl':'enterprise_id','z':'=', 'v':eid}
+                      {'t':'period', 'cl':'period_start', 'z':'<=','v':mysqlDate, l:'AND'},
+                      {'t':'period', 'cl':'period_stop', 'z':'>=','v':mysqlDate}
                     ]
             };
   db.execute(db.select(sql), function(err, data){
-    if(err) res.send(500, {'msg':'some thing is bad'});
-    if(data.length>=1){
-      var sql = {'entities':[{'t':'period', c:['id']}],
-                 'cond':[
-                          {'t':'period', 'cl':'period_start', 'z':'<=','v':mysqlDate, l:'AND'},
-                          {'t':'period', 'cl':'period_stop', 'z':'>=','v':mysqlDate, l:'AND'}, 
-                          {'t':'period', 'cl':'fiscal_year_id','z':'=', 'v':data[0].id}
-                        ]
-                };
-      db.execute(db.select(sql), function(err, data2){
       if(err) res.send(500, {'msg':'some thing is bad'});
-        if(data2.length>=1){
-          deffer.resolve({succes:true, fid:data[0].id, pid:data2[0].id});
+        if(data.length>=1){
+          deffer.resolve({succes:true, fid:data[0].fiscal_year_id, pid:data[0].id});
         }else{
           deffer.resolve({succes:false});
         }
-    });
-    }else{
-      deffer.resolve({succes:false});
-    }
   });
   return deffer.promise;
 }
