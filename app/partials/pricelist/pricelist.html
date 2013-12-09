@@ -74,10 +74,10 @@
                   </div>
                 </td>
 
-                <td ng-hide="item.id==flags.edit.item">{{item.list_price | currency }}</td>
+                <td ng-hide="item.id==flags.edit.item">{{item.price | currency }}</td>
                 <td ng-show="item.id==flags.edit.item">
                   <div class="input-group">
-                    <input type="number" ng-model="item.list_price" class="form-control">
+                    <input type="number" ng-model="item.price " class="form-control">
                     <span class="input-group-addon">$</span>
                   </div>
                 </td>
