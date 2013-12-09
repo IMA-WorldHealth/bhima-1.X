@@ -132,13 +132,11 @@ angular.module('kpk.controllers')
             models.ledger = response.data.map(function (row) {
               // filter only those that do not balance
               var cp = row;
-              console.log("hi");
               cp.balance = row.credit - row.debit; // TODO: verify that this is correct
               var deb = stores.debitors.get(row.deb_cred_id);
               cp.debitor = [deb.first_name, deb.last_name].join(' ');
               return cp;
             });
-            console.log("ledger:", models.ledger);
           }
         });
     }
