@@ -94,6 +94,7 @@ INSERT INTO `unit` VALUES
   (46,'Exchange Rate', 'Set todays exchange rate!', 1, 0, 'partials/exchange_rate', 'exchange_rate'),
   (47, 'Transaction Report', '', 10, 0, 'partials/reports/transaction_report', 'reports/transaction_report');
 
+
 insert into `permission` values
   (1,1,13),
 	(2,4,13),
@@ -145,6 +146,7 @@ insert into `permission` values
   (48, 45, 1),
   (49, 46, 1),
   (50, 47, 2);
+
 
 
 -- configure location details

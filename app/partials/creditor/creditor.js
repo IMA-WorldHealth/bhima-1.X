@@ -50,7 +50,7 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
       function getAccounts(){
         var req_db = {};
         req_db.e = [{t:'account', c:['id', 'account_number', 'account_txt']}];
-        req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
+        req_db.c = [{t:'account', cl:'locked', z:'=', v:0/*, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000*/}];
         kpkConnect.get('/data/?', req_db).then(function(data){
           $scope.accounts = data;
         });
@@ -146,7 +146,7 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
 
   function getCreditorId(id){
     var def = $q.defer();
-    kpkConnect.send('creditor', [{id:'', creditor_group_id:id}]);
+    kpkConnect.send('creditor', [{id:'', creditor_group_id:id, text:$scope.creditor.name}]);
     var request = {}; 
     request.e = [{t : 'creditor', c : ['id']}];
     request.c = [{t:'creditor', cl:'id', v:'LAST_INSERT_ID()', z:'='}];
