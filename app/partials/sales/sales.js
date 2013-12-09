@@ -58,7 +58,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         $scope.max_sales = a[3].data.max;
         $scope.max_purchase = a[4].data.max;
 
-
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
         $scope.invoice_id = createId(id);
