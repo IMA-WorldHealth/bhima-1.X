@@ -1,6 +1,6 @@
 angular.module('kpk.controllers').controller('reportTransactionController', function($scope, kpkConnect){
-	//$scope.deb_cred_type = 'D';
-	$scope.model = {};	
+	$scope.model = {};
+	$scope.model['transReport'] = [];	
 	$scope.report = {};
 	var grid;
 	var dataview;
@@ -24,7 +24,6 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
   	};
 
   	function init() {
-  		//refreshChoose();
   		var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
       	dataview = new Slick.Data.DataView({
 	        groupItemMetadataProvider: groupItemMetadataProvider,
@@ -84,20 +83,8 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 		return "";
     }
 
-    /*function refreshChoose(){
-    	if($scope.deb_cred_type.toUpperCase() == 'D'){
-    		var sql = {
-    			'entities':[{'t':'debitor', 'c':['id', 'text']}],
-    		}
-    		kpkConnect.get('/data/?', sql).then(function(value){
-  				$scope.chooses = value;
-			});
-    	}
-    }*/
-
 
     $scope.refresh = function (){
-    	console.log('**********************',$scope.report.deb_cred_type);
     	if($scope.report.deb_cred_type.toUpperCase() == 'DEBITOR'){
     		fill('debitor');
     	}else if($scope.report.deb_cred_type.toUpperCase() == 'CREDITOR'){
@@ -106,11 +93,14 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
     }
 
     $scope.fillRecords = function(){    	
-    	var type = $scope.report.deb_cred_type.toUpperCase().substring(0,1);
-    	console.log('**********************',type);
-	  	kpkConnect.basicGet('/reports/transReport/?'+JSON.stringify({id:$scope.report.choosen.id, type:type})).then(function(value){
-	  		$scope.model['transReport'] = value;
-			init();
-		});
+    	if($scope.report.choosen){
+        var type = $scope.report.deb_cred_type.toUpperCase().substring(0,1);
+        kpkConnect.basicGet('/reports/transReport/?'+JSON.stringify({id:$scope.report.choosen.id, type:type})).then(function(value){
+          $scope.model['transReport'] = value;
+          init();
+        });
+      }
     }
+
+    //init();
 });
