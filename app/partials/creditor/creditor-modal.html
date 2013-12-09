@@ -22,8 +22,8 @@
           <select
             class="form-control"
             ng-model="group.account_id"
-            ng-options="account.account_number+' '+account.account_txt for account in accounts"
-            >
+            ng-options="formatAccount(account) for account in models.account"
+          >
           </select>
         </div>
       </div> 
