@@ -56,7 +56,7 @@ angular.module('kpk.controllers')
         /*
         var req_db = {};
         req_db.e = [{t:'account', c:['id', 'account_number', 'account_txt']}];
-        req_db.c = [{t:'account', cl:'locked', z:'=', v:0/*, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000*/}];
+        req_db.c = [{t:'account', cl:'locked', z:'=', v:0/*, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
         kpkConnect.get('/data/?', req_db).then(function(data){
           $scope.accounts = data;
         });
