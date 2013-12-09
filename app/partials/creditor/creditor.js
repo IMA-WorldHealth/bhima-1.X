@@ -1,7 +1,8 @@
-angular.module('kpk.controllers').controller('creditorsController', function($scope, $q, $modal, kpkConnect){
+angular.module('kpk.controllers')
+.controller('creditorsController', function($scope, $q, $modal, kpkConnect, connect) {
 
   //initialisations
-  $scope.creditor={};
+  $scope.creditor = {};
   $scope.creditorExiste = 0;
   
   //populating creditors
@@ -16,7 +17,6 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
   //les fonctions
   function getCreditors(){
     var req_db = {};
-
     req_db.e = [{t:'supplier', c:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
     kpkConnect.get('/data/?', req_db).then(function(data){
       $scope.creditors = data;
@@ -45,16 +45,29 @@ angular.module('kpk.controllers').controller('creditorsController', function($sc
     backdrop: true,
     controller: function($scope, $modalInstance, selectedAcc, kpkConnect) {
       $scope.group = {};
+      var models = $scope.models = {};
       //populating accounts
       getAccounts();
-      function getAccounts(){
+      function getAccounts() {
+        var req = {tables : {'account' : {columns: ["id", "account_number", "account_txt"]}}};
+        connect.req(req).then(function (dependency) {
+          models.account = dependency.data;
+        });
+        /*
         var req_db = {};
         req_db.e = [{t:'account', c:['id', 'account_number', 'account_txt']}];
         req_db.c = [{t:'account', cl:'locked', z:'=', v:0, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
         kpkConnect.get('/data/?', req_db).then(function(data){
           $scope.accounts = data;
         });
-      }       
+        */
+      }
+
+      function formatAccount (account) {
+        return [account.account_number, account.account_txt].join(' ');
+      }
+
+      $scope.formatAccount = formatAccount;
         
       $scope.close = function() {
         $modalInstance.dismiss();
