@@ -235,6 +235,7 @@ app.get('/reports/:route/', function(req, res) {
 
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
+  
   console.log('query', query);
 
   //TODO update to err, ans standard of callback methods

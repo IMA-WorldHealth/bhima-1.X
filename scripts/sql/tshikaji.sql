@@ -91,7 +91,9 @@ INSERT INTO `unit` VALUES
   (43,'Financial Report', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
   (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget'),
   (45,'Price List', 'Configure price lists!', 11, 0, 'partials/price_list', 'inventory/price_list'),
-  (46,'Exchange Rate', 'Set todays exchange rate!', 1, 0, 'partials/exchange_rate', 'exchange_rate');
+  (46,'Exchange Rate', 'Set todays exchange rate!', 1, 0, 'partials/exchange_rate', 'exchange_rate'),
+  (47, 'Transaction Report', '', 10, 0, 'partials/reports/transaction_report', 'reports/transaction_report');
+
 
 insert into `permission` values
   (1,1,13),
@@ -142,7 +144,9 @@ insert into `permission` values
   (46, 43, 13),
   (47, 44, 1),
   (48, 45, 1),
-  (49, 46, 1);
+  (49, 46, 1),
+  (50, 47, 2);
+
 
 
 -- configure location details
