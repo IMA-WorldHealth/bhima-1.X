@@ -1,22 +1,29 @@
-<link href="partials/reports/transaction_report/transaction_report.css" rel="stylesheet">
+<link href="partials/reports/transaction/transaction_report.css" rel="stylesheet">
+
 <header>
   <span class="capital">TRANSACTION REPORT</span>
 </header>
-<section class="underline">
-<div class="content">
-<div class="row">
-     <div class="col-xs-3">
-      Type :<select  class="form-control" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
-                        <option>Debitor</option>
-                        <option>Creditor</option>
-                      </select>
-      Choose :<select class="form-control" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses"></select>
-      </section>
 
-      
-    </div>
-</div>
-  <div class="row">   
+<section class="underline">
+<label class="radio">
+  <input type="radio" name="radio" id="debitorradioID" ng-model="radio1" checked>
+  Debitor
+</label>
+
+<label class="radio">
+  <input type="radio" name="radio" id="creditorradioID" ng-model="radio2">
+  Creditor
+</label>
+
+Operation Type :<select  ng-change="refreshChoose()" id="typeID" ng-model="report.deb_cred_type">
+  <option>D</option>
+  <option>C</option>
+  </select>
+  Choose :<!--select class="form-control" id="chooseID" ng-model="report.choosen" ng-options="choosen in chooses"></select>
+</section-->
+
+<div class="content">
+  <div class="row">
     <div class="col-xs-12">
       <div id="transaction_report_grid" class="grid" style="height: 650px; overflow: hidden; outline: 0px; position: relative;">
     </div>
