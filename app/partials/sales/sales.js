@@ -3,7 +3,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
     //  - Invoice ID should be updated if an invoice is created in the time since invoice creation - see sockets
-    console.log("Sales initialised");
 
     //Default selection for invoice payable
     $scope.invoice = {payable: "false"};
