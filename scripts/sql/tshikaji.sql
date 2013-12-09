@@ -426,7 +426,7 @@ insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`,
 
 -- configure fiscal year/period
 
-insert into `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_year_txt`, `transaction_start_number`, `transaction_stop_number`, `fiscal_year_number`, `start_month`, `start_year`, `previous_fiscal_year`) values 
+/*insert into `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_year_txt`, `transaction_start_number`, `transaction_stop_number`, `fiscal_year_number`, `start_month`, `start_year`, `previous_fiscal_year`) values 
   (200, 1, 12, 'Tshikaji 2013', null, null, 1, 07, 2013, null);
 
 insert into `period` (`id`, `fiscal_year_id`, `period_start`, `period_stop`, `locked`) values
@@ -441,7 +441,7 @@ insert into `period` (`id`, `fiscal_year_id`, `period_start`, `period_stop`, `lo
 	('9', '1', '2014-05-01', '2014-05-31', '0'),
 	('10', '1', '2014-06-01', '2014-06-30', '0'),
 	('11', '1', '2014-07-01', '2014-07-31', '0'),
-	('12', '1', '2014-08-01', '2014-08-31', '0');
+	('12', '1', '2014-08-01', '2014-08-31', '0');*/
 
 -- configure accounts
 insert into `account_type` values
