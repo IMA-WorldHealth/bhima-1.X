@@ -98,7 +98,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       if (angular.isNumber($scope.debtor.price_list_id)) {
         price_list = {
           identifier: "inventory_id",
-          tables : { "price_list" : {columns: ["id", "list_id", "inventory_id", "list_price", "discount"]}},
+          tables : { "price_list" : {columns: ["id", "list_id", "inventory_id", "price", "discount"]}},
           where: ["price_list.list_id="+$scope.debtor.price_list_id]
         };
 
@@ -108,7 +108,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
           var store = arr[1]; // price_list store
           inv_store.setData(data.map(function (item) {
             var adjusted = store.get(item.id);
-            if (adjusted) item.price = adjusted.list_price;
+            if (adjusted) item.price = adjusted.price;
             return item;
           }));
           $scope.inventory_model = inv_store;
