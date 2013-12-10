@@ -45,9 +45,9 @@ angular.module('kpk.controllers')
     columns = [
       {id: "account_number" , name: "Account Number", field: "account_number", sortable: true},
       {id: "txt"      , name: "Account Text"     , field: "account_txt", sortable: true},
-      {id: "type"     , name: "Account Type"     , field: "type"},
+      {id: "type"     , name: "Account Type"     , field: "type", sortable: true},
       {id: "category" , name: "Account Category" , field: "account_category_id", sortable: true, formatter: formatAccountCategory},
-      {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed", formatter: formatFixed},
+      {id: "fixed"    , name: "Fixed/Variable"   , field: "fixed", formatter: formatFixed, sortable: true},
       {id: "locked"   , name: "Locked"           , field: "locked", sortable: true, formatter: formatLocked}
     ];
 
@@ -103,7 +103,6 @@ angular.module('kpk.controllers')
     $scope.dataview = setup.dataview;
     
     $scope.$watch('models.accounts', function () {
-      console.log("model changed!");
       $scope.dataview.setItems($scope.models.accounts);
     });
   });
@@ -135,14 +134,17 @@ angular.module('kpk.controllers')
 
 });
 
-angular.module('kpk.controllers').controller('accountFormController', function ($scope) {
-      $scope.account = {};
-      // $scope.account.locked = 0;
-      $scope.close = function () {
-        $scope.$modalInstance.dismiss(); 
-      };
-      $scope.submit = function () {
-        if ($scope.accountForm.$invalid) $scope.invalid = true;
-        else $scope.$modalInstance.close($scope.account);
-      };
-  });
+angular.module('kpk.controllers')
+.controller('accountFormController', function ($scope) {
+  // hack to get form validation to work in a modal
+
+  $scope.account = {};
+  // $scope.account.locked = 0;
+  $scope.close = function () {
+    $scope.$modalInstance.dismiss(); 
+  };
+  $scope.submit = function () {
+    if ($scope.accountForm.$invalid) $scope.invalid = true;
+    else $scope.$modalInstance.close($scope.account);
+  };
+});

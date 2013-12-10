@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="/partials/inventory/view.css">
+
+<header>
+  <span>Inventory View</span>
+</header>
+
+<section class="underline">
+  <div class="pull-left dropdown">
+    <button type="button" class="btn dropdown-toggle btn-default">Group By</button>
+    <ul class="dropdown-menu">
+      <li><a href="" ng-click="groupby.type()">Type</a></li>
+      <li><a href="" ng-click="groupby.group()">Group</a></li>
+      <li><a href="" ng-click="groupby.unit()">Unit</a></li>
+      <li><a href="" ng-click="groupby.consumable()">Consumable/Durable</a></li>
+      <li><a href="" ng-click="groupby.price()">Price</a></li>
+    </ul>
+  </div>
+</section>
+
+<div class="content">
+  <div class="grid">
+    <div id="kpk-inventory-grid"></div> 
+  </div>
+</div>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <a href="#/inventory/register" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Register Stock</a>
+  </div>
+</section>
