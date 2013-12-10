@@ -53,6 +53,13 @@ section {
   border-top: 1px solid #dddddd;
 }
 
+.bar-bottom {
+  border-top: 1px solid #dddddd;
+  position : absolute;
+  bottom   : 0;
+  width    : 100%;
+}
+
 .capital { 
   text-transform: capitalize;
 }

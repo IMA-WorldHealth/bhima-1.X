@@ -43,6 +43,14 @@
       controller: 'inventoryController',
       templateUrl: '/partials/inventory/inventory.html'
     }).
+    when('/inventory/view', {
+      controller : 'inventoryViewCtrl',
+      templateUrl:'/partials/inventory/view.html'
+    }).
+    when('/inventory/register', {
+      controller: 'inventoryRegisterController',
+      templateUrl: '/partials/inventory/register/register.html'
+    }).
     when('/patient_records/:patientID', { 
       controller: 'patientRecordsController', 
       templateUrl: '/partials/records/patient_records/patient_records.html'
@@ -55,14 +63,11 @@
       controller: 'salesRecordsController',
       templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
-    when('/inventory/register', {
-      controller: 'inventoryRegisterController',
-      templateUrl: '/partials/inventory/register/register.html'
-    }).
     when('/cash', {
       controller: 'cashController',
       templateUrl: '/partials/cash/cash.html'
-    }).when('/creditors', {
+    })
+    .when('/creditors', {
       controller: 'creditorsController',
       templateUrl: '/partials/creditor/creditor.html'
     }).
