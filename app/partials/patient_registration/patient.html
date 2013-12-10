@@ -39,8 +39,14 @@
               <div class="form-group">
                 <div class="radio-inline">
                   <label>
-                    <input type="radio" name="sex_select" id="male" value="M" checked ng-model="patient.sex"
-                           required>
+                    <input
+                      type="radio"
+                      name="sex_select"
+                      id="male"
+                      value="M"
+                      checked
+                      ng-model="patient.sex"
+                      required>
                     Male
                   </label>
                 </div>
@@ -168,7 +174,7 @@
                 id="group-account"
                 class="form-kapok"
                 ng-model="group.account_id"
-                ng-options="account.account_number+'--'+account.account_txt for account in accounts"
+                ng-options="formatAccount(account) for account in accounts"
                 required
                 ></select>
           </div>
@@ -181,7 +187,7 @@
                 id="group-location"
                 class="form-kapok"
                 ng-model="group.location_id"
-                ng-options="location.id+'--'+location.city+'--'+location.region for location in locations"
+                ng-options="formatLocation(location) for location in locations"
                 required
                 ></select>
           </div>
@@ -194,7 +200,21 @@
                 id="group-payment"
                 class="form-kapok"
                 ng-model="group.payment_id"
-                ng-options="payment.id+'--'+payment.text for payment in payments"
+                ng-options="formatPayment(payment) for payment in payments"
+                required
+                >
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-2 control-label" for="group-list">Price List:</label>
+          <div class="col-xs-8">
+            <select
+                id="group-list"
+                class="form-kapok"
+                ng-model="group.price_list_id"
+                ng-options="list.id as list.name for list in lists"
                 required
                 ></select>
           </div>

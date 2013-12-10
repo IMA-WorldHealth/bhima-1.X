@@ -74,8 +74,8 @@ create table `permission` (
   primary key (`id`),
   key `id_unit` (`id_unit`),
   key `id_user` (`id_user`),
-  constraint foreign key (`id_unit`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`id_unit`) references `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`id_user`) references `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -104,7 +104,7 @@ create table `location` (
   `village`     varchar(45),
   primary key (`id`),
   key `country_id` (`country_id`),
-  constraint foreign key (`country_id`) REFERENCES `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`country_id`) references `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb; 
 
 --
@@ -153,7 +153,7 @@ create table `fiscal_year` (
   `locked`                    boolean not null default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`)
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
 
 --
@@ -228,7 +228,7 @@ create table `creditor_group` (
   `account_id`  int unsigned NOT NULL,
   primary key (`id`),
   key `account_id` (`account_id`),
-  constraint foreign key (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`account_id`) references `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -238,10 +238,10 @@ drop table if exists `creditor`;
 create table `creditor` (
   `id`                int unsigned NOT NULL AUTO_INCREMENT,
   `creditor_group_id` smallint NOT NULL,
-  `creditor_txt`      varchar(45),
+  `text`      varchar(45),
   primary key (`id`),
   key `creditor_group_id` (`creditor_group_id`),
-  constraint foreign key (`creditor_group_id`) REFERENCES `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`creditor_group_id`) references `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -256,6 +256,19 @@ create table `payment` (
   `text`    varchar(50) NOT NULL,
   `note`    text,
   primary key (`id`)
+) engine=innodb;
+
+--
+-- table `kpk`.`price_list_name`
+--
+drop table if exists `kpk`.`price_list_name`;
+create table `kpk`.`price_list_name` (
+  enterprise_id   smallint unsigned not null,
+  id              smallint  unsigned not null,
+  name            varchar(100) not null,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
 
 --
@@ -284,6 +297,7 @@ create table `debitor_group` (
   `note`                text,
   `locked`              boolean NOT NULL DEFAULT 0,
   `contact_id`          smallint unsigned,
+  `price_list_id`       smallint unsigned,
   `tax_id`              smallint unsigned NULL,
   `max_credit`          mediumint unsigned DEFAULT '0',
   `type_id`             smallint unsigned NOT NULL,
@@ -293,14 +307,16 @@ create table `debitor_group` (
   key `location_id` (`location_id`),
   key `payment_id` (`payment_id`),
   key `contact_id` (`contact_id`),
+  key `price_list_id` (`price_list_id`),
   key `tax_id` (`tax_id`),
   key `type_id` (`type_id`),
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`tax_id`) REFERENCES `tax` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`type_id`) REFERENCES `debitor_group_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`price_list_id`) references `price_list_name` (`id`),
+  constraint foreign key (`account_id`) references `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`location_id`) references `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`payment_id`) references `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`tax_id`) references `tax` (`id`),
+  constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
 
 --
@@ -308,12 +324,12 @@ create table `debitor_group` (
 --
 drop table if exists `debitor`;
 create table `debitor` (
-  `id`        int unsigned NOT NULL auto_increment,
-  `group_id`  smallint unsigned NOT NULL,
+  `id`        int       unsigned NOT NULL auto_increment,
+  `group_id`  smallint  unsigned NOT NULL,
   `text`      text,
   primary key (`id`),
   key `group_id` (`group_id`),
-  constraint foreign key (`group_id`) REFERENCES `debitor_group` (`id`)
+  constraint foreign key (`group_id`) references `debitor_group` (`id`)
 ) engine=innodb;
 
 --
@@ -336,8 +352,8 @@ create table `supplier` (
   primary key (`id`),
   key `creditor_id` (`creditor_id`),
   key `location_id` (`location_id`),
-  constraint foreign key (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`creditor_id`) REFERENCES `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`location_id`) references `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`creditor_id`) references `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -365,8 +381,8 @@ create table `patient` (
   key `debitor_id` (`debitor_id`),
   key `location_id` (`location_id`),
   unique key `creditor_id` (`creditor_id`),
-  constraint foreign key (`debitor_id`) REFERENCES `debitor` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`location_id`) REFERENCES `location` (`id`) ON UPDATE CASCADE
+  constraint foreign key (`debitor_id`) references `debitor` (`id`) ON UPDATE CASCADE,
+  constraint foreign key (`location_id`) references `location` (`id`) ON UPDATE CASCADE
 ) engine=innodb;
 
 
@@ -392,7 +408,7 @@ create table `period` (
   `locked`          boolean not null default 0,
   primary key (`id`),
   key `fiscal_year_id` (`fiscal_year_id`),
-  constraint foreign key (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`)
+  constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`)
 ) engine=innodb;
 
 --
@@ -406,7 +422,7 @@ create table `department` (
   `note`          text,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -427,10 +443,10 @@ create table `employee` (
   key `location_id` (`location_id`),
   key `department_id` (`department_id`),
   key `creditor_id` (`creditor_id`),
-  constraint foreign key (`debitor_id`) REFERENCES `debitor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`location_id`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`creditor_id`) REFERENCES `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`department_id`) REFERENCES `department` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`debitor_id`) references `debitor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`location_id`) references `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`creditor_id`) references `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`department_id`) references `department` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -460,10 +476,10 @@ create table `inv_group` (
   -- key `cogs_account` (`cogs_account`),
   -- key `stock_account` (`stock_account`),
   -- key `tax_account` (`tax_account`),
-  -- constraint foreign key (`sales_account`) REFERENCES `account` (`account_number`),
-  -- constraint foreign key (`cogs_account`) REFERENCES `account` (`account_number`),
-  -- constraint foreign key (`stock_account`) REFERENCES `account` (`account_number`),
-  -- constraint foreign key (`tax_account`) REFERENCES `account` (`account_number`)
+  -- constraint foreign key (`sales_account`) references `account` (`account_number`),
+  -- constraint foreign key (`cogs_account`) references `account` (`account_number`),
+  -- constraint foreign key (`stock_account`) references `account` (`account_number`),
+  -- constraint foreign key (`tax_account`) references `account` (`account_number`)
 ) engine=innodb;
 
 --
@@ -491,10 +507,10 @@ create table `inventory` (
   key `group_id` (`group_id`),
   key `unit_id` (`unit_id`),
   key `type_id` (`type_id`),
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  constraint foreign key (`group_id`) REFERENCES `inv_group` (`id`),
-  constraint foreign key (`unit_id`) REFERENCES `inv_unit` (`id`),
-  constraint foreign key (`type_id`) REFERENCES `inv_type` (`id`)
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`group_id`) references `inv_group` (`id`),
+  constraint foreign key (`unit_id`) references `inv_unit` (`id`),
+  constraint foreign key (`type_id`) references `inv_type` (`id`)
 ) engine=innodb;
 
 --
@@ -516,9 +532,9 @@ create table `sale` (
   key `enterprise_id` (`enterprise_id`),
   key `debitor_id` (`debitor_id`),
   key `currency_id` (`currency_id`),
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  constraint foreign key (`debitor_id`) REFERENCES `debitor` (`id`),
-  constraint foreign key (`currency_id`) REFERENCES `currency` (`id`)
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
 
 --
@@ -535,8 +551,8 @@ create table `sale_item` (
   primary key (`id`),
   key `sale_id` (`sale_id`),
   key `inventory_id` (`inventory_id`),
-  constraint foreign key (`sale_id`) REFERENCES `sale` (`id`) ON DELETE CASCADE,
-  constraint foreign key (`inventory_id`) REFERENCES `inventory` (`id`)
+  constraint foreign key (`sale_id`) references `sale` (`id`) ON DELETE CASCADE,
+  constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
 
 --
@@ -558,9 +574,9 @@ create table `purchase` (
   key `enterprise_id` (`enterprise_id`),
   key `creditor_id` (`creditor_id`),
   key `purchaser_id` (`purchaser_id`),
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  constraint foreign key (`creditor_id`) REFERENCES `creditor` (`id`),
-  constraint foreign key (`purchaser_id`) REFERENCES `user` (`id`)
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`creditor_id`) references `creditor` (`id`),
+  constraint foreign key (`purchaser_id`) references `user` (`id`)
 ) engine=innodb;
 
 --
@@ -596,8 +612,8 @@ create table `purchase_item` (
   primary key (`id`),
   key `purchase_id` (`purchase_id`),
   key `inventory_id` (`inventory_id`),
-  constraint foreign key (`purchase_id`) REFERENCES `purchase` (`id`) ON DELETE CASCADE,
-  constraint foreign key (`inventory_id`) REFERENCES `inventory` (`id`)
+  constraint foreign key (`purchase_id`) references `purchase` (`id`) ON DELETE CASCADE,
+  constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
 
 --
@@ -651,10 +667,10 @@ create table `cash` (
   key `cashier_id` (`cashier_id`),
   key `debit_account` (`debit_account`),
   key `credit_account` (`credit_account`),
-  constraint foreign key (`currency_id`) REFERENCES `currency` (`id`),
-  constraint foreign key (`cashier_id`) REFERENCES `user` (`id`),
-  constraint foreign key (`debit_account`) REFERENCES `account` (`id`),
-  constraint foreign key (`credit_account`) REFERENCES `account` (`id`)
+  constraint foreign key (`currency_id`) references `currency` (`id`),
+  constraint foreign key (`cashier_id`) references `user` (`id`),
+  constraint foreign key (`debit_account`) references `account` (`id`),
+  constraint foreign key (`credit_account`) references `account` (`id`)
 ) engine=innodb;
 
 --
@@ -708,10 +724,10 @@ create table `posting_journal` (
   key `user_id` (`user_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
-  constraint foreign key (`origin_id`) REFERENCES `transaction_type` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  constraint foreign key (`origin_id`) references `transaction_type` (`id`) ON UPDATE CASCADE,
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON UPDATE CASCADE,
+  constraint foreign key (`currency_id`) references `currency` (`id`) ON UPDATE CASCADE,
+  constraint foreign key (`user_id`) references `user` (`id`) ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -749,10 +765,10 @@ create table `kpk`.`general_ledger` (
   key `user_id` (`user_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
-  constraint foreign key (`origin_id`) REFERENCES `transaction_type` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`enterprise_id`) REFERENCES `enterprise` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  constraint foreign key (`origin_id`) references `transaction_type` (`id`) ON UPDATE CASCADE,
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON UPDATE CASCADE,
+  constraint foreign key (`currency_id`) references `currency` (`id`) ON UPDATE CASCADE,
+  constraint foreign key (`user_id`) references `user` (`id`) ON UPDATE CASCADE
 ) engine=innodb;
 
 --
@@ -778,19 +794,6 @@ create table `kpk`.`period_total` (
   constraint foreign key (`account_id`) references `account` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`)
-) engine=innodb;
-
---
--- table `kpk`.`price_list_name`
---
-drop table if exists `kpk`.`price_list_name`;
-create table `kpk`.`price_list_name` (
-  enterprise_id   smallint unsigned not null,
-  id              smallint  unsigned not null,
-  name            varchar(100) not null,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
 
 --

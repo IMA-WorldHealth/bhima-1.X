@@ -51,7 +51,7 @@ angular.module('kpk.controllers')
         stores[imports.model_names[idx]] = store;
         models[imports.model_names[idx]] = store.data;
       });
-      
+
       columns = [
         {id: 'invoice_id', name: 'Invoice ID', field: 'inv_po_id'},
         {id: 'debitor', name: 'Debitor', field: 'debitor'},
@@ -132,7 +132,7 @@ angular.module('kpk.controllers')
             models.ledger = response.data.map(function (row) {
               // filter only those that do not balance
               var cp = row;
-              cp.balance = row.debit - row.credit;
+              cp.balance = row.credit - row.debit; // TODO: verify that this is correct
               var deb = stores.debitors.get(row.deb_cred_id);
               cp.debitor = [deb.first_name, deb.last_name].join(' ');
               return cp;
