@@ -804,7 +804,7 @@ create table `kpk`.`price_list` (
   id              int unsigned not null,
   list_id         smallint unsigned not null,
   inventory_id    int unsigned not null,
-  list_price      decimal(19, 2) unsigned not null default 0,
+  price           decimal(19, 2) unsigned not null default 0,
   discount        decimal(3, 2) unsigned not null default 0,
   note            text, 
   primary key (`id`),
