@@ -62,6 +62,10 @@
       controller: 'creditorsController',
       templateUrl: '/partials/creditor/creditor.html'
     }).
+    when('/creditors/creditor_group', {
+      controller: 'creditorGroupCtrl',
+      templateUrl: 'partials/creditor/group/creditor_group.html'
+    }).
     when('/inventory/purchase', {
       controller: 'purchaseOrderController',
       templateUrl: 'partials/purchase_order/purchase.html'
