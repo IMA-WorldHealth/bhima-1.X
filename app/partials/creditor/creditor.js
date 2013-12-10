@@ -39,59 +39,8 @@ angular.module('kpk.controllers')
     });
   }
 
-  $scope.showDialog = function() {
-    var instance = $modal.open({
-    templateUrl: "/partials/creditor/creditor-modal.html",
-    backdrop: true,
-    controller: function($scope, $modalInstance, selectedAcc, kpkConnect) {
-      $scope.group = {};
-      var models = $scope.models = {};
-      //populating accounts
-      getAccounts();
-      function getAccounts() {
-        var req = {tables : {'account' : {columns: ["id", "account_number", "account_txt"]}}};
-        connect.req(req).then(function (dependency) {
-          models.account = dependency.data;
-        });
-        /*
-        var req_db = {};
-        req_db.e = [{t:'account', c:['id', 'account_number', 'account_txt']}];
-        req_db.c = [{t:'account', cl:'locked', z:'=', v:0/*, l:'AND'}, {t:'account', cl:'account_number', z:'>=', v:400000, l:'AND'}, {t:'account', cl:'account_number', z:'<', v:500000}];
-        kpkConnect.get('/data/?', req_db).then(function(data){
-          $scope.accounts = data;
-        });
-        */
-      }
-
-      function formatAccount (account) {
-        return [account.account_number, account.account_txt].join(' ');
-      }
-
-      $scope.formatAccount = formatAccount;
-        
-      $scope.close = function() {
-        $modalInstance.dismiss();
-      };
-      $scope.submit = function() {
-        $modalInstance.close({group:$scope.group.group, account:$scope.group.account_id});
-      };
-    },
-    resolve: {
-      selectedAcc: function() {
-        return 'hello';
-      },
-    }
-    });
-    instance.result.then(function(values) {
-      kpkConnect.send('creditor_group', [{id:'', group_txt:values.group, account_id:values.account.id}]);
-      getGroups();
-    }, function() {
-      //console.log('dedrick');
-    });
-  };
-
   $scope.verifyExisting = function(){
-   if($scope.creditorExiste ==0){
+   if ($scope.creditorExiste === 0) {
        if($scope.creditor.name){
         if(isThere($scope.creditors, 'name', $scope.creditor.name)){
           var req_db = {};
@@ -113,7 +62,7 @@ angular.module('kpk.controllers')
         }
       }
    }
-  }
+  };
 
   $scope.fill = function(index){
     //getCreditors();
@@ -126,7 +75,7 @@ angular.module('kpk.controllers')
     id_promise.then(function(value){
       $scope.creditor_group = getCreditorGroup(value.id);
     });
-  }
+  };
 
   $scope.save = function(creditor, creditor_group){
     creditor.location_id = extractId(creditor.location_id);
@@ -155,7 +104,7 @@ angular.module('kpk.controllers')
       }
       
     });
-  }
+  };
 
   function getCreditorId(id){
     var def = $q.defer();
@@ -178,9 +127,9 @@ angular.module('kpk.controllers')
       request.e = [{t : 'creditor', c : ['id']}];
       request.c = [{t:'creditor', cl:'id', v:id, z:'='}];
       kpkConnect.get('data/?',request).then(function(data) {
-       (data.length > 0)?def.resolve(true):def.resolve(false);    
+        def.resolve(data.length > 0);
       });
-    }else{
+    } else {
       def.resolve(false);
     }
     return def.promise;
@@ -256,10 +205,10 @@ angular.module('kpk.controllers')
     }
   }
 
-  $scope.delete = function(creditor){
+  $scope.delete = function(creditor) {
 
     kpkConnect.delete('supplier', creditor.id);
     $scope.creditor = {};
     getCreditors();
-  }
+  };
  });

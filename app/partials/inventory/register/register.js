@@ -1,4 +1,5 @@
 angular.module('kpk.controllers').controller('inventoryRegisterController', function ($scope, appstate, connect, $q, $modal) {
+  'use strict';
 
     var account_defn, inv_unit_defn, inv_group_defn, inv_defn, inv_type_defn;
     var eid = appstate.get('enterprise').id;
