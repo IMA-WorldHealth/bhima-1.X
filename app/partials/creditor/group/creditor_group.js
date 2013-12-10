@@ -11,7 +11,7 @@ angular.module('kpk.controllers')
   // init
   function initialize () {
     connect.req({
-      tables : { 'account' : { columns: ["id", "account_number", "account_txt"]}}
+      tables : {'account':{ columns: ["id", "account_number", "account_txt"]}}
     }).then(function (store) {
       models.account = store.data;
       stores.account = store;

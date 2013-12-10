@@ -6,7 +6,7 @@
 
 <section class="underline">
   <div class="pull-right">
-    <a ng-click="createGroup()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Create Patient Group</a>
+    <a href="#/debitor/debitor_group" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Create Patient Group</a>
     <a href='/#/patient_records/' class="btn btn-default"><span class="glyphicon glyphicon-list"></span> View Patient Records</a>
   </div>
 </section>
@@ -140,141 +140,10 @@
 </div>
 
 <section class="underline overline">
-<div class="pull-right">
-  <a ng-click="update(patient)"
-                 ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-pencil"></span> Register Patient
-              </a>
-              </div>
+  <div class="pull-right">
+    <a ng-click="update(patient)" ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-pencil"></span> Register Patient
+    </a>
+  </div>
 </section>
 
-<script type="text/ng-template" id="debtorgroupmodal.html">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Create Patient Group</h3>
-    </div>
-    <div class="modal-body">
-      <form class="form-horizontal" role="form" name="addPatientGroup" novalidate>
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-name">Name:</label>
-          <div class="col-xs-8">
-            <input
-              id="group-name"
-              class="form-kapok"
-              ng-model="group.name"
-              required
-            >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-account">Account:</label>
-          <div class="col-xs-8">
-            <select
-                id="group-account"
-                class="form-kapok"
-                ng-model="group.account_id"
-                ng-options="formatAccount(account) for account in accounts"
-                required
-                ></select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-location">Location:</label>
-          <div class="col-xs-8">
-            <select
-                id="group-location"
-                class="form-kapok"
-                ng-model="group.location_id"
-                ng-options="formatLocation(location) for location in locations"
-                required
-                ></select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-payment">Payment:</label>
-          <div class="col-xs-8">
-            <select
-                id="group-payment"
-                class="form-kapok"
-                ng-model="group.payment_id"
-                ng-options="formatPayment(payment) for payment in payments"
-                required
-                >
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-list">Price List:</label>
-          <div class="col-xs-8">
-            <select
-                id="group-list"
-                class="form-kapok"
-                ng-model="group.price_list_id"
-                ng-options="list.id as list.name for list in lists"
-                required
-                ></select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="phone">Phone:</label>
-          <div class="col-xs-8">
-            <input
-              id="group-phone"
-              class="form-kapok"
-              ng-model="group.phone"            
-            >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="email">Email:</label>
-          <div class="col-xs-8">
-            <input
-              type="email"
-              id="group-email"
-              class="form-kapok"
-              ng-model="group.email"            
-            >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="maxcredit">Max Credit:</label>
-          <div class="col-xs-8">
-            <input
-              id="group-maxcredit"
-              class="form-kapok"
-              ng-model="group.max_credit"
-              required            
-            >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-type">Type:</label>
-          <div class="col-xs-8">
-            <select
-                id="group-type"
-                class="form-kapok"
-                ng-model="group.type_id"
-                ng-options="type.id+'--'+type.type for type in types"
-                required
-                ></select>
-          </div>
-        </div>
-      </form>      
-
-            <label for="note">Note</label>
-            <textarea ng-model = "group.note" class="form-control note"></textarea>
-      </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" ng-click="discard()">Discard</button>
-      <button type="button" class="btn btn-default" ng-disabled="form.$invalid" ng-click="submit()">Save changes</button>
-    </div>
-  </div>
-</script>

@@ -31,6 +31,10 @@
       controller: 'patientRegController',
       templateUrl: 'partials/patient_registration/patient.html'
     }).
+    when('/debitor/debitor_group', {
+      controller : 'debitorGroupCtrl',
+      templateUrl: 'partials/debitor/debitor_group.html'
+    }).
     when('/accounts', {
       controller: 'accountController',
       templateUrl: '/partials/accounts/accounts.html'
