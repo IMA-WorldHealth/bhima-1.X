@@ -71,6 +71,18 @@ section {
   border: 1px solid #cccccc;
 }
 
+.list-selected {
+  text-transform : capitalize;
+  font-weight : bold;
+}
+
+/* CAUTION: This uses Bootstrap's glyphicon code */
+.list-selected:before {
+  font-family: 'Glyphicons Halflings';
+  font-size: 0.85em;
+  content : '\e072';
+}
+
 /* trololololol */
 .loading {
   transition: all 2.0s ease;
@@ -80,3 +92,5 @@ section {
   transform: rotate(360deg);
   -webkit-transform: rotate(360deg);
 }
+
+
