@@ -4,7 +4,7 @@
 
 <section class="underline">
   <div class="pull-left ">
-    <input type="text" ng-model="flags.search" placeholder="Search for Creditor Group" class="form-kapok" size="25">
+    <input type="search" ng-model="flags.search" placeholder="Search for Creditor Group" class="form-kapok" size="25">
   </div>
   <div class="pull-right">
     <a href="#/creditors" class="btn btn-default btn-sm">Register Suppliers</a>
@@ -24,7 +24,7 @@
             <tr><td>Group Name</td><td>Account Number</td><td>Edit</td></tr>
           </thead>
           <tbody>
-            <tr ng-repeat="group in models.creditor_group"><td>{{group.group_txt}}</td><td>{{formatGroupAccount(group.account_id)}}</td><td ng-click="editGroup(group)"><i class="glyphicon glyphicon-pencil"></i></td></tr>
+            <tr ng-repeat="group in models.creditor_group | filter:flags.search"><td>{{group.group_txt}}</td><td>{{formatGroupAccount(group.account_id)}}</td><td ng-click="editGroup(group)"><i class="glyphicon glyphicon-pencil"></i></td></tr>
           </tbody>
         </table>
       </div>

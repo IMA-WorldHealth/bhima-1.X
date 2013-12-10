@@ -93,7 +93,8 @@ INSERT INTO `unit` VALUES
   (45,'Price List', 'Configure price lists!', 11, 0, 'partials/price_list', 'inventory/price_list'),
   (46,'Exchange Rate', 'Set todays exchange rate!', 1, 0, 'partials/exchange_rate', 'exchange_rate'),
   (47,'Transaction Report', '', 10, 0, 'partials/reports/transaction_report', 'reports/transaction_report'),
-  (48,'Creditor Groups', '', 5, 0, 'partials/creditor/group/creditor_group', 'creditors/creditor_group');
+  (48,'Creditor Groups', '', 1, 0, 'partials/creditor/group/creditor_group', 'creditors/creditor_group'),
+  (49,'Debitor Groups', '', 1, 0, 'partials/debitor/debitor_group', 'debitor/debitor_group');
 
 
 insert into `permission` values
@@ -148,7 +149,9 @@ insert into `permission` values
   (49, 46, 1),
   (50, 47, 1),
   (51, 48, 1),
-  (52, 47, 2);
+  (52, 47, 2),
+  (53, 48, 1),
+  (54, 49, 1);
 
 
 

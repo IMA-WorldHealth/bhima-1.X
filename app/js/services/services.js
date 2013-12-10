@@ -796,7 +796,7 @@
       // clean off the $$hashKey and other angular bits and delete undefined
       var cleaned = {};
       for (var k in obj) {
-        if (k !== '$$hashKey' && obj[k] !== undefined ) cleaned[k] = obj[k];
+        if (k != '$$hashKey' && angular.isDefined(obj[k]) && obj[k] !== "" && obj[k] !== null) cleaned[k] = obj[k];
       } 
       return cleaned;
     }
