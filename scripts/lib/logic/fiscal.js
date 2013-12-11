@@ -22,30 +22,39 @@ module.exports = (function(db) {
     var endDateObj = new Date(endDate);
     var validData = verifyData(startDateObj, endDateObj, enterprise);
 
-    if(!validData.valid) return callback(validData.message);
+    if(!validData.valid) return callback(validData.message, null);
     
     //Create line in `fiscal_year`
     createFiscalRecord(enterprise, startDateObj, endDateObj, description)
     
     .then(function(fiscalSuccess) { 
       console.log('deferred success');
-      var fiscalInsertId = fiscalSuccess;
-      return createPeriodRecords(enterprise, fiscalInsertId, startDateObj, endDateObj);
+      var fiscalInsertId = fiscalSuccess.insertId;
+      return createPeriodRecords(fiscalInsertId, startDateObj, endDateObj);
     }, function(err) { 
-      console.log("fiscal error");
-      throw new Error(err);
+      console.log("fiscal error", err); 
+      throw err;
     })
     
     .then(function(periodSuccess) { 
-      callback("Module completed up to period");
+      console.log('period success', periodSuccess);
+      return createBudgetRecords(enterprise, periodSuccess.insertId, periodSuccess.affectedRows);
     }, function(err) { 
       console.log("period error");
-      throw new Error(err);
+      throw err;
+    })
+
+    .then(function(budgetSuccess) { 
+      console.log('budgetSucess complete');
+      callback(null, "Fiscal year, Periods and Budget items generated");
+    }, function(err) { 
+      console.log("budget error");
+      throw err;
     })
     
     .fail(function(err) { 
       console.log("Got to error", err);
-      callback("error in promise chain" + err);
+      callback(err, null);
     })
   }
 
@@ -85,14 +94,16 @@ module.exports = (function(db) {
 
       db.execute(fiscalSQL, function(err, ans) { 
         if(err) return deferred.reject(err);
-        deferred.resolve(ans.insertId);
+        deferred.resolve(ans);
       })
+    }, function(err) { 
+      deferred.reject(err);
     });
 
     return deferred.promise;
   } 
 
-  function createPeriodRecords(enterprise, fiscalYearId, startDate, endDate) { 
+  function createPeriodRecords(fiscalYearId, startDate, endDate) { 
     var accountIdList, totalMonths, periodSQL;
     var deferred = q.defer();
     var periodSQLHead = 'INSERT INTO `period` (fiscal_year_id, period_start, period_stop) VALUES ';
@@ -115,13 +126,44 @@ module.exports = (function(db) {
     return deferred.promise;
   }
 
-  function createBudgetRecords() { 
-    var accountIdList;
+  function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted) { 
+    var accountIdList, budgetSQL;
     var deferred = q.defer();
+    var periodIdList  = [];
+    var budgetSQLHead = 'INSERT INTO `budget` (account_id, period_id, budget) VALUES ';
+    var budgetSQLBody = [];
+    var DEFAULT_BUDGET = 0;
 
-    getAccountList()
+    console.log(insertedPeriodId, totalPeriodsInserted)
+
+
+    //FIXME - this is so Bad. Periods are inserted as a group returning the inital insert value, extrapolating period Ids from this and number of rows affected
+    for(var i = insertedPeriodId, l = (totalPeriodsInserted + insertedPeriodId); i < l; i++) { 
+      periodIdList.push(i);
+    }
+
+    getAccountList(enterprise)
     .then(function(res) { 
+      console.log('list then');
       accountIdList = res;
+
+      console.log(accountIdList, periodIdList);
+      accountIdList.forEach(function(account) { 
+        console.log('nothing');
+        periodIdList.forEach(function(period) { 
+          console.log('some shit if happening');
+          budgetSQLBody.push('(' + account.id + ',' + period + ',' + DEFAULT_BUDGET + ')');
+        })
+      });
+
+      budgetSQL = budgetSQLHead + budgetSQLBody.join(',')
+      db.execute(budgetSQL, function(err, ans) { 
+        if(err) return deferred.reject(err);
+        deferred.resolve(ans);
+      })
+
+    }, function(err) { 
+      deferred.reject(err);
     });
 
     return deferred.promise;
