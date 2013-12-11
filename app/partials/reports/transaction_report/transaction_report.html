@@ -1,6 +1,6 @@
 <link href="partials/reports/transaction_report/transaction_report.css" rel="stylesheet">
 <header>
-  <span class="capital">TRANSACTION REPORT</span>
+  <span class="capital">Transaction Report</span>
 </header>
 <section class="underline">
 <div class="row">
@@ -19,6 +19,14 @@
     </div>
 
 </div>
+</section>
+<section class="underline infobar" ng-show="show1 && show2">
+balanced:<label ng-switch on="isBalanced">{{isBalanced}}</label>
+  <div class="pull-right">      
+      Total Debit  : {{credit}}
+      Total Credit : {{debit}}
+      Sold : {{sold}}
+  </div>
 </section>
 <div class="content">
 
