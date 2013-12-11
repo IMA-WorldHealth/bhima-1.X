@@ -118,11 +118,10 @@ app.post('/journal', function(req, res) {
   jr.poster(req, res); 
 });
 
-app.get('/trialbalance/', function (req, res, next) {
-  // temp API
-  balance(function (err, result) {
-    if (err) throw err;
-    else res.send(result); 
+app.get('/trial/', function (req, res, next) {
+  balance.trial_balance().then(function (results) {
+    if (results.err) res.send({error: results.err});
+    res.send(200);
   });
 });
 
@@ -212,19 +211,6 @@ app.get('/temp/', function (req, res, next) {
     if (err) next(err);
     res.send(rows); 
   });
-});
-
-app.post('/temp/:table/', function (req, res, next) {
-  var tmp = {};
-  var sql = parser.post(tmp);
-});
-
-app.put('/temp/:table/:id', function (req, res, next) {
-  // TODO:
-});
-
-app.delete('/temp/:table/:id', function (req, res, next) {
-  // TODO:
 });
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
