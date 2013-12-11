@@ -174,12 +174,13 @@ module.exports = (function(db) {
     //find head of list (if it exists)
     db.execute(head_request, function(err, ans) {
       if(ans.length > 1) {
-        deferred.reject("too many null values - corrupt data");
+        return deferred.reject("too many null values - corrupt data");
       }
       if(ans.length < 1) {
         //no fiscal years - create the first one
-        deferred.resolve(null);
+        return deferred.resolve(null);
       }
+      
       iterateList(ans[0].id);
     });
 
