@@ -53,6 +53,13 @@ section {
   border-top: 1px solid #dddddd;
 }
 
+.bar-bottom {
+  border-top: 1px solid #dddddd;
+  position : absolute;
+  bottom   : 0;
+  width    : 100%;
+}
+
 .capital { 
   text-transform: capitalize;
 }
@@ -71,9 +78,22 @@ section {
   border: 1px solid #cccccc;
 }
 
+
 /* everything is bad */
 .hack-left { 
   margin-left: -15px;
+}
+
+.list-selected {
+  text-transform : capitalize;
+  font-weight : bold;
+}
+
+/* CAUTION: This uses Bootstrap's glyphicon code */
+.list-selected:before {
+  font-family: 'Glyphicons Halflings';
+  font-size: 0.85em;
+  content : '\e072';
 }
 
 /* trololololol */
@@ -85,4 +105,3 @@ section {
   transform: rotate(360deg);
   -webkit-transform: rotate(360deg);
 }
-
