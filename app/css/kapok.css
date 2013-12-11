@@ -71,6 +71,11 @@ section {
   border: 1px solid #cccccc;
 }
 
+/* everything is bad */
+.hack-left { 
+  margin-left: -15px;
+}
+
 /* trololololol */
 .loading {
   transition: all 2.0s ease;
@@ -80,3 +85,4 @@ section {
   transform: rotate(360deg);
   -webkit-transform: rotate(360deg);
 }
+

@@ -11,16 +11,27 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
 
     //TODO: This data can be fetched from the application level service
 
-    init();
+    var models = {};
 
+    models['fiscal'] = {
+      model: {},
+      request: {
+        'tables': { 
+          'fiscal_year': {
+            'columns': ["id", "fiscal_year_txt"]
+          }
+        }
+      }
+    }
+
+  
     function init() { 
+
       appstate.register("enterprise", function(res) { 
         createBudget(res.id);
-
-        // fetchAccount(1).then(function(res) { console.log(res)})
-        //Expose to scope for view
-        $scope.enterprise = res;
+        // $scope.enterprise = res;
       });
+
     }
 
     function createBudget(e_id) { 
@@ -270,6 +281,10 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       
       return true;
     };
+
+    $scope.updateBudget = function updateBudget() { 
+      console.log('updateBudget');
+    }
 
     init();
   });
