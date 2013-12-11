@@ -94,8 +94,8 @@
   });
 
   services.factory('appcache', function($q) { 
-    const DB_NAME = "kpk";
-    const VERSION = 2;
+    var DB_NAME = "kpk";
+    var VERSION = 2;
 
     var db, cacheSupported;
     var requestMap = { 
@@ -128,7 +128,7 @@
       request.onupgradeneeded = function(event) { 
         db = event.target.result;
 
-        if(!db.objectStoreNames.contains()
+        // if(!db.objectStoreNames.contains()
         deferred.resolve();
       }
       request.onsuccess = function(event) { 
