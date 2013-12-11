@@ -49,32 +49,6 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
         deferred.resolve(data);
       });
       return deferred.promise;
-    }
-    $scope.treeData.push(element);
-
-  }
-
-  result.then(function(values){
-    for(var i = 0; i<values.length; i++){
-      getChildren(values[i], cb);
-    }
-  });
- 
-  
-  $scope.$watch('navtree.currentNode', function(newObj, oldObj) {
-    if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
-      $location.path($scope.navtree.currentNode.p_url);
-    }
-  }, true);
-
-  function getRoles () {
-    var request = {}; 
-    request.e = [{t : 'unit', c : ['id', 'name']}];
-    request.c = [{t:'unit', cl:'parent', v:0, z:'='}];
-    kpkConnect.get('/tree?',request).then(function(data) { 
-      deferred.resolve(data);
-    });
-    return deferred.promise;
   }
 
   function getChildren(role, callback){
