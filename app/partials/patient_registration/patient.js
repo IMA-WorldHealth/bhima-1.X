@@ -118,8 +118,6 @@ angular.module('kpk.controllers')
           submitted = true;
         });
       });
-    });
-
   }
 
   $scope.formatLocation = function(l) { 
