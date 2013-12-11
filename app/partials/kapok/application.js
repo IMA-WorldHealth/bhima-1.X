@@ -1,8 +1,7 @@
 angular.module('kpk.controllers').controller('appController', function($scope, $location, appcache, appstate, connect) { 
     
-    //Lookup users language preference 
+    //lookup users language preference 
     
-
     //Cache URL's to maintain user session
     var url = $location.url();
 
