@@ -18,42 +18,36 @@ module.exports = (function(db) {
     
     //TODO discuss: Passing variables down through all the functions vs. declaring them at the top, testing/ coupling vs. readability/ clarity? 
     //              this version seems very tightly coupled
+    var fiscalInsertId;
     var startDateObj = new Date(startDate);
     var endDateObj = new Date(endDate);
     var validData = verifyData(startDateObj, endDateObj, enterprise);
 
-    if(!validData.valid) return callback(validData.message, null);
+    if(!validData.valid) return callback(validData, null);
     
     //Create line in `fiscal_year`
     createFiscalRecord(enterprise, startDateObj, endDateObj, description)
     
     .then(function(fiscalSuccess) { 
-      console.log('deferred success');
-      var fiscalInsertId = fiscalSuccess.insertId;
+      fiscalInsertId = fiscalSuccess.insertId;
       return createPeriodRecords(fiscalInsertId, startDateObj, endDateObj);
     }, function(err) { 
-      console.log("fiscal error", err); 
       throw err;
     })
     
     .then(function(periodSuccess) { 
-      console.log('period success', periodSuccess);
       return createBudgetRecords(enterprise, periodSuccess.insertId, periodSuccess.affectedRows);
     }, function(err) { 
-      console.log("period error");
       throw err;
     })
 
     .then(function(budgetSuccess) { 
-      console.log('budgetSucess complete');
-      callback(null, "Fiscal year, Periods and Budget items generated");
+      callback(null, {'fiscalInsertId' : fiscalInsertId, 'message' : "Fiscal year, Periods and Budget items generated"});
     }, function(err) { 
-      console.log("budget error");
       throw err;
     })
     
     .fail(function(err) { 
-      console.log("Got to error", err);
       callback(err, null);
     })
   }
@@ -61,7 +55,7 @@ module.exports = (function(db) {
   function statusObject(valid, message) { 
       return { 
         'valid': valid,
-        'message': message
+        'code': message
       }
     }
 
@@ -134,9 +128,6 @@ module.exports = (function(db) {
     var budgetSQLBody = [];
     var DEFAULT_BUDGET = 0;
 
-    console.log(insertedPeriodId, totalPeriodsInserted)
-
-
     //FIXME - this is so Bad. Periods are inserted as a group returning the inital insert value, extrapolating period Ids from this and number of rows affected
     for(var i = insertedPeriodId, l = (totalPeriodsInserted + insertedPeriodId); i < l; i++) { 
       periodIdList.push(i);
@@ -144,14 +135,9 @@ module.exports = (function(db) {
 
     getAccountList(enterprise)
     .then(function(res) { 
-      console.log('list then');
       accountIdList = res;
-
-      console.log(accountIdList, periodIdList);
       accountIdList.forEach(function(account) { 
-        console.log('nothing');
         periodIdList.forEach(function(period) { 
-          console.log('some shit if happening');
           budgetSQLBody.push('(' + account.id + ',' + period + ',' + DEFAULT_BUDGET + ')');
         })
       });
