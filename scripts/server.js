@@ -160,49 +160,6 @@ app.get('/max/:id/:table', function(req, res) {
   });
 });
 
-app.get('/fiscal/:enterprise', function(req, res) {
-  /*
-  * summary:
-  *   calculate the 'previous' fiscal given an enterprise, return null if no fiscal year exists
-  * TODO replace literal SQL commands with db interface - does not support multiple databases */
-  var enterprise = req.params.enterprise;
-
-  var head_request = "SELECT `id` FROM `fiscal_year` WHERE `previous_fiscal_year` IS NULL";
-  var iterate_request = "SELECT `id`, `previous_fiscal_year` FROM `fiscal_year` WHERE `previous_fiscal_year`=";
-
-  var iterations = 0;
-  var time_stamp = Date.now();
-
-  //find head of list (if it exists)
-  db.execute(head_request, function(err, ans) {
-    if(ans.length > 1) {
-      return;
-    }
-    if(ans.length < 1) {
-      //no fiscal years - create the first one
-      res.send({previous_fiscal_year: null});
-      return;
-    }
-    iterateList(ans[0].id);
-  });
-
-  function iterateList(id) {
-    iterations++;
-    db.execute(iterate_request + id, function(err, ans) {
-      if(err) return;
-      if(ans.length===0) {
-        return respond(id);
-      }
-      return iterateList(ans[0].id);
-    });
-  }
-
-  function respond(previous_id) {
-    res.send({previous_fiscal_year: previous_id});
-  }
-
-});
-
 // repeat paths but for new connect.req() method
 
 app.get('/temp/', function (req, res, next) {
@@ -231,9 +188,17 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, res);
 });
 
-// app.get('/fiscal/', function(req, res) { 
-//   res.send(500, "Not implemented");
-// });
+app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res) { 
+  var enterprise = req.params.enterprise;
+  var startDate = req.params.startDate;
+  var endDate = req.params.endDate;
+  var description = req.params.description;
+
+  fiscal.create(enterprise, startDate, endDate, description, function(status) { 
+    console.log('create returned', status);
+    res.send(status);
+  })
+});
 
 app.get('/reports/:route/', function(req, res) { 
   var route = req.params.route;
