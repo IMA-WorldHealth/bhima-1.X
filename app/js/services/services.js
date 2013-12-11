@@ -93,53 +93,10 @@
     }
   });
 
-  services.factory('appnotify', function ($q, $timeout) {
-
-//    Allows for multiple notifications - if that's your thing
-//    var notifications = [];
-    var notification = [];
-//    FIXME This is horrible - CSS styles should be applied conditionally with ng-class
-    var style = ["notification-success"];
-    var timeout = 3000;
-
-    function init() {
-//    initialise session variables etc.
-    }
-
-    function setNotification(type, header, body, delay) {
-//      only one notification allowed at this time
-      if (delay) timeout = delay;
-
-      /*if(type) style[0] = "notification-" + type;
-       notification.pop();
-       notification.push({'type' : type, 'header' : header, 'body' : body, 'delay' : delay});*/
-      console.log('[appnotify] setNotification(); populate notification model')
-      var handle = $timeout(clearAll, timeout);
-    }
-
-    function clearAll() {
-      console.log('[appnotify] clearAll(); clear notification model');
-      notification.pop();
-    }
-
-    /*function registerDisplay()
-     *   summary
-     *     Any controller can register as a notification display - a callback would be registered
-     *     for every time an update is made to notification state
-     */
-
-    init();
-
-    return {
-//      Is it a good idea to expose this?
-      notification: notification,
-      setNotification: setNotification,
-      clearAll: clearAll,
-      style: style
-    }
-  });
-
   services.factory('appcache', function($q, $rootScope) {
+    //create object with user settings - current navigation, language etc. 
+    //generic method for retreiving / setting settings
+
     /////
     // summary: 
     //  Used to interface with indexedDB store, providing methods to read and write to local storage
