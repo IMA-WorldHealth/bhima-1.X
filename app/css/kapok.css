@@ -26,7 +26,7 @@ header small {
 }
 
 section { 
-  maring-top: 0;
+  margin-top: 0;
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 3px;
@@ -34,6 +34,63 @@ section {
 
   /*Fixes pull-right only menus, should not be needed*/
   min-height: 37px;
+}
+
+/* publish alerts and messages here! */
+.kpk-message-container {
+  position: relative;
+  clear: none;
+  width: 100%;
+  z-index: 5;
+}
+
+.kpk-message {
+  opacity            : 0;
+  position           : absolute;
+  background-color   : #ffffff;
+  padding            : 0.75em;
+  top                : -2em;
+  left               : 50%;
+  width              : 75%;
+  margin-left        : -36.5%;
+  margin-top         : -1px;
+  border             : 1px solid transparent;
+  border-radius      : 0 0 4px 4px; /* top left, top right, bottom right, bottom left */
+  -webkit-box-shadow : 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow         : 0 6px 12px rgba(0, 0, 0, 0.175);
+  transition         : top 500ms ease;
+  transition         : opacity 25ms linear;
+}
+
+.kpk-message.active {
+  transition: opacity 25ms linear; /* prevent jumping of opacity */
+  transition: top 500ms ease;
+  opacity: 1;
+  top: 0;
+}
+
+.kpk-message.warning {
+  background-color: #fcf8e3;
+  border-color: #fbeed5;
+  color: #c09853;
+}
+
+.kpk-message.success {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  color: #468847;
+}
+
+.kpk-message.danger {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  color: #b94a48;
+}
+
+.kpk-message.info {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  color: #3a87ad;
 }
 
 .content {
@@ -53,13 +110,20 @@ section {
   border-top: 1px solid #dddddd;
 }
 
+.bar-bottom {
+  border-top: 1px solid #dddddd;
+  position : absolute;
+  bottom   : 0;
+  width    : 100%;
+}
+
 .capital { 
   text-transform: capitalize;
 }
 
 /*Form-control direvative (spelt wrong) add more CSSness*/
 .form-kapok {
-  diplay: block;
+  display: block;
   width: 100%;
   height: 30px;
   padding: 6px 12px;
@@ -69,6 +133,23 @@ section {
   vertical-align: middle;
   background-color: #ffffff;
   border: 1px solid #cccccc;
+}
+
+/* everything is bad */
+.hack-left { 
+  margin-left: -15px;
+}
+
+.list-selected {
+  text-transform : capitalize;
+  font-weight : bold;
+}
+
+/* CAUTION: This uses Bootstrap's glyphicon code */
+.list-selected:before {
+  font-family: 'Glyphicons Halflings';
+  font-size: 0.85em;
+  content : '\e072';
 }
 
 /* trololololol */

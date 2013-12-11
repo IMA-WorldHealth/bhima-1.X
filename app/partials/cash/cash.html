@@ -18,79 +18,83 @@
         </button>
       </div>
 </section>
-<br/>
 
+<div class="content">
   <!-- search panel -->
   <div class="row">
-    <section>
-      <div class="col-xs-6">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            <span>Invoice &amp Patient Search</span>
-            <span class="pull-right" title="Toggle Search Panel" ng-click="toggleFilterRow()">
-              <i class="glyphicon glyphicon-search"></i>
+    <div class="col-xs-6">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <span>Invoice &amp Patient Search</span>
+          <span class="pull-right" title="Toggle Search Panel" ng-click="toggleFilterRow()">
+            <i class="glyphicon glyphicon-search"></i>
+          </span>
+        </div>
+        <div id="kpk-cash-grid" style="height: 550px;" class="grid"></div>
+        <div id="kpk-cash-filter" style="display:none;">
+          <form class="form-inline" name="search" role="form">
+            <label>Filter invoices:</label>
+            <input type="search" id="kpk-cash-filter-invoices" ng-model="data.search">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span>Payment | <small>{{data.debitor}}</small></span>
+          <span class="pull-right"><i class="glyphicon glyphicon-usd"></i></span>
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <td><label>Invoice Number</label></td>
+              <td><label>Date</label></td>
+              <td><label>Balance</label></td>
+              <td style="width: 20%;"><label>Paid</label></td>
+              <td><label>Remaining</label></td>
+              <td style="width:10px;"></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="invoice in data.paying">
+              <td>{{invoice.inv_po_id}}</td>
+              <td>{{invoice.trans_date | date }}</td>
+              <td>{{invoice.balance | currency }}</td>
+              <td><input type="number" class="form-control" ng-class="{'has-error' : invoice.allocated > data.payment}"ng-model="invoice.allocated" required ng-change="freeze(invoice)"></td>
+              <td>{{invoice.remaining | currency }}</td>
+              <td ng-click="removeInvoice($index)"><i class="glyphicon glyphicon-remove"></i></td>
+              <td ng-click="thaw(invoice)"><i ng-class="{'glyphicon glyphicon-stop' : invoice.frozen}"></i></td>
+            </tr>
+          </tbody>
+        </table>
+        <hr style="padding:0;margin:0;" />
+        <div class="panel-body">
+          <label>Total Due: {{data.total | currency }}</label>
+          <label class="pull-right" ng-show="data.excess > 0">Overdue: {{data.excess | currency }}</label>
+          <div class="input-group">
+            <input placehoder="$0.00" type="number" ng-model="data.payment" ng-change="allocate()" class="form-control">
+            <span class="input-group-addon">
+              {{formatCurrency(data.currency)}}
             </span>
           </div>
-          <div id="kpk-cash-grid" style="height: 550px;" class="grid"></div>
-          <div id="kpk-cash-filter" style="display:none;">
-            <form class="form-inline" name="search" role="form">
-              <label>Filter invoices:</label>
-              <input type="search" id="kpk-cash-filter-invoices" ng-model="data.search">
-            </form>
-          </div>
+        </div>
+        <div class="panel-footer">
+          <button type="button" class="btn btn-default" ng-click="pay()" ng-disabled="!data.payment">
+            Pay Invoice(s)
+          </button>
+          <button type="button" class="btn btn-default" ng-click="clearSelection()">
+            Clear Selection
+          </button>
         </div>
       </div>
-
-      <div class="col-xs-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <span>Payment | <small>{{data.debitor}}</small></span>
-            <span class="pull-right"><i class="glyphicon glyphicon-usd"></i></span>
-          </div>
-          <table class="table table-condensed">
-            <thead>
-              <tr>
-                <td><label>Invoice Number</label></td>
-                <td><label>Date</label></td>
-                <td><label>Balance</label></td>
-                <td style="width: 20%;"><label>Paid</label></td>
-                <td><label>Remaining</label></td>
-                <td style="width:10px;"></td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="invoice in data.paying">
-                <td>{{invoice.inv_po_id}}</td>
-                <td>{{invoice.trans_date | date }}</td>
-                <td>{{invoice.balance | currency }}</td>
-                <td><input type="number" class="form-control" ng-class="{'has-error' : invoice.allocated > data.payment}"ng-model="invoice.allocated" required ng-change="freeze(invoice)"></td>
-                <td>{{invoice.remaining | currency }}</td>
-                <td ng-click="removeInvoice($index)"><i class="glyphicon glyphicon-remove"></i></td>
-                <td ng-click="thaw(invoice)"><i ng-class="{'glyphicon glyphicon-stop' : invoice.frozen}"></i></td>
-              </tr>
-            </tbody>
-          </table>
-          <hr style="padding:0;margin:0;" />
-          <div class="panel-body">
-            <label>Total Due: {{data.total | currency }}</label>
-            <label class="pull-right" ng-show="data.excess > 0">Overdue: {{data.excess | currency }}</label>
-            <div class="input-group">
-              <input placehoder="$0.00" type="number" ng-model="data.payment" ng-change="allocate()" class="form-control">
-              <span class="input-group-addon">
-                {{formatCurrency(data.currency)}}
-              </span>
-            </div>
-          </div>
-          <div class="panel-footer">
-            <button type="button" class="btn btn-default" ng-click="pay()" ng-disabled="!data.payment">
-              Pay Invoice(s)
-            </button>
-            <button type="button" class="btn btn-default" ng-click="clearSelection()">
-              Clear Selection
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
   </div>
 </div>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <button class="btn btn-default"><i class="glyphicon glyphicon-list"></i> Posting Journal</button>
+  </div>
+</section>

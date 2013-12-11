@@ -23,18 +23,15 @@
 <!--not required in placeholder rewrite-->
 <div ng-controller="appController">
 
-  <!--Bootstrap container, any content inside div can be split into 12 columns-->
   <div id="kpk-sidebar" class="container">
     <div class="row" id="kpk-header">
       <div class="col-xs-12">
         <h2><img src="assets/icon.png" width="100" height="100" class="loading"></h2>
-        <!--Did I spend too long on this? -yes-->
       </div>
     </div>
 
     <div class="row" id="kpk-tree" ng-controller="treeController">
-      <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treeData" data-node-id="id"
-           data-node-label="label" data-node-children="children"></div>
+      <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treeData" data-node-id="id" data-node-label="label" data-node-children="children"></div>
     </div>
 
     <div class="row" id="kpk-util" ng-controller="utilController">
@@ -74,7 +71,14 @@
       </div>
     </div>
   </div>
+
   <div id="kpk-container">
+    <!-- experimental alert boxes -->
+    <div class="kpk-message-container">
+      <div id="kpk-message" class="kpk-message danger">
+      </div>
+    </div>
+
     <div ng-view id="kpk-view"><!--Content populated with angular--></div>
   </div>
 </div>
