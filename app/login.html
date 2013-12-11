@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Login to Bika</title>
+    <title>Login to Kapok</title>
     <style>
 
       * {
@@ -40,13 +40,10 @@
       }
 
       .row input {
+        background: #FFF;
         float: right;
         padding: 6px;
         border: 1px solid #dadada;
-      }
-
-      .row input:focus {
-        box-shadow: 0 0 5px green;
       }
 
       .control {
@@ -64,14 +61,14 @@
   </head>
   <body>
     <form action="/login" method="POST">
-      <label>Bika</label>
+      <label>Kapok</label>
       <div class="row">
           <label for="username">User</label>
-          <input name="username" type="text" autofocus />
+          <input name="username" placeholder="Enter your username" type="text" autofocus />
       </div>
       <div class="row">
         <label for="password">Password</label>
-        <input name="password" type="password" required />
+        <input name="password" placeholder="Enter your password" type="password" required />
       </div>
       <div class="control">
         <input type="submit" />

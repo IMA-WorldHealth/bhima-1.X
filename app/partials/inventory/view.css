@@ -1,14 +1,12 @@
-.nav, .pagination, .carousel a { cursor: pointer; }
-
 
 /*Temporary fix for border-box bootstrap collision*/
-#kpk-accounts-grid, #kpk-accounts-grid div {
+#kpk-inventory-grid, #kpk-inventory-grid div {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
 }
 
-#kpk-accounts-grid {
+#kpk-inventory-grid {
   height: 650px;
   width: 100%;
   font-size: 8pt;

@@ -1,11 +1,17 @@
 angular.module('kpk.controllers')
 .controller('priceListController', function ($scope, $q, connect, appstate) {
+  // This module is responsible for creating price lists.
+  // FIXME: There is an error with editing old price lists.  Need to 
+  // make a facility for that and fix the errors using connect.basicPost
+
+  'use strict';
+
   var imports = {},
       models       = $scope.models = {},
       flags        = $scope.flags  = {},
       dirty        = $scope.dirty  = {},
       validate     = $scope.validate = {},
-      dependencies = ["plnames", "inv", "grp"],
+      dependencies = ["price_list_name", "inv", "grp"],
       stores       = {};
   flags.edit   = {};
   flags.errors = {};
@@ -41,9 +47,9 @@ angular.module('kpk.controllers')
   // create a new price list
   function addList () {
     var id, list;
-    id = stores.plnames.generateid();
+    id = stores.price_list_name.generateid();
     list = {id: id};
-    stores.plnames.post(list);
+    stores.price_list_name.post(list);
     // after creating, immediately edit
     $scope.editList(id);
   }
@@ -55,15 +61,15 @@ angular.module('kpk.controllers')
     models.pl.forEach(function(item) {
       $scope.removeItem(item.id);
     });
-    stores.plnames.remove(id);
+    stores.price_list_name.remove(id);
     connect.basicDelete('price_list_name', id);
   }
 
   // validate and save
   function saveList () {
     var id = flags.edit.list;
-    var list = stores.plnames.get(id);
-    if (!validate.list(list)) stores.plnames.remove(id);
+    var list = stores.price_list_name.get(id);
+    if (!validate.list(list)) stores.price_list_name.remove(id);
     else {
       list.enterprise_id = imports.enterprise_id;
       connect.basicPut('price_list_name', [list]);
