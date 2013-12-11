@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, connect) {
+.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, message, connect) {
   // This is the posting journal and perhaps the heaviest
   // module in Kapok.  It is responsible for posting to
   // the general ledger via a trial balance
@@ -132,14 +132,14 @@ angular.module('kpk.controllers')
     // This code assumes you are posting everything in the posting journal
     // with your user name.
     // DECISION: Should we allow you to post only some transactions?
-    connect.fetch('/trailbalance')
+    connect.fetch('/trial/')
     .success(function (data, status) {
-      console.log('posting success!');
+      message.success({content: "Posted Successfully!"});
       // logic 
       // Reload page?
     })
     .error(function (data, status) {
-      alert("Posting err:", status);
+      message.error({content: "Posting Failed!"});
     });
   };
 
