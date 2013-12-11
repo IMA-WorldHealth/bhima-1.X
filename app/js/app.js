@@ -89,6 +89,10 @@
     when('/reports/transaction_report', { 
       controller: 'reportTransactionController',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
+    }).
+    when('/reports/summary', {
+      controller: 'summaryController',
+      templateUrl: 'partials/reports/summary/summary.html'
     });
   }  
 

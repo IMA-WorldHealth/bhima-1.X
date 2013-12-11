@@ -10,19 +10,21 @@ angular.module('kpk.controllers')
 
 //   Temporary output vars
     var out_count = 0;
+    var fiscal_set = false;
 
     function init() { 
       //Resposible for getting the current values of selects
       appstate.register("enterprise", function(res) { 
         loadEnterprise(res.id);
+        console.log('fl e', res);
         //Reveal to scope for info display
         $scope.enterprise = res;
-        console.log("Appstate returned", res);
       });
 
       //This isn't required - should this be included?
       appstate.register("fiscal", function(res) { 
-        console.log("resolving", res);
+        console.log('fl f', res);
+        fiscal_set = true;
         $scope.select(res.id);
       });
     }
@@ -194,6 +196,9 @@ angular.module('kpk.controllers')
           updateProgress("[Fiscal year and budget successfully configured]");
           fiscal_object.id = insertId;
           $scope.fiscal_model.post(fiscal_object);
+
+          console.log('fiscal set', fiscal_set, fiscal_object);
+          if(!fiscal_set) appstate.set('fiscal', fiscal_object);
           deferred.resolve();
 
           // generate budget for account/ period
