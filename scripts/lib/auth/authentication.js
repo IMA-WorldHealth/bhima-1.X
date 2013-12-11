@@ -52,7 +52,7 @@ module.exports = (function (db) {
           db.execute(sql, function (err, results) {
             if (err) next(err);
             // TODO: client-side logic not implimented for this.
-            if (!results.length) res.send({error : "incorrect username/password combination."});
+            if (results.length < 1) return res.send({error : "Incorrect username/password combination."});
 
             var user = results.pop();
             if (user.logged_in) {

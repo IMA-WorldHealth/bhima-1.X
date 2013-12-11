@@ -1,5 +1,7 @@
 // Module: scripts/tree.js
 
+var parser = require('./database/parser');
+
 module.exports = (function (db) {
   // This module is responsible for constructing each
   // person's tree based on their permissions in the
@@ -8,6 +10,8 @@ module.exports = (function (db) {
   // FIXME: there seems to be some code repetition.
   // FIXME/TODO: Can this actually load recursively?
   //  seems like it goes one branch deep then stops.
+
+  'use strict';
 
   function loadTree (userid, query, callback) {
     // this takes in the user id, a query object, and a callback
@@ -32,7 +36,7 @@ module.exports = (function (db) {
       if (err) callback(err, null);
       if (results.length) {
         // return parents
-        roles = results.map(function (row) {
+        var roles = results.map(function (row) {
           return row.parent;
         });
         // make unique
@@ -85,8 +89,26 @@ module.exports = (function (db) {
     });
   }
 
+  function simpleLoad (userid, callback) {
+    // TODO: finish this module
+    // a simple loading of the tree,
+    // in a non-recursive fashion
+    var query = {
+      tables : { 
+        'permission' : { columns : ['id']},
+        'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'p_url']}
+      },
+      join : ['permission.id_unit=unit.id'],
+      where : ['permission.id_user=' + userid]
+    };
+
+    db.execute(parser.select(query), callback);
+
+  }
+
   return {
-    loadTree : loadTree
+    loadTree : loadTree,
+    simpleLoad : simpleLoad
   };
 
 });

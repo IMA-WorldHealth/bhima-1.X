@@ -1,4 +1,8 @@
 angular.module('kpk.controllers').controller('treeController', function($scope, $q, $location, appcache, kpkConnect) {    
+    // This module loads the tree.
+    // Rewrite Dec 12th so that tree only sends one XHR request,
+    // rather than several recursively for optimisation purposes.
+    'use strict';
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
@@ -11,6 +15,9 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
 //      Set default element state
       element.collapsed = true;
 //      console.log(appcache.checkDB());
+      
+      if(role.p_url !== '') element.p_url = role.p_url;
+
 
       for(var i = 0; i<units.length; i++){
         element.children.push({"label":units[i].name, "id":units[i].id, "p_url":units[i].p_url, "children":[]});
@@ -28,7 +35,9 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
     
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
         if( $scope.navtree && angular.isObject($scope.navtree.currentNode) ) {
-            $location.path($scope.navtree.currentNode.p_url);
+            var path = $scope.navtree.currentNode.p_url;
+            if(path) $location.path(path);
+            
         }
     }, true);
 
@@ -40,17 +49,17 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
         deferred.resolve(data);
       });
       return deferred.promise;
-    }
+  }
 
-    function getChildren(role, callback){
-      var request = {}; 
-      request.e = [{t : 'unit', c : ['id', 'name', 'url']}];
-      request.c = [{t:'unit', cl:'parent', v:role.id, z:'='}];
-      kpkConnect.get('/tree?',request).then(function(data) {
-          callback(role, data); 
-        
-      });
+  function getChildren(role, callback){
+    var request = {}; 
+    request.e = [{t : 'unit', c : ['id', 'name', 'url']}];
+    request.c = [{t:'unit', cl:'parent', v:role.id, z:'='}];
+    kpkConnect.get('/tree?',request).then(function(data) {
+        callback(role, data); 
+      
+    });
 
-    };
+  }
 
 });
