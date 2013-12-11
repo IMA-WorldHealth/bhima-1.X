@@ -11,7 +11,7 @@ angular.module('kpk.controllers')
       flags        = $scope.flags  = {},
       dirty        = $scope.dirty  = {},
       validate     = $scope.validate = {},
-      dependencies = ["price_list_name", "inv", "grp"],
+      dependencies = ["price_list_name", "inventory", "inv_group"],
       stores       = {};
   flags.edit   = {};
   flags.errors = {};
@@ -19,20 +19,20 @@ angular.module('kpk.controllers')
   // FIXME: Eventually move away form this method of getting enterprise id
   // so that we can refresh when the enterprise changes
   imports.enterprise_id = appstate.get('enterprise').id;
-  imports.pln = {
+  imports.price_list_name = {
     tables: { 'price_list_name' : { columns :  ["id", "name"] }},
     where : ["price_list_name.enterprise_id="+imports.enterprise_id]
   };
-  imports.inv = {tables : { 'inventory' : { columns: ["id", "code", "text"] }}};
-  imports.grp = {tables : { 'inv_group' : { columns: ["id", "name", "symbol"] }}};
-  imports.pl = {tables: { 'price_list' : { columns : ["id", "list_id", "inventory_id", "price", "discount", "note"] }}};
+  imports.inventory = {tables : { 'inventory' : { columns: ["id", "code", "text", "group_id"] }}};
+  imports.inv_group = {tables : { 'inv_group' : { columns: ["id", "name", "symbol"] }}};
+  imports.price_list = {tables: { 'price_list' : { columns : ["id", "list_id", "inventory_id", "price", "discount", "note"] }}};
 
   // initialize models
 
   $q.all([
-    connect.req(imports.pln),
-    connect.req(imports.inv),
-    connect.req(imports.grp)
+    connect.req(imports.price_list_name),
+    connect.req(imports.inventory),
+    connect.req(imports.inv_group)
   ]).then(function (arr) {
     // load dependencies
     for (var i = arr.length - 1; i >= 0; i--) {
@@ -58,7 +58,7 @@ angular.module('kpk.controllers')
     var bool = confirm("Are you sure you want to do this?  It will delete the entire price list and subitems!");
     if (!bool) return;
     var id = flags.list;
-    models.pl.forEach(function(item) {
+    models.price_list.forEach(function(item) {
       $scope.removeItem(item.id);
     });
     stores.price_list_name.remove(id);
@@ -85,10 +85,10 @@ angular.module('kpk.controllers')
   // load a specific price list
   function loadList (id) {
     if (flags.edit.list === Infinity) {
-      imports.pl.where = ["price_list.list_id=" + id];
-      connect.req(imports.pl).then(function (res) {
-        models.pl = res.data;
-        stores.pl = res;
+      imports.price_list.where = ["price_list.list_id=" + id];
+      connect.req(imports.price_list).then(function (res) {
+        stores.price_list = res;
+        $scope.models.price_list = res.data;
       });
       flags.list = id;
       flags.add = true;
@@ -100,14 +100,14 @@ angular.module('kpk.controllers')
   // remove an item from the price list
   function removeItem (id) {
     flags.add = true;
-    stores.pl.remove(id);
+    stores.price_list.remove(id);
     connect.basicDelete("price_list", id);
   }
 
   // add an item to the price list
   function addItem () {
-    var id = stores.pl.generateid();
-    stores.pl.post({id: id, list_id: flags.list});
+    var id = stores.price_list.generateid();
+    stores.price_list.post({id: id, list_id: flags.list});
     $scope.editItem(id);
   }
  
@@ -119,35 +119,18 @@ angular.module('kpk.controllers')
 
   // validate and exit editing
   function saveEdit () {
-    var item = stores.pl.get(flags.edit.item);
+    var item = stores.price_list.get(flags.edit.item);
     if (validate.item(item)) { 
       flags.edit.item = Infinity; 
       flags.add = true;
     }
   }
 
-  // filter controls
-  function filter (id) {
-    flags.filter = id >= 0 ? stores.grp.get(id).symbol : "";
-    refreshInventory();
-  }
-
   // label the inventory properly
-  function label (invid) {
+  function label (inventory_id) {
     // sometimes it is not defined
-    var item = invid ? stores.inv.get(invid) : {};
+    var item = inventory_id ? stores.inventory.get(inventory_id) : {};
     return (item && item.text) ? item.text : "";
-  }
-
-  function refreshInventory () {
-    var inv = { tables : { 'inventory' : { columns: ["id", "code", "text"] }}};
-    if (flags.filter) {
-      inv.where = ["inventory.group_id=" + flags.filter];
-    }
-    connect.req(inv).then(function (res) {
-      models.inv = res.data;
-      stores.inv = res;
-    });
   }
 
   // validation
@@ -169,10 +152,10 @@ angular.module('kpk.controllers')
   // form controls
 
   function save () {
-    models.pl.map(function (item) { return connect.clean(item); });
+    models.price_list.map(function (item) { return connect.clean(item); });
     // TODO/FIXME: There is currently no way to do batch inserts.
     // So we are resorted to doing this.
-    models.pl.forEach(function (item) {
+    models.price_list.forEach(function (item) {
       connect.basicPut('price_list', [item]);
     });
   }
@@ -180,10 +163,14 @@ angular.module('kpk.controllers')
   function erase () {
     var bool = confirm("Are you sure you want to do this?  It will clear the entire price list!");
     if (bool) {
-      models.pl.forEach(function (item) {
-        stores.pl.remove(item.id); 
+      models.price_list.forEach(function (item) {
+        stores.price_list.remove(item.id); 
       });
     }
+  }
+
+  function showFilter (id) {
+    return stores.inv_group && stores.inv_group.get(id) ? stores.inv_group.get(id).symbol : "";
   }
 
   // expose to view
@@ -197,8 +184,8 @@ angular.module('kpk.controllers')
   $scope.removeItem = removeItem;
   $scope.editItem = editItem;
   $scope.saveEdit = saveEdit;
+  $scope.showFilter = showFilter;
 
-  $scope.filter = filter;
   $scope.label = label;
   $scope.erase = erase;
   $scope.save = save;
