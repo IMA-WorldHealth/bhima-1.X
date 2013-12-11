@@ -167,9 +167,11 @@ module.exports = (function (db) {
 
     db.execute(sql.transfer, function(err, res) {
       if (err) defer.resolve({error : err });
-      db.execute(sql.remove, function (error, res) {
-        defer.resolve(error ? {error: error, res: res} : {res: res});
-      });
+      else {
+        db.execute(sql.remove, function (error, res) {
+          defer.resolve(error ? {error: error, res: res} : {res: res});
+        });
+      }
     });
     
     return defer.promise;
