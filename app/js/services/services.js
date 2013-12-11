@@ -817,4 +817,86 @@
     };
   });
 
+
+  services.factory('message', function ($timeout) {
+    var target = $('#kpk-message'), 
+        delay = 3000,       // two second delay 
+        node,
+        timeout;
+
+    function cancel () {
+      if (timeout) $timeout.cancel(timeout);
+    }
+
+    function error (data) {
+      data.type = "error";
+      return call(data);
+    }
+
+    function info (data) {
+      data.type = "info";
+      return call(data);
+    }
+
+    function warn (data) {
+      data.type = "warning";
+      return call(data);
+    }
+
+    function success (data) {
+      data.type = "success";
+      return call(data);
+    }
+
+    function call (data) {
+      // this API is 
+      // data = {
+      //   content: "",
+      //   type : "error" | "info" | "warning" | "success"
+      //   links : [{}, ..],
+      // }
+
+      data.links = data.links || [];
+      data.content = data.content || "";
+
+      var template = '<a href="%link%" class="btn btn-default btn-sm">%title%</a>';
+      var links = data.links.map(function (link) {
+        var title = Object.keys(link)[0],
+            href = link[title];
+        return template.replace('%link%', href).replace('%title%', title);
+      });
+
+      // create the DOM Node
+      node = ['<span class="content">',
+                data.content,
+              '</span>',
+              '<span class="links pull-right">',
+                links.join(''),
+              '</span>'
+      ].join('');
+
+      // attach to the DOM
+      target.html(node);
+      target.toggleClass('active');
+      target.toggleClass(data.type);
+
+      // display the element
+      timeout = $timeout(function () {
+        target.toggleClass('active');
+        target.toggleClass(data.type);
+      }, delay);
+      
+    }
+    
+    return {
+      call : call,
+      error : error,
+      info: info,
+      warn: warn,
+      success: success,
+      cancel : cancel
+    };
+
+  });
+
 })(angular);
