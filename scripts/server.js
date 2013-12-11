@@ -231,9 +231,9 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, res);
 });
 
-app.get('/fiscal/', function(req, res) { 
-  fiscal.create(1, 2, 3, 4);
-});
+// app.get('/fiscal/', function(req, res) { 
+//   res.send(500, "Not implemented");
+// });
 
 app.get('/reports/:route/', function(req, res) { 
   var route = req.params.route;
