@@ -31,6 +31,10 @@
       controller: 'patientRegController',
       templateUrl: 'partials/patient_registration/patient.html'
     }).
+    when('/debitor/debitor_group', {
+      controller : 'debitorGroupCtrl',
+      templateUrl: 'partials/debitor/debitor_group.html'
+    }).
     when('/accounts', {
       controller: 'accountController',
       templateUrl: '/partials/accounts/accounts.html'
@@ -38,6 +42,14 @@
     when('/inventory', {
       controller: 'inventoryController',
       templateUrl: '/partials/inventory/inventory.html'
+    }).
+    when('/inventory/view', {
+      controller : 'inventoryViewCtrl',
+      templateUrl:'/partials/inventory/view.html'
+    }).
+    when('/inventory/register', {
+      controller: 'inventoryRegisterController',
+      templateUrl: '/partials/inventory/register/register.html'
     }).
     when('/patient_records/:patientID', { 
       controller: 'patientRecordsController', 
@@ -51,16 +63,17 @@
       controller: 'salesRecordsController',
       templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
-    when('/inventory/register', {
-      controller: 'inventoryRegisterController',
-      templateUrl: '/partials/inventory/register/register.html'
-    }).
     when('/cash', {
       controller: 'cashController',
       templateUrl: '/partials/cash/cash.html'
-    }).when('/creditors', {
+    })
+    .when('/creditors', {
       controller: 'creditorsController',
       templateUrl: '/partials/creditor/creditor.html'
+    }).
+    when('/creditors/creditor_group', {
+      controller: 'creditorGroupCtrl',
+      templateUrl: 'partials/creditor/group/creditor_group.html'
     }).
     when('/inventory/purchase', {
       controller: 'purchaseOrderController',
@@ -89,6 +102,10 @@
     when('/reports/transaction_report', { 
       controller: 'reportTransactionController',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
+    }).
+    when('/reports/summary', {
+      controller: 'summaryController',
+      templateUrl: 'partials/reports/summary/summary.html'
     });
   }  
 
