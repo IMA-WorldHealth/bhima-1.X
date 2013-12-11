@@ -24,8 +24,7 @@
   "dependencies": {
     "mysql": "2.x.x",
     "express": "3.x.x",
-    "ws": "0.4.31",
-    "async": "~0.2.9"
+    "ws": "0.4.31"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
