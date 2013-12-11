@@ -8,20 +8,12 @@ module.exports = (function(db) {
   *   Creates periods and their respective budgets for each account. 
   *   Returns 200 success on complete entry of every part and 500 on failure indicating which stage the process failed.
   */
-  var enterprise, startDate, endDate, description;
 
   function create(enterprise, startDate, endDate, description) { 
-    enterprise = enterprise;
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-    description = description;
-
-
   }
 
   function verifyData() { 
 
-    console.log('[fiscal.js] verifyData()', enterprise, startDate, endDate, description);
     //Enterprise must exist
 
     //Start date must be before end date
