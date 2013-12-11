@@ -194,9 +194,10 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
   var endDate = req.params.endDate;
   var description = req.params.description;
 
+  //function(err, status);
   fiscal.create(enterprise, startDate, endDate, description, function(status) { 
     console.log('create returned', status);
-    res.send(status);
+    res.send(200, status);
   })
 });
 
