@@ -1,6 +1,12 @@
-<header class="kpk-header">
-  <h2>Price Lists</h2>
+<header>
+  <span>Price Lists</span>
 </header>
+
+<section class="underline">
+  <div class="pull-right">
+    <a href="#/debitor/debitor_group" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-user"></i> View Debitor Groups</a>
+  </div>
+</section>
 
 <div class="content">
   <div class="row">
@@ -25,7 +31,7 @@
           </tbody>
         </table>
         <div class="panel-footer">
-          <button type="button" class="btn btn-default" ng-disabled="flags.list==0 || !flags.list" ng-click="removeList()">Delete List</button>
+          <button type="button" class="btn btn-default btn-sm" ng-disabled="flags.list==0 || !flags.list" ng-click="removeList()">Delete List</button>
         </div>
       </div>
     </div>
@@ -36,19 +42,19 @@
           <i class="glyphicon glyphicon-list"></i> Price List Details
           <button class="pull-right" type="button" ng-click="addItem()" ng-disabled="!flags.add">+</button>
         </div>
-        <table ng-hide="!models.pl" class="table table-condensed table-hover table-bordered">
+        <table ng-hide="!models.price_list" class="table table-condensed table-hover table-bordered">
           <thead>
             <tr>
               <th style="width: 33%;">
-                Inventory ID
+                Inventory Item
                 <div style="display: inline; float: right;" class="pull-right dropdown">
                   <span  class="dropdown-toggle">
-                    <i class="glyphicon glyphicon-filter"></i> {{flags.filter}} 
+                    <i class="glyphicon glyphicon-filter"></i> {{showFilter(flags.filter)}} 
                   </span>
                   <ul class="dropdown-menu pull-left">
                     <li class="dropdown-header"><b>Filter on:</b></li>
-                    <li><a href="" ng-click="filter()">None</a></li>
-                    <li ng-repeat="group in models.grp"><a href="" ng-click="filter(group.id)">{{group.symbol}} | {{group.name}}</a></li>
+                    <li><a href="" ng-click="flags.filter=''">None</a></li>
+                    <li ng-repeat="group in models.inv_group"><a href="" ng-click="flags.filter=group.id">{{group.symbol}} | {{group.name}}</a></li>
                   </ul>
                 </div>
               </th>
@@ -60,12 +66,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="item in models.pl" ng-class="{'danger' : !validate.item(item)}">
+            <tr ng-repeat="item in models.price_list" ng-class="{'danger' : !validate.item(item)}">
               <td ng-hide="item.id==flags.edit.item">{{label(item.inventory_id)}}</td>
               <td ng-show="item.id==flags.edit.item">
                 <select 
                   ng-model="item.inventory_id"
-                  ng-options="inv.id as inv.text for inv in models.inv"
+                  ng-options="inv.id as inv.text for inv in models.inventory | filter:flags.filter"
                   class="form-kapok">
                   <option value="">-- Select An Item --</option>
                 </select>
@@ -106,8 +112,10 @@
       </div>
     </div>
   </div>
-  <hr />
-  <div class="col-sm-offset-9 col-xs-3">
+</div>
+
+<section class="bar-bottom">
+  <div class="pull-right">
     <button class="btn btn-default" type="button" ng-click="save()" ng-disabled="!flags.add">
       <i class="glyphicon glyphicon-floppy-save"></i> Save
     </button>
@@ -115,4 +123,4 @@
       <i class="glyphicon glyphicon-floppy-remove"></i> Erase
     </button>
   </div>
-</div>
+</section>
