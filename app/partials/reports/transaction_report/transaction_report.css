@@ -56,3 +56,9 @@
 #transaction_report_grid, #transaction_report_grid div { 
   box-sizing: content-box;
 }
+
+.infobar{
+  font-weight: bold;
+  font-size: 12px;
+}
+
