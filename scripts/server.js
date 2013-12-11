@@ -13,6 +13,7 @@ var express      = require('express')
   , balance      = require('./lib/logic/balance')(db) // TODO
   , jr           = require('./lib/logic/journal')
   , ledger       = require('./lib/logic/ledger')(db)
+  , fiscal       = require('./lib/logic/fiscal')(db)
   , app          = express();
 
 app.configure(function () {
@@ -228,6 +229,10 @@ app.delete('/temp/:table/:id', function (req, res, next) {
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, res);
+});
+
+app.get('/fiscal/', function(req, res) { 
+  fiscal.create(1, 2, 3, 4);
 });
 
 app.get('/reports/:route/', function(req, res) { 
