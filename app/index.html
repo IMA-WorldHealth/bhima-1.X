@@ -72,10 +72,15 @@
     </div>
   </div>
 
-  <div id="kpk-container">
+  <div id="kpk-container" ng-controller="messageCtrl">
     <!-- experimental alert boxes -->
     <div class="kpk-message-container">
-      <div id="kpk-message" class="kpk-message danger">
+      <div id="kpk-message" class="kpk-message" ng-class="{'active' : message.active, message.type : message.type}">
+        <span ng-show="!!message.title" class="kpk-message-title">{{message.content}}</span>
+        <span class="kpk-message-content">{{message.content}}</span>
+        <span ng-show="!!message.closable" class="kpk-message-close" ng-click="message.close()">
+          <i class="glyphicon glyphicon-close"></i>
+        </span>
       </div>
     </div>
 
