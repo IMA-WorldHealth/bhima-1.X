@@ -26,11 +26,11 @@
 
           <div class="form-group">
             <label for="saledate">Invoice Date</label>
-            <input type="date" id="saledate" class="form-control" ng-model="sale_date">
+            <input type="date" id="saledate" class="form-kapok" ng-model="sale_date">
           </div>
           <div class="form-group">
             <label for="select-deb">Patient</label>
-            <select id="select-deb" ng-model="debtor" ng-options="formatDebtor(d) for d in debtor_model" class="form-control" ng-change="loadInventory()">
+            <select id="select-deb" ng-model="debtor" ng-options="formatDebtor(d) for d in debtor_model" class="form-kapok" ng-change="loadInventory()">
               <option value="">--Select Patient--</option>
             </select>
           </div>
@@ -49,7 +49,7 @@
               </label>
             </div>
             <div class="input-group">
-              <select id="payable" class="form-control" ng-disabled="isPayable()">
+              <select id="payable" class="form-kapok" ng-disabled="isPayable()">
                 <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
                 <option>14</option>
                 <option>30</option>
@@ -162,7 +162,7 @@
     <div class="col-xs-4">
       <div class="form-group">
         <label for="debitor">Debtor Account</label>
-        <select id="debitor" class="form-control" ng-options="formatDebtor(d) for d in debtor_model.data"
+        <select id="debitor" class="form-kapok" ng-options="formatDebtor(d) for d in debtor_model.data"
                 ng_model="debtor"></select>
       </div>
       <div class="panel panel-default">
@@ -178,7 +178,7 @@
         <div class="col-lg-offset-10">
           <div class="input-group">
             <span class="input-group-addon">#</span>
-            <input id="salesid" class="form-control" ng-model="invoice_id">
+            <input id="salesid" class="form-kapok" ng-model="invoice_id">
           </div>
         </div>
       </div>
@@ -187,7 +187,7 @@
 
           <div class="form-group">
             <label for="saledate">Sale Date</label>
-            <input type="date" id="saledate" class="form-control" ng-model="sale_date">
+            <input type="date" id="saledate" class="form-kapok" ng-model="sale_date">
           </div>
 
           <div class="form-group">
@@ -204,7 +204,7 @@
               </label>
             </div>
             <div class="input-group">
-              <select id="payable" class="form-control" ng-disabled="isPayable()">
+              <select id="payable" class="form-kapok" ng-disabled="isPayable()">
                 &lt;!&ndash;FIXME Currently hardcoded - should these be pulled from a data set?&ndash;&gt;
                 <option>14</option>
                 <option>30</option>
@@ -217,7 +217,7 @@
         <div class="col-xs-6">
           <label for="invoicetext">Sale Text</label>
           &lt;!&ndash;FIXME This shouldn't be making a call to a function - too many digests run on this page&ndash;&gt;
-          <textarea class="form-control" id="invoicetext">{{formatText()}}</textarea>
+          <textarea class="form-kapok" id="invoicetext">{{formatText()}}</textarea>
         </div>
       </div>
     </div>
@@ -242,11 +242,11 @@
         </thead>
         <tbody>
         <tr ng-repeat="item in inventory">
-          <td class="invoice-item"><select class="form-control" ng-change="updateItem(item)" ng-model="item.item"
+          <td class="invoice-item"><select class="form-kapok" ng-change="updateItem(item)" ng-model="item.item"
                                            ng-options="l.code for l in inventory_model.data"></select></td>
-          <td class="invoice-desc"><input type="text" class="form-control" ng-model="item.text"></td>
-          <td class="invoice-quantity"><input type="number" class="form-control" ng-model="item.quantity"></td>
-          <td class="invoice-price"><input type="number" class="form-control" ng-model="item.price"></td>
+          <td class="invoice-desc"><input type="text" class="form-kapok" ng-model="item.text"></td>
+          <td class="invoice-quantity"><input type="number" class="form-kapok" ng-model="item.quantity"></td>
+          <td class="invoice-price"><input type="number" class="form-kapok" ng-model="item.price"></td>
           <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
         </tr>
         <tr ng-show="itemsInInv()">
