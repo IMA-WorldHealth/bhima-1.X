@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('reportTransactionController', function($scope, $q, $filter, kpkConnect, connect){
+angular.module('kpk.controllers').controller('reportTransactionController', function($scope, $q, $filter, connect){
 
 	var imports={},
 	models = $scope.models = {},
@@ -27,10 +27,7 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 	    enableColumnReorder: true,
 	    forceFitColumns: true,
 	    rowHeight: 30
-  	};
-
-  	if(!$scope.report.choosen)
-  			$scope.isBalanced = " Choose the Debitor/Creditor To see Balance";  	
+  	};  	  	
 
   	function popul() {
   		  		
@@ -59,21 +56,13 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
     }
 
     function fill(table){
-    	var sql = {
-    			'entities':[{'t':table, 'c':['id', 'text']}],
-    	}    	
-		kpkConnect.get('/data/?', sql).then(function(value){
-				$scope.chooses = value;
-		});
-
-		/*var tmp = {};
+		var tmp = {};
     	tmp[table]={columns:['id', 'text']};
-    	var sql = tmp;
+    	var sql = {tables:tmp};
     	console.log(sql);
     	$q.all([connect.req(sql)]).then(function(reps){
     		$scope.chooses = reps[0].data;
-
-    	});p*/
+    	});
     }
 
     function groupByService() {
@@ -125,7 +114,9 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
     	if($scope.report.choosen){
     		$scope.show2 = true;
 	        var type = $scope.report.deb_cred_type.toUpperCase().substring(0,1);
-	        kpkConnect.basicGet('/reports/transReport/?'+JSON.stringify({id:$scope.report.choosen.id, type:type})).then(function(values){
+	        //kpkConnect.basicGet('/reports/transReport/?'+JSON.stringify({id:$scope.report.choosen.id, type:type})).then(function(values){
+	        	//FIXME: basicGet throw an error
+	          connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.report.choosen.id, type:type})).then(function(values){
 	          $scope.model['transReport'] = values;
 	          doSummary(values);
 	          popul();
