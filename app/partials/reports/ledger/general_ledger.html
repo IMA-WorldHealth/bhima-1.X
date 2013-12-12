@@ -1,0 +1,29 @@
+<header>
+  <span>General Ledger Report</span>
+</header>
+
+<section class="underline">
+  <div class="pull-left">
+    <input type="search" placeholder="Filter General Ledger" class="form-kapok" ng-model="flags.searchStr" size="25">
+  </div>
+  <div class="pull-left">
+    <button type="button" class="btn btn-sm btn-default">Order By</button>
+  </div>
+  <div class="pull-right dropdown">
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle">
+      <i class="glyphicon glyphicon-cog"></i> Configure
+    </button>
+    <ul class="dropdown-menu">
+      <li class="dropdown-header">Visible Columns</li>
+      <li ng-repeat="column in columns">
+        <a class="capital" ng-click="column.visible=!column.visible" href="">
+          <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{column.name || column.id}}
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<div class="content">
+  <div id="kpk-ledger-general_ledger-grid" style="height: 550px;" class="grid"></div>
+</div>

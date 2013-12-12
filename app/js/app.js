@@ -103,6 +103,10 @@
       controller: 'reportTransactionController',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
     }).
+    when('/reports/ledger/general_ledger', {
+      controller: 'reportGeneralLedgerCtrl',
+      templateUrl: '/partials/reports/ledger/general_ledger.html'
+    }).
     when('/reports/summary', {
       controller: 'summaryController',
       templateUrl: 'partials/reports/summary/summary.html'
