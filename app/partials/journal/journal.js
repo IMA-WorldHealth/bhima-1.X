@@ -7,7 +7,7 @@ angular.module('kpk.controllers')
   'use strict';
 
   $scope.model = {};
-  $scope.model['journal'] = {'data' : []};
+  $scope.model.journal = {'data' : [] };
 
 //  Request
   var journal_request = {
@@ -41,6 +41,8 @@ angular.module('kpk.controllers')
     {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},
     {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
+
+
   var options = {
     enableCellNavigation: true,
     enableColumnReorder: true,
@@ -67,7 +69,7 @@ angular.module('kpk.controllers')
       grid.onSort.subscribe(function(e, args) {
         sort_column = args.sortCol.field;
         dataview.sort(compareSort, args.sortAsc);
-      })
+      });
 
       dataview.onRowCountChanged.subscribe(function (e, args) {
         grid.updateRowCount();
@@ -79,8 +81,6 @@ angular.module('kpk.controllers')
         grid.render();
       });
 
-
-
 //      Set for context menu column selection
 //      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 
@@ -88,14 +88,28 @@ angular.module('kpk.controllers')
       dataview.setItems($scope.model['journal'].data);
 //      $scope.groupByID()
       dataview.endUpdate();
-      console.log("d", dataview);
-      console.log("d.g", dataview.getItems());
 
-    })
+    // allow the user to select only certain columns shown
+    $scope.columns = angular.copy(columns).map(function (column) {
+      column.visible = true;
+      return column;
+    });
+
+    $scope.$watch('columns', function () {
+      if ($scope.columns) {
+        console.log("Refreshing Columns..");
+        var columns = $scope.columns.filter(function (column) {
+          return column.visible;
+        });
+        grid.setColumns(columns);
+      }
+    }, true);
+
+    });
 
   }
 
-  $scope.groupByID = function groupByID() {
+  $scope.groupByID = function groupByID () {
     dataview.setGrouping({
       getter: "trans_id",
       formatter: function (g) {
@@ -109,7 +123,7 @@ angular.module('kpk.controllers')
     });
   };
 
-  $scope.groupByAccount = function groupByAccount() {
+  $scope.groupByAccount = function groupByAccount () {
     dataview.setGrouping({
       getter: "account_id",
       formatter: function(g) {

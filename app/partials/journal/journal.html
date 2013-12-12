@@ -10,7 +10,17 @@
             
   <div class="pull-right">
     <a class="capital btn btn-default btn-sm" ng-click="trial()"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}}</a>
-    <a class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
+    <span class="dropdown">
+      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">Toggle Columns</li>
+        <li ng-repeat="column in columns">
+          <a class="capital" ng-click="column.visible=!column.visible" href="">
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{column.name || column.id}}
+          </a>
+        </li>
+      </ul>
+    </span>
     <a class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</a>
   </div>
 </section>
