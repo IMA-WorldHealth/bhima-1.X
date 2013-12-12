@@ -5,7 +5,7 @@
 <section class="underline">
 <div class="row">
     <div class="col-xs-3">
-      <select  class="form-control" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
+      <select  class="form-kapok" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
                         <option value="">--Select Type--</option>
                         <option>Debitor</option>
                         <option>Creditor</option>
@@ -13,7 +13,7 @@
     </div>
 
     <div class="col-xs-3">
-        <select class="form-control" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses">
+        <select class="form-kapok" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses">
           <option value="">--Select the name --</option>
         </select>
     </div>
