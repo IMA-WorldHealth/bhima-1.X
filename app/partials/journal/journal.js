@@ -97,13 +97,11 @@ angular.module('kpk.controllers')
     });
 
     $scope.$watch('columns', function () {
-      if ($scope.columns) {
-        console.log("Refreshing Columns..");
-        var columns = $scope.columns.filter(function (column) {
-          return column.visible;
-        });
-        grid.setColumns(columns);
-      }
+      if (!$scope.columns) return;
+      var columns = $scope.columns.filter(function (column) {
+        return column.visible;
+      });
+      grid.setColumns(columns);
     }, true);
 
     });

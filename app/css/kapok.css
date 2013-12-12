@@ -36,6 +36,10 @@ section {
   min-height: 37px;
 }
 
+.grid {
+  box-sizing: content-box;
+}
+
 /* publish alerts and messages here! */
 .kpk-message-container {
   position: relative;

@@ -19,3 +19,6 @@
 
 ### Other
  - Fix up journal code 
+
+### Database changes:
+ - change doc_num (cash, journal, general ledger) to doc_id

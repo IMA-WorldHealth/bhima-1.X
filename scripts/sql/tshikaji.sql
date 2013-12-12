@@ -95,7 +95,8 @@ INSERT INTO `unit` VALUES
   (47,'Transaction Report', '', 10, 0, 'partials/reports/transaction_report', 'reports/transaction_report'),
   (48,'Creditor Groups', '', 1, 0, 'partials/creditor/group/creditor_group', 'creditors/creditor_group'),
   (49,'Debitor Groups', '', 1, 0, 'partials/debitor/debitor_group', 'debitor/debitor_group'),
-  (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view');
+  (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view'),
+  (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger');
 
 
 insert into `permission` values
@@ -153,7 +154,8 @@ insert into `permission` values
   (52, 47, 2),
   (53, 48, 1),
   (54, 49, 1),
-  (55, 50, 1);
+  (55, 50, 1),
+  (56, 51, 1);
 
 
 
