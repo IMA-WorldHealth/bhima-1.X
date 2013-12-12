@@ -62,6 +62,7 @@
               <td>{{invoice.inv_po_id}}</td>
               <td>{{invoice.trans_date | date }}</td>
               <td>{{invoice.balance | currency }}</td>
+
               <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}"ng-model="invoice.allocated" required ng-change="freeze(invoice)"></td>
               <td>{{invoice.remaining | currency }}</td>
               <td ng-click="removeInvoice($index)"><i class="glyphicon glyphicon-remove"></i></td>
@@ -74,6 +75,7 @@
           <label>Total Due: {{data.total | currency }}</label>
           <label class="pull-right" ng-show="data.excess > 0">Overdue: {{data.excess | currency }}</label>
           <div class="input-group">
+
             <input placehoder="$0.00" type="number" ng-model="data.payment" ng-change="allocate()" class="form-kapok">
             <span class="input-group-addon">
               {{formatCurrency(data.currency)}}
