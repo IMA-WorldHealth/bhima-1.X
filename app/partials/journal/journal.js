@@ -147,12 +147,12 @@ angular.module('kpk.controllers')
     // DECISION: Should we allow you to post only some transactions?
     connect.fetch('/trial/')
     .success(function (data, status) {
-      message.success({content: "Posted Successfully!"});
+      console.log('Posted successfully!');
       // logic 
       // Reload page?
     })
     .error(function (data, status) {
-      message.error({content: "Posting Failed!"});
+      console.log('Posting encountered an error!');
     });
   };
 
