@@ -696,6 +696,13 @@
       return $http.get(url);
     }
 
+    function MyBasicGet(target){
+      var promise = $http.get(target).then(function(result) { 
+        return result.data;
+      });
+      return promise;
+    };
+
 //    FIXME accepts any request (temporarily making up for 'req()' shortcomings) this should be deprecated
     function basicReq(reqobj) {
       //summary: 
@@ -813,7 +820,8 @@
       basicDelete: basicDelete,
       journal: journal,
       fetch: fetch,
-      clean: clean
+      clean: clean,
+      MyBasicGet: MyBasicGet
     };
   });
 
