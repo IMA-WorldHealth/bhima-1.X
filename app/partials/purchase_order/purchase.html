@@ -34,11 +34,11 @@
 
           <div class="form-group">
             <label for="saledate">Sale Date</label>
-            <input type="date" id="saledate" class="form-control" ng-model="sale_date">
+            <input type="date" id="saledate" class="form-kapok" ng-model="sale_date">
           </div>
           <div class="form-group">
             <label for="select-cred">Supplier</label>
-            <select id="select-cred" ng-model="creditor" ng-options="formatCreditor(c) for c in creditor_model.data" class="form-control">
+            <select id="select-cred" ng-model="creditor" ng-options="formatCreditor(c) for c in creditor_model.data" class="form-kapok">
               <option value="">--Select Creditor--</option>
             </select>
           </div>
@@ -57,7 +57,7 @@
               </label>
             </div>
             <div class="input-group">
-              <select id="payable" class="form-control" ng-disabled="isPayable()">
+              <select id="payable" class="form-kapok" ng-disabled="isPayable()">
                 <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
                 <option>14</option>
                 <option>30</option>
