@@ -55,7 +55,7 @@ module.exports = (function (db) {
           error.message = errors.account_locked.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        d.resolve(error);
+        return error.message ? d.reject(error) : d.resolve({});
       });
       return d.promise;
     }
@@ -68,7 +68,7 @@ module.exports = (function (db) {
           error.message = errors.account_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        d.resolve(error);
+        return error.message ? d.reject(error) : d.resolve({});
       });
       return d.promise;
     }
@@ -81,7 +81,7 @@ module.exports = (function (db) {
           error.message = errors.debitor_creditor_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        d.resolve(error);
+        return error.message ? d.reject(error) : d.resolve({});
       });
       return d.promise;
     }
@@ -94,7 +94,7 @@ module.exports = (function (db) {
           error.message = errors.fiscal_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        d.resolve(error);
+        return error.message ? d.reject(error) : d.resolve({});
       });
       return d.promise;
     }
@@ -107,7 +107,7 @@ module.exports = (function (db) {
           error.message = errors.period_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        d.resolve(error);
+        return error.message ? d.reject(error) : d.resolve({});
       });
       return d.promise;
     }
@@ -120,7 +120,7 @@ module.exports = (function (db) {
           error.message = errors.invoice_purchase_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        d.resolve(error);
+        return error.message ? d.reject(error) : d.resolve({});
       });
 
       return d.promise;
@@ -131,29 +131,20 @@ module.exports = (function (db) {
 
       db.execute(queries.balance, function (err, res) {
         if (res.debit !== res.credit) error.message = errors.balance;
-        d.resolve(error);
+        return error.message ? d.reject(error) : d.resolve({});
       });
 
       return d.promise;
     }
 
-    function run () {
-      var d = q.defer();
-      q.all([
-        account_defined(),
-        account_locked(),
-        invoice_purchase_defined(),
-        period_defined(),
-        fiscal_defined(),
-        balance(),
-      ]).then(function (array) {
-        var errors = array.filter(function (item) { return item.message && item.rows; });
-        d.resolve(errors);
-      });
-      return d.promise;
-    }
-    
-    return run();
+    return q.all([
+      account_defined(),
+      account_locked(),
+      invoice_purchase_defined(),
+      period_defined(),
+      fiscal_defined(),
+      balance(),
+    ]);
 
   }
 
