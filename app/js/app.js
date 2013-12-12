@@ -220,6 +220,59 @@
 
     });
 
+    $translateProvider.translations('ln', {
+      //Accounting terminology
+      POSTING_JOURNAL: "Buku ya makomi",
+      TRANSACTION: "Ba Transaction",
+      ACCOUNT: "Ba Konti",
+      TRIAL_BALANCE: "balance ya vérification",
+      GENERAL_LEDGER: "Buku ya monene ya makomi",
+      DEBIT: "débit",
+      CREDIT: "crédit",
+
+      // Application functions
+      CONFIGURE: "Bobongisi",
+      PRINT: "Koimprimer",
+      CREATE: "Kela",
+
+      // Generic database
+      ID: "id",
+      DATE: "Dati",
+      DESCRIPTION: "Ndimbola",
+
+      // Actions
+      SAVE: 'Bomba',
+      DELETE : 'Longola',
+      CANCEL : 'Zonga',
+
+      //Titles
+      MANAGEMENT: "Mokambemi",
+
+      //Journal database
+      DOC_NO: "doc no.",
+      DEB_CRED_ACCOUNT: "Akonti ya debiteur to pe crediteur",
+      DEB_CRED_TYPE: "Lolenge ya crediteur to pe debiteur",
+      INV_PO_NO: "inv/PO no.",
+
+      // Users and Permissions
+      UP_TITLE : 'Mokambemi ya Basali mpe ba Ndingisa',
+      FIRST_NAME : 'Nkombo ya liboso',
+      LAST_NAME : 'Nkombo ya mibale',
+      EMAIL : 'email',
+      USER_NAME : 'Nkombo ya bosali',
+      PASSWORD : 'Nkombo ya Nkuku',
+      CONFIRM : 'Zongela ',
+      ALL : 'Nionso',
+      REGISTERED_USERS : 'Basali',
+      CHECK : 'Mpona',
+      UNITS : 'Biteni',
+      USER : 'Mosali',
+      PERMISSION: 'Ndingisa',
+      UP_DIALOGUE : 'Mpona biteni ya basali ', // This token is non-normative
+      UP_DIALOGUE_2 : 'akoki kokota',
+
+    });
+
     $translateProvider.preferredLanguage('en');
   }
 
