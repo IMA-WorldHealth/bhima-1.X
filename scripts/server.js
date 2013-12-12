@@ -66,7 +66,7 @@ app.put('/data/', function(req, res) {
   var updatesql = db.update(req.body.t, req.body.data, req.body.pk);
   db.execute(updatesql, function(err, ans) { 
     if(err) throw err;
-    res.send({status: 200, insertId: ans.insertId});
+    res.send(200, {insertId: ans.insertId});
   });
 });
 
@@ -75,7 +75,7 @@ app.post('/data/', function (req, res) {
   
   var cb = function (err, ans) {
     if (err) throw err;
-    res.send({status: 200, insertId: ans.insertId});
+    res.send(200, {insertId: ans.insertId});
   };
 
   var insertsql = db.insert(req.body.t, req.body.data);
