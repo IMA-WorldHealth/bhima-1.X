@@ -45,6 +45,7 @@ angular.module('kpk.controllers')
     var grid,
         columns,
         options,
+        searchStr = "",
         dataview = $scope.dataview = new Slick.Data.DataView();
 
     dataview.onRowCountChanged.subscribe(function (e, args) {
@@ -76,6 +77,9 @@ angular.module('kpk.controllers')
     };
 
     grid = new Slick.Grid("#kpk-inventory-grid", dataview, columns, options);
+    grid.setSelectionModel(new Slick.RowSelectionModel());
+    
+    // set up sorting
 
     function sorter (e, args) {
       var field = args.sortCol.field;
@@ -86,13 +90,37 @@ angular.module('kpk.controllers')
 
     grid.onSort.subscribe(sorter);
 
+    // set up filtering
+    
+    function search (item, args) {
+      if (item.searchStr !== "" && item.code.indexOf(args.searchStr) === -1 && item.text.indexOf(args.searchStr) === -1) {
+        return false;
+      }
+      return true;
+    }
+
+    dataview.setFilter(search);
+    dataview.setFilterArgs({
+      searchStr: searchStr
+    });
+
+    $scope.$watch('flags.search', function () {
+      if (!flags.search) flags.search = "";
+      searchStr = flags.search;
+      console.log("searchStr:", searchStr);
+      dataview.setFilterArgs({
+        searchStr: searchStr
+      });
+      dataview.refresh();
+    });
+
   }
 
   $scope.$watch('models.inventory', function () {
-    if ($scope.dataview) {
-      $scope.dataview.setItems($scope.models.inventory);
-    }
+    if ($scope.dataview) $scope.dataview.setItems($scope.models.inventory);
   }, true);
+
+
 
   function formatCurrency (row, col, item) {
     return $filter('currency')(item);

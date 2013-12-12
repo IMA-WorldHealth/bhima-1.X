@@ -37,7 +37,6 @@ angular.module('kpk.controllers')
     var grid, dataview, columns, options;
     var search = "";
     var sortcol = "inv_po_id";
-    var sortdir = 1;
 
     // paying list
     data.paying = [];

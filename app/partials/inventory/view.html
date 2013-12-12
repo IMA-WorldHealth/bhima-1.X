@@ -5,8 +5,11 @@
 </header>
 
 <section class="underline">
+  <div class="pull-left" style="padding-right: 5px;">
+    <input type="search" class="form-kapok" placeholder="filter inventory items" ng-model="flags.search" size="25">
+  </div>
   <div class="pull-left dropdown">
-    <button type="button" class="btn dropdown-toggle btn-default">Group By</button>
+    <button type="button" class="btn dropdown-toggle btn-default"><i class="glyphicon glyphicon-signal"></i> Group By</button>
     <ul class="dropdown-menu">
       <li><a href="" ng-click="groupby.type()">Type</a></li>
       <li><a href="" ng-click="groupby.group()">Group</a></li>
