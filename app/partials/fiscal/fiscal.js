@@ -140,7 +140,6 @@ angular.module('kpk.controllers')
 
         //Reload fiscal years - could insert but unneeded calculation
         loadEnterprise(enterprise.id);
-        deferred.resolve();
       }, function(err) { 
         updateProgress("Server returned error" + err.data.code);
       });
