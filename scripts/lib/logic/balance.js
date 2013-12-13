@@ -152,15 +152,16 @@ module.exports = (function (db) {
     var defer = q.defer(),
         sql = {};
     
-    sql.transfer = ["INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_eqiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)",
-                    "SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_eqiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;"].join(' ');
+    sql.transfer = ["INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)",
+                    "SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;"].join(' ');
     sql.remove = "DELETE FROM `posting_journal`;";
 
     db.execute(sql.transfer, function(err, res) {
-      if (err) defer.resolve({error : err });
+      if (err) defer.reject(err);
       else {
         db.execute(sql.remove, function (error, res) {
-          defer.resolve(error ? {error: error, res: res} : {res: res});
+          if (err) defer.reject(error);
+          defer.resolve(res);
         });
       }
     });
@@ -172,16 +173,20 @@ module.exports = (function (db) {
     // runs both
     var defer = q.defer();
     errorChecking()
-    .then(function () {
-      post()
-      .then(function (result) {
-        defer.resolve(result);
-      });
-    });
+    .then(post, function (reason) {
+      defer.reject(reason);
+    })
+    .then(function (result) {
+      defer.resolve(result);
+    }, function (reason) {
+      defer.reject(reason);
+    })
+    .done();
+
     return defer.promise;
   }
 
-  return { trial_balance: trial_balance, errorChecking : errorChecking };
+  return { trial_balance: trial_balance };
 });
 
 /*

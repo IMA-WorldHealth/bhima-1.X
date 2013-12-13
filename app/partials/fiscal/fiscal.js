@@ -43,7 +43,7 @@ angular.module('kpk.controllers')
         var data = fiscal_model.data;
         if(!fiscal_set) appstate.set('fiscal', data[data.length -1]);
         if(data[0]) $scope.select(data[data.length - 1].id);
-      })
+      });
     }
 
     function loadFiscal(enterprise_id) {  
@@ -55,7 +55,7 @@ angular.module('kpk.controllers')
           }
         },
         'where' : ['fiscal_year.enterprise_id=' + enterprise_id]
-      }
+      };
       connect.req(fiscal_query).then(function(model) {
         deferred.resolve(model);
       });
@@ -85,11 +85,11 @@ angular.module('kpk.controllers')
     $scope.isFullYear = function() {
       if($scope.new_model.year == "true") return true;
       return false;
-    }
+    };
 
     $scope.$watch('new_model.start', function(oval, nval) {
       if($scope.isFullYear()) updateEnd();
-    })
+    });
 
     function updateEnd() {
       var s = $scope.new_model.start;
@@ -140,11 +140,10 @@ angular.module('kpk.controllers')
 
         //Reload fiscal years - could insert but unneeded calculation
         loadEnterprise(enterprise.id);
-        deferred.resolve();
       }, function(err) { 
         updateProgress("Server returned error" + err.data.code);
       });
-    }
+    };
 
     function fetchPeriods(fiscal_id) {
       var period_query = {
@@ -154,7 +153,7 @@ angular.module('kpk.controllers')
           }
         },
         'where' : ['period.fiscal_year_id=' + fiscal_id]
-      }
+      };
       connect.req(period_query).then(function(model) {
         $scope.period_model = model.data;
       });
