@@ -90,23 +90,23 @@ angular.module('kpk.controllers')
 //      $scope.groupByID()
       dataview.endUpdate();
 
-    // allow the user to select only certain columns shown
-    $scope.columns = angular.copy(columns).map(function (column) {
-      column.visible = true;
-      return column;
-    });
-
-    $scope.$watch('columns', function () {
-      if (!$scope.columns) return;
-      var columns = $scope.columns.filter(function (column) {
-        return column.visible;
+      // allow the user to select only certain columns shown
+      $scope.columns = angular.copy(columns).map(function (column) {
+        column.visible = true;
+        return column;
       });
-      grid.setColumns(columns);
-    }, true);
 
     });
 
   }
+
+  $scope.$watch('columns', function () {
+    if (!$scope.columns) return;
+    var columns = $scope.columns.filter(function (column) {
+      return column.visible;
+    });
+    grid.setColumns(columns);
+  }, true);
 
   $scope.groupByID = function groupByID () {
     dataview.setGrouping({
@@ -148,11 +148,12 @@ angular.module('kpk.controllers')
     connect.fetch('/trial/')
     .success(function (data, status) {
       console.log('Posted successfully!');
-      // logic 
-      // Reload page?
+      // reload data
+      init(); 
     })
     .error(function (data, status) {
       console.log('Posting encountered an error!');
+      console.log("data:", data, "status:", status);
     });
   };
 

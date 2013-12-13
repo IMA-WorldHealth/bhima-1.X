@@ -1,0 +1,7 @@
+
+#kpk-ledger-general_ledger-grid,
+#kpk-ledger-general_ledger-grid div {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}

@@ -98,10 +98,10 @@ angular.module('kpk.controllers')
 
     function search (item, args) {
       if (item.searchStr !== "" &&
-          item.account_number.indexOf(args.searchStr) === -1 &&
-          item.trans_id.indexOf(args.searchStr) === -1 &&
+          String(item.account_number).indexOf(args.searchStr) === -1 &&
+          String(item.trans_id).indexOf(args.searchStr) === -1 &&
           item.description.indexOf(args.searchStr) === -1 &&
-          item.deb_cred_id.indexOf(args.searchStr) === -1
+          String(item.deb_cred_id).indexOf(args.searchStr) === -1
          ) {
         return false;
       }
