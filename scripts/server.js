@@ -119,8 +119,18 @@ app.post('/journal', function(req, res) {
 });
 
 app.get('/trial/', function (req, res, next) {
-  balance.trial_balance().then(function (results) {
+  trialbalance.trial()
+  .then(function (results) {
     res.send(204); // processed the request successfully, and sending NO CONTENT
+  }, function (reason) {
+    res.send(304, reason); // processed the requuest, but NOT MODIFIED
+  });
+});
+
+app.get('/post/', function (req, res, next) {
+  trialbalance.post()
+  .then(function (results) {
+    res.send(204);  // processed the request successfully, and sending NO CONTENT
   }, function (reason) {
     res.send(304, reason); // processed the requuest, but NOT MODIFIED
   });

@@ -169,7 +169,7 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
-  function trial_balance () {
+  function trial () {
     // runs both
     var defer = q.defer();
     errorChecking()
