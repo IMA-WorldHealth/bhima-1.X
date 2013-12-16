@@ -85,8 +85,12 @@ app.post('/data/', function (req, res) {
   db.execute(insertsql, cb);
 });
 
-app.delete('/data/:id/:table', function(req, res){
-  var deleteSql = db.delete(req.params.table, {id:[req.params.id]});
+app.delete('/data/:val/:col/:table', function (req, res) {
+  // format the query of the form "WHERE col = val;"
+  var reqObj = {};
+  reqObj[req.params.col] = [req.params.val];
+  // execute
+  var deleteSql = db.delete(req.params.table, reqObj);
   var cbDEL = function (err, ans) {
       if (err) throw err;
       res.status(200);

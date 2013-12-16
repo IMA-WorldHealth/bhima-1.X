@@ -779,9 +779,10 @@
       return model;
     }
 
-    function basicDelete (table, id) {
+    function basicDelete (table, col,  id) {
       // deletes something from the table `table` where id is `id` 
-      $http.delete('/data/'+id+'/'+table);
+      if (!col) col = "id";
+      $http.delete('/data/'+id+'/'+col+'/'+table);
     }
 
 //    TODO reverse these two methods? I have no idea how this happened
