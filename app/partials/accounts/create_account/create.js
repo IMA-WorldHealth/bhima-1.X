@@ -9,7 +9,7 @@ angular.module('kpk.controllers').controller('createAccountController', function
   var account_request = {
     'tables' : {
       'account' : {
-        'columns' : ["id", "account_txt", "account_type_id", "fixed"]
+        'columns' : ["id", "account_number", "account_txt", "account_type_id", "fixed"]
       }
     }
   }
@@ -19,7 +19,7 @@ angular.module('kpk.controllers').controller('createAccountController', function
   var dataview;
   var sort_column = "id";
   var columns = [
-    {id: 'id', name: 'No.', field: 'id', sortable: true, maxWidth: 80},
+    {id: 'account_number', name: 'No.', field: 'account_number', sortable: true, maxWidth: 80},
     {id: 'account_txt', name: 'Text', field: 'account_txt'},
     {id: 'account_type_id', name: 'Type', field: 'account_type_id', maxWidth: 60},
     {id: 'fixed', name: 'Fixed', field: 'fixed', maxWidth: 60}
