@@ -55,7 +55,7 @@ module.exports = (function (db) {
           error.message = errors.account_locked.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        return error.message ? d.reject(error) : d.resolve({});
+        return error.message ? d.reject(error) : d.resolve();
       });
       return d.promise;
     }
@@ -68,7 +68,7 @@ module.exports = (function (db) {
           error.message = errors.account_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        return error.message ? d.reject(error) : d.resolve({});
+        return error.message ? d.reject(error) : d.resolve();
       });
       return d.promise;
     }
@@ -81,7 +81,7 @@ module.exports = (function (db) {
           error.message = errors.debitor_creditor_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        return error.message ? d.reject(error) : d.resolve({});
+        return error.message ? d.reject(error) : d.resolve();
       });
       return d.promise;
     }
@@ -94,7 +94,7 @@ module.exports = (function (db) {
           error.message = errors.fiscal_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        return error.message ? d.reject(error) : d.resolve({});
+        return error.message ? d.reject(error) : d.resolve();
       });
       return d.promise;
     }
@@ -107,7 +107,7 @@ module.exports = (function (db) {
           error.message = errors.period_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        return error.message ? d.reject(error) : d.resolve({});
+        return error.message ? d.reject(error) : d.resolve();
       });
       return d.promise;
     }
@@ -120,7 +120,7 @@ module.exports = (function (db) {
           error.message = errors.invoice_purchase_defined.replace('%number%', res.length);
           error.rows = res.map(function (row) { return row.id; });
         }
-        return error.message ? d.reject(error) : d.resolve({});
+        return error.message ? d.reject(error) : d.resolve();
       });
 
       return d.promise;
@@ -131,7 +131,7 @@ module.exports = (function (db) {
 
       db.execute(queries.balance, function (err, res) {
         if (res.debit !== res.credit) error.message = errors.balance;
-        return error.message ? d.reject(error) : d.resolve({});
+        return error.message ? d.reject(error) : d.resolve();
       });
 
       return d.promise;
@@ -171,17 +171,24 @@ module.exports = (function (db) {
 
   function trial () {
     // runs both
+
     var defer = q.defer();
     errorChecking()
-    .then(post, function (reason) {
+    .fail(function (reason) {
+      console.log('reason:', reason);
       defer.reject(reason);
     })
-    .then(function (result) {
-      defer.resolve(result);
-    }, function (reason) {
-      defer.reject(reason);
-    })
-    .done();
+    .then(function () {
+      // start posting
+      post()
+      .fail(function (reason) {
+      console.log('reason:', reason);
+        defer.reject(reason);
+      })
+      .then(function () {
+        defer.resolve();
+      });
+    });
 
     return defer.promise;
   }
