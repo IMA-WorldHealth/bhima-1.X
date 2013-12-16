@@ -41,4 +41,48 @@
   </div>
 </section>
 
-<script type=""></script>
+<script type="text/ng-template" id="trialBalanceModal.html">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Trial Balance <small>Status: {{data.status}} </small></h3> 
+    </div>
+
+    <div class="modal-body">
+
+      <div ng-show="data.errors">
+        <ul>
+          <li ng-repeat="error in data.errors">{{error.err}} | {{error.reason}}</li>
+        </ul>
+      </div>
+
+      <div ng-hide="data.errors">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>General Ledger Balance</th><th>Total Debit</th><th>Total Credit</th><th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Before Posting</th>
+              <td>{{data.gl_balance.debit}}</td>
+              <td>{{data.gl_balance.credit}}</td>
+              <td>{{data.gl_balance.debit - data.gl_balance.credit}}</td>
+            </tr>
+            <tr>
+              <th>After Posting</th>
+              <td>{{data.gl_after_balance.debit}}</td>
+              <td>{{data.gl_after_balance.credit}}</td>
+              <td>{{data.gl_after_balance.debit - data.gl_after_balance.credit}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-disabled="data.errors" ng-click="ok()">Post to General Ledger</button>
+        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    </div>
+  </div>
+</script>

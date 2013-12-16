@@ -1,6 +1,6 @@
 angular.module('kpk.controllers')
 
-.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, message, connect) {
+.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, $modal, message, connect) {
   // This is the posting journal and perhaps the heaviest
   // module in Kapok.  It is responsible for posting to
   // the general ledger via a trial balance
@@ -146,14 +146,23 @@ angular.module('kpk.controllers')
     // with your user name.
     // DECISION: Should we allow you to post only some transactions?
     connect.fetch('/trial/')
-    .success(function (data, status) {
-      console.log('Posted successfully!');
-      // reload data
-      init(); 
-    })
-    .error(function (data, status) {
-      console.log('Posting encountered an error!');
-      console.log("data:", data, "status:", status);
+    .then(function (data) {
+      var instance = $modal.open({
+        templateUrl:'trialBalanceModal.html',
+        controller: 'trialBalanceCtrl',
+        resolve : {
+          request: function () {
+            return data;
+          }
+        }
+      });
+      instance.result.then(function () {
+        console.log("modal closed successfully.");
+      }, function () {
+        console.log("modal closed.");
+      });
+    }, function (data, status) {
+      console.log("data:", data);
     });
   };
 
@@ -203,4 +212,22 @@ angular.module('kpk.controllers')
 
 
   init();
+})
+
+.controller('trialBalanceCtrl', function ($scope, $modalInstance, request, connect) {
+  $scope.data = request.data;
+  $scope.data.status = request.status;
+
+  $scope.ok = function () {
+    connect.fetch('/post/')
+    .then(function () {
+      $modalInstance.close();
+    }, function (error) {
+      data.errors = error;
+    });
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss();
+  };
 });
