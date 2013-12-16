@@ -46,88 +46,27 @@ module.exports = function (db) {
     */
     var query = "SELECT DISTINCT `service_txt` FROM `transaction_type` WHERE `id`=" + db.escapestr(posting.transaction_type) + ';\n';
     db.execute(query, function (err, data) {
-      var columnData, sql, service_name,
+      var columnData, sql, services, service_name,
           columns = [],
           defer = Q.defer();
 
       service_name = data[0].service_txt.toLowerCase();
       columnData = map[service_name];
       for (var col in columnData) {
-        if (col !='t') columns.push('`' + columnData.t + '`.`' + columnData[col] + '`');
+        if (col != 't') columns.push('`' + columnData.t + '`.`' + columnData[col] + '`');
       }
 
-      switch (service_name) {
-        case 'sale' : 
-          sql = "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM " + columnData.t + " JOIN `sale_item` JOIN `inventory` ON `sale`.`id`=`sale_item`.`sale_id` AND `sale_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t + ".`id`=" + posting.id + ";\n";
-          /*
-          sql = {
-            'entities':[
-                        {'t':obj.t, 'c':cle_tab},
-                        {'t':'sale_item', 'c':['inventory_id', 'total']},
-                        {'t':'inventory', 'c':['group_id']}
-                       ],
-            'jcond':   [
-                        {ts: ['sale', 'sale_item'], c: ['id', 'sale_id'],l: 'AND'},
-                        {ts: ['inventory', 'sale_item'], c: ['id', 'inventory_id'],l: 'AND'}
-                       ],
-            'cond' :   [
-                        {'t':obj.t, 'cl':'id', 'z':'=', 'v':posting.id}
-                       ]
-                    };
-          */
-          db.execute(sql, function (err, data) {
-            if (err) throw err;
-            defer.resolve(data);
-          });
-          break;
-       case 'cash' :
-         sql = "SELECT " + columns.join(', ') + ", `cash_id`, `allocated_cost`, `invoice_id` FROM " + columnData.t + " JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` WHERE " + columnData.t + ".`id`=" + db.escapestr(posting.id) + ";\n";
-         /*
-         sql = {
-           'entities':[
-                       {'t':obj.t, 'c':cle_tab},
-                       {'t':'cash_item', 'c':['cash_id', 'allocated_cost', 'invoice_id']}
-                      ],
-           'jcond':   [
-                       {'ts':['cash', 'cash_item'], 'c':['id', 'cash_id'], l:'AND'}
-                      ],     
-           'cond' :   [
-                       {'t':obj.t, 'cl':'id', 'z':'=', 'v':posting.id},
-                      ]
-                   };
-         */
-         db.execute(sql, function(err, data) {
-           if (err) throw err; // collapse this into a promise..
-           defer.resolve(data);
-         });
-         break;
-        case 'purchase': 
-          sql = "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM `purchase` JOIN `purchase_item` JOIN `inventory` ON `purchase`.`id`=`purchase_id`.`purchase_id` AND `purchase_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t +".`id`=" + db.escapestr(posting.id) + ";\n";
-          /*
-          sql = {
-            'entities':[
-                        {'t':obj.t, 'c':cle_tab},
-                        {'t':'purchase_item', 'c':['inventory_id', 'total']},
-                        {'t':'inventory', 'c':['group_id']}
-                       ],
-            'jcond':   [
-                        {ts: ['purchase', 'purchase_item'], c: ['id', 'purchase_id'],l: 'AND'},
-                        {ts: ['inventory', 'purchase_item'], c: ['id', 'inventory_id'],l: 'AND'}
-                       ],
-            'cond' :   [
-                        {'t':obj.t, 'cl':'id', 'z':'=', 'v':posting.id}
-                       ]
-                    };
-          */
-          db.execute(sql, function(err, data){
-          if (err) throw err;
-            defer.resolve(data);
-          });
-      }
+      services = {
+        'sale' : "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM " + columnData.t + " JOIN `sale_item` JOIN `inventory` ON `sale`.`id`=`sale_item`.`sale_id` AND `sale_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t + ".`id`=" + posting.id + ";\n",
+        'cash' : "SELECT " + columns.join(', ') + ", `cash_id`, `allocated_cost`, `invoice_id` FROM " + columnData.t + " JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` WHERE " + columnData.t + ".`id`=" + db.escapestr(posting.id) + ";\n",
+        'purchase' : "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM `purchase` JOIN `purchase_item` JOIN `inventory` ON `purchase`.`id`=`purchase_id`.`purchase_id` AND `purchase_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t +".`id`=" + db.escapestr(posting.id) + ";\n"
+      };
 
-      defer.promise
-      .then(function (data) {
-        Q.all([getPeriodExerciceId(data[0].invoice_date, data[0].enterprise_id)])
+      sql = services[service_name];
+      db.execute(sql, function (err, data) {
+        if (err) throw err;
+        var date = data[0].invoice_date || data[0].date;
+        Q.all([getPeriodExerciceId(date, data[0].enterprise_id)])
         .then(function (result) {
           if (result[0].success) process(data, posting, res, result[0], service_name); //verification et insertion eventuelle
         });
@@ -184,25 +123,22 @@ module.exports = function (db) {
   }
 
   function saleCredit (obj, data, posting, res, periodExerciceIdObject) { 
-    var defer = Q.defer();  
-    var objCredit = map[obj.t+'_credit'];
-    var callback = function (err, ans) {    
-      if (err) {
-        defer.resolve({success :false, info:err});
-      } else {
-        defer.resolve({success:true, info:ans});
-      } 
-    };
-    data.forEach(function(item){
-      var journalRecord = {}; 
-      var sql = {
+    var defer = Q.defer(),
+        objCredit = map[obj.t + "_credit"],
+        journalRecord,
+        sql;
+
+    data.forEach(function (item) {
+      journalRecord = {}; 
+      sql = "SELECT `inv_group`.`sales_account` FROM `inv_group` WHERE `inv_group`.`id`=" + db.escapestr(item.group_id) + ";\n";
+      /*
+      sql = {
         'entities':[{'t':'inv_group', 'c':['sales_account']}],
         'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
       };
-      db.execute(db.select(sql), function(err, data2){       
-          for(var cle in objCredit){
-            journalRecord[cle] = item[objCredit[cle]];    
-          }
+      */
+      db.execute(sql, function (err, data2) {
+          for (var k in objCredit) journalRecord[k] = item[objCredit[k]];
           journalRecord.origin_id = posting.transaction_type;
           journalRecord.user_id = posting.user;
           journalRecord.id = '';
@@ -212,59 +148,61 @@ module.exports = function (db) {
           journalRecord.period_id = periodExerciceIdObject.pid;
           journalRecord.account_id = data2[0].sales_account;
           var sql = db.insert('posting_journal', [journalRecord]); 
-          db.execute(sql, callback);           
+          db.execute(sql, function (err, ans) {
+            defer.resolve(err ? {success: false, info : err} : {success : true, info: ans});
+          });
       });
     });
     return defer.promise;
   }
 
-  var cashDebit = function (obj, data, posting, res, periodExerciceIdObject){
+  function cashDebit (obj, data, posting, res, periodExerciceIdObject) {
     var defer = Q.defer();
     var journalRecord = {};
     var objDebit = map[obj.t+'_debit']; 
     journalRecord.id = '';
-    for(var cle in objDebit){
+    for (var cle in objDebit) {
       journalRecord[cle] = data[0][objDebit[cle]];
     }
     journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
     journalRecord.user_id = posting.user;
     journalRecord.deb_cred_type = 'D';  
-    delete(journalRecord.description);
+    delete(journalRecord.description); // why do this?
     journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
     journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
     journalRecord.period_id = periodExerciceIdObject.pid;
+    var sql = "SELECT `debit_account` FROM `cash` WHERE `id`=" + posting.id + ";\n";
+    /*
     var sql = {
       'entities':[{'t':'cash', 'c':['debit_account']}],
       'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
     };
-    db.execute(db.select(sql),function(err, record){
-
-      console.log("SQL1! ", err, record);
+    */
+    db.execute(sql,function (err, record) {
       journalRecord.account_id = record[0].debit_account;
       var sql = db.insert('posting_journal', [journalRecord]);
-      console.log('ligne debit ', journalRecord);
       db.execute(sql, function (err, ans) {
-        console.log("SQL2! ", err, ans);
-        if (err){
-          defer.resolve({success :false, info:err});
-        }else{
-        defer.resolve({success:true, info:ans});
-        } 
+        defer.resolve(err ? {success : false, info:err} : {success : true, info: ans});
       });
     });
     return defer.promise;
-  };
+  }
 
-  var cashCredit = function (obj, data, posting, res, periodExerciceIdObject){
-    var defer = Q.defer();   
-    var objCredit = map[obj.t+'_credit'];
-    var journalRecord = {};
+  function cashCredit (obj, data, posting, res, periodExerciceIdObject) {
+    var defer = Q.defer(),
+        objCredit = map[obj.t+'_credit'],
+        journalRecord = {},
+        sql;
+
     journalRecord.id = '';
+    /*
     var sql = {
                 'entities':[{'t':'cash', 'c':['credit_account']}],
                 'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
               };
-    db.execute(db.select(sql),function(err, data2){     
+    */
+    sql = "SELECT `cash`.`credit_account` FROM `cash` WHERE `cash`.`id`=" + db.escapestr(posting.id) + ";\n";
+    db.execute(sql, function (err, data2) {     
       journalRecord.account_id = data2[0].credit_account;
       data.forEach(function(item){    
         for(var cle in objCredit){
@@ -278,38 +216,35 @@ module.exports = function (db) {
         journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
         journalRecord.period_id = periodExerciceIdObject.pid;
         var sql = db.insert('posting_journal', [journalRecord]); 
-        console.log('ligne credit ', journalRecord);
         db.execute(sql, function (err, ans) {
-          if (err){
-            defer.resolve({success :false, info:err});
-          }else{
-            defer.resolve({success:true, info:ans});
-          } 
+          defer.resolve(err ? {success: false, info: err} : {success : true, info: ans});
         });
       });  
     });
     return defer.promise;
-  };
+  }
 
-  var purchaseDebit = function(obj, data, posting, res, periodExerciceIdObject){
-    var defer = Q.defer(); 
-    var objDebit = map[obj.t+'_debit'];
-    var callback = function (err, ans) {
-      if (err) defer.resolve({success :false, info:err});
-      else defer.resolve({success:true, info:ans});
-    };
+  function purchaseDebit (obj, data, posting, res, periodExerciceIdObject) {
+    var defer = Q.defer(),
+        objDebit = map[obj.t+'_debit'],
+        journalRecord,
+        sql;
 
     data.forEach(function(item){
-      var journalRecord = {}; 
-      var sql = {
+      journalRecord = {}; 
+      /*
+      sql = {
                  'entities':[{'t':'inv_group', 'c':['sales_account']}],
                  'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
       };
-      db.execute(db.select(sql), function(err, data2){
-         journalRecord.account_id = data2[0].sales_account;
-          for(var cle in objDebit){
-          journalRecord[cle] = item[objDebit[cle]];    
-          }
+      */
+      sql = "SELECT `sales_account` FROM `inv_group` WHERE `inv_group`.`id`=" + db.escapestr(item.group_id) + ";\n";
+      db.execute(sql, function (err, data2) {
+        if (err) throw err;
+        journalRecord.account_id = data2[0].sales_account;
+
+        for(var cle in objDebit) journalRecord[cle] = item[objDebit[cle]];
+
         journalRecord.origin_id = posting.transaction_type;
         journalRecord.user_id = posting.user;
         journalRecord.deb_cred_type = 'C'; 
@@ -318,14 +253,15 @@ module.exports = function (db) {
         journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
         journalRecord.period_id = periodExerciceIdObject.pid;
         var sql = db.insert('posting_journal', [journalRecord]); 
-        db.execute(sql, callback);
-              
+        db.execute(sql, function (err, ans) {
+          defer.resolve(err ? {success: false, info: err} : {success : true, info: ans});
+        });
       });
     });
     return defer.promise;
-  };
+  }
 
-  var purchaseCredit = function(obj, data, posting, res, periodExerciceIdObject){
+  function purchaseCredit (obj, data, posting, res, periodExerciceIdObject) {
     var defer = Q.defer(); 
     var journalRecord = {};
     var objCredit = map[obj.t+'_credit'];
@@ -340,38 +276,39 @@ module.exports = function (db) {
     journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
     journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
     journalRecord.period_id = periodExerciceIdObject.pid;
-    var callback = function (err, ans) {
-      if (err){
-        defer.resolve({success :false, info:err});
-      }else{
-      defer.resolve({success:true, info:ans});
-      } 
-    };  
+    var req = "SELECT `creditor_group_id` FROM `creditor` WHERE `id`=" + db.escapestr(journalRecord.deb_cred_id) + ";\n";
+    /*
     var sql = {
                'entities':[{'t':'creditor', 'c':['creditor_group_id']}],
                'cond':[{'t':'creditor', 'cl':'id', 'z':'=', 'v':journalRecord.deb_cred_id}]
               };
     var req = db.select(sql);
-    db.execute(req, function(err, data){
+    */
+    db.execute(req, function(err, data) {
+      /*
       var sql = {
        'entities':[{'t':'creditor_group', 'c':['account_id']}],
        'cond':[{'t':'creditor_group', 'cl':'id', 'z':'=', 'v':data[0].creditor_group_id}]
       };
-      db.execute(db.select(sql), function(err, data){
-        journalRecord.account_id = data[0].account_id;      
+      */
+      var sql = "SELECT `account_id` FROM `creditor_group` WEHRE `creditor_group`.`id`=" + data[0].creditor_group_id + ";\n";
+      db.execute(sql, function (err, data) {
+        journalRecord.account_id = data[0].account_id;
         var sql = db.insert('posting_journal', [journalRecord]);
-        db.execute(sql, callback); 
+        db.execute(sql, function (err, ans) {
+          defer.resolve(err ? {success: false, info: err} : {success : true, info: ans});
+        });
       });
     });
     return defer.promise;
-  };
+  }
 
   function process (data, posting, res, periodExerciceIdObject, service_name) {
     var obj = map[service_name];
     
     switch (service_name) {
       case 'sale' :
-        Q.all([saleDebit(obj, data[0], posting, res, periodExerciceIdObject), saleCredit(obj, data, posting, res, periodExerciceIdObject), check(obj.t, posting.id)]).then(function(arr) {
+        Q.all([saleDebit(obj, data[0], posting, res, periodExerciceIdObject), saleCredit(obj, data, posting, res, periodExerciceIdObject), setPosted(obj.t, posting.id)]).then(function(arr) {
           if(arr[0].success===true && arr[1].success===true && arr[2] === true){
             res.send({status: 200, insertId: arr[1].info.insertId});
           }
@@ -388,7 +325,7 @@ module.exports = function (db) {
         });
         break;
       case 'purchase' :
-        Q.all([purchaseDebit(obj, data, posting, res, periodExerciceIdObject), purchaseCredit(obj, data[0], posting, res, periodExerciceIdObject), check(obj.t, posting.id)]).then(function(arr) { 
+        Q.all([purchaseDebit(obj, data, posting, res, periodExerciceIdObject), purchaseCredit(obj, data[0], posting, res, periodExerciceIdObject), setPosted(obj.t, posting.id)]).then(function(arr) { 
           if(arr[0].success === true && arr[1].success === true && arr[2] === true){        
             res.send({status: 200, insertId: arr[1].info.insertId});
           }
@@ -398,9 +335,10 @@ module.exports = function (db) {
   }
 
 
-  function check (table, id) {
-    var defer = Q.defer();
-    db.execute(db.update(table, [{id: id, posted: 1}], ["id"]), function (err, data) {
+  function setPosted (table, id) { //used to be `check`
+    var defer = Q.defer(),
+        sql = "UPDATE " + db.escape(table) + " SET `posted`=1 WHERE `id`=" + db.escapestr(id) + ";\n";
+    db.execute(sql, function (err, data) {
       defer.resolve(err ? false : true);
     });
     return defer.promise;
