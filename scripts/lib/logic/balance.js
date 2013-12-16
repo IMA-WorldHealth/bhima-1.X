@@ -169,31 +169,7 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
-  function trial () {
-    // runs both
-
-    var defer = q.defer();
-    errorChecking()
-    .fail(function (reason) {
-      console.log('reason:', reason);
-      defer.reject(reason);
-    })
-    .then(function () {
-      // start posting
-      post()
-      .fail(function (reason) {
-      console.log('reason:', reason);
-        defer.reject(reason);
-      })
-      .then(function () {
-        defer.resolve();
-      });
-    });
-
-    return defer.promise;
-  }
-
-  return { trial_balance: trial_balance };
+  return { trial: errorChecking, post: post };
 });
 
 /*
