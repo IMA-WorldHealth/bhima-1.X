@@ -148,12 +148,51 @@ module.exports = (function (db) {
 
   }
 
+  function trial () {
+    var defer = q.defer(),
+        sql = {};
+
+    function formatResults (gl, journal) {
+      return { credit : gl.credit  + journal.credit, debit : gl.debit + journal.debit };
+    }
+
+    sql.gl_balance = "SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `general_ledger`";
+
+    sql.journal_balance = "SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `posting_journal`";
+
+    errorChecking()
+    .then(function () {
+
+      db.execute(sql.gl_balance, function (err, res) {
+        if (err) defer.reject(err);
+        db.execute(sql.journal_balance, function (error, results) {
+          if (error) defer.reject(error);
+          else {
+            // ensure proper formatting
+            // TODO: clean up this code
+            var gl_after_balance = formatResults(res[0], results[0]);
+            var object = {
+              gl_balance : res[0],
+              gl_after_balance : gl_after_balance,
+            };
+           defer.resolve(object);
+          }
+        });
+      });
+      
+    }, function (reason) {
+      defer.reject(reason);
+    });
+
+    return defer.promise;
+  }
+
   function post () {
     var defer = q.defer(),
         sql = {};
     
-    sql.transfer = ["INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)",
-                    "SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;"].join(' ');
+    sql.transfer = ["INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)",
+                    "SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;"].join(' ');
     sql.remove = "DELETE FROM `posting_journal`;";
 
     db.execute(sql.transfer, function(err, res) {
@@ -169,7 +208,7 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
-  return { trial: errorChecking, post: post };
+  return { trial: trial, post: post };
 });
 
 /*

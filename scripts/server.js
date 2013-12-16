@@ -10,7 +10,7 @@ var express      = require('express')
   , authenticate = require('./lib/auth/authentication')(db)
   , tree         = require('./lib/tree')(db)
   , report       = require('./lib/logic/report')(db)
-  , balance      = require('./lib/logic/balance')(db) // TODO
+  , trialbalance = require('./lib/logic/balance')(db)
   , jr           = require('./lib/logic/journal')
   , ledger       = require('./lib/logic/ledger')(db)
   , fiscal       = require('./lib/logic/fiscal')(db)
@@ -124,10 +124,11 @@ app.post('/journal', function(req, res) {
 
 app.get('/trial/', function (req, res, next) {
   trialbalance.trial()
-  .then(function (results) {
-    res.send(204); // processed the request successfully, and sending NO CONTENT
+  .then(function (result) {
+    res.send(result);  // processed the request successfully, and sending NO CONTENT
   }, function (reason) {
-    res.send(304, reason); // processed the requuest, but NOT MODIFIED
+    console.log("Reason:", reason);
+    res.send(304, reason);  // processed the requuest, but NOT MODIFIED
   });
 });
 

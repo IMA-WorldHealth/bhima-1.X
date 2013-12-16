@@ -36,8 +36,6 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
   ]).then(init);
   }
 
-  
-
   var stores = {},
       models = ['account', 'inv_unit', 'inv_group', 'inv_type', 'inventory'],
       item;
