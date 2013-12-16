@@ -1,6 +1,6 @@
 angular.module('kpk.controllers')
 
-.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, $modal, message, connect) {
+.controller('journalController', function($scope, $translate, $compile, $timeout, $filter, $q, $modal, $http, $location, message, connect) {
   // This is the posting journal and perhaps the heaviest
   // module in Kapok.  It is responsible for posting to
   // the general ledger via a trial balance
@@ -158,6 +158,7 @@ angular.module('kpk.controllers')
       });
       instance.result.then(function () {
         console.log("modal closed successfully.");
+        $location.path('/reports/ledger/general_ledger');
       }, function () {
         console.log("modal closed.");
       });
