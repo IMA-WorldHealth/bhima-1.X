@@ -110,7 +110,7 @@ angular.module('kpk.controllers')
       loadDebitor('*');
 
       $scope.$watch('models.ledger', function () {
-        if (models.ledger) dataview.setItems(models.ledger, "inv_po_id");
+       if (models.ledger) dataview.setItems(models.ledger, "inv_po_id");
       }, true);
 
       $scope.$watch('data.search', function () {
@@ -340,6 +340,8 @@ angular.module('kpk.controllers')
           journalPost(doc.id, res.data.id)
           .then(function (response) {
             console.log("posting returned:", response);
+            // reload page
+            loadDebitor('*');
           });
         });
       });
@@ -400,4 +402,5 @@ angular.module('kpk.controllers')
     $scope.pay = pay;
     $scope.freeze = freeze;
     $scope.thaw = thaw;
-  });
+    
+});

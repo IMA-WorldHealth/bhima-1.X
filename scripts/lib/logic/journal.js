@@ -32,6 +32,7 @@ module.exports = function (db) {
       });
     }); 
   };
+
   var saleDebit = function (obj, data, posting, res, periodExerciceIdObject){ 
     var deffer = Q.defer(); 
     var journalRecord = {};
@@ -185,12 +186,11 @@ module.exports = function (db) {
   var purchaseDebit = function(obj, data, posting, res, periodExerciceIdObject){
     var deffer = Q.defer(); 
     var objDebit = map[obj.t+'_debit'];
-    var callback = function (err, ans) {if (err){
-        deffer.resolve({succes :false, info:err});
-      }else{
-      deffer.resolve({succes:true, info:ans});
-      } 
-    }
+    var callback = function (err, ans) {
+      if (err) deffer.resolve({succes :false, info:err});
+      else deffer.resolve({succes:true, info:ans});
+    };
+
     data.forEach(function(item){
       var journalRecord = {}; 
       var sql = {
@@ -215,7 +215,7 @@ module.exports = function (db) {
       });
     });
     return deffer.promise;
-  }
+  };
 
   var purchaseCredit = function(obj, data, posting, res, periodExerciceIdObject){
     var deffer = Q.defer(); 
@@ -238,7 +238,7 @@ module.exports = function (db) {
       }else{
       deffer.resolve({succes:true, info:ans});
       } 
-    }  
+    };  
     var sql = {
                'entities':[{'t':'creditor', 'c':['creditor_group_id']}],
                'cond':[{'t':'creditor', 'cl':'id', 'z':'=', 'v':journalRecord.deb_cred_id}]
@@ -256,7 +256,7 @@ module.exports = function (db) {
       });
     });
     return deffer.promise;
-  }
+  };
 
   var process = function(data, posting, res, periodExerciceIdObject){
     var obj = map[service_name];
