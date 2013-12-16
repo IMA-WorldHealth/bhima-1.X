@@ -1,32 +1,5 @@
 angular.module('kpk.controllers')
 .controller('userController', function($scope, $q, $translate, kpkConnect, connect) {
- 
-
-  //population model de table
-  //getUsers();
-
-  //population model de role
-  // kpkConnect.fetch("unit", ["id", "name"], 'parent', 0).then(function(data){
-  //   $scope.roles = data;
-  // });
-
-  //population model d'unite
-  // kpkConnect.fetch("unit", ["id", "name", "description", "parent"]).then(function(data) { 
-  //   $scope.units = data;
-  //   for(var i=0; i<$scope.units.length; i++){
-  //     $scope.units[i].chkUnitModel = false;
-  //   }    
-  // });
-
-  //**************** les fonctions *****************
-  // function getUsers(){
-  //   var request = {}; 
-  //   request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
-  //   kpkConnect.get('/data/?',request).then(function(data) { 
-  //     $scope.model = data;
-  //   });
-  // }
-
   //initilaisation var  
   $scope.selected = {};
   $scope.chkTous = false;
@@ -71,14 +44,7 @@ angular.module('kpk.controllers')
     });
   }
 
-  function getUserUnits(idUser){
-    // var def = $q.defer();
-    // var request = {}; 
-    // request.e = [{t : 'permission', c : ['id_unit']}];
-    // request.c = [{t:'permission', cl:'id_user', v:idUser, z:'='}];
-    // kpkConnect.get('/data/?', request).then(function (data){      
-    //   def.resolve(data);
-    // });
+  function getUserUnits(idUser){    
     var def = $q.defer();
 
     var autorisations = {tables:{'permission':{columns:['id_unit']}},
@@ -153,7 +119,6 @@ angular.module('kpk.controllers')
         $scope.showbadusername = false;
         var user = {id:'', username: $scope.selected.username, password: $scope.selected.password,
                    first: $scope.selected.first, last: $scope.selected.last, email: $scope.selected.email, logged_in:0}
-        //kpkConnect.send('user', [user]);
         connect.basicPut('user', [user]).then(function(res){
           if(res.status == 200){
             var lastUser = {tables:{'user':{columns:['id']}},
@@ -163,25 +128,13 @@ angular.module('kpk.controllers')
               var i;
               for(i=0; i<$scope.units.length; i++){
                 if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
-                  //kpkConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
                   connect.basicPut('permission', [{id:'', id_unit: $scope.units[i].id, id_user:result[0].data[0].id}]);
                 }
               }              
               refreshUserModel();
             });
           }
-        });
-    //   var request = {}; 
-    //   request.e = [{t : 'user', c : ['id']}];
-    //   request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'=', l:'AND'}, {t:'user', cl:'password', v:$scope.selected.password, z:'='}];
-    //   kpkConnect.get('data/?',request).then(function(data) {           
-    //     for(var i = 0; i<$scope.units.length; i++){
-    //       if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
-    //         kpkConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:data[0].id}]);
-    //       }
-    //     }         
-    
-    // });
+        });    
       }else{
         $scope.showbadusername = true;
       }
@@ -220,16 +173,6 @@ angular.module('kpk.controllers')
   }
 
   function refreshUserModel(){
-    // var request = {}; 
-    // request.e = [{t : 'user', c : ['id', 'username', 'email', 'password','first', 'last', 'logged_in']}];
-    // kpkConnect.get('data/?',request).then(function(data) { 
-    // $scope.model = data;
-    // $scope.selected={};
-    // $scope.confirmpw = "";
-    // $scope.showbadpassword = false;
-    // $scope.showbademail = false;
-    // });
-
     $q.all([connect.req(users)]).then(function(resultats){
       $scope.model = resultats[0].data;
       $scope.selected={};
@@ -240,56 +183,26 @@ angular.module('kpk.controllers')
   }
 
   function updateUser(){
-    $scope.showbadusername = false;
-    // kpkConnect.get('data/?', {t:'permission', ids:{id_user:[$scope.selected.id]}, action:'DEL'});
-    // var sql_update = {t:'user', 
-    //                   data:[{id:$scope.selected.id,
-    //                          username: $scope.selected.username,
-    //                          password: $scope.selected.password,
-    //                          first: $scope.selected.first,
-    //                          last: $scope.selected.last,
-    //                          email:$scope.selected.email}
-    //                        ], 
-    //                   pk:["id"]
-    //                  };
-    // kpkConnect.update(sql_update);
-    // for(var i = 0; i<$scope.units.length; i++){
-    //   if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
-    //     kpkConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
-    //   }
-    // }
-
-    // FIX ME :can i delete a record by defining a property like id_user in stead of id
+    $scope.showbadusername = false;   
     var datas = [{id:$scope.selected.id, username: $scope.selected.username,
                   password: $scope.selected.password, first: $scope.selected.first,
                   last: $scope.selected.last, email:$scope.selected.email}
                 ];
 
-    connect.basicDelete('permission', $scope.selected.id).then(function(){
-      connect.basicPost('user', datas, ['id']).then(function(res){
-      if(res.status == 200){
-        for(var i = 0; i<$scope.units.length; i++){
-          if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
-            //kpkConnect.send('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
-            connect.basicPut('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
+    connect.basicDelete('permission','id_user', $scope.selected.id);
+    connect.basicPost('user', datas, ['id']).then(function(res){
+          if(res.status == 200){
+            for(var i = 0; i<$scope.units.length; i++){
+              if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
+                connect.basicPut('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
+              }
+            }
           }
-        }
-      }
-    });
-
-    });
-    
+        });
     refreshUserModel();
   }
 
   function existe(){
-    //   var def = $q.defer();
-    //   var request = {}; 
-    //   request.e = [{t : 'user', c : ['id']}];
-    //   request.c = [{t:'user', cl:'username', v:$scope.selected.username, z:'='}];
-    //   kpkConnect.get('data/?',request).then(function(data) {
-    //    (data.length > 0)?def.resolve(true):def.resolve(false);    
-    // });
     var def = $q.defer();
     var sql = {tables:{'user':{columns:['id']}},
                where:['user.username='+$scope.selected.username]
@@ -318,7 +231,6 @@ angular.module('kpk.controllers')
 
     }else{
       $scope.chkTous=false;
-
     }
   }  
 });
