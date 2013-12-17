@@ -29,7 +29,6 @@ delete from `inv_group`;
 delete from `inv_type`;
 delete from `cash_item`;
 delete from `cash`;
-delete from `sale`;
 delete from `purchase`;
 delete from `user`;
 delete from `period`;
@@ -37,6 +36,7 @@ delete from `fiscal_year`;
 delete from `enterprise`;
 delete from `location`;
 delete from `country`;
+delete from `sale`;
 
 -- configure application details
 insert into `user` values

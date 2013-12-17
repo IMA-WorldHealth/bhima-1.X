@@ -7,8 +7,7 @@ angular.module('kpk.controllers')
         TRANSACTION_TYPE = 1;
 
     // FIXME: this is the correct account (for enterprise 101), until we fix our enterprise
-    // dependencies.
-    imports.cash_account = 98 || appstate.get('enterprise').cash_account;
+    imports.cash_account = appstate.get('enterprise').cash_account;
     imports.enterprise_id = appstate.get('enterprise').id;
     imports.model_names = ['debitors', 'currency', 'cash', 'cash_items'];
 
@@ -55,8 +54,7 @@ angular.module('kpk.controllers')
         {id: 'invoice_id', name: 'Invoice ID', field: 'inv_po_id'},
         {id: 'debitor', name: 'Debitor', field: 'debitor'},
         {id: 'balance', name: 'Balance', field: 'balance', formatter: formatBalance},
-        {id: 'date', name: 'Date', field: 'trans_date', formatter: formatDate},
-        {id: 'Add', name: '', width: 5, formatter: formatBtn}
+        {id: 'date', name: 'Date', field: 'trans_date', formatter: formatDate}
       ];
 
       options = {
@@ -106,11 +104,8 @@ angular.module('kpk.controllers')
 
       dataview.syncGridSelection(grid, true);
 
-      // init data
-      loadDebitor('*');
-
       $scope.$watch('models.ledger', function () {
-       if (models.ledger) dataview.setItems(models.ledger, "inv_po_id");
+        if (models.ledger) dataview.setItems(models.ledger, "inv_po_id");
       }, true);
 
       $scope.$watch('data.search', function () {
@@ -131,13 +126,16 @@ angular.module('kpk.controllers')
             models.ledger = response.data.map(function (row) {
               // filter only those that do not balance
               var cp = row;
-              cp.balance = row.credit - row.debit; // TODO: verify that this is correct
+              cp.balance = row.debit - row.credit; // TODO: verify that this is correct
               var deb = stores.debitors.get(row.deb_cred_id);
               cp.debitor = [deb.first_name, deb.last_name].join(' ');
               return cp;
+            }).filter(function (row) {
+              return row.balance > 0;
             });
           }
         });
+        data.debitor_id = id;
     }
 
     function compareSort(a, b) {
@@ -169,10 +167,6 @@ angular.module('kpk.controllers')
 
     function formatDate (row, cell, value) {
       return $filter('date')(value); 
-    }
-
-    function formatBtn (row) {
-      return "<span style='width:100%;'<i class='glyphicon glyphicon-plus'></i></span>";
     }
 
     function addInvoice (item) {
@@ -340,8 +334,8 @@ angular.module('kpk.controllers')
           journalPost(doc.id, res.data.id)
           .then(function (response) {
             console.log("posting returned:", response);
-            // reload page
-            loadDebitor('*');
+            loadDebitor(data.debitor_id);
+            $scope.data.paying = [];
           });
         });
       });
@@ -402,5 +396,6 @@ angular.module('kpk.controllers')
     $scope.pay = pay;
     $scope.freeze = freeze;
     $scope.thaw = thaw;
+    $scope.loadDebitor = loadDebitor;
     
 });
