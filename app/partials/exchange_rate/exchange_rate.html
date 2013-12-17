@@ -1,15 +1,7 @@
 <link rel="stylesheet" href="partials/exchange_rate/exchange_rate.css">
-<header class="kpk-header">
-  <h2>Daily Exchange Rate</h2>
-  <div class="dropdown pull-right">
-    <button type="button" class="btn btn-default dropdown-toggle">
-      <i class="glyphicon glyphicon-th"></i>
-    </button>
-    <ul class="dropdown-menu kpk-menu">
-      <li><a href=""><i class="glyphicon glyphicon-search"></i>Search</a></li>
-      <li><a href=""><i class="glyphicon glyphicon-question-sign"></i>Help</a></li>
-    </ul>
-  </div>
+
+<header>
+  <span>Daily Exchange Rate</span>
 </header>
 
 <div class="container">
@@ -29,6 +21,7 @@
               ng-options="curr.id as label(curr) for curr in currencies"
               ng-change="updateFrom()"
               >
+              <option value="">-- Select Currency --</option>
             </select>
           </div>
           <label for="to" class="col-xs-1 control-label">
@@ -43,6 +36,7 @@
               ng-options="curr.id as label(curr) for curr in currencies | filter:filter"
               ng-change="updateTo()"
               >
+              <option value="">-- Select Currency --</option>
             </select>
           </div>
         </div>

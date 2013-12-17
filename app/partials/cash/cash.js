@@ -62,7 +62,7 @@ angular.module('kpk.controllers')
         enableColumnReorder: true,
         forceFitColumns: true,
         rowHeight: 35,
-        topBarHeight: 20
+        topBarHeight: 25
       };
 
       dataview = new Slick.Data.DataView({inlineFilters: true});

@@ -62,13 +62,15 @@
                 <label for="location_select">location</label>
                 <select required class="form-kapok" id="location_select" ng-model="patient.location_id"
                         ng-options="l.id as formatLocation(l) for l in location_model.data">
-                  <option value="">--Select Location--</option>
+                  <option value="">-- Select Location --</option>
                 </select>
               </div>
 
               <div class="form-group">
                 <label for="debtor-group">Patient Group</label>
-                <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtor_group_model.data"></select>
+                <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtor_group_model.data">
+                  <option value="">-- Select Group --</option>
+                </select>
               </div>
 
               <!--div class="form-group">

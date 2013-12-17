@@ -92,6 +92,7 @@
                 ng-options="group.id as group.name for group in models.inv_group"
                 required
               >
+                <option value="">-- Select Inventory Group --</option>
               </select>
             </div>
           </div>
@@ -144,6 +145,7 @@
                 ng-options="unit.id as unit.text for unit in models.inv_unit"
                 required
               >
+                <option value="">-- Select Unit --</option>
               </select>
             </div>
 
@@ -286,7 +288,9 @@
               ng-model="group.sales_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
               required
-            ></select>
+            >
+              <option value="">-- Select Account --</option>
+            </select>
           </div>
         </div>
 
@@ -298,7 +302,9 @@
               class="form-kapok"
               ng-model="group.cogs_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
-            ></select>
+            >
+              <option value="">-- Select Account --</option>
+            </select>
           </div>
         </div>
 
@@ -310,7 +316,9 @@
               class="form-kapok"
               ng-model="group.stock_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
-            ></select>
+            >
+              <option value="">-- Select Account --</option>
+            </select>
           </div>
         </div>
 
@@ -322,7 +330,9 @@
               class="form-kapok"
               ng-model="group.tax_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
-            ></select>
+            >
+              <option value="">-- Select Account --</option>
+            </select>
           </div>
         </div>
       </form>

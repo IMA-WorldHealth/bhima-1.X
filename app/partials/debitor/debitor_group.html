@@ -12,7 +12,6 @@
 </section>
 
 <div class="content">
-
   <div class="col-xs-6">
     <div class="panel panel-default" style="max-height: 300px;">
       <div class="panel-heading">
@@ -20,14 +19,14 @@
       </div>
       <table class="table table-condensed table-hover">
         <thead>
-          <tr><td>Name</td><td>Account</td><td>Type</td><td>Locked</td></tr>
+          <tr><th>Name</th><th>Account</th><th>Type</th><th><i class="glyphicon glyphicon-lock"></i></th></tr>
         </thead>
         <tbody>
           <tr ng-repeat="group in models.debitor_group | filter:flags.search" ng-click="editGroup(group)">
             <td>{{group.name}}</td>
             <td>{{displayAccount(group.account_id)}}</td>
             <td>{{displayType(group.type_id)}}</td>
-            <td><i class="glyphicon glyphicon-lock" ng-class="{disabled : group.locked}"></i></td>
+            <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)"></td>
           </tr>
         </tbody>
       </table>

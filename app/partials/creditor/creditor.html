@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="partials/creditor/creditor.css"/>
 <header>
-  <span>Register Supplier</span>
+ <span>Register Supplier</span>
 </header>
 
 <section class="underline">
@@ -10,7 +10,7 @@
 </section>
 
 <div class="content">
-<div class="row">
+  <div class="row">
     <div class="col-xs-3">
       <div class="panel panel-primary">
         <div class="panel-body">
@@ -19,7 +19,7 @@
               <label for="name">Name</label>
               <input type="text" class="form-kapok" id="name" ng-model="creditor.name" ng-change="verifyExisting()" required>
             </div>
-             <div class="form-group">
+            <div class="form-group">
               <label for="Group">Group</label>
               <select required class="form-kapok" ng-change="verifyExisting()" id="groupselectID" ng-model="creditor_group" ng-options="group.id+' -- '+group.group_txt for group in groups">
                 <option value="">--Select Group--</option>
@@ -32,15 +32,11 @@
               </select>
             </div>
             <div class="checkbox">
-        <label>International
-          <input type="checkbox" id="internationalID" ng-model = "creditor.international">
-        </label>
-      </div>
-      <div class="checkbox">
-        <label>Locked
-          <input type="checkbox" id="lockedID" ng-model = "creditor.locked">
-        </label>
-      </div>
+              <label>International
+                <input type="checkbox" id="internationalID" ng-model="creditor.international">
+              </label>
+            </div>
+          <!-- </form> -->
         </div>
       </div>
     </div>
@@ -74,7 +70,7 @@
           </form> 
           <div>
             <label for="note">Note</label>
-            <textarea ng-model = "creditor.note" class="form-kapok note"></textarea>
+            <textarea ng-model="creditor.note" class="form-kapok note"></textarea>
           </div>
         </div>
       </div>
@@ -84,26 +80,25 @@
         <div class="panel-heading">
           Registered Suppliers
         </div>
-        <div class="table-responsive">
-      <table class="table table-bordered  table-striped table-hover">
-        <thead>
-          <tr><th>ID</th><th>Name</th></tr>
-        </thead>
-        <tbody>
-        <!--This is populated with angular-->
-          <tr ng-click="fill($index)" ng-repeat="creditor in creditors">
-            <td>{{creditor.id}}</td>
-            <td>{{creditor.name}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th><i class="glyphicon glyphicon-lock"></i></th></tr>
+          </thead>
+          <tbody>
+          <!--This is populated with angular-->
+            <tr ng-click="fill($index)" ng-repeat="creditor in creditors">
+              <td>{{creditor.id}}</td>
+              <td>{{creditor.name}}</td>
+              <td><input type="checkbox" ng-model="creditor.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(creditor)"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
 
-<section class="underline overline">
+<section class="bar-bottom">
   <div class="pull-right">
     <button class="btn btn-danger btn-sm" ng-click="delete(creditor)" ng-disabled="form.$invalid">Delete Group</button>
     <button class="btn btn-default btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save Group</button>

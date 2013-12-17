@@ -17,7 +17,7 @@ angular.module('kpk.controllers')
       stores.account = store;
     });
 
-    connect.req({tables: {'creditor_group' : { columns: ["id", "group_txt", "account_id"]}}})
+    connect.req({tables: {'creditor_group' : { columns: ["id", "group_txt", "account_id", "locked"]}}})
     .then(function (store) {
       models.creditor_group = store.data;
       stores.creditor_group = store;
@@ -64,6 +64,10 @@ angular.module('kpk.controllers')
     flags.success = !flags.success;
   }
 
+  function lock (group) {
+    connect.basicPost('creditor_group', [{id: group.id, locked: group.locked}], ["id"]);
+  }
+
   initialize();
 
   $scope.formatAccount = formatAccount;
@@ -72,5 +76,6 @@ angular.module('kpk.controllers')
   $scope.editGroup = editGroup;
   $scope.newGroup = newGroup;
   $scope.save = save;
+  $scope.lock = lock;
 
 });
