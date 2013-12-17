@@ -5,6 +5,9 @@
 </header>
 
 <section class="underline">
+  <div class="pull-left">
+    <input type="text" ng-model="debitor" typeahead="debitor as debitor.first_name+' '+debitor.last_name for debitor in models.debitors | filter:$viewValue | limitTo:8" placeholder="Find a Debitor" typeahead-on-select="loadDebitor(debitor.id)" class="form-kapok" size="25">
+  </div>
   <button class="btn btn-default btn-sm" type="button">
           Current Payment 
         </button>
@@ -30,11 +33,16 @@
             <i class="glyphicon glyphicon-search"></i>
           </span>
         </div>
+        <div class="alert alert-success" ng-hide="data.debitor_id" style="margin-bottom:0;">
+          <b>No Debitor Selected.</b> Search for a debitor above to continue.
+        </div>
+        <div class="alert alert-success" ng-show="debitor && data.debitor_id && models.ledger.length==0 && data.paying.length==0" style="margin-bottom:0;">
+          <b>Debitor {{debitor.first_name}} {{debitor.last_name}} has no outstanding invoices.</b>
+        </div>
         <div id="kpk-cash-grid" style="height: 550px;" class="grid"></div>
         <div id="kpk-cash-filter" style="display:none;">
           <form class="form-inline" name="search" role="form">
-            <label>Filter invoices:</label>
-            <input type="search" id="kpk-cash-filter-invoices" ng-model="data.search">
+            <input type="search" id="kpk-cash-filter-invoices" ng-model="data.search" class="form-kapok" placeholder="Filter Invoices">
           </form>
         </div>
       </div>

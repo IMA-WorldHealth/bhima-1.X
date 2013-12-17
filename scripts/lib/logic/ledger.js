@@ -15,16 +15,34 @@ module.exports = (function (db) {
   function debitor (id, res) {
     // debitor query
     // FIXME: change this * syntax to make life better for everyone
-    var sql;
-    if (id == '*') {
-      sql = "SELECT COUNT(`total`.`inv_po_id`) AS `count`, `total`.`inv_po_id`, `total`.`deb_cred_id`, `total`.`trans_date`, `total`.`credit`, `total`.`debit` from ((SELECT `general_ledger`.`inv_po_id`, `general_ledger`.`deb_cred_id`, `general_ledger`.`trans_date`, `general_ledger`.`credit`, `general_ledger`.`debit` FROM `general_ledger` WHERE `general_ledger`.`deb_cred_type`='D') UNION (SELECT `posting_journal`.`inv_po_id`, `posting_journal`.`deb_cred_id`, `posting_journal`.`trans_date`, `posting_journal`.`credit`, `posting_journal`.`debit` FROM `posting_journal` WHERE `posting_journal`.`deb_cred_type`='D')) AS `total` GROUP BY `total`.`inv_po_id`;";
-    } else {
-      sql = "SELECT COUNT(`total`.`inv_po_id`) AS `count`, `total`.`inv_po_id`, `total`.`deb_cred_id`, `total`.`trans_date`, `total`.`credit`, `total`.`debit` from ((SELECT `general_ledger`.`inv_po_id`, `general_ledger`.`deb_cred_id`, `general_ledger`.`trans_date`, `general_ledger`.`credit`, `general_ledger`.`debit` FROM `general_ledger` WHERE `general_ledger`.`deb_cred_type`='D' AND `general_ledger`.`deb_cred_id`=?) UNION (SELECT `posting_journal`.`inv_po_id`, `posting_journal`.`deb_cred_id`, `posting_journal`.`trans_date`, `posting_journal`.`credit`, `posting_journal`.`debit` FROM `posting_journal` WHERE `posting_journal`.`deb_cred_type`='D' AND `posting_journal`.`deb_cred_id`=?)) AS `total` GROUP BY `total`.`inv_po_id`;";
-    }
-    sql = sql.replace(/\?/g, id);
-    db.execute(sql, function (err, rows) {
+    if (!id) throw new Error('No debitor id selected!');
+    var query = "SELECT `account_id` FROM `debitor` JOIN `debitor_group` ON `debitor`.`group_id`=`debitor_group`.`id` WHERE `debitor`.`id`=" + db.escapestr(id) + ";\n";
+    db.execute(query, function (err, result) {
       if (err) throw err;
-      res.send(rows);
+      else {
+        var debitor_account = result[0].account_id;
+        var first_name = result[0].first_name;
+        var last_name = result[0].last_name;
+        // FIXME/TODO This should use debit_equiv and credit_equiv rather than debit and credit
+        var sql = 
+          "SELECT `combined`.`inv_po_id`, `combined`.`trans_date`, SUM(`combined`.`debit`) AS `debit`, SUM(`combined`.`credit`) AS `credit`, `combined`.`account_id`, `combined`.`deb_cred_id` FROM (" +
+          "(" + 
+            "SELECT `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit`, `posting_journal`.`credit`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_id` " + 
+            "FROM `posting_journal` " + 
+            "WHERE `posting_journal`.`deb_cred_type`='D'" + 
+          ") UNION (" +
+            "SELECT `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_id` " +
+            "FROM `general_ledger` " +
+            "WHERE `general_ledger`.`deb_cred_type`='D'" + 
+          ")) AS `combined` " +
+          "WHERE `combined`.`account_id`=" + debitor_account + " " + 
+          "GROUP BY `combined`.`inv_po_id`;\n";
+        db.execute(sql, function (err, rows) {
+          if (err) throw err;
+          console.log('\nReceived', rows, '\n');
+          res.send(rows);
+        });
+      }
     });
   }
 
