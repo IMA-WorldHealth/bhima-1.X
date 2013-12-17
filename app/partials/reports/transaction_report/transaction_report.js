@@ -1,5 +1,5 @@
 angular.module('kpk.controllers').controller('reportTransactionController', function($scope, $q, $filter, connect){
-
+	$scope.oneAtATime = true;
 	var imports={},
 	models = $scope.models = {},
     stores = $scope.stores = {},
