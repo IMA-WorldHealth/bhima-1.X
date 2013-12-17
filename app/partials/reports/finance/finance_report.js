@@ -164,8 +164,8 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
         getter: 'category_title',
         formatter: function(g) { 
           return "<span style='font-weight: bold'>" + g.value + "</span>";
-      },
-      aggregators: financeAggregators
+        },
+        aggregators: financeAggregators
 
     }]);
   }

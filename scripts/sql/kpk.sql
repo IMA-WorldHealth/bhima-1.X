@@ -206,13 +206,14 @@ create table `account` (
   `enterprise_id`       smallint unsigned not null,
   `account_number`      int not null,
   `account_txt`         text,
-  `account_category_id` tinyint not null,
+  -- `account_category_id` tinyint not null,
+  `parent`              int not null,
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
   primary key (`id`),
   key `account_type` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
-  key `account_category_id` (`account_category_id`),
+  -- key `account_category_id` (`account_category_id`),
   constraint foreign key (`account_type_id`) references `account_type` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
   -- constraint foreign key (`account_category_id`) references `account_category` (`id`)

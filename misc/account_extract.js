@@ -39,37 +39,22 @@ function writeExtractedAccounts(accounts) {
 
   var i = 0;
   var titleSQL = '';
-  var accountSQL = '';
+  var accountSQL = [];
   var output;
-
-  //account titles
-  var titleHeader = "insert into `account_title` (`id`, `title`, `number`, `type`) values\n";
-
-  titleSQL += titleHeader;
-  accounts.forEach(function(account, index) { 
-    if(account.type === TITLE) {
-      titleSQL += '(' + i + ', ' + account.description + ', ' + account.number + ', ' + account.type + '),\n';
-      i++;
-    }
-  });
-  titleSQL[titleSQL.length -1] = ';';
+  var accountHeader;
   
-  var accountSQL = "insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `account_category_id`) values\n";
-
+  var accountHeader = "insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `parent`) values\n";
   i = 0;
   accounts.forEach(function(account, index) { 
-    if(account.type !== TITLE) { 
-      accountSQL += '(' + i + ', 1, 0, 200, ' + account.number + ', ' + account.description + ', ' + account.type + ', ' + account.parent + '),\n';
-      i++;
-    }
+    accountSQL.push('\n(' + i + ', 1, 0, 200, ' + account.number + ', "' + account.description + '", ' + account.type + ', ' + account.parent + ')');
+    i++;
   });
 
-  accountSQL[accountSQL.length - 1] = ';';
 
-  output = titleSQL + '\n\n' + accountSQL;
+  output = accountHeader + accountSQL.join(',');
 
   //accounts
-  writeAccountFile("./output.txt", output);
+  writeAccountFile("./output.sql", output);
 }
 
 function writeAccountFile(path, body) { 
