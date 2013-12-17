@@ -22,12 +22,6 @@ module.exports = function (db) {
   self.poster = function (req, res, next) { 
     req.body.forEach(function (item) {
       var sql = "SELECT `id` FROM `posting_journal` WHERE `trans_id`=" + db.escapestr(item.id) + " AND `origin_id`=" + db.escapestr(item.transaction_type) + ";\n";
-      /*
-      var sql = {
-                    'entities' : [{'t':'posting_journal', 'c':['id']}],
-                    'cond' : [{'t':'posting_journal', 'cl':'trans_id', 'z':'=', 'v':item.id, l:'AND'}, {'t':'posting_journal', 'cl':'origin_id', 'z':'=', 'v':item.transaction_type}]
-              };
-      */
       db.execute(sql, function(err, records) {
         if (err) next(err);
         if (!records.length) getData(item, res);
@@ -38,12 +32,6 @@ module.exports = function (db) {
   function getData (posting, res) {
     //each posting object contains transaction_id, service_id, user_id properties
     //request for knowing the service
-    /*
-    var sql = {
-               'entities':[{'t':'transaction_type', 'c':['service_txt']}],
-               'cond':[{'t':'transaction_type', 'cl':'id', 'z':'=', 'v':posting.transaction_type}]//posting.transaction_type
-              };
-    */
     var query = "SELECT DISTINCT `service_txt` FROM `transaction_type` WHERE `id`=" + db.escapestr(posting.transaction_type) + ';\n';
     db.execute(query, function (err, data) {
       var columnData, sql, services, service_name,
@@ -66,12 +54,11 @@ module.exports = function (db) {
       db.execute(sql, function (err, data) {
         if (err) throw err;
         var date = data[0].invoice_date || data[0].date;
-        Q.all([getPeriodExerciceId(date, data[0].enterprise_id)])
+        getPeriodId(date, data[0].enterprise_id)
         .then(function (result) {
-          if (result[0].success) process(data, posting, res, result[0], service_name); //verification et insertion eventuelle
+          if (result.success) process(data, posting, res, result, service_name); //verification et insertion eventuelle
         });
       });
-
     });
   }
 
@@ -112,9 +99,8 @@ module.exports = function (db) {
       db.execute(sql, function (err, results) {
         if (err) throw err;
         journalRecord.account_id = results[0].account_id;
-        var sql = db.insert('posting_journal', [journalRecord]);
-        db.execute(sql, function (error, ans) {
-          defer.resolve( error ? {success: false, info: error} : {success: true, info: ans});
+        insertData('posting_journal', journalRecord).then(function (resolve) {
+          defer.resolve(resolve);
         });
       });
     });
@@ -147,9 +133,8 @@ module.exports = function (db) {
           journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
           journalRecord.period_id = periodExerciceIdObject.pid;
           journalRecord.account_id = data2[0].sales_account;
-          var sql = db.insert('posting_journal', [journalRecord]); 
-          db.execute(sql, function (err, ans) {
-            defer.resolve(err ? {success: false, info : err} : {success : true, info: ans});
+          insertData('posting_journal', journalRecord).then(function (resolve) {
+            defer.resolve(resolve);
           });
       });
     });
@@ -161,9 +146,8 @@ module.exports = function (db) {
     var journalRecord = {};
     var objDebit = map[obj.t+'_debit']; 
     journalRecord.id = '';
-    for (var cle in objDebit) {
-      journalRecord[cle] = data[0][objDebit[cle]];
-    }
+    for (var cle in objDebit) journalRecord[cle] = data[0][objDebit[cle]];
+
     journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
     journalRecord.user_id = posting.user;
     journalRecord.deb_cred_type = 'D';  
@@ -180,9 +164,8 @@ module.exports = function (db) {
     */
     db.execute(sql,function (err, record) {
       journalRecord.account_id = record[0].debit_account;
-      var sql = db.insert('posting_journal', [journalRecord]);
-      db.execute(sql, function (err, ans) {
-        defer.resolve(err ? {success : false, info:err} : {success : true, info: ans});
+      insertData('posting_journal', journalRecord).then(function (resolve) {
+        defer.resolve(resolve);
       });
     });
     return defer.promise;
@@ -204,10 +187,9 @@ module.exports = function (db) {
     sql = "SELECT `cash`.`credit_account` FROM `cash` WHERE `cash`.`id`=" + db.escapestr(posting.id) + ";\n";
     db.execute(sql, function (err, data2) {     
       journalRecord.account_id = data2[0].credit_account;
-      data.forEach(function(item){    
-        for(var cle in objCredit){
-          journalRecord[cle] = item[objCredit[cle]];    
-        }
+      data.forEach(function (item) {    
+        for (var cle in objCredit) journalRecord[cle] = item[objCredit[cle]];
+
         journalRecord.origin_id = posting.transaction_type;
         journalRecord.user_id = posting.user;
         journalRecord.deb_cred_type = 'D';
@@ -215,9 +197,8 @@ module.exports = function (db) {
         journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
         journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
         journalRecord.period_id = periodExerciceIdObject.pid;
-        var sql = db.insert('posting_journal', [journalRecord]); 
-        db.execute(sql, function (err, ans) {
-          defer.resolve(err ? {success: false, info: err} : {success : true, info: ans});
+        insertData('posting_journal', journalRecord).then(function (resolve) {
+          defer.resolve(resolve);
         });
       });  
     });
@@ -252,9 +233,8 @@ module.exports = function (db) {
         journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
         journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
         journalRecord.period_id = periodExerciceIdObject.pid;
-        var sql = db.insert('posting_journal', [journalRecord]); 
-        db.execute(sql, function (err, ans) {
-          defer.resolve(err ? {success: false, info: err} : {success : true, info: ans});
+        insertData('posting_journal', journalRecord).then(function (resolve) {
+          defer.resolve(resolve);
         });
       });
     });
@@ -266,9 +246,8 @@ module.exports = function (db) {
     var journalRecord = {};
     var objCredit = map[obj.t+'_credit'];
 
-    for(var cle in objCredit){
-      journalRecord[cle] = data[objCredit[cle]];
-    }
+    for (var k in objCredit) journalRecord[k] = data[objCredit[k]];
+
     journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
     journalRecord.user_id = posting.user;
     journalRecord.id = '';
@@ -294,9 +273,8 @@ module.exports = function (db) {
       var sql = "SELECT `account_id` FROM `creditor_group` WEHRE `creditor_group`.`id`=" + data[0].creditor_group_id + ";\n";
       db.execute(sql, function (err, data) {
         journalRecord.account_id = data[0].account_id;
-        var sql = db.insert('posting_journal', [journalRecord]);
-        db.execute(sql, function (err, ans) {
-          defer.resolve(err ? {success: false, info: err} : {success : true, info: ans});
+        insertData('posting_journal', journalRecord).then(function (resolve) {
+          defer.resolve(resolve);
         });
       });
     });
@@ -334,7 +312,6 @@ module.exports = function (db) {
     }
   }
 
-
   function setPosted (table, id) { //used to be `check`
     var defer = Q.defer(),
         sql = "UPDATE " + db.escape(table) + " SET `posted`=1 WHERE `id`=" + db.escapestr(id) + ";\n";
@@ -344,21 +321,38 @@ module.exports = function (db) {
     return defer.promise;
   }
 
-  function getPeriodExerciceId (date, eid) {
+  function getPeriodId (date, eid) {
     var defer = Q.defer();
     var mysqlDate = db.escapestr(util.convertToMysqlDate(date));
     var sql = "SELECT `period`.`id`, `fiscal_year_id` FROM `period` WHERE `period`.`period_start`<=" + mysqlDate + " AND `period`.`period_stop`>=" + mysqlDate + ";\n";
-    /*
-    var sql = {'entities':[{'t':'period', c:['id', 'fiscal_year_id']}],
-               'cond':[
-                        {'t':'period', 'cl':'period_start', 'z':'<=','v':mysqlDate, l:'AND'},
-                        {'t':'period', 'cl':'period_stop', 'z':'>=','v':mysqlDate}
-                      ]
-              };
-    */
     db.execute(sql, function(err, data) {
         if (err) throw err;
         defer.resolve(data.length ? {success:true, fid:data[0].fiscal_year_id, pid:data[0].id} : {success : false});
+    });
+    return defer.promise;
+  }
+
+  function insertData (table, data) {
+    var defer = Q.defer();
+    generateTransId()
+    .then(function (id) {
+      data.trans_id = id; // add the trans id here ...
+      console.log("\ndata:", data, "\n");
+      var sql = db.insert(table, [data]);
+      db.execute(sql, function (err, result) {
+        console.log('\nDATA POSTED!\n');
+        defer.resolve(err ? {success : false, info: err} : {success : true, info: result});
+      });
+    });
+    return defer.promise;
+  }
+  
+  function generateTransId () {
+    var defer = Q.defer(),
+        sql = "SELECT MAX(`trans_id`) as `max` FROM `posting_journal`;\n";
+    db.execute(sql, function (err, rows) {
+      if (err) throw err;
+      defer.resolve(rows[0].max + 1);
     });
     return defer.promise;
   }
