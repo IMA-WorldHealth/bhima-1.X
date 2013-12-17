@@ -539,8 +539,12 @@
       var handle, deferred = $q.defer();
       var table = defn.primary || Object.keys(defn.tables)[0];
 
+
       handle = $http.get('/temp/?' + JSON.stringify(defn));
       handle.then(function (returned) {
+        
+        //massive hack so I can use an identifier - set defualt identifier
+        returned.identifier = defn.identifier || 'id';
         var m = new Model(returned, table);
         requests[m] = defn;
         deferred.resolve(m);
@@ -571,6 +575,8 @@
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
 
+      console.log('received options', options);
+
       // globals
       this.index = {};
       this.data = {};
@@ -578,6 +584,7 @@
       // locals
       var queue = [];
       var identifier = options.identifier || 'id'; // id property
+      console.log('id:', identifier);
       var pprint = '[connect] ';
       var tgt = "/temp/"; // temporary target until we standardize connect.
       var refreshrate = options.refreshrate || 500;
