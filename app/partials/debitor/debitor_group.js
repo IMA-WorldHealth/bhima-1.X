@@ -51,7 +51,6 @@ angular.module('kpk.controllers')
     }
   }
 
-
   function formatAccount (account) {
     return [account.account_number, account.account_txt].join(' :: ');
   }
@@ -71,7 +70,6 @@ angular.module('kpk.controllers')
 
   function submitForm () {
     data = connect.clean($scope.data);
-    console.log('data:', data);
     if (flags.edit) {
       // update an item
       connect.basicPost('debitor_group', [data], ['id']).then(function (response) {
@@ -102,6 +100,10 @@ angular.module('kpk.controllers')
     $scope.data = group;
   }
 
+  function lock (group) {
+    connect.basicPost('debitor_group', [{id: group.id, locked: group.locked}], ["id"]);
+  }
+
   $scope.newForm = newForm;
   $scope.submitForm = submitForm;
   $scope.editGroup = editGroup;
@@ -110,5 +112,6 @@ angular.module('kpk.controllers')
   $scope.displayAccount = displayAccount;
   $scope.displayType = displayType;
   $scope.invalid = invalid;
+  $scope.lock = lock;
 
 });

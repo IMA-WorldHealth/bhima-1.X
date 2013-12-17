@@ -8,8 +8,16 @@
   <div class="pull-left">
     <input type="search" placeholder="Filter General Ledger" class="form-kapok" ng-model="flags.searchStr" size="25">
   </div>
-  <div class="pull-left">
-    <button type="button" class="btn btn-sm btn-default">Order By</button>
+  <div class="pull-left dropdown">
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle">Group By</button>
+    <ul class="dropdown-menu">
+      <li class="dropdown-header">Grouping:</li>
+      <li><a href="" ng-click="groupby.year()">Fiscal Year</a></li>
+      <li><a href="" ng-click="groupby.period()">Period</a></li>
+      <li><a href="" ng-click="groupby.transaction()">Transaction ID</a></li>
+      <li><a href="" ng-click="groupby.account()">Account</a></li>
+      <li><a href="" ng-click="groupby.debcred()">Deb/Cred ID</a></li>
+    </ul>
   </div>
   <div class="pull-right dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle">

@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('exchangeRateController', function ($scope, connect) {
+angular.module('kpk.controllers')
+.controller('exchangeRateController', function ($scope, connect) {
   var currency;
 
   currency = {

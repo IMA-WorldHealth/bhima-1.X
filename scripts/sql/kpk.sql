@@ -226,6 +226,7 @@ create table `creditor_group` (
   `id`          smallint NOT NULL AUTO_INCREMENT,
   `group_txt`   varchar(45),
   `account_id`  int unsigned NOT NULL,
+  `locked`      boolean not null default 0,
   primary key (`id`),
   key `account_id` (`account_id`),
   constraint foreign key (`account_id`) references `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
