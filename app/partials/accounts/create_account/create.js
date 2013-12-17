@@ -1,6 +1,13 @@
 // This is horrific code, refactor 
 angular.module('kpk.controllers').controller('createAccountController', function($scope, $q, connect) { 
   console.log("createAccountController initialised");
+  /*Test page for organising and displaying chart of accounts with aggregate caculcations
+  *
+  * TODO (/purpose)
+  *   -Filter first column of grid, indicate levels of indentation
+  *   -Aggregates by nested account groups (olawd)
+  *   -Naive sorting, correct order should not be assumed from database
+  */
 
   $scope.model = {};
   $scope.model['accounts'] = {'data' : []};
@@ -8,13 +15,14 @@ angular.module('kpk.controllers').controller('createAccountController', function
 //  Request
   var account_request = {
     'identifier': 'account_number',
-    'tables' : {
+  'tables' : {
       'account' : {
         'columns' : ["id", "account_number", "account_txt", "account_type_id", "fixed", "parent"]
       }
     }
   }
-    var AccountFormatter = function (row, cell, value, columnDef, dataContext) {
+  
+  var AccountFormatter = function (row, cell, value, columnDef, dataContext) {
     // value = value.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
     var spacer = "<span style='display:inline-block;height:1px;width:" + (15 * dataContext["indent"]) + "px'></span>";
     var idx = dataview.getIdxById(dataContext.id);
@@ -22,15 +30,14 @@ angular.module('kpk.controllers').controller('createAccountController', function
     console.log('d', dataContext, 'got idx', idx);
     if (data[idx + 1] && data[idx + 1].indent > data[idx].indent) {
       if (dataContext._collapsed) {
-        return spacer + " <span class='toggle expanded glyphicon glyphicon-collapse-up'></span>&nbsp;" + value;
+        return spacer + " <span class='toggle expanded glyphicon glyphicon-collapse-up'></span>&nbsp; <b>" + value + "</b>";
       } else {
-        return spacer + " <span class='toggle collapsed glyphicon glyphicon-collapse-down'></span>&nbsp;" + value;
+        return spacer + " <span class='toggle collapsed glyphicon glyphicon-collapse-down'></span>&nbsp; <b>" + value + "</b>";
       }
     } else {
       return spacer + " <span class='toggle'></span>&nbsp;" + value;
     }
   };
-
 
   //  grid options
   var grid;
@@ -50,9 +57,6 @@ angular.module('kpk.controllers').controller('createAccountController', function
     /*Bootstrap style row height*/
     rowHeight: 30
   };
-
-
-
 
   function init() { 
 
@@ -106,8 +110,10 @@ angular.module('kpk.controllers').controller('createAccountController', function
 
       dataview.beginUpdate();
       dataview.setItems($scope.model['accounts'].data);
-      // dataview.setFilter(accountFilter)
+      dataview.setFiletr(accountFilter)
       dataview.endUpdate();
+
+      
 
       // group();
     })
@@ -130,11 +136,9 @@ angular.module('kpk.controllers').controller('createAccountController', function
         if (parent._collapsed) {
           return false;
         }
-
         parent = $scope.model['accounts'].get(parent.parent);
       }
     }
-
     return true;
   }
 
@@ -150,12 +154,5 @@ angular.module('kpk.controllers').controller('createAccountController', function
       item.indent = indent;
     });
   }
-
- /* function group() { 
-    dataview.setGrouping({
-      getter: "parent"
-    });
-  }*/
-
   init();
 });
