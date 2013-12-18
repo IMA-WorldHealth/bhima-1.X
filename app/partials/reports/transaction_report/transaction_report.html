@@ -3,25 +3,80 @@
   <span class="capital">Transaction Report</span>
 </header>
 <section class="underline">
-<div class="row">
-    <div class="col-xs-3">
-      <select  class="form-kapok" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
-                        <option value="">--Select Type--</option>
-                        <option>Debitor</option>
-                        <option>Creditor</option>
-            </select>
-    </div>
 
-    <div class="col-xs-3">
-        <select class="form-kapok" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses">
-          <option value="">--Select the name --</option>
-        </select>
-    </div>
-
-</div>
 </section>
+<!--fix me-->
+<section class="underline infobar">
+  <accordion close-others="oneAtATime">    
+    <accordion-group heading="Dynamic Body Content">
+        <accordion-heading>
+            Depliant <i class="pull-right" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i>
+        </accordion-heading>
+        <div class="row">
+          <div class="col-xs-2">
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="data.type" id="indiID" name="option_type" value="I" ng-click="fill()" checked>
+                Individual
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="data.type" id="groupID" name="option_type" ng-click="fill()" value="G">
+                Group
+              </label>
+            </div>
+          </div>
+
+          <div class="col-xs-2">
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="data.dc" id="dID" name="option_dc" value="D" ng-click="fill()" checked>
+                Debitor
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="data.dc" id="cID" name="option_dc" ng-click="fill()" value="C">
+                Creditor
+              </label>
+            </div>
+          </div>
+
+          <div class="col-xs-4">
+            <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
+                <option value="">--Select the name --</option>
+            </select> 
+
+            <!--select  class="form-kapok" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
+              <option value="">--Select Type--</option>
+              <option>Debitor</option>
+              <option>Creditor</option>
+            </select><br/>
+
+            <select class="form-kapok" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses">
+                <option value="">--Select the name --</option>
+              </select-->             
+          </div>
+
+          <!--div class="col-xs-4">
+             <select  class="form-kapok" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
+              <option value="">--Select Type--</option>
+              <option>Debitor</option>
+              <option>Creditor</option>
+            </select><br/>
+
+            <select class="form-kapok" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses">
+                <option value="">--Select the name --</option>
+              </select>
+          </div-->
+        </div>
+    </accordion-group>   
+  </accordion>
+</section>
+<!--fix me-->
 <section class="underline infobar" ng-show="show1 && show2">
-balanced:<label ng-switch on="isBalanced">{{isBalanced}}</label>
+balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
   <div class="pull-right">      
       Total Debit  : {{credit}}
       Total Credit : {{debit}}
@@ -33,15 +88,10 @@ balanced:<label ng-switch on="isBalanced">{{isBalanced}}</label>
   <div class="row">   
     <div class="col-xs-12">
       <div id="transaction_report_grid" class="grid" style="height: 650px; overflow: hidden; outline: 0px; position: relative;">
-    </div>
+      </div>
   </div>
 </div>
 
 <section class="underline overline">
-  <!--div class="pull-right">
-    <button class="capital btn btn-default btn-sm" ><span class="glyphicon glyphicon-floppy-open"></span>
-      {{'WHAT?'}}
-    </button>
-
-  </div-->
+ 
 </section>
