@@ -26,7 +26,7 @@
             <td>{{group.name}}</td>
             <td>{{displayAccount(group.account_id)}}</td>
             <td>{{displayType(group.type_id)}}</td>
-            <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)"></td>
+            <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>
           </tr>
         </tbody>
       </table>
