@@ -169,6 +169,41 @@
       UP_DIALOGUE : 'check units which user ', // This token is non-normative
       UP_DIALOGUE_2 : 'will access',
 
+      //fiscal year page
+      FISCAL_YEAR_PAGE_NEW : 'New Fiscal Year',
+      FISCAL_YEAR_PAGE_DESC : 'Year Desc.',
+      FISCAL_YEAR_PAGE_STARTMONTH : 'Start Month',
+      FISCAL_YEAR_PAGE_ONEYEAR : 'One Year',
+      FISCAL_YEAR_PAGE_SPECIFY : 'Specify',
+      FISCAL_YEAR_PAGE_ENDMONTH : 'End Month',
+      FISCAL_YEAR_PAGE_SUBMIT : 'Submit',
+      FISCAL_YEAR_PAGE_NAME : 'Name',
+      FISCAL_YEAR_PAGE_LOCK : 'Lock this Fiscal Year',
+      FISCAL_YEAR_PAGE_TOTALMONTH : 'Total Months',
+      FISCAL_YEAR_PAGE_FIRSTVOUCHER : 'First Voucher No.',
+      FISCAL_YEAR_PAGE_LASTVOUCHER : 'Last Voucher No.',
+      FISCAL_YEAR_PAGE_POSTINGFROM : 'Posting from',
+      FISCAL_YEAR_PAGE_POSTINGTO : 'Posting to',
+      FISCAL_YEAR_PAGE_PERIODS :'Periods',
+      FISCAL_YEAR_PAGE_FISCALYEARSELECTION : 'Fiscal Year Selection',
+      FISCAL_YEAR_PAGE_DESCRIPTION : 'Description',
+      FISCAL_YEAR_PAGE_ALERTPARTONE : 'There are no Fiscal Years recorded for the enterprise ',
+      FISCAL_YEAR_PAGE_ALERTTWO : '. Fiscal Years are required to group transactions and provide reports.',
+
+      //account page
+      ACCOUNT_PAGE_TITLE : 'Chart of Accounts',
+      ACCOUNT_PAGE_ADD : 'Add Account'
+
+
+
+
+
+
+
+
+
+
+
     });
 
     $translateProvider.translations('fr', {
@@ -180,11 +215,12 @@
       GENERAL_LEDGER: "grand livre général",
       DEBIT: "débit",
       CREDIT: "crédit",
+      FISCAL_YEAR : 'Annee Fiscal',
 
       // Application functions
       CONFIGURE: "configurer",
       PRINT: "imprimer",
-      CREATE: "crée",
+      CREATE: "créer",
 
       // Generic database
       ID: "id",
@@ -192,8 +228,8 @@
       DESCRIPTION: "description",
 
       // Actions
-      SAVE: 'enregistre',
-      DELETE : 'souplimer',
+      SAVE: 'enregistrer',
+      DELETE : 'soupprimer',
       CANCEL : 'retourner',
 
       //Titles
@@ -205,8 +241,8 @@
       DEB_CRED_TYPE: "debitor/creditor type",
       INV_PO_NO: "inv/PO no.",
 
-      // Users and Permissions
-      UP_TITLE : 'gestion de utilisateurs et permissions',
+      // Users and Permissions page
+      UP_TITLE : 'gestion des utilisateurs et permissions',
       FIRST_NAME : 'prenom',
       LAST_NAME : 'postnom',
       EMAIL : 'email',
@@ -221,6 +257,33 @@
       PERMISSION: 'permission',
       UP_DIALOGUE : 'crocher les modules utilisateur ', // This token is non-normative
       UP_DIALOGUE_2 : 'peut acceder',
+
+      //fiscal year page
+      FISCAL_YEAR_PAGE_NEW : 'Nouvelle Annee Fiscale',
+      FISCAL_YEAR_PAGE_DESC : 'Desc Annee.',
+      FISCAL_YEAR_PAGE_STARTMONTH : 'Debut Mois',
+      FISCAL_YEAR_PAGE_ONEYEAR : 'Une Annee',
+      FISCAL_YEAR_PAGE_SPECIFY : 'Specifier',
+      FISCAL_YEAR_PAGE_ENDMONTH : 'Fin Mois',
+      FISCAL_YEAR_PAGE_SUBMIT : 'Soumettre',
+      FISCAL_YEAR_PAGE_NAME : 'Nom',
+      FISCAL_YEAR_PAGE_LOCK : 'Bloquer Cette Annee Fiscale',
+      FISCAL_YEAR_PAGE_TOTALMONTH : 'Total Mois',
+      FISCAL_YEAR_PAGE_FIRSTVOUCHER : 'Premier No Voucher',
+      FISCAL_YEAR_PAGE_LASTVOUCHER : 'Dernier No Voucher.',
+      FISCAL_YEAR_PAGE_POSTINGFROM : 'Poster De',
+      FISCAL_YEAR_PAGE_POSTINGTO : 'Poster jusqu\'au',
+      FISCAL_YEAR_PAGE_PERIODS :'Periodes',
+      FISCAL_YEAR_PAGE_FISCALYEARSELECTION : 'Selection de l\'Annee Fiscale',
+      FISCAL_YEAR_PAGE_DESCRIPTION : 'Description',
+      FISCAL_YEAR_PAGE_ALERTPARTONE : 'Il n\'y a aucune annee fiscale enregistree pour l\'entraprise ',
+      FISCAL_YEAR_PAGE_ALERTTWO : '. Les annees fiscales sont requises pour grouper les transactions et produire les rapports.',
+
+      //account page
+
+      ACCOUNT_PAGE_TITLE : 'Tableau des Comptes',
+      ACCOUNT_PAGE_ADD : 'Ajouter un Compte'
+
 
     });
 
