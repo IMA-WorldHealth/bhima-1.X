@@ -151,7 +151,7 @@ module.exports = (function (db) {
               "' AND posting_journal.deb_cred_type = '"+params.type+"'";
     }else if(params.ig == 'G'){
       var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
-                "posting_journal.trans_date, posting_journal.credit, "+
+                "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
                 "account.account_number, currency.name, transaction_type.service_txt, "+
                 "CONCAT(user.first, ' ', user.last) as \"names\" FROM posting_journal, "+
                 "account, currency, transaction_type, user WHERE posting_journal.account_id = "+
