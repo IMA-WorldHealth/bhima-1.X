@@ -42,7 +42,8 @@ delete from `sale`;
 insert into `user` values
   (1,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
-	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',1);
+	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',1),
+  (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
 
 INSERT INTO `unit` VALUES
   (0,'Root','The unseen root node',NULL,1,'',''),
@@ -155,9 +156,30 @@ insert into `permission` values
   (53, 48, 1),
   (54, 49, 1),
   (55, 50, 1),
-  (56, 51, 1);
-
-
+  (56, 51, 1),
+	(57,4, 3),
+	(58,6, 3),
+	(59,30,3),
+	(60,31,3),
+	(61,34,3),
+	(62,35,3),
+	(63,33,3),
+	(64,36,3),
+	(65,37,3),
+	(66,38,3),
+	(67,39,3),
+	(68,40,3),
+	(69,9, 3),
+	(70,41,3),
+  (71,1, 3),
+  (72,44, 3),
+  (73,45, 3),
+  (74,46, 3),
+  (75,47, 3),
+  (76,48, 3),
+  (77,49, 3),
+  (78,50, 3),
+  (79,51, 3);
 
 -- configure location details
 insert into `country` values
