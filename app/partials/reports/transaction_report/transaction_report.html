@@ -16,13 +16,13 @@
           <div class="col-xs-2">
             <div class="radio">
               <label>
-                <input type="radio" name="option_individuel" value="I" checked>
+                <input type="radio" ng-model="data.type" id="indiID" name="option_type" value="I" ng-click="fill()" checked>
                 Individual
               </label>
             </div>
             <div class="radio">
               <label>
-                <input type="radio" name="option_individuel" value="G">
+                <input type="radio" ng-model="data.type" id="groupID" name="option_type" ng-click="fill()" value="G">
                 Group
               </label>
             </div>
@@ -31,22 +31,22 @@
           <div class="col-xs-2">
             <div class="radio">
               <label>
-                <input type="radio" name="option_dc" value="D" checked>
+                <input type="radio" ng-model="data.dc" id="dID" name="option_dc" value="D" ng-click="fill()" checked>
                 Debitor
               </label>
             </div>
             <div class="radio">
               <label>
-                <input type="radio" name="option_dc" value="C">
+                <input type="radio" ng-model="data.dc" id="cID" name="option_dc" ng-click="fill()" value="C">
                 Creditor
               </label>
             </div>
           </div>
 
           <div class="col-xs-4">
-            <select class="form-kapok" ng-model="model.choosen" ng-options="model.choosen.text for choosen in model.chooses">
+            <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
                 <option value="">--Select the name --</option>
-              </select> 
+            </select> 
 
             <!--select  class="form-kapok" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
               <option value="">--Select Type--</option>
@@ -76,7 +76,7 @@
 </section>
 <!--fix me-->
 <section class="underline infobar" ng-show="show1 && show2">
-balanced:<label ng-switch on="isBalanced">{{isBalanced}}</label>
+balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
   <div class="pull-right">      
       Total Debit  : {{credit}}
       Total Credit : {{debit}}
@@ -88,15 +88,10 @@ balanced:<label ng-switch on="isBalanced">{{isBalanced}}</label>
   <div class="row">   
     <div class="col-xs-12">
       <div id="transaction_report_grid" class="grid" style="height: 650px; overflow: hidden; outline: 0px; position: relative;">
-    </div>
+      </div>
   </div>
 </div>
 
 <section class="underline overline">
-  <!--div class="pull-right">
-    <button class="capital btn btn-default btn-sm" ><span class="glyphicon glyphicon-floppy-open"></span>
-      {{'WHAT?'}}
-    </button>
-
-  </div-->
+ 
 </section>

@@ -140,15 +140,25 @@ module.exports = (function (db) {
 
   function transReport(params){
     var params = JSON.parse(params);
-    console.log('***********************************',params.id);
     var deferred = q.defer();
-    var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
+    if(params.ig == 'I'){
+      var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
               "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
               "account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \"names\""+
               "FROM posting_journal, account, currency, transaction_type, user "+
               "WHERE posting_journal.account_id = account.id AND currency.id = posting_journal.currency_id AND"+
               " transaction_type.id = posting_journal.origin_id and user.id = posting_journal.user_id AND posting_journal.deb_cred_id = '"+params.id+
               "' AND posting_journal.deb_cred_type = '"+params.type+"'";
+    }else if(params.ig == 'G'){
+      var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
+                "posting_journal.trans_date, posting_journal.credit, "+
+                "account.account_number, currency.name, transaction_type.service_txt, "+
+                "CONCAT(user.first, ' ', user.last) as \"names\" FROM posting_journal, "+
+                "account, currency, transaction_type, user WHERE posting_journal.account_id = "+
+                "account.id AND currency.id = posting_journal.currency_id AND transaction_type.id = "+
+                " posting_journal.origin_id AND user.id = posting_journal.user_id AND posting_journal.account_id = '"+params.account_id+
+                "' AND posting_journal.deb_cred_type = '"+params.type+"'";
+    }
 
     db.execute(sql, function(err, ans) {
       if(err) {
