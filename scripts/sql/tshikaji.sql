@@ -40,7 +40,7 @@ delete from `sale`;
 
 -- configure application details
 insert into `user` values
-  (1,'jniles','malamumoke','Jonathan','Niles','jonathanwniles@gmail.com',0),
+  (1,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',1);
 
