@@ -1,5 +1,5 @@
-angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.dropdownToggle","ui.bootstrap.modal","ui.bootstrap.position","ui.bootstrap.progressbar","ui.bootstrap.tabs","ui.bootstrap.bindHtml","ui.bootstrap.typeahead"]);
-angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/modal/backdrop.html","template/modal/window.html","template/progressbar/bar.html","template/progressbar/progress.html","template/tabs/tab.html","template/tabs/tabset-titles.html","template/tabs/tabset.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html"]);
+angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.dropdownToggle","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tabs","ui.bootstrap.position","ui.bootstrap.bindHtml","ui.bootstrap.typeahead"]);
+angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tabs/tab.html","template/tabs/tabset-titles.html","template/tabs/tabset.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html"]);
 angular.module('ui.bootstrap.transition', [])
 
 /**
@@ -107,23 +107,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
 
       var isCollapsed;
       var initialAnimSkip = true;
-      scope.$watch(function (){ return element[0].scrollHeight; }, function (value) {
-        //The listener is called when scollHeight changes
-        //It actually does on 2 scenarios: 
-        // 1. Parent is set to display none
-        // 2. angular bindings inside are resolved
-        //When we have a change of scrollHeight we are setting again the correct height if the group is opened
-        if (element[0].scrollHeight !== 0) {
-          if (!isCollapsed) {
-            if (initialAnimSkip) {
-              fixUpHeight(scope, element, element[0].scrollHeight + 'px');
-            } else {
-              fixUpHeight(scope, element, 'auto');
-            }
-          }
-        }
-      });
-      
+
       scope.$watch(attrs.collapse, function(value) {
         if (value) {
           collapse();
@@ -151,6 +135,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
           initialAnimSkip = false;
           if ( !isCollapsed ) {
             fixUpHeight(scope, element, 'auto');
+            element.addClass('in');
           }
         } else {
           doTransition({ height : element[0].scrollHeight + 'px' })
@@ -159,6 +144,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
             // the group while the animation was still running
             if ( !isCollapsed ) {
               fixUpHeight(scope, element, 'auto');
+              element.addClass('in');
             }
           });
         }
@@ -167,6 +153,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
       
       var collapse = function() {
         isCollapsed = true;
+        element.removeClass('in');
         if (initialAnimSkip) {
           initialAnimSkip = false;
           fixUpHeight(scope, element, 0);
@@ -186,9 +173,12 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
 })
 
 .controller('AccordionController', ['$scope', '$attrs', 'accordionConfig', function ($scope, $attrs, accordionConfig) {
-  
+
   // This array keeps track of the accordion groups
   this.groups = [];
+
+  // Keep reference to user's scope to properly assign `is-open`
+  this.scope = $scope;
 
   // Ensure that all the groups in this accordion are closed, unless close-others explicitly says not to
   this.closeOthers = function(openGroup) {
@@ -259,12 +249,9 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
         getIsOpen = $parse(attrs.isOpen);
         setIsOpen = getIsOpen.assign;
 
-        scope.$watch(
-          function watchIsOpen() { return getIsOpen(scope.$parent); },
-          function updateOpen(value) { scope.isOpen = value; }
-        );
-        
-        scope.isOpen = getIsOpen ? getIsOpen(scope.$parent) : false;
+        accordionCtrl.scope.$watch(getIsOpen, function(value) {
+          scope.isOpen = !!value;
+        });
       }
 
       scope.$watch('isOpen', function(value) {
@@ -272,7 +259,7 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
           accordionCtrl.closeOthers(scope);
         }
         if ( setIsOpen ) {
-          setIsOpen(scope.$parent, value);
+          setIsOpen(accordionCtrl.scope, value);
         }
       });
     }
@@ -331,7 +318,7 @@ angular.module("ui.bootstrap.alert", []).directive('alert', function () {
       type: '=',
       close: '&'
     },
-    link: function(scope, iElement, iAttrs, controller) {
+    link: function(scope, iElement, iAttrs) {
       scope.closeable = "close" in iAttrs;
     }
   };
@@ -370,7 +357,7 @@ angular.module('ui.bootstrap.dropdownToggle', []).directive('dropdownToggle', ['
           closeMenu();
         }
 
-        if (!elementWasOpen) {
+        if (!elementWasOpen && !element.hasClass('disabled') && !element.prop('disabled')) {
           element.parent().addClass('open');
           openElement = element;
           closeMenu = function (event) {
@@ -389,6 +376,7 @@ angular.module('ui.bootstrap.dropdownToggle', []).directive('dropdownToggle', ['
     }
   };
 }]);
+
 angular.module('ui.bootstrap.modal', [])
 
 /**
@@ -527,7 +515,7 @@ angular.module('ui.bootstrap.modal', [])
         modalWindow.modalDomEl.remove();
 
         //remove backdrop if no longer needed
-        if (backdropIndex() == -1) {
+        if (backdropDomEl && backdropIndex() == -1) {
           backdropDomEl.remove();
           backdropDomEl = undefined;
         }
@@ -704,192 +692,249 @@ angular.module('ui.bootstrap.modal', [])
 
     return $modalProvider;
   });
-angular.module('ui.bootstrap.position', [])
 
-/**
- * A set of utility methods that can be use to retrieve position of DOM elements.
- * It is meant to be used where we need to absolute-position DOM elements in
- * relation to other, existing elements (this is the case for tooltips, popovers,
- * typeahead suggestions etc.).
- */
-  .factory('$position', ['$document', '$window', function ($document, $window) {
+angular.module('ui.bootstrap.pagination', [])
 
-    function getStyle(el, cssprop) {
-      if (el.currentStyle) { //IE
-        return el.currentStyle[cssprop];
-      } else if ($window.getComputedStyle) {
-        return $window.getComputedStyle(el)[cssprop];
-      }
-      // finally try and get inline style
-      return el.style[cssprop];
+.controller('PaginationController', ['$scope', '$attrs', '$parse', '$interpolate', function ($scope, $attrs, $parse, $interpolate) {
+  var self = this,
+      setNumPages = $attrs.numPages ? $parse($attrs.numPages).assign : angular.noop;
+
+  this.init = function(defaultItemsPerPage) {
+    if ($attrs.itemsPerPage) {
+      $scope.$parent.$watch($parse($attrs.itemsPerPage), function(value) {
+        self.itemsPerPage = parseInt(value, 10);
+        $scope.totalPages = self.calculateTotalPages();
+      });
+    } else {
+      this.itemsPerPage = defaultItemsPerPage;
     }
+  };
 
-    /**
-     * Checks if a given element is statically positioned
-     * @param element - raw DOM element
-     */
-    function isStaticPositioned(element) {
-      return (getStyle(element, "position") || 'static' ) === 'static';
+  this.noPrevious = function() {
+    return this.page === 1;
+  };
+  this.noNext = function() {
+    return this.page === $scope.totalPages;
+  };
+
+  this.isActive = function(page) {
+    return this.page === page;
+  };
+
+  this.calculateTotalPages = function() {
+    var totalPages = this.itemsPerPage < 1 ? 1 : Math.ceil($scope.totalItems / this.itemsPerPage);
+    return Math.max(totalPages || 0, 1);
+  };
+
+  this.getAttributeValue = function(attribute, defaultValue, interpolate) {
+    return angular.isDefined(attribute) ? (interpolate ? $interpolate(attribute)($scope.$parent) : $scope.$parent.$eval(attribute)) : defaultValue;
+  };
+
+  this.render = function() {
+    this.page = parseInt($scope.page, 10) || 1;
+    if (this.page > 0 && this.page <= $scope.totalPages) {
+      $scope.pages = this.getPages(this.page, $scope.totalPages);
     }
+  };
 
-    /**
-     * returns the closest, non-statically positioned parentOffset of a given element
-     * @param element
-     */
-    var parentOffsetEl = function (element) {
-      var docDomEl = $document[0];
-      var offsetParent = element.offsetParent || docDomEl;
-      while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
-        offsetParent = offsetParent.offsetParent;
-      }
-      return offsetParent || docDomEl;
-    };
-
-    return {
-      /**
-       * Provides read-only equivalent of jQuery's position function:
-       * http://api.jquery.com/position/
-       */
-      position: function (element) {
-        var elBCR = this.offset(element);
-        var offsetParentBCR = { top: 0, left: 0 };
-        var offsetParentEl = parentOffsetEl(element[0]);
-        if (offsetParentEl != $document[0]) {
-          offsetParentBCR = this.offset(angular.element(offsetParentEl));
-          offsetParentBCR.top += offsetParentEl.clientTop - offsetParentEl.scrollTop;
-          offsetParentBCR.left += offsetParentEl.clientLeft - offsetParentEl.scrollLeft;
-        }
-
-        return {
-          width: element.prop('offsetWidth'),
-          height: element.prop('offsetHeight'),
-          top: elBCR.top - offsetParentBCR.top,
-          left: elBCR.left - offsetParentBCR.left
-        };
-      },
-
-      /**
-       * Provides read-only equivalent of jQuery's offset function:
-       * http://api.jquery.com/offset/
-       */
-      offset: function (element) {
-        var boundingClientRect = element[0].getBoundingClientRect();
-        return {
-          width: element.prop('offsetWidth'),
-          height: element.prop('offsetHeight'),
-          top: boundingClientRect.top + ($window.pageYOffset || $document[0].body.scrollTop || $document[0].documentElement.scrollTop),
-          left: boundingClientRect.left + ($window.pageXOffset || $document[0].body.scrollLeft  || $document[0].documentElement.scrollLeft)
-        };
-      }
-    };
-  }]);
-
-angular.module('ui.bootstrap.progressbar', ['ui.bootstrap.transition'])
-
-.constant('progressConfig', {
-  animate: true,
-  autoType: false,
-  stackedTypes: ['success', 'info', 'warning', 'danger']
-})
-
-.controller('ProgressBarController', ['$scope', '$attrs', 'progressConfig', function($scope, $attrs, progressConfig) {
-
-    // Whether bar transitions should be animated
-    var animate = angular.isDefined($attrs.animate) ? $scope.$eval($attrs.animate) : progressConfig.animate;
-    var autoType = angular.isDefined($attrs.autoType) ? $scope.$eval($attrs.autoType) : progressConfig.autoType;
-    var stackedTypes = angular.isDefined($attrs.stackedTypes) ? $scope.$eval('[' + $attrs.stackedTypes + ']') : progressConfig.stackedTypes;
-
-    // Create bar object
-    this.makeBar = function(newBar, oldBar, index) {
-        var newValue = (angular.isObject(newBar)) ? newBar.value : (newBar || 0);
-        var oldValue =  (angular.isObject(oldBar)) ? oldBar.value : (oldBar || 0);
-        var type = (angular.isObject(newBar) && angular.isDefined(newBar.type)) ? newBar.type : (autoType) ? getStackedType(index || 0) : null;
-
-        return {
-            from: oldValue,
-            to: newValue,
-            type: type,
-            animate: animate
-        };
-    };
-
-    function getStackedType(index) {
-        return stackedTypes[index];
+  $scope.selectPage = function(page) {
+    if ( ! self.isActive(page) && page > 0 && page <= $scope.totalPages) {
+      $scope.page = page;
+      $scope.onSelectPage({ page: page });
     }
+  };
 
-    this.addBar = function(bar) {
-        $scope.bars.push(bar);
-        $scope.totalPercent += bar.to;
-    };
+  $scope.$watch('page', function() {
+    self.render();
+  });
 
-    this.clearBars = function() {
-        $scope.bars = [];
-        $scope.totalPercent = 0;
-    };
-    this.clearBars();
+  $scope.$watch('totalItems', function() {
+    $scope.totalPages = self.calculateTotalPages();
+  });
+
+  $scope.$watch('totalPages', function(value) {
+    setNumPages($scope.$parent, value); // Readonly variable
+
+    if ( self.page > value ) {
+      $scope.selectPage(value);
+    } else {
+      self.render();
+    }
+  });
 }])
 
-.directive('progress', function() {
-    return {
-        restrict: 'EA',
-        replace: true,
-        controller: 'ProgressBarController',
-        scope: {
-            value: '=percent',
-            onFull: '&',
-            onEmpty: '&'
-        },
-        templateUrl: 'template/progressbar/progress.html',
-        link: function(scope, element, attrs, controller) {
-            scope.$watch('value', function(newValue, oldValue) {
-                controller.clearBars();
-
-                if (angular.isArray(newValue)) {
-                    // Stacked progress bar
-                    for (var i=0, n=newValue.length; i < n; i++) {
-                        controller.addBar(controller.makeBar(newValue[i], oldValue[i], i));
-                    }
-                } else {
-                    // Simple bar
-                    controller.addBar(controller.makeBar(newValue, oldValue));
-                }
-            }, true);
-
-            // Total percent listeners
-            scope.$watch('totalPercent', function(value) {
-              if (value >= 100) {
-                scope.onFull();
-              } else if (value <= 0) {
-                scope.onEmpty();
-              }
-            }, true);
-        }
-    };
+.constant('paginationConfig', {
+  itemsPerPage: 10,
+  boundaryLinks: false,
+  directionLinks: true,
+  firstText: 'First',
+  previousText: 'Previous',
+  nextText: 'Next',
+  lastText: 'Last',
+  rotate: true
 })
 
-.directive('progressbar', ['$transition', function($transition) {
-    return {
-        restrict: 'EA',
-        replace: true,
-        scope: {
-            width: '=',
-            old: '=',
-            type: '=',
-            animate: '='
-        },
-        templateUrl: 'template/progressbar/bar.html',
-        link: function(scope, element) {
-            scope.$watch('width', function(value) {
-                if (scope.animate) {
-                    element.css('width', scope.old + '%');
-                    $transition(element, {width: value + '%'});
-                } else {
-                    element.css('width', value + '%');
-                }
-            });
+.directive('pagination', ['$parse', 'paginationConfig', function($parse, config) {
+  return {
+    restrict: 'EA',
+    scope: {
+      page: '=',
+      totalItems: '=',
+      onSelectPage:' &'
+    },
+    controller: 'PaginationController',
+    templateUrl: 'template/pagination/pagination.html',
+    replace: true,
+    link: function(scope, element, attrs, paginationCtrl) {
+
+      // Setup configuration parameters
+      var maxSize,
+      boundaryLinks  = paginationCtrl.getAttributeValue(attrs.boundaryLinks,  config.boundaryLinks      ),
+      directionLinks = paginationCtrl.getAttributeValue(attrs.directionLinks, config.directionLinks     ),
+      firstText      = paginationCtrl.getAttributeValue(attrs.firstText,      config.firstText,     true),
+      previousText   = paginationCtrl.getAttributeValue(attrs.previousText,   config.previousText,  true),
+      nextText       = paginationCtrl.getAttributeValue(attrs.nextText,       config.nextText,      true),
+      lastText       = paginationCtrl.getAttributeValue(attrs.lastText,       config.lastText,      true),
+      rotate         = paginationCtrl.getAttributeValue(attrs.rotate,         config.rotate);
+
+      paginationCtrl.init(config.itemsPerPage);
+
+      if (attrs.maxSize) {
+        scope.$parent.$watch($parse(attrs.maxSize), function(value) {
+          maxSize = parseInt(value, 10);
+          paginationCtrl.render();
+        });
+      }
+
+      // Create page object used in template
+      function makePage(number, text, isActive, isDisabled) {
+        return {
+          number: number,
+          text: text,
+          active: isActive,
+          disabled: isDisabled
+        };
+      }
+
+      paginationCtrl.getPages = function(currentPage, totalPages) {
+        var pages = [];
+
+        // Default page limits
+        var startPage = 1, endPage = totalPages;
+        var isMaxSized = ( angular.isDefined(maxSize) && maxSize < totalPages );
+
+        // recompute if maxSize
+        if ( isMaxSized ) {
+          if ( rotate ) {
+            // Current page is displayed in the middle of the visible ones
+            startPage = Math.max(currentPage - Math.floor(maxSize/2), 1);
+            endPage   = startPage + maxSize - 1;
+
+            // Adjust if limit is exceeded
+            if (endPage > totalPages) {
+              endPage   = totalPages;
+              startPage = endPage - maxSize + 1;
+            }
+          } else {
+            // Visible pages are paginated with maxSize
+            startPage = ((Math.ceil(currentPage / maxSize) - 1) * maxSize) + 1;
+
+            // Adjust last page if limit is exceeded
+            endPage = Math.min(startPage + maxSize - 1, totalPages);
+          }
         }
-    };
+
+        // Add page number links
+        for (var number = startPage; number <= endPage; number++) {
+          var page = makePage(number, number, paginationCtrl.isActive(number), false);
+          pages.push(page);
+        }
+
+        // Add links to move between page sets
+        if ( isMaxSized && ! rotate ) {
+          if ( startPage > 1 ) {
+            var previousPageSet = makePage(startPage - 1, '...', false, false);
+            pages.unshift(previousPageSet);
+          }
+
+          if ( endPage < totalPages ) {
+            var nextPageSet = makePage(endPage + 1, '...', false, false);
+            pages.push(nextPageSet);
+          }
+        }
+
+        // Add previous & next links
+        if (directionLinks) {
+          var previousPage = makePage(currentPage - 1, previousText, false, paginationCtrl.noPrevious());
+          pages.unshift(previousPage);
+
+          var nextPage = makePage(currentPage + 1, nextText, false, paginationCtrl.noNext());
+          pages.push(nextPage);
+        }
+
+        // Add first & last links
+        if (boundaryLinks) {
+          var firstPage = makePage(1, firstText, false, paginationCtrl.noPrevious());
+          pages.unshift(firstPage);
+
+          var lastPage = makePage(totalPages, lastText, false, paginationCtrl.noNext());
+          pages.push(lastPage);
+        }
+
+        return pages;
+      };
+    }
+  };
+}])
+
+.constant('pagerConfig', {
+  itemsPerPage: 10,
+  previousText: '« Previous',
+  nextText: 'Next »',
+  align: true
+})
+
+.directive('pager', ['pagerConfig', function(config) {
+  return {
+    restrict: 'EA',
+    scope: {
+      page: '=',
+      totalItems: '=',
+      onSelectPage:' &'
+    },
+    controller: 'PaginationController',
+    templateUrl: 'template/pagination/pager.html',
+    replace: true,
+    link: function(scope, element, attrs, paginationCtrl) {
+
+      // Setup configuration parameters
+      var previousText = paginationCtrl.getAttributeValue(attrs.previousText, config.previousText, true),
+      nextText         = paginationCtrl.getAttributeValue(attrs.nextText,     config.nextText,     true),
+      align            = paginationCtrl.getAttributeValue(attrs.align,        config.align);
+
+      paginationCtrl.init(config.itemsPerPage);
+
+      // Create page object used in template
+      function makePage(number, text, isDisabled, isPrevious, isNext) {
+        return {
+          number: number,
+          text: text,
+          disabled: isDisabled,
+          previous: ( align && isPrevious ),
+          next: ( align && isNext )
+        };
+      }
+
+      paginationCtrl.getPages = function(currentPage) {
+        return [
+          makePage(currentPage - 1, previousText, paginationCtrl.noPrevious(), true, false),
+          makePage(currentPage + 1, nextText, paginationCtrl.noNext(), false, true)
+        ];
+      };
+    }
+  };
 }]);
+
 
 /**
  * @ngdoc overview
@@ -907,11 +952,9 @@ angular.module('ui.bootstrap.tabs', [])
   };
 })
 
-.controller('TabsetController', ['$scope', '$element',
-function TabsetCtrl($scope, $element) {
-
+.controller('TabsetController', ['$scope', function TabsetCtrl($scope) {
   var ctrl = this,
-    tabs = ctrl.tabs = $scope.tabs = [];
+      tabs = ctrl.tabs = $scope.tabs = [];
 
   ctrl.select = function(tab) {
     angular.forEach(tabs, function(tab) {
@@ -1068,8 +1111,7 @@ function TabsetCtrl($scope, $element) {
   </file>
 </example>
  */
-.directive('tab', ['$parse', '$http', '$templateCache', '$compile',
-function($parse, $http, $templateCache, $compile) {
+.directive('tab', ['$parse', function($parse) {
   return {
     require: '^tabset',
     restrict: 'EA',
@@ -1091,8 +1133,13 @@ function($parse, $http, $templateCache, $compile) {
         if (attrs.active) {
           getActive = $parse(attrs.active);
           setActive = getActive.assign;
-          scope.$parent.$watch(getActive, function updateActive(value) {
-            scope.active = !!value;
+          scope.$parent.$watch(getActive, function updateActive(value, oldVal) {
+            // Avoid re-initializing scope.active as it is already initialized
+            // below. (watcher is called async during init with value ===
+            // oldVal)
+            if (value !== oldVal) {
+              scope.active = !!value;
+            }
           });
           scope.active = getActive(scope.$parent);
         } else {
@@ -1100,6 +1147,8 @@ function($parse, $http, $templateCache, $compile) {
         }
 
         scope.$watch('active', function(active) {
+          // Note this watcher also initializes and assigns scope.active to the
+          // attrs.active expression.
           setActive(scope.$parent, active);
           if (active) {
             tabsetCtrl.select(scope);
@@ -1126,9 +1175,6 @@ function($parse, $http, $templateCache, $compile) {
         scope.$on('$destroy', function() {
           tabsetCtrl.removeTab(scope);
         });
-        if (scope.active) {
-          setActive(scope.$parent, true);
-        }
 
 
         //We need to transclude later, once the content container is ready.
@@ -1154,7 +1200,7 @@ function($parse, $http, $templateCache, $compile) {
   };
 }])
 
-.directive('tabContentTransclude', ['$compile', '$parse', function($compile, $parse) {
+.directive('tabContentTransclude', function() {
   return {
     restrict: 'A',
     require: '^tabset',
@@ -1183,9 +1229,9 @@ function($parse, $http, $templateCache, $compile) {
       node.tagName.toLowerCase() === 'data-tab-heading'
     );
   }
-}])
+})
 
-.directive('tabsetTitles', ['$http', function($http) {
+.directive('tabsetTitles', function() {
   return {
     restrict: 'A',
     require: '^tabset',
@@ -1202,10 +1248,88 @@ function($parse, $http, $templateCache, $compile) {
       }
     }
   };
-}])
+});
 
-;
+angular.module('ui.bootstrap.position', [])
 
+/**
+ * A set of utility methods that can be use to retrieve position of DOM elements.
+ * It is meant to be used where we need to absolute-position DOM elements in
+ * relation to other, existing elements (this is the case for tooltips, popovers,
+ * typeahead suggestions etc.).
+ */
+  .factory('$position', ['$document', '$window', function ($document, $window) {
+
+    function getStyle(el, cssprop) {
+      if (el.currentStyle) { //IE
+        return el.currentStyle[cssprop];
+      } else if ($window.getComputedStyle) {
+        return $window.getComputedStyle(el)[cssprop];
+      }
+      // finally try and get inline style
+      return el.style[cssprop];
+    }
+
+    /**
+     * Checks if a given element is statically positioned
+     * @param element - raw DOM element
+     */
+    function isStaticPositioned(element) {
+      return (getStyle(element, "position") || 'static' ) === 'static';
+    }
+
+    /**
+     * returns the closest, non-statically positioned parentOffset of a given element
+     * @param element
+     */
+    var parentOffsetEl = function (element) {
+      var docDomEl = $document[0];
+      var offsetParent = element.offsetParent || docDomEl;
+      while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
+        offsetParent = offsetParent.offsetParent;
+      }
+      return offsetParent || docDomEl;
+    };
+
+    return {
+      /**
+       * Provides read-only equivalent of jQuery's position function:
+       * http://api.jquery.com/position/
+       */
+      position: function (element) {
+        var elBCR = this.offset(element);
+        var offsetParentBCR = { top: 0, left: 0 };
+        var offsetParentEl = parentOffsetEl(element[0]);
+        if (offsetParentEl != $document[0]) {
+          offsetParentBCR = this.offset(angular.element(offsetParentEl));
+          offsetParentBCR.top += offsetParentEl.clientTop - offsetParentEl.scrollTop;
+          offsetParentBCR.left += offsetParentEl.clientLeft - offsetParentEl.scrollLeft;
+        }
+
+        var boundingClientRect = element[0].getBoundingClientRect();
+        return {
+          width: boundingClientRect.width || element.prop('offsetWidth'),
+          height: boundingClientRect.height || element.prop('offsetHeight'),
+          top: elBCR.top - offsetParentBCR.top,
+          left: elBCR.left - offsetParentBCR.left
+        };
+      },
+
+      /**
+       * Provides read-only equivalent of jQuery's offset function:
+       * http://api.jquery.com/offset/
+       */
+      offset: function (element) {
+        var boundingClientRect = element[0].getBoundingClientRect();
+        return {
+          width: boundingClientRect.width || element.prop('offsetWidth'),
+          height: boundingClientRect.height || element.prop('offsetHeight'),
+          top: boundingClientRect.top + ($window.pageYOffset || $document[0].body.scrollTop || $document[0].documentElement.scrollTop),
+          left: boundingClientRect.left + ($window.pageXOffset || $document[0].body.scrollLeft  || $document[0].documentElement.scrollLeft)
+        };
+      }
+    };
+  }]);
 
 angular.module('ui.bootstrap.bindHtml', [])
 
@@ -1284,9 +1408,10 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //expressions used by typeahead
       var parserResult = typeaheadParser.parse(attrs.typeahead);
 
+      var hasFocus;
 
       //pop-up element used to display matches
-      var popUpEl = angular.element('<typeahead-popup></typeahead-popup>');
+      var popUpEl = angular.element('<div typeahead-popup></div>');
       popUpEl.attr({
         matches: 'matches',
         active: 'activeIdx',
@@ -1315,11 +1440,11 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
         var locals = {$viewValue: inputValue};
         isLoadingSetter(originalScope, true);
-        $q.when(parserResult.source(scope, locals)).then(function(matches) {
+        $q.when(parserResult.source(originalScope, locals)).then(function(matches) {
 
           //it might happen that several async queries were in progress if a user were typing fast
           //but we are interested only in responses that correspond to the current view value
-          if (inputValue === modelCtrl.$viewValue) {
+          if (inputValue === modelCtrl.$viewValue && hasFocus) {
             if (matches.length > 0) {
 
               scope.activeIdx = 0;
@@ -1364,7 +1489,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //$parsers kick-in on all the changes coming from the view as well as manually triggered by $setViewValue
       modelCtrl.$parsers.unshift(function (inputValue) {
 
-        resetMatches();
+        hasFocus = true;
+
         if (inputValue && inputValue.length >= minSearch) {
           if (waitTime > 0) {
             if (timeoutPromise) {
@@ -1376,13 +1502,22 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
           } else {
             getMatchesAsync(inputValue);
           }
+        } else {
+          isLoadingSetter(originalScope, false);
+          resetMatches();
         }
 
         if (isEditable) {
           return inputValue;
         } else {
-          modelCtrl.$setValidity('editable', false);
-          return undefined;
+          if (!inputValue) {
+            // Reset in case user had typed something previously.
+            modelCtrl.$setValidity('editable', true);
+            return inputValue;
+          } else {
+            modelCtrl.$setValidity('editable', false);
+            return undefined;
+          }
         }
       });
 
@@ -1436,6 +1571,9 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
         //typeahead is open and an "interesting" key was pressed
         if (scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
+          if (evt.which === 13) {
+            evt.preventDefault();
+          }
           return;
         }
 
@@ -1462,6 +1600,10 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         }
       });
 
+      element.bind('blur', function (evt) {
+        hasFocus = false;
+      });
+
       // Keep reference to click handler to unbind it.
       var dismissClickHandler = function (evt) {
         if (element[0] !== evt.target) {
@@ -1484,7 +1626,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
   .directive('typeaheadPopup', function () {
     return {
-      restrict:'E',
+      restrict:'EA',
       scope:{
         matches:'=',
         query:'=',
@@ -1519,7 +1661,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
   .directive('typeaheadMatch', ['$http', '$templateCache', '$compile', '$parse', function ($http, $templateCache, $compile, $parse) {
     return {
-      restrict:'E',
+      restrict:'EA',
       scope:{
         index:'=',
         match:'=',
@@ -1554,8 +1696,8 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
 }]);
 
 angular.module("template/accordion/accordion.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/accordion/accordion.html", "<panel class=\"panel-group\"><div class=\"panel panel-default\" ng-transclude><div class=\"panel-heading\"></div></div></div>"
-    );//"<div class=\"accordion\" ng-transclude></div>"
+  $templateCache.put("template/accordion/accordion.html",
+    "<div class=\"accordion\" ng-transclude></div>");
 }]);
 
 angular.module("template/alert/alert.html", []).run(["$templateCache", function($templateCache) {
@@ -1574,17 +1716,26 @@ angular.module("template/modal/backdrop.html", []).run(["$templateCache", functi
 
 angular.module("template/modal/window.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/modal/window.html",
-    "<div class=\"fade {{ windowClass }}\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10}\" ng-transclude></div>");
+    "<div class=\"modal fade {{ windowClass }}\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10}\" ng-transclude></div>");
 }]);
 
-angular.module("template/progressbar/bar.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/progressbar/bar.html",
-    "<div class=\"bar\" ng-class='type && \"bar-\" + type'></div>");
+angular.module("template/pagination/pager.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/pagination/pager.html",
+    "<div class=\"pager\">\n" +
+    "  <ul>\n" +
+    "    <li ng-repeat=\"page in pages\" ng-class=\"{disabled: page.disabled, previous: page.previous, next: page.next}\"><a ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
+    "  </ul>\n" +
+    "</div>\n" +
+    "");
 }]);
 
-angular.module("template/progressbar/progress.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/progressbar/progress.html",
-    "<div class=\"progress\"><progressbar ng-repeat=\"bar in bars\" width=\"bar.to\" old=\"bar.from\" animate=\"bar.animate\" type=\"bar.type\"></progressbar></div>");
+angular.module("template/pagination/pagination.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/pagination/pagination.html",
+    "<div class=\"pagination\"><ul>\n" +
+    "  <li ng-repeat=\"page in pages\" ng-class=\"{active: page.active, disabled: page.disabled}\"><a ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
+    "  </ul>\n" +
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("template/tabs/pane.html", []).run(["$templateCache", function($templateCache) {
@@ -1647,7 +1798,7 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
   $templateCache.put("template/typeahead/typeahead-popup.html",
     "<ul class=\"typeahead dropdown-menu\" ng-style=\"{display: isOpen()&&'block' || 'none', top: position.top+'px', left: position.left+'px'}\">\n" +
     "    <li ng-repeat=\"match in matches\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\">\n" +
-    "        <typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></typeahead-match>\n" +
+    "        <div typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
     "    </li>\n" +
     "</ul>");
 }]);

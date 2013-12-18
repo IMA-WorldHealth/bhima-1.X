@@ -72,18 +72,8 @@
     </div>
   </div>
 
-  <div id="kpk-container" ng-controller="messageCtrl">
-    <!-- experimental alert boxes -->
-    <div class="kpk-message-container">
-      <div id="kpk-message" class="kpk-message" ng-class="{'active' : message.active, message.type : message.type}">
-        <span ng-show="!!message.title" class="kpk-message-title">{{message.content}}</span>
-        <span class="kpk-message-content">{{message.content}}</span>
-        <span ng-show="!!message.closable" class="kpk-message-close" ng-click="message.close()">
-          <i class="glyphicon glyphicon-close"></i>
-        </span>
-      </div>
-    </div>
-
+  <div kpk-alert-type="type" ng-controller="messageCtrl"></div>
+  <div id="kpk-container">
     <div ng-view id="kpk-view"><!--Content populated with angular--></div>
   </div>
 </div>
@@ -125,17 +115,15 @@
 <!--i18n-->
 <script src="lib/angular-translate/angular-translate.js"></script>
 
+<!--lib-->
+<script src="lib/ui-bootstrap-tpls.js"></script>
+
 <!--kapok-->
 <script src="js/app.js"></script>
 <script src="js/services/services.js"></script>
 <script src="js/filters/filters.js"></script>
 <script src="js/controllers/controllers.js"></script>
 <script src="js/directives/directives.js"></script>
-
-<!--lib-->
-<script src="js/directives/angular.treeview.js"></script>
-<script src="lib/ui-bootstrap-custom-tpls-0.6.0.js"></script>
-
 
 </body>
 </html>
