@@ -277,9 +277,9 @@ angular.module('kpk.controllers')
     connect.basicPost('supplier', [{id : creditor.id, locked: creditor.locked}], ["id"]);
   };
 
-  $scope.delete = function(creditor) {
+  $scope.delete = function () {
     //kpkConnect.delete('supplier', creditor.id);
-    connect.basicDelete('supplier', creditor.id);
+    connect.basicDelete('supplier', 'id', $scope.creditor.id);
     $scope.creditor = {};
     getCreditors();
   };
