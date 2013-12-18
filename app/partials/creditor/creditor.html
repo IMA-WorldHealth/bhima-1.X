@@ -89,7 +89,7 @@
             <tr ng-click="fill($index)" ng-repeat="creditor in creditors">
               <td>{{creditor.id}}</td>
               <td>{{creditor.name}}</td>
-              <td><input type="checkbox" ng-model="creditor.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(creditor)"></td>
+              <td><input type="checkbox" ng-model="creditor.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(creditor)" ng-checked="creditor.locked"></td>
             </tr>
           </tbody>
         </table>
