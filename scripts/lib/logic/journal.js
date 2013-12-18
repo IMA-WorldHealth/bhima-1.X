@@ -47,7 +47,7 @@ module.exports = function (db) {
       services = {
         'sale' : "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM " + columnData.t + " JOIN `sale_item` JOIN `inventory` ON `sale`.`id`=`sale_item`.`sale_id` AND `sale_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t + ".`id`=" + posting.id + ";\n",
         'cash' : "SELECT " + columns.join(', ') + ", `cash_id`, `allocated_cost`, `invoice_id` FROM " + columnData.t + " JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` WHERE " + columnData.t + ".`id`=" + db.escapestr(posting.id) + ";\n",
-        'purchase' : "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM `purchase` JOIN `purchase_item` JOIN `inventory` ON `purchase`.`id`=`purchase_id`.`purchase_id` AND `purchase_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t +".`id`=" + db.escapestr(posting.id) + ";\n"
+        'purchase' : "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM `purchase` JOIN `purchase_item` JOIN `inventory` ON `purchase`.`id`=`purchase_item`.`purchase_id` AND `purchase_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t +".`id`=" + db.escapestr(posting.id) + ";\n"
       };
 
       sql = services[service_name];
