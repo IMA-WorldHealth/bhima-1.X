@@ -2,7 +2,7 @@
   'use strict';
 
   //FIXME: Format code correctly in seperate files/modules etc.
-  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'angularTreeview', 'ui.bootstrap', 'ui.bootstrap.tabs', 'pascalprecht.translate']);
+  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'ui.bootstrap', 'pascalprecht.translate']);
   
   function kpkconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
