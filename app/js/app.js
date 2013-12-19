@@ -2,7 +2,7 @@
   'use strict';
 
   //FIXME: Format code correctly in seperate files/modules etc.
-  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'angularTreeview', 'ui.bootstrap', 'ui.bootstrap.tabs', 'pascalprecht.translate']);
+  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'ui.bootstrap', 'pascalprecht.translate']);
   
   function kpkconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
@@ -192,16 +192,10 @@
 
       //account page
       ACCOUNT_PAGE_TITLE : 'Chart of Accounts',
-      ACCOUNT_PAGE_ADD : 'Add Account'
+      ACCOUNT_PAGE_ADD : 'Add Account',
 
-
-
-
-
-
-
-
-
+      //patient registration 
+      DEBTOR_GROUP : 'Debtor Group'
 
 
     });
@@ -282,7 +276,10 @@
       //account page
 
       ACCOUNT_PAGE_TITLE : 'Tableau des Comptes',
-      ACCOUNT_PAGE_ADD : 'Ajouter un Compte'
+      ACCOUNT_PAGE_ADD : 'Ajouter un Compte',
+
+      //patient registration 
+      DEBTOR_GROUP : 'Debitor Group'
 
 
     });
@@ -337,6 +334,9 @@
       PERMISSION: 'Ndingisa',
       UP_DIALOGUE : 'Mpona biteni ya basali ', // This token is non-normative
       UP_DIALOGUE_2 : 'akoki kokota',
+
+      //patient registration 
+      DEBTOR_GROUP : 'Lobi'
 
     });
 
