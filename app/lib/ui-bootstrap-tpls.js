@@ -1697,7 +1697,7 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
 
 angular.module("template/accordion/accordion.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/accordion/accordion.html",
-    "<div class=\"accordion\" ng-transclude></div>");
+    "<panel class=\"panel-group\"><div class=\"panel panel-default\" ng-transclude><div class=\"panel-heading\"></div></div></div>");
 }]);
 
 angular.module("template/alert/alert.html", []).run(["$templateCache", function($templateCache) {
