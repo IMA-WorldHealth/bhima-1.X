@@ -71,6 +71,7 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 	}
 
 	$scope.fill = function(){
+		$scope.model.chooses = [];
 		if($scope.data.type == 'I'){			
 			if($scope.data.dc == 'D'){
 
@@ -84,11 +85,11 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 		}else if($scope.data.type == 'G'){
 			if($scope.data.dc == 'D'){
 
-				$scope.model.chooses = models.creditors.data;
+				$scope.model.chooses = models.debitorGroup.data;
 
 			}else if($scope.data.dc == 'C'){
 
-				$scope.model.chooses = models.creditors.data;
+				$scope.model.chooses = models.creditorGroup.data;
 			}
 		}
 	}
@@ -101,20 +102,57 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 
 	$scope.populate = function (){
 
-		if($scope.data.type == 'I'){
+		$scope.show = true;
+		if($scope.data.type == 'I'){			
 			connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id, type:$scope.data.dc, ig:$scope.data.type})).then(function(values){
 	          $scope.model['transReport'] = values;
+	          doSummary(values);
 	          popul();
-		    });			
+		    });	
+
 		}else if($scope.data.type == 'G'){		
 
 			connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id, type:$scope.data.dc, account_id:$scope.model.selected.account_id, ig:$scope.data.type})).then(function(values){
 	          $scope.model['transReport'] = values;
+	          doSummary(values);
 	          popul();
-		    });	
-
+		    });
 
 		} 	
+    }
+
+    function doSummary(values){
+    	if($scope.data.type == 'I'){
+    		var sql = {
+				    tables : {
+				      	'posting_journal' : {columns: ["credit", "debit"]}
+				    },
+	      			where: ['posting_journal.deb_cred_id= '+$scope.model.selected.id, "AND", 'posting_journal.deb_cred_type='+$scope.data.dc, "AND", "posting_journal.account_id="+$scope.model.selected.account_id]
+		};
+
+    	}else if($scope.data.type == 'G'){
+    		var sql = {
+				    tables : {
+				      	'posting_journal' : {columns: ["credit", "debit"]}
+				    },
+	      			where: ['posting_journal.deb_cred_type='+$scope.data.dc, "AND", "posting_journal.account_id="+$scope.model.selected.account_id]
+			};
+
+    	}
+
+		$q.all([connect.req(sql)]).then(function(resps){
+
+	    	var creditTotal = 0, debitTotal = 0;
+	    	resps[0].data.forEach(function(item){
+	    		creditTotal+=item.credit;
+	    		debitTotal+=item.debit;
+	    	});
+			var soldTotal = debitTotal-creditTotal;
+			$scope.isBalanced = (soldTotal == 0)?"Yes":"No";
+			$scope.credit = creditTotal;
+			$scope.debit = debitTotal;
+			$scope.sold = (soldTotal<0)? soldTotal*(-1):soldTotal;
+		});
     }	  	  	
 
   	function popul() {
