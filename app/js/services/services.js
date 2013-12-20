@@ -93,356 +93,75 @@
     }
   });
 
-  services.factory('appnotify', function ($q, $timeout) {
+  services.factory('appcache', function($q) { 
+    var DB_NAME = "kpk";
+    var VERSION = 2;
 
-//    Allows for multiple notifications - if that's your thing
-//    var notifications = [];
-    var notification = [];
-//    FIXME This is horrible - CSS styles should be applied conditionally with ng-class
-    var style = ["notification-success"];
-    var timeout = 3000;
-
-    function init() {
-//    initialise session variables etc.
-    }
-
-    function setNotification(type, header, body, delay) {
-//      only one notification allowed at this time
-      if (delay) timeout = delay;
-
-      /*if(type) style[0] = "notification-" + type;
-       notification.pop();
-       notification.push({'type' : type, 'header' : header, 'body' : body, 'delay' : delay});*/
-      console.log('[appnotify] setNotification(); populate notification model')
-      var handle = $timeout(clearAll, timeout);
-    }
-
-    function clearAll() {
-      console.log('[appnotify] clearAll(); clear notification model');
-      notification.pop();
-    }
-
-    /*function registerDisplay()
-     *   summary
-     *     Any controller can register as a notification display - a callback would be registered
-     *     for every time an update is made to notification state
-     */
-
-    init();
-
-    return {
-//      Is it a good idea to expose this?
-      notification: notification,
-      setNotification: setNotification,
-      clearAll: clearAll,
-      style: style
-    }
-  });
-
-  services.factory('appcache', function($q, $rootScope) {
-    /////
-    // summary: 
-    //  Used to interface with indexedDB store, providing methods to read and write to local storage
-    //  
-    // TODO:
-    //  -Formalise inner working functions, and expose high level requests (storage for page save, namespacing etc.)
-    //  -Use multiple indexs (injected on request)
-    /////
-    console.log("appcache initialised");
-
-    var cache_supported;
-    if("indexedDB" in window) { 
-      cache_supported = true;
-    }
-
-    //variables inside if(cache_supported)? no need to initialise otherwise
-    var db;
-    var version = 2;
-
-    var instance = { 
-      add: add,
-      getNav: getNav,
-      cacheNav: cacheNav,
-      checkDB: checkDB
-    };
-
-    var queue = [];
-
-    function checkDB() {
-      return db;
-    }
-
-    //Methods for storing navigation data - FIXME: Should service be more abstract than this?
-    function getNav() { 
-      //FIXME: Redo this function/ queue system
-      var deferred = $q.defer();
-
-      if(!db) {
-        console.log("Adding fetch to queue");
-        queue.push(fetch);
-      } else { 
-        fetch();
-      }
-
-      function treeAttribute(name, value) {
-        //FIXME
-        //Encapsulate this in a method - checking and creating partition if !exist
-        //Add all required caches on database creation - then this check is essentially redundant
-        //Add entry for each attribute vs. storing in one big object
-        var promise = getByIndex("cache_tree");
-        //literally gross code - it's late
-        promise
-          .then(function(res) {
-            if(!res) {
-            add({"ref": "cache_tree", elements: {}})
-              .then(function(con) {
-                setAttr();
-              });
-            } else {
-              setAttr();
-            }
-          })
-
-        function setAttr() {
-          update("cache_tree", "elements", value);
-        }
-      }
-
-
-      function fetch() {
-        console.log("fetch called");
-        getByIndex("cache_nav").then(function(res) {
-          console.log("getByIndex returned", res);
-          if(res) { 
-            deferred.resolve(res.value);
-          } else { 
-            deferred.resolve(res);
-          }
-        });
-      }
-
-      return deferred.promise;
-    }
-
-    function cacheNav(nav_string) {
-
-      if(!db) { 
-        queue.push(commit);
-      } else { 
-        commit();
-      }
-
-      function commit() { 
-        var promise = getByIndex("cache_nav");
-        promise
-        .then(function(res) { 
-          if(!res) { 
-            return add({"ref": "cache_nav", "value" : ""});
-          }
-        });
-      }
-      
-      update("cache_nav", "value", nav_string);
-    }
-
-    //TODO
-    function saveSessionModel(unit, model) {
-
+    var db, cacheSupported;
+    var requestMap = { 
+      'get' : get
     }
 
     function init() { 
-      var req = indexedDB.open("kpk", version);
+      //also sets db - working on making it read better
+      openDBConnection(DB_NAME)
+      .then(function(connectionSuccess) { 
 
-      req.onupgradeneeded = function(e) { 
-        //summary: 
-        //  user is either new, or a newer version of the database is available, run database settup 
-        console.log("[appcache] upgrading indexed");
-        var checkDB = e.target.result;
+      }, function(error) { 
 
-        if(!checkDB.objectStoreNames.contains("session")) { 
-          var store = checkDB.createObjectStore("session",  {autoIncrement: true});
-          store.createIndex("ref", "ref", {unique:true});
-        }
-      }
-
-      req.onsuccess = function(e) { 
-        db = e.target.result;
-
-        //Call all methods requested befored db init
-        queue.forEach(function(callback) { 
-          callback();
-          //delete callback
-        });
-        
-      }
-
-      req.onerror = function(e) { 
-        throw new Error(e);
-      }
+      });
     }
 
-    function add(object) { 
+    //generic request method allow all calls to be queued if the database is not initialised
+    function request(method, value) { 
+      if(!requestMap[method]) return false;
+      requestMap[method](value);
+    }
+
+    function get(value) { 
+
+    }
+
+    function openDBConnection(dbname) { 
       var deferred = $q.defer();
-      if(db) { 
-        var transaction = db.transaction(["session"], "readwrite");
-        var store = transaction.objectStore("session");
+      var request = indexedDB.open(dbname);
+      request.onupgradeneeded = function(event) { 
+        db = event.target.result;
 
-        var req = store.add(object);
-
-        req.onerror = function(e) { 
-          console.log("[appcache] Failed to write", e);
-          return;
-        }
-
-        req.onsuccess = function(e) { 
-          //success
-          console.log("[appcache] object written");
-          deferred.resolve(e.target.value);
-        }
+        // if(!db.objectStoreNames.contains()
+        deferred.resolve();
       }
-      return deferred;
-    }
-
-    function put(object) { 
-      if(db) { 
-        var transaction = db.transaction(["session"], "readwrite");
-        var store = transaction.objectStore("session");
-        
-        var req = store.put(object);
-
-        req.onsuccess = function(e) { 
-          console.log("Value updated", object);
-        }
-
-        req.onerror = function(e) { 
-          console.log("[appcache] Failed to put", e);
-        }
+      request.onsuccess = function(event) { 
+        db = request.result;
+        deferred.resolve();
       }
-    }
-
-    function update(key, field, value) { 
-      if(db) { 
-        var transaction = db.transaction(["session"], "readwrite");
-        var store = transaction.objectStore("session");
-        var index = store.index("ref");
-        var key_range = IDBKeyRange.only(key);
-        
-        var req = index.openCursor(key_range);
-
-        req.onsuccess = function(e) { 
-          var cursor = e.target.result;
-          if(cursor) { 
-            //gauranteed to only be one object given key range / key
-            var res = cursor.value;
-            res[field] = value;
-            cursor.update(res);
-          }
-          console.log("[appcache] updated", key);
-        }
-
-        req.onerror = function(e) { 
-          console.log("[appcache] Failed to update");
-        }
+      request.onerror = function(event) { 
+        deferred.reject(event);
       }
-    }
-
-    function get(key) { 
-      var transaction = db.transaction(["session"], "readonly");
-      var store = transaction.objectStore("session");
-
-      var req = store.get(key);
-
-      req.onsuccess = function(e) { 
-        console.log("[appcache] Read success", e);
-        console.log("[appcache] Result", e.target.result);
-        return e.target.result;
-      }
-
-      req.onerror = function(e) { 
-        console.log("[appcache] Failed to read", e);
-      }
-
-    }
-
-    function getByIndex(key) { 
-      var deferred = $q.defer();
-      var transaction = db.transaction(["session"], "readonly");
-      var store = transaction.objectStore("session");
-      var index = store.index("ref");
-      
-      var req = index.get(key);
-
-      req.onsuccess = function(e) {
-//        temporary wrap in $apply, resolve was not being received
-        $rootScope.$apply(deferred.resolve(e.target.result));
-      }
-
-      req.onerror = function(e) { 
-        console.log("[appcache] Failed to read", e);
-      }
-
       return deferred.promise;
     }
 
-    function requestAll() { 
-      //summary: 
-      //  indexedDB cursor demonstration
-      var transaction = db.transaction(["session"], "readonly");
-      var store = transaction.objectStore("session");
-
-      var cursor = store.openCursor();
-
-      cursor.onsuccess = function(e) { 
-        var res = e.target.result;
-        if(res) { 
-          console.log("key", res.key, "data", res.value);
-          res.continue();
-        }
-      }
-
-      cursor.onerror = function(e) { 
-        console.log("[appcache] Failed to read cursor");
-      }
-    }
-
-    if(cache_supported) { 
+    cacheSupported = ("indexedDB" in window);
+    if(cacheSupported) { 
       init();
+    } else { 
+      console.log('application cache is not supported in this context');
+      //throw new Error();
     }
 
-    return instance;
-
+    return { 
+      request : request
+    };
   });
 
   services.factory('appstate', function($q) { 
-    /////
-    // summary: 
-    //  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
-    //  to allow asynchronous loading
-    // 
-    // example:
-    //  ensuring multiple values are set before loading a page (vs. only registering one dependency)
-    /*  function fetch() { 
-          var promise = fechFirst();
-          //see also: $q.all()
-          fetchFirst.then(function(res) { 
-
-            return fetchSecond();
-          })
-          .then(function(res) { 
-
-          });
-        }
-        function fetchFirst() { 
-
-        }
-
-        function fetchSecond() { 
-
-        }
+    /*
+    * summary: 
+    *  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
+    *  to allow asynchronous loading
+    * TODO
+    *   -Unregister callbacks form unit/module, these could be auto unhooked from application controller?
     */
-    //  TODO
-    //    -Unregister callbacks form unit/module, these could be auto unhooked from application controller?
-    /////
   
     var instance = {
       //summary: 
@@ -456,10 +175,6 @@
 
     var comp = {};
     var queue = {};
-
-    function init() {
-
-    }
 
     function set(comp_id, ref) { 
       //summary: 
@@ -496,8 +211,6 @@
         });
       }
     }
-
-    init();
 
     return instance;
   });
