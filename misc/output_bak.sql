@@ -95,7 +95,7 @@ insert into `account_title` (`id`, `title`, `number`, `type`) values
 (93, 78. REPRISE SUR AMORTISSEMENTS ET PROVISIONS, 78, 1),
 
 
-insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `account_category_id`) values
+insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `parent`) values
 (0, 1, 0, 200, 100, Fonds social, 3, 10),
 (1, 1, 0, 200, 1010, Dotation de base, 3, 101),
 (2, 1, 0, 200, 1013, Affectations, 3, 101),
