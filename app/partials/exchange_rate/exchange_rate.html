@@ -21,7 +21,7 @@
               ng-options="curr.id as label(curr) for curr in currencies"
               ng-change="updateFrom()"
               >
-              <option value="">-- Select Currency --</option>
+              <option value="" disabled="disabled">-- Select Currency --</option>
             </select>
           </div>
           <label for="to" class="col-xs-1 control-label">
@@ -36,7 +36,7 @@
               ng-options="curr.id as label(curr) for curr in currencies | filter:filter"
               ng-change="updateTo()"
               >
-              <option value="">-- Select Currency --</option>
+              <option value="" disabled="disabled">-- Select Currency --</option>
             </select>
           </div>
         </div>
