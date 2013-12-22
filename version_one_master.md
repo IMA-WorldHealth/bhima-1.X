@@ -50,6 +50,7 @@ the 02/14 date.
 
 (4) Features
 ------------
+-	Location creation interface 
 
 (5) Reporting
 ------------- 
