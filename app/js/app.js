@@ -1,4 +1,4 @@
-(function(angular) {
+(function (angular) {
   'use strict';
 
   //FIXME: Format code correctly in seperate files/modules etc.
@@ -122,38 +122,40 @@
     //TODO Review i18n and determine if this it the right solution
     $translateProvider.translations('en', {
       //Accounting terminology
-      POSTING_JOURNAL: "posting journal",
-      TRANSACTION: "transaction",
-      ACCOUNT: "account",
-      TRIAL_BALANCE: "trial balance",
-      GENERAL_LEDGER: "general ledger",
-      DEBIT: "debit",
-      CREDIT: "credit",
-      FISCAL_YEAR: "fiscal year",
+      POSTING_JOURNAL: 'posting journal',
+      TRANSACTION: 'transaction',
+      ACCOUNT: 'account',
+      TRIAL_BALANCE: 'trial balance',
+      GENERAL_LEDGER: 'general ledger',
+      DEBIT: 'debit',
+      CREDIT: 'credit',
+      FISCAL_YEAR: 'fiscal year',
+      ENTERPRISE : 'enterprise',
 
       //Application functions
-      CONFIGURE: "configure",
-      PRINT: "print",
-      CREATE: "create",
+      CONFIGURE: 'configure',
+      PRINT: 'print',
+      CREATE: 'create',
 
       //Generic database
-      ID: "id",
-      DATE: "date",
-      DESCRIPTION: "description",
+      ID: 'id',
+      DATE: 'date',
+      DESCRIPTION: 'description',
 
       // Actions
       SAVE: 'save',
       DELETE : 'delete',
+      NEW : 'new',
       CANCEL : 'cancel',
 
       //Titles
-      MANAGEMENT: "management",
+      MANAGEMENT: 'management',
 
       //Journal database
-      DOC_NO: "doc no.",
-      DEB_CRED_ACCOUNT: "debitor/creditor account",
-      DEB_CRED_TYPE: "debitor/creditor type",
-      INV_PO_NO: "inv/PO no.",
+      DOC_NO: 'doc no.',
+      DEB_CRED_ACCOUNT: 'debitor/creditor account',
+      DEB_CRED_TYPE: 'debitor/creditor type',
+      INV_PO_NO: 'inv/PO no.',
 
       // Users and Permissions
       UP_TITLE : 'users & permissions management', // FIXME: namespaces
@@ -171,6 +173,13 @@
       PERMISSION: 'permission',
       UP_DIALOGUE : 'check units which user ', // This token is non-normative
       UP_DIALOGUE_2 : 'will access',
+
+      // Enterprise Creation
+      NAME : 'name',
+      CASH_ACCOUNT : 'cash account',
+      LOCATION: 'location',
+      PHONE: 'phone',
+      ABBREVIATION: 'abbreviation',
 
       //fiscal year page
       FISCAL_YEAR_PAGE_NEW : 'New Fiscal Year',
@@ -205,38 +214,40 @@
 
     $translateProvider.translations('fr', {
       //Accounting terminology
-      POSTING_JOURNAL: "journal de saisie",
-      TRANSACTION: "opération",
-      ACCOUNT: "compte",
-      TRIAL_BALANCE: "balance de vérification",
-      GENERAL_LEDGER: "grand livre général",
-      DEBIT: "débit",
-      CREDIT: "crédit",
-      FISCAL_YEAR : 'Annee Fiscal',
+      POSTING_JOURNAL: 'journal de saisie',
+      TRANSACTION: 'opération',
+      ACCOUNT: 'compte',
+      TRIAL_BALANCE: 'balance de vérification',
+      GENERAL_LEDGER: 'grand livre général',
+      DEBIT: 'débit',
+      CREDIT: 'crédit',
+      FISCAL_YEAR : 'annee fiscal',
+      ENTERPRISE : 'enterprise',
 
       // Application functions
-      CONFIGURE: "configurer",
-      PRINT: "imprimer",
-      CREATE: "créer",
+      CONFIGURE: 'configurer',
+      PRINT: 'imprimer',
+      CREATE: 'créer',
 
       // Generic database
-      ID: "id",
-      DATE: "date",
-      DESCRIPTION: "description",
+      ID: 'id',
+      DATE: 'date',
+      DESCRIPTION: 'description',
 
       // Actions
       SAVE: 'enregistrer',
       DELETE : 'soupprimer',
+      NEW : 'nouvelle',
       CANCEL : 'retourner',
 
       //Titles
-      MANAGEMENT: "gestion",
+      MANAGEMENT: 'gestion',
 
       //Journal database
-      DOC_NO: "doc no.",
-      DEB_CRED_ACCOUNT: "debitor/creditor account",
-      DEB_CRED_TYPE: "debitor/creditor type",
-      INV_PO_NO: "inv/PO no.",
+      DOC_NO: 'doc no.',
+      DEB_CRED_ACCOUNT: 'debitor/creditor account',
+      DEB_CRED_TYPE: 'debitor/creditor type',
+      INV_PO_NO: 'inv/PO no.',
 
       // Users and Permissions page
       UP_TITLE : 'gestion des utilisateurs et permissions',
@@ -255,7 +266,15 @@
       UP_DIALOGUE : 'crocher les modules utilisateur ', // This token is non-normative
       UP_DIALOGUE_2 : 'peut acceder',
 
+      // Enterpise Creation
+      NAME : 'nom',
+      CASH_ACCOUNT : 'compte caisse',
+      LOCATION: 'location',
+      PHONE: 'téléphone',
+      ABBREVIATION: 'abbreviation',
+
       //fiscal year page
+      //FIXME/TODO: Namespacing
       FISCAL_YEAR_PAGE_NEW : 'Nouvelle Annee Fiscale',
       FISCAL_YEAR_PAGE_DESC : 'Desc Annee.',
       FISCAL_YEAR_PAGE_STARTMONTH : 'Debut Mois',
@@ -289,37 +308,39 @@
 
     $translateProvider.translations('ln', {
       //Accounting terminology
-      POSTING_JOURNAL: "Buku ya makomi",
-      TRANSACTION: "Ba Transaction",
-      ACCOUNT: "Ba Konti",
-      TRIAL_BALANCE: "balance ya vérification",
-      GENERAL_LEDGER: "Buku ya monene ya makomi",
-      DEBIT: "débit",
-      CREDIT: "crédit",
+      POSTING_JOURNAL: 'Buku ya makomi',
+      TRANSACTION: 'Ba Transaction',
+      ACCOUNT: 'Ba Konti',
+      TRIAL_BALANCE: 'balance ya vérification',
+      GENERAL_LEDGER: 'Buku ya monene ya makomi',
+      DEBIT: 'débit',
+      CREDIT: 'crédit',
+      ENTERPRISE : '?',
 
       // Application functions
-      CONFIGURE: "Bobongisi",
-      PRINT: "Koimprimer",
-      CREATE: "Kela",
+      CONFIGURE: 'Bobongisi',
+      PRINT: 'Koimprimer',
+      CREATE: 'Kela',
 
       // Generic database
-      ID: "id",
-      DATE: "Dati",
-      DESCRIPTION: "Ndimbola",
+      ID: 'id',
+      DATE: 'Dati',
+      DESCRIPTION: 'Ndimbola',
 
       // Actions
       SAVE: 'Bomba',
       DELETE : 'Longola',
+      NEW : '?',
       CANCEL : 'Zonga',
 
       //Titles
-      MANAGEMENT: "Mokambemi",
+      MANAGEMENT: 'Mokambemi',
 
       //Journal database
-      DOC_NO: "doc no.",
-      DEB_CRED_ACCOUNT: "Akonti ya debiteur to pe crediteur",
-      DEB_CRED_TYPE: "Lolenge ya crediteur to pe debiteur",
-      INV_PO_NO: "inv/PO no.",
+      DOC_NO: 'doc no.',
+      DEB_CRED_ACCOUNT: 'Akonti ya debiteur to pe crediteur',
+      DEB_CRED_TYPE: 'Lolenge ya crediteur to pe debiteur',
+      INV_PO_NO: 'inv/PO no.',
 
       // Users and Permissions
       UP_TITLE : 'Mokambemi ya Basali mpe ba Ndingisa',

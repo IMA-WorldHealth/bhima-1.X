@@ -22,13 +22,13 @@
             <div class="form-group">
               <label for="Group">Group</label>
               <select required class="form-kapok" ng-change="verifyExisting()" id="groupselectID" ng-model="creditor_group" ng-options="group.id+' -- '+group.group_txt for group in groups">
-                <option value="">--Select Group--</option>
+                <option value="" disabled="disabled">--Select Group--</option>
               </select>
             </div>
             <div class="form-group">
               <label for="Location">Location</label>
               <select required class="form-kapok" id="countryselectID" ng-model="creditor.location_id" ng-options="location.city+' -- '+location.region for location in locations">
-                <option value="">--Select Location--</option>
+                <option value="" disabled="disabled">--Select Location--</option>
               </select>
             </div>
             <div class="checkbox">

@@ -48,7 +48,7 @@ insert into `user` values
 INSERT INTO `unit` VALUES
   (0,'Root','The unseen root node',NULL,1,'',''),
 	(1,'Admin','The Administration Super-Category',0,1,'',''),
-	(2,'Enterprises','Manage the registered enterprises from here',1,0,'/units/enterprise/',''),
+	(2,'Enterprise','Manage the registered enterprises from here',1,0,'/partials/enterprise/','/enterprise'),
 	(3,'Form Manager','Manage your forms',1,0,'/units/formmanager/',''),
 	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/permission','/permission'),
 	(5,'Finance','The Finance Super-Category',0,1,'',''),
@@ -179,7 +179,8 @@ insert into `permission` values
   (76,48, 3),
   (77,49, 3),
   (78,50, 3),
-  (79,51, 3);
+  (79,51, 3),
+  (80,2, 1);
 
 -- configure location details
 insert into `country` values
@@ -457,8 +458,13 @@ insert into `location` values
 
 -- configure enterprise
 
-insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`) values 
-  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 570000, '/assets/logos/tsh.jpg');
+insert into `currency` (`id`, `name`, `symbol`, `note`, `rate`, `updated`) values
+  (1,'Congolese Francs','FC',NULL,920,'2013-01-03'),
+	(2,'United State Dollars','USD',NULL,1,'2013-01-03');
+
+
+insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 
+  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 570000, '/assets/logos/tsh.jpg', 1);
 
 -- configure fiscal year/period
 
@@ -1026,10 +1032,6 @@ insert into `payment` values
   (1, 14, 0, 'Two Weeks'  , ''),
 	(2, 0 , 1, 'One Month'  , ''),
 	(3, 0 , 0, 'Immediately', '');
-
-insert into `currency` values
-  (1,'Congolese Francs','FC',NULL,900,910,'2013-01-03'),
-	(2,'United State Dollars','USD',NULL,1,1,'2013-01-03');
 
 -- configure debitors
 

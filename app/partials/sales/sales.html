@@ -31,7 +31,7 @@
           <div class="form-group">
             <label for="select-deb">Patient</label>
             <select id="select-deb" ng-model="debtor" ng-options="formatDebtor(d) for d in debtor_model" class="form-kapok" ng-change="loadInventory()">
-              <option value="">--Select Patient--</option>
+              <option value="" disabled="disabled">--Select Patient--</option>
             </select>
           </div>
           <div class="form-group">
@@ -134,7 +134,7 @@
           <!-- FIXME: strange filter -->
           <tr ng-repeat="item in inventory">
             <td class="invoice-item"><select class="form-invoice" ng-change="updateRow(item)" ng-model="item.item"
-                                             ng-options="l.code for l in inventory_model.data"><option value="">--Select Item--</option></select></td>
+                                             ng-options="l.code for l in inventory_model.data"><option value="" disabled="disabled">--Select Item--</option></select></td>
             <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
             <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
             <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>

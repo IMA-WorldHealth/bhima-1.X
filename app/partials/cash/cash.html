@@ -83,7 +83,6 @@
           <label>Total Due: {{data.total | currency }}</label>
           <label class="pull-right" ng-show="data.excess > 0">Overdue: {{data.excess | currency }}</label>
           <div class="input-group">
-
             <input placehoder="$0.00" type="number" ng-model="data.payment" ng-change="allocate()" class="form-kapok">
             <span class="input-group-addon">
               {{formatCurrency(data.currency)}}

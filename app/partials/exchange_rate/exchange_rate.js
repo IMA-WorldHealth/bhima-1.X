@@ -1,29 +1,39 @@
 angular.module('kpk.controllers')
-.controller('exchangeRateController', function ($scope, connect) {
-  var currency;
+.controller('exchangeRateController', function ($scope, $q, connect) {
+  var imports = {},
+      models = $scope.models = {},
+      flags = $scope.flags = {},
+      swap = $scope.swap = {},
+      stores = {};
 
-  currency = {
+  imports.currency = {
     tables : {
-      'currency' : {
-        columns: ["id", "name", "symbol", "note", "current_rate", "last_rate", "updated"]
-      }
+      'currency' : { columns: ['id', 'name', 'symbol', 'note', 'rate', 'updated']}
     }
   };
 
+
+  function initialize () {
+    connect.req(imports.currency)
+    .then(function (res) {
+      stores.currency = res;
+      models.currency = res.data;
+    });
+  }
   var model, store, from, to;
   from = $scope.from = {};
   to = $scope.to = {};
   $scope.form = {};
-  connect.req(currency).then(function (response) {
+  connect.req(imports.currency).then(function (response) {
     store = response;
     $scope.currencies = response.data;
     to.data = angular.copy(response.data);
     from.data = angular.copy(response.data);
   });
 
-  $scope.filter = function (v) {
-    return v.id !== from.currency_id;
-  };
+  function filterOptions (opts) {
+    return opts.id !== from.currency_id;
+  }
   
   $scope.updateTo = function () {
     to.symbol = store.get(to.currency_id).symbol;
@@ -35,7 +45,7 @@ angular.module('kpk.controllers')
 
   $scope.getToSymbol = function () {
     var data = (store && store.get(from.currency_id)) ? store.get(from.currency_id) : {};
-    return (data.id === to.currency_id) ? "" : to.symbol; 
+    return (data.id === to.currency_id) ? '' : to.symbol; 
   };
   
   $scope.submit = function () {
@@ -59,5 +69,7 @@ angular.module('kpk.controllers')
   $scope.label = function (curr) {
     return [curr.symbol, '|', curr.name].join(' '); 
   };
+
+  $scope.filterOptions = filterOptions;
 
 });
