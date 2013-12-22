@@ -22,4 +22,4 @@ style or translation work!
 
 License
 ---------------
-See [License](./LICENSE.md);
+See [License](./LICENSE.md)
