@@ -4,64 +4,69 @@
   <span>Daily Exchange Rate</span>
 </header>
 
-<div class="container">
-  <div class="panel panel-default" id="exchange">
-    <div class="panel-heading">
-      <h5>Set Today's Exchange Rate:</h5>
-    </div>
-    <div class="panel-body">
-      <form name="exchange" class="form-horizontal">
-        <div class="form-group">
-          <div class="col-xs-5">
-            <select 
-              class="form-control"
-              id="from"
-              name="from"
-              ng-model="from.currency_id"
-              ng-options="curr.id as label(curr) for curr in currencies"
-              ng-change="updateFrom()"
-              >
-              <option value="" disabled="disabled">-- Select Currency --</option>
-            </select>
-          </div>
-          <label for="to" class="col-xs-1 control-label">
-            <i class="glyphicon glyphicon-arrow-right"></i>
-          </label>
-          <div class="col-xs-5">
-            <select 
-              class="form-control"
-              id="to"
-              name="to"
-              ng-model="to.currency_id"
-              ng-options="curr.id as label(curr) for curr in currencies | filter:filter"
-              ng-change="updateTo()"
-              >
-              <option value="" disabled="disabled">-- Select Currency --</option>
-            </select>
-          </div>
+<div class="content">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default" id="exchange">
+        <div class="panel-heading">
+          <h5>Set Today's Exchange Rate:</h5>
         </div>
+        <div class="panel-body">
+          <form name="exchange" class="form-horizontal">
+            <div class="form-group">
+              <div class="col-xs-5">
+                <select 
+                  class="form-control"
+                  id="from"
+                  name="from"
+                  ng-model="from.currency_id"
+                  ng-options="currency.id as label(currency) for currency in models.currency "
+                  >
+                  <option value="" disabled="disabled">-- Select Currency --</option>
+                </select>
+              </div>
+              <label for="to" class="col-xs-1 control-label">
+                <i class="glyphicon glyphicon-arrow-right"></i>
+              </label>
+              <div class="col-xs-5">
+                <select 
+                  class="form-control"
+                  id="to"
+                  name="to"
+                  ng-model="to.currency_id"
+                  ng-options="currency.id as label(currency) for currency in models.currency | filter:filter"
+                  >
+                  <option value="" disabled="disabled">-- Select Currency --</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="form-group">
-          <div class="col-xs-5 input-group">
-            <input class="form-control" min="0" value="1" disabled>
-            <span class="input-group-addon">
-              {{from.symbol}}
-            </span>
-          </div>
-          <label for="to" class="col-xs-1 control-label">
-            <i class="glyphicon glyphicon-arrow-right"></i>
-          </label>
-          <div class="col-xs-5 input-group">
-            <input class="form-control" ng-model="from.current_rate" min="0" required>
-            <span class="input-group-addon">
-              {{getToSymbol()}}
-            </span> 
-          </div>
+            <div class="form-group">
+              <div class="col-xs-5 input-group">
+                <input class="form-control" min="0" value="1" disabled>
+                <span class="input-group-addon">
+                  {{from.symbol}}
+                </span>
+              </div>
+              <label for="to" class="col-xs-1 control-label">
+                <i class="glyphicon glyphicon-arrow-right"></i>
+              </label>
+              <div class="col-xs-5 input-group">
+                <input class="form-control" ng-model="from.current_rate" min="0" required>
+                <span class="input-group-addon">
+                  {{getToSymbol()}}
+                </span> 
+              </div>
+            </div>
+          </form>
         </div>
-      </form>
+        <div class="panel-footer">
+          <input type="submit" form="exchange" class="btn btn-default" ng-click="submit()" ng-disabled="valid()">
+        </div>
+      </div>
     </div>
-    <div class="panel-footer">
-      <input type="submit" form="exchange" class="btn btn-default" ng-click="submit()" ng-disabled="valid()">
+    <div class="col-xs-6">
+      Hi
     </div>
   </div>
 </div>

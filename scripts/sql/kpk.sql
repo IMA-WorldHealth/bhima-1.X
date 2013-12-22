@@ -22,13 +22,12 @@ create table `tax` (
 --
 drop table if exists `currency`;
 create table `currency` (
-  `id`            tinyint unsigned NOT NULL,
+  `id`            tinyint unsigned NOT NULL AUTO_INCREMENT,
   `name`          text NOT NULL,
   `symbol`        varchar(15) NOT NULL,
   `note`          text,
-  `current_rate`  mediumint unsigned,
-  `last_rate`     mediumint unsigned,
-  `updated`       date NOT NULL,
+  `rate`          decimal(10,2) unsigned,
+  `updated`       date not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -120,8 +119,11 @@ create table `enterprise` (
   `location_id`         smallint unsigned not null,
   `cash_account`        int unsigned not null,
   `logo`                varchar(70),
+  `currency_id`         tinyint unsigned not null,
   primary key (`id`),
   key `location_id` (`location_id`),
+  key `currency_id` (`currency_id`),
+  constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`location_id`) references `location` (`id`)
 ) engine=innodb;
 
