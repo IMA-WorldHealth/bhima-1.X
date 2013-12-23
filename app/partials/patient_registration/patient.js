@@ -49,41 +49,7 @@ angular.module('kpk.controllers')
     search = (search.id !== undefined) ? search.id : search;
     //if (search.id) search = search.id;
     return search + 1;
-  }
-
-  $scope.update = function(patient) {
-    //      download latest patient and debtor tables, calc ID's and update
-    var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
-    var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
-
-    var patient_model, debtor_model;
-
-    //      TODO verify patient data is valid
-
-    $q.all([debtor_request, patient_request])
-      .then(function(res) {
-        debtor_model = res[0];
-        patient_model = res[1];
-
-
-        patient.id = createId(patient_model.data);
-        patient.debitor_id = createId(debtor_model.data);
-        console.log("created p_id", patient.id);
-        console.log("created id", patient.debitor_id);
-
-        commit(patient);
-      });
-    }
-
-    function createId(data) {
-      if(data.length===0) return default_patientID;
-      var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id); });
-      console.log("found", search);
-      // quick fix
-      search = (search.id !== undefined) ? search.id : search;
-      //if (search.id) search = search.id;
-      return search + 1;
-    }
+  } 
 
     $scope.update = function(patient) {
       //      download latest patient and debtor tables, calc ID's and update
@@ -161,8 +127,7 @@ angular.module('kpk.controllers')
     kpkConnect.get('/data/?', req_db).then(function(data){
       $scope.debtor_group_model.data = data;
     });
-  }
-
+  } 
   init();
 
 });
