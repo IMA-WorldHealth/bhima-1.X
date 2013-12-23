@@ -112,3 +112,10 @@ module.exports = (function (db) {
   };
 
 });
+
+/*
+ * var fs = require('fs');
+ * var cfg = fs.readFileSync('scripts/config.json');
+ * var db = require('scripts/lib/database/db')(cfg);
+ * 
+ */

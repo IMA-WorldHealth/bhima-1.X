@@ -6,7 +6,7 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
-    var cb = function(role, units){
+    function cb (role, units){
       var element = {};
       element.label = role.name;
       element.id = role.id;
@@ -24,7 +24,7 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
       }
       $scope.treeData.push(element);
 
-    };
+    }
 
     result.then(function(values){
       for(var i = 0; i<values.length; i++){
@@ -47,18 +47,21 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
       request.e = [{t : 'unit', c : ['id', 'name']}];
       request.c = [{t:'unit', cl:'parent', v:0, z:'='}];
       kpkConnect.get('/tree?',request).then(function(data) { 
+        console.log("DATA:", data);
         deferred.resolve(data);
       });
       return deferred.promise;
   }
 
-  function getChildren(role, callback){
+  function loadTree () {
+  }
+
+  function getChildren(role, callback) {
     var request = {}; 
     request.e = [{t : 'unit', c : ['id', 'name', 'url']}];
     request.c = [{t:'unit', cl:'parent', v:role.id, z:'='}];
     kpkConnect.get('/tree?',request).then(function(data) {
-        callback(role, data); 
-      
+      callback(role, data); 
     });
 
   }
