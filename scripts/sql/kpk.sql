@@ -16,7 +16,6 @@ create table `tax` (
   primary key (`id`)
 ) engine=innodb;
 
-
 --
 -- Table structure for table `kpk`.`currency`
 --
@@ -26,9 +25,24 @@ create table `currency` (
   `name`          text NOT NULL,
   `symbol`        varchar(15) NOT NULL,
   `note`          text,
-  `rate`          decimal(10,2) unsigned,
-  `updated`       date not null,
   primary key (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`exchange_rate`
+--
+drop table if exists `exchange_rate`;
+create table `exchange_rate` (
+  `id`             mediumint unsigned not null auto_increment,
+  `from_currency`  tinyint unsigned not null,
+  `to_currency`    tinyint unsigned not null,
+  `rate`           decimal(10, 2) unsigned not null,
+  `updated`        date not null,
+  key `from_currency` (`from_currency`),
+  key `to_currency` (`to_currency`),
+  primary key (`id`),
+  constraint foreign key (`from_currency`) references `currency` (`id`),
+  constraint foreign key (`to_currency`) references `currency` (`id`)
 ) engine=innodb;
 
 --
