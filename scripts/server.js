@@ -104,6 +104,7 @@ app.get('/tree', function (req, res, next) {
   var reqObj, query, userid = req.session.user_id;
   reqObj = JSON.parse(decodeURIComponent(url.parse(req.url).query));
   query = queryHandler.getQueryObj(reqObj);
+  console.log("\nquery:", query, "\n");
 
   // load tree
   tree.loadTree(userid, query, function (err, result) {
