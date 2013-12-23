@@ -105,19 +105,54 @@ create table `country` (
 ) engine=innodb;
 
 --
+-- Table structure for table `province`;
+-- 
+drop table if exists `province`;
+create table `province` (
+  `id`        smallint unsigned not null auto_increment,
+  `name`      text,
+  primary key (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `sector`;
+--
+drop table if exists `sector`;
+create table `sector` (
+  `id`        smallint unsigned not null auto_increment,
+  `name`      text,
+  primary key (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `village`;
+--
+drop table if exists `village`;
+create table `village` (
+  `id`        smallint unsigned not null auto_increment,
+  `name`      text,
+  primary key (`id`)
+) engine=innodb;
+
+--
 -- Table structure for table `kpk`.`location`
 --
 drop table if exists `location`;
 create table `location` (
-  `id`          smallint unsigned NOT NULL AUTO_INCREMENT,
-  `city`        varchar(45),
-  `region`      varchar(45),
-  `country_id`  smallint unsigned NOT NULL,
-  `zone`        varchar(45),
-  `village`     varchar(45),
+  `id`              smallint unsigned NOT NULL AUTO_INCREMENT,
+  `country_id`      smallint unsigned not null,
+  `province_id`     smallint unsigned not null,
+  `sector_id`       smallint unsigned not null,
+  `village_id`      smallint unsigned not null,
   primary key (`id`),
   key `country_id` (`country_id`),
-  constraint foreign key (`country_id`) references `country` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  key `province_id` (`province_id`),
+  key `sector_id` (`sector_id`),
+  key `village_id` (`village_id`),
+  constraint foreign key (`country_id`) references `country` (`id`),
+  constraint foreign key (`province_id`) references `province` (`id`), 
+  constraint foreign key (`sector_id`) references `sector` (`id`), 
+  constraint foreign key (`village_id`) references `village` (`id`) 
 ) engine=innodb; 
 
 --
