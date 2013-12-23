@@ -5,6 +5,8 @@ angular.module('kpk.controllers')
   var patient_model = {};
   var submitted = false;
   var default_patientID = 1;
+	
+	$scope.patient = {};
 
 
   function init() { 
@@ -31,6 +33,13 @@ angular.module('kpk.controllers')
       //$scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
     });
   }
+	
+	$scope.$watch('patient.yob', function(nval, oval) {
+		var DEFAULT_DATE = '-06-01';	
+		//validate date for now
+		if(nval && nval.length != 4) return;
+		$scope.patient.dob = nval + DEFAULT_DATE; 	
+	});
 
   function createId(data) {
     if(data.length===0) return default_patientID;

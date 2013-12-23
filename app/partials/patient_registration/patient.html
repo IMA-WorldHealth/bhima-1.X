@@ -30,12 +30,15 @@
                 <label for="second-name">Second Name</label>
                 <input type="text" class="form-kapok" id="second-name" ng-model="patient.last_name" required>
               </div>
-
+							
+							<div class="form-group">
+								<label for="yob">Year of Birth</label>
+								<input type="text" class="form-kapok" id="yob" ng-model="patient.yob">
+							</div>
               <div class="form-group">
-                <label for="dob">Date of Birth</label>
-                <input type="month" class="form-kapok" id="dob" ng-model="patient.dob">
+								<label for="dob">Date of Birth <small>(If available)</small></label>
+                <input type="date" class="form-kapok" id="dob" ng-model="patient.dob">
               </div>
-
               <div class="form-group">
                 <div class="radio-inline">
                   <label>
