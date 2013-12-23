@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('patientRecordsController', function($scope, $q, $routeParams, connect) {
+angular.module('kpk.controllers').controller('patientRecordsController', function($scope, $q, $modal,  $routeParams, connect) {
     console.log("Patient Search init");
 
     var patient = ($routeParams.patientID || -1);
