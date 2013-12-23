@@ -1,6 +1,11 @@
 angular.module('kpk.controllers')
-.controller('patientRegController', function($scope, $q, $location, connect, $modal, kpkConnect, appstate) {
+.controller('patientRegController', function($scope, $q, $location, connect, $modal, appstate) {
   'use strict';
+
+  // set up models and stores "globally"
+  $scope.models = {};
+  $scope.data = {};
+  var stores = {};
 
   var patient_model = {};
   var submitted = false;
@@ -11,9 +16,30 @@ angular.module('kpk.controllers')
 
   function init() { 
     //register patient for appcahce namespace
-    var default_group = 3; //internal patient
+    var default_group = 3; //internal patient,
 
-    var location_request = connect.req({'tables' : {'location' : {'columns' : ['id', 'city', 'region']}}});
+    var village_req = { tables : { 'village' : { 'columns' : ['id', 'name'] }}};
+    var sector_req = { tables : { 'sector' : { 'columns' : ['id', 'name'] }}};
+    var province_req = { tables : { 'province' : { 'columns' : ['id', 'name'] }}};
+    var country_req = { tables : { 'country' : { 'columns' : ['id', 'country_en'] }}};
+    var location_req = { tables : { 'location' : { 'columns' : ['id', 'village_id', 'sector_id', 'country_id'] }}};
+
+    var dependencies = ['village', 'sector', 'province', 'country', 'location'];
+
+    $q.all([
+      connect.req(village_req),
+      connect.req(sector_req),
+      connect.req(province_req),
+      connect.req(country_req),
+      connect.req(location_req)
+    ]).then(function (array) {
+      console.log("recieved:", array);
+      array.forEach(function (depend, idx) {
+        stores[dependencies[idx]] = depend;
+        $scope.models[dependencies[idx]] = depend.data;
+      });
+    });
+
     //This was if we needed to create alpha-numeric (specific) ID's
     var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
     //Used to generate debtor ID for patient
@@ -21,13 +47,11 @@ angular.module('kpk.controllers')
     var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
     var debtor_group_request = connect.req({'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}});
 
-    $q.all([location_request, patient_request, debtor_request, debtor_group_request])
+    $q.all([patient_request, debtor_request, debtor_group_request])
     .then(function(res) { 
-      $scope.location_model = res[0];
-      $scope.patient_model = res[1];
-      $scope.debtor_model = res[2];
-      $scope.debtor_group_model = res[3];
-      //$scope.location = $scope.location_model.data[0]; //select default
+      $scope.patient_model = res[0];
+      $scope.debtor_model = res[1];
+      $scope.debtor_group_model = res[2];
 
       $scope.debtor = {};
       //$scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
@@ -38,7 +62,7 @@ angular.module('kpk.controllers')
 		var DEFAULT_DATE = '-06-01';	
 		//temporary date validation
 		if(!nval || nval.length != 4) return;
-		$scope.patient.dob = nval + DEFAULT_DATE; 	
+    $scope.patient.dob = nval + DEFAULT_DATE;
 	});
 
   function createId(data) {
@@ -49,7 +73,31 @@ angular.module('kpk.controllers')
     search = (search.id !== undefined) ? search.id : search;
     //if (search.id) search = search.id;
     return search + 1;
-  } 
+  }
+
+  $scope.update = function(patient) {
+    //      download latest patient and debtor tables, calc ID's and update
+    var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
+    var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
+
+    var patient_model, debtor_model;
+
+    //      TODO verify patient data is valid
+
+    $q.all([debtor_request, patient_request])
+      .then(function(res) {
+        debtor_model = res[0];
+        patient_model = res[1];
+
+
+        patient.id = createId(patient_model.data);
+        patient.debitor_id = createId(debtor_model.data);
+        console.log("created p_id", patient.id);
+        console.log("created id", patient.debitor_id);
+
+        commit(patient);
+      });
+    };
 
     $scope.update = function(patient) {
       //      download latest patient and debtor tables, calc ID's and update
@@ -79,7 +127,7 @@ angular.module('kpk.controllers')
           patient.debitor_id = createId(debtor_model.data);
           console.log("created p_id", patient.id);
           console.log("created id", patient.debitor_id);
-					//sorry, sorry - package patient as seperate object
+          //sorry, sorry - package patient as seperate object
 					console.log('deleting yob');	
 					delete(patient.yob);
           commit(patient);
@@ -128,7 +176,12 @@ angular.module('kpk.controllers')
     connect.fetch(request).then(function (data) {
       $scope.debtor_group_model.data = data;
     });
-  } 
+  }
+
+  $scope.calcLocation = function (id) {
+    console.log("id:", id);
+  };
+
   init();
 
 });
