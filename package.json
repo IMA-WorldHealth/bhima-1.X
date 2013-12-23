@@ -23,8 +23,7 @@
   },
   "dependencies": {
     "mysql": "2.x.x",
-    "express": "3.x.x",
-    "ws": "0.4.31"
+    "express": "3.x.x"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

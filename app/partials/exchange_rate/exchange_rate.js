@@ -7,11 +7,8 @@ angular.module('kpk.controllers')
       stores = {};
 
   imports.currency = {
-    tables : {
-      'currency' : { columns: ['id', 'name', 'symbol', 'note', 'rate', 'updated']}
-    }
+    tables : { 'currency' : { columns: ['id', 'name', 'symbol', 'note', 'rate', 'updated']}}
   };
-
 
   function initialize () {
     connect.req(imports.currency)
@@ -21,7 +18,7 @@ angular.module('kpk.controllers')
     });
   }
   var model, store, from, to;
-  from = $scope.from = {};
+  from = $scope.from = {}
   to = $scope.to = {};
   $scope.form = {};
   connect.req(imports.currency).then(function (response) {
@@ -61,15 +58,16 @@ angular.module('kpk.controllers')
     connect.basicPost('currency', [data], ['id']);
   };
 
-  $scope.valid = function () {
+  function valid () {
     // OMG
     return !(!!to.currency_id && !!from.currency_id && !!from.current_rate);
   };
 
-  $scope.label = function (curr) {
+  function formatCurrency (curr) {
     return [curr.symbol, '|', curr.name].join(' '); 
   };
 
   $scope.filterOptions = filterOptions;
-
+  $scope.formatCurrency = formatCurrency;
+  $scope.valid = valid;
 });

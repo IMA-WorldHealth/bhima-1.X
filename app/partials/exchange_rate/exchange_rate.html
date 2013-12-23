@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="partials/exchange_rate/exchange_rate.css">
-
 <header>
   <span>Daily Exchange Rate</span>
 </header>
@@ -12,15 +10,15 @@
           <h5>Set Today's Exchange Rate:</h5>
         </div>
         <div class="panel-body">
-          <form name="exchange" class="form-horizontal">
+          <form name="kpk-exchange_rate-form" class="form-horizontal">
             <div class="form-group">
               <div class="col-xs-5">
                 <select 
-                  class="form-control"
+                  class="form-kapok"
                   id="from"
                   name="from"
                   ng-model="from.currency_id"
-                  ng-options="currency.id as label(currency) for currency in models.currency "
+                  ng-options="currency.id as formatCurrency(currency) for currency in models.currency "
                   >
                   <option value="" disabled="disabled">-- Select Currency --</option>
                 </select>
@@ -30,11 +28,11 @@
               </label>
               <div class="col-xs-5">
                 <select 
-                  class="form-control"
+                  class="form-kapok"
                   id="to"
                   name="to"
                   ng-model="to.currency_id"
-                  ng-options="currency.id as label(currency) for currency in models.currency | filter:filter"
+                  ng-options="currency.id as formatCurrency(currency) for currency in models.currency | filter:filterOptions"
                   >
                   <option value="" disabled="disabled">-- Select Currency --</option>
                 </select>
@@ -52,7 +50,7 @@
                 <i class="glyphicon glyphicon-arrow-right"></i>
               </label>
               <div class="col-xs-5 input-group">
-                <input class="form-control" ng-model="from.current_rate" min="0" required>
+                <input class="form-kapok" ng-model="from.current_rate" min="0" required>
                 <span class="input-group-addon">
                   {{getToSymbol()}}
                 </span> 
@@ -61,7 +59,7 @@
           </form>
         </div>
         <div class="panel-footer">
-          <input type="submit" form="exchange" class="btn btn-default" ng-click="submit()" ng-disabled="valid()">
+          <input type="submit" form="exchange" class="btn btn-default btn-sm" ng-click="submit()" ng-disabled="valid()">
         </div>
       </div>
     </div>
@@ -70,3 +68,9 @@
     </div>
   </div>
 </div>
+
+<section class="underline overline">
+  <div class="pull-right">
+    <input type="submit" form="exchange" class="btn btn-default btn-sm" ng-click="submit()" ng-disabled="valid()">
+  </div>
+</section>
