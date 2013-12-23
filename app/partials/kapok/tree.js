@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('treeController', function($scope, $q, $location, appcache, connect) {    
+angular.module('kpk.controllers').controller('treeController', function($scope, $q, $location, appcache, connect, kpkConnect) {    
     // This module loads the tree.
     // Rewrite Dec 12th so that tree only sends one XHR request,
     // rather than several recursively for optimisation purposes.
@@ -41,25 +41,26 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
         }
     }, true);
 
+    //FIXME: redo this to use connect
     function getRoles(){
-      var request = {
-        tables : {'unit' : { columns : ['id', 'name'] }},
-        where : ['unit.parent='+0]
-      };
-      connect.fetch(request).then(function (data) { 
+      var request = {}; 
+      request.e = [{t : 'unit', c : ['id', 'name']}];
+      request.c = [{t:'unit', cl:'parent', v:0, z:'='}];
+      kpkConnect.get('/tree?',request).then(function(data) { 
         deferred.resolve(data);
       });
       return deferred.promise;
   }
 
   function getChildren(role, callback){
-    var request = {
-      tables : { 'unit' : { columns: ['id', 'name', 'url']}},
-      where : ['unit.parent='+role.id]
-    };
-    connect.fetch(request).then(function (data) {
+    var request = {}; 
+    request.e = [{t : 'unit', c : ['id', 'name', 'url']}];
+    request.c = [{t:'unit', cl:'parent', v:role.id, z:'='}];
+    kpkConnect.get('/tree?',request).then(function(data) {
         callback(role, data); 
+      
     });
+
   }
 
 });
