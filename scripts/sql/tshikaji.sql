@@ -37,6 +37,9 @@ delete from `fiscal_year`;
 delete from `enterprise`;
 delete from `location`;
 delete from `country`;
+delete from `province`;
+delete from `sector`;
+delete from `village`;
 delete from `sale`;
 
 -- configure application details
@@ -427,35 +430,36 @@ insert into `country` values
 	(240,891,'Serbia and Montenegro','Serbie-et-Monténégro'),
 	(241,894,'Zambia','Zambie');
 
-insert into `location` values
-  (1,'Kinshasa','Kinshasa',52,NULL,NULL),
-	(2,'Lubumbashi','Katanga',52,NULL,NULL),
-	(3,'Mbuji-Mayi','Kasaï-Oriental',52,NULL,NULL),
-	(4,'Kananga','Kasaï-Occidental',52,NULL,NULL),
-	(5,'Kisangani','Orientale',52,NULL,NULL),
-	(6,'Bukavu','Sud-Kivu',52,NULL,NULL),
-	(7,'Tshikapa','Kasaï-Occidental',52,NULL,NULL),
-	(8,'Kolwezi','Katanga',52,NULL,NULL),
-	(9,'Likasi','Katanga',52,NULL,NULL),
-	(10,'Goma','Nord-Kivu',52,NULL,NULL),
-	(11,'Kikwit','Bandundu',52,NULL,NULL),
-	(12,'Uvira','Sud-Kivu',52,NULL,NULL),
-	(13,'Bunia','Orientale',52,NULL,NULL),
-	(14,'Mbandaka','Équateur',52,NULL,NULL),
-	(15,'Matadi','Bas-Congo',52,NULL,NULL),
-	(16,'Kabinda','Kasaï-Oriental',52,NULL,NULL),
-	(17,'Butembo','Nord-Kivu',52,NULL,NULL),
-	(18,'Mwene-Ditu','Kasaï-Oriental',52,NULL,NULL),
-	(19,'Isiro','Orientale',52,NULL,NULL),
-	(20,'Kindu','Maniema',52,NULL,NULL),
-	(21,'Boma','Bas-Congo',52,NULL,NULL),
-	(22,'Kamina','Katanga',52,NULL,NULL),
-	(23,'Gandajika','Kasaï-Oriental',52,NULL,NULL),
-	(24,'Bandundu','Bandundu',52,NULL,NULL),
-	(25,'Gemena','Équateur',52,NULL,NULL),
-	(26,'Kipushi','Katanga',52,NULL,NULL),
-	(27,'Bumba','Équateur',52,NULL,NULL),
-	(28,'Mbanza-Ngungu','Bas-Congo',52,NULL,NULL);
+
+insert into `province` (`name`) VALUES
+  ('Bas Congo'),
+  ('Bandundu'),
+  ('Kasai Oriental'),
+  ('Katanga'),
+  ('Equateur'),
+  ('Kasai Occidental'),
+  ('Kinshasa'),
+  ('Nord Kivu'),
+  ('Sud Kivu'),
+  ('Province Oriental'),
+  ('Maniema');
+
+insert into `sector` (`name`) VALUES 
+  ('Kilunda'),
+  ('Kwilu');
+
+insert into `village` (`name`) VALUES
+  ('Vanga'),
+  ('Bulungu'),
+  ('Songo'),
+  ('Lusekele'),
+  (''),
+  ('Vanga'),
+  ('Vanga'),
+  ('');
+
+insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) VALUES 
+  (1, 1, 1, 1);
 
 -- configure enterprise
 
