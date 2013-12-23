@@ -22,6 +22,7 @@ delete from `account_collection`;
 delete from `account_category`;
 delete from `price_group`;
 delete from `payment`;
+delete from `exchange_rate`;
 delete from `currency`;
 delete from `inventory`;
 delete from `inv_unit`;
@@ -458,10 +459,12 @@ insert into `location` values
 
 -- configure enterprise
 
-insert into `currency` (`id`, `name`, `symbol`, `note`, `rate`, `updated`) values
-  (1,'Congolese Francs','FC',NULL,920,'2013-01-03'),
-	(2,'United State Dollars','USD',NULL,1,'2013-01-03');
+insert into `currency` (`id`, `name`, `symbol`, `note`) values
+  (1,'Congolese Francs','FC',NULL),
+	(2,'United State Dollars','USD',NULL);
 
+insert into `exchange_rate` (`to_currency`, `from_currency`, `rate`, `updated`) values
+  (2, 1, 920, '2012-06-04');
 
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 
   (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 570000, '/assets/logos/tsh.jpg', 1);
