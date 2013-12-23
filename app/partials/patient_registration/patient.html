@@ -62,11 +62,39 @@
               </div>
 
               <div class="form-group">
-                <label for="location_select">location</label>
-                <select required class="form-kapok" id="location_select" ng-model="patient.location_id"
-                        ng-options="l.id as formatLocation(l) for l in location_model.data">
-                  <option value="" disabled="disabled">-- Select Location --</option>
+                <label for="location-country" class="capital">{{ 'COUNTRY' | translate }}</label>
+                <select required class="form-kapok" id="location-country" ng-model="data.country_id"
+                        ng-options="c.id as c.country_en for c in models.country">
+                  <option value="" disabled="disabled">-- Select Country--</option>
                 </select>
+              </div>
+
+              <div class="form-group">
+                <label for="location-province" class="capital">{{ 'PROVINCE' | translate }}</label>
+                <select required class="form-kapok" id="location-province" ng-model="data.province_id"
+                        ng-options="p.id as p.name for p in models.province">
+                  <option value="" disabled="disabled">-- Select Province --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="location-sector" class="capital">{{ 'SECTOR' | translate }}</label>
+                <select required class="form-kapok" id="location-sector" ng-model="data.sector_id"
+                        ng-options="s.id as s.name for s in models.sector">
+                  <option value="" disabled="disabled">-- Select Sector --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="location-village" class="capital">{{ 'VILLAGE' | translate }}</label>
+                <input
+                  type="text"
+                  class="form-kapok"
+                  id="location-country"
+                  ng-model="data.village"
+                  typeahead="v.id as v.name for v in models.village | filter:$viewValue | limitTo: 10"
+                  typeahead-on-select="calcLocation(id)"
+                  required >
               </div>
 
               <div class="form-group">
