@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="partials/exchange_rate/exchange_rate.css">
-
 <header>
   <span>Daily Exchange Rate</span>
 </header>
@@ -12,29 +10,29 @@
           <h5>Set Today's Exchange Rate:</h5>
         </div>
         <div class="panel-body">
-          <form name="exchange" class="form-horizontal">
+          <form name="kpk-exchange-form" class="form-horizontal">
             <div class="form-group">
               <div class="col-xs-5">
                 <select 
-                  class="form-control"
-                  id="from"
-                  name="from"
-                  ng-model="from.currency_id"
-                  ng-options="currency.id as label(currency) for currency in models.currency "
-                  >
+                  class="form-kapok"
+                  id="kpk-exchange-from"
+                  name="kpk-exchange-from"
+                  ng-model="flags.from_currency_id"
+                  ng-options="currency.id as formatCurrency(currency) for currency in models.currency"
+                >
                   <option value="" disabled="disabled">-- Select Currency --</option>
                 </select>
               </div>
-              <label for="to" class="col-xs-1 control-label">
+              <label class="col-xs-1 control-label">
                 <i class="glyphicon glyphicon-arrow-right"></i>
               </label>
               <div class="col-xs-5">
                 <select 
-                  class="form-control"
-                  id="to"
-                  name="to"
-                  ng-model="to.currency_id"
-                  ng-options="currency.id as label(currency) for currency in models.currency | filter:filter"
+                  class="form-kapok"
+                  id="kpk-exchange-to"
+                  name="kpk-exchange-to"
+                  ng-model="flags.to_currency_id"
+                  ng-options="currency.id as formatCurrency(currency) for currency in models.currency | filter:filterOptions"
                   >
                   <option value="" disabled="disabled">-- Select Currency --</option>
                 </select>
@@ -45,28 +43,31 @@
               <div class="col-xs-5 input-group">
                 <input class="form-control" min="0" value="1" disabled>
                 <span class="input-group-addon">
-                  {{from.symbol}}
+                  {{swap.from.symbol}}
                 </span>
               </div>
-              <label for="to" class="col-xs-1 control-label">
+              <label class="col-xs-1 control-label">
                 <i class="glyphicon glyphicon-arrow-right"></i>
               </label>
               <div class="col-xs-5 input-group">
-                <input class="form-control" ng-model="from.current_rate" min="0" required>
+                <input class="form-kapok" ng-model="swap.rate" min="0" required>
                 <span class="input-group-addon">
-                  {{getToSymbol()}}
+                  {{swap.to.symbol}}
                 </span> 
               </div>
             </div>
           </form>
         </div>
         <div class="panel-footer">
-          <input type="submit" form="exchange" class="btn btn-default" ng-click="submit()" ng-disabled="valid()">
+          <input type="submit" form="exchange" class="btn btn-default btn-sm" ng-click="submit()" ng-disabled="valid()">
         </div>
       </div>
     </div>
-    <div class="col-xs-6">
-      Hi
-    </div>
   </div>
 </div>
+
+<section class="underline overline">
+  <div class="pull-right">
+    <input type="submit" form="exchange" class="btn btn-default btn-sm" ng-click="submit()" ng-disabled="valid()">
+  </div>
+</section>
