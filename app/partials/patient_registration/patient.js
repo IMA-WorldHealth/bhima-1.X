@@ -36,8 +36,8 @@ angular.module('kpk.controllers')
 	
 	$scope.$watch('patient.yob', function(nval, oval) {
 		var DEFAULT_DATE = '-06-01';	
-		//validate date for now
-		if(nval && nval.length != 4) return;
+		//temporary date validation
+		if(!nval || nval.length != 4) return;
 		$scope.patient.dob = nval + DEFAULT_DATE; 	
 	});
 
@@ -99,12 +99,23 @@ angular.module('kpk.controllers')
           debtor_model = res[0];
           patient_model = res[1];
 
+					var package_patient = { 
+						id: createId(patient_model.data),
+						debitor_Id: createId(debtor_model.data),
+						first_name: patient.first_name,
+						last_name: patient.last_name,
+						dob: patient.dob,
+						sex: patient.sex,
+						location_id: patient.location_id
+					};
 
           patient.id = createId(patient_model.data);
           patient.debitor_id = createId(debtor_model.data);
           console.log("created p_id", patient.id);
           console.log("created id", patient.debitor_id);
-
+					//sorry, sorry - package patient as seperate object
+					console.log('deleting yob');	
+					delete(patient.yob);
           commit(patient);
         });
     };
@@ -113,6 +124,8 @@ angular.module('kpk.controllers')
 
       var debtor = $scope.debtor;
       patient_model = patient;
+
+			console.log('pm', patient_model);
       var format_debtor = {id: patient_model.debitor_id, group_id: $scope.debtor.debtor_group.id, text:patient_model.first_name+' - '+patient_model.last_name};
       console.log("requesting debtor;", format_debtor);
       //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
