@@ -8,7 +8,7 @@
     <input type="text" ng-model="patient_filter.filter" class="form-kapok" placeholder="Filter Patients">
   </div>
 	<div class="pull-right">
-		<a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Patient Card</a>
+		<a ng-click="patientCard()"  class="btn btn-default"><span class="glyphicon glyphicon-list"></span> Patient Card</a>
     <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
   </div>
 </section>
@@ -69,12 +69,16 @@
 	</section>
 
 	<script type="text/ng-template" id="cardModal.html">
+
 		<div class="modal-content">
 			<div class="modal-header">
-				Patient Card
+				Patient Card <small>{{patient.first_name}} {{patient.last_name}}	
 			</div>
 			<div class="modal-body">
-				Card Body
+				<div class="kpk-card">
+					<h4>{{patient.second_name}}/{{patient.dob}}</h4>
+				</div>
 			</div>
 		</div>
+
 	</script>

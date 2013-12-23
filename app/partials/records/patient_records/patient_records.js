@@ -2,8 +2,8 @@ angular.module('kpk.controllers').controller('patientRecordsController', functio
     console.log("Patient Search init");
 
     var patient = ($routeParams.patientID || -1);
-
-
+						
+		
     function init() { 
       var promise = fetchRecords();
 
@@ -47,6 +47,20 @@ angular.module('kpk.controllers').controller('patientRecordsController', functio
     $scope.select = function(id) { 
       $scope.selected = $scope.patient_model.get(id);
     }
+
+		$scope.patientCard = function() { 
+			var cardModal = $modal.open({
+				templateUrl: "cardModal.html",
+				controller: function($scope, $modalInstance, patient) { 
+					console.log("Selected patient", patient);
+					//if(!!patient) close modal
+					$scope.patient = patient;
+				},
+				resolve: { 
+					patient: function() { return $scope.selected; }
+				}
+			});
+		}
 
     init();
   });
