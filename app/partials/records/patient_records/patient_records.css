@@ -1,3 +1,26 @@
+/*This should be moved to cards own CSS file*/
+.kpk-card {
+	background: rgb(255, 255, 56) ;
+	padding: 10px;
+}
+
+.kpk-card-id {
+	float: left;	
+	clear: right;
+}
+.kpk-card-age { 
+	float: right;
+}
+.kpk-card-name { 
+	padding-bottom: 20px;
+}
+/*card style end*/
+/*Override modal style - this is bad*/
+.modal-body { 
+	padding: 0;
+	margin: 0;
+}
+
 .p-grid {
     /*border: 1px solid rgb(212,212,212);*/
     height: 600px;

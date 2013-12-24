@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('purchaseOrderController', function($scope, $q, connect, appstate, appnotify) {
+angular.module('kpk.controllers').controller('purchaseOrderController', function($scope, $q, connect, appstate) {
   console.log("Inventory invoice initialised");
 
 //  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
