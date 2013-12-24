@@ -128,6 +128,7 @@
       CREDIT: 'credit',
       FISCAL_YEAR: 'fiscal year',
       ENTERPRISE : 'enterprise',
+      ENTERPRISE_MANAGEMENT : 'enterprise management',
 
       //Application functions
       CONFIGURE: 'configure',
