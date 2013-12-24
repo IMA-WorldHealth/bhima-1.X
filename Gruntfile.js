@@ -57,6 +57,16 @@
       //FIXME reference uglify files
       files: ['app/partials/**/*.js'],
       tasks: ['concat']
+    },
+    cssmin: {
+      options : {
+        banner : '/*! <%= pkg.name %>  <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+      },
+      combine : { 
+        files : {
+          'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/css/*.css', '!app/css/*.min.css'] 
+        }
+      }
     }
   });
 
@@ -64,7 +74,8 @@
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   grunt.registerTask('build', ['jshint', 'concat']);
-  grunt.registerTask('default', ['concat', 'watch']);
+  grunt.registerTask('default', [ 'cssmin', 'concat', 'watch']);
 };
