@@ -138,9 +138,42 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
+
   function transReport(params){
     var params = JSON.parse(params);
     var deferred = q.defer();
+
+    function getElementIds(id){
+      var def = q.defer();
+      var table, cle;
+      if(params.type.toUpperCase() == 'C'){
+        table = 'creditor';
+        cle = 'creditor_group_id';
+      }else if(params.type.toUpperCase() == 'D'){
+        table = 'debitor';
+        cle = 'group_id';
+      }
+      var sql = "SELECT id FROM "+table+" Where "+cle+" ='"+id+"'";
+      db.execute(sql, function(err, ans){
+        if(err){
+          console.log("trans report, Query failed");
+          throw err;
+          return;
+        }else{
+          def.resolve(ans);
+        }
+      });
+      return def.promise;
+    } 
+
+    function getArrayOf(obj){
+      var tab = [];
+      obj.forEach(function(item){
+        tab.push(item.id);
+      });
+      return tab;
+    }
+
     if(params.ig == 'I'){
       var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
               "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
@@ -148,30 +181,47 @@ module.exports = (function (db) {
               "FROM posting_journal, account, currency, transaction_type, user "+
               "WHERE posting_journal.account_id = account.id AND currency.id = posting_journal.currency_id AND"+
               " transaction_type.id = posting_journal.origin_id and user.id = posting_journal.user_id AND posting_journal.deb_cred_id = '"+params.id+
-              "' AND posting_journal.deb_cred_type = '"+params.type+"'";
+              "' AND posting_journal.deb_cred_type = '"+params.type+"' AND posting_journal.trans_date <= '"+params.dt+"' AND posting_journal.trans_date >= '"+params.df+"'";
+
+              db.execute(sql, function(err, ans) {
+                if(err) {
+                  console.log("trans report, Query failed");
+                  throw err;
+                  // deferred.reject(err);
+                  return;
+                }
+                deferred.resolve(ans);
+              });
     }else if(params.ig == 'G'){
-      var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
-                "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
-                "account.account_number, currency.name, transaction_type.service_txt, "+
-                "CONCAT(user.first, ' ', user.last) as \"names\" FROM posting_journal, "+
-                "account, currency, transaction_type, user WHERE posting_journal.account_id = "+
-                "account.id AND currency.id = posting_journal.currency_id AND transaction_type.id = "+
-                " posting_journal.origin_id AND user.id = posting_journal.user_id AND posting_journal.account_id = '"+params.account_id+
-                "' AND posting_journal.deb_cred_type = '"+params.type+"'";
-    }
+      q.all([getElementIds(params.id)]).then(function(res){
+        var tabIds = getArrayOf(res[0]);
+        if(tabIds.length!=0){
+        var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
+                  "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
+                  "account.account_number, currency.name, transaction_type.service_txt, "+
+                  "CONCAT(user.first, ' ', user.last) as \"names\" FROM posting_journal, "+
+                  "account, currency, transaction_type, user WHERE posting_journal.account_id = "+
+                  "account.id AND currency.id = posting_journal.currency_id AND transaction_type.id = "+
+                  " posting_journal.origin_id AND user.id = posting_journal.user_id AND posting_journal.deb_cred_type = '"+params.type+"' AND "+
+                  "posting_journal.deb_cred_id IN ("+tabIds.toString()+") AND posting_journal.trans_date <= '"+params.dt+"' AND posting_journal.trans_date >= '"+params.df+"'";
 
-    db.execute(sql, function(err, ans) {
-      if(err) {
-        console.log("trans report, Query failed");
-        throw err;
-        // deferred.reject(err);
-        return;
-      }
-
-      deferred.resolve(ans);
-    });
+        db.execute(sql, function(err, ans) {
+          if(err) {
+            console.log("trans report, Query failed");
+            throw err;
+            // deferred.reject(err);
+            return;
+          }
+          deferred.resolve(ans);
+        }); }
+        else{
+          console.log('groupe vide');
+          deffered.resolve(tabIds); //un tableau vide
+        }              
+      });
+    }    
     return deferred.promise;
-  }
+    }
 
   return { 
     generate: generate
