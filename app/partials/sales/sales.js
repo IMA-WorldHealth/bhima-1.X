@@ -75,6 +75,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 			//super cryptic - if either boolean value is false, it's hot or some excuse  	
 			if(!(!!paramDebtorId && !!paramInventoryId)) return;
 			$scope.debtor = $scope.debitor_store.get(paramDebtorId);
+			
 		}
 
     function createId(current) { 
@@ -221,8 +222,10 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       row.price = row.item.price;
     };
 
-    $scope.updateInventory = function() {
-      var new_line = {item: $scope.inventory_model.data[0]}; //select default item
+    $scope.updateInventory = function(inventoryID) {
+			//FIXME dont' select default inventory item - have a selct option 
+			if(!inventoryID) inventoryID = 0; 
+			var new_line = {item: $scope.inventory_model.data[inventoryID]}; //select default item
       $scope.inventory.push(new_line);
       $scope.updateRow(new_line); //force updates of fields
       /* 
