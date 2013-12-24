@@ -1,9 +1,20 @@
 /*This should be moved to cards own CSS file*/
 .kpk-card {
-	background: yellow;
-	padding: 5px;
+	background: rgb(255, 255, 56) ;
+	padding: 10px;
 }
 
+.kpk-card-id {
+	float: left;	
+	clear: right;
+}
+.kpk-card-age { 
+	float: right;
+}
+.kpk-card-name { 
+	padding-bottom: 20px;
+}
+/*card style end*/
 /*Override modal style - this is bad*/
 .modal-body { 
 	padding: 0;
