@@ -64,7 +64,7 @@
       },
       combine : { 
         files : {
-          'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/css/*.css', '!app/css/*.min.css'] 
+          'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/partials/**/**/*.css', 'app/css/*.css', '!app/css/*.min.css', 'app/css/grid/*.css'] 
         }
       }
     }
