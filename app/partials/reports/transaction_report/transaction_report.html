@@ -41,35 +41,24 @@
                 Creditor
               </label>
             </div>
-          </div>
+          </div>          
 
           <div class="col-xs-4">
-            <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
-                <option value="" disabled="disabled">--Select the name --</option>
-            </select> 
+            <div class="form-group">
+                <label for="dob">Date From</label>
+                <input type="date" class="form-kapok" ng-model="option.dateFrom">
 
-            <!--select  class="form-kapok" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
-              <option value="">--Select Type--</option>
-              <option>Debitor</option>
-              <option>Creditor</option>
-            </select><br/>
-
-            <select class="form-kapok" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses">
-                <option value="">--Select the name --</option>
-              </select-->             
+                <label for="dob">Date To</label>
+                <input type="date" class="form-kapok" ng-model="option.dateTo">
+            </div>          
           </div>
 
-          <!--div class="col-xs-4">
-             <select  class="form-kapok" ng-change="refresh()" id="typeID" ng-model="report.deb_cred_type">
-              <option value="">--Select Type--</option>
-              <option>Debitor</option>
-              <option>Creditor</option>
-            </select><br/>
+          <div class="col-xs-3">
+            <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
+                <option value="" disabled="disabled">--Select the name --</option>
+            </select>          
+          </div>
 
-            <select class="form-kapok" id="chooseID" ng-change="fillRecords()" ng-model="report.choosen" ng-options="choosen.text for choosen in chooses">
-                <option value="">--Select the name --</option>
-              </select>
-          </div-->
         </div>
     </accordion-group>   
   </accordion>

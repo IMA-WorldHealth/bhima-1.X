@@ -6,91 +6,127 @@
   
   var services = angular.module('kpk.services', []);
     
-  //FIXME: depricated - yo
-  services.service('kpkConnect', function($http) { 
-    this.fetch = function(table, columns, where, value) {     
-      var query = { 
-        e: [{t : table, c : columns}]
-      };
-      
-      if(where) { 
-        query.c = [{t : table, cl : where, v : value, z : '='}];
-      }
-      
-      var promise = $http.get('/data/?' + JSON.stringify(query)).then(function(result) { 
-          // I can now manipulate the data before returning it if needed
+      //FIXME: depricated - yo
+    services.service('kpkConnect', function($http) { 
+      this.fetch = function(table, columns, where, value) {     
+        var query = { 
+          e: [{t : table, c : columns}]
+        };
+        
+        if(where) { 
+          query.c = [{t : table, cl : where, v : value, z : '='}];
+        }
+        
+        var promise = $http.get('/data/?' + JSON.stringify(query)).then(function(result) { 
+            // I can now manipulate the data before returning it if needed
+            return result.data;
+          });
+          return promise;
+      };      
+       //Because TODO
+      this.raw_fetch = function(qeury_object) { 
+        var promise = $http.get('/data/?' + JSON.stringify(qeury_object)).then(function(result) { 
           return result.data;
         });
         return promise;
-    };
-    
-    //Because TODO
-    this.raw_fetch = function(qeury_object) { 
-      var promise = $http.get('/data/?' + JSON.stringify(qeury_object)).then(function(result) { 
-        return result.data;
-      });
-      return promise;
-    };
+      }; 
 
-    
-    this.get = function(target, requestObject){
-      var promise = $http.get(target + JSON.stringify(requestObject)).then(function(result) { 
-        return result.data;
-      });
-      return promise;
-  };
+      this.get = function(target, requestObject){
+        var promise = $http.get(target + JSON.stringify(requestObject)).then(function(result) { 
+          return result.data;
+        });
+        return promise;
+      };
 
-  this.basicGet = function(target, param){
-    if(!param){
-      var promise = $http.get(target).then(function(result) { 
-        return result.data;
-      });
-    }      
-    return promise;
-  };
+      this.basicGet = function(target, param){
+        if(!param){
+          var promise = $http.get(target).then(function(result) { 
+            return result.data;
+          });
+        }      
+        return promise;
+      };
 
-  this.send = function(table, data) { 
-    var sql= {t:table, data:data};
-    $http.post('data/',sql);
-  };
-  this.sendTo = function(target, table, data) { 
-    var sql= {t:table, data:data};
-    $http.post(target,sql);
-  };
+      this.send = function(table, data) { 
+        var sql= {t:table, data:data};
+        $http.post('data/',sql);
+      };
 
-  this.update = function(objectRequest) { 
-    $http.put('data/',objectRequest);
-  };
+      this.sendTo = function(target, table, data) { 
+        var sql= {t:table, data:data};
+        $http.post(target,sql);
+      };
 
-  this.delete = function(table, id) { 
-    $http.delete('data/'+id+'/'+table);
-  };
-  });
+      this.update = function(objectRequest) { 
+        $http.put('data/',objectRequest);
+      };
 
-  services.service('kpkUtilitaire', function() { 
-    this.formatDate = function(dateString) {
-      return new Date(dateString).toDateString();
-    };
+      this.delete = function(table, id) { 
+        $http.delete('data/'+id+'/'+table);
+      };
+    });
 
-    Date.prototype.toMySqlDate = function (dateParam) {
-      console.log("dateParam:", dateParam);
-      var date = new Date(dateParam), annee, mois, jour;
-      annee = String(date.getFullYear());
-      mois = String(date.getMonth() + 1);
-      if (mois.length === 1) {
-       mois = "0" + mois;
+    services.service('kpkUtilitaire', function() { 
+      this.formatDate = function(dateString) {
+        return new Date(dateString).toDateString();
+      };
+
+      Date.prototype.toMySqlDate = function (dateParam) {
+        var date = new Date(dateParam), annee, mois, jour;
+        annee = String(date.getFullYear());
+        mois = String(date.getMonth() + 1);
+        if (mois.length === 1) {
+         mois = "0" + mois;
+        }
+
+        jour = String(date.getDate());
+          if (jour.length === 1) {
+            jour = "0" + jour;
+        }      
+        return annee + "-" + mois + "-" + jour;
+      };
+
+      this.convertToMysqlDate = function(dateString) {
+        return new Date().toMySqlDate(dateString);
       }
 
-      jour = String(date.getDate());
-        if (jour.length === 1) {
-          jour = "0" + jour;
-      }      
-      return annee + "-" + mois + "-" + jour;
-    };
+      this.isDateAfter = function(date1, date2){
+        date1 = new Date(date1);
+        date2 = new Date(date2);
 
-    this.convertToMysqlDate = function(dateString) {
-      return new Date().toMySqlDate(dateString);
-    }
+        if(date1.getFullYear > date2.getFullYear){
+          return true;
+        }else if(date1.getFullYear() == date2.getFullYear()){
+          if(date1.getMonth() > date2.getMonth()){
+            return true;
+          }else if(date1.getMonth() == date2.getMonth()){
+            if(date1.getDate() > date2.getDate())
+              return true;
+              return false;
+          }else if(date1.getMonth() < date2.getMonth()){
+            return false;
+          }
+        }else if(date1.getFullYear() < date2.getFullYear()){
+          return false;
+        }
+      }
+
+      this.areDatesEqual = function(date1, date2){
+        date1 = new Date(date1);
+        date2 = new Date(date2);
+
+        if(date1.getFullYear != date2.getFullYear){
+          return false;
+        }else if(date1.getFullYear() == date2.getFullYear()){
+          if(date1.getMonth() != date2.getMonth()){
+            return false;
+          }else if(date1.getMonth() == date2.getMonth()){
+            if(date1.getDate() != date2.getDate())
+              return false;
+              return true;
+          }
+        }
+      }
   });
 
   services.factory('appcache', function($q) { 
