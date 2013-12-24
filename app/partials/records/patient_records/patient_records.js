@@ -28,7 +28,7 @@ angular.module('kpk.controllers').controller('patientRecordsController', functio
 
       $scope.selected = {};
 
-      connect.req({'tables' : {'patient' : {'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2']}}})
+      connect.req({'tables' : {'patient' : {'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id']}}})
         .then(function(model) {
         deferred.resolve(model);
       });
@@ -53,8 +53,19 @@ angular.module('kpk.controllers').controller('patientRecordsController', functio
 				templateUrl: "cardModal.html",
 				controller: function($scope, $modalInstance, patient) { 
 					console.log("Selected patient", patient);
-					//if(!!patient) close modal
+					if(!patient) return; //close modal
 					$scope.patient = patient;
+
+					var age;
+					var dateBirth = new Date(patient.dob);
+					var dateCurrent = new Date();	
+					
+					//settup displayed dates	
+					age = dateCurrent.getFullYear() - dateBirth.getFullYear();	
+					$scope.patient.age = age;
+				
+					$scope.yearCurrent = dateCurrent.getFullYear();
+					console.log('calc age', age);
 				},
 				resolve: { 
 					patient: function() { return $scope.selected; }
