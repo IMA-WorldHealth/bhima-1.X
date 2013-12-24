@@ -10,8 +10,8 @@ flush privileges;
 --
 drop table if exists `tax`;
 create table `tax` (
-  `id`            smallint unsigned NOT NULL AUTO_INCREMENT,
-  `registration`  mediumint unsigned NOT NULL,
+  `id`            smallint unsigned not null auto_increment,
+  `registration`  mediumint unsigned not null,
   `note`          text,
   primary key (`id`)
 ) engine=innodb;
@@ -21,9 +21,9 @@ create table `tax` (
 --
 drop table if exists `currency`;
 create table `currency` (
-  `id`            tinyint unsigned NOT NULL AUTO_INCREMENT,
-  `name`          text NOT NULL,
-  `symbol`        varchar(15) NOT NULL,
+  `id`            tinyint unsigned not null auto_increment,
+  `name`          text not null,
+  `symbol`        varchar(15) not null,
   `note`          text,
   primary key (`id`)
 ) engine=innodb;
@@ -50,13 +50,13 @@ create table `exchange_rate` (
 --
 drop table if exists `user`;
 create table `user` (
-  `id`        smallint unsigned NOT NULL AUTO_INCREMENT,
-  `username`  varchar(80) NOT NULL,
-  `password`  varchar(100) NOT NULL,
-  `first`     text NOT NULL,
-  `last`      text NOT NULL,
+  `id`        smallint unsigned not null auto_increment,
+  `username`  varchar(80) not null,
+  `password`  varchar(100) not null,
+  `first`     text not null,
+  `last`      text not null,
   `email`     varchar(100),
-  `logged_in` boolean NOT NULL DEFAULT 0,
+  `logged_in` boolean not null default 0,
   primary key (`id`)
 ) engine=innodb;
 
@@ -65,11 +65,11 @@ create table `user` (
 --
 drop table if exists `unit`;
 create table `unit` (
-  `id`            smallint unsigned NOT NULL,
-  `name`          varchar(30) NOT NULL,
-  `description`   text NOT NULL,
+  `id`            smallint unsigned not null,
+  `name`          varchar(30) not null,
+  `description`   text not null,
   `parent`        smallint default 0,
-  `has_children`  boolean NOT NULL default 0,
+  `has_children`  boolean not null default 0,
   `url`           tinytext,
   `p_url`         tinytext,
   primary key (`id`)
@@ -81,14 +81,14 @@ create table `unit` (
 --
 drop table if exists `permission`;
 create table `permission` (
-  `id`        mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `id_unit`   smallint unsigned NOT NULL,
-  `id_user`   smallint unsigned NOT NULL,
+  `id`        mediumint unsigned not null auto_increment,
+  `id_unit`   smallint unsigned not null,
+  `id_user`   smallint unsigned not null,
   primary key (`id`),
   key `id_unit` (`id_unit`),
   key `id_user` (`id_user`),
-  constraint foreign key (`id_unit`) references `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`id_user`) references `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`id_unit`) references `unit` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`id_user`) references `user` (`id`) on DELETE cascade on update cascade
 ) engine=innodb;
 
 --
@@ -96,10 +96,10 @@ create table `permission` (
 --
 drop table if exists `country`;
 create table `country` (
-  `id`          smallint unsigned NOT NULL AUTO_INCREMENT,
-  `code`        smallint unsigned NOT NULL,
-  `country_en`  varchar(45) NOT NULL,
-  `country_fr`  varchar(45) NOT NULL,
+  `id`          smallint unsigned not null auto_increment,
+  `code`        smallint unsigned not null,
+  `country_en`  varchar(45) not null,
+  `country_fr`  varchar(45) not null,
   primary key (`id`),
   unique key `code_unique` (`code`)
 ) engine=innodb;
@@ -111,10 +111,7 @@ drop table if exists `province`;
 create table `province` (
   `id`         smallint unsigned not null auto_increment,
   `name`       text,
-  `country_id` smallint unsigned not null,
-  primary key (`id`),
-  key `country_id` (`country_id`),
-  constraint foreign key (`country_id`) references `country` (`id`)
+  primary key (`id`)
 ) engine=innodb;
 
 --
@@ -124,10 +121,7 @@ drop table if exists `sector`;
 create table `sector` (
   `id`        smallint unsigned not null auto_increment,
   `name`      text,
-  `province_id` smallint unsigned not null,
-  primary key (`id`),
-  key `province_id` (`province_id`),
-  constraint foreign key (`province_id`) references `province` (`id`)
+  primary key (`id`)
 ) engine=innodb;
 
 --
@@ -137,10 +131,7 @@ drop table if exists `village`;
 create table `village` (
   `id`        smallint unsigned not null auto_increment,
   `name`      text,
-  `sector_id` smallint unsigned not null,
-  primary key (`id`),
-  key `sector_id` (`sector_id`),
-  constraint foreign key (`sector_id`) references `sector` (`id`)
+  primary key (`id`)
 ) engine=innodb;
 
 --
@@ -148,7 +139,7 @@ create table `village` (
 --
 drop table if exists `location`;
 create table `location` (
-  `id`              smallint unsigned NOT NULL AUTO_INCREMENT,
+  `id`              smallint unsigned not null auto_increment,
   `country_id`      smallint unsigned not null,
   `province_id`     smallint unsigned not null,
   `sector_id`       smallint unsigned not null,
@@ -169,8 +160,8 @@ create table `location` (
 --
 drop table if exists `enterprise`;
 create table `enterprise` (
-  `id`                  smallint unsigned NOT NULL AUTO_INCREMENT,
-  `name`                text NOT NULL,
+  `id`                  smallint unsigned not null auto_increment,
+  `name`                text not null,
   `abbr`                varchar(50),
   `phone`               varchar(20),
   `email`               varchar(70),
@@ -190,8 +181,8 @@ create table `enterprise` (
 --
 drop table if exists `price_group`;
 create table `price_group` (
-  `id`    smallint unsigned NOT NULL,
-  `text`  varchar(100) NOT NULL,
+  `id`    smallint unsigned not null,
+  `text`  varchar(100) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -200,15 +191,15 @@ create table `price_group` (
 --
 drop table if exists `fiscal_year`;
 create table `fiscal_year` (
-  `enterprise_id`             smallint unsigned NOT NULL,
-  `id`                        mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `number_of_months`          mediumint unsigned NOT NULL,
-  `fiscal_year_txt`           text NOT NULL,
+  `enterprise_id`             smallint unsigned not null,
+  `id`                        mediumint unsigned not null auto_increment,
+  `number_of_months`          mediumint unsigned not null,
+  `fiscal_year_txt`           text not null,
   `transaction_start_number`  int unsigned,
   `transaction_stop_number`   int unsigned,
   `fiscal_year_number`        mediumint unsigned,
-  `start_month`               int unsigned NOT NULL,
-  `start_year`                int unsigned NOT NULL,
+  `start_month`               int unsigned not null,
+  `start_year`                int unsigned not null,
   `previous_fiscal_year`      mediumint unsigned,
   `locked`                    boolean not null default 0,
   primary key (`id`),
@@ -221,9 +212,9 @@ create table `fiscal_year` (
 --
 drop table if exists `budget`;
 create table `budget` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `account_id` int unsigned NOT NULL DEFAULT '0',
-  `period_id` mediumint unsigned NOT NULL,
+  `id` int not null auto_increment,
+  `account_id` int unsigned not null default '0',
+  `period_id` mediumint unsigned not null,
   `budget` decimal(10,2) unsigned,
   primary key (`id`)
 ) engine=innodb;
@@ -233,8 +224,8 @@ create table `budget` (
 --
 drop table if exists `account_type`;
 create table `account_type` (
-  `id` mediumint unsigned NOT NULL,
-  `type` varchar(35) NOT NULL,
+  `id` mediumint unsigned not null,
+  `type` varchar(35) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -284,13 +275,13 @@ create table `account` (
 --
 drop table if exists `creditor_group`;
 create table `creditor_group` (
-  `id`          smallint NOT NULL AUTO_INCREMENT,
+  `id`          smallint not null auto_increment,
   `group_txt`   varchar(45),
-  `account_id`  int unsigned NOT NULL,
+  `account_id`  int unsigned not null,
   `locked`      boolean not null default 0,
   primary key (`id`),
   key `account_id` (`account_id`),
-  constraint foreign key (`account_id`) references `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`account_id`) references `account` (`id`) on DELETE cascade on update cascade
 ) engine=innodb;
 
 --
@@ -298,12 +289,12 @@ create table `creditor_group` (
 --
 drop table if exists `creditor`;
 create table `creditor` (
-  `id`                int unsigned NOT NULL AUTO_INCREMENT,
-  `creditor_group_id` smallint NOT NULL,
+  `id`                int unsigned not null auto_increment,
+  `creditor_group_id` smallint not null,
   `text`      varchar(45),
   primary key (`id`),
   key `creditor_group_id` (`creditor_group_id`),
-  constraint foreign key (`creditor_group_id`) references `creditor_group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`creditor_group_id`) references `creditor_group` (`id`) on DELETE cascade on update cascade
 ) engine=innodb;
 
 --
@@ -312,10 +303,10 @@ create table `creditor` (
 
 drop table if exists `payment`;
 create table `payment` (
-  `id`      tinyint unsigned NOT NULL,
-  `days`    smallint unsigned DEFAULT '0',
-  `months`  mediumint unsigned DEFAULT '0',
-  `text`    varchar(50) NOT NULL,
+  `id`      tinyint unsigned not null,
+  `days`    smallint unsigned default '0',
+  `months`  mediumint unsigned default '0',
+  `text`    varchar(50) not null,
   `note`    text,
   primary key (`id`)
 ) engine=innodb;
@@ -338,8 +329,8 @@ create table `kpk`.`price_list_name` (
 --
 drop table if exists `debitor_group_type`;
 create table `debitor_group_type` (
-  `id` smallint unsigned NOT NULL auto_increment,
-  `type` varchar(80) NOT NULL,
+  `id` smallint unsigned not null auto_increment,
+  `type` varchar(80) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -348,21 +339,21 @@ create table `debitor_group_type` (
 --
 drop table if exists `debitor_group`;
 create table `debitor_group` (
-  `enterprise_id`       smallint unsigned NOT NULL,
-  `id`                  smallint unsigned AUTO_INCREMENT NOT NULL,
-  `name`                varchar(100) NOT NULL,
-  `account_id`          int unsigned NOT NULL,
-  `location_id`         smallint unsigned NOT NULL,
-  `payment_id`          tinyint unsigned NOT NULL DEFAULT '3',
-  `phone`               varchar(10) DEFAULT '',
-  `email`               varchar(30) DEFAULT '',
+  `enterprise_id`       smallint unsigned not null,
+  `id`                  smallint unsigned auto_increment not null,
+  `name`                varchar(100) not null,
+  `account_id`          int unsigned not null,
+  `location_id`         smallint unsigned not null,
+  `payment_id`          tinyint unsigned not null default '3',
+  `phone`               varchar(10) default '',
+  `email`               varchar(30) default '',
   `note`                text,
-  `locked`              boolean NOT NULL DEFAULT 0,
+  `locked`              boolean not null default 0,
   `contact_id`          smallint unsigned,
   `price_list_id`       smallint unsigned,
-  `tax_id`              smallint unsigned NULL,
-  `max_credit`          mediumint unsigned DEFAULT '0',
-  `type_id`             smallint unsigned NOT NULL,
+  `tax_id`              smallint unsigned null,
+  `max_credit`          mediumint unsigned default '0',
+  `type_id`             smallint unsigned not null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `account_id` (`account_id`),
@@ -372,11 +363,11 @@ create table `debitor_group` (
   key `price_list_id` (`price_list_id`),
   key `tax_id` (`tax_id`),
   key `type_id` (`type_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on DELETE cascade on update cascade,
   constraint foreign key (`price_list_id`) references `price_list_name` (`id`),
-  constraint foreign key (`account_id`) references `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`location_id`) references `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`payment_id`) references `payment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  constraint foreign key (`account_id`) references `account` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`location_id`) references `location` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`payment_id`) references `payment` (`id`) on DELETE cascade on update cascade,
   constraint foreign key (`tax_id`) references `tax` (`id`),
   constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
@@ -386,8 +377,8 @@ create table `debitor_group` (
 --
 drop table if exists `debitor`;
 create table `debitor` (
-  `id`        int       unsigned NOT NULL auto_increment,
-  `group_id`  smallint  unsigned NOT NULL,
+  `id`        int       unsigned not null auto_increment,
+  `group_id`  smallint  unsigned not null,
   `text`      text,
   primary key (`id`),
   key `group_id` (`group_id`),
@@ -399,23 +390,23 @@ create table `debitor` (
 --
 drop table if exists `supplier`;
 create table `supplier` (
-  `id`            int unsigned NOT NULL AUTO_INCREMENT,
-  `creditor_id`   int unsigned NOT NULL,
-  `name`          varchar(45) NOT NULL,
+  `id`            int unsigned not null auto_increment,
+  `creditor_id`   int unsigned not null,
+  `name`          varchar(45) not null,
   `address_1`     text,
   `address_2`     text,
-  `location_id`   smallint unsigned NOT NULL,
+  `location_id`   smallint unsigned not null,
   `email`         varchar(45),
   `fax`           varchar(45),
   `note`          varchar(50),
   `phone`         varchar(15),
-  `international` boolean NOT NULL DEFAULT 0,
-  `locked`        boolean NOT NULL DEFAULT 0,
+  `international` boolean not null default 0,
+  `locked`        boolean not null default 0,
   primary key (`id`),
   key `creditor_id` (`creditor_id`),
   key `location_id` (`location_id`),
-  constraint foreign key (`location_id`) references `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`creditor_id`) references `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`location_id`) references `location` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`creditor_id`) references `creditor` (`id`) on DELETE cascade on update cascade
 ) engine=innodb;
 
 --
@@ -423,28 +414,28 @@ create table `supplier` (
 --
 drop table if exists `patient`;
 create table `patient` (
-  `id`              int unsigned NOT NULL AUTO_INCREMENT,
-  `debitor_id`      int unsigned NOT NULL,
+  `id`              int unsigned not null auto_increment,
+  `debitor_id`      int unsigned not null,
   `creditor_id`     int unsigned,
-  `first_name`      varchar(150) NOT NULL,
-  `last_name`       varchar(150) NOT NULL,
+  `first_name`      varchar(150) not null,
+  `last_name`       varchar(150) not null,
   `dob`             date,
   `parent_name`     varchar(150),
-  `sex`             char(1) NOT NULL,
+  `sex`             char(1) not null,
   `religion`        varchar(50),
   `marital_status`  varchar(50),
   `phone`           varchar(12),
   `email`           varchar(20),
   `addr_1`          varchar(100),
   `addr_2`          varchar(100),
-  `location_id`     smallint unsigned NOT NULL,
+  `location_id`     smallint unsigned not null,
   primary key (`id`),
   key `first_name` (`first_name`),
   key `debitor_id` (`debitor_id`),
   key `location_id` (`location_id`),
   unique key `creditor_id` (`creditor_id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`location_id`) references `location` (`id`) ON UPDATE CASCADE
+  constraint foreign key (`debitor_id`) references `debitor` (`id`) on update cascade,
+  constraint foreign key (`location_id`) references `location` (`id`) on update cascade
 ) engine=innodb;
 
 
@@ -453,8 +444,8 @@ create table `patient` (
 --
 drop table if exists `inv_unit`;
 create table `inv_unit` (
-  `id`    smallint unsigned NOT NULL AUTO_INCREMENT,
-  `text`  varchar(100) NOT NULL,
+  `id`    smallint unsigned not null auto_increment,
+  `text`  varchar(100) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -463,10 +454,10 @@ create table `inv_unit` (
 --
 drop table if exists `period`;
 create table `period` (
-  `id`              mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `fiscal_year_id`  mediumint unsigned NOT NULL,
-  `period_start`    date NOT NULL,
-  `period_stop`     date NOT NULL,
+  `id`              mediumint unsigned not null auto_increment,
+  `fiscal_year_id`  mediumint unsigned not null,
+  `period_start`    date not null,
+  `period_stop`     date not null,
   `locked`          boolean not null default 0,
   primary key (`id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -478,13 +469,13 @@ create table `period` (
 --
 drop table if exists `department`;
 create table `department` (
-  `enterprise_id` smallint unsigned NOT NULL,
-  `id`            smallint unsigned NOT NULL,
-  `name`          varchar(100) NOT NULL,
+  `enterprise_id` smallint unsigned not null,
+  `id`            smallint unsigned not null,
+  `name`          varchar(100) not null,
   `note`          text,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on DELETE cascade on update cascade
 ) engine=innodb;
 
 --
@@ -492,23 +483,23 @@ create table `department` (
 --
 drop table if exists `employee`;
 create table `employee` (
-  `id`            smallint unsigned NOT NULL,
-  `name`          varchar(50) NOT NULL,
+  `id`            smallint unsigned not null,
+  `name`          varchar(50) not null,
   `title`         varchar(50),
-  `debitor_id`    int unsigned NOT NULL,
-  `creditor_id`   int unsigned NOT NULL,
-  `location_id`   smallint unsigned NOT NULL,
-  `department_id` smallint unsigned NOT NULL,
-  `initials`      varchar(3) NOT NULL,
+  `debitor_id`    int unsigned not null,
+  `creditor_id`   int unsigned not null,
+  `location_id`   smallint unsigned not null,
+  `department_id` smallint unsigned not null,
+  `initials`      varchar(3) not null,
   primary key (`id`),
   key `debitor_id` (`debitor_id`),
   key `location_id` (`location_id`),
   key `department_id` (`department_id`),
   key `creditor_id` (`creditor_id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`location_id`) references `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`creditor_id`) references `creditor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  constraint foreign key (`department_id`) references `department` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  constraint foreign key (`debitor_id`) references `debitor` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`location_id`) references `location` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`creditor_id`) references `creditor` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`department_id`) references `department` (`id`) on DELETE cascade on update cascade
 ) engine=innodb;
 
 --
@@ -516,8 +507,8 @@ create table `employee` (
 --
 drop table if exists `inv_type`;
 create table `inv_type` (
-  `id`    tinyint unsigned NOT NULL,
-  `text`  varchar(150) NOT NULL,
+  `id`    tinyint unsigned not null,
+  `text`  varchar(150) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -526,10 +517,10 @@ create table `inv_type` (
 --
 drop table if exists `inv_group`;
 create table `inv_group` (
-  `id`              smallint unsigned NOT NULL,
-  `name`            varchar(100) NOT NULL,
-  `symbol`          char(1) NOT NULL,
-  `sales_account`   mediumint unsigned NOT NULL,
+  `id`              smallint unsigned not null,
+  `name`            varchar(100) not null,
+  `symbol`          char(1) not null,
+  `sales_account`   mediumint unsigned not null,
   `cogs_account`    mediumint unsigned,
   `stock_account`   mediumint unsigned,
   `tax_account`     mediumint unsigned,
@@ -549,20 +540,20 @@ create table `inv_group` (
 --
 drop table if exists `inventory`;
 create table `inventory` (
-  `enterprise_id` smallint unsigned NOT NULL,
-  `id`            int unsigned NOT NULL,
-  `code`          varchar(10) NOT NULL,
+  `enterprise_id` smallint unsigned not null,
+  `id`            int unsigned not null,
+  `code`          varchar(10) not null,
   `text`          text,
-  `price`         decimal(10,2) unsigned NOT NULL DEFAULT '0.00',
-  `group_id`      smallint unsigned NOT NULL,
+  `price`         decimal(10,2) unsigned not null default '0.00',
+  `group_id`      smallint unsigned not null,
   `unit_id`       smallint unsigned,
-  `unit_weight`   mediumint DEFAULT '0',
-  `unit_volume`   mediumint DEFAULT '0',
-  `stock`         int unsigned NOT NULL DEFAULT '0',
-  `stock_max`     int unsigned NOT NULL DEFAULT '0',
-  `stock_min`     int unsigned NOT NULL DEFAULT '0',
-  `type_id`       tinyint unsigned NOT NULL DEFAULT '0',
-  `consumable`    boolean NOT NULL DEFAULT 0,
+  `unit_weight`   mediumint default '0',
+  `unit_volume`   mediumint default '0',
+  `stock`         int unsigned not null default '0',
+  `stock_max`     int unsigned not null default '0',
+  `stock_min`     int unsigned not null default '0',
+  `type_id`       tinyint unsigned not null default '0',
+  `consumable`    boolean not null default 0,
   primary key (`id`),
   unique key `code` (`code`),
   key `enterprise_id` (`enterprise_id`),
@@ -580,16 +571,16 @@ create table `inventory` (
 --
 drop table if exists `sale`;
 create table `sale` (
-  `enterprise_id` smallint unsigned NOT NULL,
-  `id`            int unsigned NOT NULL AUTO_INCREMENT,
-  `cost`          decimal(19, 2) unsigned NOT NULL,
-  `currency_id`   tinyint unsigned NOT NULL,
-  `debitor_id`    int unsigned NOT NULL,
-  `seller_id`     smallint unsigned NOT NULL,
-  `discount`      mediumint unsigned DEFAULT '0',
-  `invoice_date`  date NOT NULL, -- is this the date of the sale?
+  `enterprise_id` smallint unsigned not null,
+  `id`            int unsigned not null auto_increment,
+  `cost`          decimal(19, 2) unsigned not null,
+  `currency_id`   tinyint unsigned not null,
+  `debitor_id`    int unsigned not null,
+  `seller_id`     smallint unsigned not null,
+  `discount`      mediumint unsigned default '0',
+  `invoice_date`  date not null, -- is this the date of the sale?
   `note`          text,
-  `posted`        boolean NOT NULL DEFAULT '0',
+  `posted`        boolean not null default '0',
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `debitor_id` (`debitor_id`),
@@ -604,16 +595,16 @@ create table `sale` (
 --
 drop table if exists `sale_item`;
 create table `sale_item` (
-  `sale_id`       int unsigned NOT NULL,
-  `id`            int unsigned NOT NULL AUTO_INCREMENT,
-  `inventory_id`  int unsigned NOT NULL,
-  `quantity`      int unsigned DEFAULT '0',
-  `unit_price`    int unsigned NOT NULL,
+  `sale_id`       int unsigned not null,
+  `id`            int unsigned not null auto_increment,
+  `inventory_id`  int unsigned not null,
+  `quantity`      int unsigned default '0',
+  `unit_price`    int unsigned not null,
   `total`         int unsigned,
   primary key (`id`),
   key `sale_id` (`sale_id`),
   key `inventory_id` (`inventory_id`),
-  constraint foreign key (`sale_id`) references `sale` (`id`) ON DELETE CASCADE,
+  constraint foreign key (`sale_id`) references `sale` (`id`) on DELETE cascade,
   constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
 
@@ -622,16 +613,16 @@ create table `sale_item` (
 --
 drop table if exists `purchase`;
 create table `purchase` (
-  `id`                int unsigned NOT NULL,
-  `enterprise_id`     smallint unsigned NOT NULL,
-  `cost`              int unsigned NOT NULL DEFAULT '0',
-  `currency_id`       tinyint unsigned NOT NULL,
-  `creditor_id`       int unsigned NOT NULL,
-  `purchaser_id`      smallint unsigned NOT NULL,
-  `discount`          mediumint unsigned DEFAULT '0',
-  `invoice_date`      date NOT NULL,
+  `id`                int unsigned not null,
+  `enterprise_id`     smallint unsigned not null,
+  `cost`              int unsigned not null default '0',
+  `currency_id`       tinyint unsigned not null,
+  `creditor_id`       int unsigned not null,
+  `purchaser_id`      smallint unsigned not null,
+  `discount`          mediumint unsigned default '0',
+  `invoice_date`      date not null,
   `note`              text default null,
-  `posted`            boolean NOT NULL DEFAULT 0,
+  `posted`            boolean not null default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `creditor_id` (`creditor_id`),
@@ -646,8 +637,8 @@ create table `purchase` (
 --
 drop table if exists `inv_detail`;
 create table `inv_detail` (
-  `id`              int unsigned NOT NULL,
-  `inv_id`          int unsigned NOT NULL,
+  `id`              int unsigned not null,
+  `inv_id`          int unsigned not null,
   `serial_number`   text,
   `lot_number`      text,
   `delivery_date`   date,
@@ -665,16 +656,16 @@ create table `inv_detail` (
 --
 drop table if exists `purchase_item`;
 create table `purchase_item` (
-  `purchase_id`   int unsigned NOT NULL,
-  `id`            int unsigned NOT NULL AUTO_INCREMENT,
-  `inventory_id`  int unsigned NOT NULL,
-  `quantity`      int unsigned DEFAULT '0',
-  `unit_price`    decimal(10,2) unsigned NOT NULL,
+  `purchase_id`   int unsigned not null,
+  `id`            int unsigned not null auto_increment,
+  `inventory_id`  int unsigned not null,
+  `quantity`      int unsigned default '0',
+  `unit_price`    decimal(10,2) unsigned not null,
   `total`         decimal(10,2) unsigned,
   primary key (`id`),
   key `purchase_id` (`purchase_id`),
   key `inventory_id` (`inventory_id`),
-  constraint foreign key (`purchase_id`) references `purchase` (`id`) ON DELETE CASCADE,
+  constraint foreign key (`purchase_id`) references `purchase` (`id`) on DELETE cascade,
   constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
 
@@ -683,8 +674,8 @@ create table `purchase_item` (
 --
 drop table if exists `transaction_type`;
 create table `transaction_type` (
-  `id`            tinyint unsigned NOT NULL AUTO_INCREMENT,
-  `service_txt`   varchar(45) NOT NULL,
+  `id`            tinyint unsigned not null auto_increment,
+  `service_txt`   varchar(45) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -710,19 +701,19 @@ create table `transaction_type` (
 --
 drop table if exists `cash`;
 create table `cash` (
-  `id`              int unsigned NOT NULL auto_increment,
+  `id`              int unsigned not null auto_increment,
   `enterprise_id`   smallint null,
-  `bon`             char(1) NOT NULL,
-  `bon_num`         int unsigned NOT NULL,
-  `date`            date NOT NULL,
-  `debit_account`   int unsigned NOT NULL,
-  `credit_account`  int unsigned NOT NULL,
+  `bon`             char(1) not null,
+  `bon_num`         int unsigned not null,
+  `date`            date not null,
+  `debit_account`   int unsigned not null,
+  `credit_account`  int unsigned not null,
   `deb_cred_id`     int unsigned not null,
   `deb_cred_type`   varchar(1) not null,
-  `currency_id`     tinyint unsigned NOT NULL,
+  `currency_id`     tinyint unsigned not null,
   `cost`            decimal(19,2) unsigned not null default 0,
-  `cashier_id`      smallint unsigned NOT NULL,
-  `cashbox_id`      smallint unsigned NOT NULL,
+  `cashier_id`      smallint unsigned not null,
+  `cashbox_id`      smallint unsigned not null,
   `text`            text,
   primary key (`id`),
   key `currency_id` (`currency_id`),
@@ -756,27 +747,27 @@ create table `cash_item` (
 --
 drop table if exists `posting_journal`;
 create table `posting_journal` (
-  `id`                mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `enterprise_id`     smallint unsigned NOT NULL,
+  `id`                mediumint unsigned not null auto_increment,
+  `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned, -- not null,
   `period_id`         mediumint unsigned, -- not null,
-  `trans_id`          int unsigned NOT NULL,
-  `trans_date`        date NOT NULL,
-  `doc_num`           int unsigned, -- what does this do? -- why would this be NOT NULL if we don't know what it does? -- as a reminder to ask dedrick...
+  `trans_id`          int unsigned not null,
+  `trans_date`        date not null,
+  `doc_num`           int unsigned, -- what does this do? -- why would this be not null if we don't know what it does? -- as a reminder to ask dedrick...
   `description`       text,
   `account_id`        int unsigned not null,
   `debit`             decimal (19,2) unsigned not null default 0,
   `credit`            decimal (19,2) unsigned not null default 0,
   `debit_equiv`       decimal (19,2) unsigned not null default 0,
   `credit_equiv`      decimal (19,2) unsigned not null default 0,
-  `currency_id`       tinyint unsigned NOT NULL,
+  `currency_id`       tinyint unsigned not null,
   `deb_cred_id`       varchar(45), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         varchar(45),
   `comment`           text,
   `cost_ctrl_id`      varchar(10),
-  `origin_id`         tinyint unsigned NOT NULL,
-  `user_id`           smallint unsigned NOT NULL,
+  `origin_id`         tinyint unsigned not null,
+  `user_id`           smallint unsigned not null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -786,10 +777,10 @@ create table `posting_journal` (
   key `user_id` (`user_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
-  constraint foreign key (`origin_id`) references `transaction_type` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`currency_id`) references `currency` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`user_id`) references `user` (`id`) ON UPDATE CASCADE
+  constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on update cascade,
+  constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
+  constraint foreign key (`user_id`) references `user` (`id`) on update cascade
 ) engine=innodb;
 
 --
@@ -797,12 +788,12 @@ create table `posting_journal` (
 --
 drop table if exists `kpk`.`general_ledger`;
 create table `kpk`.`general_ledger` (
-  `id`                mediumint unsigned NOT NULL AUTO_INCREMENT,
-  `enterprise_id`     smallint unsigned NOT NULL,
+  `id`                mediumint unsigned not null auto_increment,
+  `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
-  `trans_id`          int unsigned NOT NULL,
-  `trans_date`        date NOT NULL,
+  `trans_id`          int unsigned not null,
+  `trans_date`        date not null,
   `doc_num`           int unsigned, -- what does this do?
   `description`       text,
   `account_id`        int unsigned not null,
@@ -810,14 +801,14 @@ create table `kpk`.`general_ledger` (
   `credit`            int unsigned,
   `debit_equiv`       int unsigned,
   `credit_equiv`      int unsigned,
-  `currency_id`       tinyint unsigned NOT NULL,
+  `currency_id`       tinyint unsigned not null,
   `deb_cred_id`       varchar(45), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         varchar(45),
   `comment`           text,
   `cost_ctrl_id`      varchar(10),
-  `origin_id`         tinyint unsigned NOT NULL,
-  `user_id`           smallint unsigned NOT NULL,
+  `origin_id`         tinyint unsigned not null,
+  `user_id`           smallint unsigned not null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -827,10 +818,10 @@ create table `kpk`.`general_ledger` (
   key `user_id` (`user_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
-  constraint foreign key (`origin_id`) references `transaction_type` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`currency_id`) references `currency` (`id`) ON UPDATE CASCADE,
-  constraint foreign key (`user_id`) references `user` (`id`) ON UPDATE CASCADE
+  constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on update cascade,
+  constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
+  constraint foreign key (`user_id`) references `user` (`id`) on update cascade
 ) engine=innodb;
 
 --
