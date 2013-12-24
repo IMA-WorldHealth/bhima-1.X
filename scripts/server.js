@@ -34,31 +34,28 @@ app.get('/', function (req, res, next) {
   res.sendfile('/index.html');
 });
 
-app.get('/data/', function (req, res) {
-  var cb = function (err, ans) {
-    if (err) throw err;
-    res.json(ans);
-  };
+app.get('/data/', function (req, res, next) {
   var myRequest = decodeURIComponent(url.parse(req.url).query);
-  var jsRequest;  
+  var jsRequest;
 
   //sfount FIXME - this will NOT always return a JSON object, if the object sent in the URL is not valid JSON (the catch case) it will be stringified and parsed - returning a string
-  try{
+  try {
     jsRequest = JSON.parse(myRequest);
-  }catch(e){
-    jsRequest = JSON.parse(JSON.stringify(myRequest));
+  } catch(e) {
+    throw e;
   }  
   var Qo = queryHandler.getQueryObj(jsRequest);  
-  if(!Qo.action){
+  if (!Qo.action) {
     var sql = db.select(Qo);
-  db.execute(sql, cb);
-  } else {
-    var sql = db.delete(Qo.table, Qo.ids); // en attendant une meilleure solution
-    var cbDEL = function (err, ans) {
-      if (err) throw err;
-      res.send("succes!");
-    };
-    db.execute(sql, cbDEL);
+    db.execute(sql, function (err, res) {
+      if (err) return next(err);
+      res.json(ans);
+    });
+    sql = db.delete(Qo.table, Qo.ids); // en attendant une meilleure solution
+    db.execute(sql, function (err, ans) {
+      if (err) return next(err);
+      res.send("Success!");
+    });
   }
 });
 
@@ -72,20 +69,18 @@ app.put('/data/', function(req, res) {
 
 // for inserts only
 app.post('/data/', function (req, res) {
-  
-  var cb = function (err, ans) {
-    if (err) throw err;
-    res.send(200, {insertId: ans.insertId});
-  };
-
   var insertsql = db.insert(req.body.t, req.body.data);
 //  temporarily remove debug
 //  console.log('[DEBUG SQL]', insertsql);
 
-  db.execute(insertsql, cb);
+  db.execute(insertsql, function (err, ans) {
+    if (err) throw err;
+    res.send({status: 200, insertId: ans.insertId});
+  });
 });
 
 app.delete('/data/:val/:col/:table', function (req, res) {
+  // TODO/FIXME: this code looks terrible.  Refactor.
   // format the query of the form "WHERE col = val;"
   var reqObj = {};
   reqObj[req.params.col] = [req.params.val];
@@ -112,7 +107,7 @@ app.get('/tree', function (req, res, next) {
 
   // load tree
   tree.loadTree(userid, query, function (err, result) {
-    if (err) next(err);
+    if (err) return next(err);
     res.json(result); 
   });
 });
@@ -148,10 +143,10 @@ app.get('/journal', function(req,res){
   };
   var myRequest = decodeURIComponent(url.parse(req.url).query);
   var jsRequest;  
-  try{
+  try {
     jsRequest = JSON.parse(myRequest);
-  }catch(e){
-    jsRequest = JSON.parse(JSON.stringify(myRequest));
+  } catch (e) {
+    throw e;
   }  
   var Qo = queryHandler.getQueryObj(jsRequest);
   var sql = db.select(Qo);
@@ -181,7 +176,7 @@ app.get('/temp/', function (req, res, next) {
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(rows); 
   });
 });
@@ -203,7 +198,7 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
     if(err) return res.send(500, err);
     console.timeEnd("FISCAL_KEY");
     res.send(200, status);
-  })
+  });
 });
 
 app.get('/reports/:route/', function(req, res) { 

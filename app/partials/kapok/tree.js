@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('treeController', function($scope, $q, $location, appcache, kpkConnect) {    
+angular.module('kpk.controllers').controller('treeController', function($scope, $q, $location, appcache, connect, kpkConnect) {    
     // This module loads the tree.
     // Rewrite Dec 12th so that tree only sends one XHR request,
     // rather than several recursively for optimisation purposes.
@@ -41,6 +41,7 @@ angular.module('kpk.controllers').controller('treeController', function($scope, 
         }
     }, true);
 
+    //FIXME: redo this to use connect
     function getRoles(){
       var request = {}; 
       request.e = [{t : 'unit', c : ['id', 'name']}];

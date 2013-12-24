@@ -121,10 +121,11 @@ angular.module('kpk.controllers')
   };
 
   function getGroups(){
-    var req_db = {};
-    req_db.e = [{t:'debitor_group', c:['id', 'name']}];
-    req_db.c = [{t:'debitor_group', cl:'locked', z:'=', v:0}];
-    kpkConnect.get('/data/?', req_db).then(function(data){
+    var request = {
+      tables : { 'debitor_group' : { columns : ['id', 'name']}},
+      where : ['debitor_group.locked='+0]
+    };
+    connect.fetch(request).then(function (data) {
       $scope.debtor_group_model.data = data;
     });
   } 
