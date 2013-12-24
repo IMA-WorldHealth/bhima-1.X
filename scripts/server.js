@@ -61,9 +61,9 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function(req, res) {
   var updatesql = db.update(req.body.t, req.body.data, req.body.pk);
-  db.execute(updatesql, function (err, ans) { 
-    if (err) return next(err);
-    res.send({status: 200, insertId: ans.insertId});
+  db.execute(updatesql, function(err, ans) { 
+    if(err) throw err;
+    res.send(200, {insertId: ans.insertId});
   });
 });
 

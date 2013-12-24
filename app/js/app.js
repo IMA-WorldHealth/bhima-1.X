@@ -110,6 +110,9 @@
     when('/reports/summary', {
       controller: 'summaryController',
       templateUrl: 'partials/reports/summary/summary.html'
+    }).when('/settings', { 
+      controller: 'settingsController',
+      templateUrl: 'partials/settings/settings.html'
     });
   }  
 
