@@ -33,7 +33,6 @@ angular.module('kpk.controllers')
       connect.req(country_req),
       connect.req(location_req)
     ]).then(function (array) {
-      console.log("recieved:", array);
       array.forEach(function (depend, idx) {
         stores[dependencies[idx]] = depend;
         $scope.models[dependencies[idx]] = depend.data;
@@ -68,7 +67,6 @@ angular.module('kpk.controllers')
   function createId(data) {
     if(data.length===0) return default_patientID;
     var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id); });
-    console.log("found", search);
     // quick fix
     search = (search.id !== undefined) ? search.id : search;
     //if (search.id) search = search.id;
@@ -83,77 +81,63 @@ angular.module('kpk.controllers')
     var patient_model, debtor_model;
 
     //      TODO verify patient data is valid
+    //
+    (function checkLocation () {
+      console.log($scope.data);
+      console.log("TYPE:", typeof $scope.data.village_id);
+      var newVillage = Number.isNaN(Number($scope.data.village_id));
+    })();
+
+    function convertInt (n) {
+      return Number(n);
+    }
 
     $q.all([debtor_request, patient_request])
       .then(function(res) {
         debtor_model = res[0];
         patient_model = res[1];
 
+				var package_patient = { 
+					id: createId(patient_model.data),
+					debitor_Id: createId(debtor_model.data),
+					first_name: patient.first_name,
+					last_name: patient.last_name,
+					dob: patient.dob,
+					sex: patient.sex,
+					location_id: patient.location_id
+				};
 
         patient.id = createId(patient_model.data);
         patient.debitor_id = createId(debtor_model.data);
         console.log("created p_id", patient.id);
         console.log("created id", patient.debitor_id);
-
+        //sorry, sorry - package patient as seperate object
+				console.log('deleting yob');	
+				delete(patient.yob);
         commit(patient);
       });
-    };
+  };
 
-    $scope.update = function(patient) {
-      //      download latest patient and debtor tables, calc ID's and update
-      var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
-      var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
+  function commit(patient) {
 
-      var patient_model, debtor_model;
+    var debtor = $scope.debtor;
+    patient_model = patient;
 
-      //      TODO verify patient data is valid
-
-      $q.all([debtor_request, patient_request])
-        .then(function(res) {
-          debtor_model = res[0];
-          patient_model = res[1];
-
-					var package_patient = { 
-						id: createId(patient_model.data),
-						debitor_Id: createId(debtor_model.data),
-						first_name: patient.first_name,
-						last_name: patient.last_name,
-						dob: patient.dob,
-						sex: patient.sex,
-						location_id: patient.location_id
-					};
-
-          patient.id = createId(patient_model.data);
-          patient.debitor_id = createId(debtor_model.data);
-          console.log("created p_id", patient.id);
-          console.log("created id", patient.debitor_id);
-          //sorry, sorry - package patient as seperate object
-					console.log('deleting yob');	
-					delete(patient.yob);
-          commit(patient);
-        });
-    };
-
-    function commit(patient) {
-
-      var debtor = $scope.debtor;
-      patient_model = patient;
-
-			console.log('pm', patient_model);
-      var format_debtor = {id: patient_model.debitor_id, group_id: $scope.debtor.debtor_group.id, text:patient_model.first_name+' - '+patient_model.last_name};
-      console.log("requesting debtor;", format_debtor);
-      //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
-      // FIXME 1 - default group_id, should be properly defined
-      connect.basicPut("debitor", [format_debtor])
-      .then(function(res) { 
-        //Create patient record
-        console.log("Debtor record added", res);
-        connect.basicPut("patient", [patient_model])
-        .then(function(res) {
-          $location.path("patient_records/" + res.data.insertId);
-          submitted = true;
-        });
+		console.log('pm', patient_model);
+    var format_debtor = {id: patient_model.debitor_id, group_id: $scope.debtor.debtor_group.id, text:patient_model.first_name+' - '+patient_model.last_name};
+    console.log("requesting debtor;", format_debtor);
+    //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
+    // FIXME 1 - default group_id, should be properly defined
+    connect.basicPut("debitor", [format_debtor])
+    .then(function(res) { 
+      //Create patient record
+      console.log("Debtor record added", res);
+      connect.basicPut("patient", [patient_model])
+      .then(function(res) {
+        $location.path("patient_records/" + res.data.insertId);
+        submitted = true;
       });
+    });
   }
 
   $scope.formatLocation = function(l) { 
@@ -178,8 +162,16 @@ angular.module('kpk.controllers')
     });
   }
 
-  $scope.calcLocation = function (id) {
-    console.log("id:", id);
+  $scope.calcLocation = function (v) {
+    $scope.data.newVillage = false;
+    console.log("SINGLE:", v);
+  };
+
+  $scope.villageFilter = function (village) {
+    var sector_id = $scope.data.sector_id;
+    return $scope.models.location.some(function (l) {
+      return l.sector_id === sector_id && l.village_id === village.id;
+    });
   };
 
   init();

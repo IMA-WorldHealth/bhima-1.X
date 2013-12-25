@@ -9,11 +9,11 @@ angular.module('kpk.controllers')
 
   var parents = {tables:{'unit':{columns:['id','name']}},
              where:['unit.parent=0']
-  }
+  };
   var enfants = {tables:{'unit':{columns:['id', 'name', 'description', 'parent']}}
-  }
+  };
   var users = {tables:{'user':{columns:['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']}}
-  }
+  };
 
   $q.all([connect.req(parents), connect.req(enfants), connect.req(users)]).then(function(resultats){
     $scope.model = resultats[2].data;
@@ -42,14 +42,14 @@ angular.module('kpk.controllers')
         }
       }
     });
-  }
+  };
 
   function getUserUnits(idUser){    
     var def = $q.defer();
 
     var autorisations = {tables:{'permission':{columns:['id_unit']}},
                          where:['permission.id_user='+idUser]
-    }
+    };
     $q.all([connect.req(autorisations)]).then(function(resultats){
       def.resolve(resultats[0].data);
     });
@@ -58,15 +58,15 @@ angular.module('kpk.controllers')
 
   $scope.isSelected = function() {    
     return !!($scope.selected);
-  }
+  };
 
   $scope.createUser = function() { 
     $scope.selected = {};   
-  }
+  };
 
   $scope.changeAll = function(){
-    ($scope.chkTous)?checkAll(): unCheckAll();
-  }
+    return $scope.chkTous?checkAll(): unCheckAll();
+  };
 
   $scope.getUnits = function(idRole){
     $scope.tabUnits = [];
@@ -110,7 +110,7 @@ angular.module('kpk.controllers')
     if($scope.showbademail !== true && $scope.showbadpassword!==true){
       ($scope.selected.id)?updateUser():creer();
     }
-  }
+  };
 
   function creer (){
     var result = existe();
@@ -123,11 +123,11 @@ angular.module('kpk.controllers')
           if(res.status == 200){
             var lastUser = {tables:{'user':{columns:['id']}},
                             where:['user.username='+$scope.selected.username, 'AND', 'user.password='+$scope.selected.password]
-            }
+            };
             $q.all([connect.req(lastUser)]).then(function(result){
               var i;
               for(i=0; i<$scope.units.length; i++){
-                if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
+                if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id !== 0){
                   connect.basicPut('permission', [{id:'', id_unit: $scope.units[i].id, id_user:result[0].data[0].id}]);
                 }
               }              
@@ -142,12 +142,18 @@ angular.module('kpk.controllers')
   }
 
   $scope.delete = function(){
-    if($scope.selected.id){
-      kpkConnect.delete('user', $scope.selected.id);
+    if ($scope.selected.id) {
+      connect.basicDelete('user', $scope.selected.id)
+        .then(function (response) {
+          console.log("response:", response);
+        }, function (err) {
+          console.log("Err:", err);
+        });
+        
       $scope.selected = {};
       refreshUserModel();
     }    
-  }
+  };
 
   function checkAll(){
     for(var i=0; i<$scope.units.length; i++){

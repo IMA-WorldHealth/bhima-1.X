@@ -91,9 +91,9 @@
                   type="text"
                   class="form-kapok"
                   id="location-country"
-                  ng-model="data.village"
-                  typeahead="v.id as v.name for v in models.village | filter:$viewValue | limitTo: 10"
-                  typeahead-on-select="calcLocation(id)"
+                  ng-model="data.village_id"
+                  typeahead="v.id as v.name for v in models.village | filter:$viewValue | filter:villageFilter | limitTo: 10"
+                  typeahead-on-select="calcLocation()"
                   required >
               </div>
 
@@ -104,16 +104,6 @@
                 </select>
               </div>
 
-              <!--div class="form-group">
-                <label for="village">Village</label>
-                <input type="text" class="form-kapok" id="village" ng-model="patient.village" required>
-              </div>
-
-              <div class="form-group">
-                <label for="region">Region</label>
-                <input type="text" class="form-kapok" id="region" ng-model="patient.zone" required>
-              </div>
-            </form-->
             </form>
               </div>
 
