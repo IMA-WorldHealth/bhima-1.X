@@ -73,7 +73,6 @@
     };
 
     Date.prototype.toMySqlDate = function (dateParam) {
-      console.log("dateParam:", dateParam);
       var date = new Date(dateParam), annee, mois, jour;
       annee = String(date.getFullYear());
       mois = String(date.getMonth() + 1);
@@ -130,14 +129,14 @@
 
         // if(!db.objectStoreNames.contains()
         deferred.resolve();
-      }
+      };
       request.onsuccess = function(event) { 
         db = request.result;
         deferred.resolve();
-      }
+      };
       request.onerror = function(event) { 
         deferred.reject(event);
-      }
+      };
       return deferred.promise;
     }
 
@@ -288,8 +287,6 @@
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
 
-      console.log('received options', options);
-
       // globals
       this.index = {};
       this.data = {};
@@ -297,7 +294,6 @@
       // locals
       var queue = [];
       var identifier = options.identifier || 'id'; // id property
-      console.log('id:', identifier);
       var pprint = '[connect] ';
       var tgt = "/temp/"; // temporary target until we standardize connect.
       var refreshrate = options.refreshrate || 500;
@@ -333,7 +329,6 @@
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
-            console.log('this data', this.data, 'this index ', this.index);
 
         if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;  
 
