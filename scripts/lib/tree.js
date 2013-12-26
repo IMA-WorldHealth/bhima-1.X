@@ -1,6 +1,7 @@
 // Module: scripts/tree.js
 
 var parser = require('./database/parser');
+var q = require('q');
 
 module.exports = (function (db) {
   // This module is responsible for constructing each
@@ -90,6 +91,8 @@ module.exports = (function (db) {
   }
 
   function simpleLoad (userid, callback) {
+    var defer = q.defer();
+    
     // TODO: finish this module
     // a simple loading of the tree,
     // in a non-recursive fashion
@@ -101,9 +104,8 @@ module.exports = (function (db) {
       join : ['permission.id_unit=unit.id'],
       where : ['permission.id_user=' + userid]
     };
-
     db.execute(parser.select(query), callback);
-
+    return defer.promise;
   }
 
   return {
