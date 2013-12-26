@@ -1,11 +1,17 @@
-angular.module('kpk.controllers').controller('treeController', function($scope, $q, $location, appcache, connect, kpkConnect) {    
+angular.module('kpk.controllers')
+.controller('treeController', function($scope, $q, $location, appcache, connect, kpkConnect) {    
     // This module loads the tree.
     // Rewrite Dec 12th so that tree only sends one XHR request,
     // rather than several recursively for optimisation purposes.
     'use strict';
+
     var deferred = $q.defer();
     var result = getRoles();
     $scope.treeData = [];
+    $scope.$watch('treeData', function () {
+      console.log('TREEDATA:', $scope.treeData);
+    }, true);
+
     function cb (role, units){
       var element = {};
       element.label = role.name;
