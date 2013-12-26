@@ -6,66 +6,6 @@
   
   var services = angular.module('kpk.services', []);
     
-      //FIXME: depricated - yo
-    services.service('kpkConnect', function($http) { 
-      this.fetch = function(table, columns, where, value) {     
-        var query = { 
-          e: [{t : table, c : columns}]
-        };
-        
-        if(where) { 
-          query.c = [{t : table, cl : where, v : value, z : '='}];
-        }
-        
-        var promise = $http.get('/data/?' + JSON.stringify(query)).then(function(result) { 
-            // I can now manipulate the data before returning it if needed
-            return result.data;
-          });
-          return promise;
-      };      
-       //Because TODO
-      this.raw_fetch = function(qeury_object) { 
-        var promise = $http.get('/data/?' + JSON.stringify(qeury_object)).then(function(result) { 
-          return result.data;
-        });
-        return promise;
-      }; 
-
-      this.get = function(target, requestObject){
-        var promise = $http.get(target + JSON.stringify(requestObject)).then(function(result) { 
-          return result.data;
-        });
-        return promise;
-      };
-
-      this.basicGet = function(target, param){
-        if(!param){
-          var promise = $http.get(target).then(function(result) { 
-            return result.data;
-          });
-        }      
-        return promise;
-      };
-
-      this.send = function(table, data) { 
-        var sql= {t:table, data:data};
-        $http.post('data/',sql);
-      };
-
-      this.sendTo = function(target, table, data) { 
-        var sql= {t:table, data:data};
-        $http.post(target,sql);
-      };
-
-      this.update = function(objectRequest) { 
-        $http.put('data/',objectRequest);
-      };
-
-      this.delete = function(table, id) { 
-        $http.delete('data/'+id+'/'+table);
-      };
-    });
-
     services.service('kpkUtilitaire', function() { 
       this.formatDate = function(dateString) {
         return new Date(dateString).toDateString();
@@ -87,7 +27,7 @@
 
       this.convertToMysqlDate = function(dateString) {
         return new Date().toMySqlDate(dateString);
-      }
+      };
 
       this.isDateAfter = function(date1, date2){
         date1 = new Date(date1);
@@ -108,7 +48,7 @@
         }else if(date1.getFullYear() < date2.getFullYear()){
           return false;
         }
-      }
+      };
 
       this.areDatesEqual = function(date1, date2){
         date1 = new Date(date1);
@@ -125,7 +65,7 @@
               return true;
           }
         }
-      }
+      };
   });
 
   services.factory('appcache', function($q) { 
@@ -135,7 +75,7 @@
     var db, cacheSupported;
     var requestMap = { 
       'get' : get
-    }
+    };
 
     function init() { 
       //also sets db - working on making it read better
@@ -189,7 +129,7 @@
     };
   });
 
-  services.factory('appstate', function($q) { 
+  services.factory('appstate', function ($q) { 
     /*
     * summary: 
     *  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
@@ -224,6 +164,7 @@
     }
 
     function register(comp_id, callback) { 
+      // FIXME: These are strict violations
       var id = this.id;
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
@@ -452,7 +393,7 @@
         return result.data;
       });
       return promise;
-    };
+    }
 
 //    FIXME accepts any request (temporarily making up for 'req()' shortcomings) this should be deprecated
     function basicReq(reqobj) {
@@ -482,7 +423,7 @@
       model.calculateIndex = function () {
         this.index = {};
         for (var i = this.data.length - 1; i >= 0; i--) {
-          this.index[this.data[i]["id"]] = i;
+          this.index[this.data[i].id]= i;
         }
       };
 
@@ -492,7 +433,7 @@
       };
 
       model.put = function (object) {
-        var id = object["id"];
+        var id = object.id;
         if (id in this.index) {
           //TODO: Implement overwrite flag/ behaviour
           throw new Error("Object overwrite attempted.");
