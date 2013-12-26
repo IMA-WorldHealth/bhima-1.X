@@ -1,6 +1,6 @@
 // Module: scripts/tree.js
 
-var parser = require('./database/parser');
+var parser = require('./database/parser')();
 var q = require('q');
 
 module.exports = (function (db) {
@@ -14,110 +14,72 @@ module.exports = (function (db) {
 
   'use strict';
 
-  function loadTree (userid, query, callback) {
-    // this takes in the user id, a query object, and a callback
-    // of the form function (err, result) {};
-    var field, value;
-    field = query.cond[0].cl; //champs concerne de la table
-    value = query.cond[0].v; 
-    return (value === 0) ? loadRoot(userid, field, value, callback) : loadBranch (userid, value, callback);
-  }
+  function load (userid) {
+    var defer = q.defer();
 
-  function loadRoot (userid, field, value, callback) {
-    // this operation will only happen once a page reload!
-    var sql;
-    //on demande les fils de la racine
-    sql = 'SELECT `unit`.`parent`, `permission`.`id`, `user`.`id` ' + 
-               'FROM `unit` JOIN `permission` JOIN `user` ' + 
-               'ON `permission`.`id_unit`=`unit`.`id` ' +
-                  'AND `permission`.`id_user`=`user`.`id` ' +
-                  'AND `permission`.`id_user`=' + userid; 
-
-    db.execute(sql, function (err, results) {
-      if (err) callback(err, null);
-      if (results.length) {
-        // return parents
-        var roles = results.map(function (row) {
-          return row.parent;
-        });
-        // make unique
-        roles = roles.filter(function (id, idx) {
-          return roles.indexOf(id) === idx;
-        });
-        
-        sql = "SELECT `unit`.`id`, `unit`.`name`, `unit`.`description`," +
-              " `unit`.`parent`, `unit`.`has_children`, `unit`.`p_url` " +
-              "FROM `unit`" +
-              "WHERE `unit`.`parent`=" + db.escapestr(value) +
-              " AND `unit`.`id` IN (" + roles.join() + ");";
-
-        db.execute(sql, function(err, results) {
-          return err ? callback(err, null) : callback(null, results);
-        });
-      }
-    });
-  }
-
-  function loadBranch (userid, value, callback) {
-    var sql, ids;
-
-    // FIXME: make this native SQL
-    sql = db.select({
-      'entities':[{t:'permission', c:['id_unit']},{t:'user', c:['id']},{t:'unit', c:['id']}],
-      'jcond':[{ts:['permission', 'user'], c:['id_user', 'id'], l:'AND'},{ts:['permission','unit'], c:['id_unit', 'id'], l:'AND'}],
-      'cond':[{t:'user', cl:'id', z:'=', v:userid, l:'AND'},{t:'unit', cl:'parent', z:'=', v:value}]
-    });
-
-    db.execute(sql, function(err, results) {
-      if (err) callback(err, null);
-      ids = results.map(function (row) {
-        return row.id_unit; 
+    function getChildren (parent_id) {
+      var d = q.defer();
+      var sql = parser.select({
+        tables : { 
+          'permission' : { columns : ['id', 'id_unit'] },
+          'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'p_url']}
+        },
+        join : ['permission.id_unit=unit.id'],
+        where : ['permission.id_user='+userid, 'AND', 'unit.parent='+parent_id]
       });
 
-      if (ids.length) {
+      db.execute(sql, function (err, result) {
+        if (err) throw err;
+        var have_children = result.filter(function (row) { return row.has_children; });
+        if (have_children.length) {
+          var promises = have_children.map(function (row) {
+            return getChildren(row.id_uit);
+          });
+          d.resolve(q.all(promises));
+        } else {
+          d.resolve(result);
+        }
+      });
 
-        // FIXME: code repetition
-        sql = "SELECT `unit`.`id`, `unit`.`name`, `unit`.`description`," +
-              " `unit`.`parent`, `unit`.`has_children`, `unit`.`p_url` " +
-              "FROM `unit`" +
-              "WHERE `unit`.`parent`=" + db.escapestr(value) +
-              " AND `unit`.`id` IN (" + ids.join() + ");";
+      return d.promise;
+    }
 
-        db.execute(sql, function (err, results) {
-          return err ? callback(err, null) : callback(null, results);
-        });
-      }
-    });
-  }
+    function main () {
+      var d = q.defer();
+      var query = parser.select({
+        tables : { 
+          'permission' : { columns : ['id', 'id_unit']},
+          'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'p_url']}
+        },
+        join : ['permission.id_unit=unit.id'],
+        where : ['permission.id_user=' + userid, 'AND', 'unit.parent=0'] // This assumes root is always "0"
+      });
 
-  function simpleLoad (userid, callback) {
-    var defer = q.defer();
-    
-    // TODO: finish this module
-    // a simple loading of the tree,
-    // in a non-recursive fashion
-    var query = {
-      tables : { 
-        'permission' : { columns : ['id']},
-        'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'p_url']}
-      },
-      join : ['permission.id_unit=unit.id'],
-      where : ['permission.id_user=' + userid]
-    };
-    db.execute(parser.select(query), callback);
-    return defer.promise;
+      // this is freakin' complex. DO NOT TOUCH.
+      db.execute(query, function (err, result) {
+        if (err) throw err;
+        d.resolve(q.all(result.map(function (row) {
+          var p = q.defer();
+          if (row.has_children) {
+            getChildren(row.id_unit)
+            .then(function (children) {
+              row.children = children;
+              p.resolve(row);
+            });
+          }
+          else p.resolve(row);
+          return p.promise;
+        })));
+      });
+
+      return d.promise;
+    }
+
+    return main();
   }
 
   return {
-    loadTree : loadTree,
-    simpleLoad : simpleLoad
+    load : load 
   };
 
 });
-
-/*
- * var fs = require('fs');
- * var cfg = fs.readFileSync('scripts/config.json');
- * var db = require('scripts/lib/database/db')(cfg);
- * 
- */
