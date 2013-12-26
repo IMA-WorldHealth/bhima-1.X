@@ -93,7 +93,7 @@
                   id="location-country"
                   ng-model="data.village_id"
                   typeahead="v.id as v.name for v in models.village | filter:$viewValue | filter:villageFilter | limitTo: 10"
-                  typeahead-on-select="calcLocation()"
+                  typeahead-on-select="selectLocation()"
                   required >
               </div>
 
