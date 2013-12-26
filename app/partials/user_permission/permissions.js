@@ -1,25 +1,30 @@
 angular.module('kpk.controllers')
-.controller('userController', function($scope, $q, $translate, kpkConnect, connect) {
+.controller('userController', function($scope, $q, $translate, connect) {
+  'use strict';
+
   //initilaisation var  
   $scope.selected = {};
   $scope.chkTous = false;
   $scope.showbadpassword=false;
   $scope.showbademail = false;
   $scope.showbadusername = false;
+  var parents = {
+    tables: {'unit': {columns:['id','name']}},
+    where: ['unit.parent=0']
+  };
+  var enfants = {
+    tables: {'unit': {columns:['id', 'name', 'description', 'parent']}}
+  };
+  var users = {
+    tables: {'user': {columns:['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']}}
+  };
 
-  var parents = {tables:{'unit':{columns:['id','name']}},
-             where:['unit.parent=0']
-  };
-  var enfants = {tables:{'unit':{columns:['id', 'name', 'description', 'parent']}}
-  };
-  var users = {tables:{'user':{columns:['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']}}
-  };
-
-  $q.all([connect.req(parents), connect.req(enfants), connect.req(users)]).then(function(resultats){
+  $q.all([connect.req(parents), connect.req(enfants), connect.req(users)])
+  .then(function(resultats){
     $scope.model = resultats[2].data;
     $scope.roles = resultats[0].data;
     $scope.units = resultats[1].data;
-    for(var i=0; i<$scope.units.length; i++){
+    for (var i = 0; i < $scope.units.length; i++){
       $scope.units[i].chkUnitModel = false;
     }
   });
@@ -107,24 +112,33 @@ angular.module('kpk.controllers')
         $scope.showbadpassword = true;
       }
 
-    if($scope.showbademail !== true && $scope.showbadpassword!==true){
-      ($scope.selected.id)?updateUser():creer();
+    if ($scope.showbademail !== true && $scope.showbadpassword!==true) {
+      $scope.selected.id ? updateUser() : creer();
     }
   };
 
-  function creer (){
-    var result = existe();
-    result.then(function(resp){
-      if(resp !== true){
+  function creer () {
+    existe()
+    .then(function (response ) {
+      if (response !== true){
         $scope.showbadusername = false;
-        var user = {id:'', username: $scope.selected.username, password: $scope.selected.password,
-                   first: $scope.selected.first, last: $scope.selected.last, email: $scope.selected.email, logged_in:0}
-        connect.basicPut('user', [user]).then(function(res){
+        var user = { 
+          id: '',
+          username: $scope.selected.username,
+          password: $scope.selected.password,
+          first: $scope.selected.first,
+          last: $scope.selected.last,
+          email: $scope.selected.email,
+          logged_in: 0
+        };
+        connect.basicPut('user', [user])
+      .then(function(res){
           if(res.status == 200){
             var lastUser = {tables:{'user':{columns:['id']}},
                             where:['user.username='+$scope.selected.username, 'AND', 'user.password='+$scope.selected.password]
             };
-            $q.all([connect.req(lastUser)]).then(function(result){
+            $q.all([connect.req(lastUser)])
+        .then(function(result){
               var i;
               for(i=0; i<$scope.units.length; i++){
                 if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id !== 0){
@@ -188,55 +202,51 @@ angular.module('kpk.controllers')
     });
   }
 
-  function updateUser(){
+  function updateUser () {
     $scope.showbadusername = false;   
-    var datas = [{id:$scope.selected.id, username: $scope.selected.username,
-                  password: $scope.selected.password, first: $scope.selected.first,
-                  last: $scope.selected.last, email:$scope.selected.email}
-                ];
+    var data = {
+      id: $scope.selected.id,
+      username: $scope.selected.username,
+      password: $scope.selected.password,
+      first: $scope.selected.first,
+      last: $scope.selected.last,
+      email: $scope.selected.email
+    };
 
     connect.basicDelete('permission','id_user', $scope.selected.id);
-    connect.basicPost('user', datas, ['id']).then(function(res){
-          if(res.status == 200){
-            for(var i = 0; i<$scope.units.length; i++){
-              if($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id != 0){
-                connect.basicPut('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
-              }
-            }
+    connect.basicPost('user', [data], ['id'])
+    .then(function(res){
+      if (res.status == 200){
+        for (var i = 0; i<$scope.units.length; i++){
+          if ($scope.units[i].chkUnitModel === true && $scope.units[i].parent !==0 && $scope.units[i].id !== 0) {
+            connect.basicPut('permission', [{id:'', id_unit: $scope.units[i].id, id_user:$scope.selected.id}]);
           }
-        });
+        }
+      }
+    });
     refreshUserModel();
   }
 
-  function existe(){
+  function existe () {
     var def = $q.defer();
-    var sql = {tables:{'user':{columns:['id']}},
-               where:['user.username='+$scope.selected.username]
-    }
-    $q.all([connect.req(sql)]).then(function(resultats){
-      (resultats[0].data.length>0)?def.resolve(true):def.resolve(false);
+    connect.req({
+      tables : {'user':{columns:['id']}},
+      where : ['user.username='+$scope.selected.username]
+    })
+    .then(function(res){
+      def.resolve(res.data.length > 0);
     });
     return def.promise;
   }
   
-  $scope.manageClickUnit = function(id){
+  $scope.manageClickUnit = function (id) {
     var value = null;
-    for(var i=0; i<$scope.units.length; i++){
-      if($scope.units[i].id == id){
+    for (var i=0; i<$scope.units.length; i++) {
+      if ($scope.units[i].id == id) {
         value = $scope.units[i].chkUnitModel;
         break;
       }
     }
-    if(value === true){
-      //tester si tous sont checkes
-      if(isAllChecked()){
-        $scope.chkTous=true;
-      }else{
-        $scope.chkTous = false;
-      }
-
-    }else{
-      $scope.chkTous=false;
-    }
-  }  
+    scope.chkTous = (value === true) ? !!isAllChecked() : false;
+  }; 
 });
