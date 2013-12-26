@@ -20,6 +20,7 @@
 ### General
  - Serve static content from a cookieless domains.
  - Remove unused CSS rules
+ - !IMPORTANT :: add aliasing to connect.req();
 
 ### Other
  - Fix up journal code 

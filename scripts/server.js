@@ -99,19 +99,6 @@ app.get('/user_session', function(req, res, next) {
   res.send({id: req.session.user_id});
 });
 
-app.get('/tree', function (req, res, next) {
-  // format and process request
-  var reqObj, query, userid = req.session.user_id;
-  reqObj = JSON.parse(decodeURIComponent(url.parse(req.url).query));
-  query = queryHandler.getQueryObj(reqObj);
-
-  // load tree
-  tree.loadTree(userid, query, function (err, result) {
-    if (err) return next(err);
-    res.json(result); 
-  });
-});
-
 app.post('/journal', function(req, res) {
   console.log("recieved post");
   jr.poster(req, res); 
@@ -136,7 +123,7 @@ app.get('/post/', function (req, res, next) {
   });
 });
 
-app.get('/journal', function(req,res){
+app.get('/journal', function (req,res) {
   var cb = function (err, ans) {
     if (err) throw err;
     res.json(ans);
@@ -213,6 +200,15 @@ app.get('/reports/:route/', function(req, res) {
   report.generate(route, query, function(report) { 
     if (report) return res.send(report);
     res.send(500, 'Server could not produce report');
+  });
+});
+
+app.get('/tree', function (req, res, next) {
+  tree.load(req.session.user_id)
+  .then(function (treeData) {
+    res.send(treeData);
+  }, function (err) {
+    res.send(301, err);
   });
 });
 
