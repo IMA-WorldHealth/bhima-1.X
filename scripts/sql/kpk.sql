@@ -517,7 +517,7 @@ create table `inv_type` (
 --
 drop table if exists `inv_group`;
 create table `inv_group` (
-  `id`              smallint unsigned not null,
+  `id`              smallint unsigned not null auto_increment,
   `name`            varchar(100) not null,
   `symbol`          char(1) not null,
   `sales_account`   mediumint unsigned not null,
@@ -541,7 +541,7 @@ create table `inv_group` (
 drop table if exists `inventory`;
 create table `inventory` (
   `enterprise_id` smallint unsigned not null,
-  `id`            int unsigned not null,
+  `id`            int unsigned not null auto_increment,
   `code`          varchar(10) not null,
   `text`          text,
   `price`         decimal(10,2) unsigned not null default '0.00',
