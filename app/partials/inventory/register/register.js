@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('inventoryRegisterController', function ($scope, appstate, connect, $q, $modal) {
+angular.module('kpk.controllers')
+.controller('inventoryRegisterController', function ($scope, appstate, connect, $q, $modal) {
   'use strict';
 
   var account_defn, inv_unit_defn, inv_group_defn, inv_defn, inv_type_defn;
@@ -25,34 +26,30 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
   inv_type_defn = {
     tables: {'inv_type': { columns: ['id', 'text']}}
   };
-  initia();
-  function initia(){
-    $q.all([
-    connect.req(account_defn),
-    connect.req(inv_unit_defn),
-    connect.req(inv_group_defn),
-    connect.req(inv_type_defn),
-    connect.req(inv_defn)
-  ]).then(init);
-  }
 
   var stores = {},
       models = ['account', 'inv_unit', 'inv_group', 'inv_type', 'inventory'],
-      item;
+      item = $scope.item = {};
   $scope.models = {};
-  $scope.item = item = {};
 
-  function init(arr) {
-    for (var i = 0, l = arr.length; i < l; i++) {
-      stores[models[i]] = arr[i];
-      $scope.models[models[i]] = arr[i].data;
-    }
+  function init() {
+    $q.all([
+      connect.req(account_defn),
+      connect.req(inv_unit_defn),
+      connect.req(inv_group_defn),
+      connect.req(inv_type_defn),
+      connect.req(inv_defn)
+    ]).then(function (arr) {
 
-    item.unit_weight = 0;
-    item.unit_volume = 0;
-    item.enterprise_id = eid; //101; // FIXME: maybe
-    //console.log('line 2144', stores.account); console.log('line 2144', stores.inv_unit);
-    //console.log($scope.models.account);
+      for (var i = 0, l = arr.length; i < l; i++) {
+        stores[models[i]] = arr[i];
+        $scope.models[models[i]] = arr[i].data;
+      }
+
+      item.unit_weight = 0;
+      item.unit_volume = 0;
+      item.enterprise_id = eid; //101; // FIXME: maybe
+    });
   }
 
 
@@ -63,12 +60,16 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
   }
 
   $scope.submit = function () {
+    item.enterprise_id = eid;
     if ($scope.inventory.$valid) {
-      item.id = stores.inventory.generateid(); 
-      stores.inventory.put(item);
-      item.enterprise_id = appstate.get("enterprise").id;
-      connect.basicPut('inventory', [item]);
-      stores.inventory.post(item);
+      connect.basicPut('inventory', [item])
+      .then(function (result) {
+        console.log("Added new item successfully");
+        item.id = result.data.insertId;
+        stores.inventory.post(item);
+      }, function (error) {
+        console.error(error);
+      });
       reset();
     } else {
       for (var k in $scope.inventory) {
@@ -85,40 +86,14 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
   $scope.newUnitType = function () {
     var instance = $modal.open({
       templateUrl: 'unitmodal.html',
-      controller: function($scope, $modalInstance, unitStore) {
-        var unit = $scope.unit = {};
-        $scope.units = unitStore.data;
-
-        $scope.submit = function () {
-          // validate
-          $scope.unit.id = unitStore.generateid();
-          if (unit.text) {
-            // process
-            var text = unit.text.toLowerCase();
-            text = text[0].toUpperCase() + text.slice(1);
-            unit.text = text;
-
-            /*unitStore.put(unit);
-            connect.basicPut('inv_unit', [{id: unit.id, text: unit.text}]); //FIXME: AUGHAUGH*/
-            $modalInstance.close({id: unit.id, text: unit.text});
-          }
-        };
-
-        $scope.discard = function () {
-          $modalInstance.dismiss(); 
-        };
-
-      },
+      controller: 'inventoryUnitCtrl',
       resolve: {
         unitStore: function() { return stores.inv_unit; }
       }
     });
 
-    instance.result.then(function (value) {
-      //unitStore.put(unit);
-      connect.basicPut('inv_unit', [value]);
-      initia();
-      //console.log("Submitted Successfully.");
+    instance.result.then(function (unit) {
+      stores.inv_unit.post(unit);
     }, function () {
       console.log("Dismissed Successfully."); 
     });
@@ -126,39 +101,8 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
 
   $scope.newInventoryGroup = function () {
     var instance = $modal.open({
-      templateUrl: "inventorygroupmodal.html",
-      controller: function ($scope, $modalInstance, groupStore, accountModel) {
-        var group = $scope.group = {},
-          clean = {},
-          cols = ["id", "name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
-
-        $scope.accounts = accountModel;
-
-        $scope.submit = function () {
-          group.id = groupStore.generateid();
-          cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
-          groupStore.put(group);
-          //fix me for writting this in a good way
-          clean.sales_account = clean.sales_account.id;
-          if (clean.cogs_account) {
-            clean.cogs_account = clean.cogs_account.id;
-          }
-          if (clean.stock_account) {
-            clean.stock_account = clean.stock_account.id;
-          }
-          if (clean.tax_account) {
-            clean.tax_account = clean.tax_account.id;
-          }
-          clean.symbol = clean.symbol[0];
-          connect.basicPut('inv_group', [clean]);
-          $modalInstance.close(clean);
-        };
-
-        $scope.discard = function () {
-          $modalInstance.dismiss(); 
-        };
-
-      },
+      templateUrl: 'inventorygroupmodal.html',
+      controller: 'inventoryGroupCtrl',
       resolve: {
         groupStore: function () { return stores.inv_group; },
         accountModel: function () { return $scope.models.account; }
@@ -177,4 +121,73 @@ angular.module('kpk.controllers').controller('inventoryRegisterController', func
     reset();
   };
 
+  init();
+
+})
+
+.controller('inventoryGroupCtrl', function ($scope, $modalInstance, connect, groupStore, accountModel) {
+  var group = $scope.group = {},
+    cols = ["name", "symbol", "sales_account", "cogs_account", "stock_account", "tax_account"];
+
+  $scope.accounts = accountModel;
+
+  $scope.submit = function () {
+    var clean = {};
+    cols.forEach(function (c) { clean[c] = group[c]; }); // FIXME: AUGHGUGHA
+    //FIXME: writing this in a good way
+    clean.sales_account = clean.sales_account.id;
+    if (clean.cogs_account) {
+      clean.cogs_account = clean.cogs_account.id;
+    }
+    if (clean.stock_account) {
+      clean.stock_account = clean.stock_account.id;
+    }
+    if (clean.tax_account) {
+      clean.tax_account = clean.tax_account.id;
+    }
+
+    clean.symbol = clean.symbol[0].toUpperCase();
+
+    connect.basicPut('inv_group', [clean])
+    .then(function (result) { 
+      clean.id = result.data.insertId;
+      $modalInstance.close(clean);
+    }, function (error) {
+      console.error('Error creatig new group:', error);
+    });
+  };
+
+  $scope.discard = function () {
+    $modalInstance.dismiss(); 
+  };
+})
+
+.controller('inventoryUnitCtrl', function($scope, $modalInstance, connect, unitStore) {
+  var unit = $scope.unit = {};
+  $scope.units = unitStore.data;
+
+  $scope.submit = function () {
+    // validate
+    if (unit.text) {
+      // process
+      var text = unit.text.toLowerCase();
+      text = text[0].toUpperCase() + text.slice(1);
+      unit.text = text;
+      connect.basicPut('inv_unit', [unit])
+      .then(function (result) {
+        console.log("Posted new unit successfully");
+        unit.id = result.data.insertId;
+        $modalInstance.close(unit);
+      }, function (error) {
+        console.error("Error posting new unit type:", error);
+        $modalInstance.dismiss();
+      });
+    }
+  };
+
+  $scope.discard = function () {
+    $modalInstance.dismiss(); 
+  };
+
 });
+

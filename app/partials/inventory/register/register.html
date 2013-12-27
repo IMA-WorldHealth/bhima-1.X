@@ -1,12 +1,10 @@
-<link rel="stylesheet" href="partials/inventory/register/register.css">
-
 <header>
   <span>Stock Registration</span>
 </header>
 
 <section class="underline">
   <div class="pull-left">
-    <a href="#/inventory/view" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-qrcode"></i> View Inventory Items</a>
+    <a href="#/inventory/view" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-qrcode"></i> View All Items</a>
   </div>
   <div class="pull-right">
     <!-- TODO: normalize these -->
@@ -19,37 +17,33 @@
 <div class="content">
   <form name="inventory" novalidate>
     <div class="row">
-      <!-- Pick a type -->
-      <div class="col-xs-2">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            Type
-          </div>
-          <div class="panel-body">
-            <div class="radio" ng-repeat="type in models.inv_type">
-              <label>
-                <input
-                  name="type_id"
-                  type="radio"
-                  value="{{type.id}}"
-                  id="inventory-registration-{{type.text}}"
-                  ng-model="$parent.item.type_id"
-                  ng-required="!$parent.item.type_id"
-                >
-                {{type.text}}
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="col-xs-4">
+      <div class="col-xs-6">
         <!-- general panel -->
         <div class="panel panel-default">
           <div class="panel-heading">
             General 
           </div>
           <div class="panel-body">
+
+            <fieldset>
+              <div class="col-xs-3" ng-repeat="type in models.inv_type">
+                <div class="radio" >
+                  <label>
+                    <input
+                      name="type_id"
+                      type="radio"
+                      value="{{type.id}}"
+                      id="inventory-registration-{{type.text}}"
+                      ng-model="$parent.item.type_id"
+                      ng-required="!$parent.item.type_id"
+                    >
+                    {{type.text}}
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+
             <div class="form-group">
               <label for="inventory-registration-code">
                 Inventory Code:
@@ -92,7 +86,7 @@
                 ng-options="group.id as group.name for group in models.inv_group"
                 required
               >
-                <option value="">-- Select Inventory Group --</option>
+                <option value="" disabled="disabled">-- Select Inventory Group --</option>
               </select>
             </div>
           </div>
@@ -105,33 +99,39 @@
             Billing &amp Stock Information
           </div>
           <div class="panel-body">
-            <div class="radio">
-              <label>
-                <input
-                  name="consumable"
-                  type="radio"
-                  id="inventory-registration-consumable"
-                  value="1"
-                  ng-model="item.consumable"
-                  ng-required="!item.consumable"
-                >
-                Consumable
-              </label>
-            </div>
+            <fieldset>
+              <div class="col-xs-3">
+                <div class="radio">
+                  <label>
+                    <input
+                      name="consumable"
+                      type="radio"
+                      id="inventory-registration-consumable"
+                      value="1"
+                      ng-model="item.consumable"
+                      ng-required="!item.consumable"
+                    >
+                    Consumable
+                  </label>
+                </div>
+              </div>
 
-            <div class="radio">
-              <label for="inventory-registration-durable">
-                <input
-                  name="consumable"
-                  type="radio"
-                  id="inventory-registration-durable"
-                  value="0"
-                  ng-model="item.consumable"
-                  ng-required="!item.consumable"
-                >
-                Durable
-              </label>
-            </div>
+              <div class="col-xs-3">
+                <div class="radio">
+                  <label for="inventory-registration-durable">
+                    <input
+                      name="consumable"
+                      type="radio"
+                      id="inventory-registration-durable"
+                      value="0"
+                      ng-model="item.consumable"
+                      ng-required="!item.consumable"
+                    >
+                    Durable
+                  </label>
+                </div>
+              </div>
+            </fieldset>
 
             <div class="form-group" >
               <label for="inventory-registration-unit" >
@@ -145,7 +145,7 @@
                 ng-options="unit.id as unit.text for unit in models.inv_unit"
                 required
               >
-                <option value="">-- Select Unit --</option>
+                <option value="" disabled="disabled">-- Select Unit --</option>
               </select>
             </div>
 
@@ -197,6 +197,10 @@
     </div>
   </form>
 </div>
+
+<pre>
+  {{item}}
+</pre>
 
 <section class="bar-bottom">
   <div class="pull-right">
@@ -290,7 +294,7 @@
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
               required
             >
-              <option value="">-- Select Account --</option>
+              <option value="" disabled="disabled">-- Select Account --</option>
             </select>
           </div>
         </div>
@@ -304,7 +308,7 @@
               ng-model="group.cogs_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
             >
-              <option value="">-- Select Account --</option>
+              <option value="" disabled="disabled">-- Select Account --</option>
             </select>
           </div>
         </div>
@@ -318,7 +322,7 @@
               ng-model="group.stock_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
             >
-              <option value="">-- Select Account --</option>
+              <option value="" disabled="disabled">-- Select Account --</option>
             </select>
           </div>
         </div>
@@ -332,7 +336,7 @@
               ng-model="group.tax_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
             >
-              <option value="">-- Select Account --</option>
+              <option value="" disabled="disabled">-- Select Account --</option>
             </select>
           </div>
         </div>

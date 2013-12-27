@@ -1070,32 +1070,32 @@ insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `do
 
 -- configure inventory
 
-insert into `inv_unit` values
-  (1, 'Act'),
-	(2, 'Pallet'),
-	(3, 'Pill'),
-	(4, 'Box'),
-	(5, 'Lot');
+insert into `inv_unit` (`text`) values
+  ('Act'),
+	('Pallet'),
+	('Pill'),
+	('Box'),
+	('Lot');
 
 insert into `inv_type` values
   (0,'Article'),
   (1,'Assembly'),
   (2,'Service');
 
-insert into `inv_group` values 
-  (0, 'Services' , 'S', 90, NULL, NULL, NULL), -- 164
-	(1, 'Medicines', 'M', 80, NULL, NULL, NULL), -- 164, 167
-	(2, 'Surgery'  , 'C', 88, NULL, NULL, NULL); -- 171
+insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
+  ('Services' , 'S', 90), -- 164
+	('Medicines', 'M', 80), -- 164, 167
+	('Surgery'  , 'C', 88); -- 171
 
-insert into `inventory` values 
-  (200, 1, 'CHCRAN', 'Craniotomie'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 2, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 3, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 4, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 5, 'CHPASU', 'Parotidectomie Superficielle'    , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 6, 'CHTRAC', 'Trachectome'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 7, 'EXKYSB', 'Kyste Sublingual'                , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 8, 'EXKYPB', 'Petite Kyste De La Bouche'       , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0);
+insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
+  (200, 'CHCRAN', 'Craniotomie'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHPASU', 'Parotidectomie Superficielle'    , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHTRAC', 'Trachectome'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYSB', 'Kyste Sublingual'                , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0);
 
 -- configure department
 
