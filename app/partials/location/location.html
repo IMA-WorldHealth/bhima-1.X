@@ -41,28 +41,28 @@
           <div class="form-group">
             <label class="col-xs-2 control-label">Country :</label>
             <div class="col-xs-10">
-              <input type="text" ng-model="data.country_id" name="kpk-location-country" class="form-kapok" typeahead="c.id as c.country_en for c in models.country | filter:$viewValue" typeahead-on-select="select('country')">
+              <input type="text" ng-model="data.country_id" name="kpk-location-country" class="form-kapok" typeahead="c.id as c.country_en for c in models.country | filter:$viewValue | limitTo:5" typeahead-on-select="select('country')" typeahead-input-formatter="format('country')">
             </div>
           </div>
           
           <div class="form-group">
             <label class="col-xs-2 control-label">Province : </label>
             <div class="col-xs-10">
-              <input type="text" ng-model="data.province_id" name="kpk-location-province" class="form-kapok" typeahead="p.id as p.name for p in models.province | filter:$viewValue" typeahead-on-select="select('province')">
+              <input type="text" ng-model="data.province_id" name="kpk-location-province" class="form-kapok" typeahead="p.id as p.name for p in models.province | filter:$viewValue | limitTo:8" typeahead-on-select="select('province')" typeahead-input-formatter="format('province')">
             </div>
           </div>
 
           <div class="form-group">
             <label class="col-xs-2 control-label">Sector : </label>
             <div class="col-xs-10">
-              <input type="text" ng-model="data.sector_id" name="kpk-location-sector" class="form-kapok" typeahead="s.id as s.name for s in models.sector | filter:$viewValue" typeahead-on-select="select('sector')">
+              <input type="text" ng-model="data.sector_id" name="kpk-location-sector" class="form-kapok" typeahead="s.id as s.name for s in models.sector | filter:$viewValue | limitTo:8" typeahead-on-select="select('sector')" typeahead-input-formatter="format('sector')">
             </div>
           </div>
 
           <div class="form-group">
             <label class="col-xs-2 control-label">Village : </label>
             <div class="col-xs-10">
-              <input type="text" ng-model="data.village_id" name="kpk-location-village" class="form-kapok" typeahead="v.id as v.name for v in models.village | filter:$viewValue" typeahead-on-select="select('village')">
+              <input type="text" ng-model="data.village_id" name="kpk-location-village" class="form-kapok" typeahead="v.id as v.name for v in models.village | filter:$viewValue | limitTo:8" typeahead-on-select="select('village')" typeahead-input-formatter="format('village')">
             </div>
           </div>
 

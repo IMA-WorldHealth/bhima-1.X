@@ -232,6 +232,10 @@ angular.module('kpk.controllers')
     });
   };
 
+  $scope.formatTypeAhead = function () {
+    return stores.village ? stores.village.get($scope.data.village_id).name : '';
+  };
+
   init();
 
 });
