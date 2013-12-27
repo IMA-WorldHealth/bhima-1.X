@@ -5,7 +5,7 @@ angular.module('kpk.controllers')
       flags = $scope.flags = {},
       swap = $scope.swap = {},
       stores = {},
-      dependencies = ['enterprise', 'account', 'location', 'currency'];
+      dependencies = ['enterprise', 'account', 'location', 'currency', 'province', 'country', 'village', 'sector'];
 
   imports.enterprise_id = appstate.get('enterprise').id;
   imports.enterprise = {
@@ -16,8 +16,13 @@ angular.module('kpk.controllers')
     where : ['account.enterprise_id=' + imports.enterprise_id]
   };
   imports.location = {
-    tables : { 'location' : { columns : ['id', 'city', 'region', 'country_id', 'zone', 'village']}}
+    tables : {'location' : { columns : ['id', 'village_id', 'province_id', 'sector_id', 'country_id']}}
   };
+  imports.province = {tables : {'province' : { columns : ['id', 'name'] }}};
+  imports.country = {tables : {'country' : { columns : ['id', 'country_en'] }}};
+  imports.village = {tables : {'village' : { columns : ['id', 'name'] }}};
+  imports.sector = {tables : {'sector' : { columns : ['id', 'name'] }}};
+
   imports.currency = {
     tables : { 'currency' : { columns : ['id', 'symbol', 'name'] }}
   };
@@ -27,18 +32,23 @@ angular.module('kpk.controllers')
       connect.req(imports.enterprise),
       connect.req(imports.accounts),
       connect.req(imports.location),
-      connect.req(imports.currency)
+      connect.req(imports.currency),
+      connect.req(imports.province),
+      connect.req(imports.country),
+      connect.req(imports.village),
+      connect.req(imports.sector)
     ])
     .then(function (array) {
       array.forEach(function (depend, idx) {
         stores[dependencies[idx]] = depend;
         models[dependencies[idx]] = depend.data;
       });
+      console.log(stores.enterprise);
     });
   }
 
-  function formatLocation (location) {
-    return [location.city, location.region].join(', ');
+  function formatLocation (l) {
+    return stores.location ? [stores.village.get(l.village_id).name, stores.sector.get(l.sector_id).name, stores.province.get(l.province_id).name, stores.country.get(l.country_id).country_en].join(' -- ') : '';
   }
 
   function formatAccount (account) {
