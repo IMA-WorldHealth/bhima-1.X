@@ -101,7 +101,8 @@ INSERT INTO `unit` VALUES
   (48,'Creditor Groups', '', 1, 0, 'partials/creditor/group/creditor_group', 'creditors/creditor_group'),
   (49,'Debitor Groups', '', 1, 0, 'partials/debitor/debitor_group', 'debitor/debitor_group'),
   (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view'),
-  (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger');
+  (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger'),
+  (52,'Location Manager', '', 1, 0, 'partials/location/location', 'location');
 
 
 insert into `permission` (`id_unit`, `id_user`) values
@@ -169,7 +170,6 @@ insert into `permission` (`id_unit`, `id_user`) values
   (8,1),
   (11,1),
   (10,1),
-  (13,1),
   (21,1),
 	(30,1),
 	(31,1),
@@ -189,7 +189,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (48,1),
   (49,1),
   (50,1),
-  (51,1);
+  (51,1),
+  (52,1);
 
 -- configure location details
 insert into `country` values
@@ -457,11 +458,7 @@ insert into `village` (`name`) VALUES
   ('Vanga'),
   ('Bulungu'),
   ('Songo'),
-  ('Lusekele'),
-  (''),
-  ('Vanga'),
-  ('Vanga'),
-  ('');
+  ('Lusekele');
 
 insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) VALUES 
   (1, 1, 1, 1);
@@ -476,7 +473,7 @@ insert into `exchange_rate` (`to_currency`, `from_currency`, `rate`, `updated`) 
   (2, 1, 920, '2012-06-04');
 
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 
-  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 570000, '/assets/logos/tsh.jpg', 1);
+  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 212, '/assets/logos/tsh.jpg', 1);
 
 -- configure fiscal year/period
 
