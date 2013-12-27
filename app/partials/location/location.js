@@ -79,6 +79,16 @@ angular.module('kpk.controllers')
     return stores.country? stores.country.get(id).country_en : "";
   }
 
+  function format (type) {
+    // formats the typeahead after selection
+    // TODO: reformat this a bit
+    if (type == 'country') {
+      return stores[type] ? stores[type].get($scope.data[type+'_id']).country_en : '';
+    } else {
+      return stores[type] ? stores[type].get($scope.data[type+'_id']).name  : '';
+    }
+  }
+
   function createSector () {
     var d = $q.defer();
     connect.basicPut('sector', [{name: $scope.data.sector_id}])
@@ -192,6 +202,7 @@ angular.module('kpk.controllers')
   $scope.formatSector = formatSector;
   $scope.formatProvince = formatProvince;
   $scope.formatCountry = formatCountry;
+  $scope.format = format;
   $scope.select = select;
   $scope.submit = submit;
   $scope.clear = clear;
