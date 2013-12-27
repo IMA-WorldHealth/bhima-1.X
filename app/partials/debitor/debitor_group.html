@@ -59,7 +59,7 @@
               ng-options="account.id as formatAccount(account) for account in models.account"
               required
               >
-              <option value="">-- Select An Account --</option>
+              <option value="" disabled="disabled">-- Select An Account --</option>
             </select>
           </div>
         </div>
@@ -74,7 +74,7 @@
               ng-options="location.id as formatLocation(location) for location in models.location"
               required
               >
-              <option value="">-- Select A Location --</option>
+              <option value="" disabled="disabled">-- Select A Location --</option>
             </select>
           </div>
         </div>
@@ -89,7 +89,7 @@
               ng-options="payment.id as payment.text for payment in models.payment"
               required
             >
-              <option value="">-- Select A Payment Type--</option>
+              <option value="" disabled="disabled">-- Select A Payment Type--</option>
             </select>
           </div>
         </div>
@@ -103,7 +103,7 @@
               ng-model="data.price_list_id"
               ng-options="list.id as list.name for list in models.price_list"
             >
-              <option value="">-- Select A Price List --</option>
+              <option value="" disabled="disabled">-- Select A Price List --</option>
             </select>
           </div>
         </div>
@@ -157,7 +157,7 @@
               ng-options="type.id as type.type for type in models.type"
               required
             >
-            <option value="">-- Select A Group Type -- </option>
+            <option value="" disabled="disabled">-- Select A Group Type -- </option>
           </select>
           </div>
         </div>
