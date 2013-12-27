@@ -7,7 +7,7 @@
     <input type="search" class="form-kapok" ng-model="flags.search" placeholder="Filter Debitor Groups" size="25">
   </div>
   <div class="pull-right">
-    <a href="#/patient" class="btn btn-sm btn-default">Register a Patient</a>
+    <a href="#/patient" class="btn btn-default btn-sm ">Register a Patient</a>
   </div>
 </section>
 
@@ -38,7 +38,7 @@
       <fieldset>
         <legend>Group Information</legend>
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-name">Name :</label>
+          <label class="col-xs-2 control-label" for="group-name">Name </label>
           <div class="col-xs-10">
             <input
               id="group-name"
@@ -50,7 +50,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-account">Account :</label>
+          <label class="col-xs-2 control-label" for="group-account">Account </label>
           <div class="col-xs-10">
             <select
               id="group-account"
@@ -65,7 +65,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-location">Location :</label>
+          <label class="col-xs-2 control-label" for="group-location">Location </label>
           <div class="col-xs-10">
             <select
               id="group-location"
@@ -80,7 +80,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-payment">Payment :</label>
+          <label class="col-xs-2 control-label" for="group-payment">Payment </label>
           <div class="col-xs-10">
             <select
               id="group-payment"
@@ -95,7 +95,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-list">Price List :</label>
+          <label class="col-xs-2 control-label" for="group-list">Price List </label>
           <div class="col-xs-10">
             <select
               id="group-list"
@@ -109,7 +109,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="phone">Phone :</label>
+          <label class="col-xs-2 control-label" for="phone">Phone </label>
           <div class="col-xs-10">
             <input
               type="tel"
@@ -121,7 +121,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="email">Email :</label>
+          <label class="col-xs-2 control-label" for="email">Email </label>
           <div class="col-xs-10">
             <input
               type="email"
@@ -133,7 +133,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="maxcredit">Max Credit :</label>
+          <label class="col-xs-2 control-label" for="maxcredit">Max Credit </label>
           <div class="col-xs-10">
             <input
               type="number"
@@ -148,7 +148,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-type">Type :</label>
+          <label class="col-xs-2 control-label" for="group-type">Type </label>
           <div class="col-xs-10">
             <select
               id="group-type"
@@ -162,15 +162,15 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-note">Note :</label>
+          <label class="col-xs-2 control-label" for="group-note">Note </label>
           <div class="col-xs-10">
             <textarea id="group-note" ng-model="data.note" class="form-control"></textarea>
           </div>
         </div>
       </fieldset>
       <div class="pull-right">
-        <button type="button" class="btn btn-default" ng-click="newForm()">New Form</button>
-        <button type="button" class="btn btn-default" ng-disabled="invalid()" ng-click="submitForm()">Save Changes</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="newForm()">New Form</button>
+        <button type="button" class="btn btn-sm btn-success" ng-disabled="invalid()" ng-click="submitForm()">Save Changes</button>
       </div>
     </form>
   </div>

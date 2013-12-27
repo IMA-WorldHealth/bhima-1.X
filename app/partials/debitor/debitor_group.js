@@ -22,24 +22,16 @@ angular.module('kpk.controllers')
   
   imports.payment = {tables : { 'payment' : { columns: ['id', 'text'] }}};
 
-  imports.location = {
-    tables : { 
-      'location' : { columns : ['id', 'city', 'region']},
-      'country' : { columns : ['country_en']}
-    },
-    join : ["location.country_id=country.id"]
-  };
 
   imports.type = {tables : { 'debitor_group_type' : { columns : ['id', 'type']}}};
   imports.price_list = {tables : { 'price_list_name' : { columns : ['id', 'name']}}};
 
-  var dependencies = ['debitor_group', 'account', 'payment', 'location', 'type', 'price_list'];
+  var dependencies = ['debitor_group', 'account', 'payment', 'type', 'price_list'];
 
   $q.all([
     connect.req(imports.debitor_group),
     connect.req(imports.account),
     connect.req(imports.payment),
-    connect.req(imports.location),
     connect.req(imports.type),
     connect.req(imports.price_list)
   ]).then(initialize);
@@ -49,6 +41,11 @@ angular.module('kpk.controllers')
       stores[dependencies[i]] = arr[i];
       models[dependencies[i]] = arr[i].data;
     }
+
+    connect.fetch('/location/')
+    .then(function (result) {
+      models.location = result.data;
+    });
   }
 
   function formatAccount (account) {
@@ -56,7 +53,7 @@ angular.module('kpk.controllers')
   }
 
   function formatLocation (location) {
-    return [location.city, location.region, location.country_en].join(', ');
+    return [location.village, location.sector, location.province, location.country].join(', ');
   }
 
   function invalid () {

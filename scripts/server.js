@@ -212,7 +212,7 @@ app.get('/tree', function (req, res, next) {
   });
 });
 
-app.get('/location/', function (req, res, next) {
+app.get('/location', function (req, res, next) {
   var sql = "SELECT `location`.`id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
             "FROM `location`, `village`, `sector`, `province`, `country` " + 
             "WHERE `location`.`village_id`=`village`.`id` AND `location`.`sector_id`=`sector`.`id` AND `location`.`province_id`=`province`.`id` AND `location`.`country_id`=`country`.`id`;";

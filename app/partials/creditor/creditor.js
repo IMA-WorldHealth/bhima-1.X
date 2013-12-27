@@ -31,10 +31,13 @@ angular.module('kpk.controllers')
   }
 
   function getLocations(){
-    var sql = {tables:{'location':{columns:['id', 'city', 'region']}}};
-    connect.req(sql).then(function (resultat) {
-      $scope.locations = resultat.data;
+    connect.fetch('/location').then(function (result) {
+      $scope.locations = result.data;
     });
+  }
+
+  function formatLocation (l) {
+    return [l.village, l.sector, l.province, l.country].join(' -- ');
   }
 
   $scope.verifyExisting = function(){
@@ -211,5 +214,7 @@ angular.module('kpk.controllers')
     $scope.creditor = {};
     getCreditors();
   };
+
+  $scope.formatLocation = formatLocation;
 
  });

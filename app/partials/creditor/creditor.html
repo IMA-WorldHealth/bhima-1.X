@@ -27,7 +27,7 @@
             </div>
             <div class="form-group">
               <label for="Location">Location</label>
-              <select required class="form-kapok" id="countryselectID" ng-model="creditor.location_id" ng-options="location.city+' -- '+location.region for location in locations">
+              <select required class="form-kapok" id="countryselectID" ng-model="creditor.location_id" ng-options="location.id as formatLocation(location) for location in locations">
                 <option value="" disabled="disabled">--Select Location--</option>
               </select>
             </div>
@@ -101,7 +101,7 @@
 <section class="bar-bottom">
   <div class="pull-right">
     <button class="btn btn-danger btn-sm" ng-click="delete()" ng-disabled="form.$invalid">Delete Group</button>
-    <button class="btn btn-default btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save Group</button>
+    <button class="btn btn-success btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save Group</button>
   </div>
 </section>
 
