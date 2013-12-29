@@ -223,3 +223,7 @@ app.get('/location', function (req, res, next) {
 });
 
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));
+
+process.on('uncaughtException', function (err) {
+  console.log('uncaughtException:', err);
+});
