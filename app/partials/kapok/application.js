@@ -26,7 +26,7 @@ angular.module('kpk.controllers').controller('appController', function($scope, $
     .then(function(res) { 
       default_fiscal_year = res.data[0];
       if(default_fiscal_year) appstate.set('fiscal', default_fiscal_year);
-    })
+    });
     
     /*$scope.$on('$locationChangeStart', function(e, n_url) { 
       //Split url target - needs to be more general to allow for multiple routes?
