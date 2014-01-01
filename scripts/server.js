@@ -1,32 +1,44 @@
-// server.js
-var express      = require('express')
-  , fs           = require('fs')
-  , queryHandler = require('./lib/database/myQueryHandler')
-  , url          = require('url')
-  , cfg          = JSON.parse(fs.readFileSync("scripts/config.json"))
-  , db           = require('./lib/database/db')(cfg.db)
-  , parser       = require('./lib/database/parser')(db)
-  , authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths)
-  , authenticate = require('./lib/auth/authentication')(db)
-  , tree         = require('./lib/tree')(db)
-  , report       = require('./lib/logic/report')(db)
-  , trialbalance = require('./lib/logic/balance')(db)
-  , jr           = require('./lib/logic/journal')(db)
-  , ledger       = require('./lib/logic/ledger')(db)
-  , fiscal       = require('./lib/logic/fiscal')(db)
-  , app          = express();
+// scripts/server.js
+
+
+// import node dependencies
+var express      = require('express'),
+    fs           = require('fs'),
+    domain       = require('domain'),
+    url          = require('url');
+
+// import configuration
+var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
+
+// import app dependencies
+var queryHandler = require('./lib/database/myQueryHandler'),
+    parser       = require('./lib/database/parser')(),
+    db           = require('./lib/database/db')(cfg.db),
+    tree         = require('./lib/tree')(db),
+    app          = express();
+
+// import middleware
+var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
+    authenticate = require('./lib/auth/authentication')(db),
+    errorHandler = require('./lib/error/handler');
+
+// import routes
+var report       = require('./lib/logic/report')(db),
+    trialbalance = require('./lib/logic/balance')(db),
+    jr           = require('./lib/logic/journal')(db),
+    ledger       = require('./lib/logic/ledger')(db),
+    fiscal       = require('./lib/logic/fiscal')(db);
 
 app.configure(function () {
   app.use(express.compress());
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
   app.use(express.session(cfg.session));
-  // These are in correct order.  We want to authenticate
-  // then authorize access.
   app.use(authenticate);
   app.use(authorize);
-  app.use(express.static(cfg.static));
+  app.use(express.static(cfg.static, {maxAge : 1000}));
   app.use(app.router);
+  app.use(errorHandler);
 });
 
 app.get('/', function (req, res, next) {
@@ -34,80 +46,57 @@ app.get('/', function (req, res, next) {
   res.sendfile('/index.html');
 });
 
-app.get('/data/', function (req, res, next) {
-  var myRequest = decodeURIComponent(url.parse(req.url).query);
-  var jsRequest;
-
-  //sfount FIXME - this will NOT always return a JSON object, if the object sent in the URL is not valid JSON (the catch case) it will be stringified and parsed - returning a string
-  try {
-    jsRequest = JSON.parse(myRequest);
-  } catch(e) {
-    throw e;
-  }  
-  var Qo = queryHandler.getQueryObj(jsRequest);  
-  if (!Qo.action) {
-    var sql = db.select(Qo);
-    db.execute(sql, function (err, res) {
-      if (err) return next(err);
-      res.json(ans);
-    });
-    sql = db.delete(Qo.table, Qo.ids); // en attendant une meilleure solution
-    db.execute(sql, function (err, ans) {
-      if (err) return next(err);
-      res.send("Success!");
-    });
-  }
+app.get('/temp/', function (req, res, next) {
+  var dec = JSON.parse(decodeURI(url.parse(req.url).query));
+  var sql = parser.select(dec);
+  db.execute(sql, function (err, rows) {
+    if (err) next(err);
+    res.send(rows); 
+  });
 });
 
-app.put('/data/', function(req, res) {
+app.put('/data/', function (req, res) {
   var updatesql = db.update(req.body.t, req.body.data, req.body.pk);
   db.execute(updatesql, function(err, ans) { 
-    if(err) throw err;
+    if (err) next(err);
     res.send(200, {insertId: ans.insertId});
   });
 });
 
-// for inserts only
 app.post('/data/', function (req, res) {
   var insertsql = db.insert(req.body.t, req.body.data);
-//  temporarily remove debug
-//  console.log('[DEBUG SQL]', insertsql);
-
   db.execute(insertsql, function (err, ans) {
-    if (err) throw err;
-    res.send({status: 200, insertId: ans.insertId});
+    if (err) next(err);
+    res.send(200, {insertId: ans.insertId});
   });
 });
 
+// rewrite this...
 app.delete('/data/:val/:col/:table', function (req, res) {
   // TODO/FIXME: this code looks terrible.  Refactor.
   // format the query of the form "WHERE col = val;"
   var reqObj = {};
   reqObj[req.params.col] = [req.params.val];
   // execute
-  var deleteSql = db.delete(req.params.table, reqObj);
-  var cbDEL = function (err, ans) {
-      if (err) throw err;
-      res.status(200);
-      res.send();
-  };
-  db.execute(deleteSql, cbDEL);
+  db.execute(deleteSql, function (err, ans) {
+      if (err) next(err);
+      res.send(200);
+  });
 });
 
 //TODO Server should set user details like this in a non-editable cookie
 app.get('/user_session', function(req, res, next) {
-  res.send({id: req.session.user_id});
+  res.send(200, {id: req.session.user_id});
 });
 
 app.post('/journal', function(req, res) {
-  console.log("recieved post");
   jr.poster(req, res); 
 });
 
 app.get('/trial/', function (req, res, next) {
   trialbalance.trial()
   .then(function (result) {
-    res.send(result);  // processed the request successfully, and sending NO CONTENT
+    res.send(200, result);  // processed the request successfully, and sending NO CONTENT
   }, function (reason) {
     console.log("Reason:", reason);
     res.send(304, reason);  // processed the requuest, but NOT MODIFIED
@@ -125,7 +114,7 @@ app.get('/post/', function (req, res, next) {
 
 app.get('/journal', function (req,res) {
   var cb = function (err, ans) {
-    if (err) throw err;
+    if (err) next(err);
     res.json(ans);
   };
   var myRequest = decodeURIComponent(url.parse(req.url).query);
@@ -154,17 +143,6 @@ app.get('/max/:id/:table', function(req, res) {
     }
     //dodgy as ass
     res.send({max: ans[0]['MAX(' + id + ')']});
-  });
-});
-
-// repeat paths but for new connect.req() method
-
-app.get('/temp/', function (req, res, next) {
-  var dec = JSON.parse(decodeURI(url.parse(req.url).query));
-  var sql = parser.select(dec);
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
-    res.send(rows); 
   });
 });
 
@@ -217,7 +195,7 @@ app.get('/location', function (req, res, next) {
             "FROM `location`, `village`, `sector`, `province`, `country` " + 
             "WHERE `location`.`village_id`=`village`.`id` AND `location`.`sector_id`=`sector`.`id` AND `location`.`province_id`=`province`.`id` AND `location`.`country_id`=`country`.`id`;";
   db.execute(sql, function (err, rows) {
-    if (err) throw err;
+    if (err) next(err);
     res.send(rows);
   });
 });
