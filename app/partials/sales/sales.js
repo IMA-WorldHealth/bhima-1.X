@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('salesController', function($scope, $q, $location, connect, appstate) {
+angular.module('kpk.controllers').controller('salesController', function($scope, $q, $location, $routeParams, connect, appstate) {
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
@@ -14,6 +14,8 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     var DEB_CRED_TYPE = 'D'; // FIXME: Inserts the debitor_creditor type into the journal
 
     //var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
+	
+		var paramInventoryId, paramDebtorId;
 
     var max_sales_request = connect.basicGet('/max/id/sale');
     var max_purchase_request = connect.basicGet('/max/id/purchase');
@@ -22,7 +24,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     //var debtor_request = connect.req('patient', ['debitor_id', 'first_name', 'last_name', 'location_id']);
     //cache location table to look up debitor details
     //var location_request = connect.req('location', ['id', 'city', 'region', 'country_code']);
-
+		
 
     var debitor_query = {
       tables : {
@@ -40,17 +42,16 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
      
     function init() { 
 
-//      FIXME requests shouldn't be dependent on order
 //      FIXME should verify user ID at the time of submitting invoice, less time to manipulate it I guess
-      $q.all([
-        //inventory_request,
-        // sales_request,
+			paramInventoryId = $routeParams.inventoryID;
+			paramDebtorId = $routeParams.debtorID; 
+			
+			$q.all([
         debtor_request,
         user_request,
         max_sales_request,
         max_purchase_request,
       ]).then(function(a) {
-        //$scope.inventory_model = a[0];
         $scope.debitor_store = a[0];
         $scope.debtor_model = a[0].data;
         $scope.verify = a[1].data.id;
@@ -61,11 +62,22 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
         $scope.invoice_id = createId(id);
+
+				generateRouteInvoice();
       });
 
     }
+	
+		//If route parameters provided, create default invoice
+		function generateRouteInvoice() { 
+			//validate route parameters
+			console.log(paramDebtorId, paramInventoryId, !!paramDebtorId, !!paramInventoryId);
+			//super cryptic - if either boolean value is false, it's hot or some excuse  	
+			if(!(!!paramDebtorId && !!paramInventoryId)) return;
+			$scope.debtor = $scope.debitor_store.get(paramDebtorId);
+			
+		}
 
-    //FIXME Shouldn't need to download every all invoices in this module, only take top few?
     function createId(current) { 
       var default_id = 100000;
       if(!current) return default_id;
@@ -210,8 +222,10 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       row.price = row.item.price;
     };
 
-    $scope.updateInventory = function() {
-      var new_line = {item: $scope.inventory_model.data[0]}; //select default item
+    $scope.updateInventory = function(inventoryID) {
+			//FIXME dont' select default inventory item - have a selct option 
+			if(!inventoryID) inventoryID = 0; 
+			var new_line = {item: $scope.inventory_model.data[inventoryID]}; //select default item
       $scope.inventory.push(new_line);
       $scope.updateRow(new_line); //force updates of fields
       /* 

@@ -7,7 +7,8 @@
   <div class="col-xs-4 hack-left">
     <input type="text" ng-model="patient_filter.filter" class="form-kapok" placeholder="Filter Patients">
   </div>
-  <div class="pull-right">
+	<div class="pull-right">
+		<a ng-click="patientCard()"  class="btn btn-default"><span class="glyphicon glyphicon-list"></span> Patient Card</a>
     <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
   </div>
 </section>
@@ -65,4 +66,32 @@
     <a ng-disabled='!selected' ng-click="post()" class="btn btn-default">
       <span class="glyphicon glyphicon-pencil"></span> Generate consultation form</a>
   </div>
-</section>
+	</section>
+
+	<script type="text/ng-template" id="cardModal.html">
+
+		<div class="modal-content">
+			<div class="modal-header">
+				<b>Patient ID </b><small>{{patient.first_name}} {{patient.last_name}}</small>	
+			</div>
+			<div class="modal-body">
+				<!--Ugly layout using half bootstrap, shouldn't use rows or columns-->
+				<div class="kpk-card">
+					<div class="row">
+						<div class="col-xs-12">
+						<div class="kpk-card-id">
+							<h4>{{yearCurrent}}/{{patient.id}}</h4>
+						</div>
+						<div class="kpk-card-age">
+							<h4>{{patient.sex}}/{{patient.age}}</h4>	
+						</div>
+					</div>
+					</div>
+						<div class="kpk-card-name">
+							<h2>{{patient.first_name}} {{patient.last_name}}/{{patient.location_id}}</h2>
+						</div>
+				</div>
+			</div>
+		</div>
+
+	</script>
