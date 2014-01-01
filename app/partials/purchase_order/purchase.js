@@ -1,6 +1,5 @@
 angular.module('kpk.controllers')
 .controller('purchaseOrderController', function($scope, $q, connect, appstate) {
-  'use strict';  
 
 //  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
 //  FIXME Resetting the form maintains the old invoice ID - this causes a unique ID error, resolve this
