@@ -8,18 +8,6 @@
   <div class="pull-left">
     <input type="text" ng-model="debitor" typeahead="debitor as debitor.first_name+' '+debitor.last_name for debitor in models.debitors | filter:$viewValue | limitTo:8" placeholder="Find a Debitor" typeahead-on-select="loadDebitor(debitor.id)" class="form-kapok" size="25">
   </div>
-  <button class="btn btn-default btn-sm" type="button">
-          Current Payment 
-        </button>
-        <button class="btn btn-default btn-sm" type="button">
-          Balances
-        </button>
-      </div>
-      <div class="pull-right">
-        <button class="btn btn-default" type="button">
-          Close Register
-        </button>
-      </div>
 </section>
 
 <div class="content">

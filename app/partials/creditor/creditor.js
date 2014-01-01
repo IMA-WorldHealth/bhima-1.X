@@ -16,24 +16,14 @@ angular.module('kpk.controllers')
   getLocations();
 
   //les fonctions
-  function getCreditors(){
-    /*var req_db = {};
-    req_db.e = [{t:'supplier', c:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
-    kpkConnect.get('/data/?', req_db).then(function(data){
-      $scope.creditors = data;
-    });*/
+  function getCreditors () {
     var sql = {tables:{'supplier':{columns:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}}};
     connect.req(sql).then(function (resultat) {
       $scope.creditors = resultat.data;
     });
   }
-  function getGroups(){
-    /*var req_db = {};
-    req_db.e = [{t:'creditor_group', c:['id', 'group_txt', 'account_id']}];
-    kpkConnect.get('/data/?', req_db).then(function(data){
-      $scope.groups = data;
-    });*/
 
+  function getGroups(){
     var sql = {tables:{'creditor_group':{columns:['id', 'group_txt', 'account_id']}}};
     connect.req(sql).then(function (resultat) {
       $scope.groups = resultat.data;
@@ -41,42 +31,16 @@ angular.module('kpk.controllers')
   }
 
   function getLocations(){
-   /* var req_db = {};
-    req_db.e = [{t:'location', c:['id', 'city', 'region']}];
-    kpkConnect.get('/data/?', req_db).then(function(data){
-      $scope.locations = data;
-    });*/
-
-    var sql = {tables:{'location':{columns:['id', 'city', 'region']}}};
-    connect.req(sql).then(function (resultat) {
-      $scope.locations = resultat.data;
+    connect.fetch('/location').then(function (result) {
+      $scope.locations = result.data;
     });
   }
 
-  $scope.verifyExisting = function(){
-   /*if ($scope.creditorExiste === 0) {
-       if($scope.creditor.name){
-        if(isThere($scope.creditors, 'name', $scope.creditor.name)){
-          var req_db = {};
-          req_db.e = [{t:'supplier', c:['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_id', 'email', 'fax', 'note', 'phone', 'international', 'locked']}];
-          req_db.c = [{t:'supplier', cl:'name', z:'=', v:$scope.creditor.name}];
-          kpkConnect.get('/data/?', req_db).then(function(data){
-           if(data.length>0){
-            var id_promise = getCreditorGroupId(data[0].creditor_id);
-            id_promise.then(function(value){
-              $scope.creditor_group = getCreditorGroup(value.id);
-            });
-            data[0].location_id = getCreditorLocation(data[0].location_id);
-            data[0].international = toBoolean(data[0].international);
-            data[0].locked = toBoolean(data[0].locked);
-            $scope.creditor = data[0];
-            $scope.creditorExiste = 1;
-           }        
-          });
-        }
-      }
-   }*/
+  function formatLocation (l) {
+    return [l.village, l.sector, l.province, l.country].join(' -- ');
+  }
 
+  $scope.verifyExisting = function(){
    if ($scope.creditorExiste === 0) {
     if ($scope.creditor.name) {
       if (isThere($scope.creditors, name, $scope.creditor.name)) {
@@ -122,7 +86,6 @@ angular.module('kpk.controllers')
       if (response ){ 
 
         var sql_update = {t:'supplier', data:[creditor],pk:['id']};
-        //kpkConnect.update(sql_update);
         connect.basicPost(sql_update.t, sql_update.data, sql_update.pk);
         $scope.creditor={};
         $scope.creditor_group = {};
@@ -133,7 +96,6 @@ angular.module('kpk.controllers')
         var creditor_id_promise = getCreditorId(creditor_group_id);
         creditor_id_promise.then(function(value){
           creditor.creditor_id = value;
-          //kpkConnect.send('supplier', [creditor]);
           connect.basicPut('supplier', [creditor]);
         $scope.creditor={};
         $scope.creditor_group = {};
@@ -146,19 +108,6 @@ angular.module('kpk.controllers')
 
   function getCreditorId(id){
     var def = $q.defer();
-    /*kpkConnect.send('creditor', [{id:'', creditor_group_id:id, text:$scope.creditor.name}]);    
-    var request = {}; 
-    request.e = [{t : 'creditor', c : ['id']}];
-    request.c = [{t:'creditor', cl:'id', v:'LAST_INSERT_ID()', z:'='}];
-    kpkConnect.get('data/?',request).then(function(data) {
-      console.log(data);
-      def.resolve(data[0].id);
-    });
-    connect.basicPut('creditor', [{id:'', creditor_group_id:id, text:$scope.creditor.name}]);
-    var sql = {tables:{'creditor':{columns:['id']}},
-           where:['creditor.id=LAST_INSERT_ID()']
-    };*/
-
     connect.basicPut('creditor', [{id:'', creditor_group_id:id, text:$scope.creditor.name}]).then(function(res){
       if (res.status == 200) def.resolve(res.data.insertId);
     });
@@ -168,12 +117,6 @@ angular.module('kpk.controllers')
   function existe (id) {
     var def = $q.defer(); // Best to do: if (id === undefined) def.resolve(false);
     if (id) { // this may be bad because if id === 0 this will fail...
-      /*var request = {}; 
-      request.e = [{t : 'creditor', c : ['id']}];
-      request.c = [{t:'creditor', cl:'id', v:id, z:'='}];
-      kpkConnect.get('data/?',request).then(function(data) {
-        def.resolve(data.length > 0);
-      });*/
     
       var sql = {
         tables: {'supplier': { columns:['id']}},
@@ -228,17 +171,6 @@ angular.module('kpk.controllers')
 
   function getCreditorGroupId (idCreditor) {
     var def = $q.defer();    
-    // var req_db = {};
-    // req_db.e = [{t:'creditor', c:['creditor_group_id']}];
-    // req_db.c = [{t:'creditor', cl:'id', z:'=', v:idCreditor}];
-    // kpkConnect.get('/data/?', req_db).then(function(data){
-    //   var groupID = data[0].creditor_group_id;
-    //   req_db.e = [{t:'creditor_group', c:['id']}];
-    //   req_db.c = [{t:'creditor_group', cl:'id', z:'=', v:groupID}];
-    //   kpkConnect.get('/data/?', req_db).then(function(data){
-    //   def.resolve(data[0]);
-    //   });
-    // });
 
     var sql = {
       tables: {'creditor':{columns:['creditor_group_id']}},
@@ -278,9 +210,11 @@ angular.module('kpk.controllers')
   };
 
   $scope.delete = function () {
-    //kpkConnect.delete('supplier', creditor.id);
     connect.basicDelete('supplier', 'id', $scope.creditor.id);
     $scope.creditor = {};
     getCreditors();
   };
+
+  $scope.formatLocation = formatLocation;
+
  });

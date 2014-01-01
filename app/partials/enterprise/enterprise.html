@@ -1,5 +1,5 @@
 <header>
-  <span class="capital">{{'ENTERPRISE' | translate}}</span>
+  <span class="capital">{{'ENTERPRISE_MANAGEMENT' | translate}}</span>
 </header>
 
 <section class="underline">
@@ -30,7 +30,6 @@
           </tbody>
         </table>
       </div>
-      <pre>{{swap}}</pre>
     </div>
 
     <div class="col-xs-6">
@@ -59,14 +58,14 @@
 
           <div class="form-group">
             <label for="kpk-enterprise-location" class="capital">{{ 'LOCATION' | translate }} : </label>
-            <select class="form-control" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="swap.location_id" ng-options="location.id as formatLocation(location) for location in models.location">
+            <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="swap.location_id" ng-options="location.id as formatLocation(location) for location in models.location">
               <option value="" disabled="disabled">-- Select a Location --</option>
             <select>
           </div>
 
           <div class="form-group">
             <label for="kpk-enterprise-cash_account" class="capital">{{ 'CASH_ACCOUNT' | translate }} :</label>
-            <select class="form-control" name="kpk-enterprise-cash_account" id="kpk-enterprise-cash_account" ng-model="swap.cash_account" ng-options="account.id as formatAccount(account) for account in models.account">
+            <select class="form-kapok" name="kpk-enterprise-cash_account" id="kpk-enterprise-cash_account" ng-model="swap.cash_account" ng-options="account.id as formatAccount(account) for account in models.account">
               <option value="" disabled="disabled">-- Select an Account --</option>
             <select>
           </div>

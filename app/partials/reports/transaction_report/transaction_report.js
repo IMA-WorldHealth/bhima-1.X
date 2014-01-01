@@ -1,6 +1,7 @@
-angular.module('kpk.controllers').controller('reportTransactionController', function($scope, $q, $filter, connect){
+angular.module('kpk.controllers').controller('reportTransactionController', function($scope, $q, $filter, connect, kpkUtilitaire){
 
 	$scope.report = {};
+	$scope.option = {};
 	var creditors = {tables:{'creditor':{columns:['id', 'text']},
 						    'creditor_group':{columns:['account_id']}
 						   },
@@ -28,7 +29,7 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 
 	var models = {};
 
-	var dataview;;
+	var dataview;
 
 	var names = ['debitors', 'creditors', 'debitorGroup', 'creditorGroup'];
 
@@ -101,24 +102,42 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 	}
 
 	$scope.populate = function (){
+		if($scope.option.dateFrom && $scope.option.dateTo && 
+			(kpkUtilitaire.isDateAfter($scope.option.dateTo, $scope.option.dateFrom) || 
+			 kpkUtilitaire.areDatesEqual($scope.option.dateTo, $scope.option.dateFrom))
+			){
+				$scope.show = true;
+				if($scope.data.type == 'I'){
 
-		$scope.show = true;
-		if($scope.data.type == 'I'){			
-			connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id, type:$scope.data.dc, ig:$scope.data.type})).then(function(values){
-	          $scope.model['transReport'] = values;
-	          doSummary(values);
-	          popul();
-		    });	
+					connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id,
+																				type:$scope.data.dc, 
+																				ig:$scope.data.type, 
+																				df:$scope.option.dateFrom, 
+																				dt:$scope.option.dateTo}))
+					.then(function(values){
+			          $scope.model['transReport'] = values;
+			          doSummary(values);
+			          popul();
+				    });	
 
-		}else if($scope.data.type == 'G'){		
+				}else if($scope.data.type == 'G'){		
 
-			connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id, type:$scope.data.dc, account_id:$scope.model.selected.account_id, ig:$scope.data.type})).then(function(values){
-	          $scope.model['transReport'] = values;
-	          doSummary(values);
-	          popul();
-		    });
-
-		} 	
+					connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id, 
+																				type:$scope.data.dc, 
+																				account_id:$scope.model.selected.account_id, 
+																				ig:$scope.data.type, 
+																				df:$scope.option.dateFrom, 
+																				dt:$scope.option.dateTo}))
+					.then(function(values){
+			          $scope.model['transReport'] = values;
+			          doSummary(values);
+			          popul();
+				    });
+				}
+				
+		}else{
+			alert('Date Invalid !');
+		}		
     }
 
     function doSummary(values){

@@ -37,6 +37,9 @@ delete from `fiscal_year`;
 delete from `enterprise`;
 delete from `location`;
 delete from `country`;
+delete from `province`;
+delete from `sector`;
+delete from `village`;
 delete from `sale`;
 
 -- configure application details
@@ -98,90 +101,96 @@ INSERT INTO `unit` VALUES
   (48,'Creditor Groups', '', 1, 0, 'partials/creditor/group/creditor_group', 'creditors/creditor_group'),
   (49,'Debitor Groups', '', 1, 0, 'partials/debitor/debitor_group', 'debitor/debitor_group'),
   (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view'),
-  (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger');
+  (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger'),
+  (52,'Location Manager', '', 1, 0, 'partials/location/location', 'location');
 
 
-insert into `permission` values
-  (1,1,13),
-	(2,4,13),
-	(3,6,13),
-	(4,30,13),
-	(5,31,13),
-	(6,34,13),
-	(7,35,13),
-	(8,33,13),
-	(9,36,13),
-	(10,37,13),
-	(11,38,13),
-	(12,39,13),
-	(13,40,13),
-	(14,9,13),
-	(15,41,13),
-  (16,1,1),
-	(17,4,1),
-	(18,6,1),
-	(19,30,1),
-	(20,31,1),
-	(21,34,1),
-	(22,35,1),
-	(23,33,1),
-	(24,36,1),
-	(25,37,1),
-	(26,38,1),
-	(27,39,1),
-	(28,40,1),
-	(29,9,1),
-	(30,41,1),
-  (31,1,2),
-	(32,4,2),
-	(33,6,2),
-	(34,30,2),
-	(35,31,2),
-	(36,34,2),
-	(37,35,2),
-	(38,33,2),
-	(39,36,2),
-	(40,37,2),
-	(41,38,2),
-	(42,39,2),
-	(43,40,2),
-	(44,9,2),
-	(45,41,2),
-  (46, 43, 13),
-  (47, 44, 1),
-  (48, 45, 1),
-  (49, 46, 1),
-  (50, 47, 1),
-  (51, 48, 1),
-  (52, 47, 2),
-  (53, 48, 1),
-  (54, 49, 1),
-  (55, 50, 1),
-  (56, 51, 1),
-	(57,4, 3),
-	(58,6, 3),
-	(59,30,3),
-	(60,31,3),
-	(61,34,3),
-	(62,35,3),
-	(63,33,3),
-	(64,36,3),
-	(65,37,3),
-	(66,38,3),
-	(67,39,3),
-	(68,40,3),
-	(69,9, 3),
-	(70,41,3),
-  (71,1, 3),
-  (72,44, 3),
-  (73,45, 3),
-  (74,46, 3),
-  (75,47, 3),
-  (76,48, 3),
-  (77,49, 3),
-  (78,50, 3),
-  (79,51, 3),
-  (80,2, 1);
+insert into `permission` (`id_unit`, `id_user`) values
+  (1,13),
+	(4,13),
+	(6,13),
+	(30,13),
+	(31,13),
+	(34,13),
+	(35,13),
+	(33,13),
+	(36,13),
+	(37,13),
+	(38,13),
+	(39,13),
+	(40,13),
+	(9,13),
+	(41,13),
+  (1,2),
+	(4,2),
+	(6,2),
+	(30,2),
+	(31,2),
+	(34,2),
+	(35,2),
+	(33,2),
+	(36,2),
+	(37,2),
+	(38,2),
+	(39,2),
+	(40,2),
+	(9,2),
+	(41,2),
+  (43,13),
+  (47,2),
+	(4, 3),
+	(6, 3),
+	(30,3),
+	(31,3),
+	(34,3),
+	(35,3),
+	(33,3),
+	(36,3),
+	(37,3),
+	(38,3),
+	(39,3),
+	(40,3),
+	(9, 3),
+	(41,3),
+  (1, 3),
+  (44, 3),
+  (45, 3),
+  (46, 3),
+  (47, 3),
+  (48, 3),
+  (49, 3),
+  (50, 3),
+  (51, 3),
+  (1,1),
+  (2,1),
+	(4,1),
+	(9,1),
+	(6,1),
+  (5,1),
+  (8,1),
+  (11,1),
+  (10,1),
+  (21,1),
+	(30,1),
+	(31,1),
+	(34,1),
+	(35,1),
+	(33,1),
+	(36,1),
+	(37,1),
+	(38,1),
+	(39,1),
+	(40,1),
+	(41,1),
+  (44,1),
+  (45,1),
+  (46,1),
+  (47,1),
+  (48,1),
+  (49,1),
+  (50,1),
+  (51,1),
+  (52,1);
 
 -- configure location details
 insert into `country` values
@@ -427,35 +436,32 @@ insert into `country` values
 	(240,891,'Serbia and Montenegro','Serbie-et-Monténégro'),
 	(241,894,'Zambia','Zambie');
 
-insert into `location` values
-  (1,'Kinshasa','Kinshasa',52,NULL,NULL),
-	(2,'Lubumbashi','Katanga',52,NULL,NULL),
-	(3,'Mbuji-Mayi','Kasaï-Oriental',52,NULL,NULL),
-	(4,'Kananga','Kasaï-Occidental',52,NULL,NULL),
-	(5,'Kisangani','Orientale',52,NULL,NULL),
-	(6,'Bukavu','Sud-Kivu',52,NULL,NULL),
-	(7,'Tshikapa','Kasaï-Occidental',52,NULL,NULL),
-	(8,'Kolwezi','Katanga',52,NULL,NULL),
-	(9,'Likasi','Katanga',52,NULL,NULL),
-	(10,'Goma','Nord-Kivu',52,NULL,NULL),
-	(11,'Kikwit','Bandundu',52,NULL,NULL),
-	(12,'Uvira','Sud-Kivu',52,NULL,NULL),
-	(13,'Bunia','Orientale',52,NULL,NULL),
-	(14,'Mbandaka','Équateur',52,NULL,NULL),
-	(15,'Matadi','Bas-Congo',52,NULL,NULL),
-	(16,'Kabinda','Kasaï-Oriental',52,NULL,NULL),
-	(17,'Butembo','Nord-Kivu',52,NULL,NULL),
-	(18,'Mwene-Ditu','Kasaï-Oriental',52,NULL,NULL),
-	(19,'Isiro','Orientale',52,NULL,NULL),
-	(20,'Kindu','Maniema',52,NULL,NULL),
-	(21,'Boma','Bas-Congo',52,NULL,NULL),
-	(22,'Kamina','Katanga',52,NULL,NULL),
-	(23,'Gandajika','Kasaï-Oriental',52,NULL,NULL),
-	(24,'Bandundu','Bandundu',52,NULL,NULL),
-	(25,'Gemena','Équateur',52,NULL,NULL),
-	(26,'Kipushi','Katanga',52,NULL,NULL),
-	(27,'Bumba','Équateur',52,NULL,NULL),
-	(28,'Mbanza-Ngungu','Bas-Congo',52,NULL,NULL);
+
+insert into `province` (`name`) VALUES
+  ('Bas Congo'),
+  ('Bandundu'),
+  ('Kasai Oriental'),
+  ('Katanga'),
+  ('Equateur'),
+  ('Kasai Occidental'),
+  ('Kinshasa'),
+  ('Nord Kivu'),
+  ('Sud Kivu'),
+  ('Province Oriental'),
+  ('Maniema');
+
+insert into `sector` (`name`) VALUES 
+  ('Kilunda'),
+  ('Kwilu');
+
+insert into `village` (`name`) VALUES
+  ('Vanga'),
+  ('Bulungu'),
+  ('Songo'),
+  ('Lusekele');
+
+insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) VALUES 
+  (1, 1, 1, 1);
 
 -- configure enterprise
 
@@ -467,7 +473,7 @@ insert into `exchange_rate` (`to_currency`, `from_currency`, `rate`, `updated`) 
   (2, 1, 920, '2012-06-04');
 
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 
-  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 570000, '/assets/logos/tsh.jpg', 1);
+  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 212, '/assets/logos/tsh.jpg', 1);
 
 -- configure fiscal year/period
 
@@ -1061,32 +1067,32 @@ insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `do
 
 -- configure inventory
 
-insert into `inv_unit` values
-  (1, 'Act'),
-	(2, 'Pallet'),
-	(3, 'Pill'),
-	(4, 'Box'),
-	(5, 'Lot');
+insert into `inv_unit` (`text`) values
+  ('Act'),
+	('Pallet'),
+	('Pill'),
+	('Box'),
+	('Lot');
 
 insert into `inv_type` values
   (0,'Article'),
   (1,'Assembly'),
   (2,'Service');
 
-insert into `inv_group` values 
-  (0, 'Services' , 'S', 90, NULL, NULL, NULL), -- 164
-	(1, 'Medicines', 'M', 80, NULL, NULL, NULL), -- 164, 167
-	(2, 'Surgery'  , 'C', 88, NULL, NULL, NULL); -- 171
+insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
+  ('Services' , 'S', 90), -- 164
+	('Medicines', 'M', 80), -- 164, 167
+	('Surgery'  , 'C', 88); -- 171
 
-insert into `inventory` values 
-  (200, 1, 'CHCRAN', 'Craniotomie'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 2, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 3, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 4, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 5, 'CHPASU', 'Parotidectomie Superficielle'    , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 6, 'CHTRAC', 'Trachectome'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 7, 'EXKYSB', 'Kyste Sublingual'                , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 8, 'EXKYPB', 'Petite Kyste De La Bouche'       , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0);
+insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
+  (200, 'CHCRAN', 'Craniotomie'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHPASU', 'Parotidectomie Superficielle'    , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHTRAC', 'Trachectome'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYSB', 'Kyste Sublingual'                , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0);
 
 -- configure department
 

@@ -22,7 +22,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           }
         }
       }
-    }
+    };
 
   
     function init() { 
@@ -52,8 +52,8 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
         fiscal_model = model;
 
         //set the first budget report - this will be populated in updateReport
-        var default_fiscal = appstate.get("fiscal") //Risky with validation checks
-        budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}})
+        var default_fiscal = appstate.get("fiscal"); //Risky with validation checks
+        budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}});
         fiscal_model.remove(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
       })
@@ -82,7 +82,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
             }
         },
         'where' : ['account.enterprise_id=' + e_id]
-      }
+      };
       connect.req(account_query).then(function(model) {
         deferred.resolve(model);
       });
@@ -104,7 +104,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           }
         },
         'where' : ['fiscal_year.enterprise_id=' + e_id]
-      }
+      };
       var deferred = $q.defer();
       connect.req(fiscal_query).then(function(model) {
         deferred.resolve(model);
@@ -144,33 +144,15 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       //FIXME: request object should be formed using connect API, or straight table downloaded etc - implementation decision
       var deferred = $q.defer();
       var budget_query = {
-        'e' : [{
-          t : 'period',
-          c : ['period_start', 'period_stop'] 
-        }, {
-          t : 'budget',
-          c : ['id', 'account_id', 'period_id', 'budget']
-        }],
-        'jc': [{
-          ts: ['period', 'budget'],
-          c: ['id', 'period_id'],
-          l: 'AND'
-        }],
-        'c': [{
-          t: 'budget',
-          cl: 'account_id',
-          z: '=', 
-          v: account_id, 
-          l: 'AND' 
-        }, 
-        {
-          t: 'period',
-          cl: 'fiscal_year_id', 
-          z: '=',
-          v: fiscal_year
-      }]};
+        tables : {
+          'period' : { columns: ['period_start', 'period_stop'] },
+          'budget' : { columns : ['id', 'account_id', 'period_id', 'budget'] }
+        },
+        join : ['period.id=budget.period_id'],
+        where : ['budget.account_id='+account_id, 'AND', 'period.fiscal_year_id='+fiscal_year]
+      };
 
-      connect.basicReq(budget_query).then(function(model) { 
+      connect.req(budget_query).then(function(model) { 
         console.log("Retrieved model", model);
         deferred.resolve(model);
       });
@@ -183,7 +165,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       var d = model.data;
       for(var i = d.length - 1; i >= 0; i--) {
           var month = (new Date(d[i].period_start).getMonth());
-          month_index[month] = d[i]["id"];
+          month_index[month] = d[i].id;
       }
       model.month_index = month_index;
       return model;
@@ -212,7 +194,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
         } else { 
           format.push(null);
         }
-      };
+      }
       console.log("f return", format);
       return format;
     }
@@ -226,7 +208,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
         $scope.budget_model.reports = model;
         setSelected(account_id);
       });      
-    }
+    };
 
     $scope.filterMonth = function(report, index) {
       console.log("filterMonth request", report);
@@ -278,13 +260,12 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           return false;
         } 
       }
-      
       return true;
     };
 
     $scope.updateBudget = function updateBudget() { 
       console.log('updateBudget');
-    }
+    };
 
     init();
   });

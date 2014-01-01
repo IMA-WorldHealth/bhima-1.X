@@ -6,91 +6,66 @@
   
   var services = angular.module('kpk.services', []);
     
-  //FIXME: depricated - yo
-  services.service('kpkConnect', function($http) { 
-    this.fetch = function(table, columns, where, value) {     
-      var query = { 
-        e: [{t : table, c : columns}]
+    services.service('kpkUtilitaire', function() { 
+      this.formatDate = function(dateString) {
+        return new Date(dateString).toDateString();
       };
-      
-      if(where) { 
-        query.c = [{t : table, cl : where, v : value, z : '='}];
-      }
-      
-      var promise = $http.get('/data/?' + JSON.stringify(query)).then(function(result) { 
-          // I can now manipulate the data before returning it if needed
-          return result.data;
-        });
-        return promise;
-    };
-    
-    //Because TODO
-    this.raw_fetch = function(qeury_object) { 
-      var promise = $http.get('/data/?' + JSON.stringify(qeury_object)).then(function(result) { 
-        return result.data;
-      });
-      return promise;
-    };
 
-    
-    this.get = function(target, requestObject){
-      var promise = $http.get(target + JSON.stringify(requestObject)).then(function(result) { 
-        return result.data;
-      });
-      return promise;
-  };
+      Date.prototype.toMySqlDate = function (dateParam) {
+        var date = new Date(dateParam), annee, mois, jour;
+        annee = String(date.getFullYear());
+        mois = String(date.getMonth() + 1);
+        if (mois.length === 1) {
+         mois = "0" + mois;
+        }
+        jour = String(date.getDate());
+          if (jour.length === 1) {
+            jour = "0" + jour;
+        }      
+        return annee + "-" + mois + "-" + jour;
+      };
 
-  this.basicGet = function(target, param){
-    if(!param){
-      var promise = $http.get(target).then(function(result) { 
-        return result.data;
-      });
-    }      
-    return promise;
-  };
+      this.convertToMysqlDate = function(dateString) {
+        return new Date().toMySqlDate(dateString);
+      };
 
-  this.send = function(table, data) { 
-    var sql= {t:table, data:data};
-    $http.post('data/',sql);
-  };
-  this.sendTo = function(target, table, data) { 
-    var sql= {t:table, data:data};
-    $http.post(target,sql);
-  };
+      this.isDateAfter = function(date1, date2){
+        date1 = new Date(date1);
+        date2 = new Date(date2);
 
-  this.update = function(objectRequest) { 
-    $http.put('data/',objectRequest);
-  };
+        if(date1.getFullYear > date2.getFullYear){
+          return true;
+        }else if(date1.getFullYear() == date2.getFullYear()){
+          if(date1.getMonth() > date2.getMonth()){
+            return true;
+          }else if(date1.getMonth() == date2.getMonth()){
+            if(date1.getDate() > date2.getDate())
+              return true;
+              return false;
+          }else if(date1.getMonth() < date2.getMonth()){
+            return false;
+          }
+        }else if(date1.getFullYear() < date2.getFullYear()){
+          return false;
+        }
+      };
 
-  this.delete = function(table, id) { 
-    $http.delete('data/'+id+'/'+table);
-  };
-  });
+      this.areDatesEqual = function(date1, date2){
+        date1 = new Date(date1);
+        date2 = new Date(date2);
 
-  services.service('kpkUtilitaire', function() { 
-    this.formatDate = function(dateString) {
-      return new Date(dateString).toDateString();
-    };
-
-    Date.prototype.toMySqlDate = function (dateParam) {
-      console.log("dateParam:", dateParam);
-      var date = new Date(dateParam), annee, mois, jour;
-      annee = String(date.getFullYear());
-      mois = String(date.getMonth() + 1);
-      if (mois.length === 1) {
-       mois = "0" + mois;
-      }
-
-      jour = String(date.getDate());
-        if (jour.length === 1) {
-          jour = "0" + jour;
-      }      
-      return annee + "-" + mois + "-" + jour;
-    };
-
-    this.convertToMysqlDate = function(dateString) {
-      return new Date().toMySqlDate(dateString);
-    }
+        if(date1.getFullYear != date2.getFullYear){
+          return false;
+        }else if(date1.getFullYear() == date2.getFullYear()){
+          if(date1.getMonth() != date2.getMonth()){
+            return false;
+          }else if(date1.getMonth() == date2.getMonth()){
+            if(date1.getDate() != date2.getDate())
+              return false;
+              return true;
+          }
+        }
+      };
   });
 
   services.factory('appcache', function($q) { 
@@ -100,7 +75,7 @@
     var db, cacheSupported;
     var requestMap = { 
       'get' : get
-    }
+    };
 
     function init() { 
       //also sets db - working on making it read better
@@ -130,14 +105,14 @@
 
         // if(!db.objectStoreNames.contains()
         deferred.resolve();
-      }
+      };
       request.onsuccess = function(event) { 
         db = request.result;
         deferred.resolve();
-      }
+      };
       request.onerror = function(event) { 
         deferred.reject(event);
-      }
+      };
       return deferred.promise;
     }
 
@@ -154,7 +129,7 @@
     };
   });
 
-  services.factory('appstate', function($q) { 
+  services.factory('appstate', function ($q) { 
     /*
     * summary: 
     *  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
@@ -189,6 +164,7 @@
     }
 
     function register(comp_id, callback) { 
+      // FIXME: These are strict violations
       var id = this.id;
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
@@ -288,8 +264,6 @@
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
 
-      console.log('received options', options);
-
       // globals
       this.index = {};
       this.data = {};
@@ -297,7 +271,6 @@
       // locals
       var queue = [];
       var identifier = options.identifier || 'id'; // id property
-      console.log('id:', identifier);
       var pprint = '[connect] ';
       var tgt = "/temp/"; // temporary target until we standardize connect.
       var refreshrate = options.refreshrate || 500;
@@ -333,7 +306,6 @@
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
-            console.log('this data', this.data, 'this index ', this.index);
 
         if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;  
 
@@ -421,7 +393,7 @@
         return result.data;
       });
       return promise;
-    };
+    }
 
 //    FIXME accepts any request (temporarily making up for 'req()' shortcomings) this should be deprecated
     function basicReq(reqobj) {
@@ -451,7 +423,7 @@
       model.calculateIndex = function () {
         this.index = {};
         for (var i = this.data.length - 1; i >= 0; i--) {
-          this.index[this.data[i]["id"]] = i;
+          this.index[this.data[i].id]= i;
         }
       };
 
@@ -461,7 +433,7 @@
       };
 
       model.put = function (object) {
-        var id = object["id"];
+        var id = object.id;
         if (id in this.index) {
           //TODO: Implement overwrite flag/ behaviour
           throw new Error("Object overwrite attempted.");

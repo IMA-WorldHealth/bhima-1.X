@@ -36,6 +36,11 @@ section {
   min-height: 37px;
 }
 
+/* For some reason, minification broke this.. */
+fieldset {
+  width: 100%;
+}
+
 .grid {
   box-sizing: content-box;
 }

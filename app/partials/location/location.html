@@ -1,0 +1,85 @@
+<header>
+  <span> {{ 'LOCATION' | translate }} </span>
+</header>
+
+<section class="underline">
+</section>
+
+<article class="content">
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default" style="max-height: 525px;">
+        <div class="panel-heading">
+          <span>Registered Locations</span>
+        </div>
+        <table class="table table-striped table-condensed">
+          <thead>
+            <tr>
+              <th>Village</th>
+              <th>Sector</th>
+              <th>Province</th>
+              <th>Country</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="location in models.location">
+              <td>{{formatVillage(location.village_id)}}</td>
+              <td>{{formatSector(location.sector_id)}}</td>
+              <td>{{formatProvince(location.province_id)}}</td>
+              <td>{{formatCountry(location.country_id)}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <form class="form-horizontal" name="kpk-location-form" role="form">
+        <fieldset>
+          <legend>Add a Location</legend>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Country :</label>
+            <div class="col-xs-10">
+              <input type="text" ng-model="data.country_id" name="kpk-location-country" class="form-kapok" typeahead="c.id as c.country_en for c in models.country | filter:$viewValue | limitTo:5" typeahead-on-select="select('country')" typeahead-input-formatter="format('country')">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Province : </label>
+            <div class="col-xs-10">
+              <input type="text" ng-model="data.province_id" name="kpk-location-province" class="form-kapok" typeahead="p.id as p.name for p in models.province | filter:$viewValue | limitTo:8" typeahead-on-select="select('province')" typeahead-input-formatter="format('province')">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Sector : </label>
+            <div class="col-xs-10">
+              <input type="text" ng-model="data.sector_id" name="kpk-location-sector" class="form-kapok" typeahead="s.id as s.name for s in models.sector | filter:$viewValue | limitTo:8" typeahead-on-select="select('sector')" typeahead-input-formatter="format('sector')">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Village : </label>
+            <div class="col-xs-10">
+              <input type="text" ng-model="data.village_id" name="kpk-location-village" class="form-kapok" typeahead="v.id as v.name for v in models.village | filter:$viewValue | limitTo:8" typeahead-on-select="select('village')" typeahead-input-formatter="format('village')">
+            </div>
+          </div>
+
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</article>
+<pre>
+  DATA : {{data}}
+  FLAGS : {{flags}}
+</pre>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <button class="btn btn-sm btn-success" ng-click="submit()">Submit</button>
+    <button class="btn btn-default btn-sm" ng-click="clear()">Clear</button>
+  </div>
+</section>
+

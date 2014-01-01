@@ -110,7 +110,12 @@
     when('/reports/summary', {
       controller: 'summaryController',
       templateUrl: 'partials/reports/summary/summary.html'
-    }).when('/settings', { 
+    })
+    .when('/location', {
+      controller : 'locationCtrl',
+      templateUrl: 'partials/location/location.html'
+    })
+    .when('/settings', { 
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
     });
@@ -131,6 +136,7 @@
       CREDIT: 'credit',
       FISCAL_YEAR: 'fiscal year',
       ENTERPRISE : 'enterprise',
+      ENTERPRISE_MANAGEMENT : 'enterprise management',
 
       //Application functions
       CONFIGURE: 'configure',
