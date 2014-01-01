@@ -55,7 +55,7 @@
       controller: 'patientRecordsController', 
       templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
-    when('/sales', { 
+    when('/sales/:debtorID/:inventoryID', { 
       controller: 'salesController',
       templateUrl: '/partials/sales/sales.html'
     }).
