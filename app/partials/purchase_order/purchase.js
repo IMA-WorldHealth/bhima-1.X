@@ -1,5 +1,5 @@
-angular.module('kpk.controllers').controller('purchaseOrderController', function($scope, $q, connect, appstate) {
-  console.log("Inventory invoice initialised");
+angular.module('kpk.controllers')
+.controller('purchaseOrderController', function($scope, $q, connect, appstate) {
 
 //  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
 //  FIXME Resetting the form maintains the old invoice ID - this causes a unique ID error, resolve this
@@ -26,28 +26,20 @@ angular.module('kpk.controllers').controller('purchaseOrderController', function
     'where' : [
       'inventory.type_id=0'
     ]
-  }
+  };
   var inventory_request = connect.req(inventory_query);
-
-
   var max_sales_request = connect.basicGet('/max/id/sale');
   var max_purchase_request = connect.basicGet('/max/id/purchase');
 
   var creditor_query = {
-    'e' : [{
-      t : 'supplier',
-      c : ['id', 'name', 'location_id', 'creditor_id']
-    }, {
-      t : 'location',
-      c : ['city', 'region', 'country_id']
-    }],
-    'jc' : [{
-      ts : ['location', 'supplier'],
-      c : [ 'id', 'location_id']
-    }]
+    tables: {
+      'supplier' : { columns : ['id', 'name', 'location_id', 'creditor_id'] },
+      'location' : { columns : ['city', 'region', 'country_id'] }
+    },
+    join : ['supplier.location_id=location.id']
   };
 
-  var creditor_request = connect.basicReq(creditor_query);
+  var creditor_request = connect.req(creditor_query);
   var user_request = connect.basicGet("user_session");
 
   function init() {
@@ -118,10 +110,10 @@ angular.module('kpk.controllers').controller('purchaseOrderController', function
 
   function generateItems() {
     var deferred = $q.defer();
-    var promise_arr = [];
 
     //iterate through invoice items and create an entry to sale_item
-    $scope.inventory.forEach(function(item) {
+    var promise_arr = $scope.inventory.map(function (item) {
+      console.log("Generating sale item for ", item);
       var format_item = {
         purchase_id : $scope.invoice_id,
         inventory_id : item.item.id,
@@ -129,12 +121,10 @@ angular.module('kpk.controllers').controller('purchaseOrderController', function
         unit_price : item.price,
         total : item.quantity * item.price
       };
-      console.log("Generating sale item for ", item);
-
-      promise_arr.push(connect.basicPut('purchase_item', [format_item]));
+      return connect.basicPut('purchase_item', [format_item]);
     });
 
-    $q.all(promise_arr).then(function(res) { deferred.resolve(res)});
+    $q.all(promise_arr).then(function (res) { deferred.resolve(res); });
     return deferred.promise;
   }
 
@@ -172,18 +162,18 @@ angular.module('kpk.controllers').controller('purchaseOrderController', function
       item.price = "";
       item.quantity = "";
     }
-  }
+  };
 
   $scope.updateInventory = function() {
     $scope.inventory.push({});
-  }
+  };
 
   $scope.formatText = function() {
 //      FIXME String functions within digest will take hours and years
     var c = "PO " + $scope.invoice_id + "/" + $scope.sale_date;
     if($scope.creditor) c += "/" + $scope.creditor.name + "/";
     return c;
-  }
+  };
 
 
 
@@ -203,20 +193,20 @@ angular.module('kpk.controllers').controller('purchaseOrderController', function
       }
     });
     return total;
-  }
+  };
 
   $scope.itemsInInv = function() {
     if($scope.inventory.length>0) return true;
     return false;
-  }
+  };
 
   $scope.select = function(index) {
     $scope.current_process = $scope.process[index];
-  }
+  };
 
   $scope.formatCreditor = function(creditor) {
     return creditor.name;
-  }
+  };
 
   init();
 

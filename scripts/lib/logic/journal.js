@@ -23,7 +23,7 @@ module.exports = function (db) {
     req.body.forEach(function (item) {
       var sql = "SELECT `id` FROM `posting_journal` WHERE `trans_id`=" + db.escapestr(item.id) + " AND `origin_id`=" + db.escapestr(item.transaction_type) + ";\n";
       db.execute(sql, function(err, records) {
-        if (err) next(err);
+        if (err) return next(err);
         if (!records.length) getData(item, res);
       });
     }); 

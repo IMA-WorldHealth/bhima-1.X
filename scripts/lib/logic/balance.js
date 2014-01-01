@@ -212,6 +212,7 @@ module.exports = (function (db) {
 });
 
 /*
+ * test!
 var cfg = JSON.parse(fs.readFileSync('scripts/config.json', 'utf8'));
 var db = require('./scripts/lib/database/db')(cfg.db);
 var balance = require('./scripts/lib/logic/balance')(db);

@@ -1,19 +1,21 @@
-angular.module('kpk.controllers').controller('appController', function($scope, $location, appcache, appstate, connect) { 
+angular.module('kpk.controllers')
+.controller('appController', function($scope, $location, appcache, appstate, connect) { 
+  'use strict';
     
-    //lookup users language preference 
-    
-    //Cache URL's to maintain user session
-    // var url = $location.url();
+  //lookup users language preference 
+      
+  //Cache URL's to maintain user session
+  // var url = $location.url();
 
-    // //Assuming initial page load
-    /*if (url === '') {
-      //only navigate to cached page if no page was requested
-      appcache.getNav().then(function(res) {
-        if(res) {
-          $location.path(res);
-        }
-      });
-    }*/
+  // //Assuming initial page load
+  /*if (url === '') {
+    //only navigate to cached page if no page was requested
+    appcache.getNav().then(function(res) {
+      if(res) {
+        $location.path(res);
+      }
+    });
+  }*/
 
     var default_enterprise, default_fiscal_year;
     //donwload and set enterprise and fiscal year - this should not be done here

@@ -5,7 +5,7 @@ angular.module('kpk.controllers')
       flags = $scope.flags = {},
       swap = $scope.swap = {},
       stores = {},
-      dependencies = ['enterprise', 'account', 'location', 'currency'];
+      dependencies = ['enterprise', 'account', 'currency'];
 
   imports.enterprise_id = appstate.get('enterprise').id;
   imports.enterprise = {
@@ -15,9 +15,6 @@ angular.module('kpk.controllers')
     tables : {'account' : { columns : ['id', 'account_number', 'account_txt', 'locked']}},
     where : ['account.enterprise_id=' + imports.enterprise_id]
   };
-  imports.location = {
-    tables : { 'location' : { columns : ['id', 'city', 'region', 'country_id', 'zone', 'village']}}
-  };
   imports.currency = {
     tables : { 'currency' : { columns : ['id', 'symbol', 'name'] }}
   };
@@ -26,7 +23,6 @@ angular.module('kpk.controllers')
     $q.all([
       connect.req(imports.enterprise),
       connect.req(imports.accounts),
-      connect.req(imports.location),
       connect.req(imports.currency)
     ])
     .then(function (array) {
@@ -34,11 +30,21 @@ angular.module('kpk.controllers')
         stores[dependencies[idx]] = depend;
         models[dependencies[idx]] = depend.data;
       });
+      
+      connect.fetch('/location/')
+      .then(function (result) {
+        console.log("Got location data:", result.data);
+        models.location = result.data;
+      }, function (error) {
+        console.error("found an error:", error);
+      });
+
+
     });
   }
 
-  function formatLocation (location) {
-    return [location.city, location.region].join(', ');
+  function formatLocation (l) {
+    return [l.village, l.sector, l.province, l.country].join(' -- ');
   }
 
   function formatAccount (account) {
