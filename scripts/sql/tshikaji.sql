@@ -84,7 +84,7 @@ INSERT INTO `unit` VALUES
 	(31,'Patient Registration','Register patients',21,0,'/partials/patient','patient'),
 	(32,'Essaie journal','essaie journal',17,0,'/partials/vente','/essaie'),
 	(33,'Patient Records','Search for patient',21,0,'/partials/patient_records/','patient_records/'),
-	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales'),
+	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales/0/'),
 	(35,'Sale Records','Search for a sale',5,0,'/partials/sale_records/','sale_records/'),
 	(36,'Purchase Order','Create a new Purchase Order',11,0,'partials/inventory_purchase_order','inventory/purchase'),
 	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting'),
