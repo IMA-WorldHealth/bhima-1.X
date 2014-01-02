@@ -1,24 +1,20 @@
-/*
- * Ce module retouche a pour role d'interagir avec les bases des donnees.
-* On trouvera ici trois grandes fonctionnalites a savoir :
-* 1. le pretraitement (Sanitize)
-* 2. la gestion d'erreur (Error Handling)
-* 3. Interfaces de manipulation des bases des donnees  (A generic interface for all database actions)
-*/
-
-// TODO:
-//   Make this 'use strict'
+//
+// Module: db.js
+//
+// The purpose of this module is simply to manage client connections
+// and disconnections to a variety of database management systems.
+// All query formatting is expected to happen elsewhere.
 
 // PRIVATE METHODS
 
-//FIXME mysqlInit() is called every time a new instance of db is used - all config should happen just once
+var u = require('../util/util');
 
-function mysqlInit(config) {
-  var connectConfig, db, con; //FIXME: Look up connection pooling in MySQL.
+function mysqlInit (config) {
+  // FIXME: This module should use mysql connection pooling
+  'use strict';
 
-  if (config) connectConfig = config;
-  db = require('mysql');
-  con = db.createConnection(connectConfig);
+  var db = require('mysql');
+  var con = db.createConnection(config);
   con.connect();
 
 //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
@@ -27,7 +23,8 @@ function mysqlInit(config) {
   return con;  // c'est pas necessaire pour mysql de retourne cette variable, mais peut-etre ca va necessaire pour autre base des donnees
 }
 
-function flushUsers(db_con) {
+function flushUsers (db_con) {
+  'use strict';
   var permissions, reset;
 
 //  Disable safe mode #420blazeit
@@ -73,52 +70,8 @@ function sqliteInit(config) {
  * tuplify(['id', 'nom', 'location'])
  *  ==> '(id, nom, location)'
  */
-function tuplify(values) {
+function tuplify (values) {
   return '(' + values.join(', ') + ')';
-}
-
-/* [fr]
- * Cette methode transforme un tableau des chaines de caractere
- * en une chaine avec un motif au debut et  separee par un element
- *  passe en parametre
- * @param chaines : tableau qui represente la chaine
- * @param motif   : chaine des caracteres a souder
- * @param sep : separateur
-*/
-
-function souder(chaines, motif, sep) {
-  var chaine = '', i = 0, l = chaines.length;
-  for(i; i < l; i++) { 
-    chaine += motif + escape_id(chaines[i]) + sep;
-  }
-  return chaine;
-}
-
-/* [fr]
- * Cette fonction s'occupe de la suppression des espaces
- * dans une chaine des caracteres, resout les problemes lies
- * aux accents.
- * @param chaine: la chaine a traiter.
-*/
-
-function desinfecter(chaine) {
-  chaine = chaine.replace(new RegExp("\\s", 'g'),"");
-  chaine = chaine.replace(new RegExp("[àáâãäå]", 'g'),"a");
-  chaine = chaine.replace(new RegExp("æ", 'g'),"ae");
-  chaine = chaine.replace(new RegExp("ç", 'g'),"c");
-  chaine = chaine.replace(new RegExp("[èéêë]", 'g'),"e");
-  chaine = chaine.replace(new RegExp("[ìíîï]", 'g'),"i");
-  chaine = chaine.replace(new RegExp("ñ", 'g'),"n");                            
-  chaine = chaine.replace(new RegExp("[òóôõö]", 'g'),"o");
-  chaine = chaine.replace(new RegExp("œ", 'g'),"oe");
-  chaine = chaine.replace(new RegExp("[ùúûü]", 'g'),"u");
-  chaine = chaine.replace(new RegExp("[ýÿ]", 'g'),"y");
-  chaine = chaine.replace(new RegExp("\\W", 'g'),"");
-  return chaine;
-}
-
-function isInt(n) {
-  return (Math.floor(n) === Number(n));
 }
 
 function isIn(s) {
@@ -134,97 +87,21 @@ function escape_str(v) {
   return (!Number.isNaN(n)) ? n : "'" + v + "'";
 }
 
-// SELECT helper functions
 
-// takes in entities
-function formatTables(e) {
-  var table_list = [],
-      column_list = [],
-      base = "SELECT ";
-
-  e.forEach(function(p) {
-    table_list.push(escape_id(p.t));
-    column_list = column_list.concat(p.c.map(function(c) { // format columns like [`table`.`col`, ... ]
-      return escape_id(p.t) + '.' + escape_id(c);
-    })); // trust me this works.
-  });
-
-  return base + column_list.join(', ') + ' FROM ' + table_list.join(', ');
-}
-
-function formatJoins(j) {
-  var joins = [], links = [], from_table,
-    from_col, to_table, to_col, i = 0, str;
-
-  j.forEach(function(p) {  // FIXME: change from use 'ts' syntax 
-    if (p.l) links.push(' ' + p.l.trim() + ' ');
-    from_table = escape_id(p.ts[0]);
-    from_col = escape_id(p.c[0]);
-    to_table = escape_id(p.ts[1]);
-    to_col = escape_id(p.c[1]);
-    joins.push(from_table +  '.' + from_col + ' = ' + to_table + '.' +to_col);
-  });
-
-  str = ''; 
-  for (i; i < joins.length; i++) {
-    str += joins[i] + (links[i] || '');
-  }
-
-  return str; 
-}
-
-//var x = { entities:[ {t: 'account', c: ["id"]}], cond: [{t: 'account', cl: 'id', z: 'IN', v: '(1,2)'}]};
-
-function formatConditions(c) {
-  var conditions = [], links = [], table, col,
-      value, eq, i = 0, str = '';
-
-  c.forEach(function(p) { 
-    if (p.l) links.push(' ' + p.l.trim() + ' ');
-    table = escape_id(p.t);
-    col = escape_id(p.cl);
-    value = (isInt(p.v) || isIn(p.v)) ? p.v : escape_str(p.v); // escape strings, except in conditions
-    eq = p.z.trim();
-    conditions.push(table + '.' + col + " " + eq + " " + value);
-  });
-
-  for (i; i < conditions.length; i++) {
-    str += conditions[i] + (links[i] || '');
-  }
-
-  return str;
-}
-
-function formatOrderBy(o) {
-  var base = " ORDER BY ", dir,
-      orders = [];
-
-  o.forEach(function(p) {
-    dir = (p.v === '+') ? ' ASC' : ' DESC';
-    orders.push(escape_id(p.t) + "." + escape_id(p.c) + dir);
-  });
-
-  return base + orders.join(', ');
-}
-
-function formatLimit(l) {
-  var base = " LIMIT ";
-  return base + l;
-}
-
-var con;
+// WHY IS THIS GLOBAL?
+//var con;
 
 // main db module
-function db(cfg) {
-  // TODO: update cfg type
-  var supported_databases, config;
+function db (cfg) {
+  'use strict';
+
   cfg = cfg || {};
 
   // Select the system's database with this variable.
-  sgbd = cfg.sgbd || 'mysql';
+  var sgbd = cfg.sgbd || 'mysql';
 
-  // All supported dabases and their initialization
-  supported_databases = {
+  // All supported dabases and their initializations
+  var supported_databases = {
     mysql    : mysqlInit,
     postgres : postgresInit,
     firebird : firebirdInit,
@@ -234,8 +111,9 @@ function db(cfg) {
   // load external configuration if it exists.
   // Else, default to this configuration
   // The database connection for all data interactions
-  // FIXME: researdh connection pooling in MySQL
-  if(!con) con = supported_databases[sgbd](cfg); //on a l'objet connection
+  // FIXME: research connection pooling in MySQL
+  // if (!con) con = supported_databases[sgbd](cfg);
+  var con = supported_databases[sgbd](cfg);
 
   return {
     // return all supported databases
@@ -257,16 +135,14 @@ function db(cfg) {
       table = escape_id(table);
 
       function inArr(arr, v) {
-        return arr.some(function(i) {
-          return i == v;
-        });
+        return ~arr.indexOf(v);
       }
       
       for (var j in data) {
         row = data[j];
         for (var k in row) {
           value = row[k];
-          if (!isInt(value) && !isIn(value)) value = escape_str(value);
+          if (!u.isInt(value) && !isIn(value)) value = escape_str(value);
           if (!inArr(pk, k)) {
             sets.push(escape_id(k) + "=" + value);
           } else {
@@ -280,10 +156,6 @@ function db(cfg) {
       return base;
     },
 
-    execute: function(sql, callback) {
-      console.log("[db] [execute]: ", sql);
-      return con.query(sql, callback);
-    },
 
     delete: function(table, ids) {
       var statement = 'DELETE FROM ', joiner = ' IN ',
@@ -293,7 +165,7 @@ function db(cfg) {
       table = escape_id(table);
       statement += table + ' WHERE ';
 
-      function escapeNonInts(i) { return isInt(i) ? i : escape_str(i); }
+      function escapeNonInts(i) { return u.isInt(i) ? i : escape_str(i); }
     
       for (id in ids) { 
         if (ids[id] && ids.hasOwnProperty(id) && ids.propertyIsEnumerable(id)) {
@@ -312,13 +184,12 @@ function db(cfg) {
       table = escape_id(table);
       statement += table+' ';
 
-
       rows.forEach(function (row) {
         var key;
         vals = [];
         for (key in row) {
           if (keys.indexOf(key) < 0) { keys.push(key); }  // cree un tableau pour cle unique
-          insert_value = (typeof row[key] === 'string') ? escape_str(row[key]) : row[key];
+          insert_value = u.isString(row[key]) ? escape_str(row[key]) : row[key];
           vals.push(insert_value);
         }
         groups.push(tuplify(vals));
@@ -329,26 +200,9 @@ function db(cfg) {
       return statement;
     },
 
-    select: function (data) {
-      var item, map, parts = [];
-    
-      map = {
-        'entities' : formatTables,
-        'jcond'    : formatJoins,
-        'cond'     : formatConditions,
-        'orderby'  : formatOrderBy,
-        'limit'    : formatLimit
-      };
-    
-      parts.push(formatTables(data.entities));
-    
-      if (data.jcond || data.cond) parts.push(' WHERE ');
-    
-      for (item in data) {
-        if (item !== 'entities') parts.push(map[item](data[item])); // took care of that above.
-      }
-    
-      return parts.join("") + ";";
+    execute: function(sql, callback) {
+      console.log("[db] [execute]: ", sql);
+      return con.query(sql, callback);
     },
 
     escape: function (id) {
