@@ -298,7 +298,6 @@ angular.module('kpk.controllers')
       var doc, items;
       // gather data
       doc = {
-        id : stores.cash.generateid(),
         enterprise_id : imports.enterprise_id,
         bon : 'E', // FIXME: impliment crediting
         bon_num : generateBonNumber(models.cash, 'E'),
@@ -313,14 +312,13 @@ angular.module('kpk.controllers')
         deb_cred_type : 'D' //FIXME: Do it goodly
       };
 
-
-
       // should this API be post().then() to make sure a transaction
       // completes?
       // stores.cash.post(doc);
       connect.basicPut('cash', [doc])
       .then(function (res) {
         if (res.status != 200) return;
+        doc.id = res.data.insertId;
         var items = processItems(doc);
         var promise = $q.all(items.map(function (item) { return connect.basicPut('cash_item', [item]); }));
         promise.then(function (res) { 
@@ -340,24 +338,14 @@ angular.module('kpk.controllers')
         });
       });
       
-      // TODO
-      //items = processItems(doc);
-      //items.forEach(function (item) {
-      //  stores.cash_items.post(item);
-      //});
-
-      //stores.cash.sync();
-      //stores.cash_items.sync();
     }
 
     function processItems (ref) {
       var items = [];
       // FIXME: raw hacks!
-      var id = stores.cash_items.generateid();
       data.paying.forEach(function (invoice) {
         if (invoice.allocated > 0) {
           items.push({
-            id: id++,
             cash_id : ref.id,
             allocated_cost : invoice.allocated,
             invoice_id : invoice.inv_po_id
