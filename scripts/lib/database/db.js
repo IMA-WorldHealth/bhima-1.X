@@ -62,23 +62,7 @@ function sqliteInit(config) {
 
 // UTILS
 
-/* [fr]
- * Cette methode transformer un tableau dans une chaine
- * avec braces.
- * @param values : TABLEAU
- * EX:
- * tuplify(['id', 'nom', 'location'])
- *  ==> '(id, nom, location)'
- */
-function tuplify (values) {
-  return '(' + values.join(', ') + ')';
-}
-
-function isIn(s) {
-  return String(s).indexOf('(') > -1;
-}
-
-function escape_id(v) {
+sfunction escape_id(v) {
   return "`" + v.trim() + "`";
 }
 
