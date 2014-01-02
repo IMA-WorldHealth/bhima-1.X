@@ -59,7 +59,9 @@
     </div>
   </div>
 
-  <div kpk-alert-type="type" ng-controller="messageCtrl"></div>
+  <div ng-controller="messageCtrl" class="kpk-messenger">
+    <alert ng-repeat="alert in messages" type="alert.type" close="close($index)">{{alert.message}}</alert>
+  </div>
   <div id="kpk-container">
     <div ng-view id="kpk-view"><!--Content populated with angular--></div>
   </div>

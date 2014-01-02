@@ -6,66 +6,66 @@
   
   var services = angular.module('kpk.services', []);
     
-    services.service('kpkUtilitaire', function() { 
-      this.formatDate = function(dateString) {
-        return new Date(dateString).toDateString();
-      };
+  services.service('kpkUtilitaire', function() { 
+    this.formatDate = function(dateString) {
+      return new Date(dateString).toDateString();
+    };
 
-      Date.prototype.toMySqlDate = function (dateParam) {
-        var date = new Date(dateParam), annee, mois, jour;
-        annee = String(date.getFullYear());
-        mois = String(date.getMonth() + 1);
-        if (mois.length === 1) {
-         mois = "0" + mois;
-        }
-        jour = String(date.getDate());
-          if (jour.length === 1) {
-            jour = "0" + jour;
-        }      
-        return annee + "-" + mois + "-" + jour;
-      };
+    Date.prototype.toMySqlDate = function (dateParam) {
+      var date = new Date(dateParam), annee, mois, jour;
+      annee = String(date.getFullYear());
+      mois = String(date.getMonth() + 1);
+      if (mois.length === 1) {
+       mois = "0" + mois;
+      }
+      jour = String(date.getDate());
+        if (jour.length === 1) {
+          jour = "0" + jour;
+      }      
+      return annee + "-" + mois + "-" + jour;
+    };
 
-      this.convertToMysqlDate = function(dateString) {
-        return new Date().toMySqlDate(dateString);
-      };
+    this.convertToMysqlDate = function(dateString) {
+      return new Date().toMySqlDate(dateString);
+    };
 
-      this.isDateAfter = function(date1, date2){
-        date1 = new Date(date1);
-        date2 = new Date(date2);
+    this.isDateAfter = function(date1, date2){
+      date1 = new Date(date1);
+      date2 = new Date(date2);
 
-        if(date1.getFullYear > date2.getFullYear){
+      if(date1.getFullYear > date2.getFullYear){
+        return true;
+      }else if(date1.getFullYear() == date2.getFullYear()){
+        if(date1.getMonth() > date2.getMonth()){
           return true;
-        }else if(date1.getFullYear() == date2.getFullYear()){
-          if(date1.getMonth() > date2.getMonth()){
+        }else if(date1.getMonth() == date2.getMonth()){
+          if(date1.getDate() > date2.getDate())
             return true;
-          }else if(date1.getMonth() == date2.getMonth()){
-            if(date1.getDate() > date2.getDate())
-              return true;
-              return false;
-          }else if(date1.getMonth() < date2.getMonth()){
             return false;
-          }
-        }else if(date1.getFullYear() < date2.getFullYear()){
+        }else if(date1.getMonth() < date2.getMonth()){
           return false;
         }
-      };
+      }else if(date1.getFullYear() < date2.getFullYear()){
+        return false;
+      }
+    };
 
-      this.areDatesEqual = function(date1, date2){
-        date1 = new Date(date1);
-        date2 = new Date(date2);
+    this.areDatesEqual = function(date1, date2){
+      date1 = new Date(date1);
+      date2 = new Date(date2);
 
-        if(date1.getFullYear != date2.getFullYear){
+      if(date1.getFullYear != date2.getFullYear){
+        return false;
+      }else if(date1.getFullYear() == date2.getFullYear()){
+        if(date1.getMonth() != date2.getMonth()){
           return false;
-        }else if(date1.getFullYear() == date2.getFullYear()){
-          if(date1.getMonth() != date2.getMonth()){
+        }else if(date1.getMonth() == date2.getMonth()){
+          if(date1.getDate() != date2.getDate())
             return false;
-          }else if(date1.getMonth() == date2.getMonth()){
-            if(date1.getDate() != date2.getDate())
-              return false;
-              return true;
-          }
+            return true;
         }
-      };
+      }
+    };
   });
 
   services.factory('appcache', function ($q) { 
@@ -518,33 +518,22 @@
   });
 
 
-  services.factory('message', function ($timeout) {
-    var message,
-        delay = 3000,
-        timer;
+  services.service('messenger', function ($timeout) {
+    this.messages = [];
+    var indicies = {};
 
-    function close () {
-      if (timer) $timeout.close(timer);
-      message.active = false;
-    }
-
-    function show () {
-      message.active = true;
-      timer = $timeout(function () {
-        message.active = false;
+    this.push = function (msg) {
+      var id = this.messages.push(msg) - 1;
+      indicies[id] = $timeout(function () {
+        this.messages.splice(id, 1);
       }, 3000);
-    }
-
-    message = {
-      content : "",
-      title : "",
-      type : "",
-      close : close,
-      show : show,
-      active : false
     };
 
-    return message; 
+    this.close = function (idx) {
+      // cancel timeout and splice out
+      $timeout.cancel(indicies[idxs]);
+      this.messages.splice(idx, 1);
+    };
 
   });
 
