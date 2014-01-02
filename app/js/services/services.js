@@ -68,7 +68,7 @@
       };
   });
 
-  services.factory('appcache', function($q) { 
+  services.factory('appcache', function ($q) { 
     var DB_NAME = "kpk";
     var VERSION = 2;
 
@@ -229,7 +229,7 @@
       var table = defn.primary || Object.keys(defn.tables)[0];
 
 
-      handle = $http.get('/temp/?' + JSON.stringify(defn));
+      handle = $http.get('/data/?' + JSON.stringify(defn));
       handle.then(function (returned) {
         
         //massive hack so I can use an identifier - set defualt identifier
@@ -272,7 +272,7 @@
       var queue = [];
       var identifier = options.identifier || 'id'; // id property
       var pprint = '[connect] ';
-      var tgt = "/temp/"; // temporary target until we standardize connect.
+      var tgt = "/data/"; // temporary target until we standardize connect.
       var refreshrate = options.refreshrate || 500;
 
       // set an array of data
@@ -471,10 +471,9 @@
       return model;
     }
 
-    function basicDelete (table, col,  id) {
-      // deletes something from the table `table` where id is `id` 
-      if (!col) col = "id";
-      $http.delete('/data/'+id+'/'+col+'/'+table);
+    function basicDelete (table, id, column) {
+      if (!column) column = "id";
+      $http.delete(['/data/', table, '/', column, '/', id].join(''));
     }
 
 //    TODO reverse these two methods? I have no idea how this happened

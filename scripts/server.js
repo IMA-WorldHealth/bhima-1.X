@@ -1,6 +1,5 @@
 // scripts/server.js
 
-
 // import node dependencies
 var express      = require('express'),
     fs           = require('fs'),
@@ -46,7 +45,7 @@ app.get('/', function (req, res, next) {
   res.sendfile('/index.html');
 });
 
-app.get('/temp/', function (req, res, next) {
+app.get('/data/', function (req, res, next) {
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
@@ -55,36 +54,31 @@ app.get('/temp/', function (req, res, next) {
   });
 });
 
-app.put('/data/', function (req, res) {
-  var updatesql = db.update(req.body.t, req.body.data, req.body.pk);
+app.put('/data/', function (req, res, next) {
+  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]); 
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
   });
 });
 
-app.post('/data/', function (req, res) {
-  var insertsql = db.insert(req.body.t, req.body.data);
+app.post('/data/', function (req, res, next) {
+  var insertsql = parser.insert(req.body.t, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
   });
 });
 
-// rewrite this...
-app.delete('/data/:val/:col/:table', function (req, res) {
-  // TODO/FIXME: this code looks terrible.  Refactor.
-  // format the query of the form "WHERE col = val;"
-  var reqObj = {};
-  reqObj[req.params.col] = [req.params.val];
-  // execute
-  db.execute(deleteSql, function (err, ans) {
-      if (err) next(err);
-      res.send(200);
+app.delete('/data/:table/:column/:value', function (req, res, next) {
+  var sql = parser.delete(req.params.table, req.params.column, req.params.value);
+  db.execute(sql, function (err, ans) {
+    if (err) next(err);
+    res.send(200);
   });
 });
 
-//TODO Server should set user details like this in a non-editable cookie
+// TODO Server should set user details like this in a non-editable cookie
 app.get('/user_session', function(req, res, next) {
   res.send(200, {id: req.session.user_id});
 });
