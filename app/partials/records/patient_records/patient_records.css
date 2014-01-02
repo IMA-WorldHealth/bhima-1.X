@@ -5,14 +5,32 @@
 }
 
 .kpk-card-id {
-	float: left;	
-	clear: right;
+/*	float: left;	
+	clear: right;*/
 }
 .kpk-card-age { 
-	float: right;
+	/*float: right;*/
 }
 .kpk-card-name { 
-	padding-bottom: 20px;
+	/*padding-bottom: 20px;*/
+}
+
+.card-table { 
+  width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid black;
+}
+
+.card-table thead > tr > th {
+  border-bottom: 2px solid black;
+}
+
+.card-table tbody > tr > td { 
+  padding: 5px;
+}
+
+.card-table thead > tr > th { 
+  padding-left: 5px;
 }
 /*card style end*/
 /*Override modal style - this is bad*/
