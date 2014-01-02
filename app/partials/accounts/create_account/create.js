@@ -46,7 +46,7 @@ angular.module('kpk.controllers').controller('createAccountController', function
   var sort_column = "account_number";
   var columns = [
     {id: 'account_txt', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
-    {id: 'account_number', name: 'No.', field: 'account_number', sortable: true, sortable: true},
+    {id: 'account_number', name: 'No.', field: 'account_number'},
     {id: 'account_type_id', name: 'Type', field: 'account_type_id', maxWidth: 60},
     {id: 'fixed', name: 'Fixed', field: 'fixed', maxWidth: 60}
   ];
@@ -110,7 +110,7 @@ angular.module('kpk.controllers').controller('createAccountController', function
 
       dataview.beginUpdate();
       dataview.setItems($scope.model['accounts'].data);
-      dataview.setFiletr(accountFilter)
+      dataview.setFilter(accountFilter)
       dataview.endUpdate();
 
       
