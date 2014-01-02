@@ -91,8 +91,6 @@ angular.module('kpk.controllers')
         if (addInvoice(item)) dataview.deleteItem(item.inv_po_id);
       });
 
-      $('#kpk-cash-filter').appendTo(grid.getTopPanel()).show();
-
       // intialize everything
       dataview.beginUpdate();
       dataview.setItems(data);
@@ -148,10 +146,6 @@ angular.module('kpk.controllers')
         search: search 
       });
       dataview.refresh();
-    }
-
-    function toggleFilterRow () {
-      grid.setTopPanelVisibility(!grid.getOptions().showTopPanel);
     }
 
     function filter (item, args) {
@@ -378,7 +372,6 @@ angular.module('kpk.controllers')
 
     $scope.setCurrency = setCurrency;
     $scope.formatCurrency = formatCurrency;
-    $scope.toggleFilterRow = toggleFilterRow;
     $scope.removeInvoice = removeInvoice;
     $scope.digestInvoice = digestInvoice;
     $scope.pay = pay;

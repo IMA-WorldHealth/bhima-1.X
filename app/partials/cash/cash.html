@@ -17,9 +17,7 @@
       <div class="panel panel-info">
         <div class="panel-heading">
           <span>Invoice &amp Patient Search</span>
-          <span class="pull-right" title="Toggle Search Panel" ng-click="toggleFilterRow()">
-            <i class="glyphicon glyphicon-search"></i>
-          </span>
+          <span class="pull-right"><i class="glyphicon glyphicon-search"></i></span>
         </div>
         <div class="alert alert-success" ng-hide="data.debitor_id" style="margin-bottom:0;">
           <b>No Debitor Selected.</b> Search for a debitor above to continue.
@@ -28,11 +26,6 @@
           <b>Debitor {{debitor.first_name}} {{debitor.last_name}} has no outstanding invoices.</b>
         </div>
         <div id="kpk-cash-grid" style="height: 550px;" class="grid"></div>
-        <div id="kpk-cash-filter" style="display:none;">
-          <form class="form-inline" name="search" role="form">
-            <input type="search" id="kpk-cash-filter-invoices" ng-model="data.search" class="form-kapok" placeholder="Filter Invoices">
-          </form>
-        </div>
       </div>
     </div>
 

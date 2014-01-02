@@ -62,11 +62,11 @@ function sqliteInit(config) {
 
 // UTILS
 
-sfunction escape_id(v) {
+function escape_id (v) {
   return "`" + v.trim() + "`";
 }
 
-function escape_str(v) {
+function escape_str (v) {
   var n = Number(v);      // make sure v isn't a number
   return (!Number.isNaN(n)) ? n : "'" + v + "'";
 }
