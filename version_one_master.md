@@ -9,7 +9,7 @@ for February 2014.
 
 *Note (Remove this)
 -----
-Breif markdown should be created for units/ features to keep everything/ everyone up to date, also server as placeholder documentation.
+Brief markdown should be created for units/ features to keep everything/ everyone up to date, also serve as placeholder documentation.
 
 Overview
 -------- 

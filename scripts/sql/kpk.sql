@@ -303,7 +303,7 @@ create table `creditor` (
 
 drop table if exists `payment`;
 create table `payment` (
-  `id`      tinyint unsigned not null,
+  `id`      tinyint unsigned not null auto_increment,
   `days`    smallint unsigned default '0',
   `months`  mediumint unsigned default '0',
   `text`    varchar(50) not null,

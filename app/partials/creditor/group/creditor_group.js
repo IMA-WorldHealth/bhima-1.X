@@ -50,7 +50,6 @@ angular.module('kpk.controllers')
         flags.success = response.status == 200;
       });
     } else {
-      newgroup.id = stores.creditor_group.generateid();
       connect.basicPut('creditor_group', [newgroup]).then(function (response) {
         flags.success = response.status == 200;
       });
