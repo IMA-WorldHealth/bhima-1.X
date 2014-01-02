@@ -55,6 +55,7 @@ app.get('/data/', function (req, res, next) {
 });
 
 app.put('/data/', function (req, res, next) {
+  // TODO: change the client to stop packaging data in an array...
   var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]); 
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
@@ -92,7 +93,6 @@ app.get('/trial/', function (req, res, next) {
   .then(function (result) {
     res.send(200, result);  // processed the request successfully, and sending NO CONTENT
   }, function (reason) {
-    console.log("Reason:", reason);
     res.send(304, reason);  // processed the requuest, but NOT MODIFIED
   });
 });
@@ -184,6 +184,7 @@ app.get('/tree', function (req, res, next) {
   });
 });
 
+// ugh.
 app.get('/location', function (req, res, next) {
   var sql = "SELECT `location`.`id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
             "FROM `location`, `village`, `sector`, `province`, `country` " + 
@@ -196,6 +197,9 @@ app.get('/location', function (req, res, next) {
 
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));
 
+// temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('uncaughtException:', err);
 });
+
+process.on('exit', function () { console.log('Process Shutting Down...'); });
