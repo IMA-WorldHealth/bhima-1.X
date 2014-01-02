@@ -24,7 +24,7 @@ var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
 // import routes
 var report       = require('./lib/logic/report')(db),
     trialbalance = require('./lib/logic/balance')(db),
-    jr           = require('./lib/logic/journal')(db),
+    journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
     fiscal       = require('./lib/logic/fiscal')(db);
 
@@ -64,6 +64,7 @@ app.put('/data/', function (req, res, next) {
 });
 
 app.post('/data/', function (req, res, next) {
+  // TODO: change the client to stop packaging data in an array...
   var insertsql = parser.insert(req.body.t, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
@@ -85,7 +86,7 @@ app.get('/user_session', function(req, res, next) {
 });
 
 app.post('/journal', function(req, res) {
-  jr.poster(req, res); 
+  journal.poster(req, res); 
 });
 
 app.get('/trial/', function (req, res, next) {
