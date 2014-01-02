@@ -210,7 +210,7 @@ angular.module('kpk.controllers')
   };
 
   $scope.delete = function () {
-    connect.basicDelete('supplier', 'id', $scope.creditor.id);
+    connect.basicDelete('supplier', $scope.creditor.id);
     $scope.creditor = {};
     getCreditors();
   };
