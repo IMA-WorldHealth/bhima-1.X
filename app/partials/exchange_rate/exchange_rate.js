@@ -18,6 +18,8 @@ angular.module('kpk.controllers')
     .then(function (res) {
       stores.currency = res;
       models.currency = res.data;
+    }, function (err) {
+      console.log('error:', error);
     });
     console.log('models.currency:', models.currency);
   }
