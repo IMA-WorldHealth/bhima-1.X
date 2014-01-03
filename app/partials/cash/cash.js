@@ -6,7 +6,6 @@ angular.module('kpk.controllers')
         data = $scope.data = {},
         TRANSACTION_TYPE = 1;
 
-    // FIXME: this is the correct account (for enterprise 101), until we fix our enterprise
     imports.cash_account = appstate.get('enterprise').cash_account;
     imports.enterprise_id = appstate.get('enterprise').id;
     imports.model_names = ['debitors', 'currency', 'cash', 'cash_items'];
