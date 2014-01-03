@@ -21,6 +21,13 @@
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-body">
+          <h5> Today's Exchange Rate: </h5>
+          TODO
+        </div>
+      </div>
+    
+      <div class="panel panel-default">
+        <div class="panel-body">
           <form name="kpk-exchange-form" class="form-horizontal">
             <fieldset>
               <legend>Exchange Rate</legend>
@@ -70,16 +77,10 @@
                 </div>
               </div>
             </fieldset>
-            <input type="submit" form="exchange" class="btn btn-default btn-sm" ng-click="submit()" ng-disabled="valid()">
+            <input type="submit" form="exchange" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="valid()">
           </form>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<section class="bar-bottom">
-  <div class="pull-right">
-    <input type="submit" form="exchange" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="valid()">
-  </div>
-</section>

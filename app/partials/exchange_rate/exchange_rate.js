@@ -27,9 +27,12 @@ angular.module('kpk.controllers')
         stores[dependencies[idx]] = depends;
         models[dependencies[idx]] = depends.data;
       });
+      console.log('hi', imports.enterprise.currency_id);
+      if (imports.enterprise.currency_id) swap.currency1 = stores.currency.get(imports.enterprise.currency_id);
     }, function (error) {
       console.log('error:', error);
     });
+    
   }
 
   function filterOptions (opts) {

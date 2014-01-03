@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('cashController', function($scope, $q, $modal, $filter, $http, connect, appstate) {
+.controller('cashController', function($scope, $q, $filter, $http, connect, appstate) {
     var imports = {},
         models = $scope.models = {},
         stores = $scope.stores = {},
@@ -48,6 +48,8 @@ angular.module('kpk.controllers')
         stores[imports.model_names[idx]] = store;
         models[imports.model_names[idx]] = store.data;
       });
+
+      console.log('Debs', stores.debitors);
 
       columns = [
         {id: 'invoice_id', name: 'Invoice ID', field: 'inv_po_id'},
