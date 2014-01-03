@@ -1,5 +1,5 @@
-angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.dropdownToggle","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tabs","ui.bootstrap.position","ui.bootstrap.bindHtml","ui.bootstrap.typeahead"]);
-angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tabs/tab.html","template/tabs/tabset-titles.html","template/tabs/tabset.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html"]);
+angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.dropdownToggle","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tabs","ui.bootstrap.position","ui.bootstrap.bindHtml","ui.bootstrap.typeahead", "ui.bootstrap.alert"]);
+angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tabs/tab.html","template/tabs/tabset-titles.html","template/tabs/tabset.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html", "template/alert/alert.html"]);
 angular.module('ui.bootstrap.transition', [])
 
 /**
@@ -1812,10 +1812,7 @@ angular.module("template/typeahead/typeahead.html", []).run(["$templateCache", f
     "</ul>");
 }]);
 
-angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.alert"]);
-angular.module("ui.bootstrap.tpls", ["template/alert/alert.html"]);
 angular.module("ui.bootstrap.alert", [])
-
 .controller('AlertController', ['$scope', '$attrs', function ($scope, $attrs) {
   $scope.closeable = 'close' in $attrs;
 }])
