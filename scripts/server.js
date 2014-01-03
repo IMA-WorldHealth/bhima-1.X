@@ -81,13 +81,10 @@ app.delete('/data/:table/:column/:value', function (req, res, next) {
 });
 
 // TODO Server should set user details like this in a non-editable cookie
-app.get('/user_session', function(req, res, next) {
+app.get('/user_session', function (req, res, next) {
   res.send(200, {id: req.session.user_id});
 });
 
-app.post('/journal', function(req, res) {
-  journal.poster(req, res); 
-});
 
 app.get('/trial/', function (req, res, next) {
   trialbalance.trial()
@@ -107,7 +104,7 @@ app.get('/post/', function (req, res, next) {
   });
 });
 
-app.get('/journal', function (req,res) {
+app.get('/journal', function (req, res, next) {
   var cb = function (err, ans) {
     if (err) next(err);
     res.json(ans);
@@ -118,10 +115,15 @@ app.get('/journal', function (req,res) {
     jsRequest = JSON.parse(myRequest);
   } catch (e) {
     throw e;
-  }  
+  }
   var Qo = queryHandler.getQueryObj(jsRequest);
+  console.log('\n', Qo, '\n');
   var sql = db.select(Qo);
   db.execute(sql, cb);  
+});
+
+app.post('/journal', function (req, res) {
+  journal.poster(req, res); 
 });
 
 app.get('/max/:id/:table', function(req, res) { 
@@ -203,4 +205,5 @@ process.on('uncaughtException', function (err) {
   console.log('uncaughtException:', err);
 });
 
+// temporary debugging to see why the process terminates.
 process.on('exit', function () { console.log('Process Shutting Down...'); });
