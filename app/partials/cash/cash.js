@@ -49,8 +49,6 @@ angular.module('kpk.controllers')
         models[imports.model_names[idx]] = store.data;
       });
 
-      console.log('Debs', stores.debitors);
-
       columns = [
         {id: 'invoice_id', name: 'Invoice ID', field: 'inv_po_id'},
         {id: 'debitor', name: 'Debitor', field: 'debitor'},
