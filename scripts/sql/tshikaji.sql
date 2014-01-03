@@ -483,7 +483,7 @@ insert into `currency` (`id`, `name`, `symbol`, `note`) values
   (1,'Congolese Francs','FC',NULL),
 	(2,'United State Dollars','USD',NULL);
 
-insert into `exchange_rate` (`to_currency`, `from_currency`, `rate`, `updated`) values
+insert into `exchange_rate` (`currency_1`, `currency_2`, `rate`, `date`) values
   (2, 1, 920, '2012-06-04');
 
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 

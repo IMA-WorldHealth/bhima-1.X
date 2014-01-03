@@ -1,52 +1,64 @@
 angular.module('kpk.controllers')
-.controller('exchangeRateController', function ($scope, $q, connect) {
+.controller('exchangeRateController', function ($scope, $q, connect, appstate) {
+  'use strict';
+
   var imports = {},
+      stores = {},
       models = $scope.models = {},
       flags = $scope.flags = {},
-      swap = $scope.swap = {},
-      stores = {};
+      swap = $scope.swap = {};
 
-  swap.to = {};
-  swap.from = {};
+  imports.enterprise = appstate.get('enterprise');
+  imports.currency = {tables : { 'currency' : { 'columns' : ['id', 'name', 'symbol', 'note']}}};
+  imports.exchange = {tables : { 'exchange_rate' : { 'columns' : ['id', 'currency_1', 'currency_2', 'rate', 'date']}}};
 
-  imports.currency = {
-    tables : { 'currency' : { columns: ['id', 'name', 'symbol', 'note']}}
-  };
+  swap.currency1 = {};
+  swap.currency2 = {};
 
-  function initialize () {
-    connect.req(imports.currency)
-    .then(function (res) {
-      stores.currency = res;
-      models.currency = res.data;
-    }, function (err) {
+  function run () {
+    var dependencies = ['currency', 'exchange'];
+    console.log(appstate);
+
+    $q.all([
+      connect.req(imports.currency),
+      connect.req(imports.exchange)
+    ]).then(function (array) {
+      array.forEach(function (depends, idx) {
+        stores[dependencies[idx]] = depends;
+        models[dependencies[idx]] = depends.data;
+      });
+    }, function (error) {
       console.log('error:', error);
     });
-    console.log('models.currency:', models.currency);
   }
 
   function filterOptions (opts) {
-    return opts.id !== swap.from.id;
+    return opts.id !== swap.currency1.id;
   }
   
-  $scope.submit = function () {
+  function submit () {
     // transform to MySQL date
     var date = new Date(),
-        updated = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay();
-    var data = {
-      from_currency : swap.from.id,
-      to_currency : swap.to.id,
-      rate : swap.rate,
-      updated : updated
-    };
+        formattedDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay();
 
-    connect.basicPut('exchange_rate', [data]).then(function (result) {
-      console.log("posted with result:", result);
+    console.log(swap.rate);
+
+    connect.basicPut('exchange_rate', [{
+      currency_1 : swap.currency1.id,
+      currency_2: swap.currency2.id,
+      rate : swap.rate,
+      date : formattedDate 
+    }]).then(function (result) {
+      console.log('posted with result:', result);
+      run();
+    }, function (error) {
+      console.log('error', error);
     });
-  };
+  }
 
   function valid () {
-    var t = swap.to,
-        f = swap.from;
+    var t = swap.currency2,
+        f = swap.currency1;
     return !(!!t.id && !!f.id && !!swap.rate);
   }
 
@@ -54,22 +66,17 @@ angular.module('kpk.controllers')
     return [curr.symbol, '|', curr.name].join(' '); 
   }
 
-  $scope.$watch('flags', function () {
-    console.log('flags changed:', flags);
-    if (stores.currency && flags.from_currency_id !== undefined) {
-      if (flags.to_currency_id) $scope.swap.to = stores.currency.get(flags.to_currency_id);
-      $scope.swap.from = stores.currency.get(flags.from_currency_id);
-    }
-    console.log('from:', swap.from);
-    console.log('to:', swap.to);
-  }, true);
-
+  function formatExchangeCurrency (id) {
+    return stores.currency ? stores.currency.get(id).symbol : id; 
+  }
   
   $scope.filterOptions = filterOptions;
   $scope.formatCurrency = formatCurrency;
   $scope.valid = valid;
+  $scope.submit = submit;
+  $scope.formatExchangeCurrency = formatExchangeCurrency;
 
   // start the controller
-  initialize();
+  run();
 
 });

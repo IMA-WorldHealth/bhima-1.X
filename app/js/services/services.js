@@ -380,7 +380,7 @@
       return this;
     }
 
-    function journal(invoice_ids) {
+    function journal (invoice_ids) {
       return $http.post('/journal/', invoice_ids);
     }
 
@@ -434,7 +434,7 @@
 
       model.put = function (object) {
         var id = object.id;
-        if (id in this.index) {
+ ;       if (id in this.index) {
           //TODO: Implement overwrite flag/ behaviour
           throw new Error("Object overwrite attempted.");
         } else {
@@ -518,7 +518,7 @@
   });
 
 
-  services.service('messenger', function ($timeout) {
+  services.service('message', function ($timeout) {
     this.messages = [];
     var indicies = {};
 
