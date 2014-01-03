@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('exchangeRateController', function ($scope, $q, connect, appstate) {
+.controller('exchangeRateController', function ($scope, $q, connect, messenger, appstate) {
   'use strict';
 
   var imports = {},
@@ -17,7 +17,6 @@ angular.module('kpk.controllers')
 
   function run () {
     var dependencies = ['currency', 'exchange'];
-    console.log(appstate);
 
     $q.all([
       connect.req(imports.currency),
@@ -27,24 +26,37 @@ angular.module('kpk.controllers')
         stores[dependencies[idx]] = depends;
         models[dependencies[idx]] = depends.data;
       });
-      console.log('hi', imports.enterprise.currency_id);
+      models.enterprise = imports.enterprise;
       if (imports.enterprise.currency_id) swap.currency1 = stores.currency.get(imports.enterprise.currency_id);
+
+      // calculate today's exchange rate
+      var today = new Date();
+      models.exchange.forEach(function (xchange) {
+        var temp;
+        // RAW HACKS because mysql months start at 0 and JS months start at 1
+        if (!Number.isNaN(new Date(xchange.date).getMonth()))  {
+          temp = new Date(xchange.date);
+          temp.setMonth(new Date(xchange.date).getMonth() + 1);
+        } else {
+          var dateArray = xchange.date.split('-');
+          dateArray[1] = Number(dateArray[1]) + 1;
+          temp = new Date(dateArray.join('-'));
+        }
+        console.log('temp:', temp);
+        if (today.getMonth() === temp.getMonth() && today.getYear() === temp.getYear() && today.getDay() === temp.getDate()) {
+          swap.current_exchange_rate = xchange;
+        }
+      });
+
     }, function (error) {
-      console.log('error:', error);
+      messenger.push({ type: 'error', msg: 'Could not load currency information:' + error});
     });
-    
   }
 
-  function filterOptions (opts) {
-    return opts.id !== swap.currency1.id;
-  }
-  
   function submit () {
     // transform to MySQL date
     var date = new Date(),
         formattedDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay();
-
-    console.log(swap.rate);
 
     connect.basicPut('exchange_rate', [{
       currency_1 : swap.currency1.id,
@@ -52,11 +64,15 @@ angular.module('kpk.controllers')
       rate : swap.rate,
       date : formattedDate 
     }]).then(function (result) {
-      console.log('posted with result:', result);
+      messenger.push({ type: 'success', msg: 'Added new currency with id: ' + result.data.insertId});
       run();
     }, function (error) {
-      console.log('error', error);
+      messenger.push({type: 'danger', msg: 'Failed to post new exchange rate. Error: '+ error});
     });
+  }
+
+  function filterOptions (opts) {
+    return opts.id !== swap.currency1.id;
   }
 
   function valid () {
@@ -70,14 +86,14 @@ angular.module('kpk.controllers')
   }
 
   function formatExchangeCurrency (id) {
-    return stores.currency ? stores.currency.get(id).symbol : id; 
+    return stores.currency && angular.isDefined(id) ? stores.currency.get(id).symbol : id; 
   }
   
   $scope.filterOptions = filterOptions;
   $scope.formatCurrency = formatCurrency;
+  $scope.formatExchangeCurrency = formatExchangeCurrency;
   $scope.valid = valid;
   $scope.submit = submit;
-  $scope.formatExchangeCurrency = formatExchangeCurrency;
 
   // start the controller
   run();
