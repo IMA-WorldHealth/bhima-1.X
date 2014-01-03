@@ -53,56 +53,16 @@ fieldset {
   z-index: 50;
 }
 
-.kpk-message {
-  position           : absolute;
-  opacity            : 0;
-  top                : 0;
-  right              : 2.5%;
-  background-color   : #ffffff;
-  padding            : 0.75em;
-  width              : 15%;
-  border             : 1px solid transparent;
-  border-radius      : 4px;
-  -webkit-box-shadow : 0 4px 8px rgba(0, 0, 0, 0.175);
-  box-shadow         : 0 4px 8px rgba(0, 0, 0, 0.175);
-  transition         : opacity 750ms linear;
+.kpk-messenger {
+  position: absolute;
+  z-index: 998;
+  right: 0.5%;
+  top: 0.5%;
+  width: 25%;
 }
 
-.kpk-message-title {
-  font-weight: bold;
-}
-
-.kpk-message-close {
-
-}
-
-.kpk-message.active {
-  opacity: 1;
-  transition: opacity 750ms linear;
-}
-
-.kpk-message.warning {
-  background-color: #fcf8e3;
-  border-color: #fbeed5;
-  color: #c09853;
-}
-
-.kpk-message.success {
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-  color: #468847;
-}
-
-.kpk-message.danger {
-  background-color: #f2dede;
-  border-color: #eed3d7;
-  color: #b94a48;
-}
-
-.kpk-message.info {
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-  color: #3a87ad;
+.kpk-messenger > .alert {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 
 .content {
