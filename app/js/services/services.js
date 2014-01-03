@@ -523,11 +523,16 @@
     self.messages = [];
     var indicies = {};
 
-    self.push = function (msg) {
-      var id = self.messages.push(msg) - 1;
-      /*indicies[id] = $timeout(function () {
-        self.messages.splice(id, 1);
-      }, 3000);*/
+    self.push = function (msg, timer) {
+      var id = Date.now();
+      msg.id = id;
+      self.messages.push(msg); 
+      indicies[id] = $timeout(function () {
+        var index, i = self.messages.length;
+
+        while (i--) { if (self.messages[i].id === id) { self.messages.splice(i, 1); break; } }
+
+      }, timer || 3000);
     };
 
     self.close = function (idx) {
