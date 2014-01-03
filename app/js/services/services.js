@@ -518,21 +518,22 @@
   });
 
 
-  services.service('message', function ($timeout) {
-    this.messages = [];
+  services.service('messenger', function ($timeout) {
+    var self = this;
+    self.messages = [];
     var indicies = {};
 
-    this.push = function (msg) {
-      var id = this.messages.push(msg) - 1;
-      indicies[id] = $timeout(function () {
-        this.messages.splice(id, 1);
-      }, 3000);
+    self.push = function (msg) {
+      var id = self.messages.push(msg) - 1;
+      /*indicies[id] = $timeout(function () {
+        self.messages.splice(id, 1);
+      }, 3000);*/
     };
 
-    this.close = function (idx) {
+    self.close = function (idx) {
       // cancel timeout and splice out
-      $timeout.cancel(indicies[idxs]);
-      this.messages.splice(idx, 1);
+      $timeout.cancel(indicies[idx]);
+      self.messages.splice(idx, 1);
     };
 
   });
