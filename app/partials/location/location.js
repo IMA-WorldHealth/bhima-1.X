@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('locationCtrl', function ($scope, $q, connect) {
+.controller('locationCtrl', function ($scope, $q, connect, messenger) {
   'use strict';
 
   var imports = {},
@@ -23,7 +23,6 @@ angular.module('kpk.controllers')
       connect.req(imports.country),
       connect.req(imports.location)
     ]).then(function (array) {
-      console.log("Loaded: ", array);
       array.forEach(function (depends, idx) {
         stores[dependencies[idx]] = depends;
         models[dependencies[idx]] = depends.data;
@@ -132,15 +131,15 @@ angular.module('kpk.controllers')
   }
 
   function createLocation () {
-    console.log("Creating Location: ", $scope.data);
     connect.basicPut('location', [$scope.data])
     .then(function (result) {
-      console.log("Inserted a New location successfully");
+      messenger.push({type: 'success', msg: 'Location with id ' + result.data.insertId + ' created successfully.'});
       $scope.data.id = result.data.insertId;
       stores.location.post($scope.data);
       $scope.data = {};
       $scope.flags = {};
     }, function (error) {
+      messenger.push({type: 'error', msg: 'Creation of location failed'});
       console.error("Error creating location:", $scope.data);  
     });
   }
@@ -187,7 +186,6 @@ angular.module('kpk.controllers')
         sector.promise,
         village.promise
     ]).then(function () {
-      console.log("All Promises Resolved");
       createLocation();
     });
   }
