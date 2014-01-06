@@ -1,6 +1,6 @@
  //at left posting_journal property, at right service property such as sale, cash, purchase_order : map
 var util = require('../util/util'),
-    parser = require('../database/parser'),
+    parser = require('../database/parser')(),
     Q = require('q');
 
 var map = {
@@ -340,6 +340,7 @@ module.exports = function (db) {
     .then(function (id) {
       data.trans_id = id; // add the trans id here ...
       console.log("\ndata:", data, "\n");
+      delete data.id;
       var sql = parser.insert(table, data);
       db.execute(sql, function (err, result) {
         if(err) throw err;
