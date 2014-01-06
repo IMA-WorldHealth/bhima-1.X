@@ -77,11 +77,15 @@
       'get' : get
     };
 
+    var dbdefer = $q.defer();
+
     function cacheInstance(namespace) { 
       if(!namespace) throw new Error('Cannot register cache instance without namespace');
       return { 
         namespace: namespace,
-        fetch: fetch 
+        fetch: fetch,
+        put: put,
+        request: request
       }
     }
 
@@ -90,17 +94,18 @@
       openDBConnection(DB_NAME, VERSION)
       .then(function(connectionSuccess) { 
         console.log('[appcache] db connection success');
-
+        dbdefer.resolve();
         var tempInsert = {namespace: "appjs", key: "location_cache", another_element: 7, value: 4};
         // testWrite(tempInsert); 
-        testRead("appjs", "location_cache");
+        // testRead("appjs", "location_cache");
       }, function(error) { 
-
+        console.log('error', error);
       });
     }
 
     //generic request method allow all calls to be queued if the database is not initialised
-    function request(method, value) { 
+    function request(method) { 
+      console.log(method, arguments);
       if(!requestMap[method]) return false;
       requestMap[method](value);
     }
@@ -108,17 +113,46 @@
     function get(value) { 
 
     }
-    
-    function fetch(key) { 
+   
+    //TODO This isn't readable, try common request (queue) method with accessor methods
+    function fetch(key) {
       var t = this, namespace = t.namespace;
       var deferred = $q.defer();
-      console.log('Request for ', namespace, key);
+      
+      dbdefer.promise
+      .then(function() { 
+        //fetch logic
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace, key').get([namespace, key]);
+        
+        request.onsuccess = function(event) { 
+          var result = event.target.result;
+          console.log('fetch result:', result);
+          deferred.resolve(result);
+        };
+        request.onerror = function(event) { 
+          deferred.reject(event); 
+        };
+      }); 
       return deferred.promise;
     }
   
     function put(key, value) { 
       var t = this, namespace = t.namespace;
-         
+      var deferred = $q.defer();
+       
+      var writeObject = { 
+        namespace: namespace,
+        key: key
+      }
+      var transaction = db.transaction(['master'], "readwrite");
+      var objectStore = transaction.objectStore('master');
+      var request;
+
+      //TODO jQuery dependency - write simple utility to flatten/ merge object
+      writeObject = jQuery.extend(writeObject, value);
+      console.log("[appcache] going to write", writeObject); 
     }
 
     function testRead(namespace, key) { 
