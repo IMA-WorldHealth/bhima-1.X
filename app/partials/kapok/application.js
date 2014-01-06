@@ -18,7 +18,11 @@ angular.module('kpk.controllers')
   }*/
   
   console.log('[appController]');
-  console.log(appcache);
+  var CACHE_NAMESPACE = 'application';
+  var cache = new appcache(CACHE_NAMESPACE);
+
+  console.log(cache);
+  cache.fetch('value');
 
   var default_enterprise, default_fiscal_year;
   //donwload and set enterprise and fiscal year - this should not be done here
