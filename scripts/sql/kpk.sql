@@ -830,13 +830,12 @@ create table `kpk`.`general_ledger` (
 drop table if exists `kpk`.`period_total`;
 create table `kpk`.`period_total` (
   `enterprise_id`     smallint unsigned not null,
-  `id`                mediumint unsigned not null,
+  `id`                mediumint unsigned not null auto_increment,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
   `account_id`        int unsigned not null,
   `credit`            decimal(19, 2) unsigned,
   `debit`             decimal(19, 2) unsigned,
-  `difference`        decimal(19, 2) unsigned, 
   `locked`            boolean not null default 0,
   primary key (`id`),
   key `fiscal_year_id` (`fiscal_year_id`),
