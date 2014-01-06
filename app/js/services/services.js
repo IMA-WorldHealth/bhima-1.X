@@ -68,7 +68,7 @@
     };
   });
 
-  services.factory('appcache', function ($q) { 
+  services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
     var VERSION = 13;
 
@@ -118,7 +118,6 @@
     function fetch(key) {
       var t = this, namespace = t.namespace;
       var deferred = $q.defer();
-      
       dbdefer.promise
       .then(function() { 
         //fetch logic
@@ -128,11 +127,10 @@
         
         request.onsuccess = function(event) { 
           var result = event.target.result;
-          console.log('fetch result:', result);
-          deferred.resolve(result);
+          $rootScope.$apply(deferred.resolve(result));
         };
         request.onerror = function(event) { 
-          deferred.reject(event); 
+          $rootScope.$apply(deferred.reject(event)); 
         };
       }); 
       return deferred.promise;
@@ -197,7 +195,6 @@
       var request = objectStore.add(obj);
 
       request.onsuccess = function(e) { 
-        console.log('obj successfully written');
       }
     }
 
@@ -206,7 +203,6 @@
       var request = indexedDB.open(dbname, dbversion);
       request.onupgradeneeded = function(event) { 
         db = event.target.result;
-        
         //TODO naive implementation - one object store to contain all cached data, namespaced with feild
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
         console.log('[appcahce] upgraded');
@@ -220,9 +216,9 @@
         objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
         deferred.resolve();
       };
-      request.onsuccess = function(event) { 
+      request.onsuccess = function(event) {
         db = request.result;
-        deferred.resolve();
+        $rootScope.$apply(deferred.resolve());
       };
       request.onerror = function(event) { 
         console.log('connection failed');
