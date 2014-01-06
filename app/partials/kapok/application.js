@@ -3,20 +3,14 @@ angular.module('kpk.controllers')
   'use strict';
     
   //lookup users language preference 
-  var CACHE_NAMESPACE = 'appjs';
+  var MODULE_NAMESPACE = 'appjs';
 
-  var cache = new appcache(CACHE_NAMESPACE);
+  var cache = new appcache(MODULE_NAMESPACE);
   var url = $location.url();
  
   // Assume initial page load
   if(url==='' || url==='/') { 
-    cache.fetch('location').then(function(res) { 
-      
-      //res is uninitialised if it has never been set 
-      if(res) $location.path(res.path);
-    }, function(err) { 
-      throw new Error(err);
-    });
+    settupApplication(); 
   }
 
   $scope.$on('$locationChangeStart', function(e, n_url) { 
@@ -39,5 +33,21 @@ angular.module('kpk.controllers')
     default_fiscal_year = res.data[0];
     if(default_fiscal_year) appstate.set('fiscal', default_fiscal_year);
   });
-    
+
+  function settupApplication() { 
+    loadCachedLocation(); 
+    //open tree?
+    //language?
+    //something
+  }
+   
+  function loadCachedLocation() { 
+    cache.fetch('location').then(function(res) { 
+      
+      //res is uninitialised if it has never been set 
+      if(res) $location.path(res.path);
+    }, function(err) { 
+      throw new Error(err);
+    });
+  }
 });
