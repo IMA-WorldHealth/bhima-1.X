@@ -35,6 +35,11 @@ angular.module('kpk.controllers')
 
   (function init () {
     // Load the Tree!
+    
+    cache.fetchAll().then(function(res) { 
+      console.log('all got', res);
+    });
+
     connect.basicGet('/tree')
     .then(function (res) { 
       $scope.treeData = formatElementGroup(res.data);
