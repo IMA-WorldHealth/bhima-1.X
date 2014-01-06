@@ -1,5 +1,6 @@
  //at left posting_journal property, at right service property such as sale, cash, purchase_order : map
 var util = require('../util/util'),
+    parser = require('../database/parser'),
     Q = require('q');
 
 var map = {
@@ -327,6 +328,7 @@ module.exports = function (db) {
     var sql = "SELECT `period`.`id`, `fiscal_year_id` FROM `period` WHERE `period`.`period_start`<=" + mysqlDate + " AND `period`.`period_stop`>=" + mysqlDate + ";\n";
     db.execute(sql, function(err, data) {
         if (err) throw err;
+        console.log('found', data);
         defer.resolve(data.length ? {success:true, fid:data[0].fiscal_year_id, pid:data[0].id} : {success : false});
     });
     return defer.promise;
@@ -338,8 +340,9 @@ module.exports = function (db) {
     .then(function (id) {
       data.trans_id = id; // add the trans id here ...
       console.log("\ndata:", data, "\n");
-      var sql = db.insert(table, [data]);
+      var sql = parser.insert(table, data);
       db.execute(sql, function (err, result) {
+        if(err) throw err;
         console.log('\nDATA POSTED!\n');
         defer.resolve(err ? {success : false, info: err} : {success : true, info: result});
       });

@@ -118,8 +118,7 @@ app.get('/journal', function (req, res, next) {
   }
   var Qo = queryHandler.getQueryObj(jsRequest);
   console.log('\n', Qo, '\n');
-  var sql = db.select(Qo);
-  db.execute(sql, cb);  
+  db.execute(db.select(Qo), cb);  
 });
 
 app.post('/journal', function (req, res) {
