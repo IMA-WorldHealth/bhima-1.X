@@ -187,30 +187,13 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
-  function setTotals (period) {
+  function setTotals () {
     var defer = q.defer();
 
-    // This SQL sums all transactions for a given period from the GL and PJ into `period_total`
-    var sql = 'INSERT INTO `period_total` (`enterprise_id`, `fiscal_year_id`, `period_id`, `account_id`, `credit`, `debit`) ' +
-                'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `account_id`, SUM(`combo`.`cr`) AS `credit`, SUM(`combo`.`db`) AS `debit`' +
-                'FROM ' + 
-                  '(' +
-                    '(' + 
-                      'SELECT SUM(`credit`) AS `cr`, SUM(`debit`) AS `db`, `fiscal_year_id`, `account_id`, `enterprise_id`, `period_id` ' +
-                      'FROM `posting_journal` ' +
-                      'WHERE `period_id`= ?'.replace('?', period) +
-                      'GROUP BY `account_id`' + 
-                    ')' +
-                  ' UNION ' + 
-                    '(' +
-                      'SELECT SUM(`credit`) AS `cr`, SUM(`debit`) AS `db`, `fiscal_year_id`, `account_id`, `enterprise_id`, `period_id` ' +
-                      'FROM `general_ledger` ' +  
-                      'WHERE `period_id`='.replace('?', period) +
-                      'GROUP BY `account_id`' + 
-                    ')' +
-                  ') ' + 
-                'AS `combo` ' +
-                'GROUP BY `account_id`;';
+    // This SQL sums all transactions for a given period from the PJ into `period_total`, updating old values if necessary
+    var sql = 'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' + 
+              'SELECT `account_id`, SUM(`credit`), SUM(`debit`), `fiscal_year_id`, `enterprise_id`, `period_id` FROM `posting_journal` GROUP BY `account_id` ' +
+              'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
 
     db.execute(sql, function (err, result) {
       if (err) defer.reject(err);
@@ -221,19 +204,16 @@ module.exports = (function (db) {
   
   }
 
-  function post (period) {
+  function post () {
 
-    // first setTotals in the period totals table
-          
     var defer = q.defer(),
         sql = {};
-
     
     sql.transfer = ['INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)',
                     'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;'].join(' ');
     sql.remove = 'DELETE FROM `posting_journal`;';
 
-    setTotals(period).then(function (res) {
+    setTotals().then(function (res) {
       db.execute(sql.transfer, function(err, res) {
         if (err) defer.reject(err);
         else {
@@ -246,6 +226,7 @@ module.exports = (function (db) {
     }, function (err) {
       if (err) defer.reject(err);
     });
+
     return defer.promise;
   }
 
