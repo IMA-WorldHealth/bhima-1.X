@@ -16,21 +16,24 @@ angular.module('kpk.controllers')
       }
     });
   }*/
+  
+  console.log('[appController]');
+  console.log(appcache);
 
-    var default_enterprise, default_fiscal_year;
-    //donwload and set enterprise and fiscal year - this should not be done here
-    connect.req({'tables': { 'enterprise' : {'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id']}}})
-    .then(function(res) {
-      default_enterprise = res.data[0];
-      appstate.set('enterprise', default_enterprise);
-      return connect.req({'tables': { 'fiscal_year' : { 'columns': ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year']}}});
-    }, function (err) {
-      console.log("ERR:", err); 
-    })
-    .then(function(res) { 
-      default_fiscal_year = res.data[0];
-      if(default_fiscal_year) appstate.set('fiscal', default_fiscal_year);
-    });
+  var default_enterprise, default_fiscal_year;
+  //donwload and set enterprise and fiscal year - this should not be done here
+  connect.req({'tables': { 'enterprise' : {'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id']}}})
+  .then(function(res) {
+    default_enterprise = res.data[0];
+    appstate.set('enterprise', default_enterprise);
+    return connect.req({'tables': { 'fiscal_year' : { 'columns': ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year']}}});
+  }, function (err) {
+    console.log("ERR:", err); 
+  })
+  .then(function(res) { 
+    default_fiscal_year = res.data[0];
+    if(default_fiscal_year) appstate.set('fiscal', default_fiscal_year);
+  });
     
     /*$scope.$on('$locationChangeStart', function(e, n_url) { 
       //Split url target - needs to be more general to allow for multiple routes?

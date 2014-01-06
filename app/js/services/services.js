@@ -70,7 +70,7 @@
 
   services.factory('appcache', function ($q) { 
     var DB_NAME = "kpk";
-    var VERSION = 2;
+    var VERSION = 6;
 
     var db, cacheSupported;
     var requestMap = { 
@@ -79,9 +79,13 @@
 
     function init() { 
       //also sets db - working on making it read better
-      openDBConnection(DB_NAME)
+      openDBConnection(DB_NAME, VERSION)
       .then(function(connectionSuccess) { 
+        console.log('[appcache] db connection success');
 
+        var tempInsert = {namespace: "appjs", key: "location_cache", another_element: 7, value: 4};
+        // testWrite(tempInsert); 
+        testRead("appjs", "location_cache");
       }, function(error) { 
 
       });
@@ -97,13 +101,56 @@
 
     }
 
-    function openDBConnection(dbname) { 
+    function testRead(namespace, key) { 
+      var transaction = db.transaction(['master'], "readwrite");
+      var objectStore = transaction.objectStore('master');
+      var request = objectStore.index('namespace, key').get([namespace, key]);
+
+      request.onerror = function(e) { 
+        console.log('read error', e);
+      }
+
+      request.onsuccess = function(e) { 
+        console.log('got', e.target.result);
+      }
+    }
+
+    function testWrite(obj) { 
+
+      var transaction = db.transaction(['master'], "readwrite");
+      transaction.oncomplete = function(e) { 
+        console.log('opened for transaction');
+      }
+
+      transaction.onerror = function(e) { 
+        console.log('see error', e);
+      }
+
+      var objectStore = transaction.objectStore('master');
+      var request = objectStore.add(obj);
+
+      request.onsuccess = function(e) { 
+        console.log('obj successfully written');
+      }
+    }
+
+    function openDBConnection(dbname, dbversion) { 
       var deferred = $q.defer();
-      var request = indexedDB.open(dbname);
+      var request = indexedDB.open(dbname, dbversion);
       request.onupgradeneeded = function(event) { 
         db = event.target.result;
-
-        // if(!db.objectStoreNames.contains()
+        
+        //TODO naive implementation - one object store to contain all cached data, namespaced with feild
+        //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
+        console.log('[appcahce] upgraded');
+       
+        //reset object store if it exists - DEVELOPMENT ONLY
+        if(db.objectStoreNames.contains('master')) {
+          //FIXME no error/ success handling
+          db.deleteObjectStore('master');  
+        }
+        var objectStore = db.createObjectStore("master", {keyPath: "id", autoIncrement: true});
+        objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
         deferred.resolve();
       };
       request.onsuccess = function(event) { 
