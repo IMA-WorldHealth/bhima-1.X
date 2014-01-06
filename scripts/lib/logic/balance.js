@@ -21,30 +21,30 @@ module.exports = (function (db) {
     var errors, queries;
 
     errors = {
-      "account_defined"            : "%number% Invalid Accounts Detected.",
-      "account_locked"             : "%number% Locked Accounts Detected.",
-      "balance"                    : "Credits and debits do not balance.",
-      "fiscal_defined"             : "Invalid Fiscal Year Detected for %number% transaction(s).",
-      "period_defined"             : "Invalid Periods Detected for %number% transaction(s).",
-      "inventory_purchase_defined" : "Invalid invoice or purchase order number at line %number%.",
-      "debitor_creditor_defined"   : "%number% Invalid Debitor/Creditor Groups."
+      'account_defined'            : '%number% Invalid Accounts Detected.',
+      'account_locked'             : '%number% Locked Accounts Detected.',
+      'balance'                    : 'Credits and debits do not balance.',
+      'fiscal_defined'             : 'Invalid Fiscal Year Detected for %number% transaction(s).',
+      'period_defined'             : 'Invalid Periods Detected for %number% transaction(s).',
+      'inventory_purchase_defined' : 'Invalid invoice or purchase order number at line %number%.',
+      'debitor_creditor_defined'   : '%number% Invalid Debitor/Creditor Groups.'
     };
 
     queries = {
       // are all accounts defined?
-      account_defined : "SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` WHERE `account`.`id` IS NULL;",
+      account_defined : 'SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` WHERE `account`.`id` IS NULL;',
       // are any accounts locked?
-      account_locked : "SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `account` ON  `posting_journal`.`account_id`=`account`.`id` WHERE `account`.`locked`=1;",
+      account_locked : 'SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `account` ON  `posting_journal`.`account_id`=`account`.`id` WHERE `account`.`locked`=1;',
       // are all the creditor/debitor groups + accounts defined
-      debitor_creditor_defined : "SELECT `posting_journal`.`id` FROM `posting_journal` WHERE NOT EXISTS ((SELECT `creditor`.`id`, `posting_journal`.`deb_cred_id` FROM `creditor`, `posting_journal` WHERE `creditor`.`id`=`posting_journal`.`deb_cred_id`) UNION (SELECT `debitor`.`id`, `posting_journal`.`deb_cred_id` FROM `debitor`, `posting_journal` WHERE `debitor`.`id`=`posting_journal`.`deb_cred_id`));",
+      debitor_creditor_defined : 'SELECT `posting_journal`.`id` FROM `posting_journal` WHERE NOT EXISTS ((SELECT `creditor`.`id`, `posting_journal`.`deb_cred_id` FROM `creditor`, `posting_journal` WHERE `creditor`.`id`=`posting_journal`.`deb_cred_id`) UNION (SELECT `debitor`.`id`, `posting_journal`.`deb_cred_id` FROM `debitor`, `posting_journal` WHERE `debitor`.`id`=`posting_journal`.`deb_cred_id`));',
       // are all fiscal years defined and not locked?
-      fiscal_defined : "SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `fiscal_year` ON `posting_journal`.`fiscal_year_id`=`fiscal_year`.`id` WHERE `fiscal_year`.`locked`=1;",
+      fiscal_defined : 'SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `fiscal_year` ON `posting_journal`.`fiscal_year_id`=`fiscal_year`.`id` WHERE `fiscal_year`.`locked`=1;',
       // are all periods defined and not locked?
-      period_defined : "SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `period` ON `posting_journal`.`period_id`=`period`.`id` WHERE `period`.`locked`=1;",
+      period_defined : 'SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `period` ON `posting_journal`.`period_id`=`period`.`id` WHERE `period`.`locked`=1;',
       // do the invoice/purchase orders exist?
-      invoice_purchase_defined : "SELECT `posting_journal`.`id` FROM `posting_journal` WHERE NOT EXISTS ((SELECT `purchase`.`id`, `posting_journal`.`inv_po_id` FROM `purchase`, `posting_journal` WHERE `purchase`.`id`=`posting_journal`.`inv_po_id`) UNION (SELECT `sale`.`id`, `posting_journal`.`inv_po_id` FROM `sale`, `posting_journal` WHERE `sale`.`id`=`posting_journal`.`inv_po_id`));",
+      invoice_purchase_defined : 'SELECT `posting_journal`.`id` FROM `posting_journal` WHERE NOT EXISTS ((SELECT `purchase`.`id`, `posting_journal`.`inv_po_id` FROM `purchase`, `posting_journal` WHERE `purchase`.`id`=`posting_journal`.`inv_po_id`) UNION (SELECT `sale`.`id`, `posting_journal`.`inv_po_id` FROM `sale`, `posting_journal` WHERE `sale`.`id`=`posting_journal`.`inv_po_id`));',
       // is the posting_journal balanced?
-      balance : "SELECT SUM(`posting_journal`.`credit`) AS `credit`, SUM(`posting_journal`.`debit`) AS `debit`, SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`, SUM(`posting_journal`.`credit_equiv`) AS `credit_equv` FROM `posting_journal`;"
+      balance : 'SELECT SUM(`posting_journal`.`credit`) AS `credit`, SUM(`posting_journal`.`debit`) AS `debit`, SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`, SUM(`posting_journal`.`credit_equiv`) AS `credit_equv` FROM `posting_journal`;'
     };
 
     function account_locked () { 
@@ -156,9 +156,9 @@ module.exports = (function (db) {
       return { credit : gl.credit  + journal.credit, debit : gl.debit + journal.debit };
     }
 
-    sql.gl_balance = "SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `general_ledger`";
+    sql.gl_balance = 'SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `general_ledger`';
 
-    sql.journal_balance = "SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `posting_journal`";
+    sql.journal_balance = 'SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `posting_journal`';
 
     errorChecking()
     .then(function () {
@@ -187,13 +187,47 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
+  function setTotals (period) {
+    var defer = q.defer();
+
+    // This SQL sums all transactions for a given period from the GL and PJ into `period_total`
+    var sql = 'INSERT INTO `period_total` (`enterprise_id`, `fiscal_year_id`, `period_id`, `account_id`, `credit`, `debit`) ' +
+                'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `account_id`, SUM(`combo`.`cr`) AS `credit`, SUM(`combo`.`db`) AS `debit`' +
+                'FROM ' + 
+                  '(' +
+                    '(' + 
+                      'SELECT SUM(`credit`) AS `cr`, SUM(`debit`) AS `db`, `fiscal_year_id`, `account_id`, `enterprise_id`, `period_id` ' +
+                      'FROM `posting_journal` ' +
+                      'WHERE `period_id`= ?'.replace('?', period) +
+                      'GROUP BY `account_id`' + 
+                    ')' +
+                  ' UNION ' + 
+                    '(' +
+                      'SELECT SUM(`credit`) AS `cr`, SUM(`debit`) AS `db`, `fiscal_year_id`, `account_id`, `enterprise_id`, `period_id` ' +
+                      'FROM `general_ledger` ' +  
+                      'WHERE `period_id`='.replace('?', period) +
+                      'GROUP BY `account_id`' + 
+                    ')' +
+                  ') ' + 
+                'AS `combo` ' +
+                'GROUP BY `account_id`;';
+
+    db.execute(sql, function (err, result) {
+      if (err) defer.reject(err);
+      defer.resolve(result);
+    });
+
+    return defer.promise;
+  
+  }
+
   function post () {
     var defer = q.defer(),
         sql = {};
     
-    sql.transfer = ["INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)",
-                    "SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;"].join(' ');
-    sql.remove = "DELETE FROM `posting_journal`;";
+    sql.transfer = ['INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)',
+                    'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;'].join(' ');
+    sql.remove = 'DELETE FROM `posting_journal`;';
 
     db.execute(sql.transfer, function(err, res) {
       if (err) defer.reject(err);

@@ -19,12 +19,15 @@
     </div>
 
     <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h5> Today's Exchange Rate: </h5>
-          TODO
-        </div>
-      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr><th colspan="2">Today's ({{swap.current_exchange_rate.date | date}}) Exchange Rate:</th></tr>
+          <tr><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_1)}}</th><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_2)}}</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>{{swap.current_exchange_rate.rate}}</td></tr>
+        </tbody>
+      </table>
     
       <div class="panel panel-default">
         <div class="panel-body">
