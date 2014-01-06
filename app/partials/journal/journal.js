@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect) {
+.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, printer) {
   // This is the posting journal and perhaps the heaviest
   // module in Kapok.  It is responsible for posting to
   // the general ledger via a trial balance
@@ -210,8 +210,23 @@ angular.module('kpk.controllers')
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
 //  $timeout(init, 100);
 
+  $scope.print = function () {
+    printer.clear();
+    console.log("printing!", printer);
+    printer.print({
+      title: 'A cool title!',
+      description: 'An attempt to print a table from journal...',
+      table: {
+        headers: ['id', 'date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'deb_cred_id', 'deb_cred_type', 'inv_po_id'],
+        data: connect.clean($scope.model['journal'])
+      }
+    });
+  };
+
 
   init();
+
+
 })
 
 .controller('trialBalanceCtrl', function ($scope, $modalInstance, request, connect) {
@@ -230,4 +245,5 @@ angular.module('kpk.controllers')
   $scope.cancel = function () {
     $modalInstance.dismiss();
   };
+
 });

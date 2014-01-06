@@ -556,4 +556,18 @@
 
   });
 
+  services.service('printer', function () {
+    var self = this;
+
+    this.print = function (data) {
+      self.data  = data;
+      self.data.print = true;
+    }
+
+    this.clear = function () {
+      self.data = {};
+    }
+
+  });
+
 })(angular);

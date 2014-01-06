@@ -1,25 +1,15 @@
-@media print { 
+@media print {
 
-  @page {
-    0.5cm;
+  body *:not(.printable) {
+    display: none !important;
+    visibility: none !important;
   }
 
-  body {
-    margin:0;
-    width: 100%;
-    padding:0;
-    line-height: 1.4em;
-    word-spacing: 1px;
-    letter-spacing: 0.2px;
-    font: 13px Arial, Helvetica,"Lucida Grande", serif;
-    color: #000;
+  .printable {
+    display: block !important;  
   }
 
-  body * {
-    visibility: hidden;
-  }
-
-  /* Show URLs */
+  /*
   a:link, a:visited {
     background: transparent;
     color:#333;
@@ -35,16 +25,11 @@
   a[href^="http://"] {
     color:#000;
   }
-  
-  :not(.content) {
-    display: none !important;
-  }
+  */
 
-  .content table {
+  .printable table {
     width: 100%;
     float: none;
     margin: 0;
   }
-
 }
-

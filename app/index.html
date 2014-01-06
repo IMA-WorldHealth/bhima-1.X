@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <title>Kapok Health Information System</title>
-  <link rel="stylesheet" href="css/kapok.min.css" media="all">
+  <link rel="stylesheet" href="css/kapok.min.css" media="screen">
+  <link rel="stylesheet" href="css/kpk-print.css" media="print">
 </head>
 <body ng-app="kpk">
 
@@ -57,6 +58,24 @@
         </a>
       </div>
     </div>
+  </div>
+
+  <div class="printable" ng-controller="printerCtrl">
+      <h2 ng-bind="printer.title"></h2>
+      <span ng-bind="printer.description"></span>
+      <table class="table table-bordered" ng-class="{'table-hover': printer.table.hover, 'table-striped': printer.table.striped }">
+        <thead>
+          <tr>
+            <th ng-repeat="header in printer.table.headers">{{printer.head.data}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in printer.table.rows">
+            <td ng-repeat="datum in row" ng-bind="datum"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button ng-click="clear()">Close Form</button>
   </div>
 
   <div id="kpk-container">

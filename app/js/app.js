@@ -115,6 +115,9 @@
       controller : 'locationCtrl',
       templateUrl: 'partials/location/location.html'
     })
+    .when('/print', {
+      templateUrl: 'partials/print/test.html'
+    })
     .when('/settings', { 
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
