@@ -64,7 +64,6 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         $scope.location_model = a[4];
         $scope.inventory = [];
        
-        console.log('location', $scope.location_model);
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
         $scope.invoice_id = createId(id);
@@ -81,7 +80,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 			//super cryptic - if either boolean value is false, it's hot or some excuse  	
 			if(!(!!paramDebtorId && !!paramInventoryId)) return;
 			$scope.debtor = $scope.debitor_store.get(paramDebtorId);
-			
+      $scope.loadInventory();
 		}
 
     //placholder to generate custom IDs, currently just iterates
@@ -138,7 +137,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         });
       }
 
-      $scope.currentLocation = $scope.locationModel.get($scope.debtor.location_id);
+      $scope.currentLocation = $scope.location_model.get($scope.debtor.location_id);
     };
 
     $scope.generateInvoice = function() { 
