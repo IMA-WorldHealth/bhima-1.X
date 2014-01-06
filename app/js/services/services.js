@@ -245,6 +245,12 @@
       return deferred.promise;
     }
 
+    function loc() { 
+      //FIXME Stupid method to package location table in Model, super temporary (shouldn't need to download all locations for individual user) 
+      var handle, deferred = $q.defer();
+
+    }
+
     function fetch (defn) {
       //summary: 
       //  Exactly the same as req() but now returns only

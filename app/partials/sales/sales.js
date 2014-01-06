@@ -30,12 +30,15 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       tables : {
         "patient" : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id"]},
         "debitor" : { columns : ["text"]},
-        "debitor_group" : {columns : ["price_list_id"]},
-        "location" : {columns: ["city", "region", "country_id"]}
+        "debitor_group" : {columns : ["price_list_id"]}
+        // "location" : {columns: ["village_id", "sector_id", "province_id", "country_id"]},
+        // "village" : {columns: ["id", "name"]}
       },
-      join : ["patient.location_id=location.id", "patient.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"]
+      join : ["patient.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"]
     };
     
+    //This is stupid, location should either come with debtors (aliasing columns) or be downloaded on selection (query single location)
+  
 
     var debtor_request = connect.req(debitor_query);
     var user_request = connect.basicGet("user_session");
@@ -62,7 +65,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
         $scope.invoice_id = createId(id);
-
+        console.log($scope.debitor_store);
 				generateRouteInvoice();
       });
 
@@ -78,6 +81,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 			
 		}
 
+    //placholder to generate custom IDs, currently just iterates
     function createId(current) { 
       var default_id = 100000;
       if(!current) return default_id;
@@ -130,6 +134,8 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
           $scope.inventory_model = store;
         });
       }
+
+      $scope.currentLocation = $scope.locationModel.get($scope.debtor.location_id);
     };
 
     $scope.generateInvoice = function() { 
