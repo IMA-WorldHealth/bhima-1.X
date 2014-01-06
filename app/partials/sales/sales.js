@@ -38,7 +38,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     };
     
     //This is stupid, location should either come with debtors (aliasing columns) or be downloaded on selection (query single location)
-  
+    var location_request = connect.loc(); 
 
     var debtor_request = connect.req(debitor_query);
     var user_request = connect.basicGet("user_session");
@@ -54,14 +54,17 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         user_request,
         max_sales_request,
         max_purchase_request,
+        location_request
       ]).then(function(a) {
         $scope.debitor_store = a[0];
         $scope.debtor_model = a[0].data;
         $scope.verify = a[1].data.id;
         $scope.max_sales = a[2].data.max;
         $scope.max_purchase = a[3].data.max;
+        $scope.location_model = a[4];
         $scope.inventory = [];
-        
+       
+        console.log('location', $scope.location_model);
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
         $scope.invoice_id = createId(id);
