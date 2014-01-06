@@ -70,7 +70,7 @@
 
   services.factory('appcache', function ($q) { 
     var DB_NAME = "kpk";
-    var VERSION = 6;
+    var VERSION = 13;
 
     var db, cacheSupported;
     var requestMap = { 
@@ -141,18 +141,31 @@
     function put(key, value) { 
       var t = this, namespace = t.namespace;
       var deferred = $q.defer();
+      
+      dbdefer.promise
+      .then(function() { 
+        var writeObject = { 
+          namespace: namespace,
+          key: key
+        }
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request;
        
-      var writeObject = { 
-        namespace: namespace,
-        key: key
-      }
-      var transaction = db.transaction(['master'], "readwrite");
-      var objectStore = transaction.objectStore('master');
-      var request;
+        //TODO jQuery dependency - write simple utility to flatten/ merge object
+        writeObject = jQuery.extend(writeObject, value);
+        request = objectStore.put(writeObject); 
 
-      //TODO jQuery dependency - write simple utility to flatten/ merge object
-      writeObject = jQuery.extend(writeObject, value);
-      console.log("[appcache] going to write", writeObject); 
+        request.onsuccess = function(event) { 
+          console.log('write successful'); 
+          deferred.resolve(event);
+        }
+        request.onerror = function(event) { 
+          console.log('unable to put', event);
+          deferred.reject(event);
+        }
+      }); 
+      return deferred.promise;
     }
 
     function testRead(namespace, key) { 
@@ -203,7 +216,7 @@
           //FIXME no error/ success handling
           db.deleteObjectStore('master');  
         }
-        var objectStore = db.createObjectStore("master", {keyPath: "id", autoIncrement: true});
+        var objectStore = db.createObjectStore("master", {keyPath: ['namespace', 'key']});
         objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
         deferred.resolve();
       };
@@ -212,6 +225,7 @@
         deferred.resolve();
       };
       request.onerror = function(event) { 
+        console.log('connection failed');
         deferred.reject(event);
       };
       return deferred.promise;
