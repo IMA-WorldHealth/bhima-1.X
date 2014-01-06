@@ -23,7 +23,9 @@
   },
   "dependencies": {
     "mysql": "2.x.x",
-    "express": "3.x.x"
+    "express": "3.x.x",
+    "q": "~1.0.0",
+    "pdfkit": "~0.2.6"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
