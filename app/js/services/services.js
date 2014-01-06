@@ -70,7 +70,7 @@
 
   services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
-    var VERSION = 13;
+    var VERSION = 15;
 
     var db, cacheSupported;
     var requestMap = { 
@@ -84,8 +84,9 @@
       return { 
         namespace: namespace,
         fetch: fetch,
-        put: put,
-        request: request
+        fetchAll: fetchAll,
+        put: put
+        // request: request
       }
     }
 
@@ -165,37 +166,34 @@
       return deferred.promise;
     }
 
-    function testRead(namespace, key) { 
-      var transaction = db.transaction(['master'], "readwrite");
-      var objectStore = transaction.objectStore('master');
-      var request = objectStore.index('namespace, key').get([namespace, key]);
+    function fetchAll() { 
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
 
-      request.onerror = function(e) { 
-        console.log('read error', e);
-      }
+      dbdefer.promise
+      .then(function() {
+        var store = [];
+        var transaction = db.transaction(['master'], 'readwrite');
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace').openCursor(namespace);
 
-      request.onsuccess = function(e) { 
-        console.log('got', e.target.result);
-      }
-    }
+        request.onsuccess = function(event) {
+          var cursor = event.target.result;
+          
+          if(cursor) { 
+            store.push(cursor.value);
+            cursor.continue();
+          } else {
+            deferred.resolve(store);
+          }
+        }
 
-    function testWrite(obj) { 
-
-      var transaction = db.transaction(['master'], "readwrite");
-      transaction.oncomplete = function(e) { 
-        console.log('opened for transaction');
-      }
-
-      transaction.onerror = function(e) { 
-        console.log('see error', e);
-      }
-
-      var objectStore = transaction.objectStore('master');
-      var request = objectStore.add(obj);
-
-      request.onsuccess = function(e) { 
-        console.log('obj successfully written');
-      }
+        request.onerror = function(event) { 
+          console.log('getall failure'); 
+          deferred.reject(event);
+        }
+      });
+      return deferred.promise;
     }
 
     function openDBConnection(dbname, dbversion) { 
@@ -214,6 +212,8 @@
         }
         var objectStore = db.createObjectStore("master", {keyPath: ['namespace', 'key']});
         objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
+        objectStore.createIndex("namespace", "namespace", {unique: false});
+        objectStore.createIndex("key", "key", {unique: false});
         deferred.resolve();
       };
       request.onsuccess = function(event) {
