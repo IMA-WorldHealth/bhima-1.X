@@ -7,6 +7,7 @@ angular.module('kpk.controllers')
   
   var MODULE_NAMESPACE = 'tree'; 
   var cache = new appcache(MODULE_NAMESPACE);
+  var collapsed_model = [];
 
   $scope.treeData = [];
 
@@ -14,11 +15,18 @@ angular.module('kpk.controllers')
     // recursively format elements
     if (!group) return;
     return group.map(function (element) {
-      // element.has_children
-      // element.collapsed = true;
       
       if(element.has_children) {
-        cache.fetch(element.id_unit).then(function(res) { if(res) element.collapsed = res.collapsed; });
+        var nodeCollapsed;
+        collapsed_model.some(function(item) { 
+          if(item.key === element.id_unit) { 
+            nodeCollapsed = item.collapsed; 
+            return true;
+          } 
+          return false;
+        });
+        if(angular.isDefined(nodeCollapsed)) element.collapsed = nodeCollapsed;
+        // cache.fetch(element.id_unit).then(function(res) { if(res) element.collapsed = res.collapsed; });
       }
       element.label = element.name;
       element.children = formatElementGroup(element.children);
@@ -32,18 +40,22 @@ angular.module('kpk.controllers')
       if (path) $location.path(path);
     }
   }, true);
+  
+  function loadTree() { 
+    connect.basicGet('/tree')
+    .then(function(res) { 
+      $scope.treeData = formatElementGroup(res.data);
+    });
+  }
 
   (function init () {
     // Load the Tree!
-    
     cache.fetchAll().then(function(res) { 
-      console.log('all got', res);
-    });
-
-    connect.basicGet('/tree')
-    .then(function (res) { 
-      $scope.treeData = formatElementGroup(res.data);
+      console.log('loaded');
+      collapsed_model = res;
+      return loadTree();
     });
   })();
+
 
 });
