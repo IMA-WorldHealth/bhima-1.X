@@ -3,31 +3,28 @@ angular.module('kpk.controllers')
   'use strict';
     
   //lookup users language preference 
-      
-  //Cache URL's to maintain user session
-  // var url = $location.url();
-
-  // //Assuming initial page load
-  /*if (url === '') {
-    //only navigate to cached page if no page was requested
-    appcache.getNav().then(function(res) {
-      if(res) {
-        $location.path(res);
-      }
-    });
-  }*/
-  
-  console.log('[appController]');
-  //constants
   var CACHE_NAMESPACE = 'appjs';
 
   var cache = new appcache(CACHE_NAMESPACE);
+  var url = $location.url();
+ 
+  // Assume initial page load
+  if(url==='' || url==='/') { 
+    cache.fetch('location').then(function(res) { 
+      
+      //res is uninitialised if it has never been set 
+      if(res) $location.path(res.path);
+    }, function(err) { 
+      throw new Error(err);
+    });
+  }
 
-  // cache.put("MYKEY", {value1: 5, value2: 6, simpleArray: [1, 2, 3]});
-  
-  // cache.fetch('newobj');
-  
-  
+  $scope.$on('$locationChangeStart', function(e, n_url) { 
+    //Split url target - needs to be more general to allow for multiple routes?
+    var target = n_url.split('/#')[1];
+    if(target) cache.put("location", {path: target});
+  });
+ 
   var default_enterprise, default_fiscal_year;
   //donwload and set enterprise and fiscal year - this should not be done here
   connect.req({'tables': { 'enterprise' : {'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id']}}})
@@ -43,9 +40,4 @@ angular.module('kpk.controllers')
     if(default_fiscal_year) appstate.set('fiscal', default_fiscal_year);
   });
     
-    /*$scope.$on('$locationChangeStart', function(e, n_url) { 
-      //Split url target - needs to be more general to allow for multiple routes?
-      var target = n_url.split('/#')[1];
-      if(target) appcache.cacheNav(target);
-    });*/
 });
