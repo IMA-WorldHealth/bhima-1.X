@@ -179,12 +179,11 @@
 
         request.onsuccess = function(event) {
           var cursor = event.target.result;
-          
           if(cursor) { 
             store.push(cursor.value);
             cursor.continue();
           } else {
-            deferred.resolve(store);
+            $rootScope.$apply(deferred.resolve(store));
           }
         }
 
