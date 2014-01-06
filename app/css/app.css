@@ -16,6 +16,10 @@
   margin-bottom: 1em;
 }
 
+.printable {
+  display: none;
+}
+
 .kpk-header h2 {
   width: 33.33333%;
   display: inline;
