@@ -30,12 +30,15 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       tables : {
         "patient" : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id"]},
         "debitor" : { columns : ["text"]},
-        "debitor_group" : {columns : ["price_list_id"]},
-        "location" : {columns: ["city", "region", "country_id"]}
+        "debitor_group" : {columns : ["price_list_id"]}
+        // "location" : {columns: ["village_id", "sector_id", "province_id", "country_id"]},
+        // "village" : {columns: ["id", "name"]}
       },
-      join : ["patient.location_id=location.id", "patient.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"]
+      join : ["patient.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"]
     };
     
+    //This is stupid, location should either come with debtors (aliasing columns) or be downloaded on selection (query single location)
+    var location_request = connect.loc(); 
 
     var debtor_request = connect.req(debitor_query);
     var user_request = connect.basicGet("user_session");
@@ -51,18 +54,20 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         user_request,
         max_sales_request,
         max_purchase_request,
+        location_request
       ]).then(function(a) {
         $scope.debitor_store = a[0];
         $scope.debtor_model = a[0].data;
         $scope.verify = a[1].data.id;
         $scope.max_sales = a[2].data.max;
         $scope.max_purchase = a[3].data.max;
+        $scope.location_model = a[4];
         $scope.inventory = [];
-        
+       
         //$scope.debtor = $scope.debtor_model.data[0]; // select default debtor
         var id = Math.max($scope.max_sales, $scope.max_purchase);
         $scope.invoice_id = createId(id);
-
+        console.log($scope.debitor_store);
 				generateRouteInvoice();
       });
 
@@ -75,9 +80,10 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 			//super cryptic - if either boolean value is false, it's hot or some excuse  	
 			if(!(!!paramDebtorId && !!paramInventoryId)) return;
 			$scope.debtor = $scope.debitor_store.get(paramDebtorId);
-			
+      $scope.loadInventory();
 		}
 
+    //placholder to generate custom IDs, currently just iterates
     function createId(current) { 
       var default_id = 100000;
       if(!current) return default_id;
@@ -130,6 +136,8 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
           $scope.inventory_model = store;
         });
       }
+
+      $scope.currentLocation = $scope.location_model.get($scope.debtor.location_id);
     };
 
     $scope.generateInvoice = function() { 
