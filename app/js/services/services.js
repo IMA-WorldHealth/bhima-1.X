@@ -93,13 +93,12 @@
       //also sets db - working on making it read better
       openDBConnection(DB_NAME, VERSION)
       .then(function(connectionSuccess) { 
-        console.log('[appcache] db connection success');
         dbdefer.resolve();
         var tempInsert = {namespace: "appjs", key: "location_cache", another_element: 7, value: 4};
         // testWrite(tempInsert); 
         // testRead("appjs", "location_cache");
       }, function(error) { 
-        console.log('error', error);
+        console.log('[appcache] error', error);
       });
     }
 
@@ -195,6 +194,7 @@
       var request = objectStore.add(obj);
 
       request.onsuccess = function(e) { 
+        console.log('obj successfully written');
       }
     }
 
