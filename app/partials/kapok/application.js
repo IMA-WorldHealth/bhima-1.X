@@ -23,24 +23,10 @@ angular.module('kpk.controllers')
 
   var cache = new appcache(CACHE_NAMESPACE);
 
-  console.log(cache);
   // cache.put("MYKEY", {value1: 5, value2: 6, simpleArray: [1, 2, 3]});
   
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
-  cache.fetch('location_cache');
+  // cache.fetch('newobj');
+  
   
   var default_enterprise, default_fiscal_year;
   //donwload and set enterprise and fiscal year - this should not be done here
