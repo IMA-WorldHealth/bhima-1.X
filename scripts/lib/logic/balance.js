@@ -221,33 +221,33 @@ module.exports = (function (db) {
   
   }
 
-  function post () {
+  function post (period) {
+
+    // first setTotals in the period totals table
+          
     var defer = q.defer(),
         sql = {};
+
     
     sql.transfer = ['INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)',
                     'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;'].join(' ');
     sql.remove = 'DELETE FROM `posting_journal`;';
 
-    db.execute(sql.transfer, function(err, res) {
+    setTotals(period).then(function (res) {
+      db.execute(sql.transfer, function(err, res) {
+        if (err) defer.reject(err);
+        else {
+          db.execute(sql.remove, function (error, res) {
+            if (err) defer.reject(error);
+            defer.resolve(res);
+          });
+        }
+      });
+    }, function (err) {
       if (err) defer.reject(err);
-      else {
-        db.execute(sql.remove, function (error, res) {
-          if (err) defer.reject(error);
-          defer.resolve(res);
-        });
-      }
     });
-    
     return defer.promise;
   }
 
   return { trial: trial, post: post };
 });
-
-/*
- * test!
-var cfg = JSON.parse(fs.readFileSync('scripts/config.json', 'utf8'));
-var db = require('./scripts/lib/database/db')(cfg.db);
-var balance = require('./scripts/lib/logic/balance')(db);
-*/
