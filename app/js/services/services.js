@@ -245,6 +245,19 @@
       return deferred.promise;
     }
 
+    function loc() { 
+      //FIXME Stupid method to package location table in Model, super temporary (shouldn't need to download all locations for individual user) 
+      var handle, deferred = $q.defer();
+      handle = $http.get('location/');
+      handle.then(function(res) { 
+        var m = new Model(res, 'location');
+
+        console.log('loc', m);
+        deferred.resolve(m);
+      });
+      return deferred.promise;
+    }
+
     function fetch (defn) {
       //summary: 
       //  Exactly the same as req() but now returns only
@@ -263,7 +276,6 @@
     function Model (options, target) {
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
-
       // globals
       this.index = {};
       this.data = {};
@@ -505,6 +517,7 @@
 
     return {
       req: req,
+      loc: loc,
       basicReq: basicReq,
       basicPut: basicPut,
       basicPost: basicPost,
