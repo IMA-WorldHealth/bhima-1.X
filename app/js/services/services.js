@@ -77,6 +77,14 @@
       'get' : get
     };
 
+    function cacheInstance(namespace) { 
+      if(!namespace) throw new Error('Cannot register cache instance without namespace');
+      return { 
+        namespace: namespace,
+        fetch: fetch 
+      }
+    }
+
     function init() { 
       //also sets db - working on making it read better
       openDBConnection(DB_NAME, VERSION)
@@ -99,6 +107,18 @@
 
     function get(value) { 
 
+    }
+    
+    function fetch(key) { 
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+      console.log('Request for ', namespace, key);
+      return deferred.promise;
+    }
+  
+    function put(key, value) { 
+      var t = this, namespace = t.namespace;
+         
     }
 
     function testRead(namespace, key) { 
@@ -171,9 +191,7 @@
       //throw new Error();
     }
 
-    return { 
-      request : request
-    };
+    return cacheInstance;
   });
 
   services.factory('appstate', function ($q) { 
