@@ -18,12 +18,30 @@ angular.module('kpk.controllers')
   }*/
   
   console.log('[appController]');
-  var CACHE_NAMESPACE = 'application';
+  //constants
+  var CACHE_NAMESPACE = 'appjs';
+
   var cache = new appcache(CACHE_NAMESPACE);
 
   console.log(cache);
-  cache.fetch('value');
-
+  // cache.put("MYKEY", {value1: 5, value2: 6, simpleArray: [1, 2, 3]});
+  
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  cache.fetch('location_cache');
+  
   var default_enterprise, default_fiscal_year;
   //donwload and set enterprise and fiscal year - this should not be done here
   connect.req({'tables': { 'enterprise' : {'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id']}}})
