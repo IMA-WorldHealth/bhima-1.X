@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('appController', function($scope, $location, $translate, appcache, appstate, connect) { 
+.controller('appController', function($scope, $location, $translate, appcache, appstate, connect, validate) { 
   'use strict';
     
   //lookup users language preference 

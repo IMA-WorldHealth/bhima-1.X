@@ -67,6 +67,100 @@
       }
     };
   });
+  
+  //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
+  services.factory('validate', function($q, connect) {  
+    function validate() {
+      
+      //remove startup tests to only serve model validation
+      runStartupTests();
+    }
+    
+    //expose methods
+    function registerRequirements(requirements) { 
+      
+      
+    }
+
+    function validateModels(models) { 
+
+    }
+
+    //private methods  
+    //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
+    function runStartupTests() { 
+      console.log('running testSuite');
+
+      angular.forEach(testSuite, function(test, key) { 
+        console.log('running test ', key, test);
+        test.method().then(function(res) { 
+          console.log('completed test ', key, 'result: ', res);
+          test.result = res;
+        });
+      });
+    }
+
+    var testSuite = { 
+      "enterprise" : {method: testEnterpriseExists, result: null},
+      "fiscal" : {method: testFiscalExists, result: null}
+    }
+
+    function testRequiredModel(tableName, primaryKey) { 
+      var deferred = $q.defer();
+      var testDataQuery = { 
+    
+      }
+    }
+
+    function testEnterpriseExists() { 
+      var deferred = $q.defer();
+      var testDataQuery = { 
+        tables : { 
+          "enterprise" : { 
+            columns : ["id"]
+          }
+        }
+      }
+
+      //request test data
+      connect.req(testDataQuery).then(function(res) { 
+        
+        //test an enterprise exists 
+        deferred.resolve(isNotEmpty(res.data)); 
+      });
+      return deferred.promise;
+    }
+
+    function testFiscalExists() { 
+      var deferred = $q.defer();
+      var testDataQuery = { 
+        tables : { 
+          "fiscal_year" : { 
+            columns: ["id"]
+          }
+        }
+      }
+
+      connect.req(testDataQuery).then(function(res) { 
+        
+        //test for fiscal year existence 
+        deferred.resolve(isNotEmpty(res.data));
+      });
+      return deferred.promise;
+    }
+
+    //utility methods
+    function isNotEmpty(data) { 
+      if(data.length > 0) return true;
+      return false;
+    }
+
+    validate();
+
+    return {
+    };
+  });
+
 
   services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
