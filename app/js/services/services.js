@@ -78,12 +78,31 @@
     
     //expose methods
     function registerRequirements(requirements) { 
-      
-      
+      var response = {};
+
+      //FIXME requirements validation 
+      requirements.forEach(function(item, index) { 
+        if(testSuite[item]) { 
+          
+          //if testSuite[item] isn't completed, queue until everything is ready
+          response[item] = testSuite[item].result;
+        } else { 
+          response[item] = null;
+        } 
+      });
     }
 
-    function validateModels(models) { 
-
+    function processModels(models) { 
+    
+      /*
+       * dependencies
+       * {
+       *  request : { tables...}
+       *  test : function(return true or false);
+       *  required: true || false
+       *
+      */
+       
     }
 
     //private methods  
@@ -92,8 +111,10 @@
       console.log('running testSuite');
 
       angular.forEach(testSuite, function(test, key) { 
+        var args = test.args || [];
+
         console.log('running test ', key, test);
-        test.method().then(function(res) { 
+        test.method(args).then(function(res) {
           console.log('completed test ', key, 'result: ', res);
           test.result = res;
         });
@@ -101,54 +122,36 @@
     }
 
     var testSuite = { 
-      "enterprise" : {method: testEnterpriseExists, result: null},
-      "fiscal" : {method: testFiscalExists, result: null}
+      "enterprise" : {method: testRequiredModel, args: ["enterprise"], result: null},
+      "fiscal" : {method: testRequiredModel, args: ["fiscal_year"], result: null}
     }
-
+    
     function testRequiredModel(tableName, primaryKey) { 
       var deferred = $q.defer();
       var testDataQuery = { 
-    
-      }
-    }
-
-    function testEnterpriseExists() { 
-      var deferred = $q.defer();
-      var testDataQuery = { 
-        tables : { 
-          "enterprise" : { 
-            columns : ["id"]
-          }
-        }
+        tables : {}
       }
 
-      //request test data
-      connect.req(testDataQuery).then(function(res) { 
+      primaryKey = (primaryKey || "id");
+       
+      testDataQuery.tables[tableName] = { 
+        columns: [primaryKey]
+      }
+
+      //download data to test 
+      connect.req(testDataQuery)
+      .then(function(res) { 
         
-        //test an enterprise exists 
-        deferred.resolve(isNotEmpty(res.data)); 
-      });
-      return deferred.promise;
-    }
-
-    function testFiscalExists() { 
-      var deferred = $q.defer();
-      var testDataQuery = { 
-        tables : { 
-          "fiscal_year" : { 
-            columns: ["id"]
-          }
-        }
-      }
-
-      connect.req(testDataQuery).then(function(res) { 
-        
-        //test for fiscal year existence 
+        //run test on data
         deferred.resolve(isNotEmpty(res.data));
+      }, function(err) { 
+        
+        //download failed
+        deferred.reject();
       });
       return deferred.promise;
     }
-
+       
     //utility methods
     function isNotEmpty(data) { 
       if(data.length > 0) return true;
@@ -158,6 +161,7 @@
     validate();
 
     return {
+      processModels: processModels
     };
   });
 
