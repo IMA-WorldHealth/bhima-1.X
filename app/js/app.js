@@ -369,7 +369,8 @@
       DEBTOR_GROUP : 'Lobi'
 
     });
-
+    
+    //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('en');
   }
 
