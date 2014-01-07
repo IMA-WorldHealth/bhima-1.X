@@ -110,6 +110,10 @@
     when('/reports/summary', {
       controller: 'summaryController',
       templateUrl: 'partials/reports/summary/summary.html'
+    }).
+    when('/reports/account_balance/', {
+      controller: 'reportAccountBalanceCtrl',
+      templateUrl: 'partials/reports/account_balance/account_balance.html'
     })
     .when('/location', {
       controller : 'locationCtrl',

@@ -197,6 +197,21 @@ app.get('/location', function (req, res, next) {
   });
 });
 
+app.get('/account_balance/:id', function (req, res, next) {
+  var enterprise_id = req.params.id;
+
+  var sql =  'SELECT account.account_number, account.account_txt, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
+             'FROM account LEFT JOIN period_total ' + 
+             'ON account.id=period_total.account_id ' +
+             'WHERE account.enterprise_id=' + db.escapestr(enterprise_id);
+
+  db.execute(sql, function (err, rows) {
+    if (err) next(err);
+    res.send(rows);
+  });
+
+});
+
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));
 
 // temporary error handling for development!

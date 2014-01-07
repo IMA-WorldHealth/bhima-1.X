@@ -1,35 +1,145 @@
-@media print {
 
-  body *:not(.printable) {
+.visible-print,
+tr.visible-print,
+th.visible-print,
+td.visible-print {
+  display: none !important;
+}
+
+@media print {
+  * {
+    text-shadow: none !important;
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* must undo old kpk styles */
+  #kpk-sidebar {
     display: none !important;
     visibility: none !important;
+    max-width:0;
   }
 
-  .printable {
-    display: block !important;  
+  #kpk-container {
+    position: inherit !important;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden !important;
   }
 
-  /*
-  a:link, a:visited {
-    background: transparent;
-    color:#333;
-    text-decoration:none;
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+  .ir a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: "";
+  }
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+  img {
+    max-width: 100% !important;
+  }
+  @page  {
+    margin: 2cm .5cm;
+  }
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+  .navbar {
+    display: none;
+  }
+  .table td,
+  .table th {
+    background-color: #fff !important;
+  }
+  .btn > .caret,
+  .dropup > .btn > .caret {
+    border-top-color: #000 !important;
+  }
+  .label {
+    border: 1px solid #000;
+  }
+  .table {
+    border-collapse: collapse !important;
+  }
+  .table-bordered th,
+  .table-bordered td {
+    border: 1px solid #ddd !important;
   }
 
-  a:link[href^="http://"]:after,
-  a[href^="http://"]:visited:after {
-    content: " (" attr(href) ") ";
-    font-size: 11px;
-  }
-
-  a[href^="http://"] {
-    color:#000;
+  
+  /* this causes overflow issues.. /
+  .table-condensed tbody>tr>td,
+  .table-condensed tbody>tr>th,
+  .table-condensed tfoot>tr>td,
+  .table-condensed tfoot>tr>th,
+  .table-condensed thead>tr>td,
+  .table-condensed thead>tr>th {
+    padding: 0 5px;
+    padding-bottom: 1px;
   }
   */
 
-  .printable table {
-    width: 100%;
-    float: none;
-    margin: 0;
+  tr,
+  td,
+  .table tr,
+  .table td {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-header-group;
+  }
+
+  .visible-print {
+    display: block !important;
+  }
+  table.visible-print {
+    display: table;
+  }
+  tr.visible-print {
+    display: table-row !important;
+  }
+  th.visible-print,
+  td.visible-print {
+    display: table-cell !important;
+  }
+  .hidden-print,
+  tr.hidden-print,
+  th.hidden-print,
+  td.hidden-print {
+    display: none !important;
   }
 }
