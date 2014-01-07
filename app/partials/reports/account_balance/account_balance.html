@@ -1,0 +1,20 @@
+<header>
+  <span>Account Balance - {{date | date }}</span>
+</header>
+
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th>Account Number</th>
+      <th>Account Name</th>
+      <th>Balance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="row in models.accounts" ng-class="{'pad-left':row.parent!=0}">
+      <td>{{row.account_number}}</td>
+      <td>{{row.account_txt}}</td>
+      <td>{{row.balance | currency }}</td>
+    </tr>
+  </tbody>
+</table>
