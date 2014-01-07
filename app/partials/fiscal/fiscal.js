@@ -136,7 +136,7 @@ angular.module('kpk.controllers')
       .then(function(res) { 
 
         //Reset model
-        $scope.new_model = {};
+        $scope.new_model = {'year':'true'};
 
         //Reload fiscal years - could insert but unneeded calculation
         loadEnterprise(enterprise.id);
