@@ -212,13 +212,13 @@ angular.module('kpk.controllers')
 
   $scope.print = function () {
     printer.clear();
-    console.log("printing!", printer);
+    console.log('rows:', connect.clean($scope.model['journal'].data));
     printer.print({
       title: 'A cool title!',
       description: 'An attempt to print a table from journal...',
       table: {
         headers: ['id', 'date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'deb_cred_id', 'deb_cred_type', 'inv_po_id'],
-        data: connect.clean($scope.model['journal'])
+        rows: connect.clean($scope.model['journal'].data)
       }
     });
   };

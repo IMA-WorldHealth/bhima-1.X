@@ -64,7 +64,7 @@ module.exports = function(grunt) {
       },
       combine : { 
         files : {
-          'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/partials/**/**/*.css', 'app/css/*.css', '!app/css/*.min.css', 'app/css/grid/*.css', '!app/css/kpk-print.css'] 
+          'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/partials/**/**/*.css', 'app/css/*.css', '!app/css/*.min.css', 'app/css/grid/*.css'] 
         }
       }
     }

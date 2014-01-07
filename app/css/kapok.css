@@ -19,6 +19,15 @@ header {
   /*margin-bottom: 10px;*/
 }
 
+/* temp :: used in reporting account_balances */
+.pad-left td:first-child  {
+  padding-left: 15px !important;
+}
+
+.pad-right td:first-child  {
+  padding-right: 15px !important;
+}
+
 header small { 
   font-weight: normal;
   line-height: 1;

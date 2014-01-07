@@ -1,79 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Login to Kapok</title>
-    <style>
-
-      * {
-        outline: none;
-      }
-
-      html {
-        font-family: Arial, sans-serif;
-      }
-
-      form {
-        padding: 10px 50px 50px 50px;
-        display: block;
-        width: 300px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 200px;
-      }
-
-      form > label {
-        text-align: center;
-        display: block;
-        font-size: 4em;
-      }
-
-      .row {
-        width: 100%;
-        display: block;
-        float: left;
-      }
-
-      .row label {
-        text-transform: uppercase;
-        font-weight: bold;
-        float: left;
-      }
-
-      .row input {
-        background: #FFF;
-        float: right;
-        padding: 6px;
-        border: 1px solid #dadada;
-      }
-
-      .control {
-        width: 100%;
-      }
-
-      .control input {
-        color: rgba(0,0,0,0.95);
-        padding: 6px;
-        background: white;
-        border: 1px solid rgba(0,0,0,0.6);
-      }
-
-    </style>
-  </head>
-  <body>
-    <form action="/login" method="POST">
-      <label>Kapok</label>
-      <div class="row">
-          <label for="username">User</label>
-          <input name="username" placeholder="Enter your username" type="text" autofocus required />
+<head>
+  <title>Login to Kapok</title>
+  <link rel="stylesheet" href="css/kapok.min.css">
+</head>
+<body>
+  <div class="content">
+    <div class="row">
+      <div class="col-sm-offset-4 col-xs-4" style="margin-top:5%;">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form action="/login" method="POST" class="form">
+              <fieldset>
+                <legend>Login</legend>
+                <div class="form-group">
+                    <label for="username">User</label>
+                    <input name="username" class="form-kapok" placeholder="Enter your username" type="text" autofocus required />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input name="password" class="form-kapok" placeholder="Enter your password" type="password" required />
+                </div>
+                <input class="btn btn-sm btn-success" type="submit" />
+                <input class="btn btn-sm btn-default" type="reset" />
+              </fieldset>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="row">
-        <label for="password">Password</label>
-        <input name="password" placeholder="Enter your password" type="password" required />
-      </div>
-      <div class="control">
-        <input type="submit" />
-        <input type="reset" />
-      </div>
-    </form>
-  </body>
+    </div>
+  </div>
+</body>
 </html>

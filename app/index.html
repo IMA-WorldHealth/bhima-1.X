@@ -3,15 +3,14 @@
 <head>
   <meta charset="utf-8"/>
   <title>Kapok Health Information System</title>
-  <link rel="stylesheet" href="css/kapok.min.css" media="screen">
-  <link rel="stylesheet" href="css/kpk-print.css" media="print">
+  <link rel="stylesheet" href="css/kapok.min.css">
 </head>
 <body ng-app="kpk">
 
 <!--not required in placeholder rewrite-->
 <div ng-controller="appController">
 
-  <div id="kpk-sidebar" class="container">
+  <div id="kpk-sidebar" class="container hidden-print">
     <div class="row" id="kpk-header">
       <div class="col-xs-12">
         <h2><img src="assets/icon.png" width="100" height="100" class="loading"></h2>
@@ -60,29 +59,15 @@
     </div>
   </div>
 
-  <div class="printable" ng-controller="printerCtrl">
-      <h2 ng-bind="printer.title"></h2>
-      <span ng-bind="printer.description"></span>
-      <table class="table table-bordered" ng-class="{'table-hover': printer.table.hover, 'table-striped': printer.table.striped }">
-        <thead>
-          <tr>
-            <th ng-repeat="header in printer.table.headers">{{printer.head.data}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="row in printer.table.rows">
-            <td ng-repeat="datum in row" ng-bind="datum"></td>
-          </tr>
-        </tbody>
-      </table>
-      <button ng-click="clear()">Close Form</button>
-  </div>
+  <span class="visible-print"><span class="invisible">.</span></span>
 
-  <div id="kpk-container">
-    <div ng-controller="messageCtrl" class="kpk-messenger">
-      <alert ng-repeat="alert in messages" type="alert.type" close="close($index)">{{alert.msg}}</alert>
+  <div id="kpk-container"> 
+    <div class="hidden-print">
+      <div ng-controller="messageCtrl" class="kpk-messenger">
+        <alert ng-repeat="alert in messages" type="alert.type" close="close($index)"><span ng-bind="alert.msg"></span></alert>
+      </div>
     </div>
-    <div ng-view id="kpk-view"><!--Content populated with angular--></div>
+    <div ng-view id="kpk-view"></div>
   </div>
 </div>
 

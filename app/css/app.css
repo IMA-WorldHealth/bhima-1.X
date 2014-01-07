@@ -4,37 +4,6 @@
 }
 
 /*
- * Complete App Stylesheet
- *
-*/
-
-/* for header/title elements. See /#/cash */
-.kpk-header {
-  width: 100%;
-  padding: 1em;
-  border-bottom: 1px solid #E3E3E3;
-  margin-bottom: 1em;
-}
-
-.printable {
-  display: none;
-}
-
-.kpk-header h2 {
-  width: 33.33333%;
-  display: inline;
-}
-
-/* for dropdown menus w/ glyphicons see /#/cash */
-.kpk-menu {
-  border-radius: 2px;
-}
-
-.kpk-menu i {
-  padding-right: 0.75em;
-}
-
-/*
   TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
  */
 #kpk-sidebar {
@@ -117,10 +86,6 @@ etc.
   float: left;
 }
 
-#kpk-notify h3 {
-
-}
-
 #kpk-view { 
   position: relative;
   height: 100%;
@@ -135,10 +100,6 @@ etc.
   margin-left: 8px;
   margin-bottom: 5px;*/
 } 
-
-.kpk-panel-body { 
-
-}
 
 /* Hide in webkit the number spinners 
  * for both date and number.
