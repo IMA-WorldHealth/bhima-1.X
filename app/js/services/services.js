@@ -70,14 +70,9 @@
 
   services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
-    var VERSION = 15;
+    var VERSION = 16;
 
-    var db, cacheSupported;
-    var requestMap = { 
-      'get' : get
-    };
-
-    var dbdefer = $q.defer();
+    var db, cacheSupported, dbdefer = $q.defer();
 
     function cacheInstance(namespace) { 
       if(!namespace) throw new Error('Cannot register cache instance without namespace');
@@ -86,7 +81,6 @@
         fetch: fetch,
         fetchAll: fetchAll,
         put: put
-        // request: request
       }
     }
 
@@ -95,11 +89,8 @@
       openDBConnection(DB_NAME, VERSION)
       .then(function(connectionSuccess) { 
         dbdefer.resolve();
-        var tempInsert = {namespace: "appjs", key: "location_cache", another_element: 7, value: 4};
-        // testWrite(tempInsert); 
-        // testRead("appjs", "location_cache");
       }, function(error) { 
-        console.log('[appcache] error', error);
+        throw new Error(error);
       });
     }
 
@@ -110,10 +101,6 @@
       requestMap[method](value);
     }
 
-    function get(value) { 
-
-    }
-   
     //TODO This isn't readable, try common request (queue) method with accessor methods
     function fetch(key) {
       var t = this, namespace = t.namespace;
@@ -204,7 +191,7 @@
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
         console.log('[appcahce] upgraded');
        
-        //reset object store if it exists - DEVELOPMENT ONLY
+        //delete object store if it exists - DEVELOPMENT ONLY
         if(db.objectStoreNames.contains('master')) {
           //FIXME no error/ success handling
           db.deleteObjectStore('master');  
