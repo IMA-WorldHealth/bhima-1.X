@@ -258,7 +258,7 @@ create table `account` (
   `account_number`      int not null,
   `account_txt`         text,
   -- `account_category_id` tinyint not null,
-  `parent`              int not null,
+  `parent`              int unsigned not null,
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
   primary key (`id`),
