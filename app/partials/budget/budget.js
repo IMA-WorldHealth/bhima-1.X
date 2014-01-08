@@ -78,7 +78,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       var account_query = {
         'tables' : {
           'account' : {
-            'columns' : ["id", "account_txt", "account_category_id"]
+            'columns' : ["id", "account_txt"]
             }
         },
         'where' : ['account.enterprise_id=' + e_id]
@@ -265,6 +265,8 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
 
     $scope.updateBudget = function updateBudget() { 
       console.log('updateBudget');
+
+       
     };
 
     init();
