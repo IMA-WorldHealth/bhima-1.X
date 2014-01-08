@@ -200,15 +200,15 @@ app.get('/location', function (req, res, next) {
 app.get('/account_balance/:id', function (req, res, next) {
   var enterprise_id = req.params.id;
 
-  var sql = 'SELECT temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
+  var sql = 'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
             '(' +
-              'SELECT account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
+              'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
               'FROM account LEFT JOIN period_total ' +
               'ON account.id=period_total.account_id ' +
               'WHERE account.enterprise_id=' + db.escapestr(enterprise_id) +
             ') ' +
             'AS temp JOIN account_type ' +
-            'ON temp.account_type_id=account_type.id;';
+            'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
 
   db.execute(sql, function (err, rows) {
     if (err) next(err);

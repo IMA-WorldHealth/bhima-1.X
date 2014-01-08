@@ -323,6 +323,16 @@
       //
       //  where conditions can also be specified:
       //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
+      if (angular.isString(defn)) {
+        // CLEAN THIS UP
+        var d = $q.defer();
+        $http.get(defn).then(function (returned) {
+          returned.identifier = 'id';
+          d.resolve(new Model(returned))
+        });
+        return d.promise;
+      }
+
       var handle, deferred = $q.defer();
       var table = defn.primary || Object.keys(defn.tables)[0];
 
