@@ -14,7 +14,7 @@
     <tr ng-repeat="row in models.accounts" ng-class="{'pad-left':row.parent!=0}">
       <td>{{row.account_number}}</td>
       <td>{{row.account_txt}}</td>
-      <td ng-show="row.account_type_id!=3">{{row.balance | currency }}</td><!-- FIXME: this logic should come from the server -->
+      <td ng-show="row.type!='title'">{{row.balance | currency }}</td><!-- FIXME: this logic should come from the server -->
     </tr>
   </tbody>
 </table>
