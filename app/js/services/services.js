@@ -68,49 +68,146 @@
     };
   });
 
-  services.factory('appcache', function ($q) { 
+  services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
-    var VERSION = 2;
+    var VERSION = 16;
 
-    var db, cacheSupported;
-    var requestMap = { 
-      'get' : get
-    };
+    var db, cacheSupported, dbdefer = $q.defer();
+
+    function cacheInstance(namespace) { 
+      if(!namespace) throw new Error('Cannot register cache instance without namespace');
+      return { 
+        namespace: namespace,
+        fetch: fetch,
+        fetchAll: fetchAll,
+        put: put
+      }
+    }
 
     function init() { 
       //also sets db - working on making it read better
-      openDBConnection(DB_NAME)
+      openDBConnection(DB_NAME, VERSION)
       .then(function(connectionSuccess) { 
-
+        dbdefer.resolve();
       }, function(error) { 
-
+        throw new Error(error);
       });
     }
 
     //generic request method allow all calls to be queued if the database is not initialised
-    function request(method, value) { 
+    function request(method) { 
+      console.log(method, arguments);
       if(!requestMap[method]) return false;
       requestMap[method](value);
     }
 
-    function get(value) { 
+    //TODO This isn't readable, try common request (queue) method with accessor methods
+    function fetch(key) {
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+      dbdefer.promise
+      .then(function() { 
+        //fetch logic
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace, key').get([namespace, key]);
+        
+        request.onsuccess = function(event) { 
+          var result = event.target.result;
+          $rootScope.$apply(deferred.resolve(result));
+        };
+        request.onerror = function(event) { 
+          $rootScope.$apply(deferred.reject(event)); 
+        };
+      }); 
+      return deferred.promise;
+    }
+  
+    function put(key, value) { 
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+      
+      dbdefer.promise
+      .then(function() { 
+        var writeObject = { 
+          namespace: namespace,
+          key: key
+        }
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request;
+       
+        //TODO jQuery dependency - write simple utility to flatten/ merge object
+        writeObject = jQuery.extend(writeObject, value);
+        request = objectStore.put(writeObject); 
 
+        request.onsuccess = function(event) { 
+          console.log('write successful'); 
+          deferred.resolve(event);
+        }
+        request.onerror = function(event) { 
+          console.log('unable to put', event);
+          deferred.reject(event);
+        }
+      }); 
+      return deferred.promise;
     }
 
-    function openDBConnection(dbname) { 
+    function fetchAll() { 
+      var t = this, namespace = t.namespace;
       var deferred = $q.defer();
-      var request = indexedDB.open(dbname);
+
+      dbdefer.promise
+      .then(function() {
+        var store = [];
+        var transaction = db.transaction(['master'], 'readwrite');
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace').openCursor(namespace);
+
+        request.onsuccess = function(event) {
+          var cursor = event.target.result;
+          if(cursor) { 
+            store.push(cursor.value);
+            cursor.continue();
+          } else {
+            $rootScope.$apply(deferred.resolve(store));
+          }
+        }
+
+        request.onerror = function(event) { 
+          console.log('getall failure'); 
+          deferred.reject(event);
+        }
+      });
+      return deferred.promise;
+    }
+
+    function openDBConnection(dbname, dbversion) { 
+      var deferred = $q.defer();
+      var request = indexedDB.open(dbname, dbversion);
       request.onupgradeneeded = function(event) { 
         db = event.target.result;
-
-        // if(!db.objectStoreNames.contains()
+        //TODO naive implementation - one object store to contain all cached data, namespaced with feild
+        //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
+        console.log('[appcahce] upgraded');
+       
+        //delete object store if it exists - DEVELOPMENT ONLY
+        if(db.objectStoreNames.contains('master')) {
+          //FIXME no error/ success handling
+          db.deleteObjectStore('master');  
+        }
+        var objectStore = db.createObjectStore("master", {keyPath: ['namespace', 'key']});
+        objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
+        objectStore.createIndex("namespace", "namespace", {unique: false});
+        objectStore.createIndex("key", "key", {unique: false});
         deferred.resolve();
       };
-      request.onsuccess = function(event) { 
+      request.onsuccess = function(event) {
         db = request.result;
-        deferred.resolve();
+        $rootScope.$apply(deferred.resolve());
       };
       request.onerror = function(event) { 
+        console.log('connection failed');
         deferred.reject(event);
       };
       return deferred.promise;
@@ -124,12 +221,10 @@
       //throw new Error();
     }
 
-    return { 
-      request : request
-    };
+    return cacheInstance;
   });
 
-  services.factory('appstate', function ($q) { 
+  services.factory('appstate', function ($q, $rootScope) { 
     /*
     * summary: 
     *  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
@@ -154,6 +249,7 @@
     function set(comp_id, ref) { 
       //summary: 
       //  Assign id reference to value
+      console.log(comp_id, 'set', Date.now(), ref);
       comp[comp_id] = ref;
     }
 
@@ -166,6 +262,7 @@
     function register(comp_id, callback) { 
       // FIXME: These are strict violations
       var id = this.id;
+      console.log('request for callback', comp_id);
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
       }
@@ -173,6 +270,7 @@
       queue[comp_id].push({ref: this, callback: callback});
       //init call to pass current value
       if(comp[comp_id]) { 
+        console.log("calling callback()", comp_id);
         callback(comp[comp_id]);
       }
     }

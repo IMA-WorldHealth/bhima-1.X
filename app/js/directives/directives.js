@@ -42,7 +42,10 @@
     
     }])
 
-    .directive('treeModel', ['$compile', function($compile) {
+    .directive('treeModel', ['$compile', 'appcache', function($compile, appcache) {
+      var MODULE_NAMESPACE = 'tree';
+      var cache = new appcache(MODULE_NAMESPACE);
+      
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -50,8 +53,7 @@
           var treeModel = attrs.treeModel;
           var nodeId = attrs.nodeId || 'id';
           var nodeLabel = attrs.nodeLabel || 'label';
-          var nodeChildren = attrs.nodeChildren || 'children';
-
+          var nodeChildren = attrs.nodeChildren || 'children'; 
           var template = 
             '<ul>' + 
               '<li data-ng-repeat="node in ' + treeModel + '">' + 
@@ -65,14 +67,18 @@
             '</ul>';
 
           //Collapse by default
-          if (scope.node) scope.node.collapsed = true;
+          // if (scope.node) scope.node.collapsed = true;
+
           //Assign select/ collapse methods - should only occur once
           if (treeId && treeModel) {
             if (attrs.angularTreeview) {
               scope[treeId] = scope[treeId] || {};
               scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
                 selectedNode.collapsed = !selectedNode.collapsed;
-                };
+                
+                //update store 
+                cache.put(selectedNode.id_unit, {collapsed: selectedNode.collapsed});
+              };
               scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
                 if (scope[treeId].currentNode && scope[treeId].currentNode.selected) {
                   scope[treeId].currentNode.selected = undefined;
