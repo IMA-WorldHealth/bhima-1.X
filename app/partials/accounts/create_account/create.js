@@ -1,6 +1,6 @@
 // This is horrific code, refactor 
-angular.module('kpk.controllers').controller('createAccountController', function($scope, $q, connect) { 
-  console.log("createAccountController initialised");
+angular.module('kpk.controllers').controller('manageAccount', function($scope, $q, connect) { 
+  console.log("manageAccount initialised");
   /*Test page for organising and displaying chart of accounts with aggregate caculcations
   *
   * TODO (/purpose)
@@ -12,14 +12,39 @@ angular.module('kpk.controllers').controller('createAccountController', function
   $scope.model = {};
   $scope.model['accounts'] = {'data' : []};
 
-//  Request
-  var account_request = {
+  var accountRequest = {
     'identifier': 'account_number',
-  'tables' : {
+    'tables' : {
       'account' : {
         'columns' : ["id", "account_number", "account_txt", "account_type_id", "fixed", "parent"]
       }
     }
+  }
+  
+  var accountTypeRequest = {
+    'tables' : { 
+      'account_type' : { 
+        'columns' : ["id", "type"]
+      }
+    }
+  }
+ 
+  //tables needed from the server
+  var dependencies = ['account', 'account_type'];
+  var requests = {};
+  
+  //TODO initialise all of these in a method
+  requests.account = { 
+    query: accountRequest,
+    model: null,
+    test: null,
+    required: true
+  }
+  requests.account_type = { 
+    query: accountTypeRequest,
+    model: null,
+    test: null,
+    required: true
   }
   
   var AccountFormatter = function (row, cell, value, columnDef, dataContext) {
@@ -58,66 +83,89 @@ angular.module('kpk.controllers').controller('createAccountController', function
     rowHeight: 30
   };
 
-  function init() { 
-
-    connect.req(account_request).then(function(res) { 
-      $scope.model['accounts'] = res;
-      awfulIndentCrawl($scope.model['accounts'].data);
-      console.log($scope.model['accounts'].data);
-      var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
-      dataview = new Slick.Data.DataView({
-        groupItemMetadataProvider: groupItemMetadataProvider,
-        inlineFilter: true
+  function manageAccount() { 
+    fetchDependencies()
+    .then(function(res) { 
+      settupGrid();
+    });
+  }
+  
+  //TODO pass variables down through each method vs. referencing global variables for everything
+  function fetchDependencies() { 
+    var requestPromises = [], deferred = $q.defer();
+    
+    //request queries 
+    dependencies.forEach(function(key) { 
+      requestPromises.push(connect.req(requests[key].query));  
+    });
+    
+    //receive queries
+    $q.all(requestPromises)
+    .then(function(res) { 
+      dependencies.forEach(function(key, index) { 
+        requests[key].model = res[0];
+        console.log(requests);
       });
 
-      data = $scope.model['accounts'].data;
-      grid = new Slick.Grid('#account_grid', dataview, columns, options);
-
-      grid.registerPlugin(groupItemMetadataProvider);
-
-      grid.onSort.subscribe(function(e, args) {
-        sort_column = args.sortCol.field;
-        dataview.sort(compareSort, args.sortAsc);
-      })
-
-      grid.onClick.subscribe(function(e, args) { 
-
-        if ($(e.target).hasClass("toggle")) {
-          var item = dataview.getItem(args.row);
-          if (item) {
-            if (!item._collapsed) {
-              item._collapsed = true;
-            } else {
-              item._collapsed = false;
-            }
-
-            dataview.updateItem(item.id, item);
-          }
-          e.stopImmediatePropagation();
-        }
-
-      })
-
-      dataview.onRowCountChanged.subscribe(function(e, args) { 
-        grid.updateRowCount();
-        grid.render();
-      });
-
-      dataview.onRowsChanged.subscribe(function(e, args) { 
-        grid.invalidateRows(args.rows);
-        grid.render();
-      });
-
-      dataview.beginUpdate();
-      dataview.setItems($scope.model['accounts'].data);
-      dataview.setFilter(accountFilter)
-      dataview.endUpdate();
-
+      //validate models
       
+      deferred.resolve(dependencies);
+    }); 
+    return deferred.promise;
+  }
 
-      // group();
+  function settupGrid() { 
+
+    awfulIndentCrawl(requests['account'].model.data);
+    console.log(requests['account'].model.data);
+    var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+    dataview = new Slick.Data.DataView({
+      groupItemMetadataProvider: groupItemMetadataProvider,
+      inlineFilter: true
+    });
+
+    data = requests['account'].model.data;
+    grid = new Slick.Grid('#account_grid', dataview, columns, options);
+
+    grid.registerPlugin(groupItemMetadataProvider);
+
+    grid.onSort.subscribe(function(e, args) {
+      sort_column = args.sortCol.field;
+      dataview.sort(compareSort, args.sortAsc);
     })
 
+    grid.onClick.subscribe(function(e, args) { 
+
+      if ($(e.target).hasClass("toggle")) {
+        var item = dataview.getItem(args.row);
+        if (item) {
+          if (!item._collapsed) {
+            item._collapsed = true;
+          } else {
+            item._collapsed = false;
+          }
+
+          dataview.updateItem(item.id, item);
+        }
+        e.stopImmediatePropagation();
+      }
+
+    })
+
+    dataview.onRowCountChanged.subscribe(function(e, args) { 
+      grid.updateRowCount();
+      grid.render();
+    });
+
+    dataview.onRowsChanged.subscribe(function(e, args) { 
+      grid.invalidateRows(args.rows);
+      grid.render();
+    });
+
+    dataview.beginUpdate();
+    dataview.setItems(requests['account'].model.data);
+    dataview.setFilter(accountFilter)
+    dataview.endUpdate();
   }
 
   function compareSort(a, b) {
@@ -130,13 +178,13 @@ angular.module('kpk.controllers').controller('createAccountController', function
   function accountFilter(item) {
     //enables collapsed + expanded
     if (item.parent != null) {
-      var parent = $scope.model['accounts'].get(item.parent);
+      var parent = requests['account'].model.get(item.parent);
 
       while (parent) {
         if (parent._collapsed) {
           return false;
         }
-        parent = $scope.model['accounts'].get(parent.parent);
+        parent = requests['account'].model.get(parent.parent);
       }
     }
     return true;
@@ -144,15 +192,18 @@ angular.module('kpk.controllers').controller('createAccountController', function
 
   //runs in O(O(O(...)))
   function awfulIndentCrawl(data) { 
+    console.log('got', data);
     data.forEach(function(item, index) { 
       var indent = 0;
-      var parent = $scope.model['accounts'].get(item.parent);
+      var parent = requests['account'].model.get(item.parent);
       while(parent) { 
         indent++;
-        parent = $scope.model['accounts'].get(parent.parent);
+        parent = requests['account'].model.get(parent.parent);
       }
       item.indent = indent;
     });
   }
-  init();
+  
+  manageAccount();
+  // init();
 });
