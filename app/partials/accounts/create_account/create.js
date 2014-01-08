@@ -1,5 +1,5 @@
 // This is horrific code, refactor 
-angular.module('kpk.controllers').controller('manageAccount', function($scope, $q, connect) { 
+angular.module('kpk.controllers').controller('manageAccount', function($scope, $q, connect, appstate) { 
   console.log("manageAccount initialised");
   /*Test page for organising and displaying chart of accounts with aggregate caculcations
   *
@@ -46,13 +46,17 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     test: null,
     required: true
   }
+
+  var queueSubmissions = [];
   
   var AccountFormatter = function (row, cell, value, columnDef, dataContext) {
     // value = value.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
     var spacer = "<span style='display:inline-block;height:1px;width:" + (15 * dataContext["indent"]) + "px'></span>";
     var idx = dataview.getIdxById(dataContext.id);
-
-    if (data[idx + 1] && data[idx + 1].indent > data[idx].indent) {
+   
+    //raw hacks, don't even know why I try
+    if(dataContext.account_type_id === 3) { 
+    // if (data[idx + 1] && data[idx + 1].indent > data[idx].indent) {
       if (dataContext._collapsed) {
         return spacer + " <span class='toggle expanded glyphicon glyphicon-collapse-up'></span>&nbsp; <b>" + value + "</b>";
       } else {
@@ -127,19 +131,24 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
   $scope.submitAccount = function submitAccount(account) {
     console.log('submitting account', account); 
     
+    //do some kind of validation
+    
     //format account
     var formatAccount = { 
-      id: requests['account'].model.generateid(),
       account_type_id: account.type.id,
       account_number: account.number,
       account_txt: account.title,
-      fixed: Number(account.fixed),
+      fixed: account.fixed === "true" ? 1 : 0,
       parent: account.parent.account_number,
+      enterprise_id: appstate.get('enterprise').id
     }
-
-    $scope.model['account'].post(formatAccount);
-
-    dataview.refresh();
+    
+    connect.basicPut("account", [formatAccount]).then(function(res) { 
+      formatAccount.id = res.data.insertId;
+      $scope.model['account'].post(formatAccount);
+      dataview.refresh();
+      console.log('got ', res);
+    });
   }
 
   function settupGrid() { 
@@ -187,6 +196,7 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
       dataview.sort(ohadaSort, true);
       requests['account'].model.recalculateIndex();
       dataview.setFilter(accountFilter);
+      dataview.refresh(); 
       dataview.endUpdate();  
       grid.render();
     });

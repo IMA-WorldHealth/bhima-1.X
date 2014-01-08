@@ -252,7 +252,7 @@ create table `account_collection` (
 --
 DROP TABLE IF EXISTS `account`;
 create table `account` (
-  `id`                  int unsigned not null,
+  `id`                  int unsigned not null auto_increment,
   `account_type_id`     mediumint unsigned not null,
   `enterprise_id`       smallint unsigned not null,
   `account_number`      int not null,
