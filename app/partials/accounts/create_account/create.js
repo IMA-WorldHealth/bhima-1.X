@@ -129,6 +129,7 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     
     //format account
     var formatAccount = { 
+      id: requests['account'].model.generateid(),
       account_type_id: account.type.id,
       account_number: account.number,
       account_txt: account.title,
@@ -179,7 +180,14 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     })
 
     dataview.onRowCountChanged.subscribe(function(e, args) { 
+      console.log('THIS'); 
       grid.updateRowCount();
+      dataview.beginUpdate();
+      awfulIndentCrawl(requests['account'].model.data);
+      dataview.sort(ohadaSort, true);
+      requests['account'].model.recalculateIndex();
+      dataview.setFilter(accountFilter);
+      dataview.endUpdate();  
       grid.render();
     });
 
