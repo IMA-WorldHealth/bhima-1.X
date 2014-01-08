@@ -11,7 +11,6 @@ angular.module('kpk.controllers')
     connect.fetch('/account_balance/'+imports.enterprise.id)
     .then(function (model) {
       models.accounts = model.data;
-      console.log(model.data);
     });
 
     $scope.date = new Date();
@@ -20,6 +19,11 @@ angular.module('kpk.controllers')
   $scope.$watch('models.accounts', function () {
     if (!models.accounts) return;
   }, true);
+
+  $scope.notTitle = function (row) {
+    console.log(row.type);
+    return row.type != "title"; 
+  };
 
   run();
 
