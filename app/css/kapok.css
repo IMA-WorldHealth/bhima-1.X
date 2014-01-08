@@ -1,4 +1,8 @@
 /*Overrides a lot of CSS - check this is the best place for this rule*/
+* {
+  outline: none;
+}
+
 body { 
   font-size: 12px;
 }
@@ -54,13 +58,6 @@ fieldset {
   box-sizing: content-box;
 }
 
-/* publish alerts and messages here! */
-.kpk-message-container {
-  position: relative;
-  clear: none;
-  width: 100%;
-  z-index: 50;
-}
 
 .kpk-messenger {
   position: absolute;
@@ -102,7 +99,7 @@ fieldset {
   text-transform: capitalize;
 }
 
-/*Form-control direvative (spelt wrong) add more CSSness*/
+/*Form-control derivative (spelt wrong) add more CSSness*/
 .form-kapok {
   display: block;
   width: 100%;
@@ -131,14 +128,4 @@ fieldset {
   font-family: 'Glyphicons Halflings';
   font-size: 0.85em;
   content : '\e072';
-}
-
-/* trololololol */
-.loading {
-  transition: all 2.0s ease;
-}
-
-.loading:hover {
-  transform: rotate(360deg);
-  -webkit-transform: rotate(360deg);
 }
