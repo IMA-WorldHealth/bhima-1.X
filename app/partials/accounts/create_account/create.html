@@ -6,9 +6,10 @@
   Account Management
 </header>
 <section class="underline">
-  <!-- <button class="btn btn-default btn-sm">antyhing</button> -->
+<!-- <button class="btn btn-default btn-sm">antyhing</button> -->
+<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Add Account</button>
   <div class="pull-right">
-    <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Create Chart of Accounts</button>
+    <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Create Chart of Accounts</button>
   </div>
 </section>
 
@@ -18,15 +19,48 @@
   <div class="row">
 
     <div class="col-xs-6">
-      <form>
-        <div class="form-group">  
-
+      <form novalidate name="form">
+       <div class="form-group">
+          <label for="title">Account Title</label>
+          <input required type="text" id="title" class="form-kapok" ng-model="newAccount.title">
         </div>
+
+        <div class="form-group">
+          <label for="startMonth">Account Type</label>
+          <select required  id="type" class="form-kapok" ng-model="newAccount.type">
+            <!--Placeholder options-->
+            <option>Title</option>
+            <option>Balance Account</option>
+            <option>Income/Expense Account</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="number">Account Number</label>
+          <input required type="text" id="number" class="form-kapok" ng-model="newAccount.number">
+        </div>
+
+        <div class="form-group">
+          <div class="radio">
+            <label>
+              <input type="radio" name="option_fixed" id="fixed" value="true" ng-model="newAccount.fixed" checked>
+              Fixed
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="option_variable" id="variable" value="false"
+                      ng-model="newAccount.fixed">
+              Variable 
+            </label>
+          </div>
+        </div>
+        <button ng-disabled="form.$invalid" class="btn btn-success">Submit</button>
       </form>
     </div>
     <div class="col-xs-6">
       <!--Accounts grid to be populated-->
-      <div id="account_grid" class="grid"></div>
+      <div id="account_grid" class="grid" style="max-height: 480px"></div>
     </div>
   </div>
 </div>
