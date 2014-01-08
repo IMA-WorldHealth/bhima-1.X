@@ -6,8 +6,7 @@ angular.module('kpk.controllers')
         data = $scope.data = {},
         TRANSACTION_TYPE = 1;
 
-    imports.cash_account = appstate.get('enterprise').cash_account;
-    imports.enterprise_id = appstate.get('enterprise').id;
+    imports.enterprise = appstate.get('enterprise');
     imports.model_names = ['debitors', 'currency', 'cash', 'cash_items'];
 
     imports.debitors = {
@@ -40,7 +39,7 @@ angular.module('kpk.controllers')
     data.paying = [];
     data.payment = 0;
     data.total = 0;
-    data.currency = 1;
+    data.currency = 1; // FIXME
 
     function initialize (dependencies) {
       // init all data connections & models
@@ -291,11 +290,11 @@ angular.module('kpk.controllers')
       var doc, items;
       // gather data
       doc = {
-        enterprise_id : imports.enterprise_id,
+        enterprise_id : imports.enterprise.id,
         bon : 'E', // FIXME: impliment crediting
         bon_num : generateBonNumber(models.cash, 'E'),
         date : $filter('date')(new Date(), 'yyyy-MM-dd'),
-        debit_account : imports.cash_account,
+        debit_account : imports.enterprise.cash_account,
         credit_account : stores.debitors.get(data.debitor_id).account_id,
         currency_id : data.currency,
         cost: data.payment,

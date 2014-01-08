@@ -776,10 +776,10 @@
     self.messages = [];
     var indicies = {};
 
-    self.push = function (msg, timer) {
+    self.push = function (data, timer) {
       var id = Date.now();
-      msg.id = id;
-      self.messages.push(msg); 
+      data.id = id;
+      self.messages.push(data); 
       indicies[id] = $timeout(function () {
         var index, i = self.messages.length;
 
@@ -787,6 +787,15 @@
 
       }, timer || 3000);
     };
+
+    (function () {
+      ['info', 'warning', 'danger', 'success']
+      .forEach(function (type) {
+        self[type] = function (message, timer) {
+          self.push({type: type, msg: message }, timer);
+        };
+      });
+    })();
 
     self.close = function (idx) {
       // cancel timeout and splice out
