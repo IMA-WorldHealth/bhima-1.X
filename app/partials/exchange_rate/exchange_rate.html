@@ -18,8 +18,8 @@
       </table>
     </div>
 
-    <div class="col-xs-6">
-      <table class="table table-bordered">
+    <div class="col-xs-6" ng-switch="flags.current_exchange_rate" ng-cloak>
+      <table class="table table-bordered table-condensed" ng-switch-when="true">
         <thead>
           <tr><th colspan="2">Today's ({{swap.current_exchange_rate.date | date}}) Exchange Rate:</th></tr>
           <tr><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_1)}}</th><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_2)}}</th></tr>
@@ -29,7 +29,7 @@
         </tbody>
       </table>
     
-      <div class="panel panel-default">
+      <div class="panel panel-default" ng-switch-when="false">
         <div class="panel-body">
           <form name="kpk-exchange-form" class="form-horizontal">
             <fieldset>

@@ -12,6 +12,7 @@ angular.module('kpk.controllers')
   imports.currency = {tables : { 'currency' : { 'columns' : ['id', 'name', 'symbol', 'note']}}};
   imports.exchange = {tables : { 'exchange_rate' : { 'columns' : ['id', 'currency_1', 'currency_2', 'rate', 'date']}}};
 
+  flags.current_exchange_rate = false;
   swap.currency1 = {};
   swap.currency2 = {};
 
@@ -28,25 +29,14 @@ angular.module('kpk.controllers')
       });
       models.enterprise = imports.enterprise;
       if (imports.enterprise.currency_id) swap.currency1 = stores.currency.get(imports.enterprise.currency_id);
-
       // calculate today's exchange rate
-      var today = new Date();
-      models.exchange.forEach(function (xchange) {
-        var temp;
-        // RAW HACKS because mysql months start at 0 and JS months start at 1
-        if (!Number.isNaN(new Date(xchange.date).getMonth()))  {
-          temp = new Date(xchange.date);
-          temp.setMonth(new Date(xchange.date).getMonth() + 1);
-        } else {
-          var dateArray = xchange.date.split('-');
-          dateArray[1] = Number(dateArray[1]) + 1;
-          temp = new Date(dateArray.join('-'));
-        }
-        console.log('temp:', temp);
-        if (today.getMonth() === temp.getMonth() && today.getYear() === temp.getYear() && today.getDay() === temp.getDate()) {
-          swap.current_exchange_rate = xchange;
+      models.exchange.forEach(function (e) {
+        if (new Date(e.date).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)) {
+          flags.current_exchange_rate = true;
+          swap.current_exchange_rate = e;
         }
       });
+
 
     }, function (error) {
       messenger.push({ type: 'error', msg: 'Could not load currency information:' + error});
@@ -55,14 +45,13 @@ angular.module('kpk.controllers')
 
   function submit () {
     // transform to MySQL date
-    var date = new Date(),
-        formattedDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDay();
+    var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     connect.basicPut('exchange_rate', [{
       currency_1 : swap.currency1.id,
       currency_2: swap.currency2.id,
       rate : swap.rate,
-      date : formattedDate 
+      date : date 
     }]).then(function (result) {
       messenger.push({ type: 'success', msg: 'Added new currency with id: ' + result.data.insertId});
       run();

@@ -65,16 +65,19 @@
           <label class="pull-right" ng-show="data.excess > 0">Overdue: {{data.excess | currency }}</label>
           <div class="input-group">
             <input placehoder="$0.00" type="number" ng-model="data.payment" ng-change="allocate()" class="form-kapok">
-            <span class="input-group-addon">
+            <span class="input-group-addon dropdown-toggle">
               {{formatCurrency(data.currency)}}
             </span>
+            <ul class="dropdown-menu pull-right">
+              <li ng-repeat="currency in models.currency"><a href="" ng-click="data.currency=currency.id">{{currency.symbol}}</a></li>
+            </ul>
           </div>
         </div>
         <div class="panel-footer">
-          <button type="button" class="btn btn-default" ng-click="pay()" ng-disabled="!data.payment">
+          <button type="button" class="btn btn-success btn-sm" ng-click="pay()" ng-disabled="!data.payment">
             Pay Invoice(s)
           </button>
-          <button type="button" class="btn btn-default" ng-click="clearSelection()">
+          <button type="button" class="btn btn-default btn-sm" ng-click="clearSelection()">
             Clear Selection
           </button>
         </div>

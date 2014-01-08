@@ -9,7 +9,7 @@ angular.module('kpk.controllers')
   var newgroup = $scope.newgroup = {};
 
   function handleErrors (error) {
-    messenger.push({type: 'danger', msg: 'Error: ' + error});
+    messenger.danger('Error: ' + JSON.stringify(error));
   }
 
   // init
@@ -18,14 +18,14 @@ angular.module('kpk.controllers')
     .then(function (store) {
       models.account = store.data;
       stores.account = store;
-      messenger.push({ type: 'success', msg: 'Successfully Loaded:  accounts'});
+      messenger.success('Successfully Loaded:  accounts');
     }, handleErrors);
 
     connect.req({tables: {'creditor_group' : { columns: ["id", "group_txt", "account_id", "locked"]}}})
     .then(function (store) {
       models.creditor_group = store.data;
       stores.creditor_group = store;
-      messenger.push({ type: 'success', msg: 'Successfully Loaded: creditor_group'});
+      messenger.success('Successfully Loaded: creditor_group');
     }, handleErrors);
   }
 
@@ -47,25 +47,34 @@ angular.module('kpk.controllers')
     $scope.newgroup = {};
   }
 
+  function valid() {
+    return angular.isDefined($scope.newgroup.account_id) && angular.isDefined($scope.newgroup.group_txt);
+  }
+
   function save () {
+
+    if (!valid()) {
+      messenger.warning('You haven\'t entered all the data!');
+      return;
+    } 
 
     newgroup = connect.clean($scope.newgroup);
     if (flags.edit) {
       connect.basicPost('creditor_group', [newgroup], ['id']).then(function (response) {
-        flags.success = response.status == 200;
+        messenger.info('Successfully POSTed. id:'+response.data.insertId);
+      }, function (error) {
+        messenger.danger('Error in POSTing:' + JSON.stringify(error));  
       });
     } else {
       connect.basicPut('creditor_group', [newgroup]).then(function (response) {
-        flags.success = response.status == 200;
+        messenger.info('Successfully PUT. id:' + response.data.insertId);
+      }, function (error) {
+        messenger.danger('Error in putting: ' + JSON.stringify(error));  
       });
       models.creditor_group.push(newgroup);
     }
     flags.name = newgroup.group_txt;
-    newgroup = {};
-  }
-
-  function toggleSuccess () {
-    flags.success = !flags.success;
+    $scope.newgroup = {};
   }
 
   function lock (group) {
@@ -76,7 +85,6 @@ angular.module('kpk.controllers')
 
   $scope.formatAccount = formatAccount;
   $scope.formatGroupAccount = formatGroupAccount;
-  $scope.toggleSuccess = toggleSuccess;
   $scope.editGroup = editGroup;
   $scope.newGroup = newGroup;
   $scope.save = save;
