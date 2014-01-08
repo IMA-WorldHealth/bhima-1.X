@@ -52,7 +52,6 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     var spacer = "<span style='display:inline-block;height:1px;width:" + (15 * dataContext["indent"]) + "px'></span>";
     var idx = dataview.getIdxById(dataContext.id);
 
-    console.log('d', dataContext, 'got idx', idx);
     if (data[idx + 1] && data[idx + 1].indent > data[idx].indent) {
       if (dataContext._collapsed) {
         return spacer + " <span class='toggle expanded glyphicon glyphicon-collapse-up'></span>&nbsp; <b>" + value + "</b>";
@@ -124,11 +123,27 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     }); 
     return deferred.promise;
   }
+  
+  $scope.submitAccount = function submitAccount(account) {
+    console.log('submitting account', account); 
+    
+    //format account
+    var formatAccount = { 
+      account_type_id: account.type.id,
+      account_number: account.number,
+      account_txt: account.title,
+      fixed: Number(account.fixed),
+      parent: account.parent.account_number,
+    }
+
+    $scope.model['account'].post(formatAccount);
+
+    dataview.refresh();
+  }
 
   function settupGrid() { 
 
     awfulIndentCrawl(requests['account'].model.data);
-    console.log(requests['account'].model.data);
     var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
     dataview = new Slick.Data.DataView({
       groupItemMetadataProvider: groupItemMetadataProvider,
@@ -172,30 +187,42 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
       grid.invalidateRows(args.rows);
       grid.render();
     });
-
+  
     dataview.beginUpdate();
     dataview.setItems(requests['account'].model.data);
-    dataview.setFilter(accountFilter)
+    dataview.sort(ohadaSort, true);
+    requests['account'].model.recalculateIndex();
+    dataview.setFilter(accountFilter);
     dataview.endUpdate();
   }
 
-  function compareSort(a, b) {
-    console.log("oh loard");
-    var x = a[sort_column], y = b[sort_column];
-    console.log(x, y);
+  function ohadaSort(a, b) {
+    var x = String(a[sort_column]), y = String(b[sort_column]);
+ 
     return (x == y) ? 0 : (x > y ? 1 : -1);
   }
 
   function accountFilter(item) {
     //enables collapsed + expanded
+    var limit = 0, max = 20;
     if (item.parent != null) {
       var parent = requests['account'].model.get(item.parent);
-
+      console.log('infi');
       while (parent) {
+        limit++; 
+        if(limit > max) { 
+          console.log(parent, 'crashed with infinite loop');
+          console.log('first', requests['account'].model.get(311));
+          console.log('second', requests['account'].model.get(3120));
+          console.log(requests['account'].model);
+          return false;
+        } 
+        // console.log('currentParent', parent);
         if (parent._collapsed) {
           return false;
         }
         parent = requests['account'].model.get(parent.parent);
+        // console.log('newParent', parent);
       }
     }
     return true;
@@ -203,7 +230,6 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
 
   //runs in O(O(O(...)))
   function awfulIndentCrawl(data) { 
-    console.log('got', data);
     data.forEach(function(item, index) { 
       var indent = 0;
       var parent = requests['account'].model.get(item.parent);
