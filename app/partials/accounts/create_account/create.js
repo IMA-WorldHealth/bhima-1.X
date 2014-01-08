@@ -8,9 +8,9 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
   *   -Aggregates by nested account groups (olawd)
   *   -Naive sorting, correct order should not be assumed from database
   */
-
+  
+  //TODO replace all 'requests['account'].model' -> '$scope.models['account']'
   $scope.model = {};
-  $scope.model['accounts'] = {'data' : []};
 
   var accountRequest = {
     'identifier': 'account_number',
@@ -103,12 +103,23 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     $q.all(requestPromises)
     .then(function(res) { 
       dependencies.forEach(function(key, index) { 
-        requests[key].model = res[0];
-        console.log(requests);
+        requests[key].model = res[index];
       });
 
       //validate models
       
+      //temporary smashing together of models
+      dependencies.forEach(function(key, index) { 
+        $scope.model[key] = requests[key].model;
+      });
+
+      //set default selection for new account FIXME do this somewhere else 
+      $scope.newAccount = {
+        'type': $scope.model['account_type'].data[0],
+        //FIXME doesn't select default
+        'parent' : '*'
+      };
+  
       deferred.resolve(dependencies);
     }); 
     return deferred.promise;

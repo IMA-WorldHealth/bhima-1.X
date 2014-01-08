@@ -32,11 +32,11 @@
 
             <div class="form-group">
               <label for="type">Account Type</label>
-              <select required  id="type" class="form-kapok" ng-model="newAccount.type">
+              <select required  id="type" class="form-kapok" ng-options="c.type for c in model['account_type'].data" ng-model="newAccount.type">
                 <!--Placeholder options-->
-                <option>Title</option>
-                <option>Balance Account</option>
-                <option>Income/Expense Account</option>
+                <!-- <option>Title</option> -->
+                <!-- <option>Balance Account</option> -->
+                <!-- <option>Income/Expense Account</option> -->
               </select>
             </div>
             
@@ -70,8 +70,9 @@
         <div class="panel-body">
           <div class="form-group">
             <label for="parent">Title Account</label>
-            <select required  id="parent" class="form-kapok" ng-model="newAccount.parent">
+            <select required  id="parent" class="form-kapok" ng-options="c.account_txt for c in model['account'].data | filter: {account_type_id: 1}" ng-model="newAccount.parent">
               <!--Placeholder options-->
+              <option value="*">Root</option>
             </select>
           </div> 
         </div>
