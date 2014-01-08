@@ -1,5 +1,5 @@
 // This is horrific code, refactor 
-angular.module('kpk.controllers').controller('manageAccount', function($scope, $q, connect, appstate) { 
+angular.module('kpk.controllers').controller('manageAccount', function($scope, $q, connect, appstate, messenger) { 
   console.log("manageAccount initialised");
   /*Test page for organising and displaying chart of accounts with aggregate caculcations
   *
@@ -132,7 +132,11 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     console.log('submitting account', account); 
     
     //do some kind of validation
-    
+    //kill if account exists for now 
+    if($scope.model['account'].get(account.number)) { 
+      messenger.push({type: 'danger', msg: 'Account number already exists'});
+      return;
+    }
     //format account
     var formatAccount = { 
       account_type_id: account.type.id,
