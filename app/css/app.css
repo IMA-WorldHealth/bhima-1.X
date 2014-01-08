@@ -1,7 +1,3 @@
-/* Chrome outline fix */
-* {
-  outline: none;
-}
 
 /*
   TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
