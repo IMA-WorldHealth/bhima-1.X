@@ -102,7 +102,8 @@ INSERT INTO `unit` VALUES
   (49,'Debitor Groups', '', 1, 0, 'partials/debitor/debitor_group', 'debitor/debitor_group'),
   (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view'),
   (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger'),
-  (52,'Location Manager', '', 1, 0, 'partials/location/location', 'location');
+  (52,'Location Manager', '', 1, 0, 'partials/location/location', 'location'),
+  (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/');
 
 
 insert into `permission` (`id_unit`, `id_user`) values
@@ -175,6 +176,7 @@ insert into `permission` (`id_unit`, `id_user`) values
   (50,1),
   (51,1),
   (52,1),
+  (53,1),
   (1,13),
   (2,13),
 	(4,13),
