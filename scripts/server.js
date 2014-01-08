@@ -200,7 +200,7 @@ app.get('/location', function (req, res, next) {
 app.get('/account_balance/:id', function (req, res, next) {
   var enterprise_id = req.params.id;
 
-  var sql =  'SELECT account.account_number, account.account_txt, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
+  var sql =  'SELECT account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
              'FROM account LEFT JOIN period_total ' + 
              'ON account.id=period_total.account_id ' +
              'WHERE account.enterprise_id=' + db.escapestr(enterprise_id);

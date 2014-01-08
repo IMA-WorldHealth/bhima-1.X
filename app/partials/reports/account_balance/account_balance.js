@@ -11,6 +11,7 @@ angular.module('kpk.controllers')
     connect.fetch('/account_balance/'+imports.enterprise.id)
     .then(function (model) {
       models.accounts = model.data;
+      console.log(model.data);
     });
 
     $scope.date = new Date();
