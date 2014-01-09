@@ -94,7 +94,9 @@
     
     //FIXME rewrite this method
     function processModels(models) { 
-      var deferred = $q.defer(); 
+      //TODO tests should be a list of 
+      //[{test: function(), message: ""}]
+      var deferred = $q.defer(), pass = true; 
       /*
        * dependencies
        * {
@@ -106,27 +108,29 @@
 
       angular.forEach(models, function(dependency, key) { 
         var required = dependency.required || false, data = dependency.model.data;
-        var pass = true;
         var tests = dependency.test || [];
         
         //run default required test
         if(required) {
           pass = isNotEmpty(data);
+          
+          if(!pass) {  
+            deferred.resolve({passed: false, message: 'Required table ' + key + ' has no data'});
+            return false; //break from loop 
+          }
         }
-        
+
         //TODO tests can currently only be syncronous
-        if(!pass) { 
-          tests.forEach(function(test) { 
-            var testResult = test();
-            if(!testResult) { 
-              pass = testResult;
-              return false; //breaks from loop?
-            }
-          });
-        }
+        tests.forEach(function(test) { 
+          var testResult = test();
+          if(!testResult) { 
+            pass = testResult;
+            return false; //break from loop
+          }
+        });
       }); 
 
-      deferred.resolve(pass); 
+      deferred.resolve({passed: pass, message: 'End of process'}); 
       return deferred.promise;
     }
 
