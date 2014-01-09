@@ -15,8 +15,10 @@ var map = {
   'purchase_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'credit':'cost', 'doc_num':'id'}
 };
 
-module.exports = function (db) {
+module.exports = (function (db) {
+
   'use strict';
+
   var service_name = '';
   var self = {};
 
@@ -100,8 +102,11 @@ module.exports = function (db) {
       db.execute(sql, function (err, results) {
         if (err) throw err;
         journalRecord.account_id = results[0].account_id;
-        insertData('posting_journal', journalRecord).then(function (resolve) {
-          defer.resolve(resolve);
+        insertData('posting_journal', journalRecord)
+        .then(function (resolution) {
+          defer.resolve(resolution);
+        }, function (error) {
+          defer.reject(error);
         });
       });
     });
@@ -225,7 +230,7 @@ module.exports = function (db) {
         if (err) throw err;
         journalRecord.account_id = data2[0].sales_account;
 
-        for(var cle in objDebit) journalRecord[cle] = item[objDebit[cle]];
+        for (var cle in objDebit) journalRecord[cle] = item[objDebit[cle]];
 
         journalRecord.origin_id = posting.transaction_type;
         journalRecord.user_id = posting.user;
@@ -363,4 +368,4 @@ module.exports = function (db) {
 
   return self;
 
-};
+});
