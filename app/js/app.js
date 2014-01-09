@@ -52,7 +52,7 @@
       templateUrl: '/partials/inventory/register/register.html'
     }).
     when('/patient_records/:patientID', { 
-      controller: 'patientRecordsController', 
+      controller: 'patientRecords', 
       templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
     when('/sales/:debtorID/:inventoryID', { 

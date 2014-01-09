@@ -91,18 +91,43 @@
         } 
       });
     }
-
-    function processModels(models) { 
     
+    //FIXME rewrite this method
+    function processModels(models) { 
+      var deferred = $q.defer(); 
       /*
        * dependencies
        * {
-       *  request : { tables...}
+       *  query : { tables...}
        *  test : function(return true or false);
        *  required: true || false
        *
       */
-       
+
+      angular.forEach(models, function(dependency, key) { 
+        var required = dependency.required || false, data = dependency.model.data;
+        var pass = true;
+        var tests = dependency.test || [];
+        
+        //run default required test
+        if(required) {
+          pass = isNotEmpty(data);
+        }
+        
+        //TODO tests can currently only be syncronous
+        if(!pass) { 
+          tests.forEach(function(test) { 
+            var testResult = test();
+            if(!testResult) { 
+              pass = testResult;
+              return false; //breaks from loop?
+            }
+          });
+        }
+      }); 
+
+      deferred.resolve(pass); 
+      return deferred.promise;
     }
 
     //private methods  
