@@ -1,27 +1,224 @@
  //at left posting_journal property, at right service property such as sale, cash, purchase_order : map
-var util = require('../util/util'),
-    parser = require('../database/parser')(),
+var parser = require('../database/parser')(),
     Q = require('q');
 
-var map = {
-  'sale':{'t':'sale', 'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note', 'debit':'cost'},
-  'sale_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note', 'debit': 'cost', 'inv_po_id':'id'},
-  'sale_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id','deb_cred_id':'debitor_id', 'trans_date':'invoice_date', 'description':'note','inv_po_id':'id', 'credit':'total'},
-  'cash':{'t':'cash', 'enterprise_id':'enterprise_id', 'trans_id':'id','deb_cred_id':'deb_cred_id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'debit':'cost'},
-  'cash_debit':{'enterprise_id':'enterprise_id', 'trans_id':'id','deb_cred_id':'deb_cred_id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'debit':'cost', 'doc_num':'id'},
-  'cash_credit':{'enterprise_id':'enterprise_id','deb_cred_id':'deb_cred_id', 'trans_id':'id', 'currency_id':'currency_id', 'trans_date':'date', 'description':'text', 'inv_po_id':'invoice_id', 'credit':'allocated_cost'}, 
-  'purchase':{'t':'purchase', 'trans_id':'id','enterprise_id':'enterprise_id','credit':'cost','currency_id':'currency_id','deb_cred_id':'creditor_id','trans_date':'invoice_date','description':'note'},
-  'purchase_debit': {'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id','deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID',*/, 'doc_num':'id', 'debit':'total'},
-  'purchase_credit':{'enterprise_id':'enterprise_id', 'trans_id':'id', 'currency_id':'currency_id', 'deb_cred_id':'creditor_id', 'trans_date':'invoice_date', 'description':'note'/*,'fyearID':'fyearID'*/, 'credit':'cost', 'doc_num':'id'}
+var validate = {
+  isValidDate : function (date) { return !Number.isNaN(date.parse(date)); },
+  isValidNumber : function (number) {
+    var cast = Number(number);
+    return Number.isFinite(cast) && !Number.isNaN(cast);
+  },
+  isPositive : function (number) { 
+    return this.isValidNumber(number) && Number(number) >= 0;
+  },
+  isNegative : function (number) { return !this.isPositive(number); },
+  isEqual : function (a, b) { return a === b; }
 };
 
 module.exports = (function (db) {
-
+  // deals in everything journal related
   'use strict';
+
+  var table_router, check, get;
+
+  table_router = {
+    'sale'     : handleSales,
+    'cash'     : handleCash,
+    'purchase' : handlePurchase
+  };
+
+  check = {
+    validPeriod : function (enterprise_id, date, errback) {
+      var escaped_date = db.escapestr(get.date(date));
+      var sql =
+        'SELECT `period`.`id`, `fiscal_year_id` ' +
+        'FROM `period` ' +
+        'WHERE `period`.`period_start` <=' + escaped_date + ' AND ' +
+          '`period`.`period_stop` >=' + escaped_date + ' AND ' +
+          '`period`.`locked` = 0;\n';
+      db.execute(sql, function (err, rows) {
+        if (err) return errback(err);
+        if (rows.length === 0) return errback(new Error("No period found to match the posted date"));
+        return errback(null);
+      });
+    },
+  };
+
+  get = {
+    origin : function (table, callback) {
+      // uses the transaction_type table to derive an origin_id
+      // to post to the journal.  Returns the id.
+      var query = 'SELECT `id`, `service_txt` FROM `transaction_type` WHERE `service_txt`='+db.escapestr(table)+';';
+      db.execute(query, function (err, rows) {
+        if (err) return callback(err);
+        if (rows.length === 0) return callback(new Error('Cannot find origin for transaction type : ' + table));
+        return callback(null, rows[0].id);
+      });
+    },
+
+    transactionId : function (callback) {
+      // get a new transaction id from the journal.
+      // make sure it is the last thing fired in the
+      // call stack before posting.
+      var query = 'SELECT MAX(`trans_id`) AS `max` FROM `posting_journal`;';
+      db.execute(query, function (err, rows) {
+        if (err) return callback(err);
+        return callback(null, rows[0].max ? rows[0].max + 1 : 1);
+      });
+    },
+
+    date : function (date) {
+      // returns a mysql-compatible date
+      return (date || new Date()).toISOString().slice(0, 19).replace('T', ' ');
+    },
+  
+    period : function (date, callback) {
+      // gets the currency period from a mysql-compatible date.
+      var sql = 
+        'SELECT `id`, `fiscal_year_id` FROM `period` ' +
+        'WHERE `period_start` <= ' + db.escapestr(get.date(date)) + ' AND ' +
+        ' `period_stop` >= ' + db.escapestr(get.date(date)) + ';';
+
+      db.execute(sql, function (err, rows) {
+        if (err) return callback(err);
+        if (rows.length === 0) return callback(new Error('No period or fiscal year data for date: ' + date));
+        return { period_id :rows[0].id, fiscal_year_id : rows[0].fiscal_year_id };
+      });
+    }
+
+  };
+
+  function authorize (user_id, callback) {
+    // This is a placeholder until we find out how to allow
+    // users to post.  It is a permissions issue.
+    db.execute('SELECT 1+1 AS ans;', function (err, results) {
+      if (err) return callback(err);
+      return callback(null, results);
+    });
+  }
+
+
+  function handleSales (id, callback) {
+    // sale posting requests enter here.
+    var sql =
+      'SELECT `sale`.`enterprise_id`, `sale`.`id`, `sale`.`currency_id`, ' + 
+        '`sale`.`debitor_id`, `sale`.`seller_id`, `sale`.`discount`, `sale`.`invoice_date`, ' +
+        '`sale`.`cost`, `sale`.`note`, `sale_item`.`unit_price`, `sale_item`.`total`, ' +
+        '`sale_item`.`quantity`, `inventory`.`group_id` ' +
+      'FROM `sale` JOIN `sale_item` JOIN `inventory` ON ' + 
+        '`sale`.`id`=`sale_item`.`sale_id` AND ' +
+        '`sale_item`.`inventory_id`=`inventory`.`id` ' +
+      'WHERE `sale`.`id`='+db.escapestr(id)+';';
+
+    db.execute(sql, function (err, results) {
+      if (err) return callback(err, null);
+      if (results.length === 0) return callback(new Error('No sale by the id: ' + id));
+
+      var reference_sale = results[0];
+      var enterprise_id = reference_sale.enterprise_id;
+      var date = reference_sale.invoice_date;
+
+      // first check - do we have a validPeriod?
+      // Also, implicit in this check is that a valid fiscal year
+      // is in place.
+      check.validPeriod(enterprise_id, date, function (err) {
+        if (err) callback(err, null);  
+      });
+
+      // second check - is the cost positive for every transaction?
+      var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
+      if (!costPositive) return callback(new Error('Negative cost detected for sale id: ' + id));
+
+      // third check - are all the unit_price's for sale_items positive?
+      var unit_pricePositive = results.every(function (row) { return validate.isPositive(row.unit_price); });
+      if (!unit_pricePositive) return callback(new Error('Negative unit_price for sale id: ' + id));
+
+      // fourth check - is the total the price * the quantity?
+      var totalEquality = results.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
+      if (!totalEquality) return callback(new Error('Unit prices and quantities do not match for sale id: ' + id));
+  
+      // all checks have passed - prepare for writing to the journal.
+      get.origin('sale', function (err, origin_id) {
+        if (err) return callback(err);
+        // we now have the origin!
+        
+        get.transactionId(function (err, trans_id) {
+          if (err) return callback(err);
+          // we now have the trans_id!
+          
+          get.period(date, function (err, period_object) {
+            if (err) return callback(err);
+            var period_id = period_object.period_id;
+            var fiscal_year_id = period_object.fiscal_year_id; 
+            
+            // we can begin copying data from SALE -> JOURNAL
+
+            // First, copy the data from sale into the journal.
+            // FIXME: this is unclear with get.date() which returns a mysql-compatible date
+            var sale_query =
+              'INSERT INTO `posting_journal` ' +
+                '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+                '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+              'SELECT `sale`.`enteprise_id`, ' + [fiscal_year_id, period_id, trans_id, get.date()].join(', ') + 
+                '`sale`.`note`, `debitor_group`.`account_id`, `sale`.`cost`, 0, 0, 0, ' + // last three: credit, debit_equiv, credit_equiv
+                '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') +
+              'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' + 
+                '`sale`.`debitor_id`=`debitor`.`id` AND `debitor`.`group_id`=`debitor_group`.`id` ' +
+              'WHERE `sale`.`id`=' + db.escapestr(id) + ';';
+
+            console.log('\n Sale Query is: \n', sale_query, '\n'); // Sanity check
+
+            // Then copy data from SALE_ITEMS -> JOURNAL
+            var sale_item_query =
+              'INSERT INTO `posting_journal` ' +
+                '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+                '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+              'SELECT `sale`.`enteprise_id`, ' + [fiscal_year_id, period_id, trans_id, get.date()].join(', ') + 
+                '`sale`.`note`, `inv_group`.`sales_account`, 0, `sale_item`.`total`, 0, 0, ' + // last three: credit, debit_equiv, credit_equiv
+                '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') +
+              'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inv_group` ON ' + 
+                '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
+                '`inventory`.`group_id`=`inv_group`.`id` ' +
+              'WHERE `sale`.`id`=' + db.escapestr(id) + ';';
+
+            console.log('\n sale_item_query is: \n', sale_item_query, '\n'); // Sanity check
+            
+            // we are ready!
+            
+            db.execute(sale_query, function (err, rows) {
+              if (err) return callback(err);
+              db.execute(sale_item_query, function (err, rows) {
+                if (err) return callback(err);
+                return callback(null, rows);
+              });
+            });
+          });
+        });
+      });
+    });
+  }
+ 
+  function handleCash () {}
+
+  function handlePurchase () {}
 
   var service_name = '';
   var self = {};
 
+  self.request = function (table, id, user_id, callback) {
+    // authenticate and authorize
+    authorize(user_id, function (err, res) {
+      // Is this an anti-pattern?
+      // I am not calling the callback but passing it along..
+      if (err) return callback(err);
+      table_router[table](id, callback);
+    });
+  };
+
+  // this validates that we haven't posted the same thing twice.
+  // I don't think it actually works, since trans_ids are automatically generated
   self.poster = function (req, res, next) { 
     req.body.forEach(function (item) {
       var sql = "SELECT `id` FROM `posting_journal` WHERE `trans_id`=" + db.escapestr(item.id) + " AND `origin_id`=" + db.escapestr(item.transaction_type) + ";\n";

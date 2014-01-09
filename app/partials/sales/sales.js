@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('salesController', function($scope, $q, $location, $routeParams, connect, appstate) {
+angular.module('kpk.controllers')
+.controller('salesController', function($scope, $q, $location, $routeParams, connect, appstate) {
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
@@ -188,8 +189,8 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 
     function journalPost(id) {
       var deferred = $q.defer();
-      var request = {id: id, transaction_type: INVOICE_TYPE, user: $scope.verify, deb_cred_type: DEB_CRED_TYPE};
-      connect.journal([request]).then(function(res) {
+      connect.fetch('/journal/sale/' + id)
+      .then(function(res) {
         deferred.resolve(res);
       }, function (error) {
         deferred.reject(error);  

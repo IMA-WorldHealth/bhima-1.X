@@ -123,17 +123,21 @@ app.get('/journal', function (req, res, next) {
 });
 */
 
-/*
-app.post('/journal/:table/:id', function (req, res, next) {
+
+app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
-  journal.poster(req, res, next); 
+  journal.request(req.params.table, req.params.id, req.session.user_id, function (err, success) {
+    if (err) next(err);
+    res.send(200);
+  });
 });
-*/
+
 
 app.post('/journal', function (req, res, next) {
   // What are the params here?
   journal.poster(req, res, next); 
 });
+
 
 app.get('/max/:id/:table', function(req, res) { 
   var id = req.params.id;
