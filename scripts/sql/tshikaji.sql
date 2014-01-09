@@ -206,7 +206,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (49,13),
   (50,13),
   (51,13),
-  (52,13);
+  (52,13),
+  (54,13);
 
 -- configure location details
 insert into `country` values
