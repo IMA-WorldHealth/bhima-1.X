@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('patientRecords', function($scope, $q, $modal,  $routeParams, connect) {
+angular.module('kpk.controllers').controller('patientRecords', function($scope, $q, $modal,  $routeParams, connect, messenger, validate) {
     console.log("Patient Search init");
 
     var patient = ($routeParams.patientID || -1);			
@@ -21,34 +21,51 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
     }
 
     function init() { 
-      var promise = fetchRecords();
 
-      $scope.patient_model = {};
-      $scope.selected = null;
-      $scope.patient_filter = {};
-
-      promise
-      .then(function(model) { 
-        //FIXME configure locally, then expose
+      fetchRequests()
+      .then(function(res) { 
         
-        //expose scope 
-        $scope.patient_model = filterNames(model); //ng-grid
-        //Select default
-        if(patient>0) $scope.select(patient);
+        //expose to scope
+        dependencies.forEach(function(key) { 
+          $scope.model[key] = filterNames(requests[key].model);
+        });
 
-      }); 
+        //Select default
+        if(patient > 0) $scope.select(patient);
+      });
     }
 
-    function fetchRecords() { 
-      var deferred = $q.defer();
+    function fetchRequests() { 
+      var promiseList = [], deferred = $q.defer();
 
-      $scope.selected = {};
-
-      connect.req({'tables' : {'patient' : {'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id']}}})
-        .then(function(model) {
-        deferred.resolve(model);
+      //make requests
+      dependencies.forEach(function(key) { 
+        promiseList.push(connect.req(requests[key].query));     
       });
+  
+      //verify requests 
+      $q.all(promiseList)
+      .then(function(res) { 
+        console.log('fetched all records');  
+        
+        //populate models
+        dependencies.forEach(function(key, index) { 
+          requests[key].model = res[index];
+        });
+        //run tests 
+        validate.processModels(requests)
+        .then(function(res) { 
+          if(res.passed) { 
+            deferred.resolve();
+          } else { 
+            //handle errors 
+            messenger.push({type: 'info', msg: res.message}, 6000);
+          }
+        });
 
+      }, function(err) { 
+        messenger.push({type: 'danger', msg: 'Error fetching models: ' + err});  
+      });
       return deferred.promise;
     }
 
@@ -61,7 +78,7 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
     }
 
     $scope.select = function(id) { 
-      $scope.selected = $scope.patient_model.get(id);
+      $scope.selected = $scope.model['patient'].get(id);
     }
 
 		$scope.patientCard = function() { 
