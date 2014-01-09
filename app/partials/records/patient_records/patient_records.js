@@ -1,9 +1,25 @@
-angular.module('kpk.controllers').controller('patientRecordsController', function($scope, $q, $modal,  $routeParams, connect) {
+angular.module('kpk.controllers').controller('patientRecords', function($scope, $q, $modal,  $routeParams, connect) {
     console.log("Patient Search init");
 
-    var patient = ($routeParams.patientID || -1);
-						
-		
+    var patient = ($routeParams.patientID || -1);			
+    var requests = {};
+    $scope.model = {};
+    var dependencies = ['patient'];
+
+    var patientQuery = {
+      'tables' : {
+        'patient' : {
+          'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id']
+        }
+      }
+    };
+
+    requests['patient'] = { 
+      query: patientQuery,
+      model: null,
+      required: true
+    }
+
     function init() { 
       var promise = fetchRecords();
 
