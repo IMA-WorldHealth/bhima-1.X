@@ -105,24 +105,26 @@ app.get('/post/', function (req, res, next) {
   });
 });
 
+/*
+ * I believe this code is unused
 app.get('/journal', function (req, res, next) {
-  var cb = function (err, ans) {
-    if (err) next(err);
-    res.json(ans);
-  };
-  var myRequest = decodeURIComponent(url.parse(req.url).query);
-  var jsRequest;  
+  var jsRequest; 
   try {
-    jsRequest = JSON.parse(myRequest);
+    jsRequest = JSON.parse(decodeURIComponent(url.parse(req.url).query));
   } catch (e) {
     throw e;
   }
   var Qo = queryHandler.getQueryObj(jsRequest);
   console.log('\n', Qo, '\n');
-  db.execute(db.select(Qo), cb);  
+  db.execute(db.select(Qo), function (err, ans) {
+    if (err) next(err);
+    res.json(ans); // FIXME: this db.select is no longer defined.
+  });
 });
+*/
 
 app.post('/journal', function (req, res) {
+  // What are the params here?
   journal.poster(req, res); 
 });
 
@@ -199,6 +201,7 @@ app.get('/location', function (req, res, next) {
 });
 
 app.get('/account_balance/:id', function (req, res, next) {
+  // FIXME: put this in a module!
   var enterprise_id = req.params.id;
 
   var sql = 'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
