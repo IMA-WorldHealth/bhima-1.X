@@ -136,11 +136,7 @@
 394   Achat d’emballages commerciaux.   
 40  40. FOURNISSEURS      
 400   Fournisseurs, institutions sanitaires   
-401   Fournisseurs ordinaires   
-4010        
-4011        
-4012        
-4013        
+401   Fournisseurs ordinaires          
 403   Fournisseurs, avances et acomptes versés sur valeurs d’exploitation (ou sous-traitance)   
 404   Fournisseurs, emballages et matériels à rendre    
 405   Fournisseurs, factures à recevoir   
@@ -163,28 +159,14 @@
 4222      Para médicaux 
 43  43. ETAT-PUISSANCE PUBLIQUE     
 432   CPR   
-45  45.INSTITUTIONS APPARENTEES     
-450       
-451       
-452       
-453       
-454       
-455       
+45  45.INSTITUTIONS APPARENTEES           
 46  46. CREDITEURS ET DEBITEURS DIVERS      
-460   Débiteurs divers    
-46015       
-46010       
-4601        
-46012       
+460   Débiteurs divers     
 461   Créditeurs    
 4610      Divers  
 46102       INSS
-46102       
 462   Projets spécifiques   
-4620        
 465   Organismes internationaux   
-4650        
-4651        
 466   466 Autres projets spécifiques    
 47  47. COMPTES DE REGULARISATIONS      
 470   Régularisations passives    
@@ -218,8 +200,6 @@
 591   Caisse $ à Banque $   
 592   Banque $ à Caisse Fc    
 593   Banque € à Caisse Fc    
-        
-  CLASSE 6 : COMPTES DE CHARGES ET PERTES     
 60  60. STOCKS VENDUS     
 600   Médicaments vendus    
 607   Imprimés vendus   

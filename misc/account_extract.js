@@ -2,9 +2,9 @@ var fs = require('fs');
 
 const PATH_TO_FILE = './excel_accounts.txt';
 
-const TITLE = 1;
-const INCOME_EXPENSE = 2;
-const BALANCE = 3;
+const TITLE = 3;
+const INCOME_EXPENSE = 1;
+const BALANCE = 2;
 
 function Account(number, description, type) { 
   this.number = number;

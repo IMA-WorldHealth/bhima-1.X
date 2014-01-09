@@ -92,7 +92,7 @@
       templateUrl: 'partials/exchange_rate/exchange_rate.html'
     }).
     when('/create_account', {
-      controller: 'createAccountController',
+      controller: 'manageAccount',
       templateUrl: 'partials/accounts/create_account/create.html'
     }).
     when('/reports/finance', { 

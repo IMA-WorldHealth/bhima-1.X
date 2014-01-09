@@ -6,10 +6,12 @@
   Account Management
 </header>
 <section class="underline">
-  <!-- <button class="btn btn-default btn-sm">antyhing</button> -->
-  <div class="pull-right">
-    <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Create Chart of Accounts</button>
-  </div>
+<!-- <button class="btn btn-default btn-sm">antyhing</button> -->
+<button ng-click="updateState('editAccount')" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Add Account</button>
+<div class="pull-right">
+    <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Create Chart of Accounts</button> 
+    <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Generate Account Report</button>
+</div>
 </section>
 
 <div class="content">
@@ -18,21 +20,85 @@
   <div class="row">
 
     <div class="col-xs-6">
-      <form>
-        <div class="form-group">  
-
+      <div ng-switch on="formState">
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <p>Chart of accounts for {{enterprise}}</p>
+            
+            <p>Account information and relationshions are shown 
+            in the table on the right.</p> 
+            <p>Click 'Add Account' to add an account, and the pencil icon
+            next to each account item to edit accounts.</p>
+          </div> 
         </div>
-      </form>
-    </div>
+
+        <div ng-switch-when='editAccount'> 
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              New Account 
+            </div>
+            <div class="panel-body">
+              <form novalidate name="form">
+              <div class="form-group">
+                  <label for="title">Account Title</label>
+                  <input required type="text" id="title" class="form-kapok" ng-model="newAccount.title">
+                </div>
+
+                <div class="form-group">
+                  <label for="type">Account Type</label>
+                  <select required  id="type" class="form-kapok" ng-options="c.type for c in model['account_type'].data" ng-model="newAccount.type">
+                    <!--Placeholder options-->
+                    <!-- <option>Title</option> -->
+                    <!-- <option>Balance Account</option> -->
+                    <!-- <option>Income/Expense Account</option> -->
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="number">Account Number</label>
+                  <input required type="text" id="number" class="form-kapok" ng-model="newAccount.number">
+                </div>
+
+                <div class="form-group">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="option_fixed" id="fixed" value="true" ng-model="newAccount.fixed" checked>
+                      Fixed
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="option_variable" id="variable" value="false"
+                              ng-model="newAccount.fixed">
+                      Variable 
+                    </label>
+                  </div>
+                </div> 
+              </form>
+            </div> <!--panel body-->
+          </div> <!-- panel-->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Account Group (Title Account)
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label for="parent">Title Account</label>
+                <select required  id="parent" class="form-kapok" ng-options="c.account_txt for c in model['account'].data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
+                  <!--Placeholder options-->
+                  <option value="">Root Account</option>
+                </select>
+              </div> 
+            </div>
+          </div> 
+          <button ng-disabled="form.$invalid" ng-click="submitAccount(newAccount)" class="btn btn-success">Submit</button>
+        </div>
+      </div>
+    </div> <!--ng-switch-->
     <div class="col-xs-6">
       <!--Accounts grid to be populated-->
-      <div id="account_grid" class="grid"></div>
+      <div id="account_grid" class="grid" style="max-height: 480px"></div>
     </div>
   </div>
 </div>
 
-<section class="overline underline">
-  <div class="pull-right">
-    <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-floppy-save"></span> Save Changes</button>
-  </div>
-</section>

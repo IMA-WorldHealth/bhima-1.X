@@ -623,6 +623,13 @@
         queue = fail;
       };
 
+      this.recalculateIndex = function() { 
+        var data = this.data, index = this.index;
+        for (var i = 0, l = data.length; i < l; i++) {
+          index[data[i][identifier]] = i;
+        }
+      }
+
       return this;
     }
 
@@ -680,7 +687,7 @@
 
       model.put = function (object) {
         var id = object.id;
- ;       if (id in this.index) {
+        if (id in this.index) {
           //TODO: Implement overwrite flag/ behaviour
           throw new Error("Object overwrite attempted.");
         } else {
