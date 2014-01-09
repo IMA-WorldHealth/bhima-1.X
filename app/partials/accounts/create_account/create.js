@@ -12,6 +12,9 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
   //TODO replace all 'requests['account'].model' -> '$scope.models['account']'
   $scope.model = {};
 
+  //Defines state of the unit, updated from view
+  $scope.formState = "display";
+
   var accountRequest = {
     'identifier': 'account_number',
     'tables' : {
@@ -263,6 +266,9 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     });
   }
   
+  $scope.updateState = function updateState(newState) { 
+    $scope.formState = newState;
+  }
   manageAccount();
   // init();
 });
