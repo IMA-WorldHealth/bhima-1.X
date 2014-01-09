@@ -123,9 +123,16 @@ app.get('/journal', function (req, res, next) {
 });
 */
 
-app.post('/journal', function (req, res) {
+/*
+app.post('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
-  journal.poster(req, res); 
+  journal.poster(req, res, next); 
+});
+*/
+
+app.post('/journal', function (req, res, next) {
+  // What are the params here?
+  journal.poster(req, res, next); 
 });
 
 app.get('/max/:id/:table', function(req, res) { 
