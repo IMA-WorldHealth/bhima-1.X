@@ -16,22 +16,24 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
 
     requests['patient'] = { 
       query: patientQuery,
-      model: null,
       required: true
+    }
+  
+
+    function settup(res) {  
+      //expose to scope
+      dependencies.forEach(function(key) { 
+        $scope.model[key] = filterNames(requests[key].model);
+      });
+
+      //Select default patient 
+      if(patient > 0) $scope.select(patient);
     }
 
     function init() { 
-
       fetchRequests()
       .then(function(res) { 
-        
-        //expose to scope
-        dependencies.forEach(function(key) { 
-          $scope.model[key] = filterNames(requests[key].model);
-        });
-
-        //Select default
-        if(patient > 0) $scope.select(patient);
+        settup(res);      
       });
     }
 

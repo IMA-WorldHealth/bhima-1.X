@@ -113,13 +113,13 @@
         //run default required test
         if(required) {
           pass = isNotEmpty(data);
-          
           if(!pass) {  
             deferred.resolve({passed: false, message: 'Required table ' + key + ' has no data'});
             return false; //break from loop 
           }
         }
-
+      
+        //if required fails loop will return before this point 
         //TODO tests can currently only be syncronous
         tests.forEach(function(test) { 
           var testResult = test();
@@ -161,8 +161,7 @@
         tables : {}
       }
 
-      primaryKey = (primaryKey || "id");
-       
+      primaryKey = (primaryKey || "id"); 
       testDataQuery.tables[tableName] = { 
         columns: [primaryKey]
       }
