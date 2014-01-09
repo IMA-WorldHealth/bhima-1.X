@@ -67,6 +67,132 @@
       }
     };
   });
+  
+  //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
+  services.factory('validate', function($q, connect) {  
+    function validate() {
+      
+      //remove startup tests to only serve model validation
+      runStartupTests();
+    }
+    
+    //expose methods
+    function registerRequirements(requirements) { 
+      var response = {};
+
+      //FIXME requirements validation 
+      requirements.forEach(function(item, index) { 
+        if(testSuite[item]) { 
+          
+          //if testSuite[item] isn't completed, queue until everything is ready
+          response[item] = testSuite[item].result;
+        } else { 
+          response[item] = null;
+        } 
+      });
+    }
+    
+    //FIXME rewrite this method
+    function processModels(models) { 
+      //TODO tests should be a list of 
+      //[{test: function(), message: ""}]
+      var deferred = $q.defer(), pass = true; 
+      /*
+       * dependencies
+       * {
+       *  query : { tables...}
+       *  test : function(return true or false);
+       *  required: true || false
+       *
+      */
+
+      angular.forEach(models, function(dependency, key) { 
+        var required = dependency.required || false, data = dependency.model.data;
+        var tests = dependency.test || [];
+        
+        //run default required test
+        if(required) {
+          pass = isNotEmpty(data);
+          if(!pass) {  
+            deferred.resolve({passed: false, message: 'Required table ' + key + ' has no data'});
+            return false; //break from loop 
+          }
+        }
+      
+        //if required fails loop will return before this point 
+        //TODO tests can currently only be syncronous
+        tests.forEach(function(test) { 
+          var testResult = test();
+          if(!testResult) { 
+            pass = testResult;
+            return false; //break from loop
+          }
+        });
+      }); 
+
+      deferred.resolve({passed: pass, message: 'End of process'}); 
+      return deferred.promise;
+    }
+
+    //private methods  
+    //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
+    function runStartupTests() { 
+      console.log('running testSuite');
+
+      angular.forEach(testSuite, function(test, key) { 
+        var args = test.args || [];
+
+        console.log('running test ', key, test);
+        test.method(args).then(function(res) {
+          console.log('completed test ', key, 'result: ', res);
+          test.result = res;
+        });
+      });
+    }
+
+    var testSuite = { 
+      "enterprise" : {method: testRequiredModel, args: ["enterprise"], result: null},
+      "fiscal" : {method: testRequiredModel, args: ["fiscal_year"], result: null}
+    }
+    
+    function testRequiredModel(tableName, primaryKey) { 
+      var deferred = $q.defer();
+      var testDataQuery = { 
+        tables : {}
+      }
+
+      primaryKey = (primaryKey || "id"); 
+      testDataQuery.tables[tableName] = { 
+        columns: [primaryKey]
+      }
+
+      //download data to test 
+      connect.req(testDataQuery)
+      .then(function(res) { 
+        
+        //run test on data
+        deferred.resolve(isNotEmpty(res.data));
+      }, function(err) { 
+        
+        //download failed
+        deferred.reject();
+      });
+      return deferred.promise;
+    }
+       
+    //utility methods
+    function isNotEmpty(data) { 
+      if(data.length > 0) return true;
+      return false;
+    }
+
+    validate();
+
+    return {
+      processModels: processModels
+    };
+  });
+
 
   services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
