@@ -55,6 +55,7 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 
 	$q.all([connect.req(debitors), connect.req(creditors), connect.req(debitorGroup), connect.req(creditorGroup)]).then(init);
 
+
 	/*
 	*une zone pour fonction
 	*initialisations
@@ -76,7 +77,7 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 		if($scope.data.type == 'I'){			
 			if($scope.data.dc == 'D'){
 
-				$scope.model.chooses = models.debitors.data;
+				$scope.model.chooses = models.debitors.data;				
 
 			}else if($scope.data.dc == 'C'){
 
@@ -108,7 +109,7 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 			){
 				$scope.show = true;
 				if($scope.data.type == 'I'){
-
+					($scope.data.dc == 'D')?$scope.DC="DEBITOR":$scope.DC="CREDITOR";
 					connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id,
 																				type:$scope.data.dc, 
 																				ig:$scope.data.type, 
@@ -120,7 +121,9 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 			          popul();
 				    });	
 
-				}else if($scope.data.type == 'G'){		
+				}else if($scope.data.type == 'G'){	
+
+					($scope.data.dc == 'D')?$scope.DC="DEBITOR GROUP":$scope.DC="CREDITOR GROUP";
 
 					connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id, 
 																				type:$scope.data.dc, 
