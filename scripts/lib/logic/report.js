@@ -20,8 +20,7 @@ module.exports = (function (db) {
     var route = {
       'finance'         : finance,
       'stock'           : stock,
-      'transReport'     : transReport,
-      'account_balance' : account_balance
+      'transReport'     : transReport
     };
 
     route[request](params).then(function(report) { 
