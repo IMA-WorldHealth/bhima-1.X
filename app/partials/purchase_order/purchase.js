@@ -138,17 +138,17 @@ angular.module('kpk.controllers')
         if(res.status==200) {
           var promise = generateItems();
           promise
-            .then(function(res) {
-              console.log("Purchase order successfully generated", res);
-              connect.journal([{id:$scope.invoice_id, transaction_type:3, user:1}]); //just for the test, send data to the journal traget server-side
-//              Navigate to Purchase Order review || Reset form
-//              Reset form
-                init();
+          .then(function(res) {
+            console.log("Purchase order successfully generated", res);
+            connect.journal([{id:$scope.invoice_id, transaction_type:3, user:1}]); //just for the test, send data to the journal traget server-side
+//            Navigate to Purchase Order review || Reset form
+//            Reset form
+              init();
 
-            });
+          });
         }
       });
-  }
+  };
 
   $scope.updateItem = function(item) {
 

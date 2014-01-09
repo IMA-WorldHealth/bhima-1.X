@@ -279,7 +279,8 @@ angular.module('kpk.controllers')
   function journalPost (id, user) {
     var d = $q.defer();
     var request = {id: id, transaction_type: TRANSACTION_TYPE, user: user};
-    connect.journal([request]).then(function(res) {
+    connect.journal([request])
+    .then(function(res) {
       d.resolve(res);
     });
     return d.promise;
