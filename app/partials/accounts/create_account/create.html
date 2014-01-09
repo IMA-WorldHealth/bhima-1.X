@@ -86,7 +86,7 @@
                 <label for="parent">Title Account</label>
                 <select required  id="parent" class="form-kapok" ng-options="c.account_txt for c in model['account'].data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
                   <!--Placeholder options-->
-                  <option value="*">Root</option>
+                  <option value="">Root Account</option>
                 </select>
               </div> 
             </div>
