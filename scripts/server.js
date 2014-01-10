@@ -45,7 +45,7 @@ app.get('/', function (req, res, next) {
   res.sendfile('/index.html');
 });
 
-app.get('/data/', function (req, res, next) {
+app.get('/data/', function (req, res, next) {  
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
@@ -56,7 +56,8 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]); 
+  console.log('on est ici', req.body.t, req.body.data[0], req.body.pk[0]);
+  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);  
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -65,7 +66,7 @@ app.put('/data/', function (req, res, next) {
 
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var insertsql = parser.insert(req.body.t, req.body.data[0]);
+  var insertsql = parser.insert(req.body.t, req.body.data[0]);  
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
