@@ -23,11 +23,11 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
         }
       }
     };
-
-  
+ 
     function init() { 
 
-      appstate.register("enterprise", function(res) { 
+      appstate.register("enterprise", function(res) {
+        console.log("ENTERPRISE RECEIEVED", res);
         createBudget(res.id);
         // $scope.enterprise = res;
       });
@@ -124,10 +124,10 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           fetchBudget(account_id, y.id).then(function(model) { 
             y.model = indexMonths(model);
             y.display = formatBudget(y.model);
-            console.log('display - ', y.display);
-            console.log("fetchBudget", i, l);
+            // console.log('display - ', y.display);
+            // console.log("fetchBudget", i, l);
             if(i==l-1) { 
-              console.log("resolving", reports);
+              // console.log("resolving", reports);
               deferred.resolve(reports);
             }
           });
@@ -190,7 +190,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           //FIXME: repeated data in model and period
           data.actual = 0; //actual placeholder
           format.push(data);
-          console.log("format", data);
+          // console.log("format", data);
         } else { 
           format.push(null);
         }
@@ -264,26 +264,23 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     };
 
     $scope.updateBudget = function updateBudget() { 
-      console.log('updateBudget'); 
-      console.log('models', $scope.budget_model);
-      console.log('changed periods are', dirtyBudgets);
-      
       var promiseList = [];
 
       //FIXME send all post(put) requests at once - requires server API update
       //FIXME on storing changed budgets, store model - can call get directly on model
+      //make requests 
       $scope.budget_model.reports.forEach(function(report) { 
         report.model.data.forEach(function(budget_item) { 
-          console.log('checking', budget_item.period_id, dirtyBudgets);
           if(dirtyBudgets.indexOf(budget_item.period_id) >= 0) { 
-            console.log('push this one', budget_item.period_id);
             promiseList.push(connect.basicPost("budget", [{budget: budget_item.budget, id: budget_item.id}], ["id"]));    
           }
         });
       });
-
+      
+      //handle server response
       $q.all(promiseList).then(function(res) { 
         messenger.push({type: 'success', msg: 'Budget records updated'});
+        dirtyBudgets.length = 0;
       }, function(err) { 
         messenger.push({type: 'danger', msg: 'Error updating budget records ' + err.status});  
       });
