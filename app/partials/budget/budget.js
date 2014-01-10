@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('budgetController', function($scope, $q, connect, appstate) { 
+angular.module('kpk.controllers').controller('budgetController', function($scope, $q, connect, appstate, messenger) { 
     /////
     //  summary: 
     //    Controller behaviour for the budgeting unit, fetches displays and allows updates on data joined from 
@@ -8,9 +8,9 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     //    -Memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
     /////
     
-
-    //TODO: This data can be fetched from the application level service
-
+    
+    //Rewrite using more concise model and initialisation - validation and appcache service
+    var dirtyBudgets = [];
     var models = {};
 
     models['fiscal'] = {
@@ -253,7 +253,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
     };
 
-    $scope.validSelect = function() { 
+    $scope.validSelect = function() {
       //ugly
       if($scope.fiscal_model) { 
         if($scope.fiscal_model.data.length > 0) { 
@@ -264,10 +264,37 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     };
 
     $scope.updateBudget = function updateBudget() { 
-      console.log('updateBudget');
+      console.log('updateBudget'); 
+      console.log('models', $scope.budget_model);
+      console.log('changed periods are', dirtyBudgets);
+      
+      var promiseList = [];
 
-       
+      //FIXME send all post(put) requests at once - requires server API update
+      //FIXME on storing changed budgets, store model - can call get directly on model
+      $scope.budget_model.reports.forEach(function(report) { 
+        report.model.data.forEach(function(budget_item) { 
+          console.log('checking', budget_item.period_id, dirtyBudgets);
+          if(dirtyBudgets.indexOf(budget_item.period_id) >= 0) { 
+            console.log('push this one', budget_item.period_id);
+            promiseList.push(connect.basicPost("budget", [{budget: budget_item.budget, id: budget_item.id}], ["id"]));    
+          }
+        });
+      });
+
+      $q.all(promiseList).then(function(res) { 
+        messenger.push({type: 'success', msg: 'Budget records updated'});
+      }, function(err) { 
+        messenger.push({type: 'danger', msg: 'Error updating budget records ' + err.status});  
+      });
     };
+ 
+    $scope.dirtyInput = function dirtyInput(row) { 
+      var input_period = row.period_id; 
+      console.log(dirtyBudgets, input_period, input_period in dirtyBudgets);
+      if(dirtyBudgets.indexOf(input_period) < 0) dirtyBudgets.push(row.period_id);
+    }
+
 
     init();
   });
