@@ -18,8 +18,7 @@ angular.module('kpk.controllers')
     tables : { 'currency' : { columns : ['id', 'symbol', 'name'] }}
   };
   
-  //appstate doesn't gaurantee page has already loaded for 'get', a registered callback will be executed when the value is ready
-  // imports.enterprise_id = appstate.get('enterprise').id;
+  //appstate doesn't gaurantee page has already loaded for 'get', a registered callback will be executed when the value is ready // imports.enterprise_id = appstate.get('enterprise').id;
   appstate.register('enterprise', function(res) { 
     imports.enterprise_id = res.id;
     

@@ -87,7 +87,7 @@ INSERT INTO `unit` VALUES
 	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales/0/'),
 	(35,'Sale Records','Search for a sale',5,0,'/partials/sale_records/','sale_records/'),
 	(36,'Purchase Order','Create a new Purchase Order',11,0,'partials/inventory_purchase_order','inventory/purchase'),
-	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting'),
+	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting/'),
 	(38,'Cash Box','Pay invoices',5,0,'/partials/cash','cash'),
 	(39,'Register Stock','',11,0,'partials/inventory/register','inventory/register'),
 	(40,'Register Supplier','',11,0,'partials/inventory/creditors','creditors'),

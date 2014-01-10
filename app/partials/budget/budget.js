@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('budgetController', function($scope, $q, connect, appstate, messenger) { 
+angular.module('kpk.controllers').controller('budgetController', function($scope, $q, $routeParams, connect, appstate, messenger) { 
     /////
     //  summary: 
     //    Controller behaviour for the budgeting unit, fetches displays and allows updates on data joined from 
@@ -8,6 +8,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     //    -Memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
     /////
     
+    var account = $routeParams.accountID || -1;
     
     //Rewrite using more concise model and initialisation - validation and appcache service
     var dirtyBudgets = [];
@@ -27,9 +28,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     function init() { 
 
       appstate.register("enterprise", function(res) {
-        console.log("ENTERPRISE RECEIEVED", res);
         createBudget(res.id);
-        // $scope.enterprise = res;
       });
 
     }
@@ -40,19 +39,30 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       var budget_model = {reports: []};
 
       var default_account_select;
-
+  
+      //FIXME promise / error chain
       var promise = fetchAccount(e_id);
       promise
       .then(function(model) { 
         account_model = model;
-        default_account_select = account_model.data[0].id; //First account in list, could be loaded from cache (model.get(cache_id))
+        if(account === -1) {
+          default_account_select = account_model.data[0].id; //First account in list, could be loaded from cache (model.get(cache_id))
+          messenger.push({type: 'info', msg: 'No account provided, selected default'});
+        } else { 
+          default_account_select = account;
+        }
+
+        //validate account exists 
+        $scope.selected_account = account_model.get(default_account_select);
+        if(!$scope.selected_account) throw new Error('Provided account does not exist');
         return fetchFiscal(e_id);
       })
       .then(function(model) { 
         fiscal_model = model;
-
         //set the first budget report - this will be populated in updateReport
         var default_fiscal = appstate.get("fiscal"); //Risky with validation checks
+
+        if(!default_fiscal) throw new Error('Fiscal year not provided');
         budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}});
         fiscal_model.remove(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
@@ -64,12 +74,14 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
         //TODO: Util function to check if there are any fiscal years left
         //Default select
         $scope.selected_fiscal = $scope.fiscal_model.data[0];
-        $scope.selected_account = $scope.account_model.get(default_account_select); 
+
         $scope.budget_model = budget_model;
 
         console.log(budget_model);
         //Model has already been populated by default
         setSelected(default_account_select); //optional/ can expose default to $scope, or wait for user selection
+      }, function(err) { 
+        messenger.push({type: 'danger', msg: 'Failed to generate budget report ' + err});  
       });
     }
 
