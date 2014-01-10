@@ -49,11 +49,11 @@
           <form role="form">
             <div class="form-group">
               <label for="ad1">Address 1</label>
-              <input type="text" class="form-kapok" id="ad1ID" ng-model="creditor.address1">
+              <input type="text" class="form-kapok" id="ad1ID" ng-model="creditor.address_1">
             </div>
             <div class="form-group">
               <label for="ad1">Address 2</label>
-              <input type="text" class="form-kapok" id="ad2ID" ng-model="creditor.address2">
+              <input type="text" class="form-kapok" id="ad2ID" ng-model="creditor.address_2">
             </div>
             <div class="form-group">
               <label for="phone">Phone</label>
@@ -100,8 +100,8 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <button class="btn btn-danger btn-sm" ng-click="delete()" ng-disabled="form.$invalid">Delete Group</button>
-    <button class="btn btn-success btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save Group</button>
+    <button class="btn btn-danger btn-sm" ng-click="delete()" ng-disabled="form.$invalid">Delete</button>
+    <button class="btn btn-success btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save</button>
   </div>
 </section>
 

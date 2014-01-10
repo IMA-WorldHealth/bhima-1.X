@@ -71,21 +71,32 @@ angular.module('kpk.controllers')
     $scope.creditor = $scope.creditors[index];
     $scope.creditor.international = toBoolean($scope.creditor.international);
     $scope.creditor.locked = toBoolean($scope.creditor.locked);
-    $scope.creditor.location_id = getCreditorLocation($scope.creditors[index].location_id);
+    $scope.creditor.location_id = formatLocation(getCreditorLocation($scope.creditors[index].location_id)); //FIX ME locationt does not appear
     getCreditorGroupId($scope.creditors[index].creditor_id)
     .then(function (value) {
       $scope.creditor_group = getCreditorGroup(value.id);
     });
   };
 
+  function sanitize(creditor){
+    creditor.location_id = creditor.location_id.id;
+    for(key in creditor){
+      if(!creditor[key]){
+        delete creditor[key];
+      }
+    }
+    return creditor;
+
+  }
+
   $scope.save = function(creditor, creditor_group){
-    creditor.location_id = extractId(creditor.location_id);
+    //creditor.location_id = extractId(creditor.location_id);
     var creditor_group_id = extractId(creditor_group);
     var result = existe(creditor.id);
     result.then(function(response){
-      if (response ){ 
-
-        var sql_update = {t:'supplier', data:[creditor],pk:['id']};
+      if (response ){
+        var resp_creditor = sanitize(creditor);
+        var sql_update = {t:'supplier', data:[resp_creditor],pk:['id']};  
         connect.basicPost(sql_update.t, sql_update.data, sql_update.pk);
         $scope.creditor={};
         $scope.creditor_group = {};
@@ -106,28 +117,24 @@ angular.module('kpk.controllers')
     });
   };
 
-  function getCreditorId(id){
+  function getCreditorId(creditor_group_id){
     var def = $q.defer();
-    connect.basicPut('creditor', [{id:'', creditor_group_id:id, text:$scope.creditor.name}]).then(function(res){
+    connect.basicPut('creditor', [{creditor_group_id:creditor_group_id, text:$scope.creditor.name}]).then(function(res){
       if (res.status == 200) def.resolve(res.data.insertId);
     });
     return def.promise;
   }
 
   function existe (id) {
-    var def = $q.defer(); // Best to do: if (id === undefined) def.resolve(false);
-    if (id) { // this may be bad because if id === 0 this will fail...
-    
-      var sql = {
-        tables: {'supplier': { columns:['id']}},
-        where: ['supplier.id='+id]
-      };
-      connect.req(sql).then(function (resultat) {
-        def.resolve(resultat.data.length !== 0);
-      });
-    } else {
-      def.resolve(false);
-    }
+    var def = $q.defer();
+    if(id === undefined) def.resolve(false);
+    var sql = {
+      tables: {'supplier': {columns:['id']}},
+      where: ['supplier.id='+id]
+    };
+    connect.req(sql).then(function (resultat) {
+      def.resolve(resultat.data.length !== 0);
+    });
     return def.promise;
   }
 
@@ -140,6 +147,7 @@ angular.module('kpk.controllers')
   }
 
   function getCreditorLocation(idLocation){
+    console.log('voici ce que nius avouns', idLocation);
     var indice = -1;
     for(var i = 0; i<$scope.locations.length; i++){
       if($scope.locations[i].id == idLocation){
