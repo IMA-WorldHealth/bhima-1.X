@@ -43,7 +43,7 @@
               <tr ng-repeat="row in report.display">
                 <td class="column-big">{{row.period_start | date : 'MMM yyyy'}}</td>
                 <td class="column-small"><span ng-show="row">{{row.actual | currency}}</span></td>
-                <td><span ng-show="row"><input ng-model="row.budget" class="budget-field"></span></td>
+                <td><span ng-show="row"><input ng-change="dirtyInput(row)" ng-model="row.budget" class="budget-field"></span></td>
               </tr>
               </tr>
               <!--FIXME: This logic should be in controller, total can simply be displayed-->
