@@ -33,16 +33,16 @@ create table `currency` (
 --
 drop table if exists `exchange_rate`;
 create table `exchange_rate` (
-  `id`          mediumint unsigned not null auto_increment,
-  `currency_1`  tinyint unsigned not null,
-  `currency_2`  tinyint unsigned not null,
-  `rate`        decimal(10, 2) unsigned not null,
-  `date`        date not null,
-  key `currency_1` (`currency_1`),
-  key `currency_2` (`currency_2`),
+  `id`                      mediumint unsigned not null auto_increment,
+  `enterprise_currency_id`  tinyint unsigned not null,
+  `foreign_currency_id`     tinyint unsigned not null,
+  `rate`                    decimal(19, 2) unsigned not null,
+  `date`                    date not null,
+  key `enterprise_currency_id` (`centerprise_currency_id`),
+  key `foreign_currency_id` (`foreign_currency_id`),
   primary key (`id`),
-  constraint foreign key (`currency_1`) references `currency` (`id`),
-  constraint foreign key (`currency_2`) references `currency` (`id`)
+  constraint foreign key (`enterprise_currency_id`) references `currency` (`id`),
+  constraint foreign key (`foreign_currency_id`) references `currency` (`id`)
 ) engine=innodb;
 
 --
