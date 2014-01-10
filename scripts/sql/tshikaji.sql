@@ -46,7 +46,7 @@ delete from `sale`;
 insert into `user` values
   (1,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
-	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',1),
+	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
 
 INSERT INTO `unit` VALUES
@@ -103,13 +103,21 @@ INSERT INTO `unit` VALUES
   (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view'),
   (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger'),
   (52,'Location Manager', '', 1, 0, 'partials/location/location', 'location'),
-  (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/');
+  (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/'),
+  (54,'Debitor Aging', '', 10, 0, 'partials/reports/debitor_aging/', 'reports/debitor_aging/');
 
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
+  (2,2),
 	(4,2),
+	(9,2),
 	(6,2),
+  (5,2),
+  (8,2),
+  (11,2),
+  (10,2),
+  (21,2),
 	(30,2),
 	(31,2),
 	(34,2),
@@ -120,9 +128,18 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(38,2),
 	(39,2),
 	(40,2),
-	(9,2),
 	(41,2),
+  (44,2),
+  (45,2),
+  (46,2),
   (47,2),
+  (48,2),
+  (49,2),
+  (50,2),
+  (51,2),
+  (52,2),
+  (53,2),
+  (54,2),
 	(4, 3),
 	(6, 3),
 	(30,3),
@@ -177,6 +194,7 @@ insert into `permission` (`id_unit`, `id_user`) values
   (51,1),
   (52,1),
   (53,1),
+  (54,1),
   (1,13),
   (2,13),
 	(4,13),
