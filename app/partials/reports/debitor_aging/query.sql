@@ -1,0 +1,1 @@
+SELECT period.id, debitor.text, posting_journal.`debit`, posting_journal.`credit` FROM debitor, posting_journal, period WHERE debitor.`id` = posting_journal.`deb_cred_id` AND posting_journal.`deb_cred_type`='D' AND posting_journal.`period_id` = period.`id` GROUP BY period.`id`;

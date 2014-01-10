@@ -1,0 +1,47 @@
+<link href="partials/reports/transaction_report/debitor_aging.css" rel="stylesheet">
+<header>
+  <span class="capital">
+    Deditor Aging     
+  </span>
+  </header>
+  <div class="capital pull-right visible-print"> {{DC}}:{{model.selected.text}}<br/>{{option.dateFrom}} - {{option.dateTo}}</div>  
+
+<section class="underline">
+</section>
+<!--fix me-->
+<section class="underline infobar hidden-print">  
+</section>
+<!--fix me-->
+
+<div class="content">
+<div class="row">
+     <div class="col-xs-12">
+       <table id="tbl-print" class="table table-bordered">
+       <tr>
+         <td>ID</td>
+         <td>Transaction ID</td>
+         <td>Transaction Date</td>
+         <td>Account Number</td>
+         <td>Debit</td>
+         <td>Credit</td>
+         <td>Name</td>
+         <td>Service</td>
+         <td>Names</td>
+       </tr>
+        <tr>
+          <td>{{t_report.id}}</td>
+          <td>{{t_report.trans_id}}</td>
+          <td>{{t_report.trans_date | date}}</td>
+          <td>{{t_report.account_number}}</td>
+          <td>{{t_report.debit}}</td>
+          <td>{{t_report.credit}}</td>
+          <td>{{t_report.name}}</td>
+          <td>{{t_report.service_txt}}</td>
+          <td>{{t_report.names}}</td>
+        </tr>      
+    </table>
+   </div>
+</div>
+
+<section class="underline overline"> 
+</section>
