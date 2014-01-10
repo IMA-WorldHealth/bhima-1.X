@@ -8,7 +8,7 @@
     <input type="text" ng-model="patient_filter.filter" class="form-kapok" placeholder="Filter Patients">
   </div>
 	<div class="pull-right">
-		<a ng-click="patientCard()"  class="btn btn-default"><span class="glyphicon glyphicon-list"></span> Patient Card</a>
+		<a ng-click="patientCard()" ng-disabled="!selected"  class="btn btn-default"><span class="glyphicon glyphicon-list"></span> Patient Card</a>
     <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
   </div>
 </section>
@@ -17,7 +17,7 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <div ng-switch on="patient_model.data.length">
+      <div ng-switch on="model['patient'].data.length">
         <div class="alert alert-info" ng-switch-when='0'>
           No patients found. Reference <strong><a href="/#/patient">Patient Registration</a></strong> to register a patient.
         </div>
@@ -40,7 +40,7 @@
 
           <tbody>
           <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.id)"
-              ng-repeat="patient in patient_model.data | filter: patient_filter.filter">
+              ng-repeat="patient in model['patient'].data | filter: patient_filter.filter">
 
             <td>{{patient.id}}</td>
             <td>{{patient.name}}</td>

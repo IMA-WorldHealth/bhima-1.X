@@ -9,16 +9,6 @@
  */
 
 var q = require('q');
-var PDF = require('pdfkit');
-
-function print () {
-  // prints to a particular location
-  // and returns the hashed name to
-  // be sent to the browser to load.
-  var doc = new PDF();
-  var hashed = 'app/reports/user-date-123.pdf';
-  return hashed;
-}
 
 module.exports = (function (db) { 
   'use strict';
@@ -28,9 +18,9 @@ module.exports = (function (db) {
     *   Route request for reports, if no report matches given request, return null  
     */
     var route = {
-      'finance' : finance,
-      'stock'   : stock,
-      'transReport':transReport
+      'finance'         : finance,
+      'stock'           : stock,
+      'transReport'     : transReport
     };
 
     route[request](params).then(function(report) { 

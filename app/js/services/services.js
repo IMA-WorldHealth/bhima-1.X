@@ -6,111 +6,334 @@
   
   var services = angular.module('kpk.services', []);
     
-    services.service('kpkUtilitaire', function() { 
-      this.formatDate = function(dateString) {
-        return new Date(dateString).toDateString();
-      };
+  services.service('kpkUtilitaire', function() { 
+    this.formatDate = function(dateString) {
+      return new Date(dateString).toDateString();
+    };
 
-      Date.prototype.toMySqlDate = function (dateParam) {
-        var date = new Date(dateParam), annee, mois, jour;
-        annee = String(date.getFullYear());
-        mois = String(date.getMonth() + 1);
-        if (mois.length === 1) {
-         mois = "0" + mois;
-        }
-        jour = String(date.getDate());
-          if (jour.length === 1) {
-            jour = "0" + jour;
-        }      
-        return annee + "-" + mois + "-" + jour;
-      };
+    Date.prototype.toMySqlDate = function (dateParam) {
+      var date = new Date(dateParam), annee, mois, jour;
+      annee = String(date.getFullYear());
+      mois = String(date.getMonth() + 1);
+      if (mois.length === 1) {
+       mois = "0" + mois;
+      }
+      jour = String(date.getDate());
+        if (jour.length === 1) {
+          jour = "0" + jour;
+      }      
+      return annee + "-" + mois + "-" + jour;
+    };
 
-      this.convertToMysqlDate = function(dateString) {
-        return new Date().toMySqlDate(dateString);
-      };
+    this.convertToMysqlDate = function(dateString) {
+      return new Date().toMySqlDate(dateString);
+    };
 
-      this.isDateAfter = function(date1, date2){
-        date1 = new Date(date1);
-        date2 = new Date(date2);
+    this.isDateAfter = function(date1, date2){
+      date1 = new Date(date1);
+      date2 = new Date(date2);
 
-        if(date1.getFullYear > date2.getFullYear){
+      if(date1.getFullYear > date2.getFullYear){
+        return true;
+      }else if(date1.getFullYear() == date2.getFullYear()){
+        if(date1.getMonth() > date2.getMonth()){
           return true;
-        }else if(date1.getFullYear() == date2.getFullYear()){
-          if(date1.getMonth() > date2.getMonth()){
+        }else if(date1.getMonth() == date2.getMonth()){
+          if(date1.getDate() > date2.getDate())
             return true;
-          }else if(date1.getMonth() == date2.getMonth()){
-            if(date1.getDate() > date2.getDate())
-              return true;
-              return false;
-          }else if(date1.getMonth() < date2.getMonth()){
             return false;
-          }
-        }else if(date1.getFullYear() < date2.getFullYear()){
+        }else if(date1.getMonth() < date2.getMonth()){
           return false;
         }
-      };
+      }else if(date1.getFullYear() < date2.getFullYear()){
+        return false;
+      }
+    };
 
-      this.areDatesEqual = function(date1, date2){
-        date1 = new Date(date1);
-        date2 = new Date(date2);
+    this.areDatesEqual = function(date1, date2){
+      date1 = new Date(date1);
+      date2 = new Date(date2);
 
-        if(date1.getFullYear != date2.getFullYear){
+      if(date1.getFullYear != date2.getFullYear){
+        return false;
+      }else if(date1.getFullYear() == date2.getFullYear()){
+        if(date1.getMonth() != date2.getMonth()){
           return false;
-        }else if(date1.getFullYear() == date2.getFullYear()){
-          if(date1.getMonth() != date2.getMonth()){
+        }else if(date1.getMonth() == date2.getMonth()){
+          if(date1.getDate() != date2.getDate())
             return false;
-          }else if(date1.getMonth() == date2.getMonth()){
-            if(date1.getDate() != date2.getDate())
-              return false;
-              return true;
+            return true;
+        }
+      }
+    };
+  });
+  
+  //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
+  services.factory('validate', function($q, connect) {  
+    function validate() {
+      
+      //remove startup tests to only serve model validation
+      runStartupTests();
+    }
+    
+    //expose methods
+    function registerRequirements(requirements) { 
+      var response = {};
+
+      //FIXME requirements validation 
+      requirements.forEach(function(item, index) { 
+        if(testSuite[item]) { 
+          
+          //if testSuite[item] isn't completed, queue until everything is ready
+          response[item] = testSuite[item].result;
+        } else { 
+          response[item] = null;
+        } 
+      });
+    }
+    
+    //FIXME rewrite this method
+    function processModels(models) { 
+      //TODO tests should be a list of 
+      //[{test: function(), message: ""}]
+      var deferred = $q.defer(), pass = true; 
+      /*
+       * dependencies
+       * {
+       *  query : { tables...}
+       *  test : function(return true or false);
+       *  required: true || false
+       *
+      */
+
+      angular.forEach(models, function(dependency, key) { 
+        var required = dependency.required || false, data = dependency.model.data;
+        var tests = dependency.test || [];
+        
+        //run default required test
+        if(required) {
+          pass = isNotEmpty(data);
+          if(!pass) {  
+            deferred.resolve({passed: false, message: 'Required table ' + key + ' has no data'});
+            return false; //break from loop 
           }
         }
-      };
+      
+        //if required fails loop will return before this point 
+        //TODO tests can currently only be syncronous
+        tests.forEach(function(test) { 
+          var testResult = test();
+          if(!testResult) { 
+            pass = testResult;
+            return false; //break from loop
+          }
+        });
+      }); 
+
+      deferred.resolve({passed: pass, message: 'End of process'}); 
+      return deferred.promise;
+    }
+
+    //private methods  
+    //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
+    function runStartupTests() { 
+      console.log('running testSuite');
+
+      angular.forEach(testSuite, function(test, key) { 
+        var args = test.args || [];
+
+        console.log('running test ', key, test);
+        test.method(args).then(function(res) {
+          console.log('completed test ', key, 'result: ', res);
+          test.result = res;
+        });
+      });
+    }
+
+    var testSuite = { 
+      "enterprise" : {method: testRequiredModel, args: ["enterprise"], result: null},
+      "fiscal" : {method: testRequiredModel, args: ["fiscal_year"], result: null}
+    }
+    
+    function testRequiredModel(tableName, primaryKey) { 
+      var deferred = $q.defer();
+      var testDataQuery = { 
+        tables : {}
+      }
+
+      primaryKey = (primaryKey || "id"); 
+      testDataQuery.tables[tableName] = { 
+        columns: [primaryKey]
+      }
+
+      //download data to test 
+      connect.req(testDataQuery)
+      .then(function(res) { 
+        
+        //run test on data
+        deferred.resolve(isNotEmpty(res.data));
+      }, function(err) { 
+        
+        //download failed
+        deferred.reject();
+      });
+      return deferred.promise;
+    }
+       
+    //utility methods
+    function isNotEmpty(data) { 
+      if(data.length > 0) return true;
+      return false;
+    }
+
+    validate();
+
+    return {
+      processModels: processModels
+    };
   });
 
-  services.factory('appcache', function($q) { 
-    var DB_NAME = "kpk";
-    var VERSION = 2;
 
-    var db, cacheSupported;
-    var requestMap = { 
-      'get' : get
-    };
+  services.factory('appcache', function ($rootScope, $q) { 
+    var DB_NAME = "kpk";
+    var VERSION = 16;
+
+    var db, cacheSupported, dbdefer = $q.defer();
+
+    function cacheInstance(namespace) { 
+      if(!namespace) throw new Error('Cannot register cache instance without namespace');
+      return { 
+        namespace: namespace,
+        fetch: fetch,
+        fetchAll: fetchAll,
+        put: put
+      }
+    }
 
     function init() { 
       //also sets db - working on making it read better
-      openDBConnection(DB_NAME)
+      openDBConnection(DB_NAME, VERSION)
       .then(function(connectionSuccess) { 
-
+        dbdefer.resolve();
       }, function(error) { 
-
+        throw new Error(error);
       });
     }
 
     //generic request method allow all calls to be queued if the database is not initialised
-    function request(method, value) { 
+    function request(method) { 
+      console.log(method, arguments);
       if(!requestMap[method]) return false;
       requestMap[method](value);
     }
 
-    function get(value) { 
+    //TODO This isn't readable, try common request (queue) method with accessor methods
+    function fetch(key) {
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+      dbdefer.promise
+      .then(function() { 
+        //fetch logic
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace, key').get([namespace, key]);
+        
+        request.onsuccess = function(event) { 
+          var result = event.target.result;
+          $rootScope.$apply(deferred.resolve(result));
+        };
+        request.onerror = function(event) { 
+          $rootScope.$apply(deferred.reject(event)); 
+        };
+      }); 
+      return deferred.promise;
+    }
+  
+    function put(key, value) { 
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+      
+      dbdefer.promise
+      .then(function() { 
+        var writeObject = { 
+          namespace: namespace,
+          key: key
+        }
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request;
+       
+        //TODO jQuery dependency - write simple utility to flatten/ merge object
+        writeObject = jQuery.extend(writeObject, value);
+        request = objectStore.put(writeObject); 
 
+        request.onsuccess = function(event) { 
+          console.log('write successful'); 
+          deferred.resolve(event);
+        }
+        request.onerror = function(event) { 
+          console.log('unable to put', event);
+          deferred.reject(event);
+        }
+      }); 
+      return deferred.promise;
     }
 
-    function openDBConnection(dbname) { 
+    function fetchAll() { 
+      var t = this, namespace = t.namespace;
       var deferred = $q.defer();
-      var request = indexedDB.open(dbname);
+
+      dbdefer.promise
+      .then(function() {
+        var store = [];
+        var transaction = db.transaction(['master'], 'readwrite');
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace').openCursor(namespace);
+
+        request.onsuccess = function(event) {
+          var cursor = event.target.result;
+          if(cursor) { 
+            store.push(cursor.value);
+            cursor.continue();
+          } else {
+            $rootScope.$apply(deferred.resolve(store));
+          }
+        }
+
+        request.onerror = function(event) { 
+          console.log('getall failure'); 
+          deferred.reject(event);
+        }
+      });
+      return deferred.promise;
+    }
+
+    function openDBConnection(dbname, dbversion) { 
+      var deferred = $q.defer();
+      var request = indexedDB.open(dbname, dbversion);
       request.onupgradeneeded = function(event) { 
         db = event.target.result;
-
-        // if(!db.objectStoreNames.contains()
+        //TODO naive implementation - one object store to contain all cached data, namespaced with feild
+        //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
+        console.log('[appcahce] upgraded');
+       
+        //delete object store if it exists - DEVELOPMENT ONLY
+        if(db.objectStoreNames.contains('master')) {
+          //FIXME no error/ success handling
+          db.deleteObjectStore('master');  
+        }
+        var objectStore = db.createObjectStore("master", {keyPath: ['namespace', 'key']});
+        objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
+        objectStore.createIndex("namespace", "namespace", {unique: false});
+        objectStore.createIndex("key", "key", {unique: false});
         deferred.resolve();
       };
-      request.onsuccess = function(event) { 
+      request.onsuccess = function(event) {
         db = request.result;
-        deferred.resolve();
+        $rootScope.$apply(deferred.resolve());
       };
       request.onerror = function(event) { 
+        console.log('connection failed');
         deferred.reject(event);
       };
       return deferred.promise;
@@ -124,12 +347,10 @@
       //throw new Error();
     }
 
-    return { 
-      request : request
-    };
+    return cacheInstance;
   });
 
-  services.factory('appstate', function ($q) { 
+  services.factory('appstate', function ($q, $rootScope) { 
     /*
     * summary: 
     *  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
@@ -154,6 +375,7 @@
     function set(comp_id, ref) { 
       //summary: 
       //  Assign id reference to value
+      console.log(comp_id, 'set', Date.now(), ref);
       comp[comp_id] = ref;
     }
 
@@ -166,6 +388,7 @@
     function register(comp_id, callback) { 
       // FIXME: These are strict violations
       var id = this.id;
+      console.log('request for callback', comp_id);
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
       }
@@ -173,6 +396,7 @@
       queue[comp_id].push({ref: this, callback: callback});
       //init call to pass current value
       if(comp[comp_id]) { 
+        console.log("calling callback()", comp_id);
         callback(comp[comp_id]);
       }
     }
@@ -225,11 +449,21 @@
       //
       //  where conditions can also be specified:
       //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
+      if (angular.isString(defn)) {
+        // CLEAN THIS UP
+        var d = $q.defer();
+        $http.get(defn).then(function (returned) {
+          returned.identifier = 'id';
+          d.resolve(new Model(returned))
+        });
+        return d.promise;
+      }
+
       var handle, deferred = $q.defer();
       var table = defn.primary || Object.keys(defn.tables)[0];
 
 
-      handle = $http.get('/temp/?' + JSON.stringify(defn));
+      handle = $http.get('/data/?' + JSON.stringify(defn));
       handle.then(function (returned) {
         
         //massive hack so I can use an identifier - set defualt identifier
@@ -242,6 +476,19 @@
         deferred.reject(packageError(err, table));
       });
 
+      return deferred.promise;
+    }
+
+    function loc() { 
+      //FIXME Stupid method to package location table in Model, super temporary (shouldn't need to download all locations for individual user) 
+      var handle, deferred = $q.defer();
+      handle = $http.get('location/');
+      handle.then(function(res) { 
+        var m = new Model(res, 'location');
+
+        console.log('loc', m);
+        deferred.resolve(m);
+      });
       return deferred.promise;
     }
 
@@ -263,7 +510,6 @@
     function Model (options, target) {
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
-
       // globals
       this.index = {};
       this.data = {};
@@ -272,7 +518,7 @@
       var queue = [];
       var identifier = options.identifier || 'id'; // id property
       var pprint = '[connect] ';
-      var tgt = "/temp/"; // temporary target until we standardize connect.
+      var tgt = "/data/"; // temporary target until we standardize connect.
       var refreshrate = options.refreshrate || 500;
 
       // set an array of data
@@ -377,10 +623,17 @@
         queue = fail;
       };
 
+      this.recalculateIndex = function() { 
+        var data = this.data, index = this.index;
+        for (var i = 0, l = data.length; i < l; i++) {
+          index[data[i][identifier]] = i;
+        }
+      }
+
       return this;
     }
 
-    function journal(invoice_ids) {
+    function journal (invoice_ids) {
       return $http.post('/journal/', invoice_ids);
     }
 
@@ -471,10 +724,9 @@
       return model;
     }
 
-    function basicDelete (table, col,  id) {
-      // deletes something from the table `table` where id is `id` 
-      if (!col) col = "id";
-      $http.delete('/data/'+id+'/'+col+'/'+table);
+    function basicDelete (table, id, column) {
+      if (!column) column = "id";
+      $http.delete(['/data/', table, '/', column, '/', id].join(''));
     }
 
 //    TODO reverse these two methods? I have no idea how this happened
@@ -506,6 +758,7 @@
 
     return {
       req: req,
+      loc: loc,
       basicReq: basicReq,
       basicPut: basicPut,
       basicPost: basicPost,
@@ -519,33 +772,42 @@
   });
 
 
-  services.factory('message', function ($timeout) {
-    var message,
-        delay = 3000,
-        timer;
+  services.service('messenger', function ($timeout) {
+    var self = this;
+    self.messages = [];
+    var indicies = {};
 
-    function close () {
-      if (timer) $timeout.close(timer);
-      message.active = false;
-    }
+    self.push = function (msg, timer) {
+      var id = Date.now();
+      msg.id = id;
+      self.messages.push(msg); 
+      indicies[id] = $timeout(function () {
+        var index, i = self.messages.length;
 
-    function show () {
-      message.active = true;
-      timer = $timeout(function () {
-        message.active = false;
-      }, 3000);
-    }
+        while (i--) { if (self.messages[i].id === id) { self.messages.splice(i, 1); break; } }
 
-    message = {
-      content : "",
-      title : "",
-      type : "",
-      close : close,
-      show : show,
-      active : false
+      }, timer || 3000);
     };
 
-    return message; 
+    self.close = function (idx) {
+      // cancel timeout and splice out
+      $timeout.cancel(indicies[idx]);
+      self.messages.splice(idx, 1);
+    };
+
+  });
+
+  services.service('printer', function () {
+    var self = this;
+
+    this.print = function (data) {
+      self.data  = data;
+      self.data.print = true;
+    }
+
+    this.clear = function () {
+      self.data = {};
+    }
 
   });
 

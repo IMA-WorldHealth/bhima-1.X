@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('creditorGroupCtrl', function ($scope, connect) {
+.controller('creditorGroupCtrl', function ($scope, connect, messenger) {
   'use strict';
   
   var models = $scope.models = {},
@@ -8,20 +8,25 @@ angular.module('kpk.controllers')
 
   var newgroup = $scope.newgroup = {};
 
+  function handleErrors (error) {
+    messenger.push({type: 'danger', msg: 'Error: ' + error});
+  }
+
   // init
-  function initialize () {
-    connect.req({
-      tables : {'account':{ columns: ["id", "account_number", "account_txt"]}}
-    }).then(function (store) {
+  function run () {
+    connect.req({tables : {'account':{ columns: ["id", "account_number", "account_txt"]}}})
+    .then(function (store) {
       models.account = store.data;
       stores.account = store;
-    });
+      messenger.push({ type: 'success', msg: 'Successfully Loaded:  accounts'});
+    }, handleErrors);
 
     connect.req({tables: {'creditor_group' : { columns: ["id", "group_txt", "account_id", "locked"]}}})
     .then(function (store) {
       models.creditor_group = store.data;
       stores.creditor_group = store;
-    });
+      messenger.push({ type: 'success', msg: 'Successfully Loaded: creditor_group'});
+    }, handleErrors);
   }
 
   function formatAccount (account) {
@@ -50,7 +55,6 @@ angular.module('kpk.controllers')
         flags.success = response.status == 200;
       });
     } else {
-      newgroup.id = stores.creditor_group.generateid();
       connect.basicPut('creditor_group', [newgroup]).then(function (response) {
         flags.success = response.status == 200;
       });
@@ -68,7 +72,7 @@ angular.module('kpk.controllers')
     connect.basicPost('creditor_group', [{id: group.id, locked: group.locked}], ["id"]);
   }
 
-  initialize();
+  run();
 
   $scope.formatAccount = formatAccount;
   $scope.formatGroupAccount = formatGroupAccount;

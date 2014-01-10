@@ -23,7 +23,7 @@ module.exports = (function (db) {
       default :
         next();
         break;
-    
+
       case '/logout':
         if (!req.session) next();
         else {

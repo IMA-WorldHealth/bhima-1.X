@@ -9,7 +9,7 @@ for February 2014.
 
 *Note (Remove this)
 -----
-Breif markdown should be created for units/ features to keep everything/ everyone up to date, also server as placeholder documentation.
+Brief markdown should be created for units/ features to keep everything/ everyone up to date, also serve as placeholder documentation.
 
 Overview
 -------- 
@@ -51,7 +51,7 @@ the 02/14 date.
 
 (4) Features
 ------------
-* Location creation interface and supporting database records
+* [DONE] Location creation interface and supporting database records
 * Notification (messaging) service, error/info/warning/debug messages are displayed at the top right of the application for a specified period of time.
 * Errors bubble through server, sent to client and displayed uniformly, client errors should 
    be caught and handled.

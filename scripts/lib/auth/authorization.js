@@ -35,6 +35,7 @@ module.exports = (function (db, global_paths) {
 
 
     if (req.url == "/login") res.sendfile('./app/login.html');
+    else if (req.url == '/css/kapok.min.css') res.sendfile('./app/css/kapok.min.css'); // FIXME: this is temporary
     else res.redirect('/login');
     
   }

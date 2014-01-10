@@ -33,16 +33,16 @@ create table `currency` (
 --
 drop table if exists `exchange_rate`;
 create table `exchange_rate` (
-  `id`             mediumint unsigned not null auto_increment,
-  `from_currency`  tinyint unsigned not null,
-  `to_currency`    tinyint unsigned not null,
-  `rate`           decimal(10, 2) unsigned not null,
-  `updated`        date not null,
-  key `from_currency` (`from_currency`),
-  key `to_currency` (`to_currency`),
+  `id`          mediumint unsigned not null auto_increment,
+  `currency_1`  tinyint unsigned not null,
+  `currency_2`  tinyint unsigned not null,
+  `rate`        decimal(10, 2) unsigned not null,
+  `date`        date not null,
+  key `currency_1` (`currency_1`),
+  key `currency_2` (`currency_2`),
   primary key (`id`),
-  constraint foreign key (`from_currency`) references `currency` (`id`),
-  constraint foreign key (`to_currency`) references `currency` (`id`)
+  constraint foreign key (`currency_1`) references `currency` (`id`),
+  constraint foreign key (`currency_2`) references `currency` (`id`)
 ) engine=innodb;
 
 --
@@ -252,13 +252,13 @@ create table `account_collection` (
 --
 DROP TABLE IF EXISTS `account`;
 create table `account` (
-  `id`                  int unsigned not null,
+  `id`                  int unsigned not null auto_increment,
   `account_type_id`     mediumint unsigned not null,
   `enterprise_id`       smallint unsigned not null,
   `account_number`      int not null,
   `account_txt`         text,
   -- `account_category_id` tinyint not null,
-  `parent`              int not null,
+  `parent`              int unsigned not null,
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
   primary key (`id`),
@@ -303,7 +303,7 @@ create table `creditor` (
 
 drop table if exists `payment`;
 create table `payment` (
-  `id`      tinyint unsigned not null,
+  `id`      tinyint unsigned not null auto_increment,
   `days`    smallint unsigned default '0',
   `months`  mediumint unsigned default '0',
   `text`    varchar(50) not null,
@@ -830,15 +830,13 @@ create table `kpk`.`general_ledger` (
 drop table if exists `kpk`.`period_total`;
 create table `kpk`.`period_total` (
   `enterprise_id`     smallint unsigned not null,
-  `id`                mediumint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
   `account_id`        int unsigned not null,
   `credit`            decimal(19, 2) unsigned,
   `debit`             decimal(19, 2) unsigned,
-  `difference`        decimal(19, 2) unsigned, 
   `locked`            boolean not null default 0,
-  primary key (`id`),
+  primary key (`enterprise_id`, `fiscal_year_id`, `period_id`, `account_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
   key `account_id` (`account_id`),
   key `enterprise_id` (`enterprise_id`),

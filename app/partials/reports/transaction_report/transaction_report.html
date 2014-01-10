@@ -1,65 +1,95 @@
 <link href="partials/reports/transaction_report/transaction_report.css" rel="stylesheet">
 <header>
-  <span class="capital">Transaction Report</span>
-</header>
-<section class="underline">
+  <span class="capital">
+    Transaction Report     
+  </span>
+  </header>
+  <div class="capital pull-right visible-print"> {{DC}}:{{model.selected.text}}<br/>{{option.dateFrom}} - {{option.dateTo}}</div>  
 
+<section class="underline">
 </section>
 <!--fix me-->
-<section class="underline infobar">
+<section class="underline infobar hidden-print">
   <accordion close-others="oneAtATime">    
     <accordion-group heading="Dynamic Body Content">
         <accordion-heading>
             Depliant <i class="pull-right" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i>
         </accordion-heading>
-        <div class="row">
-          <div class="col-xs-2">
-            <div class="radio">
-              <label>
-                <input type="radio" ng-model="data.type" id="indiID" name="option_type" value="I" ng-click="fill()" checked>
-                Individual
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" ng-model="data.type" id="groupID" name="option_type" ng-click="fill()" value="G">
-                Group
-              </label>
-            </div>
-          </div>
+        <table class="table">
 
-          <div class="col-xs-2">
-            <div class="radio">
-              <label>
-                <input type="radio" ng-model="data.dc" id="dID" name="option_dc" value="D" ng-click="fill()" checked>
-                Debitor
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" ng-model="data.dc" id="cID" name="option_dc" ng-click="fill()" value="C">
-                Creditor
-              </label>
-            </div>
-          </div>          
+          <tr>
+            <td>
 
-          <div class="col-xs-4">
-            <div class="form-group">
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="data.type" id="indiID" name="option_type" value="I" ng-click="fill()" checked>
+                  Individual
+                </label>
+              </div>
+
+            </td>
+            <td>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="data.type" id="groupID" name="option_type" ng-click="fill()" value="G">
+                  Group
+                </label>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="data.dc" id="dID" name="option_dc" value="D" ng-click="fill()" checked>
+                  Debitor
+                </label>
+              </div>
+
+            </td>
+            <td>
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="data.dc" id="cID" name="option_dc" ng-click="fill()" value="C">
+                  Creditor
+                </label>
+              </div>
+            </td>            
+          </tr>
+
+          <tr>
+            
+            <td>
+              <div class="form-group">
                 <label for="dob">Date From</label>
                 <input type="date" class="form-kapok" ng-model="option.dateFrom">
+            </div>              
+            </td>
 
+            <td>
+              <div class="form-group">
                 <label for="dob">Date To</label>
                 <input type="date" class="form-kapok" ng-model="option.dateTo">
-            </div>          
-          </div>
+              </div>
+            </td>
+          </tr>
 
-          <div class="col-xs-3">
-            <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
-                <option value="" disabled="disabled">--Select the name --</option>
-            </select>          
-          </div>
+          <tr>
+            <td colspan=2>
+              <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
+                  <option value="" disabled="disabled">--Select the name --</option>
+              </select>
+            </td>
+            <td>
+              
+            </td>
+          </tr>
 
-        </div>
+
+        </table>
     </accordion-group>   
   </accordion>
 </section>
@@ -75,10 +105,38 @@ balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
 <div class="content">
 
   <div class="row">   
-    <div class="col-xs-12">
+    <div class="col-xs-12 hidden-print">
       <div id="transaction_report_grid" class="grid" style="height: 650px; overflow: hidden; outline: 0px; position: relative;">
       </div>
-  </div>
+    </div>  
+</div>
+<div class="row visible-print">
+     <div class="col-xs-12">
+       <table id="tbl-print" class="table table-bordered">
+       <tr>
+         <td>ID</td>
+         <td>Transaction ID</td>
+         <td>Transaction Date</td>
+         <td>Account Number</td>
+         <td>Debit</td>
+         <td>Credit</td>
+         <td>Name</td>
+         <td>Service</td>
+         <td>Names</td>
+       </tr>
+        <tr ng-repeat="t_report in model.transReport">
+          <td>{{t_report.id}}</td>
+          <td>{{t_report.trans_id}}</td>
+          <td>{{t_report.trans_date | date}}</td>
+          <td>{{t_report.account_number}}</td>
+          <td>{{t_report.debit}}</td>
+          <td>{{t_report.credit}}</td>
+          <td>{{t_report.name}}</td>
+          <td>{{t_report.service_txt}}</td>
+          <td>{{t_report.names}}</td>
+        </tr>      
+    </table>
+   </div>
 </div>
 
 <section class="underline overline">

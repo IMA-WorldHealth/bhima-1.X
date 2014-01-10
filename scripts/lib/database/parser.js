@@ -25,14 +25,6 @@ module.exports = (function (options) {
     insert: 'INSERT INTO %table% SET %expressions%;'
   };
 
-  function getTable (def) {
-    // Returns the 'primary' table as defined by the spec.
-    // If the query definition is a join, use the primary table.
-    // If not, use the first table in the 'tables' property of the
-    // definition object.
-    return sanitize.escapeid(def.join ? def.primary: Object.keys(def.tables)[0]);
-  }
-
   function cdm (table, columns) {
     // creates a 'dot map' mapping on table
     // to multiple columns.
@@ -82,39 +74,33 @@ module.exports = (function (options) {
   }
 
   // delete
-  self.delete = function (def, id) {
-    var identifier, table, templ = self.templates.delete;
-    table = getTable(def);
-    identifier = sanitize.escapeid(def.identifier);
-    return templ.replace('%table%', table)
-                .replace('%key%', [identifier, '=', sanitize.escape(id)].join(''));
+  self.delete = function (table, column, id) {
+    var templ = self.templates.delete;
+    return templ.replace('%table%', sanitize.escapeid(table))
+                .replace('%key%', [sanitize.escapeid(column), '=', sanitize.escape(id)].join(''));
   };
 
   // update
-  self.update = function (def, obj, id) {
-    var identifier, table, expressions = [], templ = self.templates.update;
-    table = getTable(def);
-    identifier = sanitize.escapeid(def.identifier);
-    for (var e in obj) {
-      expressions.push([sanitize.escapeid(e), '=', sanitize.escape(obj[e])].join(''));
+  self.update = function (table, data, id) {
+    var expressions = [], templ = self.templates.update;
+    var identifier = sanitize.escapeid(id); // temporarily defaults to 'id'
+    for (var d in data) {
+      if (d != id) expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
     }
-    return templ.replace('%table%', table)
+    return templ.replace('%table%', sanitize.escapeid(table))
                 .replace('%expressions%', expressions.join(', '))
-                .replace('%key%', [identifier, '=', sanitize.escape(id)].join(''));
+                .replace('%key%', [identifier, '=', sanitize.escape(data[id])].join(''));
   };
 
   // insert
-  //  Should we only allow setting columns specified in the def?
-  self.insert = function (def, obj) {
-    var identifier, table, expressions = [], templ = self.templates.insert;
-    table = getTable(def);
-    identifier = sanitize.escapeid(def.identifier);
+  self.insert = function (table, data) {
+    var expressions = [], templ = self.templates.insert;
 
-    for (var e in obj) {
-      expressions.push([sanitize.escapeid(e), '=', sanitize.escape(obj[e])].join(''));
+    for (var e in data) {
+      expressions.push([sanitize.escapeid(e), '=', sanitize.escape(data[e])].join(''));
     }
   
-    return templ.replace('%table%', table)
+    return templ.replace('%table%', sanitize.escapeid(table))
                 .replace('%expressions%', expressions.join(', '));  
   };
 
