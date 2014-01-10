@@ -7,7 +7,7 @@
   function kpkconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
-    when('/budgeting', {
+    when('/budgeting/:accountID', {
       controller: 'budgetController',
       templateUrl: 'partials/budget/budget.html'
     }).
