@@ -20,10 +20,11 @@ module.exports = (function (db) {
     var route = {
       'finance'         : finance,
       'stock'           : stock,
-      'transReport'     : transReport,
-      'account_balance' : account_balance
+      'transReport'     : transReport
+      // 'account_balance' : account_balance
     };
-
+    
+    console.log('server debug', request, params);
     route[request](params).then(function(report) { 
       callback(report);
     });
@@ -75,37 +76,31 @@ module.exports = (function (db) {
       deferred.resolve(ans);
     });
 
+
+    function buildFinanceQuery(requiredFiscalYears) { 
+      
+      //TODO Update to use period_totals, not query the posting journal/ general ledger 
+      var query;
+      var fiscalColumns = "";
+
+      //add budget columns
+      requiredFiscalYears.forEach(function(year) { 
+        fiscalColumns += "(SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.debit else 0 end) - SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.credit else 0 end)) AS 'realisation "+year+"',";
+      });
+
+      query = "SELECT account.id," +
+                    "account.account_number," +
+                    fiscalColumns + 
+                    "account.account_txt " + 
+              "FROM account " +
+              "LEFT JOIN posting_journal " +
+              "ON account.id = posting_journal.account_id " + 
+              // "AND posting_journal.period_id = 3 " +
+              "GROUP BY account.account_number;";
+
+      return query;
+    }
     return deferred.promise;
-  }
-
-  function buildFinanceQuery(requiredFiscalYears) { 
-
-    var query;
-    var fiscalColumns = "";
-
-    //add budget columns
-    requiredFiscalYears.forEach(function(year) { 
-      fiscalColumns += "(SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.debit else 0 end) - SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.credit else 0 end)) AS 'realisation "+year+"',";
-    });
-
-    query = "SELECT account.id," +
-                   "account.account_number," +
-                   "account.account_txt," + 
-                   fiscalColumns + 
-                   "account_category.collection_id, " + 
-                   "account_category.title as 'category_title', " + 
-                   "account_collection.title as 'collection_title' " +
-            "FROM account " +
-            "LEFT JOIN posting_journal " +
-            "ON account.id = posting_journal.account_id " + 
-            "LEFT JOIN account_category " + 
-            "ON account.account_category_id = account_category.id " + 
-            "LEFT JOIN account_collection " + 
-            "ON account_category.collection_id = account_collection.id " +
-            // "AND posting_journal.period_id = 3 " +
-            "GROUP BY account.account_number;";
-
-    return query;
   }
 
   function stock (reportParams) {
