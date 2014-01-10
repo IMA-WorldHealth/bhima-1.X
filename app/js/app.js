@@ -52,7 +52,7 @@
       templateUrl: '/partials/inventory/register/register.html'
     }).
     when('/patient_records/:patientID', { 
-      controller: 'patientRecordsController', 
+      controller: 'patientRecords', 
       templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
     when('/sales/:debtorID/:inventoryID', { 
@@ -92,7 +92,7 @@
       templateUrl: 'partials/exchange_rate/exchange_rate.html'
     }).
     when('/create_account', {
-      controller: 'createAccountController',
+      controller: 'manageAccount',
       templateUrl: 'partials/accounts/create_account/create.html'
     }).
     when('/reports/finance', { 
@@ -110,10 +110,17 @@
     when('/reports/summary', {
       controller: 'summaryController',
       templateUrl: 'partials/reports/summary/summary.html'
+    }).
+    when('/reports/account_balance/', {
+      controller: 'reportAccountBalanceCtrl',
+      templateUrl: 'partials/reports/account_balance/account_balance.html'
     })
     .when('/location', {
       controller : 'locationCtrl',
       templateUrl: 'partials/location/location.html'
+    })
+    .when('/print', {
+      templateUrl: 'partials/print/test.html'
     })
     .when('/settings', { 
       controller: 'settingsController',
@@ -369,7 +376,8 @@
       DEBTOR_GROUP : 'Lobi'
 
     });
-
+    
+    //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('en');
   }
 

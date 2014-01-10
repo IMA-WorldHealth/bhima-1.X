@@ -1,73 +1,89 @@
 <header>
-  <span>Daily Exchange Rate</span>
+  <span>Configure Exchange Rate</span>
 </header>
 
 <div class="content">
   <div class="row">
+
     <div class="col-xs-6">
-      <div class="panel panel-default" id="exchange">
-        <div class="panel-heading">
-          <h5>Set Today's Exchange Rate:</h5>
-        </div>
+      <table class="table table-bordered table-condensed">
+        <thead>
+          <tr><th>Date</th><th>Currency 1</th><th>Currency 2</th><th>Rate</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="exchange in models.exchange | limitTo: 12">
+            <td>{{exchange.date | date}}</td><td>{{formatExchangeCurrency(exchange.currency_1)}}</td><td>{{formatExchangeCurrency(exchange.currency_2)}}</td><td>{{exchange.rate | currency }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-xs-6">
+      <table class="table table-bordered">
+        <thead>
+          <tr><th colspan="2">Today's ({{swap.current_exchange_rate.date | date}}) Exchange Rate:</th></tr>
+          <tr><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_1)}}</th><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_2)}}</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>{{swap.current_exchange_rate.rate}}</td></tr>
+        </tbody>
+      </table>
+    
+      <div class="panel panel-default">
         <div class="panel-body">
           <form name="kpk-exchange-form" class="form-horizontal">
-            <div class="form-group">
-              <div class="col-xs-5">
-                <select 
-                  class="form-kapok"
-                  id="kpk-exchange-from"
-                  name="kpk-exchange-from"
-                  ng-model="flags.from_currency_id"
-                  ng-options="currency.id as formatCurrency(currency) for currency in models.currency"
-                >
-                  <option value="" disabled="disabled">-- Select Currency --</option>
-                </select>
-              </div>
-              <label class="col-xs-1 control-label">
-                <i class="glyphicon glyphicon-arrow-right"></i>
-              </label>
-              <div class="col-xs-5">
-                <select 
-                  class="form-kapok"
-                  id="kpk-exchange-to"
-                  name="kpk-exchange-to"
-                  ng-model="flags.to_currency_id"
-                  ng-options="currency.id as formatCurrency(currency) for currency in models.currency | filter:filterOptions"
+            <fieldset>
+              <legend>Exchange Rate</legend>
+              <div class="form-group">
+                <div class="col-xs-5">
+                  <select 
+                    class="form-kapok"
+                    id="kpk-exchange-currency1"
+                    name="kpk-exchange-currency1"
+                    ng-model="swap.currency1"
+                    ng-options="currency as formatCurrency(currency) for currency in models.currency"
                   >
-                  <option value="" disabled="disabled">-- Select Currency --</option>
-                </select>
+                    <option value="" disabled="disabled">-- Select Currency --</option>
+                  </select>
+                </div>
+                <label class="col-xs-1 control-label">
+                  <i class="glyphicon glyphicon-arrow-right"></i>
+                </label>
+                <div class="col-xs-5">
+                  <select 
+                    class="form-kapok"
+                    id="kpk-exchange-currency2"
+                    name="kpk-exchange-currency2"
+                    ng-model="swap.currency2"
+                    ng-options="currency as formatCurrency(currency) for currency in models.currency | filter:filterOptions"
+                  >
+                    <option value="" disabled="disabled">-- Select Currency --</option>
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <div class="col-xs-5 input-group">
-                <input class="form-control" min="0" value="1" disabled>
-                <span class="input-group-addon">
-                  {{swap.from.symbol}}
-                </span>
+              <div class="form-group">
+                <div class="col-xs-5 input-group">
+                  <input class="form-kapok" min="0" value="1">
+                  <span class="input-group-addon">
+                    {{swap.currency1.symbol}}
+                  </span>
+                </div>
+                <label class="col-xs-1 control-label">
+                  <i class="glyphicon glyphicon-arrow-right"></i>
+                </label>
+                <div class="col-xs-5 input-group">
+                  <input class="form-kapok" ng-model="swap.rate" min="0" required placeholder="1.00">
+                  <span class="input-group-addon">
+                    {{swap.currency2.symbol}}
+                  </span> 
+                </div>
               </div>
-              <label class="col-xs-1 control-label">
-                <i class="glyphicon glyphicon-arrow-right"></i>
-              </label>
-              <div class="col-xs-5 input-group">
-                <input class="form-kapok" ng-model="swap.rate" min="0" required>
-                <span class="input-group-addon">
-                  {{swap.to.symbol}}
-                </span> 
-              </div>
-            </div>
+            </fieldset>
+            <input type="submit" form="exchange" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="valid()">
           </form>
-        </div>
-        <div class="panel-footer">
-          <input type="submit" form="exchange" class="btn btn-default btn-sm" ng-click="submit()" ng-disabled="valid()">
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<section class="bar-bottom">
-  <div class="pull-right">
-    <input type="submit" form="exchange" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="valid()">
-  </div>
-</section>

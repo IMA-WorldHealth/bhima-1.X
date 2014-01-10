@@ -213,7 +213,7 @@ angular.module('kpk.controllers')
       email: $scope.selected.email
     };
 
-    connect.basicDelete('permission','id_user', $scope.selected.id);
+    connect.basicDelete('permission', $scope.selected.id, 'id_user').then(function (result) {}, function (err) { console.error('Err:', err); });
     connect.basicPost('user', [data], ['id'])
     .then(function(res){
       if (res.status == 200){

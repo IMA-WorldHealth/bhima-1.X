@@ -1,6 +1,5 @@
 // scripts/server.js
 
-
 // import node dependencies
 var express      = require('express'),
     fs           = require('fs'),
@@ -25,7 +24,7 @@ var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
 // import routes
 var report       = require('./lib/logic/report')(db),
     trialbalance = require('./lib/logic/balance')(db),
-    jr           = require('./lib/logic/journal')(db),
+    journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
     fiscal       = require('./lib/logic/fiscal')(db);
 
@@ -46,7 +45,7 @@ app.get('/', function (req, res, next) {
   res.sendfile('/index.html');
 });
 
-app.get('/temp/', function (req, res, next) {
+app.get('/data/', function (req, res, next) {
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
@@ -55,50 +54,43 @@ app.get('/temp/', function (req, res, next) {
   });
 });
 
-app.put('/data/', function (req, res) {
-  var updatesql = db.update(req.body.t, req.body.data, req.body.pk);
+app.put('/data/', function (req, res, next) {
+  // TODO: change the client to stop packaging data in an array...
+  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]); 
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
   });
 });
 
-app.post('/data/', function (req, res) {
-  var insertsql = db.insert(req.body.t, req.body.data);
+app.post('/data/', function (req, res, next) {
+  // TODO: change the client to stop packaging data in an array...
+  var insertsql = parser.insert(req.body.t, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
   });
 });
 
-// rewrite this...
-app.delete('/data/:val/:col/:table', function (req, res) {
-  // TODO/FIXME: this code looks terrible.  Refactor.
-  // format the query of the form "WHERE col = val;"
-  var reqObj = {};
-  reqObj[req.params.col] = [req.params.val];
-  // execute
-  db.execute(deleteSql, function (err, ans) {
-      if (err) next(err);
-      res.send(200);
+app.delete('/data/:table/:column/:value', function (req, res, next) {
+  var sql = parser.delete(req.params.table, req.params.column, req.params.value);
+  db.execute(sql, function (err, ans) {
+    if (err) next(err);
+    res.send(200);
   });
 });
 
-//TODO Server should set user details like this in a non-editable cookie
-app.get('/user_session', function(req, res, next) {
+// TODO Server should set user details like this in a non-editable cookie
+app.get('/user_session', function (req, res, next) {
   res.send(200, {id: req.session.user_id});
 });
 
-app.post('/journal', function(req, res) {
-  jr.poster(req, res); 
-});
 
 app.get('/trial/', function (req, res, next) {
   trialbalance.trial()
   .then(function (result) {
     res.send(200, result);  // processed the request successfully, and sending NO CONTENT
   }, function (reason) {
-    console.log("Reason:", reason);
     res.send(304, reason);  // processed the requuest, but NOT MODIFIED
   });
 });
@@ -112,7 +104,7 @@ app.get('/post/', function (req, res, next) {
   });
 });
 
-app.get('/journal', function (req,res) {
+app.get('/journal', function (req, res, next) {
   var cb = function (err, ans) {
     if (err) next(err);
     res.json(ans);
@@ -123,10 +115,14 @@ app.get('/journal', function (req,res) {
     jsRequest = JSON.parse(myRequest);
   } catch (e) {
     throw e;
-  }  
+  }
   var Qo = queryHandler.getQueryObj(jsRequest);
-  var sql = db.select(Qo);
-  db.execute(sql, cb);  
+  console.log('\n', Qo, '\n');
+  db.execute(db.select(Qo), cb);  
+});
+
+app.post('/journal', function (req, res) {
+  journal.poster(req, res); 
 });
 
 app.get('/max/:id/:table', function(req, res) { 
@@ -190,6 +186,7 @@ app.get('/tree', function (req, res, next) {
   });
 });
 
+// ugh.
 app.get('/location', function (req, res, next) {
   var sql = "SELECT `location`.`id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
             "FROM `location`, `village`, `sector`, `province`, `country` " + 
@@ -200,8 +197,32 @@ app.get('/location', function (req, res, next) {
   });
 });
 
+app.get('/account_balance/:id', function (req, res, next) {
+  var enterprise_id = req.params.id;
+
+  var sql = 'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
+            '(' +
+              'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
+              'FROM account LEFT JOIN period_total ' +
+              'ON account.id=period_total.account_id ' +
+              'WHERE account.enterprise_id=' + db.escapestr(enterprise_id) +
+            ') ' +
+            'AS temp JOIN account_type ' +
+            'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
+
+  db.execute(sql, function (err, rows) {
+    if (err) next(err);
+    res.send(rows);
+  });
+
+});
+
 app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));
 
+// temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('uncaughtException:', err);
 });
+
+// temporary debugging to see why the process terminates.
+process.on('exit', function () { console.log('Process Shutting Down...'); });

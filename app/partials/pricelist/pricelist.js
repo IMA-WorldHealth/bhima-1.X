@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('priceListController', function ($scope, $q, connect, appstate) {
+.controller('priceListController', function ($scope, $q, connect, messenger, appstate) {
   // This module is responsible for creating price lists.
   // FIXME: There is an error with editing old price lists.  Need to 
   // make a facility for that and fix the errors using connect.basicPost
@@ -16,8 +16,6 @@ angular.module('kpk.controllers')
   flags.edit   = {};
   flags.errors = {};
 
-  // FIXME: Eventually move away form this method of getting enterprise id
-  // so that we can refresh when the enterprise changes
   imports.enterprise_id = appstate.get('enterprise').id;
   imports.price_list_name = {
     tables: { 'price_list_name' : { columns :  ["id", "name"] }},
