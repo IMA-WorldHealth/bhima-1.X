@@ -1,3 +1,22 @@
 #report_grid, #report_grid div { 
   box-sizing: content-box;
 }
+
+
+.report_table  { 
+  width: 100%; 
+  outline: 1px solid #9f9f9f;
+}
+
+.report_table thead > tr > th { 
+
+  outline: 1px solid #9f9f9f;
+}
+
+.report_table tbody > tr > td { 
+
+  outline: 1px solid #9f9f9f;
+}
+
+
+
