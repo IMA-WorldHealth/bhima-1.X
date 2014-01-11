@@ -75,6 +75,32 @@ angular.module('kpk.controllers')
   function formatExchangeCurrency (id) {
     return stores.currency && angular.isDefined(id) ? stores.currency.get(id).symbol : id; 
   }
+
+  // calculator stuff
+
+  $scope.expr = {};
+  $scope.expr.elements = [];
+
+  $scope.pushCalc = function (e) {
+    // HACK HACK HACK
+    if (!angular.isArray($scope.expr.elements)) $scope.expr.elements = [];
+    $scope.expr.elements.push(e);
+  };
+
+  $scope.clearCalc = function () {
+    $scope.expr.elements = [];
+  };
+
+  $scope.formatExpr = function (expr) {
+    return angular.isArray(expr) ? expr.join(' ') : expr;
+  };
+
+  $scope.calc = function () {
+    console.log($scope.expr.elements);
+    var temp = $scope.expr.elements.join('');
+    $scope.expr.elements = eval(temp);
+    $scope.expr.elements.length = 0;
+  };
   
   $scope.filterOptions = filterOptions;
   $scope.formatCurrency = formatCurrency;
