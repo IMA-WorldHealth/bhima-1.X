@@ -56,7 +56,7 @@ INSERT INTO `unit` VALUES
 	(3,'Form Manager','Manage your forms',1,0,'/units/formmanager/',''),
 	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/permission','/permission'),
 	(5,'Finance','The Finance Super-Category',0,1,'',''),
-	(6,'Accounts','The chart of accounts',5,0,'/partials/chart','/accounts'),
+	(6,'Account','Chart of Accounts management',1,0,'/partials/accounts/create_account','/create_account'),
 	(7,'Charts','Analyze how your company is doing',5,0,'/units/charts/',''),
 	(8,'Budgeting','Plan your next move',0,10,'/partials/budgeting',''),
 	(9,'Posting Journal','Daily Log',5,0,'/partials/postingjournal/','/posting_journal'),
@@ -87,7 +87,7 @@ INSERT INTO `unit` VALUES
 	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales/0/'),
 	(35,'Sale Records','Search for a sale',5,0,'/partials/sale_records/','sale_records/'),
 	(36,'Purchase Order','Create a new Purchase Order',11,0,'partials/inventory_purchase_order','inventory/purchase'),
-	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting'),
+	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting/'),
 	(38,'Cash Box','Pay invoices',5,0,'/partials/cash','cash'),
 	(39,'Register Stock','',11,0,'partials/inventory/register','inventory/register'),
 	(40,'Register Supplier','',11,0,'partials/inventory/creditors','creditors'),
@@ -103,8 +103,8 @@ INSERT INTO `unit` VALUES
   (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view'),
   (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger'),
   (52,'Location Manager', '', 1, 0, 'partials/location/location', 'location'),
-  (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/');
-
+  (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/'),
+  (54,'Chart of Accounts', '', 10, 0, 'partials/reports/chartofaccounts/', 'reports/chart_of_accounts/');
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
