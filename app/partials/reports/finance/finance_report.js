@@ -4,27 +4,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   
   //Models
   var models = {};
-  /*models['fiscal'] = {
-    model: {}, 
-    request: {
-      tables: {
-        'fiscal_year': { 
-          columns: ['enterprise_id', 'id', 'start_month', 'start_year', 'previous_fiscal_year']
-        }
-      }
-    }
-  }
-  models['debitor'] = {
-    model: {},
-    request: {
-      tables: { 
-        'debitor': { 
-          columns: ['id', 'group_id', 'text']
-        }
-      }
-    }
-  }*/
-
+ 
   //TODO rething name
   const DEFAULT_FILTER_RESOLUTION = 2;
 
@@ -33,9 +13,6 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   //default for now
   var requiredYears = [1, 2];
-
-  var grid;
-  var dataview;
 
   //Error handling 
   $scope.session_error = {valid: true};
@@ -80,101 +57,11 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   function settupPage() {
 
     var sessionData = models['finance'].model.data;
-
-    console.log("settupPage called");
+    
+    console.log("settupPage called", sessionData);
     //parse model to allow grouping by account number
-    parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
-    renderGrid(sessionData);
-  }
-
-
-  function renderGrid(data) {
-    var columns = [
-      {id: 'account_number', name: 'Account', field: 'account_number', maxWidth: 85},
-      {id: 'account_txt', name: 'Title', field: 'account_txt', maxWidth: 90},
-    ];
-
-    requiredYears.forEach(function(year) { 
-      columns.push({id: 'realisation ' + year, name: 'Realisation ' + year, field: 'realisation ' + year, groupTotalsFormatter: realisationTotalFormatter});
-      //add columns for budget
-    });
-
-    var options = { 
-      enableCellNavigation: true,
-      enableColumnReorder: true,
-      forceFitColumns: true,
-      rowHeight: 30
-    };
-
-    console.log(data);
-
-    var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
-    dataview = new Slick.Data.DataView({
-      groupItemMetadataProvider: groupItemMetadataProvider,
-      inlineFilter: true
-    });
-    grid = new Slick.Grid('#report_grid', dataview, columns, options);
-
-    grid.registerPlugin(groupItemMetadataProvider);
-
-    dataview.onRowCountChanged.subscribe(function(e, args) { 
-      grid.updateRowCount();
-      grid.render();
-    });
-
-    dataview.onRowsChanged.subscribe(function(e, args) { 
-      grid.invalidateRows(args.rows);
-      grid.render();
-    });
-
-    dataview.beginUpdate();
-    dataview.setItems(data);
-    dataview.endUpdate();
-
-    $scope.groupByAccountNumber();
-  }
-
-  function realisationTotalFormatter(totals, column) { 
-    console.log('format', totals, column);
-    var val = totals.sum && totals.sum[column.field];
-    if(val !== null) { 
-      return "<span style='font-weight: bold;'> Total " + totals.group.value + ": " + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
-    }
-    return "";
-  }
-
-  $scope.groupByAccountNumber = function groupByAccountNumber() { 
-    console.log('filtering');
-
-    var financeAggregators = [];
-    //FIXME include id, feild title in requiredYears - populate dynamically
-    requiredYears.forEach(function(year) { 
-      financeAggregators.push(new Slick.Data.Aggregators.Sum("realisation " + year));
-    });
-
-    dataview.setGrouping([{
-        getter: 'collection_title',
-        formatter: function(g) { 
-          console.log('formatter', g);
-          return "<span style='font-weight: bold'>" + g.value + "</span>";
-        },
-        aggregators: financeAggregators
-      },
-      {
-        getter: 'category_title',
-        formatter: function(g) { 
-          return "<span style='font-weight: bold'>" + g.value + "</span>";
-        },
-        aggregators: financeAggregators
-
-    }]);
-  }
-
-  function parseAccountGroup(data, resolution) { 
-    //This method is particularly cryptic to non-developers, clean up and restructure
-    data.forEach(function(item) { 
-      item.filterAccountNumber = item.account_number.toString().substr(0, resolution);
-    })  
+    // parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
+    // renderGrid(sessionData);
   }
 
   function populateRequests(model_list) { 
