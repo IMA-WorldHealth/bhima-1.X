@@ -112,7 +112,7 @@ module.exports = (function (db) {
       });
 
       query = [
-        "SELECT budget_result.account_id,",
+        "SELECT budget_result.account_id, account.account_number,",
         selectColumns.join(","),
         "FROM",
         "(SELECT budget.account_id,",
@@ -128,7 +128,9 @@ module.exports = (function (db) {
         "FROM period_total",
         "group by period_total.account_id)",
         "AS `period_result`",
-        "ON budget_result.account_id = period_result.account_id;"
+        "ON budget_result.account_id = period_result.account_id",
+        "LEFT JOIN",
+        "account ON account.id = budget_result.account_id;"
       ];
 
 

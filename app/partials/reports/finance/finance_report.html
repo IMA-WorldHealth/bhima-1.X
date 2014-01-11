@@ -23,10 +23,11 @@
       <table>
         <thead>
           <tr>
-            <td></td>
+            <td>Account Number</td>
           </tr>
         </thead>
         <tbody>
+          <tr ng-repeat="row in model['finance'].data"><td>{{row.account_number}}</td></tr>
         </tbody>
       </table>
     </div>
