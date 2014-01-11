@@ -80,25 +80,58 @@ module.exports = (function (db) {
     function buildFinanceQuery(requiredFiscalYears) { 
       
       //TODO Update to use period_totals, not query the posting journal/ general ledger 
-      var query;
-      var fiscalColumns = "";
+      var query = [];
+      var budgetColumns = [];
+      var realisationColumns = [];
+      var selectColumns = [];
 
       //add budget columns
-      requiredFiscalYears.forEach(function(year) { 
-        fiscalColumns += "(SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.debit else 0 end) - SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.credit else 0 end)) AS 'realisation "+year+"',";
+      // requiredFiscalYears.forEach(function(year) { 
+        // fiscalColumns += "(SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.debit else 0 end) - SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.credit else 0 end)) AS 'realisation "+year+"',";
+      // });
+
+      // query = "SELECT account.id," +
+      //               "account.account_number," +
+      //               fiscalColumns + 
+      //               "account.account_txt " + 
+      //         "FROM account " +
+      //         "LEFT JOIN posting_journal " +
+      //         "ON account.id = posting_journal.account_id " + 
+      //         // "AND posting_journal.period_id = 3 " +
+      //         "GROUP BY account.account_number;";
+     
+      //TODO currently joins two very seperate querries and just extracts columns from both, these should
+      //be combined and calculations (SUM etc.) performed on the single joined table
+      requiredFiscalYears = [1];
+
+      requiredFiscalYears.forEach(function(fiscal_year) { 
+        selectColumns.push("budget_" + fiscal_year);
+        budgetColumns.push("(SUM(case when period.fiscal_year_id = " + fiscal_year +" then budget.budget else 0 end) AS `budget_" + fiscal_year + "`");
       });
 
-      query = "SELECT account.id," +
-                    "account.account_number," +
-                    fiscalColumns + 
-                    "account.account_txt " + 
-              "FROM account " +
-              "LEFT JOIN posting_journal " +
-              "ON account.id = posting_journal.account_id " + 
-              // "AND posting_journal.period_id = 3 " +
-              "GROUP BY account.account_number;";
+      query = [
+        "SELECT budget_result.account_id,",
+        selectColumns.join(","),
+        "period_result.realisation",
+        "FROM",
+        "(SELECT budget.account_id,",
+        budgetColumns.join(","),
+        "AS `budget_total`",
+        "FROM budget inner join period ON",
+        "period.id = budget.period_id",
+        // "fiscal_year_id = 1",
+        "GROUP BY budget.account_id)",
+        "AS `budget_result`",
+        "LEFT JOIN",
+        "(SELECT period_total.account_id, (SUM(debit) - SUM(credit)) as `realisation`",
+        "FROM period_total",
+        "group by period_total.account_id, period_total.fiscal_year_id)",
+        "AS `period_result`",
+        "ON budget_result.account_id = period_result.account_id;"
+      ];
 
-      return query;
+
+      return query.join(' ');
     }
     return deferred.promise;
   }
