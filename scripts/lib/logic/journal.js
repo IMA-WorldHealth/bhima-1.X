@@ -16,9 +16,9 @@ var validate = {
   isNegative : function (number) { return !this.isPositive(number); },
   isEqual : function (a, b) { return a === b; },
   isDefined : function (a) { return a !== undefined; },
-  isUndefined : function (a) { return !isDefined(a); },
+  isUndefined : function (a) { return !this.isDefined(a); },
   isNull : function (a) { return a === null; },
-  exists : function (a) { return isDefined(a) && !isNull(a); }
+  exists : function (a) { return this.isDefined(a) && !this.isNull(a); }
 };
 
 module.exports = (function (db) {
@@ -59,9 +59,11 @@ module.exports = (function (db) {
       var sql = 
         'SELECT `temp`.`id` ' +
         'FROM (' +
-          'SELECT `debitor`.`id` FROM `debitor` WHERE `id`=' + escaped_id +
-          ') UNION (' + 
-          'SELECT `creditor`.`id` FROM `debitor` WHERE `id`=' + escaped_id +
+            '(' + 
+              'SELECT `debitor`.`id` FROM `debitor` WHERE `id`=' + escaped_id +
+            ') UNION (' + 
+              'SELECT `creditor`.`id` FROM `creditor` WHERE `id`=' + escaped_id +
+            ')' +
         ') as `temp`;';
       db.execute(sql, function (err, rows) {
         if (err) return errback(err);
@@ -97,7 +99,16 @@ module.exports = (function (db) {
 
     date : function (date) {
       // returns a mysql-compatible date
-      return (date || new Date()).toISOString().slice(0, 19).replace('T', ' ');
+      // Note : this transforms things into a date, not date + time
+      // FIXME : There is a bug, where this changes timezones if you
+      // are at midnight and converts the day to the day before.
+      var offset, d;
+      if (date) {
+        offset = new Date(date).getDate() + 1;
+        d = new Date(new Date(date).setDate(offset));
+      }
+
+      return (date ? d : new Date()).toISOString().slice(0, 10).replace('T', ' ');
     },
   
     period : function (date, callback) {
@@ -127,14 +138,14 @@ module.exports = (function (db) {
       //   the enterprise_currency, the rate is 1.
       var sql = 
         'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate` ' +
-        'FROM `exchange_rate` WHERE `date`=\'' + date + '\'';
+        'FROM `exchange_rate` WHERE `date`=\'' + this.date(date) + '\';';
       db.execute(sql, function (err, rows) {
         if (err) return callback(err);
         if (rows.length === 0) return callback(new Error('No exchange rate found for date : ' + date));
         var rate_map = {};
         rows.forEach(function (line) { 
           rate_map[line.enterprise_currency_id] = 1; // enterprise currency to itself is always 1.
-          rate_map[line.foreign_currency_id] = rate; // foreign_currency -> enterprise is rate.
+          rate_map[line.foreign_currency_id] = line.rate; // foreign_currency -> enterprise is rate.
         });
         return callback(null, rate_map);
       });
@@ -263,11 +274,13 @@ module.exports = (function (db) {
   }
 
   function handleCash (id, user_id, callback) {
+
+
     // posting from cash to the journal.
     var sql = 
       'SELECT `cash`.`id`, `cash`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  + 
         '`cash`.`deb_cred_id`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`cashier_id`, ' +
-        '`cash`.`cashbox_id`, `cash`.`text`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id` ' + 
+        '`cash`.`cashbox_id`, `cash`.`text`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' + 
         '`cash`.`bon`, `cash`.`bon_num` ' +
       'FROM `cash` JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id`;'; 
 
@@ -277,11 +290,13 @@ module.exports = (function (db) {
 
       var reference_payment = results[0];
       var enterprise_id = reference_payment.enterprise_id;
-      var date = reference_payment.invoice_date;
+      var date = reference_payment.date;
+
 
       // first check - are we in the correct period/fiscal year?
-      check.validPeriod(date, enterprise_id, function (err) {
+      check.validPeriod(enterprise_id, date, function (err) {
         if (err) return callback(err);
+
 
         // second check - is there a bon number defined?
         var bon_num_exist = validate.exists(reference_payment.bon_num);
@@ -294,15 +309,23 @@ module.exports = (function (db) {
         // forth check - is the cost positive?
         var cost_positive = validate.isPositive(reference_payment.cost);
         if (!cost_positive) return callback(new Error('Invalid value for cost for cash id: ' + id));
-
+        
         // fifth check - is the allocated cost positive for every cash item?
-        var allocated_postive = results.every(function (row) { return validate.isPostive(row.allocated_cost); });
-        if (!allocated_postive) return callback(new Error('Invalid value for one invoice with cash id: ' + id));
+        var allocated_postive = results.every(function (row) { return validate.isPositive(row.allocated_cost); });
+        if (!allocated_postive) return callback(new Error('Invalid payment price for one invoice with cash id: ' + id));
+      
+        // sixth check - do all the allocated costs add up to the total cost?
+        // We must catch this because reduce fails in on a empty array.
+        // FIXME : re-write this check
+        var allocated_equal;
+        try { allocated_equal = results.reduce(function (a, b) { return (a.allocated_cost || a) + (b.allocated_cost || 0); }); }
+        catch (e) { return callback(e); }
+        if (validate.isEqual(allocated_equal, reference_payment.cost)) return callback(new Error('Allocated cost do not add up to total cost in payment with cash id: ' + id));
 
-        // sixth check - is the deb_cred_id valid?
+        // seventh check - is the deb_cred_id valid?
         check.validDebitorOrCreditor(reference_payment.deb_cred_id, function (err) {
           if (err) return callback(err);
-          
+
           // all checks have passed - prepare for writing to the journal.
           get.origin('cash', function (err, origin_id) {
             if (err) return callback(err);
@@ -323,6 +346,7 @@ module.exports = (function (db) {
                 get.transactionId(function (err, trans_id) {
                   if (err) return callback(err);
 
+
                   var period_id = period_object.period_id;
                   var fiscal_year_id = period_object.fiscal_year_id; 
 
@@ -331,7 +355,7 @@ module.exports = (function (db) {
                   // First, figure out if we are crediting or debiting the caisse
                   // This is indicated by the bon.
                   // match { 'S' => debiting; 'E' => crediting }
-                  var account_id = reference_payment[reference_payment.bon == 'E' ? 'credit_account' : 'debit_account'];
+                  var account_type = reference_payment.bon == 'E' ? 'credit_account' : 'debit_account';
 
                   // Are they a debitor or a creditor?
                   var deb_cred_type = reference_payment.bon == 'E' ? '\'D\'' : '\'C\'';
@@ -346,30 +370,47 @@ module.exports = (function (db) {
                   var cash_query =
                     'INSERT INTO `posting_journal` ' +
                       '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                      '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+                      '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
                       '`currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                      '`cash`.`text`, ' + account_id + ', ' + money + // last three: credit, debit_equiv, credit_equiv.
-                      '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' + [origin_id, user_id].join(', ') + ' ' +
+                      '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money + 
+                      '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
+                      [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` ' + 
                     'WHERE `cash`.`id`=' + db.escapestr(id) + ';';
 
                   // Then copy data from CASH_ITEM -> JOURNAL
                   
+                  var cash_item_money = reference_payment.bon == 'E' ?
+                    '`cash_item`.`allocated_cost`, 0, '+ rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ' : 
+                    '0, `cash_item`.`allocated_cost`, 0, ' + rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ';
+
+                  var cash_item_account_id = reference_payment.bon == 'E' ? 'debit_account' : 'credit_account';
+
                   var cash_item_query =
                     'INSERT INTO `posting_journal` ' +
                       '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                      '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+                      '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
                       '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' + 
-                      '`cash`.`text`, `cash_item`.`sales_account`, 0, `sale_item`.`total`, 0, `sale_item`.`total`, ' + // last three: credit, debit_equiv, credit_equiv
-                      '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                    'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inv_group` ON ' + 
-                      '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
-                      '`inventory`.`group_id`=`inv_group`.`id` ' +
-                    'WHERE `sale`.`id`=' + db.escapestr(id) + ';';
+                      '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money + 
+                      '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
+                      '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                    'FROM `cash` JOIN `cash_item` ON ' + 
+                      '`cash`.`id`=`cash_item`.`cash_id` ' +
+                    'WHERE `cash`.`id`=' + db.escapestr(id) + ';';
 
                   // we are ready to execute!
+                  
+                  db.execute(cash_query, function (err, results) {
+                    if (err) return callback(err);
+                    console.log('\n', results, '\n');
+                    db.execute(cash_item_query, function (err, results) {
+                      if (err) return callback(err);
+                      console.log('\n', results, '\n');
+                      return callback(null, results);
+                    });
+                  });
                 });
               });
             });

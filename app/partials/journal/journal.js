@@ -36,6 +36,8 @@ angular.module('kpk.controllers')
     {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
     {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
     {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
+    {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
+    {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
     {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
     {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
     {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},

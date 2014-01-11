@@ -276,14 +276,20 @@ angular.module('kpk.controllers')
     }
   }, true);
 
-  function journalPost (id, user) {
+  function journalPost (id) {
     var d = $q.defer();
-    var request = {id: id, transaction_type: TRANSACTION_TYPE, user: user};
-    connect.journal([request])
-    .then(function(res) {
+    connect.fetch('/journal/cash/' + id)
+    .then(function (res) {
       d.resolve(res);
+    }, function (error) {
+      d.reject(error);
     });
     return d.promise;
+  }
+
+  // TODO/FIXME : abstract this!
+  function mysqlDate (date) {
+    return (date || new Date()).toISOString().slice(0, 10).replace('T', ' ');
   }
 
   function pay () {
@@ -296,7 +302,7 @@ angular.module('kpk.controllers')
       enterprise_id : imports.enterprise.id,
       bon : 'E', // FIXME: impliment crediting
       bon_num : generateBonNumber(models.cash, 'E'),
-      date : $filter('date')(new Date(), 'yyyy-MM-dd'),
+      date : mysqlDate(new Date()),
       debit_account : imports.enterprise.cash_account,
       credit_account : stores.debitors.get(data.debitor_id).account_id,
       currency_id : data.currency,

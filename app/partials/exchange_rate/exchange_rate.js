@@ -10,7 +10,7 @@ angular.module('kpk.controllers')
 
   imports.enterprise = appstate.get('enterprise');
   imports.currency = {tables : { 'currency' : { 'columns' : ['id', 'name', 'symbol', 'note']}}};
-  imports.exchange = {tables : { 'exchange_rate' : { 'columns' : ['id', 'currency_1', 'currency_2', 'rate', 'date']}}};
+  imports.exchange = {tables : { 'exchange_rate' : { 'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']}}};
 
   flags.current_exchange_rate = false;
   swap.currency1 = {};
@@ -36,20 +36,18 @@ angular.module('kpk.controllers')
           swap.current_exchange_rate = e;
         }
       });
-
-
     }, function (error) {
-      messenger.push({ type: 'error', msg: 'Could not load currency information:' + error});
+      messenger.danger('Could not load currency information:' + error);
     });
   }
 
   function submit () {
     // transform to MySQL date
-    var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    var date = new Date().toISOString().slice(0, 10).replace('T', ' ');
 
     connect.basicPut('exchange_rate', [{
-      currency_1 : swap.currency1.id,
-      currency_2: swap.currency2.id,
+      enterprise_currency_id : swap.currency1.id,
+      foreign_currency_id : swap.currency2.id,
       rate : swap.rate,
       date : date 
     }]).then(function (result) {

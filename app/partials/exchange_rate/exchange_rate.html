@@ -4,7 +4,6 @@
 
 <div class="content">
   <div class="row">
-
     <div class="col-xs-6">
       <table class="table table-bordered table-condensed">
         <thead>
@@ -12,7 +11,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="exchange in models.exchange | limitTo: 12">
-            <td>{{exchange.date | date}}</td><td>{{formatExchangeCurrency(exchange.currency_1)}}</td><td>{{formatExchangeCurrency(exchange.currency_2)}}</td><td>{{exchange.rate | currency }}</td>
+            <td>{{exchange.date | date}}</td><td>{{formatExchangeCurrency(exchange.enterprise_currency_id)}}</td><td>{{formatExchangeCurrency(exchange.foreign_currency_id)}}</td><td>{{exchange.rate | currency }}</td>
           </tr>
         </tbody>
       </table>
@@ -22,7 +21,7 @@
       <table class="table table-bordered table-condensed" ng-switch-when="true">
         <thead>
           <tr><th colspan="2">Today's ({{swap.current_exchange_rate.date | date}}) Exchange Rate:</th></tr>
-          <tr><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_1)}}</th><th>{{formatExchangeCurrency(swap.current_exchange_rate.currency_2)}}</th></tr>
+          <tr><th>{{formatExchangeCurrency(swap.current_exchange_rate.enterprise_currency_id)}}</th><th>{{formatExchangeCurrency(swap.current_exchange_rate.foreign_currency_id)}}</th></tr>
         </thead>
         <tbody>
           <tr><td>1</td><td>{{swap.current_exchange_rate.rate}}</td></tr>
@@ -84,6 +83,52 @@
           </form>
         </div>
       </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span> Hello World </span>
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th colspan="3"></th>
+              <th>PlaceHolder</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="4"></td>
+              <td><span class="btn btn-success">CE</span></td>
+            </tr>
+            <tr>
+              <td><span class="btn btn-default">7</span></td>
+              <td><span class="btn btn-default">8</span></td>
+              <td><span class="btn btn-default">9</span></td>
+              <td><span class="btn btn-default">X</span></td>
+            </tr>
+            <tr>
+              <td><span class="btn btn-default">4</span></td>
+              <td><span class="btn btn-default">5</span></td>
+              <td><span class="btn btn-default">6</span></td>
+              <td><span class="btn btn-default">-</span></td>
+            </tr>
+            <tr>
+              <td><span class="btn btn-default">1</span></td>
+              <td><span class="btn btn-default">2</span></td>
+              <td><span class="btn btn-default">3</span></td>
+              <td rowspan="2"><span class="btn btn-default">=</span></td>
+            </tr>
+            <tr>
+              <td><span class="btn btn-default"></span></td>
+              <td><span class="btn btn-default"></span></td>
+              <td><span class="btn btn-default"></span></td>
+              <td><span class="btn btn-default"></span></td>
+              <td><span class="btn btn-default"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 </div>

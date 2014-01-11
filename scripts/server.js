@@ -105,25 +105,6 @@ app.get('/post/', function (req, res, next) {
   });
 });
 
-/*
- * I believe this code is unused
-app.get('/journal', function (req, res, next) {
-  var jsRequest; 
-  try {
-    jsRequest = JSON.parse(decodeURIComponent(url.parse(req.url).query));
-  } catch (e) {
-    throw e;
-  }
-  var Qo = queryHandler.getQueryObj(jsRequest);
-  console.log('\n', Qo, '\n');
-  db.execute(db.select(Qo), function (err, ans) {
-    if (err) next(err);
-    res.json(ans); // FIXME: this db.select is no longer defined.
-  });
-});
-*/
-
-
 app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
   journal.request(req.params.table, req.params.id, req.session.user_id, function (err, success) {
@@ -132,12 +113,10 @@ app.get('/journal/:table/:id', function (req, res, next) {
   });
 });
 
-
 app.post('/journal', function (req, res, next) {
   // What are the params here?
   journal.poster(req, res, next); 
 });
-
 
 app.get('/max/:id/:table', function(req, res) { 
   var id = req.params.id;
@@ -157,6 +136,7 @@ app.get('/max/:id/:table', function(req, res) {
 });
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
+  // FIXME : redo this with callback pattern.
   ledger.debitor(req.params.id, res);
 });
 
