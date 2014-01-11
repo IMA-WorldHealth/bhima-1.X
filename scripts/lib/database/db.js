@@ -16,11 +16,15 @@ function mysqlInit (config) {
   var db = require('mysql');
   var con = db.createConnection(config);
   con.connect(function (err) {
-    if (err) setTimeout(mysqlInit(config), 1000); 
+    console.log('\nConnecting to MySQL ...\n');
+    if (err) setTimeout(mysqlInit(config), 500); 
   });
 
   con.on('error', function (err) {
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') mysqlInit(config);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+      console.log('Lost connection, reconnecting in 500ms');
+      mysqlInit(config);
+    }
     else throw err;
   });
 

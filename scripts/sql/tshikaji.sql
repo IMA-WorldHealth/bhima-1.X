@@ -485,11 +485,11 @@ insert into `currency` (`id`, `name`, `symbol`, `note`) values
   (1,'Congolese Francs','FC',NULL),
 	(2,'United State Dollars','USD',NULL);
 
-insert into `exchange_rate` (`currency_1`, `currency_2`, `rate`, `date`) values
-  (2, 1, 920, '2012-06-04');
+insert into `exchange_rate` (`enterprise_currency_id`, `foreign_currency_id`, `rate`, `date`) values
+  (2, 1, 1/920, '2014-01-04');
 
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 
-  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 212, '/assets/logos/tsh.jpg', 1);
+  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 195,, '/assets/logos/tsh.jpg', 1);
 
 -- configure fiscal year/period
 

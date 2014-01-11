@@ -38,7 +38,7 @@ create table `exchange_rate` (
   `foreign_currency_id`     tinyint unsigned not null,
   `rate`                    decimal(19, 2) unsigned not null,
   `date`                    date not null,
-  key `enterprise_currency_id` (`centerprise_currency_id`),
+  key `enterprise_currency_id` (`enterprise_currency_id`),
   key `foreign_currency_id` (`foreign_currency_id`),
   primary key (`id`),
   constraint foreign key (`enterprise_currency_id`) references `currency` (`id`),
