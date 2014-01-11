@@ -4,6 +4,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   
   //Models
   var models = {};
+  $scope.model = {};
  
   //TODO rething name
   const DEFAULT_FILTER_RESOLUTION = 2;
@@ -29,6 +30,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
       request: '/reports/finance/?' + JSON.stringify(params)
     }
 
+
     //TODO rename promise
     var promise = populateRequests(models);
  
@@ -45,6 +47,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     })
     //Verify Models - Success
     .then(function(res) { 
+      console.log(res);
       settupPage();
     },
     //Veryify Models - Error
@@ -57,7 +60,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   function settupPage() {
 
     var sessionData = models['finance'].model.data;
-    
+    $scope.model['finance'] = models['finance'].model;  
     console.log("settupPage called", sessionData);
     //parse model to allow grouping by account number
     // parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
