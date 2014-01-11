@@ -14,7 +14,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   //default for now
   var requiredYears = [1, 2];
-
+  $scope.requiredYears = requiredYears;
   //Error handling 
   $scope.session_error = {valid: true};
 
@@ -48,6 +48,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     //Verify Models - Success
     .then(function(res) { 
       console.log(res);
+      $scope.stupidHack(requiredYears);
       settupPage();
     },
     //Veryify Models - Error
@@ -149,6 +150,21 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     deferred.resolve(true);
     return deferred.promise;
   }
+
+  $scope.stupidHack = function stupidHack() { 
+    
+    //TODO Fetch fiscal years and format headers correctly (?year date, ?year description)
+    $scope.renderYears = [];
+
+    //first column 
+    $scope.renderYears.push({name: "Account", key: "account_number"});
+    
+    //iterate columns
+    requiredYears.forEach(function(year) { 
+      $scope.renderYears.push({name: "Year " + year + " budget", key: "budget_" + year});
+      $scope.renderYears.push({name: "Year " + year + " realisation", key: "realisation_" + year});
+    });
+  };
 
   //TODO renmae handleError()
   function handleError(err) { 

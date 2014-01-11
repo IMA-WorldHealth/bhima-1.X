@@ -17,19 +17,15 @@
 </section>
 </div>
 
-<div class="content">
-  <div class="row">
-    <div class="col-xs-12">
-      <table>
-        <thead>
-          <tr>
-            <td>Account Number</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="row in model['finance'].data"><td>{{row.account_number}}</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+<table class="report_table">
+  <thead>
+    <tr>
+      <th ng-repeat="column in renderYears">{{column.name}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="row in model['finance'].data">
+      <td ng-repeat="column in renderYears">{{row[column.key]}}</td>
+    </tr>
+  </tbody>
+</table>
