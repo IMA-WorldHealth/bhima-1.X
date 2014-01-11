@@ -375,8 +375,8 @@
     function set(comp_id, ref) { 
       //summary: 
       //  Assign id reference to value
-      console.log(comp_id, 'set', Date.now(), ref);
       comp[comp_id] = ref;
+      update(comp_id);
     }
 
     function get(comp_id) { 
@@ -388,25 +388,24 @@
     function register(comp_id, callback) { 
       // FIXME: These are strict violations
       var id = this.id;
-      console.log('request for callback', comp_id);
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
       }
 
-      queue[comp_id].push({ref: this, callback: callback});
       //init call to pass current value
       if(comp[comp_id]) { 
-        console.log("calling callback()", comp_id);
         callback(comp[comp_id]);
-      }
+        return;
+      } 
+      
+      queue[comp_id].push({ref: this, callback: callback});
     }
 
-    function update(comp_id, value) { 
-      comp[comp_id] = value;
+    function update(comp_id) { 
       var l = queue[comp_id];
       if(l) { 
         l.forEach(function(recept) { 
-          console.log("Attempting callback", comp[comp_id]);
+          // console.log('callback queue');
           recept.callback(comp[comp_id]);
         });
       }

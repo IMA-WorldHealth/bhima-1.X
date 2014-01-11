@@ -7,17 +7,25 @@ angular.module('kpk.controllers')
       stores = {},
       dependencies = ['enterprise', 'account', 'currency'];
 
-  imports.enterprise_id = appstate.get('enterprise').id;
   imports.enterprise = {
     tables : { 'enterprise' : { columns : ['id', 'name', 'abbr', 'email', 'phone', 'location_id', 'cash_account', 'logo', 'currency_id']}}
   };
   imports.accounts = {
-    tables : {'account' : { columns : ['id', 'account_number', 'account_txt', 'locked']}},
-    where : ['account.enterprise_id=' + imports.enterprise_id]
+    tables : {'account' : { columns : ['id', 'account_number', 'account_txt', 'locked']}}
+    // where : ['account.enterprise_id=' + imports.enterprise_id]
   };
   imports.currency = {
     tables : { 'currency' : { columns : ['id', 'symbol', 'name'] }}
   };
+  
+  //appstate doesn't gaurantee page has already loaded for 'get', a registered callback will be executed when the value is ready // imports.enterprise_id = appstate.get('enterprise').id;
+  appstate.register('enterprise', function(res) { 
+    imports.enterprise_id = res.id;
+    
+    //assign to query
+    imports.accounts.where = ['account.enterprise_id=' + imports.enterprise_id];
+    initialize();
+  });
 
   function initialize () {
     $q.all([
@@ -27,6 +35,7 @@ angular.module('kpk.controllers')
     ])
     .then(function (array) {
       array.forEach(function (depend, idx) {
+        console.log('set', depend, idx);
         stores[dependencies[idx]] = depend;
         models[dependencies[idx]] = depend.data;
       });
@@ -38,7 +47,6 @@ angular.module('kpk.controllers')
       }, function (error) {
         console.error("found an error:", error);
       });
-
 
     });
   }
@@ -54,7 +62,8 @@ angular.module('kpk.controllers')
   }
 
   function formatAccountNumber (account_id) {
-    return (stores.account) ? stores.account.get(account_id).account_number : '';
+    var account = stores.account.get(account_id);
+    if(account) return (stores.account) ? account.account_number : '';
   }
 
   function load (enterprise) {
@@ -96,7 +105,5 @@ angular.module('kpk.controllers')
   $scope.load = load;
   $scope.save = save;
   $scope.clear = clear;
-
-  initialize();
 
 });

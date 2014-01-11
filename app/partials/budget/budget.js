@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('budgetController', function($scope, $q, connect, appstate) { 
+angular.module('kpk.controllers').controller('budgetController', function($scope, $q, $routeParams, connect, appstate, messenger) { 
     /////
     //  summary: 
     //    Controller behaviour for the budgeting unit, fetches displays and allows updates on data joined from 
@@ -8,9 +8,10 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     //    -Memory in budgeting, fiscal years compared should be re-initialised, most used accounts, etc.
     /////
     
-
-    //TODO: This data can be fetched from the application level service
-
+    var account = $routeParams.accountID || -1;
+    
+    //Rewrite using more concise model and initialisation - validation and appcache service
+    var dirtyBudgets = [];
     var models = {};
 
     models['fiscal'] = {
@@ -23,13 +24,11 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
         }
       }
     };
-
-  
+ 
     function init() { 
 
-      appstate.register("enterprise", function(res) { 
+      appstate.register("enterprise", function(res) {
         createBudget(res.id);
-        // $scope.enterprise = res;
       });
 
     }
@@ -40,19 +39,30 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       var budget_model = {reports: []};
 
       var default_account_select;
-
+  
+      //FIXME promise / error chain
       var promise = fetchAccount(e_id);
       promise
       .then(function(model) { 
         account_model = model;
-        default_account_select = account_model.data[0].id; //First account in list, could be loaded from cache (model.get(cache_id))
+        if(account === -1) {
+          default_account_select = account_model.data[0].id; //First account in list, could be loaded from cache (model.get(cache_id))
+          messenger.push({type: 'info', msg: 'No account provided, selected default'});
+        } else { 
+          default_account_select = account;
+        }
+
+        //validate account exists 
+        $scope.selected_account = account_model.get(default_account_select);
+        if(!$scope.selected_account) throw new Error('Provided account does not exist');
         return fetchFiscal(e_id);
       })
       .then(function(model) { 
         fiscal_model = model;
-
         //set the first budget report - this will be populated in updateReport
         var default_fiscal = appstate.get("fiscal"); //Risky with validation checks
+
+        if(!default_fiscal) throw new Error('Fiscal year not provided');
         budget_model.reports.push({id : default_fiscal.id, desc : default_fiscal.fiscal_year_txt, model :  {}});
         fiscal_model.remove(default_fiscal.id);
         return updateReport(default_account_select, budget_model.reports);
@@ -64,12 +74,14 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
         //TODO: Util function to check if there are any fiscal years left
         //Default select
         $scope.selected_fiscal = $scope.fiscal_model.data[0];
-        $scope.selected_account = $scope.account_model.get(default_account_select); 
+
         $scope.budget_model = budget_model;
 
         console.log(budget_model);
         //Model has already been populated by default
         setSelected(default_account_select); //optional/ can expose default to $scope, or wait for user selection
+      }, function(err) { 
+        messenger.push({type: 'danger', msg: 'Failed to generate budget report ' + err});  
       });
     }
 
@@ -78,7 +90,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       var account_query = {
         'tables' : {
           'account' : {
-            'columns' : ["id", "account_txt", "account_category_id"]
+            'columns' : ["id", "account_txt"]
             }
         },
         'where' : ['account.enterprise_id=' + e_id]
@@ -124,10 +136,10 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           fetchBudget(account_id, y.id).then(function(model) { 
             y.model = indexMonths(model);
             y.display = formatBudget(y.model);
-            console.log('display - ', y.display);
-            console.log("fetchBudget", i, l);
+            // console.log('display - ', y.display);
+            // console.log("fetchBudget", i, l);
             if(i==l-1) { 
-              console.log("resolving", reports);
+              // console.log("resolving", reports);
               deferred.resolve(reports);
             }
           });
@@ -190,7 +202,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
           //FIXME: repeated data in model and period
           data.actual = 0; //actual placeholder
           format.push(data);
-          console.log("format", data);
+          // console.log("format", data);
         } else { 
           format.push(null);
         }
@@ -253,7 +265,7 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
       $scope.selected_fiscal = $scope.fiscal_model.get(report.id);
     };
 
-    $scope.validSelect = function() { 
+    $scope.validSelect = function() {
       //ugly
       if($scope.fiscal_model) { 
         if($scope.fiscal_model.data.length > 0) { 
@@ -264,8 +276,34 @@ angular.module('kpk.controllers').controller('budgetController', function($scope
     };
 
     $scope.updateBudget = function updateBudget() { 
-      console.log('updateBudget');
+      var promiseList = [];
+
+      //FIXME send all post(put) requests at once - requires server API update
+      //FIXME on storing changed budgets, store model - can call get directly on model
+      //make requests 
+      $scope.budget_model.reports.forEach(function(report) { 
+        report.model.data.forEach(function(budget_item) { 
+          if(dirtyBudgets.indexOf(budget_item.period_id) >= 0) { 
+            promiseList.push(connect.basicPost("budget", [{budget: budget_item.budget, id: budget_item.id}], ["id"]));    
+          }
+        });
+      });
+      
+      //handle server response
+      $q.all(promiseList).then(function(res) { 
+        messenger.push({type: 'success', msg: 'Budget records updated'});
+        dirtyBudgets.length = 0;
+      }, function(err) { 
+        messenger.push({type: 'danger', msg: 'Error updating budget records ' + err.status});  
+      });
     };
+ 
+    $scope.dirtyInput = function dirtyInput(row) { 
+      var input_period = row.period_id; 
+      console.log(dirtyBudgets, input_period, input_period in dirtyBudgets);
+      if(dirtyBudgets.indexOf(input_period) < 0) dirtyBudgets.push(row.period_id);
+    }
+
 
     init();
   });
