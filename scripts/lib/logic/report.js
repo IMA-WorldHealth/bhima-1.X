@@ -112,7 +112,7 @@ module.exports = (function (db) {
       });
 
       query = [
-        "SELECT budget_result.account_id, account.account_number,",
+        "SELECT budget_result.account_id, account.account_number, account.account_txt,",
         selectColumns.join(","),
         "FROM",
         "(SELECT budget.account_id,",
