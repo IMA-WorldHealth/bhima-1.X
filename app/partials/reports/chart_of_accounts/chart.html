@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="partials/reports/chart_of_accounts/chart.css">
+<header>
+  <span>{{enterprise.name}} Chart of Accounts</span>
+</header>
+
+<div>
+<table id="accTable" class="reportTable">
+  <thead>
+    <tr><th>Account Number</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat='account in model["account"].data'>
+      <td>{{account.account_number}}</td>
+      <td>{{account.account_txt}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>

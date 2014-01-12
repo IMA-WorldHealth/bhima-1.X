@@ -1,0 +1,27 @@
+.reportTable { 
+  border: 1px solid #9F9F9F;
+  width: 100%;
+  /* page-break-inside: auto; */
+}
+
+.reportTable tr { 
+  /* page-break-inside: avoid; */
+  /* page-break-after: auto; */
+}
+
+.reportTable thead > tr > th { 
+  border: 1px solid #9F9F9F;
+}
+
+.reportTable tbody > tr > td { 
+  border: 1px solid #9F9F9F;
+}
+
+thead { 
+  display: table-header-group;
+}
+
+tbody { 
+  display: table-row-group;
+}
+
