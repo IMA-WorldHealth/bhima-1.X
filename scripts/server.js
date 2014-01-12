@@ -198,6 +198,14 @@ app.get('/location', function (req, res, next) {
   });
 });
 
+app.get('/debitorAgingPeriod', function (req, res, next){
+  var sql =  "SELECT DISTINCT period.id, period.period_start, period.period_stop FROM period, general_ledger WHERE period.id = general_ledger.`period_id`;";
+  db.execute(sql, function (err, rows) {
+    if (err) next(err);
+    res.send(rows);
+  });
+});
+
 app.get('/account_balance/:id', function (req, res, next) {
   var enterprise_id = req.params.id;
 

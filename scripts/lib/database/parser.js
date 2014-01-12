@@ -140,6 +140,7 @@ module.exports = (function (options) {
     // default to 1
     conditions = (def.where) ? parseWhere(def.where) : 1;
 
+    
     return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
                 .replace('%columns%', columns.join(', '))
                 .replace('%table%', table)
