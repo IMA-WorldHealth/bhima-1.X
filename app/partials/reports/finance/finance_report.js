@@ -156,7 +156,8 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   
     //TODO Format fiscal year name with fiscal year data (?description, ?year)
     var columnDefinition = [
-      {name: "Account", key: "account_number"} 
+      {name: "Account", key: "account_number"},
+      {name: "Description", key: "account_txt"}
     ];
 
     //Derive columns from report data
