@@ -6,7 +6,18 @@
 
 <section class="underline">
   <div class="pull-right">
-    <button ng-click="groupByAccountNumber()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> Group: Resolution 1</button>
+    <span class="dropdown">
+      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">Report Years</li>
+        <li ng-repeat="year in requiredYears">
+          <a ng-click="toggleYear(year)" href="">
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !year.toggle, 'glyphicon-check' : !!year.toggle}"></i> {{year.id}}
+          </a>
+        </li>
+      </ul>
+    </span> 
+    <button ng-click="" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
   </div>
 </section>
 
@@ -20,12 +31,12 @@
 <table class="report_table">
   <thead>
     <tr>
-      <th ng-repeat="column in renderYears">{{column.name}}</th>
+      <th ng-repeat="column in columnDefinition">{{column.name}}</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="row in model['finance'].data">
-      <td ng-repeat="column in renderYears">{{row[column.key]}}</td>
+      <td ng-repeat="column in columnDefinition">{{row[column.key] || 0}}</td>
     </tr>
   </tbody>
 </table>
