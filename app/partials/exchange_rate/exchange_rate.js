@@ -6,15 +6,17 @@ angular.module('kpk.controllers')
       stores = {},
       models = $scope.models = {},
       flags = $scope.flags = {},
-      swap = $scope.swap = {};
+      swap  = $scope.swap = {},
+      data = $scope.data = {};
 
-  imports.enterprise = appstate.get('enterprise');
+  $scope.enterprise = imports.enterprise = appstate.get('enterprise');
+  var foreign_currency = $scope.data.foreign_currency = {};
+
   imports.currency = {tables : { 'currency' : { 'columns' : ['id', 'name', 'symbol', 'note']}}};
   imports.exchange = {tables : { 'exchange_rate' : { 'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']}}};
 
   flags.current_exchange_rate = false;
-  swap.currency1 = {};
-  swap.currency2 = {};
+  flags.visible = false;
 
   function run () {
     var dependencies = ['currency', 'exchange'];
@@ -28,7 +30,6 @@ angular.module('kpk.controllers')
         models[dependencies[idx]] = depends.data;
       });
       models.enterprise = imports.enterprise;
-      if (imports.enterprise.currency_id) swap.currency1 = stores.currency.get(imports.enterprise.currency_id);
       // calculate today's exchange rate
       models.exchange.forEach(function (e) {
         if (new Date(e.date).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)) {
@@ -46,12 +47,12 @@ angular.module('kpk.controllers')
     var date = new Date().toISOString().slice(0, 10).replace('T', ' ');
 
     connect.basicPut('exchange_rate', [{
-      enterprise_currency_id : swap.currency1.id,
-      foreign_currency_id : swap.currency2.id,
+      enterprise_currency_id : imports.enterprise.currency_id,
+      foreign_currency_id : $scope.data.foreign_currency.id,
       rate : swap.rate,
       date : date 
     }]).then(function (result) {
-      messenger.push({ type: 'success', msg: 'Added new currency with id: ' + result.data.insertId});
+      messenger.push({ type: 'success', msg: 'Added new exchange rate with id: ' + result.data.insertId});
       run();
     }, function (error) {
       messenger.push({type: 'danger', msg: 'Failed to post new exchange rate. Error: '+ error});
@@ -59,54 +60,26 @@ angular.module('kpk.controllers')
   }
 
   function filterOptions (opts) {
-    return opts.id !== swap.currency1.id;
+    return opts.id !== imports.enterprise.currency_id;
   }
 
   function valid () {
-    var t = swap.currency2,
-        f = swap.currency1;
-    return !(!!t.id && !!f.id && !!swap.rate);
+    return angular.isDefined(foreign_currency.id) && angular.isDefined(swap.rate);
   }
 
-  function formatCurrency (curr) {
-    return [curr.symbol, '|', curr.name].join(' '); 
+  function getCurrency (id) {
+    return stores.currency ? stores.currency.get(id) : {};
   }
 
-  function formatExchangeCurrency (id) {
-    return stores.currency && angular.isDefined(id) ? stores.currency.get(id).symbol : id; 
+  function formatCurrency (id) {
+    return stores.currency && angular.isDefined(stores.currency.get(id)) ? stores.currency.get(id).name : '';
   }
 
-  // calculator stuff
-
-  $scope.expr = {};
-  $scope.expr.elements = [];
-
-  $scope.pushCalc = function (e) {
-    // HACK HACK HACK
-    if (!angular.isArray($scope.expr.elements)) $scope.expr.elements = [];
-    $scope.expr.elements.push(e);
-  };
-
-  $scope.clearCalc = function () {
-    $scope.expr.elements = [];
-  };
-
-  $scope.formatExpr = function (expr) {
-    return angular.isArray(expr) ? expr.join(' ') : expr;
-  };
-
-  $scope.calc = function () {
-    console.log($scope.expr.elements);
-    var temp = $scope.expr.elements.join('');
-    $scope.expr.elements = eval(temp);
-    $scope.expr.elements.length = 0;
-  };
-  
   $scope.filterOptions = filterOptions;
   $scope.formatCurrency = formatCurrency;
-  $scope.formatExchangeCurrency = formatExchangeCurrency;
   $scope.valid = valid;
   $scope.submit = submit;
+  $scope.getCurrency = getCurrency;
 
   // start the controller
   run();
