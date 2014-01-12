@@ -1,4 +1,4 @@
-// js/directives/directive.js
+// js/directives/directives.js
 
 (function (angular) {
   'use strict';
@@ -25,21 +25,6 @@
           });
         });
       };
-    }])
-
-    .directive('kpkAlert', ['$compile', function ($compile) {
-      return {
-        restrict: 'A',
-        replace: true,
-        link: function ($scope, element, attrs) {
-          var template = 
-            '<div class="kapok-alert">' + 
-              '<alert type="alert.type" close="closeAlert()">{{alert.message}}</alert>' + 
-            '</div>';
-
-        }
-      };
-    
     }])
 
     .directive('treeModel', ['$compile', 'appcache', function($compile, appcache) {
@@ -91,6 +76,80 @@
           }
         }
       };
-    }]);
+    }])
 
+    .directive('kCalculator', function () {
+
+      return {
+        restrict: 'EA',
+        template :
+          '<table>' +
+          '  <tbody>' +
+          '    <tr>' +
+          '      <th colspan="3"><div class="form-kapok"><span class="pull-right">{{ dashboard }}</span></div></th>' +
+          '      <th><span class="btn btn-success" ng-click="clear()">CE</span></th>' +
+          '    </tr>' +
+          '    <tr>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(7)">7</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(8)">8</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(9)">9</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(\'*\')">x</button></td>' +
+          '    </tr>' +
+          '    <tr>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(4)">4</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(5)">5</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(6)">6</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(\'-\')">-</button></td>' +
+          '    </tr>' +
+          '    <tr>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(1)">1</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(2)">2</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(3)">3</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(\'/\')">/</button></td>' +
+          '    </tr>' +
+          '    <tr>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(0)">0</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="push(\'.\')">.</button></td>' +
+          '      <td><button type="button" class="btn btn-default" style="width:100%;" ng-click="calculate()">=</button></td>' +
+          '      <td rowspan="1"><button class="btn btn-default" style="height:100%; width:100%; padding: 0;" ng-click="push(\'+\')">+</button></td>' +
+          '    </tr>' +
+          '  </tbody>' +
+          '</table>',
+        scope : {
+          'kCalculator' : '=',
+        },
+        controller : ['$scope', function ($scope) {
+          $scope.value = 0;
+          $scope.dashboard = '';
+          $scope.elements = [];
+
+          $scope.$watch('elements', function () {
+            $scope.dashboard = $scope.elements.join('');
+          }, true);
+
+          $scope.push = function (operator) {
+            $scope.elements.push(operator);
+          };  
+
+          $scope.clear = function () {
+            $scope.elements.length = 0; 
+          };  
+
+          $scope.calculate = function () {
+            var temp = $scope.elements.join('');
+            $scope.value = eval(temp);
+            $scope.elements.length = 0;
+            $scope.elements.push($scope.value); // set the value to be an element
+          };
+
+        }],
+        link: function (scope, element, attrs) {
+
+          scope.$watch('value', function() {
+            console.log('Calculated : ', scope.value);
+          }, true);
+
+        }
+      };
+    });
 })(angular);
