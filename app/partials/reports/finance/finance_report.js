@@ -13,17 +13,18 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   //AND from title accounts
 
   //default for now
-  var requiredYears = [1, 2];
+  var requiredYears = [{id: 1, toggle: true}, {id: 2, toggle: true}];
   $scope.requiredYears = requiredYears;
   //Error handling 
   $scope.session_error = {valid: true};
 
   function init() { 
 
-    var params = { 
-      fiscal: requiredYears
-    }
-
+    var params = {fiscal: []};
+    
+    requiredYears.forEach(function(year) { 
+      if(year.toggle) params.fiscal.push(year.id);
+    });
     //Settup models
     models['finance'] = {
       model: {},
@@ -58,8 +59,9 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   }
 
   function settupPage() {
-
     var sessionData = models['finance'].model.data;
+    settupTable();
+    
     $scope.model['finance'] = models['finance'].model;  
     console.log("settupPage called", sessionData);
     //parse model to allow grouping by account number
@@ -148,7 +150,43 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     deferred.resolve(true);
     return deferred.promise;
   }
+  
+  function settupTable() { 
+  
+    //TODO Format fiscal year name with fiscal year data (?description, ?year)
+    var columnDefinition = [
+      {name: "Account", key: "account_number"},
+      {name: "Description", key: "account_txt"}
+    ];
 
+    //Derive columns from report data
+    requiredYears.forEach(function(year) {
+      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " budget", key: "budget_" + year.id});
+      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " realisation", key: "realisation_" + year.id}); 
+    });
+
+    $scope.columnDefinition = columnDefinition;
+  }
+
+  //just not good code
+  $scope.toggleYear = function toggleYear(year) {
+    
+    //TODO Code should be optimized re: angular digests
+    year.toggle = !year.toggle;
+    // settupTable();
+    if(year.toggle) { 
+      $scope.columnDefinition.push({id: year.id, name: "Year " + year.id + " budget", key: "budget_" + year.id});
+      $scope.columnDefinition.push({id: year.id, name: "Year " + year.id + " realisation", key: "realisation_" + year.id});  
+    } else { 
+      $scope.columnDefinition.map(function(item, index) { 
+        if(item.id === year.id) {
+          //FIXME Remove both columns - map doesn't hit all elements, hack
+          $scope.columnDefinition.splice(index, 2); 
+        }
+      });
+    }
+  };
+  
   //TODO renmae handleError()
   function handleError(err) { 
     if(!err) err = {};
