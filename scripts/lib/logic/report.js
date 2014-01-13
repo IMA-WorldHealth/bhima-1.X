@@ -233,7 +233,6 @@ module.exports = (function (db) {
         throw err;
         return;
       }
-      console.log('dataaaaaaaaaaaaaaa', ans);
       def.resolve(ans);
     });
 
