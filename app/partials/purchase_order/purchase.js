@@ -34,13 +34,12 @@ angular.module('kpk.controllers')
   var creditor_query = {
     tables: {
       'supplier' : { columns : ['id', 'name', 'location_id', 'creditor_id'] },
-      'location' : { columns : ['city', 'region', 'country_id'] }
-    },
-    join : ['supplier.location_id=location.id']
+    }
   };
 
   var creditor_request = connect.req(creditor_query);
   var user_request = connect.basicGet("user_session");
+  var location_request = connect.getModel("/location");
 
   function init() {
 
@@ -55,7 +54,8 @@ angular.module('kpk.controllers')
       max_sales_request,
       max_purchase_request,
       creditor_request,
-      user_request
+      user_request,
+      location_request
 
     ]).then(function(a) {
       $scope.inventory_model = a[0];
@@ -63,6 +63,7 @@ angular.module('kpk.controllers')
       $scope.max_purchase = a[2].data.max;
       $scope.creditor_model = a[3];
       $scope.verify = a[4].data.id;
+      $scope.location = a[5];
 
 //      Raw hacks - #sorry, these might be the same entity anyway
       var id = Math.max($scope.max_sales, $scope.max_purchase);
@@ -207,7 +208,13 @@ angular.module('kpk.controllers')
   $scope.formatCreditor = function(creditor) {
     return creditor.name;
   };
-
+  
+  $scope.updateLocation = function updateLocation(creditor) { 
+    var loc = $scope.location.get(creditor.location_id);
+    console.log('updateLoc', loc);
+    $scope.creditor.village = loc.village;
+    $scope.creditor.province = loc.province;
+  };
   init();
 
 
