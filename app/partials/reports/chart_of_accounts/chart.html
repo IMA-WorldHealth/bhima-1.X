@@ -6,12 +6,16 @@
 <div>
 <table id="accTable" class="reportTable">
   <thead>
-    <tr><th>Account Number</th><th>Description</th></tr>
+    <tr><th>No.</th><th>Description</th></tr>
   </thead>
   <tbody>
     <tr ng-repeat='account in model["account"].data'>
-      <td>{{account.account_number}}</td>
-      <td>{{account.account_txt}}</td>
+      <td style="vertical-align: right;">{{account.account_number}}</td>
+      <td 
+        ng-style="{'padding-left': (account.depth * 40) + 'px'}"
+        ng-class="{'reportTitle': account.account_type_id==3}">
+        {{account.account_txt}}
+      </td>
     </tr>
   </tbody>
 </table>

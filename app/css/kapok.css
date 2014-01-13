@@ -133,6 +133,8 @@ fieldset {
 /*sfount, temporary printable table styling*/
 .reportTable { 
   border: 1px solid #9F9F9F;
+  /*hack*/
+  border-top: 0;
   width: 100%;
   /* page-break-inside: auto; */
 }
@@ -148,4 +150,10 @@ fieldset {
 
 .reportTable tbody > tr > td { 
   border: 1px solid #9F9F9F;
+  vertical-align: right;
+}
+
+.reportTitle { 
+  font-size: 110%;
+  font-weight: bold;
 }
