@@ -136,8 +136,10 @@ app.get('/max/:id/:table', function(req, res) {
 });
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
-  // FIXME : redo this with callback pattern.
-  ledger.debitor(req.params.id, res);
+  ledger.debitor(req.params.id, function (err, rows) {
+    if (err) next(err);
+    res.send(rows);
+  });
 });
 
 app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res) { 

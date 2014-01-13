@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('cashController', function($scope, $q, $filter, $http, connect, appstate) {
+.controller('cashController', function($scope, $q, $filter, $http, connect, appstate, messenger) {
   'use strict';
 
   var imports = {},
@@ -9,7 +9,7 @@ angular.module('kpk.controllers')
       TRANSACTION_TYPE = 1;
 
   imports.enterprise = appstate.get('enterprise');
-  imports.model_names = ['debitors', 'currency', 'cash', 'cash_items'];
+  imports.dependencies = ['debitors', 'currency', 'cash', 'cash_items', 'exchange_rate'];
 
   imports.debitors = {
     tables: {
@@ -26,11 +26,23 @@ angular.module('kpk.controllers')
   imports.cash = {tables: { "cash" : { columns: ["id", "bon", "bon_num", "date", "debit_account", "credit_account", "currency_id", "cashier_id", "cost", "text"] }}};
   imports.cash_items = {tables: { 'cash_item' : { columns: ["id", "cash_id", "allocated_cost", "invoice_id"] }}};
 
+  imports.exchange_rate = {
+    tables : { 'exchange_rate' : { columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']}},
+    where : ['exchange_rate.date='+ mysqlDate()]
+  };
+
+  // TODO/FIXME : abstract this!
+  function mysqlDate (date) {
+    return (date || new Date()).toISOString().slice(0, 10).replace('T', ' ');
+  }
+
+
   $q.all([
     connect.req(imports.debitors),
     connect.req(imports.currency),
     connect.req(imports.cash),
-    connect.req(imports.cash_items)
+    connect.req(imports.cash_items),
+    connect.req(imports.exchange_rate)
   ]).then(initialize);
 
   var grid, dataview, columns, options;
@@ -41,13 +53,13 @@ angular.module('kpk.controllers')
   data.paying = [];
   data.payment = 0;
   data.total = 0;
-  data.currency = 1; // FIXME
+  data.currency = imports.enterprise.currency_id;
 
-  function initialize (dependencies) {
+  function initialize (depends) {
     // init all data connections & models
-    dependencies.forEach(function (store, idx) {
-      stores[imports.model_names[idx]] = store;
-      models[imports.model_names[idx]] = store.data;
+    depends.forEach(function (store, idx) {
+      stores[imports.dependencies[idx]] = store;
+      models[imports.dependencies[idx]] = store.data;
     });
 
     columns = [
@@ -103,6 +115,7 @@ angular.module('kpk.controllers')
     dataview.syncGridSelection(grid, true);
 
     $scope.$watch('models.ledger', function () {
+      data.search = '';
       if (models.ledger) dataview.setItems(models.ledger, "inv_po_id");
     }, true);
 
@@ -120,18 +133,20 @@ angular.module('kpk.controllers')
     // populate the outstanding invoices
     $http.get('/ledgers/debitor/' + id)
       .then(function (response) {
-        if (response.data) {
-          models.ledger = response.data.map(function (row) {
-            // filter only those that do not balance
-            var cp = row;
-            cp.balance = row.debit - row.credit; // TODO: verify that this is correct
-            var deb = stores.debitors.get(row.deb_cred_id);
-            cp.debitor = [deb.first_name, deb.last_name].join(' ');
-            return cp;
-          }).filter(function (row) {
-            return row.balance > 0;
-          });
-        }
+        messenger.success('The data for debitor ' +id+' loaded successfully');
+        if (!response.data) return;
+        models.ledger = response.data.map(function (row) {
+          // filter only those that do not balance
+          var cp = row;
+          cp.balance = row.debit - row.credit; // TODO: verify that this is correct
+          var deb = stores.debitors.get(row.deb_cred_id);
+          cp.debitor = [deb.first_name, deb.last_name].join(' ');
+          return cp;
+        }).filter(function (row) {
+          return row.balance > 0;
+        });
+      }, function (error) {
+        messenger.danger('Fetching debitors failed with :' + JSON.stringify(error));
       });
       data.debitor_id = id;
   }
@@ -149,7 +164,9 @@ angular.module('kpk.controllers')
   }
 
   function filter (item, args) {
-    if (item.search !== "" && item.inv_po_id.indexOf(args.search) === -1 && item.debitor.indexOf(args.search) === -1) {
+    // FIXME : For some reason, there is a chance an item does not have a invoice
+    // or puchase order id.  The hack below fixes this, but we should investigate. 
+    if (item.search !== "" && (item.inv_po_id || '').indexOf(args.search) === -1 && item.debitor.indexOf(args.search) === -1) {
       return false;
     }
     return true;
@@ -280,25 +297,21 @@ angular.module('kpk.controllers')
     var d = $q.defer();
     connect.fetch('/journal/cash/' + id)
     .then(function (res) {
+      messenger.success('Posted to journal');
       d.resolve(res);
     }, function (error) {
+      messenger.danger('Error: ' + JSON.stringify(error));
       d.reject(error);
     });
     return d.promise;
-  }
-
-  // TODO/FIXME : abstract this!
-  function mysqlDate (date) {
-    return (date || new Date()).toISOString().slice(0, 10).replace('T', ' ');
   }
 
   function pay () {
     // FIXME: add a "would you like to credit or pay back" line/check here for excess
     // run digestInvoice once more to stabilize.
     $scope.digestInvoice();
-    var doc, items;
     // gather data
-    doc = {
+    var doc = {
       enterprise_id : imports.enterprise.id,
       bon : 'E', // FIXME: impliment crediting
       bon_num : generateBonNumber(models.cash, 'E'),
@@ -323,16 +336,16 @@ angular.module('kpk.controllers')
       var items = processItems(doc);
       var promise = $q.all(items.map(function (item) { return connect.basicPut('cash_item', [item]); }));
       promise.then(function (res) { 
-        console.log("Invoice successfully paid", res);
+        messenger.success('Invoice successfully paid.');
+      }, function (error) {
+        messenger.danger('Error ' + JSON.stringify(error));
       });
     })
     .then(function () {
       connect.basicGet("user_session")
       .then(function (res) {
-        console.log("res is:", res);
         journalPost(doc.id, res.data.id)
         .then(function (response) {
-          console.log("posting returned:", response);
           loadDebitor(data.debitor_id);
           $scope.data.paying = [];
         });
@@ -344,6 +357,7 @@ angular.module('kpk.controllers')
   function processItems (ref) {
     var items = [];
     // FIXME: raw hacks!
+    console.log('DATA.PAYING', data.paying);
     data.paying.forEach(function (invoice) {
       if (invoice.allocated > 0) {
         items.push({
