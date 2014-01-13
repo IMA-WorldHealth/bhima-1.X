@@ -1,0 +1,33 @@
+<link href="partials/reports/debitor_aging/debitor_aging.css" rel="stylesheet">
+<header>
+  <span class="capital">
+    Deditor Aging     
+  </span>
+  </header>
+  <div class="capital pull-right visible-print"> {{DC}}:{{model.selected.text}}<br/>{{option.dateFrom}} - {{option.dateTo}}</div>  
+
+<section class="underline">
+</section>
+<!--fix me-->
+<section class="underline infobar hidden-print">  
+</section>
+<!--fix me-->
+
+<div class="content">
+<div class="row">
+     <div class="col-xs-12">
+       <table id="tbl-print" class="table table-bordered">
+       <tr>
+         <td>DEBITOR NAME</td>
+         <td ng-repeat="period in periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</td>
+       </tr>
+        <tr ng-repeat="debitor in results">
+          <td>{{debitor.debitorName}}</td>
+          <td ng-repeat="debitorBalance in debitor.balances">{{debitorBalance}}</td>
+        </tr>      
+    </table>
+   </div>
+</div>
+
+<section class="underline overline"> 
+</section>
