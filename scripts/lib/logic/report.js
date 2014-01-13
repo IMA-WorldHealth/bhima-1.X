@@ -220,9 +220,9 @@ module.exports = (function (db) {
 
     //requette
     //var params = JSON.parse(params);
-    var requette = "SELECT period.id, period.period_start, period.period_stop, debitor.id as idDebitor, debitor.text, general_ledger.`debit`, general_ledger.`credit` "+
-                   "FROM debitor, general_ledger, period WHERE debitor.`id` = general_ledger.`deb_cred_id` "+
-                   "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id`";
+    var requette = "SELECT period.id, period.period_start, period.period_stop, debitor.id as idDebitor, debitor.text, general_ledger.`debit`, general_ledger.`credit`, general_ledger.`account_id` "+
+                   "FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.id = debitor.group_id AND debitor.`id` = general_ledger.`deb_cred_id` "+
+                   "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id";
     // var requette = "SELECT SUM(general_ledger.`debit`), SUM(general_ledger.`credit`) FROM debitor, period, general_ledger "+
     //                "WHERE period.`id` = general_ledger.`period_id` AND debitor.id = general_ledger.`deb_cred_id` AND general_ledger.`deb_cred_id` ="+params.debitor_id+
     //                " AND general_ledger.`deb_cred_type` = 'D' GROUP BY general_ledger.`period_id`";
