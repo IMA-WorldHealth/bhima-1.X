@@ -10,7 +10,7 @@
   </thead>
   <tbody>
     <tr ng-repeat='account in model["account"].data'>
-      <td style="vertical-align: right;">{{account.account_number}}</td>
+      <td style="text-align: right;">{{account.account_number}}</td>
       <td 
         ng-style="{'padding-left': (account.depth * 40) + 'px'}"
         ng-class="{'reportTitle': account.account_type_id==3}">

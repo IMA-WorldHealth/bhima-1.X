@@ -146,6 +146,7 @@ fieldset {
 
 .reportTable thead > tr > th { 
   border: 1px solid #9F9F9F;
+  padding-left: 5px;
 }
 
 .reportTable tbody > tr > td { 
