@@ -5,7 +5,7 @@ angular.module('kpk.controllers').controller('reportDebitorAgingCtrl', function(
 	$scope.models = {};
 	$scope.results = [];
 	var names = ['debitors', 'periods'];
-	var debitors = {tables:{'debitor':{columns:['id', 'text']}}}, periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}, 'general_ledger' : {columns:['trans_id']}}, join:['general_ledger.period_id=period.id']};
+	var debitors = {tables:{'debitor':{columns:['id', 'text']}, 'debitor_group':{columns:['account_id']}}, join:['debitor.group_id=debitor_group.id']};
 
 
 	//fonctions
@@ -40,7 +40,7 @@ angular.module('kpk.controllers').controller('reportDebitorAgingCtrl', function(
 			if(checkExisting(period.id, debitor.id)){
 				var balance = 0;
 				$scope.models.debitorAgings.forEach(function(debitorAging){
-					if(debitorAging.id == period.id && debitorAging.idDebitor == debitor.id) balance+=debitorAging.debit;
+					if(debitorAging.id == period.id && debitorAging.idDebitor == debitor.id) balance+=debitorAging.credit - debitorAging.debit;
 				});
 				record.push(balance);
 			}else{
