@@ -21,7 +21,8 @@ module.exports = (function (db) {
       'finance'         : finance,
       'stock'           : stock,
       'transReport'     : transReport,
-      'debitorAging'    : debitorAging 
+      'debitorAging'    : debitorAging,
+      'accountStatement' : accountStatement 
     };
 
     route[request](params).then(function(report) { 
@@ -239,6 +240,10 @@ module.exports = (function (db) {
     //promesse
 
     return def.promise;
+  }
+
+  function accountStatement(params){
+    console.log('account statement');
   }
 
   return { 

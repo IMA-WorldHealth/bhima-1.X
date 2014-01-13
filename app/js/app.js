@@ -118,6 +118,10 @@
     when('/reports/debitor_aging/', {
       controller: 'reportDebitorAgingCtrl',
       templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
+    }).
+    when('/reports/account_statement/', {
+      controller: 'reportAccountStatementCtrl',
+      templateUrl: 'partials/reports/account_statement/account_statement.html'
     })
     .when('/location', {
       controller : 'locationCtrl',
