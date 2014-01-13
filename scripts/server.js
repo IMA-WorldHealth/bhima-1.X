@@ -56,7 +56,6 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  console.log('on est ici', req.body.t, req.body.data[0], req.body.pk[0]);
   var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);  
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
@@ -162,7 +161,6 @@ app.get('/reports/:route/', function(req, res) {
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
   
-  console.log('query', query);
 
   //TODO update to err, ans standard of callback methods
   report.generate(route, query, function(report) { 
