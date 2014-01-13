@@ -23,7 +23,7 @@
        </tr>
         <tr ng-repeat="debitor in results">
           <td>{{debitor.debitorName}}</td>
-          <td ng-repeat="debitorBalance in debitor.balances">{{debitorBalance}}</td>
+          <td ng-repeat="debitorBalance in debitor.balances">{{debitorBalance | currency}}</td>
         </tr>      
     </table>
    </div>
