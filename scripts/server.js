@@ -56,7 +56,6 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  console.log('on est ici', req.body.t, req.body.data[0], req.body.pk[0]);
   var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);  
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
@@ -164,7 +163,6 @@ app.get('/reports/:route/', function(req, res) {
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
   
-  console.log('query', query);
 
   //TODO update to err, ans standard of callback methods
   report.generate(route, query, function(report) { 
@@ -187,6 +185,14 @@ app.get('/location', function (req, res, next) {
   var sql = "SELECT `location`.`id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
             "FROM `location`, `village`, `sector`, `province`, `country` " + 
             "WHERE `location`.`village_id`=`village`.`id` AND `location`.`sector_id`=`sector`.`id` AND `location`.`province_id`=`province`.`id` AND `location`.`country_id`=`country`.`id`;";
+  db.execute(sql, function (err, rows) {
+    if (err) next(err);
+    res.send(rows);
+  });
+});
+
+app.get('/debitorAgingPeriod', function (req, res, next){
+  var sql =  "SELECT DISTINCT period.id, period.period_start, period.period_stop FROM period, general_ledger WHERE period.id = general_ledger.`period_id`;";
   db.execute(sql, function (err, rows) {
     if (err) next(err);
     res.send(rows);

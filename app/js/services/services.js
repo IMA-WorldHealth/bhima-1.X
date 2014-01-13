@@ -506,6 +506,15 @@
       return deferred.promise;
     }
 
+    function debitorAgingPeriod(){
+      var handle, deferred = $q.defer();
+      handle = $http.get('debitorAgingPeriod/');
+      handle.then(function(res) { 
+        deferred.resolve(res);
+      });
+      return deferred.promise;
+    }
+
     function Model (options, target) {
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
@@ -766,7 +775,8 @@
       journal: journal,
       fetch: fetch,
       clean: clean,
-      MyBasicGet: MyBasicGet
+      MyBasicGet: MyBasicGet,
+      debitorAgingPeriod : debitorAgingPeriod
     };
   });
 
