@@ -363,27 +363,30 @@ module.exports = (function (db) {
                   // calculate exchange rate.  If money coming in, credit is cash.cost, 
                   // credit_equiv is rate*cash.cost and vice versa.
                   var money = reference_payment.bon == 'E' ?
-                    '0, `cash`.`cost`, 0, ' + rate_map[reference_payment.currency_id] + '*`cash`.`cost`, ' : 
-                    '`cash`.`cost`, 0, ' + rate_map[reference_payment.currency_id] + '*`cash`.`cost`, 0, ';
+                    '`cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, 0, ' :
+                    '0, `cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, '; 
+                  console.log('\nMONEY: ', money);
+
 
                   // finally, copy the data from cash into the journal with care to convert exchange rates.
                   var cash_query =
                     'INSERT INTO `posting_journal` ' +
                       '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                       '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
-                      '`currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
+                      '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                       '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money + 
-                      '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
+                      '`cash`.`invoice_id`, `cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                       [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` ' + 
                     'WHERE `cash`.`id`=' + db.escapestr(id) + ';';
 
+
                   // Then copy data from CASH_ITEM -> JOURNAL
                   
                   var cash_item_money = reference_payment.bon == 'E' ?
-                    '`cash_item`.`allocated_cost`, 0, '+ rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ' : 
-                    '0, `cash_item`.`allocated_cost`, 0, ' + rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ';
+                    '0, `cash_item`.`allocated_cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ':
+                    '`cash_item`.`allocated_cost`, 0, '+ 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ';
 
                   var cash_item_account_id = reference_payment.bon == 'E' ? 'debit_account' : 'credit_account';
 
