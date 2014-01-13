@@ -60,10 +60,12 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
 
   function settupPage() {
     var sessionData = models['finance'].model.data;
+     
+    $scope.model['finance'] = models['finance'].model;  
+    console.log('before', $scope.model['finance']);
+    parseAccountDepth(models['finance'].model.data);
     settupTable();
     
-    $scope.model['finance'] = models['finance'].model;  
-    console.log("settupPage called", sessionData);
     //parse model to allow grouping by account number
     // parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
     // renderGrid(sessionData);
@@ -72,7 +74,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   function populateRequests(model_list) { 
     var deferred = $q.defer();
 
-    connect.basicGet(model_list['finance'].request).then(function(res) {
+    connect.getModel(model_list['finance'].request, "account_number").then(function(res) {
       model_list['finance'].model = res;
       deferred.resolve(model_list);
     }, function(err) { 
@@ -109,6 +111,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     });
     return deferred.promise;
   } 
+
   //TODO rename verifyReceived()
   function verifyReceived(model_list) { 
     /*summary
@@ -152,17 +155,19 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   }
   
   function settupTable() { 
-  
-    //TODO Format fiscal year name with fiscal year data (?description, ?year)
-    var columnDefinition = [
-      {name: "Account", key: "account_number"},
-      {name: "Description", key: "account_txt"}
-    ];
+    
+    //TODO Format fiscal year name with fiscal year data (?description, ?year) 
+    var columnDefinition = []; 
+
+    // var columnDefinition = [
+    //   {name: "Account", key: "account_number"},
+    //   {name: "Description", key: "account_txt"}
+    // ];
 
     //Derive columns from report data
     requiredYears.forEach(function(year) {
-      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " budget", key: "budget_" + year.id});
-      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " realisation", key: "realisation_" + year.id}); 
+      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
+      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id}); 
     });
 
     $scope.columnDefinition = columnDefinition;
@@ -246,5 +251,23 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     $scope.session_error.body = e.body;
     $scope.session_error.valid = false;
   }
+
+  function parseAccountDepth(accounts) { 
+    var ROOT_NODE = 0; 
+    
+    accounts.forEach(function(account) { 
+      var parent, depth;
+     
+      //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE) 
+      parent = $scope.model['finance'].get(account.parent);
+      depth = 0;
+      while(parent) { 
+        depth++;
+        parent = $scope.model['finance'].get(parent.parent);
+      }
+      account.depth = depth;
+    });
+  }
+
   init();
 });

@@ -31,12 +31,19 @@
 <table class="reportTable">
   <thead>
     <tr>
+      <th>Account</th>
+      <th>Description</th>
       <th ng-repeat="column in columnDefinition">{{column.name}}</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="row in model['finance'].data">
-      <td ng-repeat="column in columnDefinition">{{row[column.key] || 0}}</td>
+      <td style="text-align: right">{{row.account_number}}</td>
+      <td 
+        ng-style="{'padding-left': row.depth * 30 + 'px'}" 
+        ng-class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td>
+       
+      <td ng-repeat="column in columnDefinition"><span ng-hide="row.account_type_id==3">{{row[column.key] || 0 | currency}}</span></td>
     </tr>
   </tbody>
 </table>
