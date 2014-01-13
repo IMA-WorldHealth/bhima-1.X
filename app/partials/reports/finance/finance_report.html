@@ -1,10 +1,8 @@
 <link href="partials/reports/finance/finance_report.css" rel="stylesheet">
 
-<header>
-  <span>Finance Report</span>
-</header>
-
-<section class="underline">
+<h4>{{enterprise.name}}</h4>
+<h4>Finance Report <small>{{timestamp | date}}</small></h4>
+<section class="underline overline hidden-print">
   <div class="pull-right">
     <span class="dropdown">
       <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
@@ -17,7 +15,7 @@
         </li>
       </ul>
     </span> 
-    <button ng-click="" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
+    <button ng-click="basicPrint()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
   </div>
 </section>
 
@@ -43,7 +41,7 @@
         ng-style="{'padding-left': row.depth * 30 + 'px'}" 
         ng-class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td>
        
-      <td ng-repeat="column in columnDefinition"><span ng-hide="row.account_type_id==3">{{row[column.key] || 0 | currency}}</span></td>
+      <td ng-repeat="column in columnDefinition"><span ng-hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td>
     </tr>
   </tbody>
 </table>

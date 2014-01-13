@@ -1,5 +1,5 @@
 //TODO rethink all names
-angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect) {
+angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect, appstate) {
   //TODO required model - if the model has no data, the page should not load and report this to the user
   
   //Models
@@ -26,11 +26,24 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
       if(year.toggle) params.fiscal.push(year.id);
     });
     //Settup models
+    //TODO very temporary API flag to use req or getModel 
     models['finance'] = {
-      model: {},
+      model: {},  
+      API: false,
       request: '/reports/finance/?' + JSON.stringify(params)
     }
 
+    models['fiscal'] = { 
+      model: {},
+      API: true,
+      request: { 
+        tables: { 
+          'fiscal_year': { 
+            columns: ["id"]
+          }
+        }
+      }
+    }
 
     //TODO rename promise
     var promise = populateRequests(models);
@@ -49,6 +62,11 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     //Verify Models - Success
     .then(function(res) { 
       console.log(res);
+
+      appstate.register('enterprise', function(res) { 
+        $scope.enterprise = res;
+        $scope.timestamp = Date.now();
+      });
       settupPage();
     },
     //Veryify Models - Error
@@ -70,10 +88,11 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     // parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
     // renderGrid(sessionData);
   }
-
+  
+  //TODO very temporarily hardcoded - revisit this 
   function populateRequests(model_list) { 
     var deferred = $q.defer();
-
+    
     connect.getModel(model_list['finance'].request, "account_number").then(function(res) {
       model_list['finance'].model = res;
       deferred.resolve(model_list);
@@ -268,6 +287,9 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
       account.depth = depth;
     });
   }
-
+    
+  $scope.basicPrint = function basicPrint() { 
+    print();
+  };
   init();
 });
