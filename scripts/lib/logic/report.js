@@ -25,8 +25,7 @@ module.exports = (function (db) {
     };
     
     console.log('server debug', request, params);
-    route[request](params).then(function(report) { 
-      callback(report);
+    route[request](params).then(function(report) { callback(report);
     });
   }
 
@@ -112,7 +111,7 @@ module.exports = (function (db) {
       });
 
       query = [
-        "SELECT budget_result.account_id, account.account_number, account.account_txt,",
+        "SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id,",
         selectColumns.join(","),
         "FROM",
         "(SELECT budget.account_id,",

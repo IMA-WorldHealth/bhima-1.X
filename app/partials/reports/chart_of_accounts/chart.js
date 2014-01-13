@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('accountsReport', function($scope, $q, connect, messenger) { 
+angular.module('kpk.controllers').controller('accountsReport', function($scope, $q, connect, messenger, appstate) { 
   console.log('accountReport controller initialised');
   
   //Parse all accounts - add depth level etc. apply styling based on this
@@ -20,6 +20,13 @@ angular.module('kpk.controllers').controller('accountsReport', function($scope, 
   }
 
   function accountsReport() { 
+
+    //fetch meta data
+    appstate.register('enterprise', function(res) { 
+      $scope.enterprise = res;
+      $scope.timestamp = new Date();
+    });
+
     fetchRequests()
     .then(function(res) { 
       messenger.push({type: 'success', msg: 'Fetched all accounts'}); 
@@ -47,17 +54,11 @@ angular.module('kpk.controllers').controller('accountsReport', function($scope, 
 
   function parseAccountDepth(accounts) { 
     var ROOT_NODE = 0; 
-    console.log('parsing account depth', accounts);
-  
+    
     accounts.forEach(function(account) { 
       var parent, depth;
 
-      if(account.parent === ROOT_NODE) {  
-        account.depth = 0;
-        return;
-      }
-  
-      //TODO if parent.depth exists, increment and kill the loop
+      //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
       parent = $scope.model['account'].get(account.parent);
       depth = 0;
       while(parent) { 
@@ -66,12 +67,6 @@ angular.module('kpk.controllers').controller('accountsReport', function($scope, 
       }
       account.depth = depth;
     });
-
-    console.log('parsed', accounts);
   }
-
-  $scope.buildDepthStyle = function buildDepthStyle(account) { 
-    return { "padding-left" : (account.depth * 30) + "px" }; 
-  };
   accountsReport();
 });
