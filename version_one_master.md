@@ -16,12 +16,12 @@ Overview
 Discussion and required action topics are split into 6 key areas, all relating to acheiving 
 the 02/14 date.
 
-(1) Error Handling
-(2) Printing
-(3) Testing
-(4) Features
-(5) Reporting
-(6) Bug Fixes
+1. Error Handling
+2. Printing
+3. Testing
+4. Features
+5. Reporting
+6. Bug Fixes
 
 (1) Error Handling 
 ------------------
