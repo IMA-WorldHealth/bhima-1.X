@@ -20,10 +20,10 @@ module.exports = (function (db) {
     var route = {
       'finance'         : finance,
       'stock'           : stock,
-      'transReport'     : transReport,
+      'transReport'     : transReport
+      // 'account_balance' : account_balance
       'debitorAging'    : debitorAging,
       'accountStatement' : accountStatement 
-      // 'account_balance' : account_balance
     };
     
     console.log('server debug', request, params);
