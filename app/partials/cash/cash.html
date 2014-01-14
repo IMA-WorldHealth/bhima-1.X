@@ -15,17 +15,22 @@
       <div class="panel panel-info">
         <div class="panel-heading">
           <span>Invoice &amp Patient Search</span>
-          <span class="pull-right"><i class="glyphicon glyphicon-search"></i></span>
         </div>
-        <div class="alert alert-success" ng-hide="data.debitor_id" style="margin-bottom:0;">
-          <b>No Debitor Selected.</b> Search for a debitor above to continue.
-        </div>
-        <div class="alert alert-success" ng-show="debitor && data.debitor_id && models.ledger.length==0 && data.paying.length==0" style="margin-bottom:0;">
-          <b>Debitor {{debitor.first_name}} {{debitor.last_name}} has no outstanding invoices.</b>
-        </div>
-        <div id="kpk-cash-grid" style="height: 550px;" class="grid"></div>
-      </div>
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <tr><th>Invoice ID</th><th>Debitor</th><th>Balance</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="invoice in models.ledger" ng-click="add($index)">
+            <td>{{invoice.inv_po_id}}</td>
+            <td>{{invoice.debitor}}</td>
+            <td ng-bind-html-unsafe="invoice.balance | intlcurrency:currency(invoice.currency_id)"></td>
+            <td>{{invoice.trans_date | date}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
 
     <div class="col-xs-6">
       <div class="panel panel-default">
@@ -48,23 +53,21 @@
             <tr ng-repeat="invoice in data.paying">
               <td>{{invoice.inv_po_id}}</td>
               <td>{{invoice.trans_date | date }}</td>
-              <td>{{invoice.balance | currency }}</td>
-
-              <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}"ng-model="invoice.allocated" required ng-change="freeze(invoice)"></td>
-              <td>{{invoice.remaining | currency }}</td>
-              <td ng-click="removeInvoice($index)"><i class="glyphicon glyphicon-remove"></i></td>
-              <td ng-click="thaw(invoice)"><i ng-class="{'glyphicon glyphicon-stop' : invoice.frozen}"></i></td>
+              <td ng-bind-html-unsafe="invoice.balance | intlcurrency:currency(data.currency)"></td>
+              <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}" ng-model="invoice.allocated" required></td>
+              <td ng-bind-html-unsafe="invoice.remaining | intlcurrency:currency(data.currency)"></td>
+              <td ng-click="remove($index)"><i class="glyphicon glyphicon-remove"></i></td>
             </tr>
           </tbody>
         </table>
         <hr style="padding:0;margin:0;" />
         <div class="panel-body">
-          <label>Total Due: {{data.total | currency }}</label>
-          <label class="pull-right" ng-show="data.excess > 0">Overdue: {{data.excess | currency }}</label>
+          <label>Total Due: <span ng-bind-html-unsafe="data.total | intlcurrency:currency(data.currency)"></span></label>
+          <label class="pull-right" ng-show="data.excess > 0">Overdue: <span ng-bind-html-unsafe="data.excess | intlcurrency:currency(data.currency)"></span></label>
           <div class="input-group">
-            <input placehoder="$0.00" type="number" ng-model="data.payment" ng-change="allocate()" class="form-kapok">
+            <input type="number" ng-model="data.payment"  class="form-kapok" min="0">
             <span class="input-group-addon dropdown-toggle">
-              {{formatCurrency(data.currency)}}
+              {{ currency(data.currency) }}
             </span>
             <ul class="dropdown-menu pull-right">
               <li ng-repeat="currency in models.currency"><a href="" ng-click="data.currency=currency.id">{{currency.symbol}}</a></li>
