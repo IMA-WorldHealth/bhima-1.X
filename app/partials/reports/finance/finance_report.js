@@ -42,13 +42,11 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
         insertAccount.accounts = [];
         index[account.account_number] = insertAccount.accounts;
 
-        if(account.parent === ROOT) {
-          console.log('account', account, 'parent', account.parent);
+        if(account.parent === ROOT) { 
           store.push(insertAccount);
           return;
         }
-  
-        console.log('   account', account, 'parent', account.parent);
+        
         index[account.parent].push(insertAccount);
         return;
       }
@@ -107,4 +105,6 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   $scope.toggleYear = toggleColumn;
   $scope.basicPrint = basicPrint;
   $scope.tableDefinition = tableDefinition;
+
+  $scope.financeGroups = financeGroups;
 });
