@@ -9,6 +9,7 @@ angular.module('kpk.controllers').controller('reportAccountStatementCtrl', funct
 	var names = ['accounts', 'periods'];	
 
 
+
 	//fonctions
 
 	function init(records){
@@ -64,5 +65,6 @@ angular.module('kpk.controllers').controller('reportAccountStatementCtrl', funct
 
 	//invocations
 	$q.all([connect.req(accounts),connect.req(periods), getStatements()]).then(init);
+
 
 });
