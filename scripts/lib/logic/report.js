@@ -167,13 +167,13 @@ module.exports = (function (db) {
     }
 
     if(params.ig == 'I'){
-      var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
-              "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
+      var sql = "SELECT general_ledger.id, general_ledger.trans_id, "+
+              "general_ledger.trans_date, general_ledger.credit, general_ledger.debit, "+
               "account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \"names\""+
-              "FROM posting_journal, account, currency, transaction_type, user "+
-              "WHERE posting_journal.account_id = account.id AND currency.id = posting_journal.currency_id AND"+
-              " transaction_type.id = posting_journal.origin_id and user.id = posting_journal.user_id AND posting_journal.deb_cred_id = '"+params.id+
-              "' AND posting_journal.deb_cred_type = '"+params.type+"' AND posting_journal.trans_date <= '"+params.dt+"' AND posting_journal.trans_date >= '"+params.df+"'";
+              "FROM general_ledger, account, currency, transaction_type, user "+
+              "WHERE general_ledger.account_id = account.id AND currency.id = general_ledger.currency_id AND"+
+              " transaction_type.id = general_ledger.origin_id and user.id = general_ledger.user_id AND general_ledger.deb_cred_id = '"+params.id+
+              "' AND general_ledger.deb_cred_type = '"+params.type+"' AND general_ledger.trans_date <= '"+params.dt+"' AND general_ledger.trans_date >= '"+params.df+"'";
 
               db.execute(sql, function(err, ans) {
                 if(err) {
@@ -188,14 +188,14 @@ module.exports = (function (db) {
       q.all([getElementIds(params.id)]).then(function(res){
         var tabIds = getArrayOf(res[0]);
         if(tabIds.length!=0){
-        var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
-                  "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
+        var sql = "SELECT general_ledger.id, general_ledger.trans_id, "+
+                  "general_ledger.trans_date, general_ledger.credit, general_ledger.debit, "+
                   "account.account_number, currency.name, transaction_type.service_txt, "+
-                  "CONCAT(user.first, ' ', user.last) as \"names\" FROM posting_journal, "+
-                  "account, currency, transaction_type, user WHERE posting_journal.account_id = "+
-                  "account.id AND currency.id = posting_journal.currency_id AND transaction_type.id = "+
-                  " posting_journal.origin_id AND user.id = posting_journal.user_id AND posting_journal.deb_cred_type = '"+params.type+"' AND "+
-                  "posting_journal.deb_cred_id IN ("+tabIds.toString()+") AND posting_journal.trans_date <= '"+params.dt+"' AND posting_journal.trans_date >= '"+params.df+"'";
+                  "CONCAT(user.first, ' ', user.last) as \"names\" FROM general_ledger, "+
+                  "account, currency, transaction_type, user WHERE general_ledger.account_id = "+
+                  "account.id AND currency.id = general_ledger.currency_id AND transaction_type.id = "+
+                  " general_ledger.origin_id AND user.id = general_ledger.user_id AND general_ledger.deb_cred_type = '"+params.type+"' AND "+
+                  "general_ledger.deb_cred_id IN ("+tabIds.toString()+") AND general_ledger.trans_date <= '"+params.dt+"' AND general_ledger.trans_date >= '"+params.df+"'";
 
         db.execute(sql, function(err, ans) {
           if(err) {
@@ -263,8 +263,6 @@ module.exports = (function (db) {
     //promesse
 
     return def.promise;
-
-
   }
 
   return { 
