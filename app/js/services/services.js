@@ -102,16 +102,37 @@
       //idealy return this for cascading method calls 
       var deferred = $q.defer();
       console.log('process', this);
-      this._list = Object.keys(dependencies);
+      var list = this._list = Object.keys(dependencies);
       this._dependencies = dependencies;
-      this._models = {};
+      this.passNo = this.passNo || 0; 
+      this.passNo++;
+      if(!dependencies.model) dependencies.model = {};
       
-      fetchModels(dependencies, this._list).then(function(res) { 
+      //temporary - update
+      if(limit) list = limit;
+    
+      //Use map for this
+      var filterList = [];
+      
+      //check processed
+      list.forEach(function(key, index) { 
+        if(dependencies[key].processed) return;
+        filterList.push(key);
+      });
+
+      console.log(this.passNo, 'processing', filterList);
+      
+      fetchModels(dependencies, filterList).then(function(res) { 
         //package models 
-        this._list.forEach(function(key, index) { 
-          this._models[key] = res[index];
+        list.forEach(function(key, index) { 
+          dependencies.model[key] = res[index];
+          dependencies[key].processed = true; 
         });
-        deferred.resolve(this._models);
+        
+        //cheeky  
+        dependencies.model.processed = true;
+        // dependencies.model = model;
+        deferred.resolve(dependencies.model);
       });
       return deferred.promise;
     }
@@ -124,7 +145,7 @@
         var dependency = dependencies[key];
         var KPKAPIHISRequest = dependency.KPKAPIHISRequest || true;
         console.log('looping through dependencies', dependency);
-        
+
         //TODO redo this and delegate to a function 
         if(KPKAPIHISRequest) { 
           promiseList.push(connect.req(dependency.query));

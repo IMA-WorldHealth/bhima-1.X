@@ -8,7 +8,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   
   dependencies.finance = { 
     required : true,
-    query : '/reports/finance/?' + JSON.stringify({fiscal: []}),
+    query : '/reports/finance/?' + JSON.stringify({fiscal: [1, 2]}),
     KPKAPIHISRequest : false
   };
  
@@ -26,8 +26,10 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   validate.process(dependencies).then(reportFinance);
 
   function reportFinance(model) { 
+    
     //Assume all tests are passed, models are downloaded etc. 
-    console.log('running reportFinance', model); 
+    //Expose data to templates
+    $scope.model = model;
   }
   
   // validate meta data, contains original dependencies
