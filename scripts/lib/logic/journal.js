@@ -282,7 +282,8 @@ module.exports = (function (db) {
         '`cash`.`deb_cred_id`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`cashier_id`, ' +
         '`cash`.`cashbox_id`, `cash`.`text`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' + 
         '`cash`.`bon`, `cash`.`bon_num` ' +
-      'FROM `cash` JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id`;'; 
+      'FROM `cash` JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` ' +
+      'WHERE `cash`.`id`=' + db.escapestr(id) + ';'; 
 
     db.execute(sql, function (err, results) {
       if (err) return callback(err);
@@ -355,7 +356,7 @@ module.exports = (function (db) {
                   // First, figure out if we are crediting or debiting the caisse
                   // This is indicated by the bon.
                   // match { 'S' => debiting; 'E' => crediting }
-                  var account_type = reference_payment.bon == 'E' ? 'credit_account' : 'debit_account';
+                  var account_type = reference_payment.bon != 'E' ? 'credit_account' : 'debit_account' ;
 
                   // Are they a debitor or a creditor?
                   var deb_cred_type = reference_payment.bon == 'E' ? '\'D\'' : '\'C\'';
@@ -364,9 +365,9 @@ module.exports = (function (db) {
                   // credit_equiv is rate*cash.cost and vice versa.
                   var money = reference_payment.bon == 'E' ?
                     '`cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, 0, ' :
-                    '0, `cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, '; 
-                  console.log('\nMONEY: ', money);
+                    '0, `cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, ' ;  
 
+                  console.log("\n\nRATE MAP:", JSON.stringify(rate_map), reference_payment.currency_id, "\n\n");
 
                   // finally, copy the data from cash into the journal with care to convert exchange rates.
                   var cash_query =
@@ -387,10 +388,10 @@ module.exports = (function (db) {
                   // Then copy data from CASH_ITEM -> JOURNAL
                   
                   var cash_item_money = reference_payment.bon == 'E' ?
-                    '0, `cash_item`.`allocated_cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ':
-                    '`cash_item`.`allocated_cost`, 0, '+ 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ';
+                    '0, `cash_item`.`allocated_cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ' :
+                    '`cash_item`.`allocated_cost`, 0, '+ 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ' ;
 
-                  var cash_item_account_id = reference_payment.bon == 'E' ? 'debit_account' : 'credit_account';
+                  var cash_item_account_id = reference_payment.bon != 'E' ? 'debit_account' : 'credit_account'  ;
 
                   var cash_item_query =
                     'INSERT INTO `posting_journal` ' +

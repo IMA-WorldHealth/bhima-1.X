@@ -65,7 +65,7 @@ angular.module('kpk.controllers')
     if (!imports.exchange_rate) messenger.danger('No Exchange rate data available!');
   }
 
-  function loadDebitor (id) {
+  $scope.loadDebitor = function (id) {
     // this loads in a debitors current balance
     $http.get('/ledgers/debitor/' + id)
       .then(function (response) {
@@ -83,7 +83,7 @@ angular.module('kpk.controllers')
         messenger.danger('Fetching debitors failed with :' + JSON.stringify(error));
       });
     data.debitor_id = id;
-  }
+  };
 
   $scope.currency = function (id) {
     return stores.currency ? stores.currency.get(id).symbol : '';
@@ -167,7 +167,7 @@ angular.module('kpk.controllers')
   }, true);
   */
 
-  function pay () {
+  $scope.pay = function pay () {
     // FIXME: add a "would you like to credit or pay back" line/check here for excess
     // run digestInvoice once more to stabilize.
     $scope.digestInvoice();
@@ -215,7 +215,7 @@ angular.module('kpk.controllers')
       messenger.danger('Putting cash failed'); 
     });
     
-  }
+  };
 
   function processItems (ref) {
     var items = [];
@@ -242,9 +242,6 @@ angular.module('kpk.controllers')
     return (ids.length < 1) ? 1 : Math.max.apply(Math.max, ids) + 1;
   }
 
-  function exchange (obj, from, to) {
-  }
-
   $scope.$watch('data.currency', function (current, old) {
     if (!imports.exchange_rate) return;
 
@@ -265,8 +262,6 @@ angular.module('kpk.controllers')
   });
 
 
-  $scope.pay = pay;
-  $scope.loadDebitor = loadDebitor;
  
   run();
 
