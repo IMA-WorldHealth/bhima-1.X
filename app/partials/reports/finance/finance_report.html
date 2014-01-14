@@ -8,9 +8,9 @@
       <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">Report Years</li>
-        <li ng-repeat="year in requiredYears">
-          <a ng-click="toggleYear(year)" href="">
-            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !year.toggle, 'glyphicon-check' : !!year.toggle}"></i> {{year.id}}
+        <li ng-repeat="option in tableDefinition.options">
+          <a ng-click="toggleYear(option)" href="">
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !option.active, 'glyphicon-check' : !!option.active}"></i> {{option.id}}
           </a>
         </li>
       </ul>
@@ -31,7 +31,7 @@
     <tr>
       <th>Account</th>
       <th>Description</th>
-      <th ng-repeat="column in columnDefinition">{{column.name}}</th>
+      <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
     </tr>
   </thead>
   <tbody>
@@ -41,7 +41,7 @@
         ng-style="{'padding-left': row.depth * 30 + 'px'}" 
         ng-class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td>
        
-      <td ng-repeat="column in columnDefinition"><span ng-hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td>
+      <td ng-repeat="column in tableDefinition.columns"><span ng-hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td>
     </tr>
   </tbody>
 </table>
