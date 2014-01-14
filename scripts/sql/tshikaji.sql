@@ -93,7 +93,7 @@ INSERT INTO `unit` VALUES
 	(40,'Register Supplier','',11,0,'partials/inventory/creditors','creditors'),
 	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/'),
   (42,'Income/Expense', '', 10, 0, 'partials/reports/income_expense', 'reports/income_expense'),
-  (43,'Financial Report', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
+  (43,'Finance', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
   (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget'),
   (45,'Price List', 'Configure price lists!', 11, 0, 'partials/price_list', 'inventory/price_list'),
   (46,'Exchange Rate', 'Set todays exchange rate!', 1, 0, 'partials/exchange_rate', 'exchange_rate'),
@@ -158,7 +158,7 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(9, 3),
 	(41,3),
   (1, 3),
-  (44, 3),
+  (43, 3),
   (45, 3),
   (46, 3),
   (47, 3),
@@ -187,7 +187,7 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(39,1),
 	(40,1),
 	(41,1),
-  (44,1),
+  (43,1),
   (45,1),
   (46,1),
   (47,1),
@@ -219,7 +219,7 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(39,13),
 	(40,13),
 	(41,13),
-  (44,13),
+  (43,13),
   (45,13),
   (46,13),
   (47,13),
@@ -227,7 +227,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (49,13),
   (50,13),
   (51,13),
-  (52,13);
+  (52,13),
+  (54,13);
 
 -- configure location details
 insert into `country` values

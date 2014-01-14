@@ -1,30 +1,11 @@
 //TODO rethink all names
-angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect) {
+angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect, appstate) {
   //TODO required model - if the model has no data, the page should not load and report this to the user
   
   //Models
   var models = {};
-  /*models['fiscal'] = {
-    model: {}, 
-    request: {
-      tables: {
-        'fiscal_year': { 
-          columns: ['enterprise_id', 'id', 'start_month', 'start_year', 'previous_fiscal_year']
-        }
-      }
-    }
-  }
-  models['debitor'] = {
-    model: {},
-    request: {
-      tables: { 
-        'debitor': { 
-          columns: ['id', 'group_id', 'text']
-        }
-      }
-    }
-  }*/
-
+  $scope.model = {};
+ 
   //TODO rething name
   const DEFAULT_FILTER_RESOLUTION = 2;
 
@@ -32,24 +13,36 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   //AND from title accounts
 
   //default for now
-  var requiredYears = [1, 2];
-
-  var grid;
-  var dataview;
-
+  var requiredYears = [{id: 1, toggle: true}, {id: 2, toggle: true}];
+  $scope.requiredYears = requiredYears;
   //Error handling 
   $scope.session_error = {valid: true};
 
   function init() { 
 
-    var params = { 
-      fiscal: requiredYears
+    var params = {fiscal: []};
+    
+    requiredYears.forEach(function(year) { 
+      if(year.toggle) params.fiscal.push(year.id);
+    });
+    //Settup models
+    //TODO very temporary API flag to use req or getModel 
+    models['finance'] = {
+      model: {},  
+      API: false,
+      request: '/reports/finance/?' + JSON.stringify(params)
     }
 
-    //Settup models
-    models['finance'] = {
+    models['fiscal'] = { 
       model: {},
-      request: '/reports/finance/?' + JSON.stringify(params)
+      API: true,
+      request: { 
+        tables: { 
+          'fiscal_year': { 
+            columns: ["id"]
+          }
+        }
+      }
     }
 
     //TODO rename promise
@@ -68,6 +61,12 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     })
     //Verify Models - Success
     .then(function(res) { 
+      console.log(res);
+
+      appstate.register('enterprise', function(res) { 
+        $scope.enterprise = res;
+        $scope.timestamp = Date.now();
+      });
       settupPage();
     },
     //Veryify Models - Error
@@ -78,109 +77,23 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   }
 
   function settupPage() {
-
     var sessionData = models['finance'].model.data;
-
-    console.log("settupPage called");
+     
+    $scope.model['finance'] = models['finance'].model;  
+    console.log('before', $scope.model['finance']);
+    parseAccountDepth(models['finance'].model.data);
+    settupTable();
+    
     //parse model to allow grouping by account number
-    parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
-    renderGrid(sessionData);
+    // parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
+    // renderGrid(sessionData);
   }
-
-
-  function renderGrid(data) {
-    var columns = [
-      {id: 'account_number', name: 'Account', field: 'account_number', maxWidth: 85},
-      {id: 'account_txt', name: 'Title', field: 'account_txt', maxWidth: 90},
-    ];
-
-    requiredYears.forEach(function(year) { 
-      columns.push({id: 'realisation ' + year, name: 'Realisation ' + year, field: 'realisation ' + year, groupTotalsFormatter: realisationTotalFormatter});
-      //add columns for budget
-    });
-
-    var options = { 
-      enableCellNavigation: true,
-      enableColumnReorder: true,
-      forceFitColumns: true,
-      rowHeight: 30
-    };
-
-    console.log(data);
-
-    var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
-    dataview = new Slick.Data.DataView({
-      groupItemMetadataProvider: groupItemMetadataProvider,
-      inlineFilter: true
-    });
-    grid = new Slick.Grid('#report_grid', dataview, columns, options);
-
-    grid.registerPlugin(groupItemMetadataProvider);
-
-    dataview.onRowCountChanged.subscribe(function(e, args) { 
-      grid.updateRowCount();
-      grid.render();
-    });
-
-    dataview.onRowsChanged.subscribe(function(e, args) { 
-      grid.invalidateRows(args.rows);
-      grid.render();
-    });
-
-    dataview.beginUpdate();
-    dataview.setItems(data);
-    dataview.endUpdate();
-
-    $scope.groupByAccountNumber();
-  }
-
-  function realisationTotalFormatter(totals, column) { 
-    console.log('format', totals, column);
-    var val = totals.sum && totals.sum[column.field];
-    if(val !== null) { 
-      return "<span style='font-weight: bold;'> Total " + totals.group.value + ": " + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
-    }
-    return "";
-  }
-
-  $scope.groupByAccountNumber = function groupByAccountNumber() { 
-    console.log('filtering');
-
-    var financeAggregators = [];
-    //FIXME include id, feild title in requiredYears - populate dynamically
-    requiredYears.forEach(function(year) { 
-      financeAggregators.push(new Slick.Data.Aggregators.Sum("realisation " + year));
-    });
-
-    dataview.setGrouping([{
-        getter: 'collection_title',
-        formatter: function(g) { 
-          console.log('formatter', g);
-          return "<span style='font-weight: bold'>" + g.value + "</span>";
-        },
-        aggregators: financeAggregators
-      },
-      {
-        getter: 'category_title',
-        formatter: function(g) { 
-          return "<span style='font-weight: bold'>" + g.value + "</span>";
-        },
-        aggregators: financeAggregators
-
-    }]);
-  }
-
-  function parseAccountGroup(data, resolution) { 
-    //This method is particularly cryptic to non-developers, clean up and restructure
-    data.forEach(function(item) { 
-      item.filterAccountNumber = item.account_number.toString().substr(0, resolution);
-    })  
-  }
-
+  
+  //TODO very temporarily hardcoded - revisit this 
   function populateRequests(model_list) { 
     var deferred = $q.defer();
-
-    connect.basicGet(model_list['finance'].request).then(function(res) {
+    
+    connect.getModel(model_list['finance'].request, "account_number").then(function(res) {
       model_list['finance'].model = res;
       deferred.resolve(model_list);
     }, function(err) { 
@@ -216,7 +129,7 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
       deferred.reject(err);
     });
     return deferred.promise;
-  }
+  } 
 
   //TODO rename verifyReceived()
   function verifyReceived(model_list) { 
@@ -259,7 +172,45 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     deferred.resolve(true);
     return deferred.promise;
   }
+  
+  function settupTable() { 
+    
+    //TODO Format fiscal year name with fiscal year data (?description, ?year) 
+    var columnDefinition = []; 
 
+    // var columnDefinition = [
+    //   {name: "Account", key: "account_number"},
+    //   {name: "Description", key: "account_txt"}
+    // ];
+
+    //Derive columns from report data
+    requiredYears.forEach(function(year) {
+      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
+      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id}); 
+    });
+
+    $scope.columnDefinition = columnDefinition;
+  }
+
+  //just not good code
+  $scope.toggleYear = function toggleYear(year) {
+    
+    //TODO Code should be optimized re: angular digests
+    year.toggle = !year.toggle;
+    // settupTable();
+    if(year.toggle) { 
+      $scope.columnDefinition.push({id: year.id, name: "Year " + year.id + " budget", key: "budget_" + year.id});
+      $scope.columnDefinition.push({id: year.id, name: "Year " + year.id + " realisation", key: "realisation_" + year.id});  
+    } else { 
+      $scope.columnDefinition.map(function(item, index) { 
+        if(item.id === year.id) {
+          //FIXME Remove both columns - map doesn't hit all elements, hack
+          $scope.columnDefinition.splice(index, 2); 
+        }
+      });
+    }
+  };
+  
   //TODO renmae handleError()
   function handleError(err) { 
     if(!err) err = {};
@@ -319,5 +270,26 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
     $scope.session_error.body = e.body;
     $scope.session_error.valid = false;
   }
+
+  function parseAccountDepth(accounts) { 
+    var ROOT_NODE = 0; 
+    
+    accounts.forEach(function(account) { 
+      var parent, depth;
+     
+      //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE) 
+      parent = $scope.model['finance'].get(account.parent);
+      depth = 0;
+      while(parent) { 
+        depth++;
+        parent = $scope.model['finance'].get(parent.parent);
+      }
+      account.depth = depth;
+    });
+  }
+    
+  $scope.basicPrint = function basicPrint() { 
+    print();
+  };
   init();
 });

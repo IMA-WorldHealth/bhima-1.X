@@ -39,7 +39,7 @@ angular.module('kpk.controllers')
     };
     
     //This is stupid, location should either come with debtors (aliasing columns) or be downloaded on selection (query single location)
-    var location_request = connect.loc(); 
+    var location_request = connect.getModel('/location'); 
 
     var debtor_request = connect.req(debitor_query);
     var user_request = connect.basicGet("user_session");

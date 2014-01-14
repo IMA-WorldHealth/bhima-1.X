@@ -480,14 +480,14 @@
       return deferred.promise;
     }
 
-    function loc() { 
-      //FIXME Stupid method to package location table in Model, super temporary (shouldn't need to download all locations for individual user) 
+    function getModel(getRequest, identifier) { 
+      //TODO Decide on API to handle packing direct GET requests in model 
       var handle, deferred = $q.defer();
-      handle = $http.get('location/');
-      handle.then(function(res) { 
-        var m = new Model(res, 'location');
-
-        console.log('loc', m);
+      handle = $http.get(getRequest);
+      handle.then(function(res) {
+        res.identifier = identifier || 'id';
+        var m = new Model(res, getRequest);
+        
         deferred.resolve(m);
       });
       return deferred.promise;
@@ -768,12 +768,12 @@
 
     return {
       req: req,
-      loc: loc,
       basicReq: basicReq,
       basicPut: basicPut,
       basicPost: basicPost,
       basicGet: basicGet,
       basicDelete: basicDelete,
+      getModel: getModel,
       journal: journal,
       fetch: fetch,
       clean: clean,
