@@ -43,8 +43,8 @@
               <legend>Set Exchange Rate</legend>
               <div class="form-group">
                 <div class="col-xs-5">
-                  <div class="form-kapok">
-                    <span class="pull-right">{{ formatCurrency(enterprise.currency_id) }}</span>
+                  <div class="form-kapok" style="text-align: center;">
+                    {{ formatCurrency(enterprise.currency_id) }}
                   </div>
                 </div>
                 <label class="col-xs-1 control-label">
@@ -73,7 +73,7 @@
                   <i class="glyphicon glyphicon-arrow-right"></i>
                 </label>
                 <div class="col-xs-5 input-group">
-                  <input class="form-kapok" ng-model="swap.rate" min="0" required placeholder="1.00">
+                  <input class="form-kapok" ng-model="swap.rate" min="0" required placeholder="1.00" type="number">
                   <span class="input-group-addon">
                     {{data.foreign_currency.symbol}}
                   </span> 
