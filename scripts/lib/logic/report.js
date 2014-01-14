@@ -243,7 +243,6 @@ module.exports = (function (db) {
   }
 
   function accountStatement(params){
-    console.log('account statement');
     //deferred
     var def = q.defer();
 
@@ -264,6 +263,7 @@ module.exports = (function (db) {
     //promesse
 
     return def.promise;
+
 
   }
 
