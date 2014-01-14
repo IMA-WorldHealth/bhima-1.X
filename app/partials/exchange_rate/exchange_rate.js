@@ -44,18 +44,23 @@ angular.module('kpk.controllers')
 
   function submit () {
     // transform to MySQL date
-    var date = new Date().toISOString().slice(0, 10).replace('T', ' ');
+    var date = new Date().toISOString().slice(0, 10);
 
-    connect.basicPut('exchange_rate', [{
+    var data = {
       enterprise_currency_id : imports.enterprise.currency_id,
       foreign_currency_id : $scope.data.foreign_currency.id,
       rate : swap.rate,
       date : date 
-    }]).then(function (result) {
-      messenger.push({ type: 'success', msg: 'Added new exchange rate with id: ' + result.data.insertId});
+    };
+
+    connect.basicPut('exchange_rate', [data])
+    .then(function (result) {
+      appstate.set('exchange_rate', data);
+      messenger.success('Added new exchange rate with id: ' + result.data.insertId);
+      messenger.success('appstate.exchange_rate: ', JSON.stringify(appstate.get('exchange_rate')), 5000);
       run();
     }, function (error) {
-      messenger.push({type: 'danger', msg: 'Failed to post new exchange rate. Error: '+ error});
+      messenger.dange('Failed to post new exchange rate. Error: '+ error);
     });
   }
 

@@ -13,9 +13,13 @@ angular.module('kpk.controllers')
   var journal_request = {
     'tables' : {
       'posting_journal' : {
-        'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv"]
+        'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"]
       }
     }
+  };
+
+  var account_request = {
+    'tables' : { 'account' : {'columns' : ['id', 'account_number', 'account_txt']}}
   };
 
   //TODO iterate thorugh columns array - apply translate to each heading and update
@@ -41,6 +45,7 @@ angular.module('kpk.controllers')
     {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
     {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
     {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},
+    {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 },
     {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
 
@@ -54,8 +59,9 @@ angular.module('kpk.controllers')
 
   function init() {
 
-    connect.req(journal_request).then(function(res) {
-      $scope.model['journal'] = res;
+    $q.all([connect.req(journal_request), connect.req(account_request)]).then(function(array) {
+      $scope.model.journal = array[0];
+      $scope.model.account = array[1];
 
       var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
       dataview = new Slick.Data.DataView({
@@ -127,7 +133,7 @@ angular.module('kpk.controllers')
     dataview.setGrouping({
       getter: "account_id",
       formatter: function(g) {
-        return "<span style='font-weight: bold'>" + g.value + "</span>";
+        return "<span style='font-weight: bold'>" + ( $scope.model.account ? $scope.model.account.get(g.value).account_txt : g.value) + "</span>";
       },
       aggregators: [
         new Slick.Data.Aggregators.Sum("debit"),
