@@ -133,6 +133,10 @@
     .when('/settings', { 
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
+    })
+    .when('/reports/chart_of_accounts/', {
+      controller: 'accountsReport',
+      templateUrl: 'partials/reports/chart_of_accounts/chart.html'
     });
   }  
 
