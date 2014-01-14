@@ -42,6 +42,7 @@ module.exports = (function (options) {
   }
 
   function subroutine (cond) {
+    
     // summary:
     //    Parses and escapes all components of a where
     //    clause separated by an equals sign.
@@ -67,6 +68,7 @@ module.exports = (function (options) {
       }
     });
 
+
     // escape values
     return conditions.map(function (exp) {
       return ~exp.indexOf('.') ? exp.split('.').map(function (e) { return sanitize.escapeid(e); }).join('.') : sanitize.escape(exp);
@@ -87,6 +89,7 @@ module.exports = (function (options) {
     for (var d in data) {
       if (d != id) expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
     }
+    console.log('voici notre expression ', expressions);
     return templ.replace('%table%', sanitize.escapeid(table))
                 .replace('%expressions%', expressions.join(', '))
                 .replace('%key%', [identifier, '=', sanitize.escape(data[id])].join(''));
@@ -137,6 +140,7 @@ module.exports = (function (options) {
     // default to 1
     conditions = (def.where) ? parseWhere(def.where) : 1;
 
+    
     return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
                 .replace('%columns%', columns.join(', '))
                 .replace('%table%', table)

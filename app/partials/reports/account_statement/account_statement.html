@@ -1,0 +1,17 @@
+<link href="partials/reports/account_statement/account_statement.css" rel="stylesheet">
+<header>
+  <span class="capital">
+    Acount Statement     
+  </span>
+  </header>
+  <table class="table table-bordered tbl-print">
+    <tr>
+    <td>Accounts</td>
+    <td ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}} </td>
+    </tr>
+    <tr ng-repeat="account in models.accounts | orderBy:'account_number'">
+      <td> {{account.account_txt}} </td>
+      <td ng-repeat="stat in account.stat">{{stat}}</td>
+    </tr>                      
+  </table>
+

@@ -10,15 +10,23 @@
 var u = require('../util/util');
 
 function mysqlInit (config) {
-  // FIXME: This module should use mysql connection pooling
+  // TODO : This module should use mysql connection pooling
   'use strict';
 
   var db = require('mysql');
   var con = db.createConnection(config);
-  con.connect();
+  con.connect(function (err) {
+    console.log('\nConnecting to MySQL ...\n');
+    if (err) setTimeout(mysqlInit(config), 500); 
+  });
 
-//  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
-  flushUsers(con);
+  con.on('error', function (err) {
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+      console.log('Lost connection, reconnecting in 500ms');
+      mysqlInit(config);
+    }
+    else throw err;
+  });
 
   return con;  // c'est pas necessaire pour mysql de retourne cette variable, mais peut-etre ca va necessaire pour autre base des donnees
 }
@@ -93,6 +101,9 @@ module.exports = function (cfg) {
   // The database connection for all data interactions
   // FIXME: research connection pooling in MySQL
   var con = supported_databases[sgbd](cfg);
+
+  //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
+  flushUsers(con);
 
   return {
     // return all supported databases

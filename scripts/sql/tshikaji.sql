@@ -46,7 +46,7 @@ delete from `sale`;
 insert into `user` values
   (1,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
-	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',1),
+	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
 
 INSERT INTO `unit` VALUES
@@ -56,7 +56,7 @@ INSERT INTO `unit` VALUES
 	(3,'Form Manager','Manage your forms',1,0,'/units/formmanager/',''),
 	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/permission','/permission'),
 	(5,'Finance','The Finance Super-Category',0,1,'',''),
-	(6,'Accounts','The chart of accounts',5,0,'/partials/chart','/accounts'),
+	(6,'Account','Chart of Accounts management',1,0,'/partials/accounts/create_account','/create_account'),
 	(7,'Charts','Analyze how your company is doing',5,0,'/units/charts/',''),
 	(8,'Budgeting','Plan your next move',0,10,'/partials/budgeting',''),
 	(9,'Posting Journal','Daily Log',5,0,'/partials/postingjournal/','/posting_journal'),
@@ -87,13 +87,13 @@ INSERT INTO `unit` VALUES
 	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales/0/'),
 	(35,'Sale Records','Search for a sale',5,0,'/partials/sale_records/','sale_records/'),
 	(36,'Purchase Order','Create a new Purchase Order',11,0,'partials/inventory_purchase_order','inventory/purchase'),
-	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting'),
+	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting/'),
 	(38,'Cash Box','Pay invoices',5,0,'/partials/cash','cash'),
 	(39,'Register Stock','',11,0,'partials/inventory/register','inventory/register'),
 	(40,'Register Supplier','',11,0,'partials/inventory/creditors','creditors'),
 	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/'),
   (42,'Income/Expense', '', 10, 0, 'partials/reports/income_expense', 'reports/income_expense'),
-  (43,'Financial Report', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
+  (43,'Finance', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
   (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget'),
   (45,'Price List', 'Configure price lists!', 11, 0, 'partials/price_list', 'inventory/price_list'),
   (46,'Exchange Rate', 'Set todays exchange rate!', 1, 0, 'partials/exchange_rate', 'exchange_rate'),
@@ -103,13 +103,22 @@ INSERT INTO `unit` VALUES
   (50,'Inventory View', '', 11, 0, 'partials/inventory/view', 'inventory/view'),
   (51,'General Ledger', '', 10, 0, 'partials/reports/ledger/general_ledger', 'reports/ledger/general_ledger'),
   (52,'Location Manager', '', 1, 0, 'partials/location/location', 'location'),
-  (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/');
-
+  (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/'),
+  (54,'Chart of Accounts', '', 10, 0, 'partials/reports/chartofaccounts/', 'reports/chart_of_accounts/'),
+  (55,'Debitor Aging', '', 10, 0, 'partials/reports/debitor_aging/', 'reports/debitor_aging/'),
+  (56,'Account Statement By Period', '', 10, 0, 'partials/reports/account_statement/', 'reports/account_statement/');
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
+  (2,2),
 	(4,2),
+	(9,2),
 	(6,2),
+  (5,2),
+  (8,2),
+  (11,2),
+  (10,2),
+  (21,2),
 	(30,2),
 	(31,2),
 	(34,2),
@@ -120,9 +129,20 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(38,2),
 	(39,2),
 	(40,2),
-	(9,2),
 	(41,2),
+  (44,2),
+  (45,2),
+  (46,2),
   (47,2),
+  (48,2),
+  (49,2),
+  (50,2),
+  (51,2),
+  (52,2),
+  (53,2),
+  (54,2),
+  (55,2),
+  (56,2),
 	(4, 3),
 	(6, 3),
 	(30,3),
@@ -138,7 +158,7 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(9, 3),
 	(41,3),
   (1, 3),
-  (44, 3),
+  (43, 3),
   (45, 3),
   (46, 3),
   (47, 3),
@@ -167,7 +187,7 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(39,1),
 	(40,1),
 	(41,1),
-  (44,1),
+  (43,1),
   (45,1),
   (46,1),
   (47,1),
@@ -177,6 +197,7 @@ insert into `permission` (`id_unit`, `id_user`) values
   (51,1),
   (52,1),
   (53,1),
+  (54,1),
   (1,13),
   (2,13),
 	(4,13),
@@ -198,7 +219,7 @@ insert into `permission` (`id_unit`, `id_user`) values
 	(39,13),
 	(40,13),
 	(41,13),
-  (44,13),
+  (43,13),
   (45,13),
   (46,13),
   (47,13),
@@ -206,7 +227,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (49,13),
   (50,13),
   (51,13),
-  (52,13);
+  (52,13),
+  (54,13);
 
 -- configure location details
 insert into `country` values
@@ -485,11 +507,11 @@ insert into `currency` (`id`, `name`, `symbol`, `note`) values
   (1,'Congolese Francs','FC',NULL),
 	(2,'United State Dollars','USD',NULL);
 
-insert into `exchange_rate` (`currency_1`, `currency_2`, `rate`, `date`) values
-  (2, 1, 920, '2012-06-04');
+insert into `exchange_rate` (`enterprise_currency_id`, `foreign_currency_id`, `rate`, `date`) values
+  (2, 1, 1/920, '2014-01-04');
 
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 
-  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 212, '/assets/logos/tsh.jpg', 1);
+  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 195, '/assets/logos/tsh.jpg', 2);
 
 -- configure fiscal year/period
 

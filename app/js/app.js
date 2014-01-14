@@ -7,7 +7,7 @@
   function kpkconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
-    when('/budgeting', {
+    when('/budgeting/:accountID', {
       controller: 'budgetController',
       templateUrl: 'partials/budget/budget.html'
     }).
@@ -114,6 +114,14 @@
     when('/reports/account_balance/', {
       controller: 'reportAccountBalanceCtrl',
       templateUrl: 'partials/reports/account_balance/account_balance.html'
+    }).
+    when('/reports/debitor_aging/', {
+      controller: 'reportDebitorAgingCtrl',
+      templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
+    }).
+    when('/reports/account_statement/', {
+      controller: 'reportAccountStatementCtrl',
+      templateUrl: 'partials/reports/account_statement/account_statement.html'
     })
     .when('/location', {
       controller : 'locationCtrl',
@@ -125,6 +133,10 @@
     .when('/settings', { 
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
+    })
+    .when('/reports/chart_of_accounts/', {
+      controller: 'accountsReport',
+      templateUrl: 'partials/reports/chart_of_accounts/chart.html'
     });
   }  
 

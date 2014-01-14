@@ -45,7 +45,7 @@ app.get('/', function (req, res, next) {
   res.sendfile('/index.html');
 });
 
-app.get('/data/', function (req, res, next) {
+app.get('/data/', function (req, res, next) {  
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
@@ -56,7 +56,7 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]); 
+  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);  
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -65,7 +65,7 @@ app.put('/data/', function (req, res, next) {
 
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var insertsql = parser.insert(req.body.t, req.body.data[0]);
+  var insertsql = parser.insert(req.body.t, req.body.data[0]);  
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -104,25 +104,17 @@ app.get('/post/', function (req, res, next) {
   });
 });
 
-app.get('/journal', function (req, res, next) {
-  var cb = function (err, ans) {
+app.get('/journal/:table/:id', function (req, res, next) {
+  // What are the params here?
+  journal.request(req.params.table, req.params.id, req.session.user_id, function (err, success) {
     if (err) next(err);
-    res.json(ans);
-  };
-  var myRequest = decodeURIComponent(url.parse(req.url).query);
-  var jsRequest;  
-  try {
-    jsRequest = JSON.parse(myRequest);
-  } catch (e) {
-    throw e;
-  }
-  var Qo = queryHandler.getQueryObj(jsRequest);
-  console.log('\n', Qo, '\n');
-  db.execute(db.select(Qo), cb);  
+    res.send(200);
+  });
 });
 
-app.post('/journal', function (req, res) {
-  journal.poster(req, res); 
+app.post('/journal', function (req, res, next) {
+  // What are the params here?
+  journal.poster(req, res, next); 
 });
 
 app.get('/max/:id/:table', function(req, res) { 
@@ -143,7 +135,10 @@ app.get('/max/:id/:table', function(req, res) {
 });
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
-  ledger.debitor(req.params.id, res);
+  ledger.debitor(req.params.id, function (err, rows) {
+    if (err) next(err);
+    res.send(rows);
+  });
 });
 
 app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res) { 
@@ -168,7 +163,6 @@ app.get('/reports/:route/', function(req, res) {
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
   
-  console.log('query', query);
 
   //TODO update to err, ans standard of callback methods
   report.generate(route, query, function(report) { 
@@ -197,7 +191,16 @@ app.get('/location', function (req, res, next) {
   });
 });
 
+app.get('/debitorAgingPeriod', function (req, res, next){
+  var sql =  "SELECT DISTINCT period.id, period.period_start, period.period_stop FROM period, general_ledger WHERE period.id = general_ledger.`period_id`;";
+  db.execute(sql, function (err, rows) {
+    if (err) next(err);
+    res.send(rows);
+  });
+});
+
 app.get('/account_balance/:id', function (req, res, next) {
+  // FIXME: put this in a module!
   var enterprise_id = req.params.id;
 
   var sql = 'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
