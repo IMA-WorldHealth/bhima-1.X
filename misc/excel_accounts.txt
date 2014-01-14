@@ -1,40 +1,40 @@
-10  10. CAPITAL     
+10  CAPITAL     
 100   Fonds social    
 101   Fonds de dotation   
 1010      Dotation de base  
 1013      Affectations  
 1015      Dons et legs  
 1016      Autres dotations  
-11  11. RESERVES      
+11  RESERVES      
 110   Réserves légales    
 111   Réserves statutaires    
 112   Réserves réglementaires   
-12  12.REPORT A NOUVEAU     
+12  REPORT A NOUVEAU     
 120   Bénéfices reportés    
 121   Pertes non compensées   
-13  13. RESULTAT NET      
+13  RESULTAT NET      
 130   Bénéfice net de l’exercice    
 131   Bénéfice à conserver    
 133   Perte nette de l’exercice   
-14  14. PLUS-VALUES ET PROVISIONS REGLEMENTEES      
+14  PLUS-VALUES ET PROVISIONS REGLEMENTEES      
 140   Plus-values de réévaluation   
 146   Provisions réglementées   
-15  15. SUBVENTIONS D’EQUIPEMENT      
+15  SUBVENTIONS D’EQUIPEMENT      
 150   Subventions d’Etat    
 152   Subventions d’entreprises publiques   
 153   Subventions d’entreprises et organismes privés    
 158   Subventions d’équipements amortis   
-16  16. EMPRUNTS ET DETTES A LONG TERME       
+16  EMPRUNTS ET DETTES A LONG TERME       
 160   Emprunts garantis à long terme    
 161   Emprunts et dettes à long terme émis par des Organismes collectifs    
 162   Emprunts et dettes à long terme auprès des entreprises apparentées    
 165   Avances reçues et comptes bloqués à long terme    
-17  17. EMPRUNTS ET DETTES A MOYEN TERME      
+17  EMPRUNTS ET DETTES A MOYEN TERME      
 170   Emprunts garantis à moyen terme   
 171   Emprunts et dettes à moyen terme émis par des organismes collectifs     
 174   Fournisseurs à moyen terme    
 175   Avances reçues et comptes bloqués à moyen terme   
-18  18. PROVISIONS POUR CHARGES ET PERTES     
+18  PROVISIONS POUR CHARGES ET PERTES     
 180   Provisions pour risques   
 1800      Provisions pour litiges en cours  
 1806      Provisions pour risques divers  
@@ -191,9 +191,9 @@
 5622      Banque EU 
 563   Institutions et autres établissements financiers    
 57  57. CAISSES     
-5701      Caisses Fc  
-5702      Caisses $ 
-5703      Caisses € 
+5701  Caisses Fc  
+5702  Caisses $ 
+5703  Caisses € 
 58  58. PROVISIONS POUR DEPRECIATION DES COMPTES DE LA CLASSE V     
 59  59. VIREMENTS INTERNES      
 590   Caisse Fc à Banque Fc   

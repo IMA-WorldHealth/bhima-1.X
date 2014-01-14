@@ -1,6 +1,6 @@
 //TODO Two step, download fiscal years, and then populate finance query, validate service will need to be updated
 angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger) {
-  var dependencies = {}, tableDefinition = {columns: [], options: []};
+  var dependencies = {}, tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []};
 
   dependencies.finance = { 
     required : true,
@@ -25,8 +25,40 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
     $scope.model = model;
     parseAccountDepth($scope.model.finance);
     settupTable($scope.model.fiscal.data);
+
+    generateAccountGroups($scope.model.finance);
   }
- 
+    
+  function generateAccountGroups(accountModel, targetObj) { 
+    var accounts = accountModel.data, ROOT = 0, TITLE = 3;
+    var index = financeGroups.index, store = financeGroups.store;
+    
+    accounts.forEach(function(account) { 
+      var insertAccount = { 
+        detail : account
+      } 
+      
+      if(account.account_type_id === TITLE) { 
+        insertAccount.accounts = [];
+        index[account.account_number] = insertAccount.accounts;
+
+        if(account.parent === ROOT) {
+          console.log('account', account, 'parent', account.parent);
+          store.push(insertAccount);
+          return;
+        }
+  
+        console.log('   account', account, 'parent', account.parent);
+        index[account.parent].push(insertAccount);
+        return;
+      }
+      
+      index[account.parent].push(insertAccount); 
+    });
+
+    console.log('account groups generated', financeGroups);
+  }
+
   function parseAccountDepth(accountModel) { 
     var accounts = accountModel.data; 
     
@@ -70,7 +102,6 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
     });
   }
 
- 
   function basicPrint() { print(); } 
  
   $scope.toggleYear = toggleColumn;
