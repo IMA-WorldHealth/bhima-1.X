@@ -1,19 +1,82 @@
-//TODO rethink all names
-angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect, appstate) {
+angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate) {
   //TODO required model - if the model has no data, the page should not load and report this to the user
   
-  //Models
+  //1Define requests 2Fetch and validate 3Expose to scope.model 
+  var dependencies = {};
+
+  //dependencies['required'] = ["enterprise", "fiscal", "any other tests"];
+  
+  dependencies.finance = { 
+    required : true,
+    query : '/reports/finance/?' + JSON.stringify({fiscal: []}),
+    KPKAPIHISRequest : false
+  };
+ 
+  dependencies.fiscal = { 
+    required : true,
+    query : { 
+      tables : { 
+        fiscal_year : { 
+          columns : ["id"]
+        }
+      }
+    } 
+  };
+  
+  validate.process(dependencies).then(reportFinance);
+
+  function reportFinance(model) { 
+    //Assume all tests are passed, models are downloaded etc. 
+    console.log('running reportFinance', model); 
+  }
+  
+  // validate meta data, contains original dependencies
+  // validate model, contains all models
+
+  // validate.process(dependencies)
+  // .then(function() { 
+  //
+  // })
+
+  // validate.process(dependencies).run(reportFinance, handleErrorFunction);
+  // validate.process(dependencies).run(reportFinance);
+  // validate.process(dependencies).then(reportFinance, handleErrorFunction);
+  
+  // validate.process(dependencies, ["fiscal"])
+  // .then(function(ran) { 
+  //  dependencies.finance.query = "/reports/finance/...";
+  // }).run(reportFinance, handleErrorFunction);
+  
+  //validate.cascade([depenedencies.fiscal], function(res) { 
+  //
+  //})
+  //.cascade([dependencies.next], function(res) { 
+  //
+  //})
+  //.run(reportFinance, handleErrorFunction);
+  
+  //validate.cascade([dependencies.fiscal])
+  //.then(function(res) { 
+  //  return validate.cascade([dependencies.next]);
+  //})
+  //.then(function(res) { 
+  //
+  //
+  //process() { 
+  //  var d = promise;
+  //
+  //  d.then(function(res) { 
+  //    return this;
+  //  });
+  //}
+  //});
+    //Models
   var models = {};
   $scope.model = {};
  
-  //TODO rething name
-  const DEFAULT_FILTER_RESOLUTION = 2;
-
-  //Should be derived from enterprise configuration - i.e 6 is debits and 7 credits
-  //AND from title accounts
-
   //default for now
-  var requiredYears = [{id: 1, toggle: true}, {id: 2, toggle: true}];
+  // var requiredYears = [{id: 1, toggle: true}, {id: 2, toggle: true}];
+  var requiredYears = []; 
   $scope.requiredYears = requiredYears;
   //Error handling 
   $scope.session_error = {valid: true};
@@ -291,5 +354,5 @@ angular.module('kpk.controllers').controller('reportFinanceController', function
   $scope.basicPrint = function basicPrint() { 
     print();
   };
-  init();
+  // init();
 });

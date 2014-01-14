@@ -70,8 +70,81 @@
   
   //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
   services.factory('validate', function($q, connect) {  
-    function validate() {
+    
+    function Process() { 
+      var t = this;
+      this.queue = [];
+
+      this.resolve = function(res) { 
+        t.complete('resolve', res);
+      },
+
+      this.reject = function(res) { 
+        t.complete('reject', res);
+      }
+    }
+
+    Process.prototype = { 
+      run: function(success, failure) { 
+        this.pending.push({resolve: success, reject: failure});
+        return this;
+      },
+
+      complete: function(type, result) { 
+        while(this.pending[0]) { 
+          this.pending.shift()[type](result);
+        }
+      }
+    }
+
+    //TODO rename this.list
+    function process(dependencies, limit) {   
+      //idealy return this for cascading method calls 
+      var deferred = $q.defer();
+      console.log('process', this);
+      this._list = Object.keys(dependencies);
+      this._dependencies = dependencies;
+      this._models = {};
       
+      fetchModels(dependencies, this._list).then(function(res) { 
+        //package models 
+        this._list.forEach(function(key, index) { 
+          this._models[key] = res[index];
+        });
+        deferred.resolve(this._models);
+      });
+      return deferred.promise;
+    }
+
+    function fetchModels(dependencies, keys) { 
+      var deferred = $q.defer(), promiseList = [];
+      
+      //Make requests 
+      keys.forEach(function(key) { 
+        var dependency = dependencies[key];
+        var KPKAPIHISRequest = dependency.KPKAPIHISRequest || true;
+        console.log('looping through dependencies', dependency);
+        
+        //TODO redo this and delegate to a function 
+        if(KPKAPIHISRequest) { 
+          promiseList.push(connect.req(dependency.query));
+        } else { 
+          promiseList.push(connect.getModel(dependency.query));
+        }
+      });
+      
+      //Process response
+      $q.all(promiseList).then(function(res) { 
+        //Package responses in models
+        // keys.forEach(function(key, index) { 
+        //   dependencies[key].model = res[index];
+        // });
+        deferred.resolve(res); 
+      });
+      return deferred.promise;
+    } 
+
+    function validate() { 
       //remove startup tests to only serve model validation
       runStartupTests();
     }
@@ -91,7 +164,7 @@
         } 
       });
     }
-    
+  
     //FIXME rewrite this method
     function processModels(models) { 
       //TODO tests should be a list of 
@@ -187,12 +260,19 @@
     }
 
     validate();
-
-    return {
-      processModels: processModels
-    };
+   
+    //TODO horrible name
+    function valid() { 
+      
+      // this.processModels = processModels;
+      // this.process = process;
+      return { 
+        processModels : processModels,
+        process : process
+      };
+    }
+    return new valid;
   });
-
 
   services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
