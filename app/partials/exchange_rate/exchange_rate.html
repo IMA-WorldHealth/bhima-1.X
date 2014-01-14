@@ -2,7 +2,15 @@
   <span>Configure Exchange Rate</span>
 </header>
 
+
+<section class="underline">
+  <div class="pull-right">
+    <button type="button" class="btn btn-sm btn-default" ng-click="flags.visible=!flags.visible">Calculator</button>
+  </div>
+</section>
+
 <div class="content">
+
   <div class="row">
     <div class="col-xs-6">
       <table class="table table-bordered table-condensed">
@@ -11,7 +19,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="exchange in models.exchange | limitTo: 12">
-            <td>{{exchange.date | date}}</td><td>{{formatExchangeCurrency(exchange.enterprise_currency_id)}}</td><td>{{formatExchangeCurrency(exchange.foreign_currency_id)}}</td><td>{{exchange.rate | currency }}</td>
+            <td>{{exchange.date | date}}</td><td>{{formatCurrency(exchange.enterprise_currency_id)}}</td><td>{{formatCurrency(exchange.foreign_currency_id)}}</td><td>{{exchange.rate | currency }}</td>
           </tr>
         </tbody>
       </table>
@@ -21,7 +29,7 @@
       <table class="table table-bordered table-condensed" ng-switch-when="true">
         <thead>
           <tr><th colspan="2">Today's ({{swap.current_exchange_rate.date | date}}) Exchange Rate:</th></tr>
-          <tr><th>{{formatExchangeCurrency(swap.current_exchange_rate.enterprise_currency_id)}}</th><th>{{formatExchangeCurrency(swap.current_exchange_rate.foreign_currency_id)}}</th></tr>
+          <tr><th>{{formatCurrency(swap.current_exchange_rate.enterprise_currency_id)}}</th><th>{{formatCurrency(swap.current_exchange_rate.foreign_currency_id)}}</th></tr>
         </thead>
         <tbody>
           <tr><td>1</td><td>{{swap.current_exchange_rate.rate}}</td></tr>
@@ -32,29 +40,22 @@
         <div class="panel-body">
           <form name="kpk-exchange-form" class="form-horizontal">
             <fieldset>
-              <legend>Exchange Rate</legend>
+              <legend>Set Exchange Rate</legend>
               <div class="form-group">
                 <div class="col-xs-5">
-                  <select 
-                    class="form-kapok"
-                    id="kpk-exchange-currency1"
-                    name="kpk-exchange-currency1"
-                    ng-model="swap.currency1"
-                    ng-options="currency as formatCurrency(currency) for currency in models.currency"
-                  >
-                    <option value="" disabled="disabled">-- Select Currency --</option>
-                  </select>
+                  <div class="form-kapok" style="text-align: center;">
+                    {{ formatCurrency(enterprise.currency_id) }}
+                  </div>
                 </div>
                 <label class="col-xs-1 control-label">
-                  <i class="glyphicon glyphicon-arrow-right"></i>
                 </label>
                 <div class="col-xs-5">
                   <select 
                     class="form-kapok"
                     id="kpk-exchange-currency2"
                     name="kpk-exchange-currency2"
-                    ng-model="swap.currency2"
-                    ng-options="currency as formatCurrency(currency) for currency in models.currency | filter:filterOptions"
+                    ng-model="data.foreign_currency"
+                    ng-options="currency as formatCurrency(currency.id) for currency in models.currency | filter:filterOptions"
                   >
                     <option value="" disabled="disabled">-- Select Currency --</option>
                   </select>
@@ -63,18 +64,18 @@
 
               <div class="form-group">
                 <div class="col-xs-5 input-group">
-                  <input class="form-kapok" min="0" value="1">
+                  <input class="form-kapok" value="1" disabled="disabled">
                   <span class="input-group-addon">
-                    {{swap.currency1.symbol}}
+                    {{ getCurrency(enterprise.currency_id).symbol }}
                   </span>
                 </div>
                 <label class="col-xs-1 control-label">
                   <i class="glyphicon glyphicon-arrow-right"></i>
                 </label>
                 <div class="col-xs-5 input-group">
-                  <input class="form-kapok" ng-model="swap.rate" min="0" required placeholder="1.00">
+                  <input class="form-kapok" ng-model="swap.rate" min="0" required placeholder="1.00" type="number">
                   <span class="input-group-addon">
-                    {{swap.currency2.symbol}}
+                    {{data.foreign_currency.symbol}}
                   </span> 
                 </div>
               </div>
@@ -84,49 +85,14 @@
         </div>
       </div>
 
-      <div class="panel panel-default">
+      <div class="panel panel-default" ng-show="flags.visible">
         <div class="panel-heading">
-          <span> Hello World </span>
+          <span>Calculator</span>
+          <span class="pull-right">
+            <button type="button" ng-click="flags.visible=!flags.visible">X</button>
+          </span>
         </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th colspan="3"></th>
-              <th>PlaceHolder</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colspan="4"></td>
-              <td><span class="btn btn-success">CE</span></td>
-            </tr>
-            <tr>
-              <td><span class="btn btn-default">7</span></td>
-              <td><span class="btn btn-default">8</span></td>
-              <td><span class="btn btn-default">9</span></td>
-              <td><span class="btn btn-default">X</span></td>
-            </tr>
-            <tr>
-              <td><span class="btn btn-default">4</span></td>
-              <td><span class="btn btn-default">5</span></td>
-              <td><span class="btn btn-default">6</span></td>
-              <td><span class="btn btn-default">-</span></td>
-            </tr>
-            <tr>
-              <td><span class="btn btn-default">1</span></td>
-              <td><span class="btn btn-default">2</span></td>
-              <td><span class="btn btn-default">3</span></td>
-              <td rowspan="2"><span class="btn btn-default">=</span></td>
-            </tr>
-            <tr>
-              <td><span class="btn btn-default"></span></td>
-              <td><span class="btn btn-default"></span></td>
-              <td><span class="btn btn-default"></span></td>
-              <td><span class="btn btn-default"></span></td>
-              <td><span class="btn btn-default"></span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div k-calculator="value"></div>
       </div>
 
     </div>
