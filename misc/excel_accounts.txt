@@ -191,9 +191,9 @@
 5622      Banque EU 
 563   Institutions et autres établissements financiers    
 57  57. CAISSES     
-5701  Caisses Fc  
-5702  Caisses $ 
-5703  Caisses € 
+5701   Caisses Fc  
+5702   Caisses $ 
+5703   Caisses € 
 58  58. PROVISIONS POUR DEPRECIATION DES COMPTES DE LA CLASSE V     
 59  59. VIREMENTS INTERNES      
 590   Caisse Fc à Banque Fc   
