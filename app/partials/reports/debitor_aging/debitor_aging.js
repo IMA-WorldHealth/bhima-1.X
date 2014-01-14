@@ -35,7 +35,6 @@ angular.module('kpk.controllers').controller('reportDebitorAgingCtrl', function(
 
 	var getRecord = function(debitor){
 		var record = [];
-
 		$scope.periods.forEach(function(period){
 			if(checkExisting(period.id, debitor.id)){
 				var balance = 0;

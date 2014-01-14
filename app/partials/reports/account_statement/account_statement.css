@@ -62,9 +62,7 @@
   font-size: 12px;
 }
 
-#tbl-print{
+.tbl-print{
   width: 100%;
-  text-align: center;
-  vertical-align: center;
 }
 

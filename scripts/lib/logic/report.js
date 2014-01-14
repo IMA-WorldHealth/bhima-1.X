@@ -244,6 +244,27 @@ module.exports = (function (db) {
 
   function accountStatement(params){
     console.log('account statement');
+    //deferred
+    var def = q.defer();
+
+    //requette
+    var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
+                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id;";
+
+    db.execute(requette, function(err, ans) {
+      if(err) {
+        console.log("account statement, Query failed");
+        throw err;
+        return;
+      }
+      console.log('account statement', ans);
+      def.resolve(ans);
+    });
+
+    //promesse
+
+    return def.promise;
+
   }
 
   return { 
