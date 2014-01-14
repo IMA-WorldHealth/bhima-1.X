@@ -376,10 +376,12 @@ module.exports = (function (db) {
                       '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                       '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money + 
-                      '`cash`.`invoice_id`, `cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
+                      '`cash_item`.`invoice_id`, `cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                       [origin_id, user_id].join(', ') + ' ' +
-                    'FROM `cash` ' + 
-                    'WHERE `cash`.`id`=' + db.escapestr(id) + ';';
+                    'FROM `cash` JOIN `cash_item` ON ' + 
+                      ' `cash`.`id` = `cash_item`.`cash_id` ' + 
+                    'WHERE `cash`.`id`=' + db.escapestr(id) + ' ' + 
+                    'LIMIT 1;'; // just in case
 
 
                   // Then copy data from CASH_ITEM -> JOURNAL

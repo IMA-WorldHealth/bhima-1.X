@@ -154,7 +154,7 @@ angular.module('kpk.controllers')
         enterprise_id : appstate.get("enterprise").id, //not safe
         id : $scope.invoice_id,
         cost : t,
-        currency_id : 1, //ohgd
+        currency_id : appstate.get('enterprise').currency_id, //ohgd
         debitor_id : $scope.debtor.debitor_id,
         invoice_date: $scope.sale_date,
         seller_id : $scope.verify, //TODO placeholder - this should be derived from appstate (session) or equivelant

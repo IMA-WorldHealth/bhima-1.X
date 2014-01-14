@@ -403,9 +403,11 @@
 
     function update(comp_id) { 
       var l = queue[comp_id];
+      console.log('update called for ', comp_id, l);
       if(l) { 
         l.forEach(function(recept) { 
           // console.log('callback queue');
+          console.log('calling queued callback');
           recept.callback(comp[comp_id]);
         });
       }
