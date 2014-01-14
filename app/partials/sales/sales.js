@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('salesController', function($scope, $q, $location, $routeParams, connect, appstate) {
+angular.module('kpk.controllers')
+.controller('salesController', function($scope, $q, $location, $routeParams, connect, appstate) {
     // TODO
     //  - selecting a debitor should either be done through id or name search (Typeahead select)
     //  - An Invoice should not be able to include the same item (removed from options for future line items)
@@ -38,7 +39,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
     };
     
     //This is stupid, location should either come with debtors (aliasing columns) or be downloaded on selection (query single location)
-    var location_request = connect.loc(); 
+    var location_request = connect.getModel('/location'); 
 
     var debtor_request = connect.req(debitor_query);
     var user_request = connect.basicGet("user_session");
@@ -153,7 +154,7 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
         enterprise_id : appstate.get("enterprise").id, //not safe
         id : $scope.invoice_id,
         cost : t,
-        currency_id : 1, //ohgd
+        currency_id : appstate.get('enterprise').currency_id, //ohgd
         debitor_id : $scope.debtor.debitor_id,
         invoice_date: $scope.sale_date,
         seller_id : $scope.verify, //TODO placeholder - this should be derived from appstate (session) or equivelant
@@ -163,16 +164,20 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
       };
 
 //      Generate Invoice first for foreign key constraints, then create invoice items individually
-      connect.basicPut('sale', [format_invoice]).then(function(res) { 
-        if(res.status==200) { 
+      connect.basicPut('sale', [format_invoice])
+      .then(function(res) { 
+        if (res.status==200) { 
           var promise = generateInvoiceItems();
           promise.then(function(res) { 
             console.log("Invoice successfully generated", res);
             // assuming success - if an error occurs sale should be removed etc.
-            journalPost($scope.invoice_id).then(function(res) {
+            journalPost($scope.invoice_id)
+            .then(function(res) {
               //everything is good - if there is an error here, sale should be undone (refused from posting journal)
               console.log("posting returned", res);
               $location.path('/sale_records/' + $scope.invoice_id);
+            }, function (error) {
+              console.log("ERROR:", error);
             });
           });
         }
@@ -184,9 +189,11 @@ angular.module('kpk.controllers').controller('salesController', function($scope,
 
     function journalPost(id) {
       var deferred = $q.defer();
-      var request = {id: id, transaction_type: INVOICE_TYPE, user: $scope.verify, deb_cred_type: DEB_CRED_TYPE};
-      connect.journal([request]).then(function(res) {
+      connect.fetch('/journal/sale/' + id)
+      .then(function(res) {
         deferred.resolve(res);
+      }, function (error) {
+        deferred.reject(error);  
       });
       return deferred.promise;
     }

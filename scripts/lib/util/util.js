@@ -17,7 +17,10 @@ module.exports = {
 
   isObject: function (obj) { return Object.prototype.toString.call(obj) == '[object Object]'; },
 
-  convertToMysqlDate: function convertToMysqlDate(dateString){ return toMySqlDate(dateString)}
+  convertToMysqlDate: function convertToMysqlDate(dateString){ return toMySqlDate(dateString); }
+  /* PROPOSAL: change this to new Date().toISOString().slice(0, 19).replace('T', ' ');
+   *  It's quicker!
+  */ 
 
 };
 

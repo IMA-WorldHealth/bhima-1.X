@@ -375,8 +375,8 @@
     function set(comp_id, ref) { 
       //summary: 
       //  Assign id reference to value
-      console.log(comp_id, 'set', Date.now(), ref);
       comp[comp_id] = ref;
+      update(comp_id);
     }
 
     function get(comp_id) { 
@@ -388,25 +388,26 @@
     function register(comp_id, callback) { 
       // FIXME: These are strict violations
       var id = this.id;
-      console.log('request for callback', comp_id);
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
       }
 
-      queue[comp_id].push({ref: this, callback: callback});
       //init call to pass current value
       if(comp[comp_id]) { 
-        console.log("calling callback()", comp_id);
         callback(comp[comp_id]);
-      }
+        return;
+      } 
+      
+      queue[comp_id].push({ref: this, callback: callback});
     }
 
-    function update(comp_id, value) { 
-      comp[comp_id] = value;
+    function update(comp_id) { 
       var l = queue[comp_id];
+      console.log('update called for ', comp_id, l);
       if(l) { 
         l.forEach(function(recept) { 
-          console.log("Attempting callback", comp[comp_id]);
+          // console.log('callback queue');
+          console.log('calling queued callback');
           recept.callback(comp[comp_id]);
         });
       }
@@ -479,14 +480,14 @@
       return deferred.promise;
     }
 
-    function loc() { 
-      //FIXME Stupid method to package location table in Model, super temporary (shouldn't need to download all locations for individual user) 
+    function getModel(getRequest, identifier) { 
+      //TODO Decide on API to handle packing direct GET requests in model 
       var handle, deferred = $q.defer();
-      handle = $http.get('location/');
-      handle.then(function(res) { 
-        var m = new Model(res, 'location');
-
-        console.log('loc', m);
+      handle = $http.get(getRequest);
+      handle.then(function(res) {
+        res.identifier = identifier || 'id';
+        var m = new Model(res, getRequest);
+        
         deferred.resolve(m);
       });
       return deferred.promise;
@@ -503,6 +504,15 @@
       handle = $http.get('/temp/?' + JSON.stringify(defn));
       handle.then(function (returned) {
         deferred.resolve(returned.data);
+      });
+      return deferred.promise;
+    }
+
+    function debitorAgingPeriod(){
+      var handle, deferred = $q.defer();
+      handle = $http.get('debitorAgingPeriod/');
+      handle.then(function(res) { 
+        deferred.resolve(res);
       });
       return deferred.promise;
     }
@@ -758,16 +768,17 @@
 
     return {
       req: req,
-      loc: loc,
       basicReq: basicReq,
       basicPut: basicPut,
       basicPost: basicPost,
       basicGet: basicGet,
       basicDelete: basicDelete,
+      getModel: getModel,
       journal: journal,
       fetch: fetch,
       clean: clean,
-      MyBasicGet: MyBasicGet
+      MyBasicGet: MyBasicGet,
+      debitorAgingPeriod : debitorAgingPeriod
     };
   });
 
@@ -777,10 +788,10 @@
     self.messages = [];
     var indicies = {};
 
-    self.push = function (msg, timer) {
+    self.push = function (data, timer) {
       var id = Date.now();
-      msg.id = id;
-      self.messages.push(msg); 
+      data.id = id;
+      self.messages.push(data); 
       indicies[id] = $timeout(function () {
         var index, i = self.messages.length;
 
@@ -788,6 +799,15 @@
 
       }, timer || 3000);
     };
+
+    (function () {
+      ['info', 'warning', 'danger', 'success']
+      .forEach(function (type) {
+        self[type] = function (message, timer) {
+          self.push({type: type, msg: message }, timer);
+        };
+      });
+    })();
 
     self.close = function (idx) {
       // cancel timeout and splice out

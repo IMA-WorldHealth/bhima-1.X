@@ -94,6 +94,11 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
     fetchDependencies()
     .then(function(res) { 
       settupGrid();
+
+      //get enterprise details
+      appstate.register('enterprise', function(res) { 
+        $scope.enterprise = res;
+      });
     });
   }
   

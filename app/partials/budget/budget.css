@@ -14,7 +14,7 @@
 
 fieldset { 
   /*FIXME*/
-  margin-top: -20px;
+  margin-top: -10px;
   display: inline-block;
   vertical-align: middle;
   /*what*/
@@ -33,7 +33,7 @@ fieldset {
 
 .uniform td { 
   /*Everything is bad*/
-  height: 43px;
+  height: 5px;
   text-align: center;
   vertical-align: middle;
 }
@@ -55,7 +55,7 @@ fieldset {
   display: block;
   width: 100%;
   padding: 4px 4px;
-  font-size: 14px;
+  font-size: 10px;
   line-height: 1.2;
   color: #555555;
   vertical-align: middle;

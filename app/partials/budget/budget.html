@@ -14,9 +14,7 @@
     <select  ng-model="selected_fiscal" ng-options="f.fiscal_year_txt for f in fiscal_model.data" ng-disabled="validSelect()" id="select-fiscal" class="form-kapok">
     </select>
     <span class="input-group-btn">
-      <btn ng-disabled="validSelect()" class="btn btn-default btn-sm" ng-click="compare()" type="button">Compare
-        Year
-      </btn>
+      <btn ng-disabled="validSelect()" class="btn btn-default btn-sm" ng-click="compare()" type="button">Compare Year </btn>
     </span>
     </div>
   <!-- </div> -->
@@ -37,20 +35,18 @@
               <thead>
               <tr>
                 <th>Period</th>
-                <th>Actual</th>
                 <th>Budget</th>
               </tr>
               </thead>
               <tbody>
               <tr ng-repeat="row in report.display">
                 <td class="column-big">{{row.period_start | date : 'MMM yyyy'}}</td>
-                <td class="column-small"><span ng-show="row">{{row.actual | currency}}</span></td>
-                <td><span ng-show="row"><input ng-model="row.budget" class="budget-field"></span></td>
+                <td><span ng-show="row"><input ng-change="dirtyInput(row)" ng-model="row.budget" class="budget-field"></span></td>
               </tr>
               </tr>
               <!--FIXME: This logic should be in controller, total can simply be displayed-->
               <tr>
-                <td colspan="2">total</td>
+                <td >total</td>
                 <td>{{sum(report) | currency}}</td>
               </tr>
               </tbody>
