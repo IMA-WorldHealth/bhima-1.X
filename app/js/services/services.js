@@ -142,16 +142,9 @@
       
       //Make requests 
       keys.forEach(function(key) { 
-        var dependency = dependencies[key];
-        var KPKAPIHISRequest = dependency.KPKAPIHISRequest || true;
-        console.log('looping through dependencies', dependency);
-
-        //TODO redo this and delegate to a function 
-        if(KPKAPIHISRequest) { 
-          promiseList.push(connect.req(dependency.query));
-        } else { 
-          promiseList.push(connect.getModel(dependency.query));
-        }
+        var dependency = dependencies[key], args = [dependency.query];
+        if(dependency.identifier) args.push(dependency.identifier);
+        promiseList.push(connect.req.apply(connect.req, args));
       });
       
       //Process response
@@ -530,8 +523,9 @@
     //keep track of requests, model can use connect API without re-stating request
     //  model : request
     var requests = {};
-
-    function req (defn) {
+  
+    //FIXME remove identifier without breaking functionality (passing direct strings to req)
+    function req (defn, stringIdentifier) {
       //summary: 
       //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
       //
@@ -555,7 +549,7 @@
         // CLEAN THIS UP
         var d = $q.defer();
         $http.get(defn).then(function (returned) {
-          returned.identifier = 'id';
+          returned.identifier = stringIdentifier || 'id';
           d.resolve(new Model(returned))
         });
         return d.promise;
