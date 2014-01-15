@@ -53,7 +53,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
       
       index[account.parent].push(insertAccount); 
     });
-
+      
     console.log('account groups generated', financeGroups);
   }
 

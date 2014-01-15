@@ -27,14 +27,29 @@
       <!-- <th ng&#45;repeat="column in tableDefinition.columns">{{column.name}}</th> -->
     </tr>
   </thead>
-  <!-- <tbody> -->
-   
-
-  <!-- </tbody> -->
-  <tbody data-report-group data-group-model="financeGroups.store">
-  </tbody>
-  <!--data-report-group-->
+  <tr data-report-group data-group-model="financeGroups.store">
+  </tr> 
     
+    <!--VERSION 3-->
+  <!--   <tbody> -->
+  <!--     <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
+  <!--       <td>{{group.detail.account_number}}</td> -->
+  <!--     </tr> -->
+  <!--      -->
+  <!--     <tr ng&#45;repeat&#45;start="account in group.accounts"> -->
+  <!--       <td>#####{{account.detail.account_number}}</td> -->
+  <!--     </tr> -->
+
+  <!--     <tr ng&#45;if="account.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
+  <!--       <td>Sub Total</td> -->
+  <!--     </tr> -->
+
+  <!--     <tr ng&#45;if="group.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
+  <!--       <td>Total</td> -->
+  <!--     </tr> -->
+  <!--   </tbody> -->
+  <!-- </tbody> -->
+ 
     <!--VERSION 2--> 
     <!-- <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
     <!--   <td>{{group.detail.account_number}}</td><td><b>{{group.detail.account_txt}}</b></td> -->
