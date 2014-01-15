@@ -7,7 +7,7 @@
   <button ng-click="groupByAccount()" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> {{'ACCOUNT' | translate}}</button>
             
   <div class="pull-right">
-    <a class="capital btn btn-default btn-sm" ng-click="trial()"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}}</a>
+    <a class="capital btn btn-default btn-sm" ng-click="trial()"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}} ({{rows.length || 0 }}) {{ 'ITEMS' | translate}}</a>
     <span class="dropdown">
       <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
       <ul class="dropdown-menu">

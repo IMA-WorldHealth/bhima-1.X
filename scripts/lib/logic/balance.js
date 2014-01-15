@@ -17,13 +17,172 @@ var q = require('q');
 module.exports = (function (db) {
   'use strict';
 
-  function trial_balance (ids, callback) {
+  function run (ids, callback) {
     // this takes in an array of ids and a callback function which is
     // only fired when all test are complete.
-    
-    
-
+   
+    // preprocessing
+    ids = ids.map(function (id) { return db.escapestr(id); });
+   
+    q.all([
+      areAccountsLocked(ids),
+      areAccountsNull(ids),
+      areAllDatesValid(ids),
+      areCostsBalanced(ids),
+      areDebitorCreditorDefined(ids)
+    ]).finally(function (array) {
+      console.log('\n', 'EVERYTHING FINISIHED', '\n');
+      console.log('ARRAY', array);
+      array.forEach(function (item) {
+        console.log(item);
+      });
+      return callback(null, {});
+    });
   }
+
+
+  // utilities 
+  
+  function map (array, column) {
+    // shorthand to return an array of just
+    // the data in array.i[column];
+    return array.map(function (row) { return row[column]; });
+  }
+
+  function join (array, s) {
+    return ['(', array.join(s || ', '), ')'].join('');
+  }
+
+  // Tests
+
+  // Tries to find locked accounts
+  function areAccountsLocked (ids) {
+    var d = q.defer();
+    var sql = 
+      'SELECT `posting_journal`.`id` ' +
+      'FROM `posting_journal` LEFT JOIN `account` ' +
+      'ON  `posting_journal`.`account_id`=`account`.`id` ' +
+      'WHERE `account`.`locked`=1 AND `posting_journal`.`trans_id` IN ' + join(ids) + ';';
+
+    db.execute(sql, function (err, rows) {
+      console.log('\nrows:', rows);
+
+      if (err) 
+        return d.reject({'sysErr' : err});
+
+      if (rows.length) 
+        return d.reject({'postErr' :  'Locked accounts in transaction(s) :' + join(map(rows, 'id'))});
+
+      d.resolve();
+    });
+    
+    return d.promise;
+  }
+
+  // are all accounts defined??
+  function areAccountsNull (ids) {
+    var d = q.defer();
+    var sql = 
+      'SELECT `posting_journal`.`id` ' + 
+      'FROM `posting_journal` ' +
+      'LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` ' +
+      'WHERE `account`.`id` IS NULL AND ' + 
+      '`posting_journal`.`trans_id` IN ' + join(ids) + ';';
+
+    db.execute(sql, function (err, res) {
+      if (err) 
+        return d.reject({'sysErr' : err});
+
+      if (res.length) 
+        return d.reject({'postErr' : 'Invalid or undefined accounts in transcation(s) :' + join(map(rows, 'id'))});
+
+      d.resolve();
+    });
+
+    return d.promise;
+  }
+
+  function areAllDatesValid (ids) {
+    var d = q.defer();
+    var sql = 
+      'SELECT `id`, `period_id`, `trans_date`, `period_start`, `period_stop` ' +
+      'FROM `posting_journal` JOIN `period` ' + 
+      'ON `posting_journal`.`period_id`=`period`.`id` ' + 
+      'WHERE `trans_id` IN ' + join(ids) + ';';
+    db.execute(sql, function (err, rows) {
+      if (err) 
+        return d.reject({'sysErr' : err});
+
+      var bool = rows.filter(function (row) {
+        return !(new Date (row.trans_date) > new Date(row.period_start) && new Date (row.trans_date) < new Date(row.period_stop));
+      });
+
+      if (bool.length)
+        return d.reject({'postErr' : 'Invalid dates for transaction(s): ' + join(map(bool, 'id'))});
+
+      d.resolve();
+    });
+
+    return d.promise; 
+  }
+
+  function areCostsBalanced (ids) {
+    var d = q.defer();
+    var sql = 
+      'SELECT `id`, sum(debit) as d, sum(credit) as c, sum(debit_equiv) as de, sum(credit_equiv) as ce ' +
+      'FROM posting_journal ' +
+      'WHERE `trans_id` IN ' + join(ids) + ' ' +
+      'GROUP BY `trans_id`;';
+
+    db.execute(sql, function (err, rows) {
+      if (err) 
+        return d.reject({'sysErr' : err});
+
+      var bool = rows.filter(function (row) {
+        return !(row.d === row.c && row.de === row.ce);
+      });
+
+      if (bool.length)
+        return d.reject({'postErr': 'Debits and Credits (or equivalents) do not balance in transaction(s) : ' + join(map(bool, 'id')) });
+
+    });
+
+    return d.promise;
+  }
+
+  function areDebitorCreditorDefined (ids) {
+    var d = q.defer();
+    var sql = 
+      'SELECT `posting_journal`.`id` ' +
+      'FROM `posting_journal` ' +
+      'WHERE NOT EXISTS (' + 
+        '(' + 
+          'SELECT `creditor`.`id`, `posting_journal`.`deb_cred_id` ' +
+          'FROM `creditor` JOIN `posting_journal` ' + 
+          'ON `creditor`.`id`=`posting_journal`.`deb_cred_id`' +
+        ') UNION (' + 
+          'SELECT `debitor`.`id`, `posting_journal`.`deb_cred_id` '+
+          'FROM `debitor` JOIN `posting_journal` ON `debitor`.`id`=`posting_journal`.`deb_cred_id`' +
+        ')' +
+      ');';
+
+    db.execute(sql, function (err, rows) {
+      if (err)
+        return d.reject({'sysErr' : err });
+      
+      if (rows.length) 
+        return d.reject({'postErr' : 'Debitor/Creditors do not exist for transaction(s) : ' + join(rows.map(function (row) { return row.id; })) });
+
+    });
+
+    return d.promise;
+  }
+
+
+
+
+
+
 
   function errorChecking () {
 
@@ -54,47 +213,8 @@ module.exports = (function (db) {
       balance : 'SELECT SUM(`posting_journal`.`credit`) AS `credit`, SUM(`posting_journal`.`debit`) AS `debit`, SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`, SUM(`posting_journal`.`credit_equiv`) AS `credit_equv` FROM `posting_journal`;'
     };
 
-    function account_locked (ids) {
-      var d = q.defer();
-      var sql = 
-        'SELECT `posting_journal`.`id` ' +
-        'FROM `posting_journal` LEFT JOIN `account` ' +
-        'ON  `posting_journal`.`account_id`=`account`.`id` ' +
-        'WHERE `account`.`locked`=1;';
 
-      db.execute(sql, function (err, rows) {
-        d.resolve();
-      });
-      
-      return d.promise;
 
-    }
-
-    function account_defined () {
-
-      var d = q.defer(), error = {};
-      db.execute(queries.account_defined, function (err, res) {
-        if (res.length) {
-          error.message = errors.account_defined.replace('%number%', res.length);
-          error.rows = res.map(function (row) { return row.id; });
-        }
-        return error.message ? d.reject(error) : d.resolve();
-      });
-      return d.promise;
-    }
-
-    function debitor_creditor_defined () {
-      var d = q.defer(), error = {};
-
-      db.execute(queries.debitor_creditor_defined, function (err, res) {
-        if (res.length) {
-          error.message = errors.debitor_creditor_defined.replace('%number%', res.length);
-          error.rows = res.map(function (row) { return row.id; });
-        }
-        return error.message ? d.reject(error) : d.resolve();
-      });
-      return d.promise;
-    }
 
     function fiscal_defined () {
       var d = q.defer(), error = {};
@@ -135,26 +255,6 @@ module.exports = (function (db) {
 
       return d.promise;
     }
-
-    function balance () {
-      var d = q.defer(), error = {};
-
-      db.execute(queries.balance, function (err, res) {
-        if (res.debit !== res.credit) error.message = errors.balance;
-        return error.message ? d.reject(error) : d.resolve();
-      });
-
-      return d.promise;
-    }
-
-    return q.all([
-      account_defined(),
-      account_locked(),
-      invoice_purchase_defined(),
-      period_defined(),
-      fiscal_defined(),
-      balance(),
-    ]);
 
   }
 
@@ -219,8 +319,7 @@ module.exports = (function (db) {
     var defer = q.defer(),
         sql = {};
     
-    sql.transfer = ['INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)',
-                    'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;'].join(' ');
+    sql.transfer = ['INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)', 'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;'].join(' ');
     sql.remove = 'DELETE FROM `posting_journal`;';
 
     setTotals().then(function (res) {
@@ -240,5 +339,5 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
-  return { trial: trial, post: post };
+  return { run: run, trial: trial, post: post };
 });
