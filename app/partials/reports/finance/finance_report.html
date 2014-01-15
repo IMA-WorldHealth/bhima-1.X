@@ -27,37 +27,31 @@
       <!-- <th ng&#45;repeat="column in tableDefinition.columns">{{column.name}}</th> -->
     </tr>
   </thead>
-  <tbody>
-    <tr><td>Number</td><td>Description</td></tr>
-    <tbody>
-      <tr><td>Nested Number</td><td>Nested Description</td></tr>
-    </tbody>
-  </tbody>
-  <tbody>
-    <tr><td>Number2</td><td>Description2</td></tr>
-  </tbody>
-  
-  <tbody ng-repeat="group in financeGroups.store">
-    <tr><td>Repeat Number</td><td>Repeat Description</td></tr>
-    <tbody ng-repeat="acc in [1, 2, 3]">
-      <tr><td>Repeat Number 2</td><td>Repeat Description 2</td></tr>
-    </tbody>
-  </tbody>
+  <!-- <tbody> -->
+   
 
-  <tbody ng-repeat="l in [1, 2, 3]">
-    <tr><td>1</td></tr>
+  <!-- </tbody> -->
+  <tbody data-report-group data-group-model="financeGroups.store">
   </tbody>
-    <!--tbody-->
   <!--data-report-group-->
-     
-    <!--Repeat directly on data from report. version 1-->
-    <!--tr ng-repeat="row in model['finance'].data">
-      <td style="text-align: right">{{row.account_number}}</td>
-      <td 
-        ng-style="{'padding-left': row.depth * 30 + 'px'}" 
-        ng-class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td>
-       
-      <td ng-repeat="column in tableDefinition.columns"><span ng-hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td>
-    </tr-->
+    
+    <!--VERSION 2--> 
+    <!-- <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
+    <!--   <td>{{group.detail.account_number}}</td><td><b>{{group.detail.account_txt}}</b></td> -->
+    <!-- </tr> -->
+    <!--  -->
+    <!-- <tr ng&#45;repeat="sub in group.accounts"><td>{{sub.detail.account_number}}</td><td>{{sub.detail.account_txt}}</td></tr> -->
+    <!--  -->
+    <!-- <tr ng&#45;repeat&#45;end><td></td><td><b>This will be a total row</b></td></tr> -->
+    
+    <!--VERSION 1 - Repeat directly on data from report.-->
+    <!-- <tr ng&#45;repeat="row in model['finance'].data"> -->
+    <!--   <td style="text&#45;align: right">{{row.account_number}}</td> -->
+    <!--   <td  -->
+    <!--     ng&#45;style="{'padding&#45;left': row.depth * 30 + 'px'}"  -->
+    <!--     ng&#45;class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td> -->
+    <!--    -->
+    <!--   <td ng&#45;repeat="column in tableDefinition.columns"><span ng&#45;hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td> -->
+    <!-- </tr> -->
 </table>
 

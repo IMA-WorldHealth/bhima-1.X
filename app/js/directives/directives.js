@@ -51,17 +51,26 @@
           var groupModel = attrs.groupModel;
 
           var template = [
-            // '<tbody data-ng-repeat="account in ' + groupModel + '">',
-            '<tr data-ng-repeat="account in financeGroups.store"><td>Compiled Number 2</td><td>Compiled Text 2</td></tr>',
+            '<tr data-ng-repeat-start="account in ' + groupModel + '">',
+            '<td>{{account.detail.account_number}}</td>', 
+            '<td>{{account.detail.account_txt}}</td>',
+            '</tr>',
+            '<tr data-ng-repeat-start="sub in account.accounts"><td>{{sub.detail.account_number}}</td><td>{{sub.detail.account_txt}}</td></tr><tr data-ng-repeat-end><td></td><td>TOTAL FOR SUB</td></tr>',
+            '<tr data-ng-repeat-end>',
+            '<td></td>',
+            '<td><b>Total Row</b></td>',
+            '</tr>', 
+            // '<tbody data-report-group data-group-model="[1,2,3]"></tbody>'
+            // '<tbody data-report-group group-model="account.accounts"></tbody>'
              
             // '<tbody data-report-group data-group-model="account.accounts"></tbody>',
             // '</tbody>'
           ];
           
-          // if(attrs.reportGroup){
+          if(attrs.groupModel){
             console.log('compile');
             element.html('').append($compile(template.join(''))(scope)); 
-          // }
+          }
         }
       };
     }])
