@@ -95,6 +95,14 @@ module.exports = function (cfg) {
   // FIXME: research connection pooling in MySQL
   var con = supported_databases[sgbd](cfg);
 
+  con.on('error', function (err) {
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+      console.log('Lost connection, reconnecting in 500ms');
+      con = supported_databases[sgbd](cfg);
+    }
+    else throw err;
+  });
+
   //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
   flushUsers(con);
 

@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, printer) {
+.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, printer, messenger) {
   // This is the posting journal and perhaps the heaviest
   // module in Kapok.  It is responsible for posting to
   // the general ledger via a trial balance
@@ -49,18 +49,13 @@ angular.module('kpk.controllers')
     {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
   
-  var checkboxSelector = new Slick.CheckboxSelectColumn({
-    cssClass: "slick-cell-checkboxsel"
-  });
-
-  columns.push(checkboxSelector.getColumnDefinition());
-
   var options = {
     enableCellNavigation: true,
     enableColumnReorder: true,
     forceFitColumns: true,
     rowHeight: 30
   };
+
 
   function init() {
 
@@ -73,12 +68,20 @@ angular.module('kpk.controllers')
       dataview = new Slick.Data.DataView({
         groupItemMetadataProvider: groupItemMetadataProvider,
         inlineFilter: true
+
       });
+
+      var chkbx = new Slick.CheckboxSelectColumn({
+        cssClass: "slick-cell-checkboxsel"
+      });
+
+      columns.push(chkbx.getColumnDefinition());
+
       grid = new Slick.Grid('#journal_grid', dataview, columns, options);
 
       grid.registerPlugin(groupItemMetadataProvider);
       grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
-      grid.registerPlugin(checkboxSelector);
+      grid.registerPlugin(chkbx);
 //      Cell selection
 //      grid.setSelectionModel(new Slick.CellSelectionModel());
 
@@ -97,11 +100,17 @@ angular.module('kpk.controllers')
         grid.render();
       });
 
+      grid.onSelectedRowsChanged.subscribe(function (e, args) {
+        $scope.$apply(function () {
+          $scope.rows = args.rows;
+        });
+      });
+
 //      Set for context menu column selection
 //      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 
       dataview.beginUpdate();
-      dataview.setItems($scope.model['journal'].data);
+      dataview.setItems($scope.model.journal.data);
 //      $scope.groupByID()
       dataview.endUpdate();
 
@@ -155,13 +164,34 @@ angular.module('kpk.controllers')
     dataview.setGrouping({});
   };
 
+  function getRowData (row_array) {
+    return row_array.map(function (id) {
+      return grid.getDataItem(id);
+    });
+  }
+
+  function getTxnIds(data) {
+    var txn_ids = data.map(function (item) {
+      return item.trans_id;
+    });
+    return txn_ids.filter(function (v, i) { return txn_ids.indexOf(v) === i; });
+  }
+
   $scope.trial = function () {
-    // in Sanru Tracker, posting encompasses the entire posting journal.
-    // This code assumes you are posting everything in the posting journal
-    // with your user name.
-    // DECISION: Should we allow you to post only some transactions?
-    connect.fetch('/trial/')
+
+    // first, we need to validate that all items in each trans have been
+    // selected.
+
+    if (!$scope.rows || !$scope.rows.length) return messenger.danger('No rows selected!');
+    
+    var selected = getRowData($scope.rows);
+    var transaction_ids = getTxnIds(selected);
+
+    messenger.warning('Posting data from transactions (' + transaction_ids.toString() + ')');
+
+    connect.fetch('/trial/?q=(' + transaction_ids.toString() + ')')
     .then(function (data) {
+      messenger.success('Trial balance run!');
       var instance = $modal.open({
         templateUrl:'trialBalanceModal.html',
         controller: 'trialBalanceCtrl',
