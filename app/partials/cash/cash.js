@@ -208,8 +208,9 @@ angular.module('kpk.controllers')
     .then(function () {
       connect.fetch('/journal/cash/' + doc.id)
       .then(function (response) {
-        loadDebitor(data.debitor_id);
+        $scope.loadDebitor(data.debitor_id);
         $scope.data.paying = [];
+        $scope.data.payment = 0;
       });
     }, function (err) {
       messenger.danger('Putting cash failed'); 

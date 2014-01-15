@@ -1,7 +1,7 @@
 // scripts/lib/logic/balance.js
-var q = require('q');
 
 // module: TrialBalance 
+var q = require('q');
 
 // Trial Balance executes a series of general error checking
 // functions and specific accounting logic before posting
@@ -12,15 +12,22 @@ var q = require('q');
 // If there are no errors, the module proceeds to post
 // rows from the journal into the general ledger.
 
-// TODO: Clean up this code immensely
+// TODO : Clean up this code immensely
 
 module.exports = (function (db) {
   'use strict';
 
-  function errorChecking () {
-    var errors, queries;
+  function trial_balance (ids, callback) {
+    // this takes in an array of ids and a callback function which is
+    // only fired when all test are complete.
+    
+    
 
-    errors = {
+  }
+
+  function errorChecking () {
+
+    var errors = {
       'account_defined'            : '%number% Invalid Accounts Detected.',
       'account_locked'             : '%number% Locked Accounts Detected.',
       'balance'                    : 'Credits and debits do not balance.',
@@ -30,7 +37,7 @@ module.exports = (function (db) {
       'debitor_creditor_defined'   : '%number% Invalid Debitor/Creditor Groups.'
     };
 
-    queries = {
+    var queries = {
       // are all accounts defined?
       account_defined : 'SELECT `posting_journal`.`id` FROM `posting_journal` LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` WHERE `account`.`id` IS NULL;',
       // are any accounts locked?
@@ -47,17 +54,20 @@ module.exports = (function (db) {
       balance : 'SELECT SUM(`posting_journal`.`credit`) AS `credit`, SUM(`posting_journal`.`debit`) AS `debit`, SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`, SUM(`posting_journal`.`credit_equiv`) AS `credit_equv` FROM `posting_journal`;'
     };
 
-    function account_locked () { 
-      var d = q.defer(), error = {};
+    function account_locked (ids) {
+      var d = q.defer();
+      var sql = 
+        'SELECT `posting_journal`.`id` ' +
+        'FROM `posting_journal` LEFT JOIN `account` ' +
+        'ON  `posting_journal`.`account_id`=`account`.`id` ' +
+        'WHERE `account`.`locked`=1;';
 
-      db.execute(queries.account_locked, function (err, res) {
-        if (res.length) {
-          error.message = errors.account_locked.replace('%number%', res.length);
-          error.rows = res.map(function (row) { return row.id; });
-        }
-        return error.message ? d.reject(error) : d.resolve();
+      db.execute(sql, function (err, rows) {
+        d.resolve();
       });
+      
       return d.promise;
+
     }
 
     function account_defined () {

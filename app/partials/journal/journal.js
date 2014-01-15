@@ -48,7 +48,12 @@ angular.module('kpk.controllers')
     {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 },
     {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
+  
+  var checkboxSelector = new Slick.CheckboxSelectColumn({
+    cssClass: "slick-cell-checkboxsel"
+  });
 
+  columns.push(checkboxSelector.getColumnDefinition());
 
   var options = {
     enableCellNavigation: true,
@@ -59,7 +64,8 @@ angular.module('kpk.controllers')
 
   function init() {
 
-    $q.all([connect.req(journal_request), connect.req(account_request)]).then(function(array) {
+    $q.all([connect.req(journal_request), connect.req(account_request)])
+    .then(function(array) {
       $scope.model.journal = array[0];
       $scope.model.account = array[1];
 
@@ -71,6 +77,8 @@ angular.module('kpk.controllers')
       grid = new Slick.Grid('#journal_grid', dataview, columns, options);
 
       grid.registerPlugin(groupItemMetadataProvider);
+      grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
+      grid.registerPlugin(checkboxSelector);
 //      Cell selection
 //      grid.setSelectionModel(new Slick.CellSelectionModel());
 
