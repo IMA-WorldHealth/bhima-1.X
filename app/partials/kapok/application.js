@@ -50,7 +50,7 @@ angular.module('kpk.controllers')
     .then(function(res) {
       default_enterprise = res.data[0];
       appstate.set('enterprise', default_enterprise);
-      return connect.req({'tables': { 'fiscal_year' : { 'columns': ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year']}}});
+      return connect.req({'tables': { 'fiscal_year' : { 'columns': ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id']}}});
     })
     .then(function(res) { 
       default_fiscal_year = res.data[0];

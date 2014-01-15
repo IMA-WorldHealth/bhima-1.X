@@ -220,14 +220,11 @@ module.exports = (function (db) {
     var def = q.defer();
 
     //requette
-    //var params = JSON.parse(params);
+    var params = JSON.parse(params);
     var requette = "SELECT period.id, period.period_start, period.period_stop, debitor.id as idDebitor, debitor.text, general_ledger.`debit`, general_ledger.`credit`, general_ledger.`account_id` "+
                    "FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.id = debitor.group_id AND debitor.`id` = general_ledger.`deb_cred_id` "+
-                   "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id";
-    // var requette = "SELECT SUM(general_ledger.`debit`), SUM(general_ledger.`credit`) FROM debitor, period, general_ledger "+
-    //                "WHERE period.`id` = general_ledger.`period_id` AND debitor.id = general_ledger.`deb_cred_id` AND general_ledger.`deb_cred_id` ="+params.debitor_id+
-    //                " AND general_ledger.`deb_cred_type` = 'D' GROUP BY general_ledger.`period_id`";
-
+                   "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`='"+params.fiscal_id+"'";
+    
     db.execute(requette, function(err, ans) {
       if(err) {
         console.log("debitor aging, Query failed");
@@ -245,10 +242,11 @@ module.exports = (function (db) {
   function accountStatement(params){
     //deferred
     var def = q.defer();
+    var params = JSON.parse(params);
 
     //requette
     var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
-                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id;";
+                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
 
     db.execute(requette, function(err, ans) {
       if(err) {
