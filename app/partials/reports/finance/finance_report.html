@@ -19,29 +19,45 @@
   </div>
 </section>
 
-<!--Uses ng-switch at the moment, team should discuss the best way to do this-->
-<div ng-switch on="session_error.valid">
-<section ng-switch-when="false" class="alert {{session_error.type}}"> <!--Type mapped in JS, not ideal but works for now-->
-  <span>{{session_error.body}}</span>
-</section>
-</div>
-
 <table class="reportTable">
   <thead>
     <tr>
       <th>Account</th>
       <th>Description</th>
-      <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
+      <!-- <th ng&#45;repeat="column in tableDefinition.columns">{{column.name}}</th> -->
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="row in model['finance'].data">
+    <tr><td>Number</td><td>Description</td></tr>
+    <tbody>
+      <tr><td>Nested Number</td><td>Nested Description</td></tr>
+    </tbody>
+  </tbody>
+  <tbody>
+    <tr><td>Number2</td><td>Description2</td></tr>
+  </tbody>
+  
+  <tbody ng-repeat="group in financeGroups.store">
+    <tr><td>Repeat Number</td><td>Repeat Description</td></tr>
+    <tbody ng-repeat="acc in [1, 2, 3]">
+      <tr><td>Repeat Number 2</td><td>Repeat Description 2</td></tr>
+    </tbody>
+  </tbody>
+
+  <tbody ng-repeat="l in [1, 2, 3]">
+    <tr><td>1</td></tr>
+  </tbody>
+    <!--tbody-->
+  <!--data-report-group-->
+     
+    <!--Repeat directly on data from report. version 1-->
+    <!--tr ng-repeat="row in model['finance'].data">
       <td style="text-align: right">{{row.account_number}}</td>
       <td 
         ng-style="{'padding-left': row.depth * 30 + 'px'}" 
         ng-class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td>
        
       <td ng-repeat="column in tableDefinition.columns"><span ng-hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td>
-    </tr>
-  </tbody>
+    </tr-->
 </table>
+

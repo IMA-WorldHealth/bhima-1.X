@@ -27,6 +27,45 @@
       };
     }])
 
+    .directive('kpkAlert', ['$compile', function ($compile) {
+      return {
+        restrict: 'A',
+        replace: true,
+        link: function ($scope, element, attrs) {
+          var template = 
+            '<div class="kapok-alert">' + 
+              '<alert type="alert.type" close="closeAlert()">{{alert.message}}</alert>' + 
+            '</div>';
+
+        }
+      };
+    
+    }])
+
+    .directive('reportGroup', ['$compile', function($compile) { 
+      return { 
+        restrict: 'A',
+        link: function(scope, element, attrs) { 
+          console.log('[reportGroup] angular evaluates this', attrs);
+          
+          var groupModel = attrs.groupModel;
+
+          var template = [
+            // '<tbody data-ng-repeat="account in ' + groupModel + '">',
+            '<tr data-ng-repeat="account in financeGroups.store"><td>Compiled Number 2</td><td>Compiled Text 2</td></tr>',
+             
+            // '<tbody data-report-group data-group-model="account.accounts"></tbody>',
+            // '</tbody>'
+          ];
+          
+          // if(attrs.reportGroup){
+            console.log('compile');
+            element.html('').append($compile(template.join(''))(scope)); 
+          // }
+        }
+      };
+    }])
+
     .directive('treeModel', ['$compile', 'appcache', function($compile, appcache) {
       var MODULE_NAMESPACE = 'tree';
       var cache = new appcache(MODULE_NAMESPACE);
@@ -50,7 +89,7 @@
                 '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' + 
               '</li>' + 
             '</ul>';
-
+          
           //Collapse by default
           // if (scope.node) scope.node.collapsed = true;
 
