@@ -147,17 +147,17 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
     	if($scope.data.type == 'I'){
     		var sql = {
 				    tables : {
-				      	'posting_journal' : {columns: ["credit", "debit"]}
+				      	'general_ledger' : {columns: ["credit", "debit"]}
 				    },
-	      			where: ['posting_journal.deb_cred_id= '+$scope.model.selected.id, "AND", 'posting_journal.deb_cred_type='+$scope.data.dc, "AND", "posting_journal.account_id="+$scope.model.selected.account_id]
+	      			where: ['general_ledger.deb_cred_id= '+$scope.model.selected.id, "AND", 'general_ledger.deb_cred_type='+$scope.data.dc, "AND", "general_ledger.account_id="+$scope.model.selected.account_id]
 		};
 
     	}else if($scope.data.type == 'G'){
     		var sql = {
 				    tables : {
-				      	'posting_journal' : {columns: ["credit", "debit"]}
+				      	'general_ledger' : {columns: ["credit", "debit"]}
 				    },
-	      			where: ['posting_journal.deb_cred_type='+$scope.data.dc, "AND", "posting_journal.account_id="+$scope.model.selected.account_id]
+	      			where: ['general_ledger.deb_cred_type='+$scope.data.dc, "AND", "general_ledger.account_id="+$scope.model.selected.account_id]
 			};
 
     	}

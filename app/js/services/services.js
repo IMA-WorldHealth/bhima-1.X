@@ -375,6 +375,7 @@
     function set(comp_id, ref) { 
       //summary: 
       //  Assign id reference to value
+      console.log('setting value', comp_id, ref)
       comp[comp_id] = ref;
       update(comp_id);
     }
@@ -387,7 +388,6 @@
 
     function register(comp_id, callback) { 
       // FIXME: These are strict violations
-      var id = this.id;
       if(!queue[comp_id]) { 
         queue[comp_id] = [];
       }
@@ -398,7 +398,7 @@
         return;
       } 
       
-      queue[comp_id].push({ref: this, callback: callback});
+      queue[comp_id].push({callback: callback});
     }
 
     function update(comp_id) { 
