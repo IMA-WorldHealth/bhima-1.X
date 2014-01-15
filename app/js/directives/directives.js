@@ -41,35 +41,34 @@
       };
     
     }])
-
+  
+    //TODO create reportGroupCompile directive to test performance difference
     .directive('reportGroup', ['$compile', function($compile) { 
       return { 
         restrict: 'A',
         link: function(scope, element, attrs) { 
           console.log('[reportGroup] angular evaluates this', attrs);
-          
+   
           var groupModel = attrs.groupModel;
-
+          
+          if(groupModel == "financeGroups.store") console.time("directive_timestamp");
+          console.log(scope[groupModel]);
           var template = [
-            '<tr data-ng-repeat-start="account in ' + groupModel + '">',
-            '<td>{{account.detail.account_number}}</td>', 
-            '<td>{{account.detail.account_txt}}</td>',
-            '</tr>',
-            '<tr data-ng-repeat-start="sub in account.accounts"><td>{{sub.detail.account_number}}</td><td>{{sub.detail.account_txt}}</td></tr><tr data-ng-repeat-end><td></td><td>TOTAL FOR SUB</td></tr>',
-            '<tr data-ng-repeat-end>',
-            '<td></td>',
-            '<td><b>Total Row</b></td>',
-            '</tr>', 
-            // '<tbody data-report-group data-group-model="[1,2,3]"></tbody>'
-            // '<tbody data-report-group group-model="account.accounts"></tbody>'
-             
-            // '<tbody data-report-group data-group-model="account.accounts"></tbody>',
-            // '</tbody>'
-          ];
+            '<tr data-ng-repeat-start="group in ' + groupModel + '"><td style="text-align: right">{{group.detail.account_number}}</td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}">{{group.detail.account_txt}}</td></tr>',
+            '<tr data-report-group data-group-model="group.accounts"></tr>',
+            '<tr ng-if="group.detail.account_type_id == 3" data-ng-repeat-end><td></td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}"><b>Total Row {{group.detail.account_txt}}</b></td></tr>'
+          ]; 
+
+          // scope.$watch('financeGroups.store', function(nval, oval) { 
+            // console.log('UPDATE', oval, nval);
+            //Once a function has changed store (inital creation)
+            //check that there is data
+            //Compile HTML using ng-repeats or direct links to model
+          // }, true);
           
           if(attrs.groupModel){
             console.log('compile');
-            element.html('').append($compile(template.join(''))(scope)); 
+            element.replaceWith($compile(template.join(''))(scope));
           }
         }
       };
@@ -82,6 +81,7 @@
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
+          console.timeEnd("directive_timestamp");
           var treeId = attrs.treeId;
           var treeModel = attrs.treeModel;
           var nodeId = attrs.nodeId || 'id';
