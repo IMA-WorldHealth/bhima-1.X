@@ -94,8 +94,8 @@ app.get('/trial/', function (req, res, next) {
   console.log('looking at ids ', ids);
 
   trialbalance.run(ids, function (err, result) {
-    if (err) throw err;
-    res.send(200);
+    if (err) next(err);
+    res.send(200, result);
   });
 
   /*

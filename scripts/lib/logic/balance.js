@@ -23,20 +23,53 @@ module.exports = (function (db) {
    
     // preprocessing
     ids = ids.map(function (id) { return db.escapestr(id); });
-   
+
+    var postErrs = [];
+    var sysErrs = [];
+
+    var data = {
+      sysErrors : [],
+      postErrors : [],
+      data : []
+    };
+
     q.all([
       areAccountsLocked(ids),
       areAccountsNull(ids),
       areAllDatesValid(ids),
       areCostsBalanced(ids),
       areDebitorCreditorDefined(ids)
-    ]).finally(function (array) {
-      console.log('\n', 'EVERYTHING FINISIHED', '\n');
-      console.log('ARRAY', array);
-      array.forEach(function (item) {
-        console.log(item);
+    ].map(function (promise, idx) {
+      var d = q.defer();
+
+      promise.then(function () {
+        console.log('Resolving idx:', idx);
+        d.resolve();
+      }, function (err) {
+        if (err.sysErr) data.sysErrs.push(err.sysErr);
+        if (err.postErr) data.postErrs.push(err.postErr);
+        console.log('Resolving idx:', idx);
+        d.resolve();
       });
-      return callback(null, {});
+
+      return d.promise;
+    }))
+    .done(function () {
+      var sql =
+        'SELECT `posting_journal`.`id`,  SUM(`debit_equiv`) AS `debit`, SUM(`credit_equiv`) AS `credit`, '+
+        '`posting_journal`.`account_id`, (`period_total`.`debit` - `period_total`.`credit`) AS `balance` ' +
+        'FROM `posting_journal` LEFT JOIN `period_total` ' + 
+        'ON `posting_journal`.`account_id`=`period_total`.`account_id` ' + 
+        'GROUP BY `posting_journal`.`account_id`;';
+      db.execute(sql, function (err, result) {
+        if (err) {
+          data.sysErrors.push(err);
+        } else {
+          data.data = result;
+        } 
+
+        return callback(null, data);
+      });
     });
   }
 
@@ -65,8 +98,6 @@ module.exports = (function (db) {
       'WHERE `account`.`locked`=1 AND `posting_journal`.`trans_id` IN ' + join(ids) + ';';
 
     db.execute(sql, function (err, rows) {
-      console.log('\nrows:', rows);
-
       if (err) 
         return d.reject({'sysErr' : err});
 
@@ -105,7 +136,7 @@ module.exports = (function (db) {
   function areAllDatesValid (ids) {
     var d = q.defer();
     var sql = 
-      'SELECT `id`, `period_id`, `trans_date`, `period_start`, `period_stop` ' +
+      'SELECT `posting_journal`.`id`, `period_id`, `trans_date`, `period_start`, `period_stop` ' +
       'FROM `posting_journal` JOIN `period` ' + 
       'ON `posting_journal`.`period_id`=`period`.`id` ' + 
       'WHERE `trans_id` IN ' + join(ids) + ';';
@@ -129,7 +160,7 @@ module.exports = (function (db) {
   function areCostsBalanced (ids) {
     var d = q.defer();
     var sql = 
-      'SELECT `id`, sum(debit) as d, sum(credit) as c, sum(debit_equiv) as de, sum(credit_equiv) as ce ' +
+      'SELECT `posting_journal`.`id`, sum(debit) as d, sum(credit) as c, sum(debit_equiv) as de, sum(credit_equiv) as ce ' +
       'FROM posting_journal ' +
       'WHERE `trans_id` IN ' + join(ids) + ' ' +
       'GROUP BY `trans_id`;';
@@ -144,6 +175,8 @@ module.exports = (function (db) {
 
       if (bool.length)
         return d.reject({'postErr': 'Debits and Credits (or equivalents) do not balance in transaction(s) : ' + join(map(bool, 'id')) });
+
+      d.resolve();
 
     });
 
@@ -172,6 +205,8 @@ module.exports = (function (db) {
       
       if (rows.length) 
         return d.reject({'postErr' : 'Debitor/Creditors do not exist for transaction(s) : ' + join(rows.map(function (row) { return row.id; })) });
+
+      d.resolve();
 
     });
 

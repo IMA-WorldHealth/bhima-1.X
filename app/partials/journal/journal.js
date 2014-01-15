@@ -197,7 +197,10 @@ angular.module('kpk.controllers')
         controller: 'trialBalanceCtrl',
         resolve : {
           request: function () {
-            return data;
+            return data.data;
+          },
+          ids : function () {
+            return transaction_ids;
           }
         }
       });
@@ -256,28 +259,15 @@ angular.module('kpk.controllers')
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
 //  $timeout(init, 100);
 
-  $scope.print = function () {
-    printer.clear();
-    console.log('rows:', connect.clean($scope.model['journal'].data));
-    printer.print({
-      title: 'A cool title!',
-      description: 'An attempt to print a table from journal...',
-      table: {
-        headers: ['id', 'date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'deb_cred_id', 'deb_cred_type', 'inv_po_id'],
-        rows: connect.clean($scope.model['journal'].data)
-      }
-    });
-  };
-
-
   init();
-
 
 })
 
-.controller('trialBalanceCtrl', function ($scope, $modalInstance, request, connect) {
+.controller('trialBalanceCtrl', function ($scope, $modalInstance, request, ids, connect) {
   $scope.data = request.data;
-  $scope.data.status = request.status;
+  $scope.errors = [].concat(request.postErrors, request.sysErrors);
+
+  console.log('REQUEST', request);
 
   $scope.ok = function () {
     connect.fetch('/post/')

@@ -42,45 +42,38 @@
 <script type="text/ng-template" id="trialBalanceModal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Trial Balance <small>Status: {{data.status}} </small></h3> 
+      <h3>Trial Balance</h3> 
     </div>
 
     <div class="modal-body">
 
-      <div ng-show="data.errors">
+      <div ng-show="!!data.errors.length">
         <ul>
-          <li ng-repeat="error in data.errors">{{error.err}} | {{error.reason}}</li>
+          <li ng-repeat="error in data.errors" class="hasError"> Error : {{error}}</li>
         </ul>
       </div>
 
-      <div ng-hide="data.errors">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>General Ledger Balance</th><th>Total Debit</th><th>Total Credit</th><th>Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>Before Posting</th>
-              <td>{{data.gl_balance.debit}}</td>
-              <td>{{data.gl_balance.credit}}</td>
-              <td>{{data.gl_balance.debit - data.gl_balance.credit}}</td>
-            </tr>
-            <tr>
-              <th>After Posting</th>
-              <td>{{data.gl_after_balance.debit}}</td>
-              <td>{{data.gl_after_balance.credit}}</td>
-              <td>{{data.gl_after_balance.debit - data.gl_after_balance.credit}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Account</th><th>Before</th><th>Debit</th><th>Credit</th><th>After</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="account in data">
+            <th>{{account.account_id}}</th>
+            <td>{{account.balance | currency}}</td>
+            <td>{{account.debit | currency }}</td>
+            <td>{{account.credit | currency }}</td>
+            <td>{{account.balance + (account.credit - account.debit) | currency }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-disabled="data.errors" ng-click="ok()">Post to General Ledger</button>
-        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+      <button class="btn btn-primary" ng-disabled="data.errors" ng-click="ok()">Post to General Ledger</button>
+      <button class="btn btn-default" ng-click="cancel()">Cancel</button>
     </div>
   </div>
 </script>
