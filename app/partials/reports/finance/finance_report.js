@@ -59,9 +59,6 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
         }
         
         index[account.parent].accounts.push(insertAccount);
-        
-        //FIXME Grouping and totaling
-        updateTotal(account, index); 
         return;
       }
       
