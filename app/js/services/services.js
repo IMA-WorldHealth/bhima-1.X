@@ -351,69 +351,43 @@
   });
 
   services.factory('appstate', function ($q, $rootScope) { 
-    /*
-    * summary: 
-    *  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
-    *  to allow asynchronous loading
-    * TODO
-    *   -Unregister callbacks form unit/module, these could be auto unhooked from application controller?
-    */
-  
-    var instance = {
-      //summary: 
-      //  expose required function to Angular modules, all other functions are considered private
-      id: Date.now(),
-      get: get,
-      set: set,
-      register: register,
-      update: update
-    };
+    //TODO Use promise structure over callbacks, used throughout the application and enables error handling 
+    var store = {}, queue = {};
 
-    var comp = {};
-    var queue = {};
-
-    function set(comp_id, ref) { 
-      //summary: 
-      //  Assign id reference to value
-      comp[comp_id] = ref;
-      update(comp_id);
+    function set(storeKey, value) { 
+      store[storeKey] = value;
+      executeQueue(storeKey);
     }
 
-    function get(comp_id) { 
-      //summary: 
-      //  Reference to value by di
-      return comp[comp_id];
+    function get(storeKey) { 
+      return store[storeKey];
     }
 
-    function register(comp_id, callback) { 
-      // FIXME: These are strict violations
-      var id = this.id;
-      if(!queue[comp_id]) { 
-        queue[comp_id] = [];
-      }
+    function register(storeKey, callback) { 
+      var requestedValue = store[storeKey];
+      var queueReference = queue[storeKey] = queue[storeKey] || [];
 
-      //init call to pass current value
-      if(comp[comp_id]) { 
-        callback(comp[comp_id]);
+      if(requestedValue) { 
+        callback(requestedValue);
         return;
-      } 
-      
-      queue[comp_id].push({ref: this, callback: callback});
+      }  
+      queueReference.push({callback: callback});
     }
 
-    function update(comp_id) { 
-      var l = queue[comp_id];
-      console.log('update called for ', comp_id, l);
-      if(l) { 
-        l.forEach(function(recept) { 
-          // console.log('callback queue');
-          console.log('calling queued callback');
-          recept.callback(comp[comp_id]);
+    function executeQueue(storeKey) { 
+      var queueReference = queue[storeKey];
+      if(queueReference) { 
+        queueReference.forEach(function(pendingRequest) { 
+          pendingRequest.callback(store[storeKey]);
         });
       }
     }
 
-    return instance;
+    return {
+      get : get,
+      set : set,
+      register : register
+    };
   });
 
   services.factory('connect', function ($http, $q) {
