@@ -47,18 +47,68 @@
         restrict: 'A',
         link: function(scope, element, attrs) { 
 
-          var built = false;
+          var built = false, template = [];
 
           console.log('[reportGroupCompile] evaluated');
 
-          function buildRows(data) { 
+          function buildTable(data) { 
             built = true;
             console.log('building table with', data);
+            
+            parseGroup(data);
+                        
+            //TODO append to element vs replace (attach to tbody)
+            element.replaceWith($compile(template.join(''))(scope)); 
           }
+
+          function parseGroup(accountGroup) { 
+            accountGroup.forEach(function(account) { 
+              template.push(titleRowTemplate(account.detail)); 
+              
+              if(!account.accounts) return;
+              
+              parseGroup(account.accounts); 
+              template.push(totalRowTemplate(account.detail));
+            });
+          }
+          
+          function titleRowTemplate(account) { 
+            var descriptionData, columns = [];
+            var isTitle = (account.account_type_id === 3);
+            if(isTitle) { 
+              //doesn't need ng-style, already processed so can just set style
+              var width = scope.tableDefinition.columns.length + 1;
+              descriptionData = '<td colspan="' + width + '" class="reportTitle" ng-style="{\'padding-left\': ' + account.depth * 30 + ' + \'px\'}">' + account.account_txt + '</td>'; 
+            } else { 
+              descriptionData = '<td ng-style="{\'padding-left\': ' + account.depth * 30 + ' + \'px\'}">' + account.account_txt + '</td>';
+              
+              //FIXME very temporary and tightly coupled 
+              scope.tableDefinition.columns.forEach(function(column) { 
+                //FIXME value should be zero default from the query
+                columns.push('<td>' + (account[column.key] || 0) + '</td>');
+              });
+            }
+
+            return '<tr><td>' + account.account_number + '</td>' + descriptionData + columns.join('') + '</tr>';
+          }
+
+          function totalRowTemplate(account) { 
+            var columns = [];
+           
+            //FIXME very temporary and tightly coupled 
+            scope.tableDefinition.columns.forEach(function(column) { 
+              //FIXME value should be zero default from the query
+              columns.push('<td><b>' + account.total[column.key] + '</b></td>');
+            });
+
+            return '<tr><td></td><td style="padding-left: ' + account.depth * 30 + 'px"><b>Total ' + account.account_txt + '</b></td>' + columns.join('') + '</tr>';
+          }
+
+          //function printf(string, ...arguments) { } 
 
           scope.$watch('financeGroups.store', function(nval, oval) { 
             console.log('changed', nval, oval);
-            if(!built && nval.length > 0) buildRows(nval); //Remove directive $watch
+            if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
           }, true);
         }
       };
