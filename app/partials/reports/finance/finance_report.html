@@ -24,11 +24,11 @@
     <tr>
       <th>Account</th>
       <th>Description</th>
-      <!-- <th ng&#45;repeat="column in tableDefinition.columns">{{column.name}}</th> -->
+      <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
     </tr>
   </thead>
-  <tr data-report-group data-group-model="financeGroups.store">
-  </tr> 
+  <!--Recursive dirictive, replaces itself with inductive step-->
+  <tr data-report-group data-group-model="financeGroups.store"></tr> 
     
     <!--VERSION 3-->
   <!--   <tbody> -->
@@ -66,7 +66,7 @@
     <!--     ng&#45;style="{'padding&#45;left': row.depth * 30 + 'px'}"  -->
     <!--     ng&#45;class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td> -->
     <!--    -->
-    <!--   <td ng&#45;repeat="column in tableDefinition.columns"><span ng&#45;hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td> -->
+    <!-- <td ng&#45;repeat="column in tableDefinition.columns"><span ng&#45;hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td> -->
     <!-- </tr> -->
 </table>
 
