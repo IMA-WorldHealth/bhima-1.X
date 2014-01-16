@@ -41,33 +41,47 @@
       };
     
     }])
+
+    .directive('reportGroupCompile', ['$compile', function($compile) { 
+      return { 
+        restrict: 'A',
+        link: function(scope, element, attrs) { 
+
+          var built = false;
+
+          console.log('[reportGroupCompile] evaluated');
+
+          function buildRows(data) { 
+            built = true;
+            console.log('building table with', data);
+          }
+
+          scope.$watch('financeGroups.store', function(nval, oval) { 
+            console.log('changed', nval, oval);
+            if(!built && nval.length > 0) buildRows(nval); //Remove directive $watch
+          }, true);
+        }
+      };
+    }])
   
     //TODO create reportGroupCompile directive to test performance difference
     .directive('reportGroup', ['$compile', function($compile) { 
       return { 
         restrict: 'A',
         link: function(scope, element, attrs) { 
-          console.log('[reportGroup] angular evaluates this', attrs);
-   
           var groupModel = attrs.groupModel;
+          var template = [
+            '<tr data-ng-repeat-start="group in ' + groupModel + '">',
+            '<td style="text-align: right">{{group.detail.account_number}}</td>',
+            '<td ng-class="{\'reportTitle\': group.detail.account_type_id==3}" ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}">{{group.detail.account_txt}}</td>', 
+            '<td ng-repeat="column in tableDefinition.columns"><span ng-hide="group.detail.account_type_id==3">{{(group.detail[column.key] || 0) | currency}}</span></td>',
+            '</tr>',
+            '<tr ng-if="group.accounts" data-report-group data-group-model="group.accounts"></tr>',
+            '<tr ng-if="group.detail.account_type_id == 3" data-ng-repeat-end><td></td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}"><em>Total {{group.detail.account_txt}}</em></td><td ng-repeat="column in tableDefinition.columns"><b>{{group.detail.total[column.key] | currency}}</b></td></tr>'
+          ]; 
           
           if(groupModel == "financeGroups.store") console.time("directive_timestamp");
-          console.log(scope[groupModel]);
-          var template = [
-            '<tr data-ng-repeat-start="group in ' + groupModel + '"><td style="text-align: right">{{group.detail.account_number}}</td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}">{{group.detail.account_txt}}</td></tr>',
-            '<tr data-report-group data-group-model="group.accounts"></tr>',
-            '<tr ng-if="group.detail.account_type_id == 3" data-ng-repeat-end><td></td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}"><b>Total Row {{group.detail.account_txt}}</b></td></tr>'
-          ]; 
-
-          // scope.$watch('financeGroups.store', function(nval, oval) { 
-            // console.log('UPDATE', oval, nval);
-            //Once a function has changed store (inital creation)
-            //check that there is data
-            //Compile HTML using ng-repeats or direct links to model
-          // }, true);
-          
           if(attrs.groupModel){
-            console.log('compile');
             element.replaceWith($compile(template.join(''))(scope));
           }
         }

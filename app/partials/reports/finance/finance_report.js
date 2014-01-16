@@ -28,11 +28,15 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
 
     generateAccountGroups($scope.model.finance);
   }
-    
+   
+  //TODO Relies on data being in correct order at time of parsing (i.e all children following parent)
+  //if parent hasn't been parsed, a placeholder should be set (allowing any ordering of data)
+  
+  // TODO calculate totals seperately 
   function generateAccountGroups(accountModel, targetObj) { 
     var accounts = accountModel.data, ROOT = 0, TITLE = 3;
     var index = financeGroups.index, store = financeGroups.store;
-    
+    console.time("generate"); 
     accounts.forEach(function(account) { 
       var insertAccount = { 
         detail : account
@@ -40,21 +44,45 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
       
       if(account.account_type_id === TITLE) { 
         insertAccount.accounts = [];
-        index[account.account_number] = insertAccount.accounts;
+        
+        //FIXME Grouping and totaling
+        insertAccount.detail.total = {};
+        tableDefinition.columns.forEach(function(column) { 
+          insertAccount.detail.total[column.key] = 0; 
+        });
+
+        index[account.account_number] = insertAccount;
 
         if(account.parent === ROOT) { 
           store.push(insertAccount);
           return;
         }
         
-        index[account.parent].push(insertAccount);
+        index[account.parent].accounts.push(insertAccount);
+        
+        //FIXME Grouping and totaling
+        updateTotal(account, index); 
         return;
       }
       
-      index[account.parent].push(insertAccount); 
+      index[account.parent].accounts.push(insertAccount); 
+
+      //FIXME Grouping and totaling
+      updateTotal(account, index); 
     });
-      
+    console.timeEnd("generate");
     console.log('account groups generated', financeGroups);
+  }
+  
+  //TODO Total could be determined by inversing the sort and traversing the list linearly 
+  function updateTotal(account, index) { 
+    var parent = index[account.parent];
+    while(parent) { 
+      tableDefinition.columns.forEach(function(column) { 
+        parent.detail.total[column.key] += account[column.key];
+      });
+      parent = index[parent.detail.parent];
+    }
   }
 
   function parseAccountDepth(accountModel) { 
