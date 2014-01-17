@@ -25,20 +25,23 @@ angular.module('kpk.controllers')
   imports.inv_group = {tables : { 'inv_group' : { columns: ["id", "name", "symbol"] }}};
   imports.price_list = {tables: { 'price_list' : { columns : ["id", "list_id", "inventory_id", "price", "discount", "note"] }}};
 
-  // initialize models
 
-  $q.all([
-    connect.req(imports.price_list_name),
-    connect.req(imports.inventory),
-    connect.req(imports.inv_group)
-  ]).then(function (arr) {
-    // load dependencies
-    for (var i = arr.length - 1; i >= 0; i--) {
-      models[dependencies[i]] = arr[i].data;
-      stores[dependencies[i]] = arr[i];
-    }
-    flags.edit.list = Infinity;
-  });
+  function run () {
+    // initialize models
+
+    $q.all([
+      connect.req(imports.price_list_name),
+      connect.req(imports.inventory),
+      connect.req(imports.inv_group)
+    ]).then(function (arr) {
+      // load dependencies
+      for (var i = arr.length - 1; i >= 0; i--) {
+        models[dependencies[i]] = arr[i].data;
+        stores[dependencies[i]] = arr[i];
+      }
+      flags.edit.list = Infinity;
+    });
+  }
 
   // List controls
 
@@ -170,6 +173,8 @@ angular.module('kpk.controllers')
   function showFilter (id) {
     return stores.inv_group && stores.inv_group.get(id) ? stores.inv_group.get(id).symbol : "";
   }
+
+  run();
 
   // expose to view
   $scope.saveList = saveList;
