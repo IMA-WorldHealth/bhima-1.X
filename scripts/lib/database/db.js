@@ -116,7 +116,7 @@ module.exports = function (cfg) {
       console.log("[db] [execute]: ", sql);
       // this uses mysql connection pooling...
       con.getConnection(function (err, connection) {
-        if (err) { console.log(err); return callback(err); }
+        if (err) return callback(err);
         connection.query(sql, function (err, results) {
           connection.release();
           if (err) return callback(err);

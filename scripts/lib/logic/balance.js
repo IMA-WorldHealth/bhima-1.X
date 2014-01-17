@@ -17,7 +17,23 @@ var q = require('q');
 module.exports = (function (db) {
   'use strict';
 
-  function run (ids, callback) {
+  var keys = {};
+
+  function generateKey (user_id) {
+    var key = user_id ^ new Date().valueOf();
+    keys[key] = true;
+    setTimeout(function () {
+      console.log('Deleting key : ', key);
+      delete keys[key];
+    }, 25000);
+    return key;
+  }
+
+  function validateKey (key) {
+    return keys[key];
+  }
+
+  function run (ids, user_id, callback) {
     // this takes in an array of ids and a callback function which is
     // only fired when all test are complete.
    
@@ -43,30 +59,34 @@ module.exports = (function (db) {
       var d = q.defer();
 
       promise.then(function () {
-        console.log('Resolving idx:', idx);
         d.resolve();
       }, function (err) {
         if (err.sysErr) data.sysErrs.push(err.sysErr);
         if (err.postErr) data.postErrs.push(err.postErr);
-        console.log('Resolving idx:', idx);
         d.resolve();
       });
 
       return d.promise;
     }))
     .done(function () {
+
       var sql =
         'SELECT `posting_journal`.`id`,  SUM(`debit_equiv`) AS `debit`, SUM(`credit_equiv`) AS `credit`, '+
         '`posting_journal`.`account_id`, (`period_total`.`debit` - `period_total`.`credit`) AS `balance` ' +
         'FROM `posting_journal` LEFT JOIN `period_total` ' + 
         'ON `posting_journal`.`account_id`=`period_total`.`account_id` ' + 
         'GROUP BY `posting_journal`.`account_id`;';
+
       db.execute(sql, function (err, result) {
         if (err) {
           data.sysErrors.push(err);
         } else {
           data.data = result;
-        } 
+        }
+
+        // This is used to ensure nobody posts to the journal
+        // by accident (or is unauthorized.
+        data.key = generateKey(user_id);
 
         return callback(null, data);
       });
@@ -74,7 +94,7 @@ module.exports = (function (db) {
   }
 
 
-  // utilities 
+  // utilities for syntax sugar
   
   function map (array, column) {
     // shorthand to return an array of just
@@ -213,12 +233,6 @@ module.exports = (function (db) {
     return d.promise;
   }
 
-
-
-
-
-
-
   function errorChecking () {
 
     var errors = {
@@ -247,132 +261,96 @@ module.exports = (function (db) {
       // is the posting_journal balanced?
       balance : 'SELECT SUM(`posting_journal`.`credit`) AS `credit`, SUM(`posting_journal`.`debit`) AS `debit`, SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`, SUM(`posting_journal`.`credit_equiv`) AS `credit_equv` FROM `posting_journal`;'
     };
-
-
-
-
-    function fiscal_defined () {
-      var d = q.defer(), error = {};
-
-      db.execute(queries.fiscal_defined, function (err, res) {
-        if (res.length) {
-          error.message = errors.fiscal_defined.replace('%number%', res.length);
-          error.rows = res.map(function (row) { return row.id; });
-        }
-        return error.message ? d.reject(error) : d.resolve();
-      });
-      return d.promise;
-    }
-
-    function period_defined () {
-      var d = q.defer(), error = {};
-
-      db.execute(queries.period_defined, function (err, res) {
-        if (res.length) {
-          error.message = errors.period_defined.replace('%number%', res.length);
-          error.rows = res.map(function (row) { return row.id; });
-        }
-        return error.message ? d.reject(error) : d.resolve();
-      });
-      return d.promise;
-    }
-
-    function invoice_purchase_defined () {
-      var d = q.defer(), error = {};
-
-      db.execute(queries.invoice_purchase_defined, function (err, res) {
-        if (res.length) {
-          error.message = errors.invoice_purchase_defined.replace('%number%', res.length);
-          error.rows = res.map(function (row) { return row.id; });
-        }
-        return error.message ? d.reject(error) : d.resolve();
-      });
-
-      return d.promise;
-    }
-
   }
 
-  function trial () {
-    var defer = q.defer(),
-        sql = {};
+  function checkPermission (user_id, key, callback) {
+    // TODO / FIXME : we need to come up with a robust
+    // permissions model that will disallow just anyone 
+    // from posting to the journal.
+    
+    // First thing we need to do is see if the key is
+    // expired.  If so, we should warn the client to do
+    // another trial balance.
+    var valid = validateKey(key);
 
-    function formatResults (gl, journal) {
-      return { credit : gl.credit  + journal.credit, debit : gl.debit + journal.debit };
-    }
+    if (!valid) return callback(new Error('Posting Session Expired.  Please refresh the trial balance.'));
+    
+    var sql = 'SELECT 1 + 1 AS s';
 
-    sql.gl_balance = 'SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `general_ledger`';
-
-    sql.journal_balance = 'SELECT SUM(`debit`) AS `debit`, SUM(`credit`) AS `credit` FROM `posting_journal`';
-
-    errorChecking()
-    .then(function () {
-
-      db.execute(sql.gl_balance, function (err, res) {
-        if (err) defer.reject(err);
-        db.execute(sql.journal_balance, function (error, results) {
-          if (error) defer.reject(error);
-          else {
-            // ensure proper formatting
-            // TODO: clean up this code
-            var gl_after_balance = formatResults(res[0], results[0]);
-            var object = {
-              gl_balance : res[0],
-              gl_after_balance : gl_after_balance,
-            };
-           defer.resolve(object);
-          }
-        });
-      });
-      
-    }, function (reason) {
-      defer.reject(reason);
+    db.execute(sql, function (err, rows) {
+      if (err) return callback(err);
+      callback(null, rows);
     });
 
-    return defer.promise;
   }
 
-  function setTotals () {
+
+  function postToGeneralLedger (ids, user_id, key, callback) {
+    // This function posts data from the journal into the general ledger.
     var defer = q.defer();
 
-    // This SQL sums all transactions for a given period from the PJ into `period_total`, updating old values if necessary
-    var sql = 'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' + 
-              'SELECT `account_id`, SUM(`credit`), SUM(`debit`), `fiscal_year_id`, `enterprise_id`, `period_id` FROM `posting_journal` GROUP BY `account_id` ' +
-              'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
+    // First thing we need to do is make sure that this posting request
+    // is not an error and comes from a valid user.
+    checkPermission(user_id, key, function (err, result) {
+      if (err) return callback(err); 
+     
+      // Next, we need to generate a posting session id.
+      var sql = 'INSERT INTO `posting_session` ' +
+        'SELECT max(`posting_session`.`id`), ' + db.escapestr(user_id) + ', ' +
+        db.escapestr(new Date()) + ' ' +
+        'FROM `posting_session`;';
 
-    db.execute(sql, function (err, result) {
-      if (err) defer.reject(err);
-      defer.resolve(result);
-    });
+      db.execute(sql, function (err, rows) {
+        if (err) return callback(err);
 
-    return defer.promise;
-  
-  }
+        var session_id = rows.insertId;
 
-  function post () {
+        // Next, we must move the data into the general ledger.
+        
+        var query = 
+          'INSERT INTO `general_ledger` ' +
+            '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
+            '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+            '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, ' +
+            '`origin_id`, `user_id`, `session_id`)' +
+          'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
+            '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
+            '`deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`, ' +
+            session_id + ' ' +
+          'FROM `posting_journal` ' +
+          'WHERE `posting_journal`.`trans_id` in (' + ids.join(', ') + ');';
 
-    var defer = q.defer(),
-        sql = {};
-    
-    sql.transfer = ['INSERT INTO `general_ledger` (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`)', 'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_id`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id` FROM `posting_journal`;'].join(' ');
-    sql.remove = 'DELETE FROM `posting_journal`;';
+        db.execute(query, function (err, results) {
+          if (err) return callback (err);
+          
+          // Finally, we can remove the data from teh posting journal 
+          var sql = 'DELETE FROM `posting_journal` WHERE `trans_id` IN (' + ids.join(', ') + ');';
 
-    setTotals().then(function (res) {
-      db.execute(sql.transfer, function(err, res) {
-        if (err) defer.reject(err);
-        else {
-          db.execute(sql.remove, function (error, res) {
-            if (err) defer.reject(error);
-            defer.resolve(res);
+          db.execute(sql, function (err, rows) {
+            if (err) return callback(err); 
+
+            // Great! If we made it this far, it means the data is 
+            // in the general ledger.  We can now think about updating 
+            // our period totals.
+            
+            // This SQL sums all transactions for a given period from the PJ into `period_total`, updating old values if necessary
+            var sql = 'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' + 
+                      'SELECT `account_id`, SUM(`credit`), SUM(`debit`), `fiscal_year_id`, `enterprise_id`, `period_id` FROM `posting_journal` GROUP BY `account_id` ' +
+                      'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
+            db.execute(sql, function (err, results) {
+              if (err) return callback(err);
+              callback(null, results);
+              return;
+            });
           });
-        }
+        });
       });
-    }, function (err) {
-      if (err) defer.reject(err);
     });
-
-    return defer.promise;
   }
 
-  return { run: run, trial: trial, post: post };
+  return {
+    run: run,
+    postToGeneralLedger: postToGeneralLedger
+  };
+
 });
