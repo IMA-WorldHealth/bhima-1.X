@@ -137,6 +137,10 @@
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
+    }).
+    when('/invoice/', { 
+      controller: 'invoice', 
+      templateUrl: 'partials/invoice/invoice.html'
     });
   }  
 

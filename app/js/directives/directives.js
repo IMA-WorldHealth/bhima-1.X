@@ -51,7 +51,7 @@
         link: function(scope, element, attrs) { 
           var built = false, template = [];
           var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;  
-          var accountRowTemplate = "<tr><td>%d</td><td %s>%s</td>%s</tr>"; 
+          var accountRowTemplate = "<tr><td style='text-align: right;'>%d</td><td %s>%s</td>%s</tr>"; 
           var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>"; 
 
           if(groupModel && tableDefinition) { 
