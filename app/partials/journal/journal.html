@@ -42,38 +42,45 @@
 <script type="text/ng-template" id="trialBalanceModal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Trial Balance</h3> 
+      <span style="font-size: 2em;">Trial Balance</span> 
+      <span class="pull-right"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-print"></i> Print</button></span>
     </div>
 
-    <div class="modal-body">
-
-      <div ng-show="!!data.errors.length">
+    <div class="modal-body" ng-show="!!data.errors.length">
+      <div>
         <ul>
           <li ng-repeat="error in data.errors" class="hasError"> Error : {{error}}</li>
         </ul>
       </div>
-
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Account</th><th>Before</th><th>Debit</th><th>Credit</th><th>After</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="account in data">
-            <th>{{account.account_id}}</th>
-            <td>{{account.balance | currency}}</td>
-            <td>{{account.debit | currency }}</td>
-            <td>{{account.credit | currency }}</td>
-            <td>{{account.balance + (account.credit - account.debit) | currency }}</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
 
-    <div class="modal-footer">
-      <button class="btn btn-primary" ng-disabled="data.errors" ng-click="ok()">Post to General Ledger</button>
-      <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <table class="table table-bordered" style="margin-bottom:0">
+      <thead>
+        <tr>
+          <th>Account</th><th>Before</th><th>Debit</th><th>Credit</th><th>After</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="account in data">
+          <th>{{account.account_id}}</th>
+          <td>{{account.balance | currency}}</td>
+          <td>{{account.debit | currency }}</td>
+          <td>{{account.credit | currency }}</td>
+          <td>{{account.balance + (account.credit - account.debit) | currency }}</td>
+        </tr>
+        <tr>
+          <th>Total</th>
+          <td>{{total.before | currency }}</td>
+          <td>{{total.debit | currency }}</td>
+          <td>{{total.credit | currency }}</td>
+          <td>{{total.after | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="modal-footer" style="margin-top: 0;">
+      <button class="btn btn-sm btn-success" ng-disabled="data.errors" ng-click="ok()">Post to General Ledger</button>
+      <button class="btn btn-sm btn-default" ng-click="cancel()">Cancel</button>
     </div>
   </div>
 </script>

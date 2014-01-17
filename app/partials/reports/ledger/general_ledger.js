@@ -26,16 +26,14 @@ angular.module('kpk.controllers')
 
   $q.all([
     connect.req(imports.general_ledger)
-  ]).then(initialize);
+  ])
+  .then(initialize);
 
   function initialize (array) { 
     for (var i = 0, l = dependencies.length; i < l; i++) {
       stores[dependencies[i]] = array[i];
       models[dependencies[i]] = array[i].data;
     }
-
-    console.log('Data initialized');
-
     columns = [
       {id: 'id'             , name: 'ID'                  , field:'id'             , visible : false} ,
       {id: 'fiscal_year_id' , name: 'Fiscal Year'         , field:'fiscal_year_id' , visible : true } ,
@@ -100,7 +98,6 @@ angular.module('kpk.controllers')
       if (item.searchStr !== "" &&
           String(item.account_number).indexOf(args.searchStr) === -1 &&
           String(item.trans_id).indexOf(args.searchStr) === -1 &&
-          item.description.indexOf(args.searchStr) === -1 &&
           String(item.deb_cred_id).indexOf(args.searchStr) === -1
          ) {
         return false;
