@@ -24,7 +24,7 @@
           <tr ng-repeat="invoice in models.ledger" ng-click="add($index)">
             <td>{{invoice.inv_po_id}}</td>
             <td>{{invoice.debitor}}</td>
-            <td ng-bind-html-unsafe="invoice.balance">{{invoice.balance | intlcurrency:"FC"}}</td>
+            <td ng-bind-html="invoice.balance | intlcurrency:currency(data.currency)"></td>
             <td>{{invoice.trans_date | date}}</td>
           </tr>
         </tbody>
@@ -53,16 +53,16 @@
             <tr ng-repeat="invoice in data.paying">
               <td>{{invoice.inv_po_id}}</td>
               <td>{{invoice.trans_date | date }}</td>
-              <td ng-bind-html-unsafe="invoice.balance | intlcurrency:currency(data.currency)"></td>
+              <td ng-bind-html="invoice.balance | intlcurrency:currency(data.currency)"></td>
               <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}" ng-model="invoice.allocated" required></td>
-              <td ng-bind-html-unsafe="invoice.remaining | intlcurrency:currency(data.currency)"></td>
+              <td ng-bind-html="invoice.remaining | intlcurrency:currency(data.currency)"></td>
               <td ng-click="remove($index)"><i class="glyphicon glyphicon-remove"></i></td>
             </tr>
           </tbody>
         </table>
         <hr style="padding:0;margin:0;" />
         <div class="panel-body">
-          <label>Total Due: <span ng-bind-html-unsafe="data.total | intlcurrency:currency(data.currency)"></span></label>
+          <label>Total Due: <span ng-bind-html="data.total | intlcurrency:currency(data.currency)"></span></label>
           <label class="pull-right" ng-show="data.excess > 0">Overdue: <span ng-bind-html-unsafe="data.excess | intlcurrency:currency(data.currency)"></span></label>
           <div class="input-group">
             <input type="number" ng-model="data.payment"  class="form-kapok" min="0">
