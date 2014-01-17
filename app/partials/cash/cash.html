@@ -24,7 +24,7 @@
           <tr ng-repeat="invoice in models.ledger" ng-click="add($index)">
             <td>{{invoice.inv_po_id}}</td>
             <td>{{invoice.debitor}}</td>
-            <td ng-bind-html-unsafe="invoice.balance | intlcurrency:currency(invoice.currency_id)"></td>
+            <td ng-bind-html-unsafe="invoice.balance">{{invoice.balance | intlcurrency:"FC"}}</td>
             <td>{{invoice.trans_date | date}}</td>
           </tr>
         </tbody>

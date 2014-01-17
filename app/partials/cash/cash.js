@@ -68,20 +68,20 @@ angular.module('kpk.controllers')
   $scope.loadDebitor = function (id) {
     // this loads in a debitors current balance
     $http.get('/ledgers/debitor/' + id)
-      .then(function (response) {
-        messenger.success('The data for debitor ' +id+' loaded successfully');
-        if (!response.data) return;
-        models.ledger = response.data.map(function (row) {
-          // filter only those that do not balance
-          var deb = stores.debitors.get(row.deb_cred_id);
-          row.debitor = [deb.first_name, deb.last_name].join(' ');
-          return row;
-        }).filter(function (row) {
-          return row.balance > 0;
-        });
-      }, function (error) {
-        messenger.danger('Fetching debitors failed with :' + JSON.stringify(error));
+    .then(function (response) {
+      messenger.success('The data for debitor ' +id+' loaded successfully');
+      if (!response.data) return;
+      models.ledger = response.data.map(function (row) {
+        // filter only those that do not balance
+        var deb = stores.debitors.get(row.deb_cred_id);
+        row.debitor = [deb.first_name, deb.last_name].join(' ');
+        return row;
+      }).filter(function (row) {
+        return row.balance > 0;
       });
+    }, function (error) {
+      messenger.danger('Fetching debitors failed with :' + JSON.stringify(error));
+    });
     data.debitor_id = id;
   };
 
