@@ -11,6 +11,7 @@
 
     .filter('intlcurrency', function ($filter) {
       return function (value, type) {
+        console.log('value', value, 'type', type);
         value = (value || '0').toString();
         var formatted = '';
         switch (type) {
