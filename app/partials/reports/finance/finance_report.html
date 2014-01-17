@@ -8,9 +8,9 @@
       <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">Report Years</li>
-        <li ng-repeat="year in requiredYears">
-          <a ng-click="toggleYear(year)" href="">
-            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !year.toggle, 'glyphicon-check' : !!year.toggle}"></i> {{year.id}}
+        <li ng-repeat="option in tableDefinition.options">
+          <a ng-click="toggleYear(option)" href="">
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !option.active, 'glyphicon-check' : !!option.active}"></i> {{option.id}}
           </a>
         </li>
       </ul>
@@ -19,29 +19,54 @@
   </div>
 </section>
 
-<!--Uses ng-switch at the moment, team should discuss the best way to do this-->
-<div ng-switch on="session_error.valid">
-<section ng-switch-when="false" class="alert {{session_error.type}}"> <!--Type mapped in JS, not ideal but works for now-->
-  <span>{{session_error.body}}</span>
-</section>
-</div>
-
 <table class="reportTable">
   <thead>
     <tr>
       <th>Account</th>
       <th>Description</th>
-      <th ng-repeat="column in columnDefinition">{{column.name}}</th>
+      <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
     </tr>
   </thead>
-  <tbody>
-    <tr ng-repeat="row in model['finance'].data">
-      <td style="text-align: right">{{row.account_number}}</td>
-      <td 
-        ng-style="{'padding-left': row.depth * 30 + 'px'}" 
-        ng-class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td>
-       
-      <td ng-repeat="column in columnDefinition"><span ng-hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td>
-    </tr>
-  </tbody>
+  <!--Recursive dirictive, replaces itself with inductive step-->
+  <tr data-report-group-compile data-group-model="financeGroups.store" data-table-definition="tableDefinition"></tr> 
+    
+    <!--VERSION 3-->
+  <!--   <tbody> -->
+  <!--     <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
+  <!--       <td>{{group.detail.account_number}}</td> -->
+  <!--     </tr> -->
+  <!--      -->
+  <!--     <tr ng&#45;repeat&#45;start="account in group.accounts"> -->
+  <!--       <td>#####{{account.detail.account_number}}</td> -->
+  <!--     </tr> -->
+
+  <!--     <tr ng&#45;if="account.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
+  <!--       <td>Sub Total</td> -->
+  <!--     </tr> -->
+
+  <!--     <tr ng&#45;if="group.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
+  <!--       <td>Total</td> -->
+  <!--     </tr> -->
+  <!--   </tbody> -->
+  <!-- </tbody> -->
+ 
+    <!--VERSION 2--> 
+    <!-- <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
+    <!--   <td>{{group.detail.account_number}}</td><td><b>{{group.detail.account_txt}}</b></td> -->
+    <!-- </tr> -->
+    <!--  -->
+    <!-- <tr ng&#45;repeat="sub in group.accounts"><td>{{sub.detail.account_number}}</td><td>{{sub.detail.account_txt}}</td></tr> -->
+    <!--  -->
+    <!-- <tr ng&#45;repeat&#45;end><td></td><td><b>This will be a total row</b></td></tr> -->
+    
+    <!--VERSION 1 - Repeat directly on data from report.-->
+    <!-- <tr ng&#45;repeat="row in model['finance'].data"> -->
+    <!--   <td style="text&#45;align: right">{{row.account_number}}</td> -->
+    <!--   <td  -->
+    <!--     ng&#45;style="{'padding&#45;left': row.depth * 30 + 'px'}"  -->
+    <!--     ng&#45;class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td> -->
+    <!--    -->
+    <!-- <td ng&#45;repeat="column in tableDefinition.columns"><span ng&#45;hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td> -->
+    <!-- </tr> -->
 </table>
+

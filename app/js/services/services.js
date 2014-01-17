@@ -68,15 +68,64 @@
     };
   });
   
-  //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
   services.factory('validate', function($q, connect) {  
-    function validate() {
+    
+    //TODO Allow multiple process passes - requests that depend on requests etc. 
+    function process(dependencies, limit) {   
+      var deferred = $q.defer();
+      var list = this._list = Object.keys(dependencies);
+
+      if(!dependencies.model) dependencies.model = {};
       
+      //temporary
+      if(limit) list = limit;
+    
+      //Use map for this
+      var filterList = [];
+      
+      //check processed
+      list.forEach(function(key, index) { 
+        if(dependencies[key].processed) return;
+        filterList.push(key);
+      });
+      
+      fetchModels(dependencies, filterList).then(function(res) { 
+        //package models 
+        filterList.forEach(function(key, index) { 
+          dependencies.model[key] = res[index];
+          dependencies[key].processed = true; 
+        });
+        
+        //cheeky  
+        dependencies.model.processed = true;
+        deferred.resolve(dependencies.model);
+      });
+      return deferred.promise;
+    }
+
+    function fetchModels(dependencies, keys) { 
+      var deferred = $q.defer(), promiseList = [];
+      
+      //Make requests 
+      keys.forEach(function(key) { 
+        var dependency = dependencies[key], args = [dependency.query];
+        if(dependency.identifier) args.push(dependency.identifier);
+        promiseList.push(connect.req.apply(connect.req, args));
+      });
+      
+      //Process response
+      $q.all(promiseList).then(function(res) { 
+        deferred.resolve(res); 
+      });
+      return deferred.promise;
+    } 
+
+    function validate() { 
       //remove startup tests to only serve model validation
       runStartupTests();
     }
     
-    //expose methods
+    //TODO This should be in the dependency object passed in to process()
     function registerRequirements(requirements) { 
       var response = {};
 
@@ -91,7 +140,7 @@
         } 
       });
     }
-    
+  
     //FIXME rewrite this method
     function processModels(models) { 
       //TODO tests should be a list of 
@@ -137,14 +186,10 @@
     //private methods  
     //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
     function runStartupTests() { 
-      console.log('running testSuite');
-
       angular.forEach(testSuite, function(test, key) { 
         var args = test.args || [];
 
-        console.log('running test ', key, test);
         test.method(args).then(function(res) {
-          console.log('completed test ', key, 'result: ', res);
           test.result = res;
         });
       });
@@ -187,17 +232,19 @@
     }
 
     validate();
-
-    return {
-      processModels: processModels
-    };
+   
+    //TODO horrible name
+    function valid() { 
+      return { 
+        processModels : processModels,
+        process : process
+      };
+    }
+    return new valid;
   });
 
-
   services.factory('appcache', function ($rootScope, $q) { 
-    var DB_NAME = "kpk";
-    var VERSION = 16;
-
+    var DB_NAME = "kpk", VERSION = 20;
     var db, cacheSupported, dbdefer = $q.defer();
 
     function cacheInstance(namespace) { 
@@ -268,11 +315,9 @@
         request = objectStore.put(writeObject); 
 
         request.onsuccess = function(event) { 
-          console.log('write successful'); 
           deferred.resolve(event);
         }
         request.onerror = function(event) { 
-          console.log('unable to put', event);
           deferred.reject(event);
         }
       }); 
@@ -301,7 +346,6 @@
         }
 
         request.onerror = function(event) { 
-          console.log('getall failure'); 
           deferred.reject(event);
         }
       });
@@ -315,7 +359,6 @@
         db = event.target.result;
         //TODO naive implementation - one object store to contain all cached data, namespaced with feild
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
-        console.log('[appcahce] upgraded');
        
         //delete object store if it exists - DEVELOPMENT ONLY
         if(db.objectStoreNames.contains('master')) {
@@ -326,14 +369,13 @@
         objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
         objectStore.createIndex("namespace", "namespace", {unique: false});
         objectStore.createIndex("key", "key", {unique: false});
-        deferred.resolve();
       };
+
       request.onsuccess = function(event) {
         db = request.result;
         $rootScope.$apply(deferred.resolve());
       };
       request.onerror = function(event) { 
-        console.log('connection failed');
         deferred.reject(event);
       };
       return deferred.promise;
@@ -344,9 +386,7 @@
       init();
     } else { 
       console.log('application cache is not supported in this context');
-      //throw new Error();
     }
-
     return cacheInstance;
   });
 
@@ -403,8 +443,9 @@
     //keep track of requests, model can use connect API without re-stating request
     //  model : request
     var requests = {};
-
-    function req (defn) {
+  
+    //FIXME remove identifier without breaking functionality (passing direct strings to req)
+    function req (defn, stringIdentifier) {
       //summary: 
       //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
       //
@@ -428,7 +469,7 @@
         // CLEAN THIS UP
         var d = $q.defer();
         $http.get(defn).then(function (returned) {
-          returned.identifier = 'id';
+          returned.identifier = stringIdentifier || 'id';
           d.resolve(new Model(returned))
         });
         return d.promise;
