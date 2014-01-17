@@ -46,21 +46,20 @@
       return { 
         restrict: 'A',
         link: function(scope, element, attrs) { 
-
           var built = false, template = [];
-
-          console.log('[reportGroupCompile] evaluated');
-
+          
+          var accountTemplate = "<tr><td>%d</td><td style='%s'>%s</td>%l</tr>"; 
           function buildTable(data) { 
             built = true;
-            console.log('building table with', data);
-            
             parseGroup(data);
-                        
+            var account = data[0].detail; 
+            printf(accountTemplate, account.account_number, "", account.account_txt, []);
+
             //TODO append to element vs replace (attach to tbody)
             element.replaceWith($compile(template.join(''))(scope)); 
           }
-
+        
+          
           function parseGroup(accountGroup) { 
             accountGroup.forEach(function(account) { 
               template.push(titleRowTemplate(account.detail)); 
@@ -103,6 +102,43 @@
 
             return '<tr><td></td><td style="padding-left: ' + account.depth * 30 + 'px"><b>Total ' + account.account_txt + '</b></td>' + columns.join('') + '</tr>';
           }
+
+          //Naive templating function 
+          function printf(template) { 
+            //TODO oh lord rename tempTemplate
+            var typeIndex = [], tempTemplate = template, shift = 0; 
+            
+            var replaceArguments = []; 
+            var types = { 
+              '%s' : '[object String]',
+              '%d' : '[object Number]',
+              '%l' : '[object Array]'
+            }
+
+            for(var i = 1; i < arguments.length; i++) { 
+              replaceArguments.push(arguments[i]);
+            }
+          
+            Object.keys(types).forEach(function(matchKey) { 
+              var index = tempTemplate.indexOf(matchKey);
+              while(index >= 0) { 
+                typeIndex.push({index: index, matchKey: matchKey});
+                tempTemplate = tempTemplate.replace(matchKey, '');
+                index = tempTemplate.indexOf(matchKey);
+              }
+            });
+            
+            typeIndex.sort(function(a, b) { return a.index > b.index; });
+            typeIndex.forEach(function(replaceObj, index) {  
+              var targetArg = replaceArguments[index], replaceIndex = replaceObj.index + shift, matchKey = typeIndex[replaceIndex];
+              if(Object.prototype.toString.call(targetArg) != types[replaceObj.matchKey]) throw new Error("Argument " + targetArg + " is not " + types[replaceObj.matchKey]); 
+              template = template.replace(replaceObj.matchKey, targetArg);
+              shift += targetArg.length; 
+            });
+
+            console.log('complete', template);
+          }
+
 
           //function printf(string, ...arguments) { } 
 
