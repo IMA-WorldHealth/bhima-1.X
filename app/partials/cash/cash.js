@@ -36,7 +36,7 @@ angular.module('kpk.controllers')
 
   // TODO/FIXME : abstract this!
   function mysqlDate (date) {
-    return (date || new Date()).toISOString().slice(0, 10).replace('T', ' ');
+    return (date || new Date()).toISOString().slice(0, 10);
   }
 
   // paying list
@@ -66,10 +66,12 @@ angular.module('kpk.controllers')
   }
 
   $scope.loadDebitor = function (id) {
+    $scope.data.paying = [];
+    var ref = stores.debitors.get(id);
+    $scope.data.debitor = ref.first_name + ' ' + ref.last_name;
     // this loads in a debitors current balance
     $http.get('/ledgers/debitor/' + id)
     .then(function (response) {
-      messenger.success('The data for debitor ' +id+' loaded successfully');
       if (!response.data) return;
       models.ledger = response.data.map(function (row) {
         // filter only those that do not balance
@@ -79,10 +81,10 @@ angular.module('kpk.controllers')
       }).filter(function (row) {
         return row.balance > 0;
       });
+      messenger.success('Found ' + models.ledger.length + ' record(s) for ' + $scope.data.debitor);
     }, function (error) {
-      messenger.danger('Fetching debitors failed with :' + JSON.stringify(error));
+      messenger.danger('Fetching ' + $scope.data.debitor + 'failed with :' + JSON.stringify(error));
     });
-    data.debitor_id = id;
   };
 
   $scope.currency = function (id) {
