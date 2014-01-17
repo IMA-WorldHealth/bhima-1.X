@@ -10,25 +10,10 @@
 var u = require('../util/util');
 
 function mysqlInit (config) {
-  // TODO : This module should use mysql connection pooling
   'use strict';
-
   var db = require('mysql');
-  var con = db.createConnection(config);
-  con.connect(function (err) {
-    console.log('\nConnecting to MySQL ...\n');
-    if (err) setTimeout(mysqlInit(config), 500); 
-  });
-
-  con.on('error', function (err) {
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-      console.log('Lost connection, reconnecting in 500ms');
-      mysqlInit(config);
-    }
-    else throw err;
-  });
-
-  return con;  // c'est pas necessaire pour mysql de retourne cette variable, mais peut-etre ca va necessaire pour autre base des donnees
+  console.log('Creating connection pool...');
+  return db.createPool(config);
 }
 
 function flushUsers (db_con) {
@@ -39,14 +24,22 @@ function flushUsers (db_con) {
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
   reset = 'UPDATE `kpk`.`user` SET `logged_in`="0" WHERE `logged_in`="1";';
 
-//  Update columns that are set to logged in
-  db_con.query(permissions, function(err, res) {
+  // Mwahahahaha
+  db_con.getConnection(function (err, con) {
     if (err) throw err;
-    db_con.query(reset, function(err, res) {
+    con.query(permissions, function (err, res) {
       if (err) throw err;
-      console.log('[db.js] (*) user . logged_in set to 0');
+      con.release();
+      db_con.getConnection(function (err, con) {
+        if (err) throw err;
+        con.query(reset, function (err) {
+          if (err) throw err;
+          console.log('[db.js] (*) user . logged_in set to 0');
+        });
+      });
     });
   });
+
 }
 
 
@@ -102,6 +95,14 @@ module.exports = function (cfg) {
   // FIXME: research connection pooling in MySQL
   var con = supported_databases[sgbd](cfg);
 
+  con.on('error', function (err) {
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+      console.log('Lost connection, reconnecting in 500ms');
+      con = supported_databases[sgbd](cfg);
+    }
+    else throw err;
+  });
+
   //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
   flushUsers(con);
 
@@ -113,7 +114,15 @@ module.exports = function (cfg) {
     
     execute: function(sql, callback) {
       console.log("[db] [execute]: ", sql);
-      return con.query(sql, callback);
+      // this uses mysql connection pooling...
+      con.getConnection(function (err, connection) {
+        if (err) return callback(err);
+        connection.query(sql, function (err, results) {
+          connection.release();
+          if (err) return callback(err);
+          return callback(null, results);
+        });
+      });
     },
 
     escape: function (id) {

@@ -187,50 +187,55 @@ angular.module('kpk.controllers')
       deb_cred_type : 'D' //FIXME: Do it goodly
     };
 
-    // should this API be post().then() to make sure a transaction
-    // completes?
-    // stores.cash.post(doc);
+    console.log('Document : ', doc);
+
     connect.basicPut('cash', [doc])
     .then(function (res) {
-      if (res.status != 200) return;
       doc.id = res.data.insertId;
-      var items = processItems(doc);
-      var promise = $q.all(items.map(function (item) { return connect.basicPut('cash_item', [item]); }));
-      promise.then(function (res) { 
-        messenger.success('Invoice successfully paid.');
-      }, function (error) {
-        messenger.danger('Error ' + JSON.stringify(error));
-      });
+      return res;
     })
     .then(function (res) {
-      console.log('res', res);
-    })
-    .then(function () {
-      connect.fetch('/journal/cash/' + doc.id)
-      .then(function (response) {
-        loadDebitor(data.debitor_id);
-        $scope.data.paying = [];
+      var records = [],
+        invoices = data.paying;
+
+      // FIXME: raw hacks!
+      invoices.forEach(function (invoice) {
+        if (invoice.allocated === 0) return;
+        var record = {
+          cash_id : doc.id,
+          allocated_cost : invoice.allocated,
+          invoice_id : invoice.inv_po_id
+        };
+        records.push(record);
+      });
+
+      // putting cash items
+      $q.all(
+        records.map(function (record) {
+          return connect.basicPut('cash_item', [record]);
+        })
+      )
+      .then(function (res) {
+        console.log('RES is:', res);
+        console.log('Fetching journal for doc id', doc.id);
+
+        // posting to the journal
+        connect.fetch('/journal/cash/' + doc.id)
+        .then(function (res) {
+          $scope.loadDebitor(data.debitor_id);
+          $scope.data.paying = [];
+          $scope.payment = 0;
+        }, function(err) {
+          messenger.danger('Error: ', JSON.stringify(err));
+        });
+      }, function (err) {
+        messenger.danger('Error' + JSON.stringify(error));
       });
     }, function (err) {
-      messenger.danger('Putting cash failed'); 
+      messenger.danger('Cash posting failed with Error: ' + error);
     });
     
   };
-
-  function processItems (ref) {
-    var items = [];
-    // FIXME: raw hacks!
-    data.paying.forEach(function (invoice) {
-      if (invoice.allocated > 0) {
-        items.push({
-          cash_id : ref.id,
-          allocated_cost : invoice.allocated,
-          invoice_id : invoice.inv_po_id
-        });
-      }
-    });
-    return items;
-  }
 
   function generateBonNumber (model, bon_type) {
     // filter by bon type, then gather ids.

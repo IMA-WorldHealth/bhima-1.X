@@ -198,13 +198,13 @@ module.exports = (function (db) {
     }
 
     if(params.ig == 'I'){
-      var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
-              "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
+      var sql = "SELECT general_ledger.id, general_ledger.trans_id, "+
+              "general_ledger.trans_date, general_ledger.credit, general_ledger.debit, "+
               "account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \"names\""+
-              "FROM posting_journal, account, currency, transaction_type, user "+
-              "WHERE posting_journal.account_id = account.id AND currency.id = posting_journal.currency_id AND"+
-              " transaction_type.id = posting_journal.origin_id and user.id = posting_journal.user_id AND posting_journal.deb_cred_id = '"+params.id+
-              "' AND posting_journal.deb_cred_type = '"+params.type+"' AND posting_journal.trans_date <= '"+params.dt+"' AND posting_journal.trans_date >= '"+params.df+"'";
+              "FROM general_ledger, account, currency, transaction_type, user "+
+              "WHERE general_ledger.account_id = account.id AND currency.id = general_ledger.currency_id AND"+
+              " transaction_type.id = general_ledger.origin_id and user.id = general_ledger.user_id AND general_ledger.deb_cred_id = '"+params.id+
+              "' AND general_ledger.deb_cred_type = '"+params.type+"' AND general_ledger.trans_date <= '"+params.dt+"' AND general_ledger.trans_date >= '"+params.df+"'";
 
               db.execute(sql, function(err, ans) {
                 if(err) {
@@ -219,14 +219,14 @@ module.exports = (function (db) {
       q.all([getElementIds(params.id)]).then(function(res){
         var tabIds = getArrayOf(res[0]);
         if(tabIds.length!=0){
-        var sql = "SELECT posting_journal.id, posting_journal.trans_id, "+
-                  "posting_journal.trans_date, posting_journal.credit, posting_journal.debit, "+
+        var sql = "SELECT general_ledger.id, general_ledger.trans_id, "+
+                  "general_ledger.trans_date, general_ledger.credit, general_ledger.debit, "+
                   "account.account_number, currency.name, transaction_type.service_txt, "+
-                  "CONCAT(user.first, ' ', user.last) as \"names\" FROM posting_journal, "+
-                  "account, currency, transaction_type, user WHERE posting_journal.account_id = "+
-                  "account.id AND currency.id = posting_journal.currency_id AND transaction_type.id = "+
-                  " posting_journal.origin_id AND user.id = posting_journal.user_id AND posting_journal.deb_cred_type = '"+params.type+"' AND "+
-                  "posting_journal.deb_cred_id IN ("+tabIds.toString()+") AND posting_journal.trans_date <= '"+params.dt+"' AND posting_journal.trans_date >= '"+params.df+"'";
+                  "CONCAT(user.first, ' ', user.last) as \"names\" FROM general_ledger, "+
+                  "account, currency, transaction_type, user WHERE general_ledger.account_id = "+
+                  "account.id AND currency.id = general_ledger.currency_id AND transaction_type.id = "+
+                  " general_ledger.origin_id AND user.id = general_ledger.user_id AND general_ledger.deb_cred_type = '"+params.type+"' AND "+
+                  "general_ledger.deb_cred_id IN ("+tabIds.toString()+") AND general_ledger.trans_date <= '"+params.dt+"' AND general_ledger.trans_date >= '"+params.df+"'";
 
         db.execute(sql, function(err, ans) {
           if(err) {
@@ -251,14 +251,11 @@ module.exports = (function (db) {
     var def = q.defer();
 
     //requette
-    //var params = JSON.parse(params);
+    var params = JSON.parse(params);
     var requette = "SELECT period.id, period.period_start, period.period_stop, debitor.id as idDebitor, debitor.text, general_ledger.`debit`, general_ledger.`credit`, general_ledger.`account_id` "+
                    "FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.id = debitor.group_id AND debitor.`id` = general_ledger.`deb_cred_id` "+
-                   "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id";
-    // var requette = "SELECT SUM(general_ledger.`debit`), SUM(general_ledger.`credit`) FROM debitor, period, general_ledger "+
-    //                "WHERE period.`id` = general_ledger.`period_id` AND debitor.id = general_ledger.`deb_cred_id` AND general_ledger.`deb_cred_id` ="+params.debitor_id+
-    //                " AND general_ledger.`deb_cred_type` = 'D' GROUP BY general_ledger.`period_id`";
-
+                   "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`='"+params.fiscal_id+"'";
+    
     db.execute(requette, function(err, ans) {
       if(err) {
         console.log("debitor aging, Query failed");
@@ -276,10 +273,11 @@ module.exports = (function (db) {
   function accountStatement(params){
     //deferred
     var def = q.defer();
+    var params = JSON.parse(params);
 
     //requette
     var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
-                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id;";
+                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
 
     db.execute(requette, function(err, ans) {
       if(err) {
@@ -294,8 +292,6 @@ module.exports = (function (db) {
     //promesse
 
     return def.promise;
-
-
   }
 
   return { 

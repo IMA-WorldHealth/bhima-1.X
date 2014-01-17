@@ -742,6 +742,19 @@ create table `cash_item` (
   constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 
+-- 
+-- Table structure for table `kpk`.`posting_session`
+--
+drop table if exists `posting_session`;
+create table `posting_session` (
+  `id`        int unsigned not null auto_increment,
+  `user_id`   smallint unsigned not null,
+  `date`      timestamp not null,
+  primary key (`id`),
+  key `user_id` (`user_id`),
+  constraint foreign key (`user_id`) references `user` (`id`)
+) engine=innodb;
+
 --
 -- Table structure for table `kpk`.`posting_journal`
 --
@@ -809,6 +822,7 @@ create table `kpk`.`general_ledger` (
   `cost_ctrl_id`      varchar(10),
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
+  `session_id`        int unsigned not null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -816,12 +830,14 @@ create table `kpk`.`general_ledger` (
   key `origin_id` (`origin_id`),
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
+  key `session_id` (`session_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
   constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on update cascade,
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
-  constraint foreign key (`user_id`) references `user` (`id`) on update cascade
+  constraint foreign key (`user_id`) references `user` (`id`) on update cascade,
+  constraint foreign key (`session_id`) references `posting_session` (`id`) on update cascade
 ) engine=innodb;
 
 --

@@ -4,7 +4,8 @@
 var express      = require('express'),
     fs           = require('fs'),
     domain       = require('domain'),
-    url          = require('url');
+    url          = require('url'),
+    querystring  = require('querystring');
 
 // import configuration
 var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
@@ -87,35 +88,50 @@ app.get('/user_session', function (req, res, next) {
 
 
 app.get('/trial/', function (req, res, next) {
-  trialbalance.trial()
-  .then(function (result) {
-    res.send(200, result);  // processed the request successfully, and sending NO CONTENT
-  }, function (reason) {
-    res.send(304, reason);  // processed the requuest, but NOT MODIFIED
+  var qs = querystring.parse(url.parse(req.url).query).q;
+  var ids = qs.replace('(', '').replace(')', '').split(',');
+
+  console.log('looking at ids ', ids);
+
+  trialbalance.run(ids, req.session.user_id, function (err, result) {
+    if (err) return next(err);
+    res.send(200, result);
   });
 });
 
-app.get('/post/', function (req, res, next) {
+app.get('/post/:key', function (req, res, next) {
+  var qs = querystring.parse(url.parse(req.url).query).q;
+  var ids = qs.replace('(', '').replace(')', '').split(',');
+
+  trialbalance.postToGeneralLedger(ids, req.session.user_id, req.params.key, function (err, result) {
+    if (err) return next(err);
+    res.send(200);
+  });
+
+  /*
   trialbalance.post()
   .then(function (results) {
     res.send(204);  // processed the request successfully, and sending NO CONTENT
   }, function (reason) {
     res.send(304, reason); // processed the requuest, but NOT MODIFIED
   });
+  */
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
   journal.request(req.params.table, req.params.id, req.session.user_id, function (err, success) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(200);
   });
 });
 
+/*
 app.post('/journal', function (req, res, next) {
   // What are the params here?
   journal.poster(req, res, next); 
 });
+*/
 
 app.get('/max/:id/:table', function(req, res) { 
   var id = req.params.id;

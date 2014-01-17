@@ -2,6 +2,6 @@
 
 // default error handling behavoir
 module.exports = function (err, req, res, next) {
-  console.log('\nError: ', err, '\n');
-  res.send(500, err);
+  console.error('\n', 'Sending Error: ', err, '\n');
+  res.send(500, {error:  err.message});
 };
