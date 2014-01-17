@@ -67,8 +67,6 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
       //FIXME Grouping and totaling
       updateTotal(account, index); 
     });
-    console.timeEnd("generate");
-    console.log('account groups generated', financeGroups);
   }
   
   //TODO Total could be determined by inversing the sort and traversing the list linearly 
@@ -110,9 +108,9 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
     if(active) return pushColumn(yearOption);     
     popColumn(yearOption);
   }
-
+  
+  //TODO Index relies on number of columns per iteration, this shouldn't be hardcoded
   function pushColumn(year) { 
-    console.log(year, 'insert at', year.index);
     tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
     tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id});
   }

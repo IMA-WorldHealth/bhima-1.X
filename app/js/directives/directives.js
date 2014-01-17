@@ -43,78 +43,81 @@
     }])
 
     .directive('reportGroupCompile', ['$compile', function($compile) { 
+
+      //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation 
+      //replace with functions that build array templates and join()
       return { 
         restrict: 'A',
         link: function(scope, element, attrs) { 
           var built = false, template = [];
-          
-          var accountTemplate = "<tr><td>%d</td><td style='%s'>%s</td>%l</tr>"; 
+          var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;  
+          var accountRowTemplate = "<tr><td>%d</td><td %s>%s</td>%s</tr>"; 
+          var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>"; 
+
+          if(groupModel && tableDefinition) { 
+            scope.$watch(groupModel, function(nval, oval) { 
+              if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
+            }, true);
+          }
+
           function buildTable(data) { 
             built = true;
             parseGroup(data);
-            var account = data[0].detail; 
-            printf(accountTemplate, account.account_number, "", account.account_txt, []);
-
+            
             //TODO append to element vs replace (attach to tbody)
             element.replaceWith($compile(template.join(''))(scope)); 
-          }
-        
+          } 
           
           function parseGroup(accountGroup) { 
             accountGroup.forEach(function(account) { 
-              template.push(titleRowTemplate(account.detail)); 
+              var detail = account.detail, style = buildAccountStyle(detail); 
               
+              //Row for group detail 
+              template.push(printf(accountRowTemplate, detail.account_number, style, detail.account_txt, buildAccountColumns(detail, false)));
               if(!account.accounts) return;
               
+              //Group children 
               parseGroup(account.accounts); 
-              template.push(totalRowTemplate(account.detail));
+
+              //Total row 
+              template.push(printf(accountTotalTemplate, printf('style="padding-left: %dpx; font-weight: bold;"', detail.depth * 30), "Total " + detail.account_txt, buildAccountColumns(detail, true)));
             });
+          }
+
+          function buildAccountStyle(detail) { 
+           
+            //FIXME hardcoded account type definition
+            var styleTemplate = "", colspanTemplate = "", classTemplate = "", title = (detail.account_type_id === 3);
+              
+            styleTemplate = printf('style="padding-left: %dpx;"', detail.depth * 30);
+            if(title) { 
+              colspanTemplate = printf('colspan="%d"', scope[tableDefinition].columns.length + 1);
+              classTemplate = 'class="reportTitle"';
+            }
+            return printf('%s %s %s', styleTemplate, colspanTemplate, classTemplate);
+          }
+
+          function buildAccountColumns(detail, isTotal) {  
+            if(detail.account_type_id === 3 && !isTotal) return "";
+
+            var columnTemplate = [], data = isTotal ? detail.total : detail;
+            scope[tableDefinition].columns.forEach(function(column) { 
+              columnTemplate.push(printf('<td %s>%d</td>', (isTotal ? 'style="font-weight: bold;"' : ''), data[column.key] || 0));
+            });
+            return columnTemplate.join('');
           }
           
-          function titleRowTemplate(account) { 
-            var descriptionData, columns = [];
-            var isTitle = (account.account_type_id === 3);
-            if(isTitle) { 
-              //doesn't need ng-style, already processed so can just set style
-              var width = scope.tableDefinition.columns.length + 1;
-              descriptionData = '<td colspan="' + width + '" class="reportTitle" ng-style="{\'padding-left\': ' + account.depth * 30 + ' + \'px\'}">' + account.account_txt + '</td>'; 
-            } else { 
-              descriptionData = '<td ng-style="{\'padding-left\': ' + account.depth * 30 + ' + \'px\'}">' + account.account_txt + '</td>';
-              
-              //FIXME very temporary and tightly coupled 
-              scope.tableDefinition.columns.forEach(function(column) { 
-                //FIXME value should be zero default from the query
-                columns.push('<td>' + (account[column.key] || 0) + '</td>');
-              });
-            }
-
-            return '<tr><td>' + account.account_number + '</td>' + descriptionData + columns.join('') + '</tr>';
-          }
-
-          function totalRowTemplate(account) { 
-            var columns = [];
-           
-            //FIXME very temporary and tightly coupled 
-            scope.tableDefinition.columns.forEach(function(column) { 
-              //FIXME value should be zero default from the query
-              columns.push('<td><b>' + account.total[column.key] + '</b></td>');
-            });
-
-            return '<tr><td></td><td style="padding-left: ' + account.depth * 30 + 'px"><b>Total ' + account.account_txt + '</b></td>' + columns.join('') + '</tr>';
-          }
-
           //Naive templating function 
           function printf(template) { 
-            //TODO oh lord rename tempTemplate
             var typeIndex = [], tempTemplate = template, shift = 0; 
-            
             var replaceArguments = []; 
             var types = { 
               '%s' : '[object String]',
               '%d' : '[object Number]',
               '%l' : '[object Array]'
             }
-
+            
+            //read arguments - not sure how much 'use strict' aproves of this
             for(var i = 1; i < arguments.length; i++) { 
               replaceArguments.push(arguments[i]);
             }
@@ -135,22 +138,12 @@
               template = template.replace(replaceObj.matchKey, targetArg);
               shift += targetArg.length; 
             });
-
-            console.log('complete', template);
+            return template;
           }
-
-
-          //function printf(string, ...arguments) { } 
-
-          scope.$watch('financeGroups.store', function(nval, oval) { 
-            console.log('changed', nval, oval);
-            if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
-          }, true);
         }
       };
     }])
   
-    //TODO create reportGroupCompile directive to test performance difference
     .directive('reportGroup', ['$compile', function($compile) { 
       return { 
         restrict: 'A',
@@ -166,7 +159,6 @@
             '<tr ng-if="group.detail.account_type_id == 3" data-ng-repeat-end><td></td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}"><em>Total {{group.detail.account_txt}}</em></td><td ng-repeat="column in tableDefinition.columns"><b>{{group.detail.total[column.key] | currency}}</b></td></tr>'
           ]; 
           
-          if(groupModel == "financeGroups.store") console.time("directive_timestamp");
           if(attrs.groupModel){
             element.replaceWith($compile(template.join(''))(scope));
           }
