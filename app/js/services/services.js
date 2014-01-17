@@ -289,9 +289,7 @@
   });
 
   services.factory('appcache', function ($rootScope, $q) { 
-    var DB_NAME = "kpk";
-    var VERSION = 16;
-
+    var DB_NAME = "kpk", VERSION = 20;
     var db, cacheSupported, dbdefer = $q.defer();
 
     function cacheInstance(namespace) { 
@@ -362,11 +360,9 @@
         request = objectStore.put(writeObject); 
 
         request.onsuccess = function(event) { 
-          console.log('write successful'); 
           deferred.resolve(event);
         }
         request.onerror = function(event) { 
-          console.log('unable to put', event);
           deferred.reject(event);
         }
       }); 
@@ -395,7 +391,6 @@
         }
 
         request.onerror = function(event) { 
-          console.log('getall failure'); 
           deferred.reject(event);
         }
       });
@@ -409,7 +404,6 @@
         db = event.target.result;
         //TODO naive implementation - one object store to contain all cached data, namespaced with feild
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
-        console.log('[appcahce] upgraded');
        
         //delete object store if it exists - DEVELOPMENT ONLY
         if(db.objectStoreNames.contains('master')) {
@@ -420,14 +414,13 @@
         objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
         objectStore.createIndex("namespace", "namespace", {unique: false});
         objectStore.createIndex("key", "key", {unique: false});
-        deferred.resolve();
       };
+
       request.onsuccess = function(event) {
         db = request.result;
         $rootScope.$apply(deferred.resolve());
       };
       request.onerror = function(event) { 
-        console.log('connection failed');
         deferred.reject(event);
       };
       return deferred.promise;
@@ -438,9 +431,7 @@
       init();
     } else { 
       console.log('application cache is not supported in this context');
-      //throw new Error();
     }
-
     return cacheInstance;
   });
 

@@ -200,7 +200,7 @@
             '</ul>';
           
           //Collapse by default
-          // if (scope.node) scope.node.collapsed = true;
+          if (scope.node) scope.node.collapsed = true;
 
           //Assign select/ collapse methods - should only occur once
           if (treeId && treeModel) {
