@@ -27,6 +27,145 @@
       };
     }])
 
+    .directive('kpkAlert', ['$compile', function ($compile) {
+      return {
+        restrict: 'A',
+        replace: true,
+        link: function ($scope, element, attrs) {
+          var template = 
+            '<div class="kapok-alert">' + 
+              '<alert type="alert.type" close="closeAlert()">{{alert.message}}</alert>' + 
+            '</div>';
+
+        }
+      };
+    
+    }])
+
+    .directive('reportGroupCompile', ['$compile', function($compile) { 
+
+      //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation 
+      //replace with functions that build array templates and join()
+      return { 
+        restrict: 'A',
+        link: function(scope, element, attrs) { 
+          var built = false, template = [];
+          var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;  
+          var accountRowTemplate = "<tr><td>%d</td><td %s>%s</td>%s</tr>"; 
+          var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>"; 
+
+          if(groupModel && tableDefinition) { 
+            scope.$watch(groupModel, function(nval, oval) { 
+              if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
+            }, true);
+          }
+
+          function buildTable(data) { 
+            built = true;
+            parseGroup(data);
+            
+            //TODO append to element vs replace (attach to tbody)
+            element.replaceWith($compile(template.join(''))(scope)); 
+          } 
+          
+          function parseGroup(accountGroup) { 
+            accountGroup.forEach(function(account) { 
+              var detail = account.detail, style = buildAccountStyle(detail); 
+              
+              //Row for group detail 
+              template.push(printf(accountRowTemplate, detail.account_number, style, detail.account_txt, buildAccountColumns(detail, false)));
+              if(!account.accounts) return;
+              
+              //Group children 
+              parseGroup(account.accounts); 
+
+              //Total row 
+              template.push(printf(accountTotalTemplate, printf('style="padding-left: %dpx; font-weight: bold;"', detail.depth * 30), "Total " + detail.account_txt, buildAccountColumns(detail, true)));
+            });
+          }
+
+          function buildAccountStyle(detail) { 
+           
+            //FIXME hardcoded account type definition
+            var styleTemplate = "", colspanTemplate = "", classTemplate = "", title = (detail.account_type_id === 3);
+              
+            styleTemplate = printf('style="padding-left: %dpx;"', detail.depth * 30);
+            if(title) { 
+              colspanTemplate = printf('colspan="%d"', scope[tableDefinition].columns.length + 1);
+              classTemplate = 'class="reportTitle"';
+            }
+            return printf('%s %s %s', styleTemplate, colspanTemplate, classTemplate);
+          }
+
+          function buildAccountColumns(detail, isTotal) {  
+            if(detail.account_type_id === 3 && !isTotal) return "";
+
+            var columnTemplate = [], data = isTotal ? detail.total : detail;
+            scope[tableDefinition].columns.forEach(function(column) { 
+              columnTemplate.push(printf('<td %s>%d</td>', (isTotal ? 'style="font-weight: bold;"' : ''), data[column.key] || 0));
+            });
+            return columnTemplate.join('');
+          }
+          
+          //Naive templating function 
+          function printf(template) { 
+            var typeIndex = [], tempTemplate = template, shift = 0; 
+            var replaceArguments = []; 
+            var types = { 
+              '%s' : '[object String]',
+              '%d' : '[object Number]',
+              '%l' : '[object Array]'
+            }
+            
+            //read arguments - not sure how much 'use strict' aproves of this
+            for(var i = 1; i < arguments.length; i++) { 
+              replaceArguments.push(arguments[i]);
+            }
+          
+            Object.keys(types).forEach(function(matchKey) { 
+              var index = tempTemplate.indexOf(matchKey);
+              while(index >= 0) { 
+                typeIndex.push({index: index, matchKey: matchKey});
+                tempTemplate = tempTemplate.replace(matchKey, '');
+                index = tempTemplate.indexOf(matchKey);
+              }
+            });
+            
+            typeIndex.sort(function(a, b) { return a.index > b.index; });
+            typeIndex.forEach(function(replaceObj, index) {  
+              var targetArg = replaceArguments[index], replaceIndex = replaceObj.index + shift, matchKey = typeIndex[replaceIndex];
+              if(Object.prototype.toString.call(targetArg) != types[replaceObj.matchKey]) throw new Error("Argument " + targetArg + " is not " + types[replaceObj.matchKey]); 
+              template = template.replace(replaceObj.matchKey, targetArg);
+              shift += targetArg.length; 
+            });
+            return template;
+          }
+        }
+      };
+    }])
+  
+    .directive('reportGroup', ['$compile', function($compile) { 
+      return { 
+        restrict: 'A',
+        link: function(scope, element, attrs) { 
+          var groupModel = attrs.groupModel;
+          var template = [
+            '<tr data-ng-repeat-start="group in ' + groupModel + '">',
+            '<td style="text-align: right">{{group.detail.account_number}}</td>',
+            '<td ng-class="{\'reportTitle\': group.detail.account_type_id==3}" ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}">{{group.detail.account_txt}}</td>', 
+            '<td ng-repeat="column in tableDefinition.columns"><span ng-hide="group.detail.account_type_id==3">{{(group.detail[column.key] || 0) | currency}}</span></td>',
+            '</tr>',
+            '<tr ng-if="group.accounts" data-report-group data-group-model="group.accounts"></tr>',
+            '<tr ng-if="group.detail.account_type_id == 3" data-ng-repeat-end><td></td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}"><em>Total {{group.detail.account_txt}}</em></td><td ng-repeat="column in tableDefinition.columns"><b>{{group.detail.total[column.key] | currency}}</b></td></tr>'
+          ]; 
+          
+          if(attrs.groupModel){
+            element.replaceWith($compile(template.join(''))(scope));
+          }
+        }
+      };
+    }])
+
     .directive('treeModel', ['$compile', 'appcache', function($compile, appcache) {
       var MODULE_NAMESPACE = 'tree';
       var cache = new appcache(MODULE_NAMESPACE);
@@ -34,6 +173,7 @@
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
+          console.timeEnd("directive_timestamp");
           var treeId = attrs.treeId;
           var treeModel = attrs.treeModel;
           var nodeId = attrs.nodeId || 'id';
@@ -50,9 +190,9 @@
                 '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' + 
               '</li>' + 
             '</ul>';
-
+          
           //Collapse by default
-          // if (scope.node) scope.node.collapsed = true;
+          if (scope.node) scope.node.collapsed = true;
 
           //Assign select/ collapse methods - should only occur once
           if (treeId && treeModel) {

@@ -1,295 +1,133 @@
-//TODO rethink all names
-angular.module('kpk.controllers').controller('reportFinanceController', function($scope, $q, connect, appstate) {
-  //TODO required model - if the model has no data, the page should not load and report this to the user
-  
-  //Models
-  var models = {};
-  $scope.model = {};
+//TODO Two step, download fiscal years, and then populate finance query, validate service will need to be updated
+angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger) {
+  var dependencies = {}, tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []};
+
+  dependencies.finance = { 
+    required : true,
+    identifier: "account_number",
+    query : '/reports/finance/',
+  };
  
-  //TODO rething name
-  const DEFAULT_FILTER_RESOLUTION = 2;
-
-  //Should be derived from enterprise configuration - i.e 6 is debits and 7 credits
-  //AND from title accounts
-
-  //default for now
-  var requiredYears = [{id: 1, toggle: true}, {id: 2, toggle: true}];
-  $scope.requiredYears = requiredYears;
-  //Error handling 
-  $scope.session_error = {valid: true};
-
-  function init() { 
-
-    var params = {fiscal: []};
-    
-    requiredYears.forEach(function(year) { 
-      if(year.toggle) params.fiscal.push(year.id);
-    });
-    //Settup models
-    //TODO very temporary API flag to use req or getModel 
-    models['finance'] = {
-      model: {},  
-      API: false,
-      request: '/reports/finance/?' + JSON.stringify(params)
-    }
-
-    models['fiscal'] = { 
-      model: {},
-      API: true,
-      request: { 
-        tables: { 
-          'fiscal_year': { 
-            columns: ["id"]
-          }
+  dependencies.fiscal = { 
+    required : true,
+    query : { 
+      tables : { 
+        fiscal_year : { 
+          columns : ["id"]
         }
       }
-    }
-
-    //TODO rename promise
-    var promise = populateRequests(models);
- 
-    //Something is wrong with this promise chain - error function does not stop the chain
-    promise
-    //Populate Models - Success
-    .then(function(model_list) { 
-      return verifyReceived(model_list);
-    }, 
-    //Populate Models - Error
-    function(err) { 
-      //propogates error down chain 
-      throw err;
-    })
-    //Verify Models - Success
-    .then(function(res) { 
-      console.log(res);
-
-      appstate.register('enterprise', function(res) { 
-        $scope.enterprise = res;
-        $scope.timestamp = Date.now();
-      });
-      settupPage();
-    },
-    //Veryify Models - Error
-    function(err) { 
-      //handle error
-      handleError(err);
-    });
-  }
-
-  function settupPage() {
-    var sessionData = models['finance'].model.data;
-     
-    $scope.model['finance'] = models['finance'].model;  
-    console.log('before', $scope.model['finance']);
-    parseAccountDepth(models['finance'].model.data);
-    settupTable();
-    
-    //parse model to allow grouping by account number
-    // parseAccountGroup(sessionData, DEFAULT_FILTER_RESOLUTION);
-    // renderGrid(sessionData);
-  }
-  
-  //TODO very temporarily hardcoded - revisit this 
-  function populateRequests(model_list) { 
-    var deferred = $q.defer();
-    
-    connect.getModel(model_list['finance'].request, "account_number").then(function(res) {
-      model_list['finance'].model = res;
-      deferred.resolve(model_list);
-    }, function(err) { 
-      deferred.reject(err);
-    });
-
-    return deferred.promise;
-  }
-
-  //legacy function - may be a good example for other units though
-  function populateModels(model_list) { 
-    /*summary
-    *   generic method to request data for any number of provided models
-    */
-    var deferred = $q.defer(); 
-    var promise_list = [];
-
-    for(item in model_list) { 
-      promise_list.push(connect.req(model_list[item].request));
-    }
-
-    //Loop is bad, link models in a different way
-    $q.all(promise_list)
-    .then(function(res) { 
-      //Success 
-      var i = 0;
-      for(item in models) { 
-        model_list[item].model = res[i];
-        i++;
-      }
-      deferred.resolve(model_list);
-    }, function(err) { 
-      deferred.reject(err);
-    });
-    return deferred.promise;
-  } 
-
-  //TODO rename verifyReceived()
-  function verifyReceived(model_list) { 
-    /*summary
-    *   verify that data recieved from the server is correct and usable - if not inform the user
-    */
-    var deferred = $q.defer();
-    var test_list = {};
-
-    /*test_list['fiscal'] = {
-      method: function verifyFiscal() { 
-        if(model_list['fiscal'].model.data.length===0) return false;
-        return true;
-      },
-      err: { 
-        //Arbitrarily means test fails (see handleError)
-        status: 800,
-        fail_body: "No Fiscal Year records located, Fiscal Years are required to group transactions and provide reports."
-      }
-    }
-
-    test_list['debitor'] = {
-      method: function verifyDebitor() { 
-        if(model_list['debitor'].model.data.length===0) return false;
-        return true;
-      },
-      err: { 
-        //Arbitrarily means test fails (see handleError)
-        status: 800,
-        fail_body: "No Debitors located."
-      }
-    }*/
-
-    //iterate through tests
-    for(test in test_list) { 
-      if(!test_list[test].method()) deferred.reject(test_list[test].err);
-    }
-    
-    //All tests passed
-    deferred.resolve(true);
-    return deferred.promise;
-  }
-  
-  function settupTable() { 
-    
-    //TODO Format fiscal year name with fiscal year data (?description, ?year) 
-    var columnDefinition = []; 
-
-    // var columnDefinition = [
-    //   {name: "Account", key: "account_number"},
-    //   {name: "Description", key: "account_txt"}
-    // ];
-
-    //Derive columns from report data
-    requiredYears.forEach(function(year) {
-      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
-      if(year.toggle) columnDefinition.push({id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id}); 
-    });
-
-    $scope.columnDefinition = columnDefinition;
-  }
-
-  //just not good code
-  $scope.toggleYear = function toggleYear(year) {
-    
-    //TODO Code should be optimized re: angular digests
-    year.toggle = !year.toggle;
-    // settupTable();
-    if(year.toggle) { 
-      $scope.columnDefinition.push({id: year.id, name: "Year " + year.id + " budget", key: "budget_" + year.id});
-      $scope.columnDefinition.push({id: year.id, name: "Year " + year.id + " realisation", key: "realisation_" + year.id});  
-    } else { 
-      $scope.columnDefinition.map(function(item, index) { 
-        if(item.id === year.id) {
-          //FIXME Remove both columns - map doesn't hit all elements, hack
-          $scope.columnDefinition.splice(index, 2); 
-        }
-      });
-    }
+    } 
   };
   
-  //TODO renmae handleError()
-  function handleError(err) { 
-    if(!err) err = {};
+  validate.process(dependencies).then(reportFinance);
 
-    //only account for two types of error - could use numbered system to allow for more
-    var HTTP_ERROR = true;
-    var CLIENT_ERROR = false;
+  function reportFinance(model) { 
+    $scope.model = model;
+    parseAccountDepth($scope.model.finance);
+    settupTable($scope.model.fiscal.data);
 
-    var error_status = err.status || null;
+    generateAccountGroups($scope.model.finance);
+  }
+   
+  //TODO Relies on data being in correct order at time of parsing (i.e all children following parent)
+  //if parent hasn't been parsed, a placeholder should be set (allowing any ordering of data)
+  
+  // TODO calculate totals seperately 
+  function generateAccountGroups(accountModel, targetObj) { 
+    var accounts = accountModel.data, ROOT = 0, TITLE = 3;
+    var index = financeGroups.index, store = financeGroups.store;
+    console.time("generate"); 
+    accounts.forEach(function(account) { 
+      var insertAccount = { 
+        detail : account
+      } 
+      
+      if(account.account_type_id === TITLE) { 
+        insertAccount.accounts = [];
+        
+        //FIXME Grouping and totaling
+        insertAccount.detail.total = {};
+        tableDefinition.columns.forEach(function(column) { 
+          insertAccount.detail.total[column.key] = 0; 
+        });
 
-    //Assume the error is HTTP 
-    var error_type = err.http || HTTP_ERROR;
-    var error_body, error_title;
+        index[account.account_number] = insertAccount;
 
-    var default_error = { 
-      type: "error", 
-      body: "Unkonwn error",
-      title: ""
-    }
-
-    //This is bad and wrong and ...
-    var style_map = { 
-      "info" : "alert-info",
-      "error" : "alert-danger",
-      "default" : "alert-warning"
-    }
-
-    var error_map = {};
-    error_map[HTTP_ERROR] = {
-      500: {
-        type: "error",
-        body:  "The server encountered an error processing `" + err.table + "`. If this problem persists please contact the sysadmin.", 
-        title: ""
-      },
-      404: { 
-        type: "error",
-        body: "The server could not find `" + err.table + "`. If this problem persists please contact the sysadmin.",
-        title: ""
+        if(account.parent === ROOT) { 
+          store.push(insertAccount);
+          return;
+        }
+        
+        index[account.parent].accounts.push(insertAccount);
+        return;
       }
+      
+      index[account.parent].accounts.push(insertAccount); 
+
+      //FIXME Grouping and totaling
+      updateTotal(account, index); 
+    });
+  }
+  
+  //TODO Total could be determined by inversing the sort and traversing the list linearly 
+  function updateTotal(account, index) { 
+    var parent = index[account.parent];
+    while(parent) { 
+      tableDefinition.columns.forEach(function(column) { 
+        parent.detail.total[column.key] += account[column.key];
+      });
+      parent = index[parent.detail.parent];
     }
-
-    error_map[CLIENT_ERROR] = {
-      //Arbitrarily means a test didn't pass
-      800: { 
-        type: "info",
-        body: err.fail_body,
-        title: err.fail_title
-      }
-    }
-
-    //Default
-    var e = error_map[error_type][error_status];
-    if(!e) e = default_error;
-
-    //Expose error to view
-    $scope.session_error.type = style_map[e.type] || style_map["default"];
-    $scope.session_error.body = e.body;
-    $scope.session_error.valid = false;
   }
 
-  function parseAccountDepth(accounts) { 
-    var ROOT_NODE = 0; 
+  function parseAccountDepth(accountModel) { 
+    var accounts = accountModel.data; 
     
     accounts.forEach(function(account) { 
-      var parent, depth;
-     
-      //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE) 
-      parent = $scope.model['finance'].get(account.parent);
-      depth = 0;
+      var parent, depth = 0;
+      parent = accountModel.get(account.parent);
       while(parent) { 
         depth++;
-        parent = $scope.model['finance'].get(parent.parent);
+        parent = accountModel.get(parent.parent);
       }
       account.depth = depth;
+    }); 
+  }
+ 
+  //TODO settupTable, toggleColumn, pushColumn and popColumn all improved and encapsulated within Table object, numColumns = 2, col 1 - budget, col 2 - realisation
+  function settupTable(columnData) { 
+    columnData.forEach(function(year, index) { 
+      var tableOption = {active: false, id: year.id, index: index};
+      tableDefinition.options.push(tableOption);
+      toggleColumn(tableOption); 
     });
   }
-    
-  $scope.basicPrint = function basicPrint() { 
-    print();
-  };
-  init();
+  
+  function toggleColumn(yearOption) { 
+    var active = yearOption.active = !yearOption.active;
+    if(active) return pushColumn(yearOption);     
+    popColumn(yearOption);
+  }
+  
+  //TODO Index relies on number of columns per iteration, this shouldn't be hardcoded
+  function pushColumn(year) { 
+    tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
+    tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id});
+  }
+
+  function popColumn(year) { 
+
+    //Avoid replacing the entire array, redrawing the DOM
+    tableDefinition.columns.forEach(function(column, index) {
+      if(column.id === year.id) tableDefinition.columns.splice(index, 2);
+    });
+  }
+
+  function basicPrint() { print(); } 
+ 
+  $scope.toggleYear = toggleColumn;
+  $scope.basicPrint = basicPrint;
+  $scope.tableDefinition = tableDefinition;
+
+  $scope.financeGroups = financeGroups;
 });
