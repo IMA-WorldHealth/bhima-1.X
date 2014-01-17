@@ -68,21 +68,16 @@
     };
   });
   
-  //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
   services.factory('validate', function($q, connect) {  
     
     //TODO Allow multiple process passes - requests that depend on requests etc. 
     function process(dependencies, limit) {   
-      //idealy return this for cascading method calls 
       var deferred = $q.defer();
       var list = this._list = Object.keys(dependencies);
-      this.passNo = this.passNo || 0; 
-      this.passNo++;
 
-      console.log('[validate][', this.passNo, '] Process dependencies', dependencies);
       if(!dependencies.model) dependencies.model = {};
       
-      //temporary - update
+      //temporary
       if(limit) list = limit;
     
       //Use map for this
@@ -96,14 +91,13 @@
       
       fetchModels(dependencies, filterList).then(function(res) { 
         //package models 
-        list.forEach(function(key, index) { 
+        filterList.forEach(function(key, index) { 
           dependencies.model[key] = res[index];
           dependencies[key].processed = true; 
         });
         
         //cheeky  
         dependencies.model.processed = true;
-        // dependencies.model = model;
         deferred.resolve(dependencies.model);
       });
       return deferred.promise;
@@ -121,10 +115,6 @@
       
       //Process response
       $q.all(promiseList).then(function(res) { 
-        //Package responses in models
-        // keys.forEach(function(key, index) { 
-        //   dependencies[key].model = res[index];
-        // });
         deferred.resolve(res); 
       });
       return deferred.promise;
