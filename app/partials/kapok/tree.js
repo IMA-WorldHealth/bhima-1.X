@@ -19,17 +19,13 @@ angular.module('kpk.controllers')
   }
 
   function formatElementGroup (group) {
-    // recursively format elements
     if (!group) return;
     return group.map(function (element) {
       collapsed_model.some(function(item, index) { 
-        console.log('looking through', index); 
         if(item.key === element.id_unit) { 
           element.collapsed = item.collapsed; 
-          console.log('STOPPING');
           return true;
         } 
-        
       });
       return element;
     });
