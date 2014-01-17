@@ -71,41 +71,15 @@
   //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
   services.factory('validate', function($q, connect) {  
     
-    function Process() { 
-      var t = this;
-      this.queue = [];
-
-      this.resolve = function(res) { 
-        t.complete('resolve', res);
-      },
-
-      this.reject = function(res) { 
-        t.complete('reject', res);
-      }
-    }
-
-    Process.prototype = { 
-      run: function(success, failure) { 
-        this.pending.push({resolve: success, reject: failure});
-        return this;
-      },
-
-      complete: function(type, result) { 
-        while(this.pending[0]) { 
-          this.pending.shift()[type](result);
-        }
-      }
-    }
-
-    //TODO rename this.list
+    //TODO Allow multiple process passes - requests that depend on requests etc. 
     function process(dependencies, limit) {   
       //idealy return this for cascading method calls 
       var deferred = $q.defer();
-      console.log('process', this);
       var list = this._list = Object.keys(dependencies);
-      this._dependencies = dependencies;
       this.passNo = this.passNo || 0; 
       this.passNo++;
+
+      console.log('[validate][', this.passNo, '] Process dependencies', dependencies);
       if(!dependencies.model) dependencies.model = {};
       
       //temporary - update
@@ -119,8 +93,6 @@
         if(dependencies[key].processed) return;
         filterList.push(key);
       });
-
-      console.log(this.passNo, 'processing', filterList);
       
       fetchModels(dependencies, filterList).then(function(res) { 
         //package models 
@@ -163,7 +135,7 @@
       runStartupTests();
     }
     
-    //expose methods
+    //TODO This should be in the dependency object passed in to process()
     function registerRequirements(requirements) { 
       var response = {};
 
@@ -224,14 +196,10 @@
     //private methods  
     //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
     function runStartupTests() { 
-      console.log('running testSuite');
-
       angular.forEach(testSuite, function(test, key) { 
         var args = test.args || [];
 
-        console.log('running test ', key, test);
         test.method(args).then(function(res) {
-          console.log('completed test ', key, 'result: ', res);
           test.result = res;
         });
       });
@@ -277,9 +245,6 @@
    
     //TODO horrible name
     function valid() { 
-      
-      // this.processModels = processModels;
-      // this.process = process;
       return { 
         processModels : processModels,
         process : process
@@ -488,11 +453,9 @@
 
     function update(comp_id) { 
       var l = queue[comp_id];
-      console.log('update called for ', comp_id, l);
       if(l) { 
         l.forEach(function(recept) { 
           // console.log('callback queue');
-          console.log('calling queued callback');
           recept.callback(comp[comp_id]);
         });
       }
