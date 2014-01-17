@@ -9,9 +9,8 @@
       };
     })
 
-    .filter('intlcurrency', function ($filter) {
+    .filter('intlcurrency', function ($filter, $sce) {
       return function (value, type) {
-        console.log('value', value, 'type', type);
         value = (value || '0').toString();
         var formatted = '';
         switch (type) {
@@ -27,7 +26,7 @@
             formatted = formatted + '<span class="desc">,00</span><span class="cur">€</span>';
             break;
         }
-        return formatted;
+        return $sce.trustAsHtml(formatted);
       };
     });
     
