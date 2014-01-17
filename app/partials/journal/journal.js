@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, printer) {
+.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, printer, messenger) {
   // This is the posting journal and perhaps the heaviest
   // module in Kapok.  It is responsible for posting to
   // the general ledger via a trial balance
@@ -48,8 +48,7 @@ angular.module('kpk.controllers')
     {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 },
     {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
-
-
+  
   var options = {
     enableCellNavigation: true,
     enableColumnReorder: true,
@@ -57,9 +56,11 @@ angular.module('kpk.controllers')
     rowHeight: 30
   };
 
+
   function init() {
 
-    $q.all([connect.req(journal_request), connect.req(account_request)]).then(function(array) {
+    $q.all([connect.req(journal_request), connect.req(account_request)])
+    .then(function(array) {
       $scope.model.journal = array[0];
       $scope.model.account = array[1];
 
@@ -67,10 +68,20 @@ angular.module('kpk.controllers')
       dataview = new Slick.Data.DataView({
         groupItemMetadataProvider: groupItemMetadataProvider,
         inlineFilter: true
+
       });
+
+      var chkbx = new Slick.CheckboxSelectColumn({
+        cssClass: "slick-cell-checkboxsel"
+      });
+
+      columns.push(chkbx.getColumnDefinition());
+
       grid = new Slick.Grid('#journal_grid', dataview, columns, options);
 
       grid.registerPlugin(groupItemMetadataProvider);
+      grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
+      grid.registerPlugin(chkbx);
 //      Cell selection
 //      grid.setSelectionModel(new Slick.CellSelectionModel());
 
@@ -89,11 +100,17 @@ angular.module('kpk.controllers')
         grid.render();
       });
 
+      grid.onSelectedRowsChanged.subscribe(function (e, args) {
+        $scope.$apply(function () {
+          $scope.rows = args.rows;
+        });
+      });
+
 //      Set for context menu column selection
 //      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
 
       dataview.beginUpdate();
-      dataview.setItems($scope.model['journal'].data);
+      dataview.setItems($scope.model.journal.data);
 //      $scope.groupByID()
       dataview.endUpdate();
 
@@ -147,19 +164,43 @@ angular.module('kpk.controllers')
     dataview.setGrouping({});
   };
 
+  function getRowData (row_array) {
+    return row_array.map(function (id) {
+      return grid.getDataItem(id);
+    });
+  }
+
+  function getTxnIds(data) {
+    var txn_ids = data.map(function (item) {
+      return item.trans_id;
+    });
+    return txn_ids.filter(function (v, i) { return txn_ids.indexOf(v) === i; });
+  }
+
   $scope.trial = function () {
-    // in Sanru Tracker, posting encompasses the entire posting journal.
-    // This code assumes you are posting everything in the posting journal
-    // with your user name.
-    // DECISION: Should we allow you to post only some transactions?
-    connect.fetch('/trial/')
+
+    // first, we need to validate that all items in each trans have been
+    // selected.
+
+    if (!$scope.rows || !$scope.rows.length) return messenger.danger('No rows selected!');
+    
+    var selected = getRowData($scope.rows);
+    var transaction_ids = getTxnIds(selected);
+
+    messenger.warning('Posting data from transactions (' + transaction_ids.toString() + ')');
+
+    connect.fetch('/trial/?q=(' + transaction_ids.toString() + ')')
     .then(function (data) {
+      messenger.success('Trial balance run!');
       var instance = $modal.open({
         templateUrl:'trialBalanceModal.html',
         controller: 'trialBalanceCtrl',
         resolve : {
           request: function () {
-            return data;
+            return data.data;
+          },
+          ids : function () {
+            return transaction_ids;
           }
         }
       });
@@ -218,35 +259,33 @@ angular.module('kpk.controllers')
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
 //  $timeout(init, 100);
 
-  $scope.print = function () {
-    printer.clear();
-    console.log('rows:', connect.clean($scope.model['journal'].data));
-    printer.print({
-      title: 'A cool title!',
-      description: 'An attempt to print a table from journal...',
-      table: {
-        headers: ['id', 'date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'deb_cred_id', 'deb_cred_type', 'inv_po_id'],
-        rows: connect.clean($scope.model['journal'].data)
-      }
-    });
-  };
-
-
   init();
-
 
 })
 
-.controller('trialBalanceCtrl', function ($scope, $modalInstance, request, connect) {
+.controller('trialBalanceCtrl', function ($scope, $modalInstance, request, ids, connect) {
   $scope.data = request.data;
-  $scope.data.status = request.status;
+  $scope.errors = [].concat(request.postErrors, request.sysErrors);
+
+  var total = $scope.total = {};
+
+  // TODO
+  // this is slightly inefficient.
+  $scope.data.forEach(function (item) {
+    total.before = (total.before || 0) + item.balance;
+    total.debit = (total.debit || 0) + item.debit;
+    total.credit = (total.credit || 0) + item.credit;
+    total.after = (total.after || 0) + item.balance + (item.credit - item.debit);
+  });
 
   $scope.ok = function () {
-    connect.fetch('/post/')
+    ids =  ids.filter(function (id) { return angular.isDefined(id); });
+    connect.fetch('/post/'+ request.key +'/?q=(' + ids.toString() + ')')
     .then(function () {
       $modalInstance.close();
     }, function (error) {
-      data.errors = error;
+      console.log('ERROR:', error);
+      throw error;
     });
   };
 

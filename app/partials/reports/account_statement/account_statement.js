@@ -1,12 +1,9 @@
-angular.module('kpk.controllers').controller('reportAccountStatementCtrl', function($scope, $q, $filter, connect, kpkUtilitaire){
+angular.module('kpk.controllers').controller('reportAccountStatementCtrl', function($scope, $q, connect, appstate){
 
 	//variables
 	$scope.models = {};
-	var accounts, accountStatements;
-	//var accountClasses = {tables:{'account':{columns:['id', 'account_txt']}}, where:['account.parent=0']};
-	var accounts = {tables:{'account':{columns:['id', 'account_number', 'account_txt', 'parent']}}};
-	var periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}};
-	var names = ['accounts', 'periods'];	
+	var accounts, accountStatements, accounts, periods;	
+	var names = ['accounts', 'periods'];
 
 
 
@@ -30,9 +27,10 @@ angular.module('kpk.controllers').controller('reportAccountStatementCtrl', funct
 		});
 	}
 
-	var getStatements = function(){
+	var getStatements = function(fiscal_id){
+		console.log('fiscal recue |||||||||||||||', fiscal_id);
 		var def = $q.defer();
-		connect.MyBasicGet('/reports/accountStatement/')
+		connect.MyBasicGet('/reports/accountStatement/?'+JSON.stringify({fiscal_id : fiscal_id}))
 		.then(function(values){
 			def.resolve(values);
 		});
@@ -64,7 +62,10 @@ angular.module('kpk.controllers').controller('reportAccountStatementCtrl', funct
 	}		
 
 	//invocations
-	$q.all([connect.req(accounts),connect.req(periods), getStatements()]).then(init);
-
-
+	appstate.register('fiscal', function(fiscal){
+		console.log('************ notre fiscal account statement ', fiscal);
+		accounts = {tables:{'account':{columns:['id', 'account_number', 'account_txt', 'parent']}}, where : ['account.enterprise_id='+fiscal.enterprise_id]};
+		periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}, where : ['period.fiscal_year_id='+fiscal.id]};
+		$q.all([connect.req(accounts),connect.req(periods), getStatements(fiscal.id)]).then(init);
+	});
 });

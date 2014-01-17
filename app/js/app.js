@@ -161,6 +161,7 @@
       CONFIGURE: 'configure',
       PRINT: 'print',
       CREATE: 'create',
+      ITEMS : 'items',
 
       //Generic database
       ID: 'id',
