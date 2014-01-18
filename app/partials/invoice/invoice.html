@@ -1,8 +1,8 @@
 <header class="hidden-print"> Receipts </header> 
 
-<main class="invoice">
+<div class="invoice">
 
-<article class="invoice">
+<div class="article">
   <div class="row customer-details">
     <div class="col-xs-12"> 
       <h4>Patient Invoice</h4>
@@ -40,7 +40,7 @@
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <table class="reportTable">
+      <table class="invoiceTable">
         <thead>
           <tr><th>Description</th><th>Amount</th></tr> 
         </thead>
@@ -48,7 +48,9 @@
           <tr><td>Some Description</td><td>$1.00</td></tr> 
         </tbody>
         <tbody class="totals">
-
+          <tr><td class="no-border">Total</td><td>$1.00</td></tr>
+          <tr><td class="no-border">Amount Received</td><td>$0.00</td></tr>
+          <tr><td class="no-border">Balance Due</td><td>$1.00</td></tr>
         </tbody>
 
       </table>
