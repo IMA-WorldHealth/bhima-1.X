@@ -1,11 +1,40 @@
 @media print { 
+  article .invoice { 
+    border: none;
+  }
 
+  main .invoice { 
+    padding-left: 15px;
+    padding-right: 15px; 
+    padding-top: none; } 
+}
+
+article .invoice { 
+  padding: 5px; 
+  border: 1px solid #DDD;
+  background: white;
 }
 
 main .invoice { 
+  padding: 10px;
+  padding-top: 15px;
   background: #f3f3f3;
   height: 100%;
-  width: 100%;
-  position: absolute;
+}
 
+.reportTable tbody.items > tr > td { 
+  color: red;
+}
+
+.reportTable tbody.totals > tr > td { 
+  color: green;
+}
+
+h4 { 
+  font-size: 30px !important;
+}
+
+.customer-details { 
+  padding-top: 5px;
+  padding-bottom: 30px;
 }
