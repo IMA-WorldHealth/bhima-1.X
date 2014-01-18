@@ -50,8 +50,8 @@
         </tbody>
         <tbody class="totals">
           <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>
-          <tr><td class="no-border">Amount Received</td><td>$0.00</td></tr>
-          <tr><td class="no-border">Balance Due</td><td>{{invoice.cost | currency}}</td></tr>
+          <tr><td class="no-border">Amount Received</td><td>{{invoice.ledger.credit | currency}}</td></tr>
+          <tr><td class="no-border">Balance Due</td><td>{{invoice.ledger.balance | currency}}</td></tr>
         </tbody>
 
       </table>
