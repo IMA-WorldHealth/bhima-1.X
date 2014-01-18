@@ -161,7 +161,6 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
-
   function transReport(params) {
     var params = JSON.parse(params);
     var deferred = q.defer();
@@ -244,7 +243,9 @@ module.exports = (function (db) {
       });
     }    
     return deferred.promise;
-  }
+}
+
+
 
   function debitorAging(params){
     //deferred
