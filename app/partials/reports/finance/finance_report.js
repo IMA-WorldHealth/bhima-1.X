@@ -15,11 +15,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
         fiscal_year : { 
           columns : ["id"]
         }
-      }
-    } 
-  };
-  
-  validate.process(dependencies).then(reportFinance);
+      } } }; validate.process(dependencies).then(reportFinance);
 
   function reportFinance(model) { 
     $scope.model = model;
@@ -123,10 +119,10 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
     });
   }
 
-  function basicPrint() { print(); } 
+  function printReport() { print(); } 
  
   $scope.toggleYear = toggleColumn;
-  $scope.basicPrint = basicPrint;
+  $scope.printReport = printReport;
   $scope.tableDefinition = tableDefinition;
 
   $scope.financeGroups = financeGroups;

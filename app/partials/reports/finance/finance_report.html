@@ -1,8 +1,7 @@
-<link href="partials/reports/finance/finance_report.css" rel="stylesheet">
-
-<h4>{{enterprise.name}}</h4>
-<h4>Finance Report <small>{{timestamp | date}}</small></h4>
-<section class="underline overline hidden-print">
+<header class="hidden-print">
+  Finance Report
+</header>
+<section class="underline hidden-print">
   <div class="pull-right">
     <span class="dropdown">
       <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
@@ -15,10 +14,14 @@
         </li>
       </ul>
     </span> 
-    <button ng-click="basicPrint()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
+    <button ng-click="printReport()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
   </div>
 </section>
 
+<div class="reportBody">
+  <div class="reportFrame">
+<h4>{{enterprise.name}}</h4>
+<h4>Finance Report <small>{{timestamp | date}}</small></h4>
 <table class="reportTable">
   <thead>
     <tr>
@@ -27,46 +30,7 @@
       <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
     </tr>
   </thead>
-  <!--Recursive dirictive, replaces itself with inductive step-->
   <tr data-report-group-compile data-group-model="financeGroups.store" data-table-definition="tableDefinition"></tr> 
-    
-    <!--VERSION 3-->
-  <!--   <tbody> -->
-  <!--     <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
-  <!--       <td>{{group.detail.account_number}}</td> -->
-  <!--     </tr> -->
-  <!--      -->
-  <!--     <tr ng&#45;repeat&#45;start="account in group.accounts"> -->
-  <!--       <td>#####{{account.detail.account_number}}</td> -->
-  <!--     </tr> -->
-
-  <!--     <tr ng&#45;if="account.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
-  <!--       <td>Sub Total</td> -->
-  <!--     </tr> -->
-
-  <!--     <tr ng&#45;if="group.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
-  <!--       <td>Total</td> -->
-  <!--     </tr> -->
-  <!--   </tbody> -->
-  <!-- </tbody> -->
- 
-    <!--VERSION 2--> 
-    <!-- <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
-    <!--   <td>{{group.detail.account_number}}</td><td><b>{{group.detail.account_txt}}</b></td> -->
-    <!-- </tr> -->
-    <!--  -->
-    <!-- <tr ng&#45;repeat="sub in group.accounts"><td>{{sub.detail.account_number}}</td><td>{{sub.detail.account_txt}}</td></tr> -->
-    <!--  -->
-    <!-- <tr ng&#45;repeat&#45;end><td></td><td><b>This will be a total row</b></td></tr> -->
-    
-    <!--VERSION 1 - Repeat directly on data from report.-->
-    <!-- <tr ng&#45;repeat="row in model['finance'].data"> -->
-    <!--   <td style="text&#45;align: right">{{row.account_number}}</td> -->
-    <!--   <td  -->
-    <!--     ng&#45;style="{'padding&#45;left': row.depth * 30 + 'px'}"  -->
-    <!--     ng&#45;class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td> -->
-    <!--    -->
-    <!-- <td ng&#45;repeat="column in tableDefinition.columns"><span ng&#45;hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td> -->
-    <!-- </tr> -->
 </table>
-
+</div>
+</div>
