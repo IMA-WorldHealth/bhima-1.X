@@ -173,17 +173,15 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
   });
 });
 
-app.get('/reports/:route/', function(req, res) { 
+app.get('/reports/:route/', function(req, res, next) { 
   var route = req.params.route;
 
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
   
-
-  //TODO update to err, ans standard of callback methods
-  report.generate(route, query, function(report) { 
-    if (report) return res.send(report);
-    res.send(500, 'Server could not produce report');
+  report.generate(route, query, function(report, err) { 
+    if(err) next(err);
+    res.send(report);
   });
 });
 
