@@ -37,7 +37,7 @@ function parseAccounts(err, accountData) {
 
 function writeExtractedAccounts(accounts) { 
 
-  var i = 0;
+  var i = 1;
   var titleSQL = '';
   var accountSQL = [];
   var output;

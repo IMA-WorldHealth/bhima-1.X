@@ -96,7 +96,7 @@
       templateUrl: 'partials/accounts/create_account/create.html'
     }).
     when('/reports/finance', { 
-      controller: 'reportFinanceController',
+      controller: 'reportFinance',
       templateUrl: 'partials/reports/finance/finance_report.html'
     }).
     when('/reports/transaction_report', { 
