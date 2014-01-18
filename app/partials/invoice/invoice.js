@@ -33,25 +33,26 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   validate.process(dependencies, ['invoice', 'invoiceItem']).then(updateDependencies);
    
   function updateDependencies(model) { 
+    var invoice_data = model.invoice.data[0];
     
-    //If all has gone well (this should be asserted by validate) there is only one sale
-    $scope.invoice = model.invoice.data[0];
-
     dependencies.recipient.query = { 
       tables: {},
-      where: ['patient.debtor_id=' + $scope.invoice.debitor_id]
+      where: ['patient.debitor_id=' + invoice_data.debitor_id]
     }
     dependencies.recipient.query.tables['patient'] = { 
       columns: ['first_name', 'last_name', 'dob', 'location_id']
     };
-    
-    console.log(model);
-    // return validate.process(dependencies).then(invoice);
+    return validate.process(dependencies).then(invoice);
   }
 
   function invoice(model) { 
- 
-    //Expose to template
+    
+    //Expose data to template
     $scope.model = model; 
+    
+    //Select invoice and recipient - validate should assert these only have one item
+    $scope.invoice = $scope.model.invoice.data[0];
+    $scope.recipient = $scope.model.recipient.data[0];
+    console.log($scope.invoice, $scope.recipient);
   }
 });

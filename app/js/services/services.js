@@ -69,51 +69,56 @@
   });
   
   services.factory('validate', function($q, connect) {  
-    
-    //TODO Allow multiple process passes - requests that depend on requests etc. 
+    var modelLabel = 'model';
+
+    //TODO Exception handling
     function process(dependencies, limit) {   
       var deferred = $q.defer();
-      var list = this._list = Object.keys(dependencies);
-
-      if(!dependencies.model) dependencies.model = {};
+      var list = filterList(dependencies, (limit || Object.keys(dependencies)));
       
-      //temporary
-      if(limit) list = limit;
-    
-      //Use map for this
-      var filterList = [];
-      
-      //check processed
-      list.forEach(function(key, index) { 
-        if(dependencies[key].processed) return;
-        filterList.push(key);
-      });
-      
-      fetchModels(dependencies, filterList).then(function(res) { 
-        //package models 
-        filterList.forEach(function(key, index) { 
+      dependencies[modelLabel] = dependencies[modelLabel] || {};
+      fetchModels(dependencies, list).then(function(res) { 
+        
+        //Package models 
+        list.forEach(function(key, index) { 
           dependencies.model[key] = res[index];
           dependencies[key].processed = true; 
         });
+
+        //Test models
         
-        //cheeky  
-        dependencies.model.processed = true;
         deferred.resolve(dependencies.model);
       });
       return deferred.promise;
     }
 
+    function filterList(dependencies, list) { 
+      var filterList = [];
+      list.forEach(function(key, index) {
+        
+        //filter process requests
+        if(dependencies[key].processed) return;
+        
+        //filter model store
+        if(key===modelLabel) return;
+        filterList.push(key);
+      });
+      return filterList;
+    }
+
     function fetchModels(dependencies, keys) { 
       var deferred = $q.defer(), promiseList = [];
       
-      //Make requests 
+      //Requests
       keys.forEach(function(key) { 
         var dependency = dependencies[key], args = [dependency.query];
+        
+        //Hack to allow modelling reports with unique identifier - not properly supported by connect
         if(dependency.identifier) args.push(dependency.identifier);
         promiseList.push(connect.req.apply(connect.req, args));
       });
       
-      //Process response
+      //Response
       $q.all(promiseList).then(function(res) { 
         deferred.resolve(res); 
       });
