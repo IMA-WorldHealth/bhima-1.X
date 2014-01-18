@@ -60,7 +60,7 @@
       templateUrl: '/partials/sales/sales.html'
     }).
     when('/sale_records/:recordID?', { 
-      controller: 'salesRecordsController',
+      controller: 'salesRecords',
       templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
     when('/cash', {

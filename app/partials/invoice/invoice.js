@@ -37,6 +37,11 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   dependencies.location = { 
     required: false
   }
+
+  dependencies.ledger = { 
+    required: true,
+    identifier: 'inv_po_id'
+  }
  
   validate.process(dependencies, ['invoice', 'invoiceItem']).then(buildRecipientQuery);
    
@@ -50,6 +55,8 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     dependencies.recipient.query.tables['patient'] = { 
       columns: ['first_name', 'last_name', 'dob', 'location_id']
     };
+
+    dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_id; 
     return validate.process(dependencies, ['recipient']).then(buildLocationQuery);
   }
 
@@ -64,9 +71,10 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     
     //Expose data to template
     $scope.model = model; 
-    console.log($scope.model); 
+    
     //Select invoice and recipient - validate should assert these only have one item
     $scope.invoice = $scope.model.invoice.data[0];
+    $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
   }

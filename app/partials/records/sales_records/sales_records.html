@@ -1,25 +1,19 @@
-<link rel="stylesheet" href="partials/records/sales_records/sales_records.css"/>
-
 <header>
 <span>Patient Invoice Records</span>
 </header>
 
 <section class="underline">
-<div class="col-xs-4 hack-left">
-  <input type="text" ng-model="invoice_filter.filter" class="form-kapok" placeholder="Filter Invoices">
-</div>
-    <div class="pull-right">
-
-      <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
-
-    </div>
+  Showing latest records Max({{defaultLimit}})
+  <div class="pull-right">
+    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
+  </div>
 </section>
 
 <div class="content">
 <div class="row">
 <div class="col-xs-12">
 
-      <div ng-switch on="invoice_model.data.length">
+      <div ng-switch on="model.sale.data.length">
         <div class="alert alert-info" ng-switch-when="0">
           No patient transactions found. Reference <strong><a href="/#/sales">Patient Sales</a></strong> to generate an
           invoice.
@@ -27,33 +21,40 @@
         <div ng-switch-default></div>
       </div>
       <div class="invoice-table">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-condensed">
 
           <thead>
-          <tr>
-            <th>ID</th>
+            <tr>
+            <th><span class="glyphicon glyphicon-eye-open"></span></th>
             <th>Date</th>
-            <th>Amount</th>
-            <th>Debtor ID</th>
+            <th>#</th>
+
+            <th>Patient</th>
+            <th>Total Amount</th>
+            <th>Balance Due</th>
+            <!-- <th>Debtor ID</th> -->
             <th>Posted</th>
+            <!-- <th>Status</th> -->
           </tr>
           </thead>
 
           <tbody>
           <tr ng-class='{rowSelected: selected.id==invoice.id}' ng-click="select(invoice.id)"
-              ng-repeat="invoice in invoice_model.data | filter: invoice_filter.filter">
-
-            <td>{{invoice.id}}</td>
-            <td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
-            <td>{{invoice.cost | currency}}</td>
-            <td>{{invoice.debitor_id}}</td>
+              ng-repeat="invoice in model.sale.data | filter: invoice_filter.filter">
+              <td><a ng-href="/#/invoice/sale/{{invoice.id}}">Receipt</a></td>
+              
+              <td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td>{{invoice.id}}</td>
+              <td>{{invoice.first_name}} {{invoice.last_name}}</td>
+              <td>{{invoice.cost | currency}}</td>
+              <td>{{invoice.cost | currency}}</td>
+            <!-- <td>{{invoice.debitor_id}}</td> -->
             <!--Multiple ng-shows - mutually exclusive but not good practice-->
-            <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
+              <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
 
               <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
-            </td>
-            <td><a><span class="glyphicon glyphicon-random"></span></a></td>
-
+              </td>
+              
           </tr>
           </tbody>
         </table>
