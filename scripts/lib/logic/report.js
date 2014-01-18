@@ -27,94 +27,46 @@ module.exports = (function (db) {
     };
     
     console.log('server debug', request, params);
-    route[request](params).then(function(report) { callback(report);
-    });
+    route[request](params)
+    .then(
+    function(report) { callback(report); },
+    function(err) { callback(null, err); });
   }
 
   function finance(reportParameters) { 
-    var deferred = q.defer();
-    console.log('finance got', reportParameters, typeof(reportParameters));
-    
-    //finance expects a JSON object - invalid JSON will throw error
-    var financeParams = JSON.parse(reportParameters);
-
-    //expecting fiscal
-    var requiredFiscalYears;
-    //Need to get this from somwhere - 
-    var currentFiscalYear = 1;
-
-    //This is strange
-    if(financeParams) { 
-      requiredFiscalYears = financeParams.fiscal || [currentFiscalYear];
+    var requiredFiscalYears, initialQuery, deferred = q.defer(), financeParams = JSON.parse(reportParameters); 
+    if(!financeParams) {
+      deferred.reject(new Error("[finance.js] No fiscal years provided"));  
+      return deferred.promise;
     }
+      
+    requiredFiscalYears = financeParams.fiscal;
+    initialQuery = buildFinanceQuery(requiredFiscalYears);
 
-    console.log('working with', requiredFiscalYears);
-
-    //will require information about current fiscal year - will need to reply with YTD
-
-    
-    //TODO realisation should be a combination of credits - debits (or the other way around) - NOT two columns
-
-    //TODO discuss how wasteful requesting a full new table / calculation is when one could just get the new columns (new fiscal year etc.)
-    //could we calculate for all fiscal years every time, and then just pull from that - send all data at once, check version on client, if it matches current version on server don't re-send, just filter accordingly
-
-    //Condition is currently in the column select (very useful for selecting a variable number of columns - based on different querries)
-    //Condition could be in the ON of the join appended with an AND
-    
-    //this works for realisation 
-    //add budget 
-    //-LEFT JOIN budget 
-    //SUM(case when thing.fiscal_id = 2 then SUM(budget.budget) else 0 end)
-    var initial_query = buildFinanceQuery(requiredFiscalYears);
-
-    db.execute(initial_query, function(err, ans) {
-      if(err) {
-        console.log("finance report, initial query failed");
-        console.log(err);
-        // deferred.reject(err);
-        return;
-      }
+    db.execute(initialQuery, function(err, ans) {
+      if(err) return deferred.reject(err);
       deferred.resolve(ans);
     });
 
-
     function buildFinanceQuery(requiredFiscalYears) { 
-      
-      //TODO Update to use period_totals, not query the posting journal/ general ledger 
-      var query = [];
-      var budgetColumns = [];
-      var realisationColumns = [];
-      var selectColumns = [];
-
-      //add budget columns
-      // requiredFiscalYears.forEach(function(year) { 
-        // fiscalColumns += "(SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.debit else 0 end) - SUM(case when posting_journal.fiscal_year_id = "+year+" then posting_journal.credit else 0 end)) AS 'realisation "+year+"',";
-      // });
-
-      // query = "SELECT account.id," +
-      //               "account.account_number," +
-      //               fiscalColumns + 
-      //               "account.account_txt " + 
-      //         "FROM account " +
-      //         "LEFT JOIN posting_journal " +
-      //         "ON account.id = posting_journal.account_id " + 
-      //         // "AND posting_journal.period_id = 3 " +
-      //         "GROUP BY account.account_number;";
-     
       //TODO currently joins two very seperate querries and just extracts columns from both, these should
       //be combined and calculations (SUM etc.) performed on the single joined table
-      requiredFiscalYears = [1, 2];
+
+
+      var query = [], budgetColumns = [], realisationColumns = [], selectColumns = [], differenceColumns = [];
 
       requiredFiscalYears.forEach(function(fiscal_year) { 
         selectColumns.push("budget_result.budget_" + fiscal_year);
         selectColumns.push("period_result.realisation_" + fiscal_year);
         budgetColumns.push("SUM(case when period.fiscal_year_id = " + fiscal_year +" then budget.budget else 0 end) AS `budget_" + fiscal_year + "`");
         realisationColumns.push("(SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.debit else 0 end) - SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.credit else 0 end)) AS `realisation_" + fiscal_year + "`");
+        // differenceColumns.push("(SUM(budget_" + fiscal_year + ") - SUM(realisation_" + fiscal_year + ")) AS `difference_" + fiscal_year + "`"); 
       });
 
       query = [
         "SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id,",
         selectColumns.join(","),
+        // differenceColumns.join(","),
         "FROM",
         "(SELECT budget.account_id,",
         budgetColumns.join(","),

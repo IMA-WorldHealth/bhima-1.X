@@ -1,11 +1,10 @@
 //TODO Two step, download fiscal years, and then populate finance query, validate service will need to be updated
 angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger) {
-  var dependencies = {}, tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []};
+  var dependencies = {}, fiscalYears = [], tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []};
 
   dependencies.finance = { 
     required : true,
-    identifier: "account_number",
-    query : '/reports/finance/',
+    identifier: "account_number"
   };
  
   dependencies.fiscal = { 
@@ -15,12 +14,23 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
         fiscal_year : { 
           columns : ["id"]
         }
-      } } }; validate.process(dependencies).then(reportFinance);
+      } 
+    } 
+  }; 
+  
+  validate.process(dependencies, ['fiscal']).then(buildReportQuery);
+
+  function buildReportQuery(model) {
+    fiscalYears.push(model.fiscal.data[0].id);
+    // model.fiscal.data.forEach(function(year) { fiscalYears.push(year.id); });
+    dependencies.finance.query = '/reports/finance/?' + JSON.stringify({fiscal: fiscalYears});
+    return validate.process(dependencies).then(reportFinance);
+  }
 
   function reportFinance(model) { 
     $scope.model = model;
     parseAccountDepth($scope.model.finance);
-    settupTable($scope.model.fiscal.data);
+    settupTable(fiscalYears);
 
     generateAccountGroups($scope.model.finance);
   }
@@ -32,7 +42,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   function generateAccountGroups(accountModel, targetObj) { 
     var accounts = accountModel.data, ROOT = 0, TITLE = 3;
     var index = financeGroups.index, store = financeGroups.store;
-    console.time("generate"); 
+    
     accounts.forEach(function(account) { 
       var insertAccount = { 
         detail : account
@@ -87,13 +97,16 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
         parent = accountModel.get(parent.parent);
       }
       account.depth = depth;
+
+      //FIXME very cheeky - calculate this with SQL
+      
     }); 
   }
  
   //TODO settupTable, toggleColumn, pushColumn and popColumn all improved and encapsulated within Table object, numColumns = 2, col 1 - budget, col 2 - realisation
   function settupTable(columnData) { 
     columnData.forEach(function(year, index) { 
-      var tableOption = {active: false, id: year.id, index: index};
+      var tableOption = {active: false, id: year, index: index};
       tableDefinition.options.push(tableOption);
       toggleColumn(tableOption); 
     });
