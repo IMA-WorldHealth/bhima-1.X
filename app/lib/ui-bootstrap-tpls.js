@@ -1022,7 +1022,9 @@ angular.module('ui.bootstrap.tabs', [])
       return function(scope, element, attrs, tabsetCtrl) {
         scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
         scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
-        scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
+        console.log('attrs.direction', attrs.direction);
+        scope.direction = angular.isDefined(attrs.direction) ? angular.isDefined(scope.$parent.$eval(attrs.direction)) ? scope.$parent.$eval(attrs.direction) : attrs.direction : 'top';
+        console.log('scope.direction:', scope.direction);
         scope.tabsAbove = (scope.direction != 'below');
         tabsetCtrl.$scope = scope;
         tabsetCtrl.$transcludeFn = transclude;
@@ -1755,7 +1757,7 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 angular.module("template/tabs/tabs.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/tabs/tabs.html",
     "<div class=\"tabbable\">\n" +
-    "  <ul class=\"nav nav-tabs\">\n" +
+    "  <ul class=\"nav nav-tabs \">\n" +
     "    <li ng-repeat=\"pane in panes\" ng-class=\"{active:pane.selected}\">\n" +
     "      <a ng-click=\"select(pane)\">{{pane.heading}}</a>\n" +
     "    </li>\n" +

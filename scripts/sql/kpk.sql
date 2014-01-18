@@ -312,10 +312,10 @@ create table `payment` (
 ) engine=innodb;
 
 --
--- table `kpk`.`price_list_name`
+-- table `kpk`.`price_list`
 --
-drop table if exists `kpk`.`price_list_name`;
-create table `kpk`.`price_list_name` (
+drop table if exists `kpk`.`price_list`;
+create table `kpk`.`price_list` (
   enterprise_id   smallint unsigned not null,
   id              smallint  unsigned not null,
   name            varchar(100) not null,
@@ -364,7 +364,7 @@ create table `debitor_group` (
   key `tax_id` (`tax_id`),
   key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`price_list_id`) references `price_list_name` (`id`),
+  constraint foreign key (`price_list_id`) references `price_list` (`id`),
   constraint foreign key (`account_id`) references `account` (`id`) on DELETE cascade on update cascade,
   constraint foreign key (`location_id`) references `location` (`id`) on DELETE cascade on update cascade,
   constraint foreign key (`payment_id`) references `payment` (`id`) on DELETE cascade on update cascade,
@@ -864,10 +864,10 @@ create table `kpk`.`period_total` (
 ) engine=innodb;
 
 --
--- table `kpk`.`price_list`
+-- table `kpk`.`price_list_detail`
 --
-drop table if exists `kpk`.`price_list`;
-create table `kpk`.`price_list` (
+drop table if exists `kpk`.`price_list_detail`;
+create table `kpk`.`price_list_detail` (
   id              int unsigned not null,
   list_id         smallint unsigned not null,
   inventory_id    int unsigned not null,
@@ -878,7 +878,7 @@ create table `kpk`.`price_list` (
   key `inventory_id` (`inventory_id`),
   key `list_id` (`list_id`),
   constraint foreign key (`inventory_id`) references `inventory` (`id`),
-  constraint foreign key (`list_id`) references `price_list_name` (`id`)
+  constraint foreign key (`list_id`) references `price_list` (`id`)
 ) engine=innodb;
 
 -- Jon's dump @ 12:45.
