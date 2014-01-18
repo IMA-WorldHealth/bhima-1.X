@@ -5,7 +5,7 @@
 <div class="article">
   <div class="row customer-details">
     <div class="col-xs-12"> 
-      <h4>Patient Invoice</h4>
+      <h4 class="invoice-header">Patient Invoice</h4>
     </div>
   </div>
   <div class="row customer-details">
@@ -14,7 +14,7 @@
     </div>
     <div class="col-xs-4">
       <div class="row">
-        Steven Fountain
+        Patient Name 
       </div>
       <div class="row">
         Patient Address
@@ -25,13 +25,13 @@
         <b>Invoice #</b>
       </div>
       <div class="row">
-        10014
+        {{invoice.id}}
       </div>
       <div class="row">
         <b>Date</b>
       </div>
       <div class="row">
-        17/01/2014
+        {{invoice.invoice_date | date}}  
       </div>
     </div>
     <div class="col-xs-3">

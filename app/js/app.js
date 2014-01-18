@@ -138,7 +138,7 @@
       controller: 'accountsReport',
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
     }).
-    when('/invoice/', { 
+    when('/invoice/:originId/:invoiceId', { 
       controller: 'invoice', 
       templateUrl: 'partials/invoice/invoice.html'
     });
