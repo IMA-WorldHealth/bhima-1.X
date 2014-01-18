@@ -15,13 +15,6 @@ angular.module('kpk.controllers')
       //Reveal to scope for info display
       $scope.enterprise = res;
     });
-
-    //This isn't required - should this be included?
-    appstate.register("fiscal", function(res) { 
-      console.log('fl f', res);
-      fiscal_set = true;
-      $scope.select(res.id);
-    });
   }
 
   function loadEnterprise(enterprise_id) { 
@@ -36,7 +29,7 @@ angular.module('kpk.controllers')
       $scope.fiscal_model = fiscal_model;
       //select default
       var data = fiscal_model.data;
-      if(!fiscal_set) appstate.set('fiscal', data[data.length -1]);
+      if(!fiscal_set && data[0]) fiscal_set = true; 
       if(data[0]) $scope.select(data[data.length - 1].id);
     });
   }
@@ -132,7 +125,8 @@ angular.module('kpk.controllers')
       //Reset model
       $scope.new_model = {'year':'true'};
       messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start}); 
-
+      
+      if(!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});  
       //Reload fiscal years - could insert but unneeded calculation
       loadEnterprise(enterprise.id);
     }, function(err) { 
