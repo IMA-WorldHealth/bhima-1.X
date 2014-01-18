@@ -52,10 +52,11 @@ div .article {
 }
 
 .invoice-header { 
-  font-size: 30px !important;
+  font-size: 25px !important;
+  padding-bottom: 0px;
 }
 
 .customer-details { 
-  padding-top: 5px;
-  padding-bottom: 30px;
+  padding-top: 0px;
+  padding-bottom: 20px;
 }
