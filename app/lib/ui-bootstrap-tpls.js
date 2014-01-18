@@ -1690,9 +1690,9 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
   });
 angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/accordion/accordion-group.html",
-    "<div class=\"panel-group\">\n" +
+    "<div class=\"panel-group panel-default\">\n" +
     "  <div class=\"panel-heading\" ><a class=\"accordion-toggle\" ng-click=\"isOpen = !isOpen\" accordion-transclude=\"heading\">{{heading}}</a></div>\n" +
-    "  <div class=\"panel-body\" collapse=\"!isOpen\">\n" +
+    "  <div class=\"panel-body\" collapse=\"!isOpen\" ng-class=\"{closed : !isOpen}\">\n" +
     "    <div class=\"panel\" ng-transclude></div>  </div>\n" +
     "</div>");
 }]);
