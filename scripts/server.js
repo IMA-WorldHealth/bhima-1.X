@@ -197,10 +197,11 @@ app.get('/tree', function (req, res, next) {
 });
 
 // ugh.
-app.get('/location', function (req, res, next) {
+app.get('/location/:locationId?', function (req, res, next) {
+  var specifyLocation = req.params.locationId ? ' AND `location`.`id`=' + req.params.locationId : '';
   var sql = "SELECT `location`.`id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
             "FROM `location`, `village`, `sector`, `province`, `country` " + 
-            "WHERE `location`.`village_id`=`village`.`id` AND `location`.`sector_id`=`sector`.`id` AND `location`.`province_id`=`province`.`id` AND `location`.`country_id`=`country`.`id`;";
+            "WHERE `location`.`village_id`=`village`.`id` AND `location`.`sector_id`=`sector`.`id` AND `location`.`province_id`=`province`.`id` AND `location`.`country_id`=`country`.`id`" + specifyLocation + ";";
   db.execute(sql, function (err, rows) {
     if (err) next(err);
     res.send(rows);

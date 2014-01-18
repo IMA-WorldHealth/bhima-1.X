@@ -23,16 +23,24 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     required: true,
     query: {
       tables: {},
+      join: ['sale_item.inventory_id=inventory.id'],
       where: ['sale_item.sale_id=' + invoiceId]
     }
   };
+  dependencies.invoiceItem.query.tables['inventory'] = { 
+    columns: ['id', 'code', 'text']
+  }
   dependencies.invoiceItem.query.tables['sale_item'] = { 
     columns: ['id', 'quantity', 'unit_price', 'total']
   }
+
+  dependencies.location = { 
+    required: false
+  }
  
-  validate.process(dependencies, ['invoice', 'invoiceItem']).then(updateDependencies);
+  validate.process(dependencies, ['invoice', 'invoiceItem']).then(buildRecipientQuery);
    
-  function updateDependencies(model) { 
+  function buildRecipientQuery(model) { 
     var invoice_data = model.invoice.data[0];
     
     dependencies.recipient.query = { 
@@ -42,6 +50,13 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     dependencies.recipient.query.tables['patient'] = { 
       columns: ['first_name', 'last_name', 'dob', 'location_id']
     };
+    return validate.process(dependencies, ['recipient']).then(buildLocationQuery);
+  }
+
+  function buildLocationQuery(model) { 
+    var recipient_data = model.recipient.data[0];
+
+    dependencies.location.query = 'location/' + recipient_data.location_id;
     return validate.process(dependencies).then(invoice);
   }
 
@@ -49,10 +64,10 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     
     //Expose data to template
     $scope.model = model; 
-    
+    console.log($scope.model); 
     //Select invoice and recipient - validate should assert these only have one item
     $scope.invoice = $scope.model.invoice.data[0];
     $scope.recipient = $scope.model.recipient.data[0];
-    console.log($scope.invoice, $scope.recipient);
+    $scope.recipient.location = $scope.model.location.data[0];
   }
 });
