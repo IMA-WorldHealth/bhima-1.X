@@ -29,6 +29,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
 
   function reportFinance(model) { 
     $scope.model = model;
+    console.log($scope.model);
     parseAccountDepth($scope.model.finance);
     settupTable(fiscalYears);
 
@@ -119,16 +120,18 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   }
   
   //TODO Index relies on number of columns per iteration, this shouldn't be hardcoded
+  //derive from table definition (customised in configuration)
   function pushColumn(year) { 
-    tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
-    tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id});
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: "Year " + year.id + " Difference", key: "difference_" + year.id});
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id});
   }
 
   function popColumn(year) { 
 
     //Avoid replacing the entire array, redrawing the DOM
     tableDefinition.columns.forEach(function(column, index) {
-      if(column.id === year.id) tableDefinition.columns.splice(index, 2);
+      if(column.id === year.id) tableDefinition.columns.splice(index, 3);
     });
   }
 

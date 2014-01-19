@@ -60,13 +60,15 @@ module.exports = (function (db) {
         selectColumns.push("period_result.realisation_" + fiscal_year);
         budgetColumns.push("SUM(case when period.fiscal_year_id = " + fiscal_year +" then budget.budget else 0 end) AS `budget_" + fiscal_year + "`");
         realisationColumns.push("(SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.debit else 0 end) - SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.credit else 0 end)) AS `realisation_" + fiscal_year + "`");
-        // differenceColumns.push("(SUM(budget_" + fiscal_year + ") - SUM(realisation_" + fiscal_year + ")) AS `difference_" + fiscal_year + "`"); 
+        differenceColumns.push("(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_" + fiscal_year + "`"); 
       });
 
       query = [
         "SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id,",
         selectColumns.join(","),
-        // differenceColumns.join(","),
+        ",",
+        differenceColumns.join(","),
+        // ",(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_1`",
         "FROM",
         "(SELECT budget.account_id,",
         budgetColumns.join(","),
@@ -83,7 +85,8 @@ module.exports = (function (db) {
         "AS `period_result`",
         "ON budget_result.account_id = period_result.account_id",
         "LEFT JOIN",
-        "account ON account.id = budget_result.account_id;"
+        "account ON account.id = budget_result.account_id",
+        "GROUP BY account.id;"
       ];
 
 

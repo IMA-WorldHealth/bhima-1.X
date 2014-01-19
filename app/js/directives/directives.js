@@ -102,7 +102,7 @@
 
             var columnTemplate = [], data = isTotal ? detail.total : detail;
             scope[tableDefinition].columns.forEach(function(column) { 
-              columnTemplate.push(printf('<td %s>%d</td>', (isTotal ? 'style="font-weight: bold;"' : ''), data[column.key] || 0));
+              columnTemplate.push(printf('<td %s>{{%d | currency}}</td>', (isTotal ? 'style="font-weight: bold;"' : ''), data[column.key] || 0));
             });
             return columnTemplate.join('');
           }
