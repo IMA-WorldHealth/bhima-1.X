@@ -1,6 +1,7 @@
 //TODO Two step, download fiscal years, and then populate finance query, validate service will need to be updated
 angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger) {
   var dependencies = {}, fiscalYears = [], tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []};
+  $scope.reportState = "configure";
 
   dependencies.finance = { 
     required : true,
@@ -12,7 +13,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
     query : { 
       tables : { 
         fiscal_year : { 
-          columns : ["id"]
+          columns : ['id', 'start_year', 'fiscal_year_txt', 'start_month']
         }
       } 
     } 
