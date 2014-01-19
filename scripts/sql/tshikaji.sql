@@ -49,40 +49,32 @@ insert into `user` values
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
 
+
+-- Deleted old ones that are  were not being used.  If you
+-- think a mistake has happened, please roll this list back.
 INSERT INTO `unit` VALUES
   (0,'Root','The unseen root node',NULL,1,'',''),
 	(1,'Admin','The Administration Super-Category',0,1,'',''),
 	(2,'Enterprise','Manage the registered enterprises from here',1,0,'/partials/enterprise/','/enterprise'),
-	(3,'Form Manager','Manage your forms',1,0,'/units/formmanager/',''),
+
 	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/permission','/permission'),
 	(5,'Finance','The Finance Super-Category',0,1,'',''),
 	(6,'Account','Chart of Accounts management',1,0,'/partials/accounts/create_account','/create_account'),
-	(7,'Charts','Analyze how your company is doing',5,0,'/units/charts/',''),
+
 	(8,'Budgeting','Plan your next move',0,10,'/partials/budgeting',''),
 	(9,'Posting Journal','Daily Log',5,0,'/partials/postingjournal/','/posting_journal'),
 	(10,'Reports','Do stuff and tell people about it',0,1,'/units/reports/','reports/summary'),
 	(11,'Inventory','The Inventory Super-Category',0,1,'',''),
-	(12,'Orders','Manage your purchase orders',11,0,'/units/orders/',''),
-	(13,'Stock','What is in stock?',0,1,'',''),
-	(14,'Achats','Achats de stock',13,0,'/partials/achat','/achat'),
-	(15,'Livraison','Livraison du stock',13,0,'/partials/livraison',''),
-	(16,'Pertes','Perte en stock',13,0,'/partials/perte',''),
-	(17,'Ventes','Ventes des biens et services',0,1,'',''),
-	(18,'Malades','services rendus aux malades',17,0,'/partials/malade',''),
-	(19,'Pharmacie','vente des medicaments',17,0,'/partials/pharmacie',''),
-	(20,'Autre service','Autre service vendus',17,0,'/partials/autre',''),
+
+
+
 	(21,'Hospital','The Hospital Super-Category',0,1,'',''),
-	(22,'Pharmacy','What\'s in your pharmacy?',21,0,'/units/pharmacy/',''),
-	(23,'Laboratory','Analyze lab results',21,0,'/units/laboratory/',''),
-	(24,'Surgery','Best cuttlery here!',21,0,'/units/surgery',''),
-	(25,'Radiology','X-rays, anyone?',21,0,'/units/radiology/',''),
-	(26,'Creditors','Tous les creanciers',5,0,'/partials/creditor','/creditors'),
-	(27,'Balance','The Balance Sheet',5,0,'/units/balance/',''),
-	(28,'Transaction','The Transaction Page',5,0,'/partials/transaction',''),
-	(29,'Debitors','The debitors configuraiton page',5,0,'debitors',''),
+
+  
+
 	(30,'Fiscal Year','Fiscal year configuration page',1,0,'/partials/fiscal','fiscal'),
 	(31,'Patient Registration','Register patients',21,0,'/partials/patient','patient'),
-	(32,'Essaie journal','essaie journal',17,0,'/partials/vente','/essaie'),
+
 	(33,'Patient Records','Search for patient',21,0,'/partials/patient_records/','patient_records/'),
 	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales/0/'),
 	(35,'Sale Records','Search for a sale',5,0,'/partials/sale_records/','sale_records/'),
@@ -92,7 +84,7 @@ INSERT INTO `unit` VALUES
 	(39,'Register Stock','',11,0,'partials/inventory/register','inventory/register'),
 	(40,'Register Supplier','',11,0,'partials/inventory/creditors','creditors'),
 	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/'),
-  (42,'Income/Expense', '', 10, 0, 'partials/reports/income_expense', 'reports/income_expense'),
+
   (43,'Finance', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
   (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget'),
   (45,'Price List', 'Configure price lists!', 11, 0, 'partials/price_list', 'inventory/price_list'),
@@ -198,6 +190,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (52,1),
   (53,1),
   (54,1),
+  (55,1),
+  (56,1),
   (1,13),
   (2,13),
 	(4,13),
