@@ -36,7 +36,7 @@ angular.module('kpk.controllers')
 
   // TODO/FIXME : abstract this!
   function mysqlDate (date) {
-    return (date || new Date()).toISOString().slice(0, 10).replace('T', ' ');
+    return (date || new Date()).toISOString().slice(0, 10);
   }
 
   // paying list
@@ -66,23 +66,26 @@ angular.module('kpk.controllers')
   }
 
   $scope.loadDebitor = function (id) {
+    $scope.data.paying = [];
+    var ref = stores.debitors.get(id);
+    data.debitor_id = id;
+    $scope.data.debitor = ref.first_name + ' ' + ref.last_name;
     // this loads in a debitors current balance
     $http.get('/ledgers/debitor/' + id)
-      .then(function (response) {
-        messenger.success('The data for debitor ' +id+' loaded successfully');
-        if (!response.data) return;
-        models.ledger = response.data.map(function (row) {
-          // filter only those that do not balance
-          var deb = stores.debitors.get(row.deb_cred_id);
-          row.debitor = [deb.first_name, deb.last_name].join(' ');
-          return row;
-        }).filter(function (row) {
-          return row.balance > 0;
-        });
-      }, function (error) {
-        messenger.danger('Fetching debitors failed with :' + JSON.stringify(error));
+    .then(function (response) {
+      if (!response.data) return;
+      models.ledger = response.data.map(function (row) {
+        // filter only those that do not balance
+        var deb = stores.debitors.get(row.deb_cred_id);
+        row.debitor = [deb.first_name, deb.last_name].join(' ');
+        return row;
+      }).filter(function (row) {
+        return row.balance > 0;
       });
-    data.debitor_id = id;
+      messenger.success('Found ' + models.ledger.length + ' record(s) for ' + $scope.data.debitor);
+    }, function (error) {
+      messenger.danger('Fetching ' + $scope.data.debitor + 'failed with :' + JSON.stringify(error));
+    });
   };
 
   $scope.currency = function (id) {
@@ -172,6 +175,9 @@ angular.module('kpk.controllers')
     // run digestInvoice once more to stabilize.
     $scope.digestInvoice();
     // gather data
+    
+    console.log('data.debitor_id is : ', data.debitor_id);
+
     var doc = {
       enterprise_id : imports.enterprise.id,
       bon : 'E', // FIXME: impliment crediting

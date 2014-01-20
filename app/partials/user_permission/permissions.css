@@ -1,12 +1,19 @@
-#divuserID{
-	height: 460px;
-	overflow-y: auto;
+
+.k-list {
+  overflow : auto;
+  max-height : 450px;
+  list-style : none;
+  padding-left : 15px;
+  margin-left : 15px;
 }
 
-#divformID{
-	height: 480px;	
+
+.k-list label {
+  margin : 0 0 5px 5px;
+  padding : 0;
 }
-#divroleID{
-	height: 220px;
-	overflow-y: auto;
+
+.k-list label,
+.k-list input {
+  cursor : pointer;
 }

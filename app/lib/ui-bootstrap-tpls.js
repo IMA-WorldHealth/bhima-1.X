@@ -1022,7 +1022,7 @@ angular.module('ui.bootstrap.tabs', [])
       return function(scope, element, attrs, tabsetCtrl) {
         scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
         scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
-        scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
+        scope.direction = angular.isDefined(attrs.direction) ? angular.isDefined(scope.$parent.$eval(attrs.direction)) ? scope.$parent.$eval(attrs.direction) : attrs.direction : 'top';
         scope.tabsAbove = (scope.direction != 'below');
         tabsetCtrl.$scope = scope;
         tabsetCtrl.$transcludeFn = transclude;
@@ -1688,9 +1688,9 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
   });
 angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/accordion/accordion-group.html",
-    "<div class=\"panel-group\">\n" +
+    "<div class=\"panel-group panel-default\">\n" +
     "  <div class=\"panel-heading\" ><a class=\"accordion-toggle\" ng-click=\"isOpen = !isOpen\" accordion-transclude=\"heading\">{{heading}}</a></div>\n" +
-    "  <div class=\"panel-body\" collapse=\"!isOpen\">\n" +
+    "  <div class=\"panel-body\" collapse=\"!isOpen\" ng-class=\"{closed : !isOpen}\">\n" +
     "    <div class=\"panel\" ng-transclude></div>  </div>\n" +
     "</div>");
 }]);
@@ -1755,7 +1755,7 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 angular.module("template/tabs/tabs.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/tabs/tabs.html",
     "<div class=\"tabbable\">\n" +
-    "  <ul class=\"nav nav-tabs\">\n" +
+    "  <ul class=\"nav nav-tabs \">\n" +
     "    <li ng-repeat=\"pane in panes\" ng-class=\"{active:pane.selected}\">\n" +
     "      <a ng-click=\"select(pane)\">{{pane.heading}}</a>\n" +
     "    </li>\n" +

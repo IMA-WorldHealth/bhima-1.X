@@ -296,7 +296,7 @@ module.exports = (function (db) {
      
       // Next, we need to generate a posting session id.
       var sql = 'INSERT INTO `posting_session` ' +
-        'SELECT max(`posting_session`.`id`), ' + db.escapestr(user_id) + ', ' +
+        'SELECT max(`posting_session`.`id`) + 1, ' + db.escapestr(user_id) + ', ' +
         db.escapestr(new Date()) + ' ' +
         'FROM `posting_session`;';
 
@@ -323,20 +323,18 @@ module.exports = (function (db) {
         db.execute(query, function (err, results) {
           if (err) return callback (err);
           
-          // Finally, we can remove the data from teh posting journal 
-          var sql = 'DELETE FROM `posting_journal` WHERE `trans_id` IN (' + ids.join(', ') + ');';
+          // This SQL sums all transactions for a given period from the PJ into `period_total`, updating old values if necessary
+          var sql = 'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' + 
+                    'SELECT `account_id`, SUM(`credit`), SUM(`debit`), `fiscal_year_id`, `enterprise_id`, `period_id` FROM `posting_journal` ' +
+                    'GROUP BY `account_id` ' +
+                    'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
 
           db.execute(sql, function (err, rows) {
             if (err) return callback(err); 
 
-            // Great! If we made it this far, it means the data is 
-            // in the general ledger.  We can now think about updating 
-            // our period totals.
+            // Finally, we can remove the data from teh posting journal 
+            var sql = 'DELETE FROM `posting_journal` WHERE `trans_id` IN (' + ids.join(', ') + ');';
             
-            // This SQL sums all transactions for a given period from the PJ into `period_total`, updating old values if necessary
-            var sql = 'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' + 
-                      'SELECT `account_id`, SUM(`credit`), SUM(`debit`), `fiscal_year_id`, `enterprise_id`, `period_id` FROM `posting_journal` GROUP BY `account_id` ' +
-                      'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
             db.execute(sql, function (err, results) {
               if (err) return callback(err);
               callback(null, results);
