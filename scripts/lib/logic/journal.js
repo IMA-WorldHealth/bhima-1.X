@@ -100,17 +100,15 @@ module.exports = (function (db) {
     date : function (date) {
       // returns a mysql-compatible date
       // Note : this transforms things into a date, not date + time
-      // FIXME : There is a bug, where this changes timezones if you
-      // are at midnight and converts the day to the day before.
-      var offset, d;
-      /*
+
       if (date) {
-        offset = new Date(date).getDate() + 1;
-        d = new Date(new Date(date).setDate(offset));
+        var year = String(date.getFullYear());
+        var month = String(date.getMonth() + 1);
+        month = month.length === 1 ? '0' + month : month;
+        var day = String(date.getDate()).length === 1 ? '0' + String(date.getDate()) : String(date.getDate());
+        return [year, month, day].join('-');    
       }
-      */
-      d = date; // FIXME: Why do we need the if (date) clause?  It breaks on Steven's machine 
-      return (date ? d : new Date()).toISOString().slice(0, 10);
+      else return new Date().toISOString().slice(0,10);
     },
   
     period : function (date, callback) {
@@ -291,13 +289,14 @@ module.exports = (function (db) {
 
       var reference_payment = results[0];
       var enterprise_id = reference_payment.enterprise_id;
-      var date = reference_payment.date;
 
+      var date = reference_payment.date;
+      console.log('\n In table cash, I read out the date ', date, 'for id:', id, '\n\n');
 
       // first check - are we in the correct period/fiscal year?
       check.validPeriod(enterprise_id, date, function (err) {
-        if (err) return callback(err);
 
+        console.log('\n Date is now:', date, '\n');
 
         // second check - is there a bon number defined?
         var bon_num_exist = validate.exists(reference_payment.bon_num);
@@ -334,6 +333,8 @@ module.exports = (function (db) {
              
             get.period(date, function (err, period_object) {
               if (err) return callback(err);
+
+               console.log('\n Date is now:', date, '\n');
 
               // we now have the relevant period!
 
