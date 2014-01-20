@@ -1103,9 +1103,9 @@ insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `
  	(200, 'CHTRAC', 'Trachectome'                     , 25.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
  	(200, 'EXKYSB', 'Kyste Sublingual'                , 23.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
  	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 32.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
-  (200, 'FCEMPL', 'Fiches employee',                , 4.00, 4, 1, 0, 0, 0, 0, 0, 0),
-  (200, 'FCINFA', 'Fiches Infante',                 , 4.00, 4, 1, 0, 0, 0, 0, 0, 0),
-  (200, 'FCADUL', 'Fiches Adulte',                  , 8.00, 4, 1, 0, 0, 0, 0, 0, 0);
+  (200, 'FCEMPL', 'Fiches employee'                 , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
+  (200, 'FCINFA', 'Fiches Infante'                  , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
+  (200, 'FCADUL', 'Fiches Adulte'                   , 8.00,  4, 1, 0, 0, 0, 0, 0, 0, 0);
 
 -- configure creditor
 insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
