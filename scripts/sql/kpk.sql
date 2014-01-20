@@ -716,7 +716,7 @@ create table `cash` (
   `cost`            decimal(19,2) unsigned not null default 0,
   `cashier_id`      smallint unsigned not null,
   `cashbox_id`      smallint unsigned not null,
-  `text`            text,
+  `description`            text,
   primary key (`id`),
   key `currency_id` (`currency_id`),
   key `cashier_id` (`cashier_id`),
