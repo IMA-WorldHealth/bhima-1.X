@@ -434,8 +434,7 @@ module.exports = (function (db) {
         '`purchase`.`creditor_id`, `purchase`.`purchaser_id`, `purchase`.`discount`, `purchase`.`invoice_date`, ' +
         '`purchase`.`note`, `purchase`.`posted` ' +
       'FROM `purchase` ' + 
-      'WEHRE id=' + db.escapestr(id) + ';';
-    
+      'WHERE id=' + db.escapestr(id) + ';';
     
     db.execute (sql, function (err, rows) {
       if (err) return done(err);
@@ -443,6 +442,7 @@ module.exports = (function (db) {
       var reference_purchase = rows[0];
       var sql = 
         '';
+
     });
   }
 
