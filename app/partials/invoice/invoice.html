@@ -112,12 +112,13 @@
               <thead>
                 <tr><th>Description</th><th>Amount</th></tr> 
               </thead>
-              <tbody class="items">
-                <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price | currency}}</td></tr> 
+              <tbody class="items"> 
+                <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>Invoice # {{invoice.invoice_id}}</b></td></tr> 
+                <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price | currency}}</td></tr> 
               </tbody>
               <tbody class="totals">
                 <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>
-                <tr><td class="no-border">Amount Received</td><td>{{invoice.ledger.credit | currency}}</td></tr>
+                <tr><td class="no-border">Amount Received</td><td>{{cashTransaction.cost  | currency}}</td></tr>
                 <tr><td class="no-border">Balance Due</td><td>{{invoice.ledger.balance | currency}}</td></tr>
               </tbody>
             </table>

@@ -112,8 +112,8 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
 
-    $scope.cashTransaction = $scope.model.cash.data[0];
+    if(model.cash) $scope.cashTransaction  = $scope.model.cash.data[0];
 
-    console.log($scope.invoice.ledger);
+    console.log($scope.model.cash);
   }
 });
