@@ -1089,20 +1089,23 @@ insert into `inv_type` values
   (2,'Service');
 
 insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
-  ('Services' , 'S', 90), -- 164
-	('Medicines', 'M', 80), -- 164, 167
-	('Surgery'  , 'C', 88), -- 171
-  ('Fiches'   , 'F', 87);
+  ('Services' , 'S', 92), -- 301 
+	('Medicines', 'M', 92), -- 301
+	('Surgery'  , 'C', 94), -- 303 
+  ('Fiches'   , 'F', 93); -- 302
 
 insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
-  (200, 'CHCRAN', 'Craniotomie'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHPASU', 'Parotidectomie Superficielle'    , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHTRAC', 'Trachectome'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'EXKYSB', 'Kyste Sublingual'                , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0);
+  (200, 'CHCRAN', 'Craniotomie'                     , 21.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 18.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 17.50, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHPASU', 'Parotidectomie Superficielle'    , 16.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHTRAC', 'Trachectome'                     , 25.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYSB', 'Kyste Sublingual'                , 23.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 32.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+  (200, 'FCEMPL', 'Fiches employee',                , 4.00, 4, 1, 0, 0, 0, 0, 0, 0),
+  (200, 'FCINFA', 'Fiches Infante',                 , 4.00, 4, 1, 0, 0, 0, 0, 0, 0),
+  (200, 'FCADUL', 'Fiches Adulte',                  , 8.00, 4, 1, 0, 0, 0, 0, 0, 0);
 
 -- configure creditor
 insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
