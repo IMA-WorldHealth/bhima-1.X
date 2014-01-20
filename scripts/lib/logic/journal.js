@@ -103,12 +103,14 @@ module.exports = (function (db) {
       // FIXME : There is a bug, where this changes timezones if you
       // are at midnight and converts the day to the day before.
       var offset, d;
+      /*
       if (date) {
         offset = new Date(date).getDate() + 1;
         d = new Date(new Date(date).setDate(offset));
       }
-
-      return (date ? d : new Date()).toISOString().slice(0, 10).replace('T', ' ');
+      */
+      d = date; // FIXME: Why do we need the if (date) clause?  It breaks on Steven's machine 
+      return (date ? d : new Date()).toISOString().slice(0, 10);
     },
   
     period : function (date, callback) {
