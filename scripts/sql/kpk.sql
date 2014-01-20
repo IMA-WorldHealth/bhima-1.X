@@ -319,6 +319,8 @@ create table `kpk`.`price_list` (
   enterprise_id   smallint unsigned not null,
   id              smallint  unsigned not null,
   name            varchar(100) not null,
+  inventory_type  smallint unsigned, -- these are not strict requirements, just for ease.
+  inventory_group smallint unsigned, -- this as well.
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)

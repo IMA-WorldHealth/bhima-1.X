@@ -1022,9 +1022,7 @@ angular.module('ui.bootstrap.tabs', [])
       return function(scope, element, attrs, tabsetCtrl) {
         scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
         scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
-        console.log('attrs.direction', attrs.direction);
         scope.direction = angular.isDefined(attrs.direction) ? angular.isDefined(scope.$parent.$eval(attrs.direction)) ? scope.$parent.$eval(attrs.direction) : attrs.direction : 'top';
-        console.log('scope.direction:', scope.direction);
         scope.tabsAbove = (scope.direction != 'below');
         tabsetCtrl.$scope = scope;
         tabsetCtrl.$transcludeFn = transclude;

@@ -199,12 +199,14 @@ app.get('/tree', function (req, res, next) {
 
 app.get('/price_list/:id', function (req, res, next) {
   var sql = 
-    'SELECT `price_list`.`id`, `price_list`.`name`, COUNT(`price_list_detail`.`list_id`) AS `count` ' + 
+    'SELECT COUNT(`price_list`.`id`) AS `plcount`, `price_list`.`id`, `price_list`.`name`, ' + 
+    'COUNT(`price_list_detail`.`list_id`) AS `count` ' + 
     'FROM `price_list` LEFT JOIN `price_list_detail` ON  ' + 
       '`price_list`.`id`=`price_list_detail`.`list_id` ' +
     'WHERE `price_list`.`enterprise_id`=' + db.escapestr(req.params.id) + ';';
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
+    if (rows.length === 1 && rows[0].plcount === 0) return res.send([]);
     res.send(rows);
   });
 });
