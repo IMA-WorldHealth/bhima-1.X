@@ -276,8 +276,6 @@ module.exports = (function (db) {
   }
 
   function handleCash (id, user_id, callback) {
-
-
     // posting from cash to the journal.
     var sql = 
       'SELECT `cash`.`id`, `cash`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  + 
@@ -428,7 +426,25 @@ module.exports = (function (db) {
     });
   }
 
-  function handlePurchase () {}
+  function handlePurchase (id, user_id, done) {
+    // posting purchase requests 
+    var sql = 
+      'SELECT `purchase`.`enterprise_id`, `purchase`.`id`, `purchase`.`cost`, `purchase`.`currency_id`, ' +
+        '`purchase`.`creditor_id`, `purchase`.`purchaser_id`, `purchase`.`discount`, `purchase`.`invoice_date`, ' +
+        '`purchase`.`note`, `purchase`.`posted` ' +
+      'FROM `purchase` ' + 
+      'WEHRE id=' + db.escapestr(id) + ';';
+    
+    
+    db.execute (sql, function (err, rows) {
+      if (err) return done(err);
+  
+      var reference_purchase = rows[0];
+      var sql = 
+        '';
+    });
+  }
+
 
   var service_name = '';
   var self = {};

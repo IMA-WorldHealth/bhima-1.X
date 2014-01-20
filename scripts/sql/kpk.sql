@@ -87,8 +87,8 @@ create table `permission` (
   primary key (`id`),
   key `id_unit` (`id_unit`),
   key `id_user` (`id_user`),
-  constraint foreign key (`id_unit`) references `unit` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`id_user`) references `user` (`id`) on DELETE cascade on update cascade
+  constraint foreign key (`id_unit`) references `unit` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`id_user`) references `user` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -275,13 +275,16 @@ create table `account` (
 --
 drop table if exists `creditor_group`;
 create table `creditor_group` (
-  `id`          smallint not null auto_increment,
-  `group_txt`   varchar(45),
-  `account_id`  int unsigned not null,
-  `locked`      boolean not null default 0,
+  `enterprise_id` smallint unsigned not null,
+  `id`            smallint unsigned not null auto_increment,
+  `name`          varchar(80),
+  `account_id`    int unsigned not null,
+  `locked`        boolean not null default 0,
   primary key (`id`),
   key `account_id` (`account_id`),
-  constraint foreign key (`account_id`) references `account` (`id`) on DELETE cascade on update cascade
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -289,12 +292,12 @@ create table `creditor_group` (
 --
 drop table if exists `creditor`;
 create table `creditor` (
-  `id`                int unsigned not null auto_increment,
-  `creditor_group_id` smallint not null,
+  `id`        int unsigned not null auto_increment,
+  `group_id`  smallint unsigned not null,
   `text`      varchar(45),
   primary key (`id`),
-  key `creditor_group_id` (`creditor_group_id`),
-  constraint foreign key (`creditor_group_id`) references `creditor_group` (`id`) on DELETE cascade on update cascade
+  key `group_id` (`group_id`),
+  constraint foreign key (`group_id`) references `creditor_group` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -365,11 +368,11 @@ create table `debitor_group` (
   key `price_list_id` (`price_list_id`),
   key `tax_id` (`tax_id`),
   key `type_id` (`type_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
   constraint foreign key (`price_list_id`) references `price_list` (`id`),
-  constraint foreign key (`account_id`) references `account` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`location_id`) references `location` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`payment_id`) references `payment` (`id`) on DELETE cascade on update cascade,
+  constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`payment_id`) references `payment` (`id`) on delete cascade on update cascade,
   constraint foreign key (`tax_id`) references `tax` (`id`),
   constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
@@ -407,8 +410,8 @@ create table `supplier` (
   primary key (`id`),
   key `creditor_id` (`creditor_id`),
   key `location_id` (`location_id`),
-  constraint foreign key (`location_id`) references `location` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`creditor_id`) references `creditor` (`id`) on DELETE cascade on update cascade
+  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`creditor_id`) references `creditor` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -477,7 +480,7 @@ create table `department` (
   `note`          text,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on DELETE cascade on update cascade
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -498,10 +501,10 @@ create table `employee` (
   key `location_id` (`location_id`),
   key `department_id` (`department_id`),
   key `creditor_id` (`creditor_id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`location_id`) references `location` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`creditor_id`) references `creditor` (`id`) on DELETE cascade on update cascade,
-  constraint foreign key (`department_id`) references `department` (`id`) on DELETE cascade on update cascade
+  constraint foreign key (`debitor_id`) references `debitor` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`creditor_id`) references `creditor` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`department_id`) references `department` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -606,7 +609,7 @@ create table `sale_item` (
   primary key (`id`),
   key `sale_id` (`sale_id`),
   key `inventory_id` (`inventory_id`),
-  constraint foreign key (`sale_id`) references `sale` (`id`) on DELETE cascade,
+  constraint foreign key (`sale_id`) references `sale` (`id`) on delete cascade,
   constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
 
@@ -667,7 +670,7 @@ create table `purchase_item` (
   primary key (`id`),
   key `purchase_id` (`purchase_id`),
   key `inventory_id` (`inventory_id`),
-  constraint foreign key (`purchase_id`) references `purchase` (`id`) on DELETE cascade,
+  constraint foreign key (`purchase_id`) references `purchase` (`id`) on delete cascade,
   constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
 
