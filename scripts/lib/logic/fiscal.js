@@ -36,7 +36,7 @@ module.exports = (function(db) {
     })
     
     .then(function(periodSuccess) { 
-      return createBudgetRecords(enterprise, periodSuccess.insertId, periodSuccess.affectedRows);
+      return createBudgetRecords(enterprise, periodSuccess.insertId, periodSuccess.affectedRows, fiscalInsertId);
     }, function(err) { 
       throw err;
     })
@@ -120,13 +120,15 @@ module.exports = (function(db) {
     return deferred.promise;
   }
 
-  function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted) { 
+  function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted, fiscalYearId) { 
     var accountIdList, budgetSQL;
     var deferred = q.defer();
     var periodIdList  = [];
     var budgetSQLHead = 'INSERT INTO `budget` (account_id, period_id, budget) VALUES ';
-    var budgetSQLBody = [];
+    var budgetSQLBody = [], totalsSQLBody = [];
     var DEFAULT_BUDGET = 0;
+
+    var budgetOptions = [0, 10, 20, 30, 50];
 
     //FIXME - this is so Bad. Periods are inserted as a group returning the inital insert value, extrapolating period Ids from this and number of rows affected
     for(var i = insertedPeriodId, l = (totalPeriodsInserted + insertedPeriodId); i < l; i++) { 
@@ -138,11 +140,11 @@ module.exports = (function(db) {
       accountIdList = res;
       accountIdList.forEach(function(account) { 
         periodIdList.forEach(function(period) { 
-          budgetSQLBody.push('(' + account.id + ',' + period + ',' + DEFAULT_BUDGET + ')');
-        })
+          budgetSQLBody.push('(' + account.id + ',' + period + ',' + budgetOptions[(Math.round(Math.random() * (budgetOptions.length - 1)))] + ')');
+        });
       });
 
-      budgetSQL = budgetSQLHead + budgetSQLBody.join(',')
+      budgetSQL = budgetSQLHead + budgetSQLBody.join(',');
       db.execute(budgetSQL, function(err, ans) { 
         if(err) return deferred.reject(err);
         deferred.resolve(ans);
