@@ -25,7 +25,7 @@ angular.module('kpk.controllers')
     .then(function (store) {
       models.creditor_group = store.data;
       stores.creditor_group = store;
-      messenger.success('Successfully Loaded: creditor_group');
+      messenger.success('<b>Successfully Loaded</b>: creditor_group', 5000);
     }, handleErrors);
   }
 
