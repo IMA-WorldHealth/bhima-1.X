@@ -798,7 +798,7 @@
   });
 
 
-  services.service('messenger', function ($timeout) {
+  services.service('messenger', function ($timeout, $sce) {
     var self = this;
     self.messages = [];
     var indicies = {};
@@ -806,6 +806,7 @@
     self.push = function (data, timer) {
       var id = Date.now();
       data.id = id;
+      data.msg = $sce.trustAsHtml(data.msg); // allow html insertion
       self.messages.push(data); 
       indicies[id] = $timeout(function () {
         var index, i = self.messages.length;

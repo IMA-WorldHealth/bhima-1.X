@@ -39,7 +39,7 @@
   <div id="kpk-container"> 
     <div class="hidden-print">
       <div ng-controller="messageCtrl" class="kpk-messenger">
-        <alert ng-repeat="alert in messages" type="alert.type" close="close($index)"><span ng-bind="alert.msg"></span></alert>
+        <alert ng-repeat="alert in messages" type="alert.type" close="close($index)"><span ng-bind-html="alert.msg"></span></alert>
       </div>
     </div>
     <div ng-view id="kpk-view"></div>
