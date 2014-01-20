@@ -1,10 +1,13 @@
 angular.module('kpk.controllers')
-.controller('creditorsController', function ($scope, $q, connect) {
+.controller('creditorsController', function ($scope, $q, connect, appstate) {
   'use strict';
 
   //initialisations
   $scope.creditor = {};
   $scope.creditorExiste = 0;
+
+  // TODO : use validation module to run this
+  var enterprise = appstate.get('enterprise');
   
   //populating creditors
   getCreditors();
@@ -24,7 +27,10 @@ angular.module('kpk.controllers')
   }
 
   function getGroups(){
-    var sql = {tables:{'creditor_group':{columns:['id', 'name', 'account_id']}}};
+    var sql = {
+      tables:{'creditor_group': {columns:['id', 'name', 'account_id']}},
+      where : ['creditor_group.enterprise_id=' + enterprise.id]
+    };
     connect.req(sql).then(function (resultat) {
       $scope.groups = resultat.data;
     });
