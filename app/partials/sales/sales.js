@@ -78,7 +78,7 @@ angular.module('kpk.controllers')
 		function generateRouteInvoice() { 
 			//validate route parameters
 			console.log(paramDebtorId, paramInventoryId, !!paramDebtorId, !!paramInventoryId);
-			//super cryptic - if either boolean value is false, it's hot or some excuse  	
+      //super cryptic - if either boolean value is false, it's hot or some excuse
 			if(!(!!paramDebtorId && !!paramInventoryId)) return;
 			$scope.debtor = $scope.debitor_store.get(paramDebtorId);
       $scope.loadInventory();
@@ -114,7 +114,7 @@ angular.module('kpk.controllers')
 
       var price_list;
       $scope.inventory = [];
-      if (angular.isNumber($scope.debtor.price_list_id)) {
+      if ($scope.debtor && angular.isNumber($scope.debtor.price_list_id)) {
         price_list = {
           identifier: "inventory_id",
           tables : { "price_list" : {columns: ["id", "list_id", "inventory_id", "price", "discount"]}},
@@ -262,7 +262,7 @@ angular.module('kpk.controllers')
 
     $scope.formatDebtor = function(debtor) {
       return "[" + debtor.debitor_id + "] " + debtor.first_name + " " + debtor.last_name;
-    }
+    };
 
     init();
   });

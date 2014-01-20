@@ -22,7 +22,7 @@ angular.module('kpk.controllers')
   };
 
   imports.currency = {tables : { "currency" : { columns: ["id", "symbol"] }}};
-  imports.cash = {tables: { "cash" : { columns: ["id", "bon", "bon_num", "date", "debit_account", "credit_account", "currency_id", "cashier_id", "cost", "text"] }}};
+  imports.cash = {tables: { "cash" : { columns: ["id", "bon", "bon_num", "date", "debit_account", "credit_account", "currency_id", "cashier_id", "cost", "description"] }}};
   imports.cash_items = {tables: { 'cash_item' : { columns: ["id", "cash_id", "allocated_cost", "invoice_id"] }}};
 
 
@@ -175,25 +175,25 @@ angular.module('kpk.controllers')
     // run digestInvoice once more to stabilize.
     $scope.digestInvoice();
     // gather data
-    
-    console.log('data.debitor_id is : ', data.debitor_id);
+
+    var bon_num = generateBonNumber(models.cash, 'E');
+    var date = mysqlDate(new Date());
 
     var doc = {
       enterprise_id : imports.enterprise.id,
       bon : 'E', // FIXME: impliment crediting
-      bon_num : generateBonNumber(models.cash, 'E'),
-      date : mysqlDate(new Date()),
+      bon_num : bon_num,
+      date : date,
       debit_account : imports.enterprise.cash_account,
       credit_account : stores.debitors.get(data.debitor_id).account_id,
       currency_id : data.currency,
       cost: data.payment,
+      description : 'CP  E/' + bon_num + '/'+data.debitor.replace(' ', '/') + '/' +date, // this is hacky.  Restructure
       cashier_id : 1, // TODO
       cashbox_id : 1,  // TODO,
       deb_cred_id : data.debitor_id,//FIXME: Do it goodly
       deb_cred_type : 'D' //FIXME: Do it goodly
     };
-
-    console.log('Document : ', doc);
 
     connect.basicPut('cash', [doc])
     .then(function (res) {
@@ -230,7 +230,7 @@ angular.module('kpk.controllers')
         .then(function (res) {
           $scope.loadDebitor(data.debitor_id);
           $scope.data.paying = [];
-          $scope.payment = 0;
+          $scope.data.payment = 0;
         }, function(err) {
           messenger.danger('Error: ', JSON.stringify(err));
         });
@@ -238,7 +238,7 @@ angular.module('kpk.controllers')
         messenger.danger('Error' + JSON.stringify(error));
       });
     }, function (err) {
-      messenger.danger('Cash posting failed with Error: ' + error);
+      messenger.danger('Cash posting failed with Error: ' + err);
     });
     
   };

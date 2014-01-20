@@ -282,7 +282,7 @@ module.exports = (function (db) {
     var sql = 
       'SELECT `cash`.`id`, `cash`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  + 
         '`cash`.`deb_cred_id`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`cashier_id`, ' +
-        '`cash`.`cashbox_id`, `cash`.`text`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' + 
+        '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' + 
         '`cash`.`bon`, `cash`.`bon_num` ' +
       'FROM `cash` JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` ' +
       'WHERE `cash`.`id`=' + db.escapestr(id) + ';'; 
@@ -378,7 +378,7 @@ module.exports = (function (db) {
                       '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
                       '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                      '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money + 
+                      '`cash`.`description`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money + 
                       '`cash_item`.`invoice_id`, `cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                       [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` JOIN `cash_item` ON ' + 
@@ -401,7 +401,7 @@ module.exports = (function (db) {
                       '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
                       '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' + 
-                      '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money + 
+                      '`cash`.`description`, `cash`.`bon_num`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money + 
                       '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                       '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` JOIN `cash_item` ON ' + 
