@@ -7,6 +7,7 @@
   var services = angular.module('kpk.services', []);
     
   services.service('kpkUtilitaire', function() { 
+
     this.formatDate = function(dateString) {
       return new Date(dateString).toDateString();
     };
