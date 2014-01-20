@@ -762,7 +762,7 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (76, 1, 0, 200, 26, "26. PRETS ET AUTRES CREANCES A LONG TERME", 3, 0),
 (77, 1, 0, 200, 260, "Prêts à long terme", 2, 26),
 (78, 1, 0, 200, 265, "Comptes bancaires bloqués à long terme", 2, 26),
-(79, 1, 0, 200, 27, "27. PRETS ET AUTRES CREANCES A MOPYEN TERME", 3, 0),
+(79, 1, 0, 200, 27, "27. PRETS ET AUTRES CREANCES A MOYEN TERME", 3, 0),
 (80, 1, 0, 200, 270, "Prêts à moyen terme", 2, 27),
 (81, 1, 0, 200, 273, "Prêts à des entreprises apparentées à moyen terme", 2, 27),
 (82, 1, 0, 200, 28, "28. AMORTISSEMENT ET PROVISIONS POUR DEPRECIATION DES COMPTES DE LA CLASSE II", 3, 0),
@@ -1064,15 +1064,12 @@ insert into `debitor_group_type` (`id`, `type`) values
 
 
 insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `contact_id`, `tax_id`, `type_id`) values 
-
-  (200, 1, "Employees"                 , 65, 1, 1, 1, 1, 1),
-  (200, 2, "Fr. Reinhart Conventionees", 63, 1, 1, 1, 1, 2),
-  (200, 3, "Normal Debitors"           , 59, 1, 1, 1, 1, 3),
-  (200, 4, "Central Pharmacy"          , 56, 1, 1, 1, 1, 3),
-  (200, 5, "Other Clients"             , 66, 1, 1, 1, 1, 4);
+  (200, 1, "Fr. Reinhart Conventionees", 146, 1, 1, 1, 1, 2), -- 'society x'
+  (200, 2, "Normal Debitors"           , 147, 1, 1, 1, 1, 3), -- 'society y'
+  (200, 3, "Other Clients"             , 148, 1, 1, 1, 1, 4); -- 'clients'
 
 insert into `debitor` (`id`, `group_id`, `text`) values 
-  (1, 3, "Debitor account for patient 1");
+  (1, 1, "Jon Niles");
 
 insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
   (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
@@ -1094,7 +1091,8 @@ insert into `inv_type` values
 insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
   ('Services' , 'S', 90), -- 164
 	('Medicines', 'M', 80), -- 164, 167
-	('Surgery'  , 'C', 88); -- 171
+	('Surgery'  , 'C', 88), -- 171
+  ('Fiches'   , 'F', 87);
 
 insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
   (200, 'CHCRAN', 'Craniotomie'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
@@ -1105,6 +1103,13 @@ insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `
  	(200, 'CHTRAC', 'Trachectome'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
  	(200, 'EXKYSB', 'Kyste Sublingual'                , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
  	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0);
+
+-- configure creditor
+insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
+  (200, 'Medicine Suppliers', 139); -- account #401
+
+insert into `creditor` (`text`, `group_id`) values 
+  ('Pharmacy Centrale', 1); -- reference the above creditor group
 
 -- configure department
 
