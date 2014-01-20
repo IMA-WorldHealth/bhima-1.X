@@ -756,7 +756,7 @@
 
     function basicDelete (table, id, column) {
       if (!column) column = "id";
-      $http.delete(['/data/', table, '/', column, '/', id].join(''));
+      return $http.delete(['/data/', table, '/', column, '/', id].join(''));
     }
 
 //    TODO reverse these two methods? I have no idea how this happened

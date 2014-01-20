@@ -24,7 +24,7 @@ angular.module('kpk.controllers')
 
 
   imports.type = {tables : { 'debitor_group_type' : { columns : ['id', 'type']}}};
-  imports.price_list = {tables : { 'price_list_name' : { columns : ['id', 'name']}}};
+  imports.price_list = {tables : { 'price_list' : { columns : ['id', 'name']}}};
 
   var dependencies = ['debitor_group', 'account', 'payment', 'type', 'price_list'];
 
