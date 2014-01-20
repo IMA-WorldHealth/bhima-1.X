@@ -4,33 +4,33 @@
 
 <section class="underline hidden-print">
   <div class="pull-right">
-    <button ng-click="reportState='configure'" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</button>
-    <!-- <span class="dropdown"> -->
-    <!--   <a class="capital btn btn&#45;default btn&#45;sm dropdown&#45;toggle"><span class="glyphicon glyphicon&#45;cog"></span> {{'CONFIGURE' | translate}}</a> -->
-    <!--   <ul class="dropdown&#45;menu"> -->
-    <!--     <li class="dropdown&#45;header">Report Years</li> -->
-    <!--     <li ng&#45;repeat="option in tableDefinition.options"> -->
-    <!--       <a ng&#45;click="toggleYear(option)" href=""> -->
-    <!--         <i class="glyphicon" ng&#45;class="{'glyphicon&#45;unchecked' : !option.active, 'glyphicon&#45;check' : !!option.active}"></i> {{option.id}} -->
-    <!--       </a> -->
-    <!--     </li> -->
-    <!--   </ul> -->
-    <!-- </span>  -->
+    <!-- <button ng&#45;click="reportState='configure'" class="btn btn&#45;default btn&#45;sm capital"><span class="glyphicon glyphicon&#45;cog"></span> {{'CONFIGURE' | translate}}</button> -->
+    <span class="dropdown">
+      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">Report Years</li>
+        <li ng-repeat="option in tableDefinition.options">
+          <a ng-click="toggleYear(option)" href="">
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !option.active, 'glyphicon-check' : !!option.active}"></i> {{option.id}}
+          </a>
+        </li>
+      </ul>
+    </span> 
     <button ng-click="printReport()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
   </div>
 </section>
 
 <!-- Grey background hack -->
-<div ng-cloak ng-class="{'reportBody': reportState!='configure'}">
-  <div ng-switch on="reportState">
-    
-    <div ng-switch-default>
-      <div class="reportBody">
-        <div class=reportFrame"></div>  
-      </div>
-    </div>
-
-    <div ng-switch-when="report">
+<!-- <div ng&#45;cloak ng&#45;class="{'reportBody': reportState!='configure'}"> -->
+<!--   <div ng&#45;switch on="reportState"> -->
+<!--      -->
+<!--     <div ng&#45;switch&#45;default> -->
+<!--       <div class="reportBody"> -->
+<!--         <div class=reportFrame"></div>   -->
+<!--       </div> -->
+<!--     </div> -->
+<!--  -->
+<!--     <div ng&#45;switch&#45;when="report"> -->
       <div class="reportBody">
         <div class="reportFrame">
           <h4>{{enterprise.name}}</h4>
@@ -47,84 +47,84 @@
           </table>
         </div>
       </div>
-    </div> <!-- End report state -->
-
-    <div ng-switch-when="configure">
-      
-      <div class="container">
-      <!-- Configure Preview -->
-      <div class="row">
-        <div class="col-xs-12">
-          Report Preview
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12">
-          <table class="reportTable">
-            <thead>
-              <tr>
-                <th>Account</th>
-                <th>Description</th>
-                <th ng-repeat="year in configuration.reportFiscal">
-                  {{year}}
-                </th>
-            </thead>
-          </table>
-        </div>
-      </div>
-
-      <!-- Configure Fiscal Years -->
-      <div class="row">
-        <div class="col-xs-12">
-          Fiscal Years
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12">
-        <table class="table table-bordered table-condensed">
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Description</th>
-              <th><span class="glyphicon glyphicon-eye-open"></span> Included</th>
-              <th>Realisation</th>
-              <th>Budget</th>
-              <th>Difference</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="year in model.fiscal.data">
-              <td>{{year.start_year}}</td>
-              <td>{{year.fiscal_year_txt}}</td>
-              <td><input type="checkbox"></input></td>
-              <td><input type="checkbox"></input></td>
-              <td><input type="checkbox"></input></td>
-              <td><input type="checkbox"></input></td>
-            </tr>
-          </tbody>
-
-        </table>
-        </div>
-      </div>
-
-      <!-- Configure Accounts -->
-      <div class="row">
-        <div class="col-xs-12">
-          Accounts
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12">
-          <!-- <input type="checkbox"></input> -->
-          <!-- <label>Total accounts</label>  -->
-          <!-- <input type="checkbox"></input> -->
-          <!-- <label>Include account categories</label> -->
-        </div>
-      </div>
-    </div> <!-- End configure state -->
-    </div>
-  </div>
-</div>
+    <!-- </div> <!&#45;&#45; End report state &#45;&#45;> -->
+<!--  -->
+<!--     <div ng&#45;switch&#45;when="configure"> -->
+<!--        -->
+<!--       <div class="container"> -->
+<!--       <!&#45;&#45; Configure Preview &#45;&#45;> -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           Report Preview -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           <table class="reportTable"> -->
+<!--             <thead> -->
+<!--               <tr> -->
+<!--                 <th>Account</th> -->
+<!--                 <th>Description</th> -->
+<!--                 <th ng&#45;repeat="year in configuration.reportFiscal"> -->
+<!--                   {{year}} -->
+<!--                 </th> -->
+<!--             </thead> -->
+<!--           </table> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <!&#45;&#45; Configure Fiscal Years &#45;&#45;> -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           Fiscal Years -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--         <table class="table table&#45;bordered table&#45;condensed"> -->
+<!--           <thead> -->
+<!--             <tr> -->
+<!--               <th>Year</th> -->
+<!--               <th>Description</th> -->
+<!--               <th><span class="glyphicon glyphicon&#45;eye&#45;open"></span> Included</th> -->
+<!--               <th>Realisation</th> -->
+<!--               <th>Budget</th> -->
+<!--               <th>Difference</th> -->
+<!--             </tr> -->
+<!--           </thead> -->
+<!--           <tbody> -->
+<!--             <tr ng&#45;repeat="year in model.fiscal.data"> -->
+<!--               <td>{{year.start_year}}</td> -->
+<!--               <td>{{year.fiscal_year_txt}}</td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--             </tr> -->
+<!--           </tbody> -->
+<!--  -->
+<!--         </table> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <!&#45;&#45; Configure Accounts &#45;&#45;> -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           Accounts -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           <!&#45;&#45; <input type="checkbox"></input> &#45;&#45;> -->
+<!--           <!&#45;&#45; <label>Total accounts</label>  &#45;&#45;> -->
+<!--           <!&#45;&#45; <input type="checkbox"></input> &#45;&#45;> -->
+<!--           <!&#45;&#45; <label>Include account categories</label> &#45;&#45;> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> <!&#45;&#45; End configure state &#45;&#45;> -->
+<!--     </div> -->
+<!--   </div> -->
+<!-- </div> -->

@@ -17,49 +17,18 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
       } 
     } 
   }; 
-
-  cache.fetch('reportConfiguration').then(loadConfiguration);
-  
-  function loadConfiguration(configurationRecord) { 
-    if(configurationRecord) { 
-      console.log('[reportFinance] no config file found');
-      initialiseConfiguration();
-      return;
-    }
     
-    $scope.reportState = "report";
-    buildReport();
-  }
-
-  function initialiseConfiguration(configurationObject) { 
-    $scope.reportState = "configure";
-    configuration = { 
-      reportFiscal: [],
-      totalAccounts: true,
-      includeCategories: true
-    };
-    cache.put('reportConfiguration', configuration);
-    validate.process(dependencies, ['fiscal']).then(settupConfiguration); 
-  }
-
-  function settupConfiguration(model) { 
-    $scope.model = model; 
-    console.log(configuration);
-    $scope.configuration = configuration;
-    configuration.reportFiscal.push(model.fiscal.data[0].id);
-
-  }
+  validate.process(dependencies, ['fiscal']).then(buildReportQuery);
 
   function buildReportQuery(model) {
-    fiscalYears.push(model.fiscal.data[0].id);
-    // model.fiscal.data.forEach(function(year) { fiscalYears.push(year.id); });
+    // fiscalYears.push(model.fiscal.data[0].id);
+    model.fiscal.data.forEach(function(year) { fiscalYears.push(year.id); });
     dependencies.finance.query = '/reports/finance/?' + JSON.stringify({fiscal: fiscalYears});
     return validate.process(dependencies).then(reportFinance);
   }
 
   function reportFinance(model) { 
     $scope.model = model;
-    console.log($scope.model);
     parseAccountDepth($scope.model.finance);
     settupTable(fiscalYears);
 
@@ -152,9 +121,10 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   //TODO Index relies on number of columns per iteration, this shouldn't be hardcoded
   //derive from table definition (customised in configuration)
   function pushColumn(year) { 
-    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: "Year " + year.id + " Difference", key: "difference_" + year.id});
-    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
-    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id});
+    var label = $scope.model.fiscal.get(year.id).start_year || "Year " + year.id;
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Difference", key: "difference_" + year.id});
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Budget", key: "budget_" + year.id});
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Realisation", key: "realisation_" + year.id});
   }
 
   function popColumn(year) { 
@@ -172,4 +142,40 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   $scope.tableDefinition = tableDefinition;
 
   $scope.financeGroups = financeGroups;
+  
+  /*
+   * Report configuration code, should be implemented when finalising report
+  */
+  /*
+  cache.fetch('reportConfiguration').then(loadConfiguration);
+  
+  function loadConfiguration(configurationRecord) { 
+    if(configurationRecord) { 
+      console.log('[reportFinance] no config file found');
+      initialiseConfiguration();
+      return;
+    }
+    
+    $scope.reportState = "report";
+    validate.process(dependencies, ['fiscal']).then(buildReportQuery); 
+  }
+
+  function initialiseConfiguration(configurationObject) { 
+    $scope.reportState = "configure";
+    configuration = { 
+      reportFiscal: [],
+      totalAccounts: true,
+      includeCategories: true
+    };
+    cache.put('reportConfiguration', configuration);
+    validate.process(dependencies, ['fiscal']).then(settupConfiguration); 
+  }
+
+  function settupConfiguration(model) { 
+    $scope.model = model; 
+    console.log(configuration);
+    $scope.configuration = configuration;
+    configuration.reportFiscal.push(model.fiscal.data[0].id);
+  }
+  */
 });
