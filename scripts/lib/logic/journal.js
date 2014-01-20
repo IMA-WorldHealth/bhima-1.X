@@ -1,6 +1,7 @@
-// journal code
+// scripts/lib/logic/journal.js
 
 var parser = require('../database/parser')(),
+    util = require('../util/util'),
     Q = require('q');
 
 // validation functions
