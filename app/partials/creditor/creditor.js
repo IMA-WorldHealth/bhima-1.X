@@ -24,7 +24,7 @@ angular.module('kpk.controllers')
   }
 
   function getGroups(){
-    var sql = {tables:{'creditor_group':{columns:['id', 'group_txt', 'account_id']}}};
+    var sql = {tables:{'creditor_group':{columns:['id', 'name', 'account_id']}}};
     connect.req(sql).then(function (resultat) {
       $scope.groups = resultat.data;
     });
@@ -80,13 +80,12 @@ angular.module('kpk.controllers')
 
   function sanitize(creditor){
     creditor.location_id = creditor.location_id.id;
-    for(key in creditor){
+    for ( var key in creditor){
       if(!creditor[key]){
         delete creditor[key];
       }
     }
     return creditor;
-
   }
 
   $scope.save = function(creditor, creditor_group){
