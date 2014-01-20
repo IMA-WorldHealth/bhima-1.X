@@ -68,6 +68,7 @@ angular.module('kpk.controllers')
   $scope.loadDebitor = function (id) {
     $scope.data.paying = [];
     var ref = stores.debitors.get(id);
+    data.debitor_id = id;
     $scope.data.debitor = ref.first_name + ' ' + ref.last_name;
     // this loads in a debitors current balance
     $http.get('/ledgers/debitor/' + id)
@@ -174,6 +175,9 @@ angular.module('kpk.controllers')
     // run digestInvoice once more to stabilize.
     $scope.digestInvoice();
     // gather data
+    
+    console.log('data.debitor_id is : ', data.debitor_id);
+
     var doc = {
       enterprise_id : imports.enterprise.id,
       bon : 'E', // FIXME: impliment crediting
