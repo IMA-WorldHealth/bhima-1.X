@@ -11,7 +11,7 @@ angular.module('kpk.controllers').controller('accountsReport', function($scope, 
         }
       }
     }
-  }
+  };
 
   validate.process(dependencies).then(accountsReport);
   
@@ -22,21 +22,23 @@ angular.module('kpk.controllers').controller('accountsReport', function($scope, 
     });
 
     $scope.model = model;
-    parseAccountDepth($scope.model.account.data);
+    parseAccountDepth($scope.model.account.data, $scope.model.account);
   }
   
-  function parseAccountDepth(accounts) { 
-    accounts.forEach(function(account) { 
+  function parseAccountDepth(accountData, accountModel) { 
+    accountData.forEach(function(account) { 
       var parent, depth = 0;
 
       //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
-      parent = $scope.model['account'].get(account.parent);
+      parent = accountModel.get(account.parent);
       depth = 0;
       while(parent) { 
         depth++;
-        parent = $scope.model['account'].get(parent.parent);
+        parent = accountModel.get(parent.parent);
       }
       account.depth = depth;
     });
   }
+
+  $scope.printReport = function() { print(); };
 });

@@ -1,9 +1,10 @@
-<link href="partials/reports/finance/finance_report.css" rel="stylesheet">
+<header class="hidden-print">
+  Finance Report
+</header>
 
-<h4>{{enterprise.name}}</h4>
-<h4>Finance Report <small>{{timestamp | date}}</small></h4>
-<section class="underline overline hidden-print">
+<section class="underline hidden-print">
   <div class="pull-right">
+    <!-- <button ng&#45;click="reportState='configure'" class="btn btn&#45;default btn&#45;sm capital"><span class="glyphicon glyphicon&#45;cog"></span> {{'CONFIGURE' | translate}}</button> -->
     <span class="dropdown">
       <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
       <ul class="dropdown-menu">
@@ -15,58 +16,115 @@
         </li>
       </ul>
     </span> 
-    <button ng-click="basicPrint()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
+    <button ng-click="printReport()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
   </div>
 </section>
 
-<table class="reportTable">
-  <thead>
-    <tr>
-      <th>Account</th>
-      <th>Description</th>
-      <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
-    </tr>
-  </thead>
-  <!--Recursive dirictive, replaces itself with inductive step-->
-  <tr data-report-group-compile data-group-model="financeGroups.store" data-table-definition="tableDefinition"></tr> 
-    
-    <!--VERSION 3-->
-  <!--   <tbody> -->
-  <!--     <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
-  <!--       <td>{{group.detail.account_number}}</td> -->
-  <!--     </tr> -->
-  <!--      -->
-  <!--     <tr ng&#45;repeat&#45;start="account in group.accounts"> -->
-  <!--       <td>#####{{account.detail.account_number}}</td> -->
-  <!--     </tr> -->
-
-  <!--     <tr ng&#45;if="account.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
-  <!--       <td>Sub Total</td> -->
-  <!--     </tr> -->
-
-  <!--     <tr ng&#45;if="group.detail.account_type_id==3" ng&#45;repeat&#45;end> -->
-  <!--       <td>Total</td> -->
-  <!--     </tr> -->
-  <!--   </tbody> -->
-  <!-- </tbody> -->
- 
-    <!--VERSION 2--> 
-    <!-- <tr ng&#45;repeat&#45;start="group in financeGroups.store"> -->
-    <!--   <td>{{group.detail.account_number}}</td><td><b>{{group.detail.account_txt}}</b></td> -->
-    <!-- </tr> -->
-    <!--  -->
-    <!-- <tr ng&#45;repeat="sub in group.accounts"><td>{{sub.detail.account_number}}</td><td>{{sub.detail.account_txt}}</td></tr> -->
-    <!--  -->
-    <!-- <tr ng&#45;repeat&#45;end><td></td><td><b>This will be a total row</b></td></tr> -->
-    
-    <!--VERSION 1 - Repeat directly on data from report.-->
-    <!-- <tr ng&#45;repeat="row in model['finance'].data"> -->
-    <!--   <td style="text&#45;align: right">{{row.account_number}}</td> -->
-    <!--   <td  -->
-    <!--     ng&#45;style="{'padding&#45;left': row.depth * 30 + 'px'}"  -->
-    <!--     ng&#45;class="{'reportTitle': row.account_type_id==3}">{{row.account_txt}}</td> -->
-    <!--    -->
-    <!-- <td ng&#45;repeat="column in tableDefinition.columns"><span ng&#45;hide="row.account_type_id==3">{{(row[column.key] || 0) | currency}}</span></td> -->
-    <!-- </tr> -->
-</table>
-
+<!-- Grey background hack -->
+<!-- <div ng&#45;cloak ng&#45;class="{'reportBody': reportState!='configure'}"> -->
+<!--   <div ng&#45;switch on="reportState"> -->
+<!--      -->
+<!--     <div ng&#45;switch&#45;default> -->
+<!--       <div class="reportBody"> -->
+<!--         <div class=reportFrame"></div>   -->
+<!--       </div> -->
+<!--     </div> -->
+<!--  -->
+<!--     <div ng&#45;switch&#45;when="report"> -->
+      <div class="reportBody">
+        <div class="reportFrame">
+          <h4>{{enterprise.name}}</h4>
+          <h4>Finance Report <small>{{timestamp | date}}</small></h4>
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Description</th>
+                <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
+              </tr>
+            </thead>
+            <tr data-report-group-compile data-group-model="financeGroups.store" data-table-definition="tableDefinition"></tr> 
+          </table>
+        </div>
+      </div>
+    <!-- </div> <!&#45;&#45; End report state &#45;&#45;> -->
+<!--  -->
+<!--     <div ng&#45;switch&#45;when="configure"> -->
+<!--        -->
+<!--       <div class="container"> -->
+<!--       <!&#45;&#45; Configure Preview &#45;&#45;> -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           Report Preview -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           <table class="reportTable"> -->
+<!--             <thead> -->
+<!--               <tr> -->
+<!--                 <th>Account</th> -->
+<!--                 <th>Description</th> -->
+<!--                 <th ng&#45;repeat="year in configuration.reportFiscal"> -->
+<!--                   {{year}} -->
+<!--                 </th> -->
+<!--             </thead> -->
+<!--           </table> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <!&#45;&#45; Configure Fiscal Years &#45;&#45;> -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           Fiscal Years -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--         <table class="table table&#45;bordered table&#45;condensed"> -->
+<!--           <thead> -->
+<!--             <tr> -->
+<!--               <th>Year</th> -->
+<!--               <th>Description</th> -->
+<!--               <th><span class="glyphicon glyphicon&#45;eye&#45;open"></span> Included</th> -->
+<!--               <th>Realisation</th> -->
+<!--               <th>Budget</th> -->
+<!--               <th>Difference</th> -->
+<!--             </tr> -->
+<!--           </thead> -->
+<!--           <tbody> -->
+<!--             <tr ng&#45;repeat="year in model.fiscal.data"> -->
+<!--               <td>{{year.start_year}}</td> -->
+<!--               <td>{{year.fiscal_year_txt}}</td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--               <td><input type="checkbox"></input></td> -->
+<!--             </tr> -->
+<!--           </tbody> -->
+<!--  -->
+<!--         </table> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <!&#45;&#45; Configure Accounts &#45;&#45;> -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           Accounts -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           <!&#45;&#45; <input type="checkbox"></input> &#45;&#45;> -->
+<!--           <!&#45;&#45; <label>Total accounts</label>  &#45;&#45;> -->
+<!--           <!&#45;&#45; <input type="checkbox"></input> &#45;&#45;> -->
+<!--           <!&#45;&#45; <label>Include account categories</label> &#45;&#45;> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> <!&#45;&#45; End configure state &#45;&#45;> -->
+<!--     </div> -->
+<!--   </div> -->
+<!-- </div> -->

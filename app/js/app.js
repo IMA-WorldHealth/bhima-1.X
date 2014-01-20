@@ -7,7 +7,7 @@
   function kpkconfig($routeProvider) { 
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
-    when('/budgeting/:accountID', {
+    when('/budgeting/:accountID?', {
       controller: 'budgetController',
       templateUrl: 'partials/budget/budget.html'
     }).
@@ -51,16 +51,16 @@
       controller: 'inventoryRegisterController',
       templateUrl: '/partials/inventory/register/register.html'
     }).
-    when('/patient_records/:patientID', { 
+    when('/patient_records/:patientID?', { 
       controller: 'patientRecords', 
       templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
-    when('/sales/:debtorID/:inventoryID', { 
+    when('/sales/:debtorID?/:inventoryID?', { 
       controller: 'salesController',
       templateUrl: '/partials/sales/sales.html'
     }).
-    when('/sale_records/:recordID', { 
-      controller: 'salesRecordsController',
+    when('/sale_records/:recordID?', { 
+      controller: 'salesRecords',
       templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
     when('/cash', {
@@ -79,7 +79,7 @@
       controller: 'purchaseOrderController',
       templateUrl: 'partials/purchase_order/purchase.html'
     }).
-    when('/purchase_records/:purchaseID', {
+    when('/purchase_records/:purchaseID?', {
       controller: 'purchaseRecordsController',
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
     }).
@@ -137,6 +137,10 @@
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
+    }).
+    when('/invoice/:originId/:invoiceId', { 
+      controller: 'invoice', 
+      templateUrl: 'partials/invoice/invoice.html'
     });
   }  
 
