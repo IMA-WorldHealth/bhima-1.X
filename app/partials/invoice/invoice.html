@@ -1,0 +1,61 @@
+<header class="hidden-print"> Receipts </header> 
+
+<div class="reportBody">
+
+<div class="reportFrame">
+  <div class="row customer-details">
+    <div class="col-xs-12"> 
+      <h4 class="invoice-header">Patient Invoice</h4>
+    </div>
+  </div>
+  <div class="row customer-details">
+    <div class="col-xs-1">
+      <b>To</b>
+    </div>
+    <div class="col-xs-7">
+      <div class="row">
+        {{recipient.first_name}} {{recipient.last_name}} 
+      </div>
+      <div class="row">
+        <i>{{recipient.location.village}}</i>
+        <br>
+        <i>{{recipient.location.sector}}</i>
+        <br>
+        <i>{{recipient.location.province}}</i>
+      </div>
+    </div>
+    <div style="text-align: left;" class="col-xs-4">
+      <div class="row">
+        <b>Invoice #</b>
+      </div>
+      <div class="row">
+        {{invoice.id}}
+      </div>
+      <div class="row">
+        <b>Date</b>
+      </div>
+      <div class="row">
+        {{invoice.invoice_date | date}}  
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr><th>Description</th><th>Amount</th></tr> 
+        </thead>
+        <tbody class="items">
+          <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price | currency}}</td></tr> 
+        </tbody>
+        <tbody class="totals">
+          <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>
+          <tr><td class="no-border">Amount Received</td><td>{{invoice.ledger.credit | currency}}</td></tr>
+          <tr><td class="no-border">Balance Due</td><td>{{invoice.ledger.balance | currency}}</td></tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+</article>
+</main>

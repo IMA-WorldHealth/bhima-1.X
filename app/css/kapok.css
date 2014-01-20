@@ -158,3 +158,33 @@ fieldset {
   font-size: 110%;
   font-weight: bold;
 }
+
+@media print { 
+  .reportFrame { 
+    border: none !important;
+  }
+
+  .reportBody { 
+    padding-left: 15px;
+    padding-right: 15px; 
+    padding-top: none; 
+  }
+}
+
+div .reportBody { 
+  padding: 10px;
+  padding-top: 10px;
+  background: #f3f3f3;
+  height: 100%;
+}
+
+div .reportFrame { 
+  padding-top: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  border: 1px solid #DDD;
+  background: white;
+}
+
+

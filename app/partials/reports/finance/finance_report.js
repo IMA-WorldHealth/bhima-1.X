@@ -1,11 +1,10 @@
 //TODO Two step, download fiscal years, and then populate finance query, validate service will need to be updated
-angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger) {
-  var dependencies = {}, tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []};
-
+angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger, appcache) {
+  var dependencies = {}, fiscalYears = [], tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []}, configuration = {}, cache = new appcache('financeReport'); 
+  
   dependencies.finance = { 
     required : true,
-    identifier: "account_number",
-    query : '/reports/finance/',
+    identifier: "account_number"
   };
  
   dependencies.fiscal = { 
@@ -13,18 +12,25 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
     query : { 
       tables : { 
         fiscal_year : { 
-          columns : ["id"]
+          columns : ['id', 'start_year', 'fiscal_year_txt', 'start_month']
         }
-      }
+      } 
     } 
-  };
-  
-  validate.process(dependencies).then(reportFinance);
+  }; 
+    
+  validate.process(dependencies, ['fiscal']).then(buildReportQuery);
+
+  function buildReportQuery(model) {
+    // fiscalYears.push(model.fiscal.data[0].id);
+    model.fiscal.data.forEach(function(year) { fiscalYears.push(year.id); });
+    dependencies.finance.query = '/reports/finance/?' + JSON.stringify({fiscal: fiscalYears});
+    return validate.process(dependencies).then(reportFinance);
+  }
 
   function reportFinance(model) { 
     $scope.model = model;
     parseAccountDepth($scope.model.finance);
-    settupTable($scope.model.fiscal.data);
+    settupTable(fiscalYears);
 
     generateAccountGroups($scope.model.finance);
   }
@@ -36,7 +42,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   function generateAccountGroups(accountModel, targetObj) { 
     var accounts = accountModel.data, ROOT = 0, TITLE = 3;
     var index = financeGroups.index, store = financeGroups.store;
-    console.time("generate"); 
+    
     accounts.forEach(function(account) { 
       var insertAccount = { 
         detail : account
@@ -91,13 +97,16 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
         parent = accountModel.get(parent.parent);
       }
       account.depth = depth;
+
+      //FIXME very cheeky - calculate this with SQL
+      
     }); 
   }
  
   //TODO settupTable, toggleColumn, pushColumn and popColumn all improved and encapsulated within Table object, numColumns = 2, col 1 - budget, col 2 - realisation
   function settupTable(columnData) { 
     columnData.forEach(function(year, index) { 
-      var tableOption = {active: false, id: year.id, index: index};
+      var tableOption = {active: false, id: year, index: index};
       tableDefinition.options.push(tableOption);
       toggleColumn(tableOption); 
     });
@@ -110,24 +119,63 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   }
   
   //TODO Index relies on number of columns per iteration, this shouldn't be hardcoded
+  //derive from table definition (customised in configuration)
   function pushColumn(year) { 
-    tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Budget", key: "budget_" + year.id});
-    tableDefinition.columns.splice(year.index * 2, 0, {id: year.id, name: "Year " + year.id + " Realisation", key: "realisation_" + year.id});
+    var label = $scope.model.fiscal.get(year.id).start_year || "Year " + year.id;
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Difference", key: "difference_" + year.id});
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Budget", key: "budget_" + year.id});
+    tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Realisation", key: "realisation_" + year.id});
   }
 
   function popColumn(year) { 
 
     //Avoid replacing the entire array, redrawing the DOM
     tableDefinition.columns.forEach(function(column, index) {
-      if(column.id === year.id) tableDefinition.columns.splice(index, 2);
+      if(column.id === year.id) tableDefinition.columns.splice(index, 3);
     });
   }
 
-  function basicPrint() { print(); } 
+  function printReport() { print(); } 
  
   $scope.toggleYear = toggleColumn;
-  $scope.basicPrint = basicPrint;
+  $scope.printReport = printReport;
   $scope.tableDefinition = tableDefinition;
 
   $scope.financeGroups = financeGroups;
+  
+  /*
+   * Report configuration code, should be implemented when finalising report
+  */
+  /*
+  cache.fetch('reportConfiguration').then(loadConfiguration);
+  
+  function loadConfiguration(configurationRecord) { 
+    if(configurationRecord) { 
+      console.log('[reportFinance] no config file found');
+      initialiseConfiguration();
+      return;
+    }
+    
+    $scope.reportState = "report";
+    validate.process(dependencies, ['fiscal']).then(buildReportQuery); 
+  }
+
+  function initialiseConfiguration(configurationObject) { 
+    $scope.reportState = "configure";
+    configuration = { 
+      reportFiscal: [],
+      totalAccounts: true,
+      includeCategories: true
+    };
+    cache.put('reportConfiguration', configuration);
+    validate.process(dependencies, ['fiscal']).then(settupConfiguration); 
+  }
+
+  function settupConfiguration(model) { 
+    $scope.model = model; 
+    console.log(configuration);
+    $scope.configuration = configuration;
+    configuration.reportFiscal.push(model.fiscal.data[0].id);
+  }
+  */
 });
