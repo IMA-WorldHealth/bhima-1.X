@@ -55,22 +55,22 @@
         <form class="form-horizontal">
           <legend><h3>Adding New User <small>{{add.first}} {{add.last}}</small></h3></legend>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">First Name</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">First Name</label>
             <div class="col-xs-7">
               <input ng-model="add.first" class="form-kapok" required="required">
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">Last Name</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Last Name</label>
             <div class="col-xs-7">
               <input ng-model="add.last" class="form-kapok" required="required">
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">User Name</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">User Name</label>
             <div class="col-xs-7">
               <input ng-model="add.username" class="form-kapok" required="required">
             </div>
@@ -83,8 +83,8 @@
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">Password</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password</label>
             <div class="col-xs-7 input-group"> 
               <input ng-model="add.password" class="form-kapok" required="required" type="password">
               <span class="input-group-btn" ng-switch="add.validPassword">
@@ -96,8 +96,8 @@
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">Password (Retype)</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password (Retype)</label>
             <div class="col-xs-7 input-group">
               <input ng-model="add.password_verify" class="form-kapok" required="required" type="password">
               <span class="input-group-btn" ng-switch="add.validPassword">
@@ -119,22 +119,22 @@
         <form class="form-horizontal">
           <legend><h3>Editing User <small>{{edit.first}} {{edit.last}}</small></h3></legend>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">First Name</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">First Name</label>
             <div class="col-xs-7">
               <input ng-model="edit.first" class="form-kapok" required="required">
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">Last Name</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Last Name</label>
             <div class="col-xs-7">
               <input ng-model="edit.last" class="form-kapok" required="required">
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">User Name</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">User Name</label>
             <div class="col-xs-7">
               <input ng-model="edit.username" class="form-kapok" required="required">
             </div>
@@ -147,8 +147,8 @@
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">Password</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password</label>
             <div class="col-xs-7 input-group"> 
               <input ng-model="edit.password" class="form-kapok" required="required" type="password" ng-change="clearPass()">
               <span class="input-group-btn" ng-switch="edit.validPassword">
@@ -160,8 +160,8 @@
             </div>
           </div>
 
-          <div class="form-group required">
-            <label class="control-label col-xs-2">Password (Retype)</label>
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password (Retype)</label>
             <div class="col-xs-7 input-group">
               <input ng-model="edit.password_verify" class="form-kapok" required="required" type="password">
               <span class="input-group-btn" ng-switch="edit.validPassword">
