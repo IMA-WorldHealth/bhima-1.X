@@ -1,8 +1,7 @@
 //TODO Two step, download fiscal years, and then populate finance query, validate service will need to be updated
-angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger) {
-  var dependencies = {}, fiscalYears = [], tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []};
-  $scope.reportState = "configure";
-
+angular.module('kpk.controllers').controller('reportFinance', function($scope, $q, connect, appstate, validate, messenger, appcache) {
+  var dependencies = {}, fiscalYears = [], tableDefinition = {columns: [], options: []}, financeGroups = {index: {}, store: []}, configuration = {}, cache = new appcache('financeReport'); 
+  
   dependencies.finance = { 
     required : true,
     identifier: "account_number"
@@ -18,8 +17,38 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
       } 
     } 
   }; 
+
+  cache.fetch('reportConfiguration').then(loadConfiguration);
   
-  validate.process(dependencies, ['fiscal']).then(buildReportQuery);
+  function loadConfiguration(configurationRecord) { 
+    if(configurationRecord) { 
+      console.log('[reportFinance] no config file found');
+      initialiseConfiguration();
+      return;
+    }
+    
+    $scope.reportState = "report";
+    buildReport();
+  }
+
+  function initialiseConfiguration(configurationObject) { 
+    $scope.reportState = "configure";
+    configuration = { 
+      reportFiscal: [],
+      totalAccounts: true,
+      includeCategories: true
+    };
+    cache.put('reportConfiguration', configuration);
+    validate.process(dependencies, ['fiscal']).then(settupConfiguration); 
+  }
+
+  function settupConfiguration(model) { 
+    $scope.model = model; 
+    console.log(configuration);
+    $scope.configuration = configuration;
+    configuration.reportFiscal.push(model.fiscal.data[0].id);
+
+  }
 
   function buildReportQuery(model) {
     fiscalYears.push(model.fiscal.data[0].id);

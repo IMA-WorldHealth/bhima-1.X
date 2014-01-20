@@ -4,114 +4,127 @@
 
 <section class="underline hidden-print">
   <div class="pull-right">
-    <span class="dropdown">
-      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
-      <ul class="dropdown-menu">
-        <li class="dropdown-header">Report Years</li>
-        <li ng-repeat="option in tableDefinition.options">
-          <a ng-click="toggleYear(option)" href="">
-            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !option.active, 'glyphicon-check' : !!option.active}"></i> {{option.id}}
-          </a>
-        </li>
-      </ul>
-    </span> 
+    <button ng-click="reportState='configure'" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</button>
+    <!-- <span class="dropdown"> -->
+    <!--   <a class="capital btn btn&#45;default btn&#45;sm dropdown&#45;toggle"><span class="glyphicon glyphicon&#45;cog"></span> {{'CONFIGURE' | translate}}</a> -->
+    <!--   <ul class="dropdown&#45;menu"> -->
+    <!--     <li class="dropdown&#45;header">Report Years</li> -->
+    <!--     <li ng&#45;repeat="option in tableDefinition.options"> -->
+    <!--       <a ng&#45;click="toggleYear(option)" href=""> -->
+    <!--         <i class="glyphicon" ng&#45;class="{'glyphicon&#45;unchecked' : !option.active, 'glyphicon&#45;check' : !!option.active}"></i> {{option.id}} -->
+    <!--       </a> -->
+    <!--     </li> -->
+    <!--   </ul> -->
+    <!-- </span>  -->
     <button ng-click="printReport()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
   </div>
 </section>
 
-<div ng-switch on="reportState">
-  
-  <div ng-switch-when="report">
-    <div class="reportBody">
-      <div class="reportFrame">
-        <h4>{{enterprise.name}}</h4>
-        <h4>Finance Report <small>{{timestamp | date}}</small></h4>
-        <table class="reportTable">
+<!-- Grey background hack -->
+<div ng-cloak ng-class="{'reportBody': reportState!='configure'}">
+  <div ng-switch on="reportState">
+    
+    <div ng-switch-default>
+      <div class="reportBody">
+        <div class=reportFrame"></div>  
+      </div>
+    </div>
+
+    <div ng-switch-when="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <h4>{{enterprise.name}}</h4>
+          <h4>Finance Report <small>{{timestamp | date}}</small></h4>
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Description</th>
+                <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
+              </tr>
+            </thead>
+            <tr data-report-group-compile data-group-model="financeGroups.store" data-table-definition="tableDefinition"></tr> 
+          </table>
+        </div>
+      </div>
+    </div> <!-- End report state -->
+
+    <div ng-switch-when="configure">
+      
+      <div class="container">
+      <!-- Configure Preview -->
+      <div class="row">
+        <div class="col-xs-12">
+          Report Preview
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th>Description</th>
+                <th ng-repeat="year in configuration.reportFiscal">
+                  {{year}}
+                </th>
+            </thead>
+          </table>
+        </div>
+      </div>
+
+      <!-- Configure Fiscal Years -->
+      <div class="row">
+        <div class="col-xs-12">
+          Fiscal Years
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+        <table class="table table-bordered table-condensed">
           <thead>
             <tr>
-              <th>Account</th>
+              <th>Year</th>
               <th>Description</th>
-              <th ng-repeat="column in tableDefinition.columns">{{column.name}}</th>
+              <th><span class="glyphicon glyphicon-eye-open"></span> Included</th>
+              <th>Realisation</th>
+              <th>Budget</th>
+              <th>Difference</th>
             </tr>
           </thead>
-          <tr data-report-group-compile data-group-model="financeGroups.store" data-table-definition="tableDefinition"></tr> 
+          <tbody>
+            <tr ng-repeat="year in model.fiscal.data">
+              <td>{{year.start_year}}</td>
+              <td>{{year.fiscal_year_txt}}</td>
+              <td><input type="checkbox"></input></td>
+              <td><input type="checkbox"></input></td>
+              <td><input type="checkbox"></input></td>
+              <td><input type="checkbox"></input></td>
+            </tr>
+          </tbody>
+
         </table>
+        </div>
       </div>
-    </div>
-  </div> <!-- End report state -->
 
-  <div ng-switch-when="configure">
-    
-    <div class="container">
-    <!-- Configure Preview -->
-    <div class="row">
-      <div class="col-xs-12">
-        Report Preview
+      <!-- Configure Accounts -->
+      <div class="row">
+        <div class="col-xs-12">
+          Accounts
+        </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-xs-12">
-        <table class="reportTable">
-          <thead>
-            <tr>
-              <th>Account</th>
-              <th>Description</th>
-          </thead>
-        </table>
+      <div class="row">
+        <div class="col-xs-12">
+          <!-- <input type="checkbox"></input> -->
+          <!-- <label>Total accounts</label>  -->
+          <!-- <input type="checkbox"></input> -->
+          <!-- <label>Include account categories</label> -->
+        </div>
       </div>
+    </div> <!-- End configure state -->
     </div>
-
-    <!-- Configure Fiscal Years -->
-    <div class="row">
-      <div class="col-xs-12">
-        Fiscal Years
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-12">
-      <table class="table table-bordered table-condensed">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Description</th>
-            <th><span class="glyphicon glyphicon-eye-open"></span> Included</th>
-            <th>Realisation</th>
-            <th>Budget</th>
-            <th>Difference</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="year in model.fiscal.data">
-            <td>{{year.start_year}}</td>
-            <td>{{year.fiscal_year_txt}}</td>
-            <td><input type="checkbox"></input></td>
-            <td><input type="checkbox"></input></td>
-            <td><input type="checkbox"></input></td>
-            <td><input type="checkbox"></input></td>
-          </tr>
-        </tbody>
-
-      </table>
-      </div>
-    </div>
-
-    <!-- Configure Accounts -->
-    <div class="row">
-      <div class="col-xs-12">
-        Accounts
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-xs-12">
-        <!-- <input type="checkbox"></input> -->
-        <!-- <label>Total accounts</label>  -->
-        <!-- <input type="checkbox"></input> -->
-        <!-- <label>Include account categories</label> -->
-      </div>
-    </div>
-  </div> <!-- End configure state -->
   </div>
 </div>
