@@ -4,16 +4,16 @@
 }
 
 .invoiceTable thead > tr > th { 
-  border: 1px solid #9f9f9f;
+  border: 1px solid black;
   padding-left: 5px;
 }
 
 .invoiceTable tbody.items > tr > td { 
-  border: 1px solid #9f9f9f;
+  border: 1px solid black; 
 }
 
 .invoiceTable tbody.totals > tr > td { 
-  border: 1px solid #9f9f9f;
+  border: 1px solid black; 
 }
 
 .invoiceTable tbody > tr > td.no-border { 
