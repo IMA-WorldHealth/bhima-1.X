@@ -216,11 +216,7 @@ angular.module('kpk.controllers')
       });
 
       // putting cash items
-      $q.all(
-        records.map(function (record) {
-          return connect.basicPut('cash_item', [record]);
-        })
-      )
+      connect.basicPut('cash_item', records)
       .then(function (res) {
         console.log('RES is:', res);
         console.log('Fetching journal for doc id', doc.id);
