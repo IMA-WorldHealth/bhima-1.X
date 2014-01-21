@@ -596,6 +596,29 @@ create table `sale` (
 ) engine=innodb;
 
 --
+-- Table structure for table `kpk`.`credit_note`
+--
+drop table if exists `credit_note`;
+create table `credit_note` (
+  `enterprise_id` smallint unsigned not null,
+  `id`            int unsigned not null auto_increment,
+  `cost`          decimal(19, 2) unsigned not null,
+  `debitor_id`    int unsigned not null,
+  `seller_id`     smallint unsigned not null,
+  `sale_id`       int unsigned not null,
+  `note_date`     date not null,
+  `description`   text,
+  `posted`        boolean not null default '0',
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `debitor_id` (`debitor_id`),
+  key `sale_id` (`sale_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`sale_id`) references `sale` (`id`)
+) engine=innodb;
+
+--
 -- Table structure for table `kpk`.`sale_item`
 --
 drop table if exists `sale_item`;

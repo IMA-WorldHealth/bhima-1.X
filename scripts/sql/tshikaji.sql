@@ -98,7 +98,8 @@ INSERT INTO `unit` VALUES
   (53,'Account Balance Statement', '', 10, 0, 'partials/reports/account_balance/', 'reports/account_balance/'),
   (54,'Chart of Accounts', '', 10, 0, 'partials/reports/chartofaccounts/', 'reports/chart_of_accounts/'),
   (55,'Debitor Aging', '', 10, 0, 'partials/reports/debitor_aging/', 'reports/debitor_aging/'),
-  (56,'Account Statement By Period', '', 10, 0, 'partials/reports/account_statement/', 'reports/account_statement/');
+  (56,'Account Statement By Period', '', 10, 0, 'partials/reports/account_statement/', 'reports/account_statement/'),
+  (57,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'); 
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
