@@ -196,7 +196,7 @@
 
   services.factory('appcache', function ($rootScope, $q) { 
     var DB_NAME = "kpk";
-    var VERSION = 16;
+    var VERSION = 21;
 
     var db, cacheSupported, dbdefer = $q.defer();
 
