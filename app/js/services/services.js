@@ -7,6 +7,7 @@
   var services = angular.module('kpk.services', []);
     
   services.service('kpkUtilitaire', function() { 
+
     this.formatDate = function(dateString) {
       return new Date(dateString).toDateString();
     };
@@ -68,15 +69,69 @@
     };
   });
   
-  //service to check existence of required data from the server, tests are run on startup and can be querried from modules as needed
   services.factory('validate', function($q, connect) {  
-    function validate() {
+    var modelLabel = 'model';
+
+    //TODO Exception handling
+    function process(dependencies, limit) {   
+      var deferred = $q.defer();
+      var list = filterList(dependencies, (limit || Object.keys(dependencies)));
       
+      dependencies[modelLabel] = dependencies[modelLabel] || {};
+      fetchModels(dependencies, list).then(function(res) { 
+        
+        //Package models 
+        list.forEach(function(key, index) { 
+          dependencies.model[key] = res[index];
+          dependencies[key].processed = true; 
+        });
+
+        //Test models
+        
+        deferred.resolve(dependencies.model);
+      });
+      return deferred.promise;
+    }
+
+    function filterList(dependencies, list) { 
+      var filterList = [];
+      list.forEach(function(key, index) {
+        
+        //filter process requests
+        if(dependencies[key].processed) return;
+        
+        //filter model store
+        if(key===modelLabel) return;
+        filterList.push(key);
+      });
+      return filterList;
+    }
+
+    function fetchModels(dependencies, keys) { 
+      var deferred = $q.defer(), promiseList = [];
+      
+      //Requests
+      keys.forEach(function(key) { 
+        var dependency = dependencies[key], args = [dependency.query];
+        
+        //Hack to allow modelling reports with unique identifier - not properly supported by connect
+        if(dependency.identifier) args.push(dependency.identifier);
+        promiseList.push(connect.req.apply(connect.req, args));
+      });
+      
+      //Response
+      $q.all(promiseList).then(function(res) { 
+        deferred.resolve(res); 
+      });
+      return deferred.promise;
+    } 
+
+    function validate() { 
       //remove startup tests to only serve model validation
       runStartupTests();
     }
     
-    //expose methods
+    //TODO This should be in the dependency object passed in to process()
     function registerRequirements(requirements) { 
       var response = {};
 
@@ -91,7 +146,7 @@
         } 
       });
     }
-    
+  
     //FIXME rewrite this method
     function processModels(models) { 
       //TODO tests should be a list of 
@@ -137,14 +192,10 @@
     //private methods  
     //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
     function runStartupTests() { 
-      console.log('running testSuite');
-
       angular.forEach(testSuite, function(test, key) { 
         var args = test.args || [];
 
-        console.log('running test ', key, test);
         test.method(args).then(function(res) {
-          console.log('completed test ', key, 'result: ', res);
           test.result = res;
         });
       });
@@ -153,18 +204,18 @@
     var testSuite = { 
       "enterprise" : {method: testRequiredModel, args: ["enterprise"], result: null},
       "fiscal" : {method: testRequiredModel, args: ["fiscal_year"], result: null}
-    }
+    };
     
     function testRequiredModel(tableName, primaryKey) { 
       var deferred = $q.defer();
       var testDataQuery = { 
         tables : {}
-      }
+      };
 
       primaryKey = (primaryKey || "id"); 
       testDataQuery.tables[tableName] = { 
         columns: [primaryKey]
-      }
+      };
 
       //download data to test 
       connect.req(testDataQuery)
@@ -187,17 +238,19 @@
     }
 
     validate();
-
-    return {
-      processModels: processModels
-    };
+   
+    //TODO horrible name
+    function valid() { 
+      return { 
+        processModels : processModels,
+        process : process
+      };
+    }
+    return new valid;
   });
 
-
   services.factory('appcache', function ($rootScope, $q) { 
-    var DB_NAME = "kpk";
-    var VERSION = 16;
-
+    var DB_NAME = "kpk", VERSION = 20;
     var db, cacheSupported, dbdefer = $q.defer();
 
     function cacheInstance(namespace) { 
@@ -268,11 +321,9 @@
         request = objectStore.put(writeObject); 
 
         request.onsuccess = function(event) { 
-          console.log('write successful'); 
           deferred.resolve(event);
         }
         request.onerror = function(event) { 
-          console.log('unable to put', event);
           deferred.reject(event);
         }
       }); 
@@ -301,7 +352,6 @@
         }
 
         request.onerror = function(event) { 
-          console.log('getall failure'); 
           deferred.reject(event);
         }
       });
@@ -315,7 +365,6 @@
         db = event.target.result;
         //TODO naive implementation - one object store to contain all cached data, namespaced with feild
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
-        console.log('[appcahce] upgraded');
        
         //delete object store if it exists - DEVELOPMENT ONLY
         if(db.objectStoreNames.contains('master')) {
@@ -326,14 +375,13 @@
         objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
         objectStore.createIndex("namespace", "namespace", {unique: false});
         objectStore.createIndex("key", "key", {unique: false});
-        deferred.resolve();
       };
+
       request.onsuccess = function(event) {
         db = request.result;
         $rootScope.$apply(deferred.resolve());
       };
       request.onerror = function(event) { 
-        console.log('connection failed');
         deferred.reject(event);
       };
       return deferred.promise;
@@ -344,180 +392,55 @@
       init();
     } else { 
       console.log('application cache is not supported in this context');
-      //throw new Error();
     }
-
     return cacheInstance;
   });
 
   services.factory('appstate', function ($q, $rootScope) { 
-    /*
-    * summary: 
-    *  generic service to share values throughout the application by id - returns a promise that will either be populated or rejected
-    *  to allow asynchronous loading
-    * TODO
-    *   -Unregister callbacks form unit/module, these could be auto unhooked from application controller?
-    */
-  
-    var instance = {
-      //summary: 
-      //  expose required function to Angular modules, all other functions are considered private
-      id: Date.now(),
-      get: get,
-      set: set,
-      register: register,
-      update: update
-    };
+    //TODO Use promise structure over callbacks, used throughout the application and enables error handling 
+    var store = {}, queue = {};
 
-    var comp = {};
-    var queue = {};
-
-    function set(comp_id, ref) { 
-      //summary: 
-      //  Assign id reference to value
-      console.log('setting value', comp_id, ref)
-      comp[comp_id] = ref;
-      update(comp_id);
+    function set(storeKey, value) { 
+      store[storeKey] = value;
+      executeQueue(storeKey);
     }
 
-    function get(comp_id) { 
-      //summary: 
-      //  Reference to value by di
-      return comp[comp_id];
+    function get(storeKey) { 
+      return store[storeKey];
     }
 
-    function register(comp_id, callback) { 
-      // FIXME: These are strict violations
-      if(!queue[comp_id]) { 
-        queue[comp_id] = [];
-      }
+    function register(storeKey, callback) { 
+      var requestedValue = store[storeKey];
+      var queueReference = queue[storeKey] = queue[storeKey] || [];
 
-      //init call to pass current value
-      if(comp[comp_id]) { 
-        callback(comp[comp_id]);
+      if(requestedValue) { 
+        callback(requestedValue);
         return;
-      } 
-      
-      queue[comp_id].push({callback: callback});
+      }  
+      queueReference.push({callback: callback});
     }
 
-    function update(comp_id) { 
-      var l = queue[comp_id];
-      console.log('update called for ', comp_id, l);
-      if(l) { 
-        l.forEach(function(recept) { 
-          // console.log('callback queue');
-          console.log('calling queued callback');
-          recept.callback(comp[comp_id]);
+    function executeQueue(storeKey) { 
+      var queueReference = queue[storeKey];
+      if(queueReference) { 
+        queueReference.forEach(function(pendingRequest) { 
+          pendingRequest.callback(store[storeKey]);
         });
       }
     }
 
-    return instance;
+    return {
+      get : get,
+      set : set,
+      register : register
+    };
   });
 
-  services.factory('connect', function ($http, $q) {
-    //summary: 
-    //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
-    //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to 
-    //  update the server.
-
-    //  TODO generic id property should be injected, currently set as ID
-    //  TODO set flag for automatically flushing model updates to server
-    //  TODO anonymous functions make for bad stack traces - name those bad boys
-
-    //keep track of requests, model can use connect API without re-stating request
-    //  model : request
-    var requests = {};
-
-    function req (defn) {
-      //summary: 
-      //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
-      //
-      //  defn should be an object like
-      //  defn =  {
-      //    tables : {
-      //      'account' : {
-      //        columns: [ 'enterprise_id', 'id', 'locked', 'account_text']
-      //      },
-      //      'account_type' : {
-      //        columns: ['type']
-      //      }
-      //    },
-      //    join: ['account.account_type_id=account_type.id'],
-      //    where: ['account.enterprise_id=101']
-      //  };
-      //
-      //  where conditions can also be specified:
-      //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
-      if (angular.isString(defn)) {
-        // CLEAN THIS UP
-        var d = $q.defer();
-        $http.get(defn).then(function (returned) {
-          returned.identifier = 'id';
-          d.resolve(new Model(returned))
-        });
-        return d.promise;
-      }
-
-      var handle, deferred = $q.defer();
-      var table = defn.primary || Object.keys(defn.tables)[0];
-
-
-      handle = $http.get('/data/?' + JSON.stringify(defn));
-      handle.then(function (returned) {
-        
-        //massive hack so I can use an identifier - set defualt identifier
-        returned.identifier = defn.identifier || 'id';
-        var m = new Model(returned, table);
-        requests[m] = defn;
-        deferred.resolve(m);
-      }, function(err) { 
-        //package error object with request parameters for error routing
-        deferred.reject(packageError(err, table));
-      });
-
-      return deferred.promise;
-    }
-
-    function getModel(getRequest, identifier) { 
-      //TODO Decide on API to handle packing direct GET requests in model 
-      var handle, deferred = $q.defer();
-      handle = $http.get(getRequest);
-      handle.then(function(res) {
-        res.identifier = identifier || 'id';
-        var m = new Model(res, getRequest);
-        
-        deferred.resolve(m);
-      });
-      return deferred.promise;
-    }
-
-    function fetch (defn) {
-      //summary: 
-      //  Exactly the same as req() but now returns only
-      //  data.  Think of it as a `readonly` store.
-      var handle, deferred = $q.defer();
-
-      if (angular.isString(defn)) return $http.get(defn);
-
-      handle = $http.get('/temp/?' + JSON.stringify(defn));
-      handle.then(function (returned) {
-        deferred.resolve(returned.data);
-      });
-      return deferred.promise;
-    }
-
-    function debitorAgingPeriod(){
-      var handle, deferred = $q.defer();
-      handle = $http.get('debitorAgingPeriod/');
-      handle.then(function(res) { 
-        deferred.resolve(res);
-      });
-      return deferred.promise;
-    }
-
-    function Model (options, target) {
+  services.factory('store', function () {
+    // store service 
+    
+    return function (options, target) {
+      
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
       // globals
@@ -528,7 +451,6 @@
       var queue = [];
       var identifier = options.identifier || 'id'; // id property
       var pprint = '[connect] ';
-      var tgt = "/data/"; // temporary target until we standardize connect.
       var refreshrate = options.refreshrate || 500;
 
       // set an array of data
@@ -576,7 +498,7 @@
           }
         }
         // enqueue item for sync
-        queue.push({method: 'PUT', url: tgt + target});
+        queue.push({method: 'PUT', url: '/data/'+ target});
       };
 
       // post is for INSERTS
@@ -588,7 +510,7 @@
         if (id in index) throw pprint + 'Attempted to overwrite data with id: ' + id + '.';
         index[id] = data.push(object) - 1;
         // enqueue item for sync
-        queue.push({method: 'POST', url: tgt + target, data: object});
+        queue.push({method: 'POST', url: '/data/' + target, data: object});
       };
 
       this.remove = function (id) {
@@ -599,7 +521,7 @@
           console.log("Trying to split on ",data);
           data.splice(index[id], 1);
           this.setData(data);
-          queue.push({method: 'DELETE', url: tgt + target + '/' + id});
+          queue.push({method: 'DELETE', url: '/data/' + target + '/' + id});
         }
       };
 
@@ -633,15 +555,120 @@
         queue = fail;
       };
 
-      this.recalculateIndex = function() { 
+      this.recalculateIndex = function () { 
         var data = this.data, index = this.index;
         for (var i = 0, l = data.length; i < l; i++) {
           index[data[i][identifier]] = i;
         }
-      }
+      };
 
       return this;
+    };
+  });
+
+  services.factory('connect', function ($http, $q, store) {
+    //summary: 
+    //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
+    //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to 
+    //  update the server.
+
+    //  TODO generic id property should be injected, currently set as ID
+    //  TODO set flag for automatically flushing model updates to server
+    //  TODO anonymous functions make for bad stack traces - name those bad boys
+
+    //keep track of requests, model can use connect API without re-stating request
+    //  model : request
+    var requests = {};
+  
+    //FIXME remove identifier without breaking functionality (passing direct strings to req)
+    function req (defn, stringIdentifier) {
+      //summary: 
+      //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
+      //
+      //  defn should be an object like
+      //  defn =  {
+      //    tables : {
+      //      'account' : {
+      //        columns: [ 'enterprise_id', 'id', 'locked', 'account_text']
+      //      },
+      //      'account_type' : {
+      //        columns: ['type']
+      //      }
+      //    },
+      //    join: ['account.account_type_id=account_type.id'],
+      //    where: ['account.enterprise_id=101']
+      //  };
+      //
+      //  where conditions can also be specified:
+      //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
+      if (angular.isString(defn)) {
+        // CLEAN THIS UP
+        var d = $q.defer();
+        $http.get(defn).then(function (returned) {
+          returned.identifier = stringIdentifier || 'id';
+          d.resolve(new store(returned));
+        }, function (err) {
+          throw err; // temporary
+        });
+        return d.promise;
+      }
+
+      var handle, deferred = $q.defer();
+      var table = defn.primary || Object.keys(defn.tables)[0];
+
+
+      handle = $http.get('/data/?' + JSON.stringify(defn));
+      handle.then(function (returned) {
+        
+        //massive hack so I can use an identifier - set defualt identifier
+        returned.identifier = defn.identifier || 'id';
+        var m = new store(returned, table);
+        requests[m] = defn;
+        deferred.resolve(m);
+      }, function(err) { 
+        //package error object with request parameters for error routing
+        deferred.reject(packageError(err, table));
+      });
+
+      return deferred.promise;
     }
+
+    function getModel(getRequest, identifier) { 
+      //TODO Decide on API to handle packing direct GET requests in model 
+      var handle, deferred = $q.defer();
+      handle = $http.get(getRequest);
+      handle.then(function(res) {
+        res.identifier = identifier || 'id';
+        var m = new store(res, getRequest);
+        deferred.resolve(m);
+      });
+      return deferred.promise;
+    }
+
+    function fetch (defn) {
+      //summary: 
+      //  Exactly the same as req() but now returns only
+      //  data.  Think of it as a `readonly` store.
+      var handle, deferred = $q.defer();
+
+      if (angular.isString(defn)) return $http.get(defn);
+
+      handle = $http.get('/temp/?' + JSON.stringify(defn));
+      handle.then(function (returned) {
+        deferred.resolve(returned.data);
+      });
+      return deferred.promise;
+    }
+
+    function debitorAgingPeriod(){
+      var handle, deferred = $q.defer();
+      handle = $http.get('debitorAgingPeriod/');
+      handle.then(function(res) { 
+        deferred.resolve(res);
+      });
+      return deferred.promise;
+    }
+
 
     function journal (invoice_ids) {
       return $http.post('/journal/', invoice_ids);
@@ -658,85 +685,9 @@
       return promise;
     }
 
-//    FIXME accepts any request (temporarily making up for 'req()' shortcomings) this should be deprecated
-    function basicReq(reqobj) {
-      //summary: 
-      //  return a packaged model given a straight request object
-      var deferred = $q.defer();
-      var model = {};
-      var handle = $http.get('/data/?' + JSON.stringify(reqobj)).then(function (returned) {
-        var m = packageModel(model, returned.data);
-        //unable to uniformly set request object, this will cause a problem
-        requests[m] = reqobj;
-        deferred.resolve(m);
-      }, function(err) { 
-        //oh lawd
-        deferred.reject(packageError(err, reqobj.e.t));
-      });
-
-      return deferred.promise;
-    }
-
-    function packageModel(model, data) {
-
-      model.index = {};
-      model.data = data;
-
-      //determine indexs
-      model.calculateIndex = function () {
-        this.index = {};
-        for (var i = this.data.length - 1; i >= 0; i--) {
-          this.index[this.data[i].id]= i;
-        }
-      };
-
-      //data manipulation
-      model.get = function (id) {
-        return this.data[this.index[id]];
-      };
-
-      model.put = function (object) {
-        var id = object.id;
-        if (id in this.index) {
-          //TODO: Implement overwrite flag/ behaviour
-          throw new Error("Object overwrite attempted.");
-        } else {
-          //update index and insert object
-          this.index[id] = this.data.push(object) - 1;
-        }
-      };
-
-      model.delete = function (id) {
-        var i = this.index;
-        if (id in i) {
-          this.data.splice(i[id], 1);
-          this.calculateIndex();
-          //Check if changes should be automatically reflected in server etc.
-          connect_delete(this, id);
-          return true;
-        }
-      };
-
-      // generate id
-      model.generateid = function () {
-        var ids, id, idx = this.index;
-        ids = Object.keys(idx);
-        id = Math.max.apply(Math.max, ids) + 1;
-        return (id > 0) ? id : 1;
-      };
-
-      model.flush = function () {
-
-      };
-
-      //initialise index
-      model.calculateIndex();
-      return model;
-    }
-
     function basicDelete (table, id, column) {
       if (!column) column = "id";
-      $http.delete(['/data/', table, '/', column, '/', id].join(''));
+      return $http.delete(['/data/', table, '/', column, '/', id].join(''));
     }
 
 //    TODO reverse these two methods? I have no idea how this happened
@@ -768,7 +719,6 @@
 
     return {
       req: req,
-      basicReq: basicReq,
       basicPut: basicPut,
       basicPost: basicPost,
       basicGet: basicGet,
@@ -783,7 +733,7 @@
   });
 
 
-  services.service('messenger', function ($timeout) {
+  services.service('messenger', function ($timeout, $sce) {
     var self = this;
     self.messages = [];
     var indicies = {};
@@ -791,6 +741,7 @@
     self.push = function (data, timer) {
       var id = Date.now();
       data.id = id;
+      data.msg = $sce.trustAsHtml(data.msg); // allow html insertion
       self.messages.push(data); 
       indicies[id] = $timeout(function () {
         var index, i = self.messages.length;

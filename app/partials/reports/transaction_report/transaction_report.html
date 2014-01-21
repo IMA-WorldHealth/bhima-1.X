@@ -10,34 +10,33 @@
 </section>
 <!--fix me-->
 <section class="underline infobar hidden-print">
-  <accordion close-others="oneAtATime">    
-    <accordion-group heading="Dynamic Body Content">
-        <accordion-heading>
-            Settings <i class="pull-right" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i>
-        </accordion-heading>
-        <table class="table">
 
-          <tr>
-            <td>
-
-              <div class="radio">
-                <label>
-                  <input type="radio" ng-model="data.type" id="indiID" name="option_type" value="I" ng-click="fill()" checked>
+  <accordion close-others="true">    
+    <accordion-group is-open="isopen">
+      <accordion-heading>
+        <span>Settings</span> 
+        <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
+      </accordion-heading>
+      <table>
+        <tr>
+          <td>
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="data.type" id="indiID" name="option_type" value="I" ng-click="fill()" checked>
                   Individual
-                </label>
-              </div>
+              </label>
+            </div>
+          </td>
+          <td>
 
-            </td>
-            <td>
-
-              <div class="radio">
-                <label>
-                  <input type="radio" ng-model="data.type" id="groupID" name="option_type" ng-click="fill()" value="G">
-                  Group
-                </label>
-              </div>
-            </td>
-          </tr>
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="data.type" id="groupID" name="option_type" ng-click="fill()" value="G">
+                Group
+              </label>
+            </div>
+          </td>
+        </tr>
 
           <tr>
             <td>

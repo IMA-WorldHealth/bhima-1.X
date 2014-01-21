@@ -59,14 +59,13 @@ angular.module('kpk.controllers')
     .then(function(res) { 
       default_fiscal_year = res.data[0];
       if(default_fiscal_year) appstate.set('fiscal', default_fiscal_year);
+      
       // exchange rate stuff
       var query = {
         'tables' : { 'exchange_rate' : { 'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date'] }},
         'where' : ['exchange_rate.date='+mysqlDate()]
       };
       return connect.req(query);
-    }, function (err) {
-      throw new Error(err);
     })
     .then(function (res) {
       // fetch exchange rate data

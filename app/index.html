@@ -13,12 +13,12 @@
   <div id="kpk-sidebar" class="container hidden-print">
     <div class="row" id="kpk-header">
       <div class="col-xs-12">
-        <h2><img src="assets/final.jpeg" width="250" height="250" class="loading"></h2>
+        <h2><img src="assets/icon.png" width="100" height="100" class="loading"></h2>
       </div>
     </div>
 
     <div class="row" id="kpk-tree" ng-controller="treeController">
-      <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treeData" data-node-id="id" data-node-label="label" data-node-children="children"></div>
+      <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treeData" data-node-id="id" data-node-label="name" data-node-children="children"></div>
     </div>
 
     <div class="row" id="kpk-util" ng-controller="utilController">
@@ -39,7 +39,7 @@
   <div id="kpk-container"> 
     <div class="hidden-print">
       <div ng-controller="messageCtrl" class="kpk-messenger">
-        <alert ng-repeat="alert in messages" type="alert.type" close="close($index)"><span ng-bind="alert.msg"></span></alert>
+        <alert ng-repeat="alert in messages" type="alert.type" close="close($index)"><span ng-bind-html="alert.msg"></span></alert>
       </div>
     </div>
     <div ng-view id="kpk-view"></div>
@@ -71,6 +71,7 @@
 <script src="lib/SlickGrid/slick.formatters.js"></script>
 <script src="lib/SlickGrid/slick.groupitemmetadataprovider.js"></script>
 
+<script src="lib/SlickGrid/plugins/slick.checkboxselectcolumn.js"></script>
 <script src="lib/SlickGrid/plugins/slick.cellselectionmodel.js"></script>
 <script src="lib/SlickGrid/plugins/slick.rowselectionmodel.js"></script>
 <script src="lib/SlickGrid/plugins/slick.cellrangedecorator.js"></script>

@@ -4,7 +4,8 @@
 var express      = require('express'),
     fs           = require('fs'),
     domain       = require('domain'),
-    url          = require('url');
+    url          = require('url'),
+    querystring  = require('querystring');
 
 // import configuration
 var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
@@ -87,35 +88,50 @@ app.get('/user_session', function (req, res, next) {
 
 
 app.get('/trial/', function (req, res, next) {
-  trialbalance.trial()
-  .then(function (result) {
-    res.send(200, result);  // processed the request successfully, and sending NO CONTENT
-  }, function (reason) {
-    res.send(304, reason);  // processed the requuest, but NOT MODIFIED
+  var qs = querystring.parse(url.parse(req.url).query).q;
+  var ids = qs.replace('(', '').replace(')', '').split(',');
+
+  console.log('looking at ids ', ids);
+
+  trialbalance.run(ids, req.session.user_id, function (err, result) {
+    if (err) return next(err);
+    res.send(200, result);
   });
 });
 
-app.get('/post/', function (req, res, next) {
+app.get('/post/:key', function (req, res, next) {
+  var qs = querystring.parse(url.parse(req.url).query).q;
+  var ids = qs.replace('(', '').replace(')', '').split(',');
+
+  trialbalance.postToGeneralLedger(ids, req.session.user_id, req.params.key, function (err, result) {
+    if (err) return next(err);
+    res.send(200);
+  });
+
+  /*
   trialbalance.post()
   .then(function (results) {
     res.send(204);  // processed the request successfully, and sending NO CONTENT
   }, function (reason) {
     res.send(304, reason); // processed the requuest, but NOT MODIFIED
   });
+  */
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
   journal.request(req.params.table, req.params.id, req.session.user_id, function (err, success) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(200);
   });
 });
 
+/*
 app.post('/journal', function (req, res, next) {
   // What are the params here?
   journal.poster(req, res, next); 
 });
+*/
 
 app.get('/max/:id/:table', function(req, res) { 
   var id = req.params.id;
@@ -157,17 +173,15 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
   });
 });
 
-app.get('/reports/:route/', function(req, res) { 
+app.get('/reports/:route/', function(req, res, next) { 
   var route = req.params.route;
 
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
   
-
-  //TODO update to err, ans standard of callback methods
-  report.generate(route, query, function(report) { 
-    if (report) return res.send(report);
-    res.send(500, 'Server could not produce report');
+  report.generate(route, query, function(report, err) { 
+    if(err) next(err);
+    res.send(report);
   });
 });
 
@@ -180,13 +194,29 @@ app.get('/tree', function (req, res, next) {
   });
 });
 
+
+app.get('/price_list/:id', function (req, res, next) {
+  var sql = 
+    'SELECT COUNT(`price_list`.`id`) AS `plcount`, `price_list`.`id`, `price_list`.`name`, ' + 
+    'COUNT(`price_list_detail`.`list_id`) AS `count` ' + 
+    'FROM `price_list` LEFT JOIN `price_list_detail` ON  ' + 
+      '`price_list`.`id`=`price_list_detail`.`list_id` ' +
+    'WHERE `price_list`.`enterprise_id`=' + db.escapestr(req.params.id) + ';';
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    if (rows.length === 1 && rows[0].plcount === 0) return res.send([]);
+    res.send(rows);
+  });
+});
+
 // ugh.
-app.get('/location', function (req, res, next) {
+app.get('/location/:locationId?', function (req, res, next) {
+  var specifyLocation = req.params.locationId ? ' AND `location`.`id`=' + req.params.locationId : '';
   var sql = "SELECT `location`.`id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
             "FROM `location`, `village`, `sector`, `province`, `country` " + 
-            "WHERE `location`.`village_id`=`village`.`id` AND `location`.`sector_id`=`sector`.`id` AND `location`.`province_id`=`province`.`id` AND `location`.`country_id`=`country`.`id`;";
+            "WHERE `location`.`village_id`=`village`.`id` AND `location`.`sector_id`=`sector`.`id` AND `location`.`province_id`=`province`.`id` AND `location`.`country_id`=`country`.`id`" + specifyLocation + ";";
   db.execute(sql, function (err, rows) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(rows);
   });
 });

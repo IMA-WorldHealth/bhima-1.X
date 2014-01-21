@@ -1,0 +1,7 @@
+
+.form-horizontal .form-group .required:after {
+  clear : none;
+  content : " *";
+  color: red;
+}
+

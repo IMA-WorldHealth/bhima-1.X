@@ -24,8 +24,7 @@
   "dependencies": {
     "mysql": "2.x.x",
     "express": "3.x.x",
-    "q": "~1.0.0",
-    "pdfkit": "~0.2.6"
+    "q": "~1.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -34,6 +33,7 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-mincss": "~0.3.2",
     "grunt-contrib-cssmin": "~0.7.0",
-    "grunt-contrib-jshint": "~0.8.0"
+    "grunt-contrib-jshint": "~0.8.0",
+    "qunit": "~0.5.18"
   }
 }

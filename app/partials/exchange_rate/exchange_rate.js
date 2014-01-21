@@ -60,7 +60,7 @@ angular.module('kpk.controllers')
       messenger.success('appstate.exchange_rate: ', JSON.stringify(appstate.get('exchange_rate')), 5000);
       run();
     }, function (error) {
-      messenger.dange('Failed to post new exchange rate. Error: '+ error);
+      messenger.danger('Failed to post new exchange rate. Error: '+ error);
     });
   }
 

@@ -1,4 +1,6 @@
-angular.module('kpk.controllers').controller('reportTransactionController', function($scope, $q, $filter, connect, kpkUtilitaire){
+angular.module('kpk.controllers')
+.controller('reportTransactionController', function($scope, $q, $filter, connect, kpkUtilitaire) {
+  'use strict';
 
 	$scope.report = {};
 	$scope.option = {};
@@ -21,11 +23,10 @@ angular.module('kpk.controllers').controller('reportTransactionController', func
 	$scope.models = [];
 
 	$scope.data = {};
+  $scope.isopen = true;
 
 	$scope.model = {};
 	$scope.model.transReport = [];
-
-	$scope.oneAtATime = true;
 
 	var models = {};
 

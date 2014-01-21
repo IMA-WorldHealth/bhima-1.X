@@ -1,5 +1,5 @@
-angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.dropdownToggle","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tabs","ui.bootstrap.position","ui.bootstrap.bindHtml","ui.bootstrap.typeahead", "ui.bootstrap.alert"]);
-angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tabs/tab.html","template/tabs/tabset-titles.html","template/tabs/tabset.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html", "template/alert/alert.html"]);
+angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion", "ui.bootstrap.dropdownToggle","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tabs","ui.bootstrap.position","ui.bootstrap.bindHtml","ui.bootstrap.typeahead", "ui.bootstrap.alert"]);
+angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tabs/tab.html","template/tabs/tabset-titles.html","template/tabs/tabset.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html"]);
 angular.module('ui.bootstrap.transition', [])
 
 /**
@@ -304,22 +304,6 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
           element.append(heading);
         }
       });
-    }
-  };
-});
-
-angular.module("ui.bootstrap.alert", []).directive('alert', function () {
-  return {
-    restrict:'EA',
-    templateUrl:'template/alert/alert.html',
-    transclude:true,
-    replace:true,
-    scope: {
-      type: '=',
-      close: '&'
-    },
-    link: function(scope, iElement, iAttrs) {
-      scope.closeable = "close" in iAttrs;
     }
   };
 });
@@ -1022,7 +1006,7 @@ angular.module('ui.bootstrap.tabs', [])
       return function(scope, element, attrs, tabsetCtrl) {
         scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
         scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
-        scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
+        scope.direction = angular.isDefined(attrs.direction) ? angular.isDefined(scope.$parent.$eval(attrs.direction)) ? scope.$parent.$eval(attrs.direction) : attrs.direction : 'top';
         scope.tabsAbove = (scope.direction != 'below');
         tabsetCtrl.$scope = scope;
         tabsetCtrl.$transcludeFn = transclude;
@@ -1688,9 +1672,9 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
   });
 angular.module("template/accordion/accordion-group.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/accordion/accordion-group.html",
-    "<div class=\"panel-group\">\n" +
+    "<div class=\"panel-group panel-default\">\n" +
     "  <div class=\"panel-heading\" ><a class=\"accordion-toggle\" ng-click=\"isOpen = !isOpen\" accordion-transclude=\"heading\">{{heading}}</a></div>\n" +
-    "  <div class=\"panel-body\" collapse=\"!isOpen\">\n" +
+    "  <div class=\"panel-body\" collapse=\"!isOpen\" ng-class=\"{closed : !isOpen}\">\n" +
     "    <div class=\"panel\" ng-transclude></div>  </div>\n" +
     "</div>");
 }]);
@@ -1698,15 +1682,6 @@ angular.module("template/accordion/accordion-group.html", []).run(["$templateCac
 angular.module("template/accordion/accordion.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/accordion/accordion.html",
     "<panel class=\"panel-group\"><div class=\"panel panel-default\" ng-transclude><div class=\"panel-heading\"></div></div></div>");
-}]);
-
-angular.module("template/alert/alert.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/alert/alert.html",
-    "<div class='alert' ng-class='type && \"alert-\" + type'>\n" +
-    "    <button ng-show='closeable' type='button' class='close' ng-click='close()'>&times;</button>\n" +
-    "    <div ng-transclude></div>\n" +
-    "</div>\n" +
-    "");
 }]);
 
 angular.module("template/modal/backdrop.html", []).run(["$templateCache", function($templateCache) {
@@ -1755,7 +1730,7 @@ angular.module("template/tabs/tab.html", []).run(["$templateCache", function($te
 angular.module("template/tabs/tabs.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/tabs/tabs.html",
     "<div class=\"tabbable\">\n" +
-    "  <ul class=\"nav nav-tabs\">\n" +
+    "  <ul class=\"nav nav-tabs \">\n" +
     "    <li ng-repeat=\"pane in panes\" ng-class=\"{active:pane.selected}\">\n" +
     "      <a ng-click=\"select(pane)\">{{pane.heading}}</a>\n" +
     "    </li>\n" +

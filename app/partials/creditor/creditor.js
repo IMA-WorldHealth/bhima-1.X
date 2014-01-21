@@ -1,10 +1,13 @@
 angular.module('kpk.controllers')
-.controller('creditorsController', function ($scope, $q, connect) {
+.controller('creditorsController', function ($scope, $q, connect, appstate) {
   'use strict';
 
   //initialisations
   $scope.creditor = {};
   $scope.creditorExiste = 0;
+
+  // TODO : use validation module to run this
+  var enterprise = appstate.get('enterprise');
   
   //populating creditors
   getCreditors();
@@ -24,7 +27,10 @@ angular.module('kpk.controllers')
   }
 
   function getGroups(){
-    var sql = {tables:{'creditor_group':{columns:['id', 'group_txt', 'account_id']}}};
+    var sql = {
+      tables:{'creditor_group': {columns:['id', 'name', 'account_id']}},
+      where : ['creditor_group.enterprise_id=' + enterprise.id]
+    };
     connect.req(sql).then(function (resultat) {
       $scope.groups = resultat.data;
     });
@@ -80,18 +86,17 @@ angular.module('kpk.controllers')
 
   function sanitize(creditor){
     creditor.location_id = creditor.location_id.id;
-    for(key in creditor){
+    for ( var key in creditor){
       if(!creditor[key]){
         delete creditor[key];
       }
     }
     return creditor;
-
   }
 
   $scope.save = function(creditor, creditor_group){
     //creditor.location_id = extractId(creditor.location_id);
-    var creditor_group_id = extractId(creditor_group);
+    var group_id = extractId(creditor_group);
     var result = existe(creditor.id);
     result.then(function(response){
       if (response ){
@@ -104,7 +109,7 @@ angular.module('kpk.controllers')
         getCreditors();
       }else{
         //on insert
-        var creditor_id_promise = getCreditorId(creditor_group_id);
+        var creditor_id_promise = getCreditorId(group_id);
         creditor_id_promise.then(function(value){
           creditor.creditor_id = value;
           connect.basicPut('supplier', [creditor]);
@@ -117,9 +122,9 @@ angular.module('kpk.controllers')
     });
   };
 
-  function getCreditorId(creditor_group_id){
+  function getCreditorId(group_id){
     var def = $q.defer();
-    connect.basicPut('creditor', [{creditor_group_id:creditor_group_id, text:$scope.creditor.name}]).then(function(res){
+    connect.basicPut('creditor', [{group_id : group_id, text:$scope.creditor.name}]).then(function(res){
       if (res.status == 200) def.resolve(res.data.insertId);
     });
     return def.promise;
@@ -181,13 +186,13 @@ angular.module('kpk.controllers')
     var def = $q.defer();    
 
     var sql = {
-      tables: {'creditor':{columns:['creditor_group_id']}},
+      tables: {'creditor':{columns:['group_id']}},
       where: ['creditor.id='+idCreditor]
     };
     connect.req(sql).then(function (resultat) {
       sql = {
         tables: {'creditor_group': {columns:['id']}},
-        where: ['creditor_group.id='+resultat.data[0].creditor_group_id]
+        where: ['creditor_group.id='+resultat.data[0].group_id]
       };
       connect.req(sql).then(function (resultat2) {
         def.resolve(resultat2.data[0]);
