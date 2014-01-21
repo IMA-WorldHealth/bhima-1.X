@@ -61,7 +61,8 @@
         </div>
       </div> <!-- End Patient Invoice template -->
     </div>
-
+  
+    <!-- Placholder debtor recipt, shows all transactions for given debtor, and the balance owed-->
     <div ng-switch-when="debtor">
       <div class="row customer-details">
         <div class="col-xs-12"> 
@@ -98,7 +99,9 @@
       </div>
 
       <div class="row">
-        Balance Due 
+        <div class="col-xs-12">
+          Balance Due 
+        </div>
       </div>
     </div>
       
@@ -126,12 +129,6 @@
             </div>
           </div>
           <div style="text-align: left;" class="col-xs-4">
-            <!-- <div class="row"> -->
-            <!--   <b>Invoice #</b> -->
-            <!-- </div> -->
-            <!-- <div class="row"> -->
-            <!--   {{invoice.id}} -->
-            <!-- </div> -->
           <div class="row">
             <b>Cash transaction #</b>
           </div>
