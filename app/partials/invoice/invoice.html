@@ -49,7 +49,7 @@
               <tr><th>Description</th><th>Amount</th></tr> 
             </thead>
             <tbody class="items">
-              <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price | currency}}</td></tr> 
+              <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price * item.quantity | currency}}</td></tr> 
             </tbody>
             <tbody class="totals">
               <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>
@@ -60,7 +60,47 @@
           </table>
         </div>
       </div> <!-- End Patient Invoice template -->
+    </div>
+
+    <div ng-switch-when="debtor">
+      <div class="row customer-details">
+        <div class="col-xs-12"> 
+          <h4 class="invoice-header">Patient</h4>
+        </div>
+         <div class="col-xs-12"> 
+          <h4 class="invoice-header">Steven Fountain</h4>
+        </div>
       </div>
+      <div class="row">
+        <!-- Patient Address -->
+        <div class="col-xs-8">
+          Address
+        </div>
+        <!-- Patient ID, Phone -->
+        <div class="col-xs-4">
+          <div class="row">
+            ID
+          </div>
+          <div class="row">
+            Phone
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="invoiceTable">
+            <thead>
+              <tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance Due</th></tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        Balance Due 
+      </div>
+    </div>
       
       <div ng-switch-when="cash">
         <!-- Cash receipt template --> 
@@ -114,7 +154,7 @@
               </thead>
               <tbody class="items"> 
                 <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>Invoice # {{invoice.invoice_id}}</b></td></tr> 
-                <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price | currency}}</td></tr> 
+                <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price * item.quantity | currency}}</td></tr> 
               </tbody>
               <tbody class="totals">
                 <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>

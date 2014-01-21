@@ -5,9 +5,9 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   
   process = { 
     'cash': processCash,
-    'sale': processSale
+    'sale': processSale,
+    'debtor': processDebtor
   };
-
   dependencies.recipient = { 
     required: true 
   };
@@ -70,6 +70,10 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
 
   function processSale() {  
     validate.process(dependencies, ['invoice', 'invoiceItem']).then(buildRecipientQuery);
+  }
+
+  function processDebtor() { 
+
   }
 
   function buildInvoiceQuery(model) { 
