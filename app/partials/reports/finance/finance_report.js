@@ -29,6 +29,11 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
 
   function reportFinance(model) { 
     $scope.model = model;
+
+    appstate.register('enterprise', function(res) { 
+      $scope.enterprise = res;
+      $scope.timestamp = Date.now();
+    });
     parseAccountDepth($scope.model.finance);
     settupTable(fiscalYears);
 
@@ -47,6 +52,12 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
       var insertAccount = { 
         detail : account
       } 
+
+      //FIXME very temporary filter 
+      var filterVar = String(account.account_number);
+      if(filterVar.indexOf('6') != 0 && filterVar.indexOf('7') != 0) { 
+        return;
+      }
       
       if(account.account_type_id === TITLE) { 
         insertAccount.accounts = [];
@@ -63,11 +74,11 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
           store.push(insertAccount);
           return;
         }
-        
+       
         index[account.parent].accounts.push(insertAccount);
         return;
       }
-      
+     
       index[account.parent].accounts.push(insertAccount); 
 
       //FIXME Grouping and totaling

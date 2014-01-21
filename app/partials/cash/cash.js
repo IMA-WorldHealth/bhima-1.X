@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('cashController', function($scope, $q, $filter, $http, $timeout, connect, appstate, messenger) {
+.controller('cashController', function($scope, $q, $filter, $http, $timeout, $location, connect, appstate, messenger) {
   'use strict';
 
   var imports = {},
@@ -228,9 +228,12 @@ angular.module('kpk.controllers')
         // posting to the journal
         connect.fetch('/journal/cash/' + doc.id)
         .then(function (res) {
-          $scope.loadDebitor(data.debitor_id);
-          $scope.data.paying = [];
-          $scope.data.payment = 0;
+          $location.path('/invoice/cash/' + doc.id);
+          
+          //Replaced reset with receipt display, this should be decided on
+          // $scope.loadDebitor(data.debitor_id);
+          // $scope.data.paying = [];
+          // $scope.data.payment = 0;
         }, function(err) {
           messenger.danger('Error: ', JSON.stringify(err));
         });

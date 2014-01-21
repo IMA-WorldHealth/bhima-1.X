@@ -172,7 +172,10 @@ angular.module('kpk.controllers')
             .then(function(res) {
               //everything is good - if there is an error here, sale should be undone (refused from posting journal)
               console.log("posting returned", res);
-              $location.path('/sale_records/' + $scope.invoice_id);
+              // $location.path('/sale_records/' + $scope.invoice_id);
+              
+              //Replaced path to sale records with receipt
+              $location.path('/invoice/sale/' + $scope.invoice_id);
             }, function (error) {
               console.log("ERROR:", error);
             });

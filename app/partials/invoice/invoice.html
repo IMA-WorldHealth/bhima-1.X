@@ -3,59 +3,165 @@
 <div class="reportBody">
 
 <div class="reportFrame">
-  <div class="row customer-details">
-    <div class="col-xs-12"> 
-      <h4 class="invoice-header">Patient Invoice</h4>
-    </div>
-  </div>
-  <div class="row customer-details">
-    <div class="col-xs-1">
-      <b>To</b>
-    </div>
-    <div class="col-xs-7">
-      <div class="row">
-        {{recipient.first_name}} {{recipient.last_name}} 
+  <div ng-switch on="origin">
+    <div ng-switch-when="sale">
+      <!-- Patient Invoice template -->
+      <div class="row customer-details">
+        <div class="col-xs-12"> 
+          <h4 class="invoice-header">Patient Invoice</h4>
+        </div>
+      </div>
+      <div class="row customer-details">
+        <div class="col-xs-1">
+          <b>To</b>
+        </div>
+        <div class="col-xs-7">
+          <div class="row">
+            {{recipient.first_name}} {{recipient.last_name}} 
+          </div>
+          <div class="row">
+            <i>{{recipient.location.village}}</i>
+            <br>
+            <i>{{recipient.location.sector}}</i>
+            <br>
+            <i>{{recipient.location.province}}</i>
+          </div>
+        </div>
+        <div style="text-align: left;" class="col-xs-4">
+          <div class="row">
+            <b>Invoice #</b>
+          </div>
+          <div class="row">
+            {{invoice.id}}
+          </div>
+          <div class="row">
+            <b>Date</b>
+          </div>
+          <div class="row">
+            {{invoice.invoice_date | date}}  
+          </div>
+        </div>
       </div>
       <div class="row">
-        <i>{{recipient.location.village}}</i>
-        <br>
-        <i>{{recipient.location.sector}}</i>
-        <br>
-        <i>{{recipient.location.province}}</i>
-      </div>
-    </div>
-    <div style="text-align: left;" class="col-xs-4">
-      <div class="row">
-        <b>Invoice #</b>
-      </div>
-      <div class="row">
-        {{invoice.id}}
-      </div>
-      <div class="row">
-        <b>Date</b>
-      </div>
-      <div class="row">
-        {{invoice.invoice_date | date}}  
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <table class="invoiceTable">
-        <thead>
-          <tr><th>Description</th><th>Amount</th></tr> 
-        </thead>
-        <tbody class="items">
-          <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price | currency}}</td></tr> 
-        </tbody>
-        <tbody class="totals">
-          <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>
-          <tr><td class="no-border">Amount Received</td><td>{{invoice.ledger.credit | currency}}</td></tr>
-          <tr><td class="no-border">Balance Due</td><td>{{invoice.ledger.balance | currency}}</td></tr>
-        </tbody>
+        <div class="col-xs-12">
+          <table class="invoiceTable">
+            <thead>
+              <tr><th>Description</th><th>Amount</th></tr> 
+            </thead>
+            <tbody class="items">
+              <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price * item.quantity | currency}}</td></tr> 
+            </tbody>
+            <tbody class="totals">
+              <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>
+              <tr><td class="no-border">Amount Received</td><td>{{invoice.ledger.credit | currency}}</td></tr>
+              <tr><td class="no-border">Balance Due</td><td>{{invoice.ledger.balance | currency}}</td></tr>
+            </tbody>
 
-      </table>
+          </table>
+        </div>
+      </div> <!-- End Patient Invoice template -->
     </div>
-  </div>
-</article>
-</main>
+  
+    <!-- Placholder debtor recipt, shows all transactions for given debtor, and the balance owed-->
+    <div ng-switch-when="debtor">
+      <div class="row customer-details">
+        <div class="col-xs-12"> 
+          <h4 class="invoice-header">Patient</h4>
+        </div>
+         <div class="col-xs-12"> 
+          <h4 class="invoice-header">Steven Fountain</h4>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Patient Address -->
+        <div class="col-xs-8">
+          Address
+        </div>
+        <!-- Patient ID, Phone -->
+        <div class="col-xs-4">
+          <div class="row">
+            ID
+          </div>
+          <div class="row">
+            Phone
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="invoiceTable">
+            <thead>
+              <tr><th>Date</th><th>Description</th><th>Amount</th><th>Balance Due</th></tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          Balance Due 
+        </div>
+      </div>
+    </div>
+      
+      <div ng-switch-when="cash">
+        <!-- Cash receipt template --> 
+        <div class="row customer-details">
+          <div class="col-xs-12"> 
+            <h4 class="invoice-header">Cash Receipt</h4>
+          </div>
+        </div>
+        <div class="row customer-details">
+          <div class="col-xs-1">
+            <b>To</b>
+          </div>
+          <div class="col-xs-7">
+            <div class="row">
+              {{recipient.first_name}} {{recipient.last_name}} 
+            </div>
+            <div class="row">
+              <i>{{recipient.location.village}}</i>
+              <br>
+              <i>{{recipient.location.sector}}</i>
+              <br>
+              <i>{{recipient.location.province}}</i>
+            </div>
+          </div>
+          <div style="text-align: left;" class="col-xs-4">
+          <div class="row">
+            <b>Cash transaction #</b>
+          </div>
+          <div class="row">
+            {{cashTransaction.cash_id}}
+          </div>
+            <div class="row">
+              <b>Date</b>
+            </div>
+            <div class="row">
+              {{cashTransaction.date | date}}  
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <table class="invoiceTable">
+              <thead>
+                <tr><th>Description</th><th>Amount</th></tr> 
+              </thead>
+              <tbody class="items"> 
+                <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>Invoice # {{invoice.invoice_id}}</b></td></tr> 
+                <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price * item.quantity | currency}}</td></tr> 
+              </tbody>
+              <tbody class="totals">
+                <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>
+                <tr><td class="no-border">Amount Received</td><td>{{cashTransaction.cost  | currency}}</td></tr>
+                <tr><td class="no-border">Balance Due</td><td>{{invoice.ledger.balance | currency}}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> <!-- end Cash receipt template  -->
+    </div>
+</div>
+</div>
