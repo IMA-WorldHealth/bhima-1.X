@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('purchaseOrderController', function($scope, $q, connect, appstate) {
+.controller('purchaseOrderController', function($scope, $q, connect, appstate, messenger) {
 
 //  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
 //  FIXME Resetting the form maintains the old invoice ID - this causes a unique ID error, resolve this
@@ -135,20 +135,24 @@ angular.module('kpk.controllers')
     console.log("Posting", purchase, "to 'purchase table");
 
     connect.basicPut('purchase', [purchase])
+    .then(function(res) {
+      var id = res.data.insertId;
+      var promise = generateItems();
+      promise
       .then(function(res) {
-        if(res.status==200) {
-          var promise = generateItems();
-          promise
-          .then(function(res) {
-            console.log("Purchase order successfully generated", res);
-            connect.journal([{id:$scope.invoice_id, transaction_type:3, user:1}]); //just for the test, send data to the journal traget server-side
-//            Navigate to Purchase Order review || Reset form
-//            Reset form
-              init();
+        console.log("Purchase order successfully generated", res);
 
-          });
-        }
+        connect.fetch('/journal/purchase/' + purchase.id)
+        .then(function (success) {
+          messenger.success('Posted purchase id: ' + id);
+//        Navigate to Purchase Order review || Reset form
+//        Reset form
+          init();
+        }, function (err) {
+          messenger.danger('Posting returned err: ' + JSON.stringify(err));
+        });
       });
+    });
   };
 
   $scope.updateItem = function(item) {
