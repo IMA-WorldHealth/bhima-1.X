@@ -11,9 +11,6 @@ angular.module('kpk.controllers')
     $scope.sale_date = getDate();
     $scope.inventory = [];
 
-    var INVOICE_TYPE = 2;
-    var DEB_CRED_TYPE = 'D'; // FIXME: Inserts the debitor_creditor type into the journal
-
     //var inventory_request = connect.req({'tables' : { 'inventory' : { columns : ['id', 'code', 'text', 'price']}}});
 	
 		var paramInventoryId, paramDebtorId;

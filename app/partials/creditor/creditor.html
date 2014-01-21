@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="partials/creditor/creditor.css"/>
+
 <header>
  <span>Register Supplier</span>
 </header>
@@ -21,7 +22,7 @@
             </div>
             <div class="form-group">
               <label for="Group">Group</label>
-              <select required class="form-kapok" ng-change="verifyExisting()" id="groupselectID" ng-model="creditor_group" ng-options="group.id+' -- '+group.group_txt for group in groups">
+              <select required class="form-kapok" ng-change="verifyExisting()" id="groupselectID" ng-model="creditor_group" ng-options="group.id+' -- '+group.name for group in groups">
                 <option value="" disabled="disabled">--Select Group--</option>
               </select>
             </div>

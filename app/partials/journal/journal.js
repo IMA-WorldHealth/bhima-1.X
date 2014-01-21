@@ -284,8 +284,7 @@ angular.module('kpk.controllers')
     .then(function () {
       $modalInstance.close();
     }, function (error) {
-      console.log('ERROR:', error);
-      throw error;
+      messenger.warning('Posting Failed ' +  JSON.stringify(error));
     });
   };
 
