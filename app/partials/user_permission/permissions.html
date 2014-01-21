@@ -1,17 +1,227 @@
-<link rel="stylesheet" type="text/css" href="partials/user_permission/permissions.css"/>
-
 <header>
-	<span>{{'UP_TITLE' | translate}}</span>
+	<span class="capital">{{'UP_TITLE' | translate}}</span>
 </header>
 
 <section class="underline">
 	<div class="pull-right">
-		<button ng-click="cancel()" class="btn btn-sm btn-default" ng-disabled="form.$invalid">{{'CANCEL' | translate}}</button>
-		<button ng-click="delete()" class="btn btn-sm btn-danger" ng-disabled="form.$invalid">{{'DELETE' | translate}}</button>
-		<button ng-click="valider()" class="btn btn-sm btn-default" ng-disabled="form.$invalid">{{'SAVE' | translate}}</button>
+    <button class="btn btn-sm btn-default" class="capital" ng-click="setAction('add')"><i class="glyphicon glyphicon-user"></i> Add a New User</button>
 	</div>
 </section>
 
+<div class="content">
+  <div class="row">
+    <div class="col-xs-5">
+      <div class="panel panel-primary">
+        <div class="panel-heading capital"> 
+          {{ 'REGISTERED_USERS' | translate }}
+        </div>
+        <table class="table table-hover table-condensed">
+          <thead>
+            <tr>
+              <th class="capital">{{'FIRST_NAME' | translate}}</th>
+              <th class="capital">{{'USER_NAME' | translate}}</th>
+              <th class="capital">{{'EMAIL' | translate}}</th>
+              <th colspan="3" class="capital">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="user in models.users">
+              <td>{{user.first}}</td>
+              <td>{{user.username}}</td>
+              <td>{{user.email}}</td>
+              <td ng-click="editInfo(user)"><button ><i class="glyphicon glyphicon-pencil"></i></button></td>
+              <td ng-click="editPermission(user)"><button><i class="glyphicon glyphicon-cog"></i></button></td>
+              <td ng-click="removeUser(user)"><button><i class="glyphicon glyphicon-trash"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-7" ng-switch="action">
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <p><b>Manage Users and Permissions.</b></p>
+          <p>Edit existing users and permissions from the table to the left.</p>
+          <ul style="list-style: none; padding-left: 10px;">
+            <li><i class="glyphicon glyphicon-pencil"></i>  Edits a user's metadata. </li>
+            <li><i class="glyphicon glyphicon-cog"></i>  Edits a user's permissions. </li>
+            <li><i class="glyphicon glyphicon-trash"></i>  Deletes a user and its permission data. </li>
+          </ul>
+        </div>
+      </div>
+
+      <div ng-switch-when="add">
+        <form class="form-horizontal">
+          <legend><h3>Adding New User <small>{{add.first}} {{add.last}}</small></h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">First Name</label>
+            <div class="col-xs-7">
+              <input ng-model="add.first" class="form-kapok" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Last Name</label>
+            <div class="col-xs-7">
+              <input ng-model="add.last" class="form-kapok" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">User Name</label>
+            <div class="col-xs-7">
+              <input ng-model="add.username" class="form-kapok" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2">Email Addr.</label>
+            <div class="col-xs-7">
+              <input ng-model="add.email" class="form-kapok" type="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password</label>
+            <div class="col-xs-7 input-group"> 
+              <input ng-model="add.password" class="form-kapok" required="required" type="password">
+              <span class="input-group-btn" ng-switch="add.validPassword">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !add.validPassword, 'btn-success' : !!add.validPassword }" disabled="disabled">
+                  <i ng-switch-default class="glyphicon glyphicon-remove"></i>
+                  <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password (Retype)</label>
+            <div class="col-xs-7 input-group">
+              <input ng-model="add.password_verify" class="form-kapok" required="required" type="password">
+              <span class="input-group-btn" ng-switch="add.validPassword">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !add.validPassword, 'btn-success' : !!add.validPassword }" disabled="disabled">
+                  <i ng-switch-default class="glyphicon glyphicon-remove"></i>
+                  <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <input type="submit" class="btn btn-sm btn-success" value="Submit" ng-click="addSubmit()">
+          <input type="reset" class="btn btn-sm btn-default" value="Reset" ng-click="addReset()">
+
+        </form>
+      </div>
+
+      <div ng-switch-when="edit">
+        <form class="form-horizontal">
+          <legend><h3>Editing User <small>{{edit.first}} {{edit.last}}</small></h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">First Name</label>
+            <div class="col-xs-7">
+              <input ng-model="edit.first" class="form-kapok" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Last Name</label>
+            <div class="col-xs-7">
+              <input ng-model="edit.last" class="form-kapok" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">User Name</label>
+            <div class="col-xs-7">
+              <input ng-model="edit.username" class="form-kapok" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2">Email Addr.</label>
+            <div class="col-xs-7">
+              <input ng-model="edit.email" class="form-kapok" type="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password</label>
+            <div class="col-xs-7 input-group"> 
+              <input ng-model="edit.password" class="form-kapok" required="required" type="password" ng-change="clearPass()">
+              <span class="input-group-btn" ng-switch="edit.validPassword">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !edit.validPassword, 'btn-success' : !!edit.validPassword }" disabled="disabled">
+                  <i ng-switch-default class="glyphicon glyphicon-remove"></i>
+                  <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-2 required">Password (Retype)</label>
+            <div class="col-xs-7 input-group">
+              <input ng-model="edit.password_verify" class="form-kapok" required="required" type="password">
+              <span class="input-group-btn" ng-switch="edit.validPassword">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !edit.validPassword, 'btn-success' : !!edit.validPassword }" disabled="disabled">
+                  <i ng-switch-default class="glyphicon glyphicon-remove"></i>
+                  <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <input type="submit" class="btn btn-sm btn-success" value="Submit" ng-click="editSubmit()">
+          <input type="button" class="btn btn-sm btn-default" value="Reset" ng-click="editReset()">
+
+        </form>
+      </div>
+
+      <div ng-switch-when="permission">
+        <div class="col-xs-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span>Permissions</span>
+              <span class="pull-right">
+                <button ng-disabled="!permission.permission_change" ng-click="savePermissions()"><i class="glyphicon glyphicon-floppy"></i> Save</button>
+              </span>
+            </div>
+            <ul class="k-list">
+              <li ng-repeat="unit in models.units | filter:filterChildren" >
+                <label class="checkbox">
+                  <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
+                  {{unit.name}}
+                </label>
+                <ul class="k-list" ng-if="unit.has_children">
+                  <li ng-repeat="child in unit.children">
+                    <label class="checkbox">
+                      <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
+                      {{child.name}}
+                    </label>
+                    <ul class="k-list" ng-if="child.has_children">
+                      <li ng-repeat="final in child.children">
+                        <label class="checkbox">
+                          <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(child)">
+                          {{final.name}}
+                        </label>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!--
 <div class="content">
 	<div class="row">
 		<div class="col-xs-4" id="divformID">
@@ -56,36 +266,12 @@
 		</div>
 
 		<div class="col-xs-8" id="divuserID">
-			<div class="panel panel-default">
-				<div class="panel-heading"> 
-          {{ 'REGISTERED_USERS' | translate }}
-				</div>
-				<div class="table-responsive">
-					<table class="table table-bordered  table-striped table-hover">
-						<thead>
-							<tr>
-                <th>{{'FIRST_NAME' | translate}}</th>
-                <th>{{'USER_NAME' | translate}}</th>
-                <th>{{'EMAIL' | translate}}</th>
-              </tr>
-						</thead>
-						<tbody>
-							<tr ng-click="select($index)" ng-repeat="user in model">
-								<td>{{user.first}}</td>
-								<td>{{user.username}}</td>
-								<td>{{user.email}}</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
 	</div>
 	<div class="row">
 		<div class ="col-xs-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-          {{'UP_DIALOGUE' | translate }} <b>{{selected.first}}</b> {{'UP_DIALOGUE_2' | translate }} <!-- this is a crude approximation of an amature move -->
+          {{'UP_DIALOGUE' | translate }} <b>{{selected.first}}</b> {{'UP_DIALOGUE_2' | translate }}
 				</div>
 
 				<div class="panel-body table-responsive"  id="divroleID">
@@ -112,3 +298,4 @@
 	</div>
 </div>
 </div>
+-->

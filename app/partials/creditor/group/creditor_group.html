@@ -25,7 +25,7 @@
           </thead>
           <tbody>
             <tr ng-repeat="group in models.creditor_group | filter:flags.search"  ng-click="editGroup(group)">
-              <td>{{group.group_txt}}</td><td>{{formatGroupAccount(group.account_id)}}</td><td><input type="checkbox" ng-model="group.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(group)"></td>
+              <td>{{group.name}}</td><td>{{formatGroupAccount(group.account_id)}}</td><td><input type="checkbox" ng-model="group.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(group)"></td>
             </tr>
           </tbody>
         </table>
@@ -47,7 +47,7 @@
                 class="form-kapok"
                 placeholder="e.g. CMK Medical Aid"
                 type="text"
-                ng-model="newgroup.group_txt"
+                ng-model="newgroup.name"
                 required
                 >
             </div>
@@ -67,8 +67,8 @@
             </div>
           </div>
           <div class="pull-right">
-            <button class="btn btn-default btn-sm" ng-click="newGroup()">New Form</button>
             <button class="btn btn-success btn-sm" ng-click="save()">Save Changes</button>
+            <button class="btn btn-default btn-sm" ng-click="newGroup()">New Form</button>
           </div>
         </fieldset>
       </form>

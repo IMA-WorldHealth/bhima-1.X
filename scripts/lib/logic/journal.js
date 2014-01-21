@@ -1,6 +1,7 @@
-// journal code
+// scripts/lib/logic/journal.js
 
 var parser = require('../database/parser')(),
+    util = require('../util/util'),
     Q = require('q');
 
 // validation functions
@@ -33,6 +34,12 @@ module.exports = (function (db) {
     'cash'     : handleCash,
     'purchase' : handlePurchase
   };
+
+  function request (table, id, user_id, done) {
+    // handles all requests coming from the client
+    table_router[table](id, user_id, done);
+    return;
+  }
 
   // validity checks
   check = {
@@ -100,15 +107,15 @@ module.exports = (function (db) {
     date : function (date) {
       // returns a mysql-compatible date
       // Note : this transforms things into a date, not date + time
-      // FIXME : There is a bug, where this changes timezones if you
-      // are at midnight and converts the day to the day before.
-      var offset, d;
-      if (date) {
-        offset = new Date(date).getDate() + 1;
-        d = new Date(new Date(date).setDate(offset));
-      }
 
-      return (date ? d : new Date()).toISOString().slice(0, 10).replace('T', ' ');
+      if (date) {
+        var year = String(date.getFullYear());
+        var month = String(date.getMonth() + 1);
+        month = month.length === 1 ? '0' + month : month;
+        var day = String(date.getDate()).length === 1 ? '0' + String(date.getDate()) : String(date.getDate());
+        return [year, month, day].join('-');    
+      }
+      else return new Date().toISOString().slice(0,10);
     },
   
     period : function (date, callback) {
@@ -185,7 +192,6 @@ module.exports = (function (db) {
       // first check - do we have a validPeriod?
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
-      // FIXME : this must encapsulation all the following code!
       check.validPeriod(enterprise_id, date, function (err) {
         if (err) callback(err, null);  
 
@@ -274,13 +280,11 @@ module.exports = (function (db) {
   }
 
   function handleCash (id, user_id, callback) {
-
-
     // posting from cash to the journal.
     var sql = 
       'SELECT `cash`.`id`, `cash`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  + 
         '`cash`.`deb_cred_id`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`cashier_id`, ' +
-        '`cash`.`cashbox_id`, `cash`.`text`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' + 
+        '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' + 
         '`cash`.`bon`, `cash`.`bon_num` ' +
       'FROM `cash` JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` ' +
       'WHERE `cash`.`id`=' + db.escapestr(id) + ';'; 
@@ -291,13 +295,14 @@ module.exports = (function (db) {
 
       var reference_payment = results[0];
       var enterprise_id = reference_payment.enterprise_id;
-      var date = reference_payment.date;
 
+      var date = reference_payment.date;
+      console.log('\n In table cash, I read out the date ', date, 'for id:', id, '\n\n');
 
       // first check - are we in the correct period/fiscal year?
       check.validPeriod(enterprise_id, date, function (err) {
-        if (err) return callback(err);
 
+        console.log('\n Date is now:', date, '\n');
 
         // second check - is there a bon number defined?
         var bon_num_exist = validate.exists(reference_payment.bon_num);
@@ -334,6 +339,8 @@ module.exports = (function (db) {
              
             get.period(date, function (err, period_object) {
               if (err) return callback(err);
+
+               console.log('\n Date is now:', date, '\n');
 
               // we now have the relevant period!
 
@@ -376,7 +383,7 @@ module.exports = (function (db) {
                       '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
                       '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                      '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money + 
+                      '`cash`.`description`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money + 
                       '`cash_item`.`invoice_id`, `cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                       [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` JOIN `cash_item` ON ' + 
@@ -399,7 +406,7 @@ module.exports = (function (db) {
                       '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
                       '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' + 
-                      '`cash`.`text`, `cash`.`bon_num`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money + 
+                      '`cash`.`description`, `cash`.`bon_num`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money + 
                       '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                       '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` JOIN `cash_item` ON ' + 
@@ -426,367 +433,111 @@ module.exports = (function (db) {
     });
   }
 
-  function handlePurchase () {}
-
-  var service_name = '';
-  var self = {};
-
-  self.request = function (table, id, user_id, callback) {
-    // authenticate and authorize
-    authorize(user_id, function (err, res) {
-      // Is this an anti-pattern?
-      // I am not calling the callback but passing it along..
-      if (err) return callback(err);
-      table_router[table](id, user_id, callback);
-    });
-  };
-
-  // this validates that we haven't posted the same thing twice.
-  // I don't think it actually works, since trans_ids are automatically generated
-  self.poster = function (req, res, next) { 
-    req.body.forEach(function (item) {
-      var sql = "SELECT `id` FROM `posting_journal` WHERE `trans_id`=" + db.escapestr(item.id) + " AND `origin_id`=" + db.escapestr(item.transaction_type) + ";\n";
-      db.execute(sql, function(err, records) {
-        if (err) return next(err);
-        if (!records.length) getData(item, res);
-      });
-    }); 
-  };
-
-  function getData (posting, res) {
-    //each posting object contains transaction_id, service_id, user_id properties
-    //request for knowing the service
-    var query = "SELECT DISTINCT `service_txt` FROM `transaction_type` WHERE `id`=" + db.escapestr(posting.transaction_type) + ';\n';
-    db.execute(query, function (err, data) {
-      var columnData, sql, services, service_name,
-          columns = [],
-          defer = Q.defer();
-
-      service_name = data[0].service_txt.toLowerCase();
-      columnData = map[service_name];
-      for (var col in columnData) {
-        if (col != 't') columns.push('`' + columnData.t + '`.`' + columnData[col] + '`');
-      }
-
-      services = {
-        'sale' : "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM " + columnData.t + " JOIN `sale_item` JOIN `inventory` ON `sale`.`id`=`sale_item`.`sale_id` AND `sale_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t + ".`id`=" + posting.id + ";\n",
-        'cash' : "SELECT " + columns.join(', ') + ", `cash_id`, `allocated_cost`, `invoice_id` FROM " + columnData.t + " JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` WHERE " + columnData.t + ".`id`=" + db.escapestr(posting.id) + ";\n",
-        'purchase' : "SELECT " + columns.join(', ') + ", `inventory_id`, `total`, `group_id` FROM `purchase` JOIN `purchase_item` JOIN `inventory` ON `purchase`.`id`=`purchase_item`.`purchase_id` AND `purchase_item`.`inventory_id`=`inventory`.`id` WHERE " + columnData.t +".`id`=" + db.escapestr(posting.id) + ";\n"
-      };
-
-      sql = services[service_name];
-      db.execute(sql, function (err, data) {
-        if (err) throw err;
-        var date = data[0].invoice_date || data[0].date;
-        getPeriodId(date, data[0].enterprise_id)
-        .then(function (result) {
-          if (result.success) process(data, posting, res, result, service_name); //verification et insertion eventuelle
-        });
-      });
-    });
-  }
-
-  function saleDebit (obj, data, posting, res, periodExerciceIdObject) {
-    var defer = Q.defer(),
-        journalRecord = {},
-        debitColumns = map[obj.t + '_debit'];
-
-    for (var k in debitColumns) journalRecord[k] = data[debitColumns[k]];
-
-    journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
-    journalRecord.user_id = posting.user;
-    journalRecord.id = '';
-    //FIXME: This code is deprecated.  Actually do this properly using a post from the client.
-    journalRecord.deb_cred_type = 'D'; // TODO/FIXME
-    journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-    journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-    journalRecord.period_id = periodExerciceIdObject.pid;
-
-    /*
-    var sql = {
-               'entities':[{'t':'debitor', 'c':['group_id']}],
-               'cond':[{'t':'debitor', 'cl':'id', 'z':'=', 'v':journalRecord.deb_cred_id}]
-              };
-    */
-    var req = "SELECT `group_id` FROM `debitor` WHERE `debitor`.`id`=" + db.escapestr(journalRecord.deb_cred_id) + ";\n";
-//    var req = db.select(sql);
-    db.execute(req, function (err, rows) {
-      if (err) throw err;
-      var sql = "SELECT `debitor_group`.`account_id` FROM `debitor_group` WHERE `debitor_group`.`id`=" + rows[0].group_id + ";\n";
-      /*
-      var sql = {
-       'entities':[{'t':'debitor_group', 'c':['account_id']}],
-       'cond':[{'t':'debitor_group', 'cl':'id', 'z':'=', 'v':data[0].group_id}]
-      };
-     */
-
-      db.execute(sql, function (err, results) {
-        if (err) throw err;
-        journalRecord.account_id = results[0].account_id;
-        insertData('posting_journal', journalRecord)
-        .then(function (resolution) {
-          defer.resolve(resolution);
-        }, function (error) {
-          defer.reject(error);
-        });
-      });
-    });
-
-    return defer.promise;
-  }
-
-  function saleCredit (obj, data, posting, res, periodExerciceIdObject) { 
-    var defer = Q.defer(),
-        objCredit = map[obj.t + "_credit"],
-        journalRecord,
-        sql;
-
-    data.forEach(function (item) {
-      journalRecord = {}; 
-      sql = "SELECT `inv_group`.`sales_account` FROM `inv_group` WHERE `inv_group`.`id`=" + db.escapestr(item.group_id) + ";\n";
-      /*
-      sql = {
-        'entities':[{'t':'inv_group', 'c':['sales_account']}],
-        'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
-      };
-      */
-      db.execute(sql, function (err, data2) {
-          for (var k in objCredit) journalRecord[k] = item[objCredit[k]];
-          journalRecord.origin_id = posting.transaction_type;
-          journalRecord.user_id = posting.user;
-          journalRecord.id = '';
-          journalRecord.deb_cred_type = 'D'; 
-          journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-          journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-          journalRecord.period_id = periodExerciceIdObject.pid;
-          journalRecord.account_id = data2[0].sales_account;
-          insertData('posting_journal', journalRecord).then(function (resolve) {
-            defer.resolve(resolve);
-          });
-      });
-    });
-    return defer.promise;
-  }
-
-  function cashDebit (obj, data, posting, res, periodExerciceIdObject) {
-    var defer = Q.defer();
-    var journalRecord = {};
-    var objDebit = map[obj.t+'_debit']; 
-    journalRecord.id = '';
-    for (var cle in objDebit) journalRecord[cle] = data[0][objDebit[cle]];
-
-    journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
-    journalRecord.user_id = posting.user;
-    journalRecord.deb_cred_type = 'D';  
-    delete(journalRecord.description); // why do this?
-    journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-    journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-    journalRecord.period_id = periodExerciceIdObject.pid;
-    var sql = "SELECT `debit_account` FROM `cash` WHERE `id`=" + posting.id + ";\n";
-    /*
-    var sql = {
-      'entities':[{'t':'cash', 'c':['debit_account']}],
-      'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
-    };
-    */
-    db.execute(sql,function (err, record) {
-      journalRecord.account_id = record[0].debit_account;
-      insertData('posting_journal', journalRecord).then(function (resolve) {
-        defer.resolve(resolve);
-      });
-    });
-    return defer.promise;
-  }
-
-  function cashCredit (obj, data, posting, res, periodExerciceIdObject) {
-    var defer = Q.defer(),
-        objCredit = map[obj.t+'_credit'],
-        journalRecord = {},
-        sql;
-
-    journalRecord.id = '';
-    /*
-    var sql = {
-                'entities':[{'t':'cash', 'c':['credit_account']}],
-                'cond':[{'t':'cash', 'cl':'id', 'z':'=', 'v':posting.id}]
-              };
-    */
-    sql = "SELECT `cash`.`credit_account` FROM `cash` WHERE `cash`.`id`=" + db.escapestr(posting.id) + ";\n";
-    db.execute(sql, function (err, data2) {     
-      journalRecord.account_id = data2[0].credit_account;
-      data.forEach(function (item) {    
-        for (var cle in objCredit) journalRecord[cle] = item[objCredit[cle]];
-
-        journalRecord.origin_id = posting.transaction_type;
-        journalRecord.user_id = posting.user;
-        journalRecord.deb_cred_type = 'D';
-        delete(journalRecord.description);
-        journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-        journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-        journalRecord.period_id = periodExerciceIdObject.pid;
-        insertData('posting_journal', journalRecord).then(function (resolve) {
-          defer.resolve(resolve);
-        });
-      });  
-    });
-    return defer.promise;
-  }
-
-  function purchaseDebit (obj, data, posting, res, periodExerciceIdObject) {
-    var defer = Q.defer(),
-        objDebit = map[obj.t+'_debit'],
-        journalRecord,
-        sql;
-
-    data.forEach(function(item){
-      journalRecord = {}; 
-      /*
-      sql = {
-                 'entities':[{'t':'inv_group', 'c':['sales_account']}],
-                 'cond':[{'t':'inv_group', 'cl':'id', 'z':'=', 'v':item.group_id}]
-      };
-      */
-      sql = "SELECT `sales_account` FROM `inv_group` WHERE `inv_group`.`id`=" + db.escapestr(item.group_id) + ";\n";
-      db.execute(sql, function (err, data2) {
-        if (err) throw err;
-        journalRecord.account_id = data2[0].sales_account;
-
-        for (var cle in objDebit) journalRecord[cle] = item[objDebit[cle]];
-
-        journalRecord.origin_id = posting.transaction_type;
-        journalRecord.user_id = posting.user;
-        journalRecord.deb_cred_type = 'C'; 
-        journalRecord.id = '';
-        journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-        journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-        journalRecord.period_id = periodExerciceIdObject.pid;
-        insertData('posting_journal', journalRecord).then(function (resolve) {
-          defer.resolve(resolve);
-        });
-      });
-    });
-    return defer.promise;
-  }
-
-  function purchaseCredit (obj, data, posting, res, periodExerciceIdObject) {
-    var defer = Q.defer(); 
-    var journalRecord = {};
-    var objCredit = map[obj.t+'_credit'];
-
-    for (var k in objCredit) journalRecord[k] = data[objCredit[k]];
-
-    journalRecord.origin_id = posting.transaction_type; //this value wil be fetched in posting object
-    journalRecord.user_id = posting.user;
-    journalRecord.id = '';
-    journalRecord.deb_cred_type = 'C'; // TODO/FIXME
-    journalRecord.trans_date = util.convertToMysqlDate(journalRecord.trans_date);
-    journalRecord.fiscal_year_id = periodExerciceIdObject.fid;
-    journalRecord.period_id = periodExerciceIdObject.pid;
-    var req = "SELECT `creditor_group_id` FROM `creditor` WHERE `id`=" + db.escapestr(journalRecord.deb_cred_id) + ";\n";
-    /*
-    var sql = {
-               'entities':[{'t':'creditor', 'c':['creditor_group_id']}],
-               'cond':[{'t':'creditor', 'cl':'id', 'z':'=', 'v':journalRecord.deb_cred_id}]
-              };
-    var req = db.select(sql);
-    */
-    db.execute(req, function(err, data) {
-      /*
-      var sql = {
-       'entities':[{'t':'creditor_group', 'c':['account_id']}],
-       'cond':[{'t':'creditor_group', 'cl':'id', 'z':'=', 'v':data[0].creditor_group_id}]
-      };
-      */
-      var sql = "SELECT `account_id` FROM `creditor_group` WEHRE `creditor_group`.`id`=" + data[0].creditor_group_id + ";\n";
-      db.execute(sql, function (err, data) {
-        journalRecord.account_id = data[0].account_id;
-        insertData('posting_journal', journalRecord).then(function (resolve) {
-          defer.resolve(resolve);
-        });
-      });
-    });
-    return defer.promise;
-  }
-
-  function process (data, posting, res, periodExerciceIdObject, service_name) {
-    var obj = map[service_name];
+  function handlePurchase (id, user_id, done) {
+    // posting purchase requests 
+    var sql = 
+      'SELECT `purchase`.`enterprise_id`, `purchase`.`id`, `purchase`.`cost`, `purchase`.`currency_id`, ' +
+        '`purchase`.`creditor_id`, `purchase`.`purchaser_id`, `purchase`.`discount`, `purchase`.`invoice_date`, ' +
+        '`purchase`.`note`, `purchase`.`posted`, `purchase_item`.`unit_price`, `purchase_item`.`total`, `purchase_item`.`quantity` ' +
+      'FROM `purchase` JOIN `purchase_item` ON `purchase`.`id`=`purchase_item`.`purchase_id` ' + 
+      'WHERE `purchase`.`id`=' + db.escapestr(id) + ';';
     
-    switch (service_name) {
-      case 'sale' :
-        Q.all([saleDebit(obj, data[0], posting, res, periodExerciceIdObject), saleCredit(obj, data, posting, res, periodExerciceIdObject), setPosted(obj.t, posting.id)]).then(function(arr) {
-          if(arr[0].success===true && arr[1].success===true && arr[2] === true){
-            res.send({status: 200, insertId: arr[1].info.insertId});
-          }
-        });
-        break;
-      case 'cash' :
-        Q.all([cashDebit(obj, data, posting, res, periodExerciceIdObject), cashCredit(obj, data, posting, res, periodExerciceIdObject)]).then(function(arr) {    
-          if(arr[0].success===true && arr[1].success===true){
-            console.log('******************* on a gagne ***********************');
-            res.send({status: 200, insertId: arr[1].info.insertId});
-          } else {
-            console.log("Something wrong: ", arr);
-          }
-        });
-        break;
-      case 'purchase' :
-        Q.all([purchaseDebit(obj, data, posting, res, periodExerciceIdObject), purchaseCredit(obj, data[0], posting, res, periodExerciceIdObject), setPosted(obj.t, posting.id)]).then(function(arr) { 
-          if(arr[0].success === true && arr[1].success === true && arr[2] === true){        
-            res.send({status: 200, insertId: arr[1].info.insertId});
-          }
-        });
-        break;
-    }
-  }
+    db.execute(sql, function (err, results) {
+      if (err) return done(err);
+      if (results.length === 0) return done(new Error('No purchase order by the id: ' + id));
 
-  function setPosted (table, id) { //used to be `check`
-    var defer = Q.defer(),
-        sql = "UPDATE " + db.escape(table) + " SET `posted`=1 WHERE `id`=" + db.escapestr(id) + ";\n";
-    db.execute(sql, function (err, data) {
-      defer.resolve(err ? false : true);
-    });
-    return defer.promise;
-  }
+      var reference_purchase= results[0];
+      var enterprise_id = reference_purchase.enterprise_id;
+      var date = reference_purchase.invoice_date;
 
-  function getPeriodId (date, eid) {
-    var defer = Q.defer();
-    var mysqlDate = db.escapestr(util.convertToMysqlDate(date));
-    var sql = "SELECT `period`.`id`, `fiscal_year_id` FROM `period` WHERE `period`.`period_start`<=" + mysqlDate + " AND `period`.`period_stop`>=" + mysqlDate + ";\n";
-    db.execute(sql, function(err, data) {
-        if (err) throw err;
-        console.log('found', data);
-        defer.resolve(data.length ? {success:true, fid:data[0].fiscal_year_id, pid:data[0].id} : {success : false});
-    });
-    return defer.promise;
-  }
+      // first check - do we have a validPeriod?
+      // Also, implicit in this check is that a valid fiscal year
+      // is in place.
+      check.validPeriod(enterprise_id, date, function (err) {
+        if (err) done(err);  
 
-  function insertData (table, data) {
-    var defer = Q.defer();
-    generateTransId()
-    .then(function (id) {
-      data.trans_id = id; // add the trans id here ...
-      console.log("\ndata:", data, "\n");
-      delete data.id;
-      var sql = parser.insert(table, data);
-      db.execute(sql, function (err, result) {
-        if(err) throw err;
-        console.log('\nDATA POSTED!\n');
-        defer.resolve(err ? {success : false, info: err} : {success : true, info: result});
+        // second check - is the cost positive for every transaction?
+        var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
+        if (!costPositive) return done(new Error('Negative cost detected for purchase id: ' + id));
+
+        // third check - are all the unit_price's for purchase_items positive?
+        var unit_pricePositive = results.every(function (row) { return validate.isPositive(row.unit_price); });
+        console.log('\nrows:', results, '\n');
+        if (!unit_pricePositive) return done(new Error('Negative unit_price for purchase id: ' + id));
+
+        // fourth check - is the total the price * the quantity?
+        var totalEquality = results.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
+        if (!totalEquality) return done(new Error('Unit prices and quantities do not match for purchase id: ' + id));
+    
+        // all checks have passed - prepare for writing to the journal.
+        get.origin('purchase', function (err, origin_id) {
+          if (err) return done(err);
+          // we now have the origin!
+           
+          get.period(date, function (err, period_object) {
+            if (err) return done(err);
+
+            // we now have the relevant period!
+
+            // create a trans_id for the transaction
+            // MUST BE THE LAST REQUEST TO undo race conditions.
+            get.transactionId(function (err, trans_id) {
+              if (err) return done(err);
+
+              var period_id = period_object.period_id;
+              var fiscal_year_id = period_object.fiscal_year_id; 
+              
+              // we can begin copying data from PURCHASE -> JOURNAL
+
+              // First, copy the data from purchase into the journal.
+              var purchase_sql =
+                'INSERT INTO `posting_journal` ' +
+                  '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+                  '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                'SELECT `purchase`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                  '`purchase`.`note`, `creditor_group`.`account_id`, 0, `purchase`.`cost`, 0, `purchase`.`cost`, ' + // last four debit, credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
+                  '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                'FROM `purchase` JOIN `creditor` JOIN `creditor_group` ON ' +
+                  '`purchase`.`creditor_id`=`creditor`.`id` AND `creditor_group`.`id`=`creditor`.`group_id` ' +
+                'WHERE `purchase`.`id`=' + db.escapestr(id);
+
+              var purchase_item_sql = 
+                'INSERT INTO `posting_journal` ' +
+                  '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+                  '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                'SELECT `purchase`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' + 
+                  '`purchase`.`note`, `inv_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
+                  '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inv_group` ON ' + 
+                  '`purchase_item`.`purchase_id`=`purchase`.`id` AND `purchase_item`.`inventory_id`=`inventory`.`id` AND ' +
+                  '`inventory`.`group_id`=`inv_group`.`id` ' +
+                'WHERE `purchase`.`id`=' + db.escapestr(id) + ';';
+
+              db.execute(purchase_sql, function (err, rows) {
+                if (err) return done(err);
+
+                db.execute(purchase_item_sql, function (err, rows) {
+                  if (err) return done(err);
+                 
+                  // Finally, we can update purchase 
+                  var sql = 'UPDATE `purchase` SET `posted`=1 WHERE `id`=' + db.escapestr(id) + ';';
+
+                  db.execute(sql, function (err, rows) {
+                    if (err) return done(err);
+                    done(null, rows);
+                    return;
+                  });
+                });
+              });
+            });
+          });
+        });
       });
     });
-    return defer.promise;
-  }
-  
-  function generateTransId () {
-    var defer = Q.defer(),
-        sql = "SELECT MAX(`trans_id`) as `max` FROM `posting_journal`;\n";
-    db.execute(sql, function (err, rows) {
-      if (err) throw err;
-      defer.resolve(rows[0].max + 1);
-    });
-    return defer.promise;
   }
 
-  return self;
+  return { request : request };
 
 });

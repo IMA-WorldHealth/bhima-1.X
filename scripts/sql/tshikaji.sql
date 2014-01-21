@@ -49,42 +49,34 @@ insert into `user` values
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
 
+
+-- Deleted old ones that are  were not being used.  If you
+-- think a mistake has happened, please roll this list back.
 INSERT INTO `unit` VALUES
   (0,'Root','The unseen root node',NULL,1,'',''),
 	(1,'Admin','The Administration Super-Category',0,1,'',''),
 	(2,'Enterprise','Manage the registered enterprises from here',1,0,'/partials/enterprise/','/enterprise'),
-	(3,'Form Manager','Manage your forms',1,0,'/units/formmanager/',''),
+
 	(4,'Users & Permissions','Manage user privileges and permissions',1,0,'/partials/permission','/permission'),
 	(5,'Finance','The Finance Super-Category',0,1,'',''),
 	(6,'Account','Chart of Accounts management',1,0,'/partials/accounts/create_account','/create_account'),
-	(7,'Charts','Analyze how your company is doing',5,0,'/units/charts/',''),
+
 	(8,'Budgeting','Plan your next move',0,10,'/partials/budgeting',''),
 	(9,'Posting Journal','Daily Log',5,0,'/partials/postingjournal/','/posting_journal'),
 	(10,'Reports','Do stuff and tell people about it',0,1,'/units/reports/','reports/summary'),
 	(11,'Inventory','The Inventory Super-Category',0,1,'',''),
-	(12,'Orders','Manage your purchase orders',11,0,'/units/orders/',''),
-	(13,'Stock','What is in stock?',0,1,'',''),
-	(14,'Achats','Achats de stock',13,0,'/partials/achat','/achat'),
-	(15,'Livraison','Livraison du stock',13,0,'/partials/livraison',''),
-	(16,'Pertes','Perte en stock',13,0,'/partials/perte',''),
-	(17,'Ventes','Ventes des biens et services',0,1,'',''),
-	(18,'Malades','services rendus aux malades',17,0,'/partials/malade',''),
-	(19,'Pharmacie','vente des medicaments',17,0,'/partials/pharmacie',''),
-	(20,'Autre service','Autre service vendus',17,0,'/partials/autre',''),
+
+
+
 	(21,'Hospital','The Hospital Super-Category',0,1,'',''),
-	(22,'Pharmacy','What\'s in your pharmacy?',21,0,'/units/pharmacy/',''),
-	(23,'Laboratory','Analyze lab results',21,0,'/units/laboratory/',''),
-	(24,'Surgery','Best cuttlery here!',21,0,'/units/surgery',''),
-	(25,'Radiology','X-rays, anyone?',21,0,'/units/radiology/',''),
-	(26,'Creditors','Tous les creanciers',5,0,'/partials/creditor','/creditors'),
-	(27,'Balance','The Balance Sheet',5,0,'/units/balance/',''),
-	(28,'Transaction','The Transaction Page',5,0,'/partials/transaction',''),
-	(29,'Debitors','The debitors configuraiton page',5,0,'debitors',''),
+
+  
+
 	(30,'Fiscal Year','Fiscal year configuration page',1,0,'/partials/fiscal','fiscal'),
 	(31,'Patient Registration','Register patients',21,0,'/partials/patient','patient'),
-	(32,'Essaie journal','essaie journal',17,0,'/partials/vente','/essaie'),
+
 	(33,'Patient Records','Search for patient',21,0,'/partials/patient_records/','patient_records/'),
-	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales/0/'),
+	(34,'Sales','Create an invoice for a sale',5,0,'/partials/sales','sales/'),
 	(35,'Sale Records','Search for a sale',5,0,'/partials/sale_records/','sale_records/'),
 	(36,'Purchase Order','Create a new Purchase Order',11,0,'partials/inventory_purchase_order','inventory/purchase'),
 	(37,'Budget by Account','Budgeting by account',8,0,'partials/budgeting','budgeting/'),
@@ -92,7 +84,7 @@ INSERT INTO `unit` VALUES
 	(39,'Register Stock','',11,0,'partials/inventory/register','inventory/register'),
 	(40,'Register Supplier','',11,0,'partials/inventory/creditors','creditors'),
 	(41,'Purchase Order Records','',5,0,'partials/purchase_records/','purchase_records/'),
-  (42,'Income/Expense', '', 10, 0, 'partials/reports/income_expense', 'reports/income_expense'),
+
   (43,'Finance', '', 10, 0, 'partials/reports/finance_report', 'reports/finance'),
   (44,'Balance vs. Budget', '',10, 0, 'partials/reports/balance_budget', 'reports/balance_budget'),
   (45,'Price List', 'Configure price lists!', 11, 0, 'partials/price_list', 'inventory/price_list'),
@@ -198,6 +190,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (52,1),
   (53,1),
   (54,1),
+  (55,1),
+  (56,1),
   (1,13),
   (2,13),
 	(4,13),
@@ -688,45 +682,45 @@ insert into `account_collection` (`id`, `leading_number`, `title`) values
 
 -- update `enterprise` set `cash_account`=132 where `id`=200;
 
--- testing inserting OHADAD values into CoA
 insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `parent`) values
-(1, 1, 0, 200, 10, "10. CAPITAL", 3, 0),
+
+(1, 1, 0, 200, 10, "CAPITAL", 3, 0),
 (2, 1, 0, 200, 100, "Fonds social", 2, 10),
 (3, 1, 0, 200, 101, "Fonds de dotation", 3, 10),
 (4, 1, 0, 200, 1010, "Dotation de base", 2, 101),
 (5, 1, 0, 200, 1013, "Affectations", 2, 101),
 (6, 1, 0, 200, 1015, "Dons et legs", 2, 101),
 (7, 1, 0, 200, 1016, "Autres dotations", 2, 101),
-(8, 1, 0, 200, 11, "11. RESERVES", 3, 0),
+(8, 1, 0, 200, 11, "RESERVES", 3, 0),
 (9, 1, 0, 200, 110, "Réserves légales", 2, 11),
 (10, 1, 0, 200, 111, "Réserves statutaires", 2, 11),
 (11, 1, 0, 200, 112, "Réserves réglementaires", 2, 11),
-(12, 1, 0, 200, 12, "12.REPORT A NOUVEAU", 3, 0),
+(12, 1, 0, 200, 12, "REPORT A NOUVEAU", 3, 0),
 (13, 1, 0, 200, 120, "Bénéfices reportés", 2, 12),
 (14, 1, 0, 200, 121, "Pertes non compensées", 2, 12),
-(15, 1, 0, 200, 13, "13. RESULTAT NET", 3, 0),
+(15, 1, 0, 200, 13, "RESULTAT NET", 3, 0),
 (16, 1, 0, 200, 130, "Bénéfice net de l’exercice", 2, 13),
 (17, 1, 0, 200, 131, "Bénéfice à conserver", 2, 13),
 (18, 1, 0, 200, 133, "Perte nette de l’exercice", 2, 13),
-(19, 1, 0, 200, 14, "14. PLUS-VALUES ET PROVISIONS REGLEMENTEES", 3, 0),
+(19, 1, 0, 200, 14, "PLUS-VALUES ET PROVISIONS REGLEMENTEES", 3, 0),
 (20, 1, 0, 200, 140, "Plus-values de réévaluation", 2, 14),
 (21, 1, 0, 200, 146, "Provisions réglementées", 2, 14),
-(22, 1, 0, 200, 15, "15. SUBVENTIONS D’EQUIPEMENT", 3, 0),
+(22, 1, 0, 200, 15, "SUBVENTIONS D’EQUIPEMENT", 3, 0),
 (23, 1, 0, 200, 150, "Subventions d’Etat", 2, 15),
 (24, 1, 0, 200, 152, "Subventions d’entreprises publiques", 2, 15),
 (25, 1, 0, 200, 153, "Subventions d’entreprises et organismes privés", 2, 15),
 (26, 1, 0, 200, 158, "Subventions d’équipements amortis", 2, 15),
-(27, 1, 0, 200, 16, "16. EMPRUNTS ET DETTES A LONG TERME", 3, 0),
+(27, 1, 0, 200, 16, "EMPRUNTS ET DETTES A LONG TERME", 3, 0),
 (28, 1, 0, 200, 160, "Emprunts garantis à long terme", 2, 16),
 (29, 1, 0, 200, 161, "Emprunts et dettes à long terme émis par des Organismes collectifs", 2, 16),
 (30, 1, 0, 200, 162, "Emprunts et dettes à long terme auprès des entreprises apparentées", 2, 16),
 (31, 1, 0, 200, 165, "Avances reçues et comptes bloqués à long terme", 2, 16),
-(32, 1, 0, 200, 17, "17. EMPRUNTS ET DETTES A MOYEN TERME", 3, 0),
+(32, 1, 0, 200, 17, "EMPRUNTS ET DETTES A MOYEN TERME", 3, 0),
 (33, 1, 0, 200, 170, "Emprunts garantis à moyen terme", 2, 17),
 (34, 1, 0, 200, 171, "Emprunts et dettes à moyen terme émis par des organismes collectifs", 2, 17),
 (35, 1, 0, 200, 174, "Fournisseurs à moyen terme", 2, 17),
 (36, 1, 0, 200, 175, "Avances reçues et comptes bloqués à moyen terme", 2, 17),
-(37, 1, 0, 200, 18, "18. PROVISIONS POUR CHARGES ET PERTES", 3, 0),
+(37, 1, 0, 200, 18, "PROVISIONS POUR CHARGES ET PERTES", 3, 0),
 (38, 1, 0, 200, 180, "Provisions pour risques", 3, 18),
 (39, 1, 0, 200, 1800, "Provisions pour litiges en cours", 2, 180),
 (40, 1, 0, 200, 1806, "Provisions pour risques divers", 2, 180),
@@ -768,7 +762,7 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (76, 1, 0, 200, 26, "26. PRETS ET AUTRES CREANCES A LONG TERME", 3, 0),
 (77, 1, 0, 200, 260, "Prêts à long terme", 2, 26),
 (78, 1, 0, 200, 265, "Comptes bancaires bloqués à long terme", 2, 26),
-(79, 1, 0, 200, 27, "27. PRETS ET AUTRES CREANCES A MOPYEN TERME", 3, 0),
+(79, 1, 0, 200, 27, "27. PRETS ET AUTRES CREANCES A MOYEN TERME", 3, 0),
 (80, 1, 0, 200, 270, "Prêts à moyen terme", 2, 27),
 (81, 1, 0, 200, 273, "Prêts à des entreprises apparentées à moyen terme", 2, 27),
 (82, 1, 0, 200, 28, "28. AMORTISSEMENT ET PROVISIONS POUR DEPRECIATION DES COMPTES DE LA CLASSE II", 3, 0),
@@ -883,9 +877,9 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (191, 1, 0, 200, 5622, "Banque EU", 2, 562),
 (192, 1, 0, 200, 563, "Institutions et autres établissements financiers", 2, 56),
 (193, 1, 0, 200, 57, "57. CAISSES", 3, 0),
-(194, 1, 0, 200, 5701, "Caisses Fc", 2, 563),
-(195, 1, 0, 200, 5702, "Caisses $", 2, 563),
-(196, 1, 0, 200, 5703, "Caisses €", 2, 563),
+(194, 1, 0, 200, 5701, "Caisses Fc", 2, 57),
+(195, 1, 0, 200, 5702, "Caisses $", 2, 57),
+(196, 1, 0, 200, 5703, "Caisses €", 2, 57),
 (197, 1, 0, 200, 58, "58. PROVISIONS POUR DEPRECIATION DES COMPTES DE LA CLASSE V", 3, 0),
 (198, 1, 0, 200, 59, "59. VIREMENTS INTERNES", 3, 0),
 (199, 1, 0, 200, 590, "Caisse Fc à Banque Fc", 2, 59),
@@ -1042,7 +1036,7 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (350, 1, 0, 200, 78, "78. REPRISE SUR AMORTISSEMENTS ET PROVISIONS", 3, 0),
 (351, 1, 0, 200, 780, "Reprises sur amortissements", 1, 78),
 (352, 1, 0, 200, 781, "Reprises sur provisions non exigibles", 1, 78),
-(354, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
+(353, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
 
 -- configure price_group
 insert into `price_group` values 
@@ -1070,15 +1064,12 @@ insert into `debitor_group_type` (`id`, `type`) values
 
 
 insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `contact_id`, `tax_id`, `type_id`) values 
-
-  (200, 1, "Employees"                 , 65, 1, 1, 1, 1, 1),
-  (200, 2, "Fr. Reinhart Conventionees", 63, 1, 1, 1, 1, 2),
-  (200, 3, "Normal Debitors"           , 59, 1, 1, 1, 1, 3),
-  (200, 4, "Central Pharmacy"          , 56, 1, 1, 1, 1, 3),
-  (200, 5, "Other Clients"             , 66, 1, 1, 1, 1, 4);
+  (200, 1, "Fr. Reinhart Conventionees", 146, 1, 1, 1, 1, 2), -- 'society x'
+  (200, 2, "Normal Debitors"           , 147, 1, 1, 1, 1, 3), -- 'society y'
+  (200, 3, "Other Clients"             , 148, 1, 1, 1, 1, 4); -- 'clients'
 
 insert into `debitor` (`id`, `group_id`, `text`) values 
-  (1, 3, "Debitor account for patient 1");
+  (1, 1, "Jon Niles");
 
 insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
   (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
@@ -1098,19 +1089,30 @@ insert into `inv_type` values
   (2,'Service');
 
 insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
-  ('Services' , 'S', 90), -- 164
-	('Medicines', 'M', 80), -- 164, 167
-	('Surgery'  , 'C', 88); -- 171
+  ('Services' , 'S', 92), -- 301 
+	('Medicines', 'M', 92), -- 301
+	('Surgery'  , 'C', 94), -- 303 
+  ('Fiches'   , 'F', 93); -- 302
 
 insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
-  (200, 'CHCRAN', 'Craniotomie'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHPASU', 'Parotidectomie Superficielle'    , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'CHTRAC', 'Trachectome'                     , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'EXKYSB', 'Kyste Sublingual'                , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0),
- 	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 20000.00, 2, 1, 0, 0, 0, 0, 0, 2, 0);
+  (200, 'CHCRAN', 'Craniotomie'                     , 21.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGLOB', 'Goitre Lobectomie/Hemithyroidect', 20.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHGTHY', 'Goitre Thyroidectomie Sobtotale' , 18.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHEXKY', 'Excision De Kyste Thyroiglosse'  , 17.50, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHPASU', 'Parotidectomie Superficielle'    , 16.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'CHTRAC', 'Trachectome'                     , 25.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYSB', 'Kyste Sublingual'                , 23.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+ 	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 32.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
+  (200, 'FCEMPL', 'Fiches employee'                 , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
+  (200, 'FCINFA', 'Fiches Infante'                  , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
+  (200, 'FCADUL', 'Fiches Adulte'                   , 8.00,  4, 1, 0, 0, 0, 0, 0, 0, 0);
+
+-- configure creditor
+insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
+  (200, 'Medicine Suppliers', 139); -- account #401
+
+insert into `creditor` (`text`, `group_id`) values 
+  ('Pharmacy Centrale', 1); -- reference the above creditor group
 
 -- configure department
 

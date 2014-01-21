@@ -7,6 +7,58 @@ angular.module('kpk.controllers')
   'use strict';
 
   var imports = {},
+      stores = {},
+      models = $scope.models = {};
+
+
+  imports.enterprise = appstate.get('enterprise');
+
+  imports.lists = '/price_list/' + imports.enterprise.id;
+
+  imports.inventory_types = {
+    tables: {'inv_type' : { columns : ['id', 'text'] }}
+  };
+
+  imports.inventory_groups = {
+    tables : { 'inv_group' : { 'columns' : ['id', 'name'] }}
+  };
+
+  imports.details = {
+    tables : { 'price_list_detail' : { columns : ['id', 'inventory_id', 'price', 'discount', 'note']}}
+  };
+
+  function run () {
+    var dependencies = ['lists', 'inventory_types', 'inventory_groups', 'details'];
+
+    $q.all([
+      connect.req(imports.lists),
+      connect.req(imports.inventory_types),
+      connect.req(imports.inventory_groups),
+      connect.req(imports.details)
+    ])
+    .then(function (array) {
+      for (var i = array.length - 1; i > -1; i--) {
+        stores[dependencies[i]] = array[i];
+        models[dependencies[i]] = array[i].data;
+      }
+    });
+  }
+
+  run();
+
+  $scope.newItem = function () {
+    if (!angular.isDefined($scope.editing.id)) return messenger.warning('No price list selected', 1200);
+   
+    $scope.models.details.push({ 
+      list_id : $scope.editing.id,
+      note : "",
+    });
+
+  };
+
+  /*
+
+  var imports = {},
       models       = $scope.models = {},
       flags        = $scope.flags  = {},
       dirty        = $scope.dirty  = {},
@@ -25,20 +77,23 @@ angular.module('kpk.controllers')
   imports.inv_group = {tables : { 'inv_group' : { columns: ["id", "name", "symbol"] }}};
   imports.price_list = {tables: { 'price_list' : { columns : ["id", "list_id", "inventory_id", "price", "discount", "note"] }}};
 
-  // initialize models
 
-  $q.all([
-    connect.req(imports.price_list_name),
-    connect.req(imports.inventory),
-    connect.req(imports.inv_group)
-  ]).then(function (arr) {
-    // load dependencies
-    for (var i = arr.length - 1; i >= 0; i--) {
-      models[dependencies[i]] = arr[i].data;
-      stores[dependencies[i]] = arr[i];
-    }
-    flags.edit.list = Infinity;
-  });
+  function run () {
+    // initialize models
+
+    $q.all([
+      connect.req(imports.price_list_name),
+      connect.req(imports.inventory),
+      connect.req(imports.inv_group)
+    ]).then(function (arr) {
+      // load dependencies
+      for (var i = arr.length - 1; i >= 0; i--) {
+        models[dependencies[i]] = arr[i].data;
+        stores[dependencies[i]] = arr[i];
+      }
+      flags.edit.list = Infinity;
+    });
+  }
 
   // List controls
 
@@ -171,6 +226,8 @@ angular.module('kpk.controllers')
     return stores.inv_group && stores.inv_group.get(id) ? stores.inv_group.get(id).symbol : "";
   }
 
+  run();
+
   // expose to view
   $scope.saveList = saveList;
   $scope.addList= addList;
@@ -187,5 +244,6 @@ angular.module('kpk.controllers')
   $scope.label = label;
   $scope.erase = erase;
   $scope.save = save;
-
+  
+  */
 });

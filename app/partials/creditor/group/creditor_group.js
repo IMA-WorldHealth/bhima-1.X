@@ -1,10 +1,21 @@
 angular.module('kpk.controllers')
-.controller('creditorGroupCtrl', function ($scope, connect, messenger) {
+.controller('creditorGroupCtrl', function ($scope, connect, appstate, messenger) {
   'use strict';
   
-  var models = $scope.models = {},
+  var imports = {},
+      models = $scope.models = {},
       flags = $scope.flags = {},
       stores = {};
+
+  imports.enterprise = appstate.get('enterprise'); // TODO : use Steve's validation module ensure this works
+  imports.account = {
+    tables : { 'account':{ columns: ["id", "account_number", "account_txt"]}},
+    where : ['account.enterprise_id=' + imports.enterprise.id]
+  };
+  imports.creditor_group = {
+    tables: {'creditor_group' : { columns: ["id", "name", "account_id", "locked"]}},
+    where : ['creditor_group.enterprise_id=' + imports.enterprise.id]
+  };
 
   var newgroup = $scope.newgroup = {};
 
@@ -14,18 +25,18 @@ angular.module('kpk.controllers')
 
   // init
   function run () {
-    connect.req({tables : {'account':{ columns: ["id", "account_number", "account_txt"]}}})
+    connect.req(imports.account)
     .then(function (store) {
       models.account = store.data;
       stores.account = store;
       messenger.success('Successfully Loaded:  accounts');
     }, handleErrors);
 
-    connect.req({tables: {'creditor_group' : { columns: ["id", "group_txt", "account_id", "locked"]}}})
+    connect.req(imports.creditor_group)
     .then(function (store) {
       models.creditor_group = store.data;
       stores.creditor_group = store;
-      messenger.success('Successfully Loaded: creditor_group');
+      messenger.success('<b>Successfully Loaded</b>: creditor_group');
     }, handleErrors);
   }
 
@@ -48,7 +59,7 @@ angular.module('kpk.controllers')
   }
 
   function valid() {
-    return angular.isDefined($scope.newgroup.account_id) && angular.isDefined($scope.newgroup.group_txt);
+    return angular.isDefined($scope.newgroup.account_id) && angular.isDefined($scope.newgroup.name);
   }
 
   function save () {
@@ -66,6 +77,8 @@ angular.module('kpk.controllers')
         messenger.danger('Error in POSTing:' + JSON.stringify(error));  
       });
     } else {
+      if (!imports.enterprise) return messenger.danger('No enterprise data loaded!');
+      newgroup.enterprise_id = imports.enterprise.id;
       connect.basicPut('creditor_group', [newgroup]).then(function (response) {
         messenger.info('Successfully PUT. id:' + response.data.insertId);
       }, function (error) {
@@ -73,12 +86,17 @@ angular.module('kpk.controllers')
       });
       models.creditor_group.push(newgroup);
     }
-    flags.name = newgroup.group_txt;
+    flags.name = newgroup.name;
     $scope.newgroup = {};
   }
 
   function lock (group) {
-    connect.basicPost('creditor_group', [{id: group.id, locked: group.locked}], ["id"]);
+    connect.basicPost('creditor_group', [{id: group.id, locked: group.locked}], ["id"])
+    .then(function (success) {
+    }, function (err) {
+      group.locked = group.locked === 0 ? 1 : 0;
+      messenger.danger('Lock operation failed');
+    });
   }
 
   run();
