@@ -4,10 +4,15 @@ angular.module('kpk.controllers')
 
 	$scope.report = {};
 	$scope.option = {};
+	$scope.models = [];
+	$scope.data = {};
+  	$scope.isopen = true;
+	$scope.model = {};
+	$scope.model.transReport = [];
 	var creditors = {tables:{'creditor':{columns:['id', 'text']},
 						    'creditor_group':{columns:['account_id']}
 						   },
-					join:  ['creditor.creditor_group_id=creditor_group.id']
+					join:  ['creditor.group_id=creditor_group.id']
 				   };
 
 	var debitors = {tables:{'debitor':{columns:['id', 'text']},
@@ -18,15 +23,7 @@ angular.module('kpk.controllers')
 
 	var debitorGroup = {tables:{'debitor_group':{columns:['id', 'name', 'account_id']}}};
 
-	var creditorGroup = {tables:{'creditor_group':{columns:['id', 'group_txt', 'account_id']}}};
-
-	$scope.models = [];
-
-	$scope.data = {};
-  $scope.isopen = true;
-
-	$scope.model = {};
-	$scope.model.transReport = [];
+	var creditorGroup = {tables:{'creditor_group':{columns:['id', 'name', 'account_id']}}};	
 
 	var models = {};
 

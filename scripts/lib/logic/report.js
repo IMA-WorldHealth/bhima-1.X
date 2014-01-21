@@ -125,7 +125,7 @@ module.exports = (function (db) {
       var table, cle;
       if(params.type.toUpperCase() == 'C'){
         table = 'creditor';
-        cle = 'creditor_group_id';
+        cle = 'group_id';
       }else if(params.type.toUpperCase() == 'D'){
         table = 'debitor';
         cle = 'group_id';
