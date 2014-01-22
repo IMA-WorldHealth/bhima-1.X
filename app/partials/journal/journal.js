@@ -45,8 +45,8 @@ angular.module('kpk.controllers')
     {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
     {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
     {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},
-    {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 },
-    {id: 'del', name: '', width: 10, formatter: formatBtn}
+    {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
+    // {id: 'del', name: '', width: 10, formatter: formatBtn}
   ];
   
   var options = {
@@ -140,7 +140,9 @@ angular.module('kpk.controllers')
       },
       aggregators: [
         new Slick.Data.Aggregators.Sum("debit"),
-        new Slick.Data.Aggregators.Sum("credit")
+        new Slick.Data.Aggregators.Sum("credit"),
+        new Slick.Data.Aggregators.Sum("debit_equiv"),
+        new Slick.Data.Aggregators.Sum("credit_equiv")
       ],
       aggregateCollapsed: true
     });
@@ -154,7 +156,9 @@ angular.module('kpk.controllers')
       },
       aggregators: [
         new Slick.Data.Aggregators.Sum("debit"),
-        new Slick.Data.Aggregators.Sum("credit")
+        new Slick.Data.Aggregators.Sum("credit"),
+        new Slick.Data.Aggregators.Sum("debit_equiv"),
+        new Slick.Data.Aggregators.Sum("credit_equiv")
       ],
       aggregateCollapsed: false
     });
@@ -224,16 +228,16 @@ angular.module('kpk.controllers')
     return $filter('date')(item);
   }
 
-  function formatBtn() {
-    return "<a class='ng-scope' ng-click='splitTransaction()'><span class='glyphicon glyphicon-th-list'></span></a>";
-  }
+  // function formatBtn() {
+  //   return "<a class='ng-scope' ng-click='splitTransaction()'><span class='glyphicon glyphicon-th-list'></span></a>";
+  // }
 
   function totalFormat(totals, column) {
 
     var format = {};
     format['Credit'] = '#02BD02';
     format['Debit'] = '#F70303';
-
+    
     var val = totals.sum && totals.sum[column.field];
     if (val !== null) {
       return "<span style='font-weight: bold; color:" + format[column.name] + "'>" + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
@@ -241,16 +245,18 @@ angular.module('kpk.controllers')
     return "";
   }
 
-  $scope.splitTransaction = function splitTransaction() {
-    console.log("func is called");
+  $scope.split = function split() {
+    console.log(dataview.getItem(1));
     var instance = $modal.open({
       templateUrl: "split.html",
-      controller: function ($scope, $modalInstance) { //groupStore, accountModel
-        console.log("Group module initialised");
+      controller: function ($scope, $modalInstance, rows, data) { //groupStore, accountModel
+        console.log("Group module initialised", rows, data);
+        var transaction = $scope.transaction = data.getItem(rows[0]);
+        console.log('split', transaction);
       },
       resolve: {
-        //groupStore: function () { return stores.inv_group; },
-        //accountModel: function () { return $scope.models.account; }
+        rows: function () { return $scope.rows; },
+        data: function () { return dataview; }
       }
     });
   };
