@@ -498,15 +498,16 @@ insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) 
 
 -- configure enterprise
 
-insert into `currency` (`id`, `name`, `symbol`, `note`) values
-  (1,'Congolese Francs','FC',NULL),
-	(2,'United State Dollars','USD',NULL);
-
+insert into `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
+  (1,'Congolese Francs','Fc', '.', ','),
+	(2,'United State Dollars','$', ',', '.'),
+  (3,'Euro', '€', ' ', '.');
+             
 insert into `exchange_rate` (`enterprise_currency_id`, `foreign_currency_id`, `rate`, `date`) values
   (2, 1, 1/920, '2014-01-04');
 
-insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `cash_account`, `logo`, `currency_id`) values 
-  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, 195, '/assets/logos/tsh.jpg', 2);
+insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `logo`, `currency_id`) values 
+  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, '/assets/logos/tsh.jpg', 2);
 
 -- configure fiscal year/period
 
@@ -1129,3 +1130,8 @@ insert into `transaction_type` values
   (1, 'cash'),
 	(2, 'sale'),
 	(3, 'purchase');
+
+insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
+  (1, 200, 194, 189),
+  (2, 200, 195, 190),
+  (3, 200, 196, 191);

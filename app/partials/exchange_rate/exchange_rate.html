@@ -19,7 +19,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="exchange in models.exchange | limitTo: 12">
-            <td>{{exchange.date | date}}</td><td>{{formatCurrency(exchange.enterprise_currency_id)}}</td><td>{{formatCurrency(exchange.foreign_currency_id)}}</td><td>{{exchange.rate | currency }}</td>
+            <td>{{exchange.date | date}}</td><td>{{formatCurrency(exchange.enterprise_currency_id)}}</td><td>{{formatCurrency(exchange.foreign_currency_id)}}</td><td>{{ exchange.rate }}</td>
           </tr>
         </tbody>
       </table>
