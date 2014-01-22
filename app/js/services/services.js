@@ -30,11 +30,14 @@
       return new Date().toMySqlDate(dateString);
     };
 
-    this.isDateAfter = function(date1, date2){
-      date1 = new Date(date1);
-      date2 = new Date(date2);
 
-      if(date1.getFullYear > date2.getFullYear){
+
+    this.isDateAfter = function(date1, date2){
+      date1 = new Date(date1).setHours(0,0,0,0);
+      date2 = new Date(date2).setHours(0,0,0,0);
+      return date1 > date2;
+
+      /*if(date1.getFullYear > date2.getFullYear){
         return true;
       }else if(date1.getFullYear() == date2.getFullYear()){
         if(date1.getMonth() > date2.getMonth()){
@@ -48,14 +51,15 @@
         }
       }else if(date1.getFullYear() < date2.getFullYear()){
         return false;
-      }
+      }*/
     };
 
     this.areDatesEqual = function(date1, date2){
-      date1 = new Date(date1);
-      date2 = new Date(date2);
+      date1 = new Date(date1).setHours(0,0,0,0);
+      date2 = new Date(date2).setHours(0,0,0,0);
+      return date1 === date2;
 
-      if(date1.getFullYear != date2.getFullYear){
+     /* if(date1.getFullYear != date2.getFullYear){
         return false;
       }else if(date1.getFullYear() == date2.getFullYear()){
         if(date1.getMonth() != date2.getMonth()){
@@ -65,7 +69,7 @@
             return false;
             return true;
         }
-      }
+      }*/
     };
   });
   
@@ -250,7 +254,7 @@
   });
 
   services.factory('appcache', function ($rootScope, $q) { 
-    var DB_NAME = "kpk", VERSION = 20;
+    var DB_NAME = "kpk", VERSION = 21;
     var db, cacheSupported, dbdefer = $q.defer();
 
     function cacheInstance(namespace) { 
