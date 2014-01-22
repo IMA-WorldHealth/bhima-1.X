@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('cashController', function($scope, $q, $filter, $http, $timeout, $location, connect, appstate, messenger) {
+.controller('cashController', function($scope, $q, $filter, $timeout, $location, connect, appstate, messenger, validate, exchange) {
   'use strict';
 
   var imports = {},
@@ -8,7 +8,7 @@ angular.module('kpk.controllers')
       data = $scope.data = {};
 
   imports.enterprise = appstate.get('enterprise');
-  imports.dependencies = ['debitors', 'currency', 'cash', 'cash_items', 'exchange_rate'];
+  imports.dependencies = ['debitors', 'cash', 'currency_account', 'account'];
 
   imports.debitors = {
     tables: {
@@ -21,10 +21,21 @@ angular.module('kpk.controllers')
     where: ['debitor_group.locked<>1']
   };
 
-  imports.currency = {tables : { "currency" : { columns: ["id", "symbol"] }}};
-  imports.cash = {tables: { "cash" : { columns: ["id", "bon", "bon_num", "date", "debit_account", "credit_account", "currency_id", "cashier_id", "cost", "description"] }}};
-  imports.cash_items = {tables: { 'cash_item' : { columns: ["id", "cash_id", "allocated_cost", "invoice_id"] }}};
+  imports.currency_account = {
+    tables : {
+      'currency_account' : { columns : ['id', 'enterprise_id', 'currency_id', 'cash_account', 'bank_account']},
+      'currency' : { columns : ['symbol'] }
+    },
+    join : ['currency_account.currency_id=currency.id'],
+    where : ['currency_account.enterprise_id=' + imports.enterprise.id]
+  };
 
+  imports.accounts = {
+    tables : { 'account' : { columns : ['id', 'account_number', 'account_txt']}},
+    where : ['account.enterprise_id='+imports.enterprise.id]
+  };
+
+  imports.cash = {tables: { "cash" : { columns: ["id", "bon", "bon_num", "date", "debit_account", "credit_account", "currency_id", "cashier_id", "cost", "description"] }}};
 
   appstate.register('exchange_rate', function (exchange_rate) {
     imports.exchange_rate = exchange_rate;
@@ -43,15 +54,13 @@ angular.module('kpk.controllers')
   data.paying = [];
   data.payment = 0;
   data.total = 0;
-  data.currency = imports.enterprise.currency_id;
 
   function run () {
     $q.all([
       connect.req(imports.debitors),
-      connect.req(imports.currency),
       connect.req(imports.cash),
-      connect.req(imports.cash_items),
-     // connect.req(imports.exchange_rate)
+      connect.req(imports.currency_account),
+      connect.req(imports.accounts)
     ]).then(initialize);
   }
 
@@ -63,6 +72,13 @@ angular.module('kpk.controllers')
     });
 
     if (!imports.exchange_rate) messenger.danger('No Exchange rate data available!');
+    var enterprise = imports.enterprise;
+
+    // FIXME : this is bad code..
+    $scope.data.box = models.currency_account.filter(function (i) {
+      return i.currency_id === enterprise.currency_id;
+    }).pop();
+  
   }
 
   $scope.loadDebitor = function (id) {
@@ -71,25 +87,23 @@ angular.module('kpk.controllers')
     data.debitor_id = id;
     $scope.data.debitor = ref.first_name + ' ' + ref.last_name;
     // this loads in a debitors current balance
-    $http.get('/ledgers/debitor/' + id)
+    connect.fetch('/ledgers/debitor/' + id)
     .then(function (response) {
       if (!response.data) return;
       models.ledger = response.data.map(function (row) {
         // filter only those that do not balance
         var deb = stores.debitors.get(row.deb_cred_id);
         row.debitor = [deb.first_name, deb.last_name].join(' ');
+        row.locale = exchange(row.balance, imports.enterprise.currency_id, $scope.data.box.currency_id);
         return row;
       }).filter(function (row) {
         return row.balance > 0;
       });
+
       messenger.success('Found ' + models.ledger.length + ' record(s) for ' + $scope.data.debitor);
     }, function (error) {
       messenger.danger('Fetching ' + $scope.data.debitor + 'failed with :' + JSON.stringify(error));
     });
-  };
-
-  $scope.currency = function (id) {
-    return stores.currency ? stores.currency.get(id).symbol : '';
   };
 
   $scope.add = function (idx) {
@@ -107,9 +121,15 @@ angular.module('kpk.controllers')
   $scope.digestTotal = function () {
     var total = 0;
     data.paying.forEach(function (invoice) {
-      total += invoice.balance;
+      total += invoice.locale;
     });
     data.total = total;
+  };
+  
+  $scope.formatTitle = function (box) {
+    // FIXME : this is really bad code...
+    if (!box) return 'Caisse';
+    return stores.account ?  stores.account.get(box.cash_account).account_txt : 'Caisse';
   };
 
   function isPositive (x) {
@@ -127,11 +147,11 @@ angular.module('kpk.controllers')
       // amount in data.payment to each
       // item in the invoice.
       arr = arr.map(function (invoice, idx) {
-        var trial = c - invoice.balance;
+        var trial = c - invoice.locale;
         if (trial >= 0) { 
           // more than enough. Allocate it all.
           c = trial;
-          invoice.allocated = invoice.balance;
+          invoice.allocated = invoice.locale;
         } else {
           // not quite enough. allocate the rest
           // and set c to zero so all other allocations
@@ -140,7 +160,7 @@ angular.module('kpk.controllers')
           c = 0;
         }
         // calculate remaining cost
-        invoice.remaining = invoice.balance - invoice.allocated;
+        invoice.remaining = invoice.locale - invoice.allocated;
       });
     } else {
       arr = arr.map(function (invoice) { 
@@ -150,25 +170,14 @@ angular.module('kpk.controllers')
     }
    
     // if c is still positive, add it to excess;
+    console.log('c is:', c);
     data.excess = c;
   };
 
   $scope.$watch('data.paying', function () {
-    $scope.digestInvoice();
+    // $scope.digestInvoice();
     $scope.digestTotal();
   }, true);
-
-  /*
-  $scope.$watch('data.paying', function () {
-    if (isPositive(data.paying.length)) {
-      digestTotal();
-      var deb = stores.debitors.get(data.paying[0].deb_cred_id);
-      // FIXME: all this assumes a patient, debitors don't have first_names and last_names
-      data.debitor = [deb.first_name, deb.last_name].join(' ');
-      data.debitor_id = deb.id;
-    }
-  }, true);
-  */
 
   $scope.pay = function pay () {
     // FIXME: add a "would you like to credit or pay back" line/check here for excess
@@ -184,9 +193,9 @@ angular.module('kpk.controllers')
       bon : 'E', // FIXME: impliment crediting
       bon_num : bon_num,
       date : date,
-      debit_account : imports.enterprise.cash_account,
+      debit_account : data.box.cash_account,
       credit_account : stores.debitors.get(data.debitor_id).account_id,
-      currency_id : data.currency,
+      currency_id : data.box.currency_id,
       cost: data.payment,
       description : 'CP  E/' + bon_num + '/'+data.debitor.replace(' ', '/') + '/' +date, // this is hacky.  Restructure
       cashier_id : 1, // TODO
@@ -216,13 +225,8 @@ angular.module('kpk.controllers')
       });
 
       // putting cash items
-      $q.all(
-        records.map(function (record) {
-          return connect.basicPut('cash_item', [record]);
-        })
-      )
+      connect.basicPut('cash_item', records)
       .then(function (res) {
-        console.log('RES is:', res);
         console.log('Fetching journal for doc id', doc.id);
 
         // posting to the journal
@@ -256,26 +260,21 @@ angular.module('kpk.controllers')
     return (ids.length < 1) ? 1 : Math.max.apply(Math.max, ids) + 1;
   }
 
-  $scope.$watch('data.currency', function (current, old) {
-    if (!imports.exchange_rate) return;
-
-    var rate = imports.exchange_rate.rate;
-    $scope.data.paying = data.paying.map(function (invoice) {
-      invoice.balance = old === imports.enterprise.currency_id ? rate * invoice.balance : (1/rate) * invoice.balance;
-      invoice.allocated = old === imports.enterprise.currency_id ? rate * invoice.allocated : (1/rate) * invoice.allocated;
-      return invoice;
-    });
-
-    $scope.digestInvoice();
-    $scope.digestTotal();
-
-  });
-
   $scope.$watch('data.payment', function () {
     $scope.digestInvoice();
   });
 
 
+  $scope.$watch('data.box', function () {
+    // exchange everything queued to be paid, as well as those in 
+    // the list.
+    $scope.data.paying.forEach(function (invoice) {
+      invoice.locale = exchange(invoice.balance, data.box.currency_id);
+    });
+    (models.ledger || []).forEach(function (invoice) {
+      invoice.locale = exchange(invoice.balance, data.box.currency_id);
+    });
+  });
  
   run();
 

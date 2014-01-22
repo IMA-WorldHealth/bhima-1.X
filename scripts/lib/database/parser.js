@@ -15,6 +15,7 @@ module.exports = (function (options) {
   // to the backend.  Query objects are decoded from the URL
   // and passed into composer's methods.  
   'use strict';
+
   var self = {};
   options = options || {};
 
@@ -22,7 +23,7 @@ module.exports = (function (options) {
     select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% LIMIT %limit%;',
     update: 'UPDATE %table% SET %expressions% WHERE %key%;',
     delete: 'DELETE FROM %table% WHERE %key%;',
-    insert: 'INSERT INTO %table% SET %expressions%;'
+    insert: 'INSERT INTO %table% %values% VALUES %expressions%;'
   };
 
   function cdm (table, columns) {
@@ -42,7 +43,6 @@ module.exports = (function (options) {
   }
 
   function subroutine (cond) {
-    
     // summary:
     //    Parses and escapes all components of a where
     //    clause separated by an equals sign.
@@ -68,15 +68,25 @@ module.exports = (function (options) {
       }
     });
 
-
     // escape values
     return conditions.map(function (exp) {
       return ~exp.indexOf('.') ? exp.split('.').map(function (e) { return sanitize.escapeid(e); }).join('.') : sanitize.escape(exp);
     }).join(operator);
   }
 
+  function arrayToIn (id, ids) {
+    var templ = ' %id% IN (%ids%) ';
+    ids = ids.map(function (v) {
+      return sanitize.escape(v);
+    });
+  
+    return templ.replace('%id%', id)
+                .replace('%ids%', ids.toString()); 
+  }
+
   // delete
   self.delete = function (table, column, id) {
+    console.log('column : ', column, 'id : ', id);
     var templ = self.templates.delete;
     return templ.replace('%table%', sanitize.escapeid(table))
                 .replace('%key%', [sanitize.escapeid(column), '=', sanitize.escape(id)].join(''));
@@ -89,21 +99,33 @@ module.exports = (function (options) {
     for (var d in data) {
       if (d != id) expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
     }
-    console.log('voici notre expression ', expressions);
     return templ.replace('%table%', sanitize.escapeid(table))
                 .replace('%expressions%', expressions.join(', '))
                 .replace('%key%', [identifier, '=', sanitize.escape(data[id])].join(''));
   };
 
   // insert
-  self.insert = function (table, data) {
-    var expressions = [], templ = self.templates.insert;
+  self.insert = function (table, dataList) {
+    // insert allows insertion of multiple rows
+    var expressions = [],
+        values = [],
+        templ = self.templates.insert;
 
-    for (var e in data) {
-      expressions.push([sanitize.escapeid(e), '=', sanitize.escape(data[e])].join(''));
+    for (var k in dataList[0]) {
+      if (dataList[0].hasOwnProperty(k)) {
+        values.push(sanitize.escapeid(k));
+      }
     }
+
+    // this allows us to have multiple rows
+    dataList.forEach(function (item) {
+      var items = [];
+      for (var k in item) items.push(sanitize.escape(item[k]));
+      expressions.push('(' + items.join(', ') + ')');
+    });
   
     return templ.replace('%table%', sanitize.escapeid(table))
+                .replace('%values%', '(' + values.join(', ') + ')')
                 .replace('%expressions%', expressions.join(', '));  
   };
 

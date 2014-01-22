@@ -323,10 +323,8 @@ module.exports = (function (db) {
         // sixth check - do all the allocated costs add up to the total cost?
         // We must catch this because reduce fails in on a empty array.
         // FIXME : re-write this check
-        var allocated_equal;
-        try { allocated_equal = results.reduce(function (a, b) { return (a.allocated_cost || a) + (b.allocated_cost || 0); }); }
-        catch (e) { return callback(e); }
-        if (validate.isEqual(allocated_equal, reference_payment.cost)) return callback(new Error('Allocated cost do not add up to total cost in payment with cash id: ' + id));
+        var sum = results.map(function (item) { return item.allocated_cost; }).reduce(function (a, b) { return (a || 0) + (b || 0); } );
+        if (!validate.isEqual(sum, reference_payment.cost)) return callback(new Error('Allocated cost do not add up to total cost in payment with cash id: ' + id));
 
         // seventh check - is the deb_cred_id valid?
         check.validDebitorOrCreditor(reference_payment.deb_cred_id, function (err) {

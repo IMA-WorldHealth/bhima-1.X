@@ -657,7 +657,7 @@
 
       if (angular.isString(defn)) return $http.get(defn);
 
-      handle = $http.get('/temp/?' + JSON.stringify(defn));
+      handle = $http.get('/data/?' + JSON.stringify(defn));
       handle.then(function (returned) {
         deferred.resolve(returned.data);
       });
@@ -772,18 +772,39 @@
 
   });
 
-  services.service('printer', function () {
-    var self = this;
+  services.factory('exchange', function (connect, appstate, $timeout) {
+    var enterprise, rateMap;
 
-    this.print = function (data) {
-      self.data  = data;
-      self.data.print = true;
+    appstate.register('enterprise', function (e) {
+      enterprise = e;
+      refresh();
+    });
+
+    function refresh () {
+      rateMap = null;
+      var date = new Date().toISOString().slice(0,10);
+      connect.fetch({
+        tables : { 'exchange_rate' : { columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date'] }},
+        where : ['exchange_rate.date='+date]
+      }).then(function (array) {
+        $timeout(function () {
+          rateMap = {};
+          // This does two loops, but I feel it is not bad
+        
+          array.forEach(function (rate) {
+            rateMap[rate.foreign_currency_id] = rate.rate;
+          });
+        });
+
+      });
     }
 
-    this.clear = function () {
-      self.data = {};
-    }
-
+    return function exchange (value, to) {
+      // value is a number
+      // to is a currency_id
+      // from is a currency_id
+      return rateMap ? (rateMap[to] || 1)* value : value;
+    };
   });
 
 })(angular);
