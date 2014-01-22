@@ -65,7 +65,7 @@ angular.module('kpk.controllers').controller('creditNote', function($scope, $rou
       
     connect.basicPut('credit_note', [noteObject])
     .then(function(res) { 
-      //$location.path('
+      //$location.path('/invoice/');
     });
   }
 
