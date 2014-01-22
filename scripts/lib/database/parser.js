@@ -1,13 +1,6 @@
 // builds the sql queries that a store will use
 
-// sanitization utils
-var sanitize = {
-  escapeid : function (id) { return ['`', id, '`'].join(''); },
-  escape: function (str) { return (!Number.isNaN(Number(str)) || ~str.indexOf('"')) ? str : '"' + str + '"'; },
-  isInt : function (i) { return (Math.floor(n) === Number(n)); },
-  isIn : function (s) {  return String(s).indexOf('(') > -1; },
-  isArray : function (a) { return a.length && Object.prototype.toString.call(a) === '[object Array]'; }
-};
+var sanitize = require('../util/sanitize.js');
 
 //module: Parser 
 module.exports = (function (options) {
