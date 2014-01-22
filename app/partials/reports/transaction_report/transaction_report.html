@@ -4,7 +4,7 @@
     Transaction Report     
   </span>
   </header>
-  <div class="capital pull-right visible-print"> {{DC}}:{{model.selected.text}}<br/>{{option.dateFrom}} - {{option.dateTo}}</div>  
+  <div class="capital pull-right visible-print"> {{DC}} : {{model.selected.text}} <br/> {{data.dateFrom}} / {{data.dateTo}}</div>  
 
 <section class="underline">
 </section>
@@ -16,7 +16,7 @@
         <span>Settings</span> 
         <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
       </accordion-heading>
-      <table>
+      <table class="table table-condensed">
         <tr>
           <td>
             <div class="radio">
@@ -91,9 +91,9 @@
 <section class="underline infobar" ng-show="show">
   balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
   <div class="pull-right">      
-      Total Debit  : {{credit}}
-      Total Credit : {{debit}}
-      Sold : {{sold}}
+      Total Debit  : {{credit | currency}}
+      Total Credit : {{debit | currency}}
+      Sold : {{sold | currency}}
   </div>
 </section>
 
@@ -105,7 +105,7 @@
      <td>Account Number</td>
      <td>Debit</td>
      <td>Credit</td>
-     <td>Name</td>
+     <td>Currency</td>
      <td>Service</td>
      <td>Names</td>
   </tr>

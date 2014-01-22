@@ -37,8 +37,8 @@
   <table class="table table-bordered tbl-print">
     <thead>
       <tr>
-        <th>Accounts</th>
-        <th ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</th>
+        <td>Accounts</td>
+        <td ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</td>
       </tr>
     </thead>    
     <tr ng-repeat="account in models.accounts | orderBy:'account_number'">
