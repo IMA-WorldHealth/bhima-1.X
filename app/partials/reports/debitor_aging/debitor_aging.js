@@ -2,10 +2,11 @@ angular.module('kpk.controllers').controller('reportDebitorAgingCtrl', function(
 
 	//variables
 	
-	$scope.models = {};
+	$scope.models = {};	
 	$scope.results = [];
-	var debitors, periods;
-	var names = ['debitors', 'periods'];
+	$scope.today = new Date();
+	var debitors, periods, fiscalYears;
+	var names = ['debitors', 'periods', 'fys'];
 	
 
 	//fonctions
@@ -13,7 +14,9 @@ angular.module('kpk.controllers').controller('reportDebitorAgingCtrl', function(
 	function init (records){
 		$scope.models[names[0]] = records[0].data;
 		$scope.models[names[1]] = records[1].data;
-		$scope.models.debitorAgings = records[2];
+		$scope.models[names[2]] = records[2].data;
+		$scope.models.debitorAgings = records[3];
+		initializeItem();
 		getDebitorRecord();
 	}
 
@@ -47,16 +50,56 @@ angular.module('kpk.controllers').controller('reportDebitorAgingCtrl', function(
 	}
 
 	var getDebitorRecord = function(){
+		$scope.results = [];
 		$scope.models.debitors.forEach(function(debitor){
 			$scope.results.push({debitorName : debitor.text, balances : getRecord(debitor)});
 		});
 	}
+	var tester = function(){
+		($scope.choix)? loading($scope.choix) : loading(); 
+	}
 
-	//invocation
-	
-	appstate.register('fiscal', function(fiscal){		
-		debitors = {tables:{'debitor':{columns:['id', 'text']}, 'debitor_group':{columns:['account_id']}}, join:['debitor.group_id=debitor_group.id'], where : ['debitor_group.enterprise_id='+fiscal.enterprise_id]};
-		periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}, where : ['period.fiscal_year_id='+fiscal.id]};
-		$q.all([connect.req(debitors), connect.req(periods), getBalance(fiscal.id)]).then(init);
-	});
+	var loading = function(fy){
+
+		appstate.register('fiscal', function(fiscal){			
+			$scope.fySelected = fy || fiscal;
+			debitors = {tables:{'debitor':{columns:['id', 'text']}, 'debitor_group':{columns:['account_id']}}, join:['debitor.group_id=debitor_group.id'], where : ['debitor_group.enterprise_id='+$scope.fySelected.enterprise_id]};
+			periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}, where : ['period.fiscal_year_id='+$scope.fySelected.id]};
+			fiscalYears = {tables:{'fiscal_year':{columns:['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id']}}, where : ['fiscal_year.enterprise_id='+$scope.fySelected.enterprise_id]};
+			$q.all([connect.req(debitors), connect.req(periods), connect.req(fiscalYears), getBalance($scope.fySelected.id)]).then(init);
+		});
+	}
+
+	$scope.reload = function(f){
+		f.checked = !f.checked;
+		loading(f);
+	}
+
+	var initializeItem = function(){
+
+		$scope.models.fys.map(function(item){
+			item.checked = false;
+		});
+
+		$scope.models.periods.map(function(item){
+			item.checked = true;
+		});
+	}
+
+	$scope.adjust = function(p){
+		p.checked = !p.checked;
+		removePeriod(p.id);
+		// $scope.models.periods.splice($scope.models.periods.indexOf(p), $scope.models.periods.indexOf(p)); dont work very well
+	}
+
+	var removePeriod = function(id){
+		var periods = [];
+		$scope.models.periods.forEach(function(period){
+			if (period.id !== id) periods.push(period);
+		});
+		$scope.models.periods = periods;
+		getDebitorRecord();
+	}
+	// invocation
+	tester();
 });
