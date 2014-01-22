@@ -6,6 +6,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   process = { 
     'cash': processCash,
     'sale': processSale,
+    'credit': processCredit,
     'debtor': processDebtor
   };
   dependencies.recipient = { 
@@ -71,9 +72,26 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   function processSale() {  
     validate.process(dependencies, ['invoice', 'invoiceItem']).then(buildRecipientQuery);
   }
+  
+  //TODO this process is kind of a hack
+  function processCredit(invoiceId) { 
+    dependencies = {}; 
+    dependencies.credit = { 
+      required: true,
+      query: { 
+        tables: { 
+          credit_note: { columns: ['id', 'cost', 'debitor_id', 'seller_id', 'sale_id', 'note_date', 'description'] },
+          patient: { columns: ['first_name', 'last_name', 'location_id'] }
+        },
+        join: ['credit_note.debitor_id=patient.debitor_id'],
+        where: ['credit_note.id=' + invoiceId]  
+      }
+    };
+    validate.process(dependencies, ['credit']).then(buildCreditRecipient);
+  }
 
   function processDebtor() { 
-
+  
   }
 
   function buildInvoiceQuery(model) { 
@@ -81,6 +99,16 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     dependencies.invoice.query.where = ["sale.id=" + cash_data.invoice_id];
     dependencies.invoiceItem.query.where = ["sale_item.sale_id=" + cash_data.invoice_id];
     processSale();
+  }
+  
+  //TODO credit hack
+  function buildCreditRecipient(model) { 
+    dependencies.location = { 
+      required: true,
+      query: '/location/' + model.credit.data[0].location_id
+    }
+
+    validate.process(dependencies).then(creditInvoice);
   }
  
   function buildRecipientQuery(model) { 
@@ -115,9 +143,10 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
-
+   
     if(model.cash) $scope.cashTransaction  = $scope.model.cash.data[0];
-
-    console.log($scope.model.cash);
   }
+  
+  //TODO Follows the process credit hack
+  function creditInvoice(model) { $scope.model = model; $scope.note = $scope.model.credit.data[0]; $scope.location = $scope.model.location.data[0]}
 });

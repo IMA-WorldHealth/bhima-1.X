@@ -50,7 +50,7 @@ angular.module('kpk.controllers')
     //TODO Method to fetch session variables, fiscal years, enterprises etc. - the design and ordering of these operations should be researched 
     var default_enterprise, default_fiscal_year, default_exchange;
      
-    connect.req({'tables': { 'enterprise' : {'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id']}}})
+    connect.req({'tables': { 'enterprise' : {'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id']}}})
     .then(function(res) {
       default_enterprise = res.data[0];
       appstate.set('enterprise', default_enterprise);
@@ -70,7 +70,7 @@ angular.module('kpk.controllers')
     .then(function (res) {
       // fetch exchange rate data
       default_exchange = res.data[0];
-      if (default_exchange) console.log('setting Exchange Rate : ', default_exchange);
+      if (default_exchange) console.log('Setting Exchange Rate : ', default_exchange);
       if (default_exchange) appstate.set('exchange_rate', default_exchange);
     }, function (err) {
       throw err; 

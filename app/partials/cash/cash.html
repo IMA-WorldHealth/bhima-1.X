@@ -1,10 +1,16 @@
 <header>
-<span>Cash Box</span>
+  <h3 style="margin: 0">Cash Box <small> {{ formatTitle(data.box) }}</small></h3>
 </header>
 
 <section class="underline">
   <div class="pull-left">
     <input type="text" ng-model="debitor" typeahead="debitor as debitor.first_name+' '+debitor.last_name for debitor in models.debitors | filter:$viewValue | limitTo:8" placeholder="Find a Debitor" typeahead-on-select="loadDebitor(debitor.id)" class="form-kapok" size="25">
+  </div>
+  <div style="position: absolute; right: 5px;">
+    <button class="btn btn-sm btn-primary dropdown-toggle">{{ formatTitle(data.box) }}<i class="glyphicon glyphicon-chevron-down"></i></button> <!-- TODO make this a caret -->
+    <ul class="dropdown-menu pull-right">
+      <li ng-repeat="box in models.currency_account"><a href="" ng-click="data.box=box"> {{ formatTitle(box) }} </a></li>
+    </ul>
   </div>
 </section>
 
@@ -24,7 +30,7 @@
           <tr ng-repeat="invoice in models.ledger" ng-click="add($index)">
             <td>{{invoice.inv_po_id}}</td>
             <td>{{invoice.debitor}}</td>
-            <td ng-bind-html="invoice.balance | intlcurrency:currency(data.currency)"></td>
+            <td ng-bind-html="invoice.locale | intlcurrency:data.box.currency_id"></td>
             <td>{{invoice.trans_date | date}}</td>
           </tr>
         </tbody>
@@ -36,7 +42,6 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <span>Payment | <small>{{data.debitor}}</small></span>
-          <span class="pull-right"><i class="glyphicon glyphicon-usd"></i></span>
         </div>
         <table class="table table-condensed">
           <thead>
@@ -53,25 +58,22 @@
             <tr ng-repeat="invoice in data.paying">
               <td>{{invoice.inv_po_id}}</td>
               <td>{{invoice.trans_date | date }}</td>
-              <td ng-bind-html="invoice.balance | intlcurrency:currency(data.currency)"></td>
+              <td ng-bind-html="invoice.locale | intlcurrency:data.box.currency_id"></td>
               <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}" ng-model="invoice.allocated" required></td>
-              <td ng-bind-html="invoice.remaining | intlcurrency:currency(data.currency)"></td>
+              <td ng-bind-html="invoice.remaining | intlcurrency:data.box.currency_id"></td>
               <td ng-click="remove($index)"><i class="glyphicon glyphicon-remove"></i></td>
             </tr>
           </tbody>
         </table>
         <hr style="padding:0;margin:0;" />
         <div class="panel-body">
-          <label>Total Due: <span ng-bind-html="data.total | intlcurrency:currency(data.currency)"></span></label>
-          <label class="pull-right" ng-show="data.excess > 0">Overdue: <span ng-bind-html-unsafe="data.excess | intlcurrency:currency(data.currency)"></span></label>
+          <label>Total Due: <span ng-bind-html="data.total | intlcurrency:data.box.currency_id"></span></label>
+          <label class="pull-right" ng-show="data.excess > 0">Overdue: <span ng-bind-html="data.excess | intlcurrency:data.box.currency_id"></span></label>
           <div class="input-group">
             <input type="number" ng-model="data.payment"  class="form-kapok" min="0">
-            <span class="input-group-addon dropdown-toggle">
-              {{ currency(data.currency) }}
+            <span class="input-group-addon">
+              {{ data.box.symbol }}
             </span>
-            <ul class="dropdown-menu pull-right">
-              <li ng-repeat="currency in models.currency"><a href="" ng-click="data.currency=currency.id">{{currency.symbol}}</a></li>
-            </ul>
           </div>
         </div>
         <div class="panel-footer">

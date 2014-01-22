@@ -66,7 +66,7 @@ app.put('/data/', function (req, res, next) {
 
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var insertsql = parser.insert(req.body.t, req.body.data[0]);  
+  var insertsql = parser.insert(req.body.t, req.body.data);  
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -275,6 +275,7 @@ app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.p
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('uncaughtException:', err);
+  process.exit();
 });
 
 // temporary debugging to see why the process terminates.
