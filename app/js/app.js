@@ -122,6 +122,10 @@
     when('/reports/account_statement/', {
       controller: 'reportAccountStatementCtrl',
       templateUrl: 'partials/reports/account_statement/account_statement.html'
+    }).
+    when('/reports/income_expensive/', {
+      controller: 'reportIncomeExpensiveCtrl',
+      templateUrl: 'partials/reports/income_expensive/income_expensive.html'
     })
     .when('/location', {
       controller : 'locationCtrl',
