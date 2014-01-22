@@ -116,7 +116,6 @@ module.exports = (function (db) {
     return defer.promise;
   }
 
-
   function transReport(params) {
     var params = JSON.parse(params);
     var deferred = q.defer();
@@ -126,7 +125,7 @@ module.exports = (function (db) {
       var table, cle;
       if(params.type.toUpperCase() == 'C'){
         table = 'creditor';
-        cle = 'creditor_group_id';
+        cle = 'group_id';
       }else if(params.type.toUpperCase() == 'D'){
         table = 'debitor';
         cle = 'group_id';
@@ -199,7 +198,9 @@ module.exports = (function (db) {
       });
     }    
     return deferred.promise;
-  }
+}
+
+
 
   function debitorAging(params){
     //deferred
