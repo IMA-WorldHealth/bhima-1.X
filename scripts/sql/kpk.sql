@@ -25,6 +25,8 @@ create table `currency` (
   `name`          text not null,
   `symbol`        varchar(15) not null,
   `note`          text,
+  `separator`     varchar(5),
+  `decimal`       varchar(5),
   primary key (`id`)
 ) engine=innodb;
 
@@ -166,7 +168,6 @@ create table `enterprise` (
   `phone`               varchar(20),
   `email`               varchar(70),
   `location_id`         smallint unsigned not null,
-  `cash_account`        int unsigned not null,
   `logo`                varchar(70),
   `currency_id`         tinyint unsigned not null,
   primary key (`id`),
@@ -312,6 +313,28 @@ create table `payment` (
   `text`    varchar(50) not null,
   `note`    text,
   primary key (`id`)
+) engine=innodb;
+
+--
+-- table structure for table `kpk`.`currency_account`
+--
+drop table if exists `currency_account`;
+create table `currency_account` (
+  `id`              mediumint unsigned not null auto_increment,
+  `currency_id`     tinyint unsigned not null,
+  `enterprise_id`   smallint unsigned not null,
+  `cash_account`    int unsigned not null,
+  `bank_account`    int unsigned not null,
+  primary key (`id`),
+  key `currency_id` (`currency_id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `cash_account` (`cash_account`),
+  key `bank_account` (`bank_account`),
+  unique key (`id`, `currency_id`),
+  constraint foreign key (`currency_id`) references `currency` (`id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`cash_account`) references `account` (`id`),
+  constraint foreign key (`bank_account`) references `account` (`id`)
 ) engine=innodb;
 
 --
@@ -593,6 +616,29 @@ create table `sale` (
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
   constraint foreign key (`debitor_id`) references `debitor` (`id`),
   constraint foreign key (`currency_id`) references `currency` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`credit_note`
+--
+drop table if exists `credit_note`;
+create table `credit_note` (
+  `enterprise_id` smallint unsigned not null,
+  `id`            int unsigned not null auto_increment,
+  `cost`          decimal(19, 2) unsigned not null,
+  `debitor_id`    int unsigned not null,
+  `seller_id`     smallint unsigned not null,
+  `sale_id`       int unsigned not null,
+  `note_date`     date not null,
+  `description`   text,
+  `posted`        boolean not null default '0',
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `debitor_id` (`debitor_id`),
+  key `sale_id` (`sale_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`sale_id`) references `sale` (`id`)
 ) engine=innodb;
 
 --

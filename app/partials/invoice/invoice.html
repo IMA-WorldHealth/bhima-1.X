@@ -61,7 +61,61 @@
         </div>
       </div> <!-- End Patient Invoice template -->
     </div>
-  
+    
+    <div ng-switch-when="credit">
+      <div class="row customer-details">
+        <div class="col-xs-12"> 
+          <h4 class="invoice-header">Credit Note</h4>
+        </div>
+      </div>
+      <div class="row customer-details">
+        <div class="col-xs-1">
+          <b>To</b>
+        </div>
+        <div class="col-xs-7">
+          <div class="row">
+            {{note.first_name}} {{note.last_name}} 
+          </div>
+          <div class="row">
+            <i>{{location.village}}</i>
+            <br>
+            <i>{{location.sector}}</i>
+            <br>
+            <i>{{location.province}}</i>
+          </div>
+        </div>
+        <div style="text-align: left;" class="col-xs-4">
+          <div class="row">
+            <b>Note #</b>
+          </div>
+          <div class="row">
+            {{note.id}}
+          </div>
+          <div class="row">
+            <b>Date</b>
+          </div>
+          <div class="row">
+            {{note.note_date | date}}  
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="invoiceTable">
+            <thead>
+              <tr><th>Note</th><th>Debtor #</th><th>Amount</th></tr> 
+            </thead>
+            <tbody class="items">
+              <tr><td>{{note.description}}</td><td>{{note.debitor_id}}</td><td>{{note.cost | currency}}</td></tr> 
+            </tbody>
+            <tbody class="totals">
+              <tr><td colspan="2" class="no-border">Total Credited</td><td>{{note.cost | currency}}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div> <!-- End Patient Invoice template -->
+ 
+    </div>
     <!-- Placholder debtor recipt, shows all transactions for given debtor, and the balance owed-->
     <div ng-switch-when="debtor">
       <div class="row customer-details">

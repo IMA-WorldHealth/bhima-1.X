@@ -145,6 +145,10 @@
     when('/invoice/:originId/:invoiceId', { 
       controller: 'invoice', 
       templateUrl: 'partials/invoice/invoice.html'
+    }).
+    when('/credit_note/:invoiceId?/', { 
+      controller: 'creditNote',
+      templateUrl: 'partials/credit_note/credit_note.html'
     });
   }  
 

@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, printer, messenger) {
+.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, messenger) {
   // This is the posting journal and perhaps the heaviest
   // module in Kapok.  It is responsible for posting to
   // the general ledger via a trial balance
