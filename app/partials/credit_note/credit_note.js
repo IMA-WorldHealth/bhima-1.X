@@ -1,5 +1,5 @@
 //TODO Ensure sale exists (validation test implementation required)
-angular.module('kpk.controllers').controller('creditNote', function($scope, $routeParams, $filter, validate, connect, appstate) { 
+angular.module('kpk.controllers').controller('creditNote', function($scope, $routeParams, $filter, $location, validate, connect, appstate) { 
   var invoiceId = $routeParams.invoiceId, dependencies = {};
 
   dependencies.sale = { 
@@ -61,11 +61,11 @@ angular.module('kpk.controllers').controller('creditNote', function($scope, $rou
   }
 
   function submitNote(noteObject) { 
-    //test object before submitting to server
-      
+    //TODO Test object before submitting to server
+    //TODO ?Check there are no credit notes for this transaction and warn user 
     connect.basicPut('credit_note', [noteObject])
     .then(function(res) { 
-      //$location.path('/invoice/');
+      $location.path('/invoice/credit/' + res.data.insertId);
     });
   }
 
