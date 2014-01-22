@@ -98,15 +98,15 @@
     }
 
     function filterList(dependencies, list) { 
-      var filterList = [];
-      list.forEach(function(key, index) {
+      var filterList;
+      filterList = list.filter(function(key, index) {
         
         //filter process requests
-        if(dependencies[key].processed) return;
+        if(dependencies[key].processed) return false;
         
         //filter model store
-        if(key===modelLabel) return;
-        filterList.push(key);
+        if(key===modelLabel) return false;
+        return true;
       });
       return filterList;
     }
