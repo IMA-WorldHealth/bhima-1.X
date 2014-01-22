@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('creditNote', function($scope, $routeParams, $filter, validate) { 
+//TODO Ensure sale exists (validation test implementation required)
+angular.module('kpk.controllers').controller('creditNote', function($scope, $routeParams, $filter, validate, connect, appstate) { 
   var invoiceId = $routeParams.invoiceId, dependencies = {};
 
   dependencies.sale = { 
@@ -49,6 +50,7 @@ angular.module('kpk.controllers').controller('creditNote', function($scope, $rou
   function packageCreditNote() { 
     var defaultDescription = "Credit matching transaction #" + $scope.sale.id + " from " + $filter('date')($scope.sale.invoice_date);
     var noteObject = { 
+      enterprise_id: appstate.get('enterprise').id,
       cost: $scope.sale.cost,
       debitor_id: $scope.sale.debitor_id,
       sale_id: $scope.sale.id,
@@ -58,7 +60,14 @@ angular.module('kpk.controllers').controller('creditNote', function($scope, $rou
     return noteObject;
   }
 
-  function submitCreditNote(noteObject) { 
-
+  function submitNote(noteObject) { 
+    //test object before submitting to server
+      
+    connect.basicPut('credit_note', [noteObject])
+    .then(function(res) { 
+      //$location.path('
+    });
   }
+
+  $scope.submitNote = submitNote;
 });
