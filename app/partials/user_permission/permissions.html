@@ -188,7 +188,11 @@
                 <button ng-disabled="!permission.permission_change" ng-click="savePermissions()"><i class="glyphicon glyphicon-floppy"></i> Save</button>
               </span>
             </div>
-            <ul class="k-list">
+            <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
+              <input type="checkbox" ng-model="all.checked">
+              Super User
+            </label>
+            <ul class="k-list" style="margin-left: 25px;">
               <li ng-repeat="unit in models.units | filter:filterChildren" >
                 <label class="checkbox">
                   <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
