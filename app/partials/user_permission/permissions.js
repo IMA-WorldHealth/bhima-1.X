@@ -16,10 +16,11 @@ angular.module('kpk.controllers')
       stores = {},
       models = $scope.models = {};
 
-  //initilaisation var  
+    
 
   imports.units = {
-    tables : {'unit' : { columns : ['id', 'name', 'description', 'has_children', 'parent'] }}
+    tables : {'unit' : { columns : ['id', 'name', 'description', 'has_children', 'parent'] }},
+    where : ['unit.id<>0']
   };
 
 
@@ -28,6 +29,8 @@ angular.module('kpk.controllers')
   };
   // The add namespace
   $scope.add = {};
+  // for registration of 'super user privileges'
+  $scope.all = {};
 
   $scope.setAction = function (value) {
     $scope.action = value;
@@ -195,6 +198,14 @@ angular.module('kpk.controllers')
   $scope.filterChildren = function (unit) {
     return unit.parent === 0;
   };
+
+  $scope.$watch('all', function (value, oldValue) {
+    if (!$scope.models.units) return;
+    $scope.permission.permission_change = true;
+    $scope.models.units.forEach(function (unit) {
+      unit.checked = $scope.all.checked;
+    });
+  }, true);
   
   function run () {
     var dependencies = ['units', 'users'];
@@ -209,9 +220,6 @@ angular.module('kpk.controllers')
         $scope.models[dependencies[i]] = array[i].data;
       }
      
-      // remove the root node 
-      stores.units.remove(0);
-
       //order the data.
       $scope.models.units.forEach(function (unit) {
         unit.children = getChildren(unit.id);
