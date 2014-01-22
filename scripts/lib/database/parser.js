@@ -86,7 +86,6 @@ module.exports = (function (options) {
 
   // delete
   self.delete = function (table, column, id) {
-    console.log('column : ', column, 'id : ', id);
     var templ = self.templates.delete;
     return templ.replace('%table%', sanitize.escapeid(table))
                 .replace('%key%', [sanitize.escapeid(column), '=', sanitize.escape(id)].join(''));
