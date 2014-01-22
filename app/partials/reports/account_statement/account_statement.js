@@ -1,9 +1,11 @@
 angular.module('kpk.controllers').controller('reportAccountStatementCtrl', function($scope, $q, connect, appstate){
 
 	//variables
+
 	$scope.models = {};
+	$scope.today = new Date();
 	var accounts, accountStatements, accounts, periods;	
-	var names = ['accounts', 'periods'];
+	var names = ['accounts', 'periods', 'fys'];
 
 
 
@@ -13,12 +15,13 @@ angular.module('kpk.controllers').controller('reportAccountStatementCtrl', funct
 		//async function
 		$scope.models[names[0]] = records[0].data;
 		$scope.models[names[1]] = records[1].data;
-		accountStatements = records[2];
+		$scope.models[names[2]] = records[2].data;
+		accountStatements = records[3];
 
 		//sync function
+		initializeItem();
 		transformAccountNumber();
 		setStatAccount();
-		console.log($scope.models.accounts[4]);
 	}
 
 	var transformAccountNumber = function (){
@@ -28,7 +31,6 @@ angular.module('kpk.controllers').controller('reportAccountStatementCtrl', funct
 	}
 
 	var getStatements = function(fiscal_id){
-		console.log('fiscal recue |||||||||||||||', fiscal_id);
 		var def = $q.defer();
 		connect.MyBasicGet('/reports/accountStatement/?'+JSON.stringify({fiscal_id : fiscal_id}))
 		.then(function(values){
@@ -59,13 +61,55 @@ angular.module('kpk.controllers').controller('reportAccountStatementCtrl', funct
 			periodStats.push(balance);
 		});	
 		return periodStats;
+	}
+
+	var loading = function(fy){		
+		appstate.register('fiscal', function(fiscal){
+			$scope.fySelected = fy || fiscal;
+			accounts = {tables:{'account':{columns:['id', 'account_number', 'account_txt', 'parent']}}, where : ['account.enterprise_id='+$scope.fySelected.enterprise_id]};
+			periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}, where : ['period.fiscal_year_id='+$scope.fySelected.id]};
+			fiscalYears = {tables:{'fiscal_year':{columns:['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id']}}, where : ['fiscal_year.enterprise_id='+$scope.fySelected.enterprise_id]};
+			$q.all([connect.req(accounts),connect.req(periods),connect.req(fiscalYears), getStatements($scope.fySelected.id)]).then(init);
+		});
+	}
+
+	var initializeItem = function(){
+
+		$scope.models.fys.map(function(item){
+			item.checked = false;
+		});
+
+		$scope.models.periods.map(function(item){
+			item.checked = true;
+		});
+	}	
+
+	var removePeriod = function(id){
+		var periods = [];
+		$scope.models.periods.forEach(function(period){
+			if (period.id !== id) periods.push(period);
+		});
+		$scope.models.periods = periods;
+		setStatAccount();		
+	}
+
+	var tester = function(){
+		($scope.choix)? loading($scope.choix) : loading(); 
+	}
+
+	$scope.reload = function(f){
+		f.checked = !f.checked;
+		loading(f);
+	}
+
+	$scope.adjust = function(p){
+		p.checked = !p.checked;
+		removePeriod(p.id);
+		// $scope.models.periods.splice($scope.models.periods.indexOf(p), $scope.models.periods.indexOf(p)); dont work very well
 	}		
 
-	//invocations
-	appstate.register('fiscal', function(fiscal){
-		console.log('************ notre fiscal account statement ', fiscal);
-		accounts = {tables:{'account':{columns:['id', 'account_number', 'account_txt', 'parent']}}, where : ['account.enterprise_id='+fiscal.enterprise_id]};
-		periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}, where : ['period.fiscal_year_id='+fiscal.id]};
-		$q.all([connect.req(accounts),connect.req(periods), getStatements(fiscal.id)]).then(init);
-	});
+	// invocation
+	tester();
+
+	
 });
