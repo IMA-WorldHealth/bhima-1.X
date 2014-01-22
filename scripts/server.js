@@ -255,7 +255,7 @@ app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.p
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('uncaughtException:', err);
-  proces.exit();
+  process.exit();
 });
 
 // temporary debugging to see why the process terminates.
