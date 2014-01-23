@@ -47,6 +47,26 @@
   </div>
 </div>
 
+<script type="text/ng-template" id="verifyTransaction.html">
+  <div class="modal-content">
+    <div class="modal-header">
+      Verify Transaction
+    </div>
+    <div class="modal-body">
+      <label for="transid">Transaction Id</label>
+      <div>0</div>
+      <label for="description">Justification</label>
+      <input type="text" class="form-kapok" id="description">
+      <label for="date" value="transaction.date">Transaction Date</label>
+      <input type="date" class="form-kapok" id="date">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm">Cancel</button>
+      <button class="btn btn-success btn-sm">Confirm Transaction</button>
+    </div>
+  </div>
+</script>
+
 <script type="text/ng-template" id="split.html">
   <div class="modal-content">
     <div class="modal-header">
