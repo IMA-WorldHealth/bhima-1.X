@@ -36,40 +36,12 @@
       date1 = new Date(date1).setHours(0,0,0,0);
       date2 = new Date(date2).setHours(0,0,0,0);
       return date1 > date2;
-
-      /*if(date1.getFullYear > date2.getFullYear){
-        return true;
-      }else if(date1.getFullYear() == date2.getFullYear()){
-        if(date1.getMonth() > date2.getMonth()){
-          return true;
-        }else if(date1.getMonth() == date2.getMonth()){
-          if(date1.getDate() > date2.getDate())
-            return true;
-            return false;
-        }else if(date1.getMonth() < date2.getMonth()){
-          return false;
-        }
-      }else if(date1.getFullYear() < date2.getFullYear()){
-        return false;
-      }*/
     };
 
     this.areDatesEqual = function(date1, date2){
       date1 = new Date(date1).setHours(0,0,0,0);
       date2 = new Date(date2).setHours(0,0,0,0);
       return date1 === date2;
-
-     /* if(date1.getFullYear != date2.getFullYear){
-        return false;
-      }else if(date1.getFullYear() == date2.getFullYear()){
-        if(date1.getMonth() != date2.getMonth()){
-          return false;
-        }else if(date1.getMonth() == date2.getMonth()){
-          if(date1.getDate() != date2.getDate())
-            return false;
-            return true;
-        }
-      }*/
     };
   });
   

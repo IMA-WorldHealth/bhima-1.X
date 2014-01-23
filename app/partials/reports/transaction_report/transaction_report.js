@@ -40,23 +40,6 @@ angular.module('kpk.controllers')
 			if ($scope.data.dc === 'C') loadCreditorGroups();
 			if ($scope.data.dc === 'D') loadDebitorGroups();
 		}
-
-	}
-
-	var loadCreditors = function(){
-		$scope.model.chooses = $scope.models.creditors;
-	}
-
-	var loadDebitors = function(){
-		$scope.model.chooses = $scope.models.debitors;
-	}
-
-	var loadCreditorGroups = function(){
-		$scope.model.chooses = $scope.models.creditorGroups;
-	}
-
-	var loadDebitorGroups = function(){
-		$scope.model.chooses = $scope.models.debitorGroups;
 	}
 
 	function mapper(collection){
@@ -72,7 +55,7 @@ angular.module('kpk.controllers')
 			){
 				$scope.show = true;
 				if($scope.data.type == 'I'){
-					($scope.data.dc == 'D')?$scope.DC="DEBITOR":$scope.DC="CREDITOR";
+					($scope.data.dc == 'D')? $scope.DC = "DEBITOR" : $scope.DC = "CREDITOR";
 					connect.MyBasicGet('/reports/transReport/?'+JSON.stringify({id:$scope.model.selected.id,
 																				type:$scope.data.dc, 
 																				ig:$scope.data.type, 
@@ -80,7 +63,6 @@ angular.module('kpk.controllers')
 																				dt:$scope.data.dateTo}))
 					.then(function(values){
 			          $scope.model['transReport'] = values;
-			          console.log('le trans report est :', values);
 			          doSummary(values);
 				    });	
 
@@ -102,7 +84,7 @@ angular.module('kpk.controllers')
 
 				
 		}else{
-			alert('Date Invalid !');
+			alert('Dates Invalid !');
 		}		
     }
 
@@ -146,7 +128,23 @@ angular.module('kpk.controllers')
     	debitorGroups = {tables:{'debitor_group':{columns:['id', 'name', 'account_id']}}};
     	creditorGroups = {tables:{'creditor_group':{columns:['id', 'name', 'account_id']}}};
     	$q.all([connect.req(debitors), connect.req(creditors), connect.req(debitorGroups), connect.req(creditorGroups)]).then(init);
-    }
+    }    
+
+	var loadCreditors = function(){
+		$scope.model.chooses = $scope.models.creditors;
+	}
+
+	var loadDebitors = function(){
+		$scope.model.chooses = $scope.models.debitors;
+	}
+
+	var loadCreditorGroups = function(){
+		$scope.model.chooses = $scope.models.creditorGroups;
+	}
+
+	var loadDebitorGroups = function(){
+		$scope.model.chooses = $scope.models.debitorGroups;
+	}
 
     //invocation
 
