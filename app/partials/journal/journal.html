@@ -3,8 +3,23 @@
 </header>
 
 <section class="underline">
-  <button ng-click="groupByID()" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> {{'TRANSACTION' | translate}}</button>
-  <button ng-click="groupByAccount()" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-sort-by-attributes"></span> {{'ACCOUNT' | translate}}</button>
+  <div class="pull-left dropdown">
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle"><span class="glyphicon glyphicon-sort-by-attributes"></span> Group By</button>
+    <ul class="dropdown-menu">
+      <!-- <li class="dropdown&#45;header"></li> -->
+      <li><a href="" ng-click="groupBy('transaction')">Transaction</a></li>
+      <li><a href="" ng-click="groupBy('account')">Account</a></li>
+      <li><a href="" ng-click="groupBy('deb_cred')">Debtor/Creditor</a></li>
+    </ul>
+  </div>
+
+  <div class="pull-left">
+    <!-- FIXME remove style hack -->
+    <button style="margin-left: 5px;" ng-click="addTransaction()" class="btn btn-sm btn-default">Add Transaction</button> 
+  </div>
+
+  <!-- <button ng&#45;click="groupByID()" class="capital btn btn&#45;default btn&#45;sm"><span class="glyphicon glyphicon&#45;sort&#45;by&#45;attributes"></span> {{'TRANSACTION' | translate}}</button> -->
+  <!-- <button ng&#45;click="groupByAccount()" class="capital btn btn&#45;default btn&#45;sm"><span class="glyphicon glyphicon&#45;sort&#45;by&#45;attributes"></span> {{'ACCOUNT' | translate}}</button> -->
             
   <div class="pull-right">
     <a class="capital btn btn-default btn-sm" ng-click="split()" ng-disabled="rows.length!=1"><span class="glyphicon glyphicon-random" ng-style="rows.length!=1 ? {} : {color:'rgb(2, 179, 2)'}"></span> Split Transaction</a>
@@ -27,7 +42,7 @@
 <div class="content">
   <div class="row">
     <div class="col-xs-12">
-      <div id="journal_grid" class="grid" style="height: 650px; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"><!--Content populated with controller--></div>
+      <div id="journal_grid" class="grid" style="height: 530px; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"><!--Content populated with controller--></div>
     </div>
   </div>
 </div>

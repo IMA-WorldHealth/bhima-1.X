@@ -33,20 +33,19 @@ angular.module('kpk.controllers')
   var dataview;
   var sort_column = "trans_id";
   var columns = [
-    {id: 'trans_id', name: "ID", field: 'trans_id', sortable: true},
+    {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
     {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
-    {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
+    // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
     {id: 'description', name: 'Description', field: 'description', width: 110},
     {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
-    {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
-    {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
+    // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
+    // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
     {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
     {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
     {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
     {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
-    {id: 'inv_po_id', name: 'Inv/PO Number', field: 'inv_po_id'},
-    {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
-    // {id: 'del', name: '', width: 10, formatter: formatBtn}
+    {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
+    // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
   ];
   
   var options = {
@@ -64,8 +63,7 @@ angular.module('kpk.controllers')
       $scope.model.journal = array[0];
       $scope.model.account = array[1];
 
-      var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
-      dataview = new Slick.Data.DataView({
+      var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider(); dataview = new Slick.Data.DataView({
         groupItemMetadataProvider: groupItemMetadataProvider,
         inlineFilter: true
 
@@ -132,7 +130,7 @@ angular.module('kpk.controllers')
     grid.setColumns(columns);
   }, true);
 
-  $scope.groupByID = function groupByID () {
+  function groupByID() {
     dataview.setGrouping({
       getter: "trans_id",
       formatter: function (g) {
@@ -148,7 +146,7 @@ angular.module('kpk.controllers')
     });
   };
 
-  $scope.groupByAccount = function groupByAccount () {
+  function groupByAccount() {
     dataview.setGrouping({
       getter: "account_id",
       formatter: function(g) {
@@ -250,7 +248,6 @@ angular.module('kpk.controllers')
     var instance = $modal.open({
       templateUrl: "split.html",
       controller: function ($scope, $modalInstance, rows, data) { //groupStore, accountModel
-        console.log("Group module initialised", rows, data);
         var transaction = $scope.transaction = data.getItem(rows[0]);
         console.log('split', transaction);
       },
@@ -260,13 +257,29 @@ angular.module('kpk.controllers')
       }
     });
   };
+    
+  function groupBy(targetGroup) { 
+    var groupMap = {
+      'transaction' : groupByID,
+      'account' : groupByAccount
+    };
 
-  //good lawd hacks
+    if(groupMap[targetGroup]) groupMap[targetGroup]();
+  }
+
+  function addTransaction() { 
+    var item = {id: 509, trans_id: 5};
+    dataview.addItem(item);
+    grid.scrollRowToTop(dataview.getRowById(509));
+  }
+
+  $scope.groupBy = groupBy;
+  $scope.addTransaction = addTransaction;
+  
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
-//  $timeout(init, 100);
-
+  //$timeout(init, 100);
   init();
-
+  
 })
 
 .controller('trialBalanceCtrl', function ($scope, $modalInstance, request, ids, connect) {
