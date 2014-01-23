@@ -353,6 +353,8 @@ create table `kpk`.`price_list` (
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
 
+
+
 --
 -- Table structure for table `kpk`.`debitor_group_type`
 --
@@ -412,6 +414,37 @@ create table `debitor` (
   primary key (`id`),
   key `group_id` (`group_id`),
   constraint foreign key (`group_id`) references `debitor_group` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`patient_group`
+--
+drop table if exists `patient_group`;
+create table `kpk`.`patient_group` (
+  enterprise_id   smallint unsigned not null,
+  id              mediumint unsigned not null,
+  price_list_id   smallint unsigned not null,
+  name            varchar(60) not null,
+  note            text,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `price_list_id` (`price_list_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`price_list_id`) references `price_list` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`debitor_patient_group`
+--
+drop table if exists `debitor_patient_group`;
+create table `debitor_patient_group` (
+  `debitor_id`          int unsigned not null,
+  `patient_group_id`    int unsigned not null,
+  primary key (`debitor_id`, `patient_group`),
+  key `debitor_id` (`debitor_id`),
+  key `patient_group_id` (`patient_group_id`),
+  constraint foreign key (`debitor_id`) references `debitor`,
+  constraint foreign key (`patient_group_id`) references `patient_group_id`
 ) engine=innodb;
 
 --
