@@ -5,6 +5,7 @@ use `kpk`;
 grant all on `kpk`.* to 'kpk'@'%' identified by 'HISCongo2013';
 flush privileges;
 
+
 --
 -- Table structure for table `kpk`.`tax`
 --
