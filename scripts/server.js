@@ -185,6 +185,26 @@ app.get('/reports/:route/', function(req, res, next) {
   });
 });
 
+app.get('/InExAccounts/:id_enterprise/', function(req, res, next) { 
+  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
+  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
+  var sql = "SELECT account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'";
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(process(rows));
+  });
+
+  var process = function(accounts){
+    var InExAccounts = accounts.filter(function(item){
+      return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
+    });
+    return InExAccounts;
+  }
+
+});
+
+
+
 app.get('/tree', function (req, res, next) {
   tree.load(req.session.user_id)
   .then(function (treeData) {

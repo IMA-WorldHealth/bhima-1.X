@@ -21,9 +21,8 @@ module.exports = (function (db) {
       'finance'         : finance,
       'stock'           : stock,
       'transReport'     : transReport,
-      // 'account_balance' : account_balance
       'debitorAging'    : debitorAging,
-      'accountStatement' : accountStatement 
+      'accountStatement' : accountStatement
     };
     
     console.log('server debug', request, params);
