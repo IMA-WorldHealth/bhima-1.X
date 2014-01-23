@@ -1,127 +1,112 @@
-angular.module('kpk.controllers')
-.controller('journalController', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, printer, messenger) {
-  // This is the posting journal and perhaps the heaviest
-  // module in Kapok.  It is responsible for posting to
-  // the general ledger via a trial balance
+angular.module('kpk.controllers').controller('journal', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, printer, messenger) {
+  var dependencies = {};
+  var grid, dataview, sort_column, columns, options;
 
-  'use strict';
+  dependencies.journal = { 
+    required: true,
+    query: {
+      'tables' : {
+        'posting_journal' : { 'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] }
+      }
+    } 
+  }
 
-  $scope.model = {};
-  $scope.model.journal = {'data' : [] };
-
-//  Request
-  var journal_request = {
-    'tables' : {
-      'posting_journal' : {
-        'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"]
+  dependencies.account = {
+    query : { 
+      'tables' : { 
+        'account' : { 'columns' : ['id', 'account_number', 'account_txt'] }
       }
     }
-  };
+  }
 
-  var account_request = {
-    'tables' : { 'account' : {'columns' : ['id', 'account_number', 'account_txt']}}
-  };
-
-  //TODO iterate thorugh columns array - apply translate to each heading and update
-  //(each should go through translate initially as well)
-  $scope.$on('$translateChangeSuccess', function () {
-    //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
-  });
-
-//  grid options
-  var grid;
-  var dataview;
-  var sort_column = "trans_id";
-  var columns = [
-    {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
-    {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
-    // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
-    {id: 'description', name: 'Description', field: 'description', width: 110},
-    {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
-    // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
-    // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
-    {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
-    {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
-    {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
-    {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
-    {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
-    // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
-  ];
+  validate.process(dependencies).then(journal);
   
-  var options = {
-    enableCellNavigation: true,
-    enableColumnReorder: true,
-    forceFitColumns: true,
-    rowHeight: 30
-  };
+  function journal(model) { 
+    $scope.model = model;
+  
+    defineGridOptions();
+    initialiseGrid(); 
+  }
 
+  function defineGridOptions() { 
+    sort_column = "trans_id";
+    columns = [
+      {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
+      {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
+      // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
+      {id: 'description', name: 'Description', field: 'description', width: 110},
+      {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
+      // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
+      // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
+      {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
+      {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
+      {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
+      {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
+      {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
+      // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
+    ];
+    options = {
+      enableCellNavigation: true,
+      enableColumnReorder: true,
+      forceFitColumns: true,
+      rowHeight: 30
+    };
+  }
 
-  function init() {
-
-    $q.all([connect.req(journal_request), connect.req(account_request)])
-    .then(function(array) {
-      $scope.model.journal = array[0];
-      $scope.model.account = array[1];
-
-      var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider(); dataview = new Slick.Data.DataView({
-        groupItemMetadataProvider: groupItemMetadataProvider,
-        inlineFilter: true
-
-      });
-
-      var chkbx = new Slick.CheckboxSelectColumn({
-        cssClass: "slick-cell-checkboxsel"
-      });
-
-      columns.push(chkbx.getColumnDefinition());
-
-      grid = new Slick.Grid('#journal_grid', dataview, columns, options);
-
-      grid.registerPlugin(groupItemMetadataProvider);
-      grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
-      grid.registerPlugin(chkbx);
-//      Cell selection
-//      grid.setSelectionModel(new Slick.CellSelectionModel());
-
-      grid.onSort.subscribe(function(e, args) {
-        sort_column = args.sortCol.field;
-        dataview.sort(compareSort, args.sortAsc);
-      });
-
-      dataview.onRowCountChanged.subscribe(function (e, args) {
-        grid.updateRowCount();
-        grid.render();
-      });
-
-      dataview.onRowsChanged.subscribe(function (e, args) {
-        grid.invalidateRows(args.rows);
-        grid.render();
-      });
-
-      grid.onSelectedRowsChanged.subscribe(function (e, args) {
-        $scope.$apply(function () {
-          $scope.rows = args.rows;
-        });
-      });
-
-//      Set for context menu column selection
-//      var columnpicker = new Slick.Controls.ColumnPicker(columns, grid, options);
-
-      dataview.beginUpdate();
-      dataview.setItems($scope.model.journal.data);
-//      $scope.groupByID()
-      dataview.endUpdate();
-
-      // allow the user to select only certain columns shown
-      $scope.columns = angular.copy(columns).map(function (column) {
-        column.visible = true;
-        return column;
-      });
+  function initialiseGrid() { 
+    var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider(); 
+    dataview = new Slick.Data.DataView({
+      groupItemMetadataProvider: groupItemMetadataProvider,
+      inlineFilter: true
 
     });
 
-  }
+    var chkbx = new Slick.CheckboxSelectColumn({
+      cssClass: "slick-cell-checkboxsel"
+    });
 
+    columns.push(chkbx.getColumnDefinition());
+
+    grid = new Slick.Grid('#journal_grid', dataview, columns, options);
+    
+    grid.registerPlugin(groupItemMetadataProvider);
+    grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
+    grid.registerPlugin(chkbx);
+  
+    // grid.setSelectionModel(new Slick.CellSelectionModel());
+
+    grid.onSort.subscribe(function(e, args) {
+      sort_column = args.sortCol.field;
+      dataview.sort(compareSort, args.sortAsc);
+    });
+
+    dataview.onRowCountChanged.subscribe(function (e, args) {
+      grid.updateRowCount();
+      grid.render();
+    });
+
+    dataview.onRowsChanged.subscribe(function (e, args) {
+      grid.invalidateRows(args.rows);
+      grid.render();
+    });
+
+    grid.onSelectedRowsChanged.subscribe(function (e, args) {
+      $scope.$apply(function () {
+        $scope.rows = args.rows;
+      });
+    });
+
+    dataview.beginUpdate();
+    dataview.setItems($scope.model.journal.data);
+    dataview.endUpdate();
+
+    // allow the user to select only certain columns shown
+    $scope.columns = angular.copy(columns).map(function (column) {
+      column.visible = true;
+      return column;
+    });
+  }
+  
   $scope.$watch('columns', function () {
     if (!$scope.columns) return;
     var columns = $scope.columns.filter(function (column) {
@@ -196,7 +181,7 @@ angular.module('kpk.controllers')
       messenger.success('Trial balance run!');
       var instance = $modal.open({
         templateUrl:'trialBalanceModal.html',
-        controller: 'trialBalanceCtrl',
+        controller: 'trialBalance',
         resolve : {
           request: function () {
             return data.data;
@@ -265,17 +250,21 @@ angular.module('kpk.controllers')
   
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
   //$timeout(init, 100);
-  init();
  
   function createNewTransaction() { 
     var verifyTransaction = $modal.open({ 
       templateUrl: "verifyTransaction.html",
       controller: 'verifyTransaction',
       resolve : { 
-
       }
     });
   }
+  
+  //TODO iterate thorugh columns array - apply translate to each heading and update
+  //(each should go through translate initially as well)
+  $scope.$on('$translateChangeSuccess', function () {
+    //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
+  });
 
   $scope.split = function split() {
     console.log(dataview.getItem(1));
@@ -290,49 +279,6 @@ angular.module('kpk.controllers')
         data: function () { return dataview; }
       }
     });
-  };
-
-})
-
-.controller('verifyTransaction', function($scope, $modalInstance) { 
-  var transaction = $scope.transaction = {};
-  transaction.date = inputDate(new Date());
-  console.log($scope.transaction);
-
-  function inputDate(date) {
-    //Format the current date according to RFC3339 (for HTML input[type=="date"])
-    console.log('date', date);
-    return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
-  }
-})
-
-.controller('trialBalanceCtrl', function ($scope, $modalInstance, request, ids, connect) {
-  $scope.data = request.data;
-  $scope.errors = [].concat(request.postErrors, request.sysErrors);
-
-  var total = $scope.total = {};
-
-  // TODO
-  // this is slightly inefficient.
-  $scope.data.forEach(function (item) {
-    total.before = (total.before || 0) + item.balance;
-    total.debit = (total.debit || 0) + item.debit;
-    total.credit = (total.credit || 0) + item.credit;
-    total.after = (total.after || 0) + item.balance + (item.credit - item.debit);
-  });
-
-  $scope.ok = function () {
-    ids =  ids.filter(function (id) { return angular.isDefined(id); });
-    connect.fetch('/post/'+ request.key +'/?q=(' + ids.toString() + ')')
-    .then(function () {
-      $modalInstance.close();
-    }, function (error) {
-      messenger.warning('Posting Failed ' +  JSON.stringify(error));
-    });
-  };
-
-  $scope.cancel = function () {
-    $modalInstance.dismiss();
   };
 
 });
