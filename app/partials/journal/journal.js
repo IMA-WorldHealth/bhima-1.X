@@ -243,6 +243,40 @@ angular.module('kpk.controllers')
     return "";
   }
 
+      
+  function groupBy(targetGroup) { 
+    var groupMap = {
+      'transaction' : groupByID,
+      'account' : groupByAccount
+    };
+
+    if(groupMap[targetGroup]) groupMap[targetGroup]();
+  }
+
+  function addTransaction() { 
+    var item = {id: 509, trans_id: 5};
+    dataview.addItem(item);
+    grid.scrollRowIntoView(dataview.getRowById(509));
+    createNewTransaction();
+  }
+
+  $scope.groupBy = groupBy;
+  $scope.addTransaction = addTransaction;
+  
+  //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
+  //$timeout(init, 100);
+  init();
+ 
+  function createNewTransaction() { 
+    var verifyTransaction = $modal.open({ 
+      templateUrl: "verifyTransaction.html",
+      controller: 'verifyTransaction',
+      resolve : { 
+
+      }
+    });
+  }
+
   $scope.split = function split() {
     console.log(dataview.getItem(1));
     var instance = $modal.open({
@@ -257,29 +291,19 @@ angular.module('kpk.controllers')
       }
     });
   };
-    
-  function groupBy(targetGroup) { 
-    var groupMap = {
-      'transaction' : groupByID,
-      'account' : groupByAccount
-    };
 
-    if(groupMap[targetGroup]) groupMap[targetGroup]();
+})
+
+.controller('verifyTransaction', function($scope, $modalInstance) { 
+  var transaction = $scope.transaction = {};
+  transaction.date = inputDate(new Date());
+  console.log($scope.transaction);
+
+  function inputDate(date) {
+    //Format the current date according to RFC3339 (for HTML input[type=="date"])
+    console.log('date', date);
+    return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
   }
-
-  function addTransaction() { 
-    var item = {id: 509, trans_id: 5};
-    dataview.addItem(item);
-    grid.scrollRowToTop(dataview.getRowById(509));
-  }
-
-  $scope.groupBy = groupBy;
-  $scope.addTransaction = addTransaction;
-  
-  //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
-  //$timeout(init, 100);
-  init();
-  
 })
 
 .controller('trialBalanceCtrl', function ($scope, $modalInstance, request, ids, connect) {
