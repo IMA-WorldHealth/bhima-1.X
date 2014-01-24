@@ -4,11 +4,12 @@ angular.module('kpk.controllers').controller('verifyTransaction', function($scop
   transaction.date = inputDate(new Date());
  
   connect.req('/max/trans_id/general_ledger/posting_journal/').then(function(res) { 
-    transaction.id = res.data.max;
+    transaction.id = ++res.data.max;
     console.log('tr', transaction);
   }, function(err) { console.log(err) });
 
   function submitTransaction() { 
+
     $modalInstance.close(transaction);
   }
 

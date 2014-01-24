@@ -15,7 +15,7 @@
 
   <div class="pull-left">
     <!-- FIXME remove style hack -->
-    <button style="margin-left: 5px;" ng-click="openTransaction()" class="btn btn-sm btn-default">Add Transaction</button> 
+    <button style="margin-left: 5px;" ng-disabled="ammendTransaction.state" ng-click="openTransaction()" class="btn btn-sm btn-default">Add Transaction <small ng-show="ammendTransaction.state" style="color: red;">Transaction ({{ammendTransaction.transaction_id}}) in progress</small></button> 
   </div>
 
   <!-- <button ng&#45;click="groupByID()" class="capital btn btn&#45;default btn&#45;sm"><span class="glyphicon glyphicon&#45;sort&#45;by&#45;attributes"></span> {{'TRANSACTION' | translate}}</button> -->
@@ -59,13 +59,12 @@
       <label for="date" value="transaction.date">Transaction Date</label>
       <input type="date" class="form-kapok" id="date" ng-model="transaction.date">
       <br>
-      <label for="description">Justification</label>
-      <input type="text" class="form-kapok" id="description" ng-model='transaction.description' placeholder="Justification for ad-hoc journal entry">
-
+      <label for="description">Justification</label> <small>Must contain at least 10 characters</small>
+      <input type="text" required class="form-kapok" id="description" ng-model='transaction.description' placeholder="Justification for ad-hoc journal entry">
     </div>
     <div class="modal-footer">
       <button ng-click="cancel()" class="btn btn-danger btn-sm">Cancel</button>
-      <button ng-click="submit()" class="btn btn-success btn-sm">Confirm Transaction</button>
+      <button ng-click="submit()" ng-disabled="!transaction.description || transaction.description.length < 10" class="btn btn-success btn-sm">Confirm Transaction</button>
     </div>
   </div>
 </script>
