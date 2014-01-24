@@ -34,12 +34,12 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
       {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
       // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
-      {id: 'description', name: 'Description', field: 'description', width: 110},
-      {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true},
+      {id: 'description', name: 'Description', field: 'description', width: 110, editor:Slick.Editors.Text },
+      {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true, editor:SelectCellEditor},
       // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
       // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
-      {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
-      {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
+      {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
+      {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
       {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
       {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
       {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
@@ -49,7 +49,9 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       enableCellNavigation: true,
       enableColumnReorder: true,
       forceFitColumns: true,
-      rowHeight: 30
+      editable: true,
+      rowHeight: 30,
+      autoEdit: false
     };
   }
 
@@ -96,6 +98,15 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       });
     });
 
+    grid.onBeforeEditCell.subscribe(function(e, row) { 
+      if(ammendTransaction.state) return (row.item.trans_id === ammendTransaction.transaction_id);
+      return false;
+    });
+
+    grid.onCellChange.subscribe(function(e, args) { 
+      dataview.updateItem(args.item.id, args.item);
+    });
+
     dataview.beginUpdate();
     dataview.setItems($scope.model.journal.data);
     dataview.endUpdate();
@@ -130,10 +141,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   };
 
   function formatTransactionGroup(g) { 
-    console.log(g);
     var rowMarkup, firstElement = g.rows[0]; 
     if(ammendTransaction.state) { 
-      console.log('sldfkjsldf');
       if(firstElement.trans_id === ammendTransaction.transaction_id) {
         //markup for editing
         rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION </p>" + g.value + "</span>"  
@@ -231,12 +240,14 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   function totalFormat(totals, column) {
 
     var format = {};
-    format['Credit'] = '#02BD02';
-    format['Debit'] = '#F70303';
+    format['Credit'] = '#F70303';
+    format['Debit'] = '#02BD02';
+    format['Debit Equiv'] = '#F70303';
+    format['Credit Equiv'] = '#02BD02';
     
     var val = totals.sum && totals.sum[column.field];
     if (val !== null) {
-      return "<span style='font-weight: bold; color:" + format[column.name] + "'>" + ((Math.round(parseFloat(val)*100)/100)) + "</span>";
+      return "<span style='font-weight: bold; color:" + format[column.name] + "'>" + $filter('currency')((Math.round(parseFloat(val)*100)/100)) + "</span>";
     }
     return "";
   }
@@ -252,21 +263,21 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   }
 
   function addTransaction(template) { 
+    var temporaryId = $scope.model.journal.generateid();
     var initialTransaction = {
-      id: $scope.model.journal.generateid(),
+      id: temporaryId,
       trans_id: template.id,
       trans_date: template.date, 
       description: template.description
     }
-
+    
+    groupBy('transaction');
     ammendTransaction.transaction_id = template.id;
     ammendTransaction.state = true;
 
-
-    groupBy('transaction');
     dataview.addItem(initialTransaction);
-    dataview.addItem({id: $scope.model.journal.generateid(), trans_id: template.id, trans_date: template.date, description: template.description});
-    grid.scrollRowIntoView(dataview.getRowById(initialTransaction.id));
+    dataview.addItem({id: ++temporaryId, trans_id: template.id, trans_date: template.date, description: template.description});
+    grid.scrollRowToTop(dataview.getRowById(initialTransaction.id));
   }
 
   $scope.groupBy = groupBy;
@@ -285,7 +296,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       });
 
       verifyTransaction.result.then(function(res) { 
-        console.log('modal resolved', res);
         addTransaction(res);
       }, function(err) { console.log('err', err) });
     }
@@ -298,7 +308,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   });
 
   $scope.split = function split() {
-    console.log(dataview.getItem(1));
     var instance = $modal.open({
       templateUrl: "split.html",
       controller: function ($scope, $modalInstance, rows, data) { //groupStore, accountModel
@@ -311,5 +320,66 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       }
     });
   };
+    
+  function SelectCellEditor(args) { 
+    var $select;
+    var defaultValue;
+    var scope = this;
 
+    this.init = function() {
+
+        if(args.column.options){
+          opt_values = args.column.options.split(',');
+        }else{
+          opt_values ="yes,no".split(',');
+        }
+        option_str = ""
+        for( i in opt_values ){
+          v = opt_values[i];
+          option_str += "<OPTION value='"+v+"'>"+v+"</OPTION>";
+        }
+        // $select = $("<SELECT class='form-kapok' tabIndex='0' class='editor-select'>"+ option_str +"</SELECT>");
+        $select = $compile("<input type='text' ng-show='false' typeahead='thing in [1, 2, 3, 4]' class='form-kapok'>")($scope);
+        $select.appendTo(args.container);
+        $select.focus();
+    };
+
+    this.destroy = function() {
+        $select.remove();
+    };
+
+    this.focus = function() {
+        $select.focus();
+    };
+
+    this.loadValue = function(item) {
+        defaultValue = item[args.column.field];
+        $select.val(defaultValue);
+    };
+
+    this.serializeValue = function() {
+        if(args.column.options){
+          return $select.val();
+        }else{
+          return ($select.val() == "yes");
+        }
+    };
+
+    this.applyValue = function(item,state) {
+        item[args.column.field] = state;
+    };
+
+    this.isValueChanged = function() {
+        return ($select.val() != defaultValue);
+    };
+
+    this.validate = function() {
+        return {
+            valid: true,
+            msg: null
+        };
+    };
+
+    this.init();
+  }
 });
