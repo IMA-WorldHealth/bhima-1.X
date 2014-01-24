@@ -1,5 +1,5 @@
 angular.module('kpk.controllers').controller('journal', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, printer, messenger) {
-  var dependencies = {};
+  var dependencies = {}, ammendTransaction = $scope.ammendTransaction = {state: false};
   var grid, dataview, sort_column, columns, options;
 
   dependencies.journal = { 
@@ -115,12 +115,10 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     grid.setColumns(columns);
   }, true);
 
-  function groupByID() {
+  function groupByTransaction() {
     dataview.setGrouping({
       getter: "trans_id",
-      formatter: function (g) {
-        return "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
-      },
+      formatter: formatTransactionGroup,
       aggregators: [
         new Slick.Data.Aggregators.Sum("debit"),
         new Slick.Data.Aggregators.Sum("credit"),
@@ -130,6 +128,21 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       aggregateCollapsed: true
     });
   };
+
+  function formatTransactionGroup(g) { 
+    console.log(g);
+    var rowMarkup, firstElement = g.rows[0]; 
+    if(ammendTransaction.state) { 
+      console.log('sldfkjsldf');
+      if(firstElement.trans_id === ammendTransaction.transaction_id) {
+        //markup for editing
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION </p>" + g.value + "</span>"  
+        return rowMarkup;
+      }
+    }
+    rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
+    return rowMarkup; 
+  }
 
   function groupByAccount() {
     dataview.setGrouping({
@@ -231,18 +244,29 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       
   function groupBy(targetGroup) { 
     var groupMap = {
-      'transaction' : groupByID,
+      'transaction' : groupByTransaction,
       'account' : groupByAccount
     };
 
     if(groupMap[targetGroup]) groupMap[targetGroup]();
   }
 
-  function addTransaction() { 
-    var item = {id: 509, trans_id: 5};
-    dataview.addItem(item);
-    grid.scrollRowIntoView(dataview.getRowById(509));
-    createNewTransaction();
+  function addTransaction(template) { 
+    var initialTransaction = {
+      id: $scope.model.journal.generateid(),
+      trans_id: template.id,
+      trans_date: template.date, 
+      description: template.description
+    }
+
+    ammendTransaction.transaction_id = template.id;
+    ammendTransaction.state = true;
+
+
+    groupBy('transaction');
+    dataview.addItem(initialTransaction);
+    dataview.addItem({id: $scope.model.journal.generateid(), trans_id: template.id, trans_date: template.date, description: template.description});
+    grid.scrollRowIntoView(dataview.getRowById(initialTransaction.id));
   }
 
   $scope.groupBy = groupBy;
@@ -252,16 +276,19 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   //$timeout(init, 100);
  
   function openTransaction() { 
-    var verifyTransaction = $modal.open({ 
-      templateUrl: "verifyTransaction.html",
-      controller: 'verifyTransaction',
-      resolve : { 
-      }
-    });
+    if(!ammendTransaction.state) { 
+      var verifyTransaction = $modal.open({ 
+        templateUrl: "verifyTransaction.html",
+        controller: 'verifyTransaction',
+        resolve : { 
+        }
+      });
 
-    verifyTransaction.result.then(function(res) { 
-      console.log('modal resolved', res);
-    }, function(err) { console.log('err', err) });
+      verifyTransaction.result.then(function(res) { 
+        console.log('modal resolved', res);
+        addTransaction(res);
+      }, function(err) { console.log('err', err) });
+    }
   }
   
   //TODO iterate thorugh columns array - apply translate to each heading and update
