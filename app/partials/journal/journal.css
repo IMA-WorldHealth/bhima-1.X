@@ -29,3 +29,14 @@
 .slick-group-title { 
 }
 
+.editor-text { 
+  display: block;
+  width: 100%;
+  /* padding: 1px 6px; */
+  /* line-height: 1.428571429; */
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  /* border: 1px solid #cccccc; */
+  border: none;
+}
