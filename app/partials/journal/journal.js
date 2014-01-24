@@ -246,18 +246,22 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   }
 
   $scope.groupBy = groupBy;
-  $scope.addTransaction = addTransaction;
+  $scope.openTransaction = openTransaction;
   
   //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
   //$timeout(init, 100);
  
-  function createNewTransaction() { 
+  function openTransaction() { 
     var verifyTransaction = $modal.open({ 
       templateUrl: "verifyTransaction.html",
       controller: 'verifyTransaction',
       resolve : { 
       }
     });
+
+    verifyTransaction.result.then(function(res) { 
+      console.log('modal resolved', res);
+    }, function(err) { console.log('err', err) });
   }
   
   //TODO iterate thorugh columns array - apply translate to each heading and update

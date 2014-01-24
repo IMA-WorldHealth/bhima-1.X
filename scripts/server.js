@@ -126,18 +126,18 @@ app.get('/journal/:table/:id', function (req, res, next) {
   });
 });
 
-/*
-app.post('/journal', function (req, res, next) {
-  // What are the params here?
-  journal.poster(req, res, next); 
-});
-*/
+//FIXME receive any number of tables using regex
+app.get('/max/:id/:table/:join?', function(req, res) { 
+  var id = req.params.id, table = req.params.table, join = req.params.join;
+  
+  var max_request = "SELECT MAX(" + id + ") FROM ";
 
-app.get('/max/:id/:table', function(req, res) { 
-  var id = req.params.id;
-  var table = req.params.table;
-
-  var max_request = "SELECT MAX(" + id + ") FROM " + table;
+  max_request += "(SELECT MAX(" + id + ") AS `" + id + "` FROM " + table;
+  if(join) {
+    max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;"
+  } else { 
+    max_request += ")a;";
+  }
 
   db.execute(max_request, function(err, ans) { 
     if (err) {
