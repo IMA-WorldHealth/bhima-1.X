@@ -145,7 +145,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     if(ammendTransaction.state) { 
       if(firstElement.trans_id === ammendTransaction.transaction_id) {
         //markup for editing
-        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION </p>" + g.value + "</span>"  
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " transactions)</span><div class='pull-right'><a><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
         return rowMarkup;
       }
     }
@@ -280,10 +280,26 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     groupBy('transaction');
     ammendTransaction.transaction_id = template.id;
     ammendTransaction.state = true;
+    ammendTransaction.template = template;
 
     dataview.addItem(initialTransaction);
     dataview.addItem(balanceTransaction);
     grid.scrollRowToTop(dataview.getRowById(initialTransaction.id));
+  }
+
+  function newLine() { 
+    var temporaryId = $scope.model.journal.generateid();
+    var template = ammendTransaction.template;
+    var transactionLine = {
+      id: temporaryId,
+      trans_id: template.id,
+      trans_date: template.date, 
+      description: template.description,
+      debit_equiv: 0,
+      credit_equiv: 0
+    }
+
+    dataview.addItem(transactionLine);
   }
 
   $scope.groupBy = groupBy;
