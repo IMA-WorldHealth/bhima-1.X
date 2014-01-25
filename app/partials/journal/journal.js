@@ -263,20 +263,26 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   }
 
   function addTransaction(template) { 
-    var temporaryId = $scope.model.journal.generateid();
+    var balanceTransaction, temporaryId = $scope.model.journal.generateid();
     var initialTransaction = {
       id: temporaryId,
       trans_id: template.id,
       trans_date: template.date, 
-      description: template.description
+      description: template.description,
+      debit_equiv: 0,
+      credit_equiv: 0
     }
+    
+    //Duplicates object - not very intelectual
+    balanceTransaction = JSON.parse(JSON.stringify(initialTransaction));
+    balanceTransaction.id = ++balanceTransaction.id; 
     
     groupBy('transaction');
     ammendTransaction.transaction_id = template.id;
     ammendTransaction.state = true;
 
     dataview.addItem(initialTransaction);
-    dataview.addItem({id: ++temporaryId, trans_id: template.id, trans_date: template.date, description: template.description});
+    dataview.addItem(balanceTransaction);
     grid.scrollRowToTop(dataview.getRowById(initialTransaction.id));
   }
 
@@ -320,11 +326,16 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       }
     });
   };
+
+  $scope.thislist = [{val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}, {val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}, {val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}];
     
   function SelectCellEditor(args) { 
     var $select;
     var defaultValue;
     var scope = this;
+
+    var id = args.column.id;
+    var targetObejct = args.item;
 
     this.init = function() {
 
@@ -334,35 +345,37 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
           opt_values ="yes,no".split(',');
         }
         option_str = ""
-        for( i in opt_values ){
+        for( i in $scope.thislist ){
           v = opt_values[i];
           option_str += "<OPTION value='"+v+"'>"+v+"</OPTION>";
         }
+
+        console.log('typeahead', args);
         // $select = $("<SELECT class='form-kapok' tabIndex='0' class='editor-select'>"+ option_str +"</SELECT>");
-        $select = $compile("<input type='text' ng-show='false' typeahead='thing in [1, 2, 3, 4]' class='form-kapok'>")($scope);
+        $select = $compile("<span><input type='text' ng-model='account_id' typeahead='thing as thing.val for thing in thislist | filter: $viewValue' class='editor-typeahead' placeholder='Account Id'></span>")($scope);
         $select.appendTo(args.container);
         $select.focus();
     };
 
     this.destroy = function() {
-        $select.remove();
+      $select.remove();
     };
 
     this.focus = function() {
-        $select.focus();
+      $select.focus();
     };
 
     this.loadValue = function(item) {
-        defaultValue = item[args.column.field];
-        $select.val(defaultValue);
+      defaultValue = item[args.column.field];
+      $select.val(defaultValue);
     };
 
     this.serializeValue = function() {
-        if(args.column.options){
-          return $select.val();
-        }else{
-          return ($select.val() == "yes");
-        }
+      if(args.column.options){
+        return $select.val();
+      }else{
+        return ($select.val() == "yes");
+      }
     };
 
     this.applyValue = function(item,state) {
