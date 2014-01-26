@@ -6,15 +6,17 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     required: true,
     query: {
       'tables' : {
-        'posting_journal' : { 'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] }
-      }
+        'posting_journal' : { 'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] },
+        'account' : { 'columns' : ["account_number"] }
+      },
+      join: ["posting_journal.account_id=account.id"]
     } 
   }
 
   dependencies.account = {
     query : { 
       'tables' : { 
-        'account' : { 'columns' : ['id', 'account_number', 'account_txt'] }
+        'account' : { 'columns' : ['id', 'account_number', 'account_type_id', 'account_txt'] }
       }
     }
   }
@@ -35,7 +37,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
       // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
       {id: 'description', name: 'Description', field: 'description', width: 110, editor:Slick.Editors.Text },
-      {id: 'account_id', name: 'Account ID', field: 'account_id', sortable: true, editor:SelectCellEditor},
+      {id: 'account_id', name: 'Account ID', field: 'account_number', sortable: true, editor:SelectCellEditor},
       // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
       // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
       {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
@@ -107,6 +109,11 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       dataview.updateItem(args.item.id, args.item);
     });
 
+    grid.onClick.subscribe(function(e, args) { 
+      //FIXME REALLY hacky, redo button clicks 
+      handleClick(e.target.className);
+    });
+
     dataview.beginUpdate();
     dataview.setItems($scope.model.journal.data);
     dataview.endUpdate();
@@ -139,19 +146,22 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       aggregateCollapsed: true
     });
   };
+    
 
   function formatTransactionGroup(g) { 
     var rowMarkup, firstElement = g.rows[0]; 
     if(ammendTransaction.state) { 
       if(firstElement.trans_id === ammendTransaction.transaction_id) {
         //markup for editing
-        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " transactions)</span><div class='pull-right'><a><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " transactions)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
         return rowMarkup;
       }
     }
     rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
     return rowMarkup; 
   }
+
+
 
   function groupByAccount() {
     dataview.setGrouping({
@@ -262,6 +272,13 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     if(groupMap[targetGroup]) groupMap[targetGroup]();
   }
 
+  function handleClick(className) { 
+    var buttonMap = { 
+      'addLine': newLine
+    }
+    if(buttonMap[className]) buttonMap[className]();
+  }
+
   function addTransaction(template) { 
     var balanceTransaction, temporaryId = $scope.model.journal.generateid();
     var initialTransaction = {
@@ -281,13 +298,16 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     ammendTransaction.transaction_id = template.id;
     ammendTransaction.state = true;
     ammendTransaction.template = template;
-
+    
+    console.log('id', balanceTransaction.id, 'and', initialTransaction.id);
     dataview.addItem(initialTransaction);
     dataview.addItem(balanceTransaction);
     grid.scrollRowToTop(dataview.getRowById(initialTransaction.id));
   }
 
   function newLine() { 
+
+    $scope.model.journal.recalculateIndex();
     var temporaryId = $scope.model.journal.generateid();
     var template = ammendTransaction.template;
     var transactionLine = {
@@ -298,8 +318,10 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       debit_equiv: 0,
       credit_equiv: 0
     }
-
+    
+    // $scope.model.journal.put(transactionLine);
     dataview.addItem(transactionLine);
+    grid.scrollRowToTop(dataview.getRowById(transactionLine.id));
   }
 
   $scope.groupBy = groupBy;
@@ -354,23 +376,17 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     var targetObejct = args.item;
 
     this.init = function() {
+      option_str = ""
+      $scope.model.account.data.forEach(function(account) { 
+        var disabled = (account.account_type_id === 3) ? 'disabled' : '';
+        option_str += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
 
-        if(args.column.options){
-          opt_values = args.column.options.split(',');
-        }else{
-          opt_values ="yes,no".split(',');
-        }
-        option_str = ""
-        for( i in $scope.thislist ){
-          v = opt_values[i];
-          option_str += "<OPTION value='"+v+"'>"+v+"</OPTION>";
-        }
-
-        console.log('typeahead', args);
-        // $select = $("<SELECT class='form-kapok' tabIndex='0' class='editor-select'>"+ option_str +"</SELECT>");
-        $select = $compile("<span><input type='text' ng-model='account_id' typeahead='thing as thing.val for thing in thislist | filter: $viewValue' class='editor-typeahead' placeholder='Account Id'></span>")($scope);
-        $select.appendTo(args.container);
-        $select.focus();
+      });
+              
+      $select = $("<SELECT class='editor-text'>" + option_str + "</SELECT>");
+      // $select = $compile("<span><input type='text' ng-model='account_id' typeahead='thing as thing.val for thing in thislist | filter: $viewValue' class='editor-typeahead' placeholder='Account Id'></span>")($scope);
+      $select.appendTo(args.container);
+      $select.focus();
     };
 
     this.destroy = function() {
@@ -387,18 +403,16 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     };
 
     this.serializeValue = function() {
-      if(args.column.options){
-        return $select.val();
-      }else{
-        return ($select.val() == "yes");
-      }
+      return $select.val();
     };
 
     this.applyValue = function(item,state) {
-        item[args.column.field] = state;
+      console.log('applying value', item, state);
+      item[args.column.field] = state;
     };
 
     this.isValueChanged = function() {
+      console.log('select.val', $select.val());
         return ($select.val() != defaultValue);
     };
 
