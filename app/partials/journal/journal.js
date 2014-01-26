@@ -21,6 +21,26 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     }
   }
 
+  dependencies.debtor = { 
+    query: { 
+      'tables' : { 
+        'debitor' : { 'columns' : ['id'] },
+        'patient' : { 'columns' : ['first_name', 'last_name'] }
+      },
+      join: ['debitor.id=patient.debitor_id']
+    }
+  }
+
+  dependencies.creditor = { 
+    query: { 
+      'tables' : { 
+        'creditor' : { 'columns' : ['id'] },
+        'supplier' : { 'columns' : ['name'] }
+      },
+      join: ['creditor.id=supplier.creditor_id']
+    }
+  }
+
   validate.process(dependencies).then(journal);
   
   function journal(model) { 
@@ -42,7 +62,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
       {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
       {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
-      {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id'},
+      {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id', editor:SelectCellEditor},
       {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
       {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
       // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
@@ -288,7 +308,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       description: template.description,
       debit_equiv: 0,
       credit_equiv: 0,
-      account_number: "(Select Account)"
+      account_number: "(Select Account)",
+      deb_cred_id: "(Select Debtor)"
     }
     
     //Duplicates object - not very intelectual
@@ -317,7 +338,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       trans_date: template.date, 
       description: template.description,
       debit_equiv: 0,
-      credit_equiv: 0
+      credit_equiv: 0,
+      account_number: "(Select Account)"
     }
     
     // $scope.model.journal.put(transactionLine);
@@ -367,7 +389,17 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
   };
 
   $scope.thislist = [{val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}, {val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}, {val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}];
+  
+  //TODO combine these into one object, extend for both (init method must change)
+  function SelectAccount() { 
     
+  }
+
+  function SelectDebCred(args) { 
+      
+  }
+
+
   function SelectCellEditor(args) { 
     var $select;
     var defaultValue;
@@ -375,8 +407,34 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
 
     var id = args.column.id;
     var targetObejct = args.item;
+  
 
-    this.init = function() {
+    //TODO use prototypal inheritence vs. splitting on init
+    var fieldMap = { 
+      'deb_cred_id' : initDebCred,
+      'account_number' : initAccountNumber
+    }
+    
+    this.init = fieldMap[args.column.field];
+    
+    function initDebCred() { 
+      defaultValue = isNaN(Number(args.item.deb_cred_id)) ? null : args.item.deb_cred_id;
+
+      option_str = ""
+      $scope.model.debtor.data.forEach(function(debtor) { 
+        option_str += '<option value="' + debtor.id + '">' + debtor.id + ' ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
+        if(!defaultValue) { 
+          defaultValue = debtor.id;
+        }
+
+      });
+              
+      $select = $("<SELECT class='editor-text'>" + option_str + "</SELECT>");
+      $select.appendTo(args.container);
+      $select.focus();
+    }
+
+    function initAccountNumber() {
       
       //default value - naive way of checking for previous value, default string is set, not value
       defaultValue = isNaN(Number(args.item.account_number)) ? null : args.item.account_number;
@@ -406,7 +464,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
 
     this.loadValue = function(item) {
       // defaultValue = item[args.column.field];
-      console.log(defaultValue);
       $select.val(defaultValue);
     };
 
@@ -415,13 +472,11 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     };
 
     this.applyValue = function(item,state) {
-      console.log('applying value', item, state);
       item[args.column.field] = state;
     };
 
     this.isValueChanged = function() {
-      console.log('select.val', $select.val());
-        return ($select.val() != defaultValue);
+      return ($select.val() != defaultValue);
     };
 
     this.validate = function() {
