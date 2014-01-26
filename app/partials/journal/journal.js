@@ -287,7 +287,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       trans_date: template.date, 
       description: template.description,
       debit_equiv: 0,
-      credit_equiv: 0
+      credit_equiv: 0,
+      account_number: "(Select Account)"
     }
     
     //Duplicates object - not very intelectual
@@ -376,10 +377,16 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     var targetObejct = args.item;
 
     this.init = function() {
+      
+      //default value - naive way of checking for previous value, default string is set, not value
+      defaultValue = isNaN(Number(args.item.account_number)) ? null : args.item.account_number;
       option_str = ""
       $scope.model.account.data.forEach(function(account) { 
         var disabled = (account.account_type_id === 3) ? 'disabled' : '';
         option_str += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
+        if(!defaultValue && account.account_type_id!==3) { 
+          defaultValue = account.account_number;
+        }
 
       });
               
@@ -398,7 +405,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     };
 
     this.loadValue = function(item) {
-      defaultValue = item[args.column.field];
+      // defaultValue = item[args.column.field];
+      console.log(defaultValue);
       $select.val(defaultValue);
     };
 
