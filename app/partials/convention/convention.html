@@ -1,0 +1,141 @@
+<link rel="stylesheet" href="partials/convention/convention.css"/>
+
+<header>
+  <span>Register a Convention</span>
+</header>
+
+<section class="underline">
+  <div class="pull-left ">
+    <input type="search" ng-model="flags.search" placeholder="Filter Conventions" class="form-kapok" size="25">
+  </div>
+  <div class="pull-right">
+  </div>
+</section>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-5">
+      <div class="panel panel-default" style="max-height: 300px;">
+        <div class="panel-heading">
+          <span>Conventions</span>
+        </div>
+        <table class="table table-striped table-condensed">
+          <thead>
+            <tr><th>Convention Name</th><th>Account Number</th><th><i class="glyphicon glyphicon-earphone"></i></th></tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="convention in models.conventions track by $index" ng-click="fill($index)">
+              <td>{{convention.name}}</td>
+              <td>{{convention.account_number}}</td>
+              <td>{{convention.phone}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <form role="form" class="form-horizontal" name="addConvention" nvalidate>
+        <fieldset>
+          <legend>
+            Convention Details 
+          </legend>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Name:</label>
+            <div class="col-xs-10">
+              <input 
+                class="form-kapok"
+                placeholder="e.g. Fr Renaild"
+                type="text"
+                ng-model="convention.name"
+                required
+                >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Account Number:</label>
+             <div class="col-xs-10">
+              <select
+                class="form-kapok"
+                ng-model="convention.account_id"
+                ng-options="account.id as formatAccount(account) for account in models.accounts"
+                required
+              >
+                <option value="" disabled="disabled">--- Select An Account ---</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Location:</label>
+             <div class="col-xs-10">
+              <select
+                class="form-kapok"
+                ng-model="convention.location_id"
+                ng-options="location.id as formatLocation(location) for location in models.locations"
+                required
+              >
+                <option value="" disabled="disabled">--- Select A Location ---</option>
+              </select>
+            </div>
+          </div>          
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Phone:</label>
+             <div class="col-xs-10">
+              <input
+                class="form-kapok"
+                placeholder=" e.g. 0890000001"
+                type="text" 
+                ng-model="convention.phone"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Email:</label>
+             <div class="col-xs-10">
+              <input
+                class="form-kapok"
+                placeholder=" e.g. me@domain.com"
+                type="email" 
+                ng-model="convention.email"/>
+              </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Max credit:</label>
+            <div class="col-xs-10">
+              <input 
+                class="form-kapok"
+                type="text"
+                ng-model="convention.max_credit"
+                >
+            </div>
+          </div>
+
+          <div>  
+            <label class="col-xs-2 control-label">Note:</label>
+            <div class="col-xs-10">
+              <textarea ng-model="convention.note" class="form-kapok note">
+              </textarea>
+            </div>
+          </div>
+
+          <div class=" form-group pull-right">
+            <button class="btn btn-success btn-sm" ng-click="save(convention)">Save Changes</button>
+            <button class="btn btn-default btn-sm" ng-click="newConvention()">New Form</button>
+          </div>
+
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div ng-show="flags.success">
+  <div class="alert alert-success">
+    Successfully created <b>{{flags.name}}</b>.
+  </div>
+</div>

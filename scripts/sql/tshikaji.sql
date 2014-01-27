@@ -41,6 +41,8 @@ delete from `province`;
 delete from `sector`;
 delete from `village`;
 delete from `sale`;
+delete from `patient_group`;
+delete from `convention`;
 
 -- configure application details
 insert into `user` values
@@ -48,6 +50,9 @@ insert into `user` values
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
+
+  insert into `patient_group` values (1, 'AIDS'), (2, 'Pregnant');
+
 
 
 -- Deleted old ones that are  were not being used.  If you
@@ -101,7 +106,9 @@ INSERT INTO `unit` VALUES
   (56,'Account Statement By Period', '', 10, 0, 'partials/reports/account_statement/', 'reports/account_statement/'),
   (57,'Income Expensive Balance', '', 10, 0, 'partials/reports/income_expensive/', 'reports/income_expensive/'),
   (58,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'),
-  (59,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'); 
+  (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
+  (60,'Patient Group Assingning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
+  (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'); 
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
@@ -139,6 +146,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (55,2),
   (56,2),
   (57,2),
+  (59,2),
+  (60,2),
 	(4, 3),
 	(6, 3),
 	(30,3),
@@ -476,18 +485,18 @@ insert into `country` values
 	(241,894,'Zambia','Zambie');
 
 
-insert into `province` (`name`) VALUES
-  ('Bas Congo'),
-  ('Bandundu'),
-  ('Kasai Oriental'),
-  ('Katanga'),
-  ('Equateur'),
-  ('Kasai Occidental'),
-  ('Kinshasa'),
-  ('Nord Kivu'),
-  ('Sud Kivu'),
-  ('Province Oriental'),
-  ('Maniema');
+insert into `province` (`id`,`name`) VALUES
+  (1, 'Bas Congo'),
+  (2, 'Bandundu'),
+  (3, 'Kasai Oriental'),
+  (4, 'Katanga'),
+  (5, 'Equateur'),
+  (6, 'Kasai Occidental'),
+  (7, 'Kinshasa'),
+  (8, 'Nord Kivu'),
+  (9, 'Sud Kivu'),
+  (10, 'Province Oriental'),
+  (11, 'Maniema');
 
 insert into `sector` (`name`) VALUES 
   ('Kilunda'),
@@ -844,7 +853,7 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (150, 1, 0, 200, 417, "Clients douteux", 2, 41),
 (151, 1, 0, 200, 42, "42. PERSONNEL", 3, 0),
 (152, 1, 0, 200, 420, "Avances, acomptes et prêts au personnel", 3, 42),
-(153, 1, 0, 200, 4200, "Cadres et personnel de direction", 2, 420),
+(153, 1, 0, 200, 4200, "debitor et personnel de direction", 2, 420),
 (154, 1, 0, 200, 4201, "Infirmiers", 2, 420),
 (155, 1, 0, 200, 4202, "Para médicaux", 2, 420),
 (156, 1, 0, 200, 422, "Rémunérations dues au personnel", 3, 42),
@@ -1046,6 +1055,9 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (352, 1, 0, 200, 781, "Reprises sur provisions non exigibles", 1, 78),
 (353, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
 
+insert into `convention` values (1, 'Société X', 146, 1, '0000000000', 'Null', 'Nothing', '0'),
+ (2, 'Fr Reinart', 147, 1, '0000000000', 'Null', 'Nothing', '0');
+
 -- configure price_group
 insert into `price_group` values 
   (1,'Imports'),
@@ -1066,18 +1078,17 @@ insert into `payment` values
 
 insert into `debitor_group_type` (`id`, `type`) values
   (1, 'Employees'),
-  (2, 'Conventionees'),
   (3, 'Malades Ambulatoire'),
   (4, 'Malades Interne');
 
 
-insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `contact_id`, `tax_id`, `type_id`) values 
-  (200, 1, "Fr. Reinhart Conventionees", 146, 1, 1, 1, 1, 2), -- 'society x'
-  (200, 2, "Normal Debitors"           , 147, 1, 1, 1, 1, 3), -- 'society y'
-  (200, 3, "Other Clients"             , 148, 1, 1, 1, 1, 4); -- 'clients'
+insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`) values 
+  (200, 1, "Internal", 146, 1, 1,'note 1', 1, 1), 
+  (200, 2, "Normal Patient", 147, 1, 1,'note 2', 1, 3), 
+  (200, 3, "External", 148, 1, 1,'note 3', 1, 4); 
 
-insert into `debitor` (`id`, `group_id`, `text`) values 
-  (1, 1, "Jon Niles");
+insert into `debitor` (`id`, `group_id`, `text`, `convention_id`) values 
+  (1, 1, "Jon Niles", 1);
 
 insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
   (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
