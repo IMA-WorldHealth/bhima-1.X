@@ -8,7 +8,7 @@ angular.module('kpk.controllers')
       dependencies = ['enterprise', 'account', 'currency'];
 
   imports.enterprise = {
-    tables : { 'enterprise' : { columns : ['id', 'name', 'abbr', 'email', 'phone', 'location_id', 'cash_account', 'logo', 'currency_id']}}
+    tables : { 'enterprise' : { columns : ['id', 'name', 'abbr', 'email', 'phone', 'location_id', 'logo', 'currency_id']}}
   };
   imports.accounts = {
     tables : {'account' : { columns : ['id', 'account_number', 'account_txt', 'locked']}}
