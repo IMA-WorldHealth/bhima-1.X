@@ -1,6 +1,7 @@
 angular.module('kpk.controllers').controller('verifyTransaction', function($scope, $modalInstance,connect) { 
   var transaction = $scope.transaction = {};
-  var formComplete = false;
+  $scope.formComplete = false;
+  $scope.invalidSubmit = "";
   var defaultLogId = 10000, defaultTransactionId = 1;
 
   transaction.date = inputDate(new Date());
@@ -15,11 +16,18 @@ angular.module('kpk.controllers').controller('verifyTransaction', function($scop
   function loadNote(res) { 
     var maxid = res.data.max || defaultLogId; 
     transaction.logId = maxid;
-    formComplete = true;
+
+    connect.req('/user_session/').then(loadUser);
+  }
+
+  function loadUser(res) { 
+    transaction.userId = res.data.id;
+    $scope.formComplete = true;
   }
 
   function submitTransaction() { 
-    if(formComplete) $modalInstance.close(transaction);
+    if(!$scope.formComplete) return $scope.invalidSubmit = "Unable to verify transaction, required data is missing.";
+    $modalInstance.close(transaction);
   }
 
   function inputDate(date) {

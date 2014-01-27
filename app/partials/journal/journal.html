@@ -71,8 +71,9 @@
       <input type="text" required class="form-kapok" id="description" ng-model='transaction.description' placeholder="Justification for ad-hoc journal entry">
     </div>
     <div class="modal-footer">
+      <p style='color:red;'>{{invalidSubmit}}</p>
       <button ng-click="cancel()" class="btn btn-danger btn-sm">Cancel</button>
-      <button ng-click="submit()" ng-disabled="!transaction.description || transaction.description.length < 10 || formComplete" class="btn btn-success btn-sm">Confirm Transaction</button>
+      <button ng-click="submit()" ng-disabled="!transaction.description || transaction.description.length < 10 || !formComplete" class="btn btn-success btn-sm">Confirm Transaction</button>
     </div>
   </div>
 </script>
