@@ -41,12 +41,8 @@ angular.module('kpk.controllers')
    
   function loadCachedLocation() { 
     cache.fetch('location').then(function(res) { 
-      
-      //res is uninitialised if it has never been set 
       if(res) $location.path(res.path);
-    }, function(err) { 
-      throw new Error(err);
-    });
+    }, handleError);
   }
 
   function loadLanguage() { 
@@ -77,11 +73,12 @@ angular.module('kpk.controllers')
   function setFiscalLoadExchange(result) { 
     var currentFiscal = result.data[0]; 
 
-    //TODO improve minto hack with aliasing in query etc.
-    currentFiscal.period_id = currentFiscal.id;
-    currentFiscal.id = currentFiscal.fiscal_year_id;
-    if(currentFiscal) appstate.set('fiscal', currentFiscal);
-
+    //TODO improve mini hack with aliasing in query etc.
+    if(currentFiscal) { 
+      currentFiscal.period_id = currentFiscal.id;
+      currentFiscal.id = currentFiscal.fiscal_year_id;
+      appstate.set('fiscal', currentFiscal);
+    }
     return connect.req(queryExchange);
   }
 
