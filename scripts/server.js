@@ -57,7 +57,7 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);  
+  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -66,7 +66,7 @@ app.put('/data/', function (req, res, next) {
 
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var insertsql = parser.insert(req.body.t, req.body.data);  
+  var insertsql = parser.insert(req.body.t, req.body.data[0]);  
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -217,11 +217,13 @@ app.get('/tree', function (req, res, next) {
 
 app.get('/price_list/:id', function (req, res, next) {
   var sql = 
-    'SELECT COUNT(`price_list`.`id`) AS `plcount`, `price_list`.`id`, `price_list`.`name`, ' + 
+    'SELECT `price_list`.`id`, `price_list`.`name`, ' + 
+    '`price_list`.`inventory_type`, `price_list`.inventory_group, ' +
     'COUNT(`price_list_detail`.`list_id`) AS `count` ' + 
     'FROM `price_list` LEFT JOIN `price_list_detail` ON  ' + 
       '`price_list`.`id`=`price_list_detail`.`list_id` ' +
-    'WHERE `price_list`.`enterprise_id`=' + db.escapestr(req.params.id) + ';';
+    'WHERE `price_list`.`enterprise_id`=' + db.escapestr(req.params.id) + ' ' +
+    'GROUP BY `price_list`.`id`;';
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     if (rows.length === 1 && rows[0].plcount === 0) return res.send([]);

@@ -1,249 +1,237 @@
 angular.module('kpk.controllers')
-.controller('priceListController', function ($scope, $q, connect, messenger, appstate) {
-  // This module is responsible for creating price lists.
-  // FIXME: There is an error with editing old price lists.  Need to 
-  // make a facility for that and fix the errors using connect.basicPost
-
+.controller('priceListController', function ($scope, $q, connect, messenger, appstate, validate) {
   'use strict';
 
-  var imports = {},
-      stores = {},
-      models = $scope.models = {};
+  var dependencies = {},
+      stores = {};
 
+  $scope.action = '';
 
-  imports.enterprise = appstate.get('enterprise');
-
-  imports.lists = '/price_list/' + imports.enterprise.id;
-
-  imports.inventory_types = {
-    tables: {'inv_type' : { columns : ['id', 'text'] }}
+  dependencies.lists = {
+    required : true,
   };
 
-  imports.inventory_groups = {
-    tables : { 'inv_group' : { 'columns' : ['id', 'name'] }}
-  };
-
-  imports.details = {
-    tables : { 'price_list_detail' : { columns : ['id', 'inventory_id', 'price', 'discount', 'note']}}
-  };
-
-  function run () {
-    var dependencies = ['lists', 'inventory_types', 'inventory_groups', 'details'];
-
-    $q.all([
-      connect.req(imports.lists),
-      connect.req(imports.inventory_types),
-      connect.req(imports.inventory_groups),
-      connect.req(imports.details)
-    ])
-    .then(function (array) {
-      for (var i = array.length - 1; i > -1; i--) {
-        stores[dependencies[i]] = array[i];
-        models[dependencies[i]] = array[i].data;
+  dependencies.types = {
+    required : true,
+    query : {
+      tables: {
+        'inv_type' : {
+          columns : ['id', 'text']
+        }
       }
-    });
-  }
-
-  run();
-
-  $scope.newItem = function () {
-    if (!angular.isDefined($scope.editing.id)) return messenger.warning('No price list selected', 1200);
-   
-    $scope.models.details.push({ 
-      list_id : $scope.editing.id,
-      note : "",
-    });
-
+    } 
   };
 
-  /*
-
-  var imports = {},
-      models       = $scope.models = {},
-      flags        = $scope.flags  = {},
-      dirty        = $scope.dirty  = {},
-      validate     = $scope.validate = {},
-      dependencies = ["price_list_name", "inventory", "inv_group"],
-      stores       = {};
-  flags.edit   = {};
-  flags.errors = {};
-
-  imports.enterprise_id = appstate.get('enterprise').id;
-  imports.price_list_name = {
-    tables: { 'price_list_name' : { columns :  ["id", "name"] }},
-    where : ["price_list_name.enterprise_id="+imports.enterprise_id]
-  };
-  imports.inventory = {tables : { 'inventory' : { columns: ["id", "code", "text", "group_id"] }}};
-  imports.inv_group = {tables : { 'inv_group' : { columns: ["id", "name", "symbol"] }}};
-  imports.price_list = {tables: { 'price_list' : { columns : ["id", "list_id", "inventory_id", "price", "discount", "note"] }}};
-
-
-  function run () {
-    // initialize models
-
-    $q.all([
-      connect.req(imports.price_list_name),
-      connect.req(imports.inventory),
-      connect.req(imports.inv_group)
-    ]).then(function (arr) {
-      // load dependencies
-      for (var i = arr.length - 1; i >= 0; i--) {
-        models[dependencies[i]] = arr[i].data;
-        stores[dependencies[i]] = arr[i];
+  dependencies.groups = {
+    required : true,
+    query : {
+      tables : {
+        'inv_group' : {
+          columns : ['id', 'name', 'symbol']
+        }
       }
-      flags.edit.list = Infinity;
-    });
-  }
-
-  // List controls
-
-  // create a new price list
-  function addList () {
-    var id, list;
-    id = stores.price_list_name.generateid();
-    list = {id: id};
-    stores.price_list_name.post(list);
-    // after creating, immediately edit
-    $scope.editList(id);
-  }
-
-  function removeList () {
-    var bool = confirm("Are you sure you want to do this?  It will delete the entire price list and subitems!");
-    if (!bool) return;
-    var id = flags.list;
-    models.price_list.forEach(function(item) {
-      $scope.removeItem(item.id);
-    });
-    stores.price_list_name.remove(id);
-    connect.basicDelete('price_list_name', id);
-  }
-
-  // validate and save
-  function saveList () {
-    var id = flags.edit.list;
-    var list = stores.price_list_name.get(id);
-    if (!validate.list(list)) stores.price_list_name.remove(id);
-    else {
-      list.enterprise_id = imports.enterprise_id;
-      connect.basicPut('price_list_name', [list]);
     }
-    flags.edit.list = Infinity;
-  }
-
-  // edit a list
-  function editList (id) {
-     flags.edit.list = id;
-  }
-
-  // load a specific price list
-  function loadList (id) {
-    if (flags.edit.list === Infinity) {
-      imports.price_list.where = ["price_list.list_id=" + id];
-      connect.req(imports.price_list).then(function (res) {
-        stores.price_list = res;
-        $scope.models.price_list = res.data;
-      });
-      flags.list = id;
-      flags.add = true;
-    }
-  }
-
-  // Item controls
-  
-  // remove an item from the price list
-  function removeItem (id) {
-    flags.add = true;
-    stores.price_list.remove(id);
-    connect.basicDelete("price_list", id);
-  }
-
-  // add an item to the price list
-  function addItem () {
-    var id = stores.price_list.generateid();
-    stores.price_list.post({id: id, list_id: flags.list});
-    $scope.editItem(id);
-  }
- 
-  // edit an item in the price list 
-  function editItem (id) {
-    flags.edit.item = id;
-    flags.add = false;
-  }
-
-  // validate and exit editing
-  function saveEdit () {
-    var item = stores.price_list.get(flags.edit.item);
-    if (validate.item(item)) { 
-      flags.edit.item = Infinity; 
-      flags.add = true;
-    }
-  }
-
-  // label the inventory properly
-  function label (inventory_id) {
-    // sometimes it is not defined
-    var item = inventory_id ? stores.inventory.get(inventory_id) : {};
-    return (item && item.text) ? item.text : "";
-  }
-
-  // validation
-
-  // validate item
-  validate.item = function (item) {
-    // an item must have ether a price or a 
-    // discount, but not both
-    var bool = !!item.id && !!item.inventory_id && ((!!item.price || !!item.discount) && !(!!item.price && !!item.discount));
-    return bool;
   };
 
-  validate.list = function (list) {
-    // a list must have all fields filled out
-    var bool = !!list.id && !!list.name;
-    return bool;
+  dependencies.inventory = {
+    required : true, 
+    query : {
+      tables : {
+        'inventory' : {
+          columns : ['id', 'text', 'group_id', 'type_id', 'code']
+        }
+      },
+    }
   };
 
-  // form controls
+  appstate.register('enterprise', function (enterprise) {
+    $scope.enterprise = enterprise;
+    dependencies.lists.query = '/price_list/' + enterprise.id;
+    dependencies.inventory.query.where = ['inventory.enterprise_id=' + enterprise.id];
+    validate.process(dependencies).then(run);
+  });
 
-  function save () {
-    models.price_list.map(function (item) { return connect.clean(item); });
-    // TODO/FIXME: There is currently no way to do batch inserts.
-    // So we are resorted to doing this.
-    models.price_list.forEach(function (item) {
-      connect.basicPut('price_list', [item]);
+  function run (model) {
+    for (var k in model) $scope[k] = model[k];
+  }
+
+  $scope.editMeta = function (list) {
+    $scope.edit = {};
+    $scope.action = 'meta';
+    $scope.edit = angular.copy(list);
+  };
+
+  $scope.saveMeta = function () {
+    var count = $scope.edit.count;
+    delete $scope.edit.count;
+    connect.basicPost('price_list', [connect.clean($scope.edit)], ['id'])
+    .then(function (res) {
+      messenger.success('Successfully edited price list');
+      $scope.edit.count = count; 
+      $scope.lists.put($scope.edit);
+      $scope.action = '';
+    }, function (err) {
+      messenger.danger('error:' + JSON.stringify(err));
     });
-  }
+  };
 
-  function erase () {
-    var bool = confirm("Are you sure you want to do this?  It will clear the entire price list!");
-    if (bool) {
-      models.price_list.forEach(function (item) {
-        stores.price_list.remove(item.id); 
+  $scope.resetMeta = function  () {
+    $scope.edit = {};
+  };
+
+  $scope.addList = function () {
+    $scope.add = {};
+    $scope.action = 'add';
+  };
+
+  $scope.saveAdd = function () {
+    $scope.add.enterprise_id = $scope.enterprise.id;
+    connect.basicPut('price_list', [connect.clean($scope.add)])
+    .then(function (result) {
+      messenger.success('Posted new price list!');
+      $scope.add.id = result.data.insertId;
+      $scope.add.count = 0;
+      $scope.lists.post(connect.clean($scope.add));
+      $scope.action = '';
+    }, function (err) {
+      messenger.danger('Error:' + JSON.stringify(err));
+    });
+  };
+
+  $scope.resetAdd = function () {
+    $scope.add = {}; 
+  };
+
+  $scope.removeList = function (list) {
+    connect.basicDelete('price_list', list.id)
+    .then(function (success) {
+      messenger.success('Delete the price list.');
+      $scope.lists.remove(list.id);
+    }, function (err) {
+      messenger.danger('Error:' + JSON.stringify(err)); 
+    });
+  };
+
+
+  // items namespaces
+
+  $scope.editItems = function (list) {
+    connect.req({
+      tables : {
+        'price_list_detail' : {columns : ['id', 'list_id', 'inventory_id', 'amount', 'percent', 'note']}
+      },
+      where : ['price_list_detail.list_id=' + list.id]
+    })
+    .then(function (model) {
+      $scope.details = model;
+      $scope.action = 'item';
+      $scope.detail_list = list;
+    });
+  };
+
+  $scope.filterInventory = function (item) {
+    var list = $scope.detail_list;
+    var bool = angular.isDefined(list.inventory_group) ? item.group_id === list.inventory_group : true;
+    return bool && angular.isDefined(list.inventory_type) ? item.type_id === list.inventory_type : true;
+  };
+
+  $scope.addItem = function () {
+    $scope.details.data.push({ editing: true});
+  };
+
+  $scope.removeItem = function (idx) {
+    // make sure item exists in the database,
+    // or if it volitile
+    var item = $scope.details.data[idx];
+    if (angular.isDefined(item.id)) {
+      connect.basicDelete('price_list_detail', $scope.details.data[idx].id)
+      .then(function (result) {
+        $scope.details.data.splice(idx, 1);
+        $scope.lists.get($scope.detail_list.id).count -= 1; 
+      }, function (err) {
+        messenger.danger('Failed to delete item:', $scope.details.data[idx].id);
       });
-    }
-  }
+    } else $scope.details.data.splice(idx, 1);
+  };
 
-  function showFilter (id) {
-    return stores.inv_group && stores.inv_group.get(id) ? stores.inv_group.get(id).symbol : "";
-  }
+  $scope.editItem = function (item) {
+    item.editing = true;
+  };
 
-  run();
+  $scope.$watch('details.data', function () {
+    // only lets you save if there is nothing being edited
+    if (!$scope.details || !$scope.details.data) return;
+    $scope.canSave = $scope.details.data.every(function (item) {
+      return !item.editing; 
+    }); 
+  }, true);
 
-  // expose to view
-  $scope.saveList = saveList;
-  $scope.addList= addList;
-  $scope.editList= editList;
-  $scope.loadList = loadList;
-  $scope.removeList = removeList;
+  $scope.isValid = function (item) {
+    return angular.isDefined(item.inventory_id) &&
+      angular.isDefined(item.note) &&
+      angular.isDefined(item.amount);
+  };
 
-  $scope.addItem = addItem;
-  $scope.removeItem = removeItem;
-  $scope.editItem = editItem;
-  $scope.saveEdit = saveEdit;
-  $scope.showFilter = showFilter;
+  $scope.saveList = function () {
+    // save any changes
+    var newItems = [];
+    var updateItems = [];
+    // this discovers update changes and 
+    // new items.  New items are easy -- they do not have
+    // ids.  Anything with an id has had a round trip
+    // into the db and back.
+    $scope.details.data.forEach(function (item) {
+      if (angular.isDefined(item.id) && angular.isDefined(item.editing)) {
+        delete item.editing;
+        updateItems.push(connect.clean(item));
+      }
 
-  $scope.label = label;
-  $scope.erase = erase;
-  $scope.save = save;
+      if (!angular.isDefined(item.id) && angular.isDefined(item.editing)) {
+        delete item.editing;
+        item.list_id = $scope.detail_list.id;
+        newItems.push(connect.clean(item));
+      }
+
+    });
+
+    // normalize with promises
+
+    var promise_new = new $q.defer(),
+        promise_update = new $q.defer();
+
+    if (newItems.length) {
+      connect.basicPut('price_list_detail', [newItems])
+      .then(function (res) {
+        promise_new.resolve();
+      }, function (err) {
+        promise_new.reject(err); 
+      }); 
+    } else promise_new.resolve();
+
+    if (updateItems.length) {
+      // TODO : Make it so that we can do this in one query
+      // loop through everything and send update queries
+      $q.all(updateItems.map(function (row) {
+        return connect.basicPost('price_list_detail', [row], ['id']);
+      }))
+      .then(function (res) {
+        promise_update.resolve(res);
+      }, function (err) {
+        promise_update.reject(err); 
+      });
+    } else promise_update.resolve();
   
-  */
+    $q.all([
+      promise_new,
+      promise_update
+    ]).then(function (res) {
+      messenger.success('Successfully posted changes.');
+      // We can update the count of items
+      $scope.lists.get($scope.detail_list.id).count = newItems.length;
+    }, function (err) {
+      messenger.danger('Error. ' + JSON.stringify(err));
+    });
+
+  };
+
 });
