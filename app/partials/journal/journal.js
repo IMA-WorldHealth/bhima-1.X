@@ -63,7 +63,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
       {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
       {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id', editor:SelectCellEditor},
-      {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type'},
+      {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type', editor:SelectCellEditor},
       {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
       // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
     ];
@@ -173,11 +173,11 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     if(ammendTransaction.state) { 
       if(firstElement.trans_id === ammendTransaction.transaction_id) {
         //markup for editing
-        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " transactions)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
         return rowMarkup;
       }
     }
-    rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " transactions)</span>";
+    rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " records)</span>";
     return rowMarkup; 
   }
 
@@ -309,7 +309,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       debit_equiv: 0,
       credit_equiv: 0,
       account_number: "(Select Account)",
-      deb_cred_id: "(Select Debtor)"
+      deb_cred_id: "(Select Debtor)",
+      deb_cred_type: "D"
     }
     
     //Duplicates object - not very intelectual
@@ -339,7 +340,9 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       description: template.description,
       debit_equiv: 0,
       credit_equiv: 0,
-      account_number: "(Select Account)"
+      account_number: "(Select Account)",
+      deb_cred_id: "(Select Debtor)",
+      deb_cred_type: "D"
     }
     
     // $scope.model.journal.put(transactionLine);
@@ -412,14 +415,15 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     //TODO use prototypal inheritence vs. splitting on init
     var fieldMap = { 
       'deb_cred_id' : initDebCred,
-      'account_number' : initAccountNumber
+      'account_number' : initAccountNumber,
+      'deb_cred_type' : initDebCredType
     }
     
     this.init = fieldMap[args.column.field];
     
     function initDebCred() { 
       defaultValue = isNaN(Number(args.item.deb_cred_id)) ? null : args.item.deb_cred_id;
-
+      
       option_str = ""
       $scope.model.debtor.data.forEach(function(debtor) { 
         option_str += '<option value="' + debtor.id + '">' + debtor.id + ' ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
@@ -454,6 +458,22 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       $select.focus();
     };
 
+    function initDebCredType() {
+      var options = ["D", "C"];
+
+      //FIXME hardcoded spagetthi
+      defaultValue = options[0];
+      option_str = "";
+
+      options.forEach(function(option) { 
+        option_str += "<option value='" + option + "'>" + option + "</option>";
+      });
+
+      $select = $('<select class="editor-text">' + option_str + "</select>");
+      $select.appendTo(args.container);
+      $select.focus();
+    }
+
     this.destroy = function() {
       $select.remove();
     };
@@ -464,6 +484,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
 
     this.loadValue = function(item) {
       // defaultValue = item[args.column.field];
+      console.log('loading default value', defaultValue);
       $select.val(defaultValue);
     };
 
@@ -476,7 +497,9 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     };
 
     this.isValueChanged = function() {
-      return ($select.val() != defaultValue);
+      //If default value is something that shouldn't be selected
+      // return ($select.val() != defaultValue);
+      return true;
     };
 
     this.validate = function() {
