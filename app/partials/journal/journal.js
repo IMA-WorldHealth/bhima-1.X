@@ -333,7 +333,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     }
 
     liveTransaction.records = [];
-
+  
     liveTransaction.template = { 
       trans_id: transactionId,
       trans_date: templateRow.trans_date,
@@ -344,17 +344,17 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       deb_cred_type: templateRow.deb_cred_type,
       deb_cred_id: templateRow.deb_cred_id,
       inv_po_id: templateRow.inv_po_id,
-      enterprise_id: templateRow.enterprise_id,
-      fiscal_year_id: templateRow.fiscal_year_id,
-      period_id: templateRow.period_id
+      currency_id: templateRow.currency_id,
+      userId: 13 //FIXME
+      // enterprise_id: templateRow.enterprise_id,
+      // fiscal_year_id: templateRow.fiscal_year_id,
+      // period_id: templateRow.period_id
     }
     
     transaction.rows.forEach(function(row) { 
       row.newTransaction = false;
       liveTransaction.records.push(row);
     });
-
-    console.log(liveTransaction);
 
     groupBy('transaction');
     grid.render();
@@ -364,9 +364,10 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   function split() { 
     var temporaryId = $scope.model.journal.generateid();
     var newsplit = JSON.parse(JSON.stringify(liveTransaction.template));
-   
+      
     newsplit.id = temporaryId;
-    
+    newsplit.newTransaction = true;
+
     dataview.addItem(newsplit);
     liveTransaction.records.push(newsplit);
     $scope.model.journal.recalculateIndex();
@@ -379,7 +380,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     var records = liveTransaction.records;
     var totalDebits = totalCredits = 0;
     var validAccounts = true;
-    var packagedRecords = [], requestNew = [], requestUpdate = [];
+    var packagedRecords = [], requestNew = [], requestUpdate = [], request = [];
     
     //validation 
     records.forEach(function(record) { 
@@ -393,9 +394,56 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     
     if(!validAccounts) return $rootScope.$apply(messenger.danger('Records contain invalid accounts'));
     
-    if(!(totalDebits === liveTransaction.origin.debit_equiv && totalCredits === liveTransaction.origin.credit_equiv)) return $rootScope.$apply(messenger.danger('Transaction Debit/Credit value has changed'));
-
+    if(!(totalDebits === liveTransaction.origin.debit_equiv && totalCredits === liveTransaction.origin.credit_equiv)) return $rootScope.$apply(messenger.danger('Transaction Debit/Credit value has changed'));  
+     
     $rootScope.$apply(messenger.success('All tests passed'));
+
+    records.forEach(function(record) { 
+
+      console.log('currency', record.currency_id);
+      var newRecord = record.newTransaction; 
+
+      var packageChanges = { 
+        description: record.description,
+        debit_equiv: record.debit_equiv,
+        credit_equiv: record.credit_equiv,
+      }
+    
+      packageChanges.account_id = $scope.model.account.get(record.account_number).id;
+    
+      if(newRecord) {   
+        var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
+
+        console.log("NEW RECORD");
+        packageChanges.deb_cred_type = record.deb_cred_type;
+        packageChanges.deb_cred_id = record.deb_cred_id;
+        packageChanges.inv_po_id = record.inv_po_id;
+        packageChanges.credit = record.credit_equiv;
+        packageChanges.debit = record.debit_equiv;
+        packageChanges.trans_date = record.trans_date;
+        packageChanges.trans_id = record.trans_id;
+        packageChanges.period_id = fiscalSettings.period_id;
+        packageChanges.fiscal_year_id = fiscalSettings.id;
+        packageChanges.enterprise_id = enterpriseSettings.id;
+        packageChanges.currency_id = record.currency_id;
+        packageChanges.origin_id = 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
+        packageChanges.user_id = liveTransaction.template.userId;
+          
+        return request.push(connect.basicPut('posting_journal', [packageChanges]));
+      }
+      packageChanges.id = record.id;
+      request.push(connect.basicPost('posting_journal', [packageChanges], ['id']));
+    });
+    
+    console.log('req', request);
+    $q.all(request).then(function(res) { 
+      messenger.success('Transaction split written to database');
+      liveTransaction.state = null;
+      groupBy('transaction');
+      grid.invalidate();
+      grid.render();
+
+    }, function(err) { messenger.danger("Split submission failed"); });
   }
   
   //TODO Currently checks for balance and for NULL values, should include only credits or debits etc.
@@ -430,9 +478,11 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     
     //package
     records.forEach(function(record) { 
-      var enterpriseSettings = appstate.get('enterprise');
+      var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
       var packaged = { 
         enterprise_id: enterpriseSettings.id,
+        fiscal_year_id: fiscalSettings.id,
+        period_id: fiscalSettings.period_id,
         trans_id: record.trans_id,
         trans_date: record.trans_date,
         description: record.description,
