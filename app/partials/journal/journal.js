@@ -336,14 +336,17 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
 
     liveTransaction.template = { 
       trans_id: transactionId,
-      date: templateRow.trans_date,
+      trans_date: templateRow.trans_date,
       description: templateRow.description,
       account_number: "(Select Account)",
       debit_equiv: 0, 
       credit_equiv: 0,
       deb_cred_type: templateRow.deb_cred_type,
       deb_cred_id: templateRow.deb_cred_id,
-      inv_po_id: templateRow.inv_po_id
+      inv_po_id: templateRow.inv_po_id,
+      enterprise_id: templateRow.enterprise_id,
+      fiscal_year_id: templateRow.fiscal_year_id,
+      period_id: templateRow.period_id
     }
     
     transaction.rows.forEach(function(row) { 
@@ -365,13 +368,34 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     newsplit.id = temporaryId;
     
     dataview.addItem(newsplit);
+    liveTransaction.records.push(newsplit);
     $scope.model.journal.recalculateIndex();
     
     grid.scrollRowIntoView(dataview.getRowById(newsplit.id));
   }
-  
+ 
+  //TODO Both submit function have similar structure, but differ on tests and put/post, exract pattern
   function submitSplit() {
+    var records = liveTransaction.records;
+    var totalDebits = totalCredits = 0;
+    var validAccounts = true;
+    var packagedRecords = [], requestNew = [], requestUpdate = [];
+    
+    //validation 
+    records.forEach(function(record) { 
+      
+      totalDebits += Number(record.debit_equiv);
+      totalCredits += Number(record.credit_equiv);
 
+      var account_number = Number(record.account_number);
+      if(isNaN(account_number)) validAccounts = false;
+    });
+    
+    if(!validAccounts) return $rootScope.$apply(messenger.danger('Records contain invalid accounts'));
+    
+    if(!(totalDebits === liveTransaction.origin.debit_equiv && totalCredits === liveTransaction.origin.credit_equiv)) return $rootScope.$apply(messenger.danger('Transaction Debit/Credit value has changed'));
+
+    $rootScope.$apply(messenger.success('All tests passed'));
   }
   
   //TODO Currently checks for balance and for NULL values, should include only credits or debits etc.
@@ -384,7 +408,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     
     //validation 
     records.forEach(function(record) { 
-      console.log('submitting', record);
       
       totalDebits += Number(record.debit_equiv);
       totalCredits += Number(record.credit_equiv);
@@ -404,7 +427,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     if(totalDebits != totalCredits) { 
       return $rootScope.$apply(messenger.danger('Transaction debits and credits do not match')); 
     }
-
+    
     //package
     records.forEach(function(record) { 
       var enterpriseSettings = appstate.get('enterprise');
@@ -455,7 +478,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       credit_equiv: 0,
       account_number: "(Select Account)",
       deb_cred_id: "(Select Debtor)",
-      deb_cred_type: "D"
+      deb_cred_type: "D",
+      userId: template.userId
     }
     
     liveTransaction.records = [];
@@ -465,7 +489,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
 
     //Duplicates object - not very intelectual
     balanceTransaction = JSON.parse(JSON.stringify(initialTransaction));
-    balanceTransaction.id = ++initialTransaction.id; 
+    balanceTransaction.id++; 
     
     groupBy('transaction');
     
