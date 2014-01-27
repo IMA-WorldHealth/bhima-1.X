@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('journal', function ($scope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, printer, messenger) {
+angular.module('kpk.controllers').controller('journal', function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, printer, messenger, appstate) {
   var dependencies = {}, ammendTransaction = $scope.ammendTransaction = {state: false};
   var grid, dataview, sort_column, columns, options;
 
@@ -17,7 +17,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     query : { 
       'tables' : { 
         'account' : { 'columns' : ['id', 'account_number', 'account_type_id', 'account_txt'] }
-      }
+      },
+      identifier: 'account_number'
     }
   }
 
@@ -173,7 +174,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
     if(ammendTransaction.state) { 
       if(firstElement.trans_id === ammendTransaction.transaction_id) {
         //markup for editing
-        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
         return rowMarkup;
       }
     }
@@ -294,9 +295,81 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
 
   function handleClick(className) { 
     var buttonMap = { 
-      'addLine': newLine
+      'addLine': newLine,
+      'submitTransaction': submitTransaction
     }
     if(buttonMap[className]) buttonMap[className]();
+  }
+  
+  //TODO Currently checks for balance and for NULL values, should include only credits or debits etc.
+  function submitTransaction() { 
+    var records = ammendTransaction.records; 
+    var totalDebits = 0, totalCredits = 0; 
+    var validAccounts = true;
+    var packagedRecords = [];
+    var request = [];
+    
+    //validation 
+    records.forEach(function(record) { 
+      console.log('submitting', record);
+      
+      totalDebits += Number(record.debit_equiv);
+      totalCredits += Number(record.credit_equiv);
+
+      var account_number = Number(record.account_number);
+      var deb_cred_id = Number(record.deb_cred_id);
+
+      if(isNaN(account_number)) validAccounts = false;
+      
+      //leave deb/cred optional for now
+    });
+    
+    if(!validAccounts) { 
+      return $rootScope.$apply(messenger.danger('Records contain invalid accounts'));  
+    }
+
+    if(totalDebits != totalCredits) { 
+      return $rootScope.$apply(messenger.danger('Transaction debits and credits do not match')); 
+    }
+
+    //package
+    records.forEach(function(record) { 
+      var enterpriseSettings = appstate.get('enterprise');
+      var packaged = { 
+        enterprise_id: enterpriseSettings.id,
+        trans_id: record.trans_id,
+        trans_date: record.trans_date,
+        description: record.description,
+        debit: record.debit_equiv,
+        credit: record.credit_equiv,
+        debit_equiv: record.debit_equiv,
+        credit_equiv: record.credit_equiv,
+        deb_cred_type: record.deb_cred_type,
+        origin_id: 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
+        currency_id: enterpriseSettings.currency_id,
+        user_id: ammendTransaction.template.userId
+      }
+      
+      packaged.account_id = $scope.model.account.get(record.account_number).id;
+      if(!isNaN(Number(record.deb_cred_id))) {
+        packaged.deb_cred_id = record.deb_cred_id;
+      } else { 
+        //reset record on client
+        record.deb_cred_id = null;
+      }
+
+      request.push(connect.basicPut("posting_journal", [packaged]));
+    });
+
+    //submit
+    $q.all(request).then(function(res) { 
+      messenger.success('Transaction posted to journal. Ref #' + ammendTransaction.template.logId);
+      ammendTransaction.state = false;
+      groupBy('transaction');
+      grid.invalidate();
+      grid.render();
+    }, function(err) { messenger.danger(err.code); });
+    
   }
 
   function addTransaction(template) { 
@@ -313,18 +386,25 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       deb_cred_type: "D"
     }
     
+    ammendTransaction.records = [];
+
     //Duplicates object - not very intelectual
     balanceTransaction = JSON.parse(JSON.stringify(initialTransaction));
     balanceTransaction.id = ++balanceTransaction.id; 
     
     groupBy('transaction');
+    
     ammendTransaction.transaction_id = template.id;
     ammendTransaction.state = true;
     ammendTransaction.template = template;
     
-    console.log('id', balanceTransaction.id, 'and', initialTransaction.id);
     dataview.addItem(initialTransaction);
     dataview.addItem(balanceTransaction);
+    
+    ammendTransaction.records.push(initialTransaction);
+    ammendTransaction.records.push(balanceTransaction);
+
+    document.ammendTransaction = ammendTransaction;
     grid.scrollRowToTop(dataview.getRowById(initialTransaction.id));
   }
 
@@ -345,6 +425,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $trans
       deb_cred_type: "D"
     }
     
+    ammendTransaction.records.push(transactionLine);
+
     // $scope.model.journal.put(transactionLine);
     dataview.addItem(transactionLine);
     grid.scrollRowToTop(dataview.getRowById(transactionLine.id));

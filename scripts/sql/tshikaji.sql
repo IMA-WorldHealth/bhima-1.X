@@ -1079,10 +1079,7 @@ insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `do
 
 insert into `inv_unit` (`text`) values
   ('Act'),
-	('Pallet'),
-	('Pill'),
-	('Box'),
-	('Lot');
+	('Pallet'), ('Pill'), ('Box'), ('Lot');
 
 insert into `inv_type` values
   (0,'Article'),
@@ -1128,4 +1125,5 @@ insert into `department` values
 insert into `transaction_type` values 
   (1, 'cash'),
 	(2, 'sale'),
-	(3, 'purchase');
+	(3, 'purchase'),
+  (4, 'journal');
