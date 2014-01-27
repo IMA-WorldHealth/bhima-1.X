@@ -17,6 +17,8 @@ create table `tax` (
   primary key (`id`)
 ) engine=innodb;
 
+
+
 --
 -- Table structure for table `kpk`.`currency`
 --
@@ -338,6 +340,29 @@ create table `currency_account` (
   constraint foreign key (`bank_account`) references `account` (`id`)
 ) engine=innodb;
 
+
+--
+-- Table structure for table `kpk`.`convention`
+--
+drop table if exists `convention`;
+create table `convention` (
+  `id`                  smallint unsigned auto_increment not null,
+  `name`                varchar(100) not null,
+  `account_id`          int unsigned not null,
+  `location_id`         smallint unsigned not null,
+  `phone`               varchar(10) default '',
+  `email`               varchar(30) default '',
+  `note`                text,
+  `max_credit`          mediumint unsigned default '0',
+  primary key (`id`),
+  key `account_id` (`account_id`),
+  key `location_id` (`location_id`),
+  constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade
+) engine=innodb;
+
+
+
 --
 -- table `kpk`.`price_list`
 --
@@ -378,8 +403,6 @@ create table `debitor_group` (
   `email`               varchar(30) default '',
   `note`                text,
   `locked`              boolean not null default 0,
-  `contact_id`          smallint unsigned,
-  `price_list_id`       smallint unsigned,
   `tax_id`              smallint unsigned null,
   `max_credit`          mediumint unsigned default '0',
   `type_id`             smallint unsigned not null,
@@ -388,18 +411,27 @@ create table `debitor_group` (
   key `account_id` (`account_id`),
   key `location_id` (`location_id`),
   key `payment_id` (`payment_id`),
-  key `contact_id` (`contact_id`),
-  key `price_list_id` (`price_list_id`),
   key `tax_id` (`tax_id`),
   key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`price_list_id`) references `price_list` (`id`),
   constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
   constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
   constraint foreign key (`payment_id`) references `payment` (`id`) on delete cascade on update cascade,
   constraint foreign key (`tax_id`) references `tax` (`id`),
   constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`patient_group`
+--
+drop table if exists `patient_group`;
+create table `patient_group` (
+  `id`                  smallint unsigned auto_increment not null,
+  `name`                varchar(100) not null,
+  primary key (`id`)
+) engine=innodb;
+
+
 
 --
 -- Table structure for table `kpk`.`debitor`
@@ -409,9 +441,12 @@ create table `debitor` (
   `id`        int       unsigned not null auto_increment,
   `group_id`  smallint  unsigned not null,
   `text`      text,
+  `convention_id` smallint unsigned null,
   primary key (`id`),
   key `group_id` (`group_id`),
-  constraint foreign key (`group_id`) references `debitor_group` (`id`)
+  key `convention_id` (`convention_id`),
+  constraint foreign key (`group_id`) references `debitor_group` (`id`),
+  constraint foreign key (`convention_id`) references `convention` (`id`)
 ) engine=innodb;
 
 --
@@ -496,6 +531,22 @@ create table `patient` (
   unique key `creditor_id` (`creditor_id`),
   constraint foreign key (`debitor_id`) references `debitor` (`id`) on update cascade,
   constraint foreign key (`location_id`) references `location` (`id`) on update cascade
+) engine=innodb;
+
+
+--
+-- Table structure for table `kpk`.`debitor`
+--
+drop table if exists `assignation_patient`;
+create table `assignation_patient` (
+  `id`        smallint unsigned not null auto_increment,
+  `patient_group_id`  smallint  unsigned not null,
+  `patient_id` int unsigned not null,
+  primary key (`id`),
+  key `patient_group_id` (`patient_group_id`),
+  key `patient_id` (`patient_id`),
+  constraint foreign key (`patient_group_id`) references `patient_group` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`patient_id`) references `patient` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 

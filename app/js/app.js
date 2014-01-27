@@ -138,6 +138,14 @@
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
     })
+    .when('/convention', { 
+      controller: 'conventionController',
+      templateUrl: 'partials/convention/convention.html'
+    })
+    .when('/patient_group_assign', { 
+      controller: 'AssignPatientGroupController',
+      templateUrl: 'partials/patient_group_assign/patient_group_assign.html'
+    })
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
