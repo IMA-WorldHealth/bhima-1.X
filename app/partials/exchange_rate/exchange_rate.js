@@ -15,7 +15,6 @@ angular.module('kpk.controllers')
   imports.currency = {tables : { 'currency' : { 'columns' : ['id', 'name', 'symbol', 'note']}}};
   imports.exchange = {tables : { 'exchange_rate' : { 'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']}}};
 
-  flags.current_exchange_rate = false;
   flags.visible = false;
 
   function run () {
