@@ -138,6 +138,10 @@
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
     })
+    .when('/convention', { 
+      controller: 'conventionController',
+      templateUrl: 'partials/convention/convention.html'
+    })
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
