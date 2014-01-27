@@ -1,24 +1,41 @@
 angular.module('kpk.controllers')
-.controller('appController', function($scope, $location, $translate, appcache, appstate, connect, validate) { 
-  'use strict';
-    
-  //lookup users language preference 
-  var MODULE_NAMESPACE = 'application';
-
-  var cache = new appcache(MODULE_NAMESPACE);
-  var url = $location.url();
+.controller('appController', function($scope, $location, $translate, appcache, appstate, connect) { 
+  var moduleNamespace = 'application', cache = new appcache(moduleNamespace);
   
+  var queryEnterprise = {
+    'tables' : { 
+      'enterprise' : {
+        'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id'] }
+    }
+  };
+  
+  var queryFiscal = {
+    'tables' : { 
+      'period' : { 'columns' : ['id', 'period_start', 'period_stop', 'fiscal_year_id'] },
+      'fiscal_year' : { 'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id'] }
+    },
+    join : ['period.fiscal_year_id=fiscal_year.id'],
+    where : ["period.period_start<" + mysqlDate(), "AND", "period.period_stop>" + mysqlDate()] 
+  };
+
+  var queryExchange = {
+    'tables' : { 
+      'exchange_rate' : { 
+        'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date'] }
+    },
+    'where' : ['exchange_rate.date='+mysqlDate()]
+  };
+
   settupApplication();  
   
   function settupApplication() { 
+    var url = $location.url();
     
     //TODO experimental - loading previous sessions language settings - not always ideal during development
     loadLanguage();
 
     //Initial page load assumed be navigating to nothing
-    if(url==='' || url==='/') { 
-      loadCachedLocation(); 
-    }
+    if(url==='' || url==='/') loadCachedLocation(); 
     fetchSessionState();
   }
    
@@ -41,44 +58,43 @@ angular.module('kpk.controllers')
     });
   }
 
-  function mysqlDate (date) {
-    return (date || new Date()).toISOString().slice(0,10);
+  //Slightly more verbose than the inline equivalent but I think it looks cleaner
+  function fetchSessionState() { 
+    loadEnterprise().then(setEnterpriseLoadFiscal).then(setFiscalLoadExchange).then(setExchange, handleError);
+  }
+
+  function loadEnterprise() { 
+    return connect.req(queryEnterprise);
+  }
+
+  function setEnterpriseLoadFiscal(result) { 
+    var defaultEnterprise = result.data[0];
+    if(defaultEnterprise) appstate.set('enterprise', defaultEnterprise);
+
+    return connect.req(queryFiscal);
+  }
+
+  function setFiscalLoadExchange(result) { 
+    var currentFiscal = result.data[0]; 
+
+    //TODO improve minto hack with aliasing in query etc.
+    currentFiscal.period_id = currentFiscal.id;
+    currentFiscal.id = currentFiscal.fiscal_year_id;
+    if(currentFiscal) appstate.set('fiscal', currentFiscal);
+
+    return connect.req(queryExchange);
+  }
+
+  function setExchange(result) { 
+    var currentExchange = result.data[0];
+    if(currentExchange) appstate.set('exchange_rate', currentExchange);
+  }
+
+  function handleError(error) { 
+    throw error;
   }
   
-  function fetchSessionState() { 
-    
-    //TODO Method to fetch session variables, fiscal years, enterprises etc. - the design and ordering of these operations should be researched 
-    var default_enterprise, default_fiscal_year, default_exchange;
-     
-    connect.req({'tables': { 'enterprise' : {'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id']}}})
-    .then(function(res) {
-      default_enterprise = res.data[0];
-      appstate.set('enterprise', default_enterprise);
-      return connect.req({'tables': { 'fiscal_year' : { 'columns': ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id']}}});
-    })
-    .then(function(res) { 
-      default_fiscal_year = res.data[0];
-      if(default_fiscal_year) appstate.set('fiscal', default_fiscal_year);
-      
-      // exchange rate stuff
-      var query = {
-        'tables' : { 'exchange_rate' : { 'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date'] }},
-        'where' : ['exchange_rate.date='+mysqlDate()]
-      };
-      return connect.req(query);
-    })
-    .then(function (res) {
-      // fetch exchange rate data
-      default_exchange = res.data[0];
-      if (default_exchange) console.log('setting Exchange Rate : ', default_exchange);
-      if (default_exchange) appstate.set('exchange_rate', default_exchange);
-    }, function (err) {
-      throw err; 
-    });
-  }
-
-
-  //Watch changes in application $location, cache these in the users session
+  //Watch changes in application $location, cache these in the user's session
   $scope.$on('$locationChangeStart', function(e, n_url) { 
     
     //TODO Tree is not currently updated on navigation - user can be presented with a different screen than selected node
@@ -86,4 +102,8 @@ angular.module('kpk.controllers')
     var target = n_url.split('/#')[1];
     if(target) cache.put("location", {path: target});
   });
+
+ function mysqlDate (date) {
+    return (date || new Date()).toISOString().slice(0,10);
+  }
 });
