@@ -149,6 +149,10 @@
     when('/credit_note/:invoiceId?/', { 
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
+    })
+    .when('/patient_group', {
+      controller: 'patientGroupCtrl',
+      templateUrl: 'partials/patient_group/patient_group.html' 
     });
   }  
 
