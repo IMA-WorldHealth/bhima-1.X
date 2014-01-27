@@ -3,7 +3,6 @@
 // This modules adds utilities available throughout the
 // server.
 
-
 module.exports = {
   
   isInt : function (i) { return Math.floor(i) === Number(i); },
@@ -33,39 +32,20 @@ module.exports = {
     day = day.length < 2 ? '0' + day : day;
 
     return [year, month, day].join('-');
-  }
+  },
+  
+  isPositive : function (number) { return this.isValidNumber(number) && Number(number) >= 0; },
+
+  isNegative : function (number) { return !this.isPositive(number); },
+
+  isEqual : function (a, b) { return a === b; },
+
+  isDefined : function (a) { return a !== undefined; },
+
+  isUndefined : function (a) { return !this.isDefined(a); },
+
+  isNull : function (a) { return a === null; },
+
+  exists : function (a) { return this.isDefined(a) && !this.isNull(a); }
 
 };
-
-/*
-function toMySqlDate(dateParam) { 
-  var date = new Date(dateParam), annee, mois, jour;
-	annee = String(date.getFullYear());
-	mois = String(date.getMonth() + 1);
-	if (mois.length === 1) {
-	mois = "0" + mois;
-	}
-
-	jour = String(date.getDate());
-	if (jour.length === 1) {
-    jour = "0" + jour;
-	}      
-	return annee + "-" + mois + "-" + jour;
-
-}
-
-Date.prototype.toMySqlDate = function (dateParam) {
-	var date = new Date(dateParam), annee, mois, jour;
-	annee = String(date.getFullYear());
-	mois = String(date.getMonth() + 1);
-	if (mois.length === 1) {
-	mois = "0" + mois;
-	}
-
-	jour = String(date.getDate());
-	if (jour.length === 1) {
-    jour = "0" + jour;
-	}      
-	return annee + "-" + mois + "-" + jour;
-};
-*/

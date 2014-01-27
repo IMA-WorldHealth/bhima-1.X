@@ -99,26 +99,42 @@ module.exports = (function (options) {
   // insert
   self.insert = function (table, dataList) {
     // insert allows insertion of multiple rows
-    var expressions = [],
-        values = [],
+    var values = [], k, max, idx,
+        expressions = [],
         templ = self.templates.insert;
 
-    for (var k in dataList[0]) {
-      if (dataList[0].hasOwnProperty(k)) {
-        values.push(sanitize.escapeid(k));
+    // FIXME HACK HACK HACK to make behavoir the same across everything
+    if (!dataList.length) dataList = [dataList];
+
+    // find the maximum number of keys for a row object
+    max = 0;
+    dataList.forEach(function (row, index) {
+      var l = Object.keys(row).length;
+      if (l > max) {
+        max = l;
+        idx = index;
       }
+    });
+
+    // calculate values
+    for (k in dataList[idx]) {
+      values.push(k);
     }
 
-    // this allows us to have multiple rows
-    dataList.forEach(function (item) {
-      var items = [];
-      for (var k in item) items.push(sanitize.escape(item[k]));
-      expressions.push('(' + items.join(', ') + ')');
+    dataList.forEach(function (row) {
+      var line = [];
+      for (var k in values) {
+        // default to null
+        line.push(row[values[k]] ? sanitize.escape(row[values[k]]) : 'null');  
+      }
+      expressions.push('(' + line.join(', ') + ')');
     });
-  
-    return templ.replace('%table%', sanitize.escapeid(table))
-                .replace('%values%', '(' + values.join(', ') + ')')
-                .replace('%expressions%', expressions.join(', '));  
+
+    return templ
+      .replace('%table%', sanitize.escapeid(table))
+      .replace('%values%', '(' + values.join(', ') + ')')
+      .replace('%expressions%', expressions.join(', '));
+
   };
 
   // select
@@ -165,28 +181,3 @@ module.exports = (function (options) {
   return self;
 
 });
-
-// tests
-
-var so = {
-  identifier: 'id',
-  tables: {
-    'account' : {
-      columns : ["id", "number", "flag"] 
-    }
-  }
-};
-
-var no = {
-  identifier: 'id',
-  primary: "account",
-  tables: {
-    'account' : {
-      columns : ["id", "name", "account_type_id"] 
-    },
-    "account_type" : {
-      columns: ["id", "type"]
-    }
-  },
-  join: ["account.account_type_id=account_type.id"]
-};
