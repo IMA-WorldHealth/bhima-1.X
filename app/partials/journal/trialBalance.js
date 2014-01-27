@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('trialBalance', function ($scope, $modalInstance, request, ids, connect) {
+angular.module('kpk.controllers').controller('trialBalance', function ($scope, $modalInstance, request, ids, connect, messenger) {
   $scope.data = request.data;
   $scope.errors = [].concat(request.postErrors, request.sysErrors);
 
