@@ -1,5 +1,6 @@
+//TODO Lot's of hardcoded areas throughout editing process (marked with fixme). State is dependent on strings etc.
 angular.module('kpk.controllers').controller('journal', function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, printer, messenger, appstate) {
-  var dependencies = {}, ammendTransaction = $scope.ammendTransaction = {state: false};
+  var dependencies = {}, liveTransaction = $scope.liveTransaction = {};
   var grid, dataview, sort_column, columns, options;
 
   dependencies.journal = { 
@@ -122,7 +123,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     });
 
     grid.onBeforeEditCell.subscribe(function(e, row) { 
-      if(ammendTransaction.state) return (row.item.trans_id === ammendTransaction.transaction_id);
+      if(liveTransaction.state) return (row.item.trans_id === liveTransaction.transaction_id);
       return false;
     });
 
@@ -131,13 +132,18 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     });
 
     grid.onClick.subscribe(function(e, args) { 
+      
       //FIXME REALLY hacky, redo button clicks 
-      handleClick(e.target.className);
-    });
+      handleClick(e.target.className, args);
 
+    });
+    
     dataview.beginUpdate();
     dataview.setItems($scope.model.journal.data);
     dataview.endUpdate();
+      
+    //default grouping
+    groupBy('transaction');
 
     // allow the user to select only certain columns shown
     $scope.columns = angular.copy(columns).map(function (column) {
@@ -168,27 +174,38 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     });
   };
     
-
   function formatTransactionGroup(g) { 
-    var rowMarkup, firstElement = g.rows[0]; 
-    if(ammendTransaction.state) { 
-      if(firstElement.trans_id === ammendTransaction.transaction_id) {
+    var rowMarkup, splitTemplate, firstElement = g.rows[0];
+    if(liveTransaction.state === "add") { 
+      if(firstElement.trans_id === liveTransaction.transaction_id) {
         //markup for editing
         rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
         return rowMarkup;
       }
     }
+
+    if(liveTransaction.state === "split") { 
+      if(firstElement.trans_id === liveTransaction.transaction_id) { 
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span> Total Transaction Credit: <b>" + $filter('currency')(liveTransaction.origin.credit_equiv) + "</b> Total Transaction Debit: <b>" + $filter('currency')(liveTransaction.origin.debit_equiv) + "</b> <div class='pull-right'><a class='split'><span class='glyphicon glyphicon-plus'></span> Split</a><a style='margin-left: 15px;' class='submitSplit'><span class='glyphicon glyphicon-floppy-save'></span> Save Transaction</a></div>"  
+        return rowMarkup; 
+      }
+    }
+
+    splitTemplate = "<div class='pull-right'><a class='splitTransaction'>Split Transaction</a></div>";
     rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " records)</span>";
+     
+    //FIXME 
+    // if(!liveTransaction.state) rowMarkup += splitTemplate;
+    rowMarkup += splitTemplate;
     return rowMarkup; 
   }
-
-
 
   function groupByAccount() {
     dataview.setGrouping({
       getter: "account_id",
       formatter: function(g) {
-        return "<span style='font-weight: bold'>" + ( $scope.model.account ? $scope.model.account.get(g.value).account_txt : g.value) + "</span>";
+        var account_txt = $scope.model.account.get(g.rows[0].account_number).account_txt || "";
+        return "<span style='font-weight: bold'>" + ( $scope.model.account ? account_txt : g.value) + "</span>";
       },
       aggregators: [
         new Slick.Data.Aggregators.Sum("debit"),
@@ -264,10 +281,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     return $filter('date')(item);
   }
 
-  // function formatBtn() {
-  //   return "<a class='ng-scope' ng-click='splitTransaction()'><span class='glyphicon glyphicon-th-list'></span></a>";
-  // }
-
   function totalFormat(totals, column) {
 
     var format = {};
@@ -293,17 +306,77 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     if(groupMap[targetGroup]) groupMap[targetGroup]();
   }
 
-  function handleClick(className) { 
+  function handleClick(className, args) { 
     var buttonMap = { 
       'addLine': newLine,
-      'submitTransaction': submitTransaction
+      'submitTransaction': submitTransaction,
+      'splitTransaction': splitTransaction,
+      'split': split,
+      'submitSplit': submitSplit
     }
-    if(buttonMap[className]) buttonMap[className]();
+    if(buttonMap[className]) buttonMap[className](args);
+  }
+
+  function splitTransaction(args) { 
+    var transaction = dataview.getItem(args.row), transactionId = Number(transaction.groupingKey), templateRow = transaction.rows[0];
+    if(!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
+    if(liveTransaction.state) return $rootScope.$apply(messenger.info('Transaction ' + liveTransaction.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
+
+    liveTransaction.state = "split";
+    liveTransaction.transaction_id = transactionId;
+    
+    liveTransaction.origin = { 
+      'debit' : transaction.totals.sum.debit,
+      'credit' : transaction.totals.sum.credit,
+      'debit_equiv' : transaction.totals.sum.debit_equiv,
+      'credit_equiv' : transaction.totals.sum.credit_equiv
+    }
+
+    liveTransaction.records = [];
+
+    liveTransaction.template = { 
+      trans_id: transactionId,
+      date: templateRow.trans_date,
+      description: templateRow.description,
+      account_number: "(Select Account)",
+      debit_equiv: 0, 
+      credit_equiv: 0,
+      deb_cred_type: templateRow.deb_cred_type,
+      deb_cred_id: templateRow.deb_cred_id,
+      inv_po_id: templateRow.inv_po_id
+    }
+    
+    transaction.rows.forEach(function(row) { 
+      row.newTransaction = false;
+      liveTransaction.records.push(row);
+    });
+
+    console.log(liveTransaction);
+
+    groupBy('transaction');
+    grid.render();
+    $rootScope.$apply(messenger.success('Transaction #' + transactionId)); 
+  }
+
+  function split() { 
+    var temporaryId = $scope.model.journal.generateid();
+    var newsplit = JSON.parse(JSON.stringify(liveTransaction.template));
+   
+    newsplit.id = temporaryId;
+    
+    dataview.addItem(newsplit);
+    $scope.model.journal.recalculateIndex();
+    
+    grid.scrollRowIntoView(dataview.getRowById(newsplit.id));
+  }
+  
+  function submitSplit() {
+
   }
   
   //TODO Currently checks for balance and for NULL values, should include only credits or debits etc.
   function submitTransaction() { 
-    var records = ammendTransaction.records; 
+    var records = liveTransaction.records; 
     var totalDebits = 0, totalCredits = 0; 
     var validAccounts = true;
     var packagedRecords = [];
@@ -347,7 +420,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
         deb_cred_type: record.deb_cred_type,
         origin_id: 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
         currency_id: enterpriseSettings.currency_id,
-        user_id: ammendTransaction.template.userId
+        user_id: liveTransaction.template.userId
       }
       
       packaged.account_id = $scope.model.account.get(record.account_number).id;
@@ -363,8 +436,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
 
     //submit
     $q.all(request).then(function(res) { 
-      messenger.success('Transaction posted to journal. Ref #' + ammendTransaction.template.logId);
-      ammendTransaction.state = false;
+      messenger.success('Transaction posted to journal. Ref #' + liveTransaction.template.logId);
+      liveTransaction.state = null;
       groupBy('transaction');
       grid.invalidate();
       grid.render();
@@ -373,9 +446,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   }
 
   function addTransaction(template) { 
-    var balanceTransaction, temporaryId = $scope.model.journal.generateid();
-    var initialTransaction = {
-      id: temporaryId,
+    var initialTransaction, balanceTransaction, temporaryId = $scope.model.journal.generateid();
+    var templateTransaction = {
       trans_id: template.id,
       trans_date: template.date, 
       description: template.description,
@@ -386,25 +458,26 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       deb_cred_type: "D"
     }
     
-    ammendTransaction.records = [];
+    liveTransaction.records = [];
+    
+    initialTransaction = JSON.parse(JSON.stringify(templateTransaction));
+    initialTransaction.id = temporaryId;
 
     //Duplicates object - not very intelectual
     balanceTransaction = JSON.parse(JSON.stringify(initialTransaction));
-    balanceTransaction.id = ++balanceTransaction.id; 
+    balanceTransaction.id = ++initialTransaction.id; 
     
     groupBy('transaction');
     
-    ammendTransaction.transaction_id = template.id;
-    ammendTransaction.state = true;
-    ammendTransaction.template = template;
+    liveTransaction.transaction_id = template.id;
+    liveTransaction.state = "add";
+    liveTransaction.template = templateTransaction;
     
     dataview.addItem(initialTransaction);
     dataview.addItem(balanceTransaction);
     
-    ammendTransaction.records.push(initialTransaction);
-    ammendTransaction.records.push(balanceTransaction);
-
-    document.ammendTransaction = ammendTransaction;
+    liveTransaction.records.push(initialTransaction);
+    liveTransaction.records.push(balanceTransaction); 
     grid.scrollRowToTop(dataview.getRowById(initialTransaction.id));
   }
 
@@ -412,22 +485,11 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
 
     $scope.model.journal.recalculateIndex();
     var temporaryId = $scope.model.journal.generateid();
-    var template = ammendTransaction.template;
-    var transactionLine = {
-      id: temporaryId,
-      trans_id: template.id,
-      trans_date: template.date, 
-      description: template.description,
-      debit_equiv: 0,
-      credit_equiv: 0,
-      account_number: "(Select Account)",
-      deb_cred_id: "(Select Debtor)",
-      deb_cred_type: "D"
-    }
-    
-    ammendTransaction.records.push(transactionLine);
+    var transactionLine = JSON.parse(JSON.stringify(liveTransaction.template));
 
-    // $scope.model.journal.put(transactionLine);
+    transactionLine.id = temporaryId;
+    liveTransaction.records.push(transactionLine);
+
     dataview.addItem(transactionLine);
     grid.scrollRowToTop(dataview.getRowById(transactionLine.id));
   }
@@ -439,7 +501,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   //$timeout(init, 100);
  
   function openTransaction() { 
-    if(!ammendTransaction.state) { 
+    if(!liveTransaction.state) { 
       var verifyTransaction = $modal.open({ 
         templateUrl: "verifyTransaction.html",
         controller: 'verifyTransaction',

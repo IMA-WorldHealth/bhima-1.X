@@ -14,7 +14,7 @@
 
   <div class="pull-left">
     <!-- FIXME remove style hack -->
-    <button style="margin-left: 5px;" ng-disabled="ammendTransaction.state" ng-click="openTransaction()" class="btn btn-sm btn-default">Add Transaction <small ng-show="ammendTransaction.state" style="color: red;">Transaction ({{ammendTransaction.transaction_id}}) in progress</small></button> 
+    <button style="margin-left: 5px;" ng-disabled="liveTransaction.state" ng-click="openTransaction()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-plus"></span> Add Transaction <small ng-show="liveTransaction.state" style="color: red;">Transaction ({{liveTransaction.transaction_id}}) in progress</small></button> 
   </div>
 
   <!-- <button ng&#45;click="groupByID()" class="capital btn btn&#45;default btn&#45;sm"><span class="glyphicon glyphicon&#45;sort&#45;by&#45;attributes"></span> {{'TRANSACTION' | translate}}</button> -->
@@ -42,7 +42,7 @@
 <!-- <input type='text' ng&#45;model='account_id' typeahead='thing as thing.val for thing in thislist | filter: $viewValue' placeholder='Account Id' class='form&#45;kapok'> -->
   <div class="row">
     <div class="col-xs-12">
-      <div id="journal_grid" class="grid" style="height: 530px; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"><!--Content populated with controller--></div>
+      <div id="journal_grid" class="grid" style="height: 520px; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"><!--Content populated with controller--></div>
     </div>
   </div>
 </div>
