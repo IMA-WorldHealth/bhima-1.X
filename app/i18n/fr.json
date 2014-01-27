@@ -1,0 +1,80 @@
+{
+  "POSTING_JOURNAL" : "journal de saisie",
+  "TRANSACTION"     : "opération",
+  "ACCOUNT"         : "compte",
+  "TRIAL_BALANCE"   : "balance de vérification",
+  "GENERAL_LEDGER"  : "grand livre général",
+  "DEBIT"           : "débit",
+  "CREDIT"          : "crédit",
+  "FISCAL_YEAR"     : "annee fiscal",
+  "ENTERPRISE"      : "enterprise",
+
+  "CONFIGURE" : "configurer",
+  "PRINT"     : "imprimer",
+  "CREATE"    : "créer",
+
+  "ID"          : "id",
+  "DATE"        : "date",
+  "DESCRIPTION" : "description",
+
+  "SAVE"   : "enregistrer",
+  "DELETE" : "soupprimer",
+  "NEW"    : "nouvelle",
+  "CANCEL" : "retourner",
+
+  "MANAGEMENT" : "gestion",
+
+  "DOC_NO"           : "doc no.",
+  "DEB_CRED_ACCOUNT" : "debitor/creditor account",
+  "DEB_CRED_TYPE"    : "debitor/creditor type",
+  "INV_PO_NO"        : "inv/PO no.",
+
+  "UP_TITLE"         : "gestion des utilisateurs et permissions",
+  "FIRST_NAME"       : "prenom",
+  "LAST_NAME"        : "postnom",
+  "EMAIL"            : "email",
+  "USER_NAME"        : "nom de utilisateur",
+  "PASSWORD"         : "mots de pass",
+  "CONFIRM"          : "confirmer",
+  "ALL"              : "tous",
+  "REGISTERED_USERS" : "utilisateurs",
+  "CHECK"            : "crocher",
+  "UNITS"            : "modules",
+  "USER"             : "utilisateur",
+  "PERMISSION"       : "permission",
+  "UP_DIALOGUE"      : "crocher les modules utilisateur ", 
+  "UP_DIALOGUE_2"    : "peut acceder",
+
+  
+  "NAME"         : "nom",
+  "CASH_ACCOUNT" : "compte caisse",
+  "LOCATION"     : "location",
+  "PHONE"        : "téléphone",
+  "ABBREVIATION" : "abbreviation",
+
+  "FISCAL_YEAR_PAGE_NEW"                 : "Nouvelle Annee Fiscale",
+  "FISCAL_YEAR_PAGE_DESC"                : "Desc Annee.",
+  "FISCAL_YEAR_PAGE_STARTMONTH"          : "Debut Mois",
+  "FISCAL_YEAR_PAGE_ONEYEAR"             : "Une Annee",
+  "FISCAL_YEAR_PAGE_SPECIFY"             : "Specifier",
+  "FISCAL_YEAR_PAGE_ENDMONTH"            : "Fin Mois",
+  "FISCAL_YEAR_PAGE_SUBMIT"              : "Soumettre",
+  "FISCAL_YEAR_PAGE_NAME"                : "Nom",
+  "FISCAL_YEAR_PAGE_LOCK"                : "Bloquer Cette Annee Fiscale",
+  "FISCAL_YEAR_PAGE_TOTALMONTH"          : "Total Mois",
+  "FISCAL_YEAR_PAGE_FIRSTVOUCHER"        : "Premier No Voucher",
+  "FISCAL_YEAR_PAGE_LASTVOUCHER"         : "Dernier No Voucher.",
+  "FISCAL_YEAR_PAGE_POSTINGFROM"         : "Poster De",
+  "FISCAL_YEAR_PAGE_POSTINGTO"           : "Poster jusqu\"au",
+  "FISCAL_YEAR_PAGE_PERIODS"             : "Periodes",
+  "FISCAL_YEAR_PAGE_FISCALYEARSELECTION" : "Selection de l\"Annee Fiscale",
+  "FISCAL_YEAR_PAGE_DESCRIPTION"         : "Description",
+  "FISCAL_YEAR_PAGE_ALERTPARTONE"        : "Il n\"y a aucune annee fiscale enregistree pour l\"entraprise ",
+  "FISCAL_YEAR_PAGE_ALERTTWO"            : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports.",
+
+
+  "ACCOUNT_PAGE_TITLE" : "Tableau des Comptes",
+  "ACCOUNT_PAGE_ADD"   : "Ajouter un Compte",
+
+  "DEBTOR_GROUP" : "Debitor Group"
+}

@@ -160,6 +160,12 @@
     //TODO Configurations loaded from files on the server (pointed to by database?)
     //TODO Review how translations should be split - functionality, unit, etc.
     //TODO Review i18n and determine if this it the right solution
+    $translateProvider.useStaticFilesLoader({
+      prefix: '/i18n/',
+      suffix: '.json'
+    });
+
+    /*
     $translateProvider.translations('en', {
       //Accounting terminology
       POSTING_JOURNAL: 'posting journal',
@@ -253,6 +259,7 @@
 
 
     });
+    
 
     $translateProvider.translations('fr', {
       //Accounting terminology
@@ -405,6 +412,7 @@
       DEBTOR_GROUP : 'Lobi'
 
     });
+   */
     
     //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('en');
