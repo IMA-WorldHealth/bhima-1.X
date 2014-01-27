@@ -369,7 +369,7 @@ create table `convention` (
 drop table if exists `kpk`.`price_list`;
 create table `kpk`.`price_list` (
   enterprise_id   smallint unsigned not null,
-  id              smallint  unsigned not null,
+  id              smallint  unsigned not null auto_increment,
   name            varchar(100) not null,
   inventory_type  smallint unsigned, -- these are not strict requirements, just for ease.
   inventory_group smallint unsigned, -- this as well.
@@ -447,6 +447,37 @@ create table `debitor` (
   key `convention_id` (`convention_id`),
   constraint foreign key (`group_id`) references `debitor_group` (`id`),
   constraint foreign key (`convention_id`) references `convention` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`patient_group`
+--
+drop table if exists `patient_group`;
+create table `kpk`.`patient_group` (
+  enterprise_id   smallint unsigned not null,
+  id              mediumint unsigned not null auto_increment,
+  price_list_id   smallint unsigned not null,
+  name            varchar(60) not null,
+  note            text,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `price_list_id` (`price_list_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`price_list_id`) references `price_list` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`debitor_patient_group`
+--
+drop table if exists `debitor_patient_group`;
+create table `debitor_patient_group` (
+  `debitor_id`          int unsigned not null,
+  `patient_group_id`    int unsigned not null,
+  primary key (`debitor_id`, `patient_group`),
+  key `debitor_id` (`debitor_id`),
+  key `patient_group_id` (`patient_group_id`),
+  constraint foreign key (`debitor_id`) references `debitor`,
+  constraint foreign key (`patient_group_id`) references `patient_group_id`
 ) engine=innodb;
 
 --
@@ -971,12 +1002,12 @@ create table `kpk`.`period_total` (
 --
 drop table if exists `kpk`.`price_list_detail`;
 create table `kpk`.`price_list_detail` (
-  id              int unsigned not null,
+  id              int unsigned not null auto_increment,
   list_id         smallint unsigned not null,
   inventory_id    int unsigned not null,
-  price           decimal(19, 2) unsigned not null default 0,
-  discount        decimal(3, 2) unsigned not null default 0,
-  note            text, 
+  amount          decimal(19, 2) unsigned not null default 0,
+  percent         boolean not null default 0,
+  note            text,
   primary key (`id`),
   key `inventory_id` (`inventory_id`),
   key `list_id` (`list_id`),

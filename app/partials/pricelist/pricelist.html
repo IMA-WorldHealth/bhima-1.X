@@ -2,130 +2,182 @@
   <span>Configure Price Lists</span>
 </header>
 
+<section class="underline">
+  <button class="btn btn-sm btn-default" ng-click="addList()"><i class="glyphicon glyphicon-file"></i> New Price List</button>
+</section>
+
 <div class="content">
 
-  <tabset direction='left'>
-    <tab>
-      <tab-heading><i class="glyphicon glyphicon-eye-open"></i></tab-heading>
-      <div class="content">
-        <table class="table">
+  <div class="row">
+    <div class="col-xs-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span>Actions</span>
+        </div>
+        <table class="table table-condensed table-bordered">
           <thead>
-            <tr><th>Name</th><th>Number of Items</th></tr>
+            <tr>
+              <th>Name</th>
+              <th>Number of Items</th>
+              <th colspan="3" style="width: 20%;">Actions</th>
+            </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="list in models.lists">
-              <td>{{ list.name }}</td>
-              <td>{{ list.count }}</td>
+            <tr ng-repeat="list in lists.data">
+              <td> {{ list.name }} </td>
+              <td> {{ list.count }} </td>
+              <td><a class="btn btn-sm btn-default" ng-click="editMeta(list)" href=""><i class="glyphicon glyphicon-cog"></i></a></td>
+              <td><a class="btn btn-sm btn-default" ng-click="editItems(list)" href=""><i class="glyphicon glyphicon-list-alt"></i></a></td>
+              <td><a class="btn btn-sm btn-default" ng-click="removeList(list)" href=""><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
         </table>
-      </div> 
-    </tab>
+      </div>
+    </div>
 
-    <tab>
-      <tab-heading><i class="glyphicon glyphicon-plus"></i></tab-heading>
-      <div class="content">
-        <form class="form-horizontal">
+    <div class="col-xs-8" ng-switch="action">
+
+      <div class="alert alert-info" ng-switch-default>
+        <b>Inventory Control</b> 
+        <p>Select an action on the left to edit list items.</p>
+        <ul style="list-style-type: none; padding-left: 15px;">
+          <li><i class="glyphicon glyphicon-cog"></i>  Edit the price list's metadata </li>
+          <li><i class="glyphicon glyphicon-list-alt"></i>  Edit the price list's items</li>
+          <li><i class="glyphicon glyphicon-trash"></i>  Remove the price list</li>
+        </ul>
+        </p>
+      </div>
+      
+      <div ng-switch-when="meta">
+        <form name="editPriceList" class="form-horizontal">
           <fieldset>
-            <legend>Add a New Price List</legend>
+
+            <legend>Editting Price List Metadata</legend>
 
             <div class="form-group">
-              <label class="col-xs-2 control-label required">List Name</label>
-              <div class="col-xs-4">
-                <input class="form-kapok" ng-model="new.name" required="required">
+              <label class="col-xs-2 control-label required"> Name </label>
+              <div class="col-xs-5">
+                <input class="form-kapok" ng-model="edit.name">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-xs-2 control-label">Inventory Type</label>
-              <div class="col-xs-4">
-                <select class="form-kapok" ng-model="new.type_id" ng-options="type.id as type.text for type in models.inventory_types" required="required">
-                  <option disabled="disabled" value="">-- Select An Inventory Type --</option>
+              <label class="col-xs-2 control-label"> List Type </label>
+              <div class="col-xs-5">
+                <select class="form-kapok" ng-model="edit.inventory_type" ng-options="type.id as type.text for type in types.data">
+                  <option value=""> -- Select a List Type --</option>
                 </select>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-xs-2 control-label">Inventory Group</label>
-              <div class="col-xs-4">
-                <select class="form-kapok" ng-model="new.group_id" ng-options="group.id as group.name for group in models.inventory_groups" required="required">
-                  <option disabled="disabled" value="">-- Select An Inventory Group --</option>
+              <label class="col-xs-2 control-label"> List Group </label>
+              <div class="col-xs-5">
+                <select class="form-kapok" ng-model="edit.inventory_group" ng-options="group.id as group.name for group in groups.data">
+                  <option value=""> -- Select a List Group --</option>
                 </select>
               </div>
             </div>
-          
-            <input class="btn btn-sm btn-success" value="Save" type="submit">
-            <input class="btn btn-sm btn-default" value="Clear" type="reset">
+
+            <input type="submit" class="btn btn-sm btn-success" ng-click="saveMeta()">
+            <input type="reset" class="btn btn-sm btn-default" ng-click="resetMeta()">
+
           </fieldset>
         </form>
       </div>
-    </tab>
 
-    <tab>
-      <tab-heading><i class="glyphicon glyphicon-pencil"></i></tab-heading>
-      <div class="content">
-        <div class="row">
-          <div class="col-xs-3">
-            <select class="form-kapok" ng-model="editing.id" ng-options="list.id as list.name for list in models.lists">
-              <option disabled="disabled" class="form-kapok" value="">-- Select A Price List--</option>
-            </select>
+      <div ng-switch-when="add">
+        <form name="editPriceList" class="form-horizontal">
+          <fieldset>
+
+            <legend>Add a Price List</legend>
+
+            <div class="form-group">
+              <label class="col-xs-2 control-label required"> Name </label>
+              <div class="col-xs-5">
+                <input class="form-kapok" ng-model="add.name">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-xs-2 control-label"> List Type </label>
+              <div class="col-xs-5">
+                <select class="form-kapok" ng-model="add.inventory_type" ng-options="type.id as type.text for type in types.data">
+                  <option value=""> -- Select a List Type --</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-xs-2 control-label"> List Group </label>
+              <div class="col-xs-5">
+                <select class="form-kapok" ng-model="add.inventory_group" ng-options="group.id as group.name for group in groups.data">
+                  <option value=""> -- Select a List Group --</option>
+                </select>
+              </div>
+            </div>
+
+            <input type="submit" class="btn btn-sm btn-success" ng-click="saveAdd()">
+            <input type="reset" class="btn btn-sm btn-default" ng-click="resetAdd()">
+
+          </fieldset>
+        </form>
+      </div>
+
+      <div ng-switch-when="item">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <span> <b>Details</b> </span>
+            <span>
+              <a href="" class="btn btn-sm btn-default" ng-click="addItem()" ng-disabled="!canSave">Add an Item</a>
+              <a href="" class="btn btn-sm btn-default" ng-click="saveList()" ng-disabled="!canSave">Save List</a>
+            </span>
           </div>
-          <button class="btn btn-default btn-sm" ng-disabled="!editing.id" ng-click="newItem()">+</button>
-        </div>
 
-        <div class="row">
-          <div class="alert alert-info" ng-if="!editing.id" style="margin-top: 5px;">
-            <b>No Price List Selected.</b>
-            <p>
-              The struggle lives on.  We will fight on the beaches.  We will fight on the hills.  We will never
-              surrender.  Keep it up soldier.
-            </p>
-          </div> 
-
-          <table ng-if="!!editing.id" class="table">
+          <table class="table table-bordered table-condensed">
             <thead>
-              <tr><th>ID</th><th>Inventory Item</th><th>Price</th><th>Discount</th><th>Note</th></tr>
+              <tr>
+                <th style="width: 25%;">Inventory Item</th>
+                <th style="width: 25%;">Price</th>
+                <th style="width: 5%;">Discount</th>
+                <th style="width: 35%;">Note</th>
+                <th colspan="2">Actions</th>
+              </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="detail in models.details">
-                <td>{{detail.id}}</td>
-                <td>{{detail.inventory_id}}</td>
-                <td>{{detail.price}}</td>
-                <td>{{detail.discount}}</td>
-                <td>{{detail.note}}</td>
+              <tr ng-repeat="detail in details.data">
+
+                <td ng-show="!detail.editing">{{ inventory.get(detail.inventory_id).code }}</td>
+                <td style="padding: 0; margin: 0;" ng-hide="!detail.editing">
+                  <select class="form-kapok" ng-model="detail.inventory_id" ng-options="item.id as item.code for item in inventory.data | filter:filterInventory">
+                    <option value="">-- Select an Inventory Item --</option>
+                  </select>
+                </td>
+
+                <td ng-show="!detail.editing">{{detail.amount}}</td> <!-- flag for boolean if price -->
+                <td style="padding: 0; margin: 0;" ng-hide="!detail.editing">
+                  <input type="number" class="form-kapok" ng-model="detail.amount">
+                </td> 
+
+                <td style="padding: 0; margin: 0;">
+                  <div style="text-align: center; vertial-align: middle;">
+                    <input style="vertial-align: middle;" type="checkbox" ng-checked="!!detail.percent" ng-true-value="1" ng-false-value="0" ng-model="detail.percent" ng-disabled="!detail.editing">
+                  </div>
+                </td>
+
+                <td ng-show="!detail.editing">{{detail.note}}</td>
+                <td style="padding: 0; margin: 0;" ng-hide="!detail.editing">
+                  <input type="text" class="form-kapok" ng-model="detail.note">
+                </td>
+
+                <td style="padding: 0; margin: 0;"><a href="" class="btn btn-sm" ng-class="{'btn-success' : !!detail.editing, 'btn-default' : !detail.editing, 'btn-warning' : !detail.editing && !isValid(detail)}" ng-click="detail.editing=!detail.editing"><i class="glyphicon" ng-class="{'glyphicon-floppy-disk' : !!detail.editing, 'glyphicon-pencil' : !detail.editing}"></i></button></td>
+                <td style="padding: 0; margin: 0;"><a href="" class="btn btn-sm btn-danger" ng-click="removeItem($index)"><i class="glyphicon glyphicon-trash"></i></a></td>
+
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-    </tab>
-
-    <tab>
-      <tab-heading><i class="glyphicon glyphicon-trash"></i></tab-heading>
-      <div class="content">
-
-        <div class="col-xs-6">
-          <table class="table table-condensed table-hover">
-            <thead>
-              <th>Price Lists</th><th>Number of Items</th>
-            </thead>
-            <tbody>
-              <tr ng-repeat="list in models.lists" ng-click="data.select==list.id" ng-class="{selected : data.select==list.id}">
-                <td>{{ list.name }}</td>
-                <td>{{ list.count }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="col-xs-6">
-          <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-list"></i> Delete Price List</button>
-          <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-list-alt"></i> Delete Price List Items</button>
-        </div>
-
-      </div>
-
-    </tab>
-  </tabset>
-
+    </div>
+  </div>
 </div>
