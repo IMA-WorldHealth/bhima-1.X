@@ -107,7 +107,7 @@ INSERT INTO `unit` VALUES
   (57,'Income Expensive Balance', '', 10, 0, 'partials/reports/income_expensive/', 'reports/income_expensive/'),
   (58,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'),
   (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
-  (60,'Patient Group', '', 21, 0, 'partials/patien_group/', 'patien_group/'); 
+  (60,'Patient Group Assingning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'); 
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
