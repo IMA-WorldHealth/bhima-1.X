@@ -100,7 +100,8 @@ INSERT INTO `unit` VALUES
   (55,'Debitor Aging', '', 10, 0, 'partials/reports/debitor_aging/', 'reports/debitor_aging/'),
   (56,'Account Statement By Period', '', 10, 0, 'partials/reports/account_statement/', 'reports/account_statement/'),
   (57,'Income Expensive Balance', '', 10, 0, 'partials/reports/income_expensive/', 'reports/income_expensive/'),
-  (58,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'); 
+  (58,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'),
+  (59,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'); 
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
@@ -195,6 +196,9 @@ insert into `permission` (`id_unit`, `id_user`) values
   (54,1),
   (55,1),
   (56,1),
+  (57,1),
+  (58,1),
+  (59,1),
   (1,13),
   (2,13),
 	(4,13),
