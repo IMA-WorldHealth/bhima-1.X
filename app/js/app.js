@@ -28,7 +28,7 @@
       templateUrl: 'partials/fiscal/fiscal.html'
     }).
     when('/patient', { 
-      controller: 'patientRegController',
+      controller: 'patientRegistration',
       templateUrl: 'partials/patient_registration/patient.html'
     }).
     when('/debitor/debitor_group', {

@@ -45,10 +45,10 @@
 }
 
 .content {
-  max-height: 580px;
-  overflow-y: auto;
+  /* max-height: 580px; */
+  /* overflow-y: auto; */
   /*Hack*/
-  margin-right: 15px;
+  /* margin-right: 15px; */
 }
 
 #image-placeholder {

@@ -13,6 +13,20 @@
 </section>
 
 <div class="content">
+  <div class="col-xs-12">
+    <div class="row">
+      <div class="col-lg-offset-1 col-lg-10">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-user"></span> Patient Details
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
   <div class="row">
     <div class="col-xs-4">
         <div class="panel panel-primary">
@@ -65,7 +79,7 @@
               <div class="form-group">
                 <label for="location-country" class="capital">{{ 'COUNTRY' | translate }}</label>
                 <select required class="form-kapok" id="location-country" ng-model="data.country_id"
-                        ng-options="c.id as c.country_en for c in models.country">
+                        ng-options="c.id as c.country_en for c in model.country.data">
                   <option value="" disabled="disabled">-- Select Country--</option>
                 </select>
               </div>
@@ -73,7 +87,7 @@
               <div class="form-group">
                 <label for="location-province" class="capital">{{ 'PROVINCE' | translate }}</label>
                 <select required class="form-kapok" id="location-province" ng-model="data.province_id"
-                        ng-options="p.id as p.name for p in models.province">
+                        ng-options="p.id as p.name for p in model.province.data">
                   <option value="" disabled="disabled">-- Select Province --</option>
                 </select>
               </div>
@@ -81,7 +95,7 @@
               <div class="form-group">
                 <label for="location-sector" class="capital">{{ 'SECTOR' | translate }}</label>
                 <select required class="form-kapok" id="location-sector" ng-model="data.sector_id"
-                        ng-options="s.id as s.name for s in models.sector">
+                        ng-options="s.id as s.name for s in model.sector.data">
                   <option value="" disabled="disabled">-- Select Sector --</option>
                 </select>
               </div>
@@ -93,7 +107,7 @@
                   class="form-kapok"
                   id="location-country"
                   ng-model="data.village_id"
-                  typeahead="v.id as v.name for v in models.village | filter:$viewValue | filter:villageFilter | limitTo: 10"
+                  typeahead="v.id as v.name for v in model.village.data | filter:$viewValue | filter:villageFilter | limitTo: 10"
                   typeahead-on-select="selectLocation()"
                   typeahead-input-formatter="formatTypeAhead()"
                   required >
@@ -101,7 +115,7 @@
 
               <div class="form-group">
                 <label for="debtor-group">{{'DEBTOR_GROUP' | translate}}</label>
-                <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtor_group_model.data">
+                <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
                   <option value="" disabled="disabled">-- Select Group --</option>
                 </select>
               </div>
