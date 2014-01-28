@@ -998,8 +998,8 @@ create table `kpk`.`price_list_detail` (
   primary key (`id`),
   key `inventory_id` (`inventory_id`),
   key `list_id` (`list_id`),
-  constraint foreign key (`inventory_id`) references `inventory` (`id`),
-  constraint foreign key (`list_id`) references `price_list` (`id`)
+  constraint foreign key (`inventory_id`) references `inventory` (`id`) on delete cascade,
+  constraint foreign key (`list_id`) references `price_list` (`id`) on delete cascade
 ) engine=innodb;
 
 -- Jon's dump @ 12:45.
