@@ -102,7 +102,22 @@ angular.module('kpk.controllers')
     $scope.add = {}; 
   };
 
+
+  // This is a hack to make sure that everything stays fine
+  // when deleting a list you are currently editing.
   $scope.removeList = function (list) {
+    if ($scope.detail_list && list.id === $scope.detail_list.id) {
+      var bool = confirm("Are you sure you want to delete all the subitems?");
+      if (!bool) return;
+      connect.basicDelete('price_list', list.id)
+      .then(function (success) {
+        messenger.success('Delete the price list.');
+        $scope.lists.remove(list.id);
+      }, function (err) {
+        messenger.danger('Error:' + JSON.stringify(err)); 
+      });
+      $scope.action = 'default';
+    }
     connect.basicDelete('price_list', list.id)
     .then(function (success) {
       messenger.success('Delete the price list.');
@@ -168,7 +183,6 @@ angular.module('kpk.controllers')
 
   $scope.isValid = function (item) {
     return angular.isDefined(item.inventory_id) &&
-      angular.isDefined(item.note) &&
       angular.isDefined(item.amount);
   };
 
