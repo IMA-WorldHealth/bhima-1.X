@@ -5,7 +5,7 @@ angular.module('kpk.controllers')
   var queryEnterprise = {
     'tables' : { 
       'enterprise' : {
-        'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'cash_account', 'currency_id'] }
+        'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id'] }
     }
   };
   

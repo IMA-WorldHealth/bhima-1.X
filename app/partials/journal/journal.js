@@ -1,5 +1,5 @@
 //TODO Lot's of hardcoded areas throughout editing process (marked with fixme). State is dependent on strings etc.
-angular.module('kpk.controllers').controller('journal', function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, printer, messenger, appstate) {
+angular.module('kpk.controllers').controller('journal', function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, messenger, appstate) {
   var dependencies = {}, liveTransaction = $scope.liveTransaction = {};
   var grid, dataview, sort_column, columns, options;
 
@@ -492,13 +492,15 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
         description: record.description,
         debit: record.debit_equiv,
         credit: record.credit_equiv,
-        debit_equiv: record.debit_equiv,
+        debit_equiv: record.debit_equiv, 
         credit_equiv: record.credit_equiv,
         deb_cred_type: record.deb_cred_type,
         origin_id: 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
         currency_id: record.currency_id,
         user_id: liveTransaction.template.userId
       }
+
+      console.log(packaged);
   
       packaged.account_id = $scope.model.account.get(record.account_number).id;
       if(!isNaN(Number(record.deb_cred_id))) {
