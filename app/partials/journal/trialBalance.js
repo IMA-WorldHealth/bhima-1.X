@@ -1,6 +1,10 @@
-angular.module('kpk.controllers').controller('trialBalance', function ($scope, $modalInstance, request, ids, connect, messenger) {
+angular.module('kpk.controllers')
+.controller('trialBalance', function ($scope, $modalInstance, request, connect, messenger) {
+  console.log('Recieved data:', request, 'from server!');
+
+  $scope.errors = request.errors;
+  $scope.hasErrors = !!request.errors.length;
   $scope.data = request.data;
-  $scope.errors = [].concat(request.postErrors, request.sysErrors);
 
   var total = $scope.total = {};
 
@@ -14,8 +18,7 @@ angular.module('kpk.controllers').controller('trialBalance', function ($scope, $
   });
 
   $scope.ok = function () {
-    ids =  ids.filter(function (id) { return angular.isDefined(id); });
-    connect.fetch('/post/'+ request.key +'/?q=(' + ids.toString() + ')')
+    connect.fetch('/post/'+ request.key +'/')
     .then(function () {
       $modalInstance.close();
     }, function (error) {

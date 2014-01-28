@@ -221,43 +221,21 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     dataview.setGrouping({});
   };
 
-  function getRowData (row_array) {
-    return row_array.map(function (id) {
-      return grid.getDataItem(id);
-    });
-  }
-
-  function getTxnIds(data) {
-    var txn_ids = data.map(function (item) {
-      return item.trans_id;
-    });
-    return txn_ids.filter(function (v, i) { return txn_ids.indexOf(v) === i; });
-  }
-
-  $scope.trial = function () {
-
+  $scope.trialBalance = function () {
+    // Runs the trial balance
     // first, we need to validate that all items in each trans have been
     // selected.
 
-    if (!$scope.rows || !$scope.rows.length) return messenger.danger('No rows selected!');
-    
-    var selected = getRowData($scope.rows);
-    var transaction_ids = getTxnIds(selected);
+    messenger.warning('Trial Balance in progress ...');
 
-    messenger.warning('Posting data from transactions (' + transaction_ids.toString() + ')');
-
-    connect.fetch('/trial/?q=(' + transaction_ids.toString() + ')')
-    .then(function (data) {
-      messenger.success('Trial balance run!');
+    connect.fetch('/trial/')
+    .then(function (res) {
       var instance = $modal.open({
         templateUrl:'trialBalanceModal.html',
         controller: 'trialBalance',
         resolve : {
           request: function () {
-            return data.data;
-          },
-          ids : function () {
-            return transaction_ids;
+            return res.data;
           }
         }
       });
