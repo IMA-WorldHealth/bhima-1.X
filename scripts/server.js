@@ -66,6 +66,8 @@ app.put('/data/', function (req, res, next) {
 
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
+  
+  console.log('post', req.body.t, req.body.data[0]);
   var insertsql = parser.insert(req.body.t, req.body.data[0]);  
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
@@ -126,18 +128,18 @@ app.get('/journal/:table/:id', function (req, res, next) {
   });
 });
 
-/*
-app.post('/journal', function (req, res, next) {
-  // What are the params here?
-  journal.poster(req, res, next); 
-});
-*/
+//FIXME receive any number of tables using regex
+app.get('/max/:id/:table/:join?', function(req, res) { 
+  var id = req.params.id, table = req.params.table, join = req.params.join;
+  
+  var max_request = "SELECT MAX(" + id + ") FROM ";
 
-app.get('/max/:id/:table', function(req, res) { 
-  var id = req.params.id;
-  var table = req.params.table;
-
-  var max_request = "SELECT MAX(" + id + ") FROM " + table;
+  max_request += "(SELECT MAX(" + id + ") AS `" + id + "` FROM " + table;
+  if(join) {
+    max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;"
+  } else { 
+    max_request += ")a;";
+  }
 
   db.execute(max_request, function(err, ans) { 
     if (err) {
