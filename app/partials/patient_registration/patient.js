@@ -30,6 +30,27 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
 
   function patientRegistration(model) { 
     $scope.model = model;
+    // handlePatientImage();
+  }
+    
+  function handlePatientImage() { 
+
+    //FIXME This is super cheeky in angular - create a directive for this
+    var video = document.querySelector('#patientImage'), patientResolution = { video : { mandatory : { minWidth: 300, maxWidth: 400 } } };
+    
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+    
+    if (navigator.getUserMedia) {       
+        navigator.getUserMedia(patientResolution, handleVideo, videoError);
+    }
+    
+    function handleVideo(stream) {
+        video.src = window.URL.createObjectURL(stream);
+    }
+    
+    function videoError(error) {
+      throw error;
+    }
   }
 
 	$scope.$watch('patient.yob', function(nval, oval) {
