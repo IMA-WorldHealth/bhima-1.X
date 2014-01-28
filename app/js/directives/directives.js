@@ -42,6 +42,14 @@
     
     }])
 
+    .directive('selectSearch', ['$compile', function($compile) { 
+      return {
+        link: function(scope, element, attrs) { 
+          
+        }
+      };
+    }])
+
     .directive('reportGroupCompile', ['$compile', function($compile) { 
 
       //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation 
