@@ -28,11 +28,11 @@ angular.module('kpk.controllers')
       tables : {
         "patient" : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id"]},
         "debitor" : { columns : ["text"]},
-        "debitor_group" : {columns : ["price_list_id"]}
+        //"debitor_group" : {columns : ["price_list_id"]}
         // "location" : {columns: ["village_id", "sector_id", "province_id", "country_id"]},
         // "village" : {columns: ["id", "name"]}
       },
-      join : ["patient.debitor_id=debitor.id", "debitor.group_id=debitor_group.id"]
+      join : ["patient.debitor_id=debitor.id"]
     };
     
     //This is stupid, location should either come with debtors (aliasing columns) or be downloaded on selection (query single location)
@@ -111,6 +111,7 @@ angular.module('kpk.controllers')
 
       var price_list;
       $scope.inventory = [];
+      /*
       if ($scope.debtor && angular.isNumber($scope.debtor.price_list_id)) {
         price_list = {
           identifier: "inventory_id",
@@ -130,10 +131,11 @@ angular.module('kpk.controllers')
           $scope.inventory_model = inv_store;
         });
       } else {
+     */
         connect.req(inventory).then(function (store) {
           $scope.inventory_model = store;
         });
-      }
+      //}
 
       $scope.currentLocation = $scope.location_model.get($scope.debtor.location_id);
     };
