@@ -93,6 +93,8 @@
         //Test models
         
         deferred.resolve(dependencies.model);
+      }, function(err) { 
+        deferred.reject(err);   
       });
       return deferred.promise;
     }
@@ -126,6 +128,8 @@
       //Response
       $q.all(promiseList).then(function(res) { 
         deferred.resolve(res); 
+      }, function(err) { 
+        deferred.reject(err);  
       });
       return deferred.promise;
     } 
