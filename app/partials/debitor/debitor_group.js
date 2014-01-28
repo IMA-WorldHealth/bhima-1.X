@@ -11,7 +11,7 @@ angular.module('kpk.controllers')
   imports.enterprise_id = appstate.get('enterprise').id;
  
   imports.debitor_group = {
-    tables : { 'debitor_group' : { columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'price_list_id', 'tax_id', 'max_credit', 'type_id']}},
+    tables : { 'debitor_group' : { columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'type_id']}},
     where : ['debitor_group.enterprise_id=' + imports.enterprise_id]
   };
 
@@ -24,16 +24,14 @@ angular.module('kpk.controllers')
 
 
   imports.type = {tables : { 'debitor_group_type' : { columns : ['id', 'type']}}};
-  imports.price_list = {tables : { 'price_list' : { columns : ['id', 'name']}}};
 
-  var dependencies = ['debitor_group', 'account', 'payment', 'type', 'price_list'];
+  var dependencies = ['debitor_group', 'account', 'payment', 'type'];
 
   $q.all([
     connect.req(imports.debitor_group),
     connect.req(imports.account),
     connect.req(imports.payment),
-    connect.req(imports.type),
-    connect.req(imports.price_list)
+    connect.req(imports.type)
   ]).then(initialize);
 
   function initialize (arr) {
