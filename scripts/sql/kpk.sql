@@ -425,10 +425,17 @@ create table `debitor_group` (
 -- Table structure for table `kpk`.`patient_group`
 --
 drop table if exists `patient_group`;
-create table `patient_group` (
-  `id`                  smallint unsigned auto_increment not null,
-  `name`                varchar(100) not null,
-  primary key (`id`)
+create table `kpk`.`patient_group` (
+  enterprise_id   smallint unsigned not null,
+  id              mediumint unsigned not null auto_increment,
+  price_list_id   smallint unsigned not null,
+  name            varchar(60) not null,
+  note            text,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `price_list_id` (`price_list_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`price_list_id`) references `price_list` (`id`)
 ) engine=innodb;
 
 
@@ -447,37 +454,6 @@ create table `debitor` (
   key `convention_id` (`convention_id`),
   constraint foreign key (`group_id`) references `debitor_group` (`id`),
   constraint foreign key (`convention_id`) references `convention` (`id`)
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`patient_group`
---
-drop table if exists `patient_group`;
-create table `kpk`.`patient_group` (
-  enterprise_id   smallint unsigned not null,
-  id              mediumint unsigned not null auto_increment,
-  price_list_id   smallint unsigned not null,
-  name            varchar(60) not null,
-  note            text,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  key `price_list_id` (`price_list_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`price_list_id`) references `price_list` (`id`)
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`debitor_patient_group`
---
-drop table if exists `debitor_patient_group`;
-create table `debitor_patient_group` (
-  `debitor_id`          int unsigned not null,
-  `patient_group_id`    int unsigned not null,
-  primary key (`debitor_id`, `patient_group`),
-  key `debitor_id` (`debitor_id`),
-  key `patient_group_id` (`patient_group_id`),
-  constraint foreign key (`debitor_id`) references `debitor`,
-  constraint foreign key (`patient_group_id`) references `patient_group_id`
 ) engine=innodb;
 
 --
@@ -540,7 +516,7 @@ create table `patient` (
 drop table if exists `assignation_patient`;
 create table `assignation_patient` (
   `id`        smallint unsigned not null auto_increment,
-  `patient_group_id`  smallint  unsigned not null,
+  `patient_group_id`  mediumint  unsigned not null,
   `patient_id` int unsigned not null,
   primary key (`id`),
   key `patient_group_id` (`patient_group_id`),
@@ -928,6 +904,17 @@ create table `posting_journal` (
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on update cascade,
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade
+) engine=innodb;
+
+-- TODO Reference user table
+drop table if exists `journal_log`;
+create table `journal_log` (
+  `id`              int unsigned not null auto_increment,
+  `cost`            decimal(19, 2) unsigned not null,
+  `transaction_id`  int unsigned not null,
+  `note`            text,
+  `user_id`         smallint unsigned not null,
+  primary key (`id`)
 ) engine=innodb;
 
 --

@@ -51,7 +51,7 @@ insert into `user` values
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
 
-  insert into `patient_group` values (1, 'AIDS'), (2, 'Pregnant');
+
 
 
 
@@ -1099,10 +1099,7 @@ insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `do
 
 insert into `inv_unit` (`text`) values
   ('Act'),
-	('Pallet'),
-	('Pill'),
-	('Box'),
-	('Lot');
+	('Pallet'), ('Pill'), ('Box'), ('Lot');
 
 insert into `inv_type` values
   (0,'Article'),
@@ -1148,9 +1145,12 @@ insert into `department` values
 insert into `transaction_type` values 
   (1, 'cash'),
 	(2, 'sale'),
-	(3, 'purchase');
+	(3, 'purchase'),
+  (4, 'journal');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 194, 189),
   (2, 200, 195, 190),
   (3, 200, 196, 191);
+
+-- insert into `patient_group` values (200, 1, 1,'AIDS', 'rien'), (200, 2, 1,'Pregnant', 'rien');
