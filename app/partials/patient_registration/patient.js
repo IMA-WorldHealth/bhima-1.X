@@ -1,62 +1,37 @@
-angular.module('kpk.controllers')
-.controller('patientRegController', function($scope, $q, $location, connect, $modal, appstate) {
-  'use strict';
+angular.module('kpk.controllers').controller('patientRegistration', function($scope, $q, $location, $modal, connect, validate, appstate) {
+  var dependencies = {}, submitted = false, defaultPatientId = 1;
+	$scope.patient = {}, $scope.data = {};
+  
+  dependencies.debtorGroup = { 
+    query : {'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
+  };
 
-  // set up models and stores "globally"
-  $scope.models = {};
-  $scope.data = {};
-  var stores = {};
+  dependencies.village = { 
+    query : { tables : { 'village' : { 'columns' : ['id', 'name'] }}}
+  };
 
-  var patient_model = {};
-  var submitted = false;
-  var default_patientID = 1;
-	
-	$scope.patient = {};
+  dependencies.sector = { 
+    query : { tables : { 'sector' : { 'columns' : ['id', 'name'] }}}
+  };
 
+  dependencies.province = { 
+    query : { tables : { 'province' : { 'columns' : ['id', 'name'] }}}
+  };
 
-  function init() { 
-    //register patient for appcahce namespace
-    var default_group = 3; //internal patient,
+  dependencies.country = { 
+    query : { tables : { 'country' : { 'columns' : ['id', 'country_en'] }}}
+  };
 
-    var village_req = { tables : { 'village' : { 'columns' : ['id', 'name'] }}};
-    var sector_req = { tables : { 'sector' : { 'columns' : ['id', 'name'] }}};
-    var province_req = { tables : { 'province' : { 'columns' : ['id', 'name'] }}};
-    var country_req = { tables : { 'country' : { 'columns' : ['id', 'country_en'] }}};
-    var location_req = { tables : { 'location' : { 'columns' : ['id', 'village_id', 'sector_id', 'country_id'] }}};
+  dependencies.location = { 
+    query : { tables : { 'location' : { 'columns' : ['id', 'village_id', 'sector_id', 'country_id'] }}}
+  };
 
-    var dependencies = ['village', 'sector', 'province', 'country', 'location'];
+  validate.process(dependencies).then(patientRegistration);
 
-    $q.all([
-      connect.req(village_req),
-      connect.req(sector_req),
-      connect.req(province_req),
-      connect.req(country_req),
-      connect.req(location_req)
-    ]).then(function (array) {
-      array.forEach(function (depend, idx) {
-        stores[dependencies[idx]] = depend;
-        $scope.models[dependencies[idx]] = depend.data;
-      });
-    });
-
-    //This was if we needed to create alpha-numeric (specific) ID's
-    var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
-    //Used to generate debtor ID for patient
-    //      FIXME just take the most recent items from the database, vs everything?
-    var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
-    var debtor_group_request = connect.req({'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}});
-
-    $q.all([patient_request, debtor_request, debtor_group_request])
-    .then(function(res) { 
-      $scope.patient_model = res[0];
-      $scope.debtor_model = res[1];
-      $scope.debtor_group_model = res[2];
-
-      $scope.debtor = {};
-      //$scope.debtor.debtor_group = $scope.debtor_group_model.get(default_group);
-    });
+  function patientRegistration(model) { 
+    $scope.model = model;
   }
-	
+
 	$scope.$watch('patient.yob', function(nval, oval) {
 		var DEFAULT_DATE = '-06-01';	
 		//temporary date validation
@@ -65,7 +40,7 @@ angular.module('kpk.controllers')
 	});
 
   function createId(data) {
-    if(data.length===0) return default_patientID;
+    if(data.length===0) return defaultPatientId;
     var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id); });
     // quick fix
     search = (search.id !== undefined) ? search.id : search;
@@ -227,15 +202,12 @@ angular.module('kpk.controllers')
 
   $scope.villageFilter = function (village) {
     var sector_id = $scope.data.sector_id;
-    return $scope.models.location.some(function (l) {
+    return $scope.model.location.data.some(function (l) {
       return l.sector_id === sector_id && l.village_id === village.id;
     });
   };
 
   $scope.formatTypeAhead = function () {
-    return stores.village ? stores.village.get($scope.data.village_id).name : '';
+    return $scope.model ? $scope.model.village.get($scope.data.village_id).name : '';
   };
-
-  init();
-
 });
