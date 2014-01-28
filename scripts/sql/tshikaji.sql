@@ -1057,8 +1057,8 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (352, 1, 0, 200, 781, "Reprises sur provisions non exigibles", 1, 78),
 (353, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
 
-insert into `convention` values (1, 'Société X', 146, 1, '0000000000', 'Null', 'Nothing', '0'),
- (2, 'Fr Reinart', 147, 1, '0000000000', 'Null', 'Nothing', '0');
+insert into `convention` values (1, 'Société X', 146, 1, '0897578765', 'Null', 'Nothing', '0'),
+ (2, 'Fr Reinart', 147, 1, '0813245678', 'Null', 'Nothing', '0');
 
 -- configure price_group
 insert into `price_group` values 

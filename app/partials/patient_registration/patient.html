@@ -104,7 +104,7 @@
                 <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtor_group_model.data">
                   <option value="" disabled="disabled">-- Select Group --</option>
                 </select>
-              </div>
+              </div>             
 
             </form>
               </div>
@@ -147,6 +147,14 @@
                 <label for="marital">Marital Status</label>
                 <input type="text" class="form-kapok" id="marital" ng-model="patient.marital_status">
               </div>
+
+              <div class="form-group">
+                <label>Convention</label>
+                <select class="form-kapok" id="convention" ng-model="debtor.convention_id" ng-options="conv.id as formatConvention(conv) for conv in models.convention">
+                  <option value="" disabled="disabled">-- Select Convention --</option>
+                </select>
+              </div>
+              
             </form>
           </div>
         </div>
