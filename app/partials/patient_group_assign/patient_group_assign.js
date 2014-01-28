@@ -16,16 +16,20 @@ angular.module('kpk.controllers')
     tables : { 'assignation_patient':{ columns: ["id", "patient_group_id", "patient_id"]}}
   };
 
+  $scope.flags = {}
+  $scope.print = false;
   //fonctions
 
   function init (records){
-    $scope.print = false;
+    
     models.patients = records[0].data;
     models.patient_groups = records[1].data;
     assignation_patients = records[2].data;
     transformDatas(false);
-    saveState();
-  }
+    state.childrens = records[1].data;
+    $scope.all = false;
+    state.all = false;
+  } 
 
   var transformDatas = function (value){
     $scope.models.patient_groups.map(function(item){
@@ -33,19 +37,18 @@ angular.module('kpk.controllers')
     });
   }
 
-  $scope.decision = function (){
-    if(!state.childrens) return false;
+  function decision (){
     var diff = false;
-    for(var i = 0; i < state.childrens.length; i++){
-      if(state.childrens[i].checked !== models.patient_groups[i].checked){
+    for(var i = 0; i < models.patient_groups.length; i++){
+      if(models.patient_groups[i].checked){
         diff = true;
         break;
       } 
     }
-    var reponse = ($scope.all !== state.all || diff);
-
-    return reponse;
+    return diff;
   }
+
+
 
   $scope.showPatientGroups = function (index){
     transformDatas(false);
@@ -66,10 +69,6 @@ angular.module('kpk.controllers')
         return patient_group.checked !== true;
       });
     $scope.all = !check;
-  }
-  function saveState(){    
-    state.childrens = models.patient_groups;
-    state.all = $scope.all;
   }
 
   $scope.changeChildren = function(v){
@@ -99,18 +98,37 @@ angular.module('kpk.controllers')
         var ass_patient = [];
         
         var pg = models.patient_groups.filter(function(item){
-          return item.checked === true;
+          return item.checked;
         });
 
         pg.forEach(function(item){
           ass_patient.push({patient_group_id : item.id, patient_id : patient.id});
         });
 
-        console.log(ass_patient)
-        connect.basicPut('assignation_patient', ass_patient).then(function(v){
-        });
+        $q.all(
+          ass_patient.map(function(assignation){
+            return connect.basicPut('assignation_patient', [assignation]);
+          })
+          ).then(function(res){            
+            messenger.success('Successfully updated');
+            patient = {};
+            run();
+          }, function(err){
+            messenger.danger('Error updating');
+          });
+        // connect.basicPut('assignation_patient', ass_patient).then(function(v){
+        //   console.log(v);
+        // });
       }
     });
+  }
+
+  function checking(){
+    if(patient.id && ($scope.all || decision())){
+      save();
+    }else{
+      messenger.danger('Select a patient and Check at least one check box');
+    }    
   }
 
   //invocation
@@ -118,6 +136,6 @@ angular.module('kpk.controllers')
 
 
   $scope.formatAccount = formatAccount;
-  $scope.save = save;
+  $scope.checking = checking;
 
 });
