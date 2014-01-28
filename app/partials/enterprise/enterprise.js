@@ -67,7 +67,7 @@ function ($scope, $q, connect, validate, messenger) {
 
     connect.basicPost('enterprise', [data], ['id'])
     .then(function (res) {
-      $scope.enterprise.put(edit);
+      $scope.enterprise.put(data);
     }, function (err) {
       messenger.danger('Error updating enterprise ' + data.id + ':' + JSON.stringify(err));
     });
@@ -93,5 +93,33 @@ function ($scope, $q, connect, validate, messenger) {
   $scope.resetNew = function () {
     $scope.add = {}; 
   };
+
+  $scope.manageAccounts = function () {
+    $scope.action = 'manage';
+    $q.all([
+      connect.req({
+        tables : { 'account' : { columns : ['id', 'account_number', 'account_txt']}},
+        where : ['account.enterprise_id='+$scope.edit.id]
+      }).then(function (store) {
+        $scope.account = store; 
+      }),
+      connect.req({
+        tables : {'currency_account' : { columns : ['id', 'currency_id', 'cash_account', 'bank_account']}},
+        where : ['currency_account.enterprise_id='+$scope.edit.id]
+      })
+    ])
+    .then(function (models) {
+      $scope.account = models[0] ;
+      $scope.manage = models[1].data;
+    });
+  };
+
+  $scope.saveAccounts = function () {
+    console.log('Work in progress!'); 
+  };
+
+  $scope.resetForm = function () {
+  
+  }
 
 }]);
