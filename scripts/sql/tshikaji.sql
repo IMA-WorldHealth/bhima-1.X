@@ -51,7 +51,7 @@ insert into `user` values
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
 
-  insert into `patient_group` values (1, 'AIDS'), (2, 'Pregnant');
+
 
 
 
@@ -1150,3 +1150,5 @@ insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, 
   (1, 200, 194, 189),
   (2, 200, 195, 190),
   (3, 200, 196, 191);
+
+-- insert into `patient_group` values (200, 1, 1,'AIDS', 'rien'), (200, 2, 1,'Pregnant', 'rien');
