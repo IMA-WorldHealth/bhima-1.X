@@ -90,34 +90,17 @@ app.get('/user_session', function (req, res, next) {
 
 
 app.get('/trial/', function (req, res, next) {
-  var qs = querystring.parse(url.parse(req.url).query).q;
-  var ids = qs.replace('(', '').replace(')', '').split(',');
-
-  console.log('looking at ids ', ids);
-
-  trialbalance.run(ids, req.session.user_id, function (err, result) {
+  trialbalance.run(req.session.user_id, function (err, result) {
     if (err) return next(err);
     res.send(200, result);
   });
 });
 
 app.get('/post/:key', function (req, res, next) {
-  var qs = querystring.parse(url.parse(req.url).query).q;
-  var ids = qs.replace('(', '').replace(')', '').split(',');
-
-  trialbalance.postToGeneralLedger(ids, req.session.user_id, req.params.key, function (err, result) {
+  trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
   });
-
-  /*
-  trialbalance.post()
-  .then(function (results) {
-    res.send(204);  // processed the request successfully, and sending NO CONTENT
-  }, function (reason) {
-    res.send(304, reason); // processed the requuest, but NOT MODIFIED
-  });
-  */
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
@@ -136,7 +119,7 @@ app.get('/max/:id/:table/:join?', function(req, res) {
 
   max_request += "(SELECT MAX(" + id + ") AS `" + id + "` FROM " + table;
   if(join) {
-    max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;"
+    max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;";
   } else { 
     max_request += ")a;";
   }
