@@ -107,7 +107,7 @@ INSERT INTO `unit` VALUES
   (57,'Income Expensive Balance', '', 10, 0, 'partials/reports/income_expensive/', 'reports/income_expensive/'),
   (58,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'),
   (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
-  (60,'Patient Group Assingning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
+  (60,'Patient Group Assigning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
   (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'); 
 
 insert into `permission` (`id_unit`, `id_user`) values
@@ -208,6 +208,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (57,1),
   (58,1),
   (59,1),
+  (60,1),
+  (61,1),
   (1,13),
   (2,13),
 	(4,13),
@@ -1097,10 +1099,7 @@ insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `do
 
 insert into `inv_unit` (`text`) values
   ('Act'),
-	('Pallet'),
-	('Pill'),
-	('Box'),
-	('Lot');
+	('Pallet'), ('Pill'), ('Box'), ('Lot');
 
 insert into `inv_type` values
   (0,'Article'),
@@ -1146,7 +1145,8 @@ insert into `department` values
 insert into `transaction_type` values 
   (1, 'cash'),
 	(2, 'sale'),
-	(3, 'purchase');
+	(3, 'purchase'),
+  (4, 'journal');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 194, 189),
