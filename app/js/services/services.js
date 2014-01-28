@@ -45,51 +45,76 @@
     };
   });
   
+  //TODO passing list and dependencies to everything, could assign to object?
   services.factory('validate', function($q, connect) {  
-    var modelLabel = 'model';
+    var modelLabel = 'model'; 
+    
+    var requiredTest = {   
+      message : "Required data not found!",
+      method : hasData
+    };
 
-    //TODO Exception handling
-    function process(dependencies, limit) {   
-      var deferred = $q.defer();
-      var list = filterList(dependencies, (limit || Object.keys(dependencies)));
-      
-      dependencies[modelLabel] = dependencies[modelLabel] || {};
-      fetchModels(dependencies, list).then(function(res) { 
-        
-        //Package models 
-        list.forEach(function(key, index) { 
-          dependencies.model[key] = res[index];
-          dependencies[key].processed = true; 
-        });
+    function refresh(dependencies, limit) { 
+      var list = filterList((limit || Object.keys(dependencies)), dependencies);
 
-        //Test models
-        
-        deferred.resolve(dependencies.model);
-      }, function(err) { 
-        deferred.reject(err);   
+      list.forEach(function(modelKey) { 
+        dependencies[modelKey].processed = false;
       });
-      return deferred.promise;
+      return process(dependencies, limit);
     }
 
-    function filterList(dependencies, list) { 
+    function process(dependencies, limit) {   
+      var deferred = $q.defer(), list = filterList((limit || Object.keys(dependencies)), dependencies);
+      dependencies[modelLabel] = dependencies[modelLabel] || {};
+      
+      fetchModels(list, dependencies).then(function(model) { 
+        packageModels(list, dependencies, model);
+        validate = validateModels(list, dependencies);
+        if(validate.success) return deferred.resolve(dependencies.model);
+        
+        deferred.reject(dependencies.model);
+      
+      }, function(error) { deferred.reject(error); });
+
+      return deferred.promise;
+    }
+    
+    function filterList(list, dependencies) { 
       var filterList;
+
       filterList = list.filter(function(key, index) {
-        
-        //filter process requests
-        if(dependencies[key].processed) return false;
-        
-        //filter model store
-        if(key===modelLabel) return false;
+        if(dependencies[key].processed) return false; //processed requests
+        if(key===modelLabel) return false; //model store
         return true;
       });
       return filterList;
     }
 
-    function fetchModels(dependencies, keys) { 
+    function validateModels(list, dependencies) { 
+      var testStatus = {success: false}; 
+
+      testFailed = list.some(function(modelKey) { 
+        var model = dependencies.model[modelKey], details = dependencies[modelKey];
+        
+        if(details.required) console.log('validate data', requiredTest.method(model.data));
+        console.log('testing model', details, details.required);
+      });
+    
+      if(testFailed) return false;
+      console.log('result', test);
+    }
+ 
+    function packageModels(list, dependencies, model) { 
+      list.forEach(function(key, index) { 
+        dependencies.model[key] = model[index];
+        dependencies[key].processed = true; 
+      });
+    }
+
+    function fetchModels(list, dependencies) { 
       var deferred = $q.defer(), promiseList = [];
       
-      //Requests
-      keys.forEach(function(key) { 
+      list.forEach(function(key) { 
         var dependency = dependencies[key], args = [dependency.query];
         
         //Hack to allow modelling reports with unique identifier - not properly supported by connect
@@ -97,15 +122,15 @@
         promiseList.push(connect.req.apply(connect.req, args));
       });
       
-      //Response
-      $q.all(promiseList).then(function(res) { 
-        deferred.resolve(res); 
-      }, function(err) { 
-        deferred.reject(err);  
+      $q.all(promiseList).then(function(populatedQuerry) { 
+        deferred.resolve(populatedQuerry); 
+      }, function(error) { 
+        deferred.reject(error);  
       });
       return deferred.promise;
-    } 
+    }
 
+    
     function validate() { 
       //remove startup tests to only serve model validation
       runStartupTests();
@@ -215,6 +240,10 @@
     function isNotEmpty(data) { 
       if(data.length > 0) return true;
       return false;
+    } 
+
+    function hasData(modelData) { 
+      return (modelData.length > 0); 
     }
 
     validate();
