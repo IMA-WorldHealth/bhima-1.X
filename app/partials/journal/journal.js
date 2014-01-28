@@ -381,6 +381,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     var totalDebits = totalCredits = 0;
     var validAccounts = true;
     var packagedRecords = [], requestNew = [], requestUpdate = [], request = [];
+    var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
     
     //validation 
     records.forEach(function(record) { 
@@ -395,7 +396,9 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     if(!validAccounts) return $rootScope.$apply(messenger.danger('Records contain invalid accounts'));
     
     if(!(totalDebits === liveTransaction.origin.debit_equiv && totalCredits === liveTransaction.origin.credit_equiv)) return $rootScope.$apply(messenger.danger('Transaction Debit/Credit value has changed'));  
-     
+    
+    if(!fiscalSettings) return $rootScope.$apply(messenger.danger('Fiscal records are invalid'));
+
     $rootScope.$apply(messenger.success('All tests passed'));
 
     records.forEach(function(record) { 
@@ -412,12 +415,11 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       packageChanges.account_id = $scope.model.account.get(record.account_number).id;
     
       if(newRecord) {   
-        var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
 
-        console.log("NEW RECORD");
+        console.log('new record', record, record.currency_id);
         packageChanges.deb_cred_type = record.deb_cred_type;
-        packageChanges.deb_cred_id = record.deb_cred_id;
-        packageChanges.inv_po_id = record.inv_po_id;
+        if(record.deb_cred_id) packageChanges.deb_cred_id = record.deb_cred_id;
+        if(record.inv_po_id) packageChanges.inv_po_id = record.inv_po_id;
         packageChanges.credit = record.credit_equiv;
         packageChanges.debit = record.debit_equiv;
         packageChanges.trans_date = record.trans_date;
@@ -425,7 +427,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
         packageChanges.period_id = fiscalSettings.period_id;
         packageChanges.fiscal_year_id = fiscalSettings.id;
         packageChanges.enterprise_id = enterpriseSettings.id;
-        packageChanges.currency_id = record.currency_id;
+        if(record.currency_id) packageChanges.currency_id = record.currency_id;
         packageChanges.origin_id = 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
         packageChanges.user_id = liveTransaction.template.userId;
           
@@ -451,8 +453,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     var records = liveTransaction.records; 
     var totalDebits = 0, totalCredits = 0; 
     var validAccounts = true;
-    var packagedRecords = [];
-    var request = [];
+    var packagedRecords = [], request = [];
+    var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
     
     //validation 
     records.forEach(function(record) { 
@@ -475,10 +477,12 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     if(totalDebits != totalCredits) { 
       return $rootScope.$apply(messenger.danger('Transaction debits and credits do not match')); 
     }
+
+    if(!fiscalSettings) return $rootScope.$apply(messenger.danger('Fiscal records are invalid'));
     
     //package
     records.forEach(function(record) { 
-      var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
+      record.currency_id = enterpriseSettings.currency_id;
       var packaged = { 
         enterprise_id: enterpriseSettings.id,
         fiscal_year_id: fiscalSettings.id,
@@ -492,10 +496,10 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
         credit_equiv: record.credit_equiv,
         deb_cred_type: record.deb_cred_type,
         origin_id: 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
-        currency_id: enterpriseSettings.currency_id,
+        currency_id: record.currency_id,
         user_id: liveTransaction.template.userId
       }
-      
+  
       packaged.account_id = $scope.model.account.get(record.account_number).id;
       if(!isNaN(Number(record.deb_cred_id))) {
         packaged.deb_cred_id = record.deb_cred_id;
@@ -608,50 +612,31 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       }
     });
   };
-
-  $scope.thislist = [{val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}, {val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}, {val: 'first name'}, {val: 'first name'}, {val: 'first name'},{val: 'first name'},{val: 'first name'}, {val: 'second name'}];
   
-  //TODO combine these into one object, extend for both (init method must change)
-  function SelectAccount() { 
-    
-  }
-
-  function SelectDebCred(args) { 
-      
-  }
-
-
   function SelectCellEditor(args) { 
-    var $select;
-    var defaultValue;
-    var scope = this;
-
-    var id = args.column.id;
-    var targetObejct = args.item;
+    var $select, defaultValue, scope = this;
+    var id = args.column.id, targetObejct = args.item;
   
-
     //TODO use prototypal inheritence vs. splitting on init
     var fieldMap = { 
       'deb_cred_id' : initDebCred,
       'account_number' : initAccountNumber,
       'deb_cred_type' : initDebCredType
     }
-    
     this.init = fieldMap[args.column.field];
     
     function initDebCred() { 
       defaultValue = isNaN(Number(args.item.deb_cred_id)) ? null : args.item.deb_cred_id;
       
-      option_str = ""
+      options = ""
       $scope.model.debtor.data.forEach(function(debtor) { 
-        option_str += '<option value="' + debtor.id + '">' + debtor.id + ' ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
+        options += '<option value="' + debtor.id + '">' + debtor.id + ' ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
         if(!defaultValue) { 
           defaultValue = debtor.id;
         }
-
       });
               
-      $select = $("<SELECT class='editor-text'>" + option_str + "</SELECT>");
+      $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
       $select.appendTo(args.container);
       $select.focus();
     }
@@ -660,17 +645,17 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       
       //default value - naive way of checking for previous value, default string is set, not value
       defaultValue = isNaN(Number(args.item.account_number)) ? null : args.item.account_number;
-      option_str = ""
+      options = ""
       $scope.model.account.data.forEach(function(account) { 
         var disabled = (account.account_type_id === 3) ? 'disabled' : '';
-        option_str += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
+        options += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
         if(!defaultValue && account.account_type_id!==3) { 
           defaultValue = account.account_number;
         }
 
       });
               
-      $select = $("<SELECT class='editor-text'>" + option_str + "</SELECT>");
+      $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
       // $select = $compile("<span><input type='text' ng-model='account_id' typeahead='thing as thing.val for thing in thislist | filter: $viewValue' class='editor-typeahead' placeholder='Account Id'></span>")($scope);
       $select.appendTo(args.container);
       $select.focus();
@@ -681,13 +666,13 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
 
       //FIXME hardcoded spagetthi
       defaultValue = options[0];
-      option_str = "";
+      options = "";
 
       options.forEach(function(option) { 
-        option_str += "<option value='" + option + "'>" + option + "</option>";
+        options += "<option value='" + option + "'>" + option + "</option>";
       });
 
-      $select = $('<select class="editor-text">' + option_str + "</select>");
+      $select = $('<select class="editor-text">' + options + "</select>");
       $select.appendTo(args.container);
       $select.focus();
     }
@@ -701,8 +686,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     };
 
     this.loadValue = function(item) {
-      // defaultValue = item[args.column.field];
-      console.log('loading default value', defaultValue);
       $select.val(defaultValue);
     };
 
@@ -715,6 +698,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     };
 
     this.isValueChanged = function() {
+      
       //If default value is something that shouldn't be selected
       // return ($select.val() != defaultValue);
       return true;
