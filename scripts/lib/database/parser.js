@@ -125,7 +125,7 @@ module.exports = (function (options) {
       var line = [];
       for (var k in values) {
         // default to null
-        line.push(row[values[k]] ? sanitize.escape(row[values[k]]) : 'null');  
+        line.push(row[values[k]] !== undefined ? sanitize.escape(row[values[k]]) : 'null');  
       }
       expressions.push('(' + line.join(', ') + ')');
     });
