@@ -97,7 +97,7 @@ module.exports = (function (db) {
       // get a new transaction id from the journal.
       // make sure it is the last thing fired in the
       // call stack before posting.
-      var query = 'SELECT MAX(`trans_id`) AS `max` FROM `posting_journal`;';
+      var query = 'SELECT MAX(`trans_id`) AS `max` FROM (SELECT MAX(`trans_id`) as `trans_id` FROM `posting_journal` UNION ALL SELECT MAX(`trans_id`) as `trans_id` FROM `general_ledger`)a;';
       db.execute(query, function (err, rows) {
         if (err) return callback(err);
         return callback(null, rows[0].max ? rows[0].max + 1 : 1);
