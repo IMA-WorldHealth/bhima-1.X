@@ -149,9 +149,9 @@
               </div>
 
               <div class="form-group">
-                <label for="debtor-group">Convention</label>
-                <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtor_group_model.data">
-                  <option value="" disabled="disabled">-- Select Group --</option>
+                <label>Convention</label>
+                <select class="form-kapok" id="convention" ng-model="debtor.convention_id" ng-options="conv.id as formatConvention(conv) for conv in models.convention">
+                  <option value="" disabled="disabled">-- Select Convention --</option>
                 </select>
               </div>
               
