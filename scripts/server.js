@@ -11,8 +11,7 @@ var express      = require('express'),
 var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
 
 // import app dependencies
-var queryHandler = require('./lib/database/myQueryHandler'),
-    parser       = require('./lib/database/parser')(),
+var parser       = require('./lib/database/parser')(),
     db           = require('./lib/database/db')(cfg.db),
     tree         = require('./lib/tree')(db),
     app          = express();
@@ -24,7 +23,7 @@ var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
 
 // import routes
 var report       = require('./lib/logic/report')(db),
-    trialbalance = require('./lib/logic/balance')(db),
+    trialbalance = require('./lib/logic/trialbalance')(db),
     journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
     fiscal       = require('./lib/logic/fiscal')(db);

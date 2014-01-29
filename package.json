@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IMA-WorldHealth/Bika.git"
+    "url": "https://github.com/IMA-WorldHealth/Kapok.git"
   },
   "keywords": [
     "bika",
@@ -19,7 +19,7 @@
   "author": "IMA World Health",
   "license": "Beerware",
   "bugs": {
-    "url": "https://github.com/IMA-WorldHealth/Bika/issues"
+    "url": "https://github.com/IMA-WorldHealth/Kapok/issues"
   },
   "dependencies": {
     "mysql": "2.x.x",
