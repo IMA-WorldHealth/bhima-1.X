@@ -30,9 +30,9 @@ To install, grab a copy of the latest build on the *dev* branch ([https://github
 
 Using git:
 ```bash
-$ git clone https://github.com/IMA-WorldHealth/Kapok
-Cloning into 'Kapok' ...
-$ cd Kapok && npm install
+$ git clone https://github.com/IMA-WorldHealth/Kapok kpk
+Cloning into 'kpk' ...
+$ cd kpk && npm install
 ...
 ```
 
