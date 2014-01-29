@@ -12,7 +12,7 @@
   overflow-y: scroll;
 }
 
-fieldset { 
+.budgetFieldset { 
   /*FIXME*/
   margin-top: -10px;
   display: inline-block;

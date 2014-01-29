@@ -18,95 +18,131 @@
       <div class="col-xs-7">
         <div class="row">
           <div class="panel panel-primary">
-            <div class="panel-heading"><span class="glyphicon glyphicon-user"></span> Patient Details</div>
+            <div class="panel-heading"><span class="glyphicon glyphicon-user"></span></div>
             <div class="panel-body">
 
-              <form role="form" name="form">
-                <div class="form-group">
-                  <label for="first-name">First Name</label>
-                  <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name" required>
-                </div>
+              <form name="form" role="form" class="form-horizontal">
+                <fieldset>
+                <legend>Patient Details</legend>
+                  <div class="form-group">
+                    <label for="first-name" class="control-label col-xs-3">First Name</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name" required>
+                    </div>  
+                  </div>
 
-                <div class="form-group">
-                  <label for="second-name">Second Name</label>
-                  <input type="text" class="form-kapok" id="second-name" ng-model="patient.last_name" required>
-                </div>
+                  <div class="form-group">
+                    <label for="second-name" class="control-label col-xs-3">Second Name</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-kapok" id="second-name" ng-model="patient.last_name" required>
+                    </div> 
+                  </div>
 
-                <div class="form-group">
-                  <label for="yob">Year of Birth</label>
-                  <input type="text" class="form-kapok" id="yob" ng-model="patient.yob">
-                </div>
+                  <div class="form-group">
+                    <label for="yob" class="control-label col-xs-3">Year of Birth</label>
+                    <div class="col-xs-9">
+                      <div class="input-group">
+                        <input type="text" class="form-kapok" id="yob" ng-model="patient.yob">
+                        <span class="input-group-btn"> 
+                          <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Enter Full Date</button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                
+                  <!-- Use ng-show to display this only if enter full date is disabled -->
+                  <div class="form-group">
+                    <label for="dob" class="col-xs-3 control-label">Date of Birth</label>
+                    <div class="col-xs-9">
+                      {{"xxxx-xx-xx"}} 
+                    </div>
+                  </div>
 
-                <div class="form-group">
-                  <label for="dob">Date of Birth <small>(If available)</small></label>
-                  <input type="date" class="form-kapok" id="dob" ng-model="patient.dob">
-                </div>
+                  <div class="form-group">
+                    <label class="control-label col-xs-3">Gender</label>
+                    <div class="col-xs-9">
+                      <div class="radio-inline">
+                        <label>
+                          <input
+                            type="radio"
+                            name="sex_select"
+                            id="male"
+                            value="M"
+                            checked
+                            ng-model="patient.sex"
+                            required>
+                          Male
+                        </label>
+                      </div>
+                      <div class="radio-inline">
+                        <label>
+                          <input type="radio" name="sex_select" id="female" value="F" ng-model="patient.sex" required>
+                          Female
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
 
-                <div class="form-group">
-                  <div class="radio-inline">
-                    <label>
+                <fieldset>
+                <legend>Origin</legend>
+                  <div class="form-group">
+                    <label for="location-country" class="capital control-label col-xs-3">{{ 'COUNTRY' | translate }}</label>
+                    <div class="col-xs-9">
+                      <select required class="form-kapok" id="location-country" ng-model="data.country_id"
+                              ng-options="c.id as c.country_en for c in model.country.data">
+                        <option value="" disabled="disabled">-- Select Country--</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="location-province" class="capital control-label col-xs-3">{{ 'PROVINCE' | translate }}</label>
+                    <div class="col-xs-9"> 
+                      <select required class="form-kapok" id="location-province" ng-model="data.province_id"
+                              ng-options="p.id as p.name for p in model.province.data">
+                        <option value="" disabled="disabled">-- Select Province --</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="location-sector" class="capital control-label col-xs-3">{{ 'SECTOR' | translate }}</label>
+                    <div class="col-xs-9"> 
+                      <select required class="form-kapok" id="location-sector" ng-model="data.sector_id"
+                              ng-options="s.id as s.name for s in model.sector.data">
+                        <option value="" disabled="disabled">-- Select Sector --</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="location-village" class="capital control-label col-xs-3">{{ 'VILLAGE' | translate }}</label>
+                    <div class="col-xs-9">
                       <input
-                        type="radio"
-                        name="sex_select"
-                        id="male"
-                        value="M"
-                        checked
-                        ng-model="patient.sex"
-                        required>
-                      Male
-                    </label>
+                        type="text"
+                        class="form-kapok col-xs-9"
+                        id="location-country"
+                        ng-model="data.village_id"
+                        typeahead="v.id as v.name for v in model.village.data | filter:$viewValue | filter:villageFilter | limitTo: 10"
+                        typeahead-on-select="selectLocation()"
+                        typeahead-input-formatter="formatTypeAhead()"
+                        required >
+                    </div>
                   </div>
-                  <div class="radio-inline">
-                    <label>
-                      <input type="radio" name="sex_select" id="female" value="F" ng-model="patient.sex" required>
-                      Female
-                    </label>
+                </fieldset>
+
+                <fieldset>
+                <legend>Finance</legend>
+                  <div class="form-group">
+                    <label for="debtor-group" class="col-xs-3 control-label">{{'DEBTOR_GROUP' | translate}}</label>
+                    <div class="col-xs-9"> 
+                      <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
+                        <option value="" disabled="disabled">-- Select Group --</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="location-country" class="capital">{{ 'COUNTRY' | translate }}</label>
-                  <select required class="form-kapok" id="location-country" ng-model="data.country_id"
-                          ng-options="c.id as c.country_en for c in model.country.data">
-                    <option value="" disabled="disabled">-- Select Country--</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="location-province" class="capital">{{ 'PROVINCE' | translate }}</label>
-                  <select required class="form-kapok" id="location-province" ng-model="data.province_id"
-                          ng-options="p.id as p.name for p in model.province.data">
-                    <option value="" disabled="disabled">-- Select Province --</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="location-sector" class="capital">{{ 'SECTOR' | translate }}</label>
-                  <select required class="form-kapok" id="location-sector" ng-model="data.sector_id"
-                          ng-options="s.id as s.name for s in model.sector.data">
-                    <option value="" disabled="disabled">-- Select Sector --</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="location-village" class="capital">{{ 'VILLAGE' | translate }}</label>
-                  <input
-                    type="text"
-                    class="form-kapok"
-                    id="location-country"
-                    ng-model="data.village_id"
-                    typeahead="v.id as v.name for v in model.village.data | filter:$viewValue | filter:villageFilter | limitTo: 10"
-                    typeahead-on-select="selectLocation()"
-                    typeahead-input-formatter="formatTypeAhead()"
-                    required >
-                </div>
-
-                <div class="form-group">
-                  <label for="debtor-group">{{'DEBTOR_GROUP' | translate}}</label>
-                  <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
-                    <option value="" disabled="disabled">-- Select Group --</option>
-                  </select>
-                </div>
+                </fieldset>
 
               </form>
 
