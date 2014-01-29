@@ -5,7 +5,6 @@ use `kpk`;
 grant all on `kpk`.* to 'kpk'@'%' identified by 'HISCongo2013';
 flush privileges;
 
-
 --
 -- Table structure for table `kpk`.`tax`
 --
@@ -16,8 +15,6 @@ create table `tax` (
   `note`          text,
   primary key (`id`)
 ) engine=innodb;
-
-
 
 --
 -- Table structure for table `kpk`.`currency`
@@ -339,7 +336,6 @@ create table `currency_account` (
   constraint foreign key (`cash_account`) references `account` (`id`),
   constraint foreign key (`bank_account`) references `account` (`id`)
 ) engine=innodb;
-
 
 --
 -- Table structure for table `kpk`.`convention`
@@ -788,7 +784,6 @@ create table `transaction_type` (
   `service_txt`   varchar(45) not null,
   primary key (`id`)
 ) engine=innodb;
-
 
 --
 -- table `kpk`.`account_group`
