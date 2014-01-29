@@ -41,9 +41,9 @@
 
 /*FIXME*/
 .hack-left {
-  margin-left: -15px; !important
+  margin-left: -15px !important;
 }
 
 .hack-right { 
-  margin-left: 5px; !important
+  margin-left: 5px !important;
 }
