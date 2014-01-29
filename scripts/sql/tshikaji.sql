@@ -108,7 +108,10 @@ INSERT INTO `unit` VALUES
   (58,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'),
   (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
   (60,'Patient Group Assigning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
-  (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'); 
+  (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'),
+  (62,'Accounting', '', 0, 1, '', ''),
+  (63,'Cost Center Management', '', 62, 0, 'partials/cost_center/', 'cost_center/');
+
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
@@ -148,6 +151,9 @@ insert into `permission` (`id_unit`, `id_user`) values
   (57,2),
   (59,2),
   (60,2),
+  (61,2),
+  (62,2),
+  (63,2),
 	(4, 3),
 	(6, 3),
 	(30,3),

@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="partials/cost_center/principal_center/principal_analysis_center.css"/>
+
+
+<header>
+  <span>Principal Analysis center</span>
+</header>
+
+<section class="underline">
+  <button ng-click="newAnalysisCenter()" class="btn btn-sm btn-default">
+    <i class="glyphicon glyphicon-file"></i> New Principal Analysis Center
+  </button>
+  <div class="pull-right">
+    <a href="#/cost_center/" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span>Cost Center</a>
+  </div>
+</section>
+
+<div class="content">
+  <div class="col-xs-4">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <span>Registered Principal Analysis Centers</span>
+      </div>
+      <table class="table table-condensed table-striped">
+        <thead>
+          <tr><th>Name</th><th>Enterprise</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="pc in models.principal_centers">
+            <td>{{pc.text}}</td>
+            <td>{{pc.name}}</td>
+            <td><button class="btn btn-sm btn-default" ng-click="edit(grp)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+            <td><button class="btn btn-sm btn-default" ng-click="remove(grp)"><i class="glyphicon glyphicon-trash"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-xs-6" ng-switch="action">
+    <div ng-switch-default>
+      <div class="alert alert-info">
+        <b>Principal Analysis Center Configuration</b>
+        <p>
+          Principal Analysis Center is used to contain charges wich are inderects for a product or service .  Use this module to <b>register</b>, <b>modify</b>,
+          and <b>remove</b> principal analysis center.
+        </p>
+      </div>
+    </div>
+
+    <div ng-switch-when="register">
+      <form class="form-horizontal">
+        <fieldset>
+          <legend>Register Principal Analysis Center</legend>
+    
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-10">
+              <input class="form-kapok" ng-model="register.name">
+            </div>
+          </div>
+    
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Note</label>
+            <div class="col-xs-10">
+              <textarea class="form-control" ng-model="register.note" rows="3">
+              </textarea>
+            </div>
+          </div>
+
+          <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="Save">
+          <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="Reset Form">
+
+        </fieldset>
+      </form>
+    </div>
+
+
+    <div ng-switch-when="modify">
+      <form class="form-horizontal">
+        <fieldset>
+          <legend>Modify a Principal Analysis Center</legend>
+    
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-10">
+              <input class="form-kapok" ng-model="modify.name">
+            </div>
+          </div>
+    
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Note</label>
+            <div class="col-xs-10">
+              <textarea class="form-control" ng-model="modify.note" rows="3">
+              </textarea>
+            </div>
+          </div>
+
+          <input ng-click="saveModification()" class="btn btn-sm btn-success" type="submit" value="Save">
+          <input ng-click="resetModification()" class="btn btn-sm btn-default" type="button" value="Reset Form">
+
+        </fieldset>
+      </form>
+    </div>
+    
+  </div>
+</div>
