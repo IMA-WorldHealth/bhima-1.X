@@ -157,8 +157,16 @@
     when('/credit_note/:invoiceId?/', { 
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
-    })
-    .when('/patient_group', {
+    }).
+    when('/cost_center', { 
+      controller: 'costCenter',
+      templateUrl: 'partials/cost_center/cost_center.html'
+    }).
+    when('/cost_center/principal_center/', {
+      controller: 'principalAnalysisCenter',
+      templateUrl: 'partials/cost_center/principal_center/principal_analysis_center.html'
+    }).
+    when('/patient_group', {
       controller: 'patientGroupCtrl',
       templateUrl: 'partials/patient_group/patient_group.html' 
     });

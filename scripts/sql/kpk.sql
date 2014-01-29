@@ -1002,4 +1002,18 @@ create table `kpk`.`price_list_detail` (
   constraint foreign key (`list_id`) references `price_list` (`id`) on delete cascade
 ) engine=innodb;
 
+--
+-- table `kpk`.`pricipal_center`
+--
+drop table if exists `kpk`.`principal_center`;
+create table `kpk`.`principal_center` (
+  `enterprise_id`   smallint unsigned not null,
+  `id`              smallint  unsigned not null auto_increment,
+  `text`            varchar(100) not null,
+  `note`            text,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
+) engine=innodb;
+
 -- Jon's dump @ 12:45.
