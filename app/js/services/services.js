@@ -48,11 +48,10 @@
   //TODO passing list and dependencies to everything, could assign to object?
   services.factory('validate', function($q, connect) {  
     var modelLabel = 'model'; 
-    
-    var requiredTest = {   
-      message : "Required data not found!",
-      method : hasData
-    };
+
+    var validateTests = [ 
+      {flag: 'required', message : "Required data not found!", method : hasData}
+    ];
 
     function refresh(dependencies, limit) { 
       var list = filterList((limit || Object.keys(dependencies)), dependencies);
@@ -70,10 +69,18 @@
       fetchModels(list, dependencies).then(function(model) { 
         packageModels(list, dependencies, model);
         validate = validateModels(list, dependencies);
-        if(validate.success) return deferred.resolve(dependencies.model);
         
-        deferred.reject(dependencies.model);
-      
+        if(validate.success) return deferred.resolve(dependencies.model);
+
+        console.info("%c[validate]", "color: blue; font-weight: bold;", "Reminder that models have been tested and results should be handled");
+        console.group("Validation results");
+        console.log("Key Reference: '%s'", validate.reference);
+        console.log("Flag Reference: '%s'", validate.flag);
+        console.log("Passed: %s", validate.success);
+        console.log("Message: '%s'", validate.message);
+        console.groupEnd();
+        deferred.reject(validate);
+
       }, function(error) { deferred.reject(error); });
 
       return deferred.promise;
@@ -91,17 +98,27 @@
     }
 
     function validateModels(list, dependencies) { 
-      var testStatus = {success: false}; 
-
-      testFailed = list.some(function(modelKey) { 
-        var model = dependencies.model[modelKey], details = dependencies[modelKey];
-        
-        if(details.required) console.log('validate data', requiredTest.method(model.data));
-        console.log('testing model', details, details.required);
+      var validateStatus = new Status(); 
+      
+      list.some(function(modelKey) { 
+        var model = dependencies.model[modelKey], details = dependencies[modelKey], modelTests = details.test || [], modelTestStatus = false;
+       
+        //Check for standard test flags
+        validateTests.forEach(function(testObject) { 
+          if(details[testObject.flag]) modelTests.push(testObject);
+        });
+      
+        //Run each test
+        modelTestStatus = modelTests.some(function(testObject) { 
+          var testFailed, testMethod = testObject.method;
+  
+          testFailed = !testMethod(model.data); 
+          if(testFailed) validateStatus.setFailed(testObject, modelKey); 
+          return testFailed;
+        });
+        return modelTestStatus;
       });
-    
-      if(testFailed) return false;
-      console.log('result', test);
+      return validateStatus;
     }
  
     function packageModels(list, dependencies, model) { 
@@ -136,64 +153,6 @@
       runStartupTests();
     }
     
-    //TODO This should be in the dependency object passed in to process()
-    function registerRequirements(requirements) { 
-      var response = {};
-
-      //FIXME requirements validation 
-      requirements.forEach(function(item, index) { 
-        if(testSuite[item]) { 
-          
-          //if testSuite[item] isn't completed, queue until everything is ready
-          response[item] = testSuite[item].result;
-        } else { 
-          response[item] = null;
-        } 
-      });
-    }
-  
-    //FIXME rewrite this method
-    function processModels(models) { 
-      //TODO tests should be a list of 
-      //[{test: function(), message: ""}]
-      var deferred = $q.defer(), pass = true; 
-      /*
-       * dependencies
-       * {
-       *  query : { tables...}
-       *  test : function(return true or false);
-       *  required: true || false
-       *
-      */
-
-      angular.forEach(models, function(dependency, key) { 
-        var required = dependency.required || false, data = dependency.model.data;
-        var tests = dependency.test || [];
-        
-        //run default required test
-        if(required) {
-          pass = isNotEmpty(data);
-          if(!pass) {  
-            deferred.resolve({passed: false, message: 'Required table ' + key + ' has no data'});
-            return false; //break from loop 
-          }
-        }
-      
-        //if required fails loop will return before this point 
-        //TODO tests can currently only be syncronous
-        tests.forEach(function(test) { 
-          var testResult = test();
-          if(!testResult) { 
-            pass = testResult;
-            return false; //break from loop
-          }
-        });
-      }); 
-
-      deferred.resolve({passed: pass, message: 'End of process'}); 
-      return deferred.promise;
-    }
-
     //private methods  
     //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
     function runStartupTests() { 
@@ -235,27 +194,34 @@
       });
       return deferred.promise;
     }
-       
-    //utility methods
-    function isNotEmpty(data) { 
-      if(data.length > 0) return true;
-      return false;
-    } 
 
     function hasData(modelData) { 
       return (modelData.length > 0); 
     }
 
-    validate();
-   
-    //TODO horrible name
-    function valid() { 
-      return { 
-        processModels : processModels,
-        process : process
-      };
+    function Status() { 
+      
+      function setFailed(testObject, reference) { 
+        this.success = false;
+        this.message = testObject.message;
+        this.flag = testObject.flag;
+        this.reference = reference;
+      }
+
+      return {
+        setFailed: setFailed,
+        success: true,
+        validModelError: true,
+        message: null, 
+        reference: null,
+        flag: null
+      }
     }
-    return new valid;
+
+    return { 
+      process : process,
+      refresh : refresh
+    };
   });
 
   services.factory('appcache', function ($rootScope, $q) { 

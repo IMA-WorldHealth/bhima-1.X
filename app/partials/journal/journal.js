@@ -63,8 +63,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
       // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
       {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
-      {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
-      {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id', editor:SelectCellEditor},
+      {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text}, {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id', editor:SelectCellEditor},
       {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type', editor:SelectCellEditor},
       {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
       // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
