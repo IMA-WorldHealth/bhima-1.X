@@ -78,6 +78,7 @@ fieldset {
   padding-right: 15px;
   padding-top: 10px;
   padding-bottom: 10px;
+
 }
 
 .underline { 
@@ -90,9 +91,12 @@ fieldset {
 
 .bar-bottom {
   border-top: 1px solid #dddddd;
-  position : absolute;
-  bottom   : 0;
+  position: absolute;
+  z-index: 150;
+  left: 0;
+  bottom: 0;
   width    : 100%;
+  /* background: white; */
 }
 
 .capital { 

@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="partials/patient_registration/patient.css"/>
-
 <header> 
   <span>Register Patient</span> <small>{{patient.first_name}} {{patient.last_name}}</small>
 </header>
@@ -18,12 +16,12 @@
       <div class="col-xs-7">
         <div class="row">
           <div class="panel panel-primary">
-            <div class="panel-heading"><span class="glyphicon glyphicon-user"></span></div>
+            <div class="panel-heading"><span class="glyphicon glyphicon-user"></span> Patient Details</div>
             <div class="panel-body">
 
               <form name="form" role="form" class="form-horizontal">
                 <fieldset>
-                <legend>Patient Details</legend>
+                <legend>Patient</legend>
                   <div class="form-group">
                     <label for="first-name" class="control-label col-xs-3">First Name</label>
                     <div class="col-xs-9">
@@ -138,7 +136,25 @@
                     <label for="debtor-group" class="col-xs-3 control-label">{{'DEBTOR_GROUP' | translate}}</label>
                     <div class="col-xs-9"> 
                       <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
-                        <option value="" disabled="disabled">-- Select Group --</option>
+                        <option value="" disabled="disabled">-- Select Debtor Group --</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="patient-group" class="col-xs-3 control-label">Patient Group</label>
+                    <div class="col-xs-9"> 
+                      <select multiple required class="form-kapok" id="patient-group" ng-model="debtor.patient_group">
+                        <option value="" disabled="disabled">-- Select Patient Group --</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="convention" class="col-xs-3 control-label">Convention</label>
+                    <div class="col-xs-9"> 
+                      <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
+                        <option value="" disabled="disabled">-- <S-Del>-- Select Convention --</option>
                       </select>
                     </div>
                   </div>
