@@ -1,0 +1,170 @@
+<header>
+  <span>Convention Invoicing</span>
+</header>
+
+<section class="underline">
+  <button class="btn btn-sm btn-default pull-right" ng-click="search()" ng-disabled="!!found"><i class="glyphicon glyphicon-search"></i> Find an Invoice</button>
+</section>
+
+<div class="content" ng-switch="found">
+
+  <!-- no invoice found -->
+  <div class="row" ng-switch-default style="margin-top: 5%;">
+    <div class="panel panel-default center">
+      <div class="panel-heading">
+        <span>Find an Invoice</span>
+      </div>
+        <div class="input-group">
+          <input class="form-kapok" ng-model="data.invoice" placeholder="Search for an invoice" rows="3" typeahead="invoice as ''+invoice.id for invoice in invoices.data | filter:$viewValue | limitTo:8" typeahead-on-select="found()">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-search"></i>
+          </span>
+        </div>
+    </div>
+  </div>
+
+  <!-- found invoice interface -->
+  <div class="row" ng-switch-when="true">
+    <div ng-switch="action">
+      <div class="col-xs-4">
+        <div class="panel panel-danger">
+          <div class="panel-heading">
+            <i class="glyphicon glyphicon-list-alt"></i>
+            <span> Invoice Details</span>
+          </div>
+          <div class="panel-body">
+            <form class="form-horizontal">
+              <fieldset>
+
+                <div class="form-group">
+                  <label class="control-label col-xs-3">Invoice ID</label>
+                  <div class="col-xs-9">
+                    <p class="form-control-static">{{data.invoice.id}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-xs-3">Invoice Date</label>
+                  <div class="col-xs-9">
+                    <p class="form-control-static">{{data.invoice.invoice_date |date}}</p>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <label class="control-label col-xs-3">Debitor</label>
+                  <div class="col-xs-9">
+                    <p class="form-control-static">{{data.invoice.text}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-xs-3">Convention</label>
+                  <div class="col-xs-9">
+                    <p class="form-control-static">{{conventions.get(data.invoice.convention_id).name}}</p>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-xs-3">Discount</label>
+                  <div class="col-xs-9">
+                    <p class="form-control-static">{{data.invoice.discount}}</p>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="control-label col-xs-3">Cost</label>
+                  <div class="col-xs-9">
+                    <p class="form-control-static">{{data.invoice.cost | currency}}</p>
+                  </div>
+                </div>
+
+                <hr/>
+
+                <button class="btn btn-sm btn-success" ng-click="payAll()">Pay Total Bill</button>
+                <button class="btn btn-sm btn-default" ng-click="payPart()">Pay Part of Bill</button>
+                <button class="btn btn-sm btn-default" ng-click="selectConvention()">Select Convention</button>
+
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-8" ng-switch="action">
+
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <b>Select an Action from the Invoice Menu</b>
+            <p>There are three choices for this invoice:</p>
+            <ul class="list-plain">
+              <li><b>Pay Total Bill</b>: The convention pays the entirity of the patient bill and the patient account is re-balanced.</li>
+              <li><b>Pay Part of Bill</b>: The convention pays only a portion of the bill, leaving a remaining balance for the patient to pay.</li>
+              <li><b>Select Convention</b>: Select a convention to pay into the patient bill.</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <div ng-switch-when="selectConvention">
+          <form class="form-horizontal">
+            <fieldset>
+              <legend>Select A Convention</legend>
+
+              <div class="form-group">
+                <label class="control-label col-xs-2">Convention</label>
+                <div class="col-xs-8">
+                  <select class="form-kapok" ng-model="data.invoice.convention_id" ng-options="convention.id as convention.name for convention in conventions.data">
+                    <option value="">-- Choose a convention --</option>
+                  </select>
+                </div>
+              </div>
+
+              <button class="btn btn-success btn-sm" ng-click="saveConvention()">Save</button>
+              <button class="btn btn-sm btn-default" ng-click="resetConvention()">Cancel</button>
+          </form>
+        </div>
+
+        <div ng-switch-when="payPart">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <i class="glyphicon glyphicon-edit"></i><span> Payment Slip</span>
+            </div>
+            <div class="panel-body">
+              <form class="form-inline">
+
+                <div class="form-group">
+                  <label>Account</label>
+                  <p class="form-control-static">{{ conventions.get(edit.account_id).account_txt}}</p>
+                </div>
+
+                <div class="form-group">
+                  <label>Date</label>
+                  <p class="form-control-static">{{ edit.date | date}}</p>
+                </div>
+
+                <div class="form-group">
+                  <label>Justification</label>
+                  <input class="form-kapok" ng-model="edit.text">
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div ng-switch-when="payAll">
+          <div class="center panel panel-default">
+            <div class="panel-heading" style="text-align: left;">
+              <span>Confirm</span>
+            </div>
+            <div class="modal-body">
+              <h4>Are you sure you want to bill {{ conventions.get(data.invoice.convention_id).name }} a total of {{data.invoice.cost | currency}}?</h4>
+              <button class="btn btn-sm btn-default" ng-click="payAllYes()">Yes</button> <button class="btn btn-sm btn-default" ng-click="pay()">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>
