@@ -1,4 +1,5 @@
-angular.module('kpk.controllers').controller('inventoryController', function($scope) {
+angular.module('kpk.controllers')
+.controller('inventoryController', function($scope) {
  
     $scope.fields = {
       'stock'  : false,
