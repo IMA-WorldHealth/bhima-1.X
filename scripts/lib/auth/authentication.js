@@ -2,7 +2,10 @@
 
 // Middleware: authenticate
 
+var sanitize = require('../util/sanitize');
+
 module.exports = (function (db) {
+  'use strict';
 
   // This is the first middleware hit by any incoming
   // request, yet it will only act on AUTHENTICATION
@@ -47,8 +50,8 @@ module.exports = (function (db) {
           usr = req.body.username;
           pwd = req.body.password;
           sql = "SELECT `user`.`id`, `user`.`logged_in` " +
-            "FROM `user` WHERE `user`.`username`=" + db.escapestr(usr) +
-            " AND `user`.`password`=" + db.escapestr(pwd);
+            "FROM `user` WHERE `user`.`username`=" + sanitize.escape(usr) +
+            " AND `user`.`password`=" + sanitize.escape(pwd);
           db.execute(sql, function (err, results) {
             if (err) next(err);
             // TODO: client-side logic not implimented for this.
@@ -81,16 +84,16 @@ module.exports = (function (db) {
     // takes an id, username, password, and callback of the form
     // function (err, results) {};
     var sql;
-    id = db.escapestr(id);
+    id = sanitize.escape(id);
     sql = "UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=" + id;
 
     db.execute(sql, function (err, results) {
       if (err) callback(err); 
       
-      sql = ["SELECT `unit`.`url` ",
-            "FROM `unit`, `permission`, `user` WHERE ",
-            "`permission`.`id_user` = `user`.`id` AND `permission`.`id_unit` = `unit`.`id` AND ",
-            "`user`.`id`=", id].join('');
+      sql = 'SELECT `unit`.`url` ' +
+            'FROM `unit`, `permission`, `user` WHERE ' +
+            '`permission`.`id_user` = `user`.`id` AND `permission`.`id_unit` = `unit`.`id` AND ' +
+            '`user`.`id`=' + id;
 
       db.execute(sql, callback);
     });
@@ -99,7 +102,7 @@ module.exports = (function (db) {
   function logout (id, callback) {
     // takes an id and callback of the form
     // function (err, results) {};
-    var sql = "UPDATE `user` SET `user`.`logged_in`=0 WHERE `user`.`id`=" + db.escapestr(id);
+    var sql = "UPDATE `user` SET `user`.`logged_in`=0 WHERE `user`.`id`=" + sanitize.escape(id);
     return db.execute(sql, callback);
   }
 

@@ -15,20 +15,9 @@
 	border-radius: 0px;
 }
 
-.bika-header { 
-  padding-bottom: 9px;
-  margin: 0px 0 45px;
-  border-bottom: 1px solid #eeeeee;
-}
-
 
 .selected { 
  	/*border-left: 4px solid #01AC07;
  	background: #eeeeee;*/
  	font-weight: bold;
-}
-
-.content {
-
-  font-size: 12px;
 }

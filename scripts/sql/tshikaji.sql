@@ -107,7 +107,7 @@ INSERT INTO `unit` VALUES
   (57,'Income Expensive Balance', '', 10, 0, 'partials/reports/income_expensive/', 'reports/income_expensive/'),
   (58,'Credit Note', '', 5, 0, 'partials/credit_note/', 'credit_note/'),
   (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
-  (60,'Patient Group Assingning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
+  (60,'Patient Group Assigning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
   (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'); 
 
 insert into `permission` (`id_unit`, `id_user`) values
@@ -208,6 +208,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (57,1),
   (58,1),
   (59,1),
+  (60,1),
+  (61,1),
   (1,13),
   (2,13),
 	(4,13),
@@ -1055,8 +1057,8 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (352, 1, 0, 200, 781, "Reprises sur provisions non exigibles", 1, 78),
 (353, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
 
-insert into `convention` values (1, 'Société X', 146, 1, '0000000000', 'Null', 'Nothing', '0'),
- (2, 'Fr Reinart', 147, 1, '0000000000', 'Null', 'Nothing', '0');
+insert into `convention` values (1, 'Société X', 146, 1, '0897578765', 'Null', 'Nothing', '0'),
+ (2, 'Fr Reinart', 147, 1, '0813245678', 'Null', 'Nothing', '0');
 
 -- configure price_group
 insert into `price_group` values 

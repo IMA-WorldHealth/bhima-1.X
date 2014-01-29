@@ -22,7 +22,7 @@
             
   <div class="pull-right">
     <a class="capital btn btn-default btn-sm" ng-click="split()" ng-disabled="rows.length!=1"><span class="glyphicon glyphicon-random" ng-style="rows.length!=1 ? {} : {color:'rgb(2, 179, 2)'}"></span> Split Transaction</a>
-    <a class="capital btn btn-default btn-sm" ng-click="trial()"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}} ({{rows.length || 0 }}) {{ 'ITEMS' | translate}}</a>
+    <a class="capital btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="liveTransaction.state"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}}</a>
     <span class="dropdown">
       <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
       <ul class="dropdown-menu">
@@ -91,44 +91,47 @@
 <script type="text/ng-template" id="trialBalanceModal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <span style="font-size: 2em;">Trial Balance</span> 
-      <span class="pull-right"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-print"></i> Print</button></span>
+      <h3 style="display:inline;">Trial Balance</h3> 
+      <span class="pull-right"><a href="" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-print"></i> Print</a></span>
     </div>
 
-    <div class="modal-body" ng-show="!!data.errors.length">
-      <div>
+    <div class="modal-body" ng-switch="hasErrors">
+      <div ng-switch-when="true" class="alert alert-danger">
+        <b>You have errors!</b>
+        <ul ng-repeat="error in errors" class="list-plain">
+          <li>{{error}}</li>
         <ul>
-          <li ng-repeat="error in data.errors" class="hasError"> Error : {{error}}</li>
-        </ul>
+      </div>
+
+      <div ng-switch-when="false">
+        <table class="table table-bordered table-condensed" style="margin-bottom:0">
+          <thead>
+            <tr>
+              <th>Account</th><th>Before</th><th>Debit</th><th>Credit</th><th>After</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="line in data">
+              <th>{{line.account_number}}</th>
+              <td>{{line.balance | currency}}</td>
+              <td>{{line.debit | currency }}</td>
+              <td>{{line.credit | currency }}</td>
+              <td>{{line.balance + (line.credit - line.debit) | currency }}</td>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <td>{{total.before | currency }}</td>
+              <td>{{total.debit | currency }}</td>
+              <td>{{total.credit | currency }}</td>
+              <td>{{total.after | currency }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <table class="table table-bordered" style="margin-bottom:0">
-      <thead>
-        <tr>
-          <th>Account</th><th>Before</th><th>Debit</th><th>Credit</th><th>After</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="account in data">
-          <th>{{account.account_id}}</th>
-          <td>{{account.balance | currency}}</td>
-          <td>{{account.debit | currency }}</td>
-          <td>{{account.credit | currency }}</td>
-          <td>{{account.balance + (account.credit - account.debit) | currency }}</td>
-        </tr>
-        <tr>
-          <th>Total</th>
-          <td>{{total.before | currency }}</td>
-          <td>{{total.debit | currency }}</td>
-          <td>{{total.credit | currency }}</td>
-          <td>{{total.after | currency }}</td>
-        </tr>
-      </tbody>
-    </table>
-
     <div class="modal-footer" style="margin-top: 0;">
-      <button class="btn btn-sm btn-success" ng-disabled="data.errors" ng-click="ok()">Post to General Ledger</button>
+      <button class="btn btn-sm btn-success" ng-disabled="hasErrors" ng-click="ok()">Post to General Ledger</button>
       <button class="btn btn-sm btn-default" ng-click="cancel()">Cancel</button>
     </div>
   </div>

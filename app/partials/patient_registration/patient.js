@@ -168,24 +168,21 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
 
   function commit (patient) {
 
-    console.log("Patient:", patient);
 
     var debtor = $scope.debtor;
     patient_model = patient;
 
-		console.log('pm', patient_model);
     var format_debtor = {
       id: patient_model.debitor_id,
       group_id: $scope.debtor.debtor_group.id,
-      text:patient_model.first_name+' - '+patient_model.last_name
+      text:patient_model.first_name+' - '+patient_model.last_name,
+      convention_id : $scope.debtor.convention_id
     };
-    console.log("requesting debtor;", format_debtor);
     //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
     // FIXME 1 - default group_id, should be properly defined
     connect.basicPut("debitor", [format_debtor])
     .then(function(res) { 
       //Create patient record
-      console.log("Debtor record added", res);
       connect.basicPut("patient", [patient_model])
       .then(function(res) {
         $location.path("patient_records/" + res.data.insertId);
@@ -231,4 +228,8 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
   $scope.formatTypeAhead = function () {
     return $scope.model ? $scope.model.village.get($scope.data.village_id).name : '';
   };
+
+  $scope.formatConvention = function(convention){
+    return convention.name;
+  }
 });

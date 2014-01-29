@@ -11,8 +11,7 @@ var express      = require('express'),
 var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
 
 // import app dependencies
-var queryHandler = require('./lib/database/myQueryHandler'),
-    parser       = require('./lib/database/parser')(),
+var parser       = require('./lib/database/parser')(),
     db           = require('./lib/database/db')(cfg.db),
     tree         = require('./lib/tree')(db),
     app          = express();
@@ -24,7 +23,7 @@ var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
 
 // import routes
 var report       = require('./lib/logic/report')(db),
-    trialbalance = require('./lib/logic/balance')(db),
+    trialbalance = require('./lib/logic/trialbalance')(db),
     journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
     fiscal       = require('./lib/logic/fiscal')(db);
@@ -90,34 +89,17 @@ app.get('/user_session', function (req, res, next) {
 
 
 app.get('/trial/', function (req, res, next) {
-  var qs = querystring.parse(url.parse(req.url).query).q;
-  var ids = qs.replace('(', '').replace(')', '').split(',');
-
-  console.log('looking at ids ', ids);
-
-  trialbalance.run(ids, req.session.user_id, function (err, result) {
+  trialbalance.run(req.session.user_id, function (err, result) {
     if (err) return next(err);
     res.send(200, result);
   });
 });
 
 app.get('/post/:key', function (req, res, next) {
-  var qs = querystring.parse(url.parse(req.url).query).q;
-  var ids = qs.replace('(', '').replace(')', '').split(',');
-
-  trialbalance.postToGeneralLedger(ids, req.session.user_id, req.params.key, function (err, result) {
+  trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
   });
-
-  /*
-  trialbalance.post()
-  .then(function (results) {
-    res.send(204);  // processed the request successfully, and sending NO CONTENT
-  }, function (reason) {
-    res.send(304, reason); // processed the requuest, but NOT MODIFIED
-  });
-  */
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
@@ -136,7 +118,7 @@ app.get('/max/:id/:table/:join?', function(req, res) {
 
   max_request += "(SELECT MAX(" + id + ") AS `" + id + "` FROM " + table;
   if(join) {
-    max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;"
+    max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;";
   } else { 
     max_request += ")a;";
   }

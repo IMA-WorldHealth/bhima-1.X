@@ -21,7 +21,7 @@
             <tr><th>Patient Full Name</th><th>Date Of Birth</th></tr>
           </thead>
           <tbody>
-            <tr ng-repeat="patient in models.patients track by $index" ng-click="showPatientGroups($index)">
+            <tr ng-repeat="patient in models.patients | filter:flags.search" ng-click="showPatientGroups($index)">
               <td>{{patient.first_name}} - {{patient.last_name}}</td>
               <td>{{patient.dob | date}}</td>
             </tr>
@@ -35,7 +35,7 @@
         <div class="panel-heading">
           <span>Patient Groups</span>
           <span class="pull-right">
-            <button ng-disabled="!decision()" ng-click="save()"><i class="glyphicon glyphicon-floppy"></i> Save</button>
+            <button ng-click="checking()"><i class="glyphicon glyphicon-floppy"></i> Save</button>
           </span>
         </div>
         <ul class="k-list">

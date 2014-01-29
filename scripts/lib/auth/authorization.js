@@ -4,9 +4,10 @@
 
 
 module.exports = (function (db, global_paths) {
+  'use strict';
   
-  // This middleware concerns itself with simply
-  // validating that each request has the appropriate
+  // This middleware concerns itself only with 
+  // validating each request with the appropriate
   // session data.  It should naturally be placed high
   // in the middleware stack, but after authentication.
   //
@@ -25,11 +26,11 @@ module.exports = (function (db, global_paths) {
       var paths = [].concat(global_paths, req.session.paths);
 
       // check if url in allowable path
-      if (match(req.url, paths)) next();
-      else {
-        console.log('Prohibited url blocked by authorization.js :', req.url);
+      if (match(req.url, paths))
+	 next();
+      else
         res.send(403, {error: "Access prohibited.", fix: "Change config.json or paths in the database"});
-      }
+     
       return;
     }
 
