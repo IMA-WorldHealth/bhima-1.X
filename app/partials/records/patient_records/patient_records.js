@@ -3,10 +3,10 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
  
   dependencies.patient = { 
     required : true,
-    query : { 'tables' : { 'patient' : { 'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id'] }}}
+    query : { 'tables' : { 'patient' : { 'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id'] }}},
   };
-    
-  validate.process(dependencies).then(patientRecords, handleError);
+ 
+  validate.process(dependencies).then(patientRecords);
 
   function patientRecords(model) { 
     $scope.model = model;
@@ -19,10 +19,6 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
   
   function select(id) { 
     $scope.selected = $scope.model.patient.get(id);
-  }
-
-  function handleError(error) { 
-    console.error('oh lawd, oh, oewkflj');
   }
 
   $scope.select = select;
