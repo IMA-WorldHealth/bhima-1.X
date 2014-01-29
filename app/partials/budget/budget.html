@@ -27,7 +27,7 @@
       <div ng-switch on="active"><!--Report view-->
         <div ng-switch-default></div>
         <div ng-switch-when="report">
-          <fieldset ng-repeat="report in budget_model.reports">
+          <fieldset class="budgetFieldSet" ng-repeat="report in budget_model.reports">
             <!--Use a select here, allow selecting any of the available fiscal years-->
             <span>{{report.desc}}</span>
             <button ng-click="deleteCompare(report)" type="button" class="close budget-close">&times;</button>

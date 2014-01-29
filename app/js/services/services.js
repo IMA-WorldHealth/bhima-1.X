@@ -63,7 +63,7 @@
     }
 
     function process(dependencies, limit) {   
-      var deferred = $q.defer(), list = filterList((limit || Object.keys(dependencies)), dependencies);
+      var validate, deferred = $q.defer(), list = filterList((limit || Object.keys(dependencies)), dependencies);
       dependencies[modelLabel] = dependencies[modelLabel] || {};
       
       fetchModels(list, dependencies).then(function(model) { 
@@ -145,24 +145,6 @@
         deferred.reject(error);  
       });
       return deferred.promise;
-    }
-
-    
-    function validate() { 
-      //remove startup tests to only serve model validation
-      runStartupTests();
-    }
-    
-    //private methods  
-    //TODO Either the service should define, run and store test results to be accessed from units, or the tests should be defined elsewhere i.e application.js
-    function runStartupTests() { 
-      angular.forEach(testSuite, function(test, key) { 
-        var args = test.args || [];
-
-        test.method(args).then(function(res) {
-          test.result = res;
-        });
-      });
     }
 
     var testSuite = { 
