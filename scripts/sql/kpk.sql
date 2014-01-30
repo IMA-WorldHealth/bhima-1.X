@@ -910,9 +910,9 @@ create table `posting_journal` (
 drop table if exists `journal_log`;
 create table `journal_log` (
   `id`              int unsigned not null auto_increment,
-  `cost`            decimal(19, 2) unsigned not null,
   `transaction_id`  int unsigned not null,
   `note`            text,
+  `date`            date not null,
   `user_id`         smallint unsigned not null,
   primary key (`id`)
 ) engine=innodb;
