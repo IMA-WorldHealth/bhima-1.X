@@ -2,12 +2,11 @@ angular.module('kpk.controllers')
 .controller('enterpriseController', [
   '$scope',
   '$q',
+  '$window',
   'connect',
   'validate',
   'messenger',
-function ($scope, $q, connect, validate, messenger) {
-  var flags = $scope.flags = {};
-
+function ($scope, $q, $window, connect, validate, messenger) {
   var dependencies = {};
 
   dependencies.enterprise = {
@@ -32,6 +31,7 @@ function ($scope, $q, connect, validate, messenger) {
     }
   };
 
+
   dependencies.location = {
     required : true,
     query : '/location/'
@@ -41,6 +41,7 @@ function ($scope, $q, connect, validate, messenger) {
   
   function initialize (models) {
     for (var k in models) $scope[k] = models[k];
+    $scope.newAccount = {};
   }
 
   function handleError (error) {
@@ -100,8 +101,6 @@ function ($scope, $q, connect, validate, messenger) {
       connect.req({
         tables : { 'account' : { columns : ['id', 'account_number', 'account_txt']}},
         where : ['account.enterprise_id='+$scope.edit.id]
-      }).then(function (store) {
-        $scope.account = store; 
       }),
       connect.req({
         tables : {'currency_account' : { columns : ['id', 'currency_id', 'cash_account', 'bank_account']}},
@@ -110,16 +109,37 @@ function ($scope, $q, connect, validate, messenger) {
     ])
     .then(function (models) {
       $scope.account = models[0] ;
-      $scope.manage = models[1].data;
+      $scope.currency_account = models[1];
+    });
+  };
+
+  $scope.removeAccount = function (id) {
+    connect.basicDelete('currency_account', id)
+    .then(function (res) {
+      $scope.currency_account.remove(id); 
+    }, function (err) {
+      messenger.danger('An Error occured:' + JSON.stringify(err));
     });
   };
 
   $scope.saveAccounts = function () {
-    console.log('Work in progress!'); 
+    var data = connect.clean($scope.newAccount);
+    data.enterprise_id = $scope.editing_enterprise.id;
+    connect.basicPut('currency_account', [data])
+    .then(function (res) {
+      data.id = res.data.insertId;
+      $scope.currency_account.post(data); 
+    }, function (err) {
+      messenger.danger('An error occured:' + JSON.stringify(err));
+    });
   };
 
-  $scope.resetForm = function () {
-  
-  }
+  $scope.resetAccounts = function () {
+    $scope.newAccount = {}; 
+  };
+
+  $scope.print = function () {
+    $window.print();
+  };
 
 }]);

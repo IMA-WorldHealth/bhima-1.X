@@ -134,7 +134,7 @@
     .when('/print', {
       templateUrl: 'partials/print/test.html'
     })
-    .when('/settings', { 
+    .when('/settings/:route?', { 
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
     })
