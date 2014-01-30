@@ -9,8 +9,6 @@ module.exports = (function (db) {
   // database.
   //
   // FIXME: there seems to be some code repetition.
-  // FIXME/TODO: Can this actually load recursively?
-  //  seems like it goes one branch deep then stops.
 
   'use strict';
 
