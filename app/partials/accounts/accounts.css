@@ -1,6 +1,3 @@
-.nav, .pagination, .carousel a { cursor: pointer; }
-
-
 /*Temporary fix for border-box bootstrap collision*/
 #kpk-accounts-grid, #kpk-accounts-grid div {
   -webkit-box-sizing: content-box;
