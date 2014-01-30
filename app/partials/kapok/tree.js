@@ -42,10 +42,11 @@ function($scope, $q, $location, AppCache, connect) {
       var path = $scope.navtree.currentNode.p_url;
       if (path) $location.path(path);
     }
-  }, true); 
+  }, true);
+
 
   (function init () {
-    connect.basicGet('/tree')
+    connect.fetch('/tree')
     .then(function(res) { 
       $scope.treeData = res.data;
       loadTreeOptions();
