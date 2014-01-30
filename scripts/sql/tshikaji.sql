@@ -519,7 +519,7 @@ insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) 
 
 insert into `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
   (1,'Congolese Francs','Fc', '.', ','),
-	(2,'United State Dollars','$', ',', '.'),
+	(2,'United States Dollars','$', ',', '.'),
   (3,'Euro', '€', ' ', '.');
              
 insert into `exchange_rate` (`enterprise_currency_id`, `foreign_currency_id`, `rate`, `date`) values
