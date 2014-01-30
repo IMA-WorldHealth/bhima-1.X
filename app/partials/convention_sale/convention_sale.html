@@ -131,26 +131,48 @@
               <i class="glyphicon glyphicon-edit"></i><span> Payment Slip</span>
             </div>
             <div class="panel-body">
-              <form class="form-inline">
+              <form class="form-horizontal">
 
                 <div class="form-group">
-                  <label>Account</label>
-                  <p class="form-control-static">{{ conventions.get(edit.account_id).account_txt}}</p>
+                  <label class="control-label col-xs-1">Account</label>
+                  <div class="col-xs-5">
+                    <p class="form-control-static">{{ conventions.get(edit.account_id).account_txt}}</p>
+                  </div>
+
+                  <label class="control-label col-sm-offset-3 col-xs-1">Date</label>
+                  <div class="col-xs-2">
+                    <p class="form-control-static">{{ edit.date | date}}</p>
+                  </div>
                 </div>
 
                 <div class="form-group">
-                  <label>Date</label>
-                  <p class="form-control-static">{{ edit.date | date}}</p>
+                  <label class="control-label col-xs-1">Reason</label>
+                  <div class="col-xs-7">
+                    <input class="form-kapok" ng-model="edit.text">
+                  </div>
+                  <label class="control-label col-sm-offset-1 col-xs-1">Amount</label>
+                  <div class="col-xs-2 input-group">
+                    <input type="number" class="form-kapok" ng-model="edit.cost">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                  </div>
                 </div>
 
                 <div class="form-group">
-                  <label>Justification</label>
-                  <input class="form-kapok" ng-model="edit.text">
+                  <label class="control-label col-sm-offset-7 col-xs-2">Authorized By:</label>
+                  <div class="col-xs-3">
+                    <input class="form-kapok" ng-model="edit.authorized">
+                  </div>
                 </div>
 
               </form>
             </div>
           </div>
+
+          <div class="pull-right">
+            <button class="btn btn-sm btn-success" ng-click="authorize()">Authorize</button>
+            <button class="btn btn-sm btn-default" ng-click="discard()">Discard</button>
+          </div>
+
         </div>
 
         <div ng-switch-when="payAll">
