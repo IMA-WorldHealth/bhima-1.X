@@ -1,6 +1,7 @@
 angular.module('kpk.controllers').controller('manageAccount', function($scope, $q, validate, appstate, messenger, connect) { 
   var dependencies = {}, titleAccount = 3, formState = $scope.formState = "display";  
   var grid, columns, options, dataview, sortColumn = "account_number";
+  var financeGroups = {index: {}, store: []};
 
   $scope.newAccount = {}; 
 
@@ -109,7 +110,6 @@ angular.module('kpk.controllers').controller('manageAccount', function($scope, $
   }
 
   function ohadaSort(a, b) {
-    if(a.parent !== b.parent) return (a.parent > b.parent ? 1 : -1);
     var x = String(a[sortColumn]), y = String(b[sortColumn]);
     return (x == y) ? 0 : (x > y ? 1 : -1);
   }

@@ -2,7 +2,7 @@ angular.module('kpk.controllers').controller('verifyTransaction', function($scop
   var transaction = $scope.transaction = {};
   $scope.formComplete = false;
   $scope.invalidSubmit = "";
-  var defaultLogId = 10000, defaultTransactionId = 1;
+  var defaultLogId = 0, defaultTransactionId = 1;
 
   transaction.date = inputDate(new Date());
  
@@ -15,7 +15,7 @@ angular.module('kpk.controllers').controller('verifyTransaction', function($scop
     
   function loadNote(res) { 
     var maxid = res.data.max || defaultLogId; 
-    transaction.logId = maxid;
+    transaction.logId = ++maxid;
 
     connect.req('/user_session/').then(loadUser);
   }
