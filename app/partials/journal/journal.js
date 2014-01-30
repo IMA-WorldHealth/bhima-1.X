@@ -295,6 +295,26 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   }
 
   function splitTransaction(args) { 
+    var verifyTransaction, transaction = dataview.getItem(args.row), transactionId = Number(transaction.groupingKey), templateRow = transaction.rows[0];
+    if(!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
+    if(liveTransaction.state) return $rootScope.$apply(messenger.info('Transaction ' + liveTransaction.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
+
+    verifyTransaction = $modal.open({ 
+      templateUrl: "verifyTransaction.html",
+      controller: 'verifyTransaction',
+      resolve : {
+        updateType : 'split',
+        transaction : transactionId
+      }
+    });
+    verifyTransaction.result.then(initialiseSplit, handleError);
+  }
+
+  function initialiseSplit(template) { 
+
+  }
+
+  function splitTransaction(args) { 
     var transaction = dataview.getItem(args.row), transactionId = Number(transaction.groupingKey), templateRow = transaction.rows[0];
     if(!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
     if(liveTransaction.state) return $rootScope.$apply(messenger.info('Transaction ' + liveTransaction.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
@@ -586,12 +606,12 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
         templateUrl: "verifyTransaction.html",
         controller: 'verifyTransaction',
         resolve : { 
+          updateType : 'add',
+          transaction : null
         }
       });
 
-      verifyTransaction.result.then(function(res) { 
-        addTransaction(res);
-      }, function(err) { console.log('err', err) });
+      verifyTransaction.result.then(addTransaction, handleError);
     }
   }
   
@@ -600,20 +620,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   $scope.$on('$translateChangeSuccess', function () {
     //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
   });
-
-  $scope.split = function split() {
-    var instance = $modal.open({
-      templateUrl: "split.html",
-      controller: function ($scope, $modalInstance, rows, data) { //groupStore, accountModel
-        var transaction = $scope.transaction = data.getItem(rows[0]);
-        console.log('split', transaction);
-      },
-      resolve: {
-        rows: function () { return $scope.rows; },
-        data: function () { return dataview; }
-      }
-    });
-  };
   
   function SelectCellEditor(args) { 
     var $select, defaultValue, scope = this;
@@ -718,6 +724,10 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
 
   function mysqlDate (date) {
     return (date || new Date()).toISOString().slice(0,10);
+  }
+
+  function handleError(error) { 
+    if(error) messenger.danger(error.code);
   }
 
 });
