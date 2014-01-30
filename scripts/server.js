@@ -187,6 +187,65 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
 
 });
 
+app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) { 
+  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
+  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.principal_center_id IS NULL AND account.auxiliairy_center_id IS NULL AND account.parent <> 0";
+
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(process(rows));
+  });
+
+  var process = function(accounts){
+    var availablechargeAccounts = accounts.filter(function(item){
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+});
+
+app.get('/principalCenterAccount/:id_enterprise/:principal_center_id', function(req, res, next) { 
+  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
+  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, principal_center WHERE account.principal_center_id = principal_center.id "+
+            "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.principal_center_id='"+req.params.principal_center_id+"'";
+
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(process(rows));
+  });
+
+  var process = function(accounts){
+    var availablechargeAccounts = accounts.filter(function(item){
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+});
+
+app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) { 
+  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
+  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, auxiliairy_center WHERE account.auxiliairy_center_id = auxiliairy_center.id "+
+            "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.auxiliairy_center_id='"+req.params.auxiliairy_center_id+"'";
+
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(process(rows));
+  });
+
+  var process = function(accounts){
+    var availablechargeAccounts = accounts.filter(function(item){
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+});
+
 
 
 app.get('/tree', function (req, res, next) {

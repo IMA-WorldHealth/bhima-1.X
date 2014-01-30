@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('principalAnalysisCenter', function ($scope, $q, connect, appstate, messenger) {
+.controller('auxiliairyAnalysisCenter', function ($scope, $q, connect, appstate, messenger) {
   'use strict';
 
   //variables init
@@ -7,44 +7,42 @@ angular.module('kpk.controllers')
   $scope.register = {};
   $scope.selected = {};
   $scope.acc ={};
-  requettes.pricipal_centers = {
-    tables : {'principal_center':{columns:['id', 'text', 'note']}, 
+  requettes.auxiliairy_centers = {
+    tables : {'auxiliairy_center':{columns:['id', 'text', 'note']}, 
               'enterprise' : {columns :['name']}},
-    join : ['principal_center.enterprise_id=enterprise.id']
+    join : ['auxiliairy_center.enterprise_id=enterprise.id']
   }
 
 
   //fonctions
 
   function init (records){
-    models.principal_centers = records[0].data;
+    models.auxiliairy_centers = records[0].data;
     models.availablesAccounts = records[1];    
     transformDatas();
   }
 
   function setAction (value, index){
     $scope.action = value;
-    if(value !== 'register') $scope.selected = models.principal_centers[index];
+    if(value !== 'register') $scope.selected = models.auxiliairy_centers[index];
     if(value === 'configure') handleConfigure();
   }
 
   function saveRegistration (){
     if (isCorrect()){
       $scope.register.enterprise_id = enterprise.id;
-      connect.basicPut('principal_center', [connect.clean($scope.register)]).
+      connect.basicPut('auxiliairy_center', [connect.clean($scope.register)]).
       then(function (v){
-        console.log(v);
 
         if(v.status === 200){
           messenger.info("successfully inserted");
           $scope.register = {};
           run();
-
         }
 
       });
     }else{
-      messenger.danger('Principal cenetr Name undefined.');
+      messenger.danger('Auxiliairy cenetr Name undefined.');
     }    
   }
 
@@ -55,7 +53,7 @@ angular.module('kpk.controllers')
   function run (){
     $q.all(
       [
-        connect.req(requettes.pricipal_centers),
+        connect.req(requettes.auxiliairy_centers),
         getAvailablesAccounts(enterprise.id),
         loadAssociateAccounts
       ])
@@ -90,7 +88,7 @@ angular.module('kpk.controllers')
     });
 
     $q.all(rek.map(function(item){
-      item.principal_center_id = $scope.selected.id;
+      item.auxiliairy_center_id = $scope.selected.id;
       delete item.checked;
       return connect.basicPost('account', [connect.clean(item)], ['id']);
     })).then( function(v){
@@ -103,7 +101,7 @@ angular.module('kpk.controllers')
 
   function loadAssociateAccounts (){
     var def = $q.defer();
-    connect.MyBasicGet('/principalCenterAccount/'+enterprise.id+'/'+$scope.selected.id)
+    connect.MyBasicGet('/auxiliairyCenterAccount/'+enterprise.id+'/'+$scope.selected.id)
     .then(function(values){
       def.resolve(values);
     });

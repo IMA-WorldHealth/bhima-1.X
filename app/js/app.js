@@ -166,6 +166,10 @@
       controller: 'principalAnalysisCenter',
       templateUrl: 'partials/cost_center/principal_center/principal_analysis_center.html'
     }).
+    when('/cost_center/auxiliairy_center/', {
+      controller: 'auxiliairyAnalysisCenter',
+      templateUrl: 'partials/cost_center/auxiliairy_center/auxiliairy_analysis_center.html'
+    }).
     when('/patient_group', {
       controller: 'patientGroupCtrl',
       templateUrl: 'partials/patient_group/patient_group.html' 
