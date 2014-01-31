@@ -12,7 +12,8 @@ var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
 
 // import app dependencies
 var parser       = require('./lib/database/parser')(),
-    db           = require('./lib/database/db')(cfg.db),
+    dblogger     = require('./lib/database/logger')(cfg.log),
+    db           = require('./lib/database/db')(cfg.db, dblogger),
     tree         = require('./lib/tree')(db),
     app          = express();
 

@@ -7,6 +7,10 @@
     "password" : "HISCongo2013",
     "database" : "kpk"
   },
+  "log" : {
+    "file" : "scripts/lib/database/db.log",
+    "headers" : ["Test Header 1", "Test Header 2"] 
+  },
   "session" : {
     "secret" : "open blowfish",
     "cookie" : {
@@ -18,7 +22,6 @@
       "/css",
       "/data",
       "/tree",
-      "/temp",
       "/partials",
       "/lib",
       "/journal",
