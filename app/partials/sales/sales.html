@@ -45,10 +45,15 @@
     <label class="control-label">Invoice Patient</label>
     
     <div class="input-group">
-      <input placeholder="Select Invoice Patient" list="debtorList" class="form-kapok" ng-model="selectedDebtor" ng-options="patient as patient.first_name for patient in model.patient.data"></select>
-      <datalist id="debtorList">
-      <option ng-repeat="patient in model.patient.data">{{patient.first_name}} {{patient.last_name}}</option> 
-      </datalist>
+      
+      <input 
+      type="text" 
+      ng-model="selectedDebtor" 
+      typeahead="patient as '[' + patient.debitor_id + '] ' + patient.name for patient in model.patient.data | filter:$viewValue | limitTo:8" 
+      placeholder="Find a Debitor" 
+      typeahead-on-select="loadDebitor(debitor.id)" 
+      class="form-kapok" 
+      size="25">
       <span class="input-group-btn"> 
         <button ng-click="initialiseSaleDetails(selectedDebtor)" class="btn btn-default btn-sm">Select Patient</button>
       </span>
