@@ -56,7 +56,7 @@
       templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
     when('/sales/:debtorID?/:inventoryID?', { 
-      controller: 'salesController',
+      controller: 'sales',
       templateUrl: '/partials/sales/sales.html'
     }).
     when('/sale_records/:recordID?', { 
