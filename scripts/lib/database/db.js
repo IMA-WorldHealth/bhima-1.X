@@ -1,11 +1,10 @@
-//
+// /scripts/lib/database/db.js
+
 // Module: db.js
-//
-// The purpose of this module is simply to manage client connections
+
+// The purpose of this module is managing client connections
 // and disconnections to a variety of database management systems.
 // All query formatting is expected to happen elsewhere.
-
-// PRIVATE METHODS
 
 var u = require('../util/util');
 
@@ -20,7 +19,7 @@ function flushUsers (db_con) {
   'use strict';
   var permissions, reset;
 
-//  Disable safe mode #420blazeit
+  // Disable safe mode #420blazeit
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
   reset = 'UPDATE `kpk`.`user` SET `logged_in`="0" WHERE `logged_in`="1";';
 
@@ -39,9 +38,7 @@ function flushUsers (db_con) {
       });
     });
   });
-
 }
-
 
 // TODO: impliment PostgreSQL support
 function postgresInit(config) {
@@ -61,25 +58,13 @@ function sqliteInit(config) {
   return true;
 }
 
-// UTILS
-
-function escape_id (v) {
-  return "`" + v.trim() + "`";
-}
-
-function escape_str (v) {
-  var n = Number(v);      // make sure v isn't a number
-  return (!Number.isNaN(n)) ? n : "'" + v + "'";
-}
-
-// main db module
-module.exports = function (cfg) {
+module.exports = function (cfg, logger) {
   'use strict';
 
   cfg = cfg || {};
 
   // Select the system's database with this variable.
-  var sgbd = cfg.sgbd || 'mysql';
+  var dbms = cfg.dbms || 'mysql';
 
   // All supported dabases and their initializations
   var supported_databases = {
@@ -89,11 +74,9 @@ module.exports = function (cfg) {
     sqlite   : sqliteInit
   };
 
-  // load external configuration if it exists.
-  // Else, default to this configuration
   // The database connection for all data interactions
-  // FIXME: research connection pooling in MySQL
-  var con = supported_databases[sgbd](cfg);
+  var con = supported_databases[dbms](cfg);
+  logger.emit('credentials', cfg);
 
   //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
   flushUsers(con);
@@ -107,7 +90,8 @@ module.exports = function (cfg) {
     execute: function(sql, callback) {
       // This fxn is formated for mysql pooling, not in all generality
       console.log("[db] [execute]: ", sql);
-      // this uses mysql connection pooling...
+      logger.emit('log', sql);
+
       con.getConnection(function (err, connection) {
         if (err) return callback(err);
         connection.query(sql, function (err, results) {
@@ -116,14 +100,6 @@ module.exports = function (cfg) {
           return callback(null, results);
         });
       });
-    },
-
-    escape: function (id) {
-      return escape_id(id);
-    },
-    
-    escapestr : function (str) {
-      return escape_str(str); 
     }
   };
 };
