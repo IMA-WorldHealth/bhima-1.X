@@ -36,6 +36,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
   function sales(model) { 
     $scope.model = model;
+    generatePatientNames($scope.model.patient.data);
     
     console.log(model);
     //TODO Add logic to receive $routeParams.debtorID and $routeParams.inventoryID in the future
@@ -54,7 +55,12 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     var noteDebtor = debtor || "";
     return "PI/" + id + "/" + date + "/" + noteDebtor; 
   }
-    
+   
+  function generatePatientNames(patientData) { 
+    patientData.forEach(function(patient) { 
+      patient.name = patient.first_name + ' ' + patient.last_name;
+    });
+  }
   function init() { 
 
 //      FIXME should verify user ID at the time of submitting invoice, less time to manipulate it I guess

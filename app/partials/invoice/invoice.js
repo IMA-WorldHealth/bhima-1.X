@@ -1,13 +1,14 @@
 //TODO Debtor table currently has no personal information - this strictly ties debtors to patients (or some existing table) - a reverse lookup from debtor/ creditor ID to recipient is needed
-angular.module('kpk.controllers').controller('invoice', function($scope, $routeParams, $q, validate) { 
-  var dependencies = {}, origin = $scope.origin = $routeParams.originId, invoiceId = $routeParams.invoiceId, process = {};
+angular.module('kpk.controllers').controller('invoice', function($scope, $routeParams, $q, validate, messenger) { 
+  var dependencies = {}, origin = $scope.origin = $routeParams.originId, invoiceId = $routeParams.invoiceId, process = {}, timestamp = $scope.timestamp = new Date();
   if(!(origin && invoiceId)) throw new Error('Invalid parameters');
   
   process = { 
     'cash': processCash,
     'sale': processSale,
     'credit': processCredit,
-    'debtor': processDebtor
+    'debtor': processDebtor,
+    'patient' : processPatient,
   };
   dependencies.recipient = { 
     required: true 
@@ -91,7 +92,28 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   }
 
   function processDebtor() { 
+    messenger.danger('Method not implemented'); 
+  }
+
+  function processPatient() { 
+    dependencies.recipient.query = { 
+      tables: {},
+      where: ['patient.id=' + invoiceId]
+    }
+    dependencies.recipient.query.tables['patient'] = { 
+      columns: ['id', 'first_name', 'last_name', 'dob', 'location_id', 'debitor_id', 'registration_date']
+    };
   
+    validate.process(dependencies, ['recipient']).then(buildPatientLocation);
+  }
+
+  function buildPatientLocation(model) { 
+    dependencies.location = { 
+      required: true,
+      query: '/location/' + model.recipient.data[0].location_id
+    }
+    
+    validate.process(dependencies, ['location']).then(patientReceipt);
   }
 
   function buildInvoiceQuery(model) { 
@@ -145,7 +167,9 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     $scope.recipient.location = $scope.model.location.data[0];
    
     if(model.cash) $scope.cashTransaction  = $scope.model.cash.data[0];
-  }
+  } 
+
+  function patientReceipt(model) { $scope.model = model; $scope.recipient = $scope.model.recipient.data[0]; $scope.location = $scope.model.location.data[0]; }
   
   //TODO Follows the process credit hack
   function creditInvoice(model) { $scope.model = model; $scope.note = $scope.model.credit.data[0]; $scope.location = $scope.model.location.data[0]}

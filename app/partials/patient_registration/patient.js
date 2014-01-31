@@ -129,7 +129,7 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
     var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
     var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
 
-    var patient_model, debtor_model;
+    var patient_model, debtor_model, formattedDate = new Date().toISOString().slice(0, 10);
 
     setLocation().then(function (id) {
       console.log("setLocation returned:", id);
