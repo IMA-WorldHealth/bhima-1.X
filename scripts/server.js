@@ -190,7 +190,7 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
 app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) { 
   // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
   // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.principal_center_id IS NULL AND account.auxiliairy_center_id IS NULL AND account.parent <> 0";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0";
 
   db.execute(sql, function (err, rows) {
     if (err) return next(err);

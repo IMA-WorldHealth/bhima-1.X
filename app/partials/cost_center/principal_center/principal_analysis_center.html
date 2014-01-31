@@ -22,13 +22,15 @@
       </div>
       <table class="table table-condensed table-striped">
         <thead>
-          <tr><th>Name</th><th>Enterprise</th><th>Action</th></tr>
+          <tr><th>Name</th><th>Cost</th><th>Enterprise</th><th>Action</th></tr>
         </thead>
         <tbody>
           <tr ng-repeat="pc in models.principal_centers">
             <td>{{pc.text}}</td>
 
-            <td>{{pc.name}}</td>
+            <td>{{pc.cost | currency}}</td>
+
+            <td>{{pc.name}}</td>            
 
             <td><button class="btn btn-sm btn-default" ng-disabled="true" ng-click="edit(grp)"><i class="glyphicon glyphicon-pencil"></i></button></td>
 
@@ -63,6 +65,13 @@
             <label class="col-xs-2 control-label">Text</label>
             <div class="col-xs-10">
               <input class="form-kapok" ng-model="register.text">
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">Cost</label>
+            <div class="col-xs-10">
+              <input type="number" class="form-kapok" ng-model="register.cost">
             </div>
           </div>
     
@@ -112,16 +121,32 @@
     </div>
 
     <div ng-switch-when="configure">
-      <div class="col-xs-6 panel panel-default">
+      <div class="col-xs-7 panel panel-default">
         <div class="panel-heading">
-          <span> Availables Accounts </span>
+          <span> Assignation Accounts To {{selected.text}} </span>
           <span class="pull-right">
             <button type="submit" ng-click="associate()">Assign</button>
           </span>
         </div>
         <table class="table table-condensed table-striped">
           <thead>
-            <tr><th><input type="checkbox" ng-model="acc.all" ng-change="checkAll()" /></th><th>Account Number</th><th>Account Name</th></tr>
+            <tr>
+              <th>
+                <input type="checkbox" ng-model="acc.all" ng-change="checkAll()" />
+              </th>
+              <th>
+                Account Number
+              </th>
+              <th>
+                Account Name
+              </th>
+              <th>
+                Critere
+              </th>
+              <th>
+                Value
+              </th>
+            </tr>
           </thead>
           <tbody>
             <tr ng-repeat="account in models.availablesAccounts">
@@ -130,12 +155,16 @@
               <td>{{account.account_number}}</td>
 
               <td>{{account.account_txt}}</td>
+
+              <td><input type="text" ng-model ="account.critere_id"/></td>
+
+              <td><input type="text" ng-model ="account.value"/></td>
             </tr>
           </tbody>
       </table>
       </div>
 
-      <div class="col-xs-6 panel panel-primary">
+      <div class="col-xs-5 panel panel-primary">
         <div class="panel-heading">
         <span> Associeted Accounts To <b>{{selected.text}}</b></span>          
         </div>

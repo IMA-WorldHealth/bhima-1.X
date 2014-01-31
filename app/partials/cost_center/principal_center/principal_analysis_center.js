@@ -8,7 +8,7 @@ angular.module('kpk.controllers')
   $scope.selected = {};
   $scope.acc ={};
   requettes.pricipal_centers = {
-    tables : {'principal_center':{columns:['id', 'text', 'note']}, 
+    tables : {'principal_center':{columns:['id', 'text', 'note', 'cost']}, 
               'enterprise' : {columns :['name']}},
     join : ['principal_center.enterprise_id=enterprise.id']
   }
@@ -25,7 +25,7 @@ angular.module('kpk.controllers')
   function setAction (value, index){
     $scope.action = value;
     if(value !== 'register') $scope.selected = models.principal_centers[index];
-    if(value === 'configure') handleConfigure();
+    //if(value === 'configure') handleConfigure();
   }
 
   function saveRegistration (){
@@ -56,8 +56,8 @@ angular.module('kpk.controllers')
     $q.all(
       [
         connect.req(requettes.pricipal_centers),
-        getAvailablesAccounts(enterprise.id),
-        loadAssociateAccounts
+        getAvailablesAccounts(enterprise.id)//,
+        //loadAssociateAccounts
       ])
     .then(init);
   }
@@ -122,7 +122,7 @@ angular.module('kpk.controllers')
   $scope.setAction = setAction;
   $scope.saveRegistration = saveRegistration;
   $scope.checkAll = checkAll;
-  $scope.associate = associate;
+  //$scope.associate = associate;
 
   //invocation
   run();
