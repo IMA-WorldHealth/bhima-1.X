@@ -185,7 +185,7 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
       //Create patient record
       connect.basicPut("patient", [patient_model])
       .then(function(res) {
-        $location.path("patient_records/" + res.data.insertId);
+        $location.path("invoice/patient/" + res.data.insertId);
         submitted = true;
       });
     });
