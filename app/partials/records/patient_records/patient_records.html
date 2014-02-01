@@ -3,61 +3,147 @@
   <span>Patient Records</span>
 </header>
 
-<section class="underline">
-  <div class="col-xs-4 hack-left">
-    <input type="text" ng-model="patient_filter.filter" class="form-kapok" placeholder="Filter Patients">
-  </div>
-	<div class="pull-right">
-		<a disabled class="btn btn-default"><span class="glyphicon glyphicon-list"></span> Patient Card</a>
-    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
-  </div>
-</section>
+<!-- <section class="underline"> -->
+<!--   	<div class="pull&#45;right"> -->
+<!-- 		<a disabled class="btn btn&#45;default"><span class="glyphicon glyphicon&#45;list"></span> Patient Card</a> -->
+<!--     <a class="btn btn&#45;default"><span class="glyphicon glyphicon&#45;search"></span> Advanced Search</a> -->
+<!--   </div> -->
+<!-- </section> -->
 
 <div class="content">
-  <div class="row">
-    <div class="col-xs-12">
+          
+    <!-- Advanced Search -->
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Advanced Search
+          </div>
+          
+          <div class="panel-body">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label class="control-label">Patient Name</label>
+                <input class="form-kapok"></input>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Year of birth</label>
+                <input class="form-kapok"></input>
+              </div>
 
-      <div ng-switch on="model['patient'].data.length">
-        <div class="alert alert-info" ng-switch-when='0'>
-          No patients found. Reference <strong><a href="/#/patient">Patient Registration</a></strong> to register a patient.
+              <div class="form-group">
+                <label class="control-label">Gender</label>
+                <div class="col-xs-12">
+                  <div class="radio-inline">
+                    <label>
+                      <input
+                        type="radio"
+                        name="sex_select"
+                        id="male"
+                        value="M"
+                        checked
+                        ng-model="patient.sex"
+                        required>
+                      Male
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="sex_select" id="female" value="F" ng-model="patient.sex" required>
+                      Female
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          
+            <div class="col-xs-6">
+
+              <div class="form-group">
+                <label for="location-country" class="capital control-label">Country</label>
+                <select class="form-kapok" id="location-country"> 
+                    <option value="" disabled="disabled">-- Patient Country--</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                <label for="location-province" class="capital control-label">Province</label>
+                <select class="form-kapok" id="location-province"> 
+                    <option value="" disabled="disabled">-- Patient Province --</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                <label for="location-sector" class="capital control-label">Sector</label>
+                  <select class="form-kapok" id="location-sector">
+                    <option value="" disabled="disabled">-- Patient Sector --</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                <label for="location-village" class="capital control-label">Village</label>
+                  <input
+                    type="text"
+                    class="form-kapok col-xs-9"
+                    id="location-country"
+                    ng-model="data.village_id"
+                    typeahead="v.id as v.name for v in model.village.data | filter:$viewValue | filter:villageFilter | limitTo: 10"
+                    typeahead-on-select="selectLocation()"
+                    typeahead-input-formatter="formatTypeAhead()"
+                    required >
+                </div>
+            </div>
+          </div>
+
+          <div class="panel-footer">
+              <button ng-click="patientSearch(serachParams)" class="btn btn-default btn-sm">Search</button>
+          </div>
         </div>
-        <div ng-switch-default></div>
       </div>
-
-      <div class="patient-table">
-        <table class="table table-condensed table-bordered">
-
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>DOB</th>
-            <th>Parent</th>
-            <th>Gender</th>
-            <th>Email</th>
-          </tr>
-          </thead>
-
-          <tbody>
-          <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.id)"
-              ng-repeat="patient in model['patient'].data | filter: patient_filter.filter">
-
-            <td>{{patient.id}}</td>
-            <td>{{patient.name}}</td>
-            <td>{{patient.dob | date : 'dd/MM/yyyy'}}</td>
-            <td>{{patient.parent_name}}</td>
-            <td>{{patient.sex | uppercase}}</td>
-            <td>{{patient.email}}</td>
-            <!--Multiple ng-shows - mutually exclusive but not good practice-->
-          </tr>
-          </tbody>
-        </table>
-      </div>
-
     </div>
+      
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            Result 
+            <div class="pull-right"><span class="glyphicon glyphicon-eye-close"></span></div>
+          </div>
+          
+          <div class="patient-table">
+            <table class="table table-condensed table-bordered">
 
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>DOB</th>
+                <th>Parent</th>
+                <th>Gender</th>
+                <th>Email</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.id)"
+                  ng-repeat="patient in model['patient'].data | filter: patient_filter.filter">
+
+                <td><b>{{patient.id}}</b></td>
+                <td>{{patient.name}}</td>
+                <td>{{patient.dob | date : 'dd/MM/yyyy'}}</td>
+                <td>{{patient.parent_name}}</td>
+                <td>{{patient.sex | uppercase}}</td>
+                <td>{{patient.email}}</td>
+                <!--Multiple ng-shows - mutually exclusive but not good practice-->
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
 <section class="underline overline">
   <div class="pull-right">

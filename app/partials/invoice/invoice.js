@@ -109,7 +109,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
 
   function buildPatientLocation(model) { 
     dependencies.location = { 
-      required: true,
+      required: truepatient,
       query: '/location/' + model.recipient.data[0].location_id
     }
     
