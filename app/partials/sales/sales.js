@@ -1,4 +1,3 @@
-//Functional but not finished, scheduled for 03/02/
 angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger) {
   $scope.invoice = {payable: "false"};
   

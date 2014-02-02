@@ -1,5 +1,5 @@
-<link href="partials/sales/sales.css" rel="stylesheet"/>
-
+<!-- TODO sale table style has no margin-bottom, doesn't need to match height with find patient -->
+<!-- Use Tab selection from purchase order to select between ID and name search -->
 <header>
   <span>Create Patient Invoice</span>
 </header>
@@ -41,29 +41,44 @@
 <div class="content">
   
 <div class="row">
-  <div class="col-xs-12">
-    <label class="control-label">Invoice Patient</label>
-    
-    <div class="input-group">
-      
-      <input 
-      type="text" 
-      ng-model="selectedDebtor" 
-      typeahead="patient as '[' + patient.debitor_id + '] ' + patient.name for patient in model.patient.data | filter:$viewValue | limitTo:8" 
-      placeholder="Find a Debitor" 
-      typeahead-on-select="loadDebitor(debitor.id)" 
-      class="form-kapok" 
-      size="25">
-      <span class="input-group-btn"> 
-        <button ng-click="initialiseSaleDetails(selectedDebtor)" class="btn btn-default btn-sm">Select Patient</button>
-      </span>
-    </div>
-    <br> <!-- Style hack -->
-  </div>
-</div>
 
-<div class="row">
-  <div class="col-xs-12">
+  <div class="col-xs-5">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="glyphicon glyphicon-search"></span> Find Patient
+        
+        <!-- <div class="pull&#45;right"> -->
+        <div class="btn-group">
+          <button class="btn btn-default btn-sm">Enter Debtor ID</button>
+          <button class="btn btn-default btn-sm">Search Patient Name</button>
+        </div>
+        <!-- </div> -->
+
+      </div>
+      
+      <div class="panel-body">
+        
+                
+        <br></br>
+        <div class="input-group">
+          
+          <input 
+          type="text" 
+          ng-model="selectedDebtor" 
+          typeahead="patient as '[' + patient.debitor_id + '] ' + patient.name for patient in model.patient.data | filter:$viewValue | limitTo:8" 
+          placeholder="Find a Debitor" 
+          typeahead-on-select="loadDebitor(debitor.id)" 
+          class="form-kapok" 
+          size="25">
+          <span class="input-group-btn"> 
+            <button ng-click="initialiseSaleDetails(selectedDebtor)" class="btn btn-default btn-sm">Submit</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-7">
     <div class="panel panel-default">
       <div class="panel-heading">
         <span>Sale</span>
@@ -72,7 +87,7 @@
         </div>
       </div>
       <div ng-show="invoiceDebtor">
-        <table class="table table-condensed table-bordered">
+        <table class="table ">
           <thead>
             <tr><th>Date</th><th>Invoice</th><th>Debtor</th><th>Note</th></tr>
           </thead>
@@ -82,17 +97,22 @@
         </table>
       </div> <!-- End panel body div -->
     </div> <!-- End sale overview panel -->
-  </div> <!-- End column 12 -->
-</div> <!-- End sale overview row -->
+
+  </div>
+</div>
+
+<!-- <div class="row"> -->
+  <!-- <div class="col&#45;xs&#45;12"> -->
+      <!-- </div> <!&#45;&#45; End column 12 &#45;&#45;> -->
+<!-- </div> <!&#45;&#45; End sale overview row &#45;&#45;> -->
 
 <div class="row">
   <div class="col-xs-12">
-    <div class="panel panel-success">
+    <div class="panel panel-danger">
       <div class="panel-heading">
         <span>Sale Items</span>
-        <button class="pull-right" ng-click="updateInventory()">+</button>
+        <!-- <button class="pull&#45;right" ng&#45;click="updateInventory()">+</button> -->
         <div class="pull-right">
-          <span class="glyphicon glyphicon-eye-close"></span>
         </div>
       </div>
       <table class="table table-condensed" ng-show="itemsInInv()">
@@ -124,7 +144,7 @@
   </div>
 </div>
 
-<section class="underline overline">
+<section class="bar-bottom">
   <div class="pull-right">
     <a ng-disabled="inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
   </div>
