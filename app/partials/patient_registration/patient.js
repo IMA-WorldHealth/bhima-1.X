@@ -1,6 +1,6 @@
 angular.module('kpk.controllers').controller('patientRegistration', function($scope, $q, $location, $modal, connect, validate, appstate) {
-  var dependencies = {}, submitted = false, defaultPatientId = 1;
-	$scope.patient = {}, $scope.data = {};
+  var dependencies = {}, defaultBirthMonth = '06-01';
+  $scope.patient = {}, $scope.data = {};
   
   dependencies.debtorGroup = { 
     query : {'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
@@ -38,7 +38,7 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
     //FIXME This is super cheeky in angular - create a directive for this
     var video = document.querySelector('#patientImage'), patientResolution = { video : { mandatory : { minWidth: 300, maxWidth: 400 } } };
     
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
     
     if (navigator.getUserMedia) {       
         navigator.getUserMedia(patientResolution, handleVideo, videoError);
@@ -52,23 +52,45 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
       throw error;
     }
   }
+  
+  $scope.update = function(patient) {
 
-	$scope.$watch('patient.yob', function(nval, oval) {
-		var DEFAULT_DATE = '-06-01';	
-		//temporary date validation
-		if(!nval || nval.length != 4) return;
-    $scope.patient.dob = nval + DEFAULT_DATE;
-	});
+    setLocation().then(function(locationId) {
+      
+      //TODO verify valid patient data
+      patient.location_id = locationId; // Should this be in package_patient?
+      
+      commit(patient);
+    });
+  }
 
-  function createId(data) {
-    if(data.length===0) return defaultPatientId;
-    var search = data.reduce(function(a, b) { a = a.id || a; return Math.max(a, b.id); });
-    // quick fix
-    search = (search.id !== undefined) ? search.id : search;
-    //if (search.id) search = search.id;
-    return search + 1;
+  function commit (patient) {
+
+
+    var debtor = $scope.debtor;
+    patient_model = patient;
+
+    var format_debtor = {
+      id: patient_model.debitor_id,
+      group_id: $scope.debtor.debtor_group.id,
+      text:patient_model.first_name+' - '+patient_model.last_name,
+      convention_id : $scope.debtor.convention_id
+    };
+    //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
+    // FIXME 1 - default group_id, should be properly defined
+    connect.basicPut("debitor", [format_debtor])
+    .then(function(res) { 
+      //Create patient record
+      patient.debitor_id = res.data.insertId;
+      connect.basicPut("patient", [patient_model])
+      .then(function(res) {
+        $location.path("invoice/patient/" + res.data.insertId);
+        submitted = true;
+      });
+    });
   }
  
+  //Location code - requires refactor + newer location schema
   $scope.selectLocation = function selectLocation () {
     $scope.data.oldLocaton = true;
   };
@@ -124,94 +146,9 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
     return defer.promise;
   }
 
-  $scope.update = function(patient) {
-    //      download latest patient and debtor tables, calc ID's and update
-    var patient_request = connect.req({'tables' : {'patient' : {'columns' : ['id']}}});
-    var debtor_request = connect.req({'tables' : {'debitor' : {'columns' : ['id']}}});
-
-    var patient_model, debtor_model, formattedDate = new Date().toISOString().slice(0, 10);
-
-    setLocation().then(function (id) {
-      console.log("setLocation returned:", id);
-
-      //      TODO verify patient data is valid
-      //
-
-      $q.all([debtor_request, patient_request])
-        .then(function(res) {
-          debtor_model = res[0];
-          patient_model = res[1];
-
-          // What does this do?  It isn't reference again..
-          var package_patient = { 
-            id: createId(patient_model.data),
-            debitor_Id: createId(debtor_model.data),
-            first_name: patient.first_name,
-            last_name: patient.last_name,
-            dob: patient.dob,
-            sex: patient.sex,
-            location_id: id
-          };
-
-          patient.id = createId(patient_model.data);
-          patient.debitor_id = createId(debtor_model.data);
-          patient.location_id = id; // Should this be in package_patient?
-          console.log("created p_id", patient.id);
-          console.log("created id", patient.debitor_id);
-          //sorry, sorry - package patient as seperate object
-          console.log('deleting yob');	
-          delete(patient.yob);
-          commit(patient);
-        });
-    });
-  };
-
-  function commit (patient) {
-
-
-    var debtor = $scope.debtor;
-    patient_model = patient;
-
-    var format_debtor = {
-      id: patient_model.debitor_id,
-      group_id: $scope.debtor.debtor_group.id,
-      text:patient_model.first_name+' - '+patient_model.last_name,
-      convention_id : $scope.debtor.convention_id
-    };
-    //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
-    // FIXME 1 - default group_id, should be properly defined
-    connect.basicPut("debitor", [format_debtor])
-    .then(function(res) { 
-      //Create patient record
-      connect.basicPut("patient", [patient_model])
-      .then(function(res) {
-        $location.path("invoice/patient/" + res.data.insertId);
-        submitted = true;
-      });
-    });
-  }
-
   $scope.formatLocation = function(l) { 
     return l.city + ", " + l.region;
   };
-
-  $scope.checkChanged = function(model) { 
-      return angular.equals(model, $scope.master);
-  };
-
-  $scope.checkSubmitted = function() { 
-    return submitted;
-  };
-
-  function getGroups(){
-    var request = {
-      tables : { 'debitor_group' : { columns : ['id', 'name']}},
-      where : ['debitor_group.locked='+0]
-    };
-    connect.fetch(request).then(function (data) {
-      $scope.debtor_group_model.data = data;
-    });
-  }
 
   $scope.calcLocation = function (v) {
     $scope.data.newVillage = false;
@@ -228,8 +165,18 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
   $scope.formatTypeAhead = function () {
     return $scope.model ? $scope.model.village.get($scope.data.village_id).name : '';
   };
+   
+  //Utility methods
+  $scope.$watch('sessionProperties.yob', function(nval) {
+    if(nval && nval.length===4) $scope.patient.dob = nval + '-' + defaultBirthMonth;
+	});
 
-  $scope.formatConvention = function(convention){
-    return convention.name;
-  }
+  //$().focus() would allow the page to flow better but is fairly cheeky in angular
+  function enableFullDate() { $scope.sessionProperties.fullDateEnabled = true; }
+  
+  function checkChanged() { return angular.equals(model, $scope.master); }
+    
+  //Expose methods to scope
+  $scope.enableFullDate = enableFullDate;
+  $scope.checkChanged = checkChanged;
 });
