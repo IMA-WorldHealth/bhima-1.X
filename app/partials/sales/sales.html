@@ -90,7 +90,7 @@
     <div class="panel panel-success">
       <div class="panel-heading">
         <span>Sale Items</span>
-        <!-- <button class="pull&#45;right" ng&#45;click="updateInventory()">+</button> -->
+        <button class="pull-right" ng-click="updateInventory()">+</button>
         <div class="pull-right">
           <span class="glyphicon glyphicon-eye-close"></span>
         </div>
@@ -126,6 +126,6 @@
 
 <section class="underline overline">
   <div class="pull-right">
-    <a ng-disabled="!debtor || inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
+    <a ng-disabled="inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
   </div>
 </section>
