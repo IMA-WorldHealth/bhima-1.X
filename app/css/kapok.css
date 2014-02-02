@@ -104,7 +104,6 @@ fieldset {
   text-transform: capitalize;
 }
 
-/*Form-control derivative (spelt wrong) add more CSSness*/
 .form-kapok {
   display: block;
   width: 100%;
@@ -116,6 +115,10 @@ fieldset {
   vertical-align: middle;
   background-color: #ffffff;
   border: 1px solid #cccccc;
+}
+
+.form-kapok[disabled] { 
+  background-color: #eeeeee;
 }
 
 /* everything is bad */

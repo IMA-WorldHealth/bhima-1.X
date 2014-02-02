@@ -68,22 +68,22 @@
 
             <div class="form-group">
               <label for="location-country" class="capital control-label">Country</label>
-              <select class="form-kapok" id="location-country"> 
-                  <option value="" disabled="disabled">-- Patient Country--</option>
+              <select disabled class="form-kapok" id="location-country"> 
+                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Country&#45;&#45;</option> -->
                 </select>
             </div>
 
             <div class="form-group">
               <label for="location-province" class="capital control-label">Province</label>
-              <select class="form-kapok" id="location-province"> 
-                  <option value="" disabled="disabled">-- Patient Province --</option>
+              <select disabled class="form-kapok" id="location-province"> 
+                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Province &#45;&#45;</option> -->
                 </select>
             </div>
 
             <div class="form-group">
               <label for="location-sector" class="capital control-label">Sector</label>
-                <select class="form-kapok" id="location-sector">
-                  <option value="" disabled="disabled">-- Patient Sector --</option>
+                <select disabled class="form-kapok" id="location-sector">
+                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
                 </select>
             </div>
 
@@ -91,6 +91,7 @@
               <label for="location-village" class="capital control-label">Village</label>
                 <input
                   type="text"
+                  disabled
                   class="form-kapok col-xs-9"
                   id="location-country"
                   ng-model="data.village_id"
@@ -129,6 +130,7 @@
               <th>Email</th>
               <th>Debtor #</th>
               <th>Date registered</th>
+              <th></th>
             </tr>
             </thead>
 
@@ -144,6 +146,7 @@
               <td>{{patient.email}}</td>
               <td><b>{{patient.debitor_id}}</b></td>
               <td>{{patient.registration_date | date}}</td>
+              <td><a href="#/invoice/patient/{{patient.id}}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
             </tr>
             </tbody>
           </table>
