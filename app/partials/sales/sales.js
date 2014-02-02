@@ -1,3 +1,4 @@
+//Functional but not finished, scheduled for 03/02/
 angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger) {
   $scope.invoice = {payable: "false"};
   
@@ -49,11 +50,13 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     invoiceId = $scope.invoiceId = createId($scope.model.sale.data.max);
     invoiceDate = $scope.invoiceDate = getDate();
     invoiceNote = $scope.invoiceNote = formatNote(invoiceId, invoiceDate, invoiceDebtor);
+
+    $scope.loadInventory();
   }
 
   function formatNote(id, date, debtor) { 
     var noteDebtor = debtor || "";
-    return "PI/" + id + "/" + date + "/" + noteDebtor; 
+    return "PI/" + id + "/" + date + "/" + noteDebtor.name; 
   }
    
   function generatePatientNames(patientData) { 
@@ -157,7 +160,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       });
     //}
 
-    $scope.currentLocation = $scope.location_model.get($scope.debtor.location_id);
+    // $scope.currentLocation = $scope.location_model.get($scope.debtor.location_id);
   };
 
   $scope.generateInvoice = function() { 
@@ -171,14 +174,13 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //create invoice record
     var format_invoice = {
       enterprise_id : appstate.get("enterprise").id, //not safe
-      id : $scope.invoice_id,
       cost : t,
       currency_id : appstate.get('enterprise').currency_id, //ohgd
-      debitor_id : $scope.debtor.debitor_id,
-      invoice_date: $scope.sale_date,
+      debitor_id : invoiceDebtor.id,
+      invoice_date: invoiceDate,
       seller_id : $scope.verify, //TODO placeholder - this should be derived from appstate (session) or equivelant
       discount: '0', //placeholder
-      note : $scope.formatText(),
+      note : invoiceNote,
       posted : '0'
     };
 
@@ -186,18 +188,18 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     connect.basicPut('sale', [format_invoice])
     .then(function(res) { 
       if (res.status==200) { 
-        var promise = generateInvoiceItems();
+        var saleId = res.data.insertId, promise = generateInvoiceItems(saleId);
         promise.then(function(res) { 
           console.log("Invoice successfully generated", res);
           // assuming success - if an error occurs sale should be removed etc.
-          journalPost($scope.invoice_id)
+          journalPost(saleId)
           .then(function(res) {
             //everything is good - if there is an error here, sale should be undone (refused from posting journal)
             console.log("posting returned", res);
             // $location.path('/sale_records/' + $scope.invoice_id);
             
             //Replaced path to sale records with receipt
-            $location.path('/invoice/sale/' + $scope.invoice_id);
+            $location.path('/invoice/sale/' + saleId);
           }, function (error) {
             console.log("ERROR:", error);
           });
@@ -219,15 +221,16 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     });
     return deferred.promise;
   }
-
-  function generateInvoiceItems() { 
+  
+  //TODO Send all invoice items at once
+  function generateInvoiceItems(saleId) { 
     var deferred = $q.defer();
     var promise_arr = [];
 
     //iterate through invoice items and create an entry to sale_item
     $scope.inventory.forEach(function(item) { 
       var format_item = {
-        sale_id : $scope.invoice_id,
+        sale_id : saleId,
         inventory_id : item.item.id,
         quantity : item.quantity,
         unit_price : item.price,
