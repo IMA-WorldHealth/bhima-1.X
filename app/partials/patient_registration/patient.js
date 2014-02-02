@@ -53,40 +53,27 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
     }
   }
   
-  $scope.update = function(patient) {
-
-    setLocation().then(function(locationId) {
-      
-      //TODO verify valid patient data
-      patient.location_id = locationId; // Should this be in package_patient?
-      
-      commit(patient);
+  function registerPatient(patient) { 
+    createLocation().then(function(locationId) { 
+      patient.location_id = locationId;
+      writePatient(patient);
     });
   }
 
-  function commit (patient) {
-
-
-    var debtor = $scope.debtor;
-    patient_model = patient;
-
-    var format_debtor = {
-      id: patient_model.debitor_id,
-      group_id: $scope.debtor.debtor_group.id,
-      text:patient_model.first_name+' - '+patient_model.last_name,
+  function writePatient(patient) { 
+    var packageDebtor = {
+      group_id : $scope.debtor.debtor_group.id,
+      text : 'Debtor account for patient ' + patient.first_name + ' ' + patient.last_name,
       convention_id : $scope.debtor.convention_id
-    };
-    //Create debitor record for patient - This SHOULD be done using an alpha numeric ID, like p12
-    // FIXME 1 - default group_id, should be properly defined
-    connect.basicPut("debitor", [format_debtor])
-    .then(function(res) { 
-      //Create patient record
-      patient.debitor_id = res.data.insertId;
-      connect.basicPut("patient", [patient_model])
-      .then(function(res) {
-        $location.path("invoice/patient/" + res.data.insertId);
-        submitted = true;
-      });
+    }
+
+    connect.basicPut('debitor', [packageDebtor]).then(function(result) { 
+      patient.debitor_id = result.data.insertId;
+
+      connect.basicPut('patient', [patient]).then(function(result) { 
+        $scope.submitted = true;
+        $location.path('invoice/patient/' + result.data.insertId);
+      })
     });
   }
  
@@ -101,7 +88,7 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
   });
 
   // TODO: Clean this code up.
-  function setLocation () {
+  function createLocation () {
     var defer = $q.defer();
 
     // create location data if not exists
@@ -174,9 +161,10 @@ angular.module('kpk.controllers').controller('patientRegistration', function($sc
   //$().focus() would allow the page to flow better but is fairly cheeky in angular
   function enableFullDate() { $scope.sessionProperties.fullDateEnabled = true; }
   
-  function checkChanged() { return angular.equals(model, $scope.master); }
+  function checkChanged(model) { return angular.equals(model, $scope.master); }
     
   //Expose methods to scope
+  $scope.registerPatient = registerPatient;
   $scope.enableFullDate = enableFullDate;
   $scope.checkChanged = checkChanged;
 });
