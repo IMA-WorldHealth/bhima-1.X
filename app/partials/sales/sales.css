@@ -1,10 +1,16 @@
 .patient-find { 
   margin-left: 10px;
+  /* text-decoration: underline; */
   /* color: inherit; */
 }
 
 .patient-find:hover { 
   cursor: default; 
+}
+
+.link-selected { 
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 .po-header {
