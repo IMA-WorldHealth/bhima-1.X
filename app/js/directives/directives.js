@@ -226,6 +226,103 @@
       };
     }])
 
+    .directive('findPatient', ['$compile', 'validate', function($compile, validate) { 
+      return { 
+        restrict: 'A',
+        link : function(scope, element, attrs) { 
+          var dependencies = {};
+
+          dependencies.debtor = { 
+            required : true,
+            query : { 
+              tables : {
+                patient : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id"]},
+                debitor : { columns : ["text"]},
+              },
+              join : ["patient.debitor_id=debitor.id"]
+            }
+          };
+
+
+          scope.findPatient = {state: 'id'};
+          
+          var template = 
+          '<div class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
+          '  <div class="panel-heading">'+
+          '    <span class="glyphicon glyphicon-search"></span> Find Patient'+
+          '    <div class="pull-right">'+
+          '      <a ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> Enter Debtor ID</a>'+
+          '      <a ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> Search Patient Name</a>'+
+          '    </div>'+
+          '  </div>'+
+          '  <div class="panel-body">'+
+          '    <div ng-switch on="findPatient.state">'+
+          '      <div ng-switch-when="name">'+
+          '        <div class="input-group">'+
+          '          <input '+
+          '          type="text" '+
+          '          ng-model="selectedDebtor" '+
+          '          typeahead="patient as \'[\' + patient.debitor_id + \'] \' + patient.name for patient in model.patient.data | filter:$viewValue | limitTo:8" '+
+          '          placeholder="Find a Debitor"'+
+          '          typeahead-on-select="loadDebitor(debitor.id)" '+
+          '          class="form-kapok" '+
+          '          size="25">'+
+          '          <span class="input-group-btn"> '+
+          '            <button ng-click="submitDebtor(findPatient.state)" class="btn btn-default btn-sm">Submit</button>'+
+          '          </span>'+
+          '        </div>'+
+          '      </div> <!-- End searchName component -->'+
+          '      <div ng-switch-when="id">'+
+          '        <div class="input-group">'+
+          '          <input '+
+          '            type="text"'+
+          '            ng-model="findPatient.debtorId"'+
+          '            class="form-kapok"'+
+          '            placeholder="Debtor ID">'+
+          '          <span class="input-group-btn">'+
+          '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm">Submit</button>'+
+          '          </span>'+
+          '        </div>'+
+          '      </div>'+
+          '    </div> <!--End find patient switch -->'+
+          '  </div>'+
+          '</div>';
+
+          var stateMap = { 
+            'name' : searchName,
+            'id' : searchId
+          }
+          
+          function searchName() { 
+            console.log('search name');
+          }
+
+          function searchId(value) { 
+            console.log('search id', value);
+            
+            dependencies.debtor.query.where = ["patient.debitor_id=" + value];
+            validate.refresh(dependencies).then(handleIdRequest, handleIdError);
+          }
+
+          function handleIdRequest(model) { 
+            console.log('downloaded', model);
+            scope.findPatient.valid = true;
+          }
+
+          function handleIdError(error) { 
+            scope.findPatient.valid = false;
+          }
+          
+          function submitDebtor(value) { 
+            stateMap[scope.findPatient.state](value);
+          }
+
+          scope.submitDebtor = submitDebtor;
+          element.replaceWith($compile(template)(scope));
+        }
+      }
+    }])
+
     .directive('kCalculator', function () {
 
       return {

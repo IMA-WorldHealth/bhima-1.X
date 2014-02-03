@@ -1,6 +1,7 @@
 angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger) {
   $scope.invoice = {payable: "false"};
   
+  // $scope.findPatient = {status: "searchID"};
   //TODO perform logic with local variables and expose once complete
   $scope.sale_date = getDate();
   $scope.inventory = [];
