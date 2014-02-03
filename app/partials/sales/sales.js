@@ -265,9 +265,10 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   $scope.updateInventory = function(inventoryID) {
     //FIXME dont' select default inventory item - have a selct option 
     if(!inventoryID) inventoryID = 0; 
-    var new_line = {item: $scope.inventory_model.data[inventoryID]}; //select default item
+    var new_line = {item: {}};
+    // var new_line = {item: $scope.inventory_model.data[inventoryID]}; //select default item
     $scope.inventory.push(new_line);
-    $scope.updateRow(new_line); //force updates of fields
+    // $scope.updateRow(new_line); //force updates of fields
     /* 
     Watching a variable that isn't in angular's scope, return the variable in a function
     $scope.$watch(function() { return new_line.item; }, function(nval, oval, scope) { 
