@@ -54,8 +54,8 @@
     ];
 
     function refresh(dependencies, limit) { 
-      var list = filterList((limit || Object.keys(dependencies)), dependencies);
-
+      var list = limit || Object.keys(dependencies);
+        
       list.forEach(function(modelKey) { 
         dependencies[modelKey].processed = false;
       });

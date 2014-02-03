@@ -2,11 +2,21 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
   var dependencies = {}, patient = ($routeParams.patientID || -1);			
  
   dependencies.patient = { 
-    required : true,
-    query : { 'tables' : { 'patient' : { 'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id'] }}},
+    query : { 'tables' : { 'patient' : { 'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id', 'debitor_id', 'registration_date'] }}},
   };
  
-  validate.process(dependencies).then(patientRecords);
+  // validate.process(dependencies).then(patientRecords);
+  
+  function patientSearch(searchParams) { 
+    var condition = [];
+    if(!searchParams) return;
+      
+    Object.keys(searchParams).forEach(function(key) { 
+      if(searchParams[key].length) condition.push('patient.' + key + '=' + searchParams[key], "AND");
+    });
+    dependencies.patient.query.where = condition.slice(0, -1);
+    validate.refresh(dependencies).then(patientRecords);
+  }
 
   function patientRecords(model) { 
     $scope.model = model;
@@ -20,6 +30,7 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
   function select(id) { 
     $scope.selected = $scope.model.patient.get(id);
   }
-
+  
+  $scope.patientSearch = patientSearch;
   $scope.select = select;
 });
