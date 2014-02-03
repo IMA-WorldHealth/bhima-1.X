@@ -43,7 +43,7 @@
 <div class="row">
 
   <div class="col-xs-5">
-    <div find-patient></div>
+    <div find-patient on-search-complete="initialiseSaleDetails"></div>
     <!-- <!&#45;&#45; Find patient component &#45;&#45;> -->
     <!-- <div class="panel panel&#45;default"> -->
     <!--   <div class="panel&#45;heading"> -->
@@ -158,3 +158,10 @@
     <a ng-disabled="inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
   </div>
 </section>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
