@@ -4340,9 +4340,24 @@ body.modal-open,
   bottom: 100%;
   margin-bottom: 1px;
 }
+
 @media (min-width: 768px) {
   .navbar-right .dropdown-menu {
     right: 0;
     left: auto;
   }
 }
+
+.dropup .caret,
+.navbar-fixed-bottom .dropdown .caret {
+  border-top: 0;
+  border-bottom: 4px solid;
+  content: "";
+}
+@media print {
+  .btn > .caret,
+  .dropup > .btn > .caret {
+    border-top-color: #000 !important;
+  }
+}
+

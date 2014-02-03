@@ -42,7 +42,6 @@ delete from `sector`;
 delete from `village`;
 delete from `sale`;
 delete from `patient_group`;
-delete from `convention`;
 
 -- configure application details
 insert into `user` values
@@ -1059,9 +1058,6 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (352, 1, 0, 200, 781, "Reprises sur provisions non exigibles", 1, 78),
 (353, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
 
-insert into `convention` values (1, 'Société X', 146, 1, '0897578765', 'Null', 'Nothing', '0'),
- (2, 'Fr Reinart', 147, 1, '0813245678', 'Null', 'Nothing', '0');
-
 -- configure price_group
 insert into `price_group` values 
   (1,'Imports'),
@@ -1086,13 +1082,15 @@ insert into `debitor_group_type` (`id`, `type`) values
   (4, 'Malades Interne');
 
 
-insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`) values 
-  (200, 1, "Internal", 146, 1, 1,'note 1', 1, 1), 
-  (200, 2, "Normal Patient", 147, 1, 1,'note 2', 1, 3), 
-  (200, 3, "External", 148, 1, 1,'note 3', 1, 4); 
+insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
+  (200, 1, "Internal", 146, 1, 1,'note 1', 1, 1, 0), 
+  (200, 2, "Normal Patient", 147, 1, 1,'note 2', 1, 3, 0), 
+  (200, 3, "External", 148, 1, 1,'note 3', 1, 4, 0),
+  (200, 4, "Fr. Rienhart", 149, 1, 1, 'Convention 1', 1, 4, 1),
+  (200, 5, "Eglise", 150, 1, 1, 'Convention 2', 1, 4, 1);
 
-insert into `debitor` (`id`, `group_id`, `text`, `convention_id`) values 
-  (1, 1, "Jon Niles", 1);
+insert into `debitor` (`id`, `group_id`, `text`) values 
+  (1, 1, "Jon Niles");
 
 insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
   (1, 1, "M","Jon", "Niles", "1992-06-07", 1);

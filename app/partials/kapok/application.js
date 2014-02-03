@@ -15,7 +15,7 @@ angular.module('kpk.controllers')
       'fiscal_year' : { 'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id'] }
     },
     join : ['period.fiscal_year_id=fiscal_year.id'],
-    where : ["period.period_start<" + mysqlDate(), "AND", "period.period_stop>" + mysqlDate()] 
+    where : ["period.period_start<=" + mysqlDate(), "AND", "period.period_stop>=" + mysqlDate()] 
   };
 
   var queryExchange = {
