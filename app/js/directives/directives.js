@@ -246,7 +246,7 @@
             }
           };
 
-          scope.findPatient = {state: 'name'};
+          scope.findPatient = {state: 'id'};
           
           var template = 
           '<div class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
@@ -264,7 +264,7 @@
           '          <input '+
           '          type="text" '+
           '          ng-model="findPatient.selectedDebtor" '+
-          '          typeahead="patient as patient.name for patient in asyncPatient($viewValue) | filter:$viewValue | limitTo:8" '+
+          '          typeahead="patient as patient.name for patient in findPatient.model.debtor.data | filter:$viewValue | limitTo:8" '+
           '          placeholder="Find a Debitor"'+
           '          typeahead-on-select="loadDebitor(debitor.id)" '+
           '          typeahead-template-url="debtorListItem.html"'+
@@ -299,7 +299,9 @@
           //TODO Downloads all patients for now - this should be swapped for an asynchronous search
           validate.process(dependencies).then(findPatient);
 
-          function findPatient(model) { 
+          function findPatient(model) {
+            scope.findPatient.model = model;
+            generatePatientNames(model.debtor.data);
             var patients = generatePatientNames(model.debtor.data);
             debtorList = JSON.parse(JSON.stringify(patients));
           }

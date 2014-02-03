@@ -86,69 +86,53 @@
     <!--   </div> -->
     <!-- </div> -->
   </div>
+</div>
+<!-- </div> <!&#45;&#45; End sale overview row &#45;&#45;> -->
 
-  <div class="col-xs-7">
+<div class="row">
+  <div class="col-xs-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <span>Sale</span>
-        <div class="pull-right">
-          <span class="glyphicon glyphicon-eye-close"></span>
-        </div>
+        <span>Invoice</span> <span>{{invoiceId}}</span>
+        <!-- <button class="pull&#45;right" ng&#45;click="updateInventory()">+</button> -->
       </div>
-      <div ng-show="invoiceDebtor">
+      <div ng-show="invoiceDebtor" class="panel-body">
         <table class="table table-condensed table-bordered">
           <thead>
+            <tr><th colspan="4">Sale Details</th>
             <tr><th>Date</th><th>Invoice</th><th>Debtor</th><th>Note</th></tr>
           </thead>
           <tbody>
             <tr><td>{{invoiceDate | date}}</td><td>{{invoiceId}}</td><td>{{invoiceDebtor.first_name}} {{invoiceDebtor.last_name}}</td><td>{{invoiceNote}}</td></tr>
           </tbody>
         </table>
-      </div> <!-- End panel body div -->
-    </div> <!-- End sale overview panel -->
-
-  </div>
-</div>
-
-<!-- <div class="row"> -->
-  <!-- <div class="col&#45;xs&#45;12"> -->
-      <!-- </div> <!&#45;&#45; End column 12 &#45;&#45;> -->
-<!-- </div> <!&#45;&#45; End sale overview row &#45;&#45;> -->
-
-<div class="row">
-  <div class="col-xs-12">
-    <div class="panel panel-danger">
-      <div class="panel-heading">
-        <span>Sale Items</span>
-        <!-- <button class="pull&#45;right" ng&#45;click="updateInventory()">+</button> -->
-        <div class="pull-right">
-        </div>
-      </div>
-      <table class="table table-condensed" ng-show="itemsInInv()">
-        <thead>
-        <tr>
-          <td class="invoice-item">Item</td>
-          <td class="invoice-desc">Description</td>
-          <td>Qty</td>
-          <td>Unit Price</td>
-          <td>Amount</td>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- FIXME: strange filter -->
-        <tr ng-repeat="item in inventory">
-          <td class="invoice-item"><select class="form-invoice" ng-change="updateRow(item)" ng-model="item.item"
-                                            ng-options="l.code for l in inventory_model.data"><option value="" disabled="disabled">--Select Item--</option></select></td>
-          <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
-          <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
-          <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
-          <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
-        </tr>
-        <tr>
-          <td colspan="4"></td>
-          <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
-        </tbody>
-      </table>
+        
+        <table class='table-bordered table-condensed table'>
+          <thead>
+            <tr><th colspan="5">Sale Items <div class="pull-right"><a ng-click="updateInventory()"><span class="glyphicon glyphicon-plus"></span></a></div></th></tr>
+            <tr>
+            <th class="invoice-item">Item</th>
+            <th class="invoice-desc">Description</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Amount</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- FIXME: strange filter -->
+          <tr ng-repeat="item in inventory">
+            <td class="invoice-item"><select class="form-invoice" ng-change="updateRow(item)" ng-model="item.item"
+                                              ng-options="l.code for l in inventory_model.data"><option value="" disabled="disabled">--Select Item--</option></select></td>
+            <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
+            <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
+            <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
+            <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
+          </tr>
+          <tr>
+            <td colspan="4"><div class="pull-right"><b>Total</div></td>
+            <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
+          </tbody>
+        </table>
     </div>
   </div>
 </div>
