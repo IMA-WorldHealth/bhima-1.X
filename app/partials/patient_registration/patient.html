@@ -36,23 +36,23 @@
                     </div> 
                   </div>
 
-                  <div class="form-group">
+                  <div class="form-group" ng-show="!sessionProperties.fullDateEnabled">
                     <label for="yob" class="control-label col-xs-3">Year of Birth</label>
                     <div class="col-xs-9">
                       <div class="input-group">
-                        <input type="text" class="form-kapok" id="yob" ng-model="patient.yob">
+                        <input type="text" class="form-kapok" id="yob" ng-model="sessionProperties.yob">
                         <span class="input-group-btn"> 
-                          <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Enter Full Date</button>
+                          <button ng-click="enableFullDate()" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Enter Full Date</button>
                         </span>
                       </div>
                     </div>
                   </div>
                 
                   <!-- Use ng-show to display this only if enter full date is disabled -->
-                  <div class="form-group">
-                    <label for="dob" class="col-xs-3 control-label">Date of Birth</label>
+                  <div class="form-group" >
+                    <label for="patient-dob" class="col-xs-3 control-label">Date of Birth</label>
                     <div class="col-xs-9">
-                      {{"xxxx-xx-xx"}} 
+                      <input id="patient-dob" type="date" class="form-kapok" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob"> 
                     </div>
                   </div>
 
@@ -144,7 +144,7 @@
                   <div class="form-group">
                     <label for="patient-group" class="col-xs-3 control-label">Patient Group</label>
                     <div class="col-xs-9"> 
-                      <select multiple required class="form-kapok" id="patient-group" ng-model="debtor.patient_group">
+                      <select multiple class="form-kapok" id="patient-group" ng-model="debtor.patient_group">
                         <option value="" disabled="disabled">-- Select Patient Group --</option>
                       </select>
                     </div>
@@ -153,7 +153,7 @@
                   <div class="form-group">
                     <label for="convention" class="col-xs-3 control-label">Convention</label>
                     <div class="col-xs-9"> 
-                      <select class="form-kapok" id="convention" ng-model="debtor.convention_id" ng-options="conv.id as formatConvention(conv) for conv in models.convention">
+                      <select class="form-kapok" id="convention" ng-model="debtor.convention_id" ng-options="conv.id as conv.name for conv in models.convention">
                         <option value="" disabled="disabled">-- Select Convention --</option>
                       </select>
                     </div>
@@ -201,8 +201,13 @@
         <!-- <div class="col&#45;xs&#45;12"> -->
           <div class="row hack-right">
             <div class="panel panel-default">
-              <div class="panel-heading"><span class="glyphicon glyphicon-camera"></span></div>
-              <div class="panel-body">
+              <div class="panel-heading">
+                <span class="glyphicon glyphicon-camera"></span>
+                <div class="pull-right">
+                  <span class="glyphicon glyphicon-eye-close"></span>
+                </div>
+              </div>
+              <div hidden class="panel-body">
                 <div class="image_container">
                   <video autoplay="false" id="patientImage"></video>
                 </div>
@@ -225,7 +230,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-click="update(patient)" ng-disabled="form.$invalid || checkChanged(patient) || checkSubmitted()" class="btn btn-success btn-sm">
+    <a ng-click="registerPatient(patient)" ng-disabled="form.$invalid || checkChanged(patient)" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> Register Patient
     </a>
   </div>

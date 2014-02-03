@@ -481,21 +481,22 @@ create table `supplier` (
 --
 drop table if exists `patient`;
 create table `patient` (
-  `id`              int unsigned not null auto_increment,
-  `debitor_id`      int unsigned not null,
-  `creditor_id`     int unsigned,
-  `first_name`      varchar(150) not null,
-  `last_name`       varchar(150) not null,
-  `dob`             date,
-  `parent_name`     varchar(150),
-  `sex`             char(1) not null,
-  `religion`        varchar(50),
-  `marital_status`  varchar(50),
-  `phone`           varchar(12),
-  `email`           varchar(20),
-  `addr_1`          varchar(100),
-  `addr_2`          varchar(100),
-  `location_id`     smallint unsigned not null,
+  `id`                int unsigned not null auto_increment,
+  `debitor_id`        int unsigned not null,
+  `creditor_id`       int unsigned,
+  `first_name`        varchar(150) not null,
+  `last_name`         varchar(150) not null,
+  `dob`               date,
+  `parent_name`       varchar(150),
+  `sex`               char(1) not null,
+  `religion`          varchar(50),
+  `marital_status`    varchar(50),
+  `phone`             varchar(12),
+  `email`             varchar(20),
+  `addr_1`            varchar(100),
+  `addr_2`            varchar(100),
+  `location_id`       smallint unsigned not null,
+  `registration_date` timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
   key `first_name` (`first_name`),
   key `debitor_id` (`debitor_id`),
@@ -905,9 +906,9 @@ create table `posting_journal` (
 drop table if exists `journal_log`;
 create table `journal_log` (
   `id`              int unsigned not null auto_increment,
-  `cost`            decimal(19, 2) unsigned not null,
   `transaction_id`  int unsigned not null,
   `note`            text,
+  `date`            date not null,
   `user_id`         smallint unsigned not null,
   primary key (`id`)
 ) engine=innodb;
