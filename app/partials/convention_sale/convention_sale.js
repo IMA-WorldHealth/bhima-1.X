@@ -10,73 +10,81 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
   'use strict';
 
   var dependencies = {};
-  $scope.data = {};
-  $scope.found = false;
+  $scope.action = '';
+  $scope.convention = '';
+  $scope.selected = {};
+  $scope.paying = [];
+
 
   dependencies.invoices = {
-    required: true,
-    query : {
-      tables : {
-        'sale' : {
-          columns : ['id', 'cost', 'debitor_id', 'discount', 'invoice_date', 'note']
-        },
-        'debitor' : {
-          columns: ['group_id', 'convention_id', 'text'] 
-        },
-        'debitor_group' : {
-          columns : ['account_id'] 
-        }
-      },
-      join : ['sale.debitor_id=debitor.id', 'debitor.group_id=debitor_group.id']
-    }
+    query : 'ledgers/debitor/'
   };
 
   dependencies.conventions = {
     required: true,
     query : {
       tables : {
-        'convention'  : {
-          columns: ['id', 'name', 'account_id']
-        },
-        'account' : {
-          columns: ['account_txt']
+        'debitor_group'  : {
+          columns : ['id', 'name', 'account_id']
         }
       },
-      join : ['convention.account_id=account.id']
+      where : ['debitor_group.is_convention<>0', 'AND']
     }
   };
 
-  // get enterprise 
+  dependencies.debitors = {
+    required : true,
+    query : {
+      tables : {
+        'debitor' : {
+          columns : ['id', 'text']
+        },
+        'debitor_group' : {
+          columns : ['account_id']
+        }
+      },
+      join : ['debitor.group_id=debitor_group.id']
+    }
+  };
+
+  // get enterprise
   appstate.register('enterprise', function (enterprise) {
+    $scope.enterprise = enterprise;
     dependencies.invoices.query.where = 
-      //['sale.enterprise_id=' + enterprise.id, 'AND', 'sale.posted=0'];
-      ['sale.enterprise_id=' + enterprise.id];
-    validate.process(dependencies).then(setUpModels);
+      ['posting_journal.enterprise_id=' + enterprise.id];
+    dependencies.conventions.query.where.push( 
+      'debitor_group.enterprise_id=' + enterprise.id
+    );
+    validate.process(dependencies, ['debitors', 'conventions']).then(setUpModels);
   });
 
+  /*
+  $scope.setConvention =  function (convention) {
+    $scope.payment.convention_id = convention.id;
+  };
+  */
+
+  $scope.setDebitor = function () {
+    if (!$scope.selected.debitor) return messenger.danger('Error: no debitor selected');
+    dependencies.invoices.query += $scope.selected.debitor.id;
+    validate.process(dependencies).then(setUpModels);
+    $scope.hasDebitor = true;
+    $scope.action = 'info';
+  };
 
   function setUpModels (models) {
     for (var k in models) $scope[k] = models[k];
-    $scope.edit = {};
+    $scope.payment = {};
   }
 
-  $scope.search = function () {
-    $scope.found = false; 
+  $scope.examineInvoice = function (invoice) {
+    $scope.examine = invoice;
+    $scope.old_action = $scope.action;
+    $scope.action = 'examine';
   };
 
-  $scope.found = function () {
-    $scope.found = true;
-    $scope.action = 'pay';
-  };
-
-  $scope.payAll = function () {
-    $scope.action = 'payAll'; 
-  };
-
-  $scope.payPart = function () {
-    $scope.action = 'payPart';
-    $scope.edit.date = new Date();
-    //$scope.edit = $scope.data.invoice
+  $scope.back = function () {
+    $scope.action = $scope.old_action;
   };
 
   $scope.selectConvention = function () {
@@ -85,7 +93,7 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
   };
 
   $scope.saveConvention = function () {
-    $scope.action = 'default'; 
+    $scope.action = ''; 
   };
 
   $scope.resetConvention = function () {
@@ -93,8 +101,78 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
     $scope.action = 'default'; 
   };
 
-  $scope.pay = function () {
+  $scope.enqueue = function (idx) {
+    var invoice = $scope.invoices.data.splice(idx, 1)[0];
+    invoice.payment = invoice.balance; // initialize payment to be the exact amount -- 100%
+    $scope.paying.push(invoice);
     $scope.action = 'pay'; 
   };
+
+  $scope.dequeue = function () {
+    $scope.paying.forEach(function (i) {
+      $scope.invoices.data.push(i);
+    });
+    $scope.paying.length = 0;
+    $scope.action = '';
+  };
+
+  $scope.pay = function () {
+    console.log('submitting Payment...');
+    var payment = $scope.payment;
+    payment.enterprise_id = $scope.enterprise.id;
+    payment.group_id = $scope.selected.convention.id;
+    payment.debitor_id  = $scope.selected.debitor.id;
+    payment.total = $scope.paymentBalance;
+    payment.date = new Date().toISOString().slice(0,10);
+    $scope.action = 'confirm';
+  };
+
+  $scope.$watch('paying', function () {
+    var s = 0;
+    $scope.paying.forEach(function (i) {
+      s = s + i.payment;
+    });
+    $scope.paymentBalance = s;
+  }, true);
+
+  $scope.authorize = function () {
+    var payment = connect.clean($scope.payment);
+    connect.basicPut('group_payment', [payment])
+    .then(function (res) {
+      var id = res.data.insertId;
+      var items = formatItems(id);
+      connect.basicPut('group_payment_item', [items])
+      .then(function (res) {
+        $scope.action = '';
+        $scope.paying = [];
+        /*
+        connect.fetch('/journal/')
+        .then(function () {
+          messenger.success('Data submitted successfully.');
+        });
+        */
+      }, function (err) {
+        messenger.danger(JSON.stringify(err));
+      });
+    }, function (err) {
+      messenger.danger(JSON.stringify(err));
+    });
+  };
+
+  function formatItems (id) {
+    var items = [];
+    $scope.paying.forEach(function (i) {
+      console.log('i:', i);
+      var item = {};
+      item.cost = i.payment;
+      item.invoice_id = i.inv_po_id;
+      item.payment_id = id;
+      items.push(item);
+    });
+    
+    return items;
+    
+  }
+
 
 }]);
