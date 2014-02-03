@@ -77,7 +77,6 @@ create table `unit` (
   primary key (`id`)
 ) engine=innodb;
 
-
 --
 -- Table structure for table `kpk`.`permission`
 --
@@ -230,8 +229,8 @@ create table `account_type` (
   primary key (`id`)
 ) engine=innodb;
 
-
-
+--
+-- Tabe structure for table `kpk`.`account_category`
 drop table if exists `account_category`;
 create table `account_category` (
   `id`        tinyint not null,
@@ -340,6 +339,7 @@ create table `currency_account` (
 --
 -- Table structure for table `kpk`.`convention`
 --
+/*
 drop table if exists `convention`;
 create table `convention` (
   `id`                  smallint unsigned auto_increment not null,
@@ -349,15 +349,14 @@ create table `convention` (
   `phone`               varchar(10) default '',
   `email`               varchar(30) default '',
   `note`                text,
-  `max_credit`          mediumint unsigned default '0',
+  `max_credit`          mediumint unsigned default 0,
   primary key (`id`),
   key `account_id` (`account_id`),
   key `location_id` (`location_id`),
   constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
   constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade
 ) engine=innodb;
-
-
+*/
 
 --
 -- table `kpk`.`price_list`
@@ -402,6 +401,7 @@ create table `debitor_group` (
   `tax_id`              smallint unsigned null,
   `max_credit`          mediumint unsigned default '0',
   `type_id`             smallint unsigned not null,
+  `is_convention`        boolean not null default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `account_id` (`account_id`),
@@ -434,8 +434,6 @@ create table `kpk`.`patient_group` (
   constraint foreign key (`price_list_id`) references `price_list` (`id`)
 ) engine=innodb;
 
-
-
 --
 -- Table structure for table `kpk`.`debitor`
 --
@@ -444,12 +442,9 @@ create table `debitor` (
   `id`        int       unsigned not null auto_increment,
   `group_id`  smallint  unsigned not null,
   `text`      text,
-  `convention_id` smallint unsigned null,
   primary key (`id`),
   key `group_id` (`group_id`),
-  key `convention_id` (`convention_id`),
-  constraint foreign key (`group_id`) references `debitor_group` (`id`),
-  constraint foreign key (`convention_id`) references `convention` (`id`)
+  constraint foreign key (`group_id`) references `debitor_group` (`id`)
 ) engine=innodb;
 
 --
@@ -996,6 +991,44 @@ create table `kpk`.`price_list_detail` (
   key `list_id` (`list_id`),
   constraint foreign key (`inventory_id`) references `inventory` (`id`) on delete cascade,
   constraint foreign key (`list_id`) references `price_list` (`id`) on delete cascade
+) engine=innodb;
+
+-- 
+-- table `kpk`.`group_payment`
+--
+drop table if exists `group_payment`;
+create table `group_payment` (
+	id              int unsigned not null auto_increment,
+  enterprise_id   smallint unsigned not null,
+	debitor_id      int unsigned not null,
+	group_id        smallint unsigned not null,
+  note            text,
+  authorized_by   varchar(80) not null,
+	date            date not null,
+  total           decimal(14, 4) not null default 0,
+	primary key (`id`),
+	key `debitor_id` (`debitor_id`),
+  key `enterprise_id` (`enterprise_id`),
+	key `group_id` (`group_id`),
+	constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+	constraint foreign key (`group_id`) references `debitor_group` (`id`)
+) engine=innodb;
+
+--
+-- table `kpk`.`group_payment_item`
+--
+drop table if exists `group_payment_item`;
+create table `group_payment_item` (
+  id            int unsigned not null auto_increment,
+  payment_id    int unsigned not null,
+  invoice_id    int unsigned not null,
+  cost          decimal(16, 4) unsigned not null,
+  primary key (`id`),
+  key `payment_id` (`payment_id`),
+	key `invoice_id` (`invoice_id`),
+  constraint foreign key (`payment_id`) references `group_payment` (`id`) on delete cascade,
+	constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 
 -- Jon's dump @ 12:45.
