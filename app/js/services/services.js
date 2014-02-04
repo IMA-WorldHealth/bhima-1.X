@@ -569,15 +569,29 @@
         });
         return d.promise;
       }
+      
+      var handle, table, deferred = $q.defer();
 
-      var handle, deferred = $q.defer();
-      var table = defn.primary || Object.keys(defn.tables)[0];
+      /*
+      if (angular.isString(defn)) {
+        $http.get(defn)
+        .success(function (res) {
+          res.identifier = stringIdentifier || 'id';
+          deferred.resolve(new store(res));
+        })
+        .catch(function (err) {
+          throw err; 
+        });
+        return deferred.promise;
+      }
+     */
 
+      table = defn.primary || Object.keys(defn.tables)[0];
 
       handle = $http.get('/data/?' + JSON.stringify(defn));
       handle.then(function (returned) {
         
-        //massive hack so I can use an identifier - set defualt identifier
+        //massive hack so I can use an identifier - set default identifier
         returned.identifier = defn.identifier || 'id';
         var m = new store(returned, table);
         requests[m] = defn;
@@ -618,6 +632,7 @@
     }
 
     function debitorAgingPeriod(){
+      console.warn('connect.debitorAgingPeriod is deprecated.  Refactor your code to use fetch() or req().');
       var handle, deferred = $q.defer();
       handle = $http.get('debitorAgingPeriod/');
       handle.then(function(res) { 
@@ -626,16 +641,33 @@
       return deferred.promise;
     }
 
+    // Cleaner API functions to replace basicPut*Post*Delete
+    function put (table, data, pk) {
+      var format_object = {table: table, data: data, pk: pk};
+      return $http.put('/data/', format_object);
+    }
 
-    function journal (invoice_ids) {
+    function post (table, data) {
+      return $http.post('data/', {table : table, data : data});
+    }
+
+    function delet (table, column, id) {
+      return $http.delete(['/data', table, column, id].join('/'));
+    }
+
+    // old API
+    function journal (invoice_ids) { // TODO: deprecate this
+      console.warn('connect.journal is deprecated.  Refactor your code to use fetch(), req(), or post().');
       return $http.post('/journal/', invoice_ids);
     }
 
-    function basicGet(url) {
+    function basicGet(url) { // TODO: deprecate this
+      console.warn('connect.basicGet is deprecated.  Please refactor your code to use either fetch() or req().');
       return $http.get(url);
     }
 
     function MyBasicGet(target){
+      console.warn('connect.MyBasicGet is deprecated.  Please refactor your code to use either fetch() or req().');
       var promise = $http.get(target).then(function(result) { 
         return result.data;
       });
@@ -643,21 +675,23 @@
     }
 
     function basicDelete (table, id, column) {
+      console.warn('connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().');
       if (!column) column = "id";
       return $http.delete(['/data/', table, '/', column, '/', id].join(''));
     }
 
 //    TODO reverse these two methods? I have no idea how this happened
-    function basicPut(table, object) {
-      var format_object = {t: table, data: object};
+    function basicPut(table, data) {
+      var format_object = {table: table, data: data};
       return $http.post('data/', format_object);
     }
 
-    function basicPost(table, object, primary) {
-      var format_object = {t: table, data: object, pk: primary};
+    function basicPost(table, data, pk) {
+      var format_object = {table: table, data: data, pk: pk};
       return $http.put('data/', format_object);
     }
 
+    // utility function
     function clean (obj) {
       // clean off the $$hashKey and other angular bits and delete undefined
       var cleaned = {};
@@ -676,14 +710,17 @@
 
     return {
       req: req,
+      fetch: fetch,
+      clean: clean,
       basicPut: basicPut,
       basicPost: basicPost,
       basicGet: basicGet,
       basicDelete: basicDelete,
+      put : put,
+      post : post,
+      delete : delet,
       getModel: getModel,
       journal: journal,
-      fetch: fetch,
-      clean: clean,
       MyBasicGet: MyBasicGet,
       debitorAgingPeriod : debitorAgingPeriod
     };

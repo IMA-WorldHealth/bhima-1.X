@@ -8,11 +8,13 @@ var express      = require('express'),
     querystring  = require('querystring');
 
 // import configuration
-var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
+var cfg = require('./config.json');
 
 // import app dependencies
 var parser       = require('./lib/database/parser')(),
-    db           = require('./lib/database/db')(cfg.db),
+    dblogger     = require('./lib/database/logger')(cfg.log),
+    db           = require('./lib/database/db')(cfg.db, dblogger),
+    sanitize     = require('./lib/util/sanitize'),
     tree         = require('./lib/tree')(db),
     app          = express();
 
@@ -56,7 +58,7 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);
+  var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -66,8 +68,7 @@ app.put('/data/', function (req, res, next) {
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
   
-  console.log('post', req.body.t, req.body.data[0]);
-  var insertsql = parser.insert(req.body.t, req.body.data[0]);  
+  var insertsql = parser.insert(req.body.table, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -183,6 +184,63 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
       return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
     });
     return InExAccounts;
+  };
+
+});
+
+app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) { 
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id = '-1'";
+
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(process(rows));
+  });
+
+  var process = function(accounts){
+    var availablechargeAccounts = accounts.filter(function(item){
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+});
+
+app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) { 
+  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
+  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id "+
+            "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id='"+req.params.cost_center_id+"'";
+
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(process(rows));
+  });
+
+  var process = function(accounts){
+    var availablechargeAccounts = accounts.filter(function(item){
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+});
+
+app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) { 
+  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
+  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, auxiliairy_center WHERE account.auxiliairy_center_id = auxiliairy_center.id "+
+            "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.auxiliairy_center_id='"+req.params.auxiliairy_center_id+"'";
+
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(process(rows));
+  });
+
+  var process = function(accounts){
+    var availablechargeAccounts = accounts.filter(function(item){
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
   }
 
 });
@@ -206,7 +264,7 @@ app.get('/price_list/:id', function (req, res, next) {
     'COUNT(`price_list_detail`.`list_id`) AS `count` ' + 
     'FROM `price_list` LEFT JOIN `price_list_detail` ON  ' + 
       '`price_list`.`id`=`price_list_detail`.`list_id` ' +
-    'WHERE `price_list`.`enterprise_id`=' + db.escapestr(req.params.id) + ' ' +
+    'WHERE `price_list`.`enterprise_id`=' + sanitize.escape(req.params.id) + ' ' +
     'GROUP BY `price_list`.`id`;';
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
@@ -240,14 +298,14 @@ app.get('/account_balance/:id', function (req, res, next) {
   var enterprise_id = req.params.id;
 
   var sql = 'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
-            '(' +
-              'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
-              'FROM account LEFT JOIN period_total ' +
-              'ON account.id=period_total.account_id ' +
-              'WHERE account.enterprise_id=' + db.escapestr(enterprise_id) +
-            ') ' +
-            'AS temp JOIN account_type ' +
-            'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
+    '(' +
+      'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
+      'FROM account LEFT JOIN period_total ' +
+      'ON account.id=period_total.account_id ' +
+      'WHERE account.enterprise_id=' + sanitize.escape(enterprise_id) +
+    ') ' +
+    'AS temp JOIN account_type ' +
+    'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
 
   db.execute(sql, function (err, rows) {
     if (err) next(err);
