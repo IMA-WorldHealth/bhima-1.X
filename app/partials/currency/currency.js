@@ -35,10 +35,8 @@ function ($scope, connect, validate, messenger) {
   };
 
   $scope.submitNew = function () {
-    if ($scope.newForm.$invalid) {
-      console.log($scope.newForm.$error);
+    if ($scope.newForm.$invalid) 
       return messenger.danger('You have invalid form fields');
-    }
     connect.basicPut('currency', [connect.clean($scope.newCurrency)])
     .success(function (res) {
       $scope.action = '';
@@ -74,10 +72,8 @@ function ($scope, connect, validate, messenger) {
   };
 
   $scope.submitEdit = function () {
-    if ($scope.editForm.$invalid) {
-      console.log($scope.editForm);
+    if ($scope.editForm.$invalid)
       return messenger.danger('You have invalid form fields.');
-    }
     connect.basicPost('currency', [connect.clean($scope.editCurrency)])
     .success(function (res) { 
       $scope.action = '';
@@ -88,7 +84,6 @@ function ($scope, connect, validate, messenger) {
   };
 
   $scope.resetEdit = function () {
-    console.log('resetting..');
     $scope.editCurrency = {};
     $scope.editCurrency = angular.copy($scope.currency.get($scope.edit_id));
   };

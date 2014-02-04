@@ -67,7 +67,6 @@ app.put('/data/', function (req, res, next) {
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
   
-  //console.log('post', req.body.t, req.body.data[0]);
   var insertsql = parser.insert(req.body.table, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
