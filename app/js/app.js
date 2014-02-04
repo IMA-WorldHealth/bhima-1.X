@@ -162,13 +162,13 @@
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
     }).
-    when('/cost_center/principal_center/', {
-      controller: 'principalAnalysisCenter',
-      templateUrl: 'partials/cost_center/principal_center/principal_analysis_center.html'
+    when('/cost_center/center/', {
+      controller: 'analysisCenter',
+      templateUrl: 'partials/cost_center/center/analysis_center.html'
     }).
-    when('/cost_center/auxiliairy_center/', {
-      controller: 'auxiliairyAnalysisCenter',
-      templateUrl: 'partials/cost_center/auxiliairy_center/auxiliairy_analysis_center.html'
+    when('/cost_center/assigning/', {
+      controller: 'assigning',
+      templateUrl: 'partials/cost_center/assigning/assigning.html'
     }).
     when('/patient_group', {
       controller: 'patientGroupCtrl',

@@ -229,7 +229,7 @@ create table `budget` (
 drop table if exists `critere`;
 create table `critere` (
   `id`            smallint unsigned not null auto_increment,
-  `critere_txt`  mediumint unsigned not null,
+  `critere_txt`  varchar(50) not null,
   `note`          text,
   primary key (`id`)
 ) engine=innodb;
@@ -265,33 +265,18 @@ create table `account_collection` (
 --
 -- table `kpk`.`pricipal_center`
 --
-drop table if exists `kpk`.`principal_center`;
-create table `kpk`.`principal_center` (
+drop table if exists `kpk`.`cost_center`;
+create table `kpk`.`cost_center` (
   `enterprise_id`   smallint unsigned not null,
-  `id`              smallint  unsigned not null auto_increment,
+  `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
   `cost`            float default 0,
-  `note`            text,  
+  `note`            text, 
+  `pc`              boolean default 0, 
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
 ) engine=innodb;
-
---
--- table `kpk`.`auxiliairy_center`
---
-drop table if exists `kpk`.`auxiliairy_center`;
-create table `kpk`.`auxiliairy_center` (
-  `enterprise_id`   smallint unsigned not null,
-  `id`              smallint  unsigned not null auto_increment,
-  `text`            varchar(100) not null,
-  `cost`            float default 0,
-  `note`            text,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
-) engine=innodb;
-
 
 --
 -- Table structure for table `kpk`.`account`
@@ -303,57 +288,15 @@ create table `account` (
   `enterprise_id`       smallint unsigned not null,
   `account_number`      int not null,
   `account_txt`         text,
-  -- `account_category_id` tinyint not null,
   `parent`              int unsigned not null,
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
+  `cc_id`               smallint default -1,
   primary key (`id`),
-  key `account_type` (`account_type_id`),
+  key `account_type_id` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
-  -- key `account_category_id` (`account_category_id`),
   constraint foreign key (`account_type_id`) references `account_type` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
-  -- constraint foreign key (`account_category_id`) references `account_category` (`id`)
-) engine=innodb;
-
-
---
--- Table structure for table `kpk`.`account_centre_principal`
---
-drop table if exists `account_centre_principal`;
-create table `account_centre_principal` (
-  `id`                  smallint unsigned auto_increment not null,
-  `account_id`          int unsigned not null,
-  `principal_center_id` smallint unsigned not null,
-  `critere_id`          smallint unsigned not null,
-  `value`               float default 0,
-  primary key (`id`),
-  key `account_id` (`account_id`),
-  key `principal_center_id` (`principal_center_id`),
-  key `critere_id` (`critere_id`),
-  constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`principal_center_id`) references `principal_center` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`critere_id`) references `critere` (`id`) on update cascade
-) engine=innodb;
-
-
---
--- Table structure for table `kpk`.`account_centre_principal`
---
-drop table if exists `account_centre_auxiliaire`;
-create table `account_centre_auxiliaire` (
-  `id`                  smallint unsigned auto_increment not null,
-  `account_id`          int unsigned not null,
-  `auxiliairy_center_id` smallint unsigned not null,
-  `critere_id`          smallint unsigned not null,
-  `value`               float default 0,
-  primary key (`id`),
-  key `account_id` (`account_id`),
-  key `auxiliairy_center_id` (`auxiliairy_center_id`),
-  key `critere_id` (`critere_id`),
-  constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`auxiliairy_center_id`) references `auxiliairy_center` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`critere_id`) references `critere` (`id`) on update cascade
 ) engine=innodb;
 
 --
