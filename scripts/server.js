@@ -8,7 +8,7 @@ var express      = require('express'),
     querystring  = require('querystring');
 
 // import configuration
-var cfg = JSON.parse(fs.readFileSync("scripts/config.json"));
+var cfg = require('./config.json');
 
 // import app dependencies
 var parser       = require('./lib/database/parser')(),
@@ -57,7 +57,7 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  var updatesql = parser.update(req.body.t, req.body.data[0], req.body.pk[0]);
+  var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
   db.execute(updatesql, function(err, ans) { 
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -67,8 +67,8 @@ app.put('/data/', function (req, res, next) {
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
   
-  console.log('post', req.body.t, req.body.data[0]);
-  var insertsql = parser.insert(req.body.t, req.body.data[0]);
+  //console.log('post', req.body.t, req.body.data[0]);
+  var insertsql = parser.insert(req.body.table, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
     if (err) next(err);
     res.send(200, {insertId: ans.insertId});
@@ -184,7 +184,7 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
       return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
     });
     return InExAccounts;
-  }
+  };
 
 });
 

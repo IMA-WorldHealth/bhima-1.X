@@ -9,6 +9,8 @@
 // which encapsulate reporting the ledgers
 // for each group, respectively.
 
+var parser = require('../database/parser')();
+
 module.exports = (function (db) {
   'use strict';
 
@@ -19,7 +21,7 @@ module.exports = (function (db) {
     var query = 
       'SELECT `account_id` FROM `debitor` JOIN `debitor_group` ' + 
       'ON `debitor`.`group_id`=`debitor_group`.`id` WHERE `debitor`.`id`=' +
-      db.escapestr(id) + ';';
+      parser.escapestr(id) + ';';
   
     db.execute(query, function (err, row) {
       if (err) return callback(err);

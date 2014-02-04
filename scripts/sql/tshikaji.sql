@@ -70,11 +70,7 @@ INSERT INTO `unit` VALUES
 	(10,'Reports','Do stuff and tell people about it',0,1,'/units/reports/','reports/summary'),
 	(11,'Inventory','The Inventory Super-Category',0,1,'',''),
 
-
-
 	(21,'Hospital','The Hospital Super-Category',0,1,'',''),
-
-  
 
 	(30,'Fiscal Year','Fiscal year configuration page',1,0,'/partials/fiscal','fiscal'),
 	(31,'Patient Registration','Register patients',21,0,'/partials/patient','patient'),
@@ -108,7 +104,8 @@ INSERT INTO `unit` VALUES
   (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
   (60,'Patient Group Assigning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
   (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'),
-  (62,'Sale Convention', '', 5, 0, 'partials/convention_sale/', 'convention/paying/');
+  (62,'Group Invoicing', '', 5, 0, 'partials/convention_sale/', 'convention/paying/'),
+  (63,'Currency', '', 1, 0, 'partials/currency/currency', '/currency');
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
