@@ -35,7 +35,8 @@
   diplay: block;
   width: 100%;
   font-size: 12px;
-  margin : 0;
+  margin-top : 5px;
+  margin-bottom: 5px;
   padding: 0;
   color: #555555;
   vertical-align: middle;
@@ -44,4 +45,12 @@
 
 .form-invoice[disabled] { 
   background: white;
+}
+
+.fieldset-util { 
+  font-size: 12px;
+}
+
+.fieldset-util:hover {
+  cursor: default;
 }
