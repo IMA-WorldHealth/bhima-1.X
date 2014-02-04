@@ -91,6 +91,10 @@
       controller : 'exchangeRateController',
       templateUrl: 'partials/exchange_rate/exchange_rate.html'
     }).
+    when('/currency', {
+      controller : 'currency',
+      templateUrl: 'partials/currency/currency.html' 
+    }).
     when('/create_account', {
       controller: 'manageAccount',
       templateUrl: 'partials/accounts/create_account/create.html'
