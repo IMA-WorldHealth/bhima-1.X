@@ -1,5 +1,5 @@
 <header>
-  <span>Convention Invoicing</span>
+  <span>Group Invoicing</span>
 </header>
 
 <section class="underline">
@@ -30,7 +30,7 @@
           <legend>Select Payment Details</legend>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">Convention: </label>
+            <label class="control-label col-xs-2">Convention : </label>
             <div class="col-xs-8">
               <select class="form-kapok" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
                 <option value="">-- Select a Convention --</option>
@@ -79,7 +79,7 @@
 
     <div ng-switch-when="info">
       <div class="alert alert-info">
-        <h4>Convention Invoicing</h4>
+        <h4>Group Invoicing</h4>
         <p> Choose a convention from the upper left hand corner of the screen. </p>
       </div>
     </div>

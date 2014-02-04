@@ -104,7 +104,7 @@ INSERT INTO `unit` VALUES
   (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
   (60,'Patient Group Assigning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
   (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'),
-  (62,'Group Invoicing', '', 5, 0, 'partials/convention_sale/', 'convention/paying/'),
+  (62,'Group Invoicing', '', 5, 0, 'partials/group_invoice/', 'group_invoice/'),
   (63,'Currency', '', 1, 0, 'partials/currency/currency', '/currency');
 
 insert into `permission` (`id_unit`, `id_user`) values

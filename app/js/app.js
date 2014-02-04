@@ -142,10 +142,12 @@
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
     })
+    /*
     .when('/convention', { 
       controller: 'conventionController',
       templateUrl: 'partials/convention/convention.html'
     })
+    */
     .when('/patient_group_assign', { 
       controller: 'AssignPatientGroupController',
       templateUrl: 'partials/patient_group_assign/patient_group_assign.html'
@@ -166,9 +168,9 @@
       controller: 'patientGroupCtrl',
       templateUrl: 'partials/patient_group/patient_group.html' 
     })
-    .when('/convention/paying/:id?', {
-      controller : 'conventionSale',
-      templateUrl : 'partials/convention_sale/convention_sale.html' 
+    .when('/group_invoice/:id?', {
+      controller : 'groupInvoice',
+      templateUrl : 'partials/group_invoice/group_invoice.html' 
     });
   }  
 

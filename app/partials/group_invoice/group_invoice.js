@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('conventionSale', [
+.controller('groupInvoice', [
   '$scope',
   '$routeParams',
   'connect',
