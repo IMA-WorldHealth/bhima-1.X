@@ -154,7 +154,6 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
   function formatItems (id) {
     var items = [];
     $scope.paying.forEach(function (i) {
-      console.log('i:', i);
       var item = {};
       item.cost = i.payment;
       item.invoice_id = i.inv_po_id;
@@ -166,5 +165,8 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
     
   }
 
+  $scope.filter = function (invoice) {
+    return invoice.balance > 0; 
+  };
 
 }]);
