@@ -163,8 +163,20 @@
     when('/credit_note/:invoiceId?/', { 
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
-    })
-    .when('/patient_group', {
+    }).
+    when('/cost_center', { 
+      controller: 'costCenter',
+      templateUrl: 'partials/cost_center/cost_center.html'
+    }).
+    when('/cost_center/center/', {
+      controller: 'analysisCenter',
+      templateUrl: 'partials/cost_center/center/analysis_center.html'
+    }).
+    when('/cost_center/assigning/', {
+      controller: 'assigning',
+      templateUrl: 'partials/cost_center/assigning/assigning.html'
+    }).
+    when('/patient_group', {
       controller: 'patientGroupCtrl',
       templateUrl: 'partials/patient_group/patient_group.html' 
     })
