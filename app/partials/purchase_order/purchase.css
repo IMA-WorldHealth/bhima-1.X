@@ -40,16 +40,3 @@
 .filter {
   max-width: 10px;
 }
-.form-invoice {
-
-  diplay: block;
-  width: 100%;
-  height: 30px;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.2;
-  color: #555555;
-  vertical-align: middle;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-}

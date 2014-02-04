@@ -30,8 +30,8 @@
   font-weight: bold;
 }
 
+/*Who knows how many places this is assigned*/
 .form-invoice {
-
   diplay: block;
   width: 100%;
   font-size: 12px;
@@ -40,4 +40,8 @@
   color: #555555;
   vertical-align: middle;
   border: none;
+}
+
+.form-invoice[disabled] { 
+  background: white;
 }
