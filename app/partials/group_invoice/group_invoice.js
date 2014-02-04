@@ -58,14 +58,9 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
     validate.process(dependencies, ['debitors', 'conventions']).then(setUpModels);
   });
 
-  /*
-  $scope.setConvention =  function (convention) {
-    $scope.payment.convention_id = convention.id;
-  };
-  */
-
   $scope.setDebitor = function () {
-    if (!$scope.selected.debitor) return messenger.danger('Error: no debitor selected');
+    if (!$scope.selected.debitor) 
+      return messenger.danger('Error: No debitor selected');
     dependencies.invoices.query += $scope.selected.debitor.id;
     validate.process(dependencies).then(setUpModels);
     $scope.hasDebitor = true;
@@ -117,7 +112,6 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
   };
 
   $scope.pay = function () {
-    console.log('submitting Payment...');
     var payment = $scope.payment;
     payment.enterprise_id = $scope.enterprise.id;
     payment.group_id = $scope.selected.convention.id;
