@@ -239,7 +239,7 @@
             required : true,
             query : { 
               tables : {
-                patient : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id"]},
+                patient : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id", "sex", "dob"]},
                 debitor : { columns : ["text"]},
               },
               join : ["patient.debitor_id=debitor.id"]
@@ -264,7 +264,7 @@
           '     </div>'+
           '     <div ng-switch-when="true">'+
           '       <!-- Style hack -->'+
-          '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findPatient.debtor.name}}'+
+          '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>'+
           '       <div class="pull-right">'+
           '         <span ng-click="findPatient.refresh()" class="glyphicon glyphicon-repeat"></span>'+
           '       </div>'+
@@ -315,8 +315,8 @@
 
           function findPatient(model) {
             scope.findPatient.model = model;
-            generatePatientNames(model.debtor.data);
-            var patients = generatePatientNames(model.debtor.data);
+            extractMetaData(model.debtor.data);
+            var patients = extractMetaData(model.debtor.data);
             debtorList = JSON.parse(JSON.stringify(patients));
           }
 
@@ -334,7 +334,7 @@
           }
          
           function handleIdRequest(model) { 
-            var debtor = scope.findPatient.debtor = generatePatientNames(model.debtor.data)[0];
+            var debtor = scope.findPatient.debtor = extractMetaData(model.debtor.data)[0];
             console.log('downloaded', model);
             //Validate only one debtor matches
             scope.findPatient.valid = true;
@@ -358,9 +358,16 @@
             stateMap[scope.findPatient.state](value);
           }
           
-          function generatePatientNames(patientData) { 
+          function extractMetaData(patientData) { 
+            
             patientData.forEach(function(patient) { 
+              var currentDate = new Date(); var patientDate = new Date(patient.dob);
+
+              //Searchable name
               patient.name = patient.first_name + ' ' + patient.last_name;
+
+              //Age - naive quick method, not a priority to calculate the difference between two dates
+              patient.age = currentDate.getFullYear() - patientDate.getFullYear() - Math.round(currentDate.getMonth() / 12 + patientDate.getMonth() / 12) ; 
             });
             return patientData;
           }
