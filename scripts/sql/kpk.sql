@@ -994,10 +994,10 @@ create table `kpk`.`price_list_detail` (
 ) engine=innodb;
 
 -- 
--- table `kpk`.`group_payment`
+-- table `kpk`.`group_invoice`
 --
-drop table if exists `group_payment`;
-create table `group_payment` (
+drop table if exists `group_invoice`;
+create table `group_invoice` (
 	id              int unsigned not null auto_increment,
   enterprise_id   smallint unsigned not null,
 	debitor_id      int unsigned not null,
@@ -1016,18 +1016,18 @@ create table `group_payment` (
 ) engine=innodb;
 
 --
--- table `kpk`.`group_payment_item`
+-- table `kpk`.`group_invoice_item`
 --
-drop table if exists `group_payment_item`;
-create table `group_payment_item` (
-  id            int unsigned not null auto_increment,
-  payment_id    int unsigned not null,
-  invoice_id    int unsigned not null,
-  cost          decimal(16, 4) unsigned not null,
+drop table if exists `group_invoice_item`;
+create table `group_invoice_item` (
+  id                int unsigned not null auto_increment,
+  payment_id        int unsigned not null,
+  invoice_id        int unsigned not null,
+  cost              decimal(16, 4) unsigned not null,
   primary key (`id`),
   key `payment_id` (`payment_id`),
 	key `invoice_id` (`invoice_id`),
-  constraint foreign key (`payment_id`) references `group_payment` (`id`) on delete cascade,
+  constraint foreign key (`payment_id`) references `group_invoice` (`id`) on delete cascade,
 	constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 

@@ -1143,7 +1143,8 @@ insert into `transaction_type` values
   (1, 'cash'),
 	(2, 'sale'),
 	(3, 'purchase'),
-  (4, 'journal');
+  (4, 'journal'),
+  (5, 'group_invoice');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 194, 189),
