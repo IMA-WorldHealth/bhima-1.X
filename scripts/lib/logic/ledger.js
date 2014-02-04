@@ -9,7 +9,7 @@
 // which encapsulate reporting the ledgers
 // for each group, respectively.
 
-var parser = require('../database/parser')();
+var sanitize = require('../util/sanitize');
 
 module.exports = (function (db) {
   'use strict';
@@ -21,7 +21,7 @@ module.exports = (function (db) {
     var query = 
       'SELECT `account_id` FROM `debitor` JOIN `debitor_group` ' + 
       'ON `debitor`.`group_id`=`debitor_group`.`id` WHERE `debitor`.`id`=' +
-      parser.escapestr(id) + ';';
+      sanitize.escape(id) + ';';
   
     db.execute(query, function (err, row) {
       if (err) return callback(err);
@@ -50,7 +50,7 @@ module.exports = (function (db) {
             'WHERE `general_ledger`.`deb_cred_type`=\'D\'' + 
           ')' +
         ') AS `t` ' +
-        'WHERE `t`.`account_id`=' + db.escapestr(accnt) + ' ' + 
+        'WHERE `t`.`account_id`=' + sanitize.escape(accnt) + ' ' + 
         'GROUP BY `t`.`inv_po_id`;\n';
 
       db.execute(sql, function (err, rows) {
