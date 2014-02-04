@@ -3,10 +3,6 @@
   margin-left: -15px; !important
 }
 
-.rowSelected {
-  background-color: #dff0d8;
-}
-
 /*Temporary fix for border-box bootstrap collision*/
 #journal_grid, #journal_grid div {
   -webkit-box-sizing: content-box;

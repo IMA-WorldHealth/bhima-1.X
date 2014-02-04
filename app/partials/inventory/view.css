@@ -1,4 +1,3 @@
-
 /*Temporary fix for border-box bootstrap collision*/
 #kpk-inventory-grid, #kpk-inventory-grid div {
   -webkit-box-sizing: content-box;

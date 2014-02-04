@@ -1,0 +1,197 @@
+<link rel="stylesheet" href="partials/cost_center/center/analysis_center.css"/>
+
+
+<header>
+  <span>Analysis center</span>
+</header>
+
+<section class="underline">
+  <button ng-click="setAction('register')" class="btn btn-sm btn-default">
+    <i class="glyphicon glyphicon-file"></i> New Analysis Center
+  </button>
+  <div class="pull-right">
+    <a href="#/cost_center/" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span>Cost Center</a>
+  </div>
+</section>
+
+<div class="content">
+  <div class="col-xs-5">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <span>Registered Analysis Centers</span>
+      </div>
+      <table class="table table-condensed table-striped">
+        <thead>
+          <tr><th>Name</th><th>Cost</th><th>Enterprise</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="cc in models.cost_centers">
+            <td>{{cc.text}}</td>
+
+            <td>{{cc.cost | currency}}</td>
+
+            <td>{{cc.name}}</td>            
+
+            <td><button class="btn btn-sm btn-default" ng-disabled="true" ng-click="edit(grp)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+
+            <td><button class="btn btn-sm btn-default" ng-disabled="true" ng-click="remove(grp)"><i class="glyphicon glyphicon-trash"></i></button></td>
+
+            <td><button class="btn btn-sm btn-default" ng-click="setAction('configure', $index)"><i class="glyphicon glyphicon-cog"></i></button></td>
+
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-xs-7" ng-switch="action">
+    <div ng-switch-default>
+      <div class="alert alert-info">
+        <b>Principal Analysis Center Configuration</b>
+        <p>
+          Principal Analysis Center is used to contain charges wich are inderects for a product or service .  Use this module to <b>register</b>, <b>modify</b>,
+          and <b>remove</b> principal analysis center.
+        </p>
+      </div>
+    </div>
+
+    <div ng-switch-when="register">
+      <form class="form-horizontal">
+        <fieldset>
+          <legend>Register Analysis Center</legend>
+    
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">Text</label>
+            <div class="col-xs-10">
+              <input class="form-kapok" ng-model="register.text">
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">Cost</label>
+            <div class="col-xs-10">
+              <input type="number" class="form-kapok" ng-model="register.cost">
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">Profit Center</label>
+            <div class="col-xs-10">
+              <input type="checkbox" class="form-kapok" ng-model="register.pc">
+            </div>
+          </div>
+    
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Note</label>
+            <div class="col-xs-10">
+              <textarea class="form-control" ng-model="register.note" rows="3">
+              </textarea>
+            </div>
+          </div>
+
+          <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="Save">
+          <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="Reset Form">
+
+        </fieldset>
+      </form>
+    </div>
+
+
+    <div ng-switch-when="modify">
+      <form class="form-horizontal">
+        <fieldset>
+          <legend>Modify a Principal Analysis Center</legend>
+    
+          <div class="form-group required">
+            <label class="col-xs-2 control-label">Name</label>
+            <div class="col-xs-10">
+              <input class="form-kapok" ng-model="modify.text">
+            </div>
+          </div>
+    
+
+          <div class="form-group">
+            <label class="col-xs-2 control-label">Note</label>
+            <div class="col-xs-10">
+              <textarea class="form-control" ng-model="modify.note" rows="3">
+              </textarea>
+            </div>
+          </div>
+
+          <input ng-click="saveModification()" class="btn btn-sm btn-success" type="submit" value="Save">
+          <input ng-click="resetModification()" class="btn btn-sm btn-default" type="button" value="Reset Form">
+
+        </fieldset>
+      </form>
+    </div>
+
+    <div ng-switch-when="configure">
+
+        <div class="panel panel-default">
+              <div class="panel-heading">
+                <span> Assignation Accounts To {{selected.text}} </span>
+                <span class="pull-right">
+                  <button type="submit" ng-click="associate()">Assign</button>
+                </span>
+              </div>
+              <div class="panel-body principal-header">
+                <table class="table table-condensed table-striped">
+                <thead>
+                  <tr>
+                    <th>
+                      <input type="checkbox" ng-model="acc.all" ng-change="checkAll()" />
+                    </th>
+                    <th>
+                      Account Number
+                    </th>
+                    <th>
+                        Account Name
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="account in models.availablesAccounts">
+                    <td><input type="checkbox" ng-model ="account.checked"/></td>
+
+                    <td>{{account.account_number}}</td>
+
+                    <td>{{account.account_txt}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              </div>            
+          </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+              <span>
+                Associeted Accounts To <b>{{selected.text}}</b>               
+              </span>
+              <span class="pull-right">
+                <button type="submit" ng-click="remove()"> Remove </button>
+              </span>          
+            </div>
+
+            <div class="panel-body principal-header">
+              <table class="table table-condensed table-striped">
+              <thead>
+                <tr><th><input type="checkbox" ng-model="acc2"/></th><th>Account Number</th><th>Account Name</th></tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="associatedAccount in models.associatedAccounts">
+                  <td><input type="checkbox" ng-model="associatedAccount.checked"/></td>
+
+                  <td>{{associatedAccount.account_number}}</td>
+
+                  <td>{{associatedAccount.account_txt}}</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+        </div>
+
+    </div>    
+  </div>
+</div>

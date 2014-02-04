@@ -42,7 +42,6 @@ delete from `sector`;
 delete from `village`;
 delete from `sale`;
 delete from `patient_group`;
-delete from `convention`;
 
 -- configure application details
 insert into `user` values
@@ -71,11 +70,7 @@ INSERT INTO `unit` VALUES
 	(10,'Reports','Do stuff and tell people about it',0,1,'/units/reports/','reports/summary'),
 	(11,'Inventory','The Inventory Super-Category',0,1,'',''),
 
-
-
 	(21,'Hospital','The Hospital Super-Category',0,1,'',''),
-
-  
 
 	(30,'Fiscal Year','Fiscal year configuration page',1,0,'/partials/fiscal','fiscal'),
 	(31,'Patient Registration','Register patients',21,0,'/partials/patient','patient'),
@@ -109,7 +104,10 @@ INSERT INTO `unit` VALUES
   (59,'Convention', '', 1, 0, 'partials/convention/', 'convention/'),
   (60,'Patient Group Assigning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
   (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'),
-  (62,'Sale Convention', '', 5, 0, 'partials/convention_sale/', 'convention/paying/');
+  (62,'Accounting', '', 0, 1, '', ''),
+  (63,'Cost Center Management', '', 62, 0, 'partials/cost_center/', 'cost_center/');
+  (64,'Group Invoicing', '', 5, 0, 'partials/group_invoice/', 'group_invoice/'),
+  (65,'Currency', '', 1, 0, 'partials/currency/currency', '/currency');
 
 insert into `permission` (`id_unit`, `id_user`) values
   (1,2),
@@ -149,6 +147,11 @@ insert into `permission` (`id_unit`, `id_user`) values
   (57,2),
   (59,2),
   (60,2),
+  (61,2),
+  (62,2),
+  (63,2),
+  (64,2),
+  (65,2),
 	(4, 3),
 	(6, 3),
 	(30,3),
@@ -212,6 +215,8 @@ insert into `permission` (`id_unit`, `id_user`) values
   (60,1),
   (61,1),
   (62,1),
+  (64,1),
+  (65,1),
   (1,13),
   (2,13),
 	(4,13),
@@ -519,7 +524,7 @@ insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) 
 
 insert into `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
   (1,'Congolese Francs','Fc', '.', ','),
-	(2,'United State Dollars','$', ',', '.'),
+	(2,'United States Dollars','$', ',', '.'),
   (3,'Euro', '€', ' ', '.');
              
 insert into `exchange_rate` (`enterprise_currency_id`, `foreign_currency_id`, `rate`, `date`) values
@@ -1059,9 +1064,6 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (352, 1, 0, 200, 781, "Reprises sur provisions non exigibles", 1, 78),
 (353, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
 
-insert into `convention` values (1, 'Société X', 146, 1, '0897578765', 'Null', 'Nothing', '0'),
- (2, 'Fr Reinart', 147, 1, '0813245678', 'Null', 'Nothing', '0');
-
 -- configure price_group
 insert into `price_group` values 
   (1,'Imports'),
@@ -1086,13 +1088,15 @@ insert into `debitor_group_type` (`id`, `type`) values
   (4, 'Malades Interne');
 
 
-insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`) values 
-  (200, 1, "Internal", 146, 1, 1,'note 1', 1, 1), 
-  (200, 2, "Normal Patient", 147, 1, 1,'note 2', 1, 3), 
-  (200, 3, "External", 148, 1, 1,'note 3', 1, 4); 
+insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
+  (200, 1, "Internal", 146, 1, 1,'note 1', 1, 1, 0), 
+  (200, 2, "Normal Patient", 147, 1, 1,'note 2', 1, 3, 0), 
+  (200, 3, "External", 148, 1, 1,'note 3', 1, 4, 0),
+  (200, 4, "Fr. Rienhart", 149, 1, 1, 'Convention 1', 1, 4, 1),
+  (200, 5, "Eglise", 150, 1, 1, 'Convention 2', 1, 4, 1);
 
-insert into `debitor` (`id`, `group_id`, `text`, `convention_id`) values 
-  (1, 1, "Jon Niles", 1);
+insert into `debitor` (`id`, `group_id`, `text`) values 
+  (1, 1, "Jon Niles");
 
 insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
   (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
@@ -1148,7 +1152,8 @@ insert into `transaction_type` values
   (1, 'cash'),
 	(2, 'sale'),
 	(3, 'purchase'),
-  (4, 'journal');
+  (4, 'journal'),
+  (5, 'group_invoice');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 194, 189),

@@ -3,6 +3,8 @@
   outline: none;
 }
 
+.nav, .pagination, .carousel a { cursor: pointer; }
+
 body { 
   font-size: 12px;
 }
@@ -223,3 +225,8 @@ div .reportFrame {
   padding : 0;
 }
 
+.list-plain {
+  list-style : none;
+  margin-left: 15px;
+  padding: 0;
+}
