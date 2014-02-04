@@ -13,7 +13,7 @@ module.exports = (function (options) {
   options = options || {};
 
   self.templates = options.templates || {
-    select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% LIMIT %limit%;',
+    select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% LIMIT %limit%;',
     update: 'UPDATE %table% SET %expressions% WHERE %key%;',
     delete: 'DELETE FROM %table% WHERE %key%;',
     insert: 'INSERT INTO %table% %values% VALUES %expressions%;'
@@ -170,11 +170,14 @@ module.exports = (function (options) {
     // default to 1
     conditions = (def.where) ? parseWhere(def.where) : 1;
 
+    var groups = def.groupby ? def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) : null;
+
     
     return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
                 .replace('%columns%', columns.join(', '))
                 .replace('%table%', table)
                 .replace('%conditions%', conditions)
+                .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
                 .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
   };
 

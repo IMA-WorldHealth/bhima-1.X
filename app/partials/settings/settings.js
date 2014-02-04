@@ -1,5 +1,15 @@
-angular.module('kpk.controllers').controller('settingsController', function($scope, connect, $translate, appcache, messenger) { 
-  console.log('settings controller initialised');
+angular.module('kpk.controllers')
+.controller('settingsController', [
+  '$scope',
+  '$routeParams',
+  '$translate',
+  '$location',
+  'connect',
+  'appcache',
+  'messenger',
+function($scope, $routeParams, $translate, $location, connect, appcache, messenger) { 
+
+  $scope.q = $routeParams.q || '';
 
   var MODULE_NAMESPACE = 'util';
   var cache = new appcache(MODULE_NAMESPACE);
@@ -14,4 +24,9 @@ angular.module('kpk.controllers').controller('settingsController', function($sco
     cache.put('language', {current: key});
     messenger.push({type: 'success', msg: 'Language preference updated: ' + key});
   };
-});
+
+  $scope.back = function () {
+    $location.path($scope.q);
+  };
+
+}]);

@@ -96,6 +96,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
     // We remove the collapse CSS class to prevent a transition when we change to height: auto
     element.removeClass('collapse');
     element.css({ height: height });
+    element.css({overflow: 'hidden'});
     // It appears that  reading offsetWidth makes the browser realise that we have changed the
     // height already :-/
     var x = element[0].offsetWidth;

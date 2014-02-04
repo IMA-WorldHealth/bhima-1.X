@@ -295,6 +295,26 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   }
 
   function splitTransaction(args) { 
+    var verifyTransaction, transaction = dataview.getItem(args.row), transactionId = Number(transaction.groupingKey), templateRow = transaction.rows[0];
+    if(!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
+    if(liveTransaction.state) return $rootScope.$apply(messenger.info('Transaction ' + liveTransaction.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
+
+    verifyTransaction = $modal.open({ 
+      templateUrl: "verifyTransaction.html",
+      controller: 'verifyTransaction',
+      resolve : {
+        updateType : 'split',
+        transaction : transactionId
+      }
+    });
+    verifyTransaction.result.then(initialiseSplit, handleError);
+  }
+
+  function initialiseSplit(template) { 
+
+  }
+
+  function splitTransaction(args) { 
     var transaction = dataview.getItem(args.row), transactionId = Number(transaction.groupingKey), templateRow = transaction.rows[0];
     if(!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
     if(liveTransaction.state) return $rootScope.$apply(messenger.info('Transaction ' + liveTransaction.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
@@ -456,49 +476,71 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     }
 
     if(!fiscalSettings) return $rootScope.$apply(messenger.danger('Fiscal records are invalid'));
+      
+    writeJournalLog(liveTransaction).then(function(result) { 
+
+      //Package and submit records
+      records.forEach(function(record) { 
+        record.currency_id = enterpriseSettings.currency_id;
+        var packaged = { 
+          enterprise_id: enterpriseSettings.id,
+          fiscal_year_id: fiscalSettings.id,
+          period_id: fiscalSettings.period_id,
+          trans_id: record.trans_id,
+          trans_date: record.trans_date,
+          description: record.description,
+          debit: record.debit_equiv,
+          credit: record.credit_equiv,
+          debit_equiv: record.debit_equiv, 
+          credit_equiv: record.credit_equiv,
+          deb_cred_type: record.deb_cred_type,
+          origin_id: 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
+          currency_id: record.currency_id,
+          user_id: liveTransaction.template.userId
+        }
+
+        console.log(packaged);
     
-    //package
-    records.forEach(function(record) { 
-      record.currency_id = enterpriseSettings.currency_id;
-      var packaged = { 
-        enterprise_id: enterpriseSettings.id,
-        fiscal_year_id: fiscalSettings.id,
-        period_id: fiscalSettings.period_id,
-        trans_id: record.trans_id,
-        trans_date: record.trans_date,
-        description: record.description,
-        debit: record.debit_equiv,
-        credit: record.credit_equiv,
-        debit_equiv: record.debit_equiv, 
-        credit_equiv: record.credit_equiv,
-        deb_cred_type: record.deb_cred_type,
-        origin_id: 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
-        currency_id: record.currency_id,
-        user_id: liveTransaction.template.userId
-      }
+        packaged.account_id = $scope.model.account.get(record.account_number).id;
+        if(!isNaN(Number(record.deb_cred_id))) {
+          packaged.deb_cred_id = record.deb_cred_id;
+        } else { 
+          //reset record on client
+          record.deb_cred_id = null;
+        }
 
-      console.log(packaged);
-  
-      packaged.account_id = $scope.model.account.get(record.account_number).id;
-      if(!isNaN(Number(record.deb_cred_id))) {
-        packaged.deb_cred_id = record.deb_cred_id;
-      } else { 
-        //reset record on client
-        record.deb_cred_id = null;
-      }
+        request.push(connect.basicPut("posting_journal", [packaged]));
+      });
 
-      request.push(connect.basicPut("posting_journal", [packaged]));
-    });
+      //submit
+      $q.all(request).then(function(res) { 
+        messenger.success('Transaction posted to journal. Journal Log Ref #' + liveTransaction.logId);
+        liveTransaction.state = null;
+        groupBy('transaction');
+        grid.invalidate();
+        grid.render();
+      }, function(err) { messenger.danger(err.code); });
+    }, function(err) { messenger.danger(err.code); });      
+  }
 
-    //submit
-    $q.all(request).then(function(res) { 
-      messenger.success('Transaction posted to journal. Ref #' + liveTransaction.template.logId);
-      liveTransaction.state = null;
-      groupBy('transaction');
-      grid.invalidate();
-      grid.render();
-    }, function(err) { messenger.danger(err.code); });
-    
+  function writeJournalLog(details) { 
+    var deferred = $q.defer(), logId = details.logId, justification = details.template.description, date = mysqlDate(), user = details.template.userId, transaction = details.transaction_id;
+    console.log(details, justification, date, user);
+    var packagedLog = { 
+      transaction_id: transaction, 
+      note: justification,
+      date: date,
+      user_id: user
+    };
+
+    connect.basicPut('journal_log', [packagedLog]).then(function(result) { 
+      liveTransaction.logId = result.data.insertId; 
+      deferred.resolve(result); 
+      
+      console.log('log was written', result);
+    }, function(error) { deferred.reject(error); });
+
+    return deferred.promise;
   }
 
   function addTransaction(template) { 
@@ -516,7 +558,8 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     }
     
     liveTransaction.records = [];
-    
+    liveTransaction.logId = template.logId;
+
     initialTransaction = JSON.parse(JSON.stringify(templateTransaction));
     initialTransaction.id = temporaryId;
 
@@ -563,12 +606,12 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
         templateUrl: "verifyTransaction.html",
         controller: 'verifyTransaction',
         resolve : { 
+          updateType : 'add',
+          transaction : null
         }
       });
 
-      verifyTransaction.result.then(function(res) { 
-        addTransaction(res);
-      }, function(err) { console.log('err', err) });
+      verifyTransaction.result.then(addTransaction, handleError);
     }
   }
   
@@ -577,20 +620,6 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   $scope.$on('$translateChangeSuccess', function () {
     //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
   });
-
-  $scope.split = function split() {
-    var instance = $modal.open({
-      templateUrl: "split.html",
-      controller: function ($scope, $modalInstance, rows, data) { //groupStore, accountModel
-        var transaction = $scope.transaction = data.getItem(rows[0]);
-        console.log('split', transaction);
-      },
-      resolve: {
-        rows: function () { return $scope.rows; },
-        data: function () { return dataview; }
-      }
-    });
-  };
   
   function SelectCellEditor(args) { 
     var $select, defaultValue, scope = this;
@@ -692,4 +721,13 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
 
     this.init();
   }
+
+  function mysqlDate (date) {
+    return (date || new Date()).toISOString().slice(0,10);
+  }
+
+  function handleError(error) { 
+    if(error) messenger.danger(error.code);
+  }
+
 });

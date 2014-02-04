@@ -44,7 +44,7 @@ angular.module('kpk.controllers').controller('reportFinance', function($scope, $
   //if parent hasn't been parsed, a placeholder should be set (allowing any ordering of data)
   
   // TODO calculate totals seperately 
-  function generateAccountGroups(accountModel, targetObj) { 
+  function generateAccountGroups(accountModel) { 
     var accounts = accountModel.data, ROOT = 0, TITLE = 3;
     var index = financeGroups.index, store = financeGroups.store;
     

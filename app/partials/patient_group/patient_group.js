@@ -12,7 +12,6 @@ function ($scope, connect, validate, appstate, messenger) {
     editing;
 
   dependencies.group = {
-    required : true,
     query : {
       tables: {
         'patient_group' : {
@@ -23,7 +22,7 @@ function ($scope, connect, validate, appstate, messenger) {
   };
 
   dependencies.list = {
-    required : true,
+    //required : true,
     query : {
       tables : {
         'price_list'  :  {
