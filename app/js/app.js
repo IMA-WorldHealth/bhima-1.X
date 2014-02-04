@@ -161,6 +161,10 @@
     .when('/patient_group', {
       controller: 'patientGroupCtrl',
       templateUrl: 'partials/patient_group/patient_group.html' 
+    })
+    .when('/convention/paying/:id?', {
+      controller : 'conventionSale',
+      templateUrl : 'partials/convention_sale/convention_sale.html' 
     });
   }  
 
