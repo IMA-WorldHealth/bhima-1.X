@@ -226,6 +226,169 @@
       };
     }])
 
+    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', function($compile, validate, messenger, connect) { 
+      return { 
+        restrict: 'A',
+        link : function(scope, element, attrs) { 
+          var dependencies = {}, debtorList = [];
+          var searchCallback = scope[attrs.onSearchComplete];
+
+          if(!searchCallback) throw new Error('Patient Search directive must implement data-on-search-complete');
+         
+          dependencies.debtor = { 
+            required : true,
+            query : { 
+              tables : {
+                patient : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id"]},
+                debitor : { columns : ["text"]},
+              },
+              join : ["patient.debitor_id=debitor.id"]
+            }
+          };
+
+          scope.findPatient = {
+            state: 'id',
+            submitSuccess: false
+          };
+          
+          var template = 
+          '<div class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
+          '  <div class="panel-heading">'+
+          '    <div ng-switch on="findPatient.submitSuccess">'+
+          '     <div ng-switch-when="false">'+
+          '       <span class="glyphicon glyphicon-search"></span> Find Patient'+
+          '       <div class="pull-right">'+
+          '         <a ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> Enter Debtor ID</a>'+
+          '         <a ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> Search Patient Name</a>'+
+          '       </div>'+
+          '     </div>'+
+          '     <div ng-switch-when="true">'+
+          '       <!-- Style hack -->'+
+          '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findPatient.debtor.name}}'+
+          '       <div class="pull-right">'+
+          '         <span ng-click="findPatient.refresh()" class="glyphicon glyphicon-repeat"></span>'+
+          '       </div>'+
+          '     </div>'+
+          '    </div>'+
+          '  </div>'+
+          '  <div class="panel-body find-collapse" ng-show="!findPatient.submitSuccess">'+
+          '    <div ng-switch on="findPatient.state">'+
+          '      <div ng-switch-when="name">'+
+          '        <div class="input-group">'+
+          '          <input '+
+          '          type="text" '+
+          '          ng-model="findPatient.selectedDebtor" '+
+          '          typeahead="patient as patient.name for patient in findPatient.model.debtor.data | filter:$viewValue | limitTo:8" '+
+          '          placeholder="Find a Debitor"'+
+          '          typeahead-on-select="loadDebitor(debitor.id)" '+
+          '          typeahead-template-url="debtorListItem.html"'+
+          '          class="form-kapok" '+
+          '          size="25">'+
+          '          <span class="input-group-btn"> '+
+          '            <button ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-default btn-sm">Submit</button>'+
+          '          </span>'+
+          '        </div>'+
+          '      </div> <!-- End searchName component -->'+
+          '      <div ng-switch-when="id">'+
+          '        <div class="input-group">'+
+          '          <input '+
+          '            type="text"'+
+          '            ng-model="findPatient.debtorId"'+
+          '            class="form-kapok"'+
+          '            placeholder="Debtor ID">'+
+          '          <span class="input-group-btn">'+
+          '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm">Submit</button>'+
+          '          </span>'+
+          '        </div>'+
+          '      </div>'+
+          '    </div> <!--End find patient switch -->'+
+          '  </div>'+
+          '</div>';
+
+          var stateMap = { 
+            'name' : searchName,
+            'id' : searchId
+          }
+            
+          //TODO Downloads all patients for now - this should be swapped for an asynchronous search
+          validate.process(dependencies).then(findPatient);
+
+          function findPatient(model) {
+            scope.findPatient.model = model;
+            generatePatientNames(model.debtor.data);
+            var patients = generatePatientNames(model.debtor.data);
+            debtorList = JSON.parse(JSON.stringify(patients));
+          }
+
+          function searchName(value) { 
+            if(typeof(value)==='string') return messenger.danger('Submitted an invalid debtor');
+            scope.findPatient.debtor = value;
+            searchCallback(value); 
+            scope.findPatient.submitSuccess = true;
+          }
+
+          function searchId(value) { 
+            console.log('search id', value);
+            dependencies.debtor.query.where = ["patient.debitor_id=" + value];
+            validate.refresh(dependencies).then(handleIdRequest, handleIdError);
+          }
+         
+          function handleIdRequest(model) { 
+            var debtor = scope.findPatient.debtor = generatePatientNames(model.debtor.data)[0];
+            console.log('downloaded', model);
+            //Validate only one debtor matches
+            scope.findPatient.valid = true;
+            searchCallback(debtor);
+            scope.findPatient.submitSuccess = true;
+          }
+
+          function handleIdError(error) { 
+            scope.findPatient.valid = false;
+            console.log(error);
+
+            //Naive implementation 
+            if(error.validModelError) { 
+              if(error.flag === 'required') { 
+                messenger.danger('Patient record cannot be found');
+              }
+            }
+          }
+          
+          function submitDebtor(value) { 
+            stateMap[scope.findPatient.state](value);
+          }
+          
+          function generatePatientNames(patientData) { 
+            patientData.forEach(function(patient) { 
+              patient.name = patient.first_name + ' ' + patient.last_name;
+            });
+            return patientData;
+          }
+          
+          function validateNameSearch(value) { 
+            if(!value) return true;
+
+            if(typeof(value)==='string') { 
+              scope.findPatient.valid = false;
+              return true;
+            }
+            scope.findPatient.valid = true; 
+          }
+
+          function resetSearch() { 
+            scope.findPatient.valid = false;
+            scope.findPatient.submitSuccess = false;
+            scope.findPatient.debtor = "";
+          }
+          
+          scope.validateNameSearch = validateNameSearch;
+          scope.findPatient.refresh = resetSearch;
+          scope.submitDebtor = submitDebtor;
+          element.replaceWith($compile(template)(scope));
+        }
+      }
+    }])
+
     .directive('kCalculator', function () {
 
       return {
