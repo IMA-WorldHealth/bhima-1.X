@@ -1017,7 +1017,6 @@ create table `kpk`.`price_list_detail` (
   constraint foreign key (`inventory_id`) references `inventory` (`id`) on delete cascade,
   constraint foreign key (`list_id`) references `price_list` (`id`) on delete cascade
 ) engine=innodb;
-<<<<<<< HEAD
 
 -- 
 -- table `kpk`.`group_invoice`
@@ -1057,6 +1056,5 @@ create table `group_invoice_item` (
 	constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 
-=======
->>>>>>> cc
+
 -- Jon's dump @ 12:45.
