@@ -137,20 +137,18 @@ function ($scope, $routeParams, connect, validate, appstate, messenger) {
 
   $scope.authorize = function () {
     var payment = connect.clean($scope.payment);
-    connect.basicPut('group_payment', [payment])
+    connect.basicPut('group_invoice', [payment])
     .then(function (res) {
       var id = res.data.insertId;
       var items = formatItems(id);
-      connect.basicPut('group_payment_item', [items])
+      connect.basicPut('group_invoice_item', [items])
       .then(function (res) {
         $scope.action = '';
         $scope.paying = [];
-        /*
-        connect.fetch('/journal/')
+        connect.fetch('/journal/group_invoice/' + id)
         .then(function () {
           messenger.success('Data submitted successfully.');
         });
-        */
       }, function (err) {
         messenger.danger(JSON.stringify(err));
       });
