@@ -220,6 +220,17 @@ create table `budget` (
 ) engine=innodb;
 
 --
+-- Table structure for table `kpk`.`critere`
+--
+drop table if exists `critere`;
+create table `critere` (
+  `id`            smallint unsigned not null auto_increment,
+  `critere_txt`  varchar(50) not null,
+  `note`          text,
+  primary key (`id`)
+) engine=innodb;
+
+--
 -- Table structure for table `kpk`.`account_type`
 --
 drop table if exists `account_type`;
@@ -248,6 +259,22 @@ create table `account_collection` (
 ) engine=innodb;
 
 --
+-- table `kpk`.`pricipal_center`
+--
+drop table if exists `kpk`.`cost_center`;
+create table `kpk`.`cost_center` (
+  `enterprise_id`   smallint unsigned not null,
+  `id`              smallint not null auto_increment,
+  `text`            varchar(100) not null,
+  `cost`            float default 0,
+  `note`            text, 
+  `pc`              boolean default 0, 
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
+) engine=innodb;
+
+--
 -- Table structure for table `kpk`.`account`
 --
 DROP TABLE IF EXISTS `account`;
@@ -257,17 +284,15 @@ create table `account` (
   `enterprise_id`       smallint unsigned not null,
   `account_number`      int not null,
   `account_txt`         text,
-  -- `account_category_id` tinyint not null,
   `parent`              int unsigned not null,
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
+  `cc_id`               smallint default -1,
   primary key (`id`),
-  key `account_type` (`account_type_id`),
+  key `account_type_id` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
-  -- key `account_category_id` (`account_category_id`),
   constraint foreign key (`account_type_id`) references `account_type` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
-  -- constraint foreign key (`account_category_id`) references `account_category` (`id`)
 ) engine=innodb;
 
 --
@@ -992,6 +1017,7 @@ create table `kpk`.`price_list_detail` (
   constraint foreign key (`inventory_id`) references `inventory` (`id`) on delete cascade,
   constraint foreign key (`list_id`) references `price_list` (`id`) on delete cascade
 ) engine=innodb;
+<<<<<<< HEAD
 
 -- 
 -- table `kpk`.`group_invoice`
@@ -1031,4 +1057,6 @@ create table `group_invoice_item` (
 	constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 
+=======
+>>>>>>> cc
 -- Jon's dump @ 12:45.
