@@ -3,6 +3,8 @@
   outline: none;
 }
 
+.nav, .pagination, .carousel a { cursor: pointer; }
+
 body { 
   font-size: 12px;
 }
@@ -67,6 +69,19 @@ fieldset {
   width: 25%;
 }
 
+.center {
+  width: 75%;
+  text-align : center;
+  float        : none;
+  margin-left  : auto;
+  margin-right : auto;
+}
+
+/* undo effect on panel-heading */
+.center .panel-heading {
+  text-align: left;
+}
+
 .kpk-messenger > .alert {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
@@ -104,7 +119,6 @@ fieldset {
   text-transform: capitalize;
 }
 
-/*Form-control derivative (spelt wrong) add more CSSness*/
 .form-kapok {
   display: block;
   width: 100%;
@@ -116,6 +130,10 @@ fieldset {
   vertical-align: middle;
   background-color: #ffffff;
   border: 1px solid #cccccc;
+}
+
+.form-kapok[disabled] { 
+  background-color: #eeeeee;
 }
 
 /* everything is bad */
@@ -207,3 +225,8 @@ div .reportFrame {
   padding : 0;
 }
 
+.list-plain {
+  list-style : none;
+  margin-left: 15px;
+  padding: 0;
+}

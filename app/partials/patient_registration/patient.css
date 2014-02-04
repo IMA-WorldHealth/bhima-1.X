@@ -6,11 +6,6 @@
   min-height: 10em;
 }
 
-.bika-header {
-  padding-bottom: 9px;
-  margin: 40px 0 5px;
-  border-bottom: 1px solid #eeeeee;
-}
 /*Not optimal to control utils layout on two different elements*/
 .util {
   border-bottom: 1px solid #eeeeee;

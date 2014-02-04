@@ -1,268 +1,121 @@
-<link href="partials/sales/sales.css" rel="stylesheet"/>
-
+<!-- TODO sale table style has no margin-bottom, doesn't need to match height with find patient -->
+<!-- Use Tab selection from purchase order to select between ID and name search -->
 <header>
   <span>Create Patient Invoice</span>
 </header>
 
 <section class="underline">
   <div class="pull-right">
-    <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import prescription
+    <a class="btn btn-default">
+      <span class="glyphicon glyphicon-floppy-save"></span> Import prescription
     </a>
-    <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
-
+    <a class="btn btn-default">
+      <span class="glyphicon glyphicon-th-list"></span> Update Defaults
+    </a>
   </div>
 </section>
 
 <div class="content">
-<div class="row">
-
-    <div class="col-xs-5">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Detail
-        </div>
-        
-        <div class="panel-body purchase-header">
-          <!--Select directive tests-->
-          
-          <!-- <select select&#45;search class="form&#45;kapok"> -->
-          <!-- </select> -->
-
-          <!---->
-          <div class="form-group">
-            <label for="saledate">Invoice Date</label>
-            <input type="date" id="saledate" class="form-kapok" ng-model="sale_date">
-          </div>
-          <div class="form-group">
-            <label for="select-deb">Patient</label>
-            <select id="select-deb" ng-model="debtor" ng-options="formatDebtor(d) for d in debtor_model" class="form-kapok" ng-change="loadInventory()">
-              <option value="" disabled="disabled">--Select Patient--</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="invoice.payable">
-                Payable Immediately
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="pay" value="false" checked
-                       ng-model="invoice.payable">
-                Payable by
-              </label>
-            </div>
-            <div class="input-group">
-              <select id="payable" class="form-kapok" ng-disabled="isPayable()">
-                <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
-                <option>14</option>
-                <option>30</option>
-              </select>
-              <span class="input-group-addon">days</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    <div class="col-xs-7">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Patient Invoice
-        </div>
-        <div class="panel-body purchase-header">
-          <div class="row">
-            <div class="col-xs-12">
-              <table class="table table-bordered">
-                <thead>
-                <tr>
-                  <th>Invoice</th>
-                  <th>Date</th>
-                  <th>Note</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>{{invoice_id}}</td>
-                  <td>{{sale_date}}</td>
-                  <td>{{formatText()}}</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-12">
-              <table class="table table-bordered">
-                <thead>
-                <tr>
-                  <th>Patient</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>
-                    <h4><strong>{{debtor.first_name}} {{debtor.last_name}}</strong></h4>
-                    <h4>{{currentLocation.village}}</h4>
-                    <h4>{{currentLocation.province}}</h4>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  
   <div class="row">
+    <div class="col-xs-5">
+      <div find-patient on-search-complete="initialiseSaleDetails"></div>
+    </div>
+  </div>
 
+  <div class="row">
     <div class="col-xs-12">
-      <div class="panel panel-success">
+      <div class="panel panel-default">
         <div class="panel-heading">
-          <span>Invoice Items</span>
-          <button class="pull-right" ng-click="updateInventory()">+</button>
+          <span>Invoice</span> <span>{{invoice.id}}</span>
         </div>
-        <table class="table table-condensed" ng-show="itemsInInv()">
-          <thead>
-          <tr>
-            <td class="invoice-item">Item</td>
-            <td class="invoice-desc">Description</td>
-            <td>Qty</td>
-            <td>Unit Price</td>
-            <td>Amount</td>
-          </tr>
-          </thead>
-          <tbody>
-          <!-- FIXME: strange filter -->
-          <tr ng-repeat="item in inventory">
-            <td class="invoice-item"><select class="form-invoice" ng-change="updateRow(item)" ng-model="item.item"
-                                             ng-options="l.code for l in inventory_model.data"><option value="" disabled="disabled">--Select Item--</option></select></td>
-            <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
-            <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
-            <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
-            <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
-          </tr>
-          <tr>
-            <td colspan="4"></td>
-            <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
-          </tbody>
-        </table>
+        <div ng-show="invoice.debtor" class="panel-body">
+          <table class="table table-condensed table-bordered">
+            <thead>
+              <tr><th colspan="4">Sale Details</th>
+              <tr><th>Date</th><th>Invoice</th><th>Debtor</th><th>Note</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{invoice.date | date}}</td>
+                <td>{{invoice.id}}</td>
+                <td>{{invoice.debtor.name}}</td>
+                <td>{{invoice.note}}</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <table class='table-bordered table-condensed table'>
+            <thead>
+              <tr>
+                <th colspan="5"> Sale Items 
+                  <div class="pull-right">
+                    <a ng-click="addInvoiceItem()"><span class="glyphicon glyphicon-plus"></span></a>
+                  </div>
+                </th>
+              </tr>
+              
+              <tr>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              <!-- FIXME: strange filter -->
+              <tr ng-repeat="invoiceItem in invoice.items">
+                <td>
+                  <input 
+                  class="form-kapok"
+                  type="text"
+                  ng-model="invoiceItem.inventoryReference"
+                  typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory | filter:$viewValue | limitTo:8"
+                  typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.inventoryReference)"
+                  placeholder="Search Inventory Code">
+                </td>
+                <!-- typeahead&#45;template="<!&#45;&#45; Include name in template but don't interrupt typing &#45;&#45;> -->
+                
+                <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.text}}"></td>
+                <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
+                <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.price"></td>
+                <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.quantity * invoiceItem.price | currency}}"></td>
+              </tr>
+              
+              <tr>
+                <!-- Style hack -->
+                <td colspan="4" style="margin-right = 50px; text-align: right;"><b>Total</b></td>
+                <td><b>{{invoiceTotal() | currency}}</b></td>
+              </tr>
+              
+              <!-- <tr ng&#45;repeat="item in inventory"> -->
+              <!--   <td class="invoice&#45;item"><select class="form&#45;invoice" ng&#45;change="updateRow(item)" ng&#45;model="item.item" -->
+              <!--                                     ng&#45;options="l.code for l in inventory_model.data"><option value="" disabled="disabled">&#45;&#45;Select Item&#45;&#45;</option></select></td> -->
+              <!--   <td class="invoice&#45;desc"><input type="text" class="form&#45;invoice" ng&#45;model="item.text"></td> -->
+              <!--   <td class="invoice&#45;quantity"><input type="number" class="form&#45;invoice" ng&#45;model="item.quantity"></td> -->
+              <!--   <td class="invoice&#45;price"><input type="number" class="form&#45;invoice" ng&#45;model="item.price"></td> -->
+              <!--   <td class="invoice&#45;amount"><span>{{item.quantity * item.price | currency}}</span></td> -->
+              <!-- </tr> -->
+              <!-- <tr> -->
+              <!--   <td colspan="4"><div class="pull&#45;right"><b>Total</div></td> -->
+              <!--   <td><span><b>{{invoiceTotal() | currency}}</b></span></td> -->
+            </tbody>
+          </table>
       </div>
     </div>
   </div>
-</div>
 
-<section class="underline overline">
+<section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="!debtor || inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
+    <a ng-disabled="inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
   </div>
 </section>
 
-  
-
- <!-- <div class="row">
-    <div class="col-xs-4">
-      <div class="form-group">
-        <label for="debitor">Debtor Account</label>
-        <select id="debitor" class="form-kapok" ng-options="formatDebtor(d) for d in debtor_model.data"
-                ng_model="debtor"></select>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h2>{{debtor.first_name}} {{debtor.last_name}}</h2>
-          <h4>{{debtor.city}}</h4>
-          <H4>{{debtor.region}}</H4>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-8">
-      <div class="row">
-        <div class="col-lg-offset-10">
-          <div class="input-group">
-            <span class="input-group-addon">#</span>
-            <input id="salesid" class="form-kapok" ng-model="invoice_id">
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-6">
-
-          <div class="form-group">
-            <label for="saledate">Sale Date</label>
-            <input type="date" id="saledate" class="form-kapok" ng-model="sale_date">
-          </div>
-
-          <div class="form-group">
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="invoice.payable">
-                Payable Immediately
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="payable" value="false" checked ng-model="invoice.payable">
-                Payable by
-              </label>
-            </div>
-            <div class="input-group">
-              <select id="payable" class="form-kapok" ng-disabled="isPayable()">
-                &lt;!&ndash;FIXME Currently hardcoded - should these be pulled from a data set?&ndash;&gt;
-                <option>14</option>
-                <option>30</option>
-              </select>
-              <span class="input-group-addon">days</span>
-            </div>
-
-          </div>
-        </div>
-        <div class="col-xs-6">
-          <label for="invoicetext">Sale Text</label>
-          &lt;!&ndash;FIXME This shouldn't be making a call to a function - too many digests run on this page&ndash;&gt;
-          <textarea class="form-kapok" id="invoicetext">{{formatText()}}</textarea>
-        </div>
-      </div>
-    </div>
-  </div>-->
-  <!--<div class="row">
-    <div class="panel panel-success">
-      <div class="panel-heading">
-        <span>Invoice Items</span>
-        <button class="pull-right" ng-click="updateInventory()">+</button>
-
-      </div>
-
-      <table class="table invoice-table">
-        <thead>
-        <tr>
-          <td class="invoice-item">Item</td>
-          <td class="invoice-desc">Description</td>
-          <td>Qty</td>
-          <td>Unit Price</td>
-          <td>Amount</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="item in inventory">
-          <td class="invoice-item"><select class="form-kapok" ng-change="updateItem(item)" ng-model="item.item"
-                                           ng-options="l.code for l in inventory_model.data"></select></td>
-          <td class="invoice-desc"><input type="text" class="form-kapok" ng-model="item.text"></td>
-          <td class="invoice-quantity"><input type="number" class="form-kapok" ng-model="item.quantity"></td>
-          <td class="invoice-price"><input type="number" class="form-kapok" ng-model="item.price"></td>
-          <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
-        </tr>
-        <tr ng-show="itemsInInv()">
-          <td colspan="4"></td>
-          <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
-        </tbody>
-      </table>
-
-    </div>
-  </div>
-  <div class="row">
-    <button ng-click="generateInvoice()" class="btn btn-default btn">Generate Invoice</button>
-  </div>-->
-
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>

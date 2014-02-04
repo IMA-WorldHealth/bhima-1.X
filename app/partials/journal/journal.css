@@ -1,21 +1,4 @@
-
 /*Not optimal to control utils layout on two different elements*/
-.util {
-  border-bottom: 1px solid #eeeeee;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-}
-
-.util-bottom {
-  border-top: 1px solid #eeeeee;
-  padding-top: 5px;
-  border-bottom: 1px solid #eeeeee;
-  padding-bottom: 5px
-}
-
-.rowSelected {
-  background-color: #dff0d8;
-}
 
 /*Temporary fix for border-box bootstrap collision*/
 .grid,
@@ -24,32 +7,4 @@
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   font-size: 0.95em;
-}
-
-.slick-group-title { 
-}
-
-.editor-text { 
-  display: block;
-  width: 100%;
-  /* padding: 1px 6px; */
-  /* line-height: 1.428571429; */
-  color: #555555;
-  vertical-align: middle;
-  background-color: #ffffff;
-  /* border: 1px solid #cccccc; */
-  border: none;
-}
-
-.editor-typeahead { 
-  display: block;
-  width: 100%;
-  /* padding: 1px 6px; */
-  /* line-height: 1.428571429; */
-  color: #555555;
-  vertical-align: middle;
-  background-color: #ffffff;
-  /* border: 1px solid #cccccc; */
-  border: none;
-
 }
