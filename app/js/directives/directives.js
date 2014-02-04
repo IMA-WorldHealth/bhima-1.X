@@ -246,18 +246,32 @@
             }
           };
 
-          scope.findPatient = {state: 'id'};
+          scope.findPatient = {
+            state: 'id',
+            submitSuccess: false
+          };
           
           var template = 
           '<div class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
           '  <div class="panel-heading">'+
-          '    <span class="glyphicon glyphicon-search"></span> Find Patient'+
-          '    <div class="pull-right">'+
-          '      <a ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> Enter Debtor ID</a>'+
-          '      <a ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> Search Patient Name</a>'+
+          '    <div ng-switch on="findPatient.submitSuccess">'+
+          '     <div ng-switch-when="false">'+
+          '       <span class="glyphicon glyphicon-search"></span> Find Patient'+
+          '       <div class="pull-right">'+
+          '         <a ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> Enter Debtor ID</a>'+
+          '         <a ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> Search Patient Name</a>'+
+          '       </div>'+
+          '     </div>'+
+          '     <div ng-switch-when="true">'+
+          '       <!-- Style hack -->'+
+          '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findPatient.debtor.name}}'+
+          '       <div class="pull-right">'+
+          '         <span ng-click="findPatient.refresh()" class="glyphicon glyphicon-repeat"></span>'+
+          '       </div>'+
+          '     </div>'+
           '    </div>'+
           '  </div>'+
-          '  <div class="panel-body">'+
+          '  <div class="panel-body find-collapse" ng-show="!findPatient.submitSuccess">'+
           '    <div ng-switch on="findPatient.state">'+
           '      <div ng-switch-when="name">'+
           '        <div class="input-group">'+
@@ -308,7 +322,9 @@
 
           function searchName(value) { 
             if(typeof(value)==='string') return messenger.danger('Submitted an invalid debtor');
+            scope.findPatient.debtor = value;
             searchCallback(value); 
+            scope.findPatient.submitSuccess = true;
           }
 
           function searchId(value) { 
@@ -318,11 +334,12 @@
           }
          
           function handleIdRequest(model) { 
-            var debtor = generatePatientNames(model.debtor.data)[0];
+            var debtor = scope.findPatient.debtor = generatePatientNames(model.debtor.data)[0];
             console.log('downloaded', model);
             //Validate only one debtor matches
             scope.findPatient.valid = true;
             searchCallback(debtor);
+            scope.findPatient.submitSuccess = true;
           }
 
           function handleIdError(error) { 
@@ -357,8 +374,15 @@
             }
             scope.findPatient.valid = true; 
           }
+
+          function resetSearch() { 
+            scope.findPatient.valid = false;
+            scope.findPatient.submitSuccess = false;
+            scope.findPatient.debtor = "";
+          }
           
           scope.validateNameSearch = validateNameSearch;
+          scope.findPatient.refresh = resetSearch;
           scope.submitDebtor = submitDebtor;
           element.replaceWith($compile(template)(scope));
         }
