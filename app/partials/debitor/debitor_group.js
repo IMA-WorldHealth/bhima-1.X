@@ -1,112 +1,141 @@
 angular.module('kpk.controllers')
-.controller('debitorGroupCtrl', function ($scope, $q, connect, appstate) {
+.controller('debitorGroup', [
+  '$scope',
+  '$q',
+  'connect',
+  'appstate',
+  'messenger',
+  'validate',
+function ($scope, $q, connect, appstate, messenger, validate) {
   'use strict';
 
-  var imports = {},
-      models = $scope.models = {},
-      flags = $scope.flags = {},
-      data = $scope.data = {},
-      stores = {};
+  var dependencies = {};
+  $scope.data = {};
 
-  imports.enterprise_id = appstate.get('enterprise').id;
- 
-  imports.debitor_group = {
-    tables : { 'debitor_group' : { columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'type_id']}},
-    where : ['debitor_group.enterprise_id=' + imports.enterprise_id]
+  dependencies.debitor_group = {
+    query : {
+      tables : {
+        'debitor_group' : {
+          columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'type_id', 'is_convention']
+        }
+      }
+    }  
   };
 
-  imports.account = {
-    tables : { 'account' : { columns : ['id', 'account_number', 'account_txt']}},
-    where : ['account.locked<>1', 'AND', 'account.enterprise_id=' + imports.enterprise_id]
+  dependencies.account = {
+    required : true,
+    query : {
+      tables : {
+        'account' : {
+          columns : ['id', 'account_number', 'account_txt', 'account_type_id']
+        }
+      }
+    }  
+  };
+
+  dependencies.payment = {
+    required : true,
+    query : {
+      tables : {
+        'payment' : {
+          columns: ['id', 'text']
+        }
+      }
+    }
+  };
+
+  dependencies.types = {
+    required : true,
+    query : {
+      tables : {
+        'debitor_group_type' : {
+          columns : ['id', 'type']
+        }
+      }
+    }  
   };
   
-  imports.payment = {tables : { 'payment' : { columns: ['id', 'text'] }}};
+  dependencies.location = {
+    query : '/location/'
+  };
 
+  appstate.register('enterprise', function (enterprise) {
+    $scope.enterprise = enterprise;
+    dependencies.debitor_group.query.where = 
+      ['debitor_group.enterprise_id=' + enterprise.id];
+    dependencies.account.query.where =
+      ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id];
+    validate.process(dependencies).then(setUpModels, handleErrors);
+  });
 
-  imports.type = {tables : { 'debitor_group_type' : { columns : ['id', 'type']}}};
-
-  var dependencies = ['debitor_group', 'account', 'payment', 'type'];
-
-  $q.all([
-    connect.req(imports.debitor_group),
-    connect.req(imports.account),
-    connect.req(imports.payment),
-    connect.req(imports.type)
-  ]).then(initialize);
-
-  function initialize (arr) {
-    for (var i = 0; i < dependencies.length; i++) {
-      stores[dependencies[i]] = arr[i];
-      models[dependencies[i]] = arr[i].data;
-    }
-
-    connect.fetch('/location/')
-    .then(function (result) {
-      models.location = result.data;
-    });
+  function handleErrors (err) {
+    messenger.danger('Error:' + JSON.stringify(err));
   }
 
-  function formatAccount (account) {
+  function setUpModels (models) {
+    for (var k in models) $scope[k] = models[k];
+    $scope.action = '';
+  }
+
+  $scope.formatAccount = function formatAccount (account) {
     return [account.account_number, account.account_txt].join(' :: ');
-  }
+  };
 
-  function formatLocation (location) {
+  $scope.formatLocation = function formatLocation (location) {
     return [location.village, location.sector, location.province, location.country].join(', ');
-  }
+  };
 
-  function invalid () {
-    return $scope.dgForm.$invalid;
-  }
+  $scope.new = function () {
+    $scope.newGroup = {};
+    $scope.action = 'new'; 
+  };
 
-  function newForm () {
-    flags.edit = false;
-    $scope.data = {};
-  }
+  $scope.edit = function (group) {
+    $scope.editGroup = angular.copy(group);
+    $scope.edit_original = group;
+    $scope.action = 'edit'; 
+  };
 
-  function submitForm () {
-    data = connect.clean($scope.data);
-    if (flags.edit) {
-      // update an item
-      connect.basicPost('debitor_group', [data], ['id']).then(function (response) {
-        console.log(response.status == 200 ? "Successful Update" : "Failure in Update --  status : " + respnse.status);
-        stores.debitor_group.put(data);
-      });
-    } else {
-      // new item
-      data.id = stores.debitor_group.generateid();
-      data.enterprise_id = imports.enterprise_id;
-      connect.basicPut('debitor_group', [data]).then(function (response) {
-        console.log(response.status == 200 ? "Successful Post" : "Failure in Post --  status : " + respnse.status);
-        stores.debitor_group.post(data);
-      });
-    }
-  }
+  $scope.lock = function (group) {
+    connect.basicPost('debitor_group', [{id: group.id, locked: group.locked}], ["id"])
+    .catch(function (err) {
+      messenger.danger('Error : ', JSON.stringify(err)); 
+    });
+  };
 
-  function displayAccount (id) {
-    return stores.account ? stores.account.get(id).account_number : ''; 
-  }
+  $scope.submitNew = function () {
+    $scope.newGroup.enterprise_id = $scope.enterprise.id; 
+    var data = connect.clean($scope.newGroup);
+    connect.basicPut('debitor_group', [data])
+    .success(function (res) {
+      data.id = res.insertId;
+      $scope.debitor_group.post(data);
+      $scope.action = '';
+    })
+    .catch(function (err) {
+      messenger.danger('Error :' + JSON.stringify(err)); 
+    });
+  };
 
-  function displayType (id) {
-    return stores.type ? stores.type.get(id).type : '';
-  }
+  $scope.resetNew = function () {
+    $scope.newGroup = {};
+  };
 
-  function editGroup (group) {
-    flags.edit = true;
-    $scope.data = group;
-  }
+  $scope.submitEdit =  function () {
+    var data = connect.clean($scope.editGroup);
+    connect.basicPost('debitor_group', [data], ['id'])
+    .success(function (res) {
+      $scope.debitor_group.put(data); 
+      $scope.action = '';
+      $scope.editGroup = {}; // reset
+    })
+    .catch(function (err) {
+      messenger.danger('Error:' + JSON.stringify(err));
+    });
+  };
 
-  function lock (group) {
-    connect.basicPost('debitor_group', [{id: group.id, locked: group.locked}], ["id"]);
-  }
+  $scope.resetEdit = function () {
+    $scope.editGroup = angular.copy($scope.edit_original);  
+  };
 
-  $scope.newForm = newForm;
-  $scope.submitForm = submitForm;
-  $scope.editGroup = editGroup;
-  $scope.formatAccount = formatAccount;
-  $scope.formatLocation = formatLocation;
-  $scope.displayAccount = displayAccount;
-  $scope.displayType = displayType;
-  $scope.invalid = invalid;
-  $scope.lock = lock;
-
-});
+}]);

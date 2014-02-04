@@ -33,7 +33,6 @@ function ($scope, $q, $window, connect, validate, messenger) {
 
 
   dependencies.location = {
-    required : true,
     query : '/location/'
   };
 

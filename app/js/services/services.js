@@ -558,7 +558,6 @@
       //
       //  where conditions can also be specified:
       //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
-      /*
       if (angular.isString(defn)) {
         // CLEAN THIS UP
         var d = $q.defer();
@@ -570,9 +569,10 @@
         });
         return d.promise;
       }
-     */
+      
       var handle, table, deferred = $q.defer();
 
+      /*
       if (angular.isString(defn)) {
         $http.get(defn)
         .success(function (res) {
@@ -584,6 +584,7 @@
         });
         return deferred.promise;
       }
+     */
 
       table = defn.primary || Object.keys(defn.tables)[0];
 

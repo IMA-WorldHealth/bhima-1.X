@@ -32,7 +32,7 @@
       templateUrl: 'partials/patient_registration/patient.html'
     }).
     when('/debitor/debitor_group', {
-      controller : 'debitorGroupCtrl',
+      controller : 'debitorGroup',
       templateUrl: 'partials/debitor/debitor_group.html'
     }).
     when('/accounts', {
