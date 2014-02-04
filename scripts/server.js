@@ -188,9 +188,7 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
 });
 
 app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) { 
-  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
-  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id = '-1'";
 
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
@@ -206,11 +204,11 @@ app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) {
 
 });
 
-app.get('/principalCenterAccount/:id_enterprise/:principal_center_id', function(req, res, next) { 
+app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) { 
   // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
   // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, principal_center WHERE account.principal_center_id = principal_center.id "+
-            "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.principal_center_id='"+req.params.principal_center_id+"'";
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id "+
+            "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id='"+req.params.cost_center_id+"'";
 
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
