@@ -120,20 +120,32 @@ angular.module('kpk.controllers')
     messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
     connect.basicGet('/fiscal/' + enterprise.id + '/' + model.start + '/' + model.end + '/' + model.note)
     .then(function(res) { 
-      console.log(res);
+      console.log("RES IS:", res);
 
-      $modal.open({
+      var instance = $modal.open({
         templateUrl: 'createOpeningBalanceModal.html',
-        controller : function ($scope, $modalInstance, id, enterprise) {
+        keyboard : false,
+        backdrop: 'static',
+        controller : function ($scope, $modalInstance, fy_id, zero_id, enterprise) {
+          $scope.fy_id = fy_id;
           connect.fetch({
             tables : {
               'account' : {
-                columns : ['id', 'account_txt']
+                columns : ['id', 'account_txt', 'account_number']
+              },
+              'account_type' : {
+                columns : ['type']
               }
             },
+            join : ['account.account_type_id=account_type.id'],
             where : ['account.enterprise_id='+enterprise.id]
           })
           .then(function (model) {
+
+            model.forEach(function (row) {
+              row.account_number = "" + row.account_number; // for sorting to work
+            });
+
             $scope.accounts = model;
           });
 
@@ -144,44 +156,63 @@ angular.module('kpk.controllers')
             });
           };
 
+          $scope.defaults = function () {
+            $scope.accounts.forEach(function (row) {
+              row.credit = Number((Math.random() * 10000).toFixed(14, 2)); 
+              row.debit = Number((Math.random() * 10000).toFixed(14, 2));
+            });
+          };
+
           $scope.submit = function () {
 
-            var data = $scope.accounts.map(function (row) {
-              row.debit = row.debit || 0; // default to 0
-              row.credit = row.credit || 0; // default to 0
-              row.fiscal_year_id = id;
-              row.period_id = 0;
-              row.locked = 0;
-              row.enteprise_id = enterprise.id;
-              return row;
+            var data = $scope.accounts
+            .filter(function (row) {
+              return row.type != "title";
+            })
+            .map(function (row) {
+              var o = {};
+              o.account_id  = row.id;
+              o.debit = row.debit || 0; // default to 0
+              o.credit = row.credit || 0; // default to 0
+              o.fiscal_year_id = fy_id;
+              o.period_id = zero_id;
+              o.enterprise_id = enterprise.id;
+              return o;
             });
             
             connect.basicPut('period_total', [data])
             .then(function (res) {
               $modalInstance.close();
             }, function (err) {
-              $modelInstance.dismiss(err);
+              $modalInstance.dismiss(err);
             });
           };
 
         },
         resolve : {
-          id : function () {
-            return res.data.insertId;
+          fy_id : function () {
+            return res.data.fiscalInsertId;
+          },
+          zero_id : function () {
+            return res.data.periodZeroId;
           },
           enterprise : function () {
             return $scope.enterprise;
           }
         }
       });
-      
-      //Reset model
-      $scope.new_model = {'year':'true'};
-      messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start}); 
-      
-      if(!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});
-      //Reload fiscal years - could insert but unneeded calculation
-      loadEnterprise(enterprise.id);
+
+      instance.result.then(function () {
+        //Reset model
+        $scope.new_model = {'year':'true'};
+        messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start}); 
+        
+        if(!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});
+        //Reload fiscal years - could insert but unneeded calculation
+        loadEnterprise(enterprise.id);
+      }, function (err) {
+        messenger.danger('Error:' + JSON.stringify(err)); 
+      });
     }, function(err) { 
       messenger.push({type: 'danger', msg:'Fiscal Year request failed, server returned [' + err.data.code + ']'});
     });
@@ -194,29 +225,38 @@ angular.module('kpk.controllers')
         'period_total' : {
           columns : ['account_id', 'debit', 'credit', 'locked']
         },
+        'period' : {
+          columns : ['period_number']
+        },
         'account' : {
-          columns: ['account_txt']
+          columns: ['account_txt', 'account_number']
+        },
+        'account_type' : {
+          columns : ['type']
         }
       },
-      join : ['period_total.account_id=account.account_txt'],
-      where : ['period_total.fiscal_year_id='+id, 'AND', 'period_id=0', 
+      join : ['period_total.account_id=account.id', 'period_total.period_id=period.id', 'account.account_type_id=account_type.id'],
+      where : ['period_total.fiscal_year_id='+id, 'AND', 'period.period_number=0', 
         'AND', 'period_total.enterprise_id='+$scope.enterprise.id]
     })
     .then(function (res) {
       if (!res.length) 
         return messenger.warning('No opening balances found for fiscal year');
 
-      var instance = $model.open({
+      var instance = $modal.open({
         templateUrl: 'viewOpeningBalanceModal.html',
-        controller : function ($scope, $modalInstance, fiscal, balances) {
-          $scope.balances = balances;
+        controller : function ($scope, $modalInstance, fiscal, accounts) {
+          accounts.forEach(function (row) {
+            row.account_number = "" + row.account_number;
+          });
+          $scope.accounts = accounts;
           $scope.fiscal = fiscal;
           $scope.dismiss = function () {
             $modalInstance.close();
           };
         },
         resolve : {
-          balances : function () {
+          accounts : function () {
             return res;
           },
           fiscal : function () {
