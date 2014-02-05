@@ -117,7 +117,7 @@ module.exports = (function(db) {
       var currentPeriodStart = new Date(startDate.getFullYear(), startDate.getMonth() + i);
       var currentPeriodStop = new Date(currentPeriodStart.getFullYear(), currentPeriodStart.getMonth() + 1, 0);
 
-      periodSQLBody.push('(' + fiscalYearId + ',' + i+1 + ',"' + formatMySQLDate(currentPeriodStart) + '","' + formatMySQLDate(currentPeriodStop) + '")');
+      periodSQLBody.push('(' + fiscalYearId + ',' + Number(i)+1 + ',"' + formatMySQLDate(currentPeriodStart) + '","' + formatMySQLDate(currentPeriodStop) + '")');
     }
 
     periodSQL = periodSQLHead + periodSQLBody.join(',');
