@@ -88,7 +88,6 @@ app.get('/user_session', function (req, res, next) {
   res.send(200, {id: req.session.user_id});
 });
 
-
 app.get('/trial/', function (req, res, next) {
   trialbalance.run(req.session.user_id, function (err, result) {
     if (err) return next(err);

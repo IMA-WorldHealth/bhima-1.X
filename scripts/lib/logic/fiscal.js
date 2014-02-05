@@ -89,7 +89,7 @@ module.exports = (function(db) {
       db.execute(fiscalSQL, function(err, ans) { 
         if(err) return deferred.reject(err);
         deferred.resolve(ans);
-      })
+      });
     }, function(err) { 
       deferred.reject(err);
     });
@@ -100,15 +100,20 @@ module.exports = (function(db) {
   function createPeriodRecords(fiscalYearId, startDate, endDate) { 
     var accountIdList, totalMonths, periodSQL;
     var deferred = q.defer();
-    var periodSQLHead = 'INSERT INTO `period` (fiscal_year_id, period_start, period_stop) VALUES ';
+    var periodSQLHead = 'INSERT INTO `period` (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
     var periodSQLBody = [];
 
+    // create an opening balances period
+   
+   var ps = new Date(startDate.getFullYear(), startDate.getMonth());
+   periodSQLBody.push('(' + fiscalYearId + ',' + 0 +', "' + formatMySQLDate(ps) + '" , "' + formatMySQLDate(ps) + '")');
+
     totalMonths = monthDiff(startDate, endDate) + 1;
-    for(var i = 0; i < totalMonths; i++) { 
+    for (var i = 0; i < totalMonths; i++) {
       var currentPeriodStart = new Date(startDate.getFullYear(), startDate.getMonth() + i);
       var currentPeriodStop = new Date(currentPeriodStart.getFullYear(), currentPeriodStart.getMonth() + 1, 0);
-      
-      periodSQLBody.push('(' + fiscalYearId + ',"' + formatMySQLDate(currentPeriodStart) + '","' + formatMySQLDate(currentPeriodStop) + '")');
+
+      periodSQLBody.push('(' + fiscalYearId + ',' + i+1 + ',"' + formatMySQLDate(currentPeriodStart) + '","' + formatMySQLDate(currentPeriodStop) + '")');
     }
 
     periodSQL = periodSQLHead + periodSQLBody.join(',');

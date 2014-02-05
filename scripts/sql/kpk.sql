@@ -538,6 +538,7 @@ drop table if exists `period`;
 create table `period` (
   `id`              mediumint unsigned not null auto_increment,
   `fiscal_year_id`  mediumint unsigned not null,
+  `period_number`   smallint unsigned not null,
   `period_start`    date not null,
   `period_stop`     date not null,
   `locked`          boolean not null default 0,
