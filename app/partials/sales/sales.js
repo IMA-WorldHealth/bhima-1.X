@@ -24,7 +24,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //Expose model to scope
     $scope.model = model;
     $scope.inventory = inventory = model.inventory.data;
-    console.log(model);
   }
 
   function initialiseSaleDetails(selectedDebtor) { 
@@ -37,6 +36,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       items: []
     };
     invoice.note = formatNote(invoice);
+    addInvoiceItem(); //Default invoice item
+    
     $scope.invoice = invoice;
   }
     
@@ -49,16 +50,14 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     invoiceItem.set(inventoryReference);   
   }
 
-  //Deprecated
-  $scope.updateRow = function (row) { 
-    if(!row.quantity) row.quantity = 1;
-    row.text = row.item.text;
-    row.price = row.item.price;
-  };
-
+  function removeInvoiceItem(index) { 
+    console.log('delete request for', index);
+    invoice.items.splice(index, 1);
+  }
+  
   //Utility methods 
   
-  //Guess transaction ID, this will not be used writing the transaction to the databse
+  //Guess transaction ID, this will not be used writing the transaction to the database
   function createId(current) { 
     var defaultId = 1;
     return (current + 1) || defaultId;
@@ -69,17 +68,17 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     var currentDate = new Date();
     return currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + ('0' + currentDate.getDate()).slice(-2);
   }
-  
-  function generatePatientNames(patientData) { 
-    patientData.forEach(function(patient) { 
-      patient.name = patient.first_name + ' ' + patient.last_name;
-    });
-  }
- 
+   
   function formatNote(invoice) { 
     var noteDebtor = invoice.debtor || "";
     return "PI/" + invoice.id + "/" + invoice.date + "/" + noteDebtor.name; 
   }
+  
+  function submitInvoice() { 
+
+  }
+
+  //#sfount - refactor from here
 
   $scope.generateInvoice = function() { 
     //Client validation logic goes here - should be complimented with server integrity checks etc.
@@ -215,4 +214,5 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   $scope.initialiseSaleDetails = initialiseSaleDetails;
   $scope.addInvoiceItem = addInvoiceItem;
   $scope.updateInvoiceItem = updateInvoiceItem;
+  $scope.removeInvoiceItem = removeInvoiceItem;
 });
