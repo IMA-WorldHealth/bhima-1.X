@@ -1,130 +1,141 @@
 angular.module('kpk.controllers')
-.controller('AssignPatientGroupController', function ($scope, $q, connect, appstate, messenger) {
+.controller('AssignPatientGroupController', function ($scope, $q, connect, validate, appstate, messenger) {
   'use strict';
   //variables init
+  var dependencies = {}, 
+      models = $scope.models = {},
+      state = {},
+      assignation_patients;
 
-  var requettes = {}, patient = {}, models = $scope.models = {}, stores = {},state = {}, enterprise = appstate.get('enterprise'), assignation_patients;
-  requettes.patients = {
-    tables : {'patient':{columns:['id', 'first_name', 'last_name', 'dob']}}
-  };
+  $scope.flags = {}; $scope.print = false; $scope.patient = {}; 
 
-  requettes.patient_groups = {
-    tables : { 'patient_group':{ columns: ["id", "name"]}}
-  };
+  dependencies.patient_group = {
+    required : true,
+    query : {
+      tables : { 'patient_group':{ columns: ["id", "name"]}}
+    }
+  }
 
-  requettes.assignation_patients = {
-    tables : { 'assignation_patient':{ columns: ["id", "patient_group_id", "patient_id"]}}
-  };
+  dependencies.patient = {
+    required : true,
+    query : {
+      tables : {'patient':{columns:['id', 'first_name', 'last_name', 'dob']}}
+    }
+  }
 
-  $scope.flags = {}
-  $scope.print = false;
+  dependencies.assignation_patient = {
+    query : {
+      tables : { 'assignation_patient':{ columns: ["id", "patient_group_id", "patient_id"]}}
+    }
+  }
+
   //fonctions
 
-  function init (records){
-    
-    models.patients = records[0].data;
-    models.patient_groups = records[1].data;
-    assignation_patients = records[2].data;
+  function init (model){
+    for(var k in model){
+      $scope[k] = model[k];
+      models[k] = $scope[k].data;
+    }    
     transformDatas(false);
-    state.childrens = records[1].data;
     $scope.all = false;
-    state.all = false;
-  } 
+    state.all = false;    
+  }
 
-  var transformDatas = function (value){
-    $scope.models.patient_groups.map(function(item){
+  function errorDependencies (err){
+      messenger
+      .danger([err.message, err.reference].join(' '));
+  }
+
+  function transformDatas (value){
+    models.patient_group.map(function(item){
       item.checked = value;
     });
   }
 
   function decision (){
     var diff = false;
-    for(var i = 0; i < models.patient_groups.length; i++){
-      if(models.patient_groups[i].checked){
+    for(var i = 0; i < models.patient_group.length; i++){
+      if(models.patient_group[i].checked){
         diff = true;
         break;
       } 
     }
     return diff;
-  }
+  } 
 
-
-
-  $scope.showPatientGroups = function (index){
+  function showPatientGroups (index){
     transformDatas(false);
-      patient = models.patients[index];
-      $scope.print = true;      
-      models.patient_groups.forEach(function (patient_group){
+    $scope.patient = models.patient[index];
+    $scope.print = true;     
+    models.patient_group.forEach(function (pg){
 
-        assignation_patients.forEach(function (assignation_patient){
-        if( assignation_patient.patient_id === 
-            patient.id &&
-            assignation_patient.patient_group_id ===
-            patient_group.id          
-          ) patient_group.checked = true;
-        });
-      });   
-
-      var check = $scope.models.patient_groups.some(function (patient_group){
-        return patient_group.checked !== true;
+      $scope.assignation_patient.data.forEach(function (ap){
+      if( ap.patient_id === 
+          $scope.patient.id &&
+          ap.patient_group_id ===
+          pg.id          
+        ) pg.checked = true;
       });
+    });   
+
+    var check = models.patient_group.some(function (pg){
+      return pg.checked !== true;
+    });
     $scope.all = !check;
   }
 
-  $scope.changeChildren = function(v){
+  function changeChildren (v){
+    //
     transformDatas(v);
   }
 
   function formatAccount (account){    
-    return [account.account_number, account.account_txt].join(' -- ');
-  }
-
-  function run (){    
-    $q.all(
-      [
-      connect.req(requettes.patients),
-      connect.req(requettes.patient_groups),
-      connect.req(requettes.assignation_patients)
-      ]
-    ).then(init);
+    return [
+      account.account_number, account.account_txt
+    ].join(' -- ');
   }
 
   function save (){
+    var tapon=[]; //will contain data witch will be inserted 
 
-    connect.basicDelete('assignation_patient', patient.id, 'patient_id')
+    connect.basicDelete('assignation_patient', $scope.patient.id, 'patient_id')
     .then(function (v){
 
       if (v.status === 200) {
+        $scope.assignation_patient.data = $scope.assignation_patient.data.filter(function (item){
+          return item.patient_id !== $scope.patient.id;
+        });
         var ass_patient = [];
         
-        var pg = models.patient_groups.filter(function(item){
+        var pg_checked = models.patient_group.filter(function(item){
           return item.checked;
         });
 
-        pg.forEach(function(item){
-          ass_patient.push({patient_group_id : item.id, patient_id : patient.id});
+        pg_checked.forEach(function(item){
+          ass_patient.push({patient_group_id : item.id, patient_id : $scope.patient.id});
         });
 
         $q.all(
           ass_patient.map(function(assignation){
+            tapon.push(assignation);
             return connect.basicPut('assignation_patient', [assignation]);
           })
-          ).then(function(res){            
+          ).then(function(res){
+            for(var i=0; i<tapon.length; i++){
+              tapon[i].id = res[i].data.insertId;
+              $scope.assignation_patient.post(tapon[i]);
+            }
             messenger.success('Successfully updated');
-            patient = {};
-            run();
+            $scope.patient = {};
           }, function(err){
             messenger.danger('Error updating');
           });
-        // connect.basicPut('assignation_patient', ass_patient).then(function(v){
-        //   console.log(v);
-        // });
       }
     });
   }
 
   function checking(){
-    if(patient.id && ($scope.all || decision())){
+    if($scope.patient.id && ($scope.all || decision())){
       save();
     }else{
       messenger.danger('Select a patient and Check at least one check box');
@@ -132,10 +143,18 @@ angular.module('kpk.controllers')
   }
 
   //invocation
-  run();
 
+  appstate.register('enterprise', function (enterprise) {
+    $scope.enterprise = enterprise;
+    dependencies.patient_group.query.where = ['patient_group.enterprise_id='+enterprise.id];
+    validate.process(dependencies).then(init, errorDependencies);
+  });
+
+  //exposition
 
   $scope.formatAccount = formatAccount;
   $scope.checking = checking;
+  $scope.changeChildren = changeChildren;
+  $scope.showPatientGroups = showPatientGroups;
 
 });

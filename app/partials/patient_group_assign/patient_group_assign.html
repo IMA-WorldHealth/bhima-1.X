@@ -21,9 +21,9 @@
             <tr><th>Patient Full Name</th><th>Date Of Birth</th></tr>
           </thead>
           <tbody>
-            <tr ng-repeat="patient in models.patients | filter:flags.search" ng-click="showPatientGroups($index)">
-              <td>{{patient.first_name}} - {{patient.last_name}}</td>
-              <td>{{patient.dob | date}}</td>
+            <tr ng-repeat="p in models.patient | filter:flags.search" ng-click="showPatientGroups($index)">
+              <td>{{p.first_name}} - {{p.last_name}}</td>
+              <td>{{p.dob | date}}</td>
             </tr>
           </tbody>
         </table>
@@ -33,7 +33,7 @@
     <div class="col-xs-6">  
       <div class="panel panel-default" ng-show="print">
         <div class="panel-heading">
-          <span>Patient Groups</span>
+          <span><b>{{patient.first_name}}</b> Patient Groups </span>
           <span class="pull-right">
             <button ng-click="checking()"><i class="glyphicon glyphicon-floppy"></i> Save</button>
           </span>
@@ -46,10 +46,10 @@
             </label>
           </li>
           <ul class="k-list">
-          <li ng-repeat="patient_group in models.patient_groups">
+          <li ng-repeat="pg in models.patient_group">
             <label class="checkbox">
-              <input type="checkbox" ng-model="patient_group.checked">
-              {{patient_group.name}}
+              <input type="checkbox" ng-model="pg.checked">
+              {{pg.name}}
             </label>        
           </li>        
         </ul>
