@@ -1,7 +1,7 @@
 angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function ($scope, $q, $filter, connect, appstate, validate) {
   'use strict'; 
   var dependencies = {};
-  var columns, dataview, options, grid, groups = [];
+  var columns, dataview, options, grid, groups = $scope.groups = [];
 
   dependencies.ledger = { 
     query : {
@@ -100,17 +100,41 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
     dataview.syncGridSelection(grid, true);
   }
 
-  //Utility methods 
-  function groupby(filter) { 
-    var filterMap = { 
-      'year' : groupYear
-    };
-    
+  var groupDefinitions = [
+    {
+      title : "Transaction",
+      getter : "trans_id",
+      formatter : formatTransactionGroup,
+      aggregators : ["debit_equiv", "credit_equiv"]
+    },
+    {
+      title : "Account",
+      getter : "account_id",
+      formatter : formatAccountGroup,
+      aggregators : []
+    },
+    { 
+      title : "Period",
+      getter : "period_id",
+      // formatter : formatPeriodGroup,
+      aggregators : []
+    }
+  ];
 
-    var groupDefinition = filterMap[filter]();
+  //Utility methods 
+  function groupby(groupDefinition) { 
+    var groupInstance = {}; 
+    if(groupExists(groupDefinition, groups)) return;
     
-    if(!groupExists(groupDefinition, groups)) groups.push(groupDefinition);
-   
+    groupInstance = JSON.parse(JSON.stringify(groupDefinition));
+    groupInstance.aggregateCollapsed = true;
+    groupInstance.aggregators = [];
+
+    groupDefinition.aggregators.forEach(function(aggregate) { 
+      groupInstance.aggregators.push(new Slick.Data.Aggregators.Sum(aggregate));
+    });
+
+    groups.push(groupInstance); 
     dataview.setGrouping(groups);
   }
 
@@ -120,23 +144,12 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
     });
   }
 
-  function groupYear() { 
-    return { 
-      getter : "trans_id",
-      formatter : formatGroup,
-      aggregators : [
-        new Slick.Data.Aggregators.Sum("debit"),
-        new Slick.Data.Aggregators.Sum("credit"),
-        new Slick.Data.Aggregators.Sum("credit_equiv"),
-        new Slick.Data.Aggregators.Sum("debit_equiv"),
-      ],
-      aggregateCollapsed : true
-    } 
-  }
-  
-
-  function formatGroup(g) { 
+  function formatTransactionGroup(g) { 
     return "<span>TRANSACTION(" + g.value + ")</span>";
+  }
+
+  function formatAccountGroup(g) { 
+    return "<span>ACCOUNT(" + g.value + ")</span>";
   }
 
   function formatGroupTotalRow(totals, column) { 
@@ -194,4 +207,5 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
   }, true);
 
   $scope.groupby = groupby;
+  $scope.groupDefinitions = groupDefinitions;
 });

@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="/partials/reports/ledger/general_ledger.css">
-
 <header>
   <span>General Ledger Report</span>
 </header>
@@ -12,13 +10,21 @@
     <button type="button" class="btn btn-sm btn-default dropdown-toggle"><span class="glyphicon glyphicon-list-alt"></span> Group Rows</button>
     <ul class="dropdown-menu">
       <li class="dropdown-header">Grouping</li>
-      <li><a href="" ng-click="groupby('year')">Fiscal Year</a></li>
-      <li><a href="" ng-click="groupby('period')">Period</a></li>
-      <li><a href="" ng-click="groupby('transaction')">Transaction ID</a></li>
-      <li><a href="" ng-click="groupby('account')">Account</a></li>
-      <li><a href="" ng-click="groupby('debcred')">Deb/Cred ID</a></li>
+      
+      <li ng-repeat="groupDefinition in groupDefinitions"><a ng-click="groupby(groupDefinition)">{{groupDefinition.title}}</a></li>
+<!--  -->
+<!--       <li><a href="" ng&#45;click="groupby('year')">Fiscal Year</a></li> -->
+<!--       <li><a href="" ng&#45;click="groupby('period')">Period</a></li> -->
+<!--       <li><a href="" ng&#45;click="groupby('transaction')">Transaction ID</a></li> -->
+<!--       <li><a href="" ng&#45;click="groupby('account')">Account</a></li> -->
+<!--       <li><a href="" ng&#45;click="groupby('debcred')">Deb/Cred ID</a></li> -->
     </ul>
   </div>
+  
+  <div class="group-crumbs">
+    <span ng-repeat="activeGroup in groups">{{activeGroup.title}} > </span>
+  </div>
+
   <div class="pull-right dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle">
       <i class="glyphicon glyphicon-cog"></i> Columns 
