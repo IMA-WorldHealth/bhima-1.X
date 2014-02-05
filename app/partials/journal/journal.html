@@ -1,32 +1,30 @@
 <header>
-  <span class="capital">{{'POSTING_JOURNAL' | translate}}</span>
+  <span class="capital">{{ 'POSTING_JOURNAL.TITLE' | translate}}</span>
 </header>
 
 <section class="top-nav">
   <div class="pull-left dropdown">
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle"><span class="glyphicon glyphicon-sort-by-attributes"></span> Group By</button>
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle"><i class="glyphicon glyphicon-sort-by-attributes"></i> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}</button>
     <ul class="dropdown-menu">
       <!-- <li class="dropdown&#45;header"></li> -->
-      <li><a href="" ng-click="groupBy('transaction')">Transaction</a></li>
-      <li><a href="" ng-click="groupBy('account')">Account</a></li> <li><a href="" ng-click="groupBy('deb_cred')">Debtor/Creditor</a></li>
+      <li><a href="" ng-click="groupBy('transaction')">{{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
+      <li><a href="" ng-click="groupBy('account')">{{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
+      <li><a href="" ng-click="groupBy('deb_cred')">{{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
     </ul>
   </div>
 
   <div class="pull-left">
     <!-- FIXME remove style hack -->
-    <button style="margin-left: 5px;" ng-disabled="liveTransaction.state" ng-click="openTransaction()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-plus"></span> Add Transaction <small ng-show="liveTransaction.state" style="color: red;">Transaction ({{liveTransaction.transaction_id}}) in progress</small></button> 
+    <button style="margin-left: 5px;" ng-disabled="liveTransaction.state" ng-click="openTransaction()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-plus"></span> {{ 'POSTING_JOURNAL.ADD_TRANSACTION' | translate }}<small ng-show="liveTransaction.state" style="color: red;">{{ 'POSTING_JOURNAL.TRANSACTION' | translate }} ({{liveTransaction.transaction_id}}) {{ 'POSTING_JOURNAL.IN_PROGRESS' | translate }}</small></button> 
   </div>
 
-  <!-- <button ng&#45;click="groupByID()" class="capital btn btn&#45;default btn&#45;sm"><span class="glyphicon glyphicon&#45;sort&#45;by&#45;attributes"></span> {{'TRANSACTION' | translate}}</button> -->
-  <!-- <button ng&#45;click="groupByAccount()" class="capital btn btn&#45;default btn&#45;sm"><span class="glyphicon glyphicon&#45;sort&#45;by&#45;attributes"></span> {{'ACCOUNT' | translate}}</button> -->
-            
   <div class="pull-right">
-    <a class="capital btn btn-default btn-sm" ng-click="split()" ng-disabled="rows.length!=1"><span class="glyphicon glyphicon-random" ng-style="rows.length!=1 ? {} : {color:'rgb(2, 179, 2)'}"></span> Split Transaction</a>
-    <a class="capital btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="liveTransaction.state"><span class="glyphicon glyphicon-stats"></span> {{'TRIAL_BALANCE' | translate}}</a>
+    <a class="capital btn btn-default btn-sm" ng-click="split()" ng-disabled="rows.length!=1"><span class="glyphicon glyphicon-random" ng-style="rows.length!=1 ? {} : {color:'rgb(2, 179, 2)'}"></span> {{ 'POSTING_JOURNAL.SPLIT' | translate}} {{ 'POSTING_JOURNAL.TRANSACTION' | translate}}</a>
+    <a class="capital btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="liveTransaction.state"><span class="glyphicon glyphicon-stats"></span> {{'POSTING_JOURNAL.TRIAL_BALANCE' | translate}}</a>
     <span class="dropdown">
-      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'CONFIGURE' | translate}}</a>
+      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate}}</a>
       <ul class="dropdown-menu">
-        <li class="dropdown-header">Toggle Columns</li>
+        <li class="dropdown-header">{{ 'UTIL.TOGGLE' | translate }} {{ 'UTIL.COLUMNS' | translate }}</li>
         <li ng-repeat="column in columns">
           <a class="capital" ng-click="column.visible=!column.visible" href="">
             <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{column.name || column.id}}
@@ -34,7 +32,7 @@
         </li>
       </ul>
     </span>
-    <a class="capital btn btn-default btn-sm" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</a>
+    <a class="capital btn btn-default btn-sm" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
   </div>
 </section>
 
@@ -50,12 +48,12 @@
 <script type="text/ng-template" id="verifyTransaction.html">
   <div class="modal-content">
     <div class="modal-header">
-      Verify Transaction
+      {{ 'POSTING_JOURNAL.VERIFY_TRANSACTION' | translate }}
     </div>
     <div class="modal-body">
       <div class="row">
         <div class="col-xs-6">
-          <label for="transid">Transaction #</label>
+          <label for="transid">{{ 'POSTING_JOURNAL.TRANSACTION_NUMBER' | translate }}</label>
           <div>{{transaction.id}}</div>
         </div>
         <div class="col-xs-6">
@@ -64,16 +62,16 @@
         </div>
       </div>
       <br> <!-- FIXME Hacked style -->
-      <label for="date" value="transaction.date">Transaction Date</label>
+      <label for="date" value="transaction.date">{{ 'POSTING_JOURNAL.TRANSACTION_DATE' | translation }}</label>
       <input type="date" disabled class="form-kapok" id="date" ng-model="transaction.date">
       <br>
-      <label for="description">Justification</label> <small>Must contain at least 10 characters</small>
+      <label for="description">{{ 'POSTING_JOURNAL.JUSTIFICATION' | translate }}</label> <small>Must contain at least 10 characters</small>
       <input type="text" required class="form-kapok" id="description" ng-model='transaction.description' placeholder="Justification for ad-hoc journal entry">
     </div>
     <div class="modal-footer">
       <p style='color:red;'>{{invalidSubmit}}</p>
-      <button ng-click="cancel()" class="btn btn-danger btn-sm">Cancel</button>
-      <button ng-click="submit()" ng-disabled="!transaction.description || transaction.description.length < 10 || !formComplete" class="btn btn-success btn-sm">Confirm Transaction</button>
+      <button ng-click="cancel()" class="btn btn-danger btn-sm">{{ 'UTIL.CANCEL' | translate }}</button>
+      <button ng-click="submit()" ng-disabled="!transaction.description || transaction.description.length < 10 || !formComplete" class="btn btn-success btn-sm"> {{ 'UTIL.CONFIRM' | translate }} {{'POSTING_JOURNAL.TRANSACTION' | translate }}</button>
     </div>
   </div>
 </script>
@@ -91,13 +89,13 @@
 <script type="text/ng-template" id="trialBalanceModal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <h3 style="display:inline;">Trial Balance</h3> 
-      <span class="pull-right"><a href="" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-print"></i> Print</a></span>
+      <h3 style="display:inline;">{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3> 
+      <span class="pull-right"><a href="" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-print"></i>{{ 'UTIL.PRINT' | translate }}</a></span>
     </div>
 
     <div class="modal-body" ng-switch="hasErrors">
       <div ng-switch-when="true" class="alert alert-danger">
-        <b>You have errors!</b>
+        <b>{{ 'TRIAL_BALANCE.ERROR_TEXT' | translate }}</b>
         <ul ng-repeat="error in errors" class="list-plain">
           <li>{{error}}</li>
         <ul>
@@ -107,7 +105,11 @@
         <table class="table table-bordered table-condensed" style="margin-bottom:0">
           <thead>
             <tr>
-              <th>Account</th><th>Before</th><th>Debit</th><th>Credit</th><th>After</th>
+              <th>{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
+              <th>{{ 'TRIAL_BALANCE.BEFORE' | translate }}</th>
+              <th>{{ 'TRIAL_BALANCE.DEBIT' | translate }}</th>
+              <th>{{ 'TRIAL_BALANCE.CREDIT' | translate }}</th>
+              <th>{{ 'TRIAL_BALANCE.AFTER' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -119,7 +121,7 @@
               <td>{{line.balance + (line.credit - line.debit) | currency }}</td>
             </tr>
             <tr>
-              <th>Total</th>
+              <th>{{ 'UTIL.TOTAL' | translate }}</th>
               <td>{{total.before | currency }}</td>
               <td>{{total.debit | currency }}</td>
               <td>{{total.credit | currency }}</td>
@@ -131,8 +133,8 @@
     </div>
 
     <div class="modal-footer" style="margin-top: 0;">
-      <button class="btn btn-sm btn-success" ng-disabled="hasErrors" ng-click="ok()">Post to General Ledger</button>
-      <button class="btn btn-sm btn-default" ng-click="cancel()">Cancel</button>
+      <button class="btn btn-sm btn-success" ng-disabled="hasErrors" ng-click="ok()">{{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
+      <button class="btn btn-sm btn-default" ng-click="cancel()">{{ 'UTIL.CANCEL' | translate }}</button>
     </div>
   </div>
 </script>
