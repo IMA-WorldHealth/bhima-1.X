@@ -9,24 +9,39 @@
       };
     })
 
-    .filter('intlcurrency', function ($filter, $sce, connect) {
-      
-      var currency;
+    .filter('intlcurrency', function ($filter, $sce, messenger, validate) {
+      var dependencies = {},
+          currency;
 
-      connect.req({ tables : { 'currency' : { columns: ['id', 'symbol', 'name', 'note', 'decimal', 'separator'] }}})
-      .then(function (store) {
-        currency = store;
+      dependencies.currency = {
+        required : true,
+        query : {
+          tables : { 
+            'currency' : {
+              columns: ['id', 'symbol', 'name', 'note', 'decimal', 'separator']
+            }
+          }
+        }
+      };
+
+      validate.process(dependencies)
+      .then(function (models) {
+        currency = models.currency;
+      }, function  (err) {
+        messenger.danger('An error occured:' + JSON.stringify(err));
       });
 
       return function (value, id) {
-        // This should be re-written to do cool things.
-        value = (value || 0).toString();
+        value = (value || 0).toFixed(2);
 
-        if (!id || !currency) return $sce.trustAsHtml($filter('currency')(value));
+        if (!id || !currency)
+          return $sce.trustAsHtml($filter('currency')(value));
 
         // first, extract the decimal digits '0.xx'
-        var decimalDigits = ~value.indexOf('.') ? value.slice(value.indexOf('.')+1, value.indexOf('.') + 3) : '00';
-        if (decimalDigits) value = value.slice(0, value.indexOf('.'));
+        var decimalDigits = value.slice(value.indexOf('.')+1, value.indexOf('.') + 3);
+
+        if (decimalDigits) 
+          value = value.slice(0, value.indexOf('.'));
         var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1"+currency.get(id).separator);
         templ += '<span class="desc">' + currency.get(id).decimal + decimalDigits + '</span><span class="cur"> ' + currency.get(id).symbol +  '</span>';
 
