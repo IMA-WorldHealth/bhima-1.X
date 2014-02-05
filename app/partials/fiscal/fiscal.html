@@ -1,11 +1,11 @@
 <header>
-  <span class="capital">{{'FISCAL_YEAR' | translate}} {{'MANAGEMENT' | translate}}</span>
+  <span class="capital">{{'FISCAL_YEAR.TITLE' | translate}} {{'FISCAL_YEAR.MANAGEMENT' | translate}}</span>
 </header>
 
 <section class="top-nav">
   <div class="pull-right">
-    <button ng-click="createFiscal()" class="capital btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span> {{'CREATE' | translate}} {{'FISCAL_YEAR' | translate}}</button>
-    <button class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
+    <button ng-click="createFiscal()" class="capital btn btn-success btn-sm"><span class="glyphicon glyphicon-pencil"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
+    <button class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</button>
   </div>
 </section>
 
@@ -18,40 +18,39 @@
           <div class="row">
             <div class="col-xs-6">
 
-              <h3>{{'FISCAL_YEAR_PAGE_NEW' | translate}}</h3>
+              <h3 class="capital">{{ 'FISCAL_YEAR.NEW' | translate }}</h3>
 
               <form novalidate name="form">
                 <div class="form-group">
-                  <label for="fiscalNote">{{'FISCAL_YEAR_PAGE_DESC' | translate}}</label>
+                  <label for="fiscalNote" class="capital">{{'FISCAL_YEAR.DESC' | translate}}</label>
                   <input required id="fiscalNote" class="form-kapok" ng-model="new_model.note">
                 </div>
 
                 <div class="form-group">
-                  <label for="startMonth">{{'FISCAL_YEAR_PAGE_STARTMONTH' | translate}}</label>
+                  <label for="startMonth" class="capital">{{'FISCAL_YEAR.START_MONTH' | translate}}</label>
                   <input required type="month" id="startMonth" class="form-kapok" ng-model="new_model.start">
                 </div>
 
                 <div class="form-group">
                   <div class="radio">
-                    <label>
+                    <label class="capital">
                       <input type="radio" name="option_year" id="one" value="true" ng-model="new_model.year" checked>
-                      {{'FISCAL_YEAR_PAGE_ONEYEAR' | translate}}
+                      {{'FISCAL_YEAR.ONE_YEAR' | translate}}
                     </label>
                   </div>
                   <div class="radio">
                     <label>
                       <input type="radio" name="option_year" id="custom" value="false" ng-model="new_model.year">
-                      {{'FISCAL_YEAR_PAGE_SPECIFY' | translate}}
+                      {{'FISCAL_YEAR.SPECIFY' | translate}}
                     </label>
                   </div>
                 </div>
 
                 <div class="form-group">
-
-                  <label for="endMonth">{{'FISCAL_YEAR_PAGE_ENDMONTH' | translate}}</label>
+                  <label for="endMonth" class="capital">{{'FISCAL_YEAR.END_MONTH' | translate}}</label>
                   <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-kapok" ng-model="new_model.end">
                 </div>
-                <button ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-success">{{'FISCAL_YEAR_PAGE_SUBMIT' | translate}}</button>
+                <button ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-success">{{'UTIL.SUBMIT' | translate}}</button>
               </form>
             </div>
             <div class="col-xs-6">
@@ -63,37 +62,37 @@
       <div ng-switch-when="update">
         <div class="row">
           <div class="col-xs-6">
-            <h3 class="capital">{{'FISCAL_YEAR' | translate}} <small>{{selected.fiscal_year_txt}}</small></h3>
+            <h3 class="capital">{{ 'FISCAL_YEAR.TITLE' | translate}} <small>{{selected.fiscal_year_txt}}</small></h3>
               <!--Fiscal year form-->
               <form role="form">
                 <div class="form-group">
                   <!--TODO: -->
-                  <label for="fiscal-name" class="control-label">{{'FISCAL_YEAR_PAGE_NAME' | translate}}</label>
+                  <label for="fiscal-name" class="control-label" class="capital">{{ 'FISCAL_YEAR.NAME' | translate }}</label>
                   <input type="text" class="form-kapok" id="fiscal-name" ng-model="selected.fiscal_year_txt">
                   <!--xs doesn't have offset for some reason?-->
                   
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="selected.locked"> {{'FISCAL_YEAR_PAGE_LOCK' | translate}}
+                      <input type="checkbox" ng-model="selected.locked" class="capital"> {{'FISCAL_YEAR.LOCK' | translate}}
                     </label>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <div class="form-group">
-                    <label for="fiscal-months" class="control-label">{{'FISCAL_YEAR_PAGE_TOTALMONTH' | translate}}</label>
+                    <label for="fiscal-months" class="control-label">{{'FISCAL_YEAR.TOTAL_MONTH' | translate}}</label>
                     <input type="text" class="form-kapok" id="fiscal-months" ng-model="selected.number_of_months">
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="form-group">
-                    <label for="first-voucher" class="control-label">{{'FISCAL_YEAR_PAGE_FIRSTVOUCHER' | translate}}</label>
+                    <label for="first-voucher" class="control-label">{{'FISCAL_YEAR.FIRST_VOUCHER' | translate}}</label>
 
                     <input type="text" class="form-kapok" id="first-voucher"
                            ng-model="selected.transaction_start_number">
                   </div>
                   <div class="form-group">
-                    <label for="last-voucher" class="control-label">{{'FISCAL_YEAR_PAGE_LASTVOUCHER' | translate}}</label>
+                    <label for="last-voucher" class="control-label">{{'FISCAL_YEAR.LAST_VOUCHER' | translate}}</label>
 
                       <input type="text" class="form-kapok" id="last-voucher"
                              ng-model="selected.transaction_stop_number">
@@ -101,7 +100,7 @@
                 </div>
                 <div class="form-group">
                   <div class="form-group">
-                    <label for="posting-from" class="control-label">{{'FISCAL_YEAR_PAGE_POSTINGFROM' | translate}}</label>
+                    <label for="posting-from" class="control-label">{{'FISCAL_YEAR.POSTING_FROM' | translate}}</label>
 
                       <!--TODO: This is temporary data - logic should be implemented-->
                       <!--FIXME: Logic should all be taken care of in controller-->
@@ -109,7 +108,7 @@
                              value="{{getFiscalStart() | date:'dd/MM/yyyy'}}">
                   </div>
                   <div class="form-group">
-                    <label for="posting-to" class="control-label">{{'FISCAL_YEAR_PAGE_POSTINGTO' | translate}}</label>
+                    <label for="posting-to" class="control-label">{{'FISCAL_YEAR.POSTING_TO' | translate}}</label>
 
                       <input type="text" class="form-kapok" id="posting-to" readonly
                              value="{{getFiscalEnd() | date:'dd/MM/yyyy'}}">
@@ -122,7 +121,7 @@
           <table class="table table-hover table-bordered">
             <thead>
               <tr>
-               <th colspan="3">{{'FISCAL_YEAR_PAGE_PERIODS' | translate}}</th>
+               <th colspan="3">{{'FISCAL_YEAR.PERIODS' | translate}}</th>
               </tr>
             </thead>
             <tbody>
@@ -148,20 +147,20 @@
     <div class="col-xs-4">
     <div class="row">
     <div class="col-xs-12">
-    <h3>{{enterprise.name}} <small>{{'FISCAL_YEAR_PAGE_FISCALYEARSELECTION' | translate}}</small></h3>
+    <h3>{{enterprise.name}} <small>{{'FISCAL_YEAR.FISCAL_YEAR_SELECTION' | translate}}</small></h3>
     </div>
   </div>
       <div class="row">
       <div class="col-xs-12">
       <table class="table table-bordered">
         <thead>
-          <tr><th>{{'FISCAL_YEAR_PAGE_DESCRIPTION' | translate}}</th><th></th></tr>
+          <tr><th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th><th></th></tr>
         </thead>
         <tbody>
           <!-- TODO Review this, not sure about it -->
           <tr ng-switch on="model.fiscal.data.length">
              <td ng-switch-when="0" colspan=2><div class="alert alert-info">
-             {{'FISCAL_YEAR_PAGE_ALERTPARTONE' | translate}} {{enterprise.name}} {{'FISCAL_YEAR_PAGE_ALERTTWO' | translate}}</div></tr>
+             {{'FISCAL_YEAR.ALERT_ONE' | translate}} {{enterprise.name}} {{'FISCAL_YEAR.ALERT_TWO' | translate}}</div></tr>
           </tr>
           <tr ng-repeat="year in model.fiscal.data" ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}">
             <td>{{year.fiscal_year_txt}}</td>

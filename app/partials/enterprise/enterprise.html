@@ -1,20 +1,28 @@
 <header class="hidden-print">
-  <span class="capital">{{'ENTERPRISE_MANAGEMENT' | translate}}</span>
+  <span class="capital">{{'ENTERPRISE.TITLE' | translate}}</span>
 </header>
 
 <section class="top-nav hidden-print">
-  <button class="capital btn btn-default btn-sm" ng-click="newEnterprise()"><i class="glyphicon glyphicon-file"></i> New Enterprise</button>
+  <button class="capital btn btn-default btn-sm" ng-click="newEnterprise()"><i class="glyphicon glyphicon-file"></i> {{ 'ENTERPRISE.NEW' | translate }}</button>
   <div class="pull-right">
-    <button class="capital btn btn-default btn-sm" ng-click="print()"><i class="glyphicon glyphicon-print"></i> {{'PRINT' | translate}}</button>
+    <button class="capital btn btn-default btn-sm" ng-click="print()"><i class="glyphicon glyphicon-print"></i> {{'UTIL.PRINT' | translate}}</button>
   </div>
 </section>
 
 <div class="content">
 
   <div class="visible-print">
-    <table class="table table-bordered table-condensed">
+    <h3>{{ 'ENTERPRISE.REGISTERED_ENTERPRISE' | translate }}</h3>
+    <table class="table table-bordered">
       <thead>
-        <tr><th>Name</th><th>Abbreviation</th><th>Email</th><th>Phone</th></tr>
+        <tr>
+          <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
+          <th>{{ 'ENTERPRISE.ABBREVIATION' | translate }}</th>
+          <th>{{ 'ENTERPRISE.EMAIL' | translate }}</th>
+          <th>{{ 'ENTERPRISE.PHONE' | translate }}</th>
+          <th>{{ 'ENTERPRISE.LOCATION_ID' | translate }}</th>
+          <th>{{ 'ENTERPRISE.CURRENCY' | translate }}</th>
+        </tr>
       </thead>
       <tbody>
         <tr ng-repeat="e in enterprise.data">
@@ -31,11 +39,17 @@
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span>Existing Enterprises</span>
+          <span> {{ 'ENTERPRISE.EXISTING_ENTERPRISES' | translate }}</span>
         </div>
         <table class="table table-condensed table-hover">
           <thead>
-            <tr><th>Name</th><th>Abbreviation</th><th>Email</th><th>Phone</th><th>Edit</th></tr>
+            <tr>
+              <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
+              <th>{{ 'ENTERPRISE.ABBREVIATION' | translate }}</th>
+              <th>{{ 'ENTERPRISE.EMAIL' | translate }}</th>
+              <th>{{ 'ENTERPRISE.PHONE' | translate }}</th>
+              <th>{{ 'ENTERPRISE.EDIT' | translate }}</th>
+            </tr>
           </thead>
           <tbody>
             <tr ng-repeat="e in enterprise.data" ng-click="load(e)">
@@ -53,14 +67,12 @@
     <div class="col-xs-6" ng-switch="action">
       <div ng-switch-default>
         <div class="alert alert-info">
-          <h4>Enterprise Management</h4>
-          <p>
-            Manage the application's enterprises from here.  There is currently no facility for deleting
-            enterprises.
+          <h4>{{ 'ENTERPRISE.TITLE' | translate }}</h4>
+          <p>{{ 'ENTERPRISE.HELP_TEXT_1' | translate }}
           </p>
           <ul class="list-plain">
-            <li><i class="glyphicon glyphicon-pencil"></i> Edit the selected enterprise. </li>
-            <li><i class="glyphicon glyphicon-file"></i> Add a new enterprise. </li>
+            <li><i class="glyphicon glyphicon-pencil"></i> {{ 'ENTERPRISE.HELP_TEXT_2' | translate }}</li>
+            <li><i class="glyphicon glyphicon-file"></i> {{ 'ENTERPRISE.HELP_TEXT_3' | translate }}</li>
           </ul>
         </div>
       </div>
@@ -69,29 +81,29 @@
         <form>
           
           <fieldset>
-            <legend>Enterprise Configuration</legend>
+            <legend>{{ 'ENTERPRISE.CONFIGURATION' | translate }}</legend>
             <div class="form-group">
-              <label for="kpk-enterprise-name" class="capital">{{ 'NAME' | translate }} : </label>
+              <label for="kpk-enterprise-name" class="capital">{{ 'ENTERPRISE.NAME' | translate }} : </label>
               <input type="text" class="form-kapok" name="kpk-enterprise-name" id="kpk-enterprise-name" ng-model="add.name">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-abbr" class="capital">{{ 'ABBREVIATION' | translate }} : </label>
+              <label for="kpk-enterprise-abbr" class="capital">{{ 'ENTERPRISE.ABBREVIATION' | translate }} : </label>
               <input type="text" class="form-kapok" name="kpk-enterprise-abbr" id="kpk-enterprise-abbr" ng-model="add.abbr">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-email" class="capital">{{ 'EMAIL' | translate }} : </label>
+              <label for="kpk-enterprise-email" class="capital">{{ 'ENTERPRISE.EMAIL' | translate }} : </label>
               <input type="text" class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="add.email">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-phone" class="capital">{{ 'PHONE' | translate }} : </label>
+              <label for="kpk-enterprise-phone" class="capital">{{ 'ENTERPRISE.PHONE' | translate }} : </label>
               <input type="text" class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="add.phone">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-location" class="capital">{{ 'LOCATION' | translate }} : </label>
+              <label for="kpk-enterprise-location" class="capital">{{ 'ENTERPRISE.LOCATION' | translate }} : </label>
               <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
                 <option value="" disabled="disabled">-- Select a Location --</option>
               <select>
@@ -99,7 +111,7 @@
 
           </fieldset>
           <fieldset> 
-            <legend>Currency/Cash Management</legend> 
+            <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend> 
 
             <div class="radio" ng-repeat="currency in currency.data">
               <label>
@@ -120,29 +132,29 @@
         <form>
           
           <fieldset>
-            <legend>Edit Enterprise</legend>
+            <legend>{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</legend>
             <div class="form-group">
-              <label for="kpk-enterprise-name" class="capital">{{ 'NAME' | translate }} : </label>
+              <label for="kpk-enterprise-name" class="capital">{{ 'ENTERPRISE.NAME' | translate }} : </label>
               <input class="form-kapok" name="kpk-enterprise-name" id="kpk-enterprise-name" ng-model="edit.name">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-abbr" class="capital">{{ 'ABBREVIATION' | translate }} : </label>
+              <label for="kpk-enterprise-abbr" class="capital">{{ 'ENTERPRISE.ABBREVIATION' | translate }} : </label>
               <input class="form-kapok" name="kpk-enterprise-abbr" id="kpk-enterprise-abbr" ng-model="edit.abbr">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-email" class="capital">{{ 'EMAIL' | translate }} : </label>
+              <label for="kpk-enterprise-email" class="capital">{{ 'ENTERPRISE.EMAIL' | translate }} : </label>
               <input class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="edit.email">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-phone" class="capital">{{ 'PHONE' | translate }} : </label>
+              <label for="kpk-enterprise-phone" class="capital">{{ 'ENTERPRISE.PHONE' | translate }} : </label>
               <input class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="edit.phone">
             </div>
 
             <div class="form-group">
-              <label for="kpk-enterprise-location" class="capital">{{ 'LOCATION' | translate }} : </label>
+              <label for="kpk-enterprise-location" class="capital">{{ 'ENTERPRISE.LOCATION' | translate }} : </label>
               <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
                 <option value="" disabled="disabled">-- Select a Location --</option>
               <select>
@@ -150,7 +162,7 @@
 
           </fieldset>
           <fieldset> 
-            <legend>Currency/Cash Management</legend> 
+            <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend> 
 
             <input type="button" class="btn btn-sm btn-default" value="Manage Cash Accounts" ng-click="manageAccounts()">
 
@@ -172,8 +184,13 @@
       <div ng-switch-when="manage">
         <table class="table table-condensed  ">
           <thead>
-            <tr><th colspan="5">Registered Relations</th></tr>
-            <tr><th>Currency</th><th>Cash Account</th><th>Bank Account</th><th>Actions</th></tr>
+            <tr><th colspan="5">{{ 'ENTERPRISE.REGISTERED_RELATIONS' | translate }}</th></tr>
+            <tr>
+              <th> {{ 'ENTERPRISE.CURRENCY' | translate }} Currency</th>
+              <th> {{ 'ENTERPRISE.CASH_ACCOUNT' | translate }} Cash Account</th>
+              <th> {{ 'ENTERPRISE.BANK_ACCOUNT' | translate }} Bank Account</th>
+              <th> {{ 'ENTERPRISE.ACTIONS' | translate }} Actions</th>
+            </tr>
           </thead>
           <tbody>
             <tr ng-repeat="acc in currency_account.data">
@@ -187,32 +204,32 @@
 
         <form>
           <fieldset>
-            <legend>Add Currencied Account</legend>
+            <legend>{{ 'ENTERPRISE.ADD_CURRENCY_ACCOUNT' | translate }}</legend>
 
             <div class="form-group">
-              <label class="capital">Currency</label>
+              <label class="capital">{{ 'ENTERPRISE.CURRENCY' | translate }}</label>
               <select class="form-kapok" ng-model="newAccount.currency_id" ng-options="currency.id as currency.name+' ('+currency.symbol+')' for currency in currency.data">
-                <option value="">-- Select Currency --</option>
+                <option value="">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="capital">Cash Account</label>
+              <label class="capital">{{ 'ENTERPRISE.CASH_ACCOUNT' | translate }}</label>
               <select class="form-kapok" ng-model="newAccount.cash_account" ng-options="account.id as account.account_number+' -- '+account.account_txt for account in account.data">
-                <option value="">-- Select Account --</option>
+                <option value="">-- {{ 'SELECT.ACCOUNT' | translate }} --</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="capital">Bank Account</label>
+              <label class="capital">{{ 'ENTERPRISE.BANK_ACCOUNT' | translate }}</label>
               <select class="form-kapok" ng-model="newAccount.bank_account" ng-options="account.id as account.account_number+' -- '+account.account_txt for account in account.data">
-                <option value="">-- Select Account --</option>
+                <option value="">-- {{ 'SELECT.ACCOUNT' | translate }} --</option>
               </select>
             </div>
 
 
-            <input type="submit" class="btn btn-success btn-sm" ng-click="saveAccounts()" value="Save Selection">
-            <input type="button" class="btn btn-sm btn-default" ng-click="resetAccounts()" value="Reset Form">
+            <input type="submit" class="btn btn-success btn-sm" ng-click="saveAccounts()" value="{{ 'UTIL.SAVE_SELECTION' | translate }}">
+            <input type="button" class="btn btn-sm btn-default" ng-click="resetAccounts()" value="{{ 'UTIL.RESET_FORM' | translate }}">
 
           </fieldset>
         </form>

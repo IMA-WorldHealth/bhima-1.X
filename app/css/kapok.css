@@ -52,6 +52,15 @@
   height: 200px;
 }
 
+button {
+  text-transform: capitalize;
+}
+
+/* temp :: used in reporting account_balances */
+.pad-left td:first-child  {
+  padding-left: 15px !important;
+}
+
 #kpk-util { 
   position: absolute;
   bottom: 0;
