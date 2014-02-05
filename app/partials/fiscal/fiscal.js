@@ -158,8 +158,8 @@ angular.module('kpk.controllers')
 
           $scope.defaults = function () {
             $scope.accounts.forEach(function (row) {
-              row.credit = Number((Math.random() * 10000).toFixed(14, 2)); 
-              row.debit = Number((Math.random() * 10000).toFixed(14, 2));
+              row.credit = Number((Math.random() * 10000).toFixed(2)); 
+              row.debit = Number((Math.random() * 10000).toFixed(2));
             });
           };
 
