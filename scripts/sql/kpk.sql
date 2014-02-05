@@ -362,28 +362,6 @@ create table `currency_account` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`convention`
---
-/*
-drop table if exists `convention`;
-create table `convention` (
-  `id`                  smallint unsigned auto_increment not null,
-  `name`                varchar(100) not null,
-  `account_id`          int unsigned not null,
-  `location_id`         smallint unsigned not null,
-  `phone`               varchar(10) default '',
-  `email`               varchar(30) default '',
-  `note`                text,
-  `max_credit`          mediumint unsigned default 0,
-  primary key (`id`),
-  key `account_id` (`account_id`),
-  key `location_id` (`location_id`),
-  constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade
-) engine=innodb;
-*/
-
---
 -- table `kpk`.`price_list`
 --
 drop table if exists `kpk`.`price_list`;
@@ -560,6 +538,7 @@ drop table if exists `period`;
 create table `period` (
   `id`              mediumint unsigned not null auto_increment,
   `fiscal_year_id`  mediumint unsigned not null,
+  `period_number`   smallint unsigned not null,
   `period_start`    date not null,
   `period_stop`     date not null,
   `locked`          boolean not null default 0,

@@ -62,7 +62,7 @@
           <tr><th>Invoice ID</th><th>Debitor ID</th><th>Date</th><th>Total</th><th colspan="2" style="width:10%;">Actions</th></tr>
         </thead>
         <tbody>
-          <tr ng-repeat="invoice in invoices.data | filter:invoice.cost>0">
+          <tr ng-repeat="invoice in invoices.data | filter:filter">
             <td>{{invoice.inv_po_id}}</td>
             <td>{{invoice.deb_cred_id}}</td>
             <td>{{invoice.trans_date | date}}</td>

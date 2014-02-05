@@ -2,6 +2,7 @@
 
 // module: TrialBalance 
 var q = require('q'),
+    sanitize = require('../util/sanitize'),
     util = require('../util/util');
 
 // Trial Balance executes a series of general error checking
@@ -247,8 +248,8 @@ module.exports = (function (db) {
      
       // Next, we need to generate a posting session id.
       var sql = 'INSERT INTO `posting_session` ' +
-        'SELECT max(`posting_session`.`id`) + 1, ' + db.escapestr(user_id) + ', ' +
-        db.escapestr(util.toMysqlDate()) + ' ' +
+        'SELECT max(`posting_session`.`id`) + 1, ' + sanitize.escape(user_id) + ', ' +
+        sanitize.escape(util.toMysqlDate()) + ' ' +
         'FROM `posting_session`;';
 
       db.execute(sql, function (err, rows) {
