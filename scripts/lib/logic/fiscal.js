@@ -19,10 +19,11 @@ module.exports = (function(db) {
     //TODO discuss: Passing variables down through all the functions vs. declaring them at the top, testing/ coupling vs. readability/ clarity? 
     //              this version seems very tightly coupled
     var fiscalInsertId;
+    var periodZeroId;
     var startDateObj = new Date(startDate);
     var endDateObj = new Date(endDate);
     var validData = verifyData(startDateObj, endDateObj, enterprise);
-
+    var s;
     if(!validData.valid) return callback(validData, null);
     
     //Create line in `fiscal_year`
@@ -36,20 +37,23 @@ module.exports = (function(db) {
     })
     
     .then(function(periodSuccess) { 
+      s = periodSuccess;
+      periodZeroId = periodSuccess.periodZeroId;
       return createBudgetRecords(enterprise, periodSuccess.insertId, periodSuccess.affectedRows, fiscalInsertId);
     }, function(err) { 
       throw err;
     })
 
     .then(function(budgetSuccess) { 
-      callback(null, {'fiscalInsertId' : fiscalInsertId, 'message' : "Fiscal year, Periods and Budget items generated"});
+      console.log("\n\n", s ,"\n");
+      callback(null, {'fiscalInsertId' : fiscalInsertId, 'periodZeroId': periodZeroId, 'message' : "Fiscal year, Periods and Budget items generated"});
     }, function(err) { 
       throw err;
     })
     
     .fail(function(err) { 
       callback(err, null);
-    })
+    });
   }
 
   function statusObject(valid, message) { 
@@ -118,8 +122,12 @@ module.exports = (function(db) {
 
     periodSQL = periodSQLHead + periodSQLBody.join(',');
     db.execute(periodSQL, function(err, ans) {
-      if(err) return deferred.reject(err);
-      deferred.resolve(ans);
+      if (err) return deferred.reject(err);
+      var period_zero_sql = "SELECT `id` FROM `period` WHERE `fiscal_year_id`="+fiscalYearId + " AND `period_number`=0";
+      db.execute(period_zero_sql, function (err, pz) {
+        if (err) return deferred.reject(err);
+        deferred.resolve({ insertId : ans.insertId, periodZeroId : pz[0].id, affectedRows: ans.affectedRows });
+      });
     });
 
     return deferred.promise;
@@ -153,7 +161,7 @@ module.exports = (function(db) {
       db.execute(budgetSQL, function(err, ans) { 
         if(err) return deferred.reject(err);
         deferred.resolve(ans);
-      })
+      });
 
     }, function(err) { 
       deferred.reject(err);

@@ -179,27 +179,39 @@
 <script type="text/ng-template" id="createOpeningBalanceModal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Opening Balances for Fiscal Year {{ fiscal.fiscal_txt }}</h3>
+      <h3>Opening Balances for Fiscal Year {{ fy_id }}</h3>
     </div>
-    <div class="modal-body" style="max-height:500px; overflow: scroll;">
-      <table class="table table-condensed table-bordered">
+    <div class="modal-body" style="max-height: 300px; height:300px; overflow: auto;">
+      <p ng-hide="accounts.length"> <b>Loading...</b> </p>
+      <table ng-show="accounts.length" class="table table-condensed table-bordered">
         <thead>
-          <tr><th>Account</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>
+          <tr><th style="width:45%;">Account</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>
         </thead>
         <tbody>
-          <tr ng-repeat="account in accounts">
-            <td>{{ account.account_txt }}</td>
-            <td><input class="form-kapok" ng-model="account.debit" type="number"></td>
-            <td><input class="form-kapok" ng-model="account.credit" type="number"></td>
-            <td>{{ account.debit - account.credit }}</td>
+          <tr ng-repeat="account in accounts | orderBy:'account_number'" ng-switch="account.type" ng-class="{'active' : account.type=='title'}">
+            <td><b>{{ account.account_number }}</b>  <i>{{account.account_txt }}</i></td>
+            <td>
+              <input ng-switch-default class="form-kapok" ng-model="account.debit" type="number">
+              <p ng-switch-when="title"></p>
+            </td>
+            <td>
+              <input ng-switch-default class="form-kapok" ng-model="account.credit" type="number">
+              <p ng-switch-when="title"> </p>
+            </td>
+            <td>
+              <p ng-switch-default>{{ account.debit - account.credit | currency }}</p>
+              <p ng-switch-when="title"></p>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-success btn-sm" ng-click="submit()">Submit Balances</button>
-      <button class="btn btn-default btn-sm" ng-click="reset()">Reset Balances</button>
+      <div class="pull-left">
+        <button class="btn btn-success btn-sm" ng-click="submit()">Submit Balances</button>
+        <button class="btn btn-default btn-sm" ng-click="reset()">Reset Balances</button>
+      </div>
       <div class="pull-right">
         <button class="btn btn-sm btn-warning" ng-click="defaults()">Fill in Default Values</button>
       </div>
@@ -212,17 +224,17 @@
     <div class="modal-header">
       <h3>Opening Balances for Fiscal Year {{ fiscal.fiscal_txt }}</h3>
     </div>
-    <div class="modal-body" style="max-height:500px; overflow: scroll;">
-      <table class="table table-condensed table-bordered">
+    <div class="modal-body" style="max-height:300px; overflow: auto;">
+      <table ng-show="accounts.length" class="table table-condensed table-bordered">
         <thead>
-          <tr><th>Account</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>
+          <tr><th style="width:45%;">Account</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>
         </thead>
         <tbody>
-          <tr ng-repeat="balance in balances">
-            <td>{{ balance.account_txt }}</td>
-            <td>{{ balance.debit }}</td>
-            <td>{{ balance.credit  }}</td>
-            <td>{{ balance.credit - debit }}</td>
+          <tr ng-repeat="account in accounts | orderBy:'account_number'" ng-class="{'active' : account.type=='title'}">
+            <td><b>{{ account.account_number }}</b>  <i>{{account.account_txt }}</i></td>
+            <td>{{ account.debit | currency }}</td>
+            <td>{{ account.credit | currency }}</td>
+            <td>{{ account.debit - account.credit | currency }}</td>
           </tr>
         </tbody>
       </table>
