@@ -124,6 +124,7 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
 
   //Update grid on filter/settings changes
   $scope.$watch('flags.searchStr', function () {
+    if(!dataview) return;
     if (!flags.searchStr) flags.searchStr = ""; //prevent default
     dataview.setFilterArgs({
       searchStr: flags.searchStr 
@@ -138,5 +139,4 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
     });
     grid.setColumns(columns);
   }, true);
-
 });

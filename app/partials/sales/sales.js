@@ -152,8 +152,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
         unit_price : item.price,
         total : item.quantity * item.price
       };
-      console.log("Generating sale item for ", item);
-
+      console.log("Generating sale item for ", item, format_item);
+      
       promise_arr.push(connect.basicPut('sale_item', [format_item]));
     });
 
