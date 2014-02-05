@@ -577,7 +577,7 @@
 
       if (angular.isString(defn)) {
         $http.get(defn)
-        .success(function (res) {
+        .then(function (res) {
           res.identifier = stringIdentifier || 'id';
           deferred.resolve(new store(res));
         })

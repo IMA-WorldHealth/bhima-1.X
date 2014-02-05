@@ -160,6 +160,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     //Expose data to template
     $scope.model = model;
     
+    console.log(model);
     //Select invoice and recipient - validate should assert these only have one item
     $scope.invoice = $scope.model.invoice.data[0];
     $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);

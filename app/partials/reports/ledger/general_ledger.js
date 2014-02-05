@@ -1,6 +1,6 @@
 angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function ($scope, $q, $filter, connect, appstate, validate) {
   'use strict'; 
-  var dependencies = {}, flags = $scope.flags = {};
+  var dependencies = {}, flags = $scope.flags = {searchStr: ""};
   var columns, dataview, options, grid;
 
   dependencies.ledger = { 
@@ -80,7 +80,8 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
       sort_column = args.sortCol.field;
       dataview.sort(compareSort, args.sortAsc);
     });
-
+  
+  
     dataview.beginUpdate();
     dataview.setItems($scope.model.ledger.data);
     dataview.setFilterArgs({
