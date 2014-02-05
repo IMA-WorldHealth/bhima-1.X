@@ -1,60 +1,39 @@
-angular.module('kpk.controllers')
-.controller('fiscalController', function($scope, $q, connect, appstate, messenger) { 
+angular.module('kpk.controllers').controller('fiscal', function($scope, $q, connect, appstate, messenger, validate) { 
+  var dependencies = {};
+
+  dependencies.fiscal = { 
+    required: true, 
+    query : {
+      tables : {
+        fiscal_year : {
+          columns : ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"]
+        }
+      }
+    }
+  };
+  
+  appstate.register('enterprise', buildFiscalQuery);
+
+  function buildFiscalQuery(enterprise) { 
+    var enterpriseId = $scope.enterpriseId = enterprise.id;
+    dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterpriseId];
+    validate.process(dependencies).then(fiscal);
+  }
+
+  function fiscal(model) { 
+    $scope.model = model;
+  }
+  
   $scope.active = "select";
   $scope.selected = null;
   $scope.new_model = {'year' : 'true'};
   
   var fiscal_set = false;
 
-  function init() { 
-    
-    //Resposible for getting the current values of selects
-    appstate.register("enterprise", function(res) { 
-      loadEnterprise(res.id);
-
-      //Reveal to scope for info display
-      $scope.enterprise = res;
-    });
-  }
-
-  function loadEnterprise(enterprise_id) { 
-    var fiscal_model = {};
-
-    var promise = loadFiscal(enterprise_id);
-    promise
-    .then(function(res) { 
-      fiscal_model = res;
-      //FIXME: select should be a local function (returning a promise), it can then be exposed (/used) by a method on $scope
-      //expose model
-      $scope.fiscal_model = fiscal_model;
-      //select default
-      var data = fiscal_model.data;
-      if(!fiscal_set && data[0]) fiscal_set = true; 
-      if(data[0]) $scope.select(data[data.length - 1].id);
-    });
-  }
-
-  function loadFiscal(enterprise_id) {  
-    var deferred = $q.defer();
-    var fiscal_query = {
-      'tables' : {
-        'fiscal_year' : {
-          'columns' : ["id", "number_of_months", "fiscal_year_txt", "transaction_start_number", "transaction_stop_number", "start_month", "start_year", "previous_fiscal_year"]
-        }
-      },
-      'where' : ['fiscal_year.enterprise_id=' + enterprise_id]
-    };
-    connect.req(fiscal_query).then(function(model) {
-      deferred.resolve(model);
-    });
-    return deferred.promise;
-  }
-  
-
   $scope.select = function(fiscal_id) {
-    if($scope.fiscal_model) { 
+    if($scope.model.fiscal) { 
       fetchPeriods(fiscal_id);
-      $scope.selected = $scope.fiscal_model.get(fiscal_id);
+      $scope.selected = $scope.model.fiscal.get(fiscal_id);
       $scope.active = "update";
     } 
   };
@@ -63,7 +42,7 @@ angular.module('kpk.controllers')
     //validate deletion before performing
     $scope.active = "select";
     $scope.selected = null;
-    $scope.fiscal_model.delete(fiscal_id);
+    $scope.model.fiscal.delete(fiscal_id);
   };
 
   $scope.isSelected = function() { 
@@ -116,10 +95,9 @@ angular.module('kpk.controllers')
 
 
   $scope.generateFiscal = function generateFiscal(model) {
-    var enterprise = $scope.enterprise;
     
     messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
-    connect.basicGet('/fiscal/' + enterprise.id + '/' + model.start + '/' + model.end + '/' + model.note)
+    connect.basicGet('/fiscal/' + $scope.enterpriseId  + '/' + model.start + '/' + model.end + '/' + model.note)
     .then(function(res) { 
       
       //Reset model
@@ -128,7 +106,7 @@ angular.module('kpk.controllers')
       
       if(!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});  
       //Reload fiscal years - could insert but unneeded calculation
-      loadEnterprise(enterprise.id);
+      loadEnterprise($scope.enterpriseId);
     }, function(err) { 
       messenger.push({type: 'danger', msg:'Fiscal Year request failed, server returned [' + err.data.code + ']'});
     });
@@ -153,7 +131,4 @@ angular.module('kpk.controllers')
     //Format the current date according to RFC3339 (for HTML input[type=="date"])
     return date.getFullYear() + "-" + ('0' + (date.getMonth() + 1)).slice(-2);
   }
-  
-  //Initialise after scope etc. has been set
-  init();
 });
