@@ -105,7 +105,7 @@ INSERT INTO `unit` VALUES
   (60,'Patient Group Assigning', '', 21, 0, 'partials/patient_group_assign/', 'patient_group_assign/'), 
   (61,'Patient Group', '', 1, 0, 'partials/patient_group/', 'patient_group/'),
   (62,'Accounting', '', 0, 1, '', ''),
-  (63,'Cost Center Management', '', 62, 0, 'partials/cost_center/', 'cost_center/');
+  (63,'Cost Center Management', '', 62, 0, 'partials/cost_center/', 'cost_center/'),
   (64,'Group Invoicing', '', 5, 0, 'partials/group_invoice/', 'group_invoice/'),
   (65,'Currency', '', 1, 0, 'partials/currency/currency', '/currency');
 
