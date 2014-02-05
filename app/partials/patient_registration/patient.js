@@ -1,9 +1,9 @@
 angular.module('kpk.controllers').controller('patientRegistration', function($scope, $q, $location, $modal, connect, validate, appstate) {
   var dependencies = {}, defaultBirthMonth = '06-01';
-  $scope.patient = {}, $scope.data = {};
+  $scope.patient = {}, $scope.data = {}, $scope.sessionProperties = {};
   
   dependencies.debtorGroup = { 
-    query : {'tables' : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
+    query : { tables : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
   };
 
   dependencies.village = { 

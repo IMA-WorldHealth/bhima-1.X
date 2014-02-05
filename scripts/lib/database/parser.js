@@ -124,8 +124,6 @@ module.exports = (function (options) {
     dataList.forEach(function (row) {
       var line = [];
       for (var k in values) {
-
-        console.log('iterating datalist insert values', row[values[k]], sanitize.escape(row[values[k]])); 
         // default to null
         line.push(row[values[k]] !== undefined ? sanitize.escape(row[values[k]]) : 'null');  
       }
