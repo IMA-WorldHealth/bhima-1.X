@@ -188,7 +188,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function InvoiceItem() { 
     
     function set(inventoryReference) { 
-      console.log('setting', inventoryReference);
       this.quantity = this.quantity || 1;
       this.code = inventoryReference.code;
       this.text = inventoryReference.text;
@@ -197,7 +196,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       this.note = "";
 
       this.isSet = true;
-      console.log('set', this);
     }
 
     return {  
