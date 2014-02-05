@@ -1,7 +1,7 @@
 angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function ($scope, $q, $filter, connect, appstate, validate) {
   'use strict'; 
-  var dependencies = {}, flags = $scope.flags = {searchStr: ""};
-  var columns, dataview, options, grid;
+  var dependencies = {};
+  var columns, dataview, options, grid, groups = [];
 
   dependencies.ledger = { 
     query : {
@@ -37,10 +37,10 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
       {id: 'doc_num'        , name: 'Document ID'         , field:'doc_num'        , visible : true } ,
       {id: 'description'    , name: 'Description'         , field:'description'    , visible : true } ,
       {id: 'account_number' , name: 'Account'             , field:'account_number' , visible : true } ,
-      {id: 'debit'          , name: 'Debit'               , field:'debit'          , visible : false, formatter: formatAmount},
-      {id: 'credit'         , name: 'Credit'              , field:'credit'         , visible : false, formatter: formatAmount},
-      {id: 'debit_equiv'    , name: 'Debit Equiv.'        , field:'debit_equiv'    , visible : true, formatter: formatEquiv},
-      {id: 'credit_equiv'   , name: 'Credit Equiv.'       , field:'credit_equiv'   , visible : true, formatter: formatEquiv},
+      {id: 'debit'          , name: 'Debit'               , field:'debit'          , visible : false, formatter: formatAmount, groupTotalsFormatter: formatGroupTotalRow},
+      {id: 'credit'         , name: 'Credit'              , field:'credit'         , visible : false, formatter: formatAmount, groupTotalsFormatter: formatGroupTotalRow},
+      {id: 'debit_equiv'    , name: 'Debit Equiv.'        , field:'debit_equiv'    , visible : true, formatter: formatEquiv, groupTotalsFormatter: formatGroupTotalRow },
+      {id: 'credit_equiv'   , name: 'Credit Equiv.'       , field:'credit_equiv'   , visible : true, formatter: formatEquiv, groupTotalsFormatter: formatGroupTotalRow},
       {id: 'currency_id'    , name: 'Currency'            , field:'currency_id'    , visible : false} ,
       {id: 'deb_cred_id'    , name: 'Deb/Cred ID'         , field:'deb_cred_id'    , visible : true } ,
       {id: 'deb_cred_type'  , name: 'D/C'                 , field:'deb_cred_type'  , visible : true } ,
@@ -60,7 +60,12 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
   }
 
   function initialiseGrid() { 
-    dataview = new Slick.Data.DataView();
+    var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+
+    dataview = new Slick.Data.DataView({
+      groupItemMetadataProvider : groupItemMetadataProvider,
+      inlineFilter : true
+    });
 
     dataview.onRowCountChanged.subscribe(function (e, args) {
       grid.updateRowCount();
@@ -74,7 +79,9 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
 
     grid = new Slick.Grid('#kpk-ledger-general_ledger-grid', dataview, columns, options);
     grid.setSelectionModel(new Slick.RowSelectionModel());
-
+    
+    grid.registerPlugin(groupItemMetadataProvider);
+  
     //Grid sorting 
     grid.onSort.subscribe(function(e, args) {
       sort_column = args.sortCol.field;
@@ -84,16 +91,61 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
   
     dataview.beginUpdate();
     dataview.setItems($scope.model.ledger.data);
-    dataview.setFilterArgs({
-      searchStr: flags.searchStr
-    });
-    dataview.setFilter(search);
+    // dataview.setFilterArgs({
+    //   searchStr: flags.searchStr
+    // });
+    // dataview.setFilter(search);
     dataview.endUpdate();
 
     dataview.syncGridSelection(grid, true);
   }
 
-  //Grid sort methods
+  //Utility methods 
+  function groupby(filter) { 
+    var filterMap = { 
+      'year' : groupYear
+    };
+    
+
+    var groupDefinition = filterMap[filter]();
+    
+    if(!groupExists(groupDefinition, groups)) groups.push(groupDefinition);
+   
+    dataview.setGrouping(groups);
+  }
+
+  function groupExists(targetGroup, groupList) { 
+    return groups.some(function(group) { 
+      return group.getter === targetGroup.getter;
+    });
+  }
+
+  function groupYear() { 
+    return { 
+      getter : "trans_id",
+      formatter : formatGroup,
+      aggregators : [
+        new Slick.Data.Aggregators.Sum("debit"),
+        new Slick.Data.Aggregators.Sum("credit"),
+        new Slick.Data.Aggregators.Sum("credit_equiv"),
+        new Slick.Data.Aggregators.Sum("debit_equiv"),
+      ],
+      aggregateCollapsed : true
+    } 
+  }
+  
+
+  function formatGroup(g) { 
+    return "<span>TRANSACTION(" + g.value + ")</span>";
+  }
+
+  function formatGroupTotalRow(totals, column) { 
+    var val = totals.sum && totals.sum[column.field];
+    if(val!==null) return "<span style='font-weight: bold'>" + $filter('currency')(Math.round(parseFloat(val)*100/100)) + "</span>";
+    return ""; 
+  }
+  
+  //Grid sort methods 
   function compareSort(a, b) {
     var x = a[sort_column], y = b[sort_column];
     return (x == y) ? 0 : (x > y ? 1 : -1);
@@ -124,14 +176,14 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
   }
 
   //Update grid on filter/settings changes
-  $scope.$watch('flags.searchStr', function () {
+  /*$scope.$watch('flags.searchStr', function () {
     if(!dataview) return;
     if (!flags.searchStr) flags.searchStr = ""; //prevent default
     dataview.setFilterArgs({
       searchStr: flags.searchStr 
     });
     dataview.refresh();
-  });
+  });*/
 
   $scope.$watch('columns', function () {
     if (!$scope.columns) return;
@@ -140,4 +192,6 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
     });
     grid.setColumns(columns);
   }, true);
+
+  $scope.groupby = groupby;
 });

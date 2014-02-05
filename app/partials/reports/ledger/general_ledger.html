@@ -5,23 +5,23 @@
 </header>
 
 <section class="underline">
-  <div class="pull-left">
-    <input type="search" placeholder="Filter General Ledger" class="form-kapok" ng-model="flags.searchStr" size="25">
-  </div>
+  <!-- <div class="pull&#45;left"> -->
+    <!-- <input type="search" placeholder="Filter General Ledger" class="form&#45;kapok" ng&#45;model="flags.searchStr" size="25"> -->
+  <!-- </div> -->
   <div class="pull-left dropdown">
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle">Group By</button>
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle"><span class="glyphicon glyphicon-list-alt"></span> Group Rows</button>
     <ul class="dropdown-menu">
-      <li class="dropdown-header">Grouping:</li>
-      <li><a href="" ng-click="groupby.year()">Fiscal Year</a></li>
-      <li><a href="" ng-click="groupby.period()">Period</a></li>
-      <li><a href="" ng-click="groupby.transaction()">Transaction ID</a></li>
-      <li><a href="" ng-click="groupby.account()">Account</a></li>
-      <li><a href="" ng-click="groupby.debcred()">Deb/Cred ID</a></li>
+      <li class="dropdown-header">Grouping</li>
+      <li><a href="" ng-click="groupby('year')">Fiscal Year</a></li>
+      <li><a href="" ng-click="groupby('period')">Period</a></li>
+      <li><a href="" ng-click="groupby('transaction')">Transaction ID</a></li>
+      <li><a href="" ng-click="groupby('account')">Account</a></li>
+      <li><a href="" ng-click="groupby('debcred')">Deb/Cred ID</a></li>
     </ul>
   </div>
   <div class="pull-right dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle">
-      <i class="glyphicon glyphicon-cog"></i> Configure
+      <i class="glyphicon glyphicon-cog"></i> Columns 
     </button>
     <ul class="dropdown-menu">
       <li class="dropdown-header">Visible Columns</li>
@@ -35,5 +35,5 @@
 </section>
 
 <div class="content">
-  <div id="kpk-ledger-general_ledger-grid" style="height: 550px;" class="grid"></div>
+  <div id="kpk-ledger-general_ledger-grid" style="height: 530px;" class="grid"></div>
 </div>
