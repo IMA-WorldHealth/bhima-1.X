@@ -1,6 +1,5 @@
 // Services.js
 //TODO: Define API for getting data from the server - providing query data, simple table names, etc.
-
 (function (angular) {
   'use strict';
   
@@ -87,14 +86,14 @@
     }
     
     function filterList(list, dependencies) { 
-      var filterList;
+      var filtered;
 
-      filterList = list.filter(function(key, index) {
+      filtered = list.filter(function(key, index) {
         if(dependencies[key].processed) return false; //processed requests
         if(key===modelLabel) return false; //model store
         return true;
       });
-      return filterList;
+      return filtered;
     }
 
     function validateModels(list, dependencies) { 
@@ -182,12 +181,13 @@
     }
 
     function Status() { 
-      
+      var self = this;
+
       function setFailed(testObject, reference) { 
-        this.success = false;
-        this.message = testObject.message;
-        this.flag = testObject.flag;
-        this.reference = reference;
+        self.success = false;
+        self.message = testObject.message;
+        self.flag = testObject.flag;
+        self.reference = reference;
       }
 
       return {
@@ -197,7 +197,7 @@
         message: null, 
         reference: null,
         flag: null
-      }
+      };
     }
 
     return { 
@@ -207,22 +207,102 @@
   });
 
   services.factory('appcache', function ($rootScope, $q) { 
-    var DB_NAME = "kpk", VERSION = 21;
+    var dbName = "kpk", dbVersion = 21;
     var db, cacheSupported, dbdefer = $q.defer();
-
-    function cacheInstance(namespace) { 
+      
+    function CacheInstance(namespace) { 
+      var self = this;
       if(!namespace) throw new Error('Cannot register cache instance without namespace');
-      return { 
-        namespace: namespace,
-        fetch: fetch,
-        fetchAll: fetchAll,
-        put: put
+      
+      //TODO This isn't readable, try common request (queue) method with accessor methods
+      function fetch(key) {
+        // var namespace = self.namespace;
+        var deferred = $q.defer();
+        
+        dbdefer.promise
+        .then(function() { 
+          //fetch logic
+          var transaction = db.transaction(['master'], "readwrite");
+          var objectStore = transaction.objectStore('master');
+          var request = objectStore.index('namespace, key').get([namespace, key]);
+          
+          request.onsuccess = function(event) { 
+            var result = event.target.result;
+            $rootScope.$apply(deferred.resolve(result));
+          };
+          request.onerror = function(event) { 
+            $rootScope.$apply(deferred.reject(event)); 
+          };
+        }); 
+        return deferred.promise;
       }
+    
+      function put(key, value) { 
+        var deferred = $q.defer();
+        
+        dbdefer.promise
+        .then(function() { 
+          var writeObject = { 
+            namespace: namespace,
+            key: key
+          };
+          var transaction = db.transaction(['master'], "readwrite");
+          var objectStore = transaction.objectStore('master');
+          var request;
+        
+          //TODO jQuery dependency - write simple utility to flatten/ merge object
+          writeObject = jQuery.extend(writeObject, value);
+          request = objectStore.put(writeObject); 
+
+          request.onsuccess = function(event) { 
+            deferred.resolve(event);
+          };
+          request.onerror = function(event) { 
+            deferred.reject(event);
+          };
+        }); 
+        return deferred.promise;
+      }
+
+      function fetchAll() { 
+        var namespace = self.namespace;
+        var deferred = $q.defer();
+
+        dbdefer.promise
+        .then(function() {
+          var store = [];
+          var transaction = db.transaction(['master'], 'readwrite');
+          var objectStore = transaction.objectStore('master');
+          var request = objectStore.index('namespace').openCursor(namespace);
+
+          request.onsuccess = function(event) {
+            var cursor = event.target.result;
+            if(cursor) { 
+              store.push(cursor.value);
+              cursor.continue();
+            } else {
+              $rootScope.$apply(deferred.resolve(store));
+            }
+          };
+
+          request.onerror = function(event) { 
+            deferred.reject(event);
+          };
+        });
+        return deferred.promise;
+      }
+    
+      this.namespace = namespace;
+      this.fetch = fetch;
+      this.fetchAll = fetchAll;
+      this.put = put;
+
+      return this;  
     }
 
     function init() { 
       //also sets db - working on making it read better
-      openDBConnection(DB_NAME, VERSION)
+      openDBConnection(dbName, dbVersion)
       .then(function(connectionSuccess) { 
         dbdefer.resolve();
       }, function(error) { 
@@ -232,89 +312,11 @@
 
     //generic request method allow all calls to be queued if the database is not initialised
     function request(method) { 
-      console.log(method, arguments);
       if(!requestMap[method]) return false;
       requestMap[method](value);
     }
 
-    //TODO This isn't readable, try common request (queue) method with accessor methods
-    function fetch(key) {
-      var t = this, namespace = t.namespace;
-      var deferred = $q.defer();
-      dbdefer.promise
-      .then(function() { 
-        //fetch logic
-        var transaction = db.transaction(['master'], "readwrite");
-        var objectStore = transaction.objectStore('master');
-        var request = objectStore.index('namespace, key').get([namespace, key]);
-        
-        request.onsuccess = function(event) { 
-          var result = event.target.result;
-          $rootScope.$apply(deferred.resolve(result));
-        };
-        request.onerror = function(event) { 
-          $rootScope.$apply(deferred.reject(event)); 
-        };
-      }); 
-      return deferred.promise;
-    }
-  
-    function put(key, value) { 
-      var t = this, namespace = t.namespace;
-      var deferred = $q.defer();
-      
-      dbdefer.promise
-      .then(function() { 
-        var writeObject = { 
-          namespace: namespace,
-          key: key
-        }
-        var transaction = db.transaction(['master'], "readwrite");
-        var objectStore = transaction.objectStore('master');
-        var request;
-       
-        //TODO jQuery dependency - write simple utility to flatten/ merge object
-        writeObject = jQuery.extend(writeObject, value);
-        request = objectStore.put(writeObject); 
-
-        request.onsuccess = function(event) { 
-          deferred.resolve(event);
-        }
-        request.onerror = function(event) { 
-          deferred.reject(event);
-        }
-      }); 
-      return deferred.promise;
-    }
-
-    function fetchAll() { 
-      var t = this, namespace = t.namespace;
-      var deferred = $q.defer();
-
-      dbdefer.promise
-      .then(function() {
-        var store = [];
-        var transaction = db.transaction(['master'], 'readwrite');
-        var objectStore = transaction.objectStore('master');
-        var request = objectStore.index('namespace').openCursor(namespace);
-
-        request.onsuccess = function(event) {
-          var cursor = event.target.result;
-          if(cursor) { 
-            store.push(cursor.value);
-            cursor.continue();
-          } else {
-            $rootScope.$apply(deferred.resolve(store));
-          }
-        }
-
-        request.onerror = function(event) { 
-          deferred.reject(event);
-        }
-      });
-      return deferred.promise;
-    }
-
+    
     function openDBConnection(dbname, dbversion) { 
       var deferred = $q.defer();
       var request = indexedDB.open(dbname, dbversion);
@@ -350,7 +352,7 @@
     } else { 
       console.log('application cache is not supported in this context');
     }
-    return cacheInstance;
+    return CacheInstance;
   });
 
   services.factory('appstate', function ($q, $rootScope) { 
@@ -558,6 +560,7 @@
       //
       //  where conditions can also be specified:
       //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
+      /*
       if (angular.isString(defn)) {
         // CLEAN THIS UP
         var d = $q.defer();
@@ -569,22 +572,19 @@
         });
         return d.promise;
       }
-      
+     */
       var handle, table, deferred = $q.defer();
 
-      /*
       if (angular.isString(defn)) {
         $http.get(defn)
-        .success(function (res) {
+        .then(function (res) {
           res.identifier = stringIdentifier || 'id';
           deferred.resolve(new store(res));
-        })
-        .catch(function (err) {
-          throw err; 
+        }, function (err) {
+          throw err;  // temp
         });
         return deferred.promise;
       }
-     */
 
       table = defn.primary || Object.keys(defn.tables)[0];
 

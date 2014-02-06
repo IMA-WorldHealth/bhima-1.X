@@ -1,5 +1,3 @@
-<!-- TODO sale table style has no margin-bottom, doesn't need to match height with find patient -->
-<!-- Use Tab selection from purchase order to select between ID and name search -->
 <header>
   <span>Create Patient Invoice</span>
 </header>
@@ -25,86 +23,87 @@
 
   <div class="row">
     <div class="col-xs-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <span>Invoice</span> <span>{{invoice.id}}</span>
-        </div>
-        <div ng-show="invoice.debtor" class="panel-body">
-          <table class="table table-condensed table-bordered">
-            <thead>
-              <tr><th colspan="4">Sale Details</th>
-              <tr><th>Date</th><th>Invoice</th><th>Debtor</th><th>Note</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{invoice.date | date}}</td>
-                <td>{{invoice.id}}</td>
-                <td>{{invoice.debtor.name}}</td>
-                <td>{{invoice.note}}</td>
-              </tr>
-            </tbody>
-          </table>
-          
-          <table class='table-bordered table-condensed table'>
-            <thead>
-              <tr>
-                <th colspan="5"> Sale Items 
+        <div ng-show="invoice.debtor">
+          <div class="row">
+            <div class="col-xs-12">
+              <fieldset>
+                <legend>Sale
                   <div class="pull-right">
-                    <a ng-click="addInvoiceItem()"><span class="glyphicon glyphicon-plus"></span></a>
+                    <a class="fieldset-util"><span class="glyphicon glyphicon-pencil"></span> Edit Sale</a>
                   </div>
-                </th>
-              </tr>
-              
-              <tr>
-                <th>Item</th>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Unit Price</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            
-            <tbody>
-              <!-- FIXME: strange filter -->
-              <tr ng-repeat="invoiceItem in invoice.items">
-                <td>
-                  <input 
-                  class="form-kapok"
-                  type="text"
-                  ng-model="invoiceItem.inventoryReference"
-                  typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory | filter:$viewValue | limitTo:8"
-                  typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.inventoryReference)"
-                  placeholder="Search Inventory Code">
-                </td>
-                <!-- typeahead&#45;template="<!&#45;&#45; Include name in template but don't interrupt typing &#45;&#45;> -->
-                
-                <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.text}}"></td>
-                <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
-                <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.price"></td>
-                <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.quantity * invoiceItem.price | currency}}"></td>
-              </tr>
-              
-              <tr>
-                <!-- Style hack -->
-                <td colspan="4" style="margin-right = 50px; text-align: right;"><b>Total</b></td>
-                <td><b>{{invoiceTotal() | currency}}</b></td>
-              </tr>
-              
-              <!-- <tr ng&#45;repeat="item in inventory"> -->
-              <!--   <td class="invoice&#45;item"><select class="form&#45;invoice" ng&#45;change="updateRow(item)" ng&#45;model="item.item" -->
-              <!--                                     ng&#45;options="l.code for l in inventory_model.data"><option value="" disabled="disabled">&#45;&#45;Select Item&#45;&#45;</option></select></td> -->
-              <!--   <td class="invoice&#45;desc"><input type="text" class="form&#45;invoice" ng&#45;model="item.text"></td> -->
-              <!--   <td class="invoice&#45;quantity"><input type="number" class="form&#45;invoice" ng&#45;model="item.quantity"></td> -->
-              <!--   <td class="invoice&#45;price"><input type="number" class="form&#45;invoice" ng&#45;model="item.price"></td> -->
-              <!--   <td class="invoice&#45;amount"><span>{{item.quantity * item.price | currency}}</span></td> -->
-              <!-- </tr> -->
-              <!-- <tr> -->
-              <!--   <td colspan="4"><div class="pull&#45;right"><b>Total</div></td> -->
-              <!--   <td><span><b>{{invoiceTotal() | currency}}</b></span></td> -->
-            </tbody>
-          </table>
+                </legend>
+                <table class=' table-condensed table table-bordered'>
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Date</th>
+                      <th>Debtor</th>
+                      <th>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{invoice.id}}</td>
+                      <td>{{invoice.date}}</td>
+                      <td>{{invoice.debtor.name}}</td>
+                      <td>{{invoice.note}}</td>
+                  </tbody>
+                </table>
+               </form>
+              </fieldset>
+            </div>
+          </div>
+         <div class="row">
+
+            <div class="col-xs-12">
+                <div class="pull-right">
+                  <a ng-click="addInvoiceItem()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> Add Line Item</a>
+                </div>
+                <table class=' table-condensed table'>
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Description</th>
+                      <th>Qty</th>
+                      <th>Unit Price</th>
+                      <th>Amount</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>
+                    <!-- FIXME: strange filter -->
+                    <tr ng-repeat="invoiceItem in invoice.items">
+                      <td>
+                        <input 
+                        class="form-invoice"
+                        type="text"
+                        typeahead-template-url="invoiceListItem.html"
+                        ng-model="invoiceItem.inventoryReference"
+                        typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory | filter:$viewValue | limitTo:8"
+                        typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.inventoryReference)"
+                        placeholder="Search Inventory Code"
+                      </td>
+                      
+                      <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.text}}"></td>
+                      <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
+                      <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.price"></td>
+                      <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.quantity * invoiceItem.price | currency}}"></td>
+                      <td><a ng-click="removeInvoiceItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                    </tr>
+                    
+                    <tr>
+                      <!-- Style hack -->
+                      <td colspan="4" style="margin-right = 50px; text-align: right;"><b>Total</b></td>
+                      <td colspan="2"><b>{{invoiceTotal() | currency}}</b></td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 
 <section class="bar-bottom">
@@ -117,5 +116,12 @@
   <a>
     <span><b>[{{match.model.debitor_id}}]</b></span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
+
+<script type="text/ng-template" id="invoiceListItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
   </a>
 </script>

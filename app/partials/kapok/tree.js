@@ -38,6 +38,7 @@ function($scope, $q, $location, AppCache, connect) {
   }
   
   $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
+    console.log('TREEDATA:', $scope.treeData);
     if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
       var path = $scope.navtree.currentNode.p_url;
       if (path) $location.path(path);
