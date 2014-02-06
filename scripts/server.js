@@ -38,7 +38,7 @@ app.configure(function () {
   app.use(express.session(cfg.session));
   app.use(authenticate);
   app.use(authorize);
-  app.use(express.static(cfg.static, {maxAge : 1000}));
+  app.use(express.static(cfg.static, {maxAge : 10000}));
   app.use(app.router);
   app.use(errorHandler);
 });

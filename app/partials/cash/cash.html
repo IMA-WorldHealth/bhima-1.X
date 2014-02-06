@@ -1,22 +1,32 @@
 <header>
-  <h3 style="margin: 0">Cash Box <small> {{ formatTitle(data.box) }}</small></h3>
+  Cash Payment
 </header>
 
 <section class="underline">
-  <div class="pull-left">
-    <input type="text" ng-model="debitor" typeahead="debitor as debitor.first_name+' '+debitor.last_name for debitor in models.debitors | filter:$viewValue | limitTo:8" placeholder="Find a Debitor" typeahead-on-select="loadDebitor(debitor.id)" class="form-kapok" size="25">
-  </div>
   <div style="position: absolute; right: 5px;">
-    <button class="btn btn-sm btn-primary dropdown-toggle">{{ formatTitle(data.box) }}<i class="glyphicon glyphicon-chevron-down"></i></button> <!-- TODO make this a caret -->
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ formatTitle(data.box) }}
+      <!-- TODO make this a caret -->
+      <i class="glyphicon glyphicon-chevron-down"></i>
+    </button> 
     <ul class="dropdown-menu pull-right">
-      <li ng-repeat="box in models.currency_account"><a href="" ng-click="data.box=box"> {{ formatTitle(box) }} </a></li>
+      <li ng-repeat="box in models.currency_account">
+        <a href="" ng-click="data.box=box"> {{ formatTitle(box) }} </a>
+        </li>
     </ul>
   </div>
 </section>
 
 <div class="content">
-  <!-- search panel -->
+
   <div class="row">
+    <!-- patient search panel -->
+    <div class="col-xs-5">
+      <div find-patient on-search-complete="loadInvoices"></div>
+    </div>
+
+
+    <!-- search panel -->
     <div class="col-xs-6">
       <div class="panel panel-info">
         <div class="panel-heading">
@@ -51,7 +61,7 @@
               <td><label>Balance</label></td>
               <td style="width: 20%;"><label>Paid</label></td>
               <td><label>Remaining</label></td>
-              <td style="width:10px;"></td>
+              <td style="width:5%;"></td>
             </tr>
           </thead>
           <tbody>
@@ -61,7 +71,7 @@
               <td ng-bind-html="invoice.locale | intlcurrency:data.box.currency_id"></td>
               <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}" ng-model="invoice.allocated" required></td>
               <td ng-bind-html="invoice.remaining | intlcurrency:data.box.currency_id"></td>
-              <td ng-click="remove($index)"><i class="glyphicon glyphicon-remove"></i></td>
+              <td><button class="btn btn-sm btn-danger" ng-click="remove($index)"><i class="glyphicon glyphicon-trash"></i></button></td>
             </tr>
           </tbody>
         </table>
@@ -94,3 +104,11 @@
     <button class="btn btn-default"><i class="glyphicon glyphicon-list"></i> Posting Journal</button>
   </div>
 </section>
+
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
