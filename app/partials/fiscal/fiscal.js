@@ -1,5 +1,6 @@
-angular.module('kpk.controllers')
-.controller('fiscalController', function($scope, $q, $modal, connect, appstate, messenger, validate) { 
+angular.module('kpk.controllers').controller('fiscalController', function($scope, $q, $modal, connect, appstate, messenger, validate) { 
+  'use strict';
+
   $scope.active = "select";
   $scope.selected = null;
   $scope.new_model = {'year' : 'true'};
@@ -76,8 +77,7 @@ angular.module('kpk.controllers')
 
   $scope.$watch('new_model.start', function(oval, nval) {
     if($scope.isFullYear()) updateEnd();
-  });
-
+  }); 
   function updateEnd() {
     var s = $scope.new_model.start;
     if(s) {
