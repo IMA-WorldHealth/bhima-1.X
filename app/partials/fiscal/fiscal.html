@@ -159,11 +159,11 @@
         </thead>
         <tbody>
           <!-- TODO Review this, not sure about it -->
-          <tr ng-switch on="fiscal_model.data.length">
+          <tr ng-switch on="model.fiscal.data.length">
              <td ng-switch-when="0" colspan=2><div class="alert alert-info">
              {{'FISCAL_YEAR_PAGE_ALERTPARTONE' | translate}} {{enterprise.name}} {{'FISCAL_YEAR_PAGE_ALERTTWO' | translate}}</div></tr>
           </tr>
-          <tr ng-repeat="year in fiscal_model.data" ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}">
+          <tr ng-repeat="year in model.fiscal.data" ng-click="select(year.id)" ng-class="{selected: year.id==selected.id}">
             <td>{{year.fiscal_year_txt}}</td>
             <td>{{year.start_month}}/{{year.start_year}}</td>
           </tr>
