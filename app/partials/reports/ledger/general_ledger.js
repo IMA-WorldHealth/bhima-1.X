@@ -116,7 +116,7 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
     { 
       title : "Period",
       getter : "period_id",
-      // formatter : formatPeriodGroup,
+      formatter : formatPeriodGroup,
       aggregators : []
     }
   ];
@@ -129,11 +129,12 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
     groupInstance = JSON.parse(JSON.stringify(groupDefinition));
     groupInstance.aggregateCollapsed = true;
     groupInstance.aggregators = [];
-
+   
     groupDefinition.aggregators.forEach(function(aggregate) { 
       groupInstance.aggregators.push(new Slick.Data.Aggregators.Sum(aggregate));
     });
-
+    
+    groupInstance.formatter = groupDefinition.formatter;
     groups.push(groupInstance); 
     dataview.setGrouping(groups);
   }
@@ -150,6 +151,10 @@ angular.module('kpk.controllers').controller('reportGeneralLedgerCtrl', function
 
   function formatAccountGroup(g) { 
     return "<span>ACCOUNT(" + g.value + ")</span>";
+  }
+  
+  function formatPeriodGroup(g) { 
+    return "<span>PERIOD(" + g.value + ")</span>";
   }
 
   function formatGroupTotalRow(totals, column) { 
