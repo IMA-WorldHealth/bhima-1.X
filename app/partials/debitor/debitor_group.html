@@ -91,9 +91,9 @@
           </div>
 
           <div class="form-group">
-            <label class="col-xs-2 control-label required">Payment</label>
+            <label class="col-xs-2 control-label">Payment</label>
             <div class="col-xs-10">
-              <select name="group-payment" class="form-kapok" ng-model="newGroup.payment_id" ng-options="pay.id as pay.text for pay in payment.data" required>
+              <select name="group-payment" class="form-kapok" ng-model="newGroup.payment_id" ng-options="pay.id as pay.text for pay in payment.data">
                 <option value="" disabled="disabled">-- Select A Payment Type--</option>
               </select>
             </div>
