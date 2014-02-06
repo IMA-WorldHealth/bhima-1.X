@@ -21,10 +21,6 @@
     </ul>
   </div>
   
-  <div class="group-crumbs">
-    <span ng-repeat="activeGroup in groups">{{activeGroup.title}} > </span>
-  </div>
-
   <div class="pull-right dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle">
       <i class="glyphicon glyphicon-cog"></i> Columns 
@@ -40,6 +36,12 @@
   </div>
 </section>
 
+<section>
+  <div class="group-crumbs">
+    Group Detail<span ng-repeat="activeGroup in groups"> > {{activeGroup.title}} </span>
+  </div>
+</section>
+
 <div class="content">
-  <div id="kpk-ledger-general_ledger-grid" style="height: 530px;" class="grid"></div>
+  <div id="kpk-ledger-general_ledger-grid" style="height: 450px;" class="grid"></div>
 </div>
