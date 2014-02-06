@@ -4,6 +4,7 @@ angular.module('kpk.controllers').controller('journal', [
   '$rootScope',
   '$translate',
   '$compile',
+  '$timeout',
   '$filter',
   '$q',
   '$http',
@@ -69,7 +70,7 @@ function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http
   function defineGridOptions() { 
     sort_column = "trans_id";
     columns = [
-      {id: 'id', name : 'id', field: 'id', sortable : true},
+      {id: 'id', name : 'ID', field: 'id', sortable : true},
       {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
       {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
       // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
