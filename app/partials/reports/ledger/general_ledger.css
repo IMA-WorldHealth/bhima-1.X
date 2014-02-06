@@ -1,3 +1,18 @@
+.group-crumbs { 
+  margin-top: 10px; clear: both;
+  float: left;
+  display: inline-block;
+}
+/*Hacks*/
+.group-crumbs :first-child { 
+  margin-left : 5px;
+}
+
+.group-crumbs span { 
+  color : blue;
+  display: inline-block;
+  
+}
 
 #kpk-ledger-general_ledger-grid,
 #kpk-ledger-general_ledger-grid div {

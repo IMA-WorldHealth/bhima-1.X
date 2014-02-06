@@ -1,5 +1,3 @@
-<!-- TODO sale table style has no margin-bottom, doesn't need to match height with find patient -->
-<!-- Use Tab selection from purchase order to select between ID and name search -->
 <header>
   <span>Create Patient Invoice</span>
 </header>
@@ -27,74 +25,40 @@
     <div class="col-xs-12">
         <div ng-show="invoice.debtor">
           <div class="row">
-            <div class="col-xs-6">
-              <fieldset>
-                <legend>Patient</legend>
-                
-                <form class="form-horizontal">
-
-                  <div class="form-group">
-                    <label for="debtorName" class="control-label col-xs-3">Name</label>
-                    <div class="col-xs-9">
-                      <input id="debtorName" class="form-invoice" disabled value="{{invoice.debtor.name}}">
-                    </div>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="debtorId" class="control-label col-xs-3">Debtor Id</label>
-                    <div class="col-xs-9">
-                      <input id="debtorId" class="form-invoice" disabled value="{{invoice.debtor.debitor_id}}">
-                    </div>
-                  </div>
-
-                </form>
-
-              </fieldset>
-            </div>
-            <div class="col-xs-6">
+            <div class="col-xs-12">
               <fieldset>
                 <legend>Sale
                   <div class="pull-right">
                     <a class="fieldset-util"><span class="glyphicon glyphicon-pencil"></span> Edit Sale</a>
                   </div>
                 </legend>
-                
-                <form class="form-horizontal">
-
-                  <div class="form-group">
-                    <label for="saleId" class="control-label col-xs-2">Id</label>
-                    <div class="col-xs-10">
-                      <input id="saleId" class="form-invoice" disabled value="{{invoice.id}}">
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="saleDate" class="control-label col-xs-2">Date</label>
-                    <div class="col-xs-10">
-                      <input class="form-invoice" disabled value="{{invoice.date}}">
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="saleNote" class="control-label col-xs-2">Note</label>
-                    <div class="col-xs-10">
-                      <input class="form-invoice" disabled value="{{invoice.note}}">
-                    </div>
-                  </div>
-
-                </form>
+                <table class=' table-condensed table table-bordered'>
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Date</th>
+                      <th>Debtor</th>
+                      <th>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{invoice.id}}</td>
+                      <td>{{invoice.date}}</td>
+                      <td>{{invoice.debtor.name}}</td>
+                      <td>{{invoice.note}}</td>
+                  </tbody>
+                </table>
+               </form>
               </fieldset>
             </div>
           </div>
          <div class="row">
 
             <div class="col-xs-12">
-              <fieldset>
-                <legend>Sale Items
-                  <div class="pull-right">
-                    <a ng-click="addInvoiceItem()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> Add Item Line</a>
-                  </div>
-                </legend>
+                <div class="pull-right">
+                  <a ng-click="addInvoiceItem()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> Add Line Item</a>
+                </div>
                 <table class=' table-condensed table'>
                   <thead>
                     <tr>
