@@ -1,5 +1,19 @@
 //TODO Lot's of hardcoded areas throughout editing process (marked with fixme). State is dependent on strings etc.
-angular.module('kpk.controllers').controller('journal', function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, messenger, appstate) {
+angular.module('kpk.controllers').controller('journal', [
+  '$scope',
+  '$rootScope',
+  '$translate',
+  '$compile',
+  '$filter',
+  '$q',
+  '$http',
+  '$location',
+  '$modal',
+  'connect',
+  'validate',
+  'messenger',
+  'appstate',
+function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, messenger, appstate) {
   var dependencies = {}, liveTransaction = $scope.liveTransaction = {};
   var grid, dataview, sort_column, columns, options;
 
@@ -12,7 +26,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       },
       join: ["posting_journal.account_id=account.id"]
     } 
-  }
+  };
 
   dependencies.account = {
     query : { 
@@ -21,7 +35,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       },
       identifier: 'account_number'
     }
-  }
+  };
 
   dependencies.debtor = { 
     query: { 
@@ -31,7 +45,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       },
       join: ['debitor.id=patient.debitor_id']
     }
-  }
+  };
 
   dependencies.creditor = { 
     query: { 
@@ -41,7 +55,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       },
       join: ['creditor.id=supplier.creditor_id']
     }
-  }
+  };
 
   validate.process(dependencies).then(journal);
   
@@ -55,6 +69,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
   function defineGridOptions() { 
     sort_column = "trans_id";
     columns = [
+      {id: 'id', name : 'id', field: 'id', sortable : true},
       {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
       {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
       // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
@@ -68,6 +83,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
       // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 } 
     ];
+
     options = {
       enableCellNavigation: true,
       enableColumnReorder: true,
@@ -171,21 +187,21 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       ],
       aggregateCollapsed: true
     });
-  };
+  }
     
   function formatTransactionGroup(g) { 
     var rowMarkup, splitTemplate, firstElement = g.rows[0];
     if(liveTransaction.state === "add") { 
       if(firstElement.trans_id === liveTransaction.transaction_id) {
         //markup for editing
-        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>"  
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>";
         return rowMarkup;
       }
     }
 
     if(liveTransaction.state === "split") { 
       if(firstElement.trans_id === liveTransaction.transaction_id) { 
-        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span> Total Transaction Credit: <b>" + $filter('currency')(liveTransaction.origin.credit_equiv) + "</b> Total Transaction Debit: <b>" + $filter('currency')(liveTransaction.origin.debit_equiv) + "</b> <div class='pull-right'><a class='split'><span class='glyphicon glyphicon-plus'></span> Split</a><a style='margin-left: 15px;' class='submitSplit'><span class='glyphicon glyphicon-floppy-save'></span> Save Transaction</a></div>"  
+        rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span> Total Transaction Credit: <b>" + $filter('currency')(liveTransaction.origin.credit_equiv) + "</b> Total Transaction Debit: <b>" + $filter('currency')(liveTransaction.origin.debit_equiv) + "</b> <div class='pull-right'><a class='split'><span class='glyphicon glyphicon-plus'></span> Split</a><a style='margin-left: 15px;' class='submitSplit'><span class='glyphicon glyphicon-floppy-save'></span> Save Transaction</a></div>";
         return rowMarkup; 
       }
     }
@@ -199,7 +215,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     return rowMarkup; 
   }
 
-  function groupByAccount() {
+  function groupByAccount () {
     dataview.setGrouping({
       getter: "account_id",
       formatter: function(g) {
@@ -214,7 +230,7 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
       ],
       aggregateCollapsed: false
     });
-  };
+  }
 
   $scope.removeGroup = function removeGroup() {
     dataview.setGrouping({});
@@ -730,4 +746,4 @@ angular.module('kpk.controllers').controller('journal', function ($scope, $rootS
     if(error) messenger.danger(error.code);
   }
 
-});
+}]);
