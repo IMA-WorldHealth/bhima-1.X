@@ -10,7 +10,8 @@ angular.module('kpk.controllers')
   'messenger',
   'validate',
   'exchange',
-  function($scope, $q, $filter, $timeout, $location, connect, appstate, messenger, validate, exchange) {
+  'kpkUtilitaire',
+  function($scope, $q, $filter, $timeout, $location, connect, appstate, messenger, validate, exchange, util) {
     'use strict';
 
     var dependencies = {},
@@ -91,6 +92,7 @@ angular.module('kpk.controllers')
       validate.process(dependencies).then(setUpModels, handleErrors);
     });
 
+
     function setUpModels(models) {
       for (var k in models) { $scope[k] = models[k]; }
       $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
@@ -109,36 +111,32 @@ angular.module('kpk.controllers')
       $scope.debitor = debitor;
       $scope.paying = [];
       connect.fetch('/ledgers/debitor/' + debitor.id)
-      .success(function (data) {
-        data.forEach(function (row) {
-          row.debitor = [debitor.first_name, debitor.last_name].join(' ');
-        });
+        .success(function (data) {
+          data.forEach(function (row) {
+            row.debitor = [debitor.first_name, debitor.last_name].join(' ');
+          });
 
-        $scope.ledger = data.filter(function (row) {
-          return row.balance > 0;
+          $scope.ledger = data.filter(function (row) {
+            return row.balance > 0;
+          });
+
+          // hack to process currency locales
+          $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
+
+        })
+        .error(function (err) {
+          messenger.danger('An error occured:' + JSON.stringify(err));
         });
-      })
-      .catch(function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
-      });
     };
-
-    // TODO/FIXME : abstract this!
-    function mysqlDate (date) {
-      return (date || new Date()).toISOString().slice(0, 10);
-    }
-
 
     $scope.add = function (idx) {
       var invoice = $scope.ledger.splice(idx, 1)[0];
       invoice.allocated = 0;
       $scope.paying.push(invoice);
-      $scope.digestInvoice();
     };
 
     $scope.remove = function (idx) {
       $scope.ledger.push($scope.paying.splice(idx, 1)[0]);
-      $scope.digestInvoice();
     };
 
     $scope.digestTotal = function () {
@@ -186,16 +184,12 @@ angular.module('kpk.controllers')
       data.excess = c;
     };
 
-    $scope.$watch('paying', function () {
-      // $scope.digestInvoice();
-      $scope.digestTotal();
-    }, true);
 
     function processCashInvoice () {
       // Gather data and submit the cash invoice
       var bon_num, cashPayment, date, description;
 
-      date = mysqlDate(new Date());
+      date = util.convertToMysqlDate(new Date());
 
       bon_num = generateBonNumber($scope.cash.data, 'E');
 
@@ -207,7 +201,7 @@ angular.module('kpk.controllers')
         bon_num : bon_num,
         date : date,
         debit_account : $scope.cashbox.cash_account,
-        credit_account : $scope.debitors.get(data.debitor_id).account_id,
+        credit_account : $scope.debitor.account_id,
         currency_id : $scope.cashbox.currency_id,
         cost: data.payment,
         description : description,
@@ -261,8 +255,7 @@ angular.module('kpk.controllers')
         .then(showReceipt)
         .catch(function (err) {
           messenger.danger('An error occured' + JSON.stringify(err));
-        })
-        .done();
+        });
     };
 
     function generateBonNumber (model, bon_type) {
@@ -275,25 +268,30 @@ angular.module('kpk.controllers')
       return (ids.length < 1) ? 1 : Math.max.apply(Math.max, ids) + 1;
     }
 
-    $scope.$watch('data.payment', function () {
-      $scope.digestInvoice();
-    });
-
-    $scope.$watch('cashbox', function () {
+    function digestExchangeRate () {
       // exchange everything queued to be paid, as well as those in 
       // the list.
+      //
       $scope.paying.forEach(function (invoice) {
-        invoice.locale = exchange(invoice.balance, data.box.currency_id);
+        invoice.locale = exchange(invoice.balance, $scope.cashbox.currency_id);
       });
 
       ($scope.ledger || []).forEach(function (invoice) {
-        invoice.locale = exchange(invoice.balance, data.box.currency_id);
+        invoice.locale = exchange(invoice.balance, $scope.cashbox.currency_id);
       });
 
       // finally digest the invoice
       $scope.digestInvoice();
+    }
 
-    }, true);
+    // FIXME: This is suboptimal, but very readable.
+    // Everytime a cashbox changes or the ledger gains
+    // or loses items, the invoice balances are
+    // exchanged into the appropriate locale currency.
+    $scope.$watch('ledger', digestExchangeRate, true);
+    $scope.$watch('cashbox', digestExchangeRate, true);
+    $scope.$watch('paying', $scope.digestTotal, true);
+    $scope.$watch('data.payment', $scope.digestInvoice);
 
   }
 ]);
