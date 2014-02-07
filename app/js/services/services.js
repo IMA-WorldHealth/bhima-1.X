@@ -68,7 +68,7 @@
       fetchModels(list, dependencies).then(function(model) { 
         packageModels(list, dependencies, model);
         validate = validateModels(list, dependencies);
-        
+        console.log('ran tests', validate); 
         if(validate.success) return deferred.resolve(dependencies.model);
 
         console.info("%c[validate]", "color: blue; font-weight: bold;", "Reminder that models have been tested and results should be handled");
@@ -101,7 +101,7 @@
       
       list.some(function(modelKey) { 
         var model = dependencies.model[modelKey], details = dependencies[modelKey], modelTests = details.test || [], modelTestStatus = false;
-       
+        
         //Check for standard test flags
         validateTests.forEach(function(testObject) { 
           if(details[testObject.flag]) modelTests.push(testObject);
@@ -110,7 +110,7 @@
         //Run each test
         modelTestStatus = modelTests.some(function(testObject) { 
           var testFailed, testMethod = testObject.method;
-  
+           
           testFailed = !testMethod(model.data); 
           if(testFailed) validateStatus.setFailed(testObject, modelKey); 
           return testFailed;
@@ -190,14 +190,14 @@
         self.reference = reference;
       }
 
-      return {
-        setFailed: setFailed,
-        success: true,
-        validModelError: true,
-        message: null, 
-        reference: null,
-        flag: null
-      };
+      this.setFailed = setFailed;
+      this.success = true;
+      this.validModelError = true;
+      this.message = null; 
+      this.reference = null;
+      this.flag = null;
+
+      return this;
     }
 
     return { 
@@ -656,11 +656,6 @@
     }
 
     // old API
-    function journal (invoice_ids) { // TODO: deprecate this
-      console.warn('connect.journal is deprecated.  Refactor your code to use fetch(), req(), or post().');
-      return $http.post('/journal/', invoice_ids);
-    }
-
     function basicGet(url) { // TODO: deprecate this
       console.warn('connect.basicGet is deprecated.  Please refactor your code to use either fetch() or req().');
       return $http.get(url);
@@ -720,7 +715,6 @@
       post : post,
       delete : delet,
       getModel: getModel,
-      journal: journal,
       MyBasicGet: MyBasicGet,
       debitorAgingPeriod : debitorAgingPeriod
     };
