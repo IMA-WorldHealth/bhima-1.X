@@ -33,7 +33,7 @@
           <span>Today's ({{ today | date}}) Exchange Rates:</span>
         </div>
         <div class="panel-body">
-          <form class="form-horizontal">
+          <form class="form-horizontal" novalidate>
 
             <div class="form-group" ng-repeat="rate in currentRates">
               <label class="control-label col-xs-3">{{ currency.get(rate.foreign_currency_id).name }} Rate</label>

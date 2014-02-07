@@ -13,7 +13,11 @@ angular.module('kpk.controllers')
   function($scope, $q, $filter, $timeout, $location, connect, appstate, messenger, validate, exchange) {
     'use strict';
 
-    var dependencies = {};
+    var dependencies = {},
+        data = $scope.data = {};
+    $scope.paying = [];
+    data.payment = 0;
+    data.total = 0;
 
     // NOTE: This assumes that all debitor transactions
     // are made with patients.  This should change in all
@@ -46,8 +50,12 @@ angular.module('kpk.controllers')
     dependencies.cashboxes = {
       query : {
         tables : {
-          'currency_account' : { columns : ['id', 'enterprise_id', 'currency_id', 'cash_account', 'bank_account']},
-          'currency' : { columns : ['symbol'] }
+          'currency_account' : {
+            columns : ['id', 'enterprise_id', 'currency_id', 'cash_account', 'bank_account']
+          },
+          'currency' : {
+            columns : ['symbol']
+          }
         },
         join : ['currency_account.currency_id=currency.id'],
       }
@@ -73,6 +81,7 @@ angular.module('kpk.controllers')
       }
     };
 
+    // Wait for the enterprise before initializing the module
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.cashboxes.query.where =
@@ -84,26 +93,32 @@ angular.module('kpk.controllers')
 
     function setUpModels(models) {
       for (var k in models) { $scope[k] = models[k]; }
+      $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
+      $scope.paying = [];
     }
 
     function handleErrors(error) {
       messenger.danger('Error:', JSON.stringify(error));
     }
 
+    $scope.setCashBox = function setCashBox (box) {
+      $scope.cashbox = box;
+    };
+
     $scope.loadInvoices = function (debitor) {
       $scope.debitor = debitor;
       $scope.paying = [];
       connect.fetch('/ledgers/debitor/' + debitor.id)
-      .then(function (res) {
-        $scope.ledger= res.data.map(function (row) {
-          // filter only those that do not balance
+      .success(function (data) {
+        data.forEach(function (row) {
           row.debitor = [debitor.first_name, debitor.last_name].join(' ');
-          row.locale = exchange(row.balance, $scope.enterprise.currency_id, $scope.data.box.currency_id);
-          return row;
-        }).filter(function (row) {
+        });
+
+        $scope.ledger = data.filter(function (row) {
           return row.balance > 0;
         });
-      }, function (err) {
+      })
+      .catch(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };
@@ -113,51 +128,34 @@ angular.module('kpk.controllers')
       return (date || new Date()).toISOString().slice(0, 10);
     }
 
-    var data = $scope.data = {};
-    // paying list
-    data.paying = [];
-    data.payment = 0;
-    data.total = 0;
 
     $scope.add = function (idx) {
       var invoice = $scope.ledger.splice(idx, 1)[0];
       invoice.allocated = 0;
-      data.paying.push(invoice);
+      $scope.paying.push(invoice);
       $scope.digestInvoice();
     };
 
     $scope.remove = function (idx) {
-      $scope.ledger.push(data.paying.splice(idx, 1)[0]);
+      $scope.ledger.push($scope.paying.splice(idx, 1)[0]);
       $scope.digestInvoice();
     };
 
     $scope.digestTotal = function () {
       var total = 0;
-      data.paying.forEach(function (invoice) {
+      $scope.paying.forEach(function (invoice) {
         total += invoice.locale;
       });
       data.total = total;
     };
-    
-    $scope.formatTitle = function (box) {
-      // FIXME : this is really bad code...
-      if (!box) return 'Caisse';
-      return $scope.accounts ?
-        $scope.account.get(box.cash_account).account_txt :
-        'Caisse';
-    };
-
-    function isPositive (x) {
-      return x >= 0;
-    }
 
     $scope.digestInvoice = function () {
       var c = (data.payment) ? data.payment : 0;
-      var arr = data.paying;
+      var arr = $scope.paying;
 
-      if (!isPositive(arr.length)) data.excess = c;
+      if (arr.length >= 0) data.excess = c;
 
-      if (isPositive(c)) {
+      if (c >= 0) {
         // this is a loop to allocate the
         // amount in data.payment to each
         // item in the invoice.
@@ -185,83 +183,86 @@ angular.module('kpk.controllers')
       }
      
       // if c is still positive, add it to excess;
-      console.log('c is:', c);
       data.excess = c;
     };
 
-    $scope.$watch('data.paying', function () {
+    $scope.$watch('paying', function () {
       // $scope.digestInvoice();
       $scope.digestTotal();
     }, true);
 
-    $scope.pay = function pay () {
-      // FIXME: add a 'would you like to credit or pay back' line/check here for excess
-      // run digestInvoice once more to stabilize.
-      $scope.digestInvoice();
-      // gather data
+    function processCashInvoice () {
+      // Gather data and submit the cash invoice
+      var bon_num, cashPayment, date, description;
 
-      var bon_num = generateBonNumber($scope.cash.data, 'E');
-      var date = mysqlDate(new Date());
+      date = mysqlDate(new Date());
 
-      var doc = {
+      bon_num = generateBonNumber($scope.cash.data, 'E');
+
+      description = ['CP E', bon_num, $scope.debitor.first_name, date].join('/');
+
+      cashPayment = {
         enterprise_id : $scope.enterprise.id,
-        bon : 'E', // FIXME: impliment crediting
+        bon : 'E',
         bon_num : bon_num,
         date : date,
-        debit_account : data.box.cash_account,
+        debit_account : $scope.cashbox.cash_account,
         credit_account : $scope.debitors.get(data.debitor_id).account_id,
-        currency_id : data.box.currency_id,
+        currency_id : $scope.cashbox.currency_id,
         cost: data.payment,
-        description : 'CP  E/' + bon_num + '/'+data.debitor.replace(' ', '/') + '/' +date, // this is hacky.  Restructure
+        description : description,
         cashier_id : 1, // TODO
-        cashbox_id : 1,  // TODO,
-        deb_cred_id : data.debitor_id,//FIXME: Do it goodly
-        deb_cred_type : 'D' //FIXME: Do it goodly
+        cashbox_id : 1,  // TODO
+        deb_cred_id : $scope.debitor.id,
+        deb_cred_type : 'D'
       };
 
-      connect.basicPut('cash', [doc])
-      .then(function (res) {
-        doc.id = res.data.insertId;
-        return res;
-      })
-      .then(function (res) {
-        var records = [],
-          invoices = data.paying;
+      return connect.basicPut('cash', [cashPayment]);
+    }
 
-        // FIXME: raw hacks!
-        invoices.forEach(function (invoice) {
-          if (invoice.allocated === 0) return;
-          var record = {
-            cash_id : doc.id,
+    function processCashItems (res) {
+      // format cash items and submit them
+      var records,
+          id = res.data.insertId;
+
+      $scope.invoice_id = id; // clean this up to make it more testable
+
+      records = $scope.paying
+        .filter(function (invoice) {
+          return invoice.allocated > 0;
+        })
+        .map(function (invoice) {
+          return {
+            cash_id: id,
             allocated_cost : invoice.allocated,
             invoice_id : invoice.inv_po_id
           };
-          records.push(record);
         });
 
-        // putting cash items
-        connect.basicPut('cash_item', records)
-        .then(function (res) {
+      return connect.basicPut('cash_item', records);
+    }
 
-          // posting to the journal
-          connect.fetch('/journal/cash/' + doc.id)
-          .then(function (res) {
-            $location.path('/invoice/cash/' + doc.id);
-            
-            //Replaced reset with receipt display, this should be decided on
-            // $scope.loadDebitor(data.debitor_id);
-            // $scope.data.paying = [];
-            // $scope.data.payment = 0;
-          }, function(err) {
-            messenger.danger('Error: ', JSON.stringify(err));
-          });
-        }, function (err) {
-          messenger.danger('Error' + JSON.stringify(error));
-        });
-      }, function (err) {
-        messenger.danger('Cash posting failed with Error: ' + err);
-      });
-      
+    function postToJournal (res) {
+      return connect.fetch('/journal/cash/' + $scope.invoice_id);
+    }
+
+    function showReceipt () {
+      $location.path('/invoice/cash/' + $scope.invoice_id);
+    }
+
+    $scope.payInvoices = function pay () {
+      // FIXME: add a 'would you like to credit or pay back' line/check here for excess
+      // run digestInvoice once more to stabilize.
+      $scope.digestInvoice();
+
+      processCashInvoice()
+        .then(processCashItems)
+        .then(postToJournal)
+        .then(showReceipt)
+        .catch(function (err) {
+          messenger.danger('An error occured' + JSON.stringify(err));
+        })
+        .done();
     };
 
     function generateBonNumber (model, bon_type) {
@@ -278,18 +279,22 @@ angular.module('kpk.controllers')
       $scope.digestInvoice();
     });
 
-    $scope.$watch('data.box', function () {
+    $scope.$watch('cashbox', function () {
       // exchange everything queued to be paid, as well as those in 
       // the list.
-      $scope.data.paying.forEach(function (invoice) {
+      $scope.paying.forEach(function (invoice) {
         invoice.locale = exchange(invoice.balance, data.box.currency_id);
       });
 
       ($scope.ledger || []).forEach(function (invoice) {
         invoice.locale = exchange(invoice.balance, data.box.currency_id);
       });
-    });
-   
+
+      // finally digest the invoice
+      $scope.digestInvoice();
+
+    }, true);
+
   }
 ]);
 
