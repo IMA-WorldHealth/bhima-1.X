@@ -47,7 +47,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="invoice in ledger.data" ng-click="add($index)">
+            <tr ng-repeat="invoice in ledger" ng-click="add($index)">
               <td>{{invoice.inv_po_id}}</td>
               <td>{{invoice.debitor}}</td>
               <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
@@ -61,16 +61,16 @@
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span>Payment | <small>{{data.debitor}}</small></span>
+          <span>Payment | <small>{{debitor.first_name}} {{debitor.last_name}}</small></span>
         </div>
         <table class="table table-condensed">
           <thead>
             <tr>
-              <td><label>Invoice Number</label></td>
-              <td><label>Date</label></td>
-              <td><label>Balance</label></td>
+              <td style=""><label>Invoice Number</label></td>
+              <td style=""><label>Date</label></td>
+              <td style=""><label>Balance</label></td>
               <td style="width: 20%;"><label>Paid</label></td>
-              <td><label>Remaining</label></td>
+              <td style=""><label>Remaining</label></td>
               <td style="width:5%;"></td>
             </tr>
           </thead>
@@ -89,14 +89,31 @@
         <hr style="padding:0;margin:0;" />
 
         <div class="panel-body">
-          <label>Total Due: <span ng-bind-html="data.total | intlcurrency:cashbox.currency_id"></span></label>
-          <label class="pull-right" ng-show="data.excess > 0">Overdue: <span ng-bind-html="data.excess | intlcurrency:cashbox.currency_id"></span></label>
-          <div class="input-group">
-            <input type="number" ng-model="data.payment"  class="form-kapok" min="0">
-            <span class="input-group-addon">
-              {{ cashbox.symbol }}
-            </span>
-          </div>
+          <form class="form-horizontal">
+
+            <div class="form-group">
+              <div class="col-xs-4">
+                <label class="control-label col-xs-8">Total Due</label>
+                <p class="form-control-static" ng-bind-html="data.total | intlcurrency:cashbox.currency_id"></p>
+              </div>
+
+              <div class="col-xs-4">
+                <label class="control-label col-xs-8">Total Paying</label>
+                <p class="form-control-static" ng-bind-html="data.payment | intlcurrency:cashbox.currency_id"></p>
+              </div>
+
+              <div class="col-xs-4">
+                <label class="control-label col-xs-8">Over Due</label>
+                <p class="form-control-static" ng-bind-html="data.excess | intlcurrency:cashbox.currency_id"></p>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <input type="number" ng-model="data.payment"  class="form-kapok" min="0" required>
+              <span class="input-group-addon"> {{ cashbox.symbol }} </span>
+            </div>
+
+          </form>
         </div>
         <div class="panel-footer">
           <button type="button" class="btn btn-success btn-sm" ng-click="payInvoices()" ng-disabled="!data.payment">

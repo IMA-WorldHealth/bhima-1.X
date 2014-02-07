@@ -53,7 +53,7 @@ app.get('/data/', function (req, res, next) {
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
-    res.send(rows); 
+    res.send(rows);
   });
 });
 
