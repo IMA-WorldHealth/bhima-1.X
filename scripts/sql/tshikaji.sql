@@ -488,31 +488,29 @@ insert into `country` values
 	(241,894,'Zambia','Zambie');
 
 
-insert into `province` (`id`,`name`) VALUES
-  (1, 'Bas Congo'),
-  (2, 'Bandundu'),
-  (3, 'Kasai Oriental'),
-  (4, 'Katanga'),
-  (5, 'Equateur'),
-  (6, 'Kasai Occidental'),
-  (7, 'Kinshasa'),
-  (8, 'Nord Kivu'),
-  (9, 'Sud Kivu'),
-  (10, 'Province Oriental'),
-  (11, 'Maniema');
+insert into `province` (`id`,`name`, `country_id`) VALUES
+  (1, 'Bas Congo', 52),
+  (2, 'Bandundu', 52),
+  (3, 'Kasai Oriental', 52),
+  (4, 'Katanga', 52),
+  (5, 'Equateur', 52),
+  (6, 'Kasai Occidental', 52),
+  (7, 'Kinshasa', 52),
+  (8, 'Nord Kivu', 52),
+  (9, 'Sud Kivu', 52),
+  (10, 'Province Oriental', 52),
+  (11, 'Maniema', 52);
 
-insert into `sector` (`name`) VALUES 
-  ('Kilunda'),
-  ('Kwilu');
+insert into `sector` (`id`,`name`, `province_id`) VALUES 
+  (1, 'Kilunda', 2),
+  (2, 'Kwilu', 2);
 
-insert into `village` (`name`) VALUES
-  ('Vanga'),
-  ('Bulungu'),
-  ('Songo'),
-  ('Lusekele');
+insert into `village` (`id`, `name`, `sector_id`) VALUES
+  (1, 'Vanga', 2),
+  (2, 'Bulungu', 2),
+  (3, 'Songo', 1),
+  (4, 'Lusekele', 1);
 
-insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) VALUES 
-  (1, 1, 1, 1);
 
 -- configure enterprise
 
