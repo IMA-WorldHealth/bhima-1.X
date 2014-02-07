@@ -24,7 +24,7 @@
       templateUrl:'partials/journal/journal.html'
     }).
     when('/fiscal', {
-      controller: 'fiscalController',
+      controller: 'fiscal',
       templateUrl: 'partials/fiscal/fiscal.html'
     }).
     when('/patient', { 
