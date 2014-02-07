@@ -226,23 +226,24 @@
       };
     }])
 
-    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', function($compile, validate, messenger, connect) { 
-      return { 
+    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', function($compile, validate, messenger, connect) {
+      return {
         restrict: 'A',
-        link : function(scope, element, attrs) { 
+        link : function(scope, element, attrs) {
           var dependencies = {}, debtorList = [];
           var searchCallback = scope[attrs.onSearchComplete];
 
           if(!searchCallback) throw new Error('Patient Search directive must implement data-on-search-complete');
          
-          dependencies.debtor = { 
+          dependencies.debtor = {
             required : true,
-            query : { 
+            query : {
               tables : {
                 patient : {columns : ["id", "debitor_id", "first_name", "last_name", "location_id", "sex", "dob"]},
                 debitor : { columns : ["text"]},
+                debitor_group : { columns : ['account_id']}
               },
-              join : ["patient.debitor_id=debitor.id"]
+              join : ["patient.debitor_id=debitor.id", 'debitor.group_id=debitor_group.id']
             }
           };
 
@@ -251,7 +252,7 @@
             submitSuccess: false
           };
           
-          var template = 
+          var template =
           '<div class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
           '  <div class="panel-heading">'+
           '    <div ng-switch on="findPatient.submitSuccess">'+
