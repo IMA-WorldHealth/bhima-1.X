@@ -19,7 +19,8 @@ div[data-tree-model] li {
   line-height: 20px;
 }
 
-div[data-tree-model] li i, div[data-tree-model] li span {
+div[data-tree-model] li i,
+div[data-tree-model] li span {
   cursor: pointer;
 }
 

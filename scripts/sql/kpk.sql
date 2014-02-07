@@ -582,7 +582,7 @@ create table `sale` (
   `cost`          decimal(19, 2) unsigned not null,
   `currency_id`   tinyint unsigned not null,
   `debitor_id`    int unsigned not null,
-  `seller_id`     smallint unsigned not null,
+  `seller_id`     smallint unsigned not null default 0,
   `discount`      mediumint unsigned default '0',
   `invoice_date`  date not null, -- is this the date of the sale?
   `note`          text,

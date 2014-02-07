@@ -1,83 +1,122 @@
 <header>
-  <h3 style="margin: 0">Cash Box <small> {{ formatTitle(data.box) }}</small></h3>
+  Cash Payment
 </header>
 
 <section class="underline">
-  <div class="pull-left">
-    <input type="text" ng-model="debitor" typeahead="debitor as debitor.first_name+' '+debitor.last_name for debitor in models.debitors | filter:$viewValue | limitTo:8" placeholder="Find a Debitor" typeahead-on-select="loadDebitor(debitor.id)" class="form-kapok" size="25">
-  </div>
   <div style="position: absolute; right: 5px;">
-    <button class="btn btn-sm btn-primary dropdown-toggle">{{ formatTitle(data.box) }}<i class="glyphicon glyphicon-chevron-down"></i></button> <!-- TODO make this a caret -->
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ accounts.get(cashbox.cash_account).account_txt || 'Caisse'}}
+      <!-- TODO make this a caret -->
+      <i class="glyphicon glyphicon-chevron-down"></i>
+    </button> 
     <ul class="dropdown-menu pull-right">
-      <li ng-repeat="box in models.currency_account"><a href="" ng-click="data.box=box"> {{ formatTitle(box) }} </a></li>
+      <li ng-repeat="box in cashboxes.data">
+        <a href="" ng-click="setCashBox(box)"> {{ accounts.get(box.cash_account).account_txt }} </a>
+      </li>
     </ul>
   </div>
 </section>
 
 <div class="content">
-  <!-- search panel -->
+
   <div class="row">
-    <div class="col-xs-6">
-      <div class="panel panel-info">
-        <div class="panel-heading">
-          <span>Invoice &amp Patient Search</span>
+    <div class="col-xs-6" ng-switch="!!debitor">
+
+      <!-- patient search panel -->
+      <div find-patient on-search-complete="loadInvoices"></div>
+
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <h4>Cash Payment Module</h4>
+          <p>The module allows debitors to pay against existing invoices.</p>
+          <p>To begin, search for a debitor using the search bar above</p>
         </div>
-      <table class="table table-condensed table-bordered">
-        <thead>
-          <tr><th>Invoice ID</th><th>Debitor</th><th>Balance</th><th>Date</th></tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="invoice in models.ledger" ng-click="add($index)">
-            <td>{{invoice.inv_po_id}}</td>
-            <td>{{invoice.debitor}}</td>
-            <td ng-bind-html="invoice.locale | intlcurrency:data.box.currency_id"></td>
-            <td>{{invoice.trans_date | date}}</td>
-          </tr>
-        </tbody>
-      </table>
+      </div>
+
+      <div class="panel panel-primary" ng-switch-when="true">
+        <div class="panel-heading">
+          <span><i class="glyphicon glyphicon-list"></i> Debitor Invoices</span>
+        </div>
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr>
+              <th>Invoice ID</th>
+              <th>Debitor</th>
+              <th>Balance</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="invoice in ledger" ng-click="add($index)">
+              <td>{{invoice.inv_po_id}}</td>
+              <td>{{invoice.debitor}}</td>
+              <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
+              <td>{{invoice.trans_date | date}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
 
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span>Payment | <small>{{data.debitor}}</small></span>
+          <span>Payment | <small>{{debitor.first_name}} {{debitor.last_name}}</small></span>
         </div>
         <table class="table table-condensed">
           <thead>
             <tr>
-              <td><label>Invoice Number</label></td>
-              <td><label>Date</label></td>
-              <td><label>Balance</label></td>
+              <td style=""><label>Invoice Number</label></td>
+              <td style=""><label>Date</label></td>
+              <td style=""><label>Balance</label></td>
               <td style="width: 20%;"><label>Paid</label></td>
-              <td><label>Remaining</label></td>
-              <td style="width:10px;"></td>
+              <td style=""><label>Remaining</label></td>
+              <td style="width:5%;"></td>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="invoice in data.paying">
+            <tr ng-repeat="invoice in paying">
               <td>{{invoice.inv_po_id}}</td>
               <td>{{invoice.trans_date | date }}</td>
-              <td ng-bind-html="invoice.locale | intlcurrency:data.box.currency_id"></td>
+              <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
               <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}" ng-model="invoice.allocated" required></td>
-              <td ng-bind-html="invoice.remaining | intlcurrency:data.box.currency_id"></td>
-              <td ng-click="remove($index)"><i class="glyphicon glyphicon-remove"></i></td>
+              <td ng-bind-html="invoice.remaining | intlcurrency:cashbox.currency_id"></td>
+              <td><button class="btn btn-sm btn-danger" ng-click="remove($index)"><i class="glyphicon glyphicon-trash"></i></button></td>
             </tr>
           </tbody>
         </table>
+
         <hr style="padding:0;margin:0;" />
+
         <div class="panel-body">
-          <label>Total Due: <span ng-bind-html="data.total | intlcurrency:data.box.currency_id"></span></label>
-          <label class="pull-right" ng-show="data.excess > 0">Overdue: <span ng-bind-html="data.excess | intlcurrency:data.box.currency_id"></span></label>
-          <div class="input-group">
-            <input type="number" ng-model="data.payment"  class="form-kapok" min="0">
-            <span class="input-group-addon">
-              {{ data.box.symbol }}
-            </span>
-          </div>
+          <form class="form-horizontal">
+
+            <div class="form-group">
+              <div class="col-xs-4">
+                <label class="control-label col-xs-8">Total Due</label>
+                <p class="form-control-static" ng-bind-html="data.total | intlcurrency:cashbox.currency_id"></p>
+              </div>
+
+              <div class="col-xs-4">
+                <label class="control-label col-xs-8">Total Paying</label>
+                <p class="form-control-static" ng-bind-html="data.payment | intlcurrency:cashbox.currency_id"></p>
+              </div>
+
+              <div class="col-xs-4">
+                <label class="control-label col-xs-8">Over Due</label>
+                <p class="form-control-static" ng-bind-html="data.excess | intlcurrency:cashbox.currency_id"></p>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <input type="number" ng-model="data.payment"  class="form-kapok" min="0" required>
+              <span class="input-group-addon"> {{ cashbox.symbol }} </span>
+            </div>
+
+          </form>
         </div>
         <div class="panel-footer">
-          <button type="button" class="btn btn-success btn-sm" ng-click="pay()" ng-disabled="!data.payment">
+          <button type="button" class="btn btn-success btn-sm" ng-click="payInvoices()" ng-disabled="!data.payment">
             Pay Invoice(s)
           </button>
           <button type="button" class="btn btn-default btn-sm" ng-click="clearSelection()">
@@ -89,8 +128,9 @@
   </div>
 </div>
 
-<section class="bar-bottom">
-  <div class="pull-right">
-    <button class="btn btn-default"><i class="glyphicon glyphicon-list"></i> Posting Journal</button>
-  </div>
-</section>
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
