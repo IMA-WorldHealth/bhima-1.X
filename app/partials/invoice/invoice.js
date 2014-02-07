@@ -14,14 +14,15 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     required: true 
   };
   
-  dependencies.invoice = { 
+  dependencies.invoice = {
     required: true,
-    query: { 
+    query: {
       tables: {},
       // where: [origin + '.id=' + invoiceId]
       where: ['sale.id=' + invoiceId]
     }
   };
+ 
   // dependencies.invoice.query.tables[origin] = {
   dependencies.invoice.query.tables['sale'] = {
     columns: ['id', 'cost', 'currency_id', 'debitor_id', 'seller_id', 'invoice_date', 'note']
@@ -36,21 +37,23 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       where: ['sale_item.sale_id=' + invoiceId]
     }
   };
-  dependencies.invoiceItem.query.tables['inventory'] = { 
+
+  dependencies.invoiceItem.query.tables['inventory'] = {
     columns: ['id', 'code', 'text']
   }
+
   dependencies.invoiceItem.query.tables['sale_item'] = { 
     columns: ['id', 'quantity', 'debit', 'credit']
   }
 
-  dependencies.location = { 
+  dependencies.location = {
     required: false
-  }
+  };
 
   dependencies.ledger = { 
-    required: true,
+    //required: true, // FIXME/TODO : why was this required? It breaks things on @jniles machine.
     identifier: 'inv_po_id'
-  }
+  };
   
   process[origin](invoiceId);
   
