@@ -15,12 +15,8 @@ delete from `debitor_group`;
 delete from `debitor_group_type`;
 delete from `permission`;
 delete from `unit`;
-delete from `tax`;
 delete from `account`;
 delete from `account_type`;
-delete from `account_collection`;
-delete from `account_category`;
-delete from `price_group`;
 delete from `payment`;
 delete from `exchange_rate`;
 delete from `currency`;
@@ -556,18 +552,18 @@ insert into `account_type` values
   (2,'balance'),
   (3,'title');
 
-insert into `account_category` (`id`, `title`, `collection_id`) values 
-  (0, "Misc.", 1),
-  (1, 'Biens et Materiels', 2),
-  (2, 'Depenses de prestations', 2),
-  (3, 'Salaires', 2),
-  (4, 'Production Local', 3),
-  (5, 'Subvention', 3);
+-- insert into `account_category` (`id`, `title`, `collection_id`) values 
+--   (0, "Misc.", 1),
+--   (1, 'Biens et Materiels', 2),
+--   (2, 'Depenses de prestations', 2),
+--   (3, 'Salaires', 2),
+--   (4, 'Production Local', 3),
+--   (5, 'Subvention', 3);
 
-insert into `account_collection` (`id`, `leading_number`, `title`) values
-  (1, 4, 'Fournisseurs'),
-  (2, 6, 'Income/Debit Accounts'),
-  (3, 7, 'Expense/Credit Accounts');
+-- insert into `account_collection` (`id`, `leading_number`, `title`) values
+--   (1, 4, 'Fournisseurs'),
+--   (2, 6, 'Income/Debit Accounts'),
+--   (3, 7, 'Expense/Credit Accounts');
 
 /*insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `account_category_id`) values 
   (0  , 1, 0, 200, 60111000, "Medicaments"                               , 1, 1),
@@ -1062,29 +1058,12 @@ insert into `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_numbe
 (352, 1, 0, 200, 781, "Reprises sur provisions non exigibles", 1, 78),
 (353, 1, 0, 200, 782, "Reprises sur provisions exigibles", 1, 78);
 
--- configure price_group
-insert into `price_group` values 
-  (1,'Imports'),
-  (2,'Locals');
-
--- configure payments
-
-insert into `tax` values 
-  (1, 1,'first registration'),
-  (2, 2,'second metadata');
-
-insert into `payment` values 
-  (1, 14, 0, 'Two Weeks'  , ''),
-	(2, 0 , 1, 'One Month'  , ''),
-	(3, 0 , 0, 'Immediately', '');
-
 -- configure debitors
 
 insert into `debitor_group_type` (`id`, `type`) values
   (1, 'Employees'),
   (3, 'Malades Ambulatoire'),
   (4, 'Malades Interne');
-
 
 insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
   (200, 1, "Internal", 146, 1, 1,'note 1', 1, 1, 0), 
@@ -1136,14 +1115,6 @@ insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values
 insert into `creditor` (`text`, `group_id`) values 
   ('Pharmacy Centrale', 1); -- reference the above creditor group
 
--- configure department
-
-insert into `department` values
-  (200, 1, 'Vanga Admin'     , NULL),
-	(200, 2, 'Vanga Atelier'   , 'The workforce at Vanga'),
-	(200, 3, 'Vanga Pharamacy' , NULL),
-	(200, 4, 'Vanga Accounting', 'Keeping track of accounts');
-
 -- configure journal/transaction/general ledger
 
 insert into `transaction_type` values 
@@ -1151,7 +1122,8 @@ insert into `transaction_type` values
 	(2, 'sale'),
 	(3, 'purchase'),
   (4, 'journal'),
-  (5, 'group_invoice');
+  (5, 'group_invoice'),
+  (6, 'credit_note');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 194, 189),

@@ -6,17 +6,6 @@ grant all on `kpk`.* to 'kpk'@'%' identified by 'HISCongo2013';
 flush privileges;
 
 --
--- Table structure for table `kpk`.`tax`
---
-drop table if exists `tax`;
-create table `tax` (
-  `id`            smallint unsigned not null auto_increment,
-  `registration`  mediumint unsigned not null,
-  `note`          text,
-  primary key (`id`)
-) engine=innodb;
-
---
 -- Table structure for table `kpk`.`currency`
 --
 drop table if exists `currency`;
@@ -177,16 +166,6 @@ create table `enterprise` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`price_group`
---
-drop table if exists `price_group`;
-create table `price_group` (
-  `id`    smallint unsigned not null,
-  `text`  varchar(100) not null,
-  primary key (`id`)
-) engine=innodb;
-
---
 -- Table structure for table `kpk`.`fiscal_year`
 --
 drop table if exists `fiscal_year`;
@@ -237,24 +216,6 @@ drop table if exists `account_type`;
 create table `account_type` (
   `id` mediumint unsigned not null,
   `type` varchar(35) not null,
-  primary key (`id`)
-) engine=innodb;
-
---
--- Tabe structure for table `kpk`.`account_category`
-drop table if exists `account_category`;
-create table `account_category` (
-  `id`        tinyint not null,
-  `title`     varchar(120) not null,
-  `collection_id` tinyint not null,
-  primary key (`id`)
-) engine=innodb;
-
-drop table if exists `account_collection`;
-create table `account_collection` (
-  `id`               tinyint not null,
-  `leading_number`   tinyint not null,
-  `title`            varchar(120) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -409,14 +370,14 @@ create table `debitor_group` (
   key `enterprise_id` (`enterprise_id`),
   key `account_id` (`account_id`),
   key `location_id` (`location_id`),
-  key `payment_id` (`payment_id`),
-  key `tax_id` (`tax_id`),
+--  key `payment_id` (`payment_id`),
+--  key `tax_id` (`tax_id`),
   key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
   constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
   constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`payment_id`) references `payment` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`tax_id`) references `tax` (`id`),
+--  constraint foreign key (`payment_id`) references `payment` (`id`) on delete cascade on update cascade,
+--  constraint foreign key (`tax_id`) references `tax` (`id`),
   constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
 
@@ -548,44 +509,6 @@ create table `period` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`department`
---
-drop table if exists `department`;
-create table `department` (
-  `enterprise_id` smallint unsigned not null,
-  `id`            smallint unsigned not null,
-  `name`          varchar(100) not null,
-  `note`          text,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`employee`
---
-drop table if exists `employee`;
-create table `employee` (
-  `id`            smallint unsigned not null,
-  `name`          varchar(50) not null,
-  `title`         varchar(50),
-  `debitor_id`    int unsigned not null,
-  `creditor_id`   int unsigned not null,
-  `location_id`   smallint unsigned not null,
-  `department_id` smallint unsigned not null,
-  `initials`      varchar(3) not null,
-  primary key (`id`),
-  key `debitor_id` (`debitor_id`),
-  key `location_id` (`location_id`),
-  key `department_id` (`department_id`),
-  key `creditor_id` (`creditor_id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`creditor_id`) references `creditor` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`department_id`) references `department` (`id`) on delete cascade on update cascade
-) engine=innodb;
-
---
 -- Table structure for table `kpk`.`inv_type`
 --
 drop table if exists `inv_type`;
@@ -682,11 +605,11 @@ create table `credit_note` (
   `id`            int unsigned not null auto_increment,
   `cost`          decimal(19, 2) unsigned not null,
   `debitor_id`    int unsigned not null,
-  `seller_id`     smallint unsigned not null,
+  `seller_id`     smallint unsigned not null default 0,
   `sale_id`       int unsigned not null,
   `note_date`     date not null,
   `description`   text,
-  `posted`        boolean not null default '0',
+  `posted`        boolean not null default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `debitor_id` (`debitor_id`),
@@ -728,7 +651,7 @@ create table `purchase` (
   `discount`          mediumint unsigned default '0',
   `invoice_date`      date not null,
   `note`              text default null,
-  `posted`            boolean not null default 0,
+  `posted`            boolean not null default 1,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `creditor_id` (`creditor_id`),
@@ -785,21 +708,6 @@ create table `transaction_type` (
   primary key (`id`)
 ) engine=innodb;
 
---
--- table `kpk`.`account_group`
---
--- TODO: when we can discuss this as a group
--- drop table if exists `account_group`;
--- create table `account_group` (
---   `id`              int not null auto_increment,
---   `account_id`      int not null,
---   `enterprise_id`   smallint not null,
---   primary key (`id`),
---   key (`account_id`),
---   key (`enterprise_id`),
---   constraint foreign key (`account_id`) references `account` (`id`),
---   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
--- ) engine=innodb;
 
 --
 -- Table structure for table `kpk`.`cash`
@@ -874,10 +782,10 @@ create table `posting_journal` (
   `doc_num`           int unsigned, -- what does this do? -- why would this be not null if we don't know what it does? -- as a reminder to ask dedrick...
   `description`       text,
   `account_id`        int unsigned not null,
-  `debit`             decimal (19,2) unsigned not null default 0,
-  `credit`            decimal (19,2) unsigned not null default 0,
-  `debit_equiv`       decimal (19,2) unsigned not null default 0,
-  `credit_equiv`      decimal (19,2) unsigned not null default 0,
+  `debit`             decimal (19, 4) unsigned not null default 0,
+  `credit`            decimal (19, 4) unsigned not null default 0,
+  `debit_equiv`       decimal (19, 4) unsigned not null default 0,
+  `credit_equiv`      decimal (19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
   `deb_cred_id`       varchar(45), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
@@ -901,17 +809,6 @@ create table `posting_journal` (
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade
 ) engine=innodb;
 
--- TODO Reference user table
-drop table if exists `journal_log`;
-create table `journal_log` (
-  `id`              int unsigned not null auto_increment,
-  `transaction_id`  int unsigned not null,
-  `note`            text,
-  `date`            date not null,
-  `user_id`         smallint unsigned not null,
-  primary key (`id`)
-) engine=innodb;
-
 --
 -- table `kpk`.`general_ledger`
 --
@@ -926,10 +823,10 @@ create table `kpk`.`general_ledger` (
   `doc_num`           int unsigned, -- what does this do?
   `description`       text,
   `account_id`        int unsigned not null,
-  `debit`             int unsigned,
-  `credit`            int unsigned,
-  `debit_equiv`       int unsigned,
-  `credit_equiv`      int unsigned,
+  `debit`             decimal(19, 4) unsigned not null default 0,
+  `credit`            decimal(19, 4) unsigned not null default 0,
+  `debit_equiv`       decimal(19, 4) unsigned not null default 0,
+  `credit_equiv`      decimal(19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
   `deb_cred_id`       varchar(45), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
@@ -1034,6 +931,5 @@ create table `group_invoice_item` (
   constraint foreign key (`payment_id`) references `group_invoice` (`id`) on delete cascade,
 	constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
-
 
 -- Jon's dump @ 12:45.
