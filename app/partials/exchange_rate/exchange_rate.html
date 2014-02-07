@@ -2,10 +2,16 @@
   <span>Configure Exchange Rates</span>
 </header>
 
+<section class="underline">
+  <a href="" class="btn btn-sm btn-default" ng-click="action='new'"><i class="glyphicon glyphicon-file"></i> New Exchange Rate</a>
+  <a href="" class="btn btn-sm btn-default" ng-click="action='review'"><i class="glyphicon glyphicon-list"></i> Review Today's Rates</a>
+</section>
+
 <div class="content">
 
   <div class="row">
     <div class="col-xs-6">
+      <h3 style="margin-top:inherit;">Previous Rates</h3>
       <table class="table table-bordered table-condensed">
         <thead>
           <tr>
@@ -26,17 +32,30 @@
       </table>
     </div>
 
-    <div class="col-xs-6" ng-cloak>
+    <div class="col-xs-6" ng-switch="action">
 
-      <div class="panel panel-default" ng-if="!!currentRates.length">
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <h4>Exchange Rate Module</h4>
+          <p>
+            The exchange rate module provides the facilty to set daily exchange rates. In order
+            to ensure data integrity, an exchange rate for <b>all</b> functional currencies must
+            be set <b>daily</b>.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel panel-default" ng-switch-when="review">
         <div class="panel-heading">
-          <span>Today's ({{ today | date}}) Exchange Rates:</span>
+          <span>Exchange rate for <b>{{ today | date}}</b></span>
         </div>
         <div class="panel-body">
-          <form class="form-horizontal" novalidate>
+          <form class="form-horizontal">
 
             <div class="form-group" ng-repeat="rate in currentRates">
-              <label class="control-label col-xs-3">{{ currency.get(rate.foreign_currency_id).name }} Rate</label>
+              <label class="control-label col-xs-3">
+                {{ currency.get(rate.foreign_currency_id).name }} Rate
+              </label>
               <div class="col-xs-1">
                 <p class="form-control-static"> 1  <b>::</b></p>
               </div>
@@ -49,9 +68,9 @@
         </div>
       </div>
     
-      <div class="panel panel-default">
+      <div class="panel panel-default" ng-switch-when="new">
         <div class="panel-body">
-          <form name="exchangeForm" class="form-horizontal">
+          <form name="exchangeForm" class="form-horizontal" novalidate>
             <fieldset>
               <legend>Set Exchange Rate</legend>
 
