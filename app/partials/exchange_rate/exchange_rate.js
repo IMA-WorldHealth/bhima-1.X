@@ -33,7 +33,6 @@ angular.module('kpk.controllers')
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
-      // run everything
       validate.process(dependencies).then(buildModels, handleError);
     });
 
@@ -46,11 +45,9 @@ angular.module('kpk.controllers')
     }
 
     function buildModels(models) {
-      for (var k in models) $scope[k] = models[k];
+      for (var k in models) { $scope[k] = models[k]; }
 
       $scope.today = new Date().toISOString().slice(0, 10);
-      $scope.showCalculator = false;
-
       $scope.newRate = {};
     }
 
@@ -75,10 +72,13 @@ angular.module('kpk.controllers')
         // set global exchange rate
         ($scope.global_rates.length ? $scope.global_rates : []).push(data);
         appstate.set('exchange_rate', $scope.global_rates);
+
         // add to store
         data.id = result.data.insertId;
         $scope.rates.post(data);
+
         // reset rate
+        $scope.action = '';
         $scope.newRate = {};
       }, function (error) {
         messenger.danger('Failed to post new exchange rate. Error: '+ error);
