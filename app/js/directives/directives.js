@@ -329,6 +329,7 @@
 
           function searchId(value) { 
             console.log('search id', value);
+            if(isNaN(Number(value))) return messenger.danger("Invalid ID value submitted");
             dependencies.debtor.query.where = ["patient.debitor_id=" + value];
             validate.refresh(dependencies).then(handleIdRequest, handleIdError);
           }
@@ -337,6 +338,7 @@
             var debtor = scope.findPatient.debtor = extractMetaData(model.debtor.data)[0];
             console.log('downloaded', model);
             //Validate only one debtor matches
+            if(!debtor) return messenger.danger("Received invalid debtor, unknown");
             scope.findPatient.valid = true;
             searchCallback(debtor);
             scope.findPatient.submitSuccess = true;

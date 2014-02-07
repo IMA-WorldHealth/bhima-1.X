@@ -28,7 +28,8 @@ var report       = require('./lib/logic/report')(db),
     trialbalance = require('./lib/logic/trialbalance')(db),
     journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
-    fiscal       = require('./lib/logic/fiscal')(db);
+    fiscal       = require('./lib/logic/fiscal')(db),
+    createSale   = require('./lib/logic/createSale')(db, parser, journal);
 
 app.configure(function () {
   app.use(express.compress());
@@ -51,7 +52,7 @@ app.get('/data/', function (req, res, next) {
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(rows); 
   });
 });
@@ -60,7 +61,7 @@ app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
   var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
   db.execute(updatesql, function(err, ans) { 
-    if (err) next(err);
+    if (err) return next(err);
     res.send(200, {insertId: ans.insertId});
   });
 });
@@ -70,15 +71,22 @@ app.post('/data/', function (req, res, next) {
   
   var insertsql = parser.insert(req.body.table, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(200, {insertId: ans.insertId});
+  });
+});
+
+app.post('/sale/', function (req, res, next) { 
+  createSale.execute(req.body, req.session.user_id, function (err, ans) { 
+    if(err) return next(err);
+    res.send(200, {saleId: ans});
   });
 });
 
 app.delete('/data/:table/:column/:value', function (req, res, next) {
   var sql = parser.delete(req.params.table, req.params.column, req.params.value);
   db.execute(sql, function (err, ans) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(200);
   });
 });
@@ -136,7 +144,7 @@ app.get('/max/:id/:table/:join?', function(req, res) {
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
   ledger.debitor(req.params.id, function (err, rows) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(rows);
   });
 });
@@ -164,7 +172,7 @@ app.get('/reports/:route/', function(req, res, next) {
   var query = decodeURIComponent(url.parse(req.url).query);
   
   report.generate(route, query, function(report, err) { 
-    if(err) next(err);
+    if(err) return next(err);
     res.send(report);
   });
 });
@@ -307,7 +315,7 @@ app.get('/account_balance/:id', function (req, res, next) {
     'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
 
   db.execute(sql, function (err, rows) {
-    if (err) next(err);
+    if (err) return next(err);
     res.send(rows);
   });
 

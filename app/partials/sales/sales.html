@@ -95,7 +95,7 @@
                     <tr>
                       <!-- Style hack -->
                       <td colspan="4" style="margin-right = 50px; text-align: right;"><b>Total</b></td>
-                      <td colspan="2"><b>{{invoiceTotal() | currency}}</b></td>
+                      <td colspan="2"><b>{{calculateTotal() | currency}}</b></td>
                     </tr>
                     
                   </tbody>
@@ -108,7 +108,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="inventory.length==0" ng-click="generateInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
+    <a ng-disabled="inventory.length==0" ng-click="submitInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Patient Invoice</a>
   </div>
 </section>
 

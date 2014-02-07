@@ -1,26 +1,31 @@
 module.exports = function(grunt) {
+  'use strict';
+  
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    jshint: { 
+    jshint: {
+      options : {
+        jshintrc : '.jshintrc',
+      },
       all: ['app/partials/**/*.js'],
-      dev: { 
-        options: { 
-          curly: true,
-          eqeqeq: true,
-          eqnull: true,
-          browser: true,
-          globals: {
-            jQuery: true
-          }
-        },
+      dev: {
+        // options: {
+        //   curly: true,
+        //   eqeqeq: true,
+        //   eqnull: true,
+        //   browser: true,
+        //   globals: {
+        //     jQuery: true
+        //   }
+        // },
         files: {
           src: ['/app/partials/**/*.js']
         }
       }
     },
-    concat: { 
-      options : { 
-        banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" + 
+    concat: {
+      options : {
+        banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" +
                 "angular.module('kpk.controllers', []);\n\n",
         //strip any strict definitions (single in banner), label source
         process: function(src, filepath) {
@@ -28,23 +33,23 @@ module.exports = function(grunt) {
             src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
         }
       },
-      kapok: { 
+      kapok: {
         src: ['app/partials/**/*.js'],
         dest: 'app/js/controllers/controllers.js'
       }
     },
     //working on this (implicitly concatinate to eventually allow sourcemaps)
-    uglify: { 
+    uglify: {
       options: {
         mangle: false,
         //{ except: ['$scope', '$routeProvider', 'etc.'] }
         //version/timestamp - probably shouldn't include angular logic but I'm tired
-        banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" + 
+        banner: "/*<%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %> */\n" +
                 "'use strict'\n\n" +
                 "angular.module('kpk.controllers', []);\n\n"
       },
-      kapok: { 
-        options: { 
+      kapok: {
+        options: {
           sourceMap: 'controllers.map.js',
           sourceMapRoot: 'http://localhost:8080/partials/'
         },
@@ -53,7 +58,7 @@ module.exports = function(grunt) {
         }
       }
     },
-    watch: { 
+    watch: {
       //FIXME reference uglify files
       files: ['app/partials/**/*.js', 'app/partials/**/*.css', 'app/css/*.css', '!app/css/*.min.css'],
       tasks: ['concat', 'cssmin']
@@ -62,7 +67,7 @@ module.exports = function(grunt) {
       options : {
         banner : '/*! <%= pkg.name %>  <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
-      combine : { 
+      combine : {
         files : {
           'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/partials/**/**/*.css', 'app/css/*.css', '!app/css/*.min.css', 'app/css/grid/*.css'] 
         }
