@@ -15,11 +15,11 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   //Temporary seller ID, should happen on the server
   dependencies.seller = { 
     query : 'user_session'
-  }
+  };
 
   validate.process(dependencies).then(sales);
 
-  function sales(model) { 
+  function sales(model) {
     //Expose model to scope
     $scope.model = model;
     $scope.inventory = inventory = model.inventory.data;
@@ -57,6 +57,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       date : getDate(),
       items: []
     };
+
     invoice.note = formatNote(invoice);
     addInvoiceItem(); //Default invoice item
     

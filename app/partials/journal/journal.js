@@ -16,7 +16,7 @@ angular.module('kpk.controllers').controller('journal', [
   'appstate',
   function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, messenger, appstate) {
     var dependencies = {}, liveTransaction = $scope.liveTransaction = {};
-    var grid, dataview, sort_column, columns, options;
+    var grid, dataview, sort_column, columns, options, chkbx;
 
     dependencies.journal = {
       required: true,
@@ -59,7 +59,7 @@ angular.module('kpk.controllers').controller('journal', [
     };
 
     validate.process(dependencies).then(journal);
-   
+
     function journal(model) {
       $scope.model = model;
    
@@ -74,7 +74,7 @@ angular.module('kpk.controllers').controller('journal', [
         {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
         {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
         // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
-        {id: 'description', name: 'Description', field: 'description', width: 110, editor:Slick.Editors.Text },
+        {id: 'description', name: 'Description', field: 'description', width: 110, editor: Slick.Editors.Text },
         {id: 'account_id', name: 'Account ID', field: 'account_number', sortable: true, editor:SelectCellEditor},
         // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
         // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
@@ -103,7 +103,7 @@ angular.module('kpk.controllers').controller('journal', [
         inlineFilter: true
       });
 
-      var chkbx = new Slick.CheckboxSelectColumn({
+      chkbx = new Slick.CheckboxSelectColumn({
         cssClass: "slick-cell-checkboxsel"
       });
 
@@ -148,8 +148,13 @@ angular.module('kpk.controllers').controller('journal', [
       });
 
       grid.onClick.subscribe(function(e, args) {
+<<<<<<< HEAD
        
         //FIXME REALLY hacky, redo button clicks
+=======
+        
+        //FIXME REALLY hacky, redo button clicks 
+>>>>>>> journal now disallows hiding the checkbox column
         handleClick(e.target.className, args);
 
       });
@@ -162,10 +167,16 @@ angular.module('kpk.controllers').controller('journal', [
       groupBy('transaction');
 
       // allow the user to select only certain columns shown
-      $scope.columns = angular.copy(columns).map(function (column) {
-        column.visible = true;
-        return column;
-      });
+      $scope.columns = angular.copy(columns)
+        .filter(function (column) {
+          // This is a hack to remove the checkbox column definition
+          // out of the ui selections.
+          return column.id !== '_checkbox_selector';
+        })
+        .map(function (column) {
+          column.visible = true;
+          return column;
+        });
     }
    
     $scope.$watch('columns', function () {
@@ -173,6 +184,7 @@ angular.module('kpk.controllers').controller('journal', [
       var columns = $scope.columns.filter(function (column) {
         return column.visible;
       });
+      columns.push(chkbx.getColumnDefinition());
       grid.setColumns(columns);
     }, true);
 
@@ -189,7 +201,11 @@ angular.module('kpk.controllers').controller('journal', [
         aggregateCollapsed: true
       });
     }
+<<<<<<< HEAD
      
+=======
+      
+>>>>>>> journal now disallows hiding the checkbox column
     function formatTransactionGroup(g) {
       var rowMarkup, splitTemplate, firstElement = g.rows[0];
       if(liveTransaction.state === "add") {

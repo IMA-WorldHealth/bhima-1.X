@@ -21,7 +21,6 @@ module.exports = function (db) {
     'credit_note' : handleCreditNote,
   };
 
-
   // validity checks
   check = {
     validPeriod : function (enterprise_id, date, errback) {
