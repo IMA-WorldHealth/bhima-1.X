@@ -28,6 +28,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function initialiseSaleDetails(selectedDebtor) { 
     if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
     
+    validate.
     invoice = { 
       debtor : selectedDebtor,
       id : createId($scope.model.sale.data.max),
@@ -52,9 +53,12 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function removeInvoiceItem(index) { 
     invoice.items.splice(index, 1);
   }
-  
+
   function submitInvoice() { 
-    $http.post('sale/', packageInvoiceRequest()).then(handleSaleResponse); 
+    var invoiceRequest = packageInvoiceRequest();
+    
+    if(!validSaleProperties(invoiceRequest)) return;
+    $http.post('sale/', invoiceRequest).then(handleSaleResponse); 
   }
   
   function packageInvoiceRequest() { 
@@ -88,6 +92,34 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
   function handleSaleResponse(result) { 
     $location.path('/invoice/sale/' + result.data.saleId);
+  }
+
+  function validSaleProperties(saleRequest) { 
+    var sale = saleRequest.sale, saleItems = saleRequest.saleItems;
+    var validItems;
+
+    //Check sale item properties
+    if(saleItems.length===0) { 
+      messenger.danger("[Invalid Sale] No sale items found");
+      return false;
+    }
+
+    invalidItems = saleItems.some(function(saleItem) { 
+      for(property in saleItem) { 
+        console.log('checking property', property);
+        if(angular.isUndefined(saleItem[property]) || saleItem[property]===null) return true;
+      }
+      console.log('saleItem', saleItem);
+      if(isNaN(Number(saleItem.quantity))) return true;
+      if(isNaN(Number(saleItem.unit_price))) return true;
+      return false;
+    });
+    
+    if(invalidItems) { 
+      messenger.danger("[Invalid Sale] Sale items contain null values");
+      return false;
+    }
+    return true;
   }
   
   //Utility methods 
