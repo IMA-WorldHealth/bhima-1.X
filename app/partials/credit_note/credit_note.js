@@ -41,22 +41,21 @@ angular.module('kpk.controllers').controller('creditNote', function($scope, $rou
   }
 
   function creditNote(model) {
-    console.log(model);
     $scope.model = model;
     $scope.sale = $scope.model.sale.data[0];
     $scope.creditNote = packageCreditNote();
   }
 
-  function packageCreditNote() { 
+  function packageCreditNote() {
     var defaultDescription = "Credit matching transaction #" + $scope.sale.id + " from " + $filter('date')($scope.sale.invoice_date);
-    var noteObject = { 
+    var noteObject = {
       enterprise_id: appstate.get('enterprise').id,
       cost: $scope.sale.cost,
       debitor_id: $scope.sale.debitor_id,
       sale_id: $scope.sale.id,
-      note_date: new Date(),
+      note_date: new Date().toISOString().slice(0, 10), // format as mysql date
       description: defaultDescription
-    }
+    };
     return noteObject;
   }
 
