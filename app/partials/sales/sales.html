@@ -92,6 +92,14 @@
                       <td><a ng-click="removeInvoiceItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
                     </tr>
                     
+                    <tr ng-show="invoice.priceList">
+                      <td><input class="form-invoice" style="color: red;" value="Discount"></td>
+                      <td><input class="form-invoice" style="color: red;" value="Patient Group '{{invoice.priceList.name}}'" disabled></td>
+                      <td><input class="form-invoice" style="color: red;" value="1" disabled></td>
+                      <td><input disabled class="form-invoice" style="color: red;" value="{{invoice.priceList.discount}}"></td>
+                      <td colspan="2"><input disabled class="form-invoice" style="color: red;" value="{{-invoice.priceList.discount | currency}}"></td>
+                    </tr>
+
                     <tr>
                       <!-- Style hack -->
                       <td colspan="4" style="margin-right = 50px; text-align: right;"><b>Total</b></td>

@@ -28,7 +28,29 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function initialiseSaleDetails(selectedDebtor) { 
     if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
     
-    validate.
+    buildInvoice(selectedDebtor);
+    
+    dependencies.priceList = { 
+      query : { 
+        tables : { 
+          assignation_patient : {columns : ['patient_group_id', 'patient_id']},
+          patient_group : {columns : ['note']},
+          price_list : {columns : ['id', 'name', 'discount', 'note']}
+        },
+        join : [
+          'assignation_patient.patient_group_id=patient_group.id', 
+          'patient_group.price_list_id=price_list.id'
+        ],
+        where : [
+          'assignation_patient.patient_id=' + 1
+        ]
+      }
+    };
+    
+    validate.refresh(dependencies, ['priceList']).then(processPriceList);
+  }
+
+  function buildInvoice(selectedDebtor) { 
     invoice = { 
       debtor : selectedDebtor,
       id : createId($scope.model.sale.data.max),
@@ -39,6 +61,14 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     addInvoiceItem(); //Default invoice item
     
     $scope.invoice = invoice;
+  }
+
+  function processPriceList(model) { 
+    var selectedPriceList, priceLists = model.priceList.data;
+      
+    //naive implementation of resolving multiple price lists
+    selectedPriceList = priceLists.sort(function(a, b) { return a.discount < b.discount; })[0];
+    if(selectedPriceList) invoice.priceList = selectedPriceList;
   }
     
   //TODO split inventory management into a seperate controller
