@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger) {
+angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger) {
  
   //TODO Pass default debtor and inventory parameters to sale modules
   var dependencies = {}, invoice = {}, inventory = [];
@@ -20,7 +20,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   validate.process(dependencies).then(sales);
 
   function sales(model) { 
-    
     //Expose model to scope
     $scope.model = model;
     $scope.inventory = inventory = model.inventory.data;
@@ -75,7 +74,25 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   }
   
   function submitInvoice() { 
+    $http.post('sale/', packageInvoiceRequest()).then(handleSaleResponse); 
+  }
+  
+  function packageInvoiceRequest() { 
+    var requestContainer = {};
+    
+    requestContainer.sale = { 
+      enterprise_id : appstate.get('enterprise').id,
+      cost : $scope.invoiceTotal(),
 
+    };
+
+    requestContainer.saleItems = [];
+
+
+  }
+
+  function handleSaleResponse(result) { 
+    console.log('sale post has responded', result);
   }
 
   //#sfount - refactor from here
@@ -213,4 +230,5 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   $scope.addInvoiceItem = addInvoiceItem;
   $scope.updateInvoiceItem = updateInvoiceItem;
   $scope.removeInvoiceItem = removeInvoiceItem;
+  $scope.submitInvoice = submitInvoice;
 });

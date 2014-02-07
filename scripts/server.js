@@ -75,6 +75,11 @@ app.post('/data/', function (req, res, next) {
   });
 });
 
+app.post('/sale/', function (req, res, next) { 
+  console.log('Received post request for sale', req.body);
+  res.send(200, "OK");
+});
+
 app.delete('/data/:table/:column/:value', function (req, res, next) {
   var sql = parser.delete(req.params.table, req.params.column, req.params.value);
   db.execute(sql, function (err, ans) {
