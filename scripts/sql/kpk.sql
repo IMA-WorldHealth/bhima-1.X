@@ -99,9 +99,12 @@ create table `country` (
 -- 
 drop table if exists `province`;
 create table `province` (
-  `id`         smallint unsigned not null auto_increment,
+  `id`         mediumint unsigned not null auto_increment,
   `name`       text,
-  primary key (`id`)
+  `country_id` smallint unsigned not null,
+  primary key (`id`),
+  key `country_id` (`country_id`),
+  constraint foreign key (`country_id`) references `country` (`id`)
 ) engine=innodb;
 
 --
@@ -109,9 +112,12 @@ create table `province` (
 --
 drop table if exists `sector`;
 create table `sector` (
-  `id`        smallint unsigned not null auto_increment,
-  `name`      text,
-  primary key (`id`)
+  `id`          mediumint unsigned not null auto_increment,
+  `name`        text,
+  `province_id` mediumint unsigned not null,
+  primary key (`id`),
+  key `province_id` (`province_id`),
+  constraint foreign key (`province_id`) references `province` (`id`)
 ) engine=innodb;
 
 --
@@ -119,31 +125,13 @@ create table `sector` (
 --
 drop table if exists `village`;
 create table `village` (
-  `id`        smallint unsigned not null auto_increment,
+  `id`        mediumint unsigned not null auto_increment,
   `name`      text,
-  primary key (`id`)
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`location`
---
-drop table if exists `location`;
-create table `location` (
-  `id`              smallint unsigned not null auto_increment,
-  `country_id`      smallint unsigned not null,
-  `province_id`     smallint unsigned not null,
-  `sector_id`       smallint unsigned not null,
-  `village_id`      smallint unsigned not null,
+  `sector_id` mediumint unsigned not null,
   primary key (`id`),
-  key `country_id` (`country_id`),
-  key `province_id` (`province_id`),
   key `sector_id` (`sector_id`),
-  key `village_id` (`village_id`),
-  constraint foreign key (`country_id`) references `country` (`id`),
-  constraint foreign key (`province_id`) references `province` (`id`), 
-  constraint foreign key (`sector_id`) references `sector` (`id`), 
-  constraint foreign key (`village_id`) references `village` (`id`) 
-) engine=innodb; 
+  constraint foreign key (`sector_id`) references `sector` (`id`)
+) engine=innodb;
 
 --
 -- Table structure for table `kpk`.`enterprise`
