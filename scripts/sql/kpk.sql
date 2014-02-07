@@ -330,8 +330,8 @@ create table `kpk`.`price_list` (
   enterprise_id   smallint unsigned not null,
   id              smallint  unsigned not null auto_increment,
   name            varchar(100) not null,
-  inventory_type  smallint unsigned, -- these are not strict requirements, just for ease.
-  inventory_group smallint unsigned, -- this as well.
+  discount        decimal(19, 2) unsigned not null default 0,  
+  note            text,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
