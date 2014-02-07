@@ -50,12 +50,47 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   }
 
   function removeInvoiceItem(index) { 
-    console.log('delete request for', index);
     invoice.items.splice(index, 1);
   }
   
-  //Utility methods 
+  function submitInvoice() { 
+    $http.post('sale/', packageInvoiceRequest()).then(handleSaleResponse); 
+  }
   
+  function packageInvoiceRequest() { 
+    var requestContainer = {};
+    
+    //Seller ID will be inserted on the server
+    requestContainer.sale = { 
+      enterprise_id : appstate.get('enterprise').id,
+      cost : calculateTotal(),
+      currency_id : appstate.get('enterprise').currency_id,
+      debitor_id : invoice.debtor.id,
+      invoice_date : invoice.date,
+      note : invoice.note
+    }; 
+
+    requestContainer.saleItems = [];
+    
+    invoice.items.forEach(function(saleItem) { 
+      var formatSaleItem;
+
+      formatSaleItem = { 
+        inventory_id : saleItem.inventoryId,
+        quantity : saleItem.quantity,
+        unit_price : saleItem.price,
+        total : saleItem.quantity * saleItem.price
+      }
+      requestContainer.saleItems.push(formatSaleItem);
+    });
+    return requestContainer;
+  }
+
+  function handleSaleResponse(result) { 
+    $location.path('/invoice/sale/' + result.data.saleId);
+  }
+  
+  //Utility methods 
   //Guess transaction ID, this will not be used writing the transaction to the database
   function createId(current) { 
     var defaultId = 1;
@@ -73,114 +108,10 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     return "PI/" + invoice.id + "/" + invoice.date + "/" + noteDebtor.name; 
   }
   
-  function submitInvoice() { 
-    $http.post('sale/', packageInvoiceRequest()).then(handleSaleResponse); 
-  }
-  
-  function packageInvoiceRequest() { 
-    var requestContainer = {};
+  function calculateTotal() { 
+    var total = 0; 
     
-    requestContainer.sale = { 
-      enterprise_id : appstate.get('enterprise').id,
-      cost : $scope.invoiceTotal(),
-
-    };
-
-    requestContainer.saleItems = [];
-
-
-  }
-
-  function handleSaleResponse(result) { 
-    console.log('sale post has responded', result);
-  }
-
-  //#sfount - refactor from here
-
-  $scope.generateInvoice = function() { 
-    //Client validation logic goes here - should be complimented with server integrity checks etc.
-//      FIXME use reduce here
-    var t = 0;
-    for(var i = 0, l = invoice.items.length; i < l; i++) { t += invoice.items[i].quantity * invoice.items[i].price;
-    }
-
-    //create invoice record
-    var format_invoice = {
-      enterprise_id : appstate.get("enterprise").id, //not safe
-      cost : t,
-      currency_id : appstate.get('enterprise').currency_id, //ohgd
-      debitor_id : invoice.debtor.id,
-      invoice_date: invoice.date,
-      seller_id : $scope.model.seller.data.id, //TODO placeholder - this should be derived from appstate (session) or equivelant
-      discount: '0', //placeholder
-      note : invoice.note,
-      posted : '0'
-    };
-
-//      Generate Invoice first for foreign key constraints, then create invoice items individually
-    connect.basicPut('sale', [format_invoice])
-    .then(function(res) { 
-      if (res.status==200) { 
-        var saleId = res.data.insertId, promise = generateInvoiceItems(saleId);
-        promise.then(function(res) { 
-          console.log("Invoice successfully generated", res);
-          // assuming success - if an error occurs sale should be removed etc.
-          journalPost(saleId)
-          .then(function(res) {
-            //everything is good - if there is an error here, sale should be undone (refused from posting journal)
-            console.log("posting returned", res);
-            // $location.path('/sale_records/' + $scope.invoice_id);
-            
-            //Replaced path to sale records with receipt
-            $location.path('/invoice/sale/' + saleId);
-          }, function (error) {
-            console.log("ERROR:", error);
-          });
-        });
-      }
-    });
-
-    /*
-    */
-  };
-
-  function journalPost(id) {
-    var deferred = $q.defer();
-    connect.fetch('/journal/sale/' + id)
-    .then(function(res) {
-      deferred.resolve(res);
-    }, function (error) {
-      deferred.reject(error);  
-    });
-    return deferred.promise;
-  }
-  
-  //TODO Send all invoice items at once
-  function generateInvoiceItems(saleId) { 
-    var deferred = $q.defer();
-    var promise_arr = [];
-
-    //iterate through invoice items and create an entry to sale_item
-    invoice.items.forEach(function(item) { 
-      var format_item = {
-        sale_id : saleId,
-        inventory_id : item.inventoryId,
-        quantity : item.quantity,
-        unit_price : item.price,
-        total : item.quantity * item.price
-      };
-      console.log("Generating sale item for ", item, format_item);
-      
-      promise_arr.push(connect.basicPut('sale_item', [format_item]));
-    });
-
-    $q.all(promise_arr).then(function(res) { deferred.resolve(res); });
-    return deferred.promise;
-  }
-
-  $scope.invoiceTotal = function() { 
     if(!invoice.items) return;
-    var total = 0;
     invoice.items.forEach(function(item) {
       if(item.quantity && item.price) { 
         //FIXME this could probably be calculated less somewhere else (only when they change)
@@ -188,9 +119,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       }
     });
     return total;
-  };
+  }
 
-  
   $scope.isPayable = function() { 
     if($scope.invoice.payable=="true") return true;
     return false;
@@ -203,27 +133,28 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
  
   //TODO clean up invoice item set properties
   function InvoiceItem() { 
-    
+    var self = this;
+
     function set(inventoryReference) { 
-      this.quantity = this.quantity || 1;
-      this.code = inventoryReference.code;
-      this.text = inventoryReference.text;
-      this.price = inventoryReference.price;
-      this.inventoryId = inventoryReference.id;
-      this.note = "";
+      self.quantity = self.quantity || 1;
+      self.code = inventoryReference.code;
+      self.text = inventoryReference.text;
+      self.price = inventoryReference.price;
+      self.inventoryId = inventoryReference.id;
+      self.note = "";
 
-      this.isSet = true;
+      self.isSet = true;
     }
 
-    return {  
-      quantity: 0,
-      code: null,
-      inventoryId: null,
-      price: null,
-      text: null,
-      note: null,
-      set: set
-    }
+    this.quantity = 0,
+    this.code = null,
+    this.inventoryId = null,
+    this.price = null,
+    this.text = null,
+    this.note = null,
+    this.set = set;
+
+    return this;
   }
 
   $scope.initialiseSaleDetails = initialiseSaleDetails;
@@ -231,4 +162,5 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   $scope.updateInvoiceItem = updateInvoiceItem;
   $scope.removeInvoiceItem = removeInvoiceItem;
   $scope.submitInvoice = submitInvoice;
+  $scope.calculateTotal = calculateTotal;
 });
