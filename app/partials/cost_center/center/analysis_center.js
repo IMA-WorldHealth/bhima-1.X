@@ -39,9 +39,8 @@ angular.module('kpk.controllers')
   }
 
   function saveRegistration (){
-    console.log($scope.register.pc);
     if (isCorrect()){
-      $scope.register.enterprise_id = enterprise.id;
+      $scope.register.enterprise_id = enterprise.id;      
       connect.basicPut('cost_center', [connect.clean($scope.register)]).
       then(function (v){
 
