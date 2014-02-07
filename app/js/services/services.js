@@ -1,35 +1,33 @@
-// Services.js
-//TODO: Define API for getting data from the server - providing query data, simple table names, etc.
+// app/js/services/services.js
+
 (function (angular) {
   'use strict';
   
   var services = angular.module('kpk.services', []);
     
-  services.service('kpkUtilitaire', function() { 
+  services.service('kpkUtilitaire', function() {
 
     this.formatDate = function(dateString) {
       return new Date(dateString).toDateString();
     };
 
-    Date.prototype.toMySqlDate = function (dateParam) {
-      var date = new Date(dateParam), annee, mois, jour;
+    this.convertToMysqlDate = function (dateParam) {
+      var date = new Date(dateParam),
+        annee,
+        mois,
+        jour;
       annee = String(date.getFullYear());
       mois = String(date.getMonth() + 1);
       if (mois.length === 1) {
-       mois = "0" + mois;
+        mois = "0" + mois;
       }
+
       jour = String(date.getDate());
-        if (jour.length === 1) {
-          jour = "0" + jour;
-      }      
+      if (jour.length === 1) {
+        jour = "0" + jour;
+      }
       return annee + "-" + mois + "-" + jour;
     };
-
-    this.convertToMysqlDate = function(dateString) {
-      return new Date().toMySqlDate(dateString);
-    };
-
-
 
     this.isDateAfter = function(date1, date2){
       date1 = new Date(date1).setHours(0,0,0,0);
@@ -37,11 +35,12 @@
       return date1 > date2;
     };
 
-    this.areDatesEqual = function(date1, date2){
+    this.areDatesEqual = function(date1, date2) {
       date1 = new Date(date1).setHours(0,0,0,0);
       date2 = new Date(date2).setHours(0,0,0,0);
       return date1 === date2;
     };
+
   });
   
   //TODO passing list and dependencies to everything, could assign to object?
@@ -52,20 +51,20 @@
       {flag: 'required', message : "Required data not found!", method : hasData}
     ];
 
-    function refresh(dependencies, limit) { 
+    function refresh(dependencies, limit) {
       var list = limit || Object.keys(dependencies);
         
-      list.forEach(function(modelKey) { 
+      list.forEach(function(modelKey) {
         dependencies[modelKey].processed = false;
       });
       return process(dependencies, limit);
     }
 
-    function process(dependencies, limit) {   
+    function process(dependencies, limit) {
       var validate, deferred = $q.defer(), list = filterList((limit || Object.keys(dependencies)), dependencies);
       dependencies[modelLabel] = dependencies[modelLabel] || {};
       
-      fetchModels(list, dependencies).then(function(model) { 
+      fetchModels(list, dependencies).then(function(model) {
         packageModels(list, dependencies, model);
         validate = validateModels(list, dependencies);
         console.log('ran tests', validate); 
@@ -86,14 +85,14 @@
     }
     
     function filterList(list, dependencies) { 
-      var filtered;
+      var filterList;
 
-      filtered = list.filter(function(key, index) {
+      filterList = list.filter(function(key, index) {
         if(dependencies[key].processed) return false; //processed requests
         if(key===modelLabel) return false; //model store
         return true;
       });
-      return filtered;
+      return filterList;
     }
 
     function validateModels(list, dependencies) { 
@@ -168,7 +167,7 @@
         
         //run test on data
         deferred.resolve(isNotEmpty(res.data));
-      }, function(err) { 
+      }, function(err) {
         
         //download failed
         deferred.reject();
@@ -176,133 +175,52 @@
       return deferred.promise;
     }
 
-    function hasData(modelData) { 
-      return (modelData.length > 0); 
+    function hasData(modelData) {
+      return (modelData.length > 0);
     }
 
-    function Status() { 
-      var self = this;
-
-      function setFailed(testObject, reference) { 
-        self.success = false;
-        self.message = testObject.message;
-        self.flag = testObject.flag;
-        self.reference = reference;
+    function Status() {
+      
+      function setFailed(testObject, reference) {
+        this.success = false;
+        this.message = testObject.message;
+        this.flag = testObject.flag;
+        this.reference = reference;
       }
 
       this.setFailed = setFailed;
       this.success = true;
       this.validModelError = true;
-      this.message = null; 
+      this.message = null;
       this.reference = null;
       this.flag = null;
 
       return this;
     }
 
-    return { 
+    return {
       process : process,
       refresh : refresh
     };
   });
 
-  services.factory('appcache', function ($rootScope, $q) { 
-    var dbName = "kpk", dbVersion = 21;
+  services.factory('appcache', function ($rootScope, $q) {
+    var DB_NAME = "kpk", VERSION = 21;
     var db, cacheSupported, dbdefer = $q.defer();
-      
-    function CacheInstance(namespace) { 
-      var self = this;
+
+    function cacheInstance(namespace) {
       if(!namespace) throw new Error('Cannot register cache instance without namespace');
-      
-      //TODO This isn't readable, try common request (queue) method with accessor methods
-      function fetch(key) {
-        // var namespace = self.namespace;
-        var deferred = $q.defer();
-        
-        dbdefer.promise
-        .then(function() { 
-          //fetch logic
-          var transaction = db.transaction(['master'], "readwrite");
-          var objectStore = transaction.objectStore('master');
-          var request = objectStore.index('namespace, key').get([namespace, key]);
-          
-          request.onsuccess = function(event) { 
-            var result = event.target.result;
-            $rootScope.$apply(deferred.resolve(result));
-          };
-          request.onerror = function(event) { 
-            $rootScope.$apply(deferred.reject(event)); 
-          };
-        }); 
-        return deferred.promise;
-      }
-    
-      function put(key, value) { 
-        var deferred = $q.defer();
-        
-        dbdefer.promise
-        .then(function() { 
-          var writeObject = { 
-            namespace: namespace,
-            key: key
-          };
-          var transaction = db.transaction(['master'], "readwrite");
-          var objectStore = transaction.objectStore('master');
-          var request;
-        
-          //TODO jQuery dependency - write simple utility to flatten/ merge object
-          writeObject = jQuery.extend(writeObject, value);
-          request = objectStore.put(writeObject); 
-
-          request.onsuccess = function(event) { 
-            deferred.resolve(event);
-          };
-          request.onerror = function(event) { 
-            deferred.reject(event);
-          };
-        }); 
-        return deferred.promise;
-      }
-
-      function fetchAll() { 
-        var namespace = self.namespace;
-        var deferred = $q.defer();
-
-        dbdefer.promise
-        .then(function() {
-          var store = [];
-          var transaction = db.transaction(['master'], 'readwrite');
-          var objectStore = transaction.objectStore('master');
-          var request = objectStore.index('namespace').openCursor(namespace);
-
-          request.onsuccess = function(event) {
-            var cursor = event.target.result;
-            if(cursor) { 
-              store.push(cursor.value);
-              cursor.continue();
-            } else {
-              $rootScope.$apply(deferred.resolve(store));
-            }
-          };
-
-          request.onerror = function(event) { 
-            deferred.reject(event);
-          };
-        });
-        return deferred.promise;
-      }
-    
-      this.namespace = namespace;
-      this.fetch = fetch;
-      this.fetchAll = fetchAll;
-      this.put = put;
-
-      return this;  
+      return {
+        namespace: namespace,
+        fetch: fetch,
+        fetchAll: fetchAll,
+        put: put
+      };
     }
 
     function init() { 
       //also sets db - working on making it read better
-      openDBConnection(dbName, dbVersion)
+      openDBConnection(DB_NAME, VERSION)
       .then(function(connectionSuccess) { 
         dbdefer.resolve();
       }, function(error) { 
@@ -312,11 +230,89 @@
 
     //generic request method allow all calls to be queued if the database is not initialised
     function request(method) { 
+      console.log(method, arguments);
       if(!requestMap[method]) return false;
       requestMap[method](value);
     }
 
-    
+    //TODO This isn't readable, try common request (queue) method with accessor methods
+    function fetch(key) {
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+      dbdefer.promise
+      .then(function() { 
+        //fetch logic
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace, key').get([namespace, key]);
+        
+        request.onsuccess = function(event) { 
+          var result = event.target.result;
+          $rootScope.$apply(deferred.resolve(result));
+        };
+        request.onerror = function(event) { 
+          $rootScope.$apply(deferred.reject(event)); 
+        };
+      }); 
+      return deferred.promise;
+    }
+  
+    function put(key, value) { 
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+      
+      dbdefer.promise
+      .then(function() { 
+        var writeObject = { 
+          namespace: namespace,
+          key: key
+        }
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request;
+       
+        //TODO jQuery dependency - write simple utility to flatten/ merge object
+        writeObject = jQuery.extend(writeObject, value);
+        request = objectStore.put(writeObject); 
+
+        request.onsuccess = function(event) { 
+          deferred.resolve(event);
+        }
+        request.onerror = function(event) { 
+          deferred.reject(event);
+        }
+      }); 
+      return deferred.promise;
+    }
+
+    function fetchAll() { 
+      var t = this, namespace = t.namespace;
+      var deferred = $q.defer();
+
+      dbdefer.promise
+      .then(function() {
+        var store = [];
+        var transaction = db.transaction(['master'], 'readwrite');
+        var objectStore = transaction.objectStore('master');
+        var request = objectStore.index('namespace').openCursor(namespace);
+
+        request.onsuccess = function(event) {
+          var cursor = event.target.result;
+          if(cursor) { 
+            store.push(cursor.value);
+            cursor.continue();
+          } else {
+            $rootScope.$apply(deferred.resolve(store));
+          }
+        }
+
+        request.onerror = function(event) { 
+          deferred.reject(event);
+        }
+      });
+      return deferred.promise;
+    }
+
     function openDBConnection(dbname, dbversion) { 
       var deferred = $q.defer();
       var request = indexedDB.open(dbname, dbversion);
@@ -352,7 +348,7 @@
     } else { 
       console.log('application cache is not supported in this context');
     }
-    return CacheInstance;
+    return cacheInstance;
   });
 
   services.factory('appstate', function ($q, $rootScope) { 
@@ -577,11 +573,12 @@
 
       if (angular.isString(defn)) {
         $http.get(defn)
-        .then(function (res) {
+        .success(function (res) {
           res.identifier = stringIdentifier || 'id';
           deferred.resolve(new store(res));
-        }, function (err) {
-          throw err;  // temp
+        })
+        .catch(function (err) {
+          throw err; 
         });
         return deferred.promise;
       }
@@ -756,39 +753,22 @@
 
   });
 
-  services.factory('exchange', function (connect, appstate, $timeout) {
-    var enterprise, rateMap;
+  services.factory('exchange', function (connect, appstate, $timeout, kpkUtilitaire, validate) {
+    var map;
 
-    appstate.register('enterprise', function (e) {
-      enterprise = e;
-      refresh();
+    appstate.register('exchange_rate', function (globalRates) {
+      // build rate map anytime the exchange rate changes.
+      map = {};
+      globalRates.forEach(function (r) {
+        map[r.foreign_currency_id] = r.rate;
+      });
     });
 
-    function refresh () {
-      rateMap = null;
-      var date = new Date().toISOString().slice(0,10);
-      connect.fetch({
-        tables : { 'exchange_rate' : { columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date'] }},
-        where : ['exchange_rate.date='+date]
-      }).then(function (array) {
-        $timeout(function () {
-          rateMap = {};
-          // This does two loops, but I feel it is not bad
-        
-          array.forEach(function (rate) {
-            rateMap[rate.foreign_currency_id] = rate.rate;
-          });
-        });
-
-      });
-    }
-
-    return function exchange (value, to) {
-      // value is a number
-      // to is a currency_id
-      // from is a currency_id
-      return rateMap ? (rateMap[to] || 1)* value : value;
+    return function (value, currency_id) {
+      if (!map) console.warn('No exchange rates detected!');
+      return map ? (map[currency_id] || 1.00) * value : value;
     };
+
   });
 
 })(angular);

@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   'use strict';
   
   grunt.initConfig({
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
       },
       combine : {
         files : {
-          'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/partials/**/**/*.css', 'app/css/*.css', '!app/css/*.min.css', 'app/css/grid/*.css'] 
+          'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/partials/**/**/*.css', 'app/css/*.css', '!app/css/*.min.css', 'app/css/grid/*.css']
         }
       }
     }

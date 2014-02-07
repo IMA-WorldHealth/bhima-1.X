@@ -3,8 +3,6 @@
   outline: none;
 }
 
-.nav, .pagination, .carousel a { cursor: pointer; }
-
 body { 
   font-size: 12px;
 }
@@ -51,7 +49,7 @@ section {
   min-height: 37px;
 }
 
-/* For some reason, minification broke this.. */
+/* For some reason, minification broke this... */
 fieldset {
   width: 100%;
 }
@@ -93,11 +91,10 @@ fieldset {
   padding-right: 15px;
   padding-top: 10px;
   padding-bottom: 10px;
-
   font-size: 12px;
 }
 
-.underline { 
+.underline {
   border-bottom: 1px solid #dddddd;
 }
 

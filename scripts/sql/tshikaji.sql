@@ -521,9 +521,6 @@ insert into `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
 	(2,'United States Dollars','$', ',', '.'),
   (3,'Euro', '€', ' ', '.');
              
-insert into `exchange_rate` (`enterprise_currency_id`, `foreign_currency_id`, `rate`, `date`) values
-  (2, 1, 1/920, '2014-01-04');
-
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `logo`, `currency_id`) values 
   (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, '/assets/logos/tsh.jpg', 2);
 
