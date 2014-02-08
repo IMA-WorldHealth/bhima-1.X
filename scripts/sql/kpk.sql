@@ -936,4 +936,15 @@ create table `group_invoice_item` (
 	constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 
+-- TODO Reference user table
+drop table if exists `journal_log`;
+create table `journal_log` (
+  `id`              int unsigned not null auto_increment,
+  `transaction_id`  int unsigned not null,
+  `note`            text,
+  `date`            date not null,
+  `user_id`         smallint unsigned not null,
+  primary key (`id`)
+) engine=innodb;
+
 -- Jon's dump @ 12:45.
