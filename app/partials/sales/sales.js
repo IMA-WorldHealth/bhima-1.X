@@ -87,13 +87,14 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function submitInvoice() { 
     var invoiceRequest = packageInvoiceRequest();
     
+    console.log('inv request', invoiceRequest);
     if(!validSaleProperties(invoiceRequest)) return;
     $http.post('sale/', invoiceRequest).then(handleSaleResponse); 
   }
   
   function packageInvoiceRequest() { 
-    var requestContainer = {};
-    
+    var requestContainer = {}, netDiscountPrice, totalCost;
+     
     //Seller ID will be inserted on the server
     requestContainer.sale = { 
       enterprise_id : appstate.get('enterprise').id,
@@ -102,21 +103,50 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       debitor_id : invoice.debtor.id,
       invoice_date : invoice.date,
       note : invoice.note
-    }; 
+    };
+
+    
+    if(invoice.priceList) {
+       //TODO Hacky 
+      console.log('new calc', calculateTotal(false));
+      netDiscountPrice = (calculateTotal(false) < invoice.priceList.discount) ? calculateTotal(false) : invoice.priceList.discount; 
+      requestContainer.sale.discount = netDiscountPrice;
+    }
 
     requestContainer.saleItems = [];
     
     invoice.items.forEach(function(saleItem) { 
       var formatSaleItem;
-
+      console.log('pkg', saleItem);
       formatSaleItem = { 
         inventory_id : saleItem.inventoryId,
         quantity : saleItem.quantity,
-        unit_price : saleItem.price,
-        total : saleItem.quantity * saleItem.price
-      }
+        inventory_price : saleItem.inventoryReference.price,
+        transaction_price : saleItem.price,
+        credit : saleItem.price * saleItem.quantity,
+        debit : 0
+      };
+
       requestContainer.saleItems.push(formatSaleItem);
+
+      if(invoice.priceList) { 
+        //TODO Placeholder discount item select, this should be in enterprise settings
+        var formatDiscountItem, enterpriseDiscountId=12; 
+
+        
+        formatDiscountItem = { 
+          inventory_id : enterpriseDiscountId,
+          quantity : 1,
+          transaction_price : netDiscountPrice,
+          debit : netDiscountPrice,
+          credit : 0, //FIXME default values because parser cannot insert records with different columns
+          inventory_price : 0
+        };
+        
+        requestContainer.saleItems.push(formatDiscountItem);
+      }
     });
+
     return requestContainer;
   }
 
@@ -141,7 +171,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       }
       console.log('saleItem', saleItem);
       if(isNaN(Number(saleItem.quantity))) return true;
-      if(isNaN(Number(saleItem.unit_price))) return true;
+      if(isNaN(Number(saleItem.transaction_price))) return true;
       return false;
     });
     
@@ -169,9 +199,11 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     var noteDebtor = invoice.debtor || "";
     return "PI/" + invoice.id + "/" + invoice.date + "/" + noteDebtor.name; 
   }
-  
-  function calculateTotal() { 
-    var total = 0; 
+ 
+  //TODO Refactor code
+  function calculateTotal(includeDiscount) { 
+    var total = 0;
+    includeDiscount = angular.isDefined(includeDiscount) ? includeDiscount : true; 
     
     if(!invoice.items) return;
     invoice.items.forEach(function(item) {
@@ -180,6 +212,11 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
         total += (item.quantity * item.price);
       }
     });
+  
+    if(includeDiscount) { 
+      if(invoice.priceList) total -= invoice.priceList.discount;
+      if(total < 0) total = 0;
+    }
     return total;
   }
 

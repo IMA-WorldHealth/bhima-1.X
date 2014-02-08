@@ -38,6 +38,7 @@ delete from `sector`;
 delete from `village`;
 delete from `sale`;
 delete from `patient_group`;
+delete from `price_list`;
 
 -- configure application details
 insert into `user` values
@@ -1084,13 +1085,15 @@ insert into `inv_unit` (`text`) values
 insert into `inv_type` values
   (0,'Article'),
   (1,'Assembly'),
-  (2,'Service');
+  (2,'Service'),
+  (3,'Discount');
 
 insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
   ('Services' , 'S', 92), -- 301 
 	('Medicines', 'M', 92), -- 301
 	('Surgery'  , 'C', 94), -- 303 
-  ('Fiches'   , 'F', 93); -- 302
+  ('Fiches'   , 'F', 93), -- 302
+  ('Discount' , 'D', 351); -- 780 (Randomly chosen) 
 
 insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
   (200, 'CHCRAN', 'Craniotomie'                     , 21.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
@@ -1103,7 +1106,8 @@ insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `
  	(200, 'EXKYPB', 'Petite Kyste De La Bouche'       , 32.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
   (200, 'FCEMPL', 'Fiches employee'                 , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
   (200, 'FCINFA', 'Fiches Infante'                  , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
-  (200, 'FCADUL', 'Fiches Adulte'                   , 8.00,  4, 1, 0, 0, 0, 0, 0, 0, 0);
+  (200, 'FCADUL', 'Fiches Adulte'                   , 8.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
+  (200, 'DNT'   , 'Enterprise Level Discount'       , 0.00,  4, 1, 0, 0, 0, 0, 0, 3, 0);
 
 -- configure creditor
 insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
@@ -1122,9 +1126,16 @@ insert into `transaction_type` values
   (5, 'group_invoice'),
   (6, 'credit_note');
 
+insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
+  (200, 'HIV', 20, 'Reducded cost for HIV patients');
+
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 194, 189),
   (2, 200, 195, 190),
   (3, 200, 196, 191);
 
--- insert into `patient_group` values (200, 1, 1,'AIDS', 'rien'), (200, 2, 1,'Pregnant', 'rien');
+insert into `patient_group` (`enterprise_id`, `price_list_id`, `name`, `note`) values 
+  (200, 1, 'HIV', 'Funds for patients provided by societe x');
+
+insert into `assignation_patient` (`patient_group_id`, `patient_id`) values
+  (1, 1);
