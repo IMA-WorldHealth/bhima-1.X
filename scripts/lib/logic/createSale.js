@@ -39,7 +39,6 @@ module.exports = (function(db, parser, journal) {
       //TODO Possible source of uncaught exceptions floating around unmanaged
       //TODO Very messy rollback code - console log structure can be replaced with actual logging
       //(client shouldn't be concerned with errors here)
-      /*
       if(processedSaleItems) {
         console.log("[createSale] error occured, rolling back sale items");
         rollbackSaleItems(saleRecordId).then(function(result) {
@@ -53,7 +52,6 @@ module.exports = (function(db, parser, journal) {
           rollbackSale(saleRecordId).then(function(result) { console.log('[createSale] rollback success'); });
         }
       }
-     */
     });
   }
 
