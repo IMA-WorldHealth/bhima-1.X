@@ -31,7 +31,6 @@ delete from `user`;
 delete from `period`;
 delete from `fiscal_year`;
 delete from `enterprise`;
-delete from `location`;
 delete from `country`;
 delete from `province`;
 delete from `sector`;
