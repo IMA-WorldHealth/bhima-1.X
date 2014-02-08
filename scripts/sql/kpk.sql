@@ -624,12 +624,16 @@ create table `credit_note` (
 --
 drop table if exists `sale_item`;
 create table `sale_item` (
-  `sale_id`       int unsigned not null,
-  `id`            int unsigned not null auto_increment,
-  `inventory_id`  int unsigned not null,
-  `quantity`      int unsigned default '0',
-  `unit_price`    decimal(19, 2) unsigned not null,
-  `total`         decimal(19, 2) unsigned,
+  `sale_id`           int unsigned not null,
+  `id`                int unsigned not null auto_increment,
+  `inventory_id`      int unsigned not null,
+  `quantity`          int unsigned default '0',
+  `inventory_price`   decimal(19, 2), 
+  `transaction_price` decimal(19, 2) not null,
+  `debit`             decimal(19, 2) not null default 0,
+  `credit`            decimal(19, 2) not null default 0,
+  -- `unit_price`    decimal(19, 2) unsigned not null,
+  -- `total`         decimal(19, 2) unsigned,
   primary key (`id`),
   key `sale_id` (`sale_id`),
   key `inventory_id` (`inventory_id`),
