@@ -43,7 +43,7 @@ module.exports = function (db) {
         return errback(null);
       });
     },
-    
+   
     validDebitorOrCreditor : function (id, errback) {
       // NOTE: This is NOT STRICT. It may find a debitor when a creditor was
       // requested, or vice versa.  This is fine for the checks here, but not
@@ -105,7 +105,7 @@ module.exports = function (db) {
       }
       else return new Date().toISOString().slice(0,10);
     },
-  
+ 
     period : function (date, callback) {
       // gets the currency period from a mysql-compatible date.
       var sql =
@@ -125,7 +125,7 @@ module.exports = function (db) {
       // FIXME : this logic needs perfecting..
       //   NOTE: the idea is that the rate for a day
       //   is considered as enterprise_currency -> foreign_currency
-      //   for each line.  We create an object then of 
+      //   for each line.  We create an object then of
       //   {
       //     foreign_currency_id : rate
       //   }
@@ -148,7 +148,7 @@ module.exports = function (db) {
   };
 
   function authorize (user_id, callback) {
-    // This is a placeholder until we find out how to allow
+    // TODO : This is a placeholder until we find out how to allow
     // users to post.  It is a permissions issue.
     db.execute('SELECT 1+1 AS ans;', function (err, results) {
       if (err) return callback(err);
@@ -161,12 +161,13 @@ module.exports = function (db) {
     var sql =
       'SELECT `sale`.`enterprise_id`, `sale`.`id`, `sale`.`currency_id`, ' +
         '`sale`.`debitor_id`, `sale`.`seller_id`, `sale`.`discount`, `sale`.`invoice_date`, ' +
-        '`sale`.`cost`, `sale`.`note`, `sale_item`.`unit_price`, `sale_item`.`total`, ' +
-        '`sale_item`.`quantity`, `inventory`.`group_id` ' +
+        '`sale`.`cost`, `sale`.`note`, `sale_item`.`transaction_price`, `sale_item`.`debit`, ' +
+        '`sale_item`.`credit`, `sale_item`.`quantity`, `inventory`.`group_id` ' +
       'FROM `sale` JOIN `sale_item` JOIN `inventory` ON ' +
         '`sale`.`id`=`sale_item`.`sale_id` AND ' +
         '`sale_item`.`inventory_id`=`inventory`.`id` ' +
-      'WHERE `sale`.`id`='+sanitize.escape(id)+';';
+      'WHERE `sale`.`id`=' + sanitize.escape(id) +
+      'ORDER BY `sale_item`.`credit`;';
 
     db.execute(sql, function (err, results) {
       if (err) return callback(err, null);
@@ -176,46 +177,66 @@ module.exports = function (db) {
       var enterprise_id = reference_sale.enterprise_id;
       var date = reference_sale.invoice_date;
 
-      // first check - do we have a validPeriod?
+      // first check - do we have a valid period?
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
       check.validPeriod(enterprise_id, date, function (err) {
         if (err) callback(err, null);
 
-        // second check - is the cost positive for every transaction?
-        var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
-        if (!costPositive) return callback(new Error('Negative cost detected for sale id: ' + id));
+        // second check - are the debits (discounts) positive
+        // for every transaction item?
+        var debitPositive = results.every(function (row) {
+          return validate.isPositive(row.debit);
+        });
 
-        // third check - are all the unit_price's for sale_items positive?
-        var unit_pricePositive = results.every(function (row) { return validate.isPositive(row.unit_price); });
-        if (!unit_pricePositive) return callback(new Error('Negative unit_price for sale id: ' + id));
+        if (!debitPositive) {
+          return callback(new Error('Negative debit detected for sale id: ' + id));
+        }
 
-        // fourth check - is the total the price * the quantity?
-        var totalEquality = results.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
-        if (!totalEquality) return callback(new Error('Unit prices and quantities do not match for sale id: ' + id));
-    
+        // third check - are all the credits (revenue) positive
+        // for every transaction item?
+        var creditPositive = results.every(function (row) {
+          return validate.isPositive(row.credit);
+        });
+
+        if (!creditPositive) {
+          return callback(new Error('Negative credit detected for sale id: ' + id));
+        }
+
+        // fourth check - do the credits minus the debits sum to the total
+        // cost?  This also checks for the quantity.
+        var sumDebitsAndCredits = 0;
+        results.forEach(function (i) {
+          sumDebitsAndCredits += (i.credit - i.debit) * i.quantity;
+        });
+
+        if (!validate.isEqual(sumDebitsAndCredits, reference_sale.cost)) {
+          return callback(new Error('The sum of the debits and credits is not the transaction cost for sale id :' + id));
+        }
+
         // all checks have passed - prepare for writing to the journal.
         get.origin('sale', function (err, origin_id) {
           if (err) return callback(err);
           // we now have the origin!
-           
+          
           get.period(date, function (err, period_object) {
             if (err) return callback(err);
 
             // we now have the relevant period!
 
             // create a trans_id for the transaction
-            // MUST BE THE LAST REQUEST TO undo race conditions.
+            // MUST BE THE LAST REQUEST TO prevent race conditions.
             get.transactionId(function (err, trans_id) {
               if (err) return callback(err);
 
               var period_id = period_object.period_id;
               var fiscal_year_id = period_object.fiscal_year_id;
-              
+             
               // we can begin copying data from SALE -> JOURNAL
 
               // First, copy the data from sale into the journal.
-              // FIXME: this is unclear with get.date() which returns a mysql-compatible date
+              // FIXME: this is unclear with get.date() which 
+              // returns a mysql-compatible date
               var sale_query =
                 'INSERT INTO `posting_journal` ' +
                   '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -243,12 +264,12 @@ module.exports = function (db) {
                 'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
 
               // we are ready to execute!
-              
+             
               db.execute(sale_query, function (err, rows) {
                 if (err) return callback(err);
                 db.execute(sale_item_query, function (err, rows) {
                   if (err) return callback(err);
-                  
+                 
                   // now we must set all relevant rows from sale to "posted"
                   var sale_posted_query =
                     'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`id`='+sanitize.escape(id);
@@ -299,11 +320,11 @@ module.exports = function (db) {
         // forth check - is the cost positive?
         var cost_positive = validate.isPositive(reference_payment.cost);
         if (!cost_positive) return callback(new Error('Invalid value for cost for cash id: ' + id));
-        
+       
         // fifth check - is the allocated cost positive for every cash item?
         var allocated_postive = results.every(function (row) { return validate.isPositive(row.allocated_cost); });
         if (!allocated_postive) return callback(new Error('Invalid payment price for one invoice with cash id: ' + id));
-      
+     
         // sixth check - do all the allocated costs add up to the total cost?
         // We must catch this because reduce fails in on a empty array.
         // FIXME : re-write this check
@@ -318,7 +339,7 @@ module.exports = function (db) {
           get.origin('cash', function (err, origin_id) {
             if (err) return callback(err);
             // we now have the origin!
-             
+            
             get.period(date, function (err, period_object) {
               if (err) return callback(err);
 
@@ -339,7 +360,7 @@ module.exports = function (db) {
                   var fiscal_year_id = period_object.fiscal_year_id;
 
                   // we can begin copying data from CASH -> JOURNAL
-                  
+                 
                   // First, figure out if we are crediting or debiting the caisse
                   // This is indicated by the bon.
                   // match { 'S' => debiting; 'E' => crediting }
@@ -348,7 +369,7 @@ module.exports = function (db) {
                   // Are they a debitor or a creditor?
                   var deb_cred_type = reference_payment.bon === 'E' ? '\'D\'' : '\'C\'';
 
-                  // calculate exchange rate.  If money coming in, credit is cash.cost, 
+                  // calculate exchange rate.  If money coming in, credit is cash.cost,
                   // credit_equiv is rate*cash.cost and vice versa.
                   var money = reference_payment.bon === 'E' ?
                     '`cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, 0, ' :
@@ -371,7 +392,7 @@ module.exports = function (db) {
 
 
                   // Then copy data from CASH_ITEM -> JOURNAL
-                  
+                 
                   var cash_item_money = reference_payment.bon === 'E' ?
                     '0, `cash_item`.`allocated_cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ' :
                     '`cash_item`.`allocated_cost`, 0, '+ 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ' ;
@@ -392,7 +413,7 @@ module.exports = function (db) {
                     'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
 
                   // we are ready to execute!
-                  
+                 
                   db.execute(cash_query, function (err, results) {
                     if (err) return callback(err);
                     db.execute(cash_item_query, function (err, results) {
@@ -410,14 +431,14 @@ module.exports = function (db) {
   }
 
   function handlePurchase (id, user_id, done) {
-    // posting purchase requests 
+    // posting purchase requests
     var sql =
       'SELECT `purchase`.`enterprise_id`, `purchase`.`id`, `purchase`.`cost`, `purchase`.`currency_id`, ' +
         '`purchase`.`creditor_id`, `purchase`.`purchaser_id`, `purchase`.`discount`, `purchase`.`invoice_date`, ' +
         '`purchase`.`note`, `purchase`.`posted`, `purchase_item`.`unit_price`, `purchase_item`.`total`, `purchase_item`.`quantity` ' +
       'FROM `purchase` JOIN `purchase_item` ON `purchase`.`id`=`purchase_item`.`purchase_id` ' +
       'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
-    
+   
     db.execute(sql, function (err, results) {
       if (err) return done(err);
       if (results.length === 0) return done(new Error('No purchase order by the id: ' + id));
@@ -443,12 +464,12 @@ module.exports = function (db) {
         // fourth check - is the total the price * the quantity?
         var totalEquality = results.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
         if (!totalEquality) return done(new Error('Unit prices and quantities do not match for purchase id: ' + id));
-    
+   
         // all checks have passed - prepare for writing to the journal.
         get.origin('purchase', function (err, origin_id) {
           if (err) return done(err);
           // we now have the origin!
-           
+          
           get.period(date, function (err, period_object) {
             if (err) return done(err);
 
@@ -461,7 +482,7 @@ module.exports = function (db) {
 
               var period_id = period_object.period_id;
               var fiscal_year_id = period_object.fiscal_year_id;
-              
+             
               // we can begin copying data from PURCHASE -> JOURNAL
 
               // First, copy the data from purchase into the journal.
@@ -495,8 +516,8 @@ module.exports = function (db) {
 
                 db.execute(purchase_item_sql, function (err, rows) {
                   if (err) return done(err);
-                 
-                  // Finally, we can update purchase 
+                
+                  // Finally, we can update purchase
                   var sql = 'UPDATE `purchase` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
 
                   db.execute(sql, function (err, rows) {
@@ -514,7 +535,7 @@ module.exports = function (db) {
   }
 
   function handleGroupInvoice (id, user_id, done) {
-    // posting group invoice requests 
+    // posting group invoice requests
     var sql =
       'SELECT `group_invoice`.`id`, `group_invoice`.`enterprise_id`, `group_invoice`.`debitor_id`,  ' +
       '  `group_invoice`.`note`, `group_invoice`.`authorized_by`, `group_invoice`.`date`, ' +
@@ -524,10 +545,10 @@ module.exports = function (db) {
       '  ON `group_invoice`.`id` = `group_invoice_item`.`payment_id` AND ' +
       '  `group_invoice_item`.`invoice_id` = `sale`.`id` ' +
       'WHERE `group_invoice`.`id`=' + sanitize.escape(id) + ';';
-    
+   
     db.execute(sql, function (err, results) {
       if (err) return done(err);
-      if (results.length === 0) 
+      if (results.length === 0)
         return done(new Error('No invoice by the id: ' + id));
 
       var reference_invoice = results[0];
@@ -538,37 +559,37 @@ module.exports = function (db) {
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
       check.validPeriod(enterprise_id, date, function (err) {
-        if (err) done(err);  
+        if (err) done(err); 
 
         // second check - is the cost positive for every transaction?
         var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
-        if (!costPositive) 
+        if (!costPositive)
           return done(new Error('Negative cost detected for invoice id: ' + id));
 
         // third check - is the total the price * the quantity?
         var sum = 0;
         results.forEach(function (i) { sum += i.cost; });
         var totalEquality = validate.isEqual(reference_invoice.total, sum);
-        if (!totalEquality) 
+        if (!totalEquality)
           return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
 
         // all checks have passed - prepare for writing to the journal.
         get.origin('group_invoice', function (err, origin_id) {
           if (err) return done(err);
           // we now have the origin!
-           
+          
           get.period(date, function (err, period_object) {
             if (err) return done(err);
 
             // we now have the relevant period!
-            
+           
             // NOTE : Since with group_invoice, it is desirable
             // to create on transaction per payment of an invoice.
             // For this reason, we must call get.transactionId()
             // multiple times.  Another way of doing this is simply
             // calculating the trans_ids ahead of time, then incrementing
             // through them.  This is dangerous. FIXME.
-            
+           
             // create a trans_id for the transaction
             // MUST BE THE LAST REQUEST TO prevent race conditions.
             get.transactionId(function (err, trans_id) {
@@ -687,12 +708,12 @@ module.exports = function (db) {
         get.origin('credit_note', function (err, origin_id) {
           if (err) return done(err);
           // we now have the origin!
-           
+          
           get.period(date, function (err, period_object) {
             if (err) return done(err);
 
             // we now have the relevant period!
-            
+           
             // create a trans_id for the transaction
             // MUST BE THE LAST REQUEST TO prevent race conditions.
             get.transactionId(function (err, trans_id) {
