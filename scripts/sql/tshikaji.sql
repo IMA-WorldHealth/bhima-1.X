@@ -1107,7 +1107,7 @@ insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `
   (200, 'FCEMPL', 'Fiches employee'                 , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
   (200, 'FCINFA', 'Fiches Infante'                  , 4.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
   (200, 'FCADUL', 'Fiches Adulte'                   , 8.00,  4, 1, 0, 0, 0, 0, 0, 0, 0),
-  (200, 'DNT'   , 'Enterprise Level Discount'       , 0.00,  4, 1, 0, 0, 0, 0, 0, 3, 0);
+  (200, 'DNT'   , 'Enterprise Level Discount'       , 0.00,  5, 1, 0, 0, 0, 0, 0, 3, 0);
 
 -- configure creditor
 insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
