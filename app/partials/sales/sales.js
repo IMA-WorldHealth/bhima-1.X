@@ -87,7 +87,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function submitInvoice() { 
     var invoiceRequest = packageInvoiceRequest();
     
-    console.log('inv request', invoiceRequest);
     if(!validSaleProperties(invoiceRequest)) return;
     $http.post('sale/', invoiceRequest).then(handleSaleResponse); 
   }
@@ -108,7 +107,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     
     if(invoice.priceList) {
        //TODO Hacky 
-      console.log('new calc', calculateTotal(false));
       netDiscountPrice = (calculateTotal(false) < invoice.priceList.discount) ? calculateTotal(false) : invoice.priceList.discount; 
       requestContainer.sale.discount = netDiscountPrice;
     }
@@ -117,7 +115,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     
     invoice.items.forEach(function(saleItem) { 
       var formatSaleItem;
-      console.log('pkg', saleItem);
       formatSaleItem = { 
         inventory_id : saleItem.inventoryId,
         quantity : saleItem.quantity,
@@ -128,24 +125,23 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       };
 
       requestContainer.saleItems.push(formatSaleItem);
-
-      if(invoice.priceList) { 
-        //TODO Placeholder discount item select, this should be in enterprise settings
-        var formatDiscountItem, enterpriseDiscountId=12; 
-
-        
-        formatDiscountItem = { 
-          inventory_id : enterpriseDiscountId,
-          quantity : 1,
-          transaction_price : netDiscountPrice,
-          debit : netDiscountPrice,
-          credit : 0, //FIXME default values because parser cannot insert records with different columns
-          inventory_price : 0
-        };
-        
-        requestContainer.saleItems.push(formatDiscountItem);
-      }
     });
+    
+    if(invoice.priceList) { 
+      //TODO Placeholder discount item select, this should be in enterprise settings
+      var formatDiscountItem, enterpriseDiscountId=12; 
+      
+      formatDiscountItem = { 
+        inventory_id : enterpriseDiscountId,
+        quantity : 1,
+        transaction_price : netDiscountPrice,
+        debit : netDiscountPrice,
+        credit : 0, //FIXME default values because parser cannot insert records with different columns
+        inventory_price : 0
+      };
+      
+      requestContainer.saleItems.push(formatDiscountItem);
+    }
 
     return requestContainer;
   }
@@ -166,10 +162,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
     invalidItems = saleItems.some(function(saleItem) { 
       for(property in saleItem) { 
-        console.log('checking property', property);
         if(angular.isUndefined(saleItem[property]) || saleItem[property]===null) return true;
       }
-      console.log('saleItem', saleItem);
       if(isNaN(Number(saleItem.quantity))) return true;
       if(isNaN(Number(saleItem.transaction_price))) return true;
       return false;
