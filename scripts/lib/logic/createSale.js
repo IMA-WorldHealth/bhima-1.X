@@ -34,7 +34,7 @@ module.exports = (function(db, parser, journal) {
     }, function(error) {
      
       //send source error to client
-      callback(error, null);  
+      callback(error, null);
      
       //TODO Possible source of uncaught exceptions floating around unmanaged
       //TODO Very messy rollback code - console log structure can be replaced with actual logging

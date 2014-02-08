@@ -247,6 +247,8 @@ angular.module('kpk.controllers').controller('journal', [
       connect.fetch('/trial/')
       .then(function (res) {
         var instance = $modal.open({
+          // this should not close on off click
+          backdrop: 'static',
           templateUrl:'trialBalanceModal.html',
           controller: 'trialBalance',
           resolve : {

@@ -166,7 +166,7 @@ module.exports = function (db) {
       'FROM `sale` JOIN `sale_item` JOIN `inventory` ON ' +
         '`sale`.`id`=`sale_item`.`sale_id` AND ' +
         '`sale_item`.`inventory_id`=`inventory`.`id` ' +
-      'WHERE `sale`.`id`=' + sanitize.escape(id) +
+      'WHERE `sale`.`id`=' + sanitize.escape(id) + ' ' +
       'ORDER BY `sale_item`.`credit`;';
 
     db.execute(sql, function (err, results) {
@@ -250,14 +250,17 @@ module.exports = function (db) {
                 'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
 
               // Then copy data from SALE_ITEMS -> JOURNAL
+              // This query is significantly more difficult because sale_item
+              // contains both debits and credits.
               var sale_item_query =
                 'INSERT INTO `posting_journal` ' +
                   '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                   '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                 'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  '`sale`.`note`, `inv_group`.`sales_account`, 0, `sale_item`.`total`, 0, `sale_item`.`total`, ' + // last three: credit, debit_equiv, credit_equiv
-                  '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                  '`sale`.`note`, `inv_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+                  '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, `sale`.`debitor_id`, ' +
+                  ' \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
                 'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inv_group` ON ' +
                   '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
                   '`inventory`.`group_id`=`inv_group`.`id` ' +
