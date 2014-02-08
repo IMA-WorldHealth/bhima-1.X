@@ -1,5 +1,6 @@
 // scripts/lib/logic/journal.js
 
+// TODO: dependency injection
 var parser = require('../database/parser')(),
     sanitize = require('../util/sanitize'),
     util = require('../util/util'),

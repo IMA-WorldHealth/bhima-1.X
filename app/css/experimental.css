@@ -1,0 +1,95 @@
+/* experimental css */
+
+.bar-bottom {
+  position: fixed;
+  bottom: 0;
+  right: 18%;
+  height: 37px; /* what is the recommended way of setting distances? */
+  width: 100%;
+  background: white;
+  border-top: 1px solid #ddd;
+  /* inherited from section */
+  margin-top: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  min-height: 37px;
+}
+
+header {
+  position:fixed;
+  top:0;
+  height: 50px;
+  right: 18%;
+  left:0;
+  background: white;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 2em;
+  border-bottom: 1px solid #dddddd;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.content {
+  position: fixed;
+  right: 18%;
+  bottom: 37px;
+  top: 87px;
+  left : 0;
+  overflow: auto;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  /*
+  padding-top: 10px;
+  padding-bottom: 10px;
+  */
+  font-size: 12px;
+}
+
+.top-nav {
+  position: fixed;
+  top: 50px;
+  right: 18%; /* width of the sidebar */
+  left: 0;
+  background: white;
+  margin-top: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  min-height: 37px;
+}
+
+.message-box {
+  position: fixed;
+  right: 18%; /* .5 to pad nicely */
+  margin-right: 0.5%; /* .5 to pad nicely */
+  width: 25%;
+  z-index: 998;
+  top: 0.5%;
+}
+
+.message-box > .alert {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+#kpk-container { 
+  height: 100%;
+  width: 82%;
+  position: fixed;
+  background: white;
+  overflow: auto;
+}
+
+#kpk-view {
+  position: relative;
+  height: 100%;
+  width: 82%; /* 100% minus #kpk-sidebar width */
+  background: white;
+  overflow: auto;
+}
