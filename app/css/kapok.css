@@ -1,4 +1,83 @@
 /*Overrides a lot of CSS - check this is the best place for this rule*/
+
+/* Files copied from app.css */
+
+/*
+  TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
+*/
+
+#kpk-sidebar {
+  width: 18%; /* this was 18% @jniles */
+  height: 100%;
+  position: fixed;
+  right: 0;
+  border-left: 1px solid #DADADA;
+  background: #F3F3F3;
+}
+
+#kpk-sidebar h2 { 
+  font-family: "Lucida Sans Unicode";
+  padding-left: 0;
+  font-size: 4em;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+#kpk-sidebar h2 span { 
+   color: #01AC07;
+}
+
+#kpk-header { 
+  box-shadow: 0 2px 6px -3px black;
+  height: 200px;
+}
+
+#kpk-util { 
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+#kpk-tree {
+  padding-top: 20px;
+}
+
+/* See experimental.css for working copy of these rules 
+#kpk-container { 
+  height: 100%;
+  width: 82%;
+  position: fixed;
+  background: white;
+  overflow: auto;
+}
+
+#kpk-view {
+  position: relative;
+  height: 100%;
+  /*
+  Idea being to seperate the view (unit) and outside, can't figure this out
+  */
+  /*
+  background: white;
+  height: 100%;
+  margin-top: 5px;
+  margin-right: 8px;
+  margin-left: 8px;
+  margin-bottom: 5px;
+}
+*/
+
+/* Hide in webkit the number spinners 
+ * for both date and number.
+ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: none; 
+}
+
+/* kapok.css old files */
+
 * {
   outline: none;
 }
@@ -7,20 +86,25 @@ body {
   font-size: 12px;
 }
 
+/*
 header {
   padding-top: 7px;
   padding-bottom: 7px;
   font-size: 2em;
   border-bottom: 1px solid #dddddd;
 
-  /*Avoid having nested styles with content*/
   padding-left: 15px;
   padding-right: 15px;
   margin-right: auto;
   margin-left: auto;
 
-  /*Not sure about this*/
-  /*margin-bottom: 10px;*/
+}
+*/
+
+header small { 
+  font-weight: normal;
+  line-height: 1;
+  color: #999999;
 }
 
 /* temp :: used in reporting account_balances */
@@ -32,12 +116,7 @@ header {
   padding-right: 15px !important;
 }
 
-header small { 
-  font-weight: normal;
-  line-height: 1;
-  color: #999999;
-}
-
+/*
 section { 
   margin-top: 0;
   padding-left: 15px;
@@ -45,9 +124,9 @@ section {
   padding-bottom: 3px;
   padding-top: 3px;
 
-  /*Fixes pull-right only menus, should not be needed*/
   min-height: 37px;
 }
+*/
 
 /* For some reason, minification broke this... */
 fieldset {
@@ -58,14 +137,15 @@ fieldset {
   box-sizing: content-box;
 }
 
-
-.kpk-messenger {
+/*
+.message-box {
   position: absolute;
   z-index: 998;
   right: 0.5%;
   top: 0.5%;
   width: 25%;
 }
+*/
 
 .center {
   width: 75%;
@@ -80,10 +160,7 @@ fieldset {
   text-align: left;
 }
 
-.kpk-messenger > .alert {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-}
-
+/*
 .content {
   margin-right: auto;
   margin-left: auto;
@@ -93,6 +170,7 @@ fieldset {
   padding-bottom: 10px;
   font-size: 12px;
 }
+*/
 
 .underline {
   border-bottom: 1px solid #dddddd;
@@ -102,6 +180,7 @@ fieldset {
   border-top: 1px solid #dddddd;
 }
 
+/*
 .bar-bottom {
   border-top: 1px solid #dddddd;
   position: absolute;
@@ -109,8 +188,9 @@ fieldset {
   left: 0;
   bottom: 0;
   width    : 100%;
-  /* background: white; */
+  /* background: white; 
 }
+*/
 
 .capital { 
   text-transform: capitalize;

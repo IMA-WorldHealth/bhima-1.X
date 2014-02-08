@@ -11,6 +11,7 @@
 <!--not required in placeholder rewrite-->
 <div ng-controller="app">
 
+  <!-- sidebar definition -->
   <div id="kpk-sidebar" class="container hidden-print">
     <div class="row" id="kpk-header">
 
@@ -39,14 +40,29 @@
     <span class="invisible">.</span>
   </span>
 
-  <div id="kpk-container"> 
+  <!-- Testing ... moving messages outside of view area -->
+  <div class="hidden-print">
+    <div ng-controller="message" class="message-box" id="msg-box">
+      <alert ng-repeat="alert in messages" type="alert.type" close="close($index)">
+        <span ng-bind-html="alert.msg"></span>
+      </alert>
+    </div>
+  </div>
+
+  <!--
+  <div id="kpk-container">
+  -->
+    <!--
     <div class="hidden-print">
       <div ng-controller="messageCtrl" class="kpk-messenger">
         <alert ng-repeat="alert in messages" type="alert.type" close="close($index)"><span ng-bind-html="alert.msg"></span></alert>
       </div>
     </div>
+    -->
     <div ng-view id="kpk-view"></div>
+    <!--
   </div>
+    -->
 </div>
 
 
