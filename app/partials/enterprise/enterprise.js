@@ -32,23 +32,25 @@ function ($scope, $q, $window, connect, validate, messenger) {
   };
 
 
-  dependencies.location = {
+  dependencies.locations = {
     query : '/location/'
   };
-
-  validate.process(dependencies).then(initialize, handleError);
+  
   
   function initialize (models) {
     for (var k in models) $scope[k] = models[k];
+
     $scope.newAccount = {};
+    for(var j in $scope.locations) console.log(j);
   }
 
   function handleError (error) {
     messenger.danger('An error occured in fetching requests: ' + JSON.stringify(error)); 
   }
 
-  $scope.formatLocation = function formatLocation (l) {
-    return [l.village, l.sector, l.province, l.country].join(' -- ');
+  function fLocation (l) {
+    console.log('on est la')
+    return [l.Village, l.Sector, l.Province, l.Country].join(' -- ');
   };
 
   $scope.newEnterprise = function () {
@@ -140,5 +142,13 @@ function ($scope, $q, $window, connect, validate, messenger) {
   $scope.print = function () {
     $window.print();
   };
+
+  //invocation
+
+  validate.process(dependencies).then(initialize, handleError);
+
+  //exposition 
+
+  $scope.fLocation = fLocation;
 
 }]);
