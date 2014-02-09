@@ -28,3 +28,7 @@
 .hack-right { 
   margin-left: 5px !important;
 }
+
+.par-bottom {
+  position: relative;
+}

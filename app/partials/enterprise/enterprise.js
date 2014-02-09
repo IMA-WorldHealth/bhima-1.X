@@ -7,7 +7,7 @@ angular.module('kpk.controllers')
   'validate',
   'messenger',
 function ($scope, $q, $window, connect, validate, messenger) {
-  var dependencies = {};
+  var dependencies = {}, model={};
 
   dependencies.enterprise = {
     required : true,
@@ -30,18 +30,13 @@ function ($scope, $q, $window, connect, validate, messenger) {
       }
     }
   };
-
-
-  dependencies.locations = {
-    query : '/location/'
-  };
   
   
   function initialize (models) {
-    for (var k in models) $scope[k] = models[k];
-
+    model.dependences = models[0];
+    $scope.location = models[1];
+    for (var k in model.dependences) $scope[k] = model.dependences[k];
     $scope.newAccount = {};
-    for(var j in $scope.locations) console.log(j);
   }
 
   function handleError (error) {
@@ -49,8 +44,7 @@ function ($scope, $q, $window, connect, validate, messenger) {
   }
 
   function fLocation (l) {
-    console.log('on est la')
-    return [l.Village, l.Sector, l.Province, l.Country].join(' -- ');
+    return [l.village, l.sector, l.province, l.country].join(' -- ');
   };
 
   $scope.newEnterprise = function () {
@@ -143,9 +137,23 @@ function ($scope, $q, $window, connect, validate, messenger) {
     $window.print();
   };
 
+  
+  var getLocation = function(){
+    var def = $q.defer();
+    connect.MyBasicGet('/location/')
+    .then(function(values){
+      def.resolve(values);
+    });
+    return def.promise;
+  }
+
+  function run (){
+    $q.all([validate.process(dependencies), getLocation()]).then(initialize);
+  }
+
   //invocation
 
-  validate.process(dependencies).then(initialize, handleError);
+  run();
 
   //exposition 
 

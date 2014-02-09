@@ -11,39 +11,40 @@ angular.module('kpk.controllers')
     var dependencies = {},
         defaultBirthMonth = '06-01';
 
-    $scope.patient = {};
-    $scope.data = {};
+    $scope.patient = {}, $scope.country = {}, $scope.province = {},
+    $scope.sector = {}, $scope.village = {}, $scope.current_country = {}, $scope.current_province = {},
+    $scope.current_sector = {}, $scope.current_village = {}, $scope.data = {}, $scope.assignation = {};
     $scope.sessionProperties = {};
+
+    dependencies.patientGroup = {
+      query : { tables : {'patient_group' : {'columns' : ['id', 'name']}}}
+    };
     
     dependencies.debtorGroup = {
       query : { tables : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
     };
 
     dependencies.village = {
-      query : { tables : { 'village' : { 'columns' : ['id', 'name'] }}}
+      query : { tables : { 'village' : { 'columns' : ['id', 'name', 'sector_id'] }}}
     };
 
     dependencies.sector = {
-      query : { tables : { 'sector' : { 'columns' : ['id', 'name'] }}}
+      query : { tables : { 'sector' : { 'columns' : ['id', 'name', 'province_id'] }}}
     };
 
     dependencies.province = {
-      query : { tables : { 'province' : { 'columns' : ['id', 'name'] }}}
+      query : { tables : { 'province' : { 'columns' : ['id', 'name', 'country_id'] }}}
     };
 
     dependencies.country = {
       query : { tables : { 'country' : { 'columns' : ['id', 'country_en'] }}}
     };
-
-    dependencies.location = {
-      query : { tables : { 'location' : { 'columns' : ['id', 'village_id', 'sector_id', 'country_id'] }}}
-    };
-
-    validate.process(dependencies).then(patientRegistration);
+    
 
     function patientRegistration(model) {
       $scope.model = model;
       handlePatientImage();
+      initSelect($scope.enterprise.location_id);
     }
       
     function handlePatientImage() {
@@ -68,114 +69,118 @@ angular.module('kpk.controllers')
     }
     
     function registerPatient(patient) {
-      createLocation().then(function(locationId) {
-        patient.location_id = locationId;
-        writePatient(patient);
+      getVillageId($scope.village.name, $scope.sector.sector_id).then(function(origin_id){
+        patient.origin_location_id = origin_id;
+        getVillageId($scope.current_village.name, $scope.current_sector.sector_id).then(function(current_id){
+         patient.current_location_id = current_id;
+         if(patient.origin_location_id && patient.current_location_id){
+            writePatient(patient);
+         }
+        });
       });
+    }
+
+    function getVillageId(name, id_sector){
+      var id = undefined;
+      var def = $q.defer();
+      for(var i = 0; i<$scope.model.village.data.length; i++){
+        if($scope.model.village.data[i].name.toUpperCase() === name.toUpperCase() && $scope.model.village.data[i].sector_id === id_sector){
+          id = $scope.model.village.data[i].id;
+          console.log(id);
+          break;
+        }
+      }
+
+      if(id) {
+        console.log('le village existe deja');
+        def.resolve(id);
+      }else{
+        console.log('nous devons ajouter le village');
+        var toInputVillage = {
+          name : name,
+          sector_id : id_sector
+        }
+        connect.basicPut('village', [toInputVillage]).then(function(v){
+          toInputVillage.id = v.data.insertId;
+          $scope.model.village.post(toInputVillage);
+          console.log('le modele a change', $scope.model.village);
+          return def.resolve(v.data.insertId);
+        });
+      }
+      return def.promise;
     }
 
     function writePatient(patient) {
       var packageDebtor = {
         group_id : $scope.debtor.debtor_group.id,
-        text : 'Debtor account for patient ' + patient.first_name + ' ' + patient.last_name,
-        convention_id : $scope.debtor.convention_id
+        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name,
       };
 
       connect.basicPut('debitor', [packageDebtor]).then(function(result) {
         patient.debitor_id = result.data.insertId;
-
         connect.basicPut('patient', [patient]).then(function(result) {
           $scope.submitted = true;
-          $location.path('invoice/patient/' + result.data.insertId);
+          if($scope.assignation.patient_group_id){
+            $q.all(
+            $scope.assignation.patient_group_id.map(function (patient_group_id){
+              var pg = {patient_group_id : patient_group_id, patient_id : result.data.insertId};
+              return connect.basicPut('assignation_patient', [pg]);
+            })
+            ).then(function (v){
+              $location.path('invoice/patient/' + result.data.insertId);
+            }); 
+          }else{
+            $location.path('invoice/patient/' + result.data.insertId);
+          }         
         });
       });
     }
-   
-    //Location code - requires refactor + newer location schema
-    $scope.selectLocation = function selectLocation () {
-      $scope.data.oldLocaton = true;
-    };
 
-    $scope.$watch('data.village_id', function () {
-      // reset the oldLocation flag if the model changes.
-      $scope.data.oldLocation = false;
-    });
 
-    // TODO: Clean this code up.
-    function createLocation () {
-      var defer = $q.defer();
 
-      // create location data if not exists
-      var location_data;
-      var data = $scope.data;
-      if ($scope.data.oldLocation) {
-        location_data = {
-          country_id : data.country_id,
-          province_id : data.province_id,
-          sector_id : data.sector_id,
-          village_id : data.village_id
-        };
-
-        connect.basicPut('location', [location_data])
-        .then(function (result) {
-          defer.resolve(result.data.insertId);
-        }, function (error) {
-          defer.reject(error);
-        });
-
-      } else {
-        connect.basicPut('village', [{name: data.village_id}])
-        .then(function (result) {
-          var id = result.data.insertId;
-          location_data = {
-            country_id : data.country_id,
-            province_id : data.province_id,
-            sector_id : data.sector_id,
-            village_id : id
-          };
-
-          connect.basicPut('location', [location_data])
-          .then(function (result) {
-            defer.resolve(result.data.insertId);
-          }, function (error) {
-            defer.reject(error);
-          });
-        });
-      }
-
-      return defer.promise;
+    function handleOriginCountryChange(){
+      console.log('cahangement');
+      
     }
-
-    $scope.formatLocation = function(l) {
-      return l.city + ", " + l.region;
-    };
-
-    $scope.calcLocation = function (v) {
-      $scope.data.newVillage = false;
-    };
-
-    $scope.villageFilter = function (village) {
-      var sector_id = $scope.data.sector_id;
-      return $scope.model.location.data.some(function (l) {
-        return l.sector_id === sector_id && l.village_id === village.id;
-      });
-    };
-
-    $scope.formatTypeAhead = function () {
-      return $scope.model ? $scope.model.village.get($scope.data.village_id).name : '';
-    };
      
     //Utility methods
     $scope.$watch('sessionProperties.yob', function(nval) {
       if(nval && nval.length===4) $scope.patient.dob = nval + '-' + defaultBirthMonth;
     });
 
-    //$().focus() would allow the page to flow better but is fairly cheeky in angular
     function enableFullDate() { $scope.sessionProperties.fullDateEnabled = true; }
     
     function checkChanged(model) { return angular.equals(model, $scope.master); }
+
+    function initSelect(village_id){
+
+      $scope.village = angular.copy($scope.model.village.get(village_id));
+      $scope.sector = angular.copy($scope.model.sector.get($scope.village.sector_id));
+      $scope.sector.sector_id = $scope.sector.id;
+      $scope.province = angular.copy($scope.model.province.get($scope.sector.province_id));
+      $scope.province.province_id = $scope.province.id;
+      $scope.country = angular.copy($scope.model.country.get($scope.province.country_id));
+      $scope.country.country_id = $scope.country.id;
+
+      $scope.current_village =angular.copy($scope.model.village.get(village_id));
+      $scope.current_sector = angular.copy($scope.model.sector.get($scope.current_village.sector_id));
+      $scope.current_sector.sector_id = $scope.current_sector.id;
+      $scope.current_province = angular.copy($scope.model.province.get($scope.current_sector.province_id));
+      $scope.current_province.province_id = $scope.current_province.id;
+      $scope.current_country = angular.copy($scope.model.country.get($scope.current_province.country_id));
+      $scope.current_country.country_id = $scope.current_country.id;
+    }
+
+    // invocation
+
+    appstate.register('enterprise', function(enterprise){
+      $scope.enterprise = enterprise;      
+      validate.process(dependencies).then(patientRegistration);
+    });
+    
       
     //Expose methods to scope
+
     $scope.registerPatient = registerPatient;
     $scope.enableFullDate = enableFullDate;
     $scope.checkChanged = checkChanged;
