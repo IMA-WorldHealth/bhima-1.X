@@ -82,7 +82,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       query: { 
         tables: { 
           credit_note: { columns: ['id', 'cost', 'debitor_id', 'seller_id', 'sale_id', 'note_date', 'description'] },
-          patient: { columns: ['first_name', 'last_name', 'location_id'] }
+          patient: { columns: ['first_name', 'last_name', 'current_location_id'] }
         },
         join: ['credit_note.debitor_id=patient.debitor_id'],
         where: ['credit_note.id=' + invoiceId]  
@@ -101,7 +101,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       where: ['patient.id=' + invoiceId]
     }
     dependencies.recipient.query.tables['patient'] = { 
-      columns: ['id', 'first_name', 'last_name', 'dob', 'location_id', 'debitor_id', 'registration_date']
+      columns: ['id', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_id', 'registration_date']
     };
   
     validate.process(dependencies, ['recipient']).then(buildPatientLocation);

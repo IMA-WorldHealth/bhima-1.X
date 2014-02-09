@@ -97,7 +97,7 @@
 
             <div class="form-group">
               <label for="kpk-enterprise-location" class="capital">{{ 'LOCATION' | translate }} : </label>
-              <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="location.id as fLocation(location) for location in locations.data">
+              <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
                 <option value="" disabled="disabled">-- Select a Location --</option>
               <select>
             </div>
@@ -148,7 +148,7 @@
 
             <div class="form-group">
               <label for="kpk-enterprise-location" class="capital">{{ 'LOCATION' | translate }} : </label>
-              <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="location.id as formatLocation(location) for location in location.data">
+              <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
                 <option value="" disabled="disabled">-- Select a Location --</option>
               <select>
             </div>

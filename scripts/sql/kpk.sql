@@ -442,15 +442,18 @@ create table `patient` (
   `email`             varchar(20),
   `addr_1`            varchar(100),
   `addr_2`            varchar(100),
-  `location_id`       mediumint unsigned not null,
+  `origin_location_id`       mediumint unsigned not null,
+  `current_location_id`       mediumint unsigned not null,
   `registration_date` timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
   key `first_name` (`first_name`),
   key `debitor_id` (`debitor_id`),
-  key `location_id` (`location_id`),
+  key `origin_location_id` (`origin_location_id`),
+  key `current_location_id` (`current_location_id`),
   unique key `creditor_id` (`creditor_id`),
   constraint foreign key (`debitor_id`) references `debitor` (`id`) on update cascade,
-  constraint foreign key (`location_id`) references `village` (`id`) on update cascade
+  constraint foreign key (`current_location_id`) references `village` (`id`) on update cascade,
+  constraint foreign key (`origin_location_id`) references `village` (`id`) on update cascade
 ) engine=innodb;
 
 

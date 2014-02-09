@@ -1069,8 +1069,8 @@ insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `locat
 insert into `debitor` (`id`, `group_id`, `text`) values 
   (1, 1, "Jon Niles");
 
-insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
-  (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
+insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `origin_location_id`, `current_location_id`) values
+  (1, 1, "M","Jon", "Niles", "1992-06-07", 1, 1);
 
 -- configure inventory
 
