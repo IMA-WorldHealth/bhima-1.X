@@ -2,7 +2,7 @@
 <span>Patient Invoice Records</span>
 </header>
 
-<section class="underline">
+<section class="top-nav">
   Showing latest records Max({{defaultLimit}})
   <div class="pull-right">
     <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
@@ -66,10 +66,9 @@
   </div>
 </div>
 
-<section class="underline overline">
-<div class="pull-right">
-              <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
-                <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
-
-            </div>
+<section class="bar-bottom">
+  <div class="pull-right">
+  <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
+    <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
+  </div>
 </section>

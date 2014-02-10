@@ -2,15 +2,17 @@
 	<span class="capital">{{'UP_TITLE' | translate}}</span>
 </header>
 
-<section class="underline">
+<section class="top-nav">
 	<div class="pull-right">
-    <button class="btn btn-sm btn-default" class="capital" ng-click="setAction('add')"><i class="glyphicon glyphicon-user"></i> Add a New User</button>
+    <button class="btn btn-sm btn-default" class="capital" ng-click="setAction('add')">
+      <i class="glyphicon glyphicon-user"></i> Add a New User
+    </button>
 	</div>
 </section>
 
 <div class="content">
   <div class="row">
-    <div class="col-xs-5">
+    <div class="col-xs-6">
       <div class="panel panel-primary">
         <div class="panel-heading capital"> 
           {{ 'REGISTERED_USERS' | translate }}
@@ -29,16 +31,16 @@
               <td>{{user.first}}</td>
               <td>{{user.username}}</td>
               <td>{{user.email}}</td>
-              <td ng-click="editInfo(user)"><button ><i class="glyphicon glyphicon-pencil"></i></button></td>
-              <td ng-click="editPermission(user)"><button><i class="glyphicon glyphicon-cog"></i></button></td>
-              <td ng-click="removeUser(user)"><button><i class="glyphicon glyphicon-trash"></i></button></td>
+              <td ng-click="editInfo(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button></td>
+              <td ng-click="editPermission(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-cog"></i></button></td>
+              <td ng-click="removeUser(user)"><button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button></td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div class="col-xs-7" ng-switch="action">
+    <div class="col-xs-6" ng-switch="action">
       <div ng-switch-default>
         <div class="alert alert-info">
           <h4>User and Permissions Management</h4>

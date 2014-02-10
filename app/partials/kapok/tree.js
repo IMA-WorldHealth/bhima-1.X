@@ -1,16 +1,16 @@
 angular.module('kpk.controllers')
-.controller('treeController', [
+.controller('tree', [
   '$scope',
   '$q',
   '$location',
   'appcache',
   'connect',
-  function($scope, $q, $location, AppCache, connect) {    
-    // TODOs:
+  function($scope, $q, $location, AppCache, connect) {
+    // TODO:
     //   Theoretically, the users and permissions depend on an
     //   enterprise, so do we need it or not?
     'use strict';
-    
+   
     var MODULE_NAMESPACE = 'tree';
     var cache = new AppCache(MODULE_NAMESPACE);
     var collapsed_model = [];
@@ -18,7 +18,8 @@ angular.module('kpk.controllers')
     $scope.treeData = [];
 
     function loadTreeOptions() {
-      cache.fetchAll().then(function(res) {
+      cache.fetchAll()
+      .then(function(res) {
         collapsed_model = res;
         formatElementGroup($scope.treeData);
       });
@@ -36,7 +37,7 @@ angular.module('kpk.controllers')
         return element;
       });
     }
-    
+   
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
       if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
         var path = $scope.navtree.currentNode.p_url;

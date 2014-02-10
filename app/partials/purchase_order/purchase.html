@@ -1,23 +1,22 @@
-<link rel="stylesheet" href="partials/purchase_order/purchase.css"/>
 <header>
   <span>Create Purchase Order</span>
 </header>
 
-<section class="underline">
+<section class="top-nav">
   <div class="btn-group">
-              <button class="btn btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase
-                Order
-              </button>
-              <button class="btn btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">
-                Quote
-              </button>
-            </div>
-            <div class="pull-right">
-              <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
-              </a>
-              <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
+  <button class="btn btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase
+    Order
+  </button>
+  <button class="btn btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">
+    Quote
+  </button>
+</div>
+<div class="pull-right">
+  <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
+  </a>
+  <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
 
-            </div>
+</div>
 </section>
 
 <div class="content">
@@ -167,7 +166,7 @@
 
 </div>
 
-<section class="underline overline">
+<section class="bar-bottom">
   <div class="pull-right">
     <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
   </div>

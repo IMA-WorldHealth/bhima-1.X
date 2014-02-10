@@ -1,40 +1,41 @@
-<link href="partials/reports/debitor_aging/debitor_aging.css" rel="stylesheet">
 
-  <section class="underline">
-    <h4> Fiscal Year : {{fySelected.fiscal_year_txt}}</h4>
-    <h4>Report : Deditor Aging  <small>{{today | date}}</small></h4>
-  </section>
+<header>
+    <span> Fiscal Year : {{fySelected.fiscal_year_txt}}</span>
+    <span>Report : Deditor Aging  <small>{{today | date}}</small></span>
+</header>
 
-  <section class="underline hidden-print">
-    <div class="pull-right">
 
-      <span class="dropdown">
-        <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Fiscal Year</a>
-        <ul class="dropdown-menu">
-          <li class="dropdown-header">choose Fiscal Years</li>
-          <li ng-repeat="fy in models.fys">
-            <a class="capital" ng-click="reload(fy)" href="">
-              <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !fy.checked, 'glyphicon-check' : !!fy.checked}"></i>{{fy.fiscal_year_txt}}
-            </a>
-          </li>
-        </ul>
-      </span> 
+<section class="top-nav hidden-print">
+  <div class="pull-right">
 
-      <span class="dropdown">
-        <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Periods</a>
-        <ul class="dropdown-menu">
-          <li class="dropdown-header">choose the period</li>
-          <li ng-repeat="p in models.periods">
-            <a class="capital" ng-click="adjust(p)" href="">
-              <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !p.checked, 'glyphicon-check' : !!p.checked}"></i>{{p.period_start | date}}
-            </a>
-          </li>
-        </ul>
-      </span>
+    <span class="dropdown">
+      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Fiscal Year</a>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">choose Fiscal Years</li>
+        <li ng-repeat="fy in models.fys">
+          <a class="capital" ng-click="reload(fy)" href="">
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !fy.checked, 'glyphicon-check' : !!fy.checked}"></i>{{fy.fiscal_year_txt}}
+          </a>
+        </li>
+      </ul>
+    </span> 
 
-    </div>
-  </section> 
+    <span class="dropdown">
+      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Periods</a>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">choose the period</li>
+        <li ng-repeat="p in models.periods">
+          <a class="capital" ng-click="adjust(p)" href="">
+            <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !p.checked, 'glyphicon-check' : !!p.checked}"></i>{{p.period_start | date}}
+          </a>
+        </li>
+      </ul>
+    </span>
 
+  </div>
+</section> 
+
+<div class="content">
   <table id="tbl-print" class="table table-bordered">
     <tr>
        <td>DEBITOR NAME</td>
@@ -45,3 +46,4 @@
        <td ng-repeat="debitorBalance in debitor.balances track by $index">{{debitorBalance | currency}}</td>
     </tr>      
   </table>
+</div>

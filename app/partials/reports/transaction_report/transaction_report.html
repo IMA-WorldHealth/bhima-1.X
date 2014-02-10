@@ -1,14 +1,12 @@
-<link href="partials/reports/transaction_report/transaction_report.css" rel="stylesheet">
 <header>
-  <span class="capital">
-    Transaction Report     
-  </span>
-  </header>
-  <div class="capital pull-right visible-print"> {{DC}} : {{model.selected.text}} <br/> {{data.dateFrom}} / {{data.dateTo}}</div>  
+  <span class="capital">Transaction Report</span>
+</header>
 
-<section class="underline">
+<section class="top-bar">
+  <div class="capital pull-right visible-print"> {{DC}} : {{model.selected.text}} <br/> {{data.dateFrom}} / {{data.dateTo}}</div>  
 </section>
 
+<!--
 <section class="underline infobar hidden-print">
   <accordion close-others="true">    
     <accordion-group is-open="false">
@@ -88,6 +86,7 @@
   </accordion>
 </section>
 
+
 <section class="underline infobar" ng-show="show">
   balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
   <div class="pull-right">      
@@ -96,30 +95,125 @@
       Sold : {{sold | currency}}
   </div>
 </section>
+-->
 
-<table id="tbl-print" class="table table-bordered">
-  <tr>
-     <td>ID</td>
-     <td>Transaction ID</td>
-     <td>Transaction Date</td>
-     <td>Account Number</td>
-     <td>Debit</td>
-     <td>Credit</td>
-     <td>Currency</td>
-     <td>Service</td>
-     <td>Names</td>
-  </tr>
+<div class="content">
 
-  <tr ng-repeat="t_report in model.transReport">
-    <td>{{t_report.id}}</td>
-    <td>{{t_report.trans_id}}</td>
-    <td>{{t_report.trans_date | date}}</td>
-    <td>{{t_report.account_number}}</td>
-    <td>{{t_report.debit | currency}}</td>
-    <td>{{t_report.credit | currency}}</td>
-    <td>{{t_report.name}}</td>
-    <td>{{t_report.service_txt}}</td>
-    <td>{{t_report.names}}</td>
-  </tr>
-</table>
+  <div class="infobar">
+    <section class="underline infobar hidden-print">
+      <accordion close-others="true">    
+        <accordion-group is-open="false">
+          <accordion-heading>
+            <span>Settings</span> 
+            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
+          </accordion-heading>
+          <table class="table table-condensed">
+            <tr>
+              <td>
+                <div class="radio">
+                  <label>
+                    <input type="radio" id="indiID" name="option_type" ng-click="fill('I')"/>
+                      Individual
+                  </label>
+                </div>
+              </td>
+              <td>
+
+                <div class="radio">
+                  <label>
+                    <input type="radio" id="groupID" name="option_type" ng-click="fill('G')"/>
+                    Group
+                  </label>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+
+                <div class="radio">
+                  <label>
+                    <input type="radio" id="dID" name="option_dc" ng-click="fill('D')"/>
+                    Debitor
+                  </label>
+                </div>
+
+              </td>
+              <td>
+                <div class="radio">
+                  <label>
+                    <input type="radio"id="cID" name="option_dc" ng-click="fill('C')"/>
+                    Creditor
+                  </label>
+                </div>
+              </td>            
+            </tr>
+
+            <tr>            
+              <td>
+                <div class="form-group">
+                  <label>Date From</label>
+                  <input type="date" class="form-kapok" ng-model="data.dateFrom">
+                </div>              
+              </td>
+
+              <td>
+                <div class="form-group">
+                  <label for="dob">Date To</label>
+                  <input type="date" class="form-kapok" ng-model="data.dateTo">
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan=2>
+                <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
+                    <option value="" disabled="disabled">--Select the name --</option>
+                </select>
+              </td>
+              <td>            
+              </td>
+            </tr>
+          </table>
+        </accordion-group>   
+      </accordion>
+    </section>
+  </div>
+
+
+  <div class="infobar" ng-show="show">
+    balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
+    <div class="pull-right">      
+        Total Debit  : {{credit | currency}}
+        Total Credit : {{debit | currency}}
+        Sold : {{sold | currency}}
+    </div>
+  </div>
+
+  <table id="tbl-print" class="table table-bordered">
+    <tr>
+       <td>ID</td>
+       <td>Transaction ID</td>
+       <td>Transaction Date</td>
+       <td>Account Number</td>
+       <td>Debit</td>
+       <td>Credit</td>
+       <td>Currency</td>
+       <td>Service</td>
+       <td>Names</td>
+    </tr>
+
+    <tr ng-repeat="t_report in model.transReport">
+      <td>{{t_report.id}}</td>
+      <td>{{t_report.trans_id}}</td>
+      <td>{{t_report.trans_date | date}}</td>
+      <td>{{t_report.account_number}}</td>
+      <td>{{t_report.debit | currency}}</td>
+      <td>{{t_report.credit | currency}}</td>
+      <td>{{t_report.name}}</td>
+      <td>{{t_report.service_txt}}</td>
+      <td>{{t_report.names}}</td>
+    </tr>
+  </table>
+</div>
 
