@@ -40,7 +40,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     columns: ['id', 'code', 'text']
   }
   dependencies.invoiceItem.query.tables['sale_item'] = { 
-    columns: ['id', 'quantity', 'unit_price', 'total']
+    columns: ['id', 'quantity', 'debit', 'credit']
   }
 
   dependencies.location = { 

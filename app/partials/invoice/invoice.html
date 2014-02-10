@@ -49,7 +49,7 @@
               <tr><th>Description</th><th>Amount</th></tr> 
             </thead>
             <tbody class="items">
-              <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{item.unit_price * item.quantity | currency}}</td></tr> 
+              <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td>{{(item.credit - item.debit) | currency}}</td></tr> 
             </tbody>
             <tbody class="totals">
               <tr><td class="no-border">Total</td><td>{{invoice.cost | currency}}</td></tr>

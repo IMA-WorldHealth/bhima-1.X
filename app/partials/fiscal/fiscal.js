@@ -184,8 +184,8 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
         
         // if(!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});
         
-        //Reload fiscal years - could insert but unneeded calculation
-        buildFiscalQuery($scope.enterpriseId);
+        //TODO Hack
+        buildFiscalQuery({id: $scope.enterpriseId});
         $scope.active = "select";
       }, function (err) {
         messenger.danger('Error:' + JSON.stringify(err)); 
