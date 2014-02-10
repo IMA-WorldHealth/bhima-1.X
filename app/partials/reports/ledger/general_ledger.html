@@ -34,14 +34,15 @@
       </li>
     </ul>
   </div>
-</section>
 
-<section>
-  <div class="group-crumbs">
-    Group Detail<span ng-repeat="activeGroup in groups"> > {{activeGroup.title}} </span>
-  </div>
 </section>
 
 <div class="content">
+  <div class="group-crumbs" style="display: block; width: 100%;">
+    Group Detail<span ng-repeat="activeGroup in groups"> > {{activeGroup.title}} </span>
+  </div>
+
+  <div>
   <div id="kpk-ledger-general_ledger-grid" style="height: 450px;" class="grid"></div>
+</div>
 </div>
