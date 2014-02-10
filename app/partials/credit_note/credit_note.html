@@ -27,8 +27,8 @@
                 <tr ng-repeat="item in model.saleItem.data">
                   <td>{{item.text}}</td>
                   <td>{{item.quantity}}</td>
-                  <td>{{item.unit_price | currency}}</td>
-                  <td>{{item.total | currency}}</td>
+                  <td>{{item.transaction_price | currency}}</td>
+                  <td>{{item.credit - item.debit | currency}}</td>
                 </tr>
                 <tr><th colspan="3" style="text-align: right;">Total Debit</th><td>{{sale.cost | currency}}</td></tr>
               </tbody>
