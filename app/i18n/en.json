@@ -100,7 +100,50 @@
 
   "SELECT" : {
     "ACCOUNT" : "Select Account",
-    "CURRENCY" : "Select Currency" 
+    "CURRENCY" : "Select Currency",
+    "NAME" : "Select A Name"
+  },
+
+  "REPORT" : {
+    "CHART_OF_ACCOUNTS" : "Chart of Accounts",
+    "NUMBER" : "Number",
+    "DESCRIPTION" : "Description",
+    "FINANCE_REPORT" : "Finance Report",
+    "REPORT_YEARS" : "Report Years",
+    "ACCOUNT" : "Account",
+    "TRANSACTION_REPORT" : "Transaction Report",
+    "BALANCED" : "Balanced",
+    "TOTAL_DEBIT" : "Total Debit",
+    "TOTAL_CREDIT" : "Total Credit",
+    "BALANCE" : "Balance",
+    "INDIVIDUAL" : "Individual",
+    "GROUP" : "Group",
+    "CREDITOR" : "Creditor",
+    "DEBITOR" : "Debitor",
+    "DATE_FROM" : "Date From",
+    "DATE_TO" : "Date To",
+    "CHOICE" : "Select One",
+    "GENERAL_LEDGER_REPORT" : "General Ledger Report",
+    "GENERAL_LEDGER" : "General Ledger",
+    "GROUPING" : "Grouping",
+    "GROUP_ROWS" : "Group Rows",
+    "COLUMNS" : "Columns",
+    "VISIBLE_COLUMNS" : "Visible Columns",
+    "GROUP_DETAIL" : "Group Detail",
+    "FISCAL_YEAR" : "Fiscal Year",
+    "REPORT" : "Report",
+    "DEBITOR_AGING" : "Debitor Aging",
+    "CHOOSE_FISCAL_YEAR" : "Choose Fiscal Year",
+    "VISIBLE_FISCAL_YEAR" : "Visible Fiscal Year",
+    "VISIBLE_PERIODS" : "Visible Periods",
+    "CHOOSE_PERIOD" : "Choose A Period",
+    "INCOME_EXPENSE_REPORT" : "Income/Expense Report"
+  },
+
+  "COLUMNS" : {
+    "COLUMNS" : "Columns",
+    "DEBITOR_NAME" : "Debitor Name",
+    "ACCOUNT" : "Account"
   },
 
   "ID"         : "id",

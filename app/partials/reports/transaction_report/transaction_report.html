@@ -1,192 +1,107 @@
 <header>
-  <span class="capital">Transaction Report</span>
+  {{ "REPORT.TRANSACTION_REPORT" | translate }}
 </header>
 
-<section class="top-bar">
-  <div class="capital pull-right visible-print"> {{DC}} : {{model.selected.text}} <br/> {{data.dateFrom}} / {{data.dateTo}}</div>  
+<section class="top-nav">
+  <div class="capital pull-right visible-print">
+    {{ DC }} : {{model.selected.text}}
+    <br/>
+    {{data.dateFrom}} / {{data.dateTo}}
+  </div>
 </section>
 
-<!--
-<section class="underline infobar hidden-print">
-  <accordion close-others="true">    
-    <accordion-group is-open="false">
-      <accordion-heading>
-        <span>Settings</span> 
-        <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
-      </accordion-heading>
-      <table class="table table-condensed">
-        <tr>
-          <td>
-            <div class="radio">
-              <label>
+<div class="report">
+
+  <div class="infobar hidden-print">
+    <accordion close-others="true">
+      <accordion-group is-open="true">
+        <accordion-heading>
+          <span>Settings</span>
+          <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
+        </accordion-heading>
+
+        <form class="form-horizontal">
+
+          <div class="form-group">
+            <label class="control-label col-xs-1">
+              {{ "REPORT.CHOICE" | translate }} :
+            </label>
+
+            <div class="radio-inline">
+              <label class="col-xs-1">
                 <input type="radio" id="indiID" name="option_type" ng-click="fill('I')"/>
-                  Individual
+                {{ "REPORT.INDIVIDUAL" | translate }} 
               </label>
             </div>
-          </td>
-          <td>
 
-            <div class="radio">
-              <label>
+            <div class="radio-inline">
+              <label class="col-xs-1">
                 <input type="radio" id="groupID" name="option_type" ng-click="fill('G')"/>
-                Group
+                {{ "REPORT.GROUP" | translate }}
               </label>
             </div>
-          </td>
-        </tr>
+          </div>
 
-        <tr>
-          <td>
+          <div class="form-group">
+            <label class="control-label col-xs-1">
+              {{ "REPORT.CHOICE" | translate }} : 
+            </label>
 
-            <div class="radio">
-              <label>
+            <div class="radio-inline">
+              <label class="col-xs-1">
                 <input type="radio" id="dID" name="option_dc" ng-click="fill('D')"/>
-                Debitor
+                {{ "REPORT.DEBITOR" | translate }}
               </label>
             </div>
 
-          </td>
-          <td>
-            <div class="radio">
-              <label>
-                <input type="radio"id="cID" name="option_dc" ng-click="fill('C')"/>
-                Creditor
+            <div class="radio-inline">
+              <label class="col-xs-1">
+                <input type="radio" id="cID" name="option_dc" ng-click="fill('C')"/>
+                {{ "REPORT.CREDITOR" | translate }}
               </label>
             </div>
-          </td>            
-        </tr>
+          </div>
 
-        <tr>            
-          <td>
-            <div class="form-group">
-              <label>Date From</label>
+          <div class="form-group">
+            <label class="control-label col-xs-1">
+              {{ "REPORT.DATE_FROM" | translate }} : 
+            </label>
+            <div class="col-xs-6">
               <input type="date" class="form-kapok" ng-model="data.dateFrom">
-            </div>              
-          </td>
+            </div>
+          </div>
 
-          <td>
-            <div class="form-group">
-              <label for="dob">Date To</label>
+          <div class="form-group">
+            <label class="control-label col-xs-1">
+              {{ "REPORT.DATE_TO" | translate }} : 
+            </label>
+            <div class="col-xs-6">
               <input type="date" class="form-kapok" ng-model="data.dateTo">
             </div>
-          </td>
-        </tr>
+          </div>
 
-        <tr>
-          <td colspan=2>
-            <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
-                <option value="" disabled="disabled">--Select the name --</option>
-            </select>
-          </td>
-          <td>            
-          </td>
-        </tr>
-      </table>
-    </accordion-group>   
-  </accordion>
-</section>
+          <div class="form-group">
+            <label class="control-label col-xs-1">
+              {{ "REPORT.CHOICE" | translate }} : 
+            </label>
+            <div class="col-xs-6">
+              <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
+                <option value="" disabled="disabled">-- {{ "SELECT.NAME" | translate }}--</option>
+              </select>
+            </div>
+          </div>
 
-
-<section class="underline infobar" ng-show="show">
-  balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
-  <div class="pull-right">      
-      Total Debit  : {{credit | currency}}
-      Total Credit : {{debit | currency}}
-      Sold : {{sold | currency}}
+        </form>
+      </accordion-group>
+    </accordion>
   </div>
-</section>
--->
-
-<div class="content">
-
-  <div class="infobar">
-    <section class="underline infobar hidden-print">
-      <accordion close-others="true">    
-        <accordion-group is-open="false">
-          <accordion-heading>
-            <span>Settings</span> 
-            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
-          </accordion-heading>
-          <table class="table table-condensed">
-            <tr>
-              <td>
-                <div class="radio">
-                  <label>
-                    <input type="radio" id="indiID" name="option_type" ng-click="fill('I')"/>
-                      Individual
-                  </label>
-                </div>
-              </td>
-              <td>
-
-                <div class="radio">
-                  <label>
-                    <input type="radio" id="groupID" name="option_type" ng-click="fill('G')"/>
-                    Group
-                  </label>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-
-                <div class="radio">
-                  <label>
-                    <input type="radio" id="dID" name="option_dc" ng-click="fill('D')"/>
-                    Debitor
-                  </label>
-                </div>
-
-              </td>
-              <td>
-                <div class="radio">
-                  <label>
-                    <input type="radio"id="cID" name="option_dc" ng-click="fill('C')"/>
-                    Creditor
-                  </label>
-                </div>
-              </td>            
-            </tr>
-
-            <tr>            
-              <td>
-                <div class="form-group">
-                  <label>Date From</label>
-                  <input type="date" class="form-kapok" ng-model="data.dateFrom">
-                </div>              
-              </td>
-
-              <td>
-                <div class="form-group">
-                  <label for="dob">Date To</label>
-                  <input type="date" class="form-kapok" ng-model="data.dateTo">
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td colspan=2>
-                <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
-                    <option value="" disabled="disabled">--Select the name --</option>
-                </select>
-              </td>
-              <td>            
-              </td>
-            </tr>
-          </table>
-        </accordion-group>   
-      </accordion>
-    </section>
-  </div>
-
 
   <div class="infobar" ng-show="show">
-    balanced : <label ng-switch on="isBalanced">{{isBalanced}}</label>
-    <div class="pull-right">      
-        Total Debit  : {{credit | currency}}
-        Total Credit : {{debit | currency}}
-        Sold : {{sold | currency}}
+    {{ "REPORT.BALANCED" | translate }}: <label ng-switch on="isBalanced"> {{ isBalanced }} </label>
+    <div class="pull-right">
+      {{ "REPORT.TOTAL_CREDIT" | translate }} : {{credit | currency}}
+      {{ "REPORT.TOTAL_DEBIT" | translate }} : {{debit | currency}}
+      {{ "REPORT.BALANCE" | translate }} : {{sold | currency}}
     </div>
   </div>
 
@@ -216,4 +131,3 @@
     </tr>
   </table>
 </div>
-

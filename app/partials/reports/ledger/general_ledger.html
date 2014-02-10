@@ -1,5 +1,5 @@
 <header>
-  <span>General Ledger Report</span>
+  <span>{{ "REPORT.GENERAL_LEDGER_REPORT" | translate }}</span>
 </header>
 
 <section class="top-nav">
@@ -7,11 +7,15 @@
     <!-- <input type="search" placeholder="Filter General Ledger" class="form&#45;kapok" ng&#45;model="flags.searchStr" size="25"> -->
   <!-- </div> -->
   <div class="pull-left dropdown">
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle"><span class="glyphicon glyphicon-list-alt"></span> Group Rows</button>
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle">
+      <span class="glyphicon glyphicon-list-alt"></span> {{ "REPORT.GROUP_ROWS" | translate }}
+    </button>
     <ul class="dropdown-menu">
-      <li class="dropdown-header">Grouping</li>
+      <li class="dropdown-header">{{ "REPORT.GROUPING" | translate }}</li>
       
-      <li ng-repeat="groupDefinition in groupDefinitions"><a ng-click="groupby(groupDefinition)">{{groupDefinition.title}}</a></li>
+      <li ng-repeat="groupDefinition in groupDefinitions">
+      <a ng-click="groupby(groupDefinition)">{{groupDefinition.title}}</a>
+      </li>
 <!--  -->
 <!--       <li><a href="" ng&#45;click="groupby('year')">Fiscal Year</a></li> -->
 <!--       <li><a href="" ng&#45;click="groupby('period')">Period</a></li> -->
@@ -23,10 +27,12 @@
   
   <div class="pull-right dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle">
-      <i class="glyphicon glyphicon-cog"></i> Columns 
+      <i class="glyphicon glyphicon-cog"></i> {{ "REPORT.COLUMNS" | translate }}
     </button>
     <ul class="dropdown-menu">
-      <li class="dropdown-header">Visible Columns</li>
+      <li class="dropdown-header">
+        {{ "REPORT.VISIBLE_COLUMNS" | translate }}
+      </li>
       <li ng-repeat="column in columns">
         <a class="capital" ng-click="column.visible=!column.visible" href="">
           <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{column.name || column.id}}
@@ -34,15 +40,15 @@
       </li>
     </ul>
   </div>
-
 </section>
 
-<div class="content">
+<div class="report">
   <div class="group-crumbs" style="display: block; width: 100%;">
-    Group Detail<span ng-repeat="activeGroup in groups"> > {{activeGroup.title}} </span>
+    {{ "REPORT.GROUP_DETAIL" | translate }}<span ng-repeat="activeGroup in groups"> > {{activeGroup.title}} </span>
   </div>
 
   <div>
-  <div id="kpk-ledger-general_ledger-grid" style="height: 450px;" class="grid"></div>
-</div>
+    <div id="kpk-ledger-general_ledger-grid" style="height: 450px;" class="grid"></div>
+  </div>
+
 </div>
