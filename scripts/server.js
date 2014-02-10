@@ -282,11 +282,11 @@ app.get('/price_list/:id', function (req, res, next) {
 
 // ugh.
 app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND village`.`id`=' + req.params.villageId : '';
+  var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
 
   var sql = "SELECT `village`.`id` as `id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
             "FROM `village`, `sector`, `province`, `country` " + 
-            "WHERE village.`sector_id` = sector.id AND sector.province_id = province.id AND province.country_id=country.id" + specifyVillage + ";";
+            "WHERE village.sector_id = sector.id AND sector.province_id = province.id AND province.country_id=country.id " + specifyVillage + ";";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     console.log(rows);
