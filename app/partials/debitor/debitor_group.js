@@ -53,10 +53,11 @@ angular.module('kpk.controllers')
         }
       }
     };
-    
+   
     dependencies.location = {
       query : '/location/'
     };
+
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
