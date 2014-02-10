@@ -2,7 +2,7 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
   var dependencies = {}, patient = ($routeParams.patientID || -1);			
  
   dependencies.patient = { 
-    query : { 'tables' : { 'patient' : { 'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'location_id', 'debitor_id', 'registration_date'] }}},
+    query : { 'tables' : { 'patient' : { 'columns' : ['id', 'first_name', 'last_name', 'dob', 'parent_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'current_location_id', 'debitor_id', 'registration_date'] }}},
   };
  
   // validate.process(dependencies).then(patientRecords);
