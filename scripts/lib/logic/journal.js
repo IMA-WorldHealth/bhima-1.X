@@ -203,7 +203,7 @@ module.exports = function (db) {
         // cost?  This also checks for the quantity.
         var sumDebitsAndCredits = 0;
         results.forEach(function (i) {
-          sumDebitsAndCredits += (i.credit - i.debit) * i.quantity;
+          sumDebitsAndCredits += (i.credit - i.debit);
         });
 
         if (!validate.isEqual(sumDebitsAndCredits, reference_sale.cost)) {
