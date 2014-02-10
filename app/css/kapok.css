@@ -1,15 +1,69 @@
 /*Overrides a lot of CSS - check this is the best place for this rule*/
 
-/* Files copied from app.css */
+/* Rules copied from app.css */
 
 /*
   TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
 */
 
-/* FIX: This fixes drop down menu being clobbered by content */
-.dropdown-menu {
-  background: white;
+* {
+  outline: none;
 }
+
+body { 
+  font-size: 12px;
+}
+
+button {
+  text-transform: capitalize;
+}
+
+/* For some reason, minification broke this... */
+fieldset {
+  width: 100%;
+}
+
+section {
+  position: absolute;
+  left: 0;
+  right:0;
+  min-height: 37px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  margin-top: 0;
+}
+
+header {
+  position:absolute;
+  top:0;
+  right:0;
+  left:0;
+  height: 50px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 2em;
+  border-bottom: 1px solid #dddddd;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+header small { 
+  font-weight: normal;
+  line-height: 1;
+  color: #999999;
+}
+
+/* Hide in webkit the number spinners 
+ * for both date and number.
+ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: none; 
+}
+
 
 /* first viewport */
 .sidebar {
@@ -19,6 +73,18 @@
   height: 100%;
   border-left: 1px solid #DADADA;
   background: #F3F3F3;
+}
+
+.sidebar h2 {
+  font-family: "Lucida Sans Unicode";
+  padding-left: 0;
+  font-size: 4em;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+.sidebar h2 span {
+   color: #01AC07;
 }
 
 /* second viewport */
@@ -35,30 +101,25 @@
   overflow: auto;
 }
 
-.sidebar h2 {
-  font-family: "Lucida Sans Unicode";
-  padding-left: 0;
-  font-size: 4em;
-  letter-spacing: 0.2em;
-  text-align: center;
-}
-
-.sidebar h2 span {
-   color: #01AC07;
+.content {
+  position: absolute;
+  /*right: 18%;*/
+  bottom: 37px;
+  top: 87px;
+  right:0;
+  left : 0;
+  overflow: auto;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  font-size: 12px;
 }
 
 #logo  { 
   box-shadow: 0 2px 6px -3px black;
   height: 200px;
-}
-
-button {
-  text-transform: capitalize;
-}
-
-/* temp :: used in reporting account_balances */
-.pad-left td:first-child  {
-  padding-left: 15px !important;
 }
 
 #kpk-util { 
@@ -71,26 +132,6 @@ button {
   padding-top: 20px;
 }
 
-/* Hide in webkit the number spinners 
- * for both date and number.
- */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: none; 
-}
-
-/* kapok.css old files */
-
-* {
-  outline: none;
-}
-
-body { 
-  font-size: 12px;
-}
-
-
 /* temp :: used in reporting account_balances */
 .pad-left td:first-child  {
   padding-left: 15px !important;
@@ -100,15 +141,11 @@ body {
   padding-right: 15px !important;
 }
 
-/* For some reason, minification broke this... */
-fieldset {
-  width: 100%;
-}
-
 .grid {
   box-sizing: content-box;
 }
 
+/* used in login.html */
 .center {
   width: 75%;
   text-align : center;
@@ -246,53 +283,6 @@ div .reportFrame {
   border-top: 1px solid #ddd;
 }
 
-section {
-  position: absolute;
-  left: 0;
-  right:0;
-  min-height: 37px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-bottom: 3px;
-  padding-top: 3px;
-  margin-top: 0;
-}
-
-header {
-  position:absolute;
-  top:0;
-  right:0;
-  left:0;
-  height: 50px;
-  padding-top: 7px;
-  padding-bottom: 7px;
-  font-size: 2em;
-  border-bottom: 1px solid #dddddd;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-header small { 
-  font-weight: normal;
-  line-height: 1;
-  color: #999999;
-}
-
-.content {
-  position: absolute;
-  /*right: 18%;*/
-  bottom: 37px;
-  top: 87px;
-  right:0;
-  left : 0;
-  overflow: auto;
-  margin-right: auto;
-  margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 5px;
-  font-size: 12px;
-}
 
 /* positioned relative to the entire window */
 /* FIXME : it would be ideal if this were not the case */

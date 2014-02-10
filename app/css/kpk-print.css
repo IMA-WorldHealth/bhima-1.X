@@ -14,28 +14,44 @@ td.visible-print {
     box-shadow: none !important;
   }
 
-  /* must undo old kpk styles */
-  .sidebar {
-    display: none !important;
-    visibility: none !important;
-    max-width:0;
+  body {
+    width: 100%;
   }
 
-  .view {
-    position: inherit !important;
-    margin: 0;
-    height: 100%;
+  header {
+    display: none !important;
+  }
+
+  .bar-bottom {
+    display: none !important;
+  }
+
+  .top-nav {
+    display: none !important;
+  }
+
+  .viewport {
+    position: static !important;
+    margin:0 !important;
+    padding:0 !important;
     width: 100% !important;
     overflow: hidden !important;
   }
 
-  .view .content {
-    right : 0 !important;
+  .view {
+    position: static !important;
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
     overflow: hidden !important;
   }
 
-  .viewport {
-      width: 100% !important;
+  .content {
+    padding:0;
+    margin:0;
+    height: 100% !important;
+    width: 100% !important;
+    overflow : hidden !important;
   }
 
   a,
@@ -68,9 +84,11 @@ td.visible-print {
   img {
     max-width: 100% !important;
   }
+
   @page  {
     margin: 2cm .5cm;
   }
+
   p,
   h2,
   h3 {
