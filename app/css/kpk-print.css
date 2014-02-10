@@ -54,6 +54,10 @@ td.visible-print {
     overflow : hidden !important;
   }
 
+  .report {
+    margin-top : 0;
+  }
+
   a,
   a:visited {
     text-decoration: underline;

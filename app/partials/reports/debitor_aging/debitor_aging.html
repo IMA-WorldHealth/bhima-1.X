@@ -1,4 +1,3 @@
-
 <header>
     <span> Fiscal Year : {{fySelected.fiscal_year_txt}}</span>
     <span>Report : Deditor Aging  <small>{{today | date}}</small></span>
@@ -35,15 +34,19 @@
   </div>
 </section> 
 
-<div class="content">
+<div class="report">
   <table id="tbl-print" class="table table-bordered">
-    <tr>
-       <td>DEBITOR NAME</td>
-       <td ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</td>
-    </tr>
+    <thead>
+      <tr>
+         <th>Debitor Name</th>
+         <th ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</th>
+      </tr>
+    </thead> 
+    <tbody>
     <tr ng-repeat="debitor in results">
-       <td>{{debitor.debitorName}}</td>
+       <th>{{debitor.debitorName}}</th>
        <td ng-repeat="debitorBalance in debitor.balances track by $index">{{debitorBalance | currency}}</td>
-    </tr>      
+    </tr>
+    </tbody>
   </table>
 </div>
