@@ -17,7 +17,7 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
     dependencies.patient.query.where = condition.slice(0, -1);
     validate.refresh(dependencies).then(patientRecords);
   }
-
+  
   function patientRecords(model) { 
     $scope.model = model;
     filterNames(model.patient.data);
@@ -26,11 +26,17 @@ angular.module('kpk.controllers').controller('patientRecords', function($scope, 
   function filterNames(patientData) { 
     patientData.forEach(function(patient) { patient.name = patient.first_name + ' ' + patient.last_name; }); 
   }
-  
+
+  function fetchAll() { 
+    dependencies.patient.query.where = null;
+    validate.refresh(dependencies).then(patientRecords);
+  }
+
   function select(id) { 
     $scope.selected = $scope.model.patient.get(id);
   }
   
   $scope.patientSearch = patientSearch;
+  $scope.fetchAll = fetchAll;
   $scope.select = select;
 });

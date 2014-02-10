@@ -31,7 +31,7 @@ angular.module('kpk.controllers')
       query: {
         tables: {
           sale_item: {
-            columns: ['id', 'inventory_id', 'quantity', 'unit_price', 'total']
+            columns: ['id', 'inventory_id', 'quantity', 'transaction_price', 'debit', 'credit']
           },
           inventory: {
             columns: ['code', 'text']
