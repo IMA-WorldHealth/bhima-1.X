@@ -15,19 +15,35 @@ td.visible-print {
   }
 
   /* must undo old kpk styles */
-  #kpk-sidebar {
+  .sidebar {
     display: none !important;
     visibility: none !important;
     max-width:0;
   }
 
-  #kpk-container {
+  .view {
     position: inherit !important;
     margin: 0;
     height: 100%;
-    width: 100%;
+    width: 100% !important;
     overflow: hidden !important;
   }
+
+  .viewport {
+      width: 100% !important;
+  }
+  
+  .content {
+    width: 100% !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  /*
+  .view .content {
+    right: 0 !important;
+  }
+  */
 
   a,
   a:visited {

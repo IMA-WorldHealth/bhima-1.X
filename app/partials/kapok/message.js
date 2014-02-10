@@ -3,8 +3,6 @@ angular.module('kpk.controllers')
   // This binds the message service to the DOM
   'use strict';
 
-  messenger.warning('This is a test', 500000);
-
   $scope.messages = messenger.messages;
   $scope.close = messenger.close;
 

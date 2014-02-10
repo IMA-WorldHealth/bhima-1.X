@@ -1,10 +1,10 @@
 .grid {
-  
   position: relative;
   border: 1px solid #dddddd;
   border-bottom: 0;
   border-collapse: collapse !important;
 }
+
 .grid input[type="checkbox"] {
   vertical-align: baseline;
   margin: 0;
@@ -21,22 +21,21 @@
   position: absolute;
   width: 100%;
 }
+
 .grid .grid-canvas .slick-cell,
 .grid .grid-canvas .slick-headerrow-column {
-
   border: 1px solid #dddddd;
   border-left: 0;
   border-top:0;
-
-
-
 }
+
 .grid .grid-canvas .even {
   /*
   toggle background colours
   background: #f9f9f9;
   */
 }
+
 .grid .grid-canvas .slick-cell {
   /*padding: 8px 7.5834px;
   font-size: 14px;*/
@@ -45,6 +44,7 @@
   vertical-align: top;
 
 }
+
 .grid .grid-canvas .slick-cell td {
   font-size: 14px;
 }
@@ -90,7 +90,6 @@ body .grid .grid-canvas .slick-cell {
   line-height: 14px;
   margin: 0;
   border: 0;
-
   border-right: 1px solid #dddddd;
   border-left: 0;
   border-bottom: 1px solid #dddddd;
@@ -102,6 +101,7 @@ body .grid .grid-canvas .slick-cell {
   font-weight: bold;
 
 }
+
 .grid .slick-header-columns .slick-header-column.ui-state-default {
   padding: 5px 7.5834px;
   font-size: 14px;
@@ -112,6 +112,7 @@ body .grid .grid-canvas .slick-cell {
 body .grid .slick-header-columns .slick-header-column.ui-state-default {
   line-height: 20px;
 }
+
 .grid .slick-header-columns .slick-header-column a,
 .grid .slick-header-columns .slick-header-column a:visited {
   color: #333333;
@@ -120,7 +121,6 @@ body .grid .slick-header-columns .slick-header-column.ui-state-default {
   color: #333333;
 }
 .grid .slick-header-columns .slick-header-column.ui-state-default {
-
   background: transparent;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -162,7 +162,6 @@ body .grid .slick-header-columns .slick-header-column.ui-state-default {
 }
 
 .slick-group {
-
   color: #3a87ad;
   background-color: #d9edf7;
   border-color: #bce8f1;

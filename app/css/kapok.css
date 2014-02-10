@@ -6,16 +6,36 @@
   TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
 */
 
-#kpk-sidebar {
-  width: 18%; /* this was 18% @jniles */
-  height: 100%;
+/* FIX: This fixes drop down menu being clobbered by content */
+.dropdown-menu {
+  background: white;
+}
+
+/* first viewport */
+.sidebar {
   position: fixed;
   right: 0;
+  width: 18%;
+  height: 100%;
   border-left: 1px solid #DADADA;
   background: #F3F3F3;
 }
 
-#kpk-sidebar h2 { 
+/* second viewport */
+.viewport {
+  position: fixed;
+  width: 82%;
+  height: 100%;
+}
+
+.view {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.sidebar h2 {
   font-family: "Lucida Sans Unicode";
   padding-left: 0;
   font-size: 4em;
@@ -23,11 +43,11 @@
   text-align: center;
 }
 
-#kpk-sidebar h2 span { 
+.sidebar h2 span {
    color: #01AC07;
 }
 
-#kpk-header { 
+#logo  { 
   box-shadow: 0 2px 6px -3px black;
   height: 200px;
 }
@@ -41,31 +61,6 @@
 #kpk-tree {
   padding-top: 20px;
 }
-
-/* See experimental.css for working copy of these rules 
-#kpk-container { 
-  height: 100%;
-  width: 82%;
-  position: fixed;
-  background: white;
-  overflow: auto;
-}
-
-#kpk-view {
-  position: relative;
-  height: 100%;
-  /*
-  Idea being to seperate the view (unit) and outside, can't figure this out
-  */
-  /*
-  background: white;
-  height: 100%;
-  margin-top: 5px;
-  margin-right: 8px;
-  margin-left: 8px;
-  margin-bottom: 5px;
-}
-*/
 
 /* Hide in webkit the number spinners 
  * for both date and number.
@@ -86,26 +81,6 @@ body {
   font-size: 12px;
 }
 
-/*
-header {
-  padding-top: 7px;
-  padding-bottom: 7px;
-  font-size: 2em;
-  border-bottom: 1px solid #dddddd;
-
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-right: auto;
-  margin-left: auto;
-
-}
-*/
-
-header small { 
-  font-weight: normal;
-  line-height: 1;
-  color: #999999;
-}
 
 /* temp :: used in reporting account_balances */
 .pad-left td:first-child  {
@@ -116,18 +91,6 @@ header small {
   padding-right: 15px !important;
 }
 
-/*
-section { 
-  margin-top: 0;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-bottom: 3px;
-  padding-top: 3px;
-
-  min-height: 37px;
-}
-*/
-
 /* For some reason, minification broke this... */
 fieldset {
   width: 100%;
@@ -136,16 +99,6 @@ fieldset {
 .grid {
   box-sizing: content-box;
 }
-
-/*
-.message-box {
-  position: absolute;
-  z-index: 998;
-  right: 0.5%;
-  top: 0.5%;
-  width: 25%;
-}
-*/
 
 .center {
   width: 75%;
@@ -160,18 +113,6 @@ fieldset {
   text-align: left;
 }
 
-/*
-.content {
-  margin-right: auto;
-  margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 12px;
-}
-*/
-
 .underline {
   border-bottom: 1px solid #dddddd;
 }
@@ -179,18 +120,6 @@ fieldset {
 .overline { 
   border-top: 1px solid #dddddd;
 }
-
-/*
-.bar-bottom {
-  border-top: 1px solid #dddddd;
-  position: absolute;
-  z-index: 150;
-  left: 0;
-  bottom: 0;
-  width    : 100%;
-  /* background: white; 
-}
-*/
 
 .capital { 
   text-transform: capitalize;
@@ -216,18 +145,6 @@ fieldset {
 /* everything is bad */
 .hack-left { 
   margin-left: -15px;
-}
-
-.list-selected {
-  text-transform : capitalize;
-  font-weight : bold;
-}
-
-/* CAUTION: This uses Bootstrap's glyphicon code */
-.list-selected:before {
-  font-family: 'Glyphicons Halflings';
-  font-size: 0.85em;
-  content : '\e072';
 }
 
 /*sfount, temporary printable table styling*/
@@ -307,3 +224,79 @@ div .reportFrame {
   margin-left: 15px;
   padding: 0;
 }
+
+/* experimental css */
+
+.top-nav {
+  top: 50px;
+  border-bottom: 1px solid #ddd;
+}
+
+.bar-bottom {
+  bottom: 0;
+  border-top: 1px solid #ddd;
+}
+
+section {
+  position: absolute;
+  left: 0;
+  right:0;
+  min-height: 37px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  margin-top: 0;
+}
+
+header {
+  position:absolute;
+  top:0;
+  right:0;
+  left:0;
+  height: 50px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 2em;
+  border-bottom: 1px solid #dddddd;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+header small { 
+  font-weight: normal;
+  line-height: 1;
+  color: #999999;
+}
+
+.content {
+  position: absolute;
+  /*right: 18%;*/
+  bottom: 37px;
+  top: 87px;
+  right:0;
+  left : 0;
+  overflow: auto;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  font-size: 12px;
+}
+
+/* positioned relative to the entire window */
+/* FIXME : it would be ideal if this were not the case */
+.message-box {
+  right: 18%;
+  position: absolute;
+  margin-right: 0.5%; /* .5 to pad nicely */
+  width: 25%;
+  z-index: 998;
+  top: 0.5%;
+}
+
+.message-box > .alert {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
