@@ -10,7 +10,7 @@
 
 <!--not required in placeholder rewrite-->
 <div ng-controller="app">
-
+  
   <!-- sidebar definition -->
   <div class="container sidebar hidden-print">
     <div class="row" id="logo">
@@ -22,8 +22,7 @@
     </div>
 
    <div class="row" id="kpk-util" ng-controller="util">
-      <div class="btn-group-justified"><!--class="btn-group"-->
-        <!-- href="/#/settings" -->
+      <div class="btn-group-justified">
         <a ng-click="openSettings()" type="button" class="btn btn-default"> 
           <span class="glyphicon glyphicon-cog"></span>
         </a>
@@ -34,11 +33,11 @@
     </div>
   </div>
 
-  <!-- required for printing to work properly... -->
   <span class="visible-print">
     <span class="invisible">.</span>
   </span>
 
+  <!-- required for printing to work properly... -->
   <div class="hidden-print">
     <div ng-controller="message" class="message-box" id="msg-box">
       <alert ng-repeat="alert in messages" type="alert.type" close="close($index)">

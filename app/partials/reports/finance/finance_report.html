@@ -1,8 +1,8 @@
-<header class="hidden-print">
+<header>
   Finance Report
 </header>
 
-<section class="top-nav hidden-print">
+<section class="top-nav">
   <div class="pull-right">
     <!-- <button ng&#45;click="reportState='configure'" class="btn btn&#45;default btn&#45;sm capital"><span class="glyphicon glyphicon&#45;cog"></span> {{'CONFIGURE' | translate}}</button> -->
     <span class="dropdown">
@@ -16,7 +16,9 @@
         </li>
       </ul>
     </span> 
-    <button ng-click="printReport()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
+    <button ng-click="printReport()" class="btn btn-default btn-sm capital">
+      <span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}
+    </button>
   </div>
 </section>
 
