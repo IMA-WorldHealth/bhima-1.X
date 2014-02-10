@@ -99,9 +99,12 @@ create table `country` (
 -- 
 drop table if exists `province`;
 create table `province` (
-  `id`         smallint unsigned not null auto_increment,
+  `id`         mediumint unsigned not null auto_increment,
   `name`       text,
-  primary key (`id`)
+  `country_id` smallint unsigned not null,
+  primary key (`id`),
+  key `country_id` (`country_id`),
+  constraint foreign key (`country_id`) references `country` (`id`)
 ) engine=innodb;
 
 --
@@ -109,9 +112,12 @@ create table `province` (
 --
 drop table if exists `sector`;
 create table `sector` (
-  `id`        smallint unsigned not null auto_increment,
-  `name`      text,
-  primary key (`id`)
+  `id`          mediumint unsigned not null auto_increment,
+  `name`        text,
+  `province_id` mediumint unsigned not null,
+  primary key (`id`),
+  key `province_id` (`province_id`),
+  constraint foreign key (`province_id`) references `province` (`id`)
 ) engine=innodb;
 
 --
@@ -119,31 +125,13 @@ create table `sector` (
 --
 drop table if exists `village`;
 create table `village` (
-  `id`        smallint unsigned not null auto_increment,
+  `id`        mediumint unsigned not null auto_increment,
   `name`      text,
-  primary key (`id`)
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`location`
---
-drop table if exists `location`;
-create table `location` (
-  `id`              smallint unsigned not null auto_increment,
-  `country_id`      smallint unsigned not null,
-  `province_id`     smallint unsigned not null,
-  `sector_id`       smallint unsigned not null,
-  `village_id`      smallint unsigned not null,
+  `sector_id` mediumint unsigned not null,
   primary key (`id`),
-  key `country_id` (`country_id`),
-  key `province_id` (`province_id`),
   key `sector_id` (`sector_id`),
-  key `village_id` (`village_id`),
-  constraint foreign key (`country_id`) references `country` (`id`),
-  constraint foreign key (`province_id`) references `province` (`id`), 
-  constraint foreign key (`sector_id`) references `sector` (`id`), 
-  constraint foreign key (`village_id`) references `village` (`id`) 
-) engine=innodb; 
+  constraint foreign key (`sector_id`) references `sector` (`id`)
+) engine=innodb;
 
 --
 -- Table structure for table `kpk`.`enterprise`
@@ -155,14 +143,14 @@ create table `enterprise` (
   `abbr`                varchar(50),
   `phone`               varchar(20),
   `email`               varchar(70),
-  `location_id`         smallint unsigned not null,
+  `location_id`         mediumint unsigned not null,
   `logo`                varchar(70),
   `currency_id`         tinyint unsigned not null,
   primary key (`id`),
   key `location_id` (`location_id`),
   key `currency_id` (`currency_id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
-  constraint foreign key (`location_id`) references `location` (`id`)
+  constraint foreign key (`location_id`) references `village` (`id`)
 ) engine=innodb;
 
 --
@@ -356,7 +344,7 @@ create table `debitor_group` (
   `id`                  smallint unsigned auto_increment not null,
   `name`                varchar(100) not null,
   `account_id`          int unsigned not null,
-  `location_id`         smallint unsigned not null,
+  `location_id`         mediumint unsigned not null,
   `payment_id`          tinyint unsigned not null default '3',
   `phone`               varchar(10) default '',
   `email`               varchar(30) default '',
@@ -375,7 +363,7 @@ create table `debitor_group` (
   key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
   constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`location_id`) references `village` (`id`) on delete cascade on update cascade,
 --  constraint foreign key (`payment_id`) references `payment` (`id`) on delete cascade on update cascade,
 --  constraint foreign key (`tax_id`) references `tax` (`id`),
   constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
@@ -421,7 +409,7 @@ create table `supplier` (
   `name`          varchar(45) not null,
   `address_1`     text,
   `address_2`     text,
-  `location_id`   smallint unsigned not null,
+  `location_id`   mediumint unsigned not null,
   `email`         varchar(45),
   `fax`           varchar(45),
   `note`          varchar(50),
@@ -431,7 +419,7 @@ create table `supplier` (
   primary key (`id`),
   key `creditor_id` (`creditor_id`),
   key `location_id` (`location_id`),
-  constraint foreign key (`location_id`) references `location` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`location_id`) references `village` (`id`) on delete cascade on update cascade,
   constraint foreign key (`creditor_id`) references `creditor` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
@@ -454,15 +442,18 @@ create table `patient` (
   `email`             varchar(20),
   `addr_1`            varchar(100),
   `addr_2`            varchar(100),
-  `location_id`       smallint unsigned not null,
+  `origin_location_id`       mediumint unsigned not null,
+  `current_location_id`       mediumint unsigned not null,
   `registration_date` timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
   key `first_name` (`first_name`),
   key `debitor_id` (`debitor_id`),
-  key `location_id` (`location_id`),
+  key `origin_location_id` (`origin_location_id`),
+  key `current_location_id` (`current_location_id`),
   unique key `creditor_id` (`creditor_id`),
   constraint foreign key (`debitor_id`) references `debitor` (`id`) on update cascade,
-  constraint foreign key (`location_id`) references `location` (`id`) on update cascade
+  constraint foreign key (`current_location_id`) references `village` (`id`) on update cascade,
+  constraint foreign key (`origin_location_id`) references `village` (`id`) on update cascade
 ) engine=innodb;
 
 

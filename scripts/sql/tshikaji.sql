@@ -31,7 +31,6 @@ delete from `user`;
 delete from `period`;
 delete from `fiscal_year`;
 delete from `enterprise`;
-delete from `location`;
 delete from `country`;
 delete from `province`;
 delete from `sector`;
@@ -489,31 +488,29 @@ insert into `country` values
 	(241,894,'Zambia','Zambie');
 
 
-insert into `province` (`id`,`name`) VALUES
-  (1, 'Bas Congo'),
-  (2, 'Bandundu'),
-  (3, 'Kasai Oriental'),
-  (4, 'Katanga'),
-  (5, 'Equateur'),
-  (6, 'Kasai Occidental'),
-  (7, 'Kinshasa'),
-  (8, 'Nord Kivu'),
-  (9, 'Sud Kivu'),
-  (10, 'Province Oriental'),
-  (11, 'Maniema');
+insert into `province` (`id`,`name`, `country_id`) VALUES
+  (1, 'Bas Congo', 52),
+  (2, 'Bandundu', 52),
+  (3, 'Kasai Oriental', 52),
+  (4, 'Katanga', 52),
+  (5, 'Equateur', 52),
+  (6, 'Kasai Occidental', 52),
+  (7, 'Kinshasa', 52),
+  (8, 'Nord Kivu', 52),
+  (9, 'Sud Kivu', 52),
+  (10, 'Province Oriental', 52),
+  (11, 'Maniema', 52);
 
-insert into `sector` (`name`) VALUES 
-  ('Kilunda'),
-  ('Kwilu');
+insert into `sector` (`id`,`name`, `province_id`) VALUES 
+  (1, 'Kilunda', 2),
+  (2, 'Kwilu', 2);
 
-insert into `village` (`name`) VALUES
-  ('Vanga'),
-  ('Bulungu'),
-  ('Songo'),
-  ('Lusekele');
+insert into `village` (`id`, `name`, `sector_id`) VALUES
+  (1, 'Vanga', 2),
+  (2, 'Bulungu', 2),
+  (3, 'Songo', 1),
+  (4, 'Lusekele', 1);
 
-insert into `location` (`country_id`, `province_id`, `sector_id`, `village_id`) VALUES 
-  (1, 1, 1, 1);
 
 -- configure enterprise
 
@@ -1073,8 +1070,8 @@ insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `locat
 insert into `debitor` (`id`, `group_id`, `text`) values 
   (1, 1, "Jon Niles");
 
-insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `location_id`) values
-  (1, 1, "M","Jon", "Niles", "1992-06-07", 1);
+insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `origin_location_id`, `current_location_id`) values
+  (1, 1, "M","Jon", "Niles", "1992-06-07", 1, 1);
 
 -- configure inventory
 
