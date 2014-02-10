@@ -113,7 +113,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   function buildPatientLocation(model) { 
     dependencies.location = { 
       required: true,
-      query: '/location/' + model.recipient.data[0].location_id
+      query: '/location/' + model.recipient.data[0].current_location_id
     }
     
     validate.process(dependencies, ['location']).then(patientReceipt);
@@ -130,7 +130,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   function buildCreditRecipient(model) { 
     dependencies.location = { 
       required: true,
-      query: '/location/' + model.credit.data[0].location_id
+      query: '/location/' + model.credit.data[0].current_location_id
     }
 
     validate.process(dependencies).then(creditInvoice);
@@ -144,7 +144,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       where: ['patient.debitor_id=' + invoice_data.debitor_id]
     }
     dependencies.recipient.query.tables['patient'] = { 
-      columns: ['first_name', 'last_name', 'dob', 'location_id']
+      columns: ['first_name', 'last_name', 'dob', 'current_location_id']
     };
 
     dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_id; 
@@ -154,7 +154,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   function buildLocationQuery(model) { 
     var recipient_data = model.recipient.data[0];
 
-    dependencies.location.query = 'location/' + recipient_data.location_id;
+    dependencies.location.query = 'location/' + recipient_data.current_location_id;
     return validate.process(dependencies).then(invoice);
   }
 
