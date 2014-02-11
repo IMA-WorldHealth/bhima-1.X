@@ -1,5 +1,5 @@
 <header>
-  <span>Group Invoicing</span>
+  <span>{{ "GROUP_INVOICING.TITLE" | translate }}</span>
 </header>
 
 <section class="top-nav">
@@ -27,22 +27,22 @@
     <div ng-switch-default>
       <form class="form-horizontal">
         <fieldset>
-          <legend>Select Payment Details</legend>
+          <legend>{{ "GROUP_INVOICING.SELECT_PAYMENT_DETAILS" | translate }}</legend>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">Convention : </label>
+            <label class="control-label col-xs-2">{{ "GROUP_INVOICING.GROUP" | translate }}: </label>
             <div class="col-xs-8">
               <select class="form-kapok" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
-                <option value="">-- Select a Convention --</option>
+                <option value="">-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">Debitor:</label>
+            <label class="control-label col-xs-2"> {{ "GROUP_INVOICE.DEBITOR" | translate }}:</label>
             <div class="col-xs-8">
               <select class="form-kapok" ng-model="selected.debitor" ng-options="debitor as debitor.text for debitor in debitors.data">
-                <option value="">-- Select a Debitor --</option>
+                <option value="">-- {{ "SELECT.DEBITOR" | translate }}--</option>
               </select>
             </div>
           </div>

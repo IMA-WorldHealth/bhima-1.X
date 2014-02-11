@@ -1,17 +1,17 @@
 <header> 
-  <span>Register Patient</span> <small>{{patient.first_name}} {{patient.last_name}}</small>
+  <span>{{ "PATIENT_REG.TITLE" | translate }}</span> <small>{{patient.first_name}} {{patient.last_name}}</small>
 </header>
 
 <section class="top-nav">
   <div class="pull-right">
     <a href="#/debitor/debitor_group" class="capital btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-tag"></span> {{'CREATE' | translate}} {{'DEBTOR_GROUP' | translate}}
+      <span class="glyphicon glyphicon-tag"></span> {{ "PATIENT_REG.CREATE_DEBTOR_GROUP" | translate }}
     </a>
     <a href='/#/patient_records/' class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-list"></span> View Patient Records
+      <span class="glyphicon glyphicon-list"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }}
     </a>
     <a href='/#/patient_group_assign/' class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-transfer"></span> Patient Group Assigning
+      <span class="glyphicon glyphicon-transfer"></span> {{ "PATIENT_REG.PATIENT_GROUP_ASSIGNMENT" | translate }}
     </a>
   </div>
 </section>
@@ -22,33 +22,33 @@
       <div class="col-xs-7">
         <div class="row">
           <div class="panel panel-primary">
-            <div class="panel-heading"><span class="glyphicon glyphicon-user"></span> Patient Details</div>
+            <div class="panel-heading"><span class="glyphicon glyphicon-user"></span>{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</div>
             <div class="panel-body">
 
               <form name="form" role="form" class="form-horizontal">
                 <fieldset>
-                <legend>Patient</legend>
+                  <legend>{{ "PATIENT_REG.PATIENT" | translate }}</legend>
                   <div class="form-group">
-                    <label for="first-name" class="control-label col-xs-3">First Name</label>
+                    <label for="first-name" class="control-label col-xs-3">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                     <div class="col-xs-9">
                       <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name" required>
                     </div>  
                   </div>
 
                   <div class="form-group">
-                    <label for="second-name" class="control-label col-xs-3">Second Name</label>
+                    <label for="second-name" class="control-label col-xs-3">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                     <div class="col-xs-9">
                       <input type="text" class="form-kapok" id="second-name" ng-model="patient.last_name" required>
                     </div> 
                   </div>
 
                   <div class="form-group" ng-show="!sessionProperties.fullDateEnabled">
-                    <label for="yob" class="control-label col-xs-3">Year of Birth</label>
+                    <label for="yob" class="control-label col-xs-3"> {{ "PATIENT_REG.YOB" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="input-group">
                         <input type="text" class="form-kapok" id="yob" ng-model="sessionProperties.yob">
                         <span class="input-group-btn"> 
-                          <button ng-click="enableFullDate()" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span> Enter Full Date</button>
+                          <button ng-click="enableFullDate()" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span>{{ "PATIENT_REG.ENTER_FULL_DATE" | translate }}</button>
                         </span>
                       </div>
                     </div>
@@ -56,32 +56,25 @@
                 
                   <!-- Use ng-show to display this only if enter full date is disabled -->
                   <div class="form-group" >
-                    <label for="patient-dob" class="col-xs-3 control-label">Date of Birth</label>
+                    <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
                       <input id="patient-dob" type="date" class="form-kapok" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob"> 
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label class="control-label col-xs-3">Gender</label>
+                    <label class="control-label col-xs-3"> {{ "PATIENT_REG.SEX" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="radio-inline">
                         <label>
-                          <input
-                            type="radio"
-                            name="sex_select"
-                            id="male"
-                            value="M"
-                            checked
-                            ng-model="patient.sex"
-                            required>
-                          Male
+                          <input type="radio" name="sex_select" id="male" value="M" checked ng-model="patient.sex" required>
+                          {{ "PATIENT_REG.MALE" | translate }} 
                         </label>
                       </div>
                       <div class="radio-inline">
                         <label>
                           <input type="radio" name="sex_select" id="female" value="F" ng-model="patient.sex" required>
-                          Female
+                          {{ "PATIENT_REG.FEMALE" | translate }} 
                         </label>
                       </div>
                     </div>
@@ -89,89 +82,74 @@
                 </fieldset>
 
                 <fieldset>
-                  <legend>Location</legend>
-                  <table class="table table-bordered">
-                    <tr>
-                      <td>
-                          <!-- debut origin-->
+                  <legend>{{ "LOCATION.LOCATION" | translate }}</legend>
+                  <div class="col-xs-6">
                     <fieldset>
-                      <legend>Origin</legend>
+                      <legend>{{ "LOCATION.ORIGIN" | translate }}</legend>
 
                       <div class="form-group pull-left">
-                        <label for="location-country" class="capital control-label col-xs-3">{{ 'COUNTRY' | translate }}</label>
+                        <label for="location-country" class="capital control-label col-xs-3">{{ "LOCATION.COUNTRY" | translate }}</label>
                         <div class="col-xs-9">
-                          <select required class="form-kapok" id="location-country" ng-model="country.country_id"
-                                  ng-options="c.id as c.country_en for c in model.country.data"
-                                   ng-change="handleOriginCountryChange()">
-                            <option value="" disabled="disabled">-- Select Country--</option>
+                          <select required class="form-kapok" id="location-country" ng-model="country.country_id" ng-options="c.id as c.country_en for c in model.country.data" ng-change="handleOriginCountryChange()">
+                            <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                           </select>
                         </div>
                       </div>
 
                       <div class="form-group">
-                        <label for="location-province" class="capital control-label col-xs-3">{{ 'PROVINCE' | translate }}</label>
+                        <label for="location-province" class="capital control-label col-xs-3">{{ "LOCATION.PROVINCE" | translate }}</label>
                         <div class="col-xs-9"> 
                           <select required class="form-kapok" id="location-province" ng-model="province.province_id"
                                   ng-options="p.id as p.name for p in model.province.data">
-                            <option value="" disabled="disabled">-- Select Province --</option>
+                            <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
                           </select>
                         </div>
                       </div>
 
                       <div class="form-group">
-                        <label for="location-sector" class="capital control-label col-xs-3">{{ 'SECTOR' | translate }}</label>
-                        <div class="col-xs-9"> 
-                          <select required class="form-kapok" id="location-sector" ng-model="sector.sector_id"
-                                  ng-options="s.id as s.name for s in model.sector.data">
-                            <option value="" disabled="disabled">-- Select Sector --</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-village" class="capital control-label col-xs-3">{{ 'VILLAGE' | translate }}</label>
+                        <label for="location-sector" class="capital control-label col-xs-3">{{ "LOCATION.SECTOR" | translate }}</label>
                         <div class="col-xs-9">
-                          <input
-                            type="text"
-                            class="form-kapok col-xs-9"
-                            id="location-country"
-                            ng-model="village.name"
-                            required >
+                          <select class="form-kapok" id="location-sector" ng-model="sector.sector_id" ng-options="s.id as s.name for s in model.sector.data" required>
+                            <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="location-village" class="capital control-label col-xs-3">{{ "LOCATION.VILLAGE" | translate }}</label>
+                        <div class="col-xs-9">
+                          <input type="text" class="form-kapok col-xs-9" id="location-country" ng-model="village.name" required>
                         </div>
                       </div>
                     </fieldset>
-                          <!-- Fin origin-->                        
-                      </td>
-                      <td>
-                       <!--debut current-->
+                  </div>
+
+                  <div class="col-xs-6">
                     <fieldset>
-                      <legend>Current</legend>
+                      <legend> {{ "LOCATION.CURRENT" | translate }}</legend>
                       <div class="form-group pull-left">
-                        <label for="location-country" class="capital control-label col-xs-3">{{ 'COUNTRY' | translate }}</label>
+                        <label for="location-country" class="capital control-label col-xs-3">{{ "LOCATION.COUNTRY" | translate }}</label>
                         <div class="col-xs-9">
-                          <select required class="form-kapok" id="location-country" ng-model="current_country.country_id"
-                                  ng-options="c.id as c.country_en for c in model.country.data">
-                            <option value="" disabled="disabled">-- Select Country--</option>
+                          <select required class="form-kapok" id="location-country" ng-model="current_country.country_id" ng-options="c.id as c.country_en for c in model.country.data">
+                            <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                           </select>
                         </div>
                       </div>
 
                       <div class="form-group">
-                        <label for="location-province" class="capital control-label col-xs-3">{{ 'PROVINCE' | translate }}</label>
+                        <label for="location-province" class="capital control-label col-xs-3">{{ "LOCATION.PROVINCE" | translate }}</label>
                         <div class="col-xs-9"> 
-                          <select required class="form-kapok" id="location-province" ng-model="current_province.province_id"
-                                  ng-options="p.id as p.name for p in model.province.data">
-                            <option value="" disabled="disabled">-- Select Province --</option>
+                          <select required class="form-kapok" id="location-province" ng-model="current_province.province_id" ng-options="p.id as p.name for p in model.province.data">
+                            <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
                           </select>
                         </div>
                       </div>
 
                       <div class="form-group">
-                        <label for="location-sector" class="capital control-label col-xs-3">{{ 'SECTOR' | translate }}</label>
+                        <label for="location-sector" class="capital control-label col-xs-3">{{ "LOCATION.SECTOR" | translate }}</label>
                         <div class="col-xs-9"> 
-                          <select required class="form-kapok" id="location-sector" ng-model="current_sector.sector_id"
-                                  ng-options="s.id as s.name for s in model.sector.data">
-                            <option value="" disabled="disabled">-- Select Sector --</option>
+                          <select required class="form-kapok" id="location-sector" ng-model="current_sector.sector_id" ng-options="s.id as s.name for s in model.sector.data">
+                            <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
                           </select>
                         </div>
                       </div>
@@ -179,40 +157,29 @@
                       <div class="form-group">
                         <label for="location-village" class="capital control-label col-xs-3">{{ 'VILLAGE' | translate }}</label>
                         <div class="col-xs-9">
-                          <input
-                            type="text"
-                            class="form-kapok col-xs-9"
-                            id="location-country"
-                            ng-model="current_village.name"
-                            ng-change="inChange()"
-                            required >
+                          <input type="text" class="form-kapok col-xs-9" id="location-country" ng-model="current_village.name" ng-change="inChange()" required >
                         </div>
                       </div>
                     </fieldset>
-                       <!-- fin current-->
-                        
-                      </td>
-                    </tr>
-                  </table>
-                    
+                  </div>
                 </fieldset>
 
                 <fieldset>
-                  <legend>Finance</legend>
+                  <legend>{{ "PATIENT_REG.FINANCE" | translate }}</legend>
                   <div class="form-group">
-                    <label for="debtor-group" class="col-xs-3 control-label">{{'DEBTOR_GROUP' | translate}}</label>
+                    <label for="debtor-group" class="col-xs-3 control-label">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
                     <div class="col-xs-9"> 
                       <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
-                        <option value="" disabled="disabled">-- Select Debtor Group --</option>
+                        <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
                       </select>
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="patient-group" class="col-xs-3 control-label">Patient Group</label>
+                    <label for="patient-group" class="col-xs-3 control-label">{{"PATIENT_REG.PATIENT_GROUP" | translate }}</label>
                     <div class="col-xs-9"> 
                       <select multiple class="form-kapok" id="patient-group" ng-model="assignation.patient_group_id" ng-options=" pg.id as pg.name for pg in model.patientGroup.data" >
-                        <option value="" disabled="disabled">-- Select Patient Group --</option>
+                        <option value="" disabled="disabled">-- {{ "SELECT.PATIENT_GROUP" | translate }} --</option>
                       </select>
                     </div>
                   </div>
@@ -224,28 +191,32 @@
         </div> <!-- End patient details row -->
         <div class="row">
           <div class="panel panel-default">
-            <div class="panel-heading">Optional Information</div>
+            <div class="panel-heading">{{ "PATIENT_REG.OPTIONAL_INFO" | translate }}</div>
             <div class="panel-body">
               <form role="form">
+
                 <div class="form-group">
-                  <label for="phone">Phone No.</label>
+                  <label for="phone">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
                   <input type="text" class="form-kapok" id="phone" ng-model="patient.phone">
                 </div>
+
                 <div class="form-group">
-                  <label for="email">Email</label>
+                  <label for="email">{{ "PATIENT_REG.EMAIL" | translate }}</label>
                   <input type="email" class="form-kapok" id="email" ng-model="patient.email">
                 </div>
 
                 <div class="form-group">
-                  <label for="parent">Parent's Name</label>
+                  <label for="parent">{{ "PATIENT_REG.PARENT_NAME" | translate }}</label>
                   <input type="text" class="form-kapok" id="parent" ng-model="patient.parent_name">
                 </div>
+
                 <div class="form-group">
-                  <label for="religion">Religion</label>
+                  <label for="religion">{{ "PATIENT_REG.RELIGION" | translate }}</label>
                   <input type="text" class="form-kapok" id="religion" ng-model="patient.religion">
                 </div>
+
                 <div class="form-group">
-                  <label for="marital">Marital Status</label>
+                  <label for="marital">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
                   <input type="text" class="form-kapok" id="marital" ng-model="patient.marital_status">
                 </div>
               </form>
@@ -273,7 +244,7 @@
           </div> <!-- End column 5 row -->
           <div class="row hack-right">
             <div class="panel panel-default">
-              <div class="panel-heading"><span class="glyphicon glyphicon-pencil"></span> Patient Notes</div>
+              <div class="panel-heading"><span class="glyphicon glyphicon-pencil"></span>{{ "PATIENT_REG.PATIENT_NOTES" | translate }}</div>
               <!-- <div class="panel&#45;body"> -->
                 <textarea type="text" multiline class="form-kapok note"></textarea>
               <!-- </div> -->
@@ -283,18 +254,12 @@
       <!-- </div> <!&#45;&#45;End main column 5 &#45;&#45;> -->
     </div><!-- End row -->
   </div>
-
-
-
-
-
- 
 </div>
 
 <section class="bar-bottom">
   <div class="pull-right">
     <a ng-click="registerPatient(patient)" ng-disabled="form.$invalid || checkChanged(patient)" class="btn btn-success btn-sm">
-      <span class="glyphicon glyphicon-pencil"></span> Register Patient
+      <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
     </a>
   </div>
 </section>

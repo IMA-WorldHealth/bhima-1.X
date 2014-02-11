@@ -101,7 +101,18 @@
   "SELECT" : {
     "ACCOUNT" : "Select Account",
     "CURRENCY" : "Select Currency",
-    "NAME" : "Select A Name"
+    "NAME" : "Select a Name",
+    "COUNTRY" : "Select a Country",
+    "PROVINCE" : "Select a Province",
+    "SECTOR" : "Select a Sector",
+    "VILLAGE" : "Select a Village",
+    "DEBITOR_GROUP" : "Select a Debitor Group",
+    "PATIENT_GROUP" : "Select a Patient Group",
+    "CREDITOR_GROUP" : "Select a Creditor Group",
+    "PRICE_LIST" : " Select a Price List",
+    "LOCATION" : "Select a Location",
+    "PAYMENT" : "Select a Payment Type",
+    "GROUP_TYPE" : "Select a Group Type"
   },
 
   "REPORT" : {
@@ -143,25 +154,134 @@
   "COLUMNS" : {
     "COLUMNS" : "Columns",
     "DEBITOR_NAME" : "Debitor Name",
-    "ACCOUNT" : "Account"
+    "ACCOUNT" : "Account",
+    "GROUP_NAME" : "Group Name",
+    "ACCOUNT_NUMBER" : "Account Number",
+    "EDIT" : "Edit",
+    "CONVENTION" : "Convention",
+    "NAME" : "Name",
+    "SYMBOL" : "Symbol",
+    "SEPARATOR" : "Separator",
+    "DECIMAL" : "Decimal",
+    "ACTIONS" : "Actions",
+    "NOTE" : "Note",
+    "PHONE" : "Phone",
+    "EMAIL" : "Email",
+    "MAX_CREDIT" : "Max Credit",
+    "TYPE" : "Type",
+    "LOCATION" : "Location",
+    "PAYMENT" : "Payment"
   },
 
-  "ID"         : "id",
-  "DATE"        : "date",
-  "DESCRIPTION" : "description",
+  "PATIENT_REG" : {
+    "TITLE" : "Patient Registration",
+    "CREATE_DEBTOR_GROUP" : "Create Debitor Group",
+    "VIEW_PATIENT_RECORDS" : "View Patient Records",
+    "PATIENT_GROUP_ASSIGNMENT" : "Patient Group Assignment",
+    "PATIENT" : "Patient",
+    "FIRST_NAME" : "First Name",
+    "SECOND_NAME" : "Second Name",
+    "YOB" : "Year of Birth",
+    "ENTER_FULL_DATE" : "Enter Full Date",
+    "DOB" : "Date of Birth",
+    "SEX" : "Sex",
+    "MALE" : "Male",
+    "FEMALE" : "Female",
+    "FINANCE" : "Finance",
+    "PATIENT_GROUP" : "Patient Group",
+    "DEBTOR_GROUP" : "Debitor Group",
+    "OPTIONAL_INFO" : "Optional Information",
+    "PHONE_NO" : "Phone Number",
+    "EMAIL": "Email",
+    "PARENT_NAME" : "Parent Name",
+    "RELIGION" : "Religion",
+    "MARITAL_STATUS" : "Marital Status",
+    "PATIENT_NOTES" : "Patient Notes",
+    "REGISTER_PATIENT" : "Register Patient"
+  },
 
-  "SAVE"   : "save",
-  "DELETE" : "delete",
-  "NEW"    : "new",
-  "CANCEL" : "cancel",
+  "CREDITOR_GRP" : {
+    "TITLE" : "Creditor Group Management",
+    "NEW" : "New Creditor Group",
+    "CREDITOR_GROUPS" : "Creditor Groups",
+    "HELP_TXT" : "The creditor group management page",
+    "SAVE_CHANGES" : "Save Changes",
+    "NEW_FORM" : "New Form",
+    "DETAILS" : "Creditor Group Details"
+  },
 
-  "MANAGEMENT" : "management",
+  "LOCATION" : {
+    "LOCATION" : "Location",
+    "ORIGIN" : "Origin",
+    "CURRENT" : "Current",
+    "COUNTRY" : "Country",
+    "PROVINCE" : "Province",
+    "SECTOR" : "Sector",
+    "VILLAGE" : "Village"
+  },
+
+  "GROUP_INVOICING" : {
+    "TITLE" : "Debtor Group Invoicing",
+    "SELECT_PAYMENT_DETAILS" : "Select Payment Details",
+    "GROUP" : "Group"
+  },
+
+  "FORM" : {
+    "SAVE" : "Save",
+    "SAVE_FORM" : "Save Form",
+    "SAVE_CHANGES" : "Save Changes",
+    "CLEAR" : "Clear",
+    "CLEAR_FORM" : "Clear Form",
+    "RESET" : "Reset",
+    "RESET_FORM" : "Reset Form",
+    "CANCEL" : "Cancel"
+  },
+
+  "CURRENCY" : {
+    "TITLE" : "Currency Management",
+    "ADD" : "Add a Currency",
+    "HELP_TXT_1" : "Configure the application's currencies and rendering from this module",
+    "DEFN" : "Definitions",
+    "SYMBOL" : "Symbol",
+    "SEPARATOR" : "Separator",
+    "DECIMAL" : "Decimal",
+    "SYMBOL_TXT" : "the symbol with which the currency is identified and rendered.  Appears after the amount",
+    "SEPARATOR_TXT" : "the delimiter used to denote the thousands places in an amount",
+    "DECIMAL_TXT" : "the delimiter used between the integer parts of an amount and the decimal parts",
+    "ACTIONS" : "Actions",
+    "ACTION_TXT_1" : "Edit the currency item",
+    "ACTION_TXT_2" :  "Delete the currency item",
+    "CURRENCY_DEFN" : "Currency Definition"
+  },
+
+  "PATIENT_GRP" : {
+    "TITLE" : "Patient Group Management",
+    "NEW" : "New Patient Group",
+    "REGISTERED" : "Registered Patient Groups",
+    "REGISTER" : "Register a Patient Group",
+    "PRICE_LIST" : "Price List",
+    "MODIFY" : "Modify a Patient Group",
+    "PATIENT_GROUP" : "Patient Group",
+    "HELP_TXT_1" : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits"
+  },
+
+  "DEBITOR_GRP" :  {
+    "TITLE" : "Debitor Group Management",
+    "GROUPS" : "Debitor Groups",
+    "NEW" : "New Debitor Group",
+    "FILTER" : "Filter Debitor Groups",
+    "HELP_TXT_1" : "This interface allows you to review, find, and configure debitor groups",
+    "HELP_TXT_2" : "Edit selected debitor group",
+    "HELP_TXT_3" : "Lock the selected debitor group.  No new transactions can be recorded for a locked group",
+    "HELP_TXT_4" : "Create a new debitor group",
+    "INFO" : "Group Information"
+  },
 
   "DOC_NO"           : "doc no.",
   "DEB_CRED_ACCOUNT" : "debitor/creditor account",
   "DEB_CRED_TYPE"    : "debitor/creditor type",
   "INV_PO_NO"        : "inv/PO no.",
-
+ 
   "UP_TITLE"         : "users & permissions management",
   "FIRST_NAME"       : "first name",
   "LAST_NAME"        : "last name",
@@ -180,7 +300,6 @@
 
   "NAME"         : "name",
   "CASH_ACCOUNT" : "cash account",
-  "LOCATION"     : "location",
   "PHONE"        : "phone",
   "ABBREVIATION" : "abbreviation",
 

@@ -1,10 +1,10 @@
 <header>
-  <span> Configure Patient Groups </span>
+  <span>{{ "PATIENT_GRP.TITLE" | translate }}</span>
 </header>
 
 <section class="top-nav">
   <button ng-click="newGroup()" class="btn btn-sm btn-default">
-    <i class="glyphicon glyphicon-file"></i> New Patient Group
+    <i class="glyphicon glyphicon-plus-sign"></i> {{ "PATIENT_GRP.NEW" | translate }}
   </button>
 </section>
 
@@ -12,18 +12,30 @@
   <div class="col-xs-4">
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <span>Registered Patient Groups</span>
+        <span>{{ "PATIENT_GRP.REGISTERED" | translate }}</span>
       </div>
       <table class="table table-condensed table-striped">
         <thead>
-          <tr><th>Patient Group</th><th>Price List</th><th colspan="2">Actions</th></tr>
+          <tr>
+            <th>{{ "PATIENT_GRP.PATIENT_GROUP" | translate }}</th>
+            <th>{{ "PATIENT_GRP.PRICE_LIST" | translate }}</th>
+            <th colspan="2">Actions</th>
+          </tr>
         </thead>
         <tbody>
           <tr ng-repeat="grp in group.data">
-            <td>{{grp.name}}</td>
-            <td>{{list.get(grp.price_list_id).name}}</td>
-            <td><button class="btn btn-sm btn-default" ng-click="edit(grp)"><i class="glyphicon glyphicon-pencil"></i></button></td>
-            <td><button class="btn btn-sm btn-default" ng-click="remove(grp)"><i class="glyphicon glyphicon-trash"></i></button></td>
+            <td>{{ grp.name }}</td>
+            <td>{{ list.get(grp.price_list_id).name }}</td>
+            <td>
+              <button class="btn btn-sm btn-default" ng-click="edit(grp)">
+                <i class="glyphicon glyphicon-pencil"></i>
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-default" ng-click="remove(grp)">
+                <i class="glyphicon glyphicon-trash"></i>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -33,47 +45,43 @@
   <div class="col-xs-6" ng-switch="action">
     <div ng-switch-default>
       <div class="alert alert-info">
-        <b>Patient Group Configuration</b>
-        <p>
-          Patient groups are uses to assign the appropriate discounts to types
-          of patients that merit them.  Use this module to <b>register</b>, <b>modify</b>,
-          and <b>remove</b> patient groups and their benefits.
-        </p>
+        <b>{{ "PATIENT_GRP.TITLE" | translate }}</b>
+        <p>{{ "PATIENT_GRP.HELP_TXT_1" | translate }}.</p>
       </div>
     </div>
 
     <div ng-switch-when="register">
       <form class="form-horizontal">
         <fieldset>
-          <legend>Register a Patient Group</legend>
+          <legend>{{ "PATIENT_GRP.REGISTER" | translate }}</legend>
     
           <div class="form-group required">
-            <label class="col-xs-2 control-label">Name</label>
+            <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
             <div class="col-xs-10">
               <input class="form-kapok" ng-model="register.name">
             </div>
           </div>
         
           <div class="form-group required">
-            <label class="col-xs-2 control-label">Price List</label>
+            <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
             <div class="col-xs-10">
               <select class="form-kapok" ng-model="register.price_list_id" ng-options="list.id as list.name for list in list.data">
-                <option value="">-- Select a Price List --</option>
+                <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
               </select>
             </div>
           </div>
     
 
           <div class="form-group">
-            <label class="col-xs-2 control-label">Note</label>
+            <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
             <div class="col-xs-10">
               <textarea class="form-control" ng-model="register.note" rows="3">
               </textarea>
             </div>
           </div>
 
-          <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="Save">
-          <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="Reset Form">
+          <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
+          <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
 
         </fieldset>
       </form>
@@ -83,39 +91,37 @@
     <div ng-switch-when="modify">
       <form class="form-horizontal">
         <fieldset>
-          <legend>Modify a Patient Group</legend>
+          <legend>{{ "PATIENT_GRP.MODIFY" |  translate }}</legend>
     
           <div class="form-group required">
-            <label class="col-xs-2 control-label">Name</label>
+            <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
             <div class="col-xs-10">
               <input class="form-kapok" ng-model="modify.name">
             </div>
           </div>
         
           <div class="form-group required">
-            <label class="col-xs-2 control-label">Price List</label>
+            <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
             <div class="col-xs-10">
               <select class="form-kapok" ng-model="modify.price_list_id" ng-options="list.id as list.name for list in list.data">
-                <option value="">-- Select a Price List --</option>
+                <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
               </select>
             </div>
           </div>
     
 
           <div class="form-group">
-            <label class="col-xs-2 control-label">Note</label>
+            <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
             <div class="col-xs-10">
-              <textarea class="form-control" ng-model="modify.note" rows="3">
-              </textarea>
+              <textarea class="form-control" ng-model="modify.note" rows="3"></textarea>
             </div>
           </div>
 
-          <input ng-click="saveModification()" class="btn btn-sm btn-success" type="submit" value="Save">
-          <input ng-click="resetModification()" class="btn btn-sm btn-default" type="button" value="Reset Form">
+          <input ng-click="saveModification()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
+          <input ng-click="resetModification()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
 
         </fieldset>
       </form>
     </div>
-    
   </div>
 </div>
