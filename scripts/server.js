@@ -289,10 +289,21 @@ app.get('/location/:villageId?', function (req, res, next) {
             "WHERE village.sector_id = sector.id AND sector.province_id = province.id AND province.country_id=country.id " + specifyVillage + ";";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
-    console.log(rows);
     res.send(rows);
   });
 });
+
+app.get('/village/', function (req, res, next) {
+
+  var sql = "SELECT `village`.`id` as `id`,  `village`.`name` as `village`, `sector`.`id` "+
+            "as `sector_id`, `sector`.`name` as `sector` FROM `village`, `sector` "+
+            "WHERE village.`sector_id` = sector.id";
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(rows);
+  });
+});
+
 
 app.get('/debitorAgingPeriod', function (req, res, next){
   var sql =  "SELECT DISTINCT period.id, period.period_start, period.period_stop FROM period, general_ledger WHERE period.id = general_ledger.`period_id`;";
