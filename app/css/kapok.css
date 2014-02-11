@@ -193,6 +193,10 @@ input::-webkit-inner-spin-button {
   margin-left: -15px;
 }
 
+.report {
+  margin-top: 85px;
+}
+
 /*sfount, temporary printable table styling*/
 .reportTable { 
   border: 1px solid #9F9F9F;
