@@ -162,6 +162,9 @@
     "NAME" : "Name",
     "SYMBOL" : "Symbol",
     "SEPARATOR" : "Separator",
+    "DEBITOR_ID" : "Debitor ID",
+    "TOTAL_CREDIT" : "Total Credit",
+    "SALE_ID" : "Sale ID",
     "DECIMAL" : "Decimal",
     "ACTIONS" : "Actions",
     "NOTE" : "Note",
@@ -170,7 +173,17 @@
     "MAX_CREDIT" : "Max Credit",
     "TYPE" : "Type",
     "LOCATION" : "Location",
-    "PAYMENT" : "Payment"
+    "PAYMENT" : "Payment",
+    "DATE" : "Date",
+    "INVOICE_ID" : "Invoice ID",
+    "DEBITOR" : "Debitor",
+    "BALANCE" : "Balance",
+    "PAID" : "Paid",
+    "REMAINING" : "Remaining",
+    "DESCRIPTION" : "Description",
+    "QUANTITY" : "Quantity",
+    "UNIT_PRICE" : "Unit Price",
+    "COST" : "Cost"
   },
 
   "PATIENT_REG" : {
@@ -235,6 +248,28 @@
     "RESET" : "Reset",
     "RESET_FORM" : "Reset Form",
     "CANCEL" : "Cancel"
+  },
+
+  "CASH" : {
+    "TITLE" : "Cash Payment Module",
+    "DEFAULT_CASHBOX" : "Caisse",
+    "HELP_TXT_1" : "The module allows debitors to pay against existing invoices",
+    "HELP_TXT_2" : "To begin, search for a debitor using the search bar above",
+    "DEBITOR_INVOICES" : "Debitor Invoices",
+    "PAYMENT" : "Payment",
+    "TOTAL_DUE" : "Total Due",
+    "TOTAL_PAYING" : "Total Paying",
+    "OVERDUE" : "Over Due",
+    "PAY_INVOICES" : "Pay Invoices",
+    "CLEAR_SELECTION" : "Clear Selection"
+  },
+
+  "CREDIT_NOTE" : {
+    "TITLE" : "Credit Note",
+    "SALE_DETAILS" : "Sale Details",
+    "TOTAL_DEBIT" : "Total Debit",
+    "DESCRIPTION" : "Description",
+    "SUBMIT" : "Submit Credit Note"
   },
 
   "CURRENCY" : {
