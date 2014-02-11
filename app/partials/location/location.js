@@ -31,29 +31,33 @@ dependencies.location = {
 //fonction
  
 function manageLocation(model){
-  for (var k in model) $scope.model[k] = model.k; 
-  console.log(model);
+  for (var k in model) $scope.model[k] = model[k]; 
 }
-  function formatVillage (id) {
-    return stores.village ? stores.village.get(id).name : "";
-  }
 
-  function formatSector (id) {
-    return stores.sector? stores.sector.get(id).name : "";
-  }
+function setOp(action){
+$scope.op = action;
+}
 
-  function formatProvince (id) {
-    return stores.province ? stores.province.get(id).name : "";
-  }
+function addVillage(obj){
+ connect.basicPut('village', [connect.clean(obj)])
+   .then(function (res) {
+    // var id = result.data.insertId;
+    // stores.sector.post({id: id, name: $scope.data.sector_id});});
+    console.log('data inserE');
+  });
+}
 
-  function formatCountry (id) {
-    return stores.country? stores.country.get(id).country_en : "";
-  }
+validate.process(dependencies).then(manageLocation);
 
-
-
-
-// function init () {
+$scope.setOp = setOp;
+$scope.addVillage = addVillage;
+  
+  
+  
+  
+  
+  
+  // function init () {
 //     $q.all([
 //       connect.req(imports.province),
 //       connect.req(imports.sector),
@@ -218,10 +222,7 @@ function manageLocation(model){
   // }
 
   // $scope.add = add;
-  $scope.formatVillage = formatVillage;
-  $scope.formatSector = formatSector;
-  $scope.formatProvince = formatProvince;
-  $scope.formatCountry = formatCountry;
+
 //  $scope.format = format;
   // $scope.select = select;
   // $scope.submit = submit;
@@ -231,6 +232,5 @@ function manageLocation(model){
 
 // invocation
 
-validate.process(dependencies).then(manageLocation);
 
 });

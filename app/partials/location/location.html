@@ -1,14 +1,19 @@
 <header>
-<span class="capitalize"> {{ 'LOCATION MANAGER' | translate }} {{model.location.data}}</span>
+<span class="capitalize"> {{ 'LOCATION MANAGER' | translate }}</span>
   </header>
 
   <section class="top-nav">
    <div class="pull-right">
-    <a href="#" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Manage Country</span></a>
+      <a href="#" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Manage Country</span></a>
 
-    <a href="#"  class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Manage Province</span></a>
+      <a href="#"  class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Manage Province</span></a>
 
-    <a href="#" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Manage Sector</span></a>
+      <a href="#" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Manage Sector</span></a>
+  
+      <a href="#/location/village" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Manage Village</span></a>
+   </div>
+  <div class="pull-left">
+    <button class="btn btn-default btn-sm" ng-click="setOp('Add')">Add New Location</button>
   </div>
   </section>
 
@@ -40,42 +45,50 @@
       </div>
     </div>
 
-    <div class="col-xs-6">
-      <form class="form-horizontal" name="kpk-location-form" role="form">
-        <fieldset>
-          <legend>Add a Location</legend>
+    <div class="col-xs-6" ng-switch="op">
+      <div ng-switch-default>
+         <div class="alert alert-info">                                                                          
+             <b>Location Manager Configuration </b>                                                        
+             <p>Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. ⇉
+             use this module to <b>create</b>, <b>modify</b> and <b>remove</b> location.                                                        
+             </p>                                                                                                  
+         </div>  
+       </div>
 
-          <div class="form-group">
-            <label class="col-xs-2 control-label">Country :</label>
-            <div class="col-xs-10">
-              <input type="text" ng-model="data.country_id" name="kpk-location-country" class="form-kapok" typeahead="c.id as c.country_en for c in models.country | filter:$viewValue | limitTo:5" typeahead-on-select="select('country')" typeahead-input-formatter="format('country')">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label class="col-xs-2 control-label">Province : </label>
-            <div class="col-xs-10">
-              <input type="text" ng-model="data.province_id" name="kpk-location-province" class="form-kapok" typeahead="p.id as p.name for p in models.province | filter:$viewValue | limitTo:8" typeahead-on-select="select('province')" typeahead-input-formatter="format('province')">
-            </div>
-          </div>
+       <div ng-switch-when="Add">
+         
+           <form class="form-horizontal">                                                                          
+              <fieldset>                                                                                            
+                <legend>Register a Location</legend>                                                           
+                <div class="form-group">
+                  <label class="col-xs-2"> Sector</label>
+                  <div class="col-xs-10">
+                    <select
+                      required
+                      class="form-kapok"
+                      name="sectorname"
+                      id="sectorID"
+                      ng-model="add.sector_id"
+                      ng-options="sec.id as sec.name for sec in model.sector.data"
+                    >
+                      <option value="" disable="disabled">-- select A Sector -- </option>
+                    </select>
+                  </div>
+                </div>
 
-          <div class="form-group">
-            <label class="col-xs-2 control-label">Sector : </label>
-            <div class="col-xs-10">
-              <input type="text" ng-model="data.sector_id" name="kpk-location-sector" class="form-kapok" typeahead="s.id as s.name for s in models.sector | filter:$viewValue | limitTo:8" typeahead-on-select="select('sector')" typeahead-input-formatter="format('sector')">
-            </div>
-          </div>
+                <div class="form-group">                                                                   
+                   <label class="col-xs-2 control-label">Village Name</label>                                                
+                   <div class="col-xs-10">                                                                           
+                      <input class="form-kapok" ng-model="add.name" required>                                            
+                   </div>                                                                                            
+                </div>     
+              </fieldset>
+              <button class="btn btn-default btn-success" ng-click="addVillage(add)" ng-disabled="form.$invalid " type="submit">Add</button>
+              <button class="btn btn-default btn-sm"  type="reset">New Form</button>
 
-          <div class="form-group">
-            <label class="col-xs-2 control-label">Village : </label>
-            <div class="col-xs-10">
-              <input type="text" ng-model="data.village_id" name="kpk-location-village" class="form-kapok" typeahead="v.id as v.name for v in models.village | filter:$viewValue | limitTo:8" typeahead-on-select="select('village')" typeahead-input-formatter="format('village')">
-            </div>
-          </div>
-
-        </fieldset>
-      </form>
-    </div>
+            </form>
+       </div>
+      
   </div>
 </article>
 
