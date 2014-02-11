@@ -1,10 +1,12 @@
 <header>
-  <span>Currency Configuration</span>
+  <span>{{ "CURRENCY.TITLE" | translate }}</span>
 </header>
 
 <section class="top-nav">
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="new()"><i class="glyphicon glyphicon-plus"></i> Add a Currency</button>
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <i class="glyphicon glyphicon-plus-sign"></i> {{ "CURRENCY.ADD" | translate }}
+    </button>
   </div>
 </section>
 
@@ -13,7 +15,13 @@
   <div class="col-xs-6">
     <table class="table table-condensed table-striped">
       <thead>
-        <tr><th>Name</th><th>Symbol</th><th>Separator</th><th>Decimal</th><th colspan="2" style="width:10%;">Actions</th></tr>
+        <tr>
+          <th>{{ "COLUMNS.NAME" | translate }}</th>
+          <th>{{ "COLUMNS.SYMBOL" | translate }}</th>
+          <th>{{ "COLUMNS.SEPARATOR" | translate }}</th>
+          <th>{{ "COLUMNS.DECIMAL" | translate }}</th>
+          <th colspan="2" style="width:10%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+        </tr>
       </thead>
       <tbody>
         <tr ng-repeat="currency in currency.data">
@@ -21,8 +29,16 @@
           <td style="font-size: 14px;">{{currency.symbol}}</td>
           <td style="font-size: 14px;"> <b>{{currency.separator}}</b> </td>
           <td style="font-size: 14px;"> <b>{{currency.decimal}}</b> </td>
-          <td><button class="btn btn-sm btn-default" ng-click="edit(currency.id)"><i class="glyphicon glyphicon-pencil"></i></button></td>
-          <td><button class="btn btn-sm btn-danger" ng-click="remove(currency.id)" disabled><i class="glyphicon glyphicon-trash"></i></button></td>
+          <td>
+            <button class="btn btn-sm btn-default" ng-click="edit(currency.id)">
+              <i class="glyphicon glyphicon-pencil"></i>
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-danger" ng-click="remove(currency.id)" disabled>
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -32,18 +48,18 @@
 
     <div ng-switch-default>
       <div class="alert alert-info">
-        <h4>Currency Configuration</h4>
-        <p>Configure the application's currencies and rendering from this module.</p>
-        <p><b>Definitions</b></p>
+        <h4>{{ "CURRENCY.TITLE" | translate }}</h4>
+        <p>{{ "CURRENCY.HELP_TXT_1" | translate }}.</p>
+        <p><b>{{ "CURRENCY.DEFN" | translate }}</b></p>
         <ul class="list-plain">
-          <li><b>Symbol</b>: the symbol with which the currency is identified and rendered.  Appears after the amount.</li>
-          <li><b>Separator</b>: the delimiter used to denote the thousands places in an amount.</li>
-          <li><b>Decimal</b>: the delimiter used between the integer parts of an amount and the decimal parts.</li>
+          <li><b>{{ "CURRENCY.SYMBOL" | translate }}</b>: {{ "CURRENCY.SYMBOL_TXT" | translate }}.</li>
+          <li><b>{{ "CURRENCY.SEPARATOR" | translate }}</b>: {{ "CURRENCY.SEPARATOR_TXT" | translate }}.</li>
+          <li><b>{{ "CURRENCY.DECIMAL" | translate }}</b>: {{ "CURRENCY.DECIMAL_TXT" | translate }}.</li>
         </ul>
-        <p><b>Actions</b></p>
+        <p><b>{{ "CURRENCY.ACTIONS" | translate }}</b></p>
         <ul class="list-plain">
-          <li> <i class="glyphicon glyphicon-pencil"></i> Edit the currency item. </li>
-          <li> <i class="glyphicon glyphicon-trash"></i> Delete the currency item. </li>
+          <li> <i class="glyphicon glyphicon-pencil"></i> {{ "CURRENCY.ACTION_TXT_1" | translate }}.</li>
+          <li> <i class="glyphicon glyphicon-trash"></i> {{ "CURRENCY.ACTION_TXT_2" | translate }}.</li>
         </ul>
       </div>
     </div>
@@ -51,39 +67,38 @@
     <div ng-switch-when="new">
       <form class="form-horizontal" name="newForm" novalidate ng-controller="currency">
         <fieldset>
-          <legend>Currency Definition</legend>
+          <legend>{{ "CURRENCY.CURRENCY_DEFN" | translate }}</legend>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.NAME" | translate }}</label>
             <div class="col-xs-10">
               <input name="name" ng-model="newCurrency.name" class="form-kapok" required>
-              <span class="error" ng-show="newForm.name.$error.required">Required!</span><br>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Symbol</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.SYMBOL" | translate }}</label>
             <div class="col-xs-10">
               <input name="symbol" ng-model="newCurrency.symbol" class="form-kapok" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Separator</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.SEPARATOR" | translate }}</label>
             <div class="col-xs-10">
               <input name="separator" ng-model="newCurrency.separator" class="form-kapok" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Decimal</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.DECIMAL" | translate }}</label>
             <div class="col-xs-10">
               <input name="decimal" ng-model="newCurrency.decimal" class="form-kapok" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">Note</label>
+            <label class="control-label col-xs-2">{{ "COLUMNS.NOTE" | translate }}</label>
             <div class="col-xs-10">
               <textarea name="note" ng-model="newCurrency.note" class="form-control"></textarea>
             </div>
@@ -91,46 +106,46 @@
 
         </fieldset>
         
-        <input class="btn btn-sm btn-success" type="submit" ng-click="submitNew()" value="Save">
-        <input class="btn btn-sm btn-default" type="reset" ng-click="resetNew()" value="Reset Form">
+        <input class="btn btn-sm btn-success" type="submit" ng-click="submitNew()" value="{{ 'FORM.SAVE' | translate }}">
+        <input class="btn btn-sm btn-default" type="reset" ng-click="resetNew()" value="{{ 'FORM.RESET_FORM' | translate }}">
       </form>
     </div>
 
     <div ng-switch-when="edit">
       <form class="form-horizontal" name="editForm" ng-controller="currency" novalidate>
         <fieldset>
-          <legend>Currency Definition</legend>
+          <legend>{{ "CURRENCY.CURRENCY_DEFN" | translate }}</legend>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.NAME" | translate }}</label>
             <div class="col-xs-10">
               <input ng-model="editCurrency.name" class="form-kapok" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Symbol</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.SYMBOL" | translate }}</label>
             <div class="col-xs-10">
               <input ng-model="editCurrency.symbol" class="form-kapok" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Separator</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.SEPARATOR" | translate }}</label>
             <div class="col-xs-10">
               <input ng-model="editCurrency.separator" class="form-kapok" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Decimal</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.DECIMAL" | translate }}</label>
             <div class="col-xs-10">
               <input ng-model="editCurrency.decimal" class="form-kapok" required>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">Note</label>
+            <label class="control-label col-xs-2">{{ "COLUMNS.NOTE" | translate }}</label>
             <div class="col-xs-10">
               <textarea ng-model="editCurrency.note" class="form-control"></textarea>
             </div>
@@ -138,11 +153,10 @@
 
         </fieldset>
         
-        <input class="btn btn-sm btn-success" type="submit" ng-click="submitEdit()" value="Save">
-        <input class="btn btn-sm btn-default" type="button" ng-click="resetEdit()" value="Reset Form">
+        <input class="btn btn-sm btn-success" type="submit" ng-click="submitEdit()" value="{{ 'FORM.SAVE' | translate }}">
+        <input class="btn btn-sm btn-default" type="button" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
       </form>
     </div>
 
   </div>
 </div>
-
