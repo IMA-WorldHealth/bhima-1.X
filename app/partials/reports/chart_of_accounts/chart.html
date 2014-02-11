@@ -1,34 +1,34 @@
-<header class="hidden-print">
-  Chart of Accounts
+<header>
+  {{ "REPORT.CHART_OF_ACCOUNTS" | translate }}
 </header>
 
-<section class="top-nav hidden-print">
+<section class="top-nav">
   <div class="pull-right">
     <button ng-click="printReport()" class="btn btn-default btn-sm capital"><span class="glyphicon glyphicon-print"></span> {{'PRINT' | translate}}</button>
   </div>
 </section>
 
-<div class="reportBody">
-  <div class="reportFrame">
-    <h4>{{enterprise.name}}</h4>
-    <h4>Chart of Accounts <small>{{timestamp | date}}</small></h4>
-
-    <div>
-    <table id="accTable" class="reportTable">
-      <thead>
-        <tr><th>No.</th><th>Description</th></tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat='account in model["account"].data'>
-          <td style="text-align: right;">{{account.account_number}}</td>
-          <td 
-            ng-style="{'padding-left': (account.depth * 40) + 'px'}"
-            ng-class="{'reportTitle': account.account_type_id==3}">
-            {{account.account_txt}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{enterprise.name}}</h4>
+      <h4>{{ "REPORT.CHART_OF_ACCOUNTS" | translate }} <small> {{timestamp | date}}</small></h4>
+        <table id="accTable" class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "REPORT.NUMBER" | translate }}</th>
+              <th>{{ "REPORT.DESCRIPTION" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='account in model.account.data'>
+              <td style="text-align: right;">{{account.account_number}}</td>
+              <td ng-style="{'padding-left': (account.depth * 40) + 'px'}" ng-class="{'reportTitle': account.account_type_id==3}">
+                {{account.account_txt}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </div>
   </div>
 </div>

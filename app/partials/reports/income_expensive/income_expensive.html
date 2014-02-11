@@ -1,9 +1,8 @@
 <header>
-  <span> Fiscal Year : {{fySelected.fiscal_year_txt}}</span>
-  <span>Report : Income/Expensive Accounts Balances  <small>{{today | date}}</small></span>
+  <span>{{ "REPORT.INCOME_EXPENSE_REPORT" | translate }} <small> {{ today | date }}</small></span>
 </header>
 
-<section class="top-nav hidden-print">
+<section class="top-nav">
   <div class="pull-right">
 
     <span class="dropdown">
@@ -33,17 +32,19 @@
   </div>
 </section> 
 
-<div class="content">
-<table class="table table-bordered tbl-print">
-  <thead>
-    <tr>
-      <td>Accounts</td>
-      <td ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</td>
-    </tr>
-  </thead>    
-  <tr ng-repeat="account in models.accounts | orderBy:'account_number'">
-    <td>{{account.account_txt}}</td>
-    <td ng-repeat="stat in account.stat track by $index">{{stat | currency}}</td>
-  </tr>                      
-</table>
+<div class="report">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
+        <th ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</th>
+      </tr>
+    </thead>    
+    <tbody>
+      <tr ng-repeat="account in models.accounts | orderBy:'account_number'">
+        <td>{{account.account_txt}}</td>
+        <td ng-repeat="stat in account.stat track by $index">{{stat | currency}}</td>
+      </tr>                      
+    </tbody>
+  </table>
 </div>

@@ -33,17 +33,17 @@
   </div>
 </section> 
 
-<div class="content">
-<table class="table table-bordered tbl-print">
-  <thead>
-    <tr>
-      <td>Accounts</td>
-      <td ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</td>
-    </tr>
-  </thead>    
-  <tr ng-repeat="account in models.accounts | orderBy:'account_number'">
-    <td>{{account.account_txt}}</td>
-    <td ng-repeat="stat in account.stat track by $index">{{stat | currency}}</td>
-  </tr>                      
-</table>
+<div class="report">
+  <table class="table table-bordered tbl-print">
+    <thead>
+      <tr>
+        <th>Accounts</th>
+        <th ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</th>
+      </tr>
+    </thead>    
+    <tr ng-repeat="account in models.accounts | orderBy:'account_number'">
+      <td>{{account.account_txt}}</td>
+      <td ng-repeat="stat in account.stat track by $index">{{stat | currency}}</td>
+    </tr>                      
+  </table>
 </div>
