@@ -51,7 +51,7 @@
 
   "FISCAL_YEAR" : {
     "TITLE" : "fiscal year",
-    "MANAGEMENT" : "managment",
+    "MANAGEMENT" : "management",
     "NEW" : "new fiscal year",
     "DESC" : "year description",
     "START_MONTH" : "start month",
