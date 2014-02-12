@@ -235,6 +235,8 @@ input::-webkit-inner-spin-button {
     padding-left: 15px;
     padding-right: 15px; 
     padding-top: none; 
+
+    margin-top: 0 !important;
   }
 }
 

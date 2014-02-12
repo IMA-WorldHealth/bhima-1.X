@@ -30,11 +30,9 @@
                 <tr><th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th><th>Start Date</th><th></th></tr>
               </thead>
               <tbody>
-                <!-- TODO Review this, not sure about it -->
-                <!-- <tr ng&#45;switch on="model.fiscal.data.length"> -->
-                <!--   <td ng&#45;switch&#45;when="0" colspan=2><div class="alert alert&#45;info"> -->
-                <!--   {{'FISCAL_YEAR.ALERT_ONE' | translate}} {{enterprise.name}} {{'FISCAL_YEAR.ALERT_TWO' | translate}}</div></tr> -->
-                <!-- </tr> -->
+                <tr ng-if="model.fiscal.data.length===0">
+                  <td colspan=2><i>No fiscal records found</i></tr>
+                </tr>
                 <tr ng-repeat="year in model.fiscal.data" ng-class="{'btn-primary': year.id==selected.id}">
                   <td>{{year.fiscal_year_txt}}</td>
                   <td>{{year.start_month}}/{{year.start_year}}</td>
