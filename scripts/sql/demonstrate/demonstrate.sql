@@ -409,6 +409,7 @@ insert into `village` (`id`, `name`, `sector_id`) VALUES
 -- configure enterprise
 
 insert into `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
+  (1,'Congolese Francs','Fc', '.', ','),
   (2,'United States Dollars','$', ',', '.'),
   (3,'Euro', '€', ' ', '.');
              
