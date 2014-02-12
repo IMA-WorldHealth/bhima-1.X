@@ -9,13 +9,10 @@
   },
   "log" : {
     "file" : "scripts/lib/database/db.log",
-    "headers" : ["Test Header 1", "Test Header 2"] 
+    "headers" : ["Test Header 1", "Test Header 2"]
   },
   "session" : {
-    "secret" : "open blowfish",
-    "cookie" : {
-      "httpOnly" : false
-    }
+    "secret" : "open blowfish"
   },
   "auth" : {
     "paths" : [
@@ -26,6 +23,6 @@
       "/lib",
       "/journal",
       "/favicon"
-    ] 
+    ]
   }
 }
