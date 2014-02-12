@@ -117,7 +117,9 @@
     "PRICE_LIST"     : " Select a Price List",
     "LOCATION"       : "Select a Location",
     "PAYMENT"        : "Select a Payment Type",
-    "GROUP_TYPE"     : "Select a Group Type"
+    "GROUP_TYPE"     : "Select a Group Type",
+    "INVENTORY_GROUP" : "Select an Inventory Group",
+    "UNIT" : "Select a Unit"
   },
 
   "REPORT" : {
@@ -269,6 +271,7 @@
     "SAVE_CHANGES"   : "Save Changes",
     "SAVE_BALANCES"  : "Save Balances",
     "SUBMIT"         : "Submit",
+    "DISCARD"     : "Discard",
     "RESET_BALANCES" : "Reset Balances",
     "CLEAR"          : "Clear",
     "CLEAR_FORM"     : "Clear Form",
@@ -338,6 +341,40 @@
     "HELP_TXT_3" : "Lock the selected debitor group.  No new transactions can be recorded for a locked group",
     "HELP_TXT_4" : "Create a new debitor group",
     "INFO"       : "Group Information"
+  },
+
+  "INVENTORY_REGISTER" : {
+    "TITLE" : "Stock Registration",
+    "VIEW" : "View All Items",
+    "ADD_TYPE" : "Add Unit Type",
+    "ADD_GROUP" : "Add Inventory Group",
+    "GENERAL" : "General",
+    "CODE" : "Inventory Code",
+    "DESCRIPTION" : "Description",
+    "GROUP" : "Inventory Group",
+    "BILLING" : "Billing & Stock Information",
+    "DURABLE" : "Durable",
+    "CONSUMABLE" : "Consumable",
+    "UNIT" : "Unit",
+    "DEFAULT_PRICE" : "Default Price",
+    "UNIT_WEIGHT" : "Unit Weight",
+    "UNIT_VOLUME" : "Unit Volume"
+  },
+
+  "UNIT_TYPE" : {
+    "ADD" : "Add a Unit Type",
+    "NEW" : "New Unit",
+    "PLACEHOLDER" : "e.g. 'Box'",
+    "REGISTERED" : "Registered"
+  },
+
+  "INVENTORY_GROUP" : {
+    "ADD" : "Add Inventory Group",
+    "NAME" : "Name",
+    "SALES_ACCOUNT" : "Sales Account",
+    "COGS" : "COGS Account",
+    "STOCK" : "Stock Account",
+    "TAX" : "Tax Account"
   },
 
   "DOC_NO"           : "doc no.",
