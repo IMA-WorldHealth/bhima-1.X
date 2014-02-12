@@ -1,10 +1,12 @@
 <header>
- <span>Register Supplier</span>
+  {{ "SUPPLIER.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
   <div class="pull-right">
-    <a href="#/creditors/creditor_group" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> Create Creditor Group</a>
+    <a href="#/creditors/creditor_group" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-tag"></span> {{ "SUPPLIER.CREATE" | translate }}
+    </a>
   </div>
 </section>
 
@@ -15,23 +17,23 @@
         <div class="panel-body">
           <form role="form" name="form" novalidate>
             <div class="form-group">
-              <label for="name">Name</label>
+              <label for="name">{{ "COLUMNS.NAME" | translate }}</label>
               <input type="text" class="form-kapok" id="name" ng-model="creditor.name" ng-change="verifyExisting()" required>
             </div>
             <div class="form-group">
-              <label for="Group">Group</label>
+              <label for="Group">{{ "COLUMNS.GROUP" | translate }}</label>
               <select required class="form-kapok" ng-change="verifyExisting()" id="groupselectID" ng-model="creditor_group" ng-options="group.id+' -- '+group.name for group in groups">
                 <option value="" disabled="disabled">--Select Group--</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="Location">Location</label>
+              <label for="Location">{{ "COLUMNS.LOCATION" | translate }}</label>
               <select required class="form-kapok" id="countryselectID" ng-model="creditor.location_id" ng-options="location.id as formatLocation(location) for location in locations">
-                <option value="" disabled="disabled">--Select Location--</option>
+                <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
               </select>
             </div>
             <div class="checkbox">
-              <label>International
+              <label> {{ "SUPPLIER.INTL" | translate }}
                 <input type="checkbox" id="internationalID" ng-model="creditor.international">
               </label>
             </div>
@@ -42,33 +44,33 @@
     <div class="col-xs-4">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Optional Information
+          {{ "SUPPLIER.OPTIONAL_INFO" | translate }}
         </div>
         <div class="panel-body">
           <form role="form">
             <div class="form-group">
-              <label for="ad1">Address 1</label>
+              <label for="ad1">{{ "SUPPLIER.ADDR_1" | translate }}</label>
               <input type="text" class="form-kapok" id="ad1ID" ng-model="creditor.address_1">
             </div>
             <div class="form-group">
-              <label for="ad1">Address 2</label>
+              <label for="ad1">{{ "SUPPLIER.ADDR_2" | translate }}</label>
               <input type="text" class="form-kapok" id="ad2ID" ng-model="creditor.address_2">
             </div>
             <div class="form-group">
-              <label for="phone">Phone</label>
+              <label for="phone">{{ "SUPPLIER.PHONE" | translate }}</label>
               <input type="text" class="form-kapok" id="phoneID" ng-model="creditor.phone">
             </div>
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email">{{ "SUPPLIER.EMAIL" | translate }}</label>
               <input type="email" class="form-kapok" id="emailID" ng-model="creditor.email">
             </div>
             <div class="form-group">
-              <label for="fax">Fax</label>
+              <label for="fax">{{ "SUPPLIER.FAX" | translate }}</label>
               <input type="text" class="form-kapok" id="faxID" ng-model="creditor.fax">
             </div>                        
           </form> 
           <div>
-            <label for="note">Note</label>
+            <label for="note">{{ "COLUMNS.NOTE" | translate }}</label>
             <textarea ng-model="creditor.note" class="form-kapok note"></textarea>
           </div>
         </div>
@@ -77,11 +79,15 @@
     <div class="col-xs-5">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Registered Suppliers
+          {{ "SUPPLIER.REGISTERED" | translate }}
         </div>
         <table class="table table-striped table-hover">
           <thead>
-            <tr><th>ID</th><th>Name</th><th><i class="glyphicon glyphicon-lock"></i></th></tr>
+            <tr>
+              <th>{{ "COLUMNS.ID" | translate }}</th>
+              <th>{{ "COLUMNS.NAME" | translate }}</th>
+              <th><span class="glyphicon glyphicon-lock"></span></th>
+            </tr>
           </thead>
           <tbody>
           <!--This is populated with angular-->
@@ -99,8 +105,12 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <button class="btn btn-danger btn-sm" ng-click="delete()" ng-disabled="form.$invalid">Delete</button>
-    <button class="btn btn-success btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">Save</button>
+    <button class="btn btn-success btn-sm" ng-click="save(creditor, creditor_group)" ng-disabled="form.$invalid">
+      {{ "FORM.SAVE" | translate }}
+    </button>
+    <button class="btn btn-danger btn-sm" ng-click="delete()" ng-disabled="form.$invalid">
+      {{ "FORM.DELETE" | translate }}
+    </button>
   </div>
 </section>
 
