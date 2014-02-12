@@ -1,13 +1,13 @@
 <header>
-  <span>Inventory View</span>
+  {{ "INVENTORY_VIEW.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
-  <div class="pull-left" style="padding-right: 5px;">
-    <input type="search" class="form-kapok" placeholder="filter inventory items" ng-model="flags.search" size="25">
-  </div>
   <div class="pull-left dropdown">
-    <button type="button" class="btn dropdown-toggle btn-default"><i class="glyphicon glyphicon-signal"></i> Group By</button>
+    <button class="btn btn-sm dropdown-toggle btn-default">
+      <span class="glyphicon glyphicon-signal"></span> {{ "INVENTORY_VIEW.GROUP_BY" | translate }}
+    </button>
+    <!-- TODO: Fix this like general ledger -->
     <ul class="dropdown-menu">
       <li><a href="" ng-click="groupby.type()">Type</a></li>
       <li><a href="" ng-click="groupby.group()">Group</a></li>
@@ -16,6 +16,13 @@
       <li><a href="" ng-click="groupby.price()">Price</a></li>
     </ul>
   </div>
+
+  <div class="pull-right">
+    <a href="#/inventory/register" class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-file"></span> {{ "INVENTORY_VIEW.REGISTER" | translate }}
+    </a>
+  </div>
+
 </section>
 
 <div class="content">
@@ -23,9 +30,3 @@
     <div id="kpk-inventory-grid" style="max-height: 520px;"></div> 
   </div>
 </div>
-
-<section class="bar-bottom">
-  <div class="pull-right">
-    <a href="#/inventory/register" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Register Stock</a>
-  </div>
-</section>
