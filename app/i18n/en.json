@@ -104,24 +104,24 @@
   },
 
   "SELECT" : {
-    "ACCOUNT"        : "Select Account",
-    "CURRENCY"       : "Select Currency",
-    "NAME"           : "Select a Name",
-    "COUNTRY"        : "Select a Country",
-    "PROVINCE"       : "Select a Province",
-    "SECTOR"         : "Select a Sector",
-    "VILLAGE"        : "Select a Village",
-    "DEBITOR_GROUP"  : "Select a Debitor Group",
-    "PATIENT_GROUP"  : "Select a Patient Group",
-    "CREDITOR_GROUP" : "Select a Creditor Group",
-    "PRICE_LIST"     : " Select a Price List",
-    "LOCATION"       : "Select a Location",
-    "PAYMENT"        : "Select a Payment Type",
-    "GROUP_TYPE"     : "Select a Group Type",
+    "ACCOUNT"         : "Select Account",
+    "CURRENCY"        : "Select Currency",
+    "NAME"            : "Select a Name",
+    "COUNTRY"         : "Select a Country",
+    "PROVINCE"        : "Select a Province",
+    "SECTOR"          : "Select a Sector",
+    "VILLAGE"         : "Select a Village",
+    "DEBITOR_GROUP"   : "Select a Debitor Group",
+    "PATIENT_GROUP"   : "Select a Patient Group",
+    "CREDITOR_GROUP"  : "Select a Creditor Group",
+    "PRICE_LIST"      : " Select a Price List",
+    "LOCATION"        : "Select a Location",
+    "PAYMENT"         : "Select a Payment Type",
+    "GROUP_TYPE"      : "Select a Group Type",
     "INVENTORY_GROUP" : "Select an Inventory Group",
-    "UNIT" : "Select a Unit",
-    "INVENTORY_ITEM" : "Select an Inventory Item",
-    "DEBITOR" : "Select a Debitor"
+    "UNIT"            : "Select a Unit",
+    "INVENTORY_ITEM"  : "Select an Inventory Item",
+    "DEBITOR"         : "Select a Debitor"
   },
 
   "REPORT" : {
@@ -162,7 +162,9 @@
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
-    "INVOICE_DATE" : "Invoice Date",
+    "ID"             : "ID",
+    "GROUP"          : "Group",
+    "INVOICE_DATE"   : "Invoice Date",
     "TOTAL"          : "Total",
     "ACCOUNT_ID"     : "Account ID",
     "DEBITOR_NAME"   : "Debitor Name",
@@ -201,6 +203,20 @@
     "INVENTORY_ITEM" : "Inventory Item",
     "PRICE"          : "Price",
     "ACTION"         : "Action"
+  },
+
+  "SUPPLIER" : {
+    "TITLE" : "Register a Supplier",
+    "CREATE" : "Create Creditor Group",
+    "GROUP" : "Group",
+    "INTL" : "International",
+    "OPTIONAL_INFO" : "Optional Information",
+    "ADDR_1" : "Address 1",
+    "ADDR_2" : "Address 2",
+    "PHONE" : "Phone",
+    "EMAIL" : "Email",
+    "FAX" : "Fax",
+    "REGISTERED": "Registered Suppliers"
   },
 
   "PATIENT_REG" : {
@@ -301,6 +317,7 @@
     "CLEAR"          : "Clear",
     "CLEAR_FORM"     : "Clear Form",
     "RESET"          : "Reset",
+    "DELETE"         : "Delete",
     "RESET_FORM"     : "Reset Form",
     "CANCEL"         : "Cancel",
     "OK"             : "Ok"
@@ -416,31 +433,5 @@
     "COGS" : "COGS Account",
     "STOCK" : "Stock Account",
     "TAX" : "Tax Account"
-  },
-
-  "DOC_NO"           : "doc no.",
-  "DEB_CRED_ACCOUNT" : "debitor/creditor account",
-  "DEB_CRED_TYPE"    : "debitor/creditor type",
-  "INV_PO_NO"        : "inv/PO no.",
- 
-  "UP_TITLE"         : "users & permissions management",
-  "FIRST_NAME"       : "first name",
-  "LAST_NAME"        : "last name",
-  "EMAIL"            : "email",
-  "USER_NAME"        : "username",
-  "PASSWORD"         : "password",
-  "CONFIRM"          : "confirm",
-  "ALL"              : "all",
-  "REGISTERED_USERS" : "registered users",
-  "CHECK"            : "check",
-  "UNITS"            : "units",
-  "USER"             : "user",
-  "PERMISSION"       : "permission",
-  "UP_DIALOGUE"      : "check units which user ",
-  "UP_DIALOGUE_2"    : "will access",
-
-  "NAME"         : "name",
-  "CASH_ACCOUNT" : "cash account",
-  "PHONE"        : "phone",
-  "ABBREVIATION" : "abbreviation"
+  }
 }
