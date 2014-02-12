@@ -1,5 +1,5 @@
 <header>
-  <span>{{ "GROUP_INVOICING.TITLE" | translate }}</span>
+  <span>{{ "GROUP_INVOICE.TITLE" | translate }}</span>
 </header>
 
 <section class="top-nav">
@@ -27,10 +27,10 @@
     <div ng-switch-default>
       <form class="form-horizontal">
         <fieldset>
-          <legend>{{ "GROUP_INVOICING.SELECT_PAYMENT_DETAILS" | translate }}</legend>
+          <legend>{{ "GROUP_INVOICE.SELECT_PAYMENT_DETAILS" | translate }}</legend>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">{{ "GROUP_INVOICING.GROUP" | translate }}: </label>
+            <label class="control-label col-xs-2">{{ "GROUP_INVOICE.GROUP" | translate }}: </label>
             <div class="col-xs-8">
               <select class="form-kapok" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
                 <option value="">-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
@@ -54,12 +54,18 @@
     </div>
     <div class="panel panel-default" ng-switch-when="true">
       <div class="panel-heading">
-        <i class="glyphicon glyphicon-list"></i>
-        <span> Select Invoices</span>
+        <span class="glyphicon glyphicon-list"></span>
+        <span> {{ "GROUP_INVOICE.SELECT_INVOICES" | translate }}</span>
 			</div>
       <table class="table table-condensed">
         <thead>
-          <tr><th>Invoice ID</th><th>Debitor ID</th><th>Date</th><th>Total</th><th colspan="2" style="width:10%;">Actions</th></tr>
+          <tr>
+            <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
+            <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
+            <th>{{ "COLUMNS.DATE" | translate }}</th>
+            <th>{{ "COLUMNS.TOTAL" | translate }}</th>
+            <th colspan="2" style="width:10%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+          </tr>
         </thead>
         <tbody>
           <tr ng-repeat="invoice in invoices.data | filter:filter">
@@ -79,25 +85,25 @@
 
     <div ng-switch-when="info">
       <div class="alert alert-info">
-        <h4>Group Invoicing</h4>
-        <p> Choose a convention from the upper left hand corner of the screen. </p>
+        <h4>{{ "GROUP_INVOICE.TITLE" | translate }}</h4>
+        <p>{{ "GROUP_INVOICE.HELP_TXT_1" | translate }}.</p>
       </div>
     </div>
 
     <div ng-switch-when="pay">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span>Convention Invoice</span>
+          <span>{{ "GROUP_INVOICE.CONVENTION_INVOICE" | translate }}</span>
         </div>
         <div class="panel-body">
           <form name="payment" class="form-horizontal">
             <fieldset>
-              <legend>Convention Invoice for Debitor {{ selected.debitor.text }}</legend>
+              <legend>{{ "GROUP_INVOICE.INVOICE_TITLE" | translate }} {{ selected.debitor.text }}</legend>
 
               <div class="form-group" >
-                <label class="col-xs-3">Invoice ID</label>
-                <label class="col-xs-3">Cost To Debitor</label>
-                <label class="">Agreed Payment</label>
+                <label class="col-xs-3">{{ "GROUP_INVOICE.INVOICE_ID" | translate }}</label>
+                <label class="col-xs-3">{{ "GROUP_INVOICE.COST" | translate }}</label>
+                <label class="">{{ "GROUP_INVOICE.AGREED" | translate }}</label>
               </div>
 
               <div class="form-group" ng-repeat="invoice in paying">
@@ -112,16 +118,16 @@
             </fieldset>
 
             <div class="form-group" style="border-top: 1px solid #ddd;">
-              <label class="control-label col-xs-2">Balance: </label>
-              <p class="col-xs-4 form-control-static">{{ (paymentBalance | currency) || "Check that everything is correctly entered."}}</p>
+              <label class="control-label col-xs-2">{{ "GROUP_INVOICE.BALANCE" | translate }}: </label>
+              <p class="col-xs-4 form-control-static">{{ (paymentBalance | currency) || ("GROUP_INVOICE.ERROR_TXT_1" | translate) }}</p>
             </div>
             
           </form>
         </div>
       </div>
 
-      <button class="btn btn-sm btn-success" ng-click="pay()"> Pay Invoices </button>
-      <button class="btn btn-sm btn-danger" ng-click="dequeue()"> Cancel </button>
+      <button class="btn btn-sm btn-success" ng-click="pay()">{{ "GROUP_INVOICE.PAY" | translate }}</button>
+      <button class="btn btn-sm btn-danger" ng-click="dequeue()">{{ "GROUP_INVOICE.CANCEL" | translate }}</button>
     </div>
 
     <div ng-switch-when="confirm">
@@ -133,12 +139,12 @@
 
           <form name="authorization" class="form-horizontal">
             <fieldset>
-              <legend>Convention Invoice for {{ selected.debitor.text }}</legend>
+              <legend>{{ "GROUP_INVOICE.INVOICE_TITLE" | translate }} {{ selected.debitor.text }}</legend>
 
               <div class="form-group" >
-                <label class="col-xs-3">Invoice ID</label>
-                <label class="col-xs-3">Cost To Debitor</label>
-                <label class="">Agreed Payment</label>
+                <label class="col-xs-3">{{ "GROUP_INVOICE.INVOICE_ID" | translate }}</label>
+                <label class="col-xs-3">{{ "GROUP_INVOICE.COST" | translate }}</label>
+                <label class="">{{ "GROUP_INVOICE.AGREED" | translate }}</label>
               </div>
 
               <div class="form-group" ng-repeat="invoice in paying">
@@ -150,9 +156,9 @@
             </fieldset>
 
             <div class="form-group">
-              <label class="control-label col-xs-2">Balance: </label>
-              <p class="col-xs-2 form-control-static">{{ (paymentBalance | currency) || "Check that everything is correctly entered."}}</p>
-              <label class="control-label col-xs-2">Authorized By:</label>
+              <label class="control-label col-xs-2">{{ "GROUP_INVOICE.BALANCE" | translate }}: </label>
+              <p class="col-xs-2 form-control-static">{{ (paymentBalance | currency) || ("GROUP_INVOICE.ERROR_TXT_1" | translate) }}</p>
+              <label class="control-label col-xs-2">{{ "GROUP_INVOICE.AUTHORIZED_BY" | translate }}:</label>
               <div class="col-xs-6">
                 <input class="form-kapok" ng-model="payment.authorized_by" >
               </div>
@@ -162,65 +168,64 @@
         </div>
       </div>
 
-      <button ng-click="authorize()" class="btn btn-sm btn-success">Authorize</button>
-      <button ng-click="cancel()" class="btn btn-sm btn-danger">Cancel</button>
+      <button ng-click="authorize()" class="btn btn-sm btn-success">{{ "GROUP_INVOICE.AUTHORIZE" | translate }}</button>
+      <button ng-click="cancel()" class="btn btn-sm btn-danger">{{ "GROUP_INVOICE.CANCEL" | translate }}</button>
     </div>
 
     <div ng-switch-when="examine">
       <div class="panel panel-danger">
         <div class="panel-heading">
-          <i class="glyphicon glyphicon-list-alt"></i>
-          <span> Invoice Details</span>
+          <span class="glyphicon glyphicon-list-alt"></span>
+          <span>{{ "GROUP_INVOICE.DETAILS" | translate }}</span>
         </div>
         <div class="panel-body">
           <form class="form-horizontal">
             <fieldset>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">Invoice ID</label>
+                <label class="control-label col-xs-3">{{ "COLUMNS.INVOICE_ID" | translate }}</label>
                 <div class="col-xs-9">
                   <p class="form-control-static">{{examine.inv_po_id}}</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">Description</label>
+                <label class="control-label col-xs-3">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
                 <div class="col-xs-9">
                   <p class="form-control-static">{{ examine.description }}</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">Invoice Date</label>
+                <label class="control-label col-xs-3">{{ "COLUMNS.INVOICE_DATE" | translate }}</label>
                 <div class="col-xs-9">
                   <p class="form-control-static">{{examine.trans_date | date}}</p>
                 </div>
               </div>
               
               <div class="form-group">
-                <label class="control-label col-xs-3">Account ID </label>
+                <label class="control-label col-xs-3">{{ "COLUMNS.ACCOUNT_ID" | translate }}</label>
                 <div class="col-xs-9">
                   <p class="form-control-static">{{examine.account_id }}</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">Debitor</label>
+                <label class="control-label col-xs-3">{{ "COLUMNS.DEBITOR" | translate }}</label>
                 <div class="col-xs-9">
                   <p class="form-control-static">{{ debitors.get(examine.deb_cred_id).text }}</p>
                 </div>
               </div>
 
-
               <div class="form-group">
-                <label class="control-label col-xs-3"> Balance </label>
+                <label class="control-label col-xs-3">{{ "COLUMNS.BALANCE" | translate }}</label>
                 <div class="col-xs-9">
                   <p class="form-control-static">{{examine.balance | currency}}</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">Comment</label>
+                <label class="control-label col-xs-3">{{ "COLUMNS.COMMENT" | translate }}</label>
                 <div class="col-xs-9">
                   <p class="form-control-static">{{ examine.comment }}</p>
                 </div>
