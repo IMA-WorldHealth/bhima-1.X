@@ -79,10 +79,10 @@
                         class="form-invoice"
                         type="text"
                         typeahead-template-url="invoiceListItem.html"
-                        ng-model="invoiceItem.inventoryReference"
+                        ng-model="invoiceItem.selectedReference"
                         typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory | filter:$viewValue | limitTo:8"
-                        typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.inventoryReference)"
-                        placeholder="Search Inventory Code"
+                        typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.selectedReference)"
+                        placeholder="Search Inventory"
                       </td>
                       
                       <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.text}}"></td>
