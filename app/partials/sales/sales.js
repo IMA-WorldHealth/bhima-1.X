@@ -1,7 +1,7 @@
 angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger) {
 
   //TODO Pass default debtor and inventory parameters to sale modules
-  var dependencies = {}, invoice = {}, inventory = [];
+  var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
 
   dependencies.sale = {
     query : '/max/id/sale'
@@ -76,12 +76,30 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function addInvoiceItem() {
     invoice.items.push(new InvoiceItem());
   }
-
+  
+  //TODO rename legacy (previous) reference from inventoryReference
   function updateInvoiceItem(invoiceItem, inventoryReference) {
-    invoiceItem.set(inventoryReference);  
+    if(invoiceItem.inventoryReference) { 
+      $scope.model.inventory.post(invoiceItem.inventoryReference);
+      $scope.model.inventory.recalculateIndex();
+    }
+
+    invoiceItem.set(inventoryReference);
+    invoiceItem.inventoryReference = inventoryReference;
+  
+    //Remove ability to selec the option again 
+    $scope.model.inventory.remove(inventoryReference.id);
+    $scope.model.inventory.recalculateIndex();
   }
 
   function removeInvoiceItem(index) {
+    var selectedItem = invoice.items[index];
+
+    if(selectedItem.inventoryReference) { 
+      $scope.model.inventory.post(selectedItem.inventoryReference);
+      $scope.model.inventory.recalculateIndex();
+    }
+
     invoice.items.splice(index, 1);
   }
 
