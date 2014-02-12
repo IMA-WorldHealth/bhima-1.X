@@ -2,7 +2,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
   var dependencies = {};
 
   dependencies.fiscal = { 
-    required: true, 
+    // required: true, 
     query : {
       tables : {
         fiscal_year : {

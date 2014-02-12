@@ -235,6 +235,8 @@ input::-webkit-inner-spin-button {
     padding-left: 15px;
     padding-right: 15px; 
     padding-top: none; 
+
+    margin-top: 0 !important;
   }
 }
 
@@ -303,3 +305,7 @@ div .reportFrame {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 
+/*haaack*/
+.btn-primary a { 
+  color: white;
+}
