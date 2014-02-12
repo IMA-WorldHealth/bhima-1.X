@@ -1,5 +1,5 @@
 <header>
-<span class="capitalize"> {{ 'VILLAGE MANAGER' | translate }}</span>
+<span class="capitalize"> {{ 'PROVINCE MANAGER' | translate }}</span>
   </header>
 
   <section class="top-nav">
@@ -7,7 +7,7 @@
         <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Location Manager</span></a>
     </div>
     <div class="pull-left">
-      <button class="btn btn-default btn-sm" ng-click="setOp('Add')">Add New Village</button>
+      <button class="btn btn-default btn-sm" ng-click="setOp('Add')">Add New Province</button>
     </div>
   </section>
 
@@ -16,25 +16,25 @@
     <div class="col-xs-4">
       <div class="panel panel-default" style="max-height: 525px;">
         <div class="panel-heading">
-          <span>Registered Villages</span>
+          <span>Registered Province</span>
         </div>
         <div class="panel-body village-size">
           <table class="table table-striped table-condensed">
           <thead>
             <tr>
               <th>Name</th>
-              <th>Sector</th>
+              <th>Country</th>
               <th colspan="2" class="capital">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="village in model.village.data">
-              <td>{{village.village}}</td>
-              <td>{{village.sector}}</td>
-              <td ng-click="setOp('Edit', village)">
+            <tr ng-repeat="province in model.province.data">
+              <td>{{province.province}}</td>
+              <td>{{province.country_en}}</td>
+              <td ng-click="setOp('Edit', province)">
                 <button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
               </td>
-              <td ng-click="removeVillage(village)">
+              <td ng-click="removeProvince(province)">
                 <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button>
               </td>
             </tr>
@@ -48,9 +48,9 @@
     <div class="col-xs-6" ng-switch="op">
       <div ng-switch-default>
          <div class="alert alert-info">                                                                          
-             <b>Village  Manager Configuration </b>                                                        
-             <p>This module will help you to manage villages, at the left you see availvables villages and their locations. ⇉
-             use this module to <b>create</b>, <b>modify</b> and <b>remove</b> village.                                                        
+             <b>Province Manager Configuration </b>                                                        
+             <p>This module will help you to manage provinces, at the left you see availvables provinces and their locations. ⇉
+             use this module to <b>create</b>, <b>modify</b> and <b>remove</b> province.                                                        
              </p>                                                                                                  
          </div>  
        </div>
@@ -59,31 +59,31 @@
          
            <form class="form-horizontal">                                                                          
               <fieldset>                                                                                            
-                <legend>Register a Village</legend>                                                           
+                <legend>Register a Province</legend>                                                           
                 <div class="form-group">
-                  <label class="col-xs-2"> Sector</label>
+                  <label class="col-xs-2"> Country</label>
                   <div class="col-xs-10">
                     <select
                       required
                       class="form-kapok"
-                      name="sectorname"
-                      id="sectorID"
-                      ng-model="add.sector_id"
-                      ng-options="sec.id as sec.name for sec in model.sector.data"
+                      name="countryname"
+                      id="countryID"
+                      ng-model="add.country_id"
+                      ng-options="cou.id as cou.country_en for cou in model.country.data"
                     >
-                      <option value="" disable="disabled">-- select A Sector -- </option>
+                      <option value="" disable="disabled">-- select A Country -- </option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-group">                                                                   
-                   <label class="col-xs-2 control-label">Village Name</label>                                                
+                   <label class="col-xs-2 control-label">Province Name</label>                                                
                    <div class="col-xs-10">                                                                           
                       <input class="form-kapok" ng-model="add.name" required>                                            
                    </div>                                                                                            
                 </div>     
               </fieldset>
-              <button class="btn btn-default btn-success" ng-click="addVillage(add)" ng-disabled="form.$invalid " type="submit">Add</button>
+              <button class="btn btn-default btn-success" ng-click="addProvince(add)" ng-disabled="form.$invalid " type="submit">Add</button>
               <button class="btn btn-default btn-sm"  type="reset">New Form</button>
 
             </form>
@@ -93,31 +93,31 @@
          
            <form class="form-horizontal">                                                                          
               <fieldset>                                                                                            
-                <legend>Edit a Village</legend>                                                           
+                <legend>Edit a Province</legend>                                                           
                 <div class="form-group">
-                  <label class="col-xs-2"> Sector</label>
+                  <label class="col-xs-2"> Country</label>
                   <div class="col-xs-10">
                     <select
                       required
                       class="form-kapok"
-                      name="sectorname"
-                      id="sectorID"
-                      ng-model="village.sector_id"
-                      ng-options="sec.id as sec.name for sec in model.sector.data"
+                      name="countryname"
+                      id="countryID"
+                      ng-model="province.country_id"
+                      ng-options="cou.id as cou.country_en for cou in model.country.data"
                     >
-                      <option value="" disable="disabled">-- select A Sector -- </option>
+                      <option value="" disable="disabled">-- select A Country -- </option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-group">                                                                   
-                   <label class="col-xs-2 control-label">Village Name</label>                                                
+                   <label class="col-xs-2 control-label">Province Name</label>                                                
                    <div class="col-xs-10">                                                                           
-                      <input class="form-kapok" ng-model="village.village" required>                                            
+                      <input class="form-kapok" ng-model="province.province" required>                                            
                    </div>                                                                                            
                 </div>     
               </fieldset>
-              <button class="btn btn-default btn-success" ng-click="editVillage(village)" ng-disabled="form.$invalid " type="submit">Add</button>
+              <button class="btn btn-default btn-success" ng-click="editProvince(province)" ng-disabled="form.$invalid " type="submit">Add</button>
               <button class="btn btn-default btn-sm"  type="reset">New Form</button>
 
             </form>
@@ -125,5 +125,3 @@
 
   </div>
   </article>
-
-
