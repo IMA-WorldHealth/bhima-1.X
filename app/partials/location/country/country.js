@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('village', function ($scope, $q, connect, messenger, validate) {
+.controller('country', function ($scope, $q, connect, messenger, validate) {
   'use strict';
 
   var dependencies = {},
@@ -7,62 +7,59 @@ angular.module('kpk.controllers')
 
   $scope.model = {};
 //dependencies
-dependencies.sector = {
-  query :  {tables: { 'sector' : { columns : ['id', 'name', 'province_id']}}}
+dependencies.country= {
+  query :  {tables: { 'country' : { columns : ['id','code', 'country_en', 'country_fr']}}}
 };
-
-dependencies.village = {
-  query :  'village/'
-};
-
 
 //fonction
  
-function manageVillage(model){
+function manageCountry (model){
   for (var k in model) $scope.model[k] = model[k]; 
 }
 
-function setOp(action, village){
-$scope.village = angular.copy(village) || {};
+function setOp(action, country){
+$scope.country  = angular.copy(country) || {};
 $scope.op = action;
 }
 
-function addVillage(obj){
- connect.basicPut('village', [connect.clean(obj)])
+function addCountry (obj){
+  var newObject = {};
+  newObject.code = obj.code;
+  newObject.country_en  = obj.country_en;
+  newObject.country_fr  = obj.country_fr;
+ connect.basicPut('country', [connect.clean(newObject)])
    .then(function (res) {
-    obj.id = res.data.insertId;
-    obj.village = obj.name;
-    obj.sector = $scope.model.sector.get(obj.sector_id).name;
-     $scope.model.village.post(obj);
+    newObject.id = res.data.insertId;
+    $scope.model.country.post(newObject);
+    obj = {};
    });
 }
 
-function editVillage(){
-  var village = {id :$scope.village.id, name : $scope.village.village, sector_id :$scope.village. sector_id};
- connect.basicPost('village', [connect.clean(village)], ['id'])   
+function editCountry(){
+  var country  = {id :$scope.country.id, code : $scope.country.code,  country_en : $scope.country.country_en, country_fr : $scope.country.country_fr};
+ connect.basicPost('country', [connect.clean(country)], ['id'])   
    .then(function (res) {
       console.log('le modele apre update est :', res);
-      $scope.village.sector = $scope.model.sector.get(village.sector_id).name;
-      $scope.model.village.put($scope.village);
-      $scope.village = {};
+      $scope.model.country.put($scope.country);
+      $scope.country = {};
    });
 }
 
-function removeVillage(obj){
-  $scope.village = angular.copy(obj);
-  connect.basicDelete('village', $scope.village.id).
+function removeCountry(obj){
+  $scope.country = angular.copy(obj);
+  connect.basicDelete('country', $scope.country.id).
     then(function(res){
-      $scope.model.village.remove($scope.village.id);
-      $scope.village = {};
+      $scope.model.country.remove($scope.country.id);
+      $scope.country = {};
     });
 }
 
 
 
-validate.process(dependencies).then(manageVillage);
+validate.process(dependencies).then(manageCountry);
 
 $scope.setOp = setOp;
-$scope.addVillage = addVillage;
-$scope.editVillage = editVillage;
-$scope.removeVillage = removeVillage;
+$scope.addCountry = addCountry;
+$scope.editCountry = editCountry;
+$scope.removeCountry = removeCountry;
 });
