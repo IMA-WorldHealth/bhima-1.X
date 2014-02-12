@@ -1,0 +1,58 @@
+<header>
+  <span>Budget by Period</span> <small>{{selected_account.account_txt}}</small>
+</header>
+
+<section class="top-nav">
+<div class="col-lg-3 hack-left">
+  <button ng-click="updateBudget()" class="btn btn-default btn-sm">Update Budget</button>
+
+</div>
+  <!-- <div class="pull-right"> -->
+    <div class="col-lg-offset-8">
+    <div class="input-group">
+    <select  ng-model="selected_fiscal" ng-options="f.fiscal_year_txt for f in fiscal_model.data" ng-disabled="validSelect()" id="select-fiscal" class="form-kapok">
+    </select>
+    <span class="input-group-btn">
+      <btn ng-disabled="validSelect()" class="btn btn-default btn-sm" ng-click="compare()" type="button">Compare Year </btn>
+    </span>
+    </div>
+  <!-- </div> -->
+  </div>
+</section>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div ng-switch on="active"><!--Report view-->
+        <div ng-switch-default></div>
+        <div ng-switch-when="report">
+          <fieldset class="budgetFieldSet" ng-repeat="report in budget_model.reports">
+            <!--Use a select here, allow selecting any of the available fiscal years-->
+            <span>{{report.desc}}</span>
+            <button ng-click="deleteCompare(report)" type="button" class="close budget-close">&times;</button>
+            <table class="table table-bordered uniform">
+              <thead>
+              <tr>
+                <th>Period</th>
+                <th>Budget</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="row in report.display">
+                <td class="column-big">{{row.period_start | date : 'MMM yyyy'}}</td>
+                <td><span ng-show="row"><input ng-change="dirtyInput(row)" ng-model="row.budget" class="budget-field"></span></td>
+              </tr>
+              </tr>
+              <!--FIXME: This logic should be in controller, total can simply be displayed-->
+              <tr>
+                <td >total</td>
+                <td>{{sum(report) | currency}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
