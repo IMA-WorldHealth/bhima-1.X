@@ -22,6 +22,21 @@
     "SPLIT"                 : "Split"
   },
 
+  "PERMISSION" : {
+    "TITLE" : "Users & Permissions Management",
+    "PERMISSIONS" : "Permissions",
+    "ADD" : "Add a New User",
+    "REGISTERED" : "Registered Users",
+    "HELP_TXT_1" : "Edit existing users and permissions from the table to the left",
+    "HELP_TXT_2" : "Edits a user's metadata",
+    "HELP_TXT_3" : "Edits a user's permissions",
+    "HELP_TXT_4" : "Deletes a user and its permission data",
+    "ADDING" : "Adding a New User",
+    "RETYPE" : "Retype",
+    "EDITTING" : "Editting",
+    "SUPER" : "Super User"
+  },
+
   "TRIAL_BALANCE" :  {
     "TITLE" : "Trial balance",
     "ERROR_TEXT" : "You have errors!",
@@ -162,7 +177,10 @@
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
+    "PASSWORD"      : "Password",
     "ID"             : "ID",
+    "USER_NAME"       : "User Name",
+    "LAST_NAME"     : "Last Name",
     "GROUP"          : "Group",
     "INVOICE_DATE"   : "Invoice Date",
     "TOTAL"          : "Total",
@@ -173,6 +191,7 @@
     "GROUP_NAME"     : "Group Name",
     "ACCOUNT_NUMBER" : "Account Number",
     "EDIT"           : "Edit",
+    "FIRST_NAME"     : "First Name",
     "CONVENTION"     : "Convention",
     "NAME"           : "Name",
     "SYMBOL"         : "Symbol",
@@ -310,7 +329,7 @@
     "SAVE"           : "Save",
     "SAVE_FORM"      : "Save Form",
     "SAVE_CHANGES"   : "Save Changes",
-    "SAVE_BALANCES"  : "Save Balances",
+    "SUBMIT_BALANCES"  : "Save Balances",
     "SUBMIT"         : "Submit",
     "DISCARD"     : "Discard",
     "RESET_BALANCES" : "Reset Balances",
