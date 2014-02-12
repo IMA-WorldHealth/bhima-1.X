@@ -135,6 +135,10 @@
       controller : 'locationCtrl',
       templateUrl: 'partials/location/location.html'
     })
+    .when('/location/village', {
+      controller : 'village',
+      templateUrl: 'partials/location/village/village.html'
+    })
     .when('/print', {
       templateUrl: 'partials/print/test.html'
     })

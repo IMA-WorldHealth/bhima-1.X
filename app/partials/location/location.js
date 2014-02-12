@@ -1,210 +1,236 @@
 angular.module('kpk.controllers')
-.controller('locationCtrl', function ($scope, $q, connect, messenger) {
+.controller('locationCtrl', function ($scope, $q, connect, messenger, validate, appstate) {
   'use strict';
 
-  var imports = {},
-      stores = {},
-      flags = $scope.flags = {},
-      models = $scope.models = {};
+  var dependencies = {},
+      flags = $scope.flags = {};
 
-  imports.province = {tables: { 'province' : { columns : ['id', 'name']}}};
-  imports.sector = {tables: { 'sector' : { columns : ['id', 'name']}}};
-  imports.village = {tables: { 'village' : { columns : ['id', 'name']}}};
-  imports.country = {tables: { 'country' : { columns : ['id', 'country_en']}}};
-  imports.location = {tables : { 'location' : { columns : ['id', 'province_id', 'village_id', 'sector_id', 'country_id']}}};
+  $scope.model = {};
+//dependencies
+dependencies.country = {
+  query :  {tables: { 'country' : { columns : ['id', 'code', 'country_en', 'country_fr']}}}
+};
+
+dependencies.province = {
+  query :  {tables: { 'province' : { columns : ['id', 'name', 'country_id']}}}
+};
+
+dependencies.sector = {
+  query :  {tables: { 'sector' : { columns : ['id', 'name', 'province_id']}}}
+};
+
+dependencies.village = {
+  query :  {tables: { 'village' : { columns : ['id', 'name', 'sector_id']}}}
+};
+
+dependencies.location = {
+  query : 'location/'
+};
+
+
+//fonction
+ 
+function manageLocation(model){
+  for (var k in model) $scope.model[k] = model[k]; 
+}
+
+function setOp(action){
+$scope.op = action;
+}
+
+function addVillage(obj){
+ connect.basicPut('village', [connect.clean(obj)])
+   .then(function (res) {
+    // var id = result.data.insertId;
+    // stores.sector.post({id: id, name: $scope.data.sector_id});});
+    console.log('data inserE');
+  });
+}
+
+validate.process(dependencies).then(manageLocation);
+
+$scope.setOp = setOp;
+$scope.addVillage = addVillage;
   
-  var dependencies = ['province', 'sector', 'village', 'country', 'location'];
+  
+  
+  
+  
+  
+  // function init () {
+//     $q.all([
+//       connect.req(imports.province),
+//       connect.req(imports.sector),
+//       connect.req(imports.village),
+//       connect.req(imports.country),
+//       connect.req(imports.location)
+//     ]).then(function (array) {
+//       array.forEach(function (depends, idx) {
+//         stores[dependencies[idx]] = depends;
+//         models[dependencies[idx]] = depends.data;
+//       });
+//       
+//       $scope.data = {};
+//
+//       flags.new_country = true;
+//       flags.new_province = true;
+//       flags.new_sector = true;
+//       flags.new_village = true;
+//
+//     });
+//   }
+//
+  // function add () {
+  //  
+  // }
 
-  function init () {
-    $q.all([
-      connect.req(imports.province),
-      connect.req(imports.sector),
-      connect.req(imports.village),
-      connect.req(imports.country),
-      connect.req(imports.location)
-    ]).then(function (array) {
-      array.forEach(function (depends, idx) {
-        stores[dependencies[idx]] = depends;
-        models[dependencies[idx]] = depends.data;
-      });
-      
-      $scope.data = {};
+  // function select(type) {
+  //   flags["new_" + type] = false;
+  // }
 
-      flags.new_country = true;
-      flags.new_province = true;
-      flags.new_sector = true;
-      flags.new_village = true;
+  // $scope.$watch('data.country', function () {
+  //   flags.new_country = false;
+  // });
 
-    });
-  }
+  // $scope.$watch('data.village', function () {
+  //   flags.new_village = false;
+  // });
 
-  function add () {
-   
-  }
+  // $scope.$watch('data.province', function () {
+  //   flags.new_province = false;
+  // });
 
-  function select(type) {
-    flags["new_" + type] = false;
-  }
+  // $scope.$watch('data.sector', function () {
+  //   flags.new_sector = false;
+  // });
 
-  $scope.$watch('data.country', function () {
-    flags.new_country = false;
-  });
+  // function format (type) {
+  //   // formats the typeahead after selection
+  //   // TODO: reformat this a bit
+  //   if (type == 'country') {
+  //     return stores[type] ? stores[type].get($scope.data[type+'_id']).country_en : '';
+  //   } else {
+  //     return stores[type] ? stores[type].get($scope.data[type+'_id']).name  : '';
+  //   }
+  // }
 
-  $scope.$watch('data.village', function () {
-    flags.new_village = false;
-  });
+  // function createSector () {
+  //   var d = $q.defer();
+  //   connect.basicPut('sector', [{name: $scope.data.sector_id}])
+  //   .then(function (result) {
+  //     var id = result.data.insertId;
+  //     stores.sector.post({id: id, name: $scope.data.sector_id});
+  //     d.resolve(result.data.insertId);
+  //   }, function (error) {
+  //     console.error("Something went wrong creating a sector:", error); 
+  //     d.reject(error);
+  //   });
+  //   return d.promise;
+  // }
 
-  $scope.$watch('data.province', function () {
-    flags.new_province = false;
-  });
+  // function createVillage () {
+  //   var d = $q.defer();
+  //   connect.basicPut('village', [{name: $scope.data.village_id}])
+  //   .then(function (result) {
+  //     var id = result.data.insertId;
+  //     stores.village.post({id: id, name: $scope.data.village_id});
+  //     d.resolve(result.data.insertId);
+  //   }, function (error) {
+  //     console.error("Something went wrong creating a village:", error); 
+  //     d.reject(error);
+  //   });
+  //   return d.promise;
+  // }
 
-  $scope.$watch('data.sector', function () {
-    flags.new_sector = false;
-  });
+  // function createProvince() {
+  //   var d = $q.defer();
+  //   connect.basicPut('province', [{name: $scope.data.province_id}])
+  //   .then(function (result) {
+  //     var id = result.data.insertId;
+  //     stores.province.post({id: id, name: $scope.data.province_id});
+  //     d.resolve(id);
+  //   }, function (error) {
+  //     console.error("Something went wrong creating a province:", error); 
+  //     d.reject(error);
+  //   });
+  //   return d.promise;
+  // }
 
-  function formatVillage (id) {
-    return stores.village ? stores.village.get(id).name : "";
-  }
+  // function createLocation () {
+  //   connect.basicPut('location', [$scope.data])
+  //   .then(function (result) {
+  //     messenger.push({type: 'success', msg: 'Location with id ' + result.data.insertId + ' created successfully.'});
+  //     $scope.data.id = result.data.insertId;
+  //     stores.location.post($scope.data);
+  //     $scope.data = {};
+  //     $scope.flags = {};
+  //   }, function (error) {
+  //     messenger.push({type: 'error', msg: 'Creation of location failed'});
+  //     console.error("Error creating location:", $scope.data);  
+  //   });
+  // }
 
-  function formatSector (id) {
-    return stores.sector? stores.sector.get(id).name : "";
-  }
+  // function submit () {
+  //   // FIXME: find a non-niave solution for this issue
 
-  function formatProvince (id) {
-    return stores.province ? stores.province.get(id).name : "";
-  }
+  //   var sector = $q.defer();
+  //   var village = $q.defer();
+  //   var province = $q.defer();
+  //   var country = $q.defer();
 
-  function formatCountry (id) {
-    return stores.country? stores.country.get(id).country_en : "";
-  }
+  //   if (flags.new_sector) {
+  //     createSector().then(function (id) {
+  //       $scope.data.sector_id = id;
+  //       sector.resolve(true);
+  //     });
+  //   } else sector.resolve(true);
 
-  function format (type) {
-    // formats the typeahead after selection
-    // TODO: reformat this a bit
-    if (type == 'country') {
-      return stores[type] ? stores[type].get($scope.data[type+'_id']).country_en : '';
-    } else {
-      return stores[type] ? stores[type].get($scope.data[type+'_id']).name  : '';
-    }
-  }
+  //   if (flags.new_village) {
+  //     createVillage().then(function (id) {
+  //       $scope.data.village_id = id;
+  //       village.resolve(true);
+  //     });
+  //   } else village.resolve(true);
 
-  function createSector () {
-    var d = $q.defer();
-    connect.basicPut('sector', [{name: $scope.data.sector_id}])
-    .then(function (result) {
-      var id = result.data.insertId;
-      stores.sector.post({id: id, name: $scope.data.sector_id});
-      d.resolve(result.data.insertId);
-    }, function (error) {
-      console.error("Something went wrong creating a sector:", error); 
-      d.reject(error);
-    });
-    return d.promise;
-  }
+  //   if (flags.new_province) {
+  //     createProvince().then(function (id) {
+  //       $scope.data.province_id = id;
+  //       province.resolve(true);
+  //     });
+  //   } else province.resolve(true);
 
-  function createVillage () {
-    var d = $q.defer();
-    connect.basicPut('village', [{name: $scope.data.village_id}])
-    .then(function (result) {
-      var id = result.data.insertId;
-      stores.village.post({id: id, name: $scope.data.village_id});
-      d.resolve(result.data.insertId);
-    }, function (error) {
-      console.error("Something went wrong creating a village:", error); 
-      d.reject(error);
-    });
-    return d.promise;
-  }
+  //   if (flags.new_country) {
+  //     createCountry().then(function (id) {
+  //       $scope.data.country_id = id;
+  //       country.resolve(true);
+  //     });
+  //   } else country.resolve(true);
 
-  function createProvince() {
-    var d = $q.defer();
-    connect.basicPut('province', [{name: $scope.data.province_id}])
-    .then(function (result) {
-      var id = result.data.insertId;
-      stores.province.post({id: id, name: $scope.data.province_id});
-      d.resolve(id);
-    }, function (error) {
-      console.error("Something went wrong creating a province:", error); 
-      d.reject(error);
-    });
-    return d.promise;
-  }
+  //   $q.all([
+  //       country.promise,
+  //       province.promise,
+  //       sector.promise,
+  //       village.promise
+  //   ]).then(function () {
+  //     createLocation();
+  //   });
+  // }
 
-  function createLocation () {
-    connect.basicPut('location', [$scope.data])
-    .then(function (result) {
-      messenger.push({type: 'success', msg: 'Location with id ' + result.data.insertId + ' created successfully.'});
-      $scope.data.id = result.data.insertId;
-      stores.location.post($scope.data);
-      $scope.data = {};
-      $scope.flags = {};
-    }, function (error) {
-      messenger.push({type: 'error', msg: 'Creation of location failed'});
-      console.error("Error creating location:", $scope.data);  
-    });
-  }
+  // function clear () {
+  //   data = $scope.data = {};
+  //   flags = $scope.flags = {};
+  // }
 
-  function submit () {
-    // FIXME: find a non-niave solution for this issue
+  // $scope.add = add;
 
-    var sector = $q.defer();
-    var village = $q.defer();
-    var province = $q.defer();
-    var country = $q.defer();
+//  $scope.format = format;
+  // $scope.select = select;
+  // $scope.submit = submit;
+  // $scope.clear = clear;
 
-    if (flags.new_sector) {
-      createSector().then(function (id) {
-        $scope.data.sector_id = id;
-        sector.resolve(true);
-      });
-    } else sector.resolve(true);
+//  init();
 
-    if (flags.new_village) {
-      createVillage().then(function (id) {
-        $scope.data.village_id = id;
-        village.resolve(true);
-      });
-    } else village.resolve(true);
+// invocation
 
-    if (flags.new_province) {
-      createProvince().then(function (id) {
-        $scope.data.province_id = id;
-        province.resolve(true);
-      });
-    } else province.resolve(true);
-
-    if (flags.new_country) {
-      createCountry().then(function (id) {
-        $scope.data.country_id = id;
-        country.resolve(true);
-      });
-    } else country.resolve(true);
-
-    $q.all([
-        country.promise,
-        province.promise,
-        sector.promise,
-        village.promise
-    ]).then(function () {
-      createLocation();
-    });
-  }
-
-  function clear () {
-    data = $scope.data = {};
-    flags = $scope.flags = {};
-  }
-
-  $scope.add = add;
-  $scope.formatVillage = formatVillage;
-  $scope.formatSector = formatSector;
-  $scope.formatProvince = formatProvince;
-  $scope.formatCountry = formatCountry;
-  $scope.format = format;
-  $scope.select = select;
-  $scope.submit = submit;
-  $scope.clear = clear;
-
-  init();
 
 });

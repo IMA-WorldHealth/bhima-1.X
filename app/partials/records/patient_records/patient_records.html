@@ -1,25 +1,28 @@
-<link rel="stylesheet" href="partials/records/patient_records/patient_records.css"/>
 <header>
   <span>Patient Records</span>
 </header>
 
-<!-- <section class="underline"> -->
-<!--   	<div class="pull&#45;right"> -->
-<!-- 		<a disabled class="btn btn&#45;default"><span class="glyphicon glyphicon&#45;list"></span> Patient Card</a> -->
-<!--     <a class="btn btn&#45;default"><span class="glyphicon glyphicon&#45;search"></span> Advanced Search</a> -->
-<!--   </div> -->
-<!-- </section> -->
+
+<section class="top-nav underline">
+  	<div class="pull-right">
+    <a ng-click="fetchAll()" class="btn btn-default"><span class="glyphicon glyphicon-user"></span> View all patients</a>
+  </div>
+</section>
 
 <div class="content">
   <!-- Advanced Search -->
   <div class="row">
     <div class="col-xs-12">
       <div class="panel panel-default">
-        <div class="panel-heading">
-          Advanced Search
+        <div ng-click="model.patient.data=[]" class="panel-heading">
+          Advanced Search {{searchParams}}
+          <div class="pull-right">
+            <a><span class="glyphicon glyphicon-search"></span></a>
+          </div>
         </div>
         
-        <div class="panel-body">
+        <div ng-show="!model.patient.data.length || model.patient.data.length===0" class="panel-body">
+          <div class="row">
           <div class="col-xs-6">
             <div class="form-group">
               <label class="control-label">First Name</label>
@@ -100,11 +103,13 @@
                   typeahead-input-formatter="formatTypeAhead()"
                   required >
               </div>
+            </div>
           </div>
-        </div>
-
-        <div class="panel-footer">
-            <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">Search</button>
+          <div class="row">
+            <div class="col-xs-12">
+              <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">Search</button>
+            </div>  
+          </div>
         </div>
       </div>
     </div>
