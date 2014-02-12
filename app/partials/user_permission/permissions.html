@@ -1,11 +1,11 @@
 <header>
-	<span class="capital">{{'UP_TITLE' | translate}}</span>
+  {{ "PERMISSION.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
 	<div class="pull-right">
     <button class="btn btn-sm btn-default" class="capital" ng-click="setAction('add')">
-      <i class="glyphicon glyphicon-user"></i> Add a New User
+      <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
     </button>
 	</div>
 </section>
@@ -14,16 +14,16 @@
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-primary">
-        <div class="panel-heading capital"> 
-          {{ 'REGISTERED_USERS' | translate }}
+        <div class="panel-heading"> 
+          {{ "PERMISSION.REGISTERED" | translate }}
         </div>
         <table class="table table-hover table-condensed">
           <thead>
             <tr>
-              <th class="capital">{{'FIRST_NAME' | translate}}</th>
-              <th class="capital">{{'USER_NAME' | translate}}</th>
-              <th class="capital">{{'EMAIL' | translate}}</th>
-              <th colspan="3" class="capital">Actions</th>
+              <th>{{ "COLUMNS.FIRST_NAME" | translate}}</th>
+              <th>{{ "COLUMNS.USER_NAME" | translate}}</th>
+              <th>{{ "COLUMNS.EMAIL" | translate}}</th>
+              <th colspan="3" style="max-width: 20%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -43,63 +43,63 @@
     <div class="col-xs-6" ng-switch="action">
       <div ng-switch-default>
         <div class="alert alert-info">
-          <h4>User and Permissions Management</h4>
-          <p>Edit existing users and permissions from the table to the left.</p>
-          <ul style="list-style: none; padding-left: 10px;">
-            <li><i class="glyphicon glyphicon-pencil"></i>  Edits a user's metadata. </li>
-            <li><i class="glyphicon glyphicon-cog"></i>  Edits a user's permissions. </li>
-            <li><i class="glyphicon glyphicon-trash"></i>  Deletes a user and its permission data. </li>
+          <h4>{{ "PERMISSION.TITLE" | translate }}</h4>
+          <p>{{ "PERMISSION.HELP_TXT_1" | translate }}.</p>
+          <ul class="list-plain">
+            <li><i class="glyphicon glyphicon-pencil"></i> {{ "PERMISSION.HELP_TXT_2" | translate }}. </li>
+            <li><i class="glyphicon glyphicon-cog"></i> {{ "PERMISSION.HELP_TXT_3" | translate }}. </li>
+            <li><i class="glyphicon glyphicon-trash"></i> {{ "PERMISSION.HELP_TXT_4" | translate }}. </li>
           </ul>
         </div>
       </div>
 
       <div ng-switch-when="add">
         <form class="form-horizontal">
-          <legend><h3>Adding New User <small>{{add.first}} {{add.last}}</small></h3></legend>
+          <legend><h3>{{ "PERMISSION.ADDING" | translate }} <small>{{add.first}} {{add.last}}</small></h3></legend>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">First Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="add.first" class="form-kapok" required="required">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Last Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="add.last" class="form-kapok" required="required">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">User Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="add.username" class="form-kapok" required="required">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">Email Addr.</label>
+            <label class="control-label col-xs-2">{{ "COLUMNS.EMAIL" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="add.email" class="form-kapok" type="email">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Password</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
             <div class="col-xs-7 input-group"> 
               <input ng-model="add.password" class="form-kapok" required="required" type="password">
               <span class="input-group-btn" ng-switch="add.validPassword">
                 <button class="btn btn-sm" ng-class="{ 'btn-danger' : !add.validPassword, 'btn-success' : !!add.validPassword }" disabled="disabled">
-                  <i ng-switch-default class="glyphicon glyphicon-remove"></i>
-                  <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
+                  <span ng-switch-default class="glyphicon glyphicon-remove"></span>
+                  <span ng-switch-when="true" class="glyphicon glyphicon-check"></span>
                 </button>
               </span>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Password (Retype)</label>
+            <label class="control-label col-xs-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
             <div class="col-xs-7 input-group">
               <input ng-model="add.password_verify" class="form-kapok" required="required" type="password">
               <span class="input-group-btn" ng-switch="add.validPassword">
@@ -119,38 +119,38 @@
 
       <div ng-switch-when="edit">
         <form class="form-horizontal">
-          <legend><h3>Editing User <small>{{edit.first}} {{edit.last}}</small></h3></legend>
+          <legend><h3>{{ "PERMISSION.EDITTING" | translate }} <small>{{edit.first}} {{edit.last}}</small></h3></legend>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">First Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="edit.first" class="form-kapok" required="required">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Last Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="edit.last" class="form-kapok" required="required">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">User Name</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="edit.username" class="form-kapok" required="required">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2">Email Addr.</label>
+            <label class="control-label col-xs-2">{{ "COLUMNS.EMAIL" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="edit.email" class="form-kapok" type="email">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Password</label>
+            <label class="control-label col-xs-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
             <div class="col-xs-7 input-group"> 
               <input ng-model="edit.password" class="form-kapok" required="required" type="password" ng-change="clearPass()">
               <span class="input-group-btn" ng-switch="edit.validPassword">
@@ -163,7 +163,7 @@
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-2 required">Password (Retype)</label>
+            <label class="control-label col-xs-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
             <div class="col-xs-7 input-group">
               <input ng-model="edit.password_verify" class="form-kapok" required="required" type="password">
               <span class="input-group-btn" ng-switch="edit.validPassword">
@@ -175,8 +175,8 @@
             </div>
           </div>
 
-          <input type="submit" class="btn btn-sm btn-success" value="Submit" ng-click="editSubmit()">
-          <input type="button" class="btn btn-sm btn-default" value="Reset" ng-click="editReset()">
+          <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUMBIT' | translate }}" ng-click="editSubmit()">
+          <input type="button" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="editReset()">
 
         </form>
       </div>
@@ -185,14 +185,16 @@
         <div class="col-xs-6">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <span>Permissions</span>
+              <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
-                <button ng-disabled="!permission.permission_change" ng-click="savePermissions()"><i class="glyphicon glyphicon-floppy"></i> Save</button>
+                <button ng-disabled="!permission.permission_change" ng-click="savePermissions()">
+                  <span class="glyphicon glyphicon-floppy"></span> {{ "FORM.SAVE" | translate }}
+                </button>
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
               <input type="checkbox" ng-model="all.checked">
-              Super User
+              {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
               <li ng-repeat="unit in models.units | filter:filterChildren" >
@@ -226,82 +228,3 @@
 
   </div>
 </div>
-
-<!--
-<div class="content">
-	<div class="row">
-		<div class="col-xs-4" id="divformID">
-			<div class="panel panel-primary">
-				<div class="panel-body">
-					<form role="form" name="form">
-						<div class="form-group">
-              <label for="first">{{'FIRST_NAME' | translate}}:</label>
-							<input ng-model="selected.first" id="first" class="form-kapok" placeholder="First Name" required>
-						</div>
-
-						<div class="form-group">
-							<label for="last">{{'LAST_NAME' | translate}}:</label>
-							<input ng-model="selected.last" id="last" class="form-kapok" placeholder="Last Name" required>
-						</div>
-
-						<div class="form-group">
-							<label for="email">{{'EMAIL' | translate}}:</label>
-							<input ng-model="selected.email" id="email" class="form-kapok" placeholder="Email" required>
-						</div>
-						<small id="bademail" ng-show="showbademail"><font color="red">email incorrect</font></small>
-
-						<div class="form-group">
-							<label for="username">{{'USER_NAME' | translate}}:</label>
-							<input ng-model="selected.username" id="username" class="form-kapok" placeholder="User Name" required>
-						</div>
-						<small id="badusername" ng-show="showbadusername"><font color="red">username already existe</font></small>
-
-						<div class="form-group">
-              <label for="pw">{{'PASSWORD' | translate}}:</label>
-							<input type ="password" ng-model="selected.password" id="pw" class="form-kapok" placeholder="Password">
-						</div>
-
-						<div class="form-group">
-              <label for="cpw">{{'CONFIRM' | translate}} {{'PASSWORD' | translate}}:</label>
-							<input id="cpw" ng-model = "confirmpw" type="password" class="form-kapok" placeholder="Confirm your password">
-						</div>
-						<small id="badpassword" ng-show="showbadpassword"><font color="red">password incorrect</font></small>
-					</form>
-				</div>
-			</div>
-		</div>
-
-		<div class="col-xs-8" id="divuserID">
-	</div>
-	<div class="row">
-		<div class ="col-xs-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-          {{'UP_DIALOGUE' | translate }} <b>{{selected.first}}</b> {{'UP_DIALOGUE_2' | translate }}
-				</div>
-
-				<div class="panel-body table-responsive"  id="divroleID">
-          <table class="table table-bordered table-condensed">
-            <tr>
-              <td>
-                <label for="tous">{{ 'ALL' | translate }}</label>
-                <input type="checkbox" id="tous" ng-model = "chkTous" ng-click="changeAll()">
-              </td>
-              <td ng-repeat="role in roles" id='{{role.id}}'>
-                <div ng-repeat="unit in getUnits(role.id)" class="container">
-                  <div class="checkbox">
-                    <label>
-                      {{unit.name}}
-                      <input type="checkbox" id="{{unit.id}}" ng-model = "unit.chkUnitModel" ng-click = "manageClickUnit(unit.id)">
-                    </label>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </table>
-		</div>
-		</div>
-	</div>
-</div>
-</div>
--->
