@@ -85,7 +85,7 @@
             </div>
             <div class="panel-body">
               <div class="form-group">
-                <label for="parent">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
+                <label for="parent" class="required">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
                 <select required  id="parent" class="form-kapok" ng-options="c.account_txt for c in model.account.data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
                   <!--Placeholder options-->
                   <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
