@@ -104,20 +104,24 @@
   },
 
   "SELECT" : {
-    "ACCOUNT"        : "Select Account",
-    "CURRENCY"       : "Select Currency",
-    "NAME"           : "Select a Name",
-    "COUNTRY"        : "Select a Country",
-    "PROVINCE"       : "Select a Province",
-    "SECTOR"         : "Select a Sector",
-    "VILLAGE"        : "Select a Village",
-    "DEBITOR_GROUP"  : "Select a Debitor Group",
-    "PATIENT_GROUP"  : "Select a Patient Group",
-    "CREDITOR_GROUP" : "Select a Creditor Group",
-    "PRICE_LIST"     : " Select a Price List",
-    "LOCATION"       : "Select a Location",
-    "PAYMENT"        : "Select a Payment Type",
-    "GROUP_TYPE"     : "Select a Group Type"
+    "ACCOUNT"         : "Select Account",
+    "CURRENCY"        : "Select Currency",
+    "NAME"            : "Select a Name",
+    "COUNTRY"         : "Select a Country",
+    "PROVINCE"        : "Select a Province",
+    "SECTOR"          : "Select a Sector",
+    "VILLAGE"         : "Select a Village",
+    "DEBITOR_GROUP"   : "Select a Debitor Group",
+    "PATIENT_GROUP"   : "Select a Patient Group",
+    "CREDITOR_GROUP"  : "Select a Creditor Group",
+    "PRICE_LIST"      : " Select a Price List",
+    "LOCATION"        : "Select a Location",
+    "PAYMENT"         : "Select a Payment Type",
+    "GROUP_TYPE"      : "Select a Group Type",
+    "INVENTORY_GROUP" : "Select an Inventory Group",
+    "UNIT"            : "Select a Unit",
+    "INVENTORY_ITEM"  : "Select an Inventory Item",
+    "DEBITOR"         : "Select a Debitor"
   },
 
   "REPORT" : {
@@ -158,8 +162,14 @@
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
+    "ID"             : "ID",
+    "GROUP"          : "Group",
+    "INVOICE_DATE"   : "Invoice Date",
+    "TOTAL"          : "Total",
+    "ACCOUNT_ID"     : "Account ID",
     "DEBITOR_NAME"   : "Debitor Name",
     "ACCOUNT"        : "Account",
+    "COMMENT"        : "Comment",
     "GROUP_NAME"     : "Group Name",
     "ACCOUNT_NUMBER" : "Account Number",
     "EDIT"           : "Edit",
@@ -188,7 +198,25 @@
     "DESCRIPTION"    : "Description",
     "QUANTITY"       : "Quantity",
     "UNIT_PRICE"     : "Unit Price",
-    "COST"           : "Cost"
+    "COST"           : "Cost",
+    "DISCOUNT"       : "Discount",
+    "INVENTORY_ITEM" : "Inventory Item",
+    "PRICE"          : "Price",
+    "ACTION"         : "Action"
+  },
+
+  "SUPPLIER" : {
+    "TITLE" : "Register a Supplier",
+    "CREATE" : "Create Creditor Group",
+    "GROUP" : "Group",
+    "INTL" : "International",
+    "OPTIONAL_INFO" : "Optional Information",
+    "ADDR_1" : "Address 1",
+    "ADDR_2" : "Address 2",
+    "PHONE" : "Phone",
+    "EMAIL" : "Email",
+    "FAX" : "Fax",
+    "REGISTERED": "Registered Suppliers"
   },
 
   "PATIENT_REG" : {
@@ -257,10 +285,25 @@
     "VILLAGE"  : "Village"
   },
 
-  "GROUP_INVOICING" : {
+  "GROUP_INVOICE" : {
     "TITLE"                  : "Debtor Group Invoicing",
     "SELECT_PAYMENT_DETAILS" : "Select Payment Details",
-    "GROUP"                  : "Group"
+    "GROUP"                  : "Group",
+    "DEBITOR"                : "Debitor",
+    "SELECT_INVOICES"        : "Select Invoices",
+    "HELP_TXT_1" : "Choose a convention from the upper left hand corner of the screen",
+    "CONVENTION_INVOICE" : "Convention Invoice",
+    "INVOICE_TITLE" : "Convention Invoice for Debitor",
+    "COST" : "Cost to Debitor",
+    "INVOICE_ID" : "Invoice ID",
+    "AGREED" : "Agreed Payment",
+    "BALANCE" : "Balance",
+    "ERROR_TXT_1" : "Check that everything is correctly entered",
+    "CANCEL" : "Cancel",
+    "PAY" : "Pay Invoices",
+    "AUTHORIZED_BY" : "Authorized By",
+    "AUTHORIZE" : "Cancel",
+    "DETAILS" : "Invoice Details"
   },
 
   "FORM" : {
@@ -269,10 +312,12 @@
     "SAVE_CHANGES"   : "Save Changes",
     "SAVE_BALANCES"  : "Save Balances",
     "SUBMIT"         : "Submit",
+    "DISCARD"     : "Discard",
     "RESET_BALANCES" : "Reset Balances",
     "CLEAR"          : "Clear",
     "CLEAR_FORM"     : "Clear Form",
     "RESET"          : "Reset",
+    "DELETE"         : "Delete",
     "RESET_FORM"     : "Reset Form",
     "CANCEL"         : "Cancel",
     "OK"             : "Ok"
@@ -340,29 +385,53 @@
     "INFO"       : "Group Information"
   },
 
-  "DOC_NO"           : "doc no.",
-  "DEB_CRED_ACCOUNT" : "debitor/creditor account",
-  "DEB_CRED_TYPE"    : "debitor/creditor type",
-  "INV_PO_NO"        : "inv/PO no.",
- 
-  "UP_TITLE"         : "users & permissions management",
-  "FIRST_NAME"       : "first name",
-  "LAST_NAME"        : "last name",
-  "EMAIL"            : "email",
-  "USER_NAME"        : "username",
-  "PASSWORD"         : "password",
-  "CONFIRM"          : "confirm",
-  "ALL"              : "all",
-  "REGISTERED_USERS" : "registered users",
-  "CHECK"            : "check",
-  "UNITS"            : "units",
-  "USER"             : "user",
-  "PERMISSION"       : "permission",
-  "UP_DIALOGUE"      : "check units which user ",
-  "UP_DIALOGUE_2"    : "will access",
+  "INVENTORY_REGISTER" : {
+    "TITLE" : "Stock Registration",
+    "VIEW" : "View All Items",
+    "ADD_TYPE" : "Add Unit Type",
+    "ADD_GROUP" : "Add Inventory Group",
+    "GENERAL" : "General",
+    "CODE" : "Inventory Code",
+    "DESCRIPTION" : "Description",
+    "GROUP" : "Inventory Group",
+    "BILLING" : "Billing & Stock Information",
+    "DURABLE" : "Durable",
+    "CONSUMABLE" : "Consumable",
+    "UNIT" : "Unit",
+    "DEFAULT_PRICE" : "Default Price",
+    "UNIT_WEIGHT" : "Unit Weight",
+    "UNIT_VOLUME" : "Unit Volume"
+  },
 
-  "NAME"         : "name",
-  "CASH_ACCOUNT" : "cash account",
-  "PHONE"        : "phone",
-  "ABBREVIATION" : "abbreviation"
+  "INVENTORY_VIEW" : {
+    "TITLE" : "Inventory View",
+    "GROUP_BY" : "Group By",
+    "REGISTER" : "Register Stock"
+  },
+
+  "PRICE_LIST" : {
+    "TITLE" : "Price List Management",
+    "NEW" : "New Price List",
+    "HELP_TXT_1" : "Select an action on the left to edit pricelist properties",
+    "HELP_TXT_2" : "Edit the price list's metadata",
+    "HELP_TXT_3" : "Remove the price list",
+    "EDIT" : "Editting Price List Metadata",
+    "ADD" : "Add a Price List"
+  },
+
+  "UNIT_TYPE" : {
+    "ADD" : "Add a Unit Type",
+    "NEW" : "New Unit",
+    "PLACEHOLDER" : "e.g. 'Box'",
+    "REGISTERED" : "Registered"
+  },
+
+  "INVENTORY_GROUP" : {
+    "ADD" : "Add Inventory Group",
+    "NAME" : "Name",
+    "SALES_ACCOUNT" : "Sales Account",
+    "COGS" : "COGS Account",
+    "STOCK" : "Stock Account",
+    "TAX" : "Tax Account"
+  }
 }
