@@ -54,7 +54,7 @@
       </div>
 
       <div ng-switch-when="add">
-        <form class="form-horizontal">
+        <form novalidate class="form-horizontal">
           <legend><h3>{{ "PERMISSION.ADDING" | translate }} <small>{{add.first}} {{add.last}}</small></h3></legend>
 
           <div class="form-group">
@@ -118,7 +118,7 @@
       </div>
 
       <div ng-switch-when="edit">
-        <form class="form-horizontal">
+        <form novalidate class="form-horizontal">
           <legend><h3>{{ "PERMISSION.EDITTING" | translate }} <small>{{edit.first}} {{edit.last}}</small></h3></legend>
 
           <div class="form-group">
