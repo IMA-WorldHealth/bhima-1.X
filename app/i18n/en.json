@@ -49,17 +49,17 @@
   },
 
   "UTIL" : {
-    "CONFIGURE" : "configure",
-    "TOTAL" : "total",
-    "PRINT"     : "print",
-    "CREATE"    : "create",
-    "CANCEL"    : "cancel",
-    "ITEMS"     : "items",
-    "TOGGLE" : "toggle",
-    "COLUMNS" : "columns",
-    "CONFIRM" : "confirm",
-    "SUBMIT" : "submit",
-    "RESET_FORM" : "Reset Form",
+    "CONFIGURE"      : "Configure",
+    "TOTAL"          : "Total",
+    "PRINT"          : "Print",
+    "CREATE"         : "Create",
+    "CANCEL"         : "Cancel",
+    "ITEMS"          : "Items",
+    "TOGGLE"         : "Toggle",
+    "COLUMNS"        : "Columns",
+    "CONFIRM"        : "Confirm",
+    "SUBMIT"         : "Submit",
+    "RESET_FORM"     : "Reset Form",
     "SAVE_SELECTION" : "Save Selection"
   },
 
@@ -178,10 +178,10 @@
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
-    "PASSWORD"      : "Password",
+    "PASSWORD"       : "Password",
     "ID"             : "ID",
-    "USER_NAME"       : "User Name",
-    "LAST_NAME"     : "Last Name",
+    "USER_NAME"      : "User Name",
+    "LAST_NAME"      : "Last Name",
     "GROUP"          : "Group",
     "INVOICE_DATE"   : "Invoice Date",
     "TOTAL"          : "Total",
