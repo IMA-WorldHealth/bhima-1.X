@@ -318,7 +318,7 @@ app.get('/sector/', function (req, res, next) {
 app.get('/province/', function (req, res, next) {
 
   var sql = "SELECT `province`.`id` as `id`,  `province`.`name` as `province`, `country`.`id` "+
-            "as `country_id`, `country`.`name` as `country` FROM `province`, `country` "+
+            "as `country_id`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
             "WHERE `province`.`country_id` = `country`.`id`";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
