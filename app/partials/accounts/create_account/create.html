@@ -1,15 +1,21 @@
 <!--Create Account Markup-->
 <header>
-  Account Management
+  {{ "ACCOUNT.TITLE" | translate }} 
 </header>
 
 <section class="top-nav">
 <!-- <button class="btn btn-default btn-sm">antyhing</button> -->
-<button ng-click="updateState('editAccount')" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Add Account</button>
-<div class="pull-right">
-    <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Create Chart of Accounts</button> 
-    <button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list"></span> Generate Account Report</button>
-</div>
+  <button ng-click="updateState('editAccount')" class="btn btn-default btn-sm">
+    <span class="glyphicon glyphicon-plus"></span> {{ "ACCOUNT.ADD" | translate }}
+  </button>
+  <div class="pull-right">
+      <button disabled class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-pencil"></span> {{ "ACCOUNT.CREATE" | translate }} 
+      </button> 
+      <button class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-list"></span> {{ "ACCOUNT.GENERATE" | translate }}
+      </button>
+  </div>
 </section>
 
 <div class="content">
@@ -21,29 +27,27 @@
       <div ng-switch on="formState">
         <div ng-switch-default>
           <div class="alert alert-info">
-            <p>Chart of accounts for <b>{{enterprise.name}}</b></p>
-            
-            <p>Account information and relationshions are shown 
-            in the table on the right.</p> 
-            <p>Click 'Add Account' to add an account, and the pencil icon
-            next to each account item to edit accounts.</p>
+            <p>{{ "ACCOUNT.HELP_TXT_1" | translate }} <b>{{enterprise.name}}</b></p>
+            <p>{{ "ACCOUNT.HELP_TXT_2" | translate }}.</p> 
+            <p>{{ "ACCOUNT.HELP_TXT_3" | translate }}.</p>
           </div> 
         </div>
 
         <div ng-switch-when='editAccount'> 
           <div class="panel panel-default">
             <div class="panel-heading">
-              New Account 
+              {{ "ACCOUNT.NEW" | translate }}
             </div>
             <div class="panel-body">
               <form novalidate name="form">
-              <div class="form-group">
-                  <label for="title">Account Title</label>
+
+                <div class="form-group">
+                  <label for="title">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
                   <input required type="text" id="title" class="form-kapok" ng-model="newAccount.title">
                 </div>
 
                 <div class="form-group">
-                  <label for="type">Account Type</label>
+                  <label for="type">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
                   <select required  id="type" class="form-kapok" ng-options="c.type for c in model.accountType.data" ng-model="newAccount.type">
                     <!--Placeholder options-->
                     <!-- <option>Title</option> -->
@@ -53,7 +57,7 @@
                 </div>
                 
                 <div class="form-group">
-                  <label for="number">Account Number</label>
+                  <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
                   <input required type="text" id="number" class="form-kapok" ng-model="newAccount.number">
                 </div>
 
@@ -61,35 +65,37 @@
                   <div class="radio">
                     <label>
                       <input type="radio" name="option_fixed" id="fixed" value="true" ng-model="newAccount.fixed" checked>
-                      Fixed
+                      {{ "ACCOUNT.FIXED" | translate }}
                     </label>
                   </div>
                   <div class="radio">
                     <label>
-                      <input type="radio" name="option_variable" id="variable" value="false"
-                              ng-model="newAccount.fixed">
-                      Variable 
+                      <input type="radio" name="option_variable" id="variable" value="false" ng-model="newAccount.fixed">
+                      {{ "ACCOUNT.VARIABLE" | translate }} 
                     </label>
                   </div>
                 </div> 
               </form>
             </div> <!--panel body-->
           </div> <!-- panel-->
+
           <div class="panel panel-default">
             <div class="panel-heading">
-              Account Group (Title Account)
+              {{ "ACCOUNT.ACCOUNT_GROUP" | translate }}
             </div>
             <div class="panel-body">
               <div class="form-group">
-                <label for="parent">Title Account</label>
+                <label for="parent">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
                 <select required  id="parent" class="form-kapok" ng-options="c.account_txt for c in model.account.data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
                   <!--Placeholder options-->
-                  <option value="">Root Account</option>
+                  <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
                 </select>
               </div> 
             </div>
           </div> 
-          <button ng-disabled="form.$invalid" ng-click="submitAccount(newAccount)" class="btn btn-success">Submit</button>
+          <button ng-disabled="form.$invalid" ng-click="submitAccount(newAccount)" class="btn btn-success">
+            {{ "FORM.SUBMIT" | translate }} 
+          </button>
         </div>
       </div>
     </div> <!--ng-switch-->
