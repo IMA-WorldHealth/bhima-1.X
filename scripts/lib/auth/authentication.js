@@ -16,7 +16,7 @@ module.exports = (function (db) {
   // to get authenticated will be recieved at this level,
   // then proceed on to be authorized as correct.
   //
-  // All other paths are welcome to continue on to be 
+  // All other paths are welcome to continue on to be
   // validated by the authorization middleware.
 
   function authenticate (req, res, next) {
@@ -28,23 +28,25 @@ module.exports = (function (db) {
         break;
 
       case '/logout':
-        if (!req.session) next();
+        if (!req.session.authenticated) { 
+          console.log('no auth, redirecting');
+          return next(); 
+        }
         else {
+          console.log('logging out...');
           logout(req.session.user_id, function (err, result) {
-            if (err) next(err);
-            else {
-              req.session.destroy(function () {
-                res.clearCookie('connect.sid', {path : '/'});
-                res.redirect('/');
-              });
-            }
+            if (err) return next(err);
+            req.session.destroy(function () {
+              res.clearCookie('connect.sid');
+              res.redirect('/');
+            });
           });
         }
         break;
 
       case '/login':
         // FIXME: find a better way to structure this.
-        if (req.method != "POST") next();
+        if (req.method != "POST") return next();
         else {
           var usr, pwd, sql;
           usr = req.body.username;
@@ -59,8 +61,7 @@ module.exports = (function (db) {
 
             var user = results.pop();
             if (user.logged_in) {
-              res.send({error: "user already logged in."});
-              next(new Error ("user already logged in."));
+              return next(new Error ("User already logged in."));
             } else {
               login(user.id, usr, pwd, function (err, results) {
                 if (err) next (err);
@@ -88,8 +89,8 @@ module.exports = (function (db) {
     sql = "UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=" + id;
 
     db.execute(sql, function (err, results) {
-      if (err) callback(err); 
-      
+      if (err) return callback(err);
+     
       sql = 'SELECT `unit`.`url` ' +
             'FROM `unit`, `permission`, `user` WHERE ' +
             '`permission`.`id_user` = `user`.`id` AND `permission`.`id_unit` = `unit`.`id` AND ' +
@@ -106,6 +107,6 @@ module.exports = (function (db) {
     return db.execute(sql, callback);
   }
 
-  return authenticate; 
+  return authenticate;
 
 });

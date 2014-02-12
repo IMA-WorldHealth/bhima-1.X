@@ -66,6 +66,7 @@
   "FISCAL_YEAR" : {
     "TITLE"                 : "Fiscal Year",
     "MANAGEMENT"            : "Management",
+    "RECORDS"                 : "Fiscal Year Records",
     "NEW"                   : "New Fiscal Year",
     "DESC"                  : "Year Description",
     "START_MONTH"           : "Start Month",
@@ -240,6 +241,7 @@
 
   "PATIENT_REG" : {
     "TITLE"                    : "Patient Registration",
+    "PATIENT_DETAILS"          : "Patient Details",
     "CREATE_DEBTOR_GROUP"      : "Create Debitor Group",
     "VIEW_PATIENT_RECORDS"     : "View Patient Records",
     "PATIENT_GROUP_ASSIGNMENT" : "Patient Group Assignment",
@@ -321,7 +323,7 @@
     "CANCEL" : "Cancel",
     "PAY" : "Pay Invoices",
     "AUTHORIZED_BY" : "Authorized By",
-    "AUTHORIZE" : "Cancel",
+    "AUTHORIZE" : "Authorize",
     "DETAILS" : "Invoice Details"
   },
 
@@ -339,7 +341,8 @@
     "DELETE"         : "Delete",
     "RESET_FORM"     : "Reset Form",
     "CANCEL"         : "Cancel",
-    "OK"             : "Ok"
+    "OK"             : "Ok",
+    "CONTINUE"      : "Continue"
   },
 
   "CASH" : {
