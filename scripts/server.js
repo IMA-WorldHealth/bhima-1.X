@@ -304,6 +304,27 @@ app.get('/village/', function (req, res, next) {
   });
 });
 
+app.get('/sector/', function (req, res, next) {
+
+  var sql = "SELECT `sector`.`id` as `id`,  `sector`.`name` as `sector`, `province`.`id` "+
+            "as `province_id`, `province`.`name` as `province` FROM `sector`, `province` "+
+            "WHERE `sector`.`province_id` = `province`.`id`";
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(rows);
+  });
+});
+
+app.get('/province/', function (req, res, next) {
+
+  var sql = "SELECT `province`.`id` as `id`,  `province`.`name` as `province`, `country`.`id` "+
+            "as `country_id`, `country`.`name` as `country` FROM `province`, `country` "+
+            "WHERE `province`.`country_id` = `country`.`id`";
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send(rows);
+  });
+});
 
 app.get('/debitorAgingPeriod', function (req, res, next){
   var sql =  "SELECT DISTINCT period.id, period.period_start, period.period_stop FROM period, general_ledger WHERE period.id = general_ledger.`period_id`;";
