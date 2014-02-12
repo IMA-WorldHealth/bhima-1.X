@@ -1,15 +1,21 @@
 <header>
-  <span>Stock Registration</span>
+  {{ "INVENTORY_REGISTER.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
   <div class="pull-left">
-    <a href="#/inventory/view" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-qrcode"></i> View All Items</a>
+    <a href="#/inventory/view" class="btn btn-default btn-sm">
+      <i class="glyphicon glyphicon-qrcode"></i> {{ "INVENTORY_REGISTER.VIEW" | translate }}
+    </a>
   </div>
   <div class="pull-right">
     <!-- TODO: normalize these -->
-    <button type="button" ng-click="newInventoryGroup()" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-barcode"></i> Add Inventory Group</button>
-    <button type="button" ng-click="newUnitType()" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-list-alt"></i> Add Unit Type</button>
+    <button type="button" ng-click="newInventoryGroup()" class="btn btn-default btn-sm">
+      <i class="glyphicon glyphicon-barcode"></i> {{ "INVENTORY_REGISTER.ADD_GROUP" | translate }}
+    </button>
+    <button type="button" ng-click="newUnitType()" class="btn btn-default btn-sm">
+      <i class="glyphicon glyphicon-list-alt"></i> {{ "INVENTORY_REGISTER.ADD_TYPE" | translate }}
+    </button>
   </div>
 </section>
 
@@ -21,7 +27,7 @@
         <!-- general panel -->
         <div class="panel panel-default">
           <div class="panel-heading">
-            General 
+            {{ "INVENTORY_REGISTER.GENERAL" | translate }}
           </div>
           <div class="panel-body">
 
@@ -29,40 +35,27 @@
               <div class="col-xs-3" ng-repeat="type in models.inv_type">
                 <div class="radio" >
                   <label>
-                    <input
-                      name="type_id"
-                      type="radio"
-                      value="{{type.id}}"
-                      id="inventory-registration-{{type.text}}"
-                      ng-model="$parent.item.type_id"
-                      ng-required="!$parent.item.type_id"
-                    >
-                    {{type.text}}
+                    <input name="type_id" type="radio" value="{{type.id}}" id="inventory-reg-{{type.text}}" ng-model="$parent.item.type_id" ng-required="!$parent.item.type_id">
+                    {{ type.text }}
                   </label>
                 </div>
               </div>
             </fieldset>
 
             <div class="form-group">
-              <label for="inventory-registration-code">
-                Inventory Code:
+              <label for="inventory-reg-code" class="required">
+                {{ "INVENTORY_REGISTER.CODE" | translate }}
               </label>
-              <input
-                name="code"
-                id="inventory-registration-code"
-                class="form-kapok"
-                ng-model="item.code"
-                required
-              >
+              <input name="code" id="inventory-reg-code" class="form-kapok" ng-model="item.code" required>
             </div>
-            
+           
             <div class="form-group">
-              <label for="inventory-registration-text">
-                Description:
+              <label for="inventory-reg-text">
+                {{ "INVENTORY_REGISTER.DESCRIPTION" | translate }}
               </label>
               <textarea
                 name="text"
-                id="inventory-registration-text" 
+                id="inventory-reg-text"
                 class="form-control"
                 rows="3"
                 ng-model="item.text"
@@ -74,18 +67,18 @@
             <hr />
 
             <div class="form-group">
-              <label for="inventory-registration-group">
-                Inventory Group:
+              <label for="inventory-reg-group" class="required">
+                {{ "INVENTORY_REGISTER.GROUP" | translate }}
               </label>
               <select
-                id="inventory-registration-group"
+                id="inventory-reg-group"
                 class="form-kapok"
                 name="group_id"
                 ng-model="item.group_id"
                 ng-options="group.id as group.name for group in models.inv_group"
                 required
               >
-                <option value="" disabled="disabled">-- Select Inventory Group --</option>
+                <option value="" disabled="disabled">-- {{ "SELECT.INVENTORY_GROUP" | translate }} --</option>
               </select>
             </div>
           </div>
@@ -95,7 +88,7 @@
       <div class="col-xs-6">
         <div class="panel panel-default">
           <div class="panel-heading">
-            Billing &amp Stock Information
+            {{ "INVENTORY_REGISTER.BILLING" | translate }}
           </div>
           <div class="panel-body">
             <fieldset>
@@ -105,71 +98,71 @@
                     <input
                       name="consumable"
                       type="radio"
-                      id="inventory-registration-consumable"
+                      id="inventory-reg-consumable"
                       value="1"
                       ng-model="item.consumable"
                       ng-required="!item.consumable"
                     >
-                    Consumable
+                    {{ "INVENTORY_REGISTER.CONSUMABLE" | translate }}
                   </label>
                 </div>
               </div>
 
               <div class="col-xs-3">
                 <div class="radio">
-                  <label for="inventory-registration-durable">
+                  <label for="inventory-reg-durable">
                     <input
                       name="consumable"
                       type="radio"
-                      id="inventory-registration-durable"
+                      id="inventory-reg-durable"
                       value="0"
                       ng-model="item.consumable"
                       ng-required="!item.consumable"
                     >
-                    Durable
+                    {{ "INVENTORY_REGISTER.DURABLE" | translate }}
                   </label>
                 </div>
               </div>
             </fieldset>
 
             <div class="form-group" >
-              <label for="inventory-registration-unit" >
-                Unit:
+              <label for="inventory-reg-unit" class="required">
+                {{ "INVENTORY_REGISTER.UNIT" | translate }}
               </label>
               <select
                 name="unit_id"
-                id="inventory-registration-unit"
+                id="inventory-reg-unit"
                 class="form-kapok"
                 ng-model="item.unit_id"
                 ng-options="unit.id as unit.text for unit in models.inv_unit"
                 required
               >
-                <option value="" disabled="disabled">-- Select Unit --</option>
+                <option value="" disabled="disabled">-- {{ "SELECT.UNIT" | translate }} --</option>
               </select>
             </div>
 
             <div class="form-group" >
-              <label for="inventory-registration-price">
-                Default Price:
+              <label for="inventory-reg-price">
+                {{ "INVENTORY_REGISTER.DEFAULT_PRICE" | translate }}
               </label>
-              <input 
+              <input
                 name="unit_price"
                 type="number"
-                id="inventory-registration-price"
+                id="inventory-reg-price"
                 class="form-kapok"
                 ng-model="item.price"
                 required
               >
             </div>
-            
+           
             <div class="form-group" >
-              <label for="inventory-registration-weight">
-                Unit Weight:
+              <label for="inventory-reg-weight" class="required">
+                {{ "INVENTORY_REGISTER.UNIT_WEIGHT" | translate }}
               </label>
-              <input 
+              <input
                 name="unit_weight"
                 type="number"
-                id="inventory-registration-weight"
+                id="inventory-reg-weight"
                 class="form-kapok"
                 ng-model="item.unit_weight"
                 required
@@ -177,13 +170,13 @@
             </div>
 
             <div class="form-group" >
-              <label for="inventory-registration-volume">
-                Unit Volume:
+              <label for="inventory-reg-volume" class="required">
+                {{ "INVENTORY_REGISTER.UNIT_VOLUME" | translate }}
               </label>
-              <input 
+              <input
                 name="unit_volume"
                 type="number"
-                id="inventory-registration-volume"
+                id="inventory-reg-volume"
                 class="form-kapok"
                 ng-model="item.unit_volume"
                 required
@@ -199,8 +192,8 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <input type="submit" class="btn btn-success" ng-click="submit()" ng-disabled="inventory.$invalid">
-    <input type="reset" class="btn btn-default" ng-click="reset()" ng-disabled="inventory.$invalid">
+    <input type="submit" class="btn btn-success" ng-click="submit()" ng-disabled="inventory.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
+    <input type="reset" class="btn btn-default" ng-click="reset()" ng-disabled="inventory.$invalid" value="{{ 'FORM.RESET' | translate }}">
   </div>
 </section>
 
@@ -208,45 +201,52 @@
 <script type="text/ng-template" id="unitmodal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Add Unit Type</h3>
+      <h3>{{ "UNIT_TYPE.ADD" | translate }}</h3>
     </div>
     <div class="modal-body">
       <div class="row">
         <div class="col-xs-8">
           <form class="form-horizontal" name="addUnit" novalidate>
+
             <div class="form-group">
-              <label class="col-xs-2 control-label" for="unit-text">New Unit:</label>
+              <label class="col-xs-2 control-label" for="unit-text">{{ "UNIT_TYPE.NEW" | translate }}:</label>
               <div class="col-xs-10">
-                <input 
-                  id="unit-text"
-                  class="form-kapok"
-                  placeholder="e.g. 'Box'"
-                  ng-model="unit.text"
-                >
+                <input id="unit-text" class="form-kapok" placeholder='{{ "UNIT_TYPE.PLACEHOLDER" | translate }}' ng-model="unit.text">
               </div>
             </div>
+
           </form>
         </div>
+
         <div class="col-xs-4">
           <div class="panel panel-warning">
             <div class="panel-heading">
-              Registered
+              {{ "UNIT_TYPE.REGISTERED" | translate }}
             </div>
             <div class="panel-body" style="max-height: 100px; overflow: auto; padding:0;">
-              <table class="table table-bordered table-hover"> 
+              <table class="table table-bordered table-hover">
                 <tbody>
-                  <tr ng-repeat="unit in units"><td>{{unit.text}}</td></tr>
+                  <tr ng-repeat="unit in units">
+                    <td>{{unit.text}}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+
       </div>
     </div>
+
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" ng-click="discard()">Discard</button>
-      <button type="button" class="btn btn-default" ng-click="submit()">Save changes</button>
+      <button class="btn btn-default" ng-click="discard()">
+        {{ "FORM.DISCARD" | translate }}
+      </button>
+      <button class="btn btn-default" ng-click="submit()">
+        {{ "FORM.SAVE_CHANGES" | translate }}
+      </button>
     </div>
+
   </div>
 </script>
 
@@ -254,48 +254,37 @@
 <script type="text/ng-template" id="inventorygroupmodal.html">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Add Inventory Group</h3>
+      <h3>{{ "INVENTORY_GROUP.ADD" | translate }}</h3>
     </div>
     <div class="modal-body">
       <form class="form-horizontal" name="addInventoryGroup" novalidate>
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-name">Name:</label>
+          <label class="col-xs-2 control-label required" for="group-name">
+            {{ "INVENTORY_GROUP.NAME" | translate }}:
+          </label>
           <div class="col-xs-8">
-            <input 
-              id="group-name"
-              class="form-kapok"
-              placeholder="e.g. Products"
-              ng-model="group.name"
-              required
-            >
+            <input id="group-name" class="form-kapok" placeholder="e.g. Products" ng-model="group.name" required>
           </div>
           <div class="col-xs-2">
-            <input 
-              id="group-name"
-              class="form-kapok"
-              placeholder="Symbol"
-              ng-model="group.symbol"
-            >
+            <input id="group-name" class="form-kapok" placeholder="Symbol" ng-model="group.symbol">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-sales-account">Sales Account:</label>
+          <label class="col-xs-2 control-label" for="group-sales-account">
+            {{ "INVENTORY_GROUP.SALES_ACCOUNT" | translate }}
+          </label>
           <div class="col-xs-10">
-            <select
-              id="group-sales-account"
-              class="form-kapok"
-              ng-model="group.sales_account"
-              ng-options="account.account_number+'--'+account.account_txt for account in accounts"
-              required
-            >
-              <option value="" disabled="disabled">-- Select Account --</option>
+            <select id="group-sales-account" class="form-kapok" ng-model="group.sales_account" ng-options="account.account_number+'--'+account.account_txt for account in accounts" required>
+              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-cogs-account">COGS Account:</label>
+          <label class="col-xs-2 control-label" for="group-cogs-account">
+            {{ "INVENTORY_GROUP.COGS" | translate }}
+          </label>
           <div class="col-xs-10">
             <select
               id="group-cogs-account"
@@ -303,43 +292,41 @@
               ng-model="group.cogs_account"
               ng-options="account.account_number+'--'+account.account_txt for account in accounts"
             >
-              <option value="" disabled="disabled">-- Select Account --</option>
+              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-stock-account">Stock Account:</label>
+          <label class="col-xs-2 control-label" for="group-stock-account">
+            {{ "INVENTORY_GROUP.STOCK" | translate }} 
+          </label>
           <div class="col-xs-10">
-            <select
-              id="group-stock-account"
-              class="form-kapok"
-              ng-model="group.stock_account"
-              ng-options="account.account_number+'--'+account.account_txt for account in accounts"
-            >
-              <option value="" disabled="disabled">-- Select Account --</option>
+            <select id="group-stock-account" class="form-kapok" ng-model="group.stock_account" ng-options="account.account_number+'--'+account.account_txt for account in accounts">
+              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-tax-account">Tax Account:</label>
+          <label class="col-xs-2 control-label" for="group-tax-account">
+            {{ "INVENTORY_GROUP.TAX" | translate }}
+          </label>
           <div class="col-xs-10">
-            <select
-              id="group-tax-account"
-              class="form-kapok"
-              ng-model="group.tax_account"
-              ng-options="account.account_number+'--'+account.account_txt for account in accounts"
-            >
-              <option value="" disabled="disabled">-- Select Account --</option>
+            <select id="group-tax-account" class="form-kapok" ng-model="group.tax_account" ng-options="account.account_number+'--'+account.account_txt for account in accounts">
+              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" ng-click="discard()">Discard</button>
-      <button type="button" class="btn btn-default" ng-click="submit()">Save changes</button>
+      <button type="button" class="btn btn-default" ng-click="discard()">
+        {{ "FORM.DISCARD" | translate}}
+      </button>
+      <button type="button" class="btn btn-default" ng-click="submit()">
+        {{ "FORM.SAVE_CHANGES" | translate }}
+      </button>
     </div>
   </div>
 </script>

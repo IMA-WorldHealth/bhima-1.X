@@ -139,6 +139,18 @@
       controller : 'village',
       templateUrl: 'partials/location/village/village.html'
     })
+     .when('/location/sector', {
+      controller : 'sector',
+      templateUrl: 'partials/location/sector/sector.html'
+    })
+     .when('/location/province', {
+      controller : 'province',
+      templateUrl: 'partials/location/province/province.html'
+    })
+    .when('/location/country', {
+      controller : 'country',
+      templateUrl: 'partials/location/country/country.html'
+    })
     .when('/print', {
       templateUrl: 'partials/print/test.html'
     })
