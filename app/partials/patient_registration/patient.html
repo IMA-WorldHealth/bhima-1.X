@@ -10,9 +10,6 @@
     <a href='/#/patient_records/' class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-list"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }}
     </a>
-    <a href='/#/patient_group_assign/' class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-transfer"></span> {{ "PATIENT_REG.PATIENT_GROUP_ASSIGNMENT" | translate }}
-    </a>
   </div>
 </section>
 
@@ -171,15 +168,6 @@
                     <div class="col-xs-9"> 
                       <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
                         <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="patient-group" class="col-xs-3 control-label">{{"PATIENT_REG.PATIENT_GROUP" | translate }}</label>
-                    <div class="col-xs-9"> 
-                      <select multiple class="form-kapok" id="patient-group" ng-model="assignation.patient_group_id" ng-options=" pg.id as pg.name for pg in model.patientGroup.data" >
-                        <option value="" disabled="disabled">-- {{ "SELECT.PATIENT_GROUP" | translate }} --</option>
                       </select>
                     </div>
                   </div>
