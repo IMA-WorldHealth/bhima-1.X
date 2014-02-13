@@ -409,12 +409,12 @@ insert into `village` (`id`, `name`, `sector_id`) VALUES
 -- configure enterprise
 
 insert into `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
-  (1,'Congolese Francs','Fc', '.', ','),
-  (2,'United States Dollars','$', ',', '.'),
-  (3,'Euro', '€', ' ', '.');
+  (1,'United States Dollars','$', ',', '.'),
+  (2,'Euro', '€', ' ', '.'),
+  (3,'Congolese Francs','Fc', '.', ',');
              
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `logo`, `currency_id`) values 
-  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, '/assets/logos/tsh.jpg', 2);
+  (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, '/assets/logos/tsh.jpg', 1);
 
 -- configure fiscal year/period
 
@@ -1021,8 +1021,8 @@ insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
   (200, 'HIV', 20, 'Reducded cost for HIV patients');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
-  (2, 200, 195, 190),
-  (3, 200, 196, 191);
+  (1, 200, 195, 190),
+  (2, 200, 196, 191);
 
 insert into `patient_group` (`enterprise_id`, `price_list_id`, `name`, `note`) values 
   (200, 1, 'HIV', 'Funds for patients provided by societe x');
