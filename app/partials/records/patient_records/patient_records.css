@@ -70,8 +70,8 @@
 
 .patient-table {
   /*FIXME pretty gross*/
-  max-height: 580px;
-  overflow-y: auto;
+  /* max-height: 580px; */
+  /* overflow-y: auto; */
 }
 
 /*FIXME*/
