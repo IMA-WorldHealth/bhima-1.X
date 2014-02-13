@@ -49,23 +49,24 @@
   },
 
   "UTIL" : {
-    "CONFIGURE" : "configure",
-    "TOTAL" : "total",
-    "PRINT"     : "print",
-    "CREATE"    : "create",
-    "CANCEL"    : "cancel",
-    "ITEMS"     : "items",
-    "TOGGLE" : "toggle",
-    "COLUMNS" : "columns",
-    "CONFIRM" : "confirm",
-    "SUBMIT" : "submit",
-    "RESET_FORM" : "Reset Form",
+    "CONFIGURE"      : "Configure",
+    "TOTAL"          : "Total",
+    "PRINT"          : "Print",
+    "CREATE"         : "Create",
+    "CANCEL"         : "Cancel",
+    "ITEMS"          : "Items",
+    "TOGGLE"         : "Toggle",
+    "COLUMNS"        : "Columns",
+    "CONFIRM"        : "Confirm",
+    "SUBMIT"         : "Submit",
+    "RESET_FORM"     : "Reset Form",
     "SAVE_SELECTION" : "Save Selection"
   },
 
   "FISCAL_YEAR" : {
     "TITLE"                 : "Fiscal Year",
     "MANAGEMENT"            : "Management",
+    "RECORDS"                 : "Fiscal Year Records",
     "NEW"                   : "New Fiscal Year",
     "DESC"                  : "Year Description",
     "START_MONTH"           : "Start Month",
@@ -177,10 +178,10 @@
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
-    "PASSWORD"      : "Password",
+    "PASSWORD"       : "Password",
     "ID"             : "ID",
-    "USER_NAME"       : "User Name",
-    "LAST_NAME"     : "Last Name",
+    "USER_NAME"      : "User Name",
+    "LAST_NAME"      : "Last Name",
     "GROUP"          : "Group",
     "INVOICE_DATE"   : "Invoice Date",
     "TOTAL"          : "Total",
@@ -240,6 +241,7 @@
 
   "PATIENT_REG" : {
     "TITLE"                    : "Patient Registration",
+    "PATIENT_DETAILS"          : "Patient Details",
     "CREATE_DEBTOR_GROUP"      : "Create Debitor Group",
     "VIEW_PATIENT_RECORDS"     : "View Patient Records",
     "PATIENT_GROUP_ASSIGNMENT" : "Patient Group Assignment",
@@ -321,7 +323,7 @@
     "CANCEL" : "Cancel",
     "PAY" : "Pay Invoices",
     "AUTHORIZED_BY" : "Authorized By",
-    "AUTHORIZE" : "Cancel",
+    "AUTHORIZE" : "Authorize",
     "DETAILS" : "Invoice Details"
   },
 
@@ -339,7 +341,8 @@
     "DELETE"         : "Delete",
     "RESET_FORM"     : "Reset Form",
     "CANCEL"         : "Cancel",
-    "OK"             : "Ok"
+    "OK"             : "Ok",
+    "CONTINUE"      : "Continue"
   },
 
   "CASH" : {
