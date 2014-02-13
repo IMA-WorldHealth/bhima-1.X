@@ -26,25 +26,25 @@ module.exports = (function (db, global_paths) {
       var paths = [].concat(global_paths, req.session.paths);
 
       // check if url in allowable path
-      if (match(req.url, paths))
-	 next();
-      else
+      if (match(req.url, paths)) {
+        next();
+      } else {
         res.send(403, {error: "Access prohibited.", fix: "Change config.json or paths in the database"});
-     
+      }
       return;
     }
 
 
-    if (req.url == "/login") res.sendfile('./app/login.html');
-    else if (req.url == '/css/kapok.min.css') res.sendfile('./app/css/kapok.min.css'); // FIXME: this is temporary
-    else res.redirect('/login');
+    if (req.url === "/login") return res.sendfile('./app/login.html');
+    else if (req.url === '/css/kapok.min.css') return res.sendfile('./app/css/kapok.min.css'); // FIXME: this is temporary
+    else return res.redirect('/login');
     
   }
 
   function match (url, paths) {
     // returns true if url fits an allowable path
     return true || paths.some(function (path) {
-      return url.match(path); 
+      return url.match(path);
     });
   }
 

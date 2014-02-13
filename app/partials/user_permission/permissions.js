@@ -22,13 +22,10 @@ angular.module('kpk.controllers')
         stores = {},
         models = $scope.models = {};
 
-   
-
     imports.units = {
       tables : {'unit' : { columns : ['id', 'name', 'description', 'has_children', 'parent'] }},
       where : ['unit.id<>0']
     };
-
 
     imports.users = {
       tables: {'user': {columns:['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']}}
@@ -59,6 +56,8 @@ angular.module('kpk.controllers')
         var data = $scope.add;
         data.id = res.data.insertId;
         stores.users.post(data);
+        $scope.add = {};
+        $scope.action = '';
       }, function (err) {
         messenger.danger("Error:" + JSON.stringify(err));
       });
@@ -79,6 +78,7 @@ angular.module('kpk.controllers')
         messenger.info('Successfully edited user : ' + res.data.insertId);
         stores.users.put($scope.edit);
         $scope.editInfo($scope.edit);
+        $scope.action = '';
       }, function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
       });
@@ -107,6 +107,9 @@ angular.module('kpk.controllers')
         .then(function (result) {
           messenger.success('Deleted user id: ' + user.id);
           stores.users.remove(user.id);
+          //  Check if we are looking at a users permissions,
+          //  or editing them, we should clear our view
+          $scope.action = $scope.action !== 'add' ? '' : $scope.action;
         }, function (err) {
           messenger.danger('Error:' + JSON.stringify(err));
         });
@@ -193,7 +196,17 @@ angular.module('kpk.controllers')
       });
     }
 
+    $scope.toggleParents = function toggleParents (unit) {
+      var parent = stores.units.get(unit.parent);
+      if (!parent) { return; }
+      parent.checked = true;
+      if (angular.isDefined(parent.parent)) {
+        $scope.toggleParents(parent);
+      }
+    };
+
     $scope.toggleChildren = function toggleChildren (unit) {
+      $scope.toggleParents(unit); // traverse upwards, toggling parents
       $scope.permission.permission_change = true;
       unit.children.forEach(function (child) {
         child.checked = unit.checked;
