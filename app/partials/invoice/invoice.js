@@ -1,5 +1,5 @@
 //TODO Debtor table currently has no personal information - this strictly ties debtors to patients (or some existing table) - a reverse lookup from debtor/ creditor ID to recipient is needed
-angular.module('kpk.controllers').controller('invoice', function($scope, $routeParams, $q, validate, messenger) { 
+angular.module('kpk.controllers').controller('invoice', function($scope, $routeParams, $q, validate, messenger, exchange, appstate) { 
   var dependencies = {}, origin = $scope.origin = $routeParams.originId, invoiceId = $routeParams.invoiceId, process = {}, timestamp = $scope.timestamp = new Date();
   if(!(origin && invoiceId)) throw new Error('Invalid parameters');
   
@@ -22,6 +22,21 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       where: ['sale.id=' + invoiceId]
     }
   };
+
+  dependencies.currency = {
+    query : {
+      tables : {
+        'currency_account' : {
+          columns : ['id', 'enterprise_id', 'currency_id', 'cash_account', 'bank_account']
+        },
+        'currency' : {
+          columns : ['symbol']
+        }
+      },
+      join : ['currency_account.currency_id=currency.id'],
+    }
+  };
+
  
   // dependencies.invoice.query.tables[origin] = {
   dependencies.invoice.query.tables['sale'] = {
@@ -54,8 +69,11 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     //required: true, // FIXME/TODO : why was this required? It breaks things on @jniles machine.
     identifier: 'inv_po_id'
   };
-  
-  process[origin](invoiceId);
+ 
+  appstate.register('enterprise', function (enterprise) { 
+    $scope.enterprise = enterprise;
+    process[origin](invoiceId);
+  });
   
   function processCash(requestId) { 
     dependencies.cash = { 
@@ -123,6 +141,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     var cash_data = model.cash.data[0];
     dependencies.invoice.query.where = ["sale.id=" + cash_data.invoice_id];
     dependencies.invoiceItem.query.where = ["sale_item.sale_id=" + cash_data.invoice_id];
+  
     processSale();
   }
   
@@ -159,22 +178,47 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   }
 
   function invoice(model) { 
-    
+    var routeCurrencyId; 
     //Expose data to template
     $scope.model = model;
+   
+    $scope.session = {};
+    $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
+    routeCurrencyId = $scope.session.currentCurrency.currency_id;
     
-    console.log(model);
     //Select invoice and recipient - validate should assert these only have one item
     $scope.invoice = $scope.model.invoice.data[0];
     $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
+    
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
-   
-    if(model.cash) $scope.cashTransaction  = $scope.model.cash.data[0];
-  } 
+    
 
+    //FIXME hacks for meeting
+    if(model.cash) { 
+      $scope.cashTransaction  = $scope.model.cash.data[0];
+      routeCurrencyId = $scope.cashTransaction.currency_id;   
+    }
+
+    updateCost(routeCurrencyId);
+  } 
   function patientReceipt(model) { $scope.model = model; $scope.recipient = $scope.model.recipient.data[0]; $scope.location = $scope.model.location.data[0]; }
-  
   //TODO Follows the process credit hack
   function creditInvoice(model) { $scope.model = model; $scope.note = $scope.model.credit.data[0]; $scope.location = $scope.model.location.data[0]}
+
+  function updateCost(currency_id) { 
+    console.log('updating cost');
+    $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
+    console.log('cid', currency_id);
+    $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
+    console.log('ledger', $scope.model);
+
+    $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
+
+    $scope.model.invoiceItem.data.forEach(function (item) { 
+      item.localeCost = exchange((item.credit - item.debit), currency_id);
+    });
+  }
+
+  $scope.updateCost = updateCost;
 });
