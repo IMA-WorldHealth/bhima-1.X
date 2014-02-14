@@ -140,15 +140,6 @@ angular.module('kpk.controllers')
       throw error;
     }
     
-    //Watch changes in application $location, cache these in the user's session
-    $scope.$on('$locationChangeStart', function(e, n_url) {
-      
-      //TODO Tree is not currently updated on navigation - user can be presented with a different screen than selected node
-      //Split url target - needs to be more general to allow for multiple routes?
-      var target = n_url.split('/#')[1];
-      if(target) cache.put("location", {path: target});
-    });
-
     function mysqlDate (date) {
       return (date || new Date()).toISOString().slice(0,10);
     }
