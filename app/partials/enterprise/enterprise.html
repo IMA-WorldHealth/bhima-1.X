@@ -1,11 +1,11 @@
 <header class="hidden-print">
-  <span class="capital">{{'ENTERPRISE.TITLE' | translate}}</span>
+  <span>{{'ENTERPRISE.TITLE' | translate}}</span>
 </header>
 
 <section class="top-nav hidden-print">
-  <button class="capital btn btn-default btn-sm" ng-click="newEnterprise()"><i class="glyphicon glyphicon-file"></i> {{ 'ENTERPRISE.NEW' | translate }}</button>
+  <button class="btn btn-default btn-sm" ng-click="newEnterprise()"><i class="glyphicon glyphicon-file"></i> {{ 'ENTERPRISE.NEW' | translate }}</button>
   <div class="pull-right">
-    <button class="capital btn btn-default btn-sm" ng-click="print()"><i class="glyphicon glyphicon-print"></i> {{'UTIL.PRINT' | translate}}</button>
+    <button class="btn btn-default btn-sm" ng-click="print()"><i class="glyphicon glyphicon-print"></i> {{'UTIL.PRINT' | translate}}</button>
   </div>
 </section>
 
@@ -82,32 +82,32 @@
           </div>
 
           <div ng-switch-when="new">
-            <form>
+            <form novalidate name="new">
               
               <fieldset>
                 <legend>{{ 'ENTERPRISE.CONFIGURATION' | translate }}</legend>
                 <div class="form-group">
-                  <label for="kpk-enterprise-name" class="capital">{{ 'ENTERPRISE.NAME' | translate }} : </label>
+                  <label for="kpk-enterprise-name">{{ 'ENTERPRISE.NAME' | translate }} </label>
                   <input type="text" class="form-kapok" name="kpk-enterprise-name" id="kpk-enterprise-name" ng-model="add.name">
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-abbr" class="capital">{{ 'ENTERPRISE.ABBREVIATION' | translate }} : </label>
+                  <label for="kpk-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
                   <input type="text" class="form-kapok" name="kpk-enterprise-abbr" id="kpk-enterprise-abbr" ng-model="add.abbr">
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-email" class="capital">{{ 'ENTERPRISE.EMAIL' | translate }} : </label>
-                  <input type="text" class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="add.email">
+                  <label for="kpk-enterprise-email">{{ 'ENTERPRISE.EMAIL' | translate }} </label>
+                  <input type="email" class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="add.email">
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-phone" class="capital">{{ 'ENTERPRISE.PHONE' | translate }} : </label>
-                  <input type="text" class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="add.phone">
+                  <label for="kpk-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
+                  <input type="tel" class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="add.phone">
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-location" class="capital">{{ 'ENTERPRISE.LOCATION' | translate }} : </label>
+                  <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
                   <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
                     <option value="" disabled="disabled">-- Select a Location --</option>
                   </select>
@@ -126,40 +126,40 @@
 
               </fieldset>
 
-              <input type="submit" class="btn btn-sm btn-success" ng-click="saveNew()" value="Save">
-              <input type="reset" class="btn btn-sm btn-default" ng-click="resetNew()" value="Reset Form">
+              <input type="submit" class="btn btn-sm btn-success" ng-click="saveNew()" value="{{ 'FORM.SAVE' | translate }}" ng-disabled="new.$invalid">
+              <input type="reset" class="btn btn-sm btn-default" ng-click="resetNew()" value="{{ 'FORM.RESET_FORM' | translate }}">
 
             </form>
           </div>
 
           <div ng-switch-when="edit">
-            <form>
+            <form novalidate name="edit">
               
               <fieldset>
                 <legend>{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</legend>
                 <div class="form-group">
-                  <label for="kpk-enterprise-name" class="capital">{{ 'ENTERPRISE.NAME' | translate }} : </label>
-                  <input class="form-kapok" name="kpk-enterprise-name" id="kpk-enterprise-name" ng-model="edit.name">
+                  <label for="kpk-enterprise-name" class="required">{{ 'ENTERPRISE.NAME' | translate }} </label>
+                  <input class="form-kapok" name="kpk-enterprise-name" id="kpk-enterprise-name" ng-model="edit.name" required>
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-abbr" class="capital">{{ 'ENTERPRISE.ABBREVIATION' | translate }} : </label>
+                  <label for="kpk-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
                   <input class="form-kapok" name="kpk-enterprise-abbr" id="kpk-enterprise-abbr" ng-model="edit.abbr">
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-email" class="capital">{{ 'ENTERPRISE.EMAIL' | translate }} : </label>
-                  <input class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="edit.email">
+                  <label for="kpk-enterprise-email" >{{ 'ENTERPRISE.EMAIL' | translate }} </label>
+                  <input type="email" class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="edit.email">
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-phone" class="capital">{{ 'ENTERPRISE.PHONE' | translate }} : </label>
-                  <input class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="edit.phone">
+                  <label for="kpk-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
+                  <input type="tel" class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="edit.phone">
                 </div>
 
                 <div class="form-group">
-                  <label for="kpk-enterprise-location" class="capital">{{ 'ENTERPRISE.LOCATION' | translate }} : </label>
-                  <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
+                  <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
+                  <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.id as fLocation(loc) for loc in location" required>
                     <option value="" disabled="disabled">-- Select a Location --</option>
                   </select>
                 </div>
@@ -168,7 +168,7 @@
               <fieldset> 
                 <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend> 
 
-                <input type="button" class="btn btn-sm btn-default" value="Manage Cash Accounts" ng-click="manageAccounts()">
+                <input type="button" class="btn btn-sm btn-default" value="{{ 'ENTERPRISE.MANAGE_CASH_ACCOUNTS' | translate }}" ng-click="manageAccounts()">
 
                 <div class="radio" ng-repeat="currency in currency.data">
                   <label>
@@ -179,8 +179,8 @@
 
               </fieldset>
 
-              <input type="submit" class="btn btn-sm btn-success" ng-click="saveEdit()" value="Save Changes">
-              <input type="button" class="btn btn-sm btn-default" ng-click="resetEdit()" value="Reset Form">
+              <input type="submit" class="btn btn-sm btn-success" ng-click="saveEdit()" value="{{ 'FORM.SAVE_CHANGES' | translate }}" ng-disabled="edit.$invalid">
+              <input type="button" class="btn btn-sm btn-default" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
 
             </form>
           </div>
@@ -211,21 +211,21 @@
                 <legend>{{ 'ENTERPRISE.ADD_CURRENCY_ACCOUNT' | translate }}</legend>
 
                 <div class="form-group">
-                  <label class="capital">{{ 'ENTERPRISE.CURRENCY' | translate }}</label>
+                  <label>{{ 'ENTERPRISE.CURRENCY' | translate }}</label>
                   <select class="form-kapok" ng-model="newAccount.currency_id" ng-options="currency.id as currency.name+' ('+currency.symbol+')' for currency in currency.data">
                     <option value="">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
                   </select>
                 </div>
 
                 <div class="form-group">
-                  <label class="capital">{{ 'ENTERPRISE.CASH_ACCOUNT' | translate }}</label>
+                  <label >{{ 'ENTERPRISE.CASH_ACCOUNT' | translate }}</label>
                   <select class="form-kapok" ng-model="newAccount.cash_account" ng-options="account.id as account.account_number+' -- '+account.account_txt for account in account.data">
                     <option value="">-- {{ 'SELECT.ACCOUNT' | translate }} --</option>
                   </select>
                 </div>
 
                 <div class="form-group">
-                  <label class="capital">{{ 'ENTERPRISE.BANK_ACCOUNT' | translate }}</label>
+                  <label >{{ 'ENTERPRISE.BANK_ACCOUNT' | translate }}</label>
                   <select class="form-kapok" ng-model="newAccount.bank_account" ng-options="account.id as account.account_number+' -- '+account.account_txt for account in account.data">
                     <option value="">-- {{ 'SELECT.ACCOUNT' | translate }} --</option>
                   </select>

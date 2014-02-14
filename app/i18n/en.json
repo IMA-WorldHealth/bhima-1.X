@@ -100,7 +100,7 @@
     "NAME"                     : "Name",
     "ABBREVIATION"             : "Abbreviation",
     "EMAIL"                    : "Email",
-    "PHONE"                    : "Location",
+    "PHONE"                    : "Phone",
     "LOCATION_ID"              : "Location ID",
     "CURRENCY"                 : "Currency",
     "EXISTING_ENTERPRISES"     : "Existing Enterprises",
@@ -116,7 +116,8 @@
     "ACTIONS"                  : "Actions",
     "CASH_ACCOUNT"             : "Cash Account",
     "BANK_ACCOUNT"             : "Bank Account",
-    "ADD_CURRENCY_ACCOUNT"     : "Add Currencied Account"
+    "ADD_CURRENCY_ACCOUNT"     : "Add Currencied Account",
+    "MANAGE_CASH_ACCOUNTS"     : "Manage Cash Accounts"
   },
 
   "SELECT" : {
