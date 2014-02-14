@@ -2,6 +2,8 @@
 
 ##Enterprises
 |Design |
+|-------|
+
 [] - Enterprises must share data (i.e Clinic and hospital using the same chart
 of accounts)
 
@@ -9,6 +11,8 @@ of accounts)
 
 ##Posting Journal
 |Features |Bugs |Refactor |
+|---------|-----|---------|
+
 [] - Super User - delete lines/ edit any cell, altering the balance of any 
 transaction
 
@@ -27,12 +31,16 @@ print and export to CSV and Excel
 
 ##Patient Registration 
 |Features |
+|---------|
+
 [] - Optionally store picture of patient along with other information, this can
 then be used during patient lookup for verification and should mitigate
 duplication of patient records
 
 ##Chart of Accounts
 |Design |Bugs |
+|-------|-----|
+
 [] - Accounts parent relationships should reference account_id not
 account_number
 
@@ -41,6 +49,8 @@ descriptions
 
 ##Patient Groups
 |Design |Bugs |
+|-------|-----|
+
 [x] - Privacy issues with groups, should not be known to everyone (cannot be 
 assigned at patient registration)
 
@@ -49,6 +59,8 @@ doctor? Are there multiple levels privacy/ value?
 
 ##Exchange Rates
 |Features |
+|---------|
+
 [] - Exchange rate should be defined for $100 to resolve rounding issues
 
 [] - Enterprise should gain and lose money on exchange (exchange for current 
@@ -57,6 +69,8 @@ value)
 
 ##Reports
 |Features |Bugs |
+|---------|-----|
+
 [] - Certain reports must be filterable my specific accounts/ time periods
 
 [] - All reports must be print friendly (preferably using a similar style)
@@ -68,6 +82,8 @@ period.
 
 ##Sales 
 |Features |Design |
+|---------|-------|
+
 [] - Assembly sale items - multiple lines that hit multiple accounts (i.e 
 consulation consists of consulting (7.50) and a fiche (0.50)
   [] - John Clark - inventory management
@@ -76,10 +92,14 @@ consulation consists of consulting (7.50) and a fiche (0.50)
 
 ##Receipts 
 |Features | 
+|---------|
+
 [] - Branding/logo and name of hospital on all receipts / reports
 
 ##Purcahse orders and inventory
 |Bugs |
+|-----|
+
 [] - Basic purcahse order functionality, system ability to move money from cash
 to assets (also see stock consumption)
 
@@ -87,9 +107,12 @@ to assets (also see stock consumption)
 
 ##Application Branding 
 |Features |
+|---------|
+
 [] - Logo, name and fonts
 
 [] - ukaid branding - paid for by the people of Britain
 
 ##MySQL Backup 
 |Features | 
+|---------|
