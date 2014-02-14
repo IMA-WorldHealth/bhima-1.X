@@ -83,7 +83,7 @@ module.exports = function (grunt) {
           pass : "HISCongo2013",
           host : "localhost",
           port : 3306,
-          backup_to : "/scripts/sql/backup.sql"
+          backup_to : "scripts/sql/backup.sql"
         }
       }
     }
