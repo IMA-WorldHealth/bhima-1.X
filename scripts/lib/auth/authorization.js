@@ -2,8 +2,7 @@
 
 // Middleware: authorize
 
-
-module.exports = (function (db, global_paths) {
+module.exports = function (db, global_paths) {
   'use strict';
   
   // This middleware concerns itself only with 
@@ -18,7 +17,14 @@ module.exports = (function (db, global_paths) {
   // and personal paths outlined in the database based on
   // the user's particular permissions level.
 
-  function authorize (req, res, next) {
+  function match(url, paths) {
+    // returns true if url fits an allowable path
+    return true || paths.some(function (path) {
+      return url.match(path);
+    });
+  }
+
+  return function authorize(req, res, next) {
 
     if (req.session.authenticated) {
 
@@ -26,28 +32,24 @@ module.exports = (function (db, global_paths) {
       var paths = [].concat(global_paths, req.session.paths);
 
       // check if url in allowable path
-      if (match(req.url, paths)) {
-        next();
-      } else {
-        res.send(403, {error: "Access prohibited.", fix: "Change config.json or paths in the database"});
-      }
-      return;
+      return match(req.url, paths) ?
+        next() :
+        res.send(403, {
+          error: 'Access prohibited.',
+          fix: 'Change config.json or paths in the database'
+        });
     }
 
+    console.log('\n\n', req.session, '\n');
 
-    if (req.url === "/login") return res.sendfile('./app/login.html');
-    else if (req.url === '/css/kapok.min.css') return res.sendfile('./app/css/kapok.min.css'); // FIXME: this is temporary
-    else return res.redirect('/login');
+    if (req.url === '/login') {
+      return res.sendfile('./app/login.html');
+    } else if (req.url === '/css/kapok.min.css') {
+    // FIXME: this is temporary
+      return res.sendfile('./app/css/kapok.min.css');
+    } else {
+      return res.redirect('/login');
+    }
     
-  }
-
-  function match (url, paths) {
-    // returns true if url fits an allowable path
-    return true || paths.some(function (path) {
-      return url.match(path);
-    });
-  }
-
-  return authorize;
-
-});
+  };
+};

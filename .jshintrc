@@ -111,7 +111,10 @@
  
     "maxerr"        : 100,      // Maximum errors before stopping.
     "predef"        : [         // Extra globals.
-        "angular"
+        "angular",
+        "process",
+        "require",
+        "module"
         //"exampleVar",
         //"anotherCoolGlobal",
         //"iLoveDouglas"
