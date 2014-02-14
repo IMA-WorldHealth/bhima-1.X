@@ -44,7 +44,6 @@ app.configure(function () {
 });
 
 app.get('/', function (req, res, next) {
-  console.log('\n', req.session, '\n');
   // This is to preserve the /#/ path in the url
   res.sendfile('/index.html');
 });
@@ -208,7 +207,7 @@ app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) {
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
-  }
+  };
 
 });
 
@@ -228,7 +227,7 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
-  }
+  };
 
 });
 
@@ -248,11 +247,9 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
-  }
+  };
 
 });
-
-
 
 app.get('/tree', function (req, res, next) {
   tree.load(req.session.user_id)
@@ -262,7 +259,6 @@ app.get('/tree', function (req, res, next) {
     res.send(301, err);
   });
 });
-
 
 app.get('/price_list/:id', function (req, res, next) {
   var sql =
@@ -284,20 +280,29 @@ app.get('/price_list/:id', function (req, res, next) {
 app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
 
-  var sql = "SELECT `village`.`id` as `id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
-            "FROM `village`, `sector`, `province`, `country` " +
-            "WHERE village.sector_id = sector.id AND sector.province_id = province.id AND province.country_id=country.id " + specifyVillage + ";";
+  var sql =
+    'SELECT `village`.`id` as `id`,  `village`.`name` as `village`, ' +
+      '`sector`.`name` as `sector`, `province`.`name` as `province`, ' +
+      '`country`.`country_en` as `country` ' +
+    'FROM `village`, `sector`, `province`, `country` ' +
+    'WHERE village.sector_id = sector.id AND ' +
+      'sector.province_id = province.id AND ' +
+      'province.country_id=country.id ' + specifyVillage + ';';
+
   db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(rows);
   });
 });
 
 app.get('/village/', function (req, res, next) {
 
-  var sql = "SELECT `village`.`id` as `id`,  `village`.`name` as `village`, `sector`.`id` "+
-            "as `sector_id`, `sector`.`name` as `sector` FROM `village`, `sector` "+
-            "WHERE village.`sector_id` = sector.id";
+  var sql =
+    'SELECT `village`.`id` AS `id`,  `village`.`name` AS `village`, ' +
+    '`sector`.`id` AS `sector_id`, `sector`.`name` as `sector` ' +
+    'FROM `village`, `sector` ' +
+    'WHERE village.`sector_id` = sector.id';
+
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send(rows);

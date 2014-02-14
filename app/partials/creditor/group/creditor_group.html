@@ -71,7 +71,9 @@
               <div class="col-xs-9">
                 <select class="form-kapok" ng-model="new.account_id" required> 
                   <option value="" disabled="disabled">--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
-                  <option ng-repeat="account in accounts.data" ng-disabled="account.type=='title'" value="{{account.id}}">{{ account.account_number + ' -- ' + account.account_txt }}</option>
+                  <option ng-repeat="account in accounts.data | orderBy:'account_number'" ng-disabled="account.type=='title'" value="{{account.id}}">
+                  {{ account.account_number + ' -- ' + account.account_txt }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -93,7 +95,7 @@
         <form class="form-horizontal" name="editGroup" novalidate>
 
           <fieldset>
-            <legend>{{ "CREDITOR_GRP.DETAILS | translate "}}</legend>
+            <legend>{{ "CREDITOR_GRP.DETAILS" | translate }}</legend>
 
             <div class="form-group">
               <label class="col-xs-3 control-label">{{ "COLUMNS.GROUP_NAME" | translate }}:</label>
@@ -107,7 +109,9 @@
               <div class="col-xs-9">
                 <select class="form-kapok" ng-model="new.account_id" required> 
                   <option value="" disabled="disabled">--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
-                  <option ng-repeat="account in accounts.data" ng-disabled="account.type=='title'" value="{{account.id}}">{{ account.account_number + ' -- ' + account.account_txt }}</option>
+                  <option ng-repeat="account in accounts.data | orderBy:'account_number'" ng-disabled="account.type=='title'" value="{{account.id}}">
+                    {{ account.account_number + ' -- ' + account.account_txt }}
+                  </option>
                 </select>
               </div>
             </div>
