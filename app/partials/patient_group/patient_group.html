@@ -33,7 +33,7 @@
               </button>
             </td>
             <td>
-              <button class="btn btn-sm btn-default" ng-click="remove(grp)">
+              <button class="btn btn-sm btn-danger" ng-click="remove(grp)">
                 <i class="glyphicon glyphicon-trash"></i>
               </button>
             </td>
@@ -46,7 +46,7 @@
   <div class="col-xs-6" ng-switch="action">
     <div ng-switch-default>
       <div class="alert alert-info">
-        <b>{{ "PATIENT_GRP.TITLE" | translate }}</b>
+        <h4>{{ "PATIENT_GRP.TITLE" | translate }}</h4>
         <p>{{ "PATIENT_GRP.HELP_TXT_1" | translate }}.</p>
       </div>
     </div>

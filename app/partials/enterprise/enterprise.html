@@ -82,7 +82,7 @@
           </div>
 
           <div ng-switch-when="new">
-            <form novalidate name="new">
+            <form novalidate name="newForm">
               
               <fieldset>
                 <legend>{{ 'ENTERPRISE.CONFIGURATION' | translate }}</legend>
@@ -126,14 +126,14 @@
 
               </fieldset>
 
-              <input type="submit" class="btn btn-sm btn-success" ng-click="saveNew()" value="{{ 'FORM.SAVE' | translate }}" ng-disabled="new.$invalid">
+              <input type="submit" class="btn btn-sm btn-success" ng-click="saveNew()" value="{{ 'FORM.SAVE' | translate }}" ng-disabled="newForm.$invalid">
               <input type="reset" class="btn btn-sm btn-default" ng-click="resetNew()" value="{{ 'FORM.RESET_FORM' | translate }}">
 
             </form>
           </div>
 
           <div ng-switch-when="edit">
-            <form novalidate name="edit">
+            <form novalidate name="editForm">
               
               <fieldset>
                 <legend>{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</legend>
@@ -179,7 +179,7 @@
 
               </fieldset>
 
-              <input type="submit" class="btn btn-sm btn-success" ng-click="saveEdit()" value="{{ 'FORM.SAVE_CHANGES' | translate }}" ng-disabled="edit.$invalid">
+              <input type="submit" class="btn btn-sm btn-success" ng-click="saveEdit()" value="{{ 'FORM.SAVE_CHANGES' | translate }}" ng-disabled="editForm.$invalid">
               <input type="button" class="btn btn-sm btn-default" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
 
             </form>

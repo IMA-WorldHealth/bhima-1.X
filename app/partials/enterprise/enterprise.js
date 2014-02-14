@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'connect',
   'validate',
   'messenger',
-  function ($scope, $q, $window, connect, validate, messenger) {
+  'appstate',
+  function ($scope, $q, $window, connect, validate, messenger, appstate) {
     var dependencies = {}, model={};
 
     dependencies.enterprise = {
@@ -30,7 +31,10 @@ angular.module('kpk.controllers')
         }
       }
     };
-   
+
+    appstate.register('enterprise', function (enterprise) {
+      $scope.globalEnterprise = enterprise;
+    });
    
     function initialize (models) {
       model.dependences = models[0];
@@ -65,6 +69,13 @@ angular.module('kpk.controllers')
       .then(function (res) {
         $scope.enterprise.put(data);
         $scope.action = '';
+
+        // we should reset the global enterprise variable
+        // if we have updated the global enterprise data
+        if (data.id === $scope.globalEnterprise.id) {
+          appstate.set('enterprise', $scope.enterprise.get(data.id));
+        }
+
       }, function (err) {
         messenger.danger('Error updating enterprise ' + data.id + ':' + JSON.stringify(err));
       });

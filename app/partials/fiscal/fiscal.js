@@ -1,8 +1,8 @@
-angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $modal, connect, appstate, messenger, validate) { 
+angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $modal, connect, appstate, messenger, validate) {
   var dependencies = {};
 
-  dependencies.fiscal = { 
-    // required: true, 
+  dependencies.fiscal = {
+    // required: true,
     query : {
       tables : {
         fiscal_year : {
@@ -11,49 +11,49 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
       }
     }
   };
- 
+
   //@sfount - remove variables on scope
   $scope.new_model = {'year' : 'true'};
 
   appstate.register('enterprise', buildFiscalQuery);
 
-  function buildFiscalQuery(enterprise) { 
+  function buildFiscalQuery(enterprise) {
     var enterpriseId = $scope.enterpriseId = enterprise.id;
     dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterpriseId];
     validate.refresh(dependencies).then(fiscal);
   }
 
-  function fiscal(model) { 
+  function fiscal(model) {
     $scope.model = model;
   }
-  
+ 
   $scope.select = function(fiscal_id) {
-    if($scope.model.fiscal) { 
+    if($scope.model.fiscal) {
       fetchPeriods(fiscal_id);
       $scope.selected = $scope.model.fiscal.get(fiscal_id);
       $scope.active = "update";
-    } 
+    }
   };
 
-  $scope.delete = function(fiscal_id) { 
+  $scope.delete = function(fiscal_id) {
     //validate deletion before performing
     $scope.active = "select";
     $scope.selected = null;
     $scope.model.fiscal.delete(fiscal_id);
   };
 
-  $scope.isSelected = function() { 
+  $scope.isSelected = function() {
     return !!($scope.selected);
   };
 
   $scope.isFullYear = function() {
-    if($scope.new_model.year == "true") return true;
+    if($scope.new_model.year === "true") return true;
     return false;
   };
 
   $scope.$watch('new_model.start', function(oval, nval) {
     if($scope.isFullYear()) updateEnd();
-  }); 
+  });
   function updateEnd() {
     var s = $scope.new_model.start;
     if(s) {
@@ -65,7 +65,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
     }
   }
 
-  $scope.createFiscal = function() { 
+  $scope.createFiscal = function() {
     //Do some session checking to see if any values need to be saved/ flushed to server
     $scope.active = "create";
     $scope.selected = null;
@@ -74,7 +74,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
 
   };
 
-  $scope.getFiscalStart = function() { 
+  $scope.getFiscalStart = function() {
     if($scope.period_model) {
       var t = $scope.period_model[0];
       if(t) return t.period_start;
@@ -82,7 +82,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
   };
 
   $scope.getFiscalEnd = function() {
-    if($scope.period_model) { 
+    if($scope.period_model) {
       var l = $scope.period_model;
       var t = l[l.length-1];
       if(t) return t.period_stop;
@@ -91,10 +91,10 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
 
 
   $scope.generateFiscal = function generateFiscal(model) {
-    
+   
     messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
     connect.basicGet('/fiscal/' + $scope.enterpriseId  + '/' + model.start + '/' + model.end + '/' + model.note)
-    .then(function(res) { 
+    .then(function(res) {
 
       var instance = $modal.open({
         templateUrl: 'createOpeningBalanceModal.html',
@@ -115,7 +115,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
             where : ['account.enterprise_id='+enterpriseId]
           })
           .then(function (model) {
-            
+           
             model.forEach(function (row) {
               row.account_number = "" + row.account_number; // for sorting to work
             });
@@ -126,15 +126,8 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
 
           $scope.reset = function () {
             $scope.accounts.forEach(function (row) {
-              row.credit = 0; 
+              row.credit = 0;
               row.debit = 0;
-            });
-          };
-
-          $scope.defaults = function () {
-            $scope.accounts.forEach(function (row) {
-              row.credit = Number((Math.random() * 10000).toFixed(2)); 
-              row.debit = Number((Math.random() * 10000).toFixed(2));
             });
           };
 
@@ -142,7 +135,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
 
             var data = $scope.accounts
             .filter(function (row) {
-              return row.type != "title";
+              return row.type !== "title";
             })
             .map(function (row) {
               var o = {};
@@ -154,7 +147,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
               o.enterprise_id = enterpriseId;
               return o;
             });
-            
+           
             connect.basicPut('period_total', [data])
             .then(function (res) {
               $modalInstance.close();
@@ -180,17 +173,17 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
       instance.result.then(function () {
         //Reset model
         $scope.new_model = {'year':'true'};
-        messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start}); 
-        
+        messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start});
+       
         // if(!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});
-        
+       
         //TODO Hack
         buildFiscalQuery({id: $scope.enterpriseId});
         $scope.active = "select";
       }, function (err) {
-        messenger.danger('Error:' + JSON.stringify(err)); 
+        messenger.danger('Error:' + JSON.stringify(err));
       });
-    }, function(err) { 
+    }, function(err) {
       messenger.push({type: 'danger', msg:'Fiscal Year request failed, server returned [' + err.data.code + ']'});
     });
   };
@@ -198,7 +191,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
   $scope.viewOpeningBalance =  function () {
     var id = $scope.selected.id;
     connect.fetch({
-      tables : { 
+      tables : {
         'period_total' : {
           columns : ['account_id', 'debit', 'credit', 'locked']
         },
@@ -213,11 +206,11 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
         }
       },
       join : ['period_total.account_id=account.id', 'period_total.period_id=period.id', 'account.account_type_id=account_type.id'],
-      where : ['period_total.fiscal_year_id='+id, 'AND', 'period.period_number=0', 
+      where : ['period_total.fiscal_year_id='+id, 'AND', 'period.period_number=0',
         'AND', 'period_total.enterprise_id='+$scope.enterpriseId]
     })
     .then(function (res) {
-      if (!res.length) 
+      if (!res.length)
         return messenger.warning('No opening balances found for fiscal year');
 
       var instance = $modal.open({
@@ -237,7 +230,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
             return res;
           },
           fiscal : function () {
-            return $scope.selected; 
+            return $scope.selected;
           }
         }
       });
@@ -247,9 +240,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
       }, function () {
         console.log('Modal dismissed');
       });
-  
-      
-
+ 
     }, function (err) {
       messenger.danger('An error occured : ' + JSON.stringify(err));
     });

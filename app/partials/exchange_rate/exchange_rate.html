@@ -56,11 +56,11 @@
               <label class="control-label col-xs-3">
                 {{ currency.get(rate.foreign_currency_id).name }} Rate
               </label>
-              <div class="col-xs-1">
-                <p class="form-control-static"> 1  <b>::</b></p>
+              <div class="col-xs-2">
+                <p class="form-control-static"> 100  <b>::</b></p>
               </div>
               <div class="col-xs-4">
-                <p class="form-control-static" ng-bind-html="rate.rate | intlcurrency:rate.foreign_currency_id"></p>
+                <p class="form-control-static" ng-bind-html="rate.rate * 100 | intlcurrency:rate.foreign_currency_id"></p>
               </div>
             </div>
 
