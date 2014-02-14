@@ -89,6 +89,7 @@ module.exports = function (db) {
         res.clearCookie('connect.sid');
         res.redirect('/login');
       });
+      req.session = null; // see: http://expressjs.com/api.html#cookieSession
     });
   
   }

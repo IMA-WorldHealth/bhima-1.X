@@ -16,5 +16,5 @@ which messes up page refresh.
 #### Login/Logout
 [x] Error during /logout does not eliminate the session data.
 [x] Angular captures the logout request and throws internal errors.
-[ ] Login attempts after logout are captured by angular and throw internal errors.
+[x] Login attempts after logout are captured by angular and throw internal errors.
 [ ] Routes still loaded from config.json file.
