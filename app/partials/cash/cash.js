@@ -233,6 +233,8 @@ angular.module('kpk.controllers')
           };
         });
 
+      console.log('Sending records:', records);
+
       return connect.basicPut('cash_item', records);
     }
 
