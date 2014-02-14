@@ -72,6 +72,20 @@ module.exports = function (grunt) {
           'app/css/<%= pkg.name %>.min.css' : ['app/partials/**/*.css', 'app/partials/**/**/*.css', 'app/css/*.css', '!app/css/*.min.css', 'app/css/grid/*.css']
         }
       }
+    },
+    db_dump : {
+      
+      local : {
+        options : {
+          title : "developping DB",
+          database : "kpk",
+          user : "kpk",
+          pass : "HISCongo2013",
+          host : "localhost",
+          port : 3306,
+          backup_to : "/scripts/sql/backup.sql"
+        }
+      }
     }
   });
 
@@ -80,7 +94,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-mysql-dump');
 
   grunt.registerTask('build', ['jshint', 'concat']);
-  grunt.registerTask('default', [ 'cssmin', 'concat', 'watch']);
+  grunt.registerTask('default', [ 'cssmin', 'concat', 'db_dump', 'watch']);
 };
