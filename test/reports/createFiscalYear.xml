@@ -6,14 +6,18 @@
   
   <testsuite errors="0" failures="0" hostname="" id=""
     name="login" package="createFiscalYear" skipped="0" 
-    tests="3" time="" timestamp="">
+    tests="4" time="" timestamp="">
     
     
-      <testcase name="Element &lt;body&gt; was visible after 128 milliseconds.">
+      <testcase name="Element &lt;body&gt; was visible after 107 milliseconds.">
         
       </testcase>  
     
       <testcase name="Testing if element &lt;input[name=username]&gt; is visible.">
+        
+      </testcase>  
+    
+      <testcase name="Element &lt;div[id=kpk-tree]&gt; was visible after 75 milliseconds.">
         
       </testcase>  
     
@@ -41,7 +45,7 @@
         
       </testcase>  
     
-      <testcase name="Element &lt;button[id=&quot;resetBalance&quot;]&gt; was visible after 3854 milliseconds.">
+      <testcase name="Element &lt;button[id=&quot;resetBalance&quot;]&gt; was visible after 3198 milliseconds.">
         
       </testcase>  
     
@@ -49,7 +53,7 @@
         
       </testcase>  
     
-      <testcase name="Element &lt;[id=message]&gt; was visible after 46 milliseconds.">
+      <testcase name="Element &lt;[id=message]&gt; was visible after 106 milliseconds.">
         
       </testcase>  
     
@@ -62,8 +66,12 @@
   
   <testsuite errors="0" failures="0" hostname="" id=""
     name="logout" package="createFiscalYear" skipped="0" 
-    tests="0" time="" timestamp="">
+    tests="1" time="" timestamp="">
     
+    
+      <testcase name="Testing if the page title equals &quot;Login to BHIMA&quot;.">
+        
+      </testcase>  
     
     
     </testsuite>

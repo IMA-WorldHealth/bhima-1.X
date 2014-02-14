@@ -11,9 +11,9 @@ angular.module('kpk.controllers')
     //   enterprise, so do we need it or not?
     'use strict';
    
-    var MODULE_NAMESPACE = 'tree';
-    var cache = new AppCache(MODULE_NAMESPACE);
-    var collapsed_model = [];
+    var moduleNamespace = 'tree', applicationNamespace = 'application';
+    var cache = new AppCache(moduleNamespace), applicationCache = new AppCache(applicationNamespace);
+    var originLocation, collapsed_model = [];
 
     $scope.treeData = [];
 
@@ -22,6 +22,7 @@ angular.module('kpk.controllers')
       .then(function(res) {
         collapsed_model = res;
         formatElementGroup($scope.treeData);
+        selectTreeNode($scope.treeData, originLocation);
       });
     }
 
@@ -39,12 +40,34 @@ angular.module('kpk.controllers')
     }
    
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
+      console.log('updating');
       if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
         var path = $scope.navtree.currentNode.p_url;
         if (path) $location.path(path);
       }
     }, true);
+  
+    $scope.$on('$locationChangeStart', function(e, n_url) { 
+      var target = n_url.split('/#')[1];
+      
+      originLocation = target;
+      if(target) { 
+        applicationCache.put('location', {path: target});
+        selectTreeNode($scope.treeData, target);
+      }
+    });
 
+    function selectTreeNode(list, locationPath) { 
+      list.some(function (element) { 
+        var sanitiseElement = element.p_url.replace(/\//g, '');
+        var sanitiseLocation = locationPath.replace(/\//g, '');
+    
+        if(sanitiseElement === sanitiseLocation) { 
+          $scope.navtree.selectNodeLabel(element);
+        }
+        if(element.has_children) selectTreeNode(element.children, locationPath);
+      });
+    }
 
     (function init () {
       connect.fetch('/tree')

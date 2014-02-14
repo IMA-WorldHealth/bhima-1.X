@@ -28,24 +28,19 @@ module.exports = {
     client.assert.visible('input[name=username]')
       .setValue('input[name=username]', credentials.username)
       .setValue('input[name=password]', credentials.password);
-
-    client.click('input[type=submit]');
-    client.pause(1000); 
     
-    client.assert.title('BHIMA');
+    client.click('input[type=submit]');
+    
+    client.waitForElementVisible('div[id=kpk-tree]', 1000) 
+      .assert.title('BHIMA');
 
   },
 
   'navigate' : function (client) { 
-
-    client.isVisible('i[name="Admin closed"]', function(result) { 
-      if(result.value) { 
-        client.click('i[name="Admin closed"]');
-      }
-    });
-
-    // client.verify.visible('span[name="' + testModule.link + '"]');
-    client.click('span[name="' + testModule.link + '"]')
+    
+    //Should check to see if admin branch is already expanded 
+    client.click('i[name="Admin"]')
+      .click('span[name="' + testModule.link + '"]')
       .pause(1000)
       .verify.containsText('header', 'Fiscal Year Management');
 
@@ -71,7 +66,7 @@ module.exports = {
   'logout' : function (client) { 
     client.click('a[name=logout]')
       .pause(1000)
-      //.assert.title('Login to BHIMA');
+      .assert.title('Login to BHIMA')
       .end();
   }
 };
