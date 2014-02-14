@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="createFiscalYear"
+             errors="0"
+             failures="0"
+             tests="undefined">
+  
+  <testsuite errors="0" failures="0" hostname="" id=""
+    name="login" package="createFiscalYear" skipped="0" 
+    tests="3" time="" timestamp="">
+    
+    
+      <testcase name="Element &lt;body&gt; was visible after 128 milliseconds.">
+        
+      </testcase>  
+    
+      <testcase name="Testing if element &lt;input[name=username]&gt; is visible.">
+        
+      </testcase>  
+    
+      <testcase name="Testing if the page title equals &quot;BHIMA&quot;.">
+        
+      </testcase>  
+    
+    
+    </testsuite>
+  
+  <testsuite errors="0" failures="0" hostname="" id=""
+    name="navigate" package="createFiscalYear" skipped="0" 
+    tests="7" time="" timestamp="">
+    
+    
+      <testcase name="Testing if element &lt;header&gt; contains text: Fiscal Year Management">
+        
+      </testcase>  
+    
+      <testcase name="Testing if element &lt;div[id=createPanel]&gt; is visible.">
+        
+      </testcase>  
+    
+      <testcase name="Testing if element &lt;button[id=submitFiscal]&gt; is visible.">
+        
+      </testcase>  
+    
+      <testcase name="Element &lt;button[id=&quot;resetBalance&quot;]&gt; was visible after 3854 milliseconds.">
+        
+      </testcase>  
+    
+      <testcase name="Testing if element &lt;button[id=&quot;submitBalance&quot;]&gt; is visible.">
+        
+      </testcase>  
+    
+      <testcase name="Element &lt;[id=message]&gt; was visible after 46 milliseconds.">
+        
+      </testcase>  
+    
+      <testcase name="Testing if element &lt;[id=message]&gt; has css class: alert-success">
+        
+      </testcase>  
+    
+    
+    </testsuite>
+  
+  <testsuite errors="0" failures="0" hostname="" id=""
+    name="logout" package="createFiscalYear" skipped="0" 
+    tests="0" time="" timestamp="">
+    
+    
+    
+    </testsuite>
+  
+</testsuites>

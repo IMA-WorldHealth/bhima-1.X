@@ -26,7 +26,7 @@
         <a ng-click="openSettings()" type="button" class="btn btn-default"> 
           <span class="glyphicon glyphicon-cog"></span>
         </a>
-        <a type="button" class="btn btn-default" ng-href="/logout">
+        <a name="logout" type="button" class="btn btn-default" ng-href="/logout">
           <span class="glyphicon glyphicon-log-out"></span>
         </a>
       </div>
@@ -40,7 +40,7 @@
   <!-- required for printing to work properly... -->
   <div class="hidden-print">
     <div ng-controller="message" class="message-box" id="msg-box">
-      <alert ng-repeat="alert in messages" type="alert.type" close="close($index)">
+      <alert id="message" ng-repeat="alert in messages" type="alert.type" close="close($index)">
         <span ng-bind-html="alert.msg"></span>
       </alert>
     </div>
