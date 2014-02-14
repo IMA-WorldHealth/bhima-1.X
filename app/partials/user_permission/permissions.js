@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('userController', [
+.controller('permission', [
   '$scope',
   '$q',
   'connect',
@@ -30,6 +30,7 @@ angular.module('kpk.controllers')
     imports.users = {
       tables: {'user': {columns:['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']}}
     };
+
     // The add namespace
     $scope.add = {};
     // for registration of 'super user privileges'

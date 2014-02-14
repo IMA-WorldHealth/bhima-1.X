@@ -44,11 +44,12 @@ app.configure(function () {
 });
 
 app.get('/', function (req, res, next) {
+  console.log('\n', req.session, '\n');
   // This is to preserve the /#/ path in the url
   res.sendfile('/index.html');
 });
 
-app.get('/data/', function (req, res, next) {  
+app.get('/data/', function (req, res, next) {
   var dec = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(dec);
   db.execute(sql, function (err, rows) {
@@ -60,7 +61,7 @@ app.get('/data/', function (req, res, next) {
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
   var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
-  db.execute(updatesql, function(err, ans) { 
+  db.execute(updatesql, function(err, ans) {
     if (err) return next(err);
     res.send(200, {insertId: ans.insertId});
   });
@@ -68,7 +69,7 @@ app.put('/data/', function (req, res, next) {
 
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  
+
   var insertsql = parser.insert(req.body.table, req.body.data[0]);
   db.execute(insertsql, function (err, ans) {
     if (err) return next(err);
@@ -76,8 +77,8 @@ app.post('/data/', function (req, res, next) {
   });
 });
 
-app.post('/sale/', function (req, res, next) { 
-  createSale.execute(req.body, req.session.user_id, function (err, ans) { 
+app.post('/sale/', function (req, res, next) {
+  createSale.execute(req.body, req.session.user_id, function (err, ans) {
     if(err) return next(err);
     res.send(200, {saleId: ans});
   });
@@ -119,19 +120,19 @@ app.get('/journal/:table/:id', function (req, res, next) {
 });
 
 //FIXME receive any number of tables using regex
-app.get('/max/:id/:table/:join?', function(req, res) { 
+app.get('/max/:id/:table/:join?', function(req, res) {
   var id = req.params.id, table = req.params.table, join = req.params.join;
-  
+
   var max_request = "SELECT MAX(" + id + ") FROM ";
 
   max_request += "(SELECT MAX(" + id + ") AS `" + id + "` FROM " + table;
   if(join) {
     max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;";
-  } else { 
+  } else {
     max_request += ")a;";
   }
 
-  db.execute(max_request, function(err, ans) { 
+  db.execute(max_request, function(err, ans) {
     if (err) {
       res.send(500, {info: "SQL", detail: err});
       console.error(err);
@@ -149,7 +150,7 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   });
 });
 
-app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res) { 
+app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res) {
   var enterprise = req.params.enterprise;
   var startDate = req.params.startDate;
   var endDate = req.params.endDate;
@@ -157,27 +158,26 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
 
   console.time("FISCAL_KEY");
   //function(err, status);
-  fiscal.create(enterprise, startDate, endDate, description, function(err, status) { 
-    console.log('create returned', err, status);
+  fiscal.create(enterprise, startDate, endDate, description, function(err, status) {
     if(err) return res.send(500, err);
     console.timeEnd("FISCAL_KEY");
     res.send(200, status);
   });
 });
 
-app.get('/reports/:route/', function(req, res, next) { 
+app.get('/reports/:route/', function(req, res, next) {
   var route = req.params.route;
 
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
-  
-  report.generate(route, query, function(report, err) { 
+
+  report.generate(route, query, function(report, err) {
     if(err) return next(err);
     res.send(report);
   });
 });
 
-app.get('/InExAccounts/:id_enterprise/', function(req, res, next) { 
+app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
   // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
   // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
   var sql = "SELECT account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'";
@@ -195,7 +195,7 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
 
 });
 
-app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) { 
+app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) {
   var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id = '-1'";
 
   db.execute(sql, function (err, rows) {
@@ -212,7 +212,7 @@ app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) {
 
 });
 
-app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) { 
+app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
   // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
   // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
   var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id "+
@@ -232,7 +232,7 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
 
 });
 
-app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) { 
+app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
   // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
   // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
   var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, auxiliairy_center WHERE account.auxiliairy_center_id = auxiliairy_center.id "+
@@ -265,11 +265,11 @@ app.get('/tree', function (req, res, next) {
 
 
 app.get('/price_list/:id', function (req, res, next) {
-  var sql = 
-    'SELECT `price_list`.`id`, `price_list`.`name`, ' + 
+  var sql =
+    'SELECT `price_list`.`id`, `price_list`.`name`, ' +
     '`price_list`.`inventory_type`, `price_list`.inventory_group, ' +
-    'COUNT(`price_list_detail`.`list_id`) AS `count` ' + 
-    'FROM `price_list` LEFT JOIN `price_list_detail` ON  ' + 
+    'COUNT(`price_list_detail`.`list_id`) AS `count` ' +
+    'FROM `price_list` LEFT JOIN `price_list_detail` ON  ' +
       '`price_list`.`id`=`price_list_detail`.`list_id` ' +
     'WHERE `price_list`.`enterprise_id`=' + sanitize.escape(req.params.id) + ' ' +
     'GROUP BY `price_list`.`id`;';
@@ -285,7 +285,7 @@ app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
 
   var sql = "SELECT `village`.`id` as `id`,  `village`.`name` as `village`, `sector`.`name` as `sector`, `province`.`name` as `province`, `country`.`country_en` as `country` " +
-            "FROM `village`, `sector`, `province`, `country` " + 
+            "FROM `village`, `sector`, `province`, `country` " +
             "WHERE village.sector_id = sector.id AND sector.province_id = province.id AND province.country_id=country.id " + specifyVillage + ";";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
@@ -329,7 +329,7 @@ app.get('/province/', function (req, res, next) {
 app.get('/debitorAgingPeriod', function (req, res, next){
   var sql =  "SELECT DISTINCT period.id, period.period_start, period.period_stop FROM period, general_ledger WHERE period.id = general_ledger.`period_id`;";
   db.execute(sql, function (err, rows) {
-    if (err) next(err);    
+    if (err) next(err);
     res.send(rows);
   });
 });
@@ -349,7 +349,7 @@ app.get('/account_balance/:id', function (req, res, next) {
     'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
 
   db.execute(sql, function (err, rows) {
-    if (err) return next(err);    
+    if (err) return next(err);
     res.send(rows);
   });
 

@@ -3,20 +3,20 @@
 
   //FIXME: Format code correctly in seperate files/modules etc.
   var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
-  
-  function kpkconfig($routeProvider) { 
+ 
+  function kpkconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
     when('/budgeting/:accountID?', {
       controller: 'budgetController',
       templateUrl: 'partials/budget/budget.html'
     }).
-    when('/permission', { 
-      controller: 'userController',
+    when('/permission', {
+      controller: 'permission',
       templateUrl: 'partials/user_permission/permissions.html'
     }).
-    when('/enterprise', { 
-      controller: 'enterpriseController',
+    when('/enterprise', {
+      controller: 'enterprise',
       templateUrl: 'partials/enterprise/enterprise.html'
     }).
     when('/posting_journal', {
@@ -27,7 +27,7 @@
       controller: 'fiscal',
       templateUrl: 'partials/fiscal/fiscal.html'
     }).
-    when('/patient', { 
+    when('/patient', {
       controller: 'patientRegistration',
       templateUrl: 'partials/patient_registration/patient.html'
     }).
@@ -51,15 +51,15 @@
       controller: 'inventoryRegisterController',
       templateUrl: '/partials/inventory/register/register.html'
     }).
-    when('/patient_records/:patientID?', { 
-      controller: 'patientRecords', 
+    when('/patient_records/:patientID?', {
+      controller: 'patientRecords',
       templateUrl: '/partials/records/patient_records/patient_records.html'
     }).
-    when('/sales/:debtorID?/:inventoryID?', { 
+    when('/sales/:debtorID?/:inventoryID?', {
       controller: 'sales',
       templateUrl: '/partials/sales/sales.html'
     }).
-    when('/sale_records/:recordID?', { 
+    when('/sale_records/:recordID?', {
       controller: 'salesRecords',
       templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
@@ -93,17 +93,17 @@
     }).
     when('/currency', {
       controller : 'currency',
-      templateUrl: 'partials/currency/currency.html' 
+      templateUrl: 'partials/currency/currency.html'
     }).
     when('/create_account', {
       controller: 'manageAccount',
       templateUrl: 'partials/accounts/create_account/create.html'
     }).
-    when('/reports/finance', { 
+    when('/reports/finance', {
       controller: 'reportFinance',
       templateUrl: 'partials/reports/finance/finance_report.html'
     }).
-    when('/reports/transaction_report', { 
+    when('/reports/transaction_report', {
       controller: 'reportTransactionController',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
     }).
@@ -154,17 +154,17 @@
     .when('/print', {
       templateUrl: 'partials/print/test.html'
     })
-    .when('/settings/:route?', { 
+    .when('/settings/:route?', {
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
     })
     /*
-    .when('/convention', { 
+    .when('/convention', {
       controller: 'conventionController',
       templateUrl: 'partials/convention/convention.html'
     })
     */
-    .when('/patient_group_assign', { 
+    .when('/patient_group_assign', {
       controller: 'AssignPatientGroupController',
       templateUrl: 'partials/patient_group_assign/patient_group_assign.html'
     })
@@ -172,15 +172,15 @@
       controller: 'accountsReport',
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
     }).
-    when('/invoice/:originId/:invoiceId', { 
-      controller: 'invoice', 
+    when('/invoice/:originId/:invoiceId', {
+      controller: 'invoice',
       templateUrl: 'partials/invoice/invoice.html'
     }).
-    when('/credit_note/:invoiceId?/', { 
+    when('/credit_note/:invoiceId?/', {
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
     }).
-    when('/cost_center', { 
+    when('/cost_center', {
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
     }).
@@ -194,15 +194,15 @@
     }).
     when('/patient_group', {
       controller: 'patientGroupCtrl',
-      templateUrl: 'partials/patient_group/patient_group.html' 
+      templateUrl: 'partials/patient_group/patient_group.html'
     })
     .when('/group_invoice/:id?', {
       controller : 'groupInvoice',
-      templateUrl : 'partials/group_invoice/group_invoice.html' 
+      templateUrl : 'partials/group_invoice/group_invoice.html'
     });
-  }  
+  }
 
-  function translateConfig($translateProvider) { 
+  function translateConfig($translateProvider) {
     //TODO Review how translations should be split - functionality, unit, etc.
     //TODO Review i18n and determine if this it the right solution
     $translateProvider.useStaticFilesLoader({
