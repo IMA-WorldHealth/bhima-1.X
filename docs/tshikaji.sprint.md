@@ -116,3 +116,12 @@ to assets (also see stock consumption)
 ##MySQL Backup 
 |Features | 
 |---------|
+
+
+## TODOs
+- Manual Pages (description of how to settup/use the system)
+- Presentation/Introduction 18th February, presentation @tshikaji
+- Readable/Actionable warning/errors for exceptions, mitigating silently dying
+- Installation procedures/resources, available offline and at a stable version
+- Coherent list of bugs/usability errors, plan for addressing these throughout the week
+- Chart of accounts (thsikaji data) -> ? transition to OHADA

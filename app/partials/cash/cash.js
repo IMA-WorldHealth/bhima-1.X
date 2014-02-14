@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('cashController', [
+.controller('cash', [
   '$scope',
   '$q',
   '$filter',
