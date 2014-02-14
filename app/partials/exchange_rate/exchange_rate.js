@@ -63,14 +63,19 @@ angular.module('kpk.controllers')
       var data = {
         enterprise_currency_id : $scope.enterprise.currency_id,
         foreign_currency_id : $scope.newRate.foreign_currency_id,
-        rate : $scope.newRate.rate,
+        rate : $scope.newRate.rate / 100.0,
         date : $scope.today
       };
 
       connect.basicPut('exchange_rate', [data])
       .then(function (result) {
         // set global exchange rate
-        ($scope.global_rates.length ? $scope.global_rates : []).push(data);
+        if ($scope.global_rates.length) {
+          $scope.global_rates.push(data);
+        } else {
+          $scope.global_rates = [data];
+        }
+
         appstate.set('exchange_rate', $scope.global_rates);
 
         // add to store

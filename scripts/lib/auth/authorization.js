@@ -40,12 +40,10 @@ module.exports = function (db, global_paths) {
         });
     }
 
-    console.log('\n\n', req.session, '\n');
-
     if (req.url === '/login') {
       return res.sendfile('./app/login.html');
     } else if (req.url === '/css/kapok.min.css') {
-    // FIXME: this is temporary
+    // FIXME: this is a temporary exposure of the app css
       return res.sendfile('./app/css/kapok.min.css');
     } else {
       return res.redirect('/login');
