@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="pull-right">
-    <button ng-click="createFiscal()" class="capital btn btn-success btn-sm"><span class="glyphicon glyphicon-file"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
+    <button id="createFiscal" ng-click="createFiscal()" class="capital btn btn-success btn-sm"><span class="glyphicon glyphicon-file"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
   </div>
 </section>
 
@@ -65,7 +65,7 @@
         <div ng-switch-when="create">
           <div class="row">
             <div class="col-xs-12">
-              <div class="panel panel-success">
+              <div id="createPanel" class="panel panel-success">
                 <div class="panel-heading">
                   <span class="capital">{{ 'FISCAL_YEAR.NEW' | translate }}</span>
                 </div>
@@ -104,7 +104,7 @@
                     <label for="endMonth" class="capital">{{'FISCAL_YEAR.END_MONTH' | translate}}</label>
                     <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-kapok" ng-model="new_model.end">
                   </div>
-                  <button ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-success">{{'UTIL.SUBMIT' | translate}}</button>
+                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-success">{{'UTIL.SUBMIT' | translate}}</button>
                 </form>
             </div>
             <div class="col-xs-6">
@@ -252,10 +252,10 @@
 
     <div class="modal-footer">
       <div class="pull-left">
-        <button class="btn btn-success btn-sm" ng-click="submit()">
+        <button id="submitBalance" class="btn btn-success btn-sm" ng-click="submit()">
           {{ "FORM.SUBMIT_BALANCES" | translate }}
         </button>
-        <button class="btn btn-default btn-sm" ng-click="reset()">
+        <button id="resetBalance" class="btn btn-default btn-sm" ng-click="reset()">
           {{ "FORM.RESET_BALANCES" | translate }}
         </button>
       </div>
