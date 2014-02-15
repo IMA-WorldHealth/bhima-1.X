@@ -84,7 +84,7 @@ module.exports = function (grunt) {
           pass : "HISCongo2013",
           host : "localhost",
           port : 3306,
-          backup_to : "scripts/sql/backup/<%= pkg.name %>_<%= grunt.template.today('isoDateTime') %>.sql"
+          backup_to : "scripts/sql/backup/<%= pkg.name %>_<%= pkg.version %>_<%= grunt.template.today('isoDateTime') %>.sql"
         }
       }
     }
@@ -97,6 +97,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-mysql-dump');
 
-  grunt.registerTask('build', ['concat', 'db_dump']);
-  grunt.registerTask('default', [ 'cssmin', 'concat', 'watch']);
+  grunt.registerTask('build', ['jshint', 'concat', 'db_dump']);
+  grunt.registerTask('default', ['cssmin', 'concat', 'watch']);
 };
