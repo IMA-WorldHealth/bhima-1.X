@@ -3,6 +3,7 @@
 *.min.js
 *.min.css
 node_modules/
+test/reports/
 
 # ignore build tool generated files
 app/js/controllers/controllers.js

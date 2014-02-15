@@ -53,7 +53,7 @@ module.exports = {
 
     client.verify.visible('button[id=submitFiscal]')
       .click('button[id=submitFiscal]')
-      .waitForElementVisible('button[id="resetBalance"]', 2000)
+      .waitForElementVisible('button[id="resetBalance"]', 4000)
       .click('button[id="resetBalance"]');
 
     client.verify.visible('button[id="submitBalance"]')
