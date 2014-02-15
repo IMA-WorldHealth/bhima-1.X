@@ -9,8 +9,7 @@ angular.module('kpk.controllers')
     // TODO:
     //   Theoretically, the users and permissions depend on an
     //   enterprise, so do we need it or not?
-    'use strict';
-   
+  
     var moduleNamespace = 'tree', applicationNamespace = 'application';
     var cache = new AppCache(moduleNamespace), applicationCache = new AppCache(applicationNamespace);
     var originLocation, collapsed_model = [];
@@ -38,31 +37,30 @@ angular.module('kpk.controllers')
         return element;
       });
     }
-   
+ 
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
-      console.log('updating');
       if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
         var path = $scope.navtree.currentNode.path;
         if (path) $location.path(path);
       }
     }, true);
-  
-    $scope.$on('$locationChangeStart', function(e, n_url) { 
+ 
+    $scope.$on('$locationChangeStart', function(e, n_url) {
       var target = n_url.split('/#')[1];
-      
+     
       originLocation = target;
-      if(target) { 
+      if(target) {
         applicationCache.put('location', {path: target});
         selectTreeNode($scope.treeData, target);
       }
     });
 
-    function selectTreeNode(list, locationPath) { 
-      list.some(function (element) { 
+    function selectTreeNode(list, locationPath) {
+      list.some(function (element) {
         var sanitiseElement = element.p_url.replace(/\//g, '');
         var sanitiseLocation = locationPath.replace(/\//g, '');
-    
-        if(sanitiseElement === sanitiseLocation) { 
+   
+        if(sanitiseElement === sanitiseLocation) {
           $scope.navtree.selectNodeLabel(element);
         }
         if(element.has_children) selectTreeNode(element.children, locationPath);

@@ -1,19 +1,19 @@
 //TODO Debtor table currently has no personal information - this strictly ties debtors to patients (or some existing table) - a reverse lookup from debtor/ creditor ID to recipient is needed
-angular.module('kpk.controllers').controller('invoice', function($scope, $routeParams, $q, validate, messenger, exchange, appstate) { 
+angular.module('kpk.controllers').controller('invoice', function($scope, $routeParams, $q, validate, messenger, exchange, appstate) {
   var dependencies = {}, origin = $scope.origin = $routeParams.originId, invoiceId = $routeParams.invoiceId, process = {}, timestamp = $scope.timestamp = new Date();
   if(!(origin && invoiceId)) throw new Error('Invalid parameters');
-  
-  process = { 
+
+  process = {
     'cash': processCash,
     'sale': processSale,
     'credit': processCredit,
     'debtor': processDebtor,
     'patient' : processPatient,
   };
-  dependencies.recipient = { 
-    required: true 
+  dependencies.recipient = {
+    required: true
   };
-  
+
   dependencies.invoice = {
     required: true,
     query: {
@@ -37,12 +37,12 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     }
   };
 
- 
+
   // dependencies.invoice.query.tables[origin] = {
   dependencies.invoice.query.tables['sale'] = {
     columns: ['id', 'cost', 'currency_id', 'debitor_id', 'seller_id', 'invoice_date', 'note']
   };
-  
+
   //TODO sale_item hardcoded - have a map form originId to table name, item table name, recipient table name
   dependencies.invoiceItem = {
     required: true,
@@ -55,167 +55,169 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
 
   dependencies.invoiceItem.query.tables['inventory'] = {
     columns: ['id', 'code', 'text']
-  }
+  };
 
-  dependencies.invoiceItem.query.tables['sale_item'] = { 
+  dependencies.invoiceItem.query.tables['sale_item'] = {
     columns: ['id', 'quantity', 'debit', 'credit']
-  }
+  };
 
   dependencies.location = {
     required: false
   };
 
-  dependencies.ledger = { 
+  dependencies.ledger = {
     //required: true, // FIXME/TODO : why was this required? It breaks things on @jniles machine.
     identifier: 'inv_po_id'
   };
- 
-  appstate.register('enterprise', function (enterprise) { 
+
+  appstate.register('enterprise', function (enterprise) {
     $scope.enterprise = enterprise;
     process[origin](invoiceId);
   });
-  
-  function processCash(requestId) { 
-    dependencies.cash = { 
+
+  function processCash(requestId) {
+    dependencies.cash = {
       required: true,
       query:  {
-        tables: { 
+        tables: {
           cash: { columns: ['id', 'date', 'cost', 'deb_cred_id', 'currency_id'] },
           cash_item: { columns: ['cash_id', 'allocated_cost', 'invoice_id'] }
         },
         join: ['cash_item.cash_id=cash.id'],
         where: ['cash_item.cash_id=' + requestId]
       }
-    }
+    };
 
     validate.process(dependencies, ['cash']).then(buildInvoiceQuery);
   }
 
-  function processSale() {  
+  function processSale() {
     validate.process(dependencies, ['invoice', 'invoiceItem']).then(buildRecipientQuery);
   }
-  
+
   //TODO this process is kind of a hack
-  function processCredit(invoiceId) { 
-    dependencies = {}; 
-    dependencies.credit = { 
+  function processCredit(invoiceId) {
+    dependencies = {};
+    dependencies.credit = {
       required: true,
-      query: { 
-        tables: { 
+      query: {
+        tables: {
           credit_note: { columns: ['id', 'cost', 'debitor_id', 'seller_id', 'sale_id', 'note_date', 'description'] },
           patient: { columns: ['first_name', 'last_name', 'current_location_id'] }
         },
         join: ['credit_note.debitor_id=patient.debitor_id'],
-        where: ['credit_note.id=' + invoiceId]  
+        where: ['credit_note.id=' + invoiceId]
       }
     };
     validate.process(dependencies, ['credit']).then(buildCreditRecipient);
   }
 
-  function processDebtor() { 
-    messenger.danger('Method not implemented'); 
+  function processDebtor() {
+    messenger.danger('Method not implemented');
   }
 
-  function processPatient() { 
-    dependencies.recipient.query = { 
+  function processPatient() {
+    dependencies.recipient.query = {
       tables: {},
       where: ['patient.id=' + invoiceId]
-    }
-    dependencies.recipient.query.tables['patient'] = { 
+    };
+
+    dependencies.recipient.query.tables['patient'] = {
       columns: ['id', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_id', 'registration_date']
     };
-  
+
     validate.process(dependencies, ['recipient']).then(buildPatientLocation);
   }
 
-  function buildPatientLocation(model) { 
-    dependencies.location = { 
+  function buildPatientLocation(model) {
+    dependencies.location = {
       required: true,
       query: '/location/' + model.recipient.data[0].current_location_id
-    }
-    
+    };
+ 
     validate.process(dependencies, ['location']).then(patientReceipt);
   }
 
-  function buildInvoiceQuery(model) { 
+  function buildInvoiceQuery(model) {
     var cash_data = model.cash.data[0];
     dependencies.invoice.query.where = ["sale.id=" + cash_data.invoice_id];
     dependencies.invoiceItem.query.where = ["sale_item.sale_id=" + cash_data.invoice_id];
-  
+
     processSale();
   }
-  
+
   //TODO credit hack
-  function buildCreditRecipient(model) { 
-    dependencies.location = { 
+  function buildCreditRecipient(model) {
+    dependencies.location = {
       required: true,
       query: '/location/' + model.credit.data[0].current_location_id
-    }
+    };
 
     validate.process(dependencies).then(creditInvoice);
   }
- 
-  function buildRecipientQuery(model) { 
+
+  function buildRecipientQuery(model) {
     var invoice_data = model.invoice.data[0];
-    
-    dependencies.recipient.query = { 
+ 
+    dependencies.recipient.query = {
       tables: {},
       where: ['patient.debitor_id=' + invoice_data.debitor_id]
-    }
-    dependencies.recipient.query.tables['patient'] = { 
+    };
+
+    dependencies.recipient.query.tables['patient'] = {
       columns: ['first_name', 'last_name', 'dob', 'current_location_id']
     };
 
-    dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_id; 
+    dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_id;
     return validate.process(dependencies, ['recipient']).then(buildLocationQuery);
   }
 
-  function buildLocationQuery(model) { 
+  function buildLocationQuery(model) {
     var recipient_data = model.recipient.data[0];
 
     dependencies.location.query = 'location/' + recipient_data.current_location_id;
     return validate.process(dependencies).then(invoice);
   }
 
-  function invoice(model) { 
-    var routeCurrencyId; 
+  function invoice(model) {
+    var routeCurrencyId;
     //Expose data to template
     $scope.model = model;
-   
+
     $scope.session = {};
     $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
     routeCurrencyId = $scope.session.currentCurrency.currency_id;
-    
+ 
     //Select invoice and recipient - validate should assert these only have one item
     $scope.invoice = $scope.model.invoice.data[0];
     $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
-    
+ 
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
-    
+ 
 
     //FIXME hacks for meeting
-    if(model.cash) { 
+    if(model.cash) {
       $scope.cashTransaction  = $scope.model.cash.data[0];
-      routeCurrencyId = $scope.cashTransaction.currency_id;   
+      routeCurrencyId = $scope.cashTransaction.currency_id;
     }
 
     updateCost(routeCurrencyId);
-  } 
+  }
   function patientReceipt(model) { $scope.model = model; $scope.recipient = $scope.model.recipient.data[0]; $scope.location = $scope.model.location.data[0]; }
   //TODO Follows the process credit hack
-  function creditInvoice(model) { $scope.model = model; $scope.note = $scope.model.credit.data[0]; $scope.location = $scope.model.location.data[0]}
+  function creditInvoice(model) { $scope.model = model; $scope.note = $scope.model.credit.data[0]; $scope.location = $scope.model.location.data[0]; }
 
-  function updateCost(currency_id) { 
-    console.log('updating cost');
+  function updateCost(currency_id) {
+    //console.log('updating cost');
     $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
-    console.log('cid', currency_id);
+    //console.log('cid', currency_id);
     $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
-    console.log('ledger', $scope.model);
+    //console.log('ledger', $scope.model);
 
     $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
 
-    $scope.model.invoiceItem.data.forEach(function (item) { 
+    $scope.model.invoiceItem.data.forEach(function (item) {
       item.localeCost = exchange((item.credit - item.debit), currency_id);
     });
   }

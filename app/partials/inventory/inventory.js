@@ -1,5 +1,7 @@
 angular.module('kpk.controllers')
-.controller('inventoryController', function($scope) {
+.controller('inventoryController', [
+  '$scope',
+  function($scope) {
  
     $scope.fields = {
       'stock'  : false,
@@ -10,4 +12,5 @@ angular.module('kpk.controllers')
     $scope.slide = function (tag) {
       $scope.fields[tag] = !$scope.fields[tag];
     };
-  });
+  }
+]);

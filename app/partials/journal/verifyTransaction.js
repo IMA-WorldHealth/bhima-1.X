@@ -20,24 +20,23 @@ angular.module('kpk.controllers')
     }
 
     function add() {
-   
+ 
     }
 
     $scope.formComplete = false;
     $scope.invalidSubmit = "";
 
     transaction.date = inputDate(new Date());
-  
+
     connect.req('/max/trans_id/general_ledger/posting_journal/').then(function(res) {
       transaction.id = ++res.data.max || defaultTransactionId;
-     
+   
       connect.req('/max/id/journal_log/').then(loadNote);
     }, function(err) { console.log(err); });
-     
+   
     function loadNote(res) {
       var maxid = res.data.max || defaultLogId;
       transaction.logId = ++maxid;
-
       connect.req('/user_session/').then(loadUser);
     }
 
@@ -47,7 +46,9 @@ angular.module('kpk.controllers')
     }
 
     function submitTransaction() {
-      if(!$scope.formComplete) return $scope.invalidSubmit = "Unable to verify transaction, required data is missing.";
+      if (!$scope.formComplete) {
+        return $scope.invalidSubmit = "Unable to verify transaction, required data is missing.";
+      }
       $modalInstance.close(transaction);
     }
 

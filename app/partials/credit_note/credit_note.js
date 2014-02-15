@@ -40,7 +40,7 @@ angular.module('kpk.controllers')
         join: ['sale_item.inventory_id=inventory.id']
       }
     };
-   
+  
     if(invoiceId) buildSaleQuery();
 
     function buildSaleQuery() {

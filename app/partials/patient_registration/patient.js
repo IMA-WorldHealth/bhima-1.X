@@ -11,15 +11,23 @@ angular.module('kpk.controllers')
     var dependencies = {},
         defaultBirthMonth = '06-01';
 
-    $scope.patient = {}, $scope.country = {}, $scope.province = {},
-    $scope.sector = {}, $scope.village = {}, $scope.current_country = {}, $scope.current_province = {},
-    $scope.current_sector = {}, $scope.current_village = {}, $scope.data = {}, $scope.assignation = {};
+    $scope.patient = {};
+    $scope.country = {};
+    $scope.province = {};
+    $scope.sector = {};
+    $scope.village = {};
+    $scope.current_country = {};
+    $scope.current_province = {};
+    $scope.current_sector = {};
+    $scope.current_village = {};
+    $scope.data = {};
+    $scope.assignation = {};
     $scope.sessionProperties = {};
 
     dependencies.patientGroup = {
       query : { tables : {'patient_group' : {'columns' : ['id', 'name']}}}
     };
-    
+  
     dependencies.debtorGroup = {
       query : { tables : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
     };
@@ -39,71 +47,72 @@ angular.module('kpk.controllers')
     dependencies.country = {
       query : { tables : { 'country' : { 'columns' : ['id', 'country_en'] }}}
     };
-    
+  
 
     function patientRegistration(model) {
       $scope.model = model;
       handlePatientImage();
       initSelect($scope.enterprise.location_id);
     }
-      
+    
     function handlePatientImage() {
 
       //FIXME This is super cheeky in angular - create a directive for this
       var video = document.querySelector('#patientImage'), patientResolution = { video : { mandatory : { minWidth: 300, maxWidth: 400 } } };
-      
+    
       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-      
-      if (navigator.getUserMedia) {
-        navigator.getUserMedia(patientResolution, handleVideo, videoError);
+    
+      function videoError(error) {
+        //throw error;
+        //console.error(error);
       }
-      
+    
       function handleVideo(stream) {
         video.src = window.URL.createObjectURL(stream);
       }
-      
-      function videoError(error) {
-        //throw error;
-        console.error(error);
+
+      if (navigator.getUserMedia) {
+        navigator.getUserMedia(patientResolution, handleVideo, videoError);
       }
-    }
     
+    }
+  
     function registerPatient(patient) {
       getVillageId($scope.village.name, $scope.sector.sector_id).then(function(origin_id){
         patient.origin_location_id = origin_id;
         getVillageId($scope.current_village.name, $scope.current_sector.sector_id).then(function(current_id){
-         patient.current_location_id = current_id;
-         if(patient.origin_location_id && patient.current_location_id){
+          patient.current_location_id = current_id;
+          if(patient.origin_location_id && patient.current_location_id){
             writePatient(patient);
-         }
+          }
         });
       });
     }
 
     function getVillageId(name, id_sector){
-      var id = undefined;
+      var id;
       var def = $q.defer();
-      for(var i = 0; i<$scope.model.village.data.length; i++){
+      for(var i = 0; i<$scope.model.village.data.length; i+=1){
         if($scope.model.village.data[i].name.toUpperCase() === name.toUpperCase() && $scope.model.village.data[i].sector_id === id_sector){
           id = $scope.model.village.data[i].id;
-          console.log(id);
+          //console.log(id);
           break;
         }
       }
 
       if(id) {
-        console.log('le village existe deja');
+        //console.log('le village existe deja');
         def.resolve(id);
       }else{
-        console.log('nous devons ajouter le village');
+        //console.log('nous devons ajouter le village');
         var toInputVillage = {
           name : name,
           sector_id : id_sector
-        }
+        };
         connect.basicPut('village', [toInputVillage]).then(function(v){
           toInputVillage.id = v.data.insertId;
           $scope.model.village.post(toInputVillage);
-          console.log('le modele a change', $scope.model.village);
+          //console.log('le modele a change', $scope.model.village);
           return def.resolve(v.data.insertId);
         });
       }
@@ -128,10 +137,10 @@ angular.module('kpk.controllers')
             })
             ).then(function (v){
               $location.path('invoice/patient/' + result.data.insertId);
-            }); 
-          }else{
+            });
+          } else{
             $location.path('invoice/patient/' + result.data.insertId);
-          }         
+          }
         });
       });
     }
@@ -139,17 +148,16 @@ angular.module('kpk.controllers')
 
 
     function handleOriginCountryChange(){
-      console.log('cahangement');
-      
+      //console.log('cahangement');
     }
-     
+   
     //Utility methods
     $scope.$watch('sessionProperties.yob', function(nval) {
       if(nval && nval.length===4) $scope.patient.dob = nval + '-' + defaultBirthMonth;
     });
 
     function enableFullDate() { $scope.sessionProperties.fullDateEnabled = true; }
-    
+  
     function checkChanged(model) { return angular.equals(model, $scope.master); }
 
     function initSelect(village_id){
@@ -174,11 +182,10 @@ angular.module('kpk.controllers')
     // invocation
 
     appstate.register('enterprise', function(enterprise){
-      $scope.enterprise = enterprise;      
+      $scope.enterprise = enterprise;
       validate.process(dependencies).then(patientRegistration);
     });
-    
-      
+  
     //Expose methods to scope
 
     $scope.registerPatient = registerPatient;

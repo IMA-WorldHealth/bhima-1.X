@@ -10,7 +10,7 @@ angular.module('kpk.controllers')
 
   var requettes = {}, models = $scope.models = {}, stores = {}, enterprise = appstate.get('enterprise');
   requettes.convention = {
-    tables : {'convention':{columns:['id', 'name', 'account_id', 'location_id', 'phone', 'email', 'note', 'max_credit']}, 
+    tables : {'convention':{columns:['id', 'name', 'account_id', 'location_id', 'phone', 'email', 'note', 'max_credit']},
               'account' : {columns :['id', 'account_number']}},
     join : ['convention.account_id=account.id']
   }
@@ -31,7 +31,7 @@ angular.module('kpk.controllers')
     $scope.convention = models.conventions[index];
   }
 
-  function formatAccount (account){    
+  function formatAccount (account){   
     return [account.account_number, account.account_txt].join(' -- ');
   }
 
