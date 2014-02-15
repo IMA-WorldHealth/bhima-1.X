@@ -18,3 +18,15 @@ which messes up page refresh.
 [x] Angular captures the logout request and throws internal errors.
 [x] Login attempts after logout are captured by angular and throw internal errors.
 [ ] Routes still loaded from config.json file.
+#### Creditor Group Mgmt
+[x] Account selects are not ordered properly
+
+#### Fiscal Year
+[ ] Opening balances still has button for randomly generating data
+
+#### Exchange Rate
+[ ] Exchange rate should refresh the daily exchange rate
+
+#### CashBox
+[ ] Cashbox should lock up if exchange rate is not available
+[ ] Cashbox should allow adjusting amounts on an invoice to invoice basis.

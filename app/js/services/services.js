@@ -2,9 +2,9 @@
 
 (function (angular) {
   'use strict';
-  
+
   var services = angular.module('kpk.services', []);
-    
+  
   services.service('kpkUtilitaire', function() {
 
     this.formatDate = function(dateString) {
@@ -42,18 +42,18 @@
     };
 
   });
-  
-  //TODO passing list and dependencies to everything, could assign to object?
-  services.factory('validate', function($q, connect) {  
-    var modelLabel = 'model'; 
 
-    var validateTests = [ 
+  //TODO passing list and dependencies to everything, could assign to object?
+  services.factory('validate', function($q, connect) {
+    var modelLabel = 'model';
+
+    var validateTests = [
       {flag: 'required', message : "Required data not found!", method : hasData}
     ];
 
     function refresh(dependencies, limit) {
       var list = limit || Object.keys(dependencies);
-        
+      
       list.forEach(function(modelKey) {
         dependencies[modelKey].processed = false;
       });
@@ -63,11 +63,11 @@
     function process(dependencies, limit) {
       var validate, deferred = $q.defer(), list = filterList((limit || Object.keys(dependencies)), dependencies);
       dependencies[modelLabel] = dependencies[modelLabel] || {};
-      
+    
       fetchModels(list, dependencies).then(function(model) {
         packageModels(list, dependencies, model);
         validate = validateModels(list, dependencies);
-        console.log('ran tests', validate); 
+        console.log('ran tests', validate);
         if(validate.success) return deferred.resolve(dependencies.model);
 
         console.info("%c[validate]", "color: blue; font-weight: bold;", "Reminder that models have been tested and results should be handled");
@@ -83,8 +83,8 @@
 
       return deferred.promise;
     }
-    
-    function filterList(list, dependencies) { 
+  
+    function filterList(list, dependencies) {
       var filterList;
 
       filterList = list.filter(function(key, index) {
@@ -95,80 +95,80 @@
       return filterList;
     }
 
-    function validateModels(list, dependencies) { 
-      var validateStatus = new Status(); 
-      
-      list.some(function(modelKey) { 
+    function validateModels(list, dependencies) {
+      var validateStatus = new Status();
+    
+      list.some(function(modelKey) {
         var model = dependencies.model[modelKey], details = dependencies[modelKey], modelTests = details.test || [], modelTestStatus = false;
-        
+      
         //Check for standard test flags
-        validateTests.forEach(function(testObject) { 
+        validateTests.forEach(function(testObject) {
           if(details[testObject.flag]) modelTests.push(testObject);
         });
-      
+    
         //Run each test
-        modelTestStatus = modelTests.some(function(testObject) { 
+        modelTestStatus = modelTests.some(function(testObject) {
           var testFailed, testMethod = testObject.method;
-           
-          testFailed = !testMethod(model.data); 
-          if(testFailed) validateStatus.setFailed(testObject, modelKey); 
+         
+          testFailed = !testMethod(model.data);
+          if(testFailed) validateStatus.setFailed(testObject, modelKey);
           return testFailed;
         });
         return modelTestStatus;
       });
       return validateStatus;
     }
- 
-    function packageModels(list, dependencies, model) { 
-      list.forEach(function(key, index) { 
+
+    function packageModels(list, dependencies, model) {
+      list.forEach(function(key, index) {
         dependencies.model[key] = model[index];
-        dependencies[key].processed = true; 
+        dependencies[key].processed = true;
       });
     }
 
-    function fetchModels(list, dependencies) { 
+    function fetchModels(list, dependencies) {
       var deferred = $q.defer(), promiseList = [];
-      
-      list.forEach(function(key) { 
+    
+      list.forEach(function(key) {
         var dependency = dependencies[key], args = [dependency.query];
-        
+      
         //Hack to allow modelling reports with unique identifier - not properly supported by connect
         if(dependency.identifier) args.push(dependency.identifier);
         promiseList.push(connect.req.apply(connect.req, args));
       });
-      
-      $q.all(promiseList).then(function(populatedQuerry) { 
-        deferred.resolve(populatedQuerry); 
-      }, function(error) { 
-        deferred.reject(error);  
+    
+      $q.all(promiseList).then(function(populatedQuerry) {
+        deferred.resolve(populatedQuerry);
+      }, function(error) {
+        deferred.reject(error);
       });
       return deferred.promise;
     }
 
-    var testSuite = { 
+    var testSuite = {
       "enterprise" : {method: testRequiredModel, args: ["enterprise"], result: null},
       "fiscal" : {method: testRequiredModel, args: ["fiscal_year"], result: null}
     };
-    
-    function testRequiredModel(tableName, primaryKey) { 
+  
+    function testRequiredModel(tableName, primaryKey) {
       var deferred = $q.defer();
-      var testDataQuery = { 
+      var testDataQuery = {
         tables : {}
       };
 
-      primaryKey = (primaryKey || "id"); 
-      testDataQuery.tables[tableName] = { 
+      primaryKey = (primaryKey || "id");
+      testDataQuery.tables[tableName] = {
         columns: [primaryKey]
       };
 
-      //download data to test 
+      //download data to test
       connect.req(testDataQuery)
-      .then(function(res) { 
-        
+      .then(function(res) {
+      
         //run test on data
         deferred.resolve(isNotEmpty(res.data));
       }, function(err) {
-        
+      
         //download failed
         deferred.reject();
       });
@@ -180,7 +180,7 @@
     }
 
     function Status() {
-      
+    
       function setFailed(testObject, reference) {
         this.success = false;
         this.message = testObject.message;
@@ -218,18 +218,18 @@
       };
     }
 
-    function init() { 
+    function init() {
       //also sets db - working on making it read better
       openDBConnection(DB_NAME, VERSION)
-      .then(function(connectionSuccess) { 
+      .then(function(connectionSuccess) {
         dbdefer.resolve();
-      }, function(error) { 
+      }, function(error) {
         throw new Error(error);
       });
     }
 
     //generic request method allow all calls to be queued if the database is not initialised
-    function request(method) { 
+    function request(method) {
       console.log(method, arguments);
       if(!requestMap[method]) return false;
       requestMap[method](value);
@@ -240,52 +240,52 @@
       var t = this, namespace = t.namespace;
       var deferred = $q.defer();
       dbdefer.promise
-      .then(function() { 
+      .then(function() {
         //fetch logic
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request = objectStore.index('namespace, key').get([namespace, key]);
-        
-        request.onsuccess = function(event) { 
+      
+        request.onsuccess = function(event) {
           var result = event.target.result;
           $rootScope.$apply(deferred.resolve(result));
         };
-        request.onerror = function(event) { 
-          $rootScope.$apply(deferred.reject(event)); 
+        request.onerror = function(event) {
+          $rootScope.$apply(deferred.reject(event));
         };
-      }); 
+      });
       return deferred.promise;
     }
-  
-    function put(key, value) { 
+
+    function put(key, value) {
       var t = this, namespace = t.namespace;
       var deferred = $q.defer();
-      
+    
       dbdefer.promise
-      .then(function() { 
-        var writeObject = { 
+      .then(function() {
+        var writeObject = {
           namespace: namespace,
           key: key
         }
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request;
-       
+     
         //TODO jQuery dependency - write simple utility to flatten/ merge object
         writeObject = jQuery.extend(writeObject, value);
-        request = objectStore.put(writeObject); 
+        request = objectStore.put(writeObject);
 
-        request.onsuccess = function(event) { 
+        request.onsuccess = function(event) {
           deferred.resolve(event);
         }
-        request.onerror = function(event) { 
+        request.onerror = function(event) {
           deferred.reject(event);
         }
-      }); 
+      });
       return deferred.promise;
     }
 
-    function fetchAll() { 
+    function fetchAll() {
       var t = this, namespace = t.namespace;
       var deferred = $q.defer();
 
@@ -298,7 +298,7 @@
 
         request.onsuccess = function(event) {
           var cursor = event.target.result;
-          if(cursor) { 
+          if(cursor) {
             store.push(cursor.value);
             cursor.continue();
           } else {
@@ -306,28 +306,28 @@
           }
         }
 
-        request.onerror = function(event) { 
+        request.onerror = function(event) {
           deferred.reject(event);
         }
       });
       return deferred.promise;
     }
 
-    function openDBConnection(dbname, dbversion) { 
+    function openDBConnection(dbname, dbversion) {
       var deferred = $q.defer();
       var request = indexedDB.open(dbname, dbversion);
-      request.onupgradeneeded = function(event) { 
+      request.onupgradeneeded = function(event) {
         db = event.target.result;
         //TODO naive implementation - one object store to contain all cached data, namespaced with feild
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
-       
+     
         //delete object store if it exists - DEVELOPMENT ONLY
         if(db.objectStoreNames.contains('master')) {
           //FIXME no error/ success handling
-          db.deleteObjectStore('master');  
+          db.deleteObjectStore('master');
         }
         var objectStore = db.createObjectStore("master", {keyPath: ['namespace', 'key']});
-        objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true}); 
+        objectStore.createIndex("namespace, key", ["namespace", "key"], {unique: true});
         objectStore.createIndex("namespace", "namespace", {unique: false});
         objectStore.createIndex("key", "key", {unique: false});
       };
@@ -336,49 +336,49 @@
         db = request.result;
         $rootScope.$apply(deferred.resolve());
       };
-      request.onerror = function(event) { 
+      request.onerror = function(event) {
         deferred.reject(event);
       };
       return deferred.promise;
     }
 
     cacheSupported = ("indexedDB" in window);
-    if(cacheSupported) { 
+    if(cacheSupported) {
       init();
-    } else { 
+    } else {
       console.log('application cache is not supported in this context');
     }
     return cacheInstance;
   });
 
-  services.factory('appstate', function ($q, $rootScope) { 
-    //TODO Use promise structure over callbacks, used throughout the application and enables error handling 
+  services.factory('appstate', function ($q, $rootScope) {
+    //TODO Use promise structure over callbacks, used throughout the application and enables error handling
     var store = {}, queue = {};
 
-    function set(storeKey, value) { 
+    function set(storeKey, value) {
       store[storeKey] = value;
       executeQueue(storeKey);
     }
 
-    function get(storeKey) { 
+    function get(storeKey) {
       return store[storeKey];
     }
 
-    function register(storeKey, callback) { 
+    function register(storeKey, callback) {
       var requestedValue = store[storeKey];
       var queueReference = queue[storeKey] = queue[storeKey] || [];
 
-      if(requestedValue) { 
+      if(requestedValue) {
         callback(requestedValue);
         return;
-      }  
+      }
       queueReference.push({callback: callback});
     }
 
-    function executeQueue(storeKey) { 
+    function executeQueue(storeKey) {
       var queueReference = queue[storeKey];
-      if(queueReference) { 
-        queueReference.forEach(function(pendingRequest) { 
+      if(queueReference) {
+        queueReference.forEach(function(pendingRequest) {
           pendingRequest.callback(store[storeKey]);
         });
       }
@@ -392,10 +392,10 @@
   });
 
   services.factory('store', function () {
-    // store service 
-    
+    // store service
+  
     return function (options, target) {
-      
+    
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
       // globals
@@ -413,7 +413,7 @@
         var index = this.index = {};
         this.data = data;
 
-        for (var i = 0, l = data.length; i < l; i++) {
+        for (var i = 0, l = data.length; i < l; i += 1) {
           index[data[i][identifier]] = i;
         }
       };
@@ -422,7 +422,7 @@
       var self = this;
       (function contructor () {
         for (var k in options) {
-          self[k] = options[k]; 
+          self[k] = options[k];
         }
         // set data if it is defined
         if (options.data) self.setData(options.data);
@@ -434,13 +434,13 @@
         return this.data[this.index[id]];
       };
 
-      // put is for UPDATES 
-      this.put = function (object, opts) {        
+      // put is for UPDATES
+      this.put = function (object, opts) {      
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
 
-        if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;  
+        if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;
 
         // merge or overwrite
         if (opts && opts.overwrite) {
@@ -471,7 +471,7 @@
       this.remove = function (id) {
         var data = this.data,
             index = this.index;
-        
+      
         if (id in index) {
           console.log("Trying to split on ",data);
           data.splice(index[id], 1);
@@ -500,19 +500,19 @@
           console.log(pprint, 'Executing: ', req);
           $http(req)
             .success(function () {
-              console.log(req.data.id, "synced successfully."); 
-            }) 
+              console.log(req.data.id, "synced successfully.");
+            })
             .error(function (data, status, headers, config) {
-              alert("An error in data transferred occured with status:", status); 
+              alert("An error in data transferred occured with status:", status);
               fail.push(req);
             });
         });
         queue = fail;
       };
 
-      this.recalculateIndex = function () { 
+      this.recalculateIndex = function () {
         var data = this.data, index = this.index;
-        for (var i = 0, l = data.length; i < l; i++) {
+        for (var i = 0, l = data.length; i < l; i += 1) {
           index[data[i][identifier]] = i;
         }
       };
@@ -522,9 +522,9 @@
   });
 
   services.factory('connect', function ($http, $q, store) {
-    //summary: 
+    //summary:
     //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
-    //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to 
+    //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
     //  update the server.
 
     //  TODO generic id property should be injected, currently set as ID
@@ -534,10 +534,10 @@
     //keep track of requests, model can use connect API without re-stating request
     //  model : request
     var requests = {};
-  
+
     //FIXME remove identifier without breaking functionality (passing direct strings to req)
     function req (defn, stringIdentifier) {
-      //summary: 
+      //summary:
       //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
       //
       //  defn should be an object like
@@ -577,7 +577,7 @@
           res.identifier = stringIdentifier || 'id';
           deferred.resolve(new store(res));
         }, function (err) {
-          throw err; 
+          throw err;
         });
         return deferred.promise;
       }
@@ -586,13 +586,13 @@
 
       handle = $http.get('/data/?' + JSON.stringify(defn));
       handle.then(function (returned) {
-        
+      
         //massive hack so I can use an identifier - set default identifier
         returned.identifier = defn.identifier || 'id';
         var m = new store(returned, table);
         requests[m] = defn;
         deferred.resolve(m);
-      }, function(err) { 
+      }, function(err) {
         //package error object with request parameters for error routing
         deferred.reject(packageError(err, table));
       });
@@ -600,8 +600,8 @@
       return deferred.promise;
     }
 
-    function getModel(getRequest, identifier) { 
-      //TODO Decide on API to handle packing direct GET requests in model 
+    function getModel(getRequest, identifier) {
+      //TODO Decide on API to handle packing direct GET requests in model
       var handle, deferred = $q.defer();
       handle = $http.get(getRequest);
       handle.then(function(res) {
@@ -613,7 +613,7 @@
     }
 
     function fetch (defn) {
-      //summary: 
+      //summary:
       //  Exactly the same as req() but now returns only
       //  data.  Think of it as a `readonly` store.
       var handle, deferred = $q.defer();
@@ -631,7 +631,7 @@
       console.warn('connect.debitorAgingPeriod is deprecated.  Refactor your code to use fetch() or req().');
       var handle, deferred = $q.defer();
       handle = $http.get('debitorAgingPeriod/');
-      handle.then(function(res) { 
+      handle.then(function(res) {
         deferred.resolve(res);
       });
       return deferred.promise;
@@ -659,7 +659,7 @@
 
     function MyBasicGet(target){
       console.warn('connect.MyBasicGet is deprecated.  Please refactor your code to use either fetch() or req().');
-      var promise = $http.get(target).then(function(result) { 
+      var promise = $http.get(target).then(function(result) {
         return result.data;
       });
       return promise;
@@ -687,12 +687,12 @@
       // clean off the $$hashKey and other angular bits and delete undefined
       var cleaned = {};
       for (var k in obj) {
-        if (k != '$$hashKey' && angular.isDefined(obj[k]) && obj[k] !== "" && obj[k] !== null) cleaned[k] = obj[k];
-      } 
+        if (k !== '$$hashKey' && angular.isDefined(obj[k]) && obj[k] !== "" && obj[k] !== null) cleaned[k] = obj[k];
+      }
       return cleaned;
     }
 
-    function packageError(err, table) { 
+    function packageError(err, table) {
       //I'm sure this is literally gross, should do reading up on this
       err.http = true;
       err.table = table || null;
@@ -726,7 +726,7 @@
       var id = Date.now();
       data.id = id;
       data.msg = $sce.trustAsHtml(data.msg); // allow html insertion
-      self.messages.push(data); 
+      self.messages.push(data);
       indicies[id] = $timeout(function () {
         var index, i = self.messages.length;
 
@@ -752,22 +752,31 @@
 
   });
 
-  services.factory('exchange', function (connect, appstate, $timeout, kpkUtilitaire, validate) {
-    var map;
+  services.factory('exchange', [
+    'appstate',
+    'validate',
+    'messenger',
+    function (appstate, validate, messenger) {
+      var map;
 
-    appstate.register('exchange_rate', function (globalRates) {
-      // build rate map anytime the exchange rate changes.
-      map = {};
-      globalRates.forEach(function (r) {
-        map[r.foreign_currency_id] = r.rate;
+      appstate.register('exchange_rate', function (globalRates) {
+        // build rate map anytime the exchange rate changes.
+        map = {};
+        globalRates.forEach(function (r) {
+          map[r.foreign_currency_id] = r.rate;
+        });
       });
-    });
 
-    return function (value, currency_id) {
-      if (!map) console.warn('No exchange rates detected!');
-      return map ? (map[currency_id] || 1.00) * value : value;
-    };
+      function exchange(value, currency_id, date) {
+        if (!map) {
+          console.error('No exchange rates loaded.');
+          messenger.danger('No Exchange Rates loaded!');
+        }
+        return map ? (map[currency_id] || 1.00) * value : value;
+      }
 
-  });
+      return exchange;
+    }
+  ]);
 
 })(angular);
