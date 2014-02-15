@@ -42,7 +42,7 @@ angular.module('kpk.controllers')
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
       console.log('updating');
       if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
-        var path = $scope.navtree.currentNode.p_url;
+        var path = $scope.navtree.currentNode.path;
         if (path) $location.path(path);
       }
     }, true);

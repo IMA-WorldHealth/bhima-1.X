@@ -7,7 +7,7 @@ module.exports = function (grunt) {
       options : {
         jshintrc : '.jshintrc',
       },
-      all: ['app/partials/**/*.js'],
+      all: ['app/js/controllers/controllers.js'],
       dev: {
         // options: {
         //   curly: true,
@@ -19,7 +19,7 @@ module.exports = function (grunt) {
         //   }
         // },
         files: {
-          src: ['/app/partials/**/*.js']
+          src: ['/app/js/**/*.js']
         }
       }
     },
@@ -97,6 +97,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-mysql-dump');
 
-  grunt.registerTask('build', ['jshint', 'concat', 'db_dump']);
-  grunt.registerTask('default', ['cssmin', 'concat', 'watch']);
+  grunt.registerTask('build', ['concat', 'jshint', 'cssmin']);
+  grunt.registerTask('default', [ 'cssmin', 'concat', 'db_dump', 'watch']);
 };

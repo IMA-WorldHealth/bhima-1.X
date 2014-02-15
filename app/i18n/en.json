@@ -434,6 +434,7 @@
 
   "PRICE_LIST" : {
     "TITLE" : "Price List Management",
+    "ACTIONS" : "Actions",
     "NEW" : "New Price List",
     "HELP_TXT_1" : "Select an action on the left to edit pricelist properties",
     "HELP_TXT_2" : "Edit the price list's metadata",

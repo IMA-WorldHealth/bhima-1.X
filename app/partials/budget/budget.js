@@ -1,3 +1,4 @@
-angular.module('kpk.controllers').controller('budgetController', function($scope) { 
+angular.module('kpk.controllers')
+.controller('budgetController', ['$scope', function($scope) {
    
-});
+}]);

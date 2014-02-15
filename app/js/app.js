@@ -35,17 +35,19 @@
       controller : 'debitorGroup',
       templateUrl: 'partials/debitor/debitor_group.html'
     }).
+    /*
     when('/accounts', {
       controller: 'accountController',
       templateUrl: '/partials/accounts/accounts.html'
     }).
+    */
     when('/inventory', {
       controller: 'inventoryController',
       templateUrl: '/partials/inventory/inventory.html'
     }).
     when('/inventory/view', {
       controller : 'inventoryViewCtrl',
-      templateUrl:'/partials/inventory/view.html'
+      templateUrl:'/partials/inventory/view/view.html'
     }).
     when('/inventory/register', {
       controller: 'inventoryRegisterController',
@@ -85,7 +87,7 @@
     }).
     when('/inventory/price_list', {
       controller: 'priceListController',
-      templateUrl: 'partials/pricelist/pricelist.html'
+      templateUrl: 'partials/price_list/pricelist.html'
     }).
     when('/exchange_rate', {
       controller : 'exchangeRateController',
@@ -158,15 +160,9 @@
       controller: 'settingsController',
       templateUrl: 'partials/settings/settings.html'
     })
-    /*
-    .when('/convention', {
-      controller: 'conventionController',
-      templateUrl: 'partials/convention/convention.html'
-    })
-    */
-    .when('/patient_group_assign', {
+    .when('/patient_group_assignment', {
       controller: 'AssignPatientGroupController',
-      templateUrl: 'partials/patient_group_assign/patient_group_assign.html'
+      templateUrl: 'partials/patient_group_assign/patient_group_assignment.html'
     })
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',

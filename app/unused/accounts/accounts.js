@@ -4,8 +4,6 @@ angular.module('kpk.controllers')
   // It should have facility for editing, displaying
   // and locking accounts
 
-  'use strict';
-
   function loadData () {
     var imports = {};
 
@@ -22,19 +20,19 @@ angular.module('kpk.controllers')
 
     imports.account_type = {tables: {'account_type' : {columns: ['id', 'type']}}};
     imports.account_category = {tables: {'account_category' : {columns : ['id', 'title']}}};
-    
+   
     return $q.all([connect.req(imports.account), connect.req(imports.account_type), connect.req(imports.account_category)]);
   }
 
   function initGrid () {
     var grid, columns, options, dataview;
-   
-    // dataview config 
+  
+    // dataview config
     dataview = new Slick.Data.DataView();
 
     dataview.onRowCountChanged.subscribe(function (e, args) {
       grid.updateRowCount();
-      grid.render(); 
+      grid.render();
     });
 
     dataview.onRowsChanged.subscribe(function (e, args) {
@@ -87,7 +85,7 @@ angular.module('kpk.controllers')
   }
 
   var promise = loadData();
- 
+
   $scope.models = {};
   $scope.stores = {};
   var dataview, grid;
@@ -98,10 +96,10 @@ angular.module('kpk.controllers')
     $scope.stores.types = a[1];
     $scope.models.types = a[1].data;
     $scope.stores.account_category = a[2];
-    var setup = initGrid(); 
+    var setup = initGrid();
     grid = setup.grid;
     $scope.dataview = setup.dataview;
-    
+   
     $scope.$watch('models.accounts', function () {
       $scope.dataview.setItems($scope.models.accounts);
     });
@@ -141,7 +139,7 @@ angular.module('kpk.controllers')
   $scope.account = {};
   // $scope.account.locked = 0;
   $scope.close = function () {
-    $scope.$modalInstance.dismiss(); 
+    $scope.$modalInstance.dismiss();
   };
   $scope.submit = function () {
     if ($scope.accountForm.$invalid) $scope.invalid = true;
