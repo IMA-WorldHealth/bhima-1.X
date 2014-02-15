@@ -64,7 +64,7 @@
       templateUrl: '/partials/records/sales_records/sales_records.html'
     }).
     when('/cash', {
-      controller: 'cashController',
+      controller: 'cash',
       templateUrl: '/partials/cash/cash.html'
     })
     .when('/creditors', {
