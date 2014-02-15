@@ -2,8 +2,10 @@
 .idea/
 *.min.js
 *.min.css
+
 node_modules/
 test/reports/
+scripts/sql/backup/
 
 # ignore build tool generated files
 app/js/controllers/controllers.js
