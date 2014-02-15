@@ -7,8 +7,6 @@ angular.module('kpk.controllers')
   'messenger',
   'validate',
   function ($scope, $q, connect, appstate, messenger, validate) {
-    'use strict';
-
     var dependencies = {};
     $scope.data = {};
 
@@ -53,7 +51,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-   
+ 
     dependencies.location = {
       query : '/location/'
     };
@@ -61,7 +59,7 @@ angular.module('kpk.controllers')
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
-      dependencies.debitor_group.query.where = 
+      dependencies.debitor_group.query.where =
         ['debitor_group.enterprise_id=' + enterprise.id];
       dependencies.account.query.where =
         ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id];
@@ -87,24 +85,24 @@ angular.module('kpk.controllers')
 
     $scope.new = function () {
       $scope.newGroup = {};
-      $scope.action = 'new'; 
+      $scope.action = 'new';
     };
 
     $scope.edit = function (group) {
       $scope.editGroup = angular.copy(group);
       $scope.edit_original = group;
-      $scope.action = 'edit'; 
+      $scope.action = 'edit';
     };
 
     $scope.lock = function (group) {
       connect.basicPost('debitor_group', [{id: group.id, locked: group.locked}], ["id"])
       .catch(function (err) {
-        messenger.danger('Error : ', JSON.stringify(err)); 
+        messenger.danger('Error : ', JSON.stringify(err));
       });
     };
 
     $scope.submitNew = function () {
-      $scope.newGroup.enterprise_id = $scope.enterprise.id; 
+      $scope.newGroup.enterprise_id = $scope.enterprise.id;
       var data = connect.clean($scope.newGroup);
       connect.basicPut('debitor_group', [data])
       .success(function (res) {
@@ -113,7 +111,7 @@ angular.module('kpk.controllers')
         $scope.action = '';
       })
       .catch(function (err) {
-        messenger.danger('Error :' + JSON.stringify(err)); 
+        messenger.danger('Error :' + JSON.stringify(err));
       });
     };
 
@@ -135,7 +133,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.resetEdit = function () {
-      $scope.editGroup = angular.copy($scope.edit_original);  
+      $scope.editGroup = angular.copy($scope.edit_original);
     };
 
   }

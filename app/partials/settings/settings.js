@@ -7,26 +7,27 @@ angular.module('kpk.controllers')
   'connect',
   'appcache',
   'messenger',
-function($scope, $routeParams, $translate, $location, connect, appcache, messenger) { 
+  function($scope, $routeParams, $translate, $location, connect, appcache, messenger) {
 
-  $scope.q = $routeParams.q || '';
+    $scope.q = $routeParams.q || '';
 
-  var MODULE_NAMESPACE = 'util';
-  var cache = new appcache(MODULE_NAMESPACE);
+    var MODULE_NAMESPACE = 'util';
+    var cache = new appcache(MODULE_NAMESPACE);
 
-  cache.fetch('language')
-  .then(function(res) { 
-    if(res) $scope.settings = {language: res.current};
-  });
+    cache.fetch('language')
+    .then(function(res) {
+      if(res) $scope.settings = {language: res.current};
+    });
 
-  $scope.updateLanguage = function updateLanuage(key) { 
-    $translate.uses(key);
-    cache.put('language', {current: key});
-    messenger.push({type: 'success', msg: 'Language preference updated: ' + key});
-  };
+    $scope.updateLanguage = function updateLanuage(key) {
+      $translate.uses(key);
+      cache.put('language', {current: key});
+      messenger.push({type: 'success', msg: 'Language preference updated: ' + key});
+    };
 
-  $scope.back = function () {
-    $location.path($scope.q);
-  };
+    $scope.back = function () {
+      $location.path($scope.q);
+    };
 
-}]);
+  }
+]);

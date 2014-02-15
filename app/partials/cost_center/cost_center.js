@@ -1,69 +1,77 @@
 angular.module('kpk.controllers')
-.controller('costCenter', function ($scope, $q, connect, appstate, messenger) {
-	'use strict';
-	//variables init
-	var requettes = {}, Auxiliairy_centers = [], principal_centers = [], enterprise = appstate.get('enterprise'), models = $scope.models = {};
-	requettes.cost_centers = {
-	tables : {'cost_center':{columns:['id', 'text', 'note', 'cost', 'pc']}, 
-	          'enterprise' : {columns :['name']}},
-	join : ['cost_center.enterprise_id=enterprise.id']
-	}
-	$scope.selection={};
+.controller('costCenter', [
+  '$scope',
+  '$q',
+  'connect',
+  'appstate',
+  'messenger',
+  function ($scope, $q, connect, appstate, messenger) {
+    var requettes = {},
+        auxiliary_centers = [],
+        principal_centers = [],
+        enterprise = appstate.get('enterprise'),
+        models = $scope.models = {};
 
-	//fonctions
+    requettes.cost_centers = {
+      tables : {
+        'cost_center' : {
+          columns : ['id', 'text', 'note', 'cost', 'pc']
+        },
+        'enterprise' : { columns : ['name']
+        }
+      },
+      join : ['cost_center.enterprise_id=enterprise.id']
+    };
 
-	function run (){
-	    $q.all(
-	      [
-	        connect.req(requettes.cost_centers)
-	      ])
-	    .then(init);
-	}
-	function init (records){
-		models.cost_centers = records[0].data;
-		groupCenters();
-		//defineTypeCenter(models.cost_centers);
-		updateChecks(false);
-	}
+    $scope.selection = {};
 
-	function defineTypeCenter(tbl){
-		tbl.map(function (item){
-			item.type = (item.pc)? "Principal Center" : "Auxiliairy Center";
-		});
-	}
-	function groupCenters (){
-		models.cost_centers.forEach(function (item){
-			(item.pc)? principal_centers.push(item) : Auxiliairy_centers.push(item);
-		});
-	}
+    function run() {
+      connect.req(requettes.cost_centers)
+      .then(init);
+    }
 
-	function checkAll (){
-	    models.cost_centers.forEach(function (item){
-	      if(item.pc) item.checked = $scope.selection.all;
-	    });
-  	}
+    function init (records){
+      models.cost_centers = records[0].data;
+      groupCenters();
+      //defineTypeCenter(models.cost_centers);
+      updateChecks(false);
+    }
 
-  	function updateChecks (value){
-  		principal_centers.map(function (item){
-	      if(item.pc) item.checked = value;
-	    });
-  	}
+    function defineTypeCenter(tbl) {
+      tbl.map(function (item){
+        item.type = (item.pc) ? "Principal Center" : "auxiliary Center";
+      });
+    }
 
-	//exposition
-	$scope.principal_centers = principal_centers;
-	$scope.Auxiliairy_centers = Auxiliairy_centers;
-	$scope.checkAll = checkAll;
+    function groupCenters() {
+      models.cost_centers.forEach(function (item){
+        if (item.pc) {
+          principal_centers.push(item);
+        } else {
+          auxiliary_centers.push(item);
+        }
+      });
+    }
 
+    function checkAll () {
+        models.cost_centers.forEach(function (item){
+          if(item.pc) item.checked = $scope.selection.all;
+        });
+      }
 
-	//invocation
+    function updateChecks (value){
+      principal_centers.map(function (item){
+        if(item.pc) item.checked = value;
+      });
+    }
 
-	run();
+    //exposition
+    $scope.principal_centers = principal_centers;
+    $scope.auxiliary_centers = auxiliary_centers;
+    $scope.checkAll = checkAll;
 
+    //invocation
 
-
-
-
-
-
-
-});
+    run();
+  }
+]);

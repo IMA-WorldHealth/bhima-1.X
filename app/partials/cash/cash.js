@@ -12,8 +12,6 @@ angular.module('kpk.controllers')
   'exchange',
   'kpkUtilitaire',
   function($scope, $q, $filter, $timeout, $location, connect, appstate, messenger, validate, exchange, util) {
-    'use strict';
-
     var dependencies = {},
         data = $scope.data = {};
     $scope.paying = [];

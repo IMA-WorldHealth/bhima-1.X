@@ -46,11 +46,11 @@
       templateUrl: '/partials/inventory/inventory.html'
     }).
     when('/inventory/view', {
-      controller : 'inventoryViewCtrl',
+      controller : 'inventoryView',
       templateUrl:'/partials/inventory/view/view.html'
     }).
     when('/inventory/register', {
-      controller: 'inventoryRegisterController',
+      controller: 'inventoryRegister',
       templateUrl: '/partials/inventory/register/register.html'
     }).
     when('/patient_records/:patientID?', {
@@ -118,7 +118,7 @@
       templateUrl: 'partials/reports/summary/summary.html'
     }).
     when('/reports/account_balance/', {
-      controller: 'reportAccountBalanceCtrl',
+      controller: 'reportAccountBalance',
       templateUrl: 'partials/reports/account_balance/account_balance.html'
     }).
     when('/reports/debitor_aging/', {
@@ -126,7 +126,7 @@
       templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
     }).
     when('/reports/account_statement/', {
-      controller: 'reportAccountStatementCtrl',
+      controller: 'reportAccountStatement',
       templateUrl: 'partials/reports/account_statement/account_statement.html'
     }).
     when('/reports/income_expensive/', {
@@ -161,7 +161,7 @@
       templateUrl: 'partials/settings/settings.html'
     })
     .when('/patient_group_assignment', {
-      controller: 'AssignPatientGroupController',
+      controller: 'AssignPatientGroup',
       templateUrl: 'partials/patient_group_assign/patient_group_assignment.html'
     })
     .when('/reports/chart_of_accounts/', {
@@ -189,7 +189,7 @@
       templateUrl: 'partials/cost_center/assigning/assigning.html'
     }).
     when('/patient_group', {
-      controller: 'patientGroupCtrl',
+      controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'
     })
     .when('/group_invoice/:id?', {

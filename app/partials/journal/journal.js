@@ -62,7 +62,7 @@ angular.module('kpk.controllers').controller('journal', [
 
     function journal(model) {
       $scope.model = model;
-  
+
       defineGridOptions();
       initialiseGrid();
     }
@@ -110,11 +110,11 @@ angular.module('kpk.controllers').controller('journal', [
       columns.push(chkbx.getColumnDefinition());
 
       grid = new Slick.Grid('#journal_grid', dataview, columns, options);
-    
+ 
       grid.registerPlugin(groupItemMetadataProvider);
       grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
       grid.registerPlugin(chkbx);
-  
+
       // grid.setSelectionModel(new Slick.CellSelectionModel());
 
       grid.onSort.subscribe(function(e, args) {
@@ -151,11 +151,11 @@ angular.module('kpk.controllers').controller('journal', [
         handleClick(e.target.className, args);
 
       });
-    
+ 
       dataview.beginUpdate();
       dataview.setItems($scope.model.journal.data);
       dataview.endUpdate();
-      
+   
       //default grouping
       groupBy('transaction');
 
@@ -171,7 +171,7 @@ angular.module('kpk.controllers').controller('journal', [
           return column;
         });
     }
-  
+
     $scope.$watch('columns', function () {
       if (!$scope.columns) return;
       var columns = $scope.columns.filter(function (column) {
@@ -214,7 +214,7 @@ angular.module('kpk.controllers').controller('journal', [
 
       splitTemplate = "<div class='pull-right'><a class='splitTransaction'>Split Transaction</a></div>";
       rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " records)</span>";
-     
+  
       //FIXME
       // if(!liveTransaction.state) rowMarkup += splitTemplate;
       rowMarkup += splitTemplate;
@@ -263,19 +263,19 @@ angular.module('kpk.controllers').controller('journal', [
           }
         });
         instance.result.then(function () {
-          console.log("modal closed successfully.");
+          //console.log("modal closed successfully.");
           $location.path('/reports/ledger/general_ledger');
         }, function () {
-          console.log("modal closed.");
+          //console.log("modal closed.");
         });
       }, function (data, status) {
-        console.log("data:", data);
+        //console.log("data:", data);
       });
     };
 
     function compareSort(a, b) {
       var x = a[sort_column], y = b[sort_column];
-      return (x == y) ? 0 : (x > y ? 1 : -1);
+      return (x === y) ? 0 : (x > y ? 1 : -1);
     }
 
     function formatDate (row, col, item) {
@@ -285,11 +285,11 @@ angular.module('kpk.controllers').controller('journal', [
     function totalFormat(totals, column) {
 
       var format = {};
-      format['Credit'] = '#F70303';
-      format['Debit'] = '#02BD02';
+      format.Credit = '#F70303';
+      format.Debit = '#02BD02';
       format['Debit Equiv'] = '#F70303';
       format['Credit Equiv'] = '#02BD02';
-    
+ 
       var val = totals.sum && totals.sum[column.field];
       if (val !== null) {
         return "<span style='font-weight: bold; color:" + format[column.name] + "'>" + $filter('currency')((Math.round(parseFloat(val)*100)/100)) + "</span>";
@@ -297,7 +297,7 @@ angular.module('kpk.controllers').controller('journal', [
       return "";
     }
 
-      
+   
     function groupBy(targetGroup) {
       var groupMap = {
         'transaction' : groupByTransaction,
@@ -314,7 +314,7 @@ angular.module('kpk.controllers').controller('journal', [
         'splitTransaction': splitTransaction,
         'split': split,
         'submitSplit': submitSplit
-      }
+      };
       if(buttonMap[className]) buttonMap[className](args);
     }
 
@@ -346,16 +346,16 @@ angular.module('kpk.controllers').controller('journal', [
 
       liveTransaction.state = "split";
       liveTransaction.transaction_id = transactionId;
-    
+ 
       liveTransaction.origin = {
         'debit' : transaction.totals.sum.debit,
         'credit' : transaction.totals.sum.credit,
         'debit_equiv' : transaction.totals.sum.debit_equiv,
         'credit_equiv' : transaction.totals.sum.credit_equiv
-      }
+      };
 
       liveTransaction.records = [];
-  
+
       liveTransaction.template = {
         trans_id: transactionId,
         trans_date: templateRow.trans_date,
@@ -371,8 +371,8 @@ angular.module('kpk.controllers').controller('journal', [
         // enterprise_id: templateRow.enterprise_id,
         // fiscal_year_id: templateRow.fiscal_year_id,
         // period_id: templateRow.period_id
-      }
-    
+      };
+ 
       transaction.rows.forEach(function(row) {
         row.newTransaction = false;
         liveTransaction.records.push(row);
@@ -386,59 +386,59 @@ angular.module('kpk.controllers').controller('journal', [
     function split() {
       var temporaryId = $scope.model.journal.generateid();
       var newsplit = JSON.parse(JSON.stringify(liveTransaction.template));
-      
+   
       newsplit.id = temporaryId;
       newsplit.newTransaction = true;
 
       dataview.addItem(newsplit);
       liveTransaction.records.push(newsplit);
       $scope.model.journal.recalculateIndex();
-    
+ 
       grid.scrollRowIntoView(dataview.getRowById(newsplit.id));
     }
- 
+
     //TODO Both submit function have similar structure, but differ on tests and put/post, exract pattern
     function submitSplit() {
       var records = liveTransaction.records;
-      var totalDebits = totalCredits = 0;
+      var totalDebits = 0, totalCredits = 0;
       var validAccounts = true;
       var packagedRecords = [], requestNew = [], requestUpdate = [], request = [];
       var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
-    
+ 
       //validation
       records.forEach(function(record) {
-      
+   
         totalDebits += Number(record.debit_equiv);
         totalCredits += Number(record.credit_equiv);
 
         var account_number = Number(record.account_number);
         if(isNaN(account_number)) validAccounts = false;
       });
-    
+ 
       if(!validAccounts) return $rootScope.$apply(messenger.danger('Records contain invalid accounts'));
-    
+ 
       if(!(totalDebits === liveTransaction.origin.debit_equiv && totalCredits === liveTransaction.origin.credit_equiv)) return $rootScope.$apply(messenger.danger('Transaction Debit/Credit value has changed'));
-    
+ 
       if(!fiscalSettings) return $rootScope.$apply(messenger.danger('Fiscal records are invalid'));
 
       $rootScope.$apply(messenger.success('All tests passed'));
 
       records.forEach(function(record) {
 
-        console.log('currency', record.currency_id);
+        //console.log('currency', record.currency_id);
         var newRecord = record.newTransaction;
 
         var packageChanges = {
           description: record.description,
           debit_equiv: record.debit_equiv,
           credit_equiv: record.credit_equiv,
-        }
-    
+        };
+ 
         packageChanges.account_id = $scope.model.account.get(record.account_number).id;
-    
-        if(newRecord) { 
+ 
+        if(newRecord) {
 
-          console.log('new record', record, record.currency_id);
+          //console.log('new record', record, record.currency_id);
           packageChanges.deb_cred_type = record.deb_cred_type;
           if(record.deb_cred_id) packageChanges.deb_cred_id = record.deb_cred_id;
           if(record.inv_po_id) packageChanges.inv_po_id = record.inv_po_id;
@@ -450,16 +450,16 @@ angular.module('kpk.controllers').controller('journal', [
           packageChanges.fiscal_year_id = fiscalSettings.id;
           packageChanges.enterprise_id = enterpriseSettings.id;
           if(record.currency_id) packageChanges.currency_id = record.currency_id;
-          packageChanges.origin_id = 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
+          packageChanges.origin_id = 4; //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
           packageChanges.user_id = liveTransaction.template.userId;
-          
+       
           return request.push(connect.basicPut('posting_journal', [packageChanges]));
         }
         packageChanges.id = record.id;
         request.push(connect.basicPost('posting_journal', [packageChanges], ['id']));
       });
-    
-      console.log('req', request);
+ 
+      //console.log('req', request);
       $q.all(request).then(function(res) {
         messenger.success('Transaction split written to database');
         liveTransaction.state = null;
@@ -469,7 +469,7 @@ angular.module('kpk.controllers').controller('journal', [
 
       }, function(err) { messenger.danger("Split submission failed"); });
     }
-  
+
     //TODO Currently checks for balance and for NULL values, should include only credits or debits etc.
     function submitTransaction() {
       var records = liveTransaction.records;
@@ -477,10 +477,10 @@ angular.module('kpk.controllers').controller('journal', [
       var validAccounts = true;
       var packagedRecords = [], request = [];
       var enterpriseSettings = appstate.get('enterprise'), fiscalSettings = appstate.get('fiscal'); //TODO no exception handling
-    
+ 
       //validation
       records.forEach(function(record) {
-      
+   
         totalDebits += Number(record.debit_equiv);
         totalCredits += Number(record.credit_equiv);
 
@@ -488,20 +488,20 @@ angular.module('kpk.controllers').controller('journal', [
         var deb_cred_id = Number(record.deb_cred_id);
 
         if(isNaN(account_number)) validAccounts = false;
-      
+   
         //leave deb/cred optional for now
       });
-    
+ 
       if(!validAccounts) {
         return $rootScope.$apply(messenger.danger('Records contain invalid accounts'));
       }
 
-      if(totalDebits != totalCredits) {
+      if(totalDebits !== totalCredits) {
         return $rootScope.$apply(messenger.danger('Transaction debits and credits do not match'));
       }
 
       if(!fiscalSettings) return $rootScope.$apply(messenger.danger('Fiscal records are invalid'));
-      
+   
       writeJournalLog(liveTransaction).then(function(result) {
 
         //Package and submit records
@@ -522,10 +522,10 @@ angular.module('kpk.controllers').controller('journal', [
             origin_id: 4, //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
             currency_id: record.currency_id,
             user_id: liveTransaction.template.userId
-          }
+          };
 
-          console.log(packaged);
-    
+          //console.log(packaged);
+ 
           packaged.account_id = $scope.model.account.get(record.account_number).id;
           if(!isNaN(Number(record.deb_cred_id))) {
             packaged.deb_cred_id = record.deb_cred_id;
@@ -545,12 +545,12 @@ angular.module('kpk.controllers').controller('journal', [
           grid.invalidate();
           grid.render();
         }, function(err) { messenger.danger(err.code); });
-      }, function(err) { messenger.danger(err.code); });    
+      }, function(err) { messenger.danger(err.code); });
     }
 
     function writeJournalLog(details) {
       var deferred = $q.defer(), logId = details.logId, justification = details.template.description, date = mysqlDate(), user = details.template.userId, transaction = details.transaction_id;
-      console.log(details, justification, date, user);
+      //console.log(details, justification, date, user);
       var packagedLog = {
         transaction_id: transaction,
         note: justification,
@@ -561,8 +561,8 @@ angular.module('kpk.controllers').controller('journal', [
       connect.basicPut('journal_log', [packagedLog]).then(function(result) {
         liveTransaction.logId = result.data.insertId;
         deferred.resolve(result);
-      
-        console.log('log was written', result);
+   
+        //console.log('log was written', result);
       }, function(error) { deferred.reject(error); });
 
       return deferred.promise;
@@ -580,8 +580,8 @@ angular.module('kpk.controllers').controller('journal', [
         deb_cred_id: "(Select Debtor)",
         deb_cred_type: "D",
         userId: template.userId
-      }
-    
+      };
+ 
       liveTransaction.records = [];
       liveTransaction.logId = template.logId;
 
@@ -590,17 +590,17 @@ angular.module('kpk.controllers').controller('journal', [
 
       //Duplicates object - not very intelectual
       balanceTransaction = JSON.parse(JSON.stringify(initialTransaction));
-      balanceTransaction.id++;
-    
+      balanceTransaction.id += 1;
+ 
       groupBy('transaction');
-    
+ 
       liveTransaction.transaction_id = template.id;
       liveTransaction.state = "add";
       liveTransaction.template = templateTransaction;
-    
+ 
       dataview.addItem(initialTransaction);
       dataview.addItem(balanceTransaction);
-    
+ 
       liveTransaction.records.push(initialTransaction);
       liveTransaction.records.push(balanceTransaction);
       grid.scrollRowToTop(dataview.getRowById(initialTransaction.id));
@@ -621,10 +621,10 @@ angular.module('kpk.controllers').controller('journal', [
 
     $scope.groupBy = groupBy;
     $scope.openTransaction = openTransaction;
-  
+
     //FIXME: without a delay of (roughly)>100ms slickgrid throws an error saying CSS can't be found
     //$timeout(init, 100);
- 
+
     function openTransaction() {
       if(!liveTransaction.state) {
         var verifyTransaction = $modal.open({
@@ -639,46 +639,47 @@ angular.module('kpk.controllers').controller('journal', [
         verifyTransaction.result.then(addTransaction, handleError);
       }
     }
-  
+
     //TODO iterate thorugh columns array - apply translate to each heading and update
     //(each should go through translate initially as well)
     $scope.$on('$translateChangeSuccess', function () {
       //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
     });
-  
+
     function SelectCellEditor(args) {
       var $select, defaultValue, scope = this;
       var id = args.column.id, targetObejct = args.item;
-  
+
       //TODO use prototypal inheritence vs. splitting on init
       var fieldMap = {
         'deb_cred_id' : initDebCred,
         'account_number' : initAccountNumber,
         'deb_cred_type' : initDebCredType
-      }
+      };
+
       this.init = fieldMap[args.column.field];
-    
+ 
       function initDebCred() {
         defaultValue = isNaN(Number(args.item.deb_cred_id)) ? null : args.item.deb_cred_id;
-      
-        options = ""
+   
+        options = "";
         $scope.model.debtor.data.forEach(function(debtor) {
           options += '<option value="' + debtor.id + '">' + debtor.id + ' ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
           if(!defaultValue) {
             defaultValue = debtor.id;
           }
         });
-              
+           
         $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
         $select.appendTo(args.container);
         $select.focus();
       }
 
       function initAccountNumber() {
-      
+   
         //default value - naive way of checking for previous value, default string is set, not value
         defaultValue = isNaN(Number(args.item.account_number)) ? null : args.item.account_number;
-        options = ""
+        options = "";
         $scope.model.account.data.forEach(function(account) {
           var disabled = (account.account_type_id === 3) ? 'disabled' : '';
           options += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
@@ -687,12 +688,12 @@ angular.module('kpk.controllers').controller('journal', [
           }
 
         });
-              
+           
         $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
         // $select = $compile("<span><input type='text' ng-model='account_id' typeahead='thing as thing.val for thing in thislist | filter: $viewValue' class='editor-typeahead' placeholder='Account Id'></span>")($scope);
         $select.appendTo(args.container);
         $select.focus();
-      };
+      }
 
       function initDebCredType() {
         var options = ["D", "C"];
@@ -731,7 +732,7 @@ angular.module('kpk.controllers').controller('journal', [
       };
 
       this.isValueChanged = function() {
-      
+
         //If default value is something that shouldn't be selected
         // return ($select.val() != defaultValue);
         return true;
