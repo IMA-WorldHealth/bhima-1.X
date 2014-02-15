@@ -22,7 +22,7 @@ which messes up page refresh.
 [x] Error during /logout does not eliminate the session data.
 [x] Angular captures the logout request and throws internal errors.
 [x] Login attempts after logout are captured by angular and throw internal errors.
-[ ] Routes still loaded from config.json file.
+[ ] Authorization.js does not filter access on user permissions.
 
 #### Creditor Group Mgmt
 [x] Account selects are not ordered properly
@@ -44,3 +44,7 @@ which messes up page refresh.
 
 #### Sales
 [ ] Issue a warning to the user if a fiscal year does not exist.
+
+#### Opening Balance
+[ ] Error when trying to post 0 record opening balances.
+[ ] Opening balance modal is terribly slow.

@@ -16,13 +16,22 @@
   },
   "auth" : {
     "paths" : [
+      "/js",
+      "/assets",
       "/css",
       "/data",
       "/tree",
-      "/partials",
       "/lib",
+      "/i18n",
       "/journal",
-      "/favicon"
+      "/favicon",
+      "/location",
+      "/max",
+      "/account_balance",
+      "/ledger",
+      "/user_session",
+      "/sale",
+      "/fiscal"
     ]
   }
 }

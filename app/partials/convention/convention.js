@@ -1,6 +1,11 @@
 angular.module('kpk.controllers')
-.controller('conventionController', function ($scope, $q, connect, appstate, messenger) {
-  'use strict';
+.controller('conventionController', [
+  '$scope',
+  '$q',
+  'connect',
+  'appstate',
+  'messenger',
+  function ($scope, $q, connect, appstate, messenger) {
   //variables init
 
   var requettes = {}, models = $scope.models = {}, stores = {}, enterprise = appstate.get('enterprise');

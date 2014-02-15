@@ -112,6 +112,8 @@
     "maxerr"        : 100,      // Maximum errors before stopping.
     "predef"        : [         // Extra globals.
         "angular",
+        "$",
+        "Slick",
         "process",
         "require",
         "module"

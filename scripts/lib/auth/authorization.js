@@ -18,8 +18,9 @@ module.exports = function (db, global_paths) {
   // the user's particular permissions level.
 
   function match(url, paths) {
+    if (url === '/') { return true; }
     // returns true if url fits an allowable path
-    return true || paths.some(function (path) {
+    return paths.some(function (path) {
       return url.match(path);
     });
   }
@@ -36,12 +37,13 @@ module.exports = function (db, global_paths) {
         next() :
         res.send(403, {
           error: 'Access prohibited.',
+          url : req.url,
           fix: 'Change config.json or paths in the database'
         });
     }
 
     if (req.url === '/login') {
-      return res.sendfile('./app/login.html');
+      return res.sendfile('./app/login.html')
     } else if (req.url === '/css/kapok.min.css') {
     // FIXME: this is a temporary exposure of the app css
       return res.sendfile('./app/css/kapok.min.css');

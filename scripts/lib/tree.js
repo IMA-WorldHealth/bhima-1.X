@@ -3,7 +3,7 @@
 var parser = require('./database/parser')();
 var q = require('q');
 
-module.exports = (function (db) {
+module.exports = function (db) {
   // This module is responsible for constructing each
   // person's tree based on their permissions in the
   // database.
@@ -18,9 +18,9 @@ module.exports = (function (db) {
     function getChildren (parent_id) {
       var d = q.defer();
       var sql = parser.select({
-        tables : { 
+        tables : {
           'permission' : { columns : ['id', 'id_unit'] },
-          'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'p_url']}
+          'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'path']}
         },
         join : ['permission.id_unit=unit.id'],
         where : ['permission.id_user='+userid, 'AND', 'unit.parent='+parent_id]
@@ -45,9 +45,9 @@ module.exports = (function (db) {
     function main () {
       var d = q.defer();
       var query = parser.select({
-        tables : { 
+        tables : {
           'permission' : { columns : ['id', 'id_unit']},
-          'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'p_url']}
+          'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'path']}
         },
         join : ['permission.id_unit=unit.id'],
         where : ['permission.id_user=' + userid, 'AND', 'unit.parent=0'] // This assumes root is always "0"
@@ -77,7 +77,7 @@ module.exports = (function (db) {
   }
 
   return {
-    load : load 
+    load : load
   };
 
-});
+};
