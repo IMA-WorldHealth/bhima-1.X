@@ -97,6 +97,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-mysql-dump');
 
-  grunt.registerTask('build', ['jshint', 'concat']);
-  grunt.registerTask('default', [ 'cssmin', 'concat', 'db_dump', 'watch']);
+  grunt.registerTask('build', ['jshint', 'concat', 'db_dump']);
+  grunt.registerTask('default', [ 'cssmin', 'concat', 'watch']);
 };
