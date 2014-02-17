@@ -17,6 +17,7 @@
   "auth" : {
     "paths" : [
       "/js",
+      "/partials/invoice",
       "/assets",
       "/css",
       "/data",
