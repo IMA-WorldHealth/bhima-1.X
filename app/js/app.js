@@ -110,7 +110,7 @@
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
     }).
     when('/reports/ledger/general_ledger', {
-      controller: 'reportGeneralLedgerCtrl',
+      controller: 'reportGeneralLedger',
       templateUrl: '/partials/reports/ledger/general_ledger.html'
     }).
     when('/reports/summary', {
@@ -130,7 +130,7 @@
       templateUrl: 'partials/reports/account_statement/account_statement.html'
     }).
     when('/reports/income_expensive/', {
-      controller: 'reportIncomeExpensiveCtrl',
+      controller: 'reportIncomeExpensive',
       templateUrl: 'partials/reports/income_expensive/income_expensive.html'
     })
     .when('/location', {
@@ -162,7 +162,7 @@
     })
     .when('/patient_group_assignment', {
       controller: 'AssignPatientGroup',
-      templateUrl: 'partials/patient_group_assign/patient_group_assignment.html'
+      templateUrl: 'partials/patient_group_assignment/patient_group_assign.html'
     })
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
