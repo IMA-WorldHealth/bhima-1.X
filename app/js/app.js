@@ -122,7 +122,7 @@
       templateUrl: 'partials/reports/account_balance/account_balance.html'
     }).
     when('/reports/debitor_aging/', {
-      controller: 'reportDebitorAgingCtrl',
+      controller: 'reportDebitorAging',
       templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
     }).
     when('/reports/account_statement/', {
