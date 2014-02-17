@@ -57,7 +57,7 @@ angular.module('kpk.controllers')
 
     function selectTreeNode(list, locationPath) {
       list.some(function (element) {
-        var sanitiseElement = element.p_url.replace(/\//g, '');
+        var sanitiseElement = element.path.replace(/\//g, '');
         var sanitiseLocation = locationPath.replace(/\//g, '');
    
         if(sanitiseElement === sanitiseLocation) {

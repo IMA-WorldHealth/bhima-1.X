@@ -96,6 +96,8 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
     connect.basicGet('/fiscal/' + $scope.enterpriseId  + '/' + model.start + '/' + model.end + '/' + model.note)
     .then(function(res) {
 
+      console.log('fiscal year generation returned', res);
+
       var instance = $modal.open({
         templateUrl: 'createOpeningBalanceModal.html',
         keyboard : false,
@@ -147,8 +149,8 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
               o.enterprise_id = enterpriseId;
               return o;
             });
-           
-            connect.basicPut('period_total', [data])
+            
+            connect.basicPut('period_total', data)
             .then(function (res) {
               $modalInstance.close();
             }, function (err) {
