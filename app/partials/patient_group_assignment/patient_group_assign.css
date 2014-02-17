@@ -1,4 +1,4 @@
 .assign-size {
   height: 500px;
-  overflow: scroll;
+  overflow: auto;
 }

@@ -162,7 +162,7 @@
     })
     .when('/patient_group_assignment', {
       controller: 'AssignPatientGroup',
-      templateUrl: 'partials/patient_group_assign/patient_group_assignment.html'
+      templateUrl: 'partials/patient_group_assignment/patient_group_assign.html'
     })
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
