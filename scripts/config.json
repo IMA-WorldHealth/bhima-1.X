@@ -39,7 +39,11 @@
       "/ledger",
       "/user_session",
       "/sale",
-      "/fiscal"
+      "/fiscal",
+      "/reports/transReport/",
+      "/reports/accountStatement/",
+      "/reports/debitorAging/",
+      "/InExAccounts/"
     ]
   }
 }
