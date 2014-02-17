@@ -59,7 +59,9 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
+  
   var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
+  
   db.execute(updatesql, function(err, ans) {
     if (err) return next(err);
     res.send(200, {insertId: ans.insertId});
@@ -70,6 +72,7 @@ app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
 
   var insertsql = parser.insert(req.body.table, req.body.data);
+
   db.execute(insertsql, function (err, ans) {
     if (err) return next(err);
     res.send(200, {insertId: ans.insertId});
