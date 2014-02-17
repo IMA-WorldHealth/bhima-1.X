@@ -28,7 +28,7 @@ which messes up page refresh.
 [x] Account selects are not ordered properly
 
 #### Fiscal Year
-[ ] Opening balances still has button for randomly generating data
+[x] Opening balances still has button for randomly generating data
 
 #### Exchange Rate
 [ ] Exchange rate should refresh the daily exchange rate
@@ -44,7 +44,14 @@ which messes up page refresh.
 
 #### Sales
 [ ] Issue a warning to the user if a fiscal year does not exist.
+[ ] The submit button should be green, like everything else.
 
 #### Opening Balance
 [ ] Error when trying to post 0 record opening balances.
 [ ] Opening balance modal is terribly slow.
+
+#### Patient Registration
+[ ] No indication whether the patient has been registered or not.
+
+#### Posting Journal
+[x] Only the lines concerning the patient's accounts should be recorded with their id.

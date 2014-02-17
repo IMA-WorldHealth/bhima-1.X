@@ -255,8 +255,8 @@ module.exports = function (db) {
                   '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                 'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                   '`sale`.`note`, `inv_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
-                  '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, `sale`.`debitor_id`, ' +
-                  ' \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                  '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+                  ' null, `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
                 'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inv_group` ON ' +
                   '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
                   '`inventory`.`group_id`=`inv_group`.`id` ' +
@@ -399,7 +399,7 @@ module.exports = function (db) {
                       '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                       '`cash`.`description`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money +
-                      '`cash_item`.`invoice_id`, `cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
+                      '`cash_item`.`invoice_id`, `cash`.`currency_id`, null, null, ' +
                       [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` JOIN `cash_item` ON ' +
                       ' `cash`.`id` = `cash_item`.`cash_id` ' +
