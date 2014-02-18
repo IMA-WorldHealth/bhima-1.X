@@ -22,7 +22,7 @@ which messes up page refresh.
 [x] Error during /logout does not eliminate the session data.
 [x] Angular captures the logout request and throws internal errors.
 [x] Login attempts after logout are captured by angular and throw internal errors.
-[ ] Authorization.js does not filter access on user permissions.
+[x] Authorization.js does not filter access on user permissions.
 
 #### Creditor Group Mgmt
 [x] Account selects are not ordered properly
@@ -41,6 +41,7 @@ which messes up page refresh.
 [ ] Cashbox should allow adjusting amounts on an invoice to invoice basis.
 [x] Cashbox cannot post multiple invoices, only one (the first) invoice is posted.
 [ ] Post a warning if no debitor invoices are found.
+[ ] Formatting on "find patient" needs some love on smaller screens.
 
 #### Sales
 [ ] Issue a warning to the user if a fiscal year does not exist.
