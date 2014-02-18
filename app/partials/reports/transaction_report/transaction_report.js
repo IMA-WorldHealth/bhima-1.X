@@ -5,13 +5,14 @@ angular.module('kpk.controllers')
   '$filter',
   'connect',
   'kpkUtilitaire',
-  function ($scope, $q, $filter, connect, kpkUtilitaire) {
+  function ($scope, $q, $filter, connect, util) {
 
   //variables
 
     $scope.models = {};
     $scope.model = {};
     $scope.data = {};
+    $scope.isOpen = true;
     var creditors, debitors, debitorGroups, creditorGroups;
     var names = ['debitors', 'creditors', 'debitorGroups', 'creditorGroups'];
 
@@ -22,7 +23,7 @@ angular.module('kpk.controllers')
       $scope.models[names[1]] = records[1].data;
       $scope.models[names[2]] = records[2].data;
       $scope.models[names[3]] = records[3].data;
-      for(var key in $scope.models) {
+      for (var key in $scope.models) {
         mapper($scope.models[key]);
       }
     }
@@ -54,8 +55,8 @@ angular.module('kpk.controllers')
 
     $scope.populate = function (){
       if($scope.data.dateFrom && $scope.data.dateTo &&
-        (kpkUtilitaire.isDateAfter($scope.data.dateTo, $scope.data.dateFrom) ||
-         kpkUtilitaire.areDatesEqual($scope.data.dateTo, $scope.data.dateFrom))) {
+        (util.isDateAfter($scope.data.dateTo, $scope.data.dateFrom) ||
+         util.areDatesEqual($scope.data.dateTo, $scope.data.dateFrom))) {
         $scope.show = true;
         var qo;
         if ($scope.data.type === 'I') {
