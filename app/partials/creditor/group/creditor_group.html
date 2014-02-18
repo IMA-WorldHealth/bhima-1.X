@@ -14,7 +14,7 @@
   <div class="row">
 
     <div class="col-xs-6">
-      <div class="panel panel-default" style="max-height: 300px;">
+      <div class="panel panel-default" style="max-height: 300px; overflow: auto;">
         <div class="panel-heading">
           <span>{{ "CREDITOR_GRP.CREDITOR_GROUPS" | translate }}</span>
         </div>
@@ -107,7 +107,7 @@
             <div class="form-group">
               <label class="col-xs-3 control-label">{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-kapok" ng-model="new.account_id" required> 
+                <select class="form-kapok" ng-model="edit.account_id" required> 
                   <option value="" disabled="disabled">--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
                   <option ng-repeat="account in accounts.data | orderBy:'account_number'" ng-disabled="account.type=='title'" value="{{account.id}}">
                     {{ account.account_number + ' -- ' + account.account_txt }}

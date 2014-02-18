@@ -22,13 +22,13 @@ which messes up page refresh.
 [x] Error during /logout does not eliminate the session data.
 [x] Angular captures the logout request and throws internal errors.
 [x] Login attempts after logout are captured by angular and throw internal errors.
-[ ] Authorization.js does not filter access on user permissions.
+[x] Authorization.js does not filter access on user permissions.
 
 #### Creditor Group Mgmt
 [x] Account selects are not ordered properly
 
 #### Fiscal Year
-[ ] Opening balances still has button for randomly generating data
+[x] Opening balances still has button for randomly generating data
 
 #### Exchange Rate
 [ ] Exchange rate should refresh the daily exchange rate
@@ -41,10 +41,18 @@ which messes up page refresh.
 [ ] Cashbox should allow adjusting amounts on an invoice to invoice basis.
 [x] Cashbox cannot post multiple invoices, only one (the first) invoice is posted.
 [ ] Post a warning if no debitor invoices are found.
+[ ] Formatting on "find patient" needs some love on smaller screens.
 
 #### Sales
 [ ] Issue a warning to the user if a fiscal year does not exist.
+[ ] The submit button should be green, like everything else.
 
 #### Opening Balance
 [ ] Error when trying to post 0 record opening balances.
 [ ] Opening balance modal is terribly slow.
+
+#### Patient Registration
+[ ] No indication whether the patient has been registered or not.
+
+#### Posting Journal
+[x] Only the lines concerning the patient's accounts should be recorded with their id.

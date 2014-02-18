@@ -93,17 +93,12 @@
           <form class="form-horizontal">
 
             <div class="form-group">
-              <div class="col-xs-4">
+              <div class="col-xs-6">
                 <label class="control-label col-xs-4">{{ "CASH.TOTAL_DUE" | translate }}</label>
                 <p class="form-control-static" ng-bind-html="data.total | intlcurrency:cashbox.currency_id"></p>
               </div>
 
-              <div class="col-xs-4">
-                <label class="control-label col-xs-4">{{ "CASH.TOTAL_PAYING" | translate }}</label>
-                <p class="form-control-static" ng-bind-html="data.payment | intlcurrency:cashbox.currency_id"></p>
-              </div>
-
-              <div class="col-xs-4">
+              <div class="col-xs-6">
                 <label class="control-label col-xs-4">{{ "CASH.OVERDUE" | translate }}</label>
                 <p class="form-control-static" ng-bind-html="data.excess | intlcurrency:cashbox.currency_id"></p>
               </div>

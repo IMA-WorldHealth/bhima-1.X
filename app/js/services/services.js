@@ -473,7 +473,6 @@
             index = this.index;
       
         if (id in index) {
-          console.log("Trying to split on ",data);
           data.splice(index[id], 1);
           this.setData(data);
           queue.push({method: 'DELETE', url: '/data/' + target + '/' + id});
@@ -497,10 +496,8 @@
         // sync the data from the client to the server
         var fail = [];
         queue.forEach(function (req) {
-          console.log(pprint, 'Executing: ', req);
           $http(req)
             .success(function () {
-              console.log(req.data.id, "synced successfully.");
             })
             .error(function (data, status, headers, config) {
               alert("An error in data transferred occured with status:", status);
