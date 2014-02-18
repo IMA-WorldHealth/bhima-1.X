@@ -17,21 +17,33 @@
   "auth" : {
     "paths" : [
       "/js",
+      "/partials/invoice",
       "/assets",
       "/css",
       "/data",
+      "/trial",
+      "/post",
       "/tree",
+      "/finance",
+      "/settings",
       "/lib",
       "/i18n",
       "/journal",
       "/favicon",
       "/location",
+      "/province",
+      "/sector",
+      "village",
       "/max",
       "/account_balance",
       "/ledger",
       "/user_session",
       "/sale",
-      "/fiscal"
+      "/fiscal",
+      "/reports/transReport/",
+      "/reports/accountStatement/",
+      "/reports/debitorAging/",
+      "/InExAccounts/"
     ]
   }
 }

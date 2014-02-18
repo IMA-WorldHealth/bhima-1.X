@@ -1,5 +1,4 @@
 {
-
   "POSTING_JOURNAL" : {
     "TITLE"                 : "Journal de Saisie",
     "GROUP_BY"              : "Groupe Par",
@@ -96,6 +95,34 @@
     "DEBITOR"         : "Sélectionnez une Débiteur"
   },
 
+  "PATIENT_REG" : {
+    "TITLE"                    : "Reception/Enregistrement",
+    "PATIENT_DETAILS"          : "Detailles Malades",
+    "CREATE_DEBTOR_GROUP"      : "Crée Groupe Debiteur",
+    "VIEW_PATIENT_RECORDS"     : "Voire Tous Enregistrements",
+    "PATIENT_GROUP_ASSIGNMENT" : "Assignation Groupe Malades",
+    "PATIENT"                  : "Malades",
+    "FIRST_NAME"               : "Prenom",
+    "SECOND_NAME"              : "Postnom",
+    "YOB"                      : "Année de Naissance",
+    "ENTER_FULL_DATE"          : "Saisie Date Exact",
+    "DOB"                      : "Date de Naissance",
+    "SEX"                      : "Sex",
+    "MALE"                     : "Homme",
+    "FEMALE"                   : "Femme",
+    "FINANCE"                  : "Finance",
+    "PATIENT_GROUP"            : "Groupe Malades",
+    "DEBTOR_GROUP"             : "Groupe Debiteur",
+    "OPTIONAL_INFO"            : "Informations Non-important",
+    "PHONE_NO"                 : "Numero Téléphone",
+    "EMAIL"                    : "Email",
+    "PARENT_NAME"              : "Nom de Pere",
+    "RELIGION"                 : "Religion",
+    "MARITAL_STATUS"           : "Marital Status",
+    "PATIENT_NOTES"            : "Note",
+    "REGISTER_PATIENT"         : "Enregistre le Malade"
+  },
+
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
     "PASSWORD"       : "Password",
@@ -185,7 +212,7 @@
   "UNITS"            : "modules",
   "USER"             : "utilisateur",
   "PERMISSION"       : "permission",
-  "UP_DIALOGUE"      : "crocher les modules utilisateur ", 
+  "UP_DIALOGUE"      : "crocher les modules utilisateur ",
   "UP_DIALOGUE_2"    : "peut acceder",
 
   
@@ -195,15 +222,15 @@
   "PHONE"        : "téléphone",
   "ABBREVIATION" : "abbreviation",
 
-  "FISCAL_YEAR_PAGE_NEW"                 : "Nouvelle Annee Fiscale",
-  "FISCAL_YEAR_PAGE_DESC"                : "Desc Annee.",
+  "FISCAL_YEAR_PAGE_NEW"                 : "Nouvelle Année Fiscale",
+  "FISCAL_YEAR_PAGE_DESC"                : "Desc Année.",
   "FISCAL_YEAR_PAGE_STARTMONTH"          : "Debut Mois",
-  "FISCAL_YEAR_PAGE_ONEYEAR"             : "Une Annee",
+  "FISCAL_YEAR_PAGE_ONEYEAR"             : "Une Année",
   "FISCAL_YEAR_PAGE_SPECIFY"             : "Specifier",
   "FISCAL_YEAR_PAGE_ENDMONTH"            : "Fin Mois",
   "FISCAL_YEAR_PAGE_SUBMIT"              : "Soumettre",
   "FISCAL_YEAR_PAGE_NAME"                : "Nom",
-  "FISCAL_YEAR_PAGE_LOCK"                : "Bloquer Cette Annee Fiscale",
+  "FISCAL_YEAR_PAGE_LOCK"                : "Bloquer Cette Année Fiscale",
   "FISCAL_YEAR_PAGE_TOTALMONTH"          : "Total Mois",
   "FISCAL_YEAR_PAGE_FIRSTVOUCHER"        : "Premier No Voucher",
   "FISCAL_YEAR_PAGE_LASTVOUCHER"         : "Dernier No Voucher.",
