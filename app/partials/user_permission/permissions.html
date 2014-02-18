@@ -4,7 +4,7 @@
 
 <section class="top-nav">
 	<div class="pull-right">
-    <button class="btn btn-sm btn-default" class="capital" ng-click="setAction('add')">
+    <button class="btn btn-sm btn-default" ng-click="setAction('add')">
       <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
     </button>
 	</div>
@@ -13,10 +13,11 @@
 <div class="content">
   <div class="row">
     <div class="col-xs-6">
-      <div class="panel panel-primary">
+      <div class="panel panel-primary" style="overflow: auto">
         <div class="panel-heading"> 
           {{ "PERMISSION.REGISTERED" | translate }}
         </div>
+        <div class="table-responsive">
         <table class="table table-hover table-condensed">
           <thead>
             <tr>
@@ -37,6 +38,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 
