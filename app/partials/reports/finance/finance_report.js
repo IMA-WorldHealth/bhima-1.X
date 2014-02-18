@@ -2,6 +2,7 @@
 angular.module('kpk.controllers')
 .controller('reportFinance', [
   '$scope',
+  '$q',
   'connect',
   'appstate',
   'validate',
