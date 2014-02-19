@@ -1,4 +1,4 @@
-var credentials = { 
+var credentials = {
   username : 'sfount',
   password : '1'
 };
@@ -6,17 +6,17 @@ var credentials = {
 var bhimaUtil = require('../../test/bhimaUtil.js')(credentials);
 
 var patient = { 
-  firstName : "Steven",
-  secondName : "Fountain",
+  firstName : "NewPatient",
+  secondName : "SecondName",
   yob : "1993",
   sex : "M",
   debtorGroup : "3"
-}
+};
 
-module.exports = { 
+module.exports = {
   'login' : bhimaUtil.login,
 
-  'registerPatient' : function(client) { 
+  'registerPatient' : function(client) {
     bhimaUtil.navigateTree('Hospital', 'Patient Registration', client);
     client.waitForElementVisible('div[id=patientDetails]', 1000);
 
@@ -25,9 +25,20 @@ module.exports = {
       .setValue('input[id="second-name"]', patient.secondName)
       .setValue('input[id="yob"]', patient.yob)
       .click('input[value="' + patient.sex + '"]')
-      .click('select[id="debtor-group"]')
-      .assert.visible('option[value="' + patient.debtorGroup + '"]')
-      .setValue('select[id="debtor-group"]', patient.debtorGroup);
+      .assert.visible('select[id="debtor-group"] > [value="' + patient.debtorGroup + '"]')
+      .click('select[id="debtor-group"] > [value="' + patient.debtorGroup + '"]');
+
+    client.click('a[id="submitPatient"]');
+    
+    //Hacky - could use waitFor and begin next test on that
+    client.pause(500);
+
+    //Hacky again - what if the language is Fr ?
+    client.assert.containsText('header', 'Receipts');
+  },
+
+  'billPatient' : function(client) {
+    console.log('reached patient billing');
   },
 
   'logout' : bhimaUtil.logout

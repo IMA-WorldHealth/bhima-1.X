@@ -59,8 +59,8 @@ module.exports = {
     client.verify.visible('button[id="submitBalance"]')
       .click('button[id="submitBalance"]');
 
-    client.waitForElementVisible('[id=message]', 3000)
-      .verify.cssClassPresent('[id=message]', 'alert-success');
+    client.waitForElementVisible('[name=success]', 3000)
+      .verify.cssClassPresent('[name=success]', 'alert-success');
   }, 
 
   'logout' : function (client) { 

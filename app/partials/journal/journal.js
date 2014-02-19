@@ -19,7 +19,8 @@ angular.module('kpk.controllers').controller('journal', [
     var grid, dataview, sort_column, columns, options, chkbx;
 
     dependencies.journal = {
-      required: true,
+      // FIXME 
+      // required: true,
       query: {
         'tables' : {
           'posting_journal' : { 'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] },
@@ -363,8 +364,8 @@ angular.module('kpk.controllers').controller('journal', [
         account_number: "(Select Account)",
         debit_equiv: 0,
         credit_equiv: 0,
-        deb_cred_type: templateRow.deb_cred_type,
-        deb_cred_id: templateRow.deb_cred_id,
+        // deb_cred_type: templateRow.deb_cred_type,
+        // deb_cred_id: templateRow.deb_cred_id,
         inv_po_id: templateRow.inv_po_id,
         currency_id: templateRow.currency_id,
         userId: 13 //FIXME
@@ -577,8 +578,8 @@ angular.module('kpk.controllers').controller('journal', [
         debit_equiv: 0,
         credit_equiv: 0,
         account_number: "(Select Account)",
-        deb_cred_id: "(Select Debtor)",
-        deb_cred_type: "D",
+        deb_cred_id: null,
+        deb_cred_type: null,
         userId: template.userId
       };
  
