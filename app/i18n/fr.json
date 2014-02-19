@@ -125,6 +125,33 @@
     "REGISTER_PATIENT"         : "Enregistre le Malade"
   },
 
+  "FISCAL_YEAR" : {
+    "TITLE"                 : "Annee Fiscale",
+    "MANAGEMENT"            : "Gestion",
+    "RECORDS"               : "Liste des Annees Fiscale",
+    "NEW"                   : "Nouvelle Annee",
+    "DESC"                  : "Description",
+    "START_DATE"            : "Debut Date",
+    "START_MONTH"           : "Debut Mois",
+    "ONE_YEAR"              : "Une Annee",
+    "SPECIFY"               : "Specifier",
+    "END_MONTH"             : "Fin Mois",
+    "NAME"                  : "Nom",
+    "LOCK"                  : "Bloquer Cette Annee Fiscale",
+    "TOTAL_MONTH"           : "Total Months",
+    "FIRST_VOUCHER"         : "Premier No Voucher",
+    "LAST_VOUCHER"          : "Dernier No Voucher",
+    "POSTING_FROM"          : "Poster De",
+    "NO_RECORDS" : "No Fiscal Year Records Found.",
+    "POSTING_TO"            : "Poster jusqu'au",
+    "PERIODS"               : "Periodes",
+    "FISCAL_YEAR_SELECTION" : "Selection de l\"Annee Fiscale",
+    "HELP_TXT" : "Cree et Gere l'annee fiscale du system.",
+    "DESCRIPTION"           : "Description",
+    "ALERT_ONE"        : "Il n\"y a aucune annee fiscale enregistree pour l\"entraprise ",
+    "ALERT_TWO"            : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports."
+  },
+
   "COLUMNS" : {
     "COLUMNS"        : "Colonnes",
     "PASSWORD"       : "Mot de passe",
@@ -183,7 +210,6 @@
   "GENERAL_LEDGER"  : "grand livre gÃ©nÃ©ral",
   "DEBIT"           : "dÃ©bit",
   "CREDIT"          : "crÃ©dit",
-  "FISCAL_YEAR"     : "annee fiscal",
 
   "CONFIGURE" : "configurer",
   "PRINT"     : "imprimer",
@@ -224,29 +250,8 @@
   
   "NAME"         : "nom",
   "CASH_ACCOUNT" : "compte caisse",
-  "LOCATION"     : "location",
   "PHONE"        : "tÃ©lÃ©phone",
   "ABBREVIATION" : "abbreviation",
-
-  "FISCAL_YEAR_PAGE_NEW"                 : "Nouvelle AnnÃ©e Fiscale",
-  "FISCAL_YEAR_PAGE_DESC"                : "Desc AnnÃ©e.",
-  "FISCAL_YEAR_PAGE_STARTMONTH"          : "Debut Mois",
-  "FISCAL_YEAR_PAGE_ONEYEAR"             : "Une AnnÃ©e",
-  "FISCAL_YEAR_PAGE_SPECIFY"             : "Specifier",
-  "FISCAL_YEAR_PAGE_ENDMONTH"            : "Fin Mois",
-  "FISCAL_YEAR_PAGE_SUBMIT"              : "Soumettre",
-  "FISCAL_YEAR_PAGE_NAME"                : "Nom",
-  "FISCAL_YEAR_PAGE_LOCK"                : "Bloquer Cette AnnÃ©e Fiscale",
-  "FISCAL_YEAR_PAGE_TOTALMONTH"          : "Total Mois",
-  "FISCAL_YEAR_PAGE_FIRSTVOUCHER"        : "Premier No Voucher",
-  "FISCAL_YEAR_PAGE_LASTVOUCHER"         : "Dernier No Voucher.",
-  "FISCAL_YEAR_PAGE_POSTINGFROM"         : "Poster De",
-  "FISCAL_YEAR_PAGE_POSTINGTO"           : "Poster jusqu\"au",
-  "FISCAL_YEAR_PAGE_PERIODS"             : "Periodes",
-  "FISCAL_YEAR_PAGE_FISCALYEARSELECTION" : "Selection de l\"Annee Fiscale",
-  "FISCAL_YEAR_PAGE_DESCRIPTION"         : "Description",
-  "FISCAL_YEAR_PAGE_ALERTPARTONE"        : "Il n\"y a aucune annee fiscale enregistree pour l\"entraprise ",
-  "FISCAL_YEAR_PAGE_ALERTTWO"            : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports.",
 
 
   "ACCOUNT_PAGE_TITLE" : "Tableau des Comptes",
@@ -263,7 +268,8 @@
     "SECTOR"   : "Secteur",
     "VILLAGE"  : "Village"
   },
-   "DEBITOR_GRP" : {
+
+  "DEBITOR_GRP" : {
     "TITLE"      : "Gestion des Groupes des Debiteurs",
     "GROUPS"     : "Groupe de Debiteur",
     "NEW"        : "Nouveau Groupe de Debiteur",
@@ -275,11 +281,11 @@
     "INFO"       : "Information du Groupe"
   },
 
-    "FORM" : {
+  "FORM" : {
     "SAVE"           : "Sauver",
     "SAVE_FORM"      : "Sauver Formulaire",
     "SAVE_CHANGES"   : "Sauver Changement",
-    "SUBMIT_BALANCES"  : "Sauver Balances",
+    "SUBMIT_BALANCES" : "Sauver Balances",
     "SUBMIT"         : "Soumettre",
     "DISCARD"        : "Annuler",
     "RESET_BALANCES" : "Reinitialiser Balances",
@@ -292,7 +298,8 @@
     "OK"             : "Ok",
     "CONTINUE"      : "Continuer"
   },
-   "ACCOUNT" : {
+
+  "ACCOUNT" : {
     "TITLE" : "Gestion des Comptes",
     "GENERATE" : "Generer un rapport des Comptes",
     "CREATE" : "Créer un plan Comptable",
