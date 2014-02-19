@@ -202,7 +202,6 @@
     "ENTERPRISE_CURRENCY" : "Monnaie d'Entreprise",
     "ENTERPRISE_OTHER_CURRENCY" : "Autre Monnaie",
     "RATE" : "Taux"
-    ""
   },
 
   "TRANSACTION"     : "opÃ©ration",
@@ -243,10 +242,23 @@
   "CHECK"            : "crocher",
   "UNITS"            : "modules",
   "USER"             : "utilisateur",
-  "PERMISSION"       : "permission",
   "UP_DIALOGUE"      : "crocher les modules utilisateur ",
   "UP_DIALOGUE_2"    : "peut acceder",
 
+  "PERMISSION" : {
+    "TITLE" : "Gestion des Utilisateurs & Permissions",
+    "PERMISSIONS" : "Permissions",
+    "ADD" : "Add a New User",
+    "REGISTERED" : "Registered Users",
+    "HELP_TXT_1" : "Edit existing users and permissions from the table to the left",
+    "HELP_TXT_2" : "Edits a user's metadata",
+    "HELP_TXT_3" : "Edits a user's permissions",
+    "HELP_TXT_4" : "Deletes a user and its permission data",
+    "ADDING" : "Adding a New User",
+    "RETYPE" : "Retype",
+    "EDITTING" : "Editting",
+    "SUPER" : "Super User"
+  },
   
   "NAME"         : "nom",
   "CASH_ACCOUNT" : "compte caisse",
