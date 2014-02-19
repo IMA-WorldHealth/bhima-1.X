@@ -2,15 +2,15 @@
   "POSTING_JOURNAL" : {
     "TITLE"                 : "Journal de Saisie",
     "GROUP_BY"              : "Groupe Par",
-    "DEB_CRED"              : "DÃ©biteur / CrÃ©diteur",
+    "DEB_CRED"              : "DÃƒÂ©biteur / CrÃƒÂ©diteur",
     "TRANSACTION"           : "Transaction",
     "ACCOUNT"               : "Compte",
     "TRIAL_BALANCE"         : "Rapprochement",
     "ADD_TRANSACTION"       : "Ajouter une Transation",
     "GENERAL_LEDGER"        : "Grand Livre",
     "DEBIT"                 : "Debit",
-    "CREDIT"                : "Crédit",
-    "FISCAL_YEAR"           : "Année Fiscal",
+    "CREDIT"                : "CrÃ©dit",
+    "FISCAL_YEAR"           : "AnnÃ©e Fiscal",
     "SPLIT_TRANSACTION" : "Split Transaction",
     "LIVE_TRANSACTION" : "Transaction Vivant",
     "ENTERPRISE"            : "Entreprise",
@@ -20,7 +20,7 @@
     "JUSTIFICATION"         : "Justification",
     "TRANSACTION_DATE"      : "Date de Transaction",
     "TRANSACTION_NUMBER"    : "Numero de Transaction",
-    "VERIFY_TRANSACTION"    : "VÃ©rifier Transaction",
+    "VERIFY_TRANSACTION"    : "VÃƒÂ©rifier Transaction",
     "SPLIT"                 : "Diviser"
   },
 
@@ -28,7 +28,7 @@
     "CONFIGURE"      : "Configurer",
     "TOTAL"          : "Total",
     "PRINT"          : "Imprimer",
-    "CREATE"         : "CrÃ©er",
+    "CREATE"         : "CrÃƒÂ©er",
     "CANCEL"         : "Annuler",
     "ITEMS"          : "Articles",
     "TOGGLE"         : "Basculer",
@@ -36,7 +36,7 @@
     "CONFIRM"        : "Confirmer",
     "SUBMIT"         : "Enregistrer",
     "RESET_FORM"     : "Remettre",
-    "SAVE_SELECTION" : "Enregistrer la SÃ©lection"
+    "SAVE_SELECTION" : "Enregistrer la Selection"
   },
 
   "ENTERPRISE" : {
@@ -62,7 +62,8 @@
     "ACTIONS"                  : "Acts",
     "CASH_ACCOUNT"             : "Compte de Tresorerie",
     "BANK_ACCOUNT"             : "Compte Banque",
-    "ADD_CURRENCY_ACCOUNT"     : "Ajouter une Compte Monnaie"
+    "ADD_CURRENCY_ACCOUNT"     : "Ajouter une Compte Monnaie",
+    "MANAGE_CASH_ACCOUNTS"     : "Gerer Le Compte de Caisse"
   },
 
   "TRIAL_BALANCE" : {
@@ -100,13 +101,13 @@
   "PATIENT_REG" : {
     "TITLE"                    : "Reception/Enregistrement",
     "PATIENT_DETAILS"          : "Detailles Malades",
-    "CREATE_DEBTOR_GROUP"      : "CrÃ©e Groupe Debiteur",
+    "CREATE_DEBTOR_GROUP"      : "CrÃƒÂ©e Groupe Debiteur",
     "VIEW_PATIENT_RECORDS"     : "Voire Tous Enregistrements",
     "PATIENT_GROUP_ASSIGNMENT" : "Assignation Groupe Malades",
     "PATIENT"                  : "Malades",
     "FIRST_NAME"               : "Prenom",
     "SECOND_NAME"              : "Nom",
-    "YOB"                      : "Année de Naissance",
+    "YOB"                      : "AnnÃ©e de Naissance",
     "ENTER_FULL_DATE"          : "Saisie Date Exact",
     "DOB"                      : "Date de Naissance",
     "SEX"                      : "Sex",
@@ -116,7 +117,7 @@
     "PATIENT_GROUP"            : "Groupe Malades",
     "DEBTOR_GROUP"             : "Groupe Debiteur",
     "OPTIONAL_INFO"            : "Informations Non-important",
-    "PHONE_NO"                 : "Numero TÃ©lÃ©phone",
+    "PHONE_NO"                 : "Numero TÃƒÂ©lÃƒÂ©phone",
     "EMAIL"                    : "Email",
     "PARENT_NAME"              : "Nom de Pere",
     "RELIGION"                 : "Religion",
@@ -149,7 +150,10 @@
     "HELP_TXT" : "Cree et Gere l'annee fiscale du system.",
     "DESCRIPTION"           : "Description",
     "ALERT_ONE"        : "Il n\"y a aucune annee fiscale enregistree pour l\"entraprise ",
-    "ALERT_TWO"            : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports."
+    "ALERT_TWO"            : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports.",
+    "EDIT"               : " Editer l'annee fiscale selectionnee; Bloquer et debloquer des periodes and voir l'ouverture des balances.",
+    "CREATION"             : "Creer une nouvelle annee fiscale"
+
   },
 
   "COLUMNS" : {
@@ -189,30 +193,30 @@
     "INVOICE_ID"     : "ID Facture",
     "DEBITOR"        : "Debiteur",
     "BALANCE"        : "Balance",
-    "PAID"           : "Payé",
+    "PAID"           : "PayÃ©",
     "REMAINING"      : "Reste",
     "DESCRIPTION"    : "Description",
-    "QUANTITY"       : "Quantité",
+    "QUANTITY"       : "QuantitÃ©",
     "UNIT_PRICE"     : "Prix Unitaire",
-    "COST"           : "Co�t",
+    "COST"           : "Coût",
     "DISCOUNT"       : "Discompte",
     "INVENTORY_ITEM" : "Item du Stock",
     "PRICE"          : "Prix",
     "ACTION"         : "Acte",
     "ENTERPRISE_CURRENCY" : "Monnaie d'Entreprise",
-    "ENTERPRISE_OTHER_CURRENCY" : "Autre Monnaie",
+    "OTHER_CURRENCY" : "Autre Monnaie",
     "RATE" : "Taux"
   },
 
-  "TRANSACTION"     : "opÃ©ration",
+  "TRANSACTION"     : "Ttransaction",
   "ACCOUNT"         : "compte",
-  "GENERAL_LEDGER"  : "grand livre gÃ©nÃ©ral",
-  "DEBIT"           : "dÃ©bit",
-  "CREDIT"          : "crÃ©dit",
+  "GENERAL_LEDGER"  : "grand livre",
+  "DEBIT"           : "debit",
+  "CREDIT"          : "credit",
 
   "CONFIGURE" : "configurer",
   "PRINT"     : "imprimer",
-  "CREATE"    : "crÃ©er",
+  "CREATE"    : "crÃƒÂ©er",
 
   "ID"          : "id",
   "DATE"        : "date",
@@ -248,21 +252,21 @@
   "PERMISSION" : {
     "TITLE" : "Gestion des Utilisateurs & Permissions",
     "PERMISSIONS" : "Permissions",
-    "ADD" : "Add a New User",
-    "REGISTERED" : "Registered Users",
-    "HELP_TXT_1" : "Edit existing users and permissions from the table to the left",
-    "HELP_TXT_2" : "Edits a user's metadata",
-    "HELP_TXT_3" : "Edits a user's permissions",
-    "HELP_TXT_4" : "Deletes a user and its permission data",
-    "ADDING" : "Adding a New User",
-    "RETYPE" : "Retype",
-    "EDITTING" : "Editting",
-    "SUPER" : "Super User"
+    "ADD" : "Ajouter Utilisateur",
+    "REGISTERED" : "Utilisateurs Enregistes",
+    "HELP_TXT_1" : "Editer Utilisateur Existant et sa permission a partir de la table a gauche",
+    "HELP_TXT_2" : "Editer les Metadonnees de l'utilisateur",
+    "HELP_TXT_3" : "Editer la permission de l'Utilisateur",
+    "HELP_TXT_4" : "supprimer un utilisateur et ses droits",
+    "ADDING" : "Ajout d'un nouveau Utilisateur",
+    "RETYPE" : "Retaper",
+    "EDITTING" : "Edition",
+    "SUPER" : "Super Utilisateur"
   },
   
   "NAME"         : "nom",
   "CASH_ACCOUNT" : "compte caisse",
-  "PHONE"        : "tÃ©lÃ©phone",
+  "PHONE"        : "telephone",
   "ABBREVIATION" : "abbreviation",
 
 
@@ -271,25 +275,15 @@
 
   "DEBTOR_GROUP" : "Debitor Group",
 
-  "LOCATION" : {
-    "LOCATION" : "Localisation",
-    "ORIGIN"   : "Origin",
-    "CURRENT"  : "Courant",
-    "COUNTRY"  : "Pays",
-    "PROVINCE" : "Province",
-    "SECTOR"   : "Secteur",
-    "VILLAGE"  : "Village"
-  },
-
   "DEBITOR_GRP" : {
     "TITLE"      : "Gestion des Groupes des Debiteurs",
     "GROUPS"     : "Groupe de Debiteur",
     "NEW"        : "Nouveau Groupe de Debiteur",
     "FILTER"     : "Filtrer Le Groupe de Debiteur",
     "HELP_TXT_1" : "Cette interface vous permet de visualiser, trouver, et configurer un group de debiteur",
-    "HELP_TXT_2" : "Editer le Group de debiteur Selectionné",
-    "HELP_TXT_3" : "Bloquer le Groupe de debiteur selectiionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
-    "HELP_TXT_4" : "Crée un nouveau groupe de debiteur",
+    "HELP_TXT_2" : "Editer le Group de debiteur SelectionnÃ©",
+    "HELP_TXT_3" : "Bloquer le Groupe de debiteur selectiionnÃ©. Aucune transaction ne pourra etre EffectuÃ©e avec ce groupe",
+    "HELP_TXT_4" : "CrÃ©e un nouveau groupe de debiteur",
     "INFO"       : "Information du Groupe"
   },
 
@@ -308,13 +302,15 @@
     "RESET_FORM"     : "Reinitilaiser Formiulaire",
     "CANCEL"         : "Annuler",
     "OK"             : "Ok",
-    "CONTINUE"      : "Continuer"
+    "CONTINUE"       : "Continuer",
+    "ADD"            : "Add",
+    "NEW_FORM"       : "Nouveau Formulaire"
   },
 
   "ACCOUNT" : {
     "TITLE" : "Gestion des Comptes",
     "GENERATE" : "Generer un rapport des Comptes",
-    "CREATE" : "Créer un plan Comptable",
+    "CREATE" : "CrÃ©er un plan Comptable",
     "ADD" : "Ajouter un Compte",
     "HELP_TXT_1" : "Un Plan Comptable pour",
     "HELP_TXT_2" : "Les informations sur les comptes, ainsi que leurs relations sont visibles sur le tableau a droite",
@@ -323,9 +319,9 @@
     "ACCOUNT_TITLE" : "Libelle de Compte",
     "ACCOUNT_TYPE" : "Type de Compte",
     "ACCOUNT_NUMBER" : "Numero de Compte",
-    "FIXED" : "Fixé",
+    "FIXED" : "FixÃ©",
     "VARIABLE" : "Variable",
-    "ACCOUNT_GROUP" : "Groupe des COmptes (Comptes Titres)",
+    "ACCOUNT_GROUP" : "Groupe des Comptes (Comptes Titres)",
     "TITLE_ACCOUNT" : "Comptes Titre",
     "ROOT_ACCOUNT" : "Compte Parent"
   },
@@ -338,6 +334,69 @@
     "NO_RATES" : "Il n'y a pas des taux defini pour aujourd'hui!",
     "REVIEW" : "Revoir le taux d'aujourd'hui",
     "TODAY_RATE" : "Taux d'Echange pour"
+  },
+
+  "CREDITOR_GRP" : {
+    "TITLE"           : "Gestion des Groupe des Crediteurs",
+    "NEW"             : "Nouveau Group Crediteur",
+    "CREDITOR_GROUPS" : "Groupe Crediteur",
+    "HELP_TXT"        : "La page de gestion des Groupe des Crediteurs",
+    "SAVE_CHANGES"    : "Sauver Changements",
+    "NEW_FORM"        : "Nouveau Formulaire",
+    "DETAILS"         : "Details Groupe Crediteur"
+  },
+
+  "LOCATION" : {
+    "LOCATION"                          : "Emplacement",
+    "TITLE"                             : "Gestions Emplacement",
+    "MANAGE_COUNTRY"                    : "Gerer Les Pays",
+    "MANAGE_PROVINCE"                   : "Gerer Les Province",
+    "MANAGE_SECTOR"                     : "Gerer Les Secteurs",
+    "MANAGE_VILLAGE"                    : "Gerer Les Villages",
+    "REGISTERED"                        : "Emplacement Enregistrees",
+    "COUNTRY"                           : "Pays",
+    "PROVINCE"                          : "Province",
+    "SECTOR"                            : "Secteur",
+    "VILLAGE"                           : "Village",
+    "REGISTERED"                        : "Emplacement Enregistrees",
+    "MANAGER_CONFIGURATION"             : "Configuration de la Gestion des Emplacements",
+    "DESCRIPTION"                       : "La gestion des emplacement est utilisee pour creer des emplacements, L'emplacement est tres important quand vous creez un patient et ainsi de suite. Utiliser Ce module pour",
+    "INFO_CREATE"                       : "creer",
+    "INFO_MODIFY"                       : "modifier",
+    "ET"                                : "et",
+    "REMOVE"                            : "Effacer",
+    "REGISTER"                          : "Enregistrer un Emplacement",
+    "VILLAGE_NAME"                      : "Nom du Village"
+  },
+   "COUNTRY" : {
+    "TITLE"                : "Gestion des Pays",
+    "LOCATION_MANAGER"     : "Gestion des Emplacements",
+    "NEW_COUNTRY"          : "Ajout d'Un Nouveau Pays",
+    "REGISTERED"           : "Pays Enregistrees",
+    "CODE"                 : "Code",
+    "ENGLISH_NAME"         : "Nom Anglais",
+    "FRENCH_NAME"          : "Nom Francais",
+    "ACTIONS"              : "Actions",
+    "CONFIGURATION"        : "Configuration de gestion des pays",
+    "DESCRIPTION"          : "Ce module vous aidera a gerer les pays, A gauche vous voyez les pays disponibles dans le systeme. Utiliser ce module pour",
+    "CREATE"               : "creer",
+    "MODIFY"               : "modifier",
+    "AND"                  : "et",
+    "REMOVE"               : "Effacer",
+    "COUNTRY"              : "pays",
+    "REGISTER"             : "Enregistrer un pays",
+    "CODE"                 : "Code",
+    "EDIT"                 : "Editer un pays"
+  },
+  "PATIENT_GRP" : {
+        "TITLE"         : "Gestion des Groupes Patients",
+        "NEW"           : "Nouveau Groupe Patients",
+        "REGISTERED"    : "Groupes Patients Enregistrees",
+        "REGISTER"      : "Enregistrer Groupe Patient",
+        "PRICE_LIST"    : "Liste des Prix",
+        "MODIFY"        : "Modifier un Groupe Patient",
+        "PATIENT_GROUP" : "Patient Group",
+        "HELP_TXT_1"    : "Group Patient est utilisee pour assigner un discount aux patients qui le meritent. utikiser ce module pour Enregsitrer, modifier, et effacer un group patient"
   }
 }
 

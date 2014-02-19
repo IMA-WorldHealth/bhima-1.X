@@ -100,7 +100,11 @@
     "FISCAL_YEAR_SELECTION" : "Fiscal Year Selection",
     "DESCRIPTION"           : "Description",
     "ALERT_ONE"             : "There are no Fiscal Years recorded for the enterprise ",
-    "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports."
+    "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
+    "EDIT"               : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
+    "CREATION"             : "Create a new fiscal year "
+    
+
   },
 
   "OPENING_BALANCE" : {
@@ -319,13 +323,28 @@
   },
 
   "LOCATION" : {
-    "LOCATION" : "Location",
-    "ORIGIN"   : "Origin",
-    "CURRENT"  : "Current",
-    "COUNTRY"  : "Country",
-    "PROVINCE" : "Province",
-    "SECTOR"   : "Sector",
-    "VILLAGE"  : "Village"
+    "LOCATION"                          : "Location",
+    "TITLE"                             : "Location Manager",
+    "MANAGE_COUNTRY"                    : "Manage Country",
+    "MANAGE_PROVINCE"                   : "Manage Province",
+    "MANAGE_SECTOR"                     : "Manage Sector",
+    "MANAGE_VILLAGE"                    : "Manage Village",
+    "REGISTERED"                        : "Registered Locations",
+    "COUNTRY"                           : "Country",
+    "PROVINCE"                          : "Province",
+    "SECTOR"                            : "Sector",
+    "VILLAGE"                           : "Village",
+    "REGISTERED"                        : "Registered Locations",
+    "MANAGER_CONFIGURATION"             : "Location Manager Configuration",
+    "DESCRIPTION"                       : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
+    "INFO_CREATE"                       : "create",
+    "INFO_MODIFY"                       : "modify",
+    "ET"                                : "and",
+    "REMOVE"                            : "remove",
+    "REGISTER"                          : "Register a Location",
+    "VILLAGE_NAME"                      : "Village Name",
+    "ADD"                               : "Add",
+    "NEW_FORM"                          : "New Form"
   },
 
   "GROUP_INVOICE" : {
@@ -484,5 +503,28 @@
     "TITLE" : "Create Patient Invoice",
     "IMPORT" : "Import prescription",
     "UPDATE" : "Update Defaults"
- }
+ },
+
+ "COUNTRY" : {
+    "TITLE"                : "COUNTRIES MANAGEMENT",
+    "LOCATION_MANAGER"     : "Location Manager",
+    "NEW_COUNTRY"          : "Add New Country",
+    "REGISTERED"           : "Registered Country",
+    "CODE"                 : "Code",
+    "ENGLISH_NAME"         : "English Name",
+    "FRENCH_NAME"          : "French Name",
+    "ACTIONS"              : "Actions",
+    "CONFIGURATION"        : "Country Manager Configuration ",
+    "DESCRIPTION"          : "This module will help you to manage countries, at the left you see availvables countries and their locations. ⇉ use this module to",
+    "CREATE"               : "create",
+    "MODIFY"               : "modify",
+    "AND"                  : "and",
+    "REMOVE"               : "remove",
+    "COUNTRY"              : "country",
+    "REGISTER"             : "Register a Country",
+    "CODE"                 : "Code",
+    "EDIT"                 : "Edit a Country"
+  }
+
+    
 }
