@@ -231,8 +231,6 @@ angular.module('kpk.controllers')
           };
         });
 
-      console.log('Sending records:', records);
-
       return connect.basicPut('cash_item', records);
     }
 
@@ -248,6 +246,10 @@ angular.module('kpk.controllers')
       // FIXME: add a 'would you like to credit or pay back' line/check here for excess
       // run digestInvoice once more to stabilize.
       $scope.digestInvoice();
+
+      if (!exchange.hasRates()) {
+        return messenger.danger('There is no exchange rate for today!');
+      }
 
       processCashInvoice()
         .then(processCashItems)
