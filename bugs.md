@@ -53,6 +53,9 @@ which messes up page refresh.
 
 #### Patient Registration
 [ ] No indication whether the patient has been registered or not.
+[x] Poorly formatted location selects on smaller screens
+[ ] Location selects do no register dependencies.
 
 #### Posting Journal
 [x] Only the lines concerning the patient's accounts should be recorded with their id.
+[ ] Sometimes, two invoice/po numbers are associated with one transaction.

@@ -40,7 +40,7 @@
   <!-- required for printing to work properly... -->
   <div class="hidden-print">
     <div ng-controller="message" class="message-box" id="msg-box">
-      <alert id="message" ng-repeat="alert in messages" type="alert.type" close="close($index)">
+      <alert id="message" ng-repeat="alert in messages" name="{{alert.type}}" type="alert.type" close="close($index)">
         <span ng-bind-html="alert.msg"></span>
       </alert>
     </div>

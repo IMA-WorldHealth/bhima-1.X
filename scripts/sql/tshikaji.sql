@@ -1120,8 +1120,8 @@ insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, 
   (2, 200, 195, 190),
   (3, 200, 196, 191);
 
-insert into `patient_group` (`enterprise_id`, `price_list_id`, `name`, `note`) values 
-  (200, 1, 'HIV', 'Funds for patients provided by societe x');
-
-insert into `assignation_patient` (`patient_group_id`, `patient_id`) values
-  (1, 1);
+-- insert into `patient_group` (`enterprise_id`, `price_list_id`, `name`, `note`) values 
+--   (200, 1, 'HIV', 'Funds for patients provided by societe x');
+--
+-- insert into `assignation_patient` (`patient_group_id`, `patient_id`) values
+--   (1, 1);

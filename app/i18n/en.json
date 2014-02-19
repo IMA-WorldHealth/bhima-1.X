@@ -21,6 +21,17 @@
     "VERIFY_TRANSACTION"    : "Verify Transaction",
     "SPLIT"                 : "Split"
   },
+  
+  "EXCHANGE" : {
+    "TITLE" : "Configure Exchange Rates",
+    "SET" : "Set Today's Exchange Rate",
+    "HELP_TXT_1" : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
+    "PREV" : "Previous Rates",
+    "NEW" : "New Exchange Rate",
+    "NO_RATES" : "There are no rates set for today!",
+    "REVIEW" : "Review Today's Rates",
+    "TODAY_RATE" : "Exchange Rate for"
+  },
 
   "PERMISSION" : {
     "TITLE" : "Users & Permissions Management",
@@ -179,6 +190,7 @@
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
+    "RATE" :      "Rate",
     "PASSWORD"       : "Password",
     "ID"             : "ID",
     "USER_NAME"      : "User Name",
@@ -212,7 +224,9 @@
     "PAYMENT"        : "Payment",
     "DATE"           : "Date",
     "INVOICE_ID"     : "Invoice ID",
-    "DEBITOR"        : "Debitor",
+    "OTHER_CURRENCY" : "Other Currency",
+    "ENTERPRISE_CURRENCY" : "Enterprise Currency",
+    "DEBITOR"        : "Debtor",
     "BALANCE"        : "Balance",
     "PAID"           : "Paid",
     "REMAINING"      : "Remaining",
