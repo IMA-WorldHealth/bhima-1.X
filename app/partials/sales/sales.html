@@ -1,14 +1,14 @@
 <header>
-  <span>Create Patient Invoice</span>
+  <span>{{ "SALE.TITLE" | translate}}</span>
 </header>
 
 <section class="top-nav underline">
   <div class="pull-right">
     <a class="btn btn-default">
-      <span class="glyphicon glyphicon-floppy-save"></span> Import prescription
+      <span class="glyphicon glyphicon-floppy-save"></span> {{ "SALE.IMPORT" | translate}}
     </a>
     <a class="btn btn-default">
-      <span class="glyphicon glyphicon-th-list"></span> Update Defaults
+      <span class="glyphicon glyphicon-th-list"></span> {{ "SALE.UPDATE" | translate}}
     </a>
   </div>
 </section>
@@ -35,10 +35,10 @@
                 <table class=' table-condensed table table-bordered'>
                   <thead>
                     <tr>
-                      <th>Id</th>
-                      <th>Date</th>
-                      <th>Debtor</th>
-                      <th>Note</th>
+                      <th>{{ "COLUMNS.ID" | translate}}</th>
+                      <th>{{ "COLUMNS.DATE" | translate}}</th>
+                      <th>{{ "COLUMNS.DEBITOR" | translate}}</th>
+                      <th>{{ "COLUMNS.NOTE" | translate}}</th>
                     </tr>
                   </thead>
                   <tbody>
