@@ -58,7 +58,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   };
 
   dependencies.invoiceItem.query.tables['sale_item'] = {
-    columns: ['id', 'quantity', 'debit', 'credit']
+    columns: ['id', 'quantity', 'debit', 'credit', 'sale_id']
   };
 
   dependencies.location = {
@@ -66,7 +66,6 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   };
 
   dependencies.ledger = {
-    //required: true, // FIXME/TODO : why was this required? It breaks things on @jniles machine.
     identifier: 'inv_po_id'
   };
 
@@ -139,9 +138,23 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   }
 
   function buildInvoiceQuery(model) {
-    var cash_data = model.cash.data[0];
-    dependencies.invoice.query.where = ["sale.id=" + cash_data.invoice_id];
-    dependencies.invoiceItem.query.where = ["sale_item.sale_id=" + cash_data.invoice_id];
+    var cash_data = []; var invoiceCondition = dependencies.invoice.query.where = [];
+    var invoiceItemCondition = dependencies.invoiceItem.query.where = [];
+  
+    model.cash.data.forEach(function(invoiceRef, index) { 
+      console.log('invoice ref', invoiceRef);
+      
+      if(index!==0) { 
+        invoiceCondition.push('OR');
+        invoiceItemCondition.push('OR');
+      }
+
+      invoiceCondition.push("sale.id=" + invoiceRef.invoice_id);
+      invoiceItemCondition.push("sale_item.sale_id=" + invoiceRef.invoice_id);
+    });
+
+    dependencies.invoice.query.where = invoiceCondition;
+    dependencies.invoiceItem.query.where = invoiceItemCondition;
 
     processSale();
   }
@@ -189,14 +202,20 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     $scope.session = {};
     $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
     routeCurrencyId = $scope.session.currentCurrency.currency_id;
- 
-    //Select invoice and recipient - validate should assert these only have one item
-    $scope.invoice = $scope.model.invoice.data[0];
+  
+    //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
+    $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
+    $scope.invoice.totalSum = 0;
     $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
  
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
- 
+   
+  
+    //FIXME huge total hack 
+    $scope.model.invoice.data.forEach(function(invoiceRef) { 
+      $scope.invoice.totalSum += invoiceRef.cost;
+    });
 
     //FIXME hacks for meeting
     if(model.cash) {
@@ -216,8 +235,11 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     //console.log('cid', currency_id);
     $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
     //console.log('ledger', $scope.model);
-
+    
+    console.log($scope.invoice.ledger.balance);
     $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
+
+    $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id);
 
     $scope.model.invoiceItem.data.forEach(function (item) {
       item.localeCost = exchange((item.credit - item.debit), currency_id);
