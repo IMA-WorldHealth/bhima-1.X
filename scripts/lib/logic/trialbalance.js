@@ -1,6 +1,6 @@
 // scripts/lib/logic/balance.js
 
-// module: TrialBalance 
+// module: TrialBalance
 var q = require('q'),
     sanitize = require('../util/sanitize'),
     util = require('../util/util');
@@ -37,7 +37,7 @@ module.exports = (function (db) {
   }
 
   // utilities for syntactic sugar
-  
+
   function map (array, column) {
     // shorthand to return an array of just
     // the data in array.i[column];
@@ -66,12 +66,15 @@ module.exports = (function (db) {
 
       var results = {
         errors : [],
-        data : [] 
+        data : []
       };
 
-      // Loop through promises and college failure reasons
-      array.forEach(function (promise) {
-        if (promise.state == 'rejected') results.errors.push(promise.reason);
+      // Loop through promises and collect failure reasons
+      array.forEach(function (promise, idx) {
+        if (promise.state === 'rejected') {
+          console.log("\nindex:", idx, "\n");
+          results.errors.push(promise.reason);
+        }
       });
 
       var sql = 'SELECT `pt`.`id`,  `pt`.`debit`, `pt`.`credit`, '  +
@@ -87,8 +90,8 @@ module.exports = (function (db) {
 
       db.execute(sql, function (err, rows) {
         if (err) return callback(err);
-       
-        results.data = rows; 
+     
+        results.data = rows;
         results.key = generateKey(user_id);
         return callback(null, results);
       });
@@ -103,7 +106,7 @@ module.exports = (function (db) {
   // Tries to find locked accounts
   function areAccountsLocked () {
     var d = q.defer();
-    var sql = 
+    var sql =
       'SELECT `posting_journal`.`id` ' +
       'FROM `posting_journal` LEFT JOIN `account` ' +
       'ON  `posting_journal`.`account_id`=`account`.`id` ' +
@@ -111,28 +114,28 @@ module.exports = (function (db) {
 
     db.execute(sql, function (err, rows) {
       if (err) d.reject(err);
-      if (rows.length) 
+      if (rows.length)
         d.reject('Locked accounts in line(s) :' + join(map(rows, 'id')));
       d.resolve();
     });
-    
+  
     return d.promise;
   }
 
   // are all accounts defined??
   function areAccountsNull () {
     var d = q.defer();
-    var sql = 
-      'SELECT `posting_journal`.`id` ' + 
+    var sql =
+      'SELECT `posting_journal`.`id` ' +
       'FROM `posting_journal` ' +
       'LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` ' +
       'WHERE `account`.`id` IS NULL;';
 
     db.execute(sql, function (err, res) {
       if (err) d.reject(err);
-      if (res.length) 
-        d.reject('Invalid or undefined accounts in transcation(s) :' + join(map(rows, 'id')));
-
+      if (res.length) {
+        d.reject('Invalid or undefined accounts in transcation(s) :' + join(map(res, 'id')));
+      }
       d.resolve();
     });
 
@@ -141,9 +144,9 @@ module.exports = (function (db) {
 
   function areAllDatesValid () {
     var d = q.defer();
-    var sql = 
+    var sql =
       'SELECT `posting_journal`.`id`, `period_id`, `trans_date`, `period_start`, `period_stop` ' +
-      'FROM `posting_journal` JOIN `period` ' + 
+      'FROM `posting_journal` JOIN `period` ' +
       'ON `posting_journal`.`period_id`=`period`.`id`;';
 
     db.execute(sql, function (err, rows) {
@@ -159,12 +162,12 @@ module.exports = (function (db) {
       d.resolve();
     });
 
-    return d.promise; 
+    return d.promise;
   }
 
   function areCostsBalanced () {
     var d = q.defer();
-    var sql = 
+    var sql =
       'SELECT `posting_journal`.`id`, sum(debit) as d, sum(credit) as c, sum(debit_equiv) as de, sum(credit_equiv) as ce ' +
       'FROM posting_journal ' +
       'GROUP BY `trans_id`;';
@@ -173,11 +176,14 @@ module.exports = (function (db) {
       if (err) d.reject(err);
 
       var bool = rows.filter(function (row) {
-        return !(row.d === row.c && row.de === row.ce);
+        // NOTE: We are only taking into account the debit_equivalent and credit_equivalent
+        // because, if a split occurs, we are not guaranteed these will be correct
+        return row.de !== row.ce;
       });
 
-      if (bool.length)
+      if (bool.length) {
         d.reject('Debits and Credits (or equivalents) do not balance in lines(s) : ' + join(map(bool, 'id')));
+      }
 
       d.resolve();
 
@@ -188,15 +194,15 @@ module.exports = (function (db) {
 
   function areDebitorCreditorDefined () {
     var d = q.defer();
-    var sql = 
+    var sql =
       'SELECT `posting_journal`.`id` ' +
       'FROM `posting_journal` ' +
-      'WHERE NOT EXISTS (' + 
-        '(' + 
+      'WHERE NOT EXISTS (' +
+        '(' +
           'SELECT `creditor`.`id`, `posting_journal`.`deb_cred_id` ' +
-          'FROM `creditor` JOIN `posting_journal` ' + 
+          'FROM `creditor` JOIN `posting_journal` ' +
           'ON `creditor`.`id`=`posting_journal`.`deb_cred_id`' +
-        ') UNION (' + 
+        ') UNION (' +
           'SELECT `debitor`.`id`, `posting_journal`.`deb_cred_id` '+
           'FROM `debitor` JOIN `posting_journal` ON `debitor`.`id`=`posting_journal`.`deb_cred_id`' +
         ')' +
@@ -205,7 +211,7 @@ module.exports = (function (db) {
     db.execute(sql, function (err, rows) {
       if (err) d.reject(err);
 
-      if (rows.length) 
+      if (rows.length)
         d.reject('Debitor/Creditors do not exist for line(s) : ' + join(rows.map(function (row) { return row.id; })));
 
       d.resolve();
@@ -217,16 +223,16 @@ module.exports = (function (db) {
 
   function checkPermission (user_id, key, callback) {
     // TODO / FIXME : we need to come up with a robust
-    // permissions model that will disallow just anyone 
+    // permissions model that will disallow just anyone
     // from posting to the journal.
-    
+  
     // First thing we need to do is see if the key is
     // expired.  If so, we should warn the client to do
     // another trial balance.
     var valid = validateKey(key);
 
     if (!valid) return callback(new Error('Posting Session Expired.  Please refresh the trial balance.'));
-    
+  
     var sql = 'SELECT 1 + 1 AS s';
 
     db.execute(sql, function (err, rows) {
@@ -244,8 +250,8 @@ module.exports = (function (db) {
     // First thing we need to do is make sure that this posting request
     // is not an error and comes from a valid user.
     checkPermission(user_id, key, function (err, result) {
-      if (err) return callback(err); 
-     
+      if (err) return callback(err);
+   
       // Next, we need to generate a posting session id.
       var sql = 'INSERT INTO `posting_session` ' +
         'SELECT max(`posting_session`.`id`) + 1, ' + sanitize.escape(user_id) + ', ' +
@@ -258,11 +264,11 @@ module.exports = (function (db) {
         var session_id = rows.insertId;
 
         // Next, we must move the data into the general ledger.
-        
-        var query = 
+      
+        var query =
           'INSERT INTO `general_ledger` ' +
             '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-            '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' + 
+            '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
             '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, ' +
             '`origin_id`, `user_id`, `session_id`)' +
           'SELECT `enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
@@ -273,19 +279,19 @@ module.exports = (function (db) {
 
         db.execute(query, function (err, results) {
           if (err) return callback (err);
-          
+        
           // This SQL sums all transactions for a given period from the PJ into `period_total`, updating old values if necessary
-          var sql = 'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' + 
+          var sql = 'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' +
                     'SELECT `account_id`, SUM(`credit`), SUM(`debit`), `fiscal_year_id`, `enterprise_id`, `period_id` FROM `posting_journal` ' +
                     'GROUP BY `account_id` ' +
                     'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
 
           db.execute(sql, function (err, rows) {
-            if (err) return callback(err); 
+            if (err) return callback(err);
 
-            // Finally, we can remove the data from teh posting journal 
+            // Finally, we can remove the data from teh posting journal
             var sql = 'DELETE FROM `posting_journal`;';
-            
+          
             db.execute(sql, function (err, results) {
               if (err) return callback(err);
               callback(null, results);
