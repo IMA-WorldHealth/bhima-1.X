@@ -23,12 +23,14 @@ which messes up page refresh.
 [x] Angular captures the logout request and throws internal errors.
 [x] Login attempts after logout are captured by angular and throw internal errors.
 [x] Authorization.js does not filter access on user permissions.
+[x] System blocks people who are logged in from accessing the application.
 
 #### Creditor Group Mgmt
 [x] Account selects are not ordered properly
 
 #### Fiscal Year
 [x] Opening balances still has button for randomly generating data
+[ ] Opening balances take forever to load.
 
 #### Exchange Rate
 [ ] Exchange rate should refresh the daily exchange rate
