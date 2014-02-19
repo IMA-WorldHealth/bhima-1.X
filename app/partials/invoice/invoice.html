@@ -260,7 +260,7 @@ Receipts
                 <tr><th>Description</th><th>Amount</th></tr> 
               </thead>
               <tbody class="items"> 
-                <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>Invoice # {{invoice.invoice_id}}</b></td></tr> 
+                <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>Invoice # {{invoice.invoice_id}}</b></td></tr>
                 <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td><span ng-bind-html="item.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr> 
               </tbody>
               <tbody class="totals">
