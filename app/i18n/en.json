@@ -299,9 +299,9 @@
     "ADD" : "Add Account",
     "HELP_TXT_1" : "Chart of accounts for",
     "HELP_TXT_2" : "Account information and relationshions are shown in the table on the right",
-    "HELP_TXT_3" : "Click 'Add Account' to add an account, and the pencil icon next to each account item to edit accounts",
+    "HELP_TXT_3" : "Click 'Add Account' to add an account",
     "NEW" :  "New Account",
-    "ACCOUNT_TITLE" : "Account Title",
+    "ACCOUNT_TITLE" : "Account Text",
     "ACCOUNT_TYPE" : "Account Type",
     "ACCOUNT_NUMBER" : "Account Number",
     "FIXED" : "Fixed",
@@ -471,5 +471,11 @@
     "COGS" : "COGS Account",
     "STOCK" : "Stock Account",
     "TAX" : "Tax Account"
-  }
+  },
+  
+  "SALE" : {
+    "TITLE" : "Create Patient Invoice",
+    "IMPORT" : "Import prescription",
+    "UPDATE" : "Update Defaults"
+ }
 }
