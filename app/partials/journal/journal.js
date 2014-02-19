@@ -19,7 +19,9 @@ angular.module('kpk.controllers').controller('journal', [
     var grid, dataview, sort_column, columns, options, chkbx;
 
     dependencies.journal = {
-      required: true,
+      
+      // FIXME 
+      // required: true,
       query: {
         'tables' : {
           'posting_journal' : { 'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] },
