@@ -183,6 +183,8 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     var routeCurrencyId;
     //Expose data to template
     $scope.model = model;
+      
+    console.log($scope.model);
 
     $scope.session = {};
     $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
