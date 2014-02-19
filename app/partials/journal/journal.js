@@ -21,8 +21,7 @@ angular.module('kpk.controllers').controller('journal', [
       dataview,
       sort_column,
       columns,
-      options,
-      chkbx;
+      options;
 
     dependencies.journal = {
       // FIXME 
@@ -110,17 +109,10 @@ angular.module('kpk.controllers').controller('journal', [
         inlineFilter: true
       });
 
-      chkbx = new Slick.CheckboxSelectColumn({
-        cssClass: "slick-cell-checkboxsel"
-      });
-
-      columns.push(chkbx.getColumnDefinition());
-
       grid = new Slick.Grid('#journal_grid', dataview, columns, options);
  
       grid.registerPlugin(groupItemMetadataProvider);
       grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
-      grid.registerPlugin(chkbx);
 
       // grid.setSelectionModel(new Slick.CellSelectionModel());
 
@@ -184,7 +176,6 @@ angular.module('kpk.controllers').controller('journal', [
       var columns = $scope.columns.filter(function (column) {
         return column.visible;
       });
-      columns.push(chkbx.getColumnDefinition());
       grid.setColumns(columns);
     }, true);
 
@@ -203,23 +194,26 @@ angular.module('kpk.controllers').controller('journal', [
     }
 
     function formatTransactionGroup(g) {
-      var rowMarkup, splitTemplate, firstElement = g.rows[0];
+      var rowMarkup,
+        splitTemplate,
+        firstElement = g.rows[0];
+
       if(liveTransaction.state === "add") {
         if(firstElement.trans_id === liveTransaction.transaction_id) {
           //markup for editing
-          rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>";
+          rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> " + $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>";
           return rowMarkup;
         }
       }
 
       if(liveTransaction.state === "split") {
         if(firstElement.trans_id === liveTransaction.transaction_id) {
-          rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> LIVE TRANSACTION " + g.value + " (" + g.count + " records)</span> Total Transaction Credit: <b>" + $filter('currency')(liveTransaction.origin.credit_equiv) + "</b> Total Transaction Debit: <b>" + $filter('currency')(liveTransaction.origin.debit_equiv) + "</b> <div class='pull-right'><a class='split'><span class='glyphicon glyphicon-plus'></span> Split</a><a style='margin-left: 15px;' class='submitSplit'><span class='glyphicon glyphicon-floppy-save'></span> Save Transaction</a></div>";
+          rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> "+ $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " "  + g.value + " (" + g.count + " records)</span> Total Transaction Credit: <b>" + $filter('currency')(liveTransaction.origin.credit_equiv) + "</b> Total Transaction Debit: <b>" + $filter('currency')(liveTransaction.origin.debit_equiv) + "</b> <div class='pull-right'><a class='split'><span class='glyphicon glyphicon-plus'></span> Split</a><a style='margin-left: 15px;' class='submitSplit'><span class='glyphicon glyphicon-floppy-save'></span> Save Transaction</a></div>";
           return rowMarkup;
         }
       }
 
-      splitTemplate = "<div class='pull-right'><a class='splitTransaction'>Split Transaction</a></div>";
+      splitTemplate = "<div class='pull-right'><a class='splitTransaction'> " + $translate("POSTING_JOURNAL.SPLIT_TRANSACTION") + " </a></div>";
       rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " records)</span>";
   
       //FIXME

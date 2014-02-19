@@ -17,6 +17,8 @@
     "CONFIGURE"             : "Configure",
     "JUSTIFICATION"         : "Justification",
     "TRANSACTION_DATE"      : "Transacton Date",
+    "SPLIT_TRANSACTION" : "Split Transaction",
+    "LIVE_TRANSACTION": "Live Transaction",
     "TRANSACTION_NUMBER"    : "Transaction #",
     "VERIFY_TRANSACTION"    : "Verify Transaction",
     "SPLIT"                 : "Split"

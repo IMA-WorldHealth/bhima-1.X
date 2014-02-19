@@ -766,11 +766,14 @@
 
       function exchange(value, currency_id, date) {
         if (!map) {
-          console.error('No exchange rates loaded.');
           messenger.danger('No Exchange Rates loaded!');
         }
         return map ? (map[currency_id] || 1.00) * value : value;
       }
+
+      exchange.hasRates = function () {
+        return !!map;
+      };
 
       return exchange;
     }

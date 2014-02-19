@@ -243,7 +243,7 @@
               <p ng-switch-when="title"> </p>
             </td>
             <td>
-              <p ng-switch-default>{{ account.debit - account.credit | currency }}</p>
+              <p ng-switch-default ng-bind-html="account.debit - account.credit | intlcurrency:enterprise.currency_id"></p>
               <p ng-switch-when="title"></p>
             </td>
           </tr>
@@ -282,9 +282,9 @@
         <tbody>
           <tr ng-repeat="account in accounts | orderBy:'account_number'" ng-class="{'active' : account.type=='title'}">
             <td><b>{{ account.account_number }}</b>  <i>{{account.account_txt }}</i></td>
-            <td>{{ account.debit | currency }}</td>
-            <td>{{ account.credit | currency }}</td>
-            <td>{{ account.debit - account.credit | currency }}</td>
+            <td ng-bind-html="account.debit | intlcurrency:enterprise.currency_id"></td>
+            <td ng-bind-html="account.credit | intlcurrency:enterprise.currency_id"></td>
+            <td ng-bind-html="account.debit - account.credit | intlcurrency:enterprise.currency_id"></td>
           </tr>
         </tbody>
       </table>
