@@ -87,6 +87,7 @@
     "ONE_YEAR"              : "One Year",
     "SPECIFY"               : "Specify",
     "END_MONTH"             : "End Month",
+    "HELP_TXT"              : "This utility facilitates the creation and management of fiscal years. The following operations are available",
     "NAME"                  : "Name",
     "LOCK"                  : "Lock this Fiscal Year",
     "TOTAL_MONTH"           : "Total Months",

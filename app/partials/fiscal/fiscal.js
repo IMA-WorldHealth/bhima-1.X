@@ -149,7 +149,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
               o.credit = row.credit || 0; // default to 0
               o.fiscal_year_id = fy_id;
               o.period_id = zero_id;
-              o.enterprise_id = enterpriseId;
+              o.enterprise_id = enterprise.id;
               return o;
             });
             
