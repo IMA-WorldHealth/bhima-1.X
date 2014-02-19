@@ -579,8 +579,8 @@ angular.module('kpk.controllers').controller('journal', [
         debit_equiv: 0,
         credit_equiv: 0,
         account_number: "(Select Account)",
-        deb_cred_id: "(Select Debtor)",
-        deb_cred_type: "D",
+        deb_cred_id: null,
+        deb_cred_type: null,
         userId: template.userId
       };
  
