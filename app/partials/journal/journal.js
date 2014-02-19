@@ -19,7 +19,6 @@ angular.module('kpk.controllers').controller('journal', [
     var grid, dataview, sort_column, columns, options, chkbx;
 
     dependencies.journal = {
-      
       // FIXME 
       // required: true,
       query: {

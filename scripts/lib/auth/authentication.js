@@ -40,9 +40,12 @@ module.exports = function (db) {
       // FIXME : this is strange, but works. Ideally, you should
       // only have one user matching the given parameters.
       user = results.pop();
+      /*
       if (user.logged_in) {
-        return next(new Error ('User already logged in.'));
+        // FIXME: This is temporary to reflect that we are live in an enterprise
+        //return next(new Error ('User already logged in.'));
       }
+      */
     
       id = sanitize.escape(user.id);
       sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=' + id;
