@@ -15,8 +15,14 @@ angular.module('kpk.controllers').controller('journal', [
   'messenger',
   'appstate',
   function ($scope, $rootScope, $translate, $compile, $timeout, $filter, $q, $http, $location, $modal, connect, validate, messenger, appstate) {
-    var dependencies = {}, liveTransaction = $scope.liveTransaction = {};
-    var grid, dataview, sort_column, columns, options, chkbx;
+    var dependencies = {},
+      liveTransaction = $scope.liveTransaction = {},
+      grid,
+      dataview,
+      sort_column,
+      columns,
+      options,
+      chkbx;
 
     dependencies.journal = {
       // FIXME 
