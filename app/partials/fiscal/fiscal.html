@@ -29,13 +29,13 @@
               <thead>
                 <tr>
                   <th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th>
-                  <th>Start Date</th>
+                  <th>{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr ng-if="model.fiscal.data.length===0">
-                  <td colspan=2><i>No fiscal records found</i></tr>
+                  <td colspan=2><i>{{ 'FISCAL_YEAR.NO_RECORDS' | translate }}</i></tr>
                 </tr>
                 <tr ng-repeat="year in model.fiscal.data" ng-class="{'btn-primary': year.id==selected.id}">
                   <td>{{year.fiscal_year_txt}}</td>
@@ -218,6 +218,7 @@
       <h3>{{ "OPENING_BALANCE.TITLE" | translate }} {{ fy_id }}</h3>
     </div>
     <div class="modal-body" style="max-height: 300px; height:300px; overflow: auto;">
+      <div c-data="accounts"></div>
       <p ng-hide="accounts.length"> 
         <b>{{ "OPENING_BALANCE.LOADING" | translate }}...</b>
       </p>
