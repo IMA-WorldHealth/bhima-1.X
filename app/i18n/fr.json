@@ -2,7 +2,6 @@
   "POSTING_JOURNAL" : {
     "TITLE"                 : "Journal de Saisie",
     "GROUP_BY"              : "Groupe Par",
-
     "DEB_CRED"              : "DÃ©biteur / CrÃ©diteur",
     "TRANSACTION"           : "Transaction",
     "ACCOUNT"               : "Compte",
@@ -12,7 +11,8 @@
     "DEBIT"                 : "Debit",
     "CREDIT"                : "Crédit",
     "FISCAL_YEAR"           : "Année Fiscal",
-
+    "SPLIT_TRANSACTION" : "Split Transaction",
+    "LIVE_TRANSACTION" : "Transaction Vivant",
     "ENTERPRISE"            : "Entreprise",
     "ENTERPRISE_MANAGEMENT" : "Gestion de l'Entreprise",
     "IN_PROGRESS"           : "En Cours",
@@ -29,7 +29,7 @@
     "TOTAL"          : "Total",
     "PRINT"          : "Imprimer",
     "CREATE"         : "CrÃ©er",
-    "CANCEL"         : "Innuler",
+    "CANCEL"         : "Annuler",
     "ITEMS"          : "Articles",
     "TOGGLE"         : "Basculer",
     "COLUMNS"        : "Colonnes",
