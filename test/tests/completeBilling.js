@@ -1,4 +1,4 @@
-var credentials = { 
+var credentials = {
   username : 'sfount',
   password : '1'
 };
@@ -11,12 +11,12 @@ var patient = {
   yob : "1993",
   sex : "M",
   debtorGroup : "3"
-}
+};
 
-module.exports = { 
+module.exports = {
   'login' : bhimaUtil.login,
 
-  'registerPatient' : function(client) { 
+  'registerPatient' : function(client) {
     bhimaUtil.navigateTree('Hospital', 'Patient Registration', client);
     client.waitForElementVisible('div[id=patientDetails]', 1000);
 
@@ -37,9 +37,8 @@ module.exports = {
     client.assert.containsText('header', 'Receipts');
   },
 
-  'billPatient' : function(client) { 
+  'billPatient' : function(client) {
     console.log('reached patient billing');
-    
   },
 
   'logout' : bhimaUtil.logout

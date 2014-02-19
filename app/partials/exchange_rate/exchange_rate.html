@@ -1,31 +1,31 @@
 <header>
-  <span>Configure Exchange Rates</span>
+  <span>{{ "EXCHANGE.TITLE" | translate }}</span>
 </header>
 
 <section class="top-nav">
-  <a href="" class="btn btn-sm btn-default" ng-click="action='new'"><i class="glyphicon glyphicon-file"></i> New Exchange Rate</a>
-  <a href="" class="btn btn-sm btn-default" ng-click="action='review'"><i class="glyphicon glyphicon-list"></i> Review Today's Rates</a>
+  <a href="" class="btn btn-sm btn-default" ng-click="action='new'"><i class="glyphicon glyphicon-file"></i>{{ "EXCHANGE.NEW" | translate }}</a>
+  <a href="" class="btn btn-sm btn-default" ng-click="action='review'"><i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
 </section>
 
 <div class="content">
 
   <div class="row">
     <div class="col-xs-6">
-      <h3 style="margin-top:inherit;">Previous Rates</h3>
+      <h3 style="margin-top:inherit;">{{ EXCHANGE.PREV | translate }}</h3>
       <table class="table table-bordered table-condensed">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Enterprise Currency</th>
-            <th>Other Currency</th>
-            <th>Rate</th>
+            <th>{{ "COLUMNS.DATE" | translate }}</th>
+            <th>{{ "COLUMNS.ENTERPRISE_CURRENCY" | translate }}</th>
+            <th>{{ "COLUMNS.OTHER_CURRENCY" | translate }}</th>
+            <th>{{ "COLUMNS.RATE" | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="rate in rates.data | orderBy:'date' | limitTo: 12">
-            <td>{{rate.date | date}}</td>
-            <td>{{ currency.get(rate.enterprise_currency_id).name}}</td>
-            <td>{{currency.get(rate.foreign_currency_id).name }}</td>
+            <td>{{ rate.date | date }}</td>
+            <td>{{ currency.get(rate.enterprise_currency_id).name }}</td>
+            <td>{{ currency.get(rate.foreign_currency_id).name }}</td>
             <td>{{ rate.rate }}</td>
           </tr>
         </tbody>
@@ -36,18 +36,14 @@
 
       <div ng-switch-default>
         <div class="alert alert-info">
-          <h4>Exchange Rate Module</h4>
-          <p>
-            The exchange rate module provides the facilty to set daily exchange rates. In order
-            to ensure data integrity, an exchange rate for <b>all</b> functional currencies must
-            be set <b>daily</b>.
-          </p>
+          <h4> {{ "EXCHANGE.TITLE" | translate }} </h4>
+          <p>{{ "EXCHANGE.HELP_TXT_1" | translate }}</p>
         </div>
       </div>
 
       <div class="panel panel-default" ng-switch-when="review">
         <div class="panel-heading">
-          <span>Exchange rate for <b>{{ today | date}}</b></span>
+          <span>{{ 'EXCHANGE.TODAY_RATE' | translate }} <b>{{ today | date}}</b></span>
         </div>
         <div class="panel-body">
           <form class="form-horizontal">
@@ -64,6 +60,10 @@
               </div>
             </div>
 
+            <div class="alert alert-danger" ng-show="!currentRates || !currentRates.length">
+              <h5>{{ "EXCHANGE.NO_RATES" | translate }}</h5>
+            </div>
+
           </form>
         </div>
       </div>
@@ -72,7 +72,7 @@
         <div class="panel-body">
           <form name="exchangeForm" class="form-horizontal" novalidate>
             <fieldset>
-              <legend>Set Exchange Rate</legend>
+              <legend>{{ 'EXCHANGE.SET' | translate }}</legend>
 
               <div class="form-group">
                 <div class="col-xs-5">
@@ -83,7 +83,7 @@
 
                 <div class="col-sm-offset-1 col-xs-5">
                   <select class="form-kapok" ng-model="newRate.foreign_currency_id" ng-options="c.id as c.name for c in currency.data | filter:fcurrency" required>
-                    <option value="" disabled="disabled">-- Select Currency --</option>
+                    <option value="" disabled="disabled">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
                   </select>
                 </div>
               </div>
@@ -107,7 +107,7 @@
               </div>
             </fieldset>
 
-            <input type="submit" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="exchangeForm.$invalid">
+            <input type="submit" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="exchangeForm.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
 
           </form>
         </div>
