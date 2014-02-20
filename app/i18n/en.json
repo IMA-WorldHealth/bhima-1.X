@@ -267,7 +267,26 @@
     "DISCOUNT"       : "Discount",
     "INVENTORY_ITEM" : "Inventory Item",
     "PRICE"          : "Price",
-    "ACTION"         : "Action"
+    "ACTION"         : "Action",
+    "RATE"           : "Rate",
+    "TRANS_ID"       : "Transaction #",
+    "DEB_EQUIV"      : "Debit Equiv",
+    "CRE_EQUIV"      : "Credit Equiv",
+    "DC_TYPE"        : "D/C Type",
+    "INVPO_ID"       : "Inv/PO #",
+    "PATIENT"        : "Patient",
+    "TOTAL_AMOUNT"   : "Total Amount",
+    "BALANCE_DUE"    : "Balance Due",
+    "POSTED"         : "Posted",
+    "FISCAL_YEAR_ID" : "Fiscal Year ID",
+    "PERIOD_ID"      : "Period ID",
+    "DOCUMENT_ID"    : "Document ID",
+    "DEBIT"          : "Debit",
+    "CREDIT"         : "Credit",
+    "CURRENCY"       : "Monnaie",
+    "DEBCRED_ID"     : "Deb/Cred ID",
+    "ORIGIN_ID"      : "Origin ID",
+    "USER_ID"        : "User ID"
   },
 
   "SUPPLIER" : {
@@ -551,6 +570,19 @@
     "REGISTER"             : "Register a Country",
     "CODE"                 : "Code",
     "EDIT"                 : "Edit a Country"
+  },
+
+  "SALERECORD" : {
+    "TITLE" : "Patient Invoice Records",
+    "SHOWING" : "Showing latest records",
+    "ADVANCE" : "Advanced Search",
+    "UNFOUND" : "No patient transactions found. Reference",
+    "PATIENT_SALE" : "Patient Sales",
+    "GENERATE" : "to generate an invoice.",
+    "RECEIPT"  : "Receipt",
+    "POSTING"  : "Posting Journal",
+    "CREDIT_NOTE" : "Credit Note",
+    "POST"     : "Post to Journal"
   }
 
     

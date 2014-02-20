@@ -109,7 +109,7 @@
               <div class="form-group">
                 <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
                 <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
-                  <option value="" disabled="disabled">-- Select a Location --</option>
+                  <option value="" disabled="disabled">-- {{ 'SELECT.LOCATION' | translate }}--</option>
                 </select>
               </div>
 
