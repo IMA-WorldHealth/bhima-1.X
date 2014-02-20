@@ -39,6 +39,15 @@ module.exports = {
 
   'billPatient' : function(client) {
     console.log('reached patient billing');
+
+    bhimaUtil.navigateTree('Finance', 'Sales', client);
+    
+    client.waitForElementVisible('[id=findPatient]', 1000);
+    
+    client.click('[id=findByName]')
+      .setValue('[id=findSearch]', patient.firstName + ' ' + patient.secondName)
+      .click('[id=submitSearch]')
+      .pause(4000);
   },
 
   'logout' : bhimaUtil.logout
