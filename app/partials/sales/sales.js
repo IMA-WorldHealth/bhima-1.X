@@ -26,6 +26,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   }
 
   function initialiseSaleDetails(selectedDebtor) {
+
+    console.log(selectedDebtor);
     if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
    
     buildInvoice(selectedDebtor);
@@ -42,7 +44,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
           'patient_group.price_list_id=price_list.id'
         ],
         where : [
-          'assignation_patient.patient_id=' + 1
+          'assignation_patient.patient_id=' + selectedDebtor.id
         ]
       }
     };
