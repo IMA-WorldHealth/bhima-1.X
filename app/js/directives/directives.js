@@ -252,14 +252,14 @@
           };
           
           var template =
-          '<div class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
+          '<div id="findPatient" class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
           '  <div class="panel-heading">'+
           '    <div ng-switch on="findPatient.submitSuccess">'+
           '     <div ng-switch-when="false">'+
           '       <span class="glyphicon glyphicon-search"></span> Find Patient'+
           '       <div class="pull-right">'+
-          '         <a ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> Enter Debtor ID</a>'+
-          '         <a ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> Search Patient Name</a>'+
+          '         <a id="findById" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> Enter Debtor ID</a>'+
+          '         <a id="findByName" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> Search Patient Name</a>'+
           '       </div>'+
           '     </div>'+
           '     <div ng-switch-when="true">'+
@@ -276,6 +276,7 @@
           '      <div ng-switch-when="name">'+
           '        <div class="input-group">'+
           '          <input '+
+          '          id="findSearch" ' + 
           '          type="text" '+
           '          ng-model="findPatient.selectedDebtor" '+
           '          typeahead="patient as patient.name for patient in findPatient.model.debtor.data | filter:$viewValue | limitTo:8" '+
@@ -285,7 +286,7 @@
           '          class="form-kapok" '+
           '          size="25">'+
           '          <span class="input-group-btn"> '+
-          '            <button ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-default btn-sm">Submit</button>'+
+          '            <button id="submitSearch" ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-default btn-sm">Submit</button>'+
           '          </span>'+
           '        </div>'+
           '      </div> <!-- End searchName component -->'+
