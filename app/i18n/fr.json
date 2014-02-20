@@ -9,8 +9,8 @@
     "ADD_TRANSACTION"       : "Ajouter une Transation",
     "GENERAL_LEDGER"        : "Grand Livre",
     "DEBIT"                 : "Debit",
-    "CREDIT"                : "CrÃ©dit",
-    "FISCAL_YEAR"           : "AnnÃ©e Fiscal",
+    "CREDIT"                : "Credit",
+    "FISCAL_YEAR"           : "Annee Fiscal",
     "SPLIT_TRANSACTION" : "Split Transaction",
     "LIVE_TRANSACTION" : "Transaction Vivant",
     "ENTERPRISE"            : "Entreprise",
@@ -20,7 +20,7 @@
     "JUSTIFICATION"         : "Justification",
     "TRANSACTION_DATE"      : "Date de Transaction",
     "TRANSACTION_NUMBER"    : "Numero de Transaction",
-    "VERIFY_TRANSACTION"    : "VÃƒÂ©rifier Transaction",
+    "VERIFY_TRANSACTION"    : "Verifier Transaction",
     "SPLIT"                 : "Diviser"
   },
 
@@ -66,6 +66,45 @@
     "MANAGE_CASH_ACCOUNTS"     : "Gerer Le Compte de Caisse"
   },
 
+  "CASH" : {
+    "TITLE"            : "Caisse Auxillaire",
+    "DEFAULT_CASHBOX"  : "Caisse",
+    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
+    "HELP_TXT_2"       : "Trouver un Debiteur avec le ",
+    "DEBITOR_INVOICES" : "Factures Impaye de Debiteur",
+    "PAYMENT"          : "Paiement",
+    "TOTAL_DUE"        : "Total Debiter",
+    "TOTAL_PAYING"     : "Total Paye",
+    "OVERDUE"          : "Impaye",
+    "PAY_INVOICES"     : "Paye les Factures",
+    "CLEAR_SELECTION"  : "Recommencer"
+  },
+
+  "CREDIT_NOTE" : {
+    "TITLE"        : "Note de Credit",
+    "SALE_DETAILS" : "Detaille de la Facture",
+    "TOTAL_DEBIT"  : "Total Debiter",
+    "DESCRIPTION"  : "Description",
+    "SUBMIT"       : "Soumettre Note de Credit"
+  },
+
+  "CURRENCY" : {
+    "TITLE"         : "Gestion des Monaies",
+    "ADD"           : "Ajouter un Monaies",
+    "HELP_TXT_1"    : "Gerer et ajouter des monies de l'application",
+    "DEFN"          : "Definitions",
+    "SYMBOL"        : "Signe",
+    "SEPARATOR"     : "Seperateur",
+    "DECIMAL"       : "Decimal",
+    "SYMBOL_TXT"    : "La signe qui va demarquer le monaie",
+    "SEPARATOR_TXT" : "Le delimiteur pour la place milles",
+    "DECIMAL_TXT"   : "Le delimiteur pour la place decimal",
+    "ACTIONS"       : "Actions",
+    "ACTION_TXT_1"  : "Editer la monaie",
+    "ACTION_TXT_2"  : "Soupplimer la monaie",
+    "CURRENCY_DEFN" : "Definition de la Monaie"
+  },
+
   "TRIAL_BALANCE" : {
     "TITLE"       : "Rapprochement",
     "ERROR_TEXT"  : "Vous avez des Erreurs!",
@@ -75,6 +114,24 @@
     "DEBIT"       : "Debit",
     "CREDIT"      : "Credit",
     "BTN_TEXT"    : "Poster au Grand Livre"
+  },
+
+  "SALE" : {
+    "SALE" : "Facture",
+    "TITLE" : "Facturation",
+    "IMPORT" : "Importer Perscription",
+    "UPDATE" : "Mis a Jour les Defaults",
+    "SUBMIT" : "Soumettre La Facture",
+    "ADD_LINE_ITEM" : "Ajouter une Item",
+    "EDIT_SALE" : "Editer la Facture",
+    "TOTAL" : "Totale"
+  },
+
+  "FIND" : {
+    "TITLE" : "Trouver Malade",
+    "ENTER_DEBTOR_ID" : "Chercher ID Debiteur",
+    "SEARCH" : "Chercher Par Nom",
+    "PLACEHOLDER" : "Chercher un Debiteur"
   },
 
   "SELECT" : {
@@ -107,7 +164,7 @@
     "PATIENT"                  : "Malades",
     "FIRST_NAME"               : "Prenom",
     "SECOND_NAME"              : "Nom",
-    "YOB"                      : "AnnÃ©e de Naissance",
+    "YOB"                      : "Annee de Naissance",
     "ENTER_FULL_DATE"          : "Saisie Date Exact",
     "DOB"                      : "Date de Naissance",
     "SEX"                      : "Sex",
@@ -124,6 +181,52 @@
     "MARITAL_STATUS"           : "Etat Civil",
     "PATIENT_NOTES"            : "Note",
     "REGISTER_PATIENT"         : "Enregistre le Malade"
+  },
+
+  "TREE" : {
+    "ROOT" : "Racine",
+    "ADMIN" : "Admin",
+    "ENTERPRISE" : "Enterprise",
+    "PERMISSION" : "Utilisateurs & Permissions",
+    "FINANCE" : "Finance",
+    "ACCOUNT" : "Compte",
+    "BUDGETING" : "Budget",
+    "POSTING_JOURNAL" : "Journal De Saisie",
+    "REPORTS" : "Rapports",
+    "INVENTORY" : "Stock",
+    "HOSPITAL" : "Hopitale",
+    "FISCAL_YEAR" : "Annee Fiscale",
+    "PATIENT_REG" : "Enregistrement des Malades",
+    "PATIENT_RECORDS" : "Historique",
+    "SALES" : "Vents",
+    "SALE_RECORDS" : "Historique Vents",
+    "PURCHASE_ORDER" : "Demands de Fonds",
+    "BUDGET_BY_ACCOUNT" : "Budget par Compte",
+    "CASH" : "Caisse Auxillaire",
+    "REGISTER_STOCK" : "Enregistrement des Stocks",
+    "REGISTER_SUPPLIER" : "Enregistrement des Maisons",
+    "PURCHASE_ORDER_RECORDS" : "Historique Demands des Fonds",
+    "REPORT_FINANCE" : "Rapport Financial",
+    "PRICE_LIST" : "Liste des Prix",
+    "EXCHANGE" : "Taux d'Exchange",
+    "REPORT_TRANSACTION" : "Rapport Transaction",
+    "CREDITOR_GRP" : "Groupe Crediteur",
+    "DEBTOR_GRP" : "Groupe Debiteur",
+    "INVENTORY_VIEW" : "Rapport Stocks",
+    "GENERAL_LEDGER": "Grand Livre",
+    "LOCATION" : "Localisation",
+    "ACCOUNT_BALANCE_STATEMENT" :"Rapport Balance Compte",
+    "CHART_OF_ACCOUNTS" : "Plan Comptable",
+    "DEBTOR_AGING" : "Rapport Debiteur",
+    "ACCOUNT_STATEMENT" : "Rapport Compte",
+    "INCOME_EXPENSE" : "Rapport Recettes/Depense",
+    "CREDIT_NOTE" : "Note de Credit",
+    "PATIENT_GRP_ASSIGNMENT" : "Assignation Groupes des Malades",
+    "PATIENT_GRP" : "Groupe des Malales",
+    "ACCOUNTING" : "Compatabilite",
+    "COST_CENTER_MGMT" : "Centres Des Couts",
+    "GRP_INVOICING" : "Facturation des Conventions",
+    "CURRENCY" : "Monaie"
   },
 
   "PATIENT_RECORDS" : {
@@ -212,15 +315,18 @@
     "INVOICE_ID"     : "ID Facture",
     "DEBITOR"        : "Debiteur",
     "BALANCE"        : "Balance",
-    "PAID"           : "PayÃ©",
+    "PAID"           : "Paye",
     "REMAINING"      : "Reste",
     "DESCRIPTION"    : "Description",
-    "QUANTITY"       : "QuantitÃ©",
+    "QUANTITY"       : "Quantite",
     "UNIT_PRICE"     : "Prix Unitaire",
     "COST"           : "Coût",
     "DISCOUNT"       : "Discompte",
     "INVENTORY_ITEM" : "Item du Stock",
     "PRICE"          : "Prix",
+    "UNIT"           : "Unit",
+    "DURABLE"        : "Durable",
+    "CONSUMABLE"     : "Nondurable",
     "ACTION"         : "Acte",
     "ENTERPRISE_CURRENCY" : "Monnaie d'Entreprise",
     "OTHER_CURRENCY" : "Autre Monnaie",
@@ -242,9 +348,15 @@
     "CURRENCY"       : "Monnaie",
     "DEBCRED_ID"     : "ID Deb/Cred",
     "ORIGIN_ID"      : "ID Origine",
-    "USER_ID"        : "ID Utilisateur"
-
-
+    "USER_ID"        : "ID Utilisateur",
+    "AMOUNT" : "Mountant",
+    "QTY" : "Quantite",
+    "ITEM" : "Item",
+    "CODE" : "Code",
+    "TEXT" : "Texte",
+    "STOCK" : "Stock",
+    "VOLUME" : "Volume",
+    "WEIGHT" : "Poids"
   },
 
   "REPORT" : {
@@ -291,14 +403,69 @@
     "PATIENT_GRP" : "Groupe de Malades"
   },
 
-  "TRANSACTION"     : "opÃ©ration",
+  "GROUP_INVOICE" : {
+    "TITLE"                  : "Facturation des Conventions et Societes",
+    "SELECT_PAYMENT_DETAILS" : "Selectionner Detail de la Paiement",
+    "GROUP"                  : "Groupe",
+    "DEBITOR"                : "Debiteur",
+    "SELECT_INVOICES"        : "Selectionner Factures",
+    "HELP_TXT_1" : "Utiliser cette module pour facturer les Societes et Conventions",
+    "CONVENTION_INVOICE" : "Facture Convention",
+    "INVOICE_TITLE" : "Facture Convention",
+    "COST" : "Cout pour Debiteur",
+    "INVOICE_ID" : "ID Facture",
+    "AGREED" : "Paiement Agree",
+    "BALANCE" : "Balance",
+    "ERROR_TXT_1" : "Etre sure que tous les informations sont bien enregistrer",
+    "CANCEL" : "Annuler",
+    "PAY" : "Paye la Facture",
+    "AUTHORIZED_BY" : "Autorise Par",
+    "AUTHORIZE" : "Autoriser",
+    "DETAILS" : "Details Facture"
+  },
+
+  "INVENTORY_REGISTER" : {
+    "TITLE" : "Enregistrement des Stocks",
+    "VIEW" : "Voire Stocks",
+    "ADD_TYPE" : "Ajouter Type Unitaire",
+    "ADD_GROUP" : "Ajourter Groupe Inventaire",
+    "GENERAL" : "General",
+    "CODE" : "Code",
+    "DESCRIPTION" : "Description",
+    "GROUP" : "Groupe Inventaire",
+    "BILLING" : "Informations pour la Facturation et Stocks",
+    "DURABLE" : "Durable",
+    "CONSUMABLE" : "Nondurable",
+    "UNIT" : "Unit",
+    "DEFAULT_PRICE" : "Prix Unitaire",
+    "UNIT_WEIGHT" : "Poids Unitaire",
+    "UNIT_VOLUME" : "Volume Unitaire"
+  },
+
+  "PRICE_LIST" : {
+    "TITLE" : "Listes des Prixes",
+    "ACTIONS" : "Actions",
+    "NEW" : "Nouvelle Liste des Prixes",
+    "HELP_TXT_1" : "Choisier une action a gauche pour editer la liste de prix",
+    "HELP_TXT_2" : "Editer les metadonnees de la Liste",
+    "HELP_TXT_3" : "Effacer la Liste",
+    "EDIT" : "Editting Price List Metadata",
+    "ADD" : "Ajouter une List"
+  },
+
+  "INVENTORY_VIEW" : {
+    "TITLE" : "Journales des Stocks",
+    "GROUP_BY" : "Groupe Par",
+    "REGISTER" : "Enregistre Stocks"
+  },
+
   "GENERAL_LEDGER"  : "grand livre",
   "DEBIT"           : "debit",
   "CREDIT"          : "credit",
 
   "CONFIGURE" : "configurer",
   "PRINT"     : "imprimer",
-  "CREATE"    : "crÃƒÂ©er",
+  "CREATE"    : "creer",
 
   "ID"          : "id",
   "DATE"        : "date",
@@ -347,7 +514,6 @@
   },
   
   "NAME"         : "nom",
-  "CASH_ACCOUNT" : "compte caisse",
   "PHONE"        : "telephone",
   "ABBREVIATION" : "abbreviation",
 
@@ -392,7 +558,7 @@
   "ACCOUNT" : {
     "TITLE" : "Gestion des Comptes",
     "GENERATE" : "Generer un rapport des Comptes",
-    "CREATE" : "CrÃ©er un plan Comptable",
+    "CREATE" : "Creer un plan Comptable",
     "ADD" : "Ajouter un Compte",
     "HELP_TXT_1" : "Un Plan Comptable pour",
     "HELP_TXT_2" : "Les informations sur les comptes, ainsi que leurs relations sont visibles sur le tableau a droite",
@@ -401,12 +567,16 @@
     "ACCOUNT_TITLE" : "Libelle de Compte",
     "ACCOUNT_TYPE" : "Type de Compte",
     "ACCOUNT_NUMBER" : "Numero de Compte",
-    "FIXED" : "FixÃ©",
+    "FIXED" : "Fixe",
+    "NO" : "No.",
+    "TXT" : "Texte",
+    "TYPE" : "Type",
     "VARIABLE" : "Variable",
     "ACCOUNT_GROUP" : "Groupe des Comptes (Comptes Titres)",
     "TITLE_ACCOUNT" : "Comptes Titre",
     "ROOT_ACCOUNT" : "Compte Parent"
   },
+
   "EXCHANGE" : {
     "TITLE" : "Configurer le taux d'Echange",
     "SET" : "Definir le Taux d'Echange d'Aujourd'hui",
@@ -431,6 +601,8 @@
   "LOCATION" : {
     "LOCATION"                          : "Emplacement",
     "TITLE"                             : "Gestions Emplacement",
+    "ORIGIN" : "Origine",
+    "CURRENT" : "Present",
     "MANAGE_COUNTRY"                    : "Gerer Les Pays",
     "MANAGE_PROVINCE"                   : "Gerer Les Province",
     "MANAGE_SECTOR"                     : "Gerer Les Secteurs",

@@ -166,11 +166,10 @@
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-          console.timeEnd("directive_timestamp");
           var treeId = attrs.treeId;
           var treeModel = attrs.treeModel;
           var nodeId = attrs.nodeId || 'id';
-          var nodeLabel = attrs.nodeLabel || 'label';
+          var nodeLabel = attrs.nodeLabel || 'name';
           var nodeChildren = attrs.nodeChildren || 'children';
 
           var template =
@@ -178,7 +177,7 @@
               '<li data-ng-repeat="node in ' + treeModel + '">' +
                 '<i name="{{node.' + nodeLabel + '}}" ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed}" class="glyphicon" data-ng-click="' + treeId + '.selectNodeHead(node)"></i> ' +
                 '<i class="normal glyphicon glyphicon-file" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
-                '<span name="{{node.'  + nodeLabel + '}}" data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' +
+                '<span name="{{node.'  + nodeLabel + '}}" data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + ' | translate }}</span>' +
                 '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
               '</li>' +
             '</ul>';
@@ -241,10 +240,10 @@
           '  <div class="panel-heading">'+
           '    <div ng-switch on="findPatient.submitSuccess">'+
           '     <div ng-switch-when="false">'+
-          '       <span class="glyphicon glyphicon-search"></span> Find Patient'+
+          '       <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}'+
           '       <div class="pull-right">'+
-          '         <a ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> Enter Debtor ID</a>'+
-          '         <a ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> Search Patient Name</a>'+
+          '         <a ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
+          '         <a ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
           '       </div>'+
           '     </div>'+
           '     <div ng-switch-when="true">'+
@@ -264,13 +263,13 @@
           '          type="text" '+
           '          ng-model="findPatient.selectedDebtor" '+
           '          typeahead="patient as patient.name for patient in findPatient.model.debtor.data | filter:$viewValue | limitTo:8" '+
-          '          placeholder="Find a Debitor"'+
+          '          placeholder="{{ "FIND.PLACEHOLDER" | translate }}'+
           '          typeahead-on-select="loadDebitor(debitor.id)" '+
           '          typeahead-template-url="debtorListItem.html"'+
           '          class="form-kapok" '+
           '          size="25">'+
           '          <span class="input-group-btn"> '+
-          '            <button ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-default btn-sm">Submit</button>'+
+          '            <button ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }}</button>'+
           '          </span>'+
           '        </div>'+
           '      </div> <!-- End searchName component -->'+
@@ -282,7 +281,7 @@
           '            class="form-kapok"'+
           '            placeholder="Debtor ID">'+
           '          <span class="input-group-btn">'+
-          '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm">Submit</button>'+
+          '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }} </button>'+
           '          </span>'+
           '        </div>'+
           '      </div>'+

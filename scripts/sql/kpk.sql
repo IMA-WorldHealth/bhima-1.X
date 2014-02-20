@@ -58,6 +58,7 @@ drop table if exists `unit`;
 create table `unit` (
   `id`            smallint unsigned not null,
   `name`          varchar(30) not null,
+  `key`           varchar(70) not null,
   `description`   text not null,
   `parent`        smallint default 0,
   `has_children`  boolean not null default 0,
