@@ -232,7 +232,7 @@
     "NUMBER"                : "Numero",
     "DESCRIPTION"           : "Description",
     "FINANCE_REPORT"        : "Rapport Financiale",
-    "REPORT_YEARS"          : "Annee Rapports"
+    "REPORT_YEARS"          : "Annee Rapports",
     "ACCOUNT"               : "Compte",
     "TRANSACTION_REPORT"    : "Rapport des Transactions",
     "BALANCED"              : "Balance",
@@ -272,7 +272,6 @@
   },
 
   "TRANSACTION"     : "opÃ©ration",
-  "ACCOUNT"         : "compte",
   "GENERAL_LEDGER"  : "grand livre",
   "DEBIT"           : "debit",
   "CREDIT"          : "credit",
@@ -416,7 +415,6 @@
     "MANAGE_PROVINCE"                   : "Gerer Les Province",
     "MANAGE_SECTOR"                     : "Gerer Les Secteurs",
     "MANAGE_VILLAGE"                    : "Gerer Les Villages",
-    "REGISTERED"                        : "Emplacement Enregistrees",
     "COUNTRY"                           : "Pays",
     "PROVINCE"                          : "Province",
     "SECTOR"                            : "Secteur",
@@ -448,18 +446,17 @@
     "REMOVE"               : "Effacer",
     "COUNTRY"              : "pays",
     "REGISTER"             : "Enregistrer un pays",
-    "CODE"                 : "Code",
     "EDIT"                 : "Editer un pays"
   },
+
   "PATIENT_GRP" : {
-        "TITLE"         : "Gestion des Groupes Patients",
-        "NEW"           : "Nouveau Groupe Patients",
-        "REGISTERED"    : "Groupes Patients Enregistrees",
-        "REGISTER"      : "Enregistrer Groupe Patient",
-        "PRICE_LIST"    : "Liste des Prix",
-        "MODIFY"        : "Modifier un Groupe Patient",
-        "PATIENT_GROUP" : "Patient Group",
-        "HELP_TXT_1"    : "Group Patient est utilisee pour assigner un discount aux patients qui le meritent. utikiser ce module pour Enregsitrer, modifier, et effacer un group patient"
+    "TITLE"         : "Gestion des Groupes Patients",
+    "NEW"           : "Nouveau Groupe Patients",
+    "REGISTERED"    : "Groupes Patients Enregistrees",
+    "REGISTER"      : "Enregistrer Groupe Patient",
+    "PRICE_LIST"    : "Liste des Prix",
+    "MODIFY"        : "Modifier un Groupe Patient",
+    "PATIENT_GROUP" : "Patient Group",
+    "HELP_TXT_1"    : "Group Patient est utilisee pour assigner un discount aux patients qui le meritent. utikiser ce module pour Enregsitrer, modifier, et effacer un group patient"
   }
 }
-
