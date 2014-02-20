@@ -1,11 +1,13 @@
 <header>
-  <span>Patient Records</span>
+  <span>{{ "PATIENT_RECORDS.TITLE" | translate }}</span>
 </header>
 
 
 <section class="top-nav underline">
   	<div class="pull-right">
-    <a ng-click="fetchAll()" class="btn btn-default"><span class="glyphicon glyphicon-user"></span> View all patients</a>
+      <a ng-click="fetchAll()" class="btn btn-default">
+        <span class="glyphicon glyphicon-user"></span> {{ "PATIENT_RECORDS.VIEW_ALL" | translate }}
+      </a>
   </div>
 </section>
 
@@ -15,7 +17,7 @@
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div ng-click="model.patient.data=[]" class="panel-heading">
-          Advanced Search {{searchParams}}
+          {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }} {{searchParams}}
           <div class="pull-right">
             <a><span class="glyphicon glyphicon-search"></span></a>
           </div>
@@ -25,23 +27,23 @@
           <div class="row">
           <div class="col-xs-6">
             <div class="form-group">
-              <label class="control-label">First Name</label>
+              <label class="control-label">{{ "PATIENT_RECORDS.FIRST_NAME" | translate }}</label>
               <input class="form-kapok" ng-model="searchParams.first_name"></input>
             </div>
 
             <div class="form-group">
-              <label class="control-label">Last Name</label>
+              <label class="control-label">{{ "PATIENT_RECORDS.LAST_NAME" | translate }}</label>
               <input class="form-kapok" ng-model="searchParams.last_name"></input>
             </div>
             
             <!-- TODO Implement convert year to date / allow full date to be entered -->
             <div class="form-group">
-              <label class="control-label">Year of birth</label>
+              <label class="control-label">{{ "PATIENT_RECORDS.YOB" | translate }}</label>
               <input class="form-kapok"></input>
             </div>
 
             <div class="form-group">
-              <label class="control-label">Gender</label>
+              <label class="control-label">{{ "PATIENT_RECORDS.SEX" | translate }}</label>
               <div class="col-xs-12">
                 <div class="radio-inline">
                   <label>
@@ -53,13 +55,13 @@
                       checked
                       ng-model="searchParams.sex"
                       required>
-                    Male
+                    {{ "PATIENT_RECORDS.MALE" | translate }} 
                   </label>
                 </div>
                 <div class="radio-inline">
                   <label>
                     <input type="radio" name="sex_select" id="female" value="F" ng-model="searchParams.sex" required>
-                    Female
+                    {{ "PATIENT_RECORDS.FEMALE" | translate }}
                   </label>
                 </div>
               </div>
@@ -70,30 +72,37 @@
           <div class="col-xs-6">
 
             <div class="form-group">
-              <label for="location-country" class="capital control-label">Country</label>
+              <label for="location-country" class="control-label">
+                {{ "LOCATION.COUNTRY" | translate }}
+              </label>
               <select disabled class="form-kapok" id="location-country"> 
-                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Country&#45;&#45;</option> -->
-                </select>
+                <!-- <option value="" disabled="disabled">&#45;&#45; Patient Country&#45;&#45;</option> -->
+              </select>
             </div>
 
             <div class="form-group">
-              <label for="location-province" class="capital control-label">Province</label>
+              <label for="location-province" class="control-label">
+                {{ "LOCATION.PROVINCE" | translate }}
+              </label>
               <select disabled class="form-kapok" id="location-province"> 
-                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Province &#45;&#45;</option> -->
-                </select>
+                <!-- <option value="" disabled="disabled">&#45;&#45; Patient Province &#45;&#45;</option> -->
+              </select>
             </div>
 
             <div class="form-group">
-              <label for="location-sector" class="capital control-label">Sector</label>
+              <label for="location-sector" class="control-label">
+                {{ "LOCATION.SECTOR" | translate }}
+              </label>
                 <select disabled class="form-kapok" id="location-sector">
                   <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
                 </select>
             </div>
 
             <div class="form-group">
-              <label for="location-village" class="capital control-label">Village</label>
+              <label for="location-village" class="control-label">
+                {{ "LOCATION.VILLAGE" | translate }}
+              </label>
                 <input
-                  type="text"
                   disabled
                   class="form-kapok col-xs-9"
                   id="location-country"
@@ -107,7 +116,9 @@
           </div>
           <div class="row">
             <div class="col-xs-12">
-              <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">Search</button>
+              <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">
+                {{ "PATIENT_RECORDS.SEARCH" | translate }} 
+              </button>
             </div>  
           </div>
         </div>
@@ -119,8 +130,10 @@
     <div class="col-xs-12">
       <div class="panel panel-default" ng-class="{'panel-danger': model.patient.data.length<=0, 'panel-success': model.patient.data.length>0}">
         <div class="panel-heading">
-          Result 
-          <div class="pull-right"><span class="glyphicon" ng-class="{'glyphicon-eye-open': model.patient.data && model.patient.data.length!==0, 'glyphicon-eye-close': !model.patient.data.length}"></span></div>
+          {{ "PATIENT_RECORDS.RESULTS" | translate }}
+          <div class="pull-right">
+            <span class="glyphicon" ng-class="{'glyphicon-eye-open': model.patient.data && model.patient.data.length!==0, 'glyphicon-eye-close': !model.patient.data.length}"></span>
+          </div>
         </div>
           
         <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
@@ -128,27 +141,25 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>Name</th>
-              <th>DOB</th>
-              <th>Parent</th>
-              <th>Gender</th>
-              <th>Email</th>
-              <th>Debtor #</th>
-              <th>Date registered</th>
+              <th>{{ "COLUMNS.NAME" | translate }}</th>
+              <th>{{ "COLUMNS.DOB" | translate }}</th>
+              <th>{{ "COLUMNS.PARENT" | translate }}</th>
+              <th>{{ "COLUMNS.SEX" | translate }}</th>
+              <th>{{ "COLUMNS.EMAIL" | translate }}</th>
+              <th>{{ "COLUMNS.DEBTOR" | translate }} #</th>
+              <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
               <th></th>
             </tr>
             </thead>
 
             <tbody>
-            <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.id)"
-                ng-repeat="patient in model['patient'].data | filter: patient_filter.filter">
-
+            <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.id)" ng-repeat="patient in model['patient'].data | filter: patient_filter.filter">
               <td><b>{{patient.id}}</b></td>
-              <td>{{patient.name}}</td>
-              <td>{{patient.dob | date : 'dd/MM/yyyy'}}</td>
-              <td>{{patient.parent_name}}</td>
-              <td>{{patient.sex | uppercase}}</td>
-              <td>{{patient.email}}</td>
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
+              <td>{{ patient.parent_name }}</td>
+              <td>{{ patient.sex | uppercase }}</td>
+              <td>{{ patient.email }}</td>
               <td><b>{{patient.debitor_id}}</b></td>
               <td>{{patient.registration_date | date}}</td>
               <td><a href="#/invoice/patient/{{patient.id}}"><span class="glyphicon glyphicon-list-alt"></span></a></td>

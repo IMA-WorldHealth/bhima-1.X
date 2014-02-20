@@ -23,6 +23,20 @@
     "VERIFY_TRANSACTION"    : "Verify Transaction",
     "SPLIT"                 : "Split"
   },
+
+  "PATIENT_RECORDS" : {
+    "TITLE" : "Patient Records",
+    "ADVANCED_SEARCH" : "Advanced Search",
+    "FIRST_NAME" : "First Name",
+    "LAST_NAME" : "Last Name",
+    "YOB" : "Year of Birth",
+    "SEX" : "Sex",
+    "MALE" : "Male",
+    "FEMALE" : "Female",
+    "RESULTS" : "Results",
+    "VIEW_ALL" : "View all Patients",
+    "SEARCH" : "Search"
+  },
   
   "EXCHANGE" : {
     "TITLE" : "Configure Exchange Rates",
@@ -211,8 +225,13 @@
     "DEBITOR_NAME"   : "Debitor Name",
     "ACCOUNT"        : "Account",
     "COMMENT"        : "Comment",
+    "PARENT" : "Parent",
+    "SEX" : "Sex",
+    "DEBTOR" : "Debtor",
+    "DATE_REGISTERED" : "Date Registered",
     "CREDIT" :      "Credit",
     "DEBIT" : "Debit",
+    "DOB" : "Date of Birth",
     "GROUP_NAME"     : "Group Name",
     "ACCOUNT_NUMBER" : "Account Number",
     "EDIT"           : "Edit",
@@ -434,6 +453,14 @@
     "MODIFY"        : "Modify a Patient Group",
     "PATIENT_GROUP" : "Patient Group",
     "HELP_TXT_1"    : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits"
+  },
+  
+  "PATIENT_GRP_ASSIGNMENT" : {
+    "TITLE" : "Patient Group Assignment",
+    "ALL_PATIENT" : "All Patients",
+    "FULL_NAME" : "Full Name",
+    "DOB" : "Date of Birth",
+    "PATIENT_GRP" : "Patient Groups"
   },
 
   "DEBITOR_GRP" : {
