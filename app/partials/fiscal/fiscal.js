@@ -19,6 +19,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
 
   function buildFiscalQuery(enterprise) {
     var enterpriseId = $scope.enterpriseId = enterprise.id;
+    $scope.enterprise = enterprise;
     dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterpriseId];
     validate.refresh(dependencies).then(fiscal);
   }
@@ -102,7 +103,9 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
         templateUrl: 'createOpeningBalanceModal.html',
         keyboard : false,
         backdrop: 'static',
-        controller : function ($scope, $modalInstance, fy_id, zero_id, enterpriseId) {
+        controller : function ($scope, $modalInstance, fy_id, zero_id, enterprise) {
+          console.log('ENTERPRISE:', enterprise);
+          $scope.enterprise = enterprise;
           $scope.fy_id = fy_id;
           connect.fetch({
             tables : {
@@ -114,7 +117,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
               }
             },
             join : ['account.account_type_id=account_type.id'],
-            where : ['account.enterprise_id='+enterpriseId]
+            where : ['account.enterprise_id='+enterprise.id]
           })
           .then(function (model) {
            
@@ -146,7 +149,7 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
               o.credit = row.credit || 0; // default to 0
               o.fiscal_year_id = fy_id;
               o.period_id = zero_id;
-              o.enterprise_id = enterpriseId;
+              o.enterprise_id = enterprise.id;
               return o;
             });
             
@@ -166,8 +169,8 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
           zero_id : function () {
             return res.data.periodZeroId;
           },
-          enterpriseId : function () {
-            return $scope.enterpriseId;
+          enterprise : function () {
+            return $scope.enterprise;
           }
         }
       });
@@ -217,7 +220,8 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
 
       var instance = $modal.open({
         templateUrl: 'viewOpeningBalanceModal.html',
-        controller : function ($scope, $modalInstance, fiscal, accounts) {
+        controller : function ($scope, $modalInstance, fiscal, accounts, enterprise) {
+          $scope.enterprise = enterprise;
           accounts.forEach(function (row) {
             row.account_number = "" + row.account_number;
           });
@@ -233,6 +237,9 @@ angular.module('kpk.controllers').controller('fiscal', function($scope, $q, $mod
           },
           fiscal : function () {
             return $scope.selected;
+          },
+          enterprise : function () {
+            return $scope.enterprise;
           }
         }
       });

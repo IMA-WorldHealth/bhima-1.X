@@ -17,6 +17,8 @@
     "CONFIGURE"             : "Configure",
     "JUSTIFICATION"         : "Justification",
     "TRANSACTION_DATE"      : "Transacton Date",
+    "SPLIT_TRANSACTION" : "Split Transaction",
+    "LIVE_TRANSACTION": "Live Transaction",
     "TRANSACTION_NUMBER"    : "Transaction #",
     "VERIFY_TRANSACTION"    : "Verify Transaction",
     "SPLIT"                 : "Split"
@@ -80,22 +82,29 @@
     "RECORDS"                 : "Fiscal Year Records",
     "NEW"                   : "New Fiscal Year",
     "DESC"                  : "Year Description",
+    "START_DATE"            : "Start Date",
     "START_MONTH"           : "Start Month",
     "ONE_YEAR"              : "One Year",
     "SPECIFY"               : "Specify",
     "END_MONTH"             : "End Month",
+    "HELP_TXT"              : "This utility facilitates the creation and management of fiscal years. The following operations are available",
     "NAME"                  : "Name",
     "LOCK"                  : "Lock this Fiscal Year",
     "TOTAL_MONTH"           : "Total Months",
     "FIRST_VOUCHER"         : "First Voucher No.",
     "LAST_VOUCHER"          : "Last Voucher No.",
     "POSTING_FROM"          : "Posting From",
+    "NO_RECORDS" : "No Fiscal Year Records Found.",
     "POSTING_TO"            : "Posting To",
     "PERIODS"               : "Periods",
     "FISCAL_YEAR_SELECTION" : "Fiscal Year Selection",
     "DESCRIPTION"           : "Description",
     "ALERT_ONE"             : "There are no Fiscal Years recorded for the enterprise ",
-    "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports."
+    "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
+    "EDIT"               : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
+    "CREATION"             : "Create a new fiscal year "
+    
+
   },
 
   "OPENING_BALANCE" : {
@@ -202,6 +211,8 @@
     "DEBITOR_NAME"   : "Debitor Name",
     "ACCOUNT"        : "Account",
     "COMMENT"        : "Comment",
+    "CREDIT" :      "Credit",
+    "DEBIT" : "Debit",
     "GROUP_NAME"     : "Group Name",
     "ACCOUNT_NUMBER" : "Account Number",
     "EDIT"           : "Edit",
@@ -312,13 +323,28 @@
   },
 
   "LOCATION" : {
-    "LOCATION" : "Location",
-    "ORIGIN"   : "Origin",
-    "CURRENT"  : "Current",
-    "COUNTRY"  : "Country",
-    "PROVINCE" : "Province",
-    "SECTOR"   : "Sector",
-    "VILLAGE"  : "Village"
+    "LOCATION"                          : "Location",
+    "TITLE"                             : "Location Manager",
+    "MANAGE_COUNTRY"                    : "Manage Country",
+    "MANAGE_PROVINCE"                   : "Manage Province",
+    "MANAGE_SECTOR"                     : "Manage Sector",
+    "MANAGE_VILLAGE"                    : "Manage Village",
+    "REGISTERED"                        : "Registered Locations",
+    "COUNTRY"                           : "Country",
+    "PROVINCE"                          : "Province",
+    "SECTOR"                            : "Sector",
+    "VILLAGE"                           : "Village",
+    "REGISTERED"                        : "Registered Locations",
+    "MANAGER_CONFIGURATION"             : "Location Manager Configuration",
+    "DESCRIPTION"                       : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
+    "INFO_CREATE"                       : "create",
+    "INFO_MODIFY"                       : "modify",
+    "ET"                                : "and",
+    "REMOVE"                            : "remove",
+    "REGISTER"                          : "Register a Location",
+    "VILLAGE_NAME"                      : "Village Name",
+    "ADD"                               : "Add",
+    "NEW_FORM"                          : "New Form"
   },
 
   "GROUP_INVOICE" : {
@@ -477,5 +503,28 @@
     "TITLE" : "Create Patient Invoice",
     "IMPORT" : "Import prescription",
     "UPDATE" : "Update Defaults"
- }
+ },
+
+ "COUNTRY" : {
+    "TITLE"                : "COUNTRIES MANAGEMENT",
+    "LOCATION_MANAGER"     : "Location Manager",
+    "NEW_COUNTRY"          : "Add New Country",
+    "REGISTERED"           : "Registered Country",
+    "CODE"                 : "Code",
+    "ENGLISH_NAME"         : "English Name",
+    "FRENCH_NAME"          : "French Name",
+    "ACTIONS"              : "Actions",
+    "CONFIGURATION"        : "Country Manager Configuration ",
+    "DESCRIPTION"          : "This module will help you to manage countries, at the left you see availvables countries and their locations. ⇉ use this module to",
+    "CREATE"               : "create",
+    "MODIFY"               : "modify",
+    "AND"                  : "and",
+    "REMOVE"               : "remove",
+    "COUNTRY"              : "country",
+    "REGISTER"             : "Register a Country",
+    "CODE"                 : "Code",
+    "EDIT"                 : "Edit a Country"
+  }
+
+    
 }
