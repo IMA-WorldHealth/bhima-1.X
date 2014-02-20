@@ -5,7 +5,8 @@ angular.module('kpk.controllers')
   '$filter',
   'appstate',
   'connect',
-  function ($scope, $q, $filter, appstate, connect) {
+  '$translate',
+  function ($scope, $q, $filter, appstate, connect, $translate) {
     // This module provides a view into the inventory to see all registered items.
     // We display these with a slick grid to allow sorting and arbitrary
     // grouping without too much further issue.
@@ -64,18 +65,28 @@ angular.module('kpk.controllers')
       });
 
       columns = [
-        {id: "code"        , name: "Code"               , field: "code"        , sortable: true} ,
-        {id: "text"        , name: "Text"               , field: "text"        , sortable: true} ,
-        {id: "stock"       , name: "Stock Count"        , field: "stock"       , sortable: true} ,
-        {id: "group"       , name: "Inv. Group"         , field: "name"        , sortable: true} ,
-        {id: "type_id"     , name: "Type"               , field: "type_id"     , sortable: true  , formatter: formatType},
-        {id: "unit_id"     , name: "Unit"               , field: "unit_id"     , sortable: true  , formatter: formatUnit},
-        {id: "unit_weight" , name: "Unit Weight"        , field: "unit_weight" , sortable: true} ,
-        {id: "unit_volume" , name: "Unit Volume"        , field: "unit_volume" , sortable: true} ,
-        {id: "consumable"  , name: "Consumable/Durable" , field: "consumble"   , sortable: true  , formatter: formatConsumable},
-        {id: "price"       , name: "Base Price"         , field: "price"       , sortable: true  , formatter: formatCurrency}
+        {id: "COLUMNS.CODE"        , name: "Code"               , field: "code"        , sortable: true} ,
+        {id: "COLUMNS.TEXT"        , name: "Text"               , field: "text"        , sortable: true} ,
+        {id: "COLUMNS.STOCK"       , name: "Stock Count"        , field: "stock"       , sortable: true} ,
+        {id: "COLUMNS.GROUP"       , name: "Inv. Group"         , field: "name"        , sortable: true} ,
+        {id: "COLUMNS.TYPE"     , name: "Type"               , field: "type_id"     , sortable: true  , formatter: formatType},
+        {id: "COLUMNS.UNIT"     , name: "Unit"               , field: "unit_id"     , sortable: true  , formatter: formatUnit},
+        {id: "COLUMNS.WEIGHT" , name: "Unit Weight"        , field: "unit_weight" , sortable: true} ,
+        {id: "COLUMNS.VOLUME" , name: "Unit Volume"        , field: "unit_volume" , sortable: true} ,
+        {id: "COLUMNS.CONSUMABLE"  , name: "Consumable/Durable" , field: "consumble"   , sortable: true  , formatter: formatConsumable},
+        {id: "COLUMNS.PRICE"       , name: "Base Price"         , field: "price"       , sortable: true  , formatter: formatCurrency}
       ];
 
+      columns.forEach(function (col) {
+        col.name = $translate(col.id);
+      });
+
+      $scope.$on('$translateChangeSuccess', function () {
+        columns.forEach(function (col) {
+          col.name = $translate(col.id);
+        });
+      });
+      
       options = {
         enableCellNavigation : true,
         forceFitColumns      : true

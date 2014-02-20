@@ -268,7 +268,6 @@
     "INVENTORY_ITEM" : "Inventory Item",
     "PRICE"          : "Price",
     "ACTION"         : "Action",
-    "RATE"           : "Rate",
     "TRANS_ID"       : "Transaction #",
     "DEB_EQUIV"      : "Debit Equiv",
     "CRE_EQUIV"      : "Credit Equiv",
@@ -281,12 +280,67 @@
     "FISCAL_YEAR_ID" : "Fiscal Year ID",
     "PERIOD_ID"      : "Period ID",
     "DOCUMENT_ID"    : "Document ID",
-    "DEBIT"          : "Debit",
-    "CREDIT"         : "Credit",
-    "CURRENCY"       : "Monnaie",
+    "CURRENCY"       : "Currency",
     "DEBCRED_ID"     : "Deb/Cred ID",
     "ORIGIN_ID"      : "Origin ID",
-    "USER_ID"        : "User ID"
+    "USER_ID"        : "User ID",
+    "ITEM" : "Item",
+    "QTY" : "Qty",
+    "UNIT" : "Unit",
+    "CONSUMABLE" : "Consumable",
+    "DURABLE" : "Durable",
+    "AMOUNT" : "Amount",
+    "CODE" : "Code",
+    "TEXT" : "Text",
+    "STOCK" : "Stock",
+    "VOLUME" : "Volume",
+    "WEIGHT" : "Weight"
+  },
+
+  "TREE" : {
+    "ROOT" : "Root",
+    "ADMIN" : "Admin",
+    "ENTERPRISE" : "Enterprise",
+    "PERMISSION" : "Users & Permissions",
+    "FINANCE" : "Finance",
+    "ACCOUNT" : "Account",
+    "BUDGETING" : "Budget",
+    "POSTING_JOURNAL" : "Posting Journal",
+    "REPORTS" : "Reports",
+    "INVENTORY" : "Inventory",
+    "HOSPITAL" : "Hospital",
+    "FISCAL_YEAR" : "Fiscal Year",
+    "PATIENT_REG" : "Patient Registration",
+    "PATIENT_RECORDS" : "Patient Records",
+    "SALES" : "Sales",
+    "SALE_RECORDS" : "Sale Records",
+    "PURCHASE_ORDER" : "Purchase Order",
+    "BUDGET_BY_ACCOUNT" : "Budget by Account",
+    "CASH" : "Cash Payments",
+    "REGISTER_STOCK" : "Stock Registration",
+    "REGISTER_SUPPLIER" : "Register Supplier",
+    "PURCHASE_ORDER_RECORDS" : "Purchase Order Records",
+    "REPORT_FINANCE" : "Finance Report",
+    "PRICE_LIST" : "Price List",
+    "EXCHANGE" : "Exchange Rate",
+    "REPORT_TRANSACTION" : "Transaction Report",
+    "CREDITOR_GRP" : "Creditor Group",
+    "DEBTOR_GRP" : "Debtor Group",
+    "INVENTORY_VIEW" : "Stock Report",
+    "GENERAL_LEDGER": "General Ledger",
+    "LOCATION" : "Locaton Management",
+    "ACCOUNT_BALANCE_STATEMENT" :"Account Balance Statement",
+    "CHART_OF_ACCOUNTS" : "Chart of Accounts",
+    "DEBTOR_AGING" : "Debitor Aging",
+    "ACCOUNT_STATEMENT" : "Account Statement",
+    "INCOME_EXPENSE" : "Income/Expense Report",
+    "CREDIT_NOTE" : "Credit Note",
+    "PATIENT_GRP_ASSIGNMENT" : "Patient Group Assignment",
+    "PATIENT_GRP" : "Patient Groups",
+    "ACCOUNTING" : "Accounting",
+    "COST_CENTER_MGMT" : "Cost Center Management",
+    "GRP_INVOICING" : "Group Invoicing",
+    "CURRENCY" : "Currency"
   },
 
   "SUPPLIER" : {
@@ -354,6 +408,9 @@
     "ACCOUNT_TYPE" : "Account Type",
     "ACCOUNT_NUMBER" : "Account Number",
     "FIXED" : "Fixed",
+    "NO" : "No.",
+    "TXT" : "Text",
+    "TYPE" : "Type",
     "VARIABLE" : "Variable",
     "ACCOUNT_GROUP" : "Account Group (Title Account)",
     "TITLE_ACCOUNT" : "Title Account",
@@ -372,7 +429,6 @@
     "PROVINCE"                          : "Province",
     "SECTOR"                            : "Sector",
     "VILLAGE"                           : "Village",
-    "REGISTERED"                        : "Registered Locations",
     "MANAGER_CONFIGURATION"             : "Location Manager Configuration",
     "DESCRIPTION"                       : "Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
     "INFO_CREATE"                       : "create",
@@ -548,10 +604,20 @@
   "SALE" : {
     "TITLE" : "Create Patient Invoice",
     "IMPORT" : "Import prescription",
-    "UPDATE" : "Update Defaults"
- },
+    "UPDATE" : "Update Defaults",
+    "SUBMIT" : "Submit Patient Invoice",
+    "SALE"  : "Invoice",
+    "EDIT_SALE" : "Edit Sale",
+    "ADD_LINE_ITEM" : "Add a Line Item",
+    "TOTAL" : "Total"
+  },
 
- "COUNTRY" : {
+  "FIND" : {
+    "ENTER_DEBTOR_ID" : "Find By Debtor ID",
+    "SEARCH" : "Find by Name"
+  },
+
+  "COUNTRY" : {
     "TITLE"                : "COUNTRIES MANAGEMENT",
     "LOCATION_MANAGER"     : "Location Manager",
     "NEW_COUNTRY"          : "Add New Country",
@@ -568,7 +634,6 @@
     "REMOVE"               : "remove",
     "COUNTRY"              : "country",
     "REGISTER"             : "Register a Country",
-    "CODE"                 : "Code",
     "EDIT"                 : "Edit a Country"
   },
 
@@ -584,6 +649,4 @@
     "CREDIT_NOTE" : "Credit Note",
     "POST"     : "Post to Journal"
   }
-
-    
 }

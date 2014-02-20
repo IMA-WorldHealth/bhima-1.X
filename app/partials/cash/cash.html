@@ -48,10 +48,10 @@
           </thead>
           <tbody>
             <tr ng-repeat="invoice in ledger" ng-click="add($index)">
-              <td>{{invoice.inv_po_id}}</td>
-              <td>{{invoice.debitor}}</td>
+              <td>{{ invoice.inv_po_id}}</td>
+              <td>{{ invoice.debitor}}</td>
               <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
-              <td>{{invoice.trans_date | date}}</td>
+              <td>{{ invoice.trans_date | date}}</td>
             </tr>
           </tbody>
         </table>
@@ -71,7 +71,7 @@
               <th style="">{{ "COLUMNS.BALANCE" | translate }}</th>
               <th style="width: 20%;">{{ "COLUMNS.PAID" | translate }}</th>
               <th style="">{{ "COLUMNS.REMAINING" | translate }}</th>
-              <th style="width:5%;"><i class="glyphicon glyphicon-trash"></i></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -82,7 +82,7 @@
               <!-- <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}" ng-model="invoice.allocated" required></td> -->
               <td ng-bind-html="invoice.allocated | intlcurrency:cashbox.currency_id"></td>
               <td ng-bind-html="invoice.remaining | intlcurrency:cashbox.currency_id"></td>
-              <td><button class="btn btn-sm btn-danger" ng-click="remove($index)"><i class="glyphicon glyphicon-trash"></i></button></td>
+              <td><a href="" ng-click="remove($index)" class="glyphicon glyphicon-trash"></a></td>
             </tr>
           </tbody>
         </table>
