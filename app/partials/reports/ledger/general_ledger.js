@@ -38,25 +38,25 @@ angular.module('kpk.controllers')
 
     function settupGridOptions() {
       columns = [
-        {id: 'id'             , name: 'ID'                  , field:'id'             , visible : false} ,
-        {id: 'fiscal_year_id' , name: 'Fiscal Year'         , field:'fiscal_year_id' , visible : true } ,
-        {id: 'period_id'      , name: 'Period'              , field:'period_id'      , visible : true } ,
-        {id: 'trans_id'       , name: 'Transaction ID'      , field:'trans_id'       , visible : true } ,
-        {id: 'trans_date'     , name: 'Date'                , field:'trans_date'     , visible : true, formatter: formatDate},
-        {id: 'doc_num'        , name: 'Document ID'         , field:'doc_num'        , visible : true } ,
-        {id: 'description'    , name: 'Description'         , field:'description'    , visible : true } ,
-        {id: 'account_number' , name: 'Account'             , field:'account_number' , visible : true } ,
-        {id: 'debit'          , name: 'Debit'               , field:'debit'          , visible : false, formatter: formatAmount, groupTotalsFormatter: formatGroupTotalRow},
-        {id: 'credit'         , name: 'Credit'              , field:'credit'         , visible : false, formatter: formatAmount, groupTotalsFormatter: formatGroupTotalRow},
-        {id: 'debit_equiv'    , name: 'Debit Equiv.'        , field:'debit_equiv'    , visible : true, formatter: formatEquiv, groupTotalsFormatter: formatGroupTotalRow },
-        {id: 'credit_equiv'   , name: 'Credit Equiv.'       , field:'credit_equiv'   , visible : true, formatter: formatEquiv, groupTotalsFormatter: formatGroupTotalRow},
-        {id: 'currency_id'    , name: 'Currency'            , field:'currency_id'    , visible : false} ,
-        {id: 'deb_cred_id'    , name: 'Deb/Cred ID'         , field:'deb_cred_id'    , visible : true } ,
-        {id: 'deb_cred_type'  , name: 'D/C'                 , field:'deb_cred_type'  , visible : true } ,
-        {id: 'inv_po_id'      , name: 'Invoice/Purchase ID' , field:'inv_po_id'      , visible : true } ,
-        {id: 'comment'        , name: 'Comment'             , field:'comment'        , visible : false} ,
-        {id: 'origin_id'      , name: 'Origin ID'           , field:'origin_id'      , visible : false} ,
-        {id: 'user_id'        , name: 'User ID'             , field:'user_id'        , visible : false}
+        {id: 'id'             , name: $filter('translate')('COLUMNS.ID')                  , field:'id'             , visible : false} ,
+        {id: 'fiscal_year_id' , name: $filter('translate')('COLUMNS.FISCAL_YEAR_ID')        , field:'fiscal_year_id' , visible : true } ,
+        {id: 'period_id'      , name: $filter('translate')('COLUMNS.PERIOD_ID')              , field:'period_id'      , visible : true } ,
+        {id: 'trans_id'       , name: $filter('translate')('COLUMNS.TRANS_ID')      , field:'trans_id'       , visible : true } ,
+        {id: 'trans_date'     , name: $filter('translate')('COLUMNS.DATE')                , field:'trans_date'     , visible : true, formatter: formatDate},
+        {id: 'doc_num'        , name: $filter('translate')('COLUMNS.DOCUMENT_ID')         , field:'doc_num'        , visible : true } ,
+        {id: 'description'    , name: $filter('translate')('COLUMNS.DESCRIPTION')         , field:'description'    , visible : true } ,
+        {id: 'account_number' , name: $filter('translate')('COLUMNS.ACCOUNT_NUMBER')             , field:'account_number' , visible : true } ,
+        {id: 'debit'          , name: $filter('translate')('COLUMNS.DEBIT')               , field:'debit'          , visible : false, formatter: formatAmount, groupTotalsFormatter: formatGroupTotalRow},
+        {id: 'credit'         , name: $filter('translate')('COLUMNS.CREDIT')              , field:'credit'         , visible : false, formatter: formatAmount, groupTotalsFormatter: formatGroupTotalRow},
+        {id: 'debit_equiv'    , name: $filter('translate')('COLUMNS.DEB_EQUIV')        , field:'debit_equiv'    , visible : true, formatter: formatEquiv, groupTotalsFormatter: formatGroupTotalRow },
+        {id: 'credit_equiv'   , name: $filter('translate')('COLUMNS.CRE_EQUIV')       , field:'credit_equiv'   , visible : true, formatter: formatEquiv, groupTotalsFormatter: formatGroupTotalRow},
+        {id: 'currency_id'    , name: $filter('translate')('COLUMNS.CURRENCY')            , field:'currency_id'    , visible : false} ,
+        {id: 'deb_cred_id'    , name: $filter('translate')('COLUMNS.DEBCRED_ID')         , field:'deb_cred_id'    , visible : true } ,
+        {id: 'deb_cred_type'  , name: $filter('translate')('COLUMNS.DC_TYPE')                , field:'deb_cred_type'  , visible : true } ,
+        {id: 'inv_po_id'      , name: $filter('translate')('COLUMNS.INVPO_ID') , field:'inv_po_id'      , visible : true } ,
+        {id: 'comment'        , name: $filter('translate')('COLUMNS.COMMENT')             , field:'comment'        , visible : false} ,
+        {id: 'origin_id'      , name: $filter('translate')('COLUMNS.ORIGIN_ID')           , field:'origin_id'      , visible : false} ,
+        {id: 'user_id'        , name: $filter('translate')('COLUMNS.USER_ID')             , field:'user_id'        , visible : false}
       ];
       $scope.columns = angular.copy(columns);
 
