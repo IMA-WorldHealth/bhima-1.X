@@ -9,11 +9,9 @@
     </button>
     <!-- TODO: Fix this like general ledger -->
     <ul class="dropdown-menu">
-      <li><a href="" ng-click="groupby.type()">{{ "COLUMNS.TYPE" | translate }}</a></li>
-      <li><a href="" ng-click="groupby.group()">{{ "COLUMNS.GROUP" | translate }}</a></li>
-      <li><a href="" ng-click="groupby.unit()">{{ "COLUMNS.UNIT" | translate }}</a></li>
-      <li><a href="" ng-click="groupby.consumable()">{{ "COLUMNS.CONSUMABLE" | translate }}/{{ "COLUMNS.DURABLE" | translate }}</a></li>
-      <li><a href="" ng-click="groupby.price()">{{ "COLUMNS.PRICE" | translate }}</a></li>
+      <li ng-repeat="groupDefinition in groupDefinitions">
+        <a ng-click="groupby(groupDefinition)">{{groupDefinition.key | translate }}</a>
+      </li>
     </ul>
   </div>
 
