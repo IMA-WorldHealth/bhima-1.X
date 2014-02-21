@@ -17,9 +17,7 @@ angular.module('kpk.controllers')
         columns,
         options,
         searchStr = "",
-        dataview = $scope.dataview = new Slick.Data.DataView(),
-        groupDefinitions = $scope.groupDefinitions = [],
-        groups = [];
+        dataview = $scope.dataview = new Slick.Data.DataView();
 
     // FIXME: Cannot do a join with inv_unit because inventory.text and inv_unit.text clash.
     // propose rename inventory.text -> inventory.label
@@ -58,8 +56,7 @@ angular.module('kpk.controllers')
       }
     };
 
-    var flags = $scope.flags = {},
-        groupby = $scope.groupby = {};
+    var flags = $scope.flags = {};
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
@@ -175,7 +172,7 @@ angular.module('kpk.controllers')
     }
 
 
-    groupDefinitions = [
+    var groupDefinitions = $scope.groupDefinitions = [
       {
         key : 'COLUMNS.TYPE',
         getter: "type_id",
@@ -219,10 +216,9 @@ angular.module('kpk.controllers')
     ];
 
     //Utility method
-    function groupby(groupDefinition) {
+    $scope.groupby = function groupby(groupDefinition) {
       var groupInstance = {};
-      if(groupExists(groupDefinition, groups)) return;
-    
+
       groupInstance = JSON.parse(JSON.stringify(groupDefinition));
       groupInstance.aggregateCollapsed = true;
       groupInstance.aggregators = [];
@@ -232,8 +228,7 @@ angular.module('kpk.controllers')
       });
     
       groupInstance.formatter = groupDefinition.formatter;
-      groups.push(groupInstance);
-      dataview.setGrouping(groups);
+      dataview.setGrouping(groupInstance);
     }
 
     function groupExists(targetGroup, groupList) {
