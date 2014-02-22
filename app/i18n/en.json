@@ -648,5 +648,33 @@
     "POSTING"  : "Posting Journal",
     "CREDIT_NOTE" : "Credit Note",
     "POST"     : "Post to Journal"
+  },
+
+  "INVOICE" :{
+    "TITLE"                        : "Receipts",
+    "PATIENT"                      : "Patient",
+    "PATIENT_ID"                   : "Patient #",
+    "DATE_REGISTRATION"            : "Date of registration",
+    "DATE_RECEIPT"                 : "Date of receipt",
+    "PATIENT_INVOICE"              : "Patient Invoice",
+    "TO"                           : "To",
+    "INVOICE_ID"                   : "Invoice #",
+    "DATE"                         : "Date",
+    "DESCRIPTION"                  : "Description",
+    "AMOUNT"                       : "Amount",
+    "TOTAL"                        : "Total",
+    "AMOUNT_RECEIVE"               : "Amount Received",
+    "BALANCE_DUE"                  : "Balance Due",
+    "CREDIT_NOTE"                  : "Credit Note",
+    "NOTE_ID"                      : "Note #",
+    "NOTE"                         : "Note",
+    "DEBTOR_ID"                    : "# Debtor",
+    "AMOUNT"                       : "Amount",
+    "TOTAL_CREDITED"               : "Total Credited",
+    "ADDRESS"                      : "Address",
+    "ID"                           : "Id",
+    "PHONE"                        : "Phone",
+    "CASH_RECEIPT"                 : "Cash Receipt",
+    "CASH_ID"                      : "Cash transaction #"
   }
 }

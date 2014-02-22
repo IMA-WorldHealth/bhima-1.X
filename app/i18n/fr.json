@@ -663,5 +663,33 @@
     "POSTING"  : "Postage au Journal",
     "CREDIT_NOTE" : "Note de Credit",
     "POST"     : "Poster au Journal"
+  },
+
+  "INVOICE" :{
+    "TITLE"                        : "Recette",
+    "PATIENT"                      : "Patient",
+    "PATIENT_ID"                   : "# Patient",
+    "DATE_REGISTRATION"            : "Date d'enregistrement",
+    "DATE_RECEIPT"                 : "Date de recette",
+    "PATIENT_INVOICE"              : "Facture du Patient",
+    "TO"                           : "A",
+    "INVOICE_ID"                   : "# Facture",
+    "DATE"                         : "Date",
+    "DESCRIPTION"                  : "Description",
+    "AMOUNT"                       : "Montant",
+    "TOTAL"                        : "Total",
+    "AMOUNT_RECEIVE"               : "Montant recu",
+    "BALANCE_DUE"                  : "Solde",
+    "CREDIT_NOTE"                  : "Node de Credit",
+    "NOTE_ID"                      : "# Note",
+    "NOTE"                         : "Note",
+    "DEBTOR_ID"                    : "# Debiteur",
+    "AMOUNT"                       : "Montant",
+    "TOTAL_CREDITED"               : "Total Credite",
+    "ADDRESS"                      : "Addresse",
+    "ID"                           : "Id",
+    "PHONE"                        : "Phone",
+    "CASH_RECEIPT"                 : "Recette de Caisse",
+    "CASH_ID"                      : "# Transaction de Caisse#"
   }
 }
