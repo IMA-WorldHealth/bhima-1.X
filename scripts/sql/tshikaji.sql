@@ -505,8 +505,7 @@ insert into `village` (`id`, `name`, `sector_id`) VALUES
 
 insert into `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
   (1,'Congolese Francs','Fc', '.', ','),
-	(2,'United States Dollars','$', ',', '.'),
-  (3,'Euro', '€', ' ', '.');
+	(2,'United States Dollars','$', ',', '.');
              
 insert into `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `logo`, `currency_id`) values 
   (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 1, '/assets/logos/tsh.jpg', 2);
@@ -3914,11 +3913,11 @@ insert into `debitor_group_type` (`id`, `type`) values
   (4, 'Malades Interne');
 
 insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
-  (200, 1, "Internal", 146, 1, 1,'note 1', 1, 1, 0), 
-  (200, 2, "Normal Patient", 147, 1, 1,'note 2', 1, 3, 0), 
-  (200, 3, "External", 148, 1, 1,'note 3', 1, 4, 0),
-  (200, 4, "Fr. Rienhart", 149, 1, 1, 'Convention 1', 1, 4, 1),
-  (200, 5, "Eglise", 150, 1, 1, 'Convention 2', 1, 4, 1);
+  (200, 1, "Internal", 1908, 1, 1,'note 1', 1, 1, 0), 
+  (200, 2, "Normal Patient", 1908, 1, 1,'note 2', 1, 3, 0), 
+  (200, 3, "External", 1908, 1, 1,'note 3', 1, 4, 0),
+  (200, 4, "Fr. Rienhart", 1908, 1, 1, 'Convention 1', 1, 4, 1),
+  (200, 5, "Eglise", 1908, 1, 1, 'Convention 2', 1, 4, 1);
 
 insert into `debitor` (`id`, `group_id`, `text`) values 
   (1, 1, "Jon Niles");
@@ -3939,11 +3938,11 @@ insert into `inv_type` values
   (3,'Discount');
 
 insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
-  ('Services' , 'S', 92), -- 301 
-	('Medicines', 'M', 92), -- 301
-	('Surgery'  , 'C', 94), -- 303 
-  ('Fiches'   , 'F', 93), -- 302
-  ('Discount' , 'D', 351); -- 780 (Randomly chosen) 
+  ('Services' , 'S', 2232), -- 301 
+	('Medicines', 'M', 2651), -- 301
+	('Surgery'  , 'C', 2726), -- 303 
+  ('Fiches'   , 'F', 2657), -- 302
+  ('Discount' , 'D', 2581); -- 780 (Randomly chosen) 
 
 insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
   (200, 'CHCRAN', 'Craniotomie'                     , 21.00, 1, 1, 0, 0, 0, 0, 0, 2, 0),
@@ -3961,7 +3960,7 @@ insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `
 
 -- configure creditor
 insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
-  (200, 'Medicine Suppliers', 139); -- account #401
+  (200, 'Medicine Suppliers', 2113); -- account #401
 
 insert into `creditor` (`text`, `group_id`) values 
   ('Pharmacy Centrale', 1); -- reference the above creditor group
@@ -3980,9 +3979,8 @@ insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
   (200, 'HIV', 20, 'Reducded cost for HIV patients');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
-  (1, 200, 194, 189),
-  (2, 200, 195, 190),
-  (3, 200, 196, 191);
+  (1, 200, 2001, 1990),
+  (2, 200, 2002, 1900);
 
 -- insert into `patient_group` (`enterprise_id`, `price_list_id`, `name`, `note`) values 
 --   (200, 1, 'HIV', 'Funds for patients provided by societe x');
