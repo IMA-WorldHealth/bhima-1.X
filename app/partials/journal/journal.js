@@ -76,18 +76,18 @@ angular.module('kpk.controllers').controller('journal', [
     function defineGridOptions() {
       sort_column = "trans_id";
       columns = [
-        {id: 'id', name : 'ID', field: 'id', sortable : true},
-        {id: 'trans_id', name: "Transaction #", field: 'trans_id', sortable: true},
-        {id: 'trans_date', name: 'Date', field: 'trans_date', formatter: formatDate},
+        {id: 'id', name : $filter('translate')('COLUMNS.ID'), field: 'id', sortable : true},
+        {id: 'trans_id', name: $filter('translate')('COLUMNS.TRANS_ID'), field: 'trans_id', sortable: true},
+        {id: 'trans_date', name: $filter('translate')('COLUMNS.DATE'), field: 'trans_date', formatter: formatDate},
         // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
-        {id: 'description', name: 'Description', field: 'description', width: 110, editor: Slick.Editors.Text },
-        {id: 'account_id', name: 'Account ID', field: 'account_number', sortable: true, editor:SelectCellEditor},
+        {id: 'description', name: $filter('translate')('COLUMNS.DESCRIPTION'), field: 'description', width: 110, editor: Slick.Editors.Text },
+        {id: 'account_id', name: $filter('translate')('COLUMNS.ACCOUNT_NUMBER'), field: 'account_number', sortable: true, editor:SelectCellEditor},
         // {id: 'debit', name: 'Debit', field: 'debit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100},
         // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
-        {id: 'debit_equiv', name: 'Debit Equiv', field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
-        {id: 'credit_equiv', name: 'Credit Equiv', field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text}, {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id', editor:SelectCellEditor},
-        {id: 'deb_cred_type', name: 'AR/AP Type', field: 'deb_cred_type', editor:SelectCellEditor},
-        {id: 'inv_po_id', name: 'Inv/PO #', field: 'inv_po_id'}
+        {id: 'debit_equiv', name: $filter('translate')('COLUMNS.DEB_EQUIV'), field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
+        {id: 'credit_equiv', name: $filter('translate')('COLUMNS.CRE_EQUIV'), field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text}, {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id', editor:SelectCellEditor},
+        {id: 'deb_cred_type', name: $filter('translate')('COLUMNS.DC_TYPE'), field: 'deb_cred_type', editor:SelectCellEditor},
+        {id: 'inv_po_id', name: $filter('translate')('COLUMNS.INVPO_ID'), field: 'inv_po_id'}
         // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 }
       ];
 

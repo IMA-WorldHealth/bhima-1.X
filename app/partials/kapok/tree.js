@@ -3,15 +3,17 @@ angular.module('kpk.controllers')
   '$scope',
   '$q',
   '$location',
+  '$translate',
   'appcache',
   'connect',
-  function($scope, $q, $location, AppCache, connect) {
+  function($scope, $q, $location, $translate, AppCache, connect) {
     // TODO:
     //   Theoretically, the users and permissions depend on an
     //   enterprise, so do we need it or not?
-  
+ 
     var moduleNamespace = 'tree', applicationNamespace = 'application';
-    var cache = new AppCache(moduleNamespace), applicationCache = new AppCache(applicationNamespace);
+    var cache = new AppCache(moduleNamespace),
+      applicationCache = new AppCache(applicationNamespace);
     var originLocation, collapsed_model = [];
 
     $scope.treeData = [];
@@ -37,17 +39,17 @@ angular.module('kpk.controllers')
         return element;
       });
     }
- 
+
     $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
       if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
         var path = $scope.navtree.currentNode.path;
         if (path) $location.path(path);
       }
     }, true);
- 
+
     $scope.$on('$locationChangeStart', function(e, n_url) {
       var target = n_url.split('/#')[1];
-     
+    
       originLocation = target;
       if(target) {
         applicationCache.put('location', {path: target});
@@ -59,7 +61,7 @@ angular.module('kpk.controllers')
       list.some(function (element) {
         var sanitiseElement = element.path.replace(/\//g, '');
         var sanitiseLocation = locationPath.replace(/\//g, '');
-   
+  
         if(sanitiseElement === sanitiseLocation) {
           $scope.navtree.selectNodeLabel(element);
         }

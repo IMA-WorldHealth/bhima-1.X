@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'appstate',
   'messenger',
   'connect',
-  function($scope, $q, validate, appstate, messenger, connect) {
+  '$translate',
+  function($scope, $q, validate, appstate, messenger, connect, $translate) {
     var dependencies = {}, titleAccount = 3, formState = $scope.formState = "display";
     var grid, columns, options, dataview, sortColumn = "account_number";
     var financeGroups = {index: {}, store: []};
@@ -45,12 +46,19 @@ angular.module('kpk.controllers')
     function loadEnterprise(enterprise) { $scope.enterprise = enterprise; }
 
     function defineGridOptions() {
+
       columns = [
-        {id: 'account_txt', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
-        {id: 'account_number', name: 'No.', field: 'account_number'},
-        {id: 'account_type_id', name: 'Type', field: 'account_type_id', maxWidth: 60},
-        {id: 'fixed', name: 'Fixed', field: 'fixed', maxWidth: 60}
+        {id: 'ACCOUNT.TXT', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
+        {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
+        {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
+        {id: 'ACCOUNT.FIXED', name: 'Fixed', field: 'fixed', maxWidth: 60}
       ];
+
+      // TODO : Should this depend on $translate success change?
+      columns.forEach(function (col) {
+        col.name = $translate(col.id);
+      });
+
       options = {
         enableCellNavigation: true,
         enableColumnReorder: true,

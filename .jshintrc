@@ -116,7 +116,8 @@
         "Slick",
         "process",
         "require",
-        "module"
+        "module",
+        "exports",
         //"exampleVar",
         //"anotherCoolGlobal",
         //"iLoveDouglas"

@@ -1,11 +1,11 @@
 <header>
-  Patient Invoice Records
+  {{'SALERECORD.TITLE' | translate}}
 </header>
 
 <section class="top-nav">
-  Showing latest records Max({{defaultLimit}})
+  {{'SALERECORD.SHOWING' | translate}} Max({{defaultLimit}})
   <div class="pull-right">
-    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
+    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span>{{'SALERECORD.ADVANCE' | translate}} </a>
   </div>
 </section>
 
@@ -15,8 +15,7 @@
 
       <div ng-switch on="model.sale.data.length">
         <div class="alert alert-info" ng-switch-when="0">
-          No patient transactions found. Reference <strong><a href="/#/sales">Patient Sales</a></strong> to generate an
-          invoice.
+          {{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong>{{'SALERECORD.GENERATE'}} 
         </div>
         <div ng-switch-default></div>
       </div>
@@ -26,14 +25,14 @@
           <thead>
             <tr>
             <th><span class="glyphicon glyphicon-eye-open"></span></th>
-            <th>Date</th>
+            <th>{{'COLUMNS.DATE' | translate}}</th>
             <th>#</th>
 
-            <th>Patient</th>
-            <th>Total Amount</th>
-            <th>Balance Due</th>
+            <th>{{'COLUMNS.PATIENT' | translate}}</th>
+            <th>{{'COLUMNS.TOTAL_AMOUNT' | translate}}</th>
+            <th>{{'COLUMNS.BALANCE_DUE' | translate}}</th>
             <!-- <th>Debtor ID</th> -->
-            <th>Posted</th>
+            <th>{{'COLUMNS.POSTED' | translate}}</th>
             <th></th>
             <!-- <th>Status</th> -->
           </tr>
@@ -42,7 +41,7 @@
           <tbody>
           <tr ng-class='{rowSelected: selected.id==invoice.id}' ng-click="select(invoice.id)"
               ng-repeat="invoice in model.sale.data | filter: invoice_filter.filter">
-              <td><a ng-href="/#/invoice/sale/{{invoice.id}}">Receipt</a></td>
+              <td><a ng-href="/#/invoice/sale/{{invoice.id}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
               
               <td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td>{{invoice.id}}</td>
@@ -53,10 +52,10 @@
             <!--Multiple ng-shows - mutually exclusive but not good practice-->
               <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
 
-              <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
+              <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span>{{'SALERECORD.POSTING' | translate}}</div>
               </td>
 
-              <td><a href="/#/credit_note/{{invoice.id}}">Credit Note</a></td>
+              <td><a href="/#/credit_note/{{invoice.id}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td>
           </tr>
           </tbody>
         </table>
@@ -69,6 +68,6 @@
 <section class="bar-bottom">
   <div class="pull-right">
   <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
-    <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
+    <span class="glyphicon glyphicon-floppy-open"></span>{{'SALERECORD.POST' | translate}}</a>
   </div>
 </section>

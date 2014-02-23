@@ -2,7 +2,6 @@ angular.module('kpk.controllers')
 .controller('cash', [
   '$scope',
   '$q',
-  '$filter',
   '$timeout',
   '$location',
   'connect',
@@ -11,7 +10,7 @@ angular.module('kpk.controllers')
   'validate',
   'exchange',
   'kpkUtilitaire',
-  function($scope, $q, $filter, $timeout, $location, connect, appstate, messenger, validate, exchange, util) {
+  function($scope, $q, $timeout, $location, connect, appstate, messenger, validate, exchange, util) {
     var dependencies = {},
         data = $scope.data = {};
     $scope.paying = [];
