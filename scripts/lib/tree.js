@@ -20,7 +20,7 @@ module.exports = function (db) {
       var sql = parser.select({
         tables : {
           'permission' : { columns : ['id', 'id_unit'] },
-          'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'path']}
+          'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
         },
         join : ['permission.id_unit=unit.id'],
         where : ['permission.id_user='+userid, 'AND', 'unit.parent='+parent_id]
@@ -28,7 +28,9 @@ module.exports = function (db) {
 
       db.execute(sql, function (err, result) {
         if (err) throw err;
-        var have_children = result.filter(function (row) { return row.has_children; });
+        var have_children = result.filter(function (row) {
+          return row.has_children;
+        });
         if (have_children.length) {
           var promises = have_children.map(function (row) {
             return getChildren(row.id_uit);
@@ -47,7 +49,7 @@ module.exports = function (db) {
       var query = parser.select({
         tables : {
           'permission' : { columns : ['id', 'id_unit']},
-          'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'path']}
+          'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
         },
         join : ['permission.id_unit=unit.id'],
         where : ['permission.id_user=' + userid, 'AND', 'unit.parent=0'] // This assumes root is always "0"
@@ -65,7 +67,7 @@ module.exports = function (db) {
               p.resolve(row);
             });
           }
-          else p.resolve(row);
+          else { p.resolve(row); }
           return p.promise;
         })));
       });
