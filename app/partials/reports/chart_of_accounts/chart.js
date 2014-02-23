@@ -22,7 +22,18 @@ angular.module('kpk.controllers').controller('accountsReport', function($scope, 
     });
 
     $scope.model = model;
+    sortAccounts($scope.model.account);
     parseAccountDepth($scope.model.account.data, $scope.model.account);
+  }
+
+  function sortAccounts(accountModel) { 
+    var data = accountModel.data;
+
+    data.sort(function (a, b) { 
+      var left = String(a.account_number), right = String(b.account_number);
+      return (left === right) ? 0 : (left > right ? 1 : -1);
+    });
+    accountModel.recalculateIndex();
   }
   
   function parseAccountDepth(accountData, accountModel) { 
