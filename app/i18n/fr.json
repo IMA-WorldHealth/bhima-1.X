@@ -180,7 +180,14 @@
     "RELIGION"                 : "Religion",
     "MARITAL_STATUS"           : "Etat Civil",
     "PATIENT_NOTES"            : "Note",
-    "REGISTER_PATIENT"         : "Enregistre le Malade"
+    "REGISTER_PATIENT"         : "Enregistre le Malade",
+    "PROFESSION" : "Profession",
+    "MOTHER_NAME" : "Nom de Mere",
+    "EMPLOYER" : "Employeur",
+    "SPOUSE" : "Nom de l'epoux(se)",
+    "SPOUSE_EMPLOYER" : "Employeur (epoux(se))",
+    "SPOUSE_PROFESSION" : "Profession (epoux(se))",
+    "AVENUE" : "Rue"
   },
 
   "TREE" : {
