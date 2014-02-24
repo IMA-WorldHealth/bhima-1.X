@@ -3913,18 +3913,18 @@ insert into `debitor_group_type` (`id`, `type`) values
   (4, 'Malades Interne');
 
 insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
-  (200, 1, "Internal", 1908, 1, 1,'note 1', 1, 1, 0), 
-  (200, 2, "Normal Patient", 1908, 1, 1,'note 2', 1, 3, 0), 
-  (200, 3, "External", 1908, 1, 1,'note 3', 1, 4, 0),
-  (200, 4, "Fr. Rienhart", 1908, 1, 1, 'Convention 1', 1, 4, 1),
-  (200, 5, "Eglise", 1908, 1, 1, 'Convention 2', 1, 4, 1);
+  (200, 1, "Patients payant cache", 485, 1, 1, '', 1, 1, 0), 
+  (200, 2, "Patient conventionne", 472, 1, 1, '', 1, 1, 1), 
+  (200, 3, "Employes", 614, 1, 1, '', 1, 1, 0),
+  (200, 4, "Officiers CPC&CNCO", 674, 1, 1, '', 1, 4, 0),
+  (200, 5, "Apparentes", 484, 1, 1, '', 1, 4, 1);
 
-insert into `debitor` (`id`, `group_id`, `text`) values 
-  (1, 1, "Jon Niles");
-
-insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `origin_location_id`, `current_location_id`) values
-  (1, 1, "M","Jon", "Niles", "1992-06-07", 1, 1);
-
+-- insert into `debitor` (`id`, `group_id`, `text`) values 
+--   (1, 1, "Jon Niles");
+--
+-- insert into `patient` (`id`, `debitor_id`, `sex`, `first_name`, `last_name`, `dob`, `origin_location_id`, `current_location_id`) values
+--   (1, 1, "M","Jon", "Niles", "1992-06-07", 1, 1);
+--
 -- configure inventory
 
 insert into `inv_unit` (`text`) values
