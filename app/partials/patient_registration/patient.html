@@ -30,7 +30,7 @@
                   <div class="form-group">
                     <label for="first-name" class="control-label col-xs-3">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                     <div class="col-xs-9">
-                      <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name" required>
+                      <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name">
                     </div>  
                   </div>
 
@@ -88,7 +88,7 @@
                     <fieldset>
                       <legend>{{ "LOCATION.ORIGIN" | translate }}</legend>
 
-                      <div class="form-group pull-left">
+                      <div class="form-group">
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
                         </label>
@@ -197,8 +197,18 @@
                 </div>
 
                 <div class="form-group">
+                  <label for="email">{{ "PATIENT_REG.AVENUE" | translate }}</label>
+                  <input type="email" class="form-kapok" id="avenue" ng-model="patient.address_1">
+                </div>
+
+                <div class="form-group">
                   <label for="parent">{{ "PATIENT_REG.PARENT_NAME" | translate }}</label>
-                  <input type="text" class="form-kapok" id="parent" ng-model="patient.parent_name">
+                  <input type="text" class="form-kapok" id="father_name" ng-model="patient.father_name">
+                </div>
+
+                <div class="form-group">
+                  <label>{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
+                  <input class="form-kapok" id="mother_name" ng-model="patient.mother_name">
                 </div>
 
                 <div class="form-group">
@@ -208,8 +218,34 @@
 
                 <div class="form-group">
                   <label for="marital">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
-                  <input type="text" class="form-kapok" id="marital" ng-model="patient.marital_status">
+                  <input class="form-kapok" id="marital" ng-model="patient.marital_status">
                 </div>
+
+                <div class="form-group">
+                  <label>{{ "PATIENT_REG.PROFESSION" | translate }}</label>
+                  <input class="form-kapok" id="profession" ng-model="patient.profession">
+                </div>
+
+                <div class="form-group">
+                  <label>{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
+                  <input class="form-kapok" id="employer" ng-model="patient.employer">
+                </div>
+
+                <div class="form-group">
+                  <label>{{ "PATIENT_REG.SPOUSE" | translate }}</label>
+                  <input class="form-kapok" id="spouse" ng-model="patient.spouse">
+                </div>
+
+                <div class="form-group">
+                  <label>{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
+                  <input class="form-kapok" id="spouse_profession" ng-model="patient.spouse_profession">
+                </div>
+
+                <div class="form-group">
+                  <label>{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
+                  <input class="form-kapok" id="spouse_employer" ng-model="patient.spouse_employer">
+                </div>
+
               </form>
             </div>
           </div> <!-- End panel -->

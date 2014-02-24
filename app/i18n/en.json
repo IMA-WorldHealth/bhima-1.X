@@ -383,7 +383,14 @@
     "RELIGION"                 : "Religion",
     "MARITAL_STATUS"           : "Marital Status",
     "PATIENT_NOTES"            : "Patient Notes",
-    "REGISTER_PATIENT"         : "Register Patient"
+    "REGISTER_PATIENT"         : "Register Patient",
+    "PROFESSION" : "Occupation",
+    "EMPLOYER" : "Employer",
+    "MOTHER_NAME" : "Mother's Name",
+    "SPOUSE" : "Spouse's Name",
+    "SPOUSE_EMPLOYER" : "Spouse's Employer",
+    "SPOUSE_PROFESSION" : "Spouse's Occupation",
+    "AVENUE" : "Avenue"
   },
 
   "CREDITOR_GRP" : {
