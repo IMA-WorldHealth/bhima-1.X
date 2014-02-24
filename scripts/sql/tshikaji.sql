@@ -500,7 +500,6 @@ insert into `sector` (`id`,`name`, `province_id`) VALUES
   (7, 'Bambesa', 1),
   (8, 'Banalia', 1),
   (9, 'Bandalungwa', 1),
-  (10, 'Bandoyi', 1),
   (11, 'Barumbu', 1),
   (12, 'Basankusu', 1),
   (13, 'Basoko', 1),
@@ -4185,4 +4184,3 @@ insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, 
 --
 -- insert into `assignation_patient` (`patient_group_id`, `patient_id`) values
 --   (1, 1);
-(199, 'Zongo Territory'
