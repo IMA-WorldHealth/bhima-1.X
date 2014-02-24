@@ -432,7 +432,7 @@ create table `patient` (
   `id`                int unsigned not null auto_increment,
   `debitor_id`        int unsigned not null,
   `creditor_id`       int unsigned,
-  `first_name`        varchar(150),
+  `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
   `dob`               date,
   `father_name`       varchar(150),
