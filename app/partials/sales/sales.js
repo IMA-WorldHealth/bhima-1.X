@@ -22,6 +22,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function sales(model) {
     //Expose model to scope
     $scope.model = model;
+
+    
     $scope.inventory = inventory = model.inventory.data;
   }
 
@@ -29,7 +31,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
     console.log(selectedDebtor);
     if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
-   
+    
     buildInvoice(selectedDebtor);
    
     dependencies.priceList = {
@@ -101,7 +103,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       $scope.model.inventory.post(selectedItem.inventoryReference);
       $scope.model.inventory.recalculateIndex();
     }
-
+/
     invoice.items.splice(index, 1);
   }
 
@@ -120,7 +122,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       enterprise_id : appstate.get('enterprise').id,
       cost : calculateTotal(),
       currency_id : appstate.get('enterprise').currency_id,
-      debitor_id : invoice.debtor.id,
+      debitor_id : invoice.debtor.debitor_id,
       invoice_date : invoice.date,
       note : invoice.note
     };
