@@ -26,6 +26,7 @@ angular.module('kpk.controllers')
     $scope.sessionProperties = {};
 
     // TODO: complete this
+    /*
     dependencies.location = {
       query : {
         tables : {
@@ -33,6 +34,7 @@ angular.module('kpk.controllers')
         }
       }
     };
+    */
 
     dependencies.patientGroup = {
       query : { tables : {'patient_group' : {'columns' : ['id', 'name']}}}
