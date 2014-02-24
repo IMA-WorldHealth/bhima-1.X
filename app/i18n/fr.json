@@ -520,7 +520,7 @@
     "EDITTING" : "Edition",
     "SUPER" : "Super Utilisateur"
   },
-  
+ 
   "NAME"         : "nom",
   "PHONE"        : "telephone",
   "ABBREVIATION" : "abbreviation",
@@ -611,6 +611,8 @@
     "TITLE"                             : "Gestions Emplacement",
     "ORIGIN" : "Origine",
     "CURRENT" : "Present",
+    "VILLE" : "Ville/Commune",
+    "LOCALITY": "Localite",
     "MANAGE_COUNTRY"                    : "Gerer Les Pays",
     "MANAGE_PROVINCE"                   : "Gerer Les Province",
     "MANAGE_SECTOR"                     : "Gerer Les Secteurs",

@@ -108,7 +108,7 @@
 
                       <div class="form-group">
                         <label for="location-sector" class="control-label">
-                          {{ "LOCATION.SECTOR" | translate }}
+                          {{ "LOCATION.VILLE" | translate }}
                         </label>
                         <select class="form-kapok" id="location-sector" ng-model="sector.sector_id" ng-options="s.id as s.name for s in model.sector.data" required>
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
@@ -117,7 +117,7 @@
 
                       <div class="form-group">
                         <label for="location-village" class="control-label">
-                          {{ "LOCATION.VILLAGE" | translate }}
+                          {{ "LOCATION.LOCALITY" | translate }}
                         </label>
                         <input class="form-kapok" id="location-country" ng-model="village.name" required>
                     </fieldset>
@@ -146,7 +146,7 @@
 
                       <div class="form-group">
                         <label for="location-sector" class="control-label">
-                          {{ "LOCATION.SECTOR" | translate }}
+                          {{ "LOCATION.VILLE" | translate }}
                         </label>
                         <select required class="form-kapok" id="location-sector" ng-model="current_sector.sector_id" ng-options="s.id as s.name for s in model.sector.data">
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
@@ -155,7 +155,7 @@
 
                       <div class="form-group">
                         <label for="location-village" class="control-label">
-                          {{ "LOCATION.VILLAGE" | translate }}
+                          {{ "LOCATION.LOCALITY" | translate }}
                         </label>
                         <input class="form-kapok" id="location-country" ng-model="current_village.name" ng-change="inChange()" required>
                       </div>
