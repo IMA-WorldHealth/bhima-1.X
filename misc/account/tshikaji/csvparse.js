@@ -7,7 +7,7 @@ var maxAccountDetails = 8, schema = {}, schemaIndex;
 var accountLabel = 4, accountNumber = 5
 
 var differentiateEnterprise = 4, accountNumberLength = 7;
-var sqlOutput = [];
+var sqlOutput = [], csvOutput = [];
 
 readFile(accountFilePath).then(parseCSV);
 
@@ -50,8 +50,15 @@ function parseCSV(fileData) {
   removeRedundant(groups); 
   
   sqlPrint(groups, 0);
-  console.log("insert into `account` (`fixed`, `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `parent`) values"); 
-  console.log(sqlOutput.join(',\n') + ';');
+  csvPrint(groups, 0, 0);
+  
+  // Format SQL output 
+  // console.log("insert into `account` (`fixed`, `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `parent`) values"); 
+  // console.log(sqlOutput.join(',\n') + ';');
+  
+  // Format CSV output
+  console.log('Account Number, Account Title, Account Parent\n');
+  console.log(csvOutput.join('\n'));
 }
 
 function initGroups(store, data) { 
@@ -107,6 +114,25 @@ function groupDebugPrint(group, indentLevel) {
       groupDebugPrint(group[account], indentLevel + 1);
     }
   }
+}
+
+function csvPrint(group, parentAccountNumber, indentLevel) { 
+  for(account in group) { 
+
+    var indentString = '';
+    for(var i=0; i < indentLevel; i++) { indentString+='.'; }
+    
+    if(account.length < accountNumberLength) { 
+      var accountNumber = account;
+      
+      csvOutput.push(accountNumber + ',' + indentString + 'Title Account for ' + account + ',' + parentAccountNumber); 
+      csvPrint(group[account], accountNumber, indentLevel + 1);
+    } else { 
+      var accountType = (account[0] === '6' || account[0] === '7') ? '1' : '2';
+      csvOutput.push(account + ',' + indentString + schema[account].label + ',' + parentAccountNumber);
+    }
+  }
+
 }
 
 function sqlPrint(group, parentAccountNumber) { 

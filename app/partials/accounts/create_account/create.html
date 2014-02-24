@@ -5,7 +5,7 @@
 
 <section class="top-nav">
 <!-- <button class="btn btn-default btn-sm">antyhing</button> -->
-  <button ng-click="updateState('editAccount')" class="btn btn-default btn-sm">
+  <button ng-click="updateState('edit')" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-plus"></span> {{ "ACCOUNT.ADD" | translate }}
   </button>
   <div class="pull-right">
@@ -23,8 +23,8 @@
   <!--Note that that column classes should be used with rows to ensure corred padding -->
   <div class="row">
 
-    <div class="col-xs-6">
-      <div ng-switch on="formState">
+    <div class="col-xs-3">
+      <div ng-switch on="session.state">
         <div ng-switch-default>
           <div class="alert alert-info">
             <p>{{ "ACCOUNT.HELP_TXT_1" | translate }} <b>{{enterprise.name}}</b></p>
@@ -33,7 +33,7 @@
           </div> 
         </div>
 
-        <div ng-switch-when='editAccount'> 
+        <div ng-switch-when='edit'> 
           <div class="panel panel-default">
             <div class="panel-heading">
               {{ "ACCOUNT.NEW" | translate }}
@@ -99,7 +99,7 @@
         </div>
       </div>
     </div> <!--ng-switch-->
-    <div class="col-xs-6">
+    <div class="col-xs-9">
       <!--Accounts grid to be populated-->
       <div id="account_grid" class="grid" style="max-height: 480px"></div>
     </div>
