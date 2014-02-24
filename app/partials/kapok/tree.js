@@ -60,7 +60,7 @@ angular.module('kpk.controllers')
     function selectTreeNode(list, locationPath) {
       list.some(function (element) {
         var sanitiseElement = element.path.replace(/\//g, '');
-        var sanitiseLocation = locationPath.replace(/\//g, '');
+        var sanitiseLocation = locationPath ? locationPath.replace(/\//g, '') : "";
   
         if(sanitiseElement === sanitiseLocation) {
           $scope.navtree.selectNodeLabel(element);

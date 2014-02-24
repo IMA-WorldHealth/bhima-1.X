@@ -3,14 +3,14 @@ var parser = require('../lib/database/parser')();
 var _select = {
   simple : {
     query : {
-      tables : {
+      'tables' : {
         'account' : {
-          columns : [ 'id', 'number']
+          'columns' : [ 'id', 'number']
         }
       }
     },
     fail : 'Parser.js fails to compose simple SELECT queries',
-    result : 'SELECT `account`.`id`, `account`.`number` FROM `account`;'
+    result : 'SELECT `account`.`id`, `account`.`number` FROM `account` WHERE 1;'
   },
 
   join : {
@@ -35,7 +35,7 @@ var _select = {
         '`user`.`email` ' +
       'FROM `permission` JOIN `unit` JOIN `user` ON ' +
         '`permission`.`id_unit`=`unit`.`id` AND ' +
-        '`permission`.`id_user`=`user`.`id`;'
+        '`permission`.`id_user`=`user`.`id` WHERE 1;'
   },
 
   where : {
@@ -53,7 +53,7 @@ var _select = {
         '`account`.`locked` ' +
       'FROM `account` ' +
       'WHERE `account`.`locked`<>0 AND `account`.`account_number`>=100;'
-  }
+  },
 
   where_complex : {
     query : {
@@ -61,9 +61,11 @@ var _select = {
         'enterprise' : {
           columns : ['id', 'name', 'location_id', 'phone', 'email', 'account_group_id']
         },
-        'account_group' : ['account_number', 'ordering']
+        'account_group' : {
+          columns : ['account_number', 'ordering']
+        }
       },
-      where : ['enterprise.id=1', ['account_group.account_number<100', 'OR',
+      where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR',
         'account_group.account_number>150']],
       join : ['enterprise.account_group_id=account_group.id']
     },
@@ -74,7 +76,7 @@ var _select = {
         '`account_group`.`account_number`, `account_group`.`ordering` ' +
       'FROM `enterprise` JOIN `account_group` ON ' +
         '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-      'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100` OR ' +
+      'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100 OR ' +
         '`account_group`.`account_number`>150);'
   },
 
@@ -92,6 +94,7 @@ var _select = {
       'SELECT `debtor`.`id`, `debtor`.`name`, `debtor`.`location_id`, ' +
         '`debtor`.`group_id` ' +
       'FROM `debtor` ' +
+      'WHERE 1 ' +
       'LIMIT 30;'
   },
 
@@ -108,6 +111,7 @@ var _select = {
     result :
       'SELECT `creditor`.`id`, `creditor`.`name`, `creditor`.`group_id` ' +
       'FROM `creditor` ' +
+      'WHERE 1 ' +
       'ORDER BY `creditor`.`group_id`;'
   },
 
@@ -121,7 +125,7 @@ var _select = {
           columns : ['account_number', 'ordering']
         }
       },
-      where : ['enterprise.id=1', ['account_group.account_number<100', 'OR', 'account_group.account_number>=150']],
+      where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR', 'account_group.account_number>=150']],
       join : ['enterprise.account_group_id=account_group.id'],
       orderby : ['account_group.account_number'],
       limit: 5
@@ -133,7 +137,7 @@ var _select = {
         '`account_group`.`ordering` ' +
       'FROM `enterprise` JOIN `account_group` ON ' +
         '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-      'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100` OR ' +
+      'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100 OR ' +
         '`account_group`.`account_number`>150) ' +
       'ORDER BY `account_group`.`account_number` ' +
       'LIMIT 5;'
@@ -142,7 +146,7 @@ var _select = {
 };
 
 var _update = {
- 
+
   simple : {
     table : 'unit',
     data : { id : 1, url : '/some/url/content/', parent: 23 },
@@ -151,7 +155,7 @@ var _update = {
     result :
       'UPDATE `unit` SET `url`="/some/url/content/", `parent`=23 ' +
       'WHERE `id`=1;'
-  }
+  },
 
   // TODO : this test is a work in progress.
   multi : {
@@ -165,10 +169,9 @@ var _update = {
     result :
       'UPDATE `unit` set `name`="modified" WHERE `id`=2;'
   }
-
 };
 
-var _insert : {
+var _insert = {
   simple : {
     table: 'user',
     data : { username : 'axelroad', email : 'axel@gmail.com' },
@@ -185,14 +188,14 @@ var _insert : {
       { code : 'EXPYAN', price : 20, text : 'Extra Pain'}
     ],
     fail : 'Parser.js cannot compose multi insert queries',
-    result : 
+    result :
       'INSERT INTO `inventory` (`code`, `price`, `text`) VALUES ' +
         '("CHGRAN", 100, "Chirgerie"), ' +
         '("EXPYAN", 20, "Extra Pain");'
   }
-}
+};
 
-var _delete : {
+var _delete = {
   simple : {
     table : 'account',
     key : 'id',
@@ -211,22 +214,25 @@ var _delete : {
       'DELETE FROM `account` WHERE `id` in (1, 2, 3, 4);'
   }
 
-}
+};
 
 exports.testSelect = function (test) {
 
-  for (var _test in _select) {
+  for (var _key in _select) {
+    var _test = _select[_key];
     test.equal(parser.select(_test.query), _test.result, _test.fail);
+    console.log('_key:', _key);
   }
 
-  test.done()
+  test.done();
 
 };
 
 exports.testUpdate = function (test) {
 
-  for (var _test in _update) {
-    test.equal(parser.update(_test.table, _test.data, _test.key), _test.result, _test.fail);
+  for (var _key in _update) {
+    var _test = _update[_key];
+    test.equal(parser.update(_test.table, [_test.data], [_test.key]), _test.result, _test.fail);
   }
 
   test.done();
@@ -235,7 +241,8 @@ exports.testUpdate = function (test) {
 
 exports.testDelete = function (test) {
 
-  for (var _test in _delete) {
+  for (var _key in _delete) {
+    var _test = _delete[_key];
     test.equal(parser.delete(_test.table, _test.key, _test.value), _test.result, _test.fail);
   }
 
@@ -244,7 +251,8 @@ exports.testDelete = function (test) {
 
 exports.testInsert = function (test) {
 
-  for (var _test in _insert) {
+  for (var _key in _insert) {
+    var _test = _insert[_key];
     test.equal(parser.insert(_test.table, _test.data), _test.result, _test.fail);
   }
 

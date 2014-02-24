@@ -4,17 +4,17 @@
 
 <section class="top-nav">
   <div class="btn-group">
-  <button class="btn btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase
+  <button class="btn btn-sm btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase
     Order
   </button>
-  <button class="btn btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">
+  <button class="btn btn-sm btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">
     Quote
   </button>
 </div>
 <div class="pull-right">
-  <a class="btn btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
+  <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
   </a>
-  <a class="btn btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
+  <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
 
 </div>
 </section>
@@ -168,6 +168,6 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
+    <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
   </div>
 </section>

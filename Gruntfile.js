@@ -58,6 +58,9 @@ module.exports = function (grunt) {
         }
       }
     },
+    nodeunit : {
+      all : ['scripts/test/*.js'],
+    },
     watch: {
       //FIXME reference uglify files
       files: ['app/partials/**/*.js', 'app/partials/**/*.css', 'app/css/*.css', '!app/css/*.min.css'],
@@ -96,6 +99,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-mysql-dump');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
+
   
   grunt.registerTask('lint', ['jshint']);
   grunt.registerTask('build', ['concat', 'cssmin', 'db_dump']);

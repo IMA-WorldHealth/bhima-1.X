@@ -217,6 +217,7 @@
     "PASSWORD"       : "Password",
     "ID"             : "ID",
     "USER_NAME"      : "User Name",
+    "CREDITOR_ID" : "Creditor ID",
     "LAST_NAME"      : "Last Name",
     "GROUP"          : "Group",
     "INVOICE_DATE"   : "Invoice Date",
@@ -419,6 +420,8 @@
 
   "LOCATION" : {
     "LOCATION"                          : "Location",
+    "ORIGIN" : "Origin",
+    "CURRENT" : "Current",
     "TITLE"                             : "Location Manager",
     "MANAGE_COUNTRY"                    : "Manage Country",
     "MANAGE_PROVINCE"                   : "Manage Province",
@@ -613,6 +616,7 @@
   },
 
   "FIND" : {
+    "TITLE" : "Find a patient",
     "ENTER_DEBTOR_ID" : "Find By Debtor ID",
     "SEARCH" : "Find by Name"
   },
