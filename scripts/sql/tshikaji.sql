@@ -44,7 +44,8 @@ insert into `user` values
   (1,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
-  (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0);
+  (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0),
+  (4, 'recept', 'moyo', 'Reception', 'Reception', 'recept@example.me', 0);
 
 -- url, p_url
 -- index.html files in urls here are reflective of
@@ -230,7 +231,10 @@ insert into `permission` (`id_unit`, `id_user`) values
  (50,13),
  (51,13),
  (52,13),
- (54,13);
+(54,13),
+(21, 4),
+(31, 4),
+(33, 4);
 
 -- configure location details
 insert into `country` values
