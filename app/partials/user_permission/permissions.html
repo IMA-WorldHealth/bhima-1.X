@@ -28,7 +28,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="user in models.users">
+            <tr ng-repeat="user in users.data">
               <td>{{user.first}}</td>
               <td>{{user.username}}</td>
               <td>{{user.email}}</td>
@@ -199,7 +199,7 @@
               {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
-              <li ng-repeat="unit in models.units | filter:filterChildren" >
+              <li ng-repeat="unit in units.data | filter:filterChildren" >
                 <label class="checkbox">
                   <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
                   {{unit.name}}

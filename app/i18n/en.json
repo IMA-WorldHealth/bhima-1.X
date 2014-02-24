@@ -37,7 +37,7 @@
     "VIEW_ALL" : "View all Patients",
     "SEARCH" : "Search"
   },
-  
+ 
   "EXCHANGE" : {
     "TITLE" : "Configure Exchange Rates",
     "SET" : "Set Today's Exchange Rate",
@@ -117,7 +117,7 @@
     "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
     "EDIT"               : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"             : "Create a new fiscal year "
-    
+   
 
   },
 
@@ -430,6 +430,8 @@
     "ORIGIN" : "Origin",
     "CURRENT" : "Current",
     "TITLE"                             : "Location Manager",
+    "VILLE" : "Township/Commune",
+    "LOCALITY": "Locality",
     "MANAGE_COUNTRY"                    : "Manage Country",
     "MANAGE_PROVINCE"                   : "Manage Province",
     "MANAGE_SECTOR"                     : "Manage Sector",
@@ -539,7 +541,7 @@
     "PATIENT_GROUP" : "Patient Group",
     "HELP_TXT_1"    : "Patient groups are uses to assign the appropriate discounts to types of patients that merit them.  Use this module to register, modify, and remove patient groups and their benefits"
   },
-  
+ 
   "PATIENT_GRP_ASSIGNMENT" : {
     "TITLE" : "Patient Group Assignment",
     "ALL_PATIENT" : "All Patients",
@@ -610,7 +612,7 @@
     "STOCK" : "Stock Account",
     "TAX" : "Tax Account"
   },
-  
+ 
   "SALE" : {
     "TITLE" : "Create Patient Invoice",
     "IMPORT" : "Import prescription",
@@ -680,7 +682,6 @@
     "NOTE_ID"                      : "Note #",
     "NOTE"                         : "Note",
     "DEBTOR_ID"                    : "# Debtor",
-    "AMOUNT"                       : "Amount",
     "TOTAL_CREDITED"               : "Total Credited",
     "ADDRESS"                      : "Address",
     "ID"                           : "Id",
