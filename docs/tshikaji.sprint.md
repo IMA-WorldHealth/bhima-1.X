@@ -61,7 +61,7 @@ doctor? Are there multiple levels privacy/ value?
 |Features |
 |---------|
 
-[] - Exchange rate should be defined for $100 to resolve rounding issues
+[x] - Exchange rate should be defined for $100 to resolve rounding issues
 
 [] - Enterprise should gain and lose money on exchange (exchange for current 
 day differs from the day of the sale, dollars purchased could have changed
@@ -103,7 +103,7 @@ consulation consists of consulting (7.50) and a fiche (0.50)
 [] - Basic purcahse order functionality, system ability to move money from cash
 to assets (also see stock consumption)
 
-[] - Resolve broken stock registration
+[x] - Resolve broken stock registration
 
 ##Application Branding 
 |Features |

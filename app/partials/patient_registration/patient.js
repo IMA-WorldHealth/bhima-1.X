@@ -11,6 +11,7 @@ angular.module('kpk.controllers')
     var dependencies = {},
         defaultBirthMonth = '06-01';
 
+    $scope.location = {};
     $scope.patient = {};
     $scope.country = {};
     $scope.province = {};
@@ -78,9 +79,11 @@ angular.module('kpk.controllers')
     }
   
     function registerPatient(patient) {
-      getVillageId($scope.village.name, $scope.sector.sector_id).then(function(origin_id){
+      getVillageId($scope.village.name, $scope.sector.sector_id)
+      .then(function(origin_id){
         patient.origin_location_id = origin_id;
-        getVillageId($scope.current_village.name, $scope.current_sector.sector_id).then(function(current_id){
+        getVillageId($scope.current_village.name, $scope.current_sector.sector_id)
+        .then(function(current_id){
           patient.current_location_id = current_id;
           if(patient.origin_location_id && patient.current_location_id){
             writePatient(patient);

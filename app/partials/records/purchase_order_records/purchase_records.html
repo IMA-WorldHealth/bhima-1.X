@@ -7,7 +7,7 @@
     <input type="text" ng-model="purchase_filter.filter" class="form-kapok" placeholder="Filter Purchase Orders">
   </div>
   <div class="pull-right">
-    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
+    <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
   </div>
 </section>
   
@@ -26,11 +26,11 @@
 
           <thead>
           <tr>
-            <th>ID</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Creditor ID</th>
-            <th>Posted</th>
+            <th>{{ "COLUMNS.ID" | translate }}</th>
+            <th>{{ "COLUMNS.DATE" | translate }}</th>
+            <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+            <th>{{ "COLUMNS.CREDITOR_ID" | translate }}</th>
+            <th>{{ "COLUMNS.POSTED" | translate }}</th>
           </tr>
           </thead>
 
@@ -61,7 +61,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
+    <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-sm btn-default">
       <span class="glyphicon glyphicon-floppy-open"></span> Post to Journal</a>
   </div>
 </section>

@@ -2,18 +2,18 @@
 
 var sanitize = require('../util/sanitize.js');
 
-//module: Parser 
-module.exports = (function (options) {
+//module: Parser
+module.exports = function (options) {
   // The parser module is the composer for all SQL queries
   // to the backend.  Query objects are decoded from the URL
-  // and passed into composer's methods.  
+  // and passed into composer's methods.
   'use strict';
 
   var self = {};
   options = options || {};
 
   self.templates = options.templates || {
-    select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% LIMIT %limit%;',
+    select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% ORDER BY %order% LIMIT %limit%;',
     update: 'UPDATE %table% SET %expressions% WHERE %key%;',
     delete: 'DELETE FROM %table% WHERE %key%;',
     insert: 'INSERT INTO %table% %values% VALUES %expressions%;'
@@ -22,8 +22,8 @@ module.exports = (function (options) {
   function cdm (table, columns) {
     // creates a 'dot map' mapping on table
     // to multiple columns.
-    // e.g. `table`.`column1`, `table`.`column2`   
-    return columns.map(function (c) { 
+    // e.g. `table`.`column1`, `table`.`column2` 
+    return columns.map(function (c) {
       return [table, '.', sanitize.escapeid(c)].join('');
     }).join(', ');
   }
@@ -31,7 +31,7 @@ module.exports = (function (options) {
   function parseWhere (list) {
     var ops = ['AND', 'OR'];
     return list.map(function (cond) {
-      return ~ops.indexOf(cond) ? cond : subroutine(cond); 
+      return ~ops.indexOf(cond) ? cond : subroutine(cond);
     }).join(' ');
   }
 
@@ -45,14 +45,14 @@ module.exports = (function (options) {
     //    => '`a`.`id`=`b`.`id`'
     var ops = ['>=', '<=', '!=', '<>', '=', '<', '>'],
       conditions,
-      operator; 
+      operator;
 
     if (sanitize.isArray(cond)) {
       // recursively compile the condition
       return '(' + parseWhere(cond) + ')';
     }
-  
-    // halts on true 
+
+    // halts on true
     ops.some(function (op) {
       if (~cond.indexOf(op)) {
         conditions = cond.split(op);
@@ -72,9 +72,9 @@ module.exports = (function (options) {
     ids = ids.map(function (v) {
       return sanitize.escape(v);
     });
-  
+
     return templ.replace('%id%', id)
-                .replace('%ids%', ids.toString()); 
+                .replace('%ids%', ids.toString());
   }
 
   // delete
@@ -125,7 +125,7 @@ module.exports = (function (options) {
       var line = [];
       for (var k in values) {
         // default to null
-        line.push(row[values[k]] != null ? sanitize.escape(row[values[k]]) : 'null');  
+        line.push(row[values[k]] !== null ? sanitize.escape(row[values[k]]) : 'null');
       }
       expressions.push('(' + line.join(', ') + ')');
     });
@@ -144,7 +144,7 @@ module.exports = (function (options) {
       templ = self.templates.select,
       join = def.join,
       tables = Object.keys(def.tables).map(function (t) { return sanitize.escapeid(t); });
-  
+
     for (var t in def.tables) {
       columns.push(cdm(sanitize.escapeid(t), def.tables[t].columns));
     }
@@ -153,7 +153,7 @@ module.exports = (function (options) {
       // parse the join condition
       table = tables.join(' JOIN ') + ' ON ';
       // escape column specification
-      table += join.map(function (exp) { 
+      table += join.map(function (exp) {
         // first split on equality
         return exp.split('=').map(function (col) {
           // then on the full stop
@@ -170,17 +170,21 @@ module.exports = (function (options) {
     // default to 1
     conditions = (def.where) ? parseWhere(def.where) : 1;
 
-    var groups = def.groupby ? def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) : null;
+    var groups = def.groupby ?
+      def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) :
+      null;
 
-    
+    var order;
+
     return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
                 .replace('%columns%', columns.join(', '))
                 .replace('%table%', table)
                 .replace('%conditions%', conditions)
                 .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
+                .replace(' ORDER BY %order%', order ? ' ORDER BY ' + order.join('.') : '')
                 .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
   };
 
   return self;
 
-});
+};
