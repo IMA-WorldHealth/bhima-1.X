@@ -11,3 +11,6 @@
   font-size: 12px;
 }
 
+.grid_link { 
+  cursor: pointer;
+}

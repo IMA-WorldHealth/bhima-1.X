@@ -8,9 +8,10 @@ angular.module('kpk.controllers')
   'connect',
   '$translate',
   function($scope, $q, validate, appstate, messenger, connect, $translate) {
-    var dependencies = {}, titleAccount = 3, formState = $scope.formState = "display";
+    var dependencies = {}, titleAccount = 3;
     var grid, columns, options, dataview, sortColumn = "account_number";
     var financeGroups = {index: {}, store: []};
+    var session = $scope.session = {state: "display"};
 
     $scope.newAccount = {};
 
@@ -51,7 +52,11 @@ angular.module('kpk.controllers')
         {id: 'ACCOUNT.TXT', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
         {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
         {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
-        {id: 'ACCOUNT.FIXED', name: 'Fixed', field: 'fixed', maxWidth: 60}
+        {id: 'ACCOUNT.FIXED', name: 'Fixed', field: 'fixed', maxWidth: 60},
+
+        //TODO Translation 
+        {id: 'Edit', name: 'Edit', maxWidth: 50, formatter: EditFormatter},
+        {id: 'Delete', name: 'Delete', maxWidth: 70, formatter: DeleteFormatter}
       ];
 
       // TODO : Should this depend on $translate success change?
@@ -193,7 +198,7 @@ angular.module('kpk.controllers')
       });
     }
    
-    function updateState(newState) { $scope.formState = newState; }
+    function updateState(newState) { session.state = newState; }
 
     function AccountFormatter(row, cell, value, columnDef, dataContext) {
       var spacer = "<span style='display:inline-block;height:1px;width:" + (15 * dataContext.indent) + "px'></span>";
@@ -207,6 +212,14 @@ angular.module('kpk.controllers')
       } else {
         return spacer + " <span class='toggle'></span>&nbsp;" + value;
       }
+    }
+
+    function EditFormatter(row, cell, value, columnDef, dataContext) { 
+      return '<a class="grid_link"><span class="glyphicon glyphicon-pencil"></span></a>';
+    }
+
+    function DeleteFormatter(row, cell, value, columndDef, dataContext) { 
+      return '<a class="grid_link"><span class="glyphicon glyphicon-trash"></span></a>';
     }
    
     $scope.updateState = updateState;
