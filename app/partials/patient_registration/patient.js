@@ -25,6 +25,15 @@ angular.module('kpk.controllers')
     $scope.assignation = {};
     $scope.sessionProperties = {};
 
+    // TODO: complete this
+    dependencies.location = {
+      query : {
+        tables : {
+          columns: []
+        }
+      }
+    };
+
     dependencies.patientGroup = {
       query : { tables : {'patient_group' : {'columns' : ['id', 'name']}}}
     };
