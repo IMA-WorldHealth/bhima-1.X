@@ -45,7 +45,7 @@ insert into `user` values
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
 	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0),
-  (4, 'recept', 'moyo', 'Reception', 'Reception', 'recept@example.me', 0);
+  (4, 'receptioniste', 'moyo', 'Reception', 'Reception', 'recept@example.me', 0);
 
 -- url, p_url
 -- index.html files in urls here are reflective of
