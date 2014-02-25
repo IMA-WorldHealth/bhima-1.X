@@ -14,7 +14,7 @@ angular.module('kpk.controllers')
 
     $scope.assignation = {};
     $scope.sessionProperties = {};
-
+    $scope.patient = {};
     /*
     dependencies.patientGroup = {
       query : { tables : {'patient_group' : {'columns' : ['id', 'name']}}}
@@ -184,7 +184,7 @@ angular.module('kpk.controllers')
       if(nval && nval.length===4) $scope.patient.dob = nval + '-' + defaultBirthMonth;
     });
 
-    $scope.enabledFullDate = function enableFullDate() {
+    $scope.enableFullDate = function enableFullDate() {
       $scope.sessionProperties.fullDateEnabled = true;
     };
  
