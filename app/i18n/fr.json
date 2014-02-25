@@ -24,6 +24,12 @@
     "SPLIT"                 : "Diviser"
   },
 
+  "OPENING_BALANCE" : {
+    "TITLE" : "Configurer Balance Ouvert",
+    "LOADING" : "Chargement",
+    "DEFAULTS" : "Utilizer Default (0)"
+  },
+
   "UTIL" : {
     "CONFIGURE"      : "Configurer",
     "TOTAL"          : "Total",
