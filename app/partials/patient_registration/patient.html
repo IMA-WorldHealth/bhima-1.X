@@ -24,7 +24,7 @@
             </div>
             <div class="panel-body">
 
-              <form name="details" role="form" class="form-horizontal">
+              <form name="details" class="form-horizontal">
                 <fieldset>
                   <legend>{{ "PATIENT_REG.PATIENT" | translate }}</legend>
                   <div class="form-group">
@@ -92,7 +92,7 @@
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-country" ng-model="country.country_id" ng-options="c.id as c.country_en for c in model.country.data" ng-change="handleOriginCountryChange()">
+                        <select required class="form-kapok" id="location-country" ng-model="origin.country" ng-options="country as country.country_fr for country in country.data">
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
                       </div>
@@ -101,7 +101,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-province" ng-model="province.province_id" ng-options="p.id as p.name for p in model.province.data">
+                        <select required class="form-kapok" id="location-province" ng-model="origin.province" ng-options="province as province.name for province in province.data">
                           <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -110,7 +110,7 @@
                         <label for="location-sector" class="control-label">
                           {{ "LOCATION.VILLE" | translate }}
                         </label>
-                        <select class="form-kapok" id="location-sector" ng-model="sector.sector_id" ng-options="s.id as s.name for s in model.sector.data" required>
+                        <select class="form-kapok" id="location-sector" ng-model="origin.sector" ng-options="sector as sector.name for sector in sector.data" required>
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
                         </select>
                       </div>
@@ -119,7 +119,7 @@
                         <label for="location-village" class="control-label">
                           {{ "LOCATION.LOCALITY" | translate }}
                         </label>
-                        <input class="form-kapok" id="location-country" ng-model="village.name" required>
+                        <input class="form-kapok" id="location-country" ng-model="origin.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
                     </fieldset>
                   </div>
 
@@ -130,7 +130,7 @@
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-country" ng-model="current_country.country_id" ng-options="c.id as c.country_en for c in model.country.data">
+                        <select required class="form-kapok" id="location-country" ng-model="current.country" ng-options="country as country.country_fr for country in country.data">
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
                       </div>
@@ -139,7 +139,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-province" ng-model="current_province.province_id" ng-options="p.id as p.name for p in model.province.data">
+                        <select required class="form-kapok" id="location-province" ng-model="current.province" ng-options="province as province.name for province in province.data | filter:{country_id:current.country_id}">
                           <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -148,7 +148,7 @@
                         <label for="location-sector" class="control-label">
                           {{ "LOCATION.VILLE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-sector" ng-model="current_sector.sector_id" ng-options="s.id as s.name for s in model.sector.data">
+                        <select required class="form-kapok" id="location-sector" ng-model="current.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:current.province.id}">
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
                         </select>
                       </div>
@@ -157,7 +157,7 @@
                         <label for="location-village" class="control-label">
                           {{ "LOCATION.LOCALITY" | translate }}
                         </label>
-                        <input class="form-kapok" id="location-country" ng-model="current_village.name" ng-change="inChange()" required>
+                        <input class="form-kapok" id="location-country" ng-model="current.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
                       </div>
                     </fieldset>
                   </div>
@@ -168,9 +168,8 @@
                   <div class="form-group">
                     <label for="debtor-group" class="col-xs-3 control-label">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
                     <div class="col-xs-9"> 
-                      <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in model.debtorGroup.data">
+                      <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data">
                         <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
-                        <option id="selectme" value="15">Selectableson</option>
                       </select>
                     </div>
                   </div>
@@ -285,7 +284,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient(patient)" ng-disabled="form.$invalid || checkChanged(patient)" class="btn btn-success btn-sm">
+    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
     </a>
   </div>
