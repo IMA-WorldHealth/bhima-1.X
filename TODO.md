@@ -32,3 +32,5 @@
   - Create a release directory, which all code is built to.
 
 
+#### Tshikaji
+ - Uptime monitor on the server
