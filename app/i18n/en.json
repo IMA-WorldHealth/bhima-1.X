@@ -627,6 +627,7 @@
   "FIND" : {
     "TITLE" : "Find a patient",
     "ENTER_DEBTOR_ID" : "Find By Debtor ID",
+    "PLACEHOLDER" : "Debitor ID",
     "SEARCH" : "Find by Name"
   },
 
