@@ -264,7 +264,7 @@
           '          type="text" '+
           '          ng-model="findPatient.selectedDebtor" '+
           '          typeahead="patient as patient.name for patient in findPatient.model.debtor.data | filter:$viewValue | limitTo:8" '+
-          '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\'' +
+          '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
           '          typeahead-on-select="loadDebitor(debitor.id)" '+
           '          typeahead-template-url="debtorListItem.html"'+
           '          class="form-kapok" '+

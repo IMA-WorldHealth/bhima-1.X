@@ -101,7 +101,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-province" ng-model="origin.province" ng-options="province as province.name for province in province.data">
+                        <select required class="form-kapok" id="location-province" ng-model="origin.province" ng-options="province as province.name for province in province.data | filter:{country_id:origin.country.id}">
                           <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -110,7 +110,7 @@
                         <label for="location-sector" class="control-label">
                           {{ "LOCATION.VILLE" | translate }}
                         </label>
-                        <select class="form-kapok" id="location-sector" ng-model="origin.sector" ng-options="sector as sector.name for sector in sector.data" required>
+                        <select class="form-kapok" id="location-sector" ng-model="origin.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:origin.province.id}" required>
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
                         </select>
                       </div>
@@ -139,7 +139,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-province" ng-model="current.province" ng-options="province as province.name for province in province.data | filter:{country_id:current.country_id}">
+                        <select required class="form-kapok" id="location-province" ng-model="current.province" ng-options="province as province.name for province in province.data | filter:{country_id:current.country.id}">
                           <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
