@@ -103,7 +103,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       $scope.model.inventory.post(selectedItem.inventoryReference);
       $scope.model.inventory.recalculateIndex();
     }
-/
     invoice.items.splice(index, 1);
   }
 
