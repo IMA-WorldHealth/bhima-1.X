@@ -173,7 +173,7 @@ angular.module('kpk.controllers')
 
       connect.basicPut('debitor', [packageDebtor]).then(function(result) {
         patient.debitor_id = result.data.insertId;
-        connect.basicPut('patient', [patient]).then(function(result) {
+        connect.basicPut('patient', [connect.clean(patient)]).then(function(result) {
           $location.path('invoice/patient/' + result.data.insertId);
         });
       });
