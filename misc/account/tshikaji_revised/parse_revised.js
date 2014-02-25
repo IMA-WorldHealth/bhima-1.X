@@ -1,7 +1,7 @@
 var fs = require('fs'), q = require('q');
 
 var accountFilePath = "./PLAN COMPTABLE REVISE.csv";
-var maxAccountDetails = 6, schema = [], schemaIndex;
+var maxAccountDetails = 2, schema = [], schemaIndex;
 
 // Account detail indexs (from CSV)
 var accountLabel = 2, accountNumber = 1
@@ -12,7 +12,7 @@ var sqlOutput = [], csvOutput = [];
 readFile(accountFilePath).then(parseCSV);
 
 function parseCSV(fileData) { 
-  var groups = {}, rawSchema = fileData.split(','), index = 1;
+  var groups = {}, rawSchema = fileData.split(','), index = 0;
   var currentParent = 0, previousParent = currentParent;
   
   var parentRel = {};
@@ -22,15 +22,17 @@ function parseCSV(fileData) {
   do { 
     var enterpriseId, accountInstance, indexContext = index * maxAccountDetails; 
     var buildUniqueAccount = [];
-  
+    
+    
     accountInstance = { 
       label   : rawSchema[indexContext + accountLabel],
       number  : rawSchema[indexContext + accountNumber],
       parent  : 0
     };
-      
+
+
     if(accountInstance.number !== '' && accountInstance.number !== undefined) { 
-     
+      accountInstance.label = accountInstance.label.trim(); 
       // FIXME done very quickly, deriving relationships can be cleaner than this
       for(parentAccount in parentRel) { 
         if(accountInstance.number.slice(0, parentAccount.length) === parentAccount) accountInstance.parent = parentAccount;
