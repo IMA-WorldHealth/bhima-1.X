@@ -546,7 +546,8 @@ drop table if exists `inventory`;
 create table `inventory` (
   `enterprise_id` smallint unsigned not null,
   `id`            int unsigned not null auto_increment,
-  `code`          varchar(10) not null,
+  `code`          varchar(30) not null,
+  `inv_code`      varchar(30),
   `text`          text,
   `price`         decimal(10,3) unsigned not null default '0.00',
   `group_id`      smallint unsigned not null,

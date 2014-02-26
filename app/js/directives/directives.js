@@ -15,7 +15,7 @@
         });
       };
     }])
-   
+  
     .directive('ngBlur', ['$parse', function ($parse) {
       return function(scope, element, attr) {
         var fn = $parse(attr.ngBlur);
@@ -30,7 +30,7 @@
     .directive('selectSearch', ['$compile', function($compile) {
       return {
         link: function(scope, element, attrs) {
-        
+       
         }
       };
     }])
@@ -56,19 +56,19 @@
           function buildTable(data) {
             built = true;
             parseGroup(data);
-          
+         
             //TODO append to element vs replace (attach to tbody)
             element.replaceWith($compile(template.join(''))(scope));
           }
-        
+       
           function parseGroup(accountGroup) {
             accountGroup.forEach(function(account) {
               var detail = account.detail, style = buildAccountStyle(detail);
-            
+           
               //Row for group detail
               template.push(printf(accountRowTemplate, detail.account_number, style, detail.account_txt, buildAccountColumns(detail, false)));
               if(!account.accounts) return;
-            
+           
               //Group children
               parseGroup(account.accounts);
 
@@ -78,10 +78,10 @@
           }
 
           function buildAccountStyle(detail) {
-         
+        
             //FIXME hardcoded account type definition
             var styleTemplate = "", colspanTemplate = "", classTemplate = "", title = (detail.account_type_id === 3);
-            
+           
             styleTemplate = printf('style="padding-left: %dpx;"', detail.depth * 30);
             if(title) {
               colspanTemplate = printf('colspan="%d"', scope[tableDefinition].columns.length + 1);
@@ -99,7 +99,7 @@
             });
             return columnTemplate.join('');
           }
-        
+       
           //Naive templating function
           function printf(template) {
             var typeIndex = [], tempTemplate = template, shift = 0;
@@ -109,12 +109,12 @@
               '%d' : '[object Number]',
               '%l' : '[object Array]'
             };
-          
+         
             //read arguments - not sure how much 'use strict' aproves of this
             for(var i = 1; i < arguments.length; i += 1) {
               replaceArguments.push(arguments[i]);
             }
-        
+       
             Object.keys(types).forEach(function(matchKey) {
               var index = tempTemplate.indexOf(matchKey);
               while(index >= 0) {
@@ -123,7 +123,7 @@
                 index = tempTemplate.indexOf(matchKey);
               }
             });
-          
+         
             typeIndex.sort(function(a, b) { return a.index > b.index; });
             typeIndex.forEach(function(replaceObj, index) {
               var targetArg = replaceArguments[index], replaceIndex = replaceObj.index + shift, matchKey = typeIndex[replaceIndex];
@@ -151,7 +151,7 @@
             '<tr ng-if="group.accounts" data-report-group data-group-model="group.accounts"></tr>',
             '<tr ng-if="group.detail.account_type_id == 3" data-ng-repeat-end><td></td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}"><em>Total {{group.detail.account_txt}}</em></td><td ng-repeat="column in tableDefinition.columns"><b>{{group.detail.total[column.key] | currency}}</b></td></tr>'
           ];
-        
+       
           if(attrs.groupModel){
             element.replaceWith($compile(template.join(''))(scope));
           }
@@ -162,7 +162,7 @@
     .directive('treeModel', ['$compile', 'appcache', function($compile, appcache) {
       var MODULE_NAMESPACE = 'tree';
       var cache = new appcache(MODULE_NAMESPACE);
-    
+   
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -181,7 +181,7 @@
                 '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
               '</li>' +
             '</ul>';
-        
+       
           //Collapse by default
           if (scope.node) scope.node.collapsed = true;
 
@@ -191,7 +191,7 @@
               scope[treeId] = scope[treeId] || {};
               scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
                 selectedNode.collapsed = !selectedNode.collapsed;
-              
+             
                 //update store
                 cache.put(selectedNode.id_unit, {collapsed: selectedNode.collapsed});
               };
@@ -217,7 +217,7 @@
           var searchCallback = scope[attrs.onSearchComplete];
 
           if(!searchCallback) throw new Error('Patient Search directive must implement data-on-search-complete');
-       
+      
           dependencies.debtor = {
             required : true,
             query : {
@@ -234,7 +234,7 @@
             state: 'id',
             submitSuccess: false
           };
-        
+       
           var template =
           '<div id="findPatient" class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
           '  <div class="panel-heading">'+
@@ -260,11 +260,11 @@
           '      <div ng-switch-when="name">'+
           '        <div class="input-group">'+
           '          <input '+
-          '          id="findSearch" ' + 
+          '          id="findSearch" ' +
           '          type="text" '+
           '          ng-model="findPatient.selectedDebtor" '+
           '          typeahead="patient as patient.name for patient in findPatient.model.debtor.data | filter:$viewValue | limitTo:8" '+
-          '          placeholder="{{ "FIND.PLACEHOLDER" | translate }}'+
+          '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
           '          typeahead-on-select="loadDebitor(debitor.id)" '+
           '          typeahead-template-url="debtorListItem.html"'+
           '          class="form-kapok" '+
@@ -294,7 +294,7 @@
             'name' : searchName,
             'id' : searchId
           };
-          
+         
           //TODO Downloads all patients for now - this should be swapped for an asynchronous search
           validate.process(dependencies).then(findPatient);
 
@@ -318,7 +318,7 @@
             dependencies.debtor.query.where = ["patient.debitor_id=" + value];
             validate.refresh(dependencies).then(handleIdRequest, handleIdError);
           }
-       
+      
           function handleIdRequest(model) {
             var debtor = scope.findPatient.debtor = extractMetaData(model.debtor.data)[0];
             console.log('downloaded', model);
@@ -340,13 +340,13 @@
               }
             }
           }
-        
+       
           function submitDebtor(value) {
             stateMap[scope.findPatient.state](value);
           }
-        
+       
           function extractMetaData(patientData) {
-          
+         
             patientData.forEach(function(patient) {
               var currentDate = new Date();
               var patientDate = new Date(patient.dob);
@@ -359,7 +359,7 @@
             });
             return patientData;
           }
-        
+       
           function validateNameSearch(value) {
             if(!value) return true;
 
@@ -375,7 +375,7 @@
             scope.findPatient.submitSuccess = false;
             scope.findPatient.debtor = "";
           }
-        
+       
           scope.validateNameSearch = validateNameSearch;
           scope.findPatient.refresh = resetSearch;
           scope.submitDebtor = submitDebtor;
@@ -482,7 +482,7 @@
             // when the 'compile' expression changes
             // assign it into the current DOM
             element.html(value);
-       
+      
             // compile the new DOM and link it to the current
             // scope.
             // NOTE: we only compile .childNodes so that
