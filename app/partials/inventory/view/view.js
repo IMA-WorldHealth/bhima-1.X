@@ -19,7 +19,7 @@ angular.module('kpk.controllers')
         searchStr = "",
         dataview = $scope.dataview = new Slick.Data.DataView();
 
-    // FIXME: Cannot do a join with inv_unit because inventory.text and inv_unit.text clash.
+    // FIXME: Cannot do a join with inventory_unit because inventory.text and inventory_unit.text clash.
     // propose rename inventory.text -> inventory.label
 
     dependencies.inventory = {
@@ -28,18 +28,18 @@ angular.module('kpk.controllers')
           'inventory' : {
             columns: ['id', 'code', 'text', 'price', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'type_id', 'consumable']
           },
-          'inv_group' : {
+          'inventory_group' : {
             columns : ['name']
           }
         },
-        join: ['inventory.group_id=inv_group.id'],
+        join: ['inventory.group_id=inventory_group.id'],
       }
     };
 
     dependencies.inventory_unit = {
       query : {
         tables : {
-          'inv_unit': {
+          'inventory_unit': {
             columns : ['id', 'text' ]
           }
         }
@@ -49,7 +49,7 @@ angular.module('kpk.controllers')
     dependencies.inventory_type = {
       query : {
         tables : {
-          'inv_type': {
+          'inventory_type': {
             columns : ['id', 'text' ]
           }
         }
@@ -61,7 +61,7 @@ angular.module('kpk.controllers')
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.inventory.query.where =
-        ['inventory.enterprise_id=' + enterprise.id]
+        ['inventory.enterprise_id=' + enterprise.id];
       validate.process(dependencies).then(buildStores);
     });
 
@@ -106,7 +106,7 @@ angular.module('kpk.controllers')
           col.name = $translate(col.id);
         });
       });
-    
+  
       options = {
         enableCellNavigation : true,
         forceFitColumns      : true
@@ -114,7 +114,7 @@ angular.module('kpk.controllers')
 
       grid = new Slick.Grid("#kpk-inventory-grid", dataview, columns, options);
       grid.setSelectionModel(new Slick.RowSelectionModel());
-  
+
       // set up sorting
 
       function sorter (e, args) {
@@ -127,7 +127,7 @@ angular.module('kpk.controllers')
       grid.onSort.subscribe(sorter);
 
       // set up filtering
-  
+
       function search (item, args) {
         if (item.searchStr !== "" && item.code.indexOf(args.searchStr) === -1 && item.text.indexOf(args.searchStr) === -1) {
           return false;
@@ -222,14 +222,14 @@ angular.module('kpk.controllers')
       groupInstance = JSON.parse(JSON.stringify(groupDefinition));
       groupInstance.aggregateCollapsed = true;
       groupInstance.aggregators = [];
-   
+ 
       groupDefinition.aggregators.forEach(function(aggregate) {
         groupInstance.aggregators.push(new Slick.Data.Aggregators.Sum(aggregate));
       });
-    
+  
       groupInstance.formatter = groupDefinition.formatter;
       dataview.setGrouping(groupInstance);
-    }
+    };
 
     function groupExists(targetGroup, groupList) {
       return groupList.some(function(group) {
