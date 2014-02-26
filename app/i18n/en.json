@@ -348,7 +348,19 @@
     "ACCOUNTING" : "Accounting",
     "COST_CENTER_MGMT" : "Cost Center Management",
     "GRP_INVOICING" : "Group Invoicing",
-    "CURRENCY" : "Currency"
+    "CURRENCY" : "Currency",
+    "RENEWAL" : "Patient Renewal"
+  },
+
+  "RENEWAL" : {
+    "TITLE" : "Renew Patient Visit",
+    "NAME" : "Name",
+    "AGE" : "Age",
+    "GENDER" : "Sex",
+    "ORIGIN" : "Origin",
+    "PATIENT" : "Patient",
+    "CONFIRM_RENEWAL" : "Confirm Renewal",
+    "BILL_RENEWAL" : "Bill for Renewal"
   },
 
   "SUPPLIER" : {
