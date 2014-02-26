@@ -15,11 +15,6 @@ angular.module('kpk.controllers')
     $scope.assignation = {};
     $scope.sessionProperties = {};
     $scope.patient = {};
-    /*
-    dependencies.patientGroup = {
-      query : { tables : {'patient_group' : {'columns' : ['id', 'name']}}}
-    };
-    */
  
     dependencies.debtorGroup = {
       query : { tables : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
@@ -91,7 +86,9 @@ angular.module('kpk.controllers')
       // if the villages are strings, create database entries for them
       if (angular.isString($scope.origin.village) && angular.isString($scope.current.village)) {
         createVillage($scope.origin.village, $scope.origin.sector.id, 'origin')
-        .then(createVillage($scope.current.village, $scope.current.sector.id, 'current'))
+        .then(function () {
+          return createVillage($scope.current.village, $scope.current.sector.id, 'current');
+        })
         .then(function () {
           defer.resolve();
         });
@@ -111,6 +108,7 @@ angular.module('kpk.controllers')
 
       defer.promise.then(function () {
         var patient = $scope.patient;
+
         patient.current_location_id = $scope.current.village.id;
         patient.origin_location_id = $scope.origin.village.id;
         writePatient(patient);
@@ -135,36 +133,6 @@ angular.module('kpk.controllers')
       });
     }
 
-    function getVillageId(name, id_sector){
-      var id;
-      var def = $q.defer();
-      for(var i = 0; i<$scope.village.data.length; i+=1){
-        if($scope.village.data[i].name.toUpperCase() === name.toUpperCase() && $scope.village.data[i].sector_id === id_sector){
-          id = $scope.village.data[i].id;
-          //console.log(id);
-          break;
-        }
-      }
-
-      if(id) {
-        //console.log('le village existe deja');
-        def.resolve(id);
-      }else{
-        //console.log('nous devons ajouter le village');
-        var toInputVillage = {
-          name : name,
-          sector_id : id_sector
-        };
-        connect.basicPut('village', [toInputVillage]).then(function(v){
-          toInputVillage.id = v.data.insertId;
-          $scope.village.post(toInputVillage);
-          //console.log('le modele a change', $scope.village);
-          return def.resolve(v.data.insertId);
-        });
-      }
-      return def.promise;
-    }
-
     function writePatient(patient) {
       var packageDebtor = {
         group_id : $scope.debtor.debtor_group.id,
@@ -173,7 +141,8 @@ angular.module('kpk.controllers')
 
       connect.basicPut('debitor', [packageDebtor]).then(function(result) {
         patient.debitor_id = result.data.insertId;
-        connect.basicPut('patient', [connect.clean(patient)]).then(function(result) {
+        connect.basicPut('patient', [connect.clean(patient)])
+        .then(function(result) {
           $location.path('invoice/patient/' + result.data.insertId);
         });
       });
