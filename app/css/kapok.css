@@ -311,3 +311,22 @@ div .reportFrame {
 .btn-primary a { 
   color: white;
 }
+
+.menu-item { 
+  margin-left: 10px;
+}
+
+.menu-item:hover { 
+  cursor: pointer;
+}
+
+.panel-primary .panel-heading .menu-item { 
+  color: white;
+}
+
+.selected-primary { 
+  color: #ffffff;
+  background-color: #428bca;
+  border-color: #357ebd;
+
+}
