@@ -26,7 +26,7 @@ angular.module('kpk.controllers')
       required : true,
       query : {
         tables : {
-          'inv_unit': {
+          'inventory_unit': {
             columns: ['id', 'text']
           }
         }
@@ -37,13 +37,13 @@ angular.module('kpk.controllers')
       required: true,
       query : {
         tables: {
-          'inv_group': {
-            columns: ['id', 'name', 'symbol', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']
+          'inventory_group': {
+            columns: ['id', 'name', 'code', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']
           }
         }
       }
     };
-   
+  
     dependencies.inventory = {
       query : {
         tables: {
@@ -58,7 +58,7 @@ angular.module('kpk.controllers')
       required : true,
       query : {
         tables: {
-          'inv_type': {
+          'inventory_type': {
             columns: ['id', 'text']
           }
         }
