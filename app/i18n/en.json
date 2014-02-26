@@ -361,6 +361,7 @@
   "PATIENT_REG" : {
     "TITLE"                    : "Patient Registration",
     "PATIENT_DETAILS"          : "Patient Details",
+    "INVALID_DATE" : "Warning: Date of Birth is in the Future! Are you sure it is correct?",
     "CREATE_DEBTOR_GROUP"      : "Create Debitor Group",
     "VIEW_PATIENT_RECORDS"     : "View Patient Records",
     "PATIENT_GROUP_ASSIGNMENT" : "Patient Group Assignment",
