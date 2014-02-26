@@ -3,11 +3,13 @@ angular.module('kpk.controllers')
   '$scope',
   '$q',
   '$location',
+  '$translate',
   'connect',
   'messenger',
   'validate',
   'appstate',
-  function($scope, $q, $location, connect, messenger, validate, appstate) {
+  'kpkUtilitaire',
+  function($scope, $q, $location, $translate, connect, messenger, validate, appstate, util) {
 
     var dependencies = {},
         defaultBirthMonth = '06-01';
@@ -80,6 +82,10 @@ angular.module('kpk.controllers')
     }
  
     $scope.registerPatient = function registerPatient() {
+
+      if (util.isDateAfter($scope.patient.dob, new Date())) {
+        return messenger.warning($translate('PATIENT_REG.INVALID_DATE'), 6000);
+      }
 
       // This is overly verbose, but works and is clean
       var defer = $q.defer();

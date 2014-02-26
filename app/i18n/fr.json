@@ -164,6 +164,7 @@
   "PATIENT_REG" : {
     "TITLE"                    : "Reception/Enregistrement",
     "PATIENT_DETAILS"          : "Detailles Malades",
+    "INVALID_DATE"  : "Attention! Date de naissance est invalid!  Etes-vous sur que c'est correct?",
     "CREATE_DEBTOR_GROUP"      : "Creer Groupe Debiteur",
     "VIEW_PATIENT_RECORDS"     : "Voire Tous Enregistrements",
     "PATIENT_GROUP_ASSIGNMENT" : "Assignation Groupe Malades",
@@ -701,7 +702,6 @@
     "NOTE_ID"                      : "# Note",
     "NOTE"                         : "Note",
     "DEBTOR_ID"                    : "# Debiteur",
-    "AMOUNT"                       : "Montant",
     "TOTAL_CREDITED"               : "Total Credite",
     "ADDRESS"                      : "Addresse",
     "ID"                           : "Id",
