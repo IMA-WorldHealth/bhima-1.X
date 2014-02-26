@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('priceListController', [
+.controller('priceList', [
   '$scope',
   '$q',
   'connect',
@@ -7,26 +7,34 @@ angular.module('kpk.controllers')
   'appstate',
   'validate',
   function ($scope, $q, connect, messenger, appstate, validate) {
-
-    //variables and init
- 
-    var dependencies = {},
-        stores = {};
-
+    var dependencies = {}, stores = {};
+    var enterprise; 
+    
     $scope.action = '';
 
-    dependencies.price_list = {
+    dependencies.priceList = {
       query : {
-        tables : {'price_list' : {columns:['id', 'name', 'discount', 'note']}
-      }
+        tables : {'price_list' : {columns:['id', 'name', 'discount', 'note']}}
       }
     };
 
-    //fonctions
+    appstate.register('enterprise', loadDependencies);
 
-    function init (model) {
-      for (var k in model) { $scope[k] = model[k]; }
+    function loadDependencies(enterpriseResult) { 
+      enterprise = $scope.enterprise = enterpriseResult;
+      
+      // Set condition
+      dependencies.priceList.query.where  = ['price_list.enterprise_id='+enterprise.id];
+      validate.process(dependencies).then(priceList);
     }
+
+    function priceList(model) { 
+      $scope.model = model;
+    }
+    
+    // function init (model) {
+    //   for (var k in model) { $scope[k] = model[k]; }
+    // }
 
     function editMeta (list) {
       $scope.edit = {};
@@ -86,12 +94,7 @@ angular.module('kpk.controllers')
       });
     }
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      dependencies.price_list.query.where  = ['price_list.enterprise_id='+enterprise.id];
-      validate.process(dependencies).then(init);
-    });
-
+    
     //exposition
 
     $scope.editMeta = editMeta;
