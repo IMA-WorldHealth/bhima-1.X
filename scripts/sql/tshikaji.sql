@@ -2304,12 +2304,12 @@ insert into `debitor_group_type` (`id`, `type`) values
   (3, 'Malades Ambulatoire'),
   (4, 'Malades Interne');
 
-insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
-  (200, 1, "Patients payant cache", 10, 1, 1, '', 1, 1, 0), 
-  (200, 2, "Patient conventionne", 10, 1, 1, '', 1, 1, 1), 
-  (200, 3, "Employes", 10, 1, 1, '', 1, 1, 0),
-  (200, 4, "Officiers CPC&CNCO", 10, 1, 1, '', 1, 4, 0),
-  (200, 5, "Apparentes", 10, 1, 1, '', 1, 4, 1);
+-- insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
+--  (200, 1, "Patients payant cache", 10, 1, 1, '', 1, 1, 0), 
+--  (200, 2, "Patient conventionne", 10, 1, 1, '', 1, 1, 1), 
+--  (200, 3, "Employes", 10, 1, 1, '', 1, 1, 0),
+--  (200, 4, "Officiers CPC&CNCO", 10, 1, 1, '', 1, 4, 0),
+--  (200, 5, "Apparentes", 10, 1, 1, '', 1, 4, 1);
 
 -- insert into `debitor` (`id`, `group_id`, `text`) values 
 --   (1, 1, "Jon Niles");
@@ -2854,8 +2854,8 @@ insert into `transaction_type` values
   (5, 'group_invoice'),
   (6, 'credit_note');
 
-insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
-  (200, 'HIV', 20, 'Reducded cost for HIV patients');
+-- insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
+--  (200, 'HIV', 20, 'Reducded cost for HIV patients');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 10, 10),

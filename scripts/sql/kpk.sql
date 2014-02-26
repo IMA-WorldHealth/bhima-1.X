@@ -318,13 +318,31 @@ drop table if exists `kpk`.`price_list`;
 create table `kpk`.`price_list` (
   enterprise_id   smallint unsigned not null,
   id              smallint  unsigned not null auto_increment,
-  name            varchar(100) not null,
-  discount        decimal(19, 3) unsigned not null default 0,  
-  note            text,
+  description     text,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
+
+
+--
+-- table `kpk`.`price_list_item`
+--
+drop table if exists `kpk`.`price_list_item`;
+create table `kpk`.`price_list_item` (
+  `id`              int unsigned not null auto_increment,
+  `order`           int unsigned not null,
+  `description`     text,
+  `value`           float not null,
+  `is_discount`     boolean not null default 0,
+  `price_list_id`   smallint unsigned not null,
+  primary key (`id`),
+  unique index (`order`, `price_list_id`),
+  key `price_list_id` (`price_list_id`),
+  constraint foreign key (`price_list_id`) references `price_list` (`id`) on delete cascade
+) engine=innodb;
+
+
 
 --
 -- Table structure for table `kpk`.`debitor_group_type`
@@ -355,17 +373,18 @@ create table `debitor_group` (
   `max_credit`          mediumint unsigned default '0',
   `type_id`             smallint unsigned not null,
   `is_convention`        boolean not null default 0,
+  `price_list_id`       smallint unsigned null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `account_id` (`account_id`),
   key `location_id` (`location_id`),
---  key `payment_id` (`payment_id`),
+  key `price_list_id` (`price_list_id`),
 --  key `tax_id` (`tax_id`),
   key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
   constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
   constraint foreign key (`location_id`) references `village` (`id`) on delete cascade on update cascade,
---  constraint foreign key (`payment_id`) references `payment` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`price_list_id`) references `price_list` (`id`) on delete cascade on update cascade,
 --  constraint foreign key (`tax_id`) references `tax` (`id`),
   constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
@@ -896,23 +915,7 @@ create table `kpk`.`period_total` (
   constraint foreign key (`period_id`) references `period` (`id`)
 ) engine=innodb;
 
---
--- table `kpk`.`price_list_detail`
---
-drop table if exists `kpk`.`price_list_detail`;
-create table `kpk`.`price_list_detail` (
-  id              int unsigned not null auto_increment,
-  list_id         smallint unsigned not null,
-  inventory_id    int unsigned not null,
-  amount          decimal(19, 3) unsigned not null default 0,
-  percent         boolean not null default 0,
-  note            text,
-  primary key (`id`),
-  key `inventory_id` (`inventory_id`),
-  key `list_id` (`list_id`),
-  constraint foreign key (`inventory_id`) references `inventory` (`id`) on delete cascade,
-  constraint foreign key (`list_id`) references `price_list` (`id`) on delete cascade
-) engine=innodb;
+
 
 -- 
 -- table `kpk`.`group_invoice`
