@@ -355,7 +355,6 @@ create table `debitor_group` (
   `max_credit`          mediumint unsigned default '0',
   `type_id`             smallint unsigned not null,
   `is_convention`        boolean not null default 0,
-  `is_society`           boolean not null default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   key `account_id` (`account_id`),
