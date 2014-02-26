@@ -1,11 +1,9 @@
-angular.module('kpk.controllers').controller('renewal', function($scope, validate) { 
+angular.module('kpk.controllers').controller('renewal', function($scope, $filter, validate, connect, messenger) { 
   var sessionPatient, patientRenewed = $scope.patientRenewed = false;
   var dependencies = {};
 
-  console.log('patient renewal'); 
   function loadPatient(patient) { 
     sessionPatient = $scope.sessionPatient = patient;
-    console.log(sessionPatient);
 
     dependencies.location = { 
       query : '/location/' + patient.origin_location_id
@@ -14,8 +12,18 @@ angular.module('kpk.controllers').controller('renewal', function($scope, validat
   }
   
   function submitRenewal(sessionPatient) {
-    console.log("firsted");
     patientRenewed = $scope.patientRenewed = true; 
+
+    connect.fetch('/visit/' + sessionPatient.id).then(function(res) { 
+      console.log('visit logged');
+
+      //Patient visit has been logged 
+      messenger.success($filter('translate')('RENEWAL.SUCCESS_MESSAGE'));
+    }, function (err) { 
+      
+      //Patient visit log failed
+      messenger.danger($filter('translate')('RENEWAL.FAILURE_MESSAGE'));  
+    });
   }
 
   function processLocation(model) { 
