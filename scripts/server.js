@@ -342,6 +342,17 @@ app.get('/debitorAgingPeriod', function (req, res, next){
   });
 });
 
+app.get('/visit/:patient_id', function (req, res, next) {
+  var patient_id = req.params.patient_id;
+  var sql =
+    "INSERT INTO `patient_visit` (`patient_id`, `registered_by`) VALUES " +
+    "(" + [patient_id, req.session.user_id].join(', ') + ");";
+  db.execute(sql, function (err, rows) {
+    if (err) return next(err);
+    res.send();
+  });
+});
+
 app.get('/account_balance/:id', function (req, res, next) {
   // FIXME: put this in a module!
   var enterprise_id = req.params.id;
