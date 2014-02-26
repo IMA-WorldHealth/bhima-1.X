@@ -517,10 +517,10 @@ create table `assignation_patient` (
 
 
 --
--- Table structure for table `kpk`.`inv_unit`
+-- Table structure for table `kpk`.`inventory_unit`
 --
-drop table if exists `inv_unit`;
-create table `inv_unit` (
+drop table if exists `inventory_unit`;
+create table `inventory_unit` (
   `id`    smallint unsigned not null auto_increment,
   `text`  varchar(100) not null,
   primary key (`id`)
@@ -543,23 +543,23 @@ create table `period` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`inv_type`
+-- Table structure for table `kpk`.`inventory_type`
 --
-drop table if exists `inv_type`;
-create table `inv_type` (
+drop table if exists `inventory_type`;
+create table `inventory_type` (
   `id`    tinyint unsigned not null,
   `text`  varchar(150) not null,
   primary key (`id`)
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`inv_group`
+-- Table structure for table `kpk`.`inventory_group`
 --
-drop table if exists `inv_group`;
-create table `inv_group` (
+drop table if exists `inventory_group`;
+create table `inventory_group` (
   `id`              smallint unsigned not null auto_increment,
   `name`            varchar(100) not null,
-  `symbol`          char(1) not null,
+  `code`            smallint not null,
   `sales_account`   mediumint unsigned not null,
   `cogs_account`    mediumint unsigned,
   `stock_account`   mediumint unsigned,
@@ -580,21 +580,21 @@ create table `inv_group` (
 --
 drop table if exists `inventory`;
 create table `inventory` (
-  `enterprise_id` smallint unsigned not null,
-  `id`            int unsigned not null auto_increment,
-  `code`          varchar(30) not null,
-  `inv_code`      varchar(30),
-  `text`          text,
-  `price`         decimal(10,3) unsigned not null default '0.00',
-  `group_id`      smallint unsigned not null,
-  `unit_id`       smallint unsigned,
-  `unit_weight`   mediumint default '0',
-  `unit_volume`   mediumint default '0',
-  `stock`         int unsigned not null default '0',
-  `stock_max`     int unsigned not null default '0',
-  `stock_min`     int unsigned not null default '0',
-  `type_id`       tinyint unsigned not null default '0',
-  `consumable`    boolean not null default 0,
+  `enterprise_id`   smallint unsigned not null,
+  `id`              int unsigned not null auto_increment,
+  `code`            varchar(30) not null,
+  `inventory_code`  varchar(30),
+  `text`            text,
+  `price`           decimal(10,3) unsigned not null default '0.00',
+  `group_id`        smallint unsigned not null,
+  `unit_id`         smallint unsigned,
+  `unit_weight`     mediumint default '0',
+  `unit_volume`     mediumint default '0',
+  `stock`           int unsigned not null default '0',
+  `stock_max`       int unsigned not null default '0',
+  `stock_min`       int unsigned not null default '0',
+  `type_id`         tinyint unsigned not null default '0',
+  `consumable`      boolean not null default 0,
   primary key (`id`),
   unique key `code` (`code`),
   key `enterprise_id` (`enterprise_id`),
@@ -602,9 +602,9 @@ create table `inventory` (
   key `unit_id` (`unit_id`),
   key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`group_id`) references `inv_group` (`id`),
-  constraint foreign key (`unit_id`) references `inv_unit` (`id`),
-  constraint foreign key (`type_id`) references `inv_type` (`id`)
+  constraint foreign key (`group_id`) references `inventory_group` (`id`),
+  constraint foreign key (`unit_id`) references `inventory_unit` (`id`),
+  constraint foreign key (`type_id`) references `inventory_type` (`id`)
 ) engine=innodb;
 
 --
@@ -701,21 +701,21 @@ create table `purchase` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`inv_detail`
+-- Table structure for table `kpk`.`inventory_detail`
 --
-drop table if exists `inv_detail`;
-create table `inv_detail` (
+drop table if exists `inventory_detail`;
+create table `inventory_detail` (
   `id`              int unsigned not null,
-  `inv_id`          int unsigned not null,
+  `inventory_id`          int unsigned not null,
   `serial_number`   text,
   `lot_number`      text,
   `delivery_date`   date,
   `po_id`           int unsigned not null,
   `expiration_date` date,
   primary key (`id`),
-  key `inv_id` (`inv_id`),
+  key `inventory_id` (`inventory_id`),
   key `po_id` (`po_id`),
-  constraint foreign key (`inv_id`) references `inventory` (`id`),
+  constraint foreign key (`inventory_id`) references `inventory` (`id`),
   constraint foreign key (`po_id`) references `purchase` (`id`)
 ) engine=innodb;
 
