@@ -221,7 +221,6 @@ exports.testSelect = function (test) {
   for (var _key in _select) {
     var _test = _select[_key];
     test.equal(parser.select(_test.query), _test.result, _test.fail);
-    console.log('_key:', _key);
   }
 
   test.done();
