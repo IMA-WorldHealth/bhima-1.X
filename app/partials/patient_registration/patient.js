@@ -139,12 +139,20 @@ angular.module('kpk.controllers')
         text : 'Debtor ' + patient.first_name + ' ' + patient.last_name,
       };
 
+      var patient_id;
       connect.basicPut('debitor', [packageDebtor]).then(function(result) {
         patient.debitor_id = result.data.insertId;
-        connect.basicPut('patient', [connect.clean(patient)])
-        .then(function(result) {
-          $location.path('invoice/patient/' + result.data.insertId);
-        });
+        return connect.basicPut('patient', [connect.clean(patient)]);
+      })
+      .then(function(result) {
+        patient_id = result.data.insertId;
+        return connect.fetch('/visit/' + patient_id);
+      })
+      .then(function (result) {
+        $location.path('invoice/patient/' + patient_id);
+      })
+      .catch(function (err) {
+        messenger.danger('An error occured:' + JSON.stringify(err));
       });
     }
 
