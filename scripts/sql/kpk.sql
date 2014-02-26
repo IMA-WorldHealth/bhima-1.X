@@ -945,4 +945,58 @@ create table `journal_log` (
   primary key (`id`)
 ) engine=innodb;
 
+--
+-- Table structure for table `kpk`.`fonction`
+--
+drop table if exists `fonction`;
+create table `fonction` (
+  `id`                    tinyint unsigned not null auto_increment,
+  `fonction_txt`          text not null,
+  primary key (`id`)
+) engine=innodb;
+
+
+--
+-- Table structure for table `kpk`.`service`
+--
+drop table if exists `service`;
+create table `service` (
+  `id`                   tinyint unsigned not null auto_increment,
+  `service_txt`          text not null,
+  primary key (`id`)
+) engine=innodb;
+
+
+--
+-- Table structure for table `kpk`.`employee`
+--
+drop table if exists `employee`;
+create table `employee` (
+  `id`                  int unsigned not null auto_increment,
+  `code`                varchar(20) not null,
+  `prenom`              text, 
+  `name`                text not null,
+  `postnom`             text,
+  `dob`                 date not null,
+  `date_embauche`       date not null,
+  `phone`               varchar(20),
+  `email`               varchar(70),
+  `fonction_id`         tinyint unsigned not null,
+  `service_id`          tinyint unsigned not null,
+  `location_id`         mediumint unsigned not null,
+  `creditor_id`         int unsigned not null,
+  `debitor_id`          int unsigned not null,            
+  primary key (`id`),
+  key `fonction_id` (`fonction_id`),
+  key `service_id`  (`service_id`),
+  key `location_id` (`location_id`),
+  key `creditor_id` (`creditor_id`),
+  key `debitor_id`  (`debitor_id`),
+  constraint foreign key (`fonction_id`) references `fonction` (`id`),
+  constraint foreign key (`service_id`) references `service` (`id`),
+  constraint foreign key (`location_id`) references `village` (`id`),
+  constraint foreign key (`creditor_id`) references `creditor` (`id`),
+  constraint foreign key (`debitor_id`) references `debitor` (`id`)
+) engine=innodb;
+
 -- Jon's dump @ 12:45.

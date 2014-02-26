@@ -1,13 +1,13 @@
 <header>
-<span class="capitalize"> {{ 'SECTOR MANAGER' | translate }}</span>
+<span class="capitalize"> {{ 'SECTOR.TITLE' | translate }}</span>
   </header>
 
   <section class="top-nav">
     <div class="pull-right">
-        <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">Location Manager</span></a>
+        <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'SECTOR.LOCATION_MANAGER' | translate}}</span></a>
     </div>
     <div class="pull-left">
-      <button class="btn btn-default btn-sm" ng-click="setOp('Add')">Add New Sector</button>
+      <button class="btn btn-default btn-sm" ng-click="setOp('Add')">{{'SECTOR.NEW_SECTOR' | translate}}</button>
     </div>
   </section>
 
@@ -16,15 +16,15 @@
     <div class="col-xs-4">
       <div class="panel panel-default" style="max-height: 525px;">
         <div class="panel-heading">
-          <span>Registered Sector</span>
+          <span>{{'SECTOR.REGISTERED' | translate}}</span>
         </div>
         <div class="panel-body sector-size">
           <table class="table table-striped table-condensed">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Province</th>
-              <th colspan="2" class="capital">Actions</th>
+              <th>{{'SECTOR.NAME' | translate}}</th>
+              <th>{{'SECTOR.PROVINCE' | translate}}</th>
+              <th colspan="2" class="capital">{{'SECTOR.ACTIONS' | translate}}</th>
             </tr>
           </thead>
           <tbody>
@@ -48,9 +48,8 @@
     <div class="col-xs-6" ng-switch="op">
       <div ng-switch-default>
          <div class="alert alert-info">                                                                          
-             <b>Sector  Manager Configuration </b>                                                        
-             <p>This module will help you to manage sectors, at the left you see availvables sectors and their locations. ⇉
-             use this module to <b>create</b>, <b>modify</b> and <b>remove</b> sector.                                                        
+             <b>{{'SECTOR.CONFIG' | translate}}</b>                                                        
+             <p>{{'SECTOR.INFO' | translate}}                                                       
              </p>                                                                                                  
          </div>  
        </div>
@@ -59,9 +58,9 @@
          
            <form class="form-horizontal">                                                                          
               <fieldset>                                                                                            
-                <legend>Register a Sector</legend>                                                           
+                <legend>{{'SECTOR.REGISTER' | translate}}</legend>                                                           
                 <div class="form-group">
-                  <label class="col-xs-2"> Province</label>
+                  <label class="col-xs-2"> {{'SECTOR.PROVINCE' | translate}}</label>
                   <div class="col-xs-10">
                     <select
                       required
@@ -71,20 +70,20 @@
                       ng-model="add.province_id"
                       ng-options="pro.id as pro.name for pro in model.province.data"
                     >
-                      <option value="" disable="disabled">-- select A Province -- </option>
+                      <option value="" disable="disabled">-- {{'SELECT.PROVINCE' | translate}}-- </option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-group">                                                                   
-                   <label class="col-xs-2 control-label">Sector Name</label>                                                
+                   <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>                                                
                    <div class="col-xs-10">                                                                           
                       <input class="form-kapok" ng-model="add.name" required>                                            
                    </div>                                                                                            
                 </div>     
               </fieldset>
-              <button class="btn btn-default btn-success" ng-click="addSector(add)" ng-disabled="form.$invalid " type="submit">Add</button>
-              <button class="btn btn-default btn-sm"  type="reset">New Form</button>
+              <button class="btn btn-default btn-success" ng-click="addSector(add)" ng-disabled="form.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
+              <button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_FORM' | translate}}</button>
 
             </form>
           </div>
@@ -93,9 +92,9 @@
          
            <form class="form-horizontal">                                                                          
               <fieldset>                                                                                            
-                <legend>Edit a Sector</legend>                                                           
+                <legend>{{'SECTOR.EDIT' | translate}}</legend>                                                           
                 <div class="form-group">
-                  <label class="col-xs-2"> Province</label>
+                  <label class="col-xs-2"> {{'SECTOR.PROVINCE' | translate}}</label>
                   <div class="col-xs-10">
                     <select
                       required
@@ -105,20 +104,20 @@
                       ng-model="sector.province_id"
                       ng-options="pro.id as pro.name for pro in model.province.data"
                     >
-                      <option value="" disable="disabled">-- select A Province -- </option>
+                      <option value="" disable="disabled">-- Selectionner un Province -- </option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-group">                                                                   
-                   <label class="col-xs-2 control-label">Sector Name</label>                                                
+                   <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>                                                
                    <div class="col-xs-10">                                                                           
                       <input class="form-kapok" ng-model="sector.sector" required>                                            
                    </div>                                                                                            
                 </div>     
               </fieldset>
-              <button class="btn btn-default btn-success" ng-click="editSector(sector)" ng-disabled="form.$invalid " type="submit">Add</button>
-              <button class="btn btn-default btn-sm"  type="reset">New Form</button>
+              <button class="btn btn-default btn-success" ng-click="editSector(sector)" ng-disabled="form.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
+              <button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_FORM' | translate}}</button>
 
             </form>
        </div>
