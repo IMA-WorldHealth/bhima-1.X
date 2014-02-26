@@ -47,6 +47,7 @@ angular.module('kpk.controllers')
         newObject.sector = obj.name;
         newObject.province = $scope.model.province.get(obj.province_id).name;
         $scope.model.sector.post(newObject);
+        $scope.op = '';
       });
     }
 
