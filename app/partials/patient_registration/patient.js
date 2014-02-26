@@ -46,7 +46,7 @@ angular.module('kpk.controllers')
       $scope.origin = {};
 
       // webcams for the win
-      handlePatientImage();
+      // handlePatientImage();
 
       // set the $scope.origin and $scope.current location variables
       ['origin', 'current']

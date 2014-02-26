@@ -66,7 +66,8 @@
 
       <div class="panel-footer">
         <button ng-disabled="!sessionPatient || patientRenewed" ng-click="submitRenewal(sessionPatient)" class="btn btn-default btn-sm">{{ "RENEWAL.CONFIRM_RENEWAL" | translate }}</button>
-        <button ng-disabled="!patientRenewed" class="btn btn-default btn-sm">{{ "RENEWAL.BILL_RENEWAL" | translate }}</button>
+        <!-- ng-disabled="!patientRenewed" -->
+        <button disabled class="btn btn-default btn-sm">{{ "RENEWAL.BILL_RENEWAL" | translate }}</button>
       </div>
     </div>
     </div>
