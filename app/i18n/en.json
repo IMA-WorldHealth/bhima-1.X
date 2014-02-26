@@ -489,7 +489,10 @@
     "RESET_FORM"     : "Reset Form",
     "CANCEL"         : "Cancel",
     "OK"             : "Ok",
-    "CONTINUE"      : "Continue"
+    "CONTINUE"      : "Continue",
+    "ADD"            : "Add",
+    "EDIT"           : "Edit",
+    "NEW_FORM"       : "New Form"
   },
 
   "CASH" : {
@@ -688,5 +691,19 @@
     "PHONE"                        : "Phone",
     "CASH_RECEIPT"                 : "Cash Receipt",
     "CASH_ID"                      : "Cash transaction #"
+  },
+    "SECTOR":{
+    "TITLE" : "Sector Manager",
+    "LOCATION_MANAGER" : "Lccation manager",
+    "NEW_SECTOR" : "Add Sector",
+    "REGISTERED" : "Registered sector",
+    "NAME" : "Name",
+    "PROVINCE" : "Province",
+    "ACTIONS" : "Actions",
+    "CONFIG" : "Sector Manager Configuration",
+    "INFO" :  "This module will help you to manage sector, use this module to create, edit and remove sector",
+    "REGISTER" : "Register a Sector",
+    "NAME_SECTOR" : "Sector Name",
+    "EDIT" : "Edit Sector"
   }
 }
