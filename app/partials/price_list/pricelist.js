@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('priceListController', [
+.controller('priceList', [
   '$scope',
   '$q',
   'connect',
@@ -7,30 +7,51 @@ angular.module('kpk.controllers')
   'appstate',
   'validate',
   function ($scope, $q, connect, messenger, appstate, validate) {
+    var dependencies = {}, stores = {};
+    var enterprise; 
+    
+    $scope.session = { 
+      action : 'default',
+      selected : null  
+    };
 
-    //variables and init
- 
-    var dependencies = {},
-        stores = {};
-
-    $scope.action = '';
-
-    dependencies.price_list = {
+    dependencies.priceList = {
       query : {
-        tables : {'price_list' : {columns:['id', 'name', 'discount', 'note']}
-      }
+        tables : {'price_list' : {columns:['id', 'name', 'discount', 'note']}}
       }
     };
 
-    //fonctions
+    appstate.register('enterprise', loadDependencies);
 
-    function init (model) {
-      for (var k in model) { $scope[k] = model[k]; }
+    function loadDependencies(enterpriseResult) { 
+      enterprise = $scope.enterprise = enterpriseResult;
+      
+      // Set condition
+      dependencies.priceList.query.where  = ['price_list.enterprise_id='+enterprise.id];
+      validate.process(dependencies).then(priceList);
     }
+
+    function priceList(model) { 
+      $scope.model = model;
+    }
+    
+    function editItems(list) { 
+      $scope.details = {data:[]};
+      $scope.session.action = 'item';
+      $scope.session.selected = list;
+    }
+
+    function addItem() { 
+      $scope.details.data.push({});
+    }
+    // function init (model) {
+    //   for (var k in model) { $scope[k] = model[k]; }
+    // }
 
     function editMeta (list) {
       $scope.edit = {};
-      $scope.action = 'meta';
+      $scope.session.action = 'meta';
+      $scope.session.selected = list;
       $scope.edit = angular.copy(list);
     }
 
@@ -39,7 +60,7 @@ angular.module('kpk.controllers')
       .then(function (res) {
         messenger.success('Successfully edited price list');
         $scope.price_list.put($scope.edit);
-        $scope.action = '';
+        $scope.session.action = '';
       }, function (err) {
         messenger.danger('error:' + JSON.stringify(err));
       });
@@ -51,17 +72,24 @@ angular.module('kpk.controllers')
 
     function addList () {
       $scope.add = {};
-      $scope.action = 'add';
+    
+      $scope.session.action = 'add';
+      $scope.session.selected = null;
     }
 
     function saveAdd () {
       $scope.add.enterprise_id = $scope.enterprise.id;
       connect.basicPut('price_list', [connect.clean($scope.add)])
       .then(function (result) {
-        messenger.success('Posted new price list!');
+        var finalList;
+
         $scope.add.id = result.data.insertId;
-        $scope.price_list.post(connect.clean($scope.add));
-        $scope.action = '';
+        finalList = connect.clean($scope.add);
+
+        $scope.model.priceList.post(finalList);
+        editItems(finalList);
+        
+        messenger.success('Posted new price list!');
       }, function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
       });
@@ -86,17 +114,13 @@ angular.module('kpk.controllers')
       });
     }
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      dependencies.price_list.query.where  = ['price_list.enterprise_id='+enterprise.id];
-      validate.process(dependencies).then(init);
-    });
-
-    //exposition
-
     $scope.editMeta = editMeta;
     $scope.saveMeta = saveMeta;
     $scope.resetMeta = resetMeta;
+
+    $scope.editItems = editItems;
+    $scope.addItem = addItem;
+
     $scope.addList = addList;
     $scope.saveAdd = saveAdd;
     $scope.isValid = isValid;

@@ -86,7 +86,7 @@
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
     }).
     when('/inventory/price_list', {
-      controller: 'priceListController',
+      controller: 'priceList',
       templateUrl: 'partials/price_list/pricelist.html'
     }).
     when('/exchange_rate', {

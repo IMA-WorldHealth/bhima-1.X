@@ -75,7 +75,7 @@ INSERT INTO `unit` VALUES
 	(40, 'Register Supplier'          , 'TREE.REGISTER_SUPPLIER', ''                                           , 11  , 0 , '/partials/inventory/creditor/'          , '/creditor'),
 	(41, 'Purchase Order Records'     , 'TREE.PURCHASE_ORDER_RECORDS', ''                                           , 5   , 0 , '/partials/records/purchase_order_records', '/purchase_records/'),
   (43, 'Finance'                    , 'TREE.REPORT_FINANCE', ''                                           , 10  , 0 , '/partials/reports/finance/'              , '/reports/finance'),
-  (45, 'Price List'                 , 'TREE.PRICE_LIST', 'Configure price lists!'                     , 11  , 0 , '/partials/price_list/'                   , '/inventory/price_list'),
+  (45, 'Price List'                 , 'TREE.PRICE_LIST', 'Configure price lists!'                     , 1  , 0 , '/partials/price_list/'                   , '/inventory/price_list'),
   (46, 'Exchange Rate'              , 'TREE.EXCHANGE', 'Set todays exchange rate!'                  , 1   , 0 , '/partials/exchange_rate/'                , '/exchange_rate'),
   (47, 'Transaction Report'         , 'TREE.REPORT_TRANSACTION', ''                                           , 10  , 0 , '/partials/reports/transaction_report/'   , '/reports/transaction_report'),
   (48, 'Creditor Groups'            , 'TREE.CREDITOR_GRP', ''                                           , 1   , 0 , '/partials/creditor/group/'               , '/creditors/creditor_group'),
@@ -2870,7 +2870,7 @@ insert into `transaction_type` values
   (6, 'credit_note');
 
 -- insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
---  (200, 'HIV', 20, 'Reducded cost for HIV patients');
+-- (200, 'HIV', 20, 'Reducded cost for HIV patients');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 10, 10),
