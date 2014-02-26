@@ -21,9 +21,9 @@ delete from `payment`;
 delete from `exchange_rate`;
 delete from `currency`;
 delete from `inventory`;
-delete from `inv_unit`;
-delete from `inv_group`;
-delete from `inv_type`;
+delete from `inventory_unit`;
+delete from `inventory_group`;
+delete from `inventory_type`;
 delete from `cash_item`;
 delete from `cash`;
 delete from `purchase`;
@@ -2319,22 +2319,37 @@ insert into `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `locat
 --
 -- configure inventory
 
-insert into `inv_unit` (`text`) values
+insert into `inventory_unit` (`text`) values
   ('Act'),
 	('Pallet'), ('Pill'), ('Box'), ('Lot');
 
-insert into `inv_type` values
+insert into `inventory_type` values
   (0,'Article'),
   (1,'Assembly'),
   (2,'Service'),
   (3,'Discount');
 
-insert into `inv_group` (`name`, `symbol`, `sales_account`) values 
-  ('Services' , 'S', 10), -- 301 
-	('Medicines', 'M', 10), -- 301
-	('Surgery'  , 'C', 10), -- 303 
-  ('Fiches'   , 'F', 10), -- 302
-  ('Discount' , 'D', 10); -- 780 (Randomly chosen) 
+insert into `inventory_group` (`code`, `name`, `sales_account`) values 
+  (010 , 'Consultation'      , 942) ,
+  (020 , 'Administration'    , 940) ,
+  (030 , 'Hospitalization'   , 949) ,
+	(040 , 'Labo'              , 952) ,
+	(050 , 'Chirurgie'         , 10)  ,
+  (060 , 'Platre'            , 967) ,
+	(070 , 'Radiologie'        , 969) ,
+	(080 , 'Orl'               , 975) ,
+  (090 , 'Accouchement PAX'  , 10)  ,
+	(091 , 'Consultation MEDE' , 10)  ,
+	(100 , 'Comprimes Medicam' , 10)  ,
+  (110 , 'Liquide Interne'   , 10)  ,
+  (120 , 'Injectable'        , 951) ,
+  (130 , 'Perfusion'         , 968) ,
+	(140 , 'Frais (Frigo)'     , 10)  ,
+	(150 , 'Externe'           , 10)  ,
+  (160 , 'Production Locale' , 10)  ,
+	(170 , 'Petit Materiel'    , 10)  ,
+	(180 , 'Optique'           , 962) ,
+  (190 , 'Caution/Impaye'    , 10);
 
 /*
 insert into `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
