@@ -164,6 +164,7 @@
   "PATIENT_REG" : {
     "TITLE"                    : "Reception/Enregistrement",
     "PATIENT_DETAILS"          : "Detailles Malades",
+    "INVALID_DATE"  : "Attention! Date de naissance est invalid!  Etes-vous sur que c'est correct?",
     "CREATE_DEBTOR_GROUP"      : "Creer Groupe Debiteur",
     "VIEW_PATIENT_RECORDS"     : "Voire Tous Enregistrements",
     "PATIENT_GROUP_ASSIGNMENT" : "Assignation Groupe Malades",
@@ -565,7 +566,8 @@
     "CANCEL"         : "Annuler",
     "OK"             : "Ok",
     "CONTINUE"       : "Continuer",
-    "ADD"            : "Add",
+    "ADD"            : "Ajouter",
+    "EDIT"           : "Editer",
     "NEW_FORM"       : "Nouveau Formulaire"
   },
 
@@ -640,7 +642,7 @@
    "COUNTRY" : {
     "TITLE"                : "Gestion des Pays",
     "LOCATION_MANAGER"     : "Gestion des Emplacements",
-    "NEW_COUNTRY"          : "Ajout d'Un Nouveau Pays",
+    "NEW_COUNTRY"          : "Ajout Nouveau Pays",
     "REGISTERED"           : "Pays Enregistrees",
     "CODE"                 : "Code",
     "ENGLISH_NAME"         : "Nom Anglais",
@@ -700,12 +702,26 @@
     "NOTE_ID"                      : "# Note",
     "NOTE"                         : "Note",
     "DEBTOR_ID"                    : "# Debiteur",
-    "AMOUNT"                       : "Montant",
     "TOTAL_CREDITED"               : "Total Credite",
     "ADDRESS"                      : "Addresse",
     "ID"                           : "Id",
     "PHONE"                        : "Phone",
     "CASH_RECEIPT"                 : "Recette de Caisse",
     "CASH_ID"                      : "# Transaction de Caisse#"
+  },
+
+  "SECTOR":{
+    "TITLE" : "Gestionnaire Secteur",
+    "LOCATION_MANAGER" : "Gestion Emplacement",
+    "NEW_SECTOR" : "Ajouter Secteur",
+    "REGISTERED" : "Secteurs enregistres",
+    "NAME" : "Nom",
+    "PROVINCE" : "Province",
+    "ACTIONS" : "Actions",
+    "CONFIG" : "Configuration Gestionnaire de Secteurs",
+    "INFO" :  "Ce module vous aidera a gerer les secteurs, a gauche la liste des secteurs enregistres, utiliser ce module pour creer, modifier et effecer les secteurs",
+    "REGISTER" : "Enregistrement Secteur",
+    "NAME_SECTOR" : "Nom Secteur",
+    "EDIT" : "Editer Secteur"
   }
 }

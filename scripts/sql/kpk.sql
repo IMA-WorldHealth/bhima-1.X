@@ -211,8 +211,8 @@ create table `account_type` (
 --
 -- table `kpk`.`pricipal_center`
 --
-drop table if exists `kpk`.`cost_center`;
-create table `kpk`.`cost_center` (
+drop table if exists `cost_center`;
+create table `cost_center` (
   `enterprise_id`   smallint unsigned not null,
   `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
@@ -449,9 +449,10 @@ create table `patient` (
   `email`             varchar(20),
   `addr_1`            varchar(100),
   `addr_2`            varchar(100),
-  `origin_location_id`       mediumint unsigned not null,
+  `renewal`           boolean not null default 0,
+  `origin_location_id`        mediumint unsigned not null,
   `current_location_id`       mediumint unsigned not null,
-  `registration_date` timestamp null default CURRENT_TIMESTAMP,
+  `registration_date`         timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
   key `first_name` (`first_name`),
   key `debitor_id` (`debitor_id`),
@@ -461,6 +462,22 @@ create table `patient` (
   constraint foreign key (`debitor_id`) references `debitor` (`id`) on update cascade,
   constraint foreign key (`current_location_id`) references `village` (`id`) on update cascade,
   constraint foreign key (`origin_location_id`) references `village` (`id`) on update cascade
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`patient_visit`
+--
+drop table if exists `patient_visit`;
+create table `patient_visit` (
+  `id`                    int unsigned not null auto_increment,
+  `patient_id`            int unsigned not null, 
+  `date`                  timestamp not null,
+  `registered_by`         smallint unsigned not null,
+  primary key (`id`),
+  key `patient_id` (`patient_id`),
+  key `registered_by` (`registered_by`),
+  constraint foreign key (`patient_id`) references `patient` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`registered_by`) references `user` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 
@@ -944,6 +961,60 @@ create table `journal_log` (
   `date`            date not null,
   `user_id`         smallint unsigned not null,
   primary key (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`fonction`
+--
+drop table if exists `fonction`;
+create table `fonction` (
+  `id`                    tinyint unsigned not null auto_increment,
+  `fonction_txt`          text not null,
+  primary key (`id`)
+) engine=innodb;
+
+
+--
+-- Table structure for table `kpk`.`service`
+--
+drop table if exists `service`;
+create table `service` (
+  `id`                   tinyint unsigned not null auto_increment,
+  `service_txt`          text not null,
+  primary key (`id`)
+) engine=innodb;
+
+
+--
+-- Table structure for table `kpk`.`employee`
+--
+drop table if exists `employee`;
+create table `employee` (
+  `id`                  int unsigned not null auto_increment,
+  `code`                varchar(20) not null,
+  `prenom`              text, 
+  `name`                text not null,
+  `postnom`             text,
+  `dob`                 date not null,
+  `date_embauche`       date not null,
+  `phone`               varchar(20),
+  `email`               varchar(70),
+  `fonction_id`         tinyint unsigned not null,
+  `service_id`          tinyint unsigned not null,
+  `location_id`         mediumint unsigned not null,
+  `creditor_id`         int unsigned not null,
+  `debitor_id`          int unsigned not null,            
+  primary key (`id`),
+  key `fonction_id` (`fonction_id`),
+  key `service_id`  (`service_id`),
+  key `location_id` (`location_id`),
+  key `creditor_id` (`creditor_id`),
+  key `debitor_id`  (`debitor_id`),
+  constraint foreign key (`fonction_id`) references `fonction` (`id`),
+  constraint foreign key (`service_id`) references `service` (`id`),
+  constraint foreign key (`location_id`) references `village` (`id`),
+  constraint foreign key (`creditor_id`) references `creditor` (`id`),
+  constraint foreign key (`debitor_id`) references `debitor` (`id`)
 ) engine=innodb;
 
 -- Jon's dump @ 12:45.

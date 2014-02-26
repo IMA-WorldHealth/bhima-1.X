@@ -3,11 +3,13 @@ angular.module('kpk.controllers')
   '$scope',
   '$q',
   '$location',
+  '$translate',
   'connect',
   'messenger',
   'validate',
   'appstate',
-  function($scope, $q, $location, connect, messenger, validate, appstate) {
+  'kpkUtilitaire',
+  function($scope, $q, $location, $translate, connect, messenger, validate, appstate, util) {
 
     var dependencies = {},
         defaultBirthMonth = '06-01';
@@ -81,6 +83,10 @@ angular.module('kpk.controllers')
  
     $scope.registerPatient = function registerPatient() {
 
+      if (util.isDateAfter($scope.patient.dob, new Date())) {
+        return messenger.warning($translate('PATIENT_REG.INVALID_DATE'), 6000);
+      }
+
       // This is overly verbose, but works and is clean
       var defer = $q.defer();
       // if the villages are strings, create database entries for them
@@ -139,12 +145,20 @@ angular.module('kpk.controllers')
         text : 'Debtor ' + patient.first_name + ' ' + patient.last_name,
       };
 
+      var patient_id;
       connect.basicPut('debitor', [packageDebtor]).then(function(result) {
         patient.debitor_id = result.data.insertId;
-        connect.basicPut('patient', [connect.clean(patient)])
-        .then(function(result) {
-          $location.path('invoice/patient/' + result.data.insertId);
-        });
+        return connect.basicPut('patient', [connect.clean(patient)]);
+      })
+      .then(function(result) {
+        patient_id = result.data.insertId;
+        return connect.fetch('/visit/' + patient_id);
+      })
+      .then(function (result) {
+        $location.path('invoice/patient/' + patient_id);
+      })
+      .catch(function (err) {
+        messenger.danger('An error occured:' + JSON.stringify(err));
       });
     }
 

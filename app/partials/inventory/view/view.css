@@ -1,12 +1,6 @@
 /*Temporary fix for border-box bootstrap collision*/
-#kpk-inventory-grid, #kpk-inventory-grid div {
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-}
-
 #kpk-inventory-grid {
-  height: 650px;
+  height: 100%;
   width: 100%;
   font-size: 8pt;
 }
