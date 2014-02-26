@@ -145,7 +145,7 @@
               <th>{{ "COLUMNS.DOB" | translate }}</th>
               <th>{{ "COLUMNS.PARENT" | translate }}</th>
               <th>{{ "COLUMNS.SEX" | translate }}</th>
-              <th>{{ "COLUMNS.EMAIL" | translate }}</th>
+              <!-- <th>{{ "COLUMNS.EMAIL" | translate }}</th> -->
               <th>{{ "COLUMNS.DEBTOR" | translate }} #</th>
               <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
               <th></th>
@@ -153,13 +153,13 @@
             </thead>
 
             <tbody>
-            <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.id)" ng-repeat="patient in model['patient'].data | filter: patient_filter.filter">
+            <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.id)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
               <td><b>{{patient.id}}</b></td>
               <td>{{ patient.name }}</td>
               <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
               <td>{{ patient.father_name }}</td>
               <td>{{ patient.sex | uppercase }}</td>
-              <td>{{ patient.email }}</td>
+              <!-- <td>{{ patient.email }}</td> -->
               <td><b>{{patient.debitor_id}}</b></td>
               <td>{{patient.registration_date | date}}</td>
               <td><a href="#/invoice/patient/{{patient.id}}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
