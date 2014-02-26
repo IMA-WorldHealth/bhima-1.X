@@ -2854,8 +2854,8 @@ insert into `transaction_type` values
   (5, 'group_invoice'),
   (6, 'credit_note');
 
-insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
-  (200, 'HIV', 20, 'Reducded cost for HIV patients');
+-- insert into `price_list` (`enterprise_id`, `name`, `discount`, `note`) values
+  -- (200, 'HIV', 20, 'Reducded cost for HIV patients');
 
 insert into `currency_account` (`currency_id`, `enterprise_id`, `cash_account`, `bank_account`) values 
   (1, 200, 10, 10),
