@@ -161,6 +161,17 @@
     "DEBITOR"         : "Selectionner une Debiteur"
   },
 
+  "RENEWAL" : {
+    "TITLE" : "Renouveller Fiche",
+    "NAME" : "Nom",
+    "AGE" : "Age",
+    "GENDER" : "Sex",
+    "ORIGIN" : "Origine",
+    "PATIENT" : "Patient",
+    "CONFIRM_RENEWAL" : "Confirmer Renouvellement",
+    "BILL_RENEWAL" : "Facturer"
+  },
+
   "PATIENT_REG" : {
     "TITLE"                    : "Reception/Enregistrement",
     "PATIENT_DETAILS"          : "Detailles Malades",
@@ -243,7 +254,8 @@
     "ACCOUNTING" : "Compatabilite",
     "COST_CENTER_MGMT" : "Centres Des Couts",
     "GRP_INVOICING" : "Facturation des Conventions",
-    "CURRENCY" : "Monaie"
+    "CURRENCY" : "Monaie",
+    "RENEWAL" : "Renouveller Fiche"
   },
 
   "PATIENT_RECORDS" : {
