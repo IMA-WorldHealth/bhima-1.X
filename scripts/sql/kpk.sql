@@ -211,8 +211,8 @@ create table `account_type` (
 --
 -- table `kpk`.`pricipal_center`
 --
-drop table if exists `kpk`.`cost_center`;
-create table `kpk`.`cost_center` (
+drop table if exists `cost_center`;
+create table `cost_center` (
   `enterprise_id`   smallint unsigned not null,
   `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
@@ -461,6 +461,22 @@ create table `patient` (
   constraint foreign key (`debitor_id`) references `debitor` (`id`) on update cascade,
   constraint foreign key (`current_location_id`) references `village` (`id`) on update cascade,
   constraint foreign key (`origin_location_id`) references `village` (`id`) on update cascade
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`patient_visit`
+--
+drop table if exists `patient_visit`;
+create table `patient_visit` (
+  `id`                    int unsigned not null auto_increment,
+  `patient_id`            int unsigned not null, 
+  `date`                  timestamp not null,
+  `registered_by`         smallint unsigned not null,
+  primary key (`id`),
+  key `patient_id` (`patient_id`),
+  key `registered_by` (`registered_by`),
+  constraint foreign key (`patient_id`) references `patient` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`registered_by`) references `user` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 
