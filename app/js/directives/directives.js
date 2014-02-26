@@ -280,7 +280,7 @@
           '            type="text"'+
           '            ng-model="findPatient.debtorId"'+
           '            class="form-kapok"'+
-          '            placeholder="Debtor ID">'+
+          '            placeholder="Patient ID">'+
           '          <span class="input-group-btn">'+
           '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }} </button>'+
           '          </span>'+
@@ -315,7 +315,7 @@
           function searchId(value) {
             console.log('search id', value);
             if(isNaN(Number(value))) return messenger.danger("Invalid ID value submitted");
-            dependencies.debtor.query.where = ["patient.debitor_id=" + value];
+            dependencies.debtor.query.where = ["patient.id=" + value];
             validate.refresh(dependencies).then(handleIdRequest, handleIdError);
           }
       
