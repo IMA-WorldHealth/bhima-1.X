@@ -195,6 +195,10 @@
     .when('/group_invoice/:id?', {
       controller : 'groupInvoice',
       templateUrl : 'partials/group_invoice/group_invoice.html'
+    })
+    .when('/renewal', { 
+      controller : 'renewal', 
+      templateUrl : 'partials/patient_renewal/renewal.html'
     });
   }
 

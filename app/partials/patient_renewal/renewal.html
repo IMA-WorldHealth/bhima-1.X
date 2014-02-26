@@ -1,0 +1,82 @@
+<header> 
+  <span>{{ "RENEWAL.TITLE" | translate }}</span>
+</header>
+
+<section class="top-nav">
+  <!-- <div class="pull&#45;right"> -->
+  <!--   <a href="#/debitor/debitor_group" class="capital btn btn&#45;default btn&#45;sm"> -->
+  <!--     <span class="glyphicon glyphicon&#45;tag"></span> {{ "PATIENT_REG.CREATE_DEBTOR_GROUP" | translate }} -->
+  <!--   </a> -->
+  <!--   <a href='/#/patient_records/' class="btn btn&#45;default btn&#45;sm"> -->
+  <!--     <span class="glyphicon glyphicon&#45;list"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }} -->
+  <!--   </a> -->
+  <!-- </div> -->
+</section>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-6">
+      <div find-patient on-search-complete="loadPatient"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ "RENEWAL.PATIENT" | translate }}
+      </div>
+
+      <div ng-show="sessionPatient" class="panel-body">
+        <div class="row">
+          <div class="col-xs-6">
+
+            <div class="form-group">
+              <label class="control-label">{{ "RENEWAL.NAME" | translate }}</label>
+              <br>
+              {{sessionPatient.name}}
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">{{ "RENEWAL.AGE" | translate }}</label>
+              <br>
+              {{sessionPatient.age}}
+            </div>
+            
+            <div class="form-group">
+              <label class="control-label">{{ "RENEWAL.GENDER" | translate }}</label>
+              <br>
+              {{sessionPatient.sex}}
+            </div>
+          </div>
+          
+          <div class="col-xs-6">
+            <!-- FIXME style hacks --> 
+            <label>{{ "RENEWAL.ORIGIN" | translate }}</label>
+            <br>
+            {{patientLocation.village}}
+            <br>
+            {{patientLocation.sector}}
+            <br>
+            {{patientLocation.province}}
+            <br>
+            {{patientLocation.country}}
+          </div>
+      </div>
+
+      <div class="panel-footer">
+        <button ng-disabled="!sessionPatient || patientRenewed" ng-click="submitRenewal(sessionPatient)" class="btn btn-default btn-sm">{{ "RENEWAL.CONFIRM_RENEWAL" | translate }}</button>
+        <button ng-disabled="!patientRenewed" class="btn btn-default btn-sm">{{ "RENEWAL.BILL_RENEWAL" | translate }}</button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
+

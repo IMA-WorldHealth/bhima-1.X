@@ -222,7 +222,7 @@
             required : true,
             query : {
               tables : {
-                patient : {columns : ["id", "debitor_id", "first_name", "last_name", "sex", "dob"]},
+                patient : {columns : ["id", "debitor_id", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
                 debitor : { columns : ["text"]},
                 debitor_group : { columns : ['account_id']}
               },
