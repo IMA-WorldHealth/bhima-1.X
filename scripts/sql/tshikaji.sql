@@ -95,7 +95,8 @@ INSERT INTO `unit` VALUES
   (63, 'Cost Center Management'     , 'TREE.COST_CENTER_MGMT', ''                                           , 62  , 0 , '/partials/cost_center/'                  , '/cost_center/'),
   (64, 'Group Invoicing'            , 'TREE.GRP_INVOICING', ''                                           , 5   , 0 , '/partials/group_invoice/'                , '/group_invoice/'),
   (65, 'Currency'                   , 'TREE.CURRENCY', ''                                           , 1   , 0 , '/partials/currency/'                     , '/currency'),
-  (66, 'Patient Renewal'            , 'TREE.RENEWAL', ''                                            , 21, 0, '/partials/patient_renewal/', '/renewal');
+  (66, 'Patient Renewal'            , 'TREE.RENEWAL', ''                                            , 21, 0, '/partials/patient_renewal/', '/renewal'),
+  (67, 'Patient Registrations'      , 'TREE.PATIENT_REGISTRATIONS', '',                                 21, 0, '/partials/reports/patient_registrations/', '/reports/patient_registrations');
 
 insert into `permission` (`id_unit`, `id_user`) values
  (1,2),
@@ -200,7 +201,10 @@ insert into `permission` (`id_unit`, `id_user`) values
  (60,1),
  (61,1),
  (62,1),
- (64,1),
+(64,1),
+(65,1),
+(66, 1),
+(67, 1),
  -- (65,1),
  (1,13),
  (2,13),
