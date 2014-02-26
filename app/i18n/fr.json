@@ -386,7 +386,8 @@
     "TEXT" : "Texte",
     "STOCK" : "Stock",
     "VOLUME" : "Volume",
-    "WEIGHT" : "Poids"
+    "WEIGHT" : "Poids",
+    "PRICE_LIST" : "Liste de Prix"
   },
 
   "REPORT" : {

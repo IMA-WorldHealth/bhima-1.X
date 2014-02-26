@@ -14,7 +14,7 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'debitor_group' : {
-            columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'type_id', 'is_convention']
+            columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'type_id', 'is_convention', 'price_list_id']
           }
         }
       }
@@ -41,6 +41,16 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.price_list = {
+      query : {
+        tables : {
+          'price_list' : {
+            columns: ['enterprise_id', 'id', 'description']
+          }
+        }
+      }
+    };
+
     dependencies.types = {
       required : true,
       query : {
@@ -61,6 +71,8 @@ angular.module('kpk.controllers')
       $scope.enterprise = enterprise;
       dependencies.debitor_group.query.where =
         ['debitor_group.enterprise_id=' + enterprise.id];
+      dependencies.price_list.query.where =
+        ['price_list.enterprise_id=' + enterprise.id];
       dependencies.account.query.where =
         ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id];
       validate.process(dependencies).then(setUpModels, handleErrors);
@@ -82,6 +94,10 @@ angular.module('kpk.controllers')
     $scope.formatLocation = function formatLocation (location) {
       return [location.village, location.sector, location.province, location.country].join(', ');
     };
+
+    $scope.formatPriceList = function formatPriceList (pl) {
+      return pl.description;
+    }
 
     $scope.new = function () {
       $scope.newGroup = {};
