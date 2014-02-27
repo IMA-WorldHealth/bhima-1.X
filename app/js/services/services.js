@@ -43,6 +43,60 @@
 
   });
 
+  services.service('precision', function () {
+    var dflt_precision = 4,
+        dflt_scalar = 1000,
+        self = this;
+
+    this.add = function add(n, m) {
+      return self.round(n + m);
+    };
+
+    this.round = function round(n, p) {
+      // round [fn]
+      // 
+      // round takes in a number, n, and a precision, p,
+      // returning the same number as a float to the
+      // decimal percision p.
+      if (!p) { p = dflt_precision; }
+      return parseFloat(n.toFixed(p));
+    
+    };
+    
+    this.scale = function scale(n, s) {
+      // scale [fn]
+      //
+      // scale scales a number by a default scalar
+      // to avoid javascript rounding errors
+      return n * (s || dflt_scalar);
+    };
+
+    this.unscale = function unscale(n, s) {
+      // unscale [fn]
+      //
+      // unscale reduces a number by a default scalar
+      // to revert scaled values to the origin metric
+      return n / (s || dflt_scalar);
+    };
+
+    this.compare = function compare(n, m) {
+      // compare [fn]
+      //
+      // compare is an extremely precise way to compare
+      // the discrepancy between two numbers.  Returns a
+      // float of the difference between the two numbers
+      var _n = self.scale(n, 100000);
+      var _m = self.scale(m, 100000);
+      var discrepancy = self.round(_n - _m);
+      return self.unscale(discrepancy, 100000);
+    };
+
+    this.sum = function sum (list) {
+      return list.reduce(self.add, 0);
+    };
+
+  });
+
   //TODO passing list and dependencies to everything, could assign to object?
   services.factory('validate', function($q, connect) {
     var modelLabel = 'model';
@@ -85,14 +139,14 @@
     }
   
     function filterList(list, dependencies) {
-      var filterList;
+      var fList;
 
-      filterList = list.filter(function(key, index) {
+      fList = list.filter(function(key, index) {
         if(dependencies[key].processed) return false; //processed requests
         if(key===modelLabel) return false; //model store
         return true;
       });
-      return filterList;
+      return fList;
     }
 
     function validateModels(list, dependencies) {
@@ -753,14 +807,15 @@
     'appstate',
     'validate',
     'messenger',
-    function (appstate, validate, messenger) {
+    'precision',
+    function (appstate, validate, messenger, precision) {
       var map;
 
       appstate.register('exchange_rate', function (globalRates) {
         // build rate map anytime the exchange rate changes.
         map = {};
         globalRates.forEach(function (r) {
-          map[r.foreign_currency_id] = r.rate;
+          map[r.foreign_currency_id] = precision.round(r.rate);
         });
       });
 
@@ -768,7 +823,7 @@
         if (!map) {
           messenger.danger('No Exchange Rates loaded!');
         }
-        return map ? (map[currency_id] || 1.00) * value : value;
+        return map ? precision.round((map[currency_id] || 1.00) * value) : precision.round(value);
       }
 
       exchange.hasRates = function () {
