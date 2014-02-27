@@ -23,6 +23,7 @@ angular.module('kpk.controllers').controller('patientRecords', [
     }
    
     function patientRecords(model) {
+      // This is a hack to get date of birth displaying correctly
       $scope.model = model;
       filterNames(model.patient.data);
     }
