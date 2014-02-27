@@ -2863,6 +2863,7 @@ insert into `creditor_group` (`enterprise_id`, `name`, `account_id`) values
 insert into `creditor` (`text`, `group_id`) values 
   ('Pharmacy Centrale', 1); -- reference the above creditor group
 
+  
 -- configure journal/transaction/general ledger
 
 insert into `transaction_type` values 
