@@ -45,7 +45,7 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'price_list' : {
-            columns: ['enterprise_id', 'id', 'description']
+            columns: ['enterprise_id', 'id', 'title', 'description']
           }
         }
       }
@@ -96,7 +96,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.formatPriceList = function formatPriceList (pl) {
-      return pl.description;
+      return pl.title;
     }
 
     $scope.new = function () {

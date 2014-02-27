@@ -28,29 +28,40 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   }
 
   function initialiseSaleDetails(selectedDebtor) {
-
     console.log(selectedDebtor);
     if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
     
     buildInvoice(selectedDebtor);
+    
+    // Patient Groups
+
+    // dependencies.priceList = {
+    //   query : {
+    //     tables : {
+    //       assignation_patient : {columns : ['patient_group_id', 'patient_id']},
+    //       patient_group : {columns : ['note']},
+    //       price_list : {columns : ['id', 'name', 'title', 'discount', 'note']}
+    //     },
+    //     join : [
+    //       'assignation_patient.patient_group_id=patient_group.id',
+    //       'patient_group.price_list_id=price_list.id'
+    //     ],
+    //     where : [
+    //       'assignation_patient.patient_id=' + selectedDebtor.id
+    //     ]
+    //   }
+    // };
    
-    dependencies.priceList = {
-      query : {
-        tables : {
-          assignation_patient : {columns : ['patient_group_id', 'patient_id']},
-          patient_group : {columns : ['note']},
-          price_list : {columns : ['id', 'name', 'discount', 'note']}
+    dependencies.priceList = { 
+      query : { 
+        tables : { 
+          price_list: { columns : ['id', 'title'] },
+          price_list_item : { columns : ['value', 'is_discount', 'description'] }
         },
-        join : [
-          'assignation_patient.patient_group_id=patient_group.id',
-          'patient_group.price_list_id=price_list.id'
-        ],
-        where : [
-          'assignation_patient.patient_id=' + selectedDebtor.id
-        ]
+        join : ['price_list_item.price_list_id=price_list.id'],
+        where : ['price_list.id=' + selectedDebtor.price_list_id]
       }
     };
-   
     validate.refresh(dependencies, ['priceList']).then(processPriceList);
   }
 
@@ -67,14 +78,21 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
    
     $scope.invoice = invoice;
   }
+  
+  function processPriceList(model) { 
+    var priceLists = model.priceList.data;
 
-  function processPriceList(model) {
-    var selectedPriceList, priceLists = model.priceList.data;
-     
-    //naive implementation of resolving multiple price lists
-    selectedPriceList = priceLists.sort(function(a, b) { return a.discount < b.discount; })[0];
-    if(selectedPriceList) invoice.priceList = selectedPriceList;
+    invoice.priceList = priceLists.sort(function (a, b) { (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
   }
+
+  //Patient Groups
+  // function processPriceList(model) {
+  //   var selectedPriceList, priceLists = model.priceList.data;
+  //    
+  //   //naive implementation of resolving multiple price lists
+  //   selectedPriceList = priceLists.sort(function(a, b) { return a.discount < b.discount; })[0];
+  //   if(selectedPriceList) invoice.priceList = selectedPriceList;
+  // }
    
   //TODO split inventory management into a seperate controller
   function addInvoiceItem() {
@@ -126,12 +144,12 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       note : invoice.note
     };
 
-   
-    if(invoice.priceList) {
-       //TODO Hacky
-      netDiscountPrice = (calculateTotal(false) < invoice.priceList.discount) ? calculateTotal(false) : invoice.priceList.discount;
-      requestContainer.sale.discount = netDiscountPrice;
-    }
+    //Patient Groups 
+    // if(invoice.priceList) {
+    //    //TODO Hacky
+    //   netDiscountPrice = (calculateTotal(false) < invoice.priceList.discount) ? calculateTotal(false) : invoice.priceList.discount;
+    //   requestContainer.sale.discount = netDiscountPrice;
+    // }
 
     requestContainer.saleItems = [];
    
@@ -148,22 +166,23 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
       requestContainer.saleItems.push(formatSaleItem);
     });
-   
-    if(invoice.priceList) {
-      //TODO Placeholder discount item select, this should be in enterprise settings
-      var formatDiscountItem, enterpriseDiscountId=12;
-     
-      formatDiscountItem = {
-        inventory_id : enterpriseDiscountId,
-        quantity : 1,
-        transaction_price : netDiscountPrice,
-        debit : netDiscountPrice,
-        credit : 0, //FIXME default values because parser cannot insert records with different columns
-        inventory_price : 0
-      };
-     
-      requestContainer.saleItems.push(formatDiscountItem);
-    }
+    
+    // Patient Groups
+    // if(invoice.priceList) {
+    //   //TODO Placeholder discount item select, this should be in enterprise settings
+    //   var formatDiscountItem, enterpriseDiscountId=12;
+    //  
+    //   formatDiscountItem = {
+    //     inventory_id : enterpriseDiscountId,
+    //     quantity : 1,
+    //     transaction_price : netDiscountPrice,
+    //     debit : netDiscountPrice,
+    //     credit : 0, //FIXME default values because parser cannot insert records with different columns
+    //     inventory_price : 0
+    //   };
+    //  
+    //   requestContainer.saleItems.push(formatDiscountItem);
+    // }
 
     return requestContainer;
   }
@@ -230,7 +249,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     });
  
     if(includeDiscount) {
-      if(invoice.priceList) total -= invoice.priceList.discount;
+      // Patient Groups
+      // if(invoice.priceList) total -= invoice.priceList.discount;
       if(total < 0) total = 0;
     }
     return total;
@@ -251,12 +271,31 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     var self = this;
 
     function set(inventoryReference) {
+      var defaultPrice = inventoryReference.price;
+      
       self.quantity = self.quantity || 1;
       self.code = inventoryReference.code;
       self.text = inventoryReference.text;
       self.price = inventoryReference.price;
       self.inventoryId = inventoryReference.id;
       self.note = "";
+      
+
+      // Temporary price list logic
+      if(invoice.priceList) { 
+        invoice.priceList.forEach(function (list) { 
+          if(list.is_discount) { 
+            console.log('[DEBUG] Applying price list discount ', list.description, list.value);
+            self.price -= Math.round((defaultPrice * list.value) / 100);
+          } else { 
+            console.log('[DEBUG] Applying price list charge ', list.description, defaultPrice, list.value);
+            var applyList = (defaultPrice * list.value) / 100; 
+            console.log(self.price, applyList);
+            self.price += applyList;
+            console.log(self.price);
+          }
+        });
+      }
 
       self.isSet = true;
     }

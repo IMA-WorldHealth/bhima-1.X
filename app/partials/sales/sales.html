@@ -53,6 +53,10 @@
               </fieldset>
             </div>
           </div>
+
+         <!-- FIXME style hacks -->
+         <p style="color: red;" ng-show="invoice.debtor.is_convention">Patient is covered by convention {{invoice.debtor.account_id}}</p>
+         <p style="color: red;" ng-repeat="charge in invoice.priceList"> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}'</p>
          <div class="row">
 
             <div class="col-xs-12">
@@ -91,14 +95,16 @@
                       <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.quantity * invoiceItem.price | currency}}"></td>
                       <td><a ng-click="removeInvoiceItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
                     </tr>
-                    
-                    <tr ng-show="invoice.priceList">
-                      <td><input class="form-invoice" style="color: red;" value="Discount"></td>
-                      <td><input class="form-invoice" style="color: red;" value="Patient Group '{{invoice.priceList.name}}'" disabled></td>
-                      <td><input class="form-invoice" style="color: red;" value="1" disabled></td>
-                      <td><input disabled class="form-invoice" style="color: red;" value="{{invoice.priceList.discount}}"></td>
-                      <td colspan="2"><input disabled class="form-invoice" style="color: red;" value="{{-invoice.priceList.discount | currency}}"></td>
-                    </tr>
+
+                    <!-- Patient groups -->
+
+                    <!-- <tr ng&#45;show="invoice.priceList"> -->
+                    <!--   <td><input class="form&#45;invoice" style="color: red;" value="Discount"></td> -->
+                    <!--   <td><input class="form&#45;invoice" style="color: red;" value="Patient Group '{{invoice.priceList.name}}'" disabled></td> -->
+                    <!--   <td><input class="form&#45;invoice" style="color: red;" value="1" disabled></td> -->
+                    <!--   <td><input disabled class="form&#45;invoice" style="color: red;" value="{{invoice.priceList.discount}}"></td> -->
+                    <!--   <td colspan="2"><input disabled class="form&#45;invoice" style="color: red;" value="{{&#45;invoice.priceList.discount | currency}}"></td> -->
+                    <!-- </tr> -->
 
                     <tr>
                       <!-- Style hack -->

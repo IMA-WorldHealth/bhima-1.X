@@ -254,12 +254,12 @@ module.exports = function (db) {
                   '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                   '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                 'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  '`sale`.`note`, `inv_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+                  '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
                   '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
                   ' null, `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inv_group` ON ' +
+                'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
                   '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
-                  '`inventory`.`group_id`=`inv_group`.`id` ' +
+                  '`inventory`.`group_id`=`inventory_group`.`id` ' +
                 'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
 
               // we are ready to execute!
@@ -520,11 +520,11 @@ module.exports = function (db) {
                   '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                   '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                 'SELECT `purchase`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  '`purchase`.`note`, `inv_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
+                  '`purchase`.`note`, `inventory_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
                   '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inv_group` ON ' +
+                'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inventory_group` ON ' +
                   '`purchase_item`.`purchase_id`=`purchase`.`id` AND `purchase_item`.`inventory_id`=`inventory`.`id` AND ' +
-                  '`inventory`.`group_id`=`inv_group`.`id` ' +
+                  '`inventory`.`group_id`=`inventory_group`.`id` ' +
                 'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
 
               db.execute(purchase_sql, function (err, rows) {
@@ -692,10 +692,10 @@ module.exports = function (db) {
       'SELECT `enterprise_id`, `cost`, `debitor_id`, `note_date`, `sale_id`, ' +
         ' `description`, `note_date`, `inventory_id`, `quantity`, ' +
         '`unit_price`, `total`' +
-      'FROM `credit_note` JOIN `sale_item` JOIN `inventory` JOIN `inv_unit` ' +
+      'FROM `credit_note` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` ' +
         'ON `credit_note`.`sale_id`=`sale_item`.`sale_id` AND ' +
         '`sale_item`.`inventory_id`=`inventory`.`id` AND ' +
-        '`inventory`.`unit_id`=`inv_unit`.`id`' +
+        '`inventory`.`unit_id`=`inventory_unit`.`id`' +
       'WHERE `credit_note`.`id`=' + sanitize.escape(id);
 
     db.execute(sql, function (err, results) {
