@@ -302,7 +302,8 @@
     "TEXT" : "Text",
     "STOCK" : "Stock",
     "VOLUME" : "Volume",
-    "WEIGHT" : "Weight"
+    "WEIGHT" : "Weight",
+    "PRICE_LIST" : "Price List"
   },
 
   "TREE" : {

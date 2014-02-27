@@ -94,6 +94,19 @@
               </div>
             </div>
 
+
+
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
+              <div class="col-xs-10">
+                <!-- note: filter off the title accounts -->
+                <select name="group-account" class="form-kapok" ng-model="newGroup.price_list_id">
+                  <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
+                  <option ng-repeat="pl in price_list.data" value='{{pl.id}}'>{{formatPriceList(pl)}}</option>
+                </select>
+              </div>
+            </div>
+
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
@@ -188,6 +201,17 @@
             </div>
 
             <div class="form-group">
+              <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
+              <div class="col-xs-10">
+                <!-- note: filter off the title accounts -->
+                <select name="group-account" class="form-kapok" ng-model="editGroup.price_list_id">
+                  <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
+                  <option ng-repeat="pl in price_list.data" value='{{pl.id}}'>{{formatPriceList(pl)}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
                 <select name="group-location" class="form-kapok" ng-model="editGroup.location_id" ng-options="loc.id as formatLocation(loc) for loc in location.data" required>
@@ -222,7 +246,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required" for="maxcredit">{{ "COLUMNS.MAX_CREDIT" | translate }}</label>
               <div class="col-xs-10">
-                <input type="number" min="0" max="100" name="group-maxcredit" class="form-kapok" ng-model="editGroup.max_credit" required>
+                <input type="number" min="0" name="group-maxcredit" class="form-kapok" ng-model="editGroup.max_credit" required>
               </div>
             </div>
 
