@@ -496,7 +496,9 @@
     "LIST_SUCCESS" : "Sauver avec Succes",
     "LIST_FAILURE" : "Erreur, Donnee invalide",
     "EDITED_SUCCES" :  "Liste de prix editer avec succes",
-    "POSTED" :"Nouvelle liste de prix postee"
+    "POSTED" :"Nouvelle liste de prix postee",
+    "DELETE_CONFIRM" : "Voulez - vous Effacer ?",
+    "REMOVE_SUCCESS" : "Effacer avec succes"
   },
 
   "INVENTORY_VIEW" : {
