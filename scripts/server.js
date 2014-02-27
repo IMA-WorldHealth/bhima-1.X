@@ -353,6 +353,12 @@ app.get('/visit/:patient_id', function (req, res, next) {
   });
 });
 
+app.get('/registrations/:from/:to', function (req, res, next) {
+  var from = new Date(req.params.from),
+      to = new Date(req.params.to);
+
+});
+
 app.get('/account_balance/:id', function (req, res, next) {
   // FIXME: put this in a module!
   var enterprise_id = req.params.id;
