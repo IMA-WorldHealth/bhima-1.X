@@ -335,6 +335,7 @@ module.exports = function (db) {
         var allocated_postive = results.every(function (row) {
           return validate.isPositive(row.allocated_cost);
         });
+
         if (!allocated_postive) {
           return done(new Error('Invalid payment price for one invoice with cash id: ' + id));
         }
@@ -345,8 +346,10 @@ module.exports = function (db) {
         function sum(a, b) {
           return a + b.allocated_cost;
         }
+
         var total = results.reduce(sum, 0);
         if (!validate.isEqual(total, reference_payment.cost)) {
+          console.log('[DEBUG] ', 'total:', total, 'cost', reference_payment.cost);
           return done(new Error('Allocated cost do not add up to total cost in payment with cash id: ' + id));
         }
 
