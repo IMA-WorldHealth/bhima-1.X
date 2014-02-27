@@ -31,8 +31,18 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     console.log(selectedDebtor);
     if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
     
+    // Release previous session items - if they exist
+    if(invoice.items) { 
+      invoice.items.forEach(function (item, index) { 
+        if(item.code) { 
+          removeInvoiceItem(index);
+        }
+      });
+    }
+
     buildInvoice(selectedDebtor);
     
+    console.log('invoice', invoice);
     // Patient Groups
 
     // dependencies.priceList = {
@@ -51,7 +61,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //     ]
     //   }
     // };
-   
+      
+    
     dependencies.priceList = { 
       query : { 
         tables : { 
