@@ -287,7 +287,9 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       self.quantity = self.quantity || 1;
       self.code = inventoryReference.code;
       self.text = inventoryReference.text;
-      self.price = inventoryReference.price;
+
+      // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+      self.price = Number(inventoryReference.price.toFixed(2));
       self.inventoryId = inventoryReference.id;
       self.note = "";
       
@@ -298,11 +300,17 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
           if(list.is_discount) { 
             console.log('[DEBUG] Applying price list discount ', list.description, list.value);
             self.price -= Math.round((defaultPrice * list.value) / 100);
+            
+            // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+            self.price = Number(self.price.toFixed(2));
           } else { 
             console.log('[DEBUG] Applying price list charge ', list.description, defaultPrice, list.value);
             var applyList = (defaultPrice * list.value) / 100; 
             console.log(self.price, applyList);
             self.price += applyList;
+            
+            // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+            self.price = Number(self.price.toFixed(2));
             console.log(self.price);
           }
         });
