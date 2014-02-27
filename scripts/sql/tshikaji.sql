@@ -2308,12 +2308,12 @@ INSERT INTO `debitor_group_type` (`id`, `type`) values
   (3, 'Malades Ambulatoire'),
   (4, 'Malades Interne');
 
--- INSERT INTO `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
---  (200, 1, "Patients payant cache", 10, 1, 1, '', 1, 1, 0), 
---  (200, 2, "Patient conventionne", 10, 1, 1, '', 1, 1, 1), 
---  (200, 3, "Employes", 10, 1, 1, '', 1, 1, 0),
---  (200, 4, "Officiers CPC&CNCO", 10, 1, 1, '', 1, 4, 0),
---  (200, 5, "Apparentes", 10, 1, 1, '', 1, 4, 1);
+INSERT INTO `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
+ (200, 1, "Patients payant cache", 10, 1, 1, '', 1, 1, 0), 
+ (200, 2, "Patient conventionne", 10, 1, 1, '', 1, 1, 1), 
+ (200, 3, "Employes", 10, 1, 1, '', 1, 1, 0),
+ (200, 4, "Officiers CPC&CNCO", 10, 1, 1, '', 1, 4, 0),
+ (200, 5, "Apparentes", 10, 1, 1, '', 1, 4, 1);
 
 -- INSERT INTO `debitor` (`id`, `group_id`, `text`) values 
 --   (1, 1, "Jon Niles");
