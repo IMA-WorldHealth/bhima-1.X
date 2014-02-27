@@ -318,6 +318,7 @@ drop table if exists `kpk`.`price_list`;
 create table `kpk`.`price_list` (
   enterprise_id   smallint unsigned not null,
   id              smallint  unsigned not null auto_increment,
+  title           text,
   description     text,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
@@ -331,13 +332,13 @@ create table `kpk`.`price_list` (
 drop table if exists `kpk`.`price_list_item`;
 create table `kpk`.`price_list_item` (
   `id`              int unsigned not null auto_increment,
-  `order`           int unsigned not null,
+  `item_order`           int unsigned not null,
   `description`     text,
   `value`           float not null,
   `is_discount`     boolean not null default 0,
   `price_list_id`   smallint unsigned not null,
   primary key (`id`),
-  unique index (`order`, `price_list_id`),
+  -- unique index (`item_order`, `price_list_id`),
   key `price_list_id` (`price_list_id`),
   constraint foreign key (`price_list_id`) references `price_list` (`id`) on delete cascade
 ) engine=innodb;
