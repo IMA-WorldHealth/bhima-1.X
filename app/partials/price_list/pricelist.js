@@ -148,7 +148,7 @@ angular.module('kpk.controllers')
     function saveMeta () {
       connect.basicPost('price_list', [connect.clean($scope.edit)], ['id'])
       .then(function (res) {
-        messenger.success('Successfully edited price list');
+        messenger.success($filter('translate')('PRICE_LIST.EDITED_SUCCES'));
         $scope.price_list.put($scope.edit);
         $scope.session.action = '';
       }, function (err) {
@@ -179,7 +179,7 @@ angular.module('kpk.controllers')
         $scope.model.priceList.post(finalList);
         editItems(finalList);
         
-        messenger.success('Posted new price list!');
+        messenger.success($filter('translate')('PRICE_LIST.POSTED'));
       }, function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
       });

@@ -128,8 +128,8 @@
           <div class="panel-heading">
             <b> <span class="glyphicon glyphicon-cog"></span> {{session.selected.title}} {{ "PRICE_LIST.ITEMS" | translate }}</b>
             <span class="pull-right">
-              <a class="menu-item" ng-click="addItem()"><span class="glyphicon glyphicon-plus"></span> Add an Item </a>
-              <a class="menu-item" ng-click="saveItems()"><span class="glyphicon glyphicon-floppy-disk"></span> Save List</a>
+              <a class="menu-item" ng-click="addItem()"><span class="glyphicon glyphicon-plus"></span>{{'PRICE_LIST.ADD_ITEMS' | translate}}</a>
+              <a class="menu-item" ng-click="saveItems()"><span class="glyphicon glyphicon-floppy-disk"></span> {{'PRICE_LIST.SAVE_LIST' | translate}}</a>
             </span>
           </div>
 
@@ -154,8 +154,8 @@
                 </td>
                 <td>
                   <select class="form-kapok" ng-model="item.is_discount">
-                    <option value="0">Increase</option>
-                    <option value="1">Decrease</option>
+                    <option value="0">{{'PRICE_LIST.INCREASE' | translate}}</option>
+                    <option value="1">{{'PRICE_LIST.DECREASE' | translate}}</option>
                   </select>
                 </td>
                 <td style="padding-right: 15px; padding-top: 10px;">

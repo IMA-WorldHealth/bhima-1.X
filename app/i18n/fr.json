@@ -130,7 +130,8 @@
     "SUBMIT" : "Soumettre La Facture",
     "ADD_LINE_ITEM" : "Ajouter une Item",
     "EDIT_SALE" : "Editer la Facture",
-    "TOTAL" : "Totale"
+    "TOTAL" : "Totale",
+    "PATIENT_COVERED" : "Patient est couvert par la convention"
   },
 
   "FIND" : {
@@ -387,7 +388,9 @@
     "STOCK" : "Stock",
     "VOLUME" : "Volume",
     "WEIGHT" : "Poids",
-    "PRICE_LIST" : "Liste de Prix"
+    "PRICE_LIST" : "Liste de Prix",
+    "TITLE" : "Titre",
+    "VALUE" : "Valeur"
   },
 
   "REPORT" : {
@@ -481,7 +484,21 @@
     "HELP_TXT_2" : "Editer les metadonnees de la Liste",
     "HELP_TXT_3" : "Effacer la Liste",
     "EDIT" : "Editting Price List Metadata",
-    "ADD" : "Ajouter une List"
+    "ADD" : "Ajouter une List",
+    "LISTS" : "Liste des prix enregistres",
+    "NO_RECORDS" : "Pas d'enregistrement",
+    "DETAILS" : "Detaillles",
+    "ITEMS" : "Itemes",
+    "ADD_ITEMS":"Ajouter un Item",
+    "SAVE_LIST":"Sauver la liste",
+    "INCREASE" : "Augmentation",
+    "DECREASE" : "Diminution",
+    "LIST_SUCCESS" : "Sauver avec Succes",
+    "LIST_FAILURE" : "Erreur, Donnee invalide",
+    "EDITED_SUCCES" :  "Liste de prix editer avec succes",
+    "POSTED" :"Nouvelle liste de prix postee",
+    "DELETE_CONFIRM" : "Voulez - vous Effacer ?",
+    "REMOVE_SUCCESS" : "Effacer avec succes"
   },
 
   "INVENTORY_VIEW" : {
