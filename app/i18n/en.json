@@ -303,7 +303,9 @@
     "STOCK" : "Stock",
     "VOLUME" : "Volume",
     "WEIGHT" : "Weight",
-    "PRICE_LIST" : "Price List"
+    "PRICE_LIST" : "Price List",
+    "TITLE" : "Title",
+    "VALUE" : "Value"
   },
 
   "TREE" : {
@@ -621,7 +623,20 @@
     "HELP_TXT_2" : "Edit the price list's metadata",
     "HELP_TXT_3" : "Remove the price list",
     "EDIT" : "Editting Price List Metadata",
-    "ADD" : "Add a Price List"
+    "ADD" : "Add a Price List",
+    "LISTS" : "Registered price list",
+    "NO_RECORDS" : "No Record",
+    "DETAILS" : "Details",
+    "ITEMS" : "Items",
+    "ADD_ITEMS":"Add an Item",
+    "SAVE_LIST":"Save List",
+    "INCREASE" : "Increase",
+    "DECREASE" : "Decrease",
+    "LIST_SUCCESS" : "price list saved",
+    "LIST_FAILURE" : "Error, invalid data",
+    "EDITED_SUCCES"  : "Successfully edited price list",
+    "POSTED" :"Posted new price list!"
+
   },
 
   "UNIT_TYPE" : {
@@ -648,7 +663,9 @@
     "SALE"  : "Invoice",
     "EDIT_SALE" : "Edit Sale",
     "ADD_LINE_ITEM" : "Add a Line Item",
-    "TOTAL" : "Total"
+    "TOTAL" : "Total",
+    "PATIENT_COVERED" : "Patient is covered by convention "
+
   },
 
   "FIND" : {
