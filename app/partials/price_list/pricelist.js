@@ -2,22 +2,23 @@ angular.module('kpk.controllers')
 .controller('priceList', [
   '$scope',
   '$q',
+  '$filter',
   'connect',
   'messenger',
   'appstate',
   'validate',
-  function ($scope, $q, connect, messenger, appstate, validate) {
+  function ($scope, $q, $filter, connect, messenger, appstate, validate) {
     var dependencies = {}, stores = {};
     var enterprise; 
     
     $scope.session = { 
       action : 'default',
-      selected : null  
+      selected : null
     };
 
     dependencies.priceList = {
       query : {
-        tables : {'price_list' : {columns:['id', 'name', 'discount', 'note']}}
+        tables : {'price_list' : {columns:['id', 'title', 'description']}}
       }
     };
 
@@ -36,17 +37,106 @@ angular.module('kpk.controllers')
     }
     
     function editItems(list) { 
-      $scope.details = {data:[]};
+      
+      console.log('list', list);
+      dependencies.priceListItems = { 
+        query : { 
+          tables : {'price_list_item' : {columns:['id', 'item_order', 'description', 'value', 'is_discount', 'price_list_id']}},
+          where : ['price_list_item.price_list_id=' + list.id]
+        }
+      };
+      validate.process(dependencies).then(processListItems);
+      
       $scope.session.action = 'item';
       $scope.session.selected = list;
+      $scope.session.deleteQueue = [];
+    }
+
+    function processListItems(model) { 
+      var defaultItem = { 
+        is_discount : '0'
+      }
+      
+      $scope.session.listItems = model.priceListItems.data; 
+      $scope.session.listCache = angular.copy($scope.session.listItems);
+      
+      $scope.session.listItems.sort(function (a, b) { return (a.item_order === b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
+      if($scope.session.listItems.length === 0) $scope.session.listItems.push(defaultItem);
     }
 
     function addItem() { 
-      $scope.details.data.push({});
+      var defaultItem = { 
+        is_discount : '0'
+      }
+      $scope.session.listItems.push(defaultItem);
     }
-    // function init (model) {
-    //   for (var k in model) { $scope[k] = model[k]; }
-    // }
+
+    function shiftDown(item) { 
+      var list = $scope.session.listItems, index = list.indexOf(item);
+
+      if(index < list.length - 1) { 
+        list.splice(index, 1);
+        list.splice(index + 1, 0, item);
+      }
+    }
+
+    function shiftUp(item) { 
+      var list = $scope.session.listItems, index = list.indexOf(item);
+      
+      if(index > 0) { 
+        list.splice(index, 1);
+        list.splice(index - 1, 0, item);
+      }
+    }
+
+    function deleteItem(item) { 
+      var list = $scope.session.listItems;
+      if(list.length > 1) { 
+        list.splice(list.indexOf(item), 1);
+        if(item.id) $scope.session.deleteQueue.push(item.id);
+      } else { 
+        messenger.warning($filter('translate')("PRICE_LIST.WARN"));
+      }
+    }
+
+    function saveItems() { 
+      var verify, priceList = $scope.session.selected;
+      var uploadPromise = [];
+
+      // Verify items
+      invalidData = $scope.session.listItems.some(function (item, index) { 
+        if(!item.price_list_id) item.price_list_id = priceList.id;
+        item.item_order = index;
+        
+        if(isNaN(Number(item.value))) return true;
+        if(!item.description || item.description.length===0) return true;
+
+        return false;
+      });
+
+      if(invalidData) return messenger.danger($filter('translate')('PRICE_LIST.INVALID_ITEMS'));
+      
+      // FIXME single request for all items
+      $scope.session.listItems.forEach(function (item) { 
+        var request, uploadItem = connect.clean(item);
+
+        if(item.id) { 
+          request = connect.basicPost('price_list_item', [uploadItem], ['id']); 
+        } else { 
+          request = connect.basicPut('price_list_item', [uploadItem]);
+        }
+        uploadPromise.push(request); 
+      });
+
+      $q.all(uploadPromise).then(function (result) { 
+        
+        // FIXME Redownload to prove DB state - remove (horrible use of bandwidth)
+        editItems(priceList);
+        messenger.success($filter('translate')('PRICE_LIST.LIST_SUCCESS'));
+      }, function (error) { 
+        messenger.danger($filter('translate')('PRICE_LIST.LIST_FAILURE'));  
+      });
+    }
 
     function editMeta (list) {
       $scope.edit = {};
@@ -105,11 +195,14 @@ angular.module('kpk.controllers')
     }
 
     function removeList (list){
+      var confirmed = confirm($filter('translate')('PRICE_LIST.DELETE_CONFIRM'));
+      if(!confirmed) return; 
+
       connect.basicDelete('price_list', list.id, 'id')
       .then(function(v){
         if (v.status === 200){
-          $scope.price_list.remove(list.id);
-          messenger.success('Price list removed !');
+          $scope.model.priceList.remove(list.id);
+          messenger.success($filter('translate')('PRICE_LIST.REMOVE_SUCCESS'));
         }
       });
     }
@@ -120,6 +213,10 @@ angular.module('kpk.controllers')
 
     $scope.editItems = editItems;
     $scope.addItem = addItem;
+    $scope.saveItems = saveItems;
+    $scope.shiftUp = shiftUp;
+    $scope.shiftDown = shiftDown;
+    $scope.deleteItem = deleteItem;
 
     $scope.addList = addList;
     $scope.saveAdd = saveAdd;
