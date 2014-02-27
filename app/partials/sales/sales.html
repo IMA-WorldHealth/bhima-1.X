@@ -55,7 +55,7 @@
           </div>
 
          <!-- FIXME style hacks -->
-         <p style="color: red;" ng-show="invoice.debtor.is_convention">Patient is covered by convention {{invoice.debtor.account_id}}</p>
+         <p style="color: red;" ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}}{{invoice.debtor.account_id}}</p>
          <p style="color: red;" ng-repeat="charge in invoice.priceList"> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}'</p>
          <div class="row">
 
