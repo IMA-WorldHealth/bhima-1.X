@@ -756,5 +756,35 @@
     "REGISTER" : "Enregistrement Secteur",
     "NAME_SECTOR" : "Nom Secteur",
     "EDIT" : "Editer Secteur"
+  },
+    "PROVINCE" :{
+    "TITLE" : "GESTION DES PROVINCES",
+    "LOCATION_MANAGER": "Gestion Emplacements",
+    "ADD" : "Ajouter Nouveau Province",
+    "REGISTERED" : "Enregistrer Province",
+    "NAME" : "Nom",
+    "COUNTRY" : "Pays",
+    "ACTIONS" : "Actions",
+    "CONFIGURATION" : "Configuration de Gestion des Provinces",
+    "DESCRIPTION" : "Ce module vous aidera a gerer les provinces, A gauche vous voyez les provinces enregistrees. utiliser ce module pour creer, modifier Et Effacer des provinces. ",
+    "REGISTER" : "Enregistrer une Province",
+    "PROVINCE_NAME" : "Nom Province",
+    "EDIT" : "Editer Province"
+    },
+
+    "VILLAGE" : {
+    "TITLE" : "VILLAGE MANAGER",
+    "LOCATION_MANAGER" : "Location manager",
+    "NEW_VILLAGE" : "Add Village",
+    "REGISTERED" : "Registered villages",
+    "NAME" : "Name",
+    "SECTOR" : "Sector",
+    "ACTIONS" : "Actions",
+    "CONFIG" : "Village Manager Configuration",
+    "INFO" :  "This module will help you to manage villge, use this module to create, edit and remove village",
+    "REGISTER" : "Register a Village",
+    "NAME_VILLAGE" : "Village Name",
+    "EDIT" : "Edit Village"
+
   }
 }
