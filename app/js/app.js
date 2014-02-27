@@ -196,8 +196,12 @@
       controller : 'groupInvoice',
       templateUrl : 'partials/group_invoice/group_invoice.html'
     })
-    .when('/renewal', { 
-      controller : 'renewal', 
+    .when('/reports/patient_registrations', {
+      controller : 'reportPatientRegistrations',
+      templateUrl : 'partials/reports/patient_registrations/patient_registrations.html'
+    })
+    .when('/renewal', {
+      controller : 'renewal',
       templateUrl : 'partials/patient_renewal/renewal.html'
     });
   }

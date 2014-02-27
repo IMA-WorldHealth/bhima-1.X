@@ -175,11 +175,12 @@
     "DEBITOR"         : "Select a Debitor"
   },
 
-  "DAILY_REGISTRATION" : {
+  "PATIENT_REGISTRATIONS" : {
     "TITLE" : "Patient Registrations",
     "FIND_DATE" : "Pick a Date",
     "DATE_FROM" : "Date From",
-    "DATE_TO" : "Date To"
+    "DATE_TO" : "Date To",
+    "SEARCH_AGAIN" : "Search Again"
   },
 
   "REPORT" : {
@@ -313,6 +314,7 @@
     "ADMIN" : "Admin",
     "ENTERPRISE" : "Enterprise",
     "PERMISSION" : "Users & Permissions",
+    "PATIENT_REGISTRATIONS" : "Patient Registrations",
     "FINANCE" : "Finance",
     "ACCOUNT" : "Account",
     "BUDGETING" : "Budget",
