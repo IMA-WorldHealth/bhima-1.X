@@ -140,6 +140,7 @@
                 <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
                 <th>{{ "COLUMNS.VALUE" | translate }}</th>
                 <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
+                <th>{{ "COLUMNS.SCOPE" | translate }}</th>
                 <th colspan="3">{{ "COLUMNS.ACTIONS" | translate }}</th>
               </tr>
             </thead>
@@ -158,6 +159,14 @@
                     <option value="1">{{'PRICE_LIST.DECREASE' | translate}}</option>
                   </select>
                 </td>
+
+                <td>
+                  <select class="form-kapok" ng-model="item.is_global">
+                    <option value="0">{{'PRICE_LIST.APPLY_TO_ITEM' | translate}}</option>
+                    <option value="1">{{'PRICE_LIST.APPLY_TO_BILL' | translate}}</option>
+                  </select>
+                </td>
+
                 <td style="padding-right: 15px; padding-top: 10px;">
                   <!-- <button class="btn btn&#45;sm" ng&#45;class="{'btn&#45;success' : !!detail.editing, 'btn&#45;default' : !detail.editing, 'btn&#45;warning' : !detail.editing &#38;&#38; !isValid(detail)}" ng&#45;click="detail.editing=!detail.editing"><i class="glyphicon" ng&#45;class="{'glyphicon&#45;floppy&#45;disk' : !!detail.editing, 'glyphicon&#45;pencil' : !detail.editing}"></i></button> -->
                   <a ng-click="shiftUp(item)" class="menu-item"><span class="glyphicon glyphicon-arrow-up"></span></a>
