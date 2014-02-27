@@ -635,7 +635,9 @@
     "LIST_SUCCESS" : "price list saved",
     "LIST_FAILURE" : "Error, invalid data",
     "EDITED_SUCCES"  : "Successfully edited price list",
-    "POSTED" :"Posted new price list!"
+    "POSTED" :"Posted new price list!",
+    "DELETE_CONFIRM" : "Are you sure, to erase ?",
+    "REMOVE_SUCCESS" : "Erased succefully !"
 
   },
 
