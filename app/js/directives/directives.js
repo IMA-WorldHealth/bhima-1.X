@@ -224,7 +224,7 @@
               tables : {
                 patient : {columns : ["id", "debitor_id", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
                 debitor : { columns : ["text"]},
-                debitor_group : { columns : ['account_id']}
+                debitor_group : { columns : ['account_id', 'price_list_id', 'is_convention']}
               },
               join : ["patient.debitor_id=debitor.id", 'debitor.group_id=debitor_group.id']
             }
