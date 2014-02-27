@@ -55,10 +55,13 @@
           </div>
 
          <!-- FIXME style hacks -->
-         <p style="color: red;" ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}}{{invoice.debtor.account_id}}</p>
-         <p style="color: red;" ng-repeat="charge in invoice.priceList"> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}'</p>
-         <div class="row">
+         <div ng-class="{'alert alert-warning' : invoice.debtor.is_convention || invoice.priceList.length}">
+         <p ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
+         <p ng-repeat="charge in invoice.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('SALE.APPLIES_GLOBALLY' | translate) : ('SALE.APPLIES_TO_ITEM' | translate)}}</b></p>
+         </div>
 
+         <div class="row">
+         
             <div class="col-xs-12">
                 <div class="pull-right">
                   <a ng-click="addInvoiceItem()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }} </a>
@@ -77,7 +80,7 @@
                   
                   <tbody>
                     <!-- FIXME: strange filter -->
-                    <tr ng-repeat="invoiceItem in invoice.items">
+                    <tr ng-class="{'incomplete-outline': !invoiceItem.code, 'complete-outline': invoiceItem.code}" ng-repeat="invoiceItem in invoice.items">
                       <td>
                         <input 
                         class="form-invoice"
@@ -105,6 +108,14 @@
                     <!--   <td><input disabled class="form&#45;invoice" style="color: red;" value="{{invoice.priceList.discount}}"></td> -->
                     <!--   <td colspan="2"><input disabled class="form&#45;invoice" style="color: red;" value="{{&#45;invoice.priceList.discount | currency}}"></td> -->
                     <!-- </tr> -->
+          
+                    <tr ng-repeat="listItem in invoice.applyGlobal">
+                      <td></td>
+                      <td></td>
+                      <td><input class="form-invoice" style="font-weight: bold;" value="{{listItem.description}}" disabled></td>
+                      <td><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.value}}%"></td>
+                      <td colspan="2"><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.currentValue | currency}}"></td>
+                    </tr>
 
                     <tr>
                       <!-- Style hack -->

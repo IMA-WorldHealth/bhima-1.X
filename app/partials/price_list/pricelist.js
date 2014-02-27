@@ -41,7 +41,7 @@ angular.module('kpk.controllers')
       console.log('list', list);
       dependencies.priceListItems = { 
         query : { 
-          tables : {'price_list_item' : {columns:['id', 'item_order', 'description', 'value', 'is_discount', 'price_list_id']}},
+          tables : {'price_list_item' : {columns:['id', 'item_order', 'description', 'value', 'is_discount', 'is_global', 'price_list_id']}},
           where : ['price_list_item.price_list_id=' + list.id]
         }
       };
@@ -54,7 +54,8 @@ angular.module('kpk.controllers')
 
     function processListItems(model) { 
       var defaultItem = { 
-        is_discount : '0'
+        is_discount : '0',
+        is_global : '0'
       }
       
       $scope.session.listItems = model.priceListItems.data; 
@@ -66,7 +67,8 @@ angular.module('kpk.controllers')
 
     function addItem() { 
       var defaultItem = { 
-        is_discount : '0'
+        is_discount : '0',
+        is_global : '0'
       }
       $scope.session.listItems.push(defaultItem);
     }

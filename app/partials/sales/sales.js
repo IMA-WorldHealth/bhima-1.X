@@ -1,5 +1,6 @@
 angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger) {
-
+  
+  //FIXME Global vs. item based prices are a hack
   //TODO Pass default debtor and inventory parameters to sale modules
   var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
 
@@ -67,7 +68,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       query : { 
         tables : { 
           price_list: { columns : ['id', 'title'] },
-          price_list_item : { columns : ['value', 'is_discount', 'description'] }
+          price_list_item : { columns : ['value', 'is_discount', 'is_global', 'description'] }
         },
         join : ['price_list_item.price_list_id=price_list.id'],
         where : ['price_list.id=' + selectedDebtor.price_list_id]
@@ -94,6 +95,15 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     var priceLists = model.priceList.data;
 
     invoice.priceList = priceLists.sort(function (a, b) { (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
+    invoice.applyGlobal = [];
+
+    invoice.priceList.forEach(function (listItem) { 
+      console.log('g', listItem.is_global, listItem);
+      if (listItem.is_global) { 
+        invoice.applyGlobal.push(listItem); 
+        console.log(invoice.applyGlobal);
+      }
+    });
   }
 
   //Patient Groups
@@ -171,7 +181,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
         quantity : saleItem.quantity,
         inventory_price : saleItem.inventoryReference.price,
         transaction_price : saleItem.price,
-        credit : saleItem.price * saleItem.quantity,
+        credit : Number((saleItem.price * saleItem.quantity).toFixed(4)),
         debit : 0
       };
 
@@ -182,7 +192,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     // if(invoice.priceList) {
     //   //TODO Placeholder discount item select, this should be in enterprise settings
     //   var formatDiscountItem, enterpriseDiscountId=12;
-    //  
     //   formatDiscountItem = {
     //     inventory_id : enterpriseDiscountId,
     //     quantity : 1,
@@ -191,10 +200,24 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //     credit : 0, //FIXME default values because parser cannot insert records with different columns
     //     inventory_price : 0
     //   };
-    //  
-    //   requestContainer.saleItems.push(formatDiscountItem);
-    // }
+    
+      invoice.applyGlobal.forEach(function (listItem) { 
+        var applyCost, formatListItem, enterpriseDiscountId=1; // FIXME Derive this from enterprise
+        formatDiscountItem = { 
+          inventory_id : enterpriseDiscountId,
+          quantity : 1,
+          transaction_price : listItem.currentValue,
+          debit : 0,
+          credit : 0,
+          inventory_price : 0
+        };
 
+        (listItem.is_discount) ? 
+          formatDiscountItem.debit = listItem.currentValue : 
+          formatDiscountItem.credit = listItem.currentValue;
+
+        requestContainer.saleItems.push(formatDiscountItem);
+    });
     return requestContainer;
   }
 
@@ -255,15 +278,20 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     invoice.items.forEach(function(item) {
       if(item.quantity && item.price) {
         //FIXME this could probably be calculated less somewhere else (only when they change)
+
         total += (item.quantity * item.price);
+
+        total = Number(total.toFixed(4)); 
       }
     });
- 
-    if(includeDiscount) {
-      // Patient Groups
-      // if(invoice.priceList) total -= invoice.priceList.discount;
-      if(total < 0) total = 0;
-    }
+    
+    invoice.applyGlobal.forEach(function (listItem) { 
+      listItem.currentValue = Number(((total * listItem.value) / 100).toFixed(4));
+
+      total += listItem.currentValue;
+      total = Number(total.toFixed(4));
+    });
+    
     return total;
   }
 
@@ -289,7 +317,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       self.text = inventoryReference.text;
 
       // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
-      self.price = Number(inventoryReference.price.toFixed(2));
+      self.price = Number(inventoryReference.price.toFixed(4));
       self.inventoryId = inventoryReference.id;
       self.note = "";
       
@@ -297,21 +325,24 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       // Temporary price list logic
       if(invoice.priceList) { 
         invoice.priceList.forEach(function (list) { 
-          if(list.is_discount) { 
-            console.log('[DEBUG] Applying price list discount ', list.description, list.value);
-            self.price -= Math.round((defaultPrice * list.value) / 100);
-            
-            // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
-            self.price = Number(self.price.toFixed(2));
-          } else { 
-            console.log('[DEBUG] Applying price list charge ', list.description, defaultPrice, list.value);
-            var applyList = (defaultPrice * list.value) / 100; 
-            console.log(self.price, applyList);
-            self.price += applyList;
-            
-            // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
-            self.price = Number(self.price.toFixed(2));
-            console.log(self.price);
+
+          if(!list.is_global) { 
+            if(list.is_discount) { 
+              console.log('[DEBUG] Applying price list discount ', list.description, list.value);
+              self.price -= Math.round((defaultPrice * list.value) / 100);
+              
+              // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+              self.price = Number(self.price.toFixed(4));
+            } else { 
+              console.log('[DEBUG] Applying price list charge ', list.description, defaultPrice, list.value);
+              var applyList = (defaultPrice * list.value) / 100; 
+              console.log(self.price, applyList);
+              self.price += applyList;
+              
+              // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+              self.price = Number(self.price.toFixed(4));
+              console.log(self.price);
+            }
           }
         });
       }
