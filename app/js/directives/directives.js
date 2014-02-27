@@ -213,7 +213,7 @@
       return {
         restrict: 'A',
         link : function(scope, element, attrs) {
-          var dependencies = {}, debtorList = [];
+          var dependencies = {}, debtorList = scope.debtorList = [];
           var searchCallback = scope[attrs.onSearchComplete];
 
           if(!searchCallback) throw new Error('Patient Search directive must implement data-on-search-complete');
@@ -263,7 +263,7 @@
           '          id="findSearch" ' +
           '          type="text" '+
           '          ng-model="findPatient.selectedDebtor" '+
-          '          typeahead="patient as patient.name for patient in findPatient.model.debtor.data | filter:$viewValue | limitTo:8" '+
+          '          typeahead="patient as patient.name for patient in debtorList | filter:$viewValue | limitTo:8" '+
           '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
           '          typeahead-on-select="loadDebitor(debitor.id)" '+
           '          typeahead-template-url="debtorListItem.html"'+
@@ -302,7 +302,7 @@
             scope.findPatient.model = model;
             extractMetaData(model.debtor.data);
             var patients = extractMetaData(model.debtor.data);
-            debtorList = JSON.parse(JSON.stringify(patients));
+            debtorList = scope.debtorList = angular.copy(patients);
           }
 
           function searchName(value) {
