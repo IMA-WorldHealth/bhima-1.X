@@ -709,9 +709,9 @@ INSERT INTO `village` (`id`, `name`, `sector_id`) VALUES
 
 -- configure enterprise
 
-INSERT INTO `currency` (`id`, `name`, `symbol`, `separator`, `decimal`) values
-  (1,'Congolese Francs','Fc', '.', ','),
-	(2,'United States Dollars','$', ',', '.');
+INSERT INTO `currency` (`id`, `name`, `symbol`, `separator`, `decimal`, `min_monentary_unit`) values
+  (1,'Congolese Francs','Fc', '.', ',', 50),
+	(2,'United States Dollars','$', ',', '.', 0.01);
              
 INSERT INTO `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `logo`, `currency_id`) values 
   (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 5, '/assets/logos/tsh.jpg', 2);

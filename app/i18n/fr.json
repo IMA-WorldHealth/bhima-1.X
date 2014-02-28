@@ -83,7 +83,8 @@
     "TOTAL_PAYING"     : "Total Paye",
     "OVERDUE"          : "Impaye",
     "PAY_INVOICES"     : "Paye les Factures",
-    "CLEAR_SELECTION"  : "Recommencer"
+    "CLEAR_SELECTION"  : "Recommencer",
+    "NO_EXCHANGE_RATE" : "Erreur: Taux d'Exchange n'existe pas!"
   },
 
   "CREDIT_NOTE" : {
@@ -740,7 +741,8 @@
     "ID"                           : "Id",
     "PHONE"                        : "Phone",
     "CASH_RECEIPT"                 : "Recette de Caisse",
-    "CASH_ID"                      : "# Transaction de Caisse#"
+    "CASH_ID"                      : "# Transaction de Caisse",
+    "AMOUNT_RECEIVED" : "Montant Paye"
   },
 
   "SECTOR":{

@@ -60,7 +60,7 @@
             </tbody>
             <tbody class="totals">
               <tr><td class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
-              <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVE' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+              <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
               <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
             </tbody>
 
@@ -264,9 +264,9 @@
                 <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td><span ng-bind-html="item.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr> 
               </tbody>
               <tbody class="totals">
-              <tr><td class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr>
-                <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVE' || translate}}</td><td><span ng-bind-html="cashTransaction.cost  | intlcurrency:cashTransaction.currency_id"></span></td></tr>
-                <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:cashTransaction.currency_id"</span></td></tr>
+              <tr><td class="no-border">{{'INVOICE.TOTAL' | translate }}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr>
+                <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate }}</td><td><span ng-bind-html="cashTransaction.cost  | intlcurrency:cashTransaction.currency_id"></span></td></tr>
+                <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate }}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:cashTransaction.currency_id"</span></td></tr>
               </tbody>
             </table>
           </div>
