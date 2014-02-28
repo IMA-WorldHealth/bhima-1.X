@@ -202,7 +202,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //   };
     
       invoice.applyGlobal.forEach(function (listItem) { 
-        var applyCost, formatListItem, enterpriseDiscountId=1; // FIXME Derive this from enterprise
+        var applyCost, formatListItem, enterpriseDiscountId=1453; // FIXME Derive this from enterprise
         formatDiscountItem = { 
           inventory_id : enterpriseDiscountId,
           quantity : 1,
