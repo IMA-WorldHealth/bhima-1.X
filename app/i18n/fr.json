@@ -257,7 +257,8 @@
     "COST_CENTER_MGMT" : "Centres Des Couts",
     "GRP_INVOICING" : "Facturation des Conventions",
     "CURRENCY" : "Monaie",
-    "RENEWAL" : "Renouveller Fiche"
+    "RENEWAL" : "Renouveller Fiche",
+    "PATIENT_REGISTRATION" : "Rapport Enregistrement des Malades"
   },
 
   "PATIENT_RECORDS" : {

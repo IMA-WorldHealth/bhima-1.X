@@ -354,7 +354,8 @@
     "COST_CENTER_MGMT" : "Cost Center Management",
     "GRP_INVOICING" : "Group Invoicing",
     "CURRENCY" : "Currency",
-    "RENEWAL" : "Patient Renewal"
+    "RENEWAL" : "Patient Renewal",
+    "PATIENT_REGISTRATION" : "Patient Registration Report"
   },
 
   "RENEWAL" : {
