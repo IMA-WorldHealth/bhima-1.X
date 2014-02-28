@@ -748,7 +748,8 @@
     "PHONE"                        : "Phone",
     "CASH_RECEIPT"                 : "Recette de Caisse",
     "CASH_ID"                      : "# Transaction de Caisse",
-    "AMOUNT_RECEIVED" : "Montant Paye"
+    "AMOUNT_RECEIVED" : "Montant Paye",
+    "TRANSACTION_PRICE" : "Prix Transaction"
   },
 
   "SECTOR":{
