@@ -107,7 +107,7 @@ angular.module('kpk.controllers')
 
     $scope.loadInvoices = function (debitor) {
       $scope.ledger = [];
-      $scope.debitor = debitor;
+      $scope.patient = debitor;
       $scope.queue = [];
       connect.fetch('/ledgers/debitor/' + debitor.debitor_id)
         .success(function (data) {
@@ -186,11 +186,16 @@ angular.module('kpk.controllers')
       // Gather data and submit the cash invoice
       var bon_num, cashPayment, date, description;
 
+      // we need to figure out if they are paying the total amount
+      // if they are, it means that the absolute value of
+      // precision.compare(precision.round(data.payment), data.total)
+      // should be less than currency.min_monentary_unit
+
       date = util.convertToMysqlDate(new Date());
 
       bon_num = generateBonNumber($scope.cash.data, 'E');
 
-      description = ['CP E', bon_num, $scope.debitor.first_name, date].join('/');
+      description = ['CP E', bon_num, $scope.patient.first_name, date].join('/');
 
       cashPayment = {
         enterprise_id : $scope.enterprise.id,
@@ -198,13 +203,13 @@ angular.module('kpk.controllers')
         bon_num : bon_num,
         date : date,
         debit_account : $scope.cashbox.cash_account,
-        credit_account : $scope.debitor.account_id,
+        credit_account : $scope.patient.account_id,
         currency_id : $scope.cashbox.currency_id,
         cost: precision.round(data.payment),
         description : description,
         cashier_id : 1,
         cashbox_id : 1,
-        deb_cred_id : $scope.debitor.id,
+        deb_cred_id : $scope.patient.debitor_id,
         deb_cred_type : 'D'
       };
 

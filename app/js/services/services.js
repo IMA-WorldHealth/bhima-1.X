@@ -854,9 +854,14 @@
         if (unit > 1) {
           // what is the remainder?
           var remainder = unit - (amount % unit);
-          console.log('amount:', amount, 'remainder:', remainder);
-          total = precision.round(amount + remainder, 0);
-          difference = remainder;
+          //console.log('amount:', amount, 'remainder:', remainder, 'unit:', unit, 'unit/2', unit/2);
+
+          if (remainder < unit / 2) {
+            total = precision.round(amount + remainder, 0);
+          } else {
+            total = precision.round(amount - (unit - remainder), 0);
+          }
+          difference = (unit - remainder);
         } else {
           // this assumes that all fractions are 0.01, 0.0001, etc.
           var l = unit.toString().length;

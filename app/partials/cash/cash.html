@@ -20,7 +20,7 @@
 <div class="content">
 
   <div class="row">
-    <div class="col-xs-6" ng-switch="!!debitor">
+    <div class="col-xs-6" ng-switch="!!patient">
 
       <!-- patient search panel -->
       <div find-patient on-search-complete="loadInvoices"></div>
@@ -48,8 +48,8 @@
           </thead>
           <tbody>
             <tr ng-repeat="invoice in ledger" ng-click="add($index)">
-              <td>{{ invoice.inv_po_id}}</td>
-              <td>{{ invoice.debitor}}</td>
+              <td>{{ invoice.inv_po_id }}</td>
+              <td>{{ invoice.debitor }}</td>
               <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
               <td>{{ invoice.trans_date | date}}</td>
             </tr>
@@ -61,7 +61,7 @@
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span>{{ "CASH.PAYMENT" | translate }} <small>{{debitor.first_name}} {{debitor.last_name}}</small></span>
+          <span>{{ "CASH.PAYMENT" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small></span>
         </div>
         <table class="table table-condensed">
           <thead>
