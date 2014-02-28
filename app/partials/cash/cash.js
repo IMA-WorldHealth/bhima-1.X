@@ -109,7 +109,7 @@ angular.module('kpk.controllers')
       $scope.ledger = [];
       $scope.debitor = debitor;
       $scope.queue = [];
-      connect.fetch('/ledgers/debitor/' + debitor.id)
+      connect.fetch('/ledgers/debitor/' + debitor.debitor_id)
         .success(function (data) {
           data.forEach(function (row) {
             row.debitor = [debitor.first_name, debitor.last_name].join(' ');
