@@ -51,17 +51,30 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
+    
           <table class="invoiceTable">
             <thead>
-              <tr><th>{{'INVOICE.DESCRIPTION' | translate}}</th><th>{{'INVOICE.AMOUNT' | translate}}</th></tr> 
+              <tr>
+                <th>{{'COLUMNS.CODE' | translate}}</th>
+                <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+                <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+                <th>{{'INVOICE.TRANSACTION_PRICE' | translate}}</th>
+                <th>{{'INVOICE.AMOUNT' | translate}}</th>
+              </tr> 
             </thead>
             <tbody class="items">
-            <tr ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td></tr> 
+              <tr ng-repeat="item in model['invoiceItem'].data">
+                <td>{{item.code}}</td>
+                <td>{{item.text}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.transaction_price}}</td>
+                <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td>
+              </tr> 
             </tbody>
             <tbody class="totals">
-              <tr><td class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
-              <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
-              <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
             </tbody>
 
           </table>
