@@ -3,7 +3,7 @@
 </header>
 
 <section class="top-nav">
-  {{'SALERECORD.SHOWING' | translate}} Max({{defaultLimit}})
+  <!-- {{'SALERECORD.SHOWING' | translate}} Max({{defaultLimit}}) -->
   <div class="pull-right">
     <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span>{{'SALERECORD.ADVANCE' | translate}} </a>
   </div>
@@ -40,7 +40,7 @@
 
           <tbody>
           <tr ng-class='{rowSelected: selected.id==invoice.id}' ng-click="select(invoice.id)"
-              ng-repeat="invoice in model.sale.data | filter: invoice_filter.filter">
+              ng-repeat="invoice in model.sale.data | orderBy : 'invoice_date':false">
               <td><a ng-href="/#/invoice/sale/{{invoice.id}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
               
               <td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
