@@ -803,35 +803,74 @@
 
   });
 
-  services.factory('exchange', [
+  services.service('exchange', [
     'appstate',
     'validate',
     'messenger',
     'precision',
     function (appstate, validate, messenger, precision) {
-      var map;
 
-      appstate.register('exchange_rate', function (globalRates) {
-        // build rate map anytime the exchange rate changes.
-        map = {};
-        globalRates.forEach(function (r) {
-          map[r.foreign_currency_id] = precision.round(r.rate);
-        });
-      });
-
-      function exchange(value, currency_id, date) {
-        if (!map) {
-          messenger.danger('No Exchange Rates loaded!');
-        }
-        return map ? precision.round((map[currency_id] || 1.00) * value) : precision.round(value);
-      }
-
-      exchange.hasRates = function () {
-        return !!map;
+      var self = function exchange (value, currency_id) {
+        if (!self.map) { messenger.danger('No exchange rates loaded'); }
+        return self.map ? precision.round((self.map[currency_id] || 1.00) * value) : precision.round(value);
       };
 
-      return exchange;
+      appstate.register('exchange_rate', function (globalRates) {
+        self.map = {};
+        globalRates.forEach(function (r) {
+          self.map[r.foreign_currency_id] = precision.round(r.rate);
+        });
+      });
+      
+      return self;
     }
   ]);
+
+  services.factory('totaler', [
+    'connect',
+    'messenger',
+    'precision',
+    function (connect, messenger, precision) {
+      var store;
+      connect.req({
+        tables : {
+          'currency' : {
+            columns : ['id', 'min_monentary_unit']
+          }
+        }
+      })
+      .then(function (currency) {
+        store = currency;
+      }, function (error) {
+        messenger.danger('Error loading currencies:' + JSON.stringify(error));
+      });
+
+      return function convert (amount, currency_id) {
+        if (!store) {
+          return messenger.danger('No Currencies loaded!');
+        }
+        var unit = store.get(currency_id).min_monentary_unit;
+        var total, difference;
+        if (unit > 1) {
+          // what is the remainder?
+          var remainder = unit - (amount % unit);
+          console.log('amount:', amount, 'remainder:', remainder);
+          total = precision.round(amount + remainder, 0);
+          difference = remainder;
+        } else {
+          // this assumes that all fractions are 0.01, 0.0001, etc.
+          var l = unit.toString().length;
+          total = precision.round(amount, l);
+          difference = precision.compare(total, amount);
+        }
+
+        return {
+          total : total,
+          difference : difference
+        };
+      };
+    }
+  ]);
+
 
 })(angular);

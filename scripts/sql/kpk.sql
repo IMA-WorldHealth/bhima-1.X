@@ -10,12 +10,13 @@ flush privileges;
 --
 drop table if exists `currency`;
 create table `currency` (
-  `id`            tinyint unsigned not null auto_increment,
-  `name`          text not null,
-  `symbol`        varchar(15) not null,
-  `note`          text,
-  `separator`     varchar(5),
-  `decimal`       varchar(5),
+  `id`                  tinyint unsigned not null auto_increment,
+  `name`                text not null,
+  `symbol`              varchar(15) not null,
+  `note`                text,
+  `separator`           varchar(5),
+  `decimal`             varchar(5),
+  `min_monentary_unit`  decimal(10, 2) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -791,8 +792,8 @@ create table `cash_item` (
   primary key (`id`),
   key `cash_id` (`cash_id`),
   key `invoice_id` (`invoice_id`),
-  constraint foreign key (`cash_id`) references `cash` (`id`),
-  constraint foreign key (`invoice_id`) references `sale` (`id`)
+  constraint foreign key (`cash_id`) references `cash` (`id`)
+-- constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 
 -- 
