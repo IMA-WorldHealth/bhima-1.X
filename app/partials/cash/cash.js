@@ -2,6 +2,7 @@ angular.module('kpk.controllers')
 .controller('cash', [
   '$scope',
   '$location',
+  '$translate',
   'connect',
   'appstate',
   'messenger',
@@ -9,17 +10,16 @@ angular.module('kpk.controllers')
   'exchange',
   'kpkUtilitaire',
   'precision',
-  function($scope, $location, connect, appstate, messenger, validate, exchange, util, precision) {
+  'totaler',
+  function($scope, $location, $translate, connect, appstate, messenger, validate, exchange, util, precision, totaler) {
     var dependencies = {},
         data = $scope.data = {};
 
     $scope.queue = [];
     data.payment = 0;
     data.total = 0;
+    data.raw = 0;
    
-    // NOTE: This assumes that all debitor transactions
-    // are made with patients.  This should change in all
-    // generality.
     dependencies.debitors = {
       query : {
         tables: {
@@ -79,7 +79,6 @@ angular.module('kpk.controllers')
       }
     };
 
-    // Wait for the enterprise before initializing the module
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.cashboxes.query.where =
@@ -144,59 +143,42 @@ angular.module('kpk.controllers')
     }
 
     $scope.digestTotal = function () {
-      data.total = $scope.queue.reduce(addTotal, 0);
+      data.raw = $scope.queue.reduce(addTotal, 0);
+      if (!$scope.cashbox) { return; }
+      var o = totaler(data.raw, $scope.cashbox.currency_id);
+      console.log('o is:', o);
+      data.total = o.total;
+
+      // digest overdue
+      var over  = data.payment - data.total;
+      data.overdue = over > 0 ? over : 0;
     };
 
     $scope.digestInvoice = function () {
-      if (!$scope.queue || !$scope.queue.length) { return; }
-      var amount = data.payment || 0,
-          i = 0;
+      if (!$scope.queue) { return; }
 
-      do {
-        var invoice = $scope.queue[i];
-        var diff = precision.round(amount - invoice.locale);
-        console.log('diff:', diff);
-        var bool = diff >= 0;
-        amount = bool ? diff : 0;
-        $scope.queue[i].allocated  = bool ? invoice.locale : amount;
-        $scope.queue[i].remaining = precision.compare(invoice.locale, invoice.allocated);
-        i += 1;
-      } while ( i < $scope.queue.length && 0 < amount);
-    
-      data.overdue = amount;
+      var proposed = $scope.data.payment || 0;
 
-      /*
-      // FIXME : refactor this
-      if (c >= 0) {
-        // this is a loop to allocate the
-        // amount in data.payment to each
-        // item in the invoice.
-        arr = arr.map(function (invoice, idx) {
-          var trial = precision.round(c - invoice.locale);
-          if (trial >= 0) {
-            // more than enough. Allocate it all.
-            c = trial;
-            invoice.allocated = invoice.locale;
-          } else {
-            // not quite enough. allocate the rest
-            // and set c to zero so all other allocations
-            // are zeroed out.
-            invoice.allocated = c;
-            c = 0;
-          }
-          // calculate remaining cost
-          invoice.remaining = precision.compare(invoice.locale,invoice.allocated);
-        });
-      } else {
-        arr = arr.map(function (invoice) {
+      $scope.queue.forEach(function (invoice) {
+        if (proposed < 0) {
           invoice.allocated = 0;
-          return invoice;
-        });
-      }
-    
-      // if c is still positive, add it to excess;
-      data.overdue = c;
-      */
+          return;
+        }
+
+        var diff = precision.round(proposed - invoice.locale);
+        if (diff >= 0) {
+          proposed = diff;
+          invoice.allocated = invoice.locale;
+        } else {
+          invoice.allocated = proposed;
+          proposed = 0;
+        }
+        invoice.remaining = precision.compare(invoice.locale, invoice.allocated);
+      });
+
+      var over  = data.payment - data.total;
+      data.overdue = over > 0 ? over : 0;
+
     };
 
 
@@ -218,10 +200,10 @@ angular.module('kpk.controllers')
         debit_account : $scope.cashbox.cash_account,
         credit_account : $scope.debitor.account_id,
         currency_id : $scope.cashbox.currency_id,
-        cost: data.payment,
+        cost: precision.round(data.payment),
         description : description,
-        cashier_id : 1, // TODO
-        cashbox_id : 1,  // TODO
+        cashier_id : 1,
+        cashbox_id : 1,
         deb_cred_id : $scope.debitor.id,
         deb_cred_type : 'D'
       };
@@ -248,6 +230,14 @@ angular.module('kpk.controllers')
           };
         });
 
+      if (precision.compare(data.total, data.raw) !== 0) {
+        records.push({
+          cash_id : id,
+          allocated_cost : precision.compare(data.total, data.raw),
+          invoice_id : 0
+        });
+      }
+
       return connect.basicPut('cash_item', records);
     }
 
@@ -262,11 +252,11 @@ angular.module('kpk.controllers')
     $scope.payInvoices = function pay () {
       // FIXME: add a 'would you like to credit or pay back' line/check here for excess
       // run digestInvoice once more to stabilize.
-      $scope.digestInvoice();
-
-      if (!exchange.hasRates()) {
-        return messenger.danger('There is no exchange rate for today!');
+      if (!exchange.map) {
+        return messenger.danger($translate('CASH.NO_EXCHANGE_RATE'));
       }
+
+      $scope.digestInvoice();
 
       processCashInvoice()
         .then(processCashItems)
