@@ -132,7 +132,9 @@
     "ADD_LINE_ITEM" : "Ajouter une Item",
     "EDIT_SALE" : "Editer la Facture",
     "TOTAL" : "Totale",
-    "PATIENT_COVERED" : "Patient est couvert par la convention"
+    "PATIENT_COVERED" : "Patient est couvert par la convention",
+    "APPLIES_GLOBALLY" : "Appliquer globalement",
+    "APPLIES_TO_ITEM" : "Appliquer par item"
   },
 
   "FIND" : {
@@ -391,7 +393,8 @@
     "WEIGHT" : "Poids",
     "PRICE_LIST" : "Liste de Prix",
     "TITLE" : "Titre",
-    "VALUE" : "Valeur"
+    "VALUE" : "Valeur",
+    "SCOPE" : "Appliquer a"
   },
 
   "REPORT" : {
@@ -499,7 +502,9 @@
     "EDITED_SUCCES" :  "Liste de prix editer avec succes",
     "POSTED" :"Nouvelle liste de prix postee",
     "DELETE_CONFIRM" : "Voulez - vous Effacer ?",
-    "REMOVE_SUCCESS" : "Effacer avec succes"
+    "REMOVE_SUCCESS" : "Effacer avec succes",
+    "APPLY_TO_ITEM" : "Appliquer a l'item",
+    "APPLY_TO_BILL" : "Appliquer a la facture"
   },
 
   "INVENTORY_VIEW" : {
