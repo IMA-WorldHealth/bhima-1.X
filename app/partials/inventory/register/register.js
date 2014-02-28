@@ -94,7 +94,8 @@ angular.module('kpk.controllers')
 
     $scope.submit = function () {
       $scope.item.enterprise_id = $scope.enterprise.id;
-      if ($scope.inventory.$valid) {
+      console.log($scope.inventory.$valid);
+      // if ($scope.inventory.$valid) {
         connect.basicPut('inventory', [connect.clean($scope.item)])
         .then(function (result) {
           $scope.item.id = result.data.insertId;
@@ -104,15 +105,15 @@ angular.module('kpk.controllers')
           messenger.danger('An error occured' + err);
         });
         $scope.reset();
-      } else {
-        for (var k in $scope.inventory) {
-          if ($scope.inventory[k].$invalid) {
-            $scope.invalid[k] = 'true';
+      // } else {
+        // for (var k in $scope.inventory) {
+          // if ($scope.inventory[k].$invalid) {
+            // $scope.invalid[k] = 'true';
             // TODO: make css classes depend on this. Color
             // red for error on each input if $invalid.
-          }
-        }
-      }
+          // }
+        // }
+      // }
     };
 
     // New Type Instance Modal/Controller
