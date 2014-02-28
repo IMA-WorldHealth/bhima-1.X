@@ -881,7 +881,7 @@
   ])
 
   .service('calc', [ 'precision', 'appstate', function (precision, appstate) {
-    appstate.register('currency', function () {
+    appstate.register('currency', function (curr) {
       
     });
   }]);
