@@ -75,11 +75,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="invoice in paying">
-              <td>{{invoice.inv_po_id}}</td>
-              <td>{{invoice.trans_date | date }}</td>
+            <tr ng-repeat="invoice in queue">
+              <td>{{ invoice.inv_po_id }}</td>
+              <td>{{ invoice.trans_date | date }}</td>
               <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
-              <!-- <td><input type="number" class="form-kapok" ng-class="{'has-error' : invoice.allocated > data.payment}" ng-model="invoice.allocated" required></td> -->
               <td ng-bind-html="invoice.allocated | intlcurrency:cashbox.currency_id"></td>
               <td ng-bind-html="invoice.remaining | intlcurrency:cashbox.currency_id"></td>
               <td><a href="" ng-click="remove($index)" class="glyphicon glyphicon-trash"></a></td>
@@ -100,7 +99,7 @@
 
               <div class="col-xs-6">
                 <label class="control-label col-xs-4">{{ "CASH.OVERDUE" | translate }}</label>
-                <p class="form-control-static" ng-bind-html="data.excess | intlcurrency:cashbox.currency_id"></p>
+                <p class="form-control-static" ng-bind-html="data.overdue | intlcurrency:cashbox.currency_id"></p>
               </div>
             </div>
 

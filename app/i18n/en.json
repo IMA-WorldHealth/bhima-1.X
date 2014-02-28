@@ -699,6 +699,21 @@
     "EDIT"                 : "Edit a Country"
   },
 
+  "PROVINCE" :{
+    "TITLE" : "PROVINCE MANAGER",
+    "LOCATION_MANAGER": "Location Manager",
+    "ADD" : "Add New Province",
+    "REGISTERED" : "Registered Province",
+    "NAME" : "Name",
+    "COUNTRY" : "Country",
+    "ACTIONS" : "Actions",
+    "CONFIGURATION" : "Province Manager Configuration",
+    "DESCRIPTION" : "This module will help you to manage provinces, at the left you see availvables provinces and their locations. use this module to create, modify and remove province. ",
+    "REGISTER" : "Register a Province",
+    "PROVINCE_NAME" : "Province name",
+    "EDIT" : "Edit a Province"
+    },
+
   "SALERECORD" : {
     "TITLE" : "Patient Invoice Records",
     "SHOWING" : "Showing latest records",
@@ -740,7 +755,7 @@
   },
     "SECTOR":{
     "TITLE" : "Sector Manager",
-    "LOCATION_MANAGER" : "Lccation manager",
+    "LOCATION_MANAGER" : "Location manager",
     "NEW_SECTOR" : "Add Sector",
     "REGISTERED" : "Registered sector",
     "NAME" : "Name",
@@ -751,5 +766,21 @@
     "REGISTER" : "Register a Sector",
     "NAME_SECTOR" : "Sector Name",
     "EDIT" : "Edit Sector"
+  },
+
+  "VILLAGE" : {
+    "TITLE" : "VILLAGE MANAGER",
+    "LOCATION_MANAGER" : "Location manager",
+    "NEW_VILLAGE" : "Add Village",
+    "REGISTERED" : "Registered villages",
+    "NAME" : "Name",
+    "SECTOR" : "Sector",
+    "ACTIONS" : "Actions",
+    "CONFIG" : "Village Manager Configuration",
+    "INFO" :  "This module will help you to manage villge, use this module to create, edit and remove village",
+    "REGISTER" : "Register a Village",
+    "NAME_VILLAGE" : "Village Name",
+    "EDIT" : "Edit Village"
+
   }
 }
