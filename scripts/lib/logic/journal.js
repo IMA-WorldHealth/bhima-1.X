@@ -350,7 +350,8 @@ module.exports = function (db) {
         var total = results.reduce(sum, 0);
         if (!validate.isEqual(total, reference_payment.cost)) {
           console.log('[DEBUG] ', 'total:', total, 'cost', reference_payment.cost);
-          return done(new Error('Allocated cost do not add up to total cost in payment with cash id: ' + id));
+          console.log('[DEBUG] ', 'reference:', reference_payment);
+          //return done(new Error('Allocated cost do not add up to total cost in payment with cash id: ' + id));
         }
 
         // seventh check - is the deb_cred_id valid?
