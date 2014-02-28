@@ -2,12 +2,6 @@
   color: #018107;
 }
 
-.invoice-table {
-  /*FIXME pretty gross*/
-  max-height: 600px;
-  overflow-y: auto;
-}
-
 .rowSelected {
   background-color: #dff0d8;
 }
