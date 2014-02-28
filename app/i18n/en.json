@@ -754,7 +754,8 @@
     "PHONE"                        : "Phone",
     "CASH_RECEIPT"                 : "Cash Receipt",
     "CASH_ID"                      : "Cash transaction #",
-    "AMOUNT_RECEIVED" : "Amount Recieved"
+    "AMOUNT_RECEIVED" : "Amount Recieved",
+    "TRANSACTION_PRICE" : "Transaction Price"
   },
 
   "SECTOR" : {
