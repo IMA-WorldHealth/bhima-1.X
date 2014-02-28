@@ -2,67 +2,75 @@
   {{ "PATIENT_REGISTRATIONS.TITLE" | translate }}
 </header>
 
-<div class="top-nav" ng-show="action=='display'">
-  <button class="btn btn-sm btn-success" ng-click="searchAgain">
-    {{ "PATIENT_REGISTRATIONS.SEARCH_AGAIN" | translate }}
-  </button>
-</div>
+<section class="top-nav">
+  <div class="pull-left">
+    <a href="" class="btn btn-sm btn-default" ng-click="day()">
+      {{ "PATIENT_REGISTRATIONS.DAY" | translate }}
+    </a>
+    <a href="" class="btn btn-sm btn-default" ng-click="week()">
+      {{ "PATIENT_REGISTRATIONS.WEEK" | translate }}
+    </a>
+    <a href="" class="btn btn-sm btn-default" ng-click="month()">
+      {{ "PATIENT_REGISTRATIONS.MONTH" | translate }}
+    </a>
+  </div>
 
-<div class="content">
-  <div class="row col-xs-12" ng-switch="action">
-
-    <div class="panel panel-default" ng-switch-default>
-      <div class="panel-heading">
-        {{ "PATIENT_REGISTRATIONS.FIND_DATE" | translate }}
-      </div>
-      <div class="panel-body">
-        <form class="form-horizontal">
-          <div class="form-group">
-            <label class="col-xs-2">{{ "PATIENT_REGISTRATIONS.DATE_FROM" | translate }}</label>
-            <div class="col-xs-10">
-              <input type="date" class="form-kapok" ng-model="date.from">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-xs-2">{{ "PATIENT_REGISTRATIONS.DATE_TO" | translate }}</label>
-            <div class="col-xs-10">
-              <input type="date" class="form-kapok" ng-model="date.to">
-            </div>
-          </div>
-          <input type="submit" class="btn btn-sm btn-success" ng-click="search()" value="{{ 'FORM.SUBMIT' | translate }}">
-        </form>
-      </div>
+  <div>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateFrom" rows="20">
     </div>
-
-    <div class="panel panel-success" ng-switch-when="'display'">
-      <div class="panel-heading">
-        <b>{{ date.from | date }} - {{ data.to | date }}</b>
-      </div>
-      <table class="table">
-        <thead>
-          <th>{{ "COLUMNS.ID" | translate }}</th>
-          <th>{{ "COLUMNS.NAME" | translate }}</th>
-          <th>{{ "COLUMNS.DOB" | translate }}</th>
-          <th>{{ "COLUMNS.PARENT" | translate }}</th>
-          <th>{{ "COLUMNS.SEX" | translate }}</th>
-          <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
-          <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
-          <th></th>
-        </thead>
-        <tbody>
-          <tr ng-repeat="row in data">
-            <th>{{ row.id }}</th>
-            <td>{{ row.first_name + " " +row.last_name }}</td>
-            <td>{{ row.dob }}</td>
-            <td>{{ row.father_name }}</td>
-            <td>{{ row.sex }}</td>
-            <th>{{ row.debitor_id }}</th>
-            <td>{{ row.registration_date }}</td>
-            <td><a href="" ng-click="viewInvoice(row.id)"><span class="glyphicon glyphicon-list-alt"></span></a></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateTo" rows="20">
     </div>
+    <a href="" class="btn btn-sm btn-primary" ng-click="search()">
+      {{ "PATIENT_REGISTRATIONS.SEARCH" | translate }}
+    </a>
+  </div>
 
+  <!--
+  <div class="pull-right btn-group">
+    <button type="button" class="btn btn-default btn-sm dropdown-toggle">
+      Specify <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><input type="date" class="form-kapok"></li>
+      <li><input type="date" class="form-kapok"></li>
+      <li class="divider"></li>
+      <li><a href="" class='btn  btn-primary'>Submit</a></li>
+    </ul>
+  </div>
+  -->
+</section>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ state.dateFrom | date }} - {{ state.dateTo | date }}</small></h4>
+        <table id="patientTable" class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.ID" | translate }}</th>
+              <th>{{ "COLUMNS.NAME" | translate }}</th>
+              <th>{{ "COLUMNS.DOB" | translate }}</th>
+              <th>{{ "COLUMNS.SEX" | translate }}</th>
+              <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
+              <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+              <th>{{ "COLUMNS.VISIT_DATE" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='patient in patients'>
+              <td> {{ patient.id }} </td>
+              <td> {{ patient.first_name + ' ' + patient.last_name }} </td>
+              <td> {{ patient.dob | date }} </td>
+              <td> {{ patient.sex }} </td>
+              <td> {{ patient.debitor_id }} </td>
+              <td> {{ patient.registration_date | date }} </td>
+              <td> {{ patient.date | date }} </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
   </div>
 </div>
+

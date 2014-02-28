@@ -765,10 +765,9 @@
       MyBasicGet: MyBasicGet,
       debitorAgingPeriod : debitorAgingPeriod
     };
-  });
+  })
 
-
-  services.service('messenger', function ($timeout, $sce) {
+  .service('messenger', function ($timeout, $sce) {
     var self = this;
     self.messages = [];
     var indicies = {};
@@ -781,7 +780,12 @@
       indicies[id] = $timeout(function () {
         var index, i = self.messages.length;
 
-        while (i--) { if (self.messages[i].id === id) { self.messages.splice(i, 1); break; } }
+        while (i--) {
+          if (self.messages[i].id === id) {
+            self.messages.splice(i, 1);
+            break;
+          }
+        }
 
       }, timer || 3000);
     };
@@ -801,14 +805,13 @@
       self.messages.splice(idx, 1);
     };
 
-  });
+  })
 
-  services.service('exchange', [
+  .service('exchange', [
     'appstate',
-    'validate',
     'messenger',
     'precision',
-    function (appstate, validate, messenger, precision) {
+    function (appstate, messenger, precision) {
 
       var self = function exchange (value, currency_id) {
         if (!self.map) { messenger.danger('No exchange rates loaded'); }
@@ -824,9 +827,9 @@
       
       return self;
     }
-  ]);
+  ])
 
-  services.factory('totaler', [
+  .factory('totaler', [
     'connect',
     'messenger',
     'precision',
@@ -875,7 +878,13 @@
         };
       };
     }
-  ]);
+  ])
+
+  .service('calc', [ 'precision', 'appstate', function (precision, appstate) {
+    appstate.register('currency', function () {
+      
+    });
+  }]);
 
 
 })(angular);
