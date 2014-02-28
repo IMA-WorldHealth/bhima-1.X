@@ -534,7 +534,8 @@
     "TOTAL_PAYING"     : "Total Paying",
     "OVERDUE"          : "Over Due",
     "PAY_INVOICES"     : "Pay Invoices",
-    "CLEAR_SELECTION"  : "Clear Selection"
+    "CLEAR_SELECTION"  : "Clear Selection",
+    "NO_EXCHANGE_RATE" : "Error: No exchange rate!"
   },
 
   "CREDIT_NOTE" : {
@@ -751,9 +752,11 @@
     "ID"                           : "Id",
     "PHONE"                        : "Phone",
     "CASH_RECEIPT"                 : "Cash Receipt",
-    "CASH_ID"                      : "Cash transaction #"
+    "CASH_ID"                      : "Cash transaction #",
+    "AMOUNT_RECEIVED" : "Amount Recieved"
   },
-    "SECTOR":{
+
+  "SECTOR" : {
     "TITLE" : "Sector Manager",
     "LOCATION_MANAGER" : "Location manager",
     "NEW_SECTOR" : "Add Sector",
