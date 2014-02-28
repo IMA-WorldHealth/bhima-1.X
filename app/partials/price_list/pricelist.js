@@ -129,7 +129,11 @@ angular.module('kpk.controllers')
         }
         uploadPromise.push(request); 
       });
-
+      
+      $scope.session.deleteQueue.forEach(function (itemId) { 
+        uploadPromise.push(connect.basicDelete('price_list_item', itemId, 'id'))
+      });
+      
       $q.all(uploadPromise).then(function (result) { 
         
         // FIXME Redownload to prove DB state - remove (horrible use of bandwidth)
