@@ -10,8 +10,8 @@ angular.module('kpk.controllers')
   'exchange',
   'kpkUtilitaire',
   'precision',
-  'totaler',
-  function($scope, $location, $translate, connect, appstate, messenger, validate, exchange, util, precision, totaler) {
+  'calc',
+  function($scope, $location, $translate, connect, appstate, messenger, validate, exchange, util, precision, calc) {
     var dependencies = {},
         data = $scope.data = {};
 
@@ -145,12 +145,12 @@ angular.module('kpk.controllers')
     $scope.digestTotal = function () {
       data.raw = $scope.queue.reduce(addTotal, 0);
       if (!$scope.cashbox) { return; }
-      var o = totaler(data.raw, $scope.cashbox.currency_id);
-      console.log('o is:', o);
+      var o = calc(data.raw, $scope.cashbox.currency_id);
       data.total = o.total;
+      data.difference = o.difference;
 
       // digest overdue
-      var over  = data.payment - data.total;
+      var over  = precision.round(data.payment - data.total, 3);
       data.overdue = over > 0 ? over : 0;
     };
 

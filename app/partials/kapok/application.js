@@ -11,7 +11,6 @@ angular.module('kpk.controllers')
     var moduleNamespace = 'application',
       dependencies = {},
       cache = new appcache(moduleNamespace);
-
   
     dependencies.enterprise = {
       required : true,
@@ -76,6 +75,14 @@ angular.module('kpk.controllers')
       'where' : ['exchange_rate.date='+mysqlDate()]
     };
 
+    var queryCurrency = {
+      'tables' : {
+        'currency' : {
+          'columns' : ['id', 'name', 'symbol', 'min_monentary_unit']
+        }
+      }
+    };
+
    
     function settupApplication() {
       var url = $location.url();
@@ -84,7 +91,7 @@ angular.module('kpk.controllers')
       loadLanguage();
 
       //Initial page load assumed be navigating to nothing
-      if(url==='' || url==='/') loadCachedLocation();
+      if(url==='' || url==='/') { loadCachedLocation(); }
       fetchSessionState();
     }
 
@@ -108,7 +115,12 @@ angular.module('kpk.controllers')
     //Slightly more verbose than the inline equivalent but I think it looks cleaner
     //TODO: transition this to using validate
     function fetchSessionState() {
-      loadEnterprise().then(setEnterpriseLoadFiscal).then(setFiscalLoadExchange).then(setExchange, handleError);
+      loadEnterprise()
+      .then(setEnterpriseLoadFiscal)
+      .then(setFiscalLoadExchange)
+      .then(setExchange)
+      .then(setCurrency)
+      .catch(handleError);
     }
 
     function loadEnterprise() {
@@ -117,7 +129,7 @@ angular.module('kpk.controllers')
 
     function setEnterpriseLoadFiscal(result) {
       var defaultEnterprise = result.data[0];
-      if(defaultEnterprise) appstate.set('enterprise', defaultEnterprise);
+      if (defaultEnterprise) { appstate.set('enterprise', defaultEnterprise); }
 
       return connect.req(queryFiscal);
     }
@@ -135,7 +147,12 @@ angular.module('kpk.controllers')
     }
 
     function setExchange(result) {
-      if(result) appstate.set('exchange_rate', result.data);
+      if(result) { appstate.set('exchange_rate', result.data); }
+      return connect.req(queryCurrency);
+    }
+
+    function setCurrency(result) {
+      if (result) { appstate.set('currency', result.data); }
     }
 
     function handleError(error) {
