@@ -227,6 +227,7 @@
     "REPORTS" : "Rapports",
     "INVENTORY" : "Stock",
     "HOSPITAL" : "Hopitale",
+    "SWAP_DEBITOR" : "Changer Groupe Debiteur",
     "FISCAL_YEAR" : "Annee Fiscale",
     "PATIENT_REG" : "Enregistrement des Malades",
     "PATIENT_RECORDS" : "Historique",
@@ -820,7 +821,7 @@
     "UPDATE_FAILURE" : "La requette ne passe pas",
     "INVALID_PRICE" : "Le Prix est invalide"
     },
-    
+
   "SWAPDEBITOR":{
     "TITLE" : "AFFECTATION DE GROUPE DES DEBITEURS",
     "PATIENT" : "Patient",
