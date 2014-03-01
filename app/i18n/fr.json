@@ -819,5 +819,19 @@
     "UPDATE_SUCCESS" : "Les stocks sont mettre a jour",
     "UPDATE_FAILURE" : "La requette ne passe pas",
     "INVALID_PRICE" : "Le Prix est invalide"
+    },
+    
+  "SWAPDEBITOR":{
+    "TITLE" : "AFFECTATION DE GROUPE DES DEBITEURS",
+    "PATIENT" : "Patient",
+    "NAME" : "Noms",
+    "AGE" : "Age",
+    "GENDER" : "Sexe",
+    "ORIGIN" : "Origines",
+    "DEBTOR_GROUP" : "Selectionner un nouveau groupe des debiteur",
+    "SUBMIT" : "Soumettre",
+    "PATIENT_REGISTRATION" : "Enregistrement Patient",
+    "DANGER" : "Erreur pendant le changement de groupe de debiteur",
+    "SUCCES" : "Changement avec succes"
   }
 }
