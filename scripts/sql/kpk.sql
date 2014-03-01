@@ -598,6 +598,7 @@ create table `inventory` (
   `stock_min`       int unsigned not null default '0',
   `type_id`         tinyint unsigned not null default '0',
   `consumable`      boolean not null default 0,
+  `origin_stamp`    timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
   unique key `code` (`code`),
   key `enterprise_id` (`enterprise_id`),
@@ -1023,4 +1024,16 @@ create table `employee` (
   constraint foreign key (`debitor_id`) references `debitor` (`id`)
 ) engine=innodb;
 
+drop table if exists `inventory_log`;
+create table `inventory_log` (
+  `id`                  int unsigned not null auto_increment,
+  `inventory_id`        int unsigned not null,
+  `log_timestamp`       timestamp null default CURRENT_TIMESTAMP,
+  `price`               decimal(19,4) unsigned not null,
+  `code`                varchar(30) not null,
+  `description`         text,
+  primary key (`id`),
+  key `inventory_id` (`inventory_id`),
+  constraint foreign key (`inventory_id`) references `inventory` (`id`)
+) engine=innodb;
 -- Jon's dump @ 12:45.
