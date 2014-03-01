@@ -794,6 +794,18 @@
     "REGISTER" : "Register a Village",
     "NAME_VILLAGE" : "Village Name",
     "EDIT" : "Edit Village"
-
+  },
+  "SWAPDEBITOR":{
+    "TITLE" : "AFFECTATION DE GROUPE DES DEBITEURS",
+    "PATIENT" : "Patient",
+    "NAME" : "Noms",
+    "AGE" : "Age",
+    "GENDER" : "Sexe",
+    "ORIGIN" : "Origines",
+    "DEBTOR_GROUP" : "Selectionner un nouveau groupe des debiteur",
+    "SUBMIT" : "Soumettre",
+    "PATIENT_REGISTRATION" : "Enregistrement Patient",
+    "DANGER" : "Erreur pendant le changement de groupe de debiteur",
+    "SUCCES" : "Changement avec succes"
   }
 }

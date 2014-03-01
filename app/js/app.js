@@ -204,6 +204,10 @@
       controller : 'renewal',
       templateUrl : 'partials/patient_renewal/renewal.html'
     })
+    .when('/swap_debitor', {
+      controller : 'swapDebitor',
+      templateUrl : 'partials/swap_debitor/swap_debitor.html'
+    })
     .when('/update_stock', { 
       controller : 'updateStock', 
       templateUrl : 'partials/update_stock/update_stock.html'
