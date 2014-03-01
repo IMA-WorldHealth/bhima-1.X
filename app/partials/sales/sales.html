@@ -3,12 +3,13 @@
 </header>
 
 <section class="top-nav underline">
-  <div class="pull-right">
-    <a class="btn btn-default">
-      <span class="glyphicon glyphicon-floppy-save"></span> {{ "SALE.IMPORT" | translate}}
+<div class="pull-right">
+    <a ng-click="toggleTablock()" ng-class="{'btn-default' : !session.recovered, 'btn-success': session.recovered}" class="btn">
+      <span ng-class="{'glyphicon-th': session.tablock===0, 'glyphicon-th-list' : session.tablock===-1}" class="glyphicon"></span> {{(session.tablock==-1) ? ("SALE.TAB_LOCK_LINE" | translate) : ("SALE.TAB_LOCK_ITEM" | translate)}}
     </a>
-    <a class="btn btn-default">
-      <span class="glyphicon glyphicon-th-list"></span> {{ "SALE.UPDATE" | translate}}
+
+    <a ng-disabled="!session.recovered" ng-class="{'btn-default' : !session.recovered, 'btn-success': session.recovered}" class="btn">
+      <span class="glyphicon glyphicon-refresh"></span> {{ "SALE.RECOVER" | translate}}
     </a>
   </div>
 </section>
@@ -92,10 +93,11 @@
                         placeholder="Search Inventory"
                       </td>
                       
+                      <!-- -1 for no tab, 0 to allow -->
                       <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.text}}"></td>
-                      <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
-                      <td><input ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.price"></td>
-                      <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.quantity * invoiceItem.price | currency}}"></td>
+                      <td><input tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
+                      <td><input tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.price"></td>
+                      <td><input tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.quantity * invoiceItem.price | currency}}"></td>
                       <td><a ng-click="removeInvoiceItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
                     </tr>
 
