@@ -1,8 +1,12 @@
-angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger) {
+angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, appcache) {
  
   //FIXME Global vs. item based prices are a hack
   //TODO Pass default debtor and inventory parameters to sale modules
   var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
+  var recoverCache = new appcache('sale');
+  var session = $scope.session = { 
+    tablock : -1
+  }
 
   dependencies.sale = {
     query : '/max/id/sale'
@@ -17,7 +21,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   dependencies.seller = {
     query : 'user_session'
   };
-
+  
+  recoverCache.fetch('session').then(processRecover); 
   validate.process(dependencies).then(sales);
 
   function sales(model) {
@@ -361,10 +366,21 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     return this;
   }
 
+  function processRecover(session) { 
+    if(!session) return;
+
+    console.log('loaded recovered session', session);
+  }
+
+  function toggleTablock() { 
+    (session.tablock===0) ? session.tablock = -1 : session.tablock = 0;
+  }
+
   $scope.initialiseSaleDetails = initialiseSaleDetails;
   $scope.addInvoiceItem = addInvoiceItem;
   $scope.updateInvoiceItem = updateInvoiceItem;
   $scope.removeInvoiceItem = removeInvoiceItem;
   $scope.submitInvoice = submitInvoice;
   $scope.calculateTotal = calculateTotal;
+  $scope.toggleTablock = toggleTablock;
 });

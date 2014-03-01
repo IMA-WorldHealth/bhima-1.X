@@ -84,9 +84,9 @@
     when('/purchase_records/:purchaseID?', {
       controller: 'purchaseRecordsController',
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
-    }).
-    when('/inventory/price_list', {
-      controller: 'priceList',
+    }).  
+    when('/inventory/price_list', { 
+      controller: 'priceList', 
       templateUrl: 'partials/price_list/pricelist.html'
     }).
     when('/exchange_rate', {
@@ -191,7 +191,7 @@
     when('/patient_group', {
       controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'
-    })
+    }) 
     .when('/group_invoice/:id?', {
       controller : 'groupInvoice',
       templateUrl : 'partials/group_invoice/group_invoice.html'
@@ -211,13 +211,12 @@
   }
 
   function translateConfig($translateProvider) {
-    //TODO Review how translations should be split - functionality, unit, etc.
     //TODO Review i18n and determine if this it the right solution
     $translateProvider.useStaticFilesLoader({
       prefix: '/i18n/',
       suffix: '.json'
     });
-
+    
     //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('en');
   }
