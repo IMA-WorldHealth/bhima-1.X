@@ -407,7 +407,8 @@
     "PRICE_LIST" : "Liste de Prix",
     "TITLE" : "Titre",
     "VALUE" : "Valeur",
-    "SCOPE" : "Appliquer a"
+    "SCOPE" : "Appliquer a",
+    "VISIT_DATE" : "Date de Visite"
   },
 
   "REPORT" : {
