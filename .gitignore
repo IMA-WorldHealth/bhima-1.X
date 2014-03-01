@@ -1,5 +1,6 @@
 *.swp
 *.swo
+*.swn
 .idea/
 *.min.js
 *.min.css
