@@ -97,7 +97,8 @@ INSERT INTO `unit` VALUES
   (65, 'Currency'                   , 'TREE.CURRENCY', ''                                           , 1   , 0 , '/partials/currency/'                     , '/currency'),
   (66, 'Patient Renewal'            , 'TREE.RENEWAL', ''                                            , 21, 0, '/partials/patient_renewal/', '/renewal'),
   (67, 'Patient Registrations'      , 'TREE.PATIENT_REGISTRATION', '',                                 21, 0, '/partials/reports/patient_registrations/', '/reports/patient_registrations'),
-  (68, 'Update Stock'               , 'TREE.UPDATE_STOCK', '',                                      11, 0, '/partials/update_stock/', '/update_stock/');
+  (68, 'Update Stock'               , 'TREE.UPDATE_STOCK', '',                                      11, 0, '/partials/update_stock/', '/update_stock/'),
+  (69, 'Change Patient Group'       , 'TREE.SWAP_DEBITOR', '',                                      21, 0, '/partials/swap_debitor/', '/swap_debitor/');
 
 INSERT INTO `permission` (`id_unit`, `id_user`) values
  (1,2),
@@ -139,6 +140,8 @@ INSERT INTO `permission` (`id_unit`, `id_user`) values
  (62,2),
  (63,2),
  (64,2),
+ (68, 2),
+ (69, 2),
  -- (65,2),
  (4, 3),
  (6, 3),
