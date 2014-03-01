@@ -61,20 +61,21 @@
       </div>
 
       <div class="panel-footer" ng-show="noEmpty">
-        <div class="row">
-          <div class="col-xs-8">
-            <div class="form-group">
-              <label for="debtor-group" class="control-label">{{ "SWAPDEBITOR.DEBTOR_GROUP" | translate }}</label>
-              <select required class="form-kapok" id="debtor-group" ng-model="debitor.debitor_group_id" ng-options="g.id as g.name for g in model.debtorGroup.data">
-              <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
-              </select>              
-            </div> 
-          </div>
-          <div class="col-xs-2">
-            <br/>
-             <button ng-disabled="!selectedDebitor" ng-click="swapGroup(selectedDebitor)" class="btn btn-default btn-sm">{{ "SWAPDEBITOR.SUBMIT" | translate }}</button>
-          </div>
-        </div>             
+        <table>
+          <tr>
+            <td><label for="debtor-group" class="control-label">{{ "SWAPDEBITOR.DEBTOR_GROUP" | translate }}</label></td>
+          </tr>
+          <tr>
+            <td>
+          
+          <select required class="form-kapok" id="debtor-group" ng-model="debitor.debitor_group_id" ng-options="g.id as g.name for g in model.debtorGroup.data"><option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
+          </select>                     
+            </td>
+            <td>
+              <span> <button ng-disabled="!noEmpty" ng-click="swapGroup(selectedDebitor)" class="btn btn-default btn-sm">{{ "SWAPDEBITOR.SUBMIT" | translate }}</button></span> 
+            </td>
+          </tr>
+        </table>            
       </div>
     </div>
    </div>
