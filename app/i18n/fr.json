@@ -260,7 +260,19 @@
     "GRP_INVOICING" : "Facturation des Conventions",
     "CURRENCY" : "Monaie",
     "RENEWAL" : "Renouveller Fiche",
-    "PATIENT_REGISTRATION" : "Rapport Enregistrement des Malades"
+    "PATIENT_REGISTRATIONS" : "Rapport Enregistrement des Malades",
+    "UPDATE_STOCK" : "Mettre a Jour les Stocks"
+  },
+
+  "PATIENT_REGISTRATIONS" : {
+    "TITLE" : "Les Enregistrements des Patients",
+    "FIND_DATE" : "Choisir Date",
+    "DATE_FROM" : "Date debut",
+    "DATE_TO" : "Date fin",
+    "DAY" : "Aujourd'hui",
+    "WEEK" : "Cette Semaine",
+    "MONTH" : "Ce Mois",
+    "SEARCH" : "Rechercher"
   },
 
   "PATIENT_RECORDS" : {
@@ -781,7 +793,7 @@
     "EDIT" : "Editer Province"
     },
 
-    "VILLAGE" : {
+  "VILLAGE" : {
     "TITLE" : "VILLAGE MANAGER",
     "LOCATION_MANAGER" : "Location manager",
     "NEW_VILLAGE" : "Add Village",
@@ -794,6 +806,17 @@
     "REGISTER" : "Register a Village",
     "NAME_VILLAGE" : "Village Name",
     "EDIT" : "Edit Village"
+  },
 
+  "UPDATE_STOCK" : {
+    "TITLE" : "Mettre a Jour le Stock",
+    "TIMESTAMP" : "Date",
+    "FIND_STOCK" : "Rechercher Item",
+    "STOCK_HISTORY" : "Historique Stock",
+    "SUBMIT" : "Soumettre",
+    "SEARCH_TEXT" : "Rechercher par code ou description",
+    "UPDATE_SUCCESS" : "Les stocks sont mettre a jour",
+    "UPDATE_FAILURE" : "La requette ne passe pas",
+    "INVALID_PRICE" : "Le Prix est invalide"
   }
 }

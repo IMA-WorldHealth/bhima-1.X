@@ -794,7 +794,7 @@
 
   },
 
-  "UPDATE_STOCK" : { 
+  "UPDATE_STOCK" : {
     "TITLE" : "Update Stock",
     "TIMESTAMP" : "Timestamp",
     "FIND_STOCK" : "Find Stock",
