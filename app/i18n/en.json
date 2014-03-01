@@ -359,7 +359,8 @@
     "GRP_INVOICING" : "Group Invoicing",
     "CURRENCY" : "Currency",
     "RENEWAL" : "Patient Renewal",
-    "PATIENT_REGISTRATION" : "Patient Registration Report"
+    "PATIENT_REGISTRATION" : "Patient Registration Report",
+    "UPDATE_STOCK" : "Update Stock"
   },
 
   "RENEWAL" : {
@@ -791,5 +792,17 @@
     "NAME_VILLAGE" : "Village Name",
     "EDIT" : "Edit Village"
 
+  },
+
+  "UPDATE_STOCK" : { 
+    "TITLE" : "Update Stock",
+    "TIMESTAMP" : "Timestamp",
+    "FIND_STOCK" : "Find Stock",
+    "STOCK_HISTORY" : "Stock History",
+    "SUBMIT" : "Submit Update",
+    "SEARCH_TEXT" : "Search by code or description",
+    "UPDATE_SUCCESS" : "Stock updated!",
+    "UPDATE_FAILURE" : "Cannot update stock",
+    "INVALID_PRICE" : "Invalid price provided"
   }
 }

@@ -59,7 +59,10 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
     // if(updateLine.text==='') return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_TEXT'));
 
     connect.basicPost('inventory', [updateLine], ['id']).then(function (res) { 
-      messenger.success($filter('translate')('UPDATE.STOCK.UPDATE_SUCCESS'));
+      messenger.success($filter('translate')('UPDATE_STOCK.UPDATE_SUCCESS'));
+      $scope.cachePrice = angular.copy(selectedStock.price);
+    }, function (err) { 
+      messenger.danger($filter('translate')('UPDATE_STOCK.UPDATE_FAILUER'));  
     });
   }
 
