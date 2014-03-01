@@ -180,7 +180,10 @@
     "FIND_DATE" : "Pick a Date",
     "DATE_FROM" : "Date From",
     "DATE_TO" : "Date To",
-    "SEARCH_AGAIN" : "Search Again"
+    "DAY" : "Today",
+    "WEEK" : "This Week",
+    "MONTH" : "This Month",
+    "SEARCH" : "Search"
   },
 
   "REPORT" : {
@@ -221,6 +224,7 @@
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
+    "VISIT_DATE" : "Last Visit",
     "RATE" :      "Rate",
     "PASSWORD"       : "Password",
     "ID"             : "ID",
