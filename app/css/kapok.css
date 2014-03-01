@@ -196,7 +196,8 @@ input::-webkit-inner-spin-button {
 }
 
 .report {
-  margin-top: 85px;
+  padding-top: 85px;
+  height: 100%;
 }
 
 /*sfount, temporary printable table styling*/
@@ -329,4 +330,8 @@ div .reportFrame {
   background-color: #428bca;
   border-color: #357ebd;
 
+}
+
+.caret::after {
+  content : attr(data-caret);
 }

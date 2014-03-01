@@ -140,7 +140,6 @@ app.get('/max/:id/:table/:join?', function(req, res) {
       console.error(err);
       return;
     }
-    //dodgy as ass
     res.send({max: ans[0]['MAX(' + id + ')']});
   });
 });
@@ -324,10 +323,10 @@ app.get('/sector/', function (req, res, next) {
 });
 
 app.get('/province/', function (req, res, next) {
- console.log('Nous sommes sur la province traget');
-  var sql = "SELECT `province`.`id` as `id`,  `province`.`name` as `province`, `country`.`id` "+
-            "as `country_id`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
-            "WHERE `province`.`country_id` = `country`.`id`";
+  var sql =
+    "SELECT `province`.`id` as `id`,  `province`.`name` as `province`, `country`.`id` "+
+    "AS `country_id`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
+    "WHERE `province`.`country_id` = `country`.`id`";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send(rows);
@@ -335,13 +334,17 @@ app.get('/province/', function (req, res, next) {
 });
 
 app.get('/debitorAgingPeriod', function (req, res, next){
-  var sql =  "SELECT DISTINCT period.id, period.period_start, period.period_stop FROM period, general_ledger WHERE period.id = general_ledger.`period_id`;";
+  var sql =
+    "SELECT DISTINCT period.id, period.period_start, period.period_stop " +
+    "FROM period, general_ledger " +
+    "WHERE period.id = general_ledger.`period_id`;";
   db.execute(sql, function (err, rows) {
     if (err) next(err);
     res.send(rows);
   });
 });
 
+// FIXME : make this code more modular
 app.get('/visit/:patient_id', function (req, res, next) {
   var patient_id = req.params.patient_id;
   var sql =
@@ -353,10 +356,23 @@ app.get('/visit/:patient_id', function (req, res, next) {
   });
 });
 
-app.get('/registrations/:from/:to', function (req, res, next) {
+app.get('/registrations/:id/:from/:to', function (req, res, next) {
   var from = new Date(req.params.from),
-      to = new Date(req.params.to);
+      to = new Date(req.params.to),
+      id = req.params.id;
 
+  var sql =
+    "SELECT patient.id, debitor_id, first_name, last_name, dob, father_name, " +
+      "sex, religion, renewal, registration_date, date " +
+    "FROM `patient` JOIN `patient_visit` ON " +
+    "`patient`.`id`=`patient_visit`.`patient_id` " +
+    "WHERE `date` > " + sanitize.escape(from.toISOString().slice(0,10)) + " AND " +
+    " `date` < " + sanitize.escape(to.toISOString().slice(0,10)) + ";";
+
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(rows);
+  });
 });
 
 app.get('/account_balance/:id', function (req, res, next) {
@@ -380,7 +396,7 @@ app.get('/account_balance/:id', function (req, res, next) {
 
 });
 
-app.listen(cfg.port, console.log("Application running on /angularproto:" + cfg.port));
+app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
 
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
