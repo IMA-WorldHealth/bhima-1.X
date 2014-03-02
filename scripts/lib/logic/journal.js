@@ -5,6 +5,7 @@ var parser = require('../database/parser')(),
     sanitize = require('../util/sanitize'),
     util = require('../util/util'),
     validate = require('../util/validate')(),
+    Store = require('../util/store'),
     Q = require('q');
 
 module.exports = function (db) {
@@ -12,7 +13,6 @@ module.exports = function (db) {
   'use strict';
 
   var table_router, check, get;
-
 
   // validity checks
   check = {
@@ -125,12 +125,12 @@ module.exports = function (db) {
       db.execute(sql, function (err, rows) {
         if (err) return done(err);
         if (rows.length === 0) return done(new Error('No exchange rate found for date : ' + date));
-        var rate_map = {};
+        var store = new Store();
         rows.forEach(function (line) {
-          rate_map[line.enterprise_currency_id] = 1; // enterprise currency to itself is always 1.
-          rate_map[line.foreign_currency_id] = line.rate; // foreign_currency -> enterprise is rate.
+          store.post({ id : line.foreign_currency_id, rate : line.rate });
+          store.post({ id : line.enterprise_currency_id, rate : 1});
         });
-        return done(null, rate_map);
+        return done(null, store);
       });
     }
   };
@@ -308,13 +308,13 @@ module.exports = function (db) {
         // second check - is there a type number defined?
         var document_id_exist = validate.exists(reference_payment.document_id);
         if (!document_id_exist) {
-          return done(new Error('The Bon number is not defined for cash id: ' + id));
+          return done(new Error('The document number is not defined for cash id: ' + id));
         }
 
         // third check - is the type defined?
         var type_exist = validate.exists(reference_payment.type);
         if (!type_exist) {
-          return done(new Error('The Bon is not defined for cash id: ' + id));
+          return done(new Error('The document type is not defined for cash id: ' + id));
         }
 
         // forth check - is the cost positive?
@@ -359,7 +359,7 @@ module.exports = function (db) {
 
               // we now have the relevant period!
 
-              get.exchangeRate(date, function (err, rate_map) {
+              get.exchangeRate(date, function (err, store) {
                 if (err) return done(err);
 
                 // we now have an exchange rate!
@@ -386,8 +386,8 @@ module.exports = function (db) {
                   // calculate exchange rate.  If money coming in, credit is cash.cost,
                   // credit_equiv is rate*cash.cost and vice versa.
                   var money = reference_payment.type === 'E' ?
-                    '`cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, 0, ' :
-                    '0, `cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, ' ;
+                    '`cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, 0, ' :
+                    '0, `cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, ' ;
 
                   // finally, copy the data from cash into the journal with care to convert exchange rates.
                   var cash_query =
@@ -408,8 +408,8 @@ module.exports = function (db) {
                   // Then copy data from CASH_ITEM -> JOURNAL
                 
                   var cash_item_money = reference_payment.type === 'E' ?
-                    '0, `cash_item`.`allocated_cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ' :
-                    '`cash_item`.`allocated_cost`, 0, '+ 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ' ;
+                    '0, `cash_item`.`allocated_cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, ' :
+                    '`cash_item`.`allocated_cost`, 0, '+ 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' ;
 
                   var cash_item_account_id = reference_payment.type !== 'E' ? 'debit_account' : 'credit_account';
 

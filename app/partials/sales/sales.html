@@ -61,7 +61,9 @@
          <p ng-repeat="charge in invoice.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('SALE.APPLIES_GLOBALLY' | translate) : ('SALE.APPLIES_TO_ITEM' | translate)}}</b></p>
          </div>
 
-        
+         <div class="alert alert-info" ng-if="session.displayRecover">
+            {{"SALE.RECOVER_INFO" | translate}}
+         </div>
 
          <div class="row">
          

@@ -370,7 +370,8 @@
     "RENEWAL" : "Patient Renewal",
     "PATIENT_REGISTRATION" : "Patient Registration Report",
     "UPDATE_STOCK" : "Update Stock",
-    "CASH_PAYMENTS" : "Cash Payments"
+    "CASH_PAYMENTS" : "Cash Payments",
+    "SWAP_DEBITOR" : "Update Debtor"
   },
 
   "RENEWAL" : {
@@ -685,9 +686,11 @@
     "EDIT_SALE" : "Edit Sale",
     "ADD_LINE_ITEM" : "Add a Line Item",
     "TOTAL" : "Total",
-    "PATIENT_COVERED" : "Patient is covered by convention "
-
-
+    "PATIENT_COVERED" : "Patient is covered by convention ",
+    "TAB_LOCK_LINE" : "Tab lock Line",
+    "TAB_LOCK_ITEM" : "Tab lock Item",
+    "RECOVER" : "Recover Sale",
+    "RECOVER_INFO" : "[Sale Recovered] It is important to note ONLY sale items are recovered, quantities and previously set prices are reset to the inventory default"
   },
 
   "FIND" : {

@@ -135,8 +135,10 @@
     "PATIENT_COVERED" : "Patient est couvert par la convention",
     "APPLIES_GLOBALLY" : "Appliquer globalement",
     "APPLIES_TO_ITEM" : "Appliquer par item",
-    "TAB_LOCK_LINE" : "TABULER PAR LIGNE",
-    "TAB_LOCK_ITEM" : "TABULER PAR ITEM"
+    "TAB_LOCK_LINE" : "Tabuler par ligne",
+    "TAB_LOCK_ITEM" : "Tabuler par item",
+    "RECOVER" : "Retrouver Vente",
+    "RECOVER_INFO" : "[Retrouver Sale] C'est important de savoir que seulement les items de vente sont retrouve, Les quantites et les pries sont reinitialises au prix par defaut des items"
   },
 
   "FIND" : {
