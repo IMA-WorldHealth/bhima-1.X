@@ -134,7 +134,9 @@
     "TOTAL" : "Totale",
     "PATIENT_COVERED" : "Patient est couvert par la convention",
     "APPLIES_GLOBALLY" : "Appliquer globalement",
-    "APPLIES_TO_ITEM" : "Appliquer par item"
+    "APPLIES_TO_ITEM" : "Appliquer par item",
+    "TAB_LOCK_LINE" : "TABULER PAR LIGNE",
+    "TAB_LOCK_ITEM" : "TABULER PAR ITEM"
   },
 
   "FIND" : {
@@ -261,7 +263,7 @@
     "GRP_INVOICING" : "Facturation des Conventions",
     "CURRENCY" : "Monaie",
     "RENEWAL" : "Renouveller Fiche",
-    "PATIENT_REGISTRATIONS" : "Rapport Enregistrement des Malades",
+    "PATIENT_REGISTRATION" : "Rapport Enregistrement des Malades",
     "UPDATE_STOCK" : "Mettre a Jour les Stocks"
   },
 
