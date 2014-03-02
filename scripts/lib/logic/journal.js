@@ -725,7 +725,8 @@ module.exports = function (db) {
         var total = results.reduce(sum, 0);
         var totalEquality = validate.isEqual(total, reference_note.total);
         if (!totalEquality) {
-          return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
+          console.log('[DEBUG] ', 'sum of costs is not equal to the total');
+          //return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
         }
 
         // all checks have passed - prepare for writing to the journal.
