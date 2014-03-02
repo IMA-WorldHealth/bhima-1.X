@@ -13,7 +13,6 @@ module.exports = function (db) {
 
   var table_router, check, get;
 
-
   // validity checks
   check = {
     validPeriod : function (enterprise_id, date, errback) {
@@ -308,13 +307,13 @@ module.exports = function (db) {
         // second check - is there a type number defined?
         var document_id_exist = validate.exists(reference_payment.document_id);
         if (!document_id_exist) {
-          return done(new Error('The Bon number is not defined for cash id: ' + id));
+          return done(new Error('The document number is not defined for cash id: ' + id));
         }
 
         // third check - is the type defined?
         var type_exist = validate.exists(reference_payment.type);
         if (!type_exist) {
-          return done(new Error('The Bon is not defined for cash id: ' + id));
+          return done(new Error('The document type is not defined for cash id: ' + id));
         }
 
         // forth check - is the cost positive?
