@@ -266,7 +266,8 @@
     "CURRENCY" : "Monaie",
     "RENEWAL" : "Renouveller Fiche",
     "PATIENT_REGISTRATION" : "Rapport Enregistrement des Malades",
-    "UPDATE_STOCK" : "Mettre a Jour les Stocks"
+    "UPDATE_STOCK" : "Mettre a Jour les Stocks",
+    "CASH_PAYMENTS" : "Rapport Paiements"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -274,6 +275,14 @@
     "FIND_DATE" : "Choisir Date",
     "DATE_FROM" : "Date debut",
     "DATE_TO" : "Date fin",
+    "DAY" : "Aujourd'hui",
+    "WEEK" : "Cette Semaine",
+    "MONTH" : "Ce Mois",
+    "SEARCH" : "Rechercher"
+  },
+
+  "CASH_PAYMENTS" : {
+    "TITLE" : "Paiements Caisse Auxillaire",
     "DAY" : "Aujourd'hui",
     "WEEK" : "Cette Semaine",
     "MONTH" : "Ce Mois",
