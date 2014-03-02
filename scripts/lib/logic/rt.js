@@ -34,7 +34,7 @@ module.exports = function (db) {
           "sex, religion, renewal, registration_date, date " +
         "FROM `patient` JOIN `patient_visit` ON " +
           "`patient`.`id`=`patient_visit`.`patient_id` " +
-        "WHERE `date` > " + start + " AND " +
+        "WHERE `date` >= " + start + " AND " +
           " `date` < " + end + ";";
     db.execute(sql, done);
   }
@@ -47,7 +47,7 @@ module.exports = function (db) {
         "SUM(si.transaction_price) AS total_price, s." +
       "FROM `sale` AS s JOIN `sale_item` as si JOIN `inventory` AS i JOIN `inventory_group` AS ig " +
       "ON s.id = si.sale_id AND si.inventory_id = i.id AND i.group_id = ig.id " +
-      "WHERE s.invoice_date > " + start + " AND " +
+      "WHERE s.invoice_date >= " + start + " AND " +
         "s.invoice_date < " + end + " AND " +
         "i.enterprise_id = " + id + " " +
       "ORDER BY i.code " +
@@ -59,10 +59,26 @@ module.exports = function (db) {
     // TODO
   }
 
+  function c(id, start, end, done) {
+    var sql =
+      "SELECT c.document_id, c.cost, cr.name, c.type, p.first_name, c.description, " +
+        "p.last_name, c.deb_cred_id, c.deb_cred_type, ci.invoice_id, c.date " +
+      "FROM `cash` AS c JOIN `currency` as cr JOIN `cash_item` AS ci " +
+        "JOIN `debitor` AS d JOIN `patient` as p " +
+        "ON ci.cash_id = c.id AND c.currency_id = cr.id AND " +
+        "c.deb_cred_id = d.id AND d.id = p.debitor_id " +
+      "WHERE c.date >= " + start + " AND " +
+        "c.date < " + end + " " +
+      "GROUP BY c.document_id;";
+
+    db.execute(sql, done);
+  }
+
   var map = {
     'p' : p,
     'i' : i,
-    'r' : r
+    'r' : r,
+    'c' : c
   };
 
   return function route (type, id, start, end, done) {

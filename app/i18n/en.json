@@ -221,6 +221,14 @@
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report"
   },
+  
+  "CASH_PAYMENTS" : {
+    "TITLE" : "Cash Payments",
+    "DAY" : "Today",
+    "WEEK" : "This Week",
+    "MONTH" : "This Month",
+    "SEARCH" : "Search"
+  },
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
@@ -236,6 +244,7 @@
     "TOTAL"          : "Total",
     "ACCOUNT_ID"     : "Account ID",
     "DEBITOR_NAME"   : "Debitor Name",
+    "DEBITOR_TYPE" : "Debitor Type",
     "ACCOUNT"        : "Account",
     "COMMENT"        : "Comment",
     "PARENT" : "Parent",
@@ -360,7 +369,8 @@
     "CURRENCY" : "Currency",
     "RENEWAL" : "Patient Renewal",
     "PATIENT_REGISTRATION" : "Patient Registration Report",
-    "UPDATE_STOCK" : "Update Stock"
+    "UPDATE_STOCK" : "Update Stock",
+    "CASH_PAYMENTS" : "Cash Payments"
   },
 
   "RENEWAL" : {
