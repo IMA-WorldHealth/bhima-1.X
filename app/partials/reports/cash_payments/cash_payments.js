@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('reportPatientRegistrations', [
+.controller('reportCashPayments', [
   '$scope',
   'connect',
   'appstate',
@@ -54,13 +54,14 @@ angular.module('kpk.controllers')
       dateConvert.setDate(dateConvert.getDate() + 1);
       dateWatcher();
       connect.fetch([
-        '/rt/p',
+        '/rt/c',
         $scope.enterprise.id,
         $scope.state.dateFrom,
         $scope.state.dateTo
       ].join('/'))
       .success(function (model) {
-        $scope.patients = model;
+        $scope.payments = model;
+
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
