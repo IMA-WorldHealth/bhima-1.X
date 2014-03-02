@@ -54,10 +54,11 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
     
     // basic validation 
     if(isNaN(Number(updateLine.price))) return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_PRICE'));
-    
+    updateLine.code = "\"" + updateLine.code + "\""; 
     // if(updateLine.code==='') return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_CODE'));
     // if(updateLine.text==='') return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_TEXT'));
-
+    
+    console.log(selectedStock, updateLine);
     connect.basicPost('inventory', [updateLine], ['id']).then(function (res) { 
       messenger.success($filter('translate')('UPDATE_STOCK.UPDATE_SUCCESS'));
       $scope.cachePrice = angular.copy(selectedStock.price);

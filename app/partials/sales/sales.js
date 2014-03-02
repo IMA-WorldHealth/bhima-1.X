@@ -24,7 +24,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   
   recoverCache.fetch('session').then(processRecover); 
   validate.process(dependencies).then(sales);
-
+  
   function sales(model) {
     //Expose model to scope
     $scope.model = model;
@@ -89,9 +89,16 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       date : getDate(),
       items: []
     };
-
+     
+    if (session.recovering) { 
+      recover();
+    } else { 
+      addInvoiceItem();
+      session.recovered = null;
+    }
+    // session.recovering ? recover() : addInvoiceItem();
+        
     invoice.note = formatNote(invoice);
-    addInvoiceItem(); //Default invoice item
   
     $scope.invoice = invoice;
   }
@@ -122,7 +129,10 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   
   //TODO split inventory management into a seperate controller
   function addInvoiceItem() {
-    invoice.items.push(new InvoiceItem());
+    var item = new InvoiceItem();
+    
+    invoice.items.push(item);
+    return item;
   }
  
   //TODO rename legacy (previous) reference from inventoryReference
@@ -138,6 +148,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //Remove ability to selec the option again
     $scope.model.inventory.remove(inventoryReference.id);
     $scope.model.inventory.recalculateIndex();
+
+    updateSessionRecover();
   }
 
   function removeInvoiceItem(index) {
@@ -207,7 +219,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //   };
    
       invoice.applyGlobal.forEach(function (listItem) {
-        var applyCost, formatListItem, enterpriseDiscountId=1453; // FIXME Derive this from enterprise
+        var applyCost, formatListItem, enterpriseDiscountId=485; // FIXME Derive this from enterprise
         formatDiscountItem = {
           inventory_id : enterpriseDiscountId,
           quantity : 1,
@@ -227,6 +239,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   }
 
   function handleSaleResponse(result) {
+    recoverCache.remove('session'); 
     $location.path('/invoice/sale/' + result.data.saleId);
   }
 
@@ -278,10 +291,10 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function calculateTotal(includeDiscount) {
     var total = 0;
     includeDiscount = angular.isDefined(includeDiscount) ? includeDiscount : true;
-  
+   
     if(!invoice.items) return;
     invoice.items.forEach(function(item) {
-      if(item.quantity && item.price) {
+      if(item.quantity && item.price && item.code) {
         //FIXME this could probably be calculated less somewhere else (only when they change)
 
         total += (item.quantity * item.price);
@@ -289,13 +302,15 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
         total = Number(total.toFixed(4));
       }
     });
-   
-    invoice.applyGlobal.forEach(function (listItem) {
-      listItem.currentValue = Number(((total * listItem.value) / 100).toFixed(4));
+      
+    if (invoice.applyGlobal) { 
+      invoice.applyGlobal.forEach(function (listItem) {
+        listItem.currentValue = Number(((total * listItem.value) / 100).toFixed(4));
 
-      total += listItem.currentValue;
-      total = Number(total.toFixed(4));
-    });
+        total += listItem.currentValue;
+        total = Number(total.toFixed(4));
+      });
+    }
     console.log(total);
     return total;
   }
@@ -366,10 +381,45 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     return this;
   }
 
-  function processRecover(session) { 
+  function processRecover(recoveredSession) { 
     if(!session) return;
 
-    console.log('loaded recovered session', session);
+    console.log('loaded recovered session', recoveredSession);
+    $scope.session.recovered = recoveredSession;
+  }
+  
+  function selectRecover() { 
+    $scope.session.recovering = true;
+    $scope.findPatient.forceSelect($scope.session.recovered.patientId);
+  }
+
+  function recover() { 
+    $scope.session.recovered.items.forEach(function (item) { 
+      var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.id);
+      currentItem.selectedReference = invItem.code;
+      updateInvoiceItem(currentItem, invItem);
+    });
+  
+    // FIXME this is stupid 
+    session.displayRecover = true;
+
+    session.recovering = false;
+    session.recovered = null;
+  }
+
+  function updateSessionRecover() { 
+    //FIXME currently puts new object on every item, this could be improved
+    var recoverObject = session.recoverObject || { 
+      patientId : invoice.debtor.id,
+      items : []
+    };
+    
+    invoice.items.forEach(function (item) { 
+      if(item.code && item.quantity) recoverObject.items.push({
+        id : item.inventoryId
+      });
+    });
+    recoverCache.put('session', recoverObject);
   }
 
   function toggleTablock() { 
@@ -383,4 +433,5 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   $scope.submitInvoice = submitInvoice;
   $scope.calculateTotal = calculateTotal;
   $scope.toggleTablock = toggleTablock;
+  $scope.selectRecover = selectRecover;
 });

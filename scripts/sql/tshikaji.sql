@@ -2373,7 +2373,6 @@ INSERT INTO `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `
   (200, 'DNT'   , 'Enterprise Level Discount'       , 0.00,  5, 1, 0, 0, 0, 0, 0, 3, 0);
 */
 INSERT INTO `inventory` (`code`, `text`, `price`, `enterprise_id`, `group_id`, `unit_id`, `stock`, `stock_max`, `type_id`, `consumable`, `stock_min`) VALUES 
-("800000", "Administrative charge (%)", "0", "200", "1", "1", "1", "100000000", "0", "0", "0"),
 ("010001","Consulation médecin ambulatoire","2.66","200","1","2","1","100000000","0","1","0"),
 ("010002","CONSULTATION MEDECIN/ HOSPITALISATION","10.00","200","1","2","1","100000000","0","1","0"),
 ("010003","Consultation Spéciale (visite directe du médecin)","12.00","200","1","2","1","100000000","0","1","0"),
@@ -2857,7 +2856,8 @@ INSERT INTO `inventory` (`code`, `text`, `price`, `enterprise_id`, `group_id`, `
 ("180009","Ancien Pce","3.00","200","19","2","1","100000000","0","1","0"),
 ("180010","Etuis Pce","1.50","200","19","2","1","100000000","0","1","0"),
 ("180024","Catheter Foley Pce","0.37","200","19","2","1","100000000","0","1","0"),
-("180025","Ouate 500 gr Rlx","2.50","200","19","2","1","100000000","0","1","0");
+("180025","Ouate 500 gr Rlx","2.50","200","19","2","1","100000000","0","1","0"),
+("800000", "Administrative charge (%)", "0", "200", "1", "1", "1", "100000000", "0", "0", "0");
 
 -- configure creditor
 INSERT INTO `creditor_group` (`enterprise_id`, `name`, `account_id`) values 

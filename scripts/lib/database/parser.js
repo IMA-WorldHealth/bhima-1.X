@@ -89,8 +89,10 @@ module.exports = function (options) {
     var expressions = [], templ = self.templates.update;
     var identifier = sanitize.escapeid(id); // temporarily defaults to 'id'
     for (var d in data) {
+      console.log(data[d], '"sanitized"', sanitize.escape(data[d]));
       if (d != id) expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
     }
+
     return templ.replace('%table%', sanitize.escapeid(table))
                 .replace('%expressions%', expressions.join(', '))
                 .replace('%key%', [identifier, '=', sanitize.escape(data[id])].join(''));
