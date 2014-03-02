@@ -1,0 +1,90 @@
+<header>
+  <span>{{ "SWAPDEBITOR.TITLE" | translate}}</span>
+</header>
+
+<section class="top-nav underline">
+  <div class="pull-right">
+    <a href="#/patient" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'SWAPDEBITOR.PATIENT_REGISTRATION' | translate}}</span></a>
+  </div>
+</section>
+
+<div class="content">
+  
+  <div class="row">
+    <div class="col-xs-6">
+      <div find-patient on-search-complete="initialiseSwaping"></div>
+    </div>
+  </div>
+  <div class="row">
+   <div class="col-xs-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ "SWAPDEBITOR.PATIENT" | translate }}
+      </div>
+
+      <div ng-show="noEmpty" class="panel-body">
+        <div class="row">
+          <div class="col-xs-6">
+
+            <div class="form-group">
+              <label class="control-label">{{ "SWAPDEBITOR.NAME" | translate }}</label>
+              <br>
+              {{selectedDebitor.name}}
+            </div>
+
+            <div class="form-group">
+              <label class="control-label">{{ "SWAPDEBITOR.AGE" | translate }}</label>
+              <br>
+              {{selectedDebitor.age}}
+            </div>
+            
+            <div class="form-group">
+              <label class="control-label">{{ "SWAPDEBITOR.GENDER" | translate }}</label>
+              <br>
+              {{selectedDebitor.sex}}
+            </div>
+          </div>
+          
+          <div class="col-xs-6">
+            <!-- FIXME style hacks --> 
+            <label>{{ "SWAPDEBITOR.ORIGIN" | translate }}</label>
+            <br>
+            {{locationDebitor.village}}
+            <br>
+            {{locationDebitor.sector}}
+            <br>
+            {{locationDebitor.province}}
+            <br>
+            {{locationDebitor.country}}
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-footer" ng-show="noEmpty">
+        <table>
+          <tr>
+            <td><label for="debtor-group" class="control-label">{{ "SWAPDEBITOR.DEBTOR_GROUP" | translate }}</label></td>
+          </tr>
+          <tr>
+            <td>
+          
+          <select required class="form-kapok" id="debtor-group" ng-model="debitor.debitor_group_id" ng-options="g.id as g.name for g in model.debtorGroup.data"><option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
+          </select>                     
+            </td>
+            <td>
+              <span> <button ng-disabled="!noEmpty" ng-click="swapGroup(selectedDebitor)" class="btn btn-default btn-sm">{{ "SWAPDEBITOR.SUBMIT" | translate }}</button></span> 
+            </td>
+          </tr>
+        </table>            
+      </div>
+    </div>
+   </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>

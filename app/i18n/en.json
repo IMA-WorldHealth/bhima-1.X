@@ -791,8 +791,8 @@
     "REGISTER" : "Register a Village",
     "NAME_VILLAGE" : "Village Name",
     "EDIT" : "Edit Village"
-
   },
+
 
   "UPDATE_STOCK" : {
     "TITLE" : "Update Stock",
@@ -804,5 +804,19 @@
     "UPDATE_SUCCESS" : "Stock updated!",
     "UPDATE_FAILURE" : "Cannot update stock",
     "INVALID_PRICE" : "Invalid price provided"
+    },
+    
+   "SWAPDEBITOR":{
+    "TITLE" : "DEBITOR GROUP REAFFECTATION",
+    "PATIENT" : "Patient",
+    "NAME" : "Names",
+    "AGE" : "Age",
+    "GENDER" : "Gender",
+    "ORIGIN" : "Origin",
+    "DEBTOR_GROUP" : "Choose the new debitor group for the debitor",
+    "SUBMIT" : "Submit",
+    "PATIENT_REGISTRATION" : "Patient Registration",
+    "DANGER" : "Error while changing debitor Group",
+    "SUCCES" : "Changing succefully"
   }
 }
