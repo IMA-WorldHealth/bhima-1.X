@@ -4,11 +4,11 @@
 
 <section class="top-nav underline">
 <div class="pull-right">
-    <a ng-click="toggleTablock()" ng-class="{'btn-default' : !session.recovered, 'btn-success': session.recovered}" class="btn">
+    <a ng-click="toggleTablock()" class="btn btn-default">
       <span ng-class="{'glyphicon-th': session.tablock===0, 'glyphicon-th-list' : session.tablock===-1}" class="glyphicon"></span> {{(session.tablock==-1) ? ("SALE.TAB_LOCK_LINE" | translate) : ("SALE.TAB_LOCK_ITEM" | translate)}}
     </a>
 
-    <a ng-disabled="!session.recovered" ng-class="{'btn-default' : !session.recovered, 'btn-success': session.recovered}" class="btn">
+    <a ng-disabled="!session.recovered" ng-click="selectRecover()" ng-class="{'btn-default' : !session.recovered, 'btn-success': session.recovered}" class="btn">
       <span class="glyphicon glyphicon-refresh"></span> {{ "SALE.RECOVER" | translate}}
     </a>
   </div>
@@ -60,6 +60,8 @@
          <p ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
          <p ng-repeat="charge in invoice.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('SALE.APPLIES_GLOBALLY' | translate) : ('SALE.APPLIES_TO_ITEM' | translate)}}</b></p>
          </div>
+
+        
 
          <div class="row">
          

@@ -375,7 +375,11 @@
             scope.findPatient.submitSuccess = false;
             scope.findPatient.debtor = "";
           }
-       
+        
+
+          // Expose selecting a debtor to the module (probabl a hack)(FIXME)
+          scope.findPatient.forceSelect = searchId;
+
           scope.validateNameSearch = validateNameSearch;
           scope.findPatient.refresh = resetSearch;
           scope.submitDebtor = submitDebtor;

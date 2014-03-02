@@ -268,7 +268,8 @@
         namespace: namespace,
         fetch: fetch,
         fetchAll: fetchAll,
-        put: put
+        put: put,
+        remove: remove
       };
     }
 
@@ -307,6 +308,32 @@
         request.onerror = function(event) {
           $rootScope.$apply(deferred.reject(event));
         };
+      });
+      return deferred.promise;
+    }
+
+    function remove(key) { 
+      var t = this, namespace = t.namespace; 
+      var deferred = $q.defer();
+
+      dbdefer.promise
+      .then(function () { 
+        var transaction = db.transaction(['master'], "readwrite");
+        var objectStore = transaction.objectStore('master');
+        var request;
+        
+        console.log('OBJECT STORE', objectStore);
+        console.log('deleting', key);
+        request = objectStore.delete([namespace, key]);
+        
+        request.onsuccess = function(event) {
+          console.log('delete success?', event);
+          deferred.resolve(event);
+        }
+        request.onerror = function(event) {
+          console.log('delete errur');
+          deferred.reject(event);
+        }
       });
       return deferred.promise;
     }
