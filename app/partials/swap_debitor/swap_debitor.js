@@ -40,10 +40,18 @@ angular.module('kpk.controllers').controller('swapDebitor', function($scope, $q,
 
   function swapGroup (selectedDebitor){
     var debitor = {id : selectedDebitor.debitor_id, group_id : $scope.debitor.debitor_group_id};
-    console.log('le debitor',debitor);
-    connect.basicPost('debitor', [connect.clean(debitor)], ['id']).then(handleSucces, handleError);    
+    connect.basicPost('debitor', [connect.clean(debitor)], ['id'])
+    .then(function(res) {
+      var packageHistory = {
+        debitor_id : selectedDebitor.debitor_id,
+        debitor_group_id : $scope.debitor.debitor_group_id,
+        user_id : $scope.model.changer.data.id
+      }
+      connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]).then(handleSucces, handleError);
+  }, handleError);  
 
   }
+
 
   function handleSucces(){
     messenger.success($filter('translate')('SWAPDEBITOR.SUCCES'));
