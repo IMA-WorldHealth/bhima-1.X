@@ -200,12 +200,20 @@
       controller : 'reportPatientRegistrations',
       templateUrl : 'partials/reports/patient_registrations/patient_registrations.html'
     })
+    .when('/reports/cash_payments', {
+      controller: 'reportCashPayments',
+      templateUrl: 'partials/reports/cash_payments/cash_payments.html'
+    })
     .when('/renewal', {
       controller : 'renewal',
       templateUrl : 'partials/patient_renewal/renewal.html'
     })
-    .when('/update_stock', { 
-      controller : 'updateStock', 
+    .when('/swap_debitor', {
+      controller : 'swapDebitor',
+      templateUrl : 'partials/swap_debitor/swap_debitor.html'
+    })
+    .when('/update_stock', {
+      controller : 'updateStock',
       templateUrl : 'partials/update_stock/update_stock.html'
     });
   }

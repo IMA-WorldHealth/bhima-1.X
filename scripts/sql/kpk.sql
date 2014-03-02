@@ -503,6 +503,7 @@ create table `patient_visit` (
 ) engine=innodb;
 
 
+
 --
 -- Table structure for table `kpk`.`debitor`
 --
@@ -759,8 +760,8 @@ drop table if exists `cash`;
 create table `cash` (
   `id`              int unsigned not null auto_increment,
   `enterprise_id`   smallint null,
-  `bon`             char(1) not null,
-  `bon_num`         int unsigned not null,
+  `document_id`     int unsigned not null,
+  `type`            char(1) not null,
   `date`            date not null,
   `debit_account`   int unsigned not null,
   `credit_account`  int unsigned not null,
@@ -1036,4 +1037,24 @@ create table `inventory_log` (
   key `inventory_id` (`inventory_id`),
   constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
+-- 
+-- Table structure for table `kpk`.`debitor_group_history`
+--
+drop table if exists `debitor_group_history`;
+create table `debitor_group_history` (
+`id`                  int unsigned not null auto_increment,
+`debitor_id`          int unsigned not null,
+`debitor_group_id`    smallint unsigned not null,
+`income_date`         timestamp not null,
+`user_id`             smallint unsigned not null,
+primary key (`id`),
+key `debitor_id` (`debitor_id`),
+key `debitor_group_id` (`debitor_group_id`),
+key `user_id` (`user_id`),
+constraint foreign key (`debitor_id`) references `debitor` (`id`),
+constraint foreign key (`debitor_group_id`) references `debitor_group` (`id`),
+constraint foreign key (`user_id`) references `user` (`id`)
+) engine=innodb;
+
+
 -- Jon's dump @ 12:45.

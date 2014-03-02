@@ -221,6 +221,14 @@
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report"
   },
+  
+  "CASH_PAYMENTS" : {
+    "TITLE" : "Cash Payments",
+    "DAY" : "Today",
+    "WEEK" : "This Week",
+    "MONTH" : "This Month",
+    "SEARCH" : "Search"
+  },
 
   "COLUMNS" : {
     "COLUMNS"        : "Columns",
@@ -236,6 +244,7 @@
     "TOTAL"          : "Total",
     "ACCOUNT_ID"     : "Account ID",
     "DEBITOR_NAME"   : "Debitor Name",
+    "DEBITOR_TYPE" : "Debitor Type",
     "ACCOUNT"        : "Account",
     "COMMENT"        : "Comment",
     "PARENT" : "Parent",
@@ -360,7 +369,8 @@
     "CURRENCY" : "Currency",
     "RENEWAL" : "Patient Renewal",
     "PATIENT_REGISTRATION" : "Patient Registration Report",
-    "UPDATE_STOCK" : "Update Stock"
+    "UPDATE_STOCK" : "Update Stock",
+    "CASH_PAYMENTS" : "Cash Payments"
   },
 
   "RENEWAL" : {
@@ -791,10 +801,10 @@
     "REGISTER" : "Register a Village",
     "NAME_VILLAGE" : "Village Name",
     "EDIT" : "Edit Village"
-
   },
 
-  "UPDATE_STOCK" : { 
+
+  "UPDATE_STOCK" : {
     "TITLE" : "Update Stock",
     "TIMESTAMP" : "Timestamp",
     "FIND_STOCK" : "Find Stock",
@@ -804,5 +814,19 @@
     "UPDATE_SUCCESS" : "Stock updated!",
     "UPDATE_FAILURE" : "Cannot update stock",
     "INVALID_PRICE" : "Invalid price provided"
+    },
+    
+   "SWAPDEBITOR":{
+    "TITLE" : "DEBITOR GROUP REAFFECTATION",
+    "PATIENT" : "Patient",
+    "NAME" : "Names",
+    "AGE" : "Age",
+    "GENDER" : "Gender",
+    "ORIGIN" : "Origin",
+    "DEBTOR_GROUP" : "Choose the new debitor group for the debitor",
+    "SUBMIT" : "Submit",
+    "PATIENT_REGISTRATION" : "Patient Registration",
+    "DANGER" : "Error while changing debitor Group",
+    "SUCCES" : "Changing succefully"
   }
 }
