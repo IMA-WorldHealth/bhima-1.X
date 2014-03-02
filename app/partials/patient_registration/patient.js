@@ -37,6 +37,10 @@ angular.module('kpk.controllers')
     dependencies.country = {
       query : { tables : { 'country' : { 'columns' : ['id', 'country_en', 'country_fr'] }}}
     };
+
+    dependencies.register = {
+      query : 'user_session'
+    };
  
     function patientRegistration(model) {
       for (var k in model) { $scope[k] = model[k]; }
@@ -153,6 +157,14 @@ angular.module('kpk.controllers')
       .then(function(result) {
         patient_id = result.data.insertId;
         return connect.fetch('/visit/' + patient_id);
+      })
+      .then(function (result) {
+        var packageHistory = {
+          debitor_id : patient.debitor_id,
+          debitor_group_id : $scope.debtor.debtor_group.id,
+          user_id : $scope.register.data.id
+        }
+        return connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]);
       })
       .then(function (result) {
         $location.path('invoice/patient/' + patient_id);
