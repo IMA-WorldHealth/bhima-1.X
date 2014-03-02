@@ -422,7 +422,8 @@
     "TITLE" : "Titre",
     "VALUE" : "Valeur",
     "SCOPE" : "Appliquer a",
-    "VISIT_DATE" : "Date de Visite"
+    "VISIT_DATE" : "Date de Visite",
+    "DEBITOR_TYPE" : "Type de Debiteur"
   },
 
   "REPORT" : {
