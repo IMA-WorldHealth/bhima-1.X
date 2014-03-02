@@ -57,7 +57,7 @@ angular.module('kpk.controllers')
       var dateConvert = $scope.dates.dateTo;
       dateConvert.setDate(dateConvert.getDate() + 1);
       connect.fetch([
-        '/registrations',
+        '/rt/p',
         $scope.enterprise.id,
         $scope.state.dateFrom,
         dateConvert

@@ -96,7 +96,7 @@ INSERT INTO `unit` VALUES
   (64, 'Group Invoicing'            , 'TREE.GRP_INVOICING', ''                                           , 5   , 0 , '/partials/group_invoice/'                , '/group_invoice/'),
   (65, 'Currency'                   , 'TREE.CURRENCY', ''                                           , 1   , 0 , '/partials/currency/'                     , '/currency'),
   (66, 'Patient Renewal'            , 'TREE.RENEWAL', ''                                            , 21, 0, '/partials/patient_renewal/', '/renewal'),
-  (67, 'Patient Registrations'      , 'TREE.PATIENT_REGISTRATION', '',                                 21, 0, '/partials/reports/patient_registrations/', '/reports/patient_registrations'),
+  (67, 'Patient Registrations'      , 'TREE.PATIENT_REGISTRATION', '',                                 10, 0, '/partials/reports/patient_registrations/', '/reports/patient_registrations'),
   (68, 'Update Stock'               , 'TREE.UPDATE_STOCK', '',                                      11, 0, '/partials/update_stock/', '/update_stock/'),
   (69, 'Change Patient Group'       , 'TREE.SWAP_DEBITOR', '',                                      21, 0, '/partials/swap_debitor/', '/swap_debitor/');
 
