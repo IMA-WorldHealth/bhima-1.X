@@ -3,7 +3,7 @@
 // This module provides additional validation utilities for tests
 // throughout the server.
 
-module.exports = (function () {
+module.exports = function () {
   'use strict';
 
   return {
@@ -23,4 +23,4 @@ module.exports = (function () {
     exists : function (a) { return this.isDefined(a) && !this.isNull(a); }
   };
 
-});
+};

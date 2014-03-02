@@ -2,10 +2,8 @@
 
 // import node dependencies
 var express      = require('express'),
-    fs           = require('fs'),
     domain       = require('domain'),
-    url          = require('url'),
-    querystring  = require('querystring');
+    url          = require('url');
 
 // import configuration
 var cfg = require('./config.json');
@@ -29,7 +27,8 @@ var report       = require('./lib/logic/report')(db),
     journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
     fiscal       = require('./lib/logic/fiscal')(db),
-    createSale   = require('./lib/logic/createSale')(db, parser, journal);
+    createSale   = require('./lib/logic/createSale')(db, parser, journal),
+    rt           = require('./lib/logic/rt')(db);
 
 app.configure(function () {
   app.use(express.compress());
@@ -262,23 +261,6 @@ app.get('/tree', function (req, res, next) {
   });
 });
 
-app.get('/price_list/:id', function (req, res, next) {
-  var sql =
-    'SELECT `price_list`.`id`, `price_list`.`name`, ' +
-    '`price_list`.`inventory_type`, `price_list`.inventory_group, ' +
-    'COUNT(`price_list_detail`.`list_id`) AS `count` ' +
-    'FROM `price_list` LEFT JOIN `price_list_detail` ON  ' +
-      '`price_list`.`id`=`price_list_detail`.`list_id` ' +
-    'WHERE `price_list`.`enterprise_id`=' + sanitize.escape(req.params.id) + ' ' +
-    'GROUP BY `price_list`.`id`;';
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
-    if (rows.length === 1 && rows[0].plcount === 0) return res.send([]);
-    res.send(rows);
-  });
-});
-
-// ugh.
 app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
 
@@ -392,6 +374,15 @@ app.get('/account_balance/:id', function (req, res, next) {
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send(rows);
+  });
+});
+
+// routes for real time queries on invoices, inventory items, etc.
+app.get('/rt/:type/:id/:start/:end', function (req, res, next) {
+
+  rt(req.params.type, req.params.id, req.params.start, req.params.end, function (err, data) {
+    if (err) { return next(err); }
+    res.send(data);
   });
 
 });

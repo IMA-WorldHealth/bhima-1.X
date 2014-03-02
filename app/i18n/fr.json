@@ -227,6 +227,7 @@
     "REPORTS" : "Rapports",
     "INVENTORY" : "Stock",
     "HOSPITAL" : "Hopitale",
+    "SWAP_DEBITOR" : "Changer Groupe Debiteur",
     "FISCAL_YEAR" : "Annee Fiscale",
     "PATIENT_REG" : "Enregistrement des Malades",
     "PATIENT_RECORDS" : "Historique",
@@ -260,7 +261,19 @@
     "GRP_INVOICING" : "Facturation des Conventions",
     "CURRENCY" : "Monaie",
     "RENEWAL" : "Renouveller Fiche",
-    "PATIENT_REGISTRATION" : "Rapport Enregistrement des Malades"
+    "PATIENT_REGISTRATIONS" : "Rapport Enregistrement des Malades",
+    "UPDATE_STOCK" : "Mettre a Jour les Stocks"
+  },
+
+  "PATIENT_REGISTRATIONS" : {
+    "TITLE" : "Les Enregistrements des Patients",
+    "FIND_DATE" : "Choisir Date",
+    "DATE_FROM" : "Date debut",
+    "DATE_TO" : "Date fin",
+    "DAY" : "Aujourd'hui",
+    "WEEK" : "Cette Semaine",
+    "MONTH" : "Ce Mois",
+    "SEARCH" : "Rechercher"
   },
 
   "PATIENT_RECORDS" : {
@@ -395,7 +408,8 @@
     "PRICE_LIST" : "Liste de Prix",
     "TITLE" : "Titre",
     "VALUE" : "Valeur",
-    "SCOPE" : "Appliquer a"
+    "SCOPE" : "Appliquer a",
+    "VISIT_DATE" : "Date de Visite"
   },
 
   "REPORT" : {
@@ -781,7 +795,7 @@
     "EDIT" : "Editer Province"
     },
 
-    "VILLAGE" : {
+  "VILLAGE" : {
     "TITLE" : "VILLAGE MANAGER",
     "LOCATION_MANAGER" : "Location manager",
     "NEW_VILLAGE" : "Add Village",
@@ -794,6 +808,31 @@
     "REGISTER" : "Register a Village",
     "NAME_VILLAGE" : "Village Name",
     "EDIT" : "Edit Village"
+  },
 
+  "UPDATE_STOCK" : {
+    "TITLE" : "Mettre a Jour le Stock",
+    "TIMESTAMP" : "Date",
+    "FIND_STOCK" : "Rechercher Item",
+    "STOCK_HISTORY" : "Historique Stock",
+    "SUBMIT" : "Soumettre",
+    "SEARCH_TEXT" : "Rechercher par code ou description",
+    "UPDATE_SUCCESS" : "Les stocks sont mettre a jour",
+    "UPDATE_FAILURE" : "La requette ne passe pas",
+    "INVALID_PRICE" : "Le Prix est invalide"
+    },
+
+  "SWAPDEBITOR":{
+    "TITLE" : "AFFECTATION DE GROUPE DES DEBITEURS",
+    "PATIENT" : "Patient",
+    "NAME" : "Noms",
+    "AGE" : "Age",
+    "GENDER" : "Sexe",
+    "ORIGIN" : "Origines",
+    "DEBTOR_GROUP" : "Selectionner un nouveau groupe des debiteur",
+    "SUBMIT" : "Soumettre",
+    "PATIENT_REGISTRATION" : "Enregistrement Patient",
+    "DANGER" : "Erreur pendant le changement de groupe de debiteur",
+    "SUCCES" : "Changement avec succes"
   }
 }

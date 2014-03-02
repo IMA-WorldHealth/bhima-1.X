@@ -13,14 +13,6 @@ module.exports = function (db) {
 
   var table_router, check, get;
 
-  // router for incoming requests
-  table_router = {
-    'sale'     : handleSales,
-    'cash'     : handleCash,
-    'purchase' : handlePurchase,
-    'group_invoice' : handleGroupInvoice,
-    'credit_note' : handleCreditNote,
-  };
 
   // validity checks
   check = {
@@ -295,7 +287,7 @@ module.exports = function (db) {
       'SELECT `cash`.`id`, `cash`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  +
         '`cash`.`deb_cred_id`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`cashier_id`, ' +
         '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' +
-        '`cash`.`bon`, `cash`.`bon_num` ' +
+        '`cash`.`type`, `cash`.`document_id` ' +
       'FROM `cash` JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` ' +
       'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
 
@@ -313,15 +305,15 @@ module.exports = function (db) {
       // first check - are we in the correct period/fiscal year?
       check.validPeriod(enterprise_id, date, function (err) {
 
-        // second check - is there a bon number defined?
-        var bon_num_exist = validate.exists(reference_payment.bon_num);
-        if (!bon_num_exist) {
+        // second check - is there a type number defined?
+        var document_id_exist = validate.exists(reference_payment.document_id);
+        if (!document_id_exist) {
           return done(new Error('The Bon number is not defined for cash id: ' + id));
         }
 
-        // third check - is the bon defined?
-        var bon_exist = validate.exists(reference_payment.bon);
-        if (!bon_exist) {
+        // third check - is the type defined?
+        var type_exist = validate.exists(reference_payment.type);
+        if (!type_exist) {
           return done(new Error('The Bon is not defined for cash id: ' + id));
         }
 
@@ -342,7 +334,6 @@ module.exports = function (db) {
    
         // sixth check - do all the allocated costs add up to the total cost?
         // We must catch this because reduce fails in on a empty array.
-        // FIXME : re-write this check
         function sum(a, b) {
           return a + b.allocated_cost;
         }
@@ -385,16 +376,16 @@ module.exports = function (db) {
                   // we can begin copying data from CASH -> JOURNAL
                 
                   // First, figure out if we are crediting or debiting the caisse
-                  // This is indicated by the bon.
+                  // This is indicated by the type.
                   // match { 'S' => debiting; 'E' => crediting }
-                  var account_type = reference_payment.bon !== 'E' ? 'credit_account' : 'debit_account' ;
+                  var account_type = reference_payment.type !== 'E' ? 'credit_account' : 'debit_account' ;
 
                   // Are they a debitor or a creditor?
-                  var deb_cred_type = reference_payment.bon === 'E' ? '\'D\'' : '\'C\'';
+                  var deb_cred_type = reference_payment.type === 'E' ? '\'D\'' : '\'C\'';
 
                   // calculate exchange rate.  If money coming in, credit is cash.cost,
                   // credit_equiv is rate*cash.cost and vice versa.
-                  var money = reference_payment.bon === 'E' ?
+                  var money = reference_payment.type === 'E' ?
                     '`cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, 0, ' :
                     '0, `cash`.`cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash`.`cost`, ' ;
 
@@ -405,7 +396,7 @@ module.exports = function (db) {
                       '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                       '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                      '`cash`.`description`, `cash`.`bon_num`, `cash`.`' + account_type + '`, ' + money +
+                      '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
                       '`cash_item`.`invoice_id`, `cash`.`currency_id`, null, null, ' +
                       [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` JOIN `cash_item` ON ' +
@@ -416,11 +407,11 @@ module.exports = function (db) {
 
                   // Then copy data from CASH_ITEM -> JOURNAL
                 
-                  var cash_item_money = reference_payment.bon === 'E' ?
+                  var cash_item_money = reference_payment.type === 'E' ?
                     '0, `cash_item`.`allocated_cost`, 0, ' + 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, ' :
                     '`cash_item`.`allocated_cost`, 0, '+ 1/rate_map[reference_payment.currency_id] + '*`cash_item`.`allocated_cost`, 0, ' ;
 
-                  var cash_item_account_id = reference_payment.bon !== 'E' ? 'debit_account' : 'credit_account';
+                  var cash_item_account_id = reference_payment.type !== 'E' ? 'debit_account' : 'credit_account';
 
                   var cash_item_query =
                     'INSERT INTO `posting_journal` ' +
@@ -428,7 +419,7 @@ module.exports = function (db) {
                       '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                       '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                     'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                      '`cash`.`description`, `cash`.`bon_num`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
+                      '`cash`.`description`, `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
                       '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                       '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
                     'FROM `cash` JOIN `cash_item` ON ' +
@@ -757,6 +748,15 @@ module.exports = function (db) {
       });
     });
   }
+
+  // router for incoming requests
+  table_router = {
+    'sale'     : handleSales,
+    'cash'     : handleCash,
+    'purchase' : handlePurchase,
+    'group_invoice' : handleGroupInvoice,
+    'credit_note' : handleCreditNote,
+  };
 
   function request (table, id, user_id, done) {
     // handles all requests coming from the client

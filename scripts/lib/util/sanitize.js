@@ -5,8 +5,8 @@ module.exports = {
   // this is not incredibly secure
   escapeid : function (id) { return ['`', id, '`'].join(''); },
   
-  escape: function (str) { return (!Number.isNaN(Number(str)) || ~str.indexOf('"')) ? str : '"' + str + '"'; },
-  
+  escape: function (str) { return '"' + String(str).replace(/"/g, '\\"') + '"'; },
+
   isInt : function (n) { return (Math.floor(n) === Number(n)); },
 
   isIn : function (s) {  return String(s).indexOf('(') > -1; },
@@ -25,6 +25,6 @@ module.exports = {
   // is there a better way to do this?
   isUndefined : function (u) { return u === undefined; },
   
-  isDefined : function (d) { return !this.isUndefined(u); }
+  isDefined : function (u) { return !this.isUndefined(u); }
 
 };

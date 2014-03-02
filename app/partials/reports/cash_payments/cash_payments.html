@@ -1,0 +1,79 @@
+<header>
+  {{ "CASH_PAYMENTS.TITLE" | translate }}
+</header>
+
+<section class="top-nav">
+  <div class="pull-left">
+    <a href="" class="btn btn-sm btn-default" ng-click="day()">
+      {{ "CASH_PAYMENTS.DAY" | translate }}
+    </a>
+    <a href="" class="btn btn-sm btn-default" ng-click="week()">
+      {{ "CASH_PAYMENTS.WEEK" | translate }}
+    </a>
+    <a href="" class="btn btn-sm btn-default" ng-click="month()">
+      {{ "CASH_PAYMENTS.MONTH" | translate }}
+    </a>
+  </div>
+
+  <div>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateFrom" rows="20">
+    </div>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateTo" rows="20">
+    </div>
+    <a href="" class="btn btn-sm btn-primary" ng-click="search()">
+      {{ "CASH_PAYMENTS.SEARCH" | translate }}
+    </a>
+  </div>
+
+  <!--
+  <div class="pull-right btn-group">
+    <button type="button" class="btn btn-default btn-sm dropdown-toggle">
+      Specify <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><input type="date" class="form-kapok"></li>
+      <li><input type="date" class="form-kapok"></li>
+      <li class="divider"></li>
+      <li><a href="" class='btn  btn-primary'>Submit</a></li>
+    </ul>
+  </div>
+  -->
+</section>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ state.dateFrom | date }} - {{ state.dateTo | date }}</small></h4>
+        <table id="patientTable" class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.ID" | translate }}</th>
+              <th>{{ "COLUMNS.NAME" | translate }}</th>
+              <th>{{ "COLUMNS.TYPE" | translate }}</th>
+              <th>{{ "COLUMNS.COST" | translate }}</th>
+              <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
+              <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
+              <th>{{ "COLUMNS.DEBITOR_TYPE" | translate }}</th>
+              <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+              <th>{{ "COLUMNS.DATE" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='payment in payments'>
+              <td> {{ payment.document_id }} </td>
+              <td> {{ payment.first_name + ' ' + payment.last_name }} </td>
+              <td> {{ payment.type }} </td>
+              <td ng-bind-html="payment.cost | intlcurrency:payment.currency_id"></td>
+              <td> {{ payment.invoice_id }} </td>
+              <td> {{ payment.deb_cred_id }} </td>
+              <td> {{ payment.deb_cred_type }} </td>
+              <td> {{ payment.description }} </td>
+              <td> {{ payment.date | date }} </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>

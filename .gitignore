@@ -9,6 +9,9 @@ node_modules/
 test/reports/
 scripts/sql/backup/
 
+# ignore misc
+/misc/*
+
 # ignore build tool generated files
 app/js/controllers/controllers.js
 ./app/js/controllers/controllers.js
@@ -16,4 +19,4 @@ app/js/controllers/controllers.js
 
 # ignore log files
 *.log
-./scripts/sql/backup.sql
+/scripts/sql/backup/*
