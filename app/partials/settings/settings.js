@@ -26,7 +26,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.back = function () {
-      $location.path($scope.q);
+      $location.path($scope.q).search('q', '');
     };
 
   }

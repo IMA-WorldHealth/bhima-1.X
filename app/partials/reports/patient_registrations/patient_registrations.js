@@ -1,12 +1,11 @@
 angular.module('kpk.controllers')
 .controller('reportPatientRegistrations', [
   '$scope',
-  '$translate',
   'connect',
   'appstate',
   'messenger',
   '$filter',
-  function ($scope, $translate, connect, appstate, messenger, $filter) {
+  function ($scope, connect, appstate, messenger, $filter) {
     $scope.state = {};
     $scope.dates = {};
 
@@ -68,7 +67,10 @@ angular.module('kpk.controllers')
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
-      
     };
+
+    // default to searching today
+    $scope.day();
+
   }
 ]);
