@@ -73,7 +73,7 @@ angular.module('kpk.controllers')
       query : {
         tables: {
           'cash' : {
-            columns: ['id', 'bon', 'bon_num', 'date', 'debit_account', 'credit_account', 'currency_id', 'cashier_id', 'cost', 'description']
+            columns: ['id', 'document_id', 'type', 'date', 'debit_account', 'credit_account', 'currency_id', 'cashier_id', 'cost', 'description']
           }
         }
       }
@@ -184,7 +184,7 @@ angular.module('kpk.controllers')
 
     function processCashInvoice () {
       // Gather data and submit the cash invoice
-      var bon_num, cashPayment, date, description;
+      var document_id, cashPayment, date, description;
 
       // we need to figure out if they are paying the total amount
       // if they are, it means that the absolute value of
@@ -193,14 +193,14 @@ angular.module('kpk.controllers')
 
       date = util.convertToMysqlDate(new Date());
 
-      bon_num = generateBonNumber($scope.cash.data, 'E');
+      document_id = generateDocumentId($scope.cash.data, 'E');
 
-      description = ['CP E', bon_num, $scope.patient.first_name, date].join('/');
+      description = ['CP E', document_id, $scope.patient.first_name, date].join('/');
 
       cashPayment = {
         enterprise_id : $scope.enterprise.id,
-        bon : 'E',
-        bon_num : bon_num,
+        type : 'E',
+        document_id : document_id,
         date : date,
         debit_account : $scope.cashbox.cash_account,
         credit_account : $scope.patient.account_id,
@@ -272,12 +272,12 @@ angular.module('kpk.controllers')
         });
     };
 
-    function generateBonNumber (model, bon_type) {
+    function generateDocumentId(model, type) {
       // filter by bon type, then gather ids.
       var ids = model.filter(function(row) {
-        return row.bon === bon_type;
+        return row.type === type;
       }).map(function(row) {
-        return row.bon_num;
+        return row.document_id;
       });
       return (ids.length < 1) ? 1 : Math.max.apply(Math.max, ids) + 1;
     }

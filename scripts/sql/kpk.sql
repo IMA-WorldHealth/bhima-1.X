@@ -760,8 +760,8 @@ drop table if exists `cash`;
 create table `cash` (
   `id`              int unsigned not null auto_increment,
   `enterprise_id`   smallint null,
-  `bon`             char(1) not null,
-  `bon_num`         int unsigned not null,
+  `document_id`     int unsigned not null,
+  `type`            char(1) not null,
   `date`            date not null,
   `debit_account`   int unsigned not null,
   `credit_account`  int unsigned not null,
