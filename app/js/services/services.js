@@ -4,7 +4,7 @@
   'use strict';
 
   var services = angular.module('kpk.services', []);
-  
+
   services.service('kpkUtilitaire', function() {
 
     this.formatDate = function(dateString) {
@@ -54,15 +54,15 @@
 
     this.round = function round(n, p) {
       // round [fn]
-      // 
+      //
       // round takes in a number, n, and a precision, p,
       // returning the same number as a float to the
       // decimal percision p.
       if (!p) { p = dflt_precision; }
       return parseFloat(n.toFixed(p));
-    
+
     };
-    
+
     this.scale = function scale(n, s) {
       // scale [fn]
       //
@@ -107,7 +107,7 @@
 
     function refresh(dependencies, limit) {
       var list = limit || Object.keys(dependencies);
-      
+  
       list.forEach(function(modelKey) {
         dependencies[modelKey].processed = false;
       });
@@ -117,7 +117,7 @@
     function process(dependencies, limit) {
       var validate, deferred = $q.defer(), list = filterList((limit || Object.keys(dependencies)), dependencies);
       dependencies[modelLabel] = dependencies[modelLabel] || {};
-    
+
       fetchModels(list, dependencies).then(function(model) {
         packageModels(list, dependencies, model);
         validate = validateModels(list, dependencies);
@@ -137,7 +137,7 @@
 
       return deferred.promise;
     }
-  
+
     function filterList(list, dependencies) {
       var fList;
 
@@ -151,19 +151,19 @@
 
     function validateModels(list, dependencies) {
       var validateStatus = new Status();
-    
+
       list.some(function(modelKey) {
         var model = dependencies.model[modelKey], details = dependencies[modelKey], modelTests = details.test || [], modelTestStatus = false;
-      
+  
         //Check for standard test flags
         validateTests.forEach(function(testObject) {
           if(details[testObject.flag]) modelTests.push(testObject);
         });
-    
+
         //Run each test
         modelTestStatus = modelTests.some(function(testObject) {
           var testFailed, testMethod = testObject.method;
-         
+     
           testFailed = !testMethod(model.data);
           if(testFailed) validateStatus.setFailed(testObject, modelKey);
           return testFailed;
@@ -182,15 +182,15 @@
 
     function fetchModels(list, dependencies) {
       var deferred = $q.defer(), promiseList = [];
-    
+
       list.forEach(function(key) {
         var dependency = dependencies[key], args = [dependency.query];
-      
+  
         //Hack to allow modelling reports with unique identifier - not properly supported by connect
         if(dependency.identifier) args.push(dependency.identifier);
         promiseList.push(connect.req.apply(connect.req, args));
       });
-    
+
       $q.all(promiseList).then(function(populatedQuerry) {
         deferred.resolve(populatedQuerry);
       }, function(error) {
@@ -203,7 +203,7 @@
       "enterprise" : {method: testRequiredModel, args: ["enterprise"], result: null},
       "fiscal" : {method: testRequiredModel, args: ["fiscal_year"], result: null}
     };
-  
+
     function testRequiredModel(tableName, primaryKey) {
       var deferred = $q.defer();
       var testDataQuery = {
@@ -218,11 +218,11 @@
       //download data to test
       connect.req(testDataQuery)
       .then(function(res) {
-      
+  
         //run test on data
         deferred.resolve(isNotEmpty(res.data));
       }, function(err) {
-      
+  
         //download failed
         deferred.reject();
       });
@@ -234,7 +234,7 @@
     }
 
     function Status() {
-    
+
       function setFailed(testObject, reference) {
         this.success = false;
         this.message = testObject.message;
@@ -300,7 +300,7 @@
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request = objectStore.index('namespace, key').get([namespace, key]);
-      
+  
         request.onsuccess = function(event) {
           var result = event.target.result;
           $rootScope.$apply(deferred.resolve(result));
@@ -341,7 +341,7 @@
     function put(key, value) {
       var t = this, namespace = t.namespace;
       var deferred = $q.defer();
-    
+
       dbdefer.promise
       .then(function() {
         var writeObject = {
@@ -351,7 +351,7 @@
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request;
-     
+ 
         //TODO jQuery dependency - write simple utility to flatten/ merge object
         writeObject = jQuery.extend(writeObject, value);
         request = objectStore.put(writeObject);
@@ -401,7 +401,7 @@
         db = event.target.result;
         //TODO naive implementation - one object store to contain all cached data, namespaced with feild
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
-     
+ 
         //delete object store if it exists - DEVELOPMENT ONLY
         if(db.objectStoreNames.contains('master')) {
           //FIXME no error/ success handling
@@ -472,11 +472,11 @@
     };
   });
 
-  services.factory('store', function () {
+  services.factory('store', ['$http', function ($http) {
     // store service
-  
+
     return function (options, target) {
-    
+
       // the data store, similar to Dojo's Memory Store.
       options = options || {};
       // globals
@@ -516,7 +516,7 @@
       };
 
       // put is for UPDATES
-      this.put = function (object, opts) {      
+      this.put = function (object, opts) {
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
@@ -552,19 +552,12 @@
       this.remove = function (id) {
         var data = this.data,
             index = this.index;
-      
+  
         if (id in index) {
           data.splice(index[id], 1);
           this.setData(data);
           queue.push({method: 'DELETE', url: '/data/' + target + '/' + id});
         }
-      };
-
-      this.generateid = function () {
-        // generate a new id by incrimenting the last id
-        // in the store
-        var id = Math.max.apply(Math.max, Object.keys(this.index)) + 1;
-        return (id > 0)  ? id : 1;
       };
 
       this.contains = function (id) {
@@ -578,12 +571,12 @@
         var fail = [];
         queue.forEach(function (req) {
           $http(req)
-            .success(function () {
-            })
-            .error(function (data, status, headers, config) {
-              alert("An error in data transferred occured with status:", status);
-              fail.push(req);
-            });
+          .success(function () {
+          })
+          .error(function (data, status, headers, config) {
+            alert("An error in data transferred occured with status:", status);
+            fail.push(req);
+          });
         });
         queue = fail;
       };
@@ -597,7 +590,7 @@
 
       return this;
     };
-  });
+  }]);
 
   services.factory('connect', function ($http, $q, store) {
     //summary:
@@ -664,7 +657,7 @@
 
       handle = $http.get('/data/?' + JSON.stringify(defn));
       handle.then(function (returned) {
-      
+  
         //massive hack so I can use an identifier - set default identifier
         returned.identifier = defn.identifier || 'id';
         var m = new store(returned, table);
@@ -851,59 +844,8 @@
           self.map[r.foreign_currency_id] = precision.round(r.rate);
         });
       });
-      
+  
       return self;
-    }
-  ])
-
-  .factory('totaler', [
-    'connect',
-    'messenger',
-    'precision',
-    function (connect, messenger, precision) {
-      var store;
-      connect.req({
-        tables : {
-          'currency' : {
-            columns : ['id', 'min_monentary_unit']
-          }
-        }
-      })
-      .then(function (currency) {
-        store = currency;
-      }, function (error) {
-        messenger.danger('Error loading currencies:' + JSON.stringify(error));
-      });
-
-      return function convert (amount, currency_id) {
-        if (!store) {
-          return messenger.danger('No Currencies loaded!');
-        }
-        var unit = store.get(currency_id).min_monentary_unit;
-        var total, difference;
-        if (unit > 1) {
-          // what is the remainder?
-          var remainder = unit - (amount % unit);
-          //console.log('amount:', amount, 'remainder:', remainder, 'unit:', unit, 'unit/2', unit/2);
-
-          if (remainder < unit / 2) {
-            total = precision.round(amount + remainder, 0);
-          } else {
-            total = precision.round(amount - (unit - remainder), 0);
-          }
-          difference = (unit - remainder);
-        } else {
-          // this assumes that all fractions are 0.01, 0.0001, etc.
-          var l = unit.toString().length;
-          total = precision.round(amount, l);
-          difference = precision.compare(total, amount);
-        }
-
-        return {
-          total : total,
-          difference : difference
-        };
-      };
     }
   ])
 
