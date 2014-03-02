@@ -3,7 +3,7 @@
 
   //FIXME: Format code correctly in seperate files/modules etc.
   var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
- 
+
   function kpkconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
@@ -84,9 +84,9 @@
     when('/purchase_records/:purchaseID?', {
       controller: 'purchaseRecordsController',
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
-    }).  
-    when('/inventory/price_list', { 
-      controller: 'priceList', 
+    }).
+    when('/inventory/price_list', {
+      controller: 'priceList',
       templateUrl: 'partials/price_list/pricelist.html'
     }).
     when('/exchange_rate', {
@@ -116,10 +116,6 @@
     when('/reports/summary', {
       controller: 'summaryController',
       templateUrl: 'partials/reports/summary/summary.html'
-    }).
-    when('/reports/account_balance/', {
-      controller: 'reportAccountBalance',
-      templateUrl: 'partials/reports/account_balance/account_balance.html'
     }).
     when('/reports/debitor_aging/', {
       controller: 'reportDebitorAging',
@@ -191,7 +187,7 @@
     when('/patient_group', {
       controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'
-    }) 
+    })
     .when('/group_invoice/:id?', {
       controller : 'groupInvoice',
       templateUrl : 'partials/group_invoice/group_invoice.html'
@@ -224,7 +220,7 @@
       prefix: '/i18n/',
       suffix: '.json'
     });
-    
+ 
     //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('en');
   }
