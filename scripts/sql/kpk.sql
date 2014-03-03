@@ -350,12 +350,13 @@ create table `kpk`.`price_list_item` (
 --
 -- Table structure for table `kpk`.`debitor_group_type`
 --
-drop table if exists `debitor_group_type`;
-create table `debitor_group_type` (
-  `id` smallint unsigned not null auto_increment,
-  `type` varchar(80) not null,
-  primary key (`id`)
-) engine=innodb;
+-- drop table if exists `debitor_group_type`;
+-- create table `debitor_group_type` (
+--   `id` smallint unsigned not null auto_increment,
+--   `type` varchar(80) not null,
+--   primary key (`id`)
+-- ) engine=innodb;
+--
 
 --
 -- Table structure for table `kpk`.`debitor_group`
@@ -374,7 +375,7 @@ create table `debitor_group` (
   `locked`              boolean not null default 0,
   `tax_id`              smallint unsigned null,
   `max_credit`          mediumint unsigned default '0',
-  `type_id`             smallint unsigned not null,
+  -- `type_id`             smallint unsigned,
   `is_convention`        boolean not null default 0,
   `price_list_id`       smallint unsigned null,
   primary key (`id`),
@@ -383,13 +384,13 @@ create table `debitor_group` (
   key `location_id` (`location_id`),
   key `price_list_id` (`price_list_id`),
 --  key `tax_id` (`tax_id`),
-  key `type_id` (`type_id`),
+  -- key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
   constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
   constraint foreign key (`location_id`) references `village` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`price_list_id`) references `price_list` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`price_list_id`) references `price_list` (`id`) on delete cascade on update cascade
 --  constraint foreign key (`tax_id`) references `tax` (`id`),
-  constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
+  -- constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
 
 --
