@@ -4,6 +4,7 @@ angular.module('kpk.controllers')
   '$location',
   '$translate',
   'connect',
+  'appcache',
   'appstate',
   'messenger',
   'validate',
@@ -11,9 +12,10 @@ angular.module('kpk.controllers')
   'kpkUtilitaire',
   'precision',
   'calc',
-  function($scope, $location, $translate, connect, appstate, messenger, validate, exchange, util, precision, calc) {
+  function($scope, $location, $translate, connect, appcache, appstate, messenger, validate, exchange, util, precision, calc) {
     var dependencies = {},
         data = $scope.data = {};
+    var cache = new appcache('cash');
 
     $scope.queue = [];
     data.payment = 0;
@@ -78,7 +80,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-
+    
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.cashboxes.query.where =
@@ -87,7 +89,8 @@ angular.module('kpk.controllers')
         ['account.enterprise_id=' + enterprise.id];
       validate.process(dependencies).then(setUpModels, handleErrors);
     });
-
+    
+    cache.fetch('cashbox').then(loadCashBox);
 
     function setUpModels(models) {
       for (var k in models) {
@@ -103,7 +106,13 @@ angular.module('kpk.controllers')
 
     $scope.setCashBox = function setCashBox (box) {
       $scope.cashbox = box;
+
+      cache.put('cashbox', box);
     };
+
+    function loadCashBox(box) { 
+      if (box) $scope.cashbox = box;
+    }
 
     $scope.loadInvoices = function (debitor) {
       $scope.ledger = [];

@@ -62,7 +62,7 @@ module.exports = function (db) {
   function c(id, start, end, done) {
     var sql =
       "SELECT c.document_id, c.cost, cr.name, c.type, p.first_name, c.description, " +
-        "p.last_name, c.deb_cred_id, c.deb_cred_type, ci.invoice_id, c.date " +
+        "p.last_name, c.deb_cred_id, c.deb_cred_type, c.currency_id, ci.invoice_id, c.date " +
       "FROM `cash` AS c JOIN `currency` as cr JOIN `cash_item` AS ci " +
         "JOIN `debitor` AS d JOIN `patient` as p " +
         "ON ci.cash_id = c.id AND c.currency_id = cr.id AND " +
