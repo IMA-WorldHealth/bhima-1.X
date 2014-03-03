@@ -43,9 +43,9 @@ delete from `price_list`;
 INSERT INTO `user` values
   (1,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 	(2,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
-	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
   (3, 'sthreshley', 'ima', 'Larry', 'Sthreshley', 'example@email.me', 0),
-  (4, 'receptioniste', 'moyo', 'Reception', 'Reception', 'recept@example.me', 0);
+  (4, 'receptioniste', 'moyo', 'Reception', 'Reception', 'recept@example.me', 0),
+	(13,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0);
 
 -- url, p_url
 -- index.html files in urls here are reflective of
@@ -2330,8 +2330,7 @@ INSERT INTO `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `locat
 -- configure inventory
 
 INSERT INTO `inventory_unit` (`text`) values
-  ('Act'),
-	('Pallet'), ('Pill'), ('Box'), ('Lot');
+  ('Act'),('Pallet'), ('Pill'), ('Box'), ('Lot');
 
 INSERT INTO `inventory_type` values
   (0,'Article'),
