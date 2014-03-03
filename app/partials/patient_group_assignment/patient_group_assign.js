@@ -135,7 +135,7 @@ angular.module('kpk.controllers')
                 $scope.assignation_patient.post(tapon[i]);
               }
               messenger.success('Successfully updated');
-              $scope.patient = {};
+              // $scope.patient = {};
             }, function(err){
               messenger.danger('Error updating');
             });
