@@ -14,7 +14,7 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'debitor_group' : {
-            columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'type_id', 'is_convention', 'price_list_id']
+            columns : ['id', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'is_convention', 'price_list_id']
           }
         }
       }
@@ -51,16 +51,16 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.types = {
-      required : true,
-      query : {
-        tables : {
-          'debitor_group_type' : {
-            columns : ['id', 'type']
-          }
-        }
-      }
-    };
+    // dependencies.types = {
+    //   required : true,
+    //   query : {
+    //     tables : {
+    //       'debitor_group_type' : {
+    //         columns : ['id', 'type']
+    //       }
+    //     }
+    //   }
+    // };
  
     dependencies.location = {
       query : '/location/'
