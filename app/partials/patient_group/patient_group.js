@@ -1,13 +1,16 @@
 angular.module('kpk.controllers')
 .controller('patientGroup', [
   '$scope',
+  '$filter',
   'connect',
   'validate',
   'appstate',
   'messenger',
-  function ($scope, connect, validate, appstate, messenger) {
-    var dependencies = {},
-      editing;
+  function ($scope, $filter, connect, validate, appstate, messenger) {
+    var dependencies = {};
+    var session = $scope.session = {
+      selected : null
+    };
 
     dependencies.group = {
       query : {
@@ -20,27 +23,26 @@ angular.module('kpk.controllers')
     };
 
     dependencies.list = {
-      //required : true,
       query : {
-        tables : {
-          'price_list'  :  {
-            columns : ['id', 'title']
-          }
-        }
-      }
+        tables : { 'price_list' : { columns : ['id', 'title'] } } 
+      } 
     };
 
-    appstate.register('enterprise', function (enterprise) {
+    appstate.register('enterprise', loadEnterprise);
+
+    function loadEnterprise(enterprise) { 
       $scope.enterprise = enterprise;
       dependencies.group.query.where = ['patient_group.enterprise_id='+enterprise.id];
-      validate.process(dependencies).then(run);
-    });
+      validate.process(dependencies).then(initialisePatientGroup);
+    }
 
-    function run (models) {
-      for (var k in models) { $scope[k] = models[k]; }
+    function initialisePatientGroup(model) {
+      for (var modelKey in model) { $scope[modelKey] = model[modelKey]; }
     }
 
     $scope.remove = function (grp) {
+      if (!confirm($filter('translate')('PATIENT_GRP.CONFIRM_MESSAGE'))) return;
+
       connect.basicDelete('patient_group', grp.id)
       .then(function (result) {
         $scope.group.remove(grp.id);
@@ -54,11 +56,14 @@ angular.module('kpk.controllers')
     $scope.newGroup = function () {
       $scope.register = {};
       $scope.action = 'register';
+
+      session.selected = null;
     };
 
     $scope.saveRegistration = function () {
       $scope.register.enterprise_id = $scope.enterprise.id;
       // validate that register is complete.
+      console.log('attempting to insert', connect.clean($scope.register));
       connect.basicPut('patient_group', [connect.clean($scope.register)])
       .then(function (res) {
         var row = connect.clean($scope.register);
@@ -79,6 +84,8 @@ angular.module('kpk.controllers')
       $scope.action = 'modify';
       $scope.modify = angular.copy(grp);
       $scope.modify_original = grp;
+
+      session.selected = grp;
     };
 
     $scope.resetModification = function () {

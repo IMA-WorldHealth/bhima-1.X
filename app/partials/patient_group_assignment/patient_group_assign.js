@@ -37,9 +37,8 @@ angular.module('kpk.controllers')
         tables : { 'assignation_patient':{ columns: ["id", "patient_group_id", "patient_id"]}}
       }
     };
-
+    
     //fonctions
-
     function init (model){
       for (var k in model) {
         $scope[k] = model[k];
@@ -63,6 +62,7 @@ angular.module('kpk.controllers')
     function decision (){
       var diff = false;
       for(var i = 0; i < models.patient_group.length; i+=1){
+        console.log('validating', models.patient_group[i]);
         if(models.patient_group[i].checked){
           diff = true;
           break;
@@ -71,12 +71,14 @@ angular.module('kpk.controllers')
       return diff;
     }
 
-    function showPatientGroups (index){
-      transformDatas(false);
-      $scope.patient = models.patient[index];
-      $scope.print = true;
-      models.patient_group.forEach(function (pg){
+    function loadPatientGroups (patient){
+      var index = patient.id;
 
+      transformDatas(false);
+      $scope.patient = patient;
+      $scope.print = true;
+
+      models.patient_group.forEach(function (pg){
         $scope.assignation_patient.data.forEach(function (ap){
           if (ap.patient_id === $scope.patient.id &&
               ap.patient_group_id === pg.id) {
@@ -162,7 +164,6 @@ angular.module('kpk.controllers')
     $scope.formatAccount = formatAccount;
     $scope.checking = checking;
     $scope.changeChildren = changeChildren;
-    $scope.showPatientGroups = showPatientGroups;
-
+    $scope.loadPatientGroups = loadPatientGroups;
   }
 ]);
