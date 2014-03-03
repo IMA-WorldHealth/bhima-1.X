@@ -24,7 +24,7 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'price_list'  :  {
-            columns : ['id', 'name']
+            columns : ['id', 'description']
           }
         }
       }

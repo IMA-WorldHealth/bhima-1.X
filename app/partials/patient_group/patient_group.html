@@ -10,7 +10,7 @@
 
 <div class="content">
   <div class="row">
-  <div class="col-xs-4">
+  <div class="col-xs-6">
     <div class="panel panel-primary">
       <div class="panel-heading">
         <span>{{ "PATIENT_GRP.REGISTERED" | translate }}</span>
@@ -59,14 +59,14 @@
           <div class="form-group required">
             <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
             <div class="col-xs-10">
-              <input class="form-kapok" ng-model="register.name">
+              <input class="form-kapok" ng-model="register.description">
             </div>
           </div>
         
           <div class="form-group required">
             <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
             <div class="col-xs-10">
-              <select class="form-kapok" ng-model="register.price_list_id" ng-options="list.id as list.name for list in list.data">
+              <select class="form-kapok" ng-model="register.price_list_id" ng-options="list.id as list.description for list in list.data">
                 <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
               </select>
             </div>
