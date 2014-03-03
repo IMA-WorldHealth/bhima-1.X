@@ -219,7 +219,10 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //   };
    
       invoice.applyGlobal.forEach(function (listItem) {
-        var applyCost, formatListItem, enterpriseDiscountId=485; // FIXME Derive this from enterprise
+        var applyCost, formatListItem, enterpriseDiscountId; // FIXME Derive this from enterprise
+        
+        (listItem.is_discount) ? enterpriseDiscountId = 486 : enterpriseDiscountId = 485;
+        
         formatDiscountItem = {
           inventory_id : enterpriseDiscountId,
           quantity : 1,
@@ -306,8 +309,13 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     if (invoice.applyGlobal) { 
       invoice.applyGlobal.forEach(function (listItem) {
         listItem.currentValue = Number(((total * listItem.value) / 100).toFixed(4));
+        
+        if (listItem.is_discount) { 
+          total -= listItem.currentValue;
+        } else { 
+          total += listItem.currentValue;
+        }
 
-        total += listItem.currentValue;
         total = Number(total.toFixed(4));
       });
     }
