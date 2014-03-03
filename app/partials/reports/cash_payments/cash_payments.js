@@ -21,19 +21,13 @@ angular.module('kpk.controllers')
 
     $scope.$watch('dates', dateWatcher, true);
     $scope.$watch('state', stateWatcher, true);
-
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-    });
-
+ 
     $scope.day = function day () {
       $scope.dates.dateFrom = new Date();
       $scope.dates.dateTo = new Date();
       $scope.search();
     };
-
+    
     $scope.week = function week () {
       $scope.dates.dateFrom = new Date();
       $scope.dates.dateTo = new Date();
@@ -67,9 +61,16 @@ angular.module('kpk.controllers')
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };
+    
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise;
+      $scope.dates.dateFrom = new Date();
+      $scope.dates.dateTo = new Date();
+      
+      // default to searching today
+      $scope.day();
+    });
 
-    // default to searching today
-    $scope.day();
 
   }
 ]);
