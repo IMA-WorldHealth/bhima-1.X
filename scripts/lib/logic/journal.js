@@ -281,6 +281,10 @@ module.exports = function (db) {
     });
   }
 
+  function calcGainLossExchange(amoung, currency) {
+  
+  }
+
   function handleCash (id, user_id, done) {
     // posting from cash to the journal.
     var sql =
