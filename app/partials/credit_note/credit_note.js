@@ -5,10 +5,12 @@ angular.module('kpk.controllers')
   '$routeParams',
   '$filter',
   '$location',
+  '$timeout',
   'validate',
   'connect',
   'appstate',
-  function ($scope, $routeParams, $filter, $location, validate, connect, appstate) {
+  'messenger',
+  function ($scope, $routeParams, $filter, $location, $timeout, validate, connect, appstate, messenger) {
     var invoiceId = $routeParams.invoiceId, dependencies = {};
 
     dependencies.sale = {
@@ -69,14 +71,23 @@ angular.module('kpk.controllers')
     }
 
     function submitNote(noteObject) {
+      var insertId;
       //TODO Test object before submitting to server
       //TODO ?Check there are no credit notes for this transaction and warn user
       connect.basicPut('credit_note', [noteObject])
-      .then(function(res) {
-        $location.path('/invoice/credit/' + res.data.insertId);
+      .then(function (creditResult) {
+        insertId = creditResult.data.insertId;
+        
+        return connect.basicGet('journal/credit_note/' + insertId);
+      })
+      .then(function (postResult) { 
+        
+        $location.path('/invoice/credit/' + insertId);
+      }, function(error) { 
+        messenger.danger('submission failed ' + error.status);
       });
     }
-
+    
     $scope.submitNote = submitNote;
   }
 ]);
