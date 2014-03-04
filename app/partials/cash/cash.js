@@ -129,11 +129,6 @@ angular.module('kpk.controllers')
             return row.balance > 0;
           });
 
-          console.log($scope.ledger);
-
-          // hack to process currency locales
-          $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
-
         })
         .error(function (err) {
           messenger.danger('An error occured:' + JSON.stringify(err));
