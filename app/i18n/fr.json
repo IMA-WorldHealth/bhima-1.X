@@ -81,7 +81,7 @@
     "PAYMENT"          : "Paiement",
     "TOTAL_DUE"        : "Total Debiter",
     "TOTAL_PAYING"     : "Total Paye",
-    "OVERDUE"          : "Impaye",
+    "OVERDUE"          : "Excedent",
     "PAY_INVOICES"     : "Paye les Factures",
     "CLEAR_SELECTION"  : "Recommencer",
     "NO_EXCHANGE_RATE" : "Erreur: Taux d'Exchange n'existe pas!"
