@@ -12,41 +12,16 @@ angular.module('kpk.controllers')
   'kpkUtilitaire',
   'precision',
   'calc',
-  function($scope, $location, $translate, connect, appcache, appstate, messenger, validate, exchange, util, precision, calc) {
+  function($scope, $location, $translate, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc) {
     var dependencies = {},
-        data = $scope.data = {};
-    var cache = new appcache('cash');
+        data = $scope.data = {},
+        cache = new Appcache('cash');
 
     $scope.queue = [];
     data.payment = 0;
     data.total = 0;
     data.raw = 0;
-   
-    dependencies.debitors = {
-      query : {
-        tables: {
-          'patient' : {
-            columns: ['first_name', 'last_name']
-          },
-          'debitor' : {
-            columns: ['id']
-          },
-          'debitor_group' : {
-            columns: ['name', 'account_id', 'max_credit']
-          },
-          'account' : {
-            columns: ['account_number']
-          }
-        },
-        join: [
-          'patient.debitor_id=debitor.id',
-          'debitor.group_id=debitor_group.id',
-          'debitor_group.account_id=account.id'
-        ],
-        where: ['debitor_group.locked<>1']
-      }
-    };
-
+  
     dependencies.cashboxes = {
       query : {
         tables : {
@@ -55,19 +30,15 @@ angular.module('kpk.controllers')
           },
           'currency' : {
             columns : ['symbol']
-          }
-        },
-        join : ['currency_account.currency_id=currency.id'],
-      }
-    };
-
-    dependencies.accounts = {
-      query : {
-        tables : {
+          },
           'account' : {
-            columns : ['id', 'account_number', 'account_txt']
+            columns : ['account_txt']
           }
         },
+        join : [
+          'currency_account.currency_id=currency.id',
+          'account.id=currency_account.cash_account'
+        ],
       }
     };
 
@@ -80,25 +51,33 @@ angular.module('kpk.controllers')
         }
       }
     };
-    
+   
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.cashboxes.query.where =
         ['currency_account.enterprise_id=' + enterprise.id];
-      dependencies.accounts.query.where =
+      /*
+       * dependencies.accounts.query.where =
         ['account.enterprise_id=' + enterprise.id];
+      */
       validate.process(dependencies).then(setUpModels, handleErrors);
     });
-    
+   
+
+    function loadCashBox(box) {
+      if (box) $scope.cashbox = box;
+    }
+
     cache.fetch('cashbox').then(loadCashBox);
 
     function setUpModels(models) {
       for (var k in models) {
         $scope[k] = models[k];
       }
-      
-      if(!$scope.cashbox) $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
-      $scope.queue = [];
+     
+      if (!$scope.cashbox) {
+        $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
+      }
     }
 
     function handleErrors(error) {
@@ -107,32 +86,22 @@ angular.module('kpk.controllers')
 
     $scope.setCashBox = function setCashBox (box) {
       $scope.cashbox = box;
-
       cache.put('cashbox', box);
     };
 
-    function loadCashBox(box) { 
-      if (box) $scope.cashbox = box;
-    }
-
-    $scope.loadInvoices = function (debitor) {
+    $scope.loadInvoices = function (patient) {
       $scope.ledger = [];
-      $scope.patient = debitor;
       $scope.queue = [];
-      connect.fetch('/ledgers/debitor/' + debitor.debitor_id)
-        .success(function (data) {
-          data.forEach(function (row) {
-            row.debitor = [debitor.first_name, debitor.last_name].join(' ');
-          });
-
-          $scope.ledger = data.filter(function (row) {
-            return row.balance > 0;
-          });
-
-        })
-        .error(function (err) {
-          messenger.danger('An error occured:' + JSON.stringify(err));
+      $scope.patient = patient;
+      connect.fetch('/ledgers/debitor/' + patient.debitor_id)
+      .success(function (data) {
+        $scope.ledger = data.filter(function (row) {
+          return row.balance > 0;
         });
+      })
+      .error(function (err) {
+        messenger.danger('An error occured:' + JSON.stringify(err));
+      });
     };
 
     $scope.add = function (idx) {
@@ -150,29 +119,33 @@ angular.module('kpk.controllers')
     }
 
     $scope.digestTotal = function () {
-      data.raw = $scope.queue.reduce(addTotal, 0);
+      $scope.data.raw = $scope.queue.reduce(addTotal, 0);
       if (!$scope.cashbox) { return; }
-      var o = calc(data.raw, $scope.cashbox.currency_id);
-      data.total = o.total;
-      data.difference = o.difference;
+      var dirty = calc(data.raw, $scope.cashbox.currency_id);
+      $scope.data.total = dirty.total;
+      $scope.data.difference = dirty.difference;
 
       // digest overdue
-      var over  = precision.round(data.payment - data.total, 3);
-      data.overdue = over > 0 ? over : 0;
+      var over  = precision.round($scope.data.payment - $scope.data.total, 3);
+      $scope.data.overdue = over > 0 ? over : 0;
     };
 
     $scope.digestInvoice = function () {
-      if (!$scope.queue) { return; }
+      if (!$scope.queue) { return null; }
 
       var proposed = $scope.data.payment || 0;
 
       $scope.queue.forEach(function (invoice) {
         if (proposed < 0) {
           invoice.allocated = 0;
-          return;
+          return null;
         }
 
         var diff = precision.round(proposed - invoice.locale);
+        invoice.allocated = diff >= 0 ? invoice.locale : proposed;
+        proposed = diff >= 0 ? diff : 0;
+       
+        /*
         if (diff >= 0) {
           proposed = diff;
           invoice.allocated = invoice.locale;
@@ -180,6 +153,8 @@ angular.module('kpk.controllers')
           invoice.allocated = proposed;
           proposed = 0;
         }
+        */
+
         invoice.remaining = precision.compare(invoice.locale, invoice.allocated);
       });
 
@@ -201,7 +176,6 @@ angular.module('kpk.controllers')
       date = util.convertToMysqlDate(new Date());
 
       document_id = generateDocumentId($scope.cash.data, 'E');
-
       description = ['CP E', document_id, $scope.patient.first_name, date].join('/');
 
       cashPayment = {
@@ -231,16 +205,16 @@ angular.module('kpk.controllers')
       $scope.invoice_id = id; // clean this up to make it more testable
 
       records = $scope.queue
-        .filter(function (invoice) {
-          return invoice.allocated > 0;
-        })
-        .map(function (invoice) {
-          return {
-            cash_id: id,
-            allocated_cost : precision.round(invoice.allocated),
-            invoice_id : invoice.inv_po_id
-          };
-        });
+      .filter(function (invoice) {
+        return invoice.allocated > 0;
+      })
+      .map(function (invoice) {
+        return {
+          cash_id: id,
+          allocated_cost : precision.round(invoice.allocated),
+          invoice_id : invoice.inv_po_id
+        };
+      });
 
       return connect.basicPut('cash_item', records);
     }

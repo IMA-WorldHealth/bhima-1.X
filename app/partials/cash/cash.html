@@ -5,13 +5,13 @@
 <section class="top-nav">
   <div style="position: absolute; right: 5px;">
     <button class="btn btn-sm btn-primary dropdown-toggle">
-      {{ accounts.get(cashbox.cash_account).account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
+      {{ cashbox.account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
       <!-- TODO make this a caret -->
       <span class="caret" data-caret="&#9660;"></span>
     </button> 
     <ul class="dropdown-menu pull-right">
       <li ng-repeat="box in cashboxes.data">
-        <a href="" ng-click="setCashBox(box)"> {{ accounts.get(box.cash_account).account_txt }} </a>
+        <a href="" ng-click="setCashBox(box)"> {{ box.account_txt }} </a>
       </li>
     </ul>
   </div>
@@ -49,7 +49,7 @@
           <tbody>
             <tr ng-repeat="invoice in ledger" ng-click="add($index)" style="cursor : pointer;">
               <td>{{ invoice.inv_po_id }}</td>
-              <td>{{ invoice.debitor }}</td>
+              <td>{{ invoice.first_name }} {{ invoice.last_name }}</td>
               <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
               <td>{{ invoice.trans_date | date}}</td>
             </tr>
