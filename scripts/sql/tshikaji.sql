@@ -2865,7 +2865,7 @@ INSERT INTO `inventory` (`code`, `text`, `price`, `enterprise_id`, `group_id`, `
 ("180024","Catheter Foley Pce","0.37","200","19","2","1","100000000","0","1","0"),
 ("180025","Ouate 500 gr Rlx","2.50","200","19","2","1","100000000","0","1","0"),
 ("800000", "Administrative charge (%)", "0", "200", "1", "1", "1", "100000000", "0", "0", "0"),
-("800001", "Remise sur facture IMA", "0", "200", "21", "1", "0", "0", "10000000", "0", "0", "0");
+("800001", "Remise sur facture IMA", "0", "200", "21", "1", "1", "10000000", "0", "0", "0");
 
 -- configure creditor
 INSERT INTO `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
