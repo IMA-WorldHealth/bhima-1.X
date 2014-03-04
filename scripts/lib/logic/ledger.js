@@ -35,7 +35,7 @@ module.exports = function (db) {
 
       var sql =
         'SELECT `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
-        'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`credit_equiv` - `t`.`debit_equiv`) as balance, ' +
+        'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
         '`t`.`account_id`, `t`.`deb_cred_id`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
         '`t`.`comment`' +
         'FROM (' +
