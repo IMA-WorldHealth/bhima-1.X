@@ -62,7 +62,7 @@ angular.module('kpk.controllers')
    
 
     function loadCashBox(box) {
-      if (box) $scope.cashbox = box;
+      if (box) { $scope.cashbox = box; }
     }
 
     cache.fetch('cashbox').then(loadCashBox);
