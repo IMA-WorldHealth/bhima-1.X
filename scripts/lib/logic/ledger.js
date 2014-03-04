@@ -26,7 +26,9 @@ module.exports = function (db) {
 
     db.execute(query, function (err, rows) {
       if (err) return callback(err);
-     
+    
+      if (!rows.length) { return callback(null, []); }
+      
       var invoices = rows.map(function (line) {
         return line.inv_po_id;
       });
@@ -58,7 +60,7 @@ module.exports = function (db) {
         'GROUP BY `t`.`inv_po_id`;\n';
 
       db.execute(sql, function (err, rows) {
-        if (err) return callback(err);
+        if (err) { return callback(err); }
         return callback(null, rows);
       });
     });

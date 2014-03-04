@@ -81,7 +81,7 @@
     "PAYMENT"          : "Paiement",
     "TOTAL_DUE"        : "Total Debiter",
     "TOTAL_PAYING"     : "Total Paye",
-    "OVERDUE"          : "Impaye",
+    "OVERDUE"          : "Excedent",
     "PAY_INVOICES"     : "Paye les Factures",
     "CLEAR_SELECTION"  : "Recommencer",
     "NO_EXCHANGE_RATE" : "Erreur: Taux d'Exchange n'existe pas!"
@@ -235,7 +235,7 @@
     "FISCAL_YEAR" : "Annee Fiscale",
     "PATIENT_REG" : "Enregistrement des Malades",
     "PATIENT_RECORDS" : "Historique",
-    "SALES" : "Vents",
+    "SALES" : "Ventes",
     "SALE_RECORDS" : "Historique Vents",
     "PURCHASE_ORDER" : "Demands de Fonds",
     "BUDGET_BY_ACCOUNT" : "Budget par Compte",

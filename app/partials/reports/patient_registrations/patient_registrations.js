@@ -26,6 +26,7 @@ angular.module('kpk.controllers')
       $scope.enterprise = enterprise;
       $scope.dates.dateFrom = new Date();
       $scope.dates.dateTo = new Date();
+      $scope.day();
     });
 
     $scope.day = function day () {
@@ -66,9 +67,6 @@ angular.module('kpk.controllers')
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };
-
-    // default to searching today
-    $scope.day();
 
   }
 ]);
