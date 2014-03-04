@@ -3,7 +3,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   //FIXME Global vs. item based prices are a hack
   //TODO Pass default debtor and inventory parameters to sale modules
   var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
-  var recoverCache = new appcache('sale');
+  var recoverCache = new appcache('sale'), priceListSource = [];
   var session = $scope.session = { 
     tablock : -1
   }
@@ -47,29 +47,29 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     }
 
     buildInvoice(selectedDebtor);
-   
-    console.log('invoice', invoice);
-    // Patient Groups
-
-    // dependencies.priceList = {
-    //   query : {
-    //     tables : {
-    //       assignation_patient : {columns : ['patient_group_id', 'patient_id']},
-    //       patient_group : {columns : ['note']},
-    //       price_list : {columns : ['id', 'name', 'title', 'discount', 'note']}
-    //     },
-    //     join : [
-    //       'assignation_patient.patient_group_id=patient_group.id',
-    //       'patient_group.price_list_id=price_list.id'
-    //     ],
-    //     where : [
-    //       'assignation_patient.patient_id=' + selectedDebtor.id
-    //     ]
-    //   }
-    // };
+    
+    // Uncommented patientGroupList - ALL other lists should import price lists from BOTH 
+    // patientGroupList and debtorGroupList (renamed from priceList) 
+    dependencies.patientGroupList = {
+      query : {
+        tables : {
+          assignation_patient : {columns : ['patient_group_id', 'patient_id']},
+          patient_group : {columns : ['note']},
+          price_list : {columns : ['title']},
+          price_list_item : {columns : ['value', 'is_discount', 'is_global', 'description']}
+        },
+        join : [
+          'assignation_patient.patient_group_id=patient_group.id',
+          'patient_group.price_list_id=price_list.id',
+          'price_list_item.price_list_id=price_list.id'
+        ],
+        where : [
+          'assignation_patient.patient_id=' + selectedDebtor.id
+        ]
+      }
+    };
      
-   
-    dependencies.priceList = {
+    dependencies.debtorGroupList = {
       query : {
         tables : {
           price_list: { columns : ['id', 'title'] },
@@ -79,7 +79,9 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
         where : ['price_list.id=' + selectedDebtor.price_list_id]
       }
     };
-    validate.refresh(dependencies, ['priceList']).then(processPriceList);
+
+    priceListSource = ['patientGroupList', 'debtorGroupList'];
+    validate.refresh(dependencies, priceListSource).then(processPriceList);
   }
 
   function buildInvoice(selectedDebtor) {
@@ -89,7 +91,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       date : getDate(),
       items: []
     };
-     
+      
     if (session.recovering) { 
       recover();
     } else { 
@@ -99,16 +101,28 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     // session.recovering ? recover() : addInvoiceItem();
         
     invoice.note = formatNote(invoice);
-  
     $scope.invoice = invoice;
   }
  
   function processPriceList(model) {
-    var priceLists = model.priceList.data;
+    invoice.priceList = [];
+    console.log('processPriceList', model);
+   
+    // Flattens all price lists fow now, make parsing later simpler
+    priceListSource.forEach(function (priceListKey) { 
+      var priceListData = model[priceListKey].data.sort(sortByOrder);
 
-    invoice.priceList = priceLists.sort(function (a, b) { (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
+      priceListData.forEach(function (priceListItem) { 
+        invoice.priceList.push(priceListItem);
+      });
+      // invoice.priceList.push(priceListData.sort(sortByOrder)); 
+    });
+
+    // var debtorList = model.debtorGroupList.data;
+    // var patientList = model.patientGroupList.data;
+    // invoice.priceList = priceLists.sort(function (a, b) { (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
     invoice.applyGlobal = [];
-
+  
     invoice.priceList.forEach(function (listItem) {
       console.log('g', listItem.is_global, listItem);
       if (listItem.is_global) {
@@ -117,15 +131,10 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       }
     });
   }
-
-  //Patient Groups
-  // function processPriceList(model) {
-  //   var selectedPriceList, priceLists = model.priceList.data;
-  //   
-  //   //naive implementation of resolving multiple price lists
-  //   selectedPriceList = priceLists.sort(function(a, b) { return a.discount < b.discount; })[0];
-  //   if(selectedPriceList) invoice.priceList = selectedPriceList;
-  // }
+  
+  function sortByOrder(a, b) { 
+    (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order) ? 1 : -1; 
+  }
   
   //TODO split inventory management into a seperate controller
   function addInvoiceItem() {
@@ -406,6 +415,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.id);
       currentItem.selectedReference = invItem.code;
       updateInvoiceItem(currentItem, invItem);
+      currentItem.quantity = item.quantity;
     });
   
     // FIXME this is stupid 
@@ -424,7 +434,8 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     
     invoice.items.forEach(function (item) { 
       if(item.code && item.quantity) recoverObject.items.push({
-        id : item.inventoryId
+        id : item.inventoryId,
+        quantity : item.quantity
       });
     });
     recoverCache.put('session', recoverObject);
@@ -432,6 +443,13 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
   function toggleTablock() { 
     (session.tablock===0) ? session.tablock = -1 : session.tablock = 0;
+  }
+  
+  function cacheQuantity(invoiceItem) { 
+    
+    if (invoiceItem.quantity==='') return;
+    if (isNaN(Number(invoiceItem.quantity))) return;
+    updateSessionRecover();
   }
 
   $scope.initialiseSaleDetails = initialiseSaleDetails;
@@ -442,4 +460,5 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   $scope.calculateTotal = calculateTotal;
   $scope.toggleTablock = toggleTablock;
   $scope.selectRecover = selectRecover;
+  $scope.cacheQuantity = cacheQuantity;
 });
