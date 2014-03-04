@@ -1947,7 +1947,16 @@ INSERT INTO `account` (`fixed`, `locked`, `enterprise_id`, `account_number`, `ac
 (0, 0, 200,83011000,"RESULTAT NET D'EXPLOITATION",2,8),
 (0, 0, 200,84011000,"RESULTAT S/CESSION IMMO ET TITRES",2,8),
 (0, 0, 200,85011000,"RESULTAT AVANT IMPOT",2,8),
-(0, 0, 200,87011000,"RESULTAT DE LA PERIODE A AFFECTER",2,8);
+(0, 0, 200,87011000,"RESULTAT DE LA PERIODE A AFFECTER",2,8),
+(0, 0, 200,41771101,"ITM", 2, 41),
+(0, 0, 200,41771102,"APPARENTES", 2, 41),
+(0, 0, 200,41771103,"HBB", 2, 41),
+(0, 0, 200,41771104,"PATIENTS PAYENT CASH", 2, 41),
+(0, 0, 200,42771105,"MALADES HOSPITALISES", 2, 41),
+(0, 0, 200,41771105,"ISTM HOSPITALISES", 2, 41),
+(0, 0, 200,41721000,"CLIENT PEDIATRIE", 2, 41),
+(0, 0, 200,41731000,"CLIENT GYNECOLOGIE OBSTETRIQUE", 2, 41),
+(0, 0, 200,74631000,"IMA SUBSIDY PROJECT", 1, 74);
 
 --
 -- INSERT INTO `account` (`id`, `fixed`,  `locked`, `enterprise_id`, `account_number`, `account_txt`, `account_type_id`, `parent`) values
@@ -2352,7 +2361,8 @@ INSERT INTO `inventory_group` (`code`, `name`, `sales_account`) values
   (160 , 'Production Locale' , 10)  ,
 	(170 , 'Petit Materiel'    , 10)  ,
 	(180 , 'Optique'           , 962) ,
-  (190 , 'Caution/Impaye'    , 10);
+  (190 , 'Caution/Impaye'    , 10)  ,
+  (200 , 'IMA Subsidy'       , 1062);
 
 /*
 INSERT INTO `inventory` (`enterprise_id`, `code`, `text`, `price`, `group_id`, `unit_id`, `unit_weight`, `unit_volume`, `stock`, `stock_max`, `stock_min`, `type_id`, `consumable`) values 
@@ -2854,7 +2864,8 @@ INSERT INTO `inventory` (`code`, `text`, `price`, `enterprise_id`, `group_id`, `
 ("180010","Etuis Pce","1.50","200","19","2","1","100000000","0","1","0"),
 ("180024","Catheter Foley Pce","0.37","200","19","2","1","100000000","0","1","0"),
 ("180025","Ouate 500 gr Rlx","2.50","200","19","2","1","100000000","0","1","0"),
-("800000", "Administrative charge (%)", "0", "200", "1", "1", "1", "100000000", "0", "0", "0");
+("800000", "Administrative charge (%)", "0", "200", "1", "1", "1", "100000000", "0", "0", "0"),
+("800001", "Remise sur facture IMA", "0", "200", "21", "1", "0", "0", "10000000", "0", "0", "0");
 
 -- configure creditor
 INSERT INTO `creditor_group` (`enterprise_id`, `name`, `account_id`) values 
