@@ -5,7 +5,7 @@
 <section class="top-nav">
   <!-- {{'SALERECORD.SHOWING' | translate}} Max({{defaultLimit}}) -->
   <div class="pull-right">
-    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span>{{'SALERECORD.ADVANCE' | translate}} </a>
+    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> {{'SALERECORD.ADVANCE' | translate}} </a>
   </div>
 </section>
 
@@ -52,7 +52,7 @@
             <!--Multiple ng-shows - mutually exclusive but not good practice-->
               <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
 
-              <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span>{{'SALERECORD.POSTING' | translate}}</div>
+              <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> {{'SALERECORD.POSTING' | translate}}</div>
               </td>
 
               <td><a href="/#/credit_note/{{invoice.id}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td>
@@ -68,6 +68,6 @@
 <section class="bar-bottom">
   <div class="pull-right">
   <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
-    <span class="glyphicon glyphicon-floppy-open"></span>{{'SALERECORD.POST' | translate}}</a>
+    <span class="glyphicon glyphicon-floppy-open"></span> {{'SALERECORD.POST' | translate}}</a>
   </div>
 </section>

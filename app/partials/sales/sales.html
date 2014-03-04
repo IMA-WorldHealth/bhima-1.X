@@ -99,7 +99,7 @@
                       
                       <!-- -1 for no tab, 0 to allow -->
                       <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.text}}"></td>
-                      <td><input tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
+                      <td><input ng-change="cacheQuantity(invoiceItem)" tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
                       <td><input tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.price"></td>
                       <td><input tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.quantity * invoiceItem.price | currency}}"></td>
                       <td><a ng-click="removeInvoiceItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>

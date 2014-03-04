@@ -10,53 +10,47 @@
 
 <div class="content">
   <div class="row">
-    <div class="col-xs-5">
-      <div class="panel panel-default" style="max-height: 500px;">
-        <div class="panel-heading">
-          <span class="glyphicon glyphicon-user"></span><span> {{ "PATIENT_GRP_ASSIGNMENT.ALL_PATIENT" | translate }} </span>
-        </div>
-        <table class="table table-striped table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "PATIENT_GRP_ASSIGNMENT.FULL_NAME" | translate }}</th>
-              <th>{{ "PATIENT_GRP_ASSIGNMENT.DOB" | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="p in models.patient | filter:flags.search" ng-click="showPatientGroups($index)">
-              <td>{{p.first_name}} - {{p.last_name}}</td>
-              <td>{{p.dob | date}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <div class="col-xs-7">
 
-    <div class="col-xs-6"> 
+      <div find-patient data-on-search-complete="loadPatientGroups"></div>
+    </div> 
+  </div>
+  <div class="row">
+    <div class="col-xs-7"> 
       <div class="panel panel-default" ng-show="print">
         <div class="panel-heading">
           <span><b>{{patient.first_name}}</b> {{ "PATIENT_GRP_ASSIGNMENT.PATIENT_GRP" | translate }}</span>
           <span class="pull-right">
-            <button ng-click="checking()"><i class="glyphicon glyphicon-floppy"></i> Save</button>
+            <a ng-click="checking()" class="menu-item"><b><i class="glyphicon glyphicon-floppy-save"></i> {{'FORM.SAVE_CHANGES' | translate}}</b></a>
           </span>
         </div>
-        <ul class="k-list">
-          <li>
-            <label class="checkbox">
-              <input type="checkbox" ng-model="all" ng-change="changeChildren(all)">
-              All
-            </label>
-          </li>
+        <div class="panel-body">
           <ul class="k-list">
-          <li ng-repeat="pg in models.patient_group">
-            <label class="checkbox">
-              <input type="checkbox" ng-model="pg.checked">
-              {{pg.name}}
-            </label>       
-          </li>       
-        </ul>
-        </ul>
+            <li>
+              <label class="checkbox">
+                <input type="checkbox" ng-model="all" ng-change="changeChildren(all)">
+                All
+              </label>
+            </li>
+            <ul class="k-list">
+              <li ng-repeat="pg in models.patient_group">
+                <label class="checkbox">
+                  <input type="checkbox" ng-model="pg.checked">
+                  {{pg.name}}
+                </label>       
+              </li>       
+            </ul>
+          </ul>
+        </div>
       </div>   
     </div>
   </div>
 </div>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
+
