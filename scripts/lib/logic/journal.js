@@ -6,7 +6,7 @@ var parser = require('../database/parser')(),
     util = require('../util/util'),
     validate = require('../util/validate')(),
     Store = require('../util/store'),
-    Q = require('q');
+    q = require('q');
 
 module.exports = function (db) {
   // deals in everything journal related
@@ -108,30 +108,27 @@ module.exports = function (db) {
       });
     },
 
-    exchangeRate : function (date, done) {
+    exchangeRate : function (date) {
       // expects a mysql-compatible date
-      // FIXME : this logic needs perfecting..
-      //   NOTE: the idea is that the rate for a day
-      //   is considered as enterprise_currency -> foreign_currency
-      //   for each line.  We create an object then of
-      //   {
-      //     foreign_currency_id : rate
-      //   }
-      //   which will map currencies to rates.  If the currency is
-      //   the enterprise_currency, the rate is 1.
-      var sql =
-        'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate` ' +
-        'FROM `exchange_rate` WHERE `date`=\'' + this.date(date) + '\';';
+      var defer = q.defer(),
+        sql =
+        'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, ' +
+          '`min_monentary_unit` ' +
+        'FROM `exchange_rate` JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
+        'WHERE `exchange_rate`.`date`=\'' + this.date(date) + '\';';
       db.execute(sql, function (err, rows) {
-        if (err) return done(err);
-        if (rows.length === 0) return done(new Error('No exchange rate found for date : ' + date));
+        if (err) { defer.reject(err); }
+        if (rows.length === 0) { defer.reject(new Error('No exchange rate found for date : ' + date)); }
+
         var store = new Store();
         rows.forEach(function (line) {
           store.post({ id : line.foreign_currency_id, rate : line.rate });
           store.post({ id : line.enterprise_currency_id, rate : 1});
         });
-        return done(null, store);
+        defer.resolve(store);
       });
+
+      return defer.promise;
     }
   };
 
@@ -281,8 +278,41 @@ module.exports = function (db) {
     });
   }
 
-  function calcGainLossExchange(amoung, currency) {
-  
+  function precision(num, p) {
+    return parseFloat(num.toFixed(p));
+  }
+
+  // handles rounding for cash
+  function handleRounding(cash_id, done) {
+    var sql =
+      'SELECT c.id, c.cost, SUM(s.cost) as sale_cost, c.date, c.currency_id, cu.min_monentary_unit ' +
+      'FROM cash AS c JOIN currency AS cu JOIN cash_item AS ci JOIN sale AS s ' +
+      'ON c.id=ci.cash_id AND c.currency_id = cu.id AND s.id = ci.invoice_id ' +
+      'WHERE c.id = ' + sanitize.escape(cash_id) + ' ' +
+      'GROUP BY c.document_id;';
+
+    db.execute(sql, function (err, rows) {
+      if (err) { return done(err); }
+      var store;
+
+      var row = rows.pop();
+
+      get.exchangeRate(row.date)
+      .then(function (data) {
+        store = data;
+        var paidValue = precision(row.cost / store.get(row.currency_id).rate, 4);
+        var remainder = precision((row.sale_cost - paidValue) * store.get(row.currency_id).rate, 4);
+        // if the absolute value of the remainder is less than the min_monentary_unit
+        // then tehy have paid in full
+        var isPaidInFull = Math.abs(remainder) - row.min_monentary_unit < row.min_monentary_unit;
+
+        // return the 'real' (enterprise currency) remainder and bool
+        return done(null, isPaidInFull, row.sale_cost - paidValue);
+      })
+      .catch(function (err) {
+        return done(err);
+      });
+    });
   }
 
   function handleCash (id, user_id, done) {
@@ -363,80 +393,151 @@ module.exports = function (db) {
 
               // we now have the relevant period!
 
-              get.exchangeRate(date, function (err, store) {
+              get.exchangeRate(date)
+              .then(function (store) {
                 if (err) return done(err);
 
                 // we now have an exchange rate!
 
                 // create a trans_id for the transaction
                 // MUST BE THE LAST REQUEST TO prevent race conditions.
+                //
                 get.transactionId(function (err, trans_id) {
                   if (err) return done(err);
 
-
-                  var period_id = period_object.period_id;
-                  var fiscal_year_id = period_object.fiscal_year_id;
-
-                  // we can begin copying data from CASH -> JOURNAL
-                
-                  // First, figure out if we are crediting or debiting the caisse
-                  // This is indicated by the type.
-                  // match { 'S' => debiting; 'E' => crediting }
-                  var account_type = reference_payment.type !== 'E' ? 'credit_account' : 'debit_account' ;
-
-                  // Are they a debitor or a creditor?
-                  var deb_cred_type = reference_payment.type === 'E' ? '\'D\'' : '\'C\'';
-
-                  // calculate exchange rate.  If money coming in, credit is cash.cost,
-                  // credit_equiv is rate*cash.cost and vice versa.
-                  var money = reference_payment.type === 'E' ?
-                    '`cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, 0, ' :
-                    '0, `cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, ' ;
-
-                  // finally, copy the data from cash into the journal with care to convert exchange rates.
-                  var cash_query =
-                    'INSERT INTO `posting_journal` ' +
-                      '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                      '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                      '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
-                    'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                      '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
-                      '`cash_item`.`invoice_id`, `cash`.`currency_id`, null, null, ' +
-                      [origin_id, user_id].join(', ') + ' ' +
-                    'FROM `cash` JOIN `cash_item` ON ' +
-                      ' `cash`.`id` = `cash_item`.`cash_id` ' +
-                    'WHERE `cash`.`id`=' + sanitize.escape(id) + ' ' +
-                    'LIMIT 1;'; // just in case
-
-
-                  // Then copy data from CASH_ITEM -> JOURNAL
-                
-                  var cash_item_money = reference_payment.type === 'E' ?
-                    '0, `cash_item`.`allocated_cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, ' :
-                    '`cash_item`.`allocated_cost`, 0, '+ 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' ;
-
-                  var cash_item_account_id = reference_payment.type !== 'E' ? 'debit_account' : 'credit_account';
-
-                  var cash_item_query =
-                    'INSERT INTO `posting_journal` ' +
-                      '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                      '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                      '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                    'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                      '`cash`.`description`, `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
-                      '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
-                      '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                    'FROM `cash` JOIN `cash_item` ON ' +
-                      '`cash`.`id`=`cash_item`.`cash_id` ' +
-                    'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
-
                   // we are ready to execute!
-                
-                  db.execute(cash_query, function (err, results) {
-                    if (err) return done(err);
-                    db.execute(cash_item_query, function (err, results) {
+                  handleRounding(id, function (err, isPaidInFull, remainder) {
+                    if (err) { return done(err); }
+
+                    var period_id = period_object.period_id;
+                    var fiscal_year_id = period_object.fiscal_year_id;
+
+                    // we can begin copying data from CASH -> JOURNAL
+                  
+                    // First, figure out if we are crediting or debiting the caisse
+                    // This is indicated by the type.
+                    // match { 'S' => debiting; 'E' => crediting }
+                    var account_type = reference_payment.type !== 'E' ? 'credit_account' : 'debit_account' ;
+
+                    // Are they a debitor or a creditor?
+                    var deb_cred_type = reference_payment.type === 'E' ? '\'D\'' : '\'C\'';
+
+                    // calculate exchange rate.  If money coming in, credit is cash.cost,
+                    // credit_equiv is rate*cash.cost and vice versa.
+                    var money = reference_payment.type === 'E' ?
+                      '`cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, 0, ' :
+                      '0, `cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, ' ;
+
+                    // finally, copy the data from cash into the journal with care to convert exchange rates.
+                    var cash_query =
+                      'INSERT INTO `posting_journal` ' +
+                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                        '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
+                      'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                        '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
+                        '`cash_item`.`invoice_id`, `cash`.`currency_id`, null, null, ' +
+                        [origin_id, user_id].join(', ') + ' ' +
+                      'FROM `cash` JOIN `cash_item` ON ' +
+                        ' `cash`.`id` = `cash_item`.`cash_id` ' +
+                      'WHERE `cash`.`id`=' + sanitize.escape(id) + ' ' +
+                      'LIMIT 1;'; // just in case
+
+                    // Then copy data from CASH_ITEM -> JOURNAL
+                  
+                    var cash_item_money = reference_payment.type === 'E' ?
+                      '0, `cash_item`.`allocated_cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, ' :
+                      '`cash_item`.`allocated_cost`, 0, '+ 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' ;
+
+                    var cash_item_account_id = reference_payment.type !== 'E' ? 'debit_account' : 'credit_account';
+
+                    var cash_item_query =
+                      'INSERT INTO `posting_journal` ' +
+                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                        '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                      'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                        '`cash`.`description`, `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
+                        '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
+                        '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                      'FROM `cash` JOIN `cash_item` ON ' +
+                        '`cash`.`id`=`cash_item`.`cash_id` '+
+                      'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
+
+                      // NOTE: In the case where the patient doesn't pay enough, we must
+                      // DEBIT the balance account and credit him for the rest.
+
+                    var rounding_query, rounding_balance_query;
+                    console.log('[DEBUG] isPaidInFull:', isPaidInFull, 'Remainder', remainder);
+                    if (isPaidInFull && remainder !== 0) {
+
+                      //FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the 
+                      //rounding account
+
+                      var creditOrDebitBool = remainder > 0;
+                      var r = precision(Math.abs(remainder), 4);
+                      var creditOrDebit = creditOrDebitBool ?
+                        [r, 0, r, 0].join(', ') :  // debit 
+                        [0, r, 0, r].join(', ') ;   // credit 
+
+                      var description =
+                        "'Rounding correction on exchange rate data for " + id + "'";
+
+                      rounding_query =
+                        'INSERT INTO `posting_journal` ' +
+                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                        '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                      'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                        description +', `cash`.`document_id`, ' + 534  + ', ' + creditOrDebit + ', ' +
+                        '`cash`.`currency_id`, null, null, `cash_item`.`invoice_id`, ' +
+                        [origin_id, user_id].join(', ') + ' ' +
+                      'FROM `cash` JOIN `cash_item` ON `cash`.`id` = `cash_item`.`cash_id` ' +
+                      'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
+
+                      if (creditOrDebitBool) {
+
+                        var balance = creditOrDebitBool ?
+                          [0, r, 0, r].join(', ') :   // credit 
+                          [r, 0, r, 0].join(', ') ;  // debit 
+
+                        rounding_balance_query =
+                          'INSERT INTO `posting_journal` ' +
+                          '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                          '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                          '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                        'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                          description +', `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + balance + ', ' +
+                          '`cash`.`currency_id`, null, null, `cash_item`.`invoice_id`, ' +
+                          [origin_id, user_id].join(', ') + ' ' +
+                        'FROM `cash` JOIN `cash_item` ON `cash`.`id` = `cash_item`.`cash_id` ' +
+                        'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
+
+                      }
+
+                    }
+
+
+                    db.execute(cash_query, function (err, results) {
                       if (err) return done(err);
-                      return done(null, results);
+                      db.execute(cash_item_query, function (err, results) {
+                        if (err) return done(err);
+                        if (rounding_query) {
+                          db.execute(rounding_query, function(err, res) {
+                            if (err) { return done(err); }
+                            if (rounding_balance_query) {
+                              db.execute(rounding_balance_query, function (err, results) {
+                                if (err) { return done(err); }
+                                return done(null, results);
+                              });
+                            } else {
+                              return done(null, res);
+                            }
+                          });
+                        } else {
+                          return done(null, results);
+                        }
+                      });
                     });
                   });
                 });
@@ -622,7 +723,7 @@ module.exports = function (db) {
 
               // process all
               var promise = results.map(function (row, idx) {
-                var defer = Q.defer();
+                var defer = q.defer();
                 var t_id = idx + trans_id;
 
                 // debiting the convention
@@ -676,7 +777,7 @@ module.exports = function (db) {
               });
 
 
-              Q.all(promise)
+              q.all(promise)
               .then(function (rows) {
                 return done(null, rows);
               }, function (err) {
