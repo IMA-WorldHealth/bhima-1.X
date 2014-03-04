@@ -796,7 +796,7 @@ create table `cash_item` (
   primary key (`id`),
   key `cash_id` (`cash_id`),
   key `invoice_id` (`invoice_id`),
-  constraint foreign key (`cash_id`) references `cash` (`id`)
+  constraint foreign key (`cash_id`) references `cash` (`id`),
   constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 

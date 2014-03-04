@@ -12,7 +12,6 @@ delete from `transaction_type`;
 delete from `patient`;
 delete from `debitor`;
 delete from `debitor_group`;
-delete from `debitor_group_type`;
 delete from `permission`;
 delete from `unit`;
 delete from `account`;
@@ -2309,17 +2308,12 @@ INSERT INTO `account` (`fixed`, `locked`, `enterprise_id`, `account_number`, `ac
 --
 -- configure debitors
 
-INSERT INTO `debitor_group_type` (`id`, `type`) values
-  (1, 'Employees'),
-  (3, 'Malades Ambulatoire'),
-  (4, 'Malades Interne');
-
-INSERT INTO `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `type_id`, `is_convention`) values 
- (200, 1, "Patients payant cache", 10, 1, 1, '', 1, 1, 0), 
- (200, 2, "Patient conventionne", 10, 1, 1, '', 1, 1, 1), 
- (200, 3, "Employes", 10, 1, 1, '', 1, 1, 0),
- (200, 4, "Officiers CPC&CNCO", 10, 1, 1, '', 1, 4, 0),
- (200, 5, "Apparentes", 10, 1, 1, '', 1, 4, 1);
+INSERT INTO `debitor_group` (`enterprise_id`, `id`, `name`, `account_id`, `location_id`, `payment_id`, `note`, `tax_id`, `is_convention`) values 
+ (200, 1, "Patients payant cache", 768, 1, 1, '', 1, 0), 
+ (200, 2, "Patient conventionne", 10, 1, 1, '', 1, 1), 
+ (200, 3, "Employes", 10, 1, 1, '', 1,  0),
+ (200, 4, "Officiers CPC&CNCO", 10, 1, 1, '', 1,  0),
+ (200, 5, "Apparentes", 10, 1, 1, '', 1,  1);
 
 -- INSERT INTO `debitor` (`id`, `group_id`, `text`) values 
 --   (1, 1, "Jon Niles");
