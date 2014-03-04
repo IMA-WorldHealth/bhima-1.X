@@ -27,6 +27,8 @@ module.exports = function (db) {
     db.execute(query, function (err, rows) {
       if (err) return callback(err);
     
+      if (!rows.length) { return callback(null, []); }
+      
       var invoices = rows.map(function (line) {
         return line.inv_po_id;
       });
