@@ -22,7 +22,8 @@ module.exports = (function (db) {
       'stock'           : stock,
       'transReport'     : transReport,
       'debitorAging'    : debitorAging,
-      'accountStatement' : accountStatement
+      'accountStatement' : accountStatement,
+      'allTrans'         : allTrans
     };
     
     console.log('server debug', request, params);
@@ -197,7 +198,33 @@ module.exports = (function (db) {
       });
     }    
     return deferred.promise;
-}
+  }
+
+  function allTrans (params){
+    var def = q.defer();
+    var params = JSON.parse(params);
+
+    //requette
+    var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
+                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
+
+    db.execute(requette, function(err, ans) {
+      if(err) {
+        console.log("account statement, Query failed");
+        throw err;
+        return;
+      }
+      console.log('account statement', ans);
+      def.resolve(ans);
+    });
+
+    //promesse
+
+    return def.promise;
+
+
+
+  }
 
 
 
