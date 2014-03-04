@@ -128,6 +128,8 @@ angular.module('kpk.controllers')
             return row.balance > 0;
           });
 
+          console.log($scope.ledger);
+
           // hack to process currency locales
           $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
 
@@ -243,14 +245,6 @@ angular.module('kpk.controllers')
             invoice_id : invoice.inv_po_id
           };
         });
-
-      if (precision.compare(data.total, data.raw) !== 0) {
-        records.push({
-          cash_id : id,
-          allocated_cost : precision.compare(data.total, data.raw),
-          invoice_id : 0
-        });
-      }
 
       return connect.basicPut('cash_item', records);
     }
