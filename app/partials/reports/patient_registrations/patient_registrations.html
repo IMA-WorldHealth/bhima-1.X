@@ -69,6 +69,11 @@
               <td> {{ patient.date | date }} </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="7">{{ "COLUMNS.TOTAL" | translate }} : {{ patients.length }}</th>
+            </tr>
+          </tfoot>
         </table>
     </div>
   </div>
