@@ -96,7 +96,8 @@ angular.module('kpk.controllers')
       for (var k in models) {
         $scope[k] = models[k];
       }
-      $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
+      
+      if(!$scope.cashbox) $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
       $scope.queue = [];
     }
 
