@@ -1,0 +1,61 @@
+<header>
+  {{ "ALLTRANSACTIONS.TITLE" | translate }}
+</header>
+
+<section class="top-nav">
+
+  <div class="pull-left col-xs-5">
+     <select required class="form-kapok" id="account" ng-model="account.id">
+        <option value="0">-- {{"SELECT.ALL" | translate }} --</option>
+        <option ng-repeat="acc in accounts.data | orderBy:'account_number'" value='{{acc.id}}' ng-disabled="acc.account_type_id==3">{{formatAccount(acc)}}</option>
+     </select>       
+  </div>
+
+  <div>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateFrom" rows="20">
+    </div>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateTo" rows="20">
+    </div>
+  </div>
+
+  <div class="pull-right">
+
+    <a href="" class="btn btn-sm btn-primary" ng-click="search()"> {{ "ALLTRANSACTIONS.SEARCH" | translate }}
+    </a>
+  </div>
+</section>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "ALLTRANSACTIONS.TITLE" | translate }} <small> {{ state.dateFrom | date }} - {{ state.dateTo | date }}</small></h4>
+        <table id="transactionsTable" class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.ID" | translate }}</th>
+              <th>{{ "COLUMNS.NAME" | translate }}</th>
+              <th>{{ "COLUMNS.DOB" | translate }}</th>
+              <th>{{ "COLUMNS.SEX" | translate }}</th>
+              <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
+              <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+              <th>{{ "COLUMNS.VISIT_DATE" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='record in records'>
+              <td> {{ patient.id }} </td>
+              <td> {{ patient.first_name + ' ' + patient.last_name }} </td>
+              <td> {{ patient.dob | date }} </td>
+              <td> {{ patient.sex }} </td>
+              <td> {{ patient.debitor_id }} </td>
+              <td> {{ patient.registration_date | date }} </td>
+              <td> {{ patient.date | date }} </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+

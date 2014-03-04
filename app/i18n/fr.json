@@ -166,7 +166,8 @@
     "INVENTORY_GROUP" : "Selectionner Groupe de Stocks",
     "UNIT"            : "Selectionner Unit",
     "INVENTORY_ITEM"  : "Selectionner une Article en Stock",
-    "DEBITOR"         : "Selectionner une Debiteur"
+    "DEBITOR"         : "Selectionner une Debiteur",
+    "ALL"             : "Tous"
   },
 
   "RENEWAL" : {
@@ -848,5 +849,15 @@
     "PATIENT_REGISTRATION" : "Enregistrement Patient",
     "DANGER" : "Erreur pendant le changement de groupe de debiteur",
     "SUCCES" : "Changement avec succes"
+  },
+
+  "ALLTRANSACTIONS" : {
+    "TITLE" : "RAPPORT SUR LES TRANSACTIONS PAR COMPTES",
+    "SEARCH" : "Rechercher",
+    "DAY" : "Aujoird'hui",
+    "WEEK" : "Cette Semaine",
+    "MONTH" : "Ce mois",
+    "FISCAL_YEAR" : "Cette Annee Fiscale",
+    "FROMSTARTING" : "Depuis le Debut"
   }
 }
