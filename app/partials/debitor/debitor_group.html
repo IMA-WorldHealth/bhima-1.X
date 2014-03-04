@@ -89,7 +89,7 @@
                 <!-- note: filter off the title accounts -->
                 <select name="group-account" class="form-kapok" ng-model="newGroup.account_id" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
-                  <option ng-repeat="acc in account.data" value='{{acc.id}}' ng-disabled="acc.account_type_id==3">{{formatAccount(acc)}}</option>
+                  <option ng-repeat="acc in account.data | orderBy:'account_number'" value='{{acc.id}}' ng-disabled="acc.account_type_id==3">{{formatAccount(acc)}}</option>
                 </select>
               </div>
             </div>
@@ -195,7 +195,7 @@
               <label class="col-xs-2 control-label required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-kapok" ng-model="editGroup.account_id" ng-options="acc.id as formatAccount(acc) for acc in account.data" required>
+                <select name="group-account" class="form-kapok" ng-model="editGroup.account_id" ng-options="acc.id as formatAccount(acc) for acc in account.data | orderBy:'account_number'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                 </select>
               </div>

@@ -83,7 +83,10 @@ angular.module('kpk.controllers')
     }
 
     function setUpModels (models) {
-      for (var k in models) $scope[k] = models[k];
+      for (var k in models) { $scope[k] = models[k]; }
+      $scope.account.data.forEach(function (account) {
+        account.account_number = String(account.account_number);
+      });
       $scope.action = '';
     }
 
