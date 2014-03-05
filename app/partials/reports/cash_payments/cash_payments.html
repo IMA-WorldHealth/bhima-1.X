@@ -49,11 +49,11 @@
         <table id="patientTable" class="reportTable">
           <thead>
             <tr>
-              <th>{{ "COLUMNS.ID" | translate }}</th>
+              <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
               <th>{{ "COLUMNS.NAME" | translate }}</th>
               <th>{{ "COLUMNS.TYPE" | translate }}</th>
               <th>{{ "COLUMNS.COST" | translate }}</th>
-              <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
+              <th>{{ "COLUMNS.SALE_ID" | translate }}</th>
               <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
               <th>{{ "COLUMNS.DEBITOR_TYPE" | translate }}</th>
               <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
@@ -73,6 +73,11 @@
               <td> {{ payment.date | date }} </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="9">{{ "COLUMNS.TOTAL" | translate }} : {{ payments.length }}</th>
+            </tr>
+          </tfoot>
         </table>
     </div>
   </div>
