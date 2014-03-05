@@ -335,3 +335,9 @@ div .reportFrame {
 .caret::after {
   content : attr(data-caret);
 }
+
+.creditInvoice { 
+  /* color: #ffffff; */
+  background-color: #d9534f;
+  /* border-color: #d43f3a; */
+}

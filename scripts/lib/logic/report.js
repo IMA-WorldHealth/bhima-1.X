@@ -22,7 +22,8 @@ module.exports = (function (db) {
       'stock'           : stock,
       'transReport'     : transReport,
       'debitorAging'    : debitorAging,
-      'accountStatement' : accountStatement
+      'accountStatement' : accountStatement,
+      'saleRecords'     : saleRecords
     };
     
     console.log('server debug', request, params);
@@ -249,8 +250,24 @@ module.exports = (function (db) {
     return def.promise;
   }
 
+  function saleRecords(params) { 
+    var deferred = q.defer(); 
+    var span = params.span || 'week';
+    var spanMap = {};
+    
+    // TODO implement span, week, day, month etc. WHERE invoice_date <> date
+    var requestSql = "SELECT sale.id, sale.cost, sale.currency_id, sale.debitor_id, sale.invoice_date, sale.note, sale.posted, credit_note.id as 'creditId', credit_note.description as 'creditDescription', credit_note.posted as 'creditPosted', first_name, last_name " + 
+      "FROM sale LEFT JOIN credit_note on sale.id = credit_note.sale_id " +
+      "LEFT JOIN patient on sale.debitor_id = patient.debitor_id;";
+
+    db.execute(requestSql, function(error, result) { 
+      if(error) return deferred.reject(error);
+      deferred.resolve(result);
+    });
+    return deferred.promise;
+  }
+
   return { 
     generate: generate
-  };
-
+  }; 
 });
