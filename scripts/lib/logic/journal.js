@@ -792,9 +792,9 @@ module.exports = function (db) {
 
   function handleCreditNote (id, user_id, done) {
     var sql =
-      'SELECT `enterprise_id`, `cost`, `debitor_id`, `note_date`, `sale_id`, ' +
+      'SELECT `credit_note`.`enterprise_id`, `cost`, `debitor_id`, `note_date`, `credit_note`.`sale_id`, ' +
         ' `description`, `note_date`, `inventory_id`, `quantity`, ' +
-        '`unit_price`, `total`' +
+        '`transaction_price`, `debit`, `credit`' +
       'FROM `credit_note` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` ' +
         'ON `credit_note`.`sale_id`=`sale_item`.`sale_id` AND ' +
         '`sale_item`.`inventory_id`=`inventory`.`id` AND ' +
@@ -803,6 +803,7 @@ module.exports = function (db) {
 
     db.execute(sql, function (err, results) {
       if (err) { return done(err); }
+      console.log(results);
       if (results.length === 0) {
         return done(new Error('No credit note by the id: ' + id));
       }
@@ -811,43 +812,99 @@ module.exports = function (db) {
       var enterprise_id = reference_note.enterprise_id;
       var date = reference_note.note_date;
 
-      // first check - do we have a validPeriod?
-      // Also, implicit in this check is that a valid fiscal year
-      // is in place.
       check.validPeriod(enterprise_id, date, function (err) {
         if (err) { done(err); }
-
-        // second check - is the cost positive for every transaction?
-        var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
-        if (!costPositive) {
-          return done(new Error('Negative cost detected for invoice id: ' + id));
-        }
-
-        // third check - is the total the price * the quantity?
-        function sum(a, b) {
-          return a + b.cost;
-        }
-        var total = results.reduce(sum, 0);
-        var totalEquality = validate.isEqual(total, reference_note.total);
-        if (!totalEquality) {
-          console.log('[DEBUG] ', 'sum of costs is not equal to the total');
-          //return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
-        }
-
-        // all checks have passed - prepare for writing to the journal.
-        get.origin('credit_note', function (err, origin_id) {
-          if (err) { return done(err); }
-          // we now have the origin!
-         
-          get.period(date, function (err, period_object) {
-            if (err) { return done(err); }
-
-            // we now have the relevant period!
           
-            // create a trans_id for the transaction
-            // MUST BE THE LAST REQUEST TO prevent race conditions.
-            get.transactionId(function (err, trans_id) {
-              // we can now post
+        // Ensure a credit note hasn't already been assiged to this sale
+        var reviewLegacyNotes = "SELECT id FROM credit_note WHERE sale_id=" + reference_note.sale_id + ";";
+        db.execute(reviewLegacyNotes, function (err, rows) {
+          if(err) return done(err);
+          
+          // There should only be one sale here
+          if(rows.length > 1) return done('This sale has already been reversed with a credit note');
+
+          // Cost positive checks  
+          var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
+          if (!costPositive) {
+            return done(new Error('Negative cost detected for invoice id: ' + id));
+          }
+        
+          // third check - is the total the price * the quantity?
+          function sum(a, b) {
+            return a + (b.credit - b.debit);
+          }
+
+          var total = results.reduce(sum, 0);
+          console.log('[DEBUG] sum', total, 'cost', reference_note.cost);
+          var totalEquality = validate.isEqual(total, reference_note.cost);
+          if (!totalEquality) {
+            console.log('[DEBUG] ', 'sum of costs is not equal to the total');
+            //return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
+          }
+
+          // all checks have passed - prepare for writing to the journal.
+          get.origin('credit_note', function (err, originId) {
+            if (err) { return done(err); }
+            // we now have the origin!
+          
+            get.period(date, function (err, periodObject) {
+              if (err) { return done(err); }
+
+              // we now have the relevant period!
+              
+              // create a trans_id for the transaction
+              // MUST BE THE LAST REQUEST TO prevent race conditions.
+              get.transactionId(function (err, transId) {
+                if(err) return done(err);
+                
+                var periodId = periodObject.period_id, fiscalYearId = periodObject.fiscal_year_id;
+                
+                // console.log('working with', row, index, periodId, originId);
+                  
+                // Credit debtor (basically the reverse of a sale)
+                var debtorQuery = 
+                  'INSERT INTO `posting_journal` ' +
+                    '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                    '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `sale`.`enterprise_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+                    '"' + reference_note.description + '", `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' + 
+                    '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [originId, user_id].join(', ') + ' ' +
+                  'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
+                    '`sale`.`debitor_id`=`debitor`.`id` AND `debitor`.`group_id`=`debitor_group`.`id` ' +
+                  'WHERE `sale`.`id`=' + sanitize.escape(reference_note.sale_id) + ';';
+    
+                // Debit sale items
+                var itemsQuery =
+                  'INSERT INTO `posting_journal` ' +
+                    '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                    '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `sale`.`enterprise_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+                    '"' + reference_note.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+                    '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+                    ' null, `sale`.`id`, ' + [originId, user_id].join(', ') + ' ' +
+                  'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+                    '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
+                    '`inventory`.`group_id`=`inventory_group`.`id` ' +
+                  'WHERE `sale`.`id`=' + sanitize.escape(reference_note.sale_id) + ';';
+              
+                db.execute(debtorQuery, function (err, rows) { 
+                  if(err) return done(err);
+
+                  db.execute(itemsQuery, function (err, rows) { 
+                    var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
+                    
+                    if(err) return done(err);
+
+                    db.execute(sql, function (err, rows) {
+                      if (err) return done(err);
+                      done(null, rows);
+                      return;
+                    });
+                  });
+                });
+              });
             });
           });
         });
