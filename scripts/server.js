@@ -171,6 +171,8 @@ app.get('/reports/:route/', function(req, res, next) {
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
 
+  console.log('les query au niveau du serveur', query);
+
   report.generate(route, query, function(report, err) {
     if(err) return next(err);
     res.send(report);
