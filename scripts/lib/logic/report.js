@@ -203,10 +203,37 @@ module.exports = (function (db) {
   function allTrans (params){
     var def = q.defer();
     var params = JSON.parse(params);
+    if(!params.source || params.source === 0){
+
+       var requette =
+        'SELECT `t`.`trans_id`, `t`.`trans_date`, `t`.`account_id`, `t`.`debit_equiv` AS `debit`,  ' +
+        '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
+        'FROM (' +
+          '(' +
+            'SELECT `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit`, ' +
+              '`posting_journal`.`credit`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, ' +
+              '`posting_journal`.`account_id`, `posting_journal`.`deb_cred_id`, `posting_journal`.`currency_id`, ' +
+              '`posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+            'FROM `posting_journal` ' +
+          ') UNION (' +
+            'SELECT `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit`, ' +
+              '`general_ledger`.`credit`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, ' +
+              '`general_ledger`.`account_id`, `general_ledger`.`deb_cred_id`, `general_ledger`.`currency_id`, ' +
+              '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+            'FROM `general_ledger` ' +
+          ')' +
+        ') AS `t`';
+
+     // console.log('getting from posting and generale ledger');
+
+    }else{
+      console.log('la source est definie');
+    }
+   // console.log('les parametre a allTrans est est :', params);
 
     //requette
-    var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
-                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
+    //var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
+              //     "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
 
     db.execute(requette, function(err, ans) {
       if(err) {
@@ -214,16 +241,12 @@ module.exports = (function (db) {
         throw err;
         return;
       }
-      console.log('account statement', ans);
+      console.log('alltrans', ans);
       def.resolve(ans);
     });
 
     //promesse
-
     return def.promise;
-
-
-
   }
 
 

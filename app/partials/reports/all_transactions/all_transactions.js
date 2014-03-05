@@ -19,7 +19,8 @@ angular.module('kpk.controllers')
       }
     }
 
-    $scope.dates = {}; $scope.account = {};
+    $scope.dates = {}; $scope.state = {}; $scope.account = {}, $scope.model = {};
+    $scope.model.sources = [$filter('translate')('SELECT.ALL'), $filter('translate')('SELECT.POSTING_JOURNAL'), $filter('translate')('SELECT.GENERAL_LEDGER')];
 
 
     //fonctions
@@ -35,8 +36,6 @@ angular.module('kpk.controllers')
       $scope.accounts.data.forEach(function (account) {
         account.account_number = String(account.account_number);
       });
-
-      //fill();
     }
 
     function handlError (err){
@@ -49,16 +48,29 @@ angular.module('kpk.controllers')
     }
 
     function selective (){
-      console.log('selective');
-    }
 
-    function all (){
+      console.log('les dates sont :', $scope.dates.from, 'et ', $scope.dates.to)
       var qo = {
         source : 'posting_journal',
         enterprise_id : $scope.enterprise.id,
-        account_id : $scope.account.id,
+        account_id : $scope.model.account_id,
         datef : $scope.dates.from,
         datet : $scope.dates.to
+      };
+      connect.MyBasicGet(
+        '/reports/allTrans/?'+JSON.stringify(qo)
+      ).then(function(res){
+          console.log('ici on a res :', res);
+      })
+    }
+
+    function all () {
+      var qo = {
+        source : $scope.model.source_id,
+        enterprise_id : $scope.enterprise.id,
+        account_id : 0,
+        datef : $scope.state.from,
+        datet : $scope.state.to
       };
       connect.MyBasicGet(
         '/reports/allTrans/?'+JSON.stringify(qo)
@@ -67,18 +79,30 @@ angular.module('kpk.controllers')
         })
     }
 
+    function dateWatcher () {
+      $scope.state.from = $filter('date')($scope.dates.from, 'yyyy-MM-dd');
+      $scope.state.to = $filter('date')($scope.dates.to, 'yyyy-MM-dd');
+    }
+
+    function stateWatcher () {
+      $scope.dates.from = new Date($scope.state.from);
+      $scope.dates.to = new Date($scope.state.to);
+    }
+
 
     //invocations
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-      dependencies.accounts.query.where = ['account.enterprise_id='+enterprise.id, 'AND', 'account_type_id<>'+3];
+      $scope.dates.from = new Date();
+      $scope.dates.to = new Date();
+      dependencies.accounts.query.where = ['account.enterprise_id='+enterprise.id];
       validate.process(dependencies).then(init, handlError);
     });
-
-    $scope.$watch('account.id', fill);
+    
+    $scope.$watch('dates', dateWatcher, true);
+    $scope.$watch('state', stateWatcher, true);
+    $scope.$watch('model.account_id', fill);   
 
 
     //expositions
@@ -91,18 +115,7 @@ angular.module('kpk.controllers')
     // $scope.state = {};
     // $scope.dates = {};
 
-    // function dateWatcher () {
-    //   $scope.state.dateFrom = $filter('date')($scope.dates.dateFrom, 'yyyy-MM-dd');
-    //   $scope.state.dateTo = $filter('date')($scope.dates.dateTo, 'yyyy-MM-dd');
-    // }
 
-    // function stateWatcher () {
-    //   $scope.dates.dateFrom = new Date($scope.state.dateFrom);
-    //   $scope.dates.dateTo = new Date($scope.state.dateTo);
-    // }
-
-    //$scope.$watch('dates', dateWatcher, true);
-    //$scope.$watch('state', stateWatcher, true);
 
     // appstate.register('enterprise', function (enterprise) {
     //   $scope.enterprise = enterprise;

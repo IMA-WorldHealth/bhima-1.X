@@ -167,7 +167,9 @@
     "UNIT"            : "Selectionner Unit",
     "INVENTORY_ITEM"  : "Selectionner une Article en Stock",
     "DEBITOR"         : "Selectionner une Debiteur",
-    "ALL"             : "Tous"
+    "ALL"             : "Tous",
+    "POSTING_JOURNAL" : "Journal de Saisie",
+    "GENERAL_LEDGER" : "Grand Livre"    
   },
 
   "RENEWAL" : {
