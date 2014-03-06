@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'messenger',
   '$filter',
   'validate',
-  function ($scope, connect, appstate, messenger, $filter, validate) {
+  'kpkUtilitaire',
+  function ($scope, connect, appstate, messenger, $filter, validate, util) {
 
     //variables inits
 
@@ -43,28 +44,40 @@ angular.module('kpk.controllers')
       //
     }
 
-    function fill (account_id){
-      var f = (account_id && account_id !== 0)? selective(account_id) : all ();
+    function fill (){
+     // var f = (account_id && account_id != 0)? selective(account_id) : all ();
+     if (!$scope.model.account_id) {
+        all();
+     }
     }
 
     function selective (){
-
-      console.log('les dates sont :', $scope.dates.from, 'et ', $scope.dates.to)
+      $scope.mode = 'selected';
       var qo = {
-        source : 'posting_journal',
+        source : $scope.model.source_id,
         enterprise_id : $scope.enterprise.id,
         account_id : $scope.model.account_id,
         datef : $scope.dates.from,
         datet : $scope.dates.to
       };
+
+      $scope.model.account_number = $scope.accounts.data.filter(function(value){
+        return value.id == $scope.model.account_id;
+      })[0].account_number;
+
       connect.MyBasicGet(
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
-          console.log('ici on a res :', res);
+          if(res.length > 0){
+            $scope.records = res;
+          }else{
+            $scope.records = [];
+          }
       })
     }
 
     function all () {
+      $scope.mode = 'all';
       var qo = {
         source : $scope.model.source_id,
         enterprise_id : $scope.enterprise.id,
@@ -75,18 +88,51 @@ angular.module('kpk.controllers')
       connect.MyBasicGet(
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
-          console.log('ici on a res :', res);
+          if(res.length > 0){
+            $scope.records = res;
+          }else{
+            $scope.records = [];
+          }
         })
     }
 
     function dateWatcher () {
-      $scope.state.from = $filter('date')($scope.dates.from, 'yyyy-MM-dd');
-      $scope.state.to = $filter('date')($scope.dates.to, 'yyyy-MM-dd');
+      // $scope.state.from = $filter('date')($scope.dates.from, 'yyyy-MM-dd');
+      // $scope.state.to = $filter('date')($scope.dates.to, 'yyyy-MM-dd');
+      $scope.state.from = util.convertToMysqlDate($scope.dates.from);
+      $scope.state.to = util.convertToMysqlDate($scope.dates.to);
     }
 
-    function stateWatcher () {
-      $scope.dates.from = new Date($scope.state.from);
-      $scope.dates.to = new Date($scope.state.to);
+    function search (){
+      if(!$scope.model.account_id) return;
+      ($scope.model.account_id != 0)?$scope.mode = 'selected' : $scope.mode = 'all';
+      var qo = {
+        source : $scope.model.source_id,
+        enterprise_id : $scope.enterprise.id,
+        account_id : $scope.model.account_id,
+        datef : $scope.state.from,
+        datet : $scope.state.to
+      };
+
+      if($scope.model.account_id && $scope.model.account_id == 0){
+        $scope.model.account_number = "Tous"
+      }else{
+         $scope.model.account_number = $scope.accounts.data.filter(function(value){
+          return value.id == $scope.model.account_id;
+        })[0].account_number;
+      }  
+
+      connect.MyBasicGet(
+        '/reports/allTrans/?'+JSON.stringify(qo)
+      ).then(function(res){
+          if(res.length > 0){
+            $scope.records = res;
+          }else{
+            $scope.records = [];
+          }
+      })
+
+
     }
 
 
@@ -101,14 +147,14 @@ angular.module('kpk.controllers')
     });
     
     $scope.$watch('dates', dateWatcher, true);
-    $scope.$watch('state', stateWatcher, true);
+   // $scope.$watch('state', stateWatcher, true);
     $scope.$watch('model.account_id', fill);   
 
 
     //expositions
 
     $scope.formatAccount = formatAccount;
-
+    $scope.search = search;
 
 
 

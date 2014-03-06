@@ -169,7 +169,8 @@
     "DEBITOR"         : "Selectionner une Debiteur",
     "ALL"             : "Tous",
     "POSTING_JOURNAL" : "Journal de Saisie",
-    "GENERAL_LEDGER" : "Grand Livre"    
+    "GENERAL_LEDGER" : "Grand Livre",
+    "SOURCE" : "Selectionner source"    
   },
 
   "RENEWAL" : {
@@ -270,7 +271,8 @@
     "RENEWAL" : "Renouveller Fiche",
     "PATIENT_REGISTRATION" : "Rapport Enregistrement des Malades",
     "UPDATE_STOCK" : "Mettre a Jour les Stocks",
-    "CASH_PAYMENTS" : "Rapport Paiements"
+    "CASH_PAYMENTS" : "Rapport Paiements",
+    "ALL_TRANSACTIONS" : "Toutes Transactions"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -426,7 +428,9 @@
     "VALUE" : "Valeur",
     "SCOPE" : "Appliquer a",
     "VISIT_DATE" : "Date de Visite",
-    "DEBITOR_TYPE" : "Type de Debiteur"
+    "DEBITOR_TYPE" : "Type de Debiteur",
+    "TRANS_DATE" : "Date Transaction"
+
   },
 
   "REPORT" : {
@@ -854,12 +858,14 @@
   },
 
   "ALLTRANSACTIONS" : {
-    "TITLE" : "RAPPORT SUR LES TRANSACTIONS PAR COMPTES",
+    "TITLE" : "ETAT DES TOUTES LES TRANSACTIONS",
     "SEARCH" : "Rechercher",
     "DAY" : "Aujoird'hui",
     "WEEK" : "Cette Semaine",
     "MONTH" : "Ce mois",
     "FISCAL_YEAR" : "Cette Annee Fiscale",
-    "FROMSTARTING" : "Depuis le Debut"
+    "FROMSTARTING" : "Depuis le Debut",
+    "SELECTED" : "ETAT DES TRANSACTIONS POUR LES COMPTES : ",
+    "DEFAULT"  : "ETAT DES TOUTES LES TRANSACTIONS"
   }
 }
