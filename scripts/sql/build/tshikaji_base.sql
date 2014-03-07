@@ -34,7 +34,7 @@ delete from `sale`;
 delete from `patient_group`;
 delete from `price_list`;
 
--- System admin 
+-- System admin
 INSERT INTO `user` values
   (1,'admin','1','System','Administrato','kpkdeveloper@gmail.com',0);
 
@@ -87,7 +87,8 @@ INSERT INTO `unit` VALUES
   (68, 'Update Stock'               , 'TREE.UPDATE_STOCK', '',                                      11, 0, '/partials/update_stock/', '/update_stock/'),
   (69, 'Change Patient Group'       , 'TREE.SWAP_DEBITOR', '',                                      21, 0, '/partials/swap_debitor/', '/swap_debitor/'),
   (70, 'Cash Payments'              , 'TREE.CASH_PAYMENTS', '',                                     10, 0, '/partials/reports/cash_payments/', '/reports/cash_payments'),
-  (71, 'Report All Transactions'    , 'TREE.ALL_TRANSACTIONS', '',                                     10, 0, '/partials/reports/all_transactions/', '/reports/all_transactions');
+  (71, 'Report All Transactions'    , 'TREE.ALL_TRANSACTIONS', '',                                     10, 0, '/partials/reports/all_transactions/', '/reports/all_transactions'),
+  (72, 'Caution'                    , 'TREE.CAUTION', '',                                     5, 0, '/partials/caution/', '/caution');
 
 -- Expose Users and Permissions
 INSERT INTO `permission` (`id_user`, `id_unit`) values
@@ -353,7 +354,7 @@ INSERT INTO `province` (`id`,`name`, `country_id`) VALUES
   (11, 'Maniema', 52);
 
 -- System transactions (TODO seperate from Tshikaji?)
-INSERT INTO `transaction_type` values 
+INSERT INTO `transaction_type` values
   (1, 'cash'),
 	(2, 'sale'),
 	(3, 'purchase'),
@@ -367,17 +368,17 @@ INSERT INTO `currency` (`id`, `name`, `symbol`, `separator`, `decimal`, `min_mon
 	(2,'United States Dollars','$', ',', '.', 0.01);
 
 
-INSERT INTO `sector` VALUES 
+INSERT INTO `sector` VALUES
 (1,'Aketi',1),(2,'Ango',1),(3,'Aru',1),(4,'Bafwasende',1),(5,'Bagata',1),(6,'Bagira',1),(7,'Bambesa',1),(8,'Banalia',1),(9,'Bandalungwa',1),(11,'Barumbu',1),(12,'Basankusu',1),(13,'Basoko',1),(14,'Befale',1),(15,'Beni',1),(16,'Bikoro',1),(17,'Bipemba',1),(18,'Boende',1),(19,'Bokungu',1),(20,'Bolobo',1),(21,'Bolomba',1),(22,'Bomongo',1),(23,'Bongandanga',1),(24,'Bondo',1),(25,'Boso-Bolo',1),(26,'Budjala',1),(27,'Bukama',1),(28,'Bukavu',1),(29,'Bulungu',1),(30,'Bumba',1),(31,'Bumbu',1),(32,'Businga',1),(33,'Buta',1),(34,'Dekese',1),(35,'Demba',1),(36,'Dibaya',1),(37,'Dibindi',1),(38,'Dilolo',1),(39,'Dimbelenge',1),(40,'Disasi',1),(41,'Diulu',1),(42,'Djolu',1),(43,'Djugu',1),(44,'Dungu',1),(45,'Feshi',1),(46,'Fizi',1),(47,'Gbadolite',1),(48,'Gemena',1),(49,'Goma',1),(50,'Gombe',1),(51,'Gungu',1),(52,'Ibanda',1),(53,'Idiofa',1),(54,'Idjwi',1),(55,'Ikela',1),(56,'Ilebo',1),(57,'Ingende',1),(58,'Inongo',1),(59,'Irumu',1),(60,'Isangi-Yanonge',1),(61,'Kabalo',1),(62,'Kabambare',1),(63,'Kabare',1),(64,'Kabeya-Kamwanga',1),(65,'Kabinda',1),(66,'Kabondo',1),(67,'Kabongo',1),(68,'Kadutu',1),(69,'Kahemba',1),(70,'Kalamu',1),(71,'Kalehe',1),(72,'Kalemie',1),(73,'Kamboye',1),(74,'Kamiji',1),(75,'Kamina',1),(76,'Kananga',6),(77,'Kaniama',1),(78,'Kanshi',1),(79,'Kasa-Vubu',1),(80,'Kasangulu',1),(81,'Kasenga',1),(82,'Kasongo',1),(83,'Kasongo Lunda',1),(84,'Katako-Kombe',1),(85,'Katanda',1),(86,'Katoka',1),(87,'Kazamba',1),(88,'Kazumba',1),(89,'Kenge',1),(90,'Kimbaseke',1),(91,'Kimvula',1),(92,'Kindu',1),(93,'Kindu.Kailo',1),(94,'Kinshasa',1),(95,'Kipushi',1),(96,'Kiri',1),(97,'Kisangani',1),(98,'Kisenso',1),(99,'Kitambo',1),(100,'Kole',1),(101,'Kongolo',1),(102,'Kungu',1),(103,'Kutu',1),(104,'Kwamouth',1),(105,'Lemba',1),(106,'Libao',1),(107,'Libenge',1),(108,'Likasi',1),(109,'Limete',1),(110,'Lingwala',1),(111,'Lisala',1),(112,'Lodja',1),(113,'Lomela',1),(114,'Lubefu',1),(115,'Lubero',1),(116,'Lubudi',1),(117,'Lubumbashi',1),(118,'Luebo',1),(119,'Luiza',1),(120,'Lukemi',1),(121,'Lukolela',1),(122,'Lukonga',1),(123,'Lukula',1),(124,'Luozi',1),(125,'Lupatapata',1),(126,'Lusambo',1),(127,'Madimba',1),(128,'Mahagi',1),(129,'Makala',1),(130,'Malemba-Nkulu',1),(131,'Maluku',1),(132,'Mambasa',1),(133,'Mankanza',1),(134,'Manono',1),(135,'Masi-Manimba',1),(136,'Masina',1),(137,'Masisi',1),(138,'Matadi',1),(139,'Matete',1),(140,'Mayoyo',1),(141,'Mbadaka',1),(142,'Mbanza-Ngungu',1),(143,'Miabi',1),(144,'Mitwaba',1),(145,'Moanda',1),(146,'Moba',1),(147,'Mobayi-Mbongo',1),(148,'Monkoto',1),(149,'Mont-Ngafula',1),(150,'Musadi',1),(151,'Mushie',1),(152,'Mutshatsha',1),(153,'Muya',1),(154,'Mvuzi',1),(155,'Mweka',1),(156,'Mwene-Ditu',1),(157,'Mwenga',1),(158,'Ndesha',1),(159,'Ndjili',1),(160,'Ngaba',1),(161,'Ngaliema',1),(162,'Ngandajika',1),(163,'Nganza',1),(164,'Ngiri-Ngiri',1),(165,'Niangara',1),(166,'Nsele',1),(167,'Nyunzu',1),(168,'Nzadi',1),(169,'Nzanza',1),(170,'Nzinda',1),(171,'Opala',1),(172,'Oshwe',1),(173,'Pangi',1),(174,'Poko',1),(175,'Popokabaka',1),(176,'Punia',1),(177,'Pweto',1),(178,'Rungu',1),(179,'Rutshuru',1),(180,'Sakania',1),(181,'Sandoa',1),(182,'Seke-Banza',1),(183,'Selembao',1),(184,'Shabunda',1),(185,'Songololo',1),(186,'Tshela',1),(187,'Tshikapa',1),(188,'Tshilenge',1),(189,'Ubundu',1),(190,'Uvira',1),(191,'Walikale',1),(192,'Walungu',1),(193,'Wamba',1),(194,'Wangata',1),(195,'Watsa',1),(196,'Yahuma',1),(197,'Yakoma',1),(198,'Yumbi',1),(199,'Zongo',1),(200,'Nkoko',6),(201,'Nganza',6),(202,'Dibaya',6),(203,'NDESHA',6),(204,'LUKONGA',6),(205,'KATOKA',6),(206,'KAZUMBA',6);
-INSERT INTO `village` VALUES 
+INSERT INTO `village` VALUES
 (1,'Vanga',2),(2,'Bulungu',2),(3,'Songo',1),(4,'Lusekele',1),(5,'Tshikaji',76),(6,'Kananga',76),(7,'Tshikapa',187),(8,'kamenga',158),(9,'kasangidi',76),(10,'nganza',200),(11,'kabundi',163),(12,'kabanza',76),(13,'quartie  hopital',76),(14,'biancky',76),(15,'mutanda',163),(16,'LUEBOCITE',118),(17,'TSHIBANDABANDA',158),(18,'NSELE',163),(19,'DIBANDISHA',202),(20,'NKONKO TSHIELA',201),(21,'MPOKOLO',76),(22,'NTAMBUE SAINT B',201),(23,'CAMP BOBOZO',201),(24,'DEMBA',76),(25,'AZDA TSHINSAMBI',76),(26,'epro',205),(27,'Appolo',76),(28,'Appolo',76),(29,'telecom',201),(30,'kalumentumba',201),(31,'MALANDI',76),(32,'BIANCKY',76),(33,'BIANCKY',76),(34,'MATAMBA',206),(35,'LUIZA',206),(36,'BIANCKY',76),(37,'BIANCKY',76),(38,'route kanyuka',76),(39,'LUBI AMPATA',201),(40,'CAMP  SNCC',76),(41,'TSHITUNTA',201),(42,'KOLE',206),(43,'KAMAYI',76),(44,'BINCKY',76),(45,'KELE KELE',205),(46,'DIBANDA',202),(47,'PLATEAU',76),(48,'NGANZA NORD',201),(49,'LUBUWA',203),(50,'BUMBA',201),(51,'KELEKELE',205),(52,'NGANZA  SUD',201),(53,'katoka epro',205),(54,'BUNKONDE',76),(55,'NKONKO',201),(56,'CAMP  BOBOZO',201),(57,'SNELi',76),(58,'DIBAYA',76);
 
 
 -- Configure enterprise
-INSERT INTO `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `logo`, `currency_id`) values 
+INSERT INTO `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `location_id`, `logo`, `currency_id`) values
   (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', 5, '/assets/logos/tsh.jpg', 2);
 
-INSERT INTO `fiscal_year` VALUES 
+INSERT INTO `fiscal_year` VALUES
 (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014,NULL,0);
 INSERT INTO `period` VALUES
 (1,1,0,'2014-01-01','2014-01-01',0),(2,1,1,'2014-01-01','2014-01-31',0),(3,1,11,'2014-02-01','2014-02-28',0),(4,1,21,'2014-03-01','2014-03-31',0),(5,1,31,'2014-04-01','2014-04-30',0),(6,1,41,'2014-05-01','2014-05-31',0),(7,1,51,'2014-06-01','2014-06-30',0),(8,1,61,'2014-07-01','2014-07-31',0),(9,1,71,'2014-08-01','2014-08-31',0),(10,1,81,'2014-09-01','2014-09-30',0),(11,1,91,'2014-10-01','2014-10-31',0),(12,1,101,'2014-11-01','2014-11-30',0),(13,1,111,'2014-12-01','2014-12-31',0);
@@ -390,10 +391,10 @@ INSERT INTO `account_type` values
 
 -- Configure base inventory
 INSERT INTO `inventory_unit` (`text`) values
-  ('Act'), 
-  ('Pallet'), 
-  ('Pill'), 
-  ('Box'), 
+  ('Act'),
+  ('Pallet'),
+  ('Pill'),
+  ('Box'),
   ('Lot');
 
 INSERT INTO `inventory_type` values
