@@ -98,7 +98,7 @@ create table `country` (
 
 --
 -- Table structure for table `province`;
--- 
+--
 drop table if exists `province`;
 create table `province` (
   `id`         mediumint unsigned not null auto_increment,
@@ -218,8 +218,8 @@ create table `cost_center` (
   `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
   `cost`            float default 0,
-  `note`            text, 
-  `pc`              boolean default 0, 
+  `note`            text,
+  `pc`              boolean default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
@@ -493,7 +493,7 @@ create table `patient` (
 drop table if exists `patient_visit`;
 create table `patient_visit` (
   `id`                    int unsigned not null auto_increment,
-  `patient_id`            int unsigned not null, 
+  `patient_id`            int unsigned not null,
   `date`                  timestamp not null,
   `registered_by`         smallint unsigned not null,
   primary key (`id`),
@@ -669,7 +669,7 @@ create table `sale_item` (
   `id`                int unsigned not null auto_increment,
   `inventory_id`      int unsigned not null,
   `quantity`          int unsigned default '0',
-  `inventory_price`   decimal(19,4), 
+  `inventory_price`   decimal(19,4),
   `transaction_price` decimal(19,4) not null,
   `debit`             decimal(19,4) not null default 0,
   `credit`            decimal(19,4) not null default 0,
@@ -800,7 +800,7 @@ create table `cash_item` (
   constraint foreign key (`invoice_id`) references `sale` (`id`)
 ) engine=innodb;
 
--- 
+--
 -- Table structure for table `kpk`.`posting_session`
 --
 drop table if exists `posting_session`;
@@ -832,7 +832,7 @@ create table `posting_journal` (
   `debit_equiv`       decimal (19, 4) unsigned not null default 0,
   `credit_equiv`      decimal (19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_id`       varchar(45), -- debitor or creditor id 
+  `deb_cred_id`       varchar(45), -- debitor or creditor id
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         varchar(45),
   `comment`           text,
@@ -873,7 +873,7 @@ create table `kpk`.`general_ledger` (
   `debit_equiv`       decimal(19, 4) unsigned not null default 0,
   `credit_equiv`      decimal(19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_id`       varchar(45), -- debitor or creditor id 
+  `deb_cred_id`       varchar(45), -- debitor or creditor id
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         varchar(45),
   `comment`           text,
@@ -923,7 +923,7 @@ create table `kpk`.`period_total` (
 
 
 
--- 
+--
 -- table `kpk`.`group_invoice`
 --
 drop table if exists `group_invoice`;
@@ -1001,7 +1001,7 @@ drop table if exists `employee`;
 create table `employee` (
   `id`                  int unsigned not null auto_increment,
   `code`                varchar(20) not null,
-  `prenom`              text, 
+  `prenom`              text,
   `name`                text not null,
   `postnom`             text,
   `dob`                 date not null,
@@ -1012,7 +1012,7 @@ create table `employee` (
   `service_id`          tinyint unsigned not null,
   `location_id`         mediumint unsigned not null,
   `creditor_id`         int unsigned not null,
-  `debitor_id`          int unsigned not null,            
+  `debitor_id`          int unsigned not null,
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
   key `service_id`  (`service_id`),
@@ -1038,7 +1038,7 @@ create table `inventory_log` (
   key `inventory_id` (`inventory_id`),
   constraint foreign key (`inventory_id`) references `inventory` (`id`)
 ) engine=innodb;
--- 
+--
 -- Table structure for table `kpk`.`debitor_group_history`
 --
 drop table if exists `debitor_group_history`;
@@ -1054,6 +1054,26 @@ key `debitor_group_id` (`debitor_group_id`),
 key `user_id` (`user_id`),
 constraint foreign key (`debitor_id`) references `debitor` (`id`),
 constraint foreign key (`debitor_group_id`) references `debitor_group` (`id`),
+constraint foreign key (`user_id`) references `user` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`caution`
+--
+drop table if exists `caution`;
+create table `caution` (
+`id`                  int unsigned not null auto_increment,
+`value`               decimal(19,4) unsigned not null,
+`date`                timestamp not null,
+`debitor_id`          int unsigned not null,
+`currency_id`         tinyint unsigned not null,
+`user_id`             smallint unsigned not null,
+primary key (`id`),
+key `debitor_id` (`debitor_id`),
+key `currency_id` (`currency_id`),
+key `user_id` (`user_id`),
+constraint foreign key (`debitor_id`) references `debitor` (`id`),
+constraint foreign key (`currency_id`) references `currency` (`id`),
 constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 
