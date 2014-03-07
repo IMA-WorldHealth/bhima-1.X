@@ -173,11 +173,11 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
   var endDate = req.params.endDate;
   var description = req.params.description;
 
-  console.time("FISCAL_KEY");
+  //console.time("FISCAL_KEY");
   //function(err, status);
   fiscal.create(enterprise, startDate, endDate, description, function(err, status) {
     if(err) return res.send(500, err);
-    console.timeEnd("FISCAL_KEY");
+    //console.timeEnd("FISCAL_KEY");
     res.send(200, status);
   });
 });
@@ -189,7 +189,7 @@ app.get('/reports/:route/', function(req, res, next) {
   var query = decodeURIComponent(url.parse(req.url).query);
 
   report(route, query, function(report, err) {
-    if(err) return next(err);
+    if (err) { return next(err); }
     res.send(report);
   });
 });

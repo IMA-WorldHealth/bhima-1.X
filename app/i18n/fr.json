@@ -347,6 +347,7 @@
     "DEBITOR_NAME"   : "Nom Debiteur",
     "ACCOUNT"        : "Compte",
     "COMMENT"        : "Commentaire",
+    "REGISTERED" : "Enregistre",
     "CREDITOR_ID" : "ID Crediteur",
     "PARENT" : "Parent",
     "SEX" : "Sex",

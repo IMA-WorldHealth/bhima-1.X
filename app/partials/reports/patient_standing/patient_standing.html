@@ -1,0 +1,127 @@
+<header>
+  {{ "PATIENT_STANDING.TITLE" | translate }}
+</header>
+
+<section class="top-nav">
+  <div class="col-xs-3">
+    <input class="form-kapok" ng-model="patient" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+  </div>
+  <a class="btn btn-sm btn-primary" href="" ng-click="search()" ng-disabled="!patient">{{ "UTIL.SEARCH" | translate }}</a>
+</section>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "PATIENT_STANDING.TITLE" | translate }} <small> {{ "PATIENT_STANDING.CREATED_ON" | translate }} {{ date | date }}</small></h4>
+
+      <div class="media">
+        <span class="pull-left">
+          <img class="media-object" ng-src="/assets/{{img}}" alt="{{ 'PATIENT_STANDING.IMG' | translate }}" width="150" height="150">
+        </span>
+        <div class="media-body">
+          <h4 class="media-heading">{{ patient.first_name }} {{ patient.last_name }}</h4>
+          <div class="media-body">
+            <form class="form-horizontal">
+
+              <div class="form-group">
+                <label class="control-label col-xs-3">
+                  {{ "COLUMNS.ID" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.id }}</p>
+                </div>
+
+                <label class="control-label col-xs-3">
+                  {{ "COLUMNS.REGISTERED" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.date_registered | date }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-3">
+                  {{ "COLUMNS.SEX" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.sex }}</p>
+                </div>
+
+                <label class="control-label col-xs-3">
+                  {{ "COLUMNS.DOB" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.dob | date }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-3">
+                  {{ "PATIENT_STANDING.ACCOUNT_NUMBER" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.account_number }}</p>
+                </div>
+
+                <label class="control-label col-xs-3">
+                  {{ "PATIENT_STANDING.ACCOUNT_BALANCE" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.account_balance | currency }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-3">
+                  {{ "PATIENT_STANDING.LAST_PURCHASE_DATE" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.purchase_date | currency }}</p>
+                </div>
+
+                <label class="control-label col-xs-3">
+                  {{ "PATIENT_STANDING.LAST_PAYMENT_DATE" | translate }}
+                </label>
+                <div class="col-xs-3">
+                  <p class="form-control-static">{{ patient.payment_date | currency }}</p>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <h4> {{ "PATIENT_STANDING.OUTSTANDING_BILLS" | translate }} </h4>
+
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
+            <th>{{ "COLUMNS.DATE_BILLED" | translate }}</th>
+            <th>{{ "COLUMNS.AMOUNT_BILLED" | translate }}</th>
+            <th>{{ "COLUMNS.AMOUNT_DUE" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="receipt in receipts">
+            <th> {{ receipt.inv_po_id }} </th>
+            <td> {{ receipt.trans_date | date }} </td>
+            <td> {{ receipt.total_amount | currency }} </td>
+            <td> {{ receipt.balance_due | currency }} </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>{{ "COLUMNS.TOTAL" | translate }}</th>
+            <td></td>
+            <td>{{ patient.total_amount | currency }}</td>
+            <td>{{ patient.total_due | currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+    </div>
+  </div>
+</div>
+
