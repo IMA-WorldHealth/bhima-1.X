@@ -300,16 +300,19 @@ create table `currency_account` (
   `enterprise_id`   smallint unsigned not null,
   `cash_account`    int unsigned not null,
   `bank_account`    int unsigned not null,
+  `caution_account` int unsigned not null,
   primary key (`id`),
   key `currency_id` (`currency_id`),
   key `enterprise_id` (`enterprise_id`),
   key `cash_account` (`cash_account`),
   key `bank_account` (`bank_account`),
+  key `caution_account` (`bank_account`),
   unique key (`id`, `currency_id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
   constraint foreign key (`cash_account`) references `account` (`id`),
-  constraint foreign key (`bank_account`) references `account` (`id`)
+  constraint foreign key (`bank_account`) references `account` (`id`),
+  constraint foreign key (`caution_account`) references `account` (`id`)
 ) engine=innodb;
 
 --
@@ -1065,13 +1068,16 @@ create table `caution` (
 `id`                  int unsigned not null auto_increment,
 `value`               decimal(19,4) unsigned not null,
 `date`                timestamp not null,
+`enterprise_id`       smallint unsigned not null,
 `debitor_id`          int unsigned not null,
 `currency_id`         tinyint unsigned not null,
 `user_id`             smallint unsigned not null,
 primary key (`id`),
+key `enterprise_id` (`enterprise_id`),
 key `debitor_id` (`debitor_id`),
 key `currency_id` (`currency_id`),
 key `user_id` (`user_id`),
+constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
 constraint foreign key (`debitor_id`) references `debitor` (`id`),
 constraint foreign key (`currency_id`) references `currency` (`id`),
 constraint foreign key (`user_id`) references `user` (`id`)

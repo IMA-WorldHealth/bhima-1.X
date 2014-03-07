@@ -21,7 +21,7 @@ angular.module('kpk.controllers')
     data.payment = 0;
     data.total = 0;
     data.raw = 0;
-   
+
     dependencies.debitors = {
       query : {
         tables: {
@@ -80,7 +80,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-    
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.cashboxes.query.where =
@@ -89,14 +89,14 @@ angular.module('kpk.controllers')
         ['account.enterprise_id=' + enterprise.id];
       validate.process(dependencies).then(setUpModels, handleErrors);
     });
-    
+
     cache.fetch('cashbox').then(loadCashBox);
 
     function setUpModels(models) {
       for (var k in models) {
         $scope[k] = models[k];
       }
-      
+
       if(!$scope.cashbox) $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
       $scope.queue = [];
     }
@@ -111,7 +111,7 @@ angular.module('kpk.controllers')
       cache.put('cashbox', box);
     };
 
-    function loadCashBox(box) { 
+    function loadCashBox(box) {
       if (box) $scope.cashbox = box;
     }
 

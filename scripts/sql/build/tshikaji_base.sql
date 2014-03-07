@@ -360,7 +360,8 @@ INSERT INTO `transaction_type` values
 	(3, 'purchase'),
   (4, 'journal'),
   (5, 'group_invoice'),
-  (6, 'credit_note');
+  (6, 'credit_note'),
+  (7, 'caution');
 
   -- Configure base currencies
 INSERT INTO `currency` (`id`, `name`, `symbol`, `separator`, `decimal`, `min_monentary_unit`) values

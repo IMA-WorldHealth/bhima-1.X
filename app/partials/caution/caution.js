@@ -30,11 +30,14 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
     query : 'user_session'
   };
 
-  function ready (model) {
+  function init (model) {
     $scope.model = model;
-    $scope.locationDebitor = model.location.data[0];
     $scope.selectedItem = model.currency_account.data[0];
+  }
 
+  function ready (model) {
+    $scope.model.location = model.location;
+    $scope.locationDebitor = model.location.data[0];
     $scope.noEmpty = true;
   }
 
@@ -42,21 +45,28 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
     if(!selectedDebitor) return messenger.danger('No debtor selected');
     $scope.selectedDebitor = selectedDebitor;
     dependencies.location = { query : '/location/' + $scope.selectedDebitor.origin_location_id};
-    validate.process(dependencies).then(ready);
+    validate.process(dependencies, ['location']).then(ready);
   }
 
-  function swapGroup (selectedDebitor){
-    var debitor = {id : selectedDebitor.debitor_id, group_id : $scope.debitor.debitor_group_id};
-    connect.basicPost('debitor', [connect.clean(debitor)], ['id'])
-    .then(function(res) {
-      var packageHistory = {
-        debitor_id : selectedDebitor.debitor_id,
-        debitor_group_id : $scope.debitor.debitor_group_id,
-        user_id : $scope.model.cashier.data.id
-      }
-      connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]).then(handleSucces, handleError);
-  }, handleError);
+  function payCaution (){
+    var record = {
+      value           : $scope.data.payment,
+      enterprise_id   : $scope.enterprise.id,
+      debitor_id      : $scope.selectedDebitor.id,
+      currency_id     : $scope.selectedItem.currency_id,
+      user_id         : $scope.model.cashier.data.id
+    };
 
+    console.log('on a ', record);
+    writeCaution(record).then(postToJournal);
+  }
+
+  function postToJournal (res) {
+    return connect.fetch('/journal/caution/' + res.data.insertId);
+  }
+
+  function writeCaution(record){
+    return connect.basicPut('caution', [record]);
   }
 
   function setCashAccount(cashAccount) {
@@ -74,7 +84,18 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
   function handleError(){
     messenger.danger($filter('translate')('SWAPDEBITOR.DANGER'));
   }
+
+  appstate.register('enterprise', function (enterprise) {
+    $scope.enterprise = enterprise;
+    dependencies.currency_account.query.where =
+      ['currency_account.enterprise_id=' + enterprise.id];
+    dependencies.accounts.query.where =
+      ['account.enterprise_id=' + enterprise.id];
+    validate.process(dependencies).then(init, handleError);
+  });
+
+
   $scope.initialiseCaution = initialiseCaution;
-  $scope.swapGroup = swapGroup;
+  $scope.payCaution = payCaution;
   $scope.setCashAccount = setCashAccount;
 });
