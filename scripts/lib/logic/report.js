@@ -121,7 +121,7 @@ module.exports = function (db) {
       return tab;
     }
 
-    if(params.ig == 'I'){
+    if(params.ig === 'I'){
       var sql = "SELECT general_ledger.id, general_ledger.trans_id, "+
               "general_ledger.trans_date, general_ledger.credit, general_ledger.debit, "+
               "account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \"names\""+
@@ -301,6 +301,44 @@ module.exports = function (db) {
     return deferred.promise;
   }
 
+  function patientStanding(params) {
+    params = querystring.parse(params);
+    var id = sanitize.escape(params.id),
+        defer = q.defer(),
+        sql =
+      "SELECT trans_id FROM " +
+        "(SELECT trans_id FROM posting_journal WHERE deb_cred_id = " + id +
+          " AND deb_cred_type = 'D' " +
+        "UNION " +
+        "SELECT trans_id FROM general_ledger WHERE deb_cred_id = " + id +
+          " AND deb_cred_type = 'D' )c;";
+   
+    db.execute(sql, function (err, rows) {
+      if (err) { return defer.reject(err); }
+      if (!rows.length) { return defer.resolve([]); }
+
+      var ids = rows
+      .map(function (row) { return row.trans_id; })
+      .join(', ');
+
+      sql =
+        "SELECT id, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
+        "FROM (" +
+          "SELECT id, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
+          "FROM posting_journal WHERE trans_id IN (" + ids + ") " +
+        "UNION " +
+          "SELECT id, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
+          "FROM general_ledger WHERE trans_id IN (" + ids + "))c;";
+
+      db.execute(sql, function (err, rows) {
+        if (err) { return defer.reject(err); }
+        defer.resolve(rows);
+      });
+    });
+
+    return defer.promise;
+  }
+
 
   return function generate(request, params, done) {
     /*summary
@@ -313,6 +351,7 @@ module.exports = function (db) {
       'saleRecords'      : saleRecords,
       'patients'         : patientRecords,
       'payments'         : paymentRecords,
+      'patientStanding' : patientStanding
     };
 
     route[request](params)
@@ -324,5 +363,4 @@ module.exports = function (db) {
     })
     .done();
   };
-
 };

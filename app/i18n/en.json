@@ -89,7 +89,19 @@
     "CONFIRM"        : "Confirm",
     "SUBMIT"         : "Submit",
     "RESET_FORM"     : "Reset Form",
-    "SAVE_SELECTION" : "Save Selection"
+    "SAVE_SELECTION" : "Save Selection",
+    "SEARCH" : "Search"
+  },
+
+  "PATIENT_STANDING" : {
+    "TITLE" : "Patient Standing Report",
+    "PLACEHOLDER" : "Find a patient...",
+    "CREATED_ON" : "Created On",
+    "ACCOUNT_NUMBER" : "Account Number",
+    "ACCOUNT_BALANCE" : "Account Balance",
+    "LAST_PURCHASE_DATE" : "Last Purchase Date",
+    "LAST_PAYMENT_DATE" : "Last Payment Date",
+    "OUTSTANDING_BILLS" : "Outstanding Bills"
   },
 
   "FISCAL_YEAR" : {
@@ -262,6 +274,7 @@
     "EDIT"           : "Edit",
     "FIRST_NAME"     : "First Name",
     "CONVENTION"     : "Convention",
+    "AMOUNT_DUE" : "Amount Due",
     "NAME"           : "Name",
     "SYMBOL"         : "Symbol",
     "SEPARATOR"      : "Separator",
@@ -308,6 +321,9 @@
     "DEBCRED_ID"     : "Deb/Cred ID",
     "ORIGIN_ID"      : "Origin ID",
     "USER_ID"        : "User ID",
+    "DATE_BILLED" : "Date Created",
+    "AMOUNT_BILLED" : "Amount Billed",
+    "REGISTERED" : "Registered",
     "ITEM" : "Item",
     "QTY" : "Qty",
     "UNIT" : "Unit",

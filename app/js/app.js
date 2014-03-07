@@ -1,7 +1,6 @@
 (function (angular) {
   'use strict';
 
-  //FIXME: Format code correctly in seperate files/modules etc.
   var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
 
   function kpkconfig($routeProvider) {
@@ -104,12 +103,16 @@
     when('/reports/finance', {
       controller: 'reportFinance',
       templateUrl: 'partials/reports/finance/finance_report.html'
-    }).
-    when('/reports/transaction_report', {
+    })
+    .when('/reports/transaction_report', {
       controller: 'reportTransactionController',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
-    }).
-    when('/reports/ledger/general_ledger', {
+    })
+    .when('/reports/patient_standing/', {
+      controller : 'reportPatientStanding',
+      templateUrl : '/partials/reports/patient_standing/patient_standing.html'
+    })
+    .when('/reports/ledger/general_ledger', {
       controller: 'reportGeneralLedger',
       templateUrl: '/partials/reports/ledger/general_ledger.html'
     }).
