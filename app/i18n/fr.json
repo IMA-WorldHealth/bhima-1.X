@@ -785,7 +785,12 @@
     "CASH_RECEIPT"                 : "Recette de Caisse",
     "CASH_ID"                      : "# Transaction de Caisse",
     "AMOUNT_RECEIVED" : "Montant Paye",
-    "TRANSACTION_PRICE" : "Prix Transaction"
+    "TRANSACTION_PRICE" : "Prix Transaction",
+    "CAUTION" : "Caution",
+    "CAUTION_ID" : "# Caution",
+    "LIBELLE_CAUTION" : "Reception Caution",
+    "TOTAL_CAUTION" : "Total",
+    "AMOUNT" : "Montant"
   },
 
   "SECTOR":{

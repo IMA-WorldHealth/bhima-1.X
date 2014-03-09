@@ -107,7 +107,7 @@
 
     function refresh(dependencies, limit) {
       var list = limit || Object.keys(dependencies);
-  
+
       list.forEach(function(modelKey) {
         dependencies[modelKey].processed = false;
       });
@@ -154,7 +154,7 @@
 
       list.some(function(modelKey) {
         var model = dependencies.model[modelKey], details = dependencies[modelKey], modelTests = details.test || [], modelTestStatus = false;
-  
+
         //Check for standard test flags
         validateTests.forEach(function(testObject) {
           if(details[testObject.flag]) modelTests.push(testObject);
@@ -163,7 +163,7 @@
         //Run each test
         modelTestStatus = modelTests.some(function(testObject) {
           var testFailed, testMethod = testObject.method;
-     
+
           testFailed = !testMethod(model.data);
           if(testFailed) validateStatus.setFailed(testObject, modelKey);
           return testFailed;
@@ -185,7 +185,7 @@
 
       list.forEach(function(key) {
         var dependency = dependencies[key], args = [dependency.query];
-  
+
         //Hack to allow modelling reports with unique identifier - not properly supported by connect
         if(dependency.identifier) args.push(dependency.identifier);
         promiseList.push(connect.req.apply(connect.req, args));
@@ -218,11 +218,11 @@
       //download data to test
       connect.req(testDataQuery)
       .then(function(res) {
-  
+
         //run test on data
         deferred.resolve(isNotEmpty(res.data));
       }, function(err) {
-  
+
         //download failed
         deferred.reject();
       });
@@ -300,7 +300,7 @@
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request = objectStore.index('namespace, key').get([namespace, key]);
-  
+
         request.onsuccess = function(event) {
           var result = event.target.result;
           $rootScope.$apply(deferred.resolve(result));
@@ -312,20 +312,20 @@
       return deferred.promise;
     }
 
-    function remove(key) { 
-      var t = this, namespace = t.namespace; 
+    function remove(key) {
+      var t = this, namespace = t.namespace;
       var deferred = $q.defer();
 
       dbdefer.promise
-      .then(function () { 
+      .then(function () {
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request;
-        
+
         console.log('OBJECT STORE', objectStore);
         console.log('deleting', key);
         request = objectStore.delete([namespace, key]);
-        
+
         request.onsuccess = function(event) {
           console.log('delete success?', event);
           deferred.resolve(event);
@@ -351,7 +351,7 @@
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request;
- 
+
         //TODO jQuery dependency - write simple utility to flatten/ merge object
         writeObject = jQuery.extend(writeObject, value);
         request = objectStore.put(writeObject);
@@ -401,7 +401,7 @@
         db = event.target.result;
         //TODO naive implementation - one object store to contain all cached data, namespaced with feild
         //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
- 
+
         //delete object store if it exists - DEVELOPMENT ONLY
         if(db.objectStoreNames.contains('master')) {
           //FIXME no error/ success handling
@@ -552,7 +552,7 @@
       this.remove = function (id) {
         var data = this.data,
             index = this.index;
-  
+
         if (id in index) {
           data.splice(index[id], 1);
           this.setData(data);
@@ -657,7 +657,7 @@
 
       handle = $http.get('/data/?' + JSON.stringify(defn));
       handle.then(function (returned) {
-  
+
         //massive hack so I can use an identifier - set default identifier
         returned.identifier = defn.identifier || 'id';
         var m = new store(returned, table);
@@ -835,16 +835,25 @@
 
       var self = function exchange (value, currency_id) {
         if (!self.map) { messenger.danger('No exchange rates loaded'); }
+
         return self.map ? precision.round((self.map[currency_id] || 1.00) * value) : precision.round(value);
       };
+
+      //FIX ME : since i wrote this method this throw an error but the app still work
+
+      self.myExchange = function myExchange (value, valueCurrency_id){
+        if(!(value && valueCurrency_id)) throw new Error('Invalid data');
+        return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
+      }
 
       appstate.register('exchange_rate', function (globalRates) {
         self.map = {};
         globalRates.forEach(function (r) {
           self.map[r.foreign_currency_id] = precision.round(r.rate);
         });
+        //self.myExchange = myExchange;
       });
-  
+
       return self;
     }
   ])

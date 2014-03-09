@@ -4,11 +4,11 @@
 
 <section class="top-nav">
 
-  <div class="pull-left col-xs-4">
+  <div class="pull-left col-xs-3">
      <select required class="form-kapok" id="account" ng-model="model.account_id">
         <option value="0">-- {{"SELECT.ALL" | translate }} --</option>
         <option ng-repeat="acc in accounts.data | orderBy:'account_number'" value='{{acc.id}}' ng-disabled="acc.account_type_id==3">{{formatAccount(acc)}}</option>
-     </select>       
+     </select>
   </div>
 
   <div>
@@ -22,7 +22,7 @@
        <select class="form-kapok" id="sources" ng-model="model.source_id">
         <option value="" disabled="disabled"> -- {{"SELECT.SOURCE" | translate }} -- </option>
         <option ng-repeat="source in model.sources" value='{{$index}}'>{{source}}</option>
-     </select> 
+     </select>
 
     </div>
   </div>
@@ -37,7 +37,7 @@
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame" ng-switch="mode">
-      
+
         <div ng-switch-default>
           <h4>{{ "ALLTRANSACTIONS.DEFAULT" | translate }}</small></h4>
           <table id="transactionsTable" class="reportTable">

@@ -9,6 +9,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     'credit': processCredit,
     'debtor': processDebtor,
     'patient' : processPatient,
+    'caution' : processCaution
   };
   dependencies.recipient = {
     required: true
@@ -115,6 +116,21 @@ invoice
     messenger.danger('Method not implemented');
   }
 
+  function processCaution (caution_id){
+    dependencies.caution = {
+      required: true,
+      query:  {
+        tables: {
+          caution: { columns: ['id', 'value', 'debitor_id', 'enterprise_id', 'currency_id'] },
+          patient : {columns : ['first_name', 'last_name', 'current_location_id']}
+        },
+        join : ['caution.debitor_id=patient.debitor_id'],
+        where: ['caution.id=' + caution_id]
+      }
+    };
+    validate.process(dependencies, ['caution']).then(buildCaution);
+  }
+
   function processPatient() {
     dependencies.recipient.query = {
       tables: {},
@@ -126,6 +142,15 @@ invoice
     };
 
     validate.process(dependencies, ['recipient']).then(buildPatientLocation);
+  }
+
+  function buildCaution (model) {
+    dependencies.location = {
+      required: true,
+      query: '/location/' + model.caution.data[0].current_location_id
+    };
+
+    validate.process(dependencies, ['location']).then(cautionInvoice);
   }
 
   function buildPatientLocation(model) {
@@ -142,7 +167,6 @@ invoice
     var invoiceItemCondition = dependencies.invoiceItem.query.where = [];
 
     model.cash.data.forEach(function(invoiceRef, index) {
-      console.log('invoice ref', invoiceRef);
 
       if(index!==0) {
         invoiceCondition.push('OR');
@@ -172,6 +196,10 @@ invoice
   function buildRecipientQuery(model) {
     var invoice_data = model.invoice.data[0];
 
+    // dependencies.saleDetails = {
+    //   query : 'saleDetails/'+model.invoice.data[0].debitor_id
+    // };
+
     dependencies.recipient.query = {
       tables: {},
       where: ['patient.debitor_id=' + invoice_data.debitor_id]
@@ -193,11 +221,11 @@ invoice
   }
 
   function invoice(model) {
+    console.log('[invoice method] appelle de la methode invoice le model est : ', model);
     var routeCurrencyId;
     //Expose data to template
     $scope.model = model;
 
-    console.log($scope.model);
 
     $scope.session = {};
     $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
@@ -207,6 +235,7 @@ invoice
     $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
     $scope.invoice.totalSum = 0;
     $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
+    console.log('[get.invoice.id] a donnee :', $scope.invoice.ledger);
 
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
@@ -229,15 +258,18 @@ invoice
   //TODO Follows the process credit hack
   function creditInvoice(model) { $scope.model = model; $scope.note = $scope.model.credit.data[0]; $scope.location = $scope.model.location.data[0]; }
 
-  function updateCost(currency_id) {
-    //console.log('updating cost');
-    $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
-    //console.log('cid', currency_id);
-    $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
-    //console.log('ledger', $scope.model);
+  function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0];}
 
-    console.log($scope.invoice.ledger.balance);
-    $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
+  function convertAmount (value, currency_id){
+    return exchange.myExchange(value, currency_id); //FIX ME exchange doesn't give expected values, so created an other called myExchange
+  }
+  function updateCost(currency_id) {
+    $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
+    var balance = ($scope.invoice.ledger)? $scope.invoice.ledger.balance : 0;//if undefined, user uses is caution
+    $scope.invoice.localeBalance = exchange(balance, currency_id);
+
+    var credit = ($scope.invoice.ledger)? $scope.invoice.ledger.credit : 0;
+    $scope.invoice.localeCredit = exchange(credit, currency_id);
 
     $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id);
 
@@ -247,4 +279,5 @@ invoice
   }
 
   $scope.updateCost = updateCost;
+  $scope.convertAmount = convertAmount;
 });
