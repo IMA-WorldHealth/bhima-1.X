@@ -64,7 +64,7 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
     var record = {
       value           : $scope.data.payment,
       enterprise_id   : $scope.enterprise.id,
-      debitor_id      : $scope.selectedDebitor.id,
+      debitor_id      : $scope.selectedDebitor.debitor_id,
       currency_id     : $scope.selectedItem.currency_id,
       user_id         : $scope.model.cashier.data.id
     };
