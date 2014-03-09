@@ -170,7 +170,7 @@
     "ALL"             : "Tous",
     "POSTING_JOURNAL" : "Journal de Saisie",
     "GENERAL_LEDGER" : "Grand Livre",
-    "SOURCE" : "Selectionner source"    
+    "SOURCE" : "Selectionner source"
   },
 
   "RENEWAL" : {
@@ -272,7 +272,8 @@
     "PATIENT_REGISTRATION" : "Rapport Enregistrement des Malades",
     "UPDATE_STOCK" : "Mettre a Jour les Stocks",
     "CASH_PAYMENTS" : "Rapport Paiements",
-    "ALL_TRANSACTIONS" : "Toutes Transactions"
+    "ALL_TRANSACTIONS" : "Toutes Transactions",
+    "CAUTION" : "Caution"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -602,7 +603,7 @@
     "EDITTING" : "Edition",
     "SUPER" : "Super Utilisateur"
   },
- 
+
   "NAME"         : "nom",
   "PHONE"        : "telephone",
   "ABBREVIATION" : "abbreviation",
@@ -867,5 +868,21 @@
     "FROMSTARTING" : "Depuis le Debut",
     "SELECTED" : "ETAT DES TRANSACTIONS POUR LES COMPTES : ",
     "DEFAULT"  : "ETAT DES TOUTES LES TRANSACTIONS"
+  },
+
+  "CAUTION":{
+    "TITLE" : "Gestion des Cautions",
+    "CASH" : "Caisse Auxilliaire",
+    "PATIENT" : "Informations Patient",
+    "NAME" : "Noms",
+    "AGE" : "Age",
+    "GENDER" : "GENDER",
+    "ORIGIN" : "Origines",
+    "INFO_CAUTION" : "Information sur la caution",
+    "CAUTION" : "Caution",
+    "PAY" : "Payer",
+    "SUCCES" : "Operation reussie !",
+    "DANGER"  : "Erreur ! pas de taus d'echange !"
+
   }
 }

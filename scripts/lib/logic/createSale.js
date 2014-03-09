@@ -2,7 +2,7 @@
 var q = require('q');
 
 module.exports = (function(db, parser, journal) {
-  
+
   function execute(saleData, userId, callback) {
     var saleRecord, saleItems, saleRecordId;
     var processedSale = false, processedSaleItems = false;
@@ -13,29 +13,29 @@ module.exports = (function(db, parser, journal) {
     if(!(saleRecord && saleItems)) return callback(null, new Error("[createSale] Required data is invalid"));
 
     writeSaleRecord(saleRecord, userId)
-   
+
     //writeSaleItems()
     .then(function(saleResult) {
       saleRecordId = saleResult.insertId;
       processedSale = true;
       return writeSaleItems(saleRecordId, saleItems);
     })
- 
+
     //submitSaleJournal()
     .then(function(saleItemResult) {
       processedSaleItems = true;
-      return submitSaleJournal(saleRecordId, userId);
+      return submitSaleJournal(saleRecordId, saleData.caution, userId);
     })
-   
+
     //returnCallback
     .then(function(saleSubmitResult) {
       callback(null, saleRecordId);
-   
+
     }, function(error) {
-     
+
       //send source error to client
       callback(error, null);
-     
+
       //TODO Possible source of uncaught exceptions floating around unmanaged
       //TODO Very messy rollback code - console log structure can be replaced with actual logging
       //(client shouldn't be concerned with errors here)
@@ -68,7 +68,7 @@ module.exports = (function(db, parser, journal) {
 
   function writeSaleItems(saleRecordId, saleItems) {
     var deferred = q.defer(), insertItemsSQL;
- 
+
     saleItems.forEach(function(saleItem) {
       saleItem.sale_id = saleRecordId;
     });
@@ -81,13 +81,13 @@ module.exports = (function(db, parser, journal) {
     return deferred.promise;
   }
 
-  function submitSaleJournal(saleRecordId, userId) {
+  function submitSaleJournal(saleRecordId, caution, userId) {
     var deferred = q.defer();
 
     journal.request('sale', saleRecordId, userId, function (error, result) {
       if(error) deferred.reject(error);
       deferred.resolve(result);
-    });
+    }, caution);
     return deferred.promise;
   }
 

@@ -27,7 +27,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     query : {
       tables : {
         'currency_account' : {
-          columns : ['id', 'enterprise_id', 'currency_id', 'cash_account', 'bank_account']
+          columns : ['id', 'enterprise_id', 'currency_id', 'cash_account', 'bank_account', 'caution_account']
         },
         'currency' : {
           columns : ['symbol']
@@ -52,7 +52,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       where: ['sale_item.sale_id=' + invoiceId]
     }
   };
-
+invoice
   dependencies.invoiceItem.query.tables['inventory'] = {
     columns: ['id', 'code', 'text']
   };
@@ -133,18 +133,18 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       required: true,
       query: '/location/' + model.recipient.data[0].current_location_id
     };
- 
+
     validate.process(dependencies, ['location']).then(patientReceipt);
   }
 
   function buildInvoiceQuery(model) {
     var cash_data = []; var invoiceCondition = dependencies.invoice.query.where = [];
     var invoiceItemCondition = dependencies.invoiceItem.query.where = [];
-  
-    model.cash.data.forEach(function(invoiceRef, index) { 
+
+    model.cash.data.forEach(function(invoiceRef, index) {
       console.log('invoice ref', invoiceRef);
-      
-      if(index!==0) { 
+
+      if(index!==0) {
         invoiceCondition.push('OR');
         invoiceItemCondition.push('OR');
       }
@@ -171,7 +171,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
 
   function buildRecipientQuery(model) {
     var invoice_data = model.invoice.data[0];
- 
+
     dependencies.recipient.query = {
       tables: {},
       where: ['patient.debitor_id=' + invoice_data.debitor_id]
@@ -196,24 +196,24 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     var routeCurrencyId;
     //Expose data to template
     $scope.model = model;
-      
+
     console.log($scope.model);
 
     $scope.session = {};
     $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
     routeCurrencyId = $scope.session.currentCurrency.currency_id;
-  
+
     //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
     $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
     $scope.invoice.totalSum = 0;
     $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
- 
+
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
-   
-  
-    //FIXME huge total hack 
-    $scope.model.invoice.data.forEach(function(invoiceRef) { 
+
+
+    //FIXME huge total hack
+    $scope.model.invoice.data.forEach(function(invoiceRef) {
       $scope.invoice.totalSum += invoiceRef.cost;
     });
 
@@ -235,7 +235,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     //console.log('cid', currency_id);
     $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
     //console.log('ledger', $scope.model);
-    
+
     console.log($scope.invoice.ledger.balance);
     $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
 
