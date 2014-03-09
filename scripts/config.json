@@ -47,7 +47,8 @@
       "/reports/accountStatement/",
       "/reports/debitorAging/",
       "/InExAccounts/",
-      "/reports/allTrans"
+      "/reports/allTrans",
+      "/caution/"
     ]
   }
 }

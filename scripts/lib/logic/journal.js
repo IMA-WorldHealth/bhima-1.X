@@ -178,7 +178,7 @@ module.exports = function (db) {
     });
   }
 
-  function handleSales (id, user_id, done) {
+  function handleSales (id, user_id, done, caution) {
     // sale posting requests enter here.
     var sql =
       'SELECT `sale`.`enterprise_id`, `sale`.`id`, `sale`.`currency_id`, ' +
@@ -238,7 +238,6 @@ module.exports = function (db) {
           console.log('[DEBUG] :', 'results', results);
           //return done(new Error('The sum of the debits and credits is not the transaction cost for sale id :' + id));
         }
-
         // all checks have passed - prepare for writing to the journal.
         get.origin('sale', function (err, origin_id) {
           if (err) return done(err);
@@ -262,52 +261,180 @@ module.exports = function (db) {
               // First, copy the data from sale into the journal.
               // FIXME: this is unclear with get.date() which
               // returns a mysql-compatible date
-              var sale_query =
-                'INSERT INTO `posting_journal` ' +
-                  '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                  '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  '`sale`.`note`, `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-                  '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
-                  '`sale`.`debitor_id`=`debitor`.`id` AND `debitor`.`group_id`=`debitor_group`.`id` ' +
-                'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
 
-              // Then copy data from SALE_ITEMS -> JOURNAL
-              // This query is significantly more difficult because sale_item
-              // contains both debits and credits.
-              var sale_item_query =
-                'INSERT INTO `posting_journal` ' +
-                  '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                  '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
-                  '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-                  ' null, `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
-                  '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
-                  '`inventory`.`group_id`=`inventory_group`.`id` ' +
-                'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
+              if(caution == 0){
+                var sale_query =
+                  'INSERT INTO `posting_journal` ' +
+                    '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                    '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                    '`sale`.`note`, `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
+                    '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                  'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
+                    '`sale`.`debitor_id`=`debitor`.`id` AND `debitor`.`group_id`=`debitor_group`.`id` ' +
+                  'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
 
-              // we are ready to execute!
+                // Then copy data from SALE_ITEMS -> JOURNAL
+                // This query is significantly more difficult because sale_item
+                // contains both debits and credits.
+                var sale_item_query =
+                  'INSERT INTO `posting_journal` ' +
+                    '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                    '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                    '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+                    '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+                    ' null, `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                  'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+                    '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
+                    '`inventory`.`group_id`=`inventory_group`.`id` ' +
+                  'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
 
-              db.execute(sale_query, function (err, rows) {
-                if (err) return done(err);
-                db.execute(sale_item_query, function (err, rows) {
+                // we are ready to execute!
+
+                db.execute(sale_query, function (err, rows) {
                   if (err) return done(err);
-
-                  // now we must set all relevant rows from sale to "posted"
-                  var sale_posted_query =
-                    'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`id`='+sanitize.escape(id);
-
-                  db.execute(sale_posted_query, function (err, rows) {
+                  db.execute(sale_item_query, function (err, rows) {
                     if (err) return done(err);
-                    return done(null, rows);
+
+                    // now we must set all relevant rows from sale to "posted"
+                    var sale_posted_query =
+                      'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`id`='+sanitize.escape(id);
+
+                    db.execute(sale_posted_query, function (err, rows) {
+                      if (err) return done(err);
+                      console.log('[journal.js] le update effectuer normalement , notre done est :', done);
+                      return done(null, rows);
+                    });
                   });
                 });
-              });
+              }else {
+                var tot = reference_sale.cost - caution;
+                if(tot > 0){
+                    var deb_cred_type = 'D';
+                    var debitingCaution =
+                     'INSERT INTO posting_journal '+
+                     '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                     '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                     '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                     'SELECT '+[
+                                  enterprise_id,
+                                  fiscal_year_id,
+                                  period_id,
+                                  trans_id, '\''+get.date()+'\''
+                               ].join(',')+', null, `currency_account`.`caution_account`, '+
+                               [
+                                  0, caution,
+                                  0, caution,
+                                  reference_sale.currency_id,
+                                  reference_sale.debitor_id
+                               ].join(',')+', \'D\', '+[reference_sale.id, origin_id, user_id].join(',')+' '+
+                      'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_sale.currency_id)+
+                      ' AND `currency_account`.`enterprise_id`='+sanitize.escape(enterprise_id)+';';
+
+
+                    var debitingDebitor =
+                      'INSERT INTO `posting_journal` ' +
+                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                        '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                      'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                        '`sale`.`note`, `debitor_group`.`account_id`, '+[tot, 0, tot, 0].join(',')+' , ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
+                        '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                      'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
+                        '`sale`.`debitor_id`=`debitor`.`id` AND `debitor`.`group_id`=`debitor_group`.`id` ' +
+                      'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
+
+                    var creditingItems =
+                      'INSERT INTO `posting_journal` ' +
+                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                        '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                      'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                        '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+                        '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+                        ' null, `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                      'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+                        '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
+                        '`inventory`.`group_id`=`inventory_group`.`id` ' +
+                      'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
+
+
+                    db.execute(debitingCaution, function (err, rows) {
+                      if (err) return done(err);
+                      db.execute(debitingDebitor, function (err, rows) {
+                        if (err) return done(err);
+                        db.execute(creditingItems, function (err, rows){
+                          if (err) return done(err);
+                          var sale_posted_query =
+                          'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`id`='+sanitize.escape(id);
+
+                          db.execute(sale_posted_query, function (err, rows) {
+                            if (err) return done(err);
+                            return done(null, rows);
+                          });
+
+                        });
+                      });
+                    });
+                }else{
+
+                  var deb_cred_type = 'D';
+                    var debitingCaution =
+                     'INSERT INTO posting_journal '+
+                     '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                     '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                     '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                     'SELECT '+[
+                                  enterprise_id,
+                                  fiscal_year_id,
+                                  period_id,
+                                  trans_id, '\''+get.date()+'\''
+                               ].join(',')+', null, `currency_account`.`caution_account`, '+
+                               [
+                                  0, reference_sale.cost,
+                                  0, reference_sale.cost,
+                                  reference_sale.currency_id,
+                                  reference_sale.debitor_id
+                               ].join(',')+', \'D\', '+[reference_sale.id, origin_id, user_id].join(',')+' '+
+                      'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_sale.currency_id)+
+                      ' AND `currency_account`.`enterprise_id`='+sanitize.escape(enterprise_id)+';';
+
+
+                    var creditingItems =
+                      'INSERT INTO `posting_journal` ' +
+                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+                        '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                      'SELECT `sale`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                        '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+                        '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+                        ' null, `sale`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                      'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+                        '`sale_item`.`sale_id`=`sale`.`id` AND `sale_item`.`inventory_id`=`inventory`.`id` AND ' +
+                        '`inventory`.`group_id`=`inventory_group`.`id` ' +
+                      'WHERE `sale`.`id`=' + sanitize.escape(id) + ';';
+
+
+                    db.execute(debitingCaution, function (err, rows) {
+                      if (err) return done(err);
+                      db.execute(creditingItems, function (err, rows){
+                        if (err) return done(err);
+                        var sale_posted_query =
+                        'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`id`='+sanitize.escape(id);
+
+                        db.execute(sale_posted_query, function (err, rows) {
+                          if (err) return done(err);
+                          return done(null, rows);
+                        });
+                      });
+                    });
+
+                }
+              }
+
             });
           });
         });
@@ -998,7 +1125,7 @@ module.exports = function (db) {
                             credit_equiv, debit_equiv,
                             reference_caution.currency_id,
                             reference_caution.debitor_id
-                         ].join(',')+', \'D\', null, '+[origin_id, user_id].join(',')+' '+
+                         ].join(',')+', \'D\', '+[id, origin_id, user_id].join(',')+' '+
                 'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
                 ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
 
@@ -1018,7 +1145,7 @@ module.exports = function (db) {
                             0, reference_caution.value,
                             debit_equiv, credit_equiv, //inverse operation for cash
                             reference_caution.currency_id
-                         ].join(',')+', null, null, null, '+[origin_id, user_id].join(',')+' '+
+                         ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
                 'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
                 ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
 
@@ -1033,7 +1160,15 @@ module.exports = function (db) {
           });
         });
       }, function(err){
-        console.log('************** error', err);
+        var discard = "DELETE FROM caution WHERE id="+sanitize.escape(id);
+        db.execute(discard, function(err, ans){
+          console.log('************** error annulation insertion', err);
+          throw (new Error('un probleme'));
+
+        });
+
+
+
       });
     });
   }
@@ -1048,9 +1183,14 @@ module.exports = function (db) {
     'caution'     : handleCaution
   };
 
-  function request (table, id, user_id, done) {
+  function request (table, id, user_id, done, debCaution) {
     // handles all requests coming from the client
-    table_router[table](id, user_id, done);
+    console.log('la caution kon a est ', debCaution);
+    if (debCaution >= 0) {
+      table_router[table](id, user_id, done, debCaution);
+    }else{
+      table_router[table](id, user_id, done);
+    }
     return;
   }
 

@@ -58,9 +58,9 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  
+
   var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
-  
+
   db.execute(updatesql, function(err, ans) {
     if (err) return next(err);
     res.send(200, {insertId: ans.insertId});
@@ -337,6 +337,40 @@ app.get('/visit/:patient_id', function (req, res, next) {
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send();
+  });
+});
+
+app.get('/caution/:debitor_id/:enterprise_id', function (req, res, next) {
+  var debitor_id = req.params.debitor_id;
+  //prochaine enterprise_id sera obtenue par requette via debitor_id
+
+  var sql = 'SELECT `enterprise`.`currency_id` FROM enterprise WHERE `enterprise`.`id`='+sanitize.escape(req.params.enterprise_id)+';';
+  db.execute(sql, function(err, ans){
+    if(err) next(err);
+    console.log("la donnee est ", ans)
+    var sql2 =
+      'SELECT `t`.`enterprise_id`, `t`.`id`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
+        '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
+        'FROM (' +
+          '(' +
+            'SELECT `posting_journal`.`enterprise_id`, `posting_journal`.`id`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+              '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_id`, `posting_journal`.`currency_id`, ' +
+              '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id` ' +
+            'FROM `posting_journal`' +
+          ') UNION (' +
+            'SELECT `general_ledger`.`enterprise_id`, `general_ledger`.`id`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+              '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_id`, `general_ledger`.`currency_id`, ' +
+              '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id` ' +
+            'FROM `general_ledger`' +
+          ')' +
+        ') AS `t`, `account` WHERE `t`.`account_id` = `account`.`id` AND `t`.`account_id` = '+
+        '(SELECT `caution_account` FROM `currency_account` WHERE `currency_account`.`enterprise_id`='+sanitize.escape(req.params.enterprise_id)+' AND `currency_account`.`currency_id`='+sanitize.escape(ans[0].currency_id)+') AND `t`.`deb_cred_id`='+sanitize.escape(debitor_id)+';';
+    db.execute(sql2, function (err, ans) {
+      if(err) next(err);
+      res.send(ans);
+    });
+
+
   });
 });
 

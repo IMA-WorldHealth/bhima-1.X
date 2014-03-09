@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('caution', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $filter) {
+angular.module('kpk.controllers').controller('caution', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $filter, kpkUtilitaire) {
 
 
   var dependencies = {};
@@ -25,6 +25,18 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
       },
     }
     };
+
+  dependencies.exchange_rate = {
+    required : true,
+    query : {
+      tables : {
+        'exchange_rate' : {
+          columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
+        }
+      },
+      where : ['exchange_rate.date='+kpkUtilitaire.convertToMysqlDate(new Date().toISOString().slice(0,10))]
+    }
+    }
   $scope.noEmpty = false; $scope.debitor = {}; $scope.data = {};
   dependencies.cashier = {
     query : 'user_session'
@@ -56,9 +68,7 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
       currency_id     : $scope.selectedItem.currency_id,
       user_id         : $scope.model.cashier.data.id
     };
-
-    console.log('on a ', record);
-    writeCaution(record).then(postToJournal);
+    writeCaution(record).then(postToJournal).then(handleSucces, handleError);
   }
 
   function postToJournal (res) {
@@ -75,14 +85,14 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
 
 
   function handleSucces(){
-    messenger.success($filter('translate')('SWAPDEBITOR.SUCCES'));
+    messenger.success($filter('translate')('CAUTION.SUCCES'));
     $scope.selectedDebitor = {};
-    $scope.debitor = {};
+    $scope.data = {};
     $scope.noEmpty = false;
   }
 
   function handleError(){
-    messenger.danger($filter('translate')('SWAPDEBITOR.DANGER'));
+    messenger.danger($filter('translate')('CAUTION.DANGER'));
   }
 
   appstate.register('enterprise', function (enterprise) {
@@ -94,8 +104,17 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
     validate.process(dependencies).then(init, handleError);
   });
 
+  function check (){
+    if($scope.data.payment){
+      return $scope.data.payment < $scope.selectedItem.min_monentary_unit;
+    }else{
+      return true;
+    }
+  }
+
 
   $scope.initialiseCaution = initialiseCaution;
   $scope.payCaution = payCaution;
   $scope.setCashAccount = setCashAccount;
+  $scope.check = check;
 });

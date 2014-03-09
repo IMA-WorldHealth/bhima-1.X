@@ -6,7 +6,7 @@
     <div class="pull-right">
       <a href="#/cash" class="capital btn btn-default btn-sm">
         <span class="glaphyicon glaphyicon-tag">
-          {{'CAUTION.CAUTION' | translate}}
+          {{'CAUTION.CASH' | translate}}
         </span>
       </a>
     </div>
@@ -100,7 +100,7 @@
         </div>
 
         <div class="panel-footer" ng-show="noEmpty">
-            <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.payment < selectedItem.min_monentary_unit, 'btn-success':  data.payment >= selectedItem.min_monentary_unit }" ng-click="payCaution()" ng-disabled="!data.payment">
+            <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.payment < selectedItem.min_monentary_unit, 'btn-success':  data.payment >= selectedItem.min_monentary_unit }" ng-click="payCaution()" ng-disabled="check()">
               {{ "CAUTION.PAY" | translate }}
             </button>
         </div>

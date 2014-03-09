@@ -306,7 +306,7 @@ create table `currency_account` (
   key `enterprise_id` (`enterprise_id`),
   key `cash_account` (`cash_account`),
   key `bank_account` (`bank_account`),
-  key `caution_account` (`bank_account`),
+  key `caution_account` (`caution_account`),
   unique key (`id`, `currency_id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
