@@ -1,7 +1,7 @@
 angular.module('kpk.controllers').controller('caution', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $filter, kpkUtilitaire) {
 
 
-  var dependencies = {};
+  var dependencies = {}, caution_id = -1;
   dependencies.currency_account = {
     query : {
       tables : {
@@ -72,6 +72,7 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
   }
 
   function postToJournal (res) {
+    caution_id = res.data.insertId;
     return connect.fetch('/journal/caution/' + res.data.insertId);
   }
 
@@ -89,6 +90,7 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
     $scope.selectedDebitor = {};
     $scope.data = {};
     $scope.noEmpty = false;
+    if(caution_id != -1) $location.path('/invoice/caution/' + caution_id);
   }
 
   function handleError(){

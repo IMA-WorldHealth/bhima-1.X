@@ -11,7 +11,7 @@ angular.module('kpk.controllers')
     var moduleNamespace = 'application',
       dependencies = {},
       cache = new appcache(moduleNamespace);
-  
+
     dependencies.enterprise = {
       required : true,
       query : {
@@ -56,7 +56,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-   
+
     var queryFiscal = {
       'tables' : {
         'period' : { 'columns' : ['id', 'period_start', 'period_stop', 'fiscal_year_id'] },
@@ -83,10 +83,10 @@ angular.module('kpk.controllers')
       }
     };
 
-   
+
     function settupApplication() {
       var url = $location.url();
-     
+
       //TODO experimental - loading previous sessions language settings - not always ideal during development
       loadLanguage();
 
@@ -96,7 +96,7 @@ angular.module('kpk.controllers')
     }
 
     settupApplication();
-    
+
     function loadCachedLocation() {
       cache.fetch('location').then(function(res) {
         if(res) $location.path(res.path);
@@ -104,7 +104,7 @@ angular.module('kpk.controllers')
     }
 
     function loadLanguage() {
-     
+
       //FIXME This could be done in util.js - extra object (in this file) vs. the clarity of doing all set up in one place
       var utilCache = new appcache('util');
       utilCache.fetch('language').then(function(res) {
