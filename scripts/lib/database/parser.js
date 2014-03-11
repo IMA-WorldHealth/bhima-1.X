@@ -1,6 +1,7 @@
 // builds the sql queries that a store will use
 
-var sanitize = require('../util/sanitize.js');
+var sanitize = require('../util/sanitize.js'),
+    util = require('../util/util');
 
 //module: Parser
 module.exports = function (options) {
@@ -79,9 +80,15 @@ module.exports = function (options) {
 
   // delete
   self.delete = function (table, column, id) {
-    var templ = self.templates.delete;
+    var templ = self.templates.delete,
+        _id;
+
+    _id = util.isArray(id) ?
+      '(' + id.map(function (i) { return sanitize.escape(i); }).join(', ') + ')':
+      sanitize.escape(id);
+
     return templ.replace('%table%', sanitize.escapeid(table))
-                .replace('%key%', [sanitize.escapeid(column), '=', sanitize.escape(id)].join(''));
+                .replace('%key%', [sanitize.escapeid(column), util.isArray(id) ? 'IN' : '=', _id].join(' '));
   };
 
   // update

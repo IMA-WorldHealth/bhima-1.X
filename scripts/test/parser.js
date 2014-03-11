@@ -52,7 +52,7 @@ var _select = {
       'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt`, ' +
         '`account`.`locked` ' +
       'FROM `account` ' +
-      'WHERE `account`.`locked`<>0 AND `account`.`account_number`>=100;'
+      'WHERE `account`.`locked`<>"0" AND `account`.`account_number`>="100";'
   },
 
   where_complex : {
@@ -76,8 +76,8 @@ var _select = {
         '`account_group`.`account_number`, `account_group`.`ordering` ' +
       'FROM `enterprise` JOIN `account_group` ON ' +
         '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-      'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100 OR ' +
-        '`account_group`.`account_number`>150);'
+      'WHERE `enterprise`.`id`="1" AND (`account_group`.`account_number`<"100" OR ' +
+        '`account_group`.`account_number`>"150");'
   },
 
   limit: {
@@ -202,7 +202,7 @@ var _delete = {
     value : 3,
     fail: 'Parser.js cannot compose simple delete queries',
     result:
-      'DELETE FROM `account` WHERE `id`=3;'
+      'DELETE FROM `account` WHERE `id` = "3";'
   },
 
   multi : {
@@ -211,7 +211,7 @@ var _delete = {
     value : [1,2,3,4],
     fail : 'Parser.js cannot compose mutli delete queries',
     result :
-      'DELETE FROM `account` WHERE `id` in (1, 2, 3, 4);'
+      'DELETE FROM `account` WHERE `id` IN ("1", "2", "3", "4");'
   }
 
 };
