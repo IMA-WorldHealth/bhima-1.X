@@ -273,7 +273,11 @@
     "UPDATE_STOCK" : "Mettre a Jour les Stocks",
     "CASH_PAYMENTS" : "Rapport Paiements",
     "ALL_TRANSACTIONS" : "Toutes Transactions",
-    "CAUTION" : "Caution"
+    "CAUTION" : "Caution",
+    "EXTRA" : "Extra",
+    "CLIENT" : "Client",
+    "BENEFICIARY" : "Beneficiary",
+    "MAIN_CASH" : "Caisse Principale"
   },
 
   "PATIENT_REGISTRATIONS" : {

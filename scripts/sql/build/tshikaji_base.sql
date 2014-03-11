@@ -88,7 +88,11 @@ INSERT INTO `unit` VALUES
   (69, 'Change Patient Group'       , 'TREE.SWAP_DEBITOR', '',                                      21, 0, '/partials/swap_debitor/', '/swap_debitor/'),
   (70, 'Cash Payments'              , 'TREE.CASH_PAYMENTS', '',                                     10, 0, '/partials/reports/cash_payments/', '/reports/cash_payments'),
   (71, 'Report All Transactions'    , 'TREE.ALL_TRANSACTIONS', '',                                     10, 0, '/partials/reports/all_transactions/', '/reports/all_transactions'),
-  (72, 'Caution'                    , 'TREE.CAUTION', '',                                     5, 0, '/partials/caution/', '/caution');
+  (72, 'Caution'                    , 'TREE.CAUTION', '',                                     5, 0, '/partials/caution/', '/caution'),
+  (73, 'Extra'                      , 'TREE.EXTRA', '',                                     0, 1, '/partials/extra/', '/extra'),
+  (74, 'Client'                     , 'TREE.CLIENT', '',                                     73, 0, '/partials/client/', '/client'),
+  (75, 'Beneficiary'                , 'TREE.BENEFICIARY', '',                                     73, 0, '/partials/beneficiary/', '/beneficiary'),
+  (76, 'Main Cash'                , 'TREE.MAIN_CASH', '',                                  5, 0, '/partials/pcash/', '/main_cash');
 
 -- Expose Users and Permissions
 INSERT INTO `permission` (`id_user`, `id_unit`) values
