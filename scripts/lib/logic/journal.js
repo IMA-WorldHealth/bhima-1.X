@@ -8,7 +8,7 @@ var parser = require('../database/parser')(),
     Store = require('../util/store'),
     q = require('q');
 
-module.exports = function (db) {
+module.exports = function (db, synthetic) {
   // deals in everything journal related
   'use strict';
 
@@ -166,6 +166,13 @@ module.exports = function (db) {
       });
 
       return defer.promise;
+    },
+
+    getCashCurrencyId : function (array, account_id){
+      return array.filter(function (item){
+        return item.cash_account === account_id;
+      });
+
     }
   };
 
@@ -305,7 +312,6 @@ module.exports = function (db) {
 
                     db.execute(sale_posted_query, function (err, rows) {
                       if (err) return done(err);
-                      console.log('[journal.js] le update effectuer normalement , notre done est :', done);
                       return done(null, rows);
                     });
                   });
@@ -1080,96 +1086,166 @@ module.exports = function (db) {
     var sql = "SELECT `caution`.`enterprise_id`, `caution`.`value`, `caution`.`date`, `caution`.`debitor_id`, `caution`.`currency_id`, `caution`.`user_id` "+
               "FROM `caution` WHERE `caution`.`id`="+sanitize.escape(id)+";";
 
-    db.execute(sql, function(err, ans){
+    db.execute(sql, function (err, ans) {
 
       if (err) return done(err, null);
       if (ans.length === 0) return done(new Error('No sale by the id: ' + id));
 
       var reference_caution = ans[0];
       var date = util.toMysqlDate(reference_caution.date);
-      console.log('reference caution', reference_caution);
 
 
       get.myExchangeRate(date)
-      .then(function (exchangeRateStore) {
-        var dailyExchange = exchangeRateStore.get(reference_caution.currency_id);
-        var debit_equiv = dailyExchange.rate * 0;
-        var credit_equiv = (1/dailyExchange.rate) * reference_caution.value;
+        .then(function (exchangeRateStore) {
+          var dailyExchange = exchangeRateStore.get(reference_caution.currency_id);
+          var debit_equiv = dailyExchange.rate * 0;
+          var credit_equiv = (1/dailyExchange.rate) * reference_caution.value;
 
-        get.origin('caution', function (err, origin_id) {
-
-          if (err) { return done(err); }
-
-          get.myPeriod(date, function (err, periodObject) {
+          get.origin('caution', function (err, origin_id) {
 
             if (err) { return done(err); }
 
-            get.transactionId(function (err, trans_id) {
-              if(err) {return done(err);}
+            get.myPeriod(date, function (err, periodObject) {
 
-              //we credit the caution account
-              var deb_cred_type = 'D';
-              var creditingRequest =
-               'INSERT INTO posting_journal '+
-               '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-               '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-               '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-               'SELECT '+[
-                            reference_caution.enterprise_id,
-                            periodObject.fiscal_year_id,
-                            periodObject.period_id,
-                            trans_id, '\''+get.date()+'\''
-                         ].join(',')+', null, `currency_account`.`caution_account`, '+
-                         [
-                            reference_caution.value, 0,
-                            credit_equiv, debit_equiv,
-                            reference_caution.currency_id,
-                            reference_caution.debitor_id
-                         ].join(',')+', \'D\', '+[id, origin_id, user_id].join(',')+' '+
-                'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
-                ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
+              if (err) { return done(err); }
+
+              get.transactionId(function (err, trans_id) {
+                if(err) {return done(err);}
+
+                  //we credit the caution account
+                  var deb_cred_type = 'D';
+                  var creditingRequest =
+                   'INSERT INTO posting_journal '+
+                   '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                   '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                   'SELECT '+[
+                                reference_caution.enterprise_id,
+                                periodObject.fiscal_year_id,
+                                periodObject.period_id,
+                                trans_id, '\''+get.date()+'\''
+                             ].join(',')+', null, `currency_account`.`caution_account`, '+
+                             [
+                                reference_caution.value, 0,
+                                credit_equiv, debit_equiv,
+                                reference_caution.currency_id,
+                                reference_caution.debitor_id
+                             ].join(',')+', \'D\', '+[id, origin_id, user_id].join(',')+' '+
+                    'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
+                    ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
 
 
-              var debitingRequest =
-               'INSERT INTO posting_journal '+
-               '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-               '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-               '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-               'SELECT '+[
-                            reference_caution.enterprise_id,
-                            periodObject.fiscal_year_id,
-                            periodObject.period_id,
-                            trans_id, '\''+get.date()+'\''
-                         ].join(',')+', null, `currency_account`.`cash_account`, '+
-                         [
-                            0, reference_caution.value,
-                            debit_equiv, credit_equiv, //inverse operation for cash
-                            reference_caution.currency_id
-                         ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
-                'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
-                ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
+                  var debitingRequest =
+                   'INSERT INTO posting_journal '+
+                   '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                   '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                   'SELECT '+[
+                                reference_caution.enterprise_id,
+                                periodObject.fiscal_year_id,
+                                periodObject.period_id,
+                                trans_id, '\''+get.date()+'\''
+                             ].join(',')+', null, `currency_account`.`cash_account`, '+
+                             [
+                                0, reference_caution.value,
+                                debit_equiv, credit_equiv, //inverse operation for cash
+                                reference_caution.currency_id
+                             ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
+                    'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
+                    ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
 
-                db.execute(creditingRequest, function(err, ans){
-                  if(err) return done(err);
-                  db.execute(debitingRequest, function(err, ans){
+                  db.execute(creditingRequest, function (err, ans){
                     if(err) return done(err);
-                    return done(null, ans);
+                    db.execute(debitingRequest, function (err, ans){
+                      if(err) return done(err);
+                      return done(null, ans);
+                    });
                   });
-                });
+              });
             });
           });
+          }, function (err){
+            var discard = "DELETE FROM caution WHERE id="+sanitize.escape(id);
+            db.execute(discard, function(err, ans){
+              console.log('************** error annulation insertion', err);
+              throw (new Error('un probleme'));
+            });
+          }
+      );
+    });
+  }
+
+  function handlePcash (id, user_id, done) {
+
+    var sql = "SELECT * FROM `pcash` WHERE `pcash`.`id`="+sanitize.escape(id)+";";
+
+    db.execute(sql, function (err, ans) {
+      if (err) return done(err, null);
+      if (ans.length === 0) return done(new Error('No pcash by the id: ' + id));
+      var reference_pcash = ans[0];
+      var date = util.toMysqlDate(reference_pcash.date);
+
+      get.myExchangeRate(date)
+          .then(function (exchangeRateStore) {
+            get.origin('pcash', function (err, origin_id) {
+              if (err) { return done(err); }
+              get.myPeriod(date, function (err, periodObject) {
+                if (err) { return done(err); }
+                get.transactionId(function (err, trans_id) {
+                  if(err) {return done(err);}
+                  var dailyExchange = exchangeRateStore.get(reference_pcash.currency_id);
+                  var debit_equiv = dailyExchange.rate * reference_pcash.value;
+                  var credit_equiv = (1/dailyExchange.rate) * 0;
+
+                  var debitingRequest =
+                   'INSERT INTO posting_journal '+
+                   '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                   '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                   'SELECT '+[
+                                reference_pcash.enterprise_id,
+                                periodObject.fiscal_year_id,
+                                periodObject.period_id,
+                                trans_id, '\''+get.date()+'\'', 'PCT'+new Date().toISOString().slice(0, 10).toString()
+                             ].join(',')+', `currency_account`.`pcash_account`, '+
+                             [
+                                0, reference_pcash.value,
+                                0, debit_equiv,
+                                reference_pcash.currency_id
+                             ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
+                    'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
+                    ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+
+                  db.execute(debitingRequest, function (err, ans){
+                    var cashCurrency = []; //correspondance caisse-monnaie
+                    var sql_select = 'SELECT `currency_account`.`cash_account`, `currency_account`.`currency_id` '+
+                                     'FROM `currency_account` WHERE `currency_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+
+                    db.execute(sql_select, function (err, ans2){
+                      var cashAccount_ids = ans2.map(function (item){
+                        cashCurrency.push({cash_account : item.cash_account, currency_id : item.currency_id});
+                        return item.cash_account;
+                      });
+
+                      synthetic('aB', reference_pcash.enterprise_id, JSON.stringify({accounts : cashAccount_ids}), function (err, ans3){
+                        var total_balance = 0;
+                        ans.forEach(function (item){
+                          total_balance+=item.balance;
+                        });
+                        console.log('la balance est :', total_balance);
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          },function (err) {
+              var discard = "DELETE FROM pcash WHERE id="+sanitize.escape(id);
+              db.execute(discard, function(err, ans){
+                console.log('************** error annulation insertion', err);
+                throw (new Error('un probleme'));
+              });
         });
-      }, function(err){
-        var discard = "DELETE FROM caution WHERE id="+sanitize.escape(id);
-        db.execute(discard, function(err, ans){
-          console.log('************** error annulation insertion', err);
-          throw (new Error('un probleme'));
-
-        });
-
-
-
-      });
     });
   }
 
@@ -1180,12 +1256,12 @@ module.exports = function (db) {
     'purchase' : handlePurchase,
     'group_invoice' : handleGroupInvoice,
     'credit_note' : handleCreditNote,
-    'caution'     : handleCaution
+    'caution'     : handleCaution,
+    'pcash'       : handlePcash
   };
 
   function request (table, id, user_id, done, debCaution) {
     // handles all requests coming from the client
-    console.log('la caution kon a est ', debCaution);
     if (debCaution >= 0) {
       table_router[table](id, user_id, done, debCaution);
     }else{
@@ -1197,3 +1273,49 @@ module.exports = function (db) {
   return { request : request };
 
 };
+
+
+
+
+
+
+
+
+                //               // db.execute(sql_select, function(err, ans){
+
+                //
+                //   synthetic('aB', reference_pcash.enterprise_id, JSON.stringify({accounts : cashAccount_ids}), function(err, ans){
+                //     ans.forEach(function (item) {
+                //       dailyExchange = exchangeRateStore.get(get.getCashCurrencyId(cashCurrency, item.account_id)[0].currency_id);
+                //       var credit = dailyExchange.rate * item.balance;
+                //       var debit = 0;
+                //       credit_equiv = item.balance;
+                //       debit_equiv = 0;
+
+
+                     // var creditingRequest =
+                        // 'INSERT INTO posting_journal '+
+                        // '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        // '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                        // '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                        // 'SELECT '+[
+                        //             reference_caution.enterprise_id,
+                        //             periodObject.fiscal_year_id,
+                        //             periodObject.period_id,
+                        //             trans_id, '\''+get.date()+'\'', 'PCT'+new Date().toISOString().slice(0, 10).toString()
+                        //           ].join(',')+', '+item.account_id+', '+
+                        //           [
+                        //             0, reference_caution.value,
+                        //             debit_equiv, credit_equiv, //inverse operation for cash
+                        //             reference_caution.currency_id
+                        //           ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
+                        // 'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
+                        // ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
+
+                      // db.execute(creditingRequest, function(err, ans){
+                      // if(err) return done(err);
+                      // db.execute(debitingRequest, function(err, ans){
+                      // if(err) return done(err);
+                      // return done(null, ans);
+                      // });
+                      // });
