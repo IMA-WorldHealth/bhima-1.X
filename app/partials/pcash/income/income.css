@@ -1,4 +1,4 @@
-.sector-size { 
-  height: 300px;
-  overflow : auto;
+.sommaire-report{
+	overflow: auto;
+	height: 400px;
 }

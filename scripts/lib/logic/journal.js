@@ -8,7 +8,7 @@ var parser = require('../database/parser')(),
     Store = require('../util/store'),
     q = require('q');
 
-module.exports = function (db) {
+module.exports = function (db, synthetic) {
   // deals in everything journal related
   'use strict';
 
@@ -166,6 +166,13 @@ module.exports = function (db) {
       });
 
       return defer.promise;
+    },
+
+    getCashCurrencyId : function (array, account_id){
+      return array.filter(function (item){
+        return item.cash_account === account_id;
+      });
+
     }
   };
 
@@ -1173,6 +1180,122 @@ module.exports = function (db) {
     });
   }
 
+  function handlePcash (id, user_id, done){
+
+    var sql = "SELECT * FROM `pcash` WHERE `pcash`.`id`="+sanitize.escape(id)+";";
+
+    db.execute(sql, function(err, ans){
+
+      if (err) return done(err, null);
+      if (ans.length === 0) return done(new Error('No pcash by the id: ' + id));
+
+      var reference_pcash = ans[0];
+      var date = util.toMysqlDate(reference_pcash.date);
+      console.log('reference pcash', reference_pcash);
+
+
+      get.myExchangeRate(date)
+      .then(function (exchangeRateStore) {
+
+        get.origin('pcash', function (err, origin_id) {
+
+          if (err) { return done(err); }
+
+          get.myPeriod(date, function (err, periodObject) {
+
+            if (err) { return done(err); }
+
+            get.transactionId(function (err, trans_id) {
+              if(err) {return done(err);}
+
+              //we debit the pcash account
+              //var deb_cred_type = 'D';
+              var dailyExchange = exchangeRateStore.get(reference_pcash.currency_id);
+              var debit_equiv = dailyExchange.rate * reference_pcash.value;
+              var credit_equiv = (1/dailyExchange.rate) * 0;
+
+              var debitingRequest =
+               'INSERT INTO posting_journal '+
+               '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+               '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+               '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+               'SELECT '+[
+                            reference_pcash.enterprise_id,
+                            periodObject.fiscal_year_id,
+                            periodObject.period_id,
+                            trans_id, '\''+get.date()+'\'', 'PCT'+new Date().toISOString().slice(0, 10).toString()
+                         ].join(',')+', `currency_account`.`pcash_account`, '+
+                         [
+                            0, reference_pcash.value,
+                            0, debit_equiv,
+                            reference_pcash.currency_id
+                         ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
+                'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
+                ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+
+              var cashCurrency = []; //correspondance caisse-monnaie
+              var sql_select = 'SELECT `currency_account`.`cash_account`, `currency_account`.`currency_id` FROM `currency_account` WHERE `currency_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+              db.execute(sql_select, function(err, ans){
+
+                var cashAccount_ids = ans.map(function (item){
+                  cashCurrency.push({cash_account : item.cash_account, currency_id : item.currency_id});
+                  return item.cash_account;
+                });
+                synthetic('aB', reference_pcash.enterprise_id, JSON.stringify({accounts : cashAccount_ids}), function(err, ans){
+                  ans.forEach(function (item) {
+                    dailyExchange = exchangeRateStore.get(get.getCashCurrencyId(cashCurrency, item.account_id)[0].currency_id);
+                    console.log('notre dailyExchange est :', dailyExchange);
+
+                   // var creditingRequest =
+                      // 'INSERT INTO posting_journal '+
+                      // '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                      // '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                      // '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                      // 'SELECT '+[
+                      //             reference_caution.enterprise_id,
+                      //             periodObject.fiscal_year_id,
+                      //             periodObject.period_id,
+                      //             trans_id, '\''+get.date()+'\'', 'PCT'+new Date().toISOString().slice(0, 10).toString()
+                      //           ].join(',')+', '+item.account_id+', '+
+                      //           [
+                      //             0, reference_caution.value,
+                      //             debit_equiv, credit_equiv, //inverse operation for cash
+                      //             reference_caution.currency_id
+                      //           ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
+                      // 'FROM `currency_account` WHERE `currency_account`.`currency_id`='+sanitize.escape(reference_caution.currency_id)+
+                      // ' AND `currency_account`.`enterprise_id`='+sanitize.escape(reference_caution.enterprise_id)+';';
+
+                    // db.execute(creditingRequest, function(err, ans){
+                    // if(err) return done(err);
+                    // db.execute(debitingRequest, function(err, ans){
+                    // if(err) return done(err);
+                    // return done(null, ans);
+                    // });
+                    // });
+                  });
+
+                });
+
+              });
+
+            });
+          });
+        });
+      }, function(err){
+        var discard = "DELETE FROM pcash WHERE id="+sanitize.escape(id);
+        db.execute(discard, function(err, ans){
+          console.log('************** error annulation insertion', err);
+          throw (new Error('un probleme'));
+
+        });
+
+
+
+      });
+    });
+
+  }
+
   // router for incoming requests
   table_router = {
     'sale'     : handleSales,
@@ -1180,12 +1303,12 @@ module.exports = function (db) {
     'purchase' : handlePurchase,
     'group_invoice' : handleGroupInvoice,
     'credit_note' : handleCreditNote,
-    'caution'     : handleCaution
+    'caution'     : handleCaution,
+    'pcash'       : handlePcash
   };
 
   function request (table, id, user_id, done, debCaution) {
     // handles all requests coming from the client
-    console.log('la caution kon a est ', debCaution);
     if (debCaution >= 0) {
       table_router[table](id, user_id, done, debCaution);
     }else{

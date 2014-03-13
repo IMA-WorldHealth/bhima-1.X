@@ -24,7 +24,7 @@ angular.module('kpk.controllers').controller('caution', function($scope, $q, $lo
         }
       },
     }
-    };
+  };
 
   dependencies.exchange_rate = {
     required : true,
