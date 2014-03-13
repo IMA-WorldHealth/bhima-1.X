@@ -24,11 +24,12 @@ var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
 // import routes
 var report       = require('./lib/logic/report')(db),
     trialbalance = require('./lib/logic/trialbalance')(db),
-    journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
     fiscal       = require('./lib/logic/fiscal')(db),
+    rt           = require('./lib/logic/rt')(db)
+    synthetic    = require('./lib/logic/synthetic')(db, sanitize);
+    journal      = require('./lib/logic/journal')(db, synthetic),
     createSale   = require('./lib/logic/createSale')(db, parser, journal),
-    rt           = require('./lib/logic/rt')(db);
 
 app.configure(function () {
   app.use(express.compress());
@@ -422,6 +423,16 @@ app.get('/rt/:type/:id/:start/:end', function (req, res, next) {
   });
 
 });
+
+app.get('/synthetic/:goal/:enterprise_id?', function (req, res, next) {
+  var query = decodeURIComponent(url.parse(req.url).query);
+  synthetic(req.params.goal, req.params.enterprise_id, query, function (err, data) {
+    if (err) { return next(err); }
+    res.send(data);
+  });
+});
+
+
 
 app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
 

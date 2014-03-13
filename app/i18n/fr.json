@@ -170,7 +170,9 @@
     "ALL"             : "Tous",
     "POSTING_JOURNAL" : "Journal de Saisie",
     "GENERAL_LEDGER" : "Grand Livre",
-    "SOURCE" : "Selectionner source"
+    "SOURCE" : "Selectionner source",
+    "CASH" : "Caisse Auxillaire",
+    "OTHER" : "Autre Source"
   },
 
   "RENEWAL" : {
@@ -434,7 +436,9 @@
     "SCOPE" : "Appliquer a",
     "VISIT_DATE" : "Date de Visite",
     "DEBITOR_TYPE" : "Type de Debiteur",
-    "TRANS_DATE" : "Date Transaction"
+    "TRANS_DATE" : "Date Transaction",
+    "NUM" : "Numero",
+    "AMOUNT" : "Montant"
 
   },
 
@@ -648,7 +652,8 @@
     "CONTINUE"       : "Continuer",
     "ADD"            : "Ajouter",
     "EDIT"           : "Editer",
-    "NEW_FORM"       : "Nouveau Formulaire"
+    "NEW_FORM"       : "Nouveau Formulaire",
+    "NEW_TRANSFER"  : "Nouveau Transfert"
   },
 
   "ACCOUNT" : {
@@ -893,5 +898,28 @@
     "SUCCES" : "Operation reussie !",
     "DANGER"  : "Erreur ! pas de taus d'echange !"
 
+  },
+
+  "PCASH" : {
+    "TITLE"   : "Gestion de la Caisse Principale",
+    "INCOME"  : "Recette",
+    "EXPENSE" : "Depense",
+    "SOME_REPORT" : "Rapport sommaire des activites (20 derniers)",
+    "MANAGER_CONFIGURATION" : "Gestion de la Caisse Principale",
+    "DESCRIPTION" : "Ce module vous permettra de realiser de facoun automatisee toutes les operations lieesa la caisse pricipale. Utiliser ce module pour gerer les recettes et depenses avec aisance."
+  },
+
+  "INCOME" : {
+    "TITLE" : "Caisse Principale : Depense",
+    "TRANSFER" : "Transfert",
+    "CONVENTION" : "Convention",
+    "OTHER" : "Autre",
+    "PCASH" : "Caisse Principale",
+    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
+    "OVERVIEW" : "Caisse Principale : Gestion des Recettes",
+    "INFO" : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
+    "SOURCE" : "Source",
+    "EXPECTED" : "Attendu",
+    "RECEIVED" : "Recu"
   }
 }

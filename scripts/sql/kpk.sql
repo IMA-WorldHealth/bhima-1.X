@@ -301,18 +301,21 @@ create table `currency_account` (
   `cash_account`    int unsigned not null,
   `bank_account`    int unsigned not null,
   `caution_account` int unsigned not null,
+  `pcash_account`   int unsigned not null,
   primary key (`id`),
   key `currency_id` (`currency_id`),
   key `enterprise_id` (`enterprise_id`),
   key `cash_account` (`cash_account`),
   key `bank_account` (`bank_account`),
   key `caution_account` (`caution_account`),
+  key `pcash_account` (`pcash_account`),
   unique key (`id`, `currency_id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
   constraint foreign key (`cash_account`) references `account` (`id`),
   constraint foreign key (`bank_account`) references `account` (`id`),
-  constraint foreign key (`caution_account`) references `account` (`id`)
+  constraint foreign key (`caution_account`) references `account` (`id`),
+  constraint foreign key (`pcash_account`) references `account` (`id`)
 ) engine=innodb;
 
 --

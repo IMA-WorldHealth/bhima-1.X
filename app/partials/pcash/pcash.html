@@ -1,1 +1,53 @@
-pcash
+
+<header>
+	<span class="capitalize"> {{ 'PCASH.TITLE' | translate }}</span>
+</header>
+
+<section class="top-nav">
+	<div class="pull-right">
+
+	  <a href="#/main_cash/income" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{ 'PCASH.INCOME' | translate }}</span></a>
+
+	  <a href="#/main_cash/expense"  class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{ 'PCASH.EXPENSE' | translate }}</span></a>
+
+	</div>
+</section>
+
+<article class="content">
+	<div class="row">
+		<div class="col-xs-6">
+			<div class="panel panel-default" style="max-height: 525px;">
+				<div class="panel-heading">
+					<span>{{ 'PCASH.SOME_REPORT' | translate }}</span>
+				</div>
+				<div class="panel-body sommaire-report">
+					<table class="table table-striped table-condensed">
+						<thead>
+							<tr>
+								<th>{{ 'COLUMNS.NUM' | translate }}</th>
+								<th>{{ 'COLUMNS.DATE' | translate }}</th>
+								<th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="pcash in model.pcash.data">
+								<td>{{$index}}</td>
+								<td>{{pcash.date}}</td>
+								<td>{{pcash.amount}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-xs-6">
+			<div class="alert alert-info">
+				<h4>{{ 'PCASH.MANAGER_CONFIGURATION' | translate }}</h4>
+				<p>{{ 'PCASH.DESCRIPTION' | translate }}</p>
+			</div>
+		</div>
+	</div>
+</article>
+
+
