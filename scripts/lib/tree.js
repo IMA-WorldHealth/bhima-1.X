@@ -19,11 +19,11 @@ module.exports = function (db) {
       var d = q.defer();
       var sql = parser.select({
         tables : {
-          'permission' : { columns : ['id', 'id_unit'] },
+          'permission' : { columns : ['id', 'user_id'] },
           'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
         },
-        join : ['permission.id_unit=unit.id'],
-        where : ['permission.id_user='+userid, 'AND', 'unit.parent='+parent_id]
+        join : ['permission.unit_id=unit.id'],
+        where : ['permission.user_id='+userid, 'AND', 'unit.parent='+parent_id]
       });
 
       db.execute(sql, function (err, result) {
@@ -33,7 +33,7 @@ module.exports = function (db) {
         });
         if (have_children.length) {
           var promises = have_children.map(function (row) {
-            return getChildren(row.id_uit);
+            return getChildren(row.unit_id);
           });
           d.resolve(q.all(promises));
         } else {
@@ -48,11 +48,11 @@ module.exports = function (db) {
       var d = q.defer();
       var query = parser.select({
         tables : {
-          'permission' : { columns : ['id', 'id_unit']},
+          'permission' : { columns : ['id', 'unit_id']},
           'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
         },
-        join : ['permission.id_unit=unit.id'],
-        where : ['permission.id_user=' + userid, 'AND', 'unit.parent=0'] // This assumes root is always "0"
+        join : ['permission.unit_id=unit.id'],
+        where : ['permission.user_id=' + userid, 'AND', 'unit.parent=0'] // This assumes root is always "0"
       });
 
       // this is freakin' complex. DO NOT TOUCH.
@@ -61,7 +61,7 @@ module.exports = function (db) {
         d.resolve(q.all(result.map(function (row) {
           var p = q.defer();
           if (row.has_children) {
-            getChildren(row.id_unit)
+            getChildren(row.unit_id)
             .then(function (children) {
               row.children = children;
               p.resolve(row);

@@ -7,12 +7,12 @@ Bug Squashing
 ### Bugs:
 
 #### Settings
-[ ] The "back" button on the settings page appends a perminent query string to the url,
+[x] The "back" button on the settings page appends a perminent query string to the url,
 which messes up page refresh.
 
 #### Enterprise Registration
 [x] The enterprise registration page should provide a way of know if changes have been saved.
-[ ] The enterprise page cannot print.
+[x] The enterprise page cannot print.
 [x] Invalid phone numbers and emails are allowed in the enterprise config form.
 [ ] Selecting cash and currency accounts should notify the user that there is no chart of accounts.
 [x] Editing does not work.
@@ -34,10 +34,10 @@ which messes up page refresh.
 [x] Opening balances do not have proper currency formatting.
 
 #### Exchange Rate
-[ ] Exchange rate should refresh the daily exchange rate
+[x] Exchange rate should refresh the daily exchange rate
 [x] Exchange rate does not support $100 -> X exchanges
 [ ] Currency format only supports two decimal places
-[ ] Database only stores 2 decimal digits, screwing up 1000-1 rates.
+[x] Database only stores 2 decimal digits, screwing up 1000-1 rates.
 
 #### CashBox
 [ ] Cashbox should lock up if exchange rate is not available
@@ -49,7 +49,7 @@ which messes up page refresh.
 
 #### Sales
 [ ] Issue a warning to the user if a fiscal year does not exist.
-[ ] The submit button should be green, like everything else.
+[x] The submit button should be green, like everything else.
 
 #### Opening Balance
 [ ] Error when trying to post 0 record opening balances.
@@ -58,8 +58,8 @@ which messes up page refresh.
 #### Patient Registration
 [ ] No indication whether the patient has been registered or not.
 [x] Poorly formatted location selects on smaller screens
-[ ] Location selects do no register dependencies.
+[x] Location selects do no register dependencies.
 
 #### Posting Journal
 [x] Only the lines concerning the patient's accounts should be recorded with their id.
-[ ] Sometimes, two invoice/po numbers are associated with one transaction.
+[x] Sometimes, two invoice/po numbers are associated with one transaction.
