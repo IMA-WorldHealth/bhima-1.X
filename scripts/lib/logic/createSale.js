@@ -1,22 +1,24 @@
 'use strict'
 var q = require('q');
+var uuid = require('../../lib/util/guid');
 
 module.exports = (function(db, parser, journal) {
   
   function execute(saleData, userId, callback) {
-    var saleRecord, saleItems, saleRecordId;
+    var saleRecord, saleItems, saleRecordId = uuid();
     var processedSale = false, processedSaleItems = false;
 
     saleRecord = saleData.sale;
+    saleRecord.uuid = saleRecordId;
+
     saleItems = saleData.saleItems;
 
     if(!(saleRecord && saleItems)) return callback(null, new Error("[createSale] Required data is invalid"));
-
+    
     writeSaleRecord(saleRecord, userId)
    
     //writeSaleItems()
     .then(function(saleResult) {
-      saleRecordId = saleResult.insertId;
       processedSale = true;
       return writeSaleItems(saleRecordId, saleItems);
     })
@@ -70,7 +72,8 @@ module.exports = (function(db, parser, journal) {
     var deferred = q.defer(), insertItemsSQL;
  
     saleItems.forEach(function(saleItem) {
-      saleItem.sale_id = saleRecordId;
+      saleItem.uuid = uuid();
+      saleItem.sale_uuid = saleRecordId;
     });
     insertItemsSQL = parser.insert('sale_item', saleItems);
 
@@ -92,7 +95,7 @@ module.exports = (function(db, parser, journal) {
   }
 
   function rollbackSale(saleRecordId) {
-    var deleteSaleSQL = parser.delete('sale', 'id', saleRecordId);
+    var deleteSaleSQL = parser.delete('sale', 'uuid', saleRecordId);
     var deferred = q.defer();
 
     db.execute(deleteSaleSQL, function(error, result) {
@@ -103,7 +106,7 @@ module.exports = (function(db, parser, journal) {
   }
 
   function rollbackSaleItems(saleRecordId) {
-    var deleteSaleItemsSQL = parser.delete('sale_item', 'sale_id', saleRecordId);
+    var deleteSaleItemsSQL = parser.delete('sale_item', 'sale_uuid', saleRecordId);
     var deferred = q.defer();
 
     db.execute(deleteSaleItemsSQL, function(error, result) {
