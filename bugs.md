@@ -49,7 +49,7 @@ which messes up page refresh.
 
 #### Sales
 [ ] Issue a warning to the user if a fiscal year does not exist.
-[ ] The submit button should be green, like everything else.
+[x] The submit button should be green, like everything else.
 
 #### Opening Balance
 [ ] Error when trying to post 0 record opening balances.
