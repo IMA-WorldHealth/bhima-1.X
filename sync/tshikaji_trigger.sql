@@ -32,13 +32,16 @@ insert into sym_node_security (node_id,node_password,registration_enabled,regist
 values ('000','HISCongo2013',0,current_timestamp,0,current_timestamp,null,null,0,null,null,null,'000');
 insert into sym_node_identity values ('000');
 
-
 --
 -- Channels
 --
 insert into sym_channel 
 (channel_id, processing_order, max_batch_size, enabled, description)
-values('patient_channel', 1, 100000, 1, 'Synchronising patients among enterprise nodes');
+values('enterprise_data', 1, 100000, 1, 'Common data to every node');
+
+insert into sym_channel
+(channel_id, processing_order, max_batch_size, enabled, description)
+values('transactional', 1, 100000, 1, 'Transactional data');
 
 -- insert into sym_channel 
 -- (channel_id, processing_order, max_batch_size, enabled, description)
@@ -46,7 +49,7 @@ values('patient_channel', 1, 100000, 1, 'Synchronising patients among enterprise
 
 insert into sym_trigger
 (trigger_id,source_table_name,channel_id,last_update_time,create_time)
-values('patient', 'patient', 'patient_channel', current_timestamp, current_timestamp);
+values('patient', 'patient', 'enterprise_data', current_timestamp, current_timestamp);
 
 --
 -- Triggers
@@ -101,11 +104,17 @@ values('client_to_master', 'client', 'master', 'default',current_timestamp, curr
 
 insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('patient', 'master_to_client', 100, current_timestamp, current_timestamp);
+values('enterprise_data', 'master_to_client', 100, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('patient', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('enterprise_data', 'client_to_master', 100, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router 
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('transactional', 'client_to_master', 100, current_timestamp, current_timestamp);
+
+
 --
 -- insert into sym_trigger_router 
 -- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
