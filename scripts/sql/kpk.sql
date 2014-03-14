@@ -88,11 +88,11 @@ create table `permission` (
 --
 drop table if exists `country`;
 create table `country` (
-  `id`          smallint unsigned not null auto_increment,
+  `uuid`        char(16) not null,
   `code`        smallint unsigned not null,
   `country_en`  varchar(45) not null,
   `country_fr`  varchar(45) not null,
-  primary key (`id`),
+  primary key (`uuid`),
   unique key `code_unique` (`code`)
 ) engine=innodb;
 
@@ -101,12 +101,12 @@ create table `country` (
 -- 
 drop table if exists `province`;
 create table `province` (
-  `id`         mediumint unsigned not null auto_increment,
+  `uuid`       char(16) not null,
   `name`       text,
-  `country_id` smallint unsigned not null,
-  primary key (`id`),
-  key `country_id` (`country_id`),
-  constraint foreign key (`country_id`) references `country` (`id`)
+  `country_uuid` char(16) not null,
+  primary key (`uuid`),
+  key `country_uuid` (`country_uuid`),
+  constraint foreign key (`country_uuid`) references `country` (`uuid`)
 ) engine=innodb;
 
 --
@@ -114,12 +114,12 @@ create table `province` (
 --
 drop table if exists `sector`;
 create table `sector` (
-  `id`          mediumint unsigned not null auto_increment,
+  `uuid`        char(16) not null,
   `name`        text,
-  `province_id` mediumint unsigned not null,
-  primary key (`id`),
-  key `province_id` (`province_id`),
-  constraint foreign key (`province_id`) references `province` (`id`)
+  `province_uuid` char(16) not null,
+  primary key (`uuid`),
+  key `province_id` (`province_uuid`),
+  constraint foreign key (`province_uuid`) references `province` (`uuid`)
 ) engine=innodb;
 
 --
@@ -127,12 +127,12 @@ create table `sector` (
 --
 drop table if exists `village`;
 create table `village` (
-  `id`        mediumint unsigned not null auto_increment,
-  `name`      text,
-  `sector_id` mediumint unsigned not null,
-  primary key (`id`),
-  key `sector_id` (`sector_id`),
-  constraint foreign key (`sector_id`) references `sector` (`id`)
+  `uuid`        char(16) not null,
+  `name`        text,
+  `sector_uuid` char(16) not null,
+  primary key (`uuid`),
+  key `sector_id` (`sector_uuid`),
+  constraint foreign key (`sector_uuid`) references `sector` (`uuid`)
 ) engine=innodb;
 
 --
@@ -145,14 +145,14 @@ create table `enterprise` (
   `abbr`                varchar(50),
   `phone`               varchar(20),
   `email`               varchar(70),
-  `location_id`         mediumint unsigned not null,
+  `location_id`         char(16) not null,
   `logo`                varchar(70),
   `currency_id`         tinyint unsigned not null,
   primary key (`id`),
   key `location_id` (`location_id`),
   key `currency_id` (`currency_id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
-  constraint foreign key (`location_id`) references `village` (`id`)
+  constraint foreign key (`location_id`) references `village` (`uuid`)
 ) engine=innodb;
 
 --
@@ -315,13 +315,13 @@ create table `currency_account` (
 --
 -- table `kpk`.`price_list`
 --
-drop table if exists `kpk`.`price_list`;
-create table `kpk`.`price_list` (
+drop table if exists `price_list`;
+create table `price_list` (
   enterprise_id   smallint unsigned not null,
-  id              smallint  unsigned not null auto_increment,
+  uuid            char(16) not null,
   title           text,
   description     text,
-  primary key (`id`),
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
@@ -330,19 +330,19 @@ create table `kpk`.`price_list` (
 --
 -- table `kpk`.`price_list_item`
 --
-drop table if exists `kpk`.`price_list_item`;
-create table `kpk`.`price_list_item` (
-  `id`              int unsigned not null auto_increment,
-  `item_order`           int unsigned not null,
+drop table if exists `price_list_item`;
+create table `price_list_item` (
+  `uuid`              char(16) not null,
+  `item_order`      int unsigned not null,
   `description`     text,
   `value`           float not null,
   `is_discount`     boolean not null default 0,
   `is_global`       boolean not null default 0, -- TODO names should better describe values
-  `price_list_id`   smallint unsigned not null,
+  `price_list_uuid` char(16) not null,
   primary key (`id`),
-  -- unique index (`item_order`, `price_list_id`),
-  key `price_list_id` (`price_list_id`),
-  constraint foreign key (`price_list_id`) references `price_list` (`id`) on delete cascade
+  -- unique index (`item_order`, `price_list_uuid`),
+  key `price_list_uuid` (`price_list_uuid`),
+  constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`) on delete cascade
 ) engine=innodb;
 
 
@@ -364,10 +364,10 @@ create table `kpk`.`price_list_item` (
 drop table if exists `debitor_group`;
 create table `debitor_group` (
   `enterprise_id`       smallint unsigned not null,
-  `id`                  smallint unsigned auto_increment not null,
+  `uuid`                  smallint unsigned auto_increment not null,
   `name`                varchar(100) not null,
   `account_id`          int unsigned not null,
-  `location_id`         mediumint unsigned not null,
+  `location_id`         char(16) not null,
   `payment_id`          tinyint unsigned not null default '3',
   `phone`               varchar(10) default '',
   `email`               varchar(30) default '',
@@ -377,18 +377,18 @@ create table `debitor_group` (
   `max_credit`          mediumint unsigned default '0',
   -- `type_id`             smallint unsigned,
   `is_convention`        boolean not null default 0,
-  `price_list_id`       smallint unsigned null,
-  primary key (`id`),
+  `price_list_uuid`      char(16) null,
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `account_id` (`account_id`),
   key `location_id` (`location_id`),
-  key `price_list_id` (`price_list_id`),
+  key `price_list_uuid` (`price_list_uuid`),
 --  key `tax_id` (`tax_id`),
   -- key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
   constraint foreign key (`account_id`) references `account` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`location_id`) references `village` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`price_list_id`) references `price_list` (`id`) on delete cascade on update cascade
+  constraint foreign key (`location_id`) references `village` (`uuid`) on delete cascade on update cascade,
+  constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`) on delete cascade on update cascade
 --  constraint foreign key (`tax_id`) references `tax` (`id`),
   -- constraint foreign key (`type_id`) references `debitor_group_type` (`id`)
 ) engine=innodb;
@@ -400,14 +400,14 @@ drop table if exists `patient_group`;
 create table `kpk`.`patient_group` (
   enterprise_id   smallint unsigned not null,
   id              mediumint unsigned not null auto_increment,
-  price_list_id   smallint unsigned not null,
+  price_list_uuid char(16) unsigned not null,
   name            varchar(60) not null,
   note            text,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  key `price_list_id` (`price_list_id`),
+  key `price_list_uuid` (`price_list_uuid`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`price_list_id`) references `price_list` (`id`)
+  constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`)
 ) engine=innodb;
 
 --
@@ -433,7 +433,7 @@ create table `supplier` (
   `name`          varchar(45) not null,
   `address_1`     text,
   `address_2`     text,
-  `location_id`   mediumint unsigned not null,
+  `location_id`   char(16) not null,
   `email`         varchar(45),
   `fax`           varchar(45),
   `note`          varchar(50),
@@ -443,7 +443,7 @@ create table `supplier` (
   primary key (`id`),
   key `creditor_id` (`creditor_id`),
   key `location_id` (`location_id`),
-  constraint foreign key (`location_id`) references `village` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`location_id`) references `village` (`uuid`) on delete cascade on update cascade,
   constraint foreign key (`creditor_id`) references `creditor` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
@@ -452,8 +452,8 @@ create table `supplier` (
 --
 drop table if exists `patient`;
 create table `patient` (
-  `id`                int unsigned not null auto_increment,
-  `debitor_id`        int unsigned not null,
+  `uuid`                char(16) not null,
+  `debitor_uuid`      char(16) not null,
   `creditor_id`       int unsigned,
   `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
@@ -473,18 +473,17 @@ create table `patient` (
   `addr_1`            varchar(100),
   `addr_2`            varchar(100),
   `renewal`           boolean not null default 0,
-  `origin_location_id`        mediumint unsigned not null,
-  `current_location_id`       mediumint unsigned not null,
+  `origin_location_id`        char(16) not null,
+  `current_location_id`       char(16) not null,
   `registration_date`         timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
-  key `first_name` (`first_name`),
-  key `debitor_id` (`debitor_id`),
+  key `debitor_uuid` (`debitor_uuid`),
   key `origin_location_id` (`origin_location_id`),
   key `current_location_id` (`current_location_id`),
   unique key `creditor_id` (`creditor_id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`) on update cascade,
-  constraint foreign key (`current_location_id`) references `village` (`id`) on update cascade,
-  constraint foreign key (`origin_location_id`) references `village` (`id`) on update cascade
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`) on update cascade,
+  constraint foreign key (`current_location_id`) references `village` (`uuid`) on update cascade,
+  constraint foreign key (`origin_location_id`) references `village` (`uuid`) on update cascade
 ) engine=innodb;
 
 --
@@ -622,7 +621,7 @@ create table `sale` (
   `id`            int unsigned not null auto_increment,
   `cost`          decimal(19,4) unsigned not null,
   `currency_id`   tinyint unsigned not null,
-  `debitor_id`    int unsigned not null,
+  `debitor_uuid`  char(16) not null,
   `seller_id`     smallint unsigned not null default 0,
   `discount`      mediumint unsigned default '0',
   `invoice_date`  date not null, -- is this the date of the sale?
@@ -630,10 +629,10 @@ create table `sale` (
   `posted`        boolean not null default '0',
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  key `debitor_id` (`debitor_id`),
+  key `debitor_uuid` (`debitor_uuid`),
   key `currency_id` (`currency_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
 
@@ -645,7 +644,7 @@ create table `credit_note` (
   `enterprise_id` smallint unsigned not null,
   `id`            int unsigned not null auto_increment,
   `cost`          decimal(19,4) unsigned not null,
-  `debitor_id`    int unsigned not null,
+  `debitor_uuid`  char(16) not null,
   `seller_id`     smallint unsigned not null default 0,
   `sale_id`       int unsigned not null,
   `note_date`     date not null,
@@ -653,10 +652,10 @@ create table `credit_note` (
   `posted`        boolean not null default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  key `debitor_id` (`debitor_id`),
+  key `debitor_uuid` (`debitor_uuid`),
   key `sale_id` (`sale_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`sale_id`) references `sale` (`id`)
 ) engine=innodb;
 
@@ -928,21 +927,21 @@ create table `kpk`.`period_total` (
 --
 drop table if exists `group_invoice`;
 create table `group_invoice` (
-	id              int unsigned not null auto_increment,
+	uuid            char(16) not null,
   enterprise_id   smallint unsigned not null,
-	debitor_id      int unsigned not null,
+	debitor_uuid    char(16) not null,
 	group_id        smallint unsigned not null,
   note            text,
   authorized_by   varchar(80) not null,
 	date            date not null,
   total           decimal(14, 4) not null default 0,
 	primary key (`id`),
-	key `debitor_id` (`debitor_id`),
+	key `debitor_uuid` (`debitor_uuid`),
   key `enterprise_id` (`enterprise_id`),
 	key `group_id` (`group_id`),
-	constraint foreign key (`debitor_id`) references `debitor` (`id`),
+	constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-	constraint foreign key (`group_id`) references `debitor_group` (`id`)
+	constraint foreign key (`group_uuid`) references `debitor_group` (`uuid`)
 ) engine=innodb;
 
 --
@@ -950,15 +949,15 @@ create table `group_invoice` (
 --
 drop table if exists `group_invoice_item`;
 create table `group_invoice_item` (
-  id                int unsigned not null auto_increment,
-  payment_id        int unsigned not null,
-  invoice_id        int unsigned not null,
+  uuid              char(16) not null,
+  payment_uuid        char(16) not null,
+  invoice_uuid        char(16) not null,
   cost              decimal(16, 4) unsigned not null,
-  primary key (`id`),
-  key `payment_id` (`payment_id`),
-	key `invoice_id` (`invoice_id`),
-  constraint foreign key (`payment_id`) references `group_invoice` (`id`) on delete cascade,
-	constraint foreign key (`invoice_id`) references `sale` (`id`)
+  primary key (`uuid`),
+  key `payment_uuid` (`payment_uuid`),
+	key `invoice_uuid` (`invoice_uuid`),
+  constraint foreign key (`payment_uuid`) references `group_invoice` (`uuid`) on delete cascade,
+	constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
 
 -- TODO Reference user table
@@ -1010,7 +1009,7 @@ create table `employee` (
   `email`               varchar(70),
   `fonction_id`         tinyint unsigned not null,
   `service_id`          tinyint unsigned not null,
-  `location_id`         mediumint unsigned not null,
+  `location_id`         char(16) not null,
   `creditor_id`         int unsigned not null,
   `debitor_id`          int unsigned not null,            
   primary key (`id`),
@@ -1021,7 +1020,7 @@ create table `employee` (
   key `debitor_id`  (`debitor_id`),
   constraint foreign key (`fonction_id`) references `fonction` (`id`),
   constraint foreign key (`service_id`) references `service` (`id`),
-  constraint foreign key (`location_id`) references `village` (`id`),
+  constraint foreign key (`location_id`) references `village` (`uuid`),
   constraint foreign key (`creditor_id`) references `creditor` (`id`),
   constraint foreign key (`debitor_id`) references `debitor` (`id`)
 ) engine=innodb;
@@ -1043,17 +1042,17 @@ create table `inventory_log` (
 --
 drop table if exists `debitor_group_history`;
 create table `debitor_group_history` (
-`id`                  int unsigned not null auto_increment,
-`debitor_id`          int unsigned not null,
-`debitor_group_id`    smallint unsigned not null,
+`uuid`                  int unsigned not null auto_increment,
+`debitor_uuid`          char(16) not null,
+`debitor_group_uuid`  char(16) not null,
 `income_date`         timestamp not null,
 `user_id`             smallint unsigned not null,
-primary key (`id`),
-key `debitor_id` (`debitor_id`),
-key `debitor_group_id` (`debitor_group_id`),
+primary key (`uuid`),
+key `debitor_id` (`debitor_uuid`),
+key `debitor_group_uuid` (`debitor_group_uuid`),
 key `user_id` (`user_id`),
-constraint foreign key (`debitor_id`) references `debitor` (`id`),
-constraint foreign key (`debitor_group_id`) references `debitor_group` (`id`),
+constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
+constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`),
 constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 
