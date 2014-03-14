@@ -132,11 +132,11 @@ angular.module('kpk.controllers')
     $scope.permission.permission_change = false;
 
     $scope.editPermission = function (user) {
-      $scope.permission.id_user = user.id;
+      $scope.permission.user_id = user.id;
       connect.req({
-        identifier : 'id_unit',
-        tables : { 'permission' : { columns : ['id', 'id_unit'] }},
-        where : ['permission.id_user='+user.id]
+        identifier : 'unit_id',
+        tables : { 'permission' : { columns : ['id', 'unit_id'] }},
+        where : ['permission.user_id='+user.id]
       })
       .then(function (store) {
         messenger.success('Loaded data for user ' + user.id);
@@ -160,14 +160,14 @@ angular.module('kpk.controllers')
     }
 
     $scope.savePermissions = function () {
-      var id_user = $scope.permission.id_user;
+      var user_id = $scope.permission.user_id;
       var units = $scope.units.data;
       var savedPermissions = $scope.permissions;
       var toSave = [],
           toRemove = [];
       units.forEach(function (unit) {
         if (unit.checked && !savedPermissions.get(unit.id)) {
-          toSave.push({ id_unit : unit.id, id_user : id_user});
+          toSave.push({ unit_id : unit.id, user_id : user_id });
         }
         if (!unit.checked && !!savedPermissions.get(unit.id)) {
           toRemove.push(savedPermissions.get(unit.id).id);
@@ -184,7 +184,7 @@ angular.module('kpk.controllers')
         })
       ).then(function (res) {
         if (!toSave.length) {
-          return messenger.success('Successfully updated permission for user ' + id_user);
+          return messenger.success('Successfully updated permission for user ' + user_id);
         }
         connect.basicPut('permission', toSave)
         /*$q.all(
@@ -193,15 +193,13 @@ angular.module('kpk.controllers')
           })
           */
         .then(function (res) {
-          messenger.success('Successfully updated permissions for user ' + id_user);
+          messenger.success('Successfully updated permissions for user ' + user_id);
         }, function (err) {
-          messenger.danger('Error in updateing user permissions for user ' + id_user);
+          messenger.danger('Error in updateing user permissions for user ' + user_id);
         });
       }, function (err) {
-        messenger.danger('Error in updating user permissions for user ' + id_user);
+        messenger.danger('Error in updating user permissions for user ' + user_id);
       });
-
-
     };
 
     function getChildren (id) {
