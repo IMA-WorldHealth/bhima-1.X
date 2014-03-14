@@ -40,6 +40,17 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.projects = {
+      query : {
+        identifier : 'id',
+        tables : {
+          'project' : {
+            columns : ['id', 'name', 'abbr']
+          }
+        }
+      }
+    };
+
     // The add namespace
     $scope.add = {};
     // for registration of 'super user privileges'
@@ -128,11 +139,11 @@ angular.module('kpk.controllers')
 
     // permissions data
 
-    $scope.permission = {};
-    $scope.permission.permission_change = false;
+    $scope.data = {};
+    $scope.data.permission_change = false;
 
     $scope.editPermission = function (user) {
-      $scope.permission.user_id = user.id;
+      $scope.data.user_id = user.id;
       connect.req({
         identifier : 'unit_id',
         tables : { 'permission' : { columns : ['id', 'unit_id'] }},
@@ -160,7 +171,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.savePermissions = function () {
-      var user_id = $scope.permission.user_id;
+      var user_id = $scope.data.user_id;
       var units = $scope.units.data;
       var savedPermissions = $scope.permissions;
       var toSave = [],
@@ -219,7 +230,7 @@ angular.module('kpk.controllers')
 
     $scope.toggleChildren = function toggleChildren (unit) {
       $scope.toggleParents(unit); // traverse upwards, toggling parents
-      $scope.permission.permission_change = true;
+      $scope.data.permission_change = true;
       unit.children.forEach(function (child) {
         child.checked = unit.checked;
       });
@@ -231,7 +242,7 @@ angular.module('kpk.controllers')
 
     $scope.$watch('all', function (value, oldValue) {
       if (!$scope.units || !$scope.units.data) return;
-      $scope.permission.permission_change = true;
+      $scope.data.permission_change = true;
       $scope.units.data.forEach(function (unit) {
         unit.checked = $scope.all.checked;
       });
@@ -247,6 +258,86 @@ angular.module('kpk.controllers')
       });
     });
 
+    // project settings
 
+    $scope.editProjects = function (user) {
+      $scope.data.user_id = user.id;
+      $scope.projects.data.forEach(function (project) {
+        project.checked = false;
+      });
+      $scope.all.projects = false;
+      connect.req({
+        tables : {
+          'project_permission' : { columns : ['id', 'project_id'] },
+        },
+        where : ['project_permission.user_id=' + user.id]
+      })
+      .then(function (store) {
+        store.data.forEach(function (perm) {
+          $scope.projects.get(perm.project_id).checked = true;
+        });
+        $scope.loadedProjects = store;
+        $scope.action = 'project';
+      })
+      .catch(function (err) {
+        messenger.danger('Error: Failed to load project data for user' + user.id);
+        $scope.action = 'project';
+      });
+    };
+
+    $scope.$watch('all.projects', function () {
+      if (!$scope.projects) { return; }
+      $scope.projects.data.forEach(function (project) {
+        project.checked = $scope.all.projects;
+      });
+    });
+
+    $scope.saveProjects = function () {
+      var user_id = $scope.data.user_id;
+      var projects = $scope.projects.data;
+      var savedProjects = $scope.loadedProjects;
+      var toSave = [],
+          toRemove = [];
+
+      projects.forEach(function (project) {
+        var isOld = !!$scope.loadedProjects.get(project.id);
+
+        if (project.checked && !isOld) {
+          toSave.push({ project_id : project.id, user_id : user_id});
+        }
+
+        if (!project.checked && isOld) {
+          toRemove.push($scope.loadedProjects.get(project.id).id);
+        }
+
+      });
+
+      // TODO / FIXME : This is terrible coding.
+      // We need to add batch updates, inserts, and deletes
+      // to connect + server.
+
+      $q.all(
+        toRemove.map(function (id) {
+          return connect.basicDelete('project_permission', [id]);
+        })
+      ).then(function (res) {
+        if (!toSave.length) {
+          return messenger.success('Successfully updated permission for user ' + user_id);
+        }
+        connect.basicPut('project_permission', toSave)
+        /*$q.all(
+          toSave.map(function (perm) {
+            return connect.basicPut('permission', [perm]);
+          })
+          */
+        .then(function (res) {
+          messenger.success('Successfully updated permissions for user ' + user_id);
+        }, function (err) {
+          messenger.danger('Error in updateing user permissions for user ' + user_id);
+        });
+      }, function (err) {
+        messenger.danger('Error in updating user permissions for user ' + user_id);
+      });
+    };
   }
 ]);
