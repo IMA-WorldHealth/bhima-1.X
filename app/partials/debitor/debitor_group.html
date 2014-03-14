@@ -25,7 +25,7 @@
             <tr>
               <th>{{ "COLUMNS.NAME" | translate }}</th>
               <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
-              <th>{{ "COLUMNS.TYPE" | translate }}</th>
+              <!-- <th>{{ "COLUMNS.TYPE" | translate }}</th> -->
               <th><i class="glyphicon glyphicon-lock"></i></th>
               <th style="width: 8%;">{{ "COLUMNS.EDIT" | translate }}</th>
             </tr>
@@ -34,7 +34,7 @@
             <tr ng-repeat="group in debitor_group.data | filter:data.search">
               <td>{{ group.name }}</td>
               <td>{{ account.get(group.account_id).account_number }}</td>
-              <td>{{ types.get(group.type_id).type }}</td>
+              <!-- <td>{{ types.get(group.type_id).type }}</td> -->
               <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>
               <td>
                 <button class="btn btn-sm btn-default" ng-click="edit(group)">
@@ -100,9 +100,9 @@
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-kapok" ng-model="newGroup.price_list_id">
+                <select name="group-account" class="form-kapok" ng-model="newGroup.price_list_uuid">
                   <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                  <option ng-repeat="pl in price_list.data" value='{{pl.id}}'>{{formatPriceList(pl)}}</option>
+                  <option ng-repeat="pl in price_list.data" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
                 </select>
               </div>
             </div>
@@ -110,7 +110,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-location" class="form-kapok" ng-model="newGroup.location_id" ng-options="loc.id as formatLocation(loc) for loc in location.data" required>
+                <select name="group-location" class="form-kapok" ng-model="newGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
                 </select>
               </div>
@@ -205,9 +205,9 @@
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-kapok" ng-model="editGroup.price_list_id">
+                <select name="group-account" class="form-kapok" ng-model="editGroup.price_list_uuid">
                   <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                  <option ng-repeat="pl in price_list.data" value='{{pl.id}}'>{{formatPriceList(pl)}}</option>
+                  <option ng-repeat="pl in price_list.data" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
                 </select>
               </div>
             </div>
@@ -215,7 +215,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-location" class="form-kapok" ng-model="editGroup.location_id" ng-options="loc.id as formatLocation(loc) for loc in location.data" required>
+                <select name="group-location" class="form-kapok" ng-model="editGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
                 </select>
                </div>
