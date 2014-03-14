@@ -153,8 +153,8 @@
             </thead>
 
             <tbody>
-            <tr ng-class='{rowSelected: selected.id==patient.id}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
-              <td><b>{{patient.id}}</b></td>
+            <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
+              <td><b>{{patient.uuid}}</b></td>
               <td>{{ patient.name }}</td>
               <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
               <td>{{ patient.father_name }}</td>

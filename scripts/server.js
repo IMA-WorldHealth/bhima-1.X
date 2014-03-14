@@ -264,7 +264,7 @@ app.get('/tree', function (req, res, next) {
 });
 
 app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
+  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\"' + req.params.villageId + '\"' : '';
 
   var sql =
     'SELECT `village`.`uuid` as `uuid`,  `village`.`name` as `village`, ' +
