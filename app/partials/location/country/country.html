@@ -84,7 +84,6 @@
           </div>
 
       <div ng-switch-when="Edit">
-         
            <form class="form-horizontal">                                                                          
               <fieldset>                                                                                            
                 <legend>{{'COUNTRY.EDIT' | translate}}</legend>                                                           
@@ -107,11 +106,14 @@
                       <input class="form-kapok" ng-model="country.country_fr" required>                                            
                    </div>                                                                                            
                 </div>     
-              </fieldset>
-              <button class="btn btn-default btn-success" ng-click="editCountry(country)" ng-disabled="form.$invalid " type="submit">{{'FORM.EDIT' | translate}}</button>
-              <button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_FORM' | translate}}</button>
-
-            </form>
+            </fieldset>
+            <button class="btn btn-default btn-success" ng-click="editCountry(country)" ng-disabled="form.$invalid " type="submit">
+              {{ 'FORM.EDIT' | translate}}
+            </button>
+            <button class="btn btn-default btn-sm" type="reset">
+              {{ 'FORM.NEW_FORM' | translate}}
+            </button>
+          </form>
        </div>
 
   </div>

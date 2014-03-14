@@ -5,7 +5,8 @@ angular.module('kpk.controllers')
   'connect',
   'messenger',
   'validate',
-  function ($scope, $q, connect, messenger, validate) {
+  'uuid',
+  function ($scope, $q, connect, messenger, validate, uuid) {
 
     var dependencies = {},
         flags = $scope.flags = {};
@@ -13,18 +14,17 @@ angular.module('kpk.controllers')
     $scope.model = {};
 
     dependencies.country = {
+      identifer : 'uuid',
       query : {
         tables: {
           'country' : {
-            columns : ['id','code', 'country_en', 'country_fr']
+            columns : ['uuid','code', 'country_en', 'country_fr']
           }
         }
       }
     };
 
-    //fonction
-    
-    function manageCountry (model){
+    function manageCountry (model) {
       for (var k in model) { $scope.model[k] = model[k]; }
     }
 
@@ -34,27 +34,29 @@ angular.module('kpk.controllers')
     }
 
     function addCountry (obj){
-      var newObject = {};
-      newObject.code = obj.code;
-      newObject.country_en  = obj.country_en;
-      newObject.country_fr  = obj.country_fr;
-      connect.basicPut('country', [connect.clean(newObject)])
+      var country = {
+        uuid : uuid(),
+        code : obj.code,
+        country_en : obj.country_en,
+        country_fr : obj.country_fr
+      };
+
+      connect.basicPut('country', [country])
       .then(function (res) {
-        newObject.id = res.data.insertId;
-        $scope.model.country.post(newObject);
+        $scope.model.country.post(country);
         obj = {};
       });
     }
 
     function editCountry(){
       var country  = {
-        id :$scope.country.id,
+        uuid : $scope.country.uuid,
         code : $scope.country.code,
         country_en : $scope.country.country_en,
         country_fr : $scope.country.country_fr
       };
 
-      connect.basicPost('country', [connect.clean(country)], ['id'])
+      connect.basicPost('country', [connect.clean(country)], ['uuid'])
       .then(function (res) {
         $scope.model.country.put($scope.country);
         $scope.country = {};
