@@ -1,12 +1,11 @@
 angular.module('kpk.controllers')
 .controller('country', [
   '$scope',
-  '$q',
   'connect',
   'messenger',
   'validate',
   'uuid',
-  function ($scope, $q, connect, messenger, validate, uuid) {
+  function ($scope, connect, messenger, validate, uuid) {
 
     var dependencies = {},
         flags = $scope.flags = {};
@@ -63,20 +62,17 @@ angular.module('kpk.controllers')
       });
     }
 
-    function removeCountry(obj){
-      $scope.country = angular.copy(obj);
-      connect.basicDelete('country', $scope.country.id)
-      .then(function(res){
-          $scope.model.country.remove($scope.country.id);
-          $scope.country = {};
-        });
-    }
+    $scope.removeCountry = function removeCountry(uuid){
+      connect.basicDelete('country', uuid, 'uuid')
+      .then(function(){
+        $scope.model.country.remove(uuid);
+      });
+    };
 
     validate.process(dependencies).then(manageCountry);
 
     $scope.setOp = setOp;
     $scope.addCountry = addCountry;
     $scope.editCountry = editCountry;
-    $scope.removeCountry = removeCountry;
   }
 ]);

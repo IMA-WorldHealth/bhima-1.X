@@ -4,17 +4,17 @@
 
 <section class="top-nav">
   <div class="pull-right">
-    <a href="#/location/country" class="capital btn btn-default btn-sm">
-      <span class="glaphyicon glaphyicon-tag">{{ 'LOCATION.MANAGE_COUNTRY' | translate }}</span>
+    <a href="#/location/country/" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-tag"></span> {{ 'LOCATION.MANAGE_COUNTRY' | translate }}
     </a>
-    <a href="#/location/province"  class="capital btn btn-default btn-sm">
-      <span class="glaphyicon glaphyicon-tag">{{ 'LOCATION.MANAGE_PROVINCE' | translate }}</span>
+    <a href="#/location/province/"  class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-tag"></span> {{ 'LOCATION.MANAGE_PROVINCE' | translate }}
     </a>
-    <a href="#/location/sector" class="capital btn btn-default btn-sm">
-      <span class="glaphyicon glaphyicon-tag">{{ 'LOCATION.MANAGE_SECTOR' | translate }}</span>
+    <a href="#/location/sector/" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-tag"></span> {{ 'LOCATION.MANAGE_SECTOR' | translate }}
     </a>
-    <a href="#/location/village" class="capital btn btn-default btn-sm">
-      <span class="glaphyicon glaphyicon-tag"> {{ 'LOCATION.MANAGE_VILLAGE' | translate }}</span>
+    <a href="#/location/village/" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-tag"></span> {{ 'LOCATION.MANAGE_VILLAGE' | translate }}
     </a>
   </div>
 </section>
@@ -36,7 +36,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="location in model.location.data">
+            <tr ng-repeat="location in locations.data">
               <td>{{location.country}}</td>
               <td>{{location.province}}</td>
               <td>{{location.sector}}</td>
@@ -47,50 +47,13 @@
       </div>
     </div>
 
-    <div class="col-xs-6" ng-switch="op">
-      <div ng-switch-default>
-         <div class="alert alert-info">                                                                          
-             <h4>{{ 'LOCATION.MANAGER_CONFIGURATION' | translate }}</h4>                                                        
-             <p>{{ 'LOCATION.DESCRIPTION' | translate }} <b> {{ 'LOCATION.INFO_CREATE' | translate }}</b>, <b>{{ 'LOCATION.INFO_MODIFY' | translate }}</b> {{ 'LOCATION.ET' | translate }} <b> {{ 'LOCATION.REMOVE' | translate }}</b> {{ 'LOCATION.LOCATION' | translate }}.                                                        
-             </p>                                                                                                  
-         </div>  
-       </div>
-
-       <div ng-switch-when="Add">
-         
-           <form class="form-horizontal">                                                                          
-              <fieldset>                                                                                            
-                <legend>{{ 'LOCATION.REGISTER' | translate }}</legend>                                                           
-                <div class="form-group">
-                  <label class="col-xs-2"> {{ 'LOCATION.SECTOR' | translate }}</label>
-                  <div class="col-xs-10">
-                    <select
-                      required
-                      class="form-kapok"
-                      name="sectorname"
-                      id="sectorID"
-                      ng-model="add.sector_id"
-                      ng-options="sec.id as sec.name for sec in model.sector.data"
-                    >
-                      <option value="" disable="disabled">{{'SELECT.SECTOR' | translate}}</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group">                                                                   
-                   <label class="col-xs-2 control-label">{{ 'LOCATION.VILLAGE_NAME' | translate }}</label>                                                
-                   <div class="col-xs-10">                                                                           
-                      <input class="form-kapok" ng-model="add.name" required>                                            
-                   </div>                                                                                            
-                </div>     
-              </fieldset>
-              <button class="btn btn-default btn-success" ng-click="addVillage(add)" ng-disabled="form.$invalid " type="submit">{{ 'FORM.ADD' | translate }}</button>
-              <button class="btn btn-default btn-sm"  type="reset">{{ 'FORM.NEW_FORM' | translate }}</button>
-
-            </form>
-       </div>
-      
-  </div>
+    <div class="col-xs-6">
+      <div class="alert alert-info">                                                                          
+          <h4>{{ 'LOCATION.MANAGER_CONFIGURATION' | translate }}</h4>                                                        
+          <p>{{ 'LOCATION.DESCRIPTION' | translate }} <b> {{ 'LOCATION.INFO_CREATE' | translate }}</b>, <b>{{ 'LOCATION.INFO_MODIFY' | translate }}</b> {{ 'LOCATION.ET' | translate }} <b> {{ 'LOCATION.REMOVE' | translate }}</b> {{ 'LOCATION.LOCATION' | translate }}.                                                        
+          </p>                                                                                                  
+      </div>  
+    </div>
 </article>
 
 

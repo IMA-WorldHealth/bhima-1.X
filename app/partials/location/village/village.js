@@ -1,12 +1,12 @@
 angular.module('kpk.controllers')
 .controller('village', [
   '$scope',
-  '$q',
   'connect',
   'messenger',
   'validate',
   'uuid',
-  function ($scope, $q, connect, messenger, validate, uuid) {
+  'store',
+  function ($scope, connect, messenger, validate, uuid, Store) {
     var dependencies = {},
         flags = $scope.flags = {};
 
@@ -23,12 +23,14 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.village = {
-      query :  'village/'
-    };
-
     function manageVillage(model){
       for (var k in model) { $scope.model[k] = model[k]; }
+
+      connect.fetch('/village/')
+      .success(function (data) {
+        $scope.model.village = new Store({ identifier : 'uuid' });
+        $scope.model.village.setData(data);
+      });
     }
 
     function setOp(action, village){
@@ -51,25 +53,27 @@ angular.module('kpk.controllers')
     }
 
     function editVillage(){
-      var village = {id :$scope.village.id, name : $scope.village.village, sector_id :$scope.village. sector_id};
-      connect.basicPost('village', [connect.clean(village)], ['id'])
-      .then(function (res) {
-        $scope.village.sector = $scope.model.sector.get(village.sector_id).name;
-        $scope.model.village.put($scope.village);
-        $scope.village = {};
+      var village = {
+        uuid : $scope.village.uuid,
+        name : $scope.village.village,
+        sector_uuid :$scope.village.sector_uuid
+      };
+
+      connect.basicPost('village', [village], ['uuid'])
+      .then(function () {
+        $scope.model.village.put(village);
       });
     }
 
-    function removeVillage(obj){
-      $scope.village = angular.copy(obj);
-      connect.basicDelete('village', $scope.village.id)
-      .then(function(res){
-        $scope.model.village.remove($scope.village.id);
-        $scope.village = {};
+    function removeVillage(uuid){
+      connect.basicDelete('village', uuid, 'uuid')
+      .then(function(){
+        $scope.model.village.remove(uuid);
       });
     }
 
-    validate.process(dependencies).then(manageVillage);
+    validate.process(dependencies)
+    .then(manageVillage);
 
     $scope.setOp = setOp;
     $scope.addVillage = addVillage;

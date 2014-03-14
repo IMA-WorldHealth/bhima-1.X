@@ -4,7 +4,7 @@
 
   <section class="top-nav">
     <div class="pull-right">
-        <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'PROVINCE.LOCATION_MANAGER' | translate}}</span></a>
+        <a href="#/location/" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'PROVINCE.LOCATION_MANAGER' | translate}}</span></a>
     </div>
     <div class="pull-left">
       <button class="btn btn-default btn-sm" ng-click="setOp('Add')">{{'PROVINCE.ADD' | translate}}</button>
@@ -22,19 +22,19 @@
           <table class="table table-striped table-condensed">
           <thead>
             <tr>
-              <th>{{'PROVINCE.NAME' | translate}}</th>
-              <th>{{'PROVINCE.COUNTRY' | translate}}</th>
-              <th colspan="2" class="capital">{{'PROVINCE.ACTIONS' | translate}}</th>
+              <th>{{ 'PROVINCE.NAME' | translate}}</th>
+              <th>{{ 'PROVINCE.COUNTRY' | translate}}</th>
+              <th colspan="2">{{ 'PROVINCE.ACTIONS' | translate}}</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="province in model.province.data">
-              <td>{{province.province}}</td>
-              <td>{{province.country_en}}</td>
+            <tr ng-repeat="province in provinces.data">
+              <td>{{ province.province }}</td>
+              <td>{{ province.country_en }}</td>
               <td ng-click="setOp('Edit', province)">
                 <button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
               </td>
-              <td ng-click="removeProvince(province)">
+              <td ng-click="removeProvince(province.uuid)">
                 <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button>
               </td>
             </tr>
@@ -47,8 +47,8 @@
 
     <div class="col-xs-6" ng-switch="op">
       <div ng-switch-default>
-         <div class="alert alert-info">                                                                          
-             <b>{{'PROVINCE.CONFIGURATION' | translate}} </b>                                                        
+         <div class="alert alert-info">
+             <b>{{'PROVINCE.CONFIGURATION' | translate}} </b>
              <p>{{'PROVINCE.DESCRIPTION' | translate}}                                                      
              </p>                                                                                                  
          </div>  
@@ -67,8 +67,8 @@
                       class="form-kapok"
                       name="countryname"
                       id="countryID"
-                      ng-model="add.country_id"
-                      ng-options="cou.id as cou.country_en for cou in model.country.data"
+                      ng-model="add.country_uuid"
+                      ng-options="cou.uuid as cou.country_en for cou in countries.data"
                     >
                       <option value="" disable="disabled">-- {{'SELECT.COUNTRY' | translate}} -- </option>
                     </select>
@@ -101,8 +101,8 @@
                       class="form-kapok"
                       name="countryname"
                       id="countryID"
-                      ng-model="province.country_id"
-                      ng-options="cou.id as cou.country_en for cou in model.country.data"
+                      ng-model="province.country_uuid"
+                      ng-options="cou.uuid as cou.country_en for cou in countries.data"
                     >
                       <option value="" disable="disabled">-- {{'SELECT.COUNTRY' | translate}} -- </option>
                     </select>

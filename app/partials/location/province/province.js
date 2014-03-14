@@ -1,83 +1,89 @@
 angular.module('kpk.controllers')
 .controller('province', [
   '$scope',
-  '$q',
   'connect',
   'messenger',
   'validate',
-  function ($scope, $q, connect, messenger, validate) {
+  'uuid',
+  'store',
+  function ($scope, connect, messenger, validate, uuid, Store) {
 
     var dependencies = {},
         flags = $scope.flags = {};
-    $scope.model = {};
 
     //dependencies
-    dependencies.country= {
+    dependencies.countries = {
+      identifier: 'uuid',
       query : {
         tables: {
           'country' : {
-            columns : ['id', 'country_en', 'country_fr']
+            columns : ['uuid', 'country_en', 'country_fr']
           }
         }
       }
     };
 
-    dependencies.province = {
-      query :  'province/'
-    };
-
 
     //fonction
    
-    function manageProvince (model){
-      for (var k in model) { $scope.model[k] = model[k]; }
+    function manageProvince (model) {
+      for (var k in model) { $scope[k] = model[k]; }
+
+      connect.fetch('/province/')
+      .success(function (data) {
+        $scope.provinces = new Store({
+          identifier: 'uuid',
+        });
+        $scope.provinces.setData(data);
+        console.log($scope.provinces.data);
+      })
+      .catch(function (err) {
+        messenger.danger('Did not load provinces');
+      });
+
     }
 
-    function setOp(action, province){
-      $scope.province  = angular.copy(province) || {};
+    $scope.setOp = function setOp(action, province){
+      $scope.province = angular.copy(province) || {};
       $scope.op = action;
-    }
+    };
 
     function addProvince (obj){
-      var newObject = {};
-      newObject.name = obj.name;
-      newObject.country_id = obj.country_id;
-      connect.basicPut('province', [connect.clean(newObject)])
+      var prov = {
+        name : obj.name,
+        country_uuid : obj.country_uuid,
+        uuid : uuid()
+      };
+
+      connect.basicPut('province', [prov])
       .then(function (res) {
-        newObject.id = res.data.insertId;
-        newObject.province  = obj.name;
-        newObject.country_en  = $scope.model.country.get(obj.country_id).country_en;
-        $scope.model.province.post(newObject);
+        $scope.provinces.post(prov);
       });
     }
 
     function editProvince(){
       var province  = {
-        id :$scope.province.id,
-        name : $scope.province.province,
-        country_id :$scope.province.country_id
+        uuid         : $scope.province.uuid,
+        name         : $scope.province.province,
+        country_uuid : $scope.province.country_uuid
       };
 
-      connect.basicPost('province', [connect.clean(province)], ['id'])
-      .then(function (res) {
-        $scope.province.country_en  = $scope.model.country.get(province.country_id).country_en;
-        $scope.model.province.put($scope.province);
-        $scope.village = {};
+      connect.basicPost('province', [province], ['uuid'])
+      .then(function () {
+        $scope.provinces.put(province);
       });
     }
 
-    function removeProvince(obj){
-      $scope.province = angular.copy(obj);
-      connect.basicDelete('province', $scope.province.id)
-      .then(function(res){
-        $scope.model.province.remove($scope.province.id);
-        $scope.province = {};
+    function removeProvince(uuid){
+      connect.basicDelete('province', [uuid], 'uuid')
+      .then(function(){
+        $scope.provinces.remove(uuid);
       });
     }
 
-    validate.process(dependencies).then(manageProvince);
+    validate.process(dependencies)
+    .then(manageProvince);
 
-    $scope.setOp = setOp;
     $scope.addProvince = addProvince;
     $scope.editProvince = editProvince;
     $scope.removeProvince = removeProvince;
