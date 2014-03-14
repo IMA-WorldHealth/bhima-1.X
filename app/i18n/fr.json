@@ -422,7 +422,7 @@
     "DEBCRED_ID"     : "ID Deb/Cred",
     "ORIGIN_ID"      : "ID Origine",
     "USER_ID"        : "ID Utilisateur",
-    "AMOUNT" : "Mountant",
+    "AMOUNT" : "Montant",
     "QTY" : "Quantite",
     "ITEM" : "Item",
     "CODE" : "Code",
@@ -487,8 +487,8 @@
   },
 
   "GROUP_INVOICE" : {
-    "TITLE"                  : "Facturation des Conventions et Societes",
-    "SELECT_PAYMENT_DETAILS" : "Selectionner Detail de la Paiement",
+    "TITLE"                  : "Facturation des Conventions, Societes Et Prise en Charge",
+    "SELECT_PAYMENT_DETAILS" : "Selectionner Detail du Paiement",
     "GROUP"                  : "Groupe",
     "DEBITOR"                : "Debiteur",
     "SELECT_INVOICES"        : "Selectionner Factures",
