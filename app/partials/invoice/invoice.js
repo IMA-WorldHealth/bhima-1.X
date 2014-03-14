@@ -118,11 +118,11 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
   function processPatient() {
     dependencies.recipient.query = {
       tables: {},
-      where: ['patient.id=' + invoiceId]
+      where: ['patient.uuid=' + invoiceId]
     };
 
     dependencies.recipient.query.tables['patient'] = {
-      columns: ['id', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_id', 'registration_date']
+      columns: ['uuid', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_uuid', 'registration_date']
     };
 
     validate.process(dependencies, ['recipient']).then(buildPatientLocation);
@@ -174,7 +174,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
  
     dependencies.recipient.query = {
       tables: {},
-      where: ['patient.debitor_id=' + invoice_data.debitor_id]
+      where: ['patient.debitor_uuid=' + invoice_data.debitor_uuid]
     };
 
     dependencies.recipient.query.tables['patient'] = {

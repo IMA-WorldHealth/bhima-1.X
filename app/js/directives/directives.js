@@ -224,7 +224,7 @@
               tables : {
                 patient : {columns : ["uuid", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
                 debitor : { columns : ["text"]},
-                debitor_group : { columns : ['account_id', 'price_list_id', 'is_convention']}
+                debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
               },
               join : ["patient.debitor_uuid=debitor.uuid", 'debitor.group_uuid=debitor_group.uuid']
             }
@@ -314,7 +314,7 @@
 
           function searchId(value) {
             console.log('search id', value);
-            if(isNaN(Number(value))) return messenger.danger("Invalid ID value submitted");
+            // if(isNaN(Number(value))) return messenger.danger("Invalid ID value submitted");
             dependencies.debtor.query.where = ["patient.uuid=" + value];
             validate.refresh(dependencies).then(handleIdRequest, handleIdError);
           }
