@@ -74,13 +74,13 @@ create table `unit` (
 drop table if exists `permission`;
 create table `permission` (
   `id`        mediumint unsigned not null auto_increment,
-  `id_unit`   smallint unsigned not null,
-  `id_user`   smallint unsigned not null,
+  `unit_id`   smallint unsigned not null,
+  `user_id`   smallint unsigned not null,
   primary key (`id`),
-  key `id_unit` (`id_unit`),
-  key `id_user` (`id_user`),
-  constraint foreign key (`id_unit`) references `unit` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`id_user`) references `user` (`id`) on delete cascade on update cascade
+  key `unit_id` (`unit_id`),
+  key `user_id` (`user_id`),
+  constraint foreign key (`unit_id`) references `unit` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`user_id`) references `user` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -332,14 +332,14 @@ create table `price_list` (
 --
 drop table if exists `price_list_item`;
 create table `price_list_item` (
-  `uuid`              char(16) not null,
+  `uuid`            char(16) not null,
   `item_order`      int unsigned not null,
   `description`     text,
   `value`           float not null,
   `is_discount`     boolean not null default 0,
   `is_global`       boolean not null default 0, -- TODO names should better describe values
   `price_list_uuid` char(16) not null,
-  primary key (`id`),
+  primary key (`uuid`),
   -- unique index (`item_order`, `price_list_uuid`),
   key `price_list_uuid` (`price_list_uuid`),
   constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`) on delete cascade
@@ -364,7 +364,7 @@ create table `price_list_item` (
 drop table if exists `debitor_group`;
 create table `debitor_group` (
   `enterprise_id`       smallint unsigned not null,
-  `uuid`                  smallint unsigned auto_increment not null,
+  `uuid`                char(16) not null,
   `name`                varchar(100) not null,
   `account_id`          int unsigned not null,
   `location_id`         char(16) not null,
@@ -397,13 +397,13 @@ create table `debitor_group` (
 -- Table structure for table `kpk`.`patient_group`
 --
 drop table if exists `patient_group`;
-create table `kpk`.`patient_group` (
-  enterprise_id   smallint unsigned not null,
-  id              mediumint unsigned not null auto_increment,
-  price_list_uuid char(16) unsigned not null,
-  name            varchar(60) not null,
-  note            text,
-  primary key (`id`),
+create table `patient_group` (
+  enterprise_id     smallint unsigned not null,
+  uuid              char(16) not null,
+  price_list_uuid   char(16) not null,
+  name              varchar(60) not null,
+  note              text,
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `price_list_uuid` (`price_list_uuid`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
@@ -415,12 +415,12 @@ create table `kpk`.`patient_group` (
 --
 drop table if exists `debitor`;
 create table `debitor` (
-  `id`        int       unsigned not null auto_increment,
-  `group_id`  smallint  unsigned not null,
+  `uuid`          char(16) not null,
+  `group_uuid`    char(16) not null,
   `text`      text,
-  primary key (`id`),
-  key `group_id` (`group_id`),
-  constraint foreign key (`group_id`) references `debitor_group` (`id`)
+  primary key (`uuid`),
+  key `group_uuid` (`group_uuid`),
+  constraint foreign key (`group_uuid`) references `debitor_group` (`uuid`)
 ) engine=innodb;
 
 --
@@ -476,7 +476,7 @@ create table `patient` (
   `origin_location_id`        char(16) not null,
   `current_location_id`       char(16) not null,
   `registration_date`         timestamp null default CURRENT_TIMESTAMP,
-  primary key (`id`),
+  primary key (`uuid`),
   key `debitor_uuid` (`debitor_uuid`),
   key `origin_location_id` (`origin_location_id`),
   key `current_location_id` (`current_location_id`),
@@ -491,14 +491,14 @@ create table `patient` (
 --
 drop table if exists `patient_visit`;
 create table `patient_visit` (
-  `id`                    int unsigned not null auto_increment,
-  `patient_id`            int unsigned not null, 
+  `uuid`                  char(16) not null,
+  `patient_uuid`          char(16) not null, 
   `date`                  timestamp not null,
   `registered_by`         smallint unsigned not null,
-  primary key (`id`),
-  key `patient_id` (`patient_id`),
+  primary key (`uuid`),
+  key `patient_uuid` (`patient_uuid`),
   key `registered_by` (`registered_by`),
-  constraint foreign key (`patient_id`) references `patient` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`patient_uuid`) references `patient` (`uuid`) on delete cascade on update cascade,
   constraint foreign key (`registered_by`) references `user` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
@@ -509,14 +509,14 @@ create table `patient_visit` (
 --
 drop table if exists `assignation_patient`;
 create table `assignation_patient` (
-  `id`        smallint unsigned not null auto_increment,
-  `patient_group_id`  mediumint  unsigned not null,
-  `patient_id` int unsigned not null,
-  primary key (`id`),
-  key `patient_group_id` (`patient_group_id`),
-  key `patient_id` (`patient_id`),
-  constraint foreign key (`patient_group_id`) references `patient_group` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`patient_id`) references `patient` (`id`) on delete cascade on update cascade
+  `uuid`                char(16) not null,
+  `patient_group_uuid`  char(16) not null,
+  `patient_uuid`        char(16) not null,
+  primary key (`uuid`),
+  key `patient_group_uuid` (`patient_group_uuid`),
+  key `patient_uuid` (`patient_uuid`),
+  constraint foreign key (`patient_group_uuid`) references `patient_group` (`uuid`) on delete cascade on update cascade,
+  constraint foreign key (`patient_uuid`) references `patient` (`uuid`) on delete cascade on update cascade
 ) engine=innodb;
 
 
@@ -561,14 +561,14 @@ create table `inventory_type` (
 --
 drop table if exists `inventory_group`;
 create table `inventory_group` (
-  `id`              smallint unsigned not null auto_increment,
+  `uuid`            char(16) not null,
   `name`            varchar(100) not null,
   `code`            smallint not null,
   `sales_account`   mediumint unsigned not null,
   `cogs_account`    mediumint unsigned,
   `stock_account`   mediumint unsigned,
   `tax_account`     mediumint unsigned,
-  primary key (`id`)
+  primary key (`uuid`)
   -- key `sales_account` (`sales_account`),
   -- key `cogs_account` (`cogs_account`),
   -- key `stock_account` (`stock_account`),
@@ -585,12 +585,12 @@ create table `inventory_group` (
 drop table if exists `inventory`;
 create table `inventory` (
   `enterprise_id`   smallint unsigned not null,
-  `id`              int unsigned not null auto_increment,
+  `uuid`            char(16) not null,
   `code`            varchar(30) not null,
   `inventory_code`  varchar(30),
   `text`            text,
   `price`           decimal(10,4) unsigned not null default '0.00',
-  `group_id`        smallint unsigned not null,
+  `group_uuid`      char(16) not null,
   `unit_id`         smallint unsigned,
   `unit_weight`     mediumint default '0',
   `unit_volume`     mediumint default '0',
@@ -600,14 +600,14 @@ create table `inventory` (
   `type_id`         tinyint unsigned not null default '0',
   `consumable`      boolean not null default 0,
   `origin_stamp`    timestamp null default CURRENT_TIMESTAMP,
-  primary key (`id`),
+  primary key (`uuid`),
   unique key `code` (`code`),
   key `enterprise_id` (`enterprise_id`),
-  key `group_id` (`group_id`),
+  key `group_uuid` (`group_uuid`),
   key `unit_id` (`unit_id`),
   key `type_id` (`type_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`group_id`) references `inventory_group` (`id`),
+  constraint foreign key (`group_uuid`) references `inventory_group` (`uuid`),
   constraint foreign key (`unit_id`) references `inventory_unit` (`id`),
   constraint foreign key (`type_id`) references `inventory_type` (`id`)
 ) engine=innodb;
@@ -618,7 +618,7 @@ create table `inventory` (
 drop table if exists `sale`;
 create table `sale` (
   `enterprise_id` smallint unsigned not null,
-  `id`            int unsigned not null auto_increment,
+  `uuid`            char(16) not null,
   `cost`          decimal(19,4) unsigned not null,
   `currency_id`   tinyint unsigned not null,
   `debitor_uuid`  char(16) not null,
@@ -627,7 +627,7 @@ create table `sale` (
   `invoice_date`  date not null, -- is this the date of the sale?
   `note`          text,
   `posted`        boolean not null default '0',
-  primary key (`id`),
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `debitor_uuid` (`debitor_uuid`),
   key `currency_id` (`currency_id`),
@@ -642,21 +642,21 @@ create table `sale` (
 drop table if exists `credit_note`;
 create table `credit_note` (
   `enterprise_id` smallint unsigned not null,
-  `id`            int unsigned not null auto_increment,
+  `uuid`            char(16) not null,
   `cost`          decimal(19,4) unsigned not null,
   `debitor_uuid`  char(16) not null,
   `seller_id`     smallint unsigned not null default 0,
-  `sale_id`       int unsigned not null,
+  `sale_uuid`     char(16) not null,
   `note_date`     date not null,
   `description`   text,
   `posted`        boolean not null default 0,
-  primary key (`id`),
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `debitor_uuid` (`debitor_uuid`),
-  key `sale_id` (`sale_id`),
+  key `sale_uuid` (`sale_uuid`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
-  constraint foreign key (`sale_id`) references `sale` (`id`)
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
 
 --
@@ -664,9 +664,9 @@ create table `credit_note` (
 --
 drop table if exists `sale_item`;
 create table `sale_item` (
-  `sale_id`           int unsigned not null,
-  `id`                int unsigned not null auto_increment,
-  `inventory_id`      int unsigned not null,
+  `sale_uuid`         char(16) not null,
+  `uuid`              char(16) not null, 
+  `inventory_uuid`    char(16) not null,
   `quantity`          int unsigned default '0',
   `inventory_price`   decimal(19,4), 
   `transaction_price` decimal(19,4) not null,
@@ -674,11 +674,11 @@ create table `sale_item` (
   `credit`            decimal(19,4) not null default 0,
   -- `unit_price`    decimal(19, 2) unsigned not null,
   -- `total`         decimal(19, 2) unsigned,
-  primary key (`id`),
-  key `sale_id` (`sale_id`),
-  key `inventory_id` (`inventory_id`),
-  constraint foreign key (`sale_id`) references `sale` (`id`) on delete cascade,
-  constraint foreign key (`inventory_id`) references `inventory` (`id`)
+  primary key (`uuid`),
+  key `sale_uuid` (`sale_uuid`),
+  key `inventory_uuid` (`inventory_uuid`),
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
+  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
 --
@@ -686,7 +686,7 @@ create table `sale_item` (
 --
 drop table if exists `purchase`;
 create table `purchase` (
-  `id`                int unsigned not null,
+  `uuid`              char(16) not null,
   `enterprise_id`     smallint unsigned not null,
   `cost`              decimal(19,4) unsigned not null default '0',
   `currency_id`       tinyint unsigned not null,
@@ -696,7 +696,7 @@ create table `purchase` (
   `invoice_date`      date not null,
   `note`              text default null,
   `posted`            boolean not null default 1,
-  primary key (`id`),
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `creditor_id` (`creditor_id`),
   key `purchaser_id` (`purchaser_id`),
@@ -710,18 +710,18 @@ create table `purchase` (
 --
 drop table if exists `inventory_detail`;
 create table `inventory_detail` (
-  `id`              int unsigned not null,
-  `inventory_id`          int unsigned not null,
-  `serial_number`   text,
-  `lot_number`      text,
-  `delivery_date`   date,
-  `po_id`           int unsigned not null,
-  `expiration_date` date,
-  primary key (`id`),
-  key `inventory_id` (`inventory_id`),
-  key `po_id` (`po_id`),
-  constraint foreign key (`inventory_id`) references `inventory` (`id`),
-  constraint foreign key (`po_id`) references `purchase` (`id`)
+  `uuid`              char(16) not null,
+  `inventory_uuid`    char(16) not null,
+  `serial_number`     text,
+  `lot_number`        text,
+  `delivery_date`     date,
+  `po_uuid`           char(16) not null,
+  `expiration_date`   date,
+  primary key (`uuid`),
+  key `inventory_uuid` (`inventory_uuid`),
+  key `po_uuid` (`po_uuid`),
+  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`),
+  constraint foreign key (`po_uuid`) references `purchase` (`uuid`)
 ) engine=innodb;
 
 --
@@ -729,17 +729,17 @@ create table `inventory_detail` (
 --
 drop table if exists `purchase_item`;
 create table `purchase_item` (
-  `purchase_id`   int unsigned not null,
-  `id`            int unsigned not null auto_increment,
-  `inventory_id`  int unsigned not null,
-  `quantity`      int unsigned default '0',
-  `unit_price`    decimal(10,4) unsigned not null,
-  `total`         decimal(10,4) unsigned,
-  primary key (`id`),
-  key `purchase_id` (`purchase_id`),
-  key `inventory_id` (`inventory_id`),
-  constraint foreign key (`purchase_id`) references `purchase` (`id`) on delete cascade,
-  constraint foreign key (`inventory_id`) references `inventory` (`id`)
+  `purchase_uuid`     char(16) not null,
+  `uuid`              char(16) not null,
+  `inventory_uuid`  char(16) not null,
+  `quantity`        int unsigned default '0',
+  `unit_price`      decimal(10,4) unsigned not null,
+  `total`           decimal(10,4) unsigned,
+  primary key (`uuid`),
+  key `purchase_uuid` (`purchase_uuid`),
+  key `inventory_uuid` (`inventory_uuid`),
+  constraint foreign key (`purchase_uuid`) references `purchase` (`uuid`) on delete cascade,
+  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
 --
@@ -758,27 +758,28 @@ create table `transaction_type` (
 --
 drop table if exists `cash`;
 create table `cash` (
-  `id`              int unsigned not null auto_increment,
-  `enterprise_id`   smallint null,
+  `uuid`            char(16) not null,
+  `enterprise_id`   smallint not null,
   `document_id`     int unsigned not null,
   `type`            char(1) not null,
   `date`            date not null,
   `debit_account`   int unsigned not null,
   `credit_account`  int unsigned not null,
-  `deb_cred_id`     int unsigned not null,
+  `deb_cred_uuid`   char(16) not null,
   `deb_cred_type`   varchar(1) not null,
   `currency_id`     tinyint unsigned not null,
   `cost`            decimal(19,4) unsigned not null default 0,
-  `cashier_id`      smallint unsigned not null,
+  `user_id`         smallint unsigned not null,
   `cashbox_id`      smallint unsigned not null,
-  `description`            text,
-  primary key (`id`),
+  `description`     text,
+  primary key (`uuid`),
+  unique key (`document_id`, `type`),
   key `currency_id` (`currency_id`),
-  key `cashier_id` (`cashier_id`),
+  key `user_id` (`user_id`),
   key `debit_account` (`debit_account`),
   key `credit_account` (`credit_account`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
-  constraint foreign key (`cashier_id`) references `user` (`id`),
+  constraint foreign key (`user_id`) references `user` (`id`),
   constraint foreign key (`debit_account`) references `account` (`id`),
   constraint foreign key (`credit_account`) references `account` (`id`)
 ) engine=innodb;
@@ -788,15 +789,15 @@ create table `cash` (
 --
 drop table if exists `cash_item`;
 create table `cash_item` (
-  `id`              int unsigned not null auto_increment,
-  `cash_id`         int unsigned not null,
-  `allocated_cost`  decimal(19,4) unsigned not null default 0.00,
-  `invoice_id`      int unsigned not null,
-  primary key (`id`),
-  key `cash_id` (`cash_id`),
-  key `invoice_id` (`invoice_id`),
-  constraint foreign key (`cash_id`) references `cash` (`id`),
-  constraint foreign key (`invoice_id`) references `sale` (`id`)
+  `uuid`              char(16) not null,
+  `cash_uuid`         char(16) not null,
+  `allocated_cost`    decimal(19,4) unsigned not null default 0.00,
+  `invoice_uuid`      char(16) not null,
+  primary key (`uuid`),
+  key `cash_uuid` (`cash_uuid`),
+  key `invoice_uuid` (`invoice_uuid`),
+  constraint foreign key (`cash_uuid`) references `cash` (`uuid`),
+  constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
 
 -- 
@@ -817,7 +818,7 @@ create table `posting_session` (
 --
 drop table if exists `posting_journal`;
 create table `posting_journal` (
-  `id`                mediumint unsigned not null auto_increment,
+  `uuid`              char(16) not null,
   `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned, -- not null,
   `period_id`         mediumint unsigned, -- not null,
@@ -831,14 +832,14 @@ create table `posting_journal` (
   `debit_equiv`       decimal (19, 4) unsigned not null default 0,
   `credit_equiv`      decimal (19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_id`       varchar(45), -- debitor or creditor id 
+  `deb_cred_uuid`     char(16), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         varchar(45),
   `comment`           text,
   `cost_ctrl_id`      varchar(10),
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
-  primary key (`id`),
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
   key `period_id` (`period_id`),
@@ -856,9 +857,9 @@ create table `posting_journal` (
 --
 -- table `kpk`.`general_ledger`
 --
-drop table if exists `kpk`.`general_ledger`;
-create table `kpk`.`general_ledger` (
-  `id`                mediumint unsigned not null auto_increment,
+drop table if exists `general_ledger`;
+create table `general_ledger` (
+  `uuid`              char(16) not null,
   `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
@@ -872,15 +873,15 @@ create table `kpk`.`general_ledger` (
   `debit_equiv`       decimal(19, 4) unsigned not null default 0,
   `credit_equiv`      decimal(19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_id`       varchar(45), -- debitor or creditor id 
+  `deb_cred_uuid`     char(16), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
-  `inv_po_id`         varchar(45),
+  `inv_po_id`         char(16),
   `comment`           text,
   `cost_ctrl_id`      varchar(10),
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
   `session_id`        int unsigned not null,
-  primary key (`id`),
+  primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
   key `period_id` (`period_id`),
@@ -930,15 +931,15 @@ create table `group_invoice` (
 	uuid            char(16) not null,
   enterprise_id   smallint unsigned not null,
 	debitor_uuid    char(16) not null,
-	group_id        smallint unsigned not null,
+	group_uuid      char(16) not null,
   note            text,
   authorized_by   varchar(80) not null,
 	date            date not null,
   total           decimal(14, 4) not null default 0,
-	primary key (`id`),
+	primary key (`uuid`),
 	key `debitor_uuid` (`debitor_uuid`),
   key `enterprise_id` (`enterprise_id`),
-	key `group_id` (`group_id`),
+	key `group_uuid` (`group_uuid`),
 	constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
 	constraint foreign key (`group_uuid`) references `debitor_group` (`uuid`)
@@ -1011,44 +1012,44 @@ create table `employee` (
   `service_id`          tinyint unsigned not null,
   `location_id`         char(16) not null,
   `creditor_id`         int unsigned not null,
-  `debitor_id`          int unsigned not null,            
+  `debitor_uuid`        char(16) not null,            
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
   key `service_id`  (`service_id`),
   key `location_id` (`location_id`),
   key `creditor_id` (`creditor_id`),
-  key `debitor_id`  (`debitor_id`),
+  key `debitor_uuid`  (`debitor_uuid`),
   constraint foreign key (`fonction_id`) references `fonction` (`id`),
   constraint foreign key (`service_id`) references `service` (`id`),
   constraint foreign key (`location_id`) references `village` (`uuid`),
   constraint foreign key (`creditor_id`) references `creditor` (`id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`)
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `inventory_log`;
 create table `inventory_log` (
-  `id`                  int unsigned not null auto_increment,
-  `inventory_id`        int unsigned not null,
+  `uuid`                char(16) not null,
+  `inventory_uuid`      char(16) not null,
   `log_timestamp`       timestamp null default CURRENT_TIMESTAMP,
   `price`               decimal(19,4) unsigned not null,
   `code`                varchar(30) not null,
   `description`         text,
-  primary key (`id`),
-  key `inventory_id` (`inventory_id`),
-  constraint foreign key (`inventory_id`) references `inventory` (`id`)
+  primary key (`uuid`),
+  key `inventory_uuid` (`inventory_uuid`),
+  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 -- 
 -- Table structure for table `kpk`.`debitor_group_history`
 --
 drop table if exists `debitor_group_history`;
 create table `debitor_group_history` (
-`uuid`                  int unsigned not null auto_increment,
+`uuid`                  char(16) not null,
 `debitor_uuid`          char(16) not null,
-`debitor_group_uuid`  char(16) not null,
-`income_date`         timestamp not null,
-`user_id`             smallint unsigned not null,
+`debitor_group_uuid`    char(16) not null,
+`income_date`           timestamp not null,
+`user_id`               smallint unsigned not null,
 primary key (`uuid`),
-key `debitor_id` (`debitor_uuid`),
+key `debitor_uuid` (`debitor_uuid`),
 key `debitor_group_uuid` (`debitor_group_uuid`),
 key `user_id` (`user_id`),
 constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
