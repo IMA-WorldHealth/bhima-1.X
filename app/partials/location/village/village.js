@@ -5,17 +5,19 @@ angular.module('kpk.controllers')
   'connect',
   'messenger',
   'validate',
-  function ($scope, $q, connect, messenger, validate) {
+  'uuid',
+  function ($scope, $q, connect, messenger, validate, uuid) {
     var dependencies = {},
         flags = $scope.flags = {};
 
     $scope.model = {};
     //dependencies
     dependencies.sector = {
+      identifier : 'uuid',
       query :  {
         tables: {
           'sector' : {
-            columns : ['id', 'name', 'province_id']
+            columns : ['uuid', 'name', 'province_uuid']
           }
         }
       }
@@ -25,9 +27,6 @@ angular.module('kpk.controllers')
       query :  'village/'
     };
 
-
-    //fonction
-   
     function manageVillage(model){
       for (var k in model) { $scope.model[k] = model[k]; }
     }
@@ -38,15 +37,16 @@ angular.module('kpk.controllers')
     }
 
     function addVillage(obj){
-      var  newObject = {};
-      newObject.name = obj.name;
-      newObject.sector_id = obj.sector_id;
-      connect.basicPut('village', [connect.clean(newObject)])
+
+      var v = {
+        uuid : uuid(),
+        name : obj.name,
+        sector_uuid : obj.sector_uuid,
+      };
+
+      connect.basicPut('village', [v])
       .then(function (res) {
-        newObject.id = res.data.insertId;
-        newObject.village = obj.name;
-        newObject.sector = $scope.model.sector.get(obj.sector_id).name;
-        $scope.model.village.post(newObject);
+        $scope.model.village.post(v);
       });
     }
 
