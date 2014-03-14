@@ -3,7 +3,7 @@ create database `kpk`;
 use `kpk`;
 
 grant all on `kpk`.* to 'kpk'@'%' identified by 'HISCongo2013';
-grant super on `kpk`.* to 'kpk';
+grant super on *.* to 'kpk'@'%';
 flush privileges;
 
 --
@@ -89,7 +89,7 @@ create table `permission` (
 --
 drop table if exists `country`;
 create table `country` (
-  `uuid`        char(16) not null,
+  `uuid`        char(36) not null,
   `code`        smallint unsigned not null,
   `country_en`  varchar(45) not null,
   `country_fr`  varchar(45) not null,
@@ -102,9 +102,9 @@ create table `country` (
 -- 
 drop table if exists `province`;
 create table `province` (
-  `uuid`       char(16) not null,
+  `uuid`       char(36) not null,
   `name`       text,
-  `country_uuid` char(16) not null,
+  `country_uuid` char(36) not null,
   primary key (`uuid`),
   key `country_uuid` (`country_uuid`),
   constraint foreign key (`country_uuid`) references `country` (`uuid`)
@@ -115,9 +115,9 @@ create table `province` (
 --
 drop table if exists `sector`;
 create table `sector` (
-  `uuid`        char(16) not null,
+  `uuid`        char(36) not null,
   `name`        text,
-  `province_uuid` char(16) not null,
+  `province_uuid` char(36) not null,
   primary key (`uuid`),
   key `province_id` (`province_uuid`),
   constraint foreign key (`province_uuid`) references `province` (`uuid`)
@@ -128,9 +128,9 @@ create table `sector` (
 --
 drop table if exists `village`;
 create table `village` (
-  `uuid`        char(16) not null,
+  `uuid`        char(36) not null,
   `name`        text,
-  `sector_uuid` char(16) not null,
+  `sector_uuid` char(36) not null,
   primary key (`uuid`),
   key `sector_id` (`sector_uuid`),
   constraint foreign key (`sector_uuid`) references `sector` (`uuid`)
@@ -146,7 +146,7 @@ create table `enterprise` (
   `abbr`                varchar(50),
   `phone`               varchar(20),
   `email`               varchar(70),
-  `location_id`         char(16) not null,
+  `location_id`         char(36) not null,
   `logo`                varchar(70),
   `currency_id`         tinyint unsigned not null,
   primary key (`id`),
@@ -319,7 +319,7 @@ create table `currency_account` (
 drop table if exists `price_list`;
 create table `price_list` (
   enterprise_id   smallint unsigned not null,
-  uuid            char(16) not null,
+  uuid            char(36) not null,
   title           text,
   description     text,
   primary key (`uuid`),
@@ -333,13 +333,13 @@ create table `price_list` (
 --
 drop table if exists `price_list_item`;
 create table `price_list_item` (
-  `uuid`            char(16) not null,
+  `uuid`            char(36) not null,
   `item_order`      int unsigned not null,
   `description`     text,
   `value`           float not null,
   `is_discount`     boolean not null default 0,
   `is_global`       boolean not null default 0, -- TODO names should better describe values
-  `price_list_uuid` char(16) not null,
+  `price_list_uuid` char(36) not null,
   primary key (`uuid`),
   -- unique index (`item_order`, `price_list_uuid`),
   key `price_list_uuid` (`price_list_uuid`),
@@ -365,10 +365,10 @@ create table `price_list_item` (
 drop table if exists `debitor_group`;
 create table `debitor_group` (
   `enterprise_id`       smallint unsigned not null,
-  `uuid`                char(16) not null,
+  `uuid`                char(36) not null,
   `name`                varchar(100) not null,
   `account_id`          int unsigned not null,
-  `location_id`         char(16) not null,
+  `location_id`         char(36) not null,
   `payment_id`          tinyint unsigned not null default '3',
   `phone`               varchar(10) default '',
   `email`               varchar(30) default '',
@@ -378,7 +378,7 @@ create table `debitor_group` (
   `max_credit`          mediumint unsigned default '0',
   -- `type_id`             smallint unsigned,
   `is_convention`        boolean not null default 0,
-  `price_list_uuid`      char(16) null,
+  `price_list_uuid`      char(36) null,
   primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `account_id` (`account_id`),
@@ -400,8 +400,8 @@ create table `debitor_group` (
 drop table if exists `patient_group`;
 create table `patient_group` (
   enterprise_id     smallint unsigned not null,
-  uuid              char(16) not null,
-  price_list_uuid   char(16) not null,
+  uuid              char(36) not null,
+  price_list_uuid   char(36) not null,
   name              varchar(60) not null,
   note              text,
   primary key (`uuid`),
@@ -416,8 +416,8 @@ create table `patient_group` (
 --
 drop table if exists `debitor`;
 create table `debitor` (
-  `uuid`          char(16) not null,
-  `group_uuid`    char(16) not null,
+  `uuid`          char(36) not null,
+  `group_uuid`    char(36) not null,
   `text`      text,
   primary key (`uuid`),
   key `group_uuid` (`group_uuid`),
@@ -434,7 +434,7 @@ create table `supplier` (
   `name`          varchar(45) not null,
   `address_1`     text,
   `address_2`     text,
-  `location_id`   char(16) not null,
+  `location_id`   char(36) not null,
   `email`         varchar(45),
   `fax`           varchar(45),
   `note`          varchar(50),
@@ -453,8 +453,8 @@ create table `supplier` (
 --
 drop table if exists `patient`;
 create table `patient` (
-  `uuid`                char(16) not null,
-  `debitor_uuid`      char(16) not null,
+  `uuid`                char(36) not null,
+  `debitor_uuid`      char(36) not null,
   `creditor_id`       int unsigned,
   `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
@@ -474,8 +474,8 @@ create table `patient` (
   `addr_1`            varchar(100),
   `addr_2`            varchar(100),
   `renewal`           boolean not null default 0,
-  `origin_location_id`        char(16) not null,
-  `current_location_id`       char(16) not null,
+  `origin_location_id`        char(36) not null,
+  `current_location_id`       char(36) not null,
   `registration_date`         timestamp null default CURRENT_TIMESTAMP,
   primary key (`uuid`),
   key `debitor_uuid` (`debitor_uuid`),
@@ -492,8 +492,8 @@ create table `patient` (
 --
 drop table if exists `patient_visit`;
 create table `patient_visit` (
-  `uuid`                  char(16) not null,
-  `patient_uuid`          char(16) not null, 
+  `uuid`                  char(36) not null,
+  `patient_uuid`          char(36) not null, 
   `date`                  timestamp not null,
   `registered_by`         smallint unsigned not null,
   primary key (`uuid`),
@@ -510,9 +510,9 @@ create table `patient_visit` (
 --
 drop table if exists `assignation_patient`;
 create table `assignation_patient` (
-  `uuid`                char(16) not null,
-  `patient_group_uuid`  char(16) not null,
-  `patient_uuid`        char(16) not null,
+  `uuid`                char(36) not null,
+  `patient_group_uuid`  char(36) not null,
+  `patient_uuid`        char(36) not null,
   primary key (`uuid`),
   key `patient_group_uuid` (`patient_group_uuid`),
   key `patient_uuid` (`patient_uuid`),
@@ -562,7 +562,7 @@ create table `inventory_type` (
 --
 drop table if exists `inventory_group`;
 create table `inventory_group` (
-  `uuid`            char(16) not null,
+  `uuid`            char(36) not null,
   `name`            varchar(100) not null,
   `code`            smallint not null,
   `sales_account`   mediumint unsigned not null,
@@ -586,12 +586,12 @@ create table `inventory_group` (
 drop table if exists `inventory`;
 create table `inventory` (
   `enterprise_id`   smallint unsigned not null,
-  `uuid`            char(16) not null,
+  `uuid`            char(36) not null,
   `code`            varchar(30) not null,
   `inventory_code`  varchar(30),
   `text`            text,
   `price`           decimal(10,4) unsigned not null default '0.00',
-  `group_uuid`      char(16) not null,
+  `group_uuid`      char(36) not null,
   `unit_id`         smallint unsigned,
   `unit_weight`     mediumint default '0',
   `unit_volume`     mediumint default '0',
@@ -619,10 +619,10 @@ create table `inventory` (
 drop table if exists `sale`;
 create table `sale` (
   `enterprise_id` smallint unsigned not null,
-  `uuid`          char(16) not null,
+  `uuid`          char(36) not null,
   `cost`          decimal(19,4) unsigned not null,
   `currency_id`   tinyint unsigned not null,
-  `debitor_uuid`  char(16) not null,
+  `debitor_uuid`  char(36) not null,
   `seller_id`     smallint unsigned not null default 0,
   `discount`      mediumint unsigned default '0',
   `invoice_date`  date not null, -- is this the date of the sale?
@@ -643,11 +643,11 @@ create table `sale` (
 drop table if exists `credit_note`;
 create table `credit_note` (
   `enterprise_id` smallint unsigned not null,
-  `uuid`            char(16) not null,
+  `uuid`            char(36) not null,
   `cost`          decimal(19,4) unsigned not null,
-  `debitor_uuid`  char(16) not null,
+  `debitor_uuid`  char(36) not null,
   `seller_id`     smallint unsigned not null default 0,
-  `sale_uuid`     char(16) not null,
+  `sale_uuid`     char(36) not null,
   `note_date`     date not null,
   `description`   text,
   `posted`        boolean not null default 0,
@@ -665,9 +665,9 @@ create table `credit_note` (
 --
 drop table if exists `sale_item`;
 create table `sale_item` (
-  `sale_uuid`         char(16) not null,
-  `uuid`              char(16) not null, 
-  `inventory_uuid`    char(16) not null,
+  `sale_uuid`         char(36) not null,
+  `uuid`              char(36) not null, 
+  `inventory_uuid`    char(36) not null,
   `quantity`          int unsigned default '0',
   `inventory_price`   decimal(19,4), 
   `transaction_price` decimal(19,4) not null,
@@ -687,7 +687,7 @@ create table `sale_item` (
 --
 drop table if exists `purchase`;
 create table `purchase` (
-  `uuid`              char(16) not null,
+  `uuid`              char(36) not null,
   `enterprise_id`     smallint unsigned not null,
   `cost`              decimal(19,4) unsigned not null default '0',
   `currency_id`       tinyint unsigned not null,
@@ -711,12 +711,12 @@ create table `purchase` (
 --
 drop table if exists `inventory_detail`;
 create table `inventory_detail` (
-  `uuid`              char(16) not null,
-  `inventory_uuid`    char(16) not null,
+  `uuid`              char(36) not null,
+  `inventory_uuid`    char(36) not null,
   `serial_number`     text,
   `lot_number`        text,
   `delivery_date`     date,
-  `po_uuid`           char(16) not null,
+  `po_uuid`           char(36) not null,
   `expiration_date`   date,
   primary key (`uuid`),
   key `inventory_uuid` (`inventory_uuid`),
@@ -730,9 +730,9 @@ create table `inventory_detail` (
 --
 drop table if exists `purchase_item`;
 create table `purchase_item` (
-  `purchase_uuid`     char(16) not null,
-  `uuid`              char(16) not null,
-  `inventory_uuid`  char(16) not null,
+  `purchase_uuid`     char(36) not null,
+  `uuid`              char(36) not null,
+  `inventory_uuid`  char(36) not null,
   `quantity`        int unsigned default '0',
   `unit_price`      decimal(10,4) unsigned not null,
   `total`           decimal(10,4) unsigned,
@@ -759,14 +759,14 @@ create table `transaction_type` (
 --
 drop table if exists `cash`;
 create table `cash` (
-  `uuid`            char(16) not null,
+  `uuid`            char(36) not null,
   `enterprise_id`   smallint not null,
   `document_id`     int unsigned not null,
   `type`            char(1) not null,
   `date`            date not null,
   `debit_account`   int unsigned not null,
   `credit_account`  int unsigned not null,
-  `deb_cred_uuid`   char(16) not null,
+  `deb_cred_uuid`   char(36) not null,
   `deb_cred_type`   varchar(1) not null,
   `currency_id`     tinyint unsigned not null,
   `cost`            decimal(19,4) unsigned not null default 0,
@@ -790,10 +790,10 @@ create table `cash` (
 --
 drop table if exists `cash_item`;
 create table `cash_item` (
-  `uuid`              char(16) not null,
-  `cash_uuid`         char(16) not null,
+  `uuid`              char(36) not null,
+  `cash_uuid`         char(36) not null,
   `allocated_cost`    decimal(19,4) unsigned not null default 0.00,
-  `invoice_uuid`      char(16) not null,
+  `invoice_uuid`      char(36) not null,
   primary key (`uuid`),
   key `cash_uuid` (`cash_uuid`),
   key `invoice_uuid` (`invoice_uuid`),
@@ -819,7 +819,7 @@ create table `posting_session` (
 --
 drop table if exists `posting_journal`;
 create table `posting_journal` (
-  `uuid`              char(16) not null,
+  `uuid`              char(36) not null,
   `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned, -- not null,
   `period_id`         mediumint unsigned, -- not null,
@@ -833,7 +833,7 @@ create table `posting_journal` (
   `debit_equiv`       decimal (19, 4) unsigned not null default 0,
   `credit_equiv`      decimal (19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_uuid`     char(16), -- debitor or creditor id 
+  `deb_cred_uuid`     char(36), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         varchar(45),
   `comment`           text,
@@ -860,7 +860,7 @@ create table `posting_journal` (
 --
 drop table if exists `general_ledger`;
 create table `general_ledger` (
-  `uuid`              char(16) not null,
+  `uuid`              char(36) not null,
   `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
@@ -874,9 +874,9 @@ create table `general_ledger` (
   `debit_equiv`       decimal(19, 4) unsigned not null default 0,
   `credit_equiv`      decimal(19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_uuid`     char(16), -- debitor or creditor id 
+  `deb_cred_uuid`     char(36), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
-  `inv_po_id`         char(16),
+  `inv_po_id`         char(36),
   `comment`           text,
   `cost_ctrl_id`      varchar(10),
   `origin_id`         tinyint unsigned not null,
@@ -929,10 +929,10 @@ create table `kpk`.`period_total` (
 --
 drop table if exists `group_invoice`;
 create table `group_invoice` (
-	uuid            char(16) not null,
+	uuid            char(36) not null,
   enterprise_id   smallint unsigned not null,
-	debitor_uuid    char(16) not null,
-	group_uuid      char(16) not null,
+	debitor_uuid    char(36) not null,
+	group_uuid      char(36) not null,
   note            text,
   authorized_by   varchar(80) not null,
 	date            date not null,
@@ -951,9 +951,9 @@ create table `group_invoice` (
 --
 drop table if exists `group_invoice_item`;
 create table `group_invoice_item` (
-  uuid              char(16) not null,
-  payment_uuid        char(16) not null,
-  invoice_uuid        char(16) not null,
+  uuid              char(36) not null,
+  payment_uuid        char(36) not null,
+  invoice_uuid        char(36) not null,
   cost              decimal(16, 4) unsigned not null,
   primary key (`uuid`),
   key `payment_uuid` (`payment_uuid`),
@@ -1011,9 +1011,9 @@ create table `employee` (
   `email`               varchar(70),
   `fonction_id`         tinyint unsigned not null,
   `service_id`          tinyint unsigned not null,
-  `location_id`         char(16) not null,
+  `location_id`         char(36) not null,
   `creditor_id`         int unsigned not null,
-  `debitor_uuid`        char(16) not null,            
+  `debitor_uuid`        char(36) not null,            
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
   key `service_id`  (`service_id`),
@@ -1029,8 +1029,8 @@ create table `employee` (
 
 drop table if exists `inventory_log`;
 create table `inventory_log` (
-  `uuid`                char(16) not null,
-  `inventory_uuid`      char(16) not null,
+  `uuid`                char(36) not null,
+  `inventory_uuid`      char(36) not null,
   `log_timestamp`       timestamp null default CURRENT_TIMESTAMP,
   `price`               decimal(19,4) unsigned not null,
   `code`                varchar(30) not null,
@@ -1044,9 +1044,9 @@ create table `inventory_log` (
 --
 drop table if exists `debitor_group_history`;
 create table `debitor_group_history` (
-`uuid`                  char(16) not null,
-`debitor_uuid`          char(16) not null,
-`debitor_group_uuid`    char(16) not null,
+`uuid`                  char(36) not null,
+`debitor_uuid`          char(36) not null,
+`debitor_group_uuid`    char(36) not null,
 `income_date`           timestamp not null,
 `user_id`               smallint unsigned not null,
 primary key (`uuid`),
