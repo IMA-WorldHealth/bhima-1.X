@@ -1,15 +1,15 @@
 <header>
-<span class="capitalize"> {{ 'VILLAGE.TITLE' | translate }}</span>
-  </header>
+  {{ 'VILLAGE.TITLE' | translate }}
+</header>
 
-  <section class="top-nav">
+<section class="top-nav">
     <div class="pull-right">
-        <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'VILLAGE.LOCATION_MANAGER' | translate}}</span></a>
+      <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'VILLAGE.LOCATION_MANAGER' | translate}}</span></a>
     </div>
     <div class="pull-left">
       <button class="btn btn-default btn-sm" ng-click="setOp('Add')">{{'VILLAGE.NEW_VILLAGE' | translate}}</button>
     </div>
-  </section>
+</section>
 
 <article class="content">
   <div class="row">
@@ -67,8 +67,8 @@
                       class="form-kapok"
                       name="sectorname"
                       id="sectorID"
-                      ng-model="add.sector_id"
-                      ng-options="sec.id as sec.name for sec in model.sector.data"
+                      ng-model="add.sector_uuid"
+                      ng-options="sec.uuid as sec.name for sec in model.sector.data"
                     >
                       <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                     </select>
@@ -101,8 +101,8 @@
                       class="form-kapok"
                       name="sectorname"
                       id="sectorID"
-                      ng-model="village.sector_id"
-                      ng-options="sec.id as sec.name for sec in model.sector.data"
+                      ng-model="village.sector_uuid"
+                      ng-options="sec.uuid as sec.name for sec in model.sector.data"
                     >
                       <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                     </select>

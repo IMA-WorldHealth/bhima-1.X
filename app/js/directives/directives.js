@@ -193,7 +193,7 @@
                 selectedNode.collapsed = !selectedNode.collapsed;
              
                 //update store
-                cache.put(selectedNode.id_unit, {collapsed: selectedNode.collapsed});
+                cache.put(selectedNode.unit_id, {collapsed: selectedNode.collapsed});
               };
               scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
                 if (scope[treeId].currentNode && scope[treeId].currentNode.selected) {
