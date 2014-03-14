@@ -142,7 +142,8 @@ angular.module('kpk.controllers')
       .then(function (res) {
         var id = res.data.insertId;
         var items = formatItems(id);
-        connect.basicPut('group_invoice_item', [items])
+        console.log('items', items);
+        connect.basicPut('group_invoice_item', items)
         .then(function (res) {
           $scope.action = '';
           $scope.paying = [];
@@ -167,9 +168,9 @@ angular.module('kpk.controllers')
         item.payment_id = id;
         items.push(item);
       });
-     
+
       return items;
-     
+
     }
 
     $scope.filter = function (invoice) {
