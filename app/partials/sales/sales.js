@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, appcache) {
+angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, appcache, uuid) {
  
   //FIXME Global vs. item based prices are a hack
   //TODO Pass default debtor and inventory parameters to sale modules
@@ -86,7 +86,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function buildInvoice(selectedDebtor) {
     invoice = {
       debtor : selectedDebtor,
-      id : createId($scope.model.sale.data.max),
+      uuid : uuid(),
       date : getDate(),
       items: []
     };
@@ -154,7 +154,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     invoiceItem.inventoryReference = inventoryReference;
  
     //Remove ability to selec the option again
-    $scope.model.inventory.remove(inventoryReference.id);
+    $scope.model.inventory.remove(inventoryReference.uuid);
     $scope.model.inventory.recalculateIndex();
 
     updateSessionRecover();
@@ -185,7 +185,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       enterprise_id : appstate.get('enterprise').id,
       cost : calculateTotal(),
       currency_id : appstate.get('enterprise').currency_id,
-      debitor_id : invoice.debtor.debitor_id,
+      debitor_uuid : invoice.debtor.debitor_uuid,
       invoice_date : invoice.date,
       note : invoice.note
     };
@@ -202,7 +202,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     invoice.items.forEach(function(saleItem) {
       var formatSaleItem;
       formatSaleItem = {
-        inventory_id : saleItem.inventoryId,
+        inventory_uuid : saleItem.inventoryId,
         quantity : saleItem.quantity,
         inventory_price : saleItem.inventoryReference.price,
         transaction_price : saleItem.price,
@@ -295,7 +295,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
  
   function formatNote(invoice) {
     var noteDebtor = invoice.debtor || "";
-    return "PI/" + invoice.id + "/" + invoice.date + "/" + noteDebtor.name;
+    return "PI/" + invoice.uuid + "/" + invoice.date + "/" + noteDebtor.name;
   }
 
   //TODO Refactor code
@@ -354,7 +354,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
       // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
       self.price = Number(inventoryReference.price.toFixed(4));
-      self.inventoryId = inventoryReference.id;
+      self.inventoryId = inventoryReference.uuid;
       self.note = "";
      
 
