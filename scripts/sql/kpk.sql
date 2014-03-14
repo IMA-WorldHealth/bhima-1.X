@@ -157,6 +157,34 @@ create table `enterprise` (
 ) engine=innodb;
 
 --
+-- Table structure for table `kpk`.`project`
+--
+drop table if exists `project`;
+create table `project` (
+  `id`              smallint unsigned not null auto_increment,
+  `name`            text,
+  `abbr`            char(3),
+  `enterprise_id`   smallint unsigned not null,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for `kpk`.`project_permission`
+--
+drop table if exists `project_permission`;
+create table `project_permission` (
+  `id`            smallint unsigned not null auto_increment,
+  `user_id`       smallint unsigned not null,
+  `project_id`    smallint unsigned not null,
+  primary key (`id`),
+  key `user_id` (`user_id`),
+  key `project_id` (`project_id`),
+  constraint foreign key (`project_id`) references `project` (`id`)
+) engine=innodb;
+
+--
 -- Table structure for table `kpk`.`fiscal_year`
 --
 drop table if exists `fiscal_year`;

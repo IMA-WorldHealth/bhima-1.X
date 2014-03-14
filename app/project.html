@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Project Selection</title>
+  <link rel="stylesheet" href="css/kapok.min.css">
+  <script src="lib/jquery-1.10.2.js"></script>
+  <script>
+    $(document).ready(function () {
+      // this is to load in all the respective projects of the user
+
+      var template =
+        "<li class='list-item'>" +
+        "  <div class='img-display'>"+
+        "    <span class='glyphicon glyphicon-home'></span>" +
+        "  </div>"+
+        "  <div class='txt-display'>" +
+        "    <span>%value%</span>" +
+        "  </div>" +
+        "</li>";
+
+      var fail_template =
+        "<div class='alert alert-danger'>" +
+        "  <h3>No projects have been assigned to your user!  Please see an administrator.</h3>" +
+        "</div>";
+
+      $.ajax('/project')
+      .done(function (data) {
+        var item, elem = $("#projects");
+
+        if (data.length < 1) {
+          elem.append(fail_template);
+        }
+
+        $.each(data, function( index, value) {
+          item = $(template.replace('%value%', value.name));
+          item .click('click', function (e) {
+            $.ajax('/project' + '?id=' + value.id)
+            .done(function (res) {
+              // redirect
+              window.location.replace('/');
+            })
+            .fail(function () {
+              alert('An error occured.  Please try again.')
+            });
+          });
+          elem.append(item);
+        });
+
+      })
+      .fail(function (err) {
+        alert('An error occured. Please refresh the page.');
+      });
+    });
+  </script>
+    
+  <style>
+
+    .field {
+      box-sizing: border-box;
+      margin: 0 auto;
+      margin-top: 20%;
+      padding: 30px;
+      background-color: white;
+      border: 1px solid rgba(164, 154, 154, 0.5);
+    }
+
+    .img-display {
+      float: left;
+      padding-right: 5px;
+    }
+
+    .list-item {
+      list-style: none;
+      padding: 8px;
+      cursor: pointer;
+      transition: padding 0.25s linear; 
+    }
+
+    .list-item:hover {
+      padding-left: 20px;
+    }
+
+  </style>
+</head>
+<body style="background: #F3F3F3;">
+  <div class="container">
+    <div class="field">
+      <h3>Select a Project</h3>
+      <ul id="projects"></ul>
+    </div>
+  </div>
+</body>
+</html>
