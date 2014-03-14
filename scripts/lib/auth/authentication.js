@@ -47,7 +47,7 @@ module.exports = function (db) {
       }
       */
     
-      id = sanitize.escape(user.uuid);
+      id = sanitize.escape(user.id);
       sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=' + id;
       
 
@@ -56,9 +56,9 @@ module.exports = function (db) {
        
         sql = 'SELECT `unit`.`url` ' +
               'FROM `unit`, `permission`, `user` WHERE ' +
-                '`permission`.`user_uuid` = `user`.`uuid` AND ' +
+                '`permission`.`user_id` = `user`.`id` AND ' +
                 '`permission`.`unit_id` = `unit`.`id` AND ' +
-                '`user`.`uuid`=' + id;
+                '`user`.`id`=' + id;
 
         db.execute(sql, function (err, results) {
           if (err) { return next(err); }
@@ -66,7 +66,7 @@ module.exports = function (db) {
             return next(new Error('This user has no permissions, please contact your System Administrator.'));
           }
           req.session.authenticated = true;
-          req.session.user_id = user.uuid;
+          req.session.user_id = user.id;
 
           req.session.paths = results.map(function (row) {
             return row.url;
@@ -102,7 +102,7 @@ module.exports = function (db) {
 
     sql =
       'UPDATE `user` SET `user`.`logged_in`=0' +
-      ' WHERE `user`.`uuid`=' + sanitize.escape(req.session.user_id);
+      ' WHERE `user`.`id`=' + sanitize.escape(req.session.user_id);
 
     db.execute(sql, function (err, result) {
       if (err) { return next(err); }

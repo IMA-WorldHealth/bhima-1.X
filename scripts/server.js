@@ -36,9 +36,11 @@ app.configure(function () {
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
   app.use(express.session(cfg.session));
+  app.use('/css', express.static('app/css', {maxAge:10000}));
+  app.use('/lib', express.static('app/lib', {maxAge:10000}));
   app.use(authenticate);
-  app.use(projects);
   app.use(authorize);
+  app.use(projects);
   app.use(express.static(cfg.static, {maxAge : 10000}));
   app.use(app.router);
   app.use(errorHandler);

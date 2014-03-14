@@ -37,6 +37,7 @@
       "/province",
       "/sector",
       "/village",
+      "/project",
       "/max",
       "/account_balance",
       "/ledger",
