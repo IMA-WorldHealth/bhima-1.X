@@ -6,12 +6,14 @@ angular.module('kpk.controllers')
   'appstate',
   'messenger',
   'validate',
-  function ($scope, $q, connect, appstate, messenger, validate) {
+  'uuid',
+  function ($scope, $q, connect, appstate, messenger, validate, uuid) {
     var dependencies = {};
     $scope.data = {};
 
     dependencies.debitor_group = {
       query : {
+        identifier : 'uuid',
         tables : {
           'debitor_group' : {
             columns : ['uuid', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'is_convention', 'price_list_uuid']
@@ -122,6 +124,7 @@ angular.module('kpk.controllers')
 
     $scope.submitNew = function () {
       $scope.newGroup.enterprise_id = $scope.enterprise.id;
+      $scope.newGroup.uuid = uuid();
       var data = connect.clean($scope.newGroup);
       connect.basicPut('debitor_group', [data])
       .success(function (res) {
@@ -139,7 +142,10 @@ angular.module('kpk.controllers')
     };
 
     $scope.submitEdit =  function () {
+      console.log('editGroup', $scope.editGroup);
       var data = connect.clean($scope.editGroup);
+
+      console.log('data', data);
       connect.basicPost('debitor_group', [data], ['uuid'])
       .success(function (res) {
         $scope.debitor_group.put(data);
