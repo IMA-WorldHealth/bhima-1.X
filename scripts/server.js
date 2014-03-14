@@ -31,6 +31,8 @@ var report       = require('./lib/logic/report')(db),
     createSale   = require('./lib/logic/createSale')(db, parser, journal),
     rt           = require('./lib/logic/rt')(db);
 
+var uuid         = require('./lib/util/guid');
+
 app.configure(function () {
   app.use(express.compress());
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
@@ -266,7 +268,7 @@ app.get('/tree', function (req, res, next) {
 });
 
 app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
+  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\"' + req.params.villageId + '\"' : '';
 
   var sql =
     'SELECT `village`.`uuid` as `uuid`,  `village`.`name` as `village`, ' +
@@ -334,8 +336,8 @@ app.get('/debitorAgingPeriod', function (req, res, next){
 app.get('/visit/:patient_id', function (req, res, next) {
   var patient_id = req.params.patient_id;
   var sql =
-    "INSERT INTO `patient_visit` (`patient_id`, `registered_by`) VALUES " +
-    "(" + [patient_id, req.session.user_id].join(', ') + ");";
+    "INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES " +
+    "(\"" + uuid() + "\"," + [patient_id, req.session.user_id].join(', ') + ");";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send();

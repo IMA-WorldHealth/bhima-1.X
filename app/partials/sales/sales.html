@@ -1,5 +1,4 @@
-<header>
-  <span>{{ "SALE.TITLE" | translate}}</span>
+<header> <span>{{ "SALE.TITLE" | translate}}</span>
 </header>
 
 <section class="top-nav underline">
@@ -148,7 +147,7 @@
 
 <script type="text/ng-template" id="debtorListItem.html">
   <a>
-    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span><b>[{{match.model.debitor_uuid}}]</b></span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
   </a>
 </script>

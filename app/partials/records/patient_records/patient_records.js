@@ -6,7 +6,10 @@ angular.module('kpk.controllers').controller('patientRecords', [
     var dependencies = {}, patient = ($routeParams.patientID || -1);
 
     dependencies.patient = {
-      query : { 'tables' : { 'patient' : { 'columns' : ['id', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'current_location_id', 'debitor_id', 'registration_date'] }}},
+      query : { 
+        identifier : 'uuid',
+        'tables' : { 'patient' : { 'columns' : ['uuid', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'current_location_id', 'debitor_uuid', 'registration_date'] }}
+      },
     };
 
     // validate.process(dependencies).then(patientRecords);

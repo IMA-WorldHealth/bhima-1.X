@@ -9,7 +9,8 @@ angular.module('kpk.controllers')
   'validate',
   'appstate',
   'kpkUtilitaire',
-  function($scope, $q, $location, $translate, connect, messenger, validate, appstate, util) {
+  'uuid',
+  function($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
 
     var dependencies = {},
         defaultBirthMonth = '06-01';
@@ -19,23 +20,38 @@ angular.module('kpk.controllers')
     $scope.patient = {};
  
     dependencies.debtorGroup = {
-      query : { tables : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
+      query : { 
+        identifier : 'uuid',
+        tables : {'debitor_group' : {'columns' : ['uuid', 'name', 'note']}}
+      }
     };
 
     dependencies.village = {
-      query : { tables : { 'village' : { 'columns' : ['id', 'name', 'sector_id'] }}}
+      query : { 
+        identifier : 'uuid',
+        tables : { 'village' : { 'columns' : ['uuid', 'name', 'sector_uuid'] }}
+      }
     };
 
     dependencies.sector = {
-      query : { tables : { 'sector' : { 'columns' : ['id', 'name', 'province_id'] }}}
+      query : { 
+        identifier : 'uuid', 
+        tables : { 'sector' : { 'columns' : ['uuid', 'name', 'province_uuid'] }}
+      }
     };
 
     dependencies.province = {
-      query : { tables : { 'province' : { 'columns' : ['id', 'name', 'country_id'] }}}
+      query : { 
+        identifier : 'uuid',
+        tables : { 'province' : { 'columns' : ['uuid', 'name', 'country_uuid'] }}
+      }
     };
 
     dependencies.country = {
-      query : { tables : { 'country' : { 'columns' : ['id', 'country_en', 'country_fr'] }}}
+      query : { 
+        identifier : 'uuid',
+        tables : { 'country' : { 'columns' : ['uuid', 'country_en', 'country_fr'] }}
+      }
     };
 
     dependencies.register = {
@@ -56,9 +72,9 @@ angular.module('kpk.controllers')
       ['origin', 'current']
       .forEach(function (param) {
         $scope[param].village = $scope.village.get($scope.enterprise.location_id);
-        $scope[param].sector = $scope.sector.get($scope[param].village.sector_id);
-        $scope[param].province = $scope.province.get($scope[param].sector.province_id);
-        $scope[param].country = $scope.country.get($scope[param].province.country_id);
+        $scope[param].sector = $scope.sector.get($scope[param].village.sector_uuid);
+        $scope[param].province = $scope.province.get($scope[param].sector.province_uuid);
+        $scope[param].country = $scope.country.get($scope[param].province.country_uuid);
       });
 
     }
@@ -119,22 +135,22 @@ angular.module('kpk.controllers')
       defer.promise.then(function () {
         var patient = $scope.patient;
 
-        patient.current_location_id = $scope.current.village.id;
-        patient.origin_location_id = $scope.origin.village.id;
+        patient.current_location_id = $scope.current.village.uuid;
+        patient.origin_location_id = $scope.origin.village.uuid;
         writePatient(patient);
       });
     };
 
 
-    function createVillage(village, sector_id, writeTo) {
+    function createVillage(village, sector_uuid, writeTo) {
       return connect.basicPut('village', [{
         name : village,
-        sector_id : sector_id
+        sector_uuid : sector_uuid
       }])
       .success(function(success) {
         $scope[writeTo].village = {
           name : name,
-          sector_id : sector_id,
+          sector_uuid : sector_uuid,
           id : success.insertId
         };
       })
@@ -144,30 +160,33 @@ angular.module('kpk.controllers')
     }
 
     function writePatient(patient) {
+      var debtorId = uuid(), patientId = uuid();
       var packageDebtor = {
-        group_id : $scope.debtor.debtor_group.id,
+        uuid : debtorId,
+        group_uuid : $scope.debtor.debtor_group.uuid,
         text : 'Debtor ' + patient.first_name + ' ' + patient.last_name,
       };
 
-      var patient_id;
+      var packagePatient = connect.clean(patient);
+      packagePatient.uuid = patientId;
+
       connect.basicPut('debitor', [packageDebtor]).then(function(result) {
-        patient.debitor_id = result.data.insertId;
-        return connect.basicPut('patient', [connect.clean(patient)]);
+        packagePatient.debitor_uuid = debtorId;
+        return connect.basicPut('patient', [packagePatient]);
       })
       .then(function(result) {
-        patient_id = result.data.insertId;
-        return connect.fetch('/visit/' + patient_id);
+        return connect.fetch('/visit/\"' + patientId + '\"');
       })
       .then(function (result) {
         var packageHistory = {
-          debitor_id : patient.debitor_id,
-          debitor_group_id : $scope.debtor.debtor_group.id,
+          debitor_uuid : packagePatient.debitor_uuid,
+          debitor_group_uuid : $scope.debtor.debtor_group.uuid,
           user_id : $scope.register.data.id
         }
         return connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]);
       })
       .then(function (result) {
-        $location.path('invoice/patient/' + patient_id);
+        $location.path('invoice/patient/' + packagePatient.uuid);
       })
       .catch(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
