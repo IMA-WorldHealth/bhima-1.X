@@ -3,6 +3,7 @@ create database `kpk`;
 use `kpk`;
 
 grant all on `kpk`.* to 'kpk'@'%' identified by 'HISCongo2013';
+grant super on `kpk`.* to 'kpk';
 flush privileges;
 
 --
@@ -618,7 +619,7 @@ create table `inventory` (
 drop table if exists `sale`;
 create table `sale` (
   `enterprise_id` smallint unsigned not null,
-  `uuid`            char(16) not null,
+  `uuid`          char(16) not null,
   `cost`          decimal(19,4) unsigned not null,
   `currency_id`   tinyint unsigned not null,
   `debitor_uuid`  char(16) not null,

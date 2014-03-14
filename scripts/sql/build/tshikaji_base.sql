@@ -6,7 +6,6 @@ delete from `transaction_type`;
 delete from `patient`;
 delete from `debitor`;
 delete from `debitor_group`;
-delete from `debitor_group_type`;
 delete from `permission`;
 delete from `unit`;
 delete from `account`;
