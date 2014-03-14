@@ -20,3 +20,4 @@ app/js/controllers/controllers.js
 # ignore log files
 *.log
 /scripts/sql/backup/*
+/symmetric/*
