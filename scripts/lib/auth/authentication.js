@@ -55,8 +55,8 @@ module.exports = function (db) {
        
         sql = 'SELECT `unit`.`url` ' +
               'FROM `unit`, `permission`, `user` WHERE ' +
-                '`permission`.`id_user` = `user`.`id` AND ' +
-                '`permission`.`id_unit` = `unit`.`id` AND ' +
+                '`permission`.`user_id` = `user`.`id` AND ' +
+                '`permission`.`unit_id` = `unit`.`id` AND ' +
                 '`user`.`id`=' + id;
 
         db.execute(sql, function (err, results) {
