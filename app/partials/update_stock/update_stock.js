@@ -7,7 +7,7 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
   dependencies.inventory = { 
     query : { 
       tables : { 
-        inventory : { columns : ['id', 'code', 'text', 'price', 'group_id', 'unit_id'] }
+        inventory : { columns : ['uuid', 'code', 'text', 'price', 'group_uuid', 'unit_id'] }
                     // origin_stamp
       }
     }
@@ -59,7 +59,7 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
     // if(updateLine.text==='') return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_TEXT'));
     
     console.log(selectedStock, updateLine);
-    connect.basicPost('inventory', [updateLine], ['id']).then(function (res) { 
+    connect.basicPost('inventory', [updateLine], ['uuid']).then(function (res) { 
       messenger.success($filter('translate')('UPDATE_STOCK.UPDATE_SUCCESS'));
       $scope.cachePrice = angular.copy(selectedStock.price);
     }, function (err) { 
