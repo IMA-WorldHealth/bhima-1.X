@@ -28,13 +28,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="village in model.village.data">
+            <tr ng-repeat="village in model.village.data | orderBy:'village'">
               <td>{{village.village}}</td>
               <td>{{village.sector}}</td>
               <td ng-click="setOp('Edit', village)">
                 <button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
               </td>
-              <td ng-click="removeVillage(village)">
+              <td ng-click="removeVillage(village.uuid)">
                 <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button>
               </td>
             </tr>
@@ -82,8 +82,10 @@
                    </div>                                                                                            
                 </div>     
               </fieldset>
-              <button class="btn btn-default btn-success" ng-click="addVillage(add)" ng-disabled="form.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
-              <button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_VILLAGE' | translate}}</button>
+              <button class="btn btn-default btn-success" ng-click="addVillage(add)" type="submit">
+                {{'FORM.ADD' | translate}}
+              </button>
+              <button class="btn btn-default btn-sm"  type="reset">{{'FORM.CANCEL' | translate}}</button>
 
             </form>
           </div>
