@@ -7,7 +7,8 @@ angular.module('kpk.controllers')
   'messenger',
   'appstate',
   'validate',
-  function ($scope, $q, $filter, connect, messenger, appstate, validate) {
+  'uuid', 
+  function ($scope, $q, $filter, connect, messenger, appstate, validate, uuid) {
     var dependencies = {}, stores = {};
     var enterprise; 
     
@@ -18,6 +19,7 @@ angular.module('kpk.controllers')
 
     dependencies.priceList = {
       query : {
+        identifier : 'uuid',
         tables : {'price_list' : {columns:['uuid', 'title', 'description']}}
       }
     };
@@ -95,7 +97,7 @@ angular.module('kpk.controllers')
       var list = $scope.session.listItems;
       if(list.length > 1) { 
         list.splice(list.indexOf(item), 1);
-        if(item.id) $scope.session.deleteQueue.push(item.id);
+        if(item.uuid) $scope.session.deleteQueue.push(item.uuid);
       } else { 
         messenger.warning($filter('translate')("PRICE_LIST.WARN"));
       }
@@ -107,7 +109,7 @@ angular.module('kpk.controllers')
 
       // Verify items
       invalidData = $scope.session.listItems.some(function (item, index) { 
-        if(!item.price_list_id) item.price_list_id = priceList.id;
+        if(!item.price_list_uuid) item.price_list_uuid = priceList.uuid;
         item.item_order = index;
         
         if(isNaN(Number(item.value))) return true;
@@ -121,10 +123,12 @@ angular.module('kpk.controllers')
       // FIXME single request for all items
       $scope.session.listItems.forEach(function (item) { 
         var request, uploadItem = connect.clean(item);
-
-        if(item.id) { 
+        console.log('UPDATING', item);
+        if(item.uuid) { 
           request = connect.basicPost('price_list_item', [uploadItem], ['uuid']); 
         } else { 
+          uploadItem.uuid = uuid();
+          console.log('adding uuid', uploadItem.uuid);
           request = connect.basicPut('price_list_item', [uploadItem]);
         }
         uploadPromise.push(request); 
@@ -155,7 +159,9 @@ angular.module('kpk.controllers')
       connect.basicPost('price_list', [connect.clean($scope.edit)], ['uuid'])
       .then(function (res) {
         messenger.success($filter('translate')('PRICE_LIST.EDITED_SUCCES'));
-        $scope.price_list.put($scope.edit);
+        $scope.model.priceList.put($scope.edit);
+        
+        $scope.session.selected = null;
         $scope.session.action = '';
       }, function (err) {
         messenger.danger('error:' + JSON.stringify(err));
@@ -175,6 +181,7 @@ angular.module('kpk.controllers')
 
     function saveAdd () {
       $scope.add.enterprise_id = $scope.enterprise.id;
+      $scope.add.uuid = uuid();
       connect.basicPut('price_list', [connect.clean($scope.add)])
       .then(function (result) {
         var finalList;
