@@ -24,15 +24,16 @@ angular.module('kpk.controllers')
 
     dependencies.inventory = {
       query : {
+        identifier : 'uuid',
         tables : {
           'inventory' : {
-            columns: ['id', 'code', 'text', 'price', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'type_id', 'consumable']
+            columns: ['uuid', 'code', 'text', 'price', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'type_id', 'consumable']
           },
           'inventory_group' : {
             columns : ['name']
           }
         },
-        join: ['inventory.group_id=inventory_group.id'],
+        join: ['inventory.group_uuid=inventory_group.uuid'],
       }
     };
 
