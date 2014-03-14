@@ -1,4 +1,4 @@
-------------------------------------------------------------------------------
+
 -- Configuration for enterprise IMCK
 ------------------------------------------------------------------------------
 
@@ -42,7 +42,6 @@ values('enterprise_data', 1, 100000, 1, 'Common data to every node');
 insert into sym_channel
 (channel_id, processing_order, max_batch_size, enabled, description)
 values('transactional', 1, 100000, 1, 'Transactional data');
-, 'Item and pricing data');
 
 --
 -- Triggers
@@ -77,12 +76,12 @@ values('client_to_master', 'client', 'master', 'default',current_timestamp, curr
 
 insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('enterprise_data', 'master_to_client', 100, current_timestamp, current_timestamp);
+values('patient', 'master_to_client', 100, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('enterprise_data', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('patient', 'client_to_master', 100, current_timestamp, current_timestamp);
 
-insert into sym_trigger_router 
-(trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('transactional', 'client_to_master', 100, current_timestamp, current_timestamp);
+-- insert into sym_trigger_router 
+-- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+-- values('transactional', 'client_to_master', 100, current_timestamp, current_timestamp);
