@@ -265,13 +265,13 @@ app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
 
   var sql =
-    'SELECT `village`.`id` as `id`,  `village`.`name` as `village`, ' +
+    'SELECT `village`.`uuid` as `uuid`,  `village`.`name` as `village`, ' +
       '`sector`.`name` as `sector`, `province`.`name` as `province`, ' +
       '`country`.`country_en` as `country` ' +
     'FROM `village`, `sector`, `province`, `country` ' +
-    'WHERE village.sector_id = sector.id AND ' +
-      'sector.province_id = province.id AND ' +
-      'province.country_id=country.id ' + specifyVillage + ';';
+    'WHERE village.sector_uuid = sector.uuid AND ' +
+      'sector.province_uuid = province.uuid AND ' +
+      'province.country_uuid=country.uuid ' + specifyVillage + ';';
 
   db.execute(sql, function (err, rows) {
     if (err) { return next(err); }

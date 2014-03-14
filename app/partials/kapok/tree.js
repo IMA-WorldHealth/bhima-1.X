@@ -31,7 +31,7 @@ angular.module('kpk.controllers')
       if (!group) return;
       return group.map(function (element) {
         collapsed_model.some(function(item, index) {
-          if(item.key === element.id_unit) {
+          if(item.key === element.unit_id) {
             element.collapsed = item.collapsed;
             return true;
           }
