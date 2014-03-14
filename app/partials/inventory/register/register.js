@@ -7,7 +7,8 @@ angular.module('kpk.controllers')
   '$modal',
   'messenger',
   'validate',
-  function ($scope, appstate, connect, $q, $modal, messenger, validate) {
+  'uuid',
+  function ($scope, appstate, connect, $q, $modal, messenger, validate, uuid) {
 
     var dependencies = {};
 
@@ -36,9 +37,10 @@ angular.module('kpk.controllers')
     dependencies.inventory_group = {
       required: true,
       query : {
+        identifier: 'uuid',
         tables: {
           'inventory_group': {
-            columns: ['id', 'name', 'code', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']
+            columns: ['uuid', 'name', 'code', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']
           }
         }
       }
@@ -46,9 +48,10 @@ angular.module('kpk.controllers')
   
     dependencies.inventory = {
       query : {
+        identifier : 'uuid',
         tables: {
           'inventory': {
-            columns: ['enterprise_id', 'id', 'code', 'text', 'price', 'group_id', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'stock_max', 'stock_min', 'consumable']
+            columns: ['enterprise_id', 'uuid', 'code', 'text', 'price', 'group_uuid', 'unit_id', 'unit_weight', 'unit_volume', 'stock', 'stock_max', 'stock_min', 'consumable']
           }
         },
       }
@@ -94,17 +97,18 @@ angular.module('kpk.controllers')
 
     $scope.submit = function () {
       $scope.item.enterprise_id = $scope.enterprise.id;
-      console.log($scope.inventory.$valid);
       // if ($scope.inventory.$valid) {
-        connect.basicPut('inventory', [connect.clean($scope.item)])
-        .then(function (result) {
-          $scope.item.id = result.data.insertId;
-          $scope.inventory.post($scope.item);
-          messenger.success('Posted item successfully');
-        }, function (err) {
-          messenger.danger('An error occured' + err);
-        });
-        $scope.reset();
+      var item = connect.clean($scope.item);
+      item.enterpise_id = $scope.enteprise.id;
+      item.uuid = uuid();
+      connect.basicPut('inventory', [item])
+      .then(function () {
+        $scope.inventory.post(item);
+        messenger.success('Posted item successfully');
+      }, function (err) {
+        messenger.danger('An error occured' + err);
+      });
+      $scope.reset();
       // } else {
         // for (var k in $scope.inventory) {
           // if ($scope.inventory[k].$invalid) {
@@ -154,6 +158,5 @@ angular.module('kpk.controllers')
       }, function () {
       });
     };
-
   }
 ]);
