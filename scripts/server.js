@@ -261,6 +261,9 @@ app.get('/tree', function (req, res, next) {
   });
 });
 
+/*
+ *
+FIXME: why is this used?
 app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
 
@@ -278,14 +281,15 @@ app.get('/location/:villageId?', function (req, res, next) {
     res.send(rows);
   });
 });
+*/
 
 app.get('/village/', function (req, res, next) {
 
   var sql =
-    'SELECT `village`.`id` AS `id`,  `village`.`name` AS `village`, ' +
-    '`sector`.`id` AS `sector_id`, `sector`.`name` as `sector` ' +
+    'SELECT `village`.`uuid` AS `uuid`,  `village`.`name` AS `village`, ' +
+    '`sector`.`uuid` AS `sector_uuid`, `sector`.`name` as `sector` ' +
     'FROM `village`, `sector` ' +
-    'WHERE village.`sector_id` = sector.id';
+    'WHERE village.`sector_uuid` = sector.uuid';
 
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
@@ -295,9 +299,9 @@ app.get('/village/', function (req, res, next) {
 
 app.get('/sector/', function (req, res, next) {
 
-  var sql = "SELECT `sector`.`id` as `id`,  `sector`.`name` as `sector`, `province`.`id` "+
-            "as `province_id`, `province`.`name` as `province` FROM `sector`, `province` "+
-            "WHERE `sector`.`province_id` = `province`.`id`";
+  var sql = "SELECT `sector`.`uuid` as `id`,  `sector`.`name` as `sector`, `province`.`uuid` "+
+            "as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` "+
+            "WHERE `sector`.`province_uuid` = `province`.`uuid`";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send(rows);
@@ -306,9 +310,9 @@ app.get('/sector/', function (req, res, next) {
 
 app.get('/province/', function (req, res, next) {
   var sql =
-    "SELECT `province`.`id` as `id`,  `province`.`name` as `province`, `country`.`id` "+
-    "AS `country_id`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
-    "WHERE `province`.`country_id` = `country`.`id`";
+    "SELECT `province`.`id` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` "+
+    "AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
+    "WHERE `province`.`country_uuid` = `country`.`uuid`";
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send(rows);
