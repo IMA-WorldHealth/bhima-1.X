@@ -261,9 +261,6 @@ app.get('/tree', function (req, res, next) {
   });
 });
 
-/*
- *
-FIXME: why is this used?
 app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`id`=' + req.params.villageId : '';
 
@@ -281,7 +278,6 @@ app.get('/location/:villageId?', function (req, res, next) {
     res.send(rows);
   });
 });
-*/
 
 app.get('/village/', function (req, res, next) {
 
@@ -299,7 +295,7 @@ app.get('/village/', function (req, res, next) {
 
 app.get('/sector/', function (req, res, next) {
 
-  var sql = "SELECT `sector`.`uuid` as `id`,  `sector`.`name` as `sector`, `province`.`uuid` "+
+  var sql = "SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` "+
             "as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` "+
             "WHERE `sector`.`province_uuid` = `province`.`uuid`";
   db.execute(sql, function (err, rows) {
@@ -310,7 +306,7 @@ app.get('/sector/', function (req, res, next) {
 
 app.get('/province/', function (req, res, next) {
   var sql =
-    "SELECT `province`.`id` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` "+
+    "SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` "+
     "AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
     "WHERE `province`.`country_uuid` = `country`.`uuid`";
   db.execute(sql, function (err, rows) {

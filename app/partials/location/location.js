@@ -1,26 +1,19 @@
 angular.module('kpk.controllers')
 .controller('locationCtrl', [
   '$scope',
-  '$q',
   'connect',
   'messenger',
-  'validate',
-  'appstate',
-  function ($scope, $q, connect, messenger, validate, appstate) {
+  'store',
+  function ($scope, connect, messenger, Store) {
 
-    var dependencies = {};
-    $scope.model = {};
+    connect.fetch('/location/')
+    .success(function (data) {
+      $scope.locations = new Store({ identifier : 'uuid' });
+      $scope.locations.setData(data);
+    })
+    .error(function (err) {
+      messenger.danger('Failed to load location data.' + err);
+    });
 
-    dependencies.location = {
-      query : 'location/'
-    };
-
-
-    //fonction
-    function manageLocation(model){
-      for (var k in model) { $scope.model[k] = model[k]; }
-    }
-
-    validate.process(dependencies).then(manageLocation);
   }
 ]);

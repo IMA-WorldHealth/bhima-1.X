@@ -1,17 +1,17 @@
 <header>
-<span class="capitalize"> {{ 'SECTOR.TITLE' | translate }}</span>
-  </header>
+  {{ 'SECTOR.TITLE' | translate }}
+</header>
 
-  <section class="top-nav">
-    <div class="pull-right">
-        <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'SECTOR.LOCATION_MANAGER' | translate}}</span></a>
-    </div>
-    <div class="pull-left">
-      <button class="btn btn-default btn-sm" ng-click="setOp('Add')">
-        {{'SECTOR.NEW_SECTOR' | translate}}
-      </button>
-    </div>
-  </section>
+<section class="top-nav">
+  <div class="pull-right">
+    <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'SECTOR.LOCATION_MANAGER' | translate}}</span></a>
+  </div>
+  <div class="pull-left">
+    <button class="btn btn-default btn-sm" ng-click="setOp('Add')">
+      {{'SECTOR.NEW_SECTOR' | translate}}
+    </button>
+  </div>
+</section>
 
 <article class="content">
   <div class="row">
@@ -26,7 +26,7 @@
             <tr>
               <th>{{'SECTOR.NAME' | translate}}</th>
               <th>{{'SECTOR.PROVINCE' | translate}}</th>
-              <th colspan="2" class="capital">{{'SECTOR.ACTIONS' | translate}}</th>
+              <th colspan="2">{{ 'SECTOR.ACTIONS' | translate}}</th>
             </tr>
           </thead>
           <tbody>
@@ -36,7 +36,7 @@
               <td ng-click="setOp('Edit', sector)">
                 <button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
               </td>
-              <td ng-click="removeSector(sector)">
+              <td ng-click="removeSector(sector.uuid)">
                 <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button>
               </td>
             </tr>
@@ -69,8 +69,8 @@
                       class="form-kapok"
                       name="provincename"
                       id="provinceID"
-                      ng-model="add.province_id"
-                      ng-options="pro.id as pro.name for pro in model.province.data"
+                      ng-model="add.province_uuid"
+                      ng-options="pro.uuid as pro.name for pro in model.province.data"
                     >
                       <option value="" disable="disabled">-- {{'SELECT.PROVINCE' | translate}}-- </option>
                     </select>
@@ -103,8 +103,8 @@
                       class="form-kapok"
                       name="provincename"
                       id="provinceID"
-                      ng-model="sector.province_id"
-                      ng-options="pro.id as pro.name for pro in model.province.data"
+                      ng-model="sector.province_uuid"
+                      ng-options="pro.uuid as pro.name for pro in model.province.data"
                     >
                       <option value="" disable="disabled">-- Selectionner un Province -- </option>
                     </select>

@@ -486,7 +486,6 @@
       // locals
       var queue = [];
       var identifier = options.identifier || 'id'; // id property
-      var pprint = '[connect] ';
       var refreshrate = options.refreshrate || 500;
 
       // set an array of data
