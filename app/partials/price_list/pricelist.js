@@ -18,7 +18,7 @@ angular.module('kpk.controllers')
 
     dependencies.priceList = {
       query : {
-        tables : {'price_list' : {columns:['id', 'title', 'description']}}
+        tables : {'price_list' : {columns:['uuid', 'title', 'description']}}
       }
     };
 
@@ -41,8 +41,8 @@ angular.module('kpk.controllers')
       console.log('list', list);
       dependencies.priceListItems = { 
         query : { 
-          tables : {'price_list_item' : {columns:['id', 'item_order', 'description', 'value', 'is_discount', 'is_global', 'price_list_id']}},
-          where : ['price_list_item.price_list_id=' + list.id]
+          tables : {'price_list_item' : {columns:['uuid', 'item_order', 'description', 'value', 'is_discount', 'is_global', 'price_list_uuid']}},
+          where : ['price_list_item.price_list_uuid=' + list.uuid]
         }
       };
       validate.process(dependencies).then(processListItems);
@@ -123,7 +123,7 @@ angular.module('kpk.controllers')
         var request, uploadItem = connect.clean(item);
 
         if(item.id) { 
-          request = connect.basicPost('price_list_item', [uploadItem], ['id']); 
+          request = connect.basicPost('price_list_item', [uploadItem], ['uuid']); 
         } else { 
           request = connect.basicPut('price_list_item', [uploadItem]);
         }
@@ -131,7 +131,7 @@ angular.module('kpk.controllers')
       });
       
       $scope.session.deleteQueue.forEach(function (itemId) { 
-        uploadPromise.push(connect.basicDelete('price_list_item', itemId, 'id'))
+        uploadPromise.push(connect.basicDelete('price_list_item', itemId, 'uuid'))
       });
       
       $q.all(uploadPromise).then(function (result) { 
@@ -152,7 +152,7 @@ angular.module('kpk.controllers')
     }
 
     function saveMeta () {
-      connect.basicPost('price_list', [connect.clean($scope.edit)], ['id'])
+      connect.basicPost('price_list', [connect.clean($scope.edit)], ['uuid'])
       .then(function (res) {
         messenger.success($filter('translate')('PRICE_LIST.EDITED_SUCCES'));
         $scope.price_list.put($scope.edit);
@@ -204,7 +204,7 @@ angular.module('kpk.controllers')
       var confirmed = confirm($filter('translate')('PRICE_LIST.DELETE_CONFIRM'));
       if(!confirmed) return; 
 
-      connect.basicDelete('price_list', list.id, 'id')
+      connect.basicDelete('price_list', list.id, 'uuid')
       .then(function(v){
         if (v.status === 200){
           $scope.model.priceList.remove(list.id);
