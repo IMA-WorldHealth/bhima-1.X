@@ -42,49 +42,26 @@ values('enterprise_data', 1, 100000, 1, 'Common data to every node');
 insert into sym_channel
 (channel_id, processing_order, max_batch_size, enabled, description)
 values('transactional', 1, 100000, 1, 'Transactional data');
-
--- insert into sym_channel 
--- (channel_id, processing_order, max_batch_size, enabled, description)
--- values('item', 1, 100000, 1, 'Item and pricing data');
-
-insert into sym_trigger
-(trigger_id,source_table_name,channel_id,last_update_time,create_time)
-values('patient', 'patient', 'enterprise_data', current_timestamp, current_timestamp);
+, 'Item and pricing data');
 
 --
 -- Triggers
 --
--- insert into sym_trigger 
--- (trigger_id,source_table_name,channel_id,last_update_time,create_time)
--- values('item_selling_price','item_selling_price','item',current_timestamp,current_timestamp);
---
--- insert into sym_trigger 
--- (trigger_id,source_table_name,channel_id,last_update_time,create_time)
--- values('item','item','item',current_timestamp,current_timestamp);
---
--- insert into sym_trigger 
--- (trigger_id,source_table_name,channel_id,last_update_time,create_time)
--- values('sale_transaction','sale_transaction','sale_transaction',current_timestamp,current_timestamp);
---
--- insert into sym_trigger 
--- (trigger_id,source_table_name,channel_id,last_update_time,create_time)
--- values('sale_return_line_item','sale_return_line_item','sale_transaction',current_timestamp,current_timestamp);
---
--- insert into sym_trigger 
--- (trigger_id,source_table_name,channel_id,last_update_time,create_time)
--- values('sale_tender_line_item','sale_tender_line_item','sale_transaction',current_timestamp,current_timestamp);
---
--- -- Example of a `dead` trigger, which is used to only sync the table during initial load
--- insert into sym_trigger 
--- (trigger_id,source_table_name,channel_id, sync_on_insert, sync_on_update, sync_on_delete, last_update_time,create_time)
--- values('sale_transaction_dead','sale_transaction','sale_transaction',0,0,0,current_timestamp,current_timestamp);
+insert into sym_trigger
+(trigger_id,source_table_name,channel_id,last_update_time,create_time)
+values('patient', 'patient', 'enterprise_data', current_timestamp, current_timestamp);
+
+insert into sym_trigger
+(trigger_id,source_table_name,channel_id,last_update_time,create_time)
+values('sale', 'sale', 'transactional', current_timestamp, current_timestamp);
+
+insert into sym_trigger
+(trigger_id,source_table_name,channel_id,last_update_time,create_time)
+values('sale_item', 'sale_item', 'transactional', current_timestamp, current_timestamp);
 
 --
--- Routers
+-- Router 
 --
-
--- In this example, two routers pass everything all the time, and a third router
--- passes information to the specific store mentioned in the column 'store'
 
 insert into sym_router 
 (router_id,source_node_group_id,target_node_group_id,router_type,create_time,last_update_time)
@@ -93,10 +70,6 @@ values('master_to_client', 'master', 'client', 'default',current_timestamp, curr
 insert into sym_router 
 (router_id,source_node_group_id,target_node_group_id,router_type,create_time,last_update_time)
 values('client_to_master', 'client', 'master', 'default',current_timestamp, current_timestamp);
-
--- insert into sym_router 
--- (router_id,source_node_group_id,target_node_group_id,router_type,router_expression,create_time,last_update_time)
--- values('corp_2_one_store', 'corp', 'store', 'column','STORE_ID=:EXTERNAL_ID or OLD_STORE_ID=:EXTERNAL_ID',current_timestamp, current_timestamp);
 
 --
 -- Trigger Router Links
@@ -113,30 +86,3 @@ values('enterprise_data', 'client_to_master', 100, current_timestamp, current_ti
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('transactional', 'client_to_master', 100, current_timestamp, current_timestamp);
-
-
---
--- insert into sym_trigger_router 
--- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
--- values('item','corp_2_store', 100, current_timestamp, current_timestamp);
---
--- insert into sym_trigger_router 
--- (trigger_id,router_id,initial_load_order,initial_load_select,last_update_time,create_time)
--- values('item_selling_price','corp_2_one_store',100,'`store_id`=''$(externalId)''',current_timestamp,current_timestamp);
---
--- insert into sym_trigger_router 
--- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
--- values('sale_transaction','store_2_corp', 200, current_timestamp, current_timestamp);
---
--- insert into sym_trigger_router 
--- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
--- values('sale_return_line_item','store_2_corp', 200, current_timestamp, current_timestamp);
---
--- insert into sym_trigger_router 
--- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
--- values('sale_tender_line_item','store_2_corp', 200, current_timestamp, current_timestamp);
---
--- -- Example of a 'dead' trigger, which is used to only sync the table during initial load
--- insert into sym_trigger_router 
--- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
--- values('sale_transaction_dead','store_2_corp', 200, current_timestamp, current_timestamp);
