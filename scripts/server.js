@@ -19,6 +19,7 @@ var parser       = require('./lib/database/parser')(),
 // import middleware
 var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
     authenticate = require('./lib/auth/authentication')(db),
+    projects     = require('./lib/auth/projects')(db),
     errorHandler = require('./lib/error/handler');
 
 // import routes
@@ -36,6 +37,7 @@ app.configure(function () {
   app.use(express.cookieParser());
   app.use(express.session(cfg.session));
   app.use(authenticate);
+  app.use(projects);
   app.use(authorize);
   app.use(express.static(cfg.static, {maxAge : 10000}));
   app.use(app.router);
