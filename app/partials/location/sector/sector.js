@@ -5,31 +5,38 @@ angular.module('kpk.controllers')
   'connect',
   'messenger',
   'validate',
-  function ($scope, $q, connect, messenger, validate) {
+  'store',
+  function ($scope, $q, connect, messenger, validate, Store) {
 
     var dependencies = {},
         flags = $scope.flags = {};
     $scope.model = {};
 
     //dependencies
-    dependencies.province= {
+    dependencies.province = {
+      identifier : 'uuid',
       query :  {
         tables: {
           'province' : {
-            columns : ['id', 'name', 'country_id']
+            columns : ['uuid', 'name', 'country_uuid']
           }
         }
       }
-    };
-
-    dependencies.sector = {
-      query :  'sector/'
     };
 
     //fonction
     
     function manageSector(model){
       for (var k in model) { $scope.model[k] = model[k]; }
+      
+      connect.fetch('/sector/')
+      .success(function (data) {
+        $scope.model.sector = new Store({ identifier : 'uuid' });
+        $scope.model.sector.setData(data);
+      })
+      .error(function () {
+        messenger.danger('Sectors not loaded!');
+      });
     }
 
     function setOp(action, sector){
@@ -52,27 +59,27 @@ angular.module('kpk.controllers')
     }
 
     function editSector(){
-      var sector = {id :$scope.sector.id, name : $scope.sector.sector,  province_id :$scope.sector. province_id};
-      connect.basicPost('sector', [connect.clean(sector)], ['id'])
+      var sector = {
+        uuid : $scope.sector.id,
+        name : $scope.sector.sector,
+        province_uuid :$scope.sector.province_uuid
+      };
+
+      connect.basicPost('sector', [connect.clean(sector)], ['uuid'])
       .then(function (res) {
-        $scope.sector.province = $scope.model.province.get(sector.province_id).name;
-        $scope.model.sector.put($scope.sector);
-        $scope.sector = {};
+        $scope.model.sector.put(sector);
       });
     }
 
-    function removeSector(obj){
-      $scope.sector = angular.copy(obj);
-      connect.basicDelete('sector', $scope.sector.id)
-      .then(function(res){
-        $scope.model.sector.remove($scope.sector.id);
-        $scope.sector = {};
+    function removeSector(uuid){
+      connect.basicDelete('sector', uuid, 'uuid')
+      .then(function(){
+        $scope.model.sector.remove(uuid);
       });
     }
 
-
-
-    validate.process(dependencies).then(manageSector);
+    validate.process(dependencies)
+    .then(manageSector);
 
     $scope.setOp = setOp;
     $scope.addSector = addSector;

@@ -28,14 +28,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="country in model.country.data">
-              <td>{{country.code}}</td>
+            <tr ng-repeat="country in model.country.data | orderBy:'country_en'">
+              <td>{{country.code }}</td>
               <td>{{country.country_en}}</td>
               <td>{{country.country_fr}}</td>
               <td ng-click="setOp('Edit', country)">
                 <button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
               </td>
-              <td ng-click="removeCountry(country)">
+              <td ng-click="removeCountry(country.uuid)">
                 <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button>
               </td>
             </tr>
