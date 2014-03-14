@@ -98,12 +98,12 @@
 						<div class="form-group">
 							<label class="col-xs-2">{{'INCOME.RECEIVED' | translate}}</label>
 							<div class="input-group col-xs-8">
-								<input type="number" min="0" class="form-kapok" ng-model="data.value" required>
+								<input type="number" ng-model="data.value" class="form-kapok"  min="0" required>
 								<span class="input-group-addon"> {{ selectedItem.symbol}} </span>
 							</div>
 						</div>
 					</fieldset>
-					<button class="btn btn-default btn-success" ng-click="ajouter()" ng-disabled="form.$invalid" type="submit">{{'FORM.ADD' | translate}}</button>
+					<button class="btn btn-default btn-success" ng-click="ajouter()" ng-disabled="form.$invalid" type="button">{{'FORM.ADD' | translate}}</button>
 					<button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_TRANSFER' | translate}}</button>
 				</form>
 			</div>
