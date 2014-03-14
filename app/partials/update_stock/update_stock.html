@@ -31,7 +31,7 @@
               typeahead-template-url="stockItem.html"
               placeholder="{{'UPDATE_STOCK.SEARCH_TEXT' | translate}}">
             <div class="input-group-btn"> 
-              <button class="btn btn-default btn-sm" ng-click="loadStock(selectedStock.id)" ng-disabled="!selectedStock">{{'FORM.SUBMIT' | translate}}</button>
+              <button class="btn btn-default btn-sm" ng-click="loadStock(selectedStock.uuid)" ng-disabled="!selectedStock">{{'FORM.SUBMIT' | translate}}</button>
             </div>
           </div>
         </div>

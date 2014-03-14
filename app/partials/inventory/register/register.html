@@ -63,7 +63,7 @@
               <label for="inventory-reg-group" class="required">
                 {{ "INVENTORY_REGISTER.GROUP" | translate }}
               </label>
-              <select id="inventory-reg-group" class="form-kapok" name="group_id" ng-model="item.group_id" ng-options="group.id as group.name for group in inventory_group.data" required>
+              <select id="inventory-reg-group" class="form-kapok" name="group_id" ng-model="item.group_uuid" ng-options="group.uuid as group.name for group in inventory_group.data" required>
                 <option value="" disabled="disabled">-- {{ "SELECT.INVENTORY_GROUP" | translate }} --</option>
               </select>
             </div>

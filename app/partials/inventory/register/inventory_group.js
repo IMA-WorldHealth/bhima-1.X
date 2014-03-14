@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'groupStore',
   'accountModel',
   'messenger',
-  function ($scope, $modalInstance, connect, groupStore, accountModel, messenger) {
+  'uuid',
+  function ($scope, $modalInstance, connect, groupStore, accountModel, messenger, uuid) {
     $scope.group = {};
 
     $scope.accounts = accountModel;
@@ -14,9 +15,9 @@ angular.module('kpk.controllers')
     $scope.submit = function () {
 
       var clean = connect.clean($scope.group);
+      clean.uuid = uuid();
       connect.basicPut('inventory_group', [connect.clean(clean)])
       .then(function (result) {
-        clean.id = result.data.insertId;
         $modalInstance.close(clean);
       }, function (error) {
         messenger.danger('Error creating new group' + error);

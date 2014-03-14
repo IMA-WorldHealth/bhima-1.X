@@ -46,8 +46,7 @@ angular.module('kpk.controllers')
         if (path) $location.path(path);
       }
     }, true);
-
-    /*
+  
     $scope.$on('$locationChangeStart', function(e, n_url) {
       var target = n_url.split('/#')[1];
     
@@ -57,7 +56,6 @@ angular.module('kpk.controllers')
         selectTreeNode($scope.treeData, target);
       }
     });
-    */
 
     function selectTreeNode(list, locationPath) {
       list.some(function (element) {
