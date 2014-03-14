@@ -9,12 +9,12 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   }
 
   dependencies.sale = {
-    query : '/max/id/sale'
+    query : '/max/uuid/sale'
   };
 
   dependencies.inventory = {
-    required: true,
-    query: { tables: {"inventory" : {columns: ["id", "code", "text", "price"]}}}
+    // required: true,
+    query: { tables: {"inventory" : {columns: ["uuid", "code", "text", "price"]}}}
   };
 
   //Temporary seller ID, should happen on the server
@@ -28,7 +28,6 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function sales(model) {
     //Expose model to scope
     $scope.model = model;
-
    
     $scope.inventory = inventory = model.inventory.data;
   }
@@ -53,18 +52,18 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     dependencies.patientGroupList = {
       query : {
         tables : {
-          assignation_patient : {columns : ['patient_group_id', 'patient_id']},
+          assignation_patient : {columns : ['patient_group_uuid', 'patient_uuid']},
           patient_group : {columns : ['note']},
           price_list : {columns : ['title']},
           price_list_item : {columns : ['value', 'is_discount', 'is_global', 'description']}
         },
         join : [
-          'assignation_patient.patient_group_id=patient_group.id',
-          'patient_group.price_list_id=price_list.id',
-          'price_list_item.price_list_id=price_list.id'
+          'assignation_patient.patient_group_uuid=patient_group.uuid',
+          'patient_group.price_list_uuid=price_list.uuid',
+          'price_list_item.price_list_uuid=price_list.uuid'
         ],
         where : [
-          'assignation_patient.patient_id=' + selectedDebtor.id
+          'assignation_patient.patient_uuid=' + selectedDebtor.uuid
         ]
       }
     };
@@ -72,11 +71,11 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     dependencies.debtorGroupList = {
       query : {
         tables : {
-          price_list: { columns : ['id', 'title'] },
+          price_list: { columns : ['uuid', 'title'] },
           price_list_item : { columns : ['value', 'is_discount', 'is_global', 'description'] }
         },
-        join : ['price_list_item.price_list_id=price_list.id'],
-        where : ['price_list.id=' + selectedDebtor.price_list_id]
+        join : ['price_list_item.price_list_uuid=price_list.uuid'],
+        where : ['price_list.uuid=' + selectedDebtor.price_list_uuid]
       }
     };
 
