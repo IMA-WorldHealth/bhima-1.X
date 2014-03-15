@@ -172,9 +172,7 @@ module.exports = function (db) {
   }
 
   function debitorAging(params){
-    //deferred
     var def = q.defer();
-    //requette
     params = JSON.parse(params);
     var requette =
       "SELECT period.id, period.period_start, period.period_stop, debitor.uuid as idDebitor, debitor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id " +
@@ -182,39 +180,26 @@ module.exports = function (db) {
       "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`='"+params.fiscal_id +"'";
 
     db.execute(requette, function(err, ans) {
-      if(err) {
-        console.log("debitor aging, Query failed");
-        throw err;
-        return;
-      }
+      if (err) { return def.reject(err); }
       def.resolve(ans);
     });
-
-    //promesse
 
     return def.promise;
   }
 
   function accountStatement(params){
-    //deferred
     var def = q.defer();
-    var params = JSON.parse(params);
+    params = JSON.parse(params);
 
-    //requette
-    var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
-                   "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
+    var requette =
+      "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit " +
+      "FROM account, period_total, period " +
+      "WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
 
     db.execute(requette, function(err, ans) {
-      if(err) {
-        //console.log("account statement, Query failed");
-        throw err;
-        return;
-      }
-      //console.log('account statement', ans);
+      if (err) { return def.reject(err); }
       def.resolve(ans);
     });
-
-    //promesse
 
     return def.promise;
   }
@@ -225,9 +210,12 @@ module.exports = function (db) {
     var spanMap = {};
 
     // TODO implement span, week, day, month etc. WHERE invoice_date <> date
-    var requestSql = "SELECT sale.id, sale.cost, sale.currency_id, sale.debitor_id, sale.invoice_date, sale.note, sale.posted, credit_note.id as 'creditId', credit_note.description as 'creditDescription', credit_note.posted as 'creditPosted', first_name, last_name " +
-      "FROM sale LEFT JOIN credit_note on sale.id = credit_note.sale_id " +
-      "LEFT JOIN patient on sale.debitor_id = patient.debitor_id;";
+    var requestSql =
+      "SELECT sale.uuid, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, " +
+      "sale.note, sale.posted, credit_note.uuid as 'creditId', credit_note.description as 'creditDescription', " +
+      "credit_note.posted as 'creditPosted', first_name, last_name " +
+      "FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid " +
+      "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid;";
 
     db.execute(requestSql, function(error, result) {
       if(error) return deferred.reject(error);

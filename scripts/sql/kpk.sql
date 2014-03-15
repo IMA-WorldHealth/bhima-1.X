@@ -647,7 +647,7 @@ create table `inventory` (
 --
 drop table if exists `sale`;
 create table `sale` (
-  `enterprise_id` smallint unsigned not null,
+  `project_id`    smallint unsigned not null,
   `uuid`          char(36) not null,
   `cost`          decimal(19,4) unsigned not null,
   `currency_id`   tinyint unsigned not null,
@@ -658,10 +658,10 @@ create table `sale` (
   `note`          text,
   `posted`        boolean not null default '0',
   primary key (`uuid`),
-  key `enterprise_id` (`enterprise_id`),
+  key `project_id` (`project_id`),
   key `debitor_uuid` (`debitor_uuid`),
   key `currency_id` (`currency_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
@@ -671,8 +671,8 @@ create table `sale` (
 --
 drop table if exists `credit_note`;
 create table `credit_note` (
-  `enterprise_id` smallint unsigned not null,
-  `uuid`            char(36) not null,
+  `project_id`    smallint unsigned not null,
+  `uuid`          char(36) not null,
   `cost`          decimal(19,4) unsigned not null,
   `debitor_uuid`  char(36) not null,
   `seller_id`     smallint unsigned not null default 0,
@@ -681,10 +681,10 @@ create table `credit_note` (
   `description`   text,
   `posted`        boolean not null default 0,
   primary key (`uuid`),
-  key `enterprise_id` (`enterprise_id`),
+  key `project_id` (`project_id`),
   key `debitor_uuid` (`debitor_uuid`),
   key `sale_uuid` (`sale_uuid`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`sale_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
@@ -717,7 +717,7 @@ create table `sale_item` (
 drop table if exists `purchase`;
 create table `purchase` (
   `uuid`              char(36) not null,
-  `enterprise_id`     smallint unsigned not null,
+  `project_id`        smallint unsigned not null,
   `cost`              decimal(19,4) unsigned not null default '0',
   `currency_id`       tinyint unsigned not null,
   `creditor_id`       int unsigned not null,
@@ -727,10 +727,10 @@ create table `purchase` (
   `note`              text default null,
   `posted`            boolean not null default 1,
   primary key (`uuid`),
-  key `enterprise_id` (`enterprise_id`),
+  key `project_id` (`project_id`),
   key `creditor_id` (`creditor_id`),
   key `purchaser_id` (`purchaser_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`project_id`) references `project_id` (`id`),
   constraint foreign key (`creditor_id`) references `creditor` (`id`),
   constraint foreign key (`purchaser_id`) references `user` (`id`)
 ) engine=innodb;
@@ -789,7 +789,7 @@ create table `transaction_type` (
 drop table if exists `cash`;
 create table `cash` (
   `uuid`            char(36) not null,
-  `enterprise_id`   smallint not null,
+  `project_id`      smallint not null,
   `document_id`     int unsigned not null,
   `type`            char(1) not null,
   `date`            date not null,
@@ -804,10 +804,12 @@ create table `cash` (
   `description`     text,
   primary key (`uuid`),
   unique key (`document_id`, `type`),
+  key `project_id` (`project_id`),
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
   key `debit_account` (`debit_account`),
   key `credit_account` (`credit_account`),
+  constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`),
   constraint foreign key (`debit_account`) references `account` (`id`),
@@ -849,7 +851,7 @@ create table `posting_session` (
 drop table if exists `posting_journal`;
 create table `posting_journal` (
   `uuid`              char(36) not null,
-  `enterprise_id`     smallint unsigned not null,
+  `project_id`        smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned, -- not null,
   `period_id`         mediumint unsigned, -- not null,
   `trans_id`          int unsigned not null,
@@ -870,7 +872,7 @@ create table `posting_journal` (
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
   primary key (`uuid`),
-  key `enterprise_id` (`enterprise_id`),
+  key `project_id` (`project_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
   key `period_id` (`period_id`),
   key `origin_id` (`origin_id`),
@@ -879,7 +881,7 @@ create table `posting_journal` (
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
   constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on update cascade,
+  constraint foreign key (`project_id`) references `project` (`id`) on update cascade,
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade
 ) engine=innodb;
@@ -890,7 +892,7 @@ create table `posting_journal` (
 drop table if exists `general_ledger`;
 create table `general_ledger` (
   `uuid`              char(36) not null,
-  `enterprise_id`     smallint unsigned not null,
+  `project_id`        smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
   `trans_id`          int unsigned not null,
@@ -912,7 +914,7 @@ create table `general_ledger` (
   `user_id`           smallint unsigned not null,
   `session_id`        int unsigned not null,
   primary key (`uuid`),
-  key `enterprise_id` (`enterprise_id`),
+  key `project_id` (`project_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
   key `period_id` (`period_id`),
   key `origin_id` (`origin_id`),
@@ -922,7 +924,7 @@ create table `general_ledger` (
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
   constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on update cascade,
+  constraint foreign key (`project_id`) references `project` (`id`) on update cascade,
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade,
   constraint foreign key (`session_id`) references `posting_session` (`id`) on update cascade
@@ -959,7 +961,7 @@ create table `kpk`.`period_total` (
 drop table if exists `group_invoice`;
 create table `group_invoice` (
 	uuid            char(36) not null,
-  enterprise_id   smallint unsigned not null,
+  project_id      smallint unsigned not null,
 	debitor_uuid    char(36) not null,
 	group_uuid      char(36) not null,
   note            text,
@@ -968,10 +970,10 @@ create table `group_invoice` (
   total           decimal(14, 4) not null default 0,
 	primary key (`uuid`),
 	key `debitor_uuid` (`debitor_uuid`),
-  key `enterprise_id` (`enterprise_id`),
+  key `project_id` (`project_id`),
 	key `group_uuid` (`group_uuid`),
 	constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`project_id`) references `project` (`id`),
 	constraint foreign key (`group_uuid`) references `debitor_group` (`uuid`)
 ) engine=innodb;
 
