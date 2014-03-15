@@ -34,6 +34,7 @@
               <td>{{user.email}}</td>
               <td ng-click="editInfo(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button></td>
               <td ng-click="editPermission(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-cog"></i></button></td>
+              <td ng-click="editProjects(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-home"></i></button></td>
               <td ng-click="removeUser(user)"><button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button></td>
             </tr>
           </tbody>
@@ -183,13 +184,40 @@
         </form>
       </div>
 
+      <div ng-switch-when="project">
+        <div class="col-xs-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span>{{ "PERMISSION.PROJECTS" | translate }}</span>
+              <span class="pull-right">
+                <button ng-click="saveProjects()">
+                  <span class="glyphicon glyphicon-floppy"></span> {{ "FORM.SAVE" | translate }}
+                </button>
+              </span>
+            </div>
+            <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
+              <input type="checkbox" ng-model="all.projects">
+              {{ "PERMISSION.ALL" | translate }}
+            </label>
+            <ul class="k-list" style="margin-left: 25px;">
+              <li ng-repeat="project in projects.data">
+                <label class="checkbox">
+                  <input type="checkbox" ng-model="project.checked">
+                  {{ project.name }}
+                </label>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div ng-switch-when="permission">
         <div class="col-xs-6">
           <div class="panel panel-default">
             <div class="panel-heading">
               <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
-                <button ng-disabled="!permission.permission_change" ng-click="savePermissions()">
+                <button ng-disabled="!data.permission_change" ng-click="savePermissions()">
                   <span class="glyphicon glyphicon-floppy"></span> {{ "FORM.SAVE" | translate }}
                 </button>
               </span>

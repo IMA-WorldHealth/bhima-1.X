@@ -49,6 +49,7 @@ module.exports = function (db) {
     
       id = sanitize.escape(user.id);
       sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=' + id;
+      
 
       db.execute(sql, function (err, results) {
         if (err) { return next(err); }
@@ -66,10 +67,27 @@ module.exports = function (db) {
           }
           req.session.authenticated = true;
           req.session.user_id = user.id;
+
           req.session.paths = results.map(function (row) {
             return row.url;
           });
-          return res.redirect('/');
+
+          sql =
+            "SELECT `project`.`id`, `project`.`name`, `project`.`abbr` " +
+            "FROM `project` JOIN `project_permission` " +
+            "ON `project`.`id` = `project_permission`.`project_id` " +
+            "WHERE `project_permission`.`user_id` = " + sanitize.escape(req.session.user_id) + ";";
+          
+          db.execute(sql, function (err, results) {
+            if (err) { return next(err); }
+            if (results.length === 1) {
+              req.session.project_id = results[0].id;
+              res.redirect('/');
+            } else {
+              return res.sendfile('./app/project.html');
+            }
+          });
+
         });
       });
     });

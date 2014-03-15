@@ -13,7 +13,6 @@ angular.module('kpk.controllers')
     $scope.accounts = accountModel;
 
     $scope.submit = function () {
-
       var clean = connect.clean($scope.group);
       clean.uuid = uuid();
       connect.basicPut('inventory_group', [connect.clean(clean)])

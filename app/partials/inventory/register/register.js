@@ -45,7 +45,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-  
+ 
     dependencies.inventory = {
       query : {
         identifier : 'uuid',
@@ -98,19 +98,18 @@ angular.module('kpk.controllers')
     $scope.submit = function () {
       var packaged = connect.clean($scope.item);
       packaged.uuid = uuid();
-      
+     
       packaged.enterprise_id = $scope.enterprise.id;
-      console.log($scope.inventory.$valid);
       // if ($scope.inventory.$valid) {
-        connect.basicPut('inventory', [packaged])
-        .then(function (result) {
-          // $scope.item.uuid = packated.uuid;
-          // $scope.inventory.post($scope.item);
-          messenger.success('Posted item successfully');
-        }, function (err) {
-          messenger.danger('An error occured' + err);
-        });
-        $scope.reset();
+      connect.basicPut('inventory', [packaged])
+      .then(function (result) {
+        // $scope.item.uuid = packated.uuid;
+        // $scope.inventory.post($scope.item);
+        messenger.success('Posted item successfully');
+      }, function (err) {
+        messenger.danger('An error occured' + err);
+      });
+      $scope.reset();
       // } else {
         // for (var k in $scope.inventory) {
           // if ($scope.inventory[k].$invalid) {
@@ -161,6 +160,5 @@ angular.module('kpk.controllers')
       }, function () {
       });
     };
-
   }
 ]);

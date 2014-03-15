@@ -83,6 +83,14 @@ angular.module('kpk.controllers')
       }
     };
 
+    var queryProject = {
+      'tables' : {
+        'project' : {
+          'columns' : ['id', 'name', 'abbr']
+        }
+      }
+    };
+
    
     function settupApplication() {
       var url = $location.url();
@@ -153,6 +161,11 @@ angular.module('kpk.controllers')
 
     function setCurrency(result) {
       if (result) { appstate.set('currency', result.data); }
+      return connect.fetch(queryProject);
+    }
+
+    function setProject(result) {
+      if (result) { appstate.set('project', result[0]); }
     }
 
     function handleError(error) {

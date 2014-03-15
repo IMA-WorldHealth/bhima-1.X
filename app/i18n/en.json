@@ -51,6 +51,8 @@
 
   "PERMISSION" : {
     "TITLE" : "Users & Permissions Management",
+    "ALL" : "All",
+    "PROJECTS" : "Projects",
     "PERMISSIONS" : "Permissions",
     "ADD" : "Add a New User",
     "REGISTERED" : "Registered Users",

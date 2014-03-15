@@ -92,6 +92,7 @@ INSERT INTO `permission` (`user_id`, `unit_id`) values
   (1, 1),
   (1, 4);
 
+
 -- Configure locations
 -- FIXME any locations with names with brackets (3 or 4 counties are corrupt)
 INSERT INTO `country` (uuid, code, country_en, country_fr) values
@@ -639,6 +640,15 @@ INSERT INTO `fiscal_year` VALUES
 (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014,NULL,0);
 INSERT INTO `period` VALUES
 (1,1,0,'2014-01-01','2014-01-01',0),(2,1,1,'2014-01-01','2014-01-31',0),(3,1,11,'2014-02-01','2014-02-28',0),(4,1,21,'2014-03-01','2014-03-31',0),(5,1,31,'2014-04-01','2014-04-30',0),(6,1,41,'2014-05-01','2014-05-31',0),(7,1,51,'2014-06-01','2014-06-30',0),(8,1,61,'2014-07-01','2014-07-31',0),(9,1,71,'2014-08-01','2014-08-31',0),(10,1,81,'2014-09-01','2014-09-30',0),(11,1,91,'2014-10-01','2014-10-31',0),(12,1,101,'2014-11-01','2014-11-30',0),(13,1,111,'2014-12-01','2014-12-31',0);
+
+-- configure projects
+INSERT INTO `project` (`id`, `name`, `abbr`, `enterprise_id`) values
+  (1, 'IMCK Hopital Bon Berger', 'HBB', 200),
+  (2, 'IMCK PAX Clinic', 'PAX', 200);
+
+INSERT INTO `project_permission` (`user_id`, `project_id`) values
+  (1, 1),
+  (1, 2);
 
 -- Configure base chart of accounts
 INSERT INTO `account_type` values
