@@ -1,45 +1,42 @@
-angular.module('kpk.controllers').controller('updateStock', function ($scope, $filter, validate, connect, messenger) { 
+angular.module('kpk.controllers')
+.controller('updateStock', function ($scope, $filter, validate, connect, messenger) {
   var dependencies = {}, selectedStock;
-  var session = $scope.session = { 
+  var session = $scope.session = {
     search: true
   };
 
-  dependencies.inventory = { 
-    query : { 
+  dependencies.inventory = {
+    query : {
       identifier : 'uuid',
-      tables : { 
+      tables : {
         inventory : { columns : ['uuid', 'code', 'text', 'price', 'group_uuid', 'unit_id'] }
-                    // origin_stamp
       }
     }
   };
 
-  dependencies.history = { 
-    query : { 
-      tables : { 
-        inventory_log : { 
-          columns : ['uuid', 'log_timestamp', 'price', 'code', 'text'] 
+  dependencies.history = {
+    query : {
+      tables : {
+        inventory_log : {
+          columns : ['uuid', 'log_timestamp', 'price', 'code', 'text']
         }
       }
     }
-  }
+  };
 
   validate.process(dependencies, ['inventory']).then(updateStock);
 
-  function updateStock(model) { 
+  function updateStock(model) {
     $scope.model = model;
-    console.log(model);
   }
 
-  function selectStock(id) { 
-    console.log('got', id);
-    selectedStock = $scope.selectedStock = $scope.model.inventory.get(id);
+  function selectStock(uuid) {
+    selectedStock = $scope.selectedStock = $scope.model.inventory.get(uuid);
     $scope.cachePrice = angular.copy(selectedStock.price);
-
   }
 
-  function loadStock(id) { 
-    session.search = false; 
+  function loadStock(id) {
+    session.search = false;
     dependencies.history.query.where = ['inventory_log.inventory_uuid=' + selectedStock.uuid];
     validate.refresh(dependencies, ['history']);
 
@@ -48,29 +45,28 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
   }
 
   // function displayHistory(model) {}
-  
-  function refreshSession() { 
+
+  function refreshSession() {
     session.search = true;
     selectedStock = $scope.selectedStock = null;
     $scope.session.stockSearch = '';
   }
 
-  function submitUpdate() { 
+  function submitUpdate() {
     var updateLine = connect.clean(selectedStock);
-    
-    // basic validation 
+
+    // basic validation
     if(isNaN(Number(updateLine.price))) return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_PRICE'));
-    
+
     // if(updateLine.code==='') return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_CODE'));
     // if(updateLine.text==='') return messenger.danger($filter('translate')('UPDATE_STOCK.INVALID_TEXT'));
-    
-    console.log(selectedStock, updateLine);
-    connect.basicPost('inventory', [updateLine], ['uuid']).then(function (res) { 
+
+    connect.basicPost('inventory', [updateLine], ['uuid']).then(function (res) {
       messenger.success($filter('translate')('UPDATE_STOCK.UPDATE_SUCCESS'));
       $scope.cachePrice = angular.copy(selectedStock.price);
       validate.refresh(dependencies, ['history']);
-    }, function (err) { 
-      messenger.danger($filter('translate')('UPDATE_STOCK.UPDATE_FAILUER'));  
+    }, function (err) {
+      messenger.danger($filter('translate')('UPDATE_STOCK.UPDATE_FAILUER'));
     });
   }
 

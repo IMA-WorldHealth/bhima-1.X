@@ -583,6 +583,8 @@
 
   "PERMISSION" : {
     "TITLE" : "Gestion des Utilisateurs & Permissions",
+    "ALL" : "Tous",
+    "PROJECTS" : "Projets",
     "PERMISSIONS" : "Permissions",
     "ADD" : "Ajouter Utilisateur",
     "REGISTERED" : "Utilisateurs Enregistes",

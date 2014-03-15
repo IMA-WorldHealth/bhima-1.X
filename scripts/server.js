@@ -19,6 +19,7 @@ var parser       = require('./lib/database/parser')(),
 // import middleware
 var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
     authenticate = require('./lib/auth/authentication')(db),
+    projects     = require('./lib/auth/projects')(db),
     errorHandler = require('./lib/error/handler');
 
 // import routes
@@ -37,8 +38,11 @@ app.configure(function () {
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
   app.use(express.session(cfg.session));
+  app.use('/css', express.static('app/css', {maxAge:10000}));
+  app.use('/lib', express.static('app/lib', {maxAge:10000}));
   app.use(authenticate);
   app.use(authorize);
+  app.use(projects);
   app.use(express.static(cfg.static, {maxAge : 10000}));
   app.use(app.router);
   app.use(errorHandler);
@@ -107,11 +111,16 @@ app.get('/trial/', function (req, res, next) {
   });
 });
 
+
 app.get('/post/:key', function (req, res, next) {
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
   });
+});
+
+app.get('/currentProject', function (req, res, next) {
+
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
