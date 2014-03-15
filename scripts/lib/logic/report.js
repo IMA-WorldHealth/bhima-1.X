@@ -215,7 +215,7 @@ module.exports = function (db) {
       "sale.note, sale.posted, credit_note.uuid as 'creditId', credit_note.description as 'creditDescription', " +
       "credit_note.posted as 'creditPosted', first_name, last_name " +
       "FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid " +
-      "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid;";
+      "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid ORDER BY sale.invoice_date DESC;";
 
     db.execute(requestSql, function(error, result) {
       if(error) return deferred.reject(error);

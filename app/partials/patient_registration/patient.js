@@ -18,37 +18,37 @@ angular.module('kpk.controllers')
     $scope.assignation = {};
     $scope.sessionProperties = {};
     $scope.patient = {};
- 
+
     dependencies.debtorGroup = {
-      query : { 
+      query : {
         identifier : 'uuid',
         tables : {'debitor_group' : {'columns' : ['uuid', 'name', 'note']}}
       }
     };
 
     dependencies.village = {
-      query : { 
+      query : {
         identifier : 'uuid',
         tables : { 'village' : { 'columns' : ['uuid', 'name', 'sector_uuid'] }}
       }
     };
 
     dependencies.sector = {
-      query : { 
-        identifier : 'uuid', 
+      query : {
+        identifier : 'uuid',
         tables : { 'sector' : { 'columns' : ['uuid', 'name', 'province_uuid'] }}
       }
     };
 
     dependencies.province = {
-      query : { 
+      query : {
         identifier : 'uuid',
         tables : { 'province' : { 'columns' : ['uuid', 'name', 'country_uuid'] }}
       }
     };
 
     dependencies.country = {
-      query : { 
+      query : {
         identifier : 'uuid',
         tables : { 'country' : { 'columns' : ['uuid', 'country_en', 'country_fr'] }}
       }
@@ -57,7 +57,7 @@ angular.module('kpk.controllers')
     dependencies.register = {
       query : 'user_session'
     };
- 
+
     function patientRegistration(model) {
       for (var k in model) { $scope[k] = model[k]; }
 
@@ -71,26 +71,26 @@ angular.module('kpk.controllers')
       // set the $scope.origin and $scope.current location variables
       ['origin', 'current']
       .forEach(function (param) {
-        $scope[param].village = $scope.village.get($scope.enterprise.location_id);
+        $scope[param].village = $scope.village.get($scope.project.location_id);
         $scope[param].sector = $scope.sector.get($scope[param].village.sector_uuid);
         $scope[param].province = $scope.province.get($scope[param].sector.province_uuid);
         $scope[param].country = $scope.country.get($scope[param].province.country_uuid);
       });
 
     }
-   
+
     function handlePatientImage() {
 
       //FIXME This is super cheeky in angular - create a directive for this
       var video = document.querySelector('#patientImage'), patientResolution = { video : { mandatory : { minWidth: 300, maxWidth: 400 } } };
-   
+
       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-   
+
       function videoError(error) {
         //throw error;
         //console.error(error);
       }
-   
+
       function handleVideo(stream) {
         video.src = window.URL.createObjectURL(stream);
       }
@@ -98,9 +98,9 @@ angular.module('kpk.controllers')
       if (navigator.getUserMedia) {
         navigator.getUserMedia(patientResolution, handleVideo, videoError);
       }
-   
+
     }
- 
+
     $scope.registerPatient = function registerPatient() {
 
       if (util.isDateAfter($scope.patient.dob, new Date())) {
@@ -169,8 +169,10 @@ angular.module('kpk.controllers')
 
       var packagePatient = connect.clean(patient);
       packagePatient.uuid = patientId;
+      packagePatient.project_id = $scope.project.id;
 
-      connect.basicPut('debitor', [packageDebtor]).then(function(result) {
+      connect.basicPut('debitor', [packageDebtor])
+      .then(function(result) {
         packagePatient.debitor_uuid = debtorId;
         return connect.basicPut('patient', [packagePatient]);
       })
@@ -181,8 +183,8 @@ angular.module('kpk.controllers')
         var packageHistory = {
           debitor_uuid : packagePatient.debitor_uuid,
           debitor_group_uuid : $scope.debtor.debtor_group.uuid,
-          user_id : $scope.register.data.id
-        }
+          user_id : 1 // FIXME: can this be done on the server?
+        };
         return connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]);
       })
       .then(function (result) {
@@ -201,18 +203,18 @@ angular.module('kpk.controllers')
     $scope.enableFullDate = function enableFullDate() {
       $scope.sessionProperties.fullDateEnabled = true;
     };
- 
+
     function handleError (err) {
       messenger.danger('An Error Occured : ' + JSON.stringify(err));
     }
 
     // invocation
 
-    appstate.register('enterprise', function(enterprise){
-      $scope.enterprise = enterprise;
+    appstate.register('project', function(project){
+      $scope.project = project;
       validate.process(dependencies)
       .then(patientRegistration, handleError);
     });
- 
+
   }
 ]);

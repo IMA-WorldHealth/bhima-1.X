@@ -481,9 +481,11 @@ create table `supplier` (
 --
 drop table if exists `patient`;
 create table `patient` (
-  `uuid`                char(36) not null,
+  `uuid`              char(36) not null,
+  `project_id`        smallint unsigned not null,
+  `reference`         int unsigned auto_increment not null, -- human readable id
   `debitor_uuid`      char(36) not null,
-  `creditor_id`       int unsigned,
+  `creditor_id`       char(36) null, -- anticipating uuids for creditors
   `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
   `dob`               date,
@@ -506,10 +508,13 @@ create table `patient` (
   `current_location_id`       char(36) not null,
   `registration_date`         timestamp null default CURRENT_TIMESTAMP,
   primary key (`uuid`),
+  key `reference` (`reference`),
+  key `project_id` (`project_id`),
   key `debitor_uuid` (`debitor_uuid`),
   key `origin_location_id` (`origin_location_id`),
   key `current_location_id` (`current_location_id`),
   unique key `creditor_id` (`creditor_id`),
+  constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`) on update cascade,
   constraint foreign key (`current_location_id`) references `village` (`uuid`) on update cascade,
   constraint foreign key (`origin_location_id`) references `village` (`uuid`) on update cascade
@@ -648,6 +653,7 @@ create table `inventory` (
 drop table if exists `sale`;
 create table `sale` (
   `project_id`    smallint unsigned not null,
+  `reference`     int unsigned not null auto_increment,
   `uuid`          char(36) not null,
   `cost`          decimal(19,4) unsigned not null,
   `currency_id`   tinyint unsigned not null,
@@ -658,6 +664,7 @@ create table `sale` (
   `note`          text,
   `posted`        boolean not null default '0',
   primary key (`uuid`),
+  key `reference` (`reference`),
   key `project_id` (`project_id`),
   key `debitor_uuid` (`debitor_uuid`),
   key `currency_id` (`currency_id`),
@@ -672,6 +679,7 @@ create table `sale` (
 drop table if exists `credit_note`;
 create table `credit_note` (
   `project_id`    smallint unsigned not null,
+  `reference`     int unsigned not null auto_increment,
   `uuid`          char(36) not null,
   `cost`          decimal(19,4) unsigned not null,
   `debitor_uuid`  char(36) not null,
@@ -681,6 +689,7 @@ create table `credit_note` (
   `description`   text,
   `posted`        boolean not null default 0,
   primary key (`uuid`),
+  key `reference` (`reference`),
   key `project_id` (`project_id`),
   key `debitor_uuid` (`debitor_uuid`),
   key `sale_uuid` (`sale_uuid`),
@@ -716,8 +725,9 @@ create table `sale_item` (
 --
 drop table if exists `purchase`;
 create table `purchase` (
-  `uuid`              char(36) not null,
   `project_id`        smallint unsigned not null,
+  `reference`         int unsigned not null auto_increment,
+  `uuid`              char(36) not null,
   `cost`              decimal(19,4) unsigned not null default '0',
   `currency_id`       tinyint unsigned not null,
   `creditor_id`       int unsigned not null,
@@ -728,9 +738,10 @@ create table `purchase` (
   `posted`            boolean not null default 1,
   primary key (`uuid`),
   key `project_id` (`project_id`),
+  key `reference` (`reference`),
   key `creditor_id` (`creditor_id`),
   key `purchaser_id` (`purchaser_id`),
-  constraint foreign key (`project_id`) references `project_id` (`id`),
+  constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`creditor_id`) references `creditor` (`id`),
   constraint foreign key (`purchaser_id`) references `user` (`id`)
 ) engine=innodb;
@@ -788,8 +799,9 @@ create table `transaction_type` (
 --
 drop table if exists `cash`;
 create table `cash` (
+  `project_id`      smallint unsigned not null,
+  `reference`       int unsigned not null auto_increment,
   `uuid`            char(36) not null,
-  `project_id`      smallint not null,
   `document_id`     int unsigned not null,
   `type`            char(1) not null,
   `date`            date not null,
@@ -804,6 +816,7 @@ create table `cash` (
   `description`     text,
   primary key (`uuid`),
   unique key (`document_id`, `type`),
+  key `reference` (`reference`),
   key `project_id` (`project_id`),
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
@@ -854,7 +867,7 @@ create table `posting_journal` (
   `project_id`        smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned, -- not null,
   `period_id`         mediumint unsigned, -- not null,
-  `trans_id`          int unsigned not null,
+  `trans_id`          text not null,
   `trans_date`        date not null,
   `doc_num`           int unsigned, -- what does this do? -- why would this be not null if we don't know what it does? -- as a reminder to ask dedrick...
   `description`       text,

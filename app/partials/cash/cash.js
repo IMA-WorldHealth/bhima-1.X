@@ -53,10 +53,10 @@ angular.module('kpk.controllers')
       }
     };
    
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
+    appstate.register('project', function (project) {
+      $scope.project = project;
       dependencies.cashboxes.query.where =
-        ['currency_account.enterprise_id=' + enterprise.id];
+        ['currency_account.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies).then(setUpModels, handleErrors);
     });
    
@@ -73,7 +73,7 @@ angular.module('kpk.controllers')
       }
      
       if (!$scope.cashbox) {
-        $scope.cashbox = $scope.cashboxes.get($scope.enterprise.currency_id);
+        $scope.cashbox = $scope.cashboxes.get($scope.project.currency_id);
       }
     }
 
@@ -169,7 +169,7 @@ angular.module('kpk.controllers')
 
       cashPayment = {
         uuid : $scope.payement_uuid,
-        enterprise_id : $scope.enterprise.id,
+        project_id : $scope.project.id,
         type : 'E',
         document_id : document_id,
         date : date,
