@@ -208,7 +208,8 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
     $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
     $scope.invoice.totalSum = 0;
-    $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
+    console.log('LEDGER', $scope.model.ledger);
+    $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
  
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
