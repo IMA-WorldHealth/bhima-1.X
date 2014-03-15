@@ -2,10 +2,17 @@ angular.module('kpk.controllers')
 .controller('reportTransactionController', [
   '$scope',
   '$q',
-  '$filter',
+  '$window',
+  'validate',
   'connect',
   'kpkUtilitaire',
-  function ($scope, $q, $filter, connect, util) {
+  function ($scope, $q, $window, validate, connect, util) {
+
+    $scope.print = function () {
+      $window.print();
+    };
+
+    $scope.search = {};
 
   //variables
 
@@ -69,7 +76,7 @@ angular.module('kpk.controllers')
             dt:$scope.data.dateTo
           };
 
-          connect.MyBasicGet('/reports/transReport/?'+JSON.stringify(qo))
+          connect.fetch('/reports/transReport/?'+JSON.stringify(qo))
           .then(function(values){
             $scope.model.transReport = values;
             doSummary(values);
@@ -88,7 +95,7 @@ angular.module('kpk.controllers')
             dt:$scope.data.dateTo
           };
 
-          connect.MyBasicGet('/reports/transReport/?'+JSON.stringify(qo))
+          connect.fetch('/reports/transReport/?'+JSON.stringify(qo))
           .then(function(values){
             $scope.model.transReport = values;
             doSummary(values);
@@ -146,7 +153,12 @@ angular.module('kpk.controllers')
       debitors =  {tables:{'debitor':{columns:['id', 'text']}, 'debitor_group':{columns:['account_id']}}, join:  ['debitor.group_id=debitor_group.id']};
       debitorGroups = {tables:{'debitor_group':{columns:['id', 'name', 'account_id']}}};
       creditorGroups = {tables:{'creditor_group':{columns:['id', 'name', 'account_id']}}};
-      $q.all([connect.req(debitors), connect.req(creditors), connect.req(debitorGroups), connect.req(creditorGroups)]).then(init);
+      $q.all([
+        connect.req(debitors),
+        connect.req(creditors),
+        connect.req(debitorGroups),
+        connect.req(creditorGroups)
+      ]).then(init);
     };
 
     var loadCreditors = function(){

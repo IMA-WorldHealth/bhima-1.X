@@ -160,27 +160,26 @@ module.exports = function (db) {
             return;
           }
           deferred.resolve(ans);
-        }); }
-        else{
+        });
+
+        } else {
           console.log('groupe vide');
           deffered.resolve(tabIds); //un tableau vide
         }
       });
     }
     return deferred.promise;
-}
-
-
+  }
 
   function debitorAging(params){
     //deferred
     var def = q.defer();
-
     //requette
-    var params = JSON.parse(params);
-    var requette = "SELECT period.id, period.period_start, period.period_stop, debitor.id as idDebitor, debitor.text, general_ledger.`debit`, general_ledger.`credit`, general_ledger.`account_id` "+
-                   "FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.id = debitor.group_id AND debitor.`id` = general_ledger.`deb_cred_id` "+
-                   "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`='"+params.fiscal_id+"'";
+    params = JSON.parse(params);
+    var requette =
+      "SELECT period.id, period.period_start, period.period_stop, debitor.uuid as idDebitor, debitor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id " +
+      "FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.uuid = debitor.group_uuid AND debitor.uuid = general_ledger.deb_cred_uuid " +
+      "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`='"+params.fiscal_id +"'";
 
     db.execute(requette, function(err, ans) {
       if(err) {
@@ -323,7 +322,6 @@ module.exports = function (db) {
       'finance'          : finance,
       'transReport'      : transReport,
       'debitorAging'     : debitorAging,
-      'accountStatement' : accountStatement,
       'saleRecords'      : saleRecords,
       'patients'         : patientRecords,
       'payments'         : paymentRecords,

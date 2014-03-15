@@ -28,8 +28,7 @@ var report       = require('./lib/logic/report')(db),
     journal      = require('./lib/logic/journal')(db),
     ledger       = require('./lib/logic/ledger')(db),
     fiscal       = require('./lib/logic/fiscal')(db),
-    createSale   = require('./lib/logic/createSale')(db, parser, journal),
-    rt           = require('./lib/logic/rt')(db);
+    createSale   = require('./lib/logic/createSale')(db, parser, journal);
 
 var uuid         = require('./lib/util/guid');
 
@@ -326,17 +325,6 @@ app.get('/province/', function (req, res, next) {
   });
 });
 
-app.get('/debitorAgingPeriod', function (req, res, next){
-  var sql =
-    "SELECT DISTINCT period.id, period.period_start, period.period_stop " +
-    "FROM period, general_ledger " +
-    "WHERE period.id = general_ledger.`period_id`;";
-  db.execute(sql, function (err, rows) {
-    if (err) next(err);
-    res.send(rows);
-  });
-});
-
 // FIXME : make this code more modular
 app.get('/visit/:patient_id', function (req, res, next) {
   var patient_id = req.params.patient_id;
@@ -347,55 +335,6 @@ app.get('/visit/:patient_id', function (req, res, next) {
     if (err) return next(err);
     res.send();
   });
-});
-
-app.get('/registrations/:id/:from/:to', function (req, res, next) {
-  var from = new Date(req.params.from),
-      to = new Date(req.params.to),
-      id = req.params.id;
-
-  var sql =
-    "SELECT patient.id, debitor_id, first_name, last_name, dob, father_name, " +
-      "sex, religion, renewal, registration_date, date " +
-    "FROM `patient` JOIN `patient_visit` ON " +
-    "`patient`.`id`=`patient_visit`.`patient_id` " +
-    "WHERE `date` > " + sanitize.escape(from.toISOString().slice(0,10)) + " AND " +
-    " `date` < " + sanitize.escape(to.toISOString().slice(0,10)) + ";";
-
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
-    res.send(rows);
-  });
-});
-
-app.get('/account_balance/:id', function (req, res, next) {
-  // FIXME: put this in a module!
-  var enterprise_id = req.params.id;
-
-  var sql = 'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
-    '(' +
-      'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
-      'FROM account LEFT JOIN period_total ' +
-      'ON account.id=period_total.account_id ' +
-      'WHERE account.enterprise_id=' + sanitize.escape(enterprise_id) +
-    ') ' +
-    'AS temp JOIN account_type ' +
-    'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
-
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
-    res.send(rows);
-  });
-});
-
-// routes for real time queries on invoices, inventory items, etc.
-app.get('/rt/:type/:id/:start/:end', function (req, res, next) {
-
-  rt(req.params.type, req.params.id, req.params.start, req.params.end, function (err, data) {
-    if (err) { return next(err); }
-    res.send(data);
-  });
-
 });
 
 app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
