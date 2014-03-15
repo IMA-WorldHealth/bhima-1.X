@@ -207,12 +207,17 @@ angular.module('kpk.controllers')
       var confirmed = confirm($filter('translate')('PRICE_LIST.DELETE_CONFIRM'));
       if(!confirmed) return;
 
-      connect.basicDelete('price_list', list.id, 'uuid')
+      connect.basicDelete('price_list', list.uuid, 'uuid')
       .then(function(v){
         if (v.status === 200){
           $scope.model.priceList.remove(list.uuid);
           messenger.success($filter('translate')('PRICE_LIST.REMOVE_SUCCESS'));
         }
+      }, function(error) { 
+        //FIXME Temporary 
+        if (error.status===500) { 
+          messenger.danger($filter('translate')('PRICE_LIST.UNABLE_TO_DELETE'), 6000);
+        };
       });
     }
 

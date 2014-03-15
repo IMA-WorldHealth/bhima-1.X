@@ -220,12 +220,13 @@
       };
     }])
 
-    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', function($compile, validate, messenger, connect) {
+    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', 'appcache', function($compile, validate, messenger, connect, appcache) {
       return {
         restrict: 'A',
         link : function(scope, element, attrs) {
           var dependencies = {}, debtorList = scope.debtorList = [];
           var searchCallback = scope[attrs.onSearchComplete];
+          var cache = new appcache('patientSearchDirective');
 
           if(!searchCallback) throw new Error('Patient Search directive must implement data-on-search-complete');
       
@@ -253,8 +254,8 @@
           '     <div ng-switch-when="false">'+
           '       <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}'+
           '       <div class="pull-right">'+
-          '         <a id="findById" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
-          '         <a id="findByName" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
+          '         <a id="findById" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.updateState(\'id\')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
+          '         <a id="findByName" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
           '       </div>'+
           '     </div>'+
           '     <div ng-switch-when="true">'+
@@ -308,6 +309,7 @@
          
           //TODO Downloads all patients for now - this should be swapped for an asynchronous search
           validate.process(dependencies).then(findPatient);
+          cache.fetch('cacheState').then(loadDefaultState);
 
           function findPatient(model) {
             scope.findPatient.model = model;
@@ -386,7 +388,16 @@
             scope.findPatient.submitSuccess = false;
             scope.findPatient.debtor = "";
           }
-        
+          
+          function updateState(newState) { 
+            scope.findPatient.state = newState; 
+            cache.put('cacheState', {state: newState});
+          }
+          
+          // FIXME Configure component on this data being available, avoid glitching interface
+          function loadDefaultState(defaultState) { 
+            if(defaultState) return scope.findPatient.state = defaultState.state;
+          }
 
           // Expose selecting a debtor to the module (probabl a hack)(FIXME)
           scope.findPatient.forceSelect = searchId;
@@ -394,6 +405,8 @@
           scope.validateNameSearch = validateNameSearch;
           scope.findPatient.refresh = resetSearch;
           scope.submitDebtor = submitDebtor;
+
+          scope.findPatient.updateState = updateState;
           element.replaceWith($compile(template)(scope));
         }
       };

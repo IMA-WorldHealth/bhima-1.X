@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $q, connect, validate, appstate, messenger) {
+  'uuid',
+  function ($scope, $q, connect, validate, appstate, messenger, uuid) {
 
     //variables init
     var dependencies = {},
@@ -21,20 +22,20 @@ angular.module('kpk.controllers')
     dependencies.patient_group = {
       required : true,
       query : {
-        tables : { 'patient_group':{ columns: ["id", "name"]}}
+        tables : { 'patient_group':{ columns: ["uuid", "name"]}}
       }
     };
 
-    dependencies.patient = {
-      required : true,
-      query : {
-        tables : {'patient':{columns:['id', 'first_name', 'last_name', 'dob']}}
-      }
-    };
+    // dependencies.patient = {
+    //   required : true,
+    //   query : {
+    //     tables : {'patient':{columns:['uuid', 'first_name', 'last_name', 'dob']}}
+    //   }
+    // };
 
     dependencies.assignation_patient = {
       query : {
-        tables : { 'assignation_patient':{ columns: ["id", "patient_group_id", "patient_id"]}}
+        tables : { 'assignation_patient':{ columns: ["uuid", "patient_group_uuid", "patient_uuid"]}}
       }
     };
     
@@ -80,8 +81,8 @@ angular.module('kpk.controllers')
 
       models.patient_group.forEach(function (pg){
         $scope.assignation_patient.data.forEach(function (ap){
-          if (ap.patient_id === $scope.patient.id &&
-              ap.patient_group_id === pg.id) {
+          if (ap.patient_uuid === $scope.patient.uuid &&
+              ap.patient_group_uuid === pg.uuid) {
             pg.checked = true;
           }
         });
@@ -107,12 +108,12 @@ angular.module('kpk.controllers')
     function save (){
       var tapon=[]; //will contain data witch will be inserted
 
-      connect.basicDelete('assignation_patient', $scope.patient.id, 'patient_id')
+      connect.basicDelete('assignation_patient', $scope.patient.uuid, 'patient_uuid')
       .then(function (v){
 
         if (v.status === 200) {
           $scope.assignation_patient.data = $scope.assignation_patient.data.filter(function (item){
-            return item.patient_id !== $scope.patient.id;
+            return item.patient_uuid !== $scope.patient.uuid;
           });
           var ass_patient = [];
       
@@ -121,7 +122,7 @@ angular.module('kpk.controllers')
           });
 
           pg_checked.forEach(function(item){
-            ass_patient.push({patient_group_id : item.id, patient_id : $scope.patient.id});
+            ass_patient.push({uuid: uuid(), patient_group_uuid : item.uuid, patient_uuid : $scope.patient.uuid});
           });
 
           $q.all(
@@ -144,7 +145,7 @@ angular.module('kpk.controllers')
     }
 
     function checking(){
-      if($scope.patient.id && ($scope.all || decision())){
+      if($scope.patient.uuid && ($scope.all || decision())){
         save();
       }else{
         messenger.danger('Select a patient and Check at least one check box');
