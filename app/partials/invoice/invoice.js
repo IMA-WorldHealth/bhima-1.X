@@ -19,7 +19,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     query: {
       tables: {},
       // where: [origin + '.id=' + invoiceId]
-      where: ['sale.id=' + invoiceId]
+      where: ['sale.uuid=' + invoiceId]
     }
   };
 
@@ -40,7 +40,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
 
   // dependencies.invoice.query.tables[origin] = {
   dependencies.invoice.query.tables['sale'] = {
-    columns: ['id', 'cost', 'currency_id', 'debitor_id', 'seller_id', 'invoice_date', 'note']
+    columns: ['uuid', 'cost', 'currency_id', 'debitor_uuid', 'seller_id', 'invoice_date', 'note']
   };
 
   //TODO sale_item hardcoded - have a map form originId to table name, item table name, recipient table name
@@ -48,17 +48,17 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     required: true,
     query: {
       tables: {},
-      join: ['sale_item.inventory_id=inventory.id'],
-      where: ['sale_item.sale_id=' + invoiceId]
+      join: ['sale_item.inventory_uuid=inventory.uuid'],
+      where: ['sale_item.sale_uuid=' + invoiceId]
     }
   };
 
   dependencies.invoiceItem.query.tables['inventory'] = {
-    columns: ['id', 'code', 'text']
+    columns: ['uuid', 'code', 'text']
   };
 
   dependencies.invoiceItem.query.tables['sale_item'] = {
-    columns: ['id', 'quantity', 'debit', 'credit', 'transaction_price', 'sale_id']
+    columns: ['uuid', 'quantity', 'debit', 'credit', 'transaction_price', 'sale_uuid']
   };
 
   dependencies.location = {
@@ -79,7 +79,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       required: true,
       query:  {
         tables: {
-          cash: { columns: ['id', 'date', 'cost', 'deb_cred_id', 'currency_id'] },
+          cash: { columns: ['id', 'date', 'cost', 'deb_cred_uuid', 'currency_id'] },
           cash_item: { columns: ['cash_id', 'allocated_cost', 'invoice_id'] }
         },
         join: ['cash_item.cash_id=cash.id'],
@@ -181,7 +181,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       columns: ['first_name', 'last_name', 'dob', 'current_location_id']
     };
 
-    dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_id;
+    dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
     return validate.process(dependencies, ['recipient']).then(buildLocationQuery);
   }
 
@@ -200,13 +200,16 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     console.log($scope.model);
 
     $scope.session = {};
+    console.log('session', $scope.session, 'model', model);
     $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
+    console.log('currentcurr', $scope.session.currentCurrency);
     routeCurrencyId = $scope.session.currentCurrency.currency_id;
   
     //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
     $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
     $scope.invoice.totalSum = 0;
-    $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
+    console.log('LEDGER', $scope.model.ledger);
+    $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
  
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];

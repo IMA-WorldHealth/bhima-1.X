@@ -35,9 +35,9 @@ angular.module('kpk.controllers')
     };
 
     dependencies.inventory_group = {
-      required: true,
+      // required: true,
       query : {
-        identifier: 'uuid',
+        identifier : 'uuid',
         tables: {
           'inventory_group': {
             columns: ['uuid', 'name', 'code', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']
@@ -45,7 +45,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-  
+ 
     dependencies.inventory = {
       query : {
         identifier : 'uuid',
@@ -96,14 +96,15 @@ angular.module('kpk.controllers')
     };
 
     $scope.submit = function () {
-      $scope.item.enterprise_id = $scope.enterprise.id;
+      var packaged = connect.clean($scope.item);
+      packaged.uuid = uuid();
+     
+      packaged.enterprise_id = $scope.enterprise.id;
       // if ($scope.inventory.$valid) {
-      var item = connect.clean($scope.item);
-      item.enterpise_id = $scope.enteprise.id;
-      item.uuid = uuid();
-      connect.basicPut('inventory', [item])
-      .then(function () {
-        $scope.inventory.post(item);
+      connect.basicPut('inventory', [packaged])
+      .then(function (result) {
+        // $scope.item.uuid = packated.uuid;
+        // $scope.inventory.post($scope.item);
         messenger.success('Posted item successfully');
       }, function (err) {
         messenger.danger('An error occured' + err);
@@ -153,6 +154,7 @@ angular.module('kpk.controllers')
       });
 
       instance.result.then(function (model) {
+        model.uuid = uuid();
         $scope.inventory_group.post(model);
         messenger.success('Submitted Successfully');
       }, function () {

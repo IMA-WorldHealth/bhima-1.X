@@ -13,8 +13,8 @@ angular.module('kpk.controllers').controller('renewal', function($scope, $filter
   
   function submitRenewal(sessionPatient) {
     patientRenewed = $scope.patientRenewed = true; 
-
-    connect.fetch('/visit/' + sessionPatient.id).then(function(res) { 
+      
+    connect.fetch('/visit/\"' + sessionPatient.uuid + '\"').then(function(res) { 
       console.log('visit logged');
 
       //Patient visit has been logged 

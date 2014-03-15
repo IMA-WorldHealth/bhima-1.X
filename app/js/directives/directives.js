@@ -176,7 +176,7 @@
             '<ul>' +
               '<li data-ng-repeat="node in ' + treeModel + '">' +
                 '<i name="{{node.' + nodeLabel + '}}" ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed}" class="glyphicon" data-ng-click="' + treeId + '.selectNodeHead(node)"></i> ' +
-                '<i class="normal glyphicon glyphicon-file" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
+                '<i class="normal glyphicon glyphicon-file" data-ng-hide="node.' + nodeChildren + '.length" data-ng-click="' + treeId + '.selectNodeHead(node)"></i> ' +
                 '<span name="{{node.'  + nodeLabel + '}}" data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + ' | translate }}</span>' +
                 '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
               '</li>' +
@@ -190,15 +190,26 @@
             if (attrs.angularTreeview) {
               scope[treeId] = scope[treeId] || {};
               scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
+  
+                // Select nodes without children
+                if(!selectedNode.has_children) return scope[treeId].selectNodeLabel(selectedNode);
+                
                 selectedNode.collapsed = !selectedNode.collapsed;
              
-                //update store
+                // Update cache
                 cache.put(selectedNode.unit_id, {collapsed: selectedNode.collapsed});
               };
               scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
+            
+                // Open nodes with children
+                if (selectedNode.has_children) return scope[treeId].selectNodeHead(selectedNode);
+              
+                // Close previous node
                 if (scope[treeId].currentNode && scope[treeId].currentNode.selected) {
                   scope[treeId].currentNode.selected = undefined;
                 }
+
+                // Select current (non-parent) node
                 selectedNode.selected = 'selected';
                 scope[treeId].currentNode = selectedNode;
               };
@@ -209,12 +220,13 @@
       };
     }])
 
-    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', function($compile, validate, messenger, connect) {
+    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', 'appcache', function($compile, validate, messenger, connect, appcache) {
       return {
         restrict: 'A',
         link : function(scope, element, attrs) {
           var dependencies = {}, debtorList = scope.debtorList = [];
           var searchCallback = scope[attrs.onSearchComplete];
+          var cache = new appcache('patientSearchDirective');
 
           if(!searchCallback) throw new Error('Patient Search directive must implement data-on-search-complete');
       
@@ -242,8 +254,8 @@
           '     <div ng-switch-when="false">'+
           '       <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}'+
           '       <div class="pull-right">'+
-          '         <a id="findById" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.state=\'id\'" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
-          '         <a id="findByName" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.state=\'name\'" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
+          '         <a id="findById" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.updateState(\'id\')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
+          '         <a id="findByName" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
           '       </div>'+
           '     </div>'+
           '     <div ng-switch-when="true">'+
@@ -297,6 +309,7 @@
          
           //TODO Downloads all patients for now - this should be swapped for an asynchronous search
           validate.process(dependencies).then(findPatient);
+          cache.fetch('cacheState').then(loadDefaultState);
 
           function findPatient(model) {
             scope.findPatient.model = model;
@@ -375,7 +388,16 @@
             scope.findPatient.submitSuccess = false;
             scope.findPatient.debtor = "";
           }
-        
+          
+          function updateState(newState) { 
+            scope.findPatient.state = newState; 
+            cache.put('cacheState', {state: newState});
+          }
+          
+          // FIXME Configure component on this data being available, avoid glitching interface
+          function loadDefaultState(defaultState) { 
+            if(defaultState) return scope.findPatient.state = defaultState.state;
+          }
 
           // Expose selecting a debtor to the module (probabl a hack)(FIXME)
           scope.findPatient.forceSelect = searchId;
@@ -383,6 +405,8 @@
           scope.validateNameSearch = validateNameSearch;
           scope.findPatient.refresh = resetSearch;
           scope.submitDebtor = submitDebtor;
+
+          scope.findPatient.updateState = updateState;
           element.replaceWith($compile(template)(scope));
         }
       };

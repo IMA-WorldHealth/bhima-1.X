@@ -659,8 +659,8 @@
     "EDITED_SUCCES"  : "Successfully edited price list",
     "POSTED" :"Posted new price list!",
     "DELETE_CONFIRM" : "Are you sure, to erase ?",
-    "REMOVE_SUCCESS" : "Erased succefully !"
-
+    "REMOVE_SUCCESS" : "Erased succefully !",
+    "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups"
   },
 
   "UNIT_TYPE" : {
@@ -698,7 +698,7 @@
   "FIND" : {
     "TITLE" : "Find a patient",
     "ENTER_DEBTOR_ID" : "Find By Debtor ID",
-    "PLACEHOLDER" : "Debitor ID",
+    "PLACEHOLDER" : "Search patient name",
     "SEARCH" : "Find by Name"
   },
 
