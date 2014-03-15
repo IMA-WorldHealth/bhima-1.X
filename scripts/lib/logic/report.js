@@ -5,124 +5,94 @@
  *   Reports currently joining accounts with account group and collection to get account group information, two things:
  *     -should the client download these two table seperately and filter on the grid, this avoids 3 joins
  *     -should the entire string of the account group titles be sent and grouped on - or just the ID (with a further look up for the title), grouping may be more expensive with large strings
- * 
+ *
  */
 
-var q = require('q');
+var q = require('q'),
+    querystring = require('querystring'),
+    util = require('../util/util'),
+    sanitize = require('../util/sanitize');
 
-module.exports = (function (db) { 
+module.exports = function (db) {
   'use strict';
 
-  function generate(request, params, callback) { 
-    /*summary 
-    *   Route request for reports, if no report matches given request, return null  
-    */
-    var route = {
-      'finance'         : finance,
-      'stock'           : stock,
-      'transReport'     : transReport,
-      'debitorAging'    : debitorAging,
-      'accountStatement' : accountStatement,
-      'saleRecords'     : saleRecords
-    };
-    
-    console.log('server debug', request, params);
-    route[request](params)
-    .then(
-    function(report) { callback(report); },
-    function(err) { callback(null, err); });
+  function buildFinanceQuery(requiredFiscalYears) {
+    //TODO currently joins two very seperate querries and just extracts columns from both, these should
+    //be combined and calculations (SUM etc.) performed on the single joined table
+
+    var query = [],
+        budgetColumns = [],
+        realisationColumns = [],
+        selectColumns = [],
+        differenceColumns = [];
+
+    requiredFiscalYears.forEach(function(fiscal_year) {
+      selectColumns.push("budget_result.budget_" + fiscal_year);
+      selectColumns.push("period_result.realisation_" + fiscal_year);
+      budgetColumns.push("SUM(case when period.fiscal_year_id = " + fiscal_year +" then budget.budget else 0 end) AS `budget_" + fiscal_year + "`");
+      realisationColumns.push("(SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.debit else 0 end) - SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.credit else 0 end)) AS `realisation_" + fiscal_year + "`");
+      differenceColumns.push("(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_" + fiscal_year + "`");
+    });
+
+    query = [
+      "SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id,",
+      selectColumns.join(","),
+      ",",
+      differenceColumns.join(","),
+      // ",(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_1`",
+      "FROM",
+      "(SELECT budget.account_id,",
+      budgetColumns.join(","),
+      "FROM budget inner join period ON",
+      "period.id = budget.period_id",
+      // "fiscal_year_id = 1",
+      "GROUP BY budget.account_id)",
+      "AS `budget_result`",
+      "LEFT JOIN",
+      "(SELECT period_total.account_id,",
+      realisationColumns.join(","),
+      "FROM period_total",
+      "group by period_total.account_id)",
+      "AS `period_result`",
+      "ON budget_result.account_id = period_result.account_id",
+      "LEFT JOIN",
+      "account ON account.id = budget_result.account_id",
+      "GROUP BY account.id;"
+    ];
+
+    return query.join(' ');
   }
 
-  function finance(reportParameters) { 
-    var requiredFiscalYears, initialQuery, deferred = q.defer(), financeParams = JSON.parse(reportParameters); 
+  function finance(reportParameters) {
+    var requiredFiscalYears,
+        initialQuery,
+        deferred = q.defer(),
+        financeParams = JSON.parse(reportParameters);
+
     if(!financeParams) {
-      deferred.reject(new Error("[finance.js] No fiscal years provided"));  
+      deferred.reject(new Error("[finance.js] No fiscal years provided"));
       return deferred.promise;
     }
-      
+
     requiredFiscalYears = financeParams.fiscal;
     initialQuery = buildFinanceQuery(requiredFiscalYears);
 
     db.execute(initialQuery, function(err, ans) {
-      if(err) return deferred.reject(err);
+      if (err) { return deferred.reject(err); }
       deferred.resolve(ans);
     });
 
-    function buildFinanceQuery(requiredFiscalYears) { 
-      //TODO currently joins two very seperate querries and just extracts columns from both, these should
-      //be combined and calculations (SUM etc.) performed on the single joined table
-
-
-      var query = [], budgetColumns = [], realisationColumns = [], selectColumns = [], differenceColumns = [];
-
-      requiredFiscalYears.forEach(function(fiscal_year) { 
-        selectColumns.push("budget_result.budget_" + fiscal_year);
-        selectColumns.push("period_result.realisation_" + fiscal_year);
-        budgetColumns.push("SUM(case when period.fiscal_year_id = " + fiscal_year +" then budget.budget else 0 end) AS `budget_" + fiscal_year + "`");
-        realisationColumns.push("(SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.debit else 0 end) - SUM(case when period_total.fiscal_year_id = " + fiscal_year + " then period_total.credit else 0 end)) AS `realisation_" + fiscal_year + "`");
-        differenceColumns.push("(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_" + fiscal_year + "`"); 
-      });
-
-      query = [
-        "SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id,",
-        selectColumns.join(","),
-        ",",
-        differenceColumns.join(","),
-        // ",(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_1`",
-        "FROM",
-        "(SELECT budget.account_id,",
-        budgetColumns.join(","),
-        "FROM budget inner join period ON",
-        "period.id = budget.period_id",
-        // "fiscal_year_id = 1",
-        "GROUP BY budget.account_id)",
-        "AS `budget_result`",
-        "LEFT JOIN",
-        "(SELECT period_total.account_id,",
-        realisationColumns.join(","),
-        "FROM period_total",
-        "group by period_total.account_id)",
-        "AS `period_result`",
-        "ON budget_result.account_id = period_result.account_id",
-        "LEFT JOIN",
-        "account ON account.id = budget_result.account_id",
-        "GROUP BY account.id;"
-      ];
-
-
-      return query.join(' ');
-    }
     return deferred.promise;
   }
 
-  function stock (reportParams) {
-    var query, enterprise, group, groupby,
-      defer = q.defer();
-
-    enterprise = reportParams.enterprise;
-    group = reportParams.group;
-    groupby = reportParams.groupby;
-    
-    query = ["SELECT inventory.code, inventory.text, inv_group.symbol, inv_group.name, inventory.stock, inv_unit.text ",
-             "FROM inventory JOIN inv_group JOIN inv_unit ON ", 
-                "inventory.group_id = inv_group.id AND ",
-                "inventory.unit_id = inv_unit.id ",
-             "WHERE inventory.enterprise_id = ", db.escapestr(enterprise), " ",
-             "ORDER BY inventory.group_id;"
-            ];
-
-    // db.execute(blah);
-
-    return defer.promise;
-  }
-
   function transReport(params) {
-    var params = JSON.parse(params);
+    console.log('[transReport] params', params);
+    params = JSON.parse(params);
     var deferred = q.defer();
 
     function getElementIds(id){
-      var def = q.defer();
-      var table, cle;
+      var table, cle, def = q.defer();
+
       if(params.type.toUpperCase() == 'C'){
         table = 'creditor';
         cle = 'group_id';
@@ -141,7 +111,7 @@ module.exports = (function (db) {
         }
       });
       return def.promise;
-    } 
+    }
 
     function getArrayOf(obj){
       var tab = [];
@@ -194,9 +164,9 @@ module.exports = (function (db) {
         else{
           console.log('groupe vide');
           deffered.resolve(tabIds); //un tableau vide
-        }              
+        }
       });
-    }    
+    }
     return deferred.promise;
 }
 
@@ -211,7 +181,7 @@ module.exports = (function (db) {
     var requette = "SELECT period.id, period.period_start, period.period_stop, debitor.id as idDebitor, debitor.text, general_ledger.`debit`, general_ledger.`credit`, general_ledger.`account_id` "+
                    "FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.id = debitor.group_id AND debitor.`id` = general_ledger.`deb_cred_id` "+
                    "AND general_ledger.`deb_cred_type`='D' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`='"+params.fiscal_id+"'";
-    
+
     db.execute(requette, function(err, ans) {
       if(err) {
         console.log("debitor aging, Query failed");
@@ -237,11 +207,11 @@ module.exports = (function (db) {
 
     db.execute(requette, function(err, ans) {
       if(err) {
-        console.log("account statement, Query failed");
+        //console.log("account statement, Query failed");
         throw err;
         return;
       }
-      console.log('account statement', ans);
+      //console.log('account statement', ans);
       def.resolve(ans);
     });
 
@@ -250,24 +220,123 @@ module.exports = (function (db) {
     return def.promise;
   }
 
-  function saleRecords(params) { 
-    var deferred = q.defer(); 
+  function saleRecords(params) {
+    var deferred = q.defer();
     var span = params.span || 'week';
     var spanMap = {};
-    
+
     // TODO implement span, week, day, month etc. WHERE invoice_date <> date
-    var requestSql = "SELECT sale.id, sale.cost, sale.currency_id, sale.debitor_id, sale.invoice_date, sale.note, sale.posted, credit_note.id as 'creditId', credit_note.description as 'creditDescription', credit_note.posted as 'creditPosted', first_name, last_name " + 
+    var requestSql = "SELECT sale.id, sale.cost, sale.currency_id, sale.debitor_id, sale.invoice_date, sale.note, sale.posted, credit_note.id as 'creditId', credit_note.description as 'creditDescription', credit_note.posted as 'creditPosted', first_name, last_name " +
       "FROM sale LEFT JOIN credit_note on sale.id = credit_note.sale_id " +
       "LEFT JOIN patient on sale.debitor_id = patient.debitor_id;";
 
-    db.execute(requestSql, function(error, result) { 
+    db.execute(requestSql, function(error, result) {
       if(error) return deferred.reject(error);
       deferred.resolve(result);
     });
     return deferred.promise;
   }
 
-  return { 
-    generate: generate
-  }; 
-});
+  function patientRecords(params) {
+    var p = querystring.parse(params),
+        deferred = q.defer();
+
+    var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+        _id = sanitize.escape(p.id);
+
+    var sql =
+      "SELECT patient.uuid, debitor_uuid, first_name, last_name, dob, father_name, " +
+          "sex, religion, renewal, registration_date, date " +
+        "FROM `patient` JOIN `patient_visit` ON " +
+          "`patient`.`uuid`=`patient_visit`.`patient_uuid` " +
+        "WHERE `date` >= " + _start + " AND " +
+          " `date` < " + _end + ";";
+    db.execute(sql, function (err, res) {
+      if (err) { return deferred.reject(err); }
+      deferred.resolve(res);
+    });
+
+    return deferred.promise;
+  }
+
+  function paymentRecords(params) {
+    var p = querystring.parse(params),
+        deferred = q.defer();
+
+    var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+        _id = sanitize.escape(p.id);
+
+    var sql =
+      "SELECT c.document_id, c.cost, cr.name, c.type, p.first_name, c.description, " +
+        "p.last_name, c.deb_cred_uuid, c.deb_cred_type, c.currency_id, ci.invoice_uuid, c.date " +
+      "FROM `cash` AS c JOIN `currency` as cr JOIN `cash_item` AS ci " +
+        "JOIN `debitor` AS d JOIN `patient` as p " +
+        "ON ci.cash_uuid = c.uuid AND c.currency_id = cr.id AND " +
+        "c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid " +
+      "WHERE c.date >= " + _start + " AND " +
+        "c.date < " + _end + " " +
+      "GROUP BY c.document_id;";
+
+    db.execute(sql, function (err, res) {
+      if (err) { return deferred.reject(err); }
+      deferred.resolve(res);
+    });
+
+    return deferred.promise;
+  }
+
+  function invoiceRecords(params) {
+    var p = querystring.parse(params),
+        deferred = q.defer();
+
+    var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+        _id = sanitize.escape(p.id);
+
+    var sql =
+      "SELECT i.uuid, ig.code, ig.name, ig.sales_account, SUM(si.quantity) AS quantity, " +
+        "SUM(si.transaction_price) AS total_price " +
+      "FROM `sale` AS s JOIN `sale_item` as si JOIN `inventory` AS i JOIN `inventory_group` AS ig " +
+      "ON s.uuid = si.sale_uuid AND si.inventory_uuid = i.uuid AND i.group_uuid = ig.uuid " +
+      "WHERE s.invoice_date >= " + _start + " AND " +
+        "s.invoice_date < " + _end + " AND " +
+        "i.enterprise_id = " + _id + " " +
+      "ORDER BY i.code " +
+      "GROUP BY i.id;";
+
+    db.execute(sql, function (err, res) {
+      if (err) { return deferred.reject(err); }
+      deferred.resolve(res);
+    });
+
+    return deferred.promise;
+  }
+
+
+  return function generate(request, params, done) {
+    /*summary
+    *   Route request for reports, if no report matches given request, return null
+    */
+    var route = {
+      'finance'          : finance,
+      'transReport'      : transReport,
+      'debitorAging'     : debitorAging,
+      'accountStatement' : accountStatement,
+      'saleRecords'      : saleRecords,
+      'patients'         : patientRecords,
+      'payments'         : paymentRecords,
+    };
+
+    route[request](params)
+    .then(function (report) {
+      done(report);
+    })
+    .catch(function (err) {
+      done(null, err);
+    })
+    .done();
+  };
+
+};

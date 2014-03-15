@@ -23,6 +23,7 @@
       "/data",
       "/trial",
       "/post",
+      "/reports",
       "/tree",
       "/credit_note",
       "/finance",
@@ -44,9 +45,6 @@
       "/user_session",
       "/sale",
       "/fiscal",
-      "/reports/transReport/",
-      "/reports/accountStatement/",
-      "/reports/debitorAging/",
       "/InExAccounts/"
     ]
   }
