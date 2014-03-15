@@ -111,11 +111,16 @@ app.get('/trial/', function (req, res, next) {
   });
 });
 
+
 app.get('/post/:key', function (req, res, next) {
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
   });
+});
+
+app.get('/currentProject', function (req, res, next) {
+
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
