@@ -960,8 +960,7 @@ create table `group_invoice_item` (
   key `payment_uuid` (`payment_uuid`),
 	key `invoice_uuid` (`invoice_uuid`),
   constraint foreign key (`payment_uuid`) references `group_invoice` (`uuid`) on delete cascade,
-	constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
-) engine=innodb;
+	constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)) engine=innodb;
 
 -- TODO Reference user table
 drop table if exists `journal_log`;
@@ -1041,16 +1040,17 @@ create table `inventory_log` (
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
--- TODO Concat into single trigger, don't have the syntax to hand
-create trigger `log_inventory_insert`
-  after insert on `inventory`
-  for each row
-  insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
+-- TODO Resolve conflicts with sync triggers 
+-- create trigger `log_inventory_insert`
+--   after insert on `inventory`
+--   for each row
+--   insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
+--
+-- create trigger `log_inventory_update`
+--   after update on `inventory`
+--   for each row
+--   insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
 
-create trigger `log_inventory_update`
-  after update on `inventory`
-  for each row
-  insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
 -- 
 -- Table structure for table `kpk`.`debitor_group_history`
 --
