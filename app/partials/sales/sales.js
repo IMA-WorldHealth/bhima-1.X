@@ -411,7 +411,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
   function recover() { 
     $scope.session.recovered.items.forEach(function (item) { 
-      var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.id);
+      var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.uuid);
       currentItem.selectedReference = invItem.code;
       updateInvoiceItem(currentItem, invItem);
       currentItem.quantity = item.quantity;
@@ -427,7 +427,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function updateSessionRecover() { 
     //FIXME currently puts new object on every item, this could be improved
     var recoverObject = session.recoverObject || { 
-      patientId : invoice.debtor.id,
+      patientId : invoice.debtor.uuid,
       items : []
     };
     

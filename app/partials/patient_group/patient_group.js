@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $filter, connect, validate, appstate, messenger) {
+  'uuid',
+  function ($scope, $filter, connect, validate, appstate, messenger, uuid) {
     var dependencies = {};
     var session = $scope.session = {
       selected : null
@@ -14,9 +15,10 @@ angular.module('kpk.controllers')
 
     dependencies.group = {
       query : {
+        identifier : 'uuid',
         tables: {
           'patient_group' : {
-            columns: ['id', 'enterprise_id', 'price_list_id', 'name', 'note']
+            columns: ['uuid', 'enterprise_id', 'price_list_uuid', 'name', 'note']
           }
         }
       }
@@ -24,7 +26,8 @@ angular.module('kpk.controllers')
 
     dependencies.list = {
       query : {
-        tables : { 'price_list' : { columns : ['id', 'title'] } } 
+        identifier : 'uuid',
+        tables : { 'price_list' : { columns : ['uuid', 'title'] } } 
       } 
     };
 
@@ -37,15 +40,17 @@ angular.module('kpk.controllers')
     }
 
     function initialisePatientGroup(model) {
-      for (var modelKey in model) { $scope[modelKey] = model[modelKey]; }
+      for (var modelKey in model) { 
+        $scope[modelKey] = model[modelKey]; 
+      }
     }
 
     $scope.remove = function (grp) {
       if (!confirm($filter('translate')('PATIENT_GRP.CONFIRM_MESSAGE'))) return;
 
-      connect.basicDelete('patient_group', grp.id)
+      connect.basicDelete('patient_group', grp.uuid, 'uuid')
       .then(function (result) {
-        $scope.group.remove(grp.id);
+        $scope.group.remove(grp.uuid);
       }, function (err) {
         messenger.danger('error:' + JSON.stringify(err));
       });
@@ -61,14 +66,17 @@ angular.module('kpk.controllers')
     };
 
     $scope.saveRegistration = function () {
-      $scope.register.enterprise_id = $scope.enterprise.id;
+      var packaged = connect.clean($scope.register);
+      packaged.uuid = uuid();
+      packaged.enterprise_id = $scope.enterprise.id;
+
       // validate that register is complete.
       console.log('attempting to insert', connect.clean($scope.register));
-      connect.basicPut('patient_group', [connect.clean($scope.register)])
+      connect.basicPut('patient_group', packaged)
       .then(function (res) {
-        var row = connect.clean($scope.register);
-        row.id = res.data.insertId;
-        $scope.group.post(row);
+        
+        $scope.group.post(packaged);
+        $scope.edit(packaged);
       }, function (err) {
         messenger.danger('An error occured.');
       });
@@ -94,7 +102,7 @@ angular.module('kpk.controllers')
 
     $scope.saveModification = function () {
       // validate that modification is complete
-      connect.basicPost('patient_group', [connect.clean($scope.modify)], ['id'])
+      connect.basicPost('patient_group', [connect.clean($scope.modify)], ['uuid'])
       .then(function (res) {
         messenger.success('Successfully modified the group.');
       }, function (err) {
