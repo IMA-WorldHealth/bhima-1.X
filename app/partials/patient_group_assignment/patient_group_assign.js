@@ -73,7 +73,7 @@ angular.module('kpk.controllers')
     }
 
     function loadPatientGroups (patient){
-      var index = patient.id;
+      var index = patient.uuid;
 
       transformDatas(false);
       $scope.patient = patient;
@@ -128,13 +128,9 @@ angular.module('kpk.controllers')
           $q.all(
             ass_patient.map(function(assignation){
               tapon.push(assignation);
-              return connect.basicPut('assignation_patient', [assignation]);
+              return connect.basicPut('assignation_patient', [assignation], 'uuid');
             })
             ).then(function(res){
-              for(var i=0; i<tapon.length; i+=1){
-                tapon[i].id = res[i].data.insertId;
-                $scope.assignation_patient.post(tapon[i]);
-              }
               messenger.success('Successfully updated');
               // $scope.patient = {};
             }, function(err){

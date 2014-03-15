@@ -580,6 +580,7 @@ create table `inventory_group` (
   -- constraint foreign key (`tax_account`) references `account` (`account_number`)
 ) engine=innodb;
 
+-- TODO User responsible for inventory item should be added
 --
 -- Table structure for table `kpk`.`inventory`
 --
@@ -1032,13 +1033,24 @@ create table `inventory_log` (
   `uuid`                char(36) not null,
   `inventory_uuid`      char(36) not null,
   `log_timestamp`       timestamp null default CURRENT_TIMESTAMP,
-  `price`               decimal(19,4) unsigned not null,
-  `code`                varchar(30) not null,
-  `description`         text,
+  `price`               decimal(19,4) unsigned,
+  `code`                varchar(30),
+  `text`                text,
   primary key (`uuid`),
   key `inventory_uuid` (`inventory_uuid`),
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
+
+-- TODO Concat into single trigger, don't have the syntax to hand
+create trigger `log_inventory_insert`
+  after insert on `inventory`
+  for each row
+  insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
+
+create trigger `log_inventory_update`
+  after update on `inventory`
+  for each row
+  insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
 -- 
 -- Table structure for table `kpk`.`debitor_group_history`
 --

@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('swapDebitor', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $filter) {
+angular.module('kpk.controllers').controller('swapDebitor', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $filter, uuid) {
  
   
   var dependencies = {}; 
@@ -9,7 +9,10 @@ angular.module('kpk.controllers').controller('swapDebitor', function($scope, $q,
   };
 
   dependencies.debtorGroup = {
-    query : { tables : {'debitor_group' : {'columns' : ['id', 'name', 'note']}}}
+    query : { 
+      identifier : 'uuid',
+      tables : {'debitor_group' : {'columns' : ['uuid', 'name', 'note']}}
+    }
   };
 
   function swap(model) {
@@ -20,31 +23,35 @@ angular.module('kpk.controllers').controller('swapDebitor', function($scope, $q,
 
   function initialiseSwaping (selectedDebitor) {
     if(!selectedDebitor) return messenger.danger('No debtor selected');
+    console.log('selectedDebitor', selectedDebitor); 
     connect.req({
         tables : {
           'debitor' : {
-            columns : ['group_id']
+            columns : ['group_uuid']
           }
         },
         where : [
-          'debitor.id=' + selectedDebitor.debitor_id
+          'debitor.uuid=' + selectedDebitor.debitor_uuid
         ]
     }).then(function(res){
-      $scope.debitor.debitor_group_id = res.data[0].group_id;
+      $scope.debitor.debitor_group_uuid = res.data[0].group_uuid;
       $scope.selectedDebitor = selectedDebitor;
       $scope.noEmpty = true;
-      dependencies.location = { query : '/location/' + $scope.selectedDebitor.origin_location_id};
+      dependencies.location = { 
+        query : '/location/' + $scope.selectedDebitor.origin_location_id
+      };
       validate.process(dependencies).then(swap);
     });
   }
 
   function swapGroup (selectedDebitor){
-    var debitor = {id : selectedDebitor.debitor_id, group_id : $scope.debitor.debitor_group_id};
-    connect.basicPost('debitor', [connect.clean(debitor)], ['id'])
+    var debitor = {uuid : selectedDebitor.debitor_uuid, group_uuid : $scope.debitor.debitor_group_uuid};
+    connect.basicPost('debitor', [connect.clean(debitor)], ['uuid'])
     .then(function(res) {
       var packageHistory = {
-        debitor_id : selectedDebitor.debitor_id,
-        debitor_group_id : $scope.debitor.debitor_group_id,
+        uuid : uuid(),
+        debitor_uuid : selectedDebitor.debitor_uuid,
+        debitor_group_uuid : $scope.debitor.debitor_group_uuid,
         user_id : $scope.model.changer.data.id
       }
       connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]).then(handleSucces, handleError);
