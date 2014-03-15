@@ -36,7 +36,7 @@ angular.module('kpk.controllers')
 
     var getStatements = function (fiscal_id){
       var def = $q.defer();
-      connect.MyBasicGet('/reports/accountStatement/?'+JSON.stringify({fiscal_id : fiscal_id}))
+      connect.fetch('/reports/accountStatement/?'+JSON.stringify({fiscal_id : fiscal_id}))
       .then(function(values){
         def.resolve(values);
       });
@@ -45,7 +45,7 @@ angular.module('kpk.controllers')
 
     var getIncomeExpensiveAccount = function (enterprise_id){
       var def = $q.defer();
-      connect.MyBasicGet('/InExAccounts/'+enterprise_id+'/')
+      connect.fetch('/InExAccounts/'+enterprise_id+'/')
       .then(function(values){
         def.resolve(values);
       });

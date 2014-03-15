@@ -153,7 +153,7 @@ angular.module('kpk.controllers')
    
     var getLocation = function(){
       var def = $q.defer();
-      connect.MyBasicGet('/location/')
+      connect.fetch('/location/')
       .then(function(values){
         def.resolve(values);
       });

@@ -29,8 +29,8 @@ angular.module('kpk.controllers')
     };
 
     var inventory_request = connect.req(inventory_query);
-    var max_sales_request = connect.basicGet('/max/id/sale');
-    var max_purchase_request = connect.basicGet('/max/id/purchase');
+    var max_sales_request = connect.fetch('/max/id/sale');
+    var max_purchase_request = connect.fetch('/max/id/purchase');
 
     var creditor_query = {
       tables: {
@@ -39,7 +39,7 @@ angular.module('kpk.controllers')
     };
 
     var creditor_request = connect.req(creditor_query);
-    var user_request = connect.basicGet("user_session");
+    var user_request = connect.fetch("user_session");
     var location_request = connect.getModel("/location");
 
     function init() {

@@ -43,14 +43,14 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.creditNote = { 
-      query: { 
-        tables: { 
+    dependencies.creditNote = {
+      query: {
+        tables: {
           'credit_note' : { columns: ['id', 'posted'] }
         }
       }
     }
-  
+
     if(invoiceId) buildSaleQuery();
 
     function buildSaleQuery() {
@@ -83,29 +83,27 @@ angular.module('kpk.controllers')
       var insertId;
       //TODO Test object before submitting to server
       //TODO ?Check there are no credit notes for this transaction and warn user
-      
+   
       // connect.fetch('reports/saleRecords/?' + JSON.stringify({span: 'week'}))
-      // .then(function (result) { 
+      // .then(function (result) {
       //   console.log('result', result);
       // });
-      
+   
       if($scope.model.creditNote.data.length >= 1) return messenger.danger("Invoice has already been reversed with credit");
       connect.basicPut('credit_note', [noteObject])
       .then(function (creditResult) {
         insertId = creditResult.data.insertId;
-
-        return connect.basicGet('journal/credit_note/' + insertId);
+        return connect.fetch('journal/credit_note/' + insertId);
       })
-      .then(function (postResult) { 
-
+      .then(function (postResult) {
         $location.path('/invoice/credit/' + insertId);
-      }, function(error) { 
+      }, function(error) {
         messenger.danger('submission failed ' + error.status);
       });
 
       validate.refresh(dependencies, ['creditNote']);
     }
-    
+ 
     $scope.submitNote = submitNote;
   }
 ]);

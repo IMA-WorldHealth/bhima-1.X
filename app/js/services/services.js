@@ -5,7 +5,7 @@
 
   var services = angular.module('kpk.services', []);
 
-  services.service('kpkUtilitaire', function() {
+  services.service('util', function() {
 
     this.formatDate = function(dateString) {
       return new Date(dateString).toDateString();
@@ -775,13 +775,11 @@
       clean: clean,
       basicPut: basicPut,
       basicPost: basicPost,
-      basicGet: basicGet,
       basicDelete: basicDelete,
       put : put,
       post : post,
       delete : delet,
       getModel: getModel,
-      MyBasicGet: MyBasicGet,
       debitorAgingPeriod : debitorAgingPeriod
     };
   })
