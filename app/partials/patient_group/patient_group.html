@@ -24,9 +24,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-class="{'selected-primary' : session.selected.id === grp.id}" ng-repeat="grp in group.data">
+          <tr ng-class="{'selected-primary' : session.selected.uuid === grp.uuid}" ng-repeat="grp in group.data">
             <td>{{ grp.name }}</td>
-            <td>{{ list.get(grp.price_list_id).title }}</td>
+            <td>{{ list.get(grp.price_list_uuid).title }} [{{ grp.price_list_uuid }}]</td>
             <td>
               <button class="btn btn-sm btn-default" ng-click="edit(grp)">
                 <i class="glyphicon glyphicon-pencil"></i>
@@ -66,7 +66,7 @@
           <div class="form-group required">
             <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
             <div class="col-xs-10">
-              <select class="form-kapok" ng-model="register.price_list_id" ng-options="list.id as list.title for list in list.data">
+              <select class="form-kapok" ng-model="register.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
                 <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
               </select>
             </div>
@@ -104,7 +104,7 @@
           <div class="form-group required">
             <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
             <div class="col-xs-10">
-              <select class="form-kapok" ng-model="modify.price_list_id" ng-options="list.id as list.title for list in list.data">
+              <select class="form-kapok" ng-model="modify.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
                 <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
               </select>
             </div>

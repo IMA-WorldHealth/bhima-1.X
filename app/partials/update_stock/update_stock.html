@@ -47,20 +47,27 @@
         </div>
         
         <!-- ng-show="!session.search" -->  
-        <div hidden class="panel-body">
+        <div class="panel-body" ng-hide="session.search">
           <table class="table table-bordered table-condensed">
             <thead>
               <tr>
                 <td>{{'UPDATE_STOCK.TIMESTAMP' | translate}}</td>
                 <td>{{'COLUMNS.PRICE' | translate}}</td>
                 <td>{{'COLUMNS.CODE' | translate}}</td>
+                <td>{{'COLUMNS.TEXT' | translate}}</td>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="record in model.history.data">
-                <td>{{record.inventory_log}}</td>
-                <td>{{record.price}}</td>
+              <!--Experimenting with ng-repeat-start-->
+              <!-- <tr ng&#45;repeat&#45;start="record in model.history.data"> -->
+                <!-- <td colspan="4" style="text&#45;align: left;">{{record.uuid}}</td>  -->
+              <!-- </tr> -->
+            <!-- <tr ng&#45;repeat&#45;end> -->
+            <tr ng-repeat="record in model.history.data | orderBy : 'log_timestamp'">
+                <td>{{record.log_timestamp | date}}</td>
+                <td>{{record.price | currency}}</td>
                 <td>{{record.code}}</td>
+                <td>{{record.text}}</td>
               </tr>
             </tbody>
 
