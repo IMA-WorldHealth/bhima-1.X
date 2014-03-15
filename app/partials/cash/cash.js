@@ -12,7 +12,8 @@ angular.module('kpk.controllers')
   'kpkUtilitaire',
   'precision',
   'calc',
-  function($scope, $location, $translate, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc) {
+  'uuid',
+  function($scope, $location, $translate, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
     var dependencies = {},
         data = $scope.data = {},
         cache = new Appcache('cash');
@@ -46,7 +47,7 @@ angular.module('kpk.controllers')
       query : {
         tables: {
           'cash' : {
-            columns: ['id', 'document_id', 'type', 'date', 'debit_account', 'credit_account', 'currency_id', 'cashier_id', 'cost', 'description']
+            columns: ['uuid', 'document_id', 'type', 'date', 'debit_account', 'credit_account', 'currency_id', 'user_id', 'cost', 'description']
           }
         }
       }
@@ -56,10 +57,6 @@ angular.module('kpk.controllers')
       $scope.enterprise = enterprise;
       dependencies.cashboxes.query.where =
         ['currency_account.enterprise_id=' + enterprise.id];
-      /*
-       * dependencies.accounts.query.where =
-        ['account.enterprise_id=' + enterprise.id];
-      */
       validate.process(dependencies).then(setUpModels, handleErrors);
     });
    
@@ -145,16 +142,6 @@ angular.module('kpk.controllers')
         invoice.allocated = diff >= 0 ? invoice.locale : proposed;
         proposed = diff >= 0 ? diff : 0;
        
-        /*
-        if (diff >= 0) {
-          proposed = diff;
-          invoice.allocated = invoice.locale;
-        } else {
-          invoice.allocated = proposed;
-          proposed = 0;
-        }
-        */
-
         invoice.remaining = precision.compare(invoice.locale, invoice.allocated);
       });
 
@@ -178,7 +165,10 @@ angular.module('kpk.controllers')
       document_id = generateDocumentId($scope.cash.data, 'E');
       description = ['CP E', document_id, $scope.patient.first_name, date].join('/');
 
+      $scope.payment_uuid = uuid();
+
       cashPayment = {
+        uuid : $scope.payement_uuid,
         enterprise_id : $scope.enterprise.id,
         type : 'E',
         document_id : document_id,
@@ -188,9 +178,9 @@ angular.module('kpk.controllers')
         currency_id : $scope.cashbox.currency_id,
         cost: precision.round(data.payment),
         description : description,
-        cashier_id : 1,
+        user_id : 1,
         cashbox_id : 1,
-        deb_cred_id : $scope.patient.debitor_id,
+        deb_cred_id : $scope.patient.debitor_uuid,
         deb_cred_type : 'D'
       };
 
@@ -200,9 +190,9 @@ angular.module('kpk.controllers')
     function processCashItems (res) {
       // format cash items and submit them
       var records,
-          id = res.data.insertId;
+          id = $scope.payment_uuid;
 
-      $scope.invoice_id = id; // clean this up to make it more testable
+      $scope.invoice_uuid = id; // clean this up to make it more testable
 
       records = $scope.queue
       .filter(function (invoice) {
@@ -210,9 +200,10 @@ angular.module('kpk.controllers')
       })
       .map(function (invoice) {
         return {
-          cash_id: id,
+          uuid : uuid(),
+          cash_uuid: id,
           allocated_cost : precision.round(invoice.allocated),
-          invoice_id : invoice.inv_po_id
+          invoice_uuid : invoice.inv_po_id
         };
       });
 
@@ -220,7 +211,7 @@ angular.module('kpk.controllers')
     }
 
     function postToJournal (res) {
-      return connect.fetch('/journal/cash/' + $scope.invoice_id);
+      return connect.fetch('/journal/cash/' + $scope.invoice_uuid);
     }
 
     function showReceipt () {
