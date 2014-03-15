@@ -1,12 +1,13 @@
-angular.module('kpk.controllers').controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, appcache, uuid) {
- 
+angular.module('kpk.controllers')
+.controller('sales', function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, appcache, uuid) {
+
   //FIXME Global vs. item based prices are a hack
   //TODO Pass default debtor and inventory parameters to sale modules
   var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
   var recoverCache = new appcache('sale'), priceListSource = [];
-  var session = $scope.session = { 
+  var session = $scope.session = {
     tablock : -1
-  }
+  };
 
   dependencies.sale = {
     query : '/max/uuid/sale'
@@ -21,21 +22,25 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   dependencies.seller = {
     query : 'user_session'
   };
-  
-  recoverCache.fetch('session').then(processRecover); 
-  validate.process(dependencies).then(sales);
-  
+
+  recoverCache.fetch('session').then(processRecover);
+
+  appstate.register('project', function (project) {
+    $scope.project = project;
+    validate.process(dependencies).then(sales);
+  });
+
   function sales(model) {
     //Expose model to scope
     $scope.model = model;
-   
+
     $scope.inventory = inventory = model.inventory.data;
   }
 
   function initialiseSaleDetails(selectedDebtor) {
     console.log(selectedDebtor);
     if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
-   
+
     // Release previous session items - if they exist
     if(invoice.items) {
       invoice.items.forEach(function (item, index) {
@@ -46,9 +51,9 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     }
 
     buildInvoice(selectedDebtor);
-    
-    // Uncommented patientGroupList - ALL other lists should import price lists from BOTH 
-    // patientGroupList and debtorGroupList (renamed from priceList) 
+
+    // Uncommented patientGroupList - ALL other lists should import price lists from BOTH
+    // patientGroupList and debtorGroupList (renamed from priceList)
     dependencies.patientGroupList = {
       query : {
         tables : {
@@ -67,7 +72,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
         ]
       }
     };
-     
+
     dependencies.debtorGroupList = {
       query : {
         tables : {
@@ -90,38 +95,38 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       date : getDate(),
       items: []
     };
-      
-    if (session.recovering) { 
+
+    if (session.recovering) {
       recover();
-    } else { 
+    } else {
       addInvoiceItem();
       session.recovered = null;
     }
     // session.recovering ? recover() : addInvoiceItem();
-        
+
     invoice.note = formatNote(invoice);
     $scope.invoice = invoice;
   }
- 
+
   function processPriceList(model) {
     invoice.priceList = [];
     console.log('processPriceList', model);
-   
+
     // Flattens all price lists fow now, make parsing later simpler
-    priceListSource.forEach(function (priceListKey) { 
+    priceListSource.forEach(function (priceListKey) {
       var priceListData = model[priceListKey].data.sort(sortByOrder);
 
-      priceListData.forEach(function (priceListItem) { 
+      priceListData.forEach(function (priceListItem) {
         invoice.priceList.push(priceListItem);
       });
-      // invoice.priceList.push(priceListData.sort(sortByOrder)); 
+      // invoice.priceList.push(priceListData.sort(sortByOrder));
     });
 
     // var debtorList = model.debtorGroupList.data;
     // var patientList = model.patientGroupList.data;
     // invoice.priceList = priceLists.sort(function (a, b) { (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
     invoice.applyGlobal = [];
-  
+
     invoice.priceList.forEach(function (listItem) {
       console.log('g', listItem.is_global, listItem);
       if (listItem.is_global) {
@@ -130,19 +135,19 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       }
     });
   }
-  
-  function sortByOrder(a, b) { 
-    (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order) ? 1 : -1; 
+
+  function sortByOrder(a, b) {
+    (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order) ? 1 : -1;
   }
-  
+
   //TODO split inventory management into a seperate controller
   function addInvoiceItem() {
     var item = new InvoiceItem();
-    
+
     invoice.items.push(item);
     return item;
   }
- 
+
   //TODO rename legacy (previous) reference from inventoryReference
   function updateInvoiceItem(invoiceItem, inventoryReference) {
     if(invoiceItem.inventoryReference) {
@@ -152,7 +157,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
     invoiceItem.set(inventoryReference);
     invoiceItem.inventoryReference = inventoryReference;
- 
+
     //Remove ability to selec the option again
     $scope.model.inventory.remove(inventoryReference.uuid);
     $scope.model.inventory.recalculateIndex();
@@ -172,19 +177,19 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
   function submitInvoice() {
     var invoiceRequest = packageInvoiceRequest();
-  
+
     if(!validSaleProperties(invoiceRequest)) return;
     $http.post('sale/', invoiceRequest).then(handleSaleResponse);
   }
 
   function packageInvoiceRequest() {
     var requestContainer = {}, netDiscountPrice, totalCost;
-   
+
     //Seller ID will be inserted on the server
     requestContainer.sale = {
-      enterprise_id : appstate.get('enterprise').id,
+      project_id : $scope.project.id,
       cost : calculateTotal(),
-      currency_id : appstate.get('enterprise').currency_id,
+      currency_id : $scope.project.currency_id,
       debitor_uuid : invoice.debtor.debitor_uuid,
       invoice_date : invoice.date,
       note : invoice.note
@@ -198,7 +203,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     // }
 
     requestContainer.saleItems = [];
-  
+
     invoice.items.forEach(function(saleItem) {
       var formatSaleItem;
       formatSaleItem = {
@@ -212,7 +217,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
       requestContainer.saleItems.push(formatSaleItem);
     });
-   
+
     // Patient Groups
     // if(invoice.priceList) {
     //   //TODO Placeholder discount item select, this should be in enterprise settings
@@ -225,12 +230,12 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     //     credit : 0, //FIXME default values because parser cannot insert records with different columns
     //     inventory_price : 0
     //   };
-   
+
       invoice.applyGlobal.forEach(function (listItem) {
         var applyCost, formatListItem, enterpriseDiscountId; // FIXME Derive this from enterprise
-        
+
         (listItem.is_discount) ? enterpriseDiscountId = 486 : enterpriseDiscountId = 485;
-        
+
         formatDiscountItem = {
           inventory_id : enterpriseDiscountId,
           quantity : 1,
@@ -250,7 +255,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   }
 
   function handleSaleResponse(result) {
-    recoverCache.remove('session'); 
+    recoverCache.remove('session');
     $location.path('/invoice/sale/' + result.data.saleId);
   }
 
@@ -272,7 +277,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       if(isNaN(Number(saleItem.transaction_price))) return true;
       return false;
     });
-  
+
     if(invalidItems) {
       messenger.danger("[Invalid Sale] Sale items contain null values");
       return false;
@@ -292,7 +297,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     var currentDate = new Date();
     return currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + ('0' + currentDate.getDate()).slice(-2);
   }
- 
+
   function formatNote(invoice) {
     var noteDebtor = invoice.debtor || "";
     return "PI/" + invoice.uuid + "/" + invoice.date + "/" + noteDebtor.name;
@@ -302,7 +307,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
   function calculateTotal(includeDiscount) {
     var total = 0;
     includeDiscount = angular.isDefined(includeDiscount) ? includeDiscount : true;
-   
+
     if(!invoice.items) return;
     invoice.items.forEach(function(item) {
       if(item.quantity && item.price && item.code) {
@@ -313,14 +318,14 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
         total = Number(total.toFixed(4));
       }
     });
-      
-    if (invoice.applyGlobal) { 
+
+    if (invoice.applyGlobal) {
       invoice.applyGlobal.forEach(function (listItem) {
         listItem.currentValue = Number(((total * listItem.value) / 100).toFixed(4));
-        
-        if (listItem.is_discount) { 
+
+        if (listItem.is_discount) {
           total -= listItem.currentValue;
-        } else { 
+        } else {
           total += listItem.currentValue;
         }
 
@@ -347,7 +352,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
     function set(inventoryReference) {
       var defaultPrice = inventoryReference.price;
-     
+
       self.quantity = self.quantity || 1;
       self.code = inventoryReference.code;
       self.text = inventoryReference.text;
@@ -356,7 +361,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       self.price = Number(inventoryReference.price.toFixed(4));
       self.inventoryId = inventoryReference.uuid;
       self.note = "";
-     
+
 
       // Temporary price list logic
       if(invoice.priceList) {
@@ -366,7 +371,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
             if(list.is_discount) {
               console.log('[DEBUG] Applying price list discount ', list.description, list.value);
               self.price -= Math.round((defaultPrice * list.value) / 100);
-             
+
               // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
               self.price = Number(self.price.toFixed(4));
             } else {
@@ -374,7 +379,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
               var applyList = (defaultPrice * list.value) / 100;
               console.log(self.price, applyList);
               self.price += applyList;
-             
+
               // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
               self.price = Number(self.price.toFixed(4));
               console.log(self.price);
@@ -386,52 +391,52 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
       self.isSet = true;
     }
 
-    this.quantity = 0,
-    this.code = null,
-    this.inventoryId = null,
-    this.price = null,
-    this.text = null,
-    this.note = null,
+    this.quantity = 0;
+    this.code = null;
+    this.inventoryId = null;
+    this.price = null;
+    this.text = null;
+    this.note = null;
     this.set = set;
 
     return this;
   }
 
-  function processRecover(recoveredSession) { 
+  function processRecover(recoveredSession) {
     if(!session) return;
 
     console.log('loaded recovered session', recoveredSession);
     $scope.session.recovered = recoveredSession;
   }
-  
-  function selectRecover() { 
+
+  function selectRecover() {
     $scope.session.recovering = true;
     $scope.findPatient.forceSelect($scope.session.recovered.patientId);
   }
 
-  function recover() { 
-    $scope.session.recovered.items.forEach(function (item) { 
+  function recover() {
+    $scope.session.recovered.items.forEach(function (item) {
       var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.uuid);
       currentItem.selectedReference = invItem.code;
       updateInvoiceItem(currentItem, invItem);
       currentItem.quantity = item.quantity;
     });
-  
-    // FIXME this is stupid 
+
+    // FIXME this is stupid
     session.displayRecover = true;
 
     session.recovering = false;
     session.recovered = null;
   }
 
-  function updateSessionRecover() { 
+  function updateSessionRecover() {
     //FIXME currently puts new object on every item, this could be improved
-    var recoverObject = session.recoverObject || { 
+    var recoverObject = session.recoverObject || {
       patientId : invoice.debtor.uuid,
       items : []
     };
-    
-    invoice.items.forEach(function (item) { 
+
+    invoice.items.forEach(function (item) {
       if(item.code && item.quantity) recoverObject.items.push({
         id : item.inventoryId,
         quantity : item.quantity
@@ -440,12 +445,12 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     recoverCache.put('session', recoverObject);
   }
 
-  function toggleTablock() { 
+  function toggleTablock() {
     (session.tablock===0) ? session.tablock = -1 : session.tablock = 0;
   }
-  
-  function cacheQuantity(invoiceItem) { 
-    
+
+  function cacheQuantity(invoiceItem) {
+
     if (invoiceItem.quantity==='') return;
     if (isNaN(Number(invoiceItem.quantity))) return;
     updateSessionRecover();

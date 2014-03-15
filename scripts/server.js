@@ -39,6 +39,7 @@ app.configure(function () {
   app.use(express.session(cfg.session));
   app.use('/css', express.static('app/css', {maxAge:10000}));
   app.use('/lib', express.static('app/lib', {maxAge:10000}));
+  app.use('/i18n', express.static('app/i18n', {maxAge:100000}));
   app.use(authenticate);
   app.use(authorize);
   app.use(projects);
@@ -53,8 +54,8 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/data/', function (req, res, next) {
-  var dec = JSON.parse(decodeURI(url.parse(req.url).query));
-  var sql = parser.select(dec);
+  var decode = JSON.parse(decodeURI(url.parse(req.url).query));
+  var sql = parser.select(decode);
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
     res.send(rows);
@@ -63,9 +64,9 @@ app.get('/data/', function (req, res, next) {
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-  
+
   var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
-  
+
   db.execute(updatesql, function(err, ans) {
     if (err) return next(err);
     res.send(200, {insertId: ans.insertId});
@@ -98,9 +99,20 @@ app.delete('/data/:table/:column/:value', function (req, res, next) {
   });
 });
 
-// TODO Server should set user details like this in a non-editable cookie
+app.get('/currentProject', function (req, res, next) {
+  var sql =
+    "SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id` " +
+    "FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` " +
+    "WHERE `project`.`id`=" + req.session.project_id + ";";
+  db.execute(sql, function (err, result) {
+    if (err) { return next(err); }
+    res.send(result[0]);
+  });
+});
+
+// FIXME: this is terribly insecure.  Please remove
 app.get('/user_session', function (req, res, next) {
-  res.send(200, {id: req.session.user_id});
+  res.send(req.session);
 });
 
 app.get('/trial/', function (req, res, next) {
@@ -110,16 +122,11 @@ app.get('/trial/', function (req, res, next) {
   });
 });
 
-
 app.get('/post/:key', function (req, res, next) {
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
   });
-});
-
-app.get('/currentProject', function (req, res, next) {
-
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
