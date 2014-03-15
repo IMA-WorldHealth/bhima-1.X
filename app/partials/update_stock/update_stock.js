@@ -6,6 +6,7 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
 
   dependencies.inventory = { 
     query : { 
+      identifier : 'uuid',
       tables : { 
         inventory : { columns : ['uuid', 'code', 'text', 'price', 'group_uuid', 'unit_id'] }
                     // origin_stamp
@@ -13,15 +14,17 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
     }
   };
 
-  // dependencies.history = { 
-  //   query : { 
-  //     tables : { 
-  //       inventory_log : { columns : ['log_timestamp', 'price', 'code'] }
-  //     }
-  //   }
-  // }
+  dependencies.history = { 
+    query : { 
+      tables : { 
+        inventory_log : { 
+          columns : ['uuid', 'log_timestamp', 'price', 'code', 'text'] 
+        }
+      }
+    }
+  }
 
-  validate.process(dependencies).then(updateStock);
+  validate.process(dependencies, ['inventory']).then(updateStock);
 
   function updateStock(model) { 
     $scope.model = model;
@@ -32,10 +35,13 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
     console.log('got', id);
     selectedStock = $scope.selectedStock = $scope.model.inventory.get(id);
     $scope.cachePrice = angular.copy(selectedStock.price);
+
   }
 
   function loadStock(id) { 
     session.search = false; 
+    dependencies.history.query.where = ['inventory_log.inventory_uuid=' + selectedStock.uuid];
+    validate.refresh(dependencies, ['history']);
 
     // dependencies.history.when = ['inventory_id=' + id];
     // validate.process(dependencies).then(displayHistory);
@@ -62,6 +68,7 @@ angular.module('kpk.controllers').controller('updateStock', function ($scope, $f
     connect.basicPost('inventory', [updateLine], ['uuid']).then(function (res) { 
       messenger.success($filter('translate')('UPDATE_STOCK.UPDATE_SUCCESS'));
       $scope.cachePrice = angular.copy(selectedStock.price);
+      validate.refresh(dependencies, ['history']);
     }, function (err) { 
       messenger.danger($filter('translate')('UPDATE_STOCK.UPDATE_FAILUER'));  
     });
