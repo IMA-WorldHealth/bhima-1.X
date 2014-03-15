@@ -103,7 +103,7 @@ angular.module('kpk.controllers')
     $scope.generateFiscal = function generateFiscal(model) {
  
       messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
-      connect.basicGet('/fiscal/' + $scope.enterpriseId  + '/' + model.start + '/' + model.end + '/' + model.note)
+      connect.fetch('/fiscal/' + $scope.enterpriseId  + '/' + model.start + '/' + model.end + '/' + model.note)
       .then(function(res) {
 
         var instance = $modal.open({

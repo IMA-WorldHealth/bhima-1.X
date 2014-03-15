@@ -8,7 +8,7 @@ angular.module('kpk.controllers')
   'messenger',
   'validate',
   'appstate',
-  'kpkUtilitaire',
+  'util',
   'uuid',
   function($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
 

@@ -9,7 +9,7 @@ angular.module('kpk.controllers')
   'messenger',
   'validate',
   'exchange',
-  'kpkUtilitaire',
+  'util',
   'precision',
   'calc',
   'uuid',

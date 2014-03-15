@@ -5,7 +5,7 @@ angular.module('kpk.controllers')
   '$window',
   'validate',
   'connect',
-  'kpkUtilitaire',
+  'util',
   function ($scope, $q, $window, validate, connect, util) {
 
     $scope.print = function () {
