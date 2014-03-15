@@ -30,10 +30,10 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="pcash in model.pcash.data">
+							<tr ng-repeat="summer in model.summers.data">
 								<td>{{$index}}</td>
-								<td>{{pcash.date}}</td>
-								<td>{{pcash.amount}}</td>
+								<td>{{summer.trans_date | date}}</td>
+								<td>{{summer.balance | currency}}</td>
 							</tr>
 						</tbody>
 					</table>
