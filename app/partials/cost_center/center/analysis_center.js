@@ -109,7 +109,7 @@ angular.module('kpk.controllers')
 
     function getAvailablesAccounts (enterprise_id){
       var def = $q.defer();
-      connect.MyBasicGet('/availablechargeAccounts/'+enterprise_id+'/')
+      connect.fetch('/availablechargeAccounts/'+enterprise_id+'/')
       .then(function(values){
         def.resolve(values);
       });
@@ -135,7 +135,7 @@ angular.module('kpk.controllers')
 
     function loadAssociateAccounts (){
       var def = $q.defer();
-      connect.MyBasicGet('/costCenterAccount/'+enterprise.id+'/'+$scope.selected.id)
+      connect.fetch('/costCenterAccount/'+enterprise.id+'/'+$scope.selected.id)
       .then(function(values){
         def.resolve(values);
       });

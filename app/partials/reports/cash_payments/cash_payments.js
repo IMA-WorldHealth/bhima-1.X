@@ -71,5 +71,13 @@ angular.module('kpk.controllers')
     });
 
 
+    function sum(a, b) {
+      return a + b.cost;
+    }
+
+    $scope.sumPayments = function () {
+      return $scope.payments ? $scope.payments.reduce(sum, 0) : 0;
+    };
+
   }
 ]);

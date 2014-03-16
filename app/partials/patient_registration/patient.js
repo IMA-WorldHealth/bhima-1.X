@@ -8,7 +8,7 @@ angular.module('kpk.controllers')
   'messenger',
   'validate',
   'appstate',
-  'kpkUtilitaire',
+  'util',
   'uuid',
   function($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
 
@@ -181,6 +181,7 @@ angular.module('kpk.controllers')
       })
       .then(function (result) {
         var packageHistory = {
+          uuid : uuid(),
           debitor_uuid : packagePatient.debitor_uuid,
           debitor_group_uuid : $scope.debtor.debtor_group.uuid,
           user_id : 1 // FIXME: can this be done on the server?
