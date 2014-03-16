@@ -188,6 +188,7 @@ angular.module('kpk.controllers')
   	appstate.register('enterprise', function(enterprise){
   		$scope.enterprise = enterprise;
       dependencies.currency_account.query.where = ['currency_account.enterprise_id='+$scope.enterprise.id];
+      dependencies.pcash_accounts.query.where = ['currency_account.enterprise_id='+$scope.enterprise.id, 'AND', 'currency_account.currency_id='+$scope.enterprise.currency_id];
   		validate.process(dependencies, ['pcash_accounts', 'currency_account', 'exchange_rate', 'cashier', 'accounts']).then(init, handlError);
   	});
 

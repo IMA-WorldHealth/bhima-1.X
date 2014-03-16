@@ -37,7 +37,7 @@ module.exports = function (db, sanitize) {
     if(acIds.length === 1){
       portion = '`t`.`account_id`='+acIds[0];
     }else{
-      portion = '`t`.`account_id`='+acIds.join(' OR `t`.`account_id`=');
+      portion = '`t`.`account_id`='+acIds.join(' OR `t`.`account_id`='); //I think it not important
     }
     var sql = 'SELECT SUM(`debit_equiv` - `credit_equiv`) as balance, trans_date '+
       'FROM ((SELECT `debit_equiv`, `credit_equiv`, `enterprise_id`, `account_id`, `currency_id`, `trans_date` FROM `posting_journal`)'+
@@ -58,7 +58,7 @@ module.exports = function (db, sanitize) {
     if(acIds.length === 1){
       portion = '`t`.`account_id`='+acIds[0];
     }else{
-      portion = '`t`.`account_id`='+acIds.join(' OR `t`.`account_id`=');
+      portion = '`t`.`account_id`='+acIds.join(' OR `t`.`account_id`='); //I think it not important
     }
     var sql = 'SELECT SUM(`debit_equiv`) as total, trans_date '+
       'FROM ((SELECT `debit_equiv`, `credit_equiv`, `enterprise_id`, `account_id`, `currency_id`, `trans_date` FROM `posting_journal`)'+
