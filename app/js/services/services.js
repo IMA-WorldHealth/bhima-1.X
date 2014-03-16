@@ -551,7 +551,7 @@
       this.remove = function (id) {
         var data = this.data,
             index = this.index;
-  
+        
         if (id in index) {
           data.splice(index[id], 1);
           this.setData(data);

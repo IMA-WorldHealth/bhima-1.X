@@ -4,7 +4,7 @@
 
 -- TODO patient channel is proof of concept, channels should encompass shared and transactional data
 -- TODO tshikaji / pax relationship shouldn't be hardcoded - master -> clients in general
-
+-- TODO sym_node_security definining initial load for client 005
 --
 -- Nodes
 --
@@ -233,38 +233,39 @@ values('client_to_master', 'client', 'master', 'default',current_timestamp, curr
 
 --
 -- Transactional links (clients report to master)
+-- transactional data is NOT initially loaded
 --
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('sale', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('sale', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('sale_item', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('sale_item', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('cash', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('cash', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('cash_item', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('cash_item', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('posting_journal', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('posting_journal', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('general_ledger', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('general_ledger', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('group_invoice', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('group_invoice', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('group_invoice_item', 'client_to_master', 100, current_timestamp, current_timestamp);
+values('group_invoice_item', 'client_to_master', -1, current_timestamp, current_timestamp);
 
 --
 -- Shared data links (common to all nodes)

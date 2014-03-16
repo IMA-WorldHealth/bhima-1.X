@@ -153,7 +153,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.$watch('inventory.data', function () {
-      if ($scope.dataview && $scope.inventory) $scope.dataview.setItems($scope.inventory.data);
+      if ($scope.dataview && $scope.inventory) $scope.dataview.setItems($scope.inventory.data, 'uuid');
     }, true);
 
     function formatCurrency (row, col, item) {
