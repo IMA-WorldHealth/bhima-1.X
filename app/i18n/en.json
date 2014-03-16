@@ -673,6 +673,7 @@
 
   "INVENTORY_GROUP" : {
     "ADD" : "Add Inventory Group",
+    "CODE" : "Code",
     "NAME" : "Name",
     "SALES_ACCOUNT" : "Sales Account",
     "COGS" : "COGS Account",
