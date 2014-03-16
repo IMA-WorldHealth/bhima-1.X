@@ -20,19 +20,14 @@ angular.module('kpk.controllers')
     var inventory_query = {
       'tables' : {
         'inventory' : {
-          'columns' : [
-            'id',
-            'code',
-            'text',
-            'price',
-            'type_id'
-          ]
+          'columns' : [ 'uuid', 'code', 'text', 'price', 'type_id']
         }
       },
       'where' : [
         'inventory.type_id=0'
       ]
     };
+
     var inventory_request = connect.req(inventory_query);
     var max_sales_request = connect.basicGet('/max/id/sale');
     var max_purchase_request = connect.basicGet('/max/id/purchase');

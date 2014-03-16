@@ -97,6 +97,28 @@
         <hr style="padding:0;margin:0;" />
 
         <div class="panel-body">
+
+          <div class="container">
+            <div class="row" style="font-size: 2em;">
+              <div class="col-xs-6">
+                <b>{{ "CASH.TOTAL_DUE" | translate }}</b>
+                <span ng-bind-html="data.total | intlcurrency:cashbox.currency_id"></span>
+              </div>
+              <div class='col-xs-6'>
+                <b>{{ "CASH.OVERDUE" | translate }}</b>
+                <span ng-bind-html="data.overdue | intlcurrency:cashbox.currency_id"></span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="input-group">
+                <input type="number" ng-model="data.payment"  class="form-kapok" min="0" required>
+                <span class="input-group-addon"> {{ cashbox.symbol }} </span>
+              </div>
+            </div>
+          </div>
+
+          <!--
           <form class="form-horizontal">
 
             <div class="form-group">
@@ -117,6 +139,7 @@
             </div>
 
           </form>
+          -->
         </div>
         <div class="panel-footer">
           <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.overdue > 0, 'btn-success':  data.overdue <= 0 }" ng-click="payInvoices()" ng-disabled="!data.payment">
