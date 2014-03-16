@@ -141,7 +141,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="inventory.length==0" ng-click="submitInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "SALE.SUBMIT" | translate }}</a>
+    <a ng-disabled="verifySubmission()" ng-click="submitInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "SALE.SUBMIT" | translate }}</a>
   </div>
 </section>
 

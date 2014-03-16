@@ -710,7 +710,7 @@
     "TAB_LOCK_LINE" : "Tab lock Line",
     "TAB_LOCK_ITEM" : "Tab lock Item",
     "RECOVER" : "Recover Sale",
-    "RECOVER_INFO" : "[Sale Recovered] It is important to note ONLY sale items are recovered, quantities and previously set prices are reset to the inventory default"
+    "RECOVER_INFO" : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default"
   },
 
   "FIND" : {
