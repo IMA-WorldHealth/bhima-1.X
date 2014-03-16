@@ -281,11 +281,11 @@ create table `account` (
 drop table if exists `creditor_group`;
 create table `creditor_group` (
   `enterprise_id` smallint unsigned not null,
-  `id`            smallint unsigned not null auto_increment,
+  `uuid`          char(36) not null,
   `name`          varchar(80),
   `account_id`    int unsigned not null,
   `locked`        boolean not null default 0,
-  primary key (`id`),
+  primary key (`uuid`),
   key `account_id` (`account_id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade on update cascade,
@@ -297,12 +297,12 @@ create table `creditor_group` (
 --
 drop table if exists `creditor`;
 create table `creditor` (
-  `uuid`      char(36),
-  `group_id`  smallint unsigned not null,
-  `text`      varchar(45),
+  `uuid`        char(36) not null,
+  `group_uuid`  char(36) not null,
+  `text`        varchar(45),
   primary key (`uuid`),
-  key `group_id` (`group_id`),
-  constraint foreign key (`group_id`) references `creditor_group` (`id`) on delete cascade on update cascade
+  key `group_uuid` (`group_uuid`),
+  constraint foreign key (`group_uuid`) references `creditor_group` (`uuid`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -457,7 +457,7 @@ create table `debitor` (
 --
 drop table if exists `supplier`;
 create table `supplier` (
-  `id`              int unsigned not null auto_increment,
+  `uuid`            char(36),
   `creditor_uuid`   char(36) not null,
   `name`            varchar(45) not null,
   `address_1`       text,
@@ -469,7 +469,7 @@ create table `supplier` (
   `phone`           varchar(15),
   `international`   boolean not null default 0,
   `locked`          boolean not null default 0,
-  primary key (`id`),
+  primary key (`uuid`),
   key `creditor_uuid` (`creditor_uuid`),
   key `location_id` (`location_id`),
   constraint foreign key (`location_id`) references `village` (`uuid`) on delete cascade on update cascade,
