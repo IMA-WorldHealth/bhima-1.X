@@ -72,7 +72,6 @@ INSERT INTO `unit` VALUES
   (52, 'Location Manager'           , 'TREE.LOCATION', ''                                           , 1   , 0 , '/partials/location/location.html'        , '/location'),
   (54, 'Chart of Accounts'          , 'TREE.CHART_OF_ACCOUNTS', ''                                           , 10  , 0 , '/partials/reports/chart_of_accounts/'      , '/reports/chart_of_accounts/'),
   (55, 'Debitor Aging'              , 'TREE.DEBTOR_AGING', ''                                           , 10  , 0 , '/partials/reports/debitor_aging/'        , '/reports/debitor_aging/'),
-  (56, 'Account Statement By Period', 'TREE.ACCOUNT_STATEMENT', ''                                           , 10  , 0 , '/partials/reports/account_statement/'    , '/reports/account_statement/'),
   (57, 'Income Expensive Balance'   , 'TREE.INCOME_EXPENSE', ''                                           , 10  , 0 , '/partials/reports/income_expensive/'     , '/reports/income_expensive/'),
   (58, 'Credit Note'                , 'TREE.CREDIT_NOTE', ''                                           , 5   , 0 , '/partials/credit_note/'                  , '/credit_note/'),
   (60, 'Patient Group Assignment'    , 'TREE.PATIENT_GRP_ASSIGNMENT', ''                                           , 21  , 0 , '/partials/patient_group_assignment/'     , '/patient_group_assignment/'),

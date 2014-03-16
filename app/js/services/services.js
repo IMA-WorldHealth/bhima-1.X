@@ -552,11 +552,7 @@
         var data = this.data,
             index = this.index;
         
-        console.log('model remove');
-        console.log('model has index', index);
-
         if (id in index) {
-          console.log('model found', index[id]);
           data.splice(index[id], 1);
           this.setData(data);
           queue.push({method: 'DELETE', url: '/data/' + target + '/' + id});

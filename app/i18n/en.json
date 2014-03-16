@@ -188,7 +188,7 @@
     "SEARCH" : "Search"
   },
 
-  "REPORT" : {
+  "REPORT"                  : {
     "CHART_OF_ACCOUNTS"     : "Chart of Accounts",
     "NUMBER"                : "Number",
     "DESCRIPTION"           : "Description",
@@ -203,7 +203,7 @@
     "INDIVIDUAL"            : "Individual",
     "GROUP"                 : "Group",
     "CREDITOR"              : "Creditor",
-    "DEBITOR"               : "Debitor",
+    "DEBTOR"                : "Debtor",
     "DATE_FROM"             : "Date From",
     "DATE_TO"               : "Date To",
     "CHOICE"                : "Select One",
@@ -521,25 +521,26 @@
     "DETAILS" : "Invoice Details"
   },
 
-  "FORM" : {
-    "SAVE"           : "Save",
-    "SAVE_FORM"      : "Save Form",
-    "SAVE_CHANGES"   : "Save Changes",
-    "SUBMIT_BALANCES"  : "Save Balances",
-    "SUBMIT"         : "Submit",
-    "DISCARD"     : "Discard",
-    "RESET_BALANCES" : "Reset Balances",
-    "CLEAR"          : "Clear",
-    "CLEAR_FORM"     : "Clear Form",
-    "RESET"          : "Reset",
-    "DELETE"         : "Delete",
-    "RESET_FORM"     : "Reset Form",
-    "CANCEL"         : "Cancel",
-    "OK"             : "Ok",
-    "CONTINUE"      : "Continue",
-    "ADD"            : "Add",
-    "EDIT"           : "Edit",
-    "NEW_FORM"       : "New Form"
+  "FORM"              : {
+    "SAVE"            : "Save",
+    "SAVE_FORM"       : "Save Form",
+    "SAVE_CHANGES"    : "Save Changes",
+    "SUBMIT_BALANCES" : "Save Balances",
+    "SUBMIT"          : "Submit",
+    "SEARCH"          : "Search",
+    "DISCARD"         : "Discard",
+    "RESET_BALANCES"  : "Reset Balances",
+    "CLEAR"           : "Clear",
+    "CLEAR_FORM"      : "Clear Form",
+    "RESET"           : "Reset",
+    "DELETE"          : "Delete",
+    "RESET_FORM"      : "Reset Form",
+    "CANCEL"          : "Cancel",
+    "OK"              : "Ok",
+    "CONTINUE"        : "Continue",
+    "ADD"             : "Add",
+    "EDIT"            : "Edit",
+    "NEW_FORM"        : "New Form"
   },
 
   "CASH" : {

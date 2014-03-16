@@ -83,13 +83,7 @@ angular.module('kpk.controllers')
       }
     };
 
-    var queryProject = {
-      'tables' : {
-        'project' : {
-          'columns' : ['id', 'name', 'abbr']
-        }
-      }
-    };
+    var queryProject = "/currentProject";
 
    
     function settupApplication() {
@@ -127,6 +121,7 @@ angular.module('kpk.controllers')
       .then(setEnterpriseLoadFiscal)
       .then(setFiscalLoadExchange)
       .then(setExchange)
+      .then(setProject)
       .then(setCurrency)
       .catch(handleError);
     }
@@ -156,16 +151,16 @@ angular.module('kpk.controllers')
 
     function setExchange(result) {
       if(result) { appstate.set('exchange_rate', result.data); }
+      return connect.fetch(queryProject);
+    }
+
+    function setProject(result) {
+      if (result) { appstate.set('project', result.data); }
       return connect.req(queryCurrency);
     }
 
     function setCurrency(result) {
       if (result) { appstate.set('currency', result.data); }
-      return connect.fetch(queryProject);
-    }
-
-    function setProject(result) {
-      if (result) { appstate.set('project', result[0]); }
     }
 
     function handleError(error) {

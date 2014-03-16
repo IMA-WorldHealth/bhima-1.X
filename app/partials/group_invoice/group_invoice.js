@@ -25,7 +25,7 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'debitor_group'  : {
-            columns : ['id', 'name', 'account_id']
+            columns : ['uuid', 'name', 'account_id']
           }
         },
         where : ['debitor_group.is_convention<>0', 'AND']
@@ -37,23 +37,23 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'debitor' : {
-            columns : ['id', 'text']
+            columns : ['uuid', 'text']
           },
           'debitor_group' : {
             columns : ['account_id']
           }
         },
-        join : ['debitor.group_id=debitor_group.id']
+        join : ['debitor.group_uuid=debitor_group.uuid']
       }
     };
 
     // get enterprise
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
+    appstate.register('project', function (project) {
+      $scope.project = project;
       dependencies.invoices.query.where =
-        ['posting_journal.enterprise_id=' + enterprise.id];
+        ['posting_journal.project_id=' + project.id];
       dependencies.conventions.query.where.push(
-        'debitor_group.enterprise_id=' + enterprise.id
+        'debitor_group.enterprise_id=' + project.id
       );
       validate.process(dependencies, ['debitors', 'conventions']).then(setUpModels);
     });
@@ -120,7 +120,7 @@ angular.module('kpk.controllers')
 
     $scope.pay = function () {
       var payment = $scope.payment;
-      payment.enterprise_id = $scope.enterprise.id;
+      payment.project_id = $scope.project.id;
       payment.group_id = $scope.selected.convention.id;
       payment.debitor_id  = $scope.selected.debitor.id;
       payment.total = $scope.paymentBalance;

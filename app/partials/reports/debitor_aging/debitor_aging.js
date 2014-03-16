@@ -7,13 +7,13 @@ angular.module('kpk.controllers')
   function($scope, $q, connect, appstate){
 
     //variables
-  
+ 
     $scope.models = {};
     $scope.results = [];
     $scope.today = new Date();
     var debitors, periods, fiscalYears;
     var names = ['debitors', 'periods', 'fys'];
-  
+ 
 
     //fonctions
 
@@ -26,9 +26,9 @@ angular.module('kpk.controllers')
       getDebitorRecord();
     }
 
-    var getBalance = function(fiscal_id){
+    var getBalance = function(fiscal_id) {
       var def = $q.defer();
-      connect.MyBasicGet('/reports/debitorAging/?'+JSON.stringify({fiscal_id : fiscal_id}))
+      connect.fetch('/reports/debitorAging/?'+JSON.stringify({fiscal_id : fiscal_id}))
       .then(function(values){
         def.resolve(values);
       });
@@ -67,13 +67,48 @@ angular.module('kpk.controllers')
     };
 
     var loading = function(fy){
-
       appstate.register('fiscal', function(fiscal) {
         $scope.fySelected = fy || fiscal;
-        debitors = {tables:{'debitor':{columns:['id', 'text']}, 'debitor_group':{columns:['account_id']}}, join:['debitor.group_id=debitor_group.id'], where : ['debitor_group.enterprise_id='+$scope.fySelected.enterprise_id]};
-        periods = {tables:{'period':{columns:['id', 'period_start', 'period_stop']}}, where : ['period.fiscal_year_id='+$scope.fySelected.id]};
-        fiscalYears = {tables:{'fiscal_year':{columns:['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id']}}, where : ['fiscal_year.enterprise_id='+$scope.fySelected.enterprise_id]};
-        $q.all([connect.req(debitors), connect.req(periods), connect.req(fiscalYears), getBalance($scope.fySelected.id)]).then(init);
+
+        debitors = {
+          identifier : 'uuid',
+          tables : {
+            'debitor' : {
+              columns : ['uuid', 'text']
+            },
+            'debitor_group':{
+              columns:['account_id']
+            }
+          },
+          join : ['debitor.group_uuid=debitor_group.uuid'],
+          where : ['debitor_group.enterprise_id='+$scope.fySelected.enterprise_id]
+        };
+
+        periods = {
+          tables : {
+            'period' : {
+              columns:['id', 'period_start', 'period_stop']
+            }
+          },
+          where : ['period.fiscal_year_id='+$scope.fySelected.id]
+        };
+
+        fiscalYears = {
+          tables : {
+            'fiscal_year' : {
+              columns: ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id']
+            }
+          },
+          where : ['fiscal_year.enterprise_id='+$scope.fySelected.enterprise_id]
+        };
+
+        $q.all([
+          connect.req(debitors),
+          connect.req(periods),
+          connect.req(fiscalYears),
+          getBalance($scope.fySelected.id)
+        ]).then(init);
+
       });
     };
 

@@ -426,7 +426,7 @@
     "DEBITOR_TYPE" : "Type de Debiteur"
   },
 
-  "REPORT" : {
+  "REPORT"                  : {
     "CHART_OF_ACCOUNTS"     : "Plan Comptable",
     "NUMBER"                : "Numero",
     "DESCRIPTION"           : "Description",
@@ -441,7 +441,7 @@
     "INDIVIDUAL"            : "Individual",
     "GROUP"                 : "Groupe",
     "CREDITOR"              : "Crediteur",
-    "DEBITOR"               : "Debiteur",
+    "DEBTOR"                : "Debiteur",
     "DATE_FROM"             : "Date Debus",
     "DATE_TO"               : "Date Fin",
     "CHOICE"                : "Selectionner Un",
@@ -620,25 +620,26 @@
     "INFO"       : "Information du Groupe"
   },
 
-  "FORM" : {
-    "SAVE"           : "Sauver",
-    "SAVE_FORM"      : "Sauver Formulaire",
-    "SAVE_CHANGES"   : "Sauver Changement",
+  "FORM"              : {
+    "SAVE"            : "Sauver",
+    "SAVE_FORM"       : "Sauver Formulaire",
+    "SAVE_CHANGES"    : "Sauver Changement",
     "SUBMIT_BALANCES" : "Sauver Balances",
-    "SUBMIT"         : "Soumettre",
-    "DISCARD"        : "Annuler",
-    "RESET_BALANCES" : "Reinitialiser Balances",
-    "CLEAR"          : "Effacer",
-    "CLEAR_FORM"     : "Effacer Formulaire",
-    "RESET"          : "Reinitilaiser",
-    "DELETE"         : "Effacer",
-    "RESET_FORM"     : "Reinitilaiser Formiulaire",
-    "CANCEL"         : "Annuler",
-    "OK"             : "Ok",
-    "CONTINUE"       : "Continuer",
-    "ADD"            : "Ajouter",
-    "EDIT"           : "Editer",
-    "NEW_FORM"       : "Nouveau Formulaire"
+    "SUBMIT"          : "Soumettre",
+    "SEARCH"          : "Rechercher",
+    "DISCARD"         : "Annuler",
+    "RESET_BALANCES"  : "Reinitialiser Balances",
+    "CLEAR"           : "Effacer",
+    "CLEAR_FORM"      : "Effacer Formulaire",
+    "RESET"           : "Reinitilaiser",
+    "DELETE"          : "Effacer",
+    "RESET_FORM"      : "Reinitilaiser Formiulaire",
+    "CANCEL"          : "Annuler",
+    "OK"              : "Ok",
+    "CONTINUE"        : "Continuer",
+    "ADD"             : "Ajouter",
+    "EDIT"            : "Editer",
+    "NEW_FORM"        : "Nouveau Formulaire"
   },
 
   "ACCOUNT" : {

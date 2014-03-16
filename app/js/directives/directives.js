@@ -228,13 +228,13 @@
           var searchCallback = scope[attrs.onSearchComplete];
           var cache = new appcache('patientSearchDirective');
 
-          if(!searchCallback) throw new Error('Patient Search directive must implement data-on-search-complete');
+          if(!searchCallback) { throw new Error('Patient Search directive must implement data-on-search-complete'); }
       
           dependencies.debtor = {
             required : true,
             query : {
               tables : {
-                patient : {columns : ["uuid", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
+                patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
                 debitor : { columns : ["text"]},
                 debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
               },
