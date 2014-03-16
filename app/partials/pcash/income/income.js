@@ -29,6 +29,19 @@ angular.module('kpk.controllers')
 	    }
     }
 
+    dependencies.pcash_accounts = {
+      query : {
+        tables : {
+          'currency_account': {
+            columns : ['pcash_account']
+          }
+        }
+      }
+    }
+    dependencies.summers = {
+      query : '/synthetic/pcRI/'
+    }
+
     dependencies.cashier = {
     	query : 'user_session'
     }
@@ -61,7 +74,8 @@ angular.module('kpk.controllers')
 
   	//fonctions
   	function init (model) {
-  		$scope.model = model;
+  		//$scope.model = model;
+      dependencies.summers.query = dependencies.summers.query+$scope.enterprise.id+'?'+JSON.stringify({accounts : formatTab(model)});
   		$scope.selectedItem = model.currency_account.data[0];
       cashAccountIds = model.currency_account.data.filter(function (item){
         return (item.cash_account);
@@ -71,11 +85,22 @@ angular.module('kpk.controllers')
         return item.cash_account;
       });
 
-      $scope.enterprise_symbole_currency = $scope.model.currency_account.data.filter(function (item){
+      $scope.enterprise_symbole_currency = model.currency_account.data.filter(function (item){
         return (item.enterprise_id === $scope.enterprise.id && item.currency_id === $scope.enterprise.currency_id)
 
       })[0].symbol;
+      validate.process(dependencies, ['summers']).then(setUpModel, handlError);
   	}
+
+    function formatTab (m){
+      return m.pcash_accounts.data.map(function (item){
+        return item.pcash_account;
+      });
+    }
+
+    function setUpModel (model){
+      $scope.model = model;
+    }
 
   	function handlError (err) {
   		messenger.danger(err.toString());
@@ -163,7 +188,7 @@ angular.module('kpk.controllers')
   	appstate.register('enterprise', function(enterprise){
   		$scope.enterprise = enterprise;
       dependencies.currency_account.query.where = ['currency_account.enterprise_id='+$scope.enterprise.id];
-  		validate.process(dependencies).then(init, handlError);
+  		validate.process(dependencies, ['pcash_accounts', 'currency_account', 'exchange_rate', 'cashier', 'accounts']).then(init, handlError);
   	});
 
 
