@@ -14,7 +14,10 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
   dependencies.inventory = {
     // required: true,
-    query: { tables: {"inventory" : {columns: ["uuid", "code", "text", "price"]}}}
+    query: { 
+      identifier : 'uuid',
+      tables: {"inventory" : {columns: ["uuid", "code", "text", "price"]}}
+    }
   };
 
   //Temporary seller ID, should happen on the server
@@ -154,6 +157,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     invoiceItem.inventoryReference = inventoryReference;
  
     //Remove ability to selec the option again
+    console.log('removing inventory item', inventoryReference.uuid);
     $scope.model.inventory.remove(inventoryReference.uuid);
     $scope.model.inventory.recalculateIndex();
 
@@ -411,6 +415,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
 
   function recover() { 
     $scope.session.recovered.items.forEach(function (item) { 
+      console.log('recovering', item)
       var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.uuid);
       currentItem.selectedReference = invItem.code;
       updateInvoiceItem(currentItem, invItem);
@@ -433,7 +438,7 @@ angular.module('kpk.controllers').controller('sales', function($scope, $q, $loca
     
     invoice.items.forEach(function (item) { 
       if(item.code && item.quantity) recoverObject.items.push({
-        id : item.inventoryId,
+        uuid : item.inventoryId,
         quantity : item.quantity
       });
     });
