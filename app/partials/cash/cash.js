@@ -90,8 +90,9 @@ angular.module('kpk.controllers')
       $scope.ledger = [];
       $scope.queue = [];
       $scope.patient = patient;
-      connect.fetch('/ledgers/debitor/' + patient.debitor_id)
+      connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
       .success(function (data) {
+        console.log('[loaded] ', data);
         $scope.ledger = data.filter(function (row) {
           return row.balance > 0;
         });
@@ -168,7 +169,7 @@ angular.module('kpk.controllers')
       $scope.payment_uuid = uuid();
 
       cashPayment = {
-        uuid : $scope.payement_uuid,
+        uuid : $scope.payment_uuid,
         project_id : $scope.project.id,
         type : 'E',
         document_id : document_id,
@@ -180,7 +181,7 @@ angular.module('kpk.controllers')
         description : description,
         user_id : 1,
         cashbox_id : 1,
-        deb_cred_id : $scope.patient.debitor_uuid,
+        deb_cred_uuid : $scope.patient.debitor_uuid,
         deb_cred_type : 'D'
       };
 

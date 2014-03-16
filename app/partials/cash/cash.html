@@ -40,7 +40,6 @@
           <thead>
             <tr>
               <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
-              <th>{{ "COLUMNS.DEBITOR" | translate }}</th>
               <th>{{ "COLUMNS.BALANCE" | translate }}</th>
               <th>{{ "COLUMNS.DATE" | translate }}</th>
             </tr>
@@ -48,9 +47,8 @@
           <tbody>
             <tr ng-repeat="invoice in ledger" ng-click="add($index)" style="cursor : pointer;">
               <td>{{ invoice.inv_po_id }}</td>
-              <td>{{ invoice.first_name }} {{ invoice.last_name }}</td>
               <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
-              <td>{{ invoice.trans_date | date}}</td>
+              <td>{{ invoice.trans_date | date }}</td>
             </tr>
           </tbody>
         </table>
@@ -156,7 +154,7 @@
 
 <script type="text/ng-template" id="debtorListItem.html">
   <a>
-    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span><b>[{{match.model.debitor_uuid}}]</b></span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
   </a>
 </script>

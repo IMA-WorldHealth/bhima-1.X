@@ -6,7 +6,7 @@ var parser = require('../database/parser')(),
     util = require('../util/util'),
     validate = require('../util/validate')(),
     Store = require('../util/store'),
-    q = require('q'), 
+    q = require('q'),
     uuid = require('../util/guid');
 
 module.exports = function (db) {
@@ -32,19 +32,19 @@ module.exports = function (db) {
         return errback(null);
       });
     },
-  
+
     validDebitorOrCreditor : function (id, errback) {
       // NOTE: This is NOT STRICT. It may find a debitor when a creditor was
       // requested, or vice versa.  This is fine for the checks here, but not
       // for posting to the general ledger.
       var escaped_id = sanitize.escape(id);
       var sql =
-        'SELECT `temp`.`id` ' +
+        'SELECT `temp`.`uuid` ' +
         'FROM (' +
             '(' +
               'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + escaped_id +
             ') UNION (' +
-              'SELECT `creditor`.`id` FROM `creditor` WHERE `id`=' + escaped_id +
+              'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + escaped_id +
             ')' +
         ') as `temp`;';
       db.execute(sql, function (err, rows) {
@@ -145,12 +145,13 @@ module.exports = function (db) {
   function handleSales (id, user_id, done) {
     // sale posting requests enter here.
     var sql =
-      'SELECT `sale`.`enterprise_id`, `sale`.`uuid`, `sale`.`currency_id`, ' +
+      'SELECT `sale`.`project_id`, `project`.`enterprise_id`, `sale`.`uuid`, `sale`.`currency_id`, ' +
         '`sale`.`debitor_uuid`, `sale`.`seller_id`, `sale`.`discount`, `sale`.`invoice_date`, ' +
         '`sale`.`cost`, `sale`.`note`, `sale_item`.`transaction_price`, `sale_item`.`debit`, ' +
         '`sale_item`.`credit`, `sale_item`.`quantity`, `inventory`.`group_uuid` ' +
-      'FROM `sale` JOIN `sale_item` JOIN `inventory` ON ' +
+      'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `project` ON ' +
         '`sale`.`uuid`=`sale_item`.`sale_uuid` AND ' +
+        '`sale`.`project_id`=`project`.`id` AND ' +
         '`sale_item`.`inventory_uuid`=`inventory`.`uuid` ' +
       'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ' ' +
       'ORDER BY `sale_item`.`credit`;';
@@ -195,7 +196,7 @@ module.exports = function (db) {
         var sumDebitsAndCredits = 0;
         results.forEach(function (i) {
           sumDebitsAndCredits += (i.credit - i.debit);
-        });
+        })
 
         if (!validate.isEqual(sumDebitsAndCredits, reference_sale.cost)) {
           console.log('[DEBUG] :', 'sumDebitsAndCredits', sumDebitsAndCredits, 'reference_sale.cost:', reference_sale.cost);
@@ -207,7 +208,7 @@ module.exports = function (db) {
         get.origin('sale', function (err, origin_id) {
           if (err) return done(err);
           // we now have the origin!
-         
+
           get.period(date, function (err, period_object) {
             if (err) return done(err);
 
@@ -220,7 +221,7 @@ module.exports = function (db) {
 
               var period_id = period_object.period_id;
               var fiscal_year_id = period_object.fiscal_year_id;
-            
+
               // we can begin copying data from SALE -> JOURNAL
 
               // First, copy the data from sale into the journal.
@@ -228,10 +229,10 @@ module.exports = function (db) {
               // returns a mysql-compatible date
               var sale_query =
                 'INSERT INTO `posting_journal` ' +
-                  '(`enterprise_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `sale`.`enterprise_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                   '`sale`.`note`, `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
                   '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [origin_id, user_id].join(', ') + ' ' +
                 'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
@@ -243,10 +244,10 @@ module.exports = function (db) {
               // contains both debits and credits.
               var sale_item_query =
                 'INSERT INTO `posting_journal` ' +
-                  '(`enterprise_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `sale`.`enterprise_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                   '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
                   '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
                   ' null, `sale`.`uuid`, ' + [origin_id, user_id].join(', ') + ' ' +
@@ -256,12 +257,12 @@ module.exports = function (db) {
                 'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ';';
 
               // we are ready to execute!
-            
+
               db.execute(sale_query, function (err, rows) {
                 if (err) return done(err);
                 db.execute(sale_item_query, function (err, rows) {
                   if (err) return done(err);
-                
+    
                   // now we must set all relevant rows from sale to "posted"
                   var sale_posted_query =
                     'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`uuid`='+sanitize.escape(id);
@@ -286,9 +287,9 @@ module.exports = function (db) {
   // handles rounding for cash
   function handleRounding(cash_id, done) {
     var sql =
-      'SELECT c.id, c.cost, SUM(s.cost) as sale_cost, c.date, c.currency_id, cu.min_monentary_unit ' +
+      'SELECT c.uuid, c.cost, SUM(s.cost) as sale_cost, c.date, c.currency_id, cu.min_monentary_unit ' +
       'FROM cash AS c JOIN currency AS cu JOIN cash_item AS ci JOIN sale AS s ' +
-      'ON c.id=ci.cash_id AND c.currency_id = cu.id AND s.id = ci.invoice_id ' +
+      'ON c.uuid=ci.cash_uuid AND c.currency_id = cu.id AND s.uuid = ci.invoice_uuid ' +
       'WHERE c.id = ' + sanitize.escape(cash_id) + ' ' +
       'GROUP BY c.document_id;';
 
@@ -319,12 +320,14 @@ module.exports = function (db) {
   function handleCash (id, user_id, done) {
     // posting from cash to the journal.
     var sql =
-      'SELECT `cash`.`id`, `cash`.`project_id`, `project`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  +
-        '`cash`.`deb_cred_id`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`cashier_id`, ' +
-        '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' +
+      'SELECT `cash`.`uuid`, `cash`.`project_id`, `project`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  +
+        '`cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`user_id`, ' +
+        '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_uuid`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_uuid`, ' +
         '`cash`.`type`, `cash`.`document_id` ' +
-      'FROM `cash` JOIN `cash_item` JOIN `project` ON `cash`.`id`=`cash_item`.`cash_id` AND `cash`.`project_id`=`project`.`id `' +
-      'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
+      'FROM `cash` JOIN `cash_item` JOIN `project` ON ' +
+        '`cash`.`uuid`=`cash_item`.`cash_uuid` ' +
+        'AND `cash`.`project_id`=`project`.`id` ' +
+      'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ';';
 
     db.execute(sql, function (err, results) {
       if (err) { return done(err); }
@@ -358,7 +361,7 @@ module.exports = function (db) {
         if (!cost_positive) {
           return done(new Error('Invalid value for cost for cash id: ' + id));
         }
-      
+
         // fifth check - is the allocated cost positive for every cash item?
         var allocated_postive = results.every(function (row) {
           return validate.isPositive(row.allocated_cost);
@@ -367,7 +370,7 @@ module.exports = function (db) {
         if (!allocated_postive) {
           return done(new Error('Invalid payment price for one invoice with cash id: ' + id));
         }
-   
+
         // sixth check - do all the allocated costs add up to the total cost?
         // We must catch this because reduce fails in on a empty array.
         function sum(a, b) {
@@ -382,14 +385,14 @@ module.exports = function (db) {
         }
 
         // seventh check - is the deb_cred_id valid?
-        check.validDebitorOrCreditor(reference_payment.deb_cred_id, function (err) {
+        check.validDebitorOrCreditor(reference_payment.deb_cred_uuid, function (err) {
           if (err) return done(err);
 
           // all checks have passed - prepare for writing to the journal.
           get.origin('cash', function (err, origin_id) {
             if (err) return done(err);
             // we now have the origin!
-           
+
             get.period(date, function (err, period_object) {
               if (err) return done(err);
 
@@ -415,7 +418,7 @@ module.exports = function (db) {
                     var fiscal_year_id = period_object.fiscal_year_id;
 
                     // we can begin copying data from CASH -> JOURNAL
-                  
+      
                     // First, figure out if we are crediting or debiting the caisse
                     // This is indicated by the type.
                     // match { 'S' => debiting; 'E' => crediting }
@@ -435,18 +438,18 @@ module.exports = function (db) {
                       'INSERT INTO `posting_journal` ' +
                         '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                        '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
+                        '`inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                       'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                         '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
-                        '`cash_item`.`invoice_id`, `cash`.`currency_id`, null, null, ' +
+                        '`cash_item`.`invoice_uuid`, `cash`.`currency_id`, null, null, ' +
                         [origin_id, user_id].join(', ') + ' ' +
                       'FROM `cash` JOIN `cash_item` ON ' +
-                        ' `cash`.`id` = `cash_item`.`cash_id` ' +
-                      'WHERE `cash`.`id`=' + sanitize.escape(id) + ' ' +
+                        ' `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
+                      'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' ' +
                       'LIMIT 1;'; // just in case
 
                     // Then copy data from CASH_ITEM -> JOURNAL
-                  
+      
                     var cash_item_money = reference_payment.type === 'E' ?
                       '0, `cash_item`.`allocated_cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, ' :
                       '`cash_item`.`allocated_cost`, 0, '+ 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' ;
@@ -457,14 +460,14 @@ module.exports = function (db) {
                       'INSERT INTO `posting_journal` ' +
                         '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                        '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                       'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                         '`cash`.`description`, `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
-                        '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
-                        '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
+                        '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, ' + deb_cred_type + ', ' +
+                        '`cash_item`.`invoice_uuid`, ' + [origin_id, user_id].join(', ') + ' ' +
                       'FROM `cash` JOIN `cash_item` ON ' +
-                        '`cash`.`id`=`cash_item`.`cash_id` '+
-                      'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
+                        '`cash`.`uuid`=`cash_item`.`cash_uuid` '+
+                      'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ';';
 
                       // NOTE: In the case where the patient doesn't pay enough, we must
                       // DEBIT the balance account and credit him for the rest.
@@ -472,14 +475,14 @@ module.exports = function (db) {
                     var rounding_query, rounding_balance_query;
                     if (isPaidInFull && remainder !== 0) {
 
-                      //FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the 
+                      //FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the
                       //rounding account
 
                       var creditOrDebitBool = remainder > 0;
                       var r = precision(Math.abs(remainder), 4);
                       var creditOrDebit = creditOrDebitBool ?
-                        [r, 0, r, 0].join(', ') :  // debit 
-                        [0, r, 0, r].join(', ') ;   // credit 
+                        [r, 0, r, 0].join(', ') :  // debit
+                        [0, r, 0, r].join(', ') ;   // credit
 
                       var description =
                         "'Rounding correction on exchange rate data for " + id + "'";
@@ -488,31 +491,31 @@ module.exports = function (db) {
                         'INSERT INTO `posting_journal` ' +
                         '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                        '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                       'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                         description +', `cash`.`document_id`, ' + 534  + ', ' + creditOrDebit + ', ' +
-                        '`cash`.`currency_id`, null, null, `cash_item`.`invoice_id`, ' +
+                        '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
                         [origin_id, user_id].join(', ') + ' ' +
-                      'FROM `cash` JOIN `cash_item` ON `cash`.`id` = `cash_item`.`cash_id` ' +
-                      'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
+                      'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
+                      'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ';';
 
                       if (creditOrDebitBool) {
 
                         var balance = creditOrDebitBool ?
-                          [0, r, 0, r].join(', ') :   // credit 
-                          [r, 0, r, 0].join(', ') ;  // debit 
+                          [0, r, 0, r].join(', ') :   // credit
+                          [r, 0, r, 0].join(', ') ;  // debit
 
                         rounding_balance_query =
                           'INSERT INTO `posting_journal` ' +
                           '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                           '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                          '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                         'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                           description +', `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + balance + ', ' +
-                          '`cash`.`currency_id`, null, null, `cash_item`.`invoice_id`, ' +
+                          '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
                           [origin_id, user_id].join(', ') + ' ' +
-                        'FROM `cash` JOIN `cash_item` ON `cash`.`id` = `cash_item`.`cash_id` ' +
-                        'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
+                        'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
+                        'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ';';
                       }
                     }
 
@@ -550,18 +553,19 @@ module.exports = function (db) {
   function handlePurchase (id, user_id, done) {
     // posting purchase requests
     var sql =
-      'SELECT `purchase`.`enterprise_id`, `purchase`.`id`, `purchase`.`cost`, `purchase`.`currency_id`, ' +
+      'SELECT `purchase`.`project_id`, `project`.`enterprise_id`, `purchase`.`id`, `purchase`.`cost`, `purchase`.`currency_id`, ' +
         '`purchase`.`creditor_id`, `purchase`.`purchaser_id`, `purchase`.`discount`, `purchase`.`invoice_date`, ' +
         '`purchase`.`note`, `purchase`.`posted`, `purchase_item`.`unit_price`, `purchase_item`.`total`, `purchase_item`.`quantity` ' +
-      'FROM `purchase` JOIN `purchase_item` ON `purchase`.`id`=`purchase_item`.`purchase_id` ' +
+      'FROM `purchase` JOIN `purchase_item` JOIN `project` ON `purchase`.`id`=`purchase_item`.`purchase_id` AND `project`.`id`=`purchase`.`project_id` ' +
       'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
-  
+
     db.execute(sql, function (err, results) {
       if (err) return done(err);
       if (results.length === 0) return done(new Error('No purchase order by the id: ' + id));
 
       var reference_purchase= results[0];
       var enterprise_id = reference_purchase.enterprise_id;
+      var project_id = reference_purchase.project_id;
       var date = reference_purchase.invoice_date;
 
       // first check - do we have a validPeriod?
@@ -581,12 +585,12 @@ module.exports = function (db) {
         // fourth check - is the total the price * the quantity?
         var totalEquality = results.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
         if (!totalEquality) return done(new Error('Unit prices and quantities do not match for purchase id: ' + id));
-  
+
         // all checks have passed - prepare for writing to the journal.
         get.origin('purchase', function (err, origin_id) {
           if (err) return done(err);
           // we now have the origin!
-         
+
           get.period(date, function (err, period_object) {
             if (err) return done(err);
 
@@ -599,16 +603,16 @@ module.exports = function (db) {
 
               var period_id = period_object.period_id;
               var fiscal_year_id = period_object.fiscal_year_id;
-            
+
               // we can begin copying data from PURCHASE -> JOURNAL
 
               // First, copy the data from purchase into the journal.
               var purchase_sql =
                 'INSERT INTO `posting_journal` ' +
-                  '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `purchase`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                  '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                'SELECT `purchase`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                   '`purchase`.`note`, `creditor_group`.`account_id`, 0, `purchase`.`cost`, 0, `purchase`.`cost`, ' + // last four debit, credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
                   '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
                 'FROM `purchase` JOIN `creditor` JOIN `creditor_group` ON ' +
@@ -617,10 +621,10 @@ module.exports = function (db) {
 
               var purchase_item_sql =
                 'INSERT INTO `posting_journal` ' +
-                  '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `purchase`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                  '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                'SELECT `purchase`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                   '`purchase`.`note`, `inventory_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
                   '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
                 'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inventory_group` ON ' +
@@ -633,7 +637,7 @@ module.exports = function (db) {
 
                 db.execute(purchase_item_sql, function (err, rows) {
                   if (err) return done(err);
-               
+   
                   // Finally, we can update purchase
                   var sql = 'UPDATE `purchase` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
 
@@ -654,15 +658,16 @@ module.exports = function (db) {
   function handleGroupInvoice (id, user_id, done) {
     // posting group invoice requests
     var sql =
-      'SELECT `group_invoice`.`id`, `group_invoice`.`enterprise_id`, `group_invoice`.`debitor_id`,  ' +
+      'SELECT `group_invoice`.`id`, `group_invoice`.`project_id`, `project`.`enterprise_id`, `group_invoice`.`debitor_id`,  ' +
       '  `group_invoice`.`note`, `group_invoice`.`authorized_by`, `group_invoice`.`date`, ' +
-      '  `group_invoice`.`total`, `group_invoice_item`.`invoice_id`, `group_invoice_item`.`cost`, ' +
+      '  `group_invoice`.`total`, `group_invoice_item`.`invoice_uuid`, `group_invoice_item`.`cost`, ' +
       '  `group_invoice_item`.`id` as `gid` ' +
-      'FROM `group_invoice` JOIN `group_invoice_item` JOIN `sale` ' +
+      'FROM `group_invoice` JOIN `group_invoice_item` JOIN `sale` JOIN `project` ' +
       '  ON `group_invoice`.`id` = `group_invoice_item`.`payment_id` AND ' +
-      '  `group_invoice_item`.`invoice_id` = `sale`.`id` ' +
+      '  `group_invoice_item`.`invoice_uuid` = `sale`.`id` AND ' +
+      '  `project`.`id` = `group_invoice`.`project_id` ' +
       'WHERE `group_invoice`.`id`=' + sanitize.escape(id) + ';';
-  
+
     db.execute(sql, function (err, results) {
       if (err) return done(err);
       if (results.length === 0) {
@@ -698,19 +703,19 @@ module.exports = function (db) {
         get.origin('group_invoice', function (err, origin_id) {
           if (err) return done(err);
           // we now have the origin!
-         
+
           get.period(date, function (err, period_object) {
             if (err) return done(err);
 
             // we now have the relevant period!
-          
+
             // NOTE : Since with group_invoice, it is desirable
             // to create on transaction per payment of an invoice.
             // For this reason, we must call get.transactionId()
             // multiple times.  Another way of doing this is simply
             // calculating the trans_ids ahead of time, then incrementing
             // through them.  This is dangerous. FIXME.
-          
+
             // create a trans_id for the transaction
             // MUST BE THE LAST REQUEST TO prevent race conditions.
             get.transactionId(function (err, trans_id) {
@@ -727,40 +732,42 @@ module.exports = function (db) {
                 // debiting the convention
                 var debit_sql=
                   'INSERT INTO `posting_journal` ' +
-                  '  (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '  (`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '  `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '  `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `group_invoice`.`enterprise_id`, ' +
+                  '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `group_invoice`.`project_id`, ' +
                     [fiscal_year_id, period_id, t_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                   '  `group_invoice`.`note`, `debitor_group`.`account_id`, `group_invoice_item`.`cost`, ' +
                   '  0, `group_invoice_item`.`cost`, 0, `enterprise`.`currency_id`, ' +
-                  '  null, null, `group_invoice_item`.`invoice_id`, ' +
+                  '  null, null, `group_invoice_item`.`invoice_uuid`, ' +
                   [origin_id, user_id].join(', ') + ' ' +
-                  'FROM `group_invoice` JOIN `group_invoice_item` JOIN `debitor_group` JOIN `sale` JOIN `enterprise` ON ' +
+                  'FROM `group_invoice` JOIN `group_invoice_item` JOIN `debitor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
                   '  `group_invoice`.`id` = `group_invoice_item`.`payment_id` AND ' +
                   '  `group_invoice`.`group_id` = `debitor_group`.`id`  AND ' +
-                  '  `group_invoice_item`.`invoice_id` = `sale`.`id` AND ' +
-                  '  `group_invoice`.`enterprise_id` = `enterprise`.`id` ' +
+                  '  `group_invoice_item`.`invoice_uuid` = `sale`.`id` AND ' +
+                  '  `group_invoice`.`project_id` = `project`.`id` AND ' +
+                  '  `project`.`enterprise_id` = `enterprise`.`id` ' +
                   'WHERE `group_invoice_item`.`id` = ' + sanitize.escape(row.gid);
 
                 // crediting the debitor
                 var credit_sql=
                   'INSERT INTO `posting_journal` ' +
-                  '  (`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '  (`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '  `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '  `currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `group_invoice`.`enterprise_id`, ' +
+                  '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `group_invoice`.`project_id`, ' +
                     [fiscal_year_id, period_id, t_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                   '  `group_invoice`.`note`, `debitor_group`.`account_id`, 0, `group_invoice_item`.`cost`, ' +
                   '  0, `group_invoice_item`.`cost`, `enterprise`.`currency_id`,  ' +
-                  '  `group_invoice`.`debitor_id`, \'D\', `group_invoice_item`.`invoice_id`, ' +
+                  '  `group_invoice`.`debitor_id`, \'D\', `group_invoice_item`.`invoice_uuid`, ' +
                   [origin_id, user_id].join(', ') + ' ' +
-                  'FROM `group_invoice` JOIN `group_invoice_item` JOIN `debitor` JOIN `debitor_group` JOIN `sale` JOIN `enterprise` ON ' +
+                  'FROM `group_invoice` JOIN `group_invoice_item` JOIN `debitor` JOIN `debitor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
                   '  `group_invoice`.`id` = `group_invoice_item`.`payment_id` AND ' +
                   '  `group_invoice`.`debitor_id` = `debitor`.`id`  AND ' +
                   '  `debitor`.`group_id` = `debitor_group`.`id` AND ' +
-                  '  `group_invoice_item`.`invoice_id` = `sale`.`id` AND ' +
-                  '  `group_invoice`.`enterprise_id` = `enterprise`.`id` ' +
+                  '  `group_invoice_item`.`invoice_uuid` = `sale`.`id` AND ' +
+                  '  `group_invoice`.`project_id` = `project`.`id` AND ' +
+                  '  `project`.`enterprise_id` = `enterprise`.`id` ' +
                   'WHERE `group_invoice_item`.`id` = ' + sanitize.escape(row.gid);
 
                 db.execute(debit_sql, function (err, rows) {
@@ -790,18 +797,18 @@ module.exports = function (db) {
 
   function handleCreditNote (id, user_id, done) {
     var sql =
-      'SELECT `credit_note`.`enterprise_id`, `cost`, `debitor_id`, `note_date`, `credit_note`.`sale_uuid`, ' +
+      'SELECT `credit_note`.`project_id`, `project`.`enterprise_id`, `cost`, `debitor_id`, `note_date`, `credit_note`.`sale_uuid`, ' +
         ' `description`, `note_date`, `inventory_id`, `quantity`, ' +
         '`transaction_price`, `debit`, `credit`' +
-      'FROM `credit_note` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` ' +
+      'FROM `credit_note` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` JOIN `project` ' +
         'ON `credit_note`.`sale_id`=`sale_item`.`sale_id` AND ' +
         '`sale_item`.`inventory_id`=`inventory`.`id` AND ' +
+        '`project`.`id` = `credit_note`.`project_id` AND ' +
         '`inventory`.`unit_id`=`inventory_unit`.`id`' +
       'WHERE `credit_note`.`id`=' + sanitize.escape(id);
 
     db.execute(sql, function (err, results) {
       if (err) { return done(err); }
-      console.log(results);
       if (results.length === 0) {
         return done(new Error('No credit note by the id: ' + id));
       }
@@ -812,21 +819,21 @@ module.exports = function (db) {
 
       check.validPeriod(enterprise_id, date, function (err) {
         if (err) { done(err); }
-          
+
         // Ensure a credit note hasn't already been assiged to this sale
         var reviewLegacyNotes = "SELECT id FROM credit_note WHERE sale_uuid=" + reference_note.sale_uuid + ";";
         db.execute(reviewLegacyNotes, function (err, rows) {
           if(err) return done(err);
-          
+
           // There should only be one sale here
           if(rows.length > 1) return done('This sale has already been reversed with a credit note');
 
-          // Cost positive checks  
+          // Cost positive checks
           var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
           if (!costPositive) {
             return done(new Error('Negative cost detected for invoice id: ' + id));
           }
-        
+
           // third check - is the total the price * the quantity?
           function sum(a, b) {
             return a + (b.credit - b.debit);
@@ -844,41 +851,41 @@ module.exports = function (db) {
           get.origin('credit_note', function (err, originId) {
             if (err) { return done(err); }
             // we now have the origin!
-          
+
             get.period(date, function (err, periodObject) {
               if (err) { return done(err); }
 
               // we now have the relevant period!
-              
+  
               // create a trans_id for the transaction
               // MUST BE THE LAST REQUEST TO prevent race conditions.
               get.transactionId(function (err, transId) {
                 if(err) return done(err);
-                
+    
                 var periodId = periodObject.period_id, fiscalYearId = periodObject.fiscal_year_id;
-                
+    
                 // console.log('working with', row, index, periodId, originId);
-                  
+      
                 // Credit debtor (basically the reverse of a sale)
-                var debtorQuery = 
+                var debtorQuery =
                   'INSERT INTO `posting_journal` ' +
-                    '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                     '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                    '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `sale`.`enterprise_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-                    '"' + reference_note.description + '", `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' + 
+                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `sale`.`project_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+                    '"' + reference_note.description + '", `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' +
                     '`sale`.`currency_id`, `sale`.`debitor_id`, \'D\', `sale`.`id`, ' + [originId, user_id].join(', ') + ' ' +
                   'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
                     '`sale`.`debitor_id`=`debitor`.`id` AND `debitor`.`group_id`=`debitor_group`.`id` ' +
                   'WHERE `sale`.`id`=' + sanitize.escape(reference_note.sale_uuid) + ';';
-    
+
                 // Debit sale items
                 var itemsQuery =
                   'INSERT INTO `posting_journal` ' +
-                    '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                     '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                    '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `sale`.`enterprise_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  'SELECT `sale`.`project_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
                     '"' + reference_note.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
                     '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
                     ' null, `sale`.`id`, ' + [originId, user_id].join(', ') + ' ' +
@@ -886,13 +893,13 @@ module.exports = function (db) {
                     '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
                     '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
                   'WHERE `sale`.`uuid`=' + sanitize.escape(reference_note.sale_uuid) + ';';
-              
-                db.execute(debtorQuery, function (err, rows) { 
+  
+                db.execute(debtorQuery, function (err, rows) {
                   if(err) return done(err);
 
-                  db.execute(itemsQuery, function (err, rows) { 
+                  db.execute(itemsQuery, function (err, rows) {
                     var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
-                    
+
                     if(err) return done(err);
 
                     db.execute(sql, function (err, rows) {

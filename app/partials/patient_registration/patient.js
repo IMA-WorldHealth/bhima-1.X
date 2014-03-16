@@ -181,6 +181,7 @@ angular.module('kpk.controllers')
       })
       .then(function (result) {
         var packageHistory = {
+          uuid : uuid(),
           debitor_uuid : packagePatient.debitor_uuid,
           debitor_group_uuid : $scope.debtor.debtor_group.uuid,
           user_id : 1 // FIXME: can this be done on the server?

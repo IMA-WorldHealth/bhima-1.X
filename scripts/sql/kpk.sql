@@ -297,10 +297,10 @@ create table `creditor_group` (
 --
 drop table if exists `creditor`;
 create table `creditor` (
-  `id`        int unsigned not null auto_increment,
+  `uuid`      char(36),
   `group_id`  smallint unsigned not null,
   `text`      varchar(45),
-  primary key (`id`),
+  primary key (`uuid`),
   key `group_id` (`group_id`),
   constraint foreign key (`group_id`) references `creditor_group` (`id`) on delete cascade on update cascade
 ) engine=innodb;
@@ -457,23 +457,23 @@ create table `debitor` (
 --
 drop table if exists `supplier`;
 create table `supplier` (
-  `id`            int unsigned not null auto_increment,
-  `creditor_id`   int unsigned not null,
-  `name`          varchar(45) not null,
-  `address_1`     text,
-  `address_2`     text,
-  `location_id`   char(36) not null,
-  `email`         varchar(45),
-  `fax`           varchar(45),
-  `note`          varchar(50),
-  `phone`         varchar(15),
-  `international` boolean not null default 0,
-  `locked`        boolean not null default 0,
+  `id`              int unsigned not null auto_increment,
+  `creditor_uuid`   char(36) not null,
+  `name`            varchar(45) not null,
+  `address_1`       text,
+  `address_2`       text,
+  `location_id`     char(36) not null,
+  `email`           varchar(45),
+  `fax`             varchar(45),
+  `note`            varchar(50),
+  `phone`           varchar(15),
+  `international`   boolean not null default 0,
+  `locked`          boolean not null default 0,
   primary key (`id`),
-  key `creditor_id` (`creditor_id`),
+  key `creditor_uuid` (`creditor_uuid`),
   key `location_id` (`location_id`),
   constraint foreign key (`location_id`) references `village` (`uuid`) on delete cascade on update cascade,
-  constraint foreign key (`creditor_id`) references `creditor` (`id`) on delete cascade on update cascade
+  constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`) on delete cascade on update cascade
 ) engine=innodb;
 
 --
@@ -485,7 +485,7 @@ create table `patient` (
   `project_id`        smallint unsigned not null,
   `reference`         int unsigned auto_increment not null, -- human readable id
   `debitor_uuid`      char(36) not null,
-  `creditor_id`       char(36) null, -- anticipating uuids for creditors
+  `creditor_uuid`     char(36) null, -- anticipating uuids for creditors
   `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
   `dob`               date,
@@ -513,7 +513,7 @@ create table `patient` (
   key `debitor_uuid` (`debitor_uuid`),
   key `origin_location_id` (`origin_location_id`),
   key `current_location_id` (`current_location_id`),
-  unique key `creditor_id` (`creditor_id`),
+  unique key `creditor_uuid` (`creditor_uuid`),
   constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`) on update cascade,
   constraint foreign key (`current_location_id`) references `village` (`uuid`) on update cascade,
@@ -730,7 +730,7 @@ create table `purchase` (
   `uuid`              char(36) not null,
   `cost`              decimal(19,4) unsigned not null default '0',
   `currency_id`       tinyint unsigned not null,
-  `creditor_id`       int unsigned not null,
+  `creditor_uuid`     char(36) not null,
   `purchaser_id`      smallint unsigned not null,
   `discount`          mediumint unsigned default '0',
   `invoice_date`      date not null,
@@ -739,10 +739,10 @@ create table `purchase` (
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
-  key `creditor_id` (`creditor_id`),
+  key `creditor_uuid` (`creditor_uuid`),
   key `purchaser_id` (`purchaser_id`),
   constraint foreign key (`project_id`) references `project` (`id`),
-  constraint foreign key (`creditor_id`) references `creditor` (`id`),
+  constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`),
   constraint foreign key (`purchaser_id`) references `user` (`id`)
 ) engine=innodb;
 
@@ -1055,18 +1055,18 @@ create table `employee` (
   `fonction_id`         tinyint unsigned not null,
   `service_id`          tinyint unsigned not null,
   `location_id`         char(36) not null,
-  `creditor_id`         int unsigned not null,
+  `creditor_uuid`       char(36) not null,
   `debitor_uuid`        char(36) not null,            
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
   key `service_id`  (`service_id`),
   key `location_id` (`location_id`),
-  key `creditor_id` (`creditor_id`),
+  key `creditor_uuid` (`creditor_uuid`),
   key `debitor_uuid`  (`debitor_uuid`),
   constraint foreign key (`fonction_id`) references `fonction` (`id`),
   constraint foreign key (`service_id`) references `service` (`id`),
   constraint foreign key (`location_id`) references `village` (`uuid`),
-  constraint foreign key (`creditor_id`) references `creditor` (`id`),
+  constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`)
 ) engine=innodb;
 
@@ -1099,18 +1099,18 @@ create table `inventory_log` (
 --
 drop table if exists `debitor_group_history`;
 create table `debitor_group_history` (
-`uuid`                  char(36) not null,
-`debitor_uuid`          char(36) not null,
-`debitor_group_uuid`    char(36) not null,
-`income_date`           timestamp not null,
-`user_id`               smallint unsigned not null,
-primary key (`uuid`),
-key `debitor_uuid` (`debitor_uuid`),
-key `debitor_group_uuid` (`debitor_group_uuid`),
-key `user_id` (`user_id`),
-constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
-constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`),
-constraint foreign key (`user_id`) references `user` (`id`)
+  `uuid`                  char(36) not null,
+  `debitor_uuid`          char(36) not null,
+  `debitor_group_uuid`    char(36) not null,
+  `income_date`           timestamp not null,
+  `user_id`               smallint unsigned not null,
+  primary key (`uuid`),
+  key `debitor_uuid` (`debitor_uuid`),
+  key `debitor_group_uuid` (`debitor_group_uuid`),
+  key `user_id` (`user_id`),
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
+  constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`),
+  constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 
 
