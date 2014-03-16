@@ -319,11 +319,11 @@ module.exports = function (db) {
   function handleCash (id, user_id, done) {
     // posting from cash to the journal.
     var sql =
-      'SELECT `cash`.`id`, `cash`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  +
+      'SELECT `cash`.`id`, `cash`.`project_id`, `project`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  +
         '`cash`.`deb_cred_id`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`cashier_id`, ' +
         '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_id`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_id`, ' +
         '`cash`.`type`, `cash`.`document_id` ' +
-      'FROM `cash` JOIN `cash_item` ON `cash`.`id`=`cash_item`.`cash_id` ' +
+      'FROM `cash` JOIN `cash_item` JOIN `project` ON `cash`.`id`=`cash_item`.`cash_id` AND `cash`.`project_id`=`project`.`id `' +
       'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
 
     db.execute(sql, function (err, results) {
@@ -333,6 +333,7 @@ module.exports = function (db) {
       }
 
       var reference_payment = results[0];
+      var project_id = reference_payment.project_id;
       var enterprise_id = reference_payment.enterprise_id;
 
       var date = reference_payment.date;
@@ -432,10 +433,10 @@ module.exports = function (db) {
                     // finally, copy the data from cash into the journal with care to convert exchange rates.
                     var cash_query =
                       'INSERT INTO `posting_journal` ' +
-                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                         '`inv_po_id`, `currency_id`, `deb_cred_id`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
-                      'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                      'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                         '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
                         '`cash_item`.`invoice_id`, `cash`.`currency_id`, null, null, ' +
                         [origin_id, user_id].join(', ') + ' ' +
@@ -454,10 +455,10 @@ module.exports = function (db) {
 
                     var cash_item_query =
                       'INSERT INTO `posting_journal` ' +
-                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                         '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                      'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                      'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                         '`cash`.`description`, `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
                         '`cash`.`currency_id`, `cash`.`deb_cred_id`, ' + deb_cred_type + ', ' +
                         '`cash_item`.`invoice_id`, ' + [origin_id, user_id].join(', ') + ' ' +
@@ -469,7 +470,6 @@ module.exports = function (db) {
                       // DEBIT the balance account and credit him for the rest.
 
                     var rounding_query, rounding_balance_query;
-                    console.log('[DEBUG] isPaidInFull:', isPaidInFull, 'Remainder', remainder);
                     if (isPaidInFull && remainder !== 0) {
 
                       //FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the 
@@ -486,10 +486,10 @@ module.exports = function (db) {
 
                       rounding_query =
                         'INSERT INTO `posting_journal` ' +
-                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                        '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                         '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                      'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                      'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                         description +', `cash`.`document_id`, ' + 534  + ', ' + creditOrDebit + ', ' +
                         '`cash`.`currency_id`, null, null, `cash_item`.`invoice_id`, ' +
                         [origin_id, user_id].join(', ') + ' ' +
@@ -504,20 +504,17 @@ module.exports = function (db) {
 
                         rounding_balance_query =
                           'INSERT INTO `posting_journal` ' +
-                          '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                          '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                           '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
                           '`currency_id`, `deb_cred_id`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                        'SELECT `cash`.`enterprise_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+                        'SELECT `cash`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                           description +', `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + balance + ', ' +
                           '`cash`.`currency_id`, null, null, `cash_item`.`invoice_id`, ' +
                           [origin_id, user_id].join(', ') + ' ' +
                         'FROM `cash` JOIN `cash_item` ON `cash`.`id` = `cash_item`.`cash_id` ' +
                         'WHERE `cash`.`id`=' + sanitize.escape(id) + ';';
-
                       }
-
                     }
-
 
                     db.execute(cash_query, function (err, results) {
                       if (err) return done(err);
