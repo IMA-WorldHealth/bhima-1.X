@@ -44,10 +44,10 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="income in model.incomes.data">
+							<tr ng-repeat="summer in model.summers.data">
 								<td>{{$index}}</td>
-								<td>{{income.date}}</td>
-								<td>{{income.amount}}</td>
+								<td>{{summer.trans_date | date}}</td>
+								<td>{{summer.total | currency}}</td>
 							</tr>
 						</tbody>
 					</table>
