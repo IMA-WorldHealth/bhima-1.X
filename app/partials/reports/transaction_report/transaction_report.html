@@ -2,6 +2,7 @@
   {{ "REPORT.TRANSACTION_REPORT" | translate }}
 </header>
 
+<!--
 <section class="top-nav">
   <div class="capital pull-right visible-print">
     {{ DC }} : {{model.selected.text}}
@@ -9,125 +10,90 @@
     {{data.dateFrom}} / {{data.dateTo}}
   </div>
 </section>
+-->
 
-<div class="report">
+<section class="top-nav">
+  <div class="pull-left">
+    <span class="dropdown">
+      <button class="btn btn-default btn-sm dropdown-toggle" ng-class="{ 'btn-primary' : !!search.group }">
+        {{ search.group || 'UTIL.CONFIGURE' | translate }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header"> {{ 'REPORT.CHOICE' | translate }} </li>
+        <li><a href="" ng-click="search.group='individual'"> {{ 'REPORT.INDIVIDUAL' | translate }} </a></li>
+        <li><a href="" ng-click="search.group='group'"> {{ 'REPORT.GROUP' | translate }} </a></li>
+      </ul>
+    </span>
 
-  <div class="infobar hidden-print">
-    <accordion close-others="true">
-      <accordion-group is-open="isOpen">
-        <accordion-heading>
-          <span>Settings</span>
-          <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
-        </accordion-heading>
-
-        <form class="form-horizontal">
-
-          <div class="form-group">
-            <label class="control-label col-xs-1">
-              {{ "REPORT.CHOICE" | translate }} :
-            </label>
-
-            <div class="radio-inline">
-              <label class="col-xs-1">
-                <input type="radio" id="indiID" name="option_type" ng-click="fill('I')"/>
-                {{ "REPORT.INDIVIDUAL" | translate }} 
-              </label>
-            </div>
-
-            <div class="radio-inline">
-              <label class="col-xs-1">
-                <input type="radio" id="groupID" name="option_type" ng-click="fill('G')"/>
-                {{ "REPORT.GROUP" | translate }}
-              </label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-1">
-              {{ "REPORT.CHOICE" | translate }} : 
-            </label>
-
-            <div class="radio-inline">
-              <label class="col-xs-1">
-                <input type="radio" id="dID" name="option_dc" ng-click="fill('D')"/>
-                {{ "REPORT.DEBITOR" | translate }}
-              </label>
-            </div>
-
-            <div class="radio-inline">
-              <label class="col-xs-1">
-                <input type="radio" id="cID" name="option_dc" ng-click="fill('C')"/>
-                {{ "REPORT.CREDITOR" | translate }}
-              </label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-1">
-              {{ "REPORT.DATE_FROM" | translate }} : 
-            </label>
-            <div class="col-xs-6">
-              <input type="date" class="form-kapok" ng-model="data.dateFrom">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-1">
-              {{ "REPORT.DATE_TO" | translate }} : 
-            </label>
-            <div class="col-xs-6">
-              <input type="date" class="form-kapok" ng-model="data.dateTo">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-1">
-              {{ "REPORT.CHOICE" | translate }} : 
-            </label>
-            <div class="col-xs-6">
-              <select class="form-kapok" ng-model="model.selected" ng-options="choosen.text for choosen in model.chooses" ng-change="populate()">
-                <option value="" disabled="disabled">-- {{ "SELECT.NAME" | translate }}--</option>
-              </select>
-            </div>
-          </div>
-
-        </form>
-      </accordion-group>
-    </accordion>
+    <span class="dropdown">
+      <button class="btn btn-default btn-sm dropdown-toggle" ng-class="{ 'btn-primary' : !!search.type}">
+        {{ search.type || 'UTIL.CONFIGURE' | translate }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header"> {{ 'REPORT.CHOICE' | translate }} </li>
+        <li><a href="" ng-click="search.type='debtor'"> {{ 'REPORT.DEBTOR' | translate }} </a></li>
+        <li><a href="" ng-click="search.type='creditor'"> {{ 'REPORT.CREDITOR' | translate }} </a></li>
+      </ul>
+    </span>
   </div>
 
-  <div class="infobar" ng-show="show">
-    {{ "REPORT.BALANCED" | translate }}: <label ng-switch on="isBalanced"> {{ isBalanced }} </label>
-    <div class="pull-right">
-      {{ "REPORT.TOTAL_CREDIT" | translate }} : {{credit | currency}}
-      {{ "REPORT.TOTAL_DEBIT" | translate }} : {{debit | currency}}
-      {{ "REPORT.BALANCE" | translate }} : {{sold | currency}}
+  <div class="pull-left">
+    <div class="col-xs-5">
+      <input type="date" class="form-kapok" ng-model="search.dateFrom">
+    </div>
+
+    <div class="col-xs-5">
+      <input type="date" class="form-kapok" ng-model="search.dateTo">
+    </div>
+
+    <input type="button" class="btn btn btn-success" value="{{ 'FORM.SEARCH' | translate }}">
+  </div> 
+
+  <div class="pull-right">
+    <button ng-click="print()" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
+    </button>
+  </div>
+</section>
+
+<div class="report" ng-switch="hasData">
+
+  <div class="reportBody">
+    <div class="reportFrame">
+      <div ng-switch-default class="hide-print">
+        <h3>Please select something.</h3>
+      </div>
+
+      <table ng-switch-when="true" class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ 'COLUMNS.ID' | translate }}</th>
+            <th>{{ 'COLUMNS.TRANS_ID' | translate }}</th>
+            <th>{{ 'COLUMNS.TRANS_DATE' | translate }}</th>
+            <th>{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
+            <th>{{ 'COLUMNS.DEBIT' | translate }}</th>
+            <th>{{ 'COLUMNS.CREDIT' | translate }}</th>
+            <th>{{ 'COLUMNS.CURRENCY' | translate }}</th>
+            <th>{{ 'COLUMNS.SERVICE' | translate }}</th>
+            <th>{{ 'COLUMNS.NAMES' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="t_report in model.transReport">
+            <td>{{ t_report.id }}</td>
+            <td>{{ t_report.trans_id} }</td>
+            <td>{{ t_report.trans_date | date }}</td>
+            <td>{{ t_report.account_number }}</td>
+            <td>{{ t_report.debit | currency }}</td>
+            <td>{{ t_report.credit | currency }}</td>
+            <td>{{ t_report.name }}</td>
+            <td>{{ t_report.service_txt }}</td>
+            <td>{{ t_report.names }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <table id="tbl-print" class="table table-bordered">
-    <tr>
-       <td>ID</td>
-       <td>Transaction ID</td>
-       <td>Transaction Date</td>
-       <td>Account Number</td>
-       <td>Debit</td>
-       <td>Credit</td>
-       <td>Currency</td>
-       <td>Service</td>
-       <td>Names</td>
-    </tr>
-
-    <tr ng-repeat="t_report in model.transReport">
-      <td>{{t_report.id}}</td>
-      <td>{{t_report.trans_id}}</td>
-      <td>{{t_report.trans_date | date}}</td>
-      <td>{{t_report.account_number}}</td>
-      <td>{{t_report.debit | currency}}</td>
-      <td>{{t_report.credit | currency}}</td>
-      <td>{{t_report.name}}</td>
-      <td>{{t_report.service_txt}}</td>
-      <td>{{t_report.names}}</td>
-    </tr>
-  </table>
 </div>

@@ -44,15 +44,14 @@ angular.module('kpk.controllers')
 
     $scope.search = function search () {
       // must add a day to pick it up from sql
-      var dateConvert = $scope.dates.dateTo;
+      var url, dateConvert = $scope.dates.dateTo;
       dateConvert.setDate(dateConvert.getDate() + 1);
       dateWatcher();
-      connect.fetch([
-        '/rt/c',
-        $scope.enterprise.id,
-        $scope.state.dateFrom,
-        $scope.state.dateTo
-      ].join('/'))
+
+      url = '/reports/payments/?id=' + $scope.enterprise.id;
+      url += '&start=' + $scope.state.dateFrom;
+      url += '&end=' + $scope.state.dateTo;
+      connect.fetch(url)
       .success(function (model) {
         $scope.payments = model;
 
