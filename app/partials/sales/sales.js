@@ -186,7 +186,7 @@ angular.module('kpk.controllers')
     
       //Seller ID will be inserted on the server
       requestContainer.sale = {
-        enterprise_id : appstate.get('enterprise').id,
+        project_id : appstate.get('project').id,
         cost : calculateTotal(),
         currency_id : appstate.get('enterprise').currency_id,
         debitor_uuid : invoice.debtor.debitor_uuid,

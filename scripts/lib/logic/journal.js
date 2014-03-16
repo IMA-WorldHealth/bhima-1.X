@@ -141,11 +141,12 @@ module.exports = function (db) {
       return done(null, results);
     });
   }
-
+  
+  // TODO Only has project ID passed from sale reference, need to look up enterprise ID
   function handleSales (id, user_id, done) {
     // sale posting requests enter here.
     var sql =
-      'SELECT `sale`.`enterprise_id`, `sale`.`uuid`, `sale`.`currency_id`, ' +
+      'SELECT `sale`.`project_id`, `sale`.`uuid`, `sale`.`currency_id`, ' +
         '`sale`.`debitor_uuid`, `sale`.`seller_id`, `sale`.`discount`, `sale`.`invoice_date`, ' +
         '`sale`.`cost`, `sale`.`note`, `sale_item`.`transaction_price`, `sale_item`.`debit`, ' +
         '`sale_item`.`credit`, `sale_item`.`quantity`, `inventory`.`group_uuid` ' +
@@ -160,7 +161,7 @@ module.exports = function (db) {
       if (results.length === 0) return done(new Error('No sale by the id: ' + id));
 
       var reference_sale = results[0];
-      var enterprise_id = reference_sale.enterprise_id;
+      var project_id = reference_sale.project_id;
       var date = reference_sale.invoice_date;
 
       // first check - do we have a valid period?
