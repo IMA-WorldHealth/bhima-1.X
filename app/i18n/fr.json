@@ -138,7 +138,7 @@
     "TAB_LOCK_LINE" : "Tabuler par ligne",
     "TAB_LOCK_ITEM" : "Tabuler par item",
     "RECOVER" : "Retrouver Vente",
-    "RECOVER_INFO" : "[Retrouver Sale] C'est important de savoir que seulement les items de vente sont retrouve, Les quantites et les pries sont reinitialises au prix par defaut des items"
+    "RECOVER_INFO" : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantities sont retrouve, les pries sont reinitialises au prix par defaut des items"
   },
 
   "FIND" : {

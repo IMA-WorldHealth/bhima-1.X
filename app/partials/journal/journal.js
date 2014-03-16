@@ -27,8 +27,9 @@ angular.module('kpk.controllers').controller('journal', [
       // FIXME 
       // required: true,
       query: {
+        identifier : 'uuid',
         'tables' : {
-          'posting_journal' : { 'columns' : ["id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_id", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] },
+          'posting_journal' : { 'columns' : ["uuid", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_uuid", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] },
           'account' : { 'columns' : ["account_number"] }
         },
         join: ["posting_journal.account_id=account.id"]
@@ -46,18 +47,20 @@ angular.module('kpk.controllers').controller('journal', [
 
     dependencies.debtor = {
       query: {
+        identifier : 'uiud',
         'tables' : {
-          'debitor' : { 'columns' : ['id'] },
+          'debitor' : { 'columns' : ['uuid'] },
           'patient' : { 'columns' : ['first_name', 'last_name'] }
         },
-        join: ['debitor.id=patient.debitor_id']
+        join: ['debitor.uuid=patient.debitor_uuid']
       }
     };
 
     dependencies.invoice = { 
       query: { 
+        identifier : 'uuid',
         tables : { 
-          sale : { columns : ['id', 'note'] } 
+          sale : { columns : ['uuid', 'note'] } 
         }
       }
     };
@@ -84,7 +87,7 @@ angular.module('kpk.controllers').controller('journal', [
     function defineGridOptions() {
       sort_column = "trans_id";
       columns = [
-        {id: 'id', name : $filter('translate')('COLUMNS.ID'), field: 'id', sortable : true},
+        {id: 'uuid', name : $filter('translate')('COLUMNS.ID'), field: 'uuid', sortable : true},
         {id: 'trans_id', name: $filter('translate')('COLUMNS.TRANS_ID'), field: 'trans_id', sortable: true},
         {id: 'trans_date', name: $filter('translate')('COLUMNS.DATE'), field: 'trans_date', formatter: formatDate},
         // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
@@ -94,7 +97,7 @@ angular.module('kpk.controllers').controller('journal', [
         // {id: 'credit', name: 'Credit', field: 'credit', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100},
         {id: 'debit_equiv', name: $filter('translate')('COLUMNS.DEB_EQUIV'), field: 'debit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth:100, editor:Slick.Editors.Text},
         {id: 'credit_equiv', name: $filter('translate')('COLUMNS.CRE_EQUIV'), field: 'credit_equiv', groupTotalsFormatter: totalFormat, sortable: true, maxWidth: 100, editor:Slick.Editors.Text}, 
-        {id: 'deb_cred_id', name: 'AR/AP Account', field: 'deb_cred_id', editor:SelectCellEditor},
+        {id: 'deb_cred_uuid', name: 'AR/AP Account', field: 'deb_cred_uuid', editor:SelectCellEditor},
         {id: 'deb_cred_type', name: $filter('translate')('COLUMNS.DC_TYPE'), field: 'deb_cred_type', editor:SelectCellEditor},
         {id: 'inv_po_id', name: $filter('translate')('COLUMNS.INVPO_ID'), field: 'inv_po_id', editor:SelectCellEditor}
         // {id: 'currency_id', name: 'Currency ID', field: 'currency_id', width: 10 }
@@ -161,7 +164,7 @@ angular.module('kpk.controllers').controller('journal', [
       });
  
       dataview.beginUpdate();
-      dataview.setItems($scope.model.journal.data);
+      dataview.setItems($scope.model.journal.data, 'uuid');
       dataview.endUpdate();
    
       //default grouping
