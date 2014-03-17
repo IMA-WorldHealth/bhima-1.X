@@ -67,12 +67,12 @@
           </tr>
           <tr>
             <td>
-          
-          <select required class="form-kapok" id="debtor-group" ng-model="debitor.debitor_group_id" ng-options="g.id as g.name for g in model.debtorGroup.data"><option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
-          </select>                     
+              <select required class="form-kapok" id="debtor-group" ng-model="debitor.debitor_group_uuid" ng-options="g.uuid as g.name for g in model.debtorGroup.data">
+                <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
+              </select>                     
             </td>
             <td>
-              <span> <button ng-disabled="!noEmpty" ng-click="swapGroup(selectedDebitor)" class="btn btn-default btn-sm">{{ "SWAPDEBITOR.SUBMIT" | translate }}</button></span> 
+              <span><button ng-disabled="!noEmpty" ng-click="swapGroup(selectedDebitor)" class="btn btn-default btn-sm">{{ "SWAPDEBITOR.SUBMIT" | translate }}</button></span> 
             </td>
           </tr>
         </table>            

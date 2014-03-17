@@ -389,7 +389,8 @@
     "PATIENT_REGISTRATION" : "Patient Registration Report",
     "UPDATE_STOCK" : "Update Stock",
     "CASH_PAYMENTS" : "Cash Payments",
-    "SWAP_DEBITOR" : "Update Debtor"
+    "SWAP_DEBITOR" : "Update Debtor",
+    "PATIENT_STAINDING" : "Patient Standing Report"
   },
 
   "RENEWAL" : {
