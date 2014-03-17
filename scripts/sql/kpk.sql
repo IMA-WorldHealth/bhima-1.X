@@ -163,7 +163,7 @@ drop table if exists `project`;
 create table `project` (
   `id`              smallint unsigned not null auto_increment,
   `name`            text,
-  `abbr`            char(3),
+  `abbr`            char(3) UNIQUE,
   `enterprise_id`   smallint unsigned not null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
@@ -663,6 +663,7 @@ create table `sale` (
   `invoice_date`  date not null, -- is this the date of the sale?
   `note`          text,
   `posted`        boolean not null default '0',
+  `timestamp`     timestamp default current_timestamp,
   primary key (`uuid`),
   key `reference` (`reference`),
   key `project_id` (`project_id`),
