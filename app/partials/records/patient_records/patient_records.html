@@ -135,37 +135,35 @@
             <span class="glyphicon" ng-class="{'glyphicon-eye-open': model.patient.data && model.patient.data.length!==0, 'glyphicon-eye-close': !model.patient.data.length}"></span>
           </div>
         </div>
-          
-        <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
-          <table class="table table-condensed table-bordered">
-            <thead>
-            <tr>
-              <th>#</th>
-              <th>{{ "COLUMNS.NAME" | translate }}</th>
-              <th>{{ "COLUMNS.DOB" | translate }}</th>
-              <th>{{ "COLUMNS.PARENT" | translate }}</th>
-              <th>{{ "COLUMNS.SEX" | translate }}</th>
-              <!-- <th>{{ "COLUMNS.EMAIL" | translate }}</th> -->
-              <th>{{ "COLUMNS.DEBTOR" | translate }} #</th>
-              <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
-              <th></th>
-            </tr>
-            </thead>
+        <div class="panel-body"> 
+          <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
+            <table class="table table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>{{ "COLUMNS.NAME" | translate }}</th>
+                <th>{{ "COLUMNS.DOB" | translate }}</th>
+                <th>{{ "COLUMNS.PARENT" | translate }}</th>
+                <th>{{ "COLUMNS.SEX" | translate }}</th>
+                <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+                <th></th>
+              </tr>
+              </thead>
 
-            <tbody>
-            <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
-              <td><b>{{patient.uuid}}</b></td>
-              <td>{{ patient.name }}</td>
-              <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
-              <td>{{ patient.father_name }}</td>
-              <td>{{ patient.sex | uppercase }}</td>
-              <!-- <td>{{ patient.email }}</td> -->
-              <td><b>{{patient.debitor_id}}</b></td>
-              <td>{{patient.registration_date | date}}</td>
-              <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span></a></td>
-            </tr>
-            </tbody>
-          </table>
+              <tbody>
+              <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
+                <td><b>{{patient.hr_id}}</b></td>
+                <td>{{ patient.name }}</td>
+                <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
+                <td>{{ patient.father_name }}</td>
+                <td>{{ patient.sex | uppercase }}</td>
+                <!-- <td>{{ patient.email }}</td> -->
+                <td>{{patient.registration_date | date}}</td>
+                <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

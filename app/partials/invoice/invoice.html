@@ -39,7 +39,8 @@
             <b>{{'INVOICE.INVOICE_ID' | translate}}</b>
           </div>
           <div class="row">
-            {{invoice.id}}
+            <!-- project abbr concat reference -->
+            {{invoice.uuid}}
           </div>
           <div class="row">
             <b>{{'INVOICE.DATE' | translate}}</b>
@@ -110,7 +111,7 @@
               <b>{{'INVOICE.PATIENT_ID' | translate}}</b>
             </div>
             <div class="row">
-              {{recipient.uuid}}
+              {{recipient.hr_id}}
             </div>
             <div class="row">
               <b>{{'INVOICE.DATE_REGISTRATION' | translate}}</b>
