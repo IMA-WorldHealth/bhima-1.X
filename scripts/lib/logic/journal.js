@@ -162,7 +162,7 @@ module.exports = function (db) {
       if (results.length === 0) return done(new Error('No sale by the id: ' + id));
 
       var reference_sale = results[0];
-      var project_id = reference_sale.project_id;
+      var enterprise_id = reference_sale.enterprise_id;
       var date = reference_sale.invoice_date;
 
       // first check - do we have a valid period?

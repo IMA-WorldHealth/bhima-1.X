@@ -211,11 +211,12 @@ module.exports = function (db) {
 
     // TODO implement span, week, day, month etc. WHERE invoice_date <> date
     var requestSql =
-      "SELECT sale.uuid, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, " +
+      "SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, " +
       "sale.note, sale.posted, credit_note.uuid as 'creditId', credit_note.description as 'creditDescription', " +
-      "credit_note.posted as 'creditPosted', first_name, last_name " +
+      "credit_note.posted as 'creditPosted', first_name, last_name, patient.reference as 'patientReference', CONCAT(project.abbr, sale.reference) as 'hr_id' " +
       "FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid " +
-      "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid ORDER BY sale.invoice_date DESC;";
+      "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid " + 
+      "LEFT JOIN project on sale.project_id = project.id ORDER BY sale.timestamp DESC;";
 
     db.execute(requestSql, function(error, result) {
       if(error) return deferred.reject(error);

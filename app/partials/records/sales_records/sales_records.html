@@ -24,40 +24,36 @@
 
           <thead>
             <tr>
-            <th><span class="glyphicon glyphicon-eye-open"></span></th>
             <th>{{'COLUMNS.DATE' | translate}}</th>
             <th>#</th>
-
+            
             <th>{{'COLUMNS.PATIENT' | translate}}</th>
             <th>{{'COLUMNS.TOTAL_AMOUNT' | translate}}</th>
-            <th>{{'COLUMNS.BALANCE_DUE' | translate}}</th>
             <!-- <th>Debtor ID</th> -->
             <th>{{'COLUMNS.POSTED' | translate}}</th>
-            <th></th>
+            <th colspan="2"></th>
             <!-- <th>Status</th> -->
           </tr>
           </thead>
 
           <tbody>
-          <tr ng-class="{'rowSelected': selected.id==invoice.id, 'creditInvoice': invoice.creditId}" ng-click="select(invoice.id)"
-            ng-repeat="invoice in model.sale.data | orderBy : 'invoice_date':false">
-              <td><a ng-href="/#/invoice/sale/{{invoice.id}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
+          <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-click="select(invoice.uuid)"
+            ng-repeat="invoice in model.sale.data">
               
               <td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
-              <td>{{invoice.id}}</td>
-              <td>{{invoice.first_name}} {{invoice.last_name}}</td>
-              <td>{{invoice.cost | currency}}</td>
+              <td>{{invoice.hr_id}}</td>
+              <td>[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
               <td>{{invoice.cost | currency}}</td>
               <!-- <td>{{invoice.debitor_id}}</td> -->
               <!--Multiple ng-shows - mutually exclusive but not good practice-->
               
               
               <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
-
               <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> {{'SALERECORD.POSTING' | translate}}</div>
               </td>
-
-              <td><a href="/#/credit_note/{{invoice.id}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td>
+              
+              <td><a ng-href="/#/invoice/sale/{{invoice.uuid}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
+              <td><a href="/#/credit_note/{{invoice.uuid}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td>
           </tr>
           </tbody>
         </table>
