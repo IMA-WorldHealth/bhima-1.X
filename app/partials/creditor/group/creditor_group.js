@@ -5,8 +5,8 @@ angular.module('kpk.controllers')
   'appstate',
   'messenger',
   'validate',
-  function ($scope, connect, appstate, messenger, validate) {
-    'use strict';
+  'uuid',
+  function ($scope, connect, appstate, messenger, validate, uuid) {
 
     var dependencies = {};
 
@@ -26,11 +26,11 @@ angular.module('kpk.controllers')
     };
 
     dependencies.groups = {
-      required : true,
       query : {
+        identifier : 'uuid',
         tables: {
           'creditor_group' : {
-            columns: ["id", "name", "account_id", "locked"]
+            columns: ["uuid", "name", "account_id", "locked"]
           }
         }
       }
@@ -42,7 +42,9 @@ angular.module('kpk.controllers')
         ['account.enterprise_id=' + enterprise.id];
       dependencies.groups.query.where =
         ['creditor_group.enterprise_id=' + enterprise.id];
-      validate.process(dependencies).then(buildModels, handleErrors);
+
+      validate.process(dependencies)
+      .then(buildModels, handleErrors);
     });
 
     function handleErrors (err) {
@@ -53,6 +55,8 @@ angular.module('kpk.controllers')
       for (var k in models) { $scope[k] = models[k]; }
       $scope.action = '';
       $scope.data = {};
+
+      console.log('$scope.accounts', $scope.accounts);
 
       // for the orderBy to work appropriately
       $scope.accounts.data.forEach(function (account) {
@@ -69,9 +73,10 @@ angular.module('kpk.controllers')
 
     $scope.saveNew = function () {
       var data = connect.clean($scope.new);
+      data.enterprise_id = $scope.enterprise.id;
+      data.uuid = uuid();
       connect.basicPut('creditor_group', [data])
       .then(function (res) {
-        data.id = res.data.insertId;
         $scope.groups.post(data);
       }, function (err) {
         messenger.danger('Error in putting: ' + JSON.stringify(err));
@@ -92,11 +97,11 @@ angular.module('kpk.controllers')
 
     $scope.saveEdit = function () {
       var data = connect.clean($scope.edit);
-      connect.basicPost('creditor_group', [data], ['id'])
+      connect.basicPost('creditor_group', [data], ['uuid'])
       .then(function (res) {
         $scope.groups.put(data);
       }, function (err) {
-        messenger.danger('Error in updating creditor group ' + data.id);
+        messenger.danger('Error in updating creditor group ' + data.uuid);
       });
     };
 
@@ -105,13 +110,12 @@ angular.module('kpk.controllers')
     };
 
     $scope.lock = function lock (group) {
-      connect.basicPost('creditor_group', [{id: group.id, locked: group.locked}], ["id"])
+      connect.basicPost('creditor_group', [{uuid: group.uuid, locked: group.locked}], ["uuid"])
       .then(function (success) {
       }, function (err) {
         group.locked = group.locked === 0 ? 1 : 0;
         messenger.danger('Lock operation failed');
       });
     };
-
   }
 ]);
