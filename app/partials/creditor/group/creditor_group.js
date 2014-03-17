@@ -56,8 +56,6 @@ angular.module('kpk.controllers')
       $scope.action = '';
       $scope.data = {};
 
-      console.log('$scope.accounts', $scope.accounts);
-
       // for the orderBy to work appropriately
       $scope.accounts.data.forEach(function (account) {
         account.account_number = String(account.account_number);
