@@ -102,7 +102,8 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
       query: {
         tables: {
           credit_note: { columns: ['id', 'cost', 'debitor_id', 'seller_id', 'sale_id', 'note_date', 'description'] },
-          patient: { columns: ['first_name', 'last_name', 'current_location_id'] }
+          patient: { columns: ['first_name', 'last_name', 'current_location_id', 'reference'] },
+          project: { columns: ['abbr'] }
         },
         join: ['credit_note.debitor_id=patient.debitor_id'],
         where: ['credit_note.id=' + invoiceId]
@@ -122,9 +123,15 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     };
 
     dependencies.recipient.query.tables['patient'] = {
-      columns: ['uuid', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_uuid', 'registration_date']
+      columns: ['uuid', 'reference', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_uuid', 'registration_date']
     };
 
+    dependencies.recipient.query.tables['project'] = { 
+      columns: ['abbr']
+    };
+    
+    dependencies.recipient.query.join = ['patient.project_id=project.id'];
+    
     validate.process(dependencies, ['recipient']).then(buildPatientLocation);
   }
 
@@ -178,9 +185,15 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     };
 
     dependencies.recipient.query.tables['patient'] = {
-      columns: ['first_name', 'last_name', 'dob', 'current_location_id']
+      columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference']
+    };
+    
+    dependencies.recipient.query.tables['project'] = { 
+      columns: ['abbr']
     };
 
+    dependencies.recipient.query.join = ['patient.project_id=project.id'];
+    
     dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
     return validate.process(dependencies, ['recipient']).then(buildLocationQuery);
   }
@@ -214,7 +227,9 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     $scope.recipient = $scope.model.recipient.data[0];
     $scope.recipient.location = $scope.model.location.data[0];
    
-  
+    // Human readable ID
+    $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
+    
     //FIXME huge total hack 
     $scope.model.invoice.data.forEach(function(invoiceRef) { 
       $scope.invoice.totalSum += invoiceRef.cost;
@@ -228,9 +243,22 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
 
     updateCost(routeCurrencyId);
   }
-  function patientReceipt(model) { $scope.model = model; $scope.recipient = $scope.model.recipient.data[0]; $scope.location = $scope.model.location.data[0]; }
+
+  function patientReceipt(model) { 
+    $scope.model = model; 
+    $scope.recipient = $scope.model.recipient.data[0]; 
+    $scope.location = $scope.model.location.data[0]; 
+  
+    // Human readable ID
+    $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference)
+  }
+
   //TODO Follows the process credit hack
-  function creditInvoice(model) { $scope.model = model; $scope.note = $scope.model.credit.data[0]; $scope.location = $scope.model.location.data[0]; }
+  function creditInvoice(model) { 
+    $scope.model = model; 
+    $scope.note = $scope.model.credit.data[0]; 
+    $scope.location = $scope.model.location.data[0]; 
+  }
 
   function updateCost(currency_id) {
     //console.log('updating cost');
