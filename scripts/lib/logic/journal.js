@@ -1,8 +1,7 @@
 // scripts/lib/logic/journal.js
 
 // TODO: dependency injection
-var parser = require('../database/parser')(),
-    sanitize = require('../util/sanitize'),
+var sanitize = require('../util/sanitize'),
     util = require('../util/util'),
     validate = require('../util/validate')(),
     Store = require('../util/store'),
@@ -111,14 +110,16 @@ module.exports = function (db) {
 
     exchangeRate : function (date) {
       // expects a mysql-compatible date
-      var defer = q.defer(),
-        sql =
+      var sql, defer = q.defer();
+
+      sql =
         'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, ' +
           '`min_monentary_unit` ' +
         'FROM `exchange_rate` JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
         'WHERE `exchange_rate`.`date`=\'' + this.date(date) + '\';';
-      db.execute(sql, function (err, rows) {
-        if (err) { defer.reject(err); }
+
+      db.exec(sql)
+      .then(function (rows) {
         if (rows.length === 0) { defer.reject(new Error('No exchange rate found for date : ' + date)); }
 
         var store = new Store();
@@ -127,6 +128,9 @@ module.exports = function (db) {
           store.post({ id : line.enterprise_currency_id, rate : 1});
         });
         defer.resolve(store);
+      })
+      .catch(function (err) {
+        defer.reject(err);
       });
 
       return defer.promise;
@@ -330,25 +334,40 @@ module.exports = function (db) {
   function handleRounding(cash_id, done) {
     var sql, row;
 
+    // find out what the current balance is on the invoice to find out if we are paying it all.
+    /*
     sql =
       'SELECT c.uuid, c.cost, SUM(s.cost) as sale_cost, c.date, c.currency_id, cu.min_monentary_unit ' +
       'FROM cash AS c JOIN currency AS cu JOIN cash_item AS ci JOIN sale AS s ' +
       'ON c.uuid=ci.cash_uuid AND c.currency_id = cu.id AND s.uuid = ci.invoice_uuid ' +
       'WHERE c.uuid = ' + sanitize.escape(cash_id) + ' ' +
       'GROUP BY c.document_id;';
+    */
+
+    sql =
+      'SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit ' +
+      'FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN posting_journal AS p ' +
+      'ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id ' +
+      'WHERE c.uuid = ' + sanitize.escape(cash_id) + ' AND p.deb_cred_uuid = s.debitor_uuid GROUP BY c.uuid;';
 
     db.exec(sql)
     .then(function (rows) {
+      console.log('[DEBUG] rows:', rows);
       row = rows.pop();
       return get.exchangeRate(row.date);
     })
     .then(function (store) {
+
       var paidValue = precision(row.cost / store.get(row.currency_id).rate, 4);
-      var remainder = precision((row.sale_cost - paidValue) * store.get(row.currency_id).rate, 4);
+      console.log('[cash.cost] ', row.cost, 'paidValue ', paidValue, 'row.balance ', row.balance);
+      var remainder = precision((row.balance - paidValue) * store.get(row.currency_id).rate, 4);
+      console.log('[remainder] ', remainder, 'row.balance-paidValue :', row.balance - paidValue, 'store.get(row.currency_id)', store.get(row.currency_id));
       // if the absolute value of the remainder is less than the min_monentary_unit
       // then they have paid in full
       var isPaidInFull = Math.abs(remainder) - row.min_monentary_unit < row.min_monentary_unit;
-      return done(null, isPaidInFull, row.sale_cost - paidValue);
+      console.log('[DEBUG] isPaidInFull:', isPaidInFull, 'Math.abs(remainder):', Math.abs(remainder), 'remainder:', remainder);
+      console.log('[DEBUG] paidValue:', paidValue, 'row:', row);
+      return done(null, isPaidInFull, row.balance - paidValue);
     })
     .catch(function (err) {
       return done(err);
@@ -482,7 +501,7 @@ module.exports = function (db) {
                         '`inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
                       'SELECT `cash`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                         '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
-                        '`cash_item`.`invoice_uuid`, `cash`.`currency_id`, null, null, ' +
+                        'null, `cash`.`currency_id`, null, null, ' +
                         [origin_id, user_id].join(', ') + ' ' +
                       'FROM `cash` JOIN `cash_item` ON ' +
                         ' `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
@@ -558,8 +577,7 @@ module.exports = function (db) {
                         '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
                         [origin_id, user_id].join(', ') + ' ' +
                       'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
-                      'WHERE `cash`.`uuid`=' + sanitize.escape(id) +
-                      'LIMIT 1;';
+                      'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' LIMIT 1;';
 
                       if (creditOrDebitBool) {
 
@@ -574,7 +592,7 @@ module.exports = function (db) {
                           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
                         'SELECT `cash`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
                           description +', `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + balance + ', ' +
-                          '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
+                          '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash_item`.`invoice_uuid`, ' +
                           [origin_id, user_id].join(', ') + ' ' +
                         'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
                         'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' LIMIT 1;';
@@ -588,9 +606,11 @@ module.exports = function (db) {
                       }));
                     })
                     .then(function () {
+                      if (rounding_query) { console.log('[DEBUG] Executed Rounding Query!'); }
                       return rounding_query ? db.exec(rounding_query) : q();
                     })
                     .then(function () {
+                      if (rounding_balance_query) { console.log('[DEBUG] Executed Rounding Query!'); }
                       return rounding_balance_query ? db.exec(rounding_balance_query) : q();
                     })
                     .then(function () {
