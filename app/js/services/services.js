@@ -822,6 +822,12 @@
       self.messages.splice(idx, 1);
     };
 
+    // Future API
+    // A blocking modal
+    self.block = function (message, callback, errback) { };
+    // Appropriate error formatting
+    self.error = function () {};
+
   })
 
   .service('exchange', [

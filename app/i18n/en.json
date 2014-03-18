@@ -573,7 +573,15 @@
     "PAY_INVOICES"     : "Pay Invoices",
     "CLEAR_SELECTION"  : "Clear Selection",
     "ERR_NO_EXCHANGE_RATE" : "ERROR : No exchange rate available!",
-    "ERR_OVERPAYING" : "ERROR : You are not allowed to overpay this invoice."
+    "OVER" : {
+      "TITLE" : "Justification for Payment",
+      "REASON" : "Reason",
+      "DANGER" : "Warning!",
+      "CUED" : "The debtor has been billed this amount",
+      "PAYMENT" : "The debitor is paying a this amount",
+      "MIN" : "Minimum 25 characters",
+      "JUSTIFICATION" : "Please include a justification for the payment on the debitor's account"
+    }
   },
 
   "CREDIT_NOTE" : {

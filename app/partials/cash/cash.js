@@ -4,6 +4,8 @@ angular.module('kpk.controllers')
   '$location',
   '$translate',
   '$window',
+  '$modal',
+  '$q',
   'connect',
   'appcache',
   'appstate',
@@ -14,7 +16,7 @@ angular.module('kpk.controllers')
   'precision',
   'calc',
   'uuid',
-  function($scope, $location, $translate, $window, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
+  function($scope, $location, $translate, $window, $modal, $q, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
     var dependencies = {},
         data = $scope.data = {},
         cache = new Appcache('cash');
@@ -23,7 +25,7 @@ angular.module('kpk.controllers')
     data.payment = 0;
     data.total = 0;
     data.raw = 0;
-  
+
     dependencies.cashboxes = {
       query : {
         tables : {
@@ -53,14 +55,14 @@ angular.module('kpk.controllers')
         }
       }
     };
-   
+ 
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.cashboxes.query.where =
         ['currency_account.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies).then(setUpModels, handleErrors);
     });
-   
+ 
 
     function loadCashBox(box) {
       if (box) { $scope.cashbox = box; }
@@ -72,7 +74,7 @@ angular.module('kpk.controllers')
       for (var k in models) {
         $scope[k] = models[k];
       }
-     
+   
       if (!$scope.cashbox) {
         $scope.cashbox = $scope.cashboxes.get($scope.project.currency_id);
       }
@@ -143,7 +145,7 @@ angular.module('kpk.controllers')
         var diff = precision.round(proposed - invoice.locale);
         invoice.allocated = diff >= 0 ? invoice.locale : proposed;
         proposed = diff >= 0 ? diff : 0;
-       
+     
         invoice.remaining = precision.compare(invoice.locale, invoice.allocated);
       });
 
@@ -152,7 +154,115 @@ angular.module('kpk.controllers')
 
     };
 
+    function initPayment () {
+      var id, date, invoice, instance, defer = $q.defer();
+  
+      date = util.convertToMysqlDate(new Date());
+      id = generateDocumentId($scope.cash.data, 'E');
 
+      invoice = {
+        date : date,
+        document_id : id,
+        description : ['CP E', id, $scope.patient.first_name, date].join('/')
+      };
+
+      if ($scope.data.overdue) {
+        instance = $modal.open({
+          templateUrl : 'justifyModal.html',
+          controller: function ($scope, $modalInstance, data) {
+            $scope.bill = data;
+            $scope.bill.valid = false;
+
+            $scope.submit = function () {
+              $modalInstance.close($scope.bill.justification);
+            };
+
+            $scope.cancel = function () {
+              $modalInstance.dismiss();
+            };
+
+            $scope.$watch('bill.justification', function () {
+              $scope.bill.valid = $scope.bill.justification ? $scope.bill.justification.length > 25 : false;
+            });
+          },
+          resolve : {
+            data : function () {
+              return $scope.data;
+            }
+          }
+        });
+
+        instance.result.then(function (description) {
+          if (description) { invoice.description = description; }
+          var data = {
+            invoice : invoice,
+            createCreditItem : true,
+          };
+          defer.resolve(invoice);
+        }, function () {
+          defer.reject();
+        });
+      } else {
+        defer.resolve(invoice);
+      }
+
+      return defer.promise;
+    }
+
+    $scope.invoice = function invoice () {
+      var payment, records, id = uuid();
+
+      initPayment()
+      .then(function (invoice) {
+        // pay the cash payment
+
+        payment = invoice;
+        payment.uuid = id;
+        payment.type = 'E';
+        payment.project_id = $scope.project.id;
+        payment.debit_account = $scope.cashbox.cash_account;
+        payment.credit_account = $scope.patient.account_id;
+        payment.currency_id = $scope.cashbox.currency_id;
+        payment.cost = precision.round(data.payment);
+        payment.deb_cred_uuid = $scope.patient.debitor_uuid;
+        payment.deb_cred_type = 'D';
+
+        // FIXME : All of these need to be re-worked
+        payment.user_id = 1;
+        payment.cashbox_id = 1;
+
+        return connect.basicPut('cash', [payment]);
+      })
+      .then(function () {
+        // pay each of the cash items
+      
+        records = [];
+      
+        $scope.queue.forEach(function (record) {
+          if (record.allocated < 0) { return; }
+          records.push({
+            uuid           : uuid(),
+            cash_uuid      : payment.uuid,
+            allocated_cost : precision.round(record.allocated),
+            invoice_uuid   : record.inv_po_id
+          });
+        });
+
+        return connect.basicPut('cash_item', records);
+      })
+      .then(function () {
+        return connect.fetch('/journal/cash/' + $scope.invoice_uuid);
+      })
+      .then(function () {
+        $location.path('/invoice/cash/' + $scope.invoice_id);
+      })
+      .catch(function (err) {
+        if (err) return messenger.danger(err);
+        messenger.danger('Payment failed for some unknown reason.');
+      });
+    };
+
+    /*
     function processCashInvoice () {
       // Gather data and submit the cash invoice
       var document_id, cashPayment, date, description;
@@ -163,8 +273,6 @@ angular.module('kpk.controllers')
       // should be less than currency.min_monentary_unit
 
       date = util.convertToMysqlDate(new Date());
-
-      if ($scope.data.overdue) { return $window.alert($translate('CASH.ERR_OVERPAYING')); }
 
       document_id = generateDocumentId($scope.cash.data, 'E');
       description = ['CP E', document_id, $scope.patient.first_name, date].join('/');
@@ -232,13 +340,14 @@ angular.module('kpk.controllers')
       $scope.digestInvoice();
 
       processCashInvoice()
-        .then(processCashItems)
-        .then(postToJournal)
-        .then(showReceipt)
-        .catch(function (err) {
-          messenger.danger('An error occured' + JSON.stringify(err));
-        });
+      .then(processCashItems)
+      .then(postToJournal)
+      .then(showReceipt)
+      .catch(function (err) {
+        messenger.danger('An error occured' + JSON.stringify(err));
+      });
     };
+    */
 
     function generateDocumentId(model, type) {
       // filter by bon type, then gather ids.
