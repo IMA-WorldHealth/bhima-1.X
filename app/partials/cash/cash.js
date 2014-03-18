@@ -3,6 +3,7 @@ angular.module('kpk.controllers')
   '$scope',
   '$location',
   '$translate',
+  '$window',
   'connect',
   'appcache',
   'appstate',
@@ -13,7 +14,7 @@ angular.module('kpk.controllers')
   'precision',
   'calc',
   'uuid',
-  function($scope, $location, $translate, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
+  function($scope, $location, $translate, $window, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
     var dependencies = {},
         data = $scope.data = {},
         cache = new Appcache('cash');
@@ -162,6 +163,8 @@ angular.module('kpk.controllers')
       // should be less than currency.min_monentary_unit
 
       date = util.convertToMysqlDate(new Date());
+
+      if ($scope.data.overdue) { return $window.alert($translate('CASH.ERR_OVERPAYING')); }
 
       document_id = generateDocumentId($scope.cash.data, 'E');
       description = ['CP E', document_id, $scope.patient.first_name, date].join('/');

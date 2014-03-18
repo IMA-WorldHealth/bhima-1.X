@@ -572,7 +572,8 @@
     "OVERDUE"          : "Over Due",
     "PAY_INVOICES"     : "Pay Invoices",
     "CLEAR_SELECTION"  : "Clear Selection",
-    "NO_EXCHANGE_RATE" : "Error: No exchange rate!"
+    "ERR_NO_EXCHANGE_RATE" : "ERROR : No exchange rate available!",
+    "ERR_OVERPAYING" : "ERROR : You are not allowed to overpay this invoice."
   },
 
   "CREDIT_NOTE" : {
