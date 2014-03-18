@@ -10,6 +10,7 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
     'debtor': processDebtor,
     'patient' : processPatient,
   };
+
   dependencies.recipient = {
     required: true
   };
@@ -40,8 +41,14 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
 
   // dependencies.invoice.query.tables[origin] = {
   dependencies.invoice.query.tables['sale'] = {
-    columns: ['uuid', 'cost', 'currency_id', 'debitor_uuid', 'seller_id', 'invoice_date', 'note']
+    columns: ['uuid', 'cost', 'currency_id', 'debitor_uuid', 'seller_id', 'invoice_date', 'note', 'project_id', 'reference']
   };
+
+  dependencies.invoice.query.tables['project'] = { 
+    columns: ['abbr']
+  }
+
+  dependencies.invoice.query.join = ['sale.project_id=project.id'];
 
   //TODO sale_item hardcoded - have a map form originId to table name, item table name, recipient table name
   dependencies.invoiceItem = {
@@ -229,7 +236,10 @@ angular.module('kpk.controllers').controller('invoice', function($scope, $routeP
    
     // Human readable ID
     $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
-    
+    $scope.invoice.hr_id = $scope.invoice.abbr.concat($scope.invoice.reference);
+
+    console.log('INVOICE', $scope.invoice);
+
     //FIXME huge total hack 
     $scope.model.invoice.data.forEach(function(invoiceRef) { 
       $scope.invoice.totalSum += invoiceRef.cost;
