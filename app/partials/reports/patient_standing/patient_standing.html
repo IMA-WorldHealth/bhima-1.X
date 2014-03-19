@@ -28,14 +28,14 @@
                   {{ "COLUMNS.ID" | translate }}
                 </label>
                 <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.id }}</p>
+                  <p class="form-control-static">{{ patient.uuid }}</p>
                 </div>
 
                 <label class="control-label col-xs-3">
                   {{ "COLUMNS.REGISTERED" | translate }}
                 </label>
                 <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.date_registered | date }}</p>
+                  <p class="form-control-static">{{ patient.registration_date | date }}</p>
                 </div>
               </div>
 
@@ -60,7 +60,7 @@
                   {{ "PATIENT_STANDING.ACCOUNT_NUMBER" | translate }}
                 </label>
                 <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.account_number }}</p>
+                  <p class="form-control-static">{{ accounts.get(patient.account_id).account_number }}</p>
                 </div>
 
                 <label class="control-label col-xs-3">

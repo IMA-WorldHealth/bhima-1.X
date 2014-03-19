@@ -2,9 +2,10 @@ angular.module('kpk.controllers')
 .controller('reportPatientStanding', [
   '$scope',
   'validate',
+  'appstate',
   'messenger',
   'connect',
-  function ($scope, validate, messenger, connect) {
+  function ($scope, validate, appstate, messenger, connect) {
     var dependencies = {};
     $scope.img = 'placeholder.gif';
 
@@ -12,11 +13,22 @@ angular.module('kpk.controllers')
       required : true,
       query : {
         tables : {
-          patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
+          patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id", "registration_date"]},
           debitor : { columns : ["text"]},
           debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
         },
         join : ["patient.debitor_uuid=debitor.uuid", 'debitor.group_uuid=debitor_group.uuid']
+      }
+    };
+
+    dependencies.accounts = {
+      required : true,
+      query : {
+        tables : {
+          account : {
+            columns : ['id', 'account_txt', 'account_number']
+          }
+        }
       }
     };
 
@@ -26,6 +38,7 @@ angular.module('kpk.controllers')
 
     function processModels(models) {
       for (var k in models) { $scope[k]= models[k]; }
+
       $scope.date = new Date();
     }
 
@@ -34,7 +47,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.search = function search() {
-      var id = $scope.patient.debitor_id;
+      var id = $scope.patient.debitor_uuid;
       connect.fetch('/reports/patientStanding/?id=' + id)
       .success(function (data) {
         $scope.receipts = data;
@@ -42,10 +55,14 @@ angular.module('kpk.controllers')
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
-      //console.log('$scope.patient', $scope.patient);
     };
 
-    validate.process(dependencies).then(processModels, handleErrors);
-    
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise;
+
+      validate.process(dependencies)
+      .then(processModels, handleErrors);
+    });
+
   }
 ]);
