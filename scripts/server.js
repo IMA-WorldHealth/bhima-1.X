@@ -84,18 +84,18 @@ app.post('/data/', function (req, res, next) {
   });
 });
 
-app.post('/sale/', function (req, res, next) {
-  createSale.execute(req.body, req.session.user_id, function (err, ans) {
-    if(err) return next(err);
-    res.send(200, {saleId: ans});
-  });
-});
-
 app.delete('/data/:table/:column/:value', function (req, res, next) {
   var sql = parser.delete(req.params.table, req.params.column, req.params.value);
   db.execute(sql, function (err, ans) {
     if (err) return next(err);
     res.send(200);
+  });
+});
+
+app.post('/sale/', function (req, res, next) {
+  createSale.execute(req.body, req.session.user_id, function (err, ans) {
+    if(err) return next(err);
+    res.send(200, {saleId: ans});
   });
 });
 

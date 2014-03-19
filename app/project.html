@@ -8,7 +8,7 @@
     $(document).ready(function () {
       // this is to load in all the respective projects of the user
 
-      var template =
+      var tpl =
         "<li class='list-item'>" +
         "  <div class='img-display'>"+
         "    <span class='glyphicon glyphicon-home'></span>" +
@@ -18,38 +18,39 @@
         "  </div>" +
         "</li>";
 
-      var fail_template =
-        "<div class='alert alert-danger'>" +
-        "  <h3>No projects have been assigned to your user!  Please see an administrator.</h3>" +
-        "</div>";
-
       $.ajax('/project')
       .done(function (data) {
         var item, elem = $("#projects");
 
-        if (data.length < 1) {
-          elem.append(fail_template);
-        }
+        if (data.length < 1) { return noProject(elem); }
 
         $.each(data, function( index, value) {
-          item = $(template.replace('%value%', value.name));
-          item .click('click', function (e) {
+          item = $(tpl.replace('%value%', value.name));
+          item.click(function (e) {
             $.ajax('/project' + '?id=' + value.id)
             .done(function (res) {
               // redirect
               window.location.replace('/');
             })
-            .fail(function () {
-              alert('An error occured.  Please try again.')
-            });
+            .fail(handleError);
           });
           elem.append(item);
         });
 
       })
-      .fail(function (err) {
-        alert('An error occured. Please refresh the page.');
-      });
+      .fail(handleError);
+
+      function noProject(e) {
+        $('.panel')
+        .removeClass('panel-primary')
+        .addClass('panel-danger');
+
+        e.before("<div class='panel-body' style='text-align:left;'><span>No projects have been assigned to your user!  Please see an administrator.</span></div>");
+      }
+
+      function handleError() {
+        alert('An error occured.  Please refresh the page.');
+      }
     });
   </script>
     
