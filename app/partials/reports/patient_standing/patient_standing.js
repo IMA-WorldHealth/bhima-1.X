@@ -9,12 +9,14 @@ angular.module('kpk.controllers')
     $scope.img = 'placeholder.gif';
 
     dependencies.patients = {
+      required : true,
       query : {
         tables : {
-          'patient' : {
-            columns : ['id', 'debitor_id', 'first_name', 'last_name', 'dob', 'profession', 'sex', 'current_location_id']
-          }
-        }
+          patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
+          debitor : { columns : ["text"]},
+          debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
+        },
+        join : ["patient.debitor_uuid=debitor.uuid", 'debitor.group_uuid=debitor_group.uuid']
       }
     };
 
