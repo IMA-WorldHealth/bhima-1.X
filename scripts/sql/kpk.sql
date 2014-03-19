@@ -163,7 +163,7 @@ drop table if exists `project`;
 create table `project` (
   `id`              smallint unsigned not null auto_increment,
   `name`            text,
-  `abbr`            char(3),
+  `abbr`            char(3) UNIQUE,
   `enterprise_id`   smallint unsigned not null,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
@@ -319,28 +319,57 @@ create table `payment` (
   primary key (`id`)
 ) engine=innodb;
 
---
--- table structure for table `kpk`.`currency_account`
---
-drop table if exists `currency_account`;
-create table `currency_account` (
+drop table if exists `cash_box`;
+create table `cash_box` (
   `id`              mediumint unsigned not null auto_increment,
+  `text`            text not null,
+  `project_id`      smallint unsigned not null,
+  primary key (`id`),
+  key `project_id` (`project_id`),
+  constraint foreign key (`project_id`) references `project` (`id`)
+) engine=innodb;
+
+drop table if exists `cash_box_account`;
+create table `cash_box_account` (
+  `id`              mediumint unsigned not null auto_increment, 
   `currency_id`     tinyint unsigned not null,
-  `enterprise_id`   smallint unsigned not null,
-  `cash_account`    int unsigned not null,
-  `bank_account`    int unsigned not null,
+  `cash_box_id`     mediumint unsigned not null,
+  `cash_account`    int unsigned,
+  `bank_account`    int unsigned,
   primary key (`id`),
   key `currency_id` (`currency_id`),
-  key `enterprise_id` (`enterprise_id`),
+  key `cash_box_id` (`cash_box_id`),
   key `cash_account` (`cash_account`),
   key `bank_account` (`bank_account`),
-  unique key (`id`, `currency_id`),
+  -- unique key (`id`, `currency_id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`cash_account`) references `account` (`id`),
   constraint foreign key (`bank_account`) references `account` (`id`)
 ) engine=innodb;
 
+--
+-- Currency account is deprecated (replaced with cash box relationship)
+--
+-- drop table if exists `currency_account`;
+-- create table `currency_account` (
+--   `id`              mediumint unsigned not null auto_increment,
+--   `currency_id`     tinyint unsigned not null,
+--   `enterprise_id`   smallint unsigned not null,
+--   `cash_account`    int unsigned not null,
+--   `bank_account`    int unsigned not null,
+--   primary key (`id`),
+--   key `currency_id` (`currency_id`),
+--   key `enterprise_id` (`enterprise_id`),
+--   key `cash_account` (`cash_account`),
+--   key `bank_account` (`bank_account`),
+--   unique key (`id`, `currency_id`),
+--   constraint foreign key (`currency_id`) references `currency` (`id`),
+--   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+--   constraint foreign key (`cash_account`) references `account` (`id`),
+--   constraint foreign key (`bank_account`) references `account` (`id`)
+-- ) engine=innodb;
+--
 --
 -- table `kpk`.`price_list`
 --
@@ -663,6 +692,7 @@ create table `sale` (
   `invoice_date`  date not null, -- is this the date of the sale?
   `note`          text,
   `posted`        boolean not null default '0',
+  `timestamp`     timestamp default current_timestamp,
   primary key (`uuid`),
   key `reference` (`reference`),
   key `project_id` (`project_id`),

@@ -8,8 +8,16 @@ angular.module('kpk.controllers').controller('patientRecords', [
     dependencies.patient = {
       query : { 
         identifier : 'uuid',
-        'tables' : { 'patient' : { 'columns' : ['uuid', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'current_location_id', 'debitor_uuid', 'registration_date'] }}
-      },
+        tables : { 
+          patient : { 
+            columns : ['uuid', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'current_location_id', 'debitor_uuid', 'registration_date', 'reference'] 
+          },
+          project : { 
+            columns : ['abbr']
+          }
+        },
+        join : ['patient.project_id=project.id']
+      }
     };
 
     // validate.process(dependencies).then(patientRecords);
@@ -32,7 +40,14 @@ angular.module('kpk.controllers').controller('patientRecords', [
     }
 
     function filterNames(patientData) {
-      patientData.forEach(function(patient) { patient.name = patient.first_name + ' ' + patient.last_name; });
+      patientData.forEach(function(patient) { 
+
+        // Full name
+        patient.name = patient.first_name + ' ' + patient.last_name;
+
+        // Human readable ID
+        patient.hr_id = patient.abbr.concat(patient.reference);
+      });
     }
 
     function fetchAll() {

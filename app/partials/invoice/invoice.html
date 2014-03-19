@@ -16,6 +16,7 @@
       <div class="row customer-details">
         <div class="col-xs-12"> 
           <h4 class="invoice-header">{{'INVOICE.PATIENT_INVOICE' | translate}}</h4>
+          <small style="color: grey; font-size: 8px">{{invoice.uuid}}</small>
         </div>
       </div>
       <div class="row customer-details">
@@ -39,7 +40,8 @@
             <b>{{'INVOICE.INVOICE_ID' | translate}}</b>
           </div>
           <div class="row">
-            {{invoice.id}}
+            <!-- project abbr concat reference -->
+            {{invoice.hr_id}}
           </div>
           <div class="row">
             <b>{{'INVOICE.DATE' | translate}}</b>
@@ -110,7 +112,7 @@
               <b>{{'INVOICE.PATIENT_ID' | translate}}</b>
             </div>
             <div class="row">
-              {{recipient.uuid}}
+              {{recipient.hr_id}}
             </div>
             <div class="row">
               <b>{{'INVOICE.DATE_REGISTRATION' | translate}}</b>

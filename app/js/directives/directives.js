@@ -234,11 +234,25 @@
             required : true,
             query : {
               tables : {
-                patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id"]},
+                patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id", "reference"]},
+                project : { columns : ["abbr"] },
                 debitor : { columns : ["text"]},
                 debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
               },
-              join : ["patient.debitor_uuid=debitor.uuid", 'debitor.group_uuid=debitor_group.uuid']
+              join : [
+                'patient.debitor_uuid=debitor.uuid',
+                'debitor.group_uuid=debitor_group.uuid',
+                'patient.project_id=project.id'
+              ]
+            }
+          };
+
+          dependencies.project = { 
+            query : { 
+              identifier : 'abbr',
+              tables : { 
+                project : { columns : ["abbr", "id"] } 
+              }
             }
           };
 
@@ -248,8 +262,7 @@
           };
        
           var template =
-          '<div id="findPatient" class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+
-          '  <div class="panel-heading">'+
+          '<div id="findPatient" class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+ '  <div class="panel-heading">'+
           '    <div ng-switch on="findPatient.submitSuccess">'+
           '     <div ng-switch-when="false">'+
           '       <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}'+
@@ -326,10 +339,34 @@
           }
 
           function searchId(value) {
-            console.log('search id', value);
-            // if(isNaN(Number(value))) return messenger.danger("Invalid ID value submitted");
-            dependencies.debtor.query.where = ["patient.uuid=" + value];
-            validate.refresh(dependencies).then(handleIdRequest, handleIdError);
+            var id = parseId(value), project;
+            
+            if(!id) return messenger.danger('Cannot parse patient ID');
+            project = scope.findPatient.model.project.get(id.projectCode);
+            
+            if(!project) return messenger.danger('Cannot find project \'' + id.projectCode + '\'');
+
+            dependencies.debtor.query.where = [
+              "patient.project_id=" + project.id,
+              "AND",
+              "patient.reference=" + id.reference
+            ];
+            validate.refresh(dependencies, ['debtor']).then(handleIdRequest, handleIdError);
+          }
+          
+          // TODO should this be temporary?
+          function parseId(idString) { 
+            var codeLength = 3, namespacedId = {}; 
+
+            // Current format VarChar(3):Int
+            namespacedId.projectCode = idString.substr(0, codeLength);
+            namespacedId.reference = idString.substr(codeLength);
+            
+            console.log(namespacedId);
+            if(!namespacedId.projectCode || !namespacedId.reference) return null;
+            if(isNaN(Number(namespacedId.reference))) return null;
+
+            return namespacedId;
           }
       
           function handleIdRequest(model) {
@@ -369,6 +406,11 @@
 
               //Age - naive quick method, not a priority to calculate the difference between two dates
               patient.age = currentDate.getFullYear() - patientDate.getFullYear() - Math.round(currentDate.getMonth() / 12 + patientDate.getMonth() / 12) ;
+
+              //Human readable ID 
+              // FIXME This should be a select CONCAT() from MySQL
+              patient.hr_id = patient.abbr.concat(patient.reference);
+              console.log(patient.hr_id);
             });
             return patientData;
           }
