@@ -35,7 +35,8 @@
     "FEMALE" : "Female",
     "RESULTS" : "Results",
     "VIEW_ALL" : "View all Patients",
-    "SEARCH" : "Search"
+    "SEARCH" : "Search",
+    "VIEW_PATIENT_CARD" : "Patient card"
   },
  
   "EXCHANGE" : {

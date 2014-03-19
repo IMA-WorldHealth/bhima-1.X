@@ -3,16 +3,42 @@
 </header>
 
 <section class="top-nav">
-  <div style="position: absolute; right: 5px;">
-    <button class="btn btn-sm btn-primary dropdown-toggle">
-      {{ cashbox.account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
-      <span class="caret" data-caret="&#9660;"></span>
-    </button> 
-    <ul class="dropdown-menu pull-right">
-      <li ng-repeat="box in cashboxes.data">
-        <a href="" ng-click="setCashBox(box)"> {{ box.account_txt }} </a>
-      </li>
-    </ul>
+<!-- <div style="position: absolute; right: 5px;"> -->
+  <div class="pull-right">
+    <!-- <select class="form&#45;kapok pull&#45;right"> -->
+    <!--   <option>1</option> -->
+    <!-- </select> -->
+
+    <!-- <select class="form&#45;kapok pull&#45;right"> -->
+    <!--   <option>2</option> -->
+    <!-- </select> -->
+    
+    <span class="dropdown pull-right"> 
+      <button class="btn btn-sm btn-warning dropdown-toggle">
+        {{ currency.symbol || "..." }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button> 
+
+      <ul class="dropdown-menu ">
+        <li ng-repeat="currency in cashbox_accounts.data">
+        <a href="" ng-click="setCurrency(currency)">  ({{currency.cash_box_id}}) {{currency.symbol}} </a>
+        </li>
+      </ul>
+    </span>
+
+    <span class="dropdown pull-right" style="padding-right: 5px;"> 
+      <button class="btn btn-sm btn-primary dropdown-toggle">
+        {{ cashbox.text || "..." }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button> 
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="box in cashboxes.data">
+          <a href="" ng-click="setCashBox(box)"> {{box.text}} - {{box.symbol}} </a>
+        </li>
+      </ul>
+    </span>
+
   </div>
 </section>
 
@@ -30,6 +56,7 @@
           <p>{{ "CASH.HELP_TXT_1" | translate }}.</p>
           <p>{{ "CASH.HELP_TXT_2" | translate }}.</p>
         </div>
+
       </div>
 
       <div class="panel panel-primary" ng-switch-when="true">
@@ -47,7 +74,7 @@
           <tbody>
             <tr ng-repeat="invoice in ledger" ng-click="add($index)" style="cursor : pointer;">
               <td>{{ invoice.inv_po_id }}</td>
-              <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
+              <td ng-bind-html="invoice.locale | intlcurrency:currency.currency_id"></td>
               <td>{{ invoice.trans_date | date }}</td>
             </tr>
           </tbody>
@@ -75,16 +102,16 @@
             <tr ng-repeat="invoice in queue">
               <td>{{ invoice.inv_po_id }}</td>
               <td>{{ invoice.trans_date | date }}</td>
-              <td ng-bind-html="invoice.locale | intlcurrency:cashbox.currency_id"></td>
-              <td ng-bind-html="invoice.allocated | intlcurrency:cashbox.currency_id"></td>
-              <td ng-bind-html="invoice.remaining | intlcurrency:cashbox.currency_id"></td>
+              <td ng-bind-html="invoice.locale | intlcurrency:currency.currency_id"></td>
+              <td ng-bind-html="invoice.allocated | intlcurrency:currency.currency_id"></td>
+              <td ng-bind-html="invoice.remaining | intlcurrency:currency.currency_id"></td>
               <td><a href="" ng-click="remove($index)" class="glyphicon glyphicon-trash"></a></td>
             </tr>
           </tbody>
           <tfoot>
             <tr style="background-color: #f5f5f5; border-color: #ddd;">
               <th colspan="2">Total:</th>
-              <td ng-bind-html="data.raw | intlcurrency:cashbox.currency_id"></td>
+              <td ng-bind-html="data.raw | intlcurrency:currency.currency_id"></td>
               <td></td>
               <td></td>
               <td></td>
@@ -100,11 +127,11 @@
             <div class="row" style="font-size: 2em;">
               <div class="col-xs-6">
                 <b>{{ "CASH.TOTAL_DUE" | translate }}</b>
-                <span ng-bind-html="data.total | intlcurrency:cashbox.currency_id"></span>
+                <span ng-bind-html="data.total | intlcurrency:currency.currency_id"></span>
               </div>
               <div class='col-xs-6'>
                 <b>{{ "CASH.OVERDUE" | translate }}</b>
-                <span ng-bind-html="data.overdue | intlcurrency:cashbox.currency_id"></span>
+                <span ng-bind-html="data.overdue | intlcurrency:currency.currency_id"></span>
               </div>
             </div>
 
