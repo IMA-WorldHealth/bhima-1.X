@@ -17,7 +17,6 @@
         <div class="panel-heading"> 
           {{ "PERMISSION.REGISTERED" | translate }}
         </div>
-        <div class="table-responsive">
         <table class="table table-hover table-condensed">
           <thead>
             <tr>
@@ -32,14 +31,13 @@
               <td>{{user.first}}</td>
               <td>{{user.username}}</td>
               <td>{{user.email}}</td>
-              <td ng-click="editInfo(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button></td>
-              <td ng-click="editPermission(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-cog"></i></button></td>
-              <td ng-click="editProjects(user)"><button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-home"></i></button></td>
-              <td ng-click="removeUser(user)"><button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button></td>
+              <td><a href="" ng-click="editInfo(user)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a href="" ng-click="editPermission(user)"><i class="glyphicon glyphicon-cog"></i></a></td>
+              <td><a href="" ng-click="editProjects(user)"><i class="glyphicon glyphicon-home"></i></a></td>
+              <td><a href="" ng-click="removeUser(user)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
         </table>
-      </div>
       </div>
     </div>
 
@@ -218,7 +216,7 @@
               <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
                 <button ng-disabled="!data.permission_change" ng-click="savePermissions()">
-                  <span class="glyphicon glyphicon-floppy"></span> {{ "FORM.SAVE" | translate }}
+                  <span class="glyphicon glyphicon-floppy-open"></span> {{ "FORM.SAVE" | translate }}
                 </button>
               </span>
             </div>

@@ -732,10 +732,10 @@
   },
 
   "COUNTRY" : {
-    "TITLE"                : "COUNTRIES MANAGEMENT",
+    "TITLE"                : "Country Management",
     "LOCATION_MANAGER"     : "Location Manager",
     "NEW_COUNTRY"          : "Add New Country",
-    "REGISTERED"           : "Registered Country",
+    "REGISTERED"           : "Registered Countries",
     "CODE"                 : "Code",
     "ENGLISH_NAME"         : "English Name",
     "FRENCH_NAME"          : "French Name",
