@@ -114,6 +114,9 @@ angular.module('kpk.controllers')
           var verifyBox = $scope.cashboxes.get(defaultCashBox.id);
           if(verifyBox) sessionDefault = verifyBox;
         }
+
+        console.log('[sessionDefault]', sessionDefault);
+
         $scope.setCashBox(sessionDefault);
       }
     }
@@ -127,7 +130,8 @@ angular.module('kpk.controllers')
       cache.put('cashbox', box);
 
       dependencies.cashbox_accounts.query.where = ['cash_box_account.cash_box_id=' + $scope.cashbox.id];
-      validate.refresh(dependencies, ['cashbox_accounts']).then(refreshCurrency);
+      validate.refresh(dependencies, ['cashbox_accounts'])
+      .then(refreshCurrency);
     };
 
     function refreshCurrency(model) {
