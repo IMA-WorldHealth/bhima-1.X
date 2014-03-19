@@ -193,37 +193,37 @@ angular.module('kpk.controllers')
         });
 
         instance.result.then(function (description) {
-          if (description) { invoice.description = description; }
-          var data = {
-            invoice : invoice,
-            createCreditItem : true,
-          };
-          defer.resolve(invoice);
+          if (description) { invoice.description += ' ' + description; }
+          defer.resolve({invoice : invoice, creditAccount : !!description });
         }, function () {
           defer.reject();
         });
       } else {
-        defer.resolve(invoice);
+        defer.resolve({ invoice : invoice, creditAccount : false });
       }
 
       return defer.promise;
     }
 
     $scope.invoice = function invoice () {
-      var payment, records, id = uuid();
+      var payment, records, creditAccount, id = uuid();
 
       initPayment()
-      .then(function (invoice) {
+      .then(function (data) {
+
         // pay the cash payment
 
-        payment = invoice;
+        console.log('bool is:', data.creditAccount);
+        creditAccount = data.creditAccount;
+
+        payment = data.invoice;
         payment.uuid = id;
         payment.type = 'E';
         payment.project_id = $scope.project.id;
         payment.debit_account = $scope.cashbox.cash_account;
         payment.credit_account = $scope.patient.account_id;
         payment.currency_id = $scope.cashbox.currency_id;
-        payment.cost = precision.round(data.payment);
+        payment.cost = precision.round($scope.data.payment);
         payment.deb_cred_uuid = $scope.patient.debitor_uuid;
         payment.deb_cred_type = 'D';
 
@@ -242,19 +242,28 @@ angular.module('kpk.controllers')
           if (record.allocated < 0) { return; }
           records.push({
             uuid           : uuid(),
-            cash_uuid      : payment.uuid,
+            cash_uuid      : id,
             allocated_cost : precision.round(record.allocated),
             invoice_uuid   : record.inv_po_id
           });
         });
 
+        if (creditAccount) {
+          records.push({
+            uuid : uuid(),
+            cash_uuid : id,
+            allocated_cost : precision.round($scope.data.payment - $scope.data.raw),
+            invoice_uuid : null
+          });
+        }
+
         return connect.basicPut('cash_item', records);
       })
       .then(function () {
-        return connect.fetch('/journal/cash/' + $scope.invoice_uuid);
+        return connect.fetch('/journal/cash/' + id);
       })
       .then(function () {
-        $location.path('/invoice/cash/' + $scope.invoice_id);
+        $location.path('/invoice/cash/' + id);
       })
       .catch(function (err) {
         if (err) return messenger.danger(err);
