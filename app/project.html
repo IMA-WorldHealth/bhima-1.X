@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Project Selection</title>
+  <title>Select A Project</title>
   <link rel="stylesheet" href="css/kapok.min.css">
   <script src="lib/jquery-1.10.2.js"></script>
   <script>
@@ -55,15 +55,6 @@
     
   <style>
 
-    .field {
-      box-sizing: border-box;
-      margin: 0 auto;
-      margin-top: 20%;
-      padding: 30px;
-      background-color: white;
-      border: 1px solid rgba(164, 154, 154, 0.5);
-    }
-
     .img-display {
       float: left;
       padding-right: 5px;
@@ -75,21 +66,32 @@
       cursor: pointer;
     }
 
+    .list-item:first-child {
+      margin-top: 1em;
+    }
+
     .txt-display {
+      padding-left: 1.5em;
       transition : all 0.2s ease;
+      text-align : left;
     }
 
     .txt-display:hover {
-      padding-left: 30px;
+      font-weight: bold;
+      padding-left: 2.25em;
     }
 
   </style>
 </head>
 <body style="background: #F3F3F3;">
   <div class="container">
-    <div class="field">
-      <h3>Select a Project</h3>
-      <ul id="projects"></ul>
+    <div class="center" style="margin-top: 5em;">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h4>Select a Project</h4>
+        </div>
+        <ul id="projects"></ul>
+      </div>
     </div>
   </div>
 </body>
