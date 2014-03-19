@@ -837,12 +837,12 @@ create table `cash_item` (
   `uuid`              char(36) not null,
   `cash_uuid`         char(36) not null,
   `allocated_cost`    decimal(19,4) unsigned not null default 0.00,
-  `invoice_uuid`      char(36) not null,
+  `invoice_uuid`      char(36),
   primary key (`uuid`),
   key `cash_uuid` (`cash_uuid`),
-  key `invoice_uuid` (`invoice_uuid`),
-  constraint foreign key (`cash_uuid`) references `cash` (`uuid`),
-  constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
+--  key `invoice_uuid` (`invoice_uuid`),
+  constraint foreign key (`cash_uuid`) references `cash` (`uuid`)
+--  constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
 
 -- 
