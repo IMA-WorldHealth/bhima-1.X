@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="col-xs-3">
-    <input class="form-kapok" ng-model="patient" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+    <input class="form-kapok" ng-model="patient" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
   </div>
   <a class="btn btn-sm btn-primary" href="" ng-click="search()" ng-disabled="!patient">{{ "UTIL.SEARCH" | translate }}</a>
 </section>
@@ -125,3 +125,9 @@
   </div>
 </div>
 
+<script type="text/ng-template" id="template.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{match.model.uuid}}]</b></span>
+  </a>
+</script>
