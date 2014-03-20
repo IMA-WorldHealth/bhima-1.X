@@ -13,11 +13,12 @@ angular.module('kpk.controllers')
       required : true,
       query : {
         tables : {
-          patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id", "registration_date"]},
+          patient : {columns : ["uuid", "project_id", "reference", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id", "registration_date"]},
           debitor : { columns : ["text"]},
-          debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
+          debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']},
+          project : { columns : ['abbr']}
         },
-        join : ["patient.debitor_uuid=debitor.uuid", 'debitor.group_uuid=debitor_group.uuid']
+        join : ["patient.debitor_uuid=debitor.uuid", 'debitor.group_uuid=debitor_group.uuid', 'patient.project_id=project.id']
       }
     };
 
@@ -47,18 +48,41 @@ angular.module('kpk.controllers')
     }
 
     $scope.search = function search() {
+      $scope.patient = $scope.selection;
       var id = $scope.patient.debitor_uuid;
       connect.fetch('/reports/patientStanding/?id=' + id)
       .success(function (data) {
-        $scope.receipts = data;
+        $scope.receipts = data.receipts;
+
+        $scope.patient.last_payment_date = new Date(data.last_payment_date);
+        $scope.patient.last_purchase_date = new Date(data.last_purchase_date);
+
+        var balance = 0,
+            sumDue = 0,
+            sumBilled = 0;
+        $scope.receipts.forEach(function (receipt) {
+          if (receipt.debit - receipt.credit === 0) { return; }
+          receipt.billed = receipt.debit;
+          receipt.due = receipt.debit - receipt.credit;
+          balance += receipt.billed - receipt.due;
+          sumBilled += receipt.billed;
+          sumDue += receipt.due;
+        });
+        $scope.patient.total_amount = sumBilled;
+        $scope.patient.total_due = sumDue;
+        $scope.patient.account_balance = balance;
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
+    $scope.isOutstanding = function isoutstanding(receipt) {
+      return receipt.debit - receipt.credit !== 0;
+    };
+
+    appstate.register('project', function (project) {
+      $scope.project = project;
 
       validate.process(dependencies)
       .then(processModels, handleErrors);
