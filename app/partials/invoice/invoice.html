@@ -1,22 +1,22 @@
 <header> 
-{{'INVOICE.TITLE' | translate}}  
-<!-- FIXME hacks for meeting -->
-<div ng-if="origin==='sale'" class="pull-right">
-  <select class="form-kapok" ng-change="updateCost(session.currentCurrency.currency_id)" ng-model="session.currentCurrency" ng-options="currency.symbol for currency in model.currency.data"></select> 
-</div>
+  {{'INVOICE.TITLE' | translate}}  
+  <!-- FIXME hacks for meeting -->
+  <div ng-if="origin==='sale'" class="pull-right">
+    <select class="form-kapok" ng-change="updateCost(session.currentCurrency.id)" ng-model="session.currentCurrency" ng-options="currency.symbol for currency in model.currency.data"></select> 
+  </div>
 </header> 
 
 <!-- TODO Massive style hack -->
 <div class="reportBody" style="margin-top: 50px;">
 
 <div class="reportFrame">
-  <div ng-switch on="origin">
+  <div ng-switch="origin">
     <div ng-switch-when="sale">
       <!-- Patient Invoice template -->
       <div class="row customer-details">
         <div class="col-xs-12"> 
-          <h4 class="invoice-header">{{'INVOICE.PATIENT_INVOICE' | translate}}</h4>
-          <small style="color: grey; font-size: 8px">{{invoice.uuid}}</small>
+          <h4 class="invoice-header">{{ 'INVOICE.PATIENT_INVOICE' | translate }}</h4>
+          <small style="color: grey; font-size: 8px">{{ invoice.uuid }}</small>
         </div>
       </div>
       <div class="row customer-details">
@@ -66,17 +66,17 @@
             </thead>
             <tbody class="items">
               <tr ng-repeat="item in model['invoiceItem'].data">
-                <td>{{item.code}}</td>
-                <td>{{item.text}}</td>
-                <td>{{item.quantity}}</td>
-                <td>{{item.transaction_price}}</td>
-                <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td>
+                <td>{{ item.code }}</td>
+                <td>{{ item.text }}</td>
+                <td>{{ item.quantity }}</td>
+                <td><span ng-bind-html="item.transaction_price | intlcurrency:project.currency_id"></span></td>
+                <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.id"></span></td>
               </tr> 
             </tbody>
             <tbody class="totals">
-              <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
-              <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
-              <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.id"></span></td></tr>
             </tbody>
 
           </table>
@@ -235,6 +235,7 @@
         <div class="row customer-details">
           <div class="col-xs-12"> 
             <h4 class="invoice-header">{{'INVOICE.CASH_RECEIPT' | translate}}</h4>
+            <small style="color: grey; font-size: 8px">{{ cashTransaction.cash_uuid }}</small>
           </div>
         </div>
         <div class="row customer-details">
@@ -258,13 +259,13 @@
             <b>{{'INVOICE.CASH_ID' | translate}}</b>
           </div>
           <div class="row">
-            {{cashTransaction.cash_id}}
+            {{ cashTransaction.cash_uuid}}
           </div>
             <div class="row">
               <b>{{'INVOICE.DATE' | translate}}</b>
             </div>
             <div class="row">
-              {{cashTransaction.date | date}}  
+              {{ cashTransaction.date | date}}  
             </div>
           </div>
         </div>
@@ -272,10 +273,13 @@
           <div class="col-xs-12">
             <table class="invoiceTable">
               <thead>
-                <tr><th>{{'INVOICE.DESCRIPTION' | translate}}</th><th>{{'INVOICE.AMOUNT' | translate}}</th></tr> 
+                <tr>
+                  <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+                  <th>{{'INVOICE.AMOUNT' | translate}}</th>
+                </tr> 
               </thead>
               <tbody class="items"> 
-                <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>{{'INVOICE.INVOICE_ID' | translate}} {{invoice.invoice_id}}</b></td></tr>
+                <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>{{'INVOICE.INVOICE_ID' | translate}} {{ project.abbr + invoice.reference }}</b></td></tr>
                 <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td><span ng-bind-html="item.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr> 
               </tbody>
               <tbody class="totals">
@@ -286,7 +290,6 @@
             </table>
           </div>
         </div>
-      </div> <!-- end Cash receipt template  -->
     </div>
 </div>
 </div>
