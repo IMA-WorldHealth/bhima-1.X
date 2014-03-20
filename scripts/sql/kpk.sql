@@ -648,8 +648,8 @@ create table `inventory_group` (
 --
 drop table if exists `inventory`;
 create table `inventory` (
-  `uuid`            char(36) not null,
   `enterprise_id`   smallint unsigned not null,
+  `uuid`            char(36) not null,
   `code`            varchar(30) not null,
   `inventory_code`  varchar(30),
   `text`            text,
