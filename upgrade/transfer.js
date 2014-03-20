@@ -1,4 +1,7 @@
 #!/usr/local/bin/node
+
+// TODO extract upgrade method one more level, pass values into upgrade, manipulate and return 
+//      (table name should be passed down through)
 var fs = require('fs'), q = require('q');
 var currentFilePath = './current.sql';
 
@@ -21,90 +24,193 @@ function parseInserts(fileData) {
   // console.log(Object.keys(tableRelation));
   
   try { 
-    upgradeCountry(tableRelation['country']);
-    upgradeProvince(tableRelation['province']); 
+    // upgradeCountry(tableRelation['country']);
+    // upgradeProvince(tableRelation['province']); 
+    simpleUpgrade('country', tableRelation['country'], upgradeCountry);
+    simpleUpgrade('province', tableRelation['province'], upgradeProvince);
+    simpleUpgrade('sector', tableRelation['sector'], upgradeSector);
+    simpleUpgrade('village', tableRelation['village'], upgradeVillage);
+    simpleUpgrade('price_list', tableRelation['price_list'], upgradePriceList);
+    simpleUpgrade('price_list_item', tableRelation['price_list_item'], upgradePriceListItem);
+    simpleUpgrade('debitor_group', tableRelation['debitor_group'], upgradeDebtorGroup);
+    simpleUpgrade('debitor', tableRelation['debitor'], upgradeDebtor);
+    simpleUpgrade('patient', tableRelation['patient'], upgradePatient);
   } catch(e) { 
     console.log(e);
   }
 }
 
 function simpleUpgrade(tableName, tableLine, upgradeMethod) {
-  var splitLine = tableLine.split("),"), tableStore = [];
+  var upgradedStore, splitLine = tableLine.split("),");
   var deferred = q.defer();
 
   idRelation[tableName] = {};
-  splitLine.forEach(upgradeMethod);
-
-
+  upgradedStore = splitLine.map(upgradeMethod);
+  
+  // Output 
+  console.log("INSERT INTO `" + tableName + "` VALUES " + upgradedStore.join(',\n'));
 }
 
-function upgradeCountry(countryLine) { 
-  var splitCountry = countryLine.split("),"), storeCountry = [];
-  var deferred = q.defer();
-  idRelation['country'] = {};
+function upgradeCountry(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
 
-  splitCountry.forEach(function (country, index) { 
-    var stripBrackets = country.substr(1, country.length-1).replace(');', ''); 
-    
-    // TODO Massive hack - use regex
-    if (!index) stripBrackets = stripBrackets.substr(stripBrackets.indexOf('(')+1, stripBrackets.length);
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'country';
+  
+  updateId = uuid();
+  idRelation[tableName][currentId] = updateId;
+  recordValues[0] = updateId;
 
-    var splitInsert = stripBrackets.split(',');
-
-    var updateId, currentId = splitInsert[0];
-    
-    updateId = uuid();
-    
-    idRelation['country'][currentId] = updateId;
-    splitInsert[0] = updateId;
-
-    // console.log(splitInsert);
-    
-    storeCountry.push('(' + splitInsert.join(',') + ')');
-
-    // console.log('s', splitInsert); 
-    // console.log('countryLine', splitInsert.join(','));
-  });
-
-  console.log("INSERT INTO", "`country`", "VALUES", storeCountry.join(',\n'));
-  deferred.resolve();
-  // console.log(storeCountry);
-  return deferred.promise;
+  return '(' + recordValues.join(',') + ')';
 }
 
-function upgradeProvince(provinceLine) { 
-  var splitProvince = provinceLine.split("),"), storeProvince = [];
-  var deferred = q.defer();
-  idRelation['province'] = {};
+function upgradeProvince(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
 
-  splitProvince.forEach(function (province, index) { 
-    var stripBrackets = province.substr(1, province.length-1).replace(');', ''); 
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'province';
+  var referenceTable = 'country';
+  
+  updateId = uuid();
+  idRelation[tableName][currentId] = updateId;
+  recordValues[0] = updateId;
+  recordValues[2] = idRelation[referenceTable][recordValues[2]];
+
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradeSector(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'sector';
+  var referenceTable = 'province';
+  
+  updateId = uuid();
+  idRelation[tableName][currentId] = updateId;
+  recordValues[0] = updateId;
+  recordValues[2] = idRelation[referenceTable][recordValues[2]];
+
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradeVillage(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'village';
+  var referenceTable = 'sector';
+  
+  updateId = uuid();
+  idRelation[tableName][currentId] = updateId;
+  recordValues[0] = updateId;
+  recordValues[2] = idRelation[referenceTable][recordValues[2]];
+
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradePriceList(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[1];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'price_list';
+
+  updateId = uuid();
+  idRelation[tableName][currentId] = updateId;
+  recordValues[1] = updateId;
+
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradePriceListItem(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'price_list_item';
+  var referenceTable = 'price_list';
     
-    // TODO Massive hack - use regex
-    if (!index) stripBrackets = stripBrackets.substr(stripBrackets.indexOf('(')+1, stripBrackets.length);
+  updateId = uuid();
+  // idRelation[tableName][currentId] = updateId;
+  recordValues[0] = updateId;
 
-    var splitInsert = stripBrackets.split(',');
+  recordValues[6] = idRelation[referenceTable][recordValues[6]];
 
-    var updateId, currentId = splitInsert[0];
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradeDebtorGroup(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[1];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'debitor_group';
+  var locationReferenceTable = 'village';
+  var priceListReferenceTable = 'price_list';
+  
+  updateId = uuid();
+  idRelation[tableName][currentId] = updateId;
+  recordValues[1] = updateId;
+  recordValues[4] = idRelation[locationReferenceTable][recordValues[4]];
+  
+  // FIXME Hack
+  if (recordValues[13]!=="NULL") recordValues[13] = idRelation[priceListReferenceTable][recordValues[13]];
+
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradeDebtor(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'debitor';
+  var referenceTable = 'debitor_group';
     
-    updateId = uuid();
+  updateId = uuid();
+  
+  idRelation[tableName][currentId] = updateId;
+  
+  recordValues[0] = updateId;
+  recordValues[1] = idRelation[referenceTable][recordValues[1]];
+
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradePatient(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'patient';
+  var referenceTable = 'debitor', locationTable = 'village';
     
-    idRelation['province'][currentId] = updateId;
-    splitInsert[0] = updateId;
-    splitInsert[2] = idRelation['country'][splitInsert[2]];
+  updateId = uuid();
+  
+  idRelation[tableName][currentId] = updateId;
+  
+  recordValues[0] = updateId;
+  
+  // 1 references project 1 (HBB), currentId is now the patient reference
+  recordValues.splice(1, 0, '1', currentId);
+  
+  recordValues[3] = idRelation[referenceTable][recordValues[3]];
+  recordValues[23] = idRelation[locationTable][recordValues[23]];
+  recordValues[24] =  idRelation[locationTable][recordValues[24]];
 
-    // console.log(splitInsert);
-    
-    storeProvince.push('(' + splitInsert.join(',') + ')');
+  return '(' + recordValues.join(',') + ')';
+}
 
-    // console.log('s', splitInsert); 
-    // console.log('countryLine', splitInsert.join(','));
-  });
-
-  console.log("INSERT INTO", "`province`", "VALUES", storeProvince.join(',\n'));
-  deferred.resolve();
-  // console.log(storeCountry);
-  return deferred.promise;
+// Returns individual values from an SQL insert
+function parseValues(record, index) { 
+  var stripBrackets = record.substr(1, record.length-1).replace(');', '');
+  if (!index) stripBrackets = stripBrackets.substr(stripBrackets.indexOf('(')+1, stripBrackets.length);
+  return stripBrackets.split(','); 
 }
 
 function uuid() {
