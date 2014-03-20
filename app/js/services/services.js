@@ -840,7 +840,6 @@
       };
 
       //FIX ME : since i wrote this method this throw an error but the app still work
-
       self.myExchange = function myExchange (value, valueCurrency_id){
         if(!(value && valueCurrency_id)) throw new Error('Invalid data');
         return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
@@ -848,7 +847,9 @@
 
       appstate.register('exchange_rate', function (globalRates) {
         self.map = {};
+        self.dailyrate = [];
         globalRates.forEach(function (r) {
+          //self.dailyrate.push({date : r.date, foreign_currency_id : r.foreign_currency_id, rate : r.rate});
           self.map[r.foreign_currency_id] = precision.round(r.rate);
         });
         //self.myExchange = myExchange;

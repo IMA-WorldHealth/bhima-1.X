@@ -874,7 +874,7 @@
 
   "ALLTRANSACTIONS" : {
     "TITLE" : "ETAT DES TOUTES LES TRANSACTIONS",
-    "SEARCH" : "Rechercher",
+    "SEARCH" : "valider",
     "DAY" : "Aujoird'hui",
     "WEEK" : "Cette Semaine",
     "MONTH" : "Ce mois",

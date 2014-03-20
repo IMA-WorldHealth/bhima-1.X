@@ -11,12 +11,33 @@ angular.module('kpk.controllers')
 
     //variables inits
 
-    var dependencies = {};
+    var dependencies = {}, map = {};
+    $scope.somDebit = 0, $scope.somCredit = 0;
 
     dependencies.accounts = {
       required : true,
       query : {
         tables : {'account' : {columns : ["id", "account_number", "account_txt", "account_type_id"]}}
+      }
+    }
+
+    dependencies.exchange_rate = {
+      query : {
+        tables : {
+          'exchange_rate' : {
+            columns : ['id', 'foreign_currency_id', 'rate', 'date']
+          }
+        }
+      }
+    }
+
+    dependencies.currencies = {
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        }
       }
     }
 
@@ -37,6 +58,11 @@ angular.module('kpk.controllers')
       $scope.accounts.data.forEach(function (account) {
         account.account_number = String(account.account_number);
       });
+      $scope.model.c = $scope.enterprise.currency_id;
+      console.log('enterprise id', $scope.model.c)
+      $scope.exchange_rate.data.forEach(function (item){
+        map[util.convertToMysqlDate(item.date)] = {c_id : item.foreign_currency_id, rate : item.rate};
+      });
     }
 
     function handlError (err){
@@ -49,6 +75,10 @@ angular.module('kpk.controllers')
      if (!$scope.model.account_id) {
         all();
      }
+    }
+
+    $scope.affiche = function(){
+      console.log($scope.model.c);
     }
 
     function selective (){
@@ -69,9 +99,17 @@ angular.module('kpk.controllers')
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
           if(res.length > 0){
-            $scope.records = res;
-          }else{
+            if(res.length > 0){
+              res.map(function (item){
+                item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+                item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+              });
+              $scope.records = res;
+              getTotal(res);
+            }else{
+            getTotal(res);
             $scope.records = [];
+            }
           }
       })
     }
@@ -89,18 +127,27 @@ angular.module('kpk.controllers')
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
           if(res.length > 0){
+            res.map(function (item){
+              item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+              item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+            });
             $scope.records = res;
+            getTotal(res);
           }else{
             $scope.records = [];
+            getTotal(res);
           }
         })
     }
 
     function dateWatcher () {
-      // $scope.state.from = $filter('date')($scope.dates.from, 'yyyy-MM-dd');
-      // $scope.state.to = $filter('date')($scope.dates.to, 'yyyy-MM-dd');
       $scope.state.from = util.convertToMysqlDate($scope.dates.from);
       $scope.state.to = util.convertToMysqlDate($scope.dates.to);
+    }
+
+    function getValue (obj, val, cVal){
+      if(cVal === $scope.model.c) return val;
+      return (obj.c_id === cVal)? 1 : (obj.rate)*val; //not good because it supporte only two currency, I will fix it very soon
     }
 
     function search (){
@@ -120,18 +167,38 @@ angular.module('kpk.controllers')
          $scope.model.account_number = $scope.accounts.data.filter(function(value){
           return value.id == $scope.model.account_id;
         })[0].account_number;
-      }  
+      }
 
       connect.MyBasicGet(
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
           if(res.length > 0){
+            res.map(function (item){
+              item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+              item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+            });
             $scope.records = res;
+            getTotal(res);
           }else{
+            getTotal(res);
             $scope.records = [];
           }
       })
+    }
 
+    function getTotal(items){
+      $scope.somCredit=0; $scope.somDebit = 0;
+      if(items.length>0){
+         items.forEach(function (item){
+        $scope.somDebit+=item.debit;
+        $scope.somCredit+=item.credit;
+      });
+
+      }else{
+        $scope.somCredit = 0;
+        $scope.somDebit = 0;
+
+      }
 
     }
 
@@ -145,69 +212,15 @@ angular.module('kpk.controllers')
       dependencies.accounts.query.where = ['account.enterprise_id='+enterprise.id];
       validate.process(dependencies).then(init, handlError);
     });
-    
+
     $scope.$watch('dates', dateWatcher, true);
-   // $scope.$watch('state', stateWatcher, true);
-    $scope.$watch('model.account_id', fill);   
+    $scope.$watch('model.account_id', fill);
+    $scope.$watch('model.c', fill);
 
 
     //expositions
 
     $scope.formatAccount = formatAccount;
     $scope.search = search;
-
-
-
-    // $scope.state = {};
-    // $scope.dates = {};
-
-
-
-    // appstate.register('enterprise', function (enterprise) {
-    //   $scope.enterprise = enterprise;
-    //   $scope.dates.dateFrom = new Date();
-    //   $scope.dates.dateTo = new Date();
-    //   $scope.day();
-    // });
-
-    // $scope.day = function day () {
-    //   $scope.dates.dateFrom = new Date();
-    //   $scope.dates.dateTo = new Date();
-    //   $scope.search();
-    // };
-
-    // $scope.week = function week () {
-    //   $scope.dates.dateFrom = new Date();
-    //   $scope.dates.dateTo = new Date();
-    //   $scope.dates.dateFrom.setDate($scope.dates.dateTo.getDate() - 7);
-    //   $scope.search();
-    // };
-
-    // $scope.month = function month () {
-    //   $scope.dates.dateFrom = new Date();
-    //   $scope.dates.dateTo = new Date();
-    //   $scope.dates.dateFrom.setMonth($scope.dates.dateTo.getMonth() - 1);
-    //   $scope.search();
-    // };
-
-    // $scope.search = function search () {
-    //   // must add a day to pick it up from sql
-    //   var dateConvert = $scope.dates.dateTo;
-    //   dateConvert.setDate(dateConvert.getDate() + 1);
-    //   dateWatcher();
-    //   connect.fetch([
-    //     '/rt/p',
-    //     $scope.enterprise.id,
-    //     $scope.state.dateFrom,
-    //     $scope.state.dateTo
-    //   ].join('/'))
-    //   .success(function (model) {
-    //     $scope.patients = model;
-    //   })
-    //   .error(function (err) {
-    //     messenger.danger('An error occured:' + JSON.stringify(err));
-    //   });
-    // };
-
   }
 ]);
