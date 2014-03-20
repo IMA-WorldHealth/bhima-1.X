@@ -37,7 +37,7 @@ angular.module('kpk.controllers')
         }
       }
     };
- 
+
     // TODO currently fetches all accounts, should be selected by project
     dependencies.cashbox_accounts = {
       query : {
@@ -70,20 +70,19 @@ angular.module('kpk.controllers')
       }
     };
 
-
     cache.fetch('cashbox').then(loadDefaultCashBox);
     cache.fetch('currency').then(loadDefaultCurrency);
-  
+
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.cashboxes.query.where =
         ['cash_box.project_id=' + project.id];
-     
+
       validate.process(dependencies, ['cashboxes', 'cash'])
       .then(setUpModels, handleErrors);
     });
- 
-  
+
+
     function loadDefaultCurrency(currency) {
       if(!currency) return;
       defaultCurrency = currency;
@@ -105,17 +104,15 @@ angular.module('kpk.controllers')
       for (var k in models) {
         $scope[k] = models[k];
       }
- 
+
       if (!$scope.cashbox) {
         var sessionDefault =
           $scope.cashboxes.data[0];
-      
+
         if(defaultCashBox) {
           var verifyBox = $scope.cashboxes.get(defaultCashBox.id);
-          if(verifyBox) sessionDefault = verifyBox;
+          if(verifyBox) { sessionDefault = verifyBox; }
         }
-
-        console.log('[sessionDefault]', sessionDefault);
 
         $scope.setCashBox(sessionDefault);
       }
@@ -129,30 +126,31 @@ angular.module('kpk.controllers')
       $scope.cashbox = box;
       cache.put('cashbox', box);
 
-      dependencies.cashbox_accounts.query.where = ['cash_box_account.cash_box_id=' + $scope.cashbox.id];
+      dependencies.cashbox_accounts.query.where =
+        ['cash_box_account.cash_box_id=' + $scope.cashbox.id];
       validate.refresh(dependencies, ['cashbox_accounts'])
       .then(refreshCurrency);
     };
 
     function refreshCurrency(model) {
       var sessionDefault;
-      
+
       for (var k in model) {
         $scope[k] = model[k];
       }
-    
+
       sessionDefault =
         $scope.cashbox_accounts.get($scope.project.currency_id) ||
         $scope.cashbox_accounts.data[0];
-    
+
       if(defaultCurrency) {
         var verifyCurrency = $scope.cashbox_accounts.get(defaultCurrency.currency_id);
         if(verifyCurrency) sessionDefault = verifyCurrency;
       }
 
       // Everything sucks
-      if(!sessionDefault) return messenger.danger('Cannot find accounts for cash box ' + $scope.cashbox.id);
-    
+      if(!sessionDefault) { return messenger.danger('Cannot find accounts for cash box ' + $scope.cashbox.id); }
+
       $scope.setCurrency(sessionDefault);
     }
 
@@ -167,7 +165,6 @@ angular.module('kpk.controllers')
       $scope.patient = patient;
       connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
       .success(function (data) {
-        console.log('[loaded] ', data);
         $scope.ledger = data.filter(function (row) {
           return row.balance > 0;
         });
@@ -217,7 +214,7 @@ angular.module('kpk.controllers')
         var diff = precision.round(proposed - invoice.locale);
         invoice.allocated = diff >= 0 ? invoice.locale : proposed;
         proposed = diff >= 0 ? diff : 0;
-   
+
         invoice.remaining = precision.compare(invoice.locale, invoice.allocated);
       });
 
@@ -287,28 +284,30 @@ angular.module('kpk.controllers')
 
         creditAccount = data.creditAccount;
 
+        var account = $scope.cashbox_accounts.get($scope.currency.currency_id);
+
         payment = data.invoice;
         payment.uuid = id;
         payment.type = 'E';
         payment.project_id = $scope.project.id;
-        payment.debit_account = $scope.cashbox.cash_account;
+        payment.debit_account = account.cash_account;
         payment.credit_account = $scope.patient.account_id;
-        payment.currency_id = $scope.cashbox.currency_id;
+        payment.currency_id = $scope.currency.currency_id;
         payment.cost = precision.round($scope.data.payment);
         payment.deb_cred_uuid = $scope.patient.debitor_uuid;
         payment.deb_cred_type = 'D';
 
         // FIXME : All of these need to be re-worked
         payment.user_id = 1;
-        payment.cashbox_id = 1;
+        payment.cashbox_id = $scope.cashbox.id;
 
         return connect.basicPut('cash', [payment]);
       })
       .then(function () {
         // pay each of the cash items
-    
+
         records = [];
-    
+
         $scope.queue.forEach(function (record) {
           if (record.allocated < 0) { return; }
           records.push({
@@ -442,7 +441,7 @@ angular.module('kpk.controllers')
     function digestExchangeRate () {
       // exchange everything queued to be paid, as well as those in
       // the list.
-      //
+
       $scope.queue.forEach(function (invoice) {
         invoice.locale = exchange(invoice.balance, $scope.currency.currency_id);
       });
@@ -450,6 +449,7 @@ angular.module('kpk.controllers')
       ($scope.ledger || []).forEach(function (invoice) {
         invoice.locale = exchange(invoice.balance, $scope.currency.currency_id);
       });
+
 
       // finally digest the invoice
       $scope.digestInvoice();
@@ -460,7 +460,7 @@ angular.module('kpk.controllers')
     // or loses items, the invoice balances are
     // exchanged into the appropriate locale currency.
     $scope.$watch('ledger', digestExchangeRate, true);
-    $scope.$watch('cashbox', digestExchangeRate, true);
+    $scope.$watch('currency', digestExchangeRate);
     $scope.$watch('queue', $scope.digestTotal, true);
     $scope.$watch('data.payment', $scope.digestInvoice);
 

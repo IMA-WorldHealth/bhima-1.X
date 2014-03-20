@@ -52,17 +52,6 @@ angular.module('kpk.controllers')
         }
       }
     };
-
-    // dependencies.types = {
-    //   required : true,
-    //   query : {
-    //     tables : {
-    //       'debitor_group_type' : {
-    //         columns : ['id', 'type']
-    //       }
-    //     }
-    //   }
-    // };
  
     dependencies.location = {
       query : '/location/'

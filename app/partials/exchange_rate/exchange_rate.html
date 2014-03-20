@@ -1,5 +1,5 @@
 <header>
-  <span>{{ "EXCHANGE.TITLE" | translate }}</span>
+  {{ "EXCHANGE.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
@@ -8,7 +8,6 @@
 </section>
 
 <div class="content">
-
   <div class="row">
     <div class="col-xs-6">
       <h3 style="margin-top:inherit;">{{ EXCHANGE.PREV | translate }}</h3>
@@ -22,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="rate in rates.data | orderBy:'date' | limitTo: 12">
+          <tr ng-repeat="rate in rates.data | orderBy:'-date' | limitTo: 12">
             <td>{{ rate.date | date }}</td>
             <td>{{ currency.get(rate.enterprise_currency_id).name }}</td>
             <td>{{ currency.get(rate.foreign_currency_id).name }}</td>

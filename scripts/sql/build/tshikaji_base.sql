@@ -647,7 +647,8 @@ INSERT INTO `project` (`id`, `name`, `abbr`, `enterprise_id`) values
   (2, 'IMCK PAX Clinic', 'PAX', 200);
 
 INSERT INTO `project_permission` (`user_id`, `project_id`) values
-  (1, 1);
+  (1, 1),
+  (1, 2);
 
 -- Configure base chart of accounts
 INSERT INTO `account_type` values
