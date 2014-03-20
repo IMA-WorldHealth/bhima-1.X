@@ -2,86 +2,86 @@
 
 (function (angular) {
   'use strict';
- 
-   angular.module('kpk.directives', [])
- 
-     .directive('ngFocus', ['$parse', function ($parse) {
-       return function(scope, element, attr) {
-         var fn = $parse(attr.ngFocus);
-         element.bind('focus', function (event) {
-           scope.$apply(function () {
-             fn(scope, {$event:event});
-           });
-         });
-       };
-     }])
-   
-     .directive('ngBlur', ['$parse', function ($parse) {
-       return function(scope, element, attr) {
-         var fn = $parse(attr.ngBlur);
-         element.bind('blur', function (event) {
-           scope.$apply(function () {
-             fn(scope, {$event:event});
-           });
-         });
-       };
-     }])
- 
-     .directive('selectSearch', ['$compile', function($compile) {
-       return {
-         link: function(scope, element, attrs) {
-        
-         }
-       };
-     }])
- 
-     .directive('reportGroupCompile', ['$compile', function($compile) {
- 
-       //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation
-       //replace with functions that build array templates and join()
-       return {
-         restrict: 'A',
-         link: function(scope, element, attrs) {
-           var built = false, template = [];
-           var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;
-           var accountRowTemplate = "<tr><td style='text-align: right;'>%d</td><td %s>%s</td>%s</tr>";
-           var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>";
- 
-           if(groupModel && tableDefinition) {
-             scope.$watch(groupModel, function(nval, oval) {
-               if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
-             }, true);
-           }
+
+  angular.module('kpk.directives', [])
+
+    .directive('ngFocus', ['$parse', function ($parse) {
+      return function(scope, element, attr) {
+        var fn = $parse(attr.ngFocus);
+        element.bind('focus', function (event) {
+          scope.$apply(function () {
+            fn(scope, {$event:event});
+          });
+        });
+      };
+    }])
+
+    .directive('ngBlur', ['$parse', function ($parse) {
+      return function(scope, element, attr) {
+        var fn = $parse(attr.ngBlur);
+        element.bind('blur', function (event) {
+          scope.$apply(function () {
+            fn(scope, {$event:event});
+          });
+        });
+      };
+    }])
+
+    .directive('selectSearch', ['$compile', function($compile) {
+      return {
+        link: function(scope, element, attrs) {
+
+        }
+      };
+    }])
+
+    .directive('reportGroupCompile', ['$compile', function($compile) {
+
+      //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation
+      //replace with functions that build array templates and join()
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          var built = false, template = [];
+          var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;
+          var accountRowTemplate = "<tr><td style='text-align: right;'>%d</td><td %s>%s</td>%s</tr>";
+          var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>";
+
+          if(groupModel && tableDefinition) {
+            scope.$watch(groupModel, function(nval, oval) {
+              if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
+            }, true);
+          }
 
           function buildTable(data) {
             built = true;
             parseGroup(data);
-         
+ 
             //TODO append to element vs replace (attach to tbody)
             element.replaceWith($compile(template.join(''))(scope));
           }
-       
+ 
           function parseGroup(accountGroup) {
             accountGroup.forEach(function(account) {
               var detail = account.detail, style = buildAccountStyle(detail);
-           
+ 
               //Row for group detail
               template.push(printf(accountRowTemplate, detail.account_number, style, detail.account_txt, buildAccountColumns(detail, false)));
               if(!account.accounts) return;
-           
+ 
               //Group children
               parseGroup(account.accounts);
-
+ 
               //Total row
               template.push(printf(accountTotalTemplate, printf('style="padding-left: %dpx; font-weight: bold;"', detail.depth * 30), "Total " + detail.account_txt, buildAccountColumns(detail, true)));
             });
           }
-
+ 
           function buildAccountStyle(detail) {
-        
+ 
             //FIXME hardcoded account type definition
             var styleTemplate = "", colspanTemplate = "", classTemplate = "", title = (detail.account_type_id === 3);
-           
+ 
             styleTemplate = printf('style="padding-left: %dpx;"', detail.depth * 30);
             if(title) {
               colspanTemplate = printf('colspan="%d"', scope[tableDefinition].columns.length + 1);
@@ -89,17 +89,17 @@
             }
             return printf('%s %s %s', styleTemplate, colspanTemplate, classTemplate);
           }
-
+ 
           function buildAccountColumns(detail, isTotal) {
             if(detail.account_type_id === 3 && !isTotal) return "";
-
+ 
             var columnTemplate = [], data = isTotal ? detail.total : detail;
             scope[tableDefinition].columns.forEach(function(column) {
               columnTemplate.push(printf('<td %s>{{%d | currency}}</td>', (isTotal ? 'style="font-weight: bold;"' : ''), data[column.key] || 0));
             });
             return columnTemplate.join('');
           }
-       
+ 
           //Naive templating function
           function printf(template) {
             var typeIndex = [], tempTemplate = template, shift = 0;
@@ -109,12 +109,12 @@
               '%d' : '[object Number]',
               '%l' : '[object Array]'
             };
-         
+ 
             //read arguments - not sure how much 'use strict' aproves of this
             for(var i = 1; i < arguments.length; i += 1) {
               replaceArguments.push(arguments[i]);
             }
-       
+ 
             Object.keys(types).forEach(function(matchKey) {
               var index = tempTemplate.indexOf(matchKey);
               while(index >= 0) {
@@ -123,11 +123,11 @@
                 index = tempTemplate.indexOf(matchKey);
               }
             });
-         
+ 
             typeIndex.sort(function(a, b) { return a.index > b.index; });
             typeIndex.forEach(function(replaceObj, index) {
               var targetArg = replaceArguments[index], replaceIndex = replaceObj.index + shift, matchKey = typeIndex[replaceIndex];
-              if(Object.prototype.toString.call(targetArg) != types[replaceObj.matchKey]) throw new Error("Argument " + targetArg + " is not " + types[replaceObj.matchKey]);
+              if(Object.prototype.toString.call(targetArg) !== types[replaceObj.matchKey]) throw new Error("Argument " + targetArg + " is not " + types[replaceObj.matchKey]);
               template = template.replace(replaceObj.matchKey, targetArg);
               shift += targetArg.length;
             });
@@ -151,7 +151,7 @@
             '<tr ng-if="group.accounts" data-report-group data-group-model="group.accounts"></tr>',
             '<tr ng-if="group.detail.account_type_id == 3" data-ng-repeat-end><td></td><td ng-style="{\'padding-left\': group.detail.depth * 30 + \'px\'}"><em>Total {{group.detail.account_txt}}</em></td><td ng-repeat="column in tableDefinition.columns"><b>{{group.detail.total[column.key] | currency}}</b></td></tr>'
           ];
-       
+
           if(attrs.groupModel){
             element.replaceWith($compile(template.join(''))(scope));
           }
@@ -159,10 +159,10 @@
       };
     }])
 
-    .directive('treeModel', ['$compile', 'appcache', function($compile, appcache) {
+    .directive('treeModel', ['$compile', 'appcache', function($compile, Appcache) {
       var MODULE_NAMESPACE = 'tree';
-      var cache = new appcache(MODULE_NAMESPACE);
-   
+      var cache = new Appcache(MODULE_NAMESPACE);
+
       return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -181,7 +181,7 @@
                 '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
               '</li>' +
             '</ul>';
-       
+
           //Collapse by default
           if (scope.node) scope.node.collapsed = true;
 
@@ -190,20 +190,20 @@
             if (attrs.angularTreeview) {
               scope[treeId] = scope[treeId] || {};
               scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
-  
+
                 // Select nodes without children
                 if(!selectedNode.has_children) return scope[treeId].selectNodeLabel(selectedNode);
-                
+  
                 selectedNode.collapsed = !selectedNode.collapsed;
-             
+
                 // Update cache
                 cache.put(selectedNode.unit_id, {collapsed: selectedNode.collapsed});
               };
               scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
-            
+
                 // Open nodes with children
                 if (selectedNode.has_children) return scope[treeId].selectNodeHead(selectedNode);
-              
+
                 // Close previous node
                 if (scope[treeId].currentNode && scope[treeId].currentNode.selected) {
                   scope[treeId].currentNode.selected = undefined;
@@ -220,16 +220,16 @@
       };
     }])
 
-    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', 'appcache', function($compile, validate, messenger, connect, appcache) {
+    .directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', 'appcache', function($compile, validate, messenger, connect, Appcache) {
       return {
         restrict: 'A',
         link : function(scope, element, attrs) {
           var dependencies = {}, debtorList = scope.debtorList = [];
           var searchCallback = scope[attrs.onSearchComplete];
-          var cache = new appcache('patientSearchDirective');
+          var cache = new Appcache('patientSearchDirective');
 
           if(!searchCallback) { throw new Error('Patient Search directive must implement data-on-search-complete'); }
-      
+
           dependencies.debtor = {
             required : true,
             query : {
@@ -247,11 +247,11 @@
             }
           };
 
-          dependencies.project = { 
-            query : { 
+          dependencies.project = {
+            query : {
               identifier : 'abbr',
-              tables : { 
-                project : { columns : ["abbr", "id"] } 
+              tables : {
+                project : { columns : ["abbr", "id"] }
               }
             }
           };
@@ -260,7 +260,7 @@
             state: 'id',
             submitSuccess: false
           };
-       
+
           var template =
           '<div id="findPatient" class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+ '  <div class="panel-heading">'+
           '    <div ng-switch on="findPatient.submitSuccess">'+
@@ -319,7 +319,7 @@
             'name' : searchName,
             'id' : searchId
           };
-         
+
           //TODO Downloads all patients for now - this should be swapped for an asynchronous search
           validate.process(dependencies).then(findPatient);
           cache.fetch('cacheState').then(loadDefaultState);
@@ -340,10 +340,10 @@
 
           function searchId(value) {
             var id = parseId(value), project;
-            
+
             if(!id) return messenger.danger('Cannot parse patient ID');
             project = scope.findPatient.model.project.get(id.projectCode);
-            
+
             if(!project) return messenger.danger('Cannot find project \'' + id.projectCode + '\'');
 
             dependencies.debtor.query.where = [
@@ -353,22 +353,22 @@
             ];
             validate.refresh(dependencies, ['debtor']).then(handleIdRequest, handleIdError);
           }
-          
+
           // TODO should this be temporary?
-          function parseId(idString) { 
-            var codeLength = 3, namespacedId = {}; 
+          function parseId(idString) {
+            var codeLength = 3, namespacedId = {};
 
             // Current format VarChar(3):Int
             namespacedId.projectCode = idString.substr(0, codeLength);
             namespacedId.reference = idString.substr(codeLength);
-            
+
             console.log(namespacedId);
             if(!namespacedId.projectCode || !namespacedId.reference) return null;
             if(isNaN(Number(namespacedId.reference))) return null;
 
             return namespacedId;
           }
-      
+
           function handleIdRequest(model) {
             var debtor = scope.findPatient.debtor = extractMetaData(model.debtor.data)[0];
             console.log('downloaded', model);
@@ -390,13 +390,13 @@
               }
             }
           }
-       
+
           function submitDebtor(value) {
             stateMap[scope.findPatient.state](value);
           }
-       
+
           function extractMetaData(patientData) {
-         
+
             patientData.forEach(function(patient) {
               var currentDate = new Date();
               var patientDate = new Date(patient.dob);
@@ -407,14 +407,14 @@
               //Age - naive quick method, not a priority to calculate the difference between two dates
               patient.age = currentDate.getFullYear() - patientDate.getFullYear() - Math.round(currentDate.getMonth() / 12 + patientDate.getMonth() / 12) ;
 
-              //Human readable ID 
+              //Human readable ID
               // FIXME This should be a select CONCAT() from MySQL
               patient.hr_id = patient.abbr.concat(patient.reference);
               console.log(patient.hr_id);
             });
             return patientData;
           }
-       
+
           function validateNameSearch(value) {
             if(!value) return true;
 
@@ -430,14 +430,14 @@
             scope.findPatient.submitSuccess = false;
             scope.findPatient.debtor = "";
           }
-          
-          function updateState(newState) { 
-            scope.findPatient.state = newState; 
+
+          function updateState(newState) {
+            scope.findPatient.state = newState;
             cache.put('cacheState', {state: newState});
           }
-          
+
           // FIXME Configure component on this data being available, avoid glitching interface
-          function loadDefaultState(defaultState) { 
+          function loadDefaultState(defaultState) {
             if(defaultState) return scope.findPatient.state = defaultState.state;
           }
 
@@ -552,7 +552,7 @@
             // when the 'compile' expression changes
             // assign it into the current DOM
             element.html(value);
-      
+
             // compile the new DOM and link it to the current
             // scope.
             // NOTE: we only compile .childNodes so that
