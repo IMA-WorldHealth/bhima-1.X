@@ -18,7 +18,7 @@ angular.module('kpk.controllers')
     // confusing halt when a user tries to load permissions.
 
     var dependencies = {};
-   
+ 
     dependencies.units = {
       query : {
         tables : {
@@ -150,7 +150,6 @@ angular.module('kpk.controllers')
         where : ['permission.user_id='+user.id]
       })
       .then(function (store) {
-        messenger.success('Loaded data for user ' + user.id);
         $scope.permissions = store;
         setSavedPermissions();
         $scope.action = "permission";
@@ -184,7 +183,7 @@ angular.module('kpk.controllers')
           toRemove.push(savedPermissions.get(unit.id).id);
         }
       });
-  
+
       // TODO / FIXME : This is terrible coding.
       // We need to add batch updates, inserts, and deletes
       // to connect + server.

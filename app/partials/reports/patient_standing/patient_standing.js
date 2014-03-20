@@ -1,11 +1,12 @@
 angular.module('kpk.controllers')
 .controller('reportPatientStanding', [
   '$scope',
+  '$window',
   'validate',
   'appstate',
   'messenger',
   'connect',
-  function ($scope, validate, appstate, messenger, connect) {
+  function ($scope, $window, validate, appstate, messenger, connect) {
     var dependencies = {};
     $scope.img = 'placeholder.gif';
 
@@ -87,6 +88,8 @@ angular.module('kpk.controllers')
       validate.process(dependencies)
       .then(processModels, handleErrors);
     });
+
+    $scope.print = function () { $window.print(); };
 
   }
 ]);
