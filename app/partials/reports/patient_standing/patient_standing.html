@@ -7,6 +7,9 @@
     <input class="form-kapok" ng-model="selection" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
   </div>
   <a class="btn btn-sm btn-primary" href="" ng-click="search()" ng-disabled="!selection">{{ "UTIL.SEARCH" | translate }}</a>
+  <div class="pull-right">
+    <a class="btn btn-sm btn-default" href="" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+  </div>
 </section>
 
 <div class="report">
