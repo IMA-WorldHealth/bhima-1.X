@@ -402,7 +402,8 @@
     "ORIGIN"          : "Origin",
     "PATIENT"         : "Patient",
     "CONFIRM_RENEWAL" : "Confirm Renewal",
-    "BILL_RENEWAL"    : "Bill for Renewal"
+    "BILL_RENEWAL"    : "Bill for Renewal",
+    "SUCCESS_MESSAGE" : "Patient visit successfully renewed"
   },
 
   "SUPPLIER"        : {
