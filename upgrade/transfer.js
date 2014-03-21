@@ -28,6 +28,7 @@ function parseInserts(fileData) {
     console.log(tableRelation['account'] + " \n");
     console.log(tableRelation['user'] + " \n");
     console.log(tableRelation['transaction_type'] + " \n");
+    // console.log(tableRelation['permission'] + " \n");
 
     simpleUpgrade('country', tableRelation['country'], upgradeCountry);
     simpleUpgrade('province', tableRelation['province'], upgradeProvince);
