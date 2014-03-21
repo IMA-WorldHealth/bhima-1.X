@@ -2,6 +2,7 @@
 
 // TODO extract upgrade method one more level, pass values into upgrade, manipulate and return 
 //      (table name should be passed down through)
+// FIXME some inventory items prices are not correctly transferred (probably to do with brackets in text)
 var fs = require('fs'), q = require('q');
 var currentFilePath = './current.sql';
 
@@ -21,11 +22,13 @@ function parseInserts(fileData) {
     tableRelation[line.split('`')[1]] = line;
   });
 
-  // console.log(Object.keys(tableRelation));
-   
   try { 
-    // upgradeCountry(tableRelation['country']);
-    // upgradeProvince(tableRelation['province']); 
+    
+    // Unchanged values, write method to output this
+    console.log(tableRelation['account'] + " \n");
+    console.log(tableRelation['user'] + " \n");
+    console.log(tableRelation['transaction_type'] + " \n");
+
     simpleUpgrade('country', tableRelation['country'], upgradeCountry);
     simpleUpgrade('province', tableRelation['province'], upgradeProvince);
     simpleUpgrade('sector', tableRelation['sector'], upgradeSector);
@@ -46,6 +49,7 @@ function parseInserts(fileData) {
     simpleUpgrade('posting_journal', tableRelation['posting_journal'], upgradePostingJournal);
     simpleUpgrade('patient_visit', tableRelation['patient_visit'], upgradePatientVisit);
     simpleUpgrade('debitor_group_history', tableRelation['debitor_group_history'], upgradeDebtorGroupHistory);
+  
     //debtor group history, patient_visitjj
   } catch(e) { 
     console.log(e);
@@ -58,9 +62,11 @@ function simpleUpgrade(tableName, tableLine, upgradeMethod) {
 
   idRelation[tableName] = {};
   upgradedStore = splitLine.map(upgradeMethod);
-  
+
   // Output 
-  console.log("INSERT INTO `" + tableName + "` VALUES " + upgradedStore.join(',\n'));
+  console.log("LOCK TABLES `" + tableName + "` WRITE;");
+  console.log("INSERT INTO `" + tableName + "` VALUES \n" + upgradedStore.join(',\n') + ";");
+  console.log("UNLOCK TABLES;");
 }
 
 function upgradeCountry(record, index) { 
@@ -69,7 +75,7 @@ function upgradeCountry(record, index) {
 
   // FIXME Temporary hack, this should be passed down through 
   var tableName = 'country';
-  
+
   updateId = uuid();
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
@@ -84,7 +90,7 @@ function upgradeProvince(record, index) {
   // FIXME Temporary hack, this should be passed down through 
   var tableName = 'province';
   var referenceTable = 'country';
-  
+
   updateId = uuid();
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
@@ -100,7 +106,7 @@ function upgradeSector(record, index) {
   // FIXME Temporary hack, this should be passed down through 
   var tableName = 'sector';
   var referenceTable = 'province';
-  
+
   updateId = uuid();
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
@@ -116,7 +122,7 @@ function upgradeVillage(record, index) {
   // FIXME Temporary hack, this should be passed down through 
   var tableName = 'village';
   var referenceTable = 'sector';
-  
+
   updateId = uuid();
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
@@ -277,9 +283,21 @@ function upgradeInventory(record, index) {
   // FIXME Temporary hack, this should be passed down through 
   var tableName = 'inventory';
   var referenceTable = 'inventory_group';
+  var inventoryText = [], finalText;
 
   updateId = uuid();
   
+  // Temporary comma hack
+  if (recordValues.length > 16) { 
+    var diff = recordValues.length - 16;
+    for (var i = 4, l = 4 + diff; i <= l; i++) {
+      inventoryText.push(recordValues[i]);
+    }
+
+    finalText = inventoryText.join(',');
+    recordValues.splice(4, diff + 1, finalText);
+  }
+
   recordValues[1] = updateId;
   idRelation[tableName][currentId] = updateId;
 
@@ -443,11 +461,14 @@ function parseValues(record, index) {
 }
 
 function uuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  var uuid;
+  uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0,
     v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
+
+  return "\'" + uuid + "\'";
 }
 
 function readFile(filePath) { 
@@ -457,6 +478,6 @@ function readFile(filePath) {
     if(readError) throw readError;
     deferred.resolve(readResult);
   });
+
   return deferred.promise;
 }
-
