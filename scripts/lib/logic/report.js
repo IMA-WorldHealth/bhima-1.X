@@ -127,7 +127,7 @@ module.exports = function (db) {
               "account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \"names\""+
               "FROM general_ledger, account, currency, transaction_type, user "+
               "WHERE general_ledger.account_id = account.id AND currency.id = general_ledger.currency_id AND"+
-              " transaction_type.id = general_ledger.origin_id and user.id = general_ledger.user_id AND general_ledger.deb_cred_id = '"+params.id+
+              " transaction_type.id = general_ledger.origin_id and user.id = general_ledger.user_id AND general_ledger.deb_cred_uuid = '"+params.id+
               "' AND general_ledger.deb_cred_type = '"+params.type+"' AND general_ledger.trans_date <= '"+params.dt+"' AND general_ledger.trans_date >= '"+params.df+"'";
 
               db.execute(sql, function(err, ans) {
@@ -150,7 +150,7 @@ module.exports = function (db) {
                   "account, currency, transaction_type, user WHERE general_ledger.account_id = "+
                   "account.id AND currency.id = general_ledger.currency_id AND transaction_type.id = "+
                   " general_ledger.origin_id AND user.id = general_ledger.user_id AND general_ledger.deb_cred_type = '"+params.type+"' AND "+
-                  "general_ledger.deb_cred_id IN ("+tabIds.toString()+") AND general_ledger.trans_date <= '"+params.dt+"' AND general_ledger.trans_date >= '"+params.df+"'";
+                  "general_ledger.deb_cred_uuid IN ("+tabIds.toString()+") AND general_ledger.trans_date <= '"+params.dt+"' AND general_ledger.trans_date >= '"+params.df+"'";
 
         db.execute(sql, function(err, ans) {
           if(err) {
@@ -305,36 +305,45 @@ module.exports = function (db) {
   function patientStanding(params) {
     params = querystring.parse(params);
     var id = sanitize.escape(params.id),
+        patient = {},
         defer = q.defer(),
         sql =
-      "SELECT trans_id FROM " +
-        "(SELECT trans_id FROM posting_journal WHERE deb_cred_id = " + id +
-          " AND deb_cred_type = 'D' " +
+        "SELECT uuid, trans_id, trans_date, sum(credit_equiv) as credit, sum(debit_equiv) as debit, description, inv_po_id " +
+        "FROM (" +
+          "SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
+          "FROM posting_journal WHERE deb_cred_uuid=" + id + " AND deb_cred_type='D' " +
         "UNION " +
-        "SELECT trans_id FROM general_ledger WHERE deb_cred_id = " + id +
-          " AND deb_cred_type = 'D' )c;";
+          "SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
+          "FROM general_ledger WHERE deb_cred_uuid=" + id + " AND deb_cred_type='D') as aggregate " +
+        "GROUP BY `inv_po_id` ORDER BY `trans_date` DESC;";
    
-    db.execute(sql, function (err, rows) {
-      if (err) { return defer.reject(err); }
+    db.exec(sql)
+    .then(function (rows) {
       if (!rows.length) { return defer.resolve([]); }
 
-      var ids = rows
-      .map(function (row) { return row.trans_id; })
-      .join(', ');
+      patient.receipts = rows;
+
+      // last payment date
+      sql =
+        'SELECT trans_date FROM `posting_journal` WHERE `origin_id` = 1 ORDER BY `trans_date` DESC LIMIT 1;';
+
+      return db.exec(sql);
+    })
+    .then(function (rows) {
+      var row = rows.pop();
+      patient.last_payment_date = row.trans_date;
 
       sql =
-        "SELECT id, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
-        "FROM (" +
-          "SELECT id, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
-          "FROM posting_journal WHERE trans_id IN (" + ids + ") " +
-        "UNION " +
-          "SELECT id, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id " +
-          "FROM general_ledger WHERE trans_id IN (" + ids + "))c;";
-
-      db.execute(sql, function (err, rows) {
-        if (err) { return defer.reject(err); }
-        defer.resolve(rows);
-      });
+        'SELECT trans_date FROM `posting_journal` WHERE `origin_id` = 2 ORDER BY `trans_date` DESC LIMIT 1;';
+      return db.exec(sql);
+    })
+    .then(function (rows) {
+      var row = rows.pop();
+      patient.last_purchase_date = row.trans_date;
+      defer.resolve(patient);
+    })
+    .catch(function (err) {
+      defer.reject(err);
     });
 
     return defer.promise;

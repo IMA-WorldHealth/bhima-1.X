@@ -32,14 +32,21 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.location = {
+      query : '/location/'
+    };
+
     appstate.register('enterprise', function (enterprise) {
       $scope.globalEnterprise = enterprise;
+      validate.process(dependencies)
+      .then(initialize);
     });
-   
+ 
     function initialize (models) {
-      model.dependences = models[0];
-      $scope.location = models[1];
-      for (var k in model.dependences) { $scope[k] = model.dependences[k]; }
+      //model.dependences = models[0];
+      //$scope.location = models[1];
+      for (var k in models) { $scope[k] = models[k]; }
+      console.log('models', models);
       $scope.newAccount = {};
     }
 
@@ -47,7 +54,7 @@ angular.module('kpk.controllers')
       messenger.danger('An error occured in fetching requests: ' + JSON.stringify(error));
     }
 
-    function fLocation (l) {
+    $scope.fLocation = function fLocation (l) {
       return [l.village, l.sector, l.province, l.country].join(' -- ');
     }
 
@@ -98,7 +105,7 @@ angular.module('kpk.controllers')
         messenger.danger('Error in saving new enterprise:' + JSON.stringify(err));
       });
     };
-   
+ 
     $scope.resetNew = function () {
       $scope.add = {};
     };
@@ -146,11 +153,9 @@ angular.module('kpk.controllers')
       $scope.newAccount = {};
     };
 
-    $scope.print = function () {
-      $window.print();
-    };
+    $scope.print = function () { $window.print(); };
 
-   
+   /*
     var getLocation = function(){
       var def = $q.defer();
       connect.fetch('/location/')
@@ -160,6 +165,7 @@ angular.module('kpk.controllers')
       return def.promise;
     };
 
+
     function run (){
       $q.all([validate.process(dependencies), getLocation()]).then(initialize);
     }
@@ -167,10 +173,6 @@ angular.module('kpk.controllers')
     //invocation
 
     run();
-
-    //exposition
-
-    $scope.fLocation = fLocation;
-
+    */
   }
 ]);

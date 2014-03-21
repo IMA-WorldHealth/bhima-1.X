@@ -1,5 +1,5 @@
-<header> 
-  <span>{{ "RENEWAL.TITLE" | translate }}</span>
+<header>
+  {{ "RENEWAL.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
@@ -29,41 +29,36 @@
 
       <div ng-show="sessionPatient" class="panel-body">
         <div class="row">
-          <div class="col-xs-6">
+          <form>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>{{ "RENEWAL.NAME" | translate }}</label>
+                <p class="form-control-static">{{ sessionPatient.name }}</p>
+              </div>
 
-            <div class="form-group">
-              <label class="control-label">{{ "RENEWAL.NAME" | translate }}</label>
-              <br>
-              {{sessionPatient.name}}
+              <div class="form-group">
+                <label>{{ "RENEWAL.AGE" | translate }}</label>
+                <p class="form-control-static">{{ sessionPatient.age }}</p>
+              </div>
+           
+              <div class="form-group">
+                <label>{{ "RENEWAL.GENDER" | translate }}</label>
+                <p class="form-control-static">{{ sessionPatient.sex }}</p>
+              </div>
             </div>
-
-            <div class="form-group">
-              <label class="control-label">{{ "RENEWAL.AGE" | translate }}</label>
-              <br>
-              {{sessionPatient.age}}
+         
+            <div class="col-xs-6">
+              <label>{{ "RENEWAL.ORIGIN" | translate }}</label>
+              <p class="form-control-static">
+                {{ patientLocation.village }} <br />
+                {{ patientLocation.sector }}  <br />
+                {{ patientLocation.province }} <br />
+                {{ patientLocation.country }}
+              </p>
             </div>
-            
-            <div class="form-group">
-              <label class="control-label">{{ "RENEWAL.GENDER" | translate }}</label>
-              <br>
-              {{sessionPatient.sex}}
-            </div>
-          </div>
-          
-          <div class="col-xs-6">
-            <!-- FIXME style hacks --> 
-            <label>{{ "RENEWAL.ORIGIN" | translate }}</label>
-            <br>
-            {{patientLocation.village}}
-            <br>
-            {{patientLocation.sector}}
-            <br>
-            {{patientLocation.province}}
-            <br>
-            {{patientLocation.country}}
-          </div>
+          </form>
+        </div>
       </div>
-
     </div>
 
     <div class="panel-footer" ng-show="sessionPatient">

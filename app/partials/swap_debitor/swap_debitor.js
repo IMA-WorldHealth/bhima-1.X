@@ -3,15 +3,15 @@ angular.module('kpk.controllers')
   '$scope',
   'validate',
   'connect',
-  'appstate',
   'messenger',
-  '$filter',
+  '$translate',
   'uuid',
-  function($scope, validate, connect, appstate, messenger, $filter, uuid) {
+  function($scope, validate, connect, messenger, $translate, uuid) {
 
     var dependencies = {};
     $scope.noEmpty = false;
     $scope.debitor = {};
+
     dependencies.changer = {
       query : 'user_session'
     };
@@ -19,7 +19,11 @@ angular.module('kpk.controllers')
     dependencies.debtorGroup = {
       query : {
         identifier : 'uuid',
-        tables : {'debitor_group' : {'columns' : ['uuid', 'name', 'note']}}
+        tables : {
+          'debitor_group' : {
+            'columns' : ['uuid', 'name', 'note']
+          }
+        }
       }
     };
 
@@ -28,9 +32,8 @@ angular.module('kpk.controllers')
       $scope.locationDebitor = model.location.data[0];
     }
 
-    function initialiseSwaping (selectedDebitor) {
-      if(!selectedDebitor) { return messenger.danger('No debtor selected'); }
-      console.log('selectedDebitor', selectedDebitor);
+    $scope.initialiseSwaping = function initialiseSwaping (selectedDebitor) {
+      if (!selectedDebitor) { return messenger.danger($translate('ERR_MISSING')); }
       connect.req({
         tables : {
           'debitor' : {
@@ -48,35 +51,38 @@ angular.module('kpk.controllers')
         };
         validate.process(dependencies).then(swap);
       });
-    }
+    };
 
-    function swapGroup (selectedDebitor){
-      var debitor = {uuid : selectedDebitor.debitor_uuid, group_uuid : $scope.debitor.debitor_group_uuid};
-      connect.basicPost('debitor', [connect.clean(debitor)], ['uuid'])
-      .then(function(res) {
+    $scope.swapGroup = function swapGroup (selectedDebitor){
+
+      var debitor = {
+        uuid : selectedDebitor.debitor_uuid,
+        group_uuid : $scope.debitor.debitor_group_uuid
+      };
+
+      connect.basicPost('debitor', [debitor], ['uuid'])
+      .then(function (res) {
         var packageHistory = {
           uuid : uuid(),
           debitor_uuid : selectedDebitor.debitor_uuid,
           debitor_group_uuid : $scope.debitor.debitor_group_uuid,
           user_id : 1 // FIXME
         };
-        connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]).then(handleSucces, handleError);
-      }, handleError);
-    }
-
+        return connect.basicPut('debitor_group_history', [packageHistory]);
+      })
+      .then(handleSucces)
+      .catch(handleError);
+    };
 
     function handleSucces(){
-      messenger.success($filter('translate')('SWAPDEBITOR.SUCCES'));
+      messenger.success($translate('SWAPDEBITOR.SUCCESS'));
       $scope.selectedDebitor = {};
       $scope.debitor = {};
       $scope.noEmpty = false;
     }
 
     function handleError(){
-      messenger.danger($filter('translate')('SWAPDEBITOR.DANGER'));
+      messenger.danger($translate('SWAPDEBITOR.ERR_HTTP'));
     }
-
-    $scope.initialiseSwaping = initialiseSwaping;
-    $scope.swapGroup = swapGroup;
   }
 ]);
