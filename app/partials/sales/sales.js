@@ -11,8 +11,9 @@ angular.module('kpk.controllers')
   'appstate',
   'messenger',
   'appcache',
+  'precision',
   'uuid',
-  function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, uuid) {
+  function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid) {
     var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
     var recoverCache = new Appcache('sale'), priceListSource = [];
     var session = $scope.session = {

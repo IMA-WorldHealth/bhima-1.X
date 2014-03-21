@@ -27,8 +27,8 @@ function parseInserts(fileData) {
     // Unchanged values, write method to output this
     console.log(tableRelation['account'] + " \n");
     console.log(tableRelation['user'] + " \n");
-    console.log(tableRelation['transaction_type'] + " \n");
-    // console.log(tableRelation['permission'] + " \n");
+    //console.log(tableRelation['transaction_type'] + " \n");
+    console.log(tableRelation['permission'] + " \n");
 
     simpleUpgrade('country', tableRelation['country'], upgradeCountry);
     simpleUpgrade('province', tableRelation['province'], upgradeProvince);
@@ -415,8 +415,12 @@ function upgradePostingJournal(record, index) {
  
   // Replace enterprise with project ID
   recordValues[1] = '1';
-  recordValues[14] = idRelation[debtorReference][recordValues[1]];
-  
+
+  if(recordValues[14]!=="NULL") {
+    var t = recordValues[14];
+    t = t.replace(/\'/g, '');
+    recordValues[14] = idRelation['debitor'][t];
+  }
   return '(' + recordValues.join(',') + ')';
 }
 
