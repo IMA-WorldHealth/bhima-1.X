@@ -360,22 +360,21 @@ app.get('/caution/:debitor_id/:enterprise_id', function (req, res, next) {
     var currency = ans.pop().currency_id;
     sql =
       'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
-        '`t`.`credit_equiv` AS `credit`, `t`.`description` ' +
+        '`t`.`credit_equiv` AS `credit`, `t`.`description`, `t`.`account_id` ' +
         'FROM (' +
-          'SELECT `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+          'SELECT `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
             '`posting_journal`.`credit_equiv`, `posting_journal`.`deb_cred_uuid`, ' +
             '`posting_journal`.`trans_id`, `posting_journal`.`description` ' +
           'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid` = ' + debitor_id +
         ' UNION ' +
-          'SELECT `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+          'SELECT `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
             '`general_ledger`.`credit_equiv`, `general_ledger`.`deb_cred_uuid`, ' +
             '`general_ledger`.`trans_id`, `general_ledger`.`description` ' +
           'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` = ' + debitor_id +
         ') AS `t` JOIN `account` ON `t`.`account_id` = `account`.`id` ' +
-        'WHERE`t`.`account_id` IN (' +
+        'WHERE `t`.`account_id` IN (' +
           'SELECT `cash_box_account`.`caution_account` FROM `cash_box_account` ' +
-          'WHERE `cash_box_account`.`enterprise_id` = ' + enterprise_id + ' ' +
-            'AND `cash_box_account`.`currency_id`=' + currency +
+          'WHERE `cash_box_account`.`currency_id`=' + currency +
         ');';
     return db.exec(sql);
   })
