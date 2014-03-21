@@ -19,6 +19,10 @@ angular.module('kpk.controllers')
       tablock : -1
     };
 
+    appstate.register('project', function (project) {
+      $scope.project = project;
+    });
+
     dependencies.inventory = {
       query: {
         identifier : 'uuid',
@@ -94,7 +98,7 @@ angular.module('kpk.controllers')
       };
 
       getCaution(selectedDebtor)
-      .then(function(caution){
+      .then(function (caution){
         if(caution.data.length > 0){
           var somdebit = 0, somcredit = 0;
           caution.data.forEach(function(item){
@@ -122,8 +126,8 @@ angular.module('kpk.controllers')
 
     }
 
-    function getCaution(selectedDebtor){
-     return connect.fetch('/caution/' + selectedDebtor.debitor_id+'/'+$scope.inventory[0].enterprise_id);
+    function getCaution(selectedDebtor) {
+      return connect.fetch('/caution/' + selectedDebtor.debitor_uuid + '/' + $scope.project.enterprise_id);
     }
 
     function processPriceList(model) {
@@ -207,9 +211,9 @@ angular.module('kpk.controllers')
 
       //Seller ID will be inserted on the server
       requestContainer.sale = {
-        project_id : appstate.get('project').id,
+        project_id : $scope.project.id,
         cost : calculateTotal(),
-        currency_id : appstate.get('enterprise').currency_id,
+        currency_id : $scope.project.currency_id,
         debitor_uuid : invoice.debtor.debitor_uuid,
         invoice_date : invoice.date,
         note : invoice.note

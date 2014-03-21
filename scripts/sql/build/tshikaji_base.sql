@@ -91,7 +91,7 @@ INSERT INTO `unit` VALUES
   (73, 'Extra'                      , 'TREE.EXTRA', '',                                     0, 1, '/partials/extra/', '/extra'),
   (74, 'Client'                     , 'TREE.CLIENT', '',                                     73, 0, '/partials/client/', '/client'),
   (75, 'Beneficiary'                , 'TREE.BENEFICIARY', '',                                     73, 0, '/partials/beneficiary/', '/beneficiary'),
-  (76, 'Main Cash'                , 'TREE.MAIN_CASH', '',                                  5, 0, '/partials/pcash/', '/main_cash');
+  (76, 'Main Cash'                , 'TREE.MAIN_CASH', '',                                  5, 0, '/partials/pcash/', '/main_cash'),
   (77, 'Patient Standing'           , 'TREE.PATIENT_STANDING', '',                                  10, 0, '/partials/reports/patient_standing/', '/reports/patient_standing');
 
 -- INSERT INTO `permission` (`user_id`, `unit_id`) values
