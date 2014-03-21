@@ -31,12 +31,8 @@
             <tr ng-repeat="group in groups.data | filter:flags.search">
               <td>{{ group.name }}</td>
               <td>{{ accounts.get(group.account_id).account_number }}</td>
-              <td>
-                <input type="checkbox" ng-model="group.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(group)">
-              </td>
-              <td ng-click="editGroup(group)" style="cursor: pointer;">
-                <i class="glyphicon glyphicon-pencil"></i>
-               </td>
+              <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>
+              <td style="cursor: pointer;"><a href="" ng-click="editGroup(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
             </tr>
           </tbody>
         </table>

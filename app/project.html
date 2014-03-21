@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Project Selection</title>
+  <title>Select A Project</title>
   <link rel="stylesheet" href="css/kapok.min.css">
   <script src="lib/jquery-1.10.2.js"></script>
   <script>
     $(document).ready(function () {
       // this is to load in all the respective projects of the user
 
-      var template =
+      var tpl =
         "<li class='list-item'>" +
         "  <div class='img-display'>"+
         "    <span class='glyphicon glyphicon-home'></span>" +
@@ -18,51 +18,43 @@
         "  </div>" +
         "</li>";
 
-      var fail_template =
-        "<div class='alert alert-danger'>" +
-        "  <h3>No projects have been assigned to your user!  Please see an administrator.</h3>" +
-        "</div>";
-
       $.ajax('/project')
       .done(function (data) {
         var item, elem = $("#projects");
 
-        if (data.length < 1) {
-          elem.append(fail_template);
-        }
+        if (data.length < 1) { return noProject(elem); }
 
         $.each(data, function( index, value) {
-          item = $(template.replace('%value%', value.name));
-          item .click('click', function (e) {
+          item = $(tpl.replace('%value%', value.name));
+          item.click(function (e) {
             $.ajax('/project' + '?id=' + value.id)
             .done(function (res) {
               // redirect
               window.location.replace('/');
             })
-            .fail(function () {
-              alert('An error occured.  Please try again.')
-            });
+            .fail(handleError);
           });
           elem.append(item);
         });
 
       })
-      .fail(function (err) {
-        alert('An error occured. Please refresh the page.');
-      });
+      .fail(handleError);
+
+      function noProject(e) {
+        $('.panel')
+        .removeClass('panel-primary')
+        .addClass('panel-danger');
+
+        e.before("<div class='panel-body' style='text-align:left;'><span>No projects have been assigned to your user!  Please see an administrator.</span></div>");
+      }
+
+      function handleError() {
+        alert('An error occured.  Please refresh the page.');
+      }
     });
   </script>
     
   <style>
-
-    .field {
-      box-sizing: border-box;
-      margin: 0 auto;
-      margin-top: 20%;
-      padding: 30px;
-      background-color: white;
-      border: 1px solid rgba(164, 154, 154, 0.5);
-    }
 
     .img-display {
       float: left;
@@ -73,20 +65,34 @@
       list-style: none;
       padding: 8px;
       cursor: pointer;
-      transition: padding 0.25s linear; 
     }
 
-    .list-item:hover {
-      padding-left: 20px;
+    .list-item:first-child {
+      margin-top: 1em;
+    }
+
+    .txt-display {
+      padding-left: 1.5em;
+      transition : all 0.2s ease;
+      text-align : left;
+    }
+
+    .txt-display:hover {
+      font-weight: bold;
+      padding-left: 2.25em;
     }
 
   </style>
 </head>
 <body style="background: #F3F3F3;">
   <div class="container">
-    <div class="field">
-      <h3>Select a Project</h3>
-      <ul id="projects"></ul>
+    <div class="center" style="margin-top: 5em;">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h4>Select a Project</h4>
+        </div>
+        <ul id="projects"></ul>
+      </div>
     </div>
   </div>
 </body>

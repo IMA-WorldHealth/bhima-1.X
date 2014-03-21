@@ -2,56 +2,56 @@
 
 (function (angular) {
   'use strict';
-
-  angular.module('kpk.directives', [])
-
-    .directive('ngFocus', ['$parse', function ($parse) {
-      return function(scope, element, attr) {
-        var fn = $parse(attr.ngFocus);
-        element.bind('focus', function (event) {
-          scope.$apply(function () {
-            fn(scope, {$event:event});
-          });
-        });
-      };
-    }])
-  
-    .directive('ngBlur', ['$parse', function ($parse) {
-      return function(scope, element, attr) {
-        var fn = $parse(attr.ngBlur);
-        element.bind('blur', function (event) {
-          scope.$apply(function () {
-            fn(scope, {$event:event});
-          });
-        });
-      };
-    }])
-
-    .directive('selectSearch', ['$compile', function($compile) {
-      return {
-        link: function(scope, element, attrs) {
-       
-        }
-      };
-    }])
-
-    .directive('reportGroupCompile', ['$compile', function($compile) {
-
-      //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation
-      //replace with functions that build array templates and join()
-      return {
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-          var built = false, template = [];
-          var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;
-          var accountRowTemplate = "<tr><td style='text-align: right;'>%d</td><td %s>%s</td>%s</tr>";
-          var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>";
-
-          if(groupModel && tableDefinition) {
-            scope.$watch(groupModel, function(nval, oval) {
-              if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
-            }, true);
-          }
+ 
+   angular.module('kpk.directives', [])
+ 
+     .directive('ngFocus', ['$parse', function ($parse) {
+       return function(scope, element, attr) {
+         var fn = $parse(attr.ngFocus);
+         element.bind('focus', function (event) {
+           scope.$apply(function () {
+             fn(scope, {$event:event});
+           });
+         });
+       };
+     }])
+   
+     .directive('ngBlur', ['$parse', function ($parse) {
+       return function(scope, element, attr) {
+         var fn = $parse(attr.ngBlur);
+         element.bind('blur', function (event) {
+           scope.$apply(function () {
+             fn(scope, {$event:event});
+           });
+         });
+       };
+     }])
+ 
+     .directive('selectSearch', ['$compile', function($compile) {
+       return {
+         link: function(scope, element, attrs) {
+        
+         }
+       };
+     }])
+ 
+     .directive('reportGroupCompile', ['$compile', function($compile) {
+ 
+       //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation
+       //replace with functions that build array templates and join()
+       return {
+         restrict: 'A',
+         link: function(scope, element, attrs) {
+           var built = false, template = [];
+           var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;
+           var accountRowTemplate = "<tr><td style='text-align: right;'>%d</td><td %s>%s</td>%s</tr>";
+           var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>";
+ 
+           if(groupModel && tableDefinition) {
+             scope.$watch(groupModel, function(nval, oval) {
+               if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
+             }, true);
+           }
 
           function buildTable(data) {
             built = true;

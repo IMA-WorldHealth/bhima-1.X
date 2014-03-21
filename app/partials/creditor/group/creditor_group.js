@@ -56,8 +56,6 @@ angular.module('kpk.controllers')
       $scope.action = '';
       $scope.data = {};
 
-      console.log('$scope.accounts', $scope.accounts);
-
       // for the orderBy to work appropriately
       $scope.accounts.data.forEach(function (account) {
         account.account_number = String(account.account_number);
@@ -78,6 +76,7 @@ angular.module('kpk.controllers')
       connect.basicPut('creditor_group', [data])
       .then(function (res) {
         $scope.groups.post(data);
+        $scope.action = '';
       }, function (err) {
         messenger.danger('Error in putting: ' + JSON.stringify(err));
       });
@@ -100,6 +99,7 @@ angular.module('kpk.controllers')
       connect.basicPost('creditor_group', [data], ['uuid'])
       .then(function (res) {
         $scope.groups.put(data);
+        $scope.action = '';
       }, function (err) {
         messenger.danger('Error in updating creditor group ' + data.uuid);
       });
@@ -111,8 +111,7 @@ angular.module('kpk.controllers')
 
     $scope.lock = function lock (group) {
       connect.basicPost('creditor_group', [{uuid: group.uuid, locked: group.locked}], ["uuid"])
-      .then(function (success) {
-      }, function (err) {
+      .error(function (err) {
         group.locked = group.locked === 0 ? 1 : 0;
         messenger.danger('Lock operation failed');
       });

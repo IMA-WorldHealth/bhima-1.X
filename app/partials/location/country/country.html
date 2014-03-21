@@ -1,20 +1,18 @@
 <header>
-<span class="capitalize"> {{'COUNTRY.TITLE' | translate }}</span>
-  </header>
+  {{'COUNTRY.TITLE' | translate }}
+</header>
 
-  <section class="top-nav">
-    <div class="pull-right">
-        <a href="#/location" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{'COUNTRY.LOCATION_MANAGER' | translate}}</span></a>
-    </div>
-    <div class="pull-left">
-      <button class="btn btn-default btn-sm" ng-click="setOp('Add')">{{'COUNTRY.NEW_COUNTRY' | translate}}</button>
-    </div>
-  </section>
+<section class="top-nav">
+  <a href="" class="btn btn-default btn-sm" ng-click="setOp('Add')"><span class="glyphicon glyphicon-plus"></span> {{'COUNTRY.NEW_COUNTRY' | translate}}</a>
+  <div class="pull-right">
+    <a href="#/location/" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{'COUNTRY.LOCATION_MANAGER' | translate}}</a>
+  </div>
+</section>
 
 <article class="content">
   <div class="row">
     <div class="col-xs-6">
-      <div class="panel panel-default" style="max-height: 525px; overflow: auto;">
+      <div class="panel panel-default" style="max-height:40em; overflow: auto;">
         <div class="panel-heading">
           <span>{{'COUNTRY.REGISTERED' | translate}}</span>
         </div>
@@ -24,20 +22,16 @@
               <th>{{'COUNTRY.CODE' | translate}}</th>
               <th>{{'COUNTRY.ENGLISH_NAME' | translate}}</th>
               <th>{{'COUNTRY.FRENCH_NAME' | translate}}</th>
-              <th colspan="2" class="capital">{{'COUNTRY.ACTIONS' | translate}}</th>
+              <th colspan="2">{{'COUNTRY.ACTIONS' | translate}}</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="country in model.country.data | orderBy:'country_en'">
-              <td>{{country.code }}</td>
-              <td>{{country.country_en}}</td>
-              <td>{{country.country_fr}}</td>
-              <td ng-click="setOp('Edit', country)">
-                <button class="btn btn-sm btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
-              </td>
-              <td ng-click="removeCountry(country.uuid)">
-                <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></button>
-              </td>
+              <td>{{ country.code }}</td>
+              <td>{{ country.country_en }}</td>
+              <td>{{ country.country_fr }}</td>
+              <td><a href="" ng-click="setOp('Edit', country)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a href="" class="danger" ng-click="removeCountry(country.uuid)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -108,7 +102,7 @@
                 </div>     
             </fieldset>
             <button class="btn btn-default btn-success" ng-click="editCountry(country)" ng-disabled="form.$invalid " type="submit">
-              {{ 'FORM.EDIT' | translate}}
+              {{ 'FORM.SAVE' | translate}}
             </button>
             <button class="btn btn-default btn-sm" type="reset">
               {{ 'FORM.NEW_FORM' | translate}}

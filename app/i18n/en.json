@@ -390,7 +390,8 @@
     "PATIENT_REGISTRATION" : "Patient Registration Report",
     "UPDATE_STOCK" : "Update Stock",
     "CASH_PAYMENTS" : "Cash Payments",
-    "SWAP_DEBITOR" : "Update Debtor"
+    "SWAP_DEBITOR" : "Update Debtor",
+    "PATIENT_STANDING" : "Patient Standing Report"
   },
 
   "RENEWAL" : {
@@ -572,7 +573,16 @@
     "OVERDUE"          : "Over Due",
     "PAY_INVOICES"     : "Pay Invoices",
     "CLEAR_SELECTION"  : "Clear Selection",
-    "NO_EXCHANGE_RATE" : "Error: No exchange rate!"
+    "ERR_NO_EXCHANGE_RATE" : "ERROR : No exchange rate available!",
+    "OVER" : {
+      "TITLE" : "Justification for Payment",
+      "REASON" : "Reason",
+      "DANGER" : "Warning!",
+      "CUED" : "The debtor has been billed this amount",
+      "PAYMENT" : "The debitor is paying a this amount",
+      "MIN" : "Minimum 25 characters",
+      "JUSTIFICATION" : "Please include a justification for the payment on the debitor's account"
+    }
   },
 
   "CREDIT_NOTE" : {
@@ -722,10 +732,10 @@
   },
 
   "COUNTRY" : {
-    "TITLE"                : "COUNTRIES MANAGEMENT",
+    "TITLE"                : "Country Management",
     "LOCATION_MANAGER"     : "Location Manager",
     "NEW_COUNTRY"          : "Add New Country",
-    "REGISTERED"           : "Registered Country",
+    "REGISTERED"           : "Registered Countries",
     "CODE"                 : "Code",
     "ENGLISH_NAME"         : "English Name",
     "FRENCH_NAME"          : "French Name",

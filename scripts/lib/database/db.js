@@ -6,7 +6,8 @@
 // and disconnections to a variety of database management systems.
 // All query formatting is expected to happen elsewhere.
 
-var u = require('../util/util');
+var u = require('../util/util'),
+    q = require('q');
 
 function mysqlInit (config) {
   'use strict';
@@ -93,13 +94,34 @@ module.exports = function (cfg, logger) {
       logger.emit('log', sql);
 
       con.getConnection(function (err, connection) {
-        if (err) return callback(err);
+        if (err) { return callback(err); }
         connection.query(sql, function (err, results) {
           connection.release();
-          if (err) return callback(err);
+          if (err) { return callback(err); }
           return callback(null, results);
         });
       });
+    },
+
+    exec : function (sql) {
+      // this fxn is formatted for mysql pooling
+      // uses promises
+
+      console.log("[db] [execute]: ", sql);
+      var defer = q.defer();
+
+      logger.emit('log', sql);
+
+      con.getConnection(function (err, connection) {
+        if (err) { return defer.rejct(err); }
+        connection.query(sql, function (err, results) {
+          connection.release();
+          if (err) { return defer.reject(err); }
+          defer.resolve(results);
+        });
+      });
+
+      return defer.promise;
     }
   };
 };
