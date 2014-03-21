@@ -92,17 +92,38 @@ angular.module('kpk.controllers')
         date : getDate(),
         items: []
       };
-  
-      if (session.recovering) {
-        recover();
-      } else {
-        addInvoiceItem();
-        session.recovered = null;
-      }
-      // session.recovering ? recover() : addInvoiceItem();
-    
-      invoice.note = formatNote(invoice);
-      $scope.invoice = invoice;
+
+      getCaution(selectedDebtor)
+      .then(function(caution){
+        if(caution.data.length > 0){
+          var somdebit = 0, somcredit = 0;
+          caution.data.forEach(function(item){
+            somdebit = precision.add(precision.scale(item.debit),somdebit);
+            somcredit = precision.add(precision.scale(item.credit),somcredit);
+          });
+
+          var debitorCaution = (precision.unscale(somcredit) - precision.unscale(somdebit));
+          invoice.debitorCaution = debitorCaution;
+        }
+        console.log('notre invoice est :', invoice);
+
+        if (session.recovering) {
+          recover();
+        } else {
+          addInvoiceItem();
+          session.recovered = null;
+        }
+        // session.recovering ? recover() : addInvoiceItem();
+
+        invoice.note = formatNote(invoice);
+        $scope.invoice = invoice;
+
+      });
+
+    }
+
+    function getCaution(selectedDebtor){
+     return connect.fetch('/caution/' + selectedDebtor.debitor_id+'/'+$scope.inventory[0].enterprise_id);
     }
 
     function processPriceList(model) {
@@ -158,6 +179,7 @@ angular.module('kpk.controllers')
       //Remove ability to selec the option again
       console.log('removing inventory item', inventoryReference.uuid);
       $scope.model.inventory.remove(inventoryReference.uuid);
+
       $scope.model.inventory.recalculateIndex();
 
       updateSessionRecover();
@@ -176,7 +198,7 @@ angular.module('kpk.controllers')
     function submitInvoice() {
       var invoiceRequest = packageInvoiceRequest();
 
-      if(!validSaleProperties(invoiceRequest)) return;
+      if (!validSaleProperties(invoiceRequest)) return;
       $http.post('sale/', invoiceRequest).then(handleSaleResponse);
     }
 
@@ -222,26 +244,30 @@ angular.module('kpk.controllers')
       //     inventory_price : 0
       //   };
 
-        invoice.applyGlobal.forEach(function (listItem) {
-          var applyCost, formatListItem, enterpriseDiscountId; // FIXME Derive this from enterprise
-    
-          (listItem.is_discount) ? enterpriseDiscountId = 486 : enterpriseDiscountId = 485;
-    
-          formatDiscountItem = {
-            inventory_id : enterpriseDiscountId,
-            quantity : 1,
-            transaction_price : listItem.currentValue,
-            debit : 0,
-            credit : 0,
-            inventory_price : 0
-          };
+      invoice.applyGlobal.forEach(function (listItem) {
+        var applyCost, formatListItem, enterpriseDiscountId; // FIXME Derive this from enterprise
 
-          (listItem.is_discount) ?
-            formatDiscountItem.debit = listItem.currentValue :
-            formatDiscountItem.credit = listItem.currentValue;
+        (listItem.is_discount) ? enterpriseDiscountId = 486 : enterpriseDiscountId = 485;
 
-          requestContainer.saleItems.push(formatDiscountItem);
+        formatDiscountItem = {
+          inventory_id : enterpriseDiscountId,
+          quantity : 1,
+          transaction_price : listItem.currentValue,
+          debit : 0,
+          credit : 0,
+          inventory_price : 0
+        };
+
+        (listItem.is_discount) ?
+          formatDiscountItem.debit = listItem.currentValue :
+          formatDiscountItem.credit = listItem.currentValue;
+
+        requestContainer.saleItems.push(formatDiscountItem);
       });
+
+      requestContainer.caution = (invoice.debitorCaution)? invoice.debitorCaution : 0;
+      console.log('caution envoye est :', requestContainer.caution);
+
       return requestContainer;
     }
 
@@ -303,11 +329,11 @@ angular.module('kpk.controllers')
           total = Number(total.toFixed(4));
         }
       });
-  
+
       if (invoice.applyGlobal) {
         invoice.applyGlobal.forEach(function (listItem) {
           listItem.currentValue = Number(((total * listItem.value) / 100).toFixed(4));
-    
+
           if (listItem.is_discount) {
             total -= listItem.currentValue;
           } else {
@@ -317,12 +343,24 @@ angular.module('kpk.controllers')
           total = Number(total.toFixed(4));
         });
       }
-      console.log(total);
-      return total;
+
+      // Apply caution
+      if(invoice.debitorCaution){
+        var remaining = 0;
+        remaining = total - invoice.debitorCaution;
+        totalToPay = (remaining < 0)? 0 : remaining;
+        totalToPay = Number(totalToPay.toFixed(4));
+      }else{
+        totalToPay = total;
+      }
+
+      return {total : total, totalToPay : totalToPay};
+
+      // return total;
     }
 
     $scope.isPayable = function() {
-      if($scope.invoice.payable=="true") return true;
+      if($scope.invoice.payable==="true") return true;
       return false;
     };
 
@@ -347,7 +385,6 @@ angular.module('kpk.controllers')
         self.inventoryId = inventoryReference.uuid;
         self.note = "";
 
-
         // Temporary price list logic
         if(invoice.priceList) {
           invoice.priceList.forEach(function (list) {
@@ -356,7 +393,7 @@ angular.module('kpk.controllers')
               if(list.is_discount) {
                 console.log('[DEBUG] Applying price list discount ', list.description, list.value);
                 self.price -= Math.round((defaultPrice * list.value) / 100);
-        
+
                 // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
                 self.price = Number(self.price.toFixed(4));
               } else {
@@ -364,7 +401,7 @@ angular.module('kpk.controllers')
                 var applyList = (defaultPrice * list.value) / 100;
                 console.log(self.price, applyList);
                 self.price += applyList;
-        
+
                 // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
                 self.price = Number(self.price.toFixed(4));
                 console.log(self.price);

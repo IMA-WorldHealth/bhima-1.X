@@ -99,7 +99,7 @@ create table `country` (
 
 --
 -- Table structure for table `province`;
--- 
+--
 drop table if exists `province`;
 create table `province` (
   `uuid`       char(36) not null,
@@ -247,8 +247,8 @@ create table `cost_center` (
   `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
   `cost`            float default 0,
-  `note`            text, 
-  `pc`              boolean default 0, 
+  `note`            text,
+  `pc`              boolean default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
@@ -336,16 +336,22 @@ create table `cash_box_account` (
   `cash_box_id`     mediumint unsigned not null,
   `cash_account`    int unsigned,
   `bank_account`    int unsigned,
+  `caution_account` int unsigned not null,
+  `pcash_account`   int unsigned not null,
   primary key (`id`),
   key `currency_id` (`currency_id`),
   key `cash_box_id` (`cash_box_id`),
   key `cash_account` (`cash_account`),
   key `bank_account` (`bank_account`),
   -- unique key (`id`, `currency_id`),
+  key `caution_account` (`caution_account`),
+  key `pcash_account` (`pcash_account`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`cash_account`) references `account` (`id`),
-  constraint foreign key (`bank_account`) references `account` (`id`)
+  constraint foreign key (`bank_account`) references `account` (`id`),
+  constraint foreign key (`caution_account`) references `account` (`id`),
+  constraint foreign key (`pcash_account`) references `account` (`id`)
 ) engine=innodb;
 
 --
@@ -737,7 +743,7 @@ create table `sale_item` (
   `uuid`              char(36) not null, 
   `inventory_uuid`    char(36) not null,
   `quantity`          int unsigned default '0',
-  `inventory_price`   decimal(19,4), 
+  `inventory_price`   decimal(19,4),
   `transaction_price` decimal(19,4) not null,
   `debit`             decimal(19,4) not null default 0,
   `credit`            decimal(19,4) not null default 0,
@@ -875,7 +881,7 @@ create table `cash_item` (
 --  constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
 
--- 
+--
 -- Table structure for table `kpk`.`posting_session`
 --
 drop table if exists `posting_session`;
@@ -998,7 +1004,7 @@ create table `kpk`.`period_total` (
 
 
 
--- 
+--
 -- table `kpk`.`group_invoice`
 --
 drop table if exists `group_invoice`;
@@ -1075,7 +1081,7 @@ drop table if exists `employee`;
 create table `employee` (
   `id`                  int unsigned not null auto_increment,
   `code`                varchar(20) not null,
-  `prenom`              text, 
+  `prenom`              text,
   `name`                text not null,
   `postnom`             text,
   `dob`                 date not null,
@@ -1143,5 +1149,98 @@ create table `debitor_group_history` (
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 
+--
+-- Table structure for table `kpk`.`caution`
+--
+drop table if exists `caution`;
+create table `caution` (
+`id`                  int unsigned not null auto_increment,
+`value`               decimal(19,4) unsigned not null,
+`date`                timestamp not null,
+`enterprise_id`       smallint unsigned not null,
+`debitor_id`          int unsigned not null,
+`currency_id`         tinyint unsigned not null,
+`user_id`             smallint unsigned not null,
+primary key (`id`),
+key `enterprise_id` (`enterprise_id`),
+key `debitor_id` (`debitor_id`),
+key `currency_id` (`currency_id`),
+key `user_id` (`user_id`),
+constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+constraint foreign key (`debitor_id`) references `debitor` (`id`),
+constraint foreign key (`currency_id`) references `currency` (`id`),
+constraint foreign key (`user_id`) references `user` (`id`)
+) engine=innodb;
 
+--
+-- Table structure for table `kpk`.`client`
+--
+drop table if exists `client`;
+create table `client` (
+  `id`                   int unsigned not null auto_increment,
+  `name`                 varchar(50) not null,
+  `last_name`            varchar(50) not null,
+  `address`              varchar(100),
+  `debitor_id`           int unsigned not null,
+  primary key (`id`),
+  key `debitor_id` (`debitor_id`),
+  constraint foreign key (`debitor_id`) references `debitor` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`beneficiary`
+--
+drop table if exists `beneficiary`;
+create table `beneficiary` (
+  `id`                   int unsigned not null auto_increment,
+  `text`                 varchar(50) not null,
+  primary key (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`pcash`
+--
+drop table if exists `pcash`;
+create table `pcash` (
+  `id`              int unsigned not null auto_increment,
+  `enterprise_id`   smallint unsigned,
+  `type`            char(1) not null,
+  `date`            date not null,
+  `deb_cred_id`     int unsigned,
+  `deb_cred_type`   varchar(1),
+  `currency_id`     tinyint unsigned not null,
+  `value`           decimal(19,4) unsigned not null default 0,
+  `cashier_id`      smallint unsigned not null,
+  `description`     text,
+  `service_id`      tinyint unsigned,
+  `beneficiary_id`  int unsigned,
+  `istransfer`      boolean not null,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `currency_id` (`currency_id`),
+  key `cashier_id` (`cashier_id`),
+  key `service_id` (`service_id`),
+  key `beneficiary_id` (`beneficiary_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`currency_id`) references `currency` (`id`),
+  constraint foreign key (`cashier_id`) references `user` (`id`),
+  constraint foreign key (`service_id`) references `service` (`id`),
+  constraint foreign key (`beneficiary_id`) references `beneficiary` (`id`)
+) engine=innodb;
+
+--
+-- table `kpk`.`pcash_item`
+--
+drop table if exists `pcash_item`;
+create table `pcash_item` (
+  `id`                int unsigned not null auto_increment,
+  `pcash_id`          int unsigned not null,
+  `allocated_value`   decimal(19,4) unsigned not null default 0.00,
+  `invoice_id`        int unsigned not null,
+  primary key (`id`),
+  key `pcash_id` (`pcash_id`),
+  key `invoice_id` (`invoice_id`),
+  constraint foreign key (`pcash_id`) references `pcash` (`id`),
+  constraint foreign key (`invoice_id`) references `sale` (`id`)
+) engine=innodb;
 -- Jon's dump @ 12:45.

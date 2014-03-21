@@ -14,7 +14,7 @@
 </section>
 
 <div class="content">
-  
+
   <div class="row">
     <div class="col-xs-7">
       <div find-patient on-search-complete="initialiseSaleDetails"></div>
@@ -55,7 +55,8 @@
           </div>
 
          <!-- FIXME style hacks -->
-         <div ng-class="{'alert alert-warning' : invoice.debtor.is_convention || invoice.priceList.length}">
+         <div ng-class="{'alert alert-warning' : invoice.debtor.is_convention || invoice.priceList.length || invoice.debitorCaution >0}">
+         <p ng-show="invoice.debitorCaution>0">Caution {{invoice.debitorCaution | currency}}</p>
          <p ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
          <p ng-repeat="charge in invoice.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('SALE.APPLIES_GLOBALLY' | translate) : ('SALE.APPLIES_TO_ITEM' | translate)}}</b></p>
          </div>
@@ -65,7 +66,7 @@
          </div>
 
          <div class="row">
-         
+
             <div class="col-xs-12">
                 <div class="pull-right">
                   <a ng-click="addInvoiceItem()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }} </a>
@@ -81,12 +82,12 @@
                       <th></th>
                     </tr>
                   </thead>
-                  
+
                   <tbody>
                     <!-- FIXME: strange filter -->
                     <tr ng-class="{'incomplete-outline': !invoiceItem.code, 'complete-outline': invoiceItem.code}" ng-repeat="invoiceItem in invoice.items">
                       <td>
-                        <input 
+                        <input
                         class="form-invoice"
                         type="text"
                         typeahead-template-url="invoiceListItem.html"
@@ -95,7 +96,7 @@
                         typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.selectedReference)"
                         placeholder="Search Inventory"
                       </td>
-                      
+
                       <!-- -1 for no tab, 0 to allow -->
                       <td><input ng-show="invoiceItem.isSet" class="form-invoice" disabled value="{{invoiceItem.text}}"></td>
                       <td><input ng-change="cacheQuantity(invoiceItem)" tabindex="{{session.tablock}}" ng-show="invoiceItem.isSet" class="form-invoice" ng-model="invoiceItem.quantity"></td>
@@ -113,7 +114,7 @@
                     <!--   <td><input disabled class="form&#45;invoice" style="color: red;" value="{{invoice.priceList.discount}}"></td> -->
                     <!--   <td colspan="2"><input disabled class="form&#45;invoice" style="color: red;" value="{{&#45;invoice.priceList.discount | currency}}"></td> -->
                     <!-- </tr> -->
-          
+
                     <tr ng-repeat="listItem in invoice.applyGlobal">
                       <td></td>
                       <td></td>
@@ -125,9 +126,9 @@
                     <tr>
                       <!-- Style hack -->
                       <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "SALE.TOTAL" | translate }}</b></td>
-                      <td colspan="2"><b>{{ calculateTotal() | currency }}</b></td>
+                      <td colspan="2"><b>{{ calculateTotal().totalToPay | currency }}</b></td>
                     </tr>
-                    
+
                   </tbody>
                 </table>
               </div>

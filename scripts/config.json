@@ -41,6 +41,8 @@
       "/sale",
       "/user_session",
       "/fiscal",
+      "/caution/",
+      "/synthetic/",
       "/InExAccounts/"
     ]
   }

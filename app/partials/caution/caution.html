@@ -1,0 +1,117 @@
+<header>
+  <span>{{ "CAUTION.TITLE" | translate}}</span>
+</header>
+
+<section class="top-nav underline">
+    <div class="pull-right">
+      <a href="#/cash" class="capital btn btn-default btn-sm">
+        <span class="glaphyicon glaphyicon-tag">
+          {{'CAUTION.CASH' | translate}}
+        </span>
+      </a>
+    </div>
+
+    <div style="position: absolute; left: 5px;">
+      <button class="btn btn-sm btn-primary dropdown-toggle">
+        {{ model.accounts.get(selectedItem.cash_account).account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu pull-left">
+        <li ng-repeat="item in model.currency_account.data">
+          <a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.cash_account).account_txt }} </a>
+        </li>
+      </ul>
+    </div>
+</section>
+
+<div class="content">
+
+  <div class="row">
+    <div class="col-xs-6">
+      <div find-patient on-search-complete="initialiseCaution"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "CAUTION.PATIENT" | translate }}
+        </div>
+
+        <div ng-show="noEmpty" class="panel-body">
+          <div class="row">
+            <div class="col-xs-6">
+
+              <div class="form-group">
+                <label class="control-label">{{ "CAUTION.NAME" | translate }}</label>
+                <br>
+                {{selectedDebitor.name}}
+              </div>
+
+              <div class="form-group">
+                <label class="control-label">{{ "CAUTION.AGE" | translate }}</label>
+                <br>
+                {{selectedDebitor.age}}
+              </div>
+
+              <div class="form-group">
+                <label class="control-label">{{ "CAUTION.GENDER" | translate }}</label>
+                <br>
+                {{selectedDebitor.sex}}
+              </div>
+            </div>
+
+            <div class="col-xs-6">
+              <!-- FIXME style hacks -->
+              <label>{{ "CAUTION.ORIGIN" | translate }}</label>
+              <br>
+              {{locationDebitor.village}}
+              <br>
+              {{locationDebitor.sector}}
+              <br>
+              {{locationDebitor.province}}
+              <br>
+              {{locationDebitor.country}}
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer" ng-show="noEmpty">
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading" >
+          {{ "CAUTION.INFO_CAUTION" | translate }}
+        </div>
+        <div class="panel-body" ng-show="noEmpty">
+          <form >
+            <div class="form-group">
+              <div class="col-xs-4">
+                <label class="control-label">{{'CAUTION.CAUTION' | translate}}</label>
+              </div>
+            </div>
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="data.payment"  class="form-kapok" min="0" required>
+              <span class="input-group-addon"> {{ selectedItem.symbol }} </span>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel-footer" ng-show="noEmpty">
+            <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.payment < selectedItem.min_monentary_unit, 'btn-success':  data.payment >= selectedItem.min_monentary_unit }" ng-click="payCaution()" ng-disabled="check()">
+              {{ "CAUTION.PAY" | translate }}
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>

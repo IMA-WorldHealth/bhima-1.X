@@ -1,5 +1,5 @@
 {
-  "POSTING_JOURNAL" : {
+  "POSTING_JOURNAL"         : {
     "TITLE"                 : "Journal de Saisie",
     "GROUP_BY"              : "Groupe Par",
     "DEB_CRED"              : "Debiteur / Crediteur",
@@ -11,8 +11,8 @@
     "DEBIT"                 : "Debit",
     "CREDIT"                : "Credit",
     "FISCAL_YEAR"           : "Annee Fiscal",
-    "SPLIT_TRANSACTION" : "Split Transaction",
-    "LIVE_TRANSACTION" : "Transaction Vivant",
+    "SPLIT_TRANSACTION"     : "Split Transaction",
+    "LIVE_TRANSACTION"      : "Transaction Vivant",
     "ENTERPRISE"            : "Entreprise",
     "ENTERPRISE_MANAGEMENT" : "Gestion de l'Entreprise",
     "IN_PROGRESS"           : "En Cours",
@@ -25,9 +25,9 @@
   },
 
   "OPENING_BALANCE" : {
-    "TITLE" : "Configurer Balance Ouvert",
-    "LOADING" : "Chargement",
-    "DEFAULTS" : "Utilizer Default (0)"
+    "TITLE"         : "Configurer Balance Ouvert",
+    "LOADING"       : "Chargement",
+    "DEFAULTS"      : "Utilizer Default (0)"
   },
 
   "UTIL" : {
@@ -45,14 +45,14 @@
     "SAVE_SELECTION" : "Enregistrer la Selection"
   },
 
-  "ENTERPRISE" : {
+  "ENTERPRISE"                 : {
     "TITLE"                    : "Gestion de l'Entreprise",
     "REGISTERED_ENTERPRISE"    : "Entreprises Enregistrees",
     "NEW"                      : "Nouvelle Entreprise",
     "NAME"                     : "Nom",
     "ABBREVIATION"             : "Abreviation",
     "EMAIL"                    : "Email",
-    "PHONE"                   : "Telephone",
+    "PHONE"                    : "Telephone",
     "LOCATION_ID"              : "ID Emplacement",
     "CURRENCY"                 : "Monnaie",
     "EXISTING_ENTERPRISES"     : "Entreprises Existantes",
@@ -72,7 +72,7 @@
     "MANAGE_CASH_ACCOUNTS"     : "Gerer Le Compte de Caisse"
   },
 
-  "CASH" : {
+  "CASH"               : {
     "TITLE"            : "Caisse Auxillaire",
     "DEFAULT_CASHBOX"  : "Caisse",
     "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
@@ -84,15 +84,15 @@
     "OVERDUE"          : "Excedent",
     "PAY_INVOICES"     : "Paye les Factures",
     "CLEAR_SELECTION"  : "Recommencer",
-    "NO_EXCHANGE_RATE" : "Erreur: Taux d'Exchange n'existe pas!",
-    "OVER" : {
-      "TITLE" : "Justification De Payment",
-      "REASON" : "Raison",
-      "DANGER" : "Attention!",
-      "CUED" : "Le debiteur doit cette montant",
-      "PAYMENT" : "Le debiteur va payer cette montant",
-      "MIN" : "Minimum 25 caracteres",
-      "JUSTIFICATION" : "S'il vous plait, indiquer la cause du payment"
+    "NO_EXCHANGE_RATE" : "Erreur                                                      : Taux d'Exchange n'existe pas!",
+    "OVER"             : {
+      "TITLE"          : "Justification De Payment",
+      "REASON"         : "Raison",
+      "DANGER"         : "Attention!",
+      "CUED"           : "Le debiteur doit cette montant",
+      "PAYMENT"        : "Le debiteur va payer cette montant",
+      "MIN"            : "Minimum 25 caracteres",
+      "JUSTIFICATION"  : "S'il vous plait, indiquer la cause du payment"
     }
   },
 
@@ -132,32 +132,32 @@
     "BTN_TEXT"    : "Poster au Grand Livre"
   },
 
-  "SALE" : {
-    "SALE" : "Facture",
-    "TITLE" : "Facturation",
-    "IMPORT" : "Importer Perscription",
-    "UPDATE" : "Mis a Jour les Defaults",
-    "SUBMIT" : "Soumettre La Facture",
-    "ADD_LINE_ITEM" : "Ajouter une Item",
-    "EDIT_SALE" : "Editer la Facture",
-    "TOTAL" : "Totale",
-    "PATIENT_COVERED" : "Patient est couvert par la convention",
+  "SALE"               : {
+    "SALE"             : "Facture",
+    "TITLE"            : "Facturation",
+    "IMPORT"           : "Importer Perscription",
+    "UPDATE"           : "Mis a Jour les Defaults",
+    "SUBMIT"           : "Soumettre La Facture",
+    "ADD_LINE_ITEM"    : "Ajouter une Item",
+    "EDIT_SALE"        : "Editer la Facture",
+    "TOTAL"            : "Totale",
+    "PATIENT_COVERED"  : "Patient est couvert par la convention",
     "APPLIES_GLOBALLY" : "Appliquer globalement",
-    "APPLIES_TO_ITEM" : "Appliquer par item",
-    "TAB_LOCK_LINE" : "Tabuler par ligne",
-    "TAB_LOCK_ITEM" : "Tabuler par item",
-    "RECOVER" : "Retrouver Vente",
-    "RECOVER_INFO" : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantities sont retrouve, les pries sont reinitialises au prix par defaut des items"
+    "APPLIES_TO_ITEM"  : "Appliquer par item",
+    "TAB_LOCK_LINE"    : "Tabuler par ligne",
+    "TAB_LOCK_ITEM"    : "Tabuler par item",
+    "RECOVER"          : "Retrouver Vente",
+    "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantities sont retrouve, les pries sont reinitialises au prix par defaut des items"
   },
 
-  "FIND" : {
-    "TITLE" : "Trouver Malade",
+  "FIND"              : {
+    "TITLE"           : "Trouver Malade",
     "ENTER_DEBTOR_ID" : "Chercher ID Debiteur",
-    "SEARCH" : "Chercher Par Nom",
-    "PLACEHOLDER" : "Chercher un Debiteur"
+    "SEARCH"          : "Chercher Par Nom",
+    "PLACEHOLDER"     : "Chercher un Debiteur"
   },
 
-  "SELECT" : {
+  "SELECT"            : {
     "ACCOUNT"         : "Selectionner Compte",
     "CURRENCY"        : "Selectionner Monnaie",
     "NAME"            : "Selectionner un Nom",
@@ -175,7 +175,13 @@
     "INVENTORY_GROUP" : "Selectionner Groupe de Stocks",
     "UNIT"            : "Selectionner Unit",
     "INVENTORY_ITEM"  : "Selectionner une Article en Stock",
-    "DEBITOR"         : "Selectionner une Debiteur"
+    "DEBITOR"         : "Selectionner une Debiteur",
+    "ALL"             : "Tous",
+    "POSTING_JOURNAL" : "Journal de Saisie",
+    "GENERAL_LEDGER"  : "Grand Livre",
+    "SOURCE"          : "Selectionner source",
+    "CASH"            : "Caisse Auxillaire",
+    "OTHER"           : "Autre Source"
   },
 
   "RENEWAL"           : {
@@ -277,7 +283,13 @@
     "RENEWAL"                   : "Renouveller Fiche",
     "PATIENT_REGISTRATION"      : "Rapport Enregistrement des Malades",
     "UPDATE_STOCK"              : "Mettre a Jour les Stocks",
-    "CASH_PAYMENTS"             : "Rapport Paiements"
+    "CASH_PAYMENTS"             : "Rapport Paiements",
+    "ALL_TRANSACTIONS"          : "Toutes Transactions",
+    "CAUTION"                   : "Caution",
+    "EXTRA"                     : "Extra",
+    "CLIENT"                    : "Client",
+    "BENEFICIARY"               : "Beneficiary",
+    "MAIN_CASH"                 : "Caisse Principale"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -481,9 +493,9 @@
     "PATIENT_GRP"          : "Groupe de Malades"
   },
 
-  "GROUP_INVOICE"            : {
-    "TITLE"                  : "Facturation des Conventions et Societes",
-    "SELECT_PAYMENT_DETAILS" : "Selectionner Detail de la Paiement",
+  "GROUP_INVOICE" : {
+    "TITLE"                  : "Facturation des Conventions, Societes Et Prise en Charge",
+    "SELECT_PAYMENT_DETAILS" : "Selectionner Detail du Paiement",
     "GROUP"                  : "Groupe",
     "DEBITOR"                : "Debiteur",
     "SELECT_INVOICES"        : "Selectionner Factures",
@@ -588,7 +600,6 @@
     "SAVE_CHANGES"    : "Sauver Changement",
     "SUBMIT_BALANCES" : "Sauver Balances",
     "SUBMIT"          : "Soumettre",
-    "SEARCH"          : "Rechercher",
     "DISCARD"         : "Annuler",
     "RESET_BALANCES"  : "Reinitialiser Balances",
     "CLEAR"           : "Effacer",
@@ -601,7 +612,8 @@
     "CONTINUE"        : "Continuer",
     "ADD"             : "Ajouter",
     "EDIT"            : "Editer",
-    "NEW_FORM"        : "Nouveau Formulaire"
+    "NEW_FORM"        : "Nouveau Formulaire",
+    "NEW_TRANSFER"    : "Nouveau Transfert"
   },
 
   "ACCOUNT"          : {
@@ -672,7 +684,8 @@
     "REGISTER"              : "Enregistrer un Emplacement",
     "VILLAGE_NAME"          : "Nom du Village"
   },
-   "COUNTRY" : {
+
+  "COUNTRY" : {
     "TITLE"                : "Gestion des Pays",
     "LOCATION_MANAGER"     : "Gestion des Emplacements",
     "NEW_COUNTRY"          : "Ajout Nouveau Pays",
@@ -742,7 +755,12 @@
     "CASH_RECEIPT"      : "Recette de Caisse",
     "CASH_ID"           : "# Transaction de Caisse",
     "AMOUNT_RECEIVED"   : "Montant Paye",
-    "TRANSACTION_PRICE" : "Prix Transaction"
+    "TRANSACTION_PRICE" : "Prix Transaction",
+    "CAUTION"           : "Caution",
+    "CAUTION_ID"        : "# Caution",
+    "LIBELLE_CAUTION"   : "Reception Caution",
+    "TOTAL_CAUTION"     : "Total",
+    "AMOUNT"            : "Montant"
   },
 
   "SECTOR"             : {
@@ -811,8 +829,60 @@
     "ORIGIN"               : "Origines",
     "DEBTOR_GROUP"         : "Selectionner un nouveau groupe des debiteur",
     "PATIENT_REGISTRATION" : "Enregistrement Patient",
+    "DANGER"               : "Erreur pendant le changement de groupe de debiteur",
     "ERR_HTTP"             : "Erreur pendant le changement de groupe de debiteur",
     "ERR_MISSING"          : "Erreur, il n'y a pas un debiteur selectionner",
     "SUCCESS"              : "Changement avec succes"
+  },
+
+  "ALLTRANSACTIONS" : {
+    "TITLE"         : "ETAT DES TOUTES LES TRANSACTIONS",
+    "SEARCH"        : "valider",
+    "DAY"           : "Aujoird'hui",
+    "WEEK"          : "Cette Semaine",
+    "MONTH"         : "Ce mois",
+    "FISCAL_YEAR"   : "Cette Annee Fiscale",
+    "FROMSTARTING"  : "Depuis le Debut",
+    "SELECTED"      : "ETAT DES TRANSACTIONS POUR LES COMPTES : ",
+    "DEFAULT"       : "ETAT DES TOUTES LES TRANSACTIONS"
+  },
+
+  "CAUTION"        : {
+    "TITLE"        : "Gestion des Cautions",
+    "CASH"         : "Caisse Auxilliaire",
+    "PATIENT"      : "Informations Patient",
+    "NAME"         : "Noms",
+    "AGE"          : "Age",
+    "GENDER"       : "GENDER",
+    "ORIGIN"       : "Origines",
+    "INFO_CAUTION" : "Information sur la caution",
+    "CAUTION"      : "Caution",
+    "PAY"          : "Payer",
+    "SUCCES"       : "Operation reussie !",
+    "DANGER"       : "Erreur ! pas de taus d'echange !"
+
+  },
+
+  "PCASH"                   : {
+    "TITLE"                 : "Gestion de la Caisse Principale",
+    "INCOME"                : "Recette",
+    "EXPENSE"               : "Depense",
+    "SOME_REPORT"           : "Rapport sommaire des activites (20 derniers)",
+    "MANAGER_CONFIGURATION" : "Gestion de la Caisse Principale",
+    "DESCRIPTION"           : "Ce module vous permettra de realiser de facoun automatisee toutes les operations lieesa la caisse pricipale. Utiliser ce module pour gerer les recettes et depenses avec aisance."
+  },
+
+  "INCOME"        : {
+    "TITLE"       : "Caisse Principale                                                                                                                                                                        : Depense",
+    "TRANSFER"    : "Transfert",
+    "CONVENTION"  : "Convention",
+    "OTHER"       : "Autre",
+    "PCASH"       : "Caisse Principale",
+    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
+    "OVERVIEW"    : "Caisse Principale                                                                                                                                                                        : Gestion des Recettes",
+    "INFO"        : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
+    "SOURCE"      : "Source",
+    "EXPECTED"    : "Attendu",
+    "RECEIVED"    : "Recu"
   }
 }

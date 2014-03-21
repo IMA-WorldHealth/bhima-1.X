@@ -99,7 +99,6 @@ angular.module('kpk.controllers')
       // if($scope.cashbox) $scope.cashbox = cashBox;
     }
 
-
     function setUpModels(models) {
       for (var k in models) {
         $scope[k] = models[k];
