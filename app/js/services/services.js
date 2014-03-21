@@ -163,7 +163,6 @@
         //Run each test
         modelTestStatus = modelTests.some(function(testObject) {
           var testFailed, testMethod = testObject.method;
-  
           testFailed = !testMethod(model.data);
           if(testFailed) validateStatus.setFailed(testObject, modelKey);
           return testFailed;
@@ -321,19 +320,19 @@
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request;
-     
+
         console.log('OBJECT STORE', objectStore);
         console.log('deleting', key);
         request = objectStore.delete([namespace, key]);
-     
+
         request.onsuccess = function(event) {
           console.log('delete success?', event);
           deferred.resolve(event);
-        }
+        };
         request.onerror = function(event) {
           console.log('delete errur');
           deferred.reject(event);
-        }
+        };
       });
       return deferred.promise;
     }
@@ -347,7 +346,7 @@
         var writeObject = {
           namespace: namespace,
           key: key
-        }
+        };
         var transaction = db.transaction(['master'], "readwrite");
         var objectStore = transaction.objectStore('master');
         var request;
@@ -551,7 +550,6 @@
       this.remove = function (id) {
         var data = this.data,
             index = this.index;
-     
         if (id in index) {
           data.splice(index[id], 1);
           this.setData(data);
@@ -838,14 +836,24 @@
 
       var self = function exchange (value, currency_id) {
         if (!self.map) { messenger.danger('No exchange rates loaded'); }
+
         return self.map ? precision.round((self.map[currency_id] || 1.00) * value) : precision.round(value);
       };
 
+      //FIX ME : since i wrote this method this throw an error but the app still work
+      self.myExchange = function myExchange (value, valueCurrency_id){
+        if(!(value && valueCurrency_id)) throw new Error('Invalid data');
+        return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
+      }
+
       appstate.register('exchange_rate', function (globalRates) {
         self.map = {};
+        self.dailyrate = [];
         globalRates.forEach(function (r) {
+          //self.dailyrate.push({date : r.date, foreign_currency_id : r.foreign_currency_id, rate : r.rate});
           self.map[r.foreign_currency_id] = precision.round(r.rate);
         });
+        //self.myExchange = myExchange;
       });
 
       return self;

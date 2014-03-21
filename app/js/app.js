@@ -211,6 +211,34 @@
       controller : 'swapDebitor',
       templateUrl : 'partials/swap_debitor/swap_debitor.html'
     })
+    .when('/reports/all_transactions', {
+      controller : 'allTransactions',
+      templateUrl : 'partials/reports/all_transactions/all_transactions.html'
+    })
+    .when('/caution', {
+      controller : 'caution',
+      templateUrl : 'partials/caution/caution.html'
+    })
+    .when('/client', {
+      controller : 'client',
+      templateUrl : 'partials/client/client.html'
+    })
+    .when('/beneficiary', {
+      controller : 'beneficiary',
+      templateUrl : 'partials/beneficiary/beneficiary.html'
+    })
+    .when('/main_cash', {
+      controller : 'mainCash',
+      templateUrl : 'partials/pcash/pcash.html'
+    })
+    .when('/main_cash/income', {
+      controller : 'income',
+      templateUrl : 'partials/pcash/income/income.html'
+    })
+    .when('/main_cash/expense', {
+      controller : 'expense',
+      templateUrl : 'partials/pcash/expense/expense.html'
+    })
     .when('/update_stock', {
       controller : 'updateStock',
       templateUrl : 'partials/update_stock/update_stock.html'
@@ -223,7 +251,7 @@
       prefix: '/i18n/',
       suffix: '.json'
     });
- 
+
     //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('en');
   }

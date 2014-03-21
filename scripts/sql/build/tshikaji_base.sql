@@ -37,6 +37,7 @@ delete from `price_list`;
 -- INSERT INTO `user` values
 --   (1,'admin','1','System','Administrato','kpkdeveloper@gmail.com',0);
 --
+
 -- Subscribed units
 INSERT INTO `unit` VALUES
   (0 , 'Root'                       , 'TREE.ROOT', 'The unseen root node'                       , NULL, 1 , '/partials/index.html'                    , '/root'),
@@ -85,7 +86,13 @@ INSERT INTO `unit` VALUES
   (68, 'Update Stock'               , 'TREE.UPDATE_STOCK', '',                                      11, 0, '/partials/update_stock/', '/update_stock/'),
   (69, 'Change Patient Group'       , 'TREE.SWAP_DEBITOR', '',                                      21, 0, '/partials/swap_debitor/', '/swap_debitor/'),
   (70, 'Cash Payments'              , 'TREE.CASH_PAYMENTS', '',                                     10, 0, '/partials/reports/cash_payments/', '/reports/cash_payments'),
-  (71, 'Patient Standing'           , 'TREE.PATIENT_STANDING', '',                                  10, 0, '/partials/reports/patient_standing/', '/reports/patient_standing');
+  (71, 'Report All Transactions'    , 'TREE.ALL_TRANSACTIONS', '',                                     10, 0, '/partials/reports/all_transactions/', '/reports/all_transactions'),
+  (72, 'Caution'                    , 'TREE.CAUTION', '',                                     5, 0, '/partials/caution/', '/caution'),
+  (73, 'Extra'                      , 'TREE.EXTRA', '',                                     0, 1, '/partials/extra/', '/extra'),
+  (74, 'Client'                     , 'TREE.CLIENT', '',                                     73, 0, '/partials/client/', '/client'),
+  (75, 'Beneficiary'                , 'TREE.BENEFICIARY', '',                                     73, 0, '/partials/beneficiary/', '/beneficiary'),
+  (76, 'Main Cash'                , 'TREE.MAIN_CASH', '',                                  5, 0, '/partials/pcash/', '/main_cash');
+  (77, 'Patient Standing'           , 'TREE.PATIENT_STANDING', '',                                  10, 0, '/partials/reports/patient_standing/', '/reports/patient_standing');
 
 -- INSERT INTO `permission` (`user_id`, `unit_id`) values
 --   (1, 0),
@@ -619,13 +626,15 @@ INSERT INTO `unit` VALUES
 --   ('50b1a097-599f-4b49-9085-01e351396691' , 'DIBAYA'           , '326983ea-2f20-48a0-9428-a7ce5664cbaa');
 --
 -- System transactions (TODO seperate from Tshikaji?)
--- INSERT INTO `transaction_type` values 
---   (1, 'cash'),
--- 	(2, 'sale'),
--- 	(3, 'purchase'),
---   (4, 'journal'),
---   (5, 'group_invoice'),
---   (6, 'credit_note');
+INSERT INTO `transaction_type` values
+  (1, 'cash'),
+	(2, 'sale'),
+	(3, 'purchase'),
+  (4, 'journal'),
+  (5, 'group_invoice'),
+  (6, 'credit_note'),
+  (7, 'caution'),
+  (8, 'pcash');
 
   -- Configure base currencies
 INSERT INTO `currency` (`id`, `name`, `symbol`, `separator`, `decimal`, `min_monentary_unit`) values
@@ -637,7 +646,7 @@ INSERT INTO `currency` (`id`, `name`, `symbol`, `separator`, `decimal`, `min_mon
 INSERT INTO `enterprise` (`id`, `name`, `abbr`, `phone`, `email`, `logo`, `currency_id`) values 
   (200, 'Hopital Bon Berger', 'GSH', '0825924377', 'cmk@tshikaji.cd', '/assets/logos/tsh.jpg', 2);
 
-INSERT INTO `fiscal_year` VALUES 
+INSERT INTO `fiscal_year` VALUES
 (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014,NULL,0);
 INSERT INTO `period` VALUES
 (1,1,0,'2014-01-01','2014-01-01',0),(2,1,1,'2014-01-01','2014-01-31',0),(3,1,11,'2014-02-01','2014-02-28',0),(4,1,21,'2014-03-01','2014-03-31',0),(5,1,31,'2014-04-01','2014-04-30',0),(6,1,41,'2014-05-01','2014-05-31',0),(7,1,51,'2014-06-01','2014-06-30',0),(8,1,61,'2014-07-01','2014-07-31',0),(9,1,71,'2014-08-01','2014-08-31',0),(10,1,81,'2014-09-01','2014-09-30',0),(11,1,91,'2014-10-01','2014-10-31',0),(12,1,101,'2014-11-01','2014-11-30',0),(13,1,111,'2014-12-01','2014-12-31',0);
@@ -659,10 +668,10 @@ INSERT INTO `account_type` values
 
 -- Configure base inventory
 INSERT INTO `inventory_unit` (`text`) values
-  ('Act'), 
-  ('Pallet'), 
-  ('Pill'), 
-  ('Box'), 
+  ('Act'),
+  ('Pallet'),
+  ('Pill'),
+  ('Box'),
   ('Lot');
 
 INSERT INTO `inventory_type` values

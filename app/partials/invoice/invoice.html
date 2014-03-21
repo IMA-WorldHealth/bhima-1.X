@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <header> 
   {{'INVOICE.TITLE' | translate}}  
   <!-- FIXME hacks for meeting -->
@@ -5,6 +6,15 @@
     <select class="form-kapok" ng-change="updateCost(session.currentCurrency.id)" ng-model="session.currentCurrency" ng-options="currency.symbol for currency in model.currency.data"></select> 
   </div>
 </header> 
+=======
+<header>
+{{'INVOICE.TITLE' | translate}}
+<!-- FIXME hacks for meeting -->
+<div ng-if="origin==='sale'" class="pull-right">
+  <select class="form-kapok" ng-change="updateCost(session.currentCurrency.currency_id)" ng-model="session.currentCurrency" ng-options="currency.symbol for currency in model.currency.data"></select>
+</div>
+</header>
+>>>>>>> ae0918c4c616b21463e3a275fcaa7f1066c7578c
 
 <!-- TODO Massive style hack -->
 <div class="reportBody" style="margin-top: 50px;">
@@ -14,9 +24,14 @@
     <div ng-switch-when="sale">
       <!-- Patient Invoice template -->
       <div class="row customer-details">
+<<<<<<< HEAD
         <div class="col-xs-12"> 
           <h4 class="invoice-header">{{ 'INVOICE.PATIENT_INVOICE' | translate }}</h4>
           <small style="color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+=======
+        <div class="col-xs-12">
+          <h4 class="invoice-header">{{'INVOICE.PATIENT_INVOICE' | translate}}</h4>
+>>>>>>> ae0918c4c616b21463e3a275fcaa7f1066c7578c
         </div>
       </div>
       <div class="row customer-details">
@@ -25,7 +40,7 @@
         </div>
         <div class="col-xs-7">
           <div class="row">
-            {{recipient.first_name}} {{recipient.last_name}} 
+            {{recipient.first_name}} {{recipient.last_name}}
           </div>
           <div class="row">
             <i>{{recipient.location.village}}</i>
@@ -47,13 +62,13 @@
             <b>{{'INVOICE.DATE' | translate}}</b>
           </div>
           <div class="row">
-            {{invoice.invoice_date | date}}  
+            {{invoice.invoice_date | date}}
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
-    
+
           <table class="invoiceTable">
             <thead>
               <tr>
@@ -62,10 +77,11 @@
                 <th>{{'COLUMNS.QUANTITY' | translate}}</th>
                 <th>{{'INVOICE.TRANSACTION_PRICE' | translate}}</th>
                 <th>{{'INVOICE.AMOUNT' | translate}}</th>
-              </tr> 
+              </tr>
             </thead>
             <tbody class="items">
               <tr ng-repeat="item in model['invoiceItem'].data">
+<<<<<<< HEAD
                 <td>{{ item.code }}</td>
                 <td>{{ item.text }}</td>
                 <td>{{ item.quantity }}</td>
@@ -77,25 +93,38 @@
               <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.id"></span></td></tr>
               <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.id"></span></td></tr>
               <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.id"></span></td></tr>
+=======
+                <td>{{item.code}}</td>
+                <td>{{item.text}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.transaction_price}}</td>
+                <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td>
+              </tr>
+            </tbody>
+            <tbody class="totals">
+              <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.localeCredit | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+              <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.currency_id"></span></td></tr>
+>>>>>>> ae0918c4c616b21463e3a275fcaa7f1066c7578c
             </tbody>
 
           </table>
         </div>
       </div> <!-- End Patient Invoice template -->
     </div>
-    
+
     <div ng-switch-when="patient">
       <div class="row customer-details">
-        <div class="col-xs-12"> 
+        <div class="col-xs-12">
           <h4 class="invoice-header">{{'INVOICE.PATIENT' | translate}}</h4>
         </div>
       </div>
       <div class="row customer-details">
-        <div class="col-xs-12"> 
+        <div class="col-xs-12">
           <div class="col-xs-1">
           </div>
           <div class="col-xs-7">
-            
+
             <div class="row">
               <h4>{{recipient.first_name}} {{recipient.last_name}}</h4>
             </div>
@@ -118,16 +147,16 @@
               <b>{{'INVOICE.DATE_REGISTRATION' | translate}}</b>
             </div>
             <div class="row">
-              {{recipient.registration_date | date}}  
+              {{recipient.registration_date | date}}
             </div>
 
             <div class="row">
               <b>Date of receipt</b>
             </div>
             <div class="row">
-              {{timestamp | date}}  
+              {{timestamp | date}}
             </div>
-            
+
           </div>
         </div>
       </div>
@@ -135,7 +164,7 @@
 
     <div ng-switch-when="credit">
       <div class="row customer-details">
-        <div class="col-xs-12"> 
+        <div class="col-xs-12">
           <h4 class="invoice-header">{{'INVOICE.CREDIT_NOTE' | translate}}</h4>
         </div>
       </div>
@@ -145,7 +174,7 @@
         </div>
         <div class="col-xs-7">
           <div class="row">
-            {{note.first_name}} {{note.last_name}} 
+            {{note.first_name}} {{note.last_name}}
           </div>
           <div class="row">
             <i>{{location.village}}</i>
@@ -166,7 +195,7 @@
             <b>{{'INVOICE.DATE' | translate}}</b>
           </div>
           <div class="row">
-            {{note.note_date | date}}  
+            {{note.note_date | date}}
           </div>
         </div>
       </div>
@@ -174,10 +203,10 @@
         <div class="col-xs-12">
           <table class="invoiceTable">
             <thead>
-              <tr><th>{{'INVOICE.NOTE' | translate}}</th><th>{{'INVOICE.AMOUNT' | translate}}</th><th></th></tr> 
+              <tr><th>{{'INVOICE.NOTE' | translate}}</th><th>{{'INVOICE.AMOUNT' | translate}}</th><th></th></tr>
             </thead>
             <tbody class="items">
-              <tr><td>{{note.description}}</td><td>{{note.debitor_id}}</td><td>{{note.cost | currency}}</td></tr> 
+              <tr><td>{{note.description}}</td><td>{{note.debitor_id}}</td><td>{{note.cost | currency}}</td></tr>
             </tbody>
             <tbody class="totals">
               <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL_CREDITED' | translate}}</td><td>{{note.cost | currency}}</td></tr>
@@ -185,15 +214,15 @@
           </table>
         </div>
       </div> <!-- End Patient Invoice template -->
- 
+
     </div>
     <!-- Placholder debtor recipt, shows all transactions for given debtor, and the balance owed-->
     <div ng-switch-when="debtor">
       <div class="row customer-details">
-        <div class="col-xs-12"> 
+        <div class="col-xs-12">
           <h4 class="invoice-header">{{'INVOICE.PATIENT' | translate}}</h4>
         </div>
-         <div class="col-xs-12"> 
+         <div class="col-xs-12">
           <h4 class="invoice-header"></h4>
         </div>
       </div>
@@ -225,15 +254,15 @@
 
       <div class="row">
         <div class="col-xs-12">
-          {{'INVOICE.BALANCE_DUE' | translate}} 
+          {{'INVOICE.BALANCE_DUE' | translate}}
         </div>
       </div>
     </div>
-      
+
       <div ng-switch-when="cash">
-        <!-- Cash receipt template --> 
+        <!-- Cash receipt template -->
         <div class="row customer-details">
-          <div class="col-xs-12"> 
+          <div class="col-xs-12">
             <h4 class="invoice-header">{{'INVOICE.CASH_RECEIPT' | translate}}</h4>
             <small style="color: grey; font-size: 8px">{{ cashTransaction.cash_uuid }}</small>
           </div>
@@ -244,7 +273,7 @@
           </div>
           <div class="col-xs-7">
             <div class="row">
-              {{recipient.first_name}} {{recipient.last_name}} 
+              {{recipient.first_name}} {{recipient.last_name}}
             </div>
             <div class="row">
               <i>{{recipient.location.village}}</i>
@@ -265,7 +294,11 @@
               <b>{{'INVOICE.DATE' | translate}}</b>
             </div>
             <div class="row">
+<<<<<<< HEAD
               {{ cashTransaction.date | date}}  
+=======
+              {{cashTransaction.date | date}}
+>>>>>>> ae0918c4c616b21463e3a275fcaa7f1066c7578c
             </div>
           </div>
         </div>
@@ -273,6 +306,7 @@
           <div class="col-xs-12">
             <table class="invoiceTable">
               <thead>
+<<<<<<< HEAD
                 <tr>
                   <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
                   <th>{{'INVOICE.AMOUNT' | translate}}</th>
@@ -281,6 +315,13 @@
               <tbody class="items"> 
                 <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>{{'INVOICE.INVOICE_ID' | translate}} {{ project.abbr + invoice.reference }}</b></td></tr>
                 <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td><span ng-bind-html="item.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr> 
+=======
+                <tr><th>{{'INVOICE.DESCRIPTION' | translate}}</th><th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
+              </thead>
+              <tbody class="items">
+                <tr ng-repeat-start="invoice in model.cash.data"><td colspan="2"><b>{{'INVOICE.INVOICE_ID' | translate}} {{invoice.invoice_id}}</b></td></tr>
+                <tr ng-repeat-end ng-repeat="item in model['invoiceItem'].data"><td>{{item.text}}</td><td><span ng-bind-html="item.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr>
+>>>>>>> ae0918c4c616b21463e3a275fcaa7f1066c7578c
               </tbody>
               <tbody class="totals">
               <tr><td class="no-border">{{'INVOICE.TOTAL' | translate }}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:cashTransaction.currency_id"></span></td></tr>
@@ -290,6 +331,69 @@
             </table>
           </div>
         </div>
+<<<<<<< HEAD
+=======
+      </div>
+
+    <div ng-switch-when="caution">
+      <div class="row customer-details">
+        <div class="col-xs-12">
+          <h4 class="invoice-header">{{'INVOICE.CAUTION' | translate}}</h4>
+        </div>
+      </div>
+      <div class="row customer-details">
+        <div class="col-xs-1">
+          <b>{{'INVOICE.TO' | translate}}</b>
+        </div>
+        <div class="col-xs-7">
+          <div class="row">
+            {{caution.first_name}} {{caution.last_name}}
+          </div>
+          <div class="row">
+            <i>{{location.village}}</i>
+            <br>
+            <i>{{location.sector}}</i>
+            <br>
+            <i>{{location.province}}</i>
+          </div>
+        </div>
+        <div style="text-align: left;" class="col-xs-4">
+          <div class="row">
+            <b>{{'INVOICE.CAUTION_ID' | translate}}</b>
+          </div>
+          <div class="row">
+            {{caution.id}}
+          </div>
+          <div class="row">
+            <b>{{'INVOICE.DATE' | translate}}</b>
+          </div>
+          <div class="row">
+            {{caution.date | date}}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="invoiceTable">
+            <thead>
+              <tr><th>{{'INVOICE.CAUTION' | translate}}</th>
+                <th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
+            </thead>
+            <tbody class="items">
+              <tr>
+                <td>{{'INVOICE.LIBELLE_CAUTION' | translate}}</td>
+                <td>{{convertAmount(caution.value, caution.currency_id) | currency}}</td>
+              </tr>
+            </tbody>
+            <tbody class="totals">
+              <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td><td>{{convertAmount(caution.value, caution.currency_id) | currency}}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div> <!-- End Patient Invoice template -->
+
+    </div> <!-- end Cash receipt template  -->
+>>>>>>> ae0918c4c616b21463e3a275fcaa7f1066c7578c
     </div>
 </div>
 </div>

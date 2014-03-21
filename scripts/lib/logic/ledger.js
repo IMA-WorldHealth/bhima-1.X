@@ -10,35 +10,57 @@
 // for each group, respectively.
 
 var sanitize = require('../util/sanitize'),
+    q =  require('q'),
     util = require('../util/util');
 
 module.exports = function (db) {
   'use strict';
 
   function debitor (id, callback) {
+    var defer = q.defer();
+
     // debitor query
-    if (!id) { return callback(new Error('No debitor id selected!')); }
+    if (!id) { defer.reject(new Error('No debitor id selected!')); }
     else { id = sanitize.escape(id); }
 
     var query =
-      'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM ((SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id FROM posting_journal as p WHERE p.deb_cred_uuid = ' + id + ') ' +
-      'UNION (SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id FROM general_ledger as g WHERE g.deb_cred_uuid = ' + id +')) as c;';
+      'SELECT `account_id` ' +
+      'FROM `debitor` JOIN `debitor_group` ON ' +
+        '`debitor`.`group_uuid` = `debitor_group`.`uuid` ' +
+      'WHERE `debitor`.`uuid`=' + id +';';
 
-    db.execute(query, function (err, rows) {
-      if (err) return callback(err);
-    
-      if (!rows.length) { return callback(null, []); }
-      
-      var invoices = rows.map(function (line) {
-        return sanitize.escape(line.inv_po_id);
+    db.exec(query)
+    .then(function (ans) {
+
+      var account = ans.pop().account_id;
+
+      var query =
+        'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
+          'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
+          'FROM posting_journal AS p ' +
+          'WHERE p.deb_cred_uuid = ' + id + ' AND p.account_id = ' + account + ' ' +
+        'UNION ' +
+          'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
+          'FROM general_ledger AS g ' +
+          'WHERE g.deb_cred_uuid = ' + id + ' AND g.account_id = ' + account + ') ' +
+        ' AS c;';
+
+      return db.exec(query);
+    })
+    .then(function (ans) {
+
+      if (!ans.length) { return callback(null, []); }
+
+      var invoices = ans.map(function (line) {
+        return line.inv_po_id;
       });
 
-      var account_id = rows[0].account_id;
+      var account_id = ans.pop().account_id;
 
       var sql =
         'SELECT `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
         'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
-        '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
+        '`t`.`account_id`, `t`.`deb_cred_id`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
         '`t`.`comment`' +
         'FROM (' +
           '(' +
@@ -59,11 +81,18 @@ module.exports = function (db) {
         'AND t.account_id = ' + account_id + ' ' +
         'GROUP BY `t`.`inv_po_id`;\n';
 
-      db.execute(sql, function (err, rows) {
-        if (err) { return callback(err); }
-        return callback(null, rows);
-      });
+      return db.exec(sql);
+
+    })
+    .then(function (ans) {
+      defer.resolve(ans);
+    })
+    .catch(function (error) {
+      defer.reject(error);
     });
+
+    return defer.promise;
+
   }
 
   function creditor (id, res) {}
