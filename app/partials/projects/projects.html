@@ -1,0 +1,112 @@
+<header>
+  {{ 'PROJECTS.TITLE' | translate }}
+</header>
+
+<section class='top-bar'>
+  <a href="" class="btn btn-sm btn-default" ng-click="new()">
+    <span class="glyphicon glyphicon-file"></span> {{ 'PROJECTS.NEW' | translate }}
+  </a>
+
+  <div class="pull-right">
+    <a href="" class="btn btn-sm btn-default" ng-click="print()">
+      <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
+    </a>
+  </div>
+</section>
+
+<div class="content">
+  <div class="row">
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          {{ 'PROJECTS.EXISTING' | translate }}
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ 'COLUMNS.ID' | translate }}</th>
+              <th>{{ 'COLUMNS.NAME' | translate }}</th>
+              <th>{{ 'COLUMNS.ABBR' | translate }}</th>
+              <th>{{ 'COLUMNS.ENTERPRISE_ID' | translate }}</th>
+              <th colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="project in projects.data">
+              <td>{{ project.id }}</td>
+              <td>{{ project.name }}</td>
+              <td>{{ project.abbr }}</td>
+              <td>{{ project.enterprise_id }}</td>
+              <td><a href="" ng-click="edit(project)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a href="" ng-click="delete(project)" disabled><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-6" ng-switch="action">
+
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <h4>{{ 'PROJECTS.TITLE' }}</h4>
+          <p> {{ 'PROJECTS.HELP_TXT_1' | translate }}</p>
+        </div>
+      </div>
+
+      <form ng-switch-when="'new'" novalidate>
+        <fieldset>
+          <legend>{{ 'PROJECTS.NEW' | translate }}</legend>
+
+          <div class="form-group">
+            <label>{{ 'COLUMNS.NAME' | translate }}</label>
+            <input class="form-kapok" ng-model="newProject.name" required>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'COLUMNS.ABBR' | translate }}</label>
+            <input class="form-kapok" ng-model="newProject.abbr" required>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'COLUMNS.ENTERPRISE' | translate }}</label>
+            <select class="form-kapok" ng-model="newProject.enterprise_id" ng-options="e.id as e.name for e in enterprises.data" required>
+              <option value="" disabled>{{ 'SELECT.ENTERPRISE' | translate }}</option>
+            </select>
+          </div>
+
+          <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitNew()">
+          <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelNew()">
+        </fieldset>
+      </form>
+
+      <form ng-switch-when="'edit'" novalidate>
+        <fieldset>
+          <legend>{{ 'PROJECTS.EDIT' | translate }}</legend>
+
+          <div class="form-group">
+            <label>{{ 'COLUMNS.NAME' | translate }}</label>
+            <input class="form-kapok" ng-model="editProject.name" required>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'COLUMNS.ABBR' | translate }}</label>
+            <input class="form-kapok" ng-model="editProject.abbr" required>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'COLUMNS.ENTERPRISE' | translate }}</label>
+            <select class="form-kapok" ng-model="editProject.enterprise_id" ng-options="e.id as e.name for e in enterprises.data" required>
+              <option value="" disabled>{{ 'SELECT.ENTERPRISE' | translate }}</option>
+            </select>
+          </div>
+
+          <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitEdit()">
+          <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelEdit()">
+        </fieldset>
+      </form>
+
+    </div>
+  </div>
+</div>
