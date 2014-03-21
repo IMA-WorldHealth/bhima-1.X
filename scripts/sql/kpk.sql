@@ -571,8 +571,6 @@ create table `patient_visit` (
   constraint foreign key (`registered_by`) references `user` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
-
-
 --
 -- Table structure for table `kpk`.`debitor`
 --
@@ -1149,28 +1147,6 @@ create table `debitor_group_history` (
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 
---
--- Table structure for table `kpk`.`caution`
---
-drop table if exists `caution`;
-create table `caution` (
-`id`                  int unsigned not null auto_increment,
-`value`               decimal(19,4) unsigned not null,
-`date`                timestamp not null,
-`enterprise_id`       smallint unsigned not null,
-`debitor_id`          int unsigned not null,
-`currency_id`         tinyint unsigned not null,
-`user_id`             smallint unsigned not null,
-primary key (`id`),
-key `enterprise_id` (`enterprise_id`),
-key `debitor_id` (`debitor_id`),
-key `currency_id` (`currency_id`),
-key `user_id` (`user_id`),
-constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-constraint foreign key (`debitor_id`) references `debitor` (`id`),
-constraint foreign key (`currency_id`) references `currency` (`id`),
-constraint foreign key (`user_id`) references `user` (`id`)
-) engine=innodb;
 
 --
 -- Table structure for table `kpk`.`client`
@@ -1181,10 +1157,10 @@ create table `client` (
   `name`                 varchar(50) not null,
   `last_name`            varchar(50) not null,
   `address`              varchar(100),
-  `debitor_id`           int unsigned not null,
+  `debitor_uuid`         char(36),
   primary key (`id`),
-  key `debitor_id` (`debitor_id`),
-  constraint foreign key (`debitor_id`) references `debitor` (`id`)
+  key `debitor_uuid` (`debitor_uuid`),
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`)
 ) engine=innodb;
 
 --
@@ -1203,7 +1179,7 @@ create table `beneficiary` (
 drop table if exists `pcash`;
 create table `pcash` (
   `id`              int unsigned not null auto_increment,
-  `enterprise_id`   smallint unsigned,
+  `enterprise_id`   smallint unsigned not null,
   `type`            char(1) not null,
   `date`            date not null,
   `deb_cred_id`     int unsigned,
@@ -1240,7 +1216,30 @@ create table `pcash_item` (
   primary key (`id`),
   key `pcash_id` (`pcash_id`),
   key `invoice_id` (`invoice_id`),
-  constraint foreign key (`pcash_id`) references `pcash` (`id`),
-  constraint foreign key (`invoice_id`) references `sale` (`id`)
+  constraint foreign key (`pcash_id`) references `pcash` (`id`)
+--  constraint foreign key (`invoice_id`) references `sale` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`caution`
+--
+drop table if exists `caution`;
+create table `caution` (
+  `id`                  int unsigned not null auto_increment,
+  `value`               decimal(19,4) unsigned not null,
+  `date`                timestamp not null,
+  `enterprise_id`       smallint unsigned not null,
+  `debitor_id`          int unsigned not null,
+  `currency_id`         tinyint unsigned not null,
+  `user_id`             smallint unsigned not null,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  key `debitor_id` (`debitor_id`),
+  key `currency_id` (`currency_id`),
+  key `user_id` (`user_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+--  constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`currency_id`) references `currency` (`id`),
+  constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 -- Jon's dump @ 12:45.

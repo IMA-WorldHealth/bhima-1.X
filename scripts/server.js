@@ -346,34 +346,44 @@ app.get('/visit/:patient_id', function (req, res, next) {
 });
 
 app.get('/caution/:debitor_id/:enterprise_id', function (req, res, next) {
-  var debitor_id = req.params.debitor_id;
+  var sql, debitor_id = sanitize.escape(req.params.debitor_id),
+      enterprise_id = sanitize.escape(req.params.enterprise_id);
   //prochaine enterprise_id sera obtenue par requette via debitor_id
 
-  var sql = 'SELECT `enterprise`.`currency_id` FROM enterprise WHERE `enterprise`.`id`='+sanitize.escape(req.params.enterprise_id)+';';
-  db.execute(sql, function(err, ans){
-    if(err) next(err);
-    console.log("la donnee est ", ans);
-    var sql2 =
-      'SELECT `t`.`enterprise_id`, `t`.`id`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
-        '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
+  sql =
+    'SELECT `enterprise`.`currency_id` ' +
+    'FROM `enterprise` ' +
+    'WHERE `enterprise`.`id` = ' + enterprise_id + ';';
+
+  db.exec(sql)
+  .then(function (ans) {
+    var currency = ans.pop().currency_id;
+    sql =
+      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
+        '`t`.`credit_equiv` AS `credit`, `t`.`description` ' +
         'FROM (' +
-          '(' +
-            'SELECT `posting_journal`.`enterprise_id`, `posting_journal`.`id`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
-              '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_id`, `posting_journal`.`currency_id`, ' +
-              '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id` ' +
-            'FROM `posting_journal`' +
-          ') UNION (' +
-            'SELECT `general_ledger`.`enterprise_id`, `general_ledger`.`id`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
-              '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_id`, `general_ledger`.`currency_id`, ' +
-              '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id` ' +
-            'FROM `general_ledger`' +
-          ')' +
-        ') AS `t`, `account` WHERE `t`.`account_id` = `account`.`id` AND `t`.`account_id` = '+
-        '(SELECT `caution_account` FROM `currency_account` WHERE `currency_account`.`enterprise_id`='+sanitize.escape(req.params.enterprise_id)+' AND `currency_account`.`currency_id`='+sanitize.escape(ans[0].currency_id)+') AND `t`.`deb_cred_id`='+sanitize.escape(debitor_id)+';';
-    db.execute(sql2, function (err, ans) {
-      if(err) next(err);
-      res.send(ans);
-    });
+          'SELECT `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+            '`posting_journal`.`credit_equiv`, `posting_journal`.`deb_cred_uuid`, ' +
+            '`posting_journal`.`trans_id`, `posting_journal`.`description` ' +
+          'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid` = ' + debitor_id +
+        ' UNION ' +
+          'SELECT `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+            '`general_ledger`.`credit_equiv`, `general_ledger`.`deb_cred_uuid`, ' +
+            '`general_ledger`.`trans_id`, `general_ledger`.`description` ' +
+          'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` = ' + debitor_id +
+        ') AS `t` JOIN `account` ON `t`.`account_id` = `account`.`id` ' +
+        'WHERE`t`.`account_id` IN (' +
+          'SELECT `cash_box_account`.`caution_account` FROM `cash_box_account` ' +
+          'WHERE `cash_box_account`.`enterprise_id` = ' + enterprise_id + ' ' +
+            'AND `cash_box_account`.`currency_id`=' + currency +
+        ');';
+    return db.exec(sql);
+  })
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
   });
 });
 

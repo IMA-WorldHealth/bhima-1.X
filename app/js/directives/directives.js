@@ -362,7 +362,7 @@
             namespacedId.projectCode = idString.substr(0, codeLength);
             namespacedId.reference = idString.substr(codeLength);
 
-            console.log(namespacedId);
+            //console.log(namespacedId);
             if(!namespacedId.projectCode || !namespacedId.reference) return null;
             if(isNaN(Number(namespacedId.reference))) return null;
 
@@ -410,7 +410,7 @@
               //Human readable ID
               // FIXME This should be a select CONCAT() from MySQL
               patient.hr_id = patient.abbr.concat(patient.reference);
-              console.log(patient.hr_id);
+              //console.log(patient.hr_id);
             });
             return patientData;
           }
