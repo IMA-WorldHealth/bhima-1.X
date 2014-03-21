@@ -1,13 +1,13 @@
 angular.module('kpk.controllers')
 .controller('patientGroup', [
   '$scope',
-  '$filter',
+  '$translate',
   'connect',
   'validate',
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, $filter, connect, validate, appstate, messenger, uuid) {
+  function ($scope, $translate, connect, validate, appstate, messenger, uuid) {
     var dependencies = {};
     var session = $scope.session = {
       selected : null
@@ -27,26 +27,30 @@ angular.module('kpk.controllers')
     dependencies.list = {
       query : {
         identifier : 'uuid',
-        tables : { 'price_list' : { columns : ['uuid', 'title'] } } 
-      } 
+        tables : {
+          'price_list' : {
+            columns : ['uuid', 'title']
+          }
+        }
+      }
     };
 
     appstate.register('enterprise', loadEnterprise);
 
-    function loadEnterprise(enterprise) { 
+    function loadEnterprise(enterprise) {
       $scope.enterprise = enterprise;
       dependencies.group.query.where = ['patient_group.enterprise_id='+enterprise.id];
       validate.process(dependencies).then(initialisePatientGroup);
     }
 
     function initialisePatientGroup(model) {
-      for (var modelKey in model) { 
-        $scope[modelKey] = model[modelKey]; 
+      for (var modelKey in model) {
+        $scope[modelKey] = model[modelKey];
       }
     }
 
     $scope.remove = function (grp) {
-      if (!confirm($filter('translate')('PATIENT_GRP.CONFIRM_MESSAGE'))) return;
+      if (!confirm($translate('PATIENT_GRP.CONFIRM_MESSAGE'))) return;
 
       connect.basicDelete('patient_group', grp.uuid, 'uuid')
       .then(function (result) {
@@ -71,10 +75,9 @@ angular.module('kpk.controllers')
       packaged.enterprise_id = $scope.enterprise.id;
 
       // validate that register is complete.
-      console.log('attempting to insert', connect.clean($scope.register));
       connect.basicPut('patient_group', packaged)
       .then(function (res) {
-        
+
         $scope.group.post(packaged);
         $scope.edit(packaged);
       }, function (err) {

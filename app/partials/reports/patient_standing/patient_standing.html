@@ -4,9 +4,12 @@
 
 <section class="top-nav">
   <div class="col-xs-3">
-    <input class="form-kapok" ng-model="patient" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+    <input class="form-kapok" ng-model="selection" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
   </div>
-  <a class="btn btn-sm btn-primary" href="" ng-click="search()" ng-disabled="!patient">{{ "UTIL.SEARCH" | translate }}</a>
+  <a class="btn btn-sm btn-primary" href="" ng-click="search()" ng-disabled="!selection">{{ "UTIL.SEARCH" | translate }}</a>
+  <div class="pull-right">
+    <a class="btn btn-sm btn-default" href="" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+  </div>
 </section>
 
 <div class="report">
@@ -24,66 +27,66 @@
             <form class="form-horizontal">
 
               <div class="form-group">
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "COLUMNS.ID" | translate }}
                 </label>
-                <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.uuid }}</p>
+                <div class="col-xs-4">
+                  <p class="form-control-static">{{ patient.abbr + patient.project_id }} <small ng-if="!!patient">({{ patient.uuid }})</small></p>
                 </div>
 
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "COLUMNS.REGISTERED" | translate }}
                 </label>
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                   <p class="form-control-static">{{ patient.registration_date | date }}</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "COLUMNS.SEX" | translate }}
                 </label>
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                   <p class="form-control-static">{{ patient.sex }}</p>
                 </div>
 
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "COLUMNS.DOB" | translate }}
                 </label>
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                   <p class="form-control-static">{{ patient.dob | date }}</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "PATIENT_STANDING.ACCOUNT_NUMBER" | translate }}
                 </label>
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                   <p class="form-control-static">{{ accounts.get(patient.account_id).account_number }}</p>
                 </div>
 
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "PATIENT_STANDING.ACCOUNT_BALANCE" | translate }}
                 </label>
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                   <p class="form-control-static">{{ patient.account_balance | currency }}</p>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "PATIENT_STANDING.LAST_PURCHASE_DATE" | translate }}
                 </label>
-                <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.purchase_date | currency }}</p>
+                <div class="col-xs-4">
+                  <p class="form-control-static">{{ patient.last_purchase_date | date }}</p>
                 </div>
 
-                <label class="control-label col-xs-3">
+                <label class="control-label col-xs-2">
                   {{ "PATIENT_STANDING.LAST_PAYMENT_DATE" | translate }}
                 </label>
-                <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.payment_date | currency }}</p>
+                <div class="col-xs-4">
+                  <p class="form-control-static">{{ patient.last_payment_date | date }}</p>
                 </div>
               </div>
 
@@ -104,17 +107,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="receipt in receipts">
-            <th> {{ receipt.inv_po_id }} </th>
+          <tr ng-repeat="receipt in receipts | filter:isOutstanding | orderBy:'trans_date'">
+            <td> {{ receipt.inv_po_id || 'Unreferenced Balance' }} </td>
             <td> {{ receipt.trans_date | date }} </td>
-            <td> {{ receipt.total_amount | currency }} </td>
-            <td> {{ receipt.balance_due | currency }} </td>
+            <td> {{ receipt.billed | currency }} </td>
+            <td> {{ receipt.due | currency }} </td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
-            <th>{{ "COLUMNS.TOTAL" | translate }}</th>
-            <td></td>
+            <th colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
             <td>{{ patient.total_amount | currency }}</td>
             <td>{{ patient.total_due | currency }}</td>
           </tr>
@@ -128,6 +130,6 @@
 <script type="text/ng-template" id="template.html">
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[{{match.model.uuid}}]</b></span>
+    <span><b>[{{ match.model.uuid }}]</b></span>
   </a>
 </script>

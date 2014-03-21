@@ -83,7 +83,7 @@
 
         <div ng-switch-when="new">
           <form novalidate name="newForm">
-            
+           
             <fieldset>
               <legend>{{ 'ENTERPRISE.CONFIGURATION' | translate }}</legend>
               <div class="form-group">
@@ -108,14 +108,14 @@
 
               <div class="form-group">
                 <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.id as fLocation(loc) for loc in location">
+                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.uuid as fLocation(loc) for loc in location.data">
                   <option value="" disabled="disabled">-- {{ 'SELECT.LOCATION' | translate }}--</option>
                 </select>
               </div>
 
             </fieldset>
-            <fieldset> 
-              <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend> 
+            <fieldset>
+              <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
 
               <div class="radio" ng-repeat="currency in currency.data">
                 <label>
@@ -134,7 +134,7 @@
 
         <div ng-switch-when="edit">
           <form novalidate name="editForm">
-            
+           
             <fieldset>
               <legend>{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</legend>
               <div class="form-group">
@@ -159,14 +159,14 @@
 
               <div class="form-group">
                 <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.id as fLocation(loc) for loc in location" required>
+                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.uuid as fLocation(loc) for loc in location.data" required>
                   <option value="" disabled="disabled">-- Select a Location --</option>
                 </select>
               </div>
 
             </fieldset>
-            <fieldset> 
-              <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend> 
+            <fieldset>
+              <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
 
               <input type="button" class="btn btn-sm btn-default" value="{{ 'ENTERPRISE.MANAGE_CASH_ACCOUNTS' | translate }}" ng-click="manageAccounts()">
 
