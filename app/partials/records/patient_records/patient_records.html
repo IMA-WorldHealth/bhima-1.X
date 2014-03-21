@@ -151,16 +151,16 @@
               </thead>
 
               <tbody>
-              <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
-                <td><b>{{patient.hr_id}}</b></td>
-                <td>{{ patient.name }}</td>
-                <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
-                <td>{{ patient.father_name }}</td>
-                <td>{{ patient.sex | uppercase }}</td>
-                <!-- <td>{{ patient.email }}</td> -->
-                <td>{{patient.registration_date | date}}</td>
-                <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
-              </tr>
+                <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
+                  <td><b>{{patient.hr_id}}</b></td>
+                  <td>{{ patient.name }}</td>
+                  <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
+                  <td>{{ patient.father_name }}</td>
+                  <td>{{ patient.sex | uppercase }}</td>
+                  <!-- <td>{{ patient.email }}</td> -->
+                  <td>{{patient.registration_date | date}}</td>
+                  <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
+                </tr>
               </tbody>
             </table>
           </div>

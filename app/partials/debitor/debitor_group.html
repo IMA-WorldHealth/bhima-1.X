@@ -25,22 +25,18 @@
             <tr>
               <th>{{ "COLUMNS.NAME" | translate }}</th>
               <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
-              <!-- <th>{{ "COLUMNS.TYPE" | translate }}</th> -->
+              <th>{{ "COLUMNS.CONVENTION" | translate }}</th>
               <th><i class="glyphicon glyphicon-lock"></i></th>
               <th style="width: 8%;">{{ "COLUMNS.EDIT" | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="group in debitor_group.data | filter:data.search">
+            <tr ng-repeat="group in debitor_group.data | filter:data.search ">
               <td>{{ group.name }}</td>
               <td>{{ account.get(group.account_id).account_number }}</td>
-              <!-- <td>{{ types.get(group.type_id).type }}</td> -->
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!group.is_convention}"></span></td>
               <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>
-              <td>
-                <button class="btn btn-sm btn-default" ng-click="edit(group)">
-                  <i class="glyphicon glyphicon-pencil"></i>
-                </button>
-              </td>
+              <td><a href="" ng-click="edit(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
             </tr>
           </tbody>
         </table>

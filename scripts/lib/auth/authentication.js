@@ -34,7 +34,8 @@ module.exports = function (db) {
       if (err) { return next(err); }
       // TODO: client-side logic not implimented for this.
       if (results.length < 1) {
-        return next(new Error('Incorrect username/password combination.'));
+        return res.sendfile('app/error.html');
+        //return next(new Error('Incorrect username/password combination.'));
       }
 
       // FIXME : this is strange, but works. Ideally, you should
@@ -46,14 +47,14 @@ module.exports = function (db) {
         //return next(new Error ('User already logged in.'));
       }
       */
-    
+   
       id = sanitize.escape(user.id);
       sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=' + id;
-      
+     
 
       db.execute(sql, function (err, results) {
         if (err) { return next(err); }
-       
+      
         sql = 'SELECT `unit`.`url` ' +
               'FROM `unit`, `permission`, `user` WHERE ' +
                 '`permission`.`user_id` = `user`.`id` AND ' +
@@ -77,7 +78,7 @@ module.exports = function (db) {
             "FROM `project` JOIN `project_permission` " +
             "ON `project`.`id` = `project_permission`.`project_id` " +
             "WHERE `project_permission`.`user_id` = " + sanitize.escape(req.session.user_id) + ";";
-          
+         
           db.execute(sql, function (err, results) {
             if (err) { return next(err); }
             if (results.length === 1) {
@@ -112,11 +113,11 @@ module.exports = function (db) {
       });
       req.session = null; // see: http://expressjs.com/api.html#cookieSession
     });
-  
+ 
   }
 
   return function authenticate(req, res, next) {
-  
+ 
     var router = {
       '/logout' : logout,
       '/login' : login
@@ -124,7 +125,7 @@ module.exports = function (db) {
 
     var fn = router[req.url];
     return fn ? fn(req, res, next) : next();
-  
+ 
   };
 
 };

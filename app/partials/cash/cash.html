@@ -21,7 +21,7 @@
 
       <ul class="dropdown-menu ">
         <li ng-repeat="currency in cashbox_accounts.data">
-        <a href="" ng-click="setCurrency(currency)">  ({{currency.cash_box_id}}) {{currency.symbol}} </a>
+        <a href="" ng-click="setCurrency(currency)">  ({{ currency.cash_box_id }}) {{currency.symbol}} </a>
         </li>
       </ul>
     </span>
@@ -167,7 +167,7 @@
           -->
         </div>
         <div class="panel-footer">
-          <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.overdue > 0, 'btn-success':  data.overdue <= 0 }" ng-click="payInvoices()" ng-disabled="!data.payment">
+          <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.overdue > 0, 'btn-success':  data.overdue <= 0 }" ng-click="invoice()" ng-disabled="!data.payment">
             {{ "CASH.PAY_INVOICES" | translate }}
           </button>
           <button type="button" class="btn btn-default btn-sm" ng-click="clearSelection()">
@@ -184,4 +184,32 @@
     <span><b>[{{match.model.debitor_uuid}}]</b></span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
   </a>
+</script>
+
+<script type="text/ng-template" id="justifyModal.html">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>{{ 'CASH.OVER.TITLE' | translate }}</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-xs-2">
+          <b>{{ 'CASH.OVER.DANGER' | translate }}</b>
+        </div>
+        <div class="col-xs-10">
+          <p>{{ "CASH.OVER.CUED" | translate }} <b class="pull-right">{{ bill.total | currency }}</b></p>
+          <p>{{ "CASH.OVER.PAYMENT" | translate }} <b class="pull-right">{{ bill.payment | currency }}</b></p>
+          <p> <b>{{ "CASH.OVER.JUSTIFICATION" | translate }}</b> <small>({{ "CASH.OVER.MIN" | translate }})</small></p>
+          <div class="input-group">
+            <span class='input-group-addon'>{{ 'CASH.OVER.REASON' | translate }}</span>
+            <input type="text" class="form-kapok" ng-model="bill.justification">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="!bill.valid">{{ "FORM.SUBMIT" | translate }}</button>
+      <button class="btn btn-sm btn-danger" ng-click="cancel()">{{ "FORM.CANCEL" | translate }}</button>
+    </div>
+  </div>
 </script>

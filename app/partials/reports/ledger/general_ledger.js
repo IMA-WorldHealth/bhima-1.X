@@ -25,21 +25,20 @@ angular.module('kpk.controllers')
       }
     };
 
-    function buildLedgerQuery(enterprise) {
-      dependencies.ledger.where = ['general_ledger.enterprise_id='+enterprise.id];
-      validate.process(dependencies).then(reportGeneralLedger);
-    }
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise;
+      validate.process(dependencies)
+      .then(reportGeneralLedger);
+    });
 
-    appstate.register('enterprise', buildLedgerQuery);
+    function reportGeneralLedger(models) {
+      for (var k in models) { $scope[k] = models[k]; }
 
-    function reportGeneralLedger(model) {
-      $scope.model = model;
-
-      settupGridOptions();
+      setupGridOptions();
       initialiseGrid();
     }
 
-    function settupGridOptions() {
+    function setupGridOptions() {
       columns = [
         {id: 'uuid'           , name: $filter('translate')('COLUMNS.ID')             , field:'uuid'           , visible : false} ,
         {id: 'fiscal_year_id' , name: $filter('translate')('COLUMNS.FISCAL_YEAR_ID') , field:'fiscal_year_id' , visible : true } ,
@@ -61,6 +60,7 @@ angular.module('kpk.controllers')
         {id: 'origin_id'      , name: $filter('translate')('COLUMNS.ORIGIN_ID')      , field:'origin_id'      , visible : false} ,
         {id: 'user_id'        , name: $filter('translate')('COLUMNS.USER_ID')        , field:'user_id'        , visible : false}
       ];
+
       $scope.columns = angular.copy(columns);
 
       options = {
@@ -102,13 +102,8 @@ angular.module('kpk.controllers')
         dataview.sort(compareSort, args.sortAsc);
       });
 
-
       dataview.beginUpdate();
-      dataview.setItems($scope.model.ledger.data);
-      // dataview.setFilterArgs({
-      //   searchStr: flags.searchStr
-      // });
-      // dataview.setFilter(search);
+      dataview.setItems($scope.ledger.data, 'uuid');
       dataview.endUpdate();
 
       dataview.syncGridSelection(grid, true);
@@ -206,16 +201,6 @@ angular.module('kpk.controllers')
     function formatDate (row, cell, value) {
       return $filter('date')(value);
     }
-
-    //Update grid on filter/settings changes
-    /*$scope.$watch('flags.searchStr', function () {
-      if(!dataview) return;
-      if (!flags.searchStr) flags.searchStr = ""; //prevent default
-      dataview.setFilterArgs({
-        searchStr: flags.searchStr
-      });
-      dataview.refresh();
-    });*/
 
     $scope.$watch('columns', function () {
       if (!$scope.columns) return;

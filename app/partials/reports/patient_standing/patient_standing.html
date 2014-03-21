@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="col-xs-3">
-    <input class="form-kapok" ng-model="patient" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+    <input class="form-kapok" ng-model="patient" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
   </div>
   <a class="btn btn-sm btn-primary" href="" ng-click="search()" ng-disabled="!patient">{{ "UTIL.SEARCH" | translate }}</a>
 </section>
@@ -28,14 +28,14 @@
                   {{ "COLUMNS.ID" | translate }}
                 </label>
                 <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.id }}</p>
+                  <p class="form-control-static">{{ patient.uuid }}</p>
                 </div>
 
                 <label class="control-label col-xs-3">
                   {{ "COLUMNS.REGISTERED" | translate }}
                 </label>
                 <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.date_registered | date }}</p>
+                  <p class="form-control-static">{{ patient.registration_date | date }}</p>
                 </div>
               </div>
 
@@ -60,7 +60,7 @@
                   {{ "PATIENT_STANDING.ACCOUNT_NUMBER" | translate }}
                 </label>
                 <div class="col-xs-3">
-                  <p class="form-control-static">{{ patient.account_number }}</p>
+                  <p class="form-control-static">{{ accounts.get(patient.account_id).account_number }}</p>
                 </div>
 
                 <label class="control-label col-xs-3">
@@ -125,3 +125,9 @@
   </div>
 </div>
 
+<script type="text/ng-template" id="template.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{match.model.uuid}}]</b></span>
+  </a>
+</script>
