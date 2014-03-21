@@ -1,4 +1,4 @@
-#!/usr/shared/bin/node
+#!/usr/local/bin/node
 
 var mysql = require('mysql');
 var q = require('q');
@@ -27,6 +27,7 @@ var include = [
   introduction,
   systemInfo,
   patientTotalReport,
+  financeOverview,
   footer
 ];
 
@@ -45,23 +46,27 @@ function collateReports() {
 }
 
 function introduction() {   
-  return "BHIMA system report - Hopital Bon Berger";
+  return "<p>BHIMA System Report - Hopital Bon Berger</p>";
 }
 
 function systemInfo() { 
-  return "Report generated on " + new Date();
+  return "<p><small>Report reference " + generateUuid() + "</small><br><small>" + new Date() + "</small></p>";
 }
 
 function patientTotalReport() { 
-  var template = "Today <b>%d</b> new patients where registered, <b>%d</b> returning patients where logged.";
+  var template = "<p>Today <b>%d</b> new patients where registered, <b>%d</b> returning patients where logged.</p>";
   var totalNew = results['New_Patients'][0].total;
   var totalReturning = results['Renewal_Patients'][0].total;
 
   return printf(template, totalNew, totalReturning);
 }
 
+function financeOverview() { 
+  return "<p><b>$1,000,000</b> in revenue was generated courtasy of BHIMA<small><i>(tm)</i></small></p>";
+}
+
 function footer() { 
-  return "Report reference " + generateUuid(); 
+  return "";
 }
 
 function populateQuery() {
