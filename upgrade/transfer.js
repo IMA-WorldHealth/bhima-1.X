@@ -302,6 +302,7 @@ function upgradeCashItem(recordValues, tableName) {
 function upgradePostingJournal(recordValues, tableName) { 
   var currentId = recordValues[0], updateId = uuid();
   var currentDebtor = recordValues[14].replace(/\'/g, '');
+  var currentSale = recordValues[16].replace(/\'/g, '');
   
   recordValues[0] = updateId;
   idRelation[tableName][currentId] = updateId;
@@ -310,6 +311,7 @@ function upgradePostingJournal(recordValues, tableName) {
   recordValues[1] = '1';
 
   if(recordValues[14]!=="NULL") recordValues[14] = idRelation['debitor'][currentDebtor];
+  if(recordValues[16]!=="NULL") recordValues[16] = idRelation['sale'][currentSale];
   return packageRecordValues(recordValues);
 }
 
