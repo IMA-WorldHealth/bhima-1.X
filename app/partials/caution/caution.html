@@ -1,13 +1,12 @@
 <header>
-  <span>{{ "CAUTION.TITLE" | translate}}</span>
+  {{ "CAUTION.TITLE" | translate }}
 </header>
 
-<section class="top-nav underline">
+<section class="top-nav">
     <div class="pull-right">
-      <a href="#/cash" class="capital btn btn-default btn-sm">
-        <span class="glaphyicon glaphyicon-tag">
+      <a href="#/cash" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-tag"></span>
           {{'CAUTION.CASH' | translate}}
-        </span>
       </a>
     </div>
 
@@ -17,7 +16,7 @@
         <span class="caret" data-caret="&#9660;"></span>
       </button>
       <ul class="dropdown-menu pull-left">
-        <li ng-repeat="item in model.currency_account.data">
+        <li ng-repeat="item in model.cash_box_account.data">
           <a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.cash_account).account_txt }} </a>
         </li>
       </ul>
@@ -111,7 +110,7 @@
 
 <script type="text/ng-template" id="debtorListItem.html">
   <a>
-    <span><b>[{{match.model.debitor_id}}]</b></span>
+    <span><b>[{{ match.model.debitor_uuid }}]</b></span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
   </a>
 </script>

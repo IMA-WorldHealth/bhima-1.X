@@ -162,9 +162,12 @@ app.get('/max/:id/:table/:join?', function(req, res) {
 });
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
-  ledger.debitor(req.params.id, function (err, rows) {
-    if (err) return next(err);
+  ledger.debitor(req.params.id)
+  .then(function (rows) {
     res.send(rows);
+  })
+  .catch(function (error) {
+    next(error);
   });
 });
 

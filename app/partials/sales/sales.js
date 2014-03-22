@@ -14,12 +14,18 @@ angular.module('kpk.controllers')
   'precision',
   'uuid',
   function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid) {
-    var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
-    var recoverCache = new Appcache('sale'), priceListSource = [];
+    var dependencies = {},
+        invoice = {},
+        inventory = [],
+        selectedInventory = {};
+
+    var recoverCache = new Appcache('sale'),
+        priceListSource = [];
+
     var session = $scope.session = {
       tablock : -1
     };
-
+    
     appstate.register('project', function (project) {
       $scope.project = project;
     });
@@ -27,7 +33,11 @@ angular.module('kpk.controllers')
     dependencies.inventory = {
       query: {
         identifier : 'uuid',
-        tables: {"inventory" : {columns: ["uuid", "code", "text", "price"]}}
+        tables: {
+          "inventory" : {
+            columns: ["uuid", "code", "text", "price"]
+          }
+        }
       }
     };
 
@@ -202,6 +212,7 @@ angular.module('kpk.controllers')
 
     function submitInvoice() {
       var invoiceRequest = packageInvoiceRequest();
+      console.log('[invoiceRequest]', invoiceRequest);
 
       if (!validSaleProperties(invoiceRequest)) return;
       $http.post('sale/', invoiceRequest).then(handleSaleResponse);
@@ -213,7 +224,7 @@ angular.module('kpk.controllers')
       //Seller ID will be inserted on the server
       requestContainer.sale = {
         project_id : $scope.project.id,
-        cost : calculateTotal(),
+        cost : calculateTotal().totalToPay,
         currency_id : $scope.project.currency_id,
         debitor_uuid : invoice.debtor.debitor_uuid,
         invoice_date : invoice.date,
@@ -223,6 +234,7 @@ angular.module('kpk.controllers')
       requestContainer.saleItems = [];
 
       invoice.items.forEach(function(saleItem) {
+        console.log('saleItem:', saleItem);
         var formatSaleItem;
         formatSaleItem = {
           inventory_uuid : saleItem.inventoryId,
@@ -252,16 +264,18 @@ angular.module('kpk.controllers')
       invoice.applyGlobal.forEach(function (listItem) {
         var applyCost, formatListItem, enterpriseDiscountId; // FIXME Derive this from enterprise
 
-        (listItem.is_discount) ? enterpriseDiscountId = 486 : enterpriseDiscountId = 485;
+        enterpriseDiscountId = listItem.is_discount ? "a47bdb0d-02d9-43a3-bfc9-eb558193eb1b" : "0b0b8dc6-9b8c-44e4-9438-151bb43909e5";
 
         formatDiscountItem = {
-          inventory_id : enterpriseDiscountId,
+          inventory_uuid : enterpriseDiscountId,
           quantity : 1,
           transaction_price : listItem.currentValue,
           debit : 0,
           credit : 0,
           inventory_price : 0
         };
+
+        console.log('[FORMAT DISCOUNT ITEM] ', formatDiscountItem);
 
         (listItem.is_discount) ?
           formatDiscountItem.debit = listItem.currentValue :
