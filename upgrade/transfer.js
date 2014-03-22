@@ -50,7 +50,11 @@ function parseInserts(fileData) {
     simpleUpgrade('posting_journal', tableRelation['posting_journal'], upgradePostingJournal);
     simpleUpgrade('patient_visit', tableRelation['patient_visit'], upgradePatientVisit);
     simpleUpgrade('debitor_group_history', tableRelation['debitor_group_history'], upgradeDebtorGroupHistory);
-  
+    
+    simpleUpgrade('pcash', tableRelation['pcash'], upgradePCash);
+    // simpleUpgrade('pcash_item', tableRelation['pcash_item'], upgradePCashItem);
+    simpleUpgrade('caution', tableRelation['caution'], upgradeCaution);
+
     //debtor group history, patient_visitjj
   } catch(e) { 
     console.log(e);
@@ -454,6 +458,76 @@ function upgradeDebtorGroupHistory(record, index) {
   recordValues[0] = updateId;
   recordValues[1] = idRelation[debitorReference][recordValues[1]];
   recordValues[2] = idRelation[debitorGroupReference][recordValues[2]];
+  
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradePCash(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'pcash';
+  var debitorReference = 'debitor';
+
+  updateId = uuid();
+    
+  idRelation[tableName][currentId] = updateId;
+  
+  // Add reference 
+  recordValues.splice(0, 0, currentId);
+
+  recordValues[1] = updateId;
+
+  // Add project ID
+  recordValues[2] = '1'; 
+
+  recordValues[5] = idRelation[debitorReference][recordValues[5]];
+  
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradePCashItem(record, index) { 
+  console.log('got', record, index);
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'pcash_item';
+  var pcashReference = 'pcash';
+  var invoiceReference = 'sale';
+
+  updateId = uuid();
+    
+  // idRelation[tableName][currentId] = updateId;
+  recordValues[0] = updateId;
+
+  recordValues[1] = idRelation[pcashReference][recordValues[1]];
+  recordValues[3] = idRelation[invoiceReference][recordValues[3]];
+  
+  return '(' + recordValues.join(',') + ')';
+}
+
+function upgradeCaution(record, index) { 
+  var recordValues = parseValues(record, index);
+  var updateId, currentId = recordValues[0];
+
+  // FIXME Temporary hack, this should be passed down through 
+  var tableName = 'caution';
+  var debitorReference = 'debitor';
+
+  updateId = uuid();
+    
+  idRelation[tableName][currentId] = updateId;
+  
+  // Add reference 
+  recordValues.splice(0, 0, currentId);
+
+  recordValues[1] = updateId;
+
+  // Add project ID
+  recordValues[4] = '1'; 
+  recordValues[5] = idRelation[debitorReference][recordValues[5]];
   
   return '(' + recordValues.join(',') + ')';
 }

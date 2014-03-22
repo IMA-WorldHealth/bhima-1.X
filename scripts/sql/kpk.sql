@@ -1178,11 +1178,12 @@ create table `beneficiary` (
 --
 drop table if exists `pcash`;
 create table `pcash` (
-  `id`              int unsigned not null auto_increment,
-  `enterprise_id`   smallint unsigned not null,
+  `reference`       int unsigned not null auto_increment,
+  `uuid`            char(36) not null,
+  `project_id`      smallint unsigned not null,
   `type`            char(1) not null,
   `date`            date not null,
-  `deb_cred_id`     int unsigned,
+  `deb_cred_uuid`   char(36),
   `deb_cred_type`   varchar(1),
   `currency_id`     tinyint unsigned not null,
   `value`           decimal(19,4) unsigned not null default 0,
@@ -1191,13 +1192,14 @@ create table `pcash` (
   `service_id`      tinyint unsigned,
   `beneficiary_id`  int unsigned,
   `istransfer`      boolean not null,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
+  primary key (`uuid`),
+  key `project_id` (`project_id`),
+  key `reference` (`reference`),
   key `currency_id` (`currency_id`),
   key `cashier_id` (`cashier_id`),
   key `service_id` (`service_id`),
   key `beneficiary_id` (`beneficiary_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`cashier_id`) references `user` (`id`),
   constraint foreign key (`service_id`) references `service` (`id`),
@@ -1209,15 +1211,15 @@ create table `pcash` (
 --
 drop table if exists `pcash_item`;
 create table `pcash_item` (
-  `id`                int unsigned not null auto_increment,
-  `pcash_id`          int unsigned not null,
+  `uuid`              varchar(36) not null,
+  `pcash_uuid`        varchar(36) not null,
   `allocated_value`   decimal(19,4) unsigned not null default 0.00,
-  `invoice_id`        int unsigned not null,
-  primary key (`id`),
-  key `pcash_id` (`pcash_id`),
-  key `invoice_id` (`invoice_id`),
-  constraint foreign key (`pcash_id`) references `pcash` (`id`)
---  constraint foreign key (`invoice_id`) references `sale` (`id`)
+  `invoice_uuid`      varchar(36),
+  primary key (`uuid`),
+  key `pcash_id` (`pcash_uuid`),
+  -- key `invoice_uuid` (`invoice_uuid`),
+  constraint foreign key (`pcash_uuid`) references `pcash` (`uuid`)
+  -- constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
 
 --
@@ -1225,20 +1227,22 @@ create table `pcash_item` (
 --
 drop table if exists `caution`;
 create table `caution` (
-  `id`                  int unsigned not null auto_increment,
+  `reference`           int unsigned not null auto_increment, 
+  `uuid`                char(36) not null,
   `value`               decimal(19,4) unsigned not null,
   `date`                timestamp not null,
-  `enterprise_id`       smallint unsigned not null,
-  `debitor_id`          int unsigned not null,
+  `project_id`          smallint unsigned not null,
+  `debitor_uuid`        char(36) not null,
   `currency_id`         tinyint unsigned not null,
   `user_id`             smallint unsigned not null,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  key `debitor_id` (`debitor_id`),
+  primary key (`uuid`),
+  key `project_id` (`project_id`),
+  key `reference` (`reference`),
+  key `debitor_uuid` (`debitor_uuid`),
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
---  constraint foreign key (`debitor_id`) references `debitor` (`id`),
+  constraint foreign key (`project_id`) references `project` (`id`),
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
