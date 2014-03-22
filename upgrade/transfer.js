@@ -301,32 +301,45 @@ function upgradeCashItem(recordValues, tableName) {
 
 function upgradePostingJournal(recordValues, tableName) { 
   var currentId = recordValues[0], updateId = uuid();
-  var currentDebtor = recordValues[14].replace(/\'/g, '');
-  var currentSale = recordValues[16].replace(/\'/g, '');
-  var lookupReference;
+  var recordLength = 21, journalText = [], finalText;
+  var currentDebtor, currentSale;
+
+  // Resolve comma parsing issue, these should be escaped before parsing
+  if (recordValues.length > recordLength) { 
+    var diff = recordValues.length - recordLength;
+    for (var i = 7, l = 7 + diff; i <= l; i++) {
+      journalText.push(recordValues[i]);
+    }
+    
+    finalText = journalText.join(',');
+    recordValues.splice(7, diff + 1, finalText);
+  }
+
+  
+  currentDebtor = recordValues[14].replace(/\'/g, '');
+  currentSale = recordValues[16].replace(/\'/g, '');
 
   recordValues[0] = updateId;
   idRelation[tableName][currentId] = updateId;
  
   // Replace enterprise with project ID
   recordValues[1] = '1';
-    
-
+   
   if(recordValues[14]!=="NULL") recordValues[14] = idRelation['debitor'][currentDebtor];
   if(recordValues[16]!=="NULL") {
     var origin = recordValues[19];
-    
+        
     var referenceMap = { 
       '7' : 'caution',
       '8' : 'pcash'
     };
-
+    
     if (referenceMap[origin]) { 
       recordValues[16] = idRelation[referenceMap[origin]][currentSale];
     } else { 
       recordValues[16] = idRelation['sale'][currentSale];
     }
-
+    
     // Mitigate 0 error, valid data shouldn't reach this point
     if (!recordValues[16]) recordValues[16] = "NULL";
   }
