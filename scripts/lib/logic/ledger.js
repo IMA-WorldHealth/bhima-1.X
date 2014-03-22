@@ -60,7 +60,7 @@ module.exports = function (db) {
       var sql =
         'SELECT `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
         'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
-        '`t`.`account_id`, `t`.`deb_cred_id`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
+        '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
         '`t`.`comment`' +
         'FROM (' +
           '(' +
@@ -77,12 +77,11 @@ module.exports = function (db) {
             'FROM `general_ledger` ' +
           ')' +
         ') AS `t` ' +
-        'WHERE `t`.`inv_po_id` IN (' + invoices.join(',') + ') ' +
+        'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +
         'AND t.account_id = ' + account_id + ' ' +
         'GROUP BY `t`.`inv_po_id`;\n';
 
       return db.exec(sql);
-
     })
     .then(function (ans) {
       defer.resolve(ans);
@@ -92,7 +91,6 @@ module.exports = function (db) {
     });
 
     return defer.promise;
-
   }
 
   function creditor (id, res) {}
