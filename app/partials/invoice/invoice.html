@@ -10,12 +10,13 @@
 <div class="reportBody" style="margin-top: 50px;">
   <div class="reportFrame">
     <div ng-switch="origin">
+
       <div ng-switch-when="sale">
         <!-- Patient Invoice template -->
         <div class="row customer-details">
           <div class="col-xs-12"> 
             <h4 class="invoice-header">{{ 'INVOICE.PATIENT_INVOICE' | translate }}</h4>
-            <small style="color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+            <small class="pull-right" style="color: grey; font-size: 8px">{{ invoice.uuid }}</small>
           </div>
         </div>
         <div class="row customer-details">
