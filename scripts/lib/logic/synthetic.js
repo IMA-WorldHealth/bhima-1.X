@@ -8,7 +8,7 @@ module.exports = function (db, sanitize) {
     'aB'    : aB,
     'pcR'   : pcR,
     'pcRI'  : pcRI
-  }
+  };
 
   function aB (enterprise_id, request, callback){
     var query = JSON.parse(request);
@@ -17,7 +17,8 @@ module.exports = function (db, sanitize) {
     });
     var portion = '`t`.`account_id`='+acIds.join(' OR `t`.`account_id`=');
 
-    var sql = 'SELECT SUM(`debit_equiv` - `credit_equiv`) as balance, `account_id` '+
+    var sql =
+      'SELECT SUM(`debit_equiv` - `credit_equiv`) as balance, `account_id` '+
       'FROM ((SELECT `debit_equiv`, `credit_equiv`, `enterprise_id`, `account_id`, `currency_id` FROM `posting_journal`)'+
       ' UNION (SELECT `debit_equiv`, `credit_equiv`, `enterprise_id`, `account_id`, `currency_id` FROM `general_ledger`)) as `t`'+
       ' WHERE '+portion+' AND `t`.`enterprise_id`='+sanitize.escape(enterprise_id)+' GROUP BY `account_id`';

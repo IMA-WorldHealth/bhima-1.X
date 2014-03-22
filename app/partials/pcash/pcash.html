@@ -1,19 +1,15 @@
-
 <header>
-	<span class="capitalize"> {{ 'PCASH.TITLE' | translate }}</span>
+  {{ 'PCASH.TITLE' | translate }}
 </header>
 
 <section class="top-nav">
 	<div class="pull-right">
-
-	  <a href="#/main_cash/income" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{ 'PCASH.INCOME' | translate }}</span></a>
-
-	  <a href="#/main_cash/expense"  class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{ 'PCASH.EXPENSE' | translate }}</span></a>
-
+    <a href="#/main_cash/income" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'PCASH.INCOME' | translate }}</a>
+  <a href="#/main_cash/expense"  class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'PCASH.EXPENSE' | translate }}</a>
 	</div>
 </section>
 
-<article class="content">
+<div class="content">
 	<div class="row">
 		<div class="col-xs-6">
 			<div class="panel panel-default" style="max-height: 525px;">
@@ -31,7 +27,7 @@
 						</thead>
 						<tbody>
 							<tr ng-repeat="summer in model.summers.data">
-								<td>{{$index}}</td>
+								<td>{{ $index }}</td>
 								<td>{{summer.trans_date | date}}</td>
 								<td>{{summer.balance | currency}}</td>
 							</tr>
@@ -48,6 +44,4 @@
 			</div>
 		</div>
 	</div>
-</article>
-
-
+</div>

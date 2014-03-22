@@ -9,30 +9,41 @@ angular.module('kpk.controllers')
   'messenger',
   'validate',
   'exchange',
-  'kpkUtilitaire',
+  'util',
   'precision',
   'calc',
   function($scope, $location, $translate, connect, appcache, appstate, messenger, validate, exchange, util, precision, calc) {
     var dependencies = {};
+
     dependencies.pcash_accounts = {
       query : {
         tables : {
-          'currency_account': {
+          'cash_box_account': {
             columns : ['pcash_account']
+          },
+          'cash_box' : {
+            columns : ['project_id']
           }
-        }
+        },
+        join : ['cash_box.id=cash_box_account.cash_box_id']
       }
-    }
+    };
+
     dependencies.summers = {
       query : '/synthetic/pcR/'
-    }
+    };
 
     //functions
+    
+    function handleErrors(error) {
+      messenger.danger('An Error occured:' + JSON.stringify(Error));
+    }
 
     function init (model){
-      dependencies.summers.query = dependencies.summers.query+$scope.enterprise.id+'?'+JSON.stringify({accounts : formatTab(model)});
-      console.log('notre model 1 est :', model);
-      validate.process(dependencies, ['summers']).then(setUpModel);
+      dependencies.summers.query = dependencies.summers.query+$scope.project.enterprise_id+'?'+JSON.stringify({accounts : formatTab(model)});
+      validate.process(dependencies, ['summers'])
+      .then(setUpModel)
+      .catch(handleErrors);
     }
 
     function setUpModel (model){
@@ -45,9 +56,9 @@ angular.module('kpk.controllers')
       });
     }
 
-    appstate.register('enterprise', function (enterprise){
-      $scope.enterprise = enterprise;
-      dependencies.pcash_accounts.query.where = ['currency_account.enterprise_id='+$scope.enterprise.id, 'AND', 'currency_account.currency_id='+$scope.enterprise.currency_id];
+    appstate.register('project', function (project){
+      $scope.project = project;
+      dependencies.pcash_accounts.query.where = ['cash_box.project_id='+$scope.project.id, 'AND', 'cash_box_account.currency_id='+$scope.project.currency_id];
       validate.process(dependencies, ['pcash_accounts']).then(init);
     });
   }

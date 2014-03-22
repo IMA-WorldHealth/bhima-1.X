@@ -48,11 +48,11 @@
           <form class="form-horizontal">
 
             <div class="form-group" ng-repeat="rate in currentRates">
-              <label class="control-label col-xs-3">
+              <label class="control-label col-xs-4">
                 {{ currency.get(rate.foreign_currency_id).name }} Rate
               </label>
-              <div class="col-xs-2">
-                <p class="form-control-static"> 100  <b>::</b></p>
+              <div class="col-xs-4">
+                <p class="form-control-static" ng-bind-html="100 | intlcurrency:rate.enterprise_currency_id"></p>
               </div>
               <div class="col-xs-4">
                 <p class="form-control-static" ng-bind-html="rate.rate * 100 | intlcurrency:rate.foreign_currency_id"></p>
@@ -75,7 +75,7 @@
 
               <div class="form-group">
                 <div class="col-xs-5">
-                  <div class="form-kapok" style="text-align: center;" disabled="disabled">
+                  <div class="form-kapok" style="text-align: center;" readonly>
                     {{ currency.get(enterprise.currency_id).name }}
                   </div>
                 </div>
@@ -89,7 +89,7 @@
 
               <div class="form-group">
                 <div class="col-xs-5 input-group">
-                  <input class="form-kapok" value="100" disabled="disabled">
+                  <input class="form-kapok" value="100" readonly>
                   <span class="input-group-addon">
                     {{ currency.get(enterprise.currency_id).symbol }}
                   </span>
@@ -111,7 +111,6 @@
           </form>
         </div>
       </div>
-
     </div>
   </div>
 </div>
