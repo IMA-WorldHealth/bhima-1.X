@@ -197,6 +197,9 @@ angular.module('kpk.controllers')
 
         invoiceCondition.push("sale.uuid=" + invoiceRef.invoice_uuid);
         invoiceItemCondition.push("sale_item.sale_uuid=" + invoiceRef.invoice_uuid);
+        if (index !== model.cash.data.length - 1) {
+          invoiceItemCondition.push("OR");
+        }
       });
 
       dependencies.invoice.query.where = invoiceCondition;
