@@ -283,6 +283,7 @@
     "RENEWAL"                   : "Renouveller Fiche",
     "PATIENT_REGISTRATION"      : "Rapport Enregistrement des Malades",
     "UPDATE_STOCK"              : "Mettre a Jour les Stocks",
+    "PATIENT_STANDING"          : "Rapport Malade",
     "CASH_PAYMENTS"             : "Rapport Paiements",
     "ALL_TRANSACTIONS"          : "Toutes Transactions",
     "CAUTION"                   : "Caution",

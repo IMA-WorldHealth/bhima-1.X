@@ -18,15 +18,6 @@ angular.module('kpk.controllers')
 
     if(!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
 
-    process = {
-      'cash': processCash,
-      'caution' : processCaution,
-      'sale': processSale,
-      'credit': processCredit,
-      'debtor': processDebtor,
-      'patient' : processPatient,
-    };
-
     dependencies.recipient = {
       required: true
     };
@@ -56,6 +47,14 @@ angular.module('kpk.controllers')
           }
         }
       }
+    };
+
+    dependencies.ledger = {
+      identifier: 'inv_po_id'
+    };
+    
+    dependencies.location = {
+      required: true
     };
 
     //TODO sale_item hardcoded - have a map form originId to table name, item table name, recipient table name
@@ -96,7 +95,8 @@ angular.module('kpk.controllers')
         query: '/location/' + model.caution.data[0].current_location_id
       };
 
-      validate.process(dependencies, ['location']).then(cautionInvoice);
+      validate.process(dependencies, ['location']);
+      //.then(cautionInvoice);
     }
 
     function buildPatientLocation(model) {
@@ -109,10 +109,6 @@ angular.module('kpk.controllers')
       };
     }
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      process[origin](invoiceId);
-    });
 
     function processCash(requestId) {
       dependencies.cash = {
@@ -197,11 +193,13 @@ angular.module('kpk.controllers')
 
         if(index!==0) {
           invoiceCondition.push('OR');
-          invoiceItemCondition.push('OR');
         }
 
         invoiceCondition.push("sale.uuid=" + invoiceRef.invoice_uuid);
         invoiceItemCondition.push("sale_item.sale_uuid=" + invoiceRef.invoice_uuid);
+        if (index !== model.cash.data.length - 1) {
+          invoiceItemCondition.push("OR");
+        }
       });
 
       dependencies.invoice.query.where = invoiceCondition;
@@ -224,22 +222,21 @@ angular.module('kpk.controllers')
       var invoice_data = model.invoice.data[0];
 
       dependencies.recipient.query = {
-        tables: {},
-        where: ['patient.debitor_uuid=' + invoice_data.debitor_uuid]
+        tables: {
+          'patient' : {
+            columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference']
+          },
+          'project' : {
+            columns: ['abbr']
+          }
+        },
+        where: ['patient.debitor_uuid=' + invoice_data.debitor_uuid],
+        join : ['patient.project_id=project.id']
       };
-
-      dependencies.recipient.query.tables['patient'] = {
-        columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference']
-      };
-
-      dependencies.recipient.query.tables['project'] = {
-        columns: ['abbr']
-      };
-
-      dependencies.recipient.query.join = ['patient.project_id=project.id'];
 
       dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
-      return validate.process(dependencies, ['recipient']).then(buildLocationQuery);
+      return validate.process(dependencies, ['recipient'])
+      .then(buildLocationQuery);
     }
 
     function buildLocationQuery(model) {
@@ -255,15 +252,14 @@ angular.module('kpk.controllers')
       //Expose data to template
       $scope.model = model;
 
-
       $scope.session = {};
-      $scope.session.currentCurrency = $scope.model.currency.get($scope.enterprise.currency_id);
+      $scope.session.currentCurrency = $scope.model.currency.get($scope.project.currency_id);
       routeCurrencyId = $scope.session.currentCurrency.currency_id;
 
       //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
       $scope.invoice.totalSum = 0;
-      $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.id);
+      $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
       console.log('[get.invoice.id] a donnee :', $scope.invoice.ledger);
 
       $scope.recipient = $scope.model.recipient.data[0];
@@ -286,7 +282,7 @@ angular.module('kpk.controllers')
         routeCurrencyId = $scope.cashTransaction.currency_id;
       }
 
-      updateCost(routeCurrencyId);
+      $scope.updateCost(routeCurrencyId);
     }
 
     function patientReceipt(model) {
@@ -295,7 +291,7 @@ angular.module('kpk.controllers')
       $scope.location = $scope.model.location.data[0];
 
       // Human readable ID
-      $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference)
+      $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
     }
 
     //TODO Follows the process credit hack
@@ -305,7 +301,7 @@ angular.module('kpk.controllers')
       $scope.location = $scope.model.location.data[0];
     }
 
-    function updateCost(currency_id) {
+    $scope.updateCost = function updateCost(currency_id) {
       //console.log('updating cost');
       $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
       //console.log('cid', currency_id);
@@ -319,8 +315,20 @@ angular.module('kpk.controllers')
       $scope.model.invoiceItem.data.forEach(function (item) {
         item.localeCost = exchange((item.credit - item.debit), currency_id);
       });
-    }
+    };
 
-    $scope.updateCost = updateCost;
+    process = {
+      'cash'    : processCash,
+      'caution' : processCaution,
+      'sale'    : processSale,
+      'credit'  : processCredit,
+      'debtor'  : processDebtor,
+      'patient' : processPatient,
+    };
+
+    appstate.register('project', function (project) {
+      $scope.project = project;
+      process[origin](invoiceId);
+    });
   }
 ]);
