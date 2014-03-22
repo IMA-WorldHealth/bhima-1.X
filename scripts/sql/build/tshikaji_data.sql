@@ -1,3 +1,12 @@
+
+INSERT INTO cash_box VALUES
+  (1, 'IMCK HBB CAISSE PPLE $', 1),
+  (2, 'IMCK HBB CAISSE PPLE FC', 1),
+  (3, 'IMCK HBB CAISSE AUX $', 1),
+  (4, 'IMCK HBB CAISSE AUX FC', 1),
+  (5, 'IMCK PAX CAISSE AUX $', 2);
+  (6, 'IMCK PAX CAISSE AUX FC', 2);
+
 LOCK TABLES `country` WRITE;
 INSERT INTO `country` VALUES 
 ('acbf3f04-bf01-421a-818d-b4aa5b403be7',4,'Afghanistan','Afghanistan'),
@@ -596,6 +605,7 @@ INSERT INTO `period_total` VALUES (200,1,1,2,0.0000,0.0000,0),(200,1,1,3,0.0000,
 INSERT INTO `project` (`id`, `name`, `abbr`, `enterprise_id`) values
 (1, 'IMCK Hopital Bon Berger', 'HBB', 200),
 (2, 'IMCK PAX Clinic', 'PAX', 200);
+
 INSERT INTO `project_permission` (`user_id`, `project_id`) values
 (1, 1),
 (1, 2);
