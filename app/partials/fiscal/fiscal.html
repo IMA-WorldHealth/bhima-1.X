@@ -40,7 +40,7 @@
                 <tr ng-repeat="year in model.fiscal.data" ng-class="{'btn-primary': year.id==selected.id}">
                   <td>{{year.fiscal_year_txt}}</td>
                   <td>{{year.start_month}}/{{year.start_year}}</td>
-                  <td><a ng-click="select(year.id)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                  <td><a ng-click="select(year.id)" href=""><span class="glyphicon glyphicon-pencil"></span></a></td>
                 </tr>
               </tbody>
             </table>
