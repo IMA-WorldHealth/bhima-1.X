@@ -406,6 +406,8 @@ function upgradePostingJournal(record, index) {
   // FIXME Temporary hack, this should be passed down through 
   var tableName = 'posting_journal';
   var debtorReference = 'debitor';
+  
+  var stripDebtor = recordValues[14].replace(/\'/g, '');
 
   updateId = uuid();
   
@@ -415,7 +417,7 @@ function upgradePostingJournal(record, index) {
  
   // Replace enterprise with project ID
   recordValues[1] = '1';
-  recordValues[14] = idRelation[debtorReference][recordValues[1]];
+  if (recordValues[14]!=='NULL') recordValues[14] = idRelation[debtorReference][stripDebtor];
   
   return '(' + recordValues.join(',') + ')';
 }
