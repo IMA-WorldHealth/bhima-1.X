@@ -188,9 +188,9 @@
             <div class="panel-heading">
               <span>{{ "PERMISSION.PROJECTS" | translate }}</span>
               <span class="pull-right">
-                <button ng-click="saveProjects()">
+                <a href="" ng-click="saveProjects()">
                   <span class="glyphicon glyphicon-floppy"></span> {{ "FORM.SAVE" | translate }}
-                </button>
+                </a>
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
@@ -210,14 +210,14 @@
       </div>
 
       <div ng-switch-when="permission">
-        <div class="col-xs-6">
+        <div class="col-xs-10">
           <div class="panel panel-default">
             <div class="panel-heading">
               <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
-                <button ng-disabled="!data.permission_change" ng-click="savePermissions()">
+                <a href="" ng-disabled="!data.permission_change" ng-click="savePermissions()">
                   <span class="glyphicon glyphicon-floppy-open"></span> {{ "FORM.SAVE" | translate }}
-                </button>
+                </a>
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
