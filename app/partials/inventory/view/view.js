@@ -114,7 +114,6 @@ angular.module('kpk.controllers')
       };
 
       grid = new Slick.Grid("#kpk-inventory-grid", dataview, columns, options);
-      grid.setSelectionModel(new Slick.RowSelectionModel());
 
       // set up sorting
 
