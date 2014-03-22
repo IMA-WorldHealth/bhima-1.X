@@ -71,11 +71,11 @@ function upgradeDB() {
     simpleUpgrade('sale_item', upgradeSaleItem);
     simpleUpgrade('cash', upgradeCash);
     simpleUpgrade('cash_item', upgradeCashItem);
-    simpleUpgrade('posting_journal', upgradePostingJournal);
     simpleUpgrade('patient_visit', upgradePatientVisit);
     simpleUpgrade('debitor_group_history', upgradeDebtorGroupHistory);
     simpleUpgrade('pcash', upgradePCash);
     simpleUpgrade('caution', upgradeCaution);
+    simpleUpgrade('posting_journal', upgradePostingJournal);
   } catch(e) { 
     writeLine(e); 
   }
@@ -303,15 +303,33 @@ function upgradePostingJournal(recordValues, tableName) {
   var currentId = recordValues[0], updateId = uuid();
   var currentDebtor = recordValues[14].replace(/\'/g, '');
   var currentSale = recordValues[16].replace(/\'/g, '');
-  
+  var lookupReference;
+
   recordValues[0] = updateId;
   idRelation[tableName][currentId] = updateId;
  
   // Replace enterprise with project ID
   recordValues[1] = '1';
+    
 
   if(recordValues[14]!=="NULL") recordValues[14] = idRelation['debitor'][currentDebtor];
-  if(recordValues[16]!=="NULL") recordValues[16] = idRelation['sale'][currentSale];
+  if(recordValues[16]!=="NULL") {
+    var origin = recordValues[19];
+    
+    var referenceMap = { 
+      '7' : 'caution',
+      '8' : 'pcash'
+    };
+
+    if (referenceMap[origin]) { 
+      recordValues[16] = idRelation[referenceMap[origin]][currentSale];
+    } else { 
+      recordValues[16] = idRelation['sale'][currentSale];
+    }
+
+    // Mitigate 0 error, valid data shouldn't reach this point
+    if (!recordValues[16]) recordValues[16] = "NULL";
+  }
   return packageRecordValues(recordValues);
 }
 
