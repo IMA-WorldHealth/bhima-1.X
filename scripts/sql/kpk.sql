@@ -334,24 +334,15 @@ create table `cash_box_account` (
   `id`              mediumint unsigned not null auto_increment, 
   `currency_id`     tinyint unsigned not null,
   `cash_box_id`     mediumint unsigned not null,
-  `cash_account`    int unsigned,
-  `bank_account`    int unsigned,
-  `caution_account` int unsigned not null,
-  `pcash_account`   int unsigned not null,
+  `account_id`    int unsigned,
   primary key (`id`),
   key `currency_id` (`currency_id`),
   key `cash_box_id` (`cash_box_id`),
-  key `cash_account` (`cash_account`),
-  key `bank_account` (`bank_account`),
+  key `account_id` (`account_id`),
   -- unique key (`id`, `currency_id`),
-  key `caution_account` (`caution_account`),
-  key `pcash_account` (`pcash_account`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
-  constraint foreign key (`cash_account`) references `account` (`id`),
-  constraint foreign key (`bank_account`) references `account` (`id`),
-  constraint foreign key (`caution_account`) references `account` (`id`),
-  constraint foreign key (`pcash_account`) references `account` (`id`)
+  constraint foreign key (`account_id`) references `account` (`id`)
 ) engine=innodb;
 
 --
