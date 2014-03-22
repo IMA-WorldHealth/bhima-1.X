@@ -913,7 +913,7 @@ create table `posting_journal` (
   `currency_id`       tinyint unsigned not null,
   `deb_cred_uuid`     char(36), -- debitor or creditor id 
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
-  `inv_po_id`         varchar(45),
+  `inv_po_id`         char(36),
   `comment`           text,
   `cost_ctrl_id`      varchar(10),
   `origin_id`         tinyint unsigned not null,
