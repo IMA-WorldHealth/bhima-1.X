@@ -1,300 +1,237 @@
 #!/usr/local/bin/node
-
-// TODO extract upgrade method one more level, pass values into upgrade, manipulate and return 
-//      (table name should be passed down through)
-// FIXME some inventory items prices are not correctly transferred (probably to do with brackets in text)
 var fs = require('fs'), q = require('q');
 var currentFilePath = './current.sql';
 
-var idRelation = {};
+var idRelation = {}, tableRelation = {};
+
+var newRelation = { 
+  project : "INSERT INTO `project` (`id`, `name`, `abbr`, `enterprise_id`) values\n(1, 'IMCK Hopital Bon Berger', 'HBB', 200),\n(2, 'IMCK PAX Clinic', 'PAX', 200);",
+  project_permission : "INSERT INTO `project_permission` (`user_id`, `project_id`) values\n(1, 1),\n(1, 2);" 
+}
+
+// Script output, can be swapped with method to write to file etc.
+var writeLine = console.log;
 
 readFile(currentFilePath).then(parseInserts);
 
 function parseInserts(fileData) { 
-  var tableRelation = {};
   var rawData = fileData.split('\n');
+
+  // Remove lines not concerned with entering data
   var lineData = rawData.filter(function(line) { 
     return line.search("INSERT INTO") >= 0;
   });
 
-  // Super hacky
+  // Parse out table names and map to insert values
   lineData.forEach(function (line) { 
     tableRelation[line.split('`')[1]] = line;
   });
+  
+  return upgradeDB();
+}
 
+function upgradeDB() { 
   try { 
+    simpleUpgrade('country', upgradeCountry);
+    simpleUpgrade('province', upgradeProvince);
+    simpleUpgrade('sector', upgradeSector);
+    simpleUpgrade('village', upgradeVillage);
+  
+    simpleTransfer('currency');
+   
+    simpleUpgrade('enterprise', upgradeEnterprise);
     
-    // Unchanged values, write method to output this
-    console.log(tableRelation['account'] + " \n");
-    console.log(tableRelation['user'] + " \n");
-    //console.log(tableRelation['transaction_type'] + " \n");
-    console.log(tableRelation['permission'] + " \n");
-
-    simpleUpgrade('country', tableRelation['country'], upgradeCountry);
-    simpleUpgrade('province', tableRelation['province'], upgradeProvince);
-    simpleUpgrade('sector', tableRelation['sector'], upgradeSector);
-    simpleUpgrade('village', tableRelation['village'], upgradeVillage);
-    simpleUpgrade('price_list', tableRelation['price_list'], upgradePriceList);
-    simpleUpgrade('price_list_item', tableRelation['price_list_item'], upgradePriceListItem);
-    simpleUpgrade('debitor_group', tableRelation['debitor_group'], upgradeDebtorGroup);
-    simpleUpgrade('debitor', tableRelation['debitor'], upgradeDebtor);
-    simpleUpgrade('patient', tableRelation['patient'], upgradePatient);
-    simpleUpgrade('patient_group', tableRelation['patient_group'], upgradePatientGroup);
-    simpleUpgrade('assignation_patient', tableRelation['assignation_patient'], upgradeAssignation);
-    simpleUpgrade('inventory_group', tableRelation['inventory_group'], upgradeInventoryGroup);
-    simpleUpgrade('inventory', tableRelation['inventory'], upgradeInventory);
-    simpleUpgrade('sale', tableRelation['sale'], upgradeSale);
-    simpleUpgrade('sale_item', tableRelation['sale_item'], upgradeSaleItem);
-    simpleUpgrade('cash', tableRelation['cash'], upgradeCash);
-    simpleUpgrade('cash_item', tableRelation['cash_item'], upgradeCashItem);
-    simpleUpgrade('posting_journal', tableRelation['posting_journal'], upgradePostingJournal);
-    simpleUpgrade('patient_visit', tableRelation['patient_visit'], upgradePatientVisit);
-    simpleUpgrade('debitor_group_history', tableRelation['debitor_group_history'], upgradeDebtorGroupHistory);
-    
-    simpleUpgrade('pcash', tableRelation['pcash'], upgradePCash);
-    // simpleUpgrade('pcash_item', tableRelation['pcash_item'], upgradePCashItem);
-    simpleUpgrade('caution', tableRelation['caution'], upgradeCaution);
-
-    //debtor group history, patient_visitjj
+    simpleTransfer('unit');
+    simpleTransfer('user');
+    simpleTransfer('permission');
+    simpleTransfer('account_type');
+    simpleTransfer('account');
+    simpleTransfer('fiscal_year');
+    simpleTransfer('period');
+    simpleTransfer('period_total');
+ 
+    // New Project data
+    simpleCreate('project');
+    simpleCreate('project_permission');
+  
+    simpleTransfer('inventory_unit');
+    simpleTransfer('inventory_type');
+    simpleTransfer('transaction_type');
+      
+    simpleUpgrade('price_list', upgradePriceList);
+    simpleUpgrade('price_list_item', upgradePriceListItem);
+    simpleUpgrade('debitor_group', upgradeDebtorGroup);
+    simpleUpgrade('debitor', upgradeDebtor);
+    simpleUpgrade('patient', upgradePatient);
+    simpleUpgrade('patient_group', upgradePatientGroup);
+    simpleUpgrade('assignation_patient', upgradeAssignation);
+    simpleUpgrade('inventory_group', upgradeInventoryGroup);
+    simpleUpgrade('inventory', upgradeInventory);
+    simpleUpgrade('sale', upgradeSale);
+    simpleUpgrade('sale_item', upgradeSaleItem);
+    simpleUpgrade('cash', upgradeCash);
+    simpleUpgrade('cash_item', upgradeCashItem);
+    simpleUpgrade('posting_journal', upgradePostingJournal);
+    simpleUpgrade('patient_visit', upgradePatientVisit);
+    simpleUpgrade('debitor_group_history', upgradeDebtorGroupHistory);
+    simpleUpgrade('pcash', upgradePCash);
+    simpleUpgrade('caution', upgradeCaution);
   } catch(e) { 
-    console.log(e);
+    writeLine(e); 
   }
 }
 
-function simpleUpgrade(tableName, tableLine, upgradeMethod) {
+function simpleUpgrade(tableName, upgradeMethod) {
+  var tableLine = tableRelation[tableName];
   var upgradedStore, splitLine = tableLine.split("),");
   var deferred = q.defer();
 
   idRelation[tableName] = {};
-  upgradedStore = splitLine.map(upgradeMethod);
+  upgradedStore = splitLine.map(function (record, index) { 
+    var recordValues = parseValues(record, index);
+    
+    return upgradeMethod(recordValues, tableName);
+  });
 
   // Output 
-  console.log("LOCK TABLES `" + tableName + "` WRITE;");
-  console.log("INSERT INTO `" + tableName + "` VALUES \n" + upgradedStore.join(',\n') + ";");
-  console.log("UNLOCK TABLES;");
+  writeLine("LOCK TABLES `" + tableName + "` WRITE;");
+  writeLine("INSERT INTO `" + tableName + "` VALUES \n" + upgradedStore.join(',\n') + ";");
+  writeLine("UNLOCK TABLES;");
 }
 
-function upgradeCountry(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
+function simpleTransfer(tableName) { 
+  writeLine(tableRelation[tableName] + " \n");
+}
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'country';
+function simpleCreate(key) { 
+  writeLine(newRelation[key]);
+}
 
-  updateId = uuid();
+function upgradeCountry(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
+  
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
-
-  return '(' + recordValues.join(',') + ')';
+  return packageRecordValues(recordValues);
 }
 
-function upgradeProvince(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
+function upgradeProvince(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'province';
-  var referenceTable = 'country';
-
-  updateId = uuid();
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
-  recordValues[2] = idRelation[referenceTable][recordValues[2]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('country', recordValues, 2);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeSector(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'sector';
-  var referenceTable = 'province';
-
-  updateId = uuid();
+function upgradeSector(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
+  
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
-  recordValues[2] = idRelation[referenceTable][recordValues[2]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('province', recordValues, 2); 
+  return packageRecordValues(recordValues);
 }
 
-function upgradeVillage(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'village';
-  var referenceTable = 'sector';
-
-  updateId = uuid();
+function upgradeVillage(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
+  
   idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
-  recordValues[2] = idRelation[referenceTable][recordValues[2]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('sector', recordValues, 2); 
+  return packageRecordValues(recordValues);
 }
 
-function upgradePriceList(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[1];
+function upgradeEnterprise(recordValues, tableName) { 
+  upgradeReference('village', recordValues, 5);
+  return packageRecordValues(recordValues);
+}
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'price_list';
+function upgradePriceList(recordValues, tableName) { 
+  var currentId = recordValues[1], updateId = uuid();
 
-  updateId = uuid();
   idRelation[tableName][currentId] = updateId;
   recordValues[1] = updateId;
-
-  return '(' + recordValues.join(',') + ')';
+  return packageRecordValues(recordValues);
 }
 
-function upgradePriceListItem(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'price_list_item';
-  var referenceTable = 'price_list';
+function upgradePriceListItem(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
     
-  updateId = uuid();
-  // idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
-
-  recordValues[6] = idRelation[referenceTable][recordValues[6]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('price_list', recordValues, 6);  
+  return packageRecordValues(recordValues);
 }
 
-function upgradeDebtorGroup(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[1];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'debitor_group';
-  var locationReferenceTable = 'village';
-  var priceListReferenceTable = 'price_list';
+function upgradeDebtorGroup(recordValues, tableName) { 
+  var currentId = recordValues[1], updateId = uuid();
   
-  updateId = uuid();
   idRelation[tableName][currentId] = updateId;
   recordValues[1] = updateId;
-  recordValues[4] = idRelation[locationReferenceTable][recordValues[4]];
+  upgradeReference('village', recordValues, 4);
   
-  // FIXME Hack
-  if (recordValues[13]!=="NULL") recordValues[13] = idRelation[priceListReferenceTable][recordValues[13]];
-
-  return '(' + recordValues.join(',') + ')';
+  if (recordValues[13]!=="NULL") upgradeReference('price_list', recordValues, 13); 
+  return packageRecordValues(recordValues);
 }
 
-function upgradeDebtor(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'debitor';
-  var referenceTable = 'debitor_group';
+function upgradeDebtor(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
     
-  updateId = uuid();
-  
   idRelation[tableName][currentId] = updateId;
-  
   recordValues[0] = updateId;
-  recordValues[1] = idRelation[referenceTable][recordValues[1]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('debitor_group', recordValues, 1);
+  return packageRecordValues(recordValues);
 }
 
-function upgradePatient(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'patient';
-  var referenceTable = 'debitor', locationTable = 'village';
-    
-  updateId = uuid();
+function upgradePatient(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
   
   idRelation[tableName][currentId] = updateId;
-  
   recordValues[0] = updateId;
   
-  // 1 references project 1 (HBB), currentId is now the patient reference
+  // Add project ID and reference
   recordValues.splice(1, 0, '1', currentId);
   
-  recordValues[3] = idRelation[referenceTable][recordValues[3]];
-  recordValues[23] = idRelation[locationTable][recordValues[23]];
-  recordValues[24] =  idRelation[locationTable][recordValues[24]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('debitor', recordValues, 3);
+  upgradeReference('village', recordValues, 23);
+  upgradeReference('village', recordValues, 24);
+  return packageRecordValues(recordValues);
 }
 
-function upgradePatientGroup(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[1];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'patient_group';
-  var priceListReferenceTable = 'price_list';
+function upgradePatientGroup(recordValues, tableName) { 
+  var currentId = recordValues[1], updateId = uuid();
   
-  updateId = uuid();
   recordValues[1] = updateId;
   idRelation[tableName][currentId] = updateId;
   
-  // FIXME Hack
-  if (recordValues[2]!=="NULL") recordValues[2] = idRelation[priceListReferenceTable][recordValues[2]];
-
-  return '(' + recordValues.join(',') + ')';
-
+  if (recordValues[2]!=="NULL") upgradeReference('price_list', recordValues, 2);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeAssignation(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'assignation_patient';
-  var groupTable = 'patient_group';
-  var patientTable = 'patient';
+function upgradeAssignation(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
     
-  updateId = uuid();
-  
   recordValues[0] = updateId;
-  recordValues[1] = idRelation[groupTable][recordValues[1]];
-  recordValues[2] = idRelation[patientTable][recordValues[2]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('patient_group', recordValues, 1);
+  upgradeReference('patient', recordValues, 2);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeInventoryGroup(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'inventory_group';
-    
-  updateId = uuid();
+function upgradeInventoryGroup(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
   
   recordValues[0] = updateId;
   idRelation[tableName][currentId] = updateId;
-
-  return '(' + recordValues.join(',') + ')';
+  return packageRecordValues(recordValues);
 }
 
-function upgradeInventory(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[1];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'inventory';
-  var referenceTable = 'inventory_group';
-  var inventoryText = [], finalText;
-
-  updateId = uuid();
-  
-  // Temporary comma hack
-  if (recordValues.length > 16) { 
-    var diff = recordValues.length - 16;
+function upgradeInventory(recordValues, tableName) { 
+  var currentId = recordValues[1], updateId = uuid();
+  var inventoryText = [], recordLength = 16, finalText;
+ 
+  // Resolve comma parsing issue, these should be escaped before parsing
+  if (recordValues.length > recordLength) { 
+    var diff = recordValues.length - recordLength;
     for (var i = 4, l = 4 + diff; i <= l; i++) {
       inventoryText.push(recordValues[i]);
     }
@@ -305,231 +242,139 @@ function upgradeInventory(record, index) {
 
   recordValues[1] = updateId;
   idRelation[tableName][currentId] = updateId;
-
-  recordValues[6] = idRelation[referenceTable][recordValues[6]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('inventory_group', recordValues, 6);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeSale(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[1];
+function upgradeSale(recordValues, tableName) { 
+  var currentId = recordValues[1], updateId = uuid();
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'sale';
-  var referenceTable = 'debitor';
-   
   // Insert a reference
   recordValues.splice(1, 0, currentId);
 
   // Enterprise ID is now project ID 
   recordValues[0] = 1;
-
-  updateId = uuid();
-  
   recordValues[2] = updateId;
+  
   idRelation[tableName][currentId] = updateId;
-
-  recordValues[5] = idRelation[referenceTable][recordValues[5]];
+  upgradeReference('debitor', recordValues, 5)
 
   // Add a timestamp
   recordValues.push(recordValues[8].substr(0, recordValues[8].length-1) + " 00:00:00\'");
-
-  return '(' + recordValues.join(',') + ')';
+  return packageRecordValues(recordValues);
 }
 
-function upgradeSaleItem(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[1];
+function upgradeSaleItem(recordValues, tableName) { 
+  var currentId = recordValues[1], updateId = uuid();
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'sale_item';
-  var saleReference = 'sale';
-  var inventoryReference = 'inventory';
-
-  updateId = uuid();
-  
   recordValues[1] = updateId;
-  // idRelation[tableName][currentId] = updateId;
   
-  recordValues[0] = idRelation[saleReference][recordValues[0]];
-  recordValues[2] = idRelation[inventoryReference][recordValues[2]];
-  
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('sale', recordValues, 0);
+  upgradeReference('inventory', recordValues, 2);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeCash(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
+function upgradeCash(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'cash';
-  var referenceTable = 'debitor';
-   
   // Insert a project ID and reference
   recordValues.splice(0, 0, '1', currentId);
-  
-  updateId = uuid();
   
   // Remove enterprise ID
   recordValues.splice(3, 1);
 
   recordValues[2] = updateId;
   idRelation[tableName][currentId] = updateId;
-
-  recordValues[8] = idRelation[referenceTable][recordValues[8]];
-
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('debitor', recordValues, 8);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeCashItem(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
+function upgradeCashItem(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'cash_item';
-  var saleReference = 'sale';
-  var cashReference = 'cash';
-
-  updateId = uuid();
-  
   recordValues[0] = updateId;
-
-  // idRelation[tableName][currentId] = updateId;
   
-  recordValues[1] = idRelation[cashReference][recordValues[1]];
-  recordValues[3] = idRelation[saleReference][recordValues[3]];
-  
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('cash', recordValues, 1);
+  upgradeReference('sale', recordValues, 3);
+  return packageRecordValues(recordValues);
 }
 
-function upgradePostingJournal(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'posting_journal';
-  var debtorReference = 'debitor';
-
-  updateId = uuid();
+function upgradePostingJournal(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
+  var currentDebtor = recordValues[14].replace(/\'/g, '');
   
   recordValues[0] = updateId;
-
   idRelation[tableName][currentId] = updateId;
  
   // Replace enterprise with project ID
   recordValues[1] = '1';
 
-  if(recordValues[14]!=="NULL") {
-    var t = recordValues[14];
-    t = t.replace(/\'/g, '');
-    recordValues[14] = idRelation['debitor'][t];
-  }
-  return '(' + recordValues.join(',') + ')';
+  if(recordValues[14]!=="NULL") recordValues[14] = idRelation['debitor'][currentDebtor];
+  return packageRecordValues(recordValues);
 }
 
-function upgradePatientVisit(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'patient_visit';
-  var patientReference = 'patient';
-
-  updateId = uuid();
+function upgradePatientVisit(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
   
   recordValues[0] = updateId;
-  recordValues[1] = idRelation[patientReference][recordValues[1]];
-  
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('patient', recordValues, 1);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeDebtorGroupHistory(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'patient_visit';
-  var debitorReference = 'debitor';
-  var debitorGroupReference = 'debitor_group';
-
-  updateId = uuid();
+function upgradeDebtorGroupHistory(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
   
   recordValues[0] = updateId;
-  recordValues[1] = idRelation[debitorReference][recordValues[1]];
-  recordValues[2] = idRelation[debitorGroupReference][recordValues[2]];
-  
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('debitor', recordValues, 1);
+  upgradeReference('debitor_group', recordValues, 2);
+  return packageRecordValues(recordValues);
 }
 
-function upgradePCash(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
-
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'pcash';
-  var debitorReference = 'debitor';
-
-  updateId = uuid();
+function upgradePCash(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
+  var currentDebtor; 
     
   idRelation[tableName][currentId] = updateId;
   
   // Add reference 
   recordValues.splice(0, 0, currentId);
-
-  recordValues[1] = updateId;
-
+  
   // Add project ID
   recordValues[2] = '1'; 
+  recordValues[1] = updateId;
 
-  recordValues[5] = idRelation[debitorReference][recordValues[5]];
-  
-  return '(' + recordValues.join(',') + ')';
+  currentDebtor = recordValues[5].replace(/\'/g, '');
+  if (recordValues[5]!=="NULL") recordValues[5] = idRelation['debitor'][currentDebtor];
+  return packageRecordValues(recordValues);
 }
 
-function upgradePCashItem(record, index) { 
-  console.log('got', record, index);
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
+function upgradePCashItem(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'pcash_item';
-  var pcashReference = 'pcash';
-  var invoiceReference = 'sale';
-
-  updateId = uuid();
-    
-  // idRelation[tableName][currentId] = updateId;
   recordValues[0] = updateId;
-
-  recordValues[1] = idRelation[pcashReference][recordValues[1]];
-  recordValues[3] = idRelation[invoiceReference][recordValues[3]];
-  
-  return '(' + recordValues.join(',') + ')';
+  upgradeReference('pcash', recordValues, 1);
+  upgradeReference('sale', recordValues, 3);
+  return packageRecordValues(recordValues);
 }
 
-function upgradeCaution(record, index) { 
-  var recordValues = parseValues(record, index);
-  var updateId, currentId = recordValues[0];
+function upgradeCaution(recordValues, tableName) { 
+  var currentId = recordValues[0], updateId = uuid();
 
-  // FIXME Temporary hack, this should be passed down through 
-  var tableName = 'caution';
-  var debitorReference = 'debitor';
-
-  updateId = uuid();
-    
-  idRelation[tableName][currentId] = updateId;
-  
   // Add reference 
   recordValues.splice(0, 0, currentId);
-
-  recordValues[1] = updateId;
 
   // Add project ID
   recordValues[4] = '1'; 
-  recordValues[5] = idRelation[debitorReference][recordValues[5]];
   
-  return '(' + recordValues.join(',') + ')';
+  idRelation[tableName][currentId] = updateId;
+  recordValues[1] = updateId;
+  
+  upgradeReference('debitor', recordValues, 5);
+  return packageRecordValues(recordValues);
+}
+
+function upgradeReference(tableReference, recordValues, index) { 
+  recordValues[index] = idRelation[tableReference][recordValues[index]];
 }
 
 // Returns individual values from an SQL insert
@@ -539,6 +384,10 @@ function parseValues(record, index) {
   return stripBrackets.split(','); 
 }
 
+function packageRecordValues(recordValues) { 
+  return '(' + recordValues.join(',') + ')';
+}
+
 function uuid() {
   var uuid;
   uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -546,7 +395,8 @@ function uuid() {
     v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
-
+  
+  // Sanitise UUID
   return "\'" + uuid + "\'";
 }
 
