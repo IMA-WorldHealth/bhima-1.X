@@ -55,10 +55,8 @@ angular.module('kpk.controllers')
     $scope.add = {};
     // for registration of 'super user privileges'
     $scope.all = {};
-
-    $scope.setAction = function (value) {
-      $scope.action = value;
-    };
+    // for printing
+    $scope.timestamp = new Date();
 
     $scope.$watch('add', function () {
       $scope.add.validPassword = angular.isDefined($scope.add.password) && $scope.add.password === $scope.add.password_verify;
@@ -290,6 +288,10 @@ angular.module('kpk.controllers')
         project.checked = $scope.all.projects;
       });
     });
+
+    $scope.print = function () {
+      $window.print();
+    };
 
     $scope.saveProjects = function () {
       var user_id = $scope.data.user_id;

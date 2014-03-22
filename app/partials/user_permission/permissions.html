@@ -2,15 +2,44 @@
   {{ "PERMISSION.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
-	<div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="setAction('add')">
-      <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
-    </button>
-	</div>
+<section class="top-nav hidden-print">
+  <button class="btn btn-sm btn-default" ng-click="action='add'">
+    <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
+  </button>
+  <div class="pull-right">
+    <a href="" class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+  </div>
 </section>
 
-<div class="content">
+<div class="visible-print">
+  <div class="report">
+    <div class="reportFrame">
+      <h4>{{ "PERMISSION.TITLE" | translate }} <small> {{ "REPORT.GENERATED_ON" | translate }} {{ timestamp | date }}</small></h4>
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.ID" | translate}}</th>
+            <th>{{ "COLUMNS.FIRST_NAME" | translate}}</th>
+            <th>{{ "COLUMNS.LAST_NAME" | translate}}</th>
+            <th>{{ "COLUMNS.USER_NAME" | translate}}</th>
+            <th>{{ "COLUMNS.EMAIL" | translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in users.data">
+            <td>{{user.id}}</td>
+            <td>{{user.first}}</td>
+            <td>{{user.last}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.email}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div> 
+
+<div class="content hidden-print">
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-primary" style="overflow: auto">
@@ -189,7 +218,7 @@
               <span>{{ "PERMISSION.PROJECTS" | translate }}</span>
               <span class="pull-right">
                 <a href="" ng-click="saveProjects()">
-                  <span class="glyphicon glyphicon-floppy"></span> {{ "FORM.SAVE" | translate }}
+                  <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
                 </a>
               </span>
             </div>
@@ -216,7 +245,7 @@
               <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
                 <a href="" ng-disabled="!data.permission_change" ng-click="savePermissions()">
-                  <span class="glyphicon glyphicon-floppy-open"></span> {{ "FORM.SAVE" | translate }}
+                  <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
                 </a>
               </span>
             </div>
