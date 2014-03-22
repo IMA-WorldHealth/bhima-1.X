@@ -212,6 +212,7 @@ angular.module('kpk.controllers')
 
     function submitInvoice() {
       var invoiceRequest = packageInvoiceRequest();
+      console.log('[invoiceRequest]', invoiceRequest);
 
       if (!validSaleProperties(invoiceRequest)) return;
       $http.post('sale/', invoiceRequest).then(handleSaleResponse);
@@ -263,16 +264,18 @@ angular.module('kpk.controllers')
       invoice.applyGlobal.forEach(function (listItem) {
         var applyCost, formatListItem, enterpriseDiscountId; // FIXME Derive this from enterprise
 
-        (listItem.is_discount) ? enterpriseDiscountId = 486 : enterpriseDiscountId = 485;
+        enterpriseDiscountId = listItem.is_discount ? "a47bdb0d-02d9-43a3-bfc9-eb558193eb1b" : "0b0b8dc6-9b8c-44e4-9438-151bb43909e5";
 
         formatDiscountItem = {
-          inventory_id : enterpriseDiscountId,
+          inventory_uuid : enterpriseDiscountId,
           quantity : 1,
           transaction_price : listItem.currentValue,
           debit : 0,
           credit : 0,
           inventory_price : 0
         };
+
+        console.log('[FORMAT DISCOUNT ITEM] ', formatDiscountItem);
 
         (listItem.is_discount) ?
           formatDiscountItem.debit = listItem.currentValue :

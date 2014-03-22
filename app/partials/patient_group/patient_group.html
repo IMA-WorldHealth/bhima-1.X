@@ -1,5 +1,5 @@
 <header>
-  <span>{{ "PATIENT_GRP.TITLE" | translate }}</span>
+  {{ "PATIENT_GRP.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
@@ -10,120 +10,120 @@
 
 <div class="content">
   <div class="row">
-  <div class="col-xs-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <span>{{ "PATIENT_GRP.REGISTERED" | translate }}</span>
-      </div>
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th>{{ "PATIENT_GRP.PATIENT_GROUP" | translate }}</th>
-            <th>{{ "PATIENT_GRP.PRICE_LIST" | translate }}</th>
-            <th colspan="2" width="10%">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-class="{'selected-primary' : session.selected.uuid === grp.uuid}" ng-repeat="grp in group.data">
-            <td>{{ grp.name }}</td>
-            <td>{{ list.get(grp.price_list_uuid).title }} [{{ grp.price_list_uuid }}]</td>
-            <td>
-              <button class="btn btn-sm btn-default" ng-click="edit(grp)">
-                <i class="glyphicon glyphicon-pencil"></i>
-              </button>
-            </td>
-            <td>
-              <button class="btn btn-sm btn-danger" ng-click="remove(grp)">
-                <i class="glyphicon glyphicon-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="col-xs-6" ng-switch="action">
-    <div ng-switch-default>
-      <div class="alert alert-info">
-        <h4>{{ "PATIENT_GRP.TITLE" | translate }}</h4>
-        <p>{{ "PATIENT_GRP.HELP_TXT_1" | translate }}.</p>
+    <div class="col-xs-6">
+      <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
+        <div class="panel-heading">
+          <span>{{ "PATIENT_GRP.REGISTERED" | translate }}</span>
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ "PATIENT_GRP.PATIENT_GROUP" | translate }}</th>
+              <th>{{ "PATIENT_GRP.PRICE_LIST" | translate }}</th>
+              <th colspan="2" width="10%">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-class="{'selected-primary' : session.selected.uuid === grp.uuid}" ng-repeat="grp in group.data">
+              <td>{{ grp.name }}</td>
+              <td>{{ list.get(grp.price_list_uuid).title }} [{{ grp.price_list_uuid }}]</td>
+              <td>
+                <button class="btn btn-sm btn-default" ng-click="edit(grp)">
+                  <i class="glyphicon glyphicon-pencil"></i>
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-danger" ng-click="remove(grp)">
+                  <i class="glyphicon glyphicon-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div ng-switch-when="register">
-      <form class="form-horizontal">
-        <fieldset>
-          <legend>{{ "PATIENT_GRP.REGISTER" | translate }}</legend>
-    
-          <div class="form-group required">
-            <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
-            <div class="col-xs-10">
-              <input class="form-kapok" ng-model="register.name">
-            </div>
-          </div>
-        
-          <div class="form-group required">
-            <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
-            <div class="col-xs-10">
-              <select class="form-kapok" ng-model="register.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
-                <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-              </select>
-            </div>
-          </div>
-    
+    <div class="col-xs-6" ng-switch="action">
 
-          <div class="form-group">
-            <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
-            <div class="col-xs-10">
-              <textarea class="form-control" ng-model="register.note" rows="3">
-              </textarea>
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <h4>{{ "PATIENT_GRP.TITLE" | translate }}</h4>
+          <p>{{ "PATIENT_GRP.HELP_TXT_1" | translate }}.</p>
+        </div>
+      </div>
+
+      <div ng-switch-when="register">
+        <form class="form-horizontal">
+          <fieldset>
+            <legend>{{ "PATIENT_GRP.REGISTER" | translate }}</legend>
+      
+            <div class="form-group required">
+              <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
+              <div class="col-xs-10">
+                <input class="form-kapok" ng-model="register.name">
+              </div>
             </div>
-          </div>
+          
+            <div class="form-group required">
+              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
+              <div class="col-xs-10">
+                <select class="form-kapok" ng-model="register.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
+                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
+                </select>
+              </div>
+            </div>
+      
 
-          <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
-          <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
+              <div class="col-xs-10">
+                <textarea class="form-control" ng-model="register.note" rows="3">
+                </textarea>
+              </div>
+            </div>
 
-        </fieldset>
-      </form>
+            <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
+            <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
+
+          </fieldset>
+        </form>
+      </div>
+
+      <div ng-switch-when="modify">
+        <form class="form-horizontal">
+          <fieldset>
+            <legend>{{ "PATIENT_GRP.MODIFY" |  translate }}</legend>
+      
+            <div class="form-group required">
+              <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
+              <div class="col-xs-10">
+                <input class="form-kapok" ng-model="modify.name">
+              </div>
+            </div>
+          
+            <div class="form-group required">
+              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
+              <div class="col-xs-10">
+                <select class="form-kapok" ng-model="modify.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
+                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
+                </select>
+              </div>
+            </div>
+      
+
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
+              <div class="col-xs-10">
+                <textarea class="form-control" ng-model="modify.note" rows="3"></textarea>
+              </div>
+            </div>
+
+            <input ng-click="saveModification()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
+            <input ng-click="resetModification()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
+
+          </fieldset>
+        </form>
+      </div>
     </div>
-
-
-    <div ng-switch-when="modify">
-      <form class="form-horizontal">
-        <fieldset>
-          <legend>{{ "PATIENT_GRP.MODIFY" |  translate }}</legend>
-    
-          <div class="form-group required">
-            <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
-            <div class="col-xs-10">
-              <input class="form-kapok" ng-model="modify.name">
-            </div>
-          </div>
-        
-          <div class="form-group required">
-            <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
-            <div class="col-xs-10">
-              <select class="form-kapok" ng-model="modify.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
-                <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-              </select>
-            </div>
-          </div>
-    
-
-          <div class="form-group">
-            <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
-            <div class="col-xs-10">
-              <textarea class="form-control" ng-model="modify.note" rows="3"></textarea>
-            </div>
-          </div>
-
-          <input ng-click="saveModification()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
-          <input ng-click="resetModification()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
-
-        </fieldset>
-      </form>
-    </div>
-  </div>
   </div>
 </div>
