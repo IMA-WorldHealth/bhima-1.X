@@ -14,12 +14,18 @@ angular.module('kpk.controllers')
   'precision',
   'uuid',
   function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid) {
-    var dependencies = {}, invoice = {}, inventory = [], selectedInventory = {};
-    var recoverCache = new Appcache('sale'), priceListSource = [];
+    var dependencies = {},
+        invoice = {},
+        inventory = [],
+        selectedInventory = {};
+
+    var recoverCache = new Appcache('sale'),
+        priceListSource = [];
+
     var session = $scope.session = {
       tablock : -1
     };
-
+    
     appstate.register('project', function (project) {
       $scope.project = project;
     });
@@ -27,7 +33,11 @@ angular.module('kpk.controllers')
     dependencies.inventory = {
       query: {
         identifier : 'uuid',
-        tables: {"inventory" : {columns: ["uuid", "code", "text", "price"]}}
+        tables: {
+          "inventory" : {
+            columns: ["uuid", "code", "text", "price"]
+          }
+        }
       }
     };
 
@@ -213,7 +223,7 @@ angular.module('kpk.controllers')
       //Seller ID will be inserted on the server
       requestContainer.sale = {
         project_id : $scope.project.id,
-        cost : calculateTotal(),
+        cost : calculateTotal().totalToPay,
         currency_id : $scope.project.currency_id,
         debitor_uuid : invoice.debtor.debitor_uuid,
         invoice_date : invoice.date,
@@ -223,6 +233,7 @@ angular.module('kpk.controllers')
       requestContainer.saleItems = [];
 
       invoice.items.forEach(function(saleItem) {
+        console.log('saleItem:', saleItem);
         var formatSaleItem;
         formatSaleItem = {
           inventory_uuid : saleItem.inventoryId,
