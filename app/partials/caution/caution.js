@@ -11,32 +11,29 @@ angular.module('kpk.controllers')
   'messenger',
   '$translate',
   'util',
-  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util) {
+  'uuid',
+  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid) {
 
     var dependencies = {},
-        caution_id = -1;
+        caution_uuid = -1;
 
-    dependencies.cash_box_account = {
+    dependencies.cash_box = {
       query : {
         tables : {
-          'cash_box_account' : {
-            columns : ['id', 'currency_id', 'cash_account', 'bank_account', 'caution_account']
+          'cash_box_account_currency' : {
+            columns : ['id', 'currency_id', 'account_id']
           },
           'currency' : {
             columns : ['symbol', 'min_monentary_unit']
+          },
+          'cash_box' : {
+            columns : ['id', 'text', 'project_id']
           }
         },
-        join : ['cash_box_account.currency_id=currency.id'],
-      }
-    };
-
-    dependencies.accounts = {
-      query : {
-        tables : {
-          'account' : {
-            columns : ['id', 'account_number', 'account_txt']
-          }
-        },
+        join : [
+          'cash_box_account_currency.currency_id=currency.id',
+          'cash_box_account_currency.cash_box_id=cash_box.id'
+        ]
       }
     };
 
@@ -49,6 +46,17 @@ angular.module('kpk.controllers')
           }
         },
         where : ['exchange_rate.date='+util.convertToMysqlDate(new Date())]
+      }
+    };
+
+    dependencies.accounts = {
+      required : true,
+      query : {
+        tables : {
+          'account' : {
+            columns : ['id','account_number', 'account_txt']
+          }
+        }
       }
     };
 
@@ -65,9 +73,10 @@ angular.module('kpk.controllers')
     $scope.model = {};
 
     function init (model) {
-      $scope.model = model;
-      $scope.selectedItem = model.cash_box_account.data[0];
       console.log('Nous avons comme model ', model);
+      $scope.model = model;
+      $scope.selectedItem = model.cash_box.data[model.cash_box.data.length-1]; //pop() doesn't work
+      console.log('selected', $scope.selectedItem);
     }
 
     function ready (model) {
@@ -85,13 +94,17 @@ angular.module('kpk.controllers')
     }
 
     function payCaution (){
+      console.log('notre debiteur selectionne', $scope.selectedDebitor);
       var record = {
+        uuid            : uuid(),
         value           : $scope.data.payment,
-        enterprise_id   : $scope.enterprise.id,
-        debitor_id      : $scope.selectedDebitor.debitor_id,
+        project_id      : $scope.project.id,
+        debitor_uuid    : $scope.selectedDebitor.debitor_uuid,
         currency_id     : $scope.selectedItem.currency_id,
-        user_id         : 1
-      };
+        user_id         : $scope.model.cashier.data.id,
+        cash_box_id     : $scope.selectedItem.id,
+        description     : ['CAP', $scope.selectedDebitor.debitor_uuid, $scope.selectedDebitor.first_name, util.convertToMysqlDate(new Date().toString())].join('/')
+      }
       writeCaution(record)
       .then(postToJournal)
       .then(handleSucces)
@@ -99,8 +112,9 @@ angular.module('kpk.controllers')
     }
 
     function postToJournal (res) {
-      caution_id = res.data.insertId;
-      return connect.fetch('/journal/caution/' + res.data.insertId);
+      caution_uuid = res.config.data.data[0].uuid;
+      console.log('notre uuid', caution_uuid);
+      return connect.fetch('/journal/caution/' + caution_uuid);
     }
 
     function writeCaution(record){
@@ -112,22 +126,23 @@ angular.module('kpk.controllers')
     }
 
 
-    function handleSucces(){
+    function handleSucces(resp){
       messenger.success($translate('CAUTION.SUCCES'));
       $scope.selectedDebitor = {};
       $scope.data = {};
       $scope.noEmpty = false;
-      if (caution_id !== -1) { $location.path('/invoice/caution/' + caution_id); }
+      console.log('on a en retour :', resp)
+      if (caution_uuid !== -1) { $location.path('/invoice/caution/' + caution_uuid); }
     }
 
     function handleError(){
       messenger.danger($translate('CAUTION.DANGER'));
     }
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      dependencies.accounts.query.where =
-        ['account.enterprise_id=' + enterprise.id];
+    appstate.register('project', function (project) {
+      $scope.project = project;
+      dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
+      dependencies.cash_box.query.where=['cash_box.project_id='+project.id];
       validate.process(dependencies).then(init, handleError);
     });
 

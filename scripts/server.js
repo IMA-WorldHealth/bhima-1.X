@@ -361,7 +361,6 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
   db.exec(sql)
   .then(function (ans) {
     var currency_id = ans.pop().currency_id;
-    console.log('voici notre currency_id', currency_id);
     sql =
       'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
         '`t`.`credit_equiv` AS `credit`, `t`.`description`, `t`.`account_id` ' +
