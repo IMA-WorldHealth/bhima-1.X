@@ -475,11 +475,19 @@ module.exports = function (db, synthetic) {
     var sql, row;
 
     // find out what the current balance is on the invoice to find out if we are paying it all.
+    /*
     sql =
       'SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit ' +
       'FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN posting_journal AS p ' +
       'ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id ' +
-      'WHERE c.uuid = ' + sanitize.escape(cash_id) + ' AND p.deb_cred_uuid = s.debitor_uuid GROUP BY c.uuid;';
+      'WHERE c.uuid = ' + sanitize.escape(cash_id) + ' AND p.deb_cred_uuid = s.debitor_uuid GROUP BY c.uuid AND s.account_id = c.credit_account;';
+    */
+    sql =
+      "SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit " +
+      "FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN posting_journal AS p JOIN debitor AS d JOIN debitor_group as dg " +
+      "ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id " +
+      "AND d.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid WHERE c.uuid = " + sanitize.escape(cash_id) + " AND p.deb_cred_uuid = s.debitor_uuid " +
+      " and p.account_id = dg.account_id GROUP BY c.uuid;";
 
     return db.exec(sql)
     .then(function (rows) {
@@ -488,11 +496,14 @@ module.exports = function (db, synthetic) {
     })
     .then(function (store) {
       var paidValue = precision(row.cost / store.get(row.currency_id).rate, 4);
+      console.log('[cash.cost] ', row.cost, 'paidvalue ', paidValue, 'row.balance ', row.balance);
       var remainder = precision((row.balance - paidValue) * store.get(row.currency_id).rate, 4);
+      console.log('[remainder] ', remainder, 'row.balance-paidValue :', row.balance - paidValue, 'store.get(row.currency_id)', store.get(row.currency_id));
       // if the absolute value of the remainder is less than the min_monentary_unit
       // then they have paid in full
-      console.log('\n[DEBUG] min_monentary_unit', row.min_monentary_unit, 'abs(remainder)', Math.abs(remainder));
       var isPaidInFull = Math.abs(remainder) - row.min_monentary_unit < row.min_monentary_unit;
+      console.log('[DEBUG] isPaidInFull:', isPaidInFull, 'Math.abs(remainder):', Math.abs(remainder), 'remainder:', remainder);
+      console.log('[DEBUG] paidValue:', paidValue, 'row:', row);
       return { isPaidInFull : isPaidInFull, remainder : row.balance - paidValue };
     });
   }
@@ -597,7 +608,7 @@ module.exports = function (db, synthetic) {
 
       state.cashUUID = uuid();
 
-      // finally, copy the data from cash into the journal with care to convert exchange rates.
+      // copy the data from cash into the journal with care to convert exchange rates.
       var sql =
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -731,6 +742,8 @@ module.exports = function (db, synthetic) {
 
       var sql =
         "DELETE FROM `posting_journal` WHERE `uuid` IN (" + ids.join(', ') + ");";
+
+      if (!ids.length) { return done(error); }
 
       db.exec(sql)
       .then(function () {
