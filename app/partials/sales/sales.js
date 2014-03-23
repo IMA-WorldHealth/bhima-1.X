@@ -25,7 +25,7 @@ angular.module('kpk.controllers')
     var session = $scope.session = {
       tablock : -1
     };
-    
+
     appstate.register('project', function (project) {
       $scope.project = project;
     });
@@ -138,7 +138,7 @@ angular.module('kpk.controllers')
     }
 
     function getCaution(selectedDebtor) {
-      return connect.fetch('/caution/' + selectedDebtor.debitor_uuid + '/' + $scope.project.enterprise_id);
+      return connect.fetch('/caution/' + selectedDebtor.debitor_uuid + '/' + $scope.project.id);
     }
 
     function processPriceList(model) {

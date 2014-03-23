@@ -14,12 +14,13 @@ module.exports = function(db, parser, journal) {
     saleItems = saleData.saleItems;
 
     if(!(saleRecord && saleItems)) return callback(null, new Error("[createSale] Required data is invalid"));
-    
+
     writeSaleRecord(saleRecord, userId)
 
     //writeSaleItems()
     .then(function(saleResult) {
       processedSale = true;
+      console.log('sale successed')
       return writeSaleItems(saleRecordId, saleItems);
     })
 
