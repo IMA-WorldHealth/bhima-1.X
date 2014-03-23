@@ -24,6 +24,14 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.inventory = { 
+      query : {
+        identifier : 'uuid',
+        tables : {'inventory' : {columns:['uuid', 'code', 'inventory_code', 'text', 'type_id']}},
+        
+      }
+    };
+
     appstate.register('enterprise', loadDependencies);
 
     function loadDependencies(enterpriseResult) {
@@ -36,6 +44,7 @@ angular.module('kpk.controllers')
 
     function priceList(model) {
       $scope.model = model;
+
     }
   
     function editItems(list) {
