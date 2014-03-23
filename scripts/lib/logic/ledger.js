@@ -16,8 +16,9 @@ var sanitize = require('../util/sanitize'),
 module.exports = function (db) {
   'use strict';
 
-  function debitor (id, callback) {
+  function debitor (id) {
     var defer = q.defer();
+    console.log('called debitor with id' + id);
 
     // debitor query
     if (!id) { defer.reject(new Error('No debitor id selected!')); }
@@ -48,8 +49,7 @@ module.exports = function (db) {
       return db.exec(query);
     })
     .then(function (ans) {
-
-      if (!ans.length) { return callback(null, []); }
+      if (!ans.length) { defer.resolve([]); }
 
       var invoices = ans.map(function (line) {
         return line.inv_po_id;
