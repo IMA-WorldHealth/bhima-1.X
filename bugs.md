@@ -40,7 +40,7 @@ which messes up page refresh.
 [x] Database only stores 2 decimal digits, screwing up 1000-1 rates.
 
 #### CashBox
-[ ] Cashbox should lock up if exchange rate is not available
+[x] Cashbox should lock up if exchange rate is not available
 [ ] Cashbox should allow adjusting amounts on an invoice to invoice basis.
 [x] Cashbox cannot post multiple invoices, only one (the first) invoice is posted.
 [ ] Post a warning if no debitor invoices are found.

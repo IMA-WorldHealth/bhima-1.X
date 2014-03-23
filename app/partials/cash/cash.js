@@ -44,7 +44,7 @@ angular.module('kpk.controllers')
         identifier : 'currency_id',
         tables : {
           'cash_box_account' : {
-            columns : ['id', 'cash_box_id', 'currency_id', 'cash_account', 'bank_account']
+            columns : ['id', 'cash_box_id', 'currency_id', 'account_id']
           },
           'currency' : {
             columns : ['symbol']
@@ -55,7 +55,7 @@ angular.module('kpk.controllers')
         },
         join : [
           'cash_box_account.currency_id=currency.id',
-          'account.id=cash_box_account.cash_account'
+          'account.id=cash_box_account.account_id'
         ]
       }
     };
@@ -84,19 +84,20 @@ angular.module('kpk.controllers')
 
 
     function loadDefaultCurrency(currency) {
+      console.log('currency', currency);
       if(!currency) return;
       defaultCurrency = currency;
 
       // Fallback for slow IDB read
-      // if($scope.currency) $scope.currency = currency;
+      if ($scope.currency) { $scope.currency = currency; }
     }
 
     function loadDefaultCashBox(cashBox) {
-      if(!cashBox) return;
+      if (!cashBox) { return; }
       defaultCashBox = cashBox;
 
       // Fallback for slow IDB read
-      // if($scope.cashbox) $scope.cashbox = cashBox;
+      if ($scope.cashbox) $scope.cashbox = cashBox;
     }
 
     function setUpModels(models) {
@@ -110,7 +111,7 @@ angular.module('kpk.controllers')
 
         if(defaultCashBox) {
           var verifyBox = $scope.cashboxes.get(defaultCashBox.id);
-          if(verifyBox) { sessionDefault = verifyBox; }
+          if (verifyBox) { sessionDefault = verifyBox; }
         }
 
         $scope.setCashBox(sessionDefault);
@@ -289,7 +290,7 @@ angular.module('kpk.controllers')
         payment.uuid = id;
         payment.type = 'E';
         payment.project_id = $scope.project.id;
-        payment.debit_account = account.cash_account;
+        payment.debit_account = account.account_id;
         payment.credit_account = $scope.patient.account_id;
         payment.currency_id = $scope.currency.currency_id;
         payment.cost = precision.round($scope.data.payment);
