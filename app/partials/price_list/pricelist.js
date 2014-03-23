@@ -24,6 +24,14 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.inventory = { 
+      query : {
+        identifier : 'uuid',
+        tables : {'inventory' : {columns:['uuid', 'code', 'inventory_code', 'text', 'type_id']}},
+        
+      }
+    };
+
     appstate.register('enterprise', loadDependencies);
 
     function loadDependencies(enterpriseResult) {
@@ -36,6 +44,7 @@ angular.module('kpk.controllers')
 
     function priceList(model) {
       $scope.model = model;
+
     }
   
     function editItems(list) {
@@ -44,7 +53,7 @@ angular.module('kpk.controllers')
       dependencies.priceListItems = {
         query : {
           identifier: 'uuid',
-          tables : {'price_list_item' : {columns:['uuid', 'item_order', 'description', 'value', 'is_discount', 'is_global', 'price_list_uuid']}},
+          tables : {'price_list_item' : {columns:['uuid', 'item_order', 'description', 'value', 'is_discount', 'is_global', 'price_list_uuid', 'inventory_uuid']}},
           where : ['price_list_item.price_list_uuid=' + list.uuid]
         }
       };
@@ -111,11 +120,13 @@ angular.module('kpk.controllers')
 
       // Verify items
       var invalidData = $scope.session.listItems.some(function (item, index) {
-        if(!item.price_list_uuid) item.price_list_uuid = priceList.uuid;
+        if (!item.price_list_uuid) item.price_list_uuid = priceList.uuid;
         item.item_order = index;
   
-        if(isNaN(Number(item.value))) return true;
-        if(!item.description || item.description.length===0) return true;
+        if (isNaN(Number(item.value))) return true;
+        if (!item.description || item.description.length===0) return true;
+
+        if (item.is_global && !item.inventory_uuid) return true;
 
         return false;
       });
