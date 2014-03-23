@@ -113,7 +113,7 @@ app.get('/currentProject', function (req, res, next) {
 
 // FIXME: this is terribly insecure.  Please remove
 app.get('/user_session', function (req, res, next) {
-  res.send(req.session);
+  res.send(200, {id: req.session.user_id});
 });
 
 app.get('/trial/', function (req, res, next) {

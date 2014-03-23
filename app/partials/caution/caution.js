@@ -56,17 +56,18 @@ angular.module('kpk.controllers')
     $scope.debitor = {};
     $scope.data = {};
 
-    /*
+
     dependencies.cashier = {
       query : 'user_session'
     };
-    */
+
 
     $scope.model = {};
 
     function init (model) {
       $scope.model = model;
       $scope.selectedItem = model.cash_box_account.data[0];
+      console.log('Nous avons comme model ', model);
     }
 
     function ready (model) {
