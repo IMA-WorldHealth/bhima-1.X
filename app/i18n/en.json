@@ -234,7 +234,8 @@
     "VISIBLE_FISCAL_YEAR"   : "Visible Fiscal Year",
     "VISIBLE_PERIODS"       : "Visible Periods",
     "CHOOSE_PERIOD"         : "Choose A Period",
-    "INCOME_EXPENSE_REPORT" : "Income/Expense Report"
+    "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
+    "GENERATED_ON" : "Generated on"
   },
 
   "CASH_PAYMENTS" : {
@@ -747,18 +748,13 @@
     "FRENCH_NAME"          : "French Name",
     "ACTIONS"              : "Actions",
     "CONFIGURATION"        : "Country Manager Configuration ",
-    "DESCRIPTION"          : "This module will help you to manage countries, at the left you see availvables countries and their locations. ⇉ use this module to",
-    "CREATE"               : "create",
-    "MODIFY"               : "modify",
-    "AND"                  : "and",
-    "REMOVE"               : "remove",
-    "COUNTRY"              : "country",
+    "DESCRIPTION"          : "This module will help you to manage countries. At the left you see available countries and their locations. Use this module to create, modify, and remove countries.",
     "REGISTER"             : "Register a Country",
     "EDIT"                 : "Edit a Country"
   },
 
   "PROVINCE"           : {
-    "TITLE"            : "PROVINCE MANAGER",
+    "TITLE"            : "Province Manager",
     "LOCATION_MANAGER" : "Location Manager",
     "ADD"              : "Add New Province",
     "REGISTERED"       : "Registered Province",
@@ -766,7 +762,7 @@
     "COUNTRY"          : "Country",
     "ACTIONS"          : "Actions",
     "CONFIGURATION"    : "Province Manager Configuration",
-    "DESCRIPTION"      : "This module will help you to manage provinces, at the left you see availvables provinces and their locations. use this module to create, modify and remove province. ",
+    "DESCRIPTION"      : "This module will help you to manage provinces, at the left you see available provinces and their locations. Use this module to create, modify and remove provinces.",
     "REGISTER"         : "Register a Province",
     "PROVINCE_NAME"    : "Province name",
     "EDIT"             : "Edit a Province"
@@ -830,7 +826,7 @@
   },
 
   "VILLAGE"            : {
-    "TITLE"            : "VILLAGE MANAGER",
+    "TITLE"            : "Village Manager",
     "LOCATION_MANAGER" : "Location manager",
     "NEW_VILLAGE"      : "Add Village",
     "REGISTERED"       : "Registered villages",

@@ -190,6 +190,10 @@ input::-webkit-inner-spin-button {
   background-color: #eeeeee;
 }
 
+textarea.form-kapok {
+  height: auto;
+}
+
 /* everything is bad */
 .hack-left { 
   margin-left: -15px;
