@@ -329,9 +329,9 @@ create table `cash_box` (
   constraint foreign key (`project_id`) references `project` (`id`)
 ) engine=innodb;
 
-drop table if exists `cash_box_account`;
-create table `cash_box_account` (
-  `id`              mediumint unsigned not null auto_increment, 
+drop table if exists `cash_box_account_currency`;
+create table `cash_box_account_currency` (
+  `id`              mediumint unsigned not null auto_increment,
   `currency_id`     tinyint unsigned not null,
   `cash_box_id`     mediumint unsigned not null,
   `account_id`    int unsigned,
@@ -342,6 +342,32 @@ create table `cash_box_account` (
   -- unique key (`id`, `currency_id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
+  constraint foreign key (`account_id`) references `account` (`id`)
+) engine=innodb;
+
+drop table if exists `caution_box`;
+create table `caution_box` (
+  `id`              mediumint unsigned not null auto_increment,
+  `text`            text not null,
+  `project_id`      smallint unsigned not null,
+  primary key (`id`),
+  key `project_id` (`project_id`),
+  constraint foreign key (`project_id`) references `project` (`id`)
+) engine=innodb;
+
+drop table if exists `caution_box_account_currency`;
+create table `caution_box_account_currency` (
+  `id`              mediumint unsigned not null auto_increment,
+  `currency_id`     tinyint unsigned not null,
+  `caution_box_id`     mediumint unsigned not null,
+  `account_id`    int unsigned,
+  primary key (`id`),
+  key `currency_id` (`currency_id`),
+  key `caution_box_id` (`caution_box_id`),
+  key `account_id` (`account_id`),
+  -- unique key (`id`, `currency_id`),
+  constraint foreign key (`currency_id`) references `currency` (`id`),
+  constraint foreign key (`caution_box_id`) references `caution_box` (`id`),
   constraint foreign key (`account_id`) references `account` (`id`)
 ) engine=innodb;
 
@@ -552,7 +578,7 @@ create table `patient` (
 drop table if exists `patient_visit`;
 create table `patient_visit` (
   `uuid`                  char(36) not null,
-  `patient_uuid`          char(36) not null, 
+  `patient_uuid`          char(36) not null,
   `date`                  timestamp not null,
   `registered_by`         smallint unsigned not null,
   primary key (`uuid`),
@@ -729,7 +755,7 @@ create table `credit_note` (
 drop table if exists `sale_item`;
 create table `sale_item` (
   `sale_uuid`         char(36) not null,
-  `uuid`              char(36) not null, 
+  `uuid`              char(36) not null,
   `inventory_uuid`    char(36) not null,
   `quantity`          int unsigned default '0',
   `inventory_price`   decimal(19,4),
@@ -902,7 +928,7 @@ create table `posting_journal` (
   `debit_equiv`       decimal (19, 4) unsigned not null default 0,
   `credit_equiv`      decimal (19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_uuid`     char(36), -- debitor or creditor id 
+  `deb_cred_uuid`     char(36), -- debitor or creditor id
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         char(36),
   `comment`           text,
@@ -943,7 +969,7 @@ create table `general_ledger` (
   `debit_equiv`       decimal(19, 4) unsigned not null default 0,
   `credit_equiv`      decimal(19, 4) unsigned not null default 0,
   `currency_id`       tinyint unsigned not null,
-  `deb_cred_uuid`     char(36), -- debitor or creditor id 
+  `deb_cred_uuid`     char(36), -- debitor or creditor id
   `deb_cred_type`     char(1), -- 'D' or 'C' if debcred_id references a debitor or creditor, respectively
   `inv_po_id`         char(36),
   `comment`           text,
@@ -1081,7 +1107,7 @@ create table `employee` (
   `service_id`          tinyint unsigned not null,
   `location_id`         char(36) not null,
   `creditor_uuid`       char(36) not null,
-  `debitor_uuid`        char(36) not null,            
+  `debitor_uuid`        char(36) not null,
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
   key `service_id`  (`service_id`),
@@ -1108,18 +1134,18 @@ create table `inventory_log` (
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
--- TODO Resolve conflicts with sync triggers 
+-- TODO Resolve conflicts with sync triggers
 -- create trigger `log_inventory_insert`
 --   after insert on `inventory`
 --   for each row
---   insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
+--   insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text);
 --
 -- create trigger `log_inventory_update`
 --   after update on `inventory`
 --   for each row
---   insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text); 
+--   insert into `inventory_log` (`uuid`, `inventory_uuid`, `log_timestamp`, `price`, `code`, `text`) values (UUID(), new.uuid, current_timestamp, new.price, new.code, new.text);
 
--- 
+--
 -- Table structure for table `kpk`.`debitor_group_history`
 --
 drop table if exists `debitor_group_history`;
@@ -1218,7 +1244,7 @@ create table `pcash_item` (
 --
 drop table if exists `caution`;
 create table `caution` (
-  `reference`           int unsigned not null auto_increment, 
+  `reference`           int unsigned not null auto_increment,
   `uuid`                char(36) not null,
   `value`               decimal(19,4) unsigned not null,
   `date`                timestamp not null,
