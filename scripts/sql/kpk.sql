@@ -393,6 +393,99 @@ create table `caution_box_account_currency` (
 --   constraint foreign key (`bank_account`) references `account` (`id`)
 -- ) engine=innodb;
 --
+
+--
+-- Table structure for table `kpk`.`inventory_unit`
+--
+drop table if exists `inventory_unit`;
+create table `inventory_unit` (
+  `id`    smallint unsigned not null auto_increment,
+  `text`  varchar(100) not null,
+  primary key (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`period`
+--
+drop table if exists `period`;
+create table `period` (
+  `id`              mediumint unsigned not null auto_increment,
+  `fiscal_year_id`  mediumint unsigned not null,
+  `period_number`   smallint unsigned not null,
+  `period_start`    date not null,
+  `period_stop`     date not null,
+  `locked`          boolean not null default 0,
+  primary key (`id`),
+  key `fiscal_year_id` (`fiscal_year_id`),
+  constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`inventory_type`
+--
+drop table if exists `inventory_type`;
+create table `inventory_type` (
+  `id`    tinyint unsigned not null,
+  `text`  varchar(150) not null,
+  primary key (`id`)
+) engine=innodb;
+
+--
+-- Table structure for table `kpk`.`inventory_group`
+--
+drop table if exists `inventory_group`;
+create table `inventory_group` (
+  `uuid`            char(36) not null,
+  `name`            varchar(100) not null,
+  `code`            smallint not null,
+  `sales_account`   mediumint unsigned not null,
+  `cogs_account`    mediumint unsigned,
+  `stock_account`   mediumint unsigned,
+  `tax_account`     mediumint unsigned,
+  primary key (`uuid`)
+  -- key `sales_account` (`sales_account`),
+  -- key `cogs_account` (`cogs_account`),
+  -- key `stock_account` (`stock_account`),
+  -- key `tax_account` (`tax_account`),
+  -- constraint foreign key (`sales_account`) references `account` (`account_number`),
+  -- constraint foreign key (`cogs_account`) references `account` (`account_number`),
+  -- constraint foreign key (`stock_account`) references `account` (`account_number`),
+  -- constraint foreign key (`tax_account`) references `account` (`account_number`)
+) engine=innodb;
+
+-- TODO User responsible for inventory item should be added
+--
+-- Table structure for table `kpk`.`inventory`
+--
+drop table if exists `inventory`;
+create table `inventory` (
+  `enterprise_id`   smallint unsigned not null,
+  `uuid`            char(36) not null,
+  `code`            varchar(30) not null,
+  `inventory_code`  varchar(30),
+  `text`            text,
+  `price`           decimal(10,4) unsigned not null default '0.00',
+  `group_uuid`      char(36) not null,
+  `unit_id`         smallint unsigned,
+  `unit_weight`     mediumint default '0',
+  `unit_volume`     mediumint default '0',
+  `stock`           int unsigned not null default '0',
+  `stock_max`       int unsigned not null default '0',
+  `stock_min`       int unsigned not null default '0',
+  `type_id`         tinyint unsigned not null default '0',
+  `consumable`      boolean not null default 0,
+  `origin_stamp`    timestamp null default CURRENT_TIMESTAMP,
+  primary key (`uuid`),
+  unique key `code` (`code`),
+  key `enterprise_id` (`enterprise_id`),
+  key `group_uuid` (`group_uuid`),
+  key `unit_id` (`unit_id`),
+  key `type_id` (`type_id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`group_uuid`) references `inventory_group` (`uuid`),
+  constraint foreign key (`unit_id`) references `inventory_unit` (`id`),
+  constraint foreign key (`type_id`) references `inventory_type` (`id`)
+) engine=innodb;
 --
 -- table `kpk`.`price_list`
 --
@@ -420,13 +513,14 @@ create table `price_list_item` (
   `is_discount`     boolean not null default 0,
   `is_global`       boolean not null default 0, -- TODO names should better describe values
   `price_list_uuid` char(36) not null,
+  `inventory_uuid`  char(36),
   primary key (`uuid`),
   -- unique index (`item_order`, `price_list_uuid`),
   key `price_list_uuid` (`price_list_uuid`),
-  constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`) on delete cascade
+  key `inventory_uuid` (`inventory_uuid`),
+  constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`) on delete cascade,
+  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`) on delete cascade
 ) engine=innodb;
-
-
 
 --
 -- Table structure for table `kpk`.`debitor_group_type`
@@ -604,98 +698,6 @@ create table `assignation_patient` (
 ) engine=innodb;
 
 
---
--- Table structure for table `kpk`.`inventory_unit`
---
-drop table if exists `inventory_unit`;
-create table `inventory_unit` (
-  `id`    smallint unsigned not null auto_increment,
-  `text`  varchar(100) not null,
-  primary key (`id`)
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`period`
---
-drop table if exists `period`;
-create table `period` (
-  `id`              mediumint unsigned not null auto_increment,
-  `fiscal_year_id`  mediumint unsigned not null,
-  `period_number`   smallint unsigned not null,
-  `period_start`    date not null,
-  `period_stop`     date not null,
-  `locked`          boolean not null default 0,
-  primary key (`id`),
-  key `fiscal_year_id` (`fiscal_year_id`),
-  constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`)
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`inventory_type`
---
-drop table if exists `inventory_type`;
-create table `inventory_type` (
-  `id`    tinyint unsigned not null,
-  `text`  varchar(150) not null,
-  primary key (`id`)
-) engine=innodb;
-
---
--- Table structure for table `kpk`.`inventory_group`
---
-drop table if exists `inventory_group`;
-create table `inventory_group` (
-  `uuid`            char(36) not null,
-  `name`            varchar(100) not null,
-  `code`            smallint not null,
-  `sales_account`   mediumint unsigned not null,
-  `cogs_account`    mediumint unsigned,
-  `stock_account`   mediumint unsigned,
-  `tax_account`     mediumint unsigned,
-  primary key (`uuid`)
-  -- key `sales_account` (`sales_account`),
-  -- key `cogs_account` (`cogs_account`),
-  -- key `stock_account` (`stock_account`),
-  -- key `tax_account` (`tax_account`),
-  -- constraint foreign key (`sales_account`) references `account` (`account_number`),
-  -- constraint foreign key (`cogs_account`) references `account` (`account_number`),
-  -- constraint foreign key (`stock_account`) references `account` (`account_number`),
-  -- constraint foreign key (`tax_account`) references `account` (`account_number`)
-) engine=innodb;
-
--- TODO User responsible for inventory item should be added
---
--- Table structure for table `kpk`.`inventory`
---
-drop table if exists `inventory`;
-create table `inventory` (
-  `enterprise_id`   smallint unsigned not null,
-  `uuid`            char(36) not null,
-  `code`            varchar(30) not null,
-  `inventory_code`  varchar(30),
-  `text`            text,
-  `price`           decimal(10,4) unsigned not null default '0.00',
-  `group_uuid`      char(36) not null,
-  `unit_id`         smallint unsigned,
-  `unit_weight`     mediumint default '0',
-  `unit_volume`     mediumint default '0',
-  `stock`           int unsigned not null default '0',
-  `stock_max`       int unsigned not null default '0',
-  `stock_min`       int unsigned not null default '0',
-  `type_id`         tinyint unsigned not null default '0',
-  `consumable`      boolean not null default 0,
-  `origin_stamp`    timestamp null default CURRENT_TIMESTAMP,
-  primary key (`uuid`),
-  unique key `code` (`code`),
-  key `enterprise_id` (`enterprise_id`),
-  key `group_uuid` (`group_uuid`),
-  key `unit_id` (`unit_id`),
-  key `type_id` (`type_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`group_uuid`) references `inventory_group` (`uuid`),
-  constraint foreign key (`unit_id`) references `inventory_unit` (`id`),
-  constraint foreign key (`type_id`) references `inventory_type` (`id`)
-) engine=innodb;
 
 --
 -- Table structure for table `kpk`.`sale`
