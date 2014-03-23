@@ -483,20 +483,16 @@ module.exports = function (db, synthetic) {
 
     return db.exec(sql)
     .then(function (rows) {
-      console.log('[DEBUG] rows:', rows);
       row = rows.pop();
       return get.exchangeRate(row.date);
     })
     .then(function (store) {
       var paidValue = precision(row.cost / store.get(row.currency_id).rate, 4);
-      console.log('[cash.cost] ', row.cost, 'paidValue ', paidValue, 'row.balance ', row.balance);
       var remainder = precision((row.balance - paidValue) * store.get(row.currency_id).rate, 4);
-      console.log('[remainder] ', remainder, 'row.balance-paidValue :', row.balance - paidValue, 'store.get(row.currency_id)', store.get(row.currency_id));
       // if the absolute value of the remainder is less than the min_monentary_unit
       // then they have paid in full
+      console.log('\n[DEBUG] min_monentary_unit', row.min_monentary_unit, 'abs(remainder)', Math.abs(remainder));
       var isPaidInFull = Math.abs(remainder) - row.min_monentary_unit < row.min_monentary_unit;
-      console.log('[DEBUG] isPaidInFull:', isPaidInFull, 'Math.abs(remainder):', Math.abs(remainder), 'remainder:', remainder);
-      console.log('[DEBUG] paidValue:', paidValue, 'row:', row);
       return { isPaidInFull : isPaidInFull, remainder : row.balance - paidValue };
     });
   }
@@ -506,14 +502,12 @@ module.exports = function (db, synthetic) {
   function handleCash (id, user_id, done) {
     // posting from cash to the journal.
     // TODO: refactor this into one "state" object
-    var state = {};
-    var cashItems, reference, project_id, enterprise_id,
-        date, originId, period, rateStore, trans_id,
-        deb_cred_type, cash_item_account_id;
+    var sql, state = {};
 
-    var cashUUID, cashItemsUUIDs = [], roundingUUID, roundingUUID2;
-    var rounding, creditOrDebitBool, roundedRemainder;
-    var sql =
+    state.id = id;
+    state.userId = user_id;
+
+    sql =
       'SELECT `cash`.`uuid`, `cash_item`.`uuid` AS `cash_item_uuid`, `cash`.`project_id`, `project`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  +
         '`cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`user_id`, ' +
         '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_uuid`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_uuid`, ' +
@@ -526,37 +520,34 @@ module.exports = function (db, synthetic) {
     db.exec(sql)
     .then(function (results) {
       if (results.length === 0) {
-        throw new Error('No cash value by the id :' + id);
+        throw new Error('No cash value by the id :' + state.id);
       }
 
-      cashItems = results;
-      reference = results[0];
-      project_id = reference.project_id;
-      enterprise_id = reference.enterprise_id;
-      date = reference.date;
+      state.items = results;
+      state.reference = results[0];
 
-      return validPeriod(enterprise_id, date);
+      return validPeriod(state.reference.enterprise_id, state.reference.date);
     })
     .then(function () {
-      var document_id_exist = validate.exists(reference.document_id);
+      var document_id_exist = validate.exists(state.reference.document_id);
       if (!document_id_exist) {
-        throw new Error('The document number is not defined for cash id: ' + id);
+        throw new Error('The document number is not defined for cash id: ' + state.id);
       }
 
       // third check - is the type defined?
-      var type_exist = validate.exists(reference.type);
+      var type_exist = validate.exists(state.reference.type);
       if (!type_exist) {
-        throw new Error('The document type is not defined for cash id: ' + id);
+        throw new Error('The document type is not defined for cash id: ' + state.id);
       }
 
       // forth check - is the cost positive?
-      var cost_positive = validate.isPositive(reference.cost);
+      var cost_positive = validate.isPositive(state.reference.cost);
       if (!cost_positive) {
-        throw new Error('Invalid value for cost for cash id: ' + id);
+        throw new Error('Invalid value for cost for cash id: ' + state.id);
       }
 
       // fifth check - is the allocated cost positive for every cash item?
-      var allocated_postive = cashItems.every(function (row) {
+      var allocated_postive = state.items.every(function (row) {
         return validate.isPositive(row.allocated_cost);
       });
 
@@ -564,158 +555,162 @@ module.exports = function (db, synthetic) {
         throw new Error('Invalid payment price for one invoice with cash id: ' + id);
       }
 
-      return validPeriod(enterprise_id, date);
+      return validPeriod(state.reference.enterprise_id, state.reference.date);
     })
     .then(function () {
-      return validDebitorOrCreditor(reference.deb_cred_uuid);
+      return validDebitorOrCreditor(state.reference.deb_cred_uuid);
     })
     .then(function () {
       return getOrigin('cash');
     })
     // TODO : collapse this code using Q.spread();
-    .then(function (origin_id) {
-      originId = origin_id;
-      return getPeriod(date);
+    .then(function (id) {
+      state.originId = id;
+      return getPeriod(state.reference.date);
     })
-    .then(function (periodObj) {
-      console.log('[PERIODOBJ]', periodObj);
-      period = periodObj;
-      return get.exchangeRate(date);
+    .then(function (period) {
+      state.period = period;
+      return get.exchangeRate(state.reference.date);
     })
     .then(function (store) {
-      rateStore = store;
+      state.store = store;
       return getTransactionId();
     })
     .then(function (id) {
-      console.log('[TRANS_ID] ', id);
-      trans_id = id;
-      return handleRounding(reference.uuid);
+      state.transId = id;
+      return handleRounding(state.id);
     })
-    .then(function (o) {
-      rounding = o;
+    .then(function (rounding) {
+      state.remainder = rounding.remainder;
+      state.isPaidInFull = rounding.isPaidInFull;
 
-      var account_type = reference.type !== 'E' ? 'credit_account' : 'debit_account' ;
+      var account_type = state.reference.type !== 'E' ? 'credit_account' : 'debit_account' ;
 
       // Are they a debitor or a creditor?
-      deb_cred_type = reference.type === 'E' ? '\'D\'' : '\'C\'';
+      state.deb_cred_type = state.reference.type === 'E' ? '\'D\'' : '\'C\'';
 
       // calculate exchange rate.  If money coming in, credit is cash.cost,
       // credit_equiv is rate*cash.cost and vice versa.
-      var money = reference.type === 'E' ?
-        '`cash`.`cost`, 0, ' + 1/rateStore.get(reference.currency_id).rate + '*`cash`.`cost`, 0, ' :
-        '0, `cash`.`cost`, 0, ' + 1/rateStore.get(reference.currency_id).rate + '*`cash`.`cost`, ' ;
+      var money = state.reference.type === 'E' ?
+        '`cash`.`cost`, 0, ' + 1/state.store.get(state.reference.currency_id).rate + '*`cash`.`cost`, 0, ' :
+        '0, `cash`.`cost`, 0, ' + 1/state.store.get(state.reference.currency_id).rate + '*`cash`.`cost`, ' ;
 
-      var cashUUID = uuid();
+      state.cashUUID = uuid();
 
       // finally, copy the data from cash into the journal with care to convert exchange rates.
-      var cash_query =
+      var sql =
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
-        'SELECT `cash`.`project_id`, ' + [sanitize.escape(cashUUID), period.fiscal_year_id, period.id , trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+        'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.cashUUID), state.period.fiscal_year_id, state.period.id , state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
           '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
           'null, `cash`.`currency_id`, null, null, ' +
-          [originId, user_id].join(', ') + ' ' +
+          [state.originId, state.userId].join(', ') + ' ' +
         'FROM `cash` JOIN `cash_item` ON ' +
           ' `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
         'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' ' +
         'LIMIT 1;'; // just in case
 
-      return db.exec(cash_query);
+      return db.exec(sql);
     })
     .then(function () {
 
       // Then copy data from CASH_ITEM -> JOURNAL
-      var cash_item_money = reference.type === 'E' ?
-        '0, `cash_item`.`allocated_cost`, 0, ' + 1/rateStore.get(reference.currency_id).rate + '*`cash_item`.`allocated_cost`, ' :
-        '`cash_item`.`allocated_cost`, 0, '+ 1/rateStore.get(reference.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' ;
+      var cash_item_money = state.reference.type === 'E' ?
+        '0, `cash_item`.`allocated_cost`, 0, ' + 1/state.store.get(state.reference.currency_id).rate + '*`cash_item`.`allocated_cost`, ' :
+        '`cash_item`.`allocated_cost`, 0, '+ 1/state.store.get(state.reference.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' ;
 
-      cash_item_account_id = reference.type !== 'E' ? 'debit_account' : 'credit_account';
+      state.cash_item_account_id = state.reference.type !== 'E' ? 'debit_account' : 'credit_account';
 
-      var cash_item_queries = [];
+      var sqls = [];
 
-      cashItems.forEach(function (item) {
+      state.itemUUIDs = [];
+      state.items.forEach(function (item) {
         var id = uuid();
-        cashItemsUUIDs.push(id);
+        state.itemUUIDs.push(id);
         var sql =
           'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT `cash`.`project_id`, ' + [sanitize.escape(id), period.fiscal_year_id, period.id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-          '`cash`.`description`, `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
-          '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, ' + deb_cred_type + ', ' +
-          '`cash_item`.`invoice_uuid`, ' + [originId, user_id].join(', ') + ' ' +
+        'SELECT `cash`.`project_id`, ' + [sanitize.escape(id), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+          '`cash`.`description`, `cash`.`document_id`, `cash`.`' + state.cash_item_account_id  + '`, ' + cash_item_money +
+          '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, ' + state.deb_cred_type + ', ' +
+          '`cash_item`.`invoice_uuid`, ' + [state.originId, state.userId].join(', ') + ' ' +
         'FROM `cash` JOIN `cash_item` ON ' +
           '`cash`.`uuid`=`cash_item`.`cash_uuid` '+
         'WHERE `cash_item`.`uuid`=' + sanitize.escape(item.cash_item_uuid) + ';';
-        cash_item_queries.push(sql);
+        sqls.push(sql);
       });
 
-      return q.all(cash_item_queries.map(function (sql) {
+      return q.all(sqls.map(function (sql) {
         return db.exec(sql);
       }));
     })
     .then(function () {
-      var rounding_query;
-      if (rounding.isPaidInFull && rounding.remainder !== 0) {
+      var query;
+
+      console.log('\n[DEBUG] state.isPaidInFull', state.isPaidInFull, ' state.remainder', state.remainder, '\n');
+
+      if (state.isPaidInFull && state.remainder !== 0) {
 
         //FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the
         //rounding account
 
-        creditOrDebitBool = rounding.remainder > 0;
-        roundedRemainder = precision(Math.abs(rounding.remainder), 4);
-        var creditOrDebit = creditOrDebitBool ?
-          [roundedRemainder, 0, roundedRemainder, 0].join(', ') :  // debit
-          [0, roundedRemainder, 0, roundedRemainder].join(', ') ;   // credit
+        state.creditOrDebitBool = state.remainder > 0;
+        console.log('[DEBUG] creditOrDebitBool : ', state.creditOrDebitBool);
+        state.roundedRemainder = precision(Math.abs(state.remainder), 4);
+        var creditOrDebit = state.creditOrDebitBool ?
+          [state.roundedRemainder, 0, state.roundedRemainder, 0].join(', ') :  // debit
+          [0, state.roundedRemainder, 0, state.roundedRemainder].join(', ') ;   // credit
 
         var description =
-          "'Rounding correction on exchange rate data for " + id + "'";
+          "'Rounding correction on exchange rate data for " + state.id + "'";
 
-        roundingUUID = uuid();
+        state.roundingUUID = uuid();
 
-        rounding_query =
+        query=
           'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT `cash`.`project_id`, ' + [sanitize.escape(roundingUUID), period.fiscal_year_id, period.id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-          description +', `cash`.`document_id`, ' + 534  + ', ' + creditOrDebit + ', ' +
+        'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.roundingUUID), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+          description + ', `cash`.`document_id`, ' + 534  + ', ' + creditOrDebit + ', ' +
           '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
-          [originId, user_id].join(', ') + ' ' +
+          [state.originId, state.userId].join(', ') + ' ' +
         'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
-        'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' LIMIT 1;';
+        'WHERE `cash`.`uuid`=' + sanitize.escape(state.id) + ' LIMIT 1;';
 
       }
-      return rounding_query ? db.exec(rounding_query) : q();
+      return query ? db.exec(query) : q();
     })
     .then(function () {
-      var rounding_balance_query;
-      if (creditOrDebitBool) {
+      var query;
+      if (state.creditOrDebitBool) {
 
-        var balance = creditOrDebitBool ?
-          [0, roundedRemainder, 0, roundedRemainder].join(', ') :   // credit
-          [roundedRemainder, 0,roundedRemainder,  0].join(', ') ;  // debit
+        var balance = state.creditOrDebitBool ?
+          [0, state.roundedRemainder, 0, state.roundedRemainder].join(', ') :   // credit
+          [state.roundedRemainder, 0, state.roundedRemainder,  0].join(', ') ;  // debit
 
-        roundingUUID2 = uuid();
+        state.roundingUUID2 = uuid();
 
         var description =
           "'Rounding correction on exchange rate data for " + id + "'";
 
-        rounding_balance_query =
+        query =
           'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT `cash`.`project_id`, ' + [sanitize.escape(roundingUUID2), period.fiscal_year_id, period.id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-          description +', `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + balance + ', ' +
+        'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.roundingUUID2), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+          description +', `cash`.`document_id`, `cash`.`' + state.cash_item_account_id  + '`, ' + balance + ', ' +
           '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash_item`.`invoice_uuid`, ' +
-          [originId, user_id].join(', ') + ' ' +
+          [state.originId, state.userId].join(', ') + ' ' +
         'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
-        'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' LIMIT 1;';
+        'WHERE `cash`.`uuid`=' + sanitize.escape(state.id) + ' LIMIT 1;';
       }
-      return rounding_balance_query ? db.exec(rounding_balance_query) : q();
+      return query ? db.exec(query) : q();
     })
     .then(function () {
       done();
@@ -723,243 +718,31 @@ module.exports = function (db, synthetic) {
     .catch(function (error) {
       // undo all transaction on error state
       // clean up
-      console.log('error', error);
-      done(error);
+
+      // collect all uuids
+      var ids = [state.roundingUUID, state.roundingUUID2, state.cashUUID]
+      .concat(state.itemUUIDs || [])
+      .filter(function (uuid) {
+        return !!uuid;
+      })
+      .map(function (uuid) {
+        return sanitize.escape(uuid);
+      });
+
+      var sql =
+        "DELETE FROM `posting_journal` WHERE `uuid` IN (" + ids.join(', ') + ");";
+
+      db.exec(sql)
+      .then(function () {
+        done(error);
+      }, function (err) {
+        done(error);
+      })
+      .done();
     })
     .done();
   }
 
-    /*
-    db.execute(sql, function (err, results) {
-      if (err) { return done(err); }
-      if (results.length === 0) {
-        return done(new Error('No cash value by the id: ' + id));
-      }
-
-      cashItems = results;
-
-      var reference_payment = results[0];
-      var project_id = reference_payment.project_id;
-      var enterprise_id = reference_payment.enterprise_id;
-
-      var date = reference_payment.date;
-
-      // first check - are we in the correct period/fiscal year?
-      check.validPeriod(enterprise_id, date, function (err) {
-
-        // second check - is there a type number defined?
-        var document_id_exist = validate.exists(reference_payment.document_id);
-        if (!document_id_exist) {
-          return done(new Error('The document number is not defined for cash id: ' + id));
-        }
-
-        // third check - is the type defined?
-        var type_exist = validate.exists(reference_payment.type);
-        if (!type_exist) {
-          return done(new Error('The document type is not defined for cash id: ' + id));
-        }
-
-        // forth check - is the cost positive?
-        var cost_positive = validate.isPositive(reference_payment.cost);
-        if (!cost_positive) {
-          return done(new Error('Invalid value for cost for cash id: ' + id));
-        }
-
-        // fifth check - is the allocated cost positive for every cash item?
-        var allocated_postive = results.every(function (row) {
-          return validate.isPositive(row.allocated_cost);
-        });
-
-        if (!allocated_postive) {
-          return done(new Error('Invalid payment price for one invoice with cash id: ' + id));
-        }
-
-        // sixth check - do all the allocated costs add up to the total cost?
-        // We must catch this because reduce fails in on a empty array.
-        function sum(a, b) {
-          return a + b.allocated_cost;
-        }
-
-        var total = results.reduce(sum, 0);
-        if (!validate.isEqual(total, reference_payment.cost)) {
-          console.log('[DEBUG] ', 'total:', total, 'cost', reference_payment.cost);
-          console.log('[DEBUG] ', 'reference:', reference_payment);
-          //return done(new Error('Allocated cost do not add up to total cost in payment with cash id: ' + id));
-        }
-
-        // seventh check - is the deb_cred_uuid valid?
-        check.validDebitorOrCreditor(reference_payment.deb_cred_uuid, function (err) {
-          if (err) return done(err);
-
-          // all checks have passed - prepare for writing to the journal.
-          get.origin('cash', function (err, origin_id) {
-            if (err) return done(err);
-            // we now have the origin!
-
-            get.period(date, function (err, period_object) {
-              if (err) return done(err);
-
-              // we now have the relevant period!
-
-              get.exchangeRate(date)
-              .then(function (store) {
-                if (err) { return done(err); }
-
-                // we now have an exchange rate!
-
-                // create a trans_id for the transaction
-                // MUST BE THE LAST REQUEST TO prevent race conditions.
-                get.transactionId(function (err, trans_id) {
-                  if (err) { return done(err); }
-
-                  // we are ready to execute!
-                  handleRounding(id, function (err, isPaidInFull, remainder) {
-                    if (err) { return done(err); }
-
-                    var period_id = period_object.period_id;
-                    var fiscal_year_id = period_object.fiscal_year_id;
-
-                    // we can begin copying data from CASH -> JOURNAL
-                    // First, figure out if we are crediting or debiting the caisse
-                    // This is indicated by the type.
-                    // match { 'S' => debiting; 'E' => crediting }
-                    var account_type = reference_payment.type !== 'E' ? 'credit_account' : 'debit_account' ;
-
-                    // Are they a debitor or a creditor?
-                    var deb_cred_type = reference_payment.type === 'E' ? '\'D\'' : '\'C\'';
-
-                    // calculate exchange rate.  If money coming in, credit is cash.cost,
-                    // credit_equiv is rate*cash.cost and vice versa.
-                    var money = reference_payment.type === 'E' ?
-                      '`cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, 0, ' :
-                      '0, `cash`.`cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash`.`cost`, ' ;
-
-                    // finally, copy the data from cash into the journal with care to convert exchange rates.
-                    var cash_query =
-                      'INSERT INTO `posting_journal` ' +
-                        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                        '`inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
-                      'SELECT `cash`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                        '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
-                        'null, `cash`.`currency_id`, null, null, ' +
-                        [origin_id, user_id].join(', ') + ' ' +
-                      'FROM `cash` JOIN `cash_item` ON ' +
-                        ' `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
-                      'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' ' +
-                      'LIMIT 1;'; // just in case
-
-                    // Then copy data from CASH_ITEM -> JOURNAL
-                    var cash_item_money = reference_payment.type === 'E' ?
-                      '0, `cash_item`.`allocated_cost`, 0, ' + 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, ' :
-                      '`cash_item`.`allocated_cost`, 0, '+ 1/store.get(reference_payment.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' ;
-
-                    var cash_item_account_id = reference_payment.type !== 'E' ? 'debit_account' : 'credit_account';
-
-                    var cash_item_queries = [];
-
-                    cashItems.forEach(function (item) {
-                      var sql =
-                        'INSERT INTO `posting_journal` ' +
-                        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                      'SELECT `cash`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                        '`cash`.`description`, `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + cash_item_money +
-                        '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, ' + deb_cred_type + ', ' +
-                        '`cash_item`.`invoice_uuid`, ' + [origin_id, user_id].join(', ') + ' ' +
-                      'FROM `cash` JOIN `cash_item` ON ' +
-                        '`cash`.`uuid`=`cash_item`.`cash_uuid` '+
-                      'WHERE `cash_item`.`uuid`=' + sanitize.escape(item.cash_item_uuid) + ';';
-                      cash_item_queries.push(sql);
-                    });
-
-                    // NOTE: In the case where the patient doesn't pay enough, we must
-                    // DEBIT the balance account and credit him for the rest.
-
-                    var rounding_query, rounding_balance_query;
-                    if (isPaidInFull && remainder !== 0) {
-
-                      //FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the
-                      //rounding account
-
-                      var creditOrDebitBool = remainder > 0;
-                      var r = precision(Math.abs(remainder), 4);
-                      var creditOrDebit = creditOrDebitBool ?
-                        [r, 0, r, 0].join(', ') :  // debit
-                        [0, r, 0, r].join(', ') ;   // credit
-
-                      var description =
-                        "'Rounding correction on exchange rate data for " + id + "'";
-
-                      rounding_query =
-                        'INSERT INTO `posting_journal` ' +
-                        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                      'SELECT `cash`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                        description +', `cash`.`document_id`, ' + 534  + ', ' + creditOrDebit + ', ' +
-                        '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
-                        [origin_id, user_id].join(', ') + ' ' +
-                      'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
-                      'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' LIMIT 1;';
-
-                      if (creditOrDebitBool) {
-
-                        var balance = creditOrDebitBool ?
-                          [0, r, 0, r].join(', ') :   // credit
-                          [r, 0, r, 0].join(', ') ;  // debit
-
-                        rounding_balance_query =
-                          'INSERT INTO `posting_journal` ' +
-                          '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                          '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                        'SELECT `cash`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                          description +', `cash`.`document_id`, `cash`.`' + cash_item_account_id  + '`, ' + balance + ', ' +
-                          '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash_item`.`invoice_uuid`, ' +
-                          [origin_id, user_id].join(', ') + ' ' +
-                        'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
-                        'WHERE `cash`.`uuid`=' + sanitize.escape(id) + ' LIMIT 1;';
-                      }
-                    }
-
-                    console.log('[EXEC] Executing cash queries');
-
-                    db.exec(cash_query)
-                    .then(function () {
-                      return q.all(cash_item_queries.map(function (query) {
-                        return db.exec(query);
-                      }));
-                    })
-                    .then(function () {
-                      if (rounding_query) { console.log('[DEBUG] Executed Rounding Query!'); }
-                      return rounding_query ? db.exec(rounding_query) : q();
-                    })
-                    .then(function () {
-                      if (rounding_balance_query) { console.log('[DEBUG] Executed Rounding Query!'); }
-                      return rounding_balance_query ? db.exec(rounding_balance_query) : q();
-                    })
-                    .then(function () {
-                      done();
-                    })
-                    .catch(function (err) {
-                      if (err) { return done(err); }
-                    })
-                    .done();
-                  });
-                });
-              })
-              .catch(function (error) {
-                done(error);
-              });
-            });
-          });
-        });
-      });
-    });
-  }
-  */
 
   function handlePurchase (id, user_id, done) {
     // posting purchase requests
