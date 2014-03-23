@@ -72,7 +72,7 @@ angular.module('kpk.controllers')
             assignation_patient : {columns : ['patient_group_uuid', 'patient_uuid']},
             patient_group : {columns : ['note']},
             price_list : {columns : ['title']},
-            price_list_item : {columns : ['value', 'is_discount', 'is_global', 'description']}
+            price_list_item : {columns : ['value', 'is_discount', 'is_global', 'description', 'inventory_uuid']}
           },
           join : [
             'assignation_patient.patient_group_uuid=patient_group.uuid',
@@ -262,12 +262,10 @@ angular.module('kpk.controllers')
       //   };
 
       invoice.applyGlobal.forEach(function (listItem) {
-        var applyCost, formatListItem, enterpriseDiscountId; // FIXME Derive this from enterprise
+        var applyCost, formatListItem; // FIXME Derive this from enterprise
 
-        enterpriseDiscountId = listItem.is_discount ? "a47bdb0d-02d9-43a3-bfc9-eb558193eb1b" : "0b0b8dc6-9b8c-44e4-9438-151bb43909e5";
-
-        formatDiscountItem = {
-          inventory_uuid : enterpriseDiscountId,
+        var formatDiscountItem = {
+          inventory_uuid : listItem.inventory_uuid,
           quantity : 1,
           transaction_price : listItem.currentValue,
           debit : 0,
@@ -277,9 +275,12 @@ angular.module('kpk.controllers')
 
         console.log('[FORMAT DISCOUNT ITEM] ', formatDiscountItem);
 
+        formatDiscountItem[listItem.is_discount ? 'debit' : 'credit'] = listItem.currentValue;
+        /*
         (listItem.is_discount) ?
           formatDiscountItem.debit = listItem.currentValue :
           formatDiscountItem.credit = listItem.currentValue;
+        */
 
         requestContainer.saleItems.push(formatDiscountItem);
       });
