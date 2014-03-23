@@ -605,7 +605,7 @@ INSERT INTO `project_permission` (`user_id`, `project_id`) values
 (1, 2);
 
 INSERT INTO cash_box (id, text, project_id) VALUES (1, 'IMCK HBB CAISSE PPLE ', 1),(2, 'IMCK HBB CAISSE AUX', 1),(3, 'IMCK PAX CAISSE AUX', 2);
-INSERT INTO cash_box_account (id, currency_id, cash_box_id, account_id) VALUES
+INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES
   (1, 1, 1, 486),
   (2, 2, 1, 487),
   (3, 1, 2, 1066),
@@ -7039,7 +7039,7 @@ INSERT INTO `pcash` VALUES
 (11,'0f09fb49-7d04-4533-bb2e-64bebcc8ea56',1,'E','2014-03-19',NULL,NULL,1,244780.0000,18,'CTWed Mar 19 2014 15:20:18 GMT+0200 (Jérusalem)',NULL,NULL,1);
 UNLOCK TABLES;
 LOCK TABLES `caution` WRITE;
-INSERT INTO `caution` VALUES
+INSERT INTO `caution` (reference, uuid, value, date, project_id, debitor_uuid, currency_id, user_id) values
 (1,'6e804e29-ca1f-405a-8941-0f0a42f39833',40000.0000,'2014-03-10 06:55:33',1,'1195e5da-e4c8-472b-ba89-5033abfb840f',1,16),
 (2,'eac06c44-0ae9-4cb9-938f-d80933fe376c',24000.0000,'2014-03-10 08:29:28',1,'7b8fb364-43e4-4c03-8ccd-30d71970cf50',1,16),
 (3,'90b320ae-8e72-4e2d-baed-6177a3ac502f',10000.0000,'2014-03-10 08:32:46',1,'1195e5da-e4c8-472b-ba89-5033abfb840f',1,16),

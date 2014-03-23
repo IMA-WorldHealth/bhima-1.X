@@ -12,12 +12,12 @@
 
     <div style="position: absolute; left: 5px;">
       <button class="btn btn-sm btn-primary dropdown-toggle">
-        {{ model.accounts.get(selectedItem.cash_account).account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
+        {{ model.accounts.get(selectedItem.account_id).account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
       <ul class="dropdown-menu pull-left">
-        <li ng-repeat="item in model.cash_box_account.data">
-          <a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.cash_account).account_txt }} </a>
+        <li ng-repeat="item in model.cash_box.data">
+          <a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.account_id).account_txt }} </a>
         </li>
       </ul>
     </div>

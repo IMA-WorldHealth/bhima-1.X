@@ -52,7 +52,7 @@ angular.module('kpk.controllers')
     dependencies.ledger = {
       identifier: 'inv_po_id'
     };
-    
+
     dependencies.location = {
       required: true
     };
@@ -74,16 +74,16 @@ angular.module('kpk.controllers')
       }
     };
 
-    function processCaution (caution_id){
+    function processCaution (caution_uuid){
       dependencies.caution = {
         required: true,
         query:  {
           tables: {
-            caution: { columns: ['id', 'value', 'debitor_id', 'enterprise_id', 'currency_id'] },
+            caution: { columns: ['reference', 'value', 'debitor_uuid', 'project_id', 'currency_id'] },
             patient : {columns : ['first_name', 'last_name', 'current_location_id']}
           },
-          join : ['caution.debitor_id=patient.debitor_id'],
-          where: ['caution.id=' + caution_id]
+          join : ['caution.debitor_uuid=patient.debitor_uuid'],
+          where: ['caution.uuid=' + caution_uuid]
         }
       };
       validate.process(dependencies, ['caution']).then(buildCaution);
@@ -95,8 +95,8 @@ angular.module('kpk.controllers')
         query: '/location/' + model.caution.data[0].current_location_id
       };
 
-      validate.process(dependencies, ['location']);
-      //.then(cautionInvoice);
+      validate.process(dependencies, ['location'])
+      .then(cautionInvoice);
     }
 
     function buildPatientLocation(model) {
@@ -316,6 +316,8 @@ angular.module('kpk.controllers')
         item.localeCost = exchange((item.credit - item.debit), currency_id);
       });
     };
+
+    function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0];}
 
     process = {
       'cash'    : processCash,

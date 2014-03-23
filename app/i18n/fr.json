@@ -860,7 +860,7 @@
     "CAUTION"      : "Caution",
     "PAY"          : "Payer",
     "SUCCES"       : "Operation reussie !",
-    "DANGER"       : "Erreur ! pas de taus d'echange !"
+    "DANGER"       : "Erreur ! Une erreur se produite pendant le posting !"
   },
 
   "PCASH"                   : {

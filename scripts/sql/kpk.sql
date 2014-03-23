@@ -1252,15 +1252,19 @@ create table `caution` (
   `debitor_uuid`        char(36) not null,
   `currency_id`         tinyint unsigned not null,
   `user_id`             smallint unsigned not null,
+  `cash_box_id`         mediumint unsigned null,
+  `description`         text,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
   key `debitor_uuid` (`debitor_uuid`),
   key `currency_id` (`currency_id`),
+  key `cash_box_id`  (`cash_box_id`),
   key `user_id` (`user_id`),
   constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
+  constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 -- Jon's dump @ 12:45.
