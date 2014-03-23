@@ -184,7 +184,7 @@
                 <td style="border-top: 0"></td>
                 <td colspan="7" style="border-top: 0">
                   <select class="form-kapok" ng-model="item.inventory_uuid" ng-options="item.uuid as ('[' + item.type_id + '][' + item.code + '] ' + item.text) for item in model.inventory.data | orderBy: '!type_id'">
-                    <option value="">-- Select Discount Item --</option>
+                    <option value="" disabled>-- Select Discount Item --</option>
                   </select>
                 </td>
               </tr>
