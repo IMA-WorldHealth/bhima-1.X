@@ -18,14 +18,14 @@ angular.module('kpk.controllers')
     dependencies.pcash_accounts = {
       query : {
         tables : {
-          'cash_box_account': {
-            columns : ['pcash_account']
+          'cash_box_account_currency': {
+            columns : ['account_id']
           },
           'cash_box' : {
             columns : ['project_id']
           }
         },
-        join : ['cash_box.id=cash_box_account.cash_box_id']
+        join : ['cash_box.id=cash_box_account_currency.cash_box_id']
       }
     };
 
@@ -34,7 +34,7 @@ angular.module('kpk.controllers')
     };
 
     //functions
-    
+
     function handleErrors(error) {
       messenger.danger('An Error occured:' + JSON.stringify(Error));
     }
@@ -58,7 +58,7 @@ angular.module('kpk.controllers')
 
     appstate.register('project', function (project){
       $scope.project = project;
-      dependencies.pcash_accounts.query.where = ['cash_box.project_id='+$scope.project.id, 'AND', 'cash_box_account.currency_id='+$scope.project.currency_id];
+      dependencies.pcash_accounts.query.where = ['cash_box.project_id='+$scope.project.id, 'AND', 'cash_box_account_currency.currency_id='+$scope.project.currency_id];
       validate.process(dependencies, ['pcash_accounts']).then(init);
     });
   }

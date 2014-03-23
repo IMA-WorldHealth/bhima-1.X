@@ -406,11 +406,11 @@ module.exports = function (db, synthetic) {
                      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
                      'SELECT ' + [ '"' + uuid() + '"', project_id, fiscal_year_id, period_id, trans_id, '\''+get.date()+'\''].join(',') + ', ' +
-                      'null, `cash_box_account`.`caution_account`, ' +
+                      'null, `cash_box_account_currency`.`caution_account`, ' +
                       [0, caution, 0, caution, reference_sale.currency_id, reference_sale.debitor_uuid].join(',') +
                       ', \'D\', ' + [reference_sale.uuid, origin_id, user_id].join(',') + ' ' +
-                    'FROM `cash_box_account` WHERE `cash_box_account`.`currency_id`='+sanitize.escape(reference_sale.currency_id)+
-                    ' AND `cash_box_account`.`enterprise_id`='+sanitize.escape(enterprise_id)+';';
+                    'FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_sale.currency_id)+
+                    ' AND `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(enterprise_id)+';';
 
 
                   sale_query =
@@ -434,8 +434,8 @@ module.exports = function (db, synthetic) {
                     'SELECT "' + uuid() + '", ' + [project_id, fiscal_year_id, period_id, trans_id, '\''+get.date()+'\''].join(', ') + ', '+
                       'null, `caution_account`, ' + [0, reference_sale.cost, 0, reference_sale.cost, reference_sale.currency_id, reference_sale.debitor_uuid].join(', ') +
                       ', \'D\', ' + [reference_sale.uuid, origin_id, user_id].join(', ') + ' ' +
-                     'FROM `cash_box_account` WHERE `cash_box_account`.`currency_id`=' + sanitize.escape(reference_sale.currency_id) +
-                     ' AND `cash_box_account`.`enterprise_id`='+sanitize.escape(enterprise_id)+';';
+                     'FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`currency_id`=' + sanitize.escape(reference_sale.currency_id) +
+                     ' AND `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(enterprise_id)+';';
                 }
               }
 
@@ -1224,7 +1224,7 @@ module.exports = function (db, synthetic) {
               if(err) {return done(err);}
 
                 var cashCurrency = []; //correspondance caisse-monnaie
-                var sql_select = 'SELECT `cash_box_account`.`cash_account`, `cash_box_account`.`currency_id` FROM `cash_box_account` WHERE `cash_box_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+                var sql_select = 'SELECT `cash_box_account_currency`.`cash_account`, `cash_box_account_currency`.`currency_id` FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
 
                 db.execute(sql_select, function (err, ans1) {
                   var cashAccount_ids = ans1.map(function (item1){
@@ -1252,14 +1252,14 @@ module.exports = function (db, synthetic) {
                                       periodObject.fiscal_year_id,
                                       periodObject.period_id,
                                       trans_id, '\''+get.date()+'\'', '\''+descrip+'\''
-                                   ].join(',')+', `cash_box_account`.`pcash_account`, '+
+                                   ].join(',')+', `cash_box_account_currency`.`pcash_account`, '+
                                    [
                                       0, reference_pcash.value,
                                       0, valueExchanged,
                                       reference_pcash.currency_id
                                    ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
-                          'FROM `cash_box_account` WHERE `cash_box_account`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
-                          ' AND `cash_box_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+                          'FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
+                          ' AND `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
                         var creditingRequests = '';
                         var creditingRequest;
                         var i = 0;
@@ -1283,8 +1283,8 @@ module.exports = function (db, synthetic) {
                                           ans2[i].balance, 0,
                                           reference_pcash.currency_id
                                        ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
-                              'FROM `cash_box_account` WHERE `cash_box_account`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
-                              ' AND `cash_box_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+                              'FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
+                              ' AND `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
                             creditingRequests = creditingRequests+creditingRequest+'!';
                             // console.log('[espion1] valueExchanged est ', valueExchanged, 'on continue');
                             i++;
@@ -1305,8 +1305,8 @@ module.exports = function (db, synthetic) {
                                           valueExchanged, 0,
                                           reference_pcash.currency_id
                                        ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
-                              'FROM `cash_box_account` WHERE `cash_box_account`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
-                              ' AND `cash_box_account`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+                              'FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
+                              ' AND `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
                             creditingRequests = creditingRequests+creditingRequest+'!';
                             valueExchanged = valueExchanged - ans2[i].balance;
                             // console.log('[espion 2] valueExchanged est :', valueExchanged, 'on arrete');
