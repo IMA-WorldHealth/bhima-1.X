@@ -145,7 +145,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="item in session.listItems ">
+              <tr ng-repeat-start="item in session.listItems ">
                 <td style="padding-top: 12px;">{{$index}}</td>
                 <td><input class="form-kapok" ng-model="item.description" type="text" placeholder="Item Description"></td>
                 <td>
@@ -177,6 +177,15 @@
                 <td style="padding-right: 15px; padding-top: 10px;">
                   <a ng-click="deleteItem(item)" class="menu-item"><span class="glyphicon glyphicon-trash"></span></a>
                   <!-- <button class="btn btn&#45;sm btn&#45;danger" ng&#45;click="removeItem($index)"><i class="glyphicon glyphicon&#45;trash"></i></button> -->
+                </td>
+              </tr>
+
+              <tr ng-repeat-end ng-if="item.is_global">
+                <td style="border-top: 0"></td>
+                <td colspan="7" style="border-top: 0">
+                  <select class="form-kapok" ng-model="item.inventory_uuid" ng-options="item.uuid as ('[' + item.type_id + '][' + item.code + '] ' + item.text) for item in model.inventory.data | orderBy: '!type_id'">
+                    <option value="">-- Select Discount Item --</option>
+                  </select>
                 </td>
               </tr>
             </tbody>
