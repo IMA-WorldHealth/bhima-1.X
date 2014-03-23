@@ -64,8 +64,8 @@ var include = [
   financeOverview,
   accounts,
   fiche,
-  subsidyIMA,
-  experimental
+  subsidyIMA
+  // experimental
 ];
 
 var documentStructure, documentContent;
@@ -153,7 +153,7 @@ function financeOverview() {
 
   sectionBody = [
     printf(strongValue, filterCurrency(totalCash)),
-    "where introduced at the Caisse Aux HBB, payed against a total of",
+    "where introduced at the Caisse Aux HBB, paid against a total of",
     printf(strongValue, totalInvoices.toString()),
     "invoices."
   ];
