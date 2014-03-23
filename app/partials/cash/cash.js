@@ -43,7 +43,7 @@ angular.module('kpk.controllers')
       query : {
         identifier : 'currency_id',
         tables : {
-          'cash_box_account' : {
+          'cash_box_account_currency' : {
             columns : ['id', 'cash_box_id', 'currency_id', 'account_id']
           },
           'currency' : {
@@ -54,8 +54,8 @@ angular.module('kpk.controllers')
           }
         },
         join : [
-          'cash_box_account.currency_id=currency.id',
-          'account.id=cash_box_account.account_id'
+          'cash_box_account_currency.currency_id=currency.id',
+          'account.id=cash_box_account_currency.account_id'
         ]
       }
     };
@@ -127,7 +127,7 @@ angular.module('kpk.controllers')
       cache.put('cashbox', box);
 
       dependencies.cashbox_accounts.query.where =
-        ['cash_box_account.cash_box_id=' + $scope.cashbox.id];
+        ['cash_box_account_currency.cash_box_id=' + $scope.cashbox.id];
       validate.refresh(dependencies, ['cashbox_accounts'])
       .then(refreshCurrency);
     };

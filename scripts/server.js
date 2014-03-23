@@ -432,9 +432,9 @@ app.get('/account_balance/:id', function (req, res, next) {
 });
 
 
-app.get('/synthetic/:goal/:enterprise_id?', function (req, res, next) {
+app.get('/synthetic/:goal/:project_id?', function (req, res, next) {
   var query = decodeURIComponent(url.parse(req.url).query);
-  synthetic(req.params.goal, req.params.enterprise_id, query, function (err, data) {
+  synthetic(req.params.goal, req.params.project_id, query, function (err, data) {
     if (err) { return next(err); }
     res.send(data);
   });
