@@ -84,7 +84,6 @@ angular.module('kpk.controllers')
 
 
     function loadDefaultCurrency(currency) {
-      console.log('currency', currency);
       if(!currency) return;
       defaultCurrency = currency;
 
@@ -317,6 +316,7 @@ angular.module('kpk.controllers')
         creditAccount = data.creditAccount;
 
         var account = $scope.cashbox_accounts.get($scope.currency.currency_id);
+        var user_id = angular.isDefined(appstate.get('user')) ? appstate.get('user').id : 3;
 
         payment = data.invoice;
         payment.uuid = id;
@@ -328,10 +328,10 @@ angular.module('kpk.controllers')
         payment.cost = precision.round($scope.data.payment);
         payment.deb_cred_uuid = $scope.patient.debitor_uuid;
         payment.deb_cred_type = 'D';
+        payment.cashbox_id = $scope.cashbox.id;
 
         // FIXME : All of these need to be re-worked
-        payment.user_id = 1;
-        payment.cashbox_id = $scope.cashbox.id;
+        payment.user_id = user_id;
 
         return connect.basicPut('cash', [payment]);
       })
@@ -368,9 +368,10 @@ angular.module('kpk.controllers')
         $location.path('/invoice/cash/' + id);
       })
       .catch(function (err) {
-        if (err) return messenger.danger(err);
+        if (err) { return messenger.danger(err.data.code); }
         messenger.danger('Payment failed for some unknown reason.');
-      });
+      })
+      .finally();
     };
 
     /*
