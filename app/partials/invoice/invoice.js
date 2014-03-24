@@ -317,6 +317,10 @@ angular.module('kpk.controllers')
       });
     };
 
+    $scope.filterCash = function filterCash(item, invoice) { 
+      return item.sale_uuid === invoice.invoice_uuid;
+    }
+
     function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0];}
 
     process = {
