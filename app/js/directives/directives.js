@@ -35,6 +35,31 @@
       };
     }])
 
+    .directive('loadingIndicator', ['requestNotificationChannel', '$timeout', function (channel, $timeout) {
+      return {
+        restrict : 'EA',
+        link : function (scope, element, attrs) {
+          element.hide();
+
+          var startRequestHandler = function() {
+            // got the request start notification, show the element
+            element.show();
+          };
+
+          var endRequestHandler = function() {
+            // got the request start notification, show the element
+            //$timeout(function () {
+            //  element.hide();
+            //}, 5000);
+          };
+
+          channel.onRequestStarted(scope, startRequestHandler);
+
+          channel.onRequestEnded(scope, endRequestHandler);
+        }
+      };
+    }])
+
     .directive('reportGroupCompile', ['$compile', function($compile) {
 
       //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation
@@ -56,32 +81,32 @@
           function buildTable(data) {
             built = true;
             parseGroup(data);
- 
+
             //TODO append to element vs replace (attach to tbody)
             element.replaceWith($compile(template.join(''))(scope));
           }
- 
+
           function parseGroup(accountGroup) {
             accountGroup.forEach(function(account) {
               var detail = account.detail, style = buildAccountStyle(detail);
- 
+
               //Row for group detail
               template.push(printf(accountRowTemplate, detail.account_number, style, detail.account_txt, buildAccountColumns(detail, false)));
               if(!account.accounts) return;
- 
+
               //Group children
               parseGroup(account.accounts);
- 
+
               //Total row
               template.push(printf(accountTotalTemplate, printf('style="padding-left: %dpx; font-weight: bold;"', detail.depth * 30), "Total " + detail.account_txt, buildAccountColumns(detail, true)));
             });
           }
- 
+
           function buildAccountStyle(detail) {
- 
+
             //FIXME hardcoded account type definition
             var styleTemplate = "", colspanTemplate = "", classTemplate = "", title = (detail.account_type_id === 3);
- 
+
             styleTemplate = printf('style="padding-left: %dpx;"', detail.depth * 30);
             if(title) {
               colspanTemplate = printf('colspan="%d"', scope[tableDefinition].columns.length + 1);
@@ -89,17 +114,17 @@
             }
             return printf('%s %s %s', styleTemplate, colspanTemplate, classTemplate);
           }
- 
+
           function buildAccountColumns(detail, isTotal) {
             if(detail.account_type_id === 3 && !isTotal) return "";
- 
+
             var columnTemplate = [], data = isTotal ? detail.total : detail;
             scope[tableDefinition].columns.forEach(function(column) {
               columnTemplate.push(printf('<td %s>{{%d | currency}}</td>', (isTotal ? 'style="font-weight: bold;"' : ''), data[column.key] || 0));
             });
             return columnTemplate.join('');
           }
- 
+
           //Naive templating function
           function printf(template) {
             var typeIndex = [], tempTemplate = template, shift = 0;
@@ -109,12 +134,12 @@
               '%d' : '[object Number]',
               '%l' : '[object Array]'
             };
- 
+
             //read arguments - not sure how much 'use strict' aproves of this
             for(var i = 1; i < arguments.length; i += 1) {
               replaceArguments.push(arguments[i]);
             }
- 
+
             Object.keys(types).forEach(function(matchKey) {
               var index = tempTemplate.indexOf(matchKey);
               while(index >= 0) {
@@ -123,7 +148,7 @@
                 index = tempTemplate.indexOf(matchKey);
               }
             });
- 
+
             typeIndex.sort(function(a, b) { return a.index > b.index; });
             typeIndex.forEach(function(replaceObj, index) {
               var targetArg = replaceArguments[index], replaceIndex = replaceObj.index + shift, matchKey = typeIndex[replaceIndex];
@@ -193,7 +218,7 @@
 
                 // Select nodes without children
                 if(!selectedNode.has_children) return scope[treeId].selectNodeLabel(selectedNode);
-  
+
                 selectedNode.collapsed = !selectedNode.collapsed;
 
                 // Update cache
