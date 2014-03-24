@@ -1,18 +1,32 @@
 #!/usr/local/bin/node
 var fs = require('fs'), q = require('q');
-var currentFilePath = './current.sql';
 
-var idRelation = {}, tableRelation = {};
-
+var idRelation = {};
+var tableRelation = {};
 var newRelation = { 
   project : "INSERT INTO `project` (`id`, `name`, `abbr`, `enterprise_id`) values\n(1, 'IMCK Hopital Bon Berger', 'HBB', 200),\n(2, 'IMCK PAX Clinic', 'PAX', 200);",
-  project_permission : "INSERT INTO `project_permission` (`user_id`, `project_id`) values\n(1, 1),\n(1, 2);" 
-}
+  project_permission : "INSERT INTO `project_permission` (`user_id`, `project_id`) values\n(1, 1),\n(1, 2);",
+  cash_box : "INSERT INTO cash_box (id, text, project_id) VALUES (1, 'IMCK HBB CAISSE PPLE ', 1),(2, 'IMCK HBB CAISSE AUX', 1),(3, 'IMCK PAX CAISSE AUX', 2);",
+  cash_box_account_currency : "INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES (1, 1, 1, 486), (2, 2, 1, 487), (5, 1, 3, 488);",
+  // cash_box_account_currency : "INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES (1, 1, 1, 486), (2, 2, 1, 487), (3, 1, 2, 1066), (4, 2, 2, 1067), (5, 1, 3, 488),(6, 2, 3, 1068);",
+  caution_box : "INSERT INTO caution_box (id, text, project_id) VALUES (1, 'IMCK HBB CAUTION ', 1),(2, 'IMCK PAX CAUTION', 2);",
+  caution_box_account_currency : "INSERT INTO caution_box_account_currency (id, currency_id, caution_box_id, account_id) VALUES (1, 2, 1, 249), (2, 2, 2, 250);"
+};
 
-// Script output, can be swapped with method to write to file etc.
+var defaultPath = "./current.sql";
 var writeLine = console.log;
+  
+parsePathArgument()
+.then(readFile)
+.then(parseInserts)
+.then(upgradeDB)
+.catch(handleError);
 
-readFile(currentFilePath).then(parseInserts);
+function parsePathArgument() { 
+  var path = process.argv[2] || defaultPath;
+  return q.resolve(path);
+  // readFile(path).then(parseInserts);
+}
 
 function parseInserts(fileData) { 
   var rawData = fileData.split('\n');
@@ -27,11 +41,11 @@ function parseInserts(fileData) {
     tableRelation[line.split('`')[1]] = line;
   });
   
-  return upgradeDB();
+  return q.resolve();
 }
 
 function upgradeDB() { 
-  try { 
+  // try { 
     simpleUpgrade('country', upgradeCountry);
     simpleUpgrade('province', upgradeProvince);
     simpleUpgrade('sector', upgradeSector);
@@ -53,10 +67,16 @@ function upgradeDB() {
     // New Project data
     simpleCreate('project');
     simpleCreate('project_permission');
-  
+    
+    simpleCreate('cash_box');
+    simpleCreate('cash_box_account_currency');
+    simpleCreate('caution_box');
+    simpleCreate('caution_box_account_currency');
+    
     simpleTransfer('inventory_unit');
     simpleTransfer('inventory_type');
     simpleTransfer('transaction_type');
+    simpleTransfer('exchange_rate');
       
     simpleUpgrade('price_list', upgradePriceList);
     simpleUpgrade('price_list_item', upgradePriceListItem);
@@ -71,14 +91,15 @@ function upgradeDB() {
     simpleUpgrade('sale_item', upgradeSaleItem);
     simpleUpgrade('cash', upgradeCash);
     simpleUpgrade('cash_item', upgradeCashItem);
+    simpleUpgrade('credit_note', upgradeCreditNote);
     simpleUpgrade('patient_visit', upgradePatientVisit);
     simpleUpgrade('debitor_group_history', upgradeDebtorGroupHistory);
     simpleUpgrade('pcash', upgradePCash);
     simpleUpgrade('caution', upgradeCaution);
     simpleUpgrade('posting_journal', upgradePostingJournal);
-  } catch(e) { 
-    writeLine(e); 
-  }
+  // } catch(e) { 
+    // writeLine(e); 
+  // }
 }
 
 function simpleUpgrade(tableName, upgradeMethod) {
@@ -100,11 +121,14 @@ function simpleUpgrade(tableName, upgradeMethod) {
 }
 
 function simpleTransfer(tableName) { 
+  
   writeLine(tableRelation[tableName] + " \n");
 }
 
 function simpleCreate(key) { 
+  writeLine("LOCK TABLES `" + key + "` WRITE;");
   writeLine(newRelation[key]);
+  writeLine("UNLOCK TABLES;");
 }
 
 function upgradeCountry(recordValues, tableName) { 
@@ -159,7 +183,11 @@ function upgradePriceListItem(recordValues, tableName) {
   var currentId = recordValues[0], updateId = uuid();
     
   recordValues[0] = updateId;
-  upgradeReference('price_list', recordValues, 6);  
+  upgradeReference('price_list', recordValues, 6);
+  
+  // Add column for inventory UUID
+  recordValues.push('NULL');
+
   return packageRecordValues(recordValues);
 }
 
@@ -170,7 +198,7 @@ function upgradeDebtorGroup(recordValues, tableName) {
   recordValues[1] = updateId;
   upgradeReference('village', recordValues, 4);
   
-  if (recordValues[13]!=="NULL") upgradeReference('price_list', recordValues, 13); 
+  if (recordValues[13]!=="NULL") upgradeReference('price_list', recordValues, 13);
   return packageRecordValues(recordValues);
 }
 
@@ -257,7 +285,7 @@ function upgradeSale(recordValues, tableName) {
   recordValues[2] = updateId;
   
   idRelation[tableName][currentId] = updateId;
-  upgradeReference('debitor', recordValues, 5)
+  upgradeReference('debitor', recordValues, 5);
 
   // Add a timestamp
   recordValues.push(recordValues[8].substr(0, recordValues[8].length-1) + " 00:00:00\'");
@@ -325,7 +353,7 @@ function upgradePostingJournal(recordValues, tableName) {
   // Replace enterprise with project ID
   recordValues[1] = '1';
    
-  if(recordValues[14]!=="NULL") recordValues[14] = idRelation['debitor'][currentDebtor];
+  if(recordValues[14]!=="NULL") recordValues[14] = idRelation.debitor[currentDebtor];
   if(recordValues[16]!=="NULL") {
     var origin = recordValues[19];
         
@@ -337,7 +365,7 @@ function upgradePostingJournal(recordValues, tableName) {
     if (referenceMap[origin]) { 
       recordValues[16] = idRelation[referenceMap[origin]][currentSale];
     } else { 
-      recordValues[16] = idRelation['sale'][currentSale];
+      recordValues[16] = idRelation.sale[currentSale];
     }
     
     // Mitigate 0 error, valid data shouldn't reach this point
@@ -377,7 +405,7 @@ function upgradePCash(recordValues, tableName) {
   recordValues[1] = updateId;
 
   currentDebtor = recordValues[5].replace(/\'/g, '');
-  if (recordValues[5]!=="NULL") recordValues[5] = idRelation['debitor'][currentDebtor];
+  if (recordValues[5]!=="NULL") recordValues[5] = idRelation.debitor[currentDebtor];
   return packageRecordValues(recordValues);
 }
 
@@ -392,7 +420,7 @@ function upgradePCashItem(recordValues, tableName) {
 
 function upgradeCaution(recordValues, tableName) { 
   var currentId = recordValues[0], updateId = uuid();
-
+  var cautionText, dateLength = 11;
   // Add reference 
   recordValues.splice(0, 0, currentId);
 
@@ -403,6 +431,30 @@ function upgradeCaution(recordValues, tableName) {
   recordValues[1] = updateId;
   
   upgradeReference('debitor', recordValues, 5);
+
+  // Add cash box ID
+  recordValues.push('2');
+ 
+  // Super hacks
+  cautionText = ["CAP", updateId, recordValues[3].substr(0, dateLength)].join('/').replace(/\'/g, '');
+  
+  // Add caution description
+  recordValues.push("\'" + cautionText + "\'");
+  return packageRecordValues(recordValues);
+}
+
+function upgradeCreditNote(recordValues, tableName) { 
+  var currentId = recordValues[1], updateId = uuid();
+  
+  recordValues[1] = updateId;
+  
+  slfksupgradeReference('debitor', recordValues, 3);
+  upgradeReference('sale', recordValues, 5);
+  
+  // Update enterprise ID to Project ID
+  recordValues[0] = '1';
+  recordValues.splice(1, 0, currentId);
+
   return packageRecordValues(recordValues);
 }
 
@@ -422,15 +474,15 @@ function packageRecordValues(recordValues) {
 }
 
 function uuid() {
-  var uuid;
-  uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  var sessionUuid;
+  sessionUuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0,
     v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
   
   // Sanitise UUID
-  return "\'" + uuid + "\'";
+  return "\'" + sessionUuid + "\'";
 }
 
 function readFile(filePath) { 
@@ -442,4 +494,8 @@ function readFile(filePath) {
   });
 
   return deferred.promise;
+}
+
+function handleError(error) { 
+  throw error;
 }

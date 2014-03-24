@@ -89,7 +89,7 @@ angular.module('kpk.controllers')
         query : {
           tables : {
             price_list: { columns : ['uuid', 'title'] },
-            price_list_item : { columns : ['value', 'is_discount', 'is_global', 'description'] }
+            price_list_item : { columns : ['value', 'is_discount', 'is_global', 'description', 'inventory_uuid'] }
           },
           join : ['price_list_item.price_list_uuid=price_list.uuid'],
           where : ['price_list.uuid=' + selectedDebtor.price_list_uuid]
@@ -131,6 +131,7 @@ angular.module('kpk.controllers')
         // session.recovering ? recover() : addInvoiceItem();
 
         invoice.note = formatNote(invoice);
+        invoice.displayId = invoice.uuid.substr(0, 13);
         $scope.invoice = invoice;
 
       });
@@ -224,7 +225,7 @@ angular.module('kpk.controllers')
       //Seller ID will be inserted on the server
       requestContainer.sale = {
         project_id : $scope.project.id,
-        cost : calculateTotal().totalToPay,
+        cost : calculateTotal().total,
         currency_id : $scope.project.currency_id,
         debitor_uuid : invoice.debtor.debitor_uuid,
         invoice_date : invoice.date,
@@ -234,7 +235,6 @@ angular.module('kpk.controllers')
       requestContainer.saleItems = [];
 
       invoice.items.forEach(function(saleItem) {
-        console.log('saleItem:', saleItem);
         var formatSaleItem;
         formatSaleItem = {
           inventory_uuid : saleItem.inventoryId,
@@ -247,6 +247,7 @@ angular.module('kpk.controllers')
 
         requestContainer.saleItems.push(formatSaleItem);
       });
+      console.log('cost envoye est :', requestContainer.sale);
 
       // Patient Groups
       // if(invoice.priceList) {
@@ -263,7 +264,8 @@ angular.module('kpk.controllers')
 
       invoice.applyGlobal.forEach(function (listItem) {
         var applyCost, formatListItem; // FIXME Derive this from enterprise
-
+        
+        console.log('adding listItem', listItem);
         var formatDiscountItem = {
           inventory_uuid : listItem.inventory_uuid,
           quantity : 1,
@@ -286,7 +288,7 @@ angular.module('kpk.controllers')
       });
 
       requestContainer.caution = (invoice.debitorCaution)? invoice.debitorCaution : 0;
-      console.log('caution envoye est :', requestContainer.caution);
+
 
       return requestContainer;
     }
@@ -331,7 +333,7 @@ angular.module('kpk.controllers')
 
     function formatNote(invoice) {
       var noteDebtor = invoice.debtor || "";
-      return "PI/" + invoice.uuid + "/" + invoice.date + "/" + noteDebtor.name;
+      return "PI" + "/" + invoice.date + "/" + noteDebtor.name;
     }
 
     //TODO Refactor code
@@ -349,6 +351,8 @@ angular.module('kpk.controllers')
           total = Number(total.toFixed(4));
         }
       });
+
+      console.log('voici le total obtenue jueste apres la sommation ', total);
 
       if (invoice.applyGlobal) {
         invoice.applyGlobal.forEach(function (listItem) {
