@@ -72,7 +72,7 @@ module.exports = function (db, synthetic) {
     .then(function (rows) {
       var data = rows.pop();
       // catch a corner case where the posting journal has no data
-      return q(data.increment ? data.abbr + data.increment : data.abbr + 1);
+      return q(data.increment ? '"' + data.abbr + data.increment + '"' : '"' + data.abbr + 1 + '"');
     });
   }
 
@@ -1211,9 +1211,14 @@ module.exports = function (db, synthetic) {
               .then(function (res){
                 return done(null, res);
               })
+              .then(function (err) {
+                done(err);
+              });
+              /*
               .catch(function (err) {
                 return done(err);
               });
+              */
             });
           });
         });
