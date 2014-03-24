@@ -10,6 +10,10 @@
       controller: 'budgetController',
       templateUrl: 'partials/budget/budget.html'
     }).
+    when('/project', {
+      controller : 'project',
+      templateUrl: 'partials/project/project.html'
+    }).
     when('/permission', {
       controller: 'permission',
       templateUrl: 'partials/user_permission/permissions.html'
