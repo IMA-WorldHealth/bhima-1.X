@@ -416,6 +416,15 @@
     "DANGER"       : "Error. Pleases see a system administrator or try again."
   },
 
+  "PCASH"                   : {
+    "TITLE"                 : "Enterprise Cash Payments",
+    "INCOME"                : "Income",
+    "EXPENSE"               : "Expense",
+    "SOME_REPORT"           : "Summary Report of Last Payments (limit 20 items)",
+    "MANAGER_CONFIGURATION" : "Configure",
+    "DESCRIPTION"           : "This module allows you to execute all operations belonging to the principal cashbox of the enterprise. Use this module to manage income and expenses with confidence."
+  },
+
   "RENEWAL"           : {
     "TITLE"           : "Renew Patient Visit",
     "NAME"            : "Name",
