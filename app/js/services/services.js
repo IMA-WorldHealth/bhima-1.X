@@ -844,7 +844,11 @@
       self.myExchange = function myExchange (value, valueCurrency_id){
         if(!(value && valueCurrency_id)) throw new Error('Invalid data');
         return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
-      }
+      };
+
+      self.hasExchange = function () {
+        return !!Object.keys(self.map).length;
+      };
 
       appstate.register('exchange_rate', function (globalRates) {
         self.map = {};

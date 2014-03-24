@@ -84,7 +84,7 @@ angular.module('kpk.controllers')
     };
 
     var queryProject = "/currentProject";
-   
+  
     function settupApplication() {
       var url = $location.url();
 
@@ -113,6 +113,10 @@ angular.module('kpk.controllers')
       });
     }
 
+    function setUser(user) {
+      appstate.set('user', user.data);
+    }
+
     //Slightly more verbose than the inline equivalent but I think it looks cleaner
     //TODO: transition this to using validate
     function fetchSessionState() {
@@ -122,7 +126,9 @@ angular.module('kpk.controllers')
       .then(setExchange)
       .then(setProject)
       .then(setCurrency)
-      .catch(handleError);
+      .then(setUser)
+      .catch(handleError)
+      .finally();
     }
 
     function loadEnterprise() {
@@ -160,6 +166,7 @@ angular.module('kpk.controllers')
 
     function setCurrency(result) {
       if (result) { appstate.set('currency', result.data); }
+      return connect.req('/user_session');
     }
 
     function handleError(error) {
