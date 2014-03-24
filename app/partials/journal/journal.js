@@ -267,6 +267,7 @@ angular.module('kpk.controllers').controller('journal', [
         var instance = $modal.open({
           // this should not close on off click
           backdrop: 'static',
+          keyboard : false,
           templateUrl:'trialBalanceModal.html',
           controller: 'trialBalance',
           resolve : {
@@ -338,6 +339,7 @@ angular.module('kpk.controllers').controller('journal', [
 
       verifyTransaction = $modal.open({
         backdrop: 'static',
+        keyboard : false,
         templateUrl: "verifyTransaction.html",
         controller: 'verifyTransaction',
         resolve : {
