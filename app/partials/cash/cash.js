@@ -116,6 +116,36 @@ angular.module('kpk.controllers')
 
         $scope.setCashBox(sessionDefault);
       }
+
+      haltOnNoExchange();
+    }
+
+    function haltOnNoExchange () {
+      if (exchange.hasExchange()) { return; }
+
+      var instance = $modal.open({
+        templateUrl : 'noExchangeRate.html',
+        backdrop    : 'static',
+        keyboard    : false,
+        controller  : function ($scope, $modalInstance) {
+          $scope.timestamp= new Date();
+
+          $scope.close = function close () {
+            $modalInstance.dismiss();
+          };
+
+          $scope.setExchange = function setExchange () {
+            $modalInstance.close();
+          };
+
+        }
+      });
+
+      instance.result.then(function () {
+        $location.path('/exchange_rate');
+      }, function () {
+        $scope.errorState = true;
+      });
     }
 
     function handleErrors(error) {
@@ -238,7 +268,9 @@ angular.module('kpk.controllers')
       if ($scope.data.overdue) {
         instance = $modal.open({
           templateUrl : 'justifyModal.html',
-          controller: function ($scope, $modalInstance, data) {
+          backdrop    : 'static',
+          keyboard    : false,
+          controller  : function ($scope, $modalInstance, data) {
             $scope.bill = data;
             $scope.bill.valid = false;
 
