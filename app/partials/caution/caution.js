@@ -104,7 +104,7 @@ angular.module('kpk.controllers')
         user_id         : $scope.model.cashier.data.id,
         cash_box_id     : $scope.selectedItem.id,
         description     : ['CAP', $scope.selectedDebitor.debitor_uuid, $scope.selectedDebitor.first_name, util.convertToMysqlDate(new Date().toString())].join('/')
-      }
+      };
       writeCaution(record)
       .then(postToJournal)
       .then(handleSucces)
