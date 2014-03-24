@@ -1,8 +1,8 @@
 #!/usr/local/bin/node
 var fs = require('fs'), q = require('q');
 
-var idRelation = {}, tableRelation = {};
-
+var idRelation = {};
+var tableRelation = {};
 var newRelation = { 
   project : "INSERT INTO `project` (`id`, `name`, `abbr`, `enterprise_id`) values\n(1, 'IMCK Hopital Bon Berger', 'HBB', 200),\n(2, 'IMCK PAX Clinic', 'PAX', 200);",
   project_permission : "INSERT INTO `project_permission` (`user_id`, `project_id`) values\n(1, 1),\n(1, 2);",
@@ -16,11 +16,16 @@ var newRelation = {
 var defaultPath = "./current.sql";
 var writeLine = console.log;
   
-parseArguments();
+parsePathArgument()
+.then(readFile)
+.then(parseInserts)
+.then(upgradeDB)
+.catch(handleError);
 
-function parseArguments() { 
+function parsePathArgument() { 
   var path = process.argv[2] || defaultPath;
-  readFile(path).then(parseInserts);
+  return q.resolve(path);
+  // readFile(path).then(parseInserts);
 }
 
 function parseInserts(fileData) { 
@@ -36,11 +41,11 @@ function parseInserts(fileData) {
     tableRelation[line.split('`')[1]] = line;
   });
   
-  return upgradeDB();
+  return q.resolve();
 }
 
 function upgradeDB() { 
-  try { 
+  // try { 
     simpleUpgrade('country', upgradeCountry);
     simpleUpgrade('province', upgradeProvince);
     simpleUpgrade('sector', upgradeSector);
@@ -92,9 +97,9 @@ function upgradeDB() {
     simpleUpgrade('pcash', upgradePCash);
     simpleUpgrade('caution', upgradeCaution);
     simpleUpgrade('posting_journal', upgradePostingJournal);
-  } catch(e) { 
-    writeLine(e); 
-  }
+  // } catch(e) { 
+    // writeLine(e); 
+  // }
 }
 
 function simpleUpgrade(tableName, upgradeMethod) {
@@ -415,7 +420,7 @@ function upgradePCashItem(recordValues, tableName) {
 
 function upgradeCaution(recordValues, tableName) { 
   var currentId = recordValues[0], updateId = uuid();
-  var cautionText;
+  var cautionText, dateLength = 11;
   // Add reference 
   recordValues.splice(0, 0, currentId);
 
@@ -431,7 +436,7 @@ function upgradeCaution(recordValues, tableName) {
   recordValues.push('2');
  
   // Super hacks
-  cautionText = ["CAP", updateId, recordValues[3].substr(0, 11)].join('/').replace(/\'/g, '');
+  cautionText = ["CAP", updateId, recordValues[3].substr(0, dateLength)].join('/').replace(/\'/g, '');
   
   // Add caution description
   recordValues.push("\'" + cautionText + "\'");
@@ -443,7 +448,7 @@ function upgradeCreditNote(recordValues, tableName) {
   
   recordValues[1] = updateId;
   
-  upgradeReference('debitor', recordValues, 3);
+  slfksupgradeReference('debitor', recordValues, 3);
   upgradeReference('sale', recordValues, 5);
   
   // Update enterprise ID to Project ID
@@ -469,15 +474,15 @@ function packageRecordValues(recordValues) {
 }
 
 function uuid() {
-  var uuid;
-  uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  var sessionUuid;
+  sessionUuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0,
     v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
   
   // Sanitise UUID
-  return "\'" + uuid + "\'";
+  return "\'" + sessionUuid + "\'";
 }
 
 function readFile(filePath) { 
@@ -489,4 +494,8 @@ function readFile(filePath) {
   });
 
   return deferred.promise;
+}
+
+function handleError(error) { 
+  throw error;
 }

@@ -354,6 +354,13 @@
             validate.refresh(dependencies, ['debtor']).then(handleIdRequest, handleIdError);
           }
 
+          function searchUuid(value) { 
+            dependencies.debtor.query.where = [
+              "patient.uuid=" + value
+            ];
+            validate.refresh(dependencies, ['debtor']).then(handleIdRequest, handleIdError);
+          }
+
           // TODO should this be temporary?
           function parseId(idString) {
             var codeLength = 3, namespacedId = {};
@@ -442,7 +449,7 @@
           }
 
           // Expose selecting a debtor to the module (probabl a hack)(FIXME)
-          scope.findPatient.forceSelect = searchId;
+          scope.findPatient.forceSelect = searchUuid;
 
           scope.validateNameSearch = validateNameSearch;
           scope.findPatient.refresh = resetSearch;
