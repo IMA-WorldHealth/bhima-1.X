@@ -19,13 +19,11 @@ var writeLine = console.log;
 parsePathArgument()
 .then(readFile)
 .then(parseInserts)
-.then(upgradeDB)
-.catch(handleError);
+.then(upgradeDB);
 
 function parsePathArgument() { 
   var path = process.argv[2] || defaultPath;
   return q.resolve(path);
-  // readFile(path).then(parseInserts);
 }
 
 function parseInserts(fileData) { 
@@ -121,7 +119,6 @@ function simpleUpgrade(tableName, upgradeMethod) {
 }
 
 function simpleTransfer(tableName) { 
-  
   writeLine(tableRelation[tableName] + " \n");
 }
 
@@ -448,7 +445,7 @@ function upgradeCreditNote(recordValues, tableName) {
   
   recordValues[1] = updateId;
   
-  slfksupgradeReference('debitor', recordValues, 3);
+  upgradeReference('debitor', recordValues, 3);
   upgradeReference('sale', recordValues, 5);
   
   // Update enterprise ID to Project ID
