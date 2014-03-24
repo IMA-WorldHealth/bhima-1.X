@@ -841,7 +841,7 @@
       };
 
       //FIX ME : since i wrote this method this throw an error but the app still work
-      self.myExchange = function myExchange (value, valueCurrency_id){
+      self.myExchange = function (value, valueCurrency_id){
         if(!(value && valueCurrency_id)) throw new Error('Invalid data');
         return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
       };

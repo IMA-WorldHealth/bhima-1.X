@@ -79,7 +79,7 @@ angular.module('kpk.controllers')
         required: true,
         query:  {
           tables: {
-            caution: { columns: ['reference', 'value', 'debitor_uuid', 'project_id', 'currency_id'] },
+            caution: { columns: ['reference', 'value', 'debitor_uuid', 'project_id', 'currency_id', 'date'] },
             patient : {columns : ['first_name', 'last_name', 'current_location_id']}
           },
           join : ['caution.debitor_uuid=patient.debitor_uuid'],
@@ -317,11 +317,15 @@ angular.module('kpk.controllers')
       });
     };
 
-    $scope.filterCash = function filterCash(item, invoice) { 
+    function convert (value, currency_id){
+      return exchange.myExchange(value, currency_id);
+    }
+
+    $scope.filterCash = function filterCash(item, invoice) {
       return item.sale_uuid === invoice.invoice_uuid;
     }
 
-    function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0];}
+    function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0]; console.log('notre caution', $scope.caution);}
 
     process = {
       'cash'    : processCash,
@@ -336,5 +340,7 @@ angular.module('kpk.controllers')
       $scope.project = project;
       process[origin](invoiceId);
     });
+
+    $scope.convert = convert;
   }
 ]);
