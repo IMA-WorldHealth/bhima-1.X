@@ -401,6 +401,21 @@
     "MAIN_CASH"                 : "Principal Cashbox"
   },
 
+  "CAUTION"        : {
+    "TITLE"        : "Caution Payments",
+    "CASH"         : "Cash Payments",
+    "PATIENT"      : "Patient Information",
+    "NAME"         : "Name",
+    "AGE"          : "Age",
+    "GENDER"       : "Sex",
+    "ORIGIN"       : "Origin",
+    "INFO_CAUTION" : "Information on the Caution",
+    "CAUTION"      : "Caution",
+    "PAY"          : "Pay",
+    "SUCCES"       : "Operation Successfully Completed",
+    "DANGER"       : "Error. Pleases see a system administrator or try again."
+  },
+
   "RENEWAL"           : {
     "TITLE"           : "Renew Patient Visit",
     "NAME"            : "Name",
