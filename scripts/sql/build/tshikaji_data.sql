@@ -605,19 +605,11 @@ INSERT INTO `project_permission` (`user_id`, `project_id`) values
 (1, 2);
 
 INSERT INTO cash_box (id, text, project_id) VALUES (1, 'IMCK HBB CAISSE PPLE ', 1),(2, 'IMCK HBB CAISSE AUX', 1),(3, 'IMCK PAX CAISSE AUX', 2);
-INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES
-  (1, 1, 1, 486),
-  (2, 2, 1, 487),
-  (3, 1, 2, 1066),
-  (4, 2, 2, 1067),
-  (5, 1, 3, 488),
-  (6, 2, 3, 1068);
+INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES (1, 1, 1, 486), (2, 2, 1, 487), (3, 1, 2, 1066), (4, 2, 2, 1067), (5, 1, 3, 488),(6, 2, 3, 1068);
 
 
 INSERT INTO caution_box (id, text, project_id) VALUES (1, 'IMCK HBB CAUTION ', 1),(2, 'IMCK PAX CAUTION', 2);
-INSERT INTO caution_box_account_currency (id, currency_id, caution_box_id, account_id) VALUES
-  (1, 2, 1, 249),
-  (2, 2, 2, 250);
+INSERT INTO caution_box_account_currency (id, currency_id, caution_box_id, account_id) VALUES (1, 2, 1, 249), (2, 2, 2, 250);
 
 INSERT INTO `inventory_unit` VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot');
 
