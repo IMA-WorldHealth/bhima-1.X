@@ -182,6 +182,10 @@ values('enterprise', 'enterprise', 'enterprise_data', current_timestamp, current
 
 insert into sym_trigger
 (trigger_id,source_table_name,channel_id,last_update_time,create_time)
+values('project', 'enterprise', 'enterprise_data', current_timestamp, current_timestamp);
+
+insert into sym_trigger
+(trigger_id,source_table_name,channel_id,last_update_time,create_time)
 values('fiscal_year', 'fiscal_year', 'enterprise_data', current_timestamp, current_timestamp);
 
 insert into sym_trigger
@@ -465,6 +469,10 @@ values('permission', 'master_to_client', 100, current_timestamp, current_timesta
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('enterprise', 'master_to_client', 100, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router 
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('project', 'master_to_client', 100, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
