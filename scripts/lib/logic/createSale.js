@@ -61,6 +61,7 @@ module.exports = function(db, parser, journal) {
   function writeSaleRecord(saleRecord, userId) {
     var insertSQL = parser.insert('sale', saleRecord), deferred = q.defer();
     saleRecord.seller_id =  userId;
+    console.log('****************************** voici le sale kon a inserer', saleRecord);
 
     db.execute(insertSQL, function (error, result) {
       if(error) return deferred.reject(error);

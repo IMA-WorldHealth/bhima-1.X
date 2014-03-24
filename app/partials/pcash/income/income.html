@@ -3,15 +3,11 @@
 </header>
 
 <section class="top-nav">
-    <div class="pull-right">
-
-	  <a href="" class="capital btn btn-default btn-sm" ng-click="setAction('transfer')"><span class="glaphyicon glaphyicon-tag">{{ 'INCOME.TRANSFER' | translate }}</span></a>
-
-	  <a href=""  class="capital btn btn-default btn-sm" ng-click="setAction('convention')"><span class="glaphyicon glaphyicon-tag">{{ 'INCOME.CONVENTION' | translate }}</span></a>
-
-	  <a href="" class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag" ng-click="setAction('other')">{{ 'INCOME.OTHER' | translate }}</span></a>
-
-	  <a href="#/main_cash"  class="capital btn btn-default btn-sm"><span class="glaphyicon glaphyicon-tag">{{ 'INCOME.PCASH' | translate }}</span></a>
+  <div class="pull-right">
+    <a href="" class="capital btn btn-default btn-sm" ng-click="setAction('transfer')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.TRANSFER' | translate }}</a>
+    <a href=""  class="capital btn btn-default btn-sm" ng-click="setAction('convention')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.CONVENTION' | translate }}</a>
+    <a href="" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag" ng-click="setAction('other')"></span> {{ 'INCOME.OTHER' | translate }}</a>
+    <a href="#/main_cash"  class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.PCASH' | translate }}</a>
 	</div>
 
 	<div style="position: absolute; left: 5px;">
@@ -27,7 +23,7 @@
     </div>
 </section>
 
-<article class="content">
+<div class="content">
 	<div class="row">
 		<div class="col-xs-4">
 			<div class="panel panel-default" style="max-height: 525px;">
@@ -117,6 +113,4 @@
 			</div>
 		</div>
 	</div>
-</article>
-
-
+</div>

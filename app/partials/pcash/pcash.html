@@ -4,8 +4,8 @@
 
 <section class="top-nav">
 	<div class="pull-right">
-    <a href="#/main_cash/income" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'PCASH.INCOME' | translate }}</a>
-  <a href="#/main_cash/expense"  class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'PCASH.EXPENSE' | translate }}</a>
+    <a href="#/main_cash/income" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'PCASH.INCOME' | translate }}</a>
+    <a href="#/main_cash/expense"  class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'PCASH.EXPENSE' | translate }}</a>
 	</div>
 </section>
 
@@ -26,7 +26,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="summer in model.summers.data">
+							<tr ng-repeat="summer in model.summers.data | limit:20">
 								<td>{{ $index }}</td>
 								<td>{{summer.trans_date | date}}</td>
 								<td>{{summer.balance | currency}}</td>
