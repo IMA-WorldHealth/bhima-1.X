@@ -64,9 +64,14 @@ module.exports = function (db, synthetic) {
 
   function getTransactionId (project_id) {
     var query =
-      'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-      'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-      'WHERE project_id = ' + project_id + ';';
+      'SELECT abbr, max(increment) AS increment FROM (' +
+        'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+        'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
+        'WHERE project_id = ' + project_id + ' ' +
+        'UNION ' +
+        'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+        'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
+        'WHERE project_id = ' + project_id + ')c;';
 
     return db.exec(query)
     .then(function (rows) {
@@ -153,9 +158,15 @@ module.exports = function (db, synthetic) {
       // make sure it is the last thing fired in the
       // call stack before posting.
       var query =
-        'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-        'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-        'WHERE project_id = ' + project_id + ';';
+        'SELECT abbr, max(increment) AS increment FROM (' +
+          'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+          'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
+          'WHERE project_id = ' + project_id + ' ' +
+          'UNION ' +
+          'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+          'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
+          'WHERE project_id = ' + project_id + ')c;';
+
       db.execute(query, function (err, rows) {
         if (err) return done(err);
         var data = rows.pop();
@@ -1211,14 +1222,10 @@ module.exports = function (db, synthetic) {
               .then(function (res){
                 return done(null, res);
               })
-              .then(function (err) {
-                done(err);
-              });
-              /*
               .catch(function (err) {
                 return done(err);
-              });
-              */
+              })
+              .done();
             });
           });
         });
