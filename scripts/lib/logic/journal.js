@@ -429,6 +429,7 @@ module.exports = function (db, synthetic) {
                     'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ';';
                 } else {
                   // Caution pays the entire bill, we must simply debit the caution account the total amount
+                  sale_query = undefined;
                   debitingCaution =
                     'INSERT INTO posting_journal '+
                      '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -445,26 +446,44 @@ module.exports = function (db, synthetic) {
                 }
               }
 
-              // execute
-              db.exec(sale_query)
-              .then(function () {
-                return debitingCaution ? db.exec(debitingCaution) : q();
-              })
-              .then(function () {
-                return q.all(item_queries.map(function (sql) {
-                  return db.exec(sql);
-                }));
-              })
-              .then(function () {
-                return db.exec(sale_posted_query);
-              })
-              .then(function (res) {
-                done(null, res);
-              })
-              .catch(function (err) {
-                done(err);
-              });
+              // // execute
+              // db.exec(sale_query)
+              // .then(function () {
+              //   return debitingCaution ? db.exec(debitingCaution) : q();
+              // })
+              // .then(function () {
+              //   return q.all(item_queries.map(function (sql) {
+              //     return db.exec(sql);
+              //   }));
+              // })
+              // .then(function () {
+              //   return db.exec(sale_posted_query);
+              // })
+              // .then(function (res) {
+              //   done(null, res);
+              // })
+              // .catch(function (err) {
+              //   done(err);
+              // });
 
+            q.all(item_queries.map(function (sql){
+              return db.exec(sql);
+            }))
+            .then(function (){
+              return debitingCaution ? db.exec(debitingCaution) : q();
+            })
+            .then(function (){
+              return sale_query ? db.exec(sale_query) : q();
+            })
+            .then(function (){
+              return db.exec(sale_posted_query);
+            })
+            .then(function (res){
+              done(null, res);
+            })
+            .then(function (err){
+              done(err);
+            });
             });
           });
         });
