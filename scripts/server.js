@@ -378,7 +378,7 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
         'WHERE `t`.`account_id` IN (' +
           'SELECT `caution_box_account_currency`.`account_id` FROM `caution_box_account_currency` ' +
           'WHERE `caution_box_account_currency`.`currency_id`=' +currency_id +
-          ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ project_id +'));';
+          ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ project_id +'));';
     return db.exec(sql);
   })
   .then(function (ans) {
