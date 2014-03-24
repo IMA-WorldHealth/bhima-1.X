@@ -249,7 +249,10 @@
   "COLUMNS"               : {
     "COLUMNS"             : "Columns",
     "VISIT_DATE"          : "Last Visit",
+    "NUM"                 : "Number",
     "RATE"                : "Rate",
+    "EXPLANATION"         : "Explanation",
+    "FIX"                 : "Fix",
     "SALE_ID"             : "Sale ID",
     "PASSWORD"            : "Password",
     "ID"                  : "ID",
@@ -399,6 +402,52 @@
     "CLIENT"                    : "Clients",
     "BENEFICIARY"               : "Beneficaries",
     "MAIN_CASH"                 : "Principal Cashbox"
+  },
+
+  "CAUTION"        : {
+    "TITLE"        : "Caution Payments",
+    "CASH"         : "Cash Payments",
+    "PATIENT"      : "Patient Information",
+    "NAME"         : "Name",
+    "AGE"          : "Age",
+    "GENDER"       : "Sex",
+    "ORIGIN"       : "Origin",
+    "INFO_CAUTION" : "Information on the Caution",
+    "CAUTION"      : "Caution",
+    "PAY"          : "Pay",
+    "SUCCES"       : "Operation Successfully Completed",
+    "DANGER"       : "Error. Pleases see a system administrator or try again."
+  },
+
+  "PCASH"                   : {
+    "TITLE"                 : "Enterprise Cash Payments",
+    "INCOME"                : "Income",
+    "EXPENSE"               : "Expense",
+    "SOME_REPORT"           : "Summary Report of Last Payments (limit 20 items)",
+    "MANAGER_CONFIGURATION" : "Configure",
+    "DESCRIPTION"           : "This module allows you to execute all operations belonging to the principal cashbox of the enterprise. Use this module to manage income and expenses with confidence."
+  },
+
+  "INCOME"        : {
+    "TITLE"       : "Enterprise Cash Payments : Income",
+    "TRANSFER"    : "Transfer",
+    "CONVENTION"  : "Convention",
+    "OTHER"       : "Other",
+    "PCASH"       : "Principal Cashbox",
+    "SOME_REPORT" : "Summary Report of Recent Transactions (Limit 20)",
+    "OVERVIEW"    : "Management of Receipts",
+    "INFO"        : "This module is responsible for automising the importation of income.  Use this module to debit the enterprise cashbox by transactions and other forms of income.",
+    "SOURCE"      : "Source",
+    "EXPECTED"    : "Excpected",
+    "RECEIVED"    : "Received"
+  },
+
+  "NO_EXCHANGE" : {
+    "TITLE" : "Missing Exchange Rate",
+    "EXPLANATION" : "This module requires an exchange rate.  There is no exchange rate set for today.",
+    "CURRENT_DATE" : "Current Date",
+    "FIX" : "Please return to the exchange rate module and set a new exchange rate.",
+    "SET_NEW_RATE" : "Set a New Rate"
   },
 
   "RENEWAL"           : {
@@ -557,6 +606,7 @@
     "DISCARD"         : "Discard",
     "RESET_BALANCES"  : "Reset Balances",
     "CLEAR"           : "Clear",
+    "CLOSE_FORM" : "Close Form",
     "CLEAR_FORM"      : "Clear Form",
     "RESET"           : "Reset",
     "DELETE"          : "Delete",

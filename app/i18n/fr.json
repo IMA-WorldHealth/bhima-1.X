@@ -353,7 +353,6 @@
     "ALERT_TWO"             : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports.",
     "EDIT"                  : " Editer l'annee fiscale selectionnee; Bloquer et debloquer des periodes and voir l'ouverture des balances.",
     "CREATION"              : "Creer une nouvelle annee fiscale"
-
   },
 
   "COLUMNS"               : {
@@ -361,6 +360,8 @@
     "PASSWORD"            : "Mot de passe",
     "ID"                  : "ID",
     "NAME"                : "Nom",
+    "EXPLANATION"         : "Explanation",
+    "FIX"                 : "Fix",
     "USER_NAME"           : "Nom Utilisateur",
     "LAST_NAME"           : "Nom",
     "GROUP"               : "Groupe",
@@ -873,7 +874,7 @@
   },
 
   "INCOME"        : {
-    "TITLE"       : "Caisse Principale                                                                                                                                                                        : Depense",
+    "TITLE"       : "Caisse Principale: Depense",
     "TRANSFER"    : "Transfert",
     "CONVENTION"  : "Convention",
     "OTHER"       : "Autre",
