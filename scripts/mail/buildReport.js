@@ -13,7 +13,7 @@ var fs = require('fs');
 var reportDate = new Date();
 
 // TEMPORARY set the date back two days
-reportDate.setDate(reportDate.getDate() - 2);
+// reportDate.setDate(reportDate.getDate());
 
 var enterprise = "IMCK";
 var timestamp = reportDate.toLocaleDateString();
