@@ -192,9 +192,25 @@ insert into sym_trigger
 (trigger_id,source_table_name,channel_id,last_update_time,create_time)
 values('account', 'account', 'enterprise_data', current_timestamp, current_timestamp);
 
-insert into sym_trigger
+insert into sym_trigger 
 (trigger_id,source_table_name,channel_id,last_update_time,create_time)
-values('currency_account', 'currency_account', 'enterprise_data', current_timestamp, current_timestamp);
+values('cash_box', 'cash_box', 'enterprise_data', current_timestamp, current_timestamp);
+
+insert into sym_trigger 
+(trigger_id,source_table_name,channel_id,last_update_time,create_time)
+values('cash_box_account_currency', 'cash_box_account_currency', 'enterprise_data', current_timestamp, current_timestamp);
+
+insert into sym_trigger 
+(trigger_id,source_table_name,channel_id,last_update_time,create_time)
+values('caution_box', 'caution_box', 'enterprise_data', current_timestamp, current_timestamp);
+
+insert into sym_trigger 
+(trigger_id,source_table_name,channel_id,last_update_time,create_time)
+values('caution_box_account_currency', 'caution_box_account_currency', 'enterprise_data', current_timestamp, current_timestamp);
+
+-- insert into sym_trigger
+-- (trigger_id,source_table_name,channel_id,last_update_time,create_time)
+-- values('currency_account', 'currency_account', 'enterprise_data', current_timestamp, current_timestamp);
 
 insert into sym_trigger
 (trigger_id,source_table_name,channel_id,last_update_time,create_time)
@@ -463,9 +479,25 @@ insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('account', 'master_to_client', 100, current_timestamp, current_timestamp);
 
+-- insert into sym_trigger_router 
+-- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+-- values('currency_account', 'master_to_client', 100, current_timestamp, current_timestamp);
+
 insert into sym_trigger_router 
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('currency_account', 'master_to_client', 100, current_timestamp, current_timestamp);
+values('cash_box', 'master_to_client', 100, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router 
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('cash_box_account_currency', 'master_to_client', 100, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router 
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('caution_box', 'master_to_client', 100, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router 
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('caution_box_account_currency', 'master_to_client', 100, current_timestamp, current_timestamp);
 
 -- FIXME conflict
 insert into sym_trigger_router 
