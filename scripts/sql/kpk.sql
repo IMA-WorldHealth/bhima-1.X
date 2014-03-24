@@ -324,6 +324,7 @@ create table `cash_box` (
   `id`              mediumint unsigned not null auto_increment,
   `text`            text not null,
   `project_id`      smallint unsigned not null,
+  `is_auxillary`    boolean not null, 
   primary key (`id`),
   key `project_id` (`project_id`),
   constraint foreign key (`project_id`) references `project` (`id`)
@@ -334,7 +335,7 @@ create table `cash_box_account_currency` (
   `id`              mediumint unsigned not null auto_increment,
   `currency_id`     tinyint unsigned not null,
   `cash_box_id`     mediumint unsigned not null,
-  `account_id`    int unsigned,
+  `account_id`      int unsigned,
   primary key (`id`),
   key `currency_id` (`currency_id`),
   key `cash_box_id` (`cash_box_id`),

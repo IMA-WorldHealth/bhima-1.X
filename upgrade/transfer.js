@@ -1,6 +1,5 @@
 #!/usr/local/bin/node
 var fs = require('fs'), q = require('q');
-var currentFilePath = './current.sql';
 
 var idRelation = {}, tableRelation = {};
 
@@ -9,10 +8,15 @@ var newRelation = {
   project_permission : "INSERT INTO `project_permission` (`user_id`, `project_id`) values\n(1, 1),\n(1, 2);" 
 }
 
-// Script output, can be swapped with method to write to file etc.
+var defaultPath = "./current.sql";
 var writeLine = console.log;
+  
+parseArguments();
 
-readFile(currentFilePath).then(parseInserts);
+function parseArguments() { 
+  var path = process.argv[2] || defaultPath;
+  readFile(path).then(parseInserts);
+}
 
 function parseInserts(fileData) { 
   var rawData = fileData.split('\n');
@@ -57,6 +61,7 @@ function upgradeDB() {
     simpleTransfer('inventory_unit');
     simpleTransfer('inventory_type');
     simpleTransfer('transaction_type');
+    simpleTransfer('exchange_rate');
       
     simpleUpgrade('price_list', upgradePriceList);
     simpleUpgrade('price_list_item', upgradePriceListItem);
@@ -159,7 +164,11 @@ function upgradePriceListItem(recordValues, tableName) {
   var currentId = recordValues[0], updateId = uuid();
     
   recordValues[0] = updateId;
-  upgradeReference('price_list', recordValues, 6);  
+  upgradeReference('price_list', recordValues, 6);
+  
+  // Add column for inventory UUID
+  recordValues.push('NULL');
+
   return packageRecordValues(recordValues);
 }
 
