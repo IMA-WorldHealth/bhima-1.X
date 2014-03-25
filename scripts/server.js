@@ -116,14 +116,14 @@ app.get('/user_session', function (req, res, next) {
   res.send(200, {id: req.session.user_id});
 });
 
-app.get('/trial/', function (req, res, next) {
+app.get('/trialbalance/initialize', function (req, res, next) {
   trialbalance.run(req.session.user_id, function (err, result) {
     if (err) return next(err);
     res.send(200, result);
   });
 });
 
-app.get('/post/:key', function (req, res, next) {
+app.get('/trailbalance/post/:key', function (req, res, next) {
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
