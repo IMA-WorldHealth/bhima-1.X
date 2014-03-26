@@ -131,7 +131,7 @@ angular.module('kpk.controllers').controller('journal', [
 
       grid.onSort.subscribe(function(e, args) {
         sort_column = args.sortCol.field;
-        dataview.sort(compareSort, args.sortAsc);
+        dataview.sort(sort_column ===  'trans_id' ? transIdSort : compareSort, args.sortAsc);
       });
 
       dataview.onRowCountChanged.subscribe(function (e, args) {
@@ -291,6 +291,11 @@ angular.module('kpk.controllers').controller('journal', [
 
     function compareSort(a, b) {
       var x = a[sort_column], y = b[sort_column];
+      return (x === y) ? 0 : (x > y ? 1 : -1);
+    }
+
+    function transIdSort(a,b) {
+      var x = Number(a[sort_column].substr(3)), y = Number(b[sort_column].substr(3));
       return (x === y) ? 0 : (x > y ? 1 : -1);
     }
 
