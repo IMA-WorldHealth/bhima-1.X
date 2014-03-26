@@ -194,9 +194,13 @@ angular.module('kpk.controllers')
       $scope.patient = patient;
       connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
       .success(function (data) {
+        data.forEach(function (i) {
+          i.inv_po_id = i.inv_po_id.slice(0, 8);
+        });
         $scope.ledger = data.filter(function (row) {
           return row.balance > 0;
         });
+
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
@@ -496,6 +500,7 @@ angular.module('kpk.controllers')
     $scope.$watch('currency', digestExchangeRate);
     $scope.$watch('queue', $scope.digestTotal, true);
     $scope.$watch('data.payment', $scope.digestInvoice);
+
 
   }
 ]);
