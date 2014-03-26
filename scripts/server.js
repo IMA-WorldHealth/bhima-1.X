@@ -389,28 +389,6 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
   });
 });
 
-/*
-app.get('/registrations/:id/:from/:to', function (req, res, next) {
-  var from = new Date(req.params.from),
-      to = new Date(req.params.to),
-      id = req.params.id;
-
-  var sql =
-    "SELECT patient.id, debitor_id, first_name, last_name, dob, father_name, " +
-      "sex, religion, renewal, registration_date, date " +
-    "FROM `patient` JOIN `patient_visit` ON " +
-    "`patient`.`id`=`patient_visit`.`patient_id` " +
-    "WHERE `date` > " + sanitize.escape(from.toISOString().slice(0,10)) + " AND " +
-    " `date` < " + sanitize.escape(to.toISOString().slice(0,10)) + ";";
-
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
-    res.send(rows);
-  });
-});
-*/
-
-
 app.get('/account_balance/:id', function (req, res, next) {
   // FIXME: put this in a module!
   var enterprise_id = req.params.id;
