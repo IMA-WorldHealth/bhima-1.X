@@ -962,7 +962,7 @@ create table `general_ledger` (
   `project_id`        smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
-  `trans_id`          int unsigned not null,
+  `trans_id`          text not null,
   `trans_date`        date not null,
   `doc_num`           int unsigned, -- what does this do?
   `description`       text,

@@ -29,7 +29,9 @@ angular.module('kpk.controllers').controller('journal', [
       query: {
         identifier : 'uuid',
         'tables' : {
-          'posting_journal' : { 'columns' : ["uuid", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_uuid", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"] },
+          'posting_journal' : {
+            'columns' : ["uuid", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_uuid", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"]
+          },
           'account' : { 'columns' : ["account_number"] }
         },
         join: ["posting_journal.account_id=account.id"]
@@ -75,14 +77,13 @@ angular.module('kpk.controllers').controller('journal', [
       }
     };
 
-    validate.process(dependencies).then(journal);
-
     function journal(model) {
       $scope.model = model;
-   
       defineGridOptions();
       initialiseGrid();
     }
+
+    validate.process(dependencies).then(journal);
 
     function defineGridOptions() {
       sort_column = "trans_id";
@@ -185,9 +186,7 @@ angular.module('kpk.controllers').controller('journal', [
 
     $scope.$watch('columns', function () {
       if (!$scope.columns) return;
-      var columns = $scope.columns.filter(function (column) {
-        return column.visible;
-      });
+      var columns = $scope.columns.filter(function (column) { return column.visible; });
       grid.setColumns(columns);
     }, true);
 
@@ -207,13 +206,14 @@ angular.module('kpk.controllers').controller('journal', [
 
     function formatTransactionGroup(g) {
       var rowMarkup,
-        splitTemplate,
-        firstElement = g.rows[0];
+          splitTemplate,
+          firstElement = g.rows[0];
 
       if(liveTransaction.state === "add") {
         if(firstElement.trans_id === liveTransaction.transaction_id) {
           //markup for editing
-          rowMarkup = "<span style='color: red;'><span style='color: red' class='glyphicon glyphicon-pencil'> </span> " + $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>";
+          rowMarkup =
+            "<span style='color: red;'><span style='color: red;' class='glyphicon glyphicon-pencil'> </span> " + $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " " + g.value + " (" + g.count + " records)</span><div class='pull-right'><a class='addLine'><span class='glyphicon glyphicon-plus'></span> Add Line</a><a style='margin-left: 15px;' class='submitTransaction'><span class='glyphicon glyphicon-floppy-save'></span> Submit Transaction</a></div>";
           return rowMarkup;
         }
       }
@@ -260,13 +260,12 @@ angular.module('kpk.controllers').controller('journal', [
       // first, we need to validate that all items in each trans have been
       // selected.
 
-      messenger.warning('Trial Balance in progress ...');
-
-      connect.fetch('/trial/')
+      connect.fetch('/trialbalance/initialize')
       .then(function (res) {
         var instance = $modal.open({
           // this should not close on off click
           backdrop: 'static',
+          // do not let esc key close modal
           keyboard : false,
           templateUrl:'trialBalanceModal.html',
           controller: 'trialBalance',
@@ -276,14 +275,17 @@ angular.module('kpk.controllers').controller('journal', [
             }
           }
         });
+
         instance.result.then(function () {
           //console.log("modal closed successfully.");
           $location.path('/reports/ledger/general_ledger');
         }, function () {
           //console.log("modal closed.");
         });
-      }, function (data, status) {
-        //console.log("data:", data);
+
+      })
+      .catch(function (error) {
+        messenger.danger('Trailbalance failed with ' + JSON.stringify(error));
       });
     };
 
@@ -333,7 +335,10 @@ angular.module('kpk.controllers').controller('journal', [
     }
 
     function splitTransaction(args) {
-      var verifyTransaction, transaction = dataview.getItem(args.row), transactionId = Number(transaction.groupingKey), templateRow = transaction.rows[0];
+      var verifyTransaction, transaction = dataview.getItem(args.row),
+          transactionId = Number(transaction.groupingKey),
+          templateRow = transaction.rows[0];
+
       if(!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
       if(liveTransaction.state) return $rootScope.$apply(messenger.info('Transaction ' + liveTransaction.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
 
@@ -470,7 +475,7 @@ angular.module('kpk.controllers').controller('journal', [
           if(record.currency_id) packageChanges.currency_id = record.currency_id;
           packageChanges.origin_id = 4; //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
           packageChanges.user_id = liveTransaction.template.userId;
-    
+
           return request.push(connect.basicPut('posting_journal', [packageChanges]));
         }
         packageChanges.id = record.id;
@@ -498,7 +503,7 @@ angular.module('kpk.controllers').controller('journal', [
 
       //validation
       records.forEach(function(record) {
-     
+
         totalDebits += dbRound(Number(record.debit_equiv));
         totalCredits += dbRound(Number(record.credit_equiv));
 
@@ -509,7 +514,7 @@ angular.module('kpk.controllers').controller('journal', [
 
         //leave deb/cred optional for now
       });
-   
+
       totalDebits = dbRound(totalDebits);
       totalCredits = dbRound(totalCredits);
 
@@ -549,7 +554,7 @@ angular.module('kpk.controllers').controller('journal', [
           if (record.inv_po_id) {
             packaged.inv_po_id = record.inv_po_id;
           }
-       
+
           packaged.account_id = $scope.model.account.get(record.account_number).id;
           if(!isNaN(Number(record.deb_cred_id))) {
             packaged.deb_cred_id = record.deb_cred_id;
@@ -671,7 +676,7 @@ angular.module('kpk.controllers').controller('journal', [
     $scope.$on('$translateChangeSuccess', function () {
       //grid.updateColumnHeader("trans_id", $translate('GENERAL_LEDGER'));
     });
- 
+
     // FIXME interesting splitting logic on select
     function SelectCellEditor(args) {
       var $select, defaultValue, scope = this;
@@ -686,9 +691,9 @@ angular.module('kpk.controllers').controller('journal', [
       };
 
       this.init = fieldMap[args.column.field];
-   
+
       function initInvPo () {
-     
+
         options = "";
         $scope.model.invoice.data.forEach(function (invoice) {
           options += '<option value="' + invoice.id + '">' + invoice.id + ' ' + invoice.note + '</option>';
@@ -710,7 +715,7 @@ angular.module('kpk.controllers').controller('journal', [
             defaultValue = debtor.id;
           }
         });
-        
+
         $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
         $select.appendTo(args.container);
         $select.focus();
@@ -729,7 +734,7 @@ angular.module('kpk.controllers').controller('journal', [
           }
 
         });
-        
+
         $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
         // $select = $compile("<span><input type='text' ng-model='account_id' typeahead='thing as thing.val for thing in thislist | filter: $viewValue' class='editor-typeahead' placeholder='Account Id'></span>")($scope);
         $select.appendTo(args.container);
