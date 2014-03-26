@@ -1208,13 +1208,7 @@ module.exports = function (db, synthetic) {
                 'FROM `cash_box_account_currency`, `cash_box` WHERE `cash_box`.`id` =`cash_box_account_currency`.`cash_box_id` AND `cash_box_account_currency`.`currency_id`='+reference_caution.currency_id+
                 ' AND `cash_box_account_currency`.`cash_box_id`='+reference_caution.cash_box_id+' AND `cash_box`.`project_id`='+reference_caution.project_id;
 
-              // db.execute(creditingRequest, function (err, ans){
-              //   if (err) { return done(err); }
-              //   db.execute(debitingRequest, function (err, ans){
-              //     if (err) { return done(err); }
-              //     return done(null, ans);
-              //   });
-              // });
+
 
               q.all([creditingRequest, debitingRequest].map(function (item){
                 return db.exec(item);

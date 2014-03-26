@@ -142,7 +142,7 @@ angular.module('kpk.controllers')
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
-      dependencies.cash_box.query.where=['cash_box.project_id='+project.id];
+      dependencies.cash_box.query.where=['cash_box.project_id='+project.id, 'AND', 'cash_box.is_auxillary='+1];
       validate.process(dependencies).then(init, handleError);
     });
 
