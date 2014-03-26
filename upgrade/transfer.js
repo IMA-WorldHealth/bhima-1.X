@@ -7,8 +7,8 @@ var newRelation = {
   project : "INSERT INTO `project` (`id`, `name`, `abbr`, `enterprise_id`) values\n(1, 'IMCK Hopital Bon Berger', 'HBB', 200),\n(2, 'IMCK PAX Clinic', 'PAX', 200);",
   project_permission : "INSERT INTO `project_permission` (`user_id`, `project_id`) values\n(1, 1),\n(1, 2);",
   cash_box : "INSERT INTO cash_box (id, text, project_id) VALUES (1, 'IMCK HBB CAISSE PPLE ', 1),(2, 'IMCK HBB CAISSE AUX', 1),(3, 'IMCK PAX CAISSE AUX', 2);",
-  cash_box_account_currency : "INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES (1, 1, 1, 486), (2, 2, 1, 487), (5, 1, 3, 488);",
-  // cash_box_account_currency : "INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES (1, 1, 1, 486), (2, 2, 1, 487), (3, 1, 2, 1066), (4, 2, 2, 1067), (5, 1, 3, 488),(6, 2, 3, 1068);",
+  // cash_box_account_currency : "INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES (1, 1, 1, 486), (2, 2, 1, 487), (5, 1, 3, 488);",
+  cash_box_account_currency : "INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id) VALUES (1, 1, 1, 486), (2, 2, 1, 487), (3, 1, 2, 1071), (4, 2, 2, 1070), (5, 1, 3, 488),(6, 2, 3, 1072);",
   caution_box : "INSERT INTO caution_box (id, text, project_id) VALUES (1, 'IMCK HBB CAUTION ', 1),(2, 'IMCK PAX CAUTION', 2);",
   caution_box_account_currency : "INSERT INTO caution_box_account_currency (id, currency_id, caution_box_id, account_id) VALUES (1, 2, 1, 249), (2, 2, 2, 250);"
 };
