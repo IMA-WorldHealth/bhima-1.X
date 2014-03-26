@@ -119,7 +119,7 @@ create table `sector` (
   `name`        text,
   `province_uuid` char(36) not null,
   primary key (`uuid`),
-  key `province_id` (`province_uuid`),
+  key `province_uuid` (`province_uuid`),
   constraint foreign key (`province_uuid`) references `province` (`uuid`)
 ) engine=innodb;
 
@@ -324,7 +324,7 @@ create table `cash_box` (
   `id`              mediumint unsigned not null auto_increment,
   `text`            text not null,
   `project_id`      smallint unsigned not null,
-  `is_auxillary`    boolean not null, 
+  `is_auxillary`    boolean not null,
   primary key (`id`),
   key `project_id` (`project_id`),
   constraint foreign key (`project_id`) references `project` (`id`)
