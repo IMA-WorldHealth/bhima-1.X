@@ -131,7 +131,7 @@ angular.module('kpk.controllers').controller('journal', [
 
       grid.onSort.subscribe(function(e, args) {
         sort_column = args.sortCol.field;
-        dataview.sort(sort_column ===  'trans_id' ? transIdSort : compareSort, args.sortAsc);
+        dataview.sort(compareSort, args.sortAsc);
       });
 
       dataview.onRowCountChanged.subscribe(function (e, args) {

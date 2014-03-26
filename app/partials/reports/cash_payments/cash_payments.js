@@ -3,11 +3,24 @@ angular.module('kpk.controllers')
   '$scope',
   'connect',
   'appstate',
+  'validate',
   'messenger',
   '$filter',
-  function ($scope, connect, appstate, messenger, $filter) {
+  function ($scope, connect, appstate, validate, messenger, $filter) {
     $scope.state = {};
     $scope.dates = {};
+
+    var dependencies = {};
+    dependencies.projects = {
+      required: true,
+      query : {
+        tables : {
+          'project' : {
+            columns : ['id', 'abbr']
+          }
+        }
+      }
+    };
 
     function dateWatcher () {
       $scope.state.dateFrom = $filter('date')($scope.dates.dateFrom, 'yyyy-MM-dd');
@@ -21,13 +34,13 @@ angular.module('kpk.controllers')
 
     $scope.$watch('dates', dateWatcher, true);
     $scope.$watch('state', stateWatcher, true);
- 
+
     $scope.day = function day () {
       $scope.dates.dateFrom = new Date();
       $scope.dates.dateTo = new Date();
       $scope.search();
     };
-    
+
     $scope.week = function week () {
       $scope.dates.dateFrom = new Date();
       $scope.dates.dateTo = new Date();
@@ -54,20 +67,26 @@ angular.module('kpk.controllers')
       connect.fetch(url)
       .success(function (model) {
         $scope.payments = model;
-
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };
-    
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       $scope.dates.dateFrom = new Date();
       $scope.dates.dateTo = new Date();
-      
+
       // default to searching today
       $scope.day();
+      validate.process(dependencies)
+      .then(function (models) {
+        for (var k in models) { $scope[k] = models[k]; }
+      })
+      .catch(function (error) {
+        messenger.danger(error);
+      });
     });
 
 

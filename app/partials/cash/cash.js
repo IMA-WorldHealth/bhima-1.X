@@ -38,6 +38,16 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.projects = {
+      query : {
+        tables : {
+          'project' : {
+            columns : ['id', 'abbr']
+          }
+        }
+      }
+    };
+
     // TODO currently fetches all accounts, should be selected by project
     dependencies.cashbox_accounts = {
       query : {
@@ -78,7 +88,7 @@ angular.module('kpk.controllers')
       dependencies.cashboxes.query.where =
         ['cash_box.project_id=' + project.id];
 
-      validate.process(dependencies, ['cashboxes', 'cash'])
+      validate.process(dependencies, ['cashboxes', 'cash', 'projects'])
       .then(setUpModels, handleErrors);
     });
 
@@ -103,6 +113,8 @@ angular.module('kpk.controllers')
       for (var k in models) {
         $scope[k] = models[k];
       }
+
+      console.log("$scope.projects", $scope.projects);
 
       if (!$scope.cashbox) {
         var sessionDefault =
@@ -194,13 +206,9 @@ angular.module('kpk.controllers')
       $scope.patient = patient;
       connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
       .success(function (data) {
-        data.forEach(function (i) {
-          i.inv_po_id = i.inv_po_id.slice(0, 8);
-        });
         $scope.ledger = data.filter(function (row) {
           return row.balance > 0;
         });
-
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
