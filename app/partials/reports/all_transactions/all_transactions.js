@@ -6,7 +6,7 @@ angular.module('kpk.controllers')
   'messenger',
   '$filter',
   'validate',
-  'kpkUtilitaire',
+  'util',
   function ($scope, connect, appstate, messenger, $filter, validate, util) {
 
     //variables inits
