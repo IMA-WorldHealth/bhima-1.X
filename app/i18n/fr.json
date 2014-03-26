@@ -132,6 +132,16 @@
     "BTN_TEXT"    : "Poster au Grand Livre"
   },
 
+  "ERROR" : {
+    "ERR_IMBALANCE" : "Imbalance Erreur",
+    "ERR_SQL" : "SQL Erreur",
+    "ERR_ACCNT_LOCKED" : "Erreur Compte Barre",
+    "ERR_ACCNT_NULL" : "Erreur Compte NULL",
+    "ERR_INVALID_DATE" : "Erreur Date Invalid",
+    "ERR_DEB_CRED_DNE" : "Erreur Debiteur/Crediteur N'Existe Pas",
+    "ERR_EXPIRED_SESSION" : "Erreur Session Expirer"
+  },
+
   "SALE"               : {
     "SALE"             : "Facture",
     "TITLE"            : "Facturation",
