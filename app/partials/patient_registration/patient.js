@@ -182,11 +182,14 @@ angular.module('kpk.controllers')
         return connect.fetch('/visit/\"' + patientId + '\"');
       })
       .then(function (result) {
+        return connect.fetch('/user_session');
+      })
+      .then(function (result) {
         var packageHistory = {
           uuid : uuid(),
           debitor_uuid : packagePatient.debitor_uuid,
           debitor_group_uuid : $scope.debtor.debtor_group.uuid,
-          user_id : 1 // FIXME: can this be done on the server?
+          user_id : result.data.id // FIXME: can this be done on the server?
         };
         return connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]);
       })
