@@ -95,7 +95,7 @@ angular.module('kpk.controllers')
         return value.id == $scope.model.account_id;
       })[0].account_number;
 
-      connect.MyBasicGet(
+      connect.fetch(
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
           if(res.length > 0){
@@ -123,7 +123,7 @@ angular.module('kpk.controllers')
         datef : $scope.state.from,
         datet : $scope.state.to
       };
-      connect.MyBasicGet(
+      connect.fetch(
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
           if(res.length > 0){
@@ -169,7 +169,7 @@ angular.module('kpk.controllers')
         })[0].account_number;
       }
 
-      connect.MyBasicGet(
+      connect.fetch(
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function(res){
           if(res.length > 0){
