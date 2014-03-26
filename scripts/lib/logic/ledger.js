@@ -18,10 +18,9 @@ module.exports = function (db) {
 
   function debitor (id) {
     var defer = q.defer();
-    console.log('called debitor with id' + id);
 
-    // debitor query
-    if (!id) { defer.reject(new Error('No debitor id selected!')); }
+    // debtor query
+    if (!id) { defer.reject(new Error('No debtor id selected!')); }
     else { id = sanitize.escape(id); }
 
     var query =
@@ -58,7 +57,7 @@ module.exports = function (db) {
       var account_id = ans.pop().account_id;
 
       var sql =
-        'SELECT `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
+        'SELECT s.reference, s.project_id, `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
         'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
         '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
         '`t`.`comment`' +
@@ -76,7 +75,7 @@ module.exports = function (db) {
               '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
             'FROM `general_ledger` ' +
           ')' +
-        ') AS `t` ' +
+        ') AS `t` JOIN sale AS s on t.inv_po_id = s.uuid ' +
         'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +
         'AND t.account_id = ' + account_id + ' ' +
         'GROUP BY `t`.`inv_po_id`;\n';
