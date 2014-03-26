@@ -90,7 +90,7 @@ angular.module('kpk.controllers').controller('journal', [
       columns = [
         {id: 'uuid', name : $filter('translate')('COLUMNS.ID'), field: 'uuid', sortable : true},
         {id: 'trans_id', name: $filter('translate')('COLUMNS.TRANS_ID'), field: 'trans_id', sortable: true},
-        {id: 'trans_date', name: $filter('translate')('COLUMNS.DATE'), field: 'trans_date', formatter: formatDate},
+        {id: 'trans_date', name: $filter('translate')('COLUMNS.DATE'), field: 'trans_date', formatter: formatDate, sortable: true},
         // {id: 'doc_num', name: 'Doc No.', field: 'doc_num', maxWidth: 75},
         {id: 'description', name: $filter('translate')('COLUMNS.DESCRIPTION'), field: 'description', width: 110, editor: Slick.Editors.Text },
         {id: 'account_id', name: $filter('translate')('COLUMNS.ACCOUNT_NUMBER'), field: 'account_number', sortable: true, editor:SelectCellEditor},
