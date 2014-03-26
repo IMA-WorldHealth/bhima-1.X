@@ -106,25 +106,25 @@ angular.module('kpk.controllers')
       if (util.isDateAfter($scope.patient.dob, new Date())) {
         return messenger.warning($translate('PATIENT_REG.INVALID_DATE'), 6000);
       }
-
+      
       // This is overly verbose, but works and is clean
       var defer = $q.defer();
       // if the villages are strings, create database entries for them
       if (angular.isString($scope.origin.village) && angular.isString($scope.current.village)) {
-        createVillage($scope.origin.village, $scope.origin.sector.id, 'origin')
+        createVillage($scope.origin.village, $scope.origin.sector.uuid, 'origin')
         .then(function () {
-          return createVillage($scope.current.village, $scope.current.sector.id, 'current');
+          return createVillage($scope.current.village, $scope.current.sector.uuid, 'current');
         })
         .then(function () {
           defer.resolve();
         });
       } else if (angular.isString($scope.origin.village)) {
-        createVillage($scope.origin.village, $scope.origin.sector.id, 'origin')
+        createVillage($scope.origin.village, $scope.origin.sector.uuid, 'origin')
         .then(function () {
           defer.resolve();
         });
       } else if (angular.isString($scope.current.village)) {
-        createVillage($scope.current.village, $scope.current.sector.id, 'current')
+        createVillage($scope.current.village, $scope.current.sector.uuid, 'current')
         .then(function () {
           defer.resolve();
         });
@@ -134,7 +134,7 @@ angular.module('kpk.controllers')
 
       defer.promise.then(function () {
         var patient = $scope.patient;
-
+      
         patient.current_location_id = $scope.current.village.uuid;
         patient.origin_location_id = $scope.origin.village.uuid;
         writePatient(patient);
@@ -143,16 +143,18 @@ angular.module('kpk.controllers')
 
 
     function createVillage(village, sector_uuid, writeTo) {
+      
       return connect.basicPut('village', [{
+        uuid : uuid(),
         name : village,
         sector_uuid : sector_uuid
       }])
       .success(function(success) {
-        $scope[writeTo].village = {
-          name : name,
-          sector_uuid : sector_uuid,
-          id : success.insertId
-        };
+        // $scope[writeTo].village = {
+        //   name : name,
+        //   sector_uuid : sector_uuid,
+        //   id : success.insertId
+        // };
       })
       .error(function(err) {
         messenger.danger('An Error occured writing the village');

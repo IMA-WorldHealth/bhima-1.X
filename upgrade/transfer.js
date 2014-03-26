@@ -367,7 +367,15 @@ function upgradePostingJournal(recordValues, tableName) {
     
     // Mitigate 0 error, valid data shouldn't reach this point
     if (!recordValues[16]) recordValues[16] = "NULL";
+
+    // Final hack - give cautions basic description
+    if(origin === '7') { 
+      recordValues[7] = "\'CAP/" + recordValues[5].substr(1, recordValues[5].length-2) + "\'";
+    }
   }
+
+  // Replace trans ID 
+  recordValues[4] = "\'HBB".concat(recordValues[4], "\'");
   return packageRecordValues(recordValues);
 }
 
