@@ -6,6 +6,7 @@ angular.module('kpk.controllers')
   'messenger',
   '$filter',
   function ($scope, connect, appstate, messenger, $filter) {
+
     $scope.state = {};
     $scope.dates = {};
 
@@ -18,9 +19,6 @@ angular.module('kpk.controllers')
       $scope.dates.dateFrom = new Date($scope.state.dateFrom);
       $scope.dates.dateTo = new Date($scope.state.dateTo);
     }
-
-    $scope.$watch('dates', dateWatcher, true);
-    $scope.$watch('state', stateWatcher, true);
 
     $scope.day = function day () {
       $scope.dates.dateFrom = new Date();
@@ -66,6 +64,9 @@ angular.module('kpk.controllers')
       $scope.dates.dateTo = new Date();
       $scope.day();
     });
+
+    $scope.$watch('dates', dateWatcher, true);
+    $scope.$watch('state', stateWatcher, true);
 
 
   }
