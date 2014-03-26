@@ -295,7 +295,8 @@ angular.module('kpk.controllers').controller('journal', [
     }
 
     function transIdSort(a,b) {
-      var x = Number(a[sort_column].substr(3)), y = Number(b[sort_column].substr(3));
+      var x = parseFloat(a[sort_column].substr(3)),
+          y = parseFloat(b[sort_column].substr(3));
       return (x === y) ? 0 : (x > y ? 1 : -1);
     }
 
