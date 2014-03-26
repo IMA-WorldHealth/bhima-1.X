@@ -123,11 +123,12 @@ angular.module('kpk.controllers')
         if (!item.price_list_uuid) item.price_list_uuid = priceList.uuid;
         item.item_order = index;
   
+        
         if (isNaN(Number(item.value))) return true;
+
         if (!item.description || item.description.length===0) return true;
-
-        if (item.is_global && !item.inventory_uuid) return true;
-
+        if (Number(item.is_global) && !item.inventory_uuid) return true;
+        
         return false;
       });
 
@@ -148,7 +149,7 @@ angular.module('kpk.controllers')
       });
     
       $scope.session.deleteQueue.forEach(function (itemId) {
-        uploadPromise.push(connect.basicDelete('price_list_item', itemId, 'uuid'))
+        uploadPromise.push(connect.basicDelete('price_list_item', itemId, 'uuid'));
       });
 
       $q.all(uploadPromise).then(function (result) {
@@ -159,6 +160,11 @@ angular.module('kpk.controllers')
       }, function (error) {
         messenger.danger($filter('translate')('PRICE_LIST.LIST_FAILURE'));
       });
+    }
+    
+    // Clear inventory uuid for non global items (on change)
+    function clearInventory(item) { 
+      if (!Number(item.is_global)) item.inventory_uuid = null;
     }
 
     function editMeta (list) {
@@ -242,6 +248,7 @@ angular.module('kpk.controllers')
     $scope.shiftUp = shiftUp;
     $scope.shiftDown = shiftDown;
     $scope.deleteItem = deleteItem;
+    $scope.clearInventory = clearInventory;
 
     $scope.addList = addList;
     $scope.saveAdd = saveAdd;

@@ -132,6 +132,8 @@
               <a class="menu-item" ng-click="saveItems()"><span class="glyphicon glyphicon-floppy-disk"></span> {{'PRICE_LIST.SAVE_LIST' | translate}}</a>
             </span>
           </div>
+          
+          {{session.listItems}}
 
           <table class="table table-condensed">
             <thead>
@@ -161,7 +163,7 @@
                 </td>
 
                 <td>
-                  <select class="form-kapok" ng-model="item.is_global">
+                  <select class="form-kapok" ng-change="clearInventory(item)" ng-model="item.is_global">
                     <option value="0">{{'PRICE_LIST.APPLY_TO_ITEM' | translate}}</option>
                     <option value="1">{{'PRICE_LIST.APPLY_TO_BILL' | translate}}</option>
                   </select>
