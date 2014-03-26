@@ -119,7 +119,7 @@ create table `sector` (
   `name`        text,
   `province_uuid` char(36) not null,
   primary key (`uuid`),
-  key `province_uuid` (`province_uuid`),
+  key `province_id` (`province_uuid`),
   constraint foreign key (`province_uuid`) references `province` (`uuid`)
 ) engine=innodb;
 
