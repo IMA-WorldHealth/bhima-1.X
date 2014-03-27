@@ -43,18 +43,18 @@
 
     <div class="col-xs-6" ng-switch="op">
       <div ng-switch-default>
-         <div class="alert alert-info">                                                           
-             <b>{{'SECTOR.CONFIG' | translate}}</b>                                         
-             <p>{{'SECTOR.INFO' | translate}}                                        
-             </p>                                                                                   
+         <div class="alert alert-info">
+             <b>{{'SECTOR.CONFIG' | translate}}</b>
+             <p>{{'SECTOR.INFO' | translate}}
+             </p>
          </div>
        </div>
 
        <div ng-switch-when="Add">
 
-           <form class="form-horizontal">                                                           
-              <fieldset>                                                                             
-                <legend>{{'SECTOR.REGISTER' | translate}}</legend>                                            
+           <form class="form-horizontal">
+              <fieldset>
+                <legend>{{'SECTOR.REGISTER' | translate}}</legend>
                 <div class="form-group">
                   <label class="col-xs-2"> {{'SECTOR.PROVINCE' | translate}}</label>
                   <div class="col-xs-10">
@@ -62,7 +62,7 @@
                       required
                       class="form-kapok"
                       name="provincename"
-                      id="provinceID"
+                      id="provinceUUID"
                       ng-model="add.province_uuid"
                       ng-options="pro.uuid as pro.name for pro in model.province.data"
                     >
@@ -71,11 +71,11 @@
                   </div>
                 </div>
 
-                <div class="form-group">                                                    
-                   <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>                                 
-                   <div class="col-xs-10">                                                            
-                      <input class="form-kapok" ng-model="add.name" required>                             
-                   </div>                                                                             
+                <div class="form-group">
+                   <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>
+                   <div class="col-xs-10">
+                      <input class="form-kapok" ng-model="add.name" required>
+                   </div>
                 </div>
               </fieldset>
               <button class="btn btn-default btn-success" ng-click="addSector(add)" ng-disabled="form.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
@@ -86,9 +86,9 @@
 
       <div ng-switch-when="Edit">
 
-           <form class="form-horizontal">                                                           
-              <fieldset>                                                                             
-                <legend>{{'SECTOR.EDIT' | translate}}</legend>                                            
+           <form class="form-horizontal">
+              <fieldset>
+                <legend>{{'SECTOR.EDIT' | translate}}</legend>
                 <div class="form-group">
                   <label class="col-xs-2"> {{'SECTOR.PROVINCE' | translate}}</label>
                   <div class="col-xs-10">
@@ -105,11 +105,11 @@
                   </div>
                 </div>
 
-                <div class="form-group">                                                    
-                   <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>                                 
-                   <div class="col-xs-10">                                                            
-                      <input class="form-kapok" ng-model="sector.sector" required>                             
-                   </div>                                                                             
+                <div class="form-group">
+                   <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>
+                   <div class="col-xs-10">
+                      <input class="form-kapok" ng-model="sector.sector" required>
+                   </div>
                 </div>
               </fieldset>
               <button class="btn btn-default btn-success" ng-click="editSector(sector)" ng-disabled="form.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
