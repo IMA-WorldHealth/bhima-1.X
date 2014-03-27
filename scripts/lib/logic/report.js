@@ -305,10 +305,11 @@ module.exports = function (db) {
         _id = sanitize.escape(p.id);
 
     var sql =
-      "SELECT patient.uuid, debitor_uuid, first_name, last_name, dob, father_name, " +
+      "SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, last_name, dob, father_name, " +
           "sex, religion, renewal, registration_date, date " +
-        "FROM `patient` JOIN `patient_visit` ON " +
-          "`patient`.`uuid`=`patient_visit`.`patient_uuid` " +
+        "FROM `patient` JOIN `patient_visit` JOIN `project` ON " +
+          "`patient`.`uuid`=`patient_visit`.`patient_uuid` AND " +
+          "`patient`.`project_id`=`project`.`id` " +
         "WHERE `date` >= " + _start + " AND " +
           " `date` < " + _end + ";";
     db.execute(sql, function (err, res) {

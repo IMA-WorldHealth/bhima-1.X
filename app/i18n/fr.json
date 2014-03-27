@@ -50,7 +50,8 @@
     "CONFIRM"        : "Confirmer",
     "SUBMIT"         : "Enregistrer",
     "RESET_FORM"     : "Remettre",
-    "SAVE_SELECTION" : "Enregistrer la Selection"
+    "SAVE_SELECTION" : "Enregistrer la Selection",
+    "SHOW" : "DEDRICKS JOB"
   },
 
   "ENTERPRISE"                 : {
@@ -337,11 +338,12 @@
     "LAST_NAME"       : "Nom",
     "YOB"             : "Annee de Naissance",
     "SEX"             : "Sex",
-    "SEARCH"          : "Executer",
-    "VIEW_ALL"        : "Voire Tous Malades",
     "MALE"            : "Homme",
     "FEMALE"          : "Femme",
-    "RESULTS"         : "Resultats"
+    "SEARCH"          : "Executer",
+    "VIEW_ALL"        : "Voire Tous Malades",
+    "RESULTS"         : "Resultats",
+    "VIEW_PATIENT_CARD" : "Carte de Malade"
   },
 
   "FISCAL_YEAR"             : {
