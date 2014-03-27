@@ -829,10 +829,11 @@
   })
 
   .service('exchange', [
+    '$timeout',
     'appstate',
     'messenger',
     'precision',
-    function (appstate, messenger, precision) {
+    function ($timeout, appstate, messenger, precision) {
 
       var self = function exchange (value, currency_id) {
         if (!self.map) { messenger.danger('No exchange rates loaded'); }
@@ -842,7 +843,7 @@
 
       //FIX ME : since i wrote this method this throw an error but the app still work
       self.myExchange = function (value, valueCurrency_id){
-        if(!(value && valueCurrency_id)) throw new Error('Invalid data');
+        if(!(value && valueCurrency_id)) { throw new Error('Invalid data'); }
         return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
       };
 
@@ -851,6 +852,7 @@
       };
 
       appstate.register('exchange_rate', function (globalRates) {
+        $timeout(function () { self.hasExchange(); }); // Force refresh
         self.map = {};
         self.dailyrate = [];
         globalRates.forEach(function (r) {
