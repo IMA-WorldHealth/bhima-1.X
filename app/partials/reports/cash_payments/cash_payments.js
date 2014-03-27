@@ -1,12 +1,14 @@
 angular.module('kpk.controllers')
 .controller('reportCashPayments', [
   '$scope',
+  '$timeout',
   'connect',
   'appstate',
   'validate',
   'messenger',
   '$filter',
-  function ($scope, connect, appstate, validate, messenger, $filter) {
+  'exchange',
+  function ($scope, connect, appstate, validate, messenger, $filter, exchange) {
     var session = $scope.session = {};
     $scope.selected = null;
 
@@ -91,7 +93,11 @@ angular.module('kpk.controllers')
       connect.fetch(url)
       .success(function (model) {
         $scope.payments = model;
-        console.log('model is:', model);
+        $timeout(function () {
+          $scope.sum = model.reduce(function (a, b) {
+            return a + exchange(b.cost, b.currency_id, b.date);
+          }, 0);
+        }, exchange.hasExchange() ? 0 : 100);
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
