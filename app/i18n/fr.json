@@ -38,9 +38,10 @@
     "SET_NEW_RATE" : "Soumettre un nouveau taux"
   },
 
-  "UTIL" : {
+  "UTIL"             : {
     "CONFIGURE"      : "Configurer",
     "TOTAL"          : "Total",
+    "PROJECT"        : "Project",
     "PRINT"          : "Imprimer",
     "CREATE"         : "Creer",
     "CANCEL"         : "Annuler",
@@ -51,7 +52,7 @@
     "SUBMIT"         : "Enregistrer",
     "RESET_FORM"     : "Remettre",
     "SAVE_SELECTION" : "Enregistrer la Selection",
-    "SHOW" : "DEDRICKS JOB"
+    "SHOW"           : "DEDRICKS JOB"
   },
 
   "ENTERPRISE"                 : {
@@ -782,8 +783,7 @@
     "CAUTION"           : "Caution",
     "CAUTION_ID"        : "# Caution",
     "LIBELLE_CAUTION"   : "Reception Caution",
-    "TOTAL_CAUTION"     : "Total",
-    "AMOUNT"            : "Montant"
+    "TOTAL_CAUTION"     : "Total"
   },
 
   "SECTOR"             : {
