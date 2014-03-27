@@ -394,10 +394,14 @@
             namespacedId.projectCode = idString.substr(0, codeLength);
             namespacedId.reference = idString.substr(codeLength);
 
-            //console.log(namespacedId);
+            // console.log(namespacedId);
             if(!namespacedId.projectCode || !namespacedId.reference) return null;
             if(isNaN(Number(namespacedId.reference))) return null;
-
+          
+            // Ignore case temporary fix
+            // FIXME MySQL request is not case sensitive - only the get on a 
+            //       model - this should be leveraged to not required uppercase
+            namespacedId.projectCode = namespacedId.projectCode.toUpperCase();
             return namespacedId;
           }
 
