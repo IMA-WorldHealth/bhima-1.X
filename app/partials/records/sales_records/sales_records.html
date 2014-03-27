@@ -4,75 +4,76 @@
 
 <section class="top-nav">
   <div class="pull-left">
-    <a href="" class="btn btn-sm btn-default" ng-click="day()">
-      {{ "CASH_PAYMENTS.DAY" | translate }}
-    </a>
-    <a href="" class="btn btn-sm btn-default" ng-click="week()">
-      {{ "CASH_PAYMENTS.WEEK" | translate }}
-    </a>
-    <a href="" class="btn btn-sm btn-default" ng-click="month()">
-      {{ "CASH_PAYMENTS.MONTH" | translate }}
-    </a>
+    <span class="btn-group">
+      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
+      <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="item in period">
+          <a href="" ng-click="select(item)">{{item.key | translate}}</a>
+        </li>
+      </ul>
+    </span>
   </div>
 
   <div>
-    <div class="col-xs-3">
-      <input class="form-kapok" type="date" ng-model="state.dateFrom" rows="20">
+    <div class="col-xs-2" style="padding-right: 0px;">
+      <input class="form-kapok" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
+    </div> 
+    <div class="col-xs-2">
+      <input class="form-kapok" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
     </div>
-    <div class="col-xs-3">
-      <input class="form-kapok" type="date" ng-model="state.dateTo" rows="20">
-    </div>
-    <a href="" class="btn btn-sm btn-primary" ng-click="search()">
-      {{ "CASH_PAYMENTS.SEARCH" | translate }}
-    </a>
   </div>
 </section>
 
 <div class="content">
 <div class="row" style="height: 99%; overflow-y: scroll">
 <div class="col-xs-12" style="height: 100%">
-
-      <div ng-switch on="model.sale.data.length">
-        <div class="alert alert-info" ng-switch-when="0">
-          {{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong>{{'SALERECORD.GENERATE'}} 
-        </div>
-        <div ng-switch-default></div>
-      </div>
-      <div>
+<!--  -->
+<!--       <div ng&#45;switch on="model.sale.data.length"> -->
+<!--         <div class="alert alert&#45;info" ng&#45;switch&#45;when="0"> -->
+<!--           {{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong>{{'SALERECORD.GENERATE'}}  -->
+<!--         </div> -->
+<!--         <div ng&#45;switch&#45;default></div> -->
+<!--       </div> -->
+<!--       <div> -->
 
         <!-- <table class="table table&#45;bordered table&#45;condensed"> -->
         <table class="reportTable">
           <thead>
             <tr>
-            <th>{{'COLUMNS.DATE' | translate}}</th>
-            <th>{{'COLUMNS.ID' | translate}}</th>
+            <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
+            <th width="10%">{{'COLUMNS.ID' | translate}}</th>
             
-            <th>{{'COLUMNS.PATIENT' | translate}}</th>
-            <th>{{'COLUMNS.TOTAL_AMOUNT' | translate}}</th>
+            <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
+            <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
             <!-- <th>Debtor ID</th> -->
             <!-- <th>{{'COLUMNS.POSTED' | translate}}</th> -->
-            <th colspan="1"></th>
+            <th  width="30%">{{ 'COLUMNS.ACTIONS' | translate }}</th>
             <!-- <th>Status</th> -->
           </tr>
           </thead>
 
           <tbody>
-          <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-click="select(invoice.uuid)"
+
+            <tr ng-if="model.sale.data.length===0 && !session.searching">
+              <td colspan="5">{{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong> {{'SALERECORD.GENERATE' | translate}}</td>
+            </tr>
+
+            <tr ng-if="session.searching">
+              <td colspan="5"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
+            </tr>
+          <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}"
             ng-repeat="invoice in model.sale.data">
               
               <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td width="10%">{{invoice.hr_id}}</td>
               <td width="20%">[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
               <td width="20%">{{invoice.cost | currency}}</td>
-              <!-- <td>{{invoice.debitor_id}}</td> -->
-              <!--Multiple ng-shows - mutually exclusive but not good practice-->
-              
-              
-              <!-- <td width="14%"><span ng&#45;hide="invoice.posted" class="glyphicon glyphicon&#45;minus"></span> -->
-              <!-- <div ng&#45;show="invoice.posted"><span class="posting glyphicon glyphicon&#45;book"></span> {{'SALERECORD.POSTING' | translate}}</div> -->
-              <!-- </td> -->
-              <!--  -->
-              <td width="30%"><a ng-href="/#/invoice/sale/{{invoice.uuid}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
+              <td width="30%">
+                <a ng-href="/#/invoice/sale/{{invoice.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                <!-- | <a ng&#45;href="/#/credit_note/{{invoice.uuid}}"><span class="glyphicon glyphicon&#45;repeat"></span> {{ 'SALERECORD.CREDIT_NOTE' | translate }}</a> -->
+              </td>
               <!-- <td width="14%"><a href="/#/credit_note/{{invoice.uuid}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td> -->
           </tr>
           </tbody>
@@ -87,11 +88,22 @@
 <div> 
   <table style="width: 99%" >
     <tbody>
-      <td width="20%"><b>Total Sales: 20</b></td>
-      <td width="10%"><b><span class="glyphicon glyphicon-user"></span> 15</b></td>
+      <td width="50%">
+        
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{total.result.sales}}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+        <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{total.result.patients}}</b>
+        <span ng-if="session.searching">...</span>
+
+        <span style="float: right; margin-right: 5px;"><b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b></span>
+      </td>
+      <td width="20%">
+        <b>{{total.result.cost | currency}}</b>
+        <span ng-if="session.searching">...</span>
+      </td>
       <td width="20%"> </td>
-      <td width="20%"><b>Total dollar</b></td>
-      <td width="30%"> </td>
       <td ></td>
 
     </tbody>
