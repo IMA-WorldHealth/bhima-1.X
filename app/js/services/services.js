@@ -519,7 +519,7 @@
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
 
-        if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;
+        if (!id) throw 'No id property in the object.  Expected property: ' + identifier;
 
         // merge or overwrite
         if (opts && opts.overwrite) {
@@ -541,7 +541,6 @@
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : Math.random();
-        if (id in index) throw pprint + 'Attempted to overwrite data with id: ' + id + '.';
         index[id] = data.push(object) - 1;
         // enqueue item for sync
         queue.push({method: 'POST', url: '/data/' + target, data: object});
@@ -830,43 +829,67 @@
 
   .service('exchange', [
     '$timeout',
+    'store',
     'appstate',
     'messenger',
     'precision',
     function ($timeout, Store, appstate, messenger, precision) {
 
       function normalize (date) {
-        return date.setHours(0,0,0);
+        return date.setHours(0,0,0,0);
       }
 
       var self = function exchange (value, currency_id, date) {
-        if (!date) { date = new Date(); }
-        if (!self.map) { messenger.danger('No exchange rates loaded'); }
-        normalize(date);
+        // This function exchanges data from the currency specified by currency_id to 
+        // the enterprise currency on a given date (default: today).
+        date = normalize(date || new Date());
+        if (!self.store) { messenger.danger('No exchange rates loaded'); }
 
-        return self.map ? precision.round((self.map[currency_id] || 1.00) * value) : precision.round(value);
+        var store = self.store.get(date);
+        if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
+
+        return precision.round(self.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate * value : value);
       };
 
       //FIX ME : since i wrote this method this throw an error but the app still work
+      /*
       self.myExchange = function (value, valueCurrency_id){
         console.log('values recue value :', value, 'valueCurrency_id', valueCurrency_id);
        // if(!(value && valueCurrency_id)) { throw new Error('Invalid data'); }
         return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
       };
+      */
 
       self.hasExchange = function () {
-        return !!Object.keys(self.map).length;
+        return !!Object.keys(self.store).length;
       };
 
-      appstate.register('exchange_rate', function (globalRates) {
+      window.exchange = self;
+
+      appstate.register('exchange_rate', function (rates) {
         $timeout(function () { self.hasExchange(); }); // Force refresh
-        self.map = {};
-        self.dailyrate = [];
-        globalRates.forEach(function (r) {
-          //self.dailyrate.push({date : r.date, foreign_currency_id : r.foreign_currency_id, rate : r.rate});
-          self.map[r.foreign_currency_id] = precision.round(r.rate);
+
+        var store = self.store = new Store({ identifier : 'date', data : [] });
+
+        rates.forEach(function (rate) {
+          var date = normalize(new Date(rate.date));
+          if (!store.get(date)) {
+            store.post({ date : date, rateStore : new Store({ data : [] }) });
+            store.get(date).rateStore.post({ id : rate.enterprise_currency_id, rate : 1}); // default rate for enterprises
+            store.get(date).rateStore.post({
+              id : rate.foreign_currency_id,
+              rate : rate.rate,
+            });
+          } else {
+            store.get(date).rateStore.post({
+              id : rate.foreign_currency_id,
+              rate : rate.rate,
+            });
+          }
         });
-        //self.myExchange = myExchange;
+
+        window.Store = self.store;
+
       });
 
       return self;
