@@ -41,9 +41,9 @@
       return date1 === date2;
     };
 
-  });
+  })
 
-  services.service('precision', function () {
+  .service('precision', function () {
     var dflt_precision = 4,
         dflt_scalar = 1000,
         self = this;
@@ -95,10 +95,10 @@
       return list.reduce(self.add, 0);
     };
 
-  });
+  })
 
   //TODO passing list and dependencies to everything, could assign to object?
-  services.factory('validate', function($q, connect) {
+  .factory('validate', function($q, connect) {
     var modelLabel = 'model';
 
     var validateTests = [
@@ -255,9 +255,9 @@
       process : process,
       refresh : refresh
     };
-  });
+  })
 
-  services.factory('appcache', function ($rootScope, $q) {
+  .factory('appcache', function ($rootScope, $q) {
     var DB_NAME = "kpk", VERSION = 21;
     var db, cacheSupported, dbdefer = $q.defer();
 
@@ -429,9 +429,9 @@
       console.log('application cache is not supported in this context');
     }
     return cacheInstance;
-  });
+  })
 
-  services.factory('appstate', function ($q, $rootScope) {
+  .factory('appstate', function ($q, $rootScope) {
     //TODO Use promise structure over callbacks, used throughout the application and enables error handling
     var store = {}, queue = {};
 
@@ -469,9 +469,9 @@
       set : set,
       register : register
     };
-  });
+  })
 
-  services.factory('store', ['$http', function ($http) {
+  .factory('store', ['$http', function ($http) {
     // store service
 
     return function (options, target) {
@@ -587,9 +587,9 @@
 
       return this;
     };
-  }]);
+  }])
 
-  services.factory('connect', function ($http, $q, store) {
+  .factory('connect', function ($http, $q, store) {
     //summary:
     //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
     //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
@@ -833,10 +833,16 @@
     'appstate',
     'messenger',
     'precision',
-    function ($timeout, appstate, messenger, precision) {
+    function ($timeout, Store, appstate, messenger, precision) {
 
-      var self = function exchange (value, currency_id) {
+      function normalize (date) {
+        return date.setHours(0,0,0);
+      }
+
+      var self = function exchange (value, currency_id, date) {
+        if (!date) { date = new Date(); }
         if (!self.map) { messenger.danger('No exchange rates loaded'); }
+        normalize(date);
 
         return self.map ? precision.round((self.map[currency_id] || 1.00) * value) : precision.round(value);
       };
@@ -935,5 +941,6 @@
       onRequestEnded: onRequestEnded
     };
   }]);
+  
 
 })(angular);
