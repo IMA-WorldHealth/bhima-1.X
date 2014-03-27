@@ -30,6 +30,14 @@
     "DEFAULTS"      : "Utilizer Default (0)"
   },
 
+  "NO_EXCHANGE" : {
+    "TITLE" : "Il n'ya pas un taux",
+    "EXPLANATION" : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui",
+    "CURRENT_DATE" : "Date",
+    "FIX" : "Entrer a la module et enregistrer un taux de jour.",
+    "SET_NEW_RATE" : "Soumettre un nouveau taux"
+  },
+
   "UTIL" : {
     "CONFIGURE"      : "Configurer",
     "TOTAL"          : "Total",
@@ -615,6 +623,7 @@
     "DISCARD"         : "Annuler",
     "RESET_BALANCES"  : "Reinitialiser Balances",
     "CLEAR"           : "Effacer",
+    "CLOSE_FORM"      : "Annuler",
     "CLEAR_FORM"      : "Effacer Formulaire",
     "RESET"           : "Reinitilaiser",
     "DELETE"          : "Effacer",
