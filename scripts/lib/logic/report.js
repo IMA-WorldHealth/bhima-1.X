@@ -277,9 +277,10 @@ module.exports = function (db) {
 
   function saleRecords(params) {
     var deferred = q.defer();
-    var span = params.span || 'week';
-    var spanMap = {};
+    params = JSON.parse(params);
 
+    if (!params.dateFrom || !params.dateTo) return q.reject(new Error("Invalid date parameters"));
+  
     // TODO implement span, week, day, month etc. WHERE invoice_date <> date
     var requestSql =
       "SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, " +
@@ -287,7 +288,9 @@ module.exports = function (db) {
       "credit_note.posted as 'creditPosted', first_name, last_name, patient.reference as 'patientReference', CONCAT(project.abbr, sale.reference) as 'hr_id' " +
       "FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid " +
       "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid " +
-      "LEFT JOIN project on sale.project_id = project.id ORDER BY sale.timestamp DESC;";
+      "LEFT JOIN project on sale.project_id = project.id " + 
+      "WHERE sale.invoice_date >=  \'" + params.dateTo + "\' AND sale.invoice_date <= \'" + params.dateFrom + "\' " + 
+      "ORDER BY sale.timestamp DESC;";
 
     db.execute(requestSql, function(error, result) {
       if(error) return deferred.reject(error);
