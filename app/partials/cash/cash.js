@@ -273,7 +273,7 @@ angular.module('kpk.controllers')
       invoice = {
         date : date,
         document_id : id,
-        description : ['CP E', id, $scope.patient.first_name, date].join('/')
+        description : ['CP E', id, $scope.patient.last_name, date].join('/')
       };
 
       if ($scope.data.overdue) {
