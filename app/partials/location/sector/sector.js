@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'messenger',
   'validate',
   'store',
-  function ($scope, $q, connect, messenger, validate, Store) {
+  'uuid',
+  function ($scope, $q, connect, messenger, validate, Store, uuid) {
 
     var dependencies = {},
         flags = $scope.flags = {};
@@ -14,29 +15,26 @@ angular.module('kpk.controllers')
 
     //dependencies
     dependencies.province = {
-      identifier : 'uuid',
       query :  {
+        identifier : 'uuid',
         tables: {
           'province' : {
             columns : ['uuid', 'name', 'country_uuid']
           }
         }
       }
-    };
+    }
+
+    dependencies.sector = {
+      identifier : 'uuid',
+      query : '/sector/'
+    }
 
     //fonction
 
     function manageSector(model){
+      console.log('les modeles sont :', model);
       for (var k in model) { $scope.model[k] = model[k]; }
-
-      connect.fetch('/sector/')
-      .success(function (data) {
-        $scope.model.sector = new Store({ identifier : 'uuid' });
-        $scope.model.sector.setData(data);
-      })
-      .error(function () {
-        messenger.danger('Sectors not loaded!');
-      });
     }
 
     function setOp(action, sector){
@@ -46,13 +44,14 @@ angular.module('kpk.controllers')
 
     function addSector(obj){
       var newObject = {};
+      newObject.uuid = uuid();
       newObject.name = obj.name;
       newObject.province_uuid = obj.province_uuid;
       connect.basicPut('sector', [connect.clean(newObject)])
       .then(function (res) {
-        newObject.id = res.data.insertId;
-        newObject.sector = obj.name;
-        newObject.province = $scope.model.province.get(obj.province_id).name;
+        newObject.uuid = newObject.uuid;
+        newObject.sector = newObject.name;
+        newObject.province = $scope.model.province.get(obj.province_uuid).name;
         $scope.model.sector.post(newObject);
         $scope.op = '';
       });
@@ -60,7 +59,7 @@ angular.module('kpk.controllers')
 
     function editSector(){
       var sector = {
-        uuid : $scope.sector.id,
+        uuid : $scope.sector.uuid,
         name : $scope.sector.sector,
         province_uuid :$scope.sector.province_uuid
       };
@@ -68,6 +67,7 @@ angular.module('kpk.controllers')
       connect.basicPost('sector', [connect.clean(sector)], ['uuid'])
       .then(function (res) {
         $scope.model.sector.put(sector);
+        $scope.op='';
       });
     }
 
