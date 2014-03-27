@@ -31,10 +31,10 @@
   },
 
   "NO_EXCHANGE" : {
-    "TITLE" : "Il n'ya pas un taux",
-    "EXPLANATION" : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui",
+    "TITLE" : "Il n'y a pas un taux",
+    "EXPLANATION" : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui.",
     "CURRENT_DATE" : "Date",
-    "FIX" : "Entrer a la module et enregistrer un taux de jour.",
+    "FIX" : "Entrer dans le module et enregistrer un taux de jour.",
     "SET_NEW_RATE" : "Soumettre un nouveau taux"
   },
 
