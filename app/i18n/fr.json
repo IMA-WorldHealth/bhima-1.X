@@ -30,6 +30,14 @@
     "DEFAULTS"      : "Utilizer Default (0)"
   },
 
+  "NO_EXCHANGE" : {
+    "TITLE" : "Il n'y a pas un taux",
+    "EXPLANATION" : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui.",
+    "CURRENT_DATE" : "Date",
+    "FIX" : "Entrer dans le module et enregistrer un taux de jour.",
+    "SET_NEW_RATE" : "Soumettre un nouveau taux"
+  },
+
   "UTIL" : {
     "CONFIGURE"      : "Configurer",
     "TOTAL"          : "Total",
@@ -130,6 +138,16 @@
     "DEBIT"       : "Debit",
     "CREDIT"      : "Credit",
     "BTN_TEXT"    : "Poster au Grand Livre"
+  },
+
+  "ERROR" : {
+    "ERR_IMBALANCE" : "Imbalance Erreur",
+    "ERR_SQL" : "SQL Erreur",
+    "ERR_ACCNT_LOCKED" : "Erreur Compte Barre",
+    "ERR_ACCNT_NULL" : "Erreur Compte NULL",
+    "ERR_INVALID_DATE" : "Erreur Date Invalid",
+    "ERR_DEB_CRED_DNE" : "Erreur Debiteur/Crediteur N'Existe Pas",
+    "ERR_EXPIRED_SESSION" : "Erreur Session Expirer"
   },
 
   "SALE"               : {
@@ -605,6 +623,7 @@
     "DISCARD"         : "Annuler",
     "RESET_BALANCES"  : "Reinitialiser Balances",
     "CLEAR"           : "Effacer",
+    "CLOSE_FORM"      : "Annuler",
     "CLEAR_FORM"      : "Effacer Formulaire",
     "RESET"           : "Reinitilaiser",
     "DELETE"          : "Effacer",

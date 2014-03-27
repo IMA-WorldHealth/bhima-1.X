@@ -14,7 +14,7 @@
   <tbody>
     <tr ng-repeat="row in models.accounts | orderBy:'account_number'" ng-class="{'active' : row.type=='title'}">
       <td ng-style="getPadding(row)">{{row.account_number}}</td>
-      <td>{{row.account_txt}}</td>
+      <td>{{ row.account_txt }}</td>
       <td><span ng-hide="row.type=='title'">{{row.balance | currency }}</span></td>
     </tr>
   </tbody>

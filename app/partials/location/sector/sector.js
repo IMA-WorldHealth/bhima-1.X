@@ -25,10 +25,10 @@ angular.module('kpk.controllers')
     };
 
     //fonction
-    
+
     function manageSector(model){
       for (var k in model) { $scope.model[k] = model[k]; }
-      
+
       connect.fetch('/sector/')
       .success(function (data) {
         $scope.model.sector = new Store({ identifier : 'uuid' });
@@ -47,7 +47,7 @@ angular.module('kpk.controllers')
     function addSector(obj){
       var newObject = {};
       newObject.name = obj.name;
-      newObject.province_id = obj.province_id;
+      newObject.province_uuid = obj.province_uuid;
       connect.basicPut('sector', [connect.clean(newObject)])
       .then(function (res) {
         newObject.id = res.data.insertId;

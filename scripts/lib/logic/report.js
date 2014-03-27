@@ -328,12 +328,15 @@ module.exports = function (db) {
         _id = sanitize.escape(p.id);
 
     var sql =
-      "SELECT c.document_id, c.cost, cr.name, c.type, p.first_name, c.description, " +
+      "SELECT c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, " +
+        "pr.abbr, c.cost, cr.name, c.type, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , " +
         "p.last_name, c.deb_cred_uuid, c.deb_cred_type, c.currency_id, ci.invoice_uuid, c.date " +
-      "FROM `cash` AS c JOIN `currency` as cr JOIN `cash_item` AS ci " +
-        "JOIN `debitor` AS d JOIN `patient` as p " +
+      "FROM `cash` AS c JOIN project AS pr JOIN `currency` as cr JOIN `cash_item` AS ci " +
+        "JOIN `debitor` AS d JOIN `patient` as p JOIN sale AS s " +
         "ON ci.cash_uuid = c.uuid AND c.currency_id = cr.id AND " +
-        "c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid " +
+        "c.project_id = pr.id AND " +
+        "c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND " +
+        "ci.invoice_uuid = s.uuid " +
       "WHERE c.date >= " + _start + " AND " +
         "c.date < " + _end + " " +
       "GROUP BY c.document_id;";

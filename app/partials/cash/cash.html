@@ -82,7 +82,8 @@
           </thead>
           <tbody>
             <tr ng-repeat="invoice in ledger" ng-click="add($index)" style="cursor : pointer;">
-              <td>{{ invoice.inv_po_id }}</td>
+              <td>{{ projects.get(invoice.project_id).abbr + invoice.reference }}</td>
+              <!-- <td>{{ invoice.inv_po_id }}</td> -->
               <td ng-bind-html="invoice.locale | intlcurrency:currency.currency_id"></td>
               <td>{{ invoice.trans_date | date }}</td>
             </tr>
@@ -109,7 +110,7 @@
           </thead>
           <tbody>
             <tr ng-repeat="invoice in queue">
-              <td>{{ invoice.inv_po_id }}</td>
+              <td>{{ projects.get(invoice.project_id).abbr + invoice.reference }}</td>
               <td>{{ invoice.trans_date | date }}</td>
               <td ng-bind-html="invoice.locale | intlcurrency:currency.currency_id"></td>
               <td ng-bind-html="invoice.allocated | intlcurrency:currency.currency_id"></td>
