@@ -89,7 +89,6 @@ angular.module('kpk.controllers')
       });
     });
 
-
     function sum(a, b) {
       return a + b.cost;
     }
