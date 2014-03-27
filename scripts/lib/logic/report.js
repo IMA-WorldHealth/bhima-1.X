@@ -328,7 +328,7 @@ module.exports = function (db) {
         _id = sanitize.escape(p.id);
 
     var sql =
-      "SELECT c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, " +
+      "SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, " +
         "pr.abbr, c.cost, cr.name, c.type, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , " +
         "p.last_name, c.deb_cred_uuid, c.deb_cred_type, c.currency_id, ci.invoice_uuid, c.date " +
       "FROM `cash` AS c JOIN project AS pr JOIN `currency` as cr JOIN `cash_item` AS ci " +
