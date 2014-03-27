@@ -839,17 +839,18 @@
         return date.setHours(0,0,0,0);
       }
 
-      var self = function exchange (value, currency_id, date) {
+      function exchange (value, currency_id, date) {
         // This function exchanges data from the currency specified by currency_id to 
         // the enterprise currency on a given date (default: today).
-        date = normalize(date || new Date());
-        if (!self.store) { messenger.danger('No exchange rates loaded'); }
+        date = date || new Date();
+        date = normalize(new Date(date));
+        if (!exchange.store) { return value; }
 
-        var store = self.store.get(date);
+        var store = exchange.store.get(date);
         if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
 
-        return precision.round(self.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate * value : value);
-      };
+        return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? (1 / store.rateStore.get(currency_id).rate) * value : value);
+      }
 
       //FIX ME : since i wrote this method this throw an error but the app still work
       /*
@@ -860,16 +861,16 @@
       };
       */
 
-      self.hasExchange = function () {
-        return !!Object.keys(self.store).length;
+      exchange.hasExchange = function () {
+        return !!exchange.store && !!Object.keys(exchange.store).length;
       };
 
-      window.exchange = self;
-
       appstate.register('exchange_rate', function (rates) {
-        $timeout(function () { self.hasExchange(); }); // Force refresh
+        $timeout(function () { exchange.hasExchange(); }); // Force refresh
 
-        var store = self.store = new Store({ identifier : 'date', data : [] });
+
+        window.exchange = exchange;
+        var store = exchange.store = new Store({ identifier : 'date', data : [] });
 
         rates.forEach(function (rate) {
           var date = normalize(new Date(rate.date));
@@ -887,12 +888,9 @@
             });
           }
         });
-
-        window.Store = self.store;
-
       });
 
-      return self;
+      return exchange;
     }
   ])
 
