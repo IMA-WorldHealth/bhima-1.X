@@ -849,7 +849,7 @@
         var store = exchange.store.get(date);
         if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
 
-        return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? (1 / store.rateStore.get(currency_id).rate) * value : value);
+        return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate * value : value);
       }
 
       //FIX ME : since i wrote this method this throw an error but the app still work
