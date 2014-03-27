@@ -91,6 +91,7 @@ angular.module('kpk.controllers')
       connect.fetch(url)
       .success(function (model) {
         $scope.payments = model;
+        console.log('model is:', model);
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
