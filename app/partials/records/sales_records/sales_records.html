@@ -3,15 +3,34 @@
 </header>
 
 <section class="top-nav">
-  <!-- {{'SALERECORD.SHOWING' | translate}} Max({{defaultLimit}}) -->
-  <div class="pull-right">
-    <a class="btn btn-default"><span class="glyphicon glyphicon-search"></span> {{'SALERECORD.ADVANCE' | translate}} </a>
+  <div class="pull-left">
+    <a href="" class="btn btn-sm btn-default" ng-click="day()">
+      {{ "CASH_PAYMENTS.DAY" | translate }}
+    </a>
+    <a href="" class="btn btn-sm btn-default" ng-click="week()">
+      {{ "CASH_PAYMENTS.WEEK" | translate }}
+    </a>
+    <a href="" class="btn btn-sm btn-default" ng-click="month()">
+      {{ "CASH_PAYMENTS.MONTH" | translate }}
+    </a>
+  </div>
+
+  <div>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateFrom" rows="20">
+    </div>
+    <div class="col-xs-3">
+      <input class="form-kapok" type="date" ng-model="state.dateTo" rows="20">
+    </div>
+    <a href="" class="btn btn-sm btn-primary" ng-click="search()">
+      {{ "CASH_PAYMENTS.SEARCH" | translate }}
+    </a>
   </div>
 </section>
 
 <div class="content">
-<div class="row">
-<div class="col-xs-12">
+<div class="row" style="height: 99%; overflow-y: scroll">
+<div class="col-xs-12" style="height: 100%">
 
       <div ng-switch on="model.sale.data.length">
         <div class="alert alert-info" ng-switch-when="0">
@@ -20,8 +39,9 @@
         <div ng-switch-default></div>
       </div>
       <div>
-        <table class="table table-bordered table-condensed">
 
+        <!-- <table class="table table&#45;bordered table&#45;condensed"> -->
+        <table class="reportTable">
           <thead>
             <tr>
             <th>{{'COLUMNS.DATE' | translate}}</th>
@@ -30,8 +50,8 @@
             <th>{{'COLUMNS.PATIENT' | translate}}</th>
             <th>{{'COLUMNS.TOTAL_AMOUNT' | translate}}</th>
             <!-- <th>Debtor ID</th> -->
-            <th>{{'COLUMNS.POSTED' | translate}}</th>
-            <th colspan="2"></th>
+            <!-- <th>{{'COLUMNS.POSTED' | translate}}</th> -->
+            <th colspan="1"></th>
             <!-- <th>Status</th> -->
           </tr>
           </thead>
@@ -40,20 +60,20 @@
           <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-click="select(invoice.uuid)"
             ng-repeat="invoice in model.sale.data">
               
-              <td>{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
-              <td><b>{{invoice.hr_id}}</b></td>
-              <td>[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
-              <td>{{invoice.cost | currency}}</td>
+              <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td width="10%">{{invoice.hr_id}}</td>
+              <td width="20%">[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
+              <td width="20%">{{invoice.cost | currency}}</td>
               <!-- <td>{{invoice.debitor_id}}</td> -->
               <!--Multiple ng-shows - mutually exclusive but not good practice-->
               
               
-              <td><span ng-hide="invoice.posted" class="glyphicon glyphicon-minus"></span>
-              <div ng-show="invoice.posted"><span class="posting glyphicon glyphicon-book"></span> {{'SALERECORD.POSTING' | translate}}</div>
-              </td>
-              
-              <td><a ng-href="/#/invoice/sale/{{invoice.uuid}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
-              <td><a href="/#/credit_note/{{invoice.uuid}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td>
+              <!-- <td width="14%"><span ng&#45;hide="invoice.posted" class="glyphicon glyphicon&#45;minus"></span> -->
+              <!-- <div ng&#45;show="invoice.posted"><span class="posting glyphicon glyphicon&#45;book"></span> {{'SALERECORD.POSTING' | translate}}</div> -->
+              <!-- </td> -->
+              <!--  -->
+              <td width="30%"><a ng-href="/#/invoice/sale/{{invoice.uuid}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
+              <!-- <td width="14%"><a href="/#/credit_note/{{invoice.uuid}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td> -->
           </tr>
           </tbody>
         </table>
@@ -64,8 +84,17 @@
 </div>
 
 <section class="bar-bottom">
-  <div class="pull-right">
-  <a ng-disabled='selected.posted!=0' ng-click="post()" class="btn btn-default">
-    <span class="glyphicon glyphicon-floppy-open"></span> {{'SALERECORD.POST' | translate}}</a>
-  </div>
+<div> 
+  <table style="width: 99%" >
+    <tbody>
+      <td width="20%"><b>Total Sales: 20</b></td>
+      <td width="10%"><b><span class="glyphicon glyphicon-user"></span> 15</b></td>
+      <td width="20%"> </td>
+      <td width="20%"><b>Total dollar</b></td>
+      <td width="30%"> </td>
+      <td ></td>
+
+    </tbody>
+  </table>
+</div>
 </section>
