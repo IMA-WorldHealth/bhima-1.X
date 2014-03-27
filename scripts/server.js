@@ -123,7 +123,8 @@ app.get('/trialbalance/initialize', function (req, res, next) {
   });
 });
 
-app.get('/trailbalance/post/:key', function (req, res, next) {
+app.get('/trailbalance/submit/:key/', function (req, res, next) {
+  console.log('{DEBUG} You hit the submit!');
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
@@ -168,7 +169,8 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   })
   .catch(function (error) {
     next(error);
-  });
+  })
+  .done();
 });
 
 app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res) {
@@ -207,12 +209,12 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
     res.send(process(rows));
   });
 
-  var process = function(accounts){
+  function process(accounts){
     var InExAccounts = accounts.filter(function(item){
       return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
     });
     return InExAccounts;
-  };
+  }
 
 });
 
@@ -224,12 +226,12 @@ app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) {
     res.send(process(rows));
   });
 
-  var process = function(accounts){
+  function process(accounts){
     var availablechargeAccounts = accounts.filter(function(item){
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
-  };
+  }
 
 });
 
@@ -250,7 +252,6 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
     });
     return availablechargeAccounts;
   };
-
 });
 
 app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
@@ -264,22 +265,23 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
     res.send(process(rows));
   });
 
-  var process = function(accounts){
+  function process(accounts){
     var availablechargeAccounts = accounts.filter(function(item){
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
-  };
-
+  }
 });
 
 app.get('/tree', function (req, res, next) {
   tree.load(req.session.user_id)
   .then(function (treeData) {
     res.send(treeData);
-  }, function (err) {
+  })
+  .catch(function (err) {
     res.send(301, err);
-  });
+  })
+  .done();
 });
 
 app.get('/location/:villageId?', function (req, res, next) {
@@ -299,6 +301,13 @@ app.get('/location/:villageId?', function (req, res, next) {
     res.send(rows);
   });
 });
+
+// New API for locations
+/*
+app.get('/location/:type/:id?', function (req, res, next) {
+
+});
+*/
 
 app.get('/village/', function (req, res, next) {
 
@@ -388,28 +397,6 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
     next(err);
   });
 });
-
-/*
-app.get('/registrations/:id/:from/:to', function (req, res, next) {
-  var from = new Date(req.params.from),
-      to = new Date(req.params.to),
-      id = req.params.id;
-
-  var sql =
-    "SELECT patient.id, debitor_id, first_name, last_name, dob, father_name, " +
-      "sex, religion, renewal, registration_date, date " +
-    "FROM `patient` JOIN `patient_visit` ON " +
-    "`patient`.`id`=`patient_visit`.`patient_id` " +
-    "WHERE `date` > " + sanitize.escape(from.toISOString().slice(0,10)) + " AND " +
-    " `date` < " + sanitize.escape(to.toISOString().slice(0,10)) + ";";
-
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
-    res.send(rows);
-  });
-});
-*/
-
 
 app.get('/account_balance/:id', function (req, res, next) {
   // FIXME: put this in a module!

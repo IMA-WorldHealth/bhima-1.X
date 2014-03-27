@@ -68,7 +68,7 @@
   },
 
   "TRIAL_BALANCE" : {
-    "TITLE"       : "Trial balance",
+    "TITLE"       : "Trial Balance",
     "ERROR_TEXT"  : "You have errors!",
     "ACCOUNT"     : "Account",
     "BEFORE"      : "Before",
@@ -76,6 +76,16 @@
     "CREDIT"      : "Credit",
     "AFTER"       : "After",
     "BTN_TEXT"    : "Post to General Ledger"
+  },
+
+  "ERROR" : {
+    "ERR_IMBALANCE" : "Imbalancing Error",
+    "ERR_SQL" : "SQL Error",
+    "ERR_ACCNT_LOCKED" : "Locked Account Error",
+    "ERR_ACCNT_NULL" : "Null Account Error",
+    "ERR_INVALID_DATE" : "Invalid Date Error",
+    "ERR_DEB_CRED_DNE" : "Debitor/Creditor Does Not Exist Error",
+    "ERR_EXPIRED_SESSION" : "Session Expired Error"
   },
 
   "UTIL" : {
@@ -249,8 +259,10 @@
   "COLUMNS"               : {
     "COLUMNS"             : "Columns",
     "VISIT_DATE"          : "Last Visit",
+    "TRANSACTION_ID"      : "Transaction ID",
     "NUM"                 : "Number",
     "RATE"                : "Rate",
+    "LINE_ID"             : "Line ID",
     "EXPLANATION"         : "Explanation",
     "FIX"                 : "Fix",
     "SALE_ID"             : "Sale ID",

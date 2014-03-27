@@ -267,7 +267,7 @@ angular.module('kpk.controllers').controller('journal', [
           backdrop: 'static',
           // do not let esc key close modal
           keyboard : false,
-          templateUrl:'trialBalanceModal.html',
+          templateUrl:'partials/journal/trialbalance/trialbalance.html',
           controller: 'trialBalance',
           resolve : {
             request: function () {

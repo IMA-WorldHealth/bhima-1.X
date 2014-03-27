@@ -523,18 +523,23 @@ module.exports = function (db, synthetic) {
       'SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit ' +
       'FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN posting_journal AS p ' +
       'ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id ' +
-      'WHERE c.uuid = ' + sanitize.escape(cash_id) + ' AND p.deb_cred_uuid = s.debitor_uuid GROUP BY c.uuid AND s.account_id = c.credit_account;';
+      'WHERE c.uuid = ' + sanitize.escape(cash_id) + ' AND p.deb_cred_uuid = s.debitor_uuid GROUP BY c.uuid;';
     */
+
     sql =
       "SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit " +
       "FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN posting_journal AS p JOIN debitor AS d JOIN debitor_group as dg " +
-      "ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id " +
-      "AND d.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid WHERE c.uuid = " + sanitize.escape(cash_id) + " AND p.deb_cred_uuid = s.debitor_uuid " +
-      " and p.account_id = dg.account_id GROUP BY c.uuid;";
+      "ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id AND p.deb_cred_uuid = s.debitor_uuid " +
+      "AND  p.account_id = dg.account_id " +
+      "AND d.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid WHERE c.uuid = " + sanitize.escape(cash_id) + " " +
+      "GROUP BY c.uuid;";
 
     return db.exec(sql)
     .then(function (rows) {
       row = rows.pop();
+      if (!row) {
+        throw new Error('No debtor invoices found.  Internal system error in handling rounding.');
+      }
       return get.exchangeRate(row.date);
     })
     .then(function (store) {
@@ -1208,13 +1213,7 @@ module.exports = function (db, synthetic) {
                 'FROM `cash_box_account_currency`, `cash_box` WHERE `cash_box`.`id` =`cash_box_account_currency`.`cash_box_id` AND `cash_box_account_currency`.`currency_id`='+reference_caution.currency_id+
                 ' AND `cash_box_account_currency`.`cash_box_id`='+reference_caution.cash_box_id+' AND `cash_box`.`project_id`='+reference_caution.project_id;
 
-              // db.execute(creditingRequest, function (err, ans){
-              //   if (err) { return done(err); }
-              //   db.execute(debitingRequest, function (err, ans){
-              //     if (err) { return done(err); }
-              //     return done(null, ans);
-              //   });
-              // });
+
 
               q.all([creditingRequest, debitingRequest].map(function (item){
                 return db.exec(item);
