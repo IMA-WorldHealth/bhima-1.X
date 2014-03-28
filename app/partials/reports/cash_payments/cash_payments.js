@@ -24,6 +24,17 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.currencies = {
+      required : true,
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        }
+      }
+    };
+
     $scope.options = [
       {
         label : 'CASH_PAYMENTS.DAY',
@@ -95,8 +106,9 @@ angular.module('kpk.controllers')
         $scope.payments = model;
         $timeout(function () {
           $scope.sum = model.reduce(function (a, b) {
-            return a + exchange(b.cost, b.currency_id, b.date);
+            return a + b.cost / exchange.rate(b.cost, b.currency_id, b.date);
           }, 0);
+          $scope.refreshCurrency();
         }, exchange.hasExchange() ? 0 : 100);
       })
       .error(function (err) {
@@ -118,13 +130,6 @@ angular.module('kpk.controllers')
       .catch(function (error) { messenger.danger('An error occurred : ' + JSON.stringify(error)); });
     });
 
-    function sum(a, b) {
-      return a + b.cost;
-    }
-
-    $scope.sumPayments = function sumPayments () {
-      return $scope.payments ? $scope.payments.reduce(sum, 0) : 0;
-    };
 
     $scope.search = search;
     $scope.reset = reset;
