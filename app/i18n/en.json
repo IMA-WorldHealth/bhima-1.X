@@ -49,6 +49,15 @@
     "REVIEW"     : "Review Today's Rates",
     "TODAY_RATE" : "Exchange Rate for"
   },
+ 
+  "PROJECT"       : {
+    "EDIT"        : "Editing Project",
+    "NEW"         : "New Project",
+    "EXISTING"    : "Existing Projects",
+    "TITLE"       : "Project Management",
+    "PRINT_TITLE" : "Registered Projects",
+    "HELP_TXT_1"  : "This page is for managment of projects belonging to enterprises.  You see here all projects currently registered to your current enterprise."
+  },
 
   "PERMISSION"    : {
     "TITLE"       : "Users & Permissions Management",
@@ -199,7 +208,8 @@
     "INVENTORY_GROUP" : "Select an Inventory Group",
     "UNIT"            : "Select a Unit",
     "INVENTORY_ITEM"  : "Select an Inventory Item",
-    "DEBITOR"         : "Select a Debitor"
+    "DEBITOR"         : "Select a Debitor",
+    "ENTERPRISE" : "Select an Enterprise"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -262,10 +272,13 @@
     "COLUMNS"             : "Columns",
     "VISIT_DATE"          : "Last Visit",
     "TRANSACTION_ID"      : "Transaction ID",
+    "ENTERPRISE" : "Enterprise",
     "NUM"                 : "Number",
     "RATE"                : "Rate",
     "LINE_ID"             : "Line ID",
     "EXPLANATION"         : "Explanation",
+    "ABBR"                : "Abbr",
+    "ENTERPRISE_ID"       : "Enterprise ID",
     "FIX"                 : "Fix",
     "SALE_ID"             : "Sale ID",
     "PASSWORD"            : "Password",
@@ -415,7 +428,8 @@
     "EXTRA"                     : "Extra",
     "CLIENT"                    : "Clients",
     "BENEFICIARY"               : "Beneficaries",
-    "MAIN_CASH"                 : "Principal Cashbox"
+    "MAIN_CASH"                 : "Principal Cashbox",
+    "PROJECT" : "Projects"
   },
 
   "CAUTION"        : {

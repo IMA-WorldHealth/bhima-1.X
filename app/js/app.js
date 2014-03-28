@@ -26,6 +26,10 @@
       controller: 'journal',
       templateUrl:'partials/journal/journal.html'
     }).
+    when('/projects', {
+      controller : 'project',
+      templateUrl : 'partials/projects/projects.html'
+    }).
     when('/fiscal', {
       controller: 'fiscal',
       templateUrl: 'partials/fiscal/fiscal.html'
