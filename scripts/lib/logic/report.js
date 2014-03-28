@@ -280,8 +280,7 @@ module.exports = function (db) {
     params = JSON.parse(params);
 
     if (!params.dateFrom || !params.dateTo) return q.reject(new Error("Invalid date parameters"));
-  
-    // TODO implement span, week, day, month etc. WHERE invoice_date <> date
+
     var requestSql =
       "SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, " +
       "sale.note, sale.posted, credit_note.uuid as 'creditId', credit_note.description as 'creditDescription', " +
@@ -289,8 +288,11 @@ module.exports = function (db) {
       "FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid " +
       "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid " +
       "LEFT JOIN project on sale.project_id = project.id " + 
-      "WHERE sale.invoice_date >=  \'" + params.dateTo + "\' AND sale.invoice_date <= \'" + params.dateFrom + "\' " + 
-      "ORDER BY sale.timestamp DESC;";
+      "WHERE sale.invoice_date >=  \'" + params.dateTo + "\' AND sale.invoice_date <= \'" + params.dateFrom + "\' ";
+    
+    if (params.project) requestSql += ("AND sale.project_id=" + params.project + " "); 
+ 
+    requestSql += "ORDER BY sale.timestamp DESC;";
 
     db.execute(requestSql, function(error, result) {
       if(error) return deferred.reject(error);
