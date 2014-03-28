@@ -39,7 +39,9 @@ angular.module('kpk.controllers')
       },
       result : {}
     };
-  
+    
+    // $scope.$watch('session.param', formatDates, true);
+
     dependencies.sale = {};
     dependencies.project = {
       query : {
@@ -51,14 +53,19 @@ angular.module('kpk.controllers')
       }
     };
 
-    validate.process(dependencies, ['project']).then(loadProjects);
+    
+    $timeout(init, 100);
+
+    function init() { 
+      validate.process(dependencies, ['project']).then(loadProjects);
+    }
 
     function loadProjects(model) {
       $scope.model = model;
       // session.project = model.project.data[0].id;
     
       // TODO Determine best way to wait for page load before requesting data
-      $timeout(function() { select(period[0]); }, 100);
+      select(period[0]);
     }
 
     function select(period) {
@@ -73,7 +80,11 @@ angular.module('kpk.controllers')
     }
 
     function reset() {
-      var request = {
+      var request;
+
+      formatDates();
+      
+      request = {
         dateFrom : session.param.dateFrom,
         dateTo : session.param.dateTo,
       };
@@ -138,12 +149,9 @@ angular.module('kpk.controllers')
     }
 
     function formatDates() { 
-      console.log('formatting dates');
       session.param.dateFrom = $filter('date')(session.param.dateFrom, 'yyyy-MM-dd');
       session.param.dateTo = $filter('date')(session.param.dateTo, 'yyyy-MM-dd');
     }
-
-    $scope.$watch('session.param', formatDates, true);
 
     $scope.select = select;
     $scope.reset = reset;
