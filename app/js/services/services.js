@@ -852,24 +852,28 @@
         return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate * value : value);
       }
 
-      //FIX ME : since i wrote this method this throw an error but the app still work
-      /*
-      self.myExchange = function (value, valueCurrency_id){
-        console.log('values recue value :', value, 'valueCurrency_id', valueCurrency_id);
-       // if(!(value && valueCurrency_id)) { throw new Error('Invalid data'); }
-        return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
-      };
-      */
+      exchange.rate = function rate (value, currency_id, date) {
+        date = date || new Date();
+        date = normalize(new Date(date));
+        if (!exchange.store) { return 1; }
 
-      exchange.hasExchange = function () {
+        var store = exchange.store.get(date);
+        if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
+        return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate : 1);
+      };
+
+      exchange.hasExchange = function hasExchange () {
         return !!exchange.store && !!Object.keys(exchange.store).length;
+      };
+
+      exchange.hasDailyRate = function hasDailyRate () {
+        var date = normalize(new Date());
+        return !!exchange.store && !!exchange.store.get(date);
       };
 
       appstate.register('exchange_rate', function (rates) {
         $timeout(function () { exchange.hasExchange(); }); // Force refresh
 
-
-        window.exchange = exchange;
         var store = exchange.store = new Store({ identifier : 'date', data : [] });
 
         rates.forEach(function (rate) {
