@@ -10,7 +10,8 @@ angular.module('kpk.controllers')
   'connect',
   'appstate',
   'messenger',
-  function ($scope, $routeParams, $filter, $location, $timeout, validate, connect, appstate, messenger) {
+  'uuid',
+  function ($scope, $routeParams, $filter, $location, $timeout, validate, connect, appstate, messenger, uuid) {
     var invoiceId = $routeParams.invoiceId, dependencies = {};
 
     dependencies.sale = {
@@ -18,13 +19,13 @@ angular.module('kpk.controllers')
       query: {
         tables: {
           sale: {
-            columns: ['id', 'cost', 'debitor_id', 'invoice_date', 'note']
+            columns: ['uuid', 'cost', 'debitor_uuid', 'invoice_date', 'note', 'project_id']
           },
           patient: {
             columns: ['first_name', 'last_name']
           }
         },
-        join: ['sale.debitor_id=patient.debitor_id']
+        join: ['sale.debitor_uuid=patient.debitor_uuid']
       }
     };
 
@@ -33,30 +34,30 @@ angular.module('kpk.controllers')
       query: {
         tables: {
           sale_item: {
-            columns: ['id', 'inventory_id', 'quantity', 'transaction_price', 'debit', 'credit']
+            columns: ['uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'debit', 'credit']
           },
           inventory: {
             columns: ['code', 'text']
           }
         },
-        join: ['sale_item.inventory_id=inventory.id']
+        join: ['sale_item.inventory_uuid=inventory.uuid']
       }
     };
 
     dependencies.creditNote = {
       query: {
         tables: {
-          'credit_note' : { columns: ['id', 'posted'] }
+          'credit_note' : { columns: ['uuid', 'posted'] }
         }
       }
-    }
+    };
 
     if(invoiceId) buildSaleQuery();
 
     function buildSaleQuery() {
-      dependencies.sale.query.where = ['sale.id=' + invoiceId];
-      dependencies.saleItem.query.where = ['sale_item.sale_id=' + invoiceId];
-      dependencies.creditNote.query.where = ['credit_note.sale_id=' + invoiceId];
+      dependencies.sale.query.where = ['sale.uuid=' + invoiceId];
+      dependencies.saleItem.query.where = ['sale_item.sale_uuid=' + invoiceId];
+      dependencies.creditNote.query.where = ['credit_note.sale_uuid=' + invoiceId];
       return validate.process(dependencies).then(creditNote);
     }
 
@@ -67,12 +68,13 @@ angular.module('kpk.controllers')
     }
 
     function packageCreditNote() {
-      var defaultDescription = "Credit matching transaction #" + $scope.sale.id + " from " + $filter('date')($scope.sale.invoice_date);
+      var defaultDescription = "Credit matching transaction #" + $scope.sale.uuid + " from " + $filter('date')($scope.sale.invoice_date);
       var noteObject = {
-        enterprise_id: appstate.get('enterprise').id,
+        uuid : uuid(),
+        project_id: $scope.sale.project_id,
         cost: $scope.sale.cost,
-        debitor_id: $scope.sale.debitor_id,
-        sale_id: $scope.sale.id,
+        debitor_uuid: $scope.sale.debitor_uuid,
+        sale_uuid: $scope.sale.uuid,
         note_date: new Date().toISOString().slice(0, 10), // format as mysql date
         description: defaultDescription
       };
@@ -92,11 +94,10 @@ angular.module('kpk.controllers')
       if($scope.model.creditNote.data.length >= 1) return messenger.danger("Invoice has already been reversed with credit");
       connect.basicPut('credit_note', [noteObject])
       .then(function (creditResult) {
-        insertId = creditResult.data.insertId;
-        return connect.fetch('journal/credit_note/' + insertId);
+        return connect.fetch('journal/credit_note/' + noteObject.uuid);
       })
       .then(function (postResult) {
-        $location.path('/invoice/credit/' + insertId);
+        $location.path('/invoice/credit/' + noteObject.uuid);
       }, function(error) {
         messenger.danger('submission failed ' + error.status);
       });

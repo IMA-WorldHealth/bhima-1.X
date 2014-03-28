@@ -140,12 +140,12 @@ angular.module('kpk.controllers')
         required: true,
         query: {
           tables: {
-            credit_note: { columns: ['id', 'cost', 'debitor_id', 'seller_id', 'sale_id', 'note_date', 'description'] },
+            credit_note: { columns: ['uuid', 'cost', 'debitor_uuid', 'seller_id', 'sale_uuid', 'note_date', 'description'] },
             patient: { columns: ['first_name', 'last_name', 'current_location_id', 'reference'] },
             project: { columns: ['abbr'] }
           },
-          join: ['credit_note.debitor_id=patient.debitor_id'],
-          where: ['credit_note.id=' + invoiceId]
+          join: ['credit_note.debitor_uuid=patient.debitor_uuid'],
+          where: ['credit_note.uuid=' + invoiceId]
         }
       };
       validate.process(dependencies, ['credit']).then(buildCreditRecipient);
