@@ -201,7 +201,8 @@
     "GENERAL_LEDGER"  : "Grand Livre",
     "SOURCE"          : "Selectionner source",
     "CASH"            : "Caisse Auxillaire",
-    "OTHER"           : "Autre Source"
+    "OTHER"           : "Autre Source",
+    "ENTERPRISE" : "Selectionner Enterprise"
   },
 
   "RENEWAL"           : {
@@ -310,7 +311,8 @@
     "EXTRA"                     : "Extra",
     "CLIENT"                    : "Client",
     "BENEFICIARY"               : "Beneficiary",
-    "MAIN_CASH"                 : "Caisse Principale"
+    "MAIN_CASH"                 : "Caisse Principale",
+    "PROJECT"                   : "Projects"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -386,6 +388,8 @@
     "USER_NAME"           : "Nom Utilisateur",
     "LAST_NAME"           : "Nom",
     "GROUP"               : "Groupe",
+    "ENTERPRISE_ID"       : "ID Enterprise",
+    "ABBR"                : "Abbr.",
     "INVOICE_DATE"        : "Date Facture",
     "TOTAL"               : "Total",
     "ACCOUNT_ID"          : "ID Compte",
@@ -586,6 +590,15 @@
     "TITLE"        : "Journales des Stocks",
     "GROUP_BY"     : "Groupe Par",
     "REGISTER"     : "Enregistre Stocks"
+  },
+
+  "PROJECT"    : {
+    "EDIT"     : "Editer",
+    "NEW"      : "Nouveux",
+    "EXISTING" : "Projects Existant",
+    "TITLE"    : "Gestion des Projects",
+    "PRINT_TITLE" : "Projects Enregistrer",
+    "HELP_TXT_1" : "Ce module vous permettre faire la gestion des projects.  Vous voyez seulment les projects qui concern votre enterprise."
   },
 
   "PERMISSION"    : {
