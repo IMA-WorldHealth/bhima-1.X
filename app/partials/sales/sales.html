@@ -95,7 +95,7 @@
                         ng-model="invoiceItem.selectedReference"
                         typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory | filter:$viewValue | limitTo:8"
                         typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.selectedReference)"
-                        placeholder="Search Inventory"
+                        placeholder="Search Inventory">
                       </td>
 
                       <!-- -1 for no tab, 0 to allow -->

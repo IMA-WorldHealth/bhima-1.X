@@ -308,7 +308,8 @@
     "EXTRA"                     : "Extra",
     "CLIENT"                    : "Client",
     "BENEFICIARY"               : "Beneficiary",
-    "MAIN_CASH"                 : "Caisse Principale"
+    "MAIN_CASH"                 : "Caisse Principale",
+    "JOURNAL_VOUCHER"           : "Ajout Transactions"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -904,5 +905,19 @@
     "SOURCE"      : "Source",
     "EXPECTED"    : "Attendu",
     "RECEIVED"    : "Recu"
-  }
+  },
+
+"JOURNAL_VOUCHER"  : {
+    "TITLE"                 : "Ajout Transaction",
+    "ADD_ROW"               : "Ajouter Ligne",
+    "POSTING_JOURNAL"       : "Posting Journal",
+    "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
+    "TAB_LOCK_LINE"         : "Ligne par Ligne",
+    "DATE"                  : "Date Transaction",
+    "DESCRIPTION"           : "Description",
+    "SUBMIT"                : "Soumettre",
+    "DEFAULT_CURRENCY"      : "Monnaie",
+    "TRANS_ID"              : "Transaction ID : ",
+    "LOG"                   : "Log Journal ID : "
+}
 }
