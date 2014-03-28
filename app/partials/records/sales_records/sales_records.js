@@ -41,16 +41,24 @@ angular.module('kpk.controllers')
     };
   
     dependencies.sale = {};
-      // query: '/reports/saleRecords/?' + JSON.stringify({dateFrom : 'week'})
-    // };
- 
-    // TODO Determine best way to wait for page load before requesting data
-    $timeout(init, 100);
-    // init();
+    dependencies.project = {
+      query : {
+        tables : {
+          project : {
+            columns : ["id", "abbr", "name"]
+          }
+        }
+      }
+    };
 
-    function init() { 
-      // Load default
-      select(period[0]);
+    validate.process(dependencies, ['project']).then(loadProjects);
+
+    function loadProjects(model) {
+      $scope.model = model;
+      // session.project = model.project.data[0].id;
+    
+      // TODO Determine best way to wait for page load before requesting data
+      $timeout(function() { select(period[0]); }, 100);
     }
 
     function select(period) {
@@ -67,14 +75,16 @@ angular.module('kpk.controllers')
     function reset() {
       var request = {
         dateFrom : session.param.dateFrom,
-        dateTo : session.param.dateTo
+        dateTo : session.param.dateTo,
       };
+
+      if (!isNaN(Number(session.project))) request.project = session.project;
 
       session.searching = true;
       dependencies.sale.query = '/reports/saleRecords/?' + JSON.stringify(request);
 
       total.result = {};
-      if ($scope.model) $scope.model.sale.data = [];
+      if ($scope.model.sale) $scope.model.sale.data = [];
       validate.refresh(dependencies, ['sale']).then(updateSession);
     }
 

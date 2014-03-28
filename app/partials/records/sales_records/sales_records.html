@@ -24,6 +24,13 @@
       <input class="form-kapok" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
     </div>
   </div>
+
+  <span class="pull-right">
+    <!-- <span class="glyphicon glyphicon&#45;home"></span> -->
+    <select class="form-kapok" ng-change="reset()" ng-model="session.project" ng-options="item.id as item.name for item in model.project.data">
+      <option value="">{{ 'SALERECORD.ALL_PROJECTS' | translate }}</option>
+    </select>
+  </span>
 </section>
 
 <div class="content">
