@@ -73,10 +73,8 @@ angular.module('kpk.controllers')
     $scope.model = {};
 
     function init (model) {
-      console.log('Nous avons comme model ', model);
       $scope.model = model;
       $scope.selectedItem = model.cash_box.data[model.cash_box.data.length-1]; //pop() doesn't work
-      console.log('selected', $scope.selectedItem);
     }
 
     function ready (model) {

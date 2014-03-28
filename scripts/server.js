@@ -427,6 +427,33 @@ app.get('/synthetic/:goal/:project_id?', function (req, res, next) {
   });
 });
 
+app.get('/period/?', function (req, res, next) {
+  var query = JSON.parse(JSON.stringify(decodeURIComponent(url.parse(req.url).query)));
+  console.log('requette recues', query);
+  var sql = "SELECT * FROM period WHERE period_start<="+sanitize.escape(query)+" AND period_stop>="+sanitize.escape(query)+" LIMIT 1";
+  db.execute(sql, function(err, ans){
+    if(err) throw err;
+    res.send(ans)
+  })
+});
+
+app.get('/max_trans/?', function (req, res, next) {
+  var project_id = JSON.parse(JSON.stringify(decodeURIComponent(url.parse(req.url).query)));
+  var sql =
+        'SELECT abbr, max(increment) AS increment FROM (' +
+          'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+          'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
+          'WHERE project_id = ' + project_id + ' ' +
+          'UNION ' +
+          'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+          'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
+          'WHERE project_id = ' + project_id + ')c;';
+  db.execute(sql, function(err, ans){
+    if(err) throw err;
+    res.send(ans);
+  })
+});
+
 app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
 
 // temporary error handling for development!
