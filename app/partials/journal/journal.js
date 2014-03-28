@@ -49,7 +49,7 @@ angular.module('kpk.controllers').controller('journal', [
 
     dependencies.debtor = {
       query: {
-        identifier : 'uiud',
+        identifier : 'uuid',
         'tables' : {
           'debitor' : { 'columns' : ['uuid'] },
           'patient' : { 'columns' : ['first_name', 'last_name'] }
