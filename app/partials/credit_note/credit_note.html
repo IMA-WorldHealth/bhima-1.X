@@ -5,7 +5,7 @@
 <div class="content"> 
     <div class="panel panel-default">
       <div ng-click="sale.visible=!sale.visible" class="panel-heading">
-        {{ "CREDIT_NOTE.SALE_DETAILS" | translate }} ({{sale.id}})
+        {{ "CREDIT_NOTE.SALE_DETAILS" | translate }} ({{sale.uuid}})
         <div class="pull-right">
           <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !sale.visible, 'glyphicon-eye-open': sale.visible}"></span>
         </div>
@@ -58,9 +58,9 @@
           <tr>
             <td>{{ creditNote.note_date | date }}</td>
             <td>{{ sale.first_name }} {{sale.last_name}}</td>
-            <td>{{ creditNote.debitor_id }}</td>
+            <td>{{ creditNote.debitor_uuid }}</td>
             <td>{{ creditNote.cost | currency }}</td>
-            <td>{{ creditNote.sale_id }}</td>
+            <td>{{ creditNote.sale_uuid }}</td>
           </tr>
         </tbody>
       </table>

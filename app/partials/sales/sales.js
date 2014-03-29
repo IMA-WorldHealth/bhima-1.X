@@ -26,10 +26,6 @@ angular.module('kpk.controllers')
       tablock : -1
     };
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-    });
-
     dependencies.inventory = {
       query: {
         identifier : 'uuid',
@@ -40,6 +36,10 @@ angular.module('kpk.controllers')
         }
       }
     };
+    
+    appstate.register('project', function (project) {
+      $scope.project = project;
+    });
 
     recoverCache.fetch('session').then(processRecover);
     validate.process(dependencies).then(sales);
