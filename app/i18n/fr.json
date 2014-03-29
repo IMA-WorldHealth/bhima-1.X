@@ -749,7 +749,8 @@
     "RECEIPT"      : "Recette",
     "POSTING"      : "Postage au Journal",
     "CREDIT_NOTE"  : "Note de Credit",
-    "POST"         : "Poster au Journal"
+    "POST"         : "Poster au Journal",
+    "ALL_PROJECTS" : "Tous les Projets"
   },
 
   "INVOICE"             : {
