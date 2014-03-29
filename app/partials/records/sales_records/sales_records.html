@@ -81,7 +81,9 @@
                 <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
                 | <a ng-href="/#/credit_note/{{invoice.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'SALERECORD.CREDIT_NOTE' | translate }}</a>
               </td>
-              <!-- <td width="14%"><a href="/#/credit_note/{{invoice.uuid}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td> -->
+              
+              <td><a ng-href="/#/invoice/sale/{{invoice.uuid}}">{{'SALERECORD.RECEIPT' | translate}}</a></td>
+              <td><a ng-href="/#/credit_note/{{invoice.uuid}}">{{'SALERECORD.CREDIT_NOTE' | translate}}</a></td>
           </tr>
           </tbody>
         </table>

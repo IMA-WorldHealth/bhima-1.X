@@ -11,7 +11,7 @@
 
 <div class="content">
   <div class="row">
-    
+
     <div class="col-xs-6">
       <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
         <div class="panel-heading">
@@ -41,15 +41,15 @@
       <div ng-switch-default>
          <div class="alert alert-info">
              <b>{{'PROVINCE.CONFIGURATION' | translate}} </b>
-             <p>{{'PROVINCE.DESCRIPTION' | translate}}                                                      
-             </p>                                                                                                  
-         </div>  
+             <p>{{'PROVINCE.DESCRIPTION' | translate}}
+             </p>
+         </div>
        </div>
 
        <div ng-switch-when="Add">
-         <form class="form-horizontal">                                                                          
-            <fieldset>                                                                                            
-              <legend>{{'PROVINCE.REGISTER' | translate}}</legend>                                                           
+         <form class="form-horizontal">
+            <fieldset>
+              <legend>{{'PROVINCE.REGISTER' | translate}}</legend>
               <div class="form-group">
                 <label class="col-xs-2"> {{'PROVINCE.COUNTRY' | translate}}</label>
                 <div class="col-xs-10">
@@ -66,12 +66,12 @@
                 </div>
               </div>
 
-              <div class="form-group">                                                                   
-                 <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>                                                
-                 <div class="col-xs-10">                                                                           
-                    <input class="form-kapok" ng-model="add.name" required>                                            
-                 </div>                                                                                            
-              </div>     
+              <div class="form-group">
+                 <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>
+                 <div class="col-xs-10">
+                    <input class="form-kapok" ng-model="add.name" required>
+                 </div>
+              </div>
             </fieldset>
 
             <button class="btn btn-default btn-success" ng-click="addProvince(add)" ng-disabled="form.$invalid">
@@ -84,9 +84,9 @@
         </div>
 
         <div ng-switch-when="Edit">
-          <form class="form-horizontal">                                                                          
-            <fieldset>                                                                                            
-              <legend>{{'PROVINCE.EDIT' | translate}}</legend>                                                           
+          <form class="form-horizontal">
+            <fieldset>
+              <legend>{{'PROVINCE.EDIT' | translate}}</legend>
               <div class="form-group">
                 <label class="col-xs-2"> {{'PROVINCE.COUNTRY' | translate}}</label>
                 <div class="col-xs-10">
@@ -103,12 +103,12 @@
                 </div>
               </div>
 
-              <div class="form-group">                                                                   
-                 <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>                                                
-                 <div class="col-xs-10">                                                                           
-                    <input class="form-kapok" ng-model="province.province" required>                                            
-                 </div>                                                                                            
-              </div>     
+              <div class="form-group">
+                 <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>
+                 <div class="col-xs-10">
+                    <input class="form-kapok" ng-model="province.province" required>
+                 </div>
+              </div>
             </fieldset>
             <button class="btn btn-default btn-success" ng-click="editProvince(province)" ng-disabled="form.$invalid">
               {{'FORM.ADD' | translate}}
