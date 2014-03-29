@@ -1041,14 +1041,14 @@ module.exports = function (db, synthetic) {
   function handleCreditNote (id, user_id, done) {
     var sql =
       'SELECT `credit_note`.`project_id`, `project`.`enterprise_id`, `cost`, `debitor_uuid`, `note_date`, `credit_note`.`sale_uuid`, ' +
-        ' `description`, `note_date`, `inventory_id`, `quantity`, ' +
+        ' `description`, `note_date`, `inventory_uuid`, `quantity`, `sale_item`.`uuid` as `item_uuid`, ' +
         '`transaction_price`, `debit`, `credit`' +
       'FROM `credit_note` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` JOIN `project` ' +
-        'ON `credit_note`.`sale_id`=`sale_item`.`sale_id` AND ' +
-        '`sale_item`.`inventory_id`=`inventory`.`id` AND ' +
+        'ON `credit_note`.`sale_uuid`=`sale_item`.`sale_uuid` AND ' +
+        '`sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
         '`project`.`id` = `credit_note`.`project_id` AND ' +
-        '`inventory`.`unit_id`=`inventory_unit`.`id`' +
-      'WHERE `credit_note`.`id`=' + sanitize.escape(id);
+        '`inventory`.`unit_id`=`inventory_unit`.`id` ' +
+      'WHERE `credit_note`.`uuid`=' + sanitize.escape(id);
 
     db.execute(sql, function (err, results) {
       if (err) { return done(err); }
@@ -1060,12 +1060,14 @@ module.exports = function (db, synthetic) {
       var enterprise_id = reference_note.enterprise_id;
       var project_id = reference_note.project_id;
       var date = reference_note.note_date;
+      
+      var saleItems = results;
 
       check.validPeriod(enterprise_id, date, function (err) {
         if (err) { done(err); }
 
         // Ensure a credit note hasn't already been assiged to this sale
-        var reviewLegacyNotes = "SELECT id FROM credit_note WHERE sale_uuid=" + reference_note.sale_uuid + ";";
+        var reviewLegacyNotes = "SELECT uuid FROM credit_note WHERE sale_uuid=" + sanitize.escape(reference_note.sale_uuid) + ";";
         db.execute(reviewLegacyNotes, function (err, rows) {
           if(err) return done(err);
 
@@ -1112,46 +1114,70 @@ module.exports = function (db, synthetic) {
                 // Credit debtor (basically the reverse of a sale)
                 var debtorQuery =
                   'INSERT INTO `posting_journal` ' +
-                    '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                     '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                     '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `sale`.`project_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+                  'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
                     '"' + reference_note.description + '", `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' +
                     '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [originId, user_id].join(', ') + ' ' +
                   'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
                     '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
                   'WHERE `sale`.`uuid`=' + sanitize.escape(reference_note.sale_uuid) + ';';
+                
+                var itemsQuery = [];
+                saleItems.forEach(function (item) { 
+                  // Debit sale items
+                  // var itemSql =
+                  // 'INSERT INTO `posting_journal` ' +
+                  //   '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  //   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                  //   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                  // 'SELECT `sale`.`project_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+                  //   '"' + reference_note.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+                  //   '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+                  //   ' null, `sale`.`uuid`, ' + [originId, user_id].join(', ') + ' ' +
+                  // 'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+                  //   '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
+                  //   '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+                  // 'WHERE `sale`.`uuid`=' + sanitize.escape(reference_note.sale_uuid) + ';';
 
-                // Debit sale items
-                var itemsQuery =
+                  var itemSql =
                   'INSERT INTO `posting_journal` ' +
-                    '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                     '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                     '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `sale`.`project_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+                  'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
                     '"' + reference_note.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
                     '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
                     ' null, `sale`.`uuid`, ' + [originId, user_id].join(', ') + ' ' +
                   'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
                     '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
                     '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
-                  'WHERE `sale`.`uuid`=' + sanitize.escape(reference_note.sale_uuid) + ';';
+                  'WHERE `sale_item`.`uuid`=' + sanitize.escape(item.item_uuid) + ';';
 
-                db.execute(debtorQuery, function (err, rows) {
-                  if(err) return done(err);
-
-                  db.execute(itemsQuery, function (err, rows) {
-                    var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
-
+                  itemsQuery.push(itemSql);
+                });
+                
+                
+                  db.execute(debtorQuery, function (err, rows) {
                     if(err) return done(err);
+                    
+                    q.all(itemsQuery.map(function (itemSql) { 
+                      return db.exec(itemSql);
+                    })).then(function(result) { 
 
-                    db.execute(sql, function (err, rows) {
-                      if (err) return done(err);
-                      done(null, rows);
-                      return;
+                      var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
+
+                      if(err) return done(err);
+
+                      db.execute(sql, function (err, rows) {
+                        if (err) return done(err);
+                        done(null, rows);
+                        return;
+                      });
                     });
                   });
-                });
+                
               });
             });
           });
