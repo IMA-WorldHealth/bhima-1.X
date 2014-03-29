@@ -92,7 +92,6 @@ input::-webkit-inner-spin-button {
   position: fixed;
   width: 82%;
   height: 100%;
-
   /* background: url('../assets/UKAID1.jpg'); */
 }
 
@@ -105,7 +104,6 @@ input::-webkit-inner-spin-button {
 
 .content {
   position: absolute;
-  /*right: 18%;*/
   bottom: 37px;
   top: 87px;
   right:0;
@@ -117,6 +115,28 @@ input::-webkit-inner-spin-button {
   padding-right: 15px;
   padding-top: 5px;
   font-size: 12px;
+}
+
+.content.extend {
+  bottom: 0;
+}
+
+/* slick modifications */
+/* FIXME: remove hacks here */
+#journal_grid.grid .slick-header-columns
+.slick-header-column {
+  height: 15px;
+}
+
+#journal_grid.grid .slick-header-columns
+.slick-header-column.ui-state-default {
+  font-weight: bold;
+}
+
+#journal_grid.grid .slick-header-columns
+.slick-header-column.ui-state-default {
+  line-height : 15px;
+  font-size : 12px;
 }
 
 #logo  { 

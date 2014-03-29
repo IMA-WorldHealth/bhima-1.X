@@ -1,0 +1,118 @@
+angular.module('kpk.controllers')
+.controller('journal.grid', [
+  '$scope',
+  '$translate',
+  '$filter',
+  '$q',
+  'validate',
+  'messenger',
+  'appstate',
+  function ($scope, $translate, $filter, $q, validate, messenger, appstate) {
+    var dependencies = {};
+    var columns, options, dataview, grid, state = {};
+    var ready = $q.defer();
+
+    appstate.set('journal.ready', ready.promise);
+
+    dependencies.journal = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          'posting_journal' : {
+            'columns' : ["uuid", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_uuid", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id"]
+          },
+          'account' : { 'columns' : ["account_number"] }
+        },
+        join: ["posting_journal.account_id=account.id"]
+      }
+    };
+
+    function initialise (models) {
+      for (var k in models) { $scope[k] = models[k]; }
+
+      // set up grid properties
+      columns = [
+        {id: 'uuid'          , name: $translate('COLUMNS.ID')             , field: 'uuid'           , sortable : true},
+        {id: 'trans_id'      , name: $translate('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true},
+        {id: 'trans_date'    , name: $translate('COLUMNS.DATE')           , field: 'trans_date'     , sortable: true},
+        // {id: 'trans_date'    , name: $translate('COLUMNS.DATE')           , field: 'trans_date'     , formatter: formatDate, sortable: true},
+        {id: 'description'   , name: $translate('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110 , editor: Slick.Editors.Text } ,
+        // {id: 'account_id'    , name: $translate('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true , editor:SelectCellEditor},
+        {id: 'account_id'    , name: $translate('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true },
+        // {id: 'debit_equiv'   , name: $translate('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        // {id: 'credit_equiv'  , name: $translate('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        // {id: 'deb_cred_uuid' , name: 'AR/AP Account'                      , field: 'deb_cred_uuid'  , editor:SelectCellEditor},
+        // {id: 'deb_cred_type' , name: $translate('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'  , editor:SelectCellEditor},
+        // {id: 'inv_po_id'     , name: $translate('COLUMNS.INVPO_ID')       , field: 'inv_po_id'      , editor:SelectCellEditor}
+        {id: 'debit_equiv'   , name: $translate('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        {id: 'credit_equiv'  , name: $translate('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        {id: 'deb_cred_uuid' , name: 'AR/AP Account'                      , field: 'deb_cred_uuid'},
+        {id: 'deb_cred_type' , name: $translate('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
+        {id: 'inv_po_id'     , name: $translate('COLUMNS.INVPO_ID')       , field: 'inv_po_id'}
+      ];
+
+      options = {
+        enableCellNavigation: true,
+        enableColumnReorder: true,
+        forceFitColumns: true,
+        editable: true,
+        rowHeight: 30,
+        autoEdit: false
+      };
+
+      populate();
+    }
+
+    function populate () {
+      var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
+
+      dataview = new Slick.Data.DataView({
+        groupItemMetadataProvider: groupItemMetadataProvider,
+        inlineFilter: true
+      });
+
+      grid = new Slick.Grid('#journal_grid', dataview, columns, options);
+
+      grid.registerPlugin(groupItemMetadataProvider);
+      grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
+
+      // grid.setSelectionModel(new Slick.CellSelectionModel());
+
+      dataview.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render();
+      });
+
+      dataview.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidateRows(args.rows);
+        grid.render();
+      });
+
+      grid.onSelectedRowsChanged.subscribe(function (e, args) {
+        $scope.$apply(function () {
+          $scope.rows = args.rows;
+        });
+      });
+
+      grid.onCellChange.subscribe(function(e, args) {
+        dataview.updateItem(args.item.id, args.item);
+      });
+
+      dataview.beginUpdate();
+      dataview.setItems($scope.journal.data, 'uuid');
+      dataview.endUpdate();
+
+      expose();
+    }
+
+    function expose () {
+      ready.resolve([grid, columns, dataview, options, state]);
+    }
+
+    validate.process(dependencies)
+    .then(initialise)
+    .catch(function (error) {
+      ready.reject(error);
+    });
+  }
+]);

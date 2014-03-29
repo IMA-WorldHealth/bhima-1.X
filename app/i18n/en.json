@@ -5,7 +5,7 @@
     "DEB_CRED"              : "Debitor / Creditor",
     "TRANSACTION"           : "Transaction",
     "ACCOUNT"               : "Account",
-    "TRIAL_BALANCE"         : "Trial balance",
+    "TRIAL_BALANCE"         : "Trial Balance",
     "ADD_TRANSACTION"       : "Add Transaction",
     "GENERAL_LEDGER"        : "General Ledger",
     "DEBIT"                 : "Debit",
