@@ -9,6 +9,7 @@ angular.module('kpk.controllers')
   function ($scope, $window, validate, connect, messenger, appstate) {
     var dependencies = {};
     $scope.action = '';
+    $scope.timestamp = new Date();
 
     dependencies.projects = {
       query : {
@@ -19,7 +20,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-    
+
     dependencies.enterprises = {
       query : {
         tables : {
@@ -42,7 +43,7 @@ angular.module('kpk.controllers')
       $window.print();
     };
 
-    $scope.new = function n(project) {
+    $scope.new = function n() {
       $scope.newProject = {};
       $scope.action = 'new';
     };
@@ -50,7 +51,8 @@ angular.module('kpk.controllers')
     $scope.submitNew = function submitNew() {
       var clean = connect.clean($scope.newProject);
       connect.basicPut('project', [clean])
-      .success(function () {
+      .success(function (res) {
+        clean.id = res.insertId;
         $scope.projects.post(clean);
         $scope.action = 'default';
       })
@@ -83,7 +85,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.delete = function d(project) {
-      connect.basicDelete('project', project, 'id')
+      connect.basicDelete('project', project.id, 'id')
       .success(function () {
         $scope.projects.remove(project.id);
       })
@@ -94,9 +96,8 @@ angular.module('kpk.controllers')
 
     appstate.register('project', function (project) {
       $scope.currentProject = project;
-      dependencies.projects.query.tables.where =
-        ['projects.enterprise_id=' + project.enterprise_id];
-
+      dependencies.projects.query.where =
+        ['project.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies)
       .then(load, handleErrors);
     });
