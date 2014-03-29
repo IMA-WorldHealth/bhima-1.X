@@ -121,7 +121,7 @@
       fetchModels(list, dependencies).then(function(model) {
         packageModels(list, dependencies, model);
         validate = validateModels(list, dependencies);
-        console.log('ran tests', validate);
+        // console.log('ran tests', validate);
         if(validate.success) return deferred.resolve(dependencies.model);
 
         console.info("%c[validate]", "color: blue; font-weight: bold;", "Reminder that models have been tested and results should be handled");

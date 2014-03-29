@@ -1,14 +1,5 @@
-<header>
-  {{ "CASH.TITLE" | translate }}
-  <!-- 
-  <span class="pull-right" loading-indicator>
-    <span class="spinner">
-      <div class="bounce1"></div>
-      <div class="bounce2"></div>
-      <div class="bounce3"></div>
-    </span>
-  </span>
-  -->
+<header data-header>
+  {{ 'CASH.TITLE' | translate}}
 </header>
 
 <section class="top-nav">
@@ -23,7 +14,7 @@
     <!-- </select> -->
 
     <span class="dropdown pull-right">
-      <button class="btn btn-sm btn-warning dropdown-toggle">
+      <button class="btn btn-sm btn-primary dropdown-toggle">
         {{ currency.symbol || "..." }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>

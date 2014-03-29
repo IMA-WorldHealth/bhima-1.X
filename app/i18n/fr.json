@@ -38,9 +38,10 @@
     "SET_NEW_RATE" : "Soumettre un nouveau taux"
   },
 
-  "UTIL" : {
+  "UTIL"             : {
     "CONFIGURE"      : "Configurer",
     "TOTAL"          : "Total",
+    "PROJECT"        : "Project",
     "PRINT"          : "Imprimer",
     "CREATE"         : "Creer",
     "CANCEL"         : "Annuler",
@@ -50,7 +51,8 @@
     "CONFIRM"        : "Confirmer",
     "SUBMIT"         : "Enregistrer",
     "RESET_FORM"     : "Remettre",
-    "SAVE_SELECTION" : "Enregistrer la Selection"
+    "SAVE_SELECTION" : "Enregistrer la Selection",
+    "SHOW"           : "DEDRICKS JOB"
   },
 
   "ENTERPRISE"                 : {
@@ -199,7 +201,8 @@
     "GENERAL_LEDGER"  : "Grand Livre",
     "SOURCE"          : "Selectionner source",
     "CASH"            : "Caisse Auxillaire",
-    "OTHER"           : "Autre Source"
+    "OTHER"           : "Autre Source",
+    "ENTERPRISE" : "Selectionner Enterprise"
   },
 
   "RENEWAL"           : {
@@ -309,7 +312,8 @@
     "CLIENT"                    : "Client",
     "BENEFICIARY"               : "Beneficiary",
     "MAIN_CASH"                 : "Caisse Principale",
-    "JOURNAL_VOUCHER"           : "Ajout Transactions"
+    "JOURNAL_VOUCHER"           : "Ajout Transactions",
+    "PROJECT"                   : "Projets"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -338,11 +342,12 @@
     "LAST_NAME"       : "Nom",
     "YOB"             : "Annee de Naissance",
     "SEX"             : "Sex",
-    "SEARCH"          : "Executer",
-    "VIEW_ALL"        : "Voire Tous Malades",
     "MALE"            : "Homme",
     "FEMALE"          : "Femme",
-    "RESULTS"         : "Resultats"
+    "SEARCH"          : "Executer",
+    "VIEW_ALL"        : "Voire Tous Malades",
+    "RESULTS"         : "Resultats",
+    "VIEW_PATIENT_CARD" : "Carte de Malade"
   },
 
   "FISCAL_YEAR"             : {
@@ -384,6 +389,8 @@
     "USER_NAME"           : "Nom Utilisateur",
     "LAST_NAME"           : "Nom",
     "GROUP"               : "Groupe",
+    "ENTERPRISE_ID"       : "ID Enterprise",
+    "ABBR"                : "Abbr.",
     "INVOICE_DATE"        : "Date Facture",
     "TOTAL"               : "Total",
     "ACCOUNT_ID"          : "ID Compte",
@@ -587,6 +594,15 @@
     "REGISTER"     : "Enregistre Stocks"
   },
 
+  "PROJECT"    : {
+    "EDIT"     : "Editer",
+    "NEW"      : "Nouveux",
+    "EXISTING" : "Projects Existant",
+    "TITLE"    : "Gestion des Projects",
+    "PRINT_TITLE" : "Projects Enregistrer",
+    "HELP_TXT_1" : "Ce module vous permettre faire la gestion des projects.  Vous voyez seulment les projects qui concern votre enterprise."
+  },
+
   "PERMISSION"    : {
     "TITLE"       : "Gestion des Utilisateurs & Permissions",
     "ALL"         : "Tous",
@@ -749,7 +765,8 @@
     "RECEIPT"      : "Recette",
     "POSTING"      : "Postage au Journal",
     "CREDIT_NOTE"  : "Note de Credit",
-    "POST"         : "Poster au Journal"
+    "POST"         : "Poster au Journal",
+    "ALL_PROJECTS" : "Tous les Projets"
   },
 
   "INVOICE"             : {
@@ -782,8 +799,7 @@
     "CAUTION"           : "Caution",
     "CAUTION_ID"        : "# Caution",
     "LIBELLE_CAUTION"   : "Reception Caution",
-    "TOTAL_CAUTION"     : "Total",
-    "AMOUNT"            : "Montant"
+    "TOTAL_CAUTION"     : "Total"
   },
 
   "SECTOR"             : {

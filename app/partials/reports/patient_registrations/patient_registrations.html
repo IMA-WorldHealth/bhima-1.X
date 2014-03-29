@@ -60,11 +60,12 @@
           </thead>
           <tbody>
             <tr ng-repeat='patient in patients'>
-              <td> {{ patient.id }} </td>
+              <td> {{ patient.abbr + patient.reference }} </td>
               <td> {{ patient.first_name + ' ' + patient.last_name }} </td>
               <td> {{ patient.dob | date }} </td>
               <td> {{ patient.sex }} </td>
-              <td> {{ patient.debitor_id }} </td>
+              <td ng-show="!patient.expand"><a href="" ng-click="patient.expand=!patient.expand">{{ "UTIL.SHOW" | translate }}</a></td>
+              <td ng-show="patient.expand"> <a href="" ng-click="patient.expand=!patient.expand">{{ patient.debitor_uuid }}</a></td>
               <td> {{ patient.registration_date | date }} </td>
               <td> {{ patient.date | date }} </td>
             </tr>

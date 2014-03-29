@@ -160,7 +160,7 @@
               <b>{{'INVOICE.NOTE_ID' | translate}}</b>
             </div>
             <div class="row">
-              {{note.id}}
+              {{note.abbr}}{{note.reference}}
             </div>
             <div class="row">
               <b>{{'INVOICE.DATE' | translate}}</b>
@@ -174,10 +174,10 @@
           <div class="col-xs-12">
             <table class="invoiceTable">
               <thead>
-                <tr><th>{{'INVOICE.NOTE' | translate}}</th><th>{{'INVOICE.AMOUNT' | translate}}</th><th></th></tr>
+                <tr><th>{{'INVOICE.NOTE' | translate}}</th><th>{{ 'COLUMNS.DEBITOR' | translate }}<th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
               </thead>
               <tbody class="items">
-                <tr><td>{{note.description}}</td><td>{{note.debitor_id}}</td><td>{{note.cost | currency}}</td></tr>
+                <tr><td>{{note.description}}</td><td>{{note.first_name}} {{note.last_name}}</td><td>{{note.cost | currency}}</td></tr>
               </tbody>
               <tbody class="totals">
                 <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL_CREDITED' | translate}}</td><td>{{note.cost | currency}}</td></tr>
