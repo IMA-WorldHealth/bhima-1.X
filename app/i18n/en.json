@@ -841,7 +841,8 @@
     "RECEIPT"      : "Receipt",
     "POSTING"      : "Posting Journal",
     "CREDIT_NOTE"  : "Credit Note",
-    "POST"         : "Post to Journal"
+    "POST"         : "Post to Journal",
+    "ALL_PROJECTS" : "All Projects"
   },
 
   "INVOICE"             : {
