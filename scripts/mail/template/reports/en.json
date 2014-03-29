@@ -1,0 +1,30 @@
+{
+  "Header" : {
+    "overview" : "Overview",
+    "accounts" : "Accounts",
+    "experimental" : "Experimental Reports"
+  },
+  
+  "Section" : {
+    "registration" : {
+      "heading" : "Patient Registration",
+      "content" : "Today, %s patients where registered; %s patients new to the hospital, and %s returning."
+    },
+    "cash" : {
+      "heading" : "HBB Cash Box",
+      "content" : "%s where introduced at the Caisse Aux HBB, paid against a total of %s invoices."
+    },
+    "subsidy" : {
+      "heading" : "IMA Subsidy",
+      "content" : "The IMA subsidy was charged a total of %s enabling %s to receive health care."
+    },
+    "sale" : {
+      "heading" : "Invoice",
+      "content" : "%s invoice transactions where submitted consistring of %s line items, this include both hospitalised and outpatiend invoices."
+    },
+    "fiche" : {
+      "heading" : "Fiche Consultation",
+      "content" : "A total of %s charges where made for fiche consultations; %s for 'Nouvelle Fiche' and %s for 'Anciennce Fiche'."
+    }
+  }
+}
