@@ -23,7 +23,7 @@
       templateUrl: 'partials/enterprise/enterprise.html'
     }).
     when('/posting_journal', {
-      controller: 'journal',
+      controller: 'journal.grid',
       templateUrl:'partials/journal/journal.html'
     }).
     when('/projects', {
