@@ -467,7 +467,8 @@
     "VALUE"               : "Valeur",
     "SCOPE"               : "Appliquer a",
     "VISIT_DATE"          : "Date de Visite",
-    "DEBITOR_TYPE"        : "Type de Debiteur"
+    "DEBITOR_TYPE"        : "Type de Debiteur",
+    "CREDITOR"            : "Crediteur"
   },
 
   "REPORT"                  : {
