@@ -48,10 +48,10 @@
         </thead>
         <tbody>
           <tr ng-repeat='payment in payments'>
-            <td> {{ payment.abbr + payment.reference }} </td>
+            <td><a ng-href="/#/invoice/cash/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a></td>
             <td> {{ payment.type }} </td>
             <td> {{ payment.first_name + ' ' + payment.last_name }} </td>
-            <td> {{ projects.get(payment.sale_project).abbr + payment.sale_reference }} </td>
+            <td><a ng-href="/#/invoice/sale/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a></td>
             <td> {{ projects.get(payment.debtor_project).abbr + payment.debtor_reference }} </td>
             <td> {{ payment.deb_cred_type }} </td>
             <td ng-bind-html="payment.cost | intlcurrency:payment.currency_id"></td>

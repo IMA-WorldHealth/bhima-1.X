@@ -101,7 +101,8 @@
     "SUBMIT"         : "Submit",
     "RESET_FORM"     : "Reset Form",
     "SAVE_SELECTION" : "Save Selection",
-    "SEARCH" : "Search"
+    "SEARCH" : "Search",
+    "SHOW" : "Show"
   },
 
   "PATIENT_STANDING"     : {

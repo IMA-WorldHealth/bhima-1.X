@@ -13,8 +13,8 @@ angular.module('kpk.controllers')
     $scope.model = {};
     //dependencies
     dependencies.sector = {
-      identifier : 'uuid',
       query :  {
+        identifier : 'uuid',
         tables: {
           'sector' : {
             columns : ['uuid', 'name', 'province_uuid']
@@ -23,14 +23,13 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.village = {
+      identifier:'uuid',
+      query : '/village/'
+    }
+
     function manageVillage(model){
       for (var k in model) { $scope.model[k] = model[k]; }
-
-      connect.fetch('/village/')
-      .success(function (data) {
-        $scope.model.village = new Store({ identifier : 'uuid' });
-        $scope.model.village.setData(data);
-      });
     }
 
     function setOp(action, village){
@@ -48,7 +47,10 @@ angular.module('kpk.controllers')
 
       connect.basicPut('village', [v])
       .then(function (res) {
+        v.village = v.name;
+        v.sector = $scope.model.sector.get(v.sector_uuid).name;
         $scope.model.village.post(v);
+        $scope.op='';
       });
     }
 
@@ -62,11 +64,12 @@ angular.module('kpk.controllers')
       connect.basicPost('village', [village], ['uuid'])
       .then(function () {
         $scope.model.village.put(village);
+        $scope.op='';
       });
     }
 
     function removeVillage(uuid){
-      connect.basicDelete('village', uuid, 'uuid')
+      connect.basicDelete('village', [uuid], 'uuid')
       .then(function(){
         $scope.model.village.remove(uuid);
       });
