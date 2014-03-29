@@ -454,6 +454,15 @@ app.get('/max_trans/?', function (req, res, next) {
   })
 });
 
+app.get('/max_log/', function (req, res, next) {
+  var sql =
+        'SELECT max(id) + 1 AS increment FROM journal_log';
+  db.execute(sql, function(err, ans){
+    if(err) throw err;
+    res.send(ans);
+  })
+});
+
 app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
 
 // temporary error handling for development!

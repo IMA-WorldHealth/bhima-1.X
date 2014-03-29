@@ -76,9 +76,11 @@ angular.module('kpk.controllers')
       $scope.voucher.currency_id = $scope.selectedItem.id;
       $scope.voucher.trans_date = util.convertToMysqlDate(new Date());
       addRow(); addRow();
-      getTransID().
-      then(function (resp){
-        $scope.voucher.trans_id = resp.data[0].abbr+resp.data[0].increment;
+
+      $q.all([getTransID(), getLogID()])
+      .then(function (response){
+        $scope.voucher.trans_id = response[0].data[0].abbr+response[0].data[0].increment;
+        $scope.voucher.log_id = response[1].data[0].increment;
       });
     }
 
@@ -168,8 +170,12 @@ angular.module('kpk.controllers')
     return connect.req('/period/?'+util.convertToMysqlDate(new Date()));
   }
 
-   function getTransID(){
+  function getTransID(){
     return connect.req('/max_trans/?'+$scope.project.id);
+  }
+
+  function getLogID(){
+    return connect.req('/max_log/');
   }
 
   appstate.register('project', function (project) {
@@ -180,7 +186,6 @@ angular.module('kpk.controllers')
 
   $scope.$watch('voucher.rows', function(nv){
     if(nv) {
-      console.log('la valeur est ', nv);
       getTotal()
     };
   }, true);
