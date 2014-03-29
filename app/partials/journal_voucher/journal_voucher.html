@@ -81,7 +81,7 @@
                   </thead>
 
                   <tbody>
-                    <tr ng-class="{'incomplete-outline': !row.desccription, 'complete-outline': row.desccription}" ng-repeat="row in voucher.rows">
+                    <tr ng-class="{'incomplete-outline': !row.description, 'complete-outline': row.description}" ng-repeat="row in voucher.rows">
                       <td><input class="form-invoice" type="text" placeholder="Description" value="{{row.description}}" ng-model="row.description"></td>
                       <td><input
                         class="form-invoice"
@@ -110,14 +110,15 @@
                     </tr>
 
                     <tr>
-                      <td colspan="3" style="margin-right = 50px; text-align: right;"><b>{{getTotal().td}}{{selectedItem.symbol}}</b></td>
-                      <td colspan="4"><b>{{ getTotal().tc}}{{selectedItem.symbol}}</b></td>
+                      <td style="text-align: left;"><b>Balance</b></td>
+                      <td colspan="2" style="margin-right = 50px; text-align: right;"><b>{{voucher.td}}{{selectedItem.symbol}}</b></td>
+                      <td colspan="3"><b>{{ voucher.tc}}{{selectedItem.symbol}}</b></td>
                     </tr>
                   </tbody>
                 </table>
             </div>
           </div>
-    </div>
+    </div3
   </div>
 </div>
 

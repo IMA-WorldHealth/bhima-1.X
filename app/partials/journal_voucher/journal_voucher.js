@@ -15,8 +15,8 @@ angular.module('kpk.controllers')
   'uuid',
   'util',
   '$q',
-  '$location',
-  function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid, util, $q, $location) {
+  'exchange',
+  function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid, util, $q, exchange) {
     var dependencies = {}, ID = null;
       $scope.voucher = {};
 
@@ -52,6 +52,10 @@ angular.module('kpk.controllers')
       }
     }
 
+    dependencies.user = {
+      query : 'user_session'
+    };
+
 
     function journalRow (){
       this.id = Math.random();
@@ -70,6 +74,7 @@ angular.module('kpk.controllers')
     }
 
     function init (model){
+      console.log('model', model);
       for(var k in model){$scope[k] = model[k]}
       $scope.voucher.rows = [];
       $scope.selectedItem = model.currencies.data[model.currencies.data.length-1];
@@ -103,7 +108,10 @@ angular.module('kpk.controllers')
       debitSom+=item.debit;
       creditSom+=item.credit;
     });
-    return {td : debitSom, tc : creditSom};
+
+    $scope.voucher.td = debitSom;
+    $scope.voucher.tc = creditSom;
+    //return {td : debitSom, tc : creditSom};
   }
 
   function submit (){
@@ -120,16 +128,19 @@ angular.module('kpk.controllers')
         record.description = row.description;
         record.account_id = row.account_id;
         record.debit = row.debit;
-        record.debit = row.credit;
-        record.debit_equiv = 0;
-        record.credit_equiv = 0;
+        record.credit = row.credit;
+        record.debit_equiv = exchange.myExchange(row.debit, $scope.voucher.currency_id);
+        console.log('row debit', row.debit, 'currency', $scope.voucher.currency_id);
+        record.credit_equiv = exchange.myExchange(row.credit, $scope.voucher.currency_id);
+        console.log('row credit', row.credit, 'currency', $scope.voucher.currency_id);
         record.currency_id = $scope.voucher.currency_id;
         record.deb_cred_uuid = row.deb_cred_uuid;
         record.deb_cred_type = row.deb_cred_type;
         record.inv_po_id = $scope.voucher.inv_po_id;
         record.comment = row.comment;
-        record.origin_id = 2;
-        record.user_id = 1;
+        record.origin_id = 9;
+        record.user_id = $scope.user.data.id;
+        window.record = record;
         return connect.clean(record);
       });
 
@@ -178,6 +189,17 @@ angular.module('kpk.controllers')
     return connect.req('/max_log/');
   }
 
+  function verifySubmission (){
+    var isAccountEmpty = false;
+    for(var i= 0; i<$scope.voucher.rows.length; i++){
+      if(!$scope.voucher.rows[i].account_id){
+        isAccountEmpty = true;
+        break;
+      }
+    }
+    return (($scope.voucher.td !== $scope.voucher.tc) || ($scope.voucher.td === 0 || $scope.voucher.tc === 0) || (isAccountEmpty));
+  }
+
   appstate.register('project', function (project) {
     $scope.project = project;
     dependencies.accounts.query.where = ['account.enterprise_id='+$scope.project.enterprise_id];
@@ -195,6 +217,7 @@ angular.module('kpk.controllers')
   $scope.setCurrency = setCurrency;
   $scope.getTotal = getTotal;
   $scope.removeRow = removeRow;
+  $scope.verifySubmission = verifySubmission;
 
 
 
