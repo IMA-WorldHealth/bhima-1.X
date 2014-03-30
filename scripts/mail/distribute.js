@@ -11,9 +11,12 @@ var address = [];
 
 // Move to configuration? 
 var defaultLanguage = "en";
+var compiledReference = {};
 
 // Should be passed by chron job
 var service = "daily";
+
+var reportDate = new Date();
 
 initialise();
 
@@ -77,39 +80,28 @@ function compileReport(languages) {
   });
 
   q.all(compileStatus).then(function (result) {
-    // if (error) return deferred.reject(error);
+  
+    // Read in compiled file locations
+    languages.forEach(function (language, index) {
+      compiledReference[language] = result[index].trim();
+    });
     deferred.resolve(result);
+  })
+  .catch(function(error) {
+    util.error(error);
   });
 
   return deferred.promise;
 }
 
 function distribute(recipient, details) {
-  var file;
-
+  
   // Verification
   if (!details.language) details.language = defaultLanguage;
   if (!details.address) throw new Error("Recipient " + recipient + " has no assigned address");
   
-  /// TODO This should not be blocking 
-  if (details.subscription.indexOf(service)<0) throw new Error("Recipient " + recipient + " is not subscribed to this service");
-  
-  // TODO This should be passed down through (returned by the mail.js service after compilation)
-  var reportDate = new Date();
-  file = './out/' +
-         reportDate.getDate() +
-         '-' +
-         (reportDate.getMonth() + 1) +
-         '-' +
-         reportDate.getFullYear() +
-         '_' +
-         details.language +
-         '_' +
-         service +
-         '.html';
-  
   // TODO improve send command, this is just a proof of concept 
-  var command = 'cat ' + file + ' | mail -a "text/html" -s "' + reportDate.toLocaleDateString() + '" ' + details.address;
+  var command = 'cat ' + compiledReference[details.language] + ' | mail -a "text/html" -s "' + reportDate.toLocaleDateString() + '" ' + details.address;
   
   util.log('[send.js] [' + service + '] [' + details.language + '] -> ' + details.address);
   return exec(command);
