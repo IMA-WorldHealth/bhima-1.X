@@ -339,7 +339,6 @@ function upgradePostingJournal(recordValues, tableName) {
     finalText = journalText.join(',');
     recordValues.splice(7, diff + 1, finalText);
   }
-
   
   currentDebtor = recordValues[14].replace(/\'/g, '');
   currentSale = recordValues[16].replace(/\'/g, '');
