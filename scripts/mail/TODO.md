@@ -7,4 +7,12 @@
 // TODO graphing thing using d3.js 
 // TODO check if file report exists, create it, create folder for tmp files (reportReference)
 
+_________________
 
+- chron job should tell send.js what task is being built
+- send.js should tell mail.js what language is being built
+- file name should refelct all information dd-mm-yyyy-daily-en.html
+
+- mail.js should accept the following parameters
+  -l language
+  -s service (daily | weekly | monthly | yearly)

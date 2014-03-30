@@ -8,6 +8,10 @@ var util = require('./lib/util.js');
 
 var enterprise = "IMCK";
 
+// TODO This is derived from send.js (from cron job)
+var service = "daily";
+var language = "en";
+
 // FIXME
 var reportDate = new Date();
 var timestamp = reportDate.toLocaleDateString();
@@ -25,7 +29,16 @@ var include = [
   subsidyIMA
 ];
 
-buildQuery().then(settup);
+parseParams()
+.then(buildQuery)
+.then(settup);
+
+// Naive parmeter parsing, should have the following format -l language -s service
+function parseParams() {
+  service = process.argv[2] || service;
+  language = process.argv[3] || language;
+  return q.resolve();
+}
 
 function buildQuery()  {
   reportQuery = {
@@ -48,7 +61,7 @@ function settup () {
   
   // Initialise modules
   data.process(reportQuery)
-  .then(template.load)
+  .then(template.load(language))
   .then(configureReport)
   .then(collateReports)
   .catch(handleError);
@@ -68,14 +81,21 @@ function collateReports() {
   var sessionTemplate = [];
 
   // TODO move to util
-  var file = reportDate.getDate() + '-' + (reportDate.getMonth() + 1) + '-' + reportDate.getFullYear();
+  var file = reportDate.getDate() +
+             '-' +
+             (reportDate.getMonth() + 1) +
+             '-' +
+             reportDate.getFullYear() +
+             '_' +
+             language +
+             '_' +
+             service;
 
-  try { 
-    
-    include.forEach(function (templateMethod) { 
-      sessionTemplate.push(templateMethod());  
+  try {
+    include.forEach(function (templateMethod) {
+      sessionTemplate.push(templateMethod());
     });
-  }catch(e) { 
+  }catch(e) {
     console.log(e);
   }
   
