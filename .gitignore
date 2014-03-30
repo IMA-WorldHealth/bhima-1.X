@@ -8,6 +8,7 @@
 node_modules/
 test/reports/
 scripts/sql/backup/
+scripts/mail/out/
 
 # ignore misc
 /misc/*
