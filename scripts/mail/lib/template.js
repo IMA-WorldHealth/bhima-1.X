@@ -4,17 +4,16 @@ var q = require('q');
 
 var template = exports;
 
+// Derive from configuration
+var language = 'en';
 var route = {
   structure : './template/template.html',
   header : './template/header.template.html',
   section : './template/section.template.html',
-  reports : './template/reports/en.json'
+  reports : './template/reports/' + language + '.json'
 };
 var store = {};
 var structureCache, reports;
-
-//module.exports = (function (param) { });
-
 
 // util.format - printf
 
@@ -76,12 +75,15 @@ template.produceReport = function (bodyString, outputFile) {
   return writeFile(outputFile, structureCache);
 };
 
-template.load = function (templateConf) { 
+template.load = function (setLanguage, templateConf) { 
   var deferred = q.defer();
   var loadStatus = [], keys = Object.keys(route);
   
   templateConf = templateConf || route;
-  
+  language = setLanguage || language;
+
+  route.reports = './template/reports/' + language + '.json';
+
   loadStatus = keys.map(function (key) { 
     return readFile(templateConf[key]);
   });
