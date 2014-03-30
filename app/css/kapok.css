@@ -139,6 +139,12 @@ input::-webkit-inner-spin-button {
   font-size : 12px;
 }
 
+#journal_grid.grid.danger .grid-canvas .slick-group {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  color : white;
+}
+
 #logo  { 
   box-shadow: 0 2px 6px -3px black;
   height: 140px;

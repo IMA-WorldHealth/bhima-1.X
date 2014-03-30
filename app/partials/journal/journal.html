@@ -4,7 +4,7 @@
 
 <section class="top-nav" ng-controller="journal.utilities">
   <div class="pull-left dropdown">
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle">
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!editing">
       <span class="glyphicon glyphicon-sort-by-attributes"></span> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}
     </button>
     <ul class="dropdown-menu">
@@ -12,17 +12,20 @@
       <li><a href="" ng-click="groupBy('account')">{{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
       <li><a href="" ng-click="groupBy('deb_cred')">{{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
     </ul>
+    <a class="btn btn-sm btn-default" ng-click="aggregates=!aggregates" ng-disabled="!!editing">
+      <span class="glyphicon" ng-class="{ 'glyphicon-th-list' : !!aggregates, 'glyphicon-list' : !aggregates }"></span>
+    </a>
   </div>
 
   <div class="pull-right">
-    <a class="btn btn-default btn-sm" ng-click="split()" ng-disabled="rows.length!=1">
-      <span class="glyphicon glyphicon-random" ng-style="rows.length!=1 ? {} : {color:'rgb(2, 179, 2)'}"></span> {{ 'POSTING_JOURNAL.SPLIT' | translate}} {{ 'POSTING_JOURNAL.TRANSACTION' | translate}}
+    <a class="btn btn-sm"  ng-class="{ 'btn-danger' : !!editing, 'active': !!editing, 'btn-default' : !editing }" ng-click="editMode()" ng-disabled="!hasData || !!editorLock">
+      <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT' | translate}} 
     </a>
-    <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="liveTransaction.state">
-      <span class="glyphicon glyphicon-stats"></span> {{'POSTING_JOURNAL.TRIAL_BALANCE' | translate}}
+    <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!editing">
+      <span class="glyphicon glyphicon-stats"></span> {{'POSTING_JOURNAL.TRIAL_BALANCE' | translate }}
     </a>
     <span class="dropdown">
-      <button type="button" class="btn btn-default btn-sm dropdown-toggle">
+      <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!editing">
         <span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate }}
       </button>
       <ul class="dropdown-menu">
@@ -34,7 +37,7 @@
         </li>
       </ul>
     </span>
-    <a class="btn btn-default btn-sm" ng-click="print()">
+    <a class="btn btn-default btn-sm" ng-click="print()" ng-disabled="!!editing">
       <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
     </a>
   </div>
