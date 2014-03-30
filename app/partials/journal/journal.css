@@ -1,10 +1,1 @@
-/*Not optimal to control utils layout on two different elements*/
 
-/*Temporary fix for border-box bootstrap collision*/
-.grid,
-.grid div {
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  font-size: 0.95em;
-}

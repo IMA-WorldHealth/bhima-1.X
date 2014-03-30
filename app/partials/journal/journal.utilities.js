@@ -5,16 +5,24 @@ angular.module('kpk.controllers')
   '$location',
   '$modal',
   '$filter',
+  'precision',
   'appcache',
   'connect',
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $translate, $location, $modal, $filter, Appcache, connect, validate, appstate, messenger) {
+  function ($scope, $translate, $location, $modal, $filter, precision, Appcache, connect, validate, appstate, messenger) {
     var dependencies = {};
     var columns, options, dataview, grid, manager;
     var cache = new Appcache('journal.utilities');
 
+    $scope.aggregates = true;
+    $scope.hasData = false;
+    $scope.editing = false;
+    $scope.editorLock = false;
+
+    // TODO : both journal.utilities and journal.controls use this
+    // table.  Use promises to share the data between the two controllers
     dependencies.account = {
       query : {
         'tables' : {
@@ -31,6 +39,7 @@ angular.module('kpk.controllers')
         dataview = params[2];
         options = params[3];
         manager = params[4];
+        $scope.hasData = !!dataview.getItems().length;
         return validate.process(dependencies);
       })
       .then(initialise)
@@ -50,6 +59,17 @@ angular.module('kpk.controllers')
         $scope.columns = angular.copy(columns);
         $scope.columns.forEach(function (column) { column.visible = true; });
       }
+
+      $scope.groupBy('transaction');
+
+      // expose regrouping method to other scopes
+      manager.regroup = function () {
+        if ($scope.grouping) { $scope.groupBy($scope.grouping); }
+      };
+
+      manager.toggleEditorLock= function () {
+        $scope.editorLock = !$scope.editorLock;
+      };
     }
 
     function handleErrors (error) {
@@ -89,6 +109,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.groupBy = function groupBy(targetGroup) {
+      $scope.grouping = targetGroup;
 
       function groupByTransaction() {
         dataview.setGrouping({
@@ -100,7 +121,8 @@ angular.module('kpk.controllers')
             new Slick.Data.Aggregators.Sum("debit_equiv"),
             new Slick.Data.Aggregators.Sum("credit_equiv")
           ],
-          aggregateCollapsed: false
+          aggregateCollapsed: $scope.aggregates,
+          lazyTotalsCalculation : true
         });
       }
 
@@ -117,7 +139,8 @@ angular.module('kpk.controllers')
             new Slick.Data.Aggregators.Sum("debit_equiv"),
             new Slick.Data.Aggregators.Sum("credit_equiv")
           ],
-          aggregateCollapsed: false
+          lazyTotalsCalculation : true,
+          aggregateCollapsed: $scope.aggregates
         });
       }
 
@@ -131,32 +154,35 @@ angular.module('kpk.controllers')
 
     function formatTransactionGroup(g) {
       var rowMarkup,
-          splitTemplate,
+          editTemplate = "",
           firstElement = g.rows[0];
 
-      if (manager.state === "split") {
-        if (firstElement.trans_id === manager.transaction_id) {
-          rowMarkup =
-            "<span style='color: red;'>" +
-            "  <span style='color: red;' class='glyphicon glyphicon-pencil'> </span> " +
-            $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " "  + g.value + " (" + g.count + " records)" +
-            "</span> " +
-            "Total Transaction Credit: <b>" + $filter('currency')(manager.origin.credit_equiv) + "</b> " +
-            "Total Transaction Debit: <b>" + $filter('currency')(manager.origin.debit_equiv) + "</b> " +
-            "<div class='pull-right'>" +
-            "  <a class='split'><span class='glyphicon glyphicon-plus'></span> Split</a>" +
-            "  <a style='margin-left: 15px;' class='submitSplit'><span class='glyphicon glyphicon-floppy-save'></span> Save Transaction</a>" +
-            "</div>";
-          return rowMarkup;
-        }
+
+      // FIXME : Edit flag should not appear while the manager is editing
+      // we need two modes: editable and editing;
+
+      if (manager.editable) {
+        editTemplate = "<div class='pull-right'><a class='unlockEditing' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
       }
 
-      splitTemplate = "<div class='pull-right'><a class='splitTransaction'> " + $translate("POSTING_JOURNAL.SPLIT_TRANSACTION") + " </a></div>";
-      rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " records)</span>";
+      if (firstElement.trans_id === manager.transactionId) {
+        rowMarkup =
+          "<span style='color: white;'>" +
+          "  <span style='color: white;' class='glyphicon glyphicon-pencil'> </span> " +
+          $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " "  + g.value + " (" + g.count + " records)" +
+          "</span> " +
+          "Total Transaction Credit: <b>" + $filter('currency')(manager.origin.credit_equiv) + "</b> " +
+          "Total Transaction Debit: <b>" + $filter('currency')(manager.origin.debit_equiv) + "</b> " +
+          "<div class='pull-right'>" +
+          "  <a class='addRow' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-plus'></span>  " + $translate('POSTING_JOURNAL.ADD_ROW') + "</a>" +
+          "  <span style='padding: 5px;'></span>" + // FIXME Hacked spacing;
+          "  <a class='save' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk'></span>  " + $translate('POSTING_JOURNAL.SAVE_TRANSACTION') + "</a>" +
+          "</div>";
+        return rowMarkup;
+      }
 
-      //FIXME
-      // if(!liveTransaction.state) rowMarkup += splitTemplate;
-      rowMarkup += splitTemplate;
+      rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " records)</span>";
+      rowMarkup += editTemplate;
       return rowMarkup;
     }
 
@@ -171,6 +197,15 @@ angular.module('kpk.controllers')
       //cache.put('columns', columns);
       grid.setColumns(columns);
     }, true);
+
+    $scope.editMode = function editMode () {
+      if (manager.state === 'editing') { return; }
+      manager.editable =  !manager.editable;
+      $scope.editing = !$scope.editing;
+      // FIXME: Get angular to do this through two different scopes
+      $('#journal_grid').toggleClass('danger');
+      $scope.groupBy('transaction');
+    };
 
   }
 ]);

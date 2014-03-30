@@ -4,10 +4,11 @@ angular.module('kpk.controllers')
   '$translate',
   '$filter',
   '$q',
+  'precision',
   'validate',
   'messenger',
   'appstate',
-  function ($scope, $translate, $filter, $q, validate, messenger, appstate) {
+  function ($scope, $translate, $filter, $q, precision, validate, messenger, appstate) {
     var dependencies = {};
     var columns, options, dataview, grid, state = {};
     var ready = $q.defer();
@@ -34,18 +35,17 @@ angular.module('kpk.controllers')
       columns = [
         {id: 'uuid'          , name: $translate('COLUMNS.ID')             , field: 'uuid'           , sortable : true},
         {id: 'trans_id'      , name: $translate('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true},
-        {id: 'trans_date'    , name: $translate('COLUMNS.DATE')           , field: 'trans_date'     , sortable: true},
-        // {id: 'trans_date'    , name: $translate('COLUMNS.DATE')           , field: 'trans_date'     , formatter: formatDate, sortable: true},
+        {id: 'trans_date'    , name: $translate('COLUMNS.DATE')           , field: 'trans_date'     , formatter : formatDate, sortable: true},
         {id: 'description'   , name: $translate('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110 , editor: Slick.Editors.Text } ,
         // {id: 'account_id'    , name: $translate('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true , editor:SelectCellEditor},
         {id: 'account_id'    , name: $translate('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true },
-        // {id: 'debit_equiv'   , name: $translate('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
-        // {id: 'credit_equiv'  , name: $translate('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        {id: 'debit_equiv'   , name: $translate('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        {id: 'credit_equiv'  , name: $translate('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
         // {id: 'deb_cred_uuid' , name: 'AR/AP Account'                      , field: 'deb_cred_uuid'  , editor:SelectCellEditor},
         // {id: 'deb_cred_type' , name: $translate('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'  , editor:SelectCellEditor},
         // {id: 'inv_po_id'     , name: $translate('COLUMNS.INVPO_ID')       , field: 'inv_po_id'      , editor:SelectCellEditor}
-        {id: 'debit_equiv'   , name: $translate('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
-        {id: 'credit_equiv'  , name: $translate('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        // {id: 'debit_equiv'   , name: $translate('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        // {id: 'credit_equiv'  , name: $translate('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
         {id: 'deb_cred_uuid' , name: 'AR/AP Account'                      , field: 'deb_cred_uuid'},
         {id: 'deb_cred_type' , name: $translate('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
         {id: 'inv_po_id'     , name: $translate('COLUMNS.INVPO_ID')       , field: 'inv_po_id'}
@@ -61,6 +61,10 @@ angular.module('kpk.controllers')
       };
 
       populate();
+    }
+
+    function formatDate (row, col, val) {
+      return $filter('date')(val);
     }
 
     function populate () {
@@ -107,6 +111,21 @@ angular.module('kpk.controllers')
 
     function expose () {
       ready.resolve([grid, columns, dataview, options, state]);
+    }
+
+    function totalFormat(totals, column) {
+      var fmt = {
+        'credit'       : '#F70303',
+        'debit'        : '#02BD02',
+        'debit_equiv'  : '#F70303',
+        'credit_equiv' : '#02BD02'
+      };
+
+      var val = totals.sum && totals.sum[column.field];
+      if (val !== null) {
+        return "<span style='font-weight: bold; color:" + fmt[column.id] + ";'>" + $filter('currency')(precision.round(val)) + "</span>";
+      }
+      return "<b>ERROR</b>";
     }
 
     validate.process(dependencies)
