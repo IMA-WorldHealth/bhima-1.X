@@ -13,6 +13,7 @@ _________________
 - send.js should tell mail.js what language is being built
 - file name should refelct all information dd-mm-yyyy-daily-en.html
 
+- distribute.js currently fails if out folder does not exist
 - mail.js should accept the following parameters
   -l language
   -s service (daily | weekly | monthly | yearly)

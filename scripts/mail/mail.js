@@ -1,5 +1,6 @@
 #!/usr/local/bin/node
 var q = require('q');
+var fs = require('fs');
 
 var template = require('./lib/template.js');
 var data = require('./lib/data.js');
@@ -30,6 +31,7 @@ var include = [
 ];
 
 parseParams()
+.then(configureEnvironment)
 .then(buildQuery)
 .then(settup);
 
@@ -90,6 +92,7 @@ function collateReports() {
              language +
              '_' +
              service;
+  var path = 'out/'.concat(file, '.html');
 
   try {
     include.forEach(function (templateMethod) {
@@ -99,7 +102,11 @@ function collateReports() {
     console.log(e);
   }
   
-  template.produceReport(sessionTemplate.join("\n"), 'out/'.concat(file, '.html')); 
+
+  template.produceReport(sessionTemplate.join("\n"), path);
+  
+  // Write the name of the file written to standard out
+  console.log(path);
   data.end();
 }
   
@@ -216,4 +223,18 @@ function filterCurrency (value) {
 
 function handleError(error) {
   throw error;
+}
+
+// Temporary - ensure out exists
+function configureEnvironment() {
+  var deferred = q.defer();
+    
+  fs.exists('./out', function (result) {
+    if (result) return deferred.resolve();
+    
+    fs.mkdir('out', function () {
+      return deferred.resolve();
+    });
+  });
+  return deferred.promise;
 }
