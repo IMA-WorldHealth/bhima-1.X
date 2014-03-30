@@ -28,7 +28,7 @@ var include = [
 buildQuery().then(settup);
 
 function buildQuery()  {
-  reportQuery = { 
+  reportQuery = {
     "New_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 0;",
     "Renewal_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 1;",
     "Sum_Cash" : "SELECT SUM(cost) as 'total' FROM cash where date = " + util.date.from + ";",
