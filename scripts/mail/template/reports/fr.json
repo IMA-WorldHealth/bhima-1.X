@@ -1,0 +1,38 @@
+{
+  "Header" : {
+    "overview" : "Sommaire",
+    "accounts" : "Comptes",
+    "experimental" : "Rapport Experimental"
+  },
+
+  "Section" : {
+    "registration" : {
+      "heading" : "Enregistrement des Patients",
+      "content" : "Aujourd'hui, %s patient(s) etaient enregistre(s); %s nouveau patient(s), et %s revenu(s)."
+    },
+    "cash" : {
+      "heading" : "Caisse HBB",
+      "content" : "%s etaient entrees dans la caisse auxilliaire HBB, payes contre un total de %s factures."
+    },
+    "subsidy" : {
+      "heading" : "Compte IMA",
+      "content" : "Le compte d'IMA etait charge avec un total de %s aidant %s pour recevoir des soins."
+    },
+    "sale" : {
+      "heading" : "Facture",
+      "content" : "%s des factures ont ete envoyees correspondant aux %s lignes d'item, Ceci concerne les factures des patients ambulatoires et hospitalises."
+    },
+    "fiche" : {
+      "heading" : "Consultation Fiche",
+      "content" : "Un total de %s etait fait pour les fiches de consulation; %s pour 'Nouvelle Fiche' et %s pour 'Anciennce Fiche'."
+    },
+    "alert_one" : {
+      "heading" : "Information",
+      "content" : "Veillez remarquer qu'il s'agit d'un rapport automatique base sur les donnees capturees par le systeme BHIMA. Il est cense fournir un rapport transparent concernant la finance et autres activites administratives a l'administration IMCK. Ce message n'apparaittra plus une seconde fois."
+    },
+    "alert_two" : {
+      "heading" : "PAX",
+      "content" : "BHIMA est entrain d'etre installe a PAX. Ce rapport va inclure les information de l'IMCK dans son entirete PAX et HBB comprises."
+    }
+  }
+}

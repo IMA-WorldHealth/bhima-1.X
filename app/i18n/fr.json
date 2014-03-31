@@ -312,7 +312,8 @@
     "CLIENT"                    : "Client",
     "BENEFICIARY"               : "Beneficiary",
     "MAIN_CASH"                 : "Caisse Principale",
-    "PROJECT"                   : "Projects"
+    "JOURNAL_VOUCHER"           : "Ajout Transactions",
+    "PROJECT"                   : "Projets"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -473,7 +474,8 @@
     "VALUE"               : "Valeur",
     "SCOPE"               : "Appliquer a",
     "VISIT_DATE"          : "Date de Visite",
-    "DEBITOR_TYPE"        : "Type de Debiteur"
+    "DEBITOR_TYPE"        : "Type de Debiteur",
+    "CREDITOR"            : "Crediteur"
   },
 
   "REPORT"                  : {
@@ -920,5 +922,19 @@
     "SOURCE"      : "Source",
     "EXPECTED"    : "Attendu",
     "RECEIVED"    : "Recu"
-  }
+  },
+
+"JOURNAL_VOUCHER"  : {
+    "TITLE"                 : "Ajout Transaction",
+    "ADD_ROW"               : "Ajouter Ligne",
+    "POSTING_JOURNAL"       : "Posting Journal",
+    "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
+    "TAB_LOCK_LINE"         : "Ligne par Ligne",
+    "DATE"                  : "Date Transaction",
+    "DESCRIPTION"           : "Description",
+    "SUBMIT"                : "Soumettre",
+    "DEFAULT_CURRENCY"      : "Monnaie",
+    "TRANS_ID"              : "Transaction ID : ",
+    "LOG"                   : "Log Journal ID : "
+}
 }
