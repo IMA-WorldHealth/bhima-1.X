@@ -20,12 +20,16 @@ angular.module('kpk.controllers')
 
     $scope.editing = false;
 
+    function isNull (t) { return t === null; }
+
+    function clone (o) { return JSON.parse(JSON.stringify(o)); }
+
     dependencies.account = {
       query : {
+        'identifier' : 'account_number',
         'tables' : {
           'account' : { 'columns' : ['id', 'account_number', 'account_type_id', 'account_txt'] }
-        },
-        identifier: 'account_number'
+        }
       }
     };
 
@@ -62,6 +66,10 @@ angular.module('kpk.controllers')
       }
     };
 
+    appstate.register('project', function (project) {
+      $scope.project = project;
+    });
+
     appstate.register('journal.ready', function (ready) {
       ready.then(function (params) {
         grid = params[0];
@@ -80,18 +88,20 @@ angular.module('kpk.controllers')
 
       $scope.journal = new Store({ data : dataview.getItems() });
 
-      var editable = {
-        'trans_date' : DateEditor, // SlickGrids date editors uses $() datepicker
-        'account_id' : AccountEditor,
-        'deb_cred_uuid': DebCredEditor,
-        'deb_cred_type': DebCredTypeEditor,
-        'inv_po_id': InvoiceEditor
+      var editors = {
+        'trans_date'    : DateEditor, // SlickGrids date editors uses $() datepicker
+        'account_id'    : AccountEditor,
+        'deb_cred_uuid' : DebCredEditor,
+        'deb_cred_type' : DebCredTypeEditor,
+        'inv_po_id'     : InvoiceEditor
       };
+
       columns.forEach(function (column) {
-        if (editable[column.id]) { column.editor = editable[column.id]; }
+        if (editors[column.id]) { column.editor = editors[column.id]; }
       });
 
       grid.setColumns(columns);
+
       // set up grid sorting
 
       grid.onSort.subscribe(function(e, args) {
@@ -118,14 +128,8 @@ angular.module('kpk.controllers')
     }
 
     function sort (a,b) {
-      var x, y;
-      if (sort_column === 'trans_id') {
-        x = parseFloat(a[sort_column].substr(3));
-        y = parseFloat(b[sort_column].substr(3));
-      } else {
-        x = a[sort_column];
-        y = b[sort_column];
-      }
+      var x = sort_column === 'trans_id' ? parseFloat(a[sort_column].substr(3)) : [sort_column];
+      var y = sort_column === 'trans_id' ? parseFloat(b[sort_column].substr(3)) : b[sort_column];
       return (x === y) ? 0 : (x > y ? 1 : -1);
     }
 
@@ -134,27 +138,18 @@ angular.module('kpk.controllers')
       var buttonMap = {
         'addRow'          : addRow,
         'editTransaction' : editTransaction,
-        'unlockEditing'   : unlockEditing,
+        'initEditing'     : initEditing,
         'save'            : save
       };
       if (buttonMap[className]) { buttonMap[className](args); }
     }
 
-    function generateId (array) {
-      var ids = [];
-      array.forEach(function (o) {
-        ids.push(Number(o.trans_id.substr(3)));
-      });
-      var max = Math.max.apply(Math.max, ids);
-      return max ? 'HBB' + (max + 1) : 'HBB1';
-    }
-
-    function clone (o) { return JSON.parse(JSON.stringify(o)); }
 
     function addRow () {
       $scope.journal.recalculateIndex();
       var _uuid = uuid();
       var transactionLine = clone(manager.template);
+      transactionLine.newRecord = true;
 
       transactionLine.uuid = _uuid;
       manager.records.push(transactionLine);
@@ -163,7 +158,7 @@ angular.module('kpk.controllers')
       //grid.scrollRowToTop(dataview.getRowById(transactionLine.uuid));
     }
 
-    function unlockEditing (args) {
+    function initEditing(args) {
       var transaction = dataview.getItem(args.row);
       manager.transactionId = transaction.groupingKey;
       manager.editable = false;
@@ -192,20 +187,23 @@ angular.module('kpk.controllers')
 
       manager.template = {
         trans_id       : transactionId,
+        fiscal_year_id : templateRow.fiscal_year_id,
+        period_id      : templateRow.period_id,
         trans_date     : templateRow.trans_date,
         description    : templateRow.description,
+        project_id     : templateRow.project_id,
         account_number : "(Select Account)",
         debit_equiv    : 0,
         credit_equiv   : 0,
-        debit: 0,
-        credit: 0,
+        debit          : 0,
+        credit         : 0,
         inv_po_id      : templateRow.inv_po_id,
         currency_id    : templateRow.currency_id,
-        userId         : 13
+        userId         : 13 // FIXME
       };
 
       transaction.rows.forEach(function(row) {
-        row.newTransaction = false;
+        row.newRecord = false;
         manager.records.push(row);
       });
 
@@ -222,7 +220,31 @@ angular.module('kpk.controllers')
       $rootScope.$apply(messenger.success(msg));
     }
 
-    //TODO Both submit function have similar structure, but differ on tests and put/post, exract pattern
+    function packager (record) {
+      var data = {}, cpProperties, prop;
+      cpProperties = [
+        'uuid', 'project_id', 'trans_id', 'trans_date', 'period_id', 'description', 'account_id',
+        'credit', 'debit', 'debit_equiv', 'credit_equiv', 'fiscal_year_id', 'currency_id',
+        'deb_cred_id', 'deb_cred_type', 'inv_po_id', 'user_id', 'origin_id'
+      ];
+
+      for (prop in record) {
+        if (~cpProperties.indexOf(prop)) {
+          if (angular.isDefined(record[prop]) && !isNull(record[prop])) {
+            data[prop] = record[prop];
+          }
+        }
+      }
+
+      if (record.account_number) { data.account_id = $scope.account.get(record.account_number).id; }
+      // FIXME : Review this decision
+      data.project_id = $scope.project.id;
+      data.origin_id = 4;
+
+      return data;
+
+    }
+
     function save () {
       var records = manager.records;
       var totalDebits = 0, totalCredits = 0;
@@ -245,7 +267,7 @@ angular.module('kpk.controllers')
         var account_number = Number(record.account_number);
         if (Number.isNaN(account_number)) validAccounts = false;
         if (Number(record.debit_equiv) === 0 && Number(record.credit_equiv) === 0) { zeroTransaction = true; }
-        if (record.debit_equiv && record.credit_equiv) { singleEntry = true; }
+        if (Number(record.debit_equiv) !== 0 && Number(record.credit_equiv) !== 0) { singleEntry = true; }
         if (isNaN(Date.parse(new Date(record.trans_date)))) { validDates = false; }
       });
 
@@ -261,52 +283,38 @@ angular.module('kpk.controllers')
       broadcastSuccess('All tests passed');
 
       var newRecords = [];
-
-      console.log('records', records);
-      return;
+      var editedRecords = [];
 
       records.forEach(function(record) {
-        //console.log('currency', record.currency_id);
-        var newRecord = record.newTransaction;
-
-        var packageChanges = {
-          description: record.description,
-          debit_equiv: record.debit_equiv,
-          credit_equiv: record.credit_equiv,
-        };
-
-        packageChanges.account_id = $scope.account.get(record.account_number).id;
-        packageChanges.uuid = record.uuid;
-
-        if (newRecord) {
-          //console.log('new record', record, record.currency_id);
-          packageChanges.deb_cred_type = record.deb_cred_type;
-          if(record.deb_cred_id) packageChanges.deb_cred_id = record.deb_cred_id;
-          if(record.inv_po_id) packageChanges.inv_po_id = record.inv_po_id;
-          packageChanges.credit = record.credit_equiv;
-          packageChanges.debit = record.debit_equiv;
-          packageChanges.trans_date = record.trans_date;
-          packageChanges.trans_id = record.trans_id;
-          packageChanges.period_id = fiscalSettings.period_id;
-          packageChanges.fiscal_year_id = fiscalSettings.id;
-          packageChanges.enterprise_id = enterpriseSettings.id;
-          if(record.currency_id) packageChanges.currency_id = record.currency_id;
-          packageChanges.origin_id = 4; //FIXME Coded pretty hard, origin_id is supposed to reference transaction_type
-          packageChanges.user_id = manager.template.userId;
-          return request.push(connect.basicPut('posting_journal', [packageChanges]));
-        }
-        request.push(connect.basicPost('posting_journal', [packageChanges], ['id']));
+        var newRecord = record.newRecord;
+        var packed = packager(record);
+        (newRecord ? newRecords : editedRecords).push(packed);
       });
 
-      $q.all(request)
+      connect.fetch('/user_session')
+      .success(function (res) {
+        var user_id = res.id;
+        newRecords.forEach(function (rec) { rec.user_id = user_id; });
+        editedRecords.forEach(function (rec) { rec.user_id = user_id; });
+        return newRecords.length ? connect.basicPut('posting_journal', newRecords) : $q.when(1);
+      })
       .then(function () {
-        messenger.success('Transaction split written to database');
+        return editedRecords.map(function (record) { return connect.basicPost('posting_journal', [record], ['uuid']); });
+      })
+      .then(function () {
+        messenger.success('Transaction edits written to database');
         manager.state = null;
+        manager.transactionId = null;
         manager.toggleEditorLock();
+        manager.toggleEditMode();
+        manager.editable = false; // FIXME : this should be done by a toggle.
+        manager.regroup();
         grid.invalidate();
         grid.render();
       })
-      .catch(function (err) { messenger.danger("Split submission failed"); });
+      .catch(function (err) {
+        messenger.danger("Submission failed" + err);
+      });
     }
 
     function writeJournalLog (details) {
@@ -337,85 +345,78 @@ angular.module('kpk.controllers')
     }
 
     // Editors
-    
+
+    function BaseEditor () {
+
+      this.destroy = function () { this.$input.remove(); };
+
+      this.focus = function () { this.$input.focus(); };
+
+      this.serializeValue = function () { return this.$input.val(); };
+
+      this.isValueChanged = function () { return true; };
+
+      this.validate = function () {
+        return {
+          valid: true,
+          msg: null
+        };
+      };
+    }
+
     function DateEditor (args) {
-      var $input, defaultValue;
+      var defaultValue;
 
       this.init = function () {
-        defaultValue = args.item.trans_id;
-        $input = $("<input class='editor-text' type='date'>");
-        $input.appendTo(args.container);
-        $input.focus();
+        defaultValue = args.item.trans_date;
+        this.$input = $("<input class='editor-text' type='date'>");
+        this.$input.appendTo(args.container);
+        this.$input.focus();
       };
-
-      this.destroy = function () { $input.remove(); };
-
-      this.focus = function () { $input.focus(); };
-
-      this.loadValue = function (item) { $input.val(defaultValue); };
-
-      this.serializeValue = function () { return $input.val(); };
 
       this.applyValue = function(item,state) {
         var e = util.convertToMysqlDate(new Date(state));
         item[args.column.field] = e;
       };
 
-      this.isValueChanged = function () { return true; };
-
-      this.validate = function () {
-        return {
-          valid: true,
-          msg: null
-        };
-      };
+      this.loadValue = function (item) { this.$input.val(defaultValue); };
 
       this.init();
     }
 
+    DateEditor.prototype = new BaseEditor();
+
     function InvoiceEditor(args) {
-      var $select, defaultValue;
       var clear = "<option value='clear'>Clear</option>",
-          cancel = "<option value='cancel'>Cancel</option>";
+          cancel = "<option value='cancel'>Cancel</option>",
+          defaultValue;
+
 
       this.init = function () {
-        options = "";
+        defaultValue = args.item.inv_po_id;
+        var options = "";
         $scope.invoice.data.forEach(function (invoice) {
           options += '<option value="' + invoice.uuid + '">' + invoice.uuid + ' ' + invoice.note + '</option>';
         });
 
         var label = 'Invoice';
-        options += !!options.length ? cancel + clear : "<option value='' disabled>[No " + label + "s Found]</option>";
 
-        $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
-        $select.appendTo(args.container);
-        $select.focus();
+        this.$input = $("<input type='text' class='editor-text' list='invoices'><datalist id='invoices'>" + options + "</datalist>");
+        this.$input.appendTo(args.container);
+        this.$input.focus();
       };
-
-      this.destroy = function () { $select.remove(); };
-
-      this.focus = function () { $select.focus(); };
-
-      this.loadValue = function (item) { $select.val(defaultValue); };
-
-      this.serializeValue = function () { return $select.val(); };
 
       this.applyValue = function(item,state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
 
-      this.isValueChanged = function () { return true; };
-
-      this.validate = function () {
-        return {
-          valid: true,
-          msg: null
-        };
-      };
+      this.loadValue = function (item) { this.$input.val(defaultValue); };
 
       this.init();
     }
+
+    InvoiceEditor.prototype = new BaseEditor();
 
     function DebCredEditor (args) {
       var $select, defaultValue;
@@ -423,7 +424,7 @@ angular.module('kpk.controllers')
           cancel = "<option value='cancel'>Cancel</option>";
 
       this.init = function () {
-        defaultValue = angular.isDefined(args.item.deb_cred_uuid) ? null : args.item.deb_cred_uuid;
+        defaultValue = angular.isDefined(args.item.deb_cred_uuid) ? args.item.deb_cred_uuid : null;
         var deb_cred_type = args.item.deb_cred_type;
         var options = "";
 
@@ -492,7 +493,7 @@ angular.module('kpk.controllers')
 
 
     function AccountEditor (args) {
-      var $select, defaultValue;
+      var defaultValue;
       var clear = "<option value='clear'>Clear</option>",
           cancel = "<option value='cancel'>Cancel</option>";
 
@@ -510,47 +511,35 @@ angular.module('kpk.controllers')
 
         options += cancel;
 
-        $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
-        $select.appendTo(args.container);
-        $select.focus();
+        this.$input = $("<SELECT class='editor-text'>" + options + "</SELECT>");
+        this.$input.appendTo(args.container);
+        this.$input.focus();
       };
 
-      this.destroy = function () { $select.remove(); };
-
-      this.focus = function () { $select.focus(); };
-
-      this.loadValue = function (item) { $select.val(defaultValue); };
-
-      this.serializeValue = function () { return $select.val(); };
+      this.loadValue = function (item) { this.$input.val(defaultValue); };
 
       this.applyValue = function(item,state) {
         if (state === 'cancel') { return; }
+        console.log("state", state, args.column.field);
         item[args.column.field] = state === 'clear' ? '' : state;
-      };
-
-      this.isValueChanged = function () { return true; };
-
-      this.validate = function () {
-        return {
-          valid: true,
-          msg: null
-        };
       };
 
       this.init();
 
     }
 
+    AccountEditor.prototype = new BaseEditor();
+
     function DebCredTypeEditor (args) {
-      var $select, defaultValue;
+      var defaultValue;
       var clear = "<option value='clear'>Clear</option>",
           cancel = "<option value='cancel'>Cancel</option>";
 
-      this.init = function () {
-        var options = ["D", "C", "Cancel"];
 
-        // FIXME Hardcoded spagetthi
-        defaultValue = options[0];
+      this.init = function () {
+        var options = ["D", "C"];
+
+        defaultValue = args.item.deb_cred_type;
         var concatOptions = "";
 
         options.forEach(function(option) {
@@ -559,34 +548,22 @@ angular.module('kpk.controllers')
 
         concatOptions += clear + cancel;
 
-        $select = $('<select class="editor-text">' + concatOptions + "</select>");
-        $select.appendTo(args.container);
-        $select.focus();
+        this.$input = $('<select class="editor-text">' + concatOptions + "</select>");
+        this.$input.appendTo(args.container);
+        this.$input.focus();
       };
 
-      this.destroy = function () { $select.remove(); };
 
-      this.focus = function () { $select.focus(); };
-
-      this.loadValue = function (item) { $select.val(defaultValue); };
-
-      this.serializeValue = function () { return $select.val(); };
+      this.loadValue = function (item) { this.$input.val(defaultValue); };
 
       this.applyValue = function(item,state) {
-        if (state === 'Cancel') { return; }
-        item[args.column.field] = state === 'Remove' ? '' : state;
-      };
-
-      this.isValueChanged = function () { return true; };
-
-      this.validate = function () {
-        return {
-          valid: true,
-          msg: null
-        };
+        if (state === 'cancel') { return; }
+        item[args.column.field] = state === 'clear' ? '' : state;
       };
 
       this.init();
     }
+
+    DebCredTypeEditor.prototype = new BaseEditor();
   }
 ]);

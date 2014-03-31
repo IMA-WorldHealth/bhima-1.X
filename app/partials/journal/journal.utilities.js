@@ -46,7 +46,8 @@ angular.module('kpk.controllers')
       .catch(handleErrors);
     });
 
-    cache.fetch('columns').then(function (columns) {
+    cache.fetch('columns')
+    .then(function (columns) {
       if (!columns) { return; }
       $scope.columns = columns;
     });
@@ -67,8 +68,12 @@ angular.module('kpk.controllers')
         if ($scope.grouping) { $scope.groupBy($scope.grouping); }
       };
 
-      manager.toggleEditorLock= function () {
+      manager.toggleEditorLock = function () {
         $scope.editorLock = !$scope.editorLock;
+      };
+
+      manager.toggleEditMode = function () {
+        $scope.toggleEditMode();
       };
     }
 
@@ -158,11 +163,9 @@ angular.module('kpk.controllers')
           firstElement = g.rows[0];
 
 
-      // FIXME : Edit flag should not appear while the manager is editing
-      // we need two modes: editable and editing;
-
       if (manager.editable) {
-        editTemplate = "<div class='pull-right'><a class='unlockEditing' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
+        console.log("manager.editable", manager.editable);
+        editTemplate = "<div class='pull-right'><a class='initEditing' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
       }
 
       if (firstElement.trans_id === manager.transactionId) {
@@ -198,13 +201,18 @@ angular.module('kpk.controllers')
       grid.setColumns(columns);
     }, true);
 
-    $scope.editMode = function editMode () {
+    $scope.toggleEditMode = function toggleEditMode () {
       if (manager.state === 'editing') { return; }
       manager.editable =  !manager.editable;
       $scope.editing = !$scope.editing;
       // FIXME: Get angular to do this through two different scopes
       $('#journal_grid').toggleClass('danger');
       $scope.groupBy('transaction');
+    };
+
+    $scope.toggleAggregates = function toggleAggregates () {
+      $scope.aggregates =! $scope.aggregates;
+      manager.regroup();
     };
 
   }
