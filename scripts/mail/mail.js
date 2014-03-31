@@ -21,6 +21,8 @@ var reportReference = util.generateUuid();
 var reportQuery = {};
 
 var include = [
+  messageInfo, 
+  messagePax,
   overview,
   patientTotalReport,
   sale,
@@ -109,7 +111,16 @@ function collateReports() {
   console.log(path);
   data.end();
 }
-  
+
+// Temporary methods for initial email
+function messageInfo() {
+  return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_one").content);
+}
+
+function messagePax() {
+  return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_two").content);
+}
+
 function overview() { 
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "overview"));
 }
