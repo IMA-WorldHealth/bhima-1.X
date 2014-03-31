@@ -42,12 +42,10 @@
       controller : 'debitorGroup',
       templateUrl: 'partials/debitor/debitor_group.html'
     }).
-    /*
-    when('/accounts', {
-      controller: 'accountController',
-      templateUrl: '/partials/accounts/accounts.html'
+    when('/journal_voucher', {
+      controller: 'journalVoucher',
+      templateUrl: 'partials/journal_voucher/journal_voucher.html'
     }).
-    */
     when('/inventory', {
       controller: 'inventoryController',
       templateUrl: '/partials/inventory/inventory.html'

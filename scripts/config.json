@@ -43,7 +43,10 @@
       "/fiscal",
       "/caution/",
       "/synthetic/",
-      "/InExAccounts/"
+      "/InExAccounts/",
+      "/period",
+      "/max_trans/",
+      "/max_log/"
     ]
   }
 }
