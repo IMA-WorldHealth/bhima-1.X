@@ -118,8 +118,8 @@ angular.module('kpk.controllers')
       // set up editing
       grid.onBeforeEditCell.subscribe(function (e, args) {
         var item =  dataview.getItem(args.row),
-            canEdit = manager.editable || manager.state === "editing";
-        if (!canEdit || manager.transactionId !== item.trans_id ) { return false; }
+            canEdit = manager.session.mode === "edit";
+        if (!canEdit || manager.session.transactionId !== item.trans_id ) { return false; }
       });
     }
 
@@ -145,32 +145,24 @@ angular.module('kpk.controllers')
 
 
     function addRow () {
-      $scope.journal.recalculateIndex();
-      var _uuid = uuid();
-      var transactionLine = clone(manager.template);
-      transactionLine.newRecord = true;
-
-      transactionLine.uuid = _uuid;
-      manager.records.push(transactionLine);
-
-      dataview.addItem(transactionLine);
+      var row;
+      row = clone(manager.session.template);
+      row.newRecord = true;
+      row.uuid = uuid();
+      manager.session.records.push(row);
+      dataview.addItem(row);
     }
 
     // TODO : clean this f() up
     function editTransaction(args) {
-      var transaction = dataview.getItem(args.row);
       var transaction = dataview.getItem(args.row),
           transactionId = transaction.groupingKey,
           templateRow = transaction.rows[0];
 
-      manager.transactionId = transaction.groupingKey;
-      manager.editable = false;
-      manager.toggleEditorLock();
+      manager.session.mode = "edit";
+      manager.session.transactionId = transaction.groupingKey;
 
-      if (!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
-      if (manager.state) return $rootScope.$apply(messenger.info('Transaction ' + manager.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
-
-      manager.state = 'editing';
+      if (!transactionId) { return $rootScope.$apply(messenger.danger('Invalid transaction provided')); }
 
       manager.origin = {
         'debit'        : transaction.totals.sum.debit,
@@ -179,9 +171,9 @@ angular.module('kpk.controllers')
         'credit_equiv' : transaction.totals.sum.credit_equiv
       };
 
-      manager.records = [];
+      manager.session.records = [];
 
-      manager.template = {
+      manager.session.template = {
         trans_id       : transactionId,
         fiscal_year_id : templateRow.fiscal_year_id,
         period_id      : templateRow.period_id,
@@ -200,16 +192,16 @@ angular.module('kpk.controllers')
 
       transaction.rows.forEach(function(row) {
         row.newRecord = false;
-        manager.records.push(row);
+        manager.session.records.push(row);
       });
 
-      manager.regroup();
+      manager.fn.regroup();
       grid.render();
       $rootScope.$apply(messenger.success('Transaction #' + transactionId));
     }
 
     function broadcastError (msg) {
-      $rootScope.$apply(messenger.danger("[ERROR]" + msg));
+      $rootScope.$apply(messenger.danger("[ERROR] " + msg, 70000));
     }
 
     function broadcastSuccess (msg) {
@@ -309,7 +301,6 @@ angular.module('kpk.controllers')
       if (multipleDatesError) { broadcastError('Transaction trans_date field has multiple dates.'); }
 
       var hasErrors = (dateError || accountError || balanceError || singleEntryError || multipleDatesError || !validTotals(totalDebits, totalCredits));
-      if (!hasErrors) { broadcastSuccess('All tests passed'); }
 
       return hasErrors;
 
@@ -317,7 +308,7 @@ angular.module('kpk.controllers')
 
 
     function save () {
-      var records = manager.records;
+      var records = manager.session.records;
 
       var hasErrors = checkErrors(records);
       if (hasErrors) { return; }
@@ -331,10 +322,9 @@ angular.module('kpk.controllers')
         (newRecord ? newRecords : editedRecords).push(packed);
       });
 
-      var userId;
       connect.fetch('/user_session')
       .success(function (res) {
-        userId = res.id;
+        manager.session.userId = res.id;
         newRecords.forEach(function (rec) { rec.user_id = res.id; });
         editedRecords.forEach(function (rec) { rec.user_id = res.id; });
         return newRecords.length ? connect.basicPut('posting_journal', newRecords) : $q.when(1);
@@ -343,44 +333,37 @@ angular.module('kpk.controllers')
         return editedRecords.map(function (record) { return connect.basicPost('posting_journal', [record], ['uuid']); });
       })
       .then(function () {
-        messenger.success('Transaction edits written to database');
-        manager.state = null;
-        manager.transactionId = null;
-        manager.toggleEditorLock();
-        manager.toggleEditMode();
-        manager.editable = false; // FIXME : this should be done by a toggle.
-        manager.regroup();
+        return writeJournalLog(manager.session);
+      })
+      .then(function () {
+        messenger.success('Transaction edits and logs saved successfully');
+        manager.fn.resetManagerSession();
+        manager.fn.regroup();
         grid.invalidate();
         grid.render();
       })
-      .then(function () {
-        return writeJournalLog(records[0], userId);
-      })
       .catch(function (err) {
         messenger.danger("Submission failed" + err);
-      });
+      })
+      .finally();
     }
 
-    function writeJournalLog (row, userId) {
-      var justification = row.description;
+    function writeJournalLog (session) {
 
-      //console.log(details, justification, date, user);
       var packagedLog = {
-        transaction_id : row.trans_id,
-        note           : justification,
-        date           : util.convertToMysqlDate(new Date()),
-        user_id        : userId
+        uuid           : session.uuid,
+        transaction_id : session.records[0].trans_id,
+        justification  : session.justification,
+        date           : util.convertToMysqlDate(session.start),
+        user_id        : session.userId
       };
 
-      return connect.basicPut('journal_log', [packagedLog])
-      .then(function(result) {
-        manager.logId = result.data.insertId;
-        console.log("Wrote transaction log.");
-        //console.log('log was written', result);
-      });
+      return connect.basicPut('journal_log', [packagedLog]);
     }
 
     // Editors
+    // FIXME: Is there some way to include this in another file?
+    // TODO: Move to a service
 
     function BaseEditor () {
 

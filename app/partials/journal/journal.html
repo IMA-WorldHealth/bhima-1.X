@@ -4,7 +4,7 @@
 
 <section class="top-nav" ng-controller="journal.utilities">
   <div class="pull-left dropdown">
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!editing">
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-sort-by-attributes"></span> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}
     </button>
     <ul class="dropdown-menu">
@@ -15,14 +15,14 @@
   </div>
 
   <div class="pull-right">
-    <a class="btn btn-sm"  ng-class="{ 'btn-danger' : !!editing, 'active': !!editing, 'btn-default' : !editing }" ng-click="toggleEditMode()" ng-disabled="!hasData || !!editorLock">
-      <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT' | translate}} 
+    <a class="btn btn-sm"  ng-class="{ 'btn-danger active' : !!session.authenticated, 'btn-default' : !session.authenticated }" ng-click="toggleEditMode()" ng-disabled="!hasData || session.mode=='edit'">
+      <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT_MODE' | translate }} 
     </a>
-    <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!editing">
+    <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-stats"></span> {{'POSTING_JOURNAL.TRIAL_BALANCE' | translate }}
     </a>
     <span class="dropdown">
-      <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!editing">
+      <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!session.authenticated">
         <span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate }}
       </button>
       <ul class="dropdown-menu">
@@ -40,7 +40,7 @@
         </li>
       </ul>
     </span>
-    <a class="btn btn-default btn-sm" ng-click="print()" ng-disabled="!!editing">
+    <a class="btn btn-default btn-sm" ng-click="print()" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
     </a>
   </div>

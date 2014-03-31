@@ -4,7 +4,6 @@
     "GROUP_BY"              : "Group By",
     "DEB_CRED"              : "Debitor / Creditor",
     "TRANSACTION"           : "Transaction",
-    "EDIT"                  : "Super User Edit",
     "ACCOUNT"               : "Account",
     "TRIAL_BALANCE"         : "Trial Balance",
     "ADD_TRANSACTION"       : "Add Transaction",
@@ -25,7 +24,18 @@
     "LIVE_TRANSACTION"      : "Live Transaction",
     "TRANSACTION_NUMBER"    : "Transaction #",
     "VERIFY_TRANSACTION"    : "Verify Transaction",
-    "SPLIT"                 : "Split"
+    "SPLIT"                 : "Split",
+    "EDIT_MODE"             : "Super User Edit",
+    "EDIT" : {
+      "TITLE" : "Entering Posting Session",
+      "JUSTIFICATION" : "Please provide a justification for your edits.",
+      "MIN_CHARS" : "Minimum 10 characters",
+      "PIN" : "Enter your PIN to confirm your identity.",
+      "ID" : "Session ID",
+      "INVALID_PIN" : "This PIN is invalid.",
+      "ATTEMPTS_REMAINING" : "attempts remaining.",
+      "INVALID_SESSION" : "This session has expired due to too many invalid attempts.  Please see an administrator to reset your PIN or try again."
+    }
   },
 
   "PATIENT_RECORDS"     : {

@@ -16,10 +16,13 @@ angular.module('kpk.controllers')
     var columns, options, dataview, grid, manager;
     var cache = new Appcache('journal.utilities');
 
+    // Three modes : { "lock", "static", "edit" }
+    // "static" -> pj at rest, default
+    // "lock" -> pj locked, can still toggle edit mode, waiting orders
+    // "edit" -> editing: must save before unlocking, all features locked.
+
     $scope.aggregates = true;
     $scope.hasData = false;
-    $scope.editing = false;
-    $scope.editorLock = false;
 
     // TODO : both journal.utilities and journal.controls use this
     // table.  Use promises to share the data between the two controllers
@@ -63,17 +66,21 @@ angular.module('kpk.controllers')
 
       $scope.groupBy('transaction');
 
+      $scope.session = manager.session;
+      manager.session.authenticated = false;
+      manager.session.mode = "static";
+
       // expose regrouping method to other scopes
-      manager.regroup = function () {
+      manager.fn.regroup = function () {
         if ($scope.grouping) { $scope.groupBy($scope.grouping); }
       };
 
-      manager.toggleEditorLock = function () {
-        $scope.editorLock = !$scope.editorLock;
+      manager.fn.toggleEditMode = function () {
+        $scope.toggleEditMode();
       };
 
-      manager.toggleEditMode = function () {
-        $scope.toggleEditMode();
+      manager.fn.resetManagerSession = function () {
+        $scope.resetManagerSession();
       };
     }
 
@@ -160,14 +167,13 @@ angular.module('kpk.controllers')
     function formatTransactionGroup(g) {
       var rowMarkup,
           editTemplate = "",
-          firstElement = g.rows[0];
+          firstRow = g.rows[0];
 
-
-      if (manager.editable) {
+      if (manager.session.mode === "lock") {
         editTemplate = "<div class='pull-right'><a class='editTransaction' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
       }
 
-      if (firstElement.trans_id === manager.transactionId) {
+      if (manager.session.mode === "edit" && firstRow.trans_id === manager.session.transactionId) {
         rowMarkup =
           "<span style='color: white;'>" +
           "  <span style='color: white;' class='glyphicon glyphicon-pencil'> </span> " +
@@ -201,27 +207,56 @@ angular.module('kpk.controllers')
     }, true);
 
     function authenticate () {
-      connect.get('/journal/authenticate')
-      .success(function (data) {
-        
-      })
-      .catch(function (err) {
-        messenger.danger('An error occored ' + JSON.stringify(err));
+      return $modal.open({
+        backdrop: 'static', // this should not close on off click
+        keyboard : false,   // do not let esc key close modal
+        templateUrl:'partials/journal/journal.auth.html',
+        controller: 'journal.auth',
       });
     }
 
-    $scope.toggleEditMode = function toggleEditMode () {
-      if (manager.state === 'editing') { return; }
-      manager.editable =  !manager.editable;
-      $scope.editing = !$scope.editing;
-      // FIXME: Get angular to do this through two different scopes
-      $('#journal_grid').toggleClass('danger');
-      $scope.groupBy('transaction');
+    $scope.$watch('session.mode', function (nv, ov) {
+      if (!manager || !manager.session || !manager.session.mode) { return; }
+      var e = $("#journal_grid");
+      e[manager.session.mode === "static" ? 'removeClass' : 'addClass']('danger');
+      manager.fn.regroup();
+    });
+
+    function beginEditMode () {
+      if (manager.session.authenticated) {
+        manager.mode = $scope.mode = "lock";
+      } else {
+        authenticate()
+        .result
+        .then(function (result) {
+          if (result.authenticated) {
+            manager.session.authenticated = result.authenticated;
+            manager.session.uuid = result.uuid;
+            manager.session.start = result.timestamp;
+            manager.session.justification = result.justification;
+            manager.session.mode = $scope.session.mode = "lock";
+          }
+        })
+        .catch(function () { messenger.warning('Edit session closed.'); });
+      }
+    }
+
+    function endEditMode () {
+      $scope.session = manager.session = { authenticated : false, mode : "static" };
+    }
+
+    $scope.toggleEditMode = function () {
+      if (manager.session.mode === "edit") { return; }
+      return manager.session.mode === "static" ? beginEditMode() : endEditMode();
+    };
+
+    $scope.resetManagerSession = function resetManagerSession () {
+      $scope.session = manager.session = { authenticated : false, mode : "static" };
     };
 
     $scope.toggleAggregates = function toggleAggregates () {
       $scope.aggregates =! $scope.aggregates;
-      manager.regroup();
+      manager.fn.regroup();
     };
 
   }
