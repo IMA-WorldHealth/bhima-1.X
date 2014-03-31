@@ -158,6 +158,7 @@ angular.module('kpk.controllers')
       //grid.scrollRowToTop(dataview.getRowById(transactionLine.uuid));
     }
 
+    // clean up initEditing + editTransaction into two separate f()s
     function initEditing(args) {
       var transaction = dataview.getItem(args.row);
       manager.transactionId = transaction.groupingKey;
@@ -245,57 +246,102 @@ angular.module('kpk.controllers')
 
     }
 
-    function save () {
-      var records = manager.records;
-      var totalDebits = 0, totalCredits = 0;
-      var validAccounts = true;
-      var validDates = true;
-      var zeroTransaction = false;
-      var singleEntry = false;
-      var packagedRecords = [],
-          requestNew = [],
-          requestUpdate = [],
-          request = [];
+    function validDate (item) {
+      return angular.isDefined(item.trans_date) &&
+          !isNaN(Date.parse(new Date(item.trans_date)));
+    }
 
-      var enterpriseSettings = appstate.get('enterprise'),
-          fiscalSettings = appstate.get('fiscal');
+    function validDebitsAndCredits (item) {
+      var credit = Number(item.credit_equiv),
+          debit = Number(item.debit_equiv);
+      return (angular.isDefined(item.debit_equiv) && angular.isDefined(item.credit_equiv)) &&
+          (!isNaN(debit) || !isNaN(credit));
+    }
+
+    function validBalance (item) {
+      var credit = Number(item.credit_equiv),
+          debit = Number(item.debit_equiv);
+      return (credit === 0 && debit > 0) || (debit === 0 && credit > 0);
+    }
+
+
+    function validAccountNumber (item) {
+      return !isNaN(Number(item.account_number));
+    }
+
+    function validTotals (totalDebit, totalCredit) {
+      return totalDebit === totalCredit;
+    }
+
+    function detectSingleEntry (item) {
+      var credit = Number(item.credit_equiv),
+          debit = Number(item.debit_equiv);
+      return credit === 0 && debit === 0;
+    }
+
+    function checkErrors (records) {
+      var totalDebits = 0, totalCredits = 0;
+
+      var dateError = false,
+          accountError = false,
+          balanceError = false,
+          singleEntryError = false,
+          multipleDatesError = false;
 
       //validation
       records.forEach(function(record) {
         totalDebits += precision.round(Number(record.debit_equiv));
         totalCredits += precision.round(Number(record.credit_equiv));
-        var account_number = Number(record.account_number);
-        if (Number.isNaN(account_number)) validAccounts = false;
-        if (Number(record.debit_equiv) === 0 && Number(record.credit_equiv) === 0) { zeroTransaction = true; }
-        if (Number(record.debit_equiv) !== 0 && Number(record.credit_equiv) !== 0) { singleEntry = true; }
-        if (isNaN(Date.parse(new Date(record.trans_date)))) { validDates = false; }
+        if (!validDate(record)) { dateError = true; }
+        if (!validAccountNumber(record)) { accountError = true; }
+        if (!validBalance(record)) { balanceError = true; }
+        if (!validDebitsAndCredits(record)) { balanceError = true; }
+        if (detectSingleEntry(record)) { singleEntryError = true; }
+      });
+
+      var testDate = records[0].trans_date;
+      multipleDatesError = records.some(function (record) {
+        return record.trans_date !== testDate;
       });
 
       totalDebits = precision.round(totalDebits);
       totalCredits = precision.round(totalCredits);
 
-      if (singleEntry) return broadcastError('Transaction contains both debits and credits on the same line.');
-      if (zeroTransaction) return broadcastError('Transaction contains records with no debit or credit value.');
-      if (totalDebits !== totalCredits) return broadcastError('Transaction debits and credits do not balance.');
-      if (!validAccounts) return broadcastError('Records contain invalid accounts');
-      if (!fiscalSettings) return broadcastError('Fiscal records are invalid');
+      if (singleEntryError) { broadcastError('Transaction contains both debits and credits on the same line.'); }
+      if (!validTotals(totalDebits, totalCredits)) { broadcastError('Transaction debits and credits do not balance.'); }
+      if (accountError) { broadcastError('Records contain invalid or nonexistant accounts.'); }
+      if (dateError) { broadcastError('Transaction contains invalid dates.'); }
+      if (multipleDatesError) { broadcastError('Transaction trans_date field has multiple dates.'); }
 
-      broadcastSuccess('All tests passed');
+      var hasErrors = (dateError || accountError || balanceError || singleEntryError || multipleDatesError || !validTotals(totalDebits, totalCredits));
+      if (!hasErrors) { broadcastSuccess('All tests passed'); }
 
-      var newRecords = [];
-      var editedRecords = [];
+      return hasErrors;
+
+    }
+
+
+    function save () {
+      var records = manager.records;
+
+      var hasErrors = checkErrors(records);
+      if (hasErrors) { return; }
+
+      var newRecords = [],
+          editedRecords = [];
 
       records.forEach(function(record) {
-        var newRecord = record.newRecord;
-        var packed = packager(record);
+        var newRecord = record.newRecord,
+            packed = packager(record);
         (newRecord ? newRecords : editedRecords).push(packed);
       });
 
+      var userId;
       connect.fetch('/user_session')
       .success(function (res) {
-        var user_id = res.id;
-        newRecords.forEach(function (rec) { rec.user_id = user_id; });
-        editedRecords.forEach(function (rec) { rec.user_id = user_id; });
+        userId = res.id;
+        newRecords.forEach(function (rec) { rec.user_id = res.id; });
+        editedRecords.forEach(function (rec) { rec.user_id = res.id; });
         return newRecords.length ? connect.basicPut('posting_journal', newRecords) : $q.when(1);
       })
       .then(function () {
@@ -312,36 +358,31 @@ angular.module('kpk.controllers')
         grid.invalidate();
         grid.render();
       })
+      .then(function () {
+        return writeJournalLog(records[0], userId);
+      })
       .catch(function (err) {
         messenger.danger("Submission failed" + err);
       });
     }
 
-    function writeJournalLog (details) {
-      var deferred = $q.defer(),
-          logId = details.logId,
-          justification = details.template.description,
-          date = util.convertToMysqlDate(),
-          user = details.template.userId,
-          transaction = details.transaction_id;
+    function writeJournalLog (row, userId) {
+      var justification = row.description;
 
       //console.log(details, justification, date, user);
       var packagedLog = {
-        transaction_id : transaction,
+        transaction_id : row.trans_id,
         note           : justification,
-        date           : date,
-        user_id        : user
+        date           : util.convertToMysqlDate(new Date()),
+        user_id        : userId
       };
 
-      connect.basicPut('journal_log', [packagedLog])
+      return connect.basicPut('journal_log', [packagedLog])
       .then(function(result) {
         manager.logId = result.data.insertId;
-        deferred.resolve(result);
+        console.log("Wrote transaction log.");
         //console.log('log was written', result);
-      })
-      .catch(function (err) { deferred.reject(err); });
-
-      return deferred.promise;
+      });
     }
 
     // Editors
@@ -368,7 +409,7 @@ angular.module('kpk.controllers')
       var defaultValue;
 
       this.init = function () {
-        defaultValue = args.item.trans_date;
+        defaultValue = new Date(args.item.trans_date).toISOString().substring(0,10);
         this.$input = $("<input class='editor-text' type='date'>");
         this.$input.appendTo(args.container);
         this.$input.focus();
@@ -419,7 +460,7 @@ angular.module('kpk.controllers')
     InvoiceEditor.prototype = new BaseEditor();
 
     function DebCredEditor (args) {
-      var $select, defaultValue;
+      var defaultValue;
       var clear = "<option value='clear'>Clear</option>",
           cancel = "<option value='cancel'>Cancel</option>";
 
@@ -428,6 +469,7 @@ angular.module('kpk.controllers')
         var deb_cred_type = args.item.deb_cred_type;
         var options = "";
 
+        // TODO : this is overly verbose
         if (deb_cred_type === 'D') {
           $scope.debtor.data.forEach(function(debtor) {
             options += '<option value="' + debtor.uuid + '">[D] [' + debtor.name + '] ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
@@ -461,35 +503,22 @@ angular.module('kpk.controllers')
         var label = deb_cred_type === 'D' ? 'Debitor' : 'Creditor';
         options += !!options.length ? cancel + clear : "<option value='' disabled>[No " + label + "s Found]</option>";
 
-        $select = $("<SELECT class='editor-text'>" + options + "</SELECT>");
-        $select.appendTo(args.container);
-        $select.focus();
+        this.$input= $("<SELECT class='editor-text'>" + options + "</SELECT>");
+        this.$input.appendTo(args.container);
+        this.$input.focus();
       };
-
-      this.destroy = function () { $select.remove(); };
-
-      this.focus = function () { $select.focus(); };
-
-      this.loadValue = function (item) { $select.val(defaultValue); };
-
-      this.serializeValue = function () { return $select.val(); };
 
       this.applyValue = function(item,state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
 
-      this.isValueChanged = function () { return true; };
-
-      this.validate = function () {
-        return {
-          valid: true,
-          msg: null
-        };
-      };
+      this.loadValue = function (item) { this.$input.val(defaultValue); };
 
       this.init();
     }
+
+    DebCredEditor.prototype = new BaseEditor();
 
 
     function AccountEditor (args) {
@@ -520,7 +549,6 @@ angular.module('kpk.controllers')
 
       this.applyValue = function(item,state) {
         if (state === 'cancel') { return; }
-        console.log("state", state, args.column.field);
         item[args.column.field] = state === 'clear' ? '' : state;
       };
 
