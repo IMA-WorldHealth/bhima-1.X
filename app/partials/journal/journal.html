@@ -12,13 +12,10 @@
       <li><a href="" ng-click="groupBy('account')">{{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
       <li><a href="" ng-click="groupBy('deb_cred')">{{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
     </ul>
-    <a class="btn btn-sm btn-default" ng-click="aggregates=!aggregates" ng-disabled="!!editing">
-      <span class="glyphicon" ng-class="{ 'glyphicon-th-list' : !!aggregates, 'glyphicon-list' : !aggregates }"></span>
-    </a>
   </div>
 
   <div class="pull-right">
-    <a class="btn btn-sm"  ng-class="{ 'btn-danger' : !!editing, 'active': !!editing, 'btn-default' : !editing }" ng-click="editMode()" ng-disabled="!hasData || !!editorLock">
+    <a class="btn btn-sm"  ng-class="{ 'btn-danger' : !!editing, 'active': !!editing, 'btn-default' : !editing }" ng-click="toggleEditMode()" ng-disabled="!hasData || !!editorLock">
       <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT' | translate}} 
     </a>
     <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!editing">
@@ -33,6 +30,12 @@
         <li ng-repeat="column in columns">
           <a ng-click="column.visible=!column.visible" href="">
             <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></span> {{ column.name }}
+          </a>
+        </li>
+        <li class="dropdown-header">{{ 'UTIL.TOGGLE_AGGREGATES' | translate }}</li>
+        <li>
+          <a ng-click="toggleAggregates()" href="">
+            <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !aggregates, 'glyphicon-check' : !!aggregates }"></span> {{ 'UTIL.AGGREGATES' | translate }}
           </a>
         </li>
       </ul>

@@ -101,22 +101,26 @@
     "ERR_EXPIRED_SESSION" : "Session Expired Error"
   },
 
-  "UTIL"             : {
-    "CONFIGURE"      : "Configure",
-    "TOTAL"          : "Total",
-    "PRINT"          : "Print",
-    "CREATE"         : "Create",
-    "PROJECT"        : "Project",
-    "CANCEL"         : "Cancel",
-    "ITEMS"          : "Items",
-    "TOGGLE"         : "Toggle",
-    "COLUMNS"        : "Columns",
-    "CONFIRM"        : "Confirm",
-    "SUBMIT"         : "Submit",
-    "RESET_FORM"     : "Reset Form",
-    "SAVE_SELECTION" : "Save Selection",
-    "SEARCH"         : "Search",
-    "SHOW"           : "Show"
+  "UTIL"                : {
+    "CONFIGURE"         : "Configure",
+    "TOTAL"             : "Total",
+    "PRINT"             : "Print",
+    "CREATE"            : "Create",
+    "PROJECT"           : "Project",
+    "CANCEL"            : "Cancel",
+    "ITEMS"             : "Items",
+    "TOGGLE"            : "Toggle",
+    "COLUMNS"           : "Columns",
+    "CONFIRM"           : "Confirm",
+    "SUBMIT"            : "Submit",
+    "RESET_FORM"        : "Reset Form",
+    "SAVE_SELECTION"    : "Save Selection",
+    "SEARCH"            : "Search",
+    "SHOW"              : "Show",
+    "TOGGLE_AGGREGATES" : "Toggle Aggregates",
+    "ON"                : "On",
+    "OFF"               : "Off",
+    "AGGREGATES" : "Aggregates"
   },
 
   "PATIENT_STANDING"     : {
