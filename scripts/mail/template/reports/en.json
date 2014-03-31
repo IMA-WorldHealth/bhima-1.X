@@ -20,11 +20,11 @@
     },
     "sale" : {
       "heading" : "Invoice",
-      "content" : "%s invoice transactions where submitted consisting of %s line items, this include both hospitalised and outpatient invoices."
+      "content" : "%s invoice transactions were submitted consisting of %s line items, this include both hospitalised and outpatient invoices."
     },
     "fiche" : {
       "heading" : "Fiche Consultation",
-      "content" : "A total of %s charges where made for fiche consultations; %s for 'Nouvelle Fiche' and %s for 'Anciennce Fiche'."
+      "content" : "A total of %s charges were made for fiche consultations; %s for 'Nouvelle Fiche' and %s for 'Anciennce Fiche'."
     },
     "alert_one" : {
       "heading" : "Info",
