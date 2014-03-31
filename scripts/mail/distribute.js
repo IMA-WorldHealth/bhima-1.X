@@ -101,7 +101,7 @@ function distribute(recipient, details) {
   if (!details.address) throw new Error("Recipient " + recipient + " has no assigned address");
   
   // TODO improve send command, this is just a proof of concept 
-  var command = 'cat ' + compiledReference[details.language] + ' | mail -a "text/html" -s "' + reportDate.toLocaleDateString() + '" ' + details.address;
+  var command = 'mail -a "Content-type: text/html;" -s "' + reportDate.toLocaleDateString() + '" ' + details.address + ' < ' + compiledReference[details.language];
   
   util.log('[send.js] [' + service + '] [' + details.language + '] -> ' + details.address);
   return exec(command);
