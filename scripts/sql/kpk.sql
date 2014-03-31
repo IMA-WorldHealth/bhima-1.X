@@ -49,6 +49,7 @@ create table `user` (
   `first`     text not null,
   `last`      text not null,
   `email`     varchar(100),
+  `pin`       char(4),
   `logged_in` boolean not null default 0,
   primary key (`id`)
 ) engine=innodb;
@@ -1020,8 +1021,6 @@ create table `kpk`.`period_total` (
   constraint foreign key (`period_id`) references `period` (`id`)
 ) engine=innodb;
 
-
-
 --
 -- table `kpk`.`group_invoice`
 --
@@ -1062,12 +1061,13 @@ create table `group_invoice_item` (
 -- TODO Reference user table
 drop table if exists `journal_log`;
 create table `journal_log` (
-  `id`              int unsigned not null auto_increment,
-  `transaction_id`  int unsigned not null,
-  `note`            text,
+  `uuid`            char(36) not null,
+  `transaction_id`  text not null,
+  `justification`   text,
   `date`            date not null,
   `user_id`         smallint unsigned not null,
-  primary key (`id`)
+  primary key (`uuid`),
+  foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 
 --
@@ -1090,7 +1090,6 @@ create table `service` (
   `service_txt`          text not null,
   primary key (`id`)
 ) engine=innodb;
-
 
 --
 -- Table structure for table `kpk`.`employee`
@@ -1166,7 +1165,6 @@ create table `debitor_group_history` (
   constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
-
 
 --
 -- Table structure for table `kpk`.`client`

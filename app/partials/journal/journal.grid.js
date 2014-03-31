@@ -9,9 +9,9 @@ angular.module('kpk.controllers')
   'messenger',
   'appstate',
   function ($scope, $translate, $filter, $q, precision, validate, messenger, appstate) {
-    var dependencies = {};
-    var columns, options, dataview, grid, state = {};
-    var ready = $q.defer();
+    var dependencies = {}, ready = $q.defer();
+    var columns, options, dataview, grid,
+        manager = { session : {}, fn : {}, mode : {} };
 
     appstate.set('journal.ready', ready.promise);
 
@@ -107,7 +107,7 @@ angular.module('kpk.controllers')
     }
 
     function expose () {
-      ready.resolve([grid, columns, dataview, options, state]);
+      ready.resolve([grid, columns, dataview, options, manager]);
     }
 
     function totalFormat(totals, column) {
