@@ -9,6 +9,7 @@ angular.module('kpk.controllers')
   function ($scope, connect, appstate, validate, messenger, $filter) {
     $scope.state = {};
     $scope.dates = {};
+    $scope.selected = null;
 
     var dependencies = {};
     dependencies.projects = {
@@ -19,6 +20,29 @@ angular.module('kpk.controllers')
             columns : ['id', 'abbr']
           }
         }
+      }
+    };
+
+    $scope.options = {
+      'CASH_PAYMENTS.DAY' : function day () {
+        $scope.selected = 'CASH_PAYMENTS.DAY';
+        $scope.dates.dateFrom = new Date();
+        $scope.dates.dateTo = new Date();
+        $scope.search();
+      },
+      'CASH_PAYMENTS.WEEK' : function week () {
+        $scope.selected = 'CASH_PAYMENTS.MONTH';
+        $scope.dates.dateFrom = new Date();
+        $scope.dates.dateTo = new Date();
+        $scope.dates.dateFrom.setDate($scope.dates.dateTo.getDate() - 7);
+        $scope.search();
+      },
+      'CASH_PAYMENTS.MONTH' : function month () {
+        $scope.selected = 'CASH_PAYMENTS.MONTH';
+        $scope.dates.dateFrom = new Date();
+        $scope.dates.dateTo = new Date();
+        $scope.dates.dateFrom.setMonth($scope.dates.dateTo.getMonth() - 1);
+        $scope.search();
       }
     };
 
@@ -35,6 +59,7 @@ angular.module('kpk.controllers')
     $scope.$watch('dates', dateWatcher, true);
     $scope.$watch('state', stateWatcher, true);
 
+    /*
     $scope.day = function day () {
       $scope.dates.dateFrom = new Date();
       $scope.dates.dateTo = new Date();
@@ -54,6 +79,7 @@ angular.module('kpk.controllers')
       $scope.dates.dateFrom.setMonth($scope.dates.dateTo.getMonth() - 1);
       $scope.search();
     };
+    */
 
     $scope.search = function search () {
       // must add a day to pick it up from sql
@@ -79,7 +105,7 @@ angular.module('kpk.controllers')
       $scope.dates.dateTo = new Date();
 
       // default to searching today
-      $scope.day();
+      $scope.search();
       validate.process(dependencies)
       .then(function (models) {
         for (var k in models) { $scope[k] = models[k]; }
