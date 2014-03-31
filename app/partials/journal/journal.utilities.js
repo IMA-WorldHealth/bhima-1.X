@@ -164,7 +164,7 @@ angular.module('kpk.controllers')
 
 
       if (manager.editable) {
-        editTemplate = "<div class='pull-right'><a class='initEditing' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
+        editTemplate = "<div class='pull-right'><a class='editTransaction' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
       }
 
       if (firstElement.trans_id === manager.transactionId) {
@@ -199,6 +199,16 @@ angular.module('kpk.controllers')
       //cache.put('columns', columns);
       grid.setColumns(columns);
     }, true);
+
+    function authenticate () {
+      connect.get('/journal/authenticate')
+      .success(function (data) {
+        
+      })
+      .catch(function (err) {
+        messenger.danger('An error occored ' + JSON.stringify(err));
+      });
+    }
 
     $scope.toggleEditMode = function toggleEditMode () {
       if (manager.state === 'editing') { return; }
