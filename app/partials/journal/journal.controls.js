@@ -21,8 +21,8 @@ angular.module('kpk.controllers')
     $scope.editing = false;
 
     function isNull (t) { return t === null; }
-
     function clone (o) { return JSON.parse(JSON.stringify(o)); }
+    function isDefined (d) { return angular.isDefined(d); }
 
     dependencies.account = {
       query : {
@@ -138,7 +138,6 @@ angular.module('kpk.controllers')
       var buttonMap = {
         'addRow'          : addRow,
         'editTransaction' : editTransaction,
-        'initEditing'     : initEditing,
         'save'            : save
       };
       if (buttonMap[className]) { buttonMap[className](args); }
@@ -155,22 +154,18 @@ angular.module('kpk.controllers')
       manager.records.push(transactionLine);
 
       dataview.addItem(transactionLine);
-      //grid.scrollRowToTop(dataview.getRowById(transactionLine.uuid));
     }
 
-    // clean up initEditing + editTransaction into two separate f()s
-    function initEditing(args) {
-      var transaction = dataview.getItem(args.row);
-      manager.transactionId = transaction.groupingKey;
-      manager.editable = false;
-      manager.toggleEditorLock();
-      editTransaction(args);
-    }
-
+    // TODO : clean this f() up
     function editTransaction(args) {
+      var transaction = dataview.getItem(args.row);
       var transaction = dataview.getItem(args.row),
           transactionId = transaction.groupingKey,
           templateRow = transaction.rows[0];
+
+      manager.transactionId = transaction.groupingKey;
+      manager.editable = false;
+      manager.toggleEditorLock();
 
       if (!transactionId) return $rootScope.$apply(messenger.danger('Invalid transaction provided'));
       if (manager.state) return $rootScope.$apply(messenger.info('Transaction ' + manager.transaction_id + ' is currently being edited. Complete this transaction to continue.'));
@@ -231,7 +226,7 @@ angular.module('kpk.controllers')
 
       for (prop in record) {
         if (~cpProperties.indexOf(prop)) {
-          if (angular.isDefined(record[prop]) && !isNull(record[prop])) {
+          if (isDefined(record[prop]) && !isNull(record[prop])) {
             data[prop] = record[prop];
           }
         }
@@ -247,14 +242,14 @@ angular.module('kpk.controllers')
     }
 
     function validDate (item) {
-      return angular.isDefined(item.trans_date) &&
+      return isDefined(item.trans_date) &&
           !isNaN(Date.parse(new Date(item.trans_date)));
     }
 
     function validDebitsAndCredits (item) {
       var credit = Number(item.credit_equiv),
           debit = Number(item.debit_equiv);
-      return (angular.isDefined(item.debit_equiv) && angular.isDefined(item.credit_equiv)) &&
+      return (isDefined(item.debit_equiv) && isDefined(item.credit_equiv)) &&
           (!isNaN(debit) || !isNaN(credit));
     }
 
@@ -465,7 +460,7 @@ angular.module('kpk.controllers')
           cancel = "<option value='cancel'>Cancel</option>";
 
       this.init = function () {
-        defaultValue = angular.isDefined(args.item.deb_cred_uuid) ? args.item.deb_cred_uuid : null;
+        defaultValue = isDefined(args.item.deb_cred_uuid) ? args.item.deb_cred_uuid : null;
         var deb_cred_type = args.item.deb_cred_type;
         var options = "";
 
