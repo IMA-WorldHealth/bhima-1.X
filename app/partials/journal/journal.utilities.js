@@ -164,7 +164,6 @@ angular.module('kpk.controllers')
 
 
       if (manager.editable) {
-        console.log("manager.editable", manager.editable);
         editTemplate = "<div class='pull-right'><a class='initEditing' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
       }
 
