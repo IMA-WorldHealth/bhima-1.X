@@ -8,11 +8,11 @@
   "Section" : {
     "registration" : {
       "heading" : "Patient Registration",
-      "content" : "Today, %s patients where registered; %s patients new to the hospital, and %s returning."
+      "content" : "Today, %s patients were registered; %s patients new to the hospital, and %s returning."
     },
     "cash" : {
       "heading" : "HBB Cash Box",
-      "content" : "%s where introduced at the Caisse Aux HBB, paid against a total of %s invoices."
+      "content" : "%s were introduced at the Caisse Aux HBB, paid against a total of %s invoices."
     },
     "subsidy" : {
       "heading" : "IMA Subsidy",
