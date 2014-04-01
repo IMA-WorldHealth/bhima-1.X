@@ -9,12 +9,21 @@
   <div class="modal-body" ng-switch="!!errors">
 
     <div ng-switch-when="true">
-      <div class="alert alert-danger">
-        <h5>{{ 'TRIAL_BALANCE.ERROR_TEXT' | translate }}</h5>
+      <div class="box-error">
+        <h4>{{ 'TRIAL_BALANCE.ERROR_TEXT' | translate }}</h4>
+
+        <ul class="list-plain" style="font-weight: normal;">
+          <li ng-repeat="error in errors">
+            <span class="glyphicon" ng-class="{'glyphicon-plus' : !error.examine, 'glyphicon-minus' : !!error.examine }"></span>
+            <strong>{{ "ERROR." + error.code | translate }}</strong>
+            {{ error.message }}
+          </li>
+        </ul>
+        <!--
         <table ng-repeat="error in errors">
           <tbody>
             <tr ng-click="error.examine=!error.examine" style="cursor:pointer;">
-              <th><span class="glyphicon" ng-class="{'glyphicon-plus' : !error.examine, 'glyphicon-minus' : !!error.examine }"></span> </th>
+              <th> </th>
               <th>{{ "ERROR." + error.code | translate }}</th>
               <td>{{ error.message }}.</td>
             </tr>
@@ -32,6 +41,7 @@
             </tbody>
           </tbody>
         </table>
+        -->
       </div>
     </div>
 

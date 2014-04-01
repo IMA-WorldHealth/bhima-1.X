@@ -94,7 +94,7 @@
 
   "TRIAL_BALANCE" : {
     "TITLE"       : "Trial Balance",
-    "ERROR_TEXT"  : "You have errors!",
+    "ERROR_TEXT"  : "Errors detected in the trial balance.",
     "ACCOUNT"     : "Account",
     "BEFORE"      : "Before",
     "DEBIT"       : "Debit",
