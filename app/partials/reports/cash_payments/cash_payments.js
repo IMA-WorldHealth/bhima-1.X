@@ -16,7 +16,7 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'project' : {
-            columns : ['id', 'abbr']
+            columns : ['id', 'abbr', 'name']
           }
         }
       }
@@ -71,6 +71,8 @@ angular.module('kpk.controllers')
     function reset (p) {
       var req, url;
 
+      console.log('session', session);
+
       // toggle off active
       session.active = !p;
 
@@ -81,10 +83,8 @@ angular.module('kpk.controllers')
         dateTo : session.dateTo
       };
 
-      if (!isNaN(Number(session.project))) { req.project = session.project; }
-
       url = '/reports/payments/?id=%project%&start=%start%&end=%end%'
-      .replace('%project%', req.project)
+      .replace('%project%', session.project)
       .replace('%start%', req.dateFrom)
       .replace('%end%', req.dateTo);
 
@@ -100,14 +100,22 @@ angular.module('kpk.controllers')
 
     appstate.register('project', function (project) {
       session.project = project.id;
-      search($scope.options[0]);
+      validate.process(dependencies)
+      .then(function (models) {
+        $scope.projects = models.projects;
+        $scope.allProjectIds =
+          models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, "")
+          .substr(1);
+        search($scope.options[0]);
+      })
+      .catch(function (error) { messenger.danger('An error occurred : ' + JSON.stringify(error)); });
     });
 
     function sum(a, b) {
       return a + b.cost;
     }
 
-    $scope.sumPayments = function () {
+    $scope.sumPayments = function sumPayments () {
       return $scope.payments ? $scope.payments.reduce(sum, 0) : 0;
     };
 
