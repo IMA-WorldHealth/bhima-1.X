@@ -16,23 +16,23 @@
     },
     "subsidy" : {
       "heading" : "IMA Subsidy",
-      "content" : "The IMA subsidy was charged a total of %s enabling %s to receive health care."
+      "content" : "The IMA subsidy was charged a total of %s enabling %s patients to receive health care."
     },
     "sale" : {
       "heading" : "Invoice",
-      "content" : "%s invoice transactions where submitted consistring of %s line items, this include both hospitalised and outpatiend invoices."
+      "content" : "%s invoice transactions were submitted consisting of %s line items, this include both hospitalised and outpatient invoices."
     },
     "fiche" : {
       "heading" : "Fiche Consultation",
-      "content" : "A total of %s charges where made for fiche consultations; %s for 'Nouvelle Fiche' and %s for 'Anciennce Fiche'."
+      "content" : "A total of %s charges were made for fiche consultations; %s for 'Nouvelle Fiche' and %s for 'Anciennce Fiche'."
     },
     "alert_one" : {
       "heading" : "Info",
-      "content" : "Please note this is an automated report based on data captured by bhima. It is intended to provide transaprent financial and system health information to the administration of IMCK. This message will not be shown again."
+      "content" : "Please note this is an automated report based on data captured by BHIMA. It is intended to provide transparent financial and system health information to the administration of IMCK. This message will not be shown again."
     },
     "alert_two" : {
       "heading" : "PAX",
-      "content" : "bhima is currently being installed at PAX. Following reports will include data for the enterprise as a whole, including both HBB and PAX."
+      "content" : "BHIMA is currently being installed at PAX. Following reports will include data for the enterprise as a whole, including both HBB and PAX."
     }
   }
 }
