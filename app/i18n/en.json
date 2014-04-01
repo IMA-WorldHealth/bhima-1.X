@@ -5,9 +5,12 @@
     "DEB_CRED"              : "Debitor / Creditor",
     "TRANSACTION"           : "Transaction",
     "ACCOUNT"               : "Account",
-    "TRIAL_BALANCE"         : "Trial balance",
+    "TRIAL_BALANCE"         : "Trial Balance",
     "ADD_TRANSACTION"       : "Add Transaction",
     "GENERAL_LEDGER"        : "General Ledger",
+    "EDIT_TRANSACTION"      : "Edit Transaction",
+    "ADD_ROW"               : "Add Row",
+    "SAVE_TRANSACTION"      : "Save Transaction",
     "DEBIT"                 : "Debit",
     "CREDIT"                : "Credit",
     "FISCAL_YEAR"           : "Fiscal Year",
@@ -21,7 +24,18 @@
     "LIVE_TRANSACTION"      : "Live Transaction",
     "TRANSACTION_NUMBER"    : "Transaction #",
     "VERIFY_TRANSACTION"    : "Verify Transaction",
-    "SPLIT"                 : "Split"
+    "SPLIT"                 : "Split",
+    "EDIT_MODE"             : "Super User Edit",
+    "EDIT" : {
+      "TITLE" : "Entering Posting Session",
+      "JUSTIFICATION" : "Please provide a justification for your edits.",
+      "MIN_CHARS" : "Minimum 10 characters",
+      "PIN" : "Enter your PIN to confirm your identity.",
+      "ID" : "Session ID",
+      "INVALID_PIN" : "This PIN is invalid.",
+      "ATTEMPTS_REMAINING" : "attempts remaining.",
+      "INVALID_SESSION" : "This session has expired due to too many invalid attempts.  Please see an administrator to reset your PIN or try again."
+    }
   },
 
   "PATIENT_RECORDS"     : {
@@ -97,22 +111,26 @@
     "ERR_EXPIRED_SESSION" : "Session Expired Error"
   },
 
-  "UTIL"             : {
-    "CONFIGURE"      : "Configure",
-    "TOTAL"          : "Total",
-    "PRINT"          : "Print",
-    "CREATE"         : "Create",
-    "PROJECT"        : "Project",
-    "CANCEL"         : "Cancel",
-    "ITEMS"          : "Items",
-    "TOGGLE"         : "Toggle",
-    "COLUMNS"        : "Columns",
-    "CONFIRM"        : "Confirm",
-    "SUBMIT"         : "Submit",
-    "RESET_FORM"     : "Reset Form",
-    "SAVE_SELECTION" : "Save Selection",
-    "SEARCH"         : "Search",
-    "SHOW"           : "Show"
+  "UTIL"                : {
+    "CONFIGURE"         : "Configure",
+    "TOTAL"             : "Total",
+    "PRINT"             : "Print",
+    "CREATE"            : "Create",
+    "PROJECT"           : "Project",
+    "CANCEL"            : "Cancel",
+    "ITEMS"             : "Items",
+    "TOGGLE"            : "Toggle",
+    "COLUMNS"           : "Columns",
+    "CONFIRM"           : "Confirm",
+    "SUBMIT"            : "Submit",
+    "RESET_FORM"        : "Reset Form",
+    "SAVE_SELECTION"    : "Save Selection",
+    "SEARCH"            : "Search",
+    "SHOW"              : "Show",
+    "TOGGLE_AGGREGATES" : "Toggle Aggregates",
+    "ON"                : "On",
+    "OFF"               : "Off",
+    "AGGREGATES" : "Aggregates"
   },
 
   "PATIENT_STANDING"     : {

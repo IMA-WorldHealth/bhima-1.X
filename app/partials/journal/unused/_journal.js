@@ -1,5 +1,6 @@
 //TODO Lot's of hardcoded areas throughout editing process (marked with fixme). State is dependent on strings etc.
-angular.module('kpk.controllers').controller('journal', [
+// DEPRECATED while refactoring
+angular.module('kpk.controllers').controller('_journal', [
   '$scope',
   '$rootScope',
   '$translate',

@@ -131,6 +131,19 @@ app.get('/trailbalance/submit/:key/', function (req, res, next) {
   });
 });
 
+app.get('/editsession/authenticate/:pin', function (req, res, next) {
+  var decrypt = req.params.pin >> 5;
+  var sql = "SELECT pin FROM user WHERE user.id = " + req.session.user_id +
+    " AND pin = '" + decrypt + "';";
+  db.exec(sql)
+  .then(function (rows) {
+    res.send({ authenticated : !!rows.length });
+  })
+  .catch(function (err) {
+    next(err);
+  });
+});
+
 app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
   journal.request(req.params.table, req.params.id, req.session.user_id, function (err, success) {
