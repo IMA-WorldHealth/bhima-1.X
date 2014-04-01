@@ -86,7 +86,7 @@ angular.module('kpk.controllers')
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.cashboxes.query.where =
-        ['cash_box.project_id=' + project.id];
+        ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=1'];
 
       validate.process(dependencies, ['cashboxes', 'cash', 'projects'])
       .then(setUpModels, handleErrors);
