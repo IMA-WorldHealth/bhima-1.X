@@ -114,8 +114,6 @@ angular.module('kpk.controllers')
         $scope[k] = models[k];
       }
 
-      console.log("$scope.projects", $scope.projects);
-
       if (!$scope.cashbox) {
         var sessionDefault =
           $scope.cashboxes.data[0];

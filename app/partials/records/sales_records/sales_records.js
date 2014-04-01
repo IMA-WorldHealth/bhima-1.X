@@ -53,7 +53,6 @@ angular.module('kpk.controllers')
       }
     };
 
-    
     $timeout(init, 100);
 
     function init() { 

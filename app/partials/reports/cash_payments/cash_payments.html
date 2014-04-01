@@ -5,11 +5,11 @@
 <section class="top-nav">
   <div class="pull-left">
     <span class="btn-group"> <!-- TODO --->
-      <button class="btn btn-sm btn-default">{{ ($scope.selected | translate) || "..." }}</button>
+      <button class="btn btn-sm btn-default" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
       <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
       <ul class="dropdown-menu">
-        <li ng-repeat="(key,func) in options">
-          <a href="" ng-click="func()">{{ key | translate }}</a>
+        <li ng-repeat="opt in options">
+          <a href="" ng-click="search(opt)">{{ opt.label | translate }}</a>
         </li>
       </ul>
     </span>
@@ -17,14 +17,11 @@
 
   <div>
     <div class="col-xs-3">
-      <input class="form-kapok" type="date" ng-model="state.dateFrom" rows="20" ng-change="search()">
+      <input class="form-kapok" type="date" ng-model="session.dateFrom" rows="20" ng-change="reset(1)">
     </div>
     <div class="col-xs-3">
-      <input class="form-kapok" type="date" ng-model="state.dateTo" rows="20" ng-change="search()">
+      <input class="form-kapok" type="date" ng-model="session.dateTo" rows="20" ng-change="reset(1)">
     </div>
-    <a href="" class="btn btn-sm btn-primary" ng-click="search()">
-      {{ "CASH_PAYMENTS.SEARCH" | translate }}
-    </a>
   </div>
 </section>
 

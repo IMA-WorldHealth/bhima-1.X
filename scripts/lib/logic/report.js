@@ -287,11 +287,11 @@ module.exports = function (db) {
       "credit_note.posted as 'creditPosted', first_name, last_name, patient.reference as 'patientReference', CONCAT(project.abbr, sale.reference) as 'hr_id' " +
       "FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid " +
       "LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid " +
-      "LEFT JOIN project on sale.project_id = project.id " + 
+      "LEFT JOIN project on sale.project_id = project.id " +
       "WHERE sale.invoice_date >=  \'" + params.dateTo + "\' AND sale.invoice_date <= \'" + params.dateFrom + "\' ";
-    
-    if (params.project) requestSql += ("AND sale.project_id=" + params.project + " "); 
- 
+
+    if (params.project) requestSql += ("AND sale.project_id=" + params.project + " ");
+
     requestSql += "ORDER BY sale.timestamp DESC;";
 
     db.execute(requestSql, function(error, result) {
@@ -326,8 +326,7 @@ module.exports = function (db) {
   }
 
   function paymentRecords(params) {
-    var p = querystring.parse(params),
-        deferred = q.defer();
+    var p = querystring.parse(params);
 
     var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
         _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
@@ -343,16 +342,11 @@ module.exports = function (db) {
         "c.project_id = pr.id AND " +
         "c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND " +
         "ci.invoice_uuid = s.uuid " +
-      "WHERE c.date >= " + _start + " AND " +
-        "c.date < " + _end + " " +
+      "WHERE c.project_id = " + _id + " AND c.date >= " + _start + " AND " +
+        "c.date <= " + _end + " " +
       "GROUP BY c.document_id;";
 
-    db.execute(sql, function (err, res) {
-      if (err) { return deferred.reject(err); }
-      deferred.resolve(res);
-    });
-
-    return deferred.promise;
+    return db.exec(sql);
   }
 
   function invoiceRecords(params) {
