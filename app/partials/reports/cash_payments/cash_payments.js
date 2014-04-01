@@ -8,7 +8,7 @@ angular.module('kpk.controllers')
   'messenger',
   '$filter',
   'exchange',
-  function ($scope, connect, appstate, validate, messenger, $filter, exchange) {
+  function ($scope, $timeout, connect, appstate, validate, messenger, $filter, exchange) {
     var session = $scope.session = {};
     $scope.selected = null;
 
@@ -84,8 +84,6 @@ angular.module('kpk.controllers')
     function reset (p) {
       var req, url;
 
-      console.log('session', session);
-
       // toggle off active
       session.active = !p;
 
@@ -105,10 +103,7 @@ angular.module('kpk.controllers')
       .success(function (model) {
         $scope.payments = model;
         $timeout(function () {
-          $scope.sum = model.reduce(function (a, b) {
-            return a + b.cost / exchange.rate(b.cost, b.currency_id, b.date);
-          }, 0);
-          $scope.refreshCurrency();
+          convert();
         }, exchange.hasExchange() ? 0 : 100);
       })
       .error(function (err) {
@@ -122,6 +117,8 @@ angular.module('kpk.controllers')
       validate.process(dependencies)
       .then(function (models) {
         $scope.projects = models.projects;
+        $scope.currencies = models.currencies;
+        session.currency = $scope.currencies.data[0].id;
         $scope.allProjectIds =
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, "")
           .substr(1);
@@ -130,8 +127,20 @@ angular.module('kpk.controllers')
       .catch(function (error) { messenger.danger('An error occurred : ' + JSON.stringify(error)); });
     });
 
+    function convert () {
+      var s = 0;
+      $scope.payments.forEach(function (payment) {
+        if (payment.currency_id === session.currency) {
+          s += payment.cost;
+        } else {
+          s += payment.cost / exchange.rate(payment.cost, payment.currency_id, payment.date);
+        }
+      });
+      session.sum = s;
+    }
 
     $scope.search = search;
     $scope.reset = reset;
+    $scope.convert = convert;
   }
 ]);
