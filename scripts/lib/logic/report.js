@@ -342,7 +342,7 @@ module.exports = function (db) {
         "c.project_id = pr.id AND " +
         "c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND " +
         "ci.invoice_uuid = s.uuid " +
-      "WHERE c.project_id = " + _id + " AND c.date >= " + _start + " AND " +
+      "WHERE c.project_id IN (" + _id + ") AND c.date >= " + _start + " AND " +
         "c.date <= " + _end + " " +
       "GROUP BY c.document_id;";
 
