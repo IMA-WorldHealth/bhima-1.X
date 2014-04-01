@@ -10,6 +10,7 @@ var route = {
   structure : './template/template.html',
   header : './template/header.template.html',
   section : './template/section.template.html',
+  message : './template/alert.template.html',
   reports : './template/reports/' + language + '.json'
 };
 var store = {};
