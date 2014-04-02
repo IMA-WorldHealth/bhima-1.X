@@ -260,6 +260,7 @@ angular.module('kpk.controllers')
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
       console.log('The Invoice is:', $scope.invoice);
       $scope.invoice.totalSum = 0;
+      console.log("[LEDGEER]", $scope.model.ledger);
       $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
       console.log('[get.invoice.id] a donnee :', $scope.invoice.ledger);
 
@@ -306,10 +307,14 @@ angular.module('kpk.controllers')
       //console.log('updating cost');
       $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
       //console.log('cid', currency_id);
-      $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
+      if ($scope.invoice.ledger)  {
+        $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
+        $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
+      } else { 
+        console.error('[invoice.js] Unable to find ledger - ledger returned nothing');
+      }
       //console.log('ledger', $scope.model);
 
-      $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
 
       $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id);
 
