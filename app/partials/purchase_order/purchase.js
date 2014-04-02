@@ -2,20 +2,23 @@ angular.module('kpk.controllers')
 .controller('purchaseOrderController', [
   '$scope',
   '$q',
+  'validate',
   'connect',
   'appstate',
   'messenger',
-  function($scope, $q, connect, appstate, messenger) {
+  function($scope, $q, validate, connect, appstate, messenger) {
+    var dependencies = {}, inventory = $scope.inventory = [];
+    var session = $scope.session = {};
+    
+    dependencies.inventory = { 
+      query : { 
+        tables : { 
+          inventory : { columns : ['uuid', 'code', 'text', 'price', 'type_id'] }
+        }
+      }
+    };
 
-  //  FIXME There is a lot of duplicated code for salesController - is there a better way to do this?
-  //  FIXME Resetting the form maintains the old invoice ID - this causes a unique ID error, resolve this
-    $scope.sale_date = getDate();
-    $scope.inventory = [];
-
-    $scope.process = ["PO", "QUOTE"];
-    $scope.current_process = $scope.process[0];
-
-    $scope.purchase_order = {payable: "false"};
+    session.payable = false;
 
     var inventory_query = {
       'tables' : {
@@ -29,12 +32,10 @@ angular.module('kpk.controllers')
     };
 
     var inventory_request = connect.req(inventory_query);
-    var max_sales_request = connect.fetch('/max/id/sale');
-    var max_purchase_request = connect.fetch('/max/id/purchase');
 
     var creditor_query = {
       tables: {
-        'supplier' : { columns : ['id', 'name', 'location_id', 'creditor_id'] },
+        'supplier' : { columns : ['uuid', 'name', 'location_id', 'creditor_uuid'] },
       }
     };
 
@@ -45,30 +46,22 @@ angular.module('kpk.controllers')
     function init() {
 
       $scope.inventory = [];
-      $scope.purchase_order.payable = "false";
       $scope.creditor = "";
 
       $q.all([
         inventory_request,
         // sales_request,
         // purchase_request,
-        max_sales_request,
-        max_purchase_request,
         creditor_request,
         user_request,
         location_request
 
       ]).then(function(a) {
         $scope.inventory_model = a[0];
-        $scope.max_sales = a[1].data.max;
-        $scope.max_purchase = a[2].data.max;
-        $scope.creditor_model = a[3];
-        $scope.verify = a[4].data.id;
-        $scope.location = a[5];
+        $scope.creditor_model = a[1];
+        $scope.verify = a[2].data.id;
+        $scope.location = a[3];
 
-  //      Raw hacks - #sorry, these might be the same entity anyway
-        var id = Math.max($scope.max_sales, $scope.max_purchase);
-        $scope.invoice_id = createId(id);
       });
     }
 
@@ -183,8 +176,7 @@ angular.module('kpk.controllers')
 
   //  Radio inputs only accept string true/false? boolean value as payable doesn't work
     $scope.isPayable = function() {
-      if($scope.purchase_order.payable==="true") return true;
-      return false;
+      return session.payable;
     };
 
     // FIXME Again - evaluated every digest, this is a bad thing

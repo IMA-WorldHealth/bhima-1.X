@@ -1,22 +1,22 @@
 <header>
-  <span>Create Purchase Order</span>
+  <span>{{ 'PURCHASE.TITLE' | translate }}</span>
 </header>
 
 <section class="top-nav">
-  <div class="btn-group">
-  <button class="btn btn-sm btn-default" ng-click="select(0)" ng-class="{current: current_process=='PO'}">Purchase
-    Order
-  </button>
-  <button class="btn btn-sm btn-default" ng-click="select(1)" ng-class="{current: current_process=='QUOTE'}">
-    Quote
-  </button>
-</div>
-<div class="pull-right">
-  <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-save"></span> Import Pro forma
-  </a>
-  <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-th-list"></span> Update Defaults</a>
-
-</div>
+<!--   <div class="btn&#45;group"> -->
+<!--   <button class="btn btn&#45;sm btn&#45;default" ng&#45;click="select(0)" ng&#45;class="{current: current_process=='PO'}">Purchase -->
+<!--     Order -->
+<!--   </button> -->
+<!--   <button class="btn btn&#45;sm btn&#45;default" ng&#45;click="select(1)" ng&#45;class="{current: current_process=='QUOTE'}"> -->
+<!--     Quote -->
+<!--   </button> -->
+<!-- </div> -->
+<!-- <div class="pull&#45;right"> -->
+<!--   <a class="btn btn&#45;sm btn&#45;default"><span class="glyphicon glyphicon&#45;floppy&#45;save"></span> Import Pro forma -->
+<!--   </a> -->
+<!--   <a class="btn btn&#45;sm btn&#45;default"><span class="glyphicon glyphicon&#45;th&#45;list"></span> Update Defaults</a> -->
+<!--  -->
+<!-- </div> -->
 </section>
 
 <div class="content">
@@ -26,7 +26,7 @@
     <div class="col-xs-5">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Detail
+          {{ 'PURCHASE.CONFIGURE' | translate }}
         </div>
 
         <div class="panel-body purchase-header">
@@ -44,14 +44,14 @@
           <div class="form-group">
             <div class="radio">
               <label>
-                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="purchase_order.payable">
+                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="session.payable">
                 Payable Immediately
               </label>
             </div>
             <div class="radio">
               <label>
                 <input type="radio" name="option_payable" id="pay" value="false" checked
-                       ng-model="purchase_order.payable">
+                       ng-model="session.payable">
                 Payable by
               </label>
             </div>
