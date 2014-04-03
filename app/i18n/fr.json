@@ -385,6 +385,7 @@
     "ID"                  : "ID",
     "NAME"                : "Nom",
     "EXPLANATION"         : "Explanation",
+    "ENTERPRISE"          : "Enterprise",
     "FIX"                 : "Fix",
     "USER_NAME"           : "Nom Utilisateur",
     "LAST_NAME"           : "Nom",

@@ -53,7 +53,7 @@ angular.module('kpk.controllers')
       var id = $scope.patient.debitor_uuid;
       connect.fetch('/reports/patientStanding/?id=' + id)
       .success(function (data) {
-        $scope.receipts = data.receipts;
+        $scope.receipts = data.receipts || [];
 
         $scope.patient.last_payment_date = new Date(data.last_payment_date);
         $scope.patient.last_purchase_date = new Date(data.last_purchase_date);
