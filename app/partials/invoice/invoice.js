@@ -223,7 +223,7 @@ angular.module('kpk.controllers')
 
     function buildRecipientQuery(model) {
       var invoice_data = model.invoice.data[0];
-      
+
       dependencies.recipient.query = {
         tables: {
           'patient' : {
@@ -235,7 +235,7 @@ angular.module('kpk.controllers')
           'debitor' : {
             columns: ['text']
           },
-          'debitor_group' : { 
+          'debitor_group' : {
             columns : ['name', 'is_convention'],
           }
         },
@@ -248,7 +248,7 @@ angular.module('kpk.controllers')
           'debitor.group_uuid=debitor_group.uuid'
         ]
       };
-      
+
       dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
       return validate.process(dependencies, ['recipient'])
       .then(buildLocationQuery);
@@ -281,7 +281,7 @@ angular.module('kpk.controllers')
 
       $scope.recipient = $scope.model.recipient.data[0];
       $scope.recipient.location = $scope.model.location.data[0];
-      
+
 
       //FIXME huge total hack
       $scope.model.invoice.data.forEach(function(invoiceRef) {
@@ -290,7 +290,7 @@ angular.module('kpk.controllers')
       // Human readable ID
       $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
       $scope.invoice.hr_id = $scope.invoice.abbr.concat($scope.invoice.reference);
-      
+
       console.log('INVOICE', $scope.invoice);
 
       //FIXME hacks for meeting
@@ -319,35 +319,36 @@ angular.module('kpk.controllers')
     }
 
     $scope.updateCost = function updateCost(currency_id) {
-      //console.log('updating cost');
-      $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
-      //console.log('cid', currency_id);
+      $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id, $scope.invoice.invoice_date);
       if ($scope.invoice.ledger)  {
-        $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
-        $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
-      } else { 
+        $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id, $scope.invoice.invoice_date);
+        $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id, $scope.invoice.invoice_date);
+      } else {
         console.error('[invoice.js] Unable to find ledger - ledger returned nothing');
       }
-      //console.log('ledger', $scope.model);
 
-
-      $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id);
+      $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id, $scope.invoice.invoice_date);
 
       $scope.model.invoiceItem.data.forEach(function (item) {
-        item.localeTransaction = exchange(item.transaction_price, currency_id);
-        item.localeCost = exchange((item.credit - item.debit), currency_id);
+        item.localeTransaction = exchange(item.transaction_price, currency_id, $scope.invoice.invoice_date);
+        item.localeCost = exchange((item.credit - item.debit), currency_id, $scope.invoice.invoice_date);
       });
     };
 
-    function convert (value, currency_id){
-      return exchange.myExchange(value, currency_id);
+    function convert (value, currency_id, date) {
+      return value / exchange.rate(value, currency_id, date);
     }
 
     $scope.filterCash = function filterCash(item, invoice) {
       return item.sale_uuid === invoice.invoice_uuid;
     };
 
-    function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0]; console.log('notre caution', $scope.caution);}
+    function cautionInvoice (model) {
+      $scope.model = model;
+      $scope.location = $scope.model.location.data[0];
+      $scope.caution = $scope.model.caution.data[0];
+      //console.log('notre caution', $scope.caution);
+    }
 
     process = {
       'cash'    : processCash,
@@ -360,7 +361,6 @@ angular.module('kpk.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      console.log('got project', project);
       process[origin](invoiceId);
     });
 

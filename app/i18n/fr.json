@@ -440,7 +440,7 @@
     "DURABLE"             : "Durable",
     "CONSUMABLE"          : "Nondurable",
     "ACTION"              : "Acte",
-    "ENTERPRISE_CURRENCY" : "Monnaie d'Entreprise",
+    "ENTERPRISE_CURRENCY" : "Monnaie de l'Entreprise",
     "OTHER_CURRENCY"      : "Autre Monnaie",
     "RATE"                : "Taux",
     "TRANS_ID"            : "# Transaction",

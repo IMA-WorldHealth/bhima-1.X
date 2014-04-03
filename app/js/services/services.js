@@ -834,6 +834,7 @@
     'messenger',
     'precision',
     function ($timeout, Store, appstate, messenger, precision) {
+      var called = false;
 
       function normalize (date) {
         return date.setHours(0,0,0,0);
@@ -847,7 +848,11 @@
         if (!exchange.store) { return value; }
 
         var store = exchange.store.get(date);
-        if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
+        if (!store && !called) { // HACK to only show one messenger instance
+          messenger.danger('No exchange rates loaded for date: ' + new Date(date));
+          called = true;
+          $timeout(function () { called = false; }, 50);
+        }
 
         return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate * value : value);
       }
@@ -868,6 +873,7 @@
 
       exchange.hasDailyRate = function hasDailyRate () {
         var date = normalize(new Date());
+        console.log("check daily rate", !!exchange.store , !!exchange.store.get(date));
         return !!exchange.store && !!exchange.store.get(date);
       };
 
