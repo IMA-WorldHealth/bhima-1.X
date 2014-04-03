@@ -26,7 +26,8 @@ function initialise() {
   template.read(addressSource)
   // .readConfiguration(configSource)
   .then(parseAddress)
-  .then(sendMail);
+  .then(sendMail)
+  .catch(handleError);
   
   // TODO Clean up files etc.
 }
@@ -87,9 +88,7 @@ function compileReport(languages) {
     });
     deferred.resolve(result);
   })
-  .catch(function(error) {
-    util.error(error);
-  });
+  .catch(handleError);
 
   return deferred.promise;
 }
@@ -117,4 +116,8 @@ function exec(command) {
     deferred.resolve(result);
   });
   return deferred.promise;
+}
+
+function handleError(error) {
+  util.error(error);
 }

@@ -158,7 +158,9 @@ angular.module('kpk.controllers')
     function processPatient() {
       dependencies.recipient.query = {
         tables: {},
-        where: ['patient.uuid=' + invoiceId]
+        where: [
+          'patient.uuid=' + invoiceId
+        ]
       };
 
       dependencies.recipient.query.tables['patient'] = {
@@ -168,6 +170,7 @@ angular.module('kpk.controllers')
       dependencies.recipient.query.tables['project'] = {
         columns: ['abbr']
       };
+
 
       dependencies.recipient.query.join = ['patient.project_id=project.id'];
 
@@ -220,20 +223,32 @@ angular.module('kpk.controllers')
 
     function buildRecipientQuery(model) {
       var invoice_data = model.invoice.data[0];
-
+      
       dependencies.recipient.query = {
         tables: {
           'patient' : {
-            columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference']
+            columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference', 'registration_date']
           },
           'project' : {
             columns: ['abbr']
+          },
+          'debitor' : {
+            columns: ['text']
+          },
+          'debitor_group' : { 
+            columns : ['name', 'is_convention'],
           }
         },
-        where: ['patient.debitor_uuid=' + invoice_data.debitor_uuid],
-        join : ['patient.project_id=project.id']
+        where: [
+          'patient.debitor_uuid=' + invoice_data.debitor_uuid,
+        ],
+        join : [
+          'patient.project_id=project.id',
+          'patient.debitor_uuid=debitor_uuid',
+          'debitor.group_uuid=debitor_group.uuid'
+        ]
       };
-
+      
       dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
       return validate.process(dependencies, ['recipient'])
       .then(buildLocationQuery);
@@ -260,12 +275,13 @@ angular.module('kpk.controllers')
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
       console.log('The Invoice is:', $scope.invoice);
       $scope.invoice.totalSum = 0;
+      console.log("[LEDGEER]", $scope.model.ledger);
       $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
       console.log('[get.invoice.id] a donnee :', $scope.invoice.ledger);
 
       $scope.recipient = $scope.model.recipient.data[0];
       $scope.recipient.location = $scope.model.location.data[0];
-
+      
 
       //FIXME huge total hack
       $scope.model.invoice.data.forEach(function(invoiceRef) {
@@ -274,7 +290,7 @@ angular.module('kpk.controllers')
       // Human readable ID
       $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
       $scope.invoice.hr_id = $scope.invoice.abbr.concat($scope.invoice.reference);
-
+      
       console.log('INVOICE', $scope.invoice);
 
       //FIXME hacks for meeting
@@ -306,14 +322,19 @@ angular.module('kpk.controllers')
       //console.log('updating cost');
       $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id);
       //console.log('cid', currency_id);
-      $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
+      if ($scope.invoice.ledger)  {
+        $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id);
+        $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
+      } else { 
+        console.error('[invoice.js] Unable to find ledger - ledger returned nothing');
+      }
       //console.log('ledger', $scope.model);
 
-      $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id);
 
       $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id);
 
       $scope.model.invoiceItem.data.forEach(function (item) {
+        item.localeTransaction = exchange(item.transaction_price, currency_id);
         item.localeCost = exchange((item.credit - item.debit), currency_id);
       });
     };
@@ -324,7 +345,7 @@ angular.module('kpk.controllers')
 
     $scope.filterCash = function filterCash(item, invoice) {
       return item.sale_uuid === invoice.invoice_uuid;
-    }
+    };
 
     function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0]; console.log('notre caution', $scope.caution);}
 
@@ -339,6 +360,7 @@ angular.module('kpk.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
+      console.log('got project', project);
       process[origin](invoiceId);
     });
 
