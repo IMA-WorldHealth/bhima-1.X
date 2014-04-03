@@ -158,7 +158,9 @@ angular.module('kpk.controllers')
     function processPatient() {
       dependencies.recipient.query = {
         tables: {},
-        where: ['patient.uuid=' + invoiceId]
+        where: [
+          'patient.uuid=' + invoiceId
+        ]
       };
 
       dependencies.recipient.query.tables['patient'] = {
@@ -168,6 +170,7 @@ angular.module('kpk.controllers')
       dependencies.recipient.query.tables['project'] = {
         columns: ['abbr']
       };
+
 
       dependencies.recipient.query.join = ['patient.project_id=project.id'];
 
@@ -220,18 +223,30 @@ angular.module('kpk.controllers')
 
     function buildRecipientQuery(model) {
       var invoice_data = model.invoice.data[0];
-
+      
       dependencies.recipient.query = {
         tables: {
           'patient' : {
-            columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference']
+            columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference', 'registration_date']
           },
           'project' : {
             columns: ['abbr']
+          },
+          'debitor' : {
+            columns: ['text']
+          },
+          'debitor_group' : { 
+            columns : ['name', 'is_convention'],
           }
         },
-        where: ['patient.debitor_uuid=' + invoice_data.debitor_uuid],
-        join : ['patient.project_id=project.id']
+        where: [
+          'patient.debitor_uuid=' + invoice_data.debitor_uuid,
+        ],
+        join : [
+          'patient.project_id=project.id',
+          'patient.debitor_uuid=debitor_uuid',
+          'debitor.group_uuid=debitor_group.uuid'
+        ]
       };
 
       dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
