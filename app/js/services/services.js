@@ -41,9 +41,9 @@
       return date1 === date2;
     };
 
-  });
+  })
 
-  services.service('precision', function () {
+  .service('precision', function () {
     var dflt_precision = 4,
         dflt_scalar = 1000,
         self = this;
@@ -95,10 +95,10 @@
       return list.reduce(self.add, 0);
     };
 
-  });
+  })
 
   //TODO passing list and dependencies to everything, could assign to object?
-  services.factory('validate', function($q, connect) {
+  .factory('validate', function($q, connect) {
     var modelLabel = 'model';
 
     var validateTests = [
@@ -255,9 +255,9 @@
       process : process,
       refresh : refresh
     };
-  });
+  })
 
-  services.factory('appcache', function ($rootScope, $q) {
+  .factory('appcache', function ($rootScope, $q) {
     var DB_NAME = "kpk", VERSION = 21;
     var db, cacheSupported, dbdefer = $q.defer();
 
@@ -429,9 +429,9 @@
       console.log('application cache is not supported in this context');
     }
     return cacheInstance;
-  });
+  })
 
-  services.factory('appstate', function ($q, $rootScope) {
+  .factory('appstate', function ($q, $rootScope) {
     //TODO Use promise structure over callbacks, used throughout the application and enables error handling
     var store = {}, queue = {};
 
@@ -469,9 +469,9 @@
       set : set,
       register : register
     };
-  });
+  })
 
-  services.factory('store', ['$http', function ($http) {
+  .factory('store', ['$http', function ($http) {
     // store service
 
     return function (options, target) {
@@ -519,7 +519,7 @@
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
 
-        if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;
+        if (!id) throw 'No id property in the object.  Expected property: ' + identifier;
 
         // merge or overwrite
         if (opts && opts.overwrite) {
@@ -541,7 +541,6 @@
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : Math.random();
-        if (id in index) throw pprint + 'Attempted to overwrite data with id: ' + id + '.';
         index[id] = data.push(object) - 1;
         // enqueue item for sync
         queue.push({method: 'POST', url: '/data/' + target, data: object});
@@ -587,9 +586,9 @@
 
       return this;
     };
-  }]);
+  }])
 
-  services.factory('connect', function ($http, $q, store) {
+  .factory('connect', function ($http, $q, store) {
     //summary:
     //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
     //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
@@ -830,40 +829,72 @@
 
   .service('exchange', [
     '$timeout',
+    'store',
     'appstate',
     'messenger',
     'precision',
-    function ($timeout, appstate, messenger, precision) {
+    function ($timeout, Store, appstate, messenger, precision) {
 
-      var self = function exchange (value, currency_id) {
-        if (!self.map) { messenger.danger('No exchange rates loaded'); }
+      function normalize (date) {
+        return date.setHours(0,0,0,0);
+      }
 
-        return self.map ? precision.round((self.map[currency_id] || 1.00) * value) : precision.round(value);
+      function exchange (value, currency_id, date) {
+        // This function exchanges data from the currency specified by currency_id to 
+        // the enterprise currency on a given date (default: today).
+        date = date || new Date();
+        date = normalize(new Date(date));
+        if (!exchange.store) { return value; }
+
+        var store = exchange.store.get(date);
+        if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
+
+        return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate * value : value);
+      }
+
+      exchange.rate = function rate (value, currency_id, date) {
+        date = date || new Date();
+        date = normalize(new Date(date));
+        if (!exchange.store) { return 1; }
+
+        var store = exchange.store.get(date);
+        if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
+        return precision.round(exchange.store && store && store.rateStore.get(currency_id) ? store.rateStore.get(currency_id).rate : 1);
       };
 
-      //FIX ME : since i wrote this method this throw an error but the app still work
-      self.myExchange = function (value, valueCurrency_id){
-        console.log('values recue value :', value, 'valueCurrency_id', valueCurrency_id);
-       // if(!(value && valueCurrency_id)) { throw new Error('Invalid data'); }
-        return self.map ? precision.round(((1/self.map[valueCurrency_id]) || 1.00) * value) : precision.round(value);
+      exchange.hasExchange = function hasExchange () {
+        return !!exchange.store && !!Object.keys(exchange.store).length;
       };
 
-      self.hasExchange = function () {
-        return !!Object.keys(self.map).length;
+      exchange.hasDailyRate = function hasDailyRate () {
+        var date = normalize(new Date());
+        return !!exchange.store && !!exchange.store.get(date);
       };
 
-      appstate.register('exchange_rate', function (globalRates) {
-        $timeout(function () { self.hasExchange(); }); // Force refresh
-        self.map = {};
-        self.dailyrate = [];
-        globalRates.forEach(function (r) {
-          //self.dailyrate.push({date : r.date, foreign_currency_id : r.foreign_currency_id, rate : r.rate});
-          self.map[r.foreign_currency_id] = precision.round(r.rate);
+      appstate.register('exchange_rate', function (rates) {
+        $timeout(function () { exchange.hasExchange(); }); // Force refresh
+
+        var store = exchange.store = new Store({ identifier : 'date', data : [] });
+
+        rates.forEach(function (rate) {
+          var date = normalize(new Date(rate.date));
+          if (!store.get(date)) {
+            store.post({ date : date, rateStore : new Store({ data : [] }) });
+            store.get(date).rateStore.post({ id : rate.enterprise_currency_id, rate : 1}); // default rate for enterprises
+            store.get(date).rateStore.post({
+              id : rate.foreign_currency_id,
+              rate : rate.rate,
+            });
+          } else {
+            store.get(date).rateStore.post({
+              id : rate.foreign_currency_id,
+              rate : rate.rate,
+            });
+          }
         });
-        //self.myExchange = myExchange;
       });
 
-      return self;
+      return exchange;
     }
   ])
 
@@ -935,5 +966,6 @@
       onRequestEnded: onRequestEnded
     };
   }]);
+  
 
 })(angular);
