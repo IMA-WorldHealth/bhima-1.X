@@ -72,7 +72,7 @@ angular.module('kpk.controllers')
           'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
         }
       },
-      'where' : ['exchange_rate.date='+mysqlDate()]
+      // 'where' : ['exchange_rate.date='+mysqlDate()]
     };
 
     var queryCurrency = {

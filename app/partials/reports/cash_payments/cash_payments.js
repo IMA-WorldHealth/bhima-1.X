@@ -1,12 +1,14 @@
 angular.module('kpk.controllers')
 .controller('reportCashPayments', [
   '$scope',
+  '$timeout',
   'connect',
   'appstate',
   'validate',
   'messenger',
   '$filter',
-  function ($scope, connect, appstate, validate, messenger, $filter) {
+  'exchange',
+  function ($scope, $timeout, connect, appstate, validate, messenger, $filter, exchange) {
     var session = $scope.session = {};
     $scope.selected = null;
 
@@ -17,6 +19,17 @@ angular.module('kpk.controllers')
         tables : {
           'project' : {
             columns : ['id', 'abbr', 'name']
+          }
+        }
+      }
+    };
+
+    dependencies.currencies = {
+      required : true,
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
           }
         }
       }
@@ -71,8 +84,6 @@ angular.module('kpk.controllers')
     function reset (p) {
       var req, url;
 
-      console.log('session', session);
-
       // toggle off active
       session.active = !p;
 
@@ -91,6 +102,9 @@ angular.module('kpk.controllers')
       connect.fetch(url)
       .success(function (model) {
         $scope.payments = model;
+        $timeout(function () {
+          convert();
+        }, exchange.hasExchange() ? 0 : 100);
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
@@ -103,6 +117,8 @@ angular.module('kpk.controllers')
       validate.process(dependencies)
       .then(function (models) {
         $scope.projects = models.projects;
+        $scope.currencies = models.currencies;
+        session.currency = $scope.currencies.data[0].id;
         $scope.allProjectIds =
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, "")
           .substr(1);
@@ -111,15 +127,20 @@ angular.module('kpk.controllers')
       .catch(function (error) { messenger.danger('An error occurred : ' + JSON.stringify(error)); });
     });
 
-    function sum(a, b) {
-      return a + b.cost;
+    function convert () {
+      var s = 0;
+      $scope.payments.forEach(function (payment) {
+        if (payment.currency_id === session.currency) {
+          s += payment.cost;
+        } else {
+          s += payment.cost / exchange.rate(payment.cost, payment.currency_id, payment.date);
+        }
+      });
+      session.sum = s;
     }
-
-    $scope.sumPayments = function sumPayments () {
-      return $scope.payments ? $scope.payments.reduce(sum, 0) : 0;
-    };
 
     $scope.search = search;
     $scope.reset = reset;
+    $scope.convert = convert;
   }
 ]);
