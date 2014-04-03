@@ -248,7 +248,7 @@ angular.module('kpk.controllers')
           'debitor.group_uuid=debitor_group.uuid'
         ]
       };
-
+      
       dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
       return validate.process(dependencies, ['recipient'])
       .then(buildLocationQuery);
@@ -281,7 +281,7 @@ angular.module('kpk.controllers')
 
       $scope.recipient = $scope.model.recipient.data[0];
       $scope.recipient.location = $scope.model.location.data[0];
-
+      
 
       //FIXME huge total hack
       $scope.model.invoice.data.forEach(function(invoiceRef) {
@@ -290,7 +290,7 @@ angular.module('kpk.controllers')
       // Human readable ID
       $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
       $scope.invoice.hr_id = $scope.invoice.abbr.concat($scope.invoice.reference);
-
+      
       console.log('INVOICE', $scope.invoice);
 
       //FIXME hacks for meeting
