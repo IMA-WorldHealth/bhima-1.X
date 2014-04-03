@@ -69,7 +69,8 @@
                   <td>{{ item.code }}</td>
                   <td>{{ item.text }}</td>
                   <td>{{ item.quantity }}</td>
-                  <td><span ng-bind-html="item.transaction_price | intlcurrency:project.currency_id"></span></td>
+
+                  <td><span ng-bind-html="item.localeTransaction | intlcurrency:session.currentCurrency.id"></span></td>
                   <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.id"></span></td>
                 </tr>
               </tbody>

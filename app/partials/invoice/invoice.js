@@ -319,6 +319,7 @@ angular.module('kpk.controllers')
       $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id);
 
       $scope.model.invoiceItem.data.forEach(function (item) {
+        item.localeTransaction = exchange(item.transaction_price, currency_id);
         item.localeCost = exchange((item.credit - item.debit), currency_id);
       });
     };
@@ -329,7 +330,7 @@ angular.module('kpk.controllers')
 
     $scope.filterCash = function filterCash(item, invoice) {
       return item.sale_uuid === invoice.invoice_uuid;
-    }
+    };
 
     function cautionInvoice (model) {$scope.model = model; $scope.location = $scope.model.location.data[0]; $scope.caution = $scope.model.caution.data[0]; console.log('notre caution', $scope.caution);}
 
@@ -344,6 +345,7 @@ angular.module('kpk.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
+      console.log('got project', project);
       process[origin](invoiceId);
     });
 
