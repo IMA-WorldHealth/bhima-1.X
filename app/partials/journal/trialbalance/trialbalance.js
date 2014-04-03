@@ -9,28 +9,23 @@ angular.module('kpk.controllers')
   function ($scope, $modalInstance, $window, connect, messenger, request) {
     var hasErrors = !!request.errors;
 
-    if (hasErrors) {
-      $scope.errors = request.errors;
+    $scope.errors = request.errors;
+    var total = $scope.total = {};
+    $scope.data = request.data;
 
-    } else {
-      var total = $scope.total = {};
-      $scope.data = request.data;
-
-      // TODO
-      // this is slightly inefficient.
-      $scope.data.forEach(function (item) {
-        total.before = (total.before || 0) + item.balance;
-        total.debit = (total.debit || 0) + item.debit;
-        total.credit = (total.credit || 0) + item.credit;
-        total.after = (total.after || 0) + item.balance + (item.credit - item.debit);
-      });
-    }
+    $scope.data.forEach(function (item) {
+      total.before = (total.before || 0) + item.balance;
+      total.debit = (total.debit || 0) + item.debit;
+      total.credit = (total.credit || 0) + item.credit;
+      total.after = (total.after || 0) + item.balance + (item.credit - item.debit);
+    });
 
     $scope.submit = function submit () {
       connect.fetch('/trialbalance/submit/'+ request.key +'/')
       .then(function () {
         $modalInstance.close();
-      }, function (error) {
+      })
+      .catch(function (error) {
         messenger.warning('Posting failed with ' +  JSON.stringify(error));
       });
     };
