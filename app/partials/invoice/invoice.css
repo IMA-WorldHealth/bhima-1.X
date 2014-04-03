@@ -28,7 +28,12 @@
   margin-bottom: 0px;
 }
 
+.invoice-underline { 
+  width : 100%;
+  border-bottom: 1px solid #cfcfcf;
+}
+
 .customer-details { 
   padding-top: 0px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
