@@ -25,6 +25,7 @@
 .invoice-header { 
   font-size: 25px !important;
   padding-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .customer-details { 

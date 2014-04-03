@@ -102,7 +102,7 @@ app.post('/sale/', function (req, res, next) {
 
 app.get('/currentProject', function (req, res, next) {
   var sql =
-    "SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id` " +
+    "SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as 'enterprise_name', `enterprise`.`phone`, `enterprise`.`email` " +
     "FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` " +
     "WHERE `project`.`id`=" + req.session.project_id + ";";
   db.execute(sql, function (err, result) {
