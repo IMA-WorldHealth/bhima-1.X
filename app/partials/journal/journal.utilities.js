@@ -196,10 +196,15 @@ angular.module('kpk.controllers')
           aggregateCollapsed: $scope.aggregates
         });
       }
+      
+      function unGroup () {
+        dataview.setGrouping({});
+      }
 
       var groupMap = {
         'transaction' : groupByTransaction,
-        'account' : groupByAccount
+        'account' : groupByAccount,
+        'ungroup' : unGroup
       };
 
       if (groupMap[targetGroup]) { groupMap[targetGroup](); }
