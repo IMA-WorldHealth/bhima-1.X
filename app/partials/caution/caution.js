@@ -12,10 +12,12 @@ angular.module('kpk.controllers')
   '$translate',
   'util',
   'uuid',
-  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid) {
+  'appcache',
+  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache) {
 
     var dependencies = {},
-        caution_uuid = -1;
+        caution_uuid = -1,
+        cache = new Appcache('caution');
 
     dependencies.cash_box = {
       query : {
@@ -74,7 +76,7 @@ angular.module('kpk.controllers')
 
     function init (model) {
       $scope.model = model;
-      $scope.selectedItem = model.cash_box.data[model.cash_box.data.length-1]; //pop() doesn't work
+
     }
 
     function ready (model) {
@@ -120,7 +122,10 @@ angular.module('kpk.controllers')
     }
 
     function setCashAccount(cashAccount) {
-      if(cashAccount) $scope.selectedItem = cashAccount;
+      if(cashAccount) {
+        $scope.selectedItem = cashAccount;
+        cache.put('selectedItem', cashAccount);
+      }
     }
 
 
@@ -137,12 +142,23 @@ angular.module('kpk.controllers')
       messenger.danger($translate('CAUTION.DANGER'));
     }
 
+    cache.fetch('selectedItem').then(load);
+
+
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
       dependencies.cash_box.query.where=['cash_box.project_id='+project.id, 'AND', 'cash_box.is_auxillary='+1];
       validate.process(dependencies).then(init, handleError);
     });
+
+    function load (selectedItem){
+      if(!selectedItem) {
+         return ;
+      }else{
+        $scope.selectedItem = selectedItem;
+      }
+    }
 
     function check (){
       if($scope.data.payment){
