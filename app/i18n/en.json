@@ -63,7 +63,7 @@
     "REVIEW"     : "Review Today's Rates",
     "TODAY_RATE" : "Exchange Rate for"
   },
- 
+
   "PROJECT"       : {
     "EDIT"        : "Editing Project",
     "NEW"         : "New Project",
@@ -291,7 +291,7 @@
     "COLUMNS"             : "Columns",
     "VISIT_DATE"          : "Last Visit",
     "TRANSACTION_ID"      : "Transaction ID",
-    "ENTERPRISE" : "Enterprise",
+    "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
     "RATE"                : "Rate",
     "LINE_ID"             : "Line ID",

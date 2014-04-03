@@ -36,7 +36,7 @@ angular.module('kpk.controllers')
         }
       }
     };
-    
+
     appstate.register('project', function (project) {
       $scope.project = project;
     });
@@ -162,10 +162,8 @@ angular.module('kpk.controllers')
       invoice.applyGlobal = [];
 
       invoice.priceList.forEach(function (listItem) {
-        console.log('g', listItem.is_global, listItem);
         if (listItem.is_global) {
           invoice.applyGlobal.push(listItem);
-          console.log(invoice.applyGlobal);
         }
       });
     }
@@ -247,7 +245,6 @@ angular.module('kpk.controllers')
 
         requestContainer.saleItems.push(formatSaleItem);
       });
-      console.log('cost envoye est :', requestContainer.sale);
 
       // Patient Groups
       // if(invoice.priceList) {
@@ -264,8 +261,7 @@ angular.module('kpk.controllers')
 
       invoice.applyGlobal.forEach(function (listItem) {
         var applyCost, formatListItem; // FIXME Derive this from enterprise
-        
-        console.log('adding listItem', listItem);
+
         var formatDiscountItem = {
           inventory_uuid : listItem.inventory_uuid,
           quantity : 1,
@@ -275,14 +271,7 @@ angular.module('kpk.controllers')
           inventory_price : 0
         };
 
-        console.log('[FORMAT DISCOUNT ITEM] ', formatDiscountItem);
-
         formatDiscountItem[listItem.is_discount ? 'debit' : 'credit'] = listItem.currentValue;
-        /*
-        (listItem.is_discount) ?
-          formatDiscountItem.debit = listItem.currentValue :
-          formatDiscountItem.credit = listItem.currentValue;
-        */
 
         requestContainer.saleItems.push(formatDiscountItem);
       });
@@ -351,8 +340,6 @@ angular.module('kpk.controllers')
           total = Number(total.toFixed(4));
         }
       });
-
-      console.log('voici le total obtenue jueste apres la sommation ', total);
 
       if (invoice.applyGlobal) {
         invoice.applyGlobal.forEach(function (listItem) {
