@@ -81,7 +81,7 @@
                   </thead>
 
                   <tbody>
-                    <tr ng-class="{'incomplete-outline': !row.description, 'complete-outline': row.description}" ng-repeat="row in voucher.rows">
+                    <tr ng-class="{'incomplete-outline': !row.description || !row.account_id, 'complete-outline': row.description && row.account_id}" ng-repeat="row in voucher.rows">
                       <td><input class="form-invoice" type="text" placeholder="Description" value="{{row.description}}" ng-model="row.description"></td>
                       <td><input
                         class="form-invoice"
