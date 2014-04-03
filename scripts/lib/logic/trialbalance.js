@@ -90,10 +90,11 @@ module.exports = function (db) {
           ') AS `pt` ' +
         'ON `account`.`id`=`pt`.`account_id`;';
 
-      return errors.length ? q(errors) : db.exec(sql);
+      return db.exec(sql);
     })
     .then(function (rows) {
-      results[errors.length ? 'errors' : 'data'] = rows;
+      results.data = rows;
+      results.errors = errors;
       results.key = keys.generate(userId);
       callback(null, results);
     })
