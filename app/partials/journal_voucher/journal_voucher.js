@@ -85,6 +85,7 @@ angular.module('kpk.controllers')
       $q.all([getTransID(), getLogID()])
       .then(function (response){
         $scope.voucher.trans_id = response[0].data[0].abbr+response[0].data[0].increment;
+        console.log('$scope.voucher.log_id', $scope.voucher.log_id)
         $scope.voucher.log_id = response[1].data[0].increment;
       });
     }
@@ -191,10 +192,12 @@ angular.module('kpk.controllers')
 
   function verifySubmission (){
     var isAccountEmpty = false;
-    for(var i= 0; i<$scope.voucher.rows.length; i++){
-      if(!$scope.voucher.rows[i].account_id){
-        isAccountEmpty = true;
-        break;
+    if($scope.voucher.rows){
+      for(var i= 0; i<$scope.voucher.rows.length; i++){
+        if(!$scope.voucher.rows[i].account_id){
+          isAccountEmpty = true;
+          break;
+        }
       }
     }
     return (($scope.voucher.td !== $scope.voucher.tc) || ($scope.voucher.td === 0 || $scope.voucher.tc === 0) || (isAccountEmpty));
