@@ -668,11 +668,11 @@ create table `patient` (
   constraint foreign key (`origin_location_id`) references `village` (`uuid`) on update cascade
 ) engine=innodb;
 
-create trigger `patient_reference` 
-  before insert on `patient`
-  for each row 
-  set new.reference = (select IF(ISNULL(max(reference)), 1, max(reference) + 1) from patient where project_id = new.project_id);
-  
+-- create trigger `patient_reference` 
+--   before insert on `patient`
+--   for each row 
+--   set new.reference = (select IF(ISNULL(max(reference)), 1, max(reference) + 1) from patient where project_id = new.project_id);
+
 --
 -- Table structure for table `kpk`.`patient_visit`
 --
@@ -733,11 +733,6 @@ create table `sale` (
   constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
 
-create trigger `sale_reference` 
-  before insert on `sale`
-  for each row 
-  set new.reference = (select IF(ISNULL(max(reference)), 1, max(reference) + 1) from sale where project_id = new.project_id);
-
 --
 -- Table structure for table `kpk`.`credit_note`
 --
@@ -762,11 +757,6 @@ create table `credit_note` (
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`sale_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
-
-create trigger `credit_note_reference` 
-  before insert on `credit_note`
-  for each row 
-  set new.reference = (select IF(ISNULL(max(reference)), 1, max(reference) + 1) from credit_note where project_id = new.project_id);
 
 --
 -- Table structure for table `kpk`.`sale_item`
@@ -898,11 +888,6 @@ create table `cash` (
   constraint foreign key (`debit_account`) references `account` (`id`),
   constraint foreign key (`credit_account`) references `account` (`id`)
 ) engine=innodb;
-
-create trigger `cash_reference` 
-  before insert on `cash`
-  for each row 
-  set new.reference = (select IF(ISNULL(max(reference)), 1, max(reference) + 1) from cash where project_id = new.project_id);
 
 --
 -- table `kpk`.`cash_item`
@@ -1244,11 +1229,6 @@ create table `pcash` (
   constraint foreign key (`beneficiary_id`) references `beneficiary` (`id`)
 ) engine=innodb;
 
-create trigger `pcash_reference` 
-  before insert on `pcash`
-  for each row 
-  set new.reference = (select IF(ISNULL(max(reference)), 1, max(reference) + 1) from pcash where project_id = new.project_id);
- 
 --
 -- table `kpk`.`pcash_item`
 --
@@ -1294,9 +1274,4 @@ create table `caution` (
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
 
-create trigger `caution` 
-  before insert on `caution`
-  for each row 
-  set new.reference = (select IF(ISNULL(max(reference)), 1, max(reference) + 1) from caution where project_id = new.project_id);
- 
 -- Jon's dump @ 12:45.
