@@ -36,6 +36,7 @@
     "qunit": "~0.5.18",
     "grunt-contrib-nodeunit": "~0.2.2",
     "grunt-mysql-dump": "~1.0.0",
-    "grunt-ngmin": "0.0.3"
+    "grunt-ngmin": "0.0.3",
+    "grunt-uncss": "~0.3.2"
   }
 }

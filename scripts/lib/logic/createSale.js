@@ -10,6 +10,7 @@ module.exports = function(db, parser, journal) {
 
     saleRecord = saleData.sale;
     saleRecord.uuid = saleRecordId;
+    saleRecord.reference = 1; // TODO : this method is a hack to get ids to work
 
     saleItems = saleData.saleItems;
 
@@ -20,7 +21,7 @@ module.exports = function(db, parser, journal) {
     //writeSaleItems()
     .then(function(saleResult) {
       processedSale = true;
-      console.log('sale successed')
+      console.log('sale successed');
       return writeSaleItems(saleRecordId, saleItems);
     })
 
