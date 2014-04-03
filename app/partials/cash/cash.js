@@ -339,6 +339,7 @@ angular.module('kpk.controllers')
         payment.deb_cred_uuid = $scope.patient.debitor_uuid;
         payment.deb_cred_type = 'D';
         payment.cashbox_id = $scope.cashbox.id;
+        payment.reference = 1; // TODO : This is a mistake
 
         // FIXME : All of these need to be re-worked
         payment.user_id = user_id;

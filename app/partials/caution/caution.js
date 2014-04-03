@@ -94,16 +94,16 @@ angular.module('kpk.controllers')
     }
 
     function payCaution (){
-      console.log('notre debiteur selectionne', $scope.selectedDebitor);
       var record = {
-        uuid            : uuid(),
-        value           : $scope.data.payment,
-        project_id      : $scope.project.id,
-        debitor_uuid    : $scope.selectedDebitor.debitor_uuid,
-        currency_id     : $scope.selectedItem.currency_id,
-        user_id         : $scope.model.cashier.data.id,
-        cash_box_id     : $scope.selectedItem.id,
-        description     : ['CAP', $scope.selectedDebitor.debitor_uuid, $scope.selectedDebitor.first_name, util.convertToMysqlDate(new Date().toString())].join('/')
+        uuid         : uuid(),
+        reference    : 1, // FIXME                                                                                                                               : Workaround for dead triggers
+        value        : $scope.data.payment,
+        project_id   : $scope.project.id,
+        debitor_uuid : $scope.selectedDebitor.debitor_uuid,
+        currency_id  : $scope.selectedItem.currency_id,
+        user_id      : $scope.model.cashier.data.id,
+        cash_box_id  : $scope.selectedItem.id,
+        description  : ['CAP', $scope.selectedDebitor.debitor_uuid, $scope.selectedDebitor.first_name, util.convertToMysqlDate(new Date().toString())].join('/')
       };
       writeCaution(record)
       .then(postToJournal)
@@ -113,7 +113,6 @@ angular.module('kpk.controllers')
 
     function postToJournal (res) {
       caution_uuid = res.config.data.data[0].uuid;
-      console.log('notre uuid', caution_uuid);
       return connect.fetch('/journal/caution/' + caution_uuid);
     }
 
