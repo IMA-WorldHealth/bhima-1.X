@@ -24,7 +24,7 @@ module.exports = function (options) {
   function cdm (table, columns) {
     // creates a 'dot map' mapping on table
     // to multiple columns.
-    // e.g. `table`.`column1`, `table`.`column2` 
+    // e.g. `table`.`column1`, `table`.`column2`
     return columns.map(function (c) {
       return [table, '.', sanitize.escapeid(c)].join('');
     }).join(', ');
@@ -196,14 +196,13 @@ module.exports = function (options) {
       null;
 
     var order;
-
     return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
-                .replace('%columns%', columns.join(', '))
-                .replace('%table%', table)
-                .replace('%conditions%', conditions)
-                .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
-                .replace(' ORDER BY %order%', order ? ' ORDER BY ' + order.join('.') : '')
-                .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
+      .replace('%columns%', columns.join(', '))
+      .replace('%table%', table)
+      .replace('%conditions%', conditions)
+      .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
+      .replace(' ORDER BY %order%', order ? ' ORDER BY ' + order.join('.') : '')
+      .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
   };
 
   return self;
