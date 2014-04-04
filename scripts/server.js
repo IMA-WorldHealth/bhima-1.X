@@ -101,8 +101,8 @@ app.post('/sale/', function (req, res, next) {
 });
 
 app.get('/currentProject', function (req, res, next) {
-  
-  // TODO sorry 
+
+  // TODO sorry
   var sql =
     "SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as 'enterprise_name', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as 'village', `sector`.`name` as 'sector' " +
     "FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` " +
@@ -448,8 +448,8 @@ app.get('/period/?', function (req, res, next) {
   var sql = "SELECT * FROM period WHERE period_start<="+sanitize.escape(query)+" AND period_stop>="+sanitize.escape(query)+" LIMIT 1";
   db.execute(sql, function(err, ans){
     if(err) throw err;
-    res.send(ans)
-  })
+    res.send(ans);
+  });
 });
 
 app.get('/max_trans/?', function (req, res, next) {
@@ -466,16 +466,16 @@ app.get('/max_trans/?', function (req, res, next) {
   db.execute(sql, function(err, ans){
     if(err) throw err;
     res.send(ans);
-  })
+  });
 });
 
 app.get('/max_log/', function (req, res, next) {
   var sql =
-        'SELECT max(id) + 1 AS increment FROM journal_log';
+        'SELECT max(uuid) + 1 AS increment FROM journal_log';
   db.execute(sql, function(err, ans){
     if(err) throw err;
     res.send(ans);
-  })
+  });
 });
 
 app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
