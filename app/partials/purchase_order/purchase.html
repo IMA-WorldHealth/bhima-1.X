@@ -3,20 +3,6 @@
 </header>
 
 <section class="top-nav">
-<!--   <div class="btn&#45;group"> -->
-<!--   <button class="btn btn&#45;sm btn&#45;default" ng&#45;click="select(0)" ng&#45;class="{current: current_process=='PO'}">Purchase -->
-<!--     Order -->
-<!--   </button> -->
-<!--   <button class="btn btn&#45;sm btn&#45;default" ng&#45;click="select(1)" ng&#45;class="{current: current_process=='QUOTE'}"> -->
-<!--     Quote -->
-<!--   </button> -->
-<!-- </div> -->
-<!-- <div class="pull&#45;right"> -->
-<!--   <a class="btn btn&#45;sm btn&#45;default"><span class="glyphicon glyphicon&#45;floppy&#45;save"></span> Import Pro forma -->
-<!--   </a> -->
-<!--   <a class="btn btn&#45;sm btn&#45;default"><span class="glyphicon glyphicon&#45;th&#45;list"></span> Update Defaults</a> -->
-<!--  -->
-<!-- </div> -->
 </section>
 
 <div class="content">
@@ -30,10 +16,10 @@
         </div>
 
         <div class="panel-body purchase-header">
-
+        
           <div class="form-group">
             <label for="saledate">Sale Date</label>
-            <input type="date" id="saledate" class="form-kapok" ng-model="sale_date">
+            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.date">
           </div>
           <div class="form-group">
             <label for="select-cred">Supplier</label>
@@ -129,10 +115,11 @@
   <div class="row">
 
     <div class="col-xs-12">
-      <div class="panel panel-success">
+      <div class="panel panel-default">
         <div class="panel-heading">
           <span>Purchase Items</span>
-          <button class="pull-right" ng-click="updateInventory()">+</button>
+          <!-- <a ng&#45;click="updateInventory()" class="pull&#45;right fieldset&#45;util"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }} </a> -->
+          <button disabled class="pull-right" ng-click="updateInventory()"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
 
         </div>
 
@@ -147,17 +134,19 @@
           </tr>
           </thead>
           <tbody>
-          <tr ng-repeat="item in inventory">
-            <td class="invoice-item"><select class="form-invoice" ng-change="updateItem(item)" ng-model="item.item"
-                                             ng-options="l.code for l in inventory_model.data"><option value="" disabled="disabled">--Select Item--</option></select></td>
-            <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
-            <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
-            <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
-            <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
-          </tr>
-          <tr>
-            <td colspan="4"></td>
-            <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
+            <tr><td colspan="5">Not implemented</td></tr>
+          <!-- <tr ng&#45;repeat="item in inventory"> -->
+          <!--   <td class="invoice&#45;item"><select class="form&#45;invoice" ng&#45;change="updateItem(item)" ng&#45;model="item.item" -->
+          <!--                                    ng&#45;options="l.code for l in inventory_model.data"><option value="" disabled="disabled">&#45;&#45;Select Item&#45;&#45;</option></select></td> -->
+          <!--   <td class="invoice&#45;desc"><input type="text" class="form&#45;invoice" ng&#45;model="item.text"></td> -->
+          <!--   <td class="invoice&#45;quantity"><input type="number" class="form&#45;invoice" ng&#45;model="item.quantity"></td> -->
+          <!--   <td class="invoice&#45;price"><input type="number" class="form&#45;invoice" ng&#45;model="item.price"></td> -->
+          <!--   <td class="invoice&#45;amount"><span>{{item.quantity * item.price | currency}}</span></td> -->
+          <!-- </tr> -->
+          <!-- <tr> -->
+          <!--   <td colspan="4"></td> -->
+          <!--   <td><span><b>{{invoiceTotal() | currency}}</b></span></td> -->
+          <!-- </tr> -->
           </tbody>
         </table>
       </div>
