@@ -6,7 +6,11 @@ angular.module('kpk.controllers')
   'connect',
   'appstate',
   'messenger',
+  'uuid',
   function($scope, $q, validate, connect, appstate, messenger) {
+
+    // TODO Currently downloads every location - should only download the 
+    // selected creditors location
     var dependencies = {}, inventory = $scope.inventory = [];
     var session = $scope.session = {};
     
@@ -18,69 +22,41 @@ angular.module('kpk.controllers')
       }
     };
 
-    session.payable = false;
-
-    var inventory_query = {
-      'tables' : {
-        'inventory' : {
-          'columns' : [ 'uuid', 'code', 'text', 'price', 'type_id']
+    dependencies.creditor = { 
+      query : { 
+        tables : {
+          supplier : { columns : ['uuid', 'name', 'location_id', 'creditor_uuid'] },
         }
-      },
-      'where' : [
-        'inventory.type_id=0'
-      ]
-    };
-
-    var inventory_request = connect.req(inventory_query);
-
-    var creditor_query = {
-      tables: {
-        'supplier' : { columns : ['uuid', 'name', 'location_id', 'creditor_uuid'] },
       }
     };
 
-    var creditor_request = connect.req(creditor_query);
-    var user_request = connect.fetch("user_session");
-    var location_request = connect.getModel("/location");
+    dependencies.creditorLocation = { 
+      query : '/location'
+    };
 
-    function init() {
-
-      $scope.inventory = [];
-      $scope.creditor = "";
-
-      $q.all([
-        inventory_request,
-        // sales_request,
-        // purchase_request,
-        creditor_request,
-        user_request,
-        location_request
-
-      ]).then(function(a) {
-        $scope.inventory_model = a[0];
-        $scope.creditor_model = a[1];
-        $scope.verify = a[2].data.id;
-        $scope.location = a[3];
-
-      });
+    session.purchase = { 
+      payable : false,
+      date : getDate()
+    };
+    session.selected = false;
+    
+    validate.process(dependencies).then(initialise);
+    
+    function initialise(model) { 
+      
+      // Expose models to the scope
+      angular.extend($scope, model);
+      console.log(model);
     }
-
+  
+    // FIXME
     function getDate() {
+      
       //Format the current date according to RFC3339 (for HTML input[type=="date"])
       var now = new Date();
-      return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + ('0' + now.getDate()).slice(-2);
+      return now.getFullYear() + "-" + ('0' + (now.getMonth() + 1)).slice(-2) + "-" + ('0' + now.getDate()).slice(-2);
     }
-
-    function createId(current) {
-      /*
-      *summary
-      *  Format and increment according to transaction ID format
-      */
-      var default_id = 100000;
-      if(!current) return default_id;
-      return current+1;
-    }
-
+    
     function formatInvoice() {
       var t = 0;
       for(var i= 0, l = $scope.inventory.length; i < l; i+=1) {
@@ -141,7 +117,7 @@ angular.module('kpk.controllers')
             messenger.success('Posted purchase id: ' + id);
   //        Navigate to Purchase Order review || Reset form
   //        Reset form
-            init();
+            // init();
           }, function (err) {
             messenger.danger('Posting returned err: ' + JSON.stringify(err));
           });
@@ -210,6 +186,6 @@ angular.module('kpk.controllers')
       $scope.creditor.province = loc.province;
     };
 
-    init();
+    // init();
   }
 ]);
