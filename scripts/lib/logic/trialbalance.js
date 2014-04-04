@@ -151,7 +151,7 @@ module.exports = function (db) {
     db.execute(sql, function (err, rows) {
       if (err) { d.reject(new error('ERR_SQL', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
       var outliers = rows.filter(function (row) {
-        return !(new Date (row.trans_date) > new Date(row.period_start) && new Date (row.trans_date) < new Date(row.period_stop));
+        return !(new Date (row.trans_date) >= new Date(row.period_start) && new Date (row.trans_date) <= new Date(row.period_stop));
       });
       if (outliers.length) { d.reject(new error('ERR_INVALID_DATE', 'The dates do not match the periods', outliers)); }
 
