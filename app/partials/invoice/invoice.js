@@ -244,7 +244,7 @@ angular.module('kpk.controllers')
         ],
         join : [
           'patient.project_id=project.id',
-          'patient.debitor_uuid=debitor_uuid',
+          'patient.debitor_uuid=debitor.uuid',
           'debitor.group_uuid=debitor_group.uuid'
         ]
       };
@@ -270,7 +270,7 @@ angular.module('kpk.controllers')
       $scope.session = {};
       $scope.session.currentCurrency = $scope.model.currency.get($scope.project.currency_id);
       routeCurrencyId = $scope.session.currentCurrency.currency_id;
-
+      
       //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
       console.log('The Invoice is:', $scope.invoice);
@@ -282,7 +282,6 @@ angular.module('kpk.controllers')
       $scope.recipient = $scope.model.recipient.data[0];
       $scope.recipient.location = $scope.model.location.data[0];
       
-
       //FIXME huge total hack
       $scope.model.invoice.data.forEach(function(invoiceRef) {
         $scope.invoice.totalSum += invoiceRef.cost;
