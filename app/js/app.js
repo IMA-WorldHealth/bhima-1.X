@@ -74,7 +74,7 @@
       controller: 'cash',
       templateUrl: '/partials/cash/cash.html'
     })
-    .when('/creditors', {
+    .when('/creditor', {
       controller: 'creditorsController',
       templateUrl: '/partials/creditor/creditor.html'
     }).
