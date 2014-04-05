@@ -5,6 +5,7 @@ angular.module('kpk.controllers')
   '$rootScope',
   '$q',
   '$filter',
+  "$window",
   'uuid',
   'store',
   'util',
@@ -13,7 +14,7 @@ angular.module('kpk.controllers')
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $translate, $rootScope, $q, $filter, uuid, Store, util, connect, precision, validate, appstate, messenger) {
+  function ($scope, $translate, $rootScope, $q, $filter, $window, uuid, Store, util, connect, precision, validate, appstate, messenger) {
     var dependencies = {};
     var columns, options, dataview, grid, manager;
     var sort_column;
@@ -62,6 +63,14 @@ angular.module('kpk.controllers')
         identifier : 'uuid',
         tables : {
           sale : { columns : ['uuid', 'note'] }
+        }
+      }
+    };
+
+    dependencies.period = {
+      query : {
+        tables : {
+          period : { columns : ['id', 'fiscal_year_id', 'period_stop', 'period_start'] }
         }
       }
     };
@@ -128,28 +137,57 @@ angular.module('kpk.controllers')
     }
 
     function sort (a,b) {
-      var x = sort_column === 'trans_id' ? parseFloat(a[sort_column].substr(3)) : [sort_column];
-      var y = sort_column === 'trans_id' ? parseFloat(b[sort_column].substr(3)) : b[sort_column];
-      return (x === y) ? 0 : (x > y ? 1 : -1);
+      var x = a[sort_column];
+      var y = b[sort_column];
+      return x > y ? 1 : -1;
     }
 
 
     function handleClick(className, args) {
+      var classes = className.split(' ');
       var buttonMap = {
-        'addRow'          : addRow,
-        'editTransaction' : editTransaction,
-        'save'            : save
+        'addRow'            : addRow,
+        'deleteRow'         : deleteRow,
+        'editTransaction'   : editTransaction,
+        'saveTransaction'   : saveTransaction,
+        'deleteTransaction' : deleteTransaction
       };
-      if (buttonMap[className]) { buttonMap[className](args); }
+      classes.forEach(function (cls) {
+        if (buttonMap[cls]) { buttonMap[cls](args); }
+      });
     }
 
+    function deleteTransaction (args) {
+      var bool = $window.confirm('Are you sure you want to delete this transaction?');
+      if (!bool) return;
+      var item = dataview.getItem(args.row);
+      item.rows.forEach(function (row) {
+        manager.session.removed.post(row);
+        manager.session.records.remove(row.uuid);
+        dataview.deleteItem(row.uuid);
+      });
+      grid.invalidate();
+      saveTransaction();
+    }
+
+    function deleteRow (args) {
+      var item = dataview.getItem(args.row);
+      if (manager.session.records.data.length < 2) { return broadcastError('Cannot delete last line in transaction.'); }
+      // post to removed list and removed from records
+      manager.session.removed.post(item);
+      manager.session.records.remove(item.uuid);
+      dataview.deleteItem(item.uuid);
+      grid.invalidate();
+      var idx = dataview.getRowById(manager.session.records.data[0].uuid);
+      grid.scrollRowToTop(idx - 1);
+    }
 
     function addRow () {
       var row;
       row = clone(manager.session.template);
       row.newRecord = true;
       row.uuid = uuid();
-      manager.session.records.push(row);
+      manager.session.records.post(row);
       dataview.addItem(row);
     }
 
@@ -159,10 +197,13 @@ angular.module('kpk.controllers')
           transactionId = transaction.groupingKey,
           templateRow = transaction.rows[0];
 
+      manager.session.rowId = args.row;
       manager.session.mode = "edit";
       manager.session.transactionId = transaction.groupingKey;
 
       if (!transactionId) { return $rootScope.$apply(messenger.danger('Invalid transaction provided')); }
+
+      manager.fn.showDeleteButton();
 
       manager.origin = {
         'debit'        : transaction.totals.sum.debit,
@@ -171,7 +212,8 @@ angular.module('kpk.controllers')
         'credit_equiv' : transaction.totals.sum.credit_equiv
       };
 
-      manager.session.records = [];
+      manager.session.records = new Store({ data : [], identifier: 'uuid'});
+      manager.session.removed = new Store({ data : [], identifier: 'uuid'});
 
       manager.session.template = {
         trans_id       : transactionId,
@@ -192,16 +234,16 @@ angular.module('kpk.controllers')
 
       transaction.rows.forEach(function(row) {
         row.newRecord = false;
-        manager.session.records.push(row);
+        manager.session.records.post(row);
       });
 
+      grid.invalidate();
       manager.fn.regroup();
-      grid.render();
       $rootScope.$apply(messenger.success('Transaction #' + transactionId));
     }
 
     function broadcastError (msg) {
-      $rootScope.$apply(messenger.danger("[ERROR] " + msg, 70000));
+      $rootScope.$apply(messenger.danger("[ERROR] " + msg, 7000));
     }
 
     function broadcastSuccess (msg) {
@@ -266,14 +308,25 @@ angular.module('kpk.controllers')
       return credit === 0 && debit === 0;
     }
 
+    function validPeriod (item) {
+      return !isNaN(Number(item.period_id));
+    }
+
+    function validFiscal(item) {
+      return !isNaN(Number(item.fiscal_year_id));
+    }
+
     function checkErrors (records) {
+      if (!records.length) { return; }
       var totalDebits = 0, totalCredits = 0;
 
       var dateError = false,
           accountError = false,
           balanceError = false,
           singleEntryError = false,
-          multipleDatesError = false;
+          multipleDatesError = false,
+          periodError = false,
+          fiscalError = false;
 
       //validation
       records.forEach(function(record) {
@@ -284,11 +337,13 @@ angular.module('kpk.controllers')
         if (!validBalance(record)) { balanceError = true; }
         if (!validDebitsAndCredits(record)) { balanceError = true; }
         if (detectSingleEntry(record)) { singleEntryError = true; }
+        if (!validPeriod(record)) { periodError = true; }
+        if (!validFiscal(record)) { fiscalError = true; }
       });
 
-      var testDate = records[0].trans_date;
+      var testDate = new Date(records[0].trans_date).setHours(0,0,0,0);
       multipleDatesError = records.some(function (record) {
-        return record.trans_date !== testDate;
+        return new Date(record.trans_date).setHours(0,0,0,0) !== testDate;
       });
 
       totalDebits = precision.round(totalDebits);
@@ -299,27 +354,40 @@ angular.module('kpk.controllers')
       if (accountError) { broadcastError('Records contain invalid or nonexistant accounts.'); }
       if (dateError) { broadcastError('Transaction contains invalid dates.'); }
       if (multipleDatesError) { broadcastError('Transaction trans_date field has multiple dates.'); }
+      if (periodError) { broadcastError('Transaction date does not fall in any valid periods.'); }
+      if (fiscalError) { broadcastError('Transaction date does not fall in any valid fiscal years.'); }
 
-      var hasErrors = (dateError || accountError || balanceError || singleEntryError || multipleDatesError || !validTotals(totalDebits, totalCredits));
+      var hasErrors = (
+          dateError || accountError ||
+          balanceError || singleEntryError ||
+          multipleDatesError || fiscalError ||
+          periodError || !validTotals(totalDebits, totalCredits)
+      );
 
       return hasErrors;
 
     }
 
-
-    function save () {
-      var records = manager.session.records;
+    function saveTransaction () {
+      var records = manager.session.records.data,
+          removed = manager.session.removed.data;
 
       var hasErrors = checkErrors(records);
       if (hasErrors) { return; }
 
       var newRecords = [],
-          editedRecords = [];
+          editedRecords = [],
+          removedRecords = [];
 
       records.forEach(function(record) {
         var newRecord = record.newRecord,
             packed = packager(record);
         (newRecord ? newRecords : editedRecords).push(packed);
+      });
+
+      removed.forEach(function (record) {
+        if (record.newRecord) { return; }
+        removedRecords.push(record.uuid);
       });
 
       connect.fetch('/user_session')
@@ -330,7 +398,10 @@ angular.module('kpk.controllers')
         return newRecords.length ? connect.basicPut('posting_journal', newRecords) : $q.when(1);
       })
       .then(function () {
-        return editedRecords.map(function (record) { return connect.basicPost('posting_journal', [record], ['uuid']); });
+        return editedRecords.length ? editedRecords.map(function (record) { return connect.basicPost('posting_journal', [record], ['uuid']); }) : $q.when(1);
+      })
+      .then(function () {
+        return removedRecords.length ? connect.basicDelete('posting_journal', removedRecords, 'uuid') : $q.when(1);
       })
       .then(function () {
         return writeJournalLog(manager.session);
@@ -340,7 +411,6 @@ angular.module('kpk.controllers')
         manager.fn.resetManagerSession();
         manager.fn.regroup();
         grid.invalidate();
-        grid.render();
       })
       .catch(function (err) {
         messenger.danger("Submission failed" + err);
@@ -352,13 +422,29 @@ angular.module('kpk.controllers')
 
       var packagedLog = {
         uuid           : session.uuid,
-        transaction_id : session.records[0].trans_id,
+        transaction_id : session.transactionId,
         justification  : session.justification,
         date           : util.convertToMysqlDate(session.start),
         user_id        : session.userId
       };
 
       return connect.basicPut('journal_log', [packagedLog]);
+    }
+
+    function normalizeDate (date) {
+      return new Date(date).setHours(0,0,0,0);
+    }
+
+    function getDateInfo (date) {
+      var period_id, fiscal_year_id;
+      var cp = normalizeDate(date);
+      $scope.period.data.forEach(function (period) {
+        if (cp >= normalizeDate(period.period_start) && cp <= normalizeDate(period.period_stop)) {
+          period_id = period.id;
+          fiscal_year_id = period.fiscal_year_id;
+        }
+      });
+      return { period_id : period_id, fiscal_year_id : fiscal_year_id };
     }
 
     // Editors
@@ -394,7 +480,11 @@ angular.module('kpk.controllers')
       };
 
       this.applyValue = function(item,state) {
-        var e = util.convertToMysqlDate(new Date(state));
+        var stateDate = new Date(state);
+        var e = util.convertToMysqlDate(stateDate);
+        var dateInfo = getDateInfo(stateDate);
+        item.fiscal_year_id = dateInfo.fiscal_year_id;
+        item.period_id = dateInfo.period_id;
         item[args.column.field] = e;
       };
 
@@ -525,7 +615,7 @@ angular.module('kpk.controllers')
 
       this.loadValue = function (item) { this.$input.val(defaultValue); };
 
-      this.applyValue = function(item,state) {
+      this.applyValue = function(item, state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };

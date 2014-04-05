@@ -84,12 +84,13 @@ module.exports = function (options) {
     var templ = self.templates.delete,
         _id;
 
-    _id = util.isArray(id) ?
-      '(' + id.map(function (i) { return sanitize.escape(i); }).join(', ') + ')':
+    _id = id.split(',');  // FIXME: this is an unreasonable hack
+    _id = util.isArray(_id) ?
+      '(' + _id.map(function (i) { return sanitize.escape(i); }).join(', ') + ')':
       sanitize.escape(id);
 
     return templ.replace('%table%', sanitize.escapeid(table))
-                .replace('%key%', [sanitize.escapeid(column), util.isArray(id) ? 'IN' : '=', _id].join(' '));
+                .replace('%key%', [sanitize.escapeid(column), 'IN', _id].join(' '));
   };
 
   // update
