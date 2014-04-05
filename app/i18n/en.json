@@ -116,7 +116,7 @@
     "TOTAL"             : "Total",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
-    "PROJECT"           : "Project",
+    "PROJECT"           : "Current Project",
     "CANCEL"            : "Cancel",
     "ITEMS"             : "Items",
     "TOGGLE"            : "Toggle",
@@ -283,7 +283,8 @@
     "DAY"         : "Today",
     "WEEK"        : "This Week",
     "MONTH"       : "This Month",
-    "SEARCH"      : "Search"
+    "SEARCH"      : "Search",
+    "ALL_PROJECTS" : "All Projects"
   },
 
   "COLUMNS"               : {

@@ -7,8 +7,8 @@ angular.module('kpk.controllers')
   'messenger',
   '$filter',
   function ($scope, connect, appstate, validate, messenger, $filter) {
-    $scope.state = {};
-    $scope.dates = {};
+    var session = $scope.session = {};
+    $scope.selected = null;
 
     var dependencies = {};
     dependencies.projects = {
@@ -16,54 +16,78 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'project' : {
-            columns : ['id', 'abbr']
+            columns : ['id', 'abbr', 'name']
           }
         }
       }
     };
 
-    function dateWatcher () {
-      $scope.state.dateFrom = $filter('date')($scope.dates.dateFrom, 'yyyy-MM-dd');
-      $scope.state.dateTo = $filter('date')($scope.dates.dateTo, 'yyyy-MM-dd');
+    $scope.options = [
+      {
+        label : 'CASH_PAYMENTS.DAY',
+        fn : day,
+      },
+      {
+        label : 'CASH_PAYMENTS.WEEK',
+        fn : week,
+      },
+      {
+        label : 'CASH_PAYMENTS.MONTH',
+        fn : month
+      }
+    ];
+
+
+    function day () {
+      session.dateFrom = new Date();
+      session.dateTo = new Date();
+      reset();
     }
 
-    function stateWatcher () {
-      $scope.dates.dateFrom = new Date($scope.state.dateFrom);
-      $scope.dates.dateTo = new Date($scope.state.dateTo);
+    function week () {
+      session.dateFrom = new Date();
+      session.dateTo = new Date();
+      session.dateFrom.setDate(session.dateTo.getDate() - 7);
+      reset();
     }
 
-    $scope.$watch('dates', dateWatcher, true);
-    $scope.$watch('state', stateWatcher, true);
+    function month () {
+      session.dateFrom = new Date();
+      session.dateTo = new Date();
+      session.dateFrom.setMonth(session.dateTo.getMonth() - 1);
+      reset();
+    }
 
-    $scope.day = function day () {
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-      $scope.search();
-    };
+    function formatDates () {
+      session.dateFrom = $filter('date')(session.dateFrom, 'yyyy-MM-dd');
+      session.dateTo = $filter('date')(session.dateTo, 'yyyy-MM-dd');
+    }
 
-    $scope.week = function week () {
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-      $scope.dates.dateFrom.setDate($scope.dates.dateTo.getDate() - 7);
-      $scope.search();
-    };
+    function search (selection) {
+      session.selected = selection.label;
+      selection.fn();
+    }
 
-    $scope.month = function month () {
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-      $scope.dates.dateFrom.setMonth($scope.dates.dateTo.getMonth() - 1);
-      $scope.search();
-    };
+    function reset (p) {
+      var req, url;
 
-    $scope.search = function search () {
-      // must add a day to pick it up from sql
-      var url, dateConvert = $scope.dates.dateTo;
-      dateConvert.setDate(dateConvert.getDate() + 1);
-      dateWatcher();
+      console.log('session', session);
 
-      url = '/reports/payments/?id=' + $scope.enterprise.id;
-      url += '&start=' + $scope.state.dateFrom;
-      url += '&end=' + $scope.state.dateTo;
+      // toggle off active
+      session.active = !p;
+
+      formatDates();
+
+      req = {
+        dateFrom : session.dateFrom,
+        dateTo : session.dateTo
+      };
+
+      url = '/reports/payments/?id=%project%&start=%start%&end=%end%'
+      .replace('%project%', session.project)
+      .replace('%start%', req.dateFrom)
+      .replace('%end%', req.dateTo);
+
       connect.fetch(url)
       .success(function (model) {
         $scope.payments = model;
@@ -71,31 +95,31 @@ angular.module('kpk.controllers')
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
-    };
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
+    }
 
-      // default to searching today
-      $scope.day();
+    appstate.register('project', function (project) {
+      session.project = project.id;
       validate.process(dependencies)
       .then(function (models) {
-        for (var k in models) { $scope[k] = models[k]; }
+        $scope.projects = models.projects;
+        $scope.allProjectIds =
+          models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, "")
+          .substr(1);
+        search($scope.options[0]);
       })
-      .catch(function (error) {
-        messenger.danger(error);
-      });
+      .catch(function (error) { messenger.danger('An error occurred : ' + JSON.stringify(error)); });
     });
 
     function sum(a, b) {
       return a + b.cost;
     }
 
-    $scope.sumPayments = function () {
+    $scope.sumPayments = function sumPayments () {
       return $scope.payments ? $scope.payments.reduce(sum, 0) : 0;
     };
 
+    $scope.search = search;
+    $scope.reset = reset;
   }
 ]);

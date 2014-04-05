@@ -17,7 +17,8 @@ module.exports = function (options) {
     select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% ORDER BY %order% LIMIT %limit%;',
     update: 'UPDATE %table% SET %expressions% WHERE %key%;',
     delete: 'DELETE FROM %table% WHERE %key%;',
-    insert: 'INSERT INTO %table% %values% VALUES %expressions%;'
+    insert: 'INSERT INTO %table% %values% VALUES %expressions%;',
+    insert_ref : 'INSERT INTO %table% %values% SELECT %expressions% from %table% where project_id=%project_id%;'
   };
 
   function cdm (table, columns) {
@@ -129,19 +130,31 @@ module.exports = function (options) {
       values.push(k);
     }
 
+    var hasReference = values.indexOf('reference') > -1;
+    var project_id;
+
+    if (hasReference) { templ = self.templates.insert_ref; }
+
     dataList.forEach(function (row) {
       var line = [];
       for (var k in values) {
         // default to null
-        line.push(row[values[k]] !== null ? sanitize.escape(row[values[k]]) : 'null');
+        if (values[k] !== 'reference') {
+          line.push(row[values[k]] !== null ? sanitize.escape(row[values[k]]) : 'null');
+        } else {
+          line.push('IF(ISNULL(max(reference)), 1, max(reference) + 1)');
+        }
+        if (values[k] === 'project_id') { project_id = sanitize.escape(row[values[k]]); }
       }
-      expressions.push('(' + line.join(', ') + ')');
+      var concat = hasReference ? line.join(', ') : '(' + line.join(', ') + ')';
+      expressions.push(concat);
     });
 
     return templ
-      .replace('%table%', sanitize.escapeid(table))
+      .replace(/%table%/g, sanitize.escapeid(table))
       .replace('%values%', '(' + values.join(', ') + ')')
-      .replace('%expressions%', expressions.join(', '));
+      .replace('%expressions%', expressions.join(', '))
+      .replace('%project_id%', project_id);
 
   };
 

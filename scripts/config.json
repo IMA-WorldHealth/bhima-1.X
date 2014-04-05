@@ -5,7 +5,8 @@
     "host"     : "localhost",
     "user"     : "kpk",
     "password" : "HISCongo2013",
-    "database" : "kpk"
+    "database" : "kpk",
+    "multipleStatements" : true
   },
   "log" : {
     "file" : "scripts/lib/database/db.log",
