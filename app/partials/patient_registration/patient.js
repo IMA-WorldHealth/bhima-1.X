@@ -172,6 +172,7 @@ angular.module('kpk.controllers')
       var packagePatient = connect.clean(patient);
       packagePatient.uuid = patientId;
       packagePatient.project_id = $scope.project.id;
+      packagePatient.reference = 1; // FIXME/TODO : This is a hack
 
       connect.basicPut('debitor', [packageDebtor])
       .then(function(result) {

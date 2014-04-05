@@ -174,7 +174,8 @@ angular.module('kpk.controllers')
         value : $scope.data.value,
         cashier_id : $scope.model.cashier.data.id,
         description : 'CT'+new Date().toString(),
-        istransfer : 1
+        istransfer : 1,
+        reference : 1,
       };
       return connect.basicPut('pcash', connect.clean(pcash));
     }

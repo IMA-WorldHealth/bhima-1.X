@@ -529,7 +529,7 @@
         restrict: 'A',
         replace : true,
         transclude : true,
-        template : '<header ng-cloak><span ng-transclude></span><span class="pull-right" style="font-size: .45em;"><div style="font-weight: bold;">{{ "UTIL.PROJECT" | translate }}</div><div>{{ project.abbr.toUpperCase() }} {{ project.name }}</div></span></header>',
+        template : '<header ng-cloak><span ng-transclude></span><span class="pull-right" style="font-size: .45em;"><div><strong>{{ "UTIL.PROJECT" | translate }}</strong></div><div>{{ project.abbr.toUpperCase() }} {{ project.name }}</div></span></header>',
         link : function (scope, element, attrs) {
           appstate.register('project', function (project) {
             $timeout(function () { scope.project = project; });
