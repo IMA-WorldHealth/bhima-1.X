@@ -40,7 +40,8 @@
           <div class="form-group">
             <label class="col-xs-3">{{'JOURNAL_VOUCHER.DATE' | translate}}</label>
             <div class="col-xs-9">
-              <input type="text" class="form-kapok"  value='{{voucher.trans_date | date}}' disabled="disabled">
+              <input class="form-kapok" type="date" ng-model="voucher.trans_date" rows="20">
+              <!--input type="text" class="form-kapok"  value='{{voucher.trans_date | date}}' disabled="disabled"-->
             </div>
           </div>
 
@@ -87,10 +88,9 @@
                         class="form-invoice"
                         type="text"
                         placeholder="Numero Compte"
-                        value="{{row.account_txt}}"
-                        ng-model="row.account_id"
+                        ng-model="row.account"
                         typeahead-template-url="accountList.html"
-                        typeahead="account.account_txt as account.account.number for account in accounts.data | filter:$viewValue | limitTo:8"
+                        typeahead="account as account.account_number for account in accounts.data | filter:$viewValue | limitTo:8"
                         placeholder="chercher Compte"
                         ></td>
                       <td><input class="form-invoice" type="number" value="{{row.debit}}" ng-model="row.debit"></td>
@@ -132,7 +132,7 @@
 <script type="text/ng-template" id="accountList.html">
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><i>{{match.model.account_txt}}</i></span>
+    <span><i>{{match.model.account_number +'   '+ match.model.account_txt}}</i></span>
   </a>
 </script>
 
