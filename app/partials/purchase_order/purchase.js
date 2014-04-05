@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('purchaseOrderController', [
+.controller('purchaseOrder', [
   '$scope',
   '$q',
   'validate',
@@ -7,10 +7,13 @@ angular.module('kpk.controllers')
   'appstate',
   'messenger',
   'uuid',
-  function($scope, $q, validate, connect, appstate, messenger) {
+  function($scope, $q, validate, connect, appstate, messenger, uuid) {
 
     // TODO Currently downloads every location - should only download the 
     // selected creditors location
+    
+    // FIXME Everything currently waits on validate to process (download) models
+    // begin settup etc. before that
     var dependencies = {}, inventory = $scope.inventory = [];
     var session = $scope.session = {};
     
@@ -34,19 +37,36 @@ angular.module('kpk.controllers')
       query : '/location'
     };
 
-    session.purchase = { 
-      payable : false,
-      date : getDate()
-    };
-    session.selected = false;
-    
+        
     validate.process(dependencies).then(initialise);
     
     function initialise(model) { 
       
       // Expose models to the scope
       angular.extend($scope, model);
-      console.log(model);
+      settupSession(session); 
+    }
+
+    function settupSession(session) { 
+      session.selected = false;
+      session.purchase = { 
+        uuid : uuid(),
+        payable : false,
+        date : getDate(), 
+        note : formatPurchaseDescription()
+      };
+      session.hr_id = session.purchase.uuid.substr(0, 6);
+    }
+
+    function formatPurchaseDescription() { 
+      
+      if (!session.selected) return "...";
+      return [
+        "PO",
+        session.hr_id,
+        session.date
+        // session.creditor.name
+      ].join('/');
     }
   
     // FIXME
@@ -72,7 +92,7 @@ angular.module('kpk.controllers')
         creditor_id : $scope.creditor.id,
         invoice_date : $scope.sale_date,
         purchaser_id : $scope.verify,
-        note : $scope.formatText(),
+        // note : $scope.formatText(),
         posted : '0'
       };
   //    verify format
@@ -141,13 +161,6 @@ angular.module('kpk.controllers')
 
     $scope.updateInventory = function() {
       $scope.inventory.push({});
-    };
-
-    $scope.formatText = function() {
-  //      FIXME String functions within digest will take hours and years
-      var c = "PO " + $scope.invoice_id + "/" + $scope.sale_date;
-      if($scope.creditor) c += "/" + $scope.creditor.name + "/";
-      return c;
     };
 
   //  Radio inputs only accept string true/false? boolean value as payable doesn't work
