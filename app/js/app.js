@@ -83,7 +83,7 @@
       templateUrl: 'partials/creditor/group/creditor_group.html'
     }).
     when('/inventory/purchase', {
-      controller: 'purchaseOrderController',
+      controller: 'purchaseOrder',
       templateUrl: 'partials/purchase_order/purchase.html'
     }).
     when('/purchase_records/:purchaseID?', {

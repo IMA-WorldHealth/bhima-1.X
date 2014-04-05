@@ -3,6 +3,9 @@
 </header>
 
 <section class="top-nav">
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</button>
+  </div>
 </section>
 
 <div class="content">
@@ -27,29 +30,32 @@
               <option value="" disabled="disabled">--Select Creditor--</option>
             </select>
           </div>
-          <div class="form-group">
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="session.payable">
-                Payable Immediately
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="pay" value="false" checked
-                       ng-model="session.payable">
-                Payable by
-              </label>
-            </div>
-            <div class="input-group">
-              <select id="payable" class="form-kapok" ng-disabled="isPayable()">
-                <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
-                <option>14</option>
-                <option>30</option>
-              </select>
-              <span class="input-group-addon">days</span>
-            </div>
-          </div>
+
+          <!-- Determine validity period of payment -->
+
+          <!-- <div class="form&#45;group"> -->
+          <!--   <div class="radio"> -->
+          <!--     <label> -->
+          <!--       <input type="radio" name="option_payable" id="immediate" value="true" ng&#45;model="session.payable"> -->
+          <!--       Payable Immediately -->
+          <!--     </label> -->
+          <!--   </div> -->
+          <!--   <div class="radio"> -->
+          <!--     <label> -->
+          <!--       <input type="radio" name="option_payable" id="pay" value="false" checked -->
+          <!--              ng&#45;model="session.payable"> -->
+          <!--       Payable by -->
+          <!--     </label> -->
+          <!--   </div>
+          <!--   <div class="input&#45;group"> -->
+          <!--     <select id="payable" class="form&#45;kapok" ng&#45;disabled="isPayable()"> -->
+          <!--       <!&#45;&#45;FIXME Currently hardcoded &#45; should these be pulled from a data set?&#45;&#45;> -->
+          <!--       <option>14</option> -->
+          <!--       <option>30</option> -->
+          <!--     </select> -->
+          <!--     <span class="input&#45;group&#45;addon">days</span> -->
+          <!--   </div> -->
+          <!-- </div> -->
         </div>
 
       </div>
@@ -75,9 +81,9 @@
                 </thead>
                 <tbody>
                 <tr>
-                  <td>{{invoice_id}}</td>
-                  <td>{{sale_date}}</td>
-                  <td>{{formatText()}}</td>
+                  <td>{{session.hr_id}}</td>
+                  <td>{{session.purchase.date | date}}</td>
+                  <td>{{session.purchase.note}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -93,7 +99,7 @@
                   <th>Supplier</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody ng-if="session.selected">
                   <tr>
                     <td>
                       <h4><strong>{{creditor.name}}</strong></h4>
