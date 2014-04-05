@@ -177,9 +177,8 @@ angular.module('kpk.controllers')
       manager.session.removed.post(item);
       manager.session.records.remove(item.uuid);
       dataview.deleteItem(item.uuid);
-      grid.invalidate();
-      var idx = dataview.getRowById(manager.session.records.data[0].uuid);
-      grid.scrollRowToTop(idx - 1);
+      grid.invalidateRow(args.row);
+      grid.render();
     }
 
     function addRow () {

@@ -24,6 +24,7 @@ angular.module('kpk.controllers')
 
     $scope.aggregates = true;
     $scope.hasData = false;
+    $scope.filter = {};
 
     // TODO : both journal.utilities and journal.controls use this
     // table.  Use promises to share the data between the two controllers
@@ -117,7 +118,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.removeGroup = function removeGroup () {
-      dataview.setGrouping({});
+      dataview.setGrouping();
     };
 
     $scope.trialBalance = function () {
@@ -299,9 +300,6 @@ angular.module('kpk.controllers')
       manager.fn.regroup();
     };
 
-    $scope.abolishGroups = function abolishGroups () {
-      dataview.setGrouping({});
-    };
 
   }
 ]);
