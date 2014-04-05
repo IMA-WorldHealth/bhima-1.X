@@ -19,6 +19,9 @@ angular.module('kpk.controllers')
   function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid, util, $q, exchange) {
     var dependencies = {}, ID = null;
     $scope.voucher = {};
+    var uuid_log = null;
+    $scope.voucher.rows = [];
+
     $scope.model = {};
 
     dependencies.accounts = {
@@ -61,7 +64,7 @@ angular.module('kpk.controllers')
     function JournalRow (){
       this.id = Math.random();
       this.description = null;
-      this.account_txt = null;
+      this.account = null;
       this.debit = 0;
       this.credit = 0;
       this.currency_id = null;
@@ -74,9 +77,7 @@ angular.module('kpk.controllers')
     }
 
     function init (model){
-      //console.log('model', model);
-      for(var k in model){ $scope[k] = model[k]; }
-      $scope.voucher.rows = [];
+      for(var k in model){$scope[k] = model[k]}
       $scope.selectedItem = model.currencies.data[model.currencies.data.length-1];
       $scope.voucher.currency_id = $scope.selectedItem.id;
       $scope.voucher.trans_date = util.convertToMysqlDate(new Date());
@@ -84,11 +85,14 @@ angular.module('kpk.controllers')
       addRow();
       addRow();
 
-      $q.all([getTransID(), getLogID()])
+      $q.all([getTransID()])
       .then(function (response){
+        response[0].data[0].increment = (response[0].data[0].increment)? response[0].data[0].increment : 1;
         $scope.voucher.trans_id = response[0].data[0].abbr+response[0].data[0].increment;
-        $scope.voucher.log_id = response[1].data[0].increment;
+        uuid_log = uuid();
+        $scope.voucher.log_id = uuid_log;
       });
+      window.voucher = $scope.voucher;
     }
 
     function error (err) {}
@@ -125,15 +129,13 @@ angular.module('kpk.controllers')
           record.fiscal_year_id = period.data[0].fiscal_year_id;
           record.period_id = period.data[0].id;
           record.trans_id = $scope.voucher.trans_id;
-          record.trans_date = $scope.voucher.trans_date;
+          record.trans_date = util.convertToMysqlDate($scope.voucher.trans_date);
           record.description = row.description;
-          record.account_id = row.account_id;
+          record.account_id = row.account.id;
           record.debit = row.debit;
           record.credit = row.credit;
           record.debit_equiv = exchange.myExchange(row.debit, $scope.voucher.currency_id);
-          //console.log('row debit', row.debit, 'currency', $scope.voucher.currency_id);
           record.credit_equiv = exchange.myExchange(row.credit, $scope.voucher.currency_id);
-          //console.log('row credit', row.credit, 'currency', $scope.voucher.currency_id);
           record.currency_id = $scope.voucher.currency_id;
           record.deb_cred_uuid = row.deb_cred_uuid;
           record.deb_cred_type = row.deb_cred_type;
@@ -141,7 +143,6 @@ angular.module('kpk.controllers')
           record.comment = row.comment;
           record.origin_id = 9;
           record.user_id = $scope.user.data.id;
-          //window.record = record;
           return connect.clean(record);
         });
 
@@ -153,9 +154,8 @@ angular.module('kpk.controllers')
             transaction_id : $scope.voucher.trans_id,
             note           : $scope.voucher.description,
             date           : $scope.voucher.trans_date,
-            user_id        : 1
+            user_id        : $scope.user.data.id
           };
-
           connect.basicPut('journal_log', [connect.clean(log)])
           .then(function (){
             flush();
@@ -172,6 +172,7 @@ angular.module('kpk.controllers')
       $scope.voucher.inv_po_id = null;
       getTransID()
       .then(function (resp){
+        resp.data[0].increment = (resp.data[0].increment)? resp.data[0].increment : 1;
         $scope.voucher.trans_id = resp.data[0].abbr+resp.data[0].increment;
       });
     }
@@ -185,6 +186,7 @@ angular.module('kpk.controllers')
     }
 
     function getTransID(){
+
       return connect.req('/max_trans/?'+$scope.project.id);
     }
 
@@ -194,24 +196,30 @@ angular.module('kpk.controllers')
 
     function verifySubmission (){
       var isAccountEmpty = false;
-      for (var i = 0; i < $scope.voucher.rows.length; i+=1) {
-        if(!$scope.voucher.rows[i].account_id){
-          isAccountEmpty = true;
-          break;
-        }
+      if($scope.voucher.rows){
+        isAccountEmpty = $scope.voucher.rows.some(function (row){
+          return !row.account;
+        });
       }
-      return (($scope.voucher.td !== $scope.voucher.tc) || ($scope.voucher.td === 0 || $scope.voucher.tc === 0) || (isAccountEmpty));
+      return (($scope.voucher.td !== $scope.voucher.tc) || ($scope.voucher.td === 0 || $scope.voucher.tc === 0) || (isAccountEmpty) || $scope.voucher.rows.length < 2);
     }
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      dependencies.accounts.query.where = ['account.enterprise_id=' + $scope.project.enterprise_id];
-      validate.process(dependencies)
-      .then(init, error);
+      dependencies.accounts.query.where = ['account.enterprise_id='+$scope.project.enterprise_id];
+      validate.process(dependencies).then(init, error);
     });
 
-    $scope.$watch('voucher.rows', function (nv) {
-      if (nv) { getTotal(); }
+    $scope.$watch('voucher.rows', function(nv){
+      if(nv) {
+        getTotal();
+      }
+    }, true);
+
+    $scope.$watch('voucher.trans_date', function(ov, nv){
+      if(nv) {
+        $scope.voucher.trans_date = (util.isDateAfter(nv, new Date()))? ov : nv;
+      }
     }, true);
 
     $scope.addRow = addRow;
@@ -220,6 +228,5 @@ angular.module('kpk.controllers')
     $scope.getTotal = getTotal;
     $scope.removeRow = removeRow;
     $scope.verifySubmission = verifySubmission;
-
   }
 ]);

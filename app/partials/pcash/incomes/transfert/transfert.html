@@ -1,0 +1,114 @@
+<header>
+	<span class="capitalize"> {{ 'TRANSFERT.TITLE' | translate }}</span>
+</header>
+
+<section class="top-nav" style="max-height: 10px;">
+	<ol class="breadcrumb">
+	  <li><a href="#/main_cash">{{'TRANSFERT.CRUMB_PCASH' | translate}}</a></li>
+	  <li><a href="#/pcash/transfert">{{'TRANSFERT.CRUMB_TRANSFERT' | translate}}</a></li>
+	</ol>
+</section>
+
+<div class="content">
+	<div class="row">
+		<div class="col-xs-4">
+			<div class="panel panel-default" style="max-height: 525px;">
+				<div class="panel-heading">
+					<span>{{'TRANSFERT.SOME_REPORT' | translate}}</span>
+				</div>
+				<div class="panel-body sommaire-report">
+					<table class="table table-striped table-condensed">
+						<thead>
+							<tr>
+								<th>{{'COLUMNS.NUM' | translate}}</th>
+								<th>{{'COLUMNS.DATE' | translate}}</th>
+								<th>{{'COLUMNS.AMOUNT' | translate}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="summer in model.summers.data">
+								<td>{{$index}}</td>
+								<td>{{summer.trans_date | date}}</td>
+								<td>{{summer.total | currency}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-xs-8">
+			<form class="form-horizontal">
+				<div>
+					<label> {{'TRANSFERT.PROJECT' | translate}}</label>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-8">
+						<select
+						required
+						class="form-kapok"
+						name="projectname"
+						id="projectID"
+						ng-model="data.project_id"
+						ng-change="resolve()"
+						>
+							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
+							<option value="0"> {{'SELECT.CASH' | translate}} </option>
+							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+						</select>
+					</div>
+				</div>
+
+				<div>
+					<label> {{'TRANSFERT.CAISSE' | translate}}</label>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-8">
+						<select
+						required
+						class="form-kapok"
+						name="caissename"
+						id="caisseID"
+						ng-model="data.caisse_id"
+						>
+							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
+							<option value="0"> {{'SELECT.CASH' | translate}} </option>
+							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+						</select>
+					</div>
+				</div>
+
+				<div>
+					<label> {{'TRANSFERT.CURRENCY' | translate}}</label>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-8">
+						<select
+						required
+						class="form-kapok"
+						name="currencyname"
+						id="currencyID"
+						ng-model="data.currency_id"
+						>
+							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
+							<option value="0"> {{'SELECT.CASH' | translate}} </option>
+							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+						</select>
+					</div>
+				</div>
+
+				<div>
+					<label> {{'TRANSFERT.AMOUNT' | translate}}</label>
+				</div>
+				<div class="form-group">
+					<div class="input-group col-xs-8">
+						<input type="number" ng-model="data.value" class="form-kapok"  min="0" required>
+						<span class="input-group-addon"> {{ selectedItem.symbol}} </span>
+					</div>
+				</div>
+					<button class="btn btn-default btn-success" ng-click="ajouter()" ng-disabled="form.$invalid" type="button">{{'FORM.ADD' | translate}}</button>
+					<button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_TRANSFER' | translate}}</button>
+				</form>
+		</div>
+	</div>
+</div>

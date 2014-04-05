@@ -938,5 +938,22 @@
     "DEFAULT_CURRENCY"      : "Monnaie",
     "TRANS_ID"              : "Transaction ID : ",
     "LOG"                   : "Log Journal ID : "
-}
+},
+  "TRANSFERT"        : {
+    "TITLE"       : "Transfert",
+    "TRANSFER"    : "Transfert",
+    "CONVENTION"  : "Convention",
+    "PCASH"       : "Caisse Principale",
+    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
+    "OVERVIEW"    : "Caisse Principale                                                                                                                                                                        : Gestion des Recettes",
+    "INFO"        : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
+    "SOURCE"      : "Source",
+    "EXPECTED"    : "Attendu",
+    "AMOUNT"      : "Montant",
+    "CRUMB_PCASH" : "caisse principale",
+    "CRUMB_TRANSFERT" : "transfert",
+    "PROJECT"     : "Proget",
+    "CAISSE"      : "Caisse",
+    "CURRENCY"    : "Monnaie"
+  }
 }
