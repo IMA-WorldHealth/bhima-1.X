@@ -2,16 +2,47 @@ angular.module('kpk.controllers')
 .controller('creditorsController', [
   '$scope',
   '$q',
-  'connect',
+  'validate',
   'appstate',
-  function ($scope, $q, connect, appstate) {
+  function ($scope, $q, validate, appstate) {
+    var dependencies = {}, session = $scope.session = {};
+    
+    // dependencies.supplier = { 
+    //   query : { 
+    //     tables : { 
+    //       columns : ['id', 'name', 'address_1', 'address_2', 'location_id', 'creditor_uuid']
+    //     }
+    //   }
+    // };
+    
+    dependencies.creditGroup = { 
+      query : { 
+        tables : { 
+          creditor_group : { columns : ['enterprise_id', 'uuid', 'name', 'account_id', 'locked'] }
+        }
+      }
+    };
+
+    dependencies.location = { 
+      query : '/location' 
+    };
+
+    appstate.register('project', initialise);
+    
+    function initialise(project) { 
+      session.project = project;
+      
+      // Request data from server
+      validate.process(dependencies).then(settupForm);
+    }
+
+    function settupForm(model) { 
+      angular.extend($scope, model); 
+    }
 
     //initialisations
     $scope.creditor = {};
     $scope.creditorExiste = 0;
-
-    // TODO : use validation module to run this
-    var enterprise = appstate.get('enterprise');
    
     //les fonctions
     function getCreditors () {
@@ -229,15 +260,15 @@ angular.module('kpk.controllers')
     };
 
     //populating creditors
-    getCreditors();
+    // getCreditors();
 
     //populating group
-    getGroups();
+    // getGroups();
 
     //populating location
-    getLocations();
+    // getLocations();
 
 
-    $scope.formatLocation = formatLocation;
+    // $scope.formatLocation = formatLocation;
   }
 ]);

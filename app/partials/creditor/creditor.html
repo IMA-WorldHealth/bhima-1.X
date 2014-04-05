@@ -3,17 +3,25 @@
 </header>
 
 <section class="top-nav">
+<span style="color: #428bca"> <span class="glyphicon glyphicon-home"></span> {{ 'SUPPLIER.HOME' | translate }} > {{ (session.status | translate) || '...'}}</span>
   <div class="pull-right">
+    <a href="" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.REGISTER_SUPPLIER" | translate }}
+    </a>
+
     <a href="#/creditors/creditor_group" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-tag"></span> {{ "SUPPLIER.CREATE" | translate }}
+      <span class="glyphicon glyphicon-list-alt"></span> {{ "SUPPLIER.CREATE_GROUP" | translate }}
     </a>
   </div>
 </section>
 
 <div class="content">
   <div class="row">
-    <div class="col-xs-3">
+    <div class="col-xs-7">
       <div class="panel panel-primary">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-user"> {{ 'SUPPLIER.SUPPLIER_DETAILS' | translate }}
+        </div>
         <div class="panel-body">
           <form role="form" name="form" novalidate>
             <div class="form-group">
@@ -37,26 +45,7 @@
                 <input type="checkbox" id="internationalID" ng-model="creditor.international">
               </label>
             </div>
-          <!-- </form> -->
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          {{ "SUPPLIER.OPTIONAL_INFO" | translate }}
-        </div>
-        <div class="panel-body">
-          <form role="form">
-            <div class="form-group">
-              <label for="ad1">{{ "SUPPLIER.ADDR_1" | translate }}</label>
-              <input type="text" class="form-kapok" id="ad1ID" ng-model="creditor.address_1">
-            </div>
-            <div class="form-group">
-              <label for="ad1">{{ "SUPPLIER.ADDR_2" | translate }}</label>
-              <input type="text" class="form-kapok" id="ad2ID" ng-model="creditor.address_2">
-            </div>
-            <div class="form-group">
+            <div class="form&#45;group">
               <label for="phone">{{ "SUPPLIER.PHONE" | translate }}</label>
               <input type="text" class="form-kapok" id="phoneID" ng-model="creditor.phone">
             </div>
@@ -64,18 +53,45 @@
               <label for="email">{{ "SUPPLIER.EMAIL" | translate }}</label>
               <input type="email" class="form-kapok" id="emailID" ng-model="creditor.email">
             </div>
-            <div class="form-group">
-              <label for="fax">{{ "SUPPLIER.FAX" | translate }}</label>
-              <input type="text" class="form-kapok" id="faxID" ng-model="creditor.fax">
-            </div>                        
-          </form> 
-          <div>
-            <label for="note">{{ "COLUMNS.NOTE" | translate }}</label>
-            <textarea ng-model="creditor.note" class="form-kapok note"></textarea>
-          </div>
+          </form>
         </div>
       </div>
     </div>
+    <!-- <div class="col&#45;xs&#45;4"> -->
+    <!--   <div class="panel panel&#45;default"> -->
+    <!--     <div class="panel&#45;heading"> -->
+    <!--       {{ "SUPPLIER.OPTIONAL_INFO" | translate }} -->
+    <!--     </div> -->
+    <!--     <div class="panel&#45;body"> -->
+    <!--       <form role="form"> -->
+    <!--         <div class="form&#45;group"> -->
+    <!--           <label for="ad1">{{ "SUPPLIER.ADDR_1" | translate }}</label> -->
+    <!--           <input type="text" class="form&#45;kapok" id="ad1ID" ng&#45;model="creditor.address_1"> -->
+    <!--         </div> -->
+    <!--         <div class="form&#45;group"> -->
+    <!--           <label for="ad1">{{ "SUPPLIER.ADDR_2" | translate }}</label> -->
+    <!--           <input type="text" class="form&#45;kapok" id="ad2ID" ng&#45;model="creditor.address_2"> -->
+    <!--         </div> -->
+    <!--         <div class="form&#45;group"> -->
+    <!--           <label for="phone">{{ "SUPPLIER.PHONE" | translate }}</label> -->
+    <!--           <input type="text" class="form&#45;kapok" id="phoneID" ng&#45;model="creditor.phone"> -->
+    <!--         </div> -->
+    <!--         <div class="form&#45;group"> -->
+    <!--           <label for="email">{{ "SUPPLIER.EMAIL" | translate }}</label> -->
+    <!--           <input type="email" class="form&#45;kapok" id="emailID" ng&#45;model="creditor.email"> -->
+    <!--         </div> -->
+    <!--         <div class="form&#45;group"> -->
+    <!--           <label for="fax">{{ "SUPPLIER.FAX" | translate }}</label> -->
+    <!--           <input type="text" class="form&#45;kapok" id="faxID" ng&#45;model="creditor.fax"> -->
+    <!--         </div>                         -->
+    <!--       </form>  -->
+    <!--       <div> -->
+    <!--         <label for="note">{{ "COLUMNS.NOTE" | translate }}</label> -->
+    <!--         <textarea ng&#45;model="creditor.note" class="form&#45;kapok note"></textarea> -->
+    <!--       </div> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!-- </div> -->
     <div class="col-xs-5">
       <div class="panel panel-default">
         <div class="panel-heading">

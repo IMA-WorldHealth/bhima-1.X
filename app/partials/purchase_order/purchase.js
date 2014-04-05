@@ -37,7 +37,6 @@ angular.module('kpk.controllers')
       query : '/location'
     };
 
-        
     validate.process(dependencies).then(initialise);
     
     function initialise(model) { 
@@ -56,10 +55,11 @@ angular.module('kpk.controllers')
         note : formatPurchaseDescription()
       };
       session.hr_id = session.purchase.uuid.substr(0, 6);
+
+      session.items = [];
     }
 
     function formatPurchaseDescription() { 
-      
       if (!session.selected) return "...";
       return [
         "PO",
