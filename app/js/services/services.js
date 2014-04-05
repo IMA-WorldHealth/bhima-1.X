@@ -841,7 +841,7 @@
       }
 
       function exchange (value, currency_id, date) {
-        // This function exchanges data from the currency specified by currency_id to 
+        // This function exchanges data from the currency specified by currency_id to
         // the enterprise currency on a given date (default: today).
         date = date || new Date();
         date = normalize(new Date(date));
@@ -939,6 +939,27 @@
     };
   })
 
+  .service('pubsub', function () {
+    var subscriptions = {};
+
+    this.subscribe = function subscribe (channel, callback) {
+      if (!channel) { return; }
+    };
+
+    this.publish = function publish () {
+      var args = Array.prototype.slice.call(arguments),
+          channel = args.shift();
+      var route = subscriptions[channel];
+      if (route) { Function.prototype.apply(route, arguments); }
+    };
+    
+    this.unsusbscribe = function unsubscribe (fn) {
+      
+    };
+
+  
+  })
+
   .factory('requestNotificationChannel', ['$rootScope', function($rootScope){
     // private notification messages
     var _START_REQUEST_ = '_START_REQUEST_';
@@ -972,6 +993,6 @@
       onRequestEnded: onRequestEnded
     };
   }]);
-  
+
 
 })(angular);
