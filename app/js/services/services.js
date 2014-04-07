@@ -519,7 +519,7 @@
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
 
-        if (!id) throw pprint + 'No id property in the object.  Expected property: ' + identifier;
+        if (!id) throw print + 'No id property in the object.  Expected property: ' + identifier;
 
         // merge or overwrite
         if (opts && opts.overwrite) {
@@ -541,7 +541,7 @@
         var data = this.data,
             index = this.index,
             id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : Math.random();
-        if (id in index) throw pprint + 'Attempted to overwrite data with id: ' + id + '.';
+        if (id in index) throw print + 'Attempted to overwrite data with id: ' + id + '.';
         index[id] = data.push(object) - 1;
         // enqueue item for sync
         queue.push({method: 'POST', url: '/data/' + target, data: object});
