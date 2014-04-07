@@ -23,7 +23,7 @@ angular.module('kpk.controllers')
       query : { 
         identifier : 'uuid',
         tables : { 
-          supplier : { columns : ['uuid', 'name', 'phone', 'locked', 'email', 'location_id', 'international'] },
+          supplier : { columns : ['uuid', 'name', 'phone', 'locked', 'email', 'location_id', 'international', 'creditor_uuid'] },
           creditor : { columns : ['group_uuid'] }
         },
         join : ['supplier.creditor_uuid=creditor.uuid']
@@ -60,9 +60,15 @@ angular.module('kpk.controllers')
  
     route = $scope.route = { 
       create : {
-        header'SUPPLIER.CREATE'
+        header : 'SUPPLIER.CREATE',
+        button : 'SUPPLIER.CREATE_SUPPLIER',
+        method : registerSupplier
       },
-      edit : 'SUPPLIER.EDIT'
+      edit : {
+        header : 'SUPPLIER.EDIT',
+        button : 'SUPPLIER.EDIT_SUPPLIER',
+        method : submitEdit
+      }
     };
     
     appstate.register('project', initialise);
@@ -98,7 +104,7 @@ angular.module('kpk.controllers')
     }
 
     function editSupplier(uuid) { 
-      
+     
       // Verify there is nothing in the current session
       assignSupplier($scope.supplier.get(uuid)); 
       session.state = route.edit;
@@ -130,17 +136,58 @@ angular.module('kpk.controllers')
     }
 
     function requestCreditor(creditor) { 
-      return connect.basicPut('creditor', [creditor]);
+      return connect.basicPost('creditor', [creditor], ['uuid']);
     }
 
     function requestSupplier(supplier) { 
-      return connect.basicPut('supplier', [supplier]);
+      return connect.basicPost('supplier', [supplier], ['uuid']);
     }
 
     function handleRegistration(success) { 
       messenger.success($translate('SUPPLIER.REGISTRATION_SUCCESS'));
       $scope.supplier.post(session.supplier);
       createSupplier();
+    }
+
+    function submitEdit() { 
+
+      //FIXME hack - remove group_uuid from supplier
+      delete session.supplier.group_uuid;
+      
+      requestSupplier(session.supplier)
+      .then(requestCreditorUpdate(session.supplier))
+      .then(handleRegistration)
+      .catch(handleError);
+    }
+
+    function requestCreditorUpdate(supplier) { 
+      var deferred = $q.defer();
+
+      dependencies.creditor = { 
+        query : { 
+          tables : { 
+            creditor : { columns : ['uuid', 'group_uuid'] }
+          }
+        },
+        where : ['creditor.uuid=' + session.creditor.group_uuid]
+      };
+
+      validate.process(dependencies, ['creditor']).then(function (model) { 
+        
+        // Assuming one supplier will only ever have one creditor account
+        var creditor = model.creditor.data[0];
+        creditor.group_uuid = session.creditor.group_uuid;
+        connect.basicPost('creditor', [creditor], ['uuid'])
+        .then(function (res) {
+          deferred.resolve(res);
+        })
+        .catch(function (error) { 
+          console.log('erm error', error);
+          deferred.reject(error); 
+        });
+      });
+
+      return deferred.promise;
     }
 
     function handleError(error) { 

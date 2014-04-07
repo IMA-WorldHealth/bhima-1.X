@@ -20,7 +20,7 @@
       <div class="panel panel-default" ng-class="{'panel-primary' : session.state===route.create, 'panel-success' : session.state===route.edit}">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-user"> {{ 'SUPPLIER.SUPPLIER_DETAILS' | translate }}</span>
-          <span class="pull-right">{{ (session.state | translate) || '...' }}</span>
+          <span class="pull-right">{{ (session.state.header | translate) || '...' }}</span>
         </div>
         <div class="panel-body">
           <form role="form" name="form" novalidate>
@@ -158,9 +158,8 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <button class="btn btn-success btn-sm" ng-click="registerSupplier()" ng-disabled="form.$invalid">
-      {{ session.state | translate }} 
+    <button class="btn btn-success btn-sm" ng-click="session.state.method()" ng-disabled="form.$invalid">
+      {{ session.state.button | translate }} 
     </button>
   </div>
 </section>
-
