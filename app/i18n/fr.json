@@ -332,7 +332,8 @@
     "DAY"         : "Aujourd'hui",
     "WEEK"        : "Cette Semaine",
     "MONTH"       : "Ce Mois",
-    "SEARCH"      : "Rechercher"
+    "SEARCH"      : "Rechercher",
+    "ALL_PROJECTS" : "Tous Projets"
   },
 
   "PATIENT_RECORDS"   : {
