@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="pull-right">
-    <a href="" class="btn btn-default btn-sm">
+    <a href="" class="btn btn-default btn-sm" ng-click="createSupplier()">
       <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.REGISTER_SUPPLIER" | translate }}
     </a>
 
@@ -17,7 +17,7 @@
 <div class="content">
   <div class="row" style="height: 99%">
     <div class="col-xs-7">
-      <div class="panel panel-primary" >
+      <div class="panel panel-default" ng-class="{'panel-primary' : session.state===route.create, 'panel-success' : session.state===route.edit}">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-user"> {{ 'SUPPLIER.SUPPLIER_DETAILS' | translate }}</span>
           <span class="pull-right">{{ (session.state | translate) || '...' }}</span>
@@ -130,7 +130,7 @@
           {{ "SUPPLIER.REGISTERED" | translate }}
         </div>
         <div class="panel-body">
-        <table class="table table-hover">
+        <table class="table table-condensed">
           <thead>
             <tr>
               <!-- <th>{{ "COLUMNS.ID" | translate }}</th> -->
@@ -141,11 +141,12 @@
           </thead>
           <tbody>
           <!--This is populated with angular-->
-            <tr ng-click="fill($index)" ng-repeat="instance in supplier.data">
+          <tr ng-class="{'selected-success' : instance.uuid===session.selected}" ng-repeat="instance in supplier.data">
               <!-- <td>{{instance.id}}</td> -->
               <td>{{instance.name}}</td>
               <td>{{instance.phone}}</td>
               <td><input type="checkbox" ng-model="instance.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(creditor)" ng-checked="creditor.locked"></td>
+              <td><a class="menu-item" ng-click="editSupplier(instance.uuid)"><span class="glyphicon glyphicon-pencil"></span></a></td>
             </tr>
           </tbody>
         </table>
@@ -158,7 +159,7 @@
 <section class="bar-bottom">
   <div class="pull-right">
     <button class="btn btn-success btn-sm" ng-click="registerSupplier()" ng-disabled="form.$invalid">
-      {{ "SUPPLIER.CREATE_SUPPLIER" | translate }} 
+      {{ session.state | translate }} 
     </button>
   </div>
 </section>
