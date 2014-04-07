@@ -304,7 +304,7 @@ module.exports = function (db) {
           "`patient`.`uuid`=`patient_visit`.`patient_uuid` AND " +
           "`patient`.`project_id`=`project`.`id` " +
         "WHERE `date` >= " + _start + " AND " +
-          " `date` < " + _end + ";";
+          " `date` <= " + _end + " AND `project_id` = " + _id + ";";
     db.execute(sql, function (err, res) {
       if (err) { return deferred.reject(err); }
       deferred.resolve(res);

@@ -14,7 +14,7 @@
 
   <div class="row">
   <div class="col-xs-6">
-    <table class="table table-condensed table-striped">
+    <table class="table table-condensed">
       <thead>
         <tr>
           <th>{{ "COLUMNS.NAME" | translate }}</th>
@@ -26,20 +26,12 @@
       </thead>
       <tbody>
         <tr ng-repeat="currency in currency.data">
-          <td> {{currency.name}} </td>
-          <td style="font-size: 14px;">{{currency.symbol}}</td>
-          <td style="font-size: 14px;"> <b>{{currency.separator}}</b> </td>
-          <td style="font-size: 14px;"> <b>{{currency.decimal}}</b> </td>
-          <td>
-            <button class="btn btn-sm btn-default" ng-click="edit(currency.id)">
-              <i class="glyphicon glyphicon-pencil"></i>
-            </button>
-          </td>
-          <td>
-            <button class="btn btn-sm btn-danger" ng-click="remove(currency.id)" disabled>
-              <i class="glyphicon glyphicon-trash"></i>
-            </button>
-          </td>
+          <td> {{ currency.name }} </td>
+          <td style="font-size: 14px;">{{ currency.symbol }}</td>
+          <td style="font-size: 14px;"> <b>{{ currency.separator }}</b> </td>
+          <td style="font-size: 14px;"> <b>{{ currency.decimal }}</b> </td>
+          <td><a ng-click="edit(currency.id)" href=""><i class="glyphicon glyphicon-pencil"></i></a></td>
+          <td><a class="danger" ng-click="remove(currency.id)" href="" disabled><i class="glyphicon glyphicon-trash"></i></button></td>
         </tr>
       </tbody>
     </table>
@@ -106,7 +98,7 @@
           </div>
 
         </fieldset>
-        
+
         <input class="btn btn-sm btn-success" type="submit" ng-click="submitNew()" value="{{ 'FORM.SAVE' | translate }}">
         <input class="btn btn-sm btn-default" type="reset" ng-click="resetNew()" value="{{ 'FORM.RESET_FORM' | translate }}">
       </form>
@@ -153,7 +145,7 @@
           </div>
 
         </fieldset>
-        
+
         <input class="btn btn-sm btn-success" type="submit" ng-click="submitEdit()" value="{{ 'FORM.SAVE' | translate }}">
         <input class="btn btn-sm btn-default" type="button" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
       </form>

@@ -16,7 +16,7 @@
 <div class="content">
   <div class="row">
     <div class="col-xs-6">
-      <div class="panel panel-default">
+      <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
         <div class="panel-heading">
           <span>{{ "DEBITOR_GRP.GROUPS" | translate }}</span>
         </div>
@@ -31,7 +31,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="group in debitor_group.data | filter:data.search ">
+            <tr ng-repeat="group in debitor_group.data | filter:data.search | orderBy:'name'">
               <td>{{ group.name }}</td>
               <td>{{ account.get(group.account_id).account_number }}</td>
               <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!group.is_convention}"></span></td>
@@ -98,7 +98,7 @@
                 <!-- note: filter off the title accounts -->
                 <select name="group-account" class="form-kapok" ng-model="newGroup.price_list_uuid">
                   <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                  <option ng-repeat="pl in price_list.data" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
+                  <option ng-repeat="pl in price_list.data | orderBy:'title'" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
                 </select>
               </div>
             </div>
@@ -106,7 +106,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-location" class="form-kapok" ng-model="newGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data" required>
+                <select name="group-location" class="form-kapok" ng-model="newGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
                 </select>
               </div>
@@ -203,7 +203,7 @@
                 <!-- note: filter off the title accounts -->
                 <select name="group-account" class="form-kapok" ng-model="editGroup.price_list_uuid">
                   <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                  <option ng-repeat="pl in price_list.data" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
+                  <option ng-repeat="pl in price_list.data | orderBy:'title'" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
                 </select>
               </div>
             </div>
@@ -211,7 +211,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-location" class="form-kapok" ng-model="editGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data" required>
+                <select name="group-location" class="form-kapok" ng-model="editGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
                 </select>
                </div>
