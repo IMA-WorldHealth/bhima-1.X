@@ -23,8 +23,10 @@ angular.module('kpk.controllers')
       query : { 
         identifier : 'uuid',
         tables : { 
-          supplier : { columns : ['uuid', 'name', 'phone', 'locked'] }
-        }
+          supplier : { columns : ['uuid', 'name', 'phone', 'locked', 'email', 'location_id', 'international'] },
+          creditor : { columns : ['group_uuid'] }
+        },
+        join : ['supplier.creditor_uuid=creditor.uuid']
       }
     };
   
@@ -56,9 +58,11 @@ angular.module('kpk.controllers')
       }
     };
  
-    route = { 
-      create : 'SESSION.CREATE',
-      edit : 'SESSION.EDIT'
+    route = $scope.route = { 
+      create : {
+        header'SUPPLIER.CREATE'
+      },
+      edit : 'SUPPLIER.EDIT'
     };
     
     appstate.register('project', initialise);
@@ -74,14 +78,37 @@ angular.module('kpk.controllers')
 
     function settupForm(model) { 
       angular.extend($scope, model); 
-      setDefaultLocation(model);
+      setDefaultLocation(session.project.location_id);
     }
       
-    function setDefaultLocation(model) { 
-      session.location.village = model.village.get(session.project.location_id);
-      session.location.sector = model.sector.get(session.location.village.sector_uuid);
-      session.location.province = model.province.get(session.location.sector.province_uuid);
-      session.location.country = model.country.get(session.location.province.country_uuid);
+    function setDefaultLocation(location_id) { 
+      session.location.village = $scope.village.get(location_id);
+      session.location.sector = $scope.sector.get(session.location.village.sector_uuid);
+      session.location.province = $scope.province.get(session.location.sector.province_uuid);
+      session.location.country = $scope.country.get(session.location.province.country_uuid);
+    }
+    
+    function createSupplier() { 
+      session.supplier = {};
+      session.creditor = {};
+      setDefaultLocation(session.project.location_id);
+          
+      session.state = route.create;
+      session.selected = null;
+    }
+
+    function editSupplier(uuid) { 
+      
+      // Verify there is nothing in the current session
+      assignSupplier($scope.supplier.get(uuid)); 
+      session.state = route.edit;
+      session.selected = uuid;
+    }
+
+    function assignSupplier(supplier) {
+      session.supplier = supplier;
+      session.creditor = { group_uuid : supplier.group_uuid };
+      setDefaultLocation(supplier.location_id);
     }
 
     function registerSupplier() { 
@@ -113,7 +140,7 @@ angular.module('kpk.controllers')
     function handleRegistration(success) { 
       messenger.success($translate('SUPPLIER.REGISTRATION_SUCCESS'));
       $scope.supplier.post(session.supplier);
-      resetSession();
+      createSupplier();
     }
 
     function handleError(error) { 
@@ -121,12 +148,8 @@ angular.module('kpk.controllers')
       messenger.danger($translate('SUPPLIER.REGISTRATION_FAILURE'));
       throw error;
     }
-
-    function resetSession() { 
-      session.supplier = {};
-      session.creditor = {};
-      setDefaultLocation(); 
-    }
     $scope.registerSupplier = registerSupplier;
+    $scope.editSupplier = editSupplier;
+    $scope.createSupplier = createSupplier;
   }
 ]);
