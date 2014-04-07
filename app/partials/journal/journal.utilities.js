@@ -24,7 +24,7 @@ angular.module('kpk.controllers')
 
     $scope.aggregates = true;
     $scope.hasData = false;
-    $scope.filter = {};
+    $scope.filter = { by : {} };
 
     // TODO : both journal.utilities and journal.controls use this
     // table.  Use promises to share the data between the two controllers
@@ -71,6 +71,13 @@ angular.module('kpk.controllers')
       $scope.session = manager.session;
       manager.session.authenticated = false;
       manager.session.mode = "static";
+
+      dataview.beginUpdate();
+      dataview.setFilter(filter);
+      dataview.setFilterArgs({
+        param : ''
+      });
+      dataview.endUpdate();
 
       // expose regrouping method to other scopes
       manager.fn.regroup = function () {
@@ -300,6 +307,38 @@ angular.module('kpk.controllers')
       manager.fn.regroup();
     };
 
+    function genericFilter (item, args) {
+      if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
+        return true;
+      }
+      return false;
+    }
+
+    var filters =  {
+      'trans_id'       : genericFilter,
+      'id'             : genericFilter,
+      'fiscal_year_id' : genericFilter,
+      'period_id'      : genericFilter,
+      'description'    : genericFilter,
+      'account_number' : genericFilter
+    };
+
+    function filter (item, args) {
+      if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
+        return true;
+      }
+      return false;
+    }
+
+    $scope.updateFilter = function updateFilter () {
+      if (!$scope.filter.by || !$scope.filter.param) { return; }
+      dataview.setFilterArgs({
+        param : $scope.filter.param
+      });
+      dataview.refresh();
+    };
+
+    $scope.$watch('filter', $scope.updateFilter, true);
 
   }
 ]);

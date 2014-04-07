@@ -19,11 +19,9 @@ module.exports = function (db, synthetic) {
     var sql =
       'SELECT `temp`.`uuid` ' +
       'FROM (' +
-          '(' +
-            'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + escaped_id +
-          ') UNION (' +
-            'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + escaped_id +
-          ')' +
+        'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + escaped_id + ' ' +
+      'UNION ' +
+        'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + escaped_id +
       ') as `temp`;';
 
     return db.exec(sql)
@@ -122,14 +120,12 @@ module.exports = function (db, synthetic) {
       // for posting to the general ledger.
       var escaped_id = sanitize.escape(id);
       var sql =
-        'SELECT `temp`.`uuid` ' +
+        'SELECT `uuid` ' +
         'FROM (' +
-            '(' +
-              'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + escaped_id +
-            ') UNION (' +
-              'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + escaped_id +
-            ')' +
-        ') as `temp`;';
+          'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + escaped_id + ' ' +
+        'UNION ' +
+          'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + escaped_id +
+        ')c;';
       db.execute(sql, function (err, rows) {
         if (err) return errback(err);
         if (rows.length === 0) return errback(new Error('No Debitor or Creditor found with id: ' + id));
@@ -336,19 +332,6 @@ module.exports = function (db, synthetic) {
           return done(new Error('Negative credit detected for sale id: ' + id));
         }
 
-        // FIXME : Javascript rounding issues are terrible
-        // fourth check - do the credits minus the debits sum to the total
-        // cost?  This also checks for the quantity.
-        var sumDebitsAndCredits = 0;
-        results.forEach(function (i) {
-          sumDebitsAndCredits += (i.credit - i.debit);
-        });
-
-        if (!validate.isEqual(sumDebitsAndCredits, reference_sale.cost)) {
-          //console.log('[DEBUG] :', 'sumDebitsAndCredits', sumDebitsAndCredits, 'reference_sale.cost:', reference_sale.cost);
-          //console.log('[DEBUG] :', 'results', results);
-          //return done(new Error('The sum of the debits and credits is not the transaction cost for sale id :' + id));
-        }
         // all checks have passed - prepare for writing to the journal.
         get.origin('sale', function (err, origin_id) {
           if (err) return done(err);
@@ -413,7 +396,7 @@ module.exports = function (db, synthetic) {
                 'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`uuid`='+sanitize.escape(id);
 
               function buildCautionQueries (nextTrans_id){
-                console.log('nex tran id est : ', nextTrans_id);
+                //console.log('nex tran id est : ', nextTrans_id);
 
                 var descript = 'CAD/'+reference_sale.debitor_uuid+'/'+get.date();
                 var transAmount = ((caution - reference_sale.cost)>0)? reference_sale.cost : caution;
@@ -454,19 +437,19 @@ module.exports = function (db, synthetic) {
                 return q.all([db.exec(sale_posted_query), getTransactionId(reference_sale.project_id)]);
               })
               .then(function (resp){
-                if(caution !== 0) {
-                  console.log('ID for transaction stuff', resp[1]);
+                if (caution !== 0) {
+                  //console.log('ID for transaction stuff', resp[1]);
                   buildCautionQueries(resp[1]);
                   return q.all([db.exec(cautionDebitingQuery), db.exec(DebitorCreditingQuery)]);
-                }else{
-                   return q();
+                } else {
+                  return q();
                 }
               })
               .then(function (res){
                 done(null, res);
               })
               .catch(function (err){
-                console.log('&&&&&&&&&&&&&&&&&&&&&&& une erreure s\'est produite pas de sale');
+                //console.log('&&&&&&&&&&&&&&&&&&&&&&& une erreure s\'est produite pas de sale');
                 done(err);
               })
               .done();
