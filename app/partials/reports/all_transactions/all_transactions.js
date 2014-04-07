@@ -202,7 +202,6 @@ angular.module('kpk.controllers')
 
     }
 
-
     //invocations
 
     appstate.register('enterprise', function (enterprise) {

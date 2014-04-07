@@ -175,74 +175,62 @@ module.exports = function (db) {
     var source = {
       "1" : "posting_journal",
       "2" : "general_ledger"
-    }
+    };
     var def = q.defer();
-    var params = JSON.parse(params);
+    params = JSON.parse(params);
     var requette;
-    var suite_account = (params.account_id && params.account_id != 0)? " AND `t`.`account_id`='"+params.account_id+"'" : '';
+    var suite_account = (params.account_id && params.account_id !== 0)? " AND `t`.`account_id`='"+params.account_id+"'" : '';
     var suite_dates   = (params.datef && params.datet)? " AND `t`.`trans_date`>= '"+params.datef+"' AND `t`.`trans_date` <= '"+params.datet+"'" : '';
-    var suite_enterprise = " AND `t`.`enterprise_id`='"+params.enterprise_id+"'";
+    //var suite_enterprise = " AND `t`.`enterprise_id`='"+params.enterprise_id+"'";
 
-    if(!params.source || params.source == 0){
-
+    if (!params.source || params.source === 0) {
       requette =
-        'SELECT `t`.`id`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
+        'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
         '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
         'FROM (' +
           '(' +
-            'SELECT `posting_journal`.`enterprise_id`, `posting_journal`.`id`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
-              '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_id`, `posting_journal`.`currency_id`, ' +
+            'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+              '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
               '`posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment` ' +
             'FROM `posting_journal` ' +
           ') UNION (' +
-            'SELECT `general_ledger`.`enterprise_id`, `general_ledger`.`id`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
-              '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_id`, `general_ledger`.`currency_id`, ' +
+            'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+              '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
               '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
             'FROM `general_ledger` ' +
           ')' +
-        ') AS `t`, account AS ac WHERE `t`.`enterprise_id` = `ac`.`enterprise_id` AND `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates+suite_enterprise;
+        ') AS `t`, account AS ac WHERE `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
 
-    }else {
-
+    } else {
       var sub_chaine = [
-                          '`enterprise_id`, ','`id`, ', '`inv_po_id`, ',
-                          '`trans_date`, ', '`debit_equiv`, ',
-                          '`credit_equiv`, ', '`account_id`, ',
-                          '`deb_cred_id`, ', '`currency_id`, ', '`doc_num`, ',
-                          '`trans_id`, ', '`description`, ', '`comment` '
-                       ]
-          .join(source[params.source]+'.');
-      sub_chaine = source[params.source]+'.'+sub_chaine;
-
+        '`enterprise_id`, ','`id`, ', '`inv_po_id`, ',
+        '`trans_date`, ', '`debit_equiv`, ',
+        '`credit_equiv`, ', '`account_id`, ',
+        '`deb_cred_uuid`, ', '`currency_id`, ', '`doc_num`, ',
+        '`trans_id`, ', '`description`, ', '`comment` '
+      ].join(source[params.source] + '.');
+      sub_chaine = source[params.source] + '.' + sub_chaine;
       requette =
-        'SELECT `t`.`id`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
+        'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
         '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
         'FROM (' +
-            'SELECT '+sub_chaine+'FROM '+source[params.source]+
-          ')'+
-        ' AS `t`, account AS ac WHERE `t`.`enterprise_id` = `ac`.`enterprise_id` AND `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates+suite_enterprise;
+          'SELECT '+sub_chaine+'FROM '+source[params.source]+
+        ') AS `t`, account AS ac WHERE `AND `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
     }
-   // // console.log('les parametre a allTrans est est :', params);
-
-    //requette
-    //var requette = "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit "+
-              //     "FROM account, period_total, period WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
 
     db.execute(requette, function(err, ans) {
-      if(err) {
+      if (err) {
         console.log("account statement, Query failed");
         throw err;
-        return;
       }
       console.log('on a les resultats', ans);
       def.resolve(ans);
     });
 
-    //promesse
     return def.promise;
   }
 
-  function debitorAging(params){
+  function debitorAging (params){
     var def = q.defer();
     params = JSON.parse(params);
     var requette =
