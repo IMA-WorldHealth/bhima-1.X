@@ -60,14 +60,14 @@ angular.module('kpk.controllers')
     function week () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
-      session.dateFrom.setDate(session.dateTo.getDate() - 7);
+      session.dateFrom.setDate(session.dateTo.getDate() - session.dateTo.getDay());
       reset();
     }
 
     function month () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
-      session.dateFrom.setMonth(session.dateTo.getMonth() - 1);
+      session.dateFrom.setDate(1);
       reset();
     }
 
