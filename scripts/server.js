@@ -101,7 +101,6 @@ app.post('/sale/', function (req, res, next) {
 });
 
 app.get('/currentProject', function (req, res, next) {
-
   // TODO sorry
   var sql =
     "SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as 'enterprise_name', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as 'village', `sector`.`name` as 'sector' " +
@@ -126,7 +125,6 @@ app.get('/trialbalance/initialize', function (req, res, next) {
 });
 
 app.get('/trailbalance/submit/:key/', function (req, res, next) {
-  console.log('{DEBUG} You hit the submit!');
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
