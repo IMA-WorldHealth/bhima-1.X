@@ -10,7 +10,7 @@ angular.module('kpk.controllers')
     var session = $scope.session = {};
     var dependencies = {};
     $scope.selected = null;
-    
+
     dependencies.projects = {
       query : {
         tables : {
@@ -45,14 +45,14 @@ angular.module('kpk.controllers')
     function week () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
-      session.dateFrom.setDate(session.dateTo.getDate() - 7);
+      session.dateFrom.setDate(session.dateTo.getDate() - session.dateTo.getDay());
       reset();
     }
 
     function month () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
-      session.dateFrom.setMonth(session.dateTo.getMonth() - 1);
+      session.dateFrom.setDate(1);
       reset();
     }
 
@@ -62,7 +62,7 @@ angular.module('kpk.controllers')
     }
 
     function search (selection) {
-      session.selected = selection.label;
+      session.selected = selection;
       selection.fn();
     }
 
@@ -79,7 +79,9 @@ angular.module('kpk.controllers')
         dateTo : session.dateTo
       };
 
-      url = '/reports/patients/?id=' + $scope.project.id;
+      if (!session.project) {session.project = $scope.allProjectIds; }
+
+      url = '/reports/patients/?id=' + session.project;
       url += '&start=' + req.dateFrom;
       url += '&end=' + req.dateTo;
 
@@ -91,26 +93,6 @@ angular.module('kpk.controllers')
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
     }
-
-    $scope.day = function day () {
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-      $scope.search();
-    };
-
-    $scope.week = function week () {
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-      $scope.dates.dateFrom.setDate($scope.dates.dateTo.getDate() - 7);
-      $scope.search();
-    };
-
-    $scope.month = function month () {
-      $scope.dates.dateFrom = new Date();
-      $scope.dates.dateTo = new Date();
-      $scope.dates.dateFrom.setMonth($scope.dates.dateTo.getMonth() - 1);
-      $scope.search();
-    };
 
     function handleErrors (err) {
       messenger.danger('An error occured.');
@@ -124,7 +106,7 @@ angular.module('kpk.controllers')
         $scope.allProjectIds =
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, "")
           .substr(1);
-        session.project = models.projects.data[0].id;
+        session.project = project.id;
         search($scope.options[0]);
       })
       .catch(handleErrors);
