@@ -294,7 +294,7 @@ module.exports = function (db) {
         deferred = q.defer();
 
     var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
         _id = sanitize.escape(p.id);
 
     var sql =
@@ -304,7 +304,7 @@ module.exports = function (db) {
           "`patient`.`uuid`=`patient_visit`.`patient_uuid` AND " +
           "`patient`.`project_id`=`project`.`id` " +
         "WHERE `date` >= " + _start + " AND " +
-          " `date` <= " + _end + " AND `project_id` = " + _id + ";";
+          " `date` <= " + _end + " AND `project_id` IN (" + _id + ");";
     db.execute(sql, function (err, res) {
       if (err) { return deferred.reject(err); }
       deferred.resolve(res);

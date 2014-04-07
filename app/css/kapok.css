@@ -396,3 +396,7 @@ a.danger {
 .btn-sq {
   border-radius: 0;
 }
+
+.creditInvoice a {
+  color: #fff;
+}

@@ -46,7 +46,6 @@
             <th>{{ "COLUMNS.NAME" | translate }}</th>
             <th>{{ "COLUMNS.SALE_ID" | translate }}</th>
             <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
-            <th>{{ "COLUMNS.DEBITOR_TYPE" | translate }}</th>
             <th>{{ "COLUMNS.COST" | translate }}</th>
             <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
             <th>{{ "COLUMNS.DATE" | translate }}</th>
@@ -59,7 +58,6 @@
             <td> {{ payment.first_name + ' ' + payment.last_name }} </td>
             <td><a ng-href="/#/invoice/sale/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a></td>
             <td> {{ projects.get(payment.debtor_project).abbr + payment.debtor_reference }} </td>
-            <td> {{ payment.deb_cred_type }} </td>
             <td ng-bind-html="payment.cost | intlcurrency:payment.currency_id"></td>
             <td> {{ payment.description }} </td>
             <td> {{ payment.date | date }} </td>
