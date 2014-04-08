@@ -3,6 +3,7 @@
     "TITLE"                 : "Journal de Saisie",
     "GROUP_BY"              : "Groupe Par",
     "DEB_CRED"              : "Debiteur / Crediteur",
+    "ABOLISH_GROUPS"        : "Abolir les groupes",
     "TRANSACTION"           : "Transaction",
     "ACCOUNT"               : "Compte",
     "TRIAL_BALANCE"         : "Rapprochement",
@@ -21,7 +22,19 @@
     "TRANSACTION_DATE"      : "Date de Transaction",
     "TRANSACTION_NUMBER"    : "Numero de Transaction",
     "VERIFY_TRANSACTION"    : "Verifier Transaction",
-    "SPLIT"                 : "Diviser"
+    "SPLIT"                 : "Diviser",
+    "EDIT_MODE"             : "Mode Editter",
+    "EDIT_TRANSACTION"      : "Editter Transaction",
+    "EDIT"                  : {
+      "TITLE"               : "Commencer Session de Editter",
+      "JUSTIFICATION"       : "Enregistre une justification pour votre activites.",
+      "MIN_CHARS"           : "Minimum 10 caracteres",
+      "PIN"                 : "Confirmer votre identite avec votre PIN",
+      "ID"                  : "ID Session",
+      "INVALID_PIN"         : "Ce PIN est invalide.",
+      "ATTEMPTS_REMAINING"  : "essais restants.",
+      "INVALID_SESSION"     : "La session est expirer a cause de authentification manquant. S'il vous plait, reessayer ou demander une administrateur remettre un place votre PIN."
+    }
   },
 
   "OPENING_BALANCE" : {
@@ -38,21 +51,26 @@
     "SET_NEW_RATE" : "Soumettre un nouveau taux"
   },
 
-  "UTIL"             : {
-    "CONFIGURE"      : "Configurer",
-    "TOTAL"          : "Total",
-    "PROJECT"        : "Project",
-    "PRINT"          : "Imprimer",
-    "CREATE"         : "Creer",
-    "CANCEL"         : "Annuler",
-    "ITEMS"          : "Articles",
-    "TOGGLE"         : "Basculer",
-    "COLUMNS"        : "Colonnes",
-    "CONFIRM"        : "Confirmer",
-    "SUBMIT"         : "Enregistrer",
-    "RESET_FORM"     : "Remettre",
-    "SAVE_SELECTION" : "Enregistrer la Selection",
-    "SHOW"           : "Voire"
+  "UTIL"                : {
+    "CONFIGURE"         : "Configurer",
+    "TOTAL"             : "Total",
+    "BACK" : "Retourner",
+    "PROJECT"           : "Project",
+    "PRINT"             : "Imprimer",
+    "CREATE"            : "Creer",
+    "CANCEL"            : "Annuler",
+    "ITEMS"             : "Articles",
+    "TOGGLE"            : "Basculer",
+    "COLUMNS"           : "Colonnes",
+    "CONFIRM"           : "Confirmer",
+    "SUBMIT"            : "Enregistrer",
+    "RESET_FORM"        : "Remettre",
+    "SAVE_SELECTION"    : "Enregistrer la Selection",
+    "SHOW"              : "Voire",
+    "TOGGLE_AGGREGATES" : "Montrer Agregats",
+    "ON"                : "On",
+    "OFF"               : "Off",
+    "AGGREGATES"        : "Agregats"
   },
 
   "ENTERPRISE"                 : {
@@ -927,19 +945,20 @@
     "RECEIVED"    : "Recu"
   },
 
-"JOURNAL_VOUCHER"  : {
-    "TITLE"                 : "Ajout Transaction",
-    "ADD_ROW"               : "Ajouter Ligne",
-    "POSTING_JOURNAL"       : "Posting Journal",
-    "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
-    "TAB_LOCK_LINE"         : "Ligne par Ligne",
-    "DATE"                  : "Date Transaction",
-    "DESCRIPTION"           : "Description",
-    "SUBMIT"                : "Soumettre",
-    "DEFAULT_CURRENCY"      : "Monnaie",
-    "TRANS_ID"              : "Transaction ID : ",
-    "LOG"                   : "Log Journal ID : "
-},
+  "JOURNAL_VOUCHER"  : {
+      "TITLE"                 : "Ajout Transaction",
+      "ADD_ROW"               : "Ajouter Ligne",
+      "POSTING_JOURNAL"       : "Posting Journal",
+      "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
+      "TAB_LOCK_LINE"         : "Ligne par Ligne",
+      "DATE"                  : "Date Transaction",
+      "DESCRIPTION"           : "Description",
+      "SUBMIT"                : "Soumettre",
+      "DEFAULT_CURRENCY"      : "Monnaie",
+      "TRANS_ID"              : "Transaction ID : ",
+      "LOG"                   : "Log Journal ID : "
+  },
+
   "TRANSFERT"        : {
     "TITLE"       : "Transfert",
     "TRANSFER"    : "Transfert",
@@ -956,5 +975,16 @@
     "PROJECT"     : "Proget",
     "CAISSE"      : "Caisse",
     "CURRENCY"    : "Monnaie"
+  },
+
+  "DASHBOARD" : {
+    "TITLE" : "Tableau de bord"
+  },
+
+  "SETTINGS" : {
+    "TITLE" : "BHIMA Parametres",
+    "LANGUAGE" : "Langue",
+    "LAST_PAGE" : "Dernier Page Visite",
+    "HOME_PAGE" : "Page Defaut"
   }
 }
