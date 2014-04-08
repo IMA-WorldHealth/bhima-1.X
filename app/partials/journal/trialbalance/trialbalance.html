@@ -1,47 +1,58 @@
 <div class="modal-content modal-lg square">
   <div class="modal-header">
-    <h3 style="display:inline;">{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
-    <span class="pull-right">
+    <h3>{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
+    <div class="modal-icons">
       <a href="" ng-click="print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
-    </span>
+    </div>
   </div>
 
   <div class="modal-table success">
     <table class="modal-table-head">
       <thead>
         <tr>
-          <th>{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
-          <th>{{ 'TRIAL_BALANCE.BEFORE' | translate }}</th>
-          <th>{{ 'TRIAL_BALANCE.DEBIT' | translate }}</th>
-          <th>{{ 'TRIAL_BALANCE.CREDIT' | translate }}</th>
-          <th>{{ 'TRIAL_BALANCE.AFTER' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.BEFORE' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.DEBIT' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.CREDIT' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.AFTER' | translate }}</th>
         </tr>
       </thead>
     </table>
-    <table class="modal-table-body">
-      <tbody>
-        <tr ng-repeat="account in data | orderBy:'account_number'">
-          <th class="no-border">{{ account.account_number }}</th>
-          <td ng-bind-html="account.balance | intlcurrency:2"></td>
-          <td ng-bind-html="account.debit | intlcurrency:2"></td>
-          <td ng-bind-html="account.credit | intlcurrency:2"></td>
-          <td ng-bind-html="(account.balance + (account.credit-account.debit)) | intlcurrency:2"></td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <th>{{ 'UTIL.TOTAL' | translate }}</th>
-          <th>{{total.before | currency }}</th>
-          <th>{{total.debit | currency }}</th>
-          <th>{{total.credit | currency }}</th>
-          <th>{{total.after | currency }}</th>
-        </tr>
-      </tfoot>
-    </table>
+    <div class="modal-table-body">
+      <table>
+        <tbody>
+          <tr ng-repeat="account in data | orderBy:'account_number'">
+            <th style="width:20%" class="no-border">{{ account.account_number }}</th>
+            <td style="width:20%" ng-bind-html="account.balance | intlcurrency:2"></td>
+            <td style="width:20%" ng-bind-html="account.debit | intlcurrency:2"></td>
+            <td style="width:20%" ng-bind-html="account.credit | intlcurrency:2"></td>
+            <td style="width:20%" ng-bind-html="(account.balance + (account.credit-account.debit)) | intlcurrency:2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-table-foot">
+      <table>
+        <tfoot>
+          <tr>
+            <th style="width:20%">{{ 'UTIL.TOTAL' | translate }}</th>
+            <th style="width:20%">{{total.before | currency }}</th>
+            <th style="width:20%">{{total.debit | currency }}</th>
+            <th style="width:20%">{{total.credit | currency }}</th>
+            <th style="width:20%">{{total.after | currency }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 
   <div class="modal-footer" style="margin-top: 0;">
-    <button class="btn btn-sm btn-success" ng-disabled="hasErrors" ng-click="submit()">{{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
-    <button class="btn btn-sm btn-default" ng-click="cancel()">{{ 'UTIL.CANCEL' | translate }}</button>
+    <div class="model-info pull-left">
+      <label><span class="glyphicon glyphicon-list"></span> {{ data.length }}</label>
+      <label><span class="glyphicon glyphicon-flag"></span> {{ 0 }}</label>
+    </div>
+    <button class="btn btn-sm btn-success square" ng-disabled="hasErrors" ng-click="submit()">{{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
+    <button class="btn btn-sm btn-default square" ng-click="cancel()">{{ 'UTIL.CANCEL' | translate }}</button>
   </div>
+
 </div>

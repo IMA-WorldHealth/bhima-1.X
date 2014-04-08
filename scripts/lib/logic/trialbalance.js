@@ -79,7 +79,7 @@ module.exports = function (db) {
         return promise.reason;
       });
 
-      var sql = 'SELECT `pt`.`uuid`,  `pt`.`debit_equiv`, `pt`.`credit_equiv`, '  +
+      var sql = 'SELECT `pt`.`uuid`,  `pt`.`debit`, `pt`.`credit`, '  +
         '`pt`.`account_id`, `pt`.`balance`, `account`.`account_number` ' +
         'FROM  account JOIN ( ' +
           'SELECT `posting_journal`.`uuid`, SUM(`debit_equiv`) AS `debit`, SUM(`credit_equiv`) AS `credit`, ' +
