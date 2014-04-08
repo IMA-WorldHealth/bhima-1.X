@@ -23,11 +23,12 @@ var reportQuery = {};
 var include = [
   overview,
   breakdown,
-  patientTotalReport,
-  sale,
-  financeOverview,
+  // patientTotalReport,
+  // sale,
+  hbbFinanceOverview,
+  paxFinanceOverview,
   accounts,
-  fiche,
+  // fiche,
   subsidyIMA
 ];
 
@@ -45,16 +46,24 @@ function parseParams() {
 
 function buildQuery()  {
   reportQuery = {
-    "New_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 0;",
-    "Renewal_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 1;",
-    "Sum_Cash" : "SELECT SUM(cost) as 'total' FROM cash where date = " + util.date.from + ";",
-    "Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as 'total' FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = " + util.date.from + ";",
+    "HBB_New_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 0 AND project_id = 1;",
+    "PAX_New_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 0 AND project_id = 2;",
+    "HBB_Renewal_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 1 AND project_id = 1;",
+    "PAX_Renewal_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 1 AND project_id = 2;",
+    "HBB_Sum_Cash" : "SELECT SUM(cost) as 'total' FROM cash where date = " + util.date.from + " AND project_id = 1;",
+    "PAX_Sum_Cash" : "SELECT SUM(cost) as 'total' FROM cash where date = " + util.date.from + " AND project_id = 2;",
+    "HBB_Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as 'total' FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = " + util.date.from + " AND project_id = 1;",
+    "PAX_Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as 'total' FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = " + util.date.from + " AND project_id = 2;",
     "IMA_Total" : "SELECT SUM(debit) as 'total' FROM posting_journal where account_id = 1062 AND trans_date = " + util.date.from + ";",
     "IMA_Patients" : "SELECT COUNT(distinct sale.debitor_uuid) as 'total' from posting_journal join sale where posting_journal.inv_po_id = sale.uuid AND account_id = 1062 AND trans_date = " + util.date.from + ";",
-    "New_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = " + util.date.from + ";",
-    "Old_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = " + util.date.from + ";",
-    "Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + ";",
-    "Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + ";"
+    "HBB_New_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 1;",
+    "PAX_New_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 2;",
+    "HBB_Old_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 1;",
+    "PAX_Old_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 2;",
+    "HBB_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 1;",
+    "PAX_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 2;",
+    "HBB_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 1;",
+    "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;"
   };
 
   return q.resolve();
@@ -112,12 +121,16 @@ function collateReports() {
 }
 
 // Temporary methods for initial email
-function messageInfo() {
-  return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_one").content);
-}
+// function messageInfo() {
+//   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_one").content);
+// }
+//
+// function messagePax() {
+//   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_two").content);
+// }
 
-function messagePax() {
-  return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_two").content);
+function linkDown() { 
+  // return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.report("Section", "alert_link").content);
 }
 
 function overview() { 
@@ -125,8 +138,22 @@ function overview() {
 }
 
 function breakdown() { 
-  var patientNew = data.lookup('New_Patients')[0].total;
-  var patientReturning = data.lookup('Renewal_Patients')[0].total;
+  var paxNew = data.lookup('PAX_New_Patients')[0].total;
+  var paxReturning = data.lookup('PAX_Renewal_Patients')[0].total;
+  var hbbNew = data.lookup('HBB_New_Patients')[0].total;
+  var hbbReturning = data.lookup('HBB_Renewal_Patients')[0].total;
+  
+  var paxNewFiche = data.lookup('PAX_New_Fiche')[0].total;
+  var paxOldFiche = data.lookup('PAX_Old_Fiche')[0].total;
+
+  var hbbNewFiche = data.lookup('HBB_New_Fiche')[0].total;
+  var hbbOldFiche = data.lookup('HBB_Old_Fiche')[0].total;
+  
+  var hbbTotalSale = data.lookup('HBB_Basic_Sale')[0].total;
+  var paxTotalSale = data.lookup('PAX_Basic_Sale')[0].total;
+
+  var hbbTotalSaleItems = data.lookup('HBB_Sale_Items')[0].total;
+  var paxTotalSaleItems = data.lookup('PAX_Sale_Items')[0].total;
 
   var structureTemplate = template.fetch('table');
   var headerTemplate = template.fetch('tableHeader');
@@ -141,9 +168,47 @@ function breakdown() {
   
   // Populate Body
   row[0] = template.replace(rowTemplate, "{{DATA_ONE}}", "New Patients");
-  row[0] = template.replace(body, "{{DATA_TWO}}", patientNew);
-  row[0] = template.replace(body, "{{DATA_THREE}}", patientReturning);
+  row[0] = template.replace(row[0], "{{DATA_TWO}}", hbbNew);
+  row[0] = template.replace(row[0], "{{DATA_THREE}}", paxNew);
+  row[0] = template.replace(row[0], "{{ROW_STYLE}}", "");
   
+  row[1] = template.replace(rowTemplate, "{{DATA_ONE}}", "Returning Patients");
+  row[1] = template.replace(row[1], "{{DATA_TWO}}", hbbReturning);
+  row[1] = template.replace(row[1], "{{DATA_THREE}}", paxReturning);
+  row[1] = template.replace(row[1], "{{ROW_STYLE}}", "");
+
+  row[2] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Patients");
+  row[2] = template.replace(row[2], "{{DATA_TWO}}", hbbNew + hbbReturning);
+  row[2] = template.replace(row[2], "{{DATA_THREE}}", paxNew + paxReturning);
+  row[2] = template.replace(row[2], "{{ROW_STYLE}}", "style='font-weight: bold'");
+  
+  row[3] = template.replace(rowTemplate, "{{DATA_ONE}}", "Invoice for 'new fiche'");
+  row[3] = template.replace(row[3], "{{DATA_TWO}}", hbbNewFiche);
+  row[3] = template.replace(row[3], "{{DATA_THREE}}", paxNewFiche);
+  row[3] = template.replace(row[3], "{{ROW_STYLE}}", "");
+  
+  row[4] = template.replace(rowTemplate, "{{DATA_ONE}}", "Invoice for 'old fiche'");
+  row[4] = template.replace(row[4], "{{DATA_TWO}}", hbbOldFiche);
+  row[4] = template.replace(row[4], "{{DATA_THREE}}", paxOldFiche);
+  row[4] = template.replace(row[4], "{{ROW_STYLE}}", "");
+
+  row[5] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Fiche Transactions");
+  row[5] = template.replace(row[5], "{{DATA_TWO}}", hbbNewFiche + hbbOldFiche);
+  row[5] = template.replace(row[5], "{{DATA_THREE}}", paxNewFiche + paxOldFiche);
+  row[5] = template.replace(row[5], "{{ROW_STYLE}}", "style='font-weight: bold'");
+  
+  row[6] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Invoice Transactions");
+  row[6] = template.replace(row[6], "{{DATA_TWO}}", hbbTotalSale);
+  row[6] = template.replace(row[6], "{{DATA_THREE}}", paxTotalSale);
+  row[6] = template.replace(row[6], "{{ROW_STYLE}}", "style='font-weight: bold'");
+
+  row[7] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Invoice Line Items");
+  row[7] = template.replace(row[7], "{{DATA_TWO}}", hbbTotalSaleItems);
+  row[7] = template.replace(row[7], "{{DATA_THREE}}", paxTotalSaleItems);
+  row[7] = template.replace(row[7], "{{ROW_STYLE}}", "style='font-weight: bold;'");
+
+  body = row.join("\n");
+
   // Populate Table
   table = template.replace(structureTemplate, "{{HEADER_CONTENT}}", header);
   table = template.replace(table, "{{BODY_CONTENT}}", body);
@@ -167,11 +232,26 @@ function patientTotalReport() {
   return template.compileSection(sectionTemplate.heading, report);
 }
 
-function financeOverview() {
-  var totalCash = data.lookup('Sum_Cash')[0].total;
-  var totalInvoices = data.lookup('Cash_Total_Invoice')[0].total;
+function hbbFinanceOverview() {
+  var totalCash = data.lookup('HBB_Sum_Cash')[0].total;
+  var totalInvoices = data.lookup('HBB_Cash_Total_Invoice')[0].total;
   
-  var sectionTemplate = template.reports("Section", "cash");
+  var sectionTemplate = template.reports("Section", "cash_hbb");
+  var report =
+    template.compile(
+        sectionTemplate.content,
+        template.insertStrong(filterCurrency(totalCash)),
+        template.insertStrong(totalInvoices)
+        );
+  
+  return template.compileSection(sectionTemplate.heading, report);
+}
+
+function paxFinanceOverview() {
+  var totalCash = data.lookup('PAX_Sum_Cash')[0].total;
+  var totalInvoices = data.lookup('PAX_Cash_Total_Invoice')[0].total;
+  
+  var sectionTemplate = template.reports("Section", "cash_pax");
   var report =
     template.compile(
         sectionTemplate.content,
