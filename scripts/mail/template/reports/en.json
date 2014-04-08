@@ -8,9 +8,9 @@
     "new_patients" : "New Patients",
     "returning_patients" : "Returning Patients",
     "total_patients" : "Total Patients",
-    "new_fiche" : "'Nouvelle Fiche' sales",
-    "old_fiche" : "'Ancienne Fiche' sales",
-    "total_fiche" : "Total Fiche sales",
+    "new_fiche" : "'Nouvelle Fiche' Sales",
+    "old_fiche" : "'Ancienne Fiche' Sales",
+    "total_fiche" : "Total Fiche Sales",
     "total_invoice" : "Total Invoice Transactions",
     "total_lines" : "Total Invoice Line Items"
   },
