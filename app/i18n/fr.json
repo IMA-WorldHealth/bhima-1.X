@@ -23,7 +23,6 @@
     "TRANSACTION_NUMBER"    : "Numero de Transaction",
     "VERIFY_TRANSACTION"    : "Verifier Transaction",
     "SPLIT"                 : "Diviser",
-<<<<<<< HEAD
     "EDIT_MODE"             : "Mode Editter",
     "EDIT_TRANSACTION"      : "Editter Transaction",
     "EDIT"                  : {
@@ -34,20 +33,7 @@
       "ID"                  : "ID Session",
       "INVALID_PIN"         : "Ce PIN est invalide.",
       "ATTEMPTS_REMAINING"  : "essais restants.",
-      "INVALID_SESSION"     : "La session est expirer a cause de authentification manquant. S'il vous plait, reessayer ou demander une administrateur remettre un place votre PIN."
-=======
-    "EDIT_MODE"             : "Editter Super User",
-    "UNGROUP"               : "Rien",
-    "EDIT"                  : {
-      "TITLE"               : "Commencer Session de Posting",
-      "JUSTIFICATION"       : "S'il vous plait, enregistrer une justification pour les edits.",
-      "MIN_CHARS"           : "Minimum 10 caracteres",
-      "PIN"                 : "Enregistrer votre PIN pour confirmer votre identite.",
-      "ID"                  : "ID Session",
-      "INVALID_PIN"         : "Le PIN n'est pas valide.",
-      "ATTEMPTS_REMAINING"  : "essaie rester.",
-      "INVALID_SESSION"     : "Le session etait terminer parceque il y detecter une maximum des requettes incorrect. Demainder a une adminstrateur des changer votre PIN ou essayer en cours."
->>>>>>> translations for journal; project page allows logout
+      "INVALID_SESSION"     : "La session  etait terminer a cause de authentification manquant. S'il vous plait, reessayer ou demander une administrateur remettre un place votre PIN."
     }
   },
 
