@@ -10,9 +10,13 @@
       "heading" : "Patient Registration",
       "content" : "Today, %s patients were registered; %s patients new to the hospital, and %s returning."
     },
-    "cash" : {
+    "cash_hbb" : {
       "heading" : "HBB Cash Box",
       "content" : "%s were introduced at the Caisse Aux HBB, paid against a total of %s invoices."
+    },
+    "cash_pax" : {
+      "heading" : "PAX Cash Box",
+      "content" : "%s were introduced at the Caisse Aux PAX, paid against a total of %s invoices."
     },
     "subsidy" : {
       "heading" : "IMA Subsidy",
