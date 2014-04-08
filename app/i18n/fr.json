@@ -157,7 +157,9 @@
     "AFTER"       : "Apres",
     "DEBIT"       : "Debit",
     "CREDIT"      : "Credit",
-    "BTN_TEXT"    : "Poster au Grand Livre"
+    "BTN_TEXT"    : "Poster au Grand Livre",
+    "TRANSACTIONS" : "Transactions",
+    "ERRORS"       : "Erreurs"
   },
 
   "ERROR"                 : {

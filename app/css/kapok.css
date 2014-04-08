@@ -330,7 +330,7 @@ div .reportFrame {
   position: absolute;
   margin-right: 0.5%; /* .5 to pad nicely */
   width: 25%;
-  z-index: 998;
+  z-index: 1175;
   top: 0.5%;
 }
 

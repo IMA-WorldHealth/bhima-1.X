@@ -2,6 +2,11 @@
   <div class="modal-header">
     <h3>{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
     <div class="modal-icons">
+      <label><span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
+      <label><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</label>
+      <label><span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}</label>
+    </div>
+    <div class="modal-print">
       <a href="" ng-click="print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
     </div>
   </div>
@@ -21,7 +26,7 @@
     <div class="modal-table-body">
       <table>
         <tbody>
-          <tr ng-repeat="account in data | orderBy:'account_number'">
+          <tr ng-repeat="account in balances | orderBy:'account_number'">
             <th style="width:20%" class="no-border">{{ account.account_number }}</th>
             <td style="width:20%" ng-bind-html="account.balance | intlcurrency:2"></td>
             <td style="width:20%" ng-bind-html="account.debit | intlcurrency:2"></td>
@@ -36,10 +41,10 @@
         <tfoot>
           <tr>
             <th style="width:20%">{{ 'UTIL.TOTAL' | translate }}</th>
-            <th style="width:20%">{{total.before | currency }}</th>
-            <th style="width:20%">{{total.debit | currency }}</th>
-            <th style="width:20%">{{total.credit | currency }}</th>
-            <th style="width:20%">{{total.after | currency }}</th>
+            <th style="width:20%" ng-bind-html="total.before | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="total.debit | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="total.credit | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="total.after | intlcurrency:2"></th>
           </tr>
         </tfoot>
       </table>
@@ -47,12 +52,8 @@
   </div>
 
   <div class="modal-footer" style="margin-top: 0;">
-    <div class="model-info pull-left">
-      <label><span class="glyphicon glyphicon-list"></span> {{ data.length }}</label>
-      <label><span class="glyphicon glyphicon-flag"></span> {{ 0 }}</label>
-    </div>
-    <button class="btn btn-sm btn-success square" ng-disabled="hasErrors" ng-click="submit()">{{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
-    <button class="btn btn-sm btn-default square" ng-click="cancel()">{{ 'UTIL.CANCEL' | translate }}</button>
+    <button class="btn btn-sm btn-success square" ng-disabled="hasErrors" ng-click="submit()"><span class="glyphicon glyphicon-ok-circle"></span> {{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
+    <button class="btn btn-sm btn-default square" ng-click="cancel()"><span class="glyphicon glyphicon-ban-circle"></span> {{ 'UTIL.CANCEL' | translate }}</button>
   </div>
 
 </div>
