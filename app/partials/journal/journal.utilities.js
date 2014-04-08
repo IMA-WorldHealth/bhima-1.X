@@ -331,7 +331,9 @@ angular.module('kpk.controllers')
     }
 
     $scope.updateFilter = function updateFilter () {
-      if (!$scope.filter.by || !$scope.filter.param) { return; }
+      // TODO : make this update when there is no data in filter.param
+      if (!$scope.filter.param) { return; }
+      if (!$scope.filter.by) { return; }
       dataview.setFilterArgs({
         param : $scope.filter.param
       });

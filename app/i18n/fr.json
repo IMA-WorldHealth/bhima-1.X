@@ -411,6 +411,8 @@
     "GROUP"               : "Groupe",
     "ENTERPRISE_ID"       : "ID Enterprise",
     "ABBR"                : "Abbr.",
+    "TRANSACTION_ID"      : "ID Transaction",
+    "LINE_ID"             : "ID Ligne",
     "INVOICE_DATE"        : "Date Facture",
     "TOTAL"               : "Total",
     "ACCOUNT_ID"          : "ID Compte",
