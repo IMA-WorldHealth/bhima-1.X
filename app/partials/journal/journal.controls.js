@@ -4,7 +4,6 @@ angular.module('kpk.controllers')
   '$translate',
   '$rootScope',
   '$q',
-  '$filter',
   "$window",
   'uuid',
   'store',
@@ -14,7 +13,7 @@ angular.module('kpk.controllers')
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $translate, $rootScope, $q, $filter, $window, uuid, Store, util, connect, precision, validate, appstate, messenger) {
+  function ($scope, $translate, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, messenger) {
     var dependencies = {};
     var columns, options, dataview, grid, manager;
     var sort_column;

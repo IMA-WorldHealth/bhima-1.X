@@ -908,6 +908,7 @@ create table `cash_item` (
 --
 -- Table structure for table `kpk`.`posting_session`
 --
+-- TODO : number of records posted 
 drop table if exists `posting_session`;
 create table `posting_session` (
   `id`        int unsigned not null auto_increment,
@@ -1063,7 +1064,6 @@ create table `group_invoice_item` (
   constraint foreign key (`payment_uuid`) references `group_invoice` (`uuid`) on delete cascade,
 	constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)) engine=innodb;
 
--- TODO Reference user table
 drop table if exists `journal_log`;
 create table `journal_log` (
   `uuid`            char(36) not null,

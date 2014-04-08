@@ -476,6 +476,10 @@ app.get('/max_log/', function (req, res, next) {
   });
 });
 
+app.get('/print/journal', function (req, res, next) {
+  res.send('Under Contruction');
+});
+
 app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
 
 // temporary error handling for development!
