@@ -20,10 +20,15 @@
       "heading" : "Enregistrement des Patients",
       "content" : "Aujourd'hui, %s patient(s) etaient enregistre(s); %s nouveau patient(s), et %s revenu(s)."
     },
-    "cash" : {
+    "cash_hbb" : {
       "heading" : "Caisse HBB",
       "content" : "%s etaient entrees dans la caisse auxilliaire HBB, payes contre un total de %s factures."
     },
+    "cash_pax" : {
+      "heading" : "Caisse PAX",
+      "content" : "%s etaient entrees dans la caisse auxilliaire PAX, payes contre un total de %s factures."
+    },
+
     "subsidy" : {
       "heading" : "Compte IMA",
       "content" : "Le compte d'IMA etait charge avec un total de %s aidant %s pour recevoir des soins."
