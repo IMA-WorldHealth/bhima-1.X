@@ -4,7 +4,16 @@
     "accounts" : "Accounts",
     "experimental" : "Experimental Reports"
   },
-  
+  "Overview" : {
+    "new_patients" : "New Patients",
+    "returning_patients" : "Returning Patients",
+    "total_patients" : "Total Patients",
+    "new_fiche" : "'Nouvelle Fiche' sales",
+    "old_fiche" : "'Ancienne Fiche' sales",
+    "total_fiche" : "Total Fiche sales",
+    "total_invoice" : "Total Invoice Transactions",
+    "total_lines" : "Total Invoice Line Items"
+  },
   "Section" : {
     "registration" : {
       "heading" : "Patient Registration",
@@ -37,6 +46,10 @@
     "alert_two" : {
       "heading" : "PAX",
       "content" : "BHIMA is currently being installed at PAX. Following reports will include data for the enterprise as a whole, including both HBB and PAX."
+    },
+    "network_warning" : {
+      "heading" : "[Network Manager]",
+      "content" : "The radio connection between HBB and PAX could not be established today."
     }
   }
 }
