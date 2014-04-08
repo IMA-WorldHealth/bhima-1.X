@@ -169,42 +169,42 @@ function breakdown() {
   header = template.replace(header, "{{DATA_THREE}}", "IMCK PAX");
   
   // Populate Body
-  row[0] = template.replace(rowTemplate, "{{DATA_ONE}}", "New Patients");
+  row[0] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "new_patients"));
   row[0] = template.replace(row[0], "{{DATA_TWO}}", hbbNew);
   row[0] = template.replace(row[0], "{{DATA_THREE}}", paxNew);
   row[0] = template.replace(row[0], "{{ROW_STYLE}}", "");
   
-  row[1] = template.replace(rowTemplate, "{{DATA_ONE}}", "Returning Patients");
+  row[1] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "returning_patients"));
   row[1] = template.replace(row[1], "{{DATA_TWO}}", hbbReturning);
   row[1] = template.replace(row[1], "{{DATA_THREE}}", paxReturning);
   row[1] = template.replace(row[1], "{{ROW_STYLE}}", "");
 
-  row[2] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Patients");
+  row[2] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "total_patients"));
   row[2] = template.replace(row[2], "{{DATA_TWO}}", hbbNew + hbbReturning);
   row[2] = template.replace(row[2], "{{DATA_THREE}}", paxNew + paxReturning);
   row[2] = template.replace(row[2], "{{ROW_STYLE}}", "style='font-weight: bold'");
   
-  row[3] = template.replace(rowTemplate, "{{DATA_ONE}}", "Invoice for 'new fiche'");
+  row[3] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "new_fiche"));
   row[3] = template.replace(row[3], "{{DATA_TWO}}", hbbNewFiche);
   row[3] = template.replace(row[3], "{{DATA_THREE}}", paxNewFiche);
   row[3] = template.replace(row[3], "{{ROW_STYLE}}", "");
   
-  row[4] = template.replace(rowTemplate, "{{DATA_ONE}}", "Invoice for 'old fiche'");
+  row[4] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "old_fiche"));
   row[4] = template.replace(row[4], "{{DATA_TWO}}", hbbOldFiche);
   row[4] = template.replace(row[4], "{{DATA_THREE}}", paxOldFiche);
   row[4] = template.replace(row[4], "{{ROW_STYLE}}", "");
 
-  row[5] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Fiche Transactions");
+  row[5] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "total_fiche"));
   row[5] = template.replace(row[5], "{{DATA_TWO}}", hbbNewFiche + hbbOldFiche);
   row[5] = template.replace(row[5], "{{DATA_THREE}}", paxNewFiche + paxOldFiche);
   row[5] = template.replace(row[5], "{{ROW_STYLE}}", "style='font-weight: bold'");
   
-  row[6] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Invoice Transactions");
+  row[6] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "total_invoice"));
   row[6] = template.replace(row[6], "{{DATA_TWO}}", hbbTotalSale);
   row[6] = template.replace(row[6], "{{DATA_THREE}}", paxTotalSale);
   row[6] = template.replace(row[6], "{{ROW_STYLE}}", "style='font-weight: bold'");
 
-  row[7] = template.replace(rowTemplate, "{{DATA_ONE}}", "Total Invoice Line Items");
+  row[7] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "total_lines"));
   row[7] = template.replace(row[7], "{{DATA_TWO}}", hbbTotalSaleItems);
   row[7] = template.replace(row[7], "{{DATA_THREE}}", paxTotalSaleItems);
   row[7] = template.replace(row[7], "{{ROW_STYLE}}", "style='font-weight: bold;'");
