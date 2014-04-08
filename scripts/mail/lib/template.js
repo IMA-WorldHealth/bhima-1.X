@@ -11,8 +11,12 @@ var route = {
   header : './template/header.template.html',
   section : './template/section.template.html',
   message : './template/alert.template.html',
-  reports : './template/reports/' + language + '.json'
+  reports : './template/reports/' + language + '.json',
+  table : './template/table/table.template.html',
+  tableRow : './template/table/table-row.template.html',
+  tableHeader : './template/table/table-header.template.html'
 };
+
 var store = {};
 var structureCache, reports;
 
