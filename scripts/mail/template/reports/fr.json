@@ -4,6 +4,16 @@
     "accounts" : "Comptes",
     "experimental" : "Rapport Experimental"
   },
+  "Overview"             : {
+    "new_patients"       : "Nouveau Patients",
+    "returning_patients" : "Ancienne Patients",
+    "total_patients"     : "Nombre de Patients",
+    "new_fiche"          : "Ventes 'Nouvelle Fiche'",
+    "old_fiche"          : "Ventes 'Ancienne Fiche'",
+    "total_fiche"        : "Nombre des Ventes Fiches",
+    "total_invoice"      : "Nombre des Factures",
+    "total_lines"        : "Nombre des Items dans les Factures"
+  },
 
   "Section" : {
     "registration" : {
@@ -33,6 +43,10 @@
     "alert_two" : {
       "heading" : "PAX",
       "content" : "BHIMA est entrain d'etre installe a PAX. Ce rapport va inclure les information de l'IMCK dans son entirete PAX et HBB comprises."
+    },
+    "network_warning" : {
+      "heading" : "[Gestion du Reseau]",
+      "content" : "La connexion entre HBB and PAX ne pouvait pas etre etabli aujourd'hui."
     }
   }
 }
