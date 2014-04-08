@@ -70,12 +70,10 @@ angular.module('kpk.controllers')
       this.inv_po_id = null;
       this.comment = null;
       this.origin = null;
-
       return this;
     }
 
     function init (model){
-      console.log('model', model);
       for(var k in model){$scope[k] = model[k]}
       $scope.selectedItem = model.currencies.data[model.currencies.data.length-1];
       $scope.voucher.currency_id = $scope.selectedItem.id;
