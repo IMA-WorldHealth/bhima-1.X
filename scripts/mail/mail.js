@@ -21,6 +21,7 @@ var reportReference = util.generateUuid();
 var reportQuery = {};
 
 var include = [
+  linkDown,
   overview,
   breakdown,
   // patientTotalReport,
@@ -130,7 +131,8 @@ function collateReports() {
 // }
 
 function linkDown() { 
-  // return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.report("Section", "alert_link").content);
+  var message = template.reports("Section", "network_warning");
+  return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, message.heading + " " + message.content);
 }
 
 function overview() { 
