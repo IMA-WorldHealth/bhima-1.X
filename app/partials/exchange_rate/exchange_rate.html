@@ -1,4 +1,4 @@
-<header>
+<header data-header>
   {{ "EXCHANGE.TITLE" | translate }}
 </header>
 
@@ -66,7 +66,7 @@
           </form>
         </div>
       </div>
-    
+
       <div class="panel panel-default" ng-switch-when="new">
         <div class="panel-body">
           <form name="exchangeForm" class="form-horizontal" novalidate>
@@ -101,7 +101,7 @@
                   <input class="form-kapok" ng-model="newRate.rate" min="0" required placeholder="1.00" type="number" required>
                   <span class="input-group-addon">
                     {{currency.get(newRate.foreign_currency_id).symbol}}
-                  </span> 
+                  </span>
                 </div>
               </div>
             </fieldset>

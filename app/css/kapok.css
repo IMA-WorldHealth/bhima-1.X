@@ -388,3 +388,15 @@ a.danger {
   background-color: #f2dede;
   border: 1px solid #eed3d7;
 }
+
+.menu-sq {
+  border-radius : 0;
+}
+
+.btn-sq {
+  border-radius: 0;
+}
+
+.creditInvoice a {
+  color: #fff;
+}

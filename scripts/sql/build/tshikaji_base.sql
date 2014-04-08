@@ -87,7 +87,8 @@ INSERT INTO `unit` VALUES (0,'Root','TREE.ROOT','The unseen root node',NULL,1,'/
 (74,'Client','TREE.CLIENT','',73,0,'/partials/client/','/client'),
 (75,'Beneficiary','TREE.BENEFICIARY','',73,0,'/partials/beneficiary/','/beneficiary'),
 (76,'Main Cash','TREE.MAIN_CASH','',5,0,'/partials/pcash/','/main_cash'),
-(77,'Project', 'TREE.PROJECT', '', 1, 0, '/partials/projects/', '/projects');
+(77,'Project', 'TREE.PROJECT', '', 1, 0, '/partials/projects/', '/projects')
+(78, 'Patient Standing', 'TREE.PATIENT_STANDING', '', 10, 0, '/partials/reports/patient_standing/', '/reports/patient_standing');
 
 -- base user & permissions
 INSERT INTO `user` (`id`, `username`, `password`, `first`, `last`, `email`, `logged_in`, `pin`) VALUES (1,'admin','1','System','Administrato','kpkdeveloper@gmail.com',0,"1234"),(2,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0,"1234"),(3,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0, "1234"),(4,'sthreshley','ima','Larry','Sthreshley','example@email.me',0,"1234"),(5,'receptioniste','moyo','Reception','Reception','recept@example.me',0,"1234"),(14,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0,"1234"),(15,'anaclet','tshiko','Anaclet','Kadiata','anakadiat@yahoo.fr',0,"1234"),(16,'caisse','moyo','Caisse','Aux',NULL,0,"1234"),(17,'Ntumba','dieumerci','Moise','Ngalamulume','ngalamulumemoise@gmail.com',0, "1234"),(18,'jean','jean','JEAN','SEKUNDO',NULL,0, "1234"); 

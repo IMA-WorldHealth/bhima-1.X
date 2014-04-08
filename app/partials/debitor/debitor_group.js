@@ -52,7 +52,7 @@ angular.module('kpk.controllers')
         }
       }
     };
- 
+
     dependencies.location = {
       query : '/location/'
     };

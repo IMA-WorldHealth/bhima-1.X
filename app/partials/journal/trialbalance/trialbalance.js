@@ -7,12 +7,11 @@ angular.module('kpk.controllers')
   'messenger',
   'request',
   function ($scope, $modalInstance, $window, connect, messenger, request) {
-    console.log("request is:", request);
     var hasErrors = !!request.errors;
 
     if (hasErrors) {
       $scope.errors = request.errors;
-      
+
     } else {
       var total = $scope.total = {};
       $scope.data = request.data;
@@ -32,7 +31,6 @@ angular.module('kpk.controllers')
       .then(function () {
         $modalInstance.close();
       }, function (error) {
-        console.log('error', error);
         messenger.warning('Posting failed with ' +  JSON.stringify(error));
       });
     };

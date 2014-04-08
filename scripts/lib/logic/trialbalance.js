@@ -79,7 +79,7 @@ module.exports = function (db) {
         return promise.reason;
       });
 
-      var sql = 'SELECT `pt`.`uuid`,  `pt`.`debit`, `pt`.`credit`, '  +
+      var sql = 'SELECT `pt`.`uuid`,  `pt`.`debit_equiv`, `pt`.`credit_equiv`, '  +
         '`pt`.`account_id`, `pt`.`balance`, `account`.`account_number` ' +
         'FROM  account JOIN ( ' +
           'SELECT `posting_journal`.`uuid`, SUM(`debit_equiv`) AS `debit`, SUM(`credit_equiv`) AS `credit`, ' +
@@ -151,7 +151,7 @@ module.exports = function (db) {
     db.execute(sql, function (err, rows) {
       if (err) { d.reject(new error('ERR_SQL', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
       var outliers = rows.filter(function (row) {
-        return !(new Date (row.trans_date) > new Date(row.period_start) && new Date (row.trans_date) < new Date(row.period_stop));
+        return !(new Date (row.trans_date) >= new Date(row.period_start) && new Date (row.trans_date) <= new Date(row.period_stop));
       });
       if (outliers.length) { d.reject(new error('ERR_INVALID_DATE', 'The dates do not match the periods', outliers)); }
 

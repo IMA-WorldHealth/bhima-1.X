@@ -49,10 +49,10 @@
         <tbody>
           <tr ng-repeat="account in data | orderBy:'account_number'">
             <th>{{ account.account_number }}</th>
-            <td>{{ account.balance | currency }}</td>
-            <td>{{ account.debit | currency }}</td>
-            <td>{{ account.credit | currency }}</td>
-            <td>{{ account.balance + (account.credit-account.debit) | currency }}</td>
+            <td ng-bind-html="account.balance | intlcurrency:2"></td>
+            <td ng-bind-html="account.debit | intlcurrency:2"></td>
+            <td ng-bind-html="account.credit | intlcurrency:2"></td>
+            <td ng-bind-html="(account.balance + (account.credit-account.debit)) | intlcurrency:2"></td>
           </tr>
         </tbody>
         <tfoot>

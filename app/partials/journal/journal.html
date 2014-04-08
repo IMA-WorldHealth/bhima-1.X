@@ -5,12 +5,29 @@
 <section class="top-nav" ng-controller="journal.utilities">
   <div class="pull-left dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!session.authenticated">
-      <span class="glyphicon glyphicon-sort-by-attributes"></span> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}
+      <span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}
     </button>
     <ul class="dropdown-menu">
       <li><a href="" ng-click="groupBy('transaction')">{{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
       <li><a href="" ng-click="groupBy('account')">{{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
       <li><a href="" ng-click="groupBy('deb_cred')">{{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
+      <li><a href="" ng-click="removeGroup()">{{ 'POSTING_JOURNAL.ABOLISH_GROUPS' | translate }}</a></li>
+    </ul>
+  </div>
+
+  <div class="pull-left dropdown input-group col-xs-4">
+    <span class="input-group-btn dropdown-toggle" style="background : white;">
+      <button class="btn btn-sm btn-default " type="button" ng-class="{'active': !!filter.by && !!filter.param }">
+        <span class="glyphicon glyphicon-filter"></span>
+        <span class="caret" data-caret="&#9660;"></span>
+        {{ filter.by.name }}
+      </button>
+    </span>
+    <input class="form-kapok" ng-model="filter.param">
+    <ul class="dropdown-menu">
+      <li ng-repeat="column in columns">
+        <a ng-click="filter.by=column" href="">{{ column.name }}</a>
+      </li>
     </ul>
   </div>
 
