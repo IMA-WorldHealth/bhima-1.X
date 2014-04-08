@@ -148,6 +148,7 @@ angular.module('kpk.controllers')
         });
 
         instance.result.then(function () {
+          console.log('Going to general ledger');
           $location.path('/reports/ledger/general_ledger');
         });
       })
@@ -196,7 +197,7 @@ angular.module('kpk.controllers')
           aggregateCollapsed: $scope.aggregates
         });
       }
-      
+
       function unGroup () {
         dataview.setGrouping({});
       }
