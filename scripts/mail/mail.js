@@ -21,9 +21,8 @@ var reportReference = util.generateUuid();
 var reportQuery = {};
 
 var include = [
-  messageInfo, 
-  messagePax,
   overview,
+  breakdown,
   patientTotalReport,
   sale,
   financeOverview,
@@ -125,6 +124,32 @@ function overview() {
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "overview"));
 }
 
+function breakdown() { 
+  var patientNew = data.lookup('New_Patients')[0].total;
+  var patientReturning = data.lookup('Renewal_Patients')[0].total;
+
+  var structureTemplate = template.fetch('table');
+  var headerTemplate = template.fetch('tableHeader');
+  var rowTemplate = template.fetch('tableRow');
+  
+  var row = [], table, header, body;
+  
+  // Populate Header 
+  header = template.replace(headerTemplate, "{{DATA_ONE}}", "");
+  header = template.replace(header, "{{DATA_TWO}}", "IMCK HBB");
+  header = template.replace(header, "{{DATA_THREE}}", "IMCK PAX");
+  
+  // Populate Body
+  row[0] = template.replace(rowTemplate, "{{DATA_ONE}}", "New Patients");
+  row[0] = template.replace(body, "{{DATA_TWO}}", patientNew);
+  row[0] = template.replace(body, "{{DATA_THREE}}", patientReturning);
+  
+  // Populate Table
+  table = template.replace(structureTemplate, "{{HEADER_CONTENT}}", header);
+  table = template.replace(table, "{{BODY_CONTENT}}", body);
+
+  return table;
+}
 // TODO create a section object with basic methods, introduce header and content etc.
 function patientTotalReport() {
   var totalNew = data.lookup('New_Patients')[0].total;
