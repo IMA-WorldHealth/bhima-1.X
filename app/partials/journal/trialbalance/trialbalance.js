@@ -33,7 +33,8 @@ angular.module('kpk.controllers')
 
     $scope.submit = function submit () {
       connect.fetch('/trialbalance/submit/'+ request.key +'/')
-      .then(function () {
+      .then(function (data) {
+        console.log("Server sent back data:", data);
         $modalInstance.close();
       })
       .catch(function (error) {

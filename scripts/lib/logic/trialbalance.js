@@ -16,7 +16,6 @@ var q = require('q'),
     util = require('../util/util'),
     uuid = require('../util/guid');
 
-
 var error = (function () {
 
   function _error (code, msg, details, action) {
@@ -48,7 +47,6 @@ function KeyRing () {
     return !!keyStore[userId][key];
   };
 }
-
 
 module.exports = function (db) {
   'use strict';
@@ -96,7 +94,7 @@ module.exports = function (db) {
     .then(function (rows) {
       results.balances = rows;
       results.errors = errors;
-      
+
       var sql =
         "SELECT COUNT(uuid) AS `lines`, trans_id, trans_date FROM posting_journal GROUP BY trans_id;";
       return db.exec(sql);
@@ -223,27 +221,28 @@ module.exports = function (db) {
     });
   }
 
-
-  function postToGeneralLedger (userId, key, callback) {
-    // Posts data from the journal into the general ledger.
-    var sql, defer = q.defer();
-
-    sql =
-      'INSERT INTO `posting_session` ' +
-      'SELECT max(`posting_session`.`id`) + 1, ' + sanitize.escape(userId) + ', ' +
-      sanitize.escape(util.toMysqlDate()) + ' ' +
-      'FROM `posting_session`;';
+  function postToGeneralLedger (userId, key) {
+    // Post data from the journal into the general ledger.
+    var sql;
 
     // First thing we need to do is make sure that this posting request
     // is not an error and comes from a valid user.
-    checkPermission(userId, key)
+    return checkPermission(userId, key)
     .then(function (res) {
+
       // Next, we need to generate a posting session id.
+      sql =
+        'INSERT INTO `posting_session` ' +
+        'SELECT max(`posting_session`.`id`) + 1, ' + sanitize.escape(userId) + ', ' +
+        sanitize.escape(util.toMysqlDate()) + ' ' +
+        'FROM `posting_session`;';
+
       return db.exec(sql);
     })
     .then(function (res) {
       // Next, we must move the data into the general ledger.
       var session_id = res.insertId;
+      console.log('SESSION ID', session_id);
       sql =
         'INSERT INTO `general_ledger` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
@@ -258,10 +257,11 @@ module.exports = function (db) {
       return db.exec(sql);
     })
     .then(function (res) {
-      // This SQL sums all transactions for a given period from the PJ into `period_total`, updating old values if necessary
+      // Sum all transactions for a given period from the PJ
+      // into `period_total`, updating old values if necessary.
       sql =
         'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' +
-        'SELECT `account_id`, SUM(`credit_equiv`) as credit, SUM(`debit_equiv`) as debit, `fiscal_year_id`, `project`.`enterprise_id`, ' +
+        'SELECT `account_id`, SUM(`credit_equiv`) AS credit, SUM(`debit_equiv`) as debit , `fiscal_year_id`, `project`.`enterprise_id`, ' +
           '`period_id` FROM `posting_journal` JOIN `project` ON `posting_journal`.`project_id`=`project`.`id` ' +
         'GROUP BY `account_id` ' +
         'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
@@ -269,18 +269,10 @@ module.exports = function (db) {
       db.exec(sql);
     })
     .then(function (res) {
-      // Finally, we can remove the data from teh posting journal
-      //sql = 'DELETE FROM `posting_journal`;';
-      sql = "select 1 + 1 as ans";
-      return db.execute(sql);
-    })
-    .then(function (res) {
-      callback(null, res);
-    })
-    .catch(function (err) {
-      callback(err);
-    })
-    .done();
+      // Finally, we can remove the data from the posting journal
+      sql = 'DELETE FROM `posting_journal` WHERE 1;';
+      return db.exec(sql);
+    });
   }
 
   return {
