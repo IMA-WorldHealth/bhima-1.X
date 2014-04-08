@@ -3,14 +3,16 @@
     "TITLE"                 : "Posting Journal",
     "GROUP_BY"              : "Group By",
     "DEB_CRED"              : "Debitor / Creditor",
+    "ABOLISH_GROUPS"        : "Abolish Groups",
     "TRANSACTION"           : "Transaction",
     "ACCOUNT"               : "Account",
     "TRIAL_BALANCE"         : "Trial Balance",
     "ADD_TRANSACTION"       : "Add Transaction",
-    "GENERAL_LEDGER"        : "General Ledger",
+    "DELETE_TRANSACTION"    : "Delete Transaction",
     "EDIT_TRANSACTION"      : "Edit Transaction",
     "ADD_ROW"               : "Add Row",
     "SAVE_TRANSACTION"      : "Save Transaction",
+    "GENERAL_LEDGER"        : "General Ledger",
     "DEBIT"                 : "Debit",
     "CREDIT"                : "Credit",
     "FISCAL_YEAR"           : "Fiscal Year",
@@ -26,15 +28,15 @@
     "VERIFY_TRANSACTION"    : "Verify Transaction",
     "SPLIT"                 : "Split",
     "EDIT_MODE"             : "Super User Edit",
-    "EDIT" : {
-      "TITLE" : "Entering Posting Session",
-      "JUSTIFICATION" : "Please provide a justification for your edits.",
-      "MIN_CHARS" : "Minimum 10 characters",
-      "PIN" : "Enter your PIN to confirm your identity.",
-      "ID" : "Session ID",
-      "INVALID_PIN" : "This PIN is invalid.",
-      "ATTEMPTS_REMAINING" : "attempts remaining.",
-      "INVALID_SESSION" : "This session has expired due to too many invalid attempts.  Please see an administrator to reset your PIN or try again."
+    "EDIT"                  : {
+      "TITLE"               : "Entering Posting Session",
+      "JUSTIFICATION"       : "Please provide a justification for your edits.",
+      "MIN_CHARS"           : "Minimum 10 characters",
+      "PIN"                 : "Enter your PIN to confirm your identity.",
+      "ID"                  : "Session ID",
+      "INVALID_PIN"         : "This PIN is invalid.",
+      "ATTEMPTS_REMAINING"  : "attempts remaining.",
+      "INVALID_SESSION"     : "This session has expired due to too many invalid attempts.  Please see an administrator to reset your PIN or try again."
     }
   },
 
@@ -63,7 +65,7 @@
     "REVIEW"     : "Review Today's Rates",
     "TODAY_RATE" : "Exchange Rate for"
   },
- 
+
   "PROJECT"       : {
     "EDIT"        : "Editing Project",
     "NEW"         : "New Project",
@@ -114,6 +116,7 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
+    "BACK" : "Back",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
     "PROJECT"           : "Current Project",
@@ -291,7 +294,7 @@
     "COLUMNS"             : "Columns",
     "VISIT_DATE"          : "Last Visit",
     "TRANSACTION_ID"      : "Transaction ID",
-    "ENTERPRISE" : "Enterprise",
+    "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
     "RATE"                : "Rate",
     "LINE_ID"             : "Line ID",
@@ -964,5 +967,16 @@
     "ERR_HTTP"             : "Error changing debtor group",
     "ERR_MISSING"          : "Error no debtor selected",
     "SUCCESS"              : "Changing successfully"
+  },
+
+  "DASHBOARD" : {
+    "TITLE" : "Dashboards"
+  },
+
+  "SETTINGS" : {
+    "TITLE" : "BHIMA Settings",
+    "LANGUAGE" : "Language",
+    "LAST_PAGE" : "Last Page Visited",
+    "HOME_PAGE" : "Default Home Page"
   }
 }

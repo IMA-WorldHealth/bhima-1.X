@@ -5,15 +5,16 @@ angular.module('kpk.controllers')
   '$location',
   '$modal',
   '$filter',
+  '$timeout',
   'precision',
   'appcache',
   'connect',
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $translate, $location, $modal, $filter, precision, Appcache, connect, validate, appstate, messenger) {
+  function ($scope, $translate, $location, $modal, $filter, $timeout, precision, Appcache, connect, validate, appstate, messenger) {
     var dependencies = {};
-    var columns, options, dataview, grid, manager;
+    var columns, options, dataview, grid, manager, deleteColumn;
     var cache = new Appcache('journal.utilities');
 
     // Three modes : { "lock", "static", "edit" }
@@ -23,6 +24,7 @@ angular.module('kpk.controllers')
 
     $scope.aggregates = true;
     $scope.hasData = false;
+    $scope.filter = { by : {} };
 
     // TODO : both journal.utilities and journal.controls use this
     // table.  Use promises to share the data between the two controllers
@@ -70,6 +72,13 @@ angular.module('kpk.controllers')
       manager.session.authenticated = false;
       manager.session.mode = "static";
 
+      dataview.beginUpdate();
+      dataview.setFilter(filter);
+      dataview.setFilterArgs({
+        param : ''
+      });
+      dataview.endUpdate();
+
       // expose regrouping method to other scopes
       manager.fn.regroup = function () {
         if ($scope.grouping) { $scope.groupBy($scope.grouping); }
@@ -82,6 +91,33 @@ angular.module('kpk.controllers')
       manager.fn.resetManagerSession = function () {
         $scope.resetManagerSession();
       };
+
+      manager.fn.showDeleteButton = function () {
+        showDeleteButton();
+      };
+    }
+
+    function btnFormatter (row,cell,value,columnDef,dataContext) {
+      var id = dataContext.trans_id;
+      if (manager.session.transactionId === id) {
+        return "<div class='deleteRow' style='cursor: pointer;'><span class='glyphicon glyphicon-trash deleteRow'></span></div>";
+      }
+      return "";
+    }
+
+    deleteColumn = {
+      id        : 'deleteRecord',
+      field     : 'delete',
+      formatter : btnFormatter,
+      width: 10
+    };
+
+    function showDeleteButton () {
+      var columns = grid.getColumns();
+      var hasDeleteButton = columns.some(function (col) { return col.id === 'deleteRecord'; });
+      if (hasDeleteButton) { return; }
+      columns.push(deleteColumn);
+      grid.setColumns(columns);
     }
 
     function handleErrors (error) {
@@ -89,7 +125,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.removeGroup = function removeGroup () {
-      dataview.setGrouping({});
+      dataview.setGrouping();
     };
 
     $scope.trialBalance = function () {
@@ -127,6 +163,11 @@ angular.module('kpk.controllers')
         dataview.setGrouping({
           getter: "trans_id",
           formatter: formatTransactionGroup,
+          comparer : function (a, b) {
+            var x =  parseFloat(a.groupingKey.substr(3));
+            var y =  parseFloat(b.groupingKey.substr(3));
+            return x > y ? 1 : -1;
+          },
           aggregators: [
             new Slick.Data.Aggregators.Sum("debit"),
             new Slick.Data.Aggregators.Sum("credit"),
@@ -166,26 +207,32 @@ angular.module('kpk.controllers')
 
     function formatTransactionGroup(g) {
       var rowMarkup,
-          editTemplate = "",
-          firstRow = g.rows[0];
+          editTemplate = "";
+
+      var correctRow = g.rows.every(function (row) {
+        return row.trans_id === manager.session.transactionId;
+      });
 
       if (manager.session.mode === "lock") {
         editTemplate = "<div class='pull-right'><a class='editTransaction' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
       }
 
-      if (manager.session.mode === "edit" && firstRow.trans_id === manager.session.transactionId) {
+      if (manager.session.mode === "edit" && correctRow) {
         rowMarkup =
           "<span style='color: white;'>" +
-          "  <span style='color: white;' class='glyphicon glyphicon-pencil'> </span> " +
-          $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " "  + g.value + " (" + g.count + " records)" +
+          "  <span style='color: white;' class='glyphicon glyphicon-warning-sign'> </span> " +
+          $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " <strong>"  + g.value + "</strong> (" + g.count + " records)" +
           "</span> " +
-          "Total Transaction Credit: <b>" + $filter('currency')(manager.origin.credit_equiv) + "</b> " +
-          "Total Transaction Debit: <b>" + $filter('currency')(manager.origin.debit_equiv) + "</b> " +
-          "<div class='pull-right'>" +
-          "  <a class='addRow' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-plus'></span>  " + $translate('POSTING_JOURNAL.ADD_ROW') + "</a>" +
+          "<span class='pull-right'>" +
+          //"  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus'></span>  " + $translate('POSTING_JOURNAL.ADD_ROW') + "</a>" +
+          "  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus addRow'></span>  " + "</a>" +
           "  <span style='padding: 5px;'></span>" + // FIXME Hacked spacing;
-          "  <a class='save' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk'></span>  " + $translate('POSTING_JOURNAL.SAVE_TRANSACTION') + "</a>" +
-          "</div>";
+          //"  <a class='saveTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk'></span>  " + $translate('POSTING_JOURNAL.SAVE_TRANSACTION') + "</a>" +
+          "  <a class='save' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk saveTransaction'></span>  " + "</a>" +
+          "  <span style='padding: 5px;'></span>" + // FIXME Hacked spacing;
+          "  <a class='save' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-trash deleteTransaction'></span>  </a>" +
+          //"  <a class='deleteTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-trash'></span>  " + $translate('POSTING_JOURNAL.DELETE_TRANSACTION') + "</a>" +
+          "</span>";
         return rowMarkup;
       }
 
@@ -236,6 +283,7 @@ angular.module('kpk.controllers')
             manager.session.justification = result.justification;
             manager.session.mode = $scope.session.mode = "lock";
           }
+          manager.fn.regroup();
         })
         .catch(function () { messenger.warning('Edit session closed.'); });
       }
@@ -258,6 +306,41 @@ angular.module('kpk.controllers')
       $scope.aggregates =! $scope.aggregates;
       manager.fn.regroup();
     };
+
+    function genericFilter (item, args) {
+      if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
+        return true;
+      }
+      return false;
+    }
+
+    var filters =  {
+      'trans_id'       : genericFilter,
+      'id'             : genericFilter,
+      'fiscal_year_id' : genericFilter,
+      'period_id'      : genericFilter,
+      'description'    : genericFilter,
+      'account_number' : genericFilter
+    };
+
+    function filter (item, args) {
+      if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
+        return true;
+      }
+      return false;
+    }
+
+    $scope.updateFilter = function updateFilter () {
+      // TODO : make this update when there is no data in filter.param
+      if (!$scope.filter.param) { return; }
+      if (!$scope.filter.by) { return; }
+      dataview.setFilterArgs({
+        param : $scope.filter.param
+      });
+      dataview.refresh();
+    };
+
+    $scope.$watch('filter', $scope.updateFilter, true);
 
   }
 ]);

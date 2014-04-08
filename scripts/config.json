@@ -10,7 +10,7 @@
   },
   "log" : {
     "file" : "scripts/lib/database/db.log",
-    "headers" : ["Test Header 1", "Test Header 2"]
+    "headers" : ["BHIMA Tshikaji Log"]
   },
   "session" : {
     "secret" : "open blowfish"
@@ -20,8 +20,8 @@
       "/js",
       "/partials/invoice",
       "/assets",
-      "/css",
       "/data",
+      "/print",
       "/currentProject",
       "/trialbalance",
       "/reports",

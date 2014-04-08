@@ -33,10 +33,10 @@ angular.module('kpk.controllers')
 
       // set up grid properties
       columns = [
-        {id: 'uuid'          , name: $translate('COLUMNS.ID')             , field: 'uuid'           , sortable : true},
-        {id: 'fiscal_year_id', name: $translate('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true},
-        {id: 'period_id'     , name: $translate('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true},
-        {id: 'trans_id'      , name: $translate('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true},
+        {id: 'uuid'          , name: $translate('COLUMNS.ID')             , field: 'uuid'           , sortable : true },
+        {id: 'fiscal_year_id', name: $translate('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true },
+        {id: 'period_id'     , name: $translate('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
+        {id: 'trans_id'      , name: $translate('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true },
         {id: 'trans_date'    , name: $translate('COLUMNS.DATE')           , field: 'trans_date'     , formatter : formatDate, sortable: true},
         {id: 'description'   , name: $translate('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110 , editor: Slick.Editors.Text},
         {id: 'account_id'    , name: $translate('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true },
@@ -87,12 +87,6 @@ angular.module('kpk.controllers')
       dataview.onRowsChanged.subscribe(function (e, args) {
         grid.invalidateRows(args.rows);
         grid.render();
-      });
-
-      grid.onSelectedRowsChanged.subscribe(function (e, args) {
-        $scope.$apply(function () {
-          $scope.rows = args.rows;
-        });
       });
 
       grid.onCellChange.subscribe(function(e, args) {

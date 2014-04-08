@@ -597,7 +597,7 @@ create table `debitor` (
   `text`      text,
   primary key (`uuid`),
   key `group_uuid` (`group_uuid`),
-  constraint foreign key (`group_uuid`) references `debitor_group` (`uuid`)
+  constraint foreign key (`group_uuid`) references `debitor_group` (`uuid`) on delete cascade
 ) engine=innodb;
 
 --
@@ -663,7 +663,7 @@ create table `patient` (
   key `current_location_id` (`current_location_id`),
   unique key `creditor_uuid` (`creditor_uuid`),
   constraint foreign key (`project_id`) references `project` (`id`),
-  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`) on update cascade,
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`) on update cascade on delete cascade,
   constraint foreign key (`current_location_id`) references `village` (`uuid`) on update cascade,
   constraint foreign key (`origin_location_id`) references `village` (`uuid`) on update cascade
 ) engine=innodb;
@@ -908,6 +908,7 @@ create table `cash_item` (
 --
 -- Table structure for table `kpk`.`posting_session`
 --
+-- TODO : number of records posted 
 drop table if exists `posting_session`;
 create table `posting_session` (
   `id`        int unsigned not null auto_increment,
@@ -1063,7 +1064,6 @@ create table `group_invoice_item` (
   constraint foreign key (`payment_uuid`) references `group_invoice` (`uuid`) on delete cascade,
 	constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)) engine=innodb;
 
--- TODO Reference user table
 drop table if exists `journal_log`;
 create table `journal_log` (
   `uuid`            char(36) not null,

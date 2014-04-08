@@ -248,6 +248,10 @@
     .when('/update_stock', {
       controller : 'updateStock',
       templateUrl : 'partials/update_stock/update_stock.html'
+    })
+    .when('/pcash/transfert', {
+      controller : 'transfert',
+      templateUrl : 'partials/pcash/incomes/transfert/transfert.html'
     });
   }
 

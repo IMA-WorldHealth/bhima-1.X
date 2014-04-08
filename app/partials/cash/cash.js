@@ -130,7 +130,7 @@ angular.module('kpk.controllers')
     }
 
     function haltOnNoExchange () {
-      if (exchange.hasExchange()) { return; }
+      if (exchange.hasDailyRate()) { return; }
 
       var instance = $modal.open({
         templateUrl : 'noExchangeRate.html',

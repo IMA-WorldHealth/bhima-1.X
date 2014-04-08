@@ -24,7 +24,7 @@ module.exports = function (options) {
   function cdm (table, columns) {
     // creates a 'dot map' mapping on table
     // to multiple columns.
-    // e.g. `table`.`column1`, `table`.`column2` 
+    // e.g. `table`.`column1`, `table`.`column2`
     return columns.map(function (c) {
       return [table, '.', sanitize.escapeid(c)].join('');
     }).join(', ');
@@ -84,12 +84,13 @@ module.exports = function (options) {
     var templ = self.templates.delete,
         _id;
 
-    _id = util.isArray(id) ?
-      '(' + id.map(function (i) { return sanitize.escape(i); }).join(', ') + ')':
+    _id = id.split(',');  // FIXME: this is an unreasonable hack
+    _id = util.isArray(_id) ?
+      '(' + _id.map(function (i) { return sanitize.escape(i); }).join(', ') + ')':
       sanitize.escape(id);
 
     return templ.replace('%table%', sanitize.escapeid(table))
-                .replace('%key%', [sanitize.escapeid(column), util.isArray(id) ? 'IN' : '=', _id].join(' '));
+                .replace('%key%', [sanitize.escapeid(column), 'IN', _id].join(' '));
   };
 
   // update
@@ -196,14 +197,13 @@ module.exports = function (options) {
       null;
 
     var order;
-
     return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
-                .replace('%columns%', columns.join(', '))
-                .replace('%table%', table)
-                .replace('%conditions%', conditions)
-                .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
-                .replace(' ORDER BY %order%', order ? ' ORDER BY ' + order.join('.') : '')
-                .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
+      .replace('%columns%', columns.join(', '))
+      .replace('%table%', table)
+      .replace('%conditions%', conditions)
+      .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
+      .replace(' ORDER BY %order%', order ? ' ORDER BY ' + order.join('.') : '')
+      .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
   };
 
   return self;
