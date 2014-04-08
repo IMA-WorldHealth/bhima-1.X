@@ -479,7 +479,11 @@ module.exports = function (db, synthetic) {
 
     sql =
       "SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit " +
-      "FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN posting_journal AS p JOIN debitor AS d JOIN debitor_group as dg " +
+      "FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN " +
+        "(SELECT credit_equiv, debit_equiv, account_id, inv_po_id, deb_cred_uuid FROM posting_journal " +
+        "UNION " +
+        "SELECT credit_equiv, debit_equiv, account_id, inv_po_id, deb_cred_uuid FROM general_ledger) AS p " +
+      "JOIN debitor AS d JOIN debitor_group as dg " +
       "ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id AND p.deb_cred_uuid = s.debitor_uuid " +
       "AND  p.account_id = dg.account_id " +
       "AND d.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid WHERE c.uuid = " + sanitize.escape(cash_id) + " " +
@@ -1037,12 +1041,12 @@ module.exports = function (db, synthetic) {
           }
 
           var total = results.reduce(sum, 0);
-          console.log('[DEBUG] sum', total, 'cost', reference_note.cost);
+          //console.log('[DEBUG] sum', total, 'cost', reference_note.cost);
           var totalEquality = validate.isEqual(total, reference_note.cost);
-          if (!totalEquality) {
-            console.log('[DEBUG] ', 'sum of costs is not equal to the total');
+          //if (!totalEquality) {
+            //console.log('[DEBUG] ', 'sum of costs is not equal to the total');
             //return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
-          }
+          //}
 
           // all checks have passed - prepare for writing to the journal.
           get.origin('credit_note', function (err, originId) {
@@ -1110,24 +1114,24 @@ module.exports = function (db, synthetic) {
                 });
 
 
-                  db.execute(debtorQuery, function (err, rows) {
+                db.execute(debtorQuery, function (err, rows) {
+                  if(err) return done(err);
+
+                  q.all(itemsQuery.map(function (itemSql) {
+                    return db.exec(itemSql);
+                  })).then(function(result) {
+
+                    var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
+
                     if(err) return done(err);
 
-                    q.all(itemsQuery.map(function (itemSql) {
-                      return db.exec(itemSql);
-                    })).then(function(result) {
-
-                      var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
-
-                      if(err) return done(err);
-
-                      db.execute(sql, function (err, rows) {
-                        if (err) return done(err);
-                        done(null, rows);
-                        return;
-                      });
+                    db.execute(sql, function (err, rows) {
+                      if (err) return done(err);
+                      done(null, rows);
+                      return;
                     });
                   });
+                });
 
               });
             });
@@ -1209,7 +1213,7 @@ module.exports = function (db, synthetic) {
       .catch(function (err) {
         var discard = "DELETE FROM caution WHERE id = " + sanitize.escape(id) + ";";
         db.execute(discard, function(err, ans){
-          console.log('************** error annulation insertion', err);
+          //console.log('************** error annulation insertion', err);
           throw (new Error('un probleme'));
         });
       });
@@ -1262,28 +1266,28 @@ module.exports = function (db, synthetic) {
                   //console.log('notre dailyExchange est :', dailyExchange.rate, 'la somme est :', valueExchanged, 'total balance est :', total_balance);
 
                   if(valueExchanged <= total_balance ){
-                      var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
-                      var debitingRequest =
-                        'INSERT INTO posting_journal '+
-                        '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-                        'SELECT '+[
-                                    reference_pcash.enterprise_id,
-                                    periodObject.fiscal_year_id,
-                                    periodObject.period_id,
-                                    trans_id, '\''+get.date()+'\'', '\''+descrip+'\''
-                                 ].join(',')+', `cash_box_account_currency`.`pcash_account`, '+
-                                 [
-                                    0, reference_pcash.value,
-                                    0, valueExchanged,
-                                    reference_pcash.currency_id
-                                 ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
-                        'FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
-                        ' AND `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
-                      var creditingRequests = '';
-                      var creditingRequest;
-                      var i = 0;
+                    var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
+                    var debitingRequest =
+                      'INSERT INTO posting_journal '+
+                      '(`enterprise_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                      'SELECT '+[
+                                  reference_pcash.enterprise_id,
+                                  periodObject.fiscal_year_id,
+                                  periodObject.period_id,
+                                  trans_id, '\''+get.date()+'\'', '\''+descrip+'\''
+                                ].join(',')+', `cash_box_account_currency`.`pcash_account`, '+
+                                [
+                                  0, reference_pcash.value,
+                                  0, valueExchanged,
+                                  reference_pcash.currency_id
+                                ].join(',')+', null, null, '+[id, origin_id, user_id].join(',')+' '+
+                      'FROM `cash_box_account_currency` WHERE `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash.currency_id)+
+                      ' AND `cash_box_account_currency`.`enterprise_id`='+sanitize.escape(reference_pcash.enterprise_id)+';';
+                    var creditingRequests = '';
+                    var creditingRequest;
+                    var i = 0;
                       //console.log('[espion 0] valueExchanged - ans2[0] donne :', (valueExchanged-ans2[i].balance));
                       do{
                         if((valueExchanged-ans2[i].balance)>0) {
@@ -1360,7 +1364,7 @@ module.exports = function (db, synthetic) {
       }, function (err) {
         var discard = "DELETE FROM pcash WHERE id="+sanitize.escape(id);
         db.execute(discard, function(err, ans){
-          console.log('************** error annulation insertion', err);
+          //console.log('************** error annulation insertion', err);
           throw (new Error('un probleme'));
         });
       });

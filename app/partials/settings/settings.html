@@ -1,29 +1,30 @@
-<!-- <link href="partials/settings/settings.css" rel="stylesheet"> -->
-<header>KPK Settings </header>
+<header data-header>
+  {{ 'SETTINGS.TITLE' | translate }}
+</header>
 
-<div class="content"> 
+<div class="content">
 
   <div class="row">
     <div class="col-xs-5">
       <div class="form-group">
-      <label for="select-language">Language</label>
-      <select id="select-language" ng-model="settings.language" ng-change="updateLanguage(settings.language)" class="form-kapok">
-        <option value="en">English</option>
-        <option value="fr">French</option>
-        <option value="ln">Lingala</option>
-      </select>
+        <label for="select-language">{{ "SETTINGS.LANGUAGE" | translate }}</label>
+        <select id="select-language" ng-model="settings.language" ng-change="updateLanguage(settings.language)" class="form-kapok">
+          <option value="en">English</option>
+          <option value="fr">French</option>
+          <option value="ln">Lingala</option>
+        </select>
       </div>
 
       <div class="form-group">
-      <label for="select-default"></span> Default Home Page</label>
-      <select id="select-default" class="form-kapok">
-        <option selected>Last page visited</option>
-      </select>
+        <label for="select-default"></span> {{ "SETTINGS.HOME_PAGE" | translate }}</label>
+        <select id="select-default" class="form-kapok">
+          <option selected>{{ "SETTINGS.LAST_PAGE" | translate }}</option>
+        </select>
       </div>
     </div>
   </div>
 
-  <button ng-show="!!q" class="btn btn-default" ng-click="back()">Back</button>
+  <button ng-show="!!q" class="btn btn-default" ng-click="back()">{{ "UTIL.BACK" | translate }}</button>
 
 </div>
 

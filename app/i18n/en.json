@@ -116,6 +116,7 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
+    "BACK" : "Back",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
     "PROJECT"           : "Current Project",
@@ -966,5 +967,16 @@
     "ERR_HTTP"             : "Error changing debtor group",
     "ERR_MISSING"          : "Error no debtor selected",
     "SUCCESS"              : "Changing successfully"
+  },
+
+  "DASHBOARD" : {
+    "TITLE" : "Dashboards"
+  },
+
+  "SETTINGS" : {
+    "TITLE" : "BHIMA Settings",
+    "LANGUAGE" : "Language",
+    "LAST_PAGE" : "Last Page Visited",
+    "HOME_PAGE" : "Default Home Page"
   }
 }

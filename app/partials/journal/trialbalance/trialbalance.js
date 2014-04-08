@@ -28,11 +28,11 @@ angular.module('kpk.controllers')
     }
 
     $scope.submit = function submit () {
+      console.log('Submitting...', request.key);
       connect.fetch('/trialbalance/submit/'+ request.key +'/')
       .then(function () {
         $modalInstance.close();
       }, function (error) {
-        console.log('error', error);
         messenger.warning('Posting failed with ' +  JSON.stringify(error));
       });
     };

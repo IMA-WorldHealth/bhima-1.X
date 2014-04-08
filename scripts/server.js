@@ -124,7 +124,7 @@ app.get('/trialbalance/initialize', function (req, res, next) {
   });
 });
 
-app.get('/trailbalance/submit/:key/', function (req, res, next) {
+app.get('/trialbalance/submit/:key/', function (req, res, next) {
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
     if (err) return next(err);
     res.send(200);
