@@ -300,6 +300,7 @@
     "TRANSACTION_ID"      : "Transaction ID",
     "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
+    "REGISTERED_BY"       : "Registered By",
     "RATE"                : "Rate",
     "LINE_ID"             : "Line ID",
     "EXPLANATION"         : "Explanation",

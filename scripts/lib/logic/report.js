@@ -299,10 +299,11 @@ module.exports = function (db) {
 
     var sql =
       "SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, last_name, dob, father_name, " +
-          "sex, religion, renewal, registration_date, date " +
-        "FROM `patient` JOIN `patient_visit` JOIN `project` ON " +
+          "sex, religion, renewal, registration_date, date, CONCAT(user.first,' ',user.last) AS registrar " +
+        "FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON " +
           "`patient`.`uuid`=`patient_visit`.`patient_uuid` AND " +
-          "`patient`.`project_id`=`project`.`id` " +
+          "`patient`.`project_id`=`project`.`id` AND " +
+          "`patient_visit`.`registered_by` = `user`.`id` " +
         "WHERE `date` >= " + _start + " AND " +
           " `date` <= " + _end + " AND `project_id` IN (" + _id + ");";
     db.execute(sql, function (err, res) {
