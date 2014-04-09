@@ -31,32 +31,33 @@
     </ul>
   </div>
 
+  <div class="pull-right dropdown" style="padding-left:3px;">
+    <button class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!session.authenticated">
+      <span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate }}
+    </button>
+    <ul class="dropdown-menu">
+      <li class="dropdown-header">{{ 'UTIL.TOGGLE' | translate }} {{ 'UTIL.COLUMNS' | translate }}</li>
+      <li ng-repeat="column in columns">
+        <a ng-click="column.visible=!column.visible" href="">
+          <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></span> {{ column.name }}
+        </a>
+      </li>
+      <li class="dropdown-header">{{ 'UTIL.TOGGLE_AGGREGATES' | translate }}</li>
+      <li>
+        <a ng-click="toggleAggregates()" href="">
+          <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !aggregates, 'glyphicon-check' : !!aggregates }"></span> {{ 'UTIL.AGGREGATES' | translate }}
+        </a>
+      </li>
+    </ul>
+  </div>
+
   <div class="pull-right">
     <a class="btn btn-sm"  ng-class="{ 'btn-danger active' : !!session.authenticated, 'btn-default' : !session.authenticated }" ng-click="toggleEditMode()" ng-disabled="!hasData || session.mode=='edit'">
-      <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT_MODE' | translate }} 
+      <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT_MODE' | translate }}
     </a>
     <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-stats"></span> {{'POSTING_JOURNAL.TRIAL_BALANCE' | translate }}
     </a>
-    <span class="dropdown">
-      <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!session.authenticated">
-        <span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate }}
-      </button>
-      <ul class="dropdown-menu">
-        <li class="dropdown-header">{{ 'UTIL.TOGGLE' | translate }} {{ 'UTIL.COLUMNS' | translate }}</li>
-        <li ng-repeat="column in columns">
-          <a ng-click="column.visible=!column.visible" href="">
-            <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></span> {{ column.name }}
-          </a>
-        </li>
-        <li class="dropdown-header">{{ 'UTIL.TOGGLE_AGGREGATES' | translate }}</li>
-        <li>
-          <a ng-click="toggleAggregates()" href="">
-            <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !aggregates, 'glyphicon-check' : !!aggregates }"></span> {{ 'UTIL.AGGREGATES' | translate }}
-          </a>
-        </li>
-      </ul>
-    </span>
     <a class="btn btn-default btn-sm" ng-click="print()" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
     </a>
