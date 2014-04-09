@@ -411,6 +411,7 @@
     "USER_NAME"           : "Nom Utilisateur",
     "LAST_NAME"           : "Nom",
     "GROUP"               : "Groupe",
+    "REGISTERED_BY"       : "Enregistrer par",
     "ENTERPRISE_ID"       : "ID Enterprise",
     "ABBR"                : "Abbr.",
     "TRANSACTION_ID"      : "ID Transaction",
