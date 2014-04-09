@@ -396,3 +396,11 @@ a.danger {
 .creditInvoice a {
   color: #fff;
 }
+
+.priceReport {
+  border : none;
+}
+
+.priceReport .group-header th {
+  padding: 5px;
+}

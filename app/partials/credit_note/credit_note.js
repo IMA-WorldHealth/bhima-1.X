@@ -90,6 +90,8 @@ angular.module('kpk.controllers')
       // .then(function (result) {
       //   console.log('result', result);
       // });
+
+      noteObject.reference = 1;
    
       if($scope.model.creditNote.data.length >= 1) return messenger.danger("Invoice has already been reversed with credit");
       connect.basicPut('credit_note', [noteObject])
