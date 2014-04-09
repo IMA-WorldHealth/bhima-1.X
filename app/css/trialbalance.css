@@ -9,6 +9,10 @@
   width: 100%;
 }
 
+.modal-table-body table tr:hover {
+  background-color: rgba(255, 255, 255,0.75);
+}
+
 .modal-table table tr th,
 .modal-table table tr td {
   width: 20%;

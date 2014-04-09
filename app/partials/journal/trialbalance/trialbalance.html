@@ -3,7 +3,7 @@
     <h3>{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
     <div class="modal-icons">
       <label><span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
-      <label><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</label>
+      <label><a href="" ng-click="examineErrors()" ng-disabled="!errors.length"  ng-class="{ 'danger' : !!errors.length }"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</a></label>
       <label><span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}</label>
     </div>
     <div class="modal-print">

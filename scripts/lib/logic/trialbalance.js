@@ -242,7 +242,6 @@ module.exports = function (db) {
     .then(function (res) {
       // Next, we must move the data into the general ledger.
       var session_id = res.insertId;
-      console.log('SESSION ID', session_id);
       sql =
         'INSERT INTO `general_ledger` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
