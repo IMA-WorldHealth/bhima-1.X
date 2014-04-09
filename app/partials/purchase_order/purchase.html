@@ -26,7 +26,7 @@
           </div>
           <div class="form-group">
             <label for="select-cred">Supplier</label>
-            <select id="select-cred" ng-change="updateLocation(creditor)" ng-model="creditor" ng-options="formatCreditor(c) for c in creditor_model.data" class="form-kapok">
+            <select id="select-cred" ng-change="updateLocation(creditor)" ng-model="session.creditor" ng-options="c.name for c in creditor.data" class="form-kapok">
               <option value="" disabled="disabled">--Select Creditor--</option>
             </select>
           </div>
