@@ -110,6 +110,10 @@
       controller: 'reportFinance',
       templateUrl: 'partials/reports/finance/finance_report.html'
     })
+    .when('/reports/prices', {
+      controller : 'report.prices',
+      templateUrl : 'partials/reports/prices/prices.html'
+    })
     .when('/reports/transaction_report', {
       controller: 'reportTransactionController',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'

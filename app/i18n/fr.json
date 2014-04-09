@@ -506,6 +506,8 @@
     "CHART_OF_ACCOUNTS"     : "Plan Comptable",
     "NUMBER"                : "Numero",
     "DESCRIPTION"           : "Description",
+    "PRICES" : "Prix Stocks",
+    "CREATED_ON" : "Cree le",
     "FINANCE_REPORT"        : "Rapport Financiale",
     "REPORT_YEARS"          : "Annee Rapports",
     "ACCOUNT"               : "Compte",

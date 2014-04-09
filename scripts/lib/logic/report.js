@@ -411,20 +411,49 @@ module.exports = function (db) {
     return defer.promise;
   }
 
+  function priceReport (params) {
+    var sql, defer = q.defer();
+
+    sql =
+      "SELECT inventory.code, text, price, inventory_group.code AS group_code, name, price " +
+      "FROM inventory JOIN inventory_group WHERE inventory.group_uuid = inventory_group.uuid " +
+      "ORDER BY inventory_group.code;";
+
+    db.exec(sql)
+    .then(function (data) {
+      var groups = {};
+      data.forEach(function (row) {
+        if (!groups[row.group_code]) {
+          groups[row.group_code] = {};
+          groups[row.group_code].name = row.name;
+          groups[row.group_code].code = row.group_code;
+          groups[row.group_code].rows = [];
+        }
+        groups[row.group_code].rows.push(row);
+      });
+
+      defer.resolve(groups);
+    })
+    .catch(function (error) { defer.reject(error); });
+
+    return defer.promise;
+  }
+
 
   return function generate(request, params, done) {
     /*summary
     *   Route request for reports, if no report matches given request, return null
     */
     var route = {
-      'finance'          : finance,
-      'transReport'      : transReport,
-      'debitorAging'     : debitorAging,
-      'saleRecords'      : saleRecords,
-      'patients'         : patientRecords,
-      'payments'         : paymentRecords,
+      'finance'         : finance,
+      'transReport'     : transReport,
+      'debitorAging'    : debitorAging,
+      'saleRecords'     : saleRecords,
+      'patients'        : patientRecords,
+      'payments'        : paymentRecords,
       'patientStanding' : patientStanding,
-      'allTrans'         : allTrans
+      'allTrans'        : allTrans,
+      'prices'          : priceReport
     };
 
     route[request](params)
