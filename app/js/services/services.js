@@ -806,11 +806,6 @@
 
   }])
 
-  .server('errorCodes', function () {
-    return {
-    };
-  })
-
   .service('exchange', [
     '$timeout',
     'store',
