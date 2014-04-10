@@ -40,8 +40,8 @@
   <!-- required for printing to work properly... -->
   <div class="hidden-print">
     <div ng-controller="message" class="message-box" id="msg-box">
-      <alert id="message" ng-repeat="alert in messages" class="square" name="{{ alert.type }}" type="alert.type" close="close($index)">
-        <span ng-bind-html="alert.msg"></span>
+      <alert id="message" ng-repeat="alert in messages" class="square kpk-msg" name="{{ alert.type }}" type="alert.type" close="close($index)" ng-cloak>
+      <span><strong>{{ alert.msg }}</strong></span>
       </alert>
     </div>
   </div>
