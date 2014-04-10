@@ -252,6 +252,10 @@
     .when('/pcash/transfert', {
       controller : 'transfert',
       templateUrl : 'partials/pcash/incomes/transfert/transfert.html'
+    })
+    .when('/primary_cash/', {
+      controller : 'primaryCash',
+      templateUrl : 'partials/primary_cash/primary.html'
     });
   }
 
