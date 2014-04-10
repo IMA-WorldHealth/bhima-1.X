@@ -19,10 +19,6 @@
   padding: 5px;
 }
 
-.modal-table.success {
-  background-color: rgba(212,221,228,0.5);
-}
-
 .modal-table-head {
   position: absolute;
   top:0; left:0; right:0;
@@ -34,19 +30,11 @@
   padding: 8px;
 }
 
-.modal-table.success .modal-table-head {
-  background-color : rgb(0,63,130);
-}
-
 .modal-table-body {
   position: absolute;
   top:33px; bottom:30px; left:0; right:0;
   max-height: 350px;
   overflow: auto;
-}
-
-.modal-table.success .modal-table-body {
-  border-left : 6px solid rgba(0,63,130, 0.75);
 }
 
 .modal-table-foot {
@@ -79,3 +67,31 @@
 .modal-icons label {
   padding-left: 5px;
 }
+
+/* success / warning / error classes */
+
+.modal-table.success {
+  background-color: rgba(212,221,228,0.5);
+}
+
+.modal-table.error {
+  background-color : rgba(193,56,50,0.35);
+}
+
+
+.modal-table.success .modal-table-head {
+  background-color : rgb(0,63,130);
+}
+
+.modal-table.error .modal-table-head {
+  background-color : #8B0000;
+}
+
+.modal-table.success .modal-table-body {
+  border-left : 6px solid rgba(0,63,130, 0.75);
+}
+
+.modal-table.error .modal-table-body {
+  border-left : 6px solid rgba(160,45,45,0.75);
+}
+

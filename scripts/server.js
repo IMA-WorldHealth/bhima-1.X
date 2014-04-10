@@ -13,6 +13,7 @@ var parser       = require('./lib/database/parser')(),
     dblogger     = require('./lib/database/logger')(cfg.log),
     db           = require('./lib/database/db')(cfg.db, dblogger),
     sanitize     = require('./lib/util/sanitize'),
+    util         = require('./lib/util/util'),
     tree         = require('./lib/tree')(db),
     app          = express();
 
@@ -460,40 +461,42 @@ app.get('/synthetic/:goal/:project_id?', function (req, res, next) {
   });
 });
 
-app.get('/period/?', function (req, res, next) {
-  var query = JSON.parse(JSON.stringify(decodeURIComponent(url.parse(req.url).query)));
-  console.log('requette recues', query);
-  var sql = "SELECT * FROM period WHERE period_start<="+sanitize.escape(query)+" AND period_stop>="+sanitize.escape(query)+" LIMIT 1";
-  db.execute(sql, function (err, ans) {
-    if(err) throw err;
+app.get('/period/:date', function (req, res, next) {
+  var date = sanitize.escape(util.toMysqlDate(new Date(Number(req.params.date))));
+
+  var sql =
+    "SELECT id, fiscal_year_id FROM period " +
+    "WHERE period_start <= " + date + " AND period_stop >= " + date + " LIMIT 1";
+
+  db.exec(sql)
+  .then(function (ans) {
     res.send(ans);
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
-app.get('/max_trans/?', function (req, res, next) {
-  var project_id = JSON.parse(JSON.stringify(decodeURIComponent(url.parse(req.url).query)));
+app.get('/max_trans/:project_id', function (req, res, next) {
+  var project_id = sanitize.escape(req.params.project_id);
   var sql =
-        'SELECT abbr, max(increment) AS increment FROM (' +
-          'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-          'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-          'WHERE project_id = ' + project_id + ' ' +
-          'UNION ' +
-          'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-          'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-          'WHERE project_id = ' + project_id + ')c;';
-  db.execute(sql, function(err, ans){
-    if(err) throw err;
+    'SELECT abbr, max(increment) AS increment FROM (' +
+      'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+      'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
+      'WHERE project_id = ' + project_id + ' ' +
+      'UNION ' +
+      'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+      'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
+      'WHERE project_id = ' + project_id + ')c;';
+  db.exec(sql)
+  .then(function (ans) {
     res.send(ans);
-  });
-});
-
-app.get('/max_log/', function (req, res, next) {
-  var sql =
-        'SELECT max(uuid) + 1 AS increment FROM journal_log';
-  db.execute(sql, function(err, ans){
-    if(err) throw err;
-    res.send(ans);
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.get('/print/journal', function (req, res, next) {

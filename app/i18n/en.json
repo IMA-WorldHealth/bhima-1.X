@@ -301,6 +301,8 @@
     "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
     "REGISTERED_BY"       : "Registered By",
+    "CREDITOR"            : "Creditor",
+    "CREDITOR_ID"         : "Creditor ID",
     "RATE"                : "Rate",
     "LINE_ID"             : "Line ID",
     "EXPLANATION"         : "Explanation",
@@ -311,7 +313,6 @@
     "PASSWORD"            : "Password",
     "ID"                  : "ID",
     "USER_NAME"           : "User Name",
-    "CREDITOR_ID"         : "Creditor ID",
     "LAST_NAME"           : "Last Name",
     "GROUP"               : "Group",
     "INVOICE_DATE"        : "Invoice Date",
@@ -319,8 +320,9 @@
     "ACCOUNT_ID"          : "Account ID",
     "DEBITOR_NAME"        : "Debitor Name",
     "DEBITOR_TYPE"        : "Debitor Type",
-    "ACCOUNT"             : "Account",
+    "DEB_CRED_TYPE"       : "Debitor/Creditor Type",
     "COMMENT"             : "Comment",
+    "ACCOUNT"             : "Account",
     "PARENT"              : "Parent",
     "SEX"                 : "Sex",
     "DEBTOR"              : "Debtor",
@@ -456,7 +458,20 @@
     "CLIENT"                    : "Clients",
     "BENEFICIARY"               : "Beneficaries",
     "MAIN_CASH"                 : "Principal Cashbox",
-    "PROJECT" : "Projects"
+    "JOURNAL_VOUCHER"           : "Journal Voucher",
+    "PROJECT"                   : "Projects"
+  },
+
+  "JOURNAL_VOUCHER"  : {
+    "TITLE"                 : "Journal Voucher",
+    "ADD_ROW"               : "Add Line",
+    "POSTING_JOURNAL"       : "Posting Journal",
+    "TAB_LOCK_COLONNE"      : "Tab Lock Column",
+    "TAB_LOCK_LINE"         : "Tab Lock Line",
+    "SUBMIT"                : "Submit",
+    "DEFAULT_CURRENCY"      : "Default Currency",
+    "TRANS_ID"              : "Transaction ID",
+    "LOG"                   : "Log Journal ID"
   },
 
   "CAUTION"        : {
