@@ -806,6 +806,11 @@
 
   }])
 
+  .server('errorCodes', function () {
+    return {
+    };
+  })
+
   .service('exchange', [
     '$timeout',
     'store',
@@ -916,27 +921,6 @@
         return v.toString(16);
       });
     };
-  })
-
-  .service('pubsub', function () {
-    var subscriptions = {};
-
-    this.subscribe = function subscribe (channel, callback) {
-      if (!channel) { return; }
-    };
-
-    this.publish = function publish () {
-      var args = Array.prototype.slice.call(arguments),
-          channel = args.shift();
-      var route = subscriptions[channel];
-      if (route) { Function.prototype.apply(route, arguments); }
-    };
-    
-    this.unsusbscribe = function unsubscribe (fn) {
-      
-    };
-
-  
   })
 
   .factory('requestNotificationChannel', ['$rootScope', function($rootScope) {

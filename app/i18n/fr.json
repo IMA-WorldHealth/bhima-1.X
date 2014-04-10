@@ -962,8 +962,8 @@
       "DESCRIPTION"           : "Description",
       "SUBMIT"                : "Soumettre",
       "DEFAULT_CURRENCY"      : "Monnaie",
-      "TRANS_ID"              : "Transaction ID : ",
-      "LOG"                   : "Log Journal ID : "
+      "TRANS_ID"              : "Transaction ID ",
+      "LOG"                   : "Log Journal ID "
   },
 
   "TRANSFERT"        : {

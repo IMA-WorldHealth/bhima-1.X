@@ -1,147 +1,110 @@
-<header>
+<header data-header>
   {{ "JOURNAL_VOUCHER.TITLE" | translate }}
 </header>
 
 <section class="top-nav underline">
-  <div class="pull-right">
-    <a ng-click="toggleTablock()" class="btn btn-default">
-      <span ng-class="{'glyphicon-th': session.tablock===0, 'glyphicon-th-list' : session.tablock===-1}" class="glyphicon"></span> {{(session.tablock==-1) ? ("JOURNAL_VOUCHER.TAB_LOCK_LINE" | translate) : ("JOURNAL_VOUCHER.TAB_LOCK_COLONNE" | translate)}}
-    </a>
+  <div class="pull-left dropdown">
+    <button class="btn btn-sm btn-primary dropdown-toggle square">
+      {{ currencies.get(voucher.currency_id).symbol || "JOURNAL_VOUCHER.DEFAULT_CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu square">
+      <li ng-repeat="currency in currencies.data">
+        <a href="" ng-click="voucher.currency_id=currency.id">{{ currency.symbol }}</a>
+      </li>
+    </ul>
+  </div>
 
-    <a href="#/posting_journal" class="btn btn-default btn-sm">
+  <div class="pull-right">
+    <a href="#/posting_journal" class="btn btn-sm btn-default square">
       <span class="glyphicon glyphicon-tag"></span> {{ "JOURNAL_VOUCHER.POSTING_JOURNAL" | translate}}
     </a>
   </div>
-
-    <div style="position: absolute; left: 5px;">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
-        {{ currencies.get(selectedItem.id).symbol || "JOURNAL_VOUCHER.DEFAULT_CURRENCY" | translate }}
-        <span class="caret" data-caret="&#9660;"></span>
-      </button>
-      <ul class="dropdown-menu pull-left">
-        <li ng-repeat="item in currencies.data">
-          <a href="" ng-click="setCurrency(item)"> {{ currencies.get(item.id).symbol }} </a>
-        </li>
-      </ul>
 </section>
 
 <div class="content">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="pull-right">
-        <div><b>{{'JOURNAL_VOUCHER.TRANS_ID' | translate}}{{voucher.trans_id}}</b></div>
-        <div><b>{{'JOURNAL_VOUCHER.LOG' | translate}}{{voucher.log_id}}</b></div>
-    </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <form class="form-horizontal">
-          <div class="form-group">
-            <label class="col-xs-3">{{'JOURNAL_VOUCHER.DATE' | translate}}</label>
-            <div class="col-xs-9">
-              <input class="form-kapok" type="date" ng-model="voucher.trans_date" rows="20">
-              <!--input type="text" class="form-kapok"  value='{{voucher.trans_date | date}}' disabled="disabled"-->
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-xs-3">{{'JOURNAL_VOUCHER.DESCRIPTION' | translate}}</label>
-            <div class="col-xs-9">
-              <input type="text" ng-model="voucher.description" class="form-kapok"  min="10" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-xs-3">{{'COLUMNS.INVPO_ID' | translate}}</label>
-            <div class="col-xs-9">
-              <input type="text" ng-model="voucher.inv_po_id" class="form-kapok"  min="10" required>
-            </div>
-          </div>
-      </form>
-    </div>
-    <div class="col-xs-12">
-
-         <div class="row">
-
-            <div class="col-xs-12">
-                <div class="pull-right">
-                  <a ng-click="addRow()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> {{ "JOURNAL_VOUCHER.ADD_ROW" | translate }} </a>
-                </div>
-                <table class='table-condensed table'>
-                  <thead>
-                    <tr>
-                      <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                      <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
-                      <th>{{ "COLUMNS.DEBIT" | translate }}</th>
-                      <th>{{ "COLUMNS.CREDIT" | translate }}</th>
-                      <th>{{ "COLUMNS.DEBITOR" | translate }}/{{ "COLUMNS.CREDITOR" | translate }}</th>
-                      <th>{{ "COLUMNS.DC_TYPE" | translate }}</th>
-                      <th>{{ "COLUMNS.COMMENT" | translate }}</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr ng-class="{'incomplete-outline': !row.description || !row.account_id, 'complete-outline': row.description && row.account_id}" ng-repeat="row in voucher.rows">
-                      <td><input class="form-invoice" type="text" placeholder="Description" value="{{row.description}}" ng-model="row.description"></td>
-                      <td><input
-                        class="form-invoice"
-                        type="text"
-                        placeholder="Numero Compte"
-                        ng-model="row.account"
-                        typeahead-template-url="accountList.html"
-                        typeahead="account as account.account_number for account in accounts.data | filter:$viewValue | limitTo:8"
-                        placeholder="chercher Compte"
-                        ></td>
-                      <td><input class="form-invoice" type="number" value="{{row.debit}}" ng-model="row.debit"></td>
-                      <td><input class="form-invoice" type="number" value="{{row.credit}}" ng-model="row.credit"></td>
-                      <td><input
-                        class="form-invoice"
-                        ng-model="row.deb_cred_uuid"
-                        type="text"
-                        placeholder="Chercher Debiteur"
-                        value="{{row.deb_cred_uuid}}"
-                        typeahead-template-url="debitorList.html"
-                        typeahead="debitor.text as debitor.uuid for debitor in debitors.data | filter:$viewValue | limitTo:8"
-                        ></td>
-                      <td><input class="form-invoice" ng-model="row.deb_cred_type" type="text" placeholder="D ou C" value="{{row.deb_cred_type}}"></td>
-                      <td><input ng-model="row.comment" class="form-invoice" value="{{row.comment}}" placeholder="Commentaire"></td>
-                      <td><a ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
-                    </tr>
-
-                    <tr>
-                      <td style="text-align: left;"><b>Balance</b></td>
-                      <td colspan="2" style="margin-right = 50px; text-align: right;"><b>{{voucher.td}}{{selectedItem.symbol}}</b></td>
-                      <td colspan="3"><b>{{ voucher.tc}}{{selectedItem.symbol}}</b></td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
+  <div class="row col-xs-12">
+    <form class="form-horizontal">
+        <div class="form-group">
+          <label class="col-xs-3">{{ 'COLUMNS.DATE' | translate }}</label>
+          <div class="col-xs-9">
+            <input class="form-kapok" type="date" ng-model="voucher.trans_date" max="{{ today }}">
           </div>
         </div>
-      </div>
+
+        <div class="form-group">
+          <label class="col-xs-3">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
+          <div class="col-xs-9">
+            <input type="text" ng-model="voucher.description" class="form-kapok" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-3">{{'COLUMNS.INVPO_ID' | translate}}</label>
+          <div class="col-xs-9">
+            <input type="text" ng-model="voucher.inv_po_id" class="form-kapok"  min="10" required>
+          </div>
+        </div>
+    </form>
+  </div>
+  <div class="row col-xs-12">
+    <div class="pull-right">
+      <a ng-click="addRow()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> {{ "JOURNAL_VOUCHER.ADD_ROW" | translate }} </a>
     </div>
+    <table class='table table-condensed'>
+      <thead>
+        <tr>
+          <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
+          <th>{{ "COLUMNS.DEBIT" | translate }}</th>
+          <th>{{ "COLUMNS.CREDIT" | translate }}</th>
+          <th>{{ "COLUMNS.DEBITOR" | translate }}/{{ "COLUMNS.CREDITOR" | translate }}</th>
+          <th>{{ "COLUMNS.DC_TYPE" | translate }}</th>
+          <th>{{ "COLUMNS.COMMENT" | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in voucher.rows" ng-class="{ 'incomplete-outline': !row.description || !row.account_id, 'complete-outline' : !!row.account_id }">
+          <td>
+            <select class="form-kapok" ng-model="row.account_id">
+              <option value="{{ account.id }}" ng-repeat="account in accounts.data" ng-disabled="account.account_type_id==3">{{ account.account_number }} {{ account.account_txt }}</option>
+            </select>
+          </td>
+          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.debit"></td>
+          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.credit"></td>
+          <td><input class="form-invoice" type="text" placeholder="{{ 'COLUMNS.DEBITOR' | translate }} / {{ 'COLUMNS.CREDITOR' | translate }}" ng-model="row.deb_cred_uuid" typeahead-template-url="debitorList.html" typeahead="debitor.text as debitor.uuid for debitor in debitors.data | filter:$viewValue | limitTo:8"></td>
+          <td>
+            <!--
+            <select class="form-kapok" ng-model="row.deb_cred_type" ng-options="option for option in options">
+              <option disabled>{{ "SELECT.DEB_CRED_TYPE" | translate }}</option>
+            </select>
+            -->
+            <input class="form-invoice" type="text" placeholder="{{ 'COLUMNS.DEB_CRED_TYPE' | translate }}" ng-model="row.deb_cred_type">
+          </td>
+          <td><input class="form-invoice" type="text" placeholder="{{ 'COLUMNS.COMMENT' | translate }}" ng-model="row.comment" ></td>
+          <td ng-click="removeRow($index)" style="cursor: pointer; color: red;"><span class="glyphicon glyphicon-trash"></span></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="1">{{ "COLUMNS.BALANCE" | translate }}</th>
+          <th> {{ voucher.debitTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
+          <th colspan="5"> {{ voucher.creditTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
+        </tr>
+      </tfoot>
+    </table>
   </div>
 </div>
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "JOURNAL_VOUCHER.SUBMIT" | translate }}</a>
+    <a ng-disabled="!session.valid" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "JOURNAL_VOUCHER.SUBMIT" | translate }}</a>
   </div>
 </section>
-
-
-<script type="text/ng-template" id="accountList.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><i>{{match.model.account_number +'   '+ match.model.account_txt}}</i></span>
-  </a>
-</script>
 
 <script type="text/ng-template" id="debitorList.html">
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[{{match.model.text}}]</b></span>
+    <span><b>[ {{ match.model.text.split(' ').pop() }}]</b></span>
   </a>
 </script>
-

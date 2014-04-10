@@ -2,14 +2,15 @@ angular.module('kpk.controllers')
 .controller('trialBalance', [
   '$scope',
   '$modalInstance',
-  '$window',
+  '$location',
   'connect',
   'messenger',
   'request',
-  function ($scope, $modalInstance, $window, connect, messenger, request) {
-    var hasErrors = !!request.errors;
-
+  function ($scope, $modalInstance, $location, connect, messenger, request) {
     var session = $scope.session = {};
+    session.action = "hide";
+
+    console.log('request', request);
 
     $scope.errors = request.errors;
     $scope.transactions = request.transactions;
@@ -47,7 +48,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.print = function print () {
-      $window.print();
+      $location.path('/print/trialbalance');
     };
 
   }
