@@ -4,6 +4,4 @@ angular.module('kpk.controllers')
   $scope.messages = messenger.messages;
   $scope.close = messenger.close;
 
-  messenger.success('Wow!', 3000000);
-
 });

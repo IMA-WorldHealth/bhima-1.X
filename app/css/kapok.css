@@ -404,5 +404,7 @@ a.danger {
 .priceReport .group-header th {
   padding: 5px;
 }
-.kpk-msg 
 
+.kpk-msg {
+  padding: 5px 15px;
+}
