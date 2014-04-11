@@ -222,7 +222,8 @@
     "SOURCE"          : "Selectionner source",
     "CASH"            : "Caisse Auxillaire",
     "OTHER"           : "Autre Source",
-    "ENTERPRISE"      : "Selectionner Enterprise"
+    "ENTERPRISE" : "Selectionner Enterprise",
+    "PROJECT"    : "Proget"
   },
 
   "RENEWAL"           : {
