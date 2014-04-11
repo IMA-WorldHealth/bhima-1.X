@@ -15,6 +15,7 @@
     "GENERAL_LEDGER"        : "General Ledger",
     "DEBIT"                 : "Debit",
     "CREDIT"                : "Credit",
+    "REFRESH"               : "Refresh",
     "FISCAL_YEAR"           : "Fiscal Year",
     "ENTERPRISE"            : "Enterprise",
     "ENTERPRISE_MANAGEMENT" : "Enterprise Management",
