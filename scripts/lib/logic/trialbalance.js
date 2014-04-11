@@ -96,7 +96,7 @@ module.exports = function (db) {
       results.errors = errors;
 
       var sql =
-        "SELECT COUNT(uuid) AS `lines`, trans_id, trans_date FROM posting_journal GROUP BY trans_id;";
+        "SELECT COUNT(`uuid`) AS `lines`, `trans_id`, `trans_date` FROM posting_journal GROUP BY trans_id;";
       return db.exec(sql);
     })
     .then(function (rows) {
@@ -134,7 +134,7 @@ module.exports = function (db) {
   function areAccountsNull () {
     var d = q.defer();
     var sql =
-      'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id` ' +
+      'SELECT `uuid`, `trans_id` ' +
       'FROM `posting_journal` ' +
       'LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` ' +
       'WHERE `account`.`id` IS NULL;';
@@ -151,7 +151,7 @@ module.exports = function (db) {
   function areAllDatesValid () {
     var d = q.defer();
     var sql =
-      'SELECT `posting_journal`.`uuid`, `period_id`, `trans_date`, `period_start`, `period_stop` ' +
+      'SELECT `uuid`, `trans_id`, `period_id`, `trans_date`, `period_start`, `period_stop` ' +
       'FROM `posting_journal` JOIN `period` ' +
       'ON `posting_journal`.`period_id`=`period`.`id`;';
 
@@ -171,9 +171,9 @@ module.exports = function (db) {
   function areCostsBalanced () {
     var d = q.defer();
     var sql =
-      'SELECT `posting_journal`.`uuid`, sum(debit) as d, sum(credit) as c, ' +
-      'sum(debit_equiv) as de, sum(credit_equiv) as ce, `posting_journal`.`trans_id` ' +
-      'FROM posting_journal ' +
+      'SELECT `uuid`, `trans_id`, sum(`debit`) as d, sum(`credit`) as c, ' +
+      'sum(`debit_equiv`) as de, sum(`credit_equiv`) as ce  ' +
+      'FROM `posting_journal` ' +
       'GROUP BY `trans_id`;';
 
     db.execute(sql, function (err, rows) {
@@ -189,7 +189,7 @@ module.exports = function (db) {
   function areDebitorCreditorDefined () {
     var d = q.defer();
     var sql =
-      'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id` ' +
+      'SELECT `uuid`, `trans_id` ' +
       'FROM `posting_journal` ' +
       'WHERE NOT EXISTS (' +
         '(' +
