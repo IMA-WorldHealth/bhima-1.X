@@ -6,13 +6,12 @@ angular.module('kpk.controllers')
   'connect',
   'messenger',
   'request',
-  function ($scope, $modalInstance, $location, connect, messenger, request) {
+  'errorCodes',
+  'precision',
+  function ($scope, $modalInstance, $location, connect, messenger, request, errorCodes, precision) {
     var session = $scope.session = {};
     session.action = "hide";
 
-    console.log('request', request);
-
-    $scope.errors = request.errors;
     $scope.transactions = request.transactions;
     $scope.balances = request.balances;
     var total = $scope.total = {};
@@ -21,7 +20,7 @@ angular.module('kpk.controllers')
       total.before = (total.before || 0) + item.balance;
       total.debit = (total.debit || 0) + item.debit;
       total.credit = (total.credit || 0) + item.credit;
-      total.after = (total.after || 0) + item.balance + (item.credit - item.debit);
+      total.after = (total.after || 0) + item.balance + precision.round(item.credit - item.debit);
     });
 
     var dates = $scope.transactions.map(function (row) {
@@ -32,10 +31,13 @@ angular.module('kpk.controllers')
     session.min = Math.min.apply(Math.min, dates);
     session.count = $scope.transactions.reduce(function (a,b) { return a + b.lines; }, 0);
 
+    $scope.errors = request.errors.map(function (error) {
+      return angular.extend(errorCodes[error.code], {affectedRows : error.details});
+    });
+
     $scope.submit = function submit () {
       connect.fetch('/trialbalance/submit/'+ request.key +'/')
       .then(function (data) {
-        console.log("Server sent back data:", data);
         $modalInstance.close();
       })
       .catch(function (error) {

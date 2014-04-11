@@ -18,4 +18,13 @@ BHIMA Error Codes
 | ERR_AUTH_UNAUTHORIZED        | User is not authorized to perform this action.                                          |
 | ERR_AUTH_UNRECOGNIZED        | Invalid or unrecognized PIN registration.                                               |
 | ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
+| ERR_ACCOUNT_LOCKED           | Locked account(s) detected in transaction.                                                      |
+| ERR_ACCOUNT_NULL             | Authenticated session has expired.                                                      |
+| ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
+| ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
+| ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
+| ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
+| ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
+| ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
+| ERR_SESS_EXPIRED             | Authenticated session has expired.                                                      |
 --------------------------------------------------------------------------------------------------------------------------

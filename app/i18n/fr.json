@@ -54,10 +54,11 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configurer",
     "TOTAL"             : "Total",
-    "BACK" : "Retourner",
+    "BACK"              : "Retourner",
     "PROJECT"           : "Project",
     "PRINT"             : "Imprimer",
     "CREATE"            : "Creer",
+    "ERROR"             : "Erreur",
     "CANCEL"            : "Annuler",
     "ITEMS"             : "Articles",
     "TOGGLE"            : "Basculer",
@@ -149,17 +150,23 @@
     "CURRENCY_DEFN" : "Definition de la Monaie"
   },
 
-  "TRIAL_BALANCE" : {
-    "TITLE"       : "Rapprochement",
-    "ERROR_TEXT"  : "Vous avez des Erreurs!",
-    "ACCOUNT"     : "Compte",
-    "BEFORE"      : "Avant",
-    "AFTER"       : "Apres",
-    "DEBIT"       : "Debit",
-    "CREDIT"      : "Credit",
-    "BTN_TEXT"    : "Poster au Grand Livre",
-    "TRANSACTIONS" : "Transactions",
-    "ERRORS"       : "Erreurs"
+  "TRIAL_BALANCE"   : {
+    "TITLE"         : "Rapprochement",
+    "ERROR_TEXT"    : "Vous avez des Erreurs!",
+    "ACCOUNT"       : "Compte",
+    "BEFORE"        : "Avant",
+    "AFTER"         : "Apres",
+    "RESULTS"       : "Resultats",
+    "DEBIT"         : "Debit",
+    "SHOW"          : "Voire",
+    "HIDE"          : "Cacher",
+    "CREDIT"        : "Credit",
+    "BTN_TEXT"      : "Poster au Grand Livre",
+    "TRANSACTIONS"  : "Transactions",
+    "ERRORS"        : "Erreurs",
+    "ERROR"         : "Erreur",
+    "DESCRIPTION"   : "Description",
+    "AFFECTED_ROWS" : "Lignes"
   },
 
   "ERROR"                 : {
