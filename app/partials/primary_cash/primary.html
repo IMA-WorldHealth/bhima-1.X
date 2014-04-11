@@ -1,0 +1,59 @@
+<header>
+  {{ 'PRIMARY_CASH.TITLE' | translate }}
+</header>
+
+<section class="top-nav underline">
+  
+  <div class="pull-left" style="margin-top: 6px; padding-left: 4px;">
+    <span class="glyphicon glyphicon-home"></span> <a>{{ 'PRIMARY_CASH.HOME' | translate }}</a>
+  </div>
+
+  <div class="pull-right">
+    <select class="form-kapok" ng-model="session.cashbox" ng-options="cashbox.id as cashbox.text for cashbox in cashBox.data">
+
+    </select>
+  </div>
+  
+  <!-- FIXME style hack -->
+  <div 
+    class="pull-right"
+    style="padding-right: 10px; margin-top: 6px;">
+    {{ 'PRIMARY_CASH.CONFIGURE' | translate }} 
+  </div>
+
+</section>
+
+<div class="content">
+
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-import"></span> {{ 'PRIMARY_CASH.INCOME' | translate }}
+        </div>
+
+        <div class="panel-body">
+          
+          <ul class="primary_cash_list">
+            <li ng-repeat="item in configuration.income"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-default"> 
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-export"></span> {{ 'PRIMARY_CASH.EXPENSE' | translate }}
+        </div>
+
+        <div class="panel-body">
+          <ul class="primary_cash_list">
+            <li ng-repeat="item in configuration.expense"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -50,11 +50,10 @@
 						name="projectname"
 						id="projectID"
 						ng-model="data.project_id"
-						ng-change="resolve()"
+						ng-change="commitCash()"
 						>
-							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
-							<option value="0"> {{'SELECT.CASH' | translate}} </option>
-							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+							<option value="" disabled="disabled">-- {{'SELECT.PROJECT' | translate}} -- </option>
+							<option ng-repeat="project in view.project.data" value='{{project.id}}'>{{project.name}}</option>
 						</select>
 					</div>
 				</div>
@@ -69,11 +68,11 @@
 						class="form-kapok"
 						name="caissename"
 						id="caisseID"
-						ng-model="data.caisse_id"
+						ng-model="data.cash_box_id"
+						ng-change="commitConfig()"
 						>
-							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
-							<option value="0"> {{'SELECT.CASH' | translate}} </option>
-							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+							<option value="" disabled="disabled">-- {{'SELECT.CASH' | translate}} -- </option>
+							<option ng-repeat="cash in view.cash_box.data" value='{{cash.id}}'>{{cash.text}}</option>
 						</select>
 					</div>
 				</div>
@@ -88,11 +87,9 @@
 						class="form-kapok"
 						name="currencyname"
 						id="currencyID"
-						ng-model="data.currency_id"
+						ng-model="data.currency"
 						>
-							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
-							<option value="0"> {{'SELECT.CASH' | translate}} </option>
-							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+							<option ng-repeat="currency in model.currency.data" value='{{currency}}' ng-selected="{{currency.id==configuration.enterprise.currency_id}}">{{currency.symbol}}</option>
 						</select>
 					</div>
 				</div>
@@ -103,7 +100,7 @@
 				<div class="form-group">
 					<div class="input-group col-xs-8">
 						<input type="number" ng-model="data.value" class="form-kapok"  min="0" required>
-						<span class="input-group-addon"> {{ selectedItem.symbol}} </span>
+						<span class="input-group-addon">{{configuration.currency.symbol}}</span>
 					</div>
 				</div>
 					<button class="btn btn-default btn-success" ng-click="ajouter()" ng-disabled="form.$invalid" type="button">{{'FORM.ADD' | translate}}</button>
