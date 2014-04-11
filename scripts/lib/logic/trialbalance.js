@@ -122,8 +122,8 @@ module.exports = function (db) {
       'WHERE `account`.`locked`=1;';
 
     db.execute(sql, function (err, rows) {
-      if (err) { d.reject(new error('ERR_SQL', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-      if (rows.length) { d.reject(new error('ERR_ACCNT_LOCKED', 'There are transactions on locked accounts', rows)); }
+      if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+      if (rows.length) { d.reject(new error('ERR_ACCOUNT_LOCKED', 'There are transactions on locked accounts', rows)); }
       d.resolve();
     });
 
@@ -140,8 +140,8 @@ module.exports = function (db) {
       'WHERE `account`.`id` IS NULL;';
 
     db.execute(sql, function (err, rows) {
-      if (err) { d.reject(new error('ERR_SQL', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-      if (rows.length) { d.reject(new error('ERR_ACCNT_NULL', 'Invalid or undefined accounts detected', rows)); }
+      if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+      if (rows.length) { d.reject(new error('ERR_ACCOUNT_NULL', 'Invalid or undefined accounts detected', rows)); }
       d.resolve();
     });
 
@@ -156,11 +156,11 @@ module.exports = function (db) {
       'ON `posting_journal`.`period_id`=`period`.`id`;';
 
     db.execute(sql, function (err, rows) {
-      if (err) { d.reject(new error('ERR_SQL', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+      if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
       var outliers = rows.filter(function (row) {
         return !(new Date (row.trans_date) >= new Date(row.period_start) && new Date (row.trans_date) <= new Date(row.period_stop));
       });
-      if (outliers.length) { d.reject(new error('ERR_INVALID_DATE', 'The dates do not match the periods', outliers)); }
+      if (outliers.length) { d.reject(new error('ERR_TXN_UNRECOGNIZED_DATE', 'The dates do not match the periods', outliers)); }
 
       d.resolve();
     });
@@ -177,9 +177,9 @@ module.exports = function (db) {
       'GROUP BY `trans_id`;';
 
     db.execute(sql, function (err, rows) {
-      if (err) { d.reject(new error('ERR_SQL', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+      if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
       var outliers = rows.filter(function (row) { return row.de !== row.ce; });
-      if (outliers.length) { d.reject(new error('ERR_IMBALANCE', 'The debits and credits do not balance for some transactions', outliers)); }
+      if (outliers.length) { d.reject(new error('ERR_TXN_IMBALANCE', 'The debits and credits do not balance for some transactions', outliers)); }
       d.resolve();
     });
 
@@ -203,8 +203,8 @@ module.exports = function (db) {
       ');';
 
     db.execute(sql, function (err, rows) {
-      if (err) { d.reject(new error('ERR_SQL', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-      if (rows.length) { d.reject(new error('ERR_DEB_CRED_DNE', 'Debitor or creditors do not exist for some transcations')); }
+      if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+      if (rows.length) { d.reject(new error('ERR_TXN_UNRECOGNIZED_DC_UUID', 'Debitor or creditors do not exist for some transcations')); }
       d.resolve();
     });
 
@@ -216,7 +216,7 @@ module.exports = function (db) {
 
     return q(keys.validate(userId, key))
     .then(function (bool) {
-      if (!bool) { throw new error('ERR_EXPIRED_SESSION', 'Posting session expired', [], 'Refresh the trial balance'); }
+      if (!bool) { throw new error('ERR_SESS_EXPIRED', 'Posting session expired', [], 'Refresh the trial balance'); }
       return db.exec(sql);
     });
   }

@@ -9,104 +9,104 @@
     when('/budgeting/:accountID?', {
       controller: 'budgetController',
       templateUrl: 'partials/budget/budget.html'
-    }).
-    when('/project', {
+    })
+    .when('/project', {
       controller : 'project',
       templateUrl: 'partials/project/project.html'
-    }).
-    when('/permission', {
+    })
+    .when('/permission', {
       controller: 'permission',
       templateUrl: 'partials/user_permission/permissions.html'
-    }).
-    when('/enterprise', {
+    })
+    .when('/enterprise', {
       controller: 'enterprise',
       templateUrl: 'partials/enterprise/enterprise.html'
-    }).
-    when('/posting_journal', {
+    })
+    .when('/posting_journal', {
       controller: 'journal.grid',
       templateUrl:'partials/journal/journal.html'
-    }).
-    when('/projects', {
+    })
+    .when('/projects', {
       controller : 'project',
       templateUrl : 'partials/projects/projects.html'
-    }).
-    when('/fiscal', {
+    })
+    .when('/fiscal', {
       controller: 'fiscal',
       templateUrl: 'partials/fiscal/fiscal.html'
-    }).
-    when('/patient', {
+    })
+    .when('/patient', {
       controller: 'patientRegistration',
       templateUrl: 'partials/patient_registration/patient.html'
-    }).
-    when('/debitor/debitor_group', {
+    })
+    .when('/debitor/debitor_group', {
       controller : 'debitorGroup',
       templateUrl: 'partials/debitor/debitor_group.html'
-    }).
-    when('/journal_voucher', {
+    })
+    .when('/journal_voucher', {
       controller: 'journalVoucher',
       templateUrl: 'partials/journal_voucher/journal_voucher.html'
-    }).
-    when('/inventory', {
+    })
+    .when('/inventory', {
       controller: 'inventoryController',
       templateUrl: '/partials/inventory/inventory.html'
-    }).
-    when('/inventory/view', {
+    })
+    .when('/inventory/view', {
       controller : 'inventoryView',
       templateUrl:'/partials/inventory/view/view.html'
-    }).
-    when('/inventory/register', {
+    })
+    .when('/inventory/register', {
       controller: 'inventoryRegister',
       templateUrl: '/partials/inventory/register/register.html'
-    }).
-    when('/patient_records/:patientID?', {
+    })
+    .when('/patient_records/:patientID?', {
       controller: 'patientRecords',
       templateUrl: '/partials/records/patient_records/patient_records.html'
-    }).
-    when('/sales/:debtorID?/:inventoryID?', {
+    })
+    .when('/sales/:debtorID?/:inventoryID?', {
       controller: 'sales',
       templateUrl: '/partials/sales/sales.html'
-    }).
-    when('/sale_records/:recordID?', {
+    })
+    .when('/sale_records/:recordID?', {
       controller: 'salesRecords',
       templateUrl: '/partials/records/sales_records/sales_records.html'
-    }).
-    when('/cash', {
+    })
+    .when('/cash', {
       controller: 'cash',
       templateUrl: '/partials/cash/cash.html'
     })
     .when('/creditors', {
       controller: 'creditorsController',
       templateUrl: '/partials/creditor/creditor.html'
-    }).
-    when('/creditors/creditor_group', {
+    })
+    .when('/creditors/creditor_group', {
       controller: 'creditorGroupCtrl',
       templateUrl: 'partials/creditor/group/creditor_group.html'
-    }).
-    when('/inventory/purchase', {
+    })
+    .when('/inventory/purchase', {
       controller: 'purchaseOrderController',
       templateUrl: 'partials/purchase_order/purchase.html'
-    }).
-    when('/purchase_records/:purchaseID?', {
+    })
+    .when('/purchase_records/:purchaseID?', {
       controller: 'purchaseRecordsController',
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
-    }).
-    when('/inventory/price_list', {
+    })
+    .when('/inventory/price_list', {
       controller: 'priceList',
       templateUrl: 'partials/price_list/pricelist.html'
-    }).
-    when('/exchange_rate', {
+    })
+    .when('/exchange_rate', {
       controller : 'exchangeRateController',
       templateUrl: 'partials/exchange_rate/exchange_rate.html'
-    }).
-    when('/currency', {
+    })
+    .when('/currency', {
       controller : 'currency',
       templateUrl: 'partials/currency/currency.html'
-    }).
-    when('/create_account', {
+    })
+    .when('/create_account', {
       controller: 'manageAccount',
       templateUrl: 'partials/accounts/create_account/create.html'
-    }).
-    when('/reports/finance', {
+    })
+    .when('/reports/finance', {
       controller: 'reportFinance',
       templateUrl: 'partials/reports/finance/finance_report.html'
     })
@@ -125,20 +125,20 @@
     .when('/reports/ledger/general_ledger', {
       controller: 'reportGeneralLedger',
       templateUrl: '/partials/reports/ledger/general_ledger.html'
-    }).
-    when('/reports/summary', {
+    })
+    .when('/reports/summary', {
       controller: 'summaryController',
       templateUrl: 'partials/reports/summary/summary.html'
-    }).
-    when('/reports/debitor_aging/', {
+    })
+    .when('/reports/debitor_aging/', {
       controller: 'reportDebitorAging',
       templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
-    }).
-    when('/reports/account_statement/', {
+    })
+    .when('/reports/account_statement/', {
       controller: 'reportAccountStatement',
       templateUrl: 'partials/reports/account_statement/account_statement.html'
-    }).
-    when('/reports/income_expensive/', {
+    })
+    .when('/reports/income_expensive/', {
       controller: 'reportIncomeExpensive',
       templateUrl: 'partials/reports/income_expensive/income_expensive.html'
     })
@@ -150,11 +150,11 @@
       controller : 'village',
       templateUrl: 'partials/location/village/village.html'
     })
-     .when('/location/sector', {
+    .when('/location/sector', {
       controller : 'sector',
       templateUrl: 'partials/location/sector/sector.html'
     })
-     .when('/location/province', {
+    .when('/location/province', {
       controller : 'province',
       templateUrl: 'partials/location/province/province.html'
     })
@@ -176,28 +176,28 @@
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
-    }).
-    when('/invoice/:originId/:invoiceId', {
+    })
+    .when('/invoice/:originId/:invoiceId', {
       controller: 'invoice',
       templateUrl: 'partials/invoice/invoice.html'
-    }).
-    when('/credit_note/:invoiceId?/', {
+    })
+    .when('/credit_note/:invoiceId?/', {
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
-    }).
-    when('/cost_center', {
+    })
+    .when('/cost_center', {
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
-    }).
-    when('/cost_center/center/', {
+    })
+    .when('/cost_center/center/', {
       controller: 'analysisCenter',
       templateUrl: 'partials/cost_center/center/analysis_center.html'
-    }).
-    when('/cost_center/assigning/', {
+    })
+    .when('/cost_center/assigning/', {
       controller: 'assigning',
       templateUrl: 'partials/cost_center/assigning/assigning.html'
-    }).
-    when('/patient_group', {
+    })
+    .when('/patient_group', {
       controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'
     })

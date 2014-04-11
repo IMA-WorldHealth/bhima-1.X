@@ -92,17 +92,23 @@
     "SUPER"       : "Super User"
   },
 
-  "TRIAL_BALANCE"  : {
-    "TITLE"        : "Trial Balance",
-    "ERROR_TEXT"   : "Errors detected in the trial balance.",
-    "ACCOUNT"      : "Account",
-    "BEFORE"       : "Before",
-    "DEBIT"        : "Debit",
-    "CREDIT"       : "Credit",
-    "AFTER"        : "After",
-    "BTN_TEXT"     : "Post to General Ledger",
-    "TRANSACTIONS" : "Transactions",
-    "ERRORS"       : "Errors"
+  "TRIAL_BALANCE"   : {
+    "TITLE"         : "Trial Balance",
+    "ERROR_TEXT"    : "Errors detected in the trial balance.",
+    "ACCOUNT"       : "Account",
+    "RESULTS"       : "Results",
+    "BEFORE"        : "Before",
+    "DEBIT"         : "Debit",
+    "CREDIT"        : "Credit",
+    "AFTER"         : "After",
+    "SHOW"          : "Show",
+    "HIDE"          : "Hide",
+    "BTN_TEXT"      : "Post to General Ledger",
+    "TRANSACTIONS"  : "Transactions",
+    "ERRORS"        : "Errors",
+    "ERROR"         : "Error",
+    "DESCRIPTION"   : "Description",
+    "AFFECTED_ROWS" : "Affected Rows"
   },
 
   "ERROR"                 : {
@@ -118,10 +124,11 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
-    "BACK" : "Back",
+    "BACK"              : "Back",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
     "PROJECT"           : "Current Project",
+    "ERROR"             : "Error",
     "CANCEL"            : "Cancel",
     "ITEMS"             : "Items",
     "TOGGLE"            : "Toggle",
@@ -135,7 +142,7 @@
     "TOGGLE_AGGREGATES" : "Toggle Aggregates",
     "ON"                : "On",
     "OFF"               : "Off",
-    "AGGREGATES" : "Aggregates"
+    "AGGREGATES"        : "Aggregates"
   },
 
   "PATIENT_STANDING"     : {

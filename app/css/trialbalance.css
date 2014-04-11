@@ -68,6 +68,10 @@
   padding-left: 5px;
 }
 
+.modal-table-body .details {
+  font-size: 10px;
+}
+
 /* success / warning / error classes */
 
 .modal-table.success {
