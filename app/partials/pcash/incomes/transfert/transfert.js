@@ -8,10 +8,11 @@ angular.module('kpk.controllers')
   'appstate',
   'util',
   'exchange',
-  function ($scope, $q, connect, messenger, validate, appstate, util, exchange) {
+  'uuid',
+  function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid) {
 
     //inits and declarations
-    var dependencies = {}, configuration = {};
+    var dependencies = {}, configuration = {}, uuid = uuid();
     $scope.data= {};
 
     dependencies.project = {
@@ -180,30 +181,36 @@ angular.module('kpk.controllers')
       configuration.value = $scope.data.value;
        console.log('configuration', configuration);
       if(!isValid()) return;
-     // writeTransfer()
-      //.then(postToJournal);
-      //.then(postToJournal).then(success, error);
+     writeTransfer()
+      .then(postToJournal)
+      .then(function (prom){
+        console.log('la promesse', prom);
+
+      })
+      .catch(function (){
+        console.log('erreur');
+      });
     }
 
     function writeTransfer (){
       var pcash = {
-        uuid : uuid(),
+        uuid : uuid,
         project_id : configuration.project_id,
         type : 'E',
         date : util.convertToMysqlDate(new Date().toISOString().slice(0,10)),
         currency_id : configuration.currency.id,
-
         value : $scope.data.value,
         cashier_id : $scope.model.cashier.data.id,
-        description : 'CT'+new Date().toString(),
+        description : 'CT/'+new Date().toString(),
         istransfer : 1,
-        reference : 1,
-      };
+        account_id : configuration.cash_account_currency[0].account_id,
+        cash_box_id : 1
+      }
       return connect.basicPut('pcash', connect.clean(pcash));
     }
 
     function postToJournal (res) {
-      return connect.fetch('/journal/pcash/' + res.data.insertId);
+      return connect.fetch('/journal/pcash/' + uuid);
     }
 
     function commitConfiguration (){
