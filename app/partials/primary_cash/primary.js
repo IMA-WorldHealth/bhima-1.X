@@ -1,8 +1,9 @@
 angular.module('kpk.controllers')
 .controller('primaryCash', [
   '$scope',
+  '$location',
   'validate',
-  function ($scope, validate) { 
+  function ($scope, $location, validate) { 
     var dependencies = {}, session = $scope.session = {};
     var configuration = $scope.configuration = {};
 
@@ -19,6 +20,10 @@ angular.module('kpk.controllers')
       {
         key : 'PURCHASE',
         link : '/primary_cash/income/purchase/'
+      },
+      {
+        key : 'GENERIC_INCOME',
+        link : '/primary_cash/income/generic/'
       }
     ];
 
@@ -33,9 +38,17 @@ angular.module('kpk.controllers')
 
     function initialise(model) { 
       angular.extend($scope, model);
-      
+     
+      // Select default cashbox
       session.cashbox = model.cashBox.data[0].id;
     }
 
+    function loadPath(path) { 
+
+      //TODO validate both correct path and cashbox
+      $location.path(path + session.cashbox);
+    }
+
+    $scope.loadPath = loadPath;
   }
 ]);

@@ -35,7 +35,7 @@
         <div class="panel-body">
           
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.income"><a ng-href="{{item.link}}">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.income"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
           </ul>
         </div>
       </div>
@@ -49,7 +49,7 @@
 
         <div class="panel-body">
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.expense"><a ng-href="{{item.link}}">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.expense"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
           </ul>
 
         </div>
