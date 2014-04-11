@@ -125,36 +125,79 @@
         <div class="panel-heading">
           <span>Purchase Items</span>
           <!-- <a ng&#45;click="updateInventory()" class="pull&#45;right fieldset&#45;util"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }} </a> -->
-          <button disabled class="pull-right" ng-click="updateInventory()"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
+          <button ng-disabled="!session.creditor" class="pull-right" ng-click="addPurchaseItem()"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
 
         </div>
-
-        <table class="table table-condensed" ng-show="session.creditor">
+        
+        <table class=' table-condensed table' ng-if="session.creditor">
           <thead>
-          <tr>
-            <td class="invoice-item">Item</td>
-            <td class="invoice-desc">Description</td>
-            <td>Qty</td>
-            <td>Unit Price</td>
-            <td>Amount</td>
-          </tr>
+            <tr>
+              <th>{{ "COLUMNS.ITEM" | translate }}</th>
+              <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+              <th>{{ "COLUMNS.QTY" | translate }}</th>
+              <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+              <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+              <th></th>
+            </tr>
           </thead>
+
           <tbody>
-            <tr><td colspan="5">Not implemented</td></tr>
-          <!-- <tr ng&#45;repeat="item in inventory"> -->
-          <!--   <td class="invoice&#45;item"><select class="form&#45;invoice" ng&#45;change="updateItem(item)" ng&#45;model="item.item" -->
-          <!--                                    ng&#45;options="l.code for l in inventory_model.data"><option value="" disabled="disabled">&#45;&#45;Select Item&#45;&#45;</option></select></td> -->
-          <!--   <td class="invoice&#45;desc"><input type="text" class="form&#45;invoice" ng&#45;model="item.text"></td> -->
-          <!--   <td class="invoice&#45;quantity"><input type="number" class="form&#45;invoice" ng&#45;model="item.quantity"></td> -->
-          <!--   <td class="invoice&#45;price"><input type="number" class="form&#45;invoice" ng&#45;model="item.price"></td> -->
-          <!--   <td class="invoice&#45;amount"><span>{{item.quantity * item.price | currency}}</span></td> -->
-          <!-- </tr> -->
-          <!-- <tr> -->
-          <!--   <td colspan="4"></td> -->
-          <!--   <td><span><b>{{invoiceTotal() | currency}}</b></span></td> -->
-          <!-- </tr> -->
+            <!-- FIXME: strange filter -->
+            <tr ng-class="{'incomplete-outline': !purchaseItem.code, 'complete-outline': purchaseItem.code}" ng-repeat="purchaseItem in session.items">
+              <td>
+                <input
+                class="form-invoice"
+                type="text"
+                typeahead-template-url="invoiceListItem.html"
+                ng-model="purchaseItem.selectedReference"
+                typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory.data | filter:$viewValue | limitTo:8"
+                typeahead-on-select="updateInvoiceItem(purchaseItem, purchaseItem.selectedReference)"
+                placeholder="Search Inventory">
+              </td>
+
+              <!-- -1 for no tab, 0 to allow -->
+              <td><input ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.text}}"></td>
+              <td><input ng-change="cacheQuantity(purchaseItem)" tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.quantity"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.price"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.price | currency}}"></td>
+              <td><a ng-click="removeInvoiceItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+            
+            <tr>
+              <!-- Style hack -->
+              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "SALE.TOTAL" | translate }}</b></td>
+              <td colspan="2"><b>{{ calculateTotal().totalToPay | currency }}</b></td>
+            </tr>
+
           </tbody>
         </table>
+
+        <!-- <table class="table table&#45;condensed" ng&#45;show="session.creditor"> -->
+        <!--   <thead> -->
+        <!--   <tr> -->
+        <!--     <td class="invoice&#45;item">Item</td> -->
+        <!--     <td class="invoice&#45;desc">Description</td> -->
+        <!--     <td>Qty</td> -->
+        <!--     <td>Unit Price</td> -->
+        <!--     <td>Amount</td> -->
+        <!--   </tr> -->
+        <!--   </thead> -->
+        <!--   <tbody> -->
+        <!--     <tr><td colspan="5">Not implemented</td></tr> -->
+        <!--   <!&#45;&#45; <tr ng&#38;#45;repeat="item in inventory"> &#45;&#45;> -->
+        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;item"><select class="form&#38;#45;invoice" ng&#38;#45;change="updateItem(item)" ng&#38;#45;model="item.item" &#45;&#45;> -->
+        <!--   <!&#45;&#45;                                    ng&#38;#45;options="l.code for l in inventory_model.data"><option value="" disabled="disabled">&#38;#45;&#38;#45;Select Item&#38;#45;&#38;#45;</option></select></td> &#45;&#45;> -->
+        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;desc"><input type="text" class="form&#38;#45;invoice" ng&#38;#45;model="item.text"></td> &#45;&#45;> -->
+        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;quantity"><input type="number" class="form&#38;#45;invoice" ng&#38;#45;model="item.quantity"></td> &#45;&#45;> -->
+        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;price"><input type="number" class="form&#38;#45;invoice" ng&#38;#45;model="item.price"></td> &#45;&#45;> -->
+        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;amount"><span>{{item.quantity * item.price | currency}}</span></td> &#45;&#45;> -->
+        <!--   <!&#45;&#45; </tr> &#45;&#45;> -->
+        <!--   <!&#45;&#45; <tr> &#45;&#45;> -->
+        <!--   <!&#45;&#45;   <td colspan="4"></td> &#45;&#45;> -->
+        <!--   <!&#45;&#45;   <td><span><b>{{invoiceTotal() | currency}}</b></span></td> &#45;&#45;> -->
+        <!--   <!&#45;&#45; </tr> &#45;&#45;> -->
+        <!--   </tbody> -->
+        <!-- </table> -->
       </div>
     </div>
   </div>
@@ -166,3 +209,10 @@
     <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
   </div>
 </section>
+
+<script type="text/ng-template" id="invoiceListItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>

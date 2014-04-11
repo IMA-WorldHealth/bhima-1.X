@@ -74,6 +74,14 @@ angular.module('kpk.controllers')
       // Get creditors location
       session.location = $scope.creditorLocation.get(creditor.location_id);
       session.purchase.note = formatPurchaseDescription();
+      settupPurchase();
+    }
+
+    function settupPurchase() { 
+      // TODO ensure previous purchase is removed etc.
+      session.items = [
+      {}
+      ];
     }
   
     // FIXME
@@ -85,7 +93,7 @@ angular.module('kpk.controllers')
     }
 
     function addPurchaseItem() { 
-      session.items.push({});
+      session.items.push({val: 5});
     }
     
   //   function formatInvoice() {
