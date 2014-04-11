@@ -760,7 +760,7 @@
     };
   }])
 
-  .service('messenger', ['$timeout', '$sce', function ($timeout, $sce) {
+  .service('messenger', ['$timeout', '$sce', 'errorCodes', function ($timeout, $sce, errorCodes) {
     var self = this;
     self.messages = [];
     var indicies = {};
@@ -801,28 +801,87 @@
     // Future API
     // A blocking modal
     self.block = function (message, callback, errback) { };
-    // Appropriate error formatting
-    self.error = function (code, notes) {
-    };
 
+    var unknown_msg = "An unanticipated error occured.";
+    // Appropriate error formatting
+    self.error = function (code, timer) {
+      var msg = errorCodes[code] || unknown_msg;
+      self.push({ title : code, msg : msg, type: 'danger'}, timer || 5000);
+    };
   }])
 
   .service('errorCodes', function () {
     return {
-      'ERR_TXN_IMBALANCE'           : 'Imbalanced transaction(s) detected',
-      'ERR_TXN_ZERO'                : 'Invalid transaction(s) line missing both debit and credit amounts',
-      'ERR_TXN_CORRUPT_DATE'        : 'Corrupted date detected in transaction(s)',
-      'ERR_TXN_MULTI_DATE'          : 'Transaction dates do not agree.  Multiple dates detected for single transaction(s)',
-      'ERR_TXN_EMPTY_ACCOUNT'       : 'Empty account field detect in transaction(s)',
-      'ERR_TXN_EMPTY_DC_TYPE'       : 'Empty debitor/creditor type detected in transaction(s) with debitor/creditor id present',
-      'ERR_TXN_EMPTY_DC_UUID'       : 'Empty debitor/creditor ID detected in transaction(s) with debitor/creditor type present',
-      'ERR_TXN_UNRECOGNIZED_DATE'   : 'Unrecognized dates in transaction(s).  Dates do not fall within a valid fiscal year',
-      'ERR_TXN_UNRECOGNIZED_DC_UUID': 'Unrecognized debitor/creditor ID in transaction(s)',
-      'ERR_HTTP_UNREACHABLE'        : 'Server returned a 404 unreachable response.',
-      'ERR_HTTP_INTERNAL'           : 'Server returned a 500 internal error response.',
-      'ERR_AUTH_UNAUTHORIZED'       : 'User is not authorized to perform this action.',
-      'ERR_AUTH_UNRECOGNIZED'       : 'Invalid or unrecognized PIN registration.',
-      'ERR_SESS_EXPIRED'            : 'Authenticated session has expired.'
+      'ERR_TXN_IMBALANCE' : {
+        title             : 'Transaction Imbalance',
+        ref               : 'ERR_TXN_IMBALANCE',
+        description       : 'Imbalanced transaction(s) detected',
+      },
+      'ERR_TXN_ZERO' : {
+        title        : 'Zero-Valued Lines',
+        ref          : 'ERR_TXN_ZERO',
+        description  : 'Invalid transaction(s) line missing both debit and credit amounts',
+      },
+      'ERR_TXN_CORRUPT_DATE' : {
+        title                : 'Corrupt Transaction Date',
+        ref                  : 'ERR_TXN_CORRUPT_DATE',
+        description          : 'Corrupted date detected in transaction(s)',
+      },
+      'ERR_TXN_MULTI_DATE' : {
+        title              : 'Multiple Transaction Dates',
+        ref                : 'ERR_TXN_MULTI_DATE',
+        description        : 'Transaction dates do not agree.  Multiple dates detected for single transaction(s)',
+      },
+      'ERR_TXN_EMPTY_ACCOUNT' : {
+        title                 : 'Empty Transaction Account',
+        ref                   : 'ERR_TXN_EMPTY_ACCOUNT',
+        description           : 'Empty account field detect in transaction(s)',
+      },
+      'ERR_TXN_EMPTY_DC_TYPE' : {
+        ref                   : 'ERR_TXN_EMPTY_DC_TYPE',
+        title                 : 'Empty Debitor/Creditor Type',
+        description           : 'Empty debitor/creditor type detected in transaction(s) with debitor/creditor id present',
+      },
+      'ERR_TXN_EMPTY_DC_UUID' : {
+        ref                   : 'ERR_TXN_EMPTY_DC_UUID',
+        title                 : 'Empty Debitor/Creditor ID',
+        description           : 'Empty debitor/creditor ID detected in transaction(s) with debitor/creditor type present',
+      },
+      'ERR_TXN_UNRECOGNIZED_DATE' : {
+        ref                       : 'ERR_TXN_UNRECOGNIZED_DATE',
+        title                     : 'Unrecognized Transaction Date',
+        description               : 'Unrecognized dates in transaction(s).  Dates do not fall within a valid fiscal year',
+      },
+      'ERR_TXN_UNRECOGNIZED_DC_UUID' : {
+        ref                          : 'ERR_TXN_UNRECOGNIZED_DC_UUID',
+        title                        : 'Unrecognized Debitor/Creditor ID',
+        description                  : 'Unrecognized debitor/creditor ID in transaction(s)',
+      },
+      'ERR_HTTP_UNREACHABLE' : {
+        title                : 'Server Unreachable',
+        ref                  : 'ERR_HTTP_UNREACHABLE',
+        description          : 'Server returned a 404 unreachable response.',
+      },
+      'ERR_HTTP_INTERNAL' : {
+        title             : 'Internal Server Error',
+        ref               : 'ERR_HTTP_INTERNAL',
+        description       : 'Server returned a 500 internal error response.',
+      },
+      'ERR_AUTH_UNAUTHORIZED' : {
+        title                 : 'Authorized Access',
+        ref                   : 'ERR_AUTH_UNAUTHORIZED',
+        description           : 'User is not authorized to perform this action.',
+      },
+      'ERR_AUTH_UNRECOGNIZED' : {
+        title                 : 'Unrecognized User',
+        ref                   : 'ERR_AUTH_UNRECOGNIZED',
+        description           : 'Invalid or unrecognized PIN registration.',
+      },
+      'ERR_SESS_EXPIRED' : {
+        title            : 'Session Expired',
+        ref              : 'ERR_SESS_EXPIRED',
+        description      : 'Authenticated session has expired.'
+      }
     };
   })
 
