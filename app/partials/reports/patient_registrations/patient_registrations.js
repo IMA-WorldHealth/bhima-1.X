@@ -7,7 +7,7 @@ angular.module('kpk.controllers')
   'messenger',
   '$filter',
   function ($scope, validate, connect, appstate, messenger, $filter) {
-    var session = $scope.session = {};
+    var session = $scope.session = { count : {} };
     var dependencies = {};
     $scope.selected = null;
 
@@ -20,21 +20,6 @@ angular.module('kpk.controllers')
         }
       }
     };
-
-    $scope.options = [
-      {
-        label : 'CASH_PAYMENTS.DAY',
-        fn : day,
-      },
-      {
-        label : 'CASH_PAYMENTS.WEEK',
-        fn : week,
-      },
-      {
-        label : 'CASH_PAYMENTS.MONTH',
-        fn : month
-      }
-    ];
 
     function day () {
       session.dateFrom = new Date();
@@ -56,6 +41,21 @@ angular.module('kpk.controllers')
       reset();
     }
 
+    $scope.options = [
+      {
+        label : 'CASH_PAYMENTS.DAY',
+        fn : day,
+      },
+      {
+        label : 'CASH_PAYMENTS.WEEK',
+        fn : week,
+      },
+      {
+        label : 'CASH_PAYMENTS.MONTH',
+        fn : month
+      }
+    ];
+
     function formatDates () {
       session.dateFrom = $filter('date')(session.dateFrom, 'yyyy-MM-dd');
       session.dateTo = $filter('date')(session.dateTo, 'yyyy-MM-dd');
@@ -68,6 +68,7 @@ angular.module('kpk.controllers')
 
     function reset (p) {
       var req, url;
+      session.searching = true;
 
       // toggle off active
       session.active = !p;
@@ -88,6 +89,7 @@ angular.module('kpk.controllers')
       connect.fetch(url)
       .success(function (model) {
         $scope.patients = model;
+        session.searching = false;
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
@@ -110,6 +112,15 @@ angular.module('kpk.controllers')
         search($scope.options[0]);
       })
       .catch(handleErrors);
+    });
+
+    $scope.$watch('patients', function () {
+      if (!$scope.patients) { return; }
+      session.count.male = 0;
+      session.count.female = 0;
+      $scope.patients.forEach(function (p) {
+        session.count[p.sex === "M" ? "male" : "female" ] += 1;
+      });
     });
 
     $scope.search = search;
