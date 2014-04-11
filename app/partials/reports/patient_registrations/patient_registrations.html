@@ -61,13 +61,17 @@
               <td> {{ patient.registrar }}</td>
             </tr>
           </tbody>
-          <tfoot>
-            <tr>
-              <th colspan="8"> <span class="glyphicon glyphicon-user"></span> {{ patients.length }}</th>
-            </tr>
-          </tfoot>
         </table>
     </div>
   </div>
 </div>
 
+<section class="bar-bottom" style="background-color:#fff;">
+  <span style="margin-right: 10px;">
+  <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ patients.length }}</b>
+    <span ng-if="session.searching">...</span>
+  </span>
+
+  <span><b>M: {{ session.count.male }}</b></span>
+  <span><b>F: {{ session.count.female }}</b></span>
+</section>
