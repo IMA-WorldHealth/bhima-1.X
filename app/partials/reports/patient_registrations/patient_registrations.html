@@ -34,7 +34,7 @@
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ state.dateFrom | date }} - {{ state.dateTo | date }}</small></h4>
+      <h4>{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
         <table id="patientTable" class="reportTable">
           <thead>
             <tr>
@@ -45,6 +45,7 @@
               <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
               <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
               <th>{{ "COLUMNS.VISIT_DATE" | translate }}</th>
+              <th>{{ "COLUMNS.REGISTERED_BY" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -57,11 +58,12 @@
               <td ng-show="patient.expand"> <a href="" ng-click="patient.expand=!patient.expand">{{ patient.debitor_uuid }}</a></td>
               <td> {{ patient.registration_date | date }} </td>
               <td> {{ patient.date | date }} </td>
+              <td> {{ patient.registrar }}</td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
-              <th colspan="7">{{ "COLUMNS.TOTAL" | translate }} : {{ patients.length }}</th>
+              <th colspan="8"> <span class="glyphicon glyphicon-user"></span> {{ patients.length }}</th>
             </tr>
           </tfoot>
         </table>

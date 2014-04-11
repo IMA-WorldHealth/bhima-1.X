@@ -1,67 +1,50 @@
-<div class="modal-content">
+<div class="modal-content modal-lg square">
   <div class="modal-header">
-    <h3 style="display:inline;">{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
-    <span class="pull-right">
-      <a href="" class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
-    </span>
+    <h3>{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
+    <div class="modal-icons">
+      <label><span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
+      <label><a href="" ng-click="examineErrors()" ng-disabled="!errors.length"  ng-class="{ 'danger' : !!errors.length }"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</a></label>
+      <label><span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}</label>
+    </div>
+    <div class="modal-print">
+      <a href="" ng-click="print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
+    </div>
   </div>
 
-  <div class="modal-body" ng-switch="!!errors">
-
-    <div ng-switch-when="true">
-      <div class="alert alert-danger">
-        <h5>{{ 'TRIAL_BALANCE.ERROR_TEXT' | translate }}</h5>
-        <table ng-repeat="error in errors">
-          <tbody>
-            <tr ng-click="error.examine=!error.examine" style="cursor:pointer;">
-              <th><span class="glyphicon" ng-class="{'glyphicon-plus' : !error.examine, 'glyphicon-minus' : !!error.examine }"></span> </th>
-              <th>{{ "ERROR." + error.code | translate }}</th>
-              <td>{{ error.message }}.</td>
-            </tr>
-            <tbody ng-show="!!error.examine">
-              <tr>
-                <th></th>
-                <th>{{ "COLUMNS.TRANSACTION_ID" | translate }}</th>
-                <th>{{ "COLUMNS.LINE_ID" | translate }}</th>
-              </tr>
-              <tr ng-repeat="detail in error.details">
-                <th></th>
-                <th>{{ detail.trans_id }}</th>
-                <td>{{ detail.uuid }}</td>
-              </tr>
-            </tbody>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div ng-switch-when="false" style="max-height: 350px; overflow: auto;">
-      <table class="table table-bordered table-condensed" style="margin-bottom:0">
-        <thead>
-          <tr>
-            <th>{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
-            <th>{{ 'TRIAL_BALANCE.BEFORE' | translate }}</th>
-            <th>{{ 'TRIAL_BALANCE.DEBIT' | translate }}</th>
-            <th>{{ 'TRIAL_BALANCE.CREDIT' | translate }}</th>
-            <th>{{ 'TRIAL_BALANCE.AFTER' | translate }}</th>
-          </tr>
-        </thead>
+  <div class="modal-table success">
+    <table class="modal-table-head">
+      <thead>
+        <tr>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.BEFORE' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.DEBIT' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.CREDIT' | translate }}</th>
+          <th style="width:20%">{{ 'TRIAL_BALANCE.AFTER' | translate }}</th>
+        </tr>
+      </thead>
+    </table>
+    <div class="modal-table-body">
+      <table>
         <tbody>
-          <tr ng-repeat="account in data | orderBy:'account_number'">
-            <th>{{ account.account_number }}</th>
-            <td ng-bind-html="account.balance | intlcurrency:2"></td>
-            <td ng-bind-html="account.debit | intlcurrency:2"></td>
-            <td ng-bind-html="account.credit | intlcurrency:2"></td>
-            <td ng-bind-html="(account.balance + (account.credit-account.debit)) | intlcurrency:2"></td>
+          <tr ng-repeat="account in balances | orderBy:'account_number'">
+            <th style="width:20%" class="no-border">{{ account.account_number }}</th>
+            <td style="width:20%" ng-bind-html="account.balance | intlcurrency:2"></td>
+            <td style="width:20%" ng-bind-html="account.debit | intlcurrency:2"></td>
+            <td style="width:20%" ng-bind-html="account.credit | intlcurrency:2"></td>
+            <td style="width:20%" ng-bind-html="(account.balance + (account.credit-account.debit)) | intlcurrency:2"></td>
           </tr>
         </tbody>
+      </table>
+    </div>
+    <div class="modal-table-foot">
+      <table>
         <tfoot>
           <tr>
-            <th>{{ 'UTIL.TOTAL' | translate }}</th>
-            <th>{{total.before | currency }}</th>
-            <th>{{total.debit | currency }}</th>
-            <th>{{total.credit | currency }}</th>
-            <th>{{total.after | currency }}</th>
+            <th style="width:20%">{{ 'UTIL.TOTAL' | translate }}</th>
+            <th style="width:20%" ng-bind-html="total.before | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="total.debit | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="total.credit | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="total.after | intlcurrency:2"></th>
           </tr>
         </tfoot>
       </table>
@@ -69,7 +52,8 @@
   </div>
 
   <div class="modal-footer" style="margin-top: 0;">
-    <button class="btn btn-sm btn-success" ng-disabled="hasErrors" ng-click="submit()">{{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
-    <button class="btn btn-sm btn-default" ng-click="cancel()">{{ 'UTIL.CANCEL' | translate }}</button>
+    <button class="btn btn-sm btn-success square" ng-disabled="hasErrors" ng-click="submit()"><span class="glyphicon glyphicon-ok-circle"></span> {{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
+    <button class="btn btn-sm btn-default square" ng-click="cancel()"><span class="glyphicon glyphicon-ban-circle"></span> {{ 'UTIL.CANCEL' | translate }}</button>
   </div>
+
 </div>

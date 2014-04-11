@@ -87,11 +87,10 @@ module.exports = function (cfg, logger) {
     getSupportedDatabases : function() {
       return Object.keys(supported_databases);
     },
-    
+
     execute: function(sql, callback) {
       // This fxn is formated for mysql pooling, not in all generality
       console.log("[db] [execute]: ", sql);
-      logger.emit('log', sql);
 
       con.getConnection(function (err, connection) {
         if (err) { return callback(err); }
@@ -110,10 +109,8 @@ module.exports = function (cfg, logger) {
       console.log("[db] [execute]: ", sql);
       var defer = q.defer();
 
-      logger.emit('log', sql);
-
       con.getConnection(function (err, connection) {
-        if (err) { return defer.rejct(err); }
+        if (err) { return defer.reject(err); }
         connection.query(sql, function (err, results) {
           connection.release();
           if (err) { return defer.reject(err); }

@@ -49,8 +49,8 @@ create table `user` (
   `first`     text not null,
   `last`      text not null,
   `email`     varchar(100),
-  -- `pin`       char(4),
   `logged_in` boolean not null default 0,
+  `pin`       char(4) not null default 0,
   primary key (`id`)
 ) engine=innodb;
 

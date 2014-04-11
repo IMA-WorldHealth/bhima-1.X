@@ -299,10 +299,11 @@ module.exports = function (db) {
 
     var sql =
       "SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, last_name, dob, father_name, " +
-          "sex, religion, renewal, registration_date, date " +
-        "FROM `patient` JOIN `patient_visit` JOIN `project` ON " +
+          "sex, religion, renewal, registration_date, date, CONCAT(user.first,' ',user.last) AS registrar " +
+        "FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON " +
           "`patient`.`uuid`=`patient_visit`.`patient_uuid` AND " +
-          "`patient`.`project_id`=`project`.`id` " +
+          "`patient`.`project_id`=`project`.`id` AND " +
+          "`patient_visit`.`registered_by` = `user`.`id` " +
         "WHERE `date` >= " + _start + " AND " +
           " `date` <= " + _end + " AND `project_id` IN (" + _id + ");";
     db.execute(sql, function (err, res) {
@@ -411,20 +412,49 @@ module.exports = function (db) {
     return defer.promise;
   }
 
+  function priceReport (params) {
+    var sql, defer = q.defer();
+
+    sql =
+      "SELECT inventory.code, text, price, inventory_group.code AS group_code, name, price " +
+      "FROM inventory JOIN inventory_group WHERE inventory.group_uuid = inventory_group.uuid " +
+      "ORDER BY inventory_group.code;";
+
+    db.exec(sql)
+    .then(function (data) {
+      var groups = {};
+      data.forEach(function (row) {
+        if (!groups[row.group_code]) {
+          groups[row.group_code] = {};
+          groups[row.group_code].name = row.name;
+          groups[row.group_code].code = row.group_code;
+          groups[row.group_code].rows = [];
+        }
+        groups[row.group_code].rows.push(row);
+      });
+
+      defer.resolve(groups);
+    })
+    .catch(function (error) { defer.reject(error); });
+
+    return defer.promise;
+  }
+
 
   return function generate(request, params, done) {
     /*summary
     *   Route request for reports, if no report matches given request, return null
     */
     var route = {
-      'finance'          : finance,
-      'transReport'      : transReport,
-      'debitorAging'     : debitorAging,
-      'saleRecords'      : saleRecords,
-      'patients'         : patientRecords,
-      'payments'         : paymentRecords,
+      'finance'         : finance,
+      'transReport'     : transReport,
+      'debitorAging'    : debitorAging,
+      'saleRecords'     : saleRecords,
+      'patients'        : patientRecords,
+      'payments'        : paymentRecords,
       'patientStanding' : patientStanding,
-      'allTrans'         : allTrans
+      'allTrans'        : allTrans,
+      'prices'          : priceReport
     };
 
     route[request](params)

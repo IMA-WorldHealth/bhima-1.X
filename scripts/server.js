@@ -57,40 +57,54 @@ app.get('/', function (req, res, next) {
 app.get('/data/', function (req, res, next) {
   var decode = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(decode);
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.put('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-
   var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
 
-  db.execute(updatesql, function(err, ans) {
-    if (err) return next(err);
+  db.exec(updatesql)
+  .then(function (ans) {
     res.send(200, {insertId: ans.insertId});
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.post('/data/', function (req, res, next) {
   // TODO: change the client to stop packaging data in an array...
-
   var insertsql = parser.insert(req.body.table, req.body.data);
 
-  db.execute(insertsql, function (err, ans) {
-    if (err) return next(err);
+  db.exec(insertsql)
+  .then(function (ans) {
     res.send(200, {insertId: ans.insertId});
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.delete('/data/:table/:column/:value', function (req, res, next) {
   var sql = parser.delete(req.params.table, req.params.column, req.params.value);
-  db.execute(sql, function (err, ans) {
-    if (err) return next(err);
+  db.exec(sql)
+  .then(function (ans) {
     res.send(200);
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.post('/sale/', function (req, res, next) {
@@ -119,16 +133,20 @@ app.get('/user_session', function (req, res, next) {
 
 app.get('/trialbalance/initialize', function (req, res, next) {
   trialbalance.run(req.session.user_id, function (err, result) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(200, result);
   });
 });
 
 app.get('/trialbalance/submit/:key/', function (req, res, next) {
-  trialbalance.postToGeneralLedger(req.session.user_id, req.params.key, function (err, result) {
-    if (err) return next(err);
+  trialbalance.postToGeneralLedger(req.session.user_id, req.params.key)
+  .then(function (result) {
     res.send(200);
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.get('/editsession/authenticate/:pin', function (req, res, next) {
@@ -141,7 +159,8 @@ app.get('/editsession/authenticate/:pin', function (req, res, next) {
   })
   .catch(function (err) {
     next(err);
-  });
+  })
+  .done();
 });
 
 app.get('/journal/:table/:id', function (req, res, next) {
@@ -153,7 +172,7 @@ app.get('/journal/:table/:id', function (req, res, next) {
 });
 
 //FIXME receive any number of tables using regex
-app.get('/max/:id/:table/:join?', function(req, res) {
+app.get('/max/:id/:table/:join?', function(req, res, next) {
   var id = req.params.id, table = req.params.table, join = req.params.join;
 
   var max_request = "SELECT MAX(" + id + ") FROM ";
@@ -186,7 +205,7 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   .done();
 });
 
-app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res) {
+app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res, next) {
   var enterprise = req.params.enterprise;
   var startDate = req.params.startDate;
   var endDate = req.params.endDate;
@@ -408,7 +427,8 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
   })
   .catch(function (err) {
     next(err);
-  });
+  })
+  .done();
 });
 
 app.get('/account_balance/:id', function (req, res, next) {
@@ -444,7 +464,7 @@ app.get('/period/?', function (req, res, next) {
   var query = JSON.parse(JSON.stringify(decodeURIComponent(url.parse(req.url).query)));
   console.log('requette recues', query);
   var sql = "SELECT * FROM period WHERE period_start<="+sanitize.escape(query)+" AND period_stop>="+sanitize.escape(query)+" LIMIT 1";
-  db.execute(sql, function(err, ans){
+  db.execute(sql, function (err, ans) {
     if(err) throw err;
     res.send(ans);
   });

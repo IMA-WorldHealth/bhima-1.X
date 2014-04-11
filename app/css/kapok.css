@@ -330,7 +330,7 @@ div .reportFrame {
   position: absolute;
   margin-right: 0.5%; /* .5 to pad nicely */
   width: 25%;
-  z-index: 998;
+  z-index: 1175;
   top: 0.5%;
 }
 
@@ -389,14 +389,18 @@ a.danger {
   border: 1px solid #eed3d7;
 }
 
-.menu-sq {
-  border-radius : 0;
-}
-
-.btn-sq {
-  border-radius: 0;
+.square {
+  border-radius :0;
 }
 
 .creditInvoice a {
   color: #fff;
+}
+
+.priceReport {
+  border : none;
+}
+
+.priceReport .group-header th {
+  padding: 5px;
 }

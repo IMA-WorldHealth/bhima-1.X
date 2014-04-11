@@ -33,7 +33,7 @@
       "ID"                  : "ID Session",
       "INVALID_PIN"         : "Ce PIN est invalide.",
       "ATTEMPTS_REMAINING"  : "essais restants.",
-      "INVALID_SESSION"     : "La session est expirer a cause de authentification manquant. S'il vous plait, reessayer ou demander une administrateur remettre un place votre PIN."
+      "INVALID_SESSION"     : "La session  etait terminer a cause de authentification manquant. S'il vous plait, reessayer ou demander une administrateur remettre un place votre PIN."
     }
   },
 
@@ -43,11 +43,11 @@
     "DEFAULTS"      : "Utilizer Default (0)"
   },
 
-  "NO_EXCHANGE" : {
-    "TITLE" : "Il n'y a pas un taux",
-    "EXPLANATION" : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui.",
+  "NO_EXCHANGE"    : {
+    "TITLE"        : "Il n'y a pas un taux",
+    "EXPLANATION"  : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui.",
     "CURRENT_DATE" : "Date",
-    "FIX" : "Entrer dans le module et enregistrer un taux de jour.",
+    "FIX"          : "Entrer dans le module et enregistrer un taux de jour.",
     "SET_NEW_RATE" : "Soumettre un nouveau taux"
   },
 
@@ -157,16 +157,18 @@
     "AFTER"       : "Apres",
     "DEBIT"       : "Debit",
     "CREDIT"      : "Credit",
-    "BTN_TEXT"    : "Poster au Grand Livre"
+    "BTN_TEXT"    : "Poster au Grand Livre",
+    "TRANSACTIONS" : "Transactions",
+    "ERRORS"       : "Erreurs"
   },
 
-  "ERROR" : {
-    "ERR_IMBALANCE" : "Imbalance Erreur",
-    "ERR_SQL" : "SQL Erreur",
-    "ERR_ACCNT_LOCKED" : "Erreur Compte Barre",
-    "ERR_ACCNT_NULL" : "Erreur Compte NULL",
-    "ERR_INVALID_DATE" : "Erreur Date Invalid",
-    "ERR_DEB_CRED_DNE" : "Erreur Debiteur/Crediteur N'Existe Pas",
+  "ERROR"                 : {
+    "ERR_IMBALANCE"       : "Imbalance Erreur",
+    "ERR_SQL"             : "SQL Erreur",
+    "ERR_ACCNT_LOCKED"    : "Erreur Compte Barre",
+    "ERR_ACCNT_NULL"      : "Erreur Compte NULL",
+    "ERR_INVALID_DATE"    : "Erreur Date Invalid",
+    "ERR_DEB_CRED_DNE"    : "Erreur Debiteur/Crediteur N'Existe Pas",
     "ERR_EXPIRED_SESSION" : "Erreur Session Expirer"
   },
 
@@ -220,7 +222,7 @@
     "SOURCE"          : "Selectionner source",
     "CASH"            : "Caisse Auxillaire",
     "OTHER"           : "Autre Source",
-    "ENTERPRISE" : "Selectionner Enterprise"
+    "ENTERPRISE"      : "Selectionner Enterprise"
   },
 
   "RENEWAL"           : {
@@ -354,18 +356,18 @@
     "ALL_PROJECTS" : "Tous Projets"
   },
 
-  "PATIENT_RECORDS"   : {
-    "TITLE"           : "Historique des Malades",
-    "ADVANCED_SEARCH" : "Recherche Detaillee",
-    "FIRST_NAME"      : "Prenom",
-    "LAST_NAME"       : "Nom",
-    "YOB"             : "Annee de Naissance",
-    "SEX"             : "Sex",
-    "MALE"            : "Homme",
-    "FEMALE"          : "Femme",
-    "SEARCH"          : "Executer",
-    "VIEW_ALL"        : "Voire Tous Malades",
-    "RESULTS"         : "Resultats",
+  "PATIENT_RECORDS"     : {
+    "TITLE"             : "Historique des Malades",
+    "ADVANCED_SEARCH"   : "Recherche Detaillee",
+    "FIRST_NAME"        : "Prenom",
+    "LAST_NAME"         : "Nom",
+    "YOB"               : "Annee de Naissance",
+    "SEX"               : "Sex",
+    "MALE"              : "Homme",
+    "FEMALE"            : "Femme",
+    "SEARCH"            : "Executer",
+    "VIEW_ALL"          : "Voire Tous Malades",
+    "RESULTS"           : "Resultats",
     "VIEW_PATIENT_CARD" : "Carte de Malade"
   },
 
@@ -409,6 +411,7 @@
     "USER_NAME"           : "Nom Utilisateur",
     "LAST_NAME"           : "Nom",
     "GROUP"               : "Groupe",
+    "REGISTERED_BY"       : "Enregistrer par",
     "ENTERPRISE_ID"       : "ID Enterprise",
     "ABBR"                : "Abbr.",
     "TRANSACTION_ID"      : "ID Transaction",
@@ -504,6 +507,8 @@
     "CHART_OF_ACCOUNTS"     : "Plan Comptable",
     "NUMBER"                : "Numero",
     "DESCRIPTION"           : "Description",
+    "PRICES" : "Prix Stocks",
+    "CREATED_ON" : "Cree le",
     "FINANCE_REPORT"        : "Rapport Financiale",
     "REPORT_YEARS"          : "Annee Rapports",
     "ACCOUNT"               : "Compte",
@@ -616,13 +621,13 @@
     "REGISTER"     : "Enregistre Stocks"
   },
 
-  "PROJECT"    : {
-    "EDIT"     : "Editer",
-    "NEW"      : "Nouveux",
-    "EXISTING" : "Projects Existant",
-    "TITLE"    : "Gestion des Projects",
+  "PROJECT"       : {
+    "EDIT"        : "Editer",
+    "NEW"         : "Nouveux",
+    "EXISTING"    : "Projects Existant",
+    "TITLE"       : "Gestion des Projects",
     "PRINT_TITLE" : "Projects Enregistrer",
-    "HELP_TXT_1" : "Ce module vous permettre faire la gestion des projects.  Vous voyez seulment les projects qui concern votre enterprise."
+    "HELP_TXT_1"  : "Ce module vous permettre faire la gestion des projects.  Vous voyez seulment les projects qui concern votre enterprise."
   },
 
   "PERMISSION"    : {
