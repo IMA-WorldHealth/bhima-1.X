@@ -98,7 +98,7 @@
   })
 
   //TODO passing list and dependencies to everything, could assign to object?
-  .factory('validate', function($q, connect) {
+  .factory('validate', ['$q', 'connect', function($q, connect) {
     var modelLabel = 'model';
 
     var validateTests = [
@@ -203,7 +203,7 @@
       "fiscal" : {method: testRequiredModel, args: ["fiscal_year"], result: null}
     };
 
-    function testRequiredModel(tableName, primaryKey) {
+    function testRequiredModel (tableName, primaryKey) {
       var deferred = $q.defer();
       var testDataQuery = {
         tables : {}
@@ -255,9 +255,9 @@
       process : process,
       refresh : refresh
     };
-  })
+  }])
 
-  .factory('appcache', function ($rootScope, $q) {
+  .factory('appcache', ['$rootScope', '$q', function ($rootScope, $q) {
     var DB_NAME = "kpk", VERSION = 21;
     var db, cacheSupported, dbdefer = $q.defer();
 
@@ -285,7 +285,7 @@
     //generic request method allow all calls to be queued if the database is not initialised
     function request(method) {
       console.log(method, arguments);
-      if(!requestMap[method]) return false;
+      if (!requestMap[method]) return false;
       requestMap[method](value);
     }
 
@@ -357,10 +357,12 @@
 
         request.onsuccess = function(event) {
           deferred.resolve(event);
-        }
+        };
+
         request.onerror = function(event) {
           deferred.reject(event);
-        }
+        };
+
       });
       return deferred.promise;
     }
@@ -429,7 +431,7 @@
       console.log('application cache is not supported in this context');
     }
     return cacheInstance;
-  })
+  }])
 
   .factory('appstate', function ($q, $rootScope) {
     //TODO Use promise structure over callbacks, used throughout the application and enables error handling
@@ -588,7 +590,7 @@
     };
   }])
 
-  .factory('connect', function ($http, $q, store) {
+  .factory('connect', [ '$http', '$q', 'store', function ($http, $q, Store) {
     //summary:
     //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
     //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
@@ -623,26 +625,13 @@
       //
       //  where conditions can also be specified:
       //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
-      /*
-      if (angular.isString(defn)) {
-        // CLEAN THIS UP
-        var d = $q.defer();
-        $http.get(defn).then(function (returned) {
-          returned.identifier = stringIdentifier || 'id';
-          d.resolve(new store(returned));
-        }, function (err) {
-          throw err; // temporary
-        });
-        return d.promise;
-      }
-     */
       var handle, table, deferred = $q.defer();
 
       if (angular.isString(defn)) {
         $http.get(defn)
         .then(function (res) {
           res.identifier = stringIdentifier || 'id';
-          deferred.resolve(new store(res));
+          deferred.resolve(new Store(res));
         }, function (err) {
           throw err;
         });
@@ -656,7 +645,7 @@
 
         //massive hack so I can use an identifier - set default identifier
         returned.identifier = defn.identifier || 'id';
-        var m = new store(returned, table);
+        var m = new Store(returned, table);
         requests[m] = defn;
         deferred.resolve(m);
       }, function(err) {
@@ -673,7 +662,7 @@
       handle = $http.get(getRequest);
       handle.then(function(res) {
         res.identifier = identifier || 'id';
-        var m = new store(res, getRequest);
+        var m = new Store(res, getRequest);
         deferred.resolve(m);
       });
       return deferred.promise;
@@ -691,16 +680,7 @@
       handle.then(function (returned) {
         deferred.resolve(returned.data);
       });
-      return deferred.promise;
-    }
 
-    function debitorAgingPeriod(){
-      console.warn('connect.debitorAgingPeriod is deprecated.  Refactor your code to use fetch() or req().');
-      var handle, deferred = $q.defer();
-      handle = $http.get('debitorAgingPeriod/');
-      handle.then(function(res) {
-        deferred.resolve(res);
-      });
       return deferred.promise;
     }
 
@@ -739,12 +719,12 @@
     }
 
 //    TODO reverse these two methods? I have no idea how this happened
-    function basicPut(table, data) {
+    function basicPut (table, data) {
       var format_object = {table: table, data: data};
       return $http.post('data/', format_object);
     }
 
-    function basicPost(table, data, pk) {
+    function basicPost (table, data, pk) {
       var format_object = {table: table, data: data, pk: pk};
       return $http.put('data/', format_object);
     }
@@ -759,7 +739,7 @@
       return cleaned;
     }
 
-    function packageError(err, table) {
+    function packageError (err, table) {
       //I'm sure this is literally gross, should do reading up on this
       err.http = true;
       err.table = table || null;
@@ -776,12 +756,11 @@
       put : put,
       post : post,
       delete : delet,
-      getModel: getModel,
-      debitorAgingPeriod : debitorAgingPeriod
+      getModel: getModel // deprecate this.
     };
-  })
+  }])
 
-  .service('messenger', function ($timeout, $sce) {
+  .service('messenger', ['$timeout', '$sce', function ($timeout, $sce) {
     var self = this;
     self.messages = [];
     var indicies = {};
@@ -825,7 +804,7 @@
     // Appropriate error formatting
     self.error = function () {};
 
-  })
+  }])
 
   .service('exchange', [
     '$timeout',
@@ -960,7 +939,7 @@
   
   })
 
-  .factory('requestNotificationChannel', ['$rootScope', function($rootScope){
+  .factory('requestNotificationChannel', ['$rootScope', function($rootScope) {
     // private notification messages
     var _START_REQUEST_ = '_START_REQUEST_';
     var _END_REQUEST_ = '_END_REQUEST_';

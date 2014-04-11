@@ -9,28 +9,35 @@ angular.module('kpk.controllers')
   function ($scope, $modalInstance, $window, connect, messenger, request) {
     var hasErrors = !!request.errors;
 
-    if (hasErrors) {
-      $scope.errors = request.errors;
+    var session = $scope.session = {};
 
-    } else {
-      var total = $scope.total = {};
-      $scope.data = request.data;
+    $scope.errors = request.errors;
+    $scope.transactions = request.transactions;
+    $scope.balances = request.balances;
+    var total = $scope.total = {};
 
-      // TODO
-      // this is slightly inefficient.
-      $scope.data.forEach(function (item) {
-        total.before = (total.before || 0) + item.balance;
-        total.debit = (total.debit || 0) + item.debit;
-        total.credit = (total.credit || 0) + item.credit;
-        total.after = (total.after || 0) + item.balance + (item.credit - item.debit);
-      });
-    }
+    $scope.balances.forEach(function (item) {
+      total.before = (total.before || 0) + item.balance;
+      total.debit = (total.debit || 0) + item.debit;
+      total.credit = (total.credit || 0) + item.credit;
+      total.after = (total.after || 0) + item.balance + (item.credit - item.debit);
+    });
+
+    var dates = $scope.transactions.map(function (row) {
+      return new Date(row.trans_date);
+    });
+
+    session.max = Math.max.apply(Math.max, dates);
+    session.min = Math.min.apply(Math.min, dates);
+    session.count = $scope.transactions.reduce(function (a,b) { return a + b.lines; }, 0);
 
     $scope.submit = function submit () {
       connect.fetch('/trialbalance/submit/'+ request.key +'/')
-      .then(function () {
+      .then(function (data) {
+        console.log("Server sent back data:", data);
         $modalInstance.close();
-      }, function (error) {
+      })
+      .catch(function (error) {
         messenger.warning('Posting failed with ' +  JSON.stringify(error));
       });
     };

@@ -92,24 +92,26 @@
     "SUPER"       : "Super User"
   },
 
-  "TRIAL_BALANCE" : {
-    "TITLE"       : "Trial Balance",
-    "ERROR_TEXT"  : "You have errors!",
-    "ACCOUNT"     : "Account",
-    "BEFORE"      : "Before",
-    "DEBIT"       : "Debit",
-    "CREDIT"      : "Credit",
-    "AFTER"       : "After",
-    "BTN_TEXT"    : "Post to General Ledger"
+  "TRIAL_BALANCE"  : {
+    "TITLE"        : "Trial Balance",
+    "ERROR_TEXT"   : "Errors detected in the trial balance.",
+    "ACCOUNT"      : "Account",
+    "BEFORE"       : "Before",
+    "DEBIT"        : "Debit",
+    "CREDIT"       : "Credit",
+    "AFTER"        : "After",
+    "BTN_TEXT"     : "Post to General Ledger",
+    "TRANSACTIONS" : "Transactions",
+    "ERRORS"       : "Errors"
   },
 
-  "ERROR" : {
-    "ERR_IMBALANCE" : "Imbalancing Error",
-    "ERR_SQL" : "SQL Error",
-    "ERR_ACCNT_LOCKED" : "Locked Account Error",
-    "ERR_ACCNT_NULL" : "Null Account Error",
-    "ERR_INVALID_DATE" : "Invalid Date Error",
-    "ERR_DEB_CRED_DNE" : "Debitor/Creditor Does Not Exist Error",
+  "ERROR"                 : {
+    "ERR_IMBALANCE"       : "Imbalancing Error",
+    "ERR_SQL"             : "SQL Error",
+    "ERR_ACCNT_LOCKED"    : "Locked Account Error",
+    "ERR_ACCNT_NULL"      : "Null Account Error",
+    "ERR_INVALID_DATE"    : "Invalid Date Error",
+    "ERR_DEB_CRED_DNE"    : "Debitor/Creditor Does Not Exist Error",
     "ERR_EXPIRED_SESSION" : "Session Expired Error"
   },
 
@@ -247,6 +249,8 @@
   "REPORT"                  : {
     "CHART_OF_ACCOUNTS"     : "Chart of Accounts",
     "NUMBER"                : "Number",
+    "PRICES"                : "Prices",
+    "CREATED_ON"            : "Created on",
     "DESCRIPTION"           : "Description",
     "FINANCE_REPORT"        : "Finance Report",
     "REPORT_YEARS"          : "Report Years",
@@ -278,7 +282,7 @@
     "VISIBLE_PERIODS"       : "Visible Periods",
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
-    "GENERATED_ON" : "Generated on"
+    "GENERATED_ON"          : "Generated on"
   },
 
   "CASH_PAYMENTS" : {
@@ -296,6 +300,7 @@
     "TRANSACTION_ID"      : "Transaction ID",
     "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
+    "REGISTERED_BY"       : "Registered By",
     "RATE"                : "Rate",
     "LINE_ID"             : "Line ID",
     "EXPLANATION"         : "Explanation",
