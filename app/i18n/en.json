@@ -93,23 +93,27 @@
     "SUPER"       : "Super User"
   },
 
-  "TRIAL_BALANCE"   : {
-    "TITLE"         : "Trial Balance",
-    "ERROR_TEXT"    : "Errors detected in the trial balance.",
-    "ACCOUNT"       : "Account",
-    "RESULTS"       : "Results",
-    "BEFORE"        : "Before",
-    "DEBIT"         : "Debit",
-    "CREDIT"        : "Credit",
-    "AFTER"         : "After",
-    "SHOW"          : "Show",
-    "HIDE"          : "Hide",
-    "BTN_TEXT"      : "Post to General Ledger",
-    "TRANSACTIONS"  : "Transactions",
-    "ERRORS"        : "Errors",
-    "ERROR"         : "Error",
-    "DESCRIPTION"   : "Description",
-    "AFFECTED_ROWS" : "Affected Rows"
+  "TRIAL_BALANCE"      : {
+    "TITLE"            : "Trial Balance",
+    "ERROR_TEXT"       : "Errors detected in the trial balance.",
+    "ACCOUNT"          : "Account",
+    "RESULTS"          : "Results",
+    "BEFORE"           : "Before",
+    "DEBIT"            : "Debit",
+    "CREDIT"           : "Credit",
+    "AFTER"            : "After",
+    "SHOW"             : "Show",
+    "HIDE"             : "Hide",
+    "BTN_TEXT"         : "Post to General Ledger",
+    "TRANSACTIONS"     : "Transactions",
+    "ERRORS"           : "Errors",
+    "ERROR"            : "Error",
+    "DESCRIPTION"      : "Description",
+    "AFFECTED_ROWS"    : "Affected Rows",
+    "SUMMARY"          : "Summary",
+    "SIGNATURES"       : "Signatures",
+    "CHIEF_ACCOUNTANT" : "Chief Accountant",
+    "FINANCE_OFFICER"  : "Finance Officer"
   },
 
   "ERROR"                 : {
@@ -126,6 +130,7 @@
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
     "BACK"              : "Back",
+    "DATE"              : "Date",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
     "PROJECT"           : "Current Project",

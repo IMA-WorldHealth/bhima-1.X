@@ -99,3 +99,20 @@
   border-left : 6px solid rgba(160,45,45,0.75);
 }
 
+/* trial balance print */
+
+.signatures {
+  width : 100%;
+  overflow: visible;
+}
+
+.signatures .signature-box {
+  float: left;
+  margin: 5px 20px 30px 25px;
+  border-bottom: 1px solid #000;
+  width: 300px;
+}
+
+.signature-box>label {
+  margin-bottom: 25px;
+}

@@ -50,7 +50,8 @@ angular.module('kpk.controllers')
     };
 
     $scope.print = function print () {
-      $location.path('/print/trialbalance');
+      $location.path('/trialbalance/print');
+      $modalInstance.dismiss();
     };
 
   }
