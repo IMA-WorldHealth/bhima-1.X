@@ -131,6 +131,15 @@ app.get('/user_session', function (req, res, next) {
   res.send(200, {id: req.session.user_id});
 });
 
+app.get('/pcash_transfert_summers', function (req, res, next) {
+  var sql =
+    "SELECT `pcash`.`reference`, `pcash`.`date`, `pcash`.`value`, `pcash`.`currency_id` FROM `pcash` WHERE `pcash`.`istransfer`=" +1+ " ORDER BY reference DESC LIMIT 20;";
+  db.execute(sql, function (err, result) {
+    if (err) { return next(err); }
+    res.send(result);
+  });
+});
+
 app.get('/trialbalance/initialize', function (req, res, next) {
   trialbalance.run(req.session.user_id, function (err, result) {
     if (err) { return next(err); }

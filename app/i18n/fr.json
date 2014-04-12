@@ -501,7 +501,8 @@
     "SCOPE"               : "Appliquer a",
     "VISIT_DATE"          : "Date de Visite",
     "DEBITOR_TYPE"        : "Type de Debiteur",
-    "CREDITOR"            : "Crediteur"
+    "CREDITOR"            : "Crediteur",
+    "REFERENCE"           : "Reference"
   },
 
   "REPORT"                  : {
