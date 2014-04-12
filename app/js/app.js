@@ -248,6 +248,10 @@
     .when('/update_stock', {
       controller : 'updateStock',
       templateUrl : 'partials/update_stock/update_stock.html'
+    })
+    .when('/employee', {
+      controller : 'employee',
+      templateUrl : 'partials/employee/employee.html'
     });
   }
 
