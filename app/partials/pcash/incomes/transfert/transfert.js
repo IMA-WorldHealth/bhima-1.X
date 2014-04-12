@@ -26,6 +26,11 @@ angular.module('kpk.controllers')
       }
     }
 
+    dependencies.summers = {
+      query :'pcash_transfert_summers',
+      identifier : 'reference'
+    }
+
     dependencies.cash_box = {
       required : true,
       query : {
@@ -62,10 +67,6 @@ angular.module('kpk.controllers')
 
     dependencies.cashier = {
       query : 'user_session'
-    }
-
-    dependencies.summers = {
-      query : '/synthetic/pcRI/'
     }
 
     //fonctions
@@ -113,11 +114,7 @@ angular.module('kpk.controllers')
       console.log('[configuration]', configuration);
     }
 
-    function formatTab (m){
-      return m.pcash_accounts.data.map(function (item){
-        return item.pcash_account;
-      });
-    }
+
 
     function updateConfig(){
       configuration.symbol = $scope.data.currency.symbol;
@@ -127,39 +124,6 @@ angular.module('kpk.controllers')
     function handlError (err) {
       messenger.danger(err.toString());
       return;
-    }
-
-    function resolve () {
-      map[$scope.data.source_id]();
-    }
-
-    function transferCashAuxi (){
-      getExpectedAmount().then(handlResult);
-    }
-
-    function transferCashPax (){
-      //console.log('cashPax');
-    }
-
-    function handlResult (res) {
-      res.data.map(function (item) {
-        item.text = getAccountText(item.account_id)[0].account_txt;
-      });
-      var print = res.data.map(function (item) {
-        return item.text+ ' : '+$scope.enterprise_symbole_currency+item.balance;
-      });
-
-      $scope.data.expected = print.join(' ; ');
-    }
-
-    function getAccountText (account_id) {
-      return $scope.model.accounts.data.filter(function (item) {
-        return item.id === account_id;
-      });
-    }
-
-    function setCashAccount(cashAccount) {
-      if(cashAccount) $scope.selectedItem = cashAccount;
     }
 
     function convert(value, currency_id){
@@ -184,8 +148,8 @@ angular.module('kpk.controllers')
      writeTransfer()
       .then(postToJournal)
       .then(function (prom){
-        console.log('la promesse', prom);
-
+        uuid=uuid();
+        value = 0;
       })
       .catch(function (){
         console.log('erreur');
@@ -223,7 +187,7 @@ angular.module('kpk.controllers')
      appstate.register('enterprise', function (enterprise){
        $scope.project = project;
        $scope.enterprise = enterprise;
-       validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier']).then(init, handlError);
+       validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'summers']).then(init, handlError);
      })
     });
 
@@ -244,17 +208,5 @@ angular.module('kpk.controllers')
     $scope.ajouter = ajouter;
     $scope.configuration = configuration;
     $scope.updateConfig = updateConfig;
-
-     // dependencies.exchange_rate = {
-    //   required : true,
-    //   query : {
-    //     tables : {
-    //       'exchange_rate' : {
-    //         columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
-    //       }
-    //     },
-    //     where : ['exchange_rate.date='+util.convertToMysqlDate(new Date().toISOString().slice(0,10))]
-    //   }
-    // };
   }
 ]);
