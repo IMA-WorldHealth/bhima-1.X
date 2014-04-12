@@ -18,6 +18,7 @@ angular.module('kpk.controllers')
     
     dependencies.inventory = { 
       query : { 
+        identifier : 'uuid',
         tables : { 
           inventory : { columns : ['uuid', 'code', 'text', 'price', 'type_id'] }
         }
@@ -79,9 +80,10 @@ angular.module('kpk.controllers')
 
     function settupPurchase() { 
       // TODO ensure previous purchase is removed etc.
-      session.items = [
-      {}
-      ];
+      session.items = [];
+      
+      // Initial purchase item 
+      addPurchaseItem();
     }
   
     // FIXME
@@ -93,133 +95,99 @@ angular.module('kpk.controllers')
     }
 
     function addPurchaseItem() { 
-      session.items.push({val: 5});
+      var item = new PurchaseItem();
+
+      session.items.push(item);
+      return item;
     }
-    
-  //   function formatInvoice() {
-  //     var t = 0;
-  //     for(var i= 0, l = $scope.inventory.length; i < l; i+=1) {
-  //       t += $scope.inventory[i].quantity * $scope.inventory[i].price;
-  //     }
-  // //    verify total
 
-  //     var format = {
-  //       enterprise_id : appstate.get("enterprise").id, //Not async safe - may return null
-  //       id : $scope.invoice_id,
-  //       cost : t,
-  //       currency_id : 1, // FIXME
-  //       creditor_id : $scope.creditor.id,
-  //       invoice_date : $scope.sale_date,
-  //       purchaser_id : $scope.verify,
-  //       // note : $scope.formatText(),
-  //       posted : '0'
-  //     };
-  // //    verify format
-  //     return format;
-  //   }
+    function removePurchaseItem(index) { 
+      var currentItem = session.items[index];
+      
+      if (currentItem.inventoryReference) { 
+        $scope.inventory.post(currentItem.inventoryReference);
+        $scope.inventory.recalculateIndex();
+      }
+      session.items.splice(index, 1);
+    }
 
-  //   function generateItems() {
-  //     var deferred = $q.defer();
+    function updatePurchaseItem(purchaseItem, inventoryReference) { 
+      if(purchaseItem.inventoryReference) { 
+        $scope.inventory.post(purchaseItem.inventoryReference);
+        $scope.inventory.recalculateIndex();
+      }
+      purchaseItem.set(inventoryReference); 
+      purchaseItem.inventoryReference = inventoryReference;
 
-  //     //iterate through invoice items and create an entry to sale_item
-  //     var promise_arr = $scope.inventory.map(function (item) {
-  //       //console.log("Generating sale item for ", item);
-  //       var format_item = {
-  //         purchase_id : $scope.invoice_id,
-  //         inventory_id : item.item.id,
-  //         quantity : item.quantity,
-  //         unit_price : item.price,
-  //         total : item.quantity * item.price
-  //       };
-  //       return connect.basicPut('purchase_item', [format_item]);
-  //     });
+      // Remove option to select duplicates
+      console.log($scope.inventory.data.length);
+      console.log('removing', inventoryReference.uuid);
+      $scope.inventory.remove(inventoryReference.uuid);
+      $scope.inventory.recalculateIndex();
+      console.log($scope.inventory.data.length);
+    }
 
-  //     $q.all(promise_arr).then(function (res) { deferred.resolve(res); });
-  //     return deferred.promise;
-  //   }
+    function purchaseTotal() { 
+      return session.items.reduce(priceMultiplyQuantity, 0);
+    }
 
-  //   $scope.submitPurchase = function() {
-  //     var purchase = formatInvoice();
+    function priceMultiplyQuantity(a, b) { 
+      a = (a.quantity * a.price) || a;
+      return (b.code) ? a + (b.quantity * b.price) : a; 
+    }
 
-  //     //console.log("Posting", purchase, "to 'purchase table");
+    function verifyPurchase(items) { 
 
-  //     connect.basicPut('purchase', [purchase])
-  //     .then(function(res) {
-  //       var id = res.data.insertId;
-  //       var promise = generateItems();
-  //       promise
-  //       .then(function(res) {
-  //         //console.log("Purchase order successfully generated", res);
+      // Ensure creditor selected and items initialised
+      if(!items || !items.length) return true;
+      
+      // Verfiy individual items
+      return items.some(function (item) { 
+        if(!item.code) return true;
+        return false;
+      });
+    }
 
-  //         connect.fetch('/journal/purchase/' + purchase.id)
-  //         .then(function (success) {
-  //           messenger.success('Posted purchase id: ' + id);
-  // //        Navigate to Purchase Order review || Reset form
-  // //        Reset form
-  //           // init();
-  //         }, function (err) {
-  //           messenger.danger('Posting returned err: ' + JSON.stringify(err));
-  //         });
-  //       });
-  //     });
-  //   };
+    function submitPurchase() { 
+      console.log('Not implemented');
+    }
 
-  //   $scope.updateItem = function(item) {
+    /*-------------------------------*/
+    function PurchaseItem() {
+      var self = this;
 
-  //     if(item.item) {
-  //       if(!item.quantity) item.quantity = 1;
-  //       item.text = item.item.text;
-  //       item.price = item.item.price;
-  //     } else {
-  // //      Reset
-  //       item.text = "";
-  //       item.price = "";
-  //       item.quantity = "";
-  //     }
-  //   };
+      function set(inventoryReference) {
+        var defaultPrice = inventoryReference.price;
 
-  //   $scope.updateInventory = function() {
-  //     $scope.inventory.push({});
-  //   };
+        self.quantity = self.quantity || 1;
+        self.code = inventoryReference.code;
+        self.text = inventoryReference.text;
 
-  // //  Radio inputs only accept string true/false? boolean value as payable doesn't work
-  //   $scope.isPayable = function() {
-  //     return session.payable;
-  //   };
+        // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+        self.price = Number(inventoryReference.price.toFixed(4));
+        self.inventoryId = inventoryReference.uuid;
+        self.note = "";
+        self.isSet = true;
+      }
 
-  //   // FIXME Again - evaluated every digest, this is a bad thing
-  //   $scope.invoiceTotal = function() {
-  //     var total = 0;
-  //     $scope.inventory.forEach(function(item) {
-  //       if(item.quantity && item.price) {
-  //         //FIXME this could probably be calculated less somewhere else (only when they change)
-  //         total += (item.quantity * item.price);
-  //       }
-  //     });
-  //     return total;
-  //   };
+      this.quantity = 0,
+      this.code = null,
+      this.inventoryId = null,
+      this.price = null,
+      this.text = null,
+      this.note = null,
+      this.set = set;
 
-  //   $scope.itemsInInv = function() {
-  //     if($scope.inventory.length>0) return true;
-  //     return false;
-  //   };
-
-  //   $scope.select = function(index) {
-  //     $scope.current_process = $scope.process[index];
-  //   };
-
-  //   $scope.formatCreditor = function(creditor) {
-  //     return creditor.name;
-  //   };
-
-  //   $scope.updateLocation = function updateLocation(creditor) {
-  //     var loc = $scope.location.get(creditor.location_id);
-  //     $scope.creditor.village = loc.village;
-  //     $scope.creditor.province = loc.province;
-  //   };
-    
+      return this;
+    }
     $scope.selectCreditor = selectCreditor;
+    
     $scope.addPurchaseItem = addPurchaseItem;
-    // init();
+    $scope.removePurchaseItem = removePurchaseItem;
+    $scope.updatePurchaseItem = updatePurchaseItem;
+
+    $scope.purchaseTotal = purchaseTotal;
+    $scope.verifyPurchase = verifyPurchase;
+    $scope.submitPurchase = submitPurchase;
   }
 ]);

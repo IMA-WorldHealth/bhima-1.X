@@ -192,8 +192,7 @@ angular.module('kpk.controllers')
       invoiceItem.set(inventoryReference);
       invoiceItem.inventoryReference = inventoryReference;
 
-      //Remove ability to selec the option again
-      console.log('removing inventory item', inventoryReference.uuid);
+      //Remove ability to select the option again
       $scope.model.inventory.remove(inventoryReference.uuid);
 
       $scope.model.inventory.recalculateIndex();
