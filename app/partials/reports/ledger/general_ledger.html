@@ -1,4 +1,4 @@
-<header>
+<header data-header>
   <span>{{ "REPORT.GENERAL_LEDGER_REPORT" | translate }}</span>
 </header>
 
@@ -9,13 +9,19 @@
     </button>
     <ul class="dropdown-menu">
       <li class="dropdown-header">{{ "REPORT.GROUPING" | translate }}</li>
-      
+
       <li ng-repeat="groupDefinition in groupDefinitions">
         <a ng-click="groupby(groupDefinition)">{{ groupDefinition.title }}</a>
       </li>
     </ul>
   </div>
-  
+
+  <div class="pull-left">
+    <div class="group-crumbs" style="display: block; width: 100%;">
+      <label>{{ "REPORT.GROUP_DETAIL" | translate }}</label> <span ng-repeat="activeGroup in groups">  > {{activeGroup.title}} </span>
+    </div>
+  </div>
+
   <div class="pull-right dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle">
       <i class="glyphicon glyphicon-cog"></i> {{ "REPORT.COLUMNS" | translate }}
@@ -33,13 +39,10 @@
   </div>
 </section>
 
-<div class="content">
-  <div class="group-crumbs" style="display: block; width: 100%;">
-    {{ "REPORT.GROUP_DETAIL" | translate }}<span ng-repeat="activeGroup in groups"> > {{activeGroup.title}} </span>
+<div class="content extend">
+  <div class="row" style="height:99%;">
+    <div class="col-xs-12" style="height:100%;">
+      <div id="general_ledger" class="grid" style="height: 100%; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"></div>
+    </div>
   </div>
-
-  <div>
-    <div id="kpk-ledger-general_ledger-grid" style="height: 450px;" class="grid"></div>
-  </div>
-
 </div>

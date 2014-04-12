@@ -1,7 +1,7 @@
 .grid {
+  box-sizing: content-box;
   position: relative;
   border: 1px solid #dddddd;
-  border-bottom: 0;
   border-collapse: collapse !important;
 }
 
@@ -26,29 +26,18 @@
   border-top:0;
 }
 
-.grid .grid-canvas .even {
-  /*
-  toggle background colours
-  background: #f9f9f9;
-  */
-}
-
 .grid .grid-canvas .slick-cell {
   /*padding: 8px 7.5834px;
   font-size: 14px;*/
   padding: 8px;
   line-height: 1.428571429;
   vertical-align: top;
-
 }
 
 .grid .grid-canvas .slick-cell td {
   font-size: 14px;
 }
 
-body .grid .grid-canvas .slick-cell {
-  line-height: 1.428571429;
-}
 .grid .grid-canvas .slick-cell a,
 .grid .grid-canvas .slick-cell a:visited,
 .grid .grid-canvas .slick-cell .ui-widget-content a,
@@ -56,12 +45,14 @@ body .grid .grid-canvas .slick-cell {
   color: #0088cc;
   text-decoration: none;
 }
+
 .grid .grid-canvas .slick-cell a:hover,
 .grid .grid-canvas .slick-cell .ui-widget-content a:hover {
   color: #005580;
   text-decoration: none;
   border-bottom: none;
 }
+
 .grid .grid-canvas .slick-cell table {
   height: 100%;
   border: 0 none;
@@ -74,17 +65,19 @@ body .grid .grid-canvas .slick-cell {
   vertical-align: middle;
   text-align: left;
 }
+
 .grid .slick-header {
   border-top: 0;
   border-bottom: 0;
-
 }
+
 .grid .slick-header-columns {
   background: transparent;
 }
+
 .grid .slick-header-columns .slick-header-column {
-  height: 25px;
-  line-height: 14px;
+  height: 15px;
+  line-height: 15px;
   margin: 0;
   border: 0;
   border-right: 1px solid #dddddd;
@@ -92,37 +85,34 @@ body .grid .grid-canvas .slick-cell {
   border-bottom: 1px solid #dddddd;
   /* like TH  */
 
-  background: transparent;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #333333;
-  font-weight: bold;
+  background  : transparent;
+  font-family : "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color       : #333333;
+  font-weight : bold;
 
 }
 
 .grid .slick-header-columns .slick-header-column.ui-state-default {
   padding: 5px 7.5834px;
-  font-size: 14px;
+  font-size: 12px;
 }
 .grid .slick-header-columns .slick-header-column.ui-state-default td {
-  font-size: 14px;
-}
-body .grid .slick-header-columns .slick-header-column.ui-state-default {
-  line-height: 20px;
+  font-size: 12px;
 }
 
 .grid .slick-header-columns .slick-header-column a,
-.grid .slick-header-columns .slick-header-column a:visited {
-  color: #333333;
-}
+.grid .slick-header-columns .slick-header-column a:visited,
 .grid .slick-header-columns .slick-header-column a:hover {
   color: #333333;
 }
+
 .grid .slick-header-columns .slick-header-column.ui-state-default {
   background: transparent;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   font-weight: bold;
 }
+
 .grid .slick-header-columns .slick-header-column.ui-state-default a,
 .grid .slick-header-columns .slick-header-column.ui-state-default a:visited {
   color: #333333;
@@ -134,23 +124,28 @@ body .grid .slick-header-columns .slick-header-column.ui-state-default {
   font-style: normal;
   color: #333333;
 }
+
 .grid .slick-header-columns .slick-header-column:hover {
   color: #333333;
 }
+
 .grid .slick-header-columns .slick-header-column .slick-sort-indicator-asc {
   vertical-align: middle;
 }
+
 .grid .slick-header-columns .slick-header-column .slick-sort-indicator-desc {
   vertical-align: middle;
 }
+
 .grid-col {
   padding: 35px;
 }
+
 .info-col {
   padding: 20px;
 }
 
-/*Style for column picker - should be elsewhere*/
+/* Style for column picker - should be elsewhere */
 .slick-columnpicker {
   background: white;
   border: 1px solid #dddddd;
@@ -176,4 +171,17 @@ body .grid .slick-header-columns .slick-header-column.ui-state-default {
 
 .slick-group-toggle.collapsed {
   /*background: url("../lib/SlickGrid/images/expand.gif") no-repeat center center;*/
+}
+
+/* FIXME: remove hacks here */
+
+.grid.danger .grid-canvas .slick-group {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  color : white;
+}
+
+#general_ledger.grid .slick-header-columns .slick-header-column.ui-state-default {
+  height: 25px;
+  line-height:20px;
 }

@@ -121,30 +121,6 @@ input::-webkit-inner-spin-button {
   bottom: 0;
 }
 
-/* slick modifications */
-/* FIXME: remove hacks here */
-#journal_grid.grid .slick-header-columns
-.slick-header-column {
-  height: 15px;
-}
-
-#journal_grid.grid .slick-header-columns
-.slick-header-column.ui-state-default {
-  font-weight: bold;
-}
-
-#journal_grid.grid .slick-header-columns
-.slick-header-column.ui-state-default {
-  line-height : 15px;
-  font-size : 12px;
-}
-
-#journal_grid.grid.danger .grid-canvas .slick-group {
-  background-color: #d9534f;
-  border-color: #d43f3a;
-  color : white;
-}
-
 #logo  {
   box-shadow: 0 2px 6px -3px black;
   height: 140px;
@@ -167,10 +143,6 @@ input::-webkit-inner-spin-button {
 
 .pad-right td:first-child  {
   padding-right: 15px !important;
-}
-
-.grid {
-  box-sizing: content-box;
 }
 
 /* used in login.html */
