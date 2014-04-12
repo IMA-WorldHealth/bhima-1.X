@@ -48,7 +48,8 @@
       "/InExAccounts/",
       "/period",
       "/max_trans/",
-      "/max_log/"
+      "/max_log/",
+      "/pcash_transfert_summers"
     ]
   }
 }
