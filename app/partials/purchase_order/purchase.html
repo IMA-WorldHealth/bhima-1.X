@@ -4,12 +4,11 @@
 
 <section class="top-nav">
   <div class="pull-right">
-    <button class="btn btn-sm btn-default">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</button>
+    <a class="btn btn-sm btn-default" ng-href="/#/creditor/">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</a>
   </div>
 </section>
 
 <div class="content">
-
 <div class="row">
 
     <div class="col-xs-5">
@@ -119,13 +118,14 @@
   </div>
 
   <div class="row">
-
+  
     <div class="col-xs-12">
-      <div class="panel panel-default">
+
+      <div class="panel panel-default" ng-class="{'panel-success' : session.creditor}">
         <div class="panel-heading">
           <span>Purchase Items</span>
-          <!-- <a ng&#45;click="updateInventory()" class="pull&#45;right fieldset&#45;util"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }} </a> -->
-          <button ng-disabled="!session.creditor" class="pull-right" ng-click="addPurchaseItem()"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
+          <!-- FIXME style hack -->
+          <button ng-disabled="!session.creditor" class="pull-right" ng-click="addPurchaseItem()" style="margin-top: -4px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
 
         </div>
         
@@ -151,7 +151,7 @@
                 typeahead-template-url="invoiceListItem.html"
                 ng-model="purchaseItem.selectedReference"
                 typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory.data | filter:$viewValue | limitTo:8"
-                typeahead-on-select="updateInvoiceItem(purchaseItem, purchaseItem.selectedReference)"
+                typeahead-on-select="updatePurchaseItem(purchaseItem, purchaseItem.selectedReference)"
                 placeholder="Search Inventory">
               </td>
 
@@ -160,13 +160,13 @@
               <td><input ng-change="cacheQuantity(purchaseItem)" tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.quantity"></td>
               <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.price"></td>
               <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.price | currency}}"></td>
-              <td><a ng-click="removeInvoiceItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td><a ng-click="removePurchaseItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
             
             <tr>
               <!-- Style hack -->
               <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "SALE.TOTAL" | translate }}</b></td>
-              <td colspan="2"><b>{{ calculateTotal().totalToPay | currency }}</b></td>
+              <td colspan="2"><b>{{ purchaseTotal() | currency }}</b></td>
             </tr>
 
           </tbody>
@@ -206,7 +206,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
+    <a ng-disabled="verifyPurchase(session.items)" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
   </div>
 </section>
 
