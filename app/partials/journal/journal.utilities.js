@@ -256,7 +256,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.print = function () {
-      $location.path('/print/journal');
+      $location.path('/journal/print');
     };
 
     // Toggle column visibility
