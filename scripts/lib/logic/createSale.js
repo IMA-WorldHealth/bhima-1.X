@@ -20,7 +20,7 @@ module.exports = function(db, parser, journal) {
     //writeSaleItems()
     .then(function(saleResult) {
       processedSale = true;
-      console.log('sale successed')
+      console.log('sale success');
       return writeSaleItems(saleRecordId, saleItems);
     })
 

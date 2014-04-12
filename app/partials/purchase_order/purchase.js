@@ -33,6 +33,14 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.employee = { 
+      query : { 
+        tables : { 
+          employee : { columns : ['id', 'code', 'prenom', 'name', 'postnom', 'dob', 'creditor_uuid'] }
+        }
+      }
+    };
+
     dependencies.creditorLocation = { 
       identifier : 'uuid',
       query : '/location'

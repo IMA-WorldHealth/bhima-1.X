@@ -29,6 +29,13 @@
               <option value="" disabled="disabled">--Select Creditor--</option>
             </select>
           </div>
+          <div class="form-group">
+            <label for="select-employee">Employee Responsible</label>
+            <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-kapok">
+              <option value="" disabled="disabled">--Select Employee--</option>
+            </select>
+          </div>
+
 
           <!-- Determine validity period of payment -->
 
@@ -121,15 +128,15 @@
   
     <div class="col-xs-12">
 
-      <div class="panel panel-default" ng-class="{'panel-success' : session.creditor}">
+      <div class="panel panel-default" ng-class="{'panel-success' : (session.creditor && session.employee)}">
         <div class="panel-heading">
           <span>Purchase Items</span>
           <!-- FIXME style hack -->
-          <button ng-disabled="!session.creditor" class="pull-right" ng-click="addPurchaseItem()" style="margin-top: -4px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
+          <button ng-disabled="!(session.creditor && session.employee)" class="pull-right" ng-click="addPurchaseItem()" style="margin-top: -4px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
 
         </div>
         
-        <table class=' table-condensed table' ng-if="session.creditor">
+        <table class='table-condensed table' ng-if="session.creditor && session.employee">
           <thead>
             <tr>
               <th>{{ "COLUMNS.ITEM" | translate }}</th>
@@ -171,33 +178,6 @@
 
           </tbody>
         </table>
-
-        <!-- <table class="table table&#45;condensed" ng&#45;show="session.creditor"> -->
-        <!--   <thead> -->
-        <!--   <tr> -->
-        <!--     <td class="invoice&#45;item">Item</td> -->
-        <!--     <td class="invoice&#45;desc">Description</td> -->
-        <!--     <td>Qty</td> -->
-        <!--     <td>Unit Price</td> -->
-        <!--     <td>Amount</td> -->
-        <!--   </tr> -->
-        <!--   </thead> -->
-        <!--   <tbody> -->
-        <!--     <tr><td colspan="5">Not implemented</td></tr> -->
-        <!--   <!&#45;&#45; <tr ng&#38;#45;repeat="item in inventory"> &#45;&#45;> -->
-        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;item"><select class="form&#38;#45;invoice" ng&#38;#45;change="updateItem(item)" ng&#38;#45;model="item.item" &#45;&#45;> -->
-        <!--   <!&#45;&#45;                                    ng&#38;#45;options="l.code for l in inventory_model.data"><option value="" disabled="disabled">&#38;#45;&#38;#45;Select Item&#38;#45;&#38;#45;</option></select></td> &#45;&#45;> -->
-        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;desc"><input type="text" class="form&#38;#45;invoice" ng&#38;#45;model="item.text"></td> &#45;&#45;> -->
-        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;quantity"><input type="number" class="form&#38;#45;invoice" ng&#38;#45;model="item.quantity"></td> &#45;&#45;> -->
-        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;price"><input type="number" class="form&#38;#45;invoice" ng&#38;#45;model="item.price"></td> &#45;&#45;> -->
-        <!--   <!&#45;&#45;   <td class="invoice&#38;#45;amount"><span>{{item.quantity * item.price | currency}}</span></td> &#45;&#45;> -->
-        <!--   <!&#45;&#45; </tr> &#45;&#45;> -->
-        <!--   <!&#45;&#45; <tr> &#45;&#45;> -->
-        <!--   <!&#45;&#45;   <td colspan="4"></td> &#45;&#45;> -->
-        <!--   <!&#45;&#45;   <td><span><b>{{invoiceTotal() | currency}}</b></span></td> &#45;&#45;> -->
-        <!--   <!&#45;&#45; </tr> &#45;&#45;> -->
-        <!--   </tbody> -->
-        <!-- </table> -->
       </div>
     </div>
   </div>
