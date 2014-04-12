@@ -1,7 +1,9 @@
 {
   "POSTING_JOURNAL"         : {
     "TITLE"                 : "Posting Journal",
+    "LINES"                 : "Lines",
     "GROUP_BY"              : "Group By",
+    "RECORDS"               : "Records",
     "DEB_CRED"              : "Debitor / Creditor",
     "ABOLISH_GROUPS"        : "Abolish Groups",
     "TRANSACTION"           : "Transaction",
@@ -263,6 +265,7 @@
     "CHART_OF_ACCOUNTS"     : "Chart of Accounts",
     "NUMBER"                : "Number",
     "PRICES"                : "Prices",
+    "SIGNATURES" : "Signatures",
     "CREATED_ON"            : "Created on",
     "DESCRIPTION"           : "Description",
     "FINANCE_REPORT"        : "Finance Report",
@@ -411,7 +414,8 @@
     "WEIGHT"              : "Weight",
     "PRICE_LIST"          : "Price List",
     "TITLE"               : "Title",
-    "VALUE"               : "Value"
+    "VALUE"               : "Value",
+    "DEB_CRED_UUID"       : "Debitor/Creditor ID"
   },
 
   "TREE"                        : {

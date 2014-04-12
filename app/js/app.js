@@ -264,6 +264,10 @@
     .when('/primary_cash/', {
       controller : 'primaryCash',
       templateUrl : 'partials/primary_cash/primary.html'
+    })
+    .when('/journal/print', {
+      controller : 'journal.print',
+      templateUrl : 'partials/journal/print.html'
     });
   }
 
