@@ -947,6 +947,20 @@
     "SUCCES"       : "Operation reussie !",
     "DANGER"       : "Erreur ! Une erreur se produite pendant le posting !"
   },
+    "CONVENTION"         : {
+    "TITLE"              : "Convention",
+    "CASH"               : "Caisse Principale",
+    "INFO"               : "Informations Convention",
+    "NAME"               : "Noms",
+    "AGE"                : "Age",
+    "GENDER"             : "GENDER",
+    "ORIGIN"             : "Origines",
+    "INFO_CONVENTION"    : "Information sur la convention",
+    "CONVENTION"         : "Convention",
+    "PAY"                : "Payer",
+    "SUCCES"             : "Operation reussie !",
+    "DANGER"             : "Erreur ! Une erreur se produite pendant le posting !"
+  },
 
   "PCASH"                   : {
     "TITLE"                 : "Gestion de la Caisse Principale",

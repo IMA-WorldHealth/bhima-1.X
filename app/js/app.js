@@ -257,6 +257,10 @@
       controller : 'transfert',
       templateUrl : 'partials/pcash/incomes/transfert/transfert.html'
     })
+     .when('/pcash/convention', {
+      controller : 'convention',
+      templateUrl : 'partials/pcash/incomes/convention/convention.html'
+    })
     .when('/trialbalance/print', {
       controller : 'trialbalance.print',
       templateUrl : 'partials/journal/trialbalance/print.html'
