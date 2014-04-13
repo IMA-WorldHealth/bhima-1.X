@@ -43,6 +43,17 @@
     }
   },
 
+  "PRIMARY_CASH" : {
+    "TITLE" : "Primary Cash",
+    "EXPENSES" : "Expenses",
+    "GENERIC" : "Generic",
+    "NAVIGATION" : "Navigation",
+    "EXPENSE" : {
+      "GENERIC_TITLE" : "Generic Expenses",
+      "GENERIC_RECEIPT" : "Generic Receipt"
+    }
+  },
+
   "PATIENT_RECORDS"     : {
     "TITLE"             : "Patient Records",
     "ADVANCED_SEARCH"   : "Advanced Search",
@@ -139,6 +150,7 @@
     "ERROR"             : "Error",
     "CANCEL"            : "Cancel",
     "ITEMS"             : "Items",
+    "CURRENCY"          : "Currency",
     "TOGGLE"            : "Toggle",
     "COLUMNS"           : "Columns",
     "CONFIRM"           : "Confirm",
