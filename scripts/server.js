@@ -134,7 +134,7 @@ app.get('/user_session', function (req, res, next) {
 
 app.get('/pcash_transfert_summers', function (req, res, next) {
   var sql =
-    "SELECT `pcash`.`reference`, `pcash`.`date`, `pcash`.`value`, `pcash`.`currency_id` FROM `pcash` WHERE `pcash`.`istransfer`=" +1+ " ORDER BY reference DESC LIMIT 20;";
+    "SELECT `pcash`.`reference`, `pcash`.`date`, `pcash`.`value`, `pcash`.`currency_id` FROM `pcash` WHERE `pcash`.`istransfer`=" +1+ " ORDER BY date, reference DESC LIMIT 20;"; //FIX ME : this request doesn't sort
   db.execute(sql, function (err, result) {
     if (err) { return next(err); }
     res.send(result);

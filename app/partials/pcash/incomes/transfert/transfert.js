@@ -12,7 +12,7 @@ angular.module('kpk.controllers')
   function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid) {
 
     //inits and declarations
-    var dependencies = {}, configuration = {}, uuid = uuid();
+    var dependencies = {}, configuration = {};
     $scope.data= {};
 
     dependencies.project = {
@@ -114,8 +114,6 @@ angular.module('kpk.controllers')
       console.log('[configuration]', configuration);
     }
 
-
-
     function updateConfig(){
       configuration.symbol = $scope.data.currency.symbol;
       configuration.currency_id = $scope.data.currency.id;
@@ -134,6 +132,7 @@ angular.module('kpk.controllers')
     function isValid(){
       var clean = true;
       if(!configuration) return false;
+      if(!configuration.pcash) return false;
       if(!$scope.data.value) return false;
       for(var k in configuration){
         clean = clean && (k)? true : false;
@@ -143,22 +142,26 @@ angular.module('kpk.controllers')
 
     function ajouter (){
       configuration.value = $scope.data.value;
-       console.log('configuration', configuration);
       if(!isValid()) return;
      writeTransfer()
       .then(postToJournal)
       .then(function (prom){
-        uuid=uuid();
-        value = 0;
+        refresh();
       })
       .catch(function (){
         console.log('erreur');
       });
     }
 
+    function refresh(){
+      configuration = {};
+      validate.refresh(dependencies, ['summers']).then(init, handlError);
+
+    }
+
     function writeTransfer (){
       var pcash = {
-        uuid : uuid,
+        uuid : uuid(),
         project_id : configuration.project_id,
         type : 'E',
         date : util.convertToMysqlDate(new Date().toISOString().slice(0,10)),
@@ -170,11 +173,12 @@ angular.module('kpk.controllers')
         account_id : configuration.cash_account_currency[0].account_id,
         cash_box_id : 1
       }
+      configuration.pcash=pcash;
       return connect.basicPut('pcash', connect.clean(pcash));
     }
 
     function postToJournal (res) {
-      return connect.fetch('/journal/pcash/' + uuid);
+      return connect.fetch('/journal/pcash/' + configuration.pcash.uuid);
     }
 
     function commitConfiguration (){
