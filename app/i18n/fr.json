@@ -517,7 +517,8 @@
     "DEBITOR_TYPE"        : "Type de Debiteur",
     "CREDITOR"            : "Crediteur",
     "DEB_CRED_TYPE"       : "Type Debiteur/Crediteur",
-    "DEB_CRED_UUID"       : "ID Debiteur/Crediteur"
+    "DEB_CRED_UUID"       : "ID Debiteur/Crediteur",
+    "REFERENCE"           : "Reference"
   },
 
   "REPORT"                  : {
