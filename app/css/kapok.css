@@ -386,3 +386,12 @@ a.danger {
 .kpk-msg {
   padding: 5px 15px;
 }
+
+.top-nav .breadcrumb {
+  background-color : #fff;
+  margin: 0;
+}
+
+.top-nav .label {
+  vertical-align : middle;
+}

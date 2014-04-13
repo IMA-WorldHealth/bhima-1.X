@@ -272,6 +272,10 @@
     .when('/journal/print', {
       controller : 'journal.print',
       templateUrl : 'partials/journal/print.html'
+    })
+    .when('/primary_cash/expense/generic/:id?', {
+      controller : 'primaryCash.expense',
+      templateUrl: 'partials/primary_cash/expense/generic.html'
     });
   }
 
