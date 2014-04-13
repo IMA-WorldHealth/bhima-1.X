@@ -210,6 +210,11 @@
     "SEARCH"          : "Chercher Par Nom",
     "PLACEHOLDER"     : "Chercher un Debiteur"
   },
+  "CFIND"              : {
+    "TITLE"           : "Trouver Convention",
+    "SEARCH"          : "Chercher Par Nom",
+    "PLACEHOLDER"     : "Chercher une convention"
+  },
 
   "SELECT"            : {
     "ACCOUNT"         : "Selectionner Compte",
@@ -1012,6 +1017,23 @@
     "AMOUNT"      : "Montant",
     "CRUMB_PCASH" : "caisse principale",
     "CRUMB_TRANSFERT" : "transfert",
+    "PROJECT"     : "Proget",
+    "CAISSE"      : "Caisse",
+    "CURRENCY"    : "Monnaie"
+  },
+
+   "CONVENTION"        : {
+    "TITLE"       : "Convention",
+    "CONVENTION"    : "Convention",
+    "INFO_CONVENTION" : "Convention",
+    "INFO" : "Information financiere sur la convention",
+    "PCASH"       : "Caisse Principale",
+    "INFO_OLD"        : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
+    "SOURCE"      : "Source",
+    "EXPECTED"    : "Attendu",
+    "AMOUNT"      : "Montant",
+    "CRUMB_PCASH" : "caisse principale",
+    "CRUMB_CONVENTION" : "convention",
     "PROJECT"     : "Proget",
     "CAISSE"      : "Caisse",
     "CURRENCY"    : "Monnaie"

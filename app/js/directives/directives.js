@@ -281,38 +281,38 @@
             }
           };
 
-          scope.findConvention = {
+          scope.findPatient = {
             state: 'id',
             submitSuccess: false
           };
 
           var template =
-          '<div id="findConvention" class="panel panel-default" ng-class="{\'panel-success\': findConvention.valid, \'panel-danger\': findConvention.valid===false}">'+ '  <div class="panel-heading">'+
-          '    <div ng-switch on="findConvention.submitSuccess">'+
+          '<div id="findPatient" class="panel panel-default" ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+ '  <div class="panel-heading">'+
+          '    <div ng-switch on="findPatient.submitSuccess">'+
           '     <div ng-switch-when="false">'+
           '       <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}'+
           '       <div class="pull-right">'+
-          '         <a id="findById" ng-class="{\'link-selected\': findConvention.state===\'id\'}" ng-click="findConvention.updateState(\'id\')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
-          '         <a id="findByName" ng-class="{\'link-selected\': findConvention.state===\'name\'}" ng-click="findConvention.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
+          '         <a id="findById" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.updateState(\'id\')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
+          '         <a id="findByName" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
           '       </div>'+
           '     </div>'+
           '     <div ng-switch-when="true">'+
           '       <!-- Style hack -->'+
-          '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findConvention.debtor.name}} <small>({{findConvention.debtor.sex}} {{findConvention.debtor.age}})</small>'+
+          '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>'+
           '       <div class="pull-right">'+
-          '         <span ng-click="findConvention.refresh()" class="glyphicon glyphicon-repeat"></span>'+
+          '         <span ng-click="findPatient.refresh()" class="glyphicon glyphicon-repeat"></span>'+
           '       </div>'+
           '     </div>'+
           '    </div>'+
           '  </div>'+
-          '  <div class="panel-body find-collapse" ng-show="!findConvention.submitSuccess">'+
-          '    <div ng-switch on="findConvention.state">'+
+          '  <div class="panel-body find-collapse" ng-show="!findPatient.submitSuccess">'+
+          '    <div ng-switch on="findPatient.state">'+
           '      <div ng-switch-when="name">'+
           '        <div class="input-group">'+
           '          <input '+
           '          id="findSearch" ' +
           '          type="text" '+
-          '          ng-model="findConvention.selectedDebtor" '+
+          '          ng-model="findPatient.selectedDebtor" '+
           '          typeahead="patient as patient.name for patient in debtorList | filter:$viewValue | limitTo:8" '+
           '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
           '          typeahead-on-select="loadDebitor(debitor.id)" '+
@@ -320,7 +320,7 @@
           '          class="form-kapok" '+
           '          size="25">'+
           '          <span class="input-group-btn"> '+
-          '            <button id="submitSearch" ng-disabled="validateNameSearch(findConvention.selectedDebtor)" ng-click="submitDebtor(findConvention.selectedDebtor)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }}</button>'+
+          '            <button id="submitSearch" ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }}</button>'+
           '          </span>'+
           '        </div>'+
           '      </div> <!-- End searchName component -->'+
@@ -328,11 +328,11 @@
           '        <div class="input-group">'+
           '          <input '+
           '            type="text"'+
-          '            ng-model="findConvention.debtorId"'+
+          '            ng-model="findPatient.debtorId"'+
           '            class="form-kapok"'+
           '            placeholder="Patient ID">'+
           '          <span class="input-group-btn">'+
-          '            <button ng-click="submitDebtor(findConvention.debtorId)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }} </button>'+
+          '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }} </button>'+
           '          </span>'+
           '        </div>'+
           '      </div>'+
@@ -346,11 +346,11 @@
           };
 
           //TODO Downloads all patients for now - this should be swapped for an asynchronous search
-          validate.process(dependencies).then(findConvention);
+          validate.process(dependencies).then(findPatient);
           cache.fetch('cacheState').then(loadDefaultState);
 
-          function findConvention(model) {
-            scope.findConvention.model = model;
+          function findPatient(model) {
+            scope.findPatient.model = model;
             extractMetaData(model.debtor.data);
             var patients = extractMetaData(model.debtor.data);
             debtorList = scope.debtorList = angular.copy(patients);
@@ -358,16 +358,16 @@
 
           function searchName(value) {
             if(typeof(value)==='string') return messenger.danger('Submitted an invalid debtor');
-            scope.findConvention.debtor = value;
+            scope.findPatient.debtor = value;
             searchCallback(value);
-            scope.findConvention.submitSuccess = true;
+            scope.findPatient.submitSuccess = true;
           }
 
           function searchId(value) {
             var id = parseId(value), project;
 
             if(!id) return messenger.danger('Cannot parse patient ID');
-            project = scope.findConvention.model.project.get(id.projectCode);
+            project = scope.findPatient.model.project.get(id.projectCode);
 
             if(!project) return messenger.danger('Cannot find project \'' + id.projectCode + '\'');
 
@@ -406,17 +406,17 @@
           }
 
           function handleIdRequest(model) {
-            var debtor = scope.findConvention.debtor = extractMetaData(model.debtor.data)[0];
+            var debtor = scope.findPatient.debtor = extractMetaData(model.debtor.data)[0];
             console.log('downloaded', model);
             //Validate only one debtor matches
             if(!debtor) return messenger.danger("Received invalid debtor, unknown");
-            scope.findConvention.valid = true;
+            scope.findPatient.valid = true;
             searchCallback(debtor);
-            scope.findConvention.submitSuccess = true;
+            scope.findPatient.submitSuccess = true;
           }
 
           function handleIdError(error) {
-            scope.findConvention.valid = false;
+            scope.findPatient.valid = false;
             console.log(error);
 
             //Naive implementation
@@ -428,7 +428,7 @@
           }
 
           function submitDebtor(value) {
-            stateMap[scope.findConvention.state](value);
+            stateMap[scope.findPatient.state](value);
           }
 
           function extractMetaData(patientData) {
@@ -455,180 +455,36 @@
             if(!value) return true;
 
             if(typeof(value)==='string') {
-              scope.findConvention.valid = false;
+              scope.findPatient.valid = false;
               return true;
             }
-            scope.findConvention.valid = true;
+            scope.findPatient.valid = true;
           }
 
           function resetSearch() {
-            scope.findConvention.valid = false;
-            scope.findConvention.submitSuccess = false;
-            scope.findConvention.debtor = "";
+            scope.findPatient.valid = false;
+            scope.findPatient.submitSuccess = false;
+            scope.findPatient.debtor = "";
           }
 
           function updateState(newState) {
-            scope.findConvention.state = newState;
+            scope.findPatient.state = newState;
             cache.put('cacheState', {state: newState});
           }
 
           // FIXME Configure component on this data being available, avoid glitching interface
           function loadDefaultState(defaultState) {
-            if(defaultState) return scope.findConvention.state = defaultState.state;
+            if(defaultState) return scope.findPatient.state = defaultState.state;
           }
 
           // Expose selecting a debtor to the module (probabl a hack)(FIXME)
-          scope.findConvention.forceSelect = searchUuid;
+          scope.findPatient.forceSelect = searchUuid;
 
           scope.validateNameSearch = validateNameSearch;
-          scope.findConvention.refresh = resetSearch;
+          scope.findPatient.refresh = resetSearch;
           scope.submitDebtor = submitDebtor;
 
-          scope.findConvention.updateState = updateState;
-          element.replaceWith($compile(template)(scope));
-        }
-      };
-    }])
-
-    .directive('findConvention', ['$compile', 'validate', 'messenger', 'connect', 'appcache', function($compile, validate, messenger, connect, Appcache) {
-      return {
-        restrict: 'A',
-        link : function(scope, element, attrs) {
-          var dependencies = {}, conventionList = scope.conventionList = [];
-          var searchCallback = scope[attrs.onSearchComplete];
-          var cache = new Appcache('conventionSearchDirective');
-
-          if(!searchCallback) { throw new Error('Convention Search directive must implement data-on-search-complete'); }
-
-          dependencies.debtor_group = {
-            required : true,
-            query : {
-              tables : {
-                debitor_group : { columns : ['uuid', 'account_id', 'phone','email']},
-                village : { columns : ['name']},
-                price_list : {columns : ['title', 'description']}
-              },
-              join : [
-                'debitor_group.location_id=village.uuid',
-                'debitor_group.price_list_uuid=price_list.uuid'
-              ]
-            }
-          };
-
-          scope.findConvention = {
-            state: 'name',
-            submitSuccess: false
-          };
-
-          var template =
-            '<div id="findConvention" class="panel panel-default" ng-class="{\'panel-success\': findConvention.valid, \'panel-danger\': findConvention.valid===false}">'+ '  <div class="panel-heading">'+
-            '    <div ng-switch on="findConvention.submitSuccess">'+
-            '     <div ng-switch-when="false">'+
-            '       <span class="glyphicon glyphicon-search"></span> {{ "CFIND.TITLE" | translate }}'+
-            '       <div class="pull-right">'+
-            '         <a id="findByName" ng-class="{\'link-selected\': findConvention.state===\'name\'}" ng-click="findConvention.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "CFIND.SEARCH" | translate }} </a>'+
-            '       </div>'+
-            '     </div>'+
-            '     <div ng-switch-when="true">'+
-            '       <!-- Style hack -->'+
-            '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findConvention.debtor_group.name}} <small>({{findConvention.debtor_group.phone}})</small>'+
-            '       <div class="pull-right">'+
-            '         <span ng-click="findConvention.refresh()" class="glyphicon glyphicon-repeat"></span>'+
-            '       </div>'+
-            '     </div>'+
-            '    </div>'+
-            '  </div>'+
-            '  <div class="panel-body find-collapse" ng-show="!findConvention.submitSuccess">'+
-            '    <div ng-switch on="findConvention.state">'+
-            '      <div ng-switch-when="name">'+
-            '        <div class="input-group">'+
-            '          <input '+
-            '          id="findSearch" ' +
-            '          type="text" '+
-            '          ng-model="findConvention.selectedConvention" '+
-            '          typeahead="convention as convention.name for convention in ConventionList | filter:$viewValue | limitTo:8" '+
-            '          placeholder=\'{{ "CFIND.PLACEHOLDER" | translate }}\' ' +
-            '          typeahead-on-select="loadDebitorGroup(debitor_group.uuid)" '+
-            '          typeahead-template-url="debitorGroupListItem.html"'+
-            '          class="form-kapok" '+
-            '          size="25">'+
-            '          <span class="input-group-btn"> '+
-            '            <button id="submitSearch" ng-disabled="validateNameSearch(findConvention.selectedConvention)" ng-click="submitDebitorGroup(findConvention.selectedConvention)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }}</button>'+
-            '          </span>'+
-            '        </div>'+
-            '      </div> <!-- End searchName component -->'+
-            '    </div> <!--End find patient switch -->'+
-            '  </div>'+
-            '</div>';
-
-          var stateMap = {
-            'name' : searchName,
-          };
-
-          //TODO Downloads all patients for now - this should be swapped for an asynchronous search
-          validate.process(dependencies).then(findConvention);
-          cache.fetch('cacheState').then(loadDefaultState);
-
-          function findConvention(model) {
-            scope.findConvention.model = model;
-            extractMetaData(model.debtor_group.data);
-            var conventions = extractMetaData(model.debtor_group.data);
-            conventionList = scope.conventionList = angular.copy(conventions);
-          }
-
-          function searchName(value) {
-            if(typeof(value)==='string') return messenger.danger('Submitted an invalid convention');
-            scope.findConvention.debitor_group = value;
-            searchCallback(value);
-            scope.findConvention.submitSuccess = true;
-          }
-
-          function submitDebitorGroup (value) {
-            stateMap[scope.findConvention.state](value);
-          }
-
-          function extractMetaData(conventionData) {
-
-            conventionData.forEach(function(convention) {
-              convention.name = patient.name;
-            });
-            return conventionData;
-          }
-
-          function validateNameSearch(value) {
-            if(!value) return true;
-
-            if(typeof(value)==='string') {
-              scope.findConvention.valid = false;
-              return true;
-            }
-            scope.findConvention.valid = true;
-          }
-
-          function resetSearch() {
-            scope.findConvention.valid = false;
-            scope.findConvention.submitSuccess = false;
-            scope.findConvention.debtor_group = "";
-          }
-
-          function updateState(newState) {
-            scope.findConvention.state = newState;
-            cache.put('cacheState', {state: newState});
-          }
-
-          // FIXME Configure component on this data being available, avoid glitching interface
-          function loadDefaultState(defaultState) {
-            if(defaultState) return scope.findConvention.state = defaultState.state;
-          }
-
-          // Expose selecting a debtor to the module (probabl a hack)(FIXME)
-          scope.findConvention.forceSelect = searchUuid;
-
-          scope.validateNameSearch = validateNameSearch;
-          scope.findConvention.refresh = resetSearch;
-          scope.submitDebtor = submitDebtor;
-
-          scope.findConvention.updateState = updateState;
+          scope.findPatient.updateState = updateState;
           element.replaceWith($compile(template)(scope));
         }
       };
@@ -678,6 +534,144 @@
           appstate.register('project', function (project) {
             $timeout(function () { scope.project = project; });
           });
+        }
+      };
+    }])
+
+    .directive('findConvention', ['$compile', 'validate', 'messenger', 'connect', 'appcache', function ($compile, validate, messenger, connect, Appcache) {
+      return {
+        restrict: 'A',
+        link : function(scope, element, attrs) {
+          var dependencies = {}, conventionList = scope.conventionList = [];
+          var searchCallback = scope[attrs.onSearchComplete];
+          var cache = new Appcache('conventionSearchDirective');
+
+          if(!searchCallback) { throw new Error('Convention Search directive must implement data-on-search-complete'); }
+
+          dependencies.debtor_group = {
+            required : true,
+            query : {
+              tables : {
+                debitor_group : { columns : ['uuid', 'name', 'account_id', 'phone','email']}
+              }
+            }
+          };
+
+          scope.findConvention = {
+            state: 'name',
+            submitSuccess: false
+          };
+
+          var template =
+            '<div id="findConvention" class="panel panel-default" ng-class="{\'panel-success\': findConvention.valid, \'panel-danger\': findConvention.valid===false}">'+ '  <div class="panel-heading">'+
+            '    <div ng-switch on="findConvention.submitSuccess">'+
+            '     <div ng-switch-when="false">'+
+            '       <span class="glyphicon glyphicon-search"></span> {{ "CFIND.TITLE" | translate }}'+
+            '       <div class="pull-right">'+
+            '         <a id="findByName" ng-class="{\'link-selected\': findConvention.state===\'name\'}" ng-click="findConvention.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "CFIND.SEARCH" | translate }} </a>'+
+            '       </div>'+
+            '     </div>'+
+            '     <div ng-switch-when="true">'+
+            '       <!-- Style hack -->'+
+            '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findConvention.debtor_group.name}}'+
+            '       <div class="pull-right">'+
+            '         <span ng-click="findConvention.refresh()" class="glyphicon glyphicon-repeat"></span>'+
+            '       </div>'+
+            '     </div>'+
+            '    </div>'+
+            '  </div>'+
+            '  <div class="panel-body find-collapse" ng-show="!findConvention.submitSuccess">'+
+            '    <div ng-switch on="findConvention.state">'+
+            '      <div ng-switch-when="name">'+
+            '        <div class="input-group">'+
+            '          <input '+
+            '          id="findSearch" ' +
+            '          type="text" '+
+            '          ng-model="findConvention.selectedConvention" '+
+            '          typeahead="convention as convention.name for convention in conventionList | filter:$viewValue | limitTo:8" '+
+            '          placeholder=\'{{ "CFIND.PLACEHOLDER" | translate }}\' ' +
+            '          typeahead-on-select="loadDebitorGroup(debitor_group.uuid)" '+
+            '          typeahead-template-url="debitorGroupListItem.html"'+
+            '          class="form-kapok" '+
+            '          size="25">'+
+            '          <span class="input-group-btn"> '+
+            '            <button id="submitSearch" ng-disabled="validateNameSearch(findConvention.selectedConvention)" ng-click="submitDebitorGroup(findConvention.selectedConvention)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }}</button>'+
+            '          </span>'+
+            '        </div>'+
+            '      </div> <!-- End searchName component -->'+
+            '    </div>'+
+            '  </div>'+
+            '</div>';
+
+          var stateMap = {
+            'name' : searchName,
+          };
+
+          //TODO Downloads all patients for now - this should be swapped for an asynchronous search
+          validate.process(dependencies).then(findConvention);
+          cache.fetch('cacheState').then(loadDefaultState);
+
+          function findConvention(model) {
+            scope.findConvention.model = model;
+            extractMetaData(model.debtor_group.data);
+            var conventions = extractMetaData(model.debtor_group.data);
+            conventionList = scope.conventionList = angular.copy(conventions);
+          }
+
+          function searchName(value) {
+            if(typeof(value)==='string') return messenger.danger('Submitted an invalid convention');
+            scope.findConvention.debtor_group = value;
+            searchCallback(value);
+            scope.findConvention.submitSuccess = true;
+          }
+
+          function submitDebitorGroup (value) {
+            stateMap[scope.findConvention.state](value);
+          }
+
+          function extractMetaData(conventionData) {
+
+            conventionData.forEach(function(convention) {
+              convention.name = convention.name;
+            });
+            return conventionData;
+          }
+
+          function validateNameSearch(value) {
+            if(!value) return true;
+
+            if(typeof(value)==='string') {
+              scope.findConvention.valid = false;
+              return true;
+            }
+            scope.findConvention.valid = true;
+          }
+
+          function resetSearch() {
+            scope.findConvention.valid = false;
+            scope.findConvention.submitSuccess = false;
+            scope.findConvention.debtor_group = "";
+          }
+
+          function updateState(newState) {
+            scope.findConvention.state = newState;
+            cache.put('cacheState', {state: newState});
+          }
+
+          // FIXME Configure component on this data being available, avoid glitching interface
+          function loadDefaultState(defaultState) {
+            if(defaultState) return scope.findConvention.state = defaultState.state;
+          }
+
+          // Expose selecting a debtor to the module (probabl a hack)(FIXME)
+          //scope.findConvention.forceSelect = searchUuid;
+
+          scope.validateNameSearch = validateNameSearch;
+          scope.findConvention.refresh = resetSearch;
+          scope.submitDebitorGroup = submitDebitorGroup;
+
+          scope.findConvention.updateState = updateState;
+          element.replaceWith($compile(template)(scope));
         }
       };
     }]);
