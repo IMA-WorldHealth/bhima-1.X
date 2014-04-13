@@ -12,7 +12,7 @@ angular.module('kpk.controllers')
   function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid) {
 
     //inits and declarations
-    var dependencies = {}, configuration = {}, uuid = uuid();
+    var dependencies = {}, configuration = {};
     $scope.data= {};
 
     dependencies.project = {
@@ -24,6 +24,11 @@ angular.module('kpk.controllers')
           }
         }
       }
+    }
+
+    dependencies.summers = {
+      query :'pcash_transfert_summers',
+      identifier : 'reference'
     }
 
     dependencies.cash_box = {
@@ -62,10 +67,6 @@ angular.module('kpk.controllers')
 
     dependencies.cashier = {
       query : 'user_session'
-    }
-
-    dependencies.summers = {
-      query : '/synthetic/pcRI/'
     }
 
     //fonctions
@@ -113,12 +114,6 @@ angular.module('kpk.controllers')
       console.log('[configuration]', configuration);
     }
 
-    function formatTab (m){
-      return m.pcash_accounts.data.map(function (item){
-        return item.pcash_account;
-      });
-    }
-
     function updateConfig(){
       configuration.symbol = $scope.data.currency.symbol;
       configuration.currency_id = $scope.data.currency.id;
@@ -129,39 +124,6 @@ angular.module('kpk.controllers')
       return;
     }
 
-    function resolve () {
-      map[$scope.data.source_id]();
-    }
-
-    function transferCashAuxi (){
-      getExpectedAmount().then(handlResult);
-    }
-
-    function transferCashPax (){
-      //console.log('cashPax');
-    }
-
-    function handlResult (res) {
-      res.data.map(function (item) {
-        item.text = getAccountText(item.account_id)[0].account_txt;
-      });
-      var print = res.data.map(function (item) {
-        return item.text+ ' : '+$scope.enterprise_symbole_currency+item.balance;
-      });
-
-      $scope.data.expected = print.join(' ; ');
-    }
-
-    function getAccountText (account_id) {
-      return $scope.model.accounts.data.filter(function (item) {
-        return item.id === account_id;
-      });
-    }
-
-    function setCashAccount(cashAccount) {
-      if(cashAccount) $scope.selectedItem = cashAccount;
-    }
-
     function convert(value, currency_id){
       if(!(value && currency_id)) return;
       return exchange.myExchange(value, currency_id);
@@ -170,6 +132,7 @@ angular.module('kpk.controllers')
     function isValid(){
       var clean = true;
       if(!configuration) return false;
+      if(!configuration.pcash) return false;
       if(!$scope.data.value) return false;
       for(var k in configuration){
         clean = clean && (k)? true : false;
@@ -179,22 +142,26 @@ angular.module('kpk.controllers')
 
     function ajouter (){
       configuration.value = $scope.data.value;
-       console.log('configuration', configuration);
       if(!isValid()) return;
      writeTransfer()
       .then(postToJournal)
       .then(function (prom){
-        console.log('la promesse', prom);
-
+        refresh();
       })
       .catch(function (){
         console.log('erreur');
       });
     }
 
+    function refresh(){
+      configuration = {};
+      validate.refresh(dependencies, ['summers']).then(init, handlError);
+
+    }
+
     function writeTransfer (){
       var pcash = {
-        uuid : uuid,
+        uuid : uuid(),
         project_id : configuration.project_id,
         type : 'E',
         date : util.convertToMysqlDate(new Date().toISOString().slice(0,10)),
@@ -206,11 +173,12 @@ angular.module('kpk.controllers')
         account_id : configuration.cash_account_currency[0].account_id,
         cash_box_id : 1
       }
+      configuration.pcash=pcash;
       return connect.basicPut('pcash', connect.clean(pcash));
     }
 
     function postToJournal (res) {
-      return connect.fetch('/journal/pcash/' + uuid);
+      return connect.fetch('/journal/pcash/' + configuration.pcash.uuid);
     }
 
     function commitConfiguration (){
@@ -223,7 +191,7 @@ angular.module('kpk.controllers')
      appstate.register('enterprise', function (enterprise){
        $scope.project = project;
        $scope.enterprise = enterprise;
-       validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier']).then(init, handlError);
+       validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'summers']).then(init, handlError);
      })
     });
 
@@ -244,17 +212,5 @@ angular.module('kpk.controllers')
     $scope.ajouter = ajouter;
     $scope.configuration = configuration;
     $scope.updateConfig = updateConfig;
-
-     // dependencies.exchange_rate = {
-    //   required : true,
-    //   query : {
-    //     tables : {
-    //       'exchange_rate' : {
-    //         columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
-    //       }
-    //     },
-    //     where : ['exchange_rate.date='+util.convertToMysqlDate(new Date().toISOString().slice(0,10))]
-    //   }
-    // };
   }
 ]);
