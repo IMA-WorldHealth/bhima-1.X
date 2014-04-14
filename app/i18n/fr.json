@@ -210,7 +210,8 @@
     "SEARCH"          : "Chercher Par Nom",
     "PLACEHOLDER"     : "Chercher un Debiteur"
   },
-  "CFIND"              : {
+
+  "CFIND"             : {
     "TITLE"           : "Trouver Convention",
     "SEARCH"          : "Chercher Par Nom",
     "PLACEHOLDER"     : "Chercher une convention"
@@ -952,17 +953,13 @@
     "SUCCES"       : "Operation reussie !",
     "DANGER"       : "Erreur ! Une erreur se produite pendant le posting !"
   },
-    "CONVENTION"         : {
+
+ "CONVENTION"            : {
     "TITLE"              : "Convention",
     "CASH"               : "Caisse Principale",
-    "INFO"               : "Informations Convention",
-    "NAME"               : "Noms",
-    "AGE"                : "Age",
-    "GENDER"             : "GENDER",
-    "ORIGIN"             : "Origines",
-    "INFO_CONVENTION"    : "Information sur la convention",
+    "INFO"               : "Informations financiere sommaire",
+    "PAYEMENT"           : "Boite de paie",
     "CONVENTION"         : "Convention",
-    "PAY"                : "Payer",
     "SUCCES"             : "Operation reussie !",
     "DANGER"             : "Erreur ! Une erreur se produite pendant le posting !"
   },
