@@ -5,9 +5,10 @@ angular.module('kpk.controllers')
   'validate',
   'messenger',
   'appstate',
+  'connect',
   'uuid',
   'util',
-  function ($scope, $routeParams, validate, messenger, appstate, uuid, util) {
+  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util) {
     var dependencies = {};
     var session = $scope.session = { receipt : {} };
 
@@ -15,17 +16,37 @@ angular.module('kpk.controllers')
 
     session.today = $scope.timestamp.toISOString().slice(0, 10);
 
-    dependencies.supplier = {
+    dependencies.suppliers = {
       query : {
         tables : {
           'supplier' : {
             columns : ['uuid', 'creditor_uuid', 'name', 'address_1', 'address_2', 'location_id', 'email']
           },
           'creditor' : {
-            columns : ['group_uuid']
+            columns : ['text']
+          },
+          'creditor_group' : {
+            columns : ['account_id']
           }
         },
-        join : ['supplier.uuid=creditor.group_uuid']
+        join : ['supplier.creditor_uuid=creditor.uuid', 'creditor.group_uuid=creditor_group.uuid']
+      }
+    };
+
+    dependencies.temp = {
+      query : {
+        tables : {
+          'patient' : {
+            columns : ['uuid', 'first_name', 'last_name']
+          },
+          'debitor' : {
+            columns : ['text']
+          },
+          'debitor_group' : {
+            columns: ['account_id']
+          }
+        },
+        join: ['patient.debitor_uuid=debitor.uuid', 'debitor.group_uuid=debitor_group.uuid']
       }
     };
 
@@ -45,6 +66,8 @@ angular.module('kpk.controllers')
       .then(function (models) {
         angular.extend($scope, models);
         session.receipt.date = new Date().toISOString().slice(0, 10);
+        session.receipt.value = 0.00;
+        session.receipt.cash_box_id = $routeParams.id;
       })
       .catch(function (err) {
         messenger.error(err);
@@ -52,7 +75,7 @@ angular.module('kpk.controllers')
     });
 
     function formatDates () {
-      session.receipt.date = util.toMysqlDate(session.receipt.date);
+      session.receipt.date = util.convertToMysqlDate(session.receipt.date);
     }
 
     $scope.generate = function generate () {
@@ -60,16 +83,44 @@ angular.module('kpk.controllers')
     };
 
     $scope.clear = function clear () {
-      $scope.session.receipt = {};
+      session.receipt = {};
+      session.receipt.date = new Date().toISOString().slice(0, 10);
+      session.receipt.value = 0.00;
+      session.receipt.cash_box_id = $routeParams.id;
     };
 
     $scope.submit = function submit () {
-      session.receipt.uuid = uuid();
+      var receipt = session.receipt;
       formatDates();
-      session.receipt.currency_id =  session.currency.id;
-      session.receipt.istransfer = 0;
 
+      connect.fetch('/user_session')
+      .success(function (user) {
 
+        var data = {
+          uuid : uuid(),
+          reference : 1,
+          project_id : $scope.project.id,
+          type : 'S',
+          date : receipt.date,
+          deb_cred_uuid : receipt.receiptient.uuid,
+          deb_cred_type : 'C',
+          currency_id : session.currency.id,
+          value : receipt.value,
+          cashier_id : user.id,
+          description : receipt.description,
+          istransfer : 0,
+          account_id : receipt.receipient.account_id,
+          cash_box_id : receipt.cash_box_id
+        };
+
+        return connect.basicPut('pcash', [data]);
+      })
+      .then(function () {
+        messenger.success("Posted data successfully.");
+      })
+      .catch(function (err) {
+        messenger.error(err);
+      });
     };
   }
 ]);
