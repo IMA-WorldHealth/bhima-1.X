@@ -7,7 +7,6 @@ angular.module('kpk.controllers')
   'validate',
   'uuid',
   function ($scope, connect, appstate, messenger, validate, uuid) {
-
     var dependencies = {};
 
     dependencies.accounts = {
@@ -52,7 +51,7 @@ angular.module('kpk.controllers')
     }
 
     function buildModels (models) {
-      for (var k in models) { $scope[k] = models[k]; }
+      angular.extend($scope, models);
       $scope.action = '';
       $scope.data = {};
 
