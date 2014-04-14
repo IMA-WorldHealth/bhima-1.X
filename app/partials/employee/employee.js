@@ -8,11 +8,19 @@ angular.module('kpk.controllers').controller('employee',
       create : 'EMPLOYEE.REGISTER',
       edit : 'EMPLOYEE.EDIT'
     };
-
+    
     dependencies.employee = { 
       query : { 
         tables : { 
           employee : { columns : ['id', 'creditor_uuid'] } 
+        }
+      }
+    };
+
+    dependencies.creditorGroup = { 
+      query : { 
+        tables : { 
+          creditor_group : { columns : ['uuid', 'name', 'account_id', 'locked'] }
         }
       }
     };
@@ -25,6 +33,7 @@ angular.module('kpk.controllers').controller('employee',
 
     function createEmployee() { 
       session.state = route.create;
+      session.employee = {};
       console.log(session.state);
     }
 
