@@ -4,34 +4,33 @@
 
 <section class="top-nav">
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="createEmployee()">
-      <i class="glyphicon glyphicon-user"></i> {{ "EMPLOYEE.REGISTER" | translate }}
-    </button>
+    <!-- <button class="btn btn&#45;sm btn&#45;default" ng&#45;click="createEmployee()"> -->
+      <!-- <i class="glyphicon glyphicon&#45;user"></i> {{ "EMPLOYEE.REGISTER" | translate }} -->
+    <!-- </button> -->
   </div>
 </section>
 
 <div class="content">
   <div class="row" style="height: 100%">
     <div class="col-xs-6" style="height: 100%">
-      <div class="panel panel-default" style="overflow: auto;">
+      <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
         <div class="panel-heading">
           <span>{{ "EMPLOYEE.EMPLOYEES" | translate }}</span>
         </div>
+        <div class="panel-body">
         <table class="table table-striped table-condensed">
           <thead>
             <tr>
               <th>{{ "COLUMNS.NAME" | translate }}</th>
+              <th>{{ "COLUMNS.CODE" | translate }}</th>
               <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
-              <!-- <th><i class="glyphicon glyphicon&#45;lock"></i></th> -->
-              <!-- <th style="width:10%;">{{ "COLUMNS.EDIT" | translate }}</th> -->
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="employee in employee.data">
-              <td>{{ employee.name }}</td>
-              <!-- <td>{{ accounts.get(group.account_id).account_number }}</td> -->
-              <!-- <td><input type="checkbox" ng&#45;model="group.locked" ng&#45;change="lock(group)" ng&#45;true&#45;value="1" ng&#45;false&#45;value="0" ng&#45;checked="group.locked"></td> -->
-              <!-- <td style="cursor: pointer;"><a href="" ng&#45;click="editGroup(group)"><i class="glyphicon glyphicon&#45;pencil"></i></a></td> -->
+            <tr ng-repeat="item in employee.data">
+              <td>{{ item.name }}</td> 
+              <td>{{ item.code }}</td>
+              <td>{{ item.creditor_uuid }}</td>
             </tr>
 
             <tr ng-if="!employee.data.length">
@@ -40,9 +39,10 @@
           </tbody>
         </table>
       </div>
+      </div>
     </div>
 
-    <div class="col-xs-6" ng-switch="state">
+    <div class="col-xs-6">
       <!-- <div ng&#45;switch&#45;default> -->
       <!--   <div class="alert alert&#45;info"> -->
       <!--     <h4>{{ "EMPLOYEE.TITLE" | translate }}</h4> -->
@@ -51,7 +51,7 @@
   
          <!-- <div ng&#45;switch&#45;when="route.create"> -->
         <div>
-        <form class="form-horizontal" name="newGroup" novalidate>
+        <form class="form-horizontal" name="employeeForm" novalidate>
           <fieldset>
             <legend>{{ "EMPLOYEE.REGISTER" | translate }}</legend>
 
@@ -65,17 +65,31 @@
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "COLUMNS.CREDITOR_GROUP" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-kapok" ng-model="session.creditor.group_uuid" ng-options="group. required> 
+                <select class="form-kapok" ng-model="session.creditor.group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data" required> 
                   <option value="" disabled="disabled">--- {{ "SELECT.CREDITOR_GROUP" | translate }} ---</option>
-                  <option ng-repeat="group in creditorGroup.data | orderBy:'name'" value="{{group.uuid}}">
-                  {{ group.name }}
-                  </option>
+                  <!-- <option ng&#45;repeat="group in creditorGroup.data | orderBy:'name'" value="{{group.uuid}}"> -->
+                  <!-- {{ group.name }} -->
+                  <!-- </option> -->
                 </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.CODE" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-kapok" ng-model="session.employee.code" required>
+              </div>
+            </div> 
+            
+            <div class="form-group" >
+              <label for="employee-dob" class="col-xs-3 control-label required">{{ "EMPLOYEE.DOB" | translate }}</label>
+              <div class="col-xs-9">
+                <input id="employee-dob" required type="date" class="form-kapok"  ng-model="session.employee.dob">
               </div>
             </div>
 
             <div class="pull-right">
-              <button ng-disabled="newGroup.$invalid" class="btn btn-success btn-sm" ng-click="saveNew()">
+              <button ng-disabled="employeeForm.$invalid" class="btn btn-success btn-sm" ng-click="registerEmployee()">
                 {{ "CREDITOR_GRP.SAVE_CHANGES" | translate }} 
               </button>
             </div>
