@@ -334,6 +334,12 @@ div .reportFrame {
 
 }
 
+.selected-success { 
+  color: #468847;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
 .caret::after {
   content : attr(data-caret);
 }

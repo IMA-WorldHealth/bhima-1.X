@@ -74,16 +74,16 @@
       controller: 'cash',
       templateUrl: '/partials/cash/cash.html'
     })
-    .when('/creditors', {
+    .when('/creditor', {
       controller: 'creditorsController',
       templateUrl: '/partials/creditor/creditor.html'
     })
     .when('/creditors/creditor_group', {
       controller: 'creditorGroupCtrl',
       templateUrl: 'partials/creditor/group/creditor_group.html'
-    })
-    .when('/inventory/purchase', {
-      controller: 'purchaseOrderController',
+    }).
+    when('/inventory/purchase', {
+      controller: 'purchaseOrder',
       templateUrl: 'partials/purchase_order/purchase.html'
     })
     .when('/purchase_records/:purchaseID?', {
@@ -264,6 +264,10 @@
     .when('/primary_cash/', {
       controller : 'primaryCash',
       templateUrl : 'partials/primary_cash/primary.html'
+    })
+    .when('/employee', {
+      controller : 'employee',
+      templateUrl : 'partials/employee/employee.html'
     })
     .when('/journal/print', {
       controller : 'journal.print',
