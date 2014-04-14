@@ -33,38 +33,42 @@
               <!-- <td><input type="checkbox" ng&#45;model="group.locked" ng&#45;change="lock(group)" ng&#45;true&#45;value="1" ng&#45;false&#45;value="0" ng&#45;checked="group.locked"></td> -->
               <!-- <td style="cursor: pointer;"><a href="" ng&#45;click="editGroup(group)"><i class="glyphicon glyphicon&#45;pencil"></i></a></td> -->
             </tr>
+
+            <tr ng-if="!employee.data.length">
+              <td colspan="2">{{ 'EMPLOYEE.NONE_FOUND' | translate }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div class="col-xs-6" ng-switch="session.state">
-
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <h4>{{ "EMPLOYEE.TITLE" | translate }}</h4>
-          <p>{{ "EMPLOYEE.DESCRIPTION" | translate }}.</p>
-        </div> </div>
-      
-        <div ng-switch-when="route.create">
+    <div class="col-xs-6" ng-switch="state">
+      <!-- <div ng&#45;switch&#45;default> -->
+      <!--   <div class="alert alert&#45;info"> -->
+      <!--     <h4>{{ "EMPLOYEE.TITLE" | translate }}</h4> -->
+      <!--     <p>{{ "EMPLOYEE.DESCRIPTION" | translate }}.</p> -->
+      <!--   </div> </div> -->
+  
+         <!-- <div ng&#45;switch&#45;when="route.create"> -->
+        <div>
         <form class="form-horizontal" name="newGroup" novalidate>
           <fieldset>
-            <legend>{{ "CREDITOR_GRP.NEW" | translate }}</legend>
+            <legend>{{ "EMPLOYEE.REGISTER" | translate }}</legend>
 
             <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "COLUMNS.GROUP_NAME" | translate }}:</label>
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.NAME" | translate }}:</label>
               <div class="col-xs-9">
-                <input class="form-kapok" ng-model="new.name" required>
+                <input class="form-kapok" ng-model="session.employee.name" required>
               </div>
             </div> 
 
             <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}:</label>
+              <label class="col-xs-3 control-label required">{{ "COLUMNS.CREDITOR_GROUP" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-kapok" ng-model="new.account_id" required> 
-                  <option value="" disabled="disabled">--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
-                  <option ng-repeat="account in accounts.data | orderBy:'account_number'" ng-disabled="account.type=='title'" value="{{account.id}}">
-                    {{ account.account_number + ' -- ' + account.account_txt }}
+                <select class="form-kapok" ng-model="session.creditor.group_uuid" ng-options="group. required> 
+                  <option value="" disabled="disabled">--- {{ "SELECT.CREDITOR_GROUP" | translate }} ---</option>
+                  <option ng-repeat="group in creditorGroup.data | orderBy:'name'" value="{{group.uuid}}">
+                  {{ group.name }}
                   </option>
                 </select>
               </div>
@@ -74,51 +78,11 @@
               <button ng-disabled="newGroup.$invalid" class="btn btn-success btn-sm" ng-click="saveNew()">
                 {{ "CREDITOR_GRP.SAVE_CHANGES" | translate }} 
               </button>
-              <button class="btn btn-default btn-sm" ng-click="resetNew()">
-                {{ "CREDITOR_GRP.NEW_FORM" | translate }}
-              </button>
             </div>
 
           </fieldset>
         </form>
       </div>
-
-      <div ng-switch-when="edit">
-        <form class="form-horizontal" name="editGroup" novalidate>
-
-          <fieldset>
-            <legend>{{ "CREDITOR_GRP.DETAILS" | translate }}</legend>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label">{{ "COLUMNS.GROUP_NAME" | translate }}:</label>
-              <div class="col-xs-9">
-                <input class="form-kapok" ng-model="edit.name" required>
-              </div>
-            </div> 
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label">{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}:</label>
-              <div class="col-xs-9">
-                <select class="form-kapok" ng-model="edit.account_id" required> 
-                  <option value="" disabled="disabled">--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
-                  <option ng-repeat="account in accounts.data | orderBy:'account_number'" ng-disabled="account.type=='title'" value="{{account.id}}">
-                    {{ account.account_number + ' -- ' + account.account_txt }}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="pull-right">
-              <button ng-disabled="editGroup.$invalid" class="btn btn-success btn-sm" ng-click="saveEdit()">
-                {{ "CREDITOR_GRP.SAVE_CHANGES" | translate }}
-              </button>
-              <button class="btn btn-default btn-sm" ng-click="resetEdit()">
-                {{ "CREDITOR_GRP.NEW_FORM" | translate }}
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-
     </div>
   </div>
-<
+</div>
