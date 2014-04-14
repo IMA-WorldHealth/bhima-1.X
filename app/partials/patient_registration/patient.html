@@ -1,5 +1,5 @@
-<header>
-  {{ "PATIENT_REG.TITLE" | translate }} <small>{{patient.first_name}} {{patient.last_name}}</small>
+<header data-header>
+  {{ "PATIENT_REG.TITLE" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
 </header>
 
 <section class="top-nav">
@@ -31,7 +31,7 @@
                     <label for="first-name" class="control-label col-xs-3">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                     <div class="col-xs-9">
                       <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name">
-                    </div> 
+                    </div>
                   </div>
 
                   <div class="form-group">
@@ -52,7 +52,7 @@
                       </div>
                     </div>
                   </div>
-               
+
                   <!-- Use ng-show to display this only if enter full date is disabled -->
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
@@ -187,7 +187,7 @@
                   <div class="form-group">
                     <label for="debtor-group" class="col-xs-3 control-label">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
                     <div class="col-xs-9">
-                      <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data">
+                      <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
                         <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
                       </select>
                     </div>
@@ -196,7 +196,7 @@
               </form>
 
             </div> <!-- End panel body -->
-          </div> <!-- End panel -->         
+          </div> <!-- End panel -->
         </div> <!-- End patient details row -->
         <div class="row">
           <div class="panel panel-default">
@@ -308,5 +308,3 @@
     </a>
   </div>
 </section>
-
-

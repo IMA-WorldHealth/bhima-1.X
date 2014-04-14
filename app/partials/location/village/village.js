@@ -26,9 +26,9 @@ angular.module('kpk.controllers')
     dependencies.village = {
       identifier:'uuid',
       query : '/village/'
-    }
+    };
 
-    function manageVillage(model){
+    function manageVillage (model){
       for (var k in model) { $scope.model[k] = model[k]; }
     }
 

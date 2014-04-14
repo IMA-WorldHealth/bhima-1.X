@@ -3,24 +3,12 @@
 </header>
 
 <section class="top-nav">
-<!--   <div class="btn&#45;group"> -->
-<!--   <button class="btn btn&#45;sm btn&#45;default" ng&#45;click="select(0)" ng&#45;class="{current: current_process=='PO'}">Purchase -->
-<!--     Order -->
-<!--   </button> -->
-<!--   <button class="btn btn&#45;sm btn&#45;default" ng&#45;click="select(1)" ng&#45;class="{current: current_process=='QUOTE'}"> -->
-<!--     Quote -->
-<!--   </button> -->
-<!-- </div> -->
-<!-- <div class="pull&#45;right"> -->
-<!--   <a class="btn btn&#45;sm btn&#45;default"><span class="glyphicon glyphicon&#45;floppy&#45;save"></span> Import Pro forma -->
-<!--   </a> -->
-<!--   <a class="btn btn&#45;sm btn&#45;default"><span class="glyphicon glyphicon&#45;th&#45;list"></span> Update Defaults</a> -->
-<!--  -->
-<!-- </div> -->
+  <div class="pull-right">
+    <a class="btn btn-sm btn-default" ng-href="/#/creditor/">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</a>
+  </div>
 </section>
 
 <div class="content">
-
 <div class="row">
 
     <div class="col-xs-5">
@@ -30,40 +18,50 @@
         </div>
 
         <div class="panel-body purchase-header">
-
+        
           <div class="form-group">
             <label for="saledate">Sale Date</label>
-            <input type="date" id="saledate" class="form-kapok" ng-model="sale_date">
+            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.invoice_date">
           </div>
           <div class="form-group">
             <label for="select-cred">Supplier</label>
-            <select id="select-cred" ng-change="updateLocation(creditor)" ng-model="creditor" ng-options="formatCreditor(c) for c in creditor_model.data" class="form-kapok">
+            <select id="select-cred" ng-change="selectCreditor(session.creditor)" ng-model="session.creditor" ng-options="c as c.name for c in creditor.data" class="form-kapok">
               <option value="" disabled="disabled">--Select Creditor--</option>
             </select>
           </div>
           <div class="form-group">
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="immediate" value="true" ng-model="session.payable">
-                Payable Immediately
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="option_payable" id="pay" value="false" checked
-                       ng-model="session.payable">
-                Payable by
-              </label>
-            </div>
-            <div class="input-group">
-              <select id="payable" class="form-kapok" ng-disabled="isPayable()">
-                <!--FIXME Currently hardcoded - should these be pulled from a data set?-->
-                <option>14</option>
-                <option>30</option>
-              </select>
-              <span class="input-group-addon">days</span>
-            </div>
+            <label for="select-employee">Employee Responsible</label>
+            <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-kapok">
+              <option value="" disabled="disabled">--Select Employee--</option>
+            </select>
           </div>
+
+
+          <!-- Determine validity period of payment -->
+
+          <!-- <div class="form&#45;group"> -->
+          <!--   <div class="radio"> -->
+          <!--     <label> -->
+          <!--       <input type="radio" name="option_payable" id="immediate" value="true" ng&#45;model="session.payable"> -->
+          <!--       Payable Immediately -->
+          <!--     </label> -->
+          <!--   </div> -->
+          <!--   <div class="radio"> -->
+          <!--     <label> -->
+          <!--       <input type="radio" name="option_payable" id="pay" value="false" checked -->
+          <!--              ng&#45;model="session.payable"> -->
+          <!--       Payable by -->
+          <!--     </label> -->
+          <!--   </div>
+          <!--   <div class="input&#45;group"> -->
+          <!--     <select id="payable" class="form&#45;kapok" ng&#45;disabled="isPayable()"> -->
+          <!--       <!&#45;&#45;FIXME Currently hardcoded &#45; should these be pulled from a data set?&#45;&#45;> -->
+          <!--       <option>14</option> -->
+          <!--       <option>30</option> -->
+          <!--     </select> -->
+          <!--     <span class="input&#45;group&#45;addon">days</span> -->
+          <!--   </div> -->
+          <!-- </div> -->
         </div>
 
       </div>
@@ -89,9 +87,9 @@
                 </thead>
                 <tbody>
                 <tr>
-                  <td>{{invoice_id}}</td>
-                  <td>{{sale_date}}</td>
-                  <td>{{formatText()}}</td>
+                  <td>{{session.hr_id}}</td>
+                  <td>{{session.purchase.invoice_date | date}}</td>
+                  <td>{{session.purchase.note}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -107,12 +105,12 @@
                   <th>Supplier</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody ng-if="session.creditor">
                   <tr>
                     <td>
-                      <h4><strong>{{creditor.name}}</strong></h4>
-                      <h4>{{creditor.village}}</h4>
-                      <h4>{{creditor.province}}</h4>
+                      <h4><strong>{{session.creditor.name}}</strong></h4>
+                      <h4>{{session.location.village}}</h4>
+                      <h4>{{session.location.province}}</h4>
                     </td>
                   </tr>
                 </tbody>
@@ -127,37 +125,57 @@
   </div>
 
   <div class="row">
-
+  
     <div class="col-xs-12">
-      <div class="panel panel-success">
+
+      <div class="panel panel-default" ng-class="{'panel-success' : (session.creditor && session.employee)}">
         <div class="panel-heading">
           <span>Purchase Items</span>
-          <button class="pull-right" ng-click="updateInventory()">+</button>
+          <!-- FIXME style hack -->
+          <button ng-disabled="!(session.creditor && session.employee)" class="pull-right" ng-click="addPurchaseItem()" style="margin-top: -4px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
 
         </div>
-
-        <table class="table table-condensed" ng-show="itemsInInv()">
+        
+        <table class='table-condensed table' ng-if="session.creditor && session.employee">
           <thead>
-          <tr>
-            <td class="invoice-item">Item</td>
-            <td class="invoice-desc">Description</td>
-            <td>Qty</td>
-            <td>Unit Price</td>
-            <td>Amount</td>
-          </tr>
+            <tr>
+              <th>{{ "COLUMNS.ITEM" | translate }}</th>
+              <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+              <th>{{ "COLUMNS.QTY" | translate }}</th>
+              <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+              <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+              <th></th>
+            </tr>
           </thead>
+
           <tbody>
-          <tr ng-repeat="item in inventory">
-            <td class="invoice-item"><select class="form-invoice" ng-change="updateItem(item)" ng-model="item.item"
-                                             ng-options="l.code for l in inventory_model.data"><option value="" disabled="disabled">--Select Item--</option></select></td>
-            <td class="invoice-desc"><input type="text" class="form-invoice" ng-model="item.text"></td>
-            <td class="invoice-quantity"><input type="number" class="form-invoice" ng-model="item.quantity"></td>
-            <td class="invoice-price"><input type="number" class="form-invoice" ng-model="item.price"></td>
-            <td class="invoice-amount"><span>{{item.quantity * item.price | currency}}</span></td>
-          </tr>
-          <tr>
-            <td colspan="4"></td>
-            <td><span><b>{{invoiceTotal() | currency}}</b></span></td>
+            <!-- FIXME: strange filter -->
+            <tr ng-class="{'incomplete-outline': !purchaseItem.code, 'complete-outline': purchaseItem.code}" ng-repeat="purchaseItem in session.items">
+              <td>
+                <input
+                class="form-invoice"
+                type="text"
+                typeahead-template-url="invoiceListItem.html"
+                ng-model="purchaseItem.selectedReference"
+                typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory.data | filter:$viewValue | limitTo:8"
+                typeahead-on-select="updatePurchaseItem(purchaseItem, purchaseItem.selectedReference)"
+                placeholder="Search Inventory">
+              </td>
+
+              <!-- -1 for no tab, 0 to allow -->
+              <td><input ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.text}}"></td>
+              <td><input ng-change="cacheQuantity(purchaseItem)" tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.quantity"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.price"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.price | currency}}"></td>
+              <td><a ng-click="removePurchaseItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+            
+            <tr>
+              <!-- Style hack -->
+              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "SALE.TOTAL" | translate }}</b></td>
+              <td colspan="2"><b>{{ purchaseTotal() | currency }}</b></td>
+            </tr>
+
           </tbody>
         </table>
       </div>
@@ -168,6 +186,13 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="!creditor || inventory.length==0" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
+    <a ng-disabled="verifyPurchase(session.items)" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
   </div>
 </section>
+
+<script type="text/ng-template" id="invoiceListItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>
