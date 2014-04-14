@@ -1,0 +1,65 @@
+<div class="reportBody">
+  <div class="reportFrame" style="overflow: auto;">
+    <h3 style="text-align: center;">{{ "TRIAL_BALANCE.TITLE" | translate }}<small style="float:right;"> {{ timestamp | date:'dd-MM-yyyy HH:mm:ss' }}</small></h3>
+
+    <div class="summary">
+      <h5>{{ "TRIAL_BALANCE.SUMMARY" | translate }}</h5>
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{ "TRIAL_BALANCE.ERRORS" | translate }}
+      </label>
+
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{ "TRIAL_BALANCE.TRANSACTIONS" | translate }}
+      </label>
+
+      <label style="padding: 0 5px;">
+        <span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}
+      </label>
+    </div>
+
+    <table class="reportTable">
+      <thead style="font-size: 14px;">
+        <tr>
+          <th>{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.BEFORE' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.DEBIT' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.CREDIT' | translate }}</th>
+          <th>{{ 'TRIAL_BALANCE.AFTER' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="account in balances | orderBy:'account_number'">
+          <td><b>{{ account.account_number }}</b></td>
+          <td ng-bind-html="account.balance | intlcurrency:2"></td>
+          <td ng-bind-html="account.debit | intlcurrency:2"></td>
+          <td ng-bind-html="account.credit | intlcurrency:2"></td>
+          <td ng-bind-html="(account.balance + (account.credit-account.debit)) | intlcurrency:2"></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>{{ 'UTIL.TOTAL' | translate }}</th>
+          <th ng-bind-html="total.before | intlcurrency:2"></th>
+          <th ng-bind-html="total.debit | intlcurrency:2"></th>
+          <th ng-bind-html="total.credit | intlcurrency:2"></th>
+          <th ng-bind-html="total.after | intlcurrency:2"></th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="signatures">
+      <h5>{{ "TRIAL_BALANCE.SIGNATURES" | translate }}</h5>
+
+      <div class="signature-box">
+        <label>{{ "TRIAL_BALANCE.CHIEF_ACCOUNTANT" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+        <div class="signature-line"></div>
+      </div>
+
+      <div class="signature-box">
+        <label>{{ "TRIAL_BALANCE.FINANCE_OFFICER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+        <div class="signature-line"></div>
+      </div>
+
+    </div>
+  </div>
+</div>

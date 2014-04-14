@@ -1,35 +1,28 @@
-// TODO Global charges currently don't hit an invetory item || account,
-// no way of tracing this back to a reason for being
 angular.module('kpk.controllers')
 .controller('journalVoucher', [
   '$scope',
-  '$location',
-  '$http',
-  '$routeParams',
   'validate',
   'connect',
   'appstate',
   'messenger',
-  'appcache',
-  'precision',
   'uuid',
   'util',
-  '$q',
   'exchange',
-  function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid, util, $q, exchange) {
-    var dependencies = {}, ID = null;
-    $scope.voucher = {};
-    var uuid_log = null;
-    $scope.voucher.rows = [];
+  function ($scope, validate, connect, appstate, messenger, uuid, util, exchange) {
+    var dependencies = {};
+    var voucher = $scope.voucher = { rows : [] };
+    var session = $scope.session = {};
 
-    $scope.model = {};
+    $scope.options = ['D', 'C'];
+
+    $scope.today = new Date().toISOString().slice(0,10);
 
     dependencies.accounts = {
       required : true,
       query : {
         tables : {
           'account' : {
-            columns : ['id', 'account_number', 'account_txt']
+            columns : ['id', 'account_number', 'account_txt', 'account_type_id']
           }
         }
       }
@@ -56,12 +49,7 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.user = {
-      query : 'user_session'
-    };
-
-
-    function JournalRow (){
+    function JournalRow () {
       this.id = Math.random();
       this.description = null;
       this.account = null;
@@ -76,157 +64,153 @@ angular.module('kpk.controllers')
       return this;
     }
 
-    function init (model){
-      for(var k in model){$scope[k] = model[k]}
-      $scope.selectedItem = model.currencies.data[model.currencies.data.length-1];
-      $scope.voucher.currency_id = $scope.selectedItem.id;
-      $scope.voucher.trans_date = util.convertToMysqlDate(new Date());
+    function init (model) {
+      for (var k in model) { $scope[k] = model[k]; }
 
-      addRow();
-      addRow();
-
-      $q.all([getTransID()])
-      .then(function (response){
-        response[0].data[0].increment = (response[0].data[0].increment)? response[0].data[0].increment : 1;
-        $scope.voucher.trans_id = response[0].data[0].abbr+response[0].data[0].increment;
-        uuid_log = uuid();
-        $scope.voucher.log_id = uuid_log;
-      });
-      window.voucher = $scope.voucher;
-    }
-
-    function error (err) {}
-
-    function setCurrency(currency) {
-      if(currency) {$scope.selectedItem = currency; $scope.voucher.currency_id = currency.id;}
-    }
-
-    function addRow() {
-      var row = new JournalRow();
-      $scope.voucher.rows.push(row);
-      return row;
-    }
-
-    function getTotal(){
-      var debitSom = 0, creditSom = 0;
-      $scope.voucher.rows.forEach(function (item){
-        debitSom+=item.debit;
-        creditSom+=item.credit;
+      $scope.accounts.data.forEach(function (account) {
+        account.account_number = String(account.account_number);
       });
 
-      $scope.voucher.td = debitSom;
-      $scope.voucher.tc = creditSom;
-      //return {td : debitSom, tc : creditSom};
+      voucher.currency_id = model.currencies.data[model.currencies.data.length-1].id;
+      voucher.trans_date = util.convertToMysqlDate(new Date());
+      voucher.rows = [new JournalRow(), new JournalRow()];
+
+      connect.fetch('/max_trans/' + $scope.project.id)
+      .success(function (ids) {
+        var id = ids.pop();
+        voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
+      })
+      .catch(function (err) {
+        console.error('An error occured : ' + JSON.stringify(err));
+      });
     }
 
-    function submit (){
-      getPeriod()
-      .then(function (period){
-        var records = $scope.voucher.rows.map(function (row){
-          var record = {};
-          record.uuid = uuid();
-          record.project_id = $scope.project.id;
-          record.fiscal_year_id = period.data[0].fiscal_year_id;
-          record.period_id = period.data[0].id;
-          record.trans_id = $scope.voucher.trans_id;
-          record.trans_date = util.convertToMysqlDate($scope.voucher.trans_date);
-          record.description = row.description;
-          record.account_id = row.account.id;
-          record.debit = row.debit;
-          record.credit = row.credit;
-          record.debit_equiv = exchange.myExchange(row.debit, $scope.voucher.currency_id);
-          record.credit_equiv = exchange.myExchange(row.credit, $scope.voucher.currency_id);
-          record.currency_id = $scope.voucher.currency_id;
-          record.deb_cred_uuid = row.deb_cred_uuid;
-          record.deb_cred_type = row.deb_cred_type;
-          record.inv_po_id = $scope.voucher.inv_po_id;
-          record.comment = row.comment;
-          record.origin_id = 9;
-          record.user_id = $scope.user.data.id;
-          return connect.clean(record);
-        });
+    $scope.submit = function submit () {
+      // local variables to speed up calculation
+      var prid, peid, fyid, description, transDate, invid, userId;
+      prid = $scope.project.id;
+      transDate = util.convertToMysqlDate(voucher.trans_date);
+      invid = voucher.inv_po_id;
+      description = voucher.description;
 
-        $q.all(records.map(function (row) {
-          return connect.basicPut('posting_journal', row);
-        }))
-        .then(function (resp) {
-          var log = {
-            transaction_id : $scope.voucher.trans_id,
-            note           : $scope.voucher.description,
-            date           : $scope.voucher.trans_date,
-            user_id        : $scope.user.data.id
+      // serialize date
+      connect.fetch('/period/' + new Date(voucher.trans_date).valueOf())
+      .success(function (periods) {
+        if (!periods.length) { throw new Error('No periods for that trans_id'); }
+        var period = periods.pop();
+        peid = period.id;
+        fyid = period.fiscal_year_id;
+
+        return connect.fetch('/user_session');
+      })
+      .success(function (user) {
+        var records = [];
+        userId = 1; // FIXME
+        voucher.rows.forEach(function (row) {
+          var record = {
+            uuid           : uuid(),
+            project_id     : prid,
+            period_id      : peid,
+            fiscal_year_id : fyid,
+            trans_id       : voucher.trans_id,
+            trans_date     : transDate,
+            description    : description,
+            account_id     : row.account_id,
+            debit          : row.debit,
+            credit         : row.credit,
+            debit_equiv    : row.debit * exchange.rate(row.debit, voucher.currency_id),
+            credit_equiv   : row.credit * exchange.rate(row.credit, voucher.currency_id),
+            currency_id    : voucher.currency_id,
+            deb_cred_uuid  : row.deb_cred_uuid,
+            deb_cred_type  : row.deb_cred_type,
+            inv_po_id      : invid,
+            comment        : row.comment,
+            origin_id      : 9,
+            user_id        : userId,
           };
-          connect.basicPut('journal_log', [connect.clean(log)])
-          .then(function (){
-            flush();
-          });
+          records.push(record);
         });
+
+        return connect.basicPut('posting_journal', records);
+      })
+      .then(function () {
+        var log = {
+          uuid           : uuid(),
+          transaction_id : voucher.trans_id,
+          justification  : voucher.description,
+          date           : voucher.trans_date,
+          user_id        : userId
+        };
+
+        return connect.basicPut('journal_log', [log]);
+      })
+      .then(function () {
+        messenger.success('Data posted successfully');
+        flush();
+      })
+      .catch(function (err) {
+        console.error('An Error Occured.' + JSON.stringify(err));
       });
-    }
+    };
 
     function flush (){
-      $scope.voucher.rows = [];
-      addRow();
-      addRow();
-      $scope.voucher.description = null;
-      $scope.voucher.inv_po_id = null;
-      getTransID()
-      .then(function (resp){
-        resp.data[0].increment = (resp.data[0].increment)? resp.data[0].increment : 1;
-        $scope.voucher.trans_id = resp.data[0].abbr+resp.data[0].increment;
+      voucher.rows = [new JournalRow(), new JournalRow()];
+      voucher.description = null;
+      voucher.inv_po_id = null;
+
+      connect.fetch('/max_trans/' + $scope.project.id)
+      .success(function (ids) {
+        var id = ids.pop();
+        voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
+      })
+      .catch(function (err) {
+        console.error('An error occurred', JSON.stringify(err));
       });
     }
 
-    function removeRow (index){
-      $scope.voucher.rows.splice(index, 1);
+    function calculateTotals () {
+      var debitSom = 0, creditSom = 0;
+      $scope.voucher.rows.forEach(function (item) {
+        debitSom += item.debit;
+        creditSom += item.credit;
+      });
+
+      $scope.voucher.debitTotal = debitSom;
+      $scope.voucher.creditTotal = creditSom;
     }
 
-    function getPeriod(){
-      return connect.req('/period/?'+util.convertToMysqlDate(new Date()));
-    }
+    $scope.$watch('voucher.rows', function () {
+      calculateTotals();
 
-    function getTransID(){
+      var hasAccounts = voucher.rows.every(function (row) {
+        return !!row.account_id;
+      });
 
-      return connect.req('/max_trans/?'+$scope.project.id);
-    }
+      var isBalanced = voucher.debitTotal === voucher.creditTotal;
+      var nonZeroBalances = voucher.debitTotal + voucher.creditTotal !== 0;
+      var nonDoubleEntry = voucher.rows.length >= 2;
 
-    function getLogID(){
-      return connect.req('/max_log/');
-    }
-
-    function verifySubmission (){
-      var isAccountEmpty = false;
-      if($scope.voucher.rows){
-        isAccountEmpty = $scope.voucher.rows.some(function (row){
-          return !row.account;
-        });
-      }
-      return (($scope.voucher.td !== $scope.voucher.tc) || ($scope.voucher.td === 0 || $scope.voucher.tc === 0) || (isAccountEmpty) || $scope.voucher.rows.length < 2);
-    }
+      session.valid = hasAccounts && isBalanced && nonZeroBalances && nonDoubleEntry;
+    }, true);
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      dependencies.accounts.query.where = ['account.enterprise_id='+$scope.project.enterprise_id];
-      validate.process(dependencies).then(init, error);
+      dependencies.accounts.query.where =
+        ['account.enterprise_id=' + project.enterprise_id];
+
+      validate.process(dependencies)
+      .then(init)
+      .catch(function (error) {
+        console.error(error);
+      });
     });
 
-    $scope.$watch('voucher.rows', function(nv){
-      if(nv) {
-        getTotal();
-      }
-    }, true);
+    $scope.addRow = function addRow () {
+      voucher.rows.push(new JournalRow());
+    };
 
-    $scope.$watch('voucher.trans_date', function(ov, nv){
-      if(nv) {
-        $scope.voucher.trans_date = (util.isDateAfter(nv, new Date()))? ov : nv;
-      }
-    }, true);
-
-    $scope.addRow = addRow;
-    $scope.submit = submit;
-    $scope.setCurrency = setCurrency;
-    $scope.getTotal = getTotal;
-    $scope.removeRow = removeRow;
-    $scope.verifySubmission = verifySubmission;
+    $scope.removeRow = function removeRow (index) {
+      voucher.rows.splice(index, 1);
+    };
   }
 ]);

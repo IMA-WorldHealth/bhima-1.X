@@ -3,7 +3,8 @@
     <h3>{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
     <div class="modal-icons">
       <label><span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
-      <label><a href="" ng-click="examineErrors()" ng-disabled="!errors.length"  ng-class="{ 'danger' : !!errors.length }"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</a></label>
+      <label ng-show="session.action=='hide'"><a href="" ng-click="session.action='show'" ng-class="{ 'danger' : !!errors.length }"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</a></label>
+      <label ng-show="session.action=='show'"><a href="" ng-click="session.action='hide'"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.RESULTS" | translate }}</a></label>
       <label><span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}</label>
     </div>
     <div class="modal-print">
@@ -11,8 +12,58 @@
     </div>
   </div>
 
-  <div class="modal-table success">
-    <table class="modal-table-head">
+  <div class="modal-table" ng-class="{ 'success' : session.action=='hide', 'error' : session.action=='show' }" ng-switch="session.action">
+
+    <!-- error modal -->
+
+    <table class="modal-table-head" ng-switch-when="show">
+      <th style="width:20%;">{{ 'TRIAL_BALANCE.ERRORS' | translate }}</th>
+      <th>{{ 'TRIAL_BALANCE.DESCRIPTION' | translate }}</th>
+      <th style="width:5%;"><span class="glyphicon glyphicon-list-alt"></span></th>
+    </table>
+
+    <div class="modal-table-body" ng-switch-when="show">
+      <table style="color: #000;">
+        <tbody ng-repeat="error in errors">
+          <tr  ng-click="error.visible=!error.visible" style="cursor: pointer;">
+            <th style="width:20;%">{{ error.title }}</th>
+            <td>{{ error.description }}</td>
+            <td style="width: 5%;">
+              <a style="color: #000;">
+                <span class="glyphicon" ng-class="{ 'glyphicon-download' : !error.visible , 'glyphicon-upload' : !!error.visible}"></span>
+                <span ng-show="!error.visible">{{ "TRIAL_BALANCE.SHOW" | translate }}</span>
+                <span ng-show="!!error.visible">{{ "TRIAL_BALANCE.HIDE" | translate }}</span>
+              </a>
+            </td>
+          </tr>
+          <tr ng-repeat="row in error.affectedRows" ng-show="!!error.visible" class="details">
+            <th style="width:20;%">
+              <span class="glyphicon glyphicon-minus"></span>
+              <span> {{ row.trans_id }}</span>
+            </th>
+            <td colspan="2">{{ row.uuid }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-table-foot" ng-switch-when="show">
+      <table>
+        <tfoot>
+          <tr>
+            <th style="width:20%;">{{ 'UTIL.TOTAL' | translate }}</th>
+            <th style="width:20%;" ng-bind-html="total.before | intlcurrency:2"></th>
+            <th style="width:20%;" ng-bind-html="total.debit | intlcurrency:2"></th>
+            <th style="width:20%;" ng-bind-html="total.credit | intlcurrency:2"></th>
+            <th style="width:20%;" ng-bind-html="total.after | intlcurrency:2"></th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- success modal -->
+
+    <table class="modal-table-head" ng-switch-when="hide">
       <thead>
         <tr>
           <th style="width:20%">{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
@@ -23,7 +74,8 @@
         </tr>
       </thead>
     </table>
-    <div class="modal-table-body">
+
+    <div class="modal-table-body" ng-switch-when="hide">
       <table>
         <tbody>
           <tr ng-repeat="account in balances | orderBy:'account_number'">
@@ -36,7 +88,8 @@
         </tbody>
       </table>
     </div>
-    <div class="modal-table-foot">
+
+    <div class="modal-table-foot" ng-switch-when="hide">
       <table>
         <tfoot>
           <tr>
@@ -52,7 +105,7 @@
   </div>
 
   <div class="modal-footer" style="margin-top: 0;">
-    <button class="btn btn-sm btn-success square" ng-disabled="hasErrors" ng-click="submit()"><span class="glyphicon glyphicon-ok-circle"></span> {{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
+    <button class="btn btn-sm btn-success square" ng-disabled="!!errors.length" ng-click="submit()"><span class="glyphicon glyphicon-ok-circle"></span> {{ 'TRIAL_BALANCE.BTN_TEXT' | translate }}</button>
     <button class="btn btn-sm btn-default square" ng-click="cancel()"><span class="glyphicon glyphicon-ban-circle"></span> {{ 'UTIL.CANCEL' | translate }}</button>
   </div>
 

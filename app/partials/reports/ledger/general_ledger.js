@@ -91,7 +91,7 @@ angular.module('kpk.controllers')
         grid.render();
       });
 
-      grid = new Slick.Grid('#kpk-ledger-general_ledger-grid', dataview, columns, options);
+      grid = new Slick.Grid('#general_ledger', dataview, columns, options);
       grid.setSelectionModel(new Slick.RowSelectionModel());
 
       grid.registerPlugin(groupItemMetadataProvider);

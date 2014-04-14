@@ -4,7 +4,7 @@
 
 <section class="top-nav" style="max-height: 10px;">
 	<ol class="breadcrumb">
-	  <li><a href="#/main_cash">{{'TRANSFERT.CRUMB_PCASH' | translate}}</a></li>
+	  <li><a href="#/primary_cash/">{{'TRANSFERT.CRUMB_PCASH' | translate}}</a></li>
 	  <li><a href="#/pcash/transfert">{{'TRANSFERT.CRUMB_TRANSFERT' | translate}}</a></li>
 	</ol>
 </section>
@@ -12,7 +12,7 @@
 <div class="content">
 	<div class="row">
 		<div class="col-xs-4">
-			<div class="panel panel-default" style="max-height: 525px;">
+			<div class="panel panel-primary" style="max-height: 525px;">
 				<div class="panel-heading">
 					<span>{{'TRANSFERT.SOME_REPORT' | translate}}</span>
 				</div>
@@ -20,16 +20,16 @@
 					<table class="table table-striped table-condensed">
 						<thead>
 							<tr>
-								<th>{{'COLUMNS.NUM' | translate}}</th>
+								<th>{{'COLUMNS.REFERENCE' | translate}}</th>
 								<th>{{'COLUMNS.DATE' | translate}}</th>
 								<th>{{'COLUMNS.AMOUNT' | translate}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="summer in model.summers.data">
-								<td>{{$index}}</td>
-								<td>{{summer.trans_date | date}}</td>
-								<td>{{summer.total | currency}}</td>
+								<td>{{summer.reference}}</td>
+								<td>{{summer.date | date}}</td>
+								<td><span ng-bind-html="summer.value | intlcurrency:summer.currency_id"></span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -50,11 +50,10 @@
 						name="projectname"
 						id="projectID"
 						ng-model="data.project_id"
-						ng-change="resolve()"
+						ng-change="commitCash()"
 						>
-							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
-							<option value="0"> {{'SELECT.CASH' | translate}} </option>
-							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+							<option value="" disabled="disabled">-- {{'SELECT.PROJECT' | translate}} -- </option>
+							<option ng-repeat="project in view.project.data" value='{{project.id}}'>{{project.name}}</option>
 						</select>
 					</div>
 				</div>
@@ -69,11 +68,11 @@
 						class="form-kapok"
 						name="caissename"
 						id="caisseID"
-						ng-model="data.caisse_id"
+						ng-model="data.cash_box_id"
+						ng-change="commitConfig()"
 						>
-							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
-							<option value="0"> {{'SELECT.CASH' | translate}} </option>
-							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+							<option value="" disabled="disabled">-- {{'SELECT.CASH' | translate}} -- </option>
+							<option ng-repeat="cash in view.cash_box.data" value='{{cash.id}}'>{{cash.text}}</option>
 						</select>
 					</div>
 				</div>
@@ -88,11 +87,9 @@
 						class="form-kapok"
 						name="currencyname"
 						id="currencyID"
-						ng-model="data.currency_id"
+						ng-model="data.currency"
 						>
-							<option value="" disabled="disabled">-- {{'SELECT.SOURCE' | translate}} -- </option>
-							<option value="0"> {{'SELECT.CASH' | translate}} </option>
-							<option value="1"> {{'SELECT.OTHER' | translate}} </option>
+							<option ng-repeat="currency in model.currency.data" value='{{currency}}' ng-selected="{{currency.id==configuration.enterprise.currency_id}}">{{currency.symbol}}</option>
 						</select>
 					</div>
 				</div>
@@ -103,7 +100,7 @@
 				<div class="form-group">
 					<div class="input-group col-xs-8">
 						<input type="number" ng-model="data.value" class="form-kapok"  min="0" required>
-						<span class="input-group-addon"> {{ selectedItem.symbol}} </span>
+						<span class="input-group-addon">{{configuration.currency.symbol}}</span>
 					</div>
 				</div>
 					<button class="btn btn-default btn-success" ng-click="ajouter()" ng-disabled="form.$invalid" type="button">{{'FORM.ADD' | translate}}</button>

@@ -1,7 +1,9 @@
 {
   "POSTING_JOURNAL"         : {
     "TITLE"                 : "Posting Journal",
+    "LINES"                 : "Lines",
     "GROUP_BY"              : "Group By",
+    "RECORDS"               : "Records",
     "DEB_CRED"              : "Debitor / Creditor",
     "ABOLISH_GROUPS"        : "Abolish Groups",
     "TRANSACTION"           : "Transaction",
@@ -15,6 +17,7 @@
     "GENERAL_LEDGER"        : "General Ledger",
     "DEBIT"                 : "Debit",
     "CREDIT"                : "Credit",
+    "REFRESH"               : "Refresh",
     "FISCAL_YEAR"           : "Fiscal Year",
     "ENTERPRISE"            : "Enterprise",
     "ENTERPRISE_MANAGEMENT" : "Enterprise Management",
@@ -92,17 +95,27 @@
     "SUPER"       : "Super User"
   },
 
-  "TRIAL_BALANCE"  : {
-    "TITLE"        : "Trial Balance",
-    "ERROR_TEXT"   : "Errors detected in the trial balance.",
-    "ACCOUNT"      : "Account",
-    "BEFORE"       : "Before",
-    "DEBIT"        : "Debit",
-    "CREDIT"       : "Credit",
-    "AFTER"        : "After",
-    "BTN_TEXT"     : "Post to General Ledger",
-    "TRANSACTIONS" : "Transactions",
-    "ERRORS"       : "Errors"
+  "TRIAL_BALANCE"      : {
+    "TITLE"            : "Trial Balance",
+    "ERROR_TEXT"       : "Errors detected in the trial balance.",
+    "ACCOUNT"          : "Account",
+    "RESULTS"          : "Results",
+    "BEFORE"           : "Before",
+    "DEBIT"            : "Debit",
+    "CREDIT"           : "Credit",
+    "AFTER"            : "After",
+    "SHOW"             : "Show",
+    "HIDE"             : "Hide",
+    "BTN_TEXT"         : "Post to General Ledger",
+    "TRANSACTIONS"     : "Transactions",
+    "ERRORS"           : "Errors",
+    "ERROR"            : "Error",
+    "DESCRIPTION"      : "Description",
+    "AFFECTED_ROWS"    : "Affected Rows",
+    "SUMMARY"          : "Summary",
+    "SIGNATURES"       : "Signatures",
+    "CHIEF_ACCOUNTANT" : "Chief Accountant",
+    "FINANCE_OFFICER"  : "Finance Officer"
   },
 
   "ERROR"                 : {
@@ -118,10 +131,12 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
-    "BACK" : "Back",
+    "BACK"              : "Back",
+    "DATE"              : "Date",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
     "PROJECT"           : "Current Project",
+    "ERROR"             : "Error",
     "CANCEL"            : "Cancel",
     "ITEMS"             : "Items",
     "TOGGLE"            : "Toggle",
@@ -135,7 +150,7 @@
     "TOGGLE_AGGREGATES" : "Toggle Aggregates",
     "ON"                : "On",
     "OFF"               : "Off",
-    "AGGREGATES" : "Aggregates"
+    "AGGREGATES"        : "Aggregates"
   },
 
   "PATIENT_STANDING"     : {
@@ -250,6 +265,7 @@
     "CHART_OF_ACCOUNTS"     : "Chart of Accounts",
     "NUMBER"                : "Number",
     "PRICES"                : "Prices",
+    "SIGNATURES" : "Signatures",
     "CREATED_ON"            : "Created on",
     "DESCRIPTION"           : "Description",
     "FINANCE_REPORT"        : "Finance Report",
@@ -301,6 +317,8 @@
     "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
     "REGISTERED_BY"       : "Registered By",
+    "CREDITOR"            : "Creditor",
+    "CREDITOR_ID"         : "Creditor ID",
     "RATE"                : "Rate",
     "LINE_ID"             : "Line ID",
     "EXPLANATION"         : "Explanation",
@@ -311,7 +329,6 @@
     "PASSWORD"            : "Password",
     "ID"                  : "ID",
     "USER_NAME"           : "User Name",
-    "CREDITOR_ID"         : "Creditor ID",
     "LAST_NAME"           : "Last Name",
     "GROUP"               : "Group",
     "INVOICE_DATE"        : "Invoice Date",
@@ -319,8 +336,9 @@
     "ACCOUNT_ID"          : "Account ID",
     "DEBITOR_NAME"        : "Debitor Name",
     "DEBITOR_TYPE"        : "Debitor Type",
-    "ACCOUNT"             : "Account",
+    "DEB_CRED_TYPE"       : "Debitor/Creditor Type",
     "COMMENT"             : "Comment",
+    "ACCOUNT"             : "Account",
     "PARENT"              : "Parent",
     "SEX"                 : "Sex",
     "DEBTOR"              : "Debtor",
@@ -396,7 +414,8 @@
     "WEIGHT"              : "Weight",
     "PRICE_LIST"          : "Price List",
     "TITLE"               : "Title",
-    "VALUE"               : "Value"
+    "VALUE"               : "Value",
+    "DEB_CRED_UUID"       : "Debitor/Creditor ID"
   },
 
   "TREE"                        : {
@@ -456,7 +475,20 @@
     "CLIENT"                    : "Clients",
     "BENEFICIARY"               : "Beneficaries",
     "MAIN_CASH"                 : "Principal Cashbox",
-    "PROJECT" : "Projects"
+    "JOURNAL_VOUCHER"           : "Journal Voucher",
+    "PROJECT"                   : "Projects"
+  },
+
+  "JOURNAL_VOUCHER"  : {
+    "TITLE"                 : "Journal Voucher",
+    "ADD_ROW"               : "Add Line",
+    "POSTING_JOURNAL"       : "Posting Journal",
+    "TAB_LOCK_COLONNE"      : "Tab Lock Column",
+    "TAB_LOCK_LINE"         : "Tab Lock Line",
+    "SUBMIT"                : "Submit",
+    "DEFAULT_CURRENCY"      : "Default Currency",
+    "TRANS_ID"              : "Transaction ID",
+    "LOG"                   : "Log Journal ID"
   },
 
   "CAUTION"        : {

@@ -211,6 +211,14 @@ angular.module('kpk.controllers')
       if (groupMap[targetGroup]) { groupMap[targetGroup](); }
     };
 
+    $scope.refreshFilter = function refreshFilter () {
+      $scope.filter.param = '';
+      dataview.setFilterArgs({
+        param : $scope.filter.param
+      });
+      dataview.refresh();
+    };
+
     function formatTransactionGroup(g) {
       var rowMarkup,
           editTemplate = "";
@@ -248,7 +256,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.print = function () {
-      $location.path('/print/journal');
+      $location.path('/journal/print');
     };
 
     // Toggle column visibility

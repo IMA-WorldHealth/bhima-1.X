@@ -24,6 +24,27 @@ angular.module('kpk.controllers')
       }
     };
 
+    function day () {
+      session.dateFrom = new Date();
+      session.dateTo = new Date();
+      reset();
+    }
+
+    function week () {
+      session.dateFrom = new Date();
+      session.dateTo = new Date();
+      session.dateFrom.setDate(session.dateTo.getDate() - session.dateTo.getDay());
+      reset();
+    }
+
+    function month () {
+      session.dateFrom = new Date();
+      session.dateTo = new Date();
+      session.dateFrom.setDate(1);
+      reset();
+    }
+
+
     dependencies.currencies = {
       required : true,
       query : {
@@ -50,27 +71,6 @@ angular.module('kpk.controllers')
       }
     ];
 
-
-    function day () {
-      session.dateFrom = new Date();
-      session.dateTo = new Date();
-      reset();
-    }
-
-    function week () {
-      session.dateFrom = new Date();
-      session.dateTo = new Date();
-      session.dateFrom.setDate(session.dateTo.getDate() - session.dateTo.getDay());
-      reset();
-    }
-
-    function month () {
-      session.dateFrom = new Date();
-      session.dateTo = new Date();
-      session.dateFrom.setDate(1);
-      reset();
-    }
-
     function formatDates () {
       session.dateFrom = $filter('date')(session.dateFrom, 'yyyy-MM-dd');
       session.dateTo = $filter('date')(session.dateTo, 'yyyy-MM-dd');
@@ -82,6 +82,7 @@ angular.module('kpk.controllers')
     }
 
     function reset (p) {
+      session.searching = true;
       var req, url;
 
       // toggle off active
@@ -104,6 +105,7 @@ angular.module('kpk.controllers')
         $scope.payments = model;
         $timeout(function () {
           convert();
+          session.searching = false;
         }, exchange.hasExchange() ? 0 : 100);
       })
       .error(function (err) {
@@ -138,6 +140,18 @@ angular.module('kpk.controllers')
       });
       session.sum = s;
     }
+
+    $scope.$watch('payments', function () {
+      if (!$scope.payments) { return; }
+      var unique = [];
+      $scope.payments.forEach(function (payment) {
+        if (unique.indexOf(payment.deb_cred_uuid) < 0) {
+          unique.push(payment.deb_cred_uuid);
+        }
+      });
+
+      session.unique_debitors = unique.length;
+    }, true);
 
     $scope.search = search;
     $scope.reset = reset;
