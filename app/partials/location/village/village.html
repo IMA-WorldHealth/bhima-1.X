@@ -55,7 +55,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label"> {{ 'VILLAGE.SECTOR' | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-kapok" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data">
+                <select class="form-kapok" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data | orderBy:'name'">
                   <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                 </select>
               </div>
@@ -81,7 +81,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{'VILLAGE.SECTOR' | translate}}</label>
               <div class="col-xs-10">
-                <select class="form-kapok" ng-model="village.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data" required>
+                <select class="form-kapok" ng-model="village.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data | orderBy:'name'" required>
                   <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                 </select>
               </div>
