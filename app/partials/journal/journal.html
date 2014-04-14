@@ -25,6 +25,9 @@
     </span>
     <input class="form-kapok" ng-model="filter.param">
     <ul class="dropdown-menu">
+      <li>
+        <a ng-click="refreshFilter()" href=""><span class="glyphicon glyphicon-refresh"></span> {{ "POSTING_JOURNAL.REFRESH" | translate }}</a>
+      </li>
       <li ng-repeat="column in columns">
         <a ng-click="filter.by=column" href="">{{ column.name }}</a>
       </li>

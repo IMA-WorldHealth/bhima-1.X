@@ -760,51 +760,152 @@
     };
   }])
 
-  .service('messenger', ['$timeout', '$sce', function ($timeout, $sce) {
-    var self = this;
-    self.messages = [];
-    var indicies = {};
+  .service('messenger', [
+    '$timeout',
+    '$sce',
+    '$translate',
+    'errorCodes',
+    function ($timeout, $sce, $translate, errorCodes) {
+      var self = this;
+      self.messages = [];
+      var indicies = {};
 
-    self.push = function (data, timer) {
-      var id = Date.now();
-      data.id = id;
-      data.msg = $sce.trustAsHtml(data.msg); // allow html insertion
-      self.messages.push(data);
-      indicies[id] = $timeout(function () {
-        var index, i = self.messages.length;
+      self.push = function (data, timer) {
+        var id = Date.now();
+        data.id = id;
+        data.msg = $sce.trustAsHtml(data.msg); // allow html insertion
+        self.messages.push(data);
+        indicies[id] = $timeout(function () {
+          var index, i = self.messages.length;
 
-        while (i--) {
-          if (self.messages[i].id === id) {
-            self.messages.splice(i, 1);
-            break;
+          while (i--) {
+            if (self.messages[i].id === id) {
+              self.messages.splice(i, 1);
+              break;
+            }
           }
-        }
 
-      }, timer || 3000);
+        }, timer || 3000);
+      };
+
+      (function () {
+        ['info', 'warning', 'danger', 'success']
+        .forEach(function (type) {
+          self[type] = function (message, timer) {
+            self.push({type: type, msg: message }, timer);
+          };
+        });
+      })();
+
+      self.close = function (idx) {
+        // cancel timeout and splice out
+        $timeout.cancel(indicies[idx]);
+        self.messages.splice(idx, 1);
+      };
+
+      // Future API
+      // A blocking modal
+      self.block = function (message, callback, errback) { };
+
+      var unknown_msg = "An unanticipated error occured.";
+      // Appropriate error formatting
+      self.error = function (code, timer) {
+        var err = errorCodes[code];
+        // FIXME : translate doesn't work
+        self.push({ title : 'ERROR: ' + err.title , msg : err.description, type: 'danger'}, timer || 5000);
+      };
+    }
+  ])
+
+  .service('errorCodes', function () {
+    return {
+      'ERR_TXN_IMBALANCE' : {
+        title             : 'Transaction Imbalance',
+        ref               : 'ERR_TXN_IMBALANCE',
+        description       : 'Imbalanced transaction(s) detected',
+      },
+      'ERR_TXN_ZERO' : {
+        title        : 'Zero-Valued Lines',
+        ref          : 'ERR_TXN_ZERO',
+        description  : 'Invalid transaction(s) line missing both debit and credit amounts',
+      },
+      'ERR_TXN_CORRUPT_DATE' : {
+        title                : 'Corrupt Transaction Date',
+        ref                  : 'ERR_TXN_CORRUPT_DATE',
+        description          : 'Corrupted date detected in transaction(s)',
+      },
+      'ERR_TXN_MULTI_DATE' : {
+        title              : 'Multiple Transaction Dates',
+        ref                : 'ERR_TXN_MULTI_DATE',
+        description        : 'Transaction dates do not agree.  Multiple dates detected for single transaction(s)',
+      },
+      'ERR_TXN_EMPTY_ACCOUNT' : {
+        title                 : 'Empty Transaction Account',
+        ref                   : 'ERR_TXN_EMPTY_ACCOUNT',
+        description           : 'Empty account field detect in transaction(s)',
+      },
+      'ERR_TXN_EMPTY_DC_TYPE' : {
+        ref                   : 'ERR_TXN_EMPTY_DC_TYPE',
+        title                 : 'Empty Debitor/Creditor Type',
+        description           : 'Empty debitor/creditor type detected in transaction(s) with debitor/creditor id present',
+      },
+      'ERR_TXN_EMPTY_DC_UUID' : {
+        ref                   : 'ERR_TXN_EMPTY_DC_UUID',
+        title                 : 'Empty Debitor/Creditor ID',
+        description           : 'Empty debitor/creditor ID detected in transaction(s) with debitor/creditor type present',
+      },
+      'ERR_TXN_UNRECOGNIZED_DATE' : {
+        ref                       : 'ERR_TXN_UNRECOGNIZED_DATE',
+        title                     : 'Unrecognized Transaction Date',
+        description               : 'Unrecognized dates in transaction(s).  Dates do not fall within a valid fiscal year',
+      },
+      'ERR_TXN_UNRECOGNIZED_DC_UUID' : {
+        ref                          : 'ERR_TXN_UNRECOGNIZED_DC_UUID',
+        title                        : 'Unrecognized Debitor/Creditor ID',
+        description                  : 'Unrecognized debitor/creditor ID in transaction(s)',
+      },
+      'ERR_HTTP_UNREACHABLE' : {
+        title                : 'Server Unreachable',
+        ref                  : 'ERR_HTTP_UNREACHABLE',
+        description          : 'Server returned a 404 unreachable response.',
+      },
+      'ERR_HTTP_INTERNAL' : {
+        title             : 'Internal Server Error',
+        ref               : 'ERR_HTTP_INTERNAL',
+        description       : 'Server returned a 500 internal error response.',
+      },
+      'ERR_AUTH_UNAUTHORIZED' : {
+        title                 : 'Authorized Access',
+        ref                   : 'ERR_AUTH_UNAUTHORIZED',
+        description           : 'User is not authorized to perform this action.',
+      },
+      'ERR_AUTH_UNRECOGNIZED' : {
+        title                 : 'Unrecognized User',
+        ref                   : 'ERR_AUTH_UNRECOGNIZED',
+        description           : 'Invalid or unrecognized PIN registration.',
+      },
+      'ERR_SESS_EXPIRED' : {
+        title            : 'Session Expired',
+        ref              : 'ERR_SESS_EXPIRED',
+        description      : 'Authenticated session has expired.'
+      },
+      'ERR_QUERY'   : {
+        title       : 'Database Exception',
+        ref         : 'ERR_QUERY',
+        description : 'The database raised an exception to the query. Please contact a sysadmin.'
+      },
+      'ERR_ACCOUNT_LOCKED' : {
+        title              : 'Locked Accounts',
+        ref                : 'ERR_ACCOUNT_LOCKED',
+        description        : 'Locked accounts included in transaction(s).'
+      },
+      'ERR_ACCOUNT_NULL' : {
+        title            : 'Null Accounts',
+        ref              : 'ERRR_ACCOUNT_NULL',
+        description      : 'Undefined or null accounts included in transaction(s).'
+      }
     };
-
-    (function () {
-      ['info', 'warning', 'danger', 'success']
-      .forEach(function (type) {
-        self[type] = function (message, timer) {
-          self.push({type: type, msg: message }, timer);
-        };
-      });
-    })();
-
-    self.close = function (idx) {
-      // cancel timeout and splice out
-      $timeout.cancel(indicies[idx]);
-      self.messages.splice(idx, 1);
-    };
-
-    // Future API
-    // A blocking modal
-    self.block = function (message, callback, errback) { };
-    // Appropriate error formatting
-    self.error = function () {};
-
-  }])
+  })
 
   .service('exchange', [
     '$timeout',
@@ -916,27 +1017,6 @@
         return v.toString(16);
       });
     };
-  })
-
-  .service('pubsub', function () {
-    var subscriptions = {};
-
-    this.subscribe = function subscribe (channel, callback) {
-      if (!channel) { return; }
-    };
-
-    this.publish = function publish () {
-      var args = Array.prototype.slice.call(arguments),
-          channel = args.shift();
-      var route = subscriptions[channel];
-      if (route) { Function.prototype.apply(route, arguments); }
-    };
-    
-    this.unsusbscribe = function unsubscribe (fn) {
-      
-    };
-
-  
   })
 
   .factory('requestNotificationChannel', ['$rootScope', function($rootScope) {

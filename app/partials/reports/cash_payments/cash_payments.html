@@ -22,10 +22,7 @@
     <div class="col-xs-2">
       <input class="form-kapok" type="date" ng-model="session.dateTo" rows="20" ng-change="reset(1)">
     </div>
-    <div class="col-xs-2 pull-right">
-      <select class="form-kapok" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
-    </div>
-    <div class="col-xs-3 pull-right">
+    <div class="col-xs-4 pull-right">
       <select class="form-kapok" ng-model="session.project" ng-change="reset()">
         <option selected value="{{ allProjectIds }}">{{ 'CASH_PAYMENTS.ALL_PROJECTS' | translate }}</option>
         <option ng-repeat="project in projects.data" value="{{ project.id }}">{{ project.name }}</option>
@@ -63,13 +60,37 @@
             <td> {{ payment.date | date }} </td>
           </tr>
         </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="6"><span class="glyphicon glyphicon-list-alt"></span> {{ payments.length }}</th>
-            <th colspan="3" ng-bind-html="session.sum | intlcurrency:session.currency"></th>
-          </tr>
-        </tfoot>
       </table>
     </div>
   </div>
 </div>
+
+<section class="bar-bottom" style="background-color:#fff">
+  <table style="width: 99%">
+    <tbody>
+      <td style="width:50%;">
+
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ payments.length }}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+
+        <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ session.unique_debitors }}</b>
+
+        <span ng-if="session.searching">...</span>
+        <span style="float: right; margin-right: 5px;">
+          <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
+        </span>
+      </td>
+      <td style="width:20%;">
+        <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>
+        <span ng-if="session.searching">...</span>
+      </td>
+      <td colspan="2">
+        <div style="width:25%;">
+          <select class="form-kapok" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
+        </div>
+      </td>
+    </tbody>
+  </table>
+</section>
