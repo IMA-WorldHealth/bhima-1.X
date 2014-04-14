@@ -959,7 +959,7 @@
     "CASH"               : "Caisse Principale",
     "INFO"               : "Informations financiere sommaire",
     "PAYEMENT"           : "Boite de paie",
-    "CONVENTION"         : "Convention",
+    "MONTANT"            : "Montant",
     "SUCCES"             : "Operation reussie !",
     "DANGER"             : "Erreur ! Une erreur se produite pendant le posting !"
   },
