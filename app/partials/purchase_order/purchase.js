@@ -8,7 +8,8 @@ angular.module('kpk.controllers')
   'messenger',
   'uuid',
   function($scope, $q, validate, connect, appstate, messenger, uuid) {
-
+    // TODO invoice_date -> purchase_date
+    
     // TODO Currently downloads every location - should only download the 
     // selected creditors location
     
@@ -46,6 +47,10 @@ angular.module('kpk.controllers')
       query : '/location'
     };
 
+    dependencies.user = { 
+      query : 'user_session'
+    };
+
     validate.process(dependencies).then(initialise);
     
     function initialise(model) { 
@@ -59,8 +64,8 @@ angular.module('kpk.controllers')
       session.selected = false;
       session.purchase = { 
         uuid : uuid(),
-        payable : false,
-        date : getDate(), 
+        // payable : false,
+        invoice_date : getDate(), 
         note : formatPurchaseDescription()
       };
       session.hr_id = session.purchase.uuid.substr(0, 6);
@@ -126,7 +131,7 @@ angular.module('kpk.controllers')
       }
       purchaseItem.set(inventoryReference); 
       purchaseItem.inventoryReference = inventoryReference;
-
+      
       // Remove option to select duplicates
       console.log($scope.inventory.data.length);
       console.log('removing', inventoryReference.uuid);
@@ -157,7 +162,37 @@ angular.module('kpk.controllers')
     }
 
     function submitPurchase() { 
-      console.log('Not implemented');
+      var purchase = connect.clean(session.purchase);
+      
+      purchase.cost = purchaseTotal();
+     
+      // FIXME
+      purchase.currency_id = appstate.get('enterprise').currency_id;
+      purchase.creditor_uuid = session.creditor.uuid;
+      purchase.purchaser_id = $scope.user.data.id;
+      purchase.project_id = appstate.get('project').id;
+     
+      console.log('p',purchase);
+      writePurchaseLine(purchase)
+      .then(writePurchaseItems)
+      .then(writeSuccess)
+      .catch(handleError);
+    }
+
+    function writePurchaseLine(purchase) { 
+      return connect.basicPut('purchase', [purchase], ['uuid']);
+    }
+
+    function writePurchaseItems() { 
+      console.log('got here');
+    }
+
+    function writeSuccess(result) { 
+
+    }
+
+    function handleError(error) { 
+
     }
 
     /*-------------------------------*/
