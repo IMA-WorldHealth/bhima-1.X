@@ -3,12 +3,13 @@ angular.module('kpk.controllers')
   '$scope',
   '$q',
   '$translate',
+  '$location',
   'validate',
   'connect',
   'appstate',
   'messenger',
   'uuid',
-  function($scope, $q, $translate, validate, connect, appstate, messenger, uuid) {
+  function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid) {
     // TODO invoice_date -> purchase_date
     
     // TODO Currently downloads every location - should only download the 
@@ -212,6 +213,7 @@ angular.module('kpk.controllers')
 
     function writeSuccess(result) { 
       messenger.success($translate('PURCHASE.WRITE_SUCCESS'));
+      $location.path('/invoice/purchase/' + session.purchase.uuid);
     }
 
     function handleError(error) { 
