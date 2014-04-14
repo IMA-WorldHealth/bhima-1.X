@@ -12,6 +12,8 @@ angular.module('kpk.controllers')
     var dependencies = {};
     var session = $scope.session = { receipt : {} };
 
+    var isDefined = angular.isDefined;
+
     $scope.timestamp = new Date();
 
     session.today = $scope.timestamp.toISOString().slice(0, 10);
@@ -72,12 +74,27 @@ angular.module('kpk.controllers')
       session.receipt.cash_box_id = $routeParams.id;
     };
 
+    $scope.$watch('session.receipt', function () {
+      if (!session || !session.receipt) {
+        session.invalid = true;
+        return;
+      }
+      var r = session.receipt;
+
+      session.invalid = !(isDefined(session.currency) &&
+        isDefined(r.recipient) &&
+        isDefined(r.value) &&
+        isDefined(r.description) &&
+        isDefined(r.date) &&
+        isDefined(r.cash_box_id));
+    }, true);
+
     $scope.submit = function submit () {
       var receipt = session.receipt;
       formatDates();
 
       connect.fetch('/user_session')
-      .success(function (user) {
+      .then(function (user) {
 
         var data = {
           uuid : uuid(),
@@ -85,14 +102,14 @@ angular.module('kpk.controllers')
           project_id : $scope.project.id,
           type : 'S',
           date : receipt.date,
-          deb_cred_uuid : receipt.receiptient.uuid,
+          deb_cred_uuid : receipt.recipient.creditor_uuid,
           deb_cred_type : 'C',
           currency_id : session.currency.id,
           value : receipt.value,
-          cashier_id : user.id,
+          cashier_id : user.data.id,
           description : receipt.description,
           istransfer : 0,
-          account_id : receipt.receipient.account_id,
+          account_id : receipt.recipient.account_id,
           cash_box_id : receipt.cash_box_id
         };
 

@@ -62,7 +62,7 @@
 
             <div class="form-group">
               <label>Receipient</label>
-              <input type="text" class="form-kapok" ng-model="session.receipt.receipient" typeahead="supplier.text for supplier in suppliers.data | filter:$viewValue | limitTo:8">
+              <input type="text" class="form-kapok" ng-model="session.receipt.recipient" typeahead="supplier as supplier.text for supplier in suppliers.data | filter:$viewValue | limitTo:8">
             </div>
 
             <div class="form-group">
