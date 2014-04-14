@@ -272,6 +272,10 @@
     .when('/journal/print', {
       controller : 'journal.print',
       templateUrl : 'partials/journal/print.html'
+    })
+    .when('/primary_cash/income/purchase/:cashbox', {
+      controller : 'purchaseOrderCash',
+      templateUrl : 'partials/primary_cash/income/purchase.html'
     });
   }
 
