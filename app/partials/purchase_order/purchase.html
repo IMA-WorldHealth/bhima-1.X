@@ -18,13 +18,13 @@
         </div>
 
         <div class="panel-body purchase-header">
-        
+
           <div class="form-group">
-            <label for="saledate">Sale Date</label>
+            <label for="saledate">{{ 'PURCHASE.SALE_DATE' | translate }}</label>
             <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.invoice_date">
           </div>
           <div class="form-group">
-            <label for="select-cred">Supplier</label>
+            <label for="select-cred">{{ 'PURCHASE.SUPPLIER' | translate }}</label>
             <select id="select-cred" ng-change="selectCreditor(session.creditor)" ng-model="session.creditor" ng-options="c as c.name for c in creditor.data" class="form-kapok">
               <option value="" disabled="disabled">--Select Creditor--</option>
             </select>
@@ -69,7 +69,7 @@
     <div class="col-xs-7">
       <div class="panel panel-default">
         <div class="panel-heading">
-          Purchase Order
+          {{ 'PURCHASE.TITLE' | translate }}
         </div>
 
         <div class="panel-body purchase-header">
@@ -80,9 +80,9 @@
               <table class="table table-bordered">
                 <thead>
                 <tr>
-                  <th>P.O</th>
-                  <th>Date</th>
-                  <th>Note</th>
+                  <th>{{ 'PURCHASE.ORDER' | translate }}</th>
+                  <th> {{ 'PURCHASE.DATE' | translate }}</th>
+                  <th> {{ 'PURCHASE.NOTE' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -102,7 +102,7 @@
               <table class="table table-bordered">
                 <thead>
                 <tr>
-                  <th>Supplier</th>
+                  <th> {{ 'PURCHASE.SUPPLIER' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody ng-if="session.creditor">
@@ -125,17 +125,17 @@
   </div>
 
   <div class="row">
-  
+
     <div class="col-xs-12">
 
       <div class="panel panel-default" ng-class="{'panel-success' : (session.creditor && session.employee)}">
         <div class="panel-heading">
-          <span>Purchase Items</span>
+          <span> {{ 'PURCHASE.PURCHASE_ITEM' | translate }}</span>
           <!-- FIXME style hack -->
-          <button ng-disabled="!(session.creditor && session.employee)" class="pull-right" ng-click="addPurchaseItem()" style="margin-top: -4px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}</button>
+          <button ng-disabled="!(session.creditor && session.employee)" class="pull-right" ng-click="addPurchaseItem()" style="margin-top: -4px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.ADD_LINE_ITEM" | translate }}</button>
 
         </div>
-        
+
         <table class='table-condensed table' ng-if="session.creditor && session.employee">
           <thead>
             <tr>
@@ -169,10 +169,10 @@
               <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.price | currency}}"></td>
               <td><a ng-click="removePurchaseItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
-            
+
             <tr>
               <!-- Style hack -->
-              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "SALE.TOTAL" | translate }}</b></td>
+              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "PURCHASE.SUBMIT" | translate }}</b></td>
               <td colspan="2"><b>{{ purchaseTotal() | currency }}</b></td>
             </tr>
 
@@ -186,7 +186,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="verifyPurchase(session.items)" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> Submit Purchase Order</a>
+    <a ng-disabled="verifyPurchase(session.items)" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "PURCHASE.SUBMIT_ORDER" | translate }}</a>
   </div>
 </section>
 

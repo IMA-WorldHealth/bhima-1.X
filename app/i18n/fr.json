@@ -1045,5 +1045,21 @@
     "LANGUAGE" : "Langue",
     "LAST_PAGE" : "Dernier Page Visite",
     "HOME_PAGE" : "Page Defaut"
+  },
+  "PURCHASE":{
+    "TITLE"    : "Ordre Achat",
+    "ADD_SUPPLIER" : "Ajouter Fournisseur",
+    "CONFIGURE"    : "Parametrage",
+    "SALE_DATE"    : "Date de vente",
+    "SUPPLIER"     : "Fournisseur",
+    "RESPONSIBLE"  : "Employe Responsable",
+    "ORDER"        : "Ordre",
+    "DATE"         : "Date",
+    "NOTE"         : "Note",
+    "PURCHASE_ITEM"         : "Items Ordonnes",
+    "ADD_LINE_ITEM" : "Ajouter item",
+    "TOTAL"         : "Total",
+    "SUBMIT"        : "Soumettre",
+    "SUBMIT_ORDER"  : "Soumettre Ordre Achat"
   }
 }
