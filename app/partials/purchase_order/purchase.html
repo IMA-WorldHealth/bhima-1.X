@@ -21,7 +21,7 @@
         
           <div class="form-group">
             <label for="saledate">Sale Date</label>
-            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.date">
+            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.invoice_date">
           </div>
           <div class="form-group">
             <label for="select-cred">Supplier</label>
@@ -88,7 +88,7 @@
                 <tbody>
                 <tr>
                   <td>{{session.hr_id}}</td>
-                  <td>{{session.purchase.date | date}}</td>
+                  <td>{{session.purchase.invoice_date | date}}</td>
                   <td>{{session.purchase.note}}</td>
                 </tr>
                 </tbody>

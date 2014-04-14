@@ -792,6 +792,7 @@ create table `purchase` (
   `currency_id`       tinyint unsigned not null,
   `creditor_uuid`     char(36) not null,
   `purchaser_id`      smallint unsigned not null,
+  `employee_id`       int unsigned not null,
   `discount`          mediumint unsigned default '0',
   `purchase_date`     date not null,
   `timestamp`         timestamp current_timestamp,
