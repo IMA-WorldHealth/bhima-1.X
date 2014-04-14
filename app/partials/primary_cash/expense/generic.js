@@ -33,23 +33,6 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.temp = {
-      query : {
-        tables : {
-          'patient' : {
-            columns : ['uuid', 'first_name', 'last_name']
-          },
-          'debitor' : {
-            columns : ['text']
-          },
-          'debitor_group' : {
-            columns: ['account_id']
-          }
-        },
-        join: ['patient.debitor_uuid=debitor.uuid', 'debitor.group_uuid=debitor_group.uuid']
-      }
-    };
-
     dependencies.currencies = {
       query : {
         tables : {
