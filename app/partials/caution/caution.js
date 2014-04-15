@@ -133,7 +133,6 @@ angular.module('kpk.controllers')
       $scope.selectedDebitor = {};
       $scope.data = {};
       $scope.noEmpty = false;
-      console.log('on a en retour :', resp)
       if (caution_uuid !== -1) { $location.path('/invoice/caution/' + caution_uuid); }
     }
 
@@ -141,8 +140,12 @@ angular.module('kpk.controllers')
       messenger.danger($translate('CAUTION.DANGER'));
     }
 
-    cache.fetch('selectedItem').then(load);
+    function load (selectedItem) {
+      if (!selectedItem) { return; }
+      $scope.selectedItem = selectedItem;
+    }
 
+    cache.fetch('selectedItem').then(load);
 
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -151,14 +154,6 @@ angular.module('kpk.controllers')
       validate.process(dependencies).then(init, handleError);
     });
 
-    function load (selectedItem){
-      if(!selectedItem) {
-         return ;
-      }else{
-        $scope.selectedItem = selectedItem;
-      }
-    }
-
     function check (){
       if($scope.data.payment){
         return $scope.data.payment < $scope.selectedItem.min_monentary_unit;
@@ -166,7 +161,6 @@ angular.module('kpk.controllers')
         return true;
       }
     }
-
 
     $scope.initialiseCaution = initialiseCaution;
     $scope.payCaution = payCaution;
