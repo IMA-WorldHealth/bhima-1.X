@@ -43,6 +43,17 @@
     }
   },
 
+  "PRIMARY_CASH" : {
+    "TITLE" : "Primary Cash",
+    "EXPENSES" : "Expenses",
+    "GENERIC" : "Generic",
+    "NAVIGATION" : "Navigation",
+    "EXPENSE" : {
+      "GENERIC_TITLE" : "Generic Expenses",
+      "GENERIC_RECEIPT" : "Generic Receipt"
+    }
+  },
+
   "PATIENT_RECORDS"     : {
     "TITLE"             : "Patient Records",
     "ADVANCED_SEARCH"   : "Advanced Search",
@@ -67,6 +78,11 @@
     "NO_RATES"   : "There are no rates set for today!",
     "REVIEW"     : "Review Today's Rates",
     "TODAY_RATE" : "Exchange Rate for"
+  },
+
+  "SEX" : {
+    "M" : "M",
+    "F" : "F"
   },
 
   "PROJECT"       : {
@@ -139,6 +155,7 @@
     "ERROR"             : "Error",
     "CANCEL"            : "Cancel",
     "ITEMS"             : "Items",
+    "CURRENCY"          : "Currency",
     "TOGGLE"            : "Toggle",
     "COLUMNS"           : "Columns",
     "CONFIRM"           : "Confirm",
@@ -349,6 +366,7 @@
     "GROUP_NAME"          : "Group Name",
     "ACCOUNT_NUMBER"      : "Account Number",
     "EDIT"                : "Edit",
+    "DELETE"              : "Delete",
     "FIRST_NAME"          : "First Name",
     "CONVENTION"          : "Convention",
     "AMOUNT_DUE"          : "Amount Due",

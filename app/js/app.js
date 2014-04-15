@@ -257,6 +257,10 @@
       controller : 'transfert',
       templateUrl : 'partials/pcash/incomes/transfert/transfert.html'
     })
+     .when('/pcash/convention', {
+      controller : 'convention',
+      templateUrl : 'partials/pcash/incomes/convention/convention.html'
+    })
     .when('/trialbalance/print', {
       controller : 'trialbalance.print',
       templateUrl : 'partials/journal/trialbalance/print.html'
@@ -272,6 +276,10 @@
     .when('/journal/print', {
       controller : 'journal.print',
       templateUrl : 'partials/journal/print.html'
+    })
+    .when('/primary_cash/expense/generic/:id?', {
+      controller : 'primaryCash.expense',
+      templateUrl: 'partials/primary_cash/expense/generic.html'
     });
   }
 

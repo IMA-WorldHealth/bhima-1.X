@@ -31,7 +31,7 @@
   </div>
 </section>
 
-<div class="report">
+<div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame">
       <h4>{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
@@ -39,7 +39,6 @@
         <thead>
           <tr>
             <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
-            <th>{{ "COLUMNS.TYPE" | translate }}</th>
             <th>{{ "COLUMNS.NAME" | translate }}</th>
             <th>{{ "COLUMNS.SALE_ID" | translate }}</th>
             <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
@@ -51,7 +50,6 @@
         <tbody>
           <tr ng-repeat='payment in payments'>
             <td><a ng-href="/#/invoice/cash/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a></td>
-            <td> {{ payment.type }} </td>
             <td> {{ payment.first_name + ' ' + payment.last_name }} </td>
             <td><a ng-href="/#/invoice/sale/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a></td>
             <td> {{ projects.get(payment.debtor_project).abbr + payment.debtor_reference }} </td>

@@ -20,13 +20,13 @@ angular.module('kpk.controllers')
 
     imports.account_type = {tables: {'account_type' : {columns: ['id', 'type']}}};
     imports.account_category = {tables: {'account_category' : {columns : ['id', 'title']}}};
-   
+
     return $q.all([connect.req(imports.account), connect.req(imports.account_type), connect.req(imports.account_category)]);
   }
 
   function initGrid () {
     var grid, columns, options, dataview;
-  
+
     // dataview config
     dataview = new Slick.Data.DataView();
 
@@ -99,7 +99,7 @@ angular.module('kpk.controllers')
     var setup = initGrid();
     grid = setup.grid;
     $scope.dataview = setup.dataview;
-   
+
     $scope.$watch('models.accounts', function () {
       $scope.dataview.setItems($scope.models.accounts);
     });
