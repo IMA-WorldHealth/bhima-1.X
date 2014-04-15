@@ -935,7 +935,11 @@
     "POSTING"      : "Posting Journal",
     "CREDIT_NOTE"  : "Credit Note",
     "POST"         : "Post to Journal",
-    "ALL_PROJECTS" : "All Projects"
+    "ALL_PROJECTS" : "All Projects",
+    "TOTAL_OF"     : "Total of",
+    "INVOICES"     : "invoices",
+    "CHARGED_AGAINST" : "charged against",
+    "PATIENTS"     : "patients"
   },
 
   "INVOICE"             : {
