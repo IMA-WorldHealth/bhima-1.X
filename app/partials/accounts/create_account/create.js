@@ -24,7 +24,7 @@ angular.module('kpk.controllers')
         }
       },
     };
-   
+
     dependencies.accountType = {
       query : {
         tables : {
@@ -36,7 +36,7 @@ angular.module('kpk.controllers')
 
     function manageAccount(model) {
       $scope.model = model;
-     
+
       appstate.register('enterprise', loadEnterprise);
       defineGridOptions();
       initialiseGrid();
@@ -53,13 +53,10 @@ angular.module('kpk.controllers')
         {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
         {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
         {id: 'ACCOUNT.FIXED', name: 'Fixed', field: 'fixed', maxWidth: 60},
-
-        //TODO Translation 
-        {id: 'Edit', name: 'Edit', maxWidth: 50, formatter: EditFormatter},
-        {id: 'Delete', name: 'Delete', maxWidth: 70, formatter: DeleteFormatter}
+        {id: 'COLUMNS.EDIT', name: 'Edit', maxWidth: 50, formatter: EditFormatter},
+        {id: 'COLUMNS.DELETE', name: 'Delete', maxWidth: 70, formatter: DeleteFormatter}
       ];
 
-      // TODO : Should this depend on $translate success change?
       columns.forEach(function (col) {
         col.name = $translate(col.id);
       });
@@ -73,7 +70,7 @@ angular.module('kpk.controllers')
 
       awfulIndentCrawl($scope.model.account.data);
     }
-   
+
     function initialiseGrid() {
       var groupItemMetadataProvider;
 
@@ -91,7 +88,7 @@ angular.module('kpk.controllers')
         // FIXME : compareSort is unimplemented
         //dataview.sort(compareSort, args.sortAsc);
       });
-     
+
       //FIXME improve this function (redundant code) extract from main initialise)
       grid.onClick.subscribe(function(e, args) {
         if ($(e.target).hasClass("toggle")) {
@@ -119,7 +116,7 @@ angular.module('kpk.controllers')
         grid.invalidateRows(args.rows);
         grid.render();
       });
-   
+
       dataview.beginUpdate();
       dataview.setItems($scope.model.account.data);
       sortAccounts();
@@ -160,7 +157,7 @@ angular.module('kpk.controllers')
         item.indent = indent;
       });
     }
-   
+
     function submitAccount(account) {
       //do some kind of validation
       //kill if account exists for now
@@ -175,7 +172,7 @@ angular.module('kpk.controllers')
         enterprise_id: appstate.get('enterprise').id,
         parent: 0 //set default parent (root)
       };
-     
+
       if(account.parent) formatAccount.parent = account.parent.account_number;
 
       connect.basicPut("account", [formatAccount]).then(function(res) {
@@ -186,7 +183,7 @@ angular.module('kpk.controllers')
         //reset form
         $scope.newAccount.title = "";
         $scope.newAccount.number = "";
-       
+ 
         if(formatAccount.account_type_id === titleAccount) {
           //console.log('update parent');
           $scope.newAccount.parent = $scope.model.account.get(formatAccount.account_number);
@@ -197,12 +194,12 @@ angular.module('kpk.controllers')
         messenger.push({type: 'danger', msg: 'Could not insert account: ' + err});
       });
     }
-   
+
     function updateState(newState) { session.state = newState; }
 
     function AccountFormatter(row, cell, value, columnDef, dataContext) {
       var spacer = "<span style='display:inline-block;height:1px;width:" + (15 * dataContext.indent) + "px'></span>";
-    
+
       if(dataContext.account_type_id === titleAccount) {
         if (dataContext._collapsed) {
           return spacer + " <span class='toggle expanded glyphicon glyphicon-collapse-up'></span>&nbsp; <b>" + value + "</b>";
@@ -214,14 +211,14 @@ angular.module('kpk.controllers')
       }
     }
 
-    function EditFormatter(row, cell, value, columnDef, dataContext) { 
+    function EditFormatter(row, cell, value, columnDef, dataContext) {
       return '<a class="grid_link"><span class="glyphicon glyphicon-pencil"></span></a>';
     }
 
-    function DeleteFormatter(row, cell, value, columndDef, dataContext) { 
+    function DeleteFormatter(row, cell, value, columndDef, dataContext) {
       return '<a class="grid_link"><span class="glyphicon glyphicon-trash"></span></a>';
     }
-   
+
     $scope.updateState = updateState;
     $scope.submitAccount = submitAccount;
   }
