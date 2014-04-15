@@ -901,8 +901,13 @@
       },
       'ERR_ACCOUNT_NULL' : {
         title            : 'Null Accounts',
-        ref              : 'ERRR_ACCOUNT_NULL',
+        ref              : 'ERR_ACCOUNT_NULL',
         description      : 'Undefined or null accounts included in transaction(s).'
+      },
+      'ERR_RECORD_NOT_FOUND' : {
+        title : 'Record Not Found',
+        ref : 'ERR_RECORD_NOT_FOUND',
+        description : 'The record you were looking for could not be retrieved'
       }
     };
   })
@@ -953,7 +958,6 @@
 
       exchange.hasDailyRate = function hasDailyRate () {
         var date = normalize(new Date());
-        console.log("check daily rate", !!exchange.store , !!exchange.store.get(date));
         return !!exchange.store && !!exchange.store.get(date);
       };
 

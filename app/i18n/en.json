@@ -890,7 +890,8 @@
     "TITLE"           : "Find a patient",
     "ENTER_DEBTOR_ID" : "Find by Patient ID",
     "PLACEHOLDER"     : "Search patient name",
-    "SEARCH"          : "Find by Name"
+    "SEARCH"          : "Find by Name",
+    "PATIENT_ID"      : "Patient ID"
   },
 
   "COUNTRY" : {
