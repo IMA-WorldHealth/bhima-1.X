@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="pull-left">
-    <span class="btn-group"> <!-- TODO --->
+    <span class="btn-group">
       <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
       <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
       <ul class="dropdown-menu menu-sq">
@@ -34,7 +34,7 @@
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <h4 class="visible-print">{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
       <table id="patientTable" class="reportTable">
         <thead>
           <tr>

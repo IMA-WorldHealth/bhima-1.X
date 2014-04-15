@@ -3,12 +3,11 @@ angular.module('kpk.controllers')
   '$scope',
   'appstate',
   'connect',
-  '$q',
   '$modal',
   'messenger',
   'validate',
   'uuid',
-  function ($scope, appstate, connect, $q, $modal, messenger, validate, uuid) {
+  function ($scope, appstate, connect, $modal, messenger, validate, uuid) {
 
     var dependencies = {};
 
@@ -45,7 +44,7 @@ angular.module('kpk.controllers')
         }
       }
     };
- 
+
     dependencies.inventory = {
       query : {
         identifier : 'uuid',
@@ -82,7 +81,7 @@ angular.module('kpk.controllers')
     }
 
     function buildStores(stores) {
-      for (var k in stores) { $scope[k] = stores[k]; }
+      angular.extend($scope, stores);
 
       $scope.item = {};
       $scope.item.unit_weight = 0;
@@ -98,7 +97,7 @@ angular.module('kpk.controllers')
     $scope.submit = function () {
       var packaged = connect.clean($scope.item);
       packaged.uuid = uuid();
-     
+
       packaged.enterprise_id = $scope.enterprise.id;
       // if ($scope.inventory.$valid) {
       connect.basicPut('inventory', [packaged])
@@ -110,15 +109,6 @@ angular.module('kpk.controllers')
         messenger.danger('An error occured' + err);
       });
       $scope.reset();
-      // } else {
-        // for (var k in $scope.inventory) {
-          // if ($scope.inventory[k].$invalid) {
-            // $scope.invalid[k] = 'true';
-            // TODO: make css classes depend on this. Color
-            // red for error on each input if $invalid.
-          // }
-        // }
-      // }
     };
 
     // New Type Instance Modal/Controller
