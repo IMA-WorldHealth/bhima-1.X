@@ -10,6 +10,10 @@ angular.module('kpk.controllers')
   function ($scope, $modalInstance, connect, groupStore, accountModel, messenger, uuid) {
     $scope.group = {};
 
+    accountModel.forEach(function (account) {
+      account.account_number = String(account.account_number);
+    });
+
     $scope.accounts = accountModel;
 
     $scope.submit = function () {

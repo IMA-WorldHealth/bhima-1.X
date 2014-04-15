@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="pull-left">
-    <span class="btn-group"> <!-- TODO --->
+    <span class="btn-group">
       <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
       <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
       <ul class="dropdown-menu menu-sq">
@@ -31,15 +31,14 @@
   </div>
 </section>
 
-<div class="report" stlye="position: absolute; left:0; right:0; bottom:37px; overflow:auto;">
+<div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <h4 class="visible-print">{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
       <table id="patientTable" class="reportTable">
         <thead>
           <tr>
             <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
-            <th>{{ "COLUMNS.TYPE" | translate }}</th>
             <th>{{ "COLUMNS.NAME" | translate }}</th>
             <th>{{ "COLUMNS.SALE_ID" | translate }}</th>
             <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
@@ -51,7 +50,6 @@
         <tbody>
           <tr ng-repeat='payment in payments'>
             <td><a ng-href="/#/invoice/cash/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a></td>
-            <td> {{ payment.type }} </td>
             <td> {{ payment.first_name + ' ' + payment.last_name }} </td>
             <td><a ng-href="/#/invoice/sale/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a></td>
             <td> {{ projects.get(payment.debtor_project).abbr + payment.debtor_reference }} </td>

@@ -80,6 +80,11 @@
     "TODAY_RATE" : "Exchange Rate for"
   },
 
+  "SEX" : {
+    "M" : "M",
+    "F" : "F"
+  },
+
   "PROJECT"       : {
     "EDIT"        : "Editing Project",
     "NEW"         : "New Project",
@@ -361,6 +366,7 @@
     "GROUP_NAME"          : "Group Name",
     "ACCOUNT_NUMBER"      : "Account Number",
     "EDIT"                : "Edit",
+    "DELETE"              : "Delete",
     "FIRST_NAME"          : "First Name",
     "CONVENTION"          : "Convention",
     "AMOUNT_DUE"          : "Amount Due",
@@ -705,7 +711,7 @@
     "DISCARD"         : "Discard",
     "RESET_BALANCES"  : "Reset Balances",
     "CLEAR"           : "Clear",
-    "CLOSE_FORM" : "Close Form",
+    "CLOSE_FORM"      : "Close Form",
     "CLEAR_FORM"      : "Clear Form",
     "RESET"           : "Reset",
     "DELETE"          : "Delete",
@@ -884,7 +890,8 @@
     "TITLE"           : "Find a patient",
     "ENTER_DEBTOR_ID" : "Find by Patient ID",
     "PLACEHOLDER"     : "Search patient name",
-    "SEARCH"          : "Find by Name"
+    "SEARCH"          : "Find by Name",
+    "PATIENT_ID"      : "Patient ID"
   },
 
   "COUNTRY" : {
@@ -928,7 +935,11 @@
     "POSTING"      : "Posting Journal",
     "CREDIT_NOTE"  : "Credit Note",
     "POST"         : "Post to Journal",
-    "ALL_PROJECTS" : "All Projects"
+    "ALL_PROJECTS" : "All Projects",
+    "TOTAL_OF"     : "Total of",
+    "INVOICES"     : "invoices",
+    "CHARGED_AGAINST" : "charged against",
+    "PATIENTS"     : "patients"
   },
 
   "INVOICE"             : {

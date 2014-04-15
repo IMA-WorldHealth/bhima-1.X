@@ -41,12 +41,11 @@ angular.module('kpk.controllers')
       validate.process(dependencies)
       .then(initialize);
     });
- 
+
     function initialize (models) {
       //model.dependences = models[0];
       //$scope.location = models[1];
-      for (var k in models) { $scope[k] = models[k]; }
-      console.log('models', models);
+      angular.extend($scope, models);
       $scope.newAccount = {};
     }
 
@@ -54,9 +53,9 @@ angular.module('kpk.controllers')
       messenger.danger('An error occured in fetching requests: ' + JSON.stringify(error));
     }
 
-    $scope.fLocation = function fLocation (l) {
+    $scope.formatLocation = function fLocation (l) {
       return [l.village, l.sector, l.province, l.country].join(' -- ');
-    }
+    };
 
     $scope.newEnterprise = function () {
       $scope.add = {};
@@ -105,74 +104,12 @@ angular.module('kpk.controllers')
         messenger.danger('Error in saving new enterprise:' + JSON.stringify(err));
       });
     };
- 
+
     $scope.resetNew = function () {
       $scope.add = {};
     };
 
-    $scope.manageAccounts = function () {
-      $scope.action = 'manage';
-      $q.all([
-        connect.req({
-          tables : { 'account' : { columns : ['id', 'account_number', 'account_txt']}},
-          where : ['account.enterprise_id='+$scope.edit.id]
-        }),
-        connect.req({
-          tables : {'currency_account' : { columns : ['id', 'currency_id', 'cash_account', 'bank_account']}},
-          where : ['currency_account.enterprise_id='+$scope.edit.id]
-        })
-      ])
-      .then(function (models) {
-        $scope.account = models[0] ;
-        $scope.currency_account = models[1];
-      });
-    };
-
-    $scope.removeAccount = function (id) {
-      connect.basicDelete('currency_account', id)
-      .then(function (res) {
-        $scope.currency_account.remove(id);
-      }, function (err) {
-        messenger.danger('An Error occured:' + JSON.stringify(err));
-      });
-    };
-
-    $scope.saveAccounts = function () {
-      var data = connect.clean($scope.newAccount);
-      data.enterprise_id = $scope.editing_enterprise.id;
-      connect.basicPut('currency_account', [data])
-      .then(function (res) {
-        data.id = res.data.insertId;
-        $scope.currency_account.post(data);
-      }, function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
-      });
-    };
-
-    $scope.resetAccounts = function () {
-      $scope.newAccount = {};
-    };
-
     $scope.print = function () { $window.print(); };
 
-   /*
-    var getLocation = function(){
-      var def = $q.defer();
-      connect.fetch('/location/')
-      .then(function(values){
-        def.resolve(values);
-      });
-      return def.promise;
-    };
-
-
-    function run (){
-      $q.all([validate.process(dependencies), getLocation()]).then(initialize);
-    }
-
-    //invocation
-
-    run();
-    */
   }
 ]);
