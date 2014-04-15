@@ -183,7 +183,7 @@ angular.module('kpk.controllers')
         //reset form
         $scope.newAccount.title = "";
         $scope.newAccount.number = "";
- 
+
         if(formatAccount.account_type_id === titleAccount) {
           //console.log('update parent');
           $scope.newAccount.parent = $scope.model.account.get(formatAccount.account_number);

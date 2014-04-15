@@ -24,12 +24,12 @@ angular.module('kpk.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.summers = {
       query :'pcash_transfert_summers',
       identifier : 'reference'
-    }
+    };
 
     dependencies.cash_box = {
       required : true,
@@ -41,7 +41,7 @@ angular.module('kpk.controllers')
         },
         where : ['cash_box.is_auxillary='+1]
       }
-    }
+    };
 
     dependencies.cashAccounCurrency = {
       required : true,
@@ -52,7 +52,7 @@ angular.module('kpk.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.currency = {
       required : true,
@@ -63,11 +63,11 @@ angular.module('kpk.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.cashier = {
       query : 'user_session'
-    }
+    };
 
     //fonctions
     function init (model) {
@@ -79,18 +79,18 @@ angular.module('kpk.controllers')
     }
 
     function commitCash (){
-     validate.refresh(dependencies, ['cash_box']).then(function(model){
-       $scope.view.cash_box.data = model.cash_box.data.filter(function (item){
-        return (item.project_id == $scope.data.project_id);
+      validate.refresh(dependencies, ['cash_box']).then(function(model){
+        $scope.view.cash_box.data = model.cash_box.data.filter(function (item) {
+          return item.project_id === $scope.data.project_id;
+        });
+        configuration.project_id = $scope.data.project_id;
       });
-       configuration.project_id = $scope.data.project_id;
-     })
     }
 
     function getCurrency (value){
       var currency = {};
-      for (var i = $scope.model.currency.data.length - 1; i >= 0; i--) {
-        if($scope.model.currency.data[i].id === value){
+      for (var i = $scope.model.currency.data.length - 1; i >= 0; i -= 1) {
+        if ($scope.model.currency.data[i].id === value) {
           currency = $scope.model.currency.data[i];
           break;
         }
@@ -98,20 +98,17 @@ angular.module('kpk.controllers')
       return currency;
     }
 
-    function commitConfig (){
+    function commitConfig () {
       configuration.cash_box_source_id = $scope.data.cash_box_id;
       updateInfoCashBox(configuration.cash_box_source_id, configuration.currency.id);
     }
 
-    function updateInfoCashBox(cash_box_source_id, currency_id) {
+    function updateInfoCashBox (cash_box_source_id, currency_id) {
       if(!cash_box_source_id || !currency_id) return;
-      configuration.cash_account_currency = $scope.model.cashAccounCurrency.data.filter(function (item){
-        return (
-                item.cash_box_id == configuration.cash_box_source_id &&
-                item.currency_id == configuration.currency.id
-               );
+      configuration.cash_account_currency = $scope.model.cashAccounCurrency.data.filter(function (item) {
+        return item.cash_box_id === configuration.cash_box_source_id &&
+          item.currency_id === configuration.currency.id;
       });
-      console.log('[configuration]', configuration);
     }
 
     function updateConfig(){
@@ -119,7 +116,7 @@ angular.module('kpk.controllers')
       configuration.currency_id = $scope.data.currency.id;
     }
 
-    function handlError (err) {
+    function handleError (err) {
       messenger.danger(err.toString());
       return;
     }
@@ -134,29 +131,30 @@ angular.module('kpk.controllers')
       if(!configuration) return false;
       if(!configuration.pcash) return false;
       if(!$scope.data.value) return false;
-      for(var k in configuration){
-        clean = clean && (k)? true : false;
+      for (var k in configuration){
+        clean = clean && (k) ? true : false;
       }
-      return (clean && ($scope.data.value)? true : false);
+      return (clean && ($scope.data.value) ? true : false);
     }
 
     function ajouter (){
       configuration.value = $scope.data.value;
+
       if(!isValid()) return;
-     writeTransfer()
+
+      writeTransfer()
       .then(postToJournal)
       .then(function (prom){
         refresh();
       })
-      .catch(function (){
-        console.log('erreur');
-      });
+      .catch(handleError);
     }
 
     function refresh(){
       configuration = {};
-      validate.refresh(dependencies, ['summers']).then(init, handlError);
-
+      validate.refresh(dependencies, ['summers'])
+      .then(init)
+      .catch(handleError);
     }
 
     function writeTransfer (){
@@ -172,7 +170,7 @@ angular.module('kpk.controllers')
         istransfer : 1,
         account_id : configuration.cash_account_currency[0].account_id,
         cash_box_id : 1
-      }
+      };
       configuration.pcash=pcash;
       return connect.basicPut('pcash', connect.clean(pcash));
     }
@@ -188,21 +186,21 @@ angular.module('kpk.controllers')
     //invocations
     appstate.register('project', function(project){
       //FIX ME : I think there is a good way to do it
-     appstate.register('enterprise', function (enterprise){
-       $scope.project = project;
-       $scope.enterprise = enterprise;
-       validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'summers']).then(init, handlError);
-     })
+      appstate.register('enterprise', function (enterprise) {
+        $scope.project = project;
+        $scope.enterprise = enterprise;
+        validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'summers'])
+        .then(init)
+        .catch(handleError);
+      });
     });
 
     $scope.$watch('data.currency', function (nv){
-      if(nv) {
+      if (nv) {
         configuration.currency = JSON.parse(nv);
         updateInfoCashBox(configuration.cash_box_source_id, configuration.currency.id);
-     }
+      }
     }, true);
-
-
 
     //expositions
     $scope.commitCash = commitCash;
