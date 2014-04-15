@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('caution', [
+.controller('convention', [
   '$scope',
   '$q',
   '$location',
@@ -15,11 +15,11 @@ angular.module('kpk.controllers')
   'appcache',
   function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache) {
 
-    var dependencies = {},
-        caution_uuid = -1,
-        cache = new Appcache('caution');
+    var dependencies = {}, record_uuid = -1,
+        cache = new Appcache('convention');
 
     dependencies.cash_box = {
+      required : true,
       query : {
         tables : {
           'cash_box_account_currency' : {
@@ -62,62 +62,65 @@ angular.module('kpk.controllers')
       }
     };
 
-    $scope.noEmpty = false;
-    $scope.debitor = {};
-    $scope.data = {};
-
-
     dependencies.cashier = {
       query : 'user_session'
     };
 
-
+    $scope.noEmpty = false;
+    $scope.convention = {};
+    $scope.data = {};
     $scope.model = {};
 
     function init (model) {
       $scope.model = model;
-
     }
 
     function ready (model) {
-      $scope.model.location = model.location;
-      $scope.locationDebitor = model.location.data[0];
+      $scope.overviews = model.situations.data.filter(function (situation){
+        return situation.balance>0;
+      });
+      console.log('[model]',model);
+      console.log('[overviews]',$scope.overviews);
       $scope.noEmpty = true;
     }
 
-    function initialiseCaution (selectedDebitor) {
-      if(!selectedDebitor) return messenger.danger('No debtor selected');
-      $scope.selectedDebitor = selectedDebitor;
-      dependencies.location = { query : '/location/' + $scope.selectedDebitor.origin_location_id};
-      validate.process(dependencies, ['location'])
+    function initialiseConvention (selectedConvention) {
+      if(!selectedConvention) return messenger.danger('No convention selected!');
+      $scope.selectedConvention = selectedConvention;
+      dependencies.situations = { query : '/ledgers/debitor_group/' + $scope.selectedConvention.uuid};
+      validate.process(dependencies, ['situations'])
       .then(ready);
     }
 
-    function payCaution (){
+    function pay (){
+
       var record = {
-        uuid         : uuid(),
-        reference    : 1, // FIXME                                                                                                                               : Workaround for dead triggers
-        value        : $scope.data.payment,
-        project_id   : $scope.project.id,
-        debitor_uuid : $scope.selectedDebitor.debitor_uuid,
-        currency_id  : $scope.selectedItem.currency_id,
-        user_id      : $scope.model.cashier.data.id,
-        cash_box_id  : $scope.selectedItem.id,
-        description  : ['CAP', $scope.selectedDebitor.debitor_uuid, $scope.selectedDebitor.first_name, util.convertToMysqlDate(new Date().toString())].join('/')
+        uuid            : uuid(),
+        project_id      : $scope.project.id,
+        type            : 'E',
+        date            : util.convertToMysqlDate(new Date().toString()),
+        currency_id     : $scope.selectedItem.currency_id,
+        value           : $scope.data.payment,
+        cashier_id      : $scope.model.cashier.data.id,
+        description     : ['COVP', $scope.selectedConvention.name, util.convertToMysqlDate(new Date().toString())].join('/'),
+        istransfer     : 0,
+        account_id      : $scope.selectedConvention.account_id,
+        cash_box_id     : $scope.selectedItem.id
       };
-      writeCaution(record)
+
+      writePay(record)
       .then(postToJournal)
       .then(handleSucces)
       .catch(handleError);
     }
 
     function postToJournal (res) {
-      caution_uuid = res.config.data.data[0].uuid;
-      return connect.fetch('/journal/caution/' + caution_uuid);
+      record_uuid = res.config.data.data[0].uuid;
+      return connect.fetch('/journal/pcash/' + record_uuid);
     }
 
-    function writeCaution(record){
-      return connect.basicPut('caution', [record]);
+    function writePay(record){
+      return connect.basicPut('pcash', [record]);
     }
 
     function setCashAccount(cashAccount) {
@@ -129,30 +132,34 @@ angular.module('kpk.controllers')
 
 
     function handleSucces(resp){
-      messenger.success($translate('CAUTION.SUCCES'));
-      $scope.selectedDebitor = {};
+      messenger.success($translate('CONVENTION.SUCCES'));
+      $scope.selectedConvention = {};
       $scope.data = {};
       $scope.noEmpty = false;
-      if (caution_uuid !== -1) { $location.path('/invoice/caution/' + caution_uuid); }
+      //if(record_uuid !== -1) $location.path('/invoice/caution/' + record_uuid);
     }
 
     function handleError(){
-      messenger.danger($translate('CAUTION.DANGER'));
-    }
-
-    function load (selectedItem) {
-      if (!selectedItem) { return; }
-      $scope.selectedItem = selectedItem;
+      messenger.danger($translate('CONVENTION.DANGER'));
     }
 
     cache.fetch('selectedItem').then(load);
 
+
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
-      dependencies.cash_box.query.where=['cash_box.project_id='+project.id, 'AND', 'cash_box.is_auxillary='+1];
+      dependencies.cash_box.query.where=['cash_box.project_id='+project.id, 'AND', 'cash_box.is_auxillary='+0];
       validate.process(dependencies).then(init, handleError);
     });
+
+    function load (selectedItem){
+      if(!selectedItem) {
+         return ;
+      }else{
+        $scope.selectedItem = selectedItem;
+      }
+    }
 
     function check (){
       if($scope.data.payment){
@@ -162,8 +169,8 @@ angular.module('kpk.controllers')
       }
     }
 
-    $scope.initialiseCaution = initialiseCaution;
-    $scope.payCaution = payCaution;
+    $scope.initialiseConvention = initialiseConvention;
+    $scope.pay = pay;
     $scope.setCashAccount = setCashAccount;
     $scope.check = check;
   }

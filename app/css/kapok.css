@@ -198,8 +198,15 @@ textarea.form-kapok {
 }
 
 .report {
-  padding-top: 85px;
-  height: 100%;
+  position:absolute;
+  top: 85px;
+  left:0;
+  right:0;
+  overflow: auto;
+}
+
+.report-compressed {
+  bottom:37px;
 }
 
 /*sfount, temporary printable table styling*/
@@ -232,6 +239,11 @@ textarea.form-kapok {
 }
 
 @media print {
+  .report {
+    position: initial;
+    min-height: 100%;
+  }
+
   .reportFrame {
     border: none !important;
   }
@@ -243,6 +255,11 @@ textarea.form-kapok {
 
     margin-top: 0 !important;
   }
+
+  .report a[href]:after {
+    content: none;
+  }
+
 }
 
 div .reportBody {
@@ -293,7 +310,6 @@ div .reportFrame {
   bottom: 0;
   border-top: 1px solid #ddd;
 }
-
 
 /* positioned relative to the entire window */
 /* FIXME : it would be ideal if this were not the case */
@@ -385,4 +401,13 @@ a.danger {
 
 .kpk-msg {
   padding: 5px 15px;
+}
+
+.top-nav .breadcrumb {
+  background-color : #fff;
+  margin: 0;
+}
+
+.top-nav .label {
+  vertical-align : middle;
 }

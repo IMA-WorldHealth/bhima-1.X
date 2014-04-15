@@ -20,7 +20,7 @@ angular.module('kpk.controllers')
 
 
     function setUpModels (models) {
-      for (var k in models) $scope[k] = models[k];
+      angular.extend($scope, models);
     }
 
     validate.process(dependencies).then(setUpModels);
@@ -71,8 +71,9 @@ angular.module('kpk.controllers')
     };
 
     $scope.submitEdit = function () {
-      if ($scope.editForm.$invalid)
+      if ($scope.editForm.$invalid) {
         return messenger.danger('You have invalid form fields.');
+      }
       connect.basicPost('currency', [connect.clean($scope.editCurrency)])
       .success(function (res) {
         $scope.action = '';

@@ -45,6 +45,11 @@
     "DEFAULTS"      : "Utilizer Default (0)"
   },
 
+  "SEX" : {
+    "M" : "H",
+    "F" : "F"
+  },
+
   "NO_EXCHANGE"    : {
     "TITLE"        : "Il n'y a pas un taux",
     "EXPLANATION"  : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui.",
@@ -209,6 +214,12 @@
     "ENTER_DEBTOR_ID" : "Chercher ID Debiteur",
     "SEARCH"          : "Chercher Par Nom",
     "PLACEHOLDER"     : "Chercher un Debiteur"
+  },
+
+  "CFIND"             : {
+    "TITLE"           : "Trouver Convention",
+    "SEARCH"          : "Chercher Par Nom",
+    "PLACEHOLDER"     : "Chercher une convention"
   },
 
   "SELECT"            : {
@@ -447,6 +458,7 @@
     "GROUP_NAME"          : "Nom Groupe",
     "ACCOUNT_NUMBER"      : "Numero Compte",
     "EDIT"                : "Editer",
+    "DELETE"              : "Effacer",
     "FIRST_NAME"          : "Prenom",
     "CONVENTION"          : "Convention",
     "SYMBOL"              : "Symbole",
@@ -851,7 +863,7 @@
 
   "SECTOR"             : {
     "TITLE"            : "Gestionnaire Secteur",
-    "LOCATION_MANAGER" : "Gestion Emplacement",
+    "LOCATION_MANAGER" : "Gestion des Emplacement",
     "NEW_SECTOR"       : "Ajouter Secteur",
     "REGISTERED"       : "Secteurs enregistres",
     "NAME"             : "Nom",
@@ -866,32 +878,32 @@
 
   "PROVINCE"           : {
     "TITLE"            : "GESTION DES PROVINCES",
-    "LOCATION_MANAGER" : "Gestion Emplacements",
+    "LOCATION_MANAGER" : "Gestion des Emplacements",
     "ADD"              : "Ajouter Nouveau Province",
-    "REGISTERED"       : "Enregistrer Province",
+    "REGISTERED"       : "Provinces Enregistres",
     "NAME"             : "Nom",
     "COUNTRY"          : "Pays",
     "ACTIONS"          : "Actions",
     "CONFIGURATION"    : "Configuration de Gestion des Provinces",
-    "DESCRIPTION"      : "Ce module vous aidera a gerer les provinces, A gauche vous voyez les provinces enregistrees. utiliser ce module pour creer, modifier Et Effacer des provinces. ",
+    "DESCRIPTION"      : "Ce module vous aider a gerer les provinces, A gauche vous voyez les provinces enregistrees. utiliser ce module pour creer, modifier Et Effacer des provinces. ",
     "REGISTER"         : "Enregistrer une Province",
     "PROVINCE_NAME"    : "Nom Province",
     "EDIT"             : "Editer Province"
     },
 
   "VILLAGE"            : {
-    "TITLE"            : "VILLAGE MANAGER",
-    "LOCATION_MANAGER" : "Location manager",
-    "NEW_VILLAGE"      : "Add Village",
-    "REGISTERED"       : "Registered villages",
-    "NAME"             : "Name",
-    "SECTOR"           : "Sector",
+    "TITLE"            : "Gestion des Villages",
+    "LOCATION_MANAGER" : "Gestion des Emplacement",
+    "NEW_VILLAGE"      : "Ajouter Village",
+    "REGISTERED"       : "Villages Enregistres",
+    "NAME"             : "Nom",
+    "SECTOR"           : "Commune",
     "ACTIONS"          : "Actions",
-    "CONFIG"           : "Village Manager Configuration",
-    "INFO"             : "This module will help you to manage villge, use this module to create, edit and remove village",
-    "REGISTER"         : "Register a Village",
-    "NAME_VILLAGE"     : "Village Name",
-    "EDIT"             : "Edit Village"
+    "CONFIG"           : "Configuration de Gestion des Villages",
+    "INFO"             : "Ce module vous aider a gerer les villages.",
+    "REGISTER"         : "Enregistrer une Village",
+    "NAME_VILLAGE"     : "Nom de Village",
+    "EDIT"             : "Editer Village"
   },
 
   "UPDATE_STOCK"     : {
@@ -946,6 +958,16 @@
     "PAY"          : "Payer",
     "SUCCES"       : "Operation reussie !",
     "DANGER"       : "Erreur ! Une erreur se produite pendant le posting !"
+  },
+
+ "CONVENTION"            : {
+    "TITLE"              : "Convention",
+    "CASH"               : "Caisse Principale",
+    "INFO"               : "Informations financiere sommaire",
+    "PAYEMENT"           : "Boite de paie",
+    "MONTANT"            : "Montant",
+    "SUCCES"             : "Operation reussie !",
+    "DANGER"             : "Erreur ! Une erreur se produite pendant le posting !"
   },
 
   "PCASH"                   : {
@@ -1003,6 +1025,23 @@
     "CURRENCY"    : "Monnaie"
   },
 
+   "CONVENTION"        : {
+    "TITLE"       : "Convention",
+    "CONVENTION"    : "Convention",
+    "INFO_CONVENTION" : "Convention",
+    "INFO" : "Information financiere sur la convention",
+    "PCASH"       : "Caisse Principale",
+    "INFO_OLD"        : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
+    "SOURCE"      : "Source",
+    "EXPECTED"    : "Attendu",
+    "AMOUNT"      : "Montant",
+    "CRUMB_PCASH" : "caisse principale",
+    "CRUMB_CONVENTION" : "convention",
+    "PROJECT"     : "Proget",
+    "CAISSE"      : "Caisse",
+    "CURRENCY"    : "Monnaie"
+  },
+
   "DASHBOARD" : {
     "TITLE" : "Tableau de bord"
   },
@@ -1012,5 +1051,21 @@
     "LANGUAGE" : "Langue",
     "LAST_PAGE" : "Dernier Page Visite",
     "HOME_PAGE" : "Page Defaut"
+  },
+  "PURCHASE":{
+    "TITLE"    : "Ordre Achat",
+    "ADD_SUPPLIER" : "Ajouter Fournisseur",
+    "CONFIGURE"    : "Parametrage",
+    "SALE_DATE"    : "Date de vente",
+    "SUPPLIER"     : "Fournisseur",
+    "RESPONSIBLE"  : "Employe Responsable",
+    "ORDER"        : "Ordre",
+    "DATE"         : "Date",
+    "NOTE"         : "Note",
+    "PURCHASE_ITEM"         : "Items Ordonnes",
+    "ADD_LINE_ITEM" : "Ajouter item",
+    "TOTAL"         : "Total",
+    "SUBMIT"        : "Soumettre",
+    "SUBMIT_ORDER"  : "Soumettre Ordre Achat"
   }
 }

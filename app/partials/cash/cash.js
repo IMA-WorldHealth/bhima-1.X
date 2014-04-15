@@ -80,19 +80,6 @@ angular.module('kpk.controllers')
       }
     };
 
-    cache.fetch('cashbox').then(loadDefaultCashBox);
-    cache.fetch('currency').then(loadDefaultCurrency);
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.cashboxes.query.where =
-        ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=1'];
-
-      validate.process(dependencies, ['cashboxes', 'cash', 'projects'])
-      .then(setUpModels, handleErrors);
-    });
-
-
     function loadDefaultCurrency(currency) {
       if(!currency) return;
       defaultCurrency = currency;
@@ -109,10 +96,20 @@ angular.module('kpk.controllers')
       if ($scope.cashbox) $scope.cashbox = cashBox;
     }
 
+    cache.fetch('cashbox').then(loadDefaultCashBox);
+    cache.fetch('currency').then(loadDefaultCurrency);
+
+    appstate.register('project', function (project) {
+      $scope.project = project;
+      dependencies.cashboxes.query.where =
+        ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=1'];
+
+      validate.process(dependencies, ['cashboxes', 'cash', 'projects'])
+      .then(setUpModels, handleErrors);
+    });
+
     function setUpModels(models) {
-      for (var k in models) {
-        $scope[k] = models[k];
-      }
+      angular.extend($scope, models);
 
       if (!$scope.cashbox) {
         var sessionDefault =
@@ -174,9 +171,7 @@ angular.module('kpk.controllers')
     function refreshCurrency(model) {
       var sessionDefault;
 
-      for (var k in model) {
-        $scope[k] = model[k];
-      }
+      angular.extend($scope, model);
 
       sessionDefault =
         $scope.cashbox_accounts.get($scope.project.currency_id) ||
@@ -320,7 +315,6 @@ angular.module('kpk.controllers')
 
       initPayment()
       .then(function (data) {
-
         // pay the cash payment
 
         creditAccount = data.creditAccount;
@@ -348,7 +342,6 @@ angular.module('kpk.controllers')
       })
       .then(function () {
         // pay each of the cash items
-
         records = [];
 
         $scope.queue.forEach(function (record) {
@@ -385,93 +378,6 @@ angular.module('kpk.controllers')
       .finally();
     };
 
-    /*
-    function processCashInvoice () {
-      // Gather data and submit the cash invoice
-      var document_id, cashPayment, date, description;
-
-      // we need to figure out if they are paying the total amount
-      // if they are, it means that the absolute value of
-      // precision.compare(precision.round(data.payment), data.total)
-      // should be less than currency.min_monentary_unit
-
-      date = util.convertToMysqlDate(new Date());
-
-      document_id = generateDocumentId($scope.cash.data, 'E');
-      description = ['CP E', document_id, $scope.patient.first_name, date].join('/');
-
-      $scope.payment_uuid = uuid();
-
-      cashPayment = {
-        uuid : $scope.payment_uuid,
-        project_id : $scope.project.id,
-        type : 'E',
-        document_id : document_id,
-        date : date,
-        debit_account : $scope.cashbox.cash_account,
-        credit_account : $scope.patient.account_id,
-        currency_id : $scope.currency.currency_id,
-        cost: precision.round(data.payment),
-        description : description,
-        user_id : 1,
-        cashbox_id : 1,
-        deb_cred_uuid : $scope.patient.debitor_uuid,
-        deb_cred_type : 'D'
-      };
-
-      return connect.basicPut('cash', [cashPayment]);
-    }
-
-    function processCashItems (res) {
-      // format cash items and submit them
-      var records,
-          id = $scope.payment_uuid;
-
-      $scope.invoice_uuid = id; // clean this up to make it more testable
-
-      records = $scope.queue
-      .filter(function (invoice) {
-        return invoice.allocated > 0;
-      })
-      .map(function (invoice) {
-        return {
-          uuid : uuid(),
-          cash_uuid: id,
-          allocated_cost : precision.round(invoice.allocated),
-          invoice_uuid : invoice.inv_po_id
-        };
-      });
-
-      return connect.basicPut('cash_item', records);
-    }
-
-    function postToJournal (res) {
-      return connect.fetch('/journal/cash/' + $scope.invoice_uuid);
-    }
-
-    function showReceipt () {
-      $location.path('/invoice/cash/' + $scope.invoice_id);
-    }
-
-    $scope.payInvoices = function pay () {
-      // FIXME: add a 'would you like to credit or pay back' line/check here for excess
-      // run digestInvoice once more to stabilize.
-      if (!exchange.map) {
-        return messenger.danger($translate('CASH.NO_EXCHANGE_RATE'));
-      }
-
-      $scope.digestInvoice();
-
-      processCashInvoice()
-      .then(processCashItems)
-      .then(postToJournal)
-      .then(showReceipt)
-      .catch(function (err) {
-        messenger.danger('An error occured' + JSON.stringify(err));
-      });
-    };
-    */
-
     function generateDocumentId(model, type) {
       // filter by bon type, then gather ids.
       var ids = model.filter(function(row) {
@@ -494,7 +400,6 @@ angular.module('kpk.controllers')
         invoice.locale = exchange(invoice.balance, $scope.currency.currency_id);
       });
 
-
       // finally digest the invoice
       $scope.digestInvoice();
     }
@@ -507,8 +412,6 @@ angular.module('kpk.controllers')
     $scope.$watch('currency', digestExchangeRate);
     $scope.$watch('queue', $scope.digestTotal, true);
     $scope.$watch('data.payment', $scope.digestInvoice);
-
-
   }
 ]);
 
