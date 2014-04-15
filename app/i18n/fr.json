@@ -45,6 +45,11 @@
     "DEFAULTS"      : "Utilizer Default (0)"
   },
 
+  "SEX" : {
+    "M" : "H",
+    "F" : "F"
+  },
+
   "NO_EXCHANGE"    : {
     "TITLE"        : "Il n'y a pas un taux",
     "EXPLANATION"  : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui.",
