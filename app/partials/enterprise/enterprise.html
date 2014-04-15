@@ -29,7 +29,7 @@
         <td>{{ e.email }}</td>
         <td>{{ e.phone }}</td>
         <td>{{ e.location_id }}</td>
-        <td>{{ currency.get(e.currency_id).name }}</td>
+        <td>{{ currency.get(e.currency_id).symbol }}</td>
       </tr>
     </tbody>
   </table>
@@ -108,7 +108,7 @@
 
               <div class="form-group">
                 <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.uuid as fLocation(loc) for loc in location.data">
+                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'">
                   <option value="" disabled="disabled">-- {{ 'SELECT.LOCATION' | translate }}--</option>
                 </select>
               </div>
@@ -159,7 +159,7 @@
 
               <div class="form-group">
                 <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.uuid as fLocation(loc) for loc in location.data" required>
+                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
                   <option value="" disabled="disabled">-- Select a Location --</option>
                 </select>
               </div>
@@ -167,8 +167,6 @@
             </fieldset>
             <fieldset>
               <legend>{{ 'ENTERPRISE.CURRENCY_CASH_MANAGEMENT' | translate }}</legend>
-
-              <input type="button" class="btn btn-sm btn-default" value="{{ 'ENTERPRISE.MANAGE_CASH_ACCOUNTS' | translate }}" ng-click="manageAccounts()">
 
               <div class="radio" ng-repeat="currency in currency.data">
                 <label>
@@ -182,60 +180,6 @@
             <input type="submit" class="btn btn-sm btn-success" ng-click="saveEdit()" value="{{ 'FORM.SAVE_CHANGES' | translate }}" ng-disabled="editForm.$invalid">
             <input type="button" class="btn btn-sm btn-default" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
 
-          </form>
-        </div>
-
-        <div ng-switch-when="manage">
-          <table class="table table-condensed  ">
-            <thead>
-              <tr><th colspan="5">{{ 'ENTERPRISE.REGISTERED_RELATIONS' | translate }}</th></tr>
-              <tr>
-                <th> {{ 'ENTERPRISE.CURRENCY' | translate }}</th>
-                <th> {{ 'ENTERPRISE.CASH_ACCOUNT' | translate }}</th>
-                <th> {{ 'ENTERPRISE.BANK_ACCOUNT' | translate }}</th>
-                <th> {{ 'ENTERPRISE.ACTIONS' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="acc in currency_account.data">
-                <td>{{ currency.get(acc.currency_id).name }}  ({{currency.get(acc.currency_id).symbol}})</td>
-                <td>{{ account.get(acc.cash_account).account_number }}</td>
-                <td>{{ account.get(acc.bank_account).account_number }}</td>
-                <td><button class="btn btn-danger btn-sm" ng-click="removeAccount(acc.id)"><i class="glyphicon glyphicon-trash"></i></button></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <form>
-            <fieldset>
-              <legend>{{ 'ENTERPRISE.ADD_CURRENCY_ACCOUNT' | translate }}</legend>
-
-              <div class="form-group">
-                <label>{{ 'ENTERPRISE.CURRENCY' | translate }}</label>
-                <select class="form-kapok" ng-model="newAccount.currency_id" ng-options="currency.id as currency.name+' ('+currency.symbol+')' for currency in currency.data">
-                  <option value="">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label >{{ 'ENTERPRISE.CASH_ACCOUNT' | translate }}</label>
-                <select class="form-kapok" ng-model="newAccount.cash_account" ng-options="account.id as account.account_number+' -- '+account.account_txt for account in account.data">
-                  <option value="">-- {{ 'SELECT.ACCOUNT' | translate }} --</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label >{{ 'ENTERPRISE.BANK_ACCOUNT' | translate }}</label>
-                <select class="form-kapok" ng-model="newAccount.bank_account" ng-options="account.id as account.account_number+' -- '+account.account_txt for account in account.data">
-                  <option value="">-- {{ 'SELECT.ACCOUNT' | translate }} --</option>
-                </select>
-              </div>
-
-
-              <input type="submit" class="btn btn-success btn-sm" ng-click="saveAccounts()" value="{{ 'UTIL.SAVE_SELECTION' | translate }}">
-              <input type="button" class="btn btn-sm btn-default" ng-click="resetAccounts()" value="{{ 'UTIL.RESET_FORM' | translate }}">
-
-            </fieldset>
           </form>
         </div>
       </div>
