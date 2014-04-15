@@ -366,6 +366,7 @@
     "GROUP_NAME"          : "Group Name",
     "ACCOUNT_NUMBER"      : "Account Number",
     "EDIT"                : "Edit",
+    "DELETE"              : "Delete",
     "FIRST_NAME"          : "First Name",
     "CONVENTION"          : "Convention",
     "AMOUNT_DUE"          : "Amount Due",
