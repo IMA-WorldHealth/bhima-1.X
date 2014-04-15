@@ -1,4 +1,4 @@
-<header>
+<header data-header>
   {{ 'SECTOR.TITLE' | translate }}
 </header>
 
@@ -9,7 +9,7 @@
 
   <div class="pull-right">
     <a href="#/location/" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-tag"></span> {{'SECTOR.LOCATION_MANAGER' | translate}}
+      <span class="glyphicon glyphicon-globe"></span> {{'SECTOR.LOCATION_MANAGER' | translate}}
     </a>
   </div>
 </section>
@@ -19,7 +19,7 @@
     <div class="col-xs-6">
       <div class="panel panel-default" style="max-height: 40em; overflow: auto;">
         <div class="panel-heading">
-          <span>{{'SECTOR.REGISTERED' | translate}}</span>
+          <span>{{ 'SECTOR.REGISTERED' | translate}}</span>
         </div>
         <table class="table table-striped table-condensed">
           <thead>

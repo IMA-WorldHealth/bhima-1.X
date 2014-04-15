@@ -328,7 +328,7 @@
     "PURCHASE_ORDER_RECORDS"    : "Historique Demands des Fonds",
     "REPORT_FINANCE"            : "Rapport Financial",
     "PRICE_LIST"                : "Liste des Prix",
-    "EXCHANGE"                  : "Taux d'Exchange",
+    "EXCHANGE"                  : "Taux de change",
     "REPORT_TRANSACTION"        : "Rapport Transaction",
     "CREDITOR_GRP"              : "Groupe Crediteur",
     "DEBTOR_GRP"                : "Groupe Debiteur",
@@ -703,7 +703,7 @@
     "CLEAR_FORM"      : "Effacer Formulaire",
     "RESET"           : "Reinitilaiser",
     "DELETE"          : "Effacer",
-    "RESET_FORM"      : "Reinitilaiser Formiulaire",
+    "RESET_FORM"      : "Reinitilaiser Formulaire",
     "CANCEL"          : "Annuler",
     "OK"              : "Ok",
     "CONTINUE"        : "Continuer",
@@ -736,14 +736,14 @@
   },
 
   "EXCHANGE"     : {
-    "TITLE"      : "Configurer le taux d'Echange",
-    "SET"        : "Definir le Taux d'Echange d'Aujourd'hui",
-    "HELP_TXT_1" : "Le module de taux d'echange, donne la possibilite de definir le taux d'echange du jour. Par souci d'integrite des donnees, Le taux d'echange doit etre defini par jour",
+    "TITLE"      : "Configurer le taux de change",
+    "SET"        : "Definir le Taux de Change pour Aujourd'hui",
+    "HELP_TXT_1" : "Le module de taux de change, donne la possibilite de definir le taux d'echange du jour. Par souci d'integrite des donnees, Le taux d'echange doit etre defini par jour",
     "PREV"       : "Taux Precedent",
     "NEW"        : "Nouveau Taux",
     "NO_RATES"   : "Il n'y a pas des taux defini pour aujourd'hui!",
     "REVIEW"     : "Revoir le taux d'aujourd'hui",
-    "TODAY_RATE" : "Taux d'Echange pour"
+    "TODAY_RATE" : "Taux de change pour"
   },
 
   "CREDITOR_GRP"      : {
@@ -777,7 +777,7 @@
     "INFO_CREATE"           : "creer",
     "INFO_MODIFY"           : "modifier",
     "ET"                    : "et",
-    "REMOVE"                : "Effacer",
+    "REMOVE"                : "effacer",
     "REGISTER"              : "Enregistrer un Emplacement",
     "VILLAGE_NAME"          : "Nom du Village"
   },
