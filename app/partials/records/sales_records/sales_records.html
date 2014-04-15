@@ -34,9 +34,9 @@
 </section>
 
 <!-- <div class="content"> -->
-<div class="report">
+<div class="report report-compressed">
   <div class="reportBody">
-    <div class="reportFrame">
+    <div class="reportFrame" style="padding-top: 10px;">
 <!-- <div class="row" style="height: 99%; overflow&#45;y: scroll"> -->
 <!-- <div class="col&#45;xs&#45;12" style="height: 100%"> -->
 <!--  -->
@@ -47,7 +47,9 @@
 <!--         <div ng&#45;switch&#45;default></div> -->
 <!--       </div> -->
 <!--       <div> -->
-
+        
+  <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
+  <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
         <!-- <table class="table table&#45;bordered table&#45;condensed"> -->
         <table class="reportTable">
           <thead>
@@ -59,7 +61,7 @@
             <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
             <!-- <th>Debtor ID</th> -->
             <!-- <th>{{'COLUMNS.POSTED' | translate}}</th> -->
-            <th  width="30%">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            <th  width="30%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
             <!-- <th>Status</th> -->
           </tr>
           </thead>
@@ -80,20 +82,19 @@
               <td width="10%">{{invoice.hr_id}}</td>
               <td width="20%">[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
               <td width="20%">{{invoice.cost | currency}}</td>
-              <td width="30%">
+              <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
                 | <a ng-href="/#/credit_note/{{invoice.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'SALERECORD.CREDIT_NOTE' | translate }}</a>
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
 
     </div>
   </div>
 </div>
 
-<section class="bar-bottom">
+<section class="bar-bottom" style="background-color: #ffffff;">
 <div> 
   <table style="width: 99%" >
     <tbody>
