@@ -795,8 +795,8 @@ create table `purchase` (
   `employee_id`       int unsigned not null,
   `discount`          mediumint unsigned default '0',
   `purchase_date`     date not null,
-  `timestamp`         timestamp current_timestamp,
-  `note`              text default null,
+  `timestamp`         timestamp null default CURRENT_TIMESTAMP,
+  `note`              text,
   `posted`            boolean not null default 1,
   primary key (`uuid`),
   key `project_id` (`project_id`),
@@ -910,7 +910,7 @@ create table `cash_item` (
 --
 -- Table structure for table `kpk`.`posting_session`
 --
--- TODO : number of records posted 
+-- TODO : number of records posted
 drop table if exists `posting_session`;
 create table `posting_session` (
   `id`        int unsigned not null auto_increment,
@@ -1250,8 +1250,7 @@ drop table if exists `pcash_item`;
 create table `pcash_item` (
   `uuid`              varchar(36) not null,
   `pcash_uuid`        varchar(36) not null,
-  `debit`             decimal (19, 4) unsigned not null default 0,
-  `credit`            decimal (19, 4) unsigned not null default 0,
+  `cost`             decimal (19, 4) unsigned not null default 0,
   `inv_po_id`      varchar(36),
   primary key (`uuid`),
   key `pcash_uuid` (`pcash_uuid`),
