@@ -31,7 +31,7 @@
   </div>
 </section>
 
-<div class="report" style="max-height: calc(100%-37px); overflow: auto;">
+<div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame">
       <h4>{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
@@ -72,6 +72,6 @@
     <span ng-if="session.searching">...</span>
   </span>
 
-  <span><b>M: {{ session.count.male }}</b></span>
-  <span><b>F: {{ session.count.female }}</b></span>
+  <span><b>{{ "SEX.M" | translate }}: {{ session.count.male }}</b></span>
+  <span><b>{{ "SEX.F" | translate }}: {{ session.count.female }}</b></span>
 </section>

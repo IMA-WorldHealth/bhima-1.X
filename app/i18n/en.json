@@ -80,6 +80,11 @@
     "TODAY_RATE" : "Exchange Rate for"
   },
 
+  "SEX" : {
+    "M" : "M",
+    "F" : "F"
+  },
+
   "PROJECT"       : {
     "EDIT"        : "Editing Project",
     "NEW"         : "New Project",
