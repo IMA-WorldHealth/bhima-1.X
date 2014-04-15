@@ -292,8 +292,8 @@
           '     <div ng-switch-when="false">'+
           '       <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}'+
           '       <div class="pull-right">'+
-          '         <a id="findById" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.updateState(\'id\')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
-          '         <a id="findByName" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
+          '         <a id="findById" style="cursor:pointer;" ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click="findPatient.updateState(\'id\')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>'+
+          '         <a id="findByName" style="cursor:pointer;" ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click="findPatient.updateState(\'name\')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>'+
           '       </div>'+
           '     </div>'+
           '     <div ng-switch-when="true">'+
@@ -330,7 +330,7 @@
           '            type="text"'+
           '            ng-model="findPatient.debtorId"'+
           '            class="form-kapok"'+
-          '            placeholder="Patient ID">'+
+          '            placeholder=\'{{ "FIND.PATIENT_ID" | translate }}\'>'+
           '          <span class="input-group-btn">'+
           '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }} </button>'+
           '          </span>'+

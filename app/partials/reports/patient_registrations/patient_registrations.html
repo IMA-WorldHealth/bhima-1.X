@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="pull-left">
-    <span class="btn-group"> <!-- TODO --->
+    <span class="btn-group">
       <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" ng-click="search(session.selected)">{{ (session.selected.label | translate) || "..." }}</button>
       <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
       <ul class="dropdown-menu menu-sq">
@@ -31,10 +31,10 @@
   </div>
 </section>
 
-<div class="report" style="max-height: calc(100%-37px); overflow: auto;">
+<div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <h4 class="visible-print">{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
         <table id="patientTable" class="reportTable">
           <thead>
             <tr>
@@ -72,6 +72,6 @@
     <span ng-if="session.searching">...</span>
   </span>
 
-  <span><b>M: {{ session.count.male }}</b></span>
-  <span><b>F: {{ session.count.female }}</b></span>
+  <span><b>{{ "SEX.M" | translate }}: {{ session.count.male }}</b></span>
+  <span><b>{{ "SEX.F" | translate }}: {{ session.count.female }}</b></span>
 </section>
