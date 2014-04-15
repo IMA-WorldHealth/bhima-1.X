@@ -711,7 +711,7 @@
     "DISCARD"         : "Discard",
     "RESET_BALANCES"  : "Reset Balances",
     "CLEAR"           : "Clear",
-    "CLOSE_FORM" : "Close Form",
+    "CLOSE_FORM"      : "Close Form",
     "CLEAR_FORM"      : "Clear Form",
     "RESET"           : "Reset",
     "DELETE"          : "Delete",

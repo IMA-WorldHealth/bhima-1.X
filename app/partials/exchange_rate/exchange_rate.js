@@ -7,8 +7,6 @@ angular.module('kpk.controllers')
   'appstate',
   'validate',
   function ($scope, $q, connect, messenger, appstate, validate) {
-    'use strict';
-
     var dependencies = {};
 
     dependencies.currency = {
@@ -45,8 +43,7 @@ angular.module('kpk.controllers')
     }
 
     function buildModels(models) {
-      for (var k in models) { $scope[k] = models[k]; }
-
+      angular.extend($scope, models);
       $scope.today = new Date().toISOString().slice(0, 10);
       $scope.newRate = {};
     }
@@ -85,8 +82,10 @@ angular.module('kpk.controllers')
         // reset rate
         $scope.action = '';
         $scope.newRate = {};
-      }, function (error) {
-        messenger.danger('Failed to post new exchange rate. Error: '+ error);
+      }, function (err) {
+        if (err.status === 404) {
+          messenger.error('ERR_HTTP_UNREACHABLE');
+        }
       });
     };
 
