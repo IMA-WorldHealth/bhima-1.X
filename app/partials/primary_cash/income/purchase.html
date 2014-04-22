@@ -3,8 +3,17 @@
 </header>
 
 <section class="top-nav">
+  <div class="pull-left">
+  <ol class="breadcrumb" style="float: right;">
+    <span class="label label-success square">{{ "PRIMARY_CASH.NAVIGATION" | translate }}</span>
+    <li><a href="#/primary_cash">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+    <li><a href="">{{ "PRIMARY_CASH.EXPENSES" | translate }}</a></li>
+    <li class="active">{{ "PRIMARY_CASH.PURCHASE" | translate }}</li>
+  </ol>
+  </div>
+
   <!-- FIXME style hack --> 
-  <div class="pull-right" style="margin-top: 6px;">
+  <div class="pull-right" style="margin-top: 9px;">
     <b>[{{cashbox.id}}] {{cashbox.text}}</b>
   </div>
 </section>
