@@ -835,14 +835,18 @@
     "TITLE"        : "Enregistrements des Factures des Patients",
     "SHOWING"      : "Vue de derniers enregistrements",
     "ADVANCE"      : "Recherches Avancee",
-    "UNFOUND"      : "Autcune transaction du patient trouvee. Refference",
-    "PATIENT_SALE" : "Vente au Patient",
-    "GENERATE"     : "Pour generer une Facture.",
-    "RECEIPT"      : "Recette",
+    "UNFOUND"      : "Aucune transaction des patients trouvee. Reference",
+    "PATIENT_SALE" : "Ventes",
+    "GENERATE"     : "Pour creer une facture.",
+    "RECEIPT"      : "Facture",
     "POSTING"      : "Postage au Journal",
     "CREDIT_NOTE"  : "Note de Credit",
     "POST"         : "Poster au Journal",
-    "ALL_PROJECTS" : "Tous les Projets"
+    "ALL_PROJECTS" : "Tous les Projets",
+    "TOTAL_OF" : "Total de",
+    "INVOICES" : "factures",
+    "CHARGED_AGAINST" : "imputees contre",
+    "PATIENTS" : "patients"
   },
 
   "INVOICE"             : {
@@ -850,7 +854,7 @@
     "PATIENT"           : "Patient",
     "PATIENT_ID"        : "# Patient",
     "DATE_REGISTRATION" : "Date d'enregistrement",
-    "DATE_RECEIPT"      : "Date de recette",
+    "DATE_RECEIPT"      : "Date de la facture",
     "PATIENT_INVOICE"   : "Facture du Patient",
     "TO"                : "A",
     "INVOICE_ID"        : "Facture No.",
