@@ -11,6 +11,7 @@ angular.module('kpk.controllers')
     var cashbox, cashboxReference = $routeParams.cashbox;
     
     if (!cashboxReference) return messenger.info($translate('CASH_PURCHASE.CASHBOX_ASSIGN_ERROR'));
+    
     // TODO Don't download complete purchase orders
     dependencies.purchase = {
       query : {

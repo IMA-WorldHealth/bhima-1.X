@@ -4,8 +4,11 @@
 
 <section class="top-nav underline">
   
-  <div class="pull-left" style="margin-top: 6px; padding-left: 4px;">
-    <span class="glyphicon glyphicon-home"></span> <a>{{ 'PRIMARY_CASH.HOME' | translate }}</a>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <span class="label label-success square">{{ "PRIMARY_CASH.NAVIGATION" | translate }}</span>
+      <li><a href="">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+    </ol>
   </div>
 
   <div class="pull-right">
@@ -35,7 +38,7 @@
         <div class="panel-body">
           
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.income"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.income"><a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
           </ul>
         </div>
       </div>
@@ -49,7 +52,7 @@
 
         <div class="panel-body">
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.expense"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.expense"><a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
           </ul>
 
         </div>
