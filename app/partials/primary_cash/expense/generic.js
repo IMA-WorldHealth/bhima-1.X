@@ -12,6 +12,11 @@ angular.module('kpk.controllers')
     var dependencies = {};
     var session = $scope.session = { receipt : {} };
 
+    // TODO
+    if (Number.isNaN(Number($routeParams.id))) {
+      throw new Error('No cashbox selected');
+    }
+
     var isDefined = angular.isDefined;
 
     $scope.timestamp = new Date();
@@ -50,8 +55,8 @@ angular.module('kpk.controllers')
       validate.process(dependencies)
       .then(function (models) {
         angular.extend($scope, models);
-        session.receipt.date = new Date().toISOString().slice(0, 10);
-        session.receipt.value = 0.00;
+        session.receipt.date = new Date().toisostring().slice(0, 10);
+        session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
       })
       .catch(function (err) {
@@ -64,7 +69,7 @@ angular.module('kpk.controllers')
     }
 
     $scope.generate = function generate () {
-      session.receipt.purchase_uuid = uuid();
+      session.receipt.reference_uuid = uuid();
     };
 
     $scope.clear = function clear () {
@@ -83,40 +88,55 @@ angular.module('kpk.controllers')
 
       session.invalid = !(isDefined(session.currency) &&
         isDefined(r.recipient) &&
-        isDefined(r.value) &&
+        isDefined(r.cost) &&
+        r.cost !== 0 &&
         isDefined(r.description) &&
         isDefined(r.date) &&
         isDefined(r.cash_box_id));
     }, true);
 
     $scope.submit = function submit () {
-      var receipt = session.receipt;
+      var data, receipt = session.receipt;
       formatDates();
+
 
       connect.fetch('/user_session')
       .then(function (user) {
 
-        var data = {
-          uuid : uuid(),
-          reference : 1,
-          project_id : $scope.project.id,
-          type : 'S',
-          date : receipt.date,
+        data = {
+          uuid          : uuid(),
+          reference     : 1,
+          project_id    : $scope.project.id,
+          type          : 'E',
+          date          : receipt.date,
           deb_cred_uuid : receipt.recipient.creditor_uuid,
           deb_cred_type : 'C',
-          currency_id : session.currency.id,
-          value : receipt.value,
-          cashier_id : user.data.id,
-          description : receipt.description,
-          istransfer : 0,
-          account_id : receipt.recipient.account_id,
-          cash_box_id : receipt.cash_box_id
+          currency_id   : session.currency.id,
+          cost          : receipt.cost,
+          user_id       : user.data.id,
+          description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
+          cash_box_id   : receipt.cash_box_id,
+          origin_id     : 0
         };
 
-        return connect.basicPut('pcash', [data]);
+        return connect.basicPut('primary_cash', [data]);
+      })
+      .then(function () {
+        var item = {
+          uuid              : uuid(),
+          primary_cash_uuid : data.uuid,
+          debit             : 0,
+          credit            : data.cost,
+          document_uuid     : receipt.reference_uuid
+        };
+        return connect.basicPut('primary_cash_item', [item]);
       })
       .then(function () {
         messenger.success("Posted data successfully.");
+        session = $scope.session = { receipt : {} };
+        session.receipt.date = new Date().toISOString().slice(0, 10);
+        session.receipt.cost = 0.00;
+        session.receipt.cash_box_id = $routeParams.id;
       })
       .catch(function (err) {
         messenger.error(err);

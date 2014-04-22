@@ -1235,6 +1235,7 @@ create table `primary_cash_item` (
   `debit`             decimal (19, 4) unsigned not null default 0,
   `credit`            decimal (19, 4) unsigned not null default 0,
   `inv_po_id`         varchar(36),
+  `document_uuid`     varchar(36),
   primary key (`uuid`),
   key `primary_cash_uuid` (`primary_cash_uuid`),
   constraint foreign key (`primary_cash_uuid`) references `primary_cash` (`uuid`)
