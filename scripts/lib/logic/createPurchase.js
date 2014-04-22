@@ -22,4 +22,12 @@ module.exports = function (db, parser, journal) {
   function execute(data, user, callback) { 
 
   }
+
+  function writeCash(uuid) { 
+
+  }
+
+  function postCash(uuid) { 
+
+  }
 };
