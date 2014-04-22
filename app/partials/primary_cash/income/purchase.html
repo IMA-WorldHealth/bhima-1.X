@@ -19,7 +19,82 @@
 </section>
 
 <div class="content">
-  <div class="row">
-     
+  <div class="row" style="margin-top: 10px">
+
+    <div class="col-xs-5">
+    
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          Select Purcahse Order
+        </div>
+
+        <div class="panel-body">
+          <div class="input-group" style="margin-bottom: 15px">
+            <span class="input-group-btn">
+              <button disabled class="square btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+            <input class="form-kapok" placeholder="Filter Purchase Orders" ng-model="session.filter">
+          </div>
+          
+          <table class="table table-bordered table-condensed"> 
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Reference</th>
+                <th>Employee</th>
+                <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+
+            <tr ng-repeat="item in purchase.data | filter : session.filter"
+                ng-class="{'selected-success': session.selected.uuid===item.uuid}">
+                <td>{{item.invoice_date | date}}</td>
+                <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
+                <td>{{item.name}}</td>
+                <td><a class="menu-item" ng-click="confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
+              </tr>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-7">
+      <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-danger' : !session.selected}">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-list-alt"></span> 
+          Confirm Payment <small>{{session.selected.uuid}}</small>
+        </div>
+
+        <div class="panel-body" ng-if="session.selected">
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th colspan="2">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{"COLUMNS.ID" | translate}}</td><td>{{session.selected.uuid}}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.NOTE" | translate}}</td><td>{{session.selected.note}}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{session.selected.name}}</td>
+              </tr>
+              <tr>  
+                <td>{{"COLUMNS.COST" | translate}}</td><td><b>{{session.selected.cost | currency}}</b></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button class="square btn btn-success btn-sm">Confirm payment of <b>{{session.selected.cost | currency}}</b> to <b>{{session.selected.name}}</b></button>
+          <button disabled class="square btn btn-danger btn-sm">Discard purchase order</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
