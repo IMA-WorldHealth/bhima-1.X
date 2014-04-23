@@ -32,53 +32,6 @@ module.exports = function (db, synthetic) {
     });
   }
 
-  function getOrigin (table) {
-    var query =
-      'SELECT `id`, `service_txt` FROM `transaction_type` ' +
-      'WHERE `service_txt`=' + sanitize.escape(table) + ';';
-    return db.exec(query)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('Cannot find origin for transaction type : ' + table);
-      }
-      return q(rows.pop().id);
-    });
-  }
-
-  function getPeriod (date) {
-    var sql =
-      'SELECT `id`, `fiscal_year_id` FROM `period` ' +
-      'WHERE `period_start` <= ' + sanitize.escape(get.date(date)) + ' AND ' +
-      ' `period_stop` >= ' + sanitize.escape(get.date(date)) + ';';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('No period or fiscal year data for date: ' + date);
-      }
-      return q(rows.pop());
-    });
-  }
-
-  function getTransactionId (project_id) {
-    var query =
-      'SELECT abbr, max(increment) AS increment FROM (' +
-        'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-        'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-        'WHERE project_id = ' + project_id + ' ' +
-        'UNION ' +
-        'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-        'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-        'WHERE project_id = ' + project_id + ')c;';
-
-    return db.exec(query)
-    .then(function (rows) {
-      var data = rows.pop();
-      // catch a corner case where the posting journal has no data
-      return q(data.increment ? '"' + data.abbr + data.increment + '"' : '"' + data.abbr + 1 + '"');
-    });
-  }
-
   function validPeriod(enteprise_id, date) {
     var escaped_date = sanitize.escape(get.date(date));
     var sql =
@@ -98,19 +51,21 @@ module.exports = function (db, synthetic) {
 
   // validity checks
   check = {
-    validPeriod : function (enterprise_id, date, errback) {
-      var escaped_date = sanitize.escape(get.date(date));
-      var sql =
+    validPeriod : function (enterprise_id, date) {
+      var escaped_date, sql;
+      escaped_date = sanitize.escape(get.date(date));
+      sql =
         'SELECT `period`.`id`, `fiscal_year_id` ' +
         'FROM `period` ' +
         'WHERE `period`.`period_start` <=' + escaped_date + ' AND ' +
           '`period`.`period_stop` >=' + escaped_date + ' AND ' +
           '`period`.`locked` = 0;\n';
-      db.execute(sql, function (err, rows) {
-        if (err) return errback(err);
-        if (rows.length === 0)
-          return errback(new Error('No period found to match the posted date : ' + date));
-        return errback(null);
+      return db.exec(sql)
+      .then(function (rows) {
+        if (rows.length === 0) {
+          throw new Error('No period found to match the posted date : ' + date);
+        }
+        return q(rows);
       });
     },
 
@@ -118,42 +73,47 @@ module.exports = function (db, synthetic) {
       // NOTE: This is NOT STRICT. It may find a debitor when a creditor was
       // requested, or vice versa.  This is fine for the checks here, but not
       // for posting to the general ledger.
-      var escaped_id = sanitize.escape(id);
-      var sql =
+      var sql;
+      id = sanitize.escape(id);
+      sql =
         'SELECT `uuid` ' +
         'FROM (' +
-          'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + escaped_id + ' ' +
+          'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + id + ' ' +
         'UNION ' +
-          'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + escaped_id +
+          'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + id +
         ')c;';
-      db.execute(sql, function (err, rows) {
-        if (err) return errback(err);
-        if (rows.length === 0) return errback(new Error('No Debitor or Creditor found with id: ' + id));
-        return errback(null);
+      return db.exec(sql)
+      .then(function (rows) {
+        if (rows.length === 0) {
+          throw new Error('No Debitor or Creditor found with id: ' + id);
+        }
+        return q(rows);
       });
     }
   };
 
   // utility functions shared by multiple queries
   get = {
-    origin : function (table, done) {
+    origin : function (table) {
       // uses the transaction_type table to derive an origin_id
       // to post to the journal.  Returns the id.
-      var query =
-        'SELECT `id`, `service_txt` FROM `transaction_type` WHERE `service_txt`='+sanitize.escape(table)+';';
-      db.execute(query, function (err, rows) {
-        if (err) return done(err);
-        if (rows.length === 0)
-          return done(new Error('Cannot find origin for transaction type : ' + table));
-        return done(null, rows[0].id);
+      var sql =
+        'SELECT `id`, `service_txt` FROM `transaction_type` ' +
+        'WHERE `service_txt`=' + sanitize.escape(table) + ';';
+      return db.exec(sql)
+      .then(function (rows) {
+        if (rows.length === 0) {
+          throw new Error('Cannot find origin for transaction type : ' + table);
+        }
+        return q(rows.pop().id);
       });
     },
 
-    transactionId : function (project_id, done) {
+    transactionId : function (project_id) {
       // get a new transaction id from the journal.
       // make sure it is the last thing fired in the
       // call stack before posting.
-      var query =
+      var sql =
         'SELECT abbr, max(increment) AS increment FROM (' +
           'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
           'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
@@ -163,38 +123,41 @@ module.exports = function (db, synthetic) {
           'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
           'WHERE project_id = ' + project_id + ')c;';
 
-      db.execute(query, function (err, rows) {
-        if (err) return done(err);
+      return db.exec(sql)
+      .then(function (rows) {
         var data = rows.pop();
-        return done(null, data.increment ? '"' + data.abbr + data.increment + '"' : '"' + data.abbr + 1 + '"');
+        // catch a corner case where the posting journal has no data
+        return q(data.increment ? '"' + data.abbr + data.increment + '"' : '"' + data.abbr + 1 + '"');
       });
     },
 
     date : function (date) {
       // returns a mysql-compatible date
       // Note : this transforms things into a date, not date + time
-
       if (date) {
         var year = String(date.getFullYear());
         var month = String(date.getMonth() + 1);
         month = month.length === 1 ? '0' + month : month;
         var day = String(date.getDate()).length === 1 ? '0' + String(date.getDate()) : String(date.getDate());
         return [year, month, day].join('-');
+      } else {
+        return new Date().toISOString().slice(0, 10);
       }
-      else return new Date().toISOString().slice(0,10);
     },
 
-    period : function (date, done) {
+    period : function (date) {
       // gets the currency period from a mysql-compatible date.
       var sql =
         'SELECT `id`, `fiscal_year_id` FROM `period` ' +
         'WHERE `period_start` <= ' + sanitize.escape(get.date(date)) + ' AND ' +
         ' `period_stop` >= ' + sanitize.escape(get.date(date)) + ';';
 
-      db.execute(sql, function (err, rows) {
-        if (err) return done(err);
-        if (rows.length === 0) return done(new Error('No period or fiscal year data for date: ' + date));
-        return done(null, { period_id :rows[0].id, fiscal_year_id : rows[0].fiscal_year_id });
+      return db.exec(sql)
+      .then(function (rows) {
+        if (rows.length === 0) {
+          throw new Error('No period or fiscal year data for date: ' + date);
+        }
+        return q(rows.pop());
       });
     },
 
@@ -214,7 +177,7 @@ module.exports = function (db, synthetic) {
 
     exchangeRate : function (date) {
       // expects a mysql-compatible date
-      var sql, defer = q.defer();
+      var sql;
 
       sql =
         'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, ' +
@@ -222,30 +185,27 @@ module.exports = function (db, synthetic) {
         'FROM `exchange_rate` JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
         'WHERE `exchange_rate`.`date`=\'' + this.date(date) + '\';';
 
-      db.exec(sql)
+      return db.exec(sql)
       .then(function (rows) {
-        if (rows.length === 0) { defer.reject(new Error('No exchange rate found for date : ' + date)); }
+        if (rows.length === 0) {
+          throw new Error('No exchange rate found for date : ' + date);
+        }
 
         var store = new Store();
         rows.forEach(function (line) {
           store.post({ id : line.foreign_currency_id, rate : line.rate });
           store.post({ id : line.enterprise_currency_id, rate : 1});
         });
-        defer.resolve(store);
-      })
-      .catch(function (err) {
-        defer.reject(err);
-      });
 
-      return defer.promise;
+        return q(store);
+      });
     },
 
     myExchangeRate : function (date) {
       // expects a mysql-compatible date
       var defer = q.defer(),
         sql =
-        'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, ' +
-          '`min_monentary_unit` ' +
+        'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, `min_monentary_unit` ' +
         'FROM `exchange_rate` JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
         'WHERE `exchange_rate`.`date`=\'' + date + '\';';
       db.execute(sql, function (err, rows) {
@@ -267,23 +227,23 @@ module.exports = function (db, synthetic) {
       return array.filter(function (item){
         return item.cash_account === account_id;
       });
-
     }
   };
 
   function authorize (user_id, done) {
     // TODO : This is a placeholder until we find out how to allow
     // users to post.  It is a permissions issue.
-    db.execute('SELECT 1+1 AS ans;', function (err, results) {
-      if (err) return done(err);
-      return done(null, results);
+    return db.exec('SELECT 1+1 AS ans;')
+    .then(function (results) {
+      return q(results);
     });
   }
 
   // TODO Only has project ID passed from sale reference, need to look up enterprise ID
-  function handleSales (id, user_id, done, caution) {
+  function handleSales (id, user_id, caution) {
     // sale posting requests enter here.
-    var sql =
+    var sql, data, reference;
+    sql =
       'SELECT `sale`.`project_id`, `project`.`enterprise_id`, `sale`.`uuid`, `sale`.`currency_id`, ' +
         '`sale`.`debitor_uuid`, `sale`.`seller_id`, `sale`.`discount`, `sale`.`invoice_date`, ' +
         '`sale`.`cost`, `sale`.`note`, `sale_item`.`uuid` as `item_uuid`, `sale_item`.`transaction_price`, `sale_item`.`debit`, ' +
@@ -295,55 +255,66 @@ module.exports = function (db, synthetic) {
       'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ' ' +
       'ORDER BY `sale_item`.`credit`;';
 
-    db.execute(sql, function (err, results) {
-      if (err) return done(err, null);
-      if (results.length === 0) { return done(new Error('No sale by the id: ' + id)); }
+    db.exec(sql)
+    .then(function (results) {
+      if (results.length === 0) {
+        throw new Error('No sale by the id: ' + id);
+      }
 
-      var allItems = results;
-
-      var reference_sale = results[0];
-      var enterprise_id = reference_sale.enterprise_id;
-      var project_id = reference_sale.project_id;
-      var date = reference_sale.invoice_date;
+      data = results;
+      reference = results[0];
 
       // first check - do we have a valid period?
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
-      check.validPeriod(enterprise_id, date, function (err) {
-        if (err) done(err, null);
+      return check.validPeriod(reference.enterprise_id, reference.invpice_date);
+    })
+    .then(function () {
+      // second check - are the debits (discounts) positive
+      // for every transaction item?
+      var debitPositive = data.every(function (row) {
+        return validate.isPositive(row.debit);
+      });
 
-        // second check - are the debits (discounts) positive
-        // for every transaction item?
-        var debitPositive = results.every(function (row) {
-          return validate.isPositive(row.debit);
-        });
+      if (!debitPositive) {
+        throw new Error('Negative debit detected for sale id: ' + id);
+      }
 
-        if (!debitPositive) {
-          return done(new Error('Negative debit detected for sale id: ' + id));
-        }
+      // third check - are all the credits (revenue) positive
+      // for every transaction item?
+      var creditPositive = data.every(function (row) {
+        return validate.isPositive(row.credit);
+      });
 
-        // third check - are all the credits (revenue) positive
-        // for every transaction item?
-        var creditPositive = results.every(function (row) {
-          return validate.isPositive(row.credit);
-        });
+      if (!creditPositive) {
+        throw new Error('Negative credit detected for sale id: ' + id);
+      }
+      
+      // all checks have passed - prepare for writing to the journal.
+      return q.spread([get.orgin('sale'), get.period(reference.invoice_date)]);
+    })
+    .then(function (origin_id, period_object) {
+      // we now have the origin!
+      // we now have the relevant period!
 
-        if (!creditPositive) {
-          return done(new Error('Negative credit detected for sale id: ' + id));
-        }
+      // create a trans_id for the transaction
+      // MUST BE THE LAST REQUEST TO prevent race conditions.
+      return get.transactionId(reference.project_id);
+    })
+    .then(function (project_id) {
+    
+    })
+    .catch(function (err) {
+    
+    })
+    .done();
 
-        // all checks have passed - prepare for writing to the journal.
         get.origin('sale', function (err, origin_id) {
           if (err) return done(err);
-          // we now have the origin!
 
           get.period(date, function (err, period_object) {
             if (err) return done(err);
 
-            // we now have the relevant period!
-
-            // create a trans_id for the transaction
-            // MUST BE THE LAST REQUEST TO prevent race conditions.
             get.transactionId(project_id, function (err, trans_id) {
               if (err) return done(err);
 
