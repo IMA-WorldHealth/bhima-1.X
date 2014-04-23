@@ -2,11 +2,11 @@ angular.module('kpk.controllers')
 .controller('permission', [
   '$scope',
   '$q',
+  '$window',
   'connect',
   'messenger',
-  '$window',
   'validate',
-  function($scope, $q, connect, messenger, $window, validate) {
+  function($scope, $q, $window, connect, messenger, validate) {
     // This module is responsible for handling the creation
     // of users and assigning permissions to existing modules.
     //
@@ -18,7 +18,7 @@ angular.module('kpk.controllers')
     // confusing halt when a user tries to load permissions.
 
     var dependencies = {};
- 
+
     dependencies.units = {
       query : {
         tables : {
@@ -247,9 +247,9 @@ angular.module('kpk.controllers')
 
     validate.process(dependencies)
     .then(function (models) {
-      for (var k in models) { $scope[k] = models[k]; }
+      angular.extend($scope, models);
 
-      // order hte data
+      // order the data
       $scope.units.data.forEach(function (unit) {
         unit.children = getChildren(unit.id);
       });
