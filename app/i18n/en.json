@@ -104,10 +104,10 @@
     "HELP_TXT_1"  : "Edit existing users and permissions from the table to the left",
     "HELP_TXT_2"  : "Edits a user's metadata",
     "HELP_TXT_3"  : "Edits a user's permissions",
-    "HELP_TXT_4"  : "Deletes a user and its permission data",
-    "ADDING"      : "Adding a New User",
+    "HELP_TXT_4"  : "Deletes a user and their permissions",
+    "ADDING"      : "Add a New User",
     "RETYPE"      : "Retype",
-    "EDITTING"    : "Editting",
+    "EDITTING"    : "Edit",
     "SUPER"       : "Super User"
   },
 

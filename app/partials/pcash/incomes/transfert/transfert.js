@@ -106,8 +106,8 @@ angular.module('kpk.controllers')
     function updateInfoCashBox (cash_box_source_id, currency_id) {
       if(!cash_box_source_id || !currency_id) return;
       configuration.cash_account_currency = $scope.model.cashAccounCurrency.data.filter(function (item) {
-        return item.cash_box_id === configuration.cash_box_source_id &&
-          item.currency_id === configuration.currency.id;
+        return item.cash_box_id == configuration.cash_box_source_id &&
+          item.currency_id == configuration.currency.id;
       });
     }
 
