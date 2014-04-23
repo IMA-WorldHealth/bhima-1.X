@@ -20,7 +20,9 @@ module.exports = function (db, parser, journal) {
   //    credit sale account
   
   function execute(data, user, callback) { 
+    console.log('client has requested purchase order', user, data);
 
+    callback(null);
   }
 
   function writeCash(uuid) { 

@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   '$translate',
   'messenger',
   'validate',
-  function ($scope, $routeParams, $translate, messenger, validate) {
+  'connect',
+  function ($scope, $routeParams, $translate, messenger, validate, connect) {
     var dependencies = {}, session = $scope.session = {};
     var cashbox, cashboxReference = $routeParams.cashbox;
     
@@ -45,13 +46,9 @@ angular.module('kpk.controllers')
     function confirmPurchase(purchaseId) {
       session.selected = $scope.purchase.get(purchaseId);
     }
-
-    function writeCash(uuid) {
-
-    }
-
-    function postCash(uuid) {
-
+    
+    function payPurchase(purchaseId) {
+      // connect.basicPut( 
     }
 
     $scope.confirmPurchase = confirmPurchase;
