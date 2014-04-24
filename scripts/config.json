@@ -41,6 +41,7 @@
       "/account_balance",
       "/ledger",
       "/sale",
+      "/purchase",
       "/user_session",
       "/fiscal",
       "/caution/",

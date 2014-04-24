@@ -30,7 +30,8 @@ var report       = require('./lib/logic/report')(db),
     fiscal       = require('./lib/logic/fiscal')(db),
     synthetic    = require('./lib/logic/synthetic')(db, sanitize),
     journal      = require('./lib/logic/journal')(db, synthetic),
-    createSale   = require('./lib/logic/createSale')(db, parser, journal);
+    createSale   = require('./lib/logic/createSale')(db, parser, journal),
+    createPurchase = require('./lib/logic/createPurchase')(db, parser, journal);
 
 var uuid         = require('./lib/util/guid');
 
@@ -108,9 +109,19 @@ app.delete('/data/:table/:column/:value', function (req, res, next) {
   .done();
 });
 
+app.post('/purchase', function(req, res, next) { 
+  // TODO duplicated methods
+  
+  console.log('createPurchase', createPurchase);
+  createPurchase.execute(req.body, req.session.user_id, function (err, ans) { 
+    if (err) return next(err);
+    res.send(200, {purchaseId: ans});
+  });
+});
+
 app.post('/sale/', function (req, res, next) {
   createSale.execute(req.body, req.session.user_id, function (err, ans) {
-    if(err) return next(err);
+    if (err) return next(err);
     res.send(200, {saleId: ans});
   });
 });
