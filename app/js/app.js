@@ -253,7 +253,7 @@
       controller : 'updateStock',
       templateUrl : 'partials/update_stock/update_stock.html'
     })
-    .when('/primary_cash/transfert', {
+    .when('/primary_cash/transfert/:cashbox_id', {
       controller : 'transfert',
       templateUrl : 'partials/primary_cash/incomes/transfert/transfert.html'
     })

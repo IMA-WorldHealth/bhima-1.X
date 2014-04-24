@@ -21,7 +21,7 @@ angular.module('kpk.controllers')
 
     {
         key : $filter('translate')('PRIMARY_CASH.INCOME.TRANSFER'),
-        link : '/primary_cash/transfert'
+        link : '/primary_cash/transfert/'
       },
 
       {
@@ -53,7 +53,7 @@ angular.module('kpk.controllers')
     function loadPath(path) {
 
       //TODO validate both correct path and cashbox
-      $location.path(path);
+      $location.path(path+session.cashbox);
     }
 
     $scope.loadPath = loadPath;
