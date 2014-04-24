@@ -25,6 +25,11 @@ angular.module('kpk.controllers')
       },
 
       {
+        key : $filter('translate')('PRIMARY_CASH.INCOME.CONVENTION'),
+        link : '/primary_cash/convention/'
+      },
+
+      {
         key : 'GENERIC_INCOME',
         link : '/primary_cash/income/generic/'
       }

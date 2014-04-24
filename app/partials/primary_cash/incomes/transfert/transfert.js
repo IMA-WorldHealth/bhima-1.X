@@ -200,6 +200,11 @@ angular.module('kpk.controllers')
       configuration.currency_id = $scope.data.currency_id;
     }
 
+    function loadPath(path) {
+      //TODO validate both correct path and cashbox
+      $location.path(path+session.cashbox);
+    }
+
     //invocations
     appstate.register('project', function(project){
       //FIX ME : I think there is a good way to do it
@@ -220,6 +225,7 @@ angular.module('kpk.controllers')
     }, true);
 
     //expositions
+    $scope.loadPath = loadPath;
     $scope.commitCash = commitCash;
     $scope.commitConfiguration = commitConfiguration;
     $scope.commitConfig = commitConfig;

@@ -257,9 +257,9 @@
       controller : 'transfert',
       templateUrl : 'partials/primary_cash/incomes/transfert/transfert.html'
     })
-     .when('/pcash/convention', {
+     .when('/primary_cash/convention/:cashbox_id', {
       controller : 'convention',
-      templateUrl : 'partials/pcash/incomes/convention/convention.html'
+      templateUrl : 'partials/primary_cash/incomes/convention/convention.html'
     })
     .when('/trialbalance/print', {
       controller : 'trialbalance.print',
