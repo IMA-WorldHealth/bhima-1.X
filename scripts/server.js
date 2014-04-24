@@ -109,9 +109,10 @@ app.delete('/data/:table/:column/:value', function (req, res, next) {
   .done();
 });
 
-app.post('/purchase/', function(req, res, next) { 
+app.post('/purchase', function(req, res, next) { 
   // TODO duplicated methods
-
+  
+  console.log('createPurchase', createPurchase);
   createPurchase.execute(req.body, req.session.user_id, function (err, ans) { 
     if (err) return next(err);
     res.send(200, {purchaseId: ans});
