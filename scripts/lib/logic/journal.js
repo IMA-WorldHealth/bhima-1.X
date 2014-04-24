@@ -1221,18 +1221,16 @@ module.exports = function (db, synthetic) {
   }
 
 
-  function handlePcash (id, user_id, done){
-    var sql = "SELECT * FROM `pcash` WHERE `pcash`.`uuid`="+sanitize.escape(id)+";";
+  function handleTransfert (id, user_id, done){
+    var sql = "SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`="+sanitize.escape(id)+";";
 
     db.execute(sql, function(err, ans){
       if (err) { return done(err, null); }
-      if (ans.length === 0) { return done(new Error('No pcash by the uuid: ' + id)); }
+      if (ans.length === 0) { return done(new Error('No primary_cash by the uuid: ' + id)); }
 
       var reference_pcash = ans[0];
       var project_id = reference_pcash.project_id;
       var date = util.toMysqlDate(reference_pcash.date);
-      //console.log('reference pcash', reference_pcash);
-
 
       get.myExchangeRate(date)
       .then(function (exchangeRateStore) {
@@ -1248,8 +1246,9 @@ module.exports = function (db, synthetic) {
             get.transactionId(project_id, function (err, trans_id) {
               if(err) {return done(err);}
                   var dailyExchange = exchangeRateStore.get(reference_pcash.currency_id);
-                  var valueExchanged = parseFloat((1/dailyExchange.rate) * reference_pcash.value).toFixed(4);
+                  var valueExchanged = parseFloat((1/dailyExchange.rate) * reference_pcash.cost).toFixed(4);
                   var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
+
 
               var credit_sql = 'INSERT INTO posting_journal '+
                             '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -1264,7 +1263,7 @@ module.exports = function (db, synthetic) {
                                         trans_id, '\''+get.date()+'\'', '\''+descrip+'\'', reference_pcash.account_id
                                       ].join(',')+', '+
                                      [
-                                      reference_pcash.value, 0,
+                                      reference_pcash.cost, 0,
                                         valueExchanged, 0,
                                         reference_pcash.currency_id
                                      ].join(',')+', null, null, '+[sanitize.escape(id), origin_id, user_id].join(',')
@@ -1285,7 +1284,7 @@ module.exports = function (db, synthetic) {
                                         trans_id, '\''+get.date()+'\'', '\''+descrip+'\''
                                       ].join(',')+', `account_id`, '+
                                      [
-                                      0, reference_pcash.value,
+                                      0, reference_pcash.cost,
                                         0, valueExchanged,
                                         reference_pcash.currency_id
                                      ].join(',')+', null, null, '+[sanitize.escape(id), origin_id, user_id].join(',')
@@ -1307,10 +1306,9 @@ module.exports = function (db, synthetic) {
           });
         });
       }, function (err) {
-        var discard = "DELETE FROM pcash WHERE uuid="+sanitize.escape(id);
+        var discard = "DELETE FROM primary_cash WHERE uuid="+sanitize.escape(id);
         db.execute(discard, function(err, ans){
-          //console.log('************** error annulation insertion', err);
-          throw (new Error('un probleme'));
+          throw (new Error('Erreur lor du update'+err));
         });
       });
     });
@@ -1425,7 +1423,7 @@ module.exports = function (db, synthetic) {
     'group_invoice'     : handleGroupInvoice,
     'credit_note'       : handleCreditNote,
     'caution'           : handleCaution,
-    'pcash'             : handlePcash,
+    'transfert'         : handleTransfert,
     'pcash_convention'  : handlePcashConvention
   };
 
