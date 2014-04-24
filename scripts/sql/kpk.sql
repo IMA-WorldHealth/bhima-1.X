@@ -502,7 +502,6 @@ create table `price_list` (
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
 
-
 --
 -- table `kpk`.`price_list_item`
 --
@@ -704,8 +703,6 @@ create table `assignation_patient` (
   constraint foreign key (`patient_uuid`) references `patient` (`uuid`) on delete cascade on update cascade
 ) engine=innodb;
 
-
-
 --
 -- Table structure for table `kpk`.`sale`
 --
@@ -795,8 +792,8 @@ create table `purchase` (
   `employee_id`       int unsigned not null,
   `discount`          mediumint unsigned default '0',
   `purchase_date`     date not null,
-  `timestamp`         timestamp null default CURRENT_TIMESTAMP,
-  `note`              text,
+  `timestamp`         timestamp default current_timestamp,
+  `note`              text default null,
   `posted`            boolean not null default 1,
   primary key (`uuid`),
   key `project_id` (`project_id`),
@@ -834,10 +831,10 @@ drop table if exists `purchase_item`;
 create table `purchase_item` (
   `purchase_uuid`     char(36) not null,
   `uuid`              char(36) not null,
-  `inventory_uuid`  char(36) not null,
-  `quantity`        int unsigned default '0',
-  `unit_price`      decimal(10,4) unsigned not null,
-  `total`           decimal(10,4) unsigned,
+  `inventory_uuid`    char(36) not null,
+  `quantity`          int unsigned default '0',
+  `unit_price`        decimal(10,4) unsigned not null,
+  `total`             decimal(10,4) unsigned,
   primary key (`uuid`),
   key `purchase_uuid` (`purchase_uuid`),
   key `inventory_uuid` (`inventory_uuid`),
@@ -1199,10 +1196,10 @@ create table `beneficiary` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`pcash`
+-- Table structure for table `kpk`.`primary_cash`
 --
-drop table if exists `pcash`;
-create table `pcash` (
+drop table if exists `primary_cash`;
+create table `primary_cash` (
   `reference`       int unsigned not null auto_increment,
   `uuid`            char(36) not null,
   `project_id`      smallint unsigned not null,
@@ -1211,52 +1208,36 @@ create table `pcash` (
   `deb_cred_uuid`   char(36) null,
   `deb_cred_type`   varchar(1) null,
   `currency_id`     tinyint unsigned not null,
-  `value`           decimal(19,4) unsigned not null default 0,
-  `cashier_id`      smallint unsigned not null,
+  `cost`            decimal(19,4) unsigned not null default 0,
+  `user_id`         smallint unsigned not null,
   `description`     text,
-  `service_id`      tinyint unsigned,
-  `beneficiary_id`  int unsigned,
-  `istransfer`      boolean not null,
-  `account_id`      int unsigned,
-  `cash_box_id`     mediumint unsigned,
-  `sale_uuid`       char(36) null,
-  `purchase_uuid`   char(36) null,
+  `cash_box_id`     mediumint unsigned not null,
+  `origin_id`       smallint unsigned not null,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
   key `currency_id` (`currency_id`),
-  key `cashier_id` (`cashier_id`),
-  -- key `service_id` (`service_id`),
-  -- key `beneficiary_id` (`beneficiary_id`),
-  key `account_id`     (`account_id`),
+  key `user_id` (`user_id`),
   key `cash_box_id`    (`cash_box_id`),
-  key `sale_uuid`      (`sale_uuid`),
-  key `purchase_uuid`  (`purchase_uuid`),
   constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
-  constraint foreign key (`cashier_id`) references `user` (`id`),
---  constraint foreign key (`service_id`) references `service` (`id`),
---  constraint foreign key (`beneficiary_id`) references `beneficiary` (`id`),
-  constraint foreign key (`account_id`) references `account` (`id`),
-  constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
-  constraint foreign key (`sale_uuid`) references `sale` (`uuid`),
-  constraint foreign key (`purchase_uuid`) references `purchase` (`uuid`)
+  constraint foreign key (`user_id`) references `user` (`id`),
+  constraint foreign key (`cash_box_id`) references `cash_box` (`id`)
 ) engine=innodb;
 
 --
--- table `kpk`.`pcash_item`
+-- table `kpk`.`primary_cash_item`
 --
-drop table if exists `pcash_item`;
-create table `pcash_item` (
+drop table if exists `primary_cash_item`;
+create table `primary_cash_item` (
   `uuid`              varchar(36) not null,
-  `pcash_uuid`        varchar(36) not null,
-  `cost`             decimal (19, 4) unsigned not null default 0,
-  `inv_po_id`      varchar(36),
+  `primary_cash_uuid` varchar(36) not null,
+  `debit`             decimal (19, 4) unsigned not null default 0,
+  `credit`            decimal (19, 4) unsigned not null default 0,
+  `inv_po_id`         varchar(36),
   primary key (`uuid`),
-  key `pcash_uuid` (`pcash_uuid`),
-  -- key `invoice_uuid` (`invoice_uuid`),
-  constraint foreign key (`pcash_uuid`) references `pcash` (`uuid`)
-  -- constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
+  key `primary_cash_uuid` (`primary_cash_uuid`),
+  constraint foreign key (`primary_cash_uuid`) references `primary_cash` (`uuid`)
 ) engine=innodb;
 
 --

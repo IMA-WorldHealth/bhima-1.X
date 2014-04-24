@@ -133,6 +133,77 @@ angular.module('kpk.controllers')
       .then(buildRecipientQuery);
     }
 
+    function processPurchase() { 
+      dependencies.purchase = { 
+        query : { 
+          tables : { 
+            purchase : { columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'invoice_date', 'note', 'employee_id'] } 
+          }
+        },
+        where : ['purchase.uuid=' + invoiceId]
+      };
+
+      dependencies.purchaseItem = { 
+        query : { 
+          tables : { 
+            purchase_item : { columns : ['uuid', 'inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total'] },
+            inventory : { columns : ['code', 'text'] }
+          },
+          join : ['purchase_item.inventory_uuid=inventory.uuid'],
+          where : ['purchase_item.purchase_uuid=' + invoiceId + '']
+        }
+      };
+
+      validate.process(dependencies, ['purchase', 'purchaseItem']).then(processPurchaseParties);
+    }
+
+    function processPurchaseParties(model) { 
+      var creditor = model.purchase.data[0].creditor_uuid;
+      var employee = model.purchase.data[0].employee_id;
+
+      dependencies.supplier = { 
+        query : { 
+          tables : { 
+            creditor : { columns : ['group_uuid'] },
+            supplier : { columns : ['uuid', 'name', 'location_id', 'email', 'fax', 'note', 'phone', 'international'] } 
+          },
+          join : ['creditor.uuid=supplier.creditor_uuid'],
+          where : ['creditor.uuid=' + creditor]
+        }
+      };
+      
+      dependencies.employee = { 
+        query : { 
+          tables : { 
+            employee : { columns : ['name', 'code', 'dob', 'creditor_uuid'] }
+          },
+          where : ['employee.id=' + employee]
+        }
+      };
+
+      validate.process(dependencies, ['supplier', 'employee']).then(processPurchaseDetails);
+    }
+
+    function processPurchaseDetails(model) { 
+      var locationId = model.supplier.data[0].location_id;
+
+      dependencies.supplierLocation = { 
+        query : '/location/' + locationId
+      };
+
+      validate.process(dependencies, ['supplierLocation']).then(initialisePurchase);
+    }
+
+    function initialisePurchase(model) { 
+      console.log('final', model);
+      $scope.model = model;
+
+      $scope.purchase = model.purchase.data[0];
+      $scope.supplier = model.supplier.data[0];
+      $scope.employee = model.employee.data[0];
+      $scope.supplierLocation = model.supplierLocation.data[0];
+    }
+
     //TODO this process is kind of a hack
     function processCredit(invoiceId) {
       dependencies = {};
@@ -355,6 +426,7 @@ angular.module('kpk.controllers')
       'credit'  : processCredit,
       'debtor'  : processDebtor,
       'patient' : processPatient,
+      'purchase': processPurchase,
     };
 
     appstate.register('project', function (project) {

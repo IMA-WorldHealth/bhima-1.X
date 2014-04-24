@@ -2,12 +2,14 @@ angular.module('kpk.controllers')
 .controller('purchaseOrder', [
   '$scope',
   '$q',
+  '$translate',
+  '$location',
   'validate',
   'connect',
   'appstate',
   'messenger',
   'uuid',
-  function($scope, $q, validate, connect, appstate, messenger, uuid) {
+  function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid) {
     // TODO invoice_date -> purchase_date
     
     // TODO Currently downloads every location - should only download the 
@@ -133,11 +135,8 @@ angular.module('kpk.controllers')
       purchaseItem.inventoryReference = inventoryReference;
       
       // Remove option to select duplicates
-      console.log($scope.inventory.data.length);
-      console.log('removing', inventoryReference.uuid);
       $scope.inventory.remove(inventoryReference.uuid);
       $scope.inventory.recalculateIndex();
-      console.log($scope.inventory.data.length);
     }
 
     function purchaseTotal() { 
@@ -168,13 +167,13 @@ angular.module('kpk.controllers')
      
       // FIXME
       purchase.currency_id = appstate.get('enterprise').currency_id;
-      purchase.creditor_uuid = session.creditor.uuid;
+      purchase.creditor_uuid = session.creditor.creditor_uuid;
       purchase.purchaser_id = $scope.user.data.id;
       purchase.project_id = appstate.get('project').id;
+      purchase.employee_id = session.employee.id;
      
-      console.log('p',purchase);
       writePurchaseLine(purchase)
-      .then(writePurchaseItems)
+      .then(writePurchaseItems(purchase.uuid))
       .then(writeSuccess)
       .catch(handleError);
     }
@@ -183,16 +182,43 @@ angular.module('kpk.controllers')
       return connect.basicPut('purchase', [purchase], ['uuid']);
     }
 
-    function writePurchaseItems() { 
-      console.log('got here');
+    function writePurchaseItems(purchase_uuid) { 
+      var deferred = $q.defer();
+      var writeRequest = [];
+
+      writeRequest = session.items.map(function (item) { 
+        var writeItem = { 
+          uuid : uuid(),
+          purchase_uuid : purchase_uuid,
+          inventory_uuid : item.inventoryId,
+          quantity : item.quantity,
+          unit_price : item.price,
+          total : item.quantity * item.price
+        };
+        console.log('item', item);
+        return connect.basicPut('purchase_item', [writeItem], ['uuid']);
+      });
+
+      console.log('wr', writeRequest);
+
+      $q.all(writeRequest)
+      .then(function (result) { 
+        deferred.resolve(result);
+      })
+      .catch(function (error) { 
+        deferred.reject(error); 
+      });
+      return deferred.promise;
     }
 
     function writeSuccess(result) { 
-
+      messenger.success($translate('PURCHASE.WRITE_SUCCESS'));
+      $location.path('/invoice/purchase/' + session.purchase.uuid);
     }
 
     function handleError(error) { 
-
+      messenger.danger($translate('PURCHASE.WRITE_FAILED'));
+      throw error;
     }
 
     /*-------------------------------*/
