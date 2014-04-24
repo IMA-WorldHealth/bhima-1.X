@@ -3,13 +3,14 @@ angular.module('kpk.controllers')
   '$scope',
   '$location',
   'validate',
-  function ($scope, $location, validate) { 
+  '$filter',
+  function ($scope, $location, validate, $filter) {
     var dependencies = {}, session = $scope.session = {};
     var configuration = $scope.configuration = {};
 
-    dependencies.cashBox = { 
-      query : { 
-        tables : { 
+    dependencies.cashBox = {
+      query : {
+        tables : {
           cash_box : { columns : ['id', 'text', 'project_id', 'is_auxillary'] }
         },
         where : ['cash_box.is_auxillary=0']
@@ -17,10 +18,12 @@ angular.module('kpk.controllers')
     };
 
     configuration.income = [
-      {
-        key : 'PURCHASE',
-        link : '/primary_cash/income/purchase/'
+
+    {
+        key : $filter('translate')('PRIMARY_CASH.INCOME.TRANSFER'),
+        link : '/primary_cash/transfert'
       },
+
       {
         key : 'GENERIC_INCOME',
         link : '/primary_cash/income/generic/'
@@ -29,24 +32,28 @@ angular.module('kpk.controllers')
 
     configuration.expense = [
       {
+        key : $filter('translate')('PRIMARY_CASH.EXPENSE.PURCHASE'),
+        link : '/primary_cash/income/purchase/'
+      },
+      {
         key : 'GENERIC_EXPENSE',
         link : '/primary_cash/expense/generic/'
       }
     ];
-     
+
     validate.process(dependencies).then(initialise);
 
-    function initialise(model) { 
+    function initialise(model) {
       angular.extend($scope, model);
-     
+
       // Select default cashbox
       session.cashbox = model.cashBox.data[0].id;
     }
 
-    function loadPath(path) { 
+    function loadPath(path) {
 
       //TODO validate both correct path and cashbox
-      $location.path(path + session.cashbox);
+      $location.path(path);
     }
 
     $scope.loadPath = loadPath;
