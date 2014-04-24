@@ -284,6 +284,10 @@
     .when('/primary_cash/income/purchase/:cashbox', {
       controller : 'purchaseOrderCash',
       templateUrl : 'partials/primary_cash/income/purchase.html'
+    })
+    .when('/inventory/depot', {
+      controller : 'inventory.depot',
+      templateUrl : 'partials/inventory/depot/depot.html'
     });
   }
 
