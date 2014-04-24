@@ -280,6 +280,10 @@
     .when('/primary_cash/expense/generic/:id?', {
       controller : 'primaryCash.expense',
       templateUrl: 'partials/primary_cash/expense/generic.html'
+    })
+    .when('/primary_cash/income/purchase/:cashbox', {
+      controller : 'purchaseOrderCash',
+      templateUrl : 'partials/primary_cash/income/purchase.html'
     });
   }
 
