@@ -1093,7 +1093,8 @@
                                   "GENERIC_RECEIPT"         : "Recettes Generiques"
                               },
     "INCOME"                : {
-                                  "TRANSFER"                : "Transfert"
+                                  "TRANSFER"                : "Transfert",
+                                  "CONVENTION"              : "Convention"
 
                               }
   }
