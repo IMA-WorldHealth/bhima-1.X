@@ -67,6 +67,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.noEmpty = false;
+    $scope.som = 0;
     $scope.convention = {};
     $scope.data = {};
     $scope.model = {};
@@ -76,11 +77,12 @@ angular.module('kpk.controllers')
     }
 
     function ready (model) {
+      $scope.som = 0;
       $scope.overviews = model.situations.data.filter(function (situation){
+        console.log('[situation]', situation);
+        if(situation.balance>0) $scope.som+=situation.balance;
         return situation.balance>0;
       });
-      console.log('[model]',model);
-      console.log('[overviews]',$scope.overviews);
       $scope.noEmpty = true;
     }
 
@@ -109,18 +111,45 @@ angular.module('kpk.controllers')
       };
 
       writePay(record)
+      .then(writeItem)
       .then(postToJournal)
       .then(handleSucces)
       .catch(handleError);
     }
 
-    function postToJournal (res) {
-      record_uuid = res.config.data.data[0].uuid;
-      return connect.fetch('/journal/pcash/' + record_uuid);
+    function postToJournal (resu) {
+      console.log('[resu]', resu);
+      record_uuid = resu[0].config.data.data[0].pcash_uuid;
+      return connect.fetch('/journal/pcash_convention/' + record_uuid);
     }
 
     function writePay(record){
       return connect.basicPut('pcash', [record]);
+    }
+
+    function writeItem (result){
+      var pcashItems = getPcashItems($scope.data.payment, result);
+      console.log('[pcashitems]', pcashItems);
+      return $q.all(pcashItems.map(function (pcash_item){
+        return connect.basicPut('pcash_item', [pcash_item]);
+      }));
+    }
+
+    function getPcashItems(max_amount, result) {
+      var items = [];
+      var cost_received = max_amount;
+
+      for(var i=0; i<$scope.overviews.length; i++){
+        cost_received-=$scope.overviews[i].balance;
+        if(cost_received>=0){
+          items.push({uuid : uuid(), pcash_uuid : result.config.data.data[0].uuid, cost : $scope.overviews[i].balance, inv_po_id : $scope.overviews[i].inv_po_id});
+        }else{
+          cost_received+=$scope.overviews[i].balance;
+          items.push({uuid : uuid(), pcash_uuid : result.config.data.data[0].uuid, cost : cost_received, inv_po_id : $scope.overviews[i].inv_po_id});
+          break;
+        }
+      }
+      return items;
     }
 
     function setCashAccount(cashAccount) {
@@ -163,7 +192,7 @@ angular.module('kpk.controllers')
 
     function check (){
       if($scope.data.payment){
-        return $scope.data.payment < $scope.selectedItem.min_monentary_unit;
+        return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
       }else{
         return true;
       }
