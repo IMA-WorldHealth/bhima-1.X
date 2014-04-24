@@ -4,8 +4,11 @@
 
 <section class="top-nav underline">
   
-  <div class="pull-left" style="margin-top: 6px; padding-left: 4px;">
-    <span class="glyphicon glyphicon-home"></span> <a>{{ 'PRIMARY_CASH.HOME' | translate }}</a>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <span class="label label-success square">{{ "PRIMARY_CASH.NAVIGATION" | translate }}</span>
+      <li><a href="">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+    </ol>
   </div>
 
   <div class="pull-right">
@@ -25,31 +28,31 @@
 
 <div class="content">
 
-  <div class="row">
+  <div class="row" style="margin-top: 10px">
     <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
           <span class="glyphicon glyphicon-import"></span> {{ 'PRIMARY_CASH.INCOME' | translate }}
         </div>
 
         <div class="panel-body">
           
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.income"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.income"><a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="col-xs-6">
-      <div class="panel panel-default"> 
-        <div class="panel-heading">
+      <div class="panel panel-default square"> 
+        <div class="panel-heading square">
           <span class="glyphicon glyphicon-export"></span> {{ 'PRIMARY_CASH.EXPENSE' | translate }}
         </div>
 
         <div class="panel-body">
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.expense"><a ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.expense"><a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
           </ul>
 
         </div>
