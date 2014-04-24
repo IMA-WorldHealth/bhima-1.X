@@ -145,10 +145,11 @@ app.get('/user_session', function (req, res, next) {
 
 app.get('/pcash_transfert_summers', function (req, res, next) {
   var sql =
-    "SELECT `pcash`.`reference`, `pcash`.`date`, `pcash`.`value`, `pcash`.`currency_id` FROM `pcash` WHERE `pcash`.`istransfer`=" +1+ " ORDER BY date, reference DESC LIMIT 20;"; //FIX ME : this request doesn't sort
+    "SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`value`, `primary_cash`.`currency_id` FROM `primary_cash` WHERE `primary_cash`.`istransfer`=" +1+ " ORDER BY date, reference DESC LIMIT 20;"; //FIX ME : this request doesn't sort
   db.execute(sql, function (err, result) {
     if (err) { return next(err); }
-    res.send(result);
+    var d = []; //for now
+    res.send(d);
   });
 });
 
