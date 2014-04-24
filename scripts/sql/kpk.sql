@@ -714,6 +714,14 @@ create table `transaction_type` (
   primary key (`id`)
 ) engine=innodb;
 
+drop table if exists `primary_cash_module`;
+create table `primary_cash_module` (
+  `id`            tinyint unsigned not null auto_increment,
+  `text`   varchar(45) not null,
+  primary key (`id`)
+) engine=innodb;
+
+
 drop table if exists `cash`;
 create table `cash` (
   `project_id`      smallint unsigned not null,
@@ -1024,21 +1032,26 @@ create table `primary_cash` (
   `deb_cred_uuid`   char(36) null,
   `deb_cred_type`   varchar(1) null,
   `currency_id`     tinyint unsigned not null,
+  `account_id`      int unsigned not null,
   `cost`            decimal(19,4) unsigned not null default 0,
   `user_id`         smallint unsigned not null,
   `description`     text,
   `cash_box_id`     mediumint unsigned not null,
-  `origin_id`       smallint unsigned not null,
+  `origin_id`       tinyint unsigned not null,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
   key `cash_box_id`    (`cash_box_id`),
+  key `account_id`     (`account_id`),
+  key `origin_id`      (`origin_id`),
   constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`),
-  constraint foreign key (`cash_box_id`) references `cash_box` (`id`)
+  constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
+  constraint foreign key (`account_id`) references `account` (`id`),
+  constraint foreign key (`origin_id`) references `primary_cash_module` (`id`)
 ) engine=innodb;
 
 drop table if exists `primary_cash_item`;

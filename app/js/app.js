@@ -253,9 +253,9 @@
       controller : 'updateStock',
       templateUrl : 'partials/update_stock/update_stock.html'
     })
-    .when('/pcash/transfert', {
+    .when('/primary_cash/transfert', {
       controller : 'transfert',
-      templateUrl : 'partials/pcash/incomes/transfert/transfert.html'
+      templateUrl : 'partials/primary_cash/incomes/transfert/transfert.html'
     })
      .when('/pcash/convention', {
       controller : 'convention',
