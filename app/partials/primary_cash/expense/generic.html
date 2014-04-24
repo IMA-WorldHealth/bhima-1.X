@@ -41,7 +41,7 @@
             <div class="form-group col-xs-6 hack-left">
               <label>Reference Document ID</label>
               <div class="input-group">
-                <input class="form-kapok" ng-model="session.receipt.purchase_uuid" required>
+                <input class="form-kapok" ng-model="session.receipt.reference_uuid" required>
                 <span class="input-group-btn">
                   <button type="button" class="btn btn-sm btn-default square" ng-click="generate()">
                     <span class="glyphicon glyphicon-refresh"></span>
@@ -62,7 +62,8 @@
 
             <div class="form-group">
               <label>Receipient</label>
-              <input type="text" class="form-kapok" ng-model="session.receipt.recipient" typeahead="supplier as supplier.text for supplier in suppliers.data | filter:$viewValue | limitTo:8">
+              <select type="text" class="form-kapok" ng-model="session.receipt.recipient" ng-options="supplier as supplier.text for supplier in suppliers.data">
+              </select>
             </div>
 
             <div class="form-group">
@@ -71,7 +72,7 @@
                 <span class="input-group-addon square">
                   {{ session.currency.symbol || "..." }}
                 </span>
-                <input type="number" class="form-kapok" ng-model="session.receipt.value">
+                <input type="number" class="form-kapok" ng-model="session.receipt.cost">
               </div>
             </div>
           </form>
@@ -85,10 +86,11 @@
   </div>
 </div>
 
-<!-- 
+<!--
 <section class="bar-bottom">
   <div class="pull-right">
     <button class="btn btn-sm btn-success" type="button" ng-click="submit()" ng-disabled="session.invalid"> {{ 'FORM.SUBMIT' | translate }} </button>
-    <button class="btn btn-sm btn-default" type="button" ng-click="clear()"> {{ 'FORM.CLEAR' | translate }} </button>
+    <button class="btn btn-sm btn-default" type="button" ng-click="clear()" {{ 'FORM.CLEAR' | translate }} </button>
   </div>
 </section>
+-->
