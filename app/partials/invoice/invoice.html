@@ -96,6 +96,102 @@
           </div>
         </div> <!-- End Patient Invoice template -->
       </div>
+      
+      <div ng-switch-when="purchase">
+        <!-- Patient Invoice template -->
+        <div class="row customer-details">
+          <div class="col-xs-12">
+
+            <small style="float: right; color: grey; font-size: 8px">{{ purchase.uuid }}</small>
+            <h4 class="invoice-header">{{ 'INVOICE.PURCHASE_ORDER' | translate }}</h4>
+          </div>
+        </div>
+        <div class="row customer-details">
+          <!-- Temporary style; needs official markup and CSS -->
+          <div class="col-xs-4">
+            <span>
+              <b>{{project.enterprise_name}}</b>
+            </span>
+            <br>
+            {{project.village}}
+            <br>
+            <!-- hah -->
+            {{ project.postal || 'B.P. 205'}}
+            <br>
+            {{project.sector}}
+            <br>
+            <i>TEL</i> {{project.phone}}
+            <br>
+            <i>FAX</i> {{project.email}}
+            
+          </div>
+          <div class="col-xs-4">
+            <i>{{ "INVOICE.PURCHASE RECIPIENT" | translate }}</i>
+            <br>
+            <span>
+              <b>{{supplier.name}}</b>
+            </span>
+            <br>
+            {{supplierLocation.village}}
+            <!-- hah -->
+            <!-- {{ project.postal || 'B.P. 205'}} -->
+            <br>
+            {{supplierLocation.sector}}
+            <br>
+            <i>TEL</i> {{supplier.phone}}
+            <br>
+            <i>FAX</i> {{supplier.email}}
+            
+          </div>
+          <div class="col-xs-4">
+            <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{purchase.reference}}</b>
+            <br>
+            <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{purchase.invoice_date | date}}</b>
+            <br>
+            <i>{{ 'INVOICE.RECEIPT_DATE' | translate}}</i> <b>{{timestamp | date}}</b>
+            <br>
+            {{ 'INVOICE.EMPLOYEE_CONTACT' | translate }}</i>
+            <br>
+            <b>{{employee.name}}</b>
+
+            <br>
+            {{ 'INVOICE.EMPLOYEE_CODE' | translate }}</i> <b>{{employee.code}}</b>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th>{{'COLUMNS.BHIMA_STOCK_CODE' | translate}}</th>
+                  <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+                  <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+                  <th>{{'INVOICE.PURCHASE_PRICE' | translate}}</th>
+                  <th>{{'INVOICE.AMOUNT' | translate}}</th>
+                </tr>
+              </thead>
+              <tbody class="items">
+                <tr ng-repeat="item in model.purchaseItem.data | orderBy : 'code'">
+                  <td>{{ item.code }}</td>
+                  <td>{{ item.text }}</td>
+                  <td>{{ item.quantity }}</td>
+
+                  <td><span ng-bind-html="item.unit_price | intlcurrency:session.currentCurrency.id"></span></td>
+                  <td><span ng-bind-html="item.total | intlcurrency:session.currentCurrency.id"></span></td>
+                </tr>
+              </tbody>
+              <tbody class="totals">
+                <tr><td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td><td><span ng-bind-html="purchase.cost | intlcurrency:session.currentCurrency.id"></span></td></tr>
+                <!-- <tr><td colspan="4" class="no&#45;border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng&#45;bind&#45;html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.id"></span></td></tr> -->
+                <!-- <tr><td colspan="4" class="no&#45;border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng&#45;bind&#45;html="invoice.localeBalance | intlcurrency:session.currentCurrency.id"></span></td></tr> -->
+              </tbody>
+
+            </table>
+          </div>
+        </div> <!-- End Patient Invoice template -->
+      </div>
 
       <div ng-switch-when="patient">
         <div class="row customer-details">
