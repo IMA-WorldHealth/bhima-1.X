@@ -1,5 +1,12 @@
 #Inventory 
 
+###Questions
+* How much penicillin do I have as an enterprise ? Im my auxilarry dep?
+* How much stock have I consumed of inventory groupX ? of type Y ?
+* How much stock have I lost of medicines this last year ? What medicines where 
+they?
+
+###Comments
 * Reduction of stock 
   * Module/ point of entry / exit at pharmacy, and smaller pharmaciecs.
     Movement from pharmacy to services like surgery, pediatrics etc.
