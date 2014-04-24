@@ -91,7 +91,7 @@
             </tbody>
           </table>
 
-          <button class="square btn btn-success btn-sm">Confirm payment of <b>{{session.selected.cost | currency}}</b> to <b>{{session.selected.name}}</b></button>
+          <button ng-click="payPurchase()" class="square btn btn-success btn-sm">Confirm payment of <b>{{session.selected.cost | currency}}</b> to <b>{{session.selected.name}}</b></button>
           <button disabled class="square btn btn-danger btn-sm">Discard purchase order</button>
         </div>
       </div>

@@ -4,10 +4,11 @@ angular.module('kpk.controllers')
   '$scope',
   '$routeParams',
   '$translate',
+  '$http',
   'messenger',
   'validate',
-  'connect',
-  function ($scope, $routeParams, $translate, messenger, validate, connect) {
+  'appstate',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate) {
     var dependencies = {}, session = $scope.session = {};
     var cashbox, cashboxReference = $routeParams.cashbox;
     
@@ -48,9 +49,22 @@ angular.module('kpk.controllers')
     }
     
     function payPurchase(purchaseId) {
-      // connect.basicPut( 
-    }
+      var purchase = { 
+        project_id : appstate.get('project').id,
+        type : 'E', // Entry ? I don't know
+        date : getDate(),
+        
+      };
 
+      $http.post('purchase', {details: 5});
+    }
+    
+    function getDate() {
+      //Format the current date according to RFC3339
+      var currentDate = new Date();
+      return currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + ('0' + currentDate.getDate()).slice(-2);
+    }
     $scope.confirmPurchase = confirmPurchase;
+    $scope.payPurchase = payPurchase;
   }
 ]);
