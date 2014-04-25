@@ -992,7 +992,14 @@
     "CASH_RECEIPT"      : "Cash Receipt",
     "CASH_ID"           : "Cash transaction #",
     "AMOUNT_RECEIVED"   : "Amount Recieved",
-    "TRANSACTION_PRICE" : "Transaction Price"
+    "TRANSACTION_PRICE" : "Transaction Price",
+    "PURCHASE_ORDER"    : "Purchase Order",
+    "PURCHASE_RECIPIENT": "Supplier",
+    "PURCHASE_ID"       : "Purchase No.",
+    "PURCHASE_DATE"     : "Purchase Date",
+    "EMPLOYEE_CONTACT"  : "Employee Ref.",
+    "EMPLOYEE_CODE"     : "Employee Code",
+    "PURCHASE_TOTAL"    : "Total Purchase Cost"
   },
 
   "SECTOR"             : {

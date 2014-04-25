@@ -126,7 +126,7 @@
             
           </div>
           <div class="col-xs-4">
-            <i>{{ "INVOICE.PURCHASE RECIPIENT" | translate }}</i>
+            <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i>
             <br>
             <span>
               <b>{{supplier.name}}</b>
@@ -146,9 +146,9 @@
           <div class="col-xs-4">
             <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{purchase.reference}}</b>
             <br>
-            <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{purchase.invoice_date | date}}</b>
+            <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{purchase.purchase_date | date}}</b>
             <br>
-            <i>{{ 'INVOICE.RECEIPT_DATE' | translate}}</i> <b>{{timestamp | date}}</b>
+            <i>{{ 'INVOICE.DATE_RECEIPT' | translate}}</i> <b>{{timestamp | date}}</b>
             <br>
             {{ 'INVOICE.EMPLOYEE_CONTACT' | translate }}</i>
             <br>
