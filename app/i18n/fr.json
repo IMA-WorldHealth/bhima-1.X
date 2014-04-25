@@ -1075,5 +1075,23 @@
     "TOTAL"         : "Total",
     "SUBMIT"        : "Soumettre",
     "SUBMIT_ORDER"  : "Soumettre Ordre Achat"
+  },
+
+  "PRIMARY_CASH" : {
+    "TITLE"                 : "Caisse Pricipale",
+    "EXPENSES"              : "Depenses",
+    "INCOMES"               : "Recettes",
+    "GENERIC"               : "Generique",
+    "NAVIGATION"            : "Naviguation",
+    "HOME"                  : "caisse principale",
+    "EXPENSE"               : {
+                                  "PURCHASE"                : "Achat",
+                                  "GENERIC_TITLE"           : "Depenses Generiques",
+                                  "GENERIC_RECEIPT"         : "Recettes Generiques"
+                              },
+    "INCOME"                : {
+                                  "TRANSFER"                : "Transfert"
+
+                              }
   }
 }

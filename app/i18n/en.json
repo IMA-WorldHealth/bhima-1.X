@@ -828,6 +828,14 @@
     "REGISTER"     : "Register Stock"
   },
 
+  "DEPOT" : {
+    "TITLE" : "Depot Management",
+    "ALERT" : "Manage your depots from here",
+    "NEW" : "Register a new Depot",
+    "EDIT" : "Edit depot information",
+    "ADD" : "Add a Depot"
+  },
+
   "PRICE_LIST"         : {
     "TITLE"            : "Price List Management",
     "ACTIONS"          : "Actions",

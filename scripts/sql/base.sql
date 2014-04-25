@@ -90,7 +90,8 @@ INSERT INTO `unit` VALUES
 (77,'Journal Voucher','TREE.JOURNAL_VOUCHER','',5,0,'/partials/journal_voucher/','/journal_voucher'),
 (78,'Project','TREE.PROJECT','',1,0,'/partials/projects/','/projects'),
 (79,'Patient Standing','TREE.PATIENT_STANDING','',10,0,'/partials/reports/patient_standing/','/reports/patient_standing'),
-(80,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee');
+(80,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee'),
+(80,'Depot Management','TREE.DEPOT','',11,0,'/partials/inventory/depot/','inventory/depot');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES 
