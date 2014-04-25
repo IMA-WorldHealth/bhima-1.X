@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="pull-right">
-    <a class="btn btn-sm btn-default" ng-href="/#/creditor/">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</a>
+    <a class="btn btn-sm btn-default square" ng-href="/#/creditor/">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</a>
   </div>
 </section>
 
@@ -12,9 +12,9 @@
 <div class="row">
 
     <div class="col-xs-5">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          {{ 'PURCHASE.CONFIGURE' | translate }}
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-cog"></span> {{ 'PURCHASE.CONFIGURE' | translate }}
         </div>
 
         <div class="panel-body purchase-header">
@@ -30,7 +30,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="select-employee">Employee Responsible</label>
+            <label for="select-employee">{{ 'PURCHASE.RESPONSABLE' | translate}}</label>
             <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-kapok">
               <option value="" disabled="disabled">--Select Employee--</option>
             </select>
@@ -67,9 +67,9 @@
       </div>
     </div>
     <div class="col-xs-7">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          {{ 'PURCHASE.TITLE' | translate }}
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-list-alt"></span> {{ 'PURCHASE.TITLE' | translate }}
         </div>
 
         <div class="panel-body purchase-header">
@@ -128,11 +128,11 @@
 
     <div class="col-xs-12">
 
-      <div class="panel panel-default" ng-class="{'panel-success' : (session.creditor && session.employee)}">
-        <div class="panel-heading">
-          <span> {{ 'PURCHASE.PURCHASE_ITEM' | translate }}</span>
+      <div class="panel panel-default square" ng-class="{'panel-success' : (session.creditor && session.employee)}">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-list"></span> {{ 'PURCHASE.PURCHASE_ITEM' | translate }}
           <!-- FIXME style hack -->
-          <button ng-disabled="!(session.creditor && session.employee)" class="pull-right" ng-click="addPurchaseItem()" style="margin-top: -4px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.ADD_LINE_ITEM" | translate }}</button>
+          <a ng-class="{'disabled' : !(session.creditor && session.employee)}" class="pull-right menu-item" ng-click="addPurchaseItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.ADD_LINE_ITEM" | translate }}</a>
 
         </div>
 
@@ -172,7 +172,7 @@
 
             <tr>
               <!-- Style hack -->
-              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "PURCHASE.SUBMIT" | translate }}</b></td>
+              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "PURCHASE.TOTAL_COST" | translate }}</b></td>
               <td colspan="2"><b>{{ purchaseTotal() | currency }}</b></td>
             </tr>
 

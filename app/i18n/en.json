@@ -433,7 +433,8 @@
     "PRICE_LIST"          : "Price List",
     "TITLE"               : "Title",
     "VALUE"               : "Value",
-    "DEB_CRED_UUID"       : "Debitor/Creditor ID"
+    "DEB_CRED_UUID"       : "Debitor/Creditor ID",
+    "PURCHASE_PRICE"      : "Purchase Price"
   },
 
   "TREE"                        : {
@@ -877,6 +878,19 @@
     "COGS"          : "COGS Account",
     "STOCK"         : "Stock Account",
     "TAX"           : "Tax Account"
+  },
+
+  "PURCHASE"          : {
+    "TITLE"           : "Purchase Order",
+    "CONFIGURE"       : "Configure",
+    "SUPPLIER"        : "Supplier",
+    "RESPONSABLE"     : "Employee Responsable",
+    "SALE_DATE"       : "Sale Date",
+    "ADD_LINE_ITEM"   : "Add line Item",
+    "ADD_SUPPLIER"    : "Register Supplier",
+    "PURCHASE_ITEM"   : "Purchase Items",
+    "TOTAL_COST"      : "Total Cost",
+    "SUBMIT_ORDER"    : "Submit Purchase Request"
   },
 
   "SALE"              : {
