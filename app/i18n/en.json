@@ -494,7 +494,8 @@
     "BENEFICIARY"               : "Beneficaries",
     "MAIN_CASH"                 : "Principal Cashbox",
     "JOURNAL_VOUCHER"           : "Journal Voucher",
-    "PROJECT"                   : "Projects"
+    "PROJECT"                   : "Projects",
+    "EMPLOYEE"                  : "Employee"
   },
 
   "JOURNAL_VOUCHER"  : {
