@@ -40,10 +40,10 @@ angular.module('kpk.controllers')
       }
     }
 
-    // dependencies.summers = {
-    //   query :'pcash_transfert_summers',
-    //   identifier : 'reference'
-    // };
+    dependencies.summers = {
+      query :'pcash_transfert_summers',
+      identifier : 'reference'
+    };
 
     dependencies.cash_box = {
       required : true,
@@ -160,11 +160,18 @@ angular.module('kpk.controllers')
       if(!isValid()) return;
 
       writeTransfer()
+      .then(writeItem)
       .then(postToJournal)
       .then(function (prom){
         //refresh();
       })
       .catch(handleError);
+    }
+
+    function writeItem (result){
+      window.result = result;
+      var item = {uuid : uuid(), primary_cash_uuid : result.config.data.data.uuid, debit : configuration.value, credit : 0}
+      return connect.basicPut('primary_cash_item', [item]);
     }
 
     function refresh(){
@@ -211,7 +218,7 @@ angular.module('kpk.controllers')
       appstate.register('enterprise', function (enterprise) {
         $scope.project = project;
         $scope.enterprise = enterprise;
-        validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'pcash_module'/*, 'summers'*/])
+        validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'pcash_module', 'summers'])
         .then(init)
         .catch(handleError);
       });

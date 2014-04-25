@@ -992,7 +992,8 @@
     "DANGER"             : "Erreur  Une erreur se produite pendant le posting",
     "TOT"                : "Total",
     "CRUMB_PCASH"        : "caisse principale",
-    "CRUMB_CONVENTION"   : "convention"
+    "CRUMB_CONVENTION"   : "convention",
+    "DEFAULT_CASHBOX"    : "Caisse"
   },
 
   "PCASH"                   : {
