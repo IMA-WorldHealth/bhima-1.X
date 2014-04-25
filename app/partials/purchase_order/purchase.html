@@ -137,7 +137,7 @@
         </div>
         
         <!-- Item Warnings -->
-        <div ng-repeat="warning in session.warnings" class="alert alert-warning square"><span class="glyphicon glyphicon-exclamation-sign"></span> {{warning}}</div>
+        <div ng-repeat="warning in warnings" class="alert alert-warning square" ng-if="warning.result"><span class="glyphicon glyphicon-exclamation-sign"></span> {{warning.message | translate}}</div>
         
         <table class='table-condensed table' ng-if="session.creditor && session.employee">
           <thead>
@@ -168,8 +168,8 @@
               <!-- -1 for no tab, 0 to allow -->
               <td><input ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.text}}"></td>
               <td><input ng-change="cacheQuantity(purchaseItem)" tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.quantity"></td>
-              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.price"></td>
-              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.price | currency}}"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.purchase_price"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.purchase_price | currency}}"></td>
               <td><a ng-click="removePurchaseItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
 

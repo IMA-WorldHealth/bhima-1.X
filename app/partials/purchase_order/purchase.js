@@ -10,15 +10,14 @@ angular.module('kpk.controllers')
   'messenger',
   'uuid',
   function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid) {
+    // TODO Module should only continue with selection of both employee and 
+    // supplier, currently just hides everything to look like this
     // TODO Currently downloads every location - should only download the 
     // selected creditors location
-    
     // FIXME Everything currently waits on validate to process (download) models
     // begin settup etc. before that
     var dependencies = {};
-    var session = $scope.session = {
-      warnings : {}
-    };
+    var session = $scope.session = {}, warnings = $scope.warnings = {};
     
     dependencies.inventory = { 
       query : { 
@@ -53,6 +52,13 @@ angular.module('kpk.controllers')
     dependencies.user = { 
       query : 'user_session'
     };
+
+    warnings.invalid_price = { 
+      condition : function (item) { return item.code ? (Number(item.purchase_price) === 0) : false ; },
+      message : 'PURCHASE.INVALID_PRICE',
+    };
+
+    //warnings.invalid_item_accounts
 
     validate.process(dependencies).then(initialise);
     
@@ -141,6 +147,7 @@ angular.module('kpk.controllers')
     }
 
     function purchaseTotal() { 
+      console.log('total', session.items);
       return session.items.reduce(priceMultiplyQuantity, 0);
     }
 
@@ -151,28 +158,31 @@ angular.module('kpk.controllers')
 
     function verifyPurchase(items) { 
       var invalid = false; 
-      var invalid_price_warning = false;
+      var invalidKeys = [];
 
       // Ensure creditor selected and items initialised
       if(!items || !items.length) return true;
-      
+     
       // Verfiy individual items
-      invalid = items.some(function (item) { 
-        
-        //TODO Extract generic warnings
-        if (item.purchase_price===0) invalid_price_warning = true;
+      invalid = items.some(function (purchaseItem) { 
+       
+        // Iterate through conditions 
+        Object.keys(warnings).forEach(function (key) { 
+          if (warnings[key].condition(purchaseItem)) invalidKeys.push(key);  
+        });
 
-        if(!item.code) return true;
+        if(!purchaseItem.code) return true;
         return false;
       });
     
-      // TODO have warnings, check conditions, and message as JSON object warnings
-      if(invalid_price_warning) {
-        session.warnings.invalid_price = $translate('PURCHASE.ZERO_PRICE');
-      } else { 
-        if (session.warnings.invalid_price) delete session.warnings.invalid_price; 
-      }
-      
+
+      console.log('keys', invalidKeys);
+      // FIXME 
+      Object.keys(warnings).forEach(function(key) { 
+        warnings[key].result = false;
+        if (invalidKeys.indexOf(key) >= 0) warnings[key].result = true; 
+      });  
+            
       return invalid;
     }
 

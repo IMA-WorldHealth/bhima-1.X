@@ -434,7 +434,9 @@
     "TITLE"               : "Title",
     "VALUE"               : "Value",
     "DEB_CRED_UUID"       : "Debitor/Creditor ID",
-    "PURCHASE_PRICE"      : "Purchase Price"
+    "SALE_PRICE"          : "Sale Price",
+    "PURCHASE_PRICE"      : "Purchase Price",
+    "BHIMA_STOCK_CODE"    : "Stock Reference"
   },
 
   "TREE"                        : {
