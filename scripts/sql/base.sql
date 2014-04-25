@@ -642,3 +642,6 @@ INSERT INTO `cash_box_account_currency` VALUES (1,1,1,486),(2,2,1,487),(3,1,2,10
 -- Configure caution boxes
 INSERT INTO `caution_box` VALUES (1,'IMCK HBB CAUTION ',1),(2,'IMCK PAX CAUTION',2);
 INSERT INTO `caution_box_account_currency` VALUES (1,2,1,249),(2,2,2,250),(3,1,1,249),(4,1,2,250);
+
+INSERT INTO `primary_cash_module` VALUES 
+(1, "Purchase");
