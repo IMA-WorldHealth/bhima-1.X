@@ -109,11 +109,11 @@ app.delete('/data/:table/:column/:value', function (req, res, next) {
   .done();
 });
 
-app.post('/purchase', function(req, res, next) { 
+app.post('/purchase', function(req, res, next) {
   // TODO duplicated methods
-  
+
   console.log('createPurchase', createPurchase);
-  createPurchase.execute(req.body, req.session.user_id, function (err, ans) { 
+  createPurchase.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) return next(err);
     res.send(200, {purchaseId: ans});
   });
@@ -145,7 +145,9 @@ app.get('/user_session', function (req, res, next) {
 
 app.get('/pcash_transfert_summers', function (req, res, next) {
   var sql =
-    "SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`value`, `primary_cash`.`currency_id` FROM `primary_cash` WHERE `primary_cash`.`istransfer`=" +1+ " ORDER BY date, reference DESC LIMIT 20;"; //FIX ME : this request doesn't sort
+    "SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` "+
+    "FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` "+
+    "WHERE `primary_cash_module`.`text`='transfert') ORDER BY date, reference DESC LIMIT 20;"; //FIX ME : this request doesn't sort
   db.execute(sql, function (err, result) {
     if (err) { return next(err); }
     var d = []; //for now
