@@ -281,9 +281,9 @@
       controller : 'primaryCash.expense',
       templateUrl: 'partials/primary_cash/expense/generic.html'
     })
-    .when('/primary_cash/income/purchase/:cashbox', {
+    .when('/primary_cash/expense/purchase/:cashbox', {
       controller : 'purchaseOrderCash',
-      templateUrl : 'partials/primary_cash/income/purchase.html'
+      templateUrl : 'partials/primary_cash/expense/purchase.html'
     })
     .when('/inventory/depot', {
       controller : 'inventory.depot',

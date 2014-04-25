@@ -20,9 +20,9 @@
   <!-- FIXME style hack -->
   <div
     class="pull-right"
-    style="padding-right: 10px; margin-top: 6px;">
+    style="padding-right: 10px; margin-top: 7px;">
     {{ 'PRIMARY_CASH.CONFIGURE' | translate }}
-  </div
+  </div>
 
 </section>
 
@@ -30,33 +30,36 @@
 
   <div class="row" style="margin-top: 10px">
     <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
           <span class="glyphicon glyphicon-import"></span> {{ 'PRIMARY_CASH.INCOMES' | translate }}
-
         </div>
 
         <div class="panel-body">
-
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.income"><a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.income">
+              <span style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-thumbs-up"></span>
+              <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
+            </li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
           <span class="glyphicon glyphicon-export"></span> {{ 'PRIMARY_CASH.EXPENSES' | translate }}
-
         </div>
 
         <div class="panel-body">
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.expense"><a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a></li>
+            <li ng-repeat="item in configuration.expense">
+              <span style="color: rgb(179, 0, 0);" class="glyphicon glyphicon-thumbs-down"></span>
+              <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
+            </li>
           </ul>
-
         </div>
       </div>
     </div>
