@@ -19,7 +19,7 @@ angular.module('kpk.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'invoice_date', 'note'] },
+          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
           employee : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },

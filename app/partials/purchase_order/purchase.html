@@ -125,8 +125,11 @@
   </div>
 
   <div class="row">
-
+            
     <div class="col-xs-12">
+      
+      <!-- Item Warnings -->
+      <div ng-repeat="warning in warnings" class="alert alert-warning square" ng-if="warning.result"><span class="glyphicon glyphicon-exclamation-sign"></span> {{warning.message | translate}}</div>
 
       <div class="panel panel-default square" ng-class="{'panel-success' : (session.creditor && session.employee)}">
         <div class="panel-heading square">
@@ -136,9 +139,7 @@
 
         </div>
         
-        <!-- Item Warnings -->
-        <div ng-repeat="warning in warnings" class="alert alert-warning square" ng-if="warning.result"><span class="glyphicon glyphicon-exclamation-sign"></span> {{warning.message | translate}}</div>
-        
+       
         <table class='table-condensed table' ng-if="session.creditor && session.employee">
           <thead>
             <tr>

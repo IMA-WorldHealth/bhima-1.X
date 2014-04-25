@@ -43,15 +43,28 @@
     }
   },
 
-  "PRIMARY_CASH" : {
-    "TITLE" : "Primary Cash",
-    "EXPENSES" : "Expenses",
-    "GENERIC" : "Generic",
-    "NAVIGATION" : "Navigation",
-    "EXPENSE" : {
-      "GENERIC_TITLE" : "Generic Expenses",
-      "GENERIC_RECEIPT" : "Generic Receipt"
+  "PRIMARY_CASH"  : {
+    "TITLE"       : "Primary Cash",
+    "EXPENSES"    : "Expenses",
+    "INCOMES"     : "Income",
+    "GENERIC"     : "Generic",
+    "NAVIGATION"  : "Navigation",
+    "CONFIGURE"   : "Configure Cash Box",
+    "EXPENSE"     : {
+      "GENERIC_TITLE"   : "Generic Expense",
+      "GENERIC_RECEIPT" : "Generic Receipt",
+      "PURCHASE"        : "Pay Purchase Order"
+    },
+    "INCOME"      : {
+      "TRANSFER"        : "Cash Box Transfer",
+      "GENERIC_TITLE"   : "Generic Income"
     }
+  },
+
+  "CASH_PURCHASE" : {
+    "TITLE"       : "Purchase Order Dispense",
+    "NOT_FOUND"   : "No pending purchase order records found.",
+    "FILTER"      : "Filter Purchase Orders"
   },
 
   "PATIENT_RECORDS"     : {
@@ -1041,7 +1054,7 @@
     "TITLE"           : "Employee Management",
     "EMPLOYEES"       : "Employess",
     "REGISTER"        : "Register Employee",
-    "NONE_FOUND"      : "No employee records found",
+    "NONE_FOUND"      : "No employee records found.",
     "CREDITOR_GROUP"  : "Creditor Group"
   },
 
