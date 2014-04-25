@@ -21,7 +21,7 @@
 
           <div class="form-group">
             <label for="saledate">{{ 'PURCHASE.SALE_DATE' | translate }}</label>
-            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.invoice_date">
+            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.purchase_date">
           </div>
           <div class="form-group">
             <label for="select-cred">{{ 'PURCHASE.SUPPLIER' | translate }}</label>
@@ -135,7 +135,10 @@
           <a ng-class="{'disabled' : !(session.creditor && session.employee)}" class="pull-right menu-item" ng-click="addPurchaseItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.ADD_LINE_ITEM" | translate }}</a>
 
         </div>
-
+        
+        <!-- Item Warnings -->
+        <div ng-repeat="warning in session.warnings" class="alert alert-warning square"><span class="glyphicon glyphicon-exclamation-sign"></span> {{warning}}</div>
+        
         <table class='table-condensed table' ng-if="session.creditor && session.employee">
           <thead>
             <tr>

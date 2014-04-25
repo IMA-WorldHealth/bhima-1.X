@@ -15,13 +15,16 @@ angular.module('kpk.controllers')
     
     // FIXME Everything currently waits on validate to process (download) models
     // begin settup etc. before that
-    var dependencies = {}, session = $scope.session = {};
+    var dependencies = {};
+    var session = $scope.session = {
+      warnings : {}
+    };
     
     dependencies.inventory = { 
       query : { 
         identifier : 'uuid',
         tables : { 
-          inventory : { columns : ['uuid', 'code', 'text', 'price', 'type_id'] }
+          inventory : { columns : ['uuid', 'code', 'text', 'purchase_price', 'type_id'] }
         }
       }
     };
@@ -142,20 +145,35 @@ angular.module('kpk.controllers')
     }
 
     function priceMultiplyQuantity(a, b) { 
-      a = (a.quantity * a.price) || a;
-      return (b.code) ? a + (b.quantity * b.price) : a; 
+      a = (a.quantity * a.purchase_price) || a;
+      return (b.code) ? a + (b.quantity * b.purchase_price) : a; 
     }
 
     function verifyPurchase(items) { 
+      var invalid = false; 
+      var invalid_price_warning = false;
 
       // Ensure creditor selected and items initialised
       if(!items || !items.length) return true;
       
       // Verfiy individual items
-      return items.some(function (item) { 
+      invalid = items.some(function (item) { 
+        
+        //TODO Extract generic warnings
+        if (item.purchase_price===0) invalid_price_warning = true;
+
         if(!item.code) return true;
         return false;
       });
+    
+      // TODO have warnings, check conditions, and message as JSON object warnings
+      if(invalid_price_warning) {
+        session.warnings.invalid_price = $translate('PURCHASE.ZERO_PRICE');
+      } else { 
+        if (session.warnings.invalid_price) delete session.warnings.invalid_price; 
+      }
+      
+      return invalid;
     }
 
     function submitPurchase() { 
@@ -190,8 +208,8 @@ angular.module('kpk.controllers')
           purchase_uuid : purchase_uuid,
           inventory_uuid : item.inventoryId,
           quantity : item.quantity,
-          unit_price : item.price,
-          total : item.quantity * item.price
+          unit_price : item.purchase_price,
+          total : item.quantity * item.purchase_price
         };
         console.log('item', item);
         return connect.basicPut('purchase_item', [writeItem], ['uuid']);
@@ -224,14 +242,14 @@ angular.module('kpk.controllers')
       var self = this;
 
       function set(inventoryReference) {
-        var defaultPrice = inventoryReference.price;
+        var defaultPrice = inventoryReference.purchase_price;
 
         self.quantity = self.quantity || 1;
         self.code = inventoryReference.code;
         self.text = inventoryReference.text;
 
         // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
-        self.price = Number(inventoryReference.price.toFixed(4));
+        self.purchase_price = Number(inventoryReference.purchase_price.toFixed(4));
         self.inventoryId = inventoryReference.uuid;
         self.note = "";
         self.isSet = true;
@@ -240,7 +258,7 @@ angular.module('kpk.controllers')
       this.quantity = 0,
       this.code = null,
       this.inventoryId = null,
-      this.price = null,
+      this.purchase_price = null,
       this.text = null,
       this.note = null,
       this.set = set;

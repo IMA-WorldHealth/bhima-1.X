@@ -365,6 +365,7 @@ create table `inventory` (
   `inventory_code`  varchar(30),
   `text`            text,
   `price`           decimal(10,4) unsigned not null default '0.00',
+  `purchase_price`  decimal(10,4) unsigned not null default '0.00', 
   `group_uuid`      char(36) not null,
   `unit_id`         smallint unsigned,
   `unit_weight`     mediumint default '0',
