@@ -433,7 +433,8 @@
     "PRICE_LIST"          : "Price List",
     "TITLE"               : "Title",
     "VALUE"               : "Value",
-    "DEB_CRED_UUID"       : "Debitor/Creditor ID"
+    "DEB_CRED_UUID"       : "Debitor/Creditor ID",
+    "PURCHASE_PRICE"      : "Purchase Price"
   },
 
   "TREE"                        : {
@@ -494,7 +495,8 @@
     "BENEFICIARY"               : "Beneficaries",
     "MAIN_CASH"                 : "Principal Cashbox",
     "JOURNAL_VOUCHER"           : "Journal Voucher",
-    "PROJECT"                   : "Projects"
+    "PROJECT"                   : "Projects",
+    "EMPLOYEE"                  : "Employee"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -827,6 +829,14 @@
     "REGISTER"     : "Register Stock"
   },
 
+  "DEPOT" : {
+    "TITLE" : "Depot Management",
+    "ALERT" : "Manage your depots from here",
+    "NEW" : "Register a new Depot",
+    "EDIT" : "Edit depot information",
+    "ADD" : "Add a Depot"
+  },
+
   "PRICE_LIST"         : {
     "TITLE"            : "Price List Management",
     "ACTIONS"          : "Actions",
@@ -868,6 +878,19 @@
     "COGS"          : "COGS Account",
     "STOCK"         : "Stock Account",
     "TAX"           : "Tax Account"
+  },
+
+  "PURCHASE"          : {
+    "TITLE"           : "Purchase Order",
+    "CONFIGURE"       : "Configure",
+    "SUPPLIER"        : "Supplier",
+    "RESPONSABLE"     : "Employee Responsable",
+    "SALE_DATE"       : "Sale Date",
+    "ADD_LINE_ITEM"   : "Add line Item",
+    "ADD_SUPPLIER"    : "Register Supplier",
+    "PURCHASE_ITEM"   : "Purchase Items",
+    "TOTAL_COST"      : "Total Cost",
+    "SUBMIT_ORDER"    : "Submit Purchase Request"
   },
 
   "SALE"              : {
@@ -969,7 +992,14 @@
     "CASH_RECEIPT"      : "Cash Receipt",
     "CASH_ID"           : "Cash transaction #",
     "AMOUNT_RECEIVED"   : "Amount Recieved",
-    "TRANSACTION_PRICE" : "Transaction Price"
+    "TRANSACTION_PRICE" : "Transaction Price",
+    "PURCHASE_ORDER"    : "Purchase Order",
+    "PURCHASE_RECIPIENT": "Supplier",
+    "PURCHASE_ID"       : "Purchase No.",
+    "PURCHASE_DATE"     : "Purchase Date",
+    "EMPLOYEE_CONTACT"  : "Employee Ref.",
+    "EMPLOYEE_CODE"     : "Employee Code",
+    "PURCHASE_TOTAL"    : "Total Purchase Cost"
   },
 
   "SECTOR"             : {

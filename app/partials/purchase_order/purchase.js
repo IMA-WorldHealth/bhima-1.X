@@ -10,8 +10,6 @@ angular.module('kpk.controllers')
   'messenger',
   'uuid',
   function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid) {
-    // TODO invoice_date -> purchase_date
-    
     // TODO Currently downloads every location - should only download the 
     // selected creditors location
     
@@ -67,7 +65,7 @@ angular.module('kpk.controllers')
       session.purchase = { 
         uuid : uuid(),
         // payable : false,
-        invoice_date : getDate(), 
+        purchase_date : getDate(), 
         note : formatPurchaseDescription()
       };
       session.hr_id = session.purchase.uuid.substr(0, 6);

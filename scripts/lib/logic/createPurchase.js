@@ -20,27 +20,38 @@ module.exports = function (db, parser, journal) {
   //    credit sale account
   
   function execute(data, user, callback) { 
-    console.log('client has requested purchase order', user, data);
-    
     var primary_cash_uuid = uuid();
     
-    writeCash(primary_cash_uuid, data);
-     
-    callback(null);
+    writeCash(primary_cash_uuid, user, data)
+    .then(writeCashItems(primary_cash_uuid, data))
+    .then(postCash(primary_cash_uuid))
+    .then(function (res) { 
+      callback(null, res);
+    })
+    .catch(function (err) { 
+      return callback(err, null);  
+    });
   }
 
-  function writeCash(uuid, details) { 
+  function writeCash(uuid, user, details) { 
     var insertSQL, deferred = q.defer();
 
     details.uuid = uuid;
+    details.cashier_id = user;
     
     insertSQL = parser.insert('pcash', details);
     
+    return db.exec(insertSQL);
+  }
+
+  function writeCashItems(cashuuid, details) { 
+    var deferred = q.defer();
+
     return deferred.promise;
   }
 
   function postCash(uuid) { 
-
+    
   }
 
   return { execute : execute };
