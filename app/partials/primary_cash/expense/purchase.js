@@ -90,7 +90,17 @@ angular.module('kpk.controllers')
         ]
       };
 
-      $http.post('purchase', request);
+      $http.post('purchase', request)
+      .then(paymentSuccess)
+      .catch(handleError);
+    }
+
+    function paymentSuccess(result) {
+      console.log('payment success', result);
+    }
+
+    function handleError(error) {
+      throw error;
     }
     
     function getDate() {
