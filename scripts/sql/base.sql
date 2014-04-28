@@ -40,9 +40,6 @@ INSERT INTO `unit` VALUES (0,'Root','TREE.ROOT','The unseen root node',NULL,1,'/
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES (1,'admin','1','System','Administrato','kpkdeveloper@gmail.com',1),(2,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),(3,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),(4,'sthreshley','ima','Larry','Sthreshley','example@email.me',0),(5,'receptioniste','moyo','Reception','Reception','recept@example.me',0),(14,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),(15,'anaclet','tshiko','Anaclet','Kadiata','anakadiat@yahoo.fr',0),(16,'caisse','moyo','Caisse','Aux',NULL,0),(17,'Ntumba','dieumerci','Moise','Ngalamulume','ngalamulumemoise@gmail.com',0),(18,'jean','jean','JEAN','SEKUNDO',NULL,0),(19,'diato','remy','remy','kadiata',NULL,0),(22,'jean','87','NDOLO','KANDAKANDA',NULL,0),(23,'muke','22','JEAN MARIE','MUKENGE SHAY',NULL,0);
 INSERT INTO `permission` VALUES (1,0,1),(2,1,1),(3,4,1);
 
--- System transactions (TODO seperate from Tshikaji?)
-INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash');
-
 -- Configure base currencies
 INSERT INTO `currency` VALUES (1,'Congolese Francs','Fc',NULL,'.',',',50.00),(2,'United States Dollars','$',NULL,',','.',0.01);
 
