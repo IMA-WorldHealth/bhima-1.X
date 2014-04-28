@@ -653,8 +653,9 @@ create table `purchase` (
 
 drop table if exists `depot`;
 create table `depot` (
-  `id`          smallint not null,
-  `text`        text,
+  `id`                 smallint unsigned auto_increment not null,
+  `text`               text,
+  `enterprise_id`      smallint unsigned not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -682,7 +683,7 @@ create table `stock_movement` (
   `direction`               text,
   `date`                    date,
   `quantity`                int not null default 0,
-  `depot_id`                smallint not null,
+  `depot_id`                smallint unsigned not null,
   `destination`             smallint not null,
   primary key (`document_id`),
   key `tracking_number` (`tracking_number`),

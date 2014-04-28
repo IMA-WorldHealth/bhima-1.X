@@ -333,6 +333,12 @@ div .reportFrame {
   cursor: pointer;
 }
 
+.menu-item.disabled { 
+  cursor: default;
+  text-decoration : none; 
+  color : #cecece;
+}
+
 .panel-primary .panel-heading .menu-item {
   color: white;
 }

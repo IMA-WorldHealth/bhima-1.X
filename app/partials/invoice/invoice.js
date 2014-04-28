@@ -137,7 +137,7 @@ angular.module('kpk.controllers')
       dependencies.purchase = { 
         query : { 
           tables : { 
-            purchase : { columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'invoice_date', 'note', 'employee_id'] } 
+            purchase : { columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id'] } 
           }
         },
         where : ['purchase.uuid=' + invoiceId]
