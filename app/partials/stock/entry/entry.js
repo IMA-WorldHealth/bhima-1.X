@@ -146,11 +146,16 @@ angular.module('kpk.controllers')
 
     function valid () {
       session.valid = !!find.valid && !!session.order && !!session.order.data &&
-        session.order.data.length > 0 &&
+        session.order.data.length > 0 && !!session.depot &&
         session.order.data.every(function (drug) {
           return !Number.isNaN(Number(drug.purchase_price)) && Number(drug.purchase_price) > 0;
         });
     }
+
+    $scope.setDepot = function setDepot (depot) {
+      session.depot = depot;
+      valid();
+    };
 
     find.fn.commit = function commit (order) {
       // order.label is a text identifier such as
