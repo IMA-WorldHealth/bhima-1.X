@@ -25,6 +25,7 @@ angular.module('kpk.controllers')
     function Lot () {
       this.id = uuid();
       this.inventory_code = null;
+      this.inventory_uuid = null;
       this.purchase_price = 0;
       this.expiration_date = new Date();
       this.entry_date = new Date();
@@ -73,6 +74,7 @@ angular.module('kpk.controllers')
 
       lot.active = false;
       lot.purchase_order_uuid = session.purchase_uuid;
+      lot.inventory_uuid = ref.inventory_uuid;
 
       // update total
       var old = session.totals.get(lot.inventory_code);

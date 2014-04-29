@@ -11,7 +11,7 @@
       </button>
       <ul class="dropdown-menu square">
         <li ng-repeat="depot in depots.data">
-          <a ng-click="session.depot=depot" class="action">{{ depot.text }}</a>
+          <a ng-click="setDepot(depot)" class="action">{{ depot.text }}</a>
         </li>
       </ul>
     </div>
@@ -19,13 +19,6 @@
 </section>
 
 <div class="content">
-  <!-- find open purchase orders -->
-  <!-- import data from purchase order -->
-  <!-- validate that all stock is actually there and correctly entered -->
-  <!-- divide up into lots and assigned quantities and lot numbers -->
-  <!-- validate that stock price is the same as the purchase price -->
-  <!-- write new stock items and stock movements -->
-
   <div class="row">
 
     <div class="col-xs-4">
