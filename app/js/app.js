@@ -288,6 +288,26 @@
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
+    })
+    .when('/stock/entry', {
+      controller : 'stock.entry',
+      templateUrl : 'partials/stock/entry/entry.html'
+    })
+    .when('/stock/loss', {
+      controller : 'stock.loss',
+      templateUrl : 'partials/stock/loss/loss.html'
+    })
+    .when('/stock/movement', {
+      controller : 'stock.movement',
+      templateUrl : 'partials/stock/movement/movement.html'
+    })
+    .when('/stock/exit', {
+      controller : 'stock.exit',
+      templateUrl : 'partials/stock/exit/exit.html'
+    })
+    .when('/stock/entry/lots', {
+      controller : 'stock.lots',
+      templateUrl : 'partials/stock/entry/lots.html'
     });
   }
 

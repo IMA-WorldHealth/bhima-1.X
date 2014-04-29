@@ -412,3 +412,11 @@ a.danger {
 .top-nav .label {
   vertical-align : middle;
 }
+
+header + .content {
+  top : 50px;
+}
+
+.panel-input {
+  margin-left: 15px;
+}
