@@ -253,13 +253,13 @@
       controller : 'updateStock',
       templateUrl : 'partials/update_stock/update_stock.html'
     })
-    .when('/primary_cash/transfert', {
+    .when('/primary_cash/transfert/:cashbox_id', {
       controller : 'transfert',
       templateUrl : 'partials/primary_cash/incomes/transfert/transfert.html'
     })
-     .when('/pcash/convention', {
+     .when('/primary_cash/convention/:cashbox_id', {
       controller : 'convention',
-      templateUrl : 'partials/pcash/incomes/convention/convention.html'
+      templateUrl : 'partials/primary_cash/incomes/convention/convention.html'
     })
     .when('/trialbalance/print', {
       controller : 'trialbalance.print',

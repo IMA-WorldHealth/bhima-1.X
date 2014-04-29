@@ -2,11 +2,14 @@
 	<span class="capitalize"> {{ 'TRANSFERT.TITLE' | translate }}</span>
 </header>
 
-<section class="top-nav" style="max-height: 10px;">
-	<ol class="breadcrumb">
-	  <li><a href="#/primary_cash/">{{'TRANSFERT.CRUMB_PCASH' | translate}}</a></li>
-	  <li><a href="#/pcash/transfert">{{'TRANSFERT.CRUMB_TRANSFERT' | translate}}</a></li>
-	</ol>
+<section class="top-nav underline">
+	 <div class="pull-left">
+	    <ol class="breadcrumb" style="float: right;">
+	      <span class="label label-success square">{{ "TRANSFERT.NAVIGATION" | translate }}</span>
+	      <li><a href="#/primary_cash/">{{'TRANSFERT.CRUMB_PCASH' | translate}}</a></li>
+		  <li><a href="" ng-click="loadPath('/primary_cash/transfert/')">{{'TRANSFERT.CRUMB_TRANSFERT' | translate}}</a></li>
+	    </ol>
+  	</div>
 </section>
 
 <div class="content">
