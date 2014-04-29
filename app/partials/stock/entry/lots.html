@@ -7,7 +7,7 @@
 
     <form class="col-xs-8">
 
-      <div class="panel panel-info" ng-repeat="lot in session.lots.data" ng-switch="lot.active">
+      <div class="panel" ng-class="{ 'panel-info' : !!lot.valid, 'panel-danger' : !lot.valid }" ng-repeat="lot in session.lots.data" ng-switch="lot.active">
         <div class="panel-heading">
           <b ng-switch-default> # {{ lot.number }}</b>
           <b ng-switch-when="true">{{ "STOCK.ENTRY.LOT_NUMBER" | translate }}</b>
@@ -24,7 +24,7 @@
               <label>{{ "COLUMNS.INVENTORY_CODE" | translate }}</label>
               <p class="form-control-static" ng-switch-default>{{ lot.inventory_code }}</p>
               <select class="form-kapok" ng-model="lot.inventory_code" ng-options="code for code in triage.codes" ng-switch-when="true" ng-change="setQuantity(lot)">
-                <option value="">-- {{ "SELECT.CODE" | translate }} --</option>
+                <option value="" disabled="disabled">-- {{ "SELECT.CODE" | translate }} --</option>
               </select>
             </div>
 
@@ -51,7 +51,7 @@
 
         </div>
 
-        <div class="panel-body" ng-if="$index==session.lots.data.length-1">
+        <div class="panel-body" ng-if="$index==session.lots.data.length-1 && !session.review">
           <a ng-click="add()" class="pull-right action"><span class="glyphicon glyphicon-plus"></span></a>
         </div>
       </div>
@@ -62,9 +62,13 @@
       <table class="table table-condensed">
         <thead>
           <tr>
+            <th colspan="4">{{ "STOCK.ENTRY.ORDER_DETAILS" | translate }}</th>
+          </tr>
+          <tr>
             <th>{{ "COLUMNS.CODE" | translate }}</th>
             <th>{{ "COLUMNS.LABEL" | translate }}</th>
             <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+            <th>{{ "STOCK.ENTRY.ASSIGNED" | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -72,6 +76,7 @@
             <td>{{ drug.code }}</td>
             <td>{{ drug.text }}</td>
             <td>{{ drug.quantity }}</td>
+            <td>{{ session.totals.get(drug.code).total }}</td>
           </tr>
         </tbody>
       </table>

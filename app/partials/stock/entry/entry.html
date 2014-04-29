@@ -32,12 +32,12 @@
       <div class="panel panel-default" ng-class="{'panel-success': !!find.valid, 'panel-danger': find.valid==false}" ng-switch="find.valid">
         <div class="panel-heading" ng-click="find.fn.activate()" ng-class="{ 'action' : !find.active }">
           <span>{{ session.order_id || "STOCK.ENTRY.FIND_PURCHASE_ORDER" | translate }}</span>
-          <span class="pull-right glyphicon" ng-class="{'glyphicon-list-alt' : !!find.active, 'glyphicon-refresh' : !find.active}"></span> 
+          <span class="pull-right glyphicon" ng-class="{'glyphicon-list-alt' : !!find.active, 'glyphicon-refresh' : !find.active}"></span>
         </div>
         <div class="panel-body" ng-if="!!find.active">
           <div class="form-group">
             <div class="input-group">
-              <input type="text" class="form-kapok" ng-model="session.order" typeahead="order.label for order in names.data | filter:$viewValue | limitTo: 8">
+              <input type="text" class="form-kapok" ng-model="session.order" typeahead="order as order.label for order in names.data | filter:$viewValue | limitTo: 8">
               <span class="input-group-btn btn btn-sm btn-default square" ng-click="find.fn.commit(session.order)">
                 <span class="glyphicon glyphicon-find"></span>
                 {{ "STOCK.ENTRY.SELECT" | translate }}
@@ -54,7 +54,7 @@
         <div class="col-xs-4">
           <div class="form-group">
             <label class="control-label col-xs-6">{{ "COLUMNS.PURCHASE_ORDER" | translate }}</label>
-            <p class="form-control-static col-xs-6">{{ session.order_id }}</p>
+            <p class="form-control-static col-xs-6">{{ session.label }}</p>
           </div>
 
           <div class="form-group">
@@ -89,24 +89,27 @@
           <th>{{ "COLUMNS.GROUP" | translate }}</th>
           <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
           <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
-          <th>{{ "COLUMNS.TOTAL" | translate }}</th>
+          <th>{{ "COLUMNS.TOTAL_PRICE" | translate }}</th>
+          <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="drug in orders.data | orderBy:'code'">
+        <tr ng-repeat="drug in session.order.data | orderBy:'code'">
           <td>{{ drug.code }}</td>
           <td>{{ drug.text }}</td>
           <td>{{ drug.name }}</td>
           <td>{{ drug.quantity }}</td>
-          <td>{{ drug.unit_price | currency }}</td>
-          <td>{{ drug.quantity * drug.unit_price | currency }}</td>
+          <td ng-bind-html="drug.unit_price | intlcurrency:drug.currency_id"></td>
+          <td ng-bind-html="drug.quantity * drug.unit_price | intlcurrency:drug.currency_id"></td>
+          <td>$ <input type="number" min="0" ng-model="drug.purchase_price" placeholder="0.00"></td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
           <th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
           <th colspan="2">{{ session.total.quantity }}</th>
-          <th colspan="2">{{ session.total.price | currency }}</th>
+          <th>{{ session.total.price | currency }}</th>
+          <th>{{ session.total.purchase_price | currency }}
         </tr>
       </tfoot>
     </table>
@@ -115,7 +118,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <button class="btn btn-sm btn-success" ng-click="assignLots()" ng-disabled="!find.valid">
+    <button class="btn btn-sm btn-success" ng-click="assignLots()" ng-disabled="!session.valid">
       {{ "STOCK.ENTRY.ASSIGN_LOTS" | translate }}
     </button>
     <button class="btn btn-sm btn-default" ng-click="cancel()">

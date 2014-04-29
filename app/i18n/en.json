@@ -358,6 +358,8 @@
     "TRACKING_NUMBER"     : "Tracking Number",
     "INVENTORY_CODE"      : "Inventory Code",
     "LINE_ID"             : "Line ID",
+    "LOT_NUMBER"          : "Lot Number",
+    "PURCHASE_DATE"       : "Purchase Date",
     "EXPLANATION"         : "Explanation",
     "ABBR"                : "Abbr",
     "ENTERPRISE_ID"       : "Enterprise ID",
@@ -416,6 +418,7 @@
     "DESCRIPTION"         : "Description",
     "QUANTITY"            : "Quantity",
     "UNIT_PRICE"          : "Unit Price",
+    "TOTAL_PRICE"         : "Total Price",
     "COST"                : "Cost",
     "DISCOUNT"            : "Discount",
     "INVENTORY_ITEM"      : "Inventory Item",
@@ -573,11 +576,11 @@
     "RECEIVED"    : "Received"
   },
 
-  "NO_EXCHANGE" : {
-    "TITLE" : "Missing Exchange Rate",
-    "EXPLANATION" : "This module requires an exchange rate.  There is no exchange rate set for today.",
+  "NO_EXCHANGE"    : {
+    "TITLE"        : "Missing Exchange Rate",
+    "EXPLANATION"  : "This module requires an exchange rate.  There is no exchange rate set for today.",
     "CURRENT_DATE" : "Current Date",
-    "FIX" : "Please return to the exchange rate module and set a new exchange rate.",
+    "FIX"          : "Please return to the exchange rate module and set a new exchange rate.",
     "SET_NEW_RATE" : "Set a New Rate"
   },
 
@@ -749,7 +752,9 @@
     "CONTINUE"        : "Continue",
     "ADD"             : "Add",
     "EDIT"            : "Edit",
-    "NEW_FORM"        : "New Form"
+    "NEW_FORM"        : "New Form",
+    "REVIEW"          : "Review",
+    "BACK"            : "Back"
   },
 
   "CASH"                   : {
@@ -1088,7 +1093,12 @@
       "FIND_PURCHASE_ORDER" : "Find a Purchase Order",
       "ORDER_DETAIL" : "Order Details",
       "ASSIGN_LOTS" : "Assign Lots",
-      "CANCEL" : "Cancel"
+      "CANCEL" : "Cancel",
+      "LOT_NUMBER" : "Lot No.",
+      "ORDER_DETAILS" : "Order Details",
+      "REMAINING" : "Remaining",
+      "ASSIGNED" : "Assigned",
+      "REVIEW" : "Review Manifest"
     },
     "EXIT" : {},
     "MOVEMENT" : {}
