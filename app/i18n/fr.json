@@ -377,7 +377,9 @@
     "BENEFICIARY"               : "Beneficiary",
     "MAIN_CASH"                 : "Caisse Principale",
     "JOURNAL_VOUCHER"           : "Ajout Transactions",
-    "PROJECT"                   : "Projets"
+    "PROJECT"                   : "Projets",
+    "DEPOT"                     : "Depot",
+    "STOCK_DISTRIBUTION"        : "Distribution Stock"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -548,7 +550,10 @@
     "CREDITOR"            : "Crediteur",
     "DEB_CRED_TYPE"       : "Type Debiteur/Crediteur",
     "DEB_CRED_UUID"       : "ID Debiteur/Crediteur",
-    "REFERENCE"           : "Reference"
+    "REFERENCE"           : "Reference",
+    "TRACKING_NUMBER"     : "Numero de Tracking",
+    "EXPIRATION_DATE"     : "Date Expiration",
+    "LOT"                 : "Lot"
   },
 
   "REPORT"                  : {
@@ -1098,5 +1103,13 @@
                                   "CONVENTION"              : "Convention"
 
                               }
+  },
+
+    "DISTRIBUTION" : {
+    "TITLE"         : "Distribution",
+    "LOT_DETAILS"   : "Details des lots",
+    "ADD_ROW"       : "Ajouter Item",
+    "DESCRIPTION"   : "Description",
+    "SUBMIT"        : "Soumettre Note de Credit"
   }
 }
