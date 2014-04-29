@@ -19,9 +19,9 @@ angular.module('kpk.controllers')
 
     configuration.income = [
 
-    {
+      {
         key : $filter('translate')('PRIMARY_CASH.INCOME.TRANSFER'),
-        link : '/primary_cash/transfert/'
+        link : '/primary_cash/income/transfert/'
       },
 
       {
@@ -30,7 +30,7 @@ angular.module('kpk.controllers')
       },
 
       {
-        key : 'GENERIC_INCOME',
+        key : $filter('translate')('PRIMARY_CASH.INCOME.GENERIC_TITLE'),
         link : '/primary_cash/income/generic/'
       }
     ];
@@ -38,10 +38,10 @@ angular.module('kpk.controllers')
     configuration.expense = [
       {
         key : $filter('translate')('PRIMARY_CASH.EXPENSE.PURCHASE'),
-        link : '/primary_cash/income/purchase/'
+        link : '/primary_cash/expense/purchase/'
       },
       {
-        key : 'GENERIC_EXPENSE',
+        key : $filter('translate')('PRIMARY_CASH.EXPENSE.GENERIC_TITLE'),
         link : '/primary_cash/expense/generic/'
       }
     ];
@@ -58,7 +58,7 @@ angular.module('kpk.controllers')
     function loadPath(path) {
 
       //TODO validate both correct path and cashbox
-      $location.path(path+session.cashbox);
+      $location.path(path + session.cashbox);
     }
 
     $scope.loadPath = loadPath;

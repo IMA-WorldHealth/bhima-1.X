@@ -11,7 +11,8 @@ angular.module('kpk.controllers')
   function ($scope, $routeParams, $translate, $http, messenger, validate, appstate) {
     var dependencies = {}, session = $scope.session = {};
     var cashbox, cashboxReference = $routeParams.cashbox;
-    
+    var currency_id = 2; // FIXME
+
     if (!cashboxReference) return messenger.info($translate('CASH_PURCHASE.CASHBOX_ASSIGN_ERROR'));
     
     // TODO Don't download complete purchase orders
@@ -19,7 +20,7 @@ angular.module('kpk.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'invoice_date', 'note'] },
+          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
           employee : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },
@@ -30,9 +31,11 @@ angular.module('kpk.controllers')
     dependencies.cashbox = {
       query : {
         tables : {
-          cash_box : { columns : ['id', 'text', 'project_id', 'is_auxillary'] }
+          cash_box : { columns : ['id', 'text', 'project_id', 'is_auxillary'] },
+          cash_box_account_currency : { columns : ['account_id'] },
         },
-        where : ['cash_box.id=' + cashboxReference]
+        join : ['cash_box_account_currency.cash_box_id=cash_box.id'],
+        where : ['cash_box.id=' + cashboxReference, 'AND', 'cash_box_account_currency.currency_id=' + currency_id]
       }
     };
 
@@ -41,7 +44,6 @@ angular.module('kpk.controllers')
     function initialise(model) {
       angular.extend($scope, model);
       cashbox = $scope.cashbox = model.cashbox.data[0];
-      console.log(model);
     }
 
     function confirmPurchase(purchaseId) {
@@ -49,8 +51,6 @@ angular.module('kpk.controllers')
     }
     
     function payPurchase(purchaseId) {
-
-      
       dependencies.employee = {
         query : {
           tables : {
@@ -66,20 +66,41 @@ angular.module('kpk.controllers')
     }
 
     function submitPayment(model) {
+      console.log('session', session);
       var creditorId = model.employee.data[0].creditor_uuid;
-      var purchase = {
-        project_id : appstate.get('project').id,
-        type : 'S', // Exit ? I don't know
-        date : getDate(),
-        deb_cred_uuid : creditorId,
-        deb_cred_type : 'C', //?
-        currency_id : 2, //FIXME
-        value : session.selected.cost,
-        description : 'PP/' + session.selected.uuid + '/',
-        istransfer : 0 //FIXME remove from schema
+      var request = {
+        details : {
+          project_id : appstate.get('project').id,
+          type : 'S', // Exit ? I don't know
+          date : getDate(),
+          deb_cred_uuid : creditorId,
+          deb_cred_type : 'C', //?
+          currency_id : 2, //FIXME
+          cash_box_id : cashbox.id,
+          account_id : cashbox.account_id,
+          description : 'PP/' + session.selected.uuid + '/',
+          origin_id : 1 //FIXME
+        },
+        transaction : [
+          {
+            inv_po_id : session.selected.uuid,
+            debit : session.selected.cost,
+            credit : 0
+          }
+        ]
       };
 
-      $http.post('purchase', purchase);
+      $http.post('purchase', request)
+      .then(paymentSuccess)
+      .catch(handleError);
+    }
+
+    function paymentSuccess(result) {
+      console.log('payment success', result);
+    }
+
+    function handleError(error) {
+      throw error;
     }
     
     function getDate() {

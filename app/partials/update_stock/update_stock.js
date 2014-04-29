@@ -9,7 +9,7 @@ angular.module('kpk.controllers')
     query : {
       identifier : 'uuid',
       tables : {
-        inventory : { columns : ['uuid', 'code', 'text', 'price', 'group_uuid', 'unit_id'] }
+        inventory : { columns : ['uuid', 'code', 'text', 'price', 'purchase_price', 'group_uuid', 'unit_id'] }
       }
     }
   };
@@ -33,6 +33,7 @@ angular.module('kpk.controllers')
   function selectStock(uuid) {
     selectedStock = $scope.selectedStock = $scope.model.inventory.get(uuid);
     $scope.cachePrice = angular.copy(selectedStock.price);
+    $scope.cachePurchasePrice = angular.copy(selectedStock.purchase_price);
   }
 
   function loadStock(id) {
@@ -64,6 +65,7 @@ angular.module('kpk.controllers')
     connect.basicPost('inventory', [updateLine], ['uuid']).then(function (res) {
       messenger.success($filter('translate')('UPDATE_STOCK.UPDATE_SUCCESS'));
       $scope.cachePrice = angular.copy(selectedStock.price);
+      $scope.cachePurchasePrice = angular.copy(selectedStock.purchase_price);
       validate.refresh(dependencies, ['history']);
     }, function (err) {
       messenger.danger($filter('translate')('UPDATE_STOCK.UPDATE_FAILUER'));

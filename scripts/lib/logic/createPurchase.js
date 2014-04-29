@@ -22,8 +22,8 @@ module.exports = function (db, parser, journal) {
   function execute(data, user, callback) { 
     var primary_cash_uuid = uuid();
     
-    writeCash(primary_cash_uuid, user, data)
-    .then(writeCashItems(primary_cash_uuid, data))
+    writeCash(primary_cash_uuid, user, data.details)
+    .then(writeCashItems(primary_cash_uuid, data.transaction))
     .then(postCash(primary_cash_uuid))
     .then(function (res) { 
       callback(null, res);
@@ -37,17 +37,24 @@ module.exports = function (db, parser, journal) {
     var insertSQL, deferred = q.defer();
 
     details.uuid = uuid;
-    details.cashier_id = user;
+    details.user_id = user;
     
-    insertSQL = parser.insert('pcash', details);
+    insertSQL = parser.insert('primary_cash', details);
     
     return db.exec(insertSQL);
   }
 
-  function writeCashItems(cashuuid, details) { 
-    var deferred = q.defer();
+  function writeCashItems(primary_cash_uuid, transactions) { 
+    var insertSQL;
+    
+    transactions.forEach(function (transaction) { 
+      transaction.uuid = uuid();
+      transaction.primary_cash_uuid = primary_cash_uuid;
+    });
+    
+    insertSQL = parser.insert('primary_cash_item', transactions);
 
-    return deferred.promise;
+    return db.exec(insertSQL);
   }
 
   function postCash(uuid) { 

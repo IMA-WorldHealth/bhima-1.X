@@ -7,8 +7,8 @@
 <div class="content">
   <div class="row">
     <div class="col-xs-12">
-      <div class="panel" ng-class="{'panel-success' : selectedStock, 'panel-default' : !selectedStock}">
-        <div class="panel-heading">
+      <div class="panel square" ng-class="{'panel-success' : selectedStock, 'panel-default' : !selectedStock}">
+        <div class="panel-heading square">
           <span class="glyphicon glyphicon" ng-class="{'glyphicon-search' : session.search, 'glyphicon-list-alt' : !session.search}"></span> 
           <span ng-show="session.search">{{'UPDATE_STOCK.FIND_STOCK' | translate}}</span>
               <span ng-show="!session.search">
@@ -40,8 +40,8 @@
   </div>
   <div class="row">
     <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="panel panel-default square">
+        <div class="panel-heading sqaure">
           <span class="glyphicon glyphicon-list-alt"></span> 
           {{'UPDATE_STOCK.STOCK_HISTORY' | translate}}
         </div>
@@ -78,22 +78,32 @@
     </div>
 
     <div class="col-xs-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
           <span class="glyphicon glyphicon-pencil"></span> 
           {{'UPDATE_STOCK.TITLE' | translate}}
         </div>
 
         <div ng-show="!session.search" class="panel-body">
           <div class="form-group">
-            <span>{{'LOCATION.CURRENT' | translate}} {{'COLUMNS.PRICE' | translate}}</span>
+            <span>{{'LOCATION.CURRENT' | translate}} {{'COLUMNS.SALE_PRICE' | translate}}</span>
             <br>
             <span><b>{{cachePrice | currency}}</b></span>
+            <br>
+            <span>{{'LOCATION.CURRENT' | translate}} {{'COLUMNS.PURCHASE_PRICE' | translate}}</span>
+            <br>
+            <span><b>{{cachePurchasePrice | currency}}</b></span>
+            
           </div>
 
           <div class="form-group"> 
-            <label>{{'COLUMNS.PRICE' | translate}}</label>
+            <label>{{'COLUMNS.SALE_PRICE' | translate}}</label>
             <input class="form-kapok" ng-model="selectedStock.price">
+          </div>
+
+          <div class="form-group">
+            <label>{{'COLUMNS.PURCHASE_PRICE' | translate}}</label>
+            <input class="form-kapok" ng-model="selectedStock.purchase_price">
           </div>
 
           <div class="form-group">
