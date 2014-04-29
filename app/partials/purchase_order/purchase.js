@@ -10,18 +10,20 @@ angular.module('kpk.controllers')
   'messenger',
   'uuid',
   function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid) {
+    // TODO Module should only continue with selection of both employee and 
+    // supplier, currently just hides everything to look like this
     // TODO Currently downloads every location - should only download the 
     // selected creditors location
-    
     // FIXME Everything currently waits on validate to process (download) models
     // begin settup etc. before that
-    var dependencies = {}, session = $scope.session = {};
+    var dependencies = {};
+    var session = $scope.session = {}, warnings = $scope.warnings = {};
     
     dependencies.inventory = { 
       query : { 
         identifier : 'uuid',
         tables : { 
-          inventory : { columns : ['uuid', 'code', 'text', 'price', 'type_id'] }
+          inventory : { columns : ['uuid', 'code', 'text', 'purchase_price', 'type_id'] }
         }
       }
     };
@@ -50,6 +52,13 @@ angular.module('kpk.controllers')
     dependencies.user = { 
       query : 'user_session'
     };
+
+    warnings.invalid_price = { 
+      condition : function (item) { return item.code ? (Number(item.purchase_price) === 0) : false ; },
+      message : 'PURCHASE.INVALID_PRICE',
+    };
+
+    //warnings.invalid_item_accounts
 
     validate.process(dependencies).then(initialise);
     
@@ -138,24 +147,43 @@ angular.module('kpk.controllers')
     }
 
     function purchaseTotal() { 
+      console.log('total', session.items);
       return session.items.reduce(priceMultiplyQuantity, 0);
     }
 
     function priceMultiplyQuantity(a, b) { 
-      a = (a.quantity * a.price) || a;
-      return (b.code) ? a + (b.quantity * b.price) : a; 
+      a = (a.quantity * a.purchase_price) || a;
+      return (b.code) ? a + (b.quantity * b.purchase_price) : a; 
     }
 
     function verifyPurchase(items) { 
+      var invalid = false; 
+      var invalidKeys = [];
 
       // Ensure creditor selected and items initialised
       if(!items || !items.length) return true;
-      
+     
       // Verfiy individual items
-      return items.some(function (item) { 
-        if(!item.code) return true;
+      invalid = items.some(function (purchaseItem) { 
+       
+        // Iterate through conditions 
+        Object.keys(warnings).forEach(function (key) { 
+          if (warnings[key].condition(purchaseItem)) invalidKeys.push(key);  
+        });
+
+        if(!purchaseItem.code) return true;
         return false;
       });
+    
+
+      console.log('keys', invalidKeys);
+      // FIXME 
+      Object.keys(warnings).forEach(function(key) { 
+        warnings[key].result = false;
+        if (invalidKeys.indexOf(key) >= 0) warnings[key].result = true; 
+      });  
+            
+      return invalid;
     }
 
     function submitPurchase() { 
@@ -190,8 +218,8 @@ angular.module('kpk.controllers')
           purchase_uuid : purchase_uuid,
           inventory_uuid : item.inventoryId,
           quantity : item.quantity,
-          unit_price : item.price,
-          total : item.quantity * item.price
+          unit_price : item.purchase_price,
+          total : item.quantity * item.purchase_price
         };
         console.log('item', item);
         return connect.basicPut('purchase_item', [writeItem], ['uuid']);
@@ -224,14 +252,14 @@ angular.module('kpk.controllers')
       var self = this;
 
       function set(inventoryReference) {
-        var defaultPrice = inventoryReference.price;
+        var defaultPrice = inventoryReference.purchase_price;
 
         self.quantity = self.quantity || 1;
         self.code = inventoryReference.code;
         self.text = inventoryReference.text;
 
         // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
-        self.price = Number(inventoryReference.price.toFixed(4));
+        self.purchase_price = Number(inventoryReference.purchase_price.toFixed(4));
         self.inventoryId = inventoryReference.uuid;
         self.note = "";
         self.isSet = true;
@@ -240,7 +268,7 @@ angular.module('kpk.controllers')
       this.quantity = 0,
       this.code = null,
       this.inventoryId = null,
-      this.price = null,
+      this.purchase_price = null,
       this.text = null,
       this.note = null,
       this.set = set;

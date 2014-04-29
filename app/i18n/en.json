@@ -43,15 +43,28 @@
     }
   },
 
-  "PRIMARY_CASH" : {
-    "TITLE" : "Primary Cash",
-    "EXPENSES" : "Expenses",
-    "GENERIC" : "Generic",
-    "NAVIGATION" : "Navigation",
-    "EXPENSE" : {
-      "GENERIC_TITLE" : "Generic Expenses",
-      "GENERIC_RECEIPT" : "Generic Receipt"
+  "PRIMARY_CASH"  : {
+    "TITLE"       : "Primary Cash",
+    "EXPENSES"    : "Expenses",
+    "INCOMES"     : "Income",
+    "GENERIC"     : "Generic",
+    "NAVIGATION"  : "Navigation",
+    "CONFIGURE"   : "Configure Cash Box",
+    "EXPENSE"     : {
+      "GENERIC_TITLE"   : "Generic Expense",
+      "GENERIC_RECEIPT" : "Generic Receipt",
+      "PURCHASE"        : "Pay Purchase Order"
+    },
+    "INCOME"      : {
+      "TRANSFER"        : "Cash Box Transfer",
+      "GENERIC_TITLE"   : "Generic Income"
     }
+  },
+
+  "CASH_PURCHASE" : {
+    "TITLE"       : "Purchase Order Dispense",
+    "NOT_FOUND"   : "No pending purchase order records found.",
+    "FILTER"      : "Filter Purchase Orders"
   },
 
   "PATIENT_RECORDS"     : {
@@ -434,7 +447,9 @@
     "TITLE"               : "Title",
     "VALUE"               : "Value",
     "DEB_CRED_UUID"       : "Debitor/Creditor ID",
-    "PURCHASE_PRICE"      : "Purchase Price"
+    "SALE_PRICE"          : "Sale Price",
+    "PURCHASE_PRICE"      : "Purchase Price",
+    "BHIMA_STOCK_CODE"    : "Stock Reference"
   },
 
   "TREE"                        : {
@@ -496,7 +511,8 @@
     "MAIN_CASH"                 : "Principal Cashbox",
     "JOURNAL_VOUCHER"           : "Journal Voucher",
     "PROJECT"                   : "Projects",
-    "EMPLOYEE"                  : "Employee"
+    "EMPLOYEE"                  : "Employee",
+    "DEPOT"                     : "Depot"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -569,18 +585,20 @@
     "SUCCESS_MESSAGE" : "Patient visit successfully renewed"
   },
 
-  "SUPPLIER"        : {
-    "TITLE"         : "Register a Supplier",
-    "CREATE"        : "Create Creditor Group",
-    "GROUP"         : "Group",
-    "INTL"          : "International",
-    "OPTIONAL_INFO" : "Optional Information",
-    "ADDR_1"        : "Address 1",
-    "ADDR_2"        : "Address 2",
-    "PHONE"         : "Phone",
-    "EMAIL"         : "Email",
-    "FAX"           : "Fax",
-    "REGISTERED"    : "Registered Suppliers"
+  "SUPPLIER"            : {
+    "TITLE"             : "Register Supplier",
+    "CREATE"            : "Create Creditor Group",
+    "GROUP"             : "Group",
+    "INTL"              : "International",
+    "OPTIONAL_INFO"     : "Optional Information",
+    "ADDR_1"            : "Address 1",
+    "ADDR_2"            : "Address 2",
+    "PHONE"             : "Phone",
+    "EMAIL"             : "Email",
+    "FAX"               : "Fax",
+    "REGISTERED"        : "Registered Suppliers",
+    "SUPPLIER_DETAILS"  : "Details",
+    "CREATE_SUPPLIER"   : "Create Supplier"
   },
 
   "PATIENT_REG"                : {
@@ -1017,32 +1035,39 @@
     "EDIT"             : "Edit Sector"
   },
 
-  "VILLAGE"            : {
-    "TITLE"            : "Village Manager",
-    "LOCATION_MANAGER" : "Location manager",
-    "NEW_VILLAGE"      : "Add Village",
-    "REGISTERED"       : "Registered villages",
-    "NAME"             : "Name",
-    "SECTOR"           : "Sector",
-    "ACTIONS"          : "Actions",
-    "CONFIG"           : "Village Manager Configuration",
-    "INFO"             : "This module will help you to manage villge, use this module to create, edit and remove village",
-    "REGISTER"         : "Register a Village",
-    "NAME_VILLAGE"     : "Village Name",
-    "EDIT"             : "Edit Village"
+  "VILLAGE"           : {
+    "TITLE"           : "Village Manager",
+    "LOCATION_MANAGER": "Location manager",
+    "NEW_VILLAGE"     : "Add Village",
+    "REGISTERED"      : "Registered villages",
+    "NAME"            : "Name",
+    "SECTOR"          : "Sector",
+    "ACTIONS"         : "Actions",
+    "CONFIG"          : "Village Manager Configuration",
+    "INFO"            : "This module will help you to manage villge, use this module to create, edit and remove village",
+    "REGISTER"        : "Register a Village",
+    "NAME_VILLAGE"    : "Village Name",
+    "EDIT"            : "Edit Village"
+  },
+  
+  "EMPLOYEE"          : {
+    "TITLE"           : "Employee Management",
+    "EMPLOYEES"       : "Employess",
+    "REGISTER"        : "Register Employee",
+    "NONE_FOUND"      : "No employee records found.",
+    "CREDITOR_GROUP"  : "Creditor Group"
   },
 
-
-  "UPDATE_STOCK"     : {
-    "TITLE"          : "Update Stock",
-    "TIMESTAMP"      : "Timestamp",
-    "FIND_STOCK"     : "Find Stock",
-    "STOCK_HISTORY"  : "Stock History",
-    "SUBMIT"         : "Submit Update",
-    "SEARCH_TEXT"    : "Search by code or description",
-    "UPDATE_SUCCESS" : "Stock updated!",
-    "UPDATE_FAILURE" : "Cannot update stock",
-    "INVALID_PRICE"  : "Invalid price provided"
+  "UPDATE_STOCK"      : {
+    "TITLE"           : "Update Stock",
+    "TIMESTAMP"       : "Timestamp",
+    "FIND_STOCK"      : "Find Stock",
+    "STOCK_HISTORY"   : "Stock History",
+    "SUBMIT"          : "Submit Update",
+    "SEARCH_TEXT"     : "Search by code or description",
+    "UPDATE_SUCCESS"  : "Stock updated!",
+    "UPDATE_FAILURE"  : "Cannot update stock",
+    "INVALID_PRICE"   : "Invalid price provided"
   },
 
   "SWAPDEBITOR"            : {

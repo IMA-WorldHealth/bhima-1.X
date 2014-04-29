@@ -5,11 +5,11 @@
 <section class="top-nav">
   <div class="pull-right">
     <a href="" class="btn btn-default btn-sm" ng-click="createSupplier()">
-      <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.REGISTER_SUPPLIER" | translate }}
+      <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.TITLE" | translate }}
     </a>
 
     <a href="#/creditors/creditor_group" class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-list-alt"></span> {{ "SUPPLIER.CREATE_GROUP" | translate }}
+      <span class="glyphicon glyphicon-list-alt"></span> {{ "SUPPLIER.CREATE" | translate }}
     </a>
   </div>
 </section>
@@ -137,6 +137,8 @@
               <th>{{ "COLUMNS.NAME" | translate }}</th>
               <th>{{ "COLUMNS.PHONE" | translate }}</th>
               <th><span class="glyphicon glyphicon-lock"></span></th>
+
+              <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -146,7 +148,7 @@
               <td>{{instance.name}}</td>
               <td>{{instance.phone}}</td>
               <td><input type="checkbox" ng-model="instance.locked" ng-true-value="1" ng-false-value="0" ng-change="lock(creditor)" ng-checked="creditor.locked"></td>
-              <td><a class="menu-item" ng-click="editSupplier(instance.uuid)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="menu-item" ng-click="editSupplier(instance.uuid)"><span class="glyphicon glyphicon-pencil"></span> {{ "COLUMNS.EDIT" | translate }}</a></td>
             </tr>
           </tbody>
         </table>

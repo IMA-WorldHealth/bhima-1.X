@@ -426,7 +426,7 @@ angular.module('kpk.controllers')
       'credit'  : processCredit,
       'debtor'  : processDebtor,
       'patient' : processPatient,
-      'purchase': processPurchase,
+      'purchase': processPurchase
     };
 
     appstate.register('project', function (project) {

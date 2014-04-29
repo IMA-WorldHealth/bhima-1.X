@@ -21,7 +21,7 @@
 
           <div class="form-group">
             <label for="saledate">{{ 'PURCHASE.SALE_DATE' | translate }}</label>
-            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.invoice_date">
+            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.purchase_date">
           </div>
           <div class="form-group">
             <label for="select-cred">{{ 'PURCHASE.SUPPLIER' | translate }}</label>
@@ -125,8 +125,11 @@
   </div>
 
   <div class="row">
-
+            
     <div class="col-xs-12">
+      
+      <!-- Item Warnings -->
+      <div ng-repeat="warning in warnings" class="alert alert-warning square" ng-if="warning.result"><span class="glyphicon glyphicon-exclamation-sign"></span> {{warning.message | translate}}</div>
 
       <div class="panel panel-default square" ng-class="{'panel-success' : (session.creditor && session.employee)}">
         <div class="panel-heading square">
@@ -135,7 +138,8 @@
           <a ng-class="{'disabled' : !(session.creditor && session.employee)}" class="pull-right menu-item" ng-click="addPurchaseItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.ADD_LINE_ITEM" | translate }}</a>
 
         </div>
-
+        
+       
         <table class='table-condensed table' ng-if="session.creditor && session.employee">
           <thead>
             <tr>
@@ -165,8 +169,8 @@
               <!-- -1 for no tab, 0 to allow -->
               <td><input ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.text}}"></td>
               <td><input ng-change="cacheQuantity(purchaseItem)" tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.quantity"></td>
-              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.price"></td>
-              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.price | currency}}"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" ng-model="purchaseItem.purchase_price"></td>
+              <td><input tabindex="{{session.tablock}}" ng-show="purchaseItem.isSet" class="form-invoice" disabled value="{{purchaseItem.quantity * purchaseItem.purchase_price | currency}}"></td>
               <td><a ng-click="removePurchaseItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
 

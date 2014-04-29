@@ -8,7 +8,7 @@
     <span class="label label-success square">{{ "PRIMARY_CASH.NAVIGATION" | translate }}</span>
     <li><a href="#/primary_cash">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
     <li><a href="">{{ "PRIMARY_CASH.EXPENSES" | translate }}</a></li>
-    <li class="active">{{ "PRIMARY_CASH.PURCHASE" | translate }}</li>
+    <li class="active">{{ "PRIMARY_CASH.EXPENSE.PURCHASE" | translate }}</li>
   </ol>
   </div>
 
@@ -33,7 +33,7 @@
             <span class="input-group-btn">
               <button disabled class="square btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
             </span>
-            <input class="form-kapok" placeholder="Filter Purchase Orders" ng-model="session.filter">
+            <input class="form-kapok" placeholder="{{'CASH_PURCHASE.FILTER' | translate }}" ng-model="session.filter">
           </div>
           
           <table class="table table-bordered table-condensed"> 
@@ -45,10 +45,16 @@
                 <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
               </tr>
             </thead>
+          
+            <tr ng-if="!purchase.data.length">
+              <td colspan="4">
+                <div class="alert alert-warning square">{{ "CASH_PURCHASE.NOT_FOUND" | translate }}</div>
+              </td>
+            </tr>
 
             <tr ng-repeat="item in purchase.data | filter : session.filter"
                 ng-class="{'selected-success': session.selected.uuid===item.uuid}">
-                <td>{{item.invoice_date | date}}</td>
+                <td>{{item.purchase_date | date}}</td>
                 <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
                 <td>{{item.name}}</td>
                 <td><a class="menu-item" ng-click="confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
@@ -62,7 +68,7 @@
     </div>
 
     <div class="col-xs-7">
-      <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-danger' : !session.selected}">
+      <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
         <div class="panel-heading square">
           <span class="glyphicon glyphicon-list-alt"></span> 
           Confirm Payment <small>{{session.selected.uuid}}</small>
