@@ -19,9 +19,14 @@ angular.module('kpk.controllers')
 
     configuration.income = [
 
-    {
+      {
         key : $filter('translate')('PRIMARY_CASH.INCOME.TRANSFER'),
         link : '/primary_cash/income/transfert/'
+      },
+
+      {
+        key : $filter('translate')('PRIMARY_CASH.INCOME.CONVENTION'),
+        link : '/primary_cash/convention/'
       },
 
       {

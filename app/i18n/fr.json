@@ -992,7 +992,8 @@
     "DANGER"             : "Erreur  Une erreur se produite pendant le posting",
     "TOT"                : "Total",
     "CRUMB_PCASH"        : "caisse principale",
-    "CRUMB_CONVENTION"   : "convention"
+    "CRUMB_CONVENTION"   : "convention",
+    "DEFAULT_CASHBOX"    : "Caisse"
   },
 
   "PCASH"                   : {
@@ -1047,7 +1048,8 @@
     "CRUMB_TRANSFERT" : "transfert",
     "PROJECT"     : "Proget",
     "CAISSE"      : "Caisse",
-    "CURRENCY"    : "Monnaie"
+    "CURRENCY"    : "Monnaie",
+    "NAVIGATION"  : "Naviguation"
   },
 
   "DASHBOARD" : {
@@ -1083,14 +1085,17 @@
     "INCOMES"               : "Recettes",
     "GENERIC"               : "Generique",
     "NAVIGATION"            : "Naviguation",
+    "CONFIGURE"             : "Configuration",
     "HOME"                  : "caisse principale",
+
     "EXPENSE"               : {
                                   "PURCHASE"                : "Achat",
                                   "GENERIC_TITLE"           : "Depenses Generiques",
                                   "GENERIC_RECEIPT"         : "Recettes Generiques"
                               },
     "INCOME"                : {
-                                  "TRANSFER"                : "Transfert"
+                                  "TRANSFER"                : "Transfert",
+                                  "CONVENTION"              : "Convention"
 
                               }
   }

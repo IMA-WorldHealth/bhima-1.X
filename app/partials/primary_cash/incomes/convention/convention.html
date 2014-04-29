@@ -16,10 +16,13 @@
       </ul>
     </div>
 
-    <ol class="breadcrumb">
-      <li><a href="#/primary_cash/">{{'CONVENTION.CRUMB_PCASH' | translate}}</a></li>
-      <li><a href="#/pcash/convention/">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</a></li>
-    </ol>
+    <div class="pull-left">
+      <ol class="breadcrumb" style="float: right;">
+        <span class="label label-success square">{{ "PRIMARY_CASH.NAVIGATION" | translate }}</span>
+        <li><a href="#/primary_cash/">{{'CONVENTION.CRUMB_PCASH' | translate}}</a></li>
+        <li><a href="" ng-click="loadPath('/primary_cash/convention/')">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</a></li>
+      </ol>
+  </div>
 </section>
 
 <div class="content">
