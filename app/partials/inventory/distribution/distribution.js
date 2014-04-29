@@ -19,8 +19,12 @@ angular.module('kpk.controllers')
         tables : {
           'stock' : {
             columns : ['inventory_uuid', 'purchase_price', 'expiration_date', 'entry_date', 'lot_number', 'purchase_order_uuid', 'tracking_number', 'quantity']
+          },
+          'inventory' : {
+            columns : ['uuid', 'text']
           }
-        }
+        },
+          join : ['stock.inventory_uuid=inventory.uuid']
       }
     };
 
@@ -42,13 +46,16 @@ angular.module('kpk.controllers')
 
     function DistributionItem () {
       this.movement = {};
-      this.document_id = uuid();
-      this.tracking_number = null;
-      this.date = util.convertToMysqlDate(new Date().toString());
-      this.depot_id = null;
-      this.amount = null;
-      this.patient_uuid = $scope.distribution.selectedDebitor.uuid;
-      this.movement = new movement(this);
+      this.item = {};
+
+      this.item.document_id = uuid();
+      this.item.tracking_number = null;
+      this.item.date = util.convertToMysqlDate(new Date().toString());
+      this.item.depot_id = null;
+      this.item.amount = null;
+      this.item.text = null;
+      this.item.patient_uuid = $scope.distribution.selectedDebitor.uuid;
+      this.item.movement = new movement(this);
       return this;
     }
 
@@ -63,6 +70,18 @@ angular.module('kpk.controllers')
       return this;
     }
 
+    function removeItem(index) {
+      distribution.rows.splice(index, 1);
+    }
+
+    function submitInvoice (){
+
+    }
+
+    function verifySubmission (){
+
+    }
+
     appstate.register('project', function (project) {
       $scope.project = project;
       validate.process(dependencies)
@@ -72,11 +91,12 @@ angular.module('kpk.controllers')
       });
     });
 
-
-
     //exposition
     $scope.distribution = distribution;
     $scope.initialiseDistributionDetails = initialiseDistributionDetails;
     $scope.addRow = addRow;
+    $scope.removeItem = removeItem;
+    $scope.submitInvoice = submitInvoice;
+    $scope.verifySubmission = verifySubmission;
   }
 ]);
