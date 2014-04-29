@@ -1,0 +1,41 @@
+<header data-header>
+  {{ "STOCK.ENTRY.REVIEW" | translate }}
+</header>
+
+<div class="content">
+  <div class="row col-xs-12">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+          <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+          <th>{{ "COLUMNS.CODE" | translate }}</th>
+          <th>{{ "COLUMNS.GROUP" | translate }}</th>
+          <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+          <th>{{ "COLUMNS.PURCHASE_DATE" | translate }}</th>
+          <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+          <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="lot in session.lots.data">
+          <td>{{ lot.tracking_number }}</td>
+          <td>{{ lot.lot_number }}</td>
+          <td>{{ lot.inventory_code }}</td>
+          <td>{{ lot.name }}</td>
+          <td ng-bind-html="lot.purchase_price | intlcurrency:project.currency_id"></td>
+          <td>{{ lot.purchase_date | date }}</td>
+          <td>{{ lot.expiration_date | date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <button class="btn btn-sm btn-success">
+      {{ "FORM.SUBMIT" | translate }}
+    </button>
+  </div>
+</section>

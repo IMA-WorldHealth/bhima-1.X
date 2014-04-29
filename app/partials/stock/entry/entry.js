@@ -58,10 +58,10 @@ angular.module('kpk.controllers')
 
     dependencies.orders = {
       query : {
-        identifier : 'uuid',
+        identifier : 'code',
         tables : {
           'purchase' : {
-            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'employee_id', 'timestamp', 'invoice_date']
+            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'employee_id', 'timestamp', 'purchase_date']
           },
           'purchase_item' : {
             columns : ['uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total']
@@ -112,11 +112,15 @@ angular.module('kpk.controllers')
       if (models.orders.data.length < 1) {
         return $q.reject('ERROR.EMPTY_DATA');
       }
-      angular.extend($scope, models);
+
       find.valid = true;
       find.active = false;
+
+      $scope.$watch('session.order.data', calculateTotals, true);
+      $scope.$watch('session.order.data', valid, true);
+
       session.order = models.orders;
-      session.order_date = new Date(models.orders.data[0].invoice_date);
+      session.order_date = new Date(models.orders.data[0].purchase_date);
       session.purchaser_id = models.orders.data[0].employee_id;
       session.purchaser_name = ($scope.employees.get(session.purchaser_id).prenom || "") + " " + $scope.employees.get(session.purchaser_id).name;
       return $q.when();
@@ -128,23 +132,35 @@ angular.module('kpk.controllers')
       var grps = {};
       totals.quantity = 0;
       totals.price = 0;
-      totals.items = $scope.orders.data.length;
-      $scope.orders.data.forEach(function (drug) {
+      totals.purchase_price = 0;
+      totals.items = session.order.data.length;
+      session.order.data.forEach(function (drug) {
         totals.quantity += precision.round(drug.quantity);
         totals.price += precision.round(drug.unit_price * drug.quantity);
+        totals.purchase_price += drug.purchase_price || 0;
         if (!grps[drug.name]) { grps[drug.name] = 0; }
         grps[drug.name] += 1;
       });
       totals.groups = Object.keys(grps).length;
     }
 
-    find.fn.commit = function commit (id) {
-      // This comes in as a text identifier such as
+    function valid () {
+      session.valid = !!find.valid && !!session.order && !!session.order.data &&
+        session.order.data.length > 0 &&
+        session.order.data.every(function (drug) {
+          return !Number.isNaN(Number(drug.purchase_price)) && Number(drug.purchase_price) > 0;
+        });
+    }
+
+    find.fn.commit = function commit (order) {
+      // order.label is a text identifier such as
       // PAX2 or HBB1235
-      if (!id || id.length < 1) { messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
-      session.order_id = id;
-      var project = id.substr(0,3).toUpperCase();
-      var reference = Number(id.substr(3));
+      if (!order || !order.label|| order.label.length < 1) { messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
+
+      session.purchase_uuid = order.uuid;
+      session.label = order.label;
+      var project = order.label.substr(0,3).toUpperCase();
+      var reference = Number(order.label.substr(3));
 
       dependencies.orders.query.where =
         ['project.abbr=' + project, 'AND', 'purchase.reference=' + reference];

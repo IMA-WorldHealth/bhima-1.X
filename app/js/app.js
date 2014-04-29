@@ -308,6 +308,10 @@
     .when('/stock/entry/lots', {
       controller : 'stock.lots',
       templateUrl : 'partials/stock/entry/lots.html'
+    })
+    .when('/stock/entry/review', {
+      controller : 'stock.review',
+      templateUrl: 'partials/stock/entry/review.html'
     });
   }
 
