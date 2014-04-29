@@ -1,0 +1,54 @@
+<header>
+  {{ "REPORTS.ACCOUNT_STATEMENT.TITLE" | translate }}
+</header>
+
+<!-- <section class="top&#45;nav"> -->
+<!-- </section> -->
+
+<!-- <div class="reportBody" style="margin&#45;top: 87px"> -->
+<div class="reportBody" style="margin-top: 50px">
+  <div class="reportFrame">
+    <div ng-if="!session.loaded">Loading report...</div>
+
+    <div>
+      <div class="row">
+        <div class="col-xs-12">
+          Account Statement 
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-8">
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Account Number</th>
+                <th>Statement Period</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+        <div class-"col-xs-4">
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          Transactions (ordered : ASC, limit : 10)
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Debtor</th>
+                <th>Invoice Ref</th>
+                <th>Amount</th>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
