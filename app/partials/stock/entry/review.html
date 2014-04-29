@@ -4,37 +4,52 @@
 
 <div class="content">
   <div class="row col-xs-12">
-    <table class="table table-condensed">
-      <thead>
-        <tr>
-          <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
-          <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
-          <th>{{ "COLUMNS.CODE" | translate }}</th>
-          <th>{{ "COLUMNS.GROUP" | translate }}</th>
-          <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
-          <th>{{ "COLUMNS.PURCHASE_DATE" | translate }}</th>
-          <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
-          <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="lot in session.lots.data">
-          <td>{{ lot.tracking_number }}</td>
-          <td>{{ lot.lot_number }}</td>
-          <td>{{ lot.inventory_code }}</td>
-          <td>{{ lot.name }}</td>
-          <td ng-bind-html="lot.purchase_price | intlcurrency:project.currency_id"></td>
-          <td>{{ lot.purchase_date | date }}</td>
-          <td>{{ lot.expiration_date | date }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="panel panel-default square">
+      <div class="panel-heading">
+        <span class="glyphicon glyphicon-list"></span>
+      </div>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th colspan="7">
+              <span class="label-group">
+                <span class="glyphicon glyphicon-list-alt"></span> {{ session.label }}
+              </span>
+
+              <span class="label-group">
+                <span class="glyphicon glyphicon-import"></span> {{ session.total.items }}
+              </span>
+            </th>
+          </tr>
+          <tr>
+            <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.CODE" | translate }}</th>
+            <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+            <th>{{ "COLUMNS.PURCHASE_DATE" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+            <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="lot in session.lots.data">
+            <td>{{ lot.tracking_number }}</td>
+            <td>{{ lot.lot_number }}</td>
+            <td>{{ lot.inventory_code }}</td>
+            <td ng-bind-html="lot.purchase_price | intlcurrency:project.currency_id"></td>
+            <td>{{ lot.date | date }}</td>
+            <td>{{ lot.expiration_date | date }}</td>
+            <td>{{ lot.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <button class="btn btn-sm btn-success">
+    <button class="btn btn-sm btn-success" ng-click="submit()">
       {{ "FORM.SUBMIT" | translate }}
     </button>
   </div>

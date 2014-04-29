@@ -130,6 +130,7 @@ angular.module('kpk.controllers')
       });
 
       if (!isBalanced) { return messenger.danger('Allocated amounts do not match purchase order amounts.'); }
+      appstate.set('stock.review', session);
 
       $location.path('/stock/entry/review');
     };
