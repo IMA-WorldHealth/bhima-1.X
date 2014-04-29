@@ -269,7 +269,7 @@
     "DEBITOR_GROUP"   : "Select a Debitor Group",
     "PATIENT_GROUP"   : "Select a Patient Group",
     "CREDITOR_GROUP"  : "Select a Creditor Group",
-    "PRICE_LIST"      : " Select a Price List",
+    "PRICE_LIST"      : "Select a Price List",
     "LOCATION"        : "Select a Location",
     "PAYMENT"         : "Select a Payment Type",
     "GROUP_TYPE"      : "Select a Group Type",
@@ -277,7 +277,8 @@
     "UNIT"            : "Select a Unit",
     "INVENTORY_ITEM"  : "Select an Inventory Item",
     "DEBITOR"         : "Select a Debitor",
-    "ENTERPRISE" : "Select an Enterprise"
+    "ENTERPRISE"      : "Select an Enterprise",
+    "CODE"            : "Select a Code"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -347,9 +348,15 @@
     "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
     "REGISTERED_BY"       : "Registered By",
+    "ORDER_DATE"          : "Date of Order",
+    "LABEL"               : "Label",
+    "SUMMARY"             : "Summary",
     "CREDITOR"            : "Creditor",
     "CREDITOR_ID"         : "Creditor ID",
     "RATE"                : "Rate",
+    "EXPIRATION_DATE"     : "Expiration Date",
+    "TRACKING_NUMBER"     : "Tracking Number",
+    "INVENTORY_CODE"      : "Inventory Code",
     "LINE_ID"             : "Line ID",
     "EXPLANATION"         : "Explanation",
     "ABBR"                : "Abbr",
@@ -358,6 +365,7 @@
     "SALE_ID"             : "Sale ID",
     "PASSWORD"            : "Password",
     "ID"                  : "ID",
+    "PURCHASE_ORDER"      : "Purchase Order",
     "USER_NAME"           : "User Name",
     "LAST_NAME"           : "Last Name",
     "GROUP"               : "Group",
@@ -1068,6 +1076,22 @@
     "UPDATE_SUCCESS"  : "Stock updated!",
     "UPDATE_FAILURE"  : "Cannot update stock",
     "INVALID_PRICE"   : "Invalid price provided"
+  },
+
+  "STOCK" : {
+    "ENTRY" : {
+      "TITLE" : "Stock Entry",
+      "PURCHASER" : "Purchaser",
+      "NO_GROUPS" : "Number of Groups",
+      "SELECT"  : "Select",
+      "SELECT_DEPOT" : "Select a Depot",
+      "FIND_PURCHASE_ORDER" : "Find a Purchase Order",
+      "ORDER_DETAIL" : "Order Details",
+      "ASSIGN_LOTS" : "Assign Lots",
+      "CANCEL" : "Cancel"
+    },
+    "EXIT" : {},
+    "MOVEMENT" : {}
   },
 
   "SWAPDEBITOR"            : {

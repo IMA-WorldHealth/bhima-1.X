@@ -638,7 +638,7 @@ create table `purchase` (
   `purchaser_id`      smallint unsigned not null,
   `employee_id`       int unsigned not null,
   `discount`          mediumint unsigned default '0',
-  `purchase_date`     date not null,
+  `invoice_date`     date not null,
   `timestamp`         timestamp default current_timestamp,
   `note`              text default null,
   `posted`            boolean not null default 1,
