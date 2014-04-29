@@ -1,0 +1,86 @@
+<header>
+  {{ "DISTRIBUTION.TITLE" | translate }}
+</header>
+
+<div class="content">
+
+  <div class="row">
+    <div class="col-xs-7">
+      <div find-patient on-search-complete="initialiseDistributionDetails"></div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div ng-click="distribution.visible=!distribution.visible" class="panel-heading">
+      {{ "DISTRIBUTION.LOT_DETAILS" | translate }}
+      <div class="pull-right">
+        <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !distribution.visible, 'glyphicon-eye-open': distribution.visible}"></span>
+      </div>
+    </div>
+    <div ng-show="distribution.visible">
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+                <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in model.saleItem.data">
+                <td>{{item.tracking_number}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.expiration_date | date}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row col-xs-12">
+    <div class="pull-right">
+      <a
+        ng-click="addRow()"
+        class="fieldset-util"
+        ng-show="distribution.noEmpty"
+      >
+        <span class="glyphicon glyphicon-plus"></span> {{ "DISTRIBUTION.ADD_ROW" | translate }}
+      </a>
+    </div>
+    <table class='table table-condensed'>
+      <thead>
+        <tr>
+          <th>{{ "COLUMNS.LOT" | translate }}</th>
+          <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+          <th>{{ "COLUMNS.QTY" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in distribution.rows" ng-class="{ 'incomplete-outline': !row.tracking_number, 'complete-outline' : !!row.tracking_number }">
+          <td><input class="form-invoice" type="text" placeholder="Numero Lot" ng-model="row.tracking_number"></td>
+          <td><input class="form-invoice" type="text" placeholder="Description"></td>
+          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.amount"></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="1">{{ "COLUMNS.BALANCE" | translate }}</th>
+          <th> {{ voucher.debitTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
+          <th colspan="5"> {{ voucher.creditTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</div>
+
+<script type="text/ng-template" id="lotList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{match.model.tracking_number}}]</b></span>
+  </a>
+</script>

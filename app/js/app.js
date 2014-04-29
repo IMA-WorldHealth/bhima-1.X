@@ -288,6 +288,10 @@
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
+    })
+    .when('/inventory/distribution', {
+      controller : 'inventory.distribution',
+      templateUrl : 'partials/inventory/distribution/distribution.html'
     });
   }
 
