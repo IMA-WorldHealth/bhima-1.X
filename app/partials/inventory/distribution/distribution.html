@@ -41,12 +41,11 @@
     </div>
   </div>
 
-  <div class="row col-xs-12">
+  <div class="row col-xs-12" ng-show="distribution.noEmpty">
     <div class="pull-right">
       <a
         ng-click="addRow()"
         class="fieldset-util"
-        ng-show="distribution.noEmpty"
       >
         <span class="glyphicon glyphicon-plus"></span> {{ "DISTRIBUTION.ADD_ROW" | translate }}
       </a>
@@ -60,10 +59,20 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="row in distribution.rows" ng-class="{ 'incomplete-outline': !row.tracking_number, 'complete-outline' : !!row.tracking_number }">
-          <td><input class="form-invoice" type="text" placeholder="Numero Lot" ng-model="row.tracking_number"></td>
-          <td><input class="form-invoice" type="text" placeholder="Description"></td>
-          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.amount"></td>
+        <tr ng-repeat="row in distribution.rows" ng-class="{ 'incomplete-outline': !row.item.tracking_number, 'complete-outline' : !!row.item.tracking_number }">
+          <td>
+            <input
+              class="form-invoice"
+              type="text"
+              placeholder="Numero Lot"
+              ng-model="row.item"
+              typeahead-template-url="lotList.html"
+              typeahead="stock as stock.tracking_number for stock in model.stocks.data | filter:$viewValue | limitTo:8"
+            >
+          </td>
+          <td><input class="form-invoice" type="text" disabled value="{{row.item.text}}"></td>
+          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.item.amount"></td>
+          <td><a ng-click="removeItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
         </tr>
       </tbody>
       <tfoot>
@@ -78,9 +87,15 @@
 
 </div>
 
+<section class="bar-bottom">
+  <div class="pull-right">
+    <a ng-disabled="verifySubmission()" ng-click="submitInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "SALE.SUBMIT" | translate }}</a>
+  </div>
+</section>
+
 <script type="text/ng-template" id="lotList.html">
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[{{match.model.tracking_number}}]</b></span>
+    <span><b>[{{match.model.text}}]</b></span>
   </a>
 </script>
