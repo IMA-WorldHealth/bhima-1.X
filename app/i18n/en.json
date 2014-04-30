@@ -523,7 +523,11 @@
     "JOURNAL_VOUCHER"           : "Journal Voucher",
     "PROJECT"                   : "Projects",
     "EMPLOYEE"                  : "Employee",
-    "DEPOT"                     : "Depot"
+    "DEPOT"                     : "Depot",
+    "STOCK_MANAGEMENT"          : "Stock Management",
+    "STOCK_ENTRY"               : "Stock Entry",
+    "STOCK_EXIT"                : "Stock Exit",
+    "STOCK_MOVEMENT"            : "Stock Movements"
   },
 
   "JOURNAL_VOUCHER"  : {
