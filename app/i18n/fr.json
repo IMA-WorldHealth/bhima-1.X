@@ -1106,10 +1106,15 @@
   },
 
     "DISTRIBUTION" : {
-    "TITLE"         : "Distribution",
-    "LOT_DETAILS"   : "Details des lots",
-    "ADD_ROW"       : "Ajouter Item",
-    "DESCRIPTION"   : "Description",
-    "SUBMIT"        : "Soumettre Note de Credit"
+    "TITLE"            : "Distribution",
+    "LOT_DETAILS"      : "Details des lots",
+    "ADD_ROW"          : "Ajouter Item",
+    "DESCRIPTION"      : "Description",
+    "SUBMIT"           : "Soumettre Note de Credit",
+    "SUBMIT"           : "Soumettre",
+    "PATIENT_COVERED"  : "Patient est couvert par la convention",
+    "APPLIES_GLOBALLY" : "Appliquer globalement",
+    "APPLIES_TO_ITEM"  : "Appliquer par item",
+    "TOTAL"            : "Total"
   }
 }

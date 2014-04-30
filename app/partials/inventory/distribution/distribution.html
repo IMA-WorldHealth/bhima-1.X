@@ -41,6 +41,13 @@
     </div>
   </div>
 
+  <div
+    ng-class="{'alert alert-warning' : distribution.selectedDebitor.is_convention || distribution.priceList.length || distribution.debitorCaution >0}">
+    <p ng-show="distribution.debitorCaution>0">Caution {{distribution.debitorCaution | currency}}</p>
+    <p ng-show="distribution.selectedDebitor.is_convention">{{'DISTRIBUTION.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
+    <p ng-repeat="charge in distribution.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('DISTRIBUTION.APPLIES_GLOBALLY' | translate) : ('DISTRIBUTION.APPLIES_TO_ITEM' | translate)}}</b></p>
+  </div>
+
   <div class="row col-xs-12" ng-show="distribution.noEmpty">
     <div class="pull-right">
       <a
@@ -56,6 +63,8 @@
           <th>{{ "COLUMNS.LOT" | translate }}</th>
           <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
           <th>{{ "COLUMNS.QTY" | translate }}</th>
+          <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
+          <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -72,24 +81,31 @@
           </td>
           <td><input class="form-invoice" type="text" disabled value="{{row.item.text}}"></td>
           <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.item.amount"></td>
+          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.item.price"></td>
+          <td><input class="form-invoice" placeholder="0" disabled value="{{(row.item.amount * row.item.price) | currency}}"></td>
           <td><a ng-click="removeItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
         </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <th colspan="1">{{ "COLUMNS.BALANCE" | translate }}</th>
-          <th> {{ voucher.debitTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
-          <th colspan="5"> {{ voucher.creditTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
+
+        <tr ng-repeat="listItem in distribution.applyGlobal">
+          <td></td>
+          <td></td>
+          <td><input class="form-invoice" style="font-weight: bold;" value="{{listItem.description}}" disabled></td>
+          <td><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.value}}%"></td>
+          <td colspan="2"><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.currentValue | currency}}"></td>
         </tr>
-      </tfoot>
+
+        <tr>
+          <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "DISTRIBUTION.TOTAL" | translate }}</b></td>
+          <td colspan="2"><b>{{ calculateTotal().totalToPay | currency}}</b></td>
+        </tr>
+      </tbody>
     </table>
   </div>
-
 </div>
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="verifySubmission()" ng-click="submitInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "SALE.SUBMIT" | translate }}</a>
+    <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
   </div>
 </section>
 
