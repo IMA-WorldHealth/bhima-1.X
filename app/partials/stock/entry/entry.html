@@ -3,18 +3,16 @@
 </header>
 
 <section class="top-nav">
-  <div class="pull-right">
-    <div class="dropdown">
-      <button class="btn btn-sm btn-primary square dropdown-toggle">
-        {{ session.depot.text || "STOCK.ENTRY.SELECT_DEPOT" | translate }}
-        <span class="caret" data-caret="&#9660;"></span>
-      </button>
-      <ul class="dropdown-menu square">
-        <li ng-repeat="depot in depots.data">
-          <a ng-click="setDepot(depot)" class="action">{{ depot.text }}</a>
-        </li>
-      </ul>
-    </div>
+  <div class="pull-right dropdown">
+    <button class="btn btn-sm btn-primary square dropdown-toggle">
+      {{ session.cfg.depot.text || "STOCK.ENTRY.SELECT_DEPOT" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu square">
+      <li ng-repeat="depot in depots.data">
+        <a ng-click="setDepot(depot)" class="action">{{ depot.text }}</a>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -24,7 +22,7 @@
     <div class="col-xs-4">
       <div class="panel panel-default" ng-class="{'panel-success': !!find.valid, 'panel-danger': find.valid==false}" ng-switch="find.valid">
         <div class="panel-heading" ng-click="find.fn.activate()" ng-class="{ 'action' : !find.active }">
-          <span>{{ session.order_id || "STOCK.ENTRY.FIND_PURCHASE_ORDER" | translate }}</span>
+          <span>{{ session.cfg.order_id || "STOCK.ENTRY.FIND_PURCHASE_ORDER" | translate }}</span>
           <span class="pull-right glyphicon" ng-class="{'glyphicon-list-alt' : !!find.active, 'glyphicon-refresh' : !find.active}"></span>
         </div>
         <div class="panel-body" ng-if="!!find.active">
@@ -47,24 +45,24 @@
         <div class="col-xs-4">
           <div class="form-group">
             <label class="control-label col-xs-6">{{ "COLUMNS.PURCHASE_ORDER" | translate }}</label>
-            <p class="form-control-static col-xs-6">{{ session.label }}</p>
+            <p class="form-control-static col-xs-6">{{ session.cfg.label }}</p>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-6">{{ "COLUMNS.ORDER_DATE" | translate }}</label>
-            <p class="form-control-static col-xs-6">{{ session.order_date | date }}</p>
+            <p class="form-control-static col-xs-6">{{ session.cfg.order_date | date }}</p>
           </div>
         </div>
 
         <div class="col-xs-6">
           <div class="form-group">
-            <label class="control-label col-xs-6">{{ "STOCK.ENTRY.PURCHASER" | translate }}</label>
-            <p class="form-control-static col-xs-6">{{ session.purchaser_name }}</p>
+            <label class="control-label col-xs-6">{{ "STOCK.ENTRY.REQUESTED_BY" | translate }}</label>
+            <p class="form-control-static col-xs-6">{{ session.cfg.employee_name }}</p>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-6">{{ "STOCK.ENTRY.NO_GROUPS" | translate }}</label>
-            <p class="form-control-static col-xs-6">{{ session.total.groups }}</p>
+            <label class="control-label col-xs-6">{{ "STOCK.ENTRY.NUM_ITEMS" | translate }}</label>
+            <p class="form-control-static col-xs-6">{{ session.totals.quantity }}</p>
           </div>
         </div>
 
@@ -73,7 +71,7 @@
   </div>
 
   <div class="row col-xs-12">
-    <h3>{{ "STOCK.ENTRY.ORDER_DETAIL" | translate }} <small>{{ session.order_id }}</small></h3>
+    <h3>{{ "STOCK.ENTRY.ORDER_DETAIL" | translate }}</h3>
     <table class="table table-condensed">
       <thead>
         <tr>
@@ -100,9 +98,9 @@
       <tfoot>
         <tr>
           <th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
-          <th colspan="2">{{ session.total.quantity }}</th>
-          <th>{{ session.total.price | currency }}</th>
-          <th>{{ session.total.purchase_price | currency }}
+          <th colspan="2">{{ session.totals.quantity }}</th>
+          <th>{{ session.totals.price | currency }}</th>
+          <th>{{ session.totals.purchase_price | currency }}
         </tr>
       </tfoot>
     </table>

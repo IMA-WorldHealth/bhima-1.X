@@ -17,7 +17,7 @@ angular.module('kpk.controllers')
 
     var session = $scope.session = {
       lots : new Store({ identifier : 'uuid', data : [] }),
-      totals : new Store({ identifier : 'code', data : [] })
+      grouping : new Store({ identifier : 'code', data : [] })
     };
 
     var triage = $scope.triage = { codes : [] };
@@ -54,41 +54,39 @@ angular.module('kpk.controllers')
       messenger.error(err);
     }
 
-    startup(appstate.get('stock.lots'));
+    appstate.register('project', function (project) {
+      $scope.project = project;
+      startup(appstate.get('stock.data'));
+    });
 
     $scope.add = function add () {
       session.lots.post(new Lot());
     };
 
-    $scope.remove = function remove (id) {
-      session.lots.remove(id);
+    $scope.edit = function edit (lot) {
+      lot.active = true;
     };
 
-    $scope.edit = function edit (id) {
-      session.lots.get(id).active = true;
-    };
-
-    $scope.commit = function commit (id) {
-      var lot = session.lots.get(id),
-          ref = session.order.get(lot.inventory_code);
+    $scope.commit = function commit (lot) {
+      var old, unitPrice, ref = session.order.get(lot.inventory_code);
 
       lot.active = false;
       lot.purchase_order_uuid = session.purchase_uuid;
       lot.inventory_uuid = ref.inventory_uuid;
 
       // update total
-      var old = session.totals.get(lot.inventory_code);
-      if (!!old) {
-        session.totals.put({ code : lot.inventory_code , total : lot.quantity + old.total });
-      } else {
-        session.totals.post({ code: lot.inventory_code, total : lot.quantity });
-      }
+      old = session.grouping.get(lot.inventory_code);
+      session.grouping.post({ code : lot.inventory_code, total : !!old ? lot.quantity + old.total : lot.quantity });
 
       // calculate using the actual purchase unit price
-      var unitPrice = precision.round(ref.purchase_price / ref.quantity);
+      unitPrice = precision.round(ref.purchase_price / ref.quantity);
       lot.purchase_price = precision.round(unitPrice * lot.quantity);
 
       lot.valid = validateLot(lot);
+    };
+
+    $scope.remove = function remove (lot) {
+      session.lots.remove(lot.uuid);
     };
 
     $scope.back = function back () {
@@ -102,7 +100,7 @@ angular.module('kpk.controllers')
         if (drug.code === lot.inventory_code) { reference = drug; }
       });
 
-      var saved = session.totals.get(code);
+      var saved = session.grouping.get(code);
       lot.quantity = !!saved ? reference.quantity - saved.total : reference.quantity;
     };
 
@@ -127,15 +125,14 @@ angular.module('kpk.controllers')
       if (!hasErrors) { return messenger.danger('Selection has errors'); }
 
       var isBalanced = session.order.data.every(function (o) {
-        var total = session.totals.get(o.code).total;
+        var total = session.grouping.get(o.code).total;
         return o.quantity === total;
       });
 
       if (!isBalanced) { return messenger.danger('Allocated amounts do not match purchase order amounts.'); }
-      appstate.set('stock.review', session);
+      appstate.set('stock.data', session);
 
       $location.path('/stock/entry/review');
     };
-
   }
 ]);

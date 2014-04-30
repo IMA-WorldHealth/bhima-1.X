@@ -7,15 +7,15 @@
 
     <form class="col-xs-8">
 
-      <div class="panel" ng-class="{ 'panel-info' : !!lot.valid, 'panel-danger' : !lot.valid }" ng-repeat="lot in session.lots.data" ng-switch="lot.active">
+      <div class="panel square" ng-class="{ 'panel-info' : !!lot.valid, 'panel-danger' : !lot.valid }" ng-repeat="lot in session.lots.data" ng-switch="lot.active">
         <div class="panel-heading">
           <b ng-switch-default> # {{ lot.number }}</b>
           <b ng-switch-when="true">{{ "STOCK.ENTRY.LOT_NUMBER" | translate }}</b>
           <input ng-model="lot.number" class="panel-input" rows="25" ng-switch-when="true">
           <div class="pull-right">
-            <a class="action" ng-click="edit(lot.uuid)" ng-switch-default><span class="glyphicon glyphicon-pencil"></span></a>
-            <a class="action" ng-click="commit(lot.uuid)" ng-switch-when="true"><span class="glyphicon glyphicon-floppy-disk"></span></a>
-            <a class="action" ng-click="remove(lot.uuid)" style="padding-left:5px;"><span class="glyphicon glyphicon-trash"></span></a>
+            <a class="action" ng-click="edit(lot)" ng-switch-default><span class="glyphicon glyphicon-pencil"></span></a>
+            <a class="action" ng-click="commit(lot)" ng-switch-when="true"><span class="glyphicon glyphicon-ok-circle"></span></a>
+            <a class="action" ng-click="remove(lot)" style="padding-left:5px;"><span class="glyphicon glyphicon-remove-circle"></span></a>
           </div>
         </div>
         <div class="panel-body">
@@ -50,15 +50,15 @@
           </div>
 
         </div>
-
-        <div class="panel-body" ng-if="$index==session.lots.data.length-1 && !session.review">
-          <a ng-click="add()" class="pull-right action"><span class="glyphicon glyphicon-plus"></span></a>
-        </div>
       </div>
 
+      <div class="btn-group-justified">
+        <a class="btn btn-default square" type="button" ng-click="add()"><span class="glyphicon glyphicon-plus"></span></a>
+      </div>
     </form>
 
     <div class="col-xs-4">
+      <pre>{{ session.grouping.data }}</pre>
       <table class="table table-condensed">
         <thead>
           <tr>
@@ -76,7 +76,7 @@
             <td>{{ drug.code }}</td>
             <td>{{ drug.text }}</td>
             <td>{{ drug.quantity }}</td>
-            <td>{{ session.totals.get(drug.code).total }}</td>
+            <td>{{ session.grouping.get(drug.code).total }}</td>
           </tr>
         </tbody>
       </table>
