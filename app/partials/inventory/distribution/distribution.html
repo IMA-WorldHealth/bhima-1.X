@@ -1,0 +1,117 @@
+<header>
+  {{ "DISTRIBUTION.TITLE" | translate }}
+</header>
+
+<div class="content">
+
+  <div class="row">
+    <div class="col-xs-7">
+      <div find-patient on-search-complete="initialiseDistributionDetails"></div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div ng-click="distribution.visible=!distribution.visible" class="panel-heading">
+      {{ "DISTRIBUTION.LOT_DETAILS" | translate }}
+      <div class="pull-right">
+        <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !distribution.visible, 'glyphicon-eye-open': distribution.visible}"></span>
+      </div>
+    </div>
+    <div ng-show="distribution.visible">
+      <div class="row">
+        <div class="col-xs-12">
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+                <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in model.saleItem.data">
+                <td>{{item.tracking_number}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.expiration_date | date}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    ng-class="{'alert alert-warning' : distribution.selectedDebitor.is_convention || distribution.priceList.length || distribution.debitorCaution >0}">
+    <p ng-show="distribution.debitorCaution>0">Caution {{distribution.debitorCaution | currency}}</p>
+    <p ng-show="distribution.selectedDebitor.is_convention">{{'DISTRIBUTION.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
+    <p ng-repeat="charge in distribution.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('DISTRIBUTION.APPLIES_GLOBALLY' | translate) : ('DISTRIBUTION.APPLIES_TO_ITEM' | translate)}}</b></p>
+  </div>
+
+  <div class="row col-xs-12" ng-show="distribution.noEmpty">
+    <div class="pull-right">
+      <a
+        ng-click="addRow()"
+        class="fieldset-util"
+      >
+        <span class="glyphicon glyphicon-plus"></span> {{ "DISTRIBUTION.ADD_ROW" | translate }}
+      </a>
+    </div>
+    <table class='table table-condensed'>
+      <thead>
+        <tr>
+          <th>{{ "COLUMNS.LOT" | translate }}</th>
+          <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+          <th>{{ "COLUMNS.QTY" | translate }}</th>
+          <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
+          <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in distribution.rows" ng-class="{ 'incomplete-outline': !row.item.tracking_number, 'complete-outline' : !!row.item.tracking_number }">
+          <td>
+            <input
+              class="form-invoice"
+              type="text"
+              placeholder="Numero Lot"
+              ng-model="row.item"
+              typeahead-template-url="lotList.html"
+              typeahead="stock as stock.tracking_number for stock in model.stocks.data | filter:$viewValue | limitTo:8"
+            >
+          </td>
+          <td><input class="form-invoice" type="text" disabled value="{{row.item.text}}"></td>
+          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.item.amount"></td>
+          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.item.price"></td>
+          <td><input class="form-invoice" placeholder="0" disabled value="{{(row.item.amount * row.item.price) | currency}}"></td>
+          <td><a ng-click="removeItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+        </tr>
+
+        <tr ng-repeat="listItem in distribution.applyGlobal">
+          <td></td>
+          <td></td>
+          <td><input class="form-invoice" style="font-weight: bold;" value="{{listItem.description}}" disabled></td>
+          <td><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.value}}%"></td>
+          <td colspan="2"><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.currentValue | currency}}"></td>
+        </tr>
+
+        <tr>
+          <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "DISTRIBUTION.TOTAL" | translate }}</b></td>
+          <td colspan="2"><b>{{ calculateTotal().totalToPay | currency}}</b></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
+  </div>
+</section>
+
+<script type="text/ng-template" id="lotList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{match.model.text}}]</b></span>
+  </a>
+</script>
