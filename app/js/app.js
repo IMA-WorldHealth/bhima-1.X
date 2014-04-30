@@ -312,6 +312,10 @@
     .when('/stock/entry/review', {
       controller : 'stock.entry.review',
       templateUrl: 'partials/stock/entry/review.html'
+    })
+    .when('/inventory/distribution', {
+      controller : 'inventory.distribution',
+      templateUrl : 'partials/inventory/distribution/distribution.html'
     });
   }
 
