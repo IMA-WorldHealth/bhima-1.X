@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('stock.lots', [
+.controller('stock.entry.partition', [
   '$scope',
   '$location',
   'store',
@@ -17,7 +17,6 @@ angular.module('kpk.controllers')
 
     var session = $scope.session = {
       lots : new Store({ identifier : 'uuid', data : [] }),
-      grouping : new Store({ identifier : 'code', data : [] })
     };
 
     var triage = $scope.triage = { codes : [] };
@@ -27,10 +26,10 @@ angular.module('kpk.controllers')
       this.inventory_code = null;
       this.inventory_uuid = null;
       this.purchase_price = 0;
+      this.purchase_order_uuid = null;
       this.expiration_date = new Date();
       this.entry_date = new Date();
       this.lot_number = 0;
-      this.purchase_order_uuid = null;
       this.tracking_number = 0;
       this.quantity = 0;
       this.active = true;
@@ -48,6 +47,27 @@ angular.module('kpk.controllers')
           triage.codes.push(drug.code);
         }
       });
+
+      // set up inventory totals
+      session.totals.inventory = {};
+
+      $scope.$watch('session.lots.data', function () {
+        if (!session.lots.data) { return; }
+
+        var inv = session.totals.inventory;
+
+        for (var k in inv) {
+          if (inv.hasOwnProperty(k.toString())) {
+            inv[k] = 0;
+          }
+        }
+
+        session.lots.data.forEach(function (lot) {
+          if (!inv[lot.inventory_code]) { inv[lot.inventory_code] = 0; }
+          inv[lot.inventory_code] += lot.quantity;
+        });
+
+      }, true);
     }
 
     function error (err) {
@@ -65,32 +85,29 @@ angular.module('kpk.controllers')
 
     $scope.edit = function edit (lot) {
       lot.active = true;
+      lot.oldTotal = session.grouping.get(lot.inventory_code).total;
     };
 
     $scope.commit = function commit (lot) {
       var old, unitPrice, ref = session.order.get(lot.inventory_code);
 
       lot.active = false;
-      lot.purchase_order_uuid = session.purchase_uuid;
+      lot.purchase_order_uuid = session.cfg.purchase_uuid;
       lot.inventory_uuid = ref.inventory_uuid;
-
-      // update total
-      old = session.grouping.get(lot.inventory_code);
-      session.grouping.post({ code : lot.inventory_code, total : !!old ? lot.quantity + old.total : lot.quantity });
 
       // calculate using the actual purchase unit price
       unitPrice = precision.round(ref.purchase_price / ref.quantity);
       lot.purchase_price = precision.round(unitPrice * lot.quantity);
-
       lot.valid = validateLot(lot);
     };
+
 
     $scope.remove = function remove (lot) {
       session.lots.remove(lot.uuid);
     };
 
     $scope.back = function back () {
-      $location.path('/stock/entry');
+      $location.path('/stock/entry/start');
     };
 
     $scope.setQuantity = function setQuantity (lot) {
@@ -100,8 +117,8 @@ angular.module('kpk.controllers')
         if (drug.code === lot.inventory_code) { reference = drug; }
       });
 
-      var saved = session.grouping.get(code);
-      lot.quantity = !!saved ? reference.quantity - saved.total : reference.quantity;
+      var saved = session.totals.inventory[code];
+      lot.quantity = !!saved ? reference.quantity - saved.total > 0 ? reference.quantity - saved.total : 0 : reference.quantity;
     };
 
     function validateLot (lot) {
@@ -125,8 +142,7 @@ angular.module('kpk.controllers')
       if (!hasErrors) { return messenger.danger('Selection has errors'); }
 
       var isBalanced = session.order.data.every(function (o) {
-        var total = session.grouping.get(o.code).total;
-        return o.quantity === total;
+        return session.totals.inventory[o.code] === o.quantity;
       });
 
       if (!isBalanced) { return messenger.danger('Allocated amounts do not match purchase order amounts.'); }

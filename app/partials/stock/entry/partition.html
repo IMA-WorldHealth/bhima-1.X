@@ -58,7 +58,6 @@
     </form>
 
     <div class="col-xs-4">
-      <pre>{{ session.grouping.data }}</pre>
       <table class="table table-condensed">
         <thead>
           <tr>
@@ -76,7 +75,7 @@
             <td>{{ drug.code }}</td>
             <td>{{ drug.text }}</td>
             <td>{{ drug.quantity }}</td>
-            <td>{{ session.grouping.get(drug.code).total }}</td>
+            <td>{{ session.totals.inventory[drug.code] || 0 }}</td>
           </tr>
         </tbody>
       </table>

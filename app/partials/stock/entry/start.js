@@ -1,5 +1,5 @@
 angular.module('kpk.controllers')
-.controller('stock.entry', [
+.controller('stock.entry.start', [
   '$scope',
   '$translate',
   '$q',
@@ -204,7 +204,7 @@ angular.module('kpk.controllers')
         totals : session.totals,
       };
       appstate.set('stock.data', db);
-      $location.path('/stock/entry/lots/');
+      $location.path('/stock/entry/partition/');
     };
 
     $scope.cancel = function cancel () {
