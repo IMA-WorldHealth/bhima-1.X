@@ -8,16 +8,33 @@
 <!-- <div class="reportBody" style="margin&#45;top: 87px"> -->
 <div class="reportBody" style="margin-top: 50px">
   <div class="reportFrame">
-    <div ng-if="!session.loaded">Loading report...</div>
+    <!-- <div ng&#45;if="!session.loaded">Loading report...</div> -->
 
     <div>
+
       <div class="row">
         <div class="col-xs-12">
-          Account Statement 
+          <div class="pull-left">
+            <h3>Account Statement <small> Account name</small></h3>
+          </div>
+          <div class="pull-right">
+            Generated on _timestamp_ _user_id_ _uuid_
+          </div>
+        </div>
+      </div>
+      
+      <div class="row" style="margin-bottom: 10px">
+        <div class="col-xs-12">
+          <div class="pull-right" style="text-align: right;">
+            <span>{{project.enterprise_name}}</span><br>
+            <span>{{project.village}}</span><br>
+            <span>B.P. 205</span><br>
+            <span>{{project.sector}}</span>
+          </div>
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" style="margin-bottom: 20px">
         <div class="col-xs-8">
           <table class="reportTable">
             <thead>
@@ -26,28 +43,104 @@
                 <th>Statement Period</th>
               </tr>
             </thead>
+
+            <tbody>
+              <tr>
+                <td>00304040</td>
+                <td>03 March - 20 April</td>
+              </td>
+            </tbody>
           </table>
         </div>
 
-        <div class-"col-xs-4">
+        <div class="col-xs-4">
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Account Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <td>03 March 2014</td>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
+      <div class="row" style="margin-bottom: 20px">
+        <div class="col-xs-12">
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th colspan="2">Account Summary</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Invoiced</td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td>Payments</td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td>Credit</td>
+                <td>$0.00</td>
+              </tr>
+              <tr>
+                <td style="font-weight: bold">Account Balance</td>
+                <td style="font-weight: bold">$0.00</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
       <div class="row">
         <div class="col-xs-12">
-          Transactions (ordered : ASC, limit : 10)
+          <!-- Transaction Detail (ordered : ASC, limit : 10) -->
           <table class="reportTable">
             <thead>
               <tr>
+                <th colspan="6">
+                  Transaction Detail 
+                  <small style="font-size: 8px">(Ordered : Date, limit 10)</small>
+                </th>
+              </tr>
+              <tr>
                 <th>Date</th>
                 <th>Description</th>
-                <th>Debtor</th>
+                <!-- <th>Debtor</th> -->
                 <th>Invoice Ref</th>
-                <th>Amount</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Balance</th>
+              </tr>
             </thead>
+            
+            <tbody>
+              <!-- Group row -->
+              <tr>
+                <td colspan="3">Not displaying <b>300</b> transactions</td>
+                <td>$5000.00</td>
+                <td>$300.00</td>
+                <td>$4700.00</td>
+              </tr>
+              
+              <!-- Transaction rows -->
+
+              <!-- Total row -->
+              <tr>
+                <td colspan="5" style="text-align: right; padding-right: 10px; font-weight: bold;">Total Balance</td>
+                <td>$4700.00</td>
+            </tbody>
           </table>
         </div>
+      </div>
+
+      <div class="row">
       </div>
     </div>
   </div>
