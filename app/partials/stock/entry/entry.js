@@ -11,7 +11,7 @@ angular.module('kpk.controllers')
   'precision',
   function ($scope, $translate, $q, $location, validate, connect, messenger, appstate, precision) {
     var dependencies = {},
-        session = $scope.session = {},
+        session = $scope.session = { cfg : {}, totals : [] },
         find = $scope.find = { active : true, fn : {} };
 
     dependencies.depots = {
@@ -108,52 +108,61 @@ angular.module('kpk.controllers')
       .catch(error);
     });
 
-    function loadPurchaseOrder (models) {
+    function setSessionProperties (models) {
       if (models.orders.data.length < 1) {
         return $q.reject('ERROR.EMPTY_DATA');
       }
 
+      // deactivate find
       find.valid = true;
       find.active = false;
 
+      // set up watchers for totalling and validation
       $scope.$watch('session.order.data', calculateTotals, true);
       $scope.$watch('session.order.data', valid, true);
 
       session.order = models.orders;
-      session.order_date = new Date(models.orders.data[0].purchase_date);
-      session.purchaser_id = models.orders.data[0].employee_id;
-      session.purchaser_name = ($scope.employees.get(session.purchaser_id).prenom || "") + " " + $scope.employees.get(session.purchaser_id).name;
+
+      // set up session properties
+      session.cfg.order_date = new Date(models.orders.data[0].purchase_date);
+      session.cfg.employee_id = models.orders.data[0].employee_id;
+      session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || "") + " " + ($scope.employees.get(session.cfg.employee_id).name || "");
       return $q.when();
     }
 
     function calculateTotals () {
+      if (!session.order || !session.order.data) { return; }
+
       // total and calculate metadata
-      var totals = session.total || (session.total = []);
-      var grps = {};
+      var totals = session.totals,
+          groups = {};
+
       totals.quantity = 0;
       totals.price = 0;
       totals.purchase_price = 0;
       totals.items = session.order.data.length;
+
       session.order.data.forEach(function (drug) {
         totals.quantity += precision.round(drug.quantity);
         totals.price += precision.round(drug.unit_price * drug.quantity);
-        totals.purchase_price += drug.purchase_price || 0;
-        if (!grps[drug.name]) { grps[drug.name] = 0; }
-        grps[drug.name] += 1;
+        totals.purchase_price += precision.round(drug.purchase_price || 0);
+        if (!groups[drug.name]) { groups[drug.name] = 0; }
+        groups[drug.name] += 1;
       });
-      totals.groups = Object.keys(grps).length;
+
+      totals.groups = Object.keys(groups).length;
     }
 
     function valid () {
       session.valid = !!find.valid && !!session.order && !!session.order.data &&
-        session.order.data.length > 0 && !!session.depot &&
+        session.order.data.length > 0 && !!session.cfg.depot &&
         session.order.data.every(function (drug) {
           return !Number.isNaN(Number(drug.purchase_price)) && Number(drug.purchase_price) > 0;
         });
     }
 
     $scope.setDepot = function setDepot (depot) {
-      session.depot = depot;
+      session.cfg.depot = depot;
       valid();
     };
 
@@ -162,16 +171,16 @@ angular.module('kpk.controllers')
       // PAX2 or HBB1235
       if (!order || !order.label|| order.label.length < 1) { messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
 
-      session.purchase_uuid = order.uuid;
-      session.label = order.label;
+      session.cfg.purchase_uuid = order.uuid;
+      session.cfg.label = order.label;
       var project = order.label.substr(0,3).toUpperCase();
       var reference = Number(order.label.substr(3));
 
       dependencies.orders.query.where =
         ['project.abbr=' + project, 'AND', 'purchase.reference=' + reference];
 
-      validate.process(dependencies, ['orders'])
-      .then(loadPurchaseOrder)
+      validate.refresh(dependencies, ['orders'])
+      .then(setSessionProperties)
       .then(calculateTotals)
       .catch(function (err) {
         find.valid = false;
@@ -183,14 +192,24 @@ angular.module('kpk.controllers')
       find.active = true;
     };
 
+    find.fn.reset = function reset () {
+      find.active = true;
+      find.valid = false;
+    };
+
     $scope.assignLots = function assignLots () {
-      appstate.set('stock.lots', session);
+      var db = {
+        cfg : session.cfg,
+        order : session.order,
+        totals : session.totals,
+      };
+      appstate.set('stock.data', db);
       $location.path('/stock/entry/lots/');
     };
 
     $scope.cancel = function cancel () {
-      session = $scope.session = {};
-      find = $scope.find = { active : true, fn : {} };
+      session = $scope.session = { cfg : {}, totals : [] };
+      find.fn.reset();
     };
 
   }

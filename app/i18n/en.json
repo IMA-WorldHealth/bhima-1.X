@@ -1085,20 +1085,20 @@
 
   "STOCK" : {
     "ENTRY" : {
-      "TITLE" : "Stock Entry",
-      "PURCHASER" : "Purchaser",
-      "NO_GROUPS" : "Number of Groups",
-      "SELECT"  : "Select",
-      "SELECT_DEPOT" : "Select a Depot",
+      "TITLE"               : "Stock Entry",
+      "SELECT"              : "Select",
+      "NUM_ITEMS"           : "Number of Items",
+      "SELECT_DEPOT"        : "Select a Depot",
       "FIND_PURCHASE_ORDER" : "Find a Purchase Order",
-      "ORDER_DETAIL" : "Order Details",
-      "ASSIGN_LOTS" : "Assign Lots",
-      "CANCEL" : "Cancel",
-      "LOT_NUMBER" : "Lot No.",
-      "ORDER_DETAILS" : "Order Details",
-      "REMAINING" : "Remaining",
-      "ASSIGNED" : "Assigned",
-      "REVIEW" : "Review Manifest"
+      "ORDER_DETAIL"        : "Order Details",
+      "ASSIGN_LOTS"         : "Assign Lots",
+      "CANCEL"              : "Cancel",
+      "LOT_NUMBER"          : "Lot No.",
+      "ORDER_DETAILS"       : "Order Details",
+      "REMAINING"           : "Remaining",
+      "ASSIGNED"            : "Assigned",
+      "REVIEW"              : "Review Manifest",
+      "REQUESTED_BY"        : "Requested By"
     },
     "EXIT" : {},
     "MOVEMENT" : {}
