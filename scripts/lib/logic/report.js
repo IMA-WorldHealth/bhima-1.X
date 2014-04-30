@@ -248,11 +248,43 @@ module.exports = function (db) {
 
   function accountStatement(params){
     var def = q.defer();
+    var overviewQuery, paymentQuery, detailQuery;
+    var queryStatus = [];
+
     params = JSON.parse(params);
     
-    console.log('\n\n\n accountStatement\n');
-    if (!params.dateFrom || !params.dateTo) return def.reject('Invalid params');
-  
+    if (!params.dateFrom || !params.dateTo || !params.accountId) return def.reject('Invalid params');
+    
+    overviewQuery = 
+      "SELECT SUM(debit_equiv) as 'invoiced', SUM(credit_equiv) as 'credit', SUM(debit_equiv - credit_equiv) as 'balance' " + 
+      "FROM posting_journal " + 
+      "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";";
+
+    // FIXME Hardcoded cash transaction type - what if payment is bank etc.
+    paymentQuery = 
+      "SELECT SUM(credit_equiv) " + 
+      "FROM posting_journal " + 
+      "WHERE account_id=" + params.accountId + " AND origin_id=1 " + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";";
+    
+    detailQuery = 
+      "SELECT trans_date, description, inv_po_id, debit_equiv, credit_equiv " +
+      "FROM posting_journal " + 
+      "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " " + 
+      "LIMIT 20;";
+    
+    queryStatus.push(
+        db.exec(overviewQuery),
+        db.exec(paymentQuery),
+        db.exec(detailQuery));
+
+    q.all(queryStatus)
+      .then(function (result) { 
+        def.resolve(result);
+      })
+      .catch(function (error) { 
+        def.resolve(error);
+      });
+
     def.resolve('Success');
     // db.execute(requette, function(err, ans) {
     //   if (err) { return def.reject(err); }
