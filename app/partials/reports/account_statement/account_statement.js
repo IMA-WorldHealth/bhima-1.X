@@ -7,12 +7,18 @@ angular.module('kpk.controllers').controller('accountStatement',
   'uuid',
   function ($scope, $q, $http, appstate, uuid) {
     var dependencies = {};
+  
+    var session = $scope.session = {
+      dateFrom : '2014-03-03',
+      dateTo : '2014-04-30',
+      limit : 20
+    };
 
     // TODO Receive this through $routeParams
     var accountId = 1062;
 
     // Temporary details not yet stored
-    var accountCreated = '03-05-2014';
+    var accountCreated = '03-03-2014';
   
     dependencies.report = {
       // query : '/report/account_statement/'
@@ -27,14 +33,42 @@ angular.module('kpk.controllers').controller('accountStatement',
 
     function initialise(model) {
       console.log('[accountStatement]', 'fetched report', model); 
+      $scope.report = model.data;
+
+      $scope.report.timestamp = new Date();
+      $scope.report.uuid = uuid();
+      $scope.report.account.created = new Date(accountCreated);
+
+      processItemBalance($scope.report);
+    }
+
+    function processItemBalance(model) {
+      var beginBalance = model.balance.balance;
+      var tempBalance = 0;
+
+      // console.log(model.detail);
+
+      // model.detail.sort();
+
+      console.log(model.detail);
+
+      model.detail.forEach(function (item) {
+        beginBalance += (item.debit_equiv - item.credit_equiv);
+        item.balance = beginBalance;
+        tempBalance += (item.debit_equiv - item.credit_equiv);
+        
+        item.inv_po_id = item.inv_po_id.slice(0, 6);
+      });
+
+      console.log(tempBalance);
     }
     
     function processReport() {
       var statementParams = {
-        dateFrom : '03-05-2014',
-        dateTo : '05-30-2014',
+        dateFrom : session.dateFrom,
+        dateTo : session.dateTo,
         order : 'date',
-        limit : 10,
+        limit : session.limit,
         accountId : accountId
       };
 

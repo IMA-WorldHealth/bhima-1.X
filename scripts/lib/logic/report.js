@@ -248,21 +248,34 @@ module.exports = function (db) {
 
   function accountStatement(params){
     var def = q.defer();
-    var overviewQuery, paymentQuery, detailQuery;
+    var overviewQuery, balanceQuery, paymentQuery, detailQuery, accountQuery;
     var queryStatus = [];
+    console.log('got here');
 
     params = JSON.parse(params);
     
     if (!params.dateFrom || !params.dateTo || !params.accountId) return def.reject('Invalid params');
     
+    params.dateFrom = '\'' + params.dateFrom + '\'';
+    params.dateTo = '\'' + params.dateTo + '\'';
+
+    accountQuery = 
+      "SELECT account_number, account_txt, account_type_id, parent FROM account where id = " + params.accountId + ";";
+
     overviewQuery = 
       "SELECT SUM(debit_equiv) as 'invoiced', SUM(credit_equiv) as 'credit', SUM(debit_equiv - credit_equiv) as 'balance' " + 
       "FROM posting_journal " + 
       "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";";
 
+    balanceQuery = 
+      "SELECT SUM(debit_equiv) as 'debit', SUM(credit_equiv) as 'credit', sum(debit_equiv - credit_equiv) as 'balance', COUNT(uuid) as 'count' " + 
+      "FROM " + 
+      "(SELECT uuid, debit_equiv, credit_equiv FROM posting_journal WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " ORDER BY trans_date DESC LIMIT " + (params.limit) + ", 18446744073709551615)a;";
+      
+
     // FIXME Hardcoded cash transaction type - what if payment is bank etc.
     paymentQuery = 
-      "SELECT SUM(credit_equiv) " + 
+      "SELECT SUM(credit_equiv) as 'payed' " +  
       "FROM posting_journal " + 
       "WHERE account_id=" + params.accountId + " AND origin_id=1 " + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";";
     
@@ -270,22 +283,34 @@ module.exports = function (db) {
       "SELECT trans_date, description, inv_po_id, debit_equiv, credit_equiv " +
       "FROM posting_journal " + 
       "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " " + 
-      "LIMIT 20;";
+      "ORDER BY trans_date DESC LIMIT " + params.limit + ";";
     
     queryStatus.push(
         db.exec(overviewQuery),
         db.exec(paymentQuery),
-        db.exec(detailQuery));
+        db.exec(detailQuery),
+        db.exec(accountQuery),
+        db.exec(balanceQuery));
+
+    console.log('\n\n\n\nadded balanceQuery');
 
     q.all(queryStatus)
-      .then(function (result) { 
-        def.resolve(result);
+      .then(function (result, err) { 
+        console.log(result[4]);
+        // FIXME hardcoded
+        def.resolve({ 
+          'overview' : result[0][0],
+          'payment' : result[1][0],
+          'detail' : result[2],
+          'account' : result[3][0],
+          'balance' : result[4][0]
+        });
       })
       .catch(function (error) { 
+        console.log('failed', error);
         def.resolve(error);
       });
 
-    def.resolve('Success');
     // db.execute(requette, function(err, ans) {
     //   if (err) { return def.reject(err); }
     //   def.resolve(ans);
