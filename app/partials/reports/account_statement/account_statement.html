@@ -15,10 +15,10 @@
       <div class="row">
         <div class="col-xs-12">
           <div class="pull-left">
-            <h3>Account Statement <small> Account name</small></h3>
+            <h3>Account Statement <small> {{report.account.account_txt}}</small></h3>
           </div>
           <div class="pull-right">
-            Generated on _timestamp_ _user_id_ _uuid_
+            {{report.timestamp | date}}
           </div>
         </div>
       </div>
@@ -46,8 +46,8 @@
 
             <tbody>
               <tr>
-                <td>00304040</td>
-                <td>03 March - 20 April</td>
+                <td>{{report.account.account_number}}</td>
+                <td>{{session.dateFrom | date}} to {{session.dateTo | date}}</td>
               </td>
             </tbody>
           </table>
@@ -61,7 +61,7 @@
               </tr>
             </thead>
             <tbody>
-              <td>03 March 2014</td>
+              <td>{{report.account.created | date}}</td>
             </tbody>
           </table>
         </div>
@@ -79,19 +79,19 @@
             <tbody>
               <tr>
                 <td>Invoiced</td>
-                <td>$0.00</td>
+                <td>{{report.overview.invoiced | currency}}</td>
               </tr>
               <tr>
                 <td>Payments</td>
-                <td>$0.00</td>
+                <td>{{report.payment.payed | currency}}</td>
               </tr>
               <tr>
                 <td>Credit</td>
-                <td>$0.00</td>
+                <td>{{report.overview.credit | currency}}</td>
               </tr>
               <tr>
                 <td style="font-weight: bold">Account Balance</td>
-                <td style="font-weight: bold">$0.00</td>
+                <td style="font-weight: bold">{{report.overview.balance | currency}}</td>
               </tr>
             </tbody>
           </table>
@@ -106,7 +106,7 @@
               <tr>
                 <th colspan="6">
                   Transaction Detail 
-                  <small style="font-size: 8px">(Ordered : Date, limit 10)</small>
+                  <small style="font-size: 8px">(Ordered : Date, Limit {{session.limit}})</small>
                 </th>
               </tr>
               <tr>
@@ -123,18 +123,26 @@
             <tbody>
               <!-- Group row -->
               <tr>
-                <td colspan="3">Not displaying <b>300</b> transactions</td>
-                <td>$5000.00</td>
-                <td>$300.00</td>
-                <td>$4700.00</td>
+                <td colspan="3">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.limit}})</small></td>
+                <td>{{report.balance.debit | currency}}</td>
+                <td>{{report.balance.credit | currency}}</td>
+                <td>{{report.balance.balance | currency}}</td>
               </tr>
               
               <!-- Transaction rows -->
+              <tr ng-repeat="item in report.detail">
+                <td>{{item.trans_date | date}}</td>
+                <td>{{item.description}}</td>
+                <td>{{item.inv_po_id}}</td>
+                <td>{{item.debit_equiv | currency}}</td>
+                <td>{{item.credit_equiv | currency}}</td>
+                <td>{{item.balance | currency}}</td>
+              </tr>
 
               <!-- Total row -->
               <tr>
-                <td colspan="5" style="text-align: right; padding-right: 10px; font-weight: bold;">Total Balance</td>
-                <td>$4700.00</td>
+                <td colspan="5" style="text-align: right; padding-right: 10px; font-weight: bold;">Final Balance</td>
+                <td>{{report.overview.balance | currency}}</td>
             </tbody>
           </table>
         </div>
