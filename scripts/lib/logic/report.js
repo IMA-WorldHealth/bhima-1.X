@@ -249,16 +249,15 @@ module.exports = function (db) {
   function accountStatement(params){
     var def = q.defer();
     params = JSON.parse(params);
-
-    var requette =
-      "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit " +
-      "FROM account, period_total, period " +
-      "WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
-
-    db.execute(requette, function(err, ans) {
-      if (err) { return def.reject(err); }
-      def.resolve(ans);
-    });
+    
+    console.log('\n\n\n accountStatement\n');
+    if (!params.dateFrom || !params.dateTo) return def.reject('Invalid params');
+  
+    def.resolve('Success');
+    // db.execute(requette, function(err, ans) {
+    //   if (err) { return def.reject(err); }
+    //   def.resolve(ans);
+    // });
 
     return def.promise;
   }
@@ -453,6 +452,7 @@ module.exports = function (db) {
       'patients'        : patientRecords,
       'payments'        : paymentRecords,
       'patientStanding' : patientStanding,
+      'accountStatement': accountStatement,
       'allTrans'        : allTrans,
       'prices'          : priceReport
     };
