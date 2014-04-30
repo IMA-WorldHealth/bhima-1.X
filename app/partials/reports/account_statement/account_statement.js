@@ -34,7 +34,8 @@ angular.module('kpk.controllers').controller('accountStatement',
         dateFrom : '03-05-2014',
         dateTo : '05-30-2014',
         order : 'date',
-        limit : 10
+        limit : 10,
+        accountId : accountId
       };
 
       dependencies.report.query =
