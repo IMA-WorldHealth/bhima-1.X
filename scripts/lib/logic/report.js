@@ -280,7 +280,7 @@ module.exports = function (db) {
       "WHERE account_id=" + params.accountId + " AND origin_id=1 " + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";";
     
     detailQuery = 
-      "SELECT trans_date, description, inv_po_id, debit_equiv, credit_equiv " +
+      "SELECT trans_date, description, inv_po_id, debit_equiv, credit_equiv, uuid " +
       "FROM posting_journal " + 
       "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " " + 
       "ORDER BY trans_date DESC LIMIT " + params.limit + ";";

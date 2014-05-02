@@ -114,19 +114,20 @@
                 <th>Description</th>
                 <!-- <th>Debtor</th> -->
                 <th>Invoice Ref</th>
+                <th>Debtor Ref</th>
                 <th>Debit</th>
                 <th>Credit</th>
-                <th>Balance</th>
+                <!-- <th>Balance</th> -->
               </tr>
             </thead>
             
             <tbody>
               <!-- Group row -->
               <tr>
-                <td colspan="3">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.limit}})</small></td>
+                <td colspan="4">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.limit}})</small></td>
                 <td>{{report.balance.debit | currency}}</td>
                 <td>{{report.balance.credit | currency}}</td>
-                <td>{{report.balance.balance | currency}}</td>
+                <!-- <td>{{report.balance.balance | currency}}</td> -->
               </tr>
               
               <!-- Transaction rows -->
@@ -134,15 +135,20 @@
                 <td>{{item.trans_date | date}}</td>
                 <td>{{item.description}}</td>
                 <td>{{item.inv_po_id}}</td>
+                <td>{{item.uuid}}</td>
                 <td>{{item.debit_equiv | currency}}</td>
                 <td>{{item.credit_equiv | currency}}</td>
-                <td>{{item.balance | currency}}</td>
-              </tr>
 
+                <!-- FIXME Ordering issue with balance and retreival from DB-->
+                <!-- <td>{{item.balance | currency}}</td> -->
+              </tr>
+              
+              <!-- FIXME -->
               <!-- Total row -->
-              <tr>
-                <td colspan="5" style="text-align: right; padding-right: 10px; font-weight: bold;">Final Balance</td>
-                <td>{{report.overview.balance | currency}}</td>
+              <!-- <tr> -->
+                <!-- <td colspan="5" style="text&#45;align: right; padding&#45;right: 10px; font&#45;weight: bold;">Final Balance</td> -->
+                <!-- <td>{{report.overview.balance | currency}}</td> -->
+              <!-- </tr> -->
             </tbody>
           </table>
         </div>

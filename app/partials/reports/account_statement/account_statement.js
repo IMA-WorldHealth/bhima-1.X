@@ -10,8 +10,8 @@ angular.module('kpk.controllers').controller('accountStatement',
   
     var session = $scope.session = {
       dateFrom : '2014-03-03',
-      dateTo : '2014-04-30',
-      limit : 20
+      dateTo : '2014-04-12',
+      limit : 25
     };
 
     // TODO Receive this through $routeParams
@@ -34,8 +34,12 @@ angular.module('kpk.controllers').controller('accountStatement',
     function initialise(model) {
       console.log('[accountStatement]', 'fetched report', model); 
       $scope.report = model.data;
-
-      $scope.report.timestamp = new Date();
+      
+      // $scope.report.account.account_number = '46661900';
+    
+      // FIXME Temporary report for meetings, this should be TODAY
+      $scope.report.timestamp = new Date(session.dateTo);
+      
       $scope.report.uuid = uuid();
       $scope.report.account.created = new Date(accountCreated);
 
@@ -58,6 +62,7 @@ angular.module('kpk.controllers').controller('accountStatement',
         tempBalance += (item.debit_equiv - item.credit_equiv);
         
         item.inv_po_id = item.inv_po_id.slice(0, 6);
+        item.uuid = item.uuid.slice(0, 6);
       });
 
       console.log(tempBalance);
