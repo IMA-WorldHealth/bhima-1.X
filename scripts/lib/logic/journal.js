@@ -267,7 +267,7 @@ module.exports = function (db, synthetic) {
       // first check - do we have a valid period?
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
-      return check.validPeriod(reference.enterprise_id, reference.invpice_date);
+      return check.validPeriod(reference.enterprise_id, reference.invoice_date);
     })
     .then(function () {
       // second check - are the debits (discounts) positive
@@ -704,39 +704,52 @@ module.exports = function (db, synthetic) {
 
   function handlePurchase (id, user_id, done) {
     // posting purchase requests
-    var sql =
+    var sql, data, reference, cfg = {}, queries = {};
+    sql =
       'SELECT `purchase`.`project_id`, `project`.`enterprise_id`, `purchase`.`id`, `purchase`.`cost`, `purchase`.`currency_id`, ' +
         '`purchase`.`creditor_id`, `purchase`.`purchaser_id`, `purchase`.`discount`, `purchase`.`invoice_date`, ' +
         '`purchase`.`note`, `purchase`.`posted`, `purchase_item`.`unit_price`, `purchase_item`.`total`, `purchase_item`.`quantity` ' +
       'FROM `purchase` JOIN `purchase_item` JOIN `project` ON `purchase`.`id`=`purchase_item`.`purchase_id` AND `project`.`id`=`purchase`.`project_id` ' +
       'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
 
-    db.execute(sql, function (err, results) {
-      if (err) return done(err);
-      if (results.length === 0) return done(new Error('No purchase order by the id: ' + id));
+    db.exec(sql)
+    .then(function (results) {
+      if (results.length === 0) { throw new Error('No purchase order by the id: ' + id); }
 
-      var reference_purchase= results[0];
-      var enterprise_id = reference_purchase.enterprise_id;
-      var project_id = reference_purchase.project_id;
-      var date = reference_purchase.invoice_date;
+      reference = results[0];
+      data = results;
 
       // first check - do we have a validPeriod?
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
-      check.validPeriod(enterprise_id, date, function (err) {
-        if (err) done(err);
+      return check.validPeriod(reference.enterprise_id, reference.invoice_date);
+    })
+    .then(function () {
+      // second check - is the cost positive for every transaction?
+      var costPositive = data.every(function (row) { return validate.isPositive(row.cost); });
+      if (!costPositive) throw new Error('Negative cost detected for purchase id: ' + id);
 
-        // second check - is the cost positive for every transaction?
-        var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
-        if (!costPositive) return done(new Error('Negative cost detected for purchase id: ' + id));
+      // third check - are all the unit_price's for purchase_items positive?
+      var unit_pricePositive = data.every(function (row) { return validate.isPositive(row.unit_price); });
+      if (!unit_pricePositive) throw new Error('Negative unit_price for purchase id: ' + id);
 
-        // third check - are all the unit_price's for purchase_items positive?
-        var unit_pricePositive = results.every(function (row) { return validate.isPositive(row.unit_price); });
-        if (!unit_pricePositive) return done(new Error('Negative unit_price for purchase id: ' + id));
-
-        // fourth check - is the total the price * the quantity?
-        var totalEquality = results.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
-        if (!totalEquality) return done(new Error('Unit prices and quantities do not match for purchase id: ' + id));
+      // fourth check - is the total the price * the quantity?
+      var totalEquality = data.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
+      if (!totalEquality) throw new Error('Unit prices and quantities do not match for purchase id: ' + id);
+    
+      return get.origin('purchase');
+    })
+    .then(function (origin_id) {
+    
+    })
+    .then(function () {
+    
+    })
+    .catch(function (err) {
+      done(err);
+    })
+    .done();
+    /*
 
         // all checks have passed - prepare for writing to the journal.
         get.origin('purchase', function (err, origin_id) {
@@ -804,6 +817,7 @@ module.exports = function (db, synthetic) {
         });
       });
     });
+    */
   }
 
   function handleGroupInvoice (id, user_id, done) {
