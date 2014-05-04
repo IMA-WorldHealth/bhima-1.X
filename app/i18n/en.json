@@ -278,7 +278,10 @@
     "INVENTORY_ITEM"  : "Select an Inventory Item",
     "DEBITOR"         : "Select a Debitor",
     "ENTERPRISE"      : "Select an Enterprise",
-    "CODE"            : "Select a Code"
+    "CODE"            : "Select a Code",
+    "DEPOT"           : "Select a Depot",
+    "TRACKING_NUMBER" : "Select a Tracking Number",
+    "DIRECTION"       : "Select a Direction"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -431,6 +434,7 @@
     "INVPO_ID"            : "Inv/PO #",
     "PATIENT"             : "Patient",
     "TOTAL_AMOUNT"        : "Total Amount",
+    "DEPOT"               : "Depot",
     "BALANCE_DUE"         : "Balance Due",
     "POSTED"              : "Posted",
     "FISCAL_YEAR_ID"      : "Fiscal Year ID",
@@ -460,7 +464,9 @@
     "DEB_CRED_UUID"       : "Debitor/Creditor ID",
     "SALE_PRICE"          : "Sale Price",
     "PURCHASE_PRICE"      : "Purchase Price",
-    "BHIMA_STOCK_CODE"    : "Stock Reference"
+    "BHIMA_STOCK_CODE"    : "Stock Reference",
+    "DIRECTION"           : "Direction",
+    "DESTINATION"         : "Destination"
   },
 
   "TREE"                        : {
@@ -1105,7 +1111,10 @@
       "REQUESTED_BY"        : "Requested By"
     },
     "EXIT" : {},
-    "MOVEMENT" : {}
+    "MOVEMENT" : {
+      "TITLE" : "Stock Movements",
+      "FORM" : "Stock Movement Form"
+    }
   },
 
   "SWAPDEBITOR"            : {
