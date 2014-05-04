@@ -10,7 +10,8 @@ angular.module('kpk.controllers')
   'exchange',
   'uuid',
   '$routeParams',
-  function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid, $routeParams) {
+  '$location',
+  function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid, $routeParams, $location) {
 
     //inits and declarations
     var dependencies = {}, configuration = {};
@@ -82,6 +83,8 @@ angular.module('kpk.controllers')
     dependencies.cashier = {
       query : 'user_session'
     };
+
+    console.log('dedrick');
 
     //fonctions
     function init (model) {
@@ -163,7 +166,8 @@ angular.module('kpk.controllers')
       .then(writeItem)
       .then(postToJournal)
       .then(function (prom){
-        //refresh();
+        console.log('[prom]', prom, configuration)
+       $location.path('/invoice/pcash_transfert/' + configuration.pcash.uuid);
       })
       .catch(handleError);
     }
