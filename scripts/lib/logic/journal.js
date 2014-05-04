@@ -1235,7 +1235,7 @@ module.exports = function (db, synthetic) {
       get.myExchangeRate(date)
       .then(function (exchangeRateStore) {
 
-        get.origin('pcash', function (err, origin_id) {
+        get.origin('pcash_transfert', function (err, origin_id) {
 
           if (err) { return done(err); }
 
