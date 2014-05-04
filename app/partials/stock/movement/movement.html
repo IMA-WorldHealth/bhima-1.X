@@ -1,0 +1,77 @@
+<header data-header>
+  {{ "STOCK.MOVEMENT.TITLE" | translate }}
+</header>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-8">
+      <div class="panel panel-default square">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-transfer"></span> {{ "STOCK.MOVEMENT.FORM" | translate }} <span class='pull-right'>{{ session.doc.document_id }}</span>
+        </div>
+
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>{{ "COLUMNS.DEPOT" | translate }}</label>
+                <select class="form-kapok" ng-model="session.doc.depot_id" ng-options="depot.id as depot.text for depot in depots.data">
+                  <option value="" disabled="disabled"> -- {{ "SELECT.DEPOT" | translate }} -- </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>{{ "COLUMNS.DIRECTION" | translate }}</label>
+                <select class="form-kapok" ng-model="session.doc.direction">
+                  <option value="" disabled="disabled"> -- {{ "SELECT.DIRECTION" | translate }} -- </option>
+                  <option value="entry">Entry</option>
+                  <option value="exit">Exit</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+              <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+              <th colspan="2">{{ "COLUMNS.DESTINATION" | translate }}</th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="row in session.rows">
+              <td>
+                <select ng-model="row.tracking_number" ng-options="item.tracking_number as item.tracking_number for item in stock.data" required>
+                  <option value="" disabled="disabled"> -- {{ "SELECT.TRACKING_NUMBER" | translate }} -- </option>
+                </select>
+              </td>
+              <td>
+                <input ng-model="row.quantity" type="number" min="0" required>
+              </td>
+              <td>
+                <input ng-model="row.destination" required>
+              </td>
+              <td><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"></td>
+              <td colspan="3"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <button class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="!session.valid">
+      {{ "FORM.SUBMIT" | translate }}
+    </button>
+  </div>
+</section>
