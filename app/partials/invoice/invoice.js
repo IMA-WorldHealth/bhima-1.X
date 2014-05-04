@@ -114,14 +114,19 @@ angular.module('kpk.controllers')
         required: true,
         query:  {
           tables: {
-            primary_cash: { columns: ['reference', 'value', 'debitor_uuid', 'project_id', 'currency_id', 'date'] },
-            user : {columns : ['first', 'last']}
+            primary_cash: { columns: ['cost', 'project_id', 'currency_id', 'date'] },
+            user : {columns : ['first', 'last']},
+            account : {columns : ['account_txt']}
           },
-          join : ['primary_cash.user_id=user.id'],
+          join : ['primary_cash.user_id=user.id', 'primary_cash.account_id=account.id'],
           where: ['primary_cash.uuid=' + transfert_uuid]
         }
       };
       validate.process(dependencies, ['transfert']).then(transfertInvoice);
+    }
+
+   function processConvention (){
+
     }
 
 
@@ -437,7 +442,7 @@ angular.module('kpk.controllers')
     function transfertInvoice (model) {
       $scope.model = model;
       $scope.transfert = $scope.model.transfert.data[0];
-      //console.log('notre caution', $scope.caution);
+      console.log('notre transfert', $scope.transfert);
     }
 
     process = {
@@ -448,7 +453,8 @@ angular.module('kpk.controllers')
       'debtor'  : processDebtor,
       'patient' : processPatient,
       'purchase': processPurchase,
-      'pcash_transfert' : processTransfert
+      'pcash_transfert' : processTransfert,
+      'pcash_convention' : processConvention
     };
 
     appstate.register('project', function (project) {
