@@ -465,21 +465,15 @@
           </div>
         </div>
         <div class="row customer-details">
-          <div class="col-xs-1">
+          <div class="col-xs-2">
             <b>{{'INVOICE.BY' | translate}}</b>
           </div>
-          <div class="col-xs-7">
+          <div class="col-xs-6">
             <div class="row">
-              {{transfert.first}} {{transfert.last}}
+              <b>{{transfert.first}} {{transfert.last}}</b>
             </div>
           </div>
           <div style="text-align: left;" class="col-xs-4">
-            <div class="row">
-              <b>{{'INVOICE.TRANSFERT' | translate}}</b>
-            </div>
-            <div class="row">
-              {{transfert.reference}}
-            </div>
             <div class="row">
               <b>{{'INVOICE.DATE' | translate}}</b>
             </div>
@@ -492,17 +486,17 @@
           <div class="col-xs-12">
             <table class="invoiceTable">
               <thead>
-                <tr><th>{{'INVOICE.TRANSFERT' | translate}}</th>
-                  <th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
+                <tr><th>{{'INVOICE.DESIGNATION' | translate}}</th>
+                <th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
               </thead>
               <tbody class="items">
                 <tr>
-                  <td>{{'INVOICE.LIBELLE_CAUTION' | translate}}</td>
-                  <td>{{convert(caution.value, caution.currency_id) | currency}}</td>
+                  <td>{{'INVOICE.LIBELLE_TRANSFERT_FROM' | translate}}{{transfert.account_txt}} {{'INVOICE.TO' | translate}} {{'INVOICE.PCASH' | translate}}</td>
+                  <td><span ng-bind-html="transfert.cost  | intlcurrency:transfert.currency_id"></span></td>
                 </tr>
               </tbody>
               <tbody class="totals">
-                <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td><td>{{convert(caution.value, caution.currency_id) | currency}}</td></tr>
+                <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_TRANSFERT' | translate}}</td><td><span ng-bind-html="transfert.cost  | intlcurrency:transfert.currency_id"></span></td></tr>
               </tbody>
             </table>
           </div>
