@@ -173,11 +173,10 @@ angular.module('kpk.controllers')
 
 
     function handleSucces(resp){
-      messenger.success($translate('CONVENTION.SUCCES'));
       $scope.selectedConvention = {};
       $scope.data = {};
       $scope.noEmpty = false;
-      //if(record_uuid !== -1) $location.path('/invoice/caution/' + record_uuid);
+      if(record_uuid !== -1) $location.path('/invoice/pcash_convention/' + record_uuid);
     }
 
     function handleError(){
