@@ -37,16 +37,16 @@
             <i>TEL</i> {{project.phone}}
             <br>
             <i>FAX</i> {{project.email}}
-            
+
           </div>
           <div class="col-xs-4">
             <b>{{recipient.first_name}} {{recipient.last_name}}</b>
             <br>
             <!-- Debtor group name -->
-            {{recipient.name}}  
+            {{recipient.name}}
             <br>
             <br>
-            <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>  
+            <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
             <br>
             {{recipient.registration_date | date}}
           </div>
@@ -61,7 +61,7 @@
             {{invoice.invoice_date | date}}
             <br>
           </div>
-          
+
         </div>
         <div class="row">
           <div class="col-xs-12">
@@ -96,7 +96,7 @@
           </div>
         </div> <!-- End Patient Invoice template -->
       </div>
-      
+
       <div ng-switch-when="purchase">
         <!-- Patient Invoice template -->
         <div class="row customer-details">
@@ -123,7 +123,7 @@
             <i>TEL</i> {{project.phone}}
             <br>
             <i>FAX</i> {{project.email}}
-            
+
           </div>
           <div class="col-xs-4">
             <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i>
@@ -141,7 +141,7 @@
             <i>TEL</i> {{supplier.phone}}
             <br>
             <i>FAX</i> {{supplier.email}}
-            
+
           </div>
           <div class="col-xs-4">
             <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{purchase.reference}}</b>
@@ -453,6 +453,50 @@
               </tbody>
               <tbody class="totals">
                 <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td><td>{{convert(caution.value, caution.currency_id) | currency}}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div> <!-- End Patient Invoice template -->
+      </div>
+      <div ng-switch-when="pcash_transfert">
+        <div class="row customer-details">
+          <div class="col-xs-12">
+            <h4 class="invoice-header">{{'INVOICE.TRANSFERT' | translate}}</h4>
+          </div>
+        </div>
+        <div class="row customer-details">
+          <div class="col-xs-2">
+            <b>{{'INVOICE.BY' | translate}}</b>
+          </div>
+          <div class="col-xs-6">
+            <div class="row">
+              <b>{{transfert.first}} {{transfert.last}}</b>
+            </div>
+          </div>
+          <div style="text-align: left;" class="col-xs-4">
+            <div class="row">
+              <b>{{'INVOICE.DATE' | translate}}</b>
+            </div>
+            <div class="row">
+              {{transfert.date | date}}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <table class="invoiceTable">
+              <thead>
+                <tr><th>{{'INVOICE.DESIGNATION' | translate}}</th>
+                <th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
+              </thead>
+              <tbody class="items">
+                <tr>
+                  <td>{{'INVOICE.LIBELLE_TRANSFERT_FROM' | translate}}{{transfert.account_txt}} {{'INVOICE.TO' | translate}} {{'INVOICE.PCASH' | translate}}</td>
+                  <td><span ng-bind-html="transfert.cost  | intlcurrency:transfert.currency_id"></span></td>
+                </tr>
+              </tbody>
+              <tbody class="totals">
+                <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_TRANSFERT' | translate}}</td><td><span ng-bind-html="transfert.cost  | intlcurrency:transfert.currency_id"></span></td></tr>
               </tbody>
             </table>
           </div>

@@ -77,6 +77,7 @@
               ng-model="row.item"
               typeahead-template-url="lotList.html"
               typeahead="stock as stock.tracking_number for stock in model.stocks.data | filter:$viewValue | limitTo:8"
+              typeahead-on-select="updateDistributionItem(row)"
             >
           </td>
           <td><input class="form-invoice" type="text" disabled value="{{row.item.text}}"></td>

@@ -11,7 +11,8 @@ angular.module('kpk.controllers')
   '$q',
   'precision',
   '$http',
-  function ($scope, $translate, validate, connect, messenger, appstate, util, uuid, $q, precision, $http) {
+  '$location',
+  function ($scope, $translate, validate, connect, messenger, appstate, util, uuid, $q, precision, $http, $location) {
     var distribution = {}, dependencies = {}, priceListSource = ['patientGroupList', 'debtorGroupList'];
     distribution.visible = false;
     distribution.noEmpty = false;
@@ -106,8 +107,22 @@ angular.module('kpk.controllers')
 
     function init (model){
       $scope.model = model;
-      console.log('model', model);
     }
+
+    function updateDistributionItem(selectedItem) {
+      console.log('item choisi', selectedItem);
+
+      selectedItem.set(selectedItem);
+      //invoiceItem.inventoryReference = inventoryReference;
+
+      // //Remove ability to select the option again
+      // $scope.model.inventory.remove(inventoryReference.uuid);
+
+      // $scope.model.inventory.recalculateIndex();
+
+      // updateSessionRecover();
+    }
+
 
     function addRow () {
       distribution.rows.push(new DistributionItem());
@@ -116,6 +131,41 @@ angular.module('kpk.controllers')
     function DistributionItem () {
       this.movement = null;
       this.item = null;
+      var self = this;
+
+      function set(row) {
+        var defaultPrice = row.item.price;
+
+        self.item.quantity = self.item.amount || 1;
+        self.item.code = row.item.code;
+        self.item.text = row.item.text;
+
+        // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+        self.item.price = Number(row.item.price.toFixed(4));
+        self.item.inventoryId = row.item.uuid;
+        self.item.note = "";
+
+        // Temporary price list logic
+        if(distribution.priceList) {
+          distribution.priceList.forEach(function (list) {
+
+            if(!list.is_global) {
+              if(list.is_discount) {
+                self.item.price -= Math.round((defaultPrice * list.value) / 100);
+                self.item.price = Number(self.item.price.toFixed(4));
+              } else {
+                var applyList = (defaultPrice * list.value) / 100;
+                self.item.price += applyList;
+                // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
+                self.item.price = Number(self.item.price.toFixed(4));
+              }
+            }
+          });
+        }
+        self.item.isSet = true;
+      }
+
+      this.set = set;
 
       // this.item.document_id = uuid();
       // this.item.tracking_number = null;
@@ -130,7 +180,6 @@ angular.module('kpk.controllers')
 
     function processPriceList (model) {
       distribution.priceList = [];
-      console.log('processPriceList', model);
 
       // Flattens all price lists fow now, make parsing later simpler
       priceListSource.forEach(function (priceListKey) {
@@ -169,7 +218,7 @@ angular.module('kpk.controllers')
       distribution.rows.splice(index, 1);
     }
 
-        //TODO Refactor code
+    //TODO Refactor code
     function calculateTotal(includeDiscount) {
       var total = 0;
       includeDiscount = angular.isDefined(includeDiscount) ? includeDiscount : true;
@@ -225,7 +274,7 @@ angular.module('kpk.controllers')
         cost : calculateTotal().total,
         currency_id : $scope.project.currency_id,
         debitor_uuid : distribution.selectedDebitor.debitor_uuid,
-        invoice_date : distribution.moving_records.date,
+        invoice_date : util.convertToMysqlDate(new Date().toString()),
         note : formatNote(distribution)
       };
 
@@ -291,7 +340,6 @@ angular.module('kpk.controllers')
         };
       });
 
-      console.log('[new tab]', distribution);
     }
 
     function submit (){
@@ -299,7 +347,6 @@ angular.module('kpk.controllers')
       doMovingStock()
       .then(doSale)
       .then(function(result){
-        console.log('final result', result);
       });
       //.then(doSale());
 
@@ -309,17 +356,13 @@ angular.module('kpk.controllers')
       return $q.all(connect.basicPut('consumption', distribution.item_records), connect.basicPut('stock_movement', distribution.moving_records));
     }
 
-    function doSale (){
+    function doSale (res){
       var saleRequest = packageSaleRequest();
-      //console.log('[invoiceRequest]', invoiceRequest);
-
-      //if (!validSaleProperties(invoiceRequest)) return;
       $http.post('sale/', saleRequest).then(handleSaleResponse);
     }
 
     function handleSaleResponse(result) {
       //recoverCache.remove('session');
-      console.log('result',result)
       $location.path('/invoice/sale/' + result.data.saleId);
     }
 
@@ -344,5 +387,6 @@ angular.module('kpk.controllers')
     $scope.submit = submit;
     $scope.verifySubmission = verifySubmission;
     $scope.calculateTotal = calculateTotal;
+    $scope.updateDistributionItem = updateDistributionItem;
   }
 ]);
