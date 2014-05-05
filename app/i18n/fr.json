@@ -885,7 +885,13 @@
     "CAUTION"           : "Caution",
     "CAUTION_ID"        : "# Caution",
     "LIBELLE_CAUTION"   : "Reception Caution",
-    "TOTAL_CAUTION"     : "Total"
+    "TOTAL_CAUTION"     : "Total",
+    "BY"                           : "Transfert realise par : ",
+    "TRANSFERT"                    : "Transfert caisse principal",
+    "DESIGNATION"                  : "Designation",
+    "LIBELLE_TRANSFERT_FROM"       : "Transfert de ",
+    "PCASH"                        : "de caisse Principale",
+    "TOTAL_TRANSFERT"              : "Total Transfert"
   },
 
   "SECTOR"             : {

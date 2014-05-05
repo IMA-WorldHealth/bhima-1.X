@@ -109,6 +109,26 @@ angular.module('kpk.controllers')
       };
     }
 
+    function processTransfert (transfert_uuid){
+      dependencies.transfert = {
+        required: true,
+        query:  {
+          tables: {
+            primary_cash: { columns: ['cost', 'project_id', 'currency_id', 'date'] },
+            user : {columns : ['first', 'last']},
+            account : {columns : ['account_txt']}
+          },
+          join : ['primary_cash.user_id=user.id', 'primary_cash.account_id=account.id'],
+          where: ['primary_cash.uuid=' + transfert_uuid]
+        }
+      };
+      validate.process(dependencies, ['transfert']).then(transfertInvoice);
+    }
+
+   function processConvention (){
+
+    }
+
 
     function processCash(requestId) {
       dependencies.cash = {
@@ -133,19 +153,19 @@ angular.module('kpk.controllers')
       .then(buildRecipientQuery);
     }
 
-    function processPurchase() { 
-      dependencies.purchase = { 
-        query : { 
-          tables : { 
-            purchase : { columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id'] } 
+    function processPurchase() {
+      dependencies.purchase = {
+        query : {
+          tables : {
+            purchase : { columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id'] }
           }
         },
         where : ['purchase.uuid=' + invoiceId]
       };
 
-      dependencies.purchaseItem = { 
-        query : { 
-          tables : { 
+      dependencies.purchaseItem = {
+        query : {
+          tables : {
             purchase_item : { columns : ['uuid', 'inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total'] },
             inventory : { columns : ['code', 'text'] }
           },
@@ -157,24 +177,24 @@ angular.module('kpk.controllers')
       validate.process(dependencies, ['purchase', 'purchaseItem']).then(processPurchaseParties);
     }
 
-    function processPurchaseParties(model) { 
+    function processPurchaseParties(model) {
       var creditor = model.purchase.data[0].creditor_uuid;
       var employee = model.purchase.data[0].employee_id;
 
-      dependencies.supplier = { 
-        query : { 
-          tables : { 
+      dependencies.supplier = {
+        query : {
+          tables : {
             creditor : { columns : ['group_uuid'] },
-            supplier : { columns : ['uuid', 'name', 'location_id', 'email', 'fax', 'note', 'phone', 'international'] } 
+            supplier : { columns : ['uuid', 'name', 'location_id', 'email', 'fax', 'note', 'phone', 'international'] }
           },
           join : ['creditor.uuid=supplier.creditor_uuid'],
           where : ['creditor.uuid=' + creditor]
         }
       };
-      
-      dependencies.employee = { 
-        query : { 
-          tables : { 
+
+      dependencies.employee = {
+        query : {
+          tables : {
             employee : { columns : ['name', 'code', 'dob', 'creditor_uuid'] }
           },
           where : ['employee.id=' + employee]
@@ -184,17 +204,17 @@ angular.module('kpk.controllers')
       validate.process(dependencies, ['supplier', 'employee']).then(processPurchaseDetails);
     }
 
-    function processPurchaseDetails(model) { 
+    function processPurchaseDetails(model) {
       var locationId = model.supplier.data[0].location_id;
 
-      dependencies.supplierLocation = { 
+      dependencies.supplierLocation = {
         query : '/location/' + locationId
       };
 
       validate.process(dependencies, ['supplierLocation']).then(initialisePurchase);
     }
 
-    function initialisePurchase(model) { 
+    function initialisePurchase(model) {
       console.log('final', model);
       $scope.model = model;
 
@@ -341,7 +361,7 @@ angular.module('kpk.controllers')
       $scope.session = {};
       $scope.session.currentCurrency = $scope.model.currency.get($scope.project.currency_id);
       routeCurrencyId = $scope.session.currentCurrency.currency_id;
-      
+
       //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
       console.log('The Invoice is:', $scope.invoice);
@@ -419,6 +439,12 @@ angular.module('kpk.controllers')
       //console.log('notre caution', $scope.caution);
     }
 
+    function transfertInvoice (model) {
+      $scope.model = model;
+      $scope.transfert = $scope.model.transfert.data[0];
+      console.log('notre transfert', $scope.transfert);
+    }
+
     process = {
       'cash'    : processCash,
       'caution' : processCaution,
@@ -426,7 +452,9 @@ angular.module('kpk.controllers')
       'credit'  : processCredit,
       'debtor'  : processDebtor,
       'patient' : processPatient,
-      'purchase': processPurchase
+      'purchase': processPurchase,
+      'pcash_transfert' : processTransfert,
+      'pcash_convention' : processConvention
     };
 
     appstate.register('project', function (project) {
