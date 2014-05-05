@@ -1,6 +1,5 @@
 // scripts/lib/logic/journal.js
 
-// TODO: dependency injection
 var sanitize = require('../util/sanitize'),
     util = require('../util/util'),
     validate = require('../util/validate')(),
@@ -9,45 +8,9 @@ var sanitize = require('../util/sanitize'),
     uuid = require('../util/guid');
 
 module.exports = function (db, synthetic) {
-  // deals in everything journal related
   'use strict';
 
   var table_router, check, get;
-
-  function validDebitorOrCreditor (id) {
-    var escaped_id = sanitize.escape(id);
-    var sql =
-      'SELECT `temp`.`uuid` ' +
-      'FROM (' +
-        'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + escaped_id + ' ' +
-      'UNION ' +
-        'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + escaped_id +
-      ') as `temp`;';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('No Debitor or Creditor found with id: ' + id);
-      }
-    });
-  }
-
-  function validPeriod(enteprise_id, date) {
-    var escaped_date = sanitize.escape(get.date(date));
-    var sql =
-      'SELECT `period`.`id`, `fiscal_year_id` ' +
-      'FROM `period` ' +
-      'WHERE `period`.`period_start` <=' + escaped_date + ' AND ' +
-        '`period`.`period_stop` >=' + escaped_date + ' AND ' +
-        '`period`.`locked` = 0;\n';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('No period found to match the posted date : ' + date);
-      }
-    });
-  }
 
   // validity checks
   check = {
@@ -99,7 +62,7 @@ module.exports = function (db, synthetic) {
       // to post to the journal.  Returns the id.
       var sql =
         'SELECT `id`, `service_txt` FROM `transaction_type` ' +
-        'WHERE `service_txt`=' + sanitize.escape(table) + ';';
+        'WHERE `service_txt` = ' + sanitize.escape(table) + ';';
       return db.exec(sql)
       .then(function (rows) {
         if (rows.length === 0) {
@@ -150,7 +113,7 @@ module.exports = function (db, synthetic) {
       var sql =
         'SELECT `id`, `fiscal_year_id` FROM `period` ' +
         'WHERE `period_start` <= ' + sanitize.escape(get.date(date)) + ' AND ' +
-        ' `period_stop` >= ' + sanitize.escape(get.date(date)) + ';';
+          '`period_stop` >= ' + sanitize.escape(get.date(date)) + ';';
 
       return db.exec(sql)
       .then(function (rows) {
@@ -221,13 +184,8 @@ module.exports = function (db, synthetic) {
       });
 
       return defer.promise;
-    },
-
-    getCashCurrencyId : function (array, account_id){
-      return array.filter(function (item){
-        return item.cash_account === account_id;
-      });
     }
+
   };
 
   function authorize (user_id, done) {
@@ -239,10 +197,14 @@ module.exports = function (db, synthetic) {
     });
   }
 
+  function buildCautionQueries (reference, queries) {
+  }
+
   // TODO Only has project ID passed from sale reference, need to look up enterprise ID
   function handleSales (id, user_id, done, caution) {
     // sale posting requests enter here.
     var sql, data, reference, cfg = {}, queries = {};
+
     sql =
       'SELECT `sale`.`project_id`, `project`.`enterprise_id`, `sale`.`uuid`, `sale`.`currency_id`, ' +
         '`sale`.`debitor_uuid`, `sale`.`seller_id`, `sale`.`discount`, `sale`.`invoice_date`, ' +
@@ -257,6 +219,7 @@ module.exports = function (db, synthetic) {
 
     db.exec(sql)
     .then(function (results) {
+
       if (results.length === 0) {
         throw new Error('No sale by the id: ' + id);
       }
@@ -289,41 +252,34 @@ module.exports = function (db, synthetic) {
       if (!creditPositive) {
         throw new Error('Negative credit detected for sale id: ' + id);
       }
-     
+
       // all checks have passed - prepare for writing to the journal.
-      return q.spread([get.origin('sale'), get.period(reference.invoice_date)]);
+      return q([get.origin('sale'), get.period(reference.invoice_date)]);
     })
-    .then(function (origin_id, period_object) {
-      console.log('[DEBUG] [JOURNAL] origin_id === ', origin_id,'period_object === ', period_object);
+    .spread(function (originId, periodObject) {
       // we now have the origin!
       // we now have the relevant period!
 
-      cfg.period = period_object;
-      cfg.origin_id = origin_id;
+      cfg.periodId = periodObject.id;
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
+      cfg.originId = originId;
 
       // create a trans_id for the transaction
       // MUST BE THE LAST REQUEST TO prevent race conditions.
       return get.transactionId(reference.project_id);
     })
     .then(function (trans_id) {
-      console.log('[DEBUG] [JOURNAL] trans_id === ', trans_id);
-      var period_id = cfg.period.period_id;
-      var fiscal_year_id = cfg.period.fiscal_year_id;
-      var origin_id = cfg.origin_id;
-      var cautionDebitingQuery = null;
-      var DebitorCreditingQuery = null;
-
       // we can begin copying data from SALE -> JOURNAL
 
       // First, copy the data from sale into the journal.
-      queries.sale_query =
+      queries.sale =
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+        'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
           '`sale`.`note`, `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-          '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [origin_id, user_id].join(', ') + ' ' +
+          '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
         'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
           '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
         'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ';';
@@ -339,73 +295,69 @@ module.exports = function (db, synthetic) {
             '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
             '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
             '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-          'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+          'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
             '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
             '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-            ' null, `sale`.`uuid`, ' + [origin_id, user_id].join(', ') + ' ' +
+            ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
           'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
             '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
             '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
-          'WHERE `sale_item`.`uuid`=' + sanitize.escape(item.item_uuid) + ';';
+          'WHERE `sale_item`.`uuid` = ' + sanitize.escape(item.item_uuid) + ';';
         queries.items.push(sql);
       });
 
       // now we must set all relevant rows from sale to "posted"
-      queries.sale_posted_query =
-        'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`uuid`=' + sanitize.escape(id);
+      queries.sale_posted =
+        'UPDATE `sale` SET `sale`.`posted`=1 WHERE `sale`.`uuid` = ' + sanitize.escape(id);
 
-      function buildCautionQueries (nextTrans_id) {
-        var descript = 'CAD/'+reference.debitor_uuid+'/'+get.date();
+      return q.all(queries.items.map(function (sql) {
+        return db.exec(sql);
+      }));
+    })
+    .then(function () {
+      return db.exec(queries.sale);
+    })
+    .then(function () {
+      return q([ db.exec(queries.sale_posted), get.transactionId(reference.project_id)]);
+    })
+    .spread(function (rows, transId) {
+      console.log('[DEBUG] [SALE] Caution is:', caution);
+
+      if (caution !== 0) {
+        var descript = 'CAD/' + reference.debitor_uuid + '/' + get.date();
         var transAmount = caution - reference.cost > 0 ? reference.cost : caution;
-        queries.cautionDebitingQuery =
+        queries.cautionDebiting =
           'INSERT INTO posting_journal '+
-             '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-             '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-             '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-             'SELECT ' + ['"' + uuid() + '"', project_id, fiscal_year_id, period_id, nextTrans_id, '\''+get.date()+'\'', '\''+descript+'\''].join(',') + ', ' +
+            '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+            'SELECT ' + ['"' + uuid() + '"', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descript+'\''].join(',') + ', ' +
               '`caution_box_account_currency`.`account_id`, ' +
               [0, transAmount, 0, transAmount, reference.currency_id, '\''+reference.debitor_uuid+'\''].join(',') +
-              ', \'D\', ' + ['\''+reference.uuid+'\'', origin_id, user_id].join(',') + ' ' +
+              ', \'D\', ' + ['\''+reference.uuid+'\'', cfg.originId, user_id].join(',') + ' ' +
             'FROM `caution_box_account_currency` WHERE `caution_box_account_currency`.`currency_id`='+reference.currency_id+
-            ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ project_id +');';
+            ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ reference.project_id +');';
 
-        queries.DebitorCreditingQuery =
+        queries.DebitorCrediting =
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscal_year_id, period_id, nextTrans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
+        'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
           '`sale`.`note`, `debitor_group`.`account_id`, 0, '+transAmount+', 0,'+transAmount+', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-          '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [origin_id, user_id].join(', ') + ' ' +
+          '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
         'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
           '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
         'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ';';
-      }
 
-      return q.all(queries.items.map(function (sql){
-        return db.exec(sql);
-      }));
-    })
-    .then(function (){
-      return db.exec(queries.sale_query);
-    })
-    .then(function (){
-      return q.all([
-        db.exec(queries.sale_posted_query),
-        get.transactionId(reference.project_id)
-      ]);
-    })
-    .then(function (resp){
-      if (caution !== 0) {
-        buildCautionQueries(resp[1]);
         return q.all([
-          db.exec(queries.cautionDebitingQuery),
-          db.exec(queries.DebitorCreditingQuery)
+          db.exec(queries.cautionDebiting),
+          db.exec(queries.DebitorCrediting)
         ]);
       }
       return q();
     })
-    .then(function (res){
+    .then(function (res) {
       done(null, res);
     })
     .catch(function (err) {
@@ -423,14 +375,6 @@ module.exports = function (db, synthetic) {
     var sql, row;
 
     // find out what the current balance is on the invoice to find out if we are paying it all.
-    /*
-    sql =
-      'SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit ' +
-      'FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN posting_journal AS p ' +
-      'ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id ' +
-      'WHERE c.uuid = ' + sanitize.escape(cash_id) + ' AND p.deb_cred_uuid = s.debitor_uuid GROUP BY c.uuid;';
-    */
-
     sql =
       "SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit " +
       "FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN " +
@@ -488,7 +432,7 @@ module.exports = function (db, synthetic) {
       state.items = results;
       state.reference = results[0];
 
-      return validPeriod(state.reference.enterprise_id, state.reference.date);
+      return check.validPeriod(state.reference.enterprise_id, state.reference.date);
     })
     .then(function () {
       var document_id_exist = validate.exists(state.reference.document_id);
@@ -517,10 +461,10 @@ module.exports = function (db, synthetic) {
         throw new Error('Invalid payment price for one invoice with cash id: ' + id);
       }
 
-      return validPeriod(state.reference.enterprise_id, state.reference.date);
+      return check.validPeriod(state.reference.enterprise_id, state.reference.date);
     })
     .then(function () {
-      return validDebitorOrCreditor(state.reference.deb_cred_uuid);
+      return check.validDebitorOrCreditor(state.reference.deb_cred_uuid);
     })
     .then(function () {
       return get.origin('cash');
@@ -615,9 +559,8 @@ module.exports = function (db, synthetic) {
 
       if (state.isPaidInFull && state.remainder !== 0) {
 
-        //FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the
-        //rounding account
-
+        // FIXME: Currently hardcoding 534 `OPERATION DE CHANGE` account as the
+        // rounding account
         state.creditOrDebitBool = state.remainder > 0;
         state.roundedRemainder = precision(Math.abs(state.remainder), 4);
         var creditOrDebit = state.creditOrDebitBool ?
@@ -640,7 +583,6 @@ module.exports = function (db, synthetic) {
           [state.originId, state.userId].join(', ') + ' ' +
         'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
         'WHERE `cash`.`uuid`=' + sanitize.escape(state.id) + ' LIMIT 1;';
-
       }
       return query ? db.exec(query) : q();
     })
@@ -736,90 +678,60 @@ module.exports = function (db, synthetic) {
       // fourth check - is the total the price * the quantity?
       var totalEquality = data.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
       if (!totalEquality) throw new Error('Unit prices and quantities do not match for purchase id: ' + id);
-    
+
       return get.origin('purchase');
     })
-    .then(function (origin_id) {
-    
+    .then(function (originId) {
+      cfg.originId = originId;
+      return get.period(reference.date);
+    })
+    .then(function (periodObject) {
+      cfg.periodId = periodObject.id;
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
+      return get.transactionId(reference.project_id);
+    })
+    .then(function (transId) {
+      // format queries
+      queries.purchase =
+        'INSERT INTO `posting_journal` ' +
+          '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+        'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+          '`purchase`.`note`, `creditor_group`.`account_id`, 0, `purchase`.`cost`, 0, `purchase`.`cost`, ' + // last four debit, credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
+          '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [cfg.originId, user_id].join(', ') + ' ' +
+        'FROM `purchase` JOIN `creditor` JOIN `creditor_group` ON ' +
+          '`purchase`.`creditor_id`=`creditor`.`id` AND `creditor_group`.`id`=`creditor`.`group_id` ' +
+        'WHERE `purchase`.`id` = ' + sanitize.escape(id);
+
+      queries.purchase_item =
+        'INSERT INTO `posting_journal` ' +
+          '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+        'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+          '`purchase`.`note`, `inventory_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
+          '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [cfg.originId, user_id].join(', ') + ' ' +
+        'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+          '`purchase_item`.`purchase_id`=`purchase`.`id` AND `purchase_item`.`inventory_id`=`inventory`.`id` AND ' +
+          '`inventory`.`group_id`=`inventory_group`.`id` ' +
+        'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
+
+      return db.exec(queries.purchase);
     })
     .then(function () {
-    
+      return db.exec(queries.purchase_item);
+    })
+    .then(function (rows) {
+      done(null, rows);
     })
     .catch(function (err) {
       done(err);
     })
     .done();
-    /*
-
-        // all checks have passed - prepare for writing to the journal.
-        get.origin('purchase', function (err, origin_id) {
-          if (err) return done(err);
-          // we now have the origin!
-
-          get.period(date, function (err, period_object) {
-            if (err) return done(err);
-
-            // we now have the relevant period!
-
-            // create a trans_id for the transaction
-            // MUST BE THE LAST REQUEST TO undo race conditions.
-            get.transactionId(project_id, function (err, trans_id) {
-              if (err) return done(err);
-
-              var period_id = period_object.period_id;
-              var fiscal_year_id = period_object.fiscal_year_id;
-
-              // we can begin copying data from PURCHASE -> JOURNAL
-
-              // First, copy the data from purchase into the journal.
-              var purchase_sql =
-                'INSERT INTO `posting_journal` ' +
-                  '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                  '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `purchase`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  '`purchase`.`note`, `creditor_group`.`account_id`, 0, `purchase`.`cost`, 0, `purchase`.`cost`, ' + // last four debit, credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-                  '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                'FROM `purchase` JOIN `creditor` JOIN `creditor_group` ON ' +
-                  '`purchase`.`creditor_id`=`creditor`.`id` AND `creditor_group`.`id`=`creditor`.`group_id` ' +
-                'WHERE `purchase`.`id`=' + sanitize.escape(id);
-
-              var purchase_item_sql =
-                'INSERT INTO `posting_journal` ' +
-                  '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                  '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-                  '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                'SELECT `purchase`.`project_id`, ' + [fiscal_year_id, period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  '`purchase`.`note`, `inventory_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
-                  '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [origin_id, user_id].join(', ') + ' ' +
-                'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inventory_group` ON ' +
-                  '`purchase_item`.`purchase_id`=`purchase`.`id` AND `purchase_item`.`inventory_id`=`inventory`.`id` AND ' +
-                  '`inventory`.`group_id`=`inventory_group`.`id` ' +
-                'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
-
-              db.execute(purchase_sql, function (err, rows) {
-                if (err) return done(err);
-
-                db.execute(purchase_item_sql, function (err, rows) {
-                  if (err) return done(err);
-                  // Finally, we can update purchase
-                  var sql = 'UPDATE `purchase` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
-
-                  db.execute(sql, function (err, rows) {
-                    if (err) return done(err);
-                    done(null, rows);
-                    return;
-                  });
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-    */
   }
 
+  // TODO : Figure out what we are going to do with this route
   function handleGroupInvoice (id, user_id, done) {
     // posting group invoice requests
     var sql =
@@ -866,11 +778,11 @@ module.exports = function (db, synthetic) {
           return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
 
         // all checks have passed - prepare for writing to the journal.
-        get.origin('group_invoice', function (err, origin_id) {
+        get.origin('group_invoice', function (err, originId) {
           if (err) return done(err);
           // we now have the origin!
 
-          get.period(date, function (err, period_object) {
+          get.period(date, function (err, periodObject) {
             if (err) return done(err);
 
             // we now have the relevant period!
@@ -887,8 +799,8 @@ module.exports = function (db, synthetic) {
             get.transactionId(project_id, function (err, trans_id) {
               if (err) return done(err);
 
-              var period_id = period_object.period_id;
-              var fiscal_year_id = period_object.fiscal_year_id;
+              var period_id = periodObject.id;
+              var fiscal_year_id = periodObject.fiscal_year_id;
 
               // process all
               var promise = results.map(function (row, idx) {
@@ -906,7 +818,7 @@ module.exports = function (db, synthetic) {
                   '  `group_invoice`.`note`, `debitor_group`.`account_id`, `group_invoice_item`.`cost`, ' +
                   '  0, `group_invoice_item`.`cost`, 0, `enterprise`.`currency_id`, ' +
                   '  null, null, `group_invoice_item`.`invoice_uuid`, ' +
-                  [origin_id, user_id].join(', ') + ' ' +
+                  [originId, user_id].join(', ') + ' ' +
                   'FROM `group_invoice` JOIN `group_invoice_item` JOIN `debitor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
                   '  `group_invoice`.`id` = `group_invoice_item`.`payment_id` AND ' +
                   '  `group_invoice`.`group_uuid` = `debitor_group`.`uuid`  AND ' +
@@ -926,7 +838,7 @@ module.exports = function (db, synthetic) {
                   '  `group_invoice`.`note`, `debitor_group`.`account_id`, 0, `group_invoice_item`.`cost`, ' +
                   '  0, `group_invoice_item`.`cost`, `enterprise`.`currency_id`,  ' +
                   '  `group_invoice`.`debitor_uuid`, \'D\', `group_invoice_item`.`invoice_uuid`, ' +
-                  [origin_id, user_id].join(', ') + ' ' +
+                  [originId, user_id].join(', ') + ' ' +
                   'FROM `group_invoice` JOIN `group_invoice_item` JOIN `debitor` JOIN `debitor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
                   '  `group_invoice`.`id` = `group_invoice_item`.`payment_id` AND ' +
                   '  `group_invoice`.`debitor_uuid` = `debitor`.`uuid`  AND ' +
@@ -962,7 +874,9 @@ module.exports = function (db, synthetic) {
   }
 
   function handleCreditNote (id, user_id, done) {
-    var sql =
+    var sql, data, reference, cfg = {}, queries = {};
+
+    sql =
       'SELECT `credit_note`.`project_id`, `project`.`enterprise_id`, `cost`, `debitor_uuid`, `note_date`, `credit_note`.`sale_uuid`, ' +
         ' `description`, `note_date`, `inventory_uuid`, `quantity`, `sale_item`.`uuid` as `item_uuid`, ' +
         '`transaction_price`, `debit`, `credit`' +
@@ -973,221 +887,203 @@ module.exports = function (db, synthetic) {
         '`inventory`.`unit_id`=`inventory_unit`.`id` ' +
       'WHERE `credit_note`.`uuid`=' + sanitize.escape(id);
 
-    db.execute(sql, function (err, results) {
-      if (err) { return done(err); }
+    db.exec(sql)
+    .then(function (results) {
       if (results.length === 0) {
-        return done(new Error('No credit note by the id: ' + id));
+        throw new Error('No credit note by the id: ' + id);
       }
 
-      var reference_note= results[0];
-      var enterprise_id = reference_note.enterprise_id;
-      var project_id = reference_note.project_id;
-      var date = reference_note.note_date;
+      data = results;
+      reference = results[0];
 
-      var saleItems = results;
+      return check.validPeriod(reference.enterprise_id, reference.note_date);
 
-      check.validPeriod(enterprise_id, date, function (err) {
-        if (err) { done(err); }
+    })
+    .then(function () {
+      // Ensure a credit note hasn't already been assiged to this sale
+      var reviewLegacyNotes = "SELECT uuid FROM credit_note WHERE sale_uuid=" + sanitize.escape(reference.sale_uuid) + ";";
+      return db.exec(reviewLegacyNotes);
+    })
+    .then(function (rows) {
+      // There should only be one sale here
+      if (rows.length > 1) {
+        throw new Error('This sale has already been reversed with a credit note');
+      }
 
-        // Ensure a credit note hasn't already been assiged to this sale
-        var reviewLegacyNotes = "SELECT uuid FROM credit_note WHERE sale_uuid=" + sanitize.escape(reference_note.sale_uuid) + ";";
-        db.execute(reviewLegacyNotes, function (err, rows) {
-          if(err) return done(err);
+      // Cost positive checks
+      var costPositive = data.every(function (row) { return validate.isPositive(row.cost); });
+      if (!costPositive) {
+        throw new Error('Negative cost detected for invoice id: ' + id);
+      }
 
-          // There should only be one sale here
-          if(rows.length > 1) return done('This sale has already been reversed with a credit note');
+      // third check - is the total the price * the quantity?
+      function sum (a, b) {
+        return a + (b.credit - b.debit);
+      }
 
-          // Cost positive checks
-          var costPositive = results.every(function (row) { return validate.isPositive(row.cost); });
-          if (!costPositive) {
-            return done(new Error('Negative cost detected for invoice id: ' + id));
-          }
+      var total = data.reduce(sum, 0);
+      //console.log('[DEBUG] sum', total, 'cost', reference_note.cost);
+      var totalEquality = validate.isEqual(total, reference.cost);
+      //if (!totalEquality) {
+        //console.log('[DEBUG] ', 'sum of costs is not equal to the total');
+        //return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
+      //}
 
-          // third check - is the total the price * the quantity?
-          function sum(a, b) {
-            return a + (b.credit - b.debit);
-          }
+      // all checks have passed - prepare for writing to the journal.
+      return q([ get.origin('credit_note'), get.period(reference.note_date) ]);
 
-          var total = results.reduce(sum, 0);
-          //console.log('[DEBUG] sum', total, 'cost', reference_note.cost);
-          var totalEquality = validate.isEqual(total, reference_note.cost);
-          //if (!totalEquality) {
-            //console.log('[DEBUG] ', 'sum of costs is not equal to the total');
-            //return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
-          //}
+    })
+    .spread(function (originId, periodObject) {
+      // we now have the origin!
+      // we now have the relevant period!
+      cfg.originId = originId;
+      cfg.periodId = periodObject.id; // TODO : change this to camelcase
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-          // all checks have passed - prepare for writing to the journal.
-          get.origin('credit_note', function (err, originId) {
-            if (err) { return done(err); }
-            // we now have the origin!
+      return get.transactionId(reference.project_id);
+    })
+    .then(function (transId) {
+      queries.debtor =
+        'INSERT INTO `posting_journal` ' +
+          '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+        'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+          '"' + reference.description + '", `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' +
+          '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
+        'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
+          '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
+        'WHERE `sale`.`uuid`=' + sanitize.escape(reference.sale_uuid) + ';';
 
-            get.period(date, function (err, periodObject) {
-              if (err) { return done(err); }
+      // Credit debtor (basically the reverse of a sale)
 
-              // we now have the relevant period!
-              // create a trans_id for the transaction
-              // MUST BE THE LAST REQUEST TO prevent race conditions.
-              get.transactionId(project_id, function (err, transId) {
-                if(err) return done(err);
+      queries.items = [];
+      data.forEach(function (item) {
+        // Debit sale items
+        // var itemSql =
+        // 'INSERT INTO `posting_journal` ' +
+        //   '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        //   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        //   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+        // 'SELECT `sale`.`project_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+        //   '"' + reference_note.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+        //   '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+        //   ' null, `sale`.`uuid`, ' + [originId, user_id].join(', ') + ' ' +
+        // 'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+        //   '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
+        //   '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+        // 'WHERE `sale`.`uuid`=' + sanitize.escape(reference.sale_uuid) + ';';
 
-                var periodId = periodObject.period_id, fiscalYearId = periodObject.fiscal_year_id;
+        var itemSql =
+          'INSERT INTO `posting_journal` ' +
+            '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+            '"' + reference.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+            '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
+            ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
+          'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+            '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
+            '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+          'WHERE `sale_item`.`uuid`=' + sanitize.escape(item.item_uuid) + ';';
 
-                // console.log('working with', row, index, periodId, originId);
-
-                // Credit debtor (basically the reverse of a sale)
-                var debtorQuery =
-                  'INSERT INTO `posting_journal` ' +
-                    '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                    '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-                    '"' + reference_note.description + '", `debitor_group`.`account_id`, `sale`.`cost`, 0, `sale`.`cost`, 0, ' +
-                    '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [originId, user_id].join(', ') + ' ' +
-                  'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
-                    '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
-                  'WHERE `sale`.`uuid`=' + sanitize.escape(reference_note.sale_uuid) + ';';
-
-                var itemsQuery = [];
-                saleItems.forEach(function (item) {
-                  // Debit sale items
-                  // var itemSql =
-                  // 'INSERT INTO `posting_journal` ' +
-                  //   '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                  //   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                  //   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  // 'SELECT `sale`.`project_id`, ' + [fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-                  //   '"' + reference_note.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
-                  //   '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-                  //   ' null, `sale`.`uuid`, ' + [originId, user_id].join(', ') + ' ' +
-                  // 'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
-                  //   '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
-                  //   '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
-                  // 'WHERE `sale`.`uuid`=' + sanitize.escape(reference_note.sale_uuid) + ';';
-
-                  var itemSql =
-                  'INSERT INTO `posting_journal` ' +
-                    '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                    '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-                  'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), fiscalYearId, periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-                    '"' + reference_note.description + '", `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
-                    '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-                    ' null, `sale`.`uuid`, ' + [originId, user_id].join(', ') + ' ' +
-                  'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
-                    '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
-                    '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
-                  'WHERE `sale_item`.`uuid`=' + sanitize.escape(item.item_uuid) + ';';
-
-                  itemsQuery.push(itemSql);
-                });
-
-
-                db.execute(debtorQuery, function (err, rows) {
-                  if(err) return done(err);
-
-                  q.all(itemsQuery.map(function (itemSql) {
-                    return db.exec(itemSql);
-                  })).then(function(result) {
-
-                    var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `id`=' + sanitize.escape(id) + ';';
-
-                    if(err) return done(err);
-
-                    db.execute(sql, function (err, rows) {
-                      if (err) return done(err);
-                      done(null, rows);
-                      return;
-                    });
-                  });
-                });
-
-              });
-            });
-          });
-        });
+        queries.items.push(itemSql);
       });
-    });
+
+      return db.exec(queries.debtor);
+    })
+    .then(function () {
+      return q.all(queries.items.map(function (sql) {
+        return db.exec(sql);
+      }));
+    })
+    .then(function () {
+      var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `uuid`=' + sanitize.escape(id) + ';';
+      return db.exec(updatePosted);
+    })
+    .then(function (rows) {
+      done(null, rows);
+    })
+    .catch(function (err) {
+      done(err);
+    })
+    .done();
   }
 
   function handleCaution(id, user_id, done) {
-    var sql =
+    var sql, data, reference, cfg = {}, queries = {};
+
+    sql =
       "SELECT `caution`.`project_id`, `caution`.`value`, `caution`.`date`, `caution`.`debitor_uuid`, `caution`.`currency_id`, `caution`.`user_id`, `caution`.`description`, `caution`.`cash_box_id` "+
       "FROM `caution` WHERE `caution`.`uuid` = " + sanitize.escape(id) + ";";
 
-    db.execute(sql, function (err, ans) {
-      if (err) { return done(err, null); }
-      if (ans.length === 0) { return done(new Error('No caution by the id: ' + id)); }
+    db.exec(sql)
+    .then(function (results) {
+      if (results.length === 0) {
+        throw new Error('No caution by the id: ' + id);
+      }
 
-      var reference_caution = ans[0];
-      var project_id = reference_caution.project_id;
-      var date = util.toMysqlDate(reference_caution.date);
+      reference = results[0];
 
-      get.myExchangeRate(date)
-      .then(function (exchangeRateStore) {
-        var dailyExchange = exchangeRateStore.get(reference_caution.currency_id);
-        var debit_equiv = dailyExchange.rate * 0;
-        var credit_equiv = (1/dailyExchange.rate) * reference_caution.value;
+      cfg.date = util.toMysqlDate(reference.date);
+      return get.myExchangeRate(cfg.date);
+    })
+    .then(function (exchangeRateStore) {
+      var dailyExchange = exchangeRateStore.get(reference.currency_id);
+      cfg.debit_equiv = dailyExchange.rate * 0;
+      cfg.credit_equiv = (1/dailyExchange.rate) * reference.value;
 
-        get.origin('caution', function (err, origin_id) {
-          if (err) { return done(err); }
+      return q([get.origin('caution'), get.period(reference.date)]);
+    })
+    .spread(function (originId, periodObject) {
+      cfg.originId = originId;
+      cfg.periodId = periodObject.id;
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-          get.myPeriod(date, function (err, periodObject) {
+      return get.transactionId(reference.project_id);
+    })
+    .then(function (transId) {
+      //we credit the caution account
+      queries.creditingRequest =
+        'INSERT INTO posting_journal '+
+        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) '+
+        'SELECT ' + [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'','\''+reference.description + '\''].join(', ') +
+          ', `caution_box_account_currency`.`account_id`, ' + [reference.value, 0, cfg.credit_equiv, cfg.debit_equiv, reference.currency_id, '\''+reference.debitor_uuid+'\''].join(', ') +
+          ', \'D\', '+['\''+id+'\'', cfg.originId, user_id].join(', ')+' '+
+        'FROM `caution_box_account_currency`, `caution_box` WHERE `caution_box`.`id` =`caution_box_account_currency`.`caution_box_id` AND `caution_box_account_currency`.`currency_id`='+reference.currency_id+
+        ' AND `caution_box`.`project_id`='+reference.project_id;
 
-            if (err) { return done(err); }
+      queries.debitingRequest =
+        'INSERT INTO posting_journal '+
+        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+        'SELECT ' + [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+reference.description+'\''].join(',') +
+          ', `cash_box_account_currency`.`account_id`, ' + [0, reference.value, cfg.debit_equiv, cfg.credit_equiv, reference.currency_id].join(',') +
+          ', null, null, ' + ['\''+id+'\'', cfg.originId, user_id].join(', ') + ' ' +
+        'FROM `cash_box_account_currency`, `cash_box` WHERE `cash_box`.`id` =`cash_box_account_currency`.`cash_box_id` AND `cash_box_account_currency`.`currency_id`='+reference.currency_id+
+        ' AND `cash_box_account_currency`.`cash_box_id`='+reference.cash_box_id+' AND `cash_box`.`project_id`='+reference.project_id;
 
-            get.transactionId(project_id, function (err, trans_id) {
-              if (err) { return done(err);}
-
-              //we credit the caution account
-              var creditingRequest =
-                'INSERT INTO posting_journal '+
-                '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) '+
-                'SELECT ' + [reference_caution.project_id, sanitize.escape(uuid()), periodObject.fiscal_year_id, periodObject.period_id, trans_id, '\''+get.date()+'\'','\''+reference_caution.description+'\''].join(', ') +
-                  ', `caution_box_account_currency`.`account_id`, '+[reference_caution.value, 0, credit_equiv, debit_equiv, reference_caution.currency_id, '\''+reference_caution.debitor_uuid+'\''].join(', ') +
-                  ', \'D\', '+['\''+id+'\'', origin_id, user_id].join(', ')+' '+
-                'FROM `caution_box_account_currency`, `caution_box` WHERE `caution_box`.`id` =`caution_box_account_currency`.`caution_box_id` AND `caution_box_account_currency`.`currency_id`='+reference_caution.currency_id+
-                ' AND `caution_box`.`project_id`='+reference_caution.project_id;
-
-
-              var debitingRequest =
-                'INSERT INTO posting_journal '+
-                '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
-                'SELECT ' + [reference_caution.project_id, sanitize.escape(uuid()), periodObject.fiscal_year_id, periodObject.period_id, trans_id, '\''+get.date()+'\'', '\''+reference_caution.description+'\''].join(',') +
-                  ', `cash_box_account_currency`.`account_id`, ' + [0, reference_caution.value, debit_equiv, credit_equiv, reference_caution.currency_id].join(',') +
-                  ', null, null, ' + ['\''+id+'\'', origin_id, user_id].join(', ') + ' ' +
-                'FROM `cash_box_account_currency`, `cash_box` WHERE `cash_box`.`id` =`cash_box_account_currency`.`cash_box_id` AND `cash_box_account_currency`.`currency_id`='+reference_caution.currency_id+
-                ' AND `cash_box_account_currency`.`cash_box_id`='+reference_caution.cash_box_id+' AND `cash_box`.`project_id`='+reference_caution.project_id;
-
-
-
-              q.all([creditingRequest, debitingRequest].map(function (item){
-                return db.exec(item);
-              }))
-              .then(function (res){
-                return done(null, res);
-              })
-              .catch(function (err) {
-                return done(err);
-              })
-              .done();
-            });
-          });
-        });
-      })
-      .catch(function (err) {
-        var discard = "DELETE FROM caution WHERE id = " + sanitize.escape(id) + ";";
-        db.execute(discard, function(err, ans){
-          //console.log('************** error annulation insertion', err);
-          throw (new Error('un probleme'));
-        });
+      return db.exec(queries.creditingRequest);
+    })
+    .then(function () {
+      return db.exec(queries.debitingRequest);
+    })
+    .then(function (rows) {
+      done(null, rows);
+    })
+    .catch(function (err) {
+      var discard = "DELETE FROM caution WHERE uuid = " + sanitize.escape(id) + ";";
+      return db.exec(discard)
+      .done(function () {
+        done(err);
       });
-    });
+    })
+    .done();
   }
-
 
   function handleTransfert (id, user_id, done){
     var sql = "SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`="+sanitize.escape(id)+";";
@@ -1203,7 +1099,7 @@ module.exports = function (db, synthetic) {
       get.myExchangeRate(date)
       .then(function (exchangeRateStore) {
 
-        get.origin('pcash_transfert', function (err, origin_id) {
+        get.origin('pcash_transfert', function (err, originId) {
 
           if (err) { return done(err); }
 
@@ -1234,7 +1130,7 @@ module.exports = function (db, synthetic) {
                                       reference_pcash.cost, 0,
                                         valueExchanged, 0,
                                         reference_pcash.currency_id
-                                     ].join(',')+', null, null, '+[sanitize.escape(id), origin_id, user_id].join(',')
+                                     ].join(',')+', null, null, '+[sanitize.escape(id), originId, user_id].join(',')
 
                               +');';
 
@@ -1255,7 +1151,7 @@ module.exports = function (db, synthetic) {
                                       0, reference_pcash.cost,
                                         0, valueExchanged,
                                         reference_pcash.currency_id
-                                     ].join(',')+', null, null, '+[sanitize.escape(id), origin_id, user_id].join(',')
+                                     ].join(',')+', null, null, '+[sanitize.escape(id), originId, user_id].join(',')
 
                               +' FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference_pcash.cash_box_id)
                               +' AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash.currency_id);
@@ -1298,7 +1194,7 @@ module.exports = function (db, synthetic) {
         get.myExchangeRate(date)
         .then(function (exchangeRateStore) {
 
-          get.origin('pcash_convention', function (err, origin_id) {
+          get.origin('pcash', function (err, originId) {
 
             if (err) { return done(err); }
 
@@ -1332,7 +1228,7 @@ module.exports = function (db, synthetic) {
                                                   0, ref_pcash_item.debit,
                                                   0, valueExchanged,
                                                   reference_pcash_convention.reference_pcash.currency_id
-                                                 ].join(',')+', null, null, '+[sanitize.escape(ref_pcash_item.inv_po_id), origin_id, user_id].join(',')
+                                                 ].join(',')+', null, null, '+[sanitize.escape(ref_pcash_item.inv_po_id), originId, user_id].join(',')
                                           +' FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference_pcash_convention.reference_pcash.cash_box_id)
                                           +' AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash_convention.reference_pcash.currency_id);
                             return db.exec(sql);
@@ -1358,7 +1254,7 @@ module.exports = function (db, synthetic) {
                                           ref_pcash_item.debit,0,
                                           valueExchanged,0,
                                           reference_pcash_convention.reference_pcash.currency_id
-                                       ].join(',')+', null, null, '+[sanitize.escape(ref_pcash_item.inv_po_id), origin_id, user_id].join(',')
+                                       ].join(',')+', null, null, '+[sanitize.escape(ref_pcash_item.inv_po_id), originId, user_id].join(',')
                                 +');';
                         return db.exec(credit_sql);
                         })
@@ -1381,8 +1277,6 @@ module.exports = function (db, synthetic) {
           });
         });
       });
-
-
     });
   }
 
@@ -1407,5 +1301,6 @@ module.exports = function (db, synthetic) {
     }
     return;
   }
+
   return { request : request };
 };
