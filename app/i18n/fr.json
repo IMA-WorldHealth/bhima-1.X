@@ -1106,7 +1106,8 @@
                               },
     "INCOME"                : {
                                   "TRANSFER"                : "Transfert",
-                                  "CONVENTION"              : "Convention"
+                                  "CONVENTION"              : "Convention",
+                                  "GENERIC_INCOME"          : "Recette generale"
 
                               }
   },
