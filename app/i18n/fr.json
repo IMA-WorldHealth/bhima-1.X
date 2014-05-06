@@ -553,7 +553,13 @@
     "REFERENCE"           : "Reference",
     "TRACKING_NUMBER"     : "Numero de Tracking",
     "EXPIRATION_DATE"     : "Date Expiration",
-    "LOT"                 : "Lot"
+    "LOT"                 : "Lot",
+    "STATE"               : "Etat",
+    "AVAILABLE"           : "Disponible",
+    "QTY_ASKED"           : "Quantite Demandee",
+    "QTY_AVAIL"           : "Quantite Disponible",
+    "QTY_IN_LOT"          : "Nombre item dans Lot",
+    "CODE_ITEM"           : "Code Medicament"
   },
 
   "REPORT"                  : {
@@ -1114,7 +1120,7 @@
 
     "DISTRIBUTION" : {
     "TITLE"            : "Distribution",
-    "LOT_DETAILS"      : "Details des lots",
+    "SALE_DETAILS"      : "Details des ventes",
     "ADD_ROW"          : "Ajouter Item",
     "DESCRIPTION"      : "Description",
     "SUBMIT"           : "Soumettre Note de Credit",
@@ -1122,6 +1128,14 @@
     "PATIENT_COVERED"  : "Patient est couvert par la convention",
     "APPLIES_GLOBALLY" : "Appliquer globalement",
     "APPLIES_TO_ITEM"  : "Appliquer par item",
-    "TOTAL"            : "Total"
+    "TOTAL"            : "Total",
+    "SELECTED_SALE_DETAILS"  : "Detail de la vente",
+    "NUM_FACTURE"            : "Numero Facture ",
+    "SALE_DATE"              : "Date de Vente",
+    "COST"                   : "Cout",
+    "LOT_DETAILS"            : "Details des Lots",
+    "EMPTY_MESSAGE"          : "Aucune vente selectionnee !"
+
+
   }
 }
