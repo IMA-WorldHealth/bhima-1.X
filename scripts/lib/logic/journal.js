@@ -1085,110 +1085,136 @@ module.exports = function (db, synthetic) {
     .done();
   }
 
-  function handleTransfert (id, user_id, done){
-    var sql = "SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`="+sanitize.escape(id)+";";
+  function handleTransfert (id, user_id, done) {
+    var sql, data, reference, cfg = {}, queries = {};
 
-    db.execute(sql, function(err, ans){
-      if (err) { return done(err, null); }
-      if (ans.length === 0) { return done(new Error('No primary_cash by the uuid: ' + id)); }
+    // TODO : Formalize this
+    sql = "SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid` = " + sanitize.escape(id) + ";";
 
-      var reference_pcash = ans[0];
-      var project_id = reference_pcash.project_id;
-      var date = util.toMysqlDate(reference_pcash.date);
+    db.exec(sql)
+    .then(function (results) {
+      if (results.length === 0) {
+        throw new Error('No primary_cash by the uuid: ' + id);
+      }
 
-      get.myExchangeRate(date)
-      .then(function (exchangeRateStore) {
+      var reference = results[0];
+      data = results;
+      var date = util.toMysqlDate(reference.date);
 
-        get.origin('pcash_transfert', function (err, originId) {
+      return get.myExchangeRate(date);
+    })
+    .then(function (exchangeRateStore) {
+      var dailyExchange = exchangeRateStore.get(reference.currency_id);
+      cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
 
-          if (err) { return done(err); }
+      return q([get.origin('pcash_transfert'), get.period(reference.date)]);
+    })
+    .then(function (originId, periodObject) {
+      cfg.originId = originId;
+      cfg.periodId = periodObject.id;
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-          get.myPeriod(date, function (err, periodObject) {
+      return get.transactionId(reference.project_id);
+    })
+    .then(function (transId) {
+      var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
+      queries.credit =
+        'INSERT INTO posting_journal (`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+          'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descrip+'\'', reference.account_id].join(',') + ', ' +
+          [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
+        ');';
 
-            if (err) { return done(err); }
-
-            get.transactionId(project_id, function (err, trans_id) {
-              if(err) {return done(err);}
-                  var dailyExchange = exchangeRateStore.get(reference_pcash.currency_id);
-                  var valueExchanged = parseFloat((1/dailyExchange.rate) * reference_pcash.cost).toFixed(4);
-                  var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
-
-
-              var credit_sql = 'INSERT INTO posting_journal '+
-                            '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-                            'VALUES ('+
-                                      [
-                                        sanitize.escape(uuid()),
-                                        reference_pcash.project_id,
-                                        periodObject.fiscal_year_id,
-                                        periodObject.period_id,
-                                        trans_id, '\''+get.date()+'\'', '\''+descrip+'\'', reference_pcash.account_id
-                                      ].join(',')+', '+
-                                     [
-                                      reference_pcash.cost, 0,
-                                        valueExchanged, 0,
-                                        reference_pcash.currency_id
-                                     ].join(',')+', null, null, '+[sanitize.escape(id), originId, user_id].join(',')
-
-                              +');';
-
-
-              var debit_sql = 'INSERT INTO posting_journal '+
-                            '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-                            'SELECT '+
-                                      [
-                                        sanitize.escape(uuid()),
-                                        reference_pcash.project_id,
-                                        periodObject.fiscal_year_id,
-                                        periodObject.period_id,
-                                        trans_id, '\''+get.date()+'\'', '\''+descrip+'\''
-                                      ].join(',')+', `account_id`, '+
-                                     [
-                                      0, reference_pcash.cost,
-                                        0, valueExchanged,
-                                        reference_pcash.currency_id
-                                     ].join(',')+', null, null, '+[sanitize.escape(id), originId, user_id].join(',')
-
-                              +' FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference_pcash.cash_box_id)
-                              +' AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash.currency_id);
-
-              q.all([credit_sql, debit_sql].map(function (item){
-                return db.exec(item);
-              }))
-              .then(function (res){
-                return done(null, res);
-              })
-              .catch(function (err){
-                return done (err);
-
-              });
-            });
-          });
-        });
-      }, function (err) {
-        var discard = "DELETE FROM primary_cash WHERE uuid="+sanitize.escape(id);
-        db.execute(discard, function(err, ans){
-          throw (new Error('Erreur lor du update'+err));
-        });
-      });
-    });
+      queries.debit =
+        'INSERT INTO posting_journal '+
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descrip+'\''].join(',') +
+          ', `account_id`, ' + [0, reference.cost, 0, cfg.valueExchanged, reference.currency_id ].join(',')+', null, null, ' +
+          [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
+          'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
+            'AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference.currency_id);
+      return db.exec(queries.credit);
+    })
+    .then(function () {
+      return db.exec(queries.debit);
+    })
+    .then(function (rows) {
+      done(null, rows);
+    })
+    .catch(function (err) {
+      var discard = "DELETE FROM primary_cash WHERE uuid = " + sanitize.escape(id) + ";";
+      return db.exec(discard)
+      .then(function () {
+        done(err);
+      })
+      .done();
+    })
+    .done();
   }
 
-  function handlePcashConvention (id, user_id, done){
-    var sql = "SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`="+sanitize.escape(id)+";";
+  function handlePcashConvention (id, user_id, done) {
+    var sql, data, reference, cfg = {}, queries = {};
 
-    db.execute(sql, function(err, ans){
-      if (err) { return done(err, null); }
-      if (ans.length === 0) { return done(new Error('No primary_cash by the uuid: ' + id)); }
-      var reference_pcash_convention={};
-      reference_pcash_convention.reference_pcash = ans[0];
-      var project_id = reference_pcash_convention.reference_pcash.project_id;
-      var date = util.toMysqlDate(reference_pcash_convention.reference_pcash.date);
-      sql = "SELECT * FROM `primary_cash_item` WHERE `primary_cash_item`.`primary_cash_uuid`="+sanitize.escape(id)+";";
+    sql =
+      "SELECT `primary_cash_item`.`primary_cash_uuid`, `reference`, `project_id`, `date`, `deb_cred_uuid`, `deb_cred_type`, `currency_id`, " +
+        "`account_id`, `cost`, `user_id`, `description`, `cash_box_id`, `origin_id`, `primary_cash_item`.`debit`, " +
+        "`primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid` " +
+      "FROM `primary_cash` JOIN `primary_cash_item` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` " +
+      "WHERE `primary_cash`.`uuid` = " + sanitize.escape(id) + ";";
+
+    db.exec(sql)
+    .then(function (results) {
+      if (results.length === 0) {
+        throw new Error('No primary_cash by the uuid: ' + id);
+      }
+
+      reference = results[0];
+      data = results;
+      var date = util.toMysqlDate(reference.date);
+      return get.myExchangeRate(date);
+    })
+    .then(function (exchangeRateStore) {
+
+      var dailyExchange = exchangeRateStore.get(reference.currency_id);
+      cfg.valueExchanged = parseFloat((1 / dailyExchange.rate) * reference.cost).toFixed(4);
+
+      return q([get.origin('pcash'), get.period(reference.date)]);
+    })
+    .spread(function (originId, periodObject) {
+      cfg.originId = originId;
+      cfg.periodId = periodObject.id;
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
+
+      return get.transactionId(reference.project_id);
+    })
+    .then(function (transId) {
+      var descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
+
+      queries;
+
+      reference.map(function (item) {
+        var valueExchanged = parseFloat((1/dailyExchange.rate) * item.debit).toFixed(4);
+        var sql =
+          'INSERT INTO posting_journal (`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`,'' `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+          'SELECT ' + [sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, periodObject.period_id, transId, '\''+get.date()+'\'', '\''+descrip+'\''].join(',') +', ' +
+            '`account_id`, ' + [0, item.debit, 0, valueExchanged, reference_pcash_convention.reference_pcash.currency_id].join(',')+', null, null, ' +
+            [sanitize.escape(item.inv_po_id), originId, user_id].join(',') + ' ' +
+          'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`=' + sanitize.escape(reference.cash_box_id) + ' ' +
+            'AND `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ";";
+        return db.exec(sql);
+      });
+    
+    })
+    .catch(function (err) {
+    
+    
+    })
+    .done();
       db.execute(sql, function(err, ans2){
         reference_pcash_convention.reference_pcash_items = ans2;
         get.myExchangeRate(date)
@@ -1206,32 +1232,9 @@ module.exports = function (db, synthetic) {
                 if(err) {return done(err);}
 
                     var dailyExchange = exchangeRateStore.get(reference_pcash_convention.reference_pcash.currency_id);
-                    //var valueExchanged = parseFloat((1/dailyExchange.rate) * reference_pcash_convention.reference_pcash.cost).toFixed(4);
                     var descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
 
                     q.all(
-                          reference_pcash_convention.reference_pcash_items.map(function (ref_pcash_item){
-                            var valueExchanged = parseFloat((1/dailyExchange.rate) * ref_pcash_item.debit).toFixed(4);
-                            var sql = 'INSERT INTO posting_journal '+
-                                        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                                        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                                        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-                                        'SELECT '+
-                                                  [
-                                                    sanitize.escape(uuid()),
-                                                    reference_pcash_convention.reference_pcash.project_id,
-                                                    periodObject.fiscal_year_id,
-                                                    periodObject.period_id,
-                                                    trans_id, '\''+get.date()+'\'', '\''+descrip+'\''
-                                                  ].join(',')+', `account_id`, '+
-                                                 [
-                                                  0, ref_pcash_item.debit,
-                                                  0, valueExchanged,
-                                                  reference_pcash_convention.reference_pcash.currency_id
-                                                 ].join(',')+', null, null, '+[sanitize.escape(ref_pcash_item.inv_po_id), originId, user_id].join(',')
-                                          +' FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference_pcash_convention.reference_pcash.cash_box_id)
-                                          +' AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference_pcash_convention.reference_pcash.currency_id);
-                            return db.exec(sql);
                           })
                     )
                     .then(function(){
