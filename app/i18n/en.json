@@ -533,7 +533,8 @@
     "STOCK_MANAGEMENT"          : "Stock Management",
     "STOCK_ENTRY"               : "Stock Entry",
     "STOCK_EXIT"                : "Stock Exit",
-    "STOCK_MOVEMENT"            : "Stock Movements"
+    "STOCK_MOVEMENT"            : "Stock Movements",
+    "STOCK_LOSS"                : "Stock Loss"
   },
 
   "JOURNAL_VOUCHER"  : {

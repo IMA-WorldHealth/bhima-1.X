@@ -1174,14 +1174,13 @@ module.exports = function (db, synthetic) {
       reference = results[0];
       data = results;
       var date = util.toMysqlDate(reference.date);
+
       return get.myExchangeRate(date);
     })
     .then(function (exchangeRateStore) {
+      cfg.dailyExchange = exchangeRateStore.get(reference.currency_id);
 
-      var dailyExchange = exchangeRateStore.get(reference.currency_id);
-      cfg.valueExchanged = parseFloat((1 / dailyExchange.rate) * reference.cost).toFixed(4);
-
-      return q([get.origin('pcash'), get.period(reference.date)]);
+      return q([get.origin('primary_cash'), get.period(reference.date)]);
     })
     .spread(function (originId, periodObject) {
       cfg.originId = originId;
@@ -1193,94 +1192,36 @@ module.exports = function (db, synthetic) {
     .then(function (transId) {
       var descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
 
-      queries;
+      queries.items = [];
 
-      reference.map(function (item) {
-        var valueExchanged = parseFloat((1/dailyExchange.rate) * item.debit).toFixed(4);
-        var sql =
-          'INSERT INTO posting_journal (`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`,'' `trans_date`, ' +
+      reference.forEach(function (item) {
+        var valueExchanged, sql;
+        valueExchanged = parseFloat((1 / cfg.dailyExchange.rate) * item.debit).toFixed(4);
+        sql =
+          'INSERT INTO posting_journal (`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-          'SELECT ' + [sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, periodObject.period_id, transId, '\''+get.date()+'\'', '\''+descrip+'\''].join(',') +', ' +
-            '`account_id`, ' + [0, item.debit, 0, valueExchanged, reference_pcash_convention.reference_pcash.currency_id].join(',')+', null, null, ' +
-            [sanitize.escape(item.inv_po_id), originId, user_id].join(',') + ' ' +
+          'SELECT ' + [sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descrip+'\''].join(',') +', ' +
+            '`account_id`, ' + [0, item.debit, 0, valueExchanged, reference.currency_id].join(',')+', null, null, ' +
+            [sanitize.escape(item.inv_po_id), cfg.originId, user_id].join(',') + ' ' +
           'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`=' + sanitize.escape(reference.cash_box_id) + ' ' +
             'AND `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ";";
-        return db.exec(sql);
+        queries.items.push(sql);
       });
-    
+
+      return q.all(queries.items.map(function (query) {
+        return db.exec(query);
+      }));
     })
     .catch(function (err) {
-    
-    
+      var discard =
+        "DELETE FROM primary_cash WHERE uuid= " + sanitize.escape(id);
+      return db.exec(discard)
+      .done(function () {
+        done(err);
+      });
     })
     .done();
-      db.execute(sql, function(err, ans2){
-        reference_pcash_convention.reference_pcash_items = ans2;
-        get.myExchangeRate(date)
-        .then(function (exchangeRateStore) {
-
-          get.origin('pcash', function (err, originId) {
-
-            if (err) { return done(err); }
-
-            get.myPeriod(date, function (err, periodObject) {
-
-              if (err) { return done(err); }
-
-              get.transactionId(project_id, function (err, trans_id) {
-                if(err) {return done(err);}
-
-                    var dailyExchange = exchangeRateStore.get(reference_pcash_convention.reference_pcash.currency_id);
-                    var descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
-
-                    q.all(
-                          })
-                    )
-                    .then(function(){
-                      return q.all(
-                        reference_pcash_convention.reference_pcash_items.map(function (ref_pcash_item){
-                        var valueExchanged = parseFloat((1/dailyExchange.rate) * ref_pcash_item.debit).toFixed(4);
-                        var credit_sql = 'INSERT INTO posting_journal '+
-                              '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                              '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                              '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-                              'VALUES ('+
-                                        [
-                                          sanitize.escape(uuid()),
-                                          reference_pcash_convention.reference_pcash.project_id,
-                                          periodObject.fiscal_year_id,
-                                          periodObject.period_id,
-                                          trans_id, '\''+get.date()+'\'', '\''+descrip+'\'', reference_pcash_convention.reference_pcash.account_id
-                                        ].join(',')+', '+
-                                       [
-                                          ref_pcash_item.debit,0,
-                                          valueExchanged,0,
-                                          reference_pcash_convention.reference_pcash.currency_id
-                                       ].join(',')+', null, null, '+[sanitize.escape(ref_pcash_item.inv_po_id), originId, user_id].join(',')
-                                +');';
-                        return db.exec(credit_sql);
-                        })
-                    )
-                    })
-                    .then(function (res){
-                      return done(null, res);
-                    })
-                    .catch(function (err){
-                      return done(err);
-                    });
-              });
-            });
-          });
-        }, function (err) {
-          var discard = "DELETE FROM primary_cash WHERE uuid="+sanitize.escape(id);
-          db.execute(discard, function(err, ans){
-            //console.log('************** error annulation insertion', err);
-            throw (new Error('un probleme'));
-          });
-        });
-      });
-    });
   }
 
   // router for incoming requests
