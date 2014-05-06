@@ -13,12 +13,13 @@ angular.module('kpk.controllers')
   '$http',
   '$location',
   function ($scope, $translate, validate, connect, messenger, appstate, util, uuid, $q, precision, $http, $location) {
-    var distribution = {}, dependencies = {}, priceListSource = ['patientGroupList', 'debtorGroupList'];
-    distribution.visible = false;
+    var distribution = {}, dependencies = {};
+    distribution.visible = true;
     distribution.noEmpty = false;
     distribution.item_records = [];
     distribution.moving_records = [];
     distribution.rows = [];
+    distribution.sales = [];
 
 
     dependencies.stocks = {
@@ -36,173 +37,67 @@ angular.module('kpk.controllers')
       }
     };
 
+    dependencies.project = {
+      required : true,
+      query : {
+        tables : {
+          'project' : {
+            columns : ['abbr', 'name']
+          }
+        }
+      }
+    };
+
+    dependencies.debitor_group = {
+      required : true,
+      query : {
+        tables : {
+          'debitor_group' : {
+            columns : ['is_convention', 'name', 'uuid', 'account_id']
+          }
+        }
+      }
+    };
+
     function initialiseDistributionDetails (selectedDebitor){
-      if(selectedDebitor) distribution.noEmpty = true;
+      if(!selectedDebitor) return;
+
+      distribution.noEmpty = true;
+      $scope.ready = "ready";
       distribution.selectedDebitor = selectedDebitor;
-      addRow();
-
-
-      dependencies.patientGroupList = {
-        query : {
-          tables : {
-            assignation_patient : {columns : ['patient_group_uuid', 'patient_uuid']},
-            patient_group : {columns : ['note']},
-            price_list : {columns : ['title']},
-            price_list_item : {columns : ['value', 'is_discount', 'is_global', 'description', 'inventory_uuid']}
-          },
-          join : [
-            'assignation_patient.patient_group_uuid=patient_group.uuid',
-            'patient_group.price_list_uuid=price_list.uuid',
-            'price_list_item.price_list_uuid=price_list.uuid'
-          ],
-          where : [
-            'assignation_patient.patient_uuid=' + selectedDebitor.uuid
-          ]
-        }
-      };
-
-      dependencies.debtorGroupList = {
-        query : {
-          tables : {
-            price_list: { columns : ['uuid', 'title'] },
-            price_list_item : { columns : ['value', 'is_discount', 'is_global', 'description', 'inventory_uuid'] }
-          },
-          join : ['price_list_item.price_list_uuid=price_list.uuid'],
-          where : ['price_list.uuid=' + selectedDebitor.price_list_uuid]
-        }
-      };
-
+      connect.fetch('/ledgers/debitor/' + selectedDebitor.debitor_uuid)
+      .success(function (data) {
+        data.map(function (row) {
+          row.reference = getAbbr(row.project_id)+row.reference;
+          row.etat = getState(row);
+        });
+        distribution.sales = data;
+        // $scope.ledger = data.filter(function (row) {
+        //   return row.balance > 0;
+        // });
+      })
+      .error(function (err) {
+        messenger.danger('An error occured:' + JSON.stringify(err));
+      });
       window.distribution = distribution;
-      getCaution()
-      .then(function (caution){
-        if(caution.data.length > 0){
-          var somdebit = 0, somcredit = 0;
-          caution.data.forEach(function(item){
-            somdebit = precision.add(precision.scale(item.debit),somdebit);
-            somcredit = precision.add(precision.scale(item.credit),somcredit);
-          });
-
-          var debitorCaution = (precision.unscale(somcredit) - precision.unscale(somdebit));
-          distribution.debitorCaution = debitorCaution;
-        }
-
-        // if (session.recovering) {
-        //   recover();
-        // } else {
-        //   addInvoiceItem();
-        //   session.recovered = null;
-        // }
-        // session.recovering ? recover() : addInvoiceItem();
-        return $q.when();
-
-      })
-      .then(function (){
-        validate.refresh(dependencies, priceListSource).then(processPriceList);
-      })
     }
 
-    function getCaution() {
-      return connect.fetch('/caution/' + $scope.distribution.selectedDebitor.debitor_uuid + '/' + $scope.project.id);
+    function getAbbr(project_id){
+      return $scope.model.project.data.filter(function (item){
+        return item.id = project_id;
+      })[0].abbr;
+    }
+
+    function getState (sale){
+      return ($scope.model.debitor_group.data.filter(function (item) {
+        return item.account_id == sale.account_id;
+      })[0].is_convention == 1)? "CONVENTION" : (sale.balance>0)? "NON PAYE" : "PAYE";
     }
 
     function init (model){
+      //init model
       $scope.model = model;
     }
-
-    function updateDistributionItem(selectedItem) {
-      console.log('item choisi', selectedItem);
-
-      selectedItem.set(selectedItem);
-      //invoiceItem.inventoryReference = inventoryReference;
-
-      // //Remove ability to select the option again
-      // $scope.model.inventory.remove(inventoryReference.uuid);
-
-      // $scope.model.inventory.recalculateIndex();
-
-      // updateSessionRecover();
-    }
-
-
-    function addRow () {
-      distribution.rows.push(new DistributionItem());
-    }
-
-    function DistributionItem () {
-      this.movement = null;
-      this.item = null;
-      var self = this;
-
-      function set(row) {
-        var defaultPrice = row.item.price;
-
-        self.item.quantity = self.item.amount || 1;
-        self.item.code = row.item.code;
-        self.item.text = row.item.text;
-
-        // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
-        self.item.price = Number(row.item.price.toFixed(4));
-        self.item.inventoryId = row.item.uuid;
-        self.item.note = "";
-
-        // Temporary price list logic
-        if(distribution.priceList) {
-          distribution.priceList.forEach(function (list) {
-
-            if(!list.is_global) {
-              if(list.is_discount) {
-                self.item.price -= Math.round((defaultPrice * list.value) / 100);
-                self.item.price = Number(self.item.price.toFixed(4));
-              } else {
-                var applyList = (defaultPrice * list.value) / 100;
-                self.item.price += applyList;
-                // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
-                self.item.price = Number(self.item.price.toFixed(4));
-              }
-            }
-          });
-        }
-        self.item.isSet = true;
-      }
-
-      this.set = set;
-
-      // this.item.document_id = uuid();
-      // this.item.tracking_number = null;
-      // this.item.date = util.convertToMysqlDate(new Date().toString());
-      // this.item.depot_id = null;
-      // this.item.amount = null;
-      // this.item.text = null;
-      // this.item.patient_uuid = $scope.distribution.selectedDebitor.uuid;
-      // this.item.movement = new movement(this);
-      return this;
-    }
-
-    function processPriceList (model) {
-      distribution.priceList = [];
-
-      // Flattens all price lists fow now, make parsing later simpler
-      priceListSource.forEach(function (priceListKey) {
-        var priceListData = model[priceListKey].data.sort(sortByOrder);
-
-        priceListData.forEach(function (priceListItem) {
-          distribution.priceList.push(priceListItem);
-        });
-      });
-
-      distribution.applyGlobal = [];
-
-      distribution.priceList.forEach(function (listItem) {
-        if (listItem.is_global) {
-          distribution.applyGlobal.push(listItem);
-        }
-      });
-    }
-
-    function sortByOrder(a, b) {
-      (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order) ? 1 : -1;
-    }
-
     function movement (consumption) {
       this.document_id = uuid();
       this.tracking_number = consumption.tracking_number;
@@ -212,108 +107,6 @@ angular.module('kpk.controllers')
       this.depot_id = 1;
       this.destination = 1;
       return this;
-    }
-
-    function removeItem(index) {
-      distribution.rows.splice(index, 1);
-    }
-
-    //TODO Refactor code
-    function calculateTotal(includeDiscount) {
-      var total = 0;
-      includeDiscount = angular.isDefined(includeDiscount) ? includeDiscount : true;
-
-      if(!distribution.rows) return;
-      distribution.rows.forEach(function(it) {
-        if(it.item.amount && it.item.price && it.item.code) {
-
-          total += (it.item.amount * it.item.price);
-
-          total = Number(total.toFixed(4));
-        }
-      });
-
-      if (distribution.applyGlobal) {
-        distribution.applyGlobal.forEach(function (listItem) {
-          listItem.currentValue = Number(((total * listItem.value) / 100).toFixed(4));
-
-          if (listItem.is_discount) {
-            total -= listItem.currentValue;
-          } else {
-            total += listItem.currentValue;
-          }
-
-          total = Number(total.toFixed(4));
-        });
-      }
-
-      // Apply caution
-      if(distribution.debitorCaution){
-        var remaining = 0;
-        remaining = total - distribution.debitorCaution;
-        totalToPay = (remaining < 0)? 0 : remaining;
-        totalToPay = Number(totalToPay.toFixed(4));
-      }else{
-        totalToPay = total;
-      }
-
-      return {total : total, totalToPay : totalToPay};
-    }
-
-    function formatNote(distribution) {
-      var noteDebitor = distribution.selectedDebitor || "";
-      return "PI" + "/" + distribution.moving_records.date + "/" + noteDebitor.name;
-    }
-
-    function packageSaleRequest() {
-      var requestContainer = {}, netDiscountPrice, totalCost;
-
-      //Seller ID will be inserted on the server
-      requestContainer.sale = {
-        project_id : $scope.project.id,
-        cost : calculateTotal().total,
-        currency_id : $scope.project.currency_id,
-        debitor_uuid : distribution.selectedDebitor.debitor_uuid,
-        invoice_date : util.convertToMysqlDate(new Date().toString()),
-        note : formatNote(distribution)
-      };
-
-      requestContainer.saleItems = [];
-
-      distribution.rows.forEach(function(saleItem) {
-        var formatSaleItem;
-        formatSaleItem = {
-          inventory_uuid : saleItem.item.inventory_uuid,
-          quantity : saleItem.item.amount,
-          inventory_price : saleItem.item.price,
-          transaction_price : saleItem.item.price,
-          credit : Number((saleItem.item.price * saleItem.item.amount).toFixed(4)),
-          debit : 0
-        }
-        requestContainer.saleItems.push(formatSaleItem);
-      });
-
-      distribution.applyGlobal.forEach(function (listItem) {
-        var applyCost, formatListItem; // FIXME Derive this from enterprise
-
-        var formatDiscountItem = {
-          inventory_uuid : listItem.inventory_uuid,
-          quantity : 1,
-          transaction_price : listItem.currentValue,
-          debit : 0,
-          credit : 0,
-          inventory_price : 0
-        };
-
-        formatDiscountItem[listItem.is_discount ? 'debit' : 'credit'] = listItem.currentValue;
-
-        requestContainer.saleItems.push(formatDiscountItem);
-      });
-
-      requestContainer.caution = (distribution.debitorCaution)? distribution.debitorCaution : 0;
-
-
-      return requestContainer;
     }
 
     function sanitize (){
@@ -345,29 +138,65 @@ angular.module('kpk.controllers')
     function submit (){
       sanitize();
       doMovingStock()
-      .then(doSale)
       .then(function(result){
       });
-      //.then(doSale());
-
     }
 
     function doMovingStock (){
-      return $q.all(connect.basicPut('consumption', distribution.item_records), connect.basicPut('stock_movement', distribution.moving_records));
-    }
-
-    function doSale (res){
-      var saleRequest = packageSaleRequest();
-      $http.post('sale/', saleRequest).then(handleSaleResponse);
+      return $q.all(
+        connect.basicPut('consumption', distribution.item_records),
+         connect.basicPut('stock_movement', distribution.moving_records)
+      );
     }
 
     function handleSaleResponse(result) {
       //recoverCache.remove('session');
-      $location.path('/invoice/sale/' + result.data.saleId);
+      //$location.path('/invoice/sale/' + result.data.saleId);
+    }
+
+    function add (idx) {
+      if($scope.selectedSale) return;
+      $scope.selectedSale =  $scope.distribution.sales.splice(idx, 1)[0];
+      dependencies.sale_items = {
+        required : true,
+        query : {
+          tables : {
+            'sale_item' : {columns : ['uuid', 'inventory_uuid', 'quantity']},
+            'inventory' : {columns : ['code', 'text', 'stock']}
+          },
+          join  : ['sale_item.inventory_uuid=inventory.uuid'],
+          where : ['sale_item.sale_uuid='+$scope.selectedSale.inv_po_id]
+        }
+      };
+
+      validate.process(dependencies,['sale_items']).then(initialiseProcess);
+    }
+
+    function remove (idx) {
+      $scope.distribution.sales.push($scope.selectedSale);
+      $scope.selectedSale= null;
+      $scope.selected = "null";
+    };
+
+    function initialiseProcess (model){
+      $scope.selected = "selected";
+      $scope.selectedSale.sale_items = model.sale_items.data.filter(function (item){
+        console.log('[item.code.substring(0,1)]', item.code.substring(0,1));
+        return item.code.substring(0,1) !== "8";
+      }).map(function (it) {
+        it.avail = (it.stock < it.quantity)? "NO" : "YES";
+        return it;
+      });
+
+      console.log('[selected sale items]', $scope.selectedSale);
     }
 
     function verifySubmission (){
 
+    }
+
+    function resolve (){
+      return !$scope.ready;
     }
 
     appstate.register('project', function (project) {
@@ -382,11 +211,10 @@ angular.module('kpk.controllers')
     //exposition
     $scope.distribution = distribution;
     $scope.initialiseDistributionDetails = initialiseDistributionDetails;
-    $scope.addRow = addRow;
-    $scope.removeItem = removeItem;
     $scope.submit = submit;
+    $scope.add = add;
+    $scope.remove = remove;
+    $scope.resolve = resolve;
     $scope.verifySubmission = verifySubmission;
-    $scope.calculateTotal = calculateTotal;
-    $scope.updateDistributionItem = updateDistributionItem;
   }
 ]);
