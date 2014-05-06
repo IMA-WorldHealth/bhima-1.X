@@ -501,7 +501,70 @@
             </table>
           </div>
         </div> <!-- End Patient Invoice template -->
-      </div> <!-- end Cash receipt template  -->
+      </div> 
+
+      <div ng-switch-when="pcash_convention">
+        <div class="row customer-details">
+          <div class="col-xs-12">
+            <h4 class="invoice-header">{{'INVOICE.CONVENTION' | translate}}</h4>
+          </div>
+        </div>
+        <div class="row customer-details">
+          <!-- Temporary style; needs official markup and CSS -->
+          <div class="col-xs-4">
+            <span>
+              <b>{{conventions[0].name}}</b>
+            </span>
+            <br>
+            {{conventions[0].abbr}}
+            <br>
+            <!-- hah -->
+            {{ conventions[0].postal || 'B.P. 205'}}
+            <br>
+            {{location.sector}}
+            <br>
+            <i>TEL</i> {{conventions[0].phone}}
+            <br>
+            <i>FAX</i> {{conventions[0].email}}
+
+          </div>
+          <div class="col-xs-4">
+            <b>{{conventions[0].account_txt}}</b>
+            <br>
+            <br>
+            <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+            <br>
+            {{conventions[0].date | date}}
+          </div>
+          <div class="col-xs-4">
+            <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{conventions[0].reference}}</b>
+            <br>           
+            <br>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <table class="invoiceTable">
+              <thead>
+                <tr><th>{{'INVOICE.NUM_CONVENTION_PAY' | translate}}</th>
+                <th>{{'INVOICE.DESIGNATION' | translate}}</th>
+                <th>{{'INVOICE.AMOUNT' | translate}}</th></tr>
+              </thead>
+              <tbody class="items">
+                <tr ng-repeat="conv in conventions">
+                  <td>{{conv.reference}}</td>
+                  <td>{{conv.note}}</td>
+                  <td><span ng-bind-html="conv.debit  | intlcurrency:conv.currency_id"></span></td>
+                </tr>
+              </tbody>
+              <tbody class="totals">
+                <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="conventions[0].cost  | intlcurrency:conventions[0].currency_id"></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div> <!-- End Patient Invoice template -->
+      </div><!-- end Cash receipt template  -->
     </div>
   </div>
 </div>
