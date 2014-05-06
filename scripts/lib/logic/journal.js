@@ -321,7 +321,6 @@ module.exports = function (db, synthetic) {
       return q([ db.exec(queries.sale_posted), get.transactionId(reference.project_id)]);
     })
     .spread(function (rows, transId) {
-      console.log('[DEBUG] [SALE] Caution is:', caution);
 
       if (caution !== 0) {
         var descript = 'CAD/' + reference.debitor_uuid + '/' + get.date();
@@ -642,7 +641,6 @@ module.exports = function (db, synthetic) {
     })
     .done();
   }
-
 
   function handlePurchase (id, user_id, done) {
     // posting purchase requests

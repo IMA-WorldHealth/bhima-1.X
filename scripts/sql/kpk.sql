@@ -718,7 +718,7 @@ create table `transaction_type` (
 drop table if exists `primary_cash_module`;
 create table `primary_cash_module` (
   `id`            tinyint unsigned not null auto_increment,
-  `text`   varchar(45) not null,
+  `text`          varchar(45) not null,
   primary key (`id`)
 ) engine=innodb;
 
