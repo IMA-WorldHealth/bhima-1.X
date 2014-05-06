@@ -17,7 +17,7 @@ angular.module('kpk.controllers')
 
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
-        $scope.cashbox_id = $routeParams.cashbox_id
+    $scope.cashbox_id = $routeParams.cashbox_id;
 
     dependencies.cash_box = {
       required : true,
@@ -77,7 +77,7 @@ angular.module('kpk.controllers')
         },
         where : ['primary_cash_module.text='+'convention']
       }
-    }
+    };
 
     $scope.noEmpty = false;
     $scope.som = 0;
@@ -130,7 +130,7 @@ angular.module('kpk.controllers')
     }
 
     function postToJournal (resu) {
-      console.log('[resu]', resu);
+      //console.log('[resu]', resu);
       record_uuid = resu[0].config.data.data[0].primary_cash_uuid;
       return connect.fetch('/journal/pcash_convention/' + record_uuid);
     }
@@ -141,7 +141,7 @@ angular.module('kpk.controllers')
 
     function writeItem (result){
       var pcashItems = getPcashItems($scope.data.payment, result);
-      console.log('[pcashitems]', pcashItems);
+      //console.log('[pcashitems]', pcashItems);
       return $q.all(pcashItems.map(function (pcash_item){
         return connect.basicPut('primary_cash_item', [pcash_item]);
       }));
@@ -151,7 +151,7 @@ angular.module('kpk.controllers')
       var items = [];
       var cost_received = max_amount;
 
-      for(var i=0; i<$scope.overviews.length; i++){
+      for (var i = 0; i < $scope.overviews.length; i += 1){
         cost_received-=$scope.overviews[i].balance;
         if(cost_received>=0){
           items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : $scope.overviews[i].balance, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
@@ -183,8 +183,12 @@ angular.module('kpk.controllers')
       messenger.danger($translate('CONVENTION.DANGER'));
     }
 
-    cache.fetch('selectedItem').then(load);
+    function load (selectedItem) {
+      if (!selectedItem) { return ; }
+      $scope.selectedItem = selectedItem;
+    }
 
+    cache.fetch('selectedItem').then(load);
 
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -193,20 +197,12 @@ angular.module('kpk.controllers')
       validate.process(dependencies).then(init, handleError);
     });
 
-    function load (selectedItem){
-      if(!selectedItem) {
-         return ;
-      }else{
-        $scope.selectedItem = selectedItem;
-      }
-    }
 
-    function check (){
-      if($scope.data.payment){
+    function check () {
+      if ($scope.data.payment){
         return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
-      }else{
-        return true;
       }
+      return true;
     }
 
     $scope.initialiseConvention = initialiseConvention;

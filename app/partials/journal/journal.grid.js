@@ -29,7 +29,7 @@ angular.module('kpk.controllers')
     };
 
     function initialise (models) {
-      for (var k in models) { $scope[k] = models[k]; }
+      angular.extend($scope, models);
 
       // set up grid properties
       columns = [

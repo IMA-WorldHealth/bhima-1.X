@@ -2,12 +2,13 @@ angular.module('kpk.controllers')
 .controller('patientGroup', [
   '$scope',
   '$translate',
+  '$window',
   'connect',
   'validate',
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, $translate, connect, validate, appstate, messenger, uuid) {
+  function ($scope, $translate, $window, connect, validate, appstate, messenger, uuid) {
     var dependencies = {};
     var session = $scope.session = {
       selected : null
@@ -44,13 +45,11 @@ angular.module('kpk.controllers')
     }
 
     function initialisePatientGroup(model) {
-      for (var modelKey in model) {
-        $scope[modelKey] = model[modelKey];
-      }
+      angular.extend($scope, model);
     }
 
     $scope.remove = function (grp) {
-      if (!confirm($translate('PATIENT_GRP.CONFIRM_MESSAGE'))) return;
+      if (!$window.confirm($translate('PATIENT_GRP.CONFIRM_MESSAGE'))) return;
 
       connect.basicDelete('patient_group', grp.uuid, 'uuid')
       .then(function (result) {

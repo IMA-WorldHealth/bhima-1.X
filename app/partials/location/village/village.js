@@ -28,8 +28,8 @@ angular.module('kpk.controllers')
       query : '/village/'
     };
 
-    function manageVillage (model){
-      for (var k in model) { $scope.model[k] = model[k]; }
+    function manageVillage (model) {
+      angular.extend($scope, model);
     }
 
     function setOp(action, village){
