@@ -125,10 +125,24 @@ angular.module('kpk.controllers')
       validate.process(dependencies, ['transfert']).then(transfertInvoice);
     }
 
-   function processConvention (){
-
+    function processConvention (convention_uuid){
+      dependencies.convention = {
+        required: true,
+        query:  {
+          tables: {
+            primary_cash: { columns: ['reference', 'cost', 'project_id', 'currency_id', 'date'] },
+            primary_cash_item : {columns : ['debit', 'credit']},            
+            account : {columns : ['account_txt']},
+            project : {columns : ['name', 'abbr']},
+            enterprise : {columns : ['phone', 'email', 'location_id']},
+            sale       : {columns : ['note']}
+          },
+          join : ['primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid', 'project.id=primary_cash.project_id', 'enterprise.id=project.enterprise_id', 'sale.uuid=primary_cash_item.inv_po_id'],
+          where: ['primary_cash.uuid=' + convention_uuid]
+        }
+      };
+      validate.process(dependencies, ['convention']).then(buildConventionInvoice);
     }
-
 
     function processCash(requestId) {
       dependencies.cash = {
@@ -275,6 +289,13 @@ angular.module('kpk.controllers')
       };
 
       validate.process(dependencies, ['location']).then(patientReceipt);
+    }
+
+    function buildConventionInvoice (model){
+      console.log('le model est la ', model);
+      dependencies.location.query = 'location/' + model.convention.data[0].location_id;
+      validate.process(dependencies, ['location']).then(conventionInvoice);
+
     }
 
     function buildInvoiceQuery(model) {
@@ -443,6 +464,13 @@ angular.module('kpk.controllers')
       $scope.model = model;
       $scope.transfert = $scope.model.transfert.data[0];
       console.log('notre transfert', $scope.transfert);
+    }
+
+    function conventionInvoice (model){
+      $scope.model = model;
+      $scope.conventions = $scope.model.convention.data;
+      $scope.location = $scope.model.location.data[0];
+      console.log('voici notre convention et location : ', $scope.conventions, $scope.location);
     }
 
     process = {
