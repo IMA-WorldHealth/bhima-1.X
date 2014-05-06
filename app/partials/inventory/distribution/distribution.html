@@ -5,12 +5,87 @@
 <div class="content">
 
   <div class="row">
-    <div class="col-xs-7">
+    <div class="col-xs-6">
       <div find-patient on-search-complete="initialiseDistributionDetails"></div>
     </div>
   </div>
 
-  <div class="panel panel-default">
+  <div class="row">
+    <div class="col-xs-6" ng-switch="ready">
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <b>Information Generale sur la distribution des medicaments</b>
+          <p>
+            Les ventes aparaittront ici
+          </p>
+        </div>
+      </div>
+
+      <div class="panel panel-primary" ng-switch-when="ready">
+        <div class="panel-heading">
+          {{ "DISTRIBUTION.SALE_DETAILS" | translate }}
+        </div>
+        <div class="row panel-body" style="height: 180px; overflow: auto;">
+          <div class="col-xs-12">
+            <table class="table table-bordered table-condensed">
+              <thead>
+                <tr>
+                  <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
+                  <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                  <th>{{ "COLUMNS.DATE" | translate }}</th>
+                  <th>{{ "COLUMNS.STATE" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="sale in distribution.sales" ng-click="add($index)" style="cursor : pointer;">
+                  <td>{{sale.reference}}</td>
+                  <td>{{sale.description}}</td>
+                  <td>{{sale.trans_date | date}}</td>
+                  <td>{{sale.etat}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+          <div class="panel-heading" >
+            {{ "DISTRIBUTION.SELECTED_SALE_DETAILS" | translate }} <b>:{{selectedSale.reference}}</b><span ng-click="remove()" class="glyphicon glyphicon-repeat pull-right" style="cursor : pointer;"></span>
+          </div>
+
+          <div class="col-xs-12 panel-body" style="height: 180px; overflow: auto;">
+            <table class="table table-bordered table-condensed">
+              <thead>
+                <tr>
+                  <th>{{ "COLUMNS.CODE" | translate }}</th>
+                  <th>{{ "COLUMNS.ITEM" | translate }}</th>
+                  <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th>
+                  <th>{{ "COLUMNS.QTY_AVAIL" | translate }}</th>
+                  <th>{{ "COLUMNS.AVAILABLE" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  ng-repeat="item in selectedSale.sale_items"
+                  ng-click="add($index)"
+                  style="cursor : pointer;"
+                  ng-class="{'incomplete-outline': item.avail=='NO', 'complete-outline': item.avail='YES'}">
+                  <td>{{item.code}}</td>
+                  <td>{{item.text}}</td>
+                  <td>{{item.quantity}}</td>
+                  <td>{{item.stock}}</td>
+                  <td><b>{{item.avail}}</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-primary">
     <div ng-click="distribution.visible=!distribution.visible" class="panel-heading">
       {{ "DISTRIBUTION.LOT_DETAILS" | translate }}
       <div class="pull-right">
@@ -22,85 +97,28 @@
         <div class="col-xs-12">
           <table class="table table-bordered table-condensed">
             <thead>
+              <tr ng-show="resolve()">
+                <th colspan="4"><small><b>{{'DISTRIBUTION.EMPTY_MESSAGE' | translate}}</b></small></th>
+              </tr>
               <tr>
-                <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
-                <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-                <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+                <th>{{ "COLUMNS.CODE_ITEM" | translate }}</th>
+                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                <th>{{ "COLUMNS.LOT" | translate }}</th>
+                <th>{{ "COLUMNS.QTY_IN_LOT" | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="item in model.saleItem.data">
-                <td>{{item.tracking_number}}</td>
+                <td>{{item.text}}</td>
                 <td>{{item.quantity}}</td>
-                <td>{{item.expiration_date | date}}</td>
+                <td>{{item.transaction_price | currency}}</td>
+                <td>{{item.credit - item.debit | currency}}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-  </div>
-
-  <div
-    ng-class="{'alert alert-warning' : distribution.selectedDebitor.is_convention || distribution.priceList.length || distribution.debitorCaution >0}">
-    <p ng-show="distribution.debitorCaution>0">Caution {{distribution.debitorCaution | currency}}</p>
-    <p ng-show="distribution.selectedDebitor.is_convention">{{'DISTRIBUTION.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
-    <p ng-repeat="charge in distribution.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('DISTRIBUTION.APPLIES_GLOBALLY' | translate) : ('DISTRIBUTION.APPLIES_TO_ITEM' | translate)}}</b></p>
-  </div>
-
-  <div class="row col-xs-12" ng-show="distribution.noEmpty">
-    <div class="pull-right">
-      <a
-        ng-click="addRow()"
-        class="fieldset-util"
-      >
-        <span class="glyphicon glyphicon-plus"></span> {{ "DISTRIBUTION.ADD_ROW" | translate }}
-      </a>
-    </div>
-    <table class='table table-condensed'>
-      <thead>
-        <tr>
-          <th>{{ "COLUMNS.LOT" | translate }}</th>
-          <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-          <th>{{ "COLUMNS.QTY" | translate }}</th>
-          <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
-          <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="row in distribution.rows" ng-class="{ 'incomplete-outline': !row.item.tracking_number, 'complete-outline' : !!row.item.tracking_number }">
-          <td>
-            <input
-              class="form-invoice"
-              type="text"
-              placeholder="Numero Lot"
-              ng-model="row.item"
-              typeahead-template-url="lotList.html"
-              typeahead="stock as stock.tracking_number for stock in model.stocks.data | filter:$viewValue | limitTo:8"
-              typeahead-on-select="updateDistributionItem(row)"
-            >
-          </td>
-          <td><input class="form-invoice" type="text" disabled value="{{row.item.text}}"></td>
-          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.item.amount"></td>
-          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.item.price"></td>
-          <td><input class="form-invoice" placeholder="0" disabled value="{{(row.item.amount * row.item.price) | currency}}"></td>
-          <td><a ng-click="removeItem($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
-        </tr>
-
-        <tr ng-repeat="listItem in distribution.applyGlobal">
-          <td></td>
-          <td></td>
-          <td><input class="form-invoice" style="font-weight: bold;" value="{{listItem.description}}" disabled></td>
-          <td><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.value}}%"></td>
-          <td colspan="2"><input disabled class="form-invoice" style="font-weight: bold;" value="{{listItem.currentValue | currency}}"></td>
-        </tr>
-
-        <tr>
-          <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "DISTRIBUTION.TOTAL" | translate }}</b></td>
-          <td colspan="2"><b>{{ calculateTotal().totalToPay | currency}}</b></td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </div>
 
@@ -109,10 +127,3 @@
     <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
   </div>
 </section>
-
-<script type="text/ng-template" id="lotList.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[{{match.model.text}}]</b></span>
-  </a>
-</script>
