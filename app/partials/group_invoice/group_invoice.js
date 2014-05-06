@@ -7,14 +7,12 @@ angular.module('kpk.controllers')
   'appstate',
   'messenger',
   function ($scope, $routeParams, connect, validate, appstate, messenger) {
-    'use strict';
 
     var dependencies = {};
     $scope.action = '';
     $scope.convention = '';
     $scope.selected = {};
     $scope.paying = [];
-
 
     dependencies.invoices = {
       query : 'ledgers/debitor/'
@@ -69,7 +67,7 @@ angular.module('kpk.controllers')
     };
 
     function setUpModels (models) {
-      for (var k in models) { $scope[k] = models[k]; }
+      angular.extend($scope, models);
       if ($scope.invoices) {
         // FIXME: this is hack
         $scope.invoices.data = $scope.invoices.data.filter(function (d) {
@@ -142,7 +140,6 @@ angular.module('kpk.controllers')
       .then(function (res) {
         var id = res.data.insertId;
         var items = formatItems(id);
-        console.log('items', items);
         connect.basicPut('group_invoice_item', items)
         .then(function (res) {
           $scope.action = '';

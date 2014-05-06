@@ -21,19 +21,17 @@ angular.module('kpk.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.provinces = {
       identifier : 'uuid',
       query : '/province/'
-    }
-
+    };
 
     //fonction
 
     function manageProvince (model) {
-      for (var k in model) { $scope[k] = model[k]; }
-        window.provinces = $scope.provinces;
+      angular.extend($scope, model);
 
       // connect.fetch('/province/')
       // .success(function (data) {

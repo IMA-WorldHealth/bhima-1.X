@@ -29,7 +29,7 @@ angular.module('kpk.controllers')
         });
 
         window.arr = models.accounts = processed;
-      
+     
       });
 
       $scope.date = new Date();

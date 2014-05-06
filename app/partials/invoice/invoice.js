@@ -131,7 +131,7 @@ angular.module('kpk.controllers')
         query:  {
           tables: {
             primary_cash: { columns: ['reference', 'cost', 'project_id', 'currency_id', 'date'] },
-            primary_cash_item : {columns : ['debit', 'credit']},            
+            primary_cash_item : {columns : ['debit', 'credit']},
             account : {columns : ['account_txt']},
             project : {columns : ['name', 'abbr']},
             enterprise : {columns : ['phone', 'email', 'location_id']},
@@ -229,7 +229,7 @@ angular.module('kpk.controllers')
     }
 
     function initialisePurchase(model) {
-      console.log('final', model);
+      //console.log('final', model);
       $scope.model = model;
 
       $scope.purchase = model.purchase.data[0];
@@ -268,11 +268,11 @@ angular.module('kpk.controllers')
         ]
       };
 
-      dependencies.recipient.query.tables['patient'] = {
+      dependencies.recipient.query.tables.patient = {
         columns: ['uuid', 'reference', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_uuid', 'registration_date']
       };
 
-      dependencies.recipient.query.tables['project'] = {
+      dependencies.recipient.query.tables.project = {
         columns: ['abbr']
       };
 
@@ -292,10 +292,8 @@ angular.module('kpk.controllers')
     }
 
     function buildConventionInvoice (model){
-      console.log('le model est la ', model);
       dependencies.location.query = 'location/' + model.convention.data[0].location_id;
       validate.process(dependencies, ['location']).then(conventionInvoice);
-
     }
 
     function buildInvoiceQuery(model) {

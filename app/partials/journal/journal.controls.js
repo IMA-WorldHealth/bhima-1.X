@@ -92,7 +92,7 @@ angular.module('kpk.controllers')
     });
 
     function initialise (models) {
-      for (var k in models) { $scope[k] = models[k]; }
+      angular.extend($scope, models);
 
       $scope.journal = new Store({ data : dataview.getItems() });
 
@@ -257,7 +257,7 @@ angular.module('kpk.controllers')
       ];
 
       for (prop in record) {
-        if (~cpProperties.indexOf(prop)) {
+        if (cpProperties.indexOf(prop) > -1) {
           if (isDefined(record[prop]) && !isNull(record[prop])) {
             data[prop] = record[prop];
           }

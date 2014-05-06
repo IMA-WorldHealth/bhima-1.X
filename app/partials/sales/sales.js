@@ -42,16 +42,16 @@ angular.module('kpk.controllers')
     });
 
     recoverCache.fetch('session').then(processRecover);
-    validate.process(dependencies).then(sales);
 
-    function sales(model) {
+    function sales (model) {
       $scope.model = model;
       $scope.inventory = inventory = model.inventory.data;
     }
 
+    validate.process(dependencies).then(sales);
+
     function initialiseSaleDetails(selectedDebtor) {
-      console.log(selectedDebtor);
-      if(!selectedDebtor) return messenger.danger('No invoice debtor selected');
+      if(!selectedDebtor) { return messenger.danger('No invoice debtor selected'); }
 
       // Release previous session items - if they exist
       if(invoice.items) {
@@ -120,7 +120,6 @@ angular.module('kpk.controllers')
           var debitorCaution = (precision.unscale(somcredit) - precision.unscale(somdebit));
           invoice.debitorCaution = debitorCaution;
         }
-        console.log('notre invoice est :', invoice);
 
         if (session.recovering) {
           recover();
@@ -144,7 +143,6 @@ angular.module('kpk.controllers')
 
     function processPriceList(model) {
       invoice.priceList = [];
-      console.log('processPriceList', model);
 
       // Flattens all price lists fow now, make parsing later simpler
       priceListSource.forEach(function (priceListKey) {
@@ -169,7 +167,8 @@ angular.module('kpk.controllers')
     }
 
     function sortByOrder(a, b) {
-      (a.item_order===b.item_order) ? 0 : (a.item_order > b.item_order) ? 1 : -1;
+      // FIXME : What does this even do?
+      return a.item_order === b.item_order ? 0 : (a.item_order > b.item_order) ? 1 : -1;
     }
 
     //TODO split inventory management into a seperate controller
@@ -210,7 +209,6 @@ angular.module('kpk.controllers')
 
     function submitInvoice() {
       var invoiceRequest = packageInvoiceRequest();
-      console.log('[invoiceRequest]', invoiceRequest);
 
       if (!validSaleProperties(invoiceRequest)) return;
       $http.post('sale/', invoiceRequest).then(handleSaleResponse);
@@ -296,8 +294,8 @@ angular.module('kpk.controllers')
         return false;
       }
 
-      invalidItems = saleItems.some(function(saleItem) {
-        for(property in saleItem) {
+      var invalidItems = saleItems.some(function(saleItem) {
+        for (var property in saleItem) {
           if(angular.isUndefined(saleItem[property]) || saleItem[property]===null) return true;
         }
         if(isNaN(Number(saleItem.quantity))) return true;
@@ -305,7 +303,7 @@ angular.module('kpk.controllers')
         return false;
       });
 
-      if(invalidItems) {
+      if (invalidItems) {
         messenger.danger("[Invalid Sale] Sale items contain null values");
         return false;
       }
@@ -353,12 +351,13 @@ angular.module('kpk.controllers')
           total = Number(total.toFixed(4));
         });
       }
+      var totalToPay;
 
       // Apply caution
       if(invoice.debitorCaution){
         var remaining = 0;
         remaining = total - invoice.debitorCaution;
-        totalToPay = (remaining < 0)? 0 : remaining;
+        totalToPay = remaining < 0 ? 0 : remaining;
         totalToPay = Number(totalToPay.toFixed(4));
       }else{
         totalToPay = total;
@@ -401,20 +400,16 @@ angular.module('kpk.controllers')
 
             if(!list.is_global) {
               if(list.is_discount) {
-                console.log('[DEBUG] Applying price list discount ', list.description, list.value);
                 self.price -= Math.round((defaultPrice * list.value) / 100);
 
                 // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
                 self.price = Number(self.price.toFixed(4));
               } else {
-                console.log('[DEBUG] Applying price list charge ', list.description, defaultPrice, list.value);
                 var applyList = (defaultPrice * list.value) / 100;
-                console.log(self.price, applyList);
                 self.price += applyList;
 
                 // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
                 self.price = Number(self.price.toFixed(4));
-                console.log(self.price);
               }
             }
           });
@@ -423,12 +418,12 @@ angular.module('kpk.controllers')
         self.isSet = true;
       }
 
-      this.quantity = 0,
-      this.code = null,
-      this.inventoryId = null,
-      this.price = null,
-      this.text = null,
-      this.note = null,
+      this.quantity = 0;
+      this.code = null;
+      this.inventoryId = null;
+      this.price = null;
+      this.text = null;
+      this.note = null;
       this.set = set;
 
       return this;
@@ -436,8 +431,6 @@ angular.module('kpk.controllers')
 
     function processRecover(recoveredSession) {
       if(!session) return;
-
-      console.log('loaded recovered session', recoveredSession);
       $scope.session.recovered = recoveredSession;
     }
 
@@ -469,16 +462,18 @@ angular.module('kpk.controllers')
       };
 
       invoice.items.forEach(function (item) {
-        if(item.code && item.quantity) recoverObject.items.push({
-          uuid : item.inventoryId,
-          quantity : item.quantity
-        });
+        if(item.code && item.quantity) {
+          recoverObject.items.push({
+            uuid : item.inventoryId,
+            quantity : item.quantity
+          });
+        }
       });
       recoverCache.put('session', recoverObject);
     }
 
     function toggleTablock() {
-      (session.tablock===0) ? session.tablock = -1 : session.tablock = 0;
+      session.tablock = session.tablock === 0 ? -1 : 0;
     }
 
     function cacheQuantity(invoiceItem) {

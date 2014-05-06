@@ -12,14 +12,15 @@ angular.module('kpk.controllers')
     //variables inits
 
     var dependencies = {}, map = {};
-    $scope.somDebit = 0, $scope.somCredit = 0;
+    $scope.somDebit = 0;
+    $scope.somCredit = 0;
 
     dependencies.accounts = {
       required : true,
       query : {
         tables : {'account' : {columns : ["id", "account_number", "account_txt", "account_type_id"]}}
       }
-    }
+    };
 
     dependencies.exchange_rate = {
       query : {
@@ -29,7 +30,7 @@ angular.module('kpk.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.currencies = {
       query : {
@@ -39,11 +40,13 @@ angular.module('kpk.controllers')
           }
         }
       }
-    }
+    };
 
-    $scope.dates = {}; $scope.state = {}; $scope.account = {}, $scope.model = {};
+    $scope.dates = {};
+    $scope.state = {};
+    $scope.account = {};
+    $scope.model = {};
     $scope.model.sources = [$filter('translate')('SELECT.ALL'), $filter('translate')('SELECT.POSTING_JOURNAL'), $filter('translate')('SELECT.GENERAL_LEDGER')];
-
 
     //fonctions
 
@@ -54,12 +57,12 @@ angular.module('kpk.controllers')
     }
 
     function init (model){
-      for(var k in model) $scope[k] = model[k];
+      angular.extend($scope, model);
       $scope.accounts.data.forEach(function (account) {
         account.account_number = String(account.account_number);
       });
       $scope.model.c = $scope.enterprise.currency_id;
-      console.log('enterprise id', $scope.model.c)
+      // console.log('enterprise id', $scope.model.c)
       $scope.exchange_rate.data.forEach(function (item){
         map[util.convertToMysqlDate(item.date)] = {c_id : item.foreign_currency_id, rate : item.rate};
       });
@@ -72,14 +75,12 @@ angular.module('kpk.controllers')
 
     function fill (){
      // var f = (account_id && account_id != 0)? selective(account_id) : all ();
-     if (!$scope.model.account_id) {
-        all();
-     }
+      if (!$scope.model.account_id) { all(); }
     }
 
     $scope.affiche = function(){
-      console.log($scope.model.c);
-    }
+      //console.log($scope.model.c);
+    };
 
     function selective (){
       $scope.mode = 'selected';
@@ -95,23 +96,22 @@ angular.module('kpk.controllers')
         return value.id == $scope.model.account_id;
       })[0].account_number;
 
-      connect.fetch(
-        '/reports/allTrans/?'+JSON.stringify(qo)
-      ).then(function(res){
+      connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
+      .then(function(res){
+        if(res.length > 0){
           if(res.length > 0){
-            if(res.length > 0){
-              res.map(function (item){
-                item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-                item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
-              });
-              $scope.records = res;
-              getTotal(res);
-            }else{
+            res.map(function (item){
+              item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+              item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+            });
+            $scope.records = res;
+            getTotal(res);
+          } else {
             getTotal(res);
             $scope.records = [];
-            }
           }
-      })
+        }
+      });
     }
 
     function all () {
@@ -137,7 +137,7 @@ angular.module('kpk.controllers')
             $scope.records = [];
             getTotal(res);
           }
-        })
+        });
     }
 
     function dateWatcher () {
@@ -152,7 +152,7 @@ angular.module('kpk.controllers')
 
     function search (){
       if(!$scope.model.account_id) return;
-      ($scope.model.account_id != 0)?$scope.mode = 'selected' : $scope.mode = 'all';
+      $scope.mode = $scope.model.account_id !== 0 ? 'selected' : 'all';
       var qo = {
         source : $scope.model.source_id,
         enterprise_id : $scope.enterprise.id,
@@ -161,45 +161,40 @@ angular.module('kpk.controllers')
         datet : $scope.state.to
       };
 
-      if($scope.model.account_id && $scope.model.account_id == 0){
-        $scope.model.account_number = "Tous"
-      }else{
-         $scope.model.account_number = $scope.accounts.data.filter(function(value){
+      if ($scope.model.account_id && $scope.model.account_id == 0) {
+        $scope.model.account_number = "Tous";
+      } else {
+        $scope.model.account_number = $scope.accounts.data.filter(function (value) {
           return value.id == $scope.model.account_id;
-        })[0].account_number;
+        })[0]
+        .account_number;
       }
 
-      connect.fetch(
-        '/reports/allTrans/?'+JSON.stringify(qo)
-      ).then(function(res){
-          if(res.length > 0){
-            res.map(function (item){
-              item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-              item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
-            });
-            $scope.records = res;
-            getTotal(res);
-          }else{
-            getTotal(res);
-            $scope.records = [];
-          }
-      })
+      connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
+      .then(function(res) {
+        if (res.length > 0) {
+          res.map(function (item){
+            item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+            item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+          });
+          $scope.records = res;
+          getTotal(res);
+        } else {
+          getTotal(res);
+          $scope.records = [];
+        }
+      });
     }
 
     function getTotal(items){
-      $scope.somCredit=0; $scope.somDebit = 0;
-      if(items.length>0){
-         items.forEach(function (item){
-        $scope.somDebit+=item.debit;
-        $scope.somCredit+=item.credit;
-      });
-
-      }else{
-        $scope.somCredit = 0;
-        $scope.somDebit = 0;
-
+      $scope.somCredit=0;
+      $scope.somDebit = 0;
+      if (items.length>0) {
+        items.forEach(function (item){
+          $scope.somDebit+=item.debit;
+          $scope.somCredit+=item.credit;
+        });
       }
-
     }
 
     //invocations

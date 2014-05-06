@@ -65,7 +65,7 @@ angular.module('kpk.controllers')
     }
 
     function init (model) {
-      for (var k in model) { $scope[k] = model[k]; }
+      angular.extend($scope, model);
 
       $scope.accounts.data.forEach(function (account) {
         account.account_number = String(account.account_number);
@@ -81,7 +81,8 @@ angular.module('kpk.controllers')
         voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
       })
       .catch(function (err) {
-        console.error('An error occured : ' + JSON.stringify(err));
+        messenger.danger('An error occured : ' + JSON.stringify(err));
+        //console.error('An error occured : ' + JSON.stringify(err));
       });
     }
 
@@ -149,7 +150,8 @@ angular.module('kpk.controllers')
         flush();
       })
       .catch(function (err) {
-        console.error('An Error Occured.' + JSON.stringify(err));
+        messenger.danger('An error occured : ' + JSON.stringify(err));
+        //console.error('An Error Occured.' + JSON.stringify(err));
       });
     };
 
@@ -164,7 +166,8 @@ angular.module('kpk.controllers')
         voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
       })
       .catch(function (err) {
-        console.error('An error occurred', JSON.stringify(err));
+        messenger.danger('An error occured : ' + JSON.stringify(err));
+        //console.error('An error occurred', JSON.stringify(err));
       });
     }
 
@@ -201,7 +204,8 @@ angular.module('kpk.controllers')
       validate.process(dependencies)
       .then(init)
       .catch(function (error) {
-        console.error(error);
+        messenger.danger('An error occured : ' + JSON.stringify(error));
+        //console.error(error);
       });
     });
 
