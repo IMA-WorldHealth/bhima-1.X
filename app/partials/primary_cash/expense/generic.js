@@ -55,7 +55,7 @@ angular.module('kpk.controllers')
       validate.process(dependencies)
       .then(function (models) {
         angular.extend($scope, models);
-        session.receipt.date = new Date().toisostring().slice(0, 10);
+        session.receipt.date = new Date().toISOString().slice(0, 10);
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
       })
@@ -79,7 +79,7 @@ angular.module('kpk.controllers')
       session.receipt.cash_box_id = $routeParams.id;
     };
 
-    $scope.$watch('session.receipt', function () {
+    function valid () {
       if (!session || !session.receipt) {
         session.invalid = true;
         return;
@@ -89,11 +89,14 @@ angular.module('kpk.controllers')
       session.invalid = !(isDefined(session.currency) &&
         isDefined(r.recipient) &&
         isDefined(r.cost) &&
-        r.cost !== 0 &&
+        r.cost > 0 &&
         isDefined(r.description) &&
         isDefined(r.date) &&
         isDefined(r.cash_box_id));
-    }, true);
+    }
+
+    $scope.$watch('session.receipt', valid, true);
+    $scope.$watch('session.currency', valid, true);
 
     $scope.submit = function submit () {
       var data, receipt = session.receipt;
@@ -111,12 +114,13 @@ angular.module('kpk.controllers')
           date          : receipt.date,
           deb_cred_uuid : receipt.recipient.creditor_uuid,
           deb_cred_type : 'C',
+          account_id    : receipt.recipient.account_id,
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.data.id,
           description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
           cash_box_id   : receipt.cash_box_id,
-          origin_id     : 0
+          origin_id     : 2
         };
 
         return connect.basicPut('primary_cash', [data]);
@@ -130,6 +134,9 @@ angular.module('kpk.controllers')
           document_uuid     : receipt.reference_uuid
         };
         return connect.basicPut('primary_cash_item', [item]);
+      })
+      .then(function () {
+        return connect.fetch('/journal/primary_cash/' + data.uuid);
       })
       .then(function () {
         messenger.success("Posted data successfully.");

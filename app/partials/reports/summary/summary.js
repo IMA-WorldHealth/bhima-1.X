@@ -15,7 +15,7 @@ angular.module('kpk.controllers')
         'view': view
       };
     }
-   
+
     function init() {
       //check if the user has a settings configuration in appcache - load from this if it exists
       var configuration = [
@@ -37,15 +37,11 @@ angular.module('kpk.controllers')
     function addReport(report) {
       var currentGroup = $scope.reports[$scope.reports.length - 1];
 
-      if(currentGroup.length >= ROW_LENGTH) {
+      if (currentGroup.length >= ROW_LENGTH) {
         currentGroup = [];
         $scope.reports.push(currentGroup);
       }
       currentGroup.push(report);
-    }
-
-    function summariseCash() {
-
     }
 
     init();

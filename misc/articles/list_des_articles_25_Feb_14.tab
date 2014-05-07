@@ -1,0 +1,484 @@
+﻿010001|          Consulation médecin ambulatoire                          |01|                          2.66
+010002|          CONSULTATION MEDECIN/ HOSPITALISATION                    |01|                         10.00
+010003|          Consultation Spéciale (visite directe du médecin)        |01|                         12.00
+010004|          Examen  Physique..................................       |01|                          5.85
+010005|          Transfert médecin ( ambulatoire )                        |01|                          1.00
+010006|          Urgence simple ( Soins infirmiers + médicamants )        |01|                          3.50
+010007|          Urgence Soins médecin de garde ( suture , Hosp. )        |01|                          9.35
+011001|          Accouchement maternité pax                               |01|                         11.50
+012001|          Consultation médecin en urgence(Pax)                     |01|                         10.00
+020002|          Frais consultation nouvelle fiche                        |01|                          1.14
+020003|          *Frais de consultation ( Ancienne Fiche ) ........       |01|                          0.57
+020008|          Abonnement TBC ( un traitement) 8 mois Adulte .(Gr       |01|                          0.57
+020009|          Abonnement TBC  6 mois  Enfant .(Gratuit).........       |01|
+020010|          Abonnement diabétiques (Glucosurie 3xsemaine             |01|                         24.00
+020011|          (non compris les éventuels tests de glycémie sangu       |01|
+020012|          Abonnement prenatal ..............................       |01|                          5.00
+020015|          Rapport médical ..................................       |01|                         15.60
+020024|          Carnet  de consultation ..........................       |01|                          6.50
+020025|          Frais administratifs                                     |01|                          0.05
+020027|          Embaumement                                              |01|                        200.00
+020028|          Document funeraires                                      |01|                         50.00
+030001|          FRAIS  D'ADMISSION ...............................       |01|                          1.10
+030002|          FRAIS DE SEJOUR                                          |01|
+030003|          Salle  commune ...................................       |01|                          1.15
+030004|          Chambre Semi-privée ..............................       |01|                          3.50
+030005|          Chambre privée ...................................       |01|                          6.85
+030006|          Chambre speciale ( voir l' Administration ) ......       |01|                         30.00
+030008|          autre echographie                                        |01|                         10.00
+030009|          Nourriture ordinaire                                     |01|
+030010|          Chambre commune ..................................       |01|                          0.85
+030011|          Repas Ordinaire ..................................       |01|                          1.50
+030012|          Soins médicaux                                           |01|                          6.10
+030013|          Soins médicaux avec urgence                              |01|                          9.75
+030014|          Accouchement  vaginal(3 jours d'hospitalisation in       |01|                          2.00
+030016|          Fausse  couche .(1 jour d'hospitalisation inclus).       |01|                          0.85
+040001|          HEMATOLOGIE ( Catégorie A ) ......................       |01|                          1.30
+040002|          Formule  leucocytaire ( F.L. ) ...................       |01|                          1.95
+040003|          Electrophorèse  ( Hgb ) ..........................       |01|                          3.90
+040004|          Hematocrite ......................................       |01|                          1.30
+040005|          consommables labo                                        |01|                          1.00
+040006|          Vitesse de sédimentation .........................       |01|                          1.30
+040007|          Goutte épaisse ...................................       |01|                          1.30
+040008|          Gastroscopie ( rectognoistoscopie ) ..............       |01|                         12.00
+040009|          CHIMIE ( Catégorie C ) ...........................       |01|                          4.55
+040010|          CULTURE ( Catégorie D) ...........................       |01|                          5.20
+040011|          Antibiogramme ( supplement à ajouter au prix ) ...       |01|                          1.95
+040012|          Frottis gram .....................................       |01|                          2.60
+040013|          Frottis de crachat Ziehl- Neelsen ................       |01|                          0.75
+040014|          Frottis Fontana ..................................       |01|                          2.60
+040015|          ASO Titre ........................................       |01|                          5.20
+040016|          Electrocardiogramme ..............................       |01|                          7.80
+040017|          Liquide - cephalo rachidien ......................       |01|                          4.55
+040018|          Ponction kyste ...................................       |01|                          1.30
+040019|          Sang occulte .....................................       |01|                          1.30
+040020|          Scarification pour B.H. ..........................       |01|                          2.93
+040021|          Scarification pour microfilaire ..................       |01|                          1.30
+040022|          Selles concentrées ...............................       |01|                          1.95
+040023|          Selles routines ..................................       |01|                          1.30
+040024|          Shake test .......................................       |01|                          6.50
+040025|          Spermogramme .....................................       |01|                          6.50
+040026|          Test de glycémie sanguine ........................       |01|                          2.00
+040027|          Test de grossesse ................................       |01|                          3.50
+040028|          Test Welcome .....................................       |01|                          7.80
+040029|          Tolérance de glucose .............................       |01|                          5.20
+040030|          Urine complète ...................................       |01|                          2.60
+040031|          Groupe + Rh ......................................       |01|                          2.60
+040032|          Préparation ( comptabilité ) .....................       |01|                          3.90
+040033|          Matériel ( Trousse + Poches  de sang ) ...........       |01|                          7.80
+040034|          Paiement  au donneur  de sang ....................       |01|                         10.87
+040035|          Test de Coombs  direct ...........................       |01|                         11.05
+040036|          HISTOLOGIE .......................................       |01|                         60.00
+040037|          CYTOLOGIE ........................................       |01|                          7.80
+050001|          Amniocenthèse ....................................       |01|                         10.00
+050002|          Biopsie de foie ..................................       |01|                         10.00
+050003|          Laparacentèse ....................................       |01|                         10.00
+050004|          Thoracentèse .....................................       |01|                         10.00
+050005|          Cerclage   du  col ...............................       |01|                         20.00
+050006|          Dilatation  et curetage ..........................       |01|                         20.00
+050007|          Drainage  abcès de Douglas .......................       |01|                         20.00
+050008|          Incision & Drainage ..............................       |01|                         20.00
+050009|          Kyste  cynovial ..................................       |01|                         10.00
+050010|          Ligature  des trompes ............................       |01|                         13.00
+050011|          Petite  greffe de peau ...........................       |01|                         20.00
+050012|          Petit  lipome ....................................       |01|                         20.00
+050013|          Petite chirurgie .................................       |01|                         20.00
+050014|          Pterygion ........................................       |01|                         20.00
+050015|          Radium x 2 insertion .............................       |01|                         20.00
+050016|          Bec de lièvre ....................................       |01|                         60.00
+050017|          Césarienne (7 jours d'hospitalisation inclus).....       |01|                         60.00
+050018|          Grossesse ectopique (7 jours d'hospitalisation inc       |01|                         60.00
+050019|          Cataracte ........................................       |01|                         60.00
+050020|          Enucléation ......................................       |01|                         60.00
+050021|          Fracture  simple .................................       |01|                         60.00
+050022|          Glaucome .........................................       |01|                         60.00
+050023|          Mi-laparatomie(3 jours d'hospitalisation inclus) .       |01|                         60.00
+050024|          Hernie simple ( + 30 % pour hernie bilatérale ) ..       |01|                         60.00
+050025|          Hydrocelectomie                                          |01|                         60.00
+050026|          Hystérectomie ( abdominale + vaginale ) (7 jrs d'h       |01|                         60.00
+050027|          Lacération de la corne ...........................       |01|                         60.00
+050028|          Laparascopie .(2 jours d'hospitalisation inclus)..       |01|                         60.00
+050029|          mi-laparatomie(3 jours d'hospitalisation inclus)..       |01|                         60.00
+050030|          Ostéomyelite .....................................       |01|                         60.00
+050031|          Ténotomie ........................................       |01|                        100.00
+050032|          Chlolécystectomie ................................       |01|                         90.00
+050033|          Dacryecystorhinostomie ...........................       |01|                         90.00
+050034|          Exploration d' orbite ............................       |01|                         90.00
+050035|          Gastrectomie ou vagotomie drainage ...............       |01|                         90.00
+050036|          Greffe  de  peau ( Grande ) ......................       |01|                         90.00
+050037|          Hernie étranglée .................................       |01|                         90.00
+050038|          Hystérectomie  radicale plus gangliectomie (1 jour       |01|                         90.00
+050039|          Laparatomie Exploratrice ( appendicectomie ) .....       |01|                         90.00
+050040|          Néphrectomie .....................................       |01|                         90.00
+050041|          Occlusion intestinale ............................       |01|                         90.00
+050042|          Opération de miles ...............................       |01|                         90.00
+050043|          Ostéosynthèse ....................................       |01|                         90.00
+050044|          Péritonite .......................................       |01|                         90.00
+050045|          Prostatectomie ...................................       |01|                         90.00
+050046|          Réduction ouverte ................................       |01|                         90.00
+050047|          Réparation fistule vésico-vaginale ...............       |01|                        200.00
+050048|          Réparation fistule recto-vaginale ................       |01|                         90.00
+050049|          Hystérectomie vaginale avec reparation de cystocèl       |01|                         90.00
+050050|          suspension du vagin(1 jour inclus)                       |01|
+050051|          Splénectomie .....................................       |01|                         90.00
+050052|          Myomectomie                                              |01|                         90.00
+050053|          AMPUTATION                                               |01|                         90.00
+050054|          REPARATION                                               |01|                         90.00
+060001|          Pieds bottes .....................................       |01|                         39.00
+060002|          Plâtre  bras .....................................       |01|                         25.00
+060003|          Plâtre jambe .....................................       |01|                         49.00
+060004|          Spica  enfant ....................................       |01|                         31.00
+060005|          Spica adulte .....................................       |01|                         62.00
+060006|          Béquilles ........................................       |01|                         24.00
+070001|          Catégorie 1 (18x24 cm, 24x30 cm)..................       |01|                          6.00
+070002|          Catégorie 2 (30x40 cm, 35x35 cm, 35x43 cm)........       |01|                          8.00
+070003|          Catégorie 3                                              |01|
+070004|          Urographie intraveineuse .........................       |01|                         47.50
+070005|          Repas  baryté + films ............................       |01|                         39.00
+070006|          Lavement baryté + films ..........................       |01|                         39.00
+070007|          Urgence Radiologie................................       |01|                          1.95
+080001|          Lavage d'oreille                                         |01|                          6.00
+080002|          Pansement + mechage ( nez ou oreille )                   |01|                         10.00
+080003|          Test audiometrique: conduction aérienne ATL,             |01|
+080004|          Tympanometrie et reflexe                                 |01|                          7.00
+080005|          Cauterisation du nez au nitrate                          |01|
+080006|          Attouchement du meat sinusien(utilise l'anesthesiq       |01|                         24.00
+080007|          Tamponnement du nez                                      |01|                         10.00
+080008|          Epreuve vestibulaire calorique(Etude du vertige )        |01|                         62.50
+080009|          Extraction  de corps étranger : Oreille et Nez           |01|                         20.00
+080010|          Endoscopie ORL( Utilise l'endoscope)                     |01|                         12.00
+080011|          Traitement par Aérosol( Aérosolthérapie) 10 séance       |01|                         24.00
+080012|          Ponction d'aspiration d'un phelgmon Pharyngie            |01|                         24.00
+090002|          Ultrason ( Ecographie obstetrique )...............       |01|                          6.50
+100001|          acetazolamide250 mg                                      |01|                          0.89
+100002|          acide folique5 mg                                        |01|                          0.02
+100003|          albendazole                                              |01|                          0.13
+100004|          allopurinol 100 mg100 mg                                 |01|                          0.03
+100005|          Aminophyline100 mg                                       |01|                          0.01
+100006|          Amitriptyline25 mg                                       |01|                          0.02
+100007|          amoxycilline 250 mg                                      |01|                          0.04
+100008|          amoxycilline 500 mg500 mg                                |01|                          0.08
+100009|          ampicilline 250 mg caps                                  |01|                          0.03
+100010|          ampicilline 500 mg caps                                  |01|                          0.09
+100011|          ampicilline 875 mg875 mg                                 |01|                          0.15
+100012|          Anti acide, Maalox 400/500 mg/ tab                       |01|                          0.02
+100013|          aspirine adulte 500 mg tab (EML)                         |01|                          0.01
+100014|          atenolol 100 mg tab                                      |01|                          0.20
+100015|          biperiden 2 mg2 mg                                       |01|                          0.15
+100016|          bisacodyl5 mg                                            |01|                          0.02
+100017|          Cafeine                                                  |01|                          0.14
+100018|          calcium lactate 300 mg                                   |01|                          0.03
+100019|          captopril 25 mg25mg                                      |01|                          0.37
+100020|          carbimazole 5mg5mg                                       |01|                          0.04
+100021|          carbon medicinale125 mg                                  |01|                          0.02
+100022|          cefaclor ( cifidine) , cefixine250 mg                    |01|                          0.27
+100023|          chloroquine phosph100mgbase                              |01|                          0.01
+100024|          chloramine 500 mg500mg                                   |01|                          0.01
+100025|          chloramphenicol 250 mg caps                              |01|                          0.05
+100026|          chloroquine phosph150 mg base tab                        |01|                          0.02
+100027|          chlorpheniramine 4 mg                                    |01|                          0.00
+100028|          chlorpromazine 25 mg                                     |01|                          0.01
+100029|          cimetidine , tagamet,pintapro 200 mg                     |01|                          0.05
+100030|          ciprofloxacine (cifin ) 500 mg tab                       |01|                          0.09
+100031|          ciprofloxacin100mg                                       |01|                          0.01
+100032|          clarythromycine( biaxin)250 mg                           |01|                          0.32
+100033|          clofazimine(lamprene)100 mg                              |01|                          0.01
+100034|          cloxacilline 250 mg cap                                  |01|                          0.20
+100035|          co trimoxazole 400/80mg tab                              |01|                          0.02
+100036|          co trimoxazole100/20 mg tab                              |01|                          0.01
+100037|          colchicine                                               |01|                          0.10
+100038|          cyclophosphamide 50 mg                                   |01|                          0.31
+100039|          dapson 5 mg (pt)                                         |01|                          0.01
+100040|          diazepam5 mg                                             |01|                          0.01
+100041|          Diclofenac sodium 25 mg tab                              |01|                          0.01
+100042|          diethylcarbamazine citrate 50 mg                         |01|                          0.01
+100043|          digoxine 0.25 mg tab blister                             |01|                          0.15
+100044|          doxycyline100 mg                                         |01|                          0.02
+100045|          ephedrine HCL 30 mg                                      |01|                          0.27
+100046|          ergotamine 1 mg + caffeine 100 tab, blister              |01|                          0.69
+100047|          erythromycine 250 mg tab                                 |01|                          0.07
+100048|          erythromycine 500 mg tab                                 |01|                          0.15
+100049|          ethambutol 400 mg                                        |01|                          0.06
+100050|          ethinyloestradiol0.05 mg                                 |01|                          0.61
+100051|          Fer + acide folique200 mg+0.25 mg                        |01|                          0.00
+100052|          fer sulphate 200 mg                                      |01|                          0.00
+100053|          furosemide 40 mg tab                                     |01|                          0.01
+100054|          glibenclamide 5 mg, tab                                  |01|                          0.01
+100055|          griseofulvine 500 mg, tab                                |01|                          0.11
+100056|          griseofulvine125 mg, tab                                 |01|                          0.02
+100057|          hydralazine25 mg                                         |01|                          0.05
+100058|          hydrochorthiazide 50 mg                                  |01|                          0.01
+100059|          hyoxine                                                  |01|                          0.05
+100060|          ibuprofen 400 mg                                         |01|                          0.02
+100061|          indomethacine25 mg                                       |01|                          0.01
+100062|          isoniazide (inh) 100 mg                                  |01|                          0.01
+100063|          isoniazide/thiacetazone300/150mg                         |01|                          0.03
+100064|          isoniazide/thiacetazone100/50mg                          |01|                          0.01
+100065|          isosorbide dinitrate 5 mg blister                        |01|                          0.08
+100066|          ketaconazole 200 mg                                      |01|                          0.30
+100067|          levamizole 50 mg tab                                     |01|                          0.02
+100068|          levothyroxine (thyroxine)0.1 mg                          |01|                          0.01
+100069|          mebendazole100 mg                                        |01|                          0.01
+100070|          mefloquine250mg                                          |01|                          0.96
+100071|          methotrexate2.5 mg                                       |01|                          0.26
+100072|          methyldopa250 mg                                         |01|                          0.05
+100073|          metoclopramide 10 mg tab                                 |01|                          0.01
+100074|          metronidazole , flagyl 250 mg tab                        |01|                          0.05
+100075|          multivitamine tab                                        |01|                          0.01
+100076|          niclosamide500 mg                                        |01|                          0.06
+100077|          nifedipine 10 mg10 mg                                    |01|                          0.30
+100078|          nitrofurantoine(furadatin)100 mg                         |01|                          0.01
+100079|          norethisterone 5 mg tab                                  |01|                          0.14
+100080|          nortriptyline 25 mg25 mg                                 |01|
+100081|          noscapine15 mg                                           |01|                          0.02
+100082|          nystatin orale500,000iu tab                              |01|                          0.01
+100083|          omeprazol 20 mg cap                                      |01|                          0.80
+100084|          ovidon (lo-femenal)                                      |01|                          0.39
+100085|          papaverine40mg                                           |01|                          0.02
+100086|          paracetamol500 mg                                        |01|                          0.01
+100087|          paracetamol 500mg tab                                    |01|                          0.01
+100088|          paracetamol 100 mg tab                                   |01|                          0.01
+100089|          penicilline-phenoxymethyl) Pen VK125 mg                  |01|                          0.03
+100090|          penicilline-phenoxymethyl) Pen VK250 mg                  |01|                          0.07
+100091|          pentazocine( morphine) 30mg/ml                           |01|                          0.40
+100092|          phenobarbital 50 mg tab                                  |01|                          0.01
+100093|          phenytoin Sodium(dilatin)100 mg                          |01|                          0.01
+100094|          piracetam 400mg(nootropil)400 mg                         |01|                          0.34
+100095|          praziquantel (biltricide) 600 mg                         |01|                          0.25
+100096|          prednisone 5 mg                                          |01|                          0.01
+100097|          proguanil (paludrine)100 mg                              |01|                          0.07
+100098|          promethazine 25 mg tab                                   |01|                          0.01
+100099|          propantheline bromide15 mg                               |01|                          0.02
+100100|          propranolol40 mg                                         |01|                          0.01
+100101|          pyrazinamide500 mg                                       |01|                          0.07
+100102|          quinine sulphate 500 mg                                  |01|                          0.15
+100103|          quinine sulphate 300 mg tab                              |01|                          0.16
+100104|          reserpine0.25 mg                                         |01|                          0.01
+100105|          rifampicine300 mg                                        |01|                          0.14
+100106|          rifampicine150 mg                                        |01|                          0.07
+100107|          salbutamol4 mg tab                                       |01|                          0.01
+100108|          spironolactone 25 mg                                     |01|                          0.08
+100109|          sulphamethoxypyridazine(fansidar)500 mg                  |01|                          0.07
+100110|          tetracycline250 mg                                       |01|                          0.02
+100111|          tempraplaquette                                          |01|                          0.02
+100112|          suxamethonuim 100 mg                                     |01|                          1.37
+100113|          thyroxine(levothyroxine)                                 |01|                          0.09
+100114|          tolbutamide500 mg                                        |01|                          0.04
+100115|          tribexfort(bte de 30 ces)                                |01|                          0.07
+100116|          vitamine A 50.000 iu                                     |01|                          0.09
+100117|          vitamine B complex tab                                   |01|                          0.01
+100118|          vitamine B6(pyridoxine)50 mg                             |01|                          0.01
+100119|          vitamine C (acide ascorbic) 250 mg tab                   |01|                          0.02
+100120|          vitamineB1 (thiamine)100 mg                              |01|                          0.01
+100121|          CONSOMMATION MEDICAMENT                                  |01|                          0.50
+100122|          CONDITIONNEMENT MEDECAMENT                               |01|                          0.01
+110001|          ampicilline susp '100 ml125mg/5ml                        |01|                          0.66
+110002|          Ampicillin susp250 mg                                    |01|                          2.00
+110003|          amoxicillin 125 mg/5ml, dry powder40/100ml               |01|                          0.66
+110004|          barium sulphate susp. pde1 gr                            |01|                          1.92
+110005|          bicarbonate de soude                                     |01|                          0.50
+110006|          cefaclor suspension125/5ml                               |01|                          1.66
+110007|          chloramphenicol susp,'60 ml125/5ml                       |01|                          2.10
+110008|          cotrimoxazole susp 100 ml200/40mg/5ml                    |01|                          2.32
+110009|          erythromycine125 mg/5ml                                  |01|                          2.31
+110010|          multivitamine sirop500 ml                                |01|                          1.90
+110011|          penicilline VK susp '100 ml125mg/5ml                     |01|                          1.39
+110012|          rehydration orale sac pour 1 L                           |01|                          0.25
+110013|          metronidazole sirop 125mg / 5 ml100 ml                   |01|                          1.31
+110014|          salbutamol oral 0,5                                      |01|                          3.70
+110015|          Terra cortil otique                                      |01|                         13.00
+120001|          adrenaline1mg/ml                                         |01|                          0.80
+120002|          amidotrizoic acide(urogra)60%,10ml                       |01|                          4.40
+120003|          Aminophylline 250 mg/10 ml                               |01|                          0.45
+120004|          ampicilline 500mg poudre pour injection                  |01|                          0.25
+120005|          ampicilline1g                                            |01|                          0.65
+120006|          atropine sulphate1mg/1ml                                 |01|                          0.15
+120007|          Bicarbonate de Na inj                                    |01|                          1.92
+120008|          butylscopolamide bromideamp                              |01|                          0.18
+120009|          bupivacaine HCL(marcaine) 20 ml 0,5%                     |01|                         10.08
+120010|          calcium gluconate 10 ml10%                               |01|                          0.32
+120011|          ceftriaxon 1g (ROCEFIN)10ml                              |01|                          1.50
+120012|          ceftriaxon 250mg, poudre pour injection                  |01|                          1.85
+120013|          chloramphenicol  huileux amp 2 ml; 250 mg/ml             |01|                          1.91
+120014|          chloramphenicol 1 gr                                     |01|                          0.65
+120015|          chlorpromazine 25 mg/2ml                                 |01|                          5.67
+120016|          cyclophosphamide200 mg                                   |01|                         17.19
+120017|          dexamethasone sodium phosph1mg/ml                        |01|                          0.17
+120018|          dextran 70, 6% in dextrose500 ml                         |01|                          5.20
+120019|          diazepam10mg/2ml                                         |01|                          0.39
+120020|          diclofenac amp3 ml.25 mg                                 |01|                          0.27
+120021|          digoxine 2ml0,25mg/ml                                    |01|                          0.60
+120022|          eau pour injection10 ml                                  |01|                          0.11
+120023|          ephedrrine 30 mg/ml                                      |01|                          0.93
+120024|          ergometrine maleate0,5mg/ml                              |01|                          0.24
+120025|          furosemide20mg/2ml                                       |01|                          0.13
+120026|          fluorouracil1mg/ml                                       |01|                         12.44
+120027|          gentamycine80mg/2ml                                      |01|                          0.15
+120028|          halothane250ml                                           |01|                         35.00
+120029|          haloperidol amp 5 mg/ml                                  |01|                          0.26
+120030|          heparin,5 ml 5.000 iu/ml                                 |01|                          5.25
+120031|          hydralazine '20 mg/ml 2ml podre pour injection           |01|                         10.00
+120032|          hydrocortisone sod succ100 mg                            |01|                          0.69
+120033|          ketamine,10 ml 50mg/ml pour injection                    |01|                          1.80
+120034|          lidocaine 50 ml1%                                        |01|                          0.62
+120035|          lidocaine 50 ml2%                                        |01|                          0.66
+120036|          lidocaine/dext,hyper,rach5/7,5%                          |01|                          0.10
+120037|          medroxyprogesterone(DEPO-PROVERA)150 mg                  |01|                          2.61
+120038|          melarsoprol(arsobal)'3,6%220mg/5ml                       |01|                         14.56
+120039|          methotrexate, 2ml 2,5mg/ml                               |01|                          3.84
+120040|          metoclopramide inj                                       |01|                          0.12
+120041|          metronidazole 5mg/ml, 100ml5mg                           |01|                          2.30
+120042|          morphine10mg/ml                                          |01|                          6.50
+120043|          neostigmine0,5mg/ml                                      |01|                          0.64
+120044|          oxytocine10iu/ml                                         |01|                          0.22
+120045|          penicilline G crystalline 5M iu podre pour injection     |01|                          0.81
+120046|          penicillline G crystalline1M iu                          |01|                          0.20
+120047|          penicilline procaine/pen4M iu                            |01|                          0.61
+120048|          penicillline benzathine 2,4M iu poudre pour injection    |01|                          1.47
+120049|          pentazocine , tromadol30mg/ml                            |01|                          2.41
+120050|          pethidine100mg/ml                                        |01|                          1.45
+120051|          phenobarbitone 2 ml100mg/ml                              |01|                          0.95
+120052|          phytomenadione vitamine K1 amp1mg/ml                     |01|                          0.41
+120053|          piracetam 400mg(nootropil)amp                            |01|
+120054|          promethazine50mg/2ml                                     |01|                          0.66
+120055|          progesterone(gestone)25mg                                |01|                          0.38
+120056|          pyrodoxine B6 Amp 2 ml.50mg/ml                           |01|                          0.12
+120057|          quininne chlorate 600mg/2ml                              |01|                          0.33
+120058|          streptomycine 5g pour injection                          |01|                          0.77
+120059|          streptomycine1 g                                         |01|                          0.37
+120060|          suramin sodique(bayer 205)1 g                            |01|                         17.00
+120061|          succinychloline amp                                      |01|                          1.37
+120062|          thiopental sodique500 mg                                 |01|                          1.58
+120063|          vitamine B complex 2 ml                                  |01|                          0.43
+120064|          vitamine b complex10ml                                   |01|                          0.43
+120065|          dextrose in water 50% 50ml                               |01|                          1.21
+130001|          serum glucose 1 L 5%                                     |01|                          4.62
+130002|          serum glucose/NACL 1 L2,5/0,45%                          |01|                          4.51
+130003|          serum physiologique(NACL)0,9%                            |01|                          4.62
+130004|          serum Rngers lactate 1 L                                 |01|                          4.62
+130005|          DEXTOSE 500 ML BAXTER 5%                                 |01|                          2.75
+130006|          SALINE 500 MLBAXTER                                      |01|                          2.48
+140001|          anti-snake vehum10 ml                                    |01|                        295.89
+140002|          insuline normal(ordinaire)40iu/ml                        |01|                          7.05
+140003|          insuline retard (NP)'10 ml40iu/ml                        |01|                          7.05
+140004|          serum anti-tetanique,amp1500 iu, 1 ml                    |01|                          2.18
+140005|          vaccin anti-tetanique10ml/20 dos                         |01|                          4.34
+140006|          vincristine1 mg                                          |01|                          8.17
+150001|          Anti haemorrhoidsupp                                     |01|                          0.24
+150002|          alcool denature1 L                                       |01|                          0.90
+150003|          argent(nitrate)"crayon"95 %                              |01|                          0.90
+150004|          argyrol collyre,5%30 ml                                  |01|                          0.90
+150005|          atropine sulph.gtt.ophth1%                               |01|                          0.90
+150006|          bande elastique                                          |01|                          1.00
+150007|          benzoic/salicyl.acide ong5/5 %                           |01|                          0.63
+150008|          benzyl benzoate 25%60 ml                                 |01|                          0.18
+150009|          betadine(povidone iode)500ml10 %                         |01|                          0.90
+150010|          cetrimide poudre50 g                                     |01|                          0.90
+150011|          cetrimide/chlorhexidin 5L0,5/0,5%                        |01|                          0.90
+150012|          chloramphenicol base1 kg                                 |01|                          0.90
+150013|          chloramphenicol collyre 10ml0,5g100ml                    |01|                          0.90
+150014|          chloramphenicol ong ophth 5gr1%                          |01|                          0.47
+150015|          chlorhexidine gluconate20%/1L                            |01|                          0.90
+150016|          chlorxylenol soln(dettol)49mg/ml/5L                      |01|                          0.90
+150017|          clotrimoxazole pom.dermique1%/10 g                       |01|                          0.87
+150018|          creoline1 L                                              |01|                          0.90
+150019|          condom (4con)                                            |01|                          0.90
+150020|          ether1 L                                                 |01|                          0.90
+150021|          gentian Violet                                           |01|                          2.94
+150022|          glycerine, 1 L85%                                        |01|                          0.90
+150023|          halothane 250 ml                                         |01|                         38.43
+150024|          crayon nitrate                                           |01|                          1.00
+150025|          hydrocortisone + Néomycin eyes drop10 ml                 |01|                          2.52
+150026|          hydrocortisone1% gtt ophth10 ml                          |01|                          1.19
+150027|          hydrocortisone pde ophth1%/5 g                           |01|                          0.98
+150028|          hydrocortisone pde deerm1%/15 g                          |01|                          0.98
+150029|          ichthammol(ichtyolle) ong10%                             |01|                          0.90
+150030|          lidocain/phenazone gtt5/5%500ml                          |01|                          0.90
+150031|          lindane liquide100 ml                                    |01|                          0.90
+150032|          lindane pommade,1 %200 g                                 |01|                          0.90
+150033|          locacortene-vioform creme15 g                            |01|                          0.90
+150034|          lysol(lyorthol)soln 5L67g/L                              |01|                          0.90
+150035|          magnesuim sulphate 50%? 20ml, (sel an)5 kg               |01|                          1.37
+150036|          mercurochrome(merbromine)500 g                           |01|                          0.90
+150037|          methylsalicylate pom,10%800 g                            |01|                          0.90
+150038|          mouse,contraceptif(Deflan)50 g                           |01|                          0.90
+150039|          neomycine/HC gtt ophth,10ml0,5/1,5%                      |01|                          0.90
+150040|          miconazole pommade                                       |01|                          0.51
+150041|          hydrocortisone pommade opht.tube                         |01|                          0.65
+150042|          miconasole poudre 2% 30gr(EML)                           |01|                          1.09
+150043|          mirine(gouttes opht)                                     |01|                          0.90
+150044|          nystatin vag supp100.000iu                               |01|                          0.05
+150045|          oxybuprocainecollyre0,4%/10ml                            |01|                          0.90
+150046|          paraffine(huile minerale)11                              |01|                          0.90
+150047|          paraformaldehyde1 g                                      |01|                          0.90
+150048|          pilocarpine gtt oppth 5ml2%                              |01|                          1.85
+150049|          poly-pred.ophtFlc                                        |01|                          0.90
+150050|          pommade antibiot,peau20 g                                |01|                          0.90
+150051|          pommade camphre 10%1 kg                                  |01|                          0.90
+150052|          poudre pour plaie500 g                                   |01|                          0.90
+150053|          Polyvidone iodine 100 ml/200ml                           |01|                          2.50
+150054|          savon antiseptique barre                                 |01|                          0.90
+150055|          silvadene creme%400 g                                    |01|                          0.90
+150056|          suppositoire,anti-hemrro                                 |01|                          0.90
+150057|          sulfacetamide pde opht10%/5                              |01|                          0.90
+150058|          talc1 kg                                                 |01|                          0.90
+150059|          tetracaine 5 ml0,5%                                      |01|                          0.90
+150060|          tetracycline HCI  ong ophth 5g1%                         |01|                          0.39
+150061|          tosylochloramine sodique500 mg                           |01|                          0.90
+150062|          undecylenic acide ong 800g10%                            |01|                          0.90
+150063|          vaseline blanche 2,5 kg                                  |01|                          0.90
+150064|          xylomethazoline gtt nasal0,1%                            |01|                          0.90
+150065|           oxyde de Zinc pommade 10%, 800 g                        |01|                          9.35
+150066|          timolol eyes 0,25% drops                                 |01|                          2.84
+150067|          Ventolin(Beclazone inhaler)1fl                           |01|                         50.92
+150068|          xylomethazoline gtt nasal10btl                           |01|                          1.81
+150069|          xylocaine gel                                            |01|                         20.00
+160001|          Amethocaine 0.5%Flc 5cc                                  |01|                          0.81
+160002|          Atropine 1%Flc 5cc                                       |01|                          0.94
+160003|          Chloramphenicol 1%Flc 5cc                                |01|                          0.81
+160004|          DexamethasoneFlc 5cc                                     |01|                          1.60
+160005|          HydrocortisoneFlc 5cc                                    |01|                          1.60
+160006|          hydrox neomy eyes ( gentamide)Flc 5cc                    |01|                          1.96
+160007|          Idoxuridine .1% (IDU)Flc 5cc                             |01|                          0.93
+160008|          Methyl celluloseFlc 5cc                                  |01|                          0.75
+160009|          Prednisolone .5%Flc 5cc                                  |01|                          1.19
+160010|          Providone iodine .5%Flc 5cc                              |01|                          0.75
+160011|          maxidrol Flc 5cc                                         |01|                          3.63
+160012|          timolol Flc 5cc                                          |01|                          2.84
+170001|          bistouris pcepce                                         |01|                          0.29
+170002|          bande elastiquepce                                       |01|                          2.08
+170003|          suturepce                                                |01|                          2.83
+170004|          compressepce                                             |01|                          0.05
+170005|          gants steriles                                           |01|                          1.75
+170006|          gants non striles                                        |01|                          0.20
+170007|          Seringue 2cc disposablePce                               |01|                          0.02
+170008|          Seringue 5cc disposablePce                               |01|                          0.22
+170009|          Seringue 10cc disposablePce                              |01|                          0.04
+170010|          Seringue 2cc non-disposablePce                           |01|                          0.43
+170011|          Seringue 5cc non-disposablePce                           |01|                          0.49
+170012|          Seringue 10cc non-disposablePce                          |01|                          0.76
+170013|          Seringue 20cc non-disposablePce                          |01|                          1.21
+170014|          Aiguille disposable 21,23 & 25gaPce                      |01|                          0.02
+170015|          Aiguille non-disp. 20,21,23 & 25gaPce                    |01|                          0.19
+170016|          Poche a urinePce                                         |01|                          0.47
+170017|          sac collecteur                                           |01|                          3.50
+170018|          sonde a demeure                                          |01|                          3.50
+170019|          sonde naso gastrique                                     |01|                          2.50
+170020|          Attele bras                                              |01|                          5.00
+170021|          Attele jambe                                             |01|                         10.00
+170022|          Cotton 500 gr                                            |01|                          2.18
+170023|          Trousse d'accouchement                                   |01|                          2.50
+170024|          trousse perfusion                                        |01|                          1.00
+170025|          trousse d'accouchement                                   |01|                          2.50
+180001|          Paire Verres Spheriques Paire                            |01|                          5.50
+180002|          Paire Verres Toriques Paire                              |01|                          8.50
+180003|          Paire Verres Double Foyer Paire                          |01|                         25.00
+180004|          Un verre Spherique Pce                                   |01|                          3.30
+180005|          Un Verre Torique Pce                                     |01|                          5.10
+180006|          Un Verre Double Foyer Pce                                |01|                         15.00
+180007|          Selector Pce                                             |01|                          7.50
+180008|          NHS Pce                                                  |01|                          5.25
+180009|          Ancien Pce                                               |01|                          3.00
+180010|          Etuis Pce                                                |01|                          1.50
+180024|          Catheter Foley Pce                                       |01|                          0.37
+180025|          Ouate 500 gr Rlx                                         |01|                          2.50

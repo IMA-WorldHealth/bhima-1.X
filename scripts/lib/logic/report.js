@@ -475,6 +475,29 @@ module.exports = function (db) {
     return defer.promise;
   }
 
+  function stockReport (params) {
+    var sql, defer = q.defer();
+    var depot_id = sanitize.escape(params.depot_id);
+    
+
+    sql =
+      "SELECT SUM(quantity) as quantity, tracking_number, direction " +
+      "FROM stock_movement " +
+      "WHERE depot_id = " + depot_id + " " +
+      "GROUP BY tracking_number, direction;";
+
+    db.exec(sql)
+    .then(function (data) {
+      defer.resolve(data);
+    })
+    .catch(function (err) {
+      defer.reject(err);
+    });
+
+    return defer.promise;
+
+  }
+
   function priceReport (params) {
     var sql, defer = q.defer();
 
@@ -503,7 +526,15 @@ module.exports = function (db) {
     return defer.promise;
   }
 
-
+  // TODO: Revamp this code to do something like
+  // var params = Array.prototype.slice.call(arguements)
+  // var request = params.unshift();
+  // route[request](params);
+  //
+  // This increased the power of the function.
+  //
+  // Also consider doing some error catching (in case route doesn't exist)
+  // by wrapping route[request](params) in q();
   return function generate(request, params, done) {
     /*summary
     *   Route request for reports, if no report matches given request, return null

@@ -67,10 +67,9 @@ angular.module('kpk.controllers')
     });
 
     function buildStores(models) {
-      for (var k in models) { $scope[k] = models[k]; }
+      angular.extend($scope, models);
       buildGrid();
     }
-
 
     function buildGrid() {
 
@@ -107,7 +106,7 @@ angular.module('kpk.controllers')
           col.name = $translate(col.id);
         });
       });
-  
+
       options = {
         enableCellNavigation : true,
         forceFitColumns      : true
@@ -222,11 +221,11 @@ angular.module('kpk.controllers')
       groupInstance = JSON.parse(JSON.stringify(groupDefinition));
       groupInstance.aggregateCollapsed = true;
       groupInstance.aggregators = [];
- 
+
       groupDefinition.aggregators.forEach(function(aggregate) {
         groupInstance.aggregators.push(new Slick.Data.Aggregators.Sum(aggregate));
       });
-  
+
       groupInstance.formatter = groupDefinition.formatter;
       dataview.setGrouping(groupInstance);
     };

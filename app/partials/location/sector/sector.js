@@ -23,18 +23,17 @@ angular.module('kpk.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.sector = {
       identifier : 'uuid',
       query : '/sector/'
-    }
+    };
 
     //fonction
 
-    function manageSector(model){
-      console.log('les modeles sont :', model);
-      for (var k in model) { $scope.model[k] = model[k]; }
+    function manageSector(model) {
+      angular.extend($scope, model);
     }
 
     function setOp(action, sector){

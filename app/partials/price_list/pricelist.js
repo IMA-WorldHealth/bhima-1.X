@@ -3,12 +3,13 @@ angular.module('kpk.controllers')
   '$scope',
   '$q',
   '$filter',
+  '$window',
   'connect',
   'messenger',
   'appstate',
   'validate',
   'uuid',
-  function ($scope, $q, $filter, connect, messenger, appstate, validate, uuid) {
+  function ($scope, $q, $filter, $window, connect, messenger, appstate, validate, uuid) {
     var dependencies = {}, stores = {};
     var enterprise;
 
@@ -24,15 +25,14 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.inventory = { 
+    dependencies.inventory = {
       query : {
         identifier : 'uuid',
         tables : {'inventory' : {columns:['uuid', 'code', 'inventory_code', 'text', 'type_id']}},
-        
+
       }
     };
 
-    appstate.register('enterprise', loadDependencies);
 
     function loadDependencies(enterpriseResult) {
       enterprise = $scope.enterprise = enterpriseResult;
@@ -42,14 +42,17 @@ angular.module('kpk.controllers')
       validate.process(dependencies).then(priceList);
     }
 
+    appstate.register('enterprise', loadDependencies);
+
+
     function priceList(model) {
       $scope.model = model;
 
     }
-  
+
     function editItems(list) {
-    
-      console.log('list', list);
+
+      //console.log('list', list);
       dependencies.priceListItems = {
         query : {
           identifier: 'uuid',
@@ -122,13 +125,13 @@ angular.module('kpk.controllers')
       var invalidData = $scope.session.listItems.some(function (item, index) {
         if (!item.price_list_uuid) item.price_list_uuid = priceList.uuid;
         item.item_order = index;
-  
-        
+
+
         if (isNaN(Number(item.value))) return true;
 
         if (!item.description || item.description.length===0) return true;
         if (Number(item.is_global) && !item.inventory_uuid) return true;
-        
+
         return false;
       });
 
@@ -137,23 +140,23 @@ angular.module('kpk.controllers')
       // FIXME single request for all items
       $scope.session.listItems.forEach(function (item) {
         var request, uploadItem = connect.clean(item);
-        console.log('UPDATING', item);
+        //console.log('UPDATING', item);
         if(item.uuid) {
           request = connect.basicPost('price_list_item', [uploadItem], ['uuid']);
         } else {
           uploadItem.uuid = uuid();
-          console.log('adding uuid', uploadItem.uuid);
+          //console.log('adding uuid', uploadItem.uuid);
           request = connect.basicPut('price_list_item', [uploadItem]);
         }
         uploadPromise.push(request);
       });
-    
+
       $scope.session.deleteQueue.forEach(function (itemId) {
         uploadPromise.push(connect.basicDelete('price_list_item', itemId, 'uuid'));
       });
 
       $q.all(uploadPromise).then(function (result) {
-  
+
         // FIXME Redownload to prove DB state - remove (horrible use of bandwidth)
         editItems(priceList);
         messenger.success($filter('translate')('PRICE_LIST.LIST_SUCCESS'));
@@ -161,9 +164,9 @@ angular.module('kpk.controllers')
         messenger.danger($filter('translate')('PRICE_LIST.LIST_FAILURE'));
       });
     }
-    
+
     // Clear inventory uuid for non global items (on change)
-    function clearInventory(item) { 
+    function clearInventory(item) {
       if (!Number(item.is_global)) item.inventory_uuid = null;
     }
 
@@ -179,7 +182,7 @@ angular.module('kpk.controllers')
       .then(function (res) {
         messenger.success($filter('translate')('PRICE_LIST.EDITED_SUCCES'));
         $scope.model.priceList.put($scope.edit);
-      
+
         $scope.session.selected = null;
         $scope.session.action = '';
       }, function (err) {
@@ -209,7 +212,7 @@ angular.module('kpk.controllers')
 
         $scope.model.priceList.post(finalList);
         editItems(finalList);
-  
+
         messenger.success($filter('translate')('PRICE_LIST.POSTED'));
       }, function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
@@ -221,7 +224,7 @@ angular.module('kpk.controllers')
     };
 
     function removeList (list){
-      var confirmed = confirm($filter('translate')('PRICE_LIST.DELETE_CONFIRM'));
+      var confirmed = $window.confirm($filter('translate')('PRICE_LIST.DELETE_CONFIRM'));
       if(!confirmed) return;
 
       connect.basicDelete('price_list', list.uuid, 'uuid')
@@ -230,11 +233,11 @@ angular.module('kpk.controllers')
           $scope.model.priceList.remove(list.uuid);
           messenger.success($filter('translate')('PRICE_LIST.REMOVE_SUCCESS'));
         }
-      }, function(error) { 
-        //FIXME Temporary 
-        if (error.status===500) { 
+      }, function(error) {
+        //FIXME Temporary
+        if (error.status===500) {
           messenger.danger($filter('translate')('PRICE_LIST.UNABLE_TO_DELETE'), 6000);
-        };
+        }
       });
     }
 

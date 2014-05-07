@@ -269,7 +269,7 @@
     "DEBITOR_GROUP"   : "Select a Debitor Group",
     "PATIENT_GROUP"   : "Select a Patient Group",
     "CREDITOR_GROUP"  : "Select a Creditor Group",
-    "PRICE_LIST"      : " Select a Price List",
+    "PRICE_LIST"      : "Select a Price List",
     "LOCATION"        : "Select a Location",
     "PAYMENT"         : "Select a Payment Type",
     "GROUP_TYPE"      : "Select a Group Type",
@@ -277,7 +277,11 @@
     "UNIT"            : "Select a Unit",
     "INVENTORY_ITEM"  : "Select an Inventory Item",
     "DEBITOR"         : "Select a Debitor",
-    "ENTERPRISE" : "Select an Enterprise"
+    "ENTERPRISE"      : "Select an Enterprise",
+    "CODE"            : "Select a Code",
+    "DEPOT"           : "Select a Depot",
+    "TRACKING_NUMBER" : "Select a Tracking Number",
+    "DIRECTION"       : "Select a Direction"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -353,10 +357,18 @@
     "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
     "REGISTERED_BY"       : "Registered By",
+    "ORDER_DATE"          : "Date of Order",
+    "LABEL"               : "Label",
+    "SUMMARY"             : "Summary",
     "CREDITOR"            : "Creditor",
     "CREDITOR_ID"         : "Creditor ID",
     "RATE"                : "Rate",
+    "EXPIRATION_DATE"     : "Expiration Date",
+    "TRACKING_NUMBER"     : "Tracking Number",
+    "INVENTORY_CODE"      : "Inventory Code",
     "LINE_ID"             : "Line ID",
+    "LOT_NUMBER"          : "Lot Number",
+    "PURCHASE_DATE"       : "Purchase Date",
     "EXPLANATION"         : "Explanation",
     "ABBR"                : "Abbr",
     "ENTERPRISE_ID"       : "Enterprise ID",
@@ -364,6 +376,7 @@
     "SALE_ID"             : "Sale ID",
     "PASSWORD"            : "Password",
     "ID"                  : "ID",
+    "PURCHASE_ORDER"      : "Purchase Order",
     "USER_NAME"           : "User Name",
     "LAST_NAME"           : "Last Name",
     "GROUP"               : "Group",
@@ -414,6 +427,7 @@
     "DESCRIPTION"         : "Description",
     "QUANTITY"            : "Quantity",
     "UNIT_PRICE"          : "Unit Price",
+    "TOTAL_PRICE"         : "Total Price",
     "COST"                : "Cost",
     "DISCOUNT"            : "Discount",
     "INVENTORY_ITEM"      : "Inventory Item",
@@ -426,6 +440,7 @@
     "INVPO_ID"            : "Inv/PO #",
     "PATIENT"             : "Patient",
     "TOTAL_AMOUNT"        : "Total Amount",
+    "DEPOT"               : "Depot",
     "BALANCE_DUE"         : "Balance Due",
     "POSTED"              : "Posted",
     "FISCAL_YEAR_ID"      : "Fiscal Year ID",
@@ -455,7 +470,9 @@
     "DEB_CRED_UUID"       : "Debitor/Creditor ID",
     "SALE_PRICE"          : "Sale Price",
     "PURCHASE_PRICE"      : "Purchase Price",
-    "BHIMA_STOCK_CODE"    : "Stock Reference"
+    "BHIMA_STOCK_CODE"    : "Stock Reference",
+    "DIRECTION"           : "Direction",
+    "DESTINATION"         : "Destination"
   },
 
   "TREE"                        : {
@@ -518,7 +535,12 @@
     "JOURNAL_VOUCHER"           : "Journal Voucher",
     "PROJECT"                   : "Projects",
     "EMPLOYEE"                  : "Employee",
-    "DEPOT"                     : "Depot"
+    "DEPOT"                     : "Depot",
+    "STOCK_MANAGEMENT"          : "Stock Management",
+    "STOCK_ENTRY"               : "Stock Entry",
+    "STOCK_EXIT"                : "Stock Exit",
+    "STOCK_MOVEMENT"            : "Stock Movements",
+    "STOCK_LOSS"                : "Stock Loss"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -571,11 +593,11 @@
     "RECEIVED"    : "Received"
   },
 
-  "NO_EXCHANGE" : {
-    "TITLE" : "Missing Exchange Rate",
-    "EXPLANATION" : "This module requires an exchange rate.  There is no exchange rate set for today.",
+  "NO_EXCHANGE"    : {
+    "TITLE"        : "Missing Exchange Rate",
+    "EXPLANATION"  : "This module requires an exchange rate.  There is no exchange rate set for today.",
     "CURRENT_DATE" : "Current Date",
-    "FIX" : "Please return to the exchange rate module and set a new exchange rate.",
+    "FIX"          : "Please return to the exchange rate module and set a new exchange rate.",
     "SET_NEW_RATE" : "Set a New Rate"
   },
 
@@ -747,7 +769,9 @@
     "CONTINUE"        : "Continue",
     "ADD"             : "Add",
     "EDIT"            : "Edit",
-    "NEW_FORM"        : "New Form"
+    "NEW_FORM"        : "New Form",
+    "REVIEW"          : "Review",
+    "BACK"            : "Back"
   },
 
   "CASH"                   : {
@@ -1074,6 +1098,30 @@
     "UPDATE_SUCCESS"  : "Stock updated!",
     "UPDATE_FAILURE"  : "Cannot update stock",
     "INVALID_PRICE"   : "Invalid price provided"
+  },
+
+  "STOCK" : {
+    "ENTRY" : {
+      "TITLE"               : "Stock Entry",
+      "SELECT"              : "Select",
+      "NUM_ITEMS"           : "Number of Items",
+      "SELECT_DEPOT"        : "Select a Depot",
+      "FIND_PURCHASE_ORDER" : "Find a Purchase Order",
+      "ORDER_DETAIL"        : "Order Details",
+      "ASSIGN_LOTS"         : "Assign Lots",
+      "CANCEL"              : "Cancel",
+      "LOT_NUMBER"          : "Lot No.",
+      "ORDER_DETAILS"       : "Order Details",
+      "REMAINING"           : "Remaining",
+      "ASSIGNED"            : "Assigned",
+      "REVIEW"              : "Review Manifest",
+      "REQUESTED_BY"        : "Requested By"
+    },
+    "EXIT" : {},
+    "MOVEMENT" : {
+      "TITLE" : "Stock Movements",
+      "FORM" : "Stock Movement Form"
+    }
   },
 
   "SWAPDEBITOR"            : {

@@ -10,7 +10,7 @@ angular.module('kpk.controllers')
     // TODO add sortable (clickable) columns
     var defaultInvoice = ($routeParams.recordID || -1),
         dependencies = {};
-    
+
     var period = $scope.period = [
       {
         key : 'CASH_PAYMENTS.DAY',
@@ -23,10 +23,10 @@ angular.module('kpk.controllers')
       {
         key : 'CASH_PAYMENTS.MONTH',
         method : month
-     }
+      }
     ];
-    
-    var session = $scope.session = { 
+
+    var session = $scope.session = {
       param : {},
       searching : true
     };
@@ -39,7 +39,7 @@ angular.module('kpk.controllers')
       },
       result : {}
     };
-    
+
     // $scope.$watch('session.param', formatDates, true);
 
     dependencies.sale = {};
@@ -55,14 +55,14 @@ angular.module('kpk.controllers')
 
     $timeout(init, 100);
 
-    function init() { 
+    function init() {
       validate.process(dependencies, ['project']).then(loadProjects);
     }
 
     function loadProjects(model) {
       $scope.model = model;
       // session.project = model.project.data[0].id;
-    
+
       // TODO Determine best way to wait for page load before requesting data
       select(period[0]);
     }
@@ -82,7 +82,7 @@ angular.module('kpk.controllers')
       var request;
 
       formatDates();
-      
+
       request = {
         dateFrom : session.param.dateFrom,
         dateTo : session.param.dateTo,
@@ -105,14 +105,14 @@ angular.module('kpk.controllers')
       reset();
     }
 
-    function week() { 
+    function week() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
       $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getDate() - 7);
       reset();
     }
 
-    function month() { 
+    function month() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
       $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getMonth() - 1);
@@ -129,10 +129,10 @@ angular.module('kpk.controllers')
       return $scope.model.sale.data.length;
     }
 
-    function totalPatients() { 
+    function totalPatients() {
       var total = 0, evaluated = {};
 
-      $scope.model.sale.data.forEach(function (sale) { 
+      $scope.model.sale.data.forEach(function (sale) {
         if (evaluated[sale.debitor_uuid]) return;
         total++;
         evaluated[sale.debitor_uuid] = true;
@@ -141,13 +141,13 @@ angular.module('kpk.controllers')
       return total;
     }
 
-    function totalCost() { 
-      return $scope.model.sale.data.reduce(function (a, b) { 
+    function totalCost() {
+      return $scope.model.sale.data.reduce(function (a, b) {
         return a + b.cost;
       }, 0);
     }
 
-    function formatDates() { 
+    function formatDates() {
       session.param.dateFrom = $filter('date')(session.param.dateFrom, 'yyyy-MM-dd');
       session.param.dateTo = $filter('date')(session.param.dateTo, 'yyyy-MM-dd');
     }

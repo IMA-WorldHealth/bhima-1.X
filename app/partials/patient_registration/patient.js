@@ -59,7 +59,7 @@ angular.module('kpk.controllers')
     };
 
     function patientRegistration(model) {
-      for (var k in model) { $scope[k] = model[k]; }
+      angular.extend($scope, model);
 
       // set up location models
       $scope.current = {};
@@ -106,7 +106,7 @@ angular.module('kpk.controllers')
       if (util.isDateAfter($scope.patient.dob, new Date())) {
         return messenger.warning($translate('PATIENT_REG.INVALID_DATE'), 6000);
       }
-      
+
       // This is overly verbose, but works and is clean
       var defer = $q.defer();
       // if the villages are strings, create database entries for them
@@ -134,7 +134,7 @@ angular.module('kpk.controllers')
 
       defer.promise.then(function () {
         var patient = $scope.patient;
-      
+
         patient.current_location_id = $scope.current.village.uuid;
         patient.origin_location_id = $scope.origin.village.uuid;
         writePatient(patient);
@@ -143,7 +143,7 @@ angular.module('kpk.controllers')
 
 
     function createVillage(village, sector_uuid, writeTo) {
-      
+
       return connect.basicPut('village', [{
         uuid : uuid(),
         name : village,
