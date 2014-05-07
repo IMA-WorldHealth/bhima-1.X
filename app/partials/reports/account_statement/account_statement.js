@@ -3,23 +3,23 @@ angular.module('kpk.controllers').controller('accountStatement',
   '$scope',
   '$q',
   '$http',
+  '$routeParams',
   'appstate',
   'uuid',
-  function ($scope, $q, $http, appstate, uuid) {
+  'util',
+  function ($scope, $q, $http, $routeParams, appstate, uuid, util) {
     var dependencies = {};
-  
+    var accountId = $routeParams.id;
     var session = $scope.session = {
-      dateFrom : '2014-03-03',
-      dateTo : '2014-04-12',
-      limit : 25
+      reportDate : new Date(),
+      timestamp : new Date(),
+      config : {
+        limit : 25
+      }
     };
+    session.config.dateFrom = util.convertToMysqlDate(session.reportDate);
+    session.config.dateTo = session.config.dateFrom;
 
-    // TODO Receive this through $routeParams
-    var accountId = 1062;
-
-    // Temporary details not yet stored
-    var accountCreated = '03-03-2014';
-  
     dependencies.report = {
       // query : '/report/account_statement/'
     };
@@ -32,48 +32,16 @@ angular.module('kpk.controllers').controller('accountStatement',
     );
 
     function initialise(model) {
-      console.log('[accountStatement]', 'fetched report', model); 
       $scope.report = model.data;
-      
-      // $scope.report.account.account_number = '46661900';
-    
-      // FIXME Temporary report for meetings, this should be TODAY
-      $scope.report.timestamp = new Date(session.dateTo);
-      
       $scope.report.uuid = uuid();
-      $scope.report.account.created = new Date(accountCreated);
-
-      processItemBalance($scope.report);
-    }
-
-    function processItemBalance(model) {
-      var beginBalance = model.balance.balance;
-      var tempBalance = 0;
-
-      // console.log(model.detail);
-
-      // model.detail.sort();
-
-      console.log(model.detail);
-
-      model.detail.forEach(function (item) {
-        beginBalance += (item.debit_equiv - item.credit_equiv);
-        item.balance = beginBalance;
-        tempBalance += (item.debit_equiv - item.credit_equiv);
-        
-        item.inv_po_id = item.inv_po_id.slice(0, 6);
-        item.uuid = item.uuid.slice(0, 6);
-      });
-
-      console.log(tempBalance);
     }
     
     function processReport() {
       var statementParams = {
-        dateFrom : session.dateFrom,
-        dateTo : session.dateTo,
+        dateFrom : session.config.dateFrom,
+        dateTo : session.config.dateTo,
         order : 'date',
-        limit : session.limit,
+        limit : session.config.limit,
         accountId : accountId
       };
 
@@ -93,6 +61,5 @@ angular.module('kpk.controllers').controller('accountStatement',
       });
       return deferred.promise;
     }
-     
   }
 ]);

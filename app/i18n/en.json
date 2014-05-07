@@ -328,7 +328,11 @@
     "VISIBLE_PERIODS"       : "Visible Periods",
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
-    "GENERATED_ON"          : "Generated on"
+    "GENERATED_ON"          : "Generated on",
+
+    "ACCOUNT_STATEMENT"     : {
+      "TITLE"               : "Account Summary Report"
+    }
   },
 
   "CASH_PAYMENTS" : {

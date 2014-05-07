@@ -260,7 +260,7 @@ module.exports = function (db) {
     params.dateTo = '\'' + params.dateTo + '\'';
 
     accountQuery = 
-      "SELECT account_number, account_txt, account_type_id, parent FROM account where id = " + params.accountId + ";";
+      "SELECT account_number, account_txt, account_type_id, parent, created FROM account where id = " + params.accountId + ";";
 
     overviewQuery = 
       "SELECT SUM(debit_equiv) as 'invoiced', SUM(credit_equiv) as 'credit', SUM(debit_equiv - credit_equiv) as 'balance' " + 

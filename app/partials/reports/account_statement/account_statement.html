@@ -1,5 +1,5 @@
 <header>
-  {{ "REPORTS.ACCOUNT_STATEMENT.TITLE" | translate }}
+  {{ "REPORT.ACCOUNT_STATEMENT.TITLE" | translate }}
 </header>
 
 <!-- <section class="top&#45;nav"> -->
@@ -18,7 +18,7 @@
             <h3>Account Statement <small> {{report.account.account_txt}}</small></h3>
           </div>
           <div class="pull-right">
-            {{report.timestamp | date}}
+            {{session.timestamp | date}}
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@
             <tbody>
               <tr>
                 <td>{{report.account.account_number}}</td>
-                <td>{{session.dateFrom | date}} to {{session.dateTo | date}}</td>
+                <td>{{session.config.dateFrom | date}} to {{session.config.dateTo | date}}</td>
               </td>
             </tbody>
           </table>
