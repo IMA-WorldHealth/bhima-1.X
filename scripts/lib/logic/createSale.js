@@ -8,17 +8,20 @@ module.exports = function(db, parser, journal) {
     var saleRecord = saleData.sale;
     var saleItems = saleData.saleItems;
     
-    var transaction = [];
+    // var transaction = [];
 
     if(!(saleRecord && saleItems)) return callback(null, new Error("[createSale] Required data is invalid"));
     saleRecord.uuid = uuid();
     // saleRecord.reference = 1; // TODO : this method is a hack to get ids to work
 
-    transaction.push(generateSaleRecord(saleRecord, userId));
-    transaction.push(generateSaleItems(saleRecord.uuid, saleItems));
+    // transaction.push(generateSaleRecord(saleRecord, userId));
+    // transaction.push(generateSaleItems(saleRecord.uuid, saleItems));
     
-    db.transaction(['INSERT INTO transaction_type VALUES (15, "KJLKJ");', 'SELECT * FROM transaction_type;']);
+    // db.executeAsTransaction(['INSERT INTO transaction_type VALUES (15, "KJLKJ");', 'SELECT * FROM transaction_type;']);
     
+    var transaction = db.requestTransactionConnection();
+    
+    console.log(transaction);
     // 0. Begin transaction
     // 1. Write sale record
     // 2. Write sale items
