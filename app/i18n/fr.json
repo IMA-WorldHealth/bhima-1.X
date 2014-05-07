@@ -553,7 +553,7 @@
     "REFERENCE"           : "Reference",
     "TRACKING_NUMBER"     : "Numero de Tracking",
     "EXPIRATION_DATE"     : "Date Expiration",
-    "LOT"                 : "Lot",
+    "LOT"                 : "Lot - Date Expiration - Quantite de Lot",
     "STATE"               : "Etat",
     "AVAILABLE"           : "Disponible",
     "QTY_ASKED"           : "Quantite Demandee",

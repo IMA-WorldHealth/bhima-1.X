@@ -512,6 +512,18 @@ app.get('/period/:date', function (req, res, next) {
   .done();
 });
 
+app.get('/lot/:inventory_uuid', function (req, res, next){
+  var sql = "SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid="+sanitize.escape(req.params.inventory_uuid);
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+});
+
 app.get('/max_trans/:project_id', function (req, res, next) {
   var project_id = sanitize.escape(req.params.project_id);
   var sql =
