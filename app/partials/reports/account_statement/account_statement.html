@@ -1,0 +1,191 @@
+<header>
+  {{ "REPORT.ACCOUNT_STATEMENT.TITLE" | translate }}
+</header>
+
+<section class="top-nav">
+<!-- <div class="pull&#45;right"> -->
+  <div class="row">
+
+    <div class="col-xs-3">
+      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateFrom" class="form-kapok">
+    </div>
+    <div class="col-xs-3">
+      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateTo" class="form-kapok">
+    </div>
+
+    <!-- <div class="col&#45;xs&#45;3"> -->
+    <!--   <input ng&#45;disabled="session.select || !session.loaded" type="number" class="form&#45;kapok spinner" ng&#45;model="session.config.limit"> -->
+    <!-- </div> -->
+
+  </div>
+  <!-- </div> -->
+</section>
+
+<!-- <div class="reportBody" style="margin&#45;top: 87px"> -->
+<div class="reportBody" style="margin-top: 87px">
+  <div class="reportFrame">
+    <!-- <div ng&#45;if="!session.loaded">Loading report...</div> -->
+    
+    <div ng-if="session.select" style="margin-bottom : 15px">
+      <div style="margin-bottom : 15px">
+        {{ "REPORT.ACCOUNT_STATEMENT.NO_ACCOUNT_SPECIFIED" | translate }}
+      </div>
+      
+      <div class="input-group"> 
+        <input class="form-kapok" type="text" ng-model="session.requestId" placeholder="Account ID">
+        <span class="input-group-btn">
+          <button ng-click="requestAccount(session.requestId)" class="btn btn-default btn-sm square">{{ "FORM.SUBMIT" | translate }}</button>
+        </span>
+      </div>
+      
+    </div>
+  
+    <!-- <div> -->
+    <div ng-if="session.loaded">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="pull-left">
+            <h3>Account Statement <small> {{report.account.account_txt}}</small></h3>
+          </div>
+          <div class="pull-right">
+            {{session.timestamp | date}}
+          </div>
+        </div>
+      </div>
+      
+      <div class="row" style="margin-bottom: 10px">
+        <div class="col-xs-12">
+          <div class="pull-right" style="text-align: right;">
+            <span>{{project.enterprise_name}}</span><br>
+            <span>{{project.village}}</span><br>
+            <span>B.P. 205</span><br>
+            <span>{{project.sector}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom: 20px">
+        <div class="col-xs-8">
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Account Number</th>
+                <th>Statement Period</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>{{report.account.account_number}}</td>
+                <td>{{session.config.dateFrom | date}} to {{session.config.dateTo | date}}</td>
+              </td>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-xs-4">
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>Account Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              <td>{{report.account.created | date}}</td>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom: 20px">
+        <div class="col-xs-12">
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th colspan="2">Account Summary</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>Invoiced</td>
+                <td>{{report.overview.invoiced | currency}}</td>
+              </tr>
+              <tr>
+                <td>Payments</td>
+                <td>{{report.payment.payed | currency}}</td>
+              </tr>
+              <tr>
+                <td>Credit</td>
+                <td>{{report.overview.credit | currency}}</td>
+              </tr>
+              <tr>
+                <td style="font-weight: bold">Account Balance</td>
+                <td style="font-weight: bold">{{report.overview.balance | currency}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <!-- Transaction Detail (ordered : ASC, limit : 10) -->
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th colspan="6">
+                  Transaction Detail 
+                  <small style="font-size: 8px">(Ordered : Date, Limit {{session.config.limit}})</small>
+                </th>
+              </tr>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <!-- <th>Debtor</th> -->
+                <th>Invoice Ref</th>
+                <th>Debtor Ref</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <!-- <th>Balance</th> -->
+              </tr>
+            </thead>
+            
+            <tbody>
+              <!-- Group row -->
+              <tr>
+                <td colspan="4">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.config.limit}})</small></td>
+                <td>{{report.balance.debit | currency}}</td>
+                <td>{{report.balance.credit | currency}}</td>
+                <!-- <td>{{report.balance.balance | currency}}</td> -->
+              </tr>
+              
+              <!-- Transaction rows -->
+              <tr ng-repeat="item in report.detail">
+                <td>{{item.trans_date | date}}</td>
+                <td>{{item.description}}</td>
+                <td>{{item.inv_po_id}}</td>
+                <td>{{item.uuid}}</td>
+                <td>{{item.debit_equiv | currency}}</td>
+                <td>{{item.credit_equiv | currency}}</td>
+
+                <!-- FIXME Ordering issue with balance and retreival from DB-->
+                <!-- <td>{{item.balance | currency}}</td> -->
+              </tr>
+              
+              <!-- FIXME -->
+              <!-- Total row -->
+              <!-- <tr> -->
+                <!-- <td colspan="5" style="text&#45;align: right; padding&#45;right: 10px; font&#45;weight: bold;">Final Balance</td> -->
+                <!-- <td>{{report.overview.balance | currency}}</td> -->
+              <!-- </tr> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+      </div>
+    </div>
+  </div>
+</div>
