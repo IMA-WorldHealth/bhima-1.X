@@ -9,9 +9,9 @@
 
       <div class="panel square" ng-class="{ 'panel-info' : !!lot.valid, 'panel-danger' : !lot.valid }" ng-repeat="lot in session.lots.data" ng-switch="lot.active">
         <div class="panel-heading">
-          <b ng-switch-default> # {{ lot.number }}</b>
+          <b ng-switch-default> # {{ lot.lot_number }}</b>
           <b ng-switch-when="true">{{ "STOCK.ENTRY.LOT_NUMBER" | translate }}</b>
-          <input ng-model="lot.number" class="panel-input" rows="25" ng-switch-when="true">
+          <input ng-model="lot.lot_number" class="panel-input" rows="25" ng-switch-when="true">
           <div class="pull-right">
             <a class="action" ng-click="edit(lot)" ng-switch-default><span class="glyphicon glyphicon-pencil"></span></a>
             <a class="action" ng-click="commit(lot)" ng-switch-when="true"><span class="glyphicon glyphicon-ok-circle"></span></a>
@@ -38,8 +38,8 @@
           <div class="col-xs-6">
             <div class="form-group">
               <label>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</label>
-              <p class="form-control-static" ng-switch-default>{{ lot.date | date }}</p>
-              <input type="date" class="form-kapok" ng-model="lot.date" ng-switch-when="true">
+              <p class="form-control-static" ng-switch-default>{{ lot.expiration_date | date }}</p>
+              <input type="date" class="form-kapok" ng-model="lot.expiration_date" ng-switch-when="true">
             </div>
 
             <div class="form-group">

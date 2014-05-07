@@ -161,6 +161,7 @@
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
     "BACK"              : "Back",
+    "NAVIGATION"        : "Navigation",
     "DATE"              : "Date",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
@@ -876,7 +877,8 @@
     "ALERT" : "Manage your depots from here",
     "NEW" : "Register a new Depot",
     "EDIT" : "Edit depot information",
-    "ADD" : "Add a Depot"
+    "ADD" : "Add a Depot",
+    "NO_DEPOTS" : "No depots have been registered."
   },
 
   "PRICE_LIST"         : {
@@ -1095,10 +1097,16 @@
   },
 
   "STOCK" : {
+    "MAIN" : {
+      "TITLE" : "Stock Management",
+      "MODULES" : "Available Modules"
+    },
     "ENTRY" : {
+      "KEY"                 : "Stock Entry",
       "TITLE"               : "Stock Entry",
       "SELECT"              : "Select",
       "NUM_ITEMS"           : "Number of Items",
+      "ENTRY_MANIFEST"      : "Entry Manifest",
       "SELECT_DEPOT"        : "Select a Depot",
       "FIND_PURCHASE_ORDER" : "Find a Purchase Order",
       "ORDER_DETAIL"        : "Order Details",
@@ -1111,8 +1119,14 @@
       "REVIEW"              : "Review Manifest",
       "REQUESTED_BY"        : "Requested By"
     },
-    "EXIT" : {},
+    "EXIT" : {
+      "KEY" : "Stock Export"
+    },
+    "LOSS" : {
+      "KEY" : "Stock Loss"
+    },
     "MOVEMENT" : {
+      "KEY"   : "Stock Movement",
       "TITLE" : "Stock Movements",
       "FORM" : "Stock Movement Form"
     }

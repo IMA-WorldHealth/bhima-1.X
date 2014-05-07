@@ -26,7 +26,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="province in provinces.data">
+            <tr ng-repeat="province in provinces.data | orderBy:'name'">
               <td>{{ province.province }}</td>
               <td>{{ province.country_en }}</td>
               <td><a href="" ng-click="setOp('Edit', province)"><i class="glyphicon glyphicon-pencil"></i></a></td>
@@ -90,24 +90,17 @@
               <div class="form-group">
                 <label class="col-xs-2"> {{'PROVINCE.COUNTRY' | translate}}</label>
                 <div class="col-xs-10">
-                  <select
-                    required
-                    class="form-kapok"
-                    name="countryname"
-                    id="countryID"
-                    ng-model="province.country_uuid"
-                    ng-options="cou.uuid as cou.country_en for cou in countries.data"
-                  >
-                    <option value="" disable="disabled">-- {{'SELECT.COUNTRY' | translate}} -- </option>
+                  <select class="form-kapok" name="countryname" id="countryID" ng-model="province.country_uuid" ng-options="cou.uuid as cou.country_fr for cou in countries.data | orderBy:'country_fr'" required>
+                    <option value="" disable="disabled">-- {{ 'SELECT.COUNTRY' | translate }} -- </option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group">
-                 <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>
-                 <div class="col-xs-10">
-                    <input class="form-kapok" ng-model="province.province" required>
-                 </div>
+                <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>
+                <div class="col-xs-10">
+                  <input class="form-kapok" ng-model="province.province" required>
+                </div>
               </div>
             </fieldset>
             <button class="btn btn-default btn-success" ng-click="editProvince(province)" ng-disabled="form.$invalid">

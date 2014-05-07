@@ -4,15 +4,22 @@ angular.module('kpk.controllers')
   '$translate',
   '$q',
   '$location',
+  '$routeParams',
   'validate',
   'connect',
   'messenger',
   'appstate',
   'precision',
-  function ($scope, $translate, $q, $location, validate, connect, messenger, appstate, precision) {
+  function ($scope, $translate, $q, $location, $routeParams, validate, connect, messenger, appstate, precision) {
     var dependencies = {},
         session = $scope.session = { cfg : {}, totals : [] },
         find = $scope.find = { active : true, fn : {} };
+
+    if (!angular.isDefined($routeParams.depotId)) {
+      messenger.error('NO_DEPOT_ID');
+    }
+
+    session.cfg.depot = { id : $routeParams.depotId };
 
     dependencies.depots = {
       query : {
@@ -42,7 +49,7 @@ angular.module('kpk.controllers')
             columns : ['uuid', 'reference', 'project_id']
           }
         },
-        where : ['purchase.posted=1']
+        where : ['purchase.paid=0']
       }
     };
 
@@ -161,15 +168,10 @@ angular.module('kpk.controllers')
         });
     }
 
-    $scope.setDepot = function setDepot (depot) {
-      session.cfg.depot = depot;
-      valid();
-    };
-
     find.fn.commit = function commit (order) {
       // order.label is a text identifier such as
       // PAX2 or HBB1235
-      if (!order || !order.label|| order.label.length < 1) { messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
+      if (!order || !order.label || order.label.length < 1) { return messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
 
       session.cfg.purchase_uuid = order.uuid;
       session.cfg.label = order.label;
