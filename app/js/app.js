@@ -317,6 +317,10 @@
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
     })
+    .when('/stock/search/', {
+      controller : 'stock.search',
+      templateUrl: 'partials/stock/search/search.html'
+    })
     .when('/inventory/distribution', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'

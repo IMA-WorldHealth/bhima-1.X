@@ -537,11 +537,7 @@
     "PROJECT"                   : "Projects",
     "EMPLOYEE"                  : "Employee",
     "DEPOT"                     : "Depot",
-    "STOCK_MANAGEMENT"          : "Stock Management",
-    "STOCK_ENTRY"               : "Stock Entry",
-    "STOCK_EXIT"                : "Stock Exit",
-    "STOCK_MOVEMENT"            : "Stock Movements",
-    "STOCK_LOSS"                : "Stock Loss"
+    "STOCK_MANAGEMENT"          : "Stock Management"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -1084,7 +1080,7 @@
   
   "EMPLOYEE"          : {
     "TITLE"           : "Employee Management",
-    "EMPLOYEES"       : "Employess",
+    "EMPLOYEES"       : "All Employees",
     "REGISTER"        : "Register Employee",
     "NONE_FOUND"      : "No employee records found.",
     "CREDITOR_GROUP"  : "Creditor Group"
@@ -1135,6 +1131,12 @@
       "KEY"   : "Stock Movement",
       "TITLE" : "Stock Movements",
       "FORM" : "Stock Movement Form"
+    },
+    "SEARCH" : {
+      "KEY" : "Find Stock Items"
+    },
+    "EXPIRE" : {
+      "KEY" : "Expiring Stock"
     }
   },
 

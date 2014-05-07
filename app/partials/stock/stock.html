@@ -32,13 +32,28 @@
           <span class="glyphicon glyphicon-home"></span> {{ "STOCK.MAIN.MODULES" | translate }}
         </div>
         <div class="panel-body">
-          <li ng-repeat="item in config" class="primary_cash_list">
-            <span style="color: rgb(7, 150, 35);" class="glyphicon {{ item.ico }}"></span>
-            <a class="menu-item" ng-click="loadPath(item.link)">{{ item.key }}</a>
+          <li ng-repeat="item in config.modules" class="primary_cash_list">
+            <span class="glyphicon {{ item.ico }}"></span>
+            <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
           </li>
         </div>
       </div>
     </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-default square">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-home"></span> {{ "STOCK.MAIN.MODULES" | translate }}
+        </div>
+        <div class="panel-body">
+          <li ng-repeat="item in config.utilities" class="primary_cash_list">
+            <span class="glyphicon {{ item.ico }}"></span>
+            <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+          </li>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
