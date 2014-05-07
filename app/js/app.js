@@ -134,8 +134,8 @@
       controller: 'reportDebitorAging',
       templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
     })
-    .when('/reports/account_statement/', {
-      controller: 'reportAccountStatement',
+    .when('/reports/account_statement/:id?', {
+      controller: 'accountStatement',
       templateUrl: 'partials/reports/account_statement/account_statement.html'
     })
     .when('/reports/income_expensive/', {

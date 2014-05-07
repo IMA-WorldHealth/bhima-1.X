@@ -333,7 +333,13 @@
     "VISIBLE_PERIODS"       : "Visible Periods",
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
-    "GENERATED_ON"          : "Generated on"
+    "GENERATED_ON"          : "Generated on",
+
+    "ACCOUNT_STATEMENT"     : {
+      "TITLE"               : "Account Summary Report",
+      "NO_ACCOUNT_SPECIFIED": "Account ID not specified",
+      "CANNOT_FIND_ACCOUNT" : "Unable to find account"
+    }
   },
 
   "CASH_PAYMENTS" : {

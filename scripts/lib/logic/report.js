@@ -247,20 +247,83 @@ module.exports = function (db) {
   }
 
   function accountStatement(params){
-    var def = q.defer();
+    var deferred = q.defer();
+    var reportSections, report = {}, queryStatus = [];
+   
+    // Parse parameters
     params = JSON.parse(params);
+    if (!params.dateFrom || !params.dateTo || !params.accountId) return deferred.reject('Invalid params');
+    
+    params.dateFrom = '\'' + params.dateFrom + '\'';
+    params.dateTo = '\'' + params.dateTo + '\'';
+ 
+    // Define report sections
+    report.overview = { 
+      query : 
+        "SELECT SUM(debit_equiv) as 'invoiced', SUM(credit_equiv) as 'credit', SUM(debit_equiv - credit_equiv) as 'balance' " + 
+        "FROM posting_journal " + 
+        "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";", 
+      singleResult : true
+    };
 
-    var requette =
-      "SELECT account.id, account.parent, account.account_txt, period_total.period_id, period_total.debit, period_total.credit " +
-      "FROM account, period_total, period " +
-      "WHERE account.id = period_total.account_id AND period_total.period_id = period.id AND period_total.`fiscal_year_id`='"+params.fiscal_id+"'";
+    report.account = { 
+      query : 
+        "SELECT account_number, account_txt, account_type_id, parent, created FROM account where id = " + params.accountId + ";",
+      singleResult : true
+    };
 
-    db.execute(requette, function(err, ans) {
-      if (err) { return def.reject(err); }
-      def.resolve(ans);
+    report.balance = { 
+      query : 
+        "SELECT SUM(debit_equiv) as 'debit', SUM(credit_equiv) as 'credit', sum(debit_equiv - credit_equiv) as 'balance', COUNT(uuid) as 'count' " + 
+        "FROM " + 
+        "(SELECT uuid, debit_equiv, credit_equiv FROM posting_journal WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " ORDER BY trans_date DESC LIMIT " + (params.limit) + ", 18446744073709551615)a;",
+      singleResult : true
+    };
+
+    report.payment = { 
+      query : 
+        "SELECT SUM(credit_equiv) as 'payed' " +  
+        "FROM posting_journal " + 
+        "WHERE account_id=" + params.accountId + " AND origin_id=1 " + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";",
+      singleResult : true
+    };
+
+    report.detail = { 
+      query : 
+        "SELECT trans_date, description, inv_po_id, debit_equiv, credit_equiv, uuid " +
+        "FROM posting_journal " + 
+        "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " " + 
+        "ORDER BY trans_date DESC LIMIT " + params.limit + ";",
+      singleResult : false
+    };
+   
+    // Execute querries
+    reportSections = Object.keys(report);
+    queryStatus = reportSections.map(function (key) { 
+      return db.exec(report[key].query);
     });
 
-    return def.promise;
+    // Handle results
+    q.all(queryStatus)
+      .then(function (result) { 
+        var packageResponse = {};
+      
+        reportSections.forEach(function (key, index) { 
+          var parseResult = report[key].singleResult ? result[index][0] : result[index];
+          packageResponse[key] = report[key].result = parseResult;
+        });
+        
+        // Ensure we found an account
+        if (!report.account.result) return deferred.reject(new Error("Unkown account " + params.accountId));
+
+        deferred.resolve(packageResponse); 
+      })
+      .catch(function (error) { 
+        console.log('failed', error);
+        deferred.reject(error);
+      });
+    
+    return deferred.promise;
   }
 
   function saleRecords(params) {
@@ -473,6 +536,7 @@ module.exports = function (db) {
       'patients'        : patientRecords,
       'payments'        : paymentRecords,
       'patientStanding' : patientStanding,
+      'accountStatement': accountStatement,
       'allTrans'        : allTrans,
       'prices'          : priceReport
     };
