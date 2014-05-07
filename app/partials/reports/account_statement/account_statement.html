@@ -9,9 +9,23 @@
 <div class="reportBody" style="margin-top: 50px">
   <div class="reportFrame">
     <!-- <div ng&#45;if="!session.loaded">Loading report...</div> -->
-
-    <div>
-
+    
+    <div ng-if="session.select" style="margin-bottom : 15px">
+      <div style="margin-bottom : 15px">
+        {{ "REPORT.ACCOUNT_STATEMENT.NO_ACCOUNT_SPECIFIED" | translate }}
+      </div>
+      
+      <div class="input-group"> 
+        <input class="form-kapok" type="text" ng-model="session.requestId" placeholder="Account ID">
+        <span class="input-group-btn">
+          <button ng-click="requestAccount(session.requestId)" class="btn btn-default btn-sm square">{{ "FORM.SUBMIT" | translate }}</button>
+        </span>
+      </div>
+      
+    </div>
+  
+    <!-- <div> -->
+    <div ng-if="session.loaded">
       <div class="row">
         <div class="col-xs-12">
           <div class="pull-left">

@@ -9,13 +9,14 @@ angular.module('kpk.controllers').controller('accountStatement',
   'util',
   function ($scope, $q, $http, $routeParams, appstate, uuid, util) {
     var dependencies = {};
-    var accountId = $routeParams.id;
     var session = $scope.session = {
       reportDate : new Date(),
       timestamp : new Date(),
       config : {
         limit : 25
-      }
+      },
+      loaded : false,
+      select : false
     };
     session.config.dateFrom = util.convertToMysqlDate(session.reportDate);
     session.config.dateTo = session.config.dateFrom;
@@ -23,32 +24,51 @@ angular.module('kpk.controllers').controller('accountStatement',
     dependencies.report = {
       // query : '/report/account_statement/'
     };
+    
+    parseParams();
 
-    processProject()
-    .then(
-      processReport
-    ).then(
-      initialise
-    );
+    function parseParams() {
+      session.config.accountId = $routeParams.id;
 
+      if (!session.config.accountId) return session.select = true;
+      return fetchReport(session.config.accountId);
+    }
+
+    function fetchReport(accountId) {
+      session.config.accountId = accountId;
+
+      processProject()
+      .then(
+        processReport
+      ).then(
+        initialise
+      ).catch(
+        handleError
+      );
+    }
+    
     function initialise(model) {
+      session.loaded = true;
+      session.select = false;
+
       $scope.report = model.data;
       $scope.report.uuid = uuid();
     }
-    
+
     function processReport() {
       var statementParams = {
         dateFrom : session.config.dateFrom,
         dateTo : session.config.dateTo,
         order : 'date',
         limit : session.config.limit,
-        accountId : accountId
+        accountId : session.config.accountId
       };
 
       dependencies.report.query =
         '/reports/accountStatement/?' +
         JSON.stringify(statementParams);
-
+    
+      console.log('requesting', statementParams);
       return $http.get(dependencies.report.query);
     }
 
@@ -61,5 +81,16 @@ angular.module('kpk.controllers').controller('accountStatement',
       });
       return deferred.promise;
     }
+
+    function handleError(error) {
+      throw error;
+    }
+
+    function requestAccount(accountId) {
+      if (accountId) fetchReport(accountId);
+      console.log('requestId', accountId);
+    }
+
+    $scope.requestAccount = requestAccount;
   }
 ]);
