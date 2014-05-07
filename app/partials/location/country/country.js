@@ -24,7 +24,7 @@ angular.module('kpk.controllers')
     };
 
     function manageCountry (model) {
-      for (var k in model) { $scope.model[k] = model[k]; }
+      angular.extend($scope, model);
     }
 
     function setOp(action, country){

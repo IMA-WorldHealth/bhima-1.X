@@ -288,6 +288,34 @@
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
+    })
+    .when('/stock/loss', {
+      controller : 'stock.loss',
+      templateUrl : 'partials/stock/loss/loss.html'
+    })
+    .when('/stock/movement', {
+      controller : 'stock.movement',
+      templateUrl : 'partials/stock/movement/movement.html'
+    })
+    .when('/stock/exit', {
+      controller : 'stock.exit',
+      templateUrl : 'partials/stock/exit/exit.html'
+    })
+    .when('/stock/entry/start', {
+      controller : 'stock.entry.start',
+      templateUrl : 'partials/stock/entry/start.html'
+    })
+    .when('/stock/entry/partition', {
+      controller : 'stock.entry.partition',
+      templateUrl : 'partials/stock/entry/partition.html'
+    })
+    .when('/stock/entry/review', {
+      controller : 'stock.entry.review',
+      templateUrl: 'partials/stock/entry/review.html'
+    })
+    .when('/inventory/distribution', {
+      controller : 'inventory.distribution',
+      templateUrl : 'partials/inventory/distribution/distribution.html'
     });
   }
 

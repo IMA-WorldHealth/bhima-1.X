@@ -377,7 +377,9 @@
     "BENEFICIARY"               : "Beneficiary",
     "MAIN_CASH"                 : "Caisse Principale",
     "JOURNAL_VOUCHER"           : "Ajout Transactions",
-    "PROJECT"                   : "Projets"
+    "PROJECT"                   : "Projets",
+    "DEPOT"                     : "Depot",
+    "STOCK_DISTRIBUTION"        : "Distribution Stock"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -548,7 +550,16 @@
     "CREDITOR"            : "Crediteur",
     "DEB_CRED_TYPE"       : "Type Debiteur/Crediteur",
     "DEB_CRED_UUID"       : "ID Debiteur/Crediteur",
-    "REFERENCE"           : "Reference"
+    "REFERENCE"           : "Reference",
+    "TRACKING_NUMBER"     : "Numero de Tracking",
+    "EXPIRATION_DATE"     : "Date Expiration",
+    "LOT"                 : "Lot",
+    "STATE"               : "Etat",
+    "AVAILABLE"           : "Disponible",
+    "QTY_ASKED"           : "Quantite Demandee",
+    "QTY_AVAIL"           : "Quantite Disponible",
+    "QTY_IN_LOT"          : "Nombre item dans Lot",
+    "CODE_ITEM"           : "Code Medicament"
   },
 
   "REPORT"                  : {
@@ -880,7 +891,13 @@
     "CAUTION"           : "Caution",
     "CAUTION_ID"        : "# Caution",
     "LIBELLE_CAUTION"   : "Reception Caution",
-    "TOTAL_CAUTION"     : "Total"
+    "TOTAL_CAUTION"     : "Total",
+    "BY"                           : "Transfert realise par : ",
+    "TRANSFERT"                    : "Transfert caisse principal",
+    "DESIGNATION"                  : "Designation",
+    "LIBELLE_TRANSFERT_FROM"       : "Transfert de ",
+    "PCASH"                        : "de caisse Principale",
+    "TOTAL_TRANSFERT"              : "Total Transfert"
   },
 
   "SECTOR"             : {
@@ -1095,8 +1112,30 @@
                               },
     "INCOME"                : {
                                   "TRANSFER"                : "Transfert",
-                                  "CONVENTION"              : "Convention"
+                                  "CONVENTION"              : "Convention",
+                                  "GENERIC_INCOME"          : "Recette generale"
 
                               }
+  },
+
+    "DISTRIBUTION" : {
+    "TITLE"            : "Distribution",
+    "SALE_DETAILS"      : "Details des ventes",
+    "ADD_ROW"          : "Ajouter Item",
+    "DESCRIPTION"      : "Description",
+    "SUBMIT"           : "Soumettre Note de Credit",
+    "SUBMIT"           : "Soumettre",
+    "PATIENT_COVERED"  : "Patient est couvert par la convention",
+    "APPLIES_GLOBALLY" : "Appliquer globalement",
+    "APPLIES_TO_ITEM"  : "Appliquer par item",
+    "TOTAL"            : "Total",
+    "SELECTED_SALE_DETAILS"  : "Detail de la vente",
+    "NUM_FACTURE"            : "Numero Facture ",
+    "SALE_DATE"              : "Date de Vente",
+    "COST"                   : "Cout",
+    "LOT_DETAILS"            : "Details des Lots",
+    "EMPTY_MESSAGE"          : "Aucune vente selectionnee !"
+
+
   }
 }

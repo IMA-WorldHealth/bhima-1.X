@@ -1,11 +1,3 @@
-/*Overrides a lot of CSS - check this is the best place for this rule*/
-
-/* Rules copied from app.css */
-
-/*
-  TODO: Sidebar should be a fixed width (left || right) vs. being 80%/20% - causes everything to squish
-*/
-
 * {
   outline: none;
 }
@@ -93,6 +85,7 @@ input::-webkit-inner-spin-button {
   height: 100%;
   /* background: url('../assets/UKAID1.jpg'); */
 }
+
 
 .view {
   position: relative;
@@ -410,4 +403,16 @@ a.danger {
 
 .top-nav .label {
   vertical-align : middle;
+}
+
+header + .content {
+  top : 50px;
+}
+
+.panel-input {
+  margin-left: 15px;
+}
+
+.label-group {
+  margin: 0 5px;
 }

@@ -39,8 +39,7 @@ angular.module('kpk.controllers')
     };
 
     function processModels(models) {
-      for (var k in models) { $scope[k]= models[k]; }
-
+      angular.extend($scope, models);
       $scope.date = new Date();
     }
 

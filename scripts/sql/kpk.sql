@@ -719,7 +719,7 @@ create table `transaction_type` (
 drop table if exists `primary_cash_module`;
 create table `primary_cash_module` (
   `id`            tinyint unsigned not null auto_increment,
-  `text`   varchar(45) not null,
+  `text`          varchar(45) not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -1094,3 +1094,23 @@ create table `caution` (
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
+
+
+drop table if exists `consumption`;
+create table `consumption` (
+  `document_id`      char(36) not null,
+  `tracking_number`  char(36) not null,
+  `date`             date,
+  `depot_id`         smallint unsigned not null,
+  `amount`           int unsigned,
+  `patient_uuid`     char(36) null,
+  primary key (`document_id`),
+  key `depot_id`   (`depot_id`),
+  key `patient_uuid` (`patient_uuid`),
+  constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade,
+  constraint foreign key (`patient_uuid`) references `patient` (`uuid`) on update cascade
+) engine=innodb;
+
+
+
+

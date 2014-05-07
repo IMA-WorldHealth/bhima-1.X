@@ -10,7 +10,8 @@ angular.module('kpk.controllers')
   'exchange',
   'uuid',
   '$routeParams',
-  function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid, $routeParams) {
+  '$location',
+  function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid, $routeParams, $location) {
 
     //inits and declarations
     var dependencies = {}, configuration = {};
@@ -38,7 +39,7 @@ angular.module('kpk.controllers')
         },
         where : ['primary_cash_module.text='+'transfert']
       }
-    }
+    };
 
     dependencies.summers = {
       query :'pcash_transfert_summers',
@@ -122,7 +123,7 @@ angular.module('kpk.controllers')
       if(!cash_box_source_id || !currency_id) {
         messenger.danger('Erreur pendant le chargement');
         return;
-      };
+      }
       configuration.cash_account_currency = $scope.model.cashAccounCurrency.data.filter(function (item) {
         return item.cash_box_id == configuration.cash_box_source_id &&
           item.currency_id == configuration.currency.id;
@@ -163,14 +164,20 @@ angular.module('kpk.controllers')
       .then(writeItem)
       .then(postToJournal)
       .then(function (prom){
-        //refresh();
+        console.log('[prom]', prom, configuration);
+        $location.path('/invoice/pcash_transfert/' + configuration.pcash.uuid);
       })
       .catch(handleError);
     }
 
     function writeItem (result){
       window.result = result;
-      var item = {uuid : uuid(), primary_cash_uuid : result.config.data.data.uuid, debit : configuration.value, credit : 0}
+      var item = {
+        uuid : uuid(),
+        primary_cash_uuid : result.config.data.data.uuid,
+        debit : configuration.value,
+        credit : 0
+      };
       return connect.basicPut('primary_cash_item', [item]);
     }
 
@@ -209,7 +216,7 @@ angular.module('kpk.controllers')
 
     function loadPath(path) {
       //TODO validate both correct path and cashbox
-      $location.path(path+session.cashbox);
+      $location.path(path + configuration.cashbox);
     }
 
     //invocations

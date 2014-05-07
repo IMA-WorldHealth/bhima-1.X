@@ -74,7 +74,7 @@ angular.module('kpk.controllers')
     }
 
     function setUpModels (models) {
-      for (var k in models) { $scope[k] = models[k]; }
+      angular.extend($scope, models);
       $scope.account.data.forEach(function (account) {
         account.account_number = String(account.account_number);
       });
@@ -91,7 +91,7 @@ angular.module('kpk.controllers')
 
     $scope.formatPriceList = function formatPriceList (pl) {
       return pl.title;
-    }
+    };
 
     $scope.new = function () {
       $scope.newGroup = {};
@@ -131,10 +131,7 @@ angular.module('kpk.controllers')
     };
 
     $scope.submitEdit =  function () {
-      console.log('editGroup', $scope.editGroup);
       var data = connect.clean($scope.editGroup);
-
-      console.log('data', data);
       connect.basicPost('debitor_group', [data], ['uuid'])
       .success(function (res) {
         $scope.debitor_group.put(data);
@@ -149,6 +146,5 @@ angular.module('kpk.controllers')
     $scope.resetEdit = function () {
       $scope.editGroup = angular.copy($scope.edit_original);
     };
-
   }
 ]);
