@@ -54,6 +54,7 @@ angular.module('kpk.controllers').controller('accountStatement',
       session.select = false;
 
       $scope.report = model.data;
+      console.log($scope.report);
       $scope.report.uuid = uuid();
     }
 
