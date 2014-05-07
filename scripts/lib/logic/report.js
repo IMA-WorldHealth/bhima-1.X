@@ -413,9 +413,7 @@ module.exports = function (db) {
   }
 
   function stockReport (params) {
-    var sql, defer = q.defer();
-    var depot_id = sanitize.escape(params.depot_id);
-    
+    var sql, depot_id = sanitize.escape(params.depot_id);
 
     sql =
       "SELECT SUM(quantity) as quantity, tracking_number, direction " +
@@ -423,16 +421,7 @@ module.exports = function (db) {
       "WHERE depot_id = " + depot_id + " " +
       "GROUP BY tracking_number, direction;";
 
-    db.exec(sql)
-    .then(function (data) {
-      defer.resolve(data);
-    })
-    .catch(function (err) {
-      defer.reject(err);
-    });
-
-    return defer.promise;
-
+    return db.exec(sql);
   }
 
   function priceReport (params) {

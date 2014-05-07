@@ -32,6 +32,9 @@
               <td><a class="action" ng-click="edit(depot)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action" ng-click="delete(depot)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
+            <tr ng-if="depots.data.lenght==0">
+              <td colspan="4"> {{ "DEPOT.NO_DEPOTS" | translate }}</td>
+            </tr>
           </tbody>
         </table>
       </div>

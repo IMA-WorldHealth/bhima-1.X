@@ -7,11 +7,9 @@ angular.module('kpk.controllers')
   'uuid',
   'store',
   function ($scope, connect, messenger, validate, uuid, Store) {
-
     var dependencies = {},
         flags = $scope.flags = {};
 
-    //dependencies
     dependencies.countries = {
       query : {
         identifier: 'uuid',
@@ -28,7 +26,6 @@ angular.module('kpk.controllers')
       query : '/province/'
     };
 
-    //fonction
 
     function manageProvince (model) {
       angular.extend($scope, model);
@@ -52,13 +49,14 @@ angular.module('kpk.controllers')
       $scope.op = action;
     };
 
-    function addProvince (obj){
+    function addProvince (obj) {
+
       var prov = {
-        name : obj.name,
+        name         : obj.name,
         country_uuid : obj.country_uuid,
-        uuid : uuid()
+        uuid         : uuid()
       };
-     // window.countries = $scope.countries;
+
       connect.basicPut('province', [prov])
       .then(function (res) {
         var clientSideProv = {};
@@ -66,11 +64,14 @@ angular.module('kpk.controllers')
         clientSideProv.province = prov.name;
         clientSideProv.country_en = $scope.countries.get(prov.country_uuid).country_en;
         $scope.provinces.post(clientSideProv);
-        $scope.op='';
+        $scope.op = '';
+      })
+      .catch(function (err) {
+        messenger.danger(err);
       });
     }
 
-    function editProvince(){
+    function editProvince () {
       var province  = {
         uuid         : $scope.province.uuid,
         name         : $scope.province.province,

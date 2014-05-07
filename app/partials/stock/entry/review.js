@@ -7,7 +7,8 @@ angular.module('kpk.controllers')
   'connect',
   'messenger',
   'util',
-  function ($scope, $location, validate, appstate, connect, messenger, util) {
+  'uuid',
+  function ($scope, $location, validate, appstate, connect, messenger, util, uuid) {
     var session = $scope.session = {};
 
     appstate.register('project', function (project) {
@@ -22,7 +23,7 @@ angular.module('kpk.controllers')
         stocks.push({
           inventory_uuid      : stock.inventory_uuid,
           purchase_price      : stock.purchase_price,
-          expiration_date     : stock.expiration_date,
+          expiration_date     : util.convertToMysqlDate(stock.expiration_date),
           entry_date          : util.convertToMysqlDate(new Date()),
           lot_number          : stock.lot_number,
           purchase_order_uuid : stock.purchase_order_uuid,
@@ -36,9 +37,10 @@ angular.module('kpk.controllers')
 
     function processMovements () {
       var movements = [];
+      var doc_id = uuid();
       session.lots.data.forEach(function (stock) {
         movements.push({
-          document_id     : 1,
+          document_id     : doc_id,
           tracking_number : stock.tracking_number,
           direction       : 'Enter',
           date            : util.convertToMysqlDate(new Date()),
@@ -60,6 +62,9 @@ angular.module('kpk.controllers')
       connect.basicPut('stock', stock)
       .then(function () {
         return connect.basicPut('stock_movement', movements);
+      })
+      .then(function () {
+        return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, paid : 1 }], ['uuid']);
       })
       .then(function () {
         messenger.success("STOCK.ENTRY.WRITE_SUCCESS");
