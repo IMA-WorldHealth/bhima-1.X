@@ -133,10 +133,10 @@ module.exports = function (cfg, logger) {
       return defer.promise;
     },
 
-    transaction : function (querries) { 
+    executeAsTransaction : function (querries) { 
       var deferred = q.defer(), queryStatus = [];
-      
       querries = querries.length ? querries : [querries];
+      
       con.getConnection(function (error, connection) { 
         if (error) return deferred.reject(error);
         
@@ -153,17 +153,78 @@ module.exports = function (cfg, logger) {
               if (error) connection.rollback(function () { 
                 return deferred.reject(error); 
               });
-              deferred.resolve(result);
+              console.log('[db][executeAsTransaction] Commited');
+              return deferred.resolve(result);
             });
           })
           .catch(function (error) { 
             connection.rollback(function () { 
+              console.log('[db][executeAsTransaction] Rolling back...');
               return deferred.reject(error);
             });
           });
         });
       });
       return deferred.promise;
+    },
+    
+    requestTransactionConnection : function() { 
+      var __connection__;
+      var __connectionReady__ = q.defer();
+
+      con.getConnection(function (error, connection) { 
+        if (error) return; // FIXME hadle error
+
+        __connection__ = connection;
+        
+        // Test transaction and calls seperate
+        __connection__.beginTransaction(function (error) { 
+          if (error) return; // FIXME handle error
+          __connectionReady__.resolve();
+        });
+      });
+  
+
+      // Each method should return a promise to be chained
+      // i.e 
+      // transaction.execute(first)
+      // .then(transaction.execute(second))
+      // .then(unrelatedMethod)
+      // .then(transaction.execute(third))
+      // .then(transaction.commit)
+      // .catch(transaction.cancel);
+      function execute(query) { 
+        var deferred = q.defer();
+
+        console.log('[db][requestTransactionConnection] execute');
+        __connectionReady__.promise.then(function () { 
+          return promiseQuery(__connection__, query);
+        });
+
+        return deferred.promise;
+      }
+
+      function commit() { 
+        __conectionReady__.promise.then(function () { 
+          __connection__.commit(function (error) { 
+            if (error) return; // FIXME handle error
+          });
+        });
+      }
+
+      function cancel() { 
+        __conectionReady__.promise.then(function () { 
+          __connection__.rollback(function () { 
+            // Handle error 
+          });
+        });
+      }
+
+      return { 
+        execute : execute,
+        commit : commit,
+        cancel : cancel
+      };
     }
   };
 };
