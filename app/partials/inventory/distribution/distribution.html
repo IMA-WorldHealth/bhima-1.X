@@ -71,7 +71,7 @@
                   ng-repeat="item in selectedSale.sale_items"
                   ng-click="add($index)"
                   style="cursor : pointer;"
-                  ng-class="{'incomplete-outline': item.avail=='NO', 'complete-outline': item.avail='YES'}">
+                  ng-class="{'incomplete-outline': item.avail=='NO', 'complete-outline': item.avail=='YES'}">
                   <td>{{item.code}}</td>
                   <td>{{item.text}}</td>
                   <td>{{item.quantity}}</td>
@@ -98,21 +98,54 @@
           <table class="table table-bordered table-condensed">
             <thead>
               <tr ng-show="resolve()">
-                <th colspan="4"><small><b>{{'DISTRIBUTION.EMPTY_MESSAGE' | translate}}</b></small></th>
+                <th colspan="4"><small style="color : red;"><b>{{'DISTRIBUTION.EMPTY_MESSAGE' | translate}}</b></small></th>
               </tr>
               <tr>
                 <th>{{ "COLUMNS.CODE_ITEM" | translate }}</th>
                 <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
                 <th>{{ "COLUMNS.LOT" | translate }}</th>
-                <th>{{ "COLUMNS.QTY_IN_LOT" | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="item in model.saleItem.data">
+              <tr ng-repeat="item in selectedSale.sale_items">
+                <td>{{item.code}}</td>
                 <td>{{item.text}}</td>
-                <td>{{item.quantity}}</td>
-                <td>{{item.transaction_price | currency}}</td>
-                <td>{{item.credit - item.debit | currency}}</td>
+                <td>
+                  <!--select
+                    required
+                    class="form-kapok"
+                    name="lotname"
+                    id="lotID"
+                    ng-model="item.tracking_number"
+                  >
+                  <option ng-repeat="lot in item.lots" value='{{lot.tracking_number}}' ng-selected="{{lot.setted==true}}">{{lot.tracking_number}} - {{lot.expiration_date | date}} - {{lot.quantity}}<input type"checkbox"/></option>
+                  </select-->
+
+                  <div id="checkboxlistID" style="border:0px; background-color:#fff; color:#000; width:300px; height: 80px; overflow-y: scroll;">
+                    <div ng-repeat="lot in item.lots">
+                      <label>
+                      <input type="checkbox" ng-model="lot.isSelected"/>
+                        <span>{{lot.tracking_number}} - {{lot.expiration_date | date}} - {{lot.quantity}}</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!--div class="col-xs-12"  >
+
+                    <button class="btn btn-sm btn-primary dropdown-toggle">
+                      {{ item.lots[0].tracking_number || "S" | translate }}
+                      <span class="caret" data-caret="&#9660;"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li ng-repeat="lot in item.lots">
+                        <label>
+                          <input type="checkbox" ng-model="lot.isSelected">
+                            <span>{{lot.tracking_number}} - {{lot.expiration_date | date}} - {{lot.quantity}}</span>
+                        </label>
+                      </li>
+                    </ul>
+                  </div-->
+                </td>
               </tr>
             </tbody>
           </table>
