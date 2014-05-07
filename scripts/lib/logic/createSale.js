@@ -5,58 +5,105 @@ module.exports = function(db, parser, journal) {
   'use strict';
 
   function execute(saleData, userId, callback) {
-    var saleRecord, saleItems, saleRecordId = uuid();
-    var processedSale = false, processedSaleItems = false;
-
-    saleRecord = saleData.sale;
-    saleRecord.uuid = saleRecordId;
-    saleRecord.reference = 1; // TODO : this method is a hack to get ids to work
-
-    saleItems = saleData.saleItems;
+    var saleRecord = saleData.sale;
+    var saleItems = saleData.saleItems;
+    
+    var transaction = [];
 
     if(!(saleRecord && saleItems)) return callback(null, new Error("[createSale] Required data is invalid"));
+    saleRecord.uuid = uuid();
+    // saleRecord.reference = 1; // TODO : this method is a hack to get ids to work
 
-    writeSaleRecord(saleRecord, userId)
+    transaction.push(generateSaleRecord(saleRecord, userId));
+    transaction.push(generateSaleItems(saleRecord.uuid, saleItems));
+    
+    db.transaction(['INSERT INTO transaction_type VALUES (15, "KJLKJ");', 'SELECT * FROM transaction_type;']);
+    
+    // 0. Begin transaction
+    // 1. Write sale record
+    // 2. Write sale items
+    // 3. Post to journal 
+    // 4. Commit / Reject transaction
 
-    //writeSaleItems()
-    .then(function(saleResult) {
-      processedSale = true;
-      console.log('sale success');
-      return writeSaleItems(saleRecordId, saleItems);
-    })
+    // writeSaleRecord(saleRecord, userId)
 
-    //submitSaleJournal()
-    .then(function(saleItemResult) {
-      processedSaleItems = true;
-      return submitSaleJournal(saleRecordId, saleData.caution, userId);
-    })
+    // //writeSaleItems()
+    // .then(function(saleResult) {
+    //   processedSale = true;
+    //   console.log('sale success');
+    //   return writeSaleItems(saleRecord.uuid, saleItems);
+    // })
 
-    //returnCallback
-    .then(function(saleSubmitResult) {
-      callback(null, saleRecordId);
+    // //submitSaleJournal()
+    // .then(function(saleItemResult) {
+    //   processedSaleItems = true;
+    //   return submitSaleJournal(saleRecord.uuid, saleData.caution, userId);
+    // })
 
-    }, function(error) {
+    // //returnCallback
+    // .then(function(saleSubmitResult) {
+    //   callback(null, saleRecord.uuid);
 
-      //send source error to client
-      callback(error, null);
+    // }, function(error) {
 
-      //TODO Possible source of uncaught exceptions floating around unmanaged
-      //TODO Very messy rollback code - console log structure can be replaced with actual logging
-      //(client shouldn't be concerned with errors here)
-      if(processedSaleItems) {
-        console.log("[createSale] error occured, rolling back sale items");
-        rollbackSaleItems(saleRecordId).then(function(result) {
-          console.log("[createSale] rollback success, rollling back sale");
-          rollbackSale(saleRecordId).then(function(result) {
-            console.log("[createSale] rollback success, all transactions deleted");
-          });
-        });
-      } else {
-        if(processedSale) {
-          rollbackSale(saleRecordId).then(function(result) { console.log('[createSale] rollback success'); });
-        }
-      }
+    //   //send source error to client
+    //   callback(error, null);
+
+    //   //TODO Possible source of uncaught exceptions floating around unmanaged
+    //   //TODO Very messy rollback code - console log structure can be replaced with actual logging
+    //   //(client shouldn't be concerned with errors here)
+    //   if(processedSaleItems) {
+    //     console.log("[createSale] error occured, rolling back sale items");
+    //     rollbackSaleItems(saleRecord.uuid).then(function(result) {
+    //       console.log("[createSale] rollback success, rollling back sale");
+    //       rollbackSale(saleRecord.uuid).then(function(result) {
+    //         console.log("[createSale] rollback success, all transactions deleted");
+    //       });
+    //     });
+    //   } else {
+    //     if(processedSale) {
+    //       rollbackSale(saleRecord.uuid).then(function(result) { console.log('[createSale] rollback success'); });
+    //     }
+    //   }
+    // });
+  }
+
+  function writeSale(transaction) { 
+    return db.exec(transaction.join('sdflkasjdflkj'));
+  }
+
+  function settupTransaction() { 
+    return db.exec('BEGIN WORK;');
+  }
+
+  function commitTransaction(result) {
+    console.log('result', result);
+    console.log('commit');
+    return db.exec('COMMIT;');
+  }
+
+  function cancelTransaction(error) { 
+    console.log('canceeeeel', error);
+    // return deb.exec('ROLLBACK;');
+  }
+
+  function updateTransaction(transaction, query) { 
+    console.log('transaction', transaction, 'query', query);
+    transaction.push(query);
+    return q.resolve();
+  }
+
+  function generateSaleRecord(saleRecord, userId) { 
+    saleRecord.seller_id = userId;
+    return parser.insert('sale', saleRecord);  
+  }
+
+  function generateSaleItems(saleRecordId, saleItems) { 
+    saleItems.forEach(function(saleItem) {
+      saleItem.uuid = uuid();
+      saleItem.sale_uuid = saleRecordId;
     });
+    return parser.insert('sale_item', saleItems);
   }
 
   function writeSaleRecord(saleRecord, userId) {
@@ -96,28 +143,6 @@ module.exports = function(db, parser, journal) {
     }, caution);
     return deferred.promise;
   }
-
-  function rollbackSale(saleRecordId) {
-    var deleteSaleSQL = parser.delete('sale', 'uuid', saleRecordId);
-    var deferred = q.defer();
-
-    db.execute(deleteSaleSQL, function(error, result) {
-      if(error) deferred.reject(error);
-      deferred.resolve(result);
-    });
-    return deferred.promise;
-  }
-
-  function rollbackSaleItems(saleRecordId) {
-    var deleteSaleItemsSQL = parser.delete('sale_item', 'sale_uuid', saleRecordId);
-    var deferred = q.defer();
-
-    db.execute(deleteSaleItemsSQL, function(error, result) {
-      if(error) deferred.reject(error);
-      deferred.resolve(result);
-    });
-    return deferred.promise;
-  }
-
+  
   return { execute : execute };
 };

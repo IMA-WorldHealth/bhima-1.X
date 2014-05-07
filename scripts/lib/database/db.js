@@ -59,6 +59,18 @@ function sqliteInit(config) {
   return true;
 }
 
+// Utility methods
+function promiseQuery(connection, sql) { 
+  var deferred = q.defer();
+  
+  console.log('[db] [Transaction Query]', sql);
+  connection.query(sql, function (error, result) { 
+    if (error) return deferred.reject(error);
+    deferred.resolve(result);
+  });
+  return deferred.promise;
+}
+
 module.exports = function (cfg, logger) {
   'use strict';
 
@@ -119,6 +131,39 @@ module.exports = function (cfg, logger) {
       });
 
       return defer.promise;
+    },
+
+    transaction : function (querries) { 
+      var deferred = q.defer(), queryStatus = [];
+      
+      querries = querries.length ? querries : [querries];
+      con.getConnection(function (error, connection) { 
+        if (error) return deferred.reject(error);
+        
+        connection.beginTransaction(function (error) { 
+          if (error) return deferred.reject(error);
+           
+          queryStatus = querries.map(function (query) { 
+            return promiseQuery(connection, query);
+          });
+          
+          q.all(queryStatus)
+          .then(function (result) { 
+            connection.commit(function (error) { 
+              if (error) connection.rollback(function () { 
+                return deferred.reject(error); 
+              });
+              deferred.resolve(result);
+            });
+          })
+          .catch(function (error) { 
+            connection.rollback(function () { 
+              return deferred.reject(error);
+            });
+          });
+        });
+      });
+      return deferred.promise;
     }
   };
 };
