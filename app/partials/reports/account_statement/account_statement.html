@@ -2,11 +2,27 @@
   {{ "REPORT.ACCOUNT_STATEMENT.TITLE" | translate }}
 </header>
 
-<!-- <section class="top&#45;nav"> -->
-<!-- </section> -->
+<section class="top-nav">
+<!-- <div class="pull&#45;right"> -->
+  <div class="row">
+
+    <div class="col-xs-3">
+      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateFrom" class="form-kapok">
+    </div>
+    <div class="col-xs-3">
+      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateTo" class="form-kapok">
+    </div>
+
+    <!-- <div class="col&#45;xs&#45;3"> -->
+    <!--   <input ng&#45;disabled="session.select || !session.loaded" type="number" class="form&#45;kapok spinner" ng&#45;model="session.config.limit"> -->
+    <!-- </div> -->
+
+  </div>
+  <!-- </div> -->
+</section>
 
 <!-- <div class="reportBody" style="margin&#45;top: 87px"> -->
-<div class="reportBody" style="margin-top: 50px">
+<div class="reportBody" style="margin-top: 87px">
   <div class="reportFrame">
     <!-- <div ng&#45;if="!session.loaded">Loading report...</div> -->
     
@@ -120,7 +136,7 @@
               <tr>
                 <th colspan="6">
                   Transaction Detail 
-                  <small style="font-size: 8px">(Ordered : Date, Limit {{session.limit}})</small>
+                  <small style="font-size: 8px">(Ordered : Date, Limit {{session.config.limit}})</small>
                 </th>
               </tr>
               <tr>
@@ -138,7 +154,7 @@
             <tbody>
               <!-- Group row -->
               <tr>
-                <td colspan="4">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.limit}})</small></td>
+                <td colspan="4">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.config.limit}})</small></td>
                 <td>{{report.balance.debit | currency}}</td>
                 <td>{{report.balance.credit | currency}}</td>
                 <!-- <td>{{report.balance.balance | currency}}</td> -->
