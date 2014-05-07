@@ -217,6 +217,7 @@ create table `account` (
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
   `cc_id`               smallint default -1,
+  `created`             timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
   key `account_type_id` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
