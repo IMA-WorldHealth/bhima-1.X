@@ -4,10 +4,12 @@ angular.module('kpk.controllers').controller('accountStatement',
   '$q',
   '$http',
   '$routeParams',
+  '$translate',
   'appstate',
   'uuid',
   'util',
-  function ($scope, $q, $http, $routeParams, appstate, uuid, util) {
+  'messenger',
+  function ($scope, $q, $http, $routeParams, $translate, appstate, uuid, util, messenger) {
     var dependencies = {};
     var session = $scope.session = {
       reportDate : new Date(),
@@ -28,10 +30,10 @@ angular.module('kpk.controllers').controller('accountStatement',
     parseParams();
 
     function parseParams() {
-      session.config.accountId = $routeParams.id;
+      session.requestId = $routeParams.id;
 
-      if (!session.config.accountId) return session.select = true;
-      return fetchReport(session.config.accountId);
+      if (!session.requestId) return session.select = true;
+      return fetchReport(session.requestId);
     }
 
     function fetchReport(accountId) {
@@ -83,7 +85,10 @@ angular.module('kpk.controllers').controller('accountStatement',
     }
 
     function handleError(error) {
-      throw error;
+      messenger.danger($translate('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);
+      session.loaded = false;
+      session.select = true;
+      throw error; 
     }
 
     function requestAccount(accountId) {

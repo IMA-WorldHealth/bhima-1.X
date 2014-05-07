@@ -297,6 +297,10 @@ module.exports = function (db) {
     q.all(queryStatus)
       .then(function (result, err) { 
         console.log(result[4]);
+
+        // Ensure we found an account
+        if (!result[3].length) return def.reject(new Error("Unkown account " + params.accountId));
+
         // FIXME hardcoded
         def.resolve({ 
           'overview' : result[0][0],
@@ -308,7 +312,7 @@ module.exports = function (db) {
       })
       .catch(function (error) { 
         console.log('failed', error);
-        def.resolve(error);
+        def.reject(error);
       });
 
     // db.execute(requette, function(err, ans) {
