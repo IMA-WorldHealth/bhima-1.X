@@ -9,7 +9,9 @@ angular.module('kpk.controllers')
   function ($scope, $location, $translate, appstate, validate, messenger) {
     var config, dependencies = {};
 
-    config = $scope.config = [
+    config = $scope.config = {};
+    
+    config.modules = [
       {
         key : $translate('STOCK.ENTRY.KEY'),
         ico : 'glyphicon-import',
@@ -29,6 +31,19 @@ angular.module('kpk.controllers')
         key : $translate('STOCK.MOVEMENT.KEY'),
         ico : 'glyphicon-transfer',
         link : '/stock/movement'
+      }
+    ];
+
+    config.utilities = [
+      {
+        key : $translate('STOCK.SEARCH.KEY'),
+        ico : 'glyphicon-search',
+        link : '/stock/search'
+      },
+      {
+        key : $translate('STOCK.EXPIRE.KEY'),
+        ico : 'glyphicon-exclamation-sign',
+        link : '/stock/expiring'
       }
     ];
 
@@ -54,11 +69,15 @@ angular.module('kpk.controllers')
       .catch(messenger.error);
     });
 
-    $scope.loadPath = function (link) {
-      if (!$scope.depot) {
+    $scope.loadPath = function (defn) {
+      console.log(defn);
+
+      if (!$scope.depot && config.modules.indexOf(defn) > -1) {
         return messenger.danger('NO_DEPOT_SELECTED');
       }
-      $location.path(link + '/' + $scope.depot.id);
+
+      var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.id : defn.link;
+      $location.path(path);
     };
 
     $scope.setDepot = function setDepot (depot) {

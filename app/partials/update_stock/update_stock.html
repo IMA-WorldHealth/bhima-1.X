@@ -9,7 +9,7 @@
     <div class="col-xs-12">
       <div class="panel square" ng-class="{'panel-success' : selectedStock, 'panel-default' : !selectedStock}">
         <div class="panel-heading square">
-          <span class="glyphicon glyphicon" ng-class="{'glyphicon-search' : session.search, 'glyphicon-list-alt' : !session.search}"></span> 
+          <span class="glyphicon" ng-class="{'glyphicon-search' : session.search, 'glyphicon-list-alt' : !session.search}"></span> 
           <span ng-show="session.search">{{'UPDATE_STOCK.FIND_STOCK' | translate}}</span>
               <span ng-show="!session.search">
                 <b>{{selectedStock.code}}</b> 
