@@ -47,6 +47,13 @@ angular.module('kpk.controllers')
       }
     ];
 
+    config.reports = [
+      {
+        key : $translate('STOCK.REPORT.STOCK_COUNT'),
+        link : '/report/stock_count'
+      }
+    ];
+
     dependencies.depots = {
       required : true,
       query : {

@@ -32,7 +32,7 @@
           <span class="glyphicon glyphicon-home"></span> {{ "STOCK.MAIN.MODULES" | translate }}
         </div>
         <div class="panel-body">
-          <li ng-repeat="item in config.modules" class="primary_cash_list">
+          <li ng-repeat="item in config.modules" class="plain-list">
             <span class="glyphicon {{ item.ico }}"></span>
             <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
           </li>
@@ -41,14 +41,27 @@
     </div>
 
     <div class="col-xs-6">
+
       <div class="panel panel-default square">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-home"></span> {{ "STOCK.MAIN.MODULES" | translate }}
+          <span class="glyphicon glyphicon-wrench"></span> {{ "STOCK.MAIN.UTILITIES" | translate }}
         </div>
         <div class="panel-body">
-          <li ng-repeat="item in config.utilities" class="primary_cash_list">
+          <li ng-repeat="item in config.utilities" class="plain-list">
             <span class="glyphicon {{ item.ico }}"></span>
             <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+          </li>
+        </div>
+      </div>
+
+
+      <div class="panel panel-default square">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-book"></span> {{ "STOCK.MAIN.REPORTS" | translate }}
+        </div>
+        <div class="panel-body">
+          <li ng-repeat="item in config.reports" class="plain-list">
+            <span class="glyphicon glyphicon-file"></span> <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
           </li>
         </div>
       </div>
