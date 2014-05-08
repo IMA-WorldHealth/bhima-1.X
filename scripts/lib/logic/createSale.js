@@ -21,7 +21,33 @@ module.exports = function(db, parser, journal) {
     
     var transaction = db.requestTransactionConnection();
     
-    console.log(transaction);
+    transaction.execute(generateSaleRecord(saleRecord, userId))
+    .then(
+      transaction.execute(generateSaleItems(saleRecord.uuid, saleItems))
+    ).then(
+      submitSaleJournal(saleRecord.uuid, saleData.caution, userId)
+    ).then(
+      transaction.commit
+    ).catch(
+      transaction.cancel
+    );
+
+    // console.log(transaction);
+
+    // transaction.execute('DELETE FROM transaction_type where id = 5;').then(function (result) { 
+    //   console.log('top, success', result);
+
+    //   return transaction.commit();
+    // }, function (error) { 
+    //   console.log('top, error', error);
+    // })
+    // .then(function (result) { 
+    //   console.log('top, commit result', result); 
+    // }, function (error) { 
+    //   console.log('top, commit error', error); 
+    // });
+
+    
     // 0. Begin transaction
     // 1. Write sale record
     // 2. Write sale items
@@ -141,8 +167,9 @@ module.exports = function(db, parser, journal) {
     var deferred = q.defer();
 
     journal.request('sale', saleRecordId, userId, function (error, result) {
-      if(error) deferred.reject(error);
-      deferred.resolve(result);
+      console.log('[jounral] Journal returned', error, result);
+      if(error) return deferred.reject(error);
+      return deferred.resolve(result);
     }, caution);
     return deferred.promise;
   }

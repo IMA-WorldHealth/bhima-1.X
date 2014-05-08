@@ -196,28 +196,42 @@ module.exports = function (cfg, logger) {
       function execute(query) { 
         var deferred = q.defer();
 
-        console.log('[db][requestTransactionConnection] execute');
         __connectionReady__.promise.then(function () { 
-          return promiseQuery(__connection__, query);
+          console.log('[db][requestTransactionConnection] [execute] __connectionReady__');
+          promiseQuery(__connection__, query).then(function (result) { 
+            console.log('[db][requestTransactionConnection] [execute] execute success');
+            deferred.resolve(result); 
+          });
         });
 
         return deferred.promise;
       }
 
       function commit() { 
-        __conectionReady__.promise.then(function () { 
+        var deferred = q.defer();
+        __connectionReady__.promise.then(function () { 
+          console.log('[db][requestTransactionConnection] [commit] __connectionReady__');
           __connection__.commit(function (error) { 
-            if (error) return; // FIXME handle error
+            if (error) return deferred.reject(error); // FIXME handle error
+            console.log('[db][requestTransactionConnection] [commit] commit success');
+            deferred.resolve();
           });
         });
+
+        return deferred.promise;
       }
 
       function cancel() { 
-        __conectionReady__.promise.then(function () { 
+        var deferred = q.defer();
+        __connectionReady__.promise.then(function () { 
+          console.log('[db][requestTransactionConnection] [cancel] __connectionReady__');
           __connection__.rollback(function () { 
-            // Handle error 
+            console.log('[db][requestTransactionConnection] [cancel] cancel success');
+            return deferred.resolve();
           });
         });
+
+        return deferred.promise;
       }
 
       return { 
