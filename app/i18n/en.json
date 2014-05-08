@@ -1101,7 +1101,8 @@
   "STOCK" : {
     "MAIN" : {
       "TITLE" : "Stock Management",
-      "MODULES" : "Available Modules"
+      "MODULES" : "Available Modules",
+      "UTILITIES" : "Stock Utilities"
     },
     "ENTRY" : {
       "KEY"                 : "Stock Entry",
@@ -1133,7 +1134,10 @@
       "FORM" : "Stock Movement Form"
     },
     "SEARCH" : {
-      "KEY" : "Find Stock Items"
+      "KEY" : "Find Stock Items",
+      "TITLE" : "Locate Stock Items",
+      "NO_SELECTION" : "No selection has been made.  Please choose an inventory item from above.",
+      "MANIFEST" : "Stock Manifest"
     },
     "EXPIRE" : {
       "KEY" : "Expiring Stock"
