@@ -240,6 +240,18 @@ app.get('/ledgers/debitor_group/:id', function (req, res, next) {
   .done();
 });
 
+app.get('/ledgers/distributableSale/:id', function (req, res, next) {
+  ledger.distributableSale(req.params.id)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+});
+
+
 app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res, next) {
   var enterprise = req.params.enterprise;
   var startDate = req.params.startDate;
