@@ -2,6 +2,11 @@
 
 // Module: db.js
 
+// TODO EVERY query to the DB is currently handled on it's own connection, one 
+// HTTP request can result in tens of connections. Performance checks for 
+// sharing connections between request sessions (also allowing for shraring a 
+// transaction between unrelated components)
+
 // The purpose of this module is managing client connections
 // and disconnections to a variety of database management systems.
 // All query formatting is expected to happen elsewhere.
@@ -65,8 +70,9 @@ function promiseQuery(connection, sql) {
   
   console.log('[db] [Transaction Query]', sql);
   connection.query(sql, function (error, result) { 
+    console.log('resultssss', error, result);
     if (error) return deferred.reject(error);
-    deferred.resolve(result);
+    return deferred.resolve(result);
   });
   return deferred.promise;
 }
@@ -174,33 +180,34 @@ module.exports = function (cfg, logger) {
 
       con.getConnection(function (error, connection) { 
         if (error) return; // FIXME hadle error
-
         __connection__ = connection;
         
-        // Test transaction and calls seperate
         __connection__.beginTransaction(function (error) { 
-          if (error) return; // FIXME handle error
+          if (error) return __connectionReady__.reject();
           __connectionReady__.resolve();
         });
       });
-  
 
-      // Each method should return a promise to be chained
-      // i.e 
-      // transaction.execute(first)
-      // .then(transaction.execute(second))
-      // .then(unrelatedMethod)
-      // .then(transaction.execute(third))
-      // .then(transaction.commit)
-      // .catch(transaction.cancel);
+      /*Each method should return a promise to be chained
+        i.e 
+          transaction.execute(first)
+          .then(transaction.execute(second))
+          .then(unrelatedMethod)
+          .then(transaction.execute(third))
+          .then(transaction.commit)
+          .catch(transaction.cancel);
+      */
+
       function execute(query) { 
         var deferred = q.defer();
 
         __connectionReady__.promise.then(function () { 
-          console.log('[db][requestTransactionConnection] [execute] __connectionReady__');
-          promiseQuery(__connection__, query).then(function (result) { 
-            console.log('[db][requestTransactionConnection] [execute] execute success');
+          promiseQuery(__connection__, query)
+          .then(function (result) { 
             deferred.resolve(result); 
+          })
+          .catch(function (error) { 
+            deferred.reject(error);
           });
         });
 
@@ -210,10 +217,8 @@ module.exports = function (cfg, logger) {
       function commit() { 
         var deferred = q.defer();
         __connectionReady__.promise.then(function () { 
-          console.log('[db][requestTransactionConnection] [commit] __connectionReady__');
           __connection__.commit(function (error) { 
-            if (error) return deferred.reject(error); // FIXME handle error
-            console.log('[db][requestTransactionConnection] [commit] commit success');
+            if (error) return deferred.reject(error);
             deferred.resolve();
           });
         });
@@ -224,9 +229,7 @@ module.exports = function (cfg, logger) {
       function cancel() { 
         var deferred = q.defer();
         __connectionReady__.promise.then(function () { 
-          console.log('[db][requestTransactionConnection] [cancel] __connectionReady__');
           __connection__.rollback(function () { 
-            console.log('[db][requestTransactionConnection] [cancel] cancel success');
             return deferred.resolve();
           });
         });
