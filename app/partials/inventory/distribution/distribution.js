@@ -23,7 +23,6 @@ angular.module('kpk.controllers')
 
 
     dependencies.stocks = {
-      required : true,
       query : {
         tables : {
           'stock' : {
@@ -61,20 +60,15 @@ angular.module('kpk.controllers')
 
     function initialiseDistributionDetails (selectedDebitor){
       if(!selectedDebitor) return;
-
-      distribution.noEmpty = true;
-      $scope.ready = "ready";
+      distribution.noEmpty = true; $scope.ready = "ready";
       distribution.selectedDebitor = selectedDebitor;
-      connect.fetch('/ledgers/debitor/' + selectedDebitor.debitor_uuid)
+      connect.fetch('/ledgers/distributableSale/' + selectedDebitor.debitor_uuid)
       .success(function (data) {
-        data.map(function (row) {
+        data.forEach(function (row) {
           row.reference = getAbbr(row.project_id)+row.reference;
           row.etat = getState(row);
         });
         distribution.sales = data;
-        // $scope.ledger = data.filter(function (row) {
-        //   return row.balance > 0;
-        // });
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
@@ -111,35 +105,63 @@ angular.module('kpk.controllers')
 
     function sanitize (){
       distribution.rows = $scope.selectedSale.sale_items;
+
       distribution.item_records = distribution.rows.map(function (it){
-        return {
-          document_id : uuid(),
-          tracking_number : it.tracking_number,
-          date : util.convertToMysqlDate(new Date().toString()),
-          depot_id : 1,
-          amount : it.quantity,
-          patient_uuid : $scope.distribution.selectedDebitor.uuid
-        };
-      });
+        it.consumption_infos = [];
+        var q = it.quantity;
+        distribution.records = it.lots.map(function (lot){
+          var record;
+          if(lot.setted){
+            if(q>0){
+              var amount;
+              if(q-lot.quantity>0){
+                q-=lot.quantity;
+                amount = lot.quantity;
+                lot.current_quantity = 0;
+              }else{
+                amount = q;
+                lot.current_quantity = lot.quantity - q;
+                q=0;
+              }
+              record = {
+                document_id : uuid(),
+                tracking_number : lot.tracking_number,
+                date : util.convertToMysqlDate(new Date().toString()),
+                depot_id : 1,
+                amount : amount,
+                sale_uuid : $scope.selectedSale.inv_po_id
+              }
+              it.consumption_infos.push(record);
+              return record;
+            }
+          }
+        })
+
+        return distribution.records = distribution.records.filter(function (item){
+          return (item)? true : false;
+        })
+      })
 
       distribution.moving_records = distribution.rows.map(function (it){
-        return {
-          document_id : uuid(),
-          tracking_number : it.tracking_number,
-          direction : 'Exit',
-          date : util.convertToMysqlDate(new Date().toString()),
-          quantity : it.quantity,
-          depot_id : 1, //for now
-          destination : 1 //for patient
-        };
-      });
+        return distribution.records = it.consumption_infos.map(function (consumption_info){
 
+              return {
+                document_id : uuid(),
+                tracking_number : consumption_info.tracking_number,
+                direction : 'Exit',
+                date : util.convertToMysqlDate(new Date().toString()),
+                quantity : consumption_info.amount,
+                depot_id : 1, //for now
+                destination :1 //for patient
+              }
+        })
+      })
     }
 
     function submit (){
       sanitize();
-      doMovingStock()
-      //.then(updateStock)
+      doConsumption()
+      .then(doMoving)
       .then(function(result){
         console.log('[result ...]')
       });
@@ -150,15 +172,22 @@ angular.module('kpk.controllers')
       .then(function (model){
         console.log('motre model',model)
       })
-
-
     }
 
-    function doMovingStock (){
+    function doConsumption (){
       return $q.all(
-        connect.basicPut('consumption', distribution.item_records),
-         connect.basicPut('stock_movement', distribution.moving_records)
-      );
+        distribution.item_records.map(function (item_record){
+          return connect.basicPut('consumption', item_record)
+        })
+      )
+    }
+
+    function doMoving(){
+      return $q.all(
+        distribution.moving_records.map(function (moving){
+          return connect.basicPut('stock_movement', moving)
+        })
+      )
     }
 
     function handleSaleResponse(result) {
@@ -180,7 +209,6 @@ angular.module('kpk.controllers')
           where : ['sale_item.sale_uuid='+$scope.selectedSale.inv_po_id]
         }
       };
-
       validate.process(dependencies,['sale_items']).then(initialiseProcess);
     }
 
@@ -188,13 +216,13 @@ angular.module('kpk.controllers')
       $scope.distribution.sales.push($scope.selectedSale);
       $scope.selectedSale= null;
       $scope.selected = "null";
-    };
+    }
 
     function initialiseProcess (model) {
       $scope.selected = "selected";
-      var items = model.sale_items.data;
+      //var items = ;
       var filtered;
-      filtered = items.filter(function (item) {
+      filtered = model.sale_items.data.filter(function (item) {
         return item.code.substring(0,1) !== "8";
       });
       filtered.forEach(function (it) {
@@ -206,6 +234,7 @@ angular.module('kpk.controllers')
       $scope.selectedSale.sale_items.forEach(function (sale_item){
         connect.fetch('/lot/' +sale_item.inventory_uuid)
         .success(function processLots (lots){
+          console.log('sale_item :', sale_item.text, 'lots', lots);
           if(!lots.length){
             messenger.danger('Pas de lot recuperes');
             return;
@@ -228,7 +257,6 @@ angular.module('kpk.controllers')
             }
           }
 
-          $scope.selectedSale.sale_items.forEach(function (sale_item){
             var som = 0;
             lots.forEach(function (lot){
               som+=lot.quantity;
@@ -238,26 +266,7 @@ angular.module('kpk.controllers')
                 if((som - lot.quantity) < sale_item.quantity) lot.setted = true;
               }
             })
-          })
-
-          console.log(lots);
-           //  lots[0].setted = true;
-          // for(var j=1; j<=lots.length-1; j++){
-          //   if(util.isDateAfter(lots[0].expiration_date, lots[j].expiration_date)){
-          //     tapon_lot = lots[0];
-          //     lots[0] = lots[j];
-          //     lots[0].setted =true;
-          //     lots[j] = tapon_lot;
-          //     lots[j].setted = false;
-          //   }else{
-          //     lots[j].setted = false;
-          //   }
-          // }
-
-          return;
-          // sale_item.lots = lots;
-          // sale_item.tracking_number = lots[0].tracking_number;
-          // console.log('[lots]', sale_item.lots);
+            sale_item.lots = lots;
         })
         .error(handleError);
       });
