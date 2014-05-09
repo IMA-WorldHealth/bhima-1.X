@@ -189,12 +189,12 @@ module.exports = function (db) {
       var account = ans.pop().account_id;
 
       var query =
-        'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
-          'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
+        'SELECT c.inv_po_id, c.account_id FROM (' +
+          'SELECT p.inv_po_id, p.account_id ' +
           'FROM posting_journal AS p ' +
           'WHERE p.deb_cred_uuid = ' + id + ' AND p.account_id = ' + account + ' ' +
         'UNION ' +
-          'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
+          'SELECT g.inv_po_id, g.account_id ' +
           'FROM general_ledger AS g ' +
           'WHERE g.deb_cred_uuid = ' + id + ' AND g.account_id = ' + account + ') ' +
         ' AS c join consumption on c.inv_po_id <> consumption.sale_uuid';
@@ -202,6 +202,7 @@ module.exports = function (db) {
       return db.exec(query);
     })
     .then(function (ans) {
+      console.log("***************** le resultat :", ans);
       if (!ans.length) { defer.resolve([]); }
 
       var invoices = ans.map(function (line) {

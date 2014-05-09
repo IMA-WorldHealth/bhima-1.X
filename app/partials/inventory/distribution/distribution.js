@@ -160,17 +160,19 @@ angular.module('kpk.controllers')
 
     function submit (){
       sanitize();
-      doConsumption()
-      .then(doMoving)
-      .then(function(result){
-        console.log('[result ...]')
-      });
+      if(stockAvailability()){
+        doConsumption()
+        .then(doMoving)
+        .then(function(result){
+          console.log('[result ...]')
+        });
+      }
+
     }
 
     function updateStock (){
       validate.refresh(dependencies, ['stock'])
       .then(function (model){
-        console.log('motre model',model)
       })
     }
 
@@ -234,7 +236,6 @@ angular.module('kpk.controllers')
       $scope.selectedSale.sale_items.forEach(function (sale_item){
         connect.fetch('/lot/' +sale_item.inventory_uuid)
         .success(function processLots (lots){
-          console.log('sale_item :', sale_item.text, 'lots', lots);
           if(!lots.length){
             messenger.danger('Pas de lot recuperes');
             return;
@@ -273,15 +274,35 @@ angular.module('kpk.controllers')
     }
 
     function verifySubmission (){
-
+      if($scope.selectedSale){
+         if($scope.selectedSale.sale_items){
+          var availability = $scope.selectedSale.sale_items.some(function (sale_item) {
+            return sale_item.avail == "NO";
+          })
+          if(availability) return availability
+          return false;
+        }else{
+          return true;
+        }
+      }
     }
-
     function handleError (){
       messenger.danger('impossible de recuperer des lots !');
     }
 
     function resolve (){
       return !$scope.ready;
+    }
+
+    function stockAvailability() {
+      var resultat =  $scope.selectedSale.sale_items.some(function (si){
+        var q = 0;
+        si.lots.forEach(function (lot){
+          if(lot.setted) q+=lot.quantity;
+        })
+        return (si.quantity > q)
+      })
+      return !resultat;
     }
 
     appstate.register('project', function (project) {
@@ -301,5 +322,6 @@ angular.module('kpk.controllers')
     $scope.remove = remove;
     $scope.resolve = resolve;
     $scope.verifySubmission = verifySubmission;
+    $scope.stockAvailability = stockAvailability;
   }
 ]);

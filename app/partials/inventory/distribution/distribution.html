@@ -124,7 +124,7 @@
                   <div id="checkboxlistID" style="border:0px; background-color:#fff; color:#000; width:100%; height: 80px; overflow-y: scroll;">
                     <div ng-repeat="lot in item.lots">
                       <label>
-                      <input type="checkbox" ng-model="lot.setted"/>
+                      <input type="checkbox" ng-model="lot.setted" ng-change="checkStockAvailability(lot)"/>
                         <span>{{lot.tracking_number}} - {{lot.expiration_date | date}} - {{lot.quantity}}</span>
                       </label>
                     </div>
