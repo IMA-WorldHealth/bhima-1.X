@@ -237,9 +237,12 @@ angular.module('kpk.controllers')
         connect.fetch('/lot/' +sale_item.inventory_uuid)
         .success(function processLots (lots){
           if(!lots.length){
+            distribution.hasLot = false;
             messenger.danger('Pas de lot recuperes');
             return;
           }
+
+          distribution.hasLot = true;
 
           if(lots.length && lots.length == 1){
             lots[0].setted = true;
@@ -274,6 +277,7 @@ angular.module('kpk.controllers')
     }
 
     function verifySubmission (){
+      if(!distribution.hasLot) return true
       if($scope.selectedSale){
          if($scope.selectedSale.sale_items){
           var availability = $scope.selectedSale.sale_items.some(function (sale_item) {
