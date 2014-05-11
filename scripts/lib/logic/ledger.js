@@ -177,6 +177,8 @@ module.exports = function (db) {
     if (!id) { defer.reject(new Error('No debtor id selected!')); }
     else { id = sanitize.escape(id); }
 
+    console.log('************************avant avant requette');
+
     var query =
       'SELECT `account_id` ' +
       'FROM `debitor` JOIN `debitor_group` ON ' +
@@ -187,9 +189,10 @@ module.exports = function (db) {
     .then(function (ans) {
 
       var account = ans.pop().account_id;
+      console.log('************************avant requette');
 
       var query =
-        'SELECT c.inv_po_id, c.account_id FROM (' +
+        'SELECT c.inv_po_id, c.account_id, consumption.tracking_number FROM (' +
           'SELECT p.inv_po_id, p.account_id ' +
           'FROM posting_journal AS p ' +
           'WHERE p.deb_cred_uuid = ' + id + ' AND p.account_id = ' + account + ' ' +
@@ -197,13 +200,17 @@ module.exports = function (db) {
           'SELECT g.inv_po_id, g.account_id ' +
           'FROM general_ledger AS g ' +
           'WHERE g.deb_cred_uuid = ' + id + ' AND g.account_id = ' + account + ') ' +
-        ' AS c join consumption on c.inv_po_id <> consumption.sale_uuid';
+        ' AS c left join consumption on c.inv_po_id = consumption.sale_uuid';
 
       return db.exec(query);
     })
     .then(function (ans) {
       console.log("***************** le resultat :", ans);
       if (!ans.length) { defer.resolve([]); }
+      ans = ans.filter(function (an){
+        return !an.tracking_number;
+
+      });
 
       var invoices = ans.map(function (line) {
         return line.inv_po_id;
