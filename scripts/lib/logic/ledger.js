@@ -177,8 +177,6 @@ module.exports = function (db) {
     if (!id) { defer.reject(new Error('No debtor id selected!')); }
     else { id = sanitize.escape(id); }
 
-    console.log('************************avant avant requette');
-
     var query =
       'SELECT `account_id` ' +
       'FROM `debitor` JOIN `debitor_group` ON ' +
@@ -189,8 +187,6 @@ module.exports = function (db) {
     .then(function (ans) {
 
       var account = ans.pop().account_id;
-      console.log('************************avant requette');
-
       var query =
         'SELECT c.inv_po_id, c.account_id, consumption.tracking_number FROM (' +
           'SELECT p.inv_po_id, p.account_id ' +
