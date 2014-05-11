@@ -27,8 +27,8 @@ angular.module('kpk.controllers')
       this.inventory_uuid = null;
       this.purchase_price = 0;
       this.purchase_order_uuid = null;
-      this.expiration_date = new Date();
-      this.entry_date = new Date();
+      this.expiration_date = null;
+      this.date = new Date();
       this.lot_number = 0;
       this.tracking_number = 0;
       this.quantity = 0;
@@ -85,7 +85,7 @@ angular.module('kpk.controllers')
 
     $scope.edit = function edit (lot) {
       lot.active = true;
-      lot.oldTotal = session.grouping.get(lot.inventory_code).total;
+      lot.oldTotal = session.totals.inventory[lot.inventory_code];
     };
 
     $scope.commit = function commit (lot) {

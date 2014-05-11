@@ -161,6 +161,7 @@
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
     "BACK"              : "Back",
+    "NAVIGATION"        : "Navigation",
     "DATE"              : "Date",
     "PRINT"             : "Print",
     "CREATE"            : "Create",
@@ -332,7 +333,13 @@
     "VISIBLE_PERIODS"       : "Visible Periods",
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
-    "GENERATED_ON"          : "Generated on"
+    "GENERATED_ON"          : "Generated on",
+
+    "ACCOUNT_STATEMENT"     : {
+      "TITLE"               : "Account Summary Report",
+      "NO_ACCOUNT_SPECIFIED": "Account ID not specified",
+      "CANNOT_FIND_ACCOUNT" : "Unable to find account"
+    }
   },
 
   "CASH_PAYMENTS" : {
@@ -530,11 +537,7 @@
     "PROJECT"                   : "Projects",
     "EMPLOYEE"                  : "Employee",
     "DEPOT"                     : "Depot",
-    "STOCK_MANAGEMENT"          : "Stock Management",
-    "STOCK_ENTRY"               : "Stock Entry",
-    "STOCK_EXIT"                : "Stock Exit",
-    "STOCK_MOVEMENT"            : "Stock Movements",
-    "STOCK_LOSS"                : "Stock Loss"
+    "STOCK_MANAGEMENT"          : "Stock Management"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -876,7 +879,8 @@
     "ALERT" : "Manage your depots from here",
     "NEW" : "Register a new Depot",
     "EDIT" : "Edit depot information",
-    "ADD" : "Add a Depot"
+    "ADD" : "Add a Depot",
+    "NO_DEPOTS" : "No depots have been registered."
   },
 
   "PRICE_LIST"         : {
@@ -1076,7 +1080,7 @@
   
   "EMPLOYEE"          : {
     "TITLE"           : "Employee Management",
-    "EMPLOYEES"       : "Employess",
+    "EMPLOYEES"       : "All Employees",
     "REGISTER"        : "Register Employee",
     "NONE_FOUND"      : "No employee records found.",
     "CREDITOR_GROUP"  : "Creditor Group"
@@ -1095,10 +1099,17 @@
   },
 
   "STOCK" : {
+    "MAIN" : {
+      "TITLE" : "Stock Management",
+      "MODULES" : "Available Modules",
+      "UTILITIES" : "Stock Utilities"
+    },
     "ENTRY" : {
+      "KEY"                 : "Stock Entry",
       "TITLE"               : "Stock Entry",
       "SELECT"              : "Select",
       "NUM_ITEMS"           : "Number of Items",
+      "ENTRY_MANIFEST"      : "Entry Manifest",
       "SELECT_DEPOT"        : "Select a Depot",
       "FIND_PURCHASE_ORDER" : "Find a Purchase Order",
       "ORDER_DETAIL"        : "Order Details",
@@ -1111,10 +1122,25 @@
       "REVIEW"              : "Review Manifest",
       "REQUESTED_BY"        : "Requested By"
     },
-    "EXIT" : {},
+    "EXIT" : {
+      "KEY" : "Stock Export"
+    },
+    "LOSS" : {
+      "KEY" : "Stock Loss"
+    },
     "MOVEMENT" : {
+      "KEY"   : "Stock Movement",
       "TITLE" : "Stock Movements",
       "FORM" : "Stock Movement Form"
+    },
+    "SEARCH" : {
+      "KEY" : "Find Stock Items",
+      "TITLE" : "Locate Stock Items",
+      "NO_SELECTION" : "No selection has been made.  Please choose an inventory item from above.",
+      "MANIFEST" : "Stock Manifest"
+    },
+    "EXPIRE" : {
+      "KEY" : "Expiring Stock"
     }
   },
 

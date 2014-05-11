@@ -27,7 +27,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="village in model.village.data | orderBy:'village'">
+            <tr ng-repeat="village in villages.data | orderBy:'village'">
               <td>{{ village.village }}</td>
               <td>{{ village.sector }}</td>
               <td><a href="" ng-click="setOp('Edit', village)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
@@ -55,7 +55,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label"> {{ 'VILLAGE.SECTOR' | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-kapok" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data | orderBy:'name'">
+                <select class="form-kapok" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in sectors.data | orderBy:'name'">
                   <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                 </select>
               </div>

@@ -2,15 +2,21 @@ angular.module('kpk.controllers')
 .controller('stock.movement', [
   '$scope',
   '$location',
+  '$routeParams',
   'validate',
   'appstate',
   'connect',
   'messenger',
   'uuid',
-  function ($scope, $location, validate, appstate, connect, messenger, uuid) {
+  function ($scope, $location, $routeParams, validate, appstate, connect, messenger, uuid) {
     var dependencies = {};
     var session = $scope.session = { doc : {}, rows : [] };
-    
+
+    if (!angular.isDefined($routeParams.depotId)) {
+      messenger.danger('ERR_NO_DEPOT');
+    }
+
+
     dependencies.depots = {
       query : {
         tables : {
@@ -54,6 +60,7 @@ angular.module('kpk.controllers')
     $scope.newForm = function newForm () {
       session = $scope.session = { doc: {}, rows : [] };
       session.doc.document_id = uuid();
+      session.doc.depot_id = $routeParams.depotId;
       session.doc.date = new Date();
       $scope.addRow();
     };
@@ -109,6 +116,6 @@ angular.module('kpk.controllers')
       validate.process(dependencies, ['depots', 'stock'])
       .then(startup).catch(error);
     });
-  
+
   }
 ]);

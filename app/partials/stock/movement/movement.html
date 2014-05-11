@@ -11,25 +11,14 @@
         </div>
 
         <div class="panel-body">
-          <div class="row">
-            <div class="col-xs-6">
-              <div class="form-group">
-                <label>{{ "COLUMNS.DEPOT" | translate }}</label>
-                <select class="form-kapok" ng-model="session.doc.depot_id" ng-options="depot.id as depot.text for depot in depots.data">
-                  <option value="" disabled="disabled"> -- {{ "SELECT.DEPOT" | translate }} -- </option>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-xs-6">
-              <div class="form-group">
-                <label>{{ "COLUMNS.DIRECTION" | translate }}</label>
-                <select class="form-kapok" ng-model="session.doc.direction">
-                  <option value="" disabled="disabled"> -- {{ "SELECT.DIRECTION" | translate }} -- </option>
-                  <option value="entry">Entry</option>
-                  <option value="exit">Exit</option>
-                </select>
-              </div>
+          <div class="row col-xs-12">
+            <div class="form-group">
+              <label>{{ "COLUMNS.DIRECTION" | translate }}</label>
+              <select class="form-kapok" ng-model="session.doc.direction">
+                <option value="" disabled="disabled"> -- {{ "SELECT.DIRECTION" | translate }} -- </option>
+                <option value="entry">Entry</option>
+                <option value="exit">Exit</option>
+              </select>
             </div>
           </div>
         </div>

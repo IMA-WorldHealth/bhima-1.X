@@ -1095,7 +1095,7 @@ module.exports = function (db, synthetic) {
         throw new Error('No primary_cash by the uuid: ' + id);
       }
 
-      var reference = results[0];
+      reference = results[0];
       data = results;
       var date = util.toMysqlDate(reference.date);
 
@@ -1105,9 +1105,9 @@ module.exports = function (db, synthetic) {
       var dailyExchange = exchangeRateStore.get(reference.currency_id);
       cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
 
-      return q([get.origin('pcash_transfert'), get.period(reference.date)]);
+      return q([get.origin('pcash'), get.period(reference.date)]); // should be get.origin(pcash_transfert);
     })
-    .then(function (originId, periodObject) {
+    .spread(function (originId, periodObject) {
       cfg.originId = originId;
       cfg.periodId = periodObject.id;
       cfg.fiscalYearId = periodObject.fiscal_year_id;
@@ -1143,12 +1143,12 @@ module.exports = function (db, synthetic) {
       done(null, rows);
     })
     .catch(function (err) {
+      console.error('[DEBUG] [ERROR]', err);
       var discard = "DELETE FROM primary_cash WHERE uuid = " + sanitize.escape(id) + ";";
       return db.exec(discard)
       .then(function () {
         done(err);
-      })
-      .done();
+      });
     })
     .done();
   }

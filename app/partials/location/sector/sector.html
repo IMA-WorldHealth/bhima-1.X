@@ -30,7 +30,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="sector in model.sector.data | orderBy:'sector'">
+            <tr ng-repeat="sector in sectors.data | orderBy:'sector'">
               <td>{{ sector.sector }}</td>
               <td>{{ sector.province }}</td>
               <td><a href="" ng-click="setOp('Edit', sector)"><i class="glyphicon glyphicon-pencil"></i></a></td>
@@ -62,7 +62,7 @@
                   name="provincename"
                   id="provinceUUID"
                   ng-model="add.province_uuid"
-                  ng-options="pro.uuid as pro.name for pro in model.province.data | orderBy:'name'"
+                  ng-options="pro.uuid as pro.name for pro in provinces.data | orderBy:'name'"
                 >
                   <option value="" disable="disabled">-- {{'SELECT.PROVINCE' | translate}}-- </option>
                 </select>
