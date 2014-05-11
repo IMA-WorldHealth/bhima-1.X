@@ -10,9 +10,7 @@ angular.module('kpk.controllers')
     var dependencies = {},
         flags = $scope.flags = {};
 
-    $scope.model = {};
-
-    dependencies.country = {
+    dependencies.countries = {
       identifer : 'uuid',
       query : {
         tables: {
@@ -42,7 +40,7 @@ angular.module('kpk.controllers')
 
       connect.basicPut('country', [country])
       .then(function (res) {
-        $scope.model.country.post(country);
+        $scope.countries.post(country);
         obj = {};
       });
     }
@@ -57,7 +55,7 @@ angular.module('kpk.controllers')
 
       connect.basicPost('country', [connect.clean(country)], ['uuid'])
       .then(function (res) {
-        $scope.model.country.put($scope.country);
+        $scope.countries.put($scope.country);
         $scope.country = {};
       });
     }
@@ -65,11 +63,12 @@ angular.module('kpk.controllers')
     $scope.removeCountry = function removeCountry(uuid){
       connect.basicDelete('country', uuid, 'uuid')
       .then(function(){
-        $scope.model.country.remove(uuid);
+        $scope.country.remove(uuid);
       });
     };
 
-    validate.process(dependencies).then(manageCountry);
+    validate.process(dependencies)
+    .then(manageCountry);
 
     $scope.setOp = setOp;
     $scope.addCountry = addCountry;

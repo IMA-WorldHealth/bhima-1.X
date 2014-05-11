@@ -56,7 +56,6 @@ input::-webkit-inner-spin-button {
   margin: none;
 }
 
-
 /* first viewport */
 .sidebar {
   position: fixed;
@@ -416,4 +415,13 @@ header + .content {
 
 .label-group {
   margin: 0 5px;
+}
+
+.plain-list {
+  padding-left: 10px;
+  list-style : none; 
+}
+
+.plain-list li { 
+  margin-bottom : 10px;
 }

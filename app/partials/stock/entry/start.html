@@ -2,20 +2,6 @@
   {{ "STOCK.ENTRY.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
-  <div class="pull-right dropdown">
-    <button class="btn btn-sm btn-primary square dropdown-toggle">
-      {{ session.cfg.depot.text || "STOCK.ENTRY.SELECT_DEPOT" | translate }}
-      <span class="caret" data-caret="&#9660;"></span>
-    </button>
-    <ul class="dropdown-menu square">
-      <li ng-repeat="depot in depots.data">
-        <a ng-click="setDepot(depot)" class="action">{{ depot.text }}</a>
-      </li>
-    </ul>
-  </div>
-</section>
-
 <div class="content">
   <div class="row">
 

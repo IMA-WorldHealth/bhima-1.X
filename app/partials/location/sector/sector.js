@@ -8,13 +8,10 @@ angular.module('kpk.controllers')
   'store',
   'uuid',
   function ($scope, $q, connect, messenger, validate, Store, uuid) {
-
     var dependencies = {},
         flags = $scope.flags = {};
-    $scope.model = {};
 
-    //dependencies
-    dependencies.province = {
+    dependencies.provinces = {
       query :  {
         identifier : 'uuid',
         tables: {
@@ -25,7 +22,7 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.sector = {
+    dependencies.sectors = {
       identifier : 'uuid',
       query : '/sector/'
     };
@@ -50,8 +47,8 @@ angular.module('kpk.controllers')
       .then(function (res) {
         newObject.uuid = newObject.uuid;
         newObject.sector = newObject.name;
-        newObject.province = $scope.model.province.get(obj.province_uuid).name;
-        $scope.model.sector.post(newObject);
+        newObject.province = $scope.provinces.get(obj.province_uuid).name;
+        $scope.sectors.post(newObject);
         $scope.op = '';
       });
     }
@@ -65,7 +62,7 @@ angular.module('kpk.controllers')
 
       connect.basicPost('sector', [connect.clean(sector)], ['uuid'])
       .then(function (res) {
-        $scope.model.sector.put(sector);
+        $scope.sectors.put(sector);
         $scope.op='';
       });
     }
@@ -73,7 +70,7 @@ angular.module('kpk.controllers')
     function removeSector(uuid){
       connect.basicDelete('sector', uuid, 'uuid')
       .then(function(){
-        $scope.model.sector.remove(uuid);
+        $scope.sectors.remove(uuid);
       });
     }
 
