@@ -379,7 +379,8 @@
     "JOURNAL_VOUCHER"           : "Ajout Transactions",
     "PROJECT"                   : "Projets",
     "DEPOT"                     : "Depot",
-    "STOCK_DISTRIBUTION"        : "Distribution Stock"
+    "STOCK_DISTRIBUTION"        : "Distribution Stock",
+    "EMPLOYEE"                  : "Gestion Employees"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -559,7 +560,9 @@
     "QTY_ASKED"           : "Quantite Demandee",
     "QTY_AVAIL"           : "Quantite Disponible",
     "QTY_IN_LOT"          : "Nombre item dans Lot",
-    "CODE_ITEM"           : "Code Medicament"
+    "CODE_ITEM"           : "Code Medicament",
+    "PURCHASE_PRICE"      : "Prix Achat",
+    "SALE_PRICE"          : "Prix Vente"
   },
 
   "REPORT"                  : {
@@ -1093,7 +1096,8 @@
     "ADD_LINE_ITEM" : "Ajouter item",
     "TOTAL"         : "Total",
     "SUBMIT"        : "Soumettre",
-    "SUBMIT_ORDER"  : "Soumettre Ordre Achat"
+    "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
+    "RESPONSABLE"   : "Responsable"
   },
 
   "PRIMARY_CASH" : {
@@ -1135,7 +1139,34 @@
     "COST"                   : "Cout",
     "LOT_DETAILS"            : "Details des Lots",
     "EMPTY_MESSAGE"          : "Aucune vente selectionnee !"
+  }, 
 
+  "SUPPLIER" :{
+    "TITLE" : "Fournisseur",
+    "CREATE" : "Groupe Crediteur",
+    "SUPPLIER_DETAILS" : "Details Fournisseur",
+    "INTL"             : "Internationale",
+    "PHONE"           : "Telephone",
+    "EMAIL"           : "Email",
+    "ADDR_1"          : "Adresse 2",
+    "ADDR_2"          : "Adresse 2",
+    "FAX"             : "Fax",
+    "CREATE_SUPPLIER"  : "Creer Fournisseur",
+    "OPTIONAL_INFO"    : "Informations Optionnelles"
+  },
 
+  "DEPOT" : {
+    "TITLE" : "Gestionn des Depot",
+    "NO_DEPOTS" : "Aucun depot trouve",
+    "ADD" : "Ajouter",
+    "ALERT" : "Ce module vous permet de gerer vos depot"
+  },
+
+  "EMPLOYEE" : {
+    "TITLE" : "Gestion des Employees",
+    "NONE_FOUND" : "Aucun employee trouve",
+    "EMPLOYEES"  : "Les Employees Enregistres",
+    "REGISTER" : "Enregistrer",
+    "CREDITOR_GROUP" : "Groupe Crediteur"
   }
 }
