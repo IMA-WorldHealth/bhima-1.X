@@ -60,16 +60,10 @@ angular.module('kpk.controllers')
       });
     }
 
-    function decision (){
-      var diff = false;
-      for(var i = 0; i < models.patient_group.length; i+=1){
-        console.log('validating', models.patient_group[i]);
-        if(models.patient_group[i].checked){
-          diff = true;
-          break;
-        }
-      }
-      return diff;
+    function isChecked (){
+      return models.patient_group.some(function (group){
+        return group.checked;
+      });
     }
 
     function loadPatientGroups (patient){
@@ -112,21 +106,22 @@ angular.module('kpk.controllers')
       .then(function (v){
 
         if (v.status === 200) {
-          $scope.assignation_patient.data = $scope.assignation_patient.data.filter(function (item){
-            return item.patient_uuid !== $scope.patient.uuid;
-          });
-          var ass_patient = [];
-      
-          var pg_checked = models.patient_group.filter(function(item){
-            return item.checked;
-          });
+          if(isChecked()){
+            $scope.assignation_patient.data = $scope.assignation_patient.data.filter(function (item){
+              return item.patient_uuid !== $scope.patient.uuid;
+            });
+            var ass_patient = [];
 
-          pg_checked.forEach(function(item){
-            ass_patient.push({uuid: uuid(), patient_group_uuid : item.uuid, patient_uuid : $scope.patient.uuid});
-          });
+            var pg_checked = models.patient_group.filter(function(item){
+              return item.checked;
+            });
 
-          $q.all(
-            ass_patient.map(function(assignation){
+            pg_checked.forEach(function(item){
+             ass_patient.push({uuid: uuid(), patient_group_uuid : item.uuid, patient_uuid : $scope.patient.uuid});
+            });
+
+            $q.all(
+              ass_patient.map(function(assignation){
               tapon.push(assignation);
               return connect.basicPut('assignation_patient', [assignation], 'uuid');
             })
@@ -134,17 +129,22 @@ angular.module('kpk.controllers')
               messenger.success('Successfully updated');
               // $scope.patient = {};
             }, function(err){
-              messenger.danger('Error updating');
+             messenger.danger('Error updating');
             });
+
+          }else{
+            messenger.success('Successfully updated');
+          }
+
         }
       });
     }
 
     function checking(){
-      if($scope.patient.uuid && ($scope.all || decision())){
+      if($scope.patient.uuid){
         save();
       }else{
-        messenger.danger('Select a patient and Check at least one check box');
+        messenger.danger('Erreur');
       }
     }
 
