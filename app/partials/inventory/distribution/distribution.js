@@ -27,13 +27,13 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'stock' : {
-            columns : ['inventory_uuid', 'purchase_price', 'expiration_date', 'entry_date', 'lot_number', 'purchase_order_uuid', 'tracking_number', 'quantity']
+            columns : ['inventory_uuid', 'expiration_date', 'entry_date', 'lot_number', 'purchase_order_uuid', 'tracking_number', 'quantity']
           },
           'inventory' : {
-            columns : ['uuid', 'text', 'enterprise_id', 'code', 'inventory_code', 'price']
+            columns : ['uuid', 'text', 'enterprise_id', 'code', 'price']
           }
         },
-          join : ['stock.inventory_uuid=inventory.uuid']
+        join : ['stock.inventory_uuid=inventory.uuid']
       }
     };
 
