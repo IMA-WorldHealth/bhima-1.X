@@ -363,7 +363,6 @@ create table `inventory` (
   `enterprise_id`   smallint unsigned not null,
   `uuid`            char(36) not null,
   `code`            varchar(30) not null,
-  `inventory_code`  varchar(30),
   `text`            text,
   `price`           decimal(10,4) unsigned not null default '0.00',
   `purchase_price`  decimal(10,4) unsigned not null default '0.00', 
@@ -664,7 +663,6 @@ create table `depot` (
 drop table if exists `stock`;
 create table `stock` (
   `inventory_uuid`         char(36) not null,
-  `purchase_price`         decimal(19, 4) not null,
   `expiration_date`        date not null,
   `entry_date`             date not null,
   `lot_number`             varchar(70) not null,
