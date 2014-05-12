@@ -365,7 +365,7 @@ create table `inventory` (
   `code`            varchar(30) not null,
   `text`            text,
   `price`           decimal(10,4) unsigned not null default '0.00',
-  `purchase_price`  decimal(10,4) unsigned not null default '0.00', 
+  `purchase_price`  decimal(10,4) unsigned not null default '0.00',
   `group_uuid`      char(36) not null,
   `unit_id`         smallint unsigned,
   `unit_weight`     mediumint default '0',
@@ -1101,12 +1101,12 @@ create table `consumption` (
   `date`             date,
   `depot_id`         smallint unsigned not null,
   `amount`           int unsigned,
-  `patient_uuid`     char(36) null,
+  `sale_uuid`     char(36) null,
   primary key (`document_id`),
   key `depot_id`   (`depot_id`),
-  key `patient_uuid` (`patient_uuid`),
+  key `sale_uuid` (`sale_uuid`),
   constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`patient_uuid`) references `patient` (`uuid`) on update cascade
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on update cascade
 ) engine=innodb;
 
 
