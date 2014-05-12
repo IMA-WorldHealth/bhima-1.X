@@ -22,7 +22,7 @@ angular.module('kpk.controllers')
       session.lots.data.forEach(function (stock) {
         stocks.push({
           inventory_uuid      : stock.inventory_uuid,
-          purchase_price      : stock.purchase_price,
+          //purchase_price      : stock.purchase_price,
           expiration_date     : util.convertToMysqlDate(stock.expiration_date),
           entry_date          : util.convertToMysqlDate(new Date()),
           lot_number          : stock.lot_number,
