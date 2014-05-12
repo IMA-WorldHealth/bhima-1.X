@@ -163,11 +163,22 @@ angular.module('kpk.controllers')
       if(stockAvailability()){
         doConsumption()
         .then(doMoving)
+        //.then(decreaseStock)
         .then(function(result){
           console.log('[result ...]')
         });
+      }else{
+        messenger.danger('Le stock dans le (s) lot (s) selectionne (s) n\'est pas disponible pour convrir la quantite demandee');
       }
+    }
 
+    function decreaseStock (){
+      console.log(distribution);
+      // return $q.all(
+      //   distribution.item_records.map(function (item_record){
+      //     return connect.basicPut('consumption', item_record)
+      //   })
+      // )
     }
 
     function updateStock (){
