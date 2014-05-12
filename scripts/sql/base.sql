@@ -92,11 +92,7 @@ INSERT INTO `unit` VALUES
 (79,'Patient Standing','TREE.PATIENT_STANDING','',10,0,'/partials/reports/patient_standing/','/reports/patient_standing'),
 (80,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee'),
 (81,'Depot Management','TREE.DEPOT','',11,0,'/partials/inventory/depot/','inventory/depot'),
-(82,'Stock Management','TREE.STOCK_MANAGEMENT','',0,1,'partials/stock',''),
-(83,'Stock Entry','TREE.STOCK_ENTRY','',82,0,'partials/stock/entry','/stock/entry/start'),
-(84,'Stock Exit','TREE.STOCK_EXIT','',82,0,'partials/stock/exit','/stock/exit'),
-(85,'Stock Loss','TREE.STOCK_LOSS','',82,0,'partials/stock/loss','/stock/loss'),
-(86,'Stock Movements','TREE.STOCK_MOVEMENT','',82,0,'partials/stock/movement','/stock/movement'),
+(82,'Stock Management','TREE.STOCK_MANAGEMENT','',0,11,'partials/stock','/stock'),
 (87,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
 (88,'Account Statement', 'TREE.ACCOUNT_STATEMENT', '', 10, 0, 'partials/reports/account_statement', '/reports/account_statement');
 

@@ -289,19 +289,11 @@
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
     })
-    .when('/stock/loss', {
-      controller : 'stock.loss',
-      templateUrl : 'partials/stock/loss/loss.html'
+    .when('/stock/', {
+      controller : 'stock.main',
+      templateUrl : 'partials/stock/stock.html'
     })
-    .when('/stock/movement', {
-      controller : 'stock.movement',
-      templateUrl : 'partials/stock/movement/movement.html'
-    })
-    .when('/stock/exit', {
-      controller : 'stock.exit',
-      templateUrl : 'partials/stock/exit/exit.html'
-    })
-    .when('/stock/entry/start', {
+    .when('/stock/entry/start/:depotId', {
       controller : 'stock.entry.start',
       templateUrl : 'partials/stock/entry/start.html'
     })
@@ -312,6 +304,22 @@
     .when('/stock/entry/review', {
       controller : 'stock.entry.review',
       templateUrl: 'partials/stock/entry/review.html'
+    })
+    .when('/stock/movement/:depotId', {
+      controller : 'stock.movement',
+      templateUrl : 'partials/stock/movement/movement.html'
+    })
+    .when('/stock/exit/:depotId', {
+      controller : 'stock.exit',
+      templateUrl : 'partials/stock/exit/exit.html'
+    })
+    .when('/stock/loss/:depotId', {
+      controller : 'stock.loss',
+      templateUrl : 'partials/stock/loss/loss.html'
+    })
+    .when('/stock/search/', {
+      controller : 'stock.search',
+      templateUrl: 'partials/stock/search/search.html'
     })
     .when('/inventory/distribution', {
       controller : 'inventory.distribution',

@@ -30,7 +30,10 @@
               <td>{{ depot.id }}</td>
               <td>{{ depot.text }}</td>
               <td><a class="action" ng-click="edit(depot)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action" ng-click="delete(depot)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td><a class="action danger" ng-click="delete(depot)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+            <tr ng-if="!depots.data.length">
+              <td colspan="4">{{ "DEPOT.NO_DEPOTS" | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -39,7 +42,7 @@
 
     <div class="col-xs-6" ng-switch="session.action">
       <div class="alert alert-info" ng-switch-default>
-        <h5>{{ "DEPOT.TITLE" | translate }}</h5>
+        <h4>{{ "DEPOT.TITLE" | translate }}</h4>
         <p>{{ "DEPOT.ALERT" | translate }}</p>
       </div>
 

@@ -10,9 +10,7 @@ angular.module('kpk.controllers')
     var dependencies = {},
         flags = $scope.flags = {};
 
-    $scope.model = {};
-    //dependencies
-    dependencies.sector = {
+    dependencies.sectors = {
       query :  {
         identifier : 'uuid',
         tables: {
@@ -23,7 +21,7 @@ angular.module('kpk.controllers')
       }
     };
 
-    dependencies.village = {
+    dependencies.villages = {
       identifier:'uuid',
       query : '/village/'
     };
@@ -48,8 +46,8 @@ angular.module('kpk.controllers')
       connect.basicPut('village', [v])
       .then(function (res) {
         v.village = v.name;
-        v.sector = $scope.model.sector.get(v.sector_uuid).name;
-        $scope.model.village.post(v);
+        v.sector = $scope.sectors.get(v.sector_uuid).name;
+        $scope.villages.post(v);
         $scope.op='';
       });
     }
@@ -63,7 +61,7 @@ angular.module('kpk.controllers')
 
       connect.basicPost('village', [village], ['uuid'])
       .then(function () {
-        $scope.model.village.put(village);
+        $scope.villages.put(village);
         $scope.op='';
       });
     }
@@ -71,7 +69,7 @@ angular.module('kpk.controllers')
     function removeVillage(uuid){
       connect.basicDelete('village', [uuid], 'uuid')
       .then(function(){
-        $scope.model.village.remove(uuid);
+        $scope.villages.remove(uuid);
       });
     }
 
