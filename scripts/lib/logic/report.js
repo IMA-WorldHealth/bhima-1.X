@@ -249,80 +249,80 @@ module.exports = function (db) {
   function accountStatement(params){
     var deferred = q.defer();
     var reportSections, report = {}, queryStatus = [];
-   
+
     // Parse parameters
     params = JSON.parse(params);
     if (!params.dateFrom || !params.dateTo || !params.accountId) return deferred.reject('Invalid params');
-    
+
     params.dateFrom = '\'' + params.dateFrom + '\'';
     params.dateTo = '\'' + params.dateTo + '\'';
- 
+
     // Define report sections
-    report.overview = { 
-      query : 
-        "SELECT SUM(debit_equiv) as 'invoiced', SUM(credit_equiv) as 'credit', SUM(debit_equiv - credit_equiv) as 'balance' " + 
-        "FROM posting_journal " + 
-        "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";", 
+    report.overview = {
+      query :
+        "SELECT SUM(debit_equiv) as 'invoiced', SUM(credit_equiv) as 'credit', SUM(debit_equiv - credit_equiv) as 'balance' " +
+        "FROM posting_journal " +
+        "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";",
       singleResult : true
     };
 
-    report.account = { 
-      query : 
+    report.account = {
+      query :
         "SELECT account_number, account_txt, account_type_id, parent, created FROM account where id = " + params.accountId + ";",
       singleResult : true
     };
 
-    report.balance = { 
-      query : 
-        "SELECT SUM(debit_equiv) as 'debit', SUM(credit_equiv) as 'credit', sum(debit_equiv - credit_equiv) as 'balance', COUNT(uuid) as 'count' " + 
-        "FROM " + 
+    report.balance = {
+      query :
+        "SELECT SUM(debit_equiv) as 'debit', SUM(credit_equiv) as 'credit', sum(debit_equiv - credit_equiv) as 'balance', COUNT(uuid) as 'count' " +
+        "FROM " +
         "(SELECT uuid, debit_equiv, credit_equiv FROM posting_journal WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " ORDER BY trans_date DESC LIMIT " + (params.limit) + ", 18446744073709551615)a;",
       singleResult : true
     };
 
-    report.payment = { 
-      query : 
-        "SELECT SUM(credit_equiv) as 'payed' " +  
-        "FROM posting_journal " + 
+    report.payment = {
+      query :
+        "SELECT SUM(credit_equiv) as 'payed' " +
+        "FROM posting_journal " +
         "WHERE account_id=" + params.accountId + " AND origin_id=1 " + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + ";",
       singleResult : true
     };
 
-    report.detail = { 
-      query : 
+    report.detail = {
+      query :
         "SELECT trans_date, description, inv_po_id, debit_equiv, credit_equiv, uuid " +
-        "FROM posting_journal " + 
-        "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " " + 
+        "FROM posting_journal " +
+        "WHERE account_id = " + params.accountId + " AND trans_date >= " + params.dateFrom + " AND trans_date <= " + params.dateTo + " " +
         "ORDER BY trans_date DESC LIMIT " + params.limit + ";",
       singleResult : false
     };
-   
+
     // Execute querries
     reportSections = Object.keys(report);
-    queryStatus = reportSections.map(function (key) { 
+    queryStatus = reportSections.map(function (key) {
       return db.exec(report[key].query);
     });
 
     // Handle results
     q.all(queryStatus)
-      .then(function (result) { 
+      .then(function (result) {
         var packageResponse = {};
-      
-        reportSections.forEach(function (key, index) { 
+
+        reportSections.forEach(function (key, index) {
           var parseResult = report[key].singleResult ? result[index][0] : result[index];
           packageResponse[key] = report[key].result = parseResult;
         });
-        
+
         // Ensure we found an account
         if (!report.account.result) return deferred.reject(new Error("Unkown account " + params.accountId));
 
-        deferred.resolve(packageResponse); 
+        deferred.resolve(packageResponse);
       })
-      .catch(function (error) { 
+      .catch(function (error) {
         console.log('failed', error);
         deferred.reject(error);
       });
-    
+
     return deferred.promise;
   }
 
@@ -475,27 +475,19 @@ module.exports = function (db) {
     return defer.promise;
   }
 
-  function stockReport (params) {
-    var sql, defer = q.defer();
-    var depot_id = sanitize.escape(params.depot_id);
-    
+  function stockLocation (params) {
+    var p = querystring.parse(params);
+    var sql, id = sanitize.escape(p.id);
 
     sql =
-      "SELECT SUM(quantity) as quantity, tracking_number, direction " +
-      "FROM stock_movement " +
-      "WHERE depot_id = " + depot_id + " " +
-      "GROUP BY tracking_number, direction;";
-
-    db.exec(sql)
-    .then(function (data) {
-      defer.resolve(data);
-    })
-    .catch(function (err) {
-      defer.reject(err);
-    });
-
-    return defer.promise;
-
+      "SELECT inventory_uuid, stock.tracking_number, direction, expiration_date, " +
+        "SUM(stock_movement.quantity) as quantity, depot.text " +
+      "FROM stock_movement JOIN stock JOIN depot " +
+        "ON stock_movement.tracking_number = stock.tracking_number AND " +
+        "stock_movement.depot_id = depot.id " +
+      "WHERE inventory_uuid = " + id + " " +
+      "GROUP BY tracking_number, depot_id, direction;";
+    return db.exec(sql);
   }
 
   function priceReport (params) {
@@ -549,7 +541,8 @@ module.exports = function (db) {
       'patientStanding' : patientStanding,
       'accountStatement': accountStatement,
       'allTrans'        : allTrans,
-      'prices'          : priceReport
+      'prices'          : priceReport,
+      'stock_location'  : stockLocation
     };
 
     route[request](params)

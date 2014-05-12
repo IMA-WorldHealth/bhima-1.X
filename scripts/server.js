@@ -240,6 +240,18 @@ app.get('/ledgers/debitor_group/:id', function (req, res, next) {
   .done();
 });
 
+app.get('/ledgers/distributableSale/:id', function (req, res, next) {
+  ledger.distributableSale(req.params.id)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+});
+
+
 app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res, next) {
   var enterprise = req.params.enterprise;
   var startDate = req.params.startDate;
@@ -502,6 +514,18 @@ app.get('/period/:date', function (req, res, next) {
     "SELECT id, fiscal_year_id FROM period " +
     "WHERE period_start <= " + date + " AND period_stop >= " + date + " LIMIT 1";
 
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+});
+
+app.get('/lot/:inventory_uuid', function (req, res, next){
+  var sql = "SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid="+sanitize.escape(req.params.inventory_uuid);
   db.exec(sql)
   .then(function (ans) {
     res.send(ans);

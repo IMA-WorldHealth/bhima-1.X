@@ -366,7 +366,7 @@ create table `inventory` (
   `inventory_code`  varchar(30),
   `text`            text,
   `price`           decimal(10,4) unsigned not null default '0.00',
-  `purchase_price`  decimal(10,4) unsigned not null default '0.00', 
+  `purchase_price`  decimal(10,4) unsigned not null default '0.00',
   `group_uuid`      char(36) not null,
   `unit_id`         smallint unsigned,
   `unit_weight`     mediumint default '0',
@@ -642,7 +642,7 @@ create table `purchase` (
   `purchase_date`     date not null,
   `timestamp`         timestamp default current_timestamp,
   `note`              text default null,
-  `posted`            boolean not null default 1,
+  `paid`            boolean not null default 0,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
@@ -669,7 +669,7 @@ create table `stock` (
   `entry_date`             date not null,
   `lot_number`             varchar(70) not null,
   `purchase_order_uuid`    char(36) not null,
-  `tracking_number`        char(10) not null,
+  `tracking_number`        char(50) not null,
   `quantity`               int not null default 0,
   primary key (`tracking_number`),
   key `inventory_uuid` (`inventory_uuid`),
@@ -681,13 +681,13 @@ create table `stock` (
 drop table if exists `stock_movement`;
 create table `stock_movement` (
   `document_id`             char(36) not null,
-  `tracking_number`         char(10) not null,
+  `tracking_number`         char(50) not null,
   `direction`               text,
   `date`                    date,
   `quantity`                int not null default 0,
   `depot_id`                smallint unsigned not null,
   `destination`             smallint not null,
-  primary key (`document_id`),
+  primary key (`document_id`, `tracking_number`),
   key `tracking_number` (`tracking_number`),
   key `depot_id` (`depot_id`),
   constraint foreign key (`tracking_number`) references `stock` (`tracking_number`),
@@ -1099,16 +1099,16 @@ create table `caution` (
 drop table if exists `consumption`;
 create table `consumption` (
   `document_id`      char(36) not null,
-  `tracking_number`  char(36) not null,
+  `tracking_number`  char(50) not null,
   `date`             date,
   `depot_id`         smallint unsigned not null,
   `amount`           int unsigned,
-  `patient_uuid`     char(36) null,
+  `sale_uuid`     char(36) null,
   primary key (`document_id`),
   key `depot_id`   (`depot_id`),
-  key `patient_uuid` (`patient_uuid`),
+  key `sale_uuid` (`sale_uuid`),
   constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`patient_uuid`) references `patient` (`uuid`) on update cascade
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on update cascade
 ) engine=innodb;
 
 

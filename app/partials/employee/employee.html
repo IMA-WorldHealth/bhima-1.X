@@ -1,24 +1,20 @@
-<header>
-  <span>{{ "EMPLOYEE.TITLE" | translate }}</span>
+<header data-header>
+  {{ "EMPLOYEE.TITLE" | translate }}
 </header>
-
-<section class="top-nav">
-</section>
 
 <div class="content">
   <div class="row" style="height: 100%">
     <div class="col-xs-6" style="height: 100%">
       <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
         <div class="panel-heading">
-          <span>{{ "EMPLOYEE.EMPLOYEES" | translate }}</span>
+          {{ "EMPLOYEE.EMPLOYEES" | translate }}
         </div>
-        <div class="panel-body">
         <table class="table table-condensed">
           <thead>
             <tr>
               <th>{{ "COLUMNS.NAME" | translate }}</th>
               <th>{{ "COLUMNS.CODE" | translate }}</th>
-              <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
+              <th>{{ "COLUMNS.CREDITOR_ID" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -33,7 +29,6 @@
             </tr>
           </tbody>
         </table>
-      </div>
       </div>
     </div>
 

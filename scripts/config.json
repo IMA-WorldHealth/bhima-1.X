@@ -50,7 +50,8 @@
       "/period",
       "/max_trans/",
       "/max_log/",
-      "/pcash_transfert_summers"
+      "/pcash_transfert_summers",
+      "/lot/"
     ]
   }
 }
