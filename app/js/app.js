@@ -321,7 +321,7 @@
       controller : 'stock.search',
       templateUrl: 'partials/stock/search/search.html'
     })
-    .when('/inventory/distribution', {
+    .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
     });
