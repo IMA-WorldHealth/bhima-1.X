@@ -181,7 +181,7 @@ create table `budget` (
 drop table if exists `critere`;
 create table `critere` (
   `id`            smallint unsigned not null auto_increment,
-  `critere_txt`  varchar(50) not null,
+  `text`          varchar(50) not null,
   `note`          text,
   primary key (`id`)
 ) engine=innodb;
@@ -195,12 +195,12 @@ create table `account_type` (
 
 drop table if exists `cost_center`;
 create table `cost_center` (
+  `id`              smallint unsigned not null auto_increment,
   `enterprise_id`   smallint unsigned not null,
-  `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
   `cost`            float default 0,
   `note`            text,
-  `pc`              boolean default 0,
+  `is_principal`    boolean default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
@@ -415,6 +415,14 @@ create table `price_list_item` (
   key `inventory_uuid` (`inventory_uuid`),
   constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`) on delete cascade,
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`) on delete cascade
+) engine=innodb;
+
+drop table if exists `service`;
+create table `service` (
+  `id`                smallint unsigned not null,
+  `name`              text not null,
+  `cost_center_id`    smallint unsigned not null,
+  primary key (`id`)
 ) engine=innodb;
 
 drop table if exists `debitor_group`;
@@ -703,6 +711,50 @@ create table `consumption` (
   primary key (`document_id`),
   key `depot_id`   (`depot_id`),
   constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade
+) engine=innodb;
+
+drop table if exists `patient_consumption`;
+create table `patient_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`    char(36) not null,
+  `sale_uuid`           char(36) not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- key `sale_uuid` (`sale_uuid`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
+  -- constraint foreign key (`sale_uuid`) references `sale` (`uuid`)
+) engine=innodb;
+
+drop table if exists `service_consumption`;
+create table `service_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`    char(36) not null,
+  `service_id`          smallint unsigned not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- key `service_id` (`service_id`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
+  -- constraint foreign key (`service_id`) references `service` (`id`)
+) engine=innodb;
+
+drop table if exists `loss_consumption`;
+create table `loss_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`    char(36) not null,
+  `document_uuid`       char(36) not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
+) engine=innodb;
+
+drop table if exists `rummage_consumption`;
+create table `rummage_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`        char(36) not null,
+  `document_uuid`           char(36) not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `purchase_item`;
