@@ -35,8 +35,8 @@
               <div class="panel square"
                    ng-class=
                    "{
-                    'panel-success' : session.depotFrom,
-                    'panel-warning' : !session.depotFrom
+                    'panel-success' : session.from,
+                    'panel-warning' : !session.from
                    }"
                 > 
                 <div class="panel-heading square">
@@ -46,9 +46,8 @@
                 <!-- <div class="panel&#45;body"> -->
                   <select 
                     class="form-kapok"
-                    ng-model="session.depotFrom" 
-                    ng-options="depot as depot.text for depot in depots.data"
-
+                    ng-model="session.from" 
+                    ng-options="depot as depot.text for depot in depotMap.from.model.data"
                     >
                     <option value="" disabled>--Select a depo--</option>
                   </select>
@@ -66,8 +65,8 @@
               <div class="panel square" 
                 ng-class=
                 "{
-                  'panel-success' : session.depotTo,
-                  'panel-warning' : !session.depotTo
+                  'panel-success' : session.to,
+                  'panel-warning' : !session.to
                 }"
                 >
                 <div class="panel-heading square">
@@ -77,8 +76,8 @@
                 <!-- <div class="panel&#45;body"> -->
                   <select 
                     class="form-kapok"
-                    ng-model="session.depotTo"
-                    ng-options="depot as depot.text for depot in depots.data"
+                    ng-model="session.to"
+                    ng-options="depot as depot.text for depot in depotMap.to.model.data"
                     >
                     <option value="" disabled>--Select a depo--</option>
                   </select>
@@ -106,13 +105,18 @@
                   <tbody>
                     <tr ng-repeat="row in session.rows">
                       <td>
-                        <input 
+                        <!-- <input  -->
+                        <!--   class="form&#45;kapok" -->
+                        <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
+                        <!-- > -->
+                        <select 
                           class="form-kapok"
-                          placeholder="Search lots in {{session.depotFrom.text}}"
-                        >
+                          >
+                          <option disabled>--Select lot from {{session.depotFrom.text}}--</option>
+                        </select>
                       </td>
                       <td>
-                        Details
+                        {{row.details || "..."}}
                       </td>
                       <td>
                         <input class="form-kapok" ng-model="row.quantity" type="number" min="0" required>
@@ -124,8 +128,7 @@
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td colspan="3"></td>
-                      <td colspan="3"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
+                      <td colspan="4" style="text-align: right;"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
                     </tr>
                   </tfoot>
                 </table>
