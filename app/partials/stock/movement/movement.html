@@ -2,8 +2,123 @@
   {{ "STOCK.MOVEMENT.TITLE" | translate }}
 </header>
 
+<section class="top-nav">
+   
+</section>
+  
 <div class="content">
   <div class="row">
+    
+    <div class="col-xs-12">
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-transfer"></span> {{ "STOCK.MOVEMENT.FORM" | translate }} 
+          <span class='pull-right'>{{ session.doc.document_id }} </span>
+        </div>
+          
+        <div class="panel-body">
+          <!-- Main content area -->
+          
+          <div class="row">
+            <div class="col-xs-5">
+              <div class="panel panel-warning square">
+                <div class="panel-heading square">
+                  Depo_From 
+                </div>
+
+                <!-- <div class="panel&#45;body"> -->
+                  <select 
+                    class="form-kapok"
+                    ng-model="session.depotFrom" 
+                    ng-options="depot.text as depot.text for depot in depots.data"
+
+                    >
+                    <option value="" disabled>--Select a depo--</option>
+                  </select>
+                <!-- </div> -->
+              </div>
+            </div>
+
+            <div class="col-xs-2">
+              <div style="text-align: center; margin-top: 20px;">
+                <span style="font-size: 30px;" class="glyphicon glyphicon-arrow-right"></span>
+              </div> 
+            </div>
+
+            <div class="col-xs-5">
+              <div class="panel panel-warning square">
+                <div class="panel-heading square">
+                  Depo_To 
+                </div>
+                  
+                <!-- <div class="panel&#45;body"> -->
+                  <select 
+                    class="form-kapok"
+                    ng-model="session.depotTo"
+                    ng-options="depot.text as depot.text for depot in depots.data"
+                    >
+                    <option value="" disabled>--Select a depo--</option>
+                  </select>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="panel panel-default square">
+                <div class="panel-heading">
+                  <span class="glyphicon glyphicon-list-alt"></span> Inventory
+                </div>
+
+                <table class="table table-bordered table-condensed">
+                  <thead>
+                    <tr>
+                      <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+                      <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th>
+                      <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                      <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+                      <!-- <th colspan="2">{{ "COLUMNS.DESTINATION" | translate }}</th> -->
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="row in session.rows">
+                      <td>
+                        <input 
+                          class="form-kapok"
+                          placeholder="Search lots in depo x"
+                        >
+                      </td>
+                      <td>
+                        Details
+                      </td>
+                      <td>
+                        <input class="form-kapok" ng-model="row.quantity" type="number" min="0" required>
+                      </td>
+                      <!-- <td> <input ng&#45;model="row.destination" required> -->
+                      <!-- </td> -->
+                      <td><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="3"></td>
+                      <td colspan="3"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+              </div>
+            </div>
+          </div>
+          
+        </div> <!-- End main content panel body -->
+      </div> <!-- End main content panel -->
+
+    </div> <!-- End full width column -->
+  </div> <!-- End row -->
+
+  <div class="row">
+
     <div class="col-xs-8">
       <div class="panel panel-default square">
         <div class="panel-heading">
@@ -39,8 +154,7 @@
               <td>
                 <input ng-model="row.quantity" type="number" min="0" required>
               </td>
-              <td>
-                <input ng-model="row.destination" required>
+              <td> <input ng-model="row.destination" required>
               </td>
               <td><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
