@@ -18,6 +18,11 @@ angular.module('kpk.controllers')
       },
 
       {
+        key : $filter('translate')('COST_CENTER.OPERATIONS.VERSEMENT'),
+        link : '/cost_center/versement/'
+      },
+
+      {
         key : $filter('translate')('COST_CENTER.OPERATIONS.ASSIGN'),
         link : '/cost_center/assigning/'
       }

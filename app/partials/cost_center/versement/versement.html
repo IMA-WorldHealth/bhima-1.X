@@ -1,0 +1,93 @@
+
+<header>
+  <span>{{'VERSEMENT.TITLE' | translate}}</span>
+</header>
+
+<section class="top-nav">
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <span class="label label-success square">{{ "ANALYSIS_CENTER.NAVIGATION" | translate }}</span>
+      <li><a href="#/cost_center">{{ "ANALYSIS_CENTER.PARENT" | translate }}</a></li>
+      <li><a href="" ng-click="loadPath('/cost_center/center/')">{{ "ANALYSIS_CENTER.TITLE" | translate }}</a></li>
+    </ol>
+  </div>
+</section>
+
+<div class="content">
+  <div class="row">
+    <div class="col-xs-3">
+      <label>{{'VERSEMENT.CHOOSE' | translate}}</label>
+    </div>
+    <div class="col-xs-4">
+      <select class="form-kapok" ng-model="configuration.cost_center">
+        <option value="{{cc}}" ng-repeat="cc in model.cost_centers.data">{{cc.text}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span> {{'VERSEMENT.AVAILABLE_ACCOUNT' | translate}} {{selected.text}} </span>
+          <span class="pull-right">
+            <button type="submit" ng-click="associate()">{{'VERSEMENT.VERSER' | translate}}</button>
+          </span>
+        </div>
+        <div class="panel-body principal-header">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" ng-model="acc.all" ng-change="checkAll()" />
+                </th>
+                <th>
+                  Account Number
+                </th>
+                <th>
+                  Account Name
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="account in model.available_accounts.data">
+                <td><input type="checkbox" ng-model ="account.checked"/></td>
+                <td>{{account.account_number}}</td>
+                <td>{{account.account_txt}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <span>
+            Associeted Accounts To <b>{{selected.text}}</b>
+          </span>
+          <span class="pull-right">
+            <button type="submit" ng-click="remove()"> Remove </button>
+          </span>
+        </div>
+
+        <div class="panel-body principal-header">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr><th><input type="checkbox" ng-model="acc2"/></th><th>Account Number</th><th>Account Name</th></tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="associatedAccount in models.associatedAccounts">
+              <td><input type="checkbox" ng-model="associatedAccount.checked"/></td>
+
+              <td>{{associatedAccount.account_number}}</td>
+
+              <td>{{associatedAccount.account_txt}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
