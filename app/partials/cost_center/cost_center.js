@@ -5,25 +5,23 @@ angular.module('kpk.controllers')
   'connect',
   'appstate',
   'messenger',
-  function ($scope, $q, connect, appstate, messenger) {
-    var requettes = {},
-        auxiliary_centers = [],
-        principal_centers = [],
-        enterprise = appstate.get('enterprise'),
-        models = $scope.models = {};
+  '$location',
+  '$filter',
+  function ($scope, $q, connect, appstate, messenger, $location, $filter) {
+    console.log('nous sommes la');
+    var configuration = $scope.configuration = {};
+    configuration.operations = [
 
-    requettes.cost_centers = {
-      tables : {
-        'cost_center' : {
-          columns : ['id', 'text', 'note', 'cost', 'pc']
-        },
-        'enterprise' : { columns : ['name']
-        }
+      {
+        key : $filter('translate')('COST_CENTER.OPERATIONS.CC'),
+        link : '/cost_center/center/'
       },
-      join : ['cost_center.enterprise_id=enterprise.id']
-    };
 
-    $scope.selection = {};
+      {
+        key : $filter('translate')('COST_CENTER.OPERATIONS.ASSIGN'),
+        link : '/cost_center/assigning/'
+      }
+    ];
 
     function run() {
       connect.req(requettes.cost_centers)
@@ -57,7 +55,7 @@ angular.module('kpk.controllers')
         models.cost_centers.forEach(function (item){
           if(item.pc) item.checked = $scope.selection.all;
         });
-      }
+    }
 
     function updateChecks (value){
       principal_centers.map(function (item){
@@ -65,13 +63,24 @@ angular.module('kpk.controllers')
       });
     }
 
-    //exposition
-    $scope.principal_centers = principal_centers;
-    $scope.auxiliary_centers = auxiliary_centers;
-    $scope.checkAll = checkAll;
+    function loadPath(path) {
+      $location.path(path);
+    }
 
-    //invocation
+    $scope.loadPath = loadPath;
 
-    run();
+    //run();
   }
 ]);
+
+
+ // requettes.cost_centers = {
+    //   tables : {
+    //     'cost_center' : {
+    //       columns : ['id', 'text', 'note', 'cost', 'pc']
+    //     },
+    //     'enterprise' : { columns : ['name']
+    //     }
+    //   },
+    //   join : ['cost_center.enterprise_id=enterprise.id']
+    // }

@@ -195,15 +195,15 @@ create table `account_type` (
 
 drop table if exists `cost_center`;
 create table `cost_center` (
-  `enterprise_id`   smallint unsigned not null,
+  `project_id`      smallint unsigned not null,
   `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
   `cost`            float default 0,
   `note`            text,
   `pc`              boolean default 0,
   primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
+  key `project_id` (`project_id`),
+  constraint foreign key (`project_id`) references `project` (`id`) on delete cascade
 ) engine=innodb;
 
 DROP TABLE IF EXISTS `account`;
