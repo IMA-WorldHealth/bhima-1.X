@@ -1123,7 +1123,7 @@
       "REQUESTED_BY"        : "Requested By"
     },
     "EXIT" : {
-      "KEY" : "Stock Export"
+      "KEY" : "Stock Distribution"
     },
     "LOSS" : {
       "KEY" : "Stock Loss"
@@ -1141,6 +1141,9 @@
     },
     "EXPIRE" : {
       "KEY" : "Expiring Stock"
+    },
+    "REPORT" : {
+      "STOCK_COUNT" : "Stock Count"
     }
   },
 

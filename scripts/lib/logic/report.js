@@ -490,6 +490,22 @@ module.exports = function (db) {
     return db.exec(sql);
   }
 
+  function stockCount (params) {
+    var p = querystring.parse(params);
+    var sql, id = sanitize.escape(p.id);
+
+    sql =
+      "SELECT uuid, code, text, name, SUM(quantity) AS quantity FROM (" +
+        "SELECT inventory.uuid, inventory.code, text, name " +
+        "FROM inventory JOIN inventory_group ON inventory.group_uuid = inventory_group.uuid " +
+        "WHERE type_id = 0" +
+      ") AS inv " +
+      "LEFT JOIN stock ON stock.inventory_uuid = inv.uuid " +
+      "GROUP BY uuid;";
+
+    return db.exec(sql);
+  }
+
   function priceReport (params) {
     var sql, defer = q.defer();
 
@@ -542,7 +558,8 @@ module.exports = function (db) {
       'accountStatement': accountStatement,
       'allTrans'        : allTrans,
       'prices'          : priceReport,
-      'stock_location'  : stockLocation
+      'stock_location'  : stockLocation,
+      'stock_count' : stockCount
     };
 
     route[request](params)
