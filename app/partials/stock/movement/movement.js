@@ -48,23 +48,37 @@ angular.module('kpk.controllers')
       }
     };
 
+
+    function initialise(project) {
+      $scope.project = project;
+      dependencies.depots.query.where =
+        ['depot.enterprise_id=' + project.enterprise_id];
+
+      validate.process(dependencies, ['depots', 'stock'])
+      .then(startup)
+      .catch(error);
+    }
+
     function error (err) {
       messenger.error(err);
     }
 
     function startup (models) {
       angular.extend($scope, models);
-      $scope.newForm();
-    }
-
-    $scope.newForm = function newForm () {
+      
       session = $scope.session = { doc: {}, rows : [] };
       session.doc.document_id = uuid();
       session.doc.depot_id = $routeParams.depotId;
       session.doc.date = new Date();
-      $scope.addRow();
-    };
 
+
+      session.depot = $scope.depots.get($routeParams.depotId);
+      
+      session.depotFrom = session.depot;
+      $scope.addRow();
+
+    }
+    
     $scope.addRow = function addRow () {
       session.rows.push({quantity : 0, destination : ''});
     };
@@ -109,13 +123,6 @@ angular.module('kpk.controllers')
 
     }, true);
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.depots.query.where =
-        ['depot.enterprise_id=' + project.enterprise_id];
-      validate.process(dependencies, ['depots', 'stock'])
-      .then(startup).catch(error);
-    });
-
+    appstate.register('project', initialise);
   }
 ]);
