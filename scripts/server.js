@@ -112,7 +112,6 @@ app.delete('/data/:table/:column/:value', function (req, res, next) {
 app.post('/purchase', function(req, res, next) {
   // TODO duplicated methods
 
-  console.log('createPurchase', createPurchase);
   createPurchase.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) return next(err);
     res.send(200, {purchaseId: ans});
@@ -258,11 +257,9 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
   var endDate = req.params.endDate;
   var description = req.params.description;
 
-  //console.time("FISCAL_KEY");
   //function(err, status);
   fiscal.create(enterprise, startDate, endDate, description, function(err, status) {
     if(err) return res.send(500, err);
-    //console.timeEnd("FISCAL_KEY");
     res.send(200, status);
   });
 });
@@ -297,8 +294,10 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
 
 });
 
-app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) {
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id = '-1'";
+app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account"+
+  " WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 "+
+  "AND account.cc_id IS NULL AND account.account_type_id<>3";
 
   db.execute(sql, function (err, rows) {
     if (err) return next(err);
@@ -307,7 +306,7 @@ app.get('/availablechargeAccounts/:id_enterprise/', function(req, res, next) {
 
   function process(accounts){
     var availablechargeAccounts = accounts.filter(function(item){
-      return item.account_number.toString().indexOf('6') === 0;
+      return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
     });
     return availablechargeAccounts;
   }
