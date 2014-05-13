@@ -181,7 +181,7 @@ create table `budget` (
 drop table if exists `critere`;
 create table `critere` (
   `id`            smallint unsigned not null auto_increment,
-  `critere_txt`  varchar(50) not null,
+  `text`          varchar(50) not null,
   `note`          text,
   primary key (`id`)
 ) engine=innodb;
@@ -195,18 +195,18 @@ create table `account_type` (
 
 drop table if exists `cost_center`;
 create table `cost_center` (
+  `id`              smallint unsigned not null auto_increment,
   `enterprise_id`   smallint unsigned not null,
-  `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
   `cost`            float default 0,
   `note`            text,
-  `pc`              boolean default 0,
+  `is_principal`    boolean default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
 ) engine=innodb;
 
-DROP TABLE IF EXISTS `account`;
+drop table if exists `account`;
 create table `account` (
   `id`                  int unsigned not null auto_increment,
   `account_type_id`     mediumint unsigned not null,
@@ -363,7 +363,6 @@ create table `inventory` (
   `enterprise_id`   smallint unsigned not null,
   `uuid`            char(36) not null,
   `code`            varchar(30) not null,
-  `inventory_code`  varchar(30),
   `text`            text,
   `price`           decimal(10,4) unsigned not null default '0.00',
   `purchase_price`  decimal(10,4) unsigned not null default '0.00',
@@ -416,6 +415,14 @@ create table `price_list_item` (
   key `inventory_uuid` (`inventory_uuid`),
   constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`) on delete cascade,
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`) on delete cascade
+) engine=innodb;
+
+drop table if exists `service`;
+create table `service` (
+  `id`                smallint unsigned not null,
+  `name`              text not null,
+  `cost_center_id`    smallint unsigned not null,
+  primary key (`id`)
 ) engine=innodb;
 
 drop table if exists `debitor_group`;
@@ -664,12 +671,11 @@ create table `depot` (
 drop table if exists `stock`;
 create table `stock` (
   `inventory_uuid`         char(36) not null,
-  `purchase_price`         decimal(19, 4) not null,
+  `tracking_number`        char(50) not null,
   `expiration_date`        date not null,
   `entry_date`             date not null,
   `lot_number`             varchar(70) not null,
   `purchase_order_uuid`    char(36) not null,
-  `tracking_number`        char(50) not null,
   `quantity`               int not null default 0,
   primary key (`tracking_number`),
   key `inventory_uuid` (`inventory_uuid`),
@@ -678,20 +684,77 @@ create table `stock` (
   constraint foreign key (`purchase_order_uuid`) references `purchase` (`uuid`)
 ) engine=innodb;
 
-drop table if exists `stock_movement`;
-create table `stock_movement` (
+drop table if exists `movement`;
+create table `movement` (
+  `uuid`                    char(36) not null,
   `document_id`             char(36) not null,
+  `depot_entry`             smallint unsigned,
+  `depot_exit`              smallint unsigned,
   `tracking_number`         char(50) not null,
-  `direction`               text,
-  `date`                    date,
   `quantity`                int not null default 0,
-  `depot_id`                smallint unsigned not null,
-  `destination`             smallint not null,
-  primary key (`document_id`, `tracking_number`),
+  `date`                    date,
+  primary key (`uuid`),
   key `tracking_number` (`tracking_number`),
-  key `depot_id` (`depot_id`),
+  key `depot_exit` (`depot_exit`),
   constraint foreign key (`tracking_number`) references `stock` (`tracking_number`),
-  constraint foreign key (`depot_id`) references `depot` (`id`)
+  constraint foreign key (`depot_exit`) references `depot` (`id`)
+) engine=innodb;
+
+drop table if exists `consumption`;
+create table `consumption` (
+  `uuid`             char(36) not null,
+  `depot_id`         smallint unsigned not null,
+  `date`             date,
+  `document_id`      char(36) not null,
+  `tracking_number`  char(50) not null,
+  `quantity`           int unsigned,
+  primary key (`document_id`),
+  key `depot_id`   (`depot_id`),
+  constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade
+) engine=innodb;
+
+drop table if exists `patient_consumption`;
+create table `patient_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`    char(36) not null,
+  `sale_uuid`           char(36) not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- key `sale_uuid` (`sale_uuid`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
+  -- constraint foreign key (`sale_uuid`) references `sale` (`uuid`)
+) engine=innodb;
+
+drop table if exists `service_consumption`;
+create table `service_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`    char(36) not null,
+  `service_id`          smallint unsigned not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- key `service_id` (`service_id`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
+  -- constraint foreign key (`service_id`) references `service` (`id`)
+) engine=innodb;
+
+drop table if exists `loss_consumption`;
+create table `loss_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`    char(36) not null,
+  `document_uuid`       char(36) not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
+) engine=innodb;
+
+drop table if exists `rummage_consumption`;
+create table `rummage_consumption` (
+  `uuid`                char(36) not null,
+  `consumption_uuid`        char(36) not null,
+  `document_uuid`           char(36) not null,
+  primary key (`uuid`)
+  -- key `consumption_uuid` (`consumption_uuid`),
+  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `purchase_item`;
@@ -722,7 +785,6 @@ create table `primary_cash_module` (
   `text`          varchar(45) not null,
   primary key (`id`)
 ) engine=innodb;
-
 
 drop table if exists `cash`;
 create table `cash` (
@@ -1094,23 +1156,5 @@ create table `caution` (
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
-
-
-drop table if exists `consumption`;
-create table `consumption` (
-  `document_id`      char(36) not null,
-  `tracking_number`  char(50) not null,
-  `date`             date,
-  `depot_id`         smallint unsigned not null,
-  `amount`           int unsigned,
-  `sale_uuid`     char(36) null,
-  primary key (`document_id`),
-  key `depot_id`   (`depot_id`),
-  key `sale_uuid` (`sale_uuid`),
-  constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade,
-  constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on update cascade
-) engine=innodb;
-
-
 
 

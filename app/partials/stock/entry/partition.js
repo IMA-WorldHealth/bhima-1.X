@@ -23,9 +23,7 @@ angular.module('kpk.controllers')
 
     function Lot () {
       this.id = uuid();
-      this.inventory_code = null;
       this.inventory_uuid = null;
-      this.purchase_price = 0;
       this.purchase_order_uuid = null;
       this.expiration_date = null;
       this.date = new Date();
