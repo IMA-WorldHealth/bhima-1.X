@@ -29,7 +29,7 @@ angular.module('kpk.controllers')
             columns : ['inventory_uuid', 'expiration_date', 'entry_date', 'lot_number', 'purchase_order_uuid', 'tracking_number', 'quantity']
           },
           'inventory' : {
-            columns : ['uuid', 'text', 'enterprise_id', 'code', 'inventory_code', 'price', 'stock']
+            columns : ['uuid', 'text', 'enterprise_id', 'code', 'price', 'stock']
           }
         },
         join : ['stock.inventory_uuid=inventory.uuid']
