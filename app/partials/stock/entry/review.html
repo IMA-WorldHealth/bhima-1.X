@@ -2,25 +2,15 @@
   {{ "STOCK.ENTRY.REVIEW" | translate }}
 </header>
 
-<div class="content">
-  <div class="row col-xs-12">
-    <div class="panel panel-default square">
-      <div class="panel-heading">
-        <span class="glyphicon glyphicon-list"></span> {{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }}
-      </div>
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th colspan="7">
-              <span class="label-group">
-                <span class="glyphicon glyphicon-list-alt"></span> {{ session.cfg.label }}
-              </span>
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }} <small> {{ session.cfg.document_id }}</small></h4>
 
-              <span class="label-group">
-                <span class="glyphicon glyphicon-import"></span> {{ session.totals.quantity }}
-              </span>
-            </th>
-          </tr>
+      <label>{{ "STOCK.ENTRY.ENTRY_DATE" | translate }}</label>  {{ session.timestamp | date }}
+
+      <table class="reportTable">
+        <thead>
           <tr>
             <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
             <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
@@ -42,7 +32,30 @@
             <td>{{ lot.quantity }}</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="6">
+              <span class="glyphicon glyphicon-list-alt"></span>
+              {{ session.lots.length }}
+            </th>
+            <th>{{ session.totals.quantity }}</th>
+          </tr>
+        </tfoot>
       </table>
+
+      <div class="signatures">
+        <h5>{{ "TRIAL_BALANCE.SIGNATURES" | translate }}</h5>
+
+        <div class="signature-box">
+          <label>{{ "TRIAL_BALANCE.CHIEF_ACCOUNTANT" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+          <div class="signature-line"></div>
+        </div>
+
+        <div class="signature-box">
+          <label>{{ "TRIAL_BALANCE.FINANCE_OFFICER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+          <div class="signature-line"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -50,7 +63,7 @@
 <section class="bar-bottom">
   <div class="pull-right">
     <button class="btn btn-sm btn-success" ng-click="submit()">
-      {{ "FORM.SUBMIT" | translate }}
+      {{ "FORM.SIGN_AND_SUBMIT" | translate }}
     </button>
   </div>
 </section>

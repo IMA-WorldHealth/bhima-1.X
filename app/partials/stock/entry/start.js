@@ -277,7 +277,7 @@ angular.module('kpk.controllers')
       data.forEach(function (o) {
         lots = lots.concat(o.lots.data);
       });
-      cache.put('order', { data : lots, cfg : session.cfg } );
+      cache.put('order', { data : lots, cfg : session.cfg, totals: session.totals } );
       $location.path('/stock/entry/review/' + session.cfg.depot.id);
     };
 

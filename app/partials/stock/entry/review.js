@@ -18,13 +18,16 @@ angular.module('kpk.controllers')
       messenger.error('NO_DEPOT_ID');
     }
 
+    session.timestamp = new Date();
+
     session.depotId = $routeParams.depotId;
 
     cache.fetch('order')
     .then(function (order) {
-      console.log(order);
       session.lots = order.data;
       session.cfg = order.cfg;
+      session.totals = order.totals;
+      session.cfg.document_id = uuid();
     })
     .catch(function (err) {
       console.log(err);
@@ -54,11 +57,10 @@ angular.module('kpk.controllers')
 
     function processMovements () {
       var movements = [];
-      var document_id = session.cfg.document_id = uuid();
       session.lots.forEach(function (stock) {
         movements.push({
           uuid : uuid(),
-          document_id     : document_id,
+          document_id     : session.cfg.document_id,
           tracking_number : stock.tracking_number,
           date            : util.convertToMysqlDate(new Date()),
           quantity        : stock.quantity,
