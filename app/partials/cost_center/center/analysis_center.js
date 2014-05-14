@@ -5,74 +5,72 @@ angular.module('kpk.controllers')
   'connect',
   'appstate',
   'messenger',
-  function ($scope, $q, connect, appstate, messenger) {
+  'validate',
+  function ($scope, $q, connect, appstate, messenger, validate) {
 
-    //variables init
-    var requettes = {},
-        models = $scope.models = {},
-        enterprise = appstate.get('enterprise'); // FIXME: refactor this dependency
+    var dependencies= {};
 
-    $scope.register = {};
-    $scope.selected = {};
-    //$scope.account= {};
-    $scope.acc2 = {};
-    $scope.acc = {};
-
-    requettes.cost_centers = {
-      tables : {
-        'cost_center' : {
-          columns : ['id', 'text', 'note', 'cost']
+    dependencies.cost_centers = {
+      query : {
+        tables : {
+          'cost_center' : {
+            columns : ['id', 'text', 'note', 'cost']
+          },
+          'project' : {
+            columns :['name']
+          }
         },
-        'enterprise' : {
-          columns :['name']
-        }
-      },
-      join : ['cost_center.enterprise_id=enterprise.id']
-    };
-
-    requettes.criteres = {
-      tables : {
-        'critere' : {
-          columns:['id', 'critere_txt', 'note']
-        }
+        join : ['cost_center.project_id=project.id']
       }
-    };
+    }
+
+    $scope.register = {}; $scope.selected = {}; $scope.acc2 = {}; $scope.acc = {};
 
     //fonctions
-
-    function init (records){
-      models.cost_centers = records[0].data;
-      models.availablesAccounts = records[1];
-      models.criteres = records[2].data;
-      transformDatas(models.availablesAccounts);
+    function init (model){
+      $scope.model = model;
+      console.log('one est la ', model);
     }
 
     function setAction (value, index){
       $scope.action = value;
-      if(value !== 'register') $scope.selected = models.cost_centers[index];
-      if(value === 'configure') {
-        $scope.selected = models.cost_centers[index];
-        handleConfigure();
-      }
+      // if(value !== 'register') $scope.selected = models.cost_centers[index];
+      // if(value === 'configure') {
+      //   $scope.selected = models.cost_centers[index];
+      //   handleConfigure();
+      // }
+    }
+
+    function writeCenter (){
+      return connect.basicPut('cost_center', connect.clean($scope.register));
     }
 
     function saveRegistration (){
-      if (isCorrect()){
-        $scope.register.enterprise_id = enterprise.id;
-        connect.basicPut('cost_center', [connect.clean($scope.register)]).
-        then(function (v){
+      $scope.register.project_id = $scope.project.id;
+      writeCenter()
+      .then(function(){
+        messenger.info("successfully inserted");
+      })
+      .catch(function(err){
+        messenger.danger('Errot during inserting.');
+      })
 
-          if(v.status === 200){
-            messenger.info("successfully inserted");
-            $scope.register = {};
-            run();
+      // if (isCorrect()){
+      //   $scope.register.enterprise_id = enterprise.id;
+      //   connect.basicPut('cost_center', [connect.clean($scope.register)]).
+      //   then(function (v){
 
-          }
+      //     if(v.status === 200){
+      //       messenger.info("successfully inserted");
+      //       $scope.register = {};
+      //       run();
 
-        });
-      }else{
-        messenger.danger('Principal cenetr Name undefined.');
-      }
+      //     }
+
+      //   });
+      // }else{
+      //   messenger.danger('Principal cenetr Name undefined.');
+      // }
     }
 
     function isCorrect(){
@@ -83,8 +81,7 @@ angular.module('kpk.controllers')
       $q.all(
         [
           connect.req(requettes.cost_centers),
-          getAvailablesAccounts(enterprise.id),
-          connect.req(requettes.criteres)
+          getAvailablesAccounts(enterprise.id)
         ])
       .then(init);
     }
@@ -92,18 +89,6 @@ angular.module('kpk.controllers')
     function transformDatas(tabl){
       tabl.map(function (item){
         item.checked = false;
-      });
-    }
-
-    function checkAll (){
-      models.availablesAccounts.forEach(function (item){
-        item.checked = $scope.acc.all;
-      });
-    }
-
-    function checkAll2 (){
-      models.associatedAccounts.forEach(function (item){
-        item.checked = $scope.acc2.all;
       });
     }
 
@@ -173,17 +158,23 @@ angular.module('kpk.controllers')
       return critere.critere_txt;
     }
 
+    appstate.register('project', function (project){
+      $scope.project = project;
+      dependencies.cost_centers.where = ['cost_center.project_id='+project.id];
+      console.log('on a', project)
+      validate.process(dependencies).then(init);
+    })
+
     //exposition
 
     $scope.setAction = setAction;
     $scope.saveRegistration = saveRegistration;
-    $scope.checkAll = checkAll;
     $scope.formatCritere = formatCritere;
     $scope.associate = associate;
     $scope.remove = remove;
 
     //invocation
-    run();
+    //run();
 
   }
 ]);
