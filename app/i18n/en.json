@@ -752,6 +752,7 @@
     "SAVE_CHANGES"    : "Save Changes",
     "SUBMIT_BALANCES" : "Save Balances",
     "SUBMIT"          : "Submit",
+    "SIGN_AND_SUBMIT" : "Sign & Submit",
     "SEARCH"          : "Search",
     "DISCARD"         : "Discard",
     "RESET_BALANCES"  : "Reset Balances",
@@ -1077,7 +1078,7 @@
     "NAME_VILLAGE"    : "Village Name",
     "EDIT"            : "Edit Village"
   },
-  
+
   "EMPLOYEE"          : {
     "TITLE"           : "Employee Management",
     "EMPLOYEES"       : "All Employees",
@@ -1121,7 +1122,8 @@
       "ASSIGNED"            : "Assigned",
       "REVIEW"              : "Review Manifest",
       "REQUESTED_BY"        : "Requested By",
-      "ADD_LOT"             : "Add Lot"
+      "ADD_LOT"             : "Add Lot",
+      "ENTRY_DATE"          : "Entry Date"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"

@@ -262,6 +262,7 @@ div .reportFrame {
   padding     : 10px;
   border      : 1px solid #DDD;
   background  : white;
+  overflow : auto;
 }
 
 .excell {
