@@ -14,12 +14,17 @@ angular.module('kpk.controllers')
     var session = $scope.session = {};
     var cache = new AppCache('stock.entry');
 
+    if (!angular.isDefined($routeParams.depotId)) {
+      messenger.error('NO_DEPOT_ID');
+    }
+
     session.depotId = $routeParams.depotId;
 
     cache.fetch('order')
     .then(function (order) {
-      session.lots = [];
-      order.data.forEach(function (order) { session.lots = session.lots.concat(order.lots); });
+      console.log(order);
+      session.lots = order.data;
+      session.cfg = order.cfg;
     })
     .catch(function (err) {
       console.log(err);
@@ -27,10 +32,7 @@ angular.module('kpk.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      angular.extend(session, appstate.get('stock.data'));
-      session.valid = !!appstate.get('stock.data');
     });
-
 
     function processStock () {
       var stocks = [];
@@ -41,7 +43,7 @@ angular.module('kpk.controllers')
           expiration_date     : util.convertToMysqlDate(stock.expiration_date),
           entry_date          : util.convertToMysqlDate(new Date()),
           lot_number          : stock.lot_number,
-          purchase_order_uuid : stock.purchase_order_uuid,
+          purchase_order_uuid : session.cfg.purchase_uuid,
           tracking_number     : stock.tracking_number,
           quantity            : stock.quantity
         });
@@ -52,23 +54,19 @@ angular.module('kpk.controllers')
 
     function processMovements () {
       var movements = [];
-      var doc_id = uuid();
+      var document_id = session.cfg.document_id = uuid();
       session.lots.forEach(function (stock) {
         movements.push({
-          document_id     : doc_id,
+          uuid : uuid(),
+          document_id     : document_id,
           tracking_number : stock.tracking_number,
-          direction       : 'Enter',
           date            : util.convertToMysqlDate(new Date()),
           quantity        : stock.quantity,
-          depot_id        : session.depotId,
-          destination     : session.depotId
+          depot_entry     : session.cfg.depot.id,
         });
       });
 
       return movements;
-    }
-
-    function invalid () {
     }
 
     $scope.submit = function () {
@@ -76,7 +74,7 @@ angular.module('kpk.controllers')
       var movements = processMovements();
       connect.basicPut('stock', stock)
       .then(function () {
-        return connect.basicPut('stock_movement', movements);
+        return connect.basicPut('movement', movements);
       })
       .then(function () {
         return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, paid : 1 }], ['uuid']);
