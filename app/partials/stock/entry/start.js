@@ -5,15 +5,20 @@ angular.module('kpk.controllers')
   '$q',
   '$location',
   '$routeParams',
+  '$filter',
   'validate',
   'connect',
   'messenger',
   'appstate',
   'precision',
-  function ($scope, $translate, $q, $location, $routeParams, validate, connect, messenger, appstate, precision) {
+  'appcache',
+  'store',
+  'uuid',
+  function ($scope, $translate, $q, $location, $routeParams, $filter, validate, connect, messenger, appstate, precision, AppCache, Store, uuid) {
     var dependencies = {},
         session = $scope.session = { cfg : {}, totals : [] },
-        find = $scope.find = { active : true, fn : {} };
+        find = $scope.find = { active : true, fn : {} },
+        cache = new AppCache('stock.entry');
 
     if (!angular.isDefined($routeParams.depotId)) {
       messenger.error('NO_DEPOT_ID');
@@ -98,11 +103,20 @@ angular.module('kpk.controllers')
       $scope.names.data.forEach(function (order) {
         order.label = $scope.projects.get(order.project_id).abbr + order.reference;
       });
+
     }
 
     function error (err) {
       messenger.danger(JSON.stringify(err));
     }
+
+    function loadOrder (order) {
+      if (!order) { return; }
+    }
+
+    cache.fetch('order')
+    .then(loadOrder)
+    .catch(error);
 
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -126,7 +140,7 @@ angular.module('kpk.controllers')
 
       // set up watchers for totalling and validation
       $scope.$watch('session.order.data', calculateTotals, true);
-      $scope.$watch('session.order.data', valid, true);
+      $scope.$watch('session.order.data', validateSession, true);
 
       session.order = models.orders;
 
@@ -134,7 +148,30 @@ angular.module('kpk.controllers')
       session.cfg.order_date = new Date(models.orders.data[0].purchase_date);
       session.cfg.employee_id = models.orders.data[0].employee_id;
       session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || "") + " " + ($scope.employees.get(session.cfg.employee_id).name || "");
+
+      // modify paramters
+      session.order.data.forEach(function (drug) {
+        drug.lots = new Store({ identifier : 'tracking_number', data : [] });
+        drug.isCollapsed = false;
+        drug.edittable = true;
+        $scope.addLot(drug);
+      });
+
       return $q.when();
+    }
+
+    function validateSession () {
+      session.valid = session.order.data.every(function (drug) {
+        return drug.validLots;
+      });
+    }
+
+    function sum (a, b) {
+      return a + Number(b.quantity);
+    }
+
+    function formatDate (date) {
+      return $filter('date')(date, 'yyyy-MM-dd');
     }
 
     function calculateTotals () {
@@ -155,17 +192,21 @@ angular.module('kpk.controllers')
         totals.purchase_price += precision.round(drug.purchase_price || 0);
         if (!groups[drug.name]) { groups[drug.name] = 0; }
         groups[drug.name] += 1;
+        drug.totalQuantity = drug.lots.data.reduce(sum, 0);
+        drug.validLots = valid(drug.lots) && drug.totalQuantity === drug.quantity;
       });
 
       totals.groups = Object.keys(groups).length;
     }
 
-    function valid () {
-      session.valid = !!find.valid && !!session.order && !!session.order.data &&
-        session.order.data.length > 0 && !!session.cfg.depot &&
-        session.order.data.every(function (drug) {
-          return !Number.isNaN(Number(drug.purchase_price)) && Number(drug.purchase_price) > 0;
-        });
+    function valid (lots) {
+      var isDef = angular.isDefined;
+      return lots.data.every(function (row) {
+        var n = Number.parseFloat(row.quantity);
+        return n > 0 && isDef(row.lot_number) &&
+          isDef(row.expiration_date) &&
+          !!row.lot_number;
+      });
     }
 
     find.fn.commit = function commit (order) {
@@ -199,19 +240,50 @@ angular.module('kpk.controllers')
       find.valid = false;
     };
 
-    $scope.assignLots = function assignLots () {
-      var db = {
-        cfg : session.cfg,
-        order : session.order,
-        totals : session.totals,
-      };
-      appstate.set('stock.data', db);
-      $location.path('/stock/entry/partition/');
-    };
-
     $scope.cancel = function cancel () {
       session = $scope.session = { cfg : {}, totals : [] };
       find.fn.reset();
+    };
+
+    $scope.toggleEdit = function toggleEdit (drug) {
+      drug.edittable = !drug.edittable;
+    };
+
+    $scope.expand = function expand (drug) {
+      drug.isCollapsed = !drug.isCollapsed;
+    };
+
+    function Lot () {
+      this.inventory_uuid = null;
+      this.purchase_order_uuid = null;
+      this.expiration_date = $filter('date')(Date.now(), 'yyyy-MM-dd');
+      this.date = Date.now();
+      this.lot_number = null;
+      this.tracking_number = uuid();
+      this.quantity = 0;
+      this.active = true;
+      this.valid = true;
+    }
+
+    $scope.addLot = function addLot (drug) {
+      var lot = new Lot();
+      lot.code = drug.code;
+      drug.lots.post(lot);
+    };
+
+    $scope.removeLot = function removeLot (drug, idx) {
+      drug.lots.data.splice(idx, 1);
+    };
+
+    $scope.review = function review () {
+      //cache.put('order', session.order.data);
+      var data = session.order.data;
+      // prepare object for cloning
+      data.forEach(function (o) {
+        o.lots = o.lots.data;
+      });
+      cache.put('order', { data : data } );
+      $location.path('/stock/entry/review/' + session.cfg.depot.id);
     };
 
   }

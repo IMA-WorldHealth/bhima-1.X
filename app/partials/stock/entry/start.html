@@ -6,13 +6,13 @@
   <div class="row">
 
     <div class="col-xs-4">
-      <div class="panel panel-default" ng-class="{'panel-success': !!find.valid, 'panel-danger': find.valid==false}" ng-switch="find.valid">
+      <div class="panel panel-default square" ng-class="{'panel-success': !!find.valid, 'panel-danger': find.valid==false}" ng-switch="find.valid">
         <div class="panel-heading" ng-click="find.fn.activate()" ng-class="{ 'action' : !find.active }">
           <span>{{ session.cfg.order_id || "STOCK.ENTRY.FIND_PURCHASE_ORDER" | translate }}</span>
           <span class="pull-right glyphicon" ng-class="{'glyphicon-list-alt' : !!find.active, 'glyphicon-refresh' : !find.active}"></span>
         </div>
-        <div class="panel-body" ng-if="!!find.active">
-          <div class="form-group">
+        <div ng-if="!!find.active">
+          <div class="form-group" style="margin-bottom:0;">
             <div class="input-group">
               <input type="text" class="form-kapok" ng-model="session.order" typeahead="order as order.label for order in names.data | filter:$viewValue | limitTo: 8">
               <span class="input-group-btn btn btn-sm btn-default square" ng-click="find.fn.commit(session.order)">
@@ -26,7 +26,7 @@
     </div>
 
     <div class="col-xs-8">
-      <form class="form-horizontal">
+      <form class="form-horizontal form-condensed">
 
         <div class="col-xs-4">
           <div class="form-group">
@@ -56,37 +56,95 @@
     </div>
   </div>
 
-  <div class="row col-xs-12">
-    <h3>{{ "STOCK.ENTRY.ORDER_DETAIL" | translate }}</h3>
+  <div class="row">
     <table class="table table-condensed">
       <thead>
         <tr>
-          <th>{{ "COLUMNS.CODE" | translate }}</th>
+          <th stlye="width:5%;"><span class="glyphicon glyphicon-th"></span></th>
+          <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
           <th>{{ "COLUMNS.LABEL" | translate }}</th>
           <th>{{ "COLUMNS.GROUP" | translate }}</th>
           <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
           <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
           <th>{{ "COLUMNS.TOTAL_PRICE" | translate }}</th>
-          <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+          <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
         </tr>
       </thead>
-      <tbody>
-        <tr ng-repeat="drug in session.order.data | orderBy:'code'">
+      <tbody ng-repeat-start="drug in session.order.data | orderBy:'code'">
+        <tr ng-class="{'highlight-grey' : !drug.isCollapsed }">
+          <td><a ng-click="expand(drug)" class="action"><span class="glyphicon" ng-class="{ 'glyphicon-circle-arrow-right' : !!drug.isCollapsed, 'glyphicon-circle-arrow-up': !drug.isCollapsed }"></span></a></td>
           <td>{{ drug.code }}</td>
           <td>{{ drug.text }}</td>
           <td>{{ drug.name }}</td>
           <td>{{ drug.quantity }}</td>
           <td ng-bind-html="drug.unit_price | intlcurrency:drug.currency_id"></td>
           <td ng-bind-html="drug.quantity * drug.unit_price | intlcurrency:drug.currency_id"></td>
-          <td>$ <input type="number" min="0" ng-model="drug.purchase_price" placeholder="0.00"></td>
+          <td>
+            <div ng-show="!drug.isCollapsed">
+              <a ng-click="addLot(drug)" class="action" style="margin: 0 5px;"><span class="glyphicon glyphicon-plus"></span></a>
+              <a ng-click="toggleEdit(drug)" class="action" ng-disabled="!drug.validLots"><span class="glyphicon" ng-class="{ 'glyphicon-floppy-disk' : drug.edittable, 'glyphicon-pencil' : !drug.edittable }"></span></a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tbody ng-repeat-end>
+        <tr ng-class="{ 'row-collapse' : drug.isCollapsed, 'success' : drug.validLots }">
+          <th colspan="3">
+            <div collapse="drug.isCollapsed"><span class="glyphicon" ng-class="{ 'glyphicon-ok-circle' : drug.validLots }"></span></div>
+          </th>
+          <th><div collapse="drug.isCollapsed">{{ "COLUMNS.LOT_NUMBER" | translate }}</div></th>
+          <th><div collapse="drug.isCollapsed">{{ "COLUMNS.QUANTITY" | translate }}</div></th>
+          <th colspan="3"><div collapse="drug.isCollapsed">{{ "COLUMNS.EXPIRATION_DATE" | translate }}</div></th>
+        </tr>
+        <tr ng-repeat="lot in drug.lots.data" ng-class="{ 'row-collapse' : drug.isCollapsed }">
+          <td colspan="3"></td>
+          <td>
+            <div collapse="drug.isCollapsed">
+              <input ng-model="lot.lot_number" ng-if="drug.edittable">
+              <div ng-if="!drug.edittable">{{ lot.lot_number }}</div>
+            </div>
+          </td>
+          <td>
+            <div collapse="drug.isCollapsed">
+              <input ng-model="lot.quantity" type="number" ng-if="drug.edittable">
+              <span ng-if="!drug.edittable">{{ lot.quantity }}</span>
+            </div>
+          </td>
+          <td colspan="2">
+            <div collapse="drug.isCollapsed">
+              <input ng-model="lot.expiration_date" type="date" ng-if="drug.edittable">
+              <span ng-if="!drug.edittable">{{ lot.expiration_date | date }}</span>
+            </div>
+          </td>
+          <td>
+            <div collapse="drug.isCollapsed">
+              <a ng-click="removeLot(drug, $index)" class="action danger">
+                <span class="glyphicon glyphicon-trash"></span>
+              </a>
+            </div>
+          </td>
+        </tr>
+        <tr ng-class="{ 'row-collapse' : drug.isCollapsed }">
+          <th colspan="4"></th>
+          <th>
+            <div collapse="drug.isCollapsed" ng-class="{ 'error' : drug.totalQuantity > drug.quantity }">
+              <span class="glyphicon glyphicon-stats"></span>
+              {{ drug.totalQuantity }}
+            </div>
+          </th>
+          <th colspan="3">
+            <div collapse="drug.isCollapsed">
+              <span class="glyphicon glyphicon-list-alt"></span>
+              {{ drug.lots.data.length }}
+            </div>
+          </th>
         </tr>
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
+          <th colspan="4">{{ "COLUMNS.SUMMARY" | translate }}</th>
           <th colspan="2">{{ session.totals.quantity }}</th>
-          <th>{{ session.totals.price | currency }}</th>
-          <th>{{ session.totals.purchase_price | currency }}
+          <th colspan="2">{{ session.totals.price | currency }}</th>
         </tr>
       </tfoot>
     </table>
@@ -95,10 +153,10 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <button class="btn btn-sm btn-success" ng-click="assignLots()" ng-disabled="!session.valid">
-      {{ "STOCK.ENTRY.ASSIGN_LOTS" | translate }}
+    <button class="btn btn-sm btn-success square" ng-disabled="!session.valid" ng-click="review()">
+      {{ "STOCK.ENTRY.REVIEW" | translate }}
     </button>
-    <button class="btn btn-sm btn-default" ng-click="cancel()">
+    <button class="btn btn-sm btn-default square" ng-click="cancel()">
       {{ "STOCK.ENTRY.CANCEL" | translate }}
     </button>
   </div>
