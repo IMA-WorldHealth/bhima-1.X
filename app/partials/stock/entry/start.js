@@ -236,7 +236,6 @@ angular.module('kpk.controllers')
       });
     }
 
-
     $scope.cancel = function cancel () {
       session = $scope.session = { cfg : {}, totals : [] };
       find.fn.reset();
@@ -263,6 +262,7 @@ angular.module('kpk.controllers')
     $scope.addLot = function addLot (drug) {
       var lot = new Lot();
       lot.code = drug.code;
+      lot.inventory_uuid = drug.inventory_uuid;
       drug.lots.post(lot);
     };
 
