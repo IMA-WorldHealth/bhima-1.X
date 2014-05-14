@@ -301,7 +301,7 @@
       controller : 'stock.entry.partition',
       templateUrl : 'partials/stock/entry/partition.html'
     })
-    .when('/stock/entry/review', {
+    .when('/stock/entry/review/:depotId', {
       controller : 'stock.entry.review',
       templateUrl: 'partials/stock/entry/review.html'
     })

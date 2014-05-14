@@ -9,8 +9,26 @@ angular.module('kpk.controllers')
   'messenger',
   'uuid',
   function ($scope, $location, $routeParams, validate, appstate, connect, messenger, uuid) {
+   
+    // TODO Warnings, only one depot, zero depots?
+    // TODO Improve data verification
+    // TODO Receipts
+    
     var dependencies = {};
-    var session = $scope.session = { doc : {}, rows : [] };
+    var session = $scope.session = {
+      doc : {},
+      rows : [],
+    };
+    var depotMap = $scope.depotMap = {
+      from : {
+        model : {},
+        dependency : 'to'
+      },
+      to : {
+        model : {},
+        dependency : 'from'
+      }
+    };
 
     if (!angular.isDefined($routeParams.depotId)) {
       messenger.danger('ERR_NO_DEPOT');
@@ -48,25 +66,63 @@ angular.module('kpk.controllers')
       }
     };
 
+
+    function initialise(project) {
+      $scope.project = project;
+      dependencies.depots.query.where =
+        ['depot.enterprise_id=' + project.enterprise_id];
+
+      validate.process(dependencies, ['depots', 'stock'])
+      .then(startup)
+      .catch(error);
+    }
+     
+    function selectDepot(target, newDepotId, oldDepot) {
+      var reference = depotMap[target];
+      var source = reference.model;
+      var dependency = depotMap[reference.dependency].model;
+      
+      // session[target] = source.get(depotId);
+      
+      dependency.remove(newDepotId);
+      if(oldDepot) dependency.post(oldDepot);
+      dependency.recalculateIndex();
+    }
+    
+    Object.keys(depotMap).forEach(function (key) {
+      $scope.$watch('session.' + key, function(nval, oval) {
+        if (nval) selectDepot(key, nval.id, oval);
+      }, false);
+    });
+
     function error (err) {
       messenger.error(err);
     }
 
     function startup (models) {
       angular.extend($scope, models);
-      $scope.newForm();
+      
+      session.doc.document_id = uuid();
+      session.doc.date = new Date();
+
+      session.depot = $scope.depots.get($routeParams.depotId);
+      
+      depotMap.from.model = angular.copy($scope.depots);
+      depotMap.to.model = angular.copy($scope.depots);
+      
+      // Assign default location 
+      session.from = depotMap.from.model.get(session.depot.id);
+      
+      $scope.addRow();
     }
 
-    $scope.newForm = function newForm () {
-      session = $scope.session = { doc: {}, rows : [] };
-      session.doc.document_id = uuid();
-      session.doc.depot_id = $routeParams.depotId;
-      session.doc.date = new Date();
-      $scope.addRow();
-    };
-
+    function updateDocumentDepo() {
+      session.doc.depot_exit = session.depotFrom.id;
+      session.doc.depot_entry = session.depotTo.id;
+    }
+    
     $scope.addRow = function addRow () {
-      session.rows.push({quantity : 0, destination : ''});
+      session.rows.push({quantity : 0});
     };
 
     $scope.removeRow = function (idx) {
@@ -75,10 +131,14 @@ angular.module('kpk.controllers')
 
     $scope.submit = function () {
       var rows = [];
-      session.rows.forEach(function (row) {
-        rows.push(angular.extend(row, session.doc));
-      });
 
+      updateDocumentDepo();
+      session.rows.forEach(function (row) {
+        var item = angular.extend(row, session.doc);
+
+        rows.push(item);
+      });
+      
       connect.basicPut('stock_movement', rows)
       .then(function (res) {
         messenger.success('STOCK.MOVEMENT.SUCCESS');
@@ -88,6 +148,7 @@ angular.module('kpk.controllers')
       });
     };
 
+    
     $scope.$watch('session', function () {
       if (!session.rows) {
         session.valid = false;
@@ -109,13 +170,7 @@ angular.module('kpk.controllers')
 
     }, true);
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.depots.query.where =
-        ['depot.enterprise_id=' + project.enterprise_id];
-      validate.process(dependencies, ['depots', 'stock'])
-      .then(startup).catch(error);
-    });
+    appstate.register('project', initialise);
 
   }
 ]);

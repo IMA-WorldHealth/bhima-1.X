@@ -2,6 +2,11 @@
 
 // Module: db.js
 
+// TODO EVERY query to the DB is currently handled on it's own connection, one 
+// HTTP request can result in tens of connections. Performance checks for 
+// sharing connections between request sessions (also allowing for shraring a 
+// transaction between unrelated components)
+
 // The purpose of this module is managing client connections
 // and disconnections to a variety of database management systems.
 // All query formatting is expected to happen elsewhere.
@@ -57,6 +62,19 @@ function firebirdInit(config) {
 function sqliteInit(config) {
   db = require('sqlite3');
   return true;
+}
+
+// Utility methods
+function promiseQuery(connection, sql) { 
+  var deferred = q.defer();
+  
+  console.log('[db] [Transaction Query]', sql);
+  connection.query(sql, function (error, result) { 
+    console.log('resultssss', error, result);
+    if (error) return deferred.reject(error);
+    return deferred.resolve(result);
+  });
+  return deferred.promise;
 }
 
 module.exports = function (cfg, logger) {
@@ -119,6 +137,111 @@ module.exports = function (cfg, logger) {
       });
 
       return defer.promise;
+    },
+
+    executeAsTransaction : function (querries) { 
+      var deferred = q.defer(), queryStatus = [];
+      querries = querries.length ? querries : [querries];
+      
+      con.getConnection(function (error, connection) { 
+        if (error) return deferred.reject(error);
+        
+        connection.beginTransaction(function (error) { 
+          if (error) return deferred.reject(error);
+           
+          queryStatus = querries.map(function (query) { 
+            return promiseQuery(connection, query);
+          });
+          
+          q.all(queryStatus)
+          .then(function (result) { 
+            connection.commit(function (error) { 
+              if (error) connection.rollback(function () { 
+                return deferred.reject(error); 
+              });
+              console.log('[db][executeAsTransaction] Commited');
+              return deferred.resolve(result);
+            });
+          })
+          .catch(function (error) { 
+            connection.rollback(function () { 
+              console.log('[db][executeAsTransaction] Rolling back...');
+              return deferred.reject(error);
+            });
+          });
+        });
+      });
+      return deferred.promise;
+    },
+    
+    requestTransactionConnection : function() { 
+      var __connection__;
+      var __connectionReady__ = q.defer();
+
+      con.getConnection(function (error, connection) { 
+        if (error) return; // FIXME hadle error
+        __connection__ = connection;
+        
+        __connection__.beginTransaction(function (error) { 
+          if (error) return __connectionReady__.reject();
+          __connectionReady__.resolve();
+        });
+      });
+
+      /*Each method should return a promise to be chained
+        i.e 
+          transaction.execute(first)
+          .then(transaction.execute(second))
+          .then(unrelatedMethod)
+          .then(transaction.execute(third))
+          .then(transaction.commit)
+          .catch(transaction.cancel);
+      */
+
+      function execute(query) { 
+        var deferred = q.defer();
+
+        __connectionReady__.promise.then(function () { 
+          promiseQuery(__connection__, query)
+          .then(function (result) { 
+            deferred.resolve(result); 
+          })
+          .catch(function (error) { 
+            deferred.reject(error);
+          });
+        });
+
+        return deferred.promise;
+      }
+
+      function commit() { 
+        var deferred = q.defer();
+        __connectionReady__.promise.then(function () { 
+          __connection__.commit(function (error) { 
+            if (error) return deferred.reject(error);
+            deferred.resolve();
+          });
+        });
+
+        return deferred.promise;
+      }
+
+      function cancel() { 
+        var deferred = q.defer();
+        __connectionReady__.promise.then(function () { 
+          __connection__.rollback(function () { 
+            return deferred.resolve();
+          });
+        });
+
+        return deferred.promise;
+      }
+
+      return { 
+        execute : execute,
+        commit : commit,
+        cancel : cancel
+      };
     }
   };
 };

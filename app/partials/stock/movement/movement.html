@@ -2,59 +2,146 @@
   {{ "STOCK.MOVEMENT.TITLE" | translate }}
 </header>
 
+<section class="top-nav">
+  
+  <div class="pull-left">
+
+  </div>
+  
+  <div class="pull-right" style="margin-top: 6px;">
+    {{session.depot.text}} <b>[{{session.depot.id}}]</b>
+  </div>
+</section>
+  
 <div class="content">
   <div class="row">
-    <div class="col-xs-8">
-      <div class="panel panel-default square">
-        <div class="panel-heading">
-          <span class="glyphicon glyphicon-transfer"></span> {{ "STOCK.MOVEMENT.FORM" | translate }} <span class='pull-right'>{{ session.doc.document_id }}</span>
-        </div>
+    
+    <div class="col-xs-12">
+      
+      <!-- Warnings -->
+      <!-- One || Zero depos registered -->
 
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-transfer"></span> {{ "STOCK.MOVEMENT.FORM" | translate }} 
+          <span class='pull-right'>{{ session.doc.document_id }} </span>
+        </div>
+          
         <div class="panel-body">
-          <div class="row col-xs-12">
-            <div class="form-group">
-              <label>{{ "COLUMNS.DIRECTION" | translate }}</label>
-              <select class="form-kapok" ng-model="session.doc.direction">
-                <option value="" disabled="disabled"> -- {{ "SELECT.DIRECTION" | translate }} -- </option>
-                <option value="entry">Entry</option>
-                <option value="exit">Exit</option>
-              </select>
+          <!-- Main content area -->
+          
+          <div class="row">
+            <div class="col-xs-5">
+              <div class="panel square"
+                   ng-class=
+                   "{
+                    'panel-success' : session.from,
+                    'panel-warning' : !session.from
+                   }"
+                > 
+                <div class="panel-heading square">
+                  Depo_From 
+                </div>
+
+                <!-- <div class="panel&#45;body"> -->
+                  <select 
+                    class="form-kapok"
+                    ng-model="session.from" 
+                    ng-options="depot as depot.text for depot in depotMap.from.model.data"
+                    >
+                    <option value="" disabled>--Select a depo--</option>
+                  </select>
+                <!-- </div> -->
+              </div>
+            </div>
+
+            <div class="col-xs-2">
+              <div style="text-align: center; margin-top: 20px;">
+                <span style="font-size: 30px;" class="glyphicon glyphicon-arrow-right"></span>
+              </div> 
+            </div>
+
+            <div class="col-xs-5">
+              <div class="panel square" 
+                ng-class=
+                "{
+                  'panel-success' : session.to,
+                  'panel-warning' : !session.to
+                }"
+                >
+                <div class="panel-heading square">
+                  Depo_To 
+                </div>
+                  
+                <!-- <div class="panel&#45;body"> -->
+                  <select 
+                    class="form-kapok"
+                    ng-model="session.to"
+                    ng-options="depot as depot.text for depot in depotMap.to.model.data"
+                    >
+                    <option value="" disabled>--Select a depo--</option>
+                  </select>
+                <!-- </div> -->
+              </div>
             </div>
           </div>
-        </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
-              <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-              <th colspan="2">{{ "COLUMNS.DESTINATION" | translate }}</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="row in session.rows">
-              <td>
-                <select ng-model="row.tracking_number" ng-options="item.tracking_number as item.tracking_number for item in stock.data" required>
-                  <option value="" disabled="disabled"> -- {{ "SELECT.TRACKING_NUMBER" | translate }} -- </option>
-                </select>
-              </td>
-              <td>
-                <input ng-model="row.quantity" type="number" min="0" required>
-              </td>
-              <td>
-                <input ng-model="row.destination" required>
-              </td>
-              <td><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3"></td>
-              <td colspan="3"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-  </div>
+
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="panel panel-default square">
+                <div class="panel-heading">
+                  <span class="glyphicon glyphicon-list-alt"></span> Inventory
+                </div>
+
+                <table class="table table-bordered table-condensed">
+                  <thead>
+                    <tr>
+                      <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+                      <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th>
+                      <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                      <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+                      <!-- <th colspan="2">{{ "COLUMNS.DESTINATION" | translate }}</th> -->
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="row in session.rows">
+                      <td>
+                        <!-- <input  -->
+                        <!--   class="form&#45;kapok" -->
+                        <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
+                        <!-- > -->
+                        <select 
+                          class="form-kapok"
+                          >
+                          <option disabled>--Select lot from {{session.depotFrom.text}}--</option>
+                        </select>
+                      </td>
+                      <td>
+                        {{row.details || "..."}}
+                      </td>
+                      <td>
+                        <input class="form-kapok" ng-model="row.quantity" type="number" min="0" required>
+                      </td>
+                      <!-- <td> <input ng&#45;model="row.destination" required> -->
+                      <!-- </td> -->
+                      <td><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="4" style="text-align: right;"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+              </div>
+            </div>
+          </div>
+          
+        </div> <!-- End main content panel body -->
+      </div> <!-- End main content panel -->
+
+    </div> <!-- End full width column -->
+  </div> <!-- End row -->
 </div>
 
 <section class="bar-bottom">
