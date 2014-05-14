@@ -10,6 +10,8 @@ test/reports/
 scripts/sql/backup/
 scripts/mail/out/
 
+misc/migrate/out/
+
 # ignore build tool generated files
 app/js/controllers/controllers.js
 ./app/js/controllers/controllers.js

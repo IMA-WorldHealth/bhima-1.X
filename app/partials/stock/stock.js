@@ -6,11 +6,14 @@ angular.module('kpk.controllers')
   'appstate',
   'validate',
   'messenger',
-  function ($scope, $location, $translate, appstate, validate, messenger) {
+  'appcache',
+  function ($scope, $location, $translate, appstate, validate, messenger, AppCache) {
     var config, dependencies = {};
 
+    var cache = new AppCache('stock.in');
+
     config = $scope.config = {};
-    
+
     config.modules = [
       {
         key : $translate('STOCK.ENTRY.KEY'),
@@ -65,19 +68,31 @@ angular.module('kpk.controllers')
       }
     };
 
+    function loadDefaultDepot (depot) {
+      if (!depot) { return; }
+      $scope.setDepot(depot);
+    }
+
+    cache.fetch('depot').then(loadDefaultDepot);
+
+    function startup (models) {
+      angular.extend($scope, models);
+    }
+
+    function error (err) {
+      messenger.danger(JSON.stringify(err));
+    }
+
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.depots.query.where =
         ['depot.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies)
-      .then(function (models) {
-        angular.extend($scope, models);
-      })
-      .catch(messenger.error);
+      .then(startup)
+      .catch(error);
     });
 
     $scope.loadPath = function (defn) {
-      console.log(defn);
 
       if (!$scope.depot && config.modules.indexOf(defn) > -1) {
         return messenger.danger('NO_DEPOT_SELECTED');
@@ -89,6 +104,7 @@ angular.module('kpk.controllers')
 
     $scope.setDepot = function setDepot (depot) {
       $scope.depot = depot;
+      cache.put('depot', depot);
     };
 
   }
