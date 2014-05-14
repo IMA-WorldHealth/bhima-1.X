@@ -1202,6 +1202,7 @@
     "PARENT"                 : "Gestion de centre de couts",
     "CHOOSE"                 : "Selectionner centre de couts",
     "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
-    "VERSER"                 : "Verser"
+    "VERSER"                 : "Verser",
+    "REMOVE"                 : "Retirer"
 }
 }
