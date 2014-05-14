@@ -92,18 +92,6 @@ angular.module('kpk.controllers')
       });
     }
 
-    function checkAll (){
-      models.availablesAccounts.forEach(function (item){
-        item.checked = $scope.acc.all;
-      });
-    }
-
-    function checkAll2 (){
-      models.associatedAccounts.forEach(function (item){
-        item.checked = $scope.acc2.all;
-      });
-    }
-
     function getAvailablesAccounts (enterprise_id){
       var def = $q.defer();
       connect.fetch('/availablechargeAccounts/'+enterprise_id+'/')
@@ -181,7 +169,6 @@ angular.module('kpk.controllers')
 
     $scope.setAction = setAction;
     $scope.saveRegistration = saveRegistration;
-    $scope.checkAll = checkAll;
     $scope.formatCritere = formatCritere;
     $scope.associate = associate;
     $scope.remove = remove;

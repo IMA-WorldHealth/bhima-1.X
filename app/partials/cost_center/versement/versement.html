@@ -14,23 +14,26 @@
 </section>
 
 <div class="content">
+
   <div class="row">
     <div class="col-xs-3">
       <label>{{'VERSEMENT.CHOOSE' | translate}}</label>
     </div>
     <div class="col-xs-4">
-      <select class="form-kapok" ng-model="configuration.cost_center">
+      <select class="form-kapok" ng-model="configuration.cost_center" ng-change="performChange()">
         <option value="{{cc}}" ng-repeat="cc in model.cost_centers.data">{{cc.text}}</option>
       </select>
     </div>
   </div>
+
   <div class="row">
+
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">
           <span> {{'VERSEMENT.AVAILABLE_ACCOUNT' | translate}} {{selected.text}} </span>
           <span class="pull-right">
-            <button type="submit" ng-click="associate()">{{'VERSEMENT.VERSER' | translate}}</button>
+            <button type="submit" ng-click="verser()">{{'VERSEMENT.VERSER' | translate}}</button>
           </span>
         </div>
         <div class="panel-body principal-header">
@@ -38,7 +41,7 @@
             <thead>
               <tr>
                 <th>
-                  <input type="checkbox" ng-model="acc.all" ng-change="checkAll()" />
+                  <input type="checkbox" ng-model="acc_1.all" ng-change="checkAll_1()" />
                 </th>
                 <th>
                   Account Number
@@ -67,17 +70,17 @@
             Associeted Accounts To <b>{{selected.text}}</b>
           </span>
           <span class="pull-right">
-            <button type="submit" ng-click="remove()"> Remove </button>
+            <button type="submit" ng-click="remove()"> {{'VERSEMENT.REMOVE' | translate}}</button>
           </span>
         </div>
 
         <div class="panel-body principal-header">
           <table class="table table-condensed table-striped">
             <thead>
-              <tr><th><input type="checkbox" ng-model="acc2"/></th><th>Account Number</th><th>Account Name</th></tr>
+              <tr><th><input type="checkbox" ng-model="acc_2.all" ng-change="checkAll_2()"/></th><th>Account Number</th><th>Account Name</th></tr>
             </thead>
             <tbody>
-              <tr ng-repeat="associatedAccount in models.associatedAccounts">
+              <tr ng-repeat="associatedAccount in model.associatedAccounts.data">
               <td><input type="checkbox" ng-model="associatedAccount.checked"/></td>
 
               <td>{{associatedAccount.account_number}}</td>
@@ -90,4 +93,5 @@
       </div>
     </div>
   </div>
+
 </div>
