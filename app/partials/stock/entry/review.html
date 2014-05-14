@@ -24,7 +24,7 @@
           <tr>
             <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
             <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
-            <th>{{ "COLUMNS.CODE" | translate }}</th>
+            <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
             <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
             <th>{{ "COLUMNS.PURCHASE_DATE" | translate }}</th>
             <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
@@ -32,10 +32,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="lot in session.lots.data">
+          <tr ng-repeat="lot in session.lots">
             <td>{{ lot.tracking_number }}</td>
             <td>{{ lot.lot_number }}</td>
-            <td>{{ lot.inventory_code }}</td>
+            <td>{{ lot.code }}</td>
             <td ng-bind-html="lot.purchase_price | intlcurrency:project.currency_id"></td>
             <td>{{ lot.date | date }}</td>
             <td>{{ lot.expiration_date | date }}</td>
@@ -49,7 +49,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <button class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="!session.valid">
+    <button class="btn btn-sm btn-success" ng-click="submit()">
       {{ "FORM.SUBMIT" | translate }}
     </button>
   </div>

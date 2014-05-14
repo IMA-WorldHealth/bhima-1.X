@@ -1120,7 +1120,8 @@
       "REMAINING"           : "Remaining",
       "ASSIGNED"            : "Assigned",
       "REVIEW"              : "Review Manifest",
-      "REQUESTED_BY"        : "Requested By"
+      "REQUESTED_BY"        : "Requested By",
+      "ADD_LOT"             : "Add Lot"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"

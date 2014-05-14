@@ -325,9 +325,9 @@ div .reportFrame {
   cursor: pointer;
 }
 
-.menu-item.disabled { 
+.menu-item.disabled {
   cursor: default;
-  text-decoration : none; 
+  text-decoration : none;
   color : #cecece;
 }
 
@@ -342,7 +342,7 @@ div .reportFrame {
 
 }
 
-.selected-success { 
+.selected-success {
   color: #468847;
   background-color: #dff0d8;
   border-color: #d6e9c6;
@@ -419,9 +419,29 @@ header + .content {
 
 .plain-list {
   padding-left: 10px;
-  list-style : none; 
+  list-style : none;
 }
 
-.plain-list li { 
+.plain-list li {
   margin-bottom : 10px;
+}
+
+.table > tbody > tr.row-collapse > td,
+.table > tbody > tr.row-collapse > th {
+  padding : 0;
+  border: none;
+}
+
+.highlight-grey {
+  background-color: #F3F3F3;
+}
+
+.table > tbody > tr.success {
+  color: #468847;
+  background-color: #dff0d8;
+  /* border-color: #d6e9c6; */
+}
+
+.error {
+  color : #b94a48;
 }

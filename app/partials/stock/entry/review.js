@@ -2,14 +2,28 @@ angular.module('kpk.controllers')
 .controller('stock.entry.review', [
   '$scope',
   '$location',
+  '$routeParams',
   'validate',
   'appstate',
   'connect',
   'messenger',
   'util',
   'uuid',
-  function ($scope, $location, validate, appstate, connect, messenger, util, uuid) {
+  'appcache',
+  function ($scope, $location, $routeParams, validate, appstate, connect, messenger, util, uuid, AppCache) {
     var session = $scope.session = {};
+    var cache = new AppCache('stock.entry');
+
+    session.depotId = $routeParams.depotId;
+
+    cache.fetch('order')
+    .then(function (order) {
+      session.lots = [];
+      order.data.forEach(function (order) { session.lots = session.lots.concat(order.lots); });
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
 
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -17,9 +31,10 @@ angular.module('kpk.controllers')
       session.valid = !!appstate.get('stock.data');
     });
 
+
     function processStock () {
       var stocks = [];
-      session.lots.data.forEach(function (stock) {
+      session.lots.forEach(function (stock) {
         stocks.push({
           inventory_uuid      : stock.inventory_uuid,
           //purchase_price      : stock.purchase_price,
@@ -38,15 +53,15 @@ angular.module('kpk.controllers')
     function processMovements () {
       var movements = [];
       var doc_id = uuid();
-      session.lots.data.forEach(function (stock) {
+      session.lots.forEach(function (stock) {
         movements.push({
           document_id     : doc_id,
           tracking_number : stock.tracking_number,
           direction       : 'Enter',
           date            : util.convertToMysqlDate(new Date()),
           quantity        : stock.quantity,
-          depot_id        : session.cfg.depot.id,
-          destination     : session.cfg.depot.id
+          depot_id        : session.depotId,
+          destination     : session.depotId
         });
       });
 
