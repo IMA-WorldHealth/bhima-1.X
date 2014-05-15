@@ -421,7 +421,7 @@ create table `price_list_item` (
 
 drop table if exists `service`;
 create table `service` (
-  `id`                smallint unsigned not null,
+  `id`                smallint unsigned not null auto_increment,
   `name`              text not null,
   `cost_center_id`    smallint unsigned not null,
   primary key (`id`)
@@ -992,14 +992,6 @@ create table `fonction` (
   primary key (`id`)
 ) engine=innodb;
 
-
-drop table if exists `service`;
-create table `service` (
-  `id`                   tinyint unsigned not null auto_increment,
-  `service_txt`          text not null,
-  primary key (`id`)
-) engine=innodb;
-
 drop table if exists `employee`;
 create table `employee` (
   `id`                  int unsigned not null auto_increment,
@@ -1012,7 +1004,7 @@ create table `employee` (
   `phone`               varchar(20),
   `email`               varchar(70),
   `fonction_id`         tinyint unsigned, -- not null,
-  `service_id`          tinyint unsigned, -- not null,
+  `service_id`          smallint unsigned, -- not null,
   `location_id`         char(36), -- not null,
   `creditor_uuid`       char(36), -- not null,
   `debitor_uuid`        char(36), -- not null,

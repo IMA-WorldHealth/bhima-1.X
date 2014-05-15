@@ -124,6 +124,24 @@ angular.module('kpk.controllers')
       return connect.req('/costCenterAccount/'+$scope.project.enterprise_id+'/'+$scope.selected_cost_center.id);
     }
 
+    function isVersable (){
+      if (!configuration.cost_center) return false;
+      if(!$scope.model.available_accounts.data.length) return false;
+      return $scope.model.available_accounts.data.some(function (account){
+        return account.checked;
+      })
+    }
+
+    function isRemovable (){
+      if (!configuration.cost_center) return false;
+      if (!$scope.model.associatedAccounts) return false
+      if (!$scope.model.associatedAccounts.data.length) return false;
+      return $scope.model.associatedAccounts.data.some(function (account){
+        return account.checked;
+      });
+
+    }
+
     appstate.register('project', function (project){
       $scope.project = project;
       validate.process(dependencies).then(init);
@@ -135,5 +153,7 @@ angular.module('kpk.controllers')
     $scope.configuration = configuration;
     $scope.verser = verser;
     $scope.remove = remove;
+    $scope.isVersable = isVersable;
+    $scope.isRemovable = isRemovable;
   }
 ]);

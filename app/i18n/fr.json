@@ -265,8 +265,9 @@
     "SOURCE"          : "Selectionner source",
     "CASH"            : "Caisse Auxillaire",
     "OTHER"           : "Autre Source",
-    "ENTERPRISE" : "Selectionner Enterprise",
-    "PROJECT"    : "Proget"
+    "ENTERPRISE"      : "Selectionner Enterprise",
+    "PROJECT"         : "Proget",
+    "COST_CENTER"     : "Selectionner Centre des frais"
   },
 
   "RENEWAL"           : {
@@ -362,7 +363,7 @@
     "PATIENT_GRP_ASSIGNMENT"    : "Assignation Groupes des Malades",
     "PATIENT_GRP"               : "Groupe des Malales",
     "ACCOUNTING"                : "Compatabilite",
-    "COST_CENTER_MGMT"          : "Centres Des Couts",
+    "COST_CENTER_MGMT"          : "Centres des couts",
     "GRP_INVOICING"             : "Facturation des Conventions",
     "CURRENCY"                  : "Monaie",
     "RENEWAL"                   : "Renouveller Fiche",
@@ -380,7 +381,8 @@
     "PROJECT"                   : "Projets",
     "DEPOT"                     : "Depot",
     "STOCK_DISTRIBUTION"        : "Distribution Stock",
-    "EMPLOYEE"                  : "Gestion Employees"
+    "EMPLOYEE"                  : "Gestion Employees",
+    "SERVICE"                   : "Gestion des Services"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -563,7 +565,9 @@
     "CODE_ITEM"           : "Code Medicament",
     "PURCHASE_PRICE"      : "Prix Achat",
     "SALE_PRICE"          : "Prix Vente",
-    "PROJECT"             : "Proget"
+    "PROJECT"             : "Proget",
+    "SERVICE"             : "Service",
+    "COST_CENTER"         : "Centre de frais"
   },
 
   "REPORT"                  : {
@@ -1185,16 +1189,24 @@
 "ANALYSIS_CENTER"              :{
     "TITLE"                    :   "Centre de couts",
     "PARENT"                   :   "Gestion de centre de couts",
-    "NAVIGATION"               : "Naviguation",
-    "NEW"                      : "Nouveau centre de couts",
-    "REGISTERED"               : "Centre des cuts enregistres",
-    "INFO"                     : "Information sur le centre des couts",
-    "INFO_DESCRIPTION"         : "Ce module vous permet de gerer vos centre des cputs (creation, modification et suppression ainsi que la consultation)",
-    "TEXT"                     : "Text",
-    "COST"                     : "Cout",
-    "IS_PROFIT"                : "Centre de profit",
-    "NOTE"                     : "Note",
-    "REGISTER"                 : "Enregistrement"
+    "NAVIGATION"               :   "Naviguation",
+    "REGISTERED"               :   "Centre des cuts enregistres",
+    "INFO"                     :   "Information sur le centre des couts",
+    "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "Cout",
+    "IS_PROFIT"                :   "Centre de profit",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Enregistrement",
+    "NEW"                      :   "Nouveau centre",
+    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
+    "NONE_FOUND"               :   "Aucun centre de frais trouve !",
+    "MODIFYING"                :   "Modification",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Mise a jour avec succes !",
+    "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
+    "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
 },
 
 "VERSEMENT" : {
@@ -1203,6 +1215,24 @@
     "CHOOSE"                 : "Selectionner centre de couts",
     "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
     "VERSER"                 : "Verser",
-    "REMOVE"                 : "Retirer"
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Navigation",
+    "ASSOCIATED_TO"          : "Les comptes associe a : ",
+    "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
+},
+
+"SERVICE" : {
+    "TITLE"                    : "Gestion des Services",
+    "REGISTERED"               : "Services enregistres",
+    "NONE_FOUND"               : "Aucun service trouve",
+    "REGISTER"                 : "Enregistrement",
+    "COST_CENTER_SELECT"       : "Centre de frais",
+    "SUCCESS_MESSAGE"          : "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"      : "Erreur durant l'insertion",
+    "INSERT_SUCCESS_MESSAGE"   :  "Insertion avec succes !",
+    "NEW"                      :  "Nouveau Service",
+    "INFO"                     :  "Information sur le service",
+    "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
+    "MODIFYING"                :  "Modification"
 }
 }
