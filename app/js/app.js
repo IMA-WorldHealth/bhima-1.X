@@ -313,9 +313,9 @@
       controller : 'stock.movement',
       templateUrl : 'partials/stock/movement/movement.html'
     })
-    .when('/stock/exit/:depotId', {
-      controller : 'stock.exit',
-      templateUrl : 'partials/stock/exit/exit.html'
+    .when('/stock/distribution/:depotId', {
+      controller : 'stock.distribution',
+      templateUrl : 'partials/stock/exit/distribution.html'
     })
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
