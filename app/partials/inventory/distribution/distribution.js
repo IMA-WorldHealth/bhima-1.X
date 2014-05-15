@@ -29,7 +29,7 @@ angular.module('kpk.controllers')
             columns : ['inventory_uuid', 'expiration_date', 'entry_date', 'lot_number', 'purchase_order_uuid', 'tracking_number', 'quantity']
           },
           'inventory' : {
-            columns : ['uuid', 'text', 'enterprise_id', 'code', 'inventory_code', 'price', 'stock']
+            columns : ['uuid', 'text', 'enterprise_id', 'code', 'price', 'stock']
           }
         },
         join : ['stock.inventory_uuid=inventory.uuid']
@@ -163,11 +163,22 @@ angular.module('kpk.controllers')
       if(stockAvailability()){
         doConsumption()
         .then(doMoving)
+        //.then(decreaseStock)
         .then(function(result){
           console.log('[result ...]')
         });
+      }else{
+        messenger.danger('Le stock dans le (s) lot (s) selectionne (s) n\'est pas disponible pour convrir la quantite demandee');
       }
+    }
 
+    function decreaseStock (){
+      console.log(distribution);
+      // return $q.all(
+      //   distribution.item_records.map(function (item_record){
+      //     return connect.basicPut('consumption', item_record)
+      //   })
+      // )
     }
 
     function updateStock (){

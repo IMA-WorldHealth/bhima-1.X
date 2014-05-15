@@ -51,7 +51,10 @@
       "/max_trans/",
       "/max_log/",
       "/pcash_transfert_summers",
-      "/lot/"
+      "/lot/",
+      "/availableAccounts/",
+      "/costCenterAccount/",
+      "/removeFromCostCenter/"
     ]
   }
 }
