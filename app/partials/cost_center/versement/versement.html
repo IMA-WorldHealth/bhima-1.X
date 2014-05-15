@@ -6,23 +6,28 @@
 <section class="top-nav">
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
-      <span class="label label-success square">{{ "ANALYSIS_CENTER.NAVIGATION" | translate }}</span>
-      <li><a href="#/cost_center">{{ "ANALYSIS_CENTER.PARENT" | translate }}</a></li>
-      <li><a href="" ng-click="loadPath('/cost_center/center/')">{{ "ANALYSIS_CENTER.TITLE" | translate }}</a></li>
+      <span class="label label-success square">{{ "VERSEMENT.NAVIG" | translate }}</span>
+      <li><a href="#/cost_center">{{ "VERSEMENT.PARENT" | translate }}</a></li>
+      <li><a href="" ng-click="loadPath('/cost_center/center/')">{{ "VERSEMENT.TITLE" | translate }}</a></li>
     </ol>
   </div>
 </section>
 
 <div class="content">
 
-  <div class="row">
-    <div class="col-xs-3">
-      <label>{{'VERSEMENT.CHOOSE' | translate}}</label>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      {{'VERSEMENT.CHOOSE' | translate}}
     </div>
-    <div class="col-xs-4">
-      <select class="form-kapok" ng-model="configuration.cost_center" ng-change="performChange()">
-        <option value="{{cc}}" ng-repeat="cc in model.cost_centers.data">{{cc.text}}</option>
-      </select>
+    <div class="panel-body">
+      <form class="form">
+        <div class="form-group">
+          <select class="col-xs-2 form-kapok" ng-model="configuration.cost_center" ng-change="performChange()">
+            <option value="{{cc}}" ng-repeat="cc in model.cost_centers.data">{{cc.text}}</option>
+          </select>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -30,13 +35,13 @@
 
     <div class="col-xs-6">
       <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-heading" style="height: 50px;">
           <span> {{'VERSEMENT.AVAILABLE_ACCOUNT' | translate}} {{selected.text}} </span>
           <span class="pull-right">
-            <button type="submit" ng-click="verser()">{{'VERSEMENT.VERSER' | translate}}</button>
+            <button ng-disabled="!isVersable()" class="btn btn-default" type="submit" ng-click="verser()">{{'VERSEMENT.VERSER' | translate}}</button>
           </span>
         </div>
-        <div class="panel-body principal-header">
+        <div class="panel-body versement-header">
           <table class="table table-condensed table-striped">
             <thead>
               <tr>
@@ -65,16 +70,16 @@
 
     <div class="col-xs-6">
       <div class="panel panel-primary">
-        <div class="panel-heading">
+        <div class="panel-heading" style="height: 50px;">
           <span>
-            Associeted Accounts To <b>{{selected.text}}</b>
+            {{'VERSEMENT.ASSOCIATED_TO' | translate}} <b>{{selected_cost_center.text}}<span ng-if="!selected_cost_center">{{'VERSEMENT.PLEASE_SELECT' | translate}}</span></b>
           </span>
           <span class="pull-right">
-            <button type="submit" ng-click="remove()"> {{'VERSEMENT.REMOVE' | translate}}</button>
+            <button ng-disabled="!isRemovable()" class="btn btn-default" type="submit" ng-click="remove()"> {{'VERSEMENT.REMOVE' | translate}}</button>
           </span>
         </div>
 
-        <div class="panel-body principal-header">
+        <div class="panel-body versement-header">
           <table class="table table-condensed table-striped">
             <thead>
               <tr><th><input type="checkbox" ng-model="acc_2.all" ng-change="checkAll_2()"/></th><th>Account Number</th><th>Account Name</th></tr>

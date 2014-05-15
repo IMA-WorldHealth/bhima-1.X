@@ -19,13 +19,13 @@
 
       <div class="panel panel-default square">
         <div class="panel-heading square">
-          <span class="glyphicon glyphicon-import"></span> {{ 'COST_CENTER.OPERATION' | translate }}
+          <span class="glyphicon glyphicon-cog"></span> {{ 'COST_CENTER.OPERATION' | translate }}
         </div>
 
         <div class="panel-body">
           <ul class="primary_cash_list">
             <li ng-repeat="item in configuration.operations">
-              <span style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-thumbs-up"></span>
+              <span style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-asterisk"></span>
               <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
             </li>
           </ul>
