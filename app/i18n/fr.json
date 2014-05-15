@@ -562,7 +562,8 @@
     "QTY_IN_LOT"          : "Nombre item dans Lot",
     "CODE_ITEM"           : "Code Medicament",
     "PURCHASE_PRICE"      : "Prix Achat",
-    "SALE_PRICE"          : "Prix Vente"
+    "SALE_PRICE"          : "Prix Vente",
+    "PROJECT"             : "Proget"
   },
 
   "REPORT"                  : {
@@ -1139,7 +1140,7 @@
     "COST"                   : "Cout",
     "LOT_DETAILS"            : "Details des Lots",
     "EMPTY_MESSAGE"          : "Aucune vente selectionnee !"
-  }, 
+  },
 
   "SUPPLIER" :{
     "TITLE" : "Fournisseur",
@@ -1168,5 +1169,40 @@
     "EMPLOYEES"  : "Les Employees Enregistres",
     "REGISTER" : "Enregistrer",
     "CREDITOR_GROUP" : "Groupe Crediteur"
-  }
+  },
+
+  "COST_CENTER" : {
+    "TITLE" : "Gestion de Centre de Couts",
+    "NAVIGATION" : "Naviguation",
+    "OPERATION"  : "operations",
+    "OPERATIONS" : {
+        "CC" : "Centre de couts",
+        "ASSIGN" : "Assignation",
+        "VERSEMENT" : "Versement"
+    }
+  },
+
+"ANALYSIS_CENTER"              :{
+    "TITLE"                    :   "Centre de couts",
+    "PARENT"                   :   "Gestion de centre de couts",
+    "NAVIGATION"               : "Naviguation",
+    "NEW"                      : "Nouveau centre de couts",
+    "REGISTERED"               : "Centre des cuts enregistres",
+    "INFO"                     : "Information sur le centre des couts",
+    "INFO_DESCRIPTION"         : "Ce module vous permet de gerer vos centre des cputs (creation, modification et suppression ainsi que la consultation)",
+    "TEXT"                     : "Text",
+    "COST"                     : "Cout",
+    "IS_PROFIT"                : "Centre de profit",
+    "NOTE"                     : "Note",
+    "REGISTER"                 : "Enregistrement"
+},
+
+"VERSEMENT" : {
+    "TITLE"                  : "Versement des comptes",
+    "PARENT"                 : "Gestion de centre de couts",
+    "CHOOSE"                 : "Selectionner centre de couts",
+    "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
+    "VERSER"                 : "Verser",
+    "REMOVE"                 : "Retirer"
+}
 }

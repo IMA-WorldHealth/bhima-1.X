@@ -195,15 +195,15 @@ create table `account_type` (
 
 drop table if exists `cost_center`;
 create table `cost_center` (
-  `id`              smallint unsigned not null auto_increment,
-  `enterprise_id`   smallint unsigned not null,
+  `project_id`      smallint unsigned not null,
+  `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
   `cost`            float default 0,
   `note`            text,
   `is_principal`    boolean default 0,
   primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`) on delete cascade
+  key `project_id` (`project_id`),
+  constraint foreign key (`project_id`) references `project` (`id`) on delete cascade
 ) engine=innodb;
 
 drop table if exists `account`;
@@ -216,13 +216,15 @@ create table `account` (
   `parent`              int unsigned not null,
   `fixed`               boolean default 0,
   `locked`              tinyint unsigned default 0,
-  `cc_id`               smallint default -1,
+  `cc_id`               smallint null,
   `created`             timestamp null default CURRENT_TIMESTAMP,
   primary key (`id`),
   key `account_type_id` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
+  key `cc_id`         (`cc_id`),
   constraint foreign key (`account_type_id`) references `account_type` (`id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
+  constraint foreign key (`cc_id`)         references `cost_center` (`id`)
 ) engine=innodb;
 
 drop table if exists `creditor_group`;
