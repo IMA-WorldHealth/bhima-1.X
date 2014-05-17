@@ -29,7 +29,6 @@ angular.module('kpk.controllers')
       $scope.acc_1 = {}; $scope.acc_1.all = false;
       $scope.acc_2 = {}; $scope.acc_2.all = false;
       filling();
-      window.tout = $scope;
     }
 
     function filling (){
