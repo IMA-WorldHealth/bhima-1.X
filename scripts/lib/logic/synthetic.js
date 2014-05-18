@@ -4,10 +4,12 @@ module.exports = function (db, sanitize) {
   //aB : accountBalance
   //pcR : principal caisse balance report by date
   //pcRI : principal caisse total income by date
+  //ccc  : cost center cost
   var menu_map = {
     'aB'    : aB,
     'pcR'   : pcR,
-    'pcRI'  : pcRI
+    'pcRI'  : pcRI,
+    'ccc'   : ccc
   };
 
   function aB (project_id, request, callback){
@@ -69,6 +71,20 @@ module.exports = function (db, sanitize) {
       if(err) return callback(err, null)
       return callback(null, ans);
     });
+  }
+
+  function ccc (){
+    var sql =
+      'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit '+
+      'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `currency_id` FROM `posting_journal`)'+
+      ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id_id`, `account_id`, `currency_id` FROM `general_ledger`)) as `t`'+
+      ' WHERE '+portion+' AND `t`.`project_id`='+sanitize.escape(project_id)+' GROUP BY `account_id`';
+
+    db.execute(sql, function(err, ans){
+      if(err) return callback(err, null)
+      return callback(null, ans);
+    });
+
   }
 
   return function menu (goal, project_id, request, callback) {

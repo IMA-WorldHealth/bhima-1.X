@@ -73,24 +73,39 @@ angular.module('kpk.controllers')
 
     }
 
+    function processSelectedCost (){
+      var def = $q.defer();
+      connect.req('/cost/'+$scope.selected_aux_cost_center.project_id+'/'+$scope.selected_aux_cost_center.id)
+      .then(function(values){
+        def.resolve(values);
+      });
+      return def.promise;
+    }
+
     function suivant(){
       $scope.model.selected_pri_cost_centers = $scope.model.pri_cost_centers.data.filter(function (cc){
         return cc.checked;
       });
 
-      $q.all(
-        $scope.model.selected_pri_cost_centers.map(function (cc){
-          cc.criteriaValue = 0;
-          return getCost(cc)
-        })
-      ).then(function (results){
+      processSelectedCost()
+      .then(function (cout){
+        console.log('le cout obtenu', cout);
+        setAction('suivant');
+        calculate();
+      });
 
-        console.log('les resultats ...', results);
-      })
+      // $q.all(
+      //   $scope.model.selected_pri_cost_centers.map(function (cc){
+      //     cc.criteriaValue = 0;
+      //     return getCost(cc)
+      //   })
+      // ).then(function (results){
 
-      $scope.selected_aux_cost_center.cost = 100;
-      setAction('suivant');
-      calculate();
+      //   console.log('les resultats ...', results);
+      // })
+
+      // $scope.selected_aux_cost_center.cost = 100;
+
     }
 
     function getCost (cc){
