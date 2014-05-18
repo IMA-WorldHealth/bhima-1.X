@@ -78,13 +78,24 @@ angular.module('kpk.controllers')
         return cc.checked;
       });
 
-      $scope.model.selected_pri_cost_centers.forEach(function (selected){
-        selected.initial_cost = 10;
-        selected.criteriaValue = 0;
-      });
+      $q.all(
+        $scope.model.selected_pri_cost_centers.map(function (cc){
+          cc.criteriaValue = 0;
+          return getCost(cc)
+        })
+      ).then(function (results){
+
+        console.log('les resultats ...', results);
+      })
+
       $scope.selected_aux_cost_center.cost = 100;
       setAction('suivant');
       calculate();
+    }
+
+    function getCost (cc){
+      cc.initial_cost = 10;
+      return $q.when(10);
     }
 
     function calculate (){
