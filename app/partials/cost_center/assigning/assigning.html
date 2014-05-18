@@ -59,7 +59,7 @@
 		        <div class="panel-body assigning-header">
 		          <table class="table table-condensed table-striped">
 		            <thead>
-		              <tr><th><input type="checkbox" ng-model="cc.all" ng-change="checkAll()"/></th><th>{{'ASSIGNING.TEXT_COST'}}</th></tr>
+		              <tr><th><input type="checkbox" ng-model="cc.all" ng-change="checkAll()"/></th><th>{{'ASSIGNING.PRI_CENTERS' | translate}}</th></tr>
 		            </thead>
 		            <tbody>
 		              <tr ng-repeat="pri_cost_center in model.pri_cost_centers.data">
@@ -75,44 +75,38 @@
 
 		<div ng-switch-when="suivant">
 			<div class="panel panel-primary">
-				<div class="panel-heading">
+				<div class="panel-heading" style="height: 50px;">
 					<span>
 					 	{{'ASSIGNING.AUX_CENTER' | translate}} : <b>{{selected_aux_cost_center.text}}</b>
 					 	{{'ASSIGNING.COST' | translate}} : <b>{{selected_aux_cost_center.cost | currency}}</b>
 					</span>
 					<span class="pull-right">
-						<button type="submit" ng-click="apply()">Apply</button>
+						<button type="submit" ng-click="apply()" class="btn btn-default">Apply</button>
 					</span>
 				</div>
 				<div class="panel-body" style="height : 100%;">
-					<span class="pull-right">
-						<select
-					 		ng-model="critere.critere_id"
-					 		ng-options="critere.id as critere.critere_txt for critere in models.criteres">
-					 		<option
-					 		value=""
-					 		disabled="true">
-					 		-- choose Criteria --
-					 		</option>
-					 	</select>
-					</span><br/>
-
 			        <table class="table table-condensed table-bordered">
 			          <thead>
 			            <tr>
 			                <th>{{'ASSIGNING.PRI_CENTERS' | translate}}</th><th>{{'ASSIGNING.INITIAL_COST' | translate}}</th>
-			                <th>{{'ASSIGNING.COEFF' | translate}}</th><th>{{'ASSIGNING.ALOCATED_COST'}}</th>
+			                <th>{{'ASSIGNING.COEFF' | translate}}</th><th>{{'ASSIGNING.AL_COST' | translate}}</th>
 			                <th>{{'ASSIGNING.TOTAL' | translate}}</th>
 			            </tr>
 			          </thead>
 			          <tbody>
 			            <tr ng-repeat="pcs in model.selected_pri_cost_centers">
 			              <td>{{pcs.text}}</td>
-			              <td>{{pcs.initialCost}}</td>
-			              <td><input type="number" ng-model="pcs.criteriaValue" ng-change="calculate()"></td>
+			              <td>{{pcs.initial_cost}}</td>
+			              <td><input type="number" ng-model="pcs.criteriaValue" ng-change="calculate()" class="form-invoice"></td>
 			              <td>{{pcs.allocatedCost}}</td>
 			              <td>{{pcs.totalCost}}</td>
 			            </tr>
+
+			            <tr>
+			              	<td><b>{{'ASSIGNING.TOTALS' | translate}}</b></td>
+			              	<td colspan="3" align="right"><b>{{getTotalAllocatedCost() | currency}}</b></td>
+			              	<td colspan="4"><b>{{getTotal() | currency}}<b/></td>
+		              	</tr>
 			          </tbody>
 			    	</table>
 				</div>
@@ -121,105 +115,3 @@
 	</div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--
-
-			<div class="col-xs-6" ng-switch="go">
-			<div ng-switch-when="ok">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<span>
-						 	Auxiliairy Center : <b>{{auxiliairy_center_selected.text}}</b>
-						 	Cost : <b>{{auxiliairy_center_selected.cost | currency}}</b>
-						</span>
-						<span class="pull-right">
-							<button type="submit" ng-click="apply()">Apply</button>
-						</span>
-
-					</div>
-					<div class="panel-body principal-header">
-						<span class="pull-right">
-							<select
-						 		ng-model="critere.critere_id"
-						 		ng-options="critere.id as critere.critere_txt for critere in models.criteres">
-						 		<option
-						 		value=""
-						 		disabled="true">
-						 		-- choose Criteria --
-						 		</option>
-						 	</select>
-						</span><br/>
-
-		                <table class="table table-condensed table-bordered">
-			              <thead>
-			                <tr>
-				                <th>Principals Centers</th><th>Initial Cost</th>
-				                <th>Critere Value</th><th>Allocated Cost</th>
-				                <th>Total Cost</th>
-			                </tr>
-			              </thead>
-			              <tbody>
-
-			                <tr ng-repeat="pcs in principal_centers_selected">
-			                  <td>{{pcs.text}}</td>
-			                  <td>{{pcs.initialCost}}</td>
-			                  <td><input type="number" ng-model="pcs.criteriaValue" ng-change="calculate()"></td>
-			                  <td>{{pcs.allocatedCost}}</td>
-			                  <td>{{pcs.totalCost}}</td>
-			                </tr>
-			              </tbody>
-		            	</table>
-            		</div>
-
-				</div>
-
-			</div>
-		</div>
-
-
-
-
-
--->
-
-
-
-
