@@ -77,7 +77,42 @@ angular.module('kpk.controllers')
       $scope.model.selected_pri_cost_centers = $scope.model.pri_cost_centers.data.filter(function (cc){
         return cc.checked;
       });
+
+      $scope.model.selected_pri_cost_centers.forEach(function (selected){
+        selected.initial_cost = 10;
+        selected.criteriaValue = 0;
+      });
+      $scope.selected_aux_cost_center.cost = 100;
       setAction('suivant');
+      calculate();
+    }
+
+    function calculate (){
+      var somCritereValue = 0;
+      $scope.model.selected_pri_cost_centers.forEach(function (item){
+        somCritereValue+=item.criteriaValue;
+      });
+      $scope.model.selected_pri_cost_centers.forEach(function (item){
+        item.allocatedCost = $scope.selected_aux_cost_center.cost * (item.criteriaValue / somCritereValue);
+        item.allocatedCost = item.allocatedCost || 0;
+        item.totalCost = item.initial_cost + item.allocatedCost;
+      });
+    }
+
+    function getTotalAllocatedCost (){
+      var som = 0;
+      $scope.model.selected_pri_cost_centers.forEach(function (item){
+        som+= item.allocatedCost || 0;
+      });
+      return som;
+    }
+
+    function getTotal (){
+      var som = 0;
+      $scope.model.selected_pri_cost_centers.forEach(function (item){
+        som+= item.totalCost || 0;
+      });
+      return som;
     }
 
     validate.process(dependencies)
@@ -87,6 +122,9 @@ angular.module('kpk.controllers')
     $scope.checkAll = checkAll;
     $scope.isForwardable = isForwardable;
     $scope.suivant = suivant;
+    $scope.calculate = calculate;
+    $scope.getTotalAllocatedCost = getTotalAllocatedCost;
+    $scope.getTotal = getTotal;
   }
 ]);
 
@@ -248,20 +286,7 @@ angular.module('kpk.controllers')
     //   });
     // }
 
-    // function calculate (){
 
-    //   var somCritereValue = 0;
-    //   $scope.principal_centers_selected.forEach(function (item){
-    //     somCritereValue+=item.criteriaValue;
-    //   });
-
-    //   //console.log(somCritereValue);
-
-    //   $scope.principal_centers_selected.forEach(function (item){
-    //     item.allocatedCost = $scope.auxiliairy_center_selected.cost * (item.criteriaValue / somCritereValue);
-    //     item.totalCost = item.initialCost + item.allocatedCost;
-    //   });
-    // }
 
     // function apply(){
 

@@ -1250,8 +1250,9 @@
     "COST"                 : "Cout",
     "PRI_CENTERS"          : "Centres des couts principaux",
     "INITIAL_COST"         : "Cout initial",
-    "COEFF"                : "Coeffiscient",
-    "ALOCATED_COST"        : "Cout alloue",
-    "TOTAL"                : "Total"
+    "COEFF"                : "Coeffiscient de repartition",
+    "AL_COST"              : "Cout alloue",
+    "TOTAL"                : "Total",
+    "TOTALS"               : "TOTAUX"
 }
 }
