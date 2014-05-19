@@ -75,7 +75,7 @@ angular.module('kpk.controllers')
 
     function processSelectedCost (){
       var def = $q.defer();
-      connect.req('/cost/'+$scope.selected_aux_cost_center.project_id+'/'+$scope.selected_aux_cost_center.id)
+      connect.req('/cost/'+$scope.project.id+'/'+$scope.selected_aux_cost_center.id)
       .then(function(values){
         def.resolve(values);
       });
@@ -89,6 +89,7 @@ angular.module('kpk.controllers')
 
       processSelectedCost()
       .then(function (cout){
+
         console.log('le cout obtenu', cout);
         setAction('suivant');
         calculate();
@@ -141,8 +142,11 @@ angular.module('kpk.controllers')
       return som;
     }
 
-    validate.process(dependencies)
-    .then(init);
+    appstate.register('project', function (project){
+      $scope.project = project;
+      validate.process(dependencies)
+      .then(init);
+    })
 
     $scope.performChange = performChange;
     $scope.checkAll = checkAll;
