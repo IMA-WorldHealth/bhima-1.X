@@ -715,8 +715,8 @@ create table `consumption` (
   constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade
 ) engine=innodb;
 
-drop table if exists `patient_consumption`;
-create table `patient_consumption` (
+drop table if exists `consumption_patient`;
+create table `consumption_patient` (
   `uuid`                char(36) not null,
   `consumption_uuid`    char(36) not null,
   `sale_uuid`           char(36) not null,
@@ -727,8 +727,8 @@ create table `patient_consumption` (
   -- constraint foreign key (`sale_uuid`) references `sale` (`uuid`)
 ) engine=innodb;
 
-drop table if exists `service_consumption`;
-create table `service_consumption` (
+drop table if exists `consumption_service`;
+create table `consumption_service` (
   `uuid`                char(36) not null,
   `consumption_uuid`    char(36) not null,
   `service_id`          smallint unsigned not null,
@@ -739,8 +739,8 @@ create table `service_consumption` (
   -- constraint foreign key (`service_id`) references `service` (`id`)
 ) engine=innodb;
 
-drop table if exists `loss_consumption`;
-create table `loss_consumption` (
+drop table if exists `consumption_loss`;
+create table `consumption_loss` (
   `uuid`                char(36) not null,
   `consumption_uuid`    char(36) not null,
   `document_uuid`       char(36) not null,
@@ -749,8 +749,8 @@ create table `loss_consumption` (
   -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
 ) engine=innodb;
 
-drop table if exists `rummage_consumption`;
-create table `rummage_consumption` (
+drop table if exists `consumption_rummage`;
+create table `consumption_rummage` (
   `uuid`                char(36) not null,
   `consumption_uuid`        char(36) not null,
   `document_uuid`           char(36) not null,
