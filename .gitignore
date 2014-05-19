@@ -10,6 +10,7 @@ test/reports/
 scripts/sql/backup/
 scripts/mail/out/
 
+client/js/controllers/
 misc/migrate/out/
 
 # ignore build tool generated files
