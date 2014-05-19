@@ -322,12 +322,11 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
   db.execute(sql, function (err, ans) {
     if (err) return next(err);
-    synthetic('ccc', req.params.id_project, null, function (err, data) {
+    synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
       if (err) { return next(err); }
+      console.log('[synthetic a retourner data]', data);
       res.send(data);
     });
-    // console.log('la reponse est ', ans);
-    // res.send(ans);
   });
 
   function process (){
