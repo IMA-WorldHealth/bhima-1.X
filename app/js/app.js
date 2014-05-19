@@ -277,6 +277,10 @@
       controller : 'employee',
       templateUrl : 'partials/employee/employee.html'
     })
+    .when('/service', {
+      controller : 'service',
+      templateUrl : 'partials/service/service.html'
+    })
     .when('/journal/print', {
       controller : 'journal.print',
       templateUrl : 'partials/journal/print.html'

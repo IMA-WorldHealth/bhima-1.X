@@ -24,14 +24,16 @@ var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
     errorHandler = require('./lib/error/handler');
 
 // import routes
-var report       = require('./lib/logic/report')(db),
-    trialbalance = require('./lib/logic/trialbalance')(db),
-    ledger       = require('./lib/logic/ledger')(db),
-    fiscal       = require('./lib/logic/fiscal')(db),
-    synthetic    = require('./lib/logic/synthetic')(db, sanitize),
-    journal      = require('./lib/logic/journal')(db, synthetic),
-    createSale   = require('./lib/logic/createSale')(db, parser, journal),
-    createPurchase = require('./lib/logic/createPurchase')(db, parser, journal);
+var report         = require('./lib/logic/report')(db),
+    trialbalance   = require('./lib/logic/trialbalance')(db),
+    ledger         = require('./lib/logic/ledger')(db),
+    fiscal         = require('./lib/logic/fiscal')(db),
+    synthetic      = require('./lib/logic/synthetic')(db, sanitize),
+    journal        = require('./lib/logic/journal')(db, synthetic),
+    createSale     = require('./lib/logic/createSale')(db, parser, journal),
+    createPurchase = require('./lib/logic/createPurchase')(db, parser, journal),
+    depotRouter    = require('./lib/logic/depot')(db),
+    drugRouter     = require('./lib/logic/drug')(db);
 
 var uuid         = require('./lib/util/guid');
 
@@ -582,6 +584,28 @@ app.get('/max_trans/:project_id', function (req, res, next) {
 
 app.get('/print/journal', function (req, res, next) {
   res.send('Under Contruction');
+});
+
+app.get('/inventory/depot/:depot/*', function (req, res, next) {
+  depotRouter(req.url, req.params.depot)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+});
+
+app.get('/inventory/drug/:code', function (req, res, next) {
+  drugRouter(req.params.code)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));

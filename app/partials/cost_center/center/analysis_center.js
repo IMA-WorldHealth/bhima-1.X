@@ -6,7 +6,8 @@ angular.module('kpk.controllers')
   'appstate',
   'messenger',
   'validate',
-  function ($scope, $q, connect, appstate, messenger, validate) {
+  '$filter',
+  function ($scope, $q, connect, appstate, messenger, validate, $filter) {
 
     var dependencies= {};
 
@@ -14,31 +15,28 @@ angular.module('kpk.controllers')
       query : {
         tables : {
           'cost_center' : {
-            columns : ['id', 'text', 'note', 'cost']
+            columns : ['id', 'text', 'note', 'cost', 'is_principal', 'project_id']
           },
           'project' : {
-            columns :['name']
+            columns :['abbr']
           }
         },
         join : ['cost_center.project_id=project.id']
       }
     }
 
-    $scope.register = {}; $scope.selected = {}; $scope.acc2 = {}; $scope.acc = {};
+    $scope.register = {}; $scope.selected = {};
 
-    //fonctions
     function init (model){
       $scope.model = model;
-      console.log('one est la ', model);
     }
 
-    function setAction (value, index){
+    function setAction (value, cost_center){
       $scope.action = value;
-      // if(value !== 'register') $scope.selected = models.cost_centers[index];
-      // if(value === 'configure') {
-      //   $scope.selected = models.cost_centers[index];
-      //   handleConfigure();
-      // }
+      $scope.selected = angular.copy(cost_center) || {};
+      if($scope.selected){
+        $scope.selected.is_principal = ($scope.selected.is_principal!=0)? true : false;
+      }
     }
 
     function writeCenter (){
@@ -47,49 +45,21 @@ angular.module('kpk.controllers')
 
     function saveRegistration (){
       $scope.register.project_id = $scope.project.id;
+      $scope.register.is_principal = ($scope.register.is_principal)? 1 : 0;
       writeCenter()
       .then(function(){
-        messenger.info("successfully inserted");
+        // FIXME just add employee to model
+        validate.refresh(dependencies, ['cost_centers']).then(function (model) {
+          angular.extend($scope, model);
+        });
+
+        $scope.register = {};
+
+        messenger.success($filter('translate')('ANALYSIS_CENTER.INSERT_SUCCESS_MESSAGE'));
       })
       .catch(function(err){
-        messenger.danger('Errot during inserting.');
+        messenger.danger($filter('translate')('ANALYSIS_CENTER.INSERT_FAIL_MESSAGE'));
       })
-
-      // if (isCorrect()){
-      //   $scope.register.enterprise_id = enterprise.id;
-      //   connect.basicPut('cost_center', [connect.clean($scope.register)]).
-      //   then(function (v){
-
-      //     if(v.status === 200){
-      //       messenger.info("successfully inserted");
-      //       $scope.register = {};
-      //       run();
-
-      //     }
-
-      //   });
-      // }else{
-      //   messenger.danger('Principal cenetr Name undefined.');
-      // }
-    }
-
-    function isCorrect(){
-      return ($scope.register.text)? true : false;
-    }
-
-    function run (){
-      $q.all(
-        [
-          connect.req(requettes.cost_centers),
-          getAvailablesAccounts(enterprise.id)
-        ])
-      .then(init);
-    }
-
-    function transformDatas(tabl){
-      tabl.map(function (item){
-        item.checked = false;
-      });
     }
 
     function getAvailablesAccounts (enterprise_id){
@@ -99,23 +69,6 @@ angular.module('kpk.controllers')
         def.resolve(values);
       });
       return def.promise;
-    }
-
-    function associate (){
-
-      var rek = models.availablesAccounts.filter(function (item){
-        return item.checked;
-      });
-
-      $q.all(rek.map(function(item){
-        item.cc_id = $scope.selected.id;
-        delete item.checked;
-        return connect.basicPost('account', [connect.clean(item)], ['id']);
-      })).then( function(v){
-        messenger.info('assignation successfully!');
-        run();
-        handleConfigure();
-      });
     }
 
     function loadAssociateAccounts (){
@@ -136,45 +89,53 @@ angular.module('kpk.controllers')
       });
     }
 
-    function remove(){
-
-      var rek = models.associatedAccounts.filter(function (item){
-        return item.checked;
-      });
-
-      $q.all(rek.map(function(item){
-        item.cc_id = -1;
-        delete item.checked;
-        return connect.basicPost('account', [connect.clean(item)], ['id']);
-      })).then( function(v){
-        messenger.info('assignation successfully!');
-        run();
-        handleConfigure();
+    function remove(cost_center){
+      $scope.selected = angular.copy(cost_center);
+      removeCostcenter()
+      .then(function (){
+        $scope.model.cost_centers.remove($scope.selected.id);
+        messenger.success($filter('translate')('ANALYSIS_CENTER.REMOVE_SUCCESS_MESSAGE'));
+      })
+      .catch(function (err){
+        messenger.danger($filter('translate')('ANALYSIS_CENTER.REMOVE_FAIL_MESSAGE'));
       });
 
     }
 
-    function formatCritere (critere){
-      return critere.critere_txt;
+    function edit (){
+      $scope.selected.is_principal = ($scope.selected.is_principal)? 1 : 0;
+      delete $scope.selected.abbr;
+      updateCostCenter()
+      .then(function () {
+        // FIXME just add employee to model
+        $scope.model.cost_centers.put($scope.selected);
+        messenger.success($filter('translate')('ANALYSIS_CENTER.UPDATE_SUCCESS_MESSAGE'));
+
+      })
+      .catch(function(err){
+        messenger.danger($filter('translate')('ANALYSIS_CENTER.UPDATE_FAIL_MESSAGE'));
+      })
+    }
+
+    function removeCostcenter (){
+      return connect.basicDelete('cost_center', [$scope.selected.id], 'id');
+    }
+
+    function updateCostCenter (){
+      return connect.basicPost('cost_center', [connect.clean($scope.selected)], ['id']);
     }
 
     appstate.register('project', function (project){
       $scope.project = project;
       dependencies.cost_centers.where = ['cost_center.project_id='+project.id];
-      console.log('on a', project)
       validate.process(dependencies).then(init);
     })
 
-    //exposition
 
     $scope.setAction = setAction;
     $scope.saveRegistration = saveRegistration;
-    $scope.formatCritere = formatCritere;
-    $scope.associate = associate;
     $scope.remove = remove;
-
-    //invocation
-    //run();
+    $scope.edit = edit;
 
   }
 ]);
