@@ -1,9 +1,9 @@
 (function (angular) {
   'use strict';
 
-  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
+  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
 
-  function kpkconfig($routeProvider) {
+  function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
     when('/budgeting/:accountID?', {
@@ -392,7 +392,7 @@
 
 
 
-  kpk.config(kpkconfig);
-  kpk.config(translateConfig);
-  kpk.config(indicatorConfig);
+  bhima.config(bhimaconfig);
+  bhima.config(translateConfig);
+  bhima.config(indicatorConfig);
 })(angular);
