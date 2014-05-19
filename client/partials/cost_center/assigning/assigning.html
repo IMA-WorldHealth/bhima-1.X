@@ -1,125 +1,117 @@
+
 <header>
-  <span>Assigning</span>
+  <span>{{'ASSIGNING.TITLE' | translate}}</span>
 </header>
 
 <section class="top-nav">
-  <div class="pull-right">
-     <a href="#/cost_center/" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span>Cost Center</a>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <span class="label label-success square">{{ "ASSIGNING.NAVIG" | translate }}</span>
+      <li><a href="#/cost_center">{{ "ASSIGNING.PARENT" | translate }}</a></li>
+      <li><a href="" ng-click="loadPath('/cost_center/center/')">{{ "ASSIGNING.TITLE" | translate }}</a></li>
+    </ol>
   </div>
 </section>
 
 <div class="content">
-	<div class="row">
-		<div class="col-xs-3">
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					<span> Select An Auxiliairy Center Here</span>
-				</div>
-				<div class="panel-body principal-header">
-					<table class="table table-condensed table-striped">
-				        <thead>
-				          <tr><th>Name</th></tr>
-				        </thead>
-				        <tbody>
-				          <tr ng-repeat="auxi in auxiliairy_centers" ng-click="setAction('clicked', $index)">
-				            <td>{{auxi.text}}</td>
-				          </tr>
-				        </tbody>
-	      			</table>
-      			</div>
-			</div>		
-		</div>
 
-		<div class="col-xs-3" ng-switch="action">
-			<div ng-switch-default>
-		      <div class="alert alert-info">
-		        <b>Information</b>
-		        <p>
-		          There is not auxiliairy center selected, Selected an auxiliary center at left to do assigning.
-		        </p>
+
+  <div class="panel panel-default" ng-if="action!='suivant'">
+    <div class="panel-heading">
+      {{'ASSIGNING.CHOOSE' | translate}}
+    </div>
+    <div class="panel-body">
+      <form class="form">
+        <div class="form-group">
+          <select class="col-xs-2 form-kapok" ng-model="configuration.aux_cost_center" ng-change="performChange()">
+            <option value="{{cc}}" ng-repeat="cc in model.aux_cost_centers.data">{{cc.text}}</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+  	<div class="col-xs-12" ng-switch="action">
+	    <div ng-switch-default>
+		    <div class="col-xs-6">
+		      <div class="panel panel-default">
+		        <div class="panel-heading" style="height: 50px;">
+		          <span> {{'ASSIGNING.INFO_COST_CENTER' | translate}} {{selected.text}} </span>
+		        </div>
+		        <div class="panel-body assigning-header">
+		          Info sur cost center
+		        </div>
 		      </div>
-    		</div>
+		    </div>
 
+		    <div class="col-xs-6">
+		      <div class="panel panel-primary">
+		        <div class="panel-heading" style="height: 50px;">
+		          <span>
+		            {{'ASSIGNING.ASSOCIATED_TO' | translate}} <b>{{selected_aux_cost_center.text}}<span ng-if="!selected_aux_cost_center">{{'ASSIGNING.PLEASE_SELECT' | translate}}</span></b>
+		          </span>
+		          <span class="pull-right">
+		            <button ng-disabled="!isForwardable()" class="btn btn-default" type="submit" ng-click="suivant()"> {{'ASSIGNING.NEXT' | translate}}</button>
+		          </span>
+		        </div>
 
-			<div ng-switch-when="clicked">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<span> Select Principal Center</span>
-						<span class="pull-right">
-							<button type="submit" ng-click="start()">Start</button>
-						</span>
-
-					</div>
-					<table class="table table-condensed table-striped">
-				        <thead>
-				          <tr><th><input type="checkbox" ng-model="selection.all" ng-change="checkAll()"/></th><th>Name</th></tr>
-				        </thead>
-				        <tbody>
-				          <tr ng-repeat="princ in principal_centers">
-				          	<td><input type="checkbox" ng-model="princ.checked"/></td>
-				            <td>{{princ.text}}</td>
-				          </tr>
-				        </tbody>
-	      			</table>				
-				</div>
-			</div>		
+		        <div class="panel-body assigning-header">
+		          <table class="table table-condensed table-striped">
+		            <thead>
+		              <tr><th><input type="checkbox" ng-model="cc.all" ng-change="checkAll()"/></th><th>{{'ASSIGNING.PRI_CENTERS' | translate}}</th></tr>
+		            </thead>
+		            <tbody>
+		              <tr ng-repeat="pri_cost_center in model.pri_cost_centers.data">
+			              <td><input type="checkbox" ng-model="pri_cost_center.checked"/></td>
+			              <td>{{pri_cost_center.text}}</td>
+		              </tr>
+		            </tbody>
+		          </table>
+		        </div>
+		      </div>
+		    </div>
 		</div>
 
-		<div class="col-xs-6" ng-switch="go">
-			<div ng-switch-when="ok">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<span>
-						 	Auxiliairy Center : <b>{{auxiliairy_center_selected.text}}</b>
-						 	Cost : <b>{{auxiliairy_center_selected.cost | currency}}</b>
-						</span>							
-						<span class="pull-right">							
-							<button type="submit" ng-click="apply()">Apply</button>
-						</span>
-
-					</div>
-					<div class="panel-body principal-header">
-						<span class="pull-right">
-							<select 
-						 		ng-model="critere.critere_id" 
-						 		ng-options="critere.id as critere.critere_txt for critere in models.criteres">
-						 		<option 
-						 		value="" 
-						 		disabled="true">
-						 		-- choose Criteria --
-						 		</option>
-						 	</select>
-						</span><br/>
-
-		                <table class="table table-condensed table-bordered">
-			              <thead>
-			                <tr>
-				                <th>Principals Centers</th><th>Initial Cost</th>
-				                <th>Critere Value</th><th>Allocated Cost</th>
-				                <th>Total Cost</th>
-			                </tr>
-			              </thead>
-			              <tbody>			 	
-
-			                <tr ng-repeat="pcs in principal_centers_selected">
-			                  <td>{{pcs.text}}</td>
-			                  <td>{{pcs.initialCost}}</td>
-			                  <td><input type="number" ng-model="pcs.criteriaValue" ng-change="calculate()"></td>
-			                  <td>{{pcs.allocatedCost}}</td>
-			                  <td>{{pcs.totalCost}}</td>
-			                </tr>			                
-			              </tbody>
-		            	</table>
-            		</div>
-
+		<div ng-switch-when="suivant">
+			<div class="panel panel-primary">
+				<div class="panel-heading" style="height: 50px;">
+					<span>
+					 	{{'ASSIGNING.AUX_CENTER' | translate}} : <b>{{selected_aux_cost_center.text}}</b>
+					 	{{'ASSIGNING.COST' | translate}} : <b>{{selected_aux_cost_center.cost | currency}}</b>
+					</span>
+					<span class="pull-right">
+						<button type="submit" ng-click="apply()" class="btn btn-default">Apply</button>
+					</span>
 				</div>
-				
-			</div>			
-		</div>
+				<div class="panel-body" style="height : 100%;">
+			        <table class="table table-condensed table-bordered">
+			          <thead>
+			            <tr>
+			                <th>{{'ASSIGNING.PRI_CENTERS' | translate}}</th><th>{{'ASSIGNING.INITIAL_COST' | translate}}</th>
+			                <th>{{'ASSIGNING.COEFF' | translate}}</th><th>{{'ASSIGNING.AL_COST' | translate}}</th>
+			                <th>{{'ASSIGNING.TOTAL' | translate}}</th>
+			            </tr>
+			          </thead>
+			          <tbody>
+			            <tr ng-repeat="pcs in model.selected_pri_cost_centers">
+			              <td>{{pcs.text}}</td>
+			              <td>{{pcs.initial_cost}}</td>
+			              <td><input type="number" ng-model="pcs.criteriaValue" ng-change="calculate()" class="form-invoice"></td>
+			              <td>{{pcs.allocatedCost}}</td>
+			              <td>{{pcs.totalCost}}</td>
+			            </tr>
 
-	</div>	
+			            <tr>
+			              	<td><b>{{'ASSIGNING.TOTALS' | translate}}</b></td>
+			              	<td colspan="3" align="right"><b>{{getTotalAllocatedCost() | currency}}</b></td>
+			              	<td colspan="4"><b>{{getTotal() | currency}}<b/></td>
+		              	</tr>
+			          </tbody>
+			    	</table>
+				</div>
+			</div>
+		</div>
+	</div>
+  </div>
 </div>
-
-
-
-

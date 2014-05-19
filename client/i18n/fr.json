@@ -1234,5 +1234,25 @@
     "INFO"                     :  "Information sur le service",
     "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
     "MODIFYING"                :  "Modification"
+},
+
+"ASSIGNING" : {
+    "TITLE"                : "Assignation",
+    "NAVIG"                : "Navigation",
+    "PARENT"               : "Gestion de centre de couts",
+    "CHOOSE"               : "Selectionner un centre de couts secondaire",
+    "INFO_COST_CENTER"     : "Details sur le centre de couts",
+    "ASSOCIATED_TO"        : "Les centres correspondants a :",
+    "PLEASE_SELECT"        : "(Selectionner centre frais SVP!)",
+    "NEXT"                 : "Suivant",
+    "TEXT_COST"            : "Designation",
+    "AUX_CENTER"           : "Centre Auxilliaire",
+    "COST"                 : "Cout",
+    "PRI_CENTERS"          : "Centres des couts principaux",
+    "INITIAL_COST"         : "Cout initial",
+    "COEFF"                : "Coeffiscient de repartition",
+    "AL_COST"              : "Cout alloue",
+    "TOTAL"                : "Total",
+    "TOTALS"               : "TOTAUX"
 }
 }

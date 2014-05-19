@@ -317,6 +317,31 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
 
 });
 
+
+app.get('/cost/:id_project/:cc_id', function(req, res, next) {
+  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account"+
+  " WHERE account.cc_id ='"+req.params.cc_id+"' AND account.account_type_id<>3";
+
+  db.execute(sql, function (err, ans) {
+    if (err) return next(err);
+    synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
+      if (err) { return next(err); }
+      console.log('[synthetic a retourner data]', data);
+      res.send(data);
+    });
+  });
+
+  function process (){
+
+
+
+  }
+
+  //res.send(20);
+});
+
+
+
 app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
   // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
   // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
