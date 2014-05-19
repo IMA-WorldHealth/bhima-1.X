@@ -55,7 +55,8 @@
       "/lot/",
       "/availableAccounts/",
       "/costCenterAccount/",
-      "/removeFromCostCenter/"
+      "/removeFromCostCenter/",
+      "/cost/"
     ]
   }
 }

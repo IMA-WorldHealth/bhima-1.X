@@ -73,19 +73,5 @@ angular.module('kpk.controllers')
     }
 
     $scope.loadPath = loadPath;
-
-    //run();
   }
 ]);
-
-
- // requettes.cost_centers = {
-    //   tables : {
-    //     'cost_center' : {
-    //       columns : ['id', 'text', 'note', 'cost', 'pc']
-    //     },
-    //     'enterprise' : { columns : ['name']
-    //     }
-    //   },
-    //   join : ['cost_center.enterprise_id=enterprise.id']
-    // }
