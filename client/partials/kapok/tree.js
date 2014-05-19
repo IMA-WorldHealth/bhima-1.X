@@ -1,37 +1,45 @@
 angular.module('kpk.controllers')
 .controller('tree', [
   '$scope',
-  '$q',
   '$location',
-  '$translate',
   'appcache',
   'connect',
-  function($scope, $q, $location, $translate, AppCache, connect) {
+  function($scope, $location, AppCache, connect) {
+    
     // TODO:
     //   Theoretically, the users and permissions depend on an
     //   enterprise, so do we need it or not?
- 
     var moduleNamespace = 'tree', applicationNamespace = 'application';
-    var cache = new AppCache(moduleNamespace),
-      applicationCache = new AppCache(applicationNamespace);
-    var originLocation, collapsed_model = [];
+    var cache = new AppCache(moduleNamespace);
+    var applicationCache = new AppCache(applicationNamespace);
+    var originLocation, collapsedModel = [];
 
     $scope.treeData = [];
+    
+    loadTreeOptions();
 
     function loadTreeOptions() {
+
+      var t = 5;
+
+      t = 5 & 1;
+
       cache.fetchAll()
       .then(function(res) {
-        collapsed_model = res;
+        collapsedModel = res;
         formatElementGroup($scope.treeData);
         selectTreeNode($scope.treeData, originLocation);
       });
     }
 
-    function formatElementGroup (group) {
-      if (!group) return;
+    function formatElementGroup(group) {
+      if (!group) {
+        return;
+      }
+
       return group.map(function (element) {
-        collapsed_model.some(function(item, index) {
-          if(item.key === element.unit_id) {
+        collapsedModel.some(function (item) {
+          if (item.key === element.unit_id) {
             element.collapsed = item.collapsed;
             return true;
           }

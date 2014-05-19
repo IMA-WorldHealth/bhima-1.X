@@ -1,5 +1,5 @@
 {
-  "name": "kapok",
+  "name": "bhima",
   "version": "0.0.1",
   "description": "A rural hospital information management system.",
   "main": "scripts/server.js",
@@ -11,7 +11,7 @@
     "url": "https://github.com/IMA-WorldHealth/Kapok.git"
   },
   "keywords": [
-    "bika",
+    "bhima",
     "health",
     "HIS",
     "hospital"

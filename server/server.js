@@ -54,6 +54,8 @@ app.configure(function () {
 });
 
 app.get('/', function (req, res, next) {
+  /*jshint unused : false*/
+ 
   // This is to preserve the /#/ path in the url
   res.sendfile('/index.html');
 });
@@ -378,6 +380,8 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
 });
 
 app.get('/tree', function (req, res, next) {
+  
+  /*jshint unused : false*/
   tree.load(req.session.user_id)
   .then(function (treeData) {
     res.send(treeData);
@@ -415,6 +419,7 @@ app.get('/location/:type/:id?', function (req, res, next) {
 
 app.get('/village/', function (req, res, next) {
 
+  /*jshint unused : false*/
   var sql =
     'SELECT `village`.`uuid` AS `uuid`,  `village`.`name` AS `village`, ' +
     '`sector`.`uuid` AS `sector_uuid`, `sector`.`name` as `sector` ' +
@@ -429,6 +434,7 @@ app.get('/village/', function (req, res, next) {
 
 app.get('/sector/', function (req, res, next) {
 
+  /*jshint unused : false*/
   var sql = "SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` "+
             "as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` "+
             "WHERE `sector`.`province_uuid` = `province`.`uuid`";
@@ -439,6 +445,8 @@ app.get('/sector/', function (req, res, next) {
 });
 
 app.get('/province/', function (req, res, next) {
+
+  /*jshint unused : false*/
   var sql =
     "SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` "+
     "AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
@@ -583,6 +591,8 @@ app.get('/max_trans/:project_id', function (req, res, next) {
 });
 
 app.get('/print/journal', function (req, res, next) {
+  
+  /*jshint unused : false*/
   res.send('Under Contruction');
 });
 
@@ -608,7 +618,7 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   .done();
 });
 
-app.listen(cfg.port, console.log("Application running on localhost:" + cfg.port));
+app.listen(cfg.port, console.log('Application running on localhost:' + cfg.port));
 
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
