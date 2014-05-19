@@ -23,7 +23,7 @@ angular.module('kpk.controllers')
       {
         key : $translate('STOCK.EXIT.KEY'),
         ico : 'glyphicon-export',
-        link : '/stock/exit'
+        link : '/stock/distribution'
       },
       {
         key : $translate('STOCK.LOSS.KEY'),
