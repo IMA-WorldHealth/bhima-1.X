@@ -13,6 +13,12 @@ angular.module('kpk.controllers')
   '$http',
   '$location',
   function ($scope, $translate, validate, connect, messenger, appstate, util, uuid, $q, precision, $http, $location) {
+    var session = $scope.session = {};
+    var dependencies = {};
+
+    session.state = 1;
+
+
     var distribution = {}, dependencies = {};
     distribution.visible = true;
     distribution.noEmpty = false;
