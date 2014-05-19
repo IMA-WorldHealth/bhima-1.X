@@ -3,7 +3,7 @@
 (function (angular) {
   'use strict';
 
-  var services = angular.module('kpk.services', []);
+  var services = angular.module('bhima.services', []);
 
   services.service('util', function() {
 
@@ -258,7 +258,7 @@
   }])
 
   .factory('appcache', ['$rootScope', '$q', function ($rootScope, $q) {
-    var DB_NAME = "kpk", VERSION = 21;
+    var DB_NAME = "bhima", VERSION = 21;
     var db, cacheSupported, dbdefer = $q.defer();
 
     function cacheInstance(namespace) {

@@ -3,7 +3,7 @@
 (function (angular) {
   'use strict';
 
-  angular.module('kpk.directives', [])
+  angular.module('bhima.directives', [])
 
     .directive('ngFocus', ['$parse', function ($parse) {
       return function(scope, element, attr) {
