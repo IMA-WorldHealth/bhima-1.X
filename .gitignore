@@ -11,6 +11,9 @@ scripts/sql/backup/
 scripts/mail/out/
 
 client/js/controllers/
+client/src/js/controllers/
+client/dist/
+
 misc/migrate/out/
 
 # ignore build tool generated files
