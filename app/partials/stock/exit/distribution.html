@@ -3,156 +3,178 @@
 </header>
 
 <div class="content">
+  
+  <div class="row">
+    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
+      <span 
+        class="label label-success"
+        >1</span> Locate patient
+    </div>
+  </div>
 
   <div class="row">
-    <div class="col-xs-6">
+    <div class="col-xs-12">
       <div find-patient on-search-complete="initialiseDistributionDetails"></div>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-xs-6" ng-switch="ready">
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <b>Information Generale sur la distribution des medicaments</b>
-          <p>
-            Les ventes aparaittront ici
-          </p>
-        </div>
-      </div>
-
-      <div class="panel panel-primary" ng-switch-when="ready">
-        <div class="panel-heading">
-          {{ "DISTRIBUTION.SALE_DETAILS" | translate }}
-        </div>
-        <div class="row panel-body" style="height: 180px; overflow: auto;">
-          <div class="col-xs-12">
-            <table class="table table-bordered table-condensed">
-              <thead>
-                <tr>
-                  <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
-                  <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                  <th>{{ "COLUMNS.DATE" | translate }}</th>
-                  <th>{{ "COLUMNS.STATE" | translate }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="sale in distribution.sales" ng-click="add($index)" style="cursor : pointer;">
-                  <td>{{sale.reference}}</td>
-                  <td>{{sale.description}}</td>
-                  <td>{{sale.trans_date | date}}</td>
-                  <td>{{sale.etat}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-6">
-      <div class="panel panel-primary">
-          <div class="panel-heading" >
-            {{ "DISTRIBUTION.SELECTED_SALE_DETAILS" | translate }} <b>:{{selectedSale.reference}}</b><span ng-click="remove()" class="glyphicon glyphicon-repeat pull-right" style="cursor : pointer;"></span>
-          </div>
-
-          <div class="col-xs-12 panel-body" style="height: 180px; overflow: auto;">
-            <table class="table table-bordered table-condensed">
-              <thead>
-                <tr>
-                  <th>{{ "COLUMNS.CODE" | translate }}</th>
-                  <th>{{ "COLUMNS.ITEM" | translate }}</th>
-                  <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th>
-                  <th>{{ "COLUMNS.QTY_AVAIL" | translate }}</th>
-                  <th>{{ "COLUMNS.AVAILABLE" | translate }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  ng-repeat="item in selectedSale.sale_items"
-                  ng-click="add($index)"
-                  style="cursor : pointer;"
-                  ng-class="{'incomplete-outline': item.avail=='NO', 'complete-outline': item.avail=='YES'}">
-                  <td>{{item.code}}</td>
-                  <td>{{item.text}}</td>
-                  <td>{{item.quantity}}</td>
-                  <td>{{item.stock}}</td>
-                  <td><b>{{item.avail}}</b></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-      </div>
+    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
+      <span class="label label-primary">2</span> Select prescription sale
     </div>
   </div>
 
-  <div class="panel panel-primary">
-    <div ng-click="distribution.visible=!distribution.visible" class="panel-heading">
-      {{ "DISTRIBUTION.LOT_DETAILS" | translate }}
-      <div class="pull-right">
-        <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !distribution.visible, 'glyphicon-eye-open': distribution.visible}"></span>
-      </div>
-    </div>
-    <div ng-show="distribution.visible">
-      <div class="row">
-        <div class="col-xs-12">
-          <table class="table table-bordered table-condensed">
-            <thead>
-              <tr ng-show="resolve()">
-                <th colspan="4"><small style="color : red;"><b>{{'DISTRIBUTION.EMPTY_MESSAGE' | translate}}</b></small></th>
-              </tr>
-              <tr>
-                <th>{{ "COLUMNS.CODE_ITEM" | translate }}</th>
-                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                <th>{{ "COLUMNS.LOT" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="item in selectedSale.sale_items">
-                <td>{{item.code}}</td>
-                <td>{{item.text}}</td>
-                <td>
-                  <!--select
-                    required
-                    class="form-kapok"
-                    name="lotname"
-                    id="lotID"
-                    ng-model="item.tracking_number"
-                  >
-                  <option ng-repeat="lot in item.lots" value='{{lot.tracking_number}}' ng-selected="{{lot.setted==true}}">{{lot.tracking_number}} - {{lot.expiration_date | date}} - {{lot.quantity}}<input type"checkbox"/></option>
-                  </select-->
 
-                  <div id="checkboxlistID" style="border:0px; background-color:#fff; color:#000; width:100%; height: 80px; overflow-y: scroll;">
-                    <div ng-repeat="lot in item.lots">
-                      <label>
-                      <input type="checkbox" ng-model="lot.setted" ng-change="checkStockAvailability(lot)"/>
-                        <span>{{lot.tracking_number}} - {{lot.expiration_date | date}} - {{lot.quantity}}</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <!--div class="col-xs-12"  >
-
-                    <button class="btn btn-sm btn-primary dropdown-toggle">
-                      {{ item.lots[0].tracking_number || "S" | translate }}
-                      <span class="caret" data-caret="&#9660;"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li ng-repeat="lot in item.lots">
-                        <label>
-                          <input type="checkbox" ng-model="lot.isSelected">
-                            <span>{{lot.tracking_number}} - {{lot.expiration_date | date}} - {{lot.quantity}}</span>
-                        </label>
-                      </li>
-                    </ul>
-                  </div-->
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <div class="row">
+    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
+      <span class="label label-primary">3</span> Allocate medicine
     </div>
   </div>
+
+<!--  -->
+<!--   <div class="row"> -->
+<!--     <div class="col&#45;xs&#45;6" ng&#45;switch="ready"> -->
+<!--       <div ng&#45;switch&#45;default> -->
+<!--         <div class="alert alert&#45;info"> -->
+<!--           <b>Information Generale sur la distribution des medicaments</b> -->
+<!--           <p> -->
+<!--             Les ventes aparaittront ici -->
+<!--           </p> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--  -->
+<!--       <div class="panel panel&#45;primary" ng&#45;switch&#45;when="ready"> -->
+<!--         <div class="panel&#45;heading"> -->
+<!--           {{ "DISTRIBUTION.SALE_DETAILS" | translate }} -->
+<!--         </div> -->
+<!--         <div class="row panel&#45;body" style="height: 180px; overflow: auto;"> -->
+<!--           <div class="col&#45;xs&#45;12"> -->
+<!--             <table class="table table&#45;bordered table&#45;condensed"> -->
+<!--               <thead> -->
+<!--                 <tr> -->
+<!--                   <th>{{ "COLUMNS.REFERENCE" | translate }}</th> -->
+<!--                   <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th> -->
+<!--                   <th>{{ "COLUMNS.DATE" | translate }}</th> -->
+<!--                   <th>{{ "COLUMNS.STATE" | translate }}</th> -->
+<!--                 </tr> -->
+<!--               </thead> -->
+<!--               <tbody> -->
+<!--                 <tr ng&#45;repeat="sale in distribution.sales" ng&#45;click="add($index)" style="cursor : pointer;"> -->
+<!--                   <td>{{sale.reference}}</td> -->
+<!--                   <td>{{sale.description}}</td> -->
+<!--                   <td>{{sale.trans_date | date}}</td> -->
+<!--                   <td>{{sale.etat}}</td> -->
+<!--                 </tr> -->
+<!--               </tbody> -->
+<!--             </table> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--     <div class="col&#45;xs&#45;6"> -->
+<!--       <div class="panel panel&#45;primary"> -->
+<!--           <div class="panel&#45;heading" > -->
+<!--             {{ "DISTRIBUTION.SELECTED_SALE_DETAILS" | translate }} <b>:{{selectedSale.reference}}</b><span ng&#45;click="remove()" class="glyphicon glyphicon&#45;repeat pull&#45;right" style="cursor : pointer;"></span> -->
+<!--           </div> -->
+<!--  -->
+<!--           <div class="col&#45;xs&#45;12 panel&#45;body" style="height: 180px; overflow: auto;"> -->
+<!--             <table class="table table&#45;bordered table&#45;condensed"> -->
+<!--               <thead> -->
+<!--                 <tr> -->
+<!--                   <th>{{ "COLUMNS.CODE" | translate }}</th> -->
+<!--                   <th>{{ "COLUMNS.ITEM" | translate }}</th> -->
+<!--                   <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th> -->
+<!--                   <th>{{ "COLUMNS.QTY_AVAIL" | translate }}</th> -->
+<!--                   <th>{{ "COLUMNS.AVAILABLE" | translate }}</th> -->
+<!--                 </tr> -->
+<!--               </thead> -->
+<!--               <tbody> -->
+<!--                 <tr -->
+<!--                   ng&#45;repeat="item in selectedSale.sale_items" -->
+<!--                   ng&#45;click="add($index)" -->
+<!--                   style="cursor : pointer;" -->
+<!--                   ng&#45;class="{'incomplete&#45;outline': item.avail=='NO', 'complete&#45;outline': item.avail=='YES'}"> -->
+<!--                   <td>{{item.code}}</td> -->
+<!--                   <td>{{item.text}}</td> -->
+<!--                   <td>{{item.quantity}}</td> -->
+<!--                   <td>{{item.stock}}</td> -->
+<!--                   <td><b>{{item.avail}}</b></td> -->
+<!--                 </tr> -->
+<!--               </tbody> -->
+<!--             </table> -->
+<!--           </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
+<!--  -->
+<!--   <div class="panel panel&#45;primary"> -->
+<!--     <div ng&#45;click="distribution.visible=!distribution.visible" class="panel&#45;heading"> -->
+<!--       {{ "DISTRIBUTION.LOT_DETAILS" | translate }} -->
+<!--       <div class="pull&#45;right"> -->
+<!--         <span  class="glyphicon" ng&#45;class="{'glyphicon&#45;eye&#45;close': !distribution.visible, 'glyphicon&#45;eye&#45;open': distribution.visible}"></span> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--     <div ng&#45;show="distribution.visible"> -->
+<!--       <div class="row"> -->
+<!--         <div class="col&#45;xs&#45;12"> -->
+<!--           <table class="table table&#45;bordered table&#45;condensed"> -->
+<!--             <thead> -->
+<!--               <tr ng&#45;show="resolve()"> -->
+<!--                 <th colspan="4"><small style="color : red;"><b>{{'DISTRIBUTION.EMPTY_MESSAGE' | translate}}</b></small></th> -->
+<!--               </tr> -->
+<!--               <tr> -->
+<!--                 <th>{{ "COLUMNS.CODE_ITEM" | translate }}</th> -->
+<!--                 <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th> -->
+<!--                 <th>{{ "COLUMNS.LOT" | translate }}</th> -->
+<!--               </tr> -->
+<!--             </thead> -->
+<!--             <tbody> -->
+<!--               <tr ng&#45;repeat="item in selectedSale.sale_items"> -->
+<!--                 <td>{{item.code}}</td> -->
+<!--                 <td>{{item.text}}</td> -->
+<!--                 <td> -->
+<!--                   <!&#45;&#45;select -->
+<!--                     required -->
+<!--                     class="form&#45;kapok" -->
+<!--                     name="lotname" -->
+<!--                     id="lotID" -->
+<!--                     ng&#45;model="item.tracking_number" -->
+<!--                   > -->
+<!--                   <option ng&#45;repeat="lot in item.lots" value='{{lot.tracking_number}}' ng&#45;selected="{{lot.setted==true}}">{{lot.tracking_number}} &#45; {{lot.expiration_date | date}} &#45; {{lot.quantity}}<input type"checkbox"/></option> -->
+<!--                   </select&#45;&#45;> -->
+<!--  -->
+<!--                   <div id="checkboxlistID" style="border:0px; background&#45;color:#fff; color:#000; width:100%; height: 80px; overflow&#45;y: scroll;"> -->
+<!--                     <div ng&#45;repeat="lot in item.lots"> -->
+<!--                       <label> -->
+<!--                       <input type="checkbox" ng&#45;model="lot.setted" ng&#45;change="checkStockAvailability(lot)"/> -->
+<!--                         <span>{{lot.tracking_number}} &#45; {{lot.expiration_date | date}} &#45; {{lot.quantity}}</span> -->
+<!--                       </label> -->
+<!--                     </div> -->
+<!--                   </div> -->
+<!--  -->
+<!--                   <!&#45;&#45;div class="col&#45;xs&#45;12"  > -->
+<!--  -->
+<!--                     <button class="btn btn&#45;sm btn&#45;primary dropdown&#45;toggle"> -->
+<!--                       {{ item.lots[0].tracking_number || "S" | translate }} -->
+<!--                       <span class="caret" data&#45;caret="&#38;#9660;"></span> -->
+<!--                     </button> -->
+<!--                     <ul class="dropdown&#45;menu"> -->
+<!--                       <li ng&#45;repeat="lot in item.lots"> -->
+<!--                         <label> -->
+<!--                           <input type="checkbox" ng&#45;model="lot.isSelected"> -->
+<!--                             <span>{{lot.tracking_number}} &#45; {{lot.expiration_date | date}} &#45; {{lot.quantity}}</span> -->
+<!--                         </label> -->
+<!--                       </li> -->
+<!--                     </ul> -->
+<!--                   </div&#45;&#45;> -->
+<!--                 </td> -->
+<!--               </tr> -->
+<!--             </tbody> -->
+<!--           </table> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
 </div>
 
 <section class="bar-bottom">
