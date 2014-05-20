@@ -2,7 +2,6 @@
 
 // import node dependencies
 var express      = require('express'),
-    domain       = require('domain'),
     url          = require('url');
 
 // import configuration
@@ -24,16 +23,16 @@ var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
     errorHandler = require('./lib/error/handler');
 
 // import routes
-var report         = require('./lib/logic/report')(db),
-    trialbalance   = require('./lib/logic/trialbalance')(db),
-    ledger         = require('./lib/logic/ledger')(db),
-    fiscal         = require('./lib/logic/fiscal')(db),
-    synthetic      = require('./lib/logic/synthetic')(db, sanitize),
-    journal        = require('./lib/logic/journal')(db, synthetic),
-    createSale     = require('./lib/logic/createSale')(db, parser, journal),
-    createPurchase = require('./lib/logic/createPurchase')(db, parser, journal),
-    depotRouter    = require('./lib/logic/depot')(db),
-    drugRouter     = require('./lib/logic/drug')(db);
+var report         = require('./routes/report')(db),
+    trialbalance   = require('./routes/trialbalance')(db),
+    ledger         = require('./routes/ledger')(db),
+    fiscal         = require('./routes/fiscal')(db),
+    synthetic      = require('./routes/synthetic')(db, sanitize),
+    journal        = require('./routes/journal')(db, synthetic),
+    createSale     = require('./routes/createSale')(db, parser, journal),
+    createPurchase = require('./routes/createPurchase')(db, parser, journal),
+    depotRouter    = require('./routes/depot')(db),
+    drugRouter     = require('./routes/drug')(db);
 
 var uuid         = require('./lib/util/guid');
 
