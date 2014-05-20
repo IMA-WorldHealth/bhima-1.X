@@ -20,7 +20,7 @@ angular.module('bhima.controllers')
     });
 
     $scope.updateLanguage = function updateLanuage(key) {
-      $translate.uses(key);
+      $translate.use(key);
       cache.put('language', {current: key});
       messenger.push({type: 'success', msg: 'Language preference updated: ' + key});
     };
