@@ -10,16 +10,18 @@ test/reports/
 scripts/sql/backup/
 scripts/mail/out/
 
-client/js/controllers/
-client/src/js/controllers/
-client/dist/
+#Ignore build
+client/dest/
+
+/*client/js/controllers/*/
+/*client/src/js/controllers/*/
 
 misc/migrate/out/
 
 # ignore build tool generated files
-app/js/controllers/controllers.js
-./app/js/controllers/controllers.js
-./app/css/kapok.min.css
+/*app/js/controllers/controllers.js*/
+/*./app/js/controllers/controllers.js*/
+/*./app/css/kapok.min.css*/
 
 # ignore log files
 *.log
