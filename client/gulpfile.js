@@ -15,8 +15,8 @@ var paths = {
   styles : ['src/partials/**/*.css', 'src/partials/**/**/*.css', 'src/css/*.css', '!src/css/*.min.css', 'src/css/grid/*.css'],
   templates : ['src/partials/**/*.html'],
   assets : ['src/assets/**/*'],
-  structure : ['src/index.html', 'src/login.html', 'src/error.html', 'project.html', 'src/js/app.js'],
-  vendor : ['vendor/']
+  static : ['src/index.html', 'src/login.html', 'src/error.html', 'src/project.html', 'src/js/app.js'],
+  vendor : ['vendor/*']
 };
 
 var destPath = 'dest/';
@@ -24,7 +24,7 @@ var destPath = 'dest/';
 gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
     .pipe(jshint(jshintrcPath))
-    .pipe(jshint.reporter('default'))
+    // .pipe(jshint.reporter('default'))
     .pipe(uglify())
     .pipe(concat('bhima.min.js'))
     .pipe(gulp.dest(destPath))
@@ -36,7 +36,7 @@ gulp.task('styles', function () {
   return gulp.src(paths.styles)
     .pipe(minifycss())
     .pipe(concat('style.min.css'))
-    .pipe(gulp.dest(destPath))
+    .pipe(gulp.dest(destPath + 'css/'))
     .pipe(notify({ message : 'Completed compliling styles.' }));
 });
 
@@ -61,8 +61,8 @@ gulp.task('vendor', function () {
 });
 
 // TODO rename
-gulp.task('structure', function () {
-  return gulp.src(paths.structure)
+gulp.task('static', function () {
+  return gulp.src(paths.static)
     .pipe(gulp.dest(destPath))
     .pipe(notify({ message : 'Completed compiling/ transfering structure files'}));
 });
@@ -73,8 +73,9 @@ gulp.task('watch', function () {
   gulp.watch(paths.styles, ['styles']);
   gulp.watch(paths.templates, ['templates']);
   gulp.watch(paths.scripts, ['scripts']);
+  gulp.watch(paths.structure, ['structure']);
 });
 
 gulp.task('default', [], function () {
-  gulp.start('scripts', 'templates', 'styles', 'assets', 'vendor', 'structure');
+  gulp.start('scripts', 'templates', 'styles', 'assets', 'vendor', 'static');
 });
