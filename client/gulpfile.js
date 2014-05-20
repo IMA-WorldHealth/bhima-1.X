@@ -14,9 +14,9 @@ var paths = {
 
   // FIXME You shouldn't need src/partials/**/**/*.css
   styles : ['src/partials/**/*.css', 'src/partials/**/**/*.css', 'src/css/*.css', '!src/css/*.min.css', 'src/css/grid/*.css'],
-  templates : ['src/partials/**/*.html'],
+  // templates : ['src/partials/**/*.html'],
   assets : ['src/assets/**/*'],
-  static : ['src/index.html', 'src/login.html', 'src/error.html', 'src/project.html', 'src/js/app.js'],
+  static : ['src/index.html', 'src/login.html', 'src/error.html', 'src/project.html', 'src/js/app.js', 'src/i18n/*', 'src/css/fonts/*', 'src/partials/**/*.html'],
   vendor : ['vendor/**/*']
 };
 
@@ -26,9 +26,8 @@ gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
     // .pipe(jshint(jshintrcPath))
     // .pipe(jshint.reporter('default'))
-    // .pipe(uglify())
-    //.pipe(header('angular.module(\'bhima.services\', [])'))
-    .pipe(concat('bhima.min.js'))
+    .pipe(uglify())
+    .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(destPath))
     .pipe(notify({ message : 'Completed compiling scripts.' }));
 });
@@ -50,12 +49,12 @@ gulp.task('assets', function () {
     .pipe(notify({ message : 'Completed optimizing and transfering assets' }));
 });
 
-gulp.task('templates', function () {
-  return gulp.src(paths.templates)
-    // TODO rename partials -> templates/
-    .pipe(gulp.dest(destPath + 'partials/'))
-    .pipe(notify({message : 'Completed transfering templates.' }));
-});
+// gulp.task('templates', function () {
+//   return gulp.src(paths.templates)
+//     // TODO rename partials -> templates/
+//     .pipe(gulp.dest(destPath + 'partials/'))
+//     .pipe(notify({message : 'Completed transfering templates.' }));
+// });
 
 gulp.task('vendor', function () {
   return gulp.src(paths.vendor)
@@ -65,7 +64,7 @@ gulp.task('vendor', function () {
 
 // TODO rename
 gulp.task('static', function () {
-  return gulp.src(paths.static)
+  return gulp.src(paths.static, { base : './src/' })
     .pipe(gulp.dest(destPath))
     .pipe(notify({ message : 'Completed compiling/ transfering structure files'}));
 });
@@ -73,11 +72,11 @@ gulp.task('static', function () {
 gulp.task('watch', function () {
   // TODO Use gulp-changed/ gulp-newer
   gulp.watch(paths.styles, ['styles']);
-  gulp.watch(paths.templates, ['templates']);
+  // gulp.watch(paths.templates, ['templates']);
   gulp.watch(paths.scripts, ['scripts']);
   gulp.watch(paths.static, ['static']);
 });
 
 gulp.task('default', [], function () {
-  gulp.start('scripts', 'templates', 'styles', 'assets', 'vendor', 'static');
+  gulp.start('scripts', 'styles', 'assets', 'vendor', 'static');
 });
