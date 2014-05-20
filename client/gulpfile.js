@@ -9,7 +9,7 @@ var gulp = require('gulp'),
 var jshintrcPath = '../.jshintrc';
 
 var paths = {
-  scripts : ['src/**/*.js', '!src/js/app.js'],
+  scripts : ['src/js/define.js', 'src/**/*.js', '!src/js/app.js'],
   
   // FIXME You shouldn't need src/partials/**/**/*.css
   styles : ['src/partials/**/*.css', 'src/partials/**/**/*.css', 'src/css/*.css', '!src/css/*.min.css', 'src/css/grid/*.css'],
@@ -50,7 +50,8 @@ gulp.task('assets', function () {
 
 gulp.task('templates', function () {
   return gulp.src(paths.templates)
-    .pipe(gulp.dest(destPath + 'templates/'))
+    // TODO rename partials -> templates/
+    .pipe(gulp.dest(destPath + 'partials/'))
     .pipe(notify({message : 'Completed transfering templates.' }));
 });
 
