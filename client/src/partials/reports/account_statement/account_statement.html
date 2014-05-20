@@ -7,14 +7,14 @@
   <div class="row">
 
     <div class="col-xs-3">
-      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateFrom" class="form-kapok">
+      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateFrom" class="form-bhima">
     </div>
     <div class="col-xs-3">
-      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateTo" class="form-kapok">
+      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateTo" class="form-bhima">
     </div>
 
     <!-- <div class="col&#45;xs&#45;3"> -->
-    <!--   <input ng&#45;disabled="session.select || !session.loaded" type="number" class="form&#45;kapok spinner" ng&#45;model="session.config.limit"> -->
+    <!--   <input ng&#45;disabled="session.select || !session.loaded" type="number" class="form&#45;bhima spinner" ng&#45;model="session.config.limit"> -->
     <!-- </div> -->
 
   </div>
@@ -32,7 +32,7 @@
       </div>
       
       <div class="input-group"> 
-        <input class="form-kapok" type="text" ng-model="session.requestId" placeholder="Account ID">
+        <input class="form-bhima" type="text" ng-model="session.requestId" placeholder="Account ID">
         <span class="input-group-btn">
           <button ng-click="requestAccount(session.requestId)" class="btn btn-default btn-sm square">{{ "FORM.SUBMIT" | translate }}</button>
         </span>

@@ -2,7 +2,7 @@
 (function (angular) {
   'use strict';
 
-  angular.module('kpk.filters', [])
+  angular.module('bhima.filters', [])
     .filter('boolean', function() {
       return function (input) {
         return Boolean(Number(input));

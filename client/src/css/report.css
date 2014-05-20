@@ -1,0 +1,51 @@
+.report {
+  position : absolute;
+  top      : 85px;
+  left     : 0;
+  right    : 0;
+  overflow : auto;
+}
+
+.reportTable {
+  border     : 1px solid #9F9F9F;  /*hack*/
+  border-top : 0;
+  width      : 100%;
+  /* page-break-inside : auto; */
+}
+
+.reportTable tr {
+  /* page-break-inside: avoid; */
+  /* page-break-after: auto; */
+}
+
+.reportTable thead > tr > th {
+  border       : 1px solid #9F9F9F;
+  padding-left : 5px;
+}
+
+.reportTable tbody > tr > td {
+  border         : 1px solid #9F9F9F;
+  vertical-align : right;
+}
+
+.reportTitle {
+  font-size   : 110%;
+  font-weight : bold;
+}
+
+.reportBody {
+  padding     : 10px;
+  background  : #f3f3f3;
+  min-height  : 100%;
+}
+
+.reportFrame {
+  padding    : 10px;
+  border     : 1px solid #DDD;
+  background : white;
+  overflow   : auto;
+}
+
+.report-compressed {
+  bottom : 37px;
+}

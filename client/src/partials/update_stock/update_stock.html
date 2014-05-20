@@ -1,5 +1,5 @@
-<header> 
-  <span>{{ "UPDATE_STOCK.TITLE" | translate }}</span>
+<header data-header> 
+  {{ "UPDATE_STOCK.TITLE" | translate }}
 </header>
 
 <section class="top-nav"></section>
@@ -23,7 +23,7 @@
         <div class="panel-body" ng-show="session.search">
           <div class="input-group"> 
             <input 
-              class="form-kapok" 
+              class="form-bhima" 
               type="text"
               ng-model="session.stockSearch"
               typeahead="stock as stock.text for stock in model.inventory.data | filter: $viewValue | limitTo:10"
@@ -98,22 +98,22 @@
 
           <div class="form-group"> 
             <label>{{'COLUMNS.SALE_PRICE' | translate}}</label>
-            <input class="form-kapok" ng-model="selectedStock.price">
+            <input class="form-bhima" ng-model="selectedStock.price">
           </div>
 
           <div class="form-group">
             <label>{{'COLUMNS.PURCHASE_PRICE' | translate}}</label>
-            <input class="form-kapok" ng-model="selectedStock.purchase_price">
+            <input class="form-bhima" ng-model="selectedStock.purchase_price">
           </div>
 
           <div class="form-group">
             <label>{{'COLUMNS.CODE' | translate}}</label>
-            <input class="form-kapok" ng-model="selectedStock.code">
+            <input class="form-bhima" ng-model="selectedStock.code">
           </div>
 
           <div class="form-group">
             <label>{{'COLUMNS.DESCRIPTION' | translate}}</label>
-            <input class="form-kapok" ng-model="selectedStock.text">
+            <input class="form-bhima" ng-model="selectedStock.text">
           </div>
         </div>
 

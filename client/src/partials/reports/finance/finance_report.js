@@ -1,5 +1,5 @@
 //TODO Two step, download fiscal years, and then populate finance query, validate service will need to be updated
-angular.module('kpk.controllers')
+angular.module('bhima.controllers')
 .controller('reportFinance', [
   '$scope',
   '$q',

@@ -1,23 +1,5 @@
-.panel-bika { 
-  border-color: #01AC07;
-}
-
 .note { 
   min-height: 10em;
-}
-
-/*Not optimal to control utils layout on two different elements*/
-.util {
-  border-bottom: 1px solid #eeeeee;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-}
-
-.util-bottom {
-  border-top: 1px solid #eeeeee;
-  padding-top: 5px;
-  border-bottom: 1px solid #eeeeee;
-  padding-bottom: 5px
 }
 
 /*FIXME*/

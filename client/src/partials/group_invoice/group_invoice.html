@@ -34,7 +34,7 @@
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "GROUP_INVOICE.GROUP" | translate }}: </label>
               <div class="col-xs-8">
-                <select class="form-kapok" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
+                <select class="form-bhima" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
                   <option value="">-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
                 </select>
               </div>
@@ -43,7 +43,7 @@
             <div class="form-group">
               <label class="control-label col-xs-2"> {{ "GROUP_INVOICE.DEBITOR" | translate }}:</label>
               <div class="col-xs-8">
-                <select class="form-kapok" ng-model="selected.debitor" ng-options="debitor as debitor.text for debitor in debitors.data">
+                <select class="form-bhima" ng-model="selected.debitor" ng-options="debitor as debitor.text for debitor in debitors.data">
                   <option value="">-- {{ "SELECT.DEBITOR" | translate }}--</option>
                 </select>
               </div>
@@ -113,7 +113,7 @@
                   <p class="form-control-static col-xs-3">{{ invoice.balance | currency}}</p>
                   <div class="col-xs-6 input-group">
                     <span class="input-group-addon">$</span>
-                    <input type="number" class="form-kapok" ng-model="invoice.payment" min="0" max="{{invoice.balance}}">
+                    <input type="number" class="form-bhima" ng-model="invoice.payment" min="0" max="{{invoice.balance}}">
                   </div>
                 </div>
 
@@ -162,7 +162,7 @@
                 <p class="col-xs-2 form-control-static">{{ (paymentBalance | currency) || ("GROUP_INVOICE.ERROR_TXT_1" | translate) }}</p>
                 <label class="control-label col-xs-2">{{ "GROUP_INVOICE.AUTHORIZED_BY" | translate }}:</label>
                 <div class="col-xs-6">
-                  <input class="form-kapok" ng-model="payment.authorized_by" >
+                  <input class="form-bhima" ng-model="payment.authorized_by" >
                 </div>
               </div>
 

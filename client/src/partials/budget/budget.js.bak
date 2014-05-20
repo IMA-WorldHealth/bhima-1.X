@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('budgetController', function($scope, $q, $routeParams, connect, appstate, messenger) { 
+angular.module('bhima.controllers').controller('budgetController', function($scope, $q, $routeParams, connect, appstate, messenger) { 
     /////
     //  summary: 
     //    Controller behaviour for the budgeting unit, fetches displays and allows updates on data joined from 

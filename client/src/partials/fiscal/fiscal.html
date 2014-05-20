@@ -17,14 +17,14 @@
           <!-- <h3>{{enterprise.name}} <small>{{'FISCAL_YEAR.FISCAL_YEAR_SELECTION' | translate}}</small></h3> -->
         </div>
       </div>
-      
+
       <div class="row">
         <div class="col-xs-12">
           <div class="panel panel-default" style="overflow-x: auto;">
             <div class="panel-heading">
               <span class="glyphicon glyphicon-list-alt"></span> {{ "FISCAL_YEAR.RECORDS" | translate }}
             </div>
-            
+
             <table class="table">
               <thead>
                 <tr>
@@ -54,7 +54,7 @@
           <div class="alert alert-info">
             <h4>{{ "FISCAL_YEAR.TITLE" | translate }}</h4>
             <p>{{ "FISCAL_YEAR.HELP_TXT" | translate }} :</p>
-            <br/> 
+            <br/>
             <ul class="list-plain">
               <li><i class="glyphicon glyphicon-pencil"></i>{{ 'FISCAL_YEAR.EDIT' | translate }}</li>
               <li><i class="glyphicon glyphicon-file"></i>{{ 'FISCAL_YEAR.CREATION' | translate }}</li>
@@ -69,19 +69,19 @@
                 <div class="panel-heading">
                   <span class="capital">{{ 'FISCAL_YEAR.NEW' | translate }}</span>
                 </div>
-              
+
                 <div class="panel-body">
             <div class="col-xs-6">
 
                 <form novalidate name="form">
                   <div class="form-group">
                     <label for="fiscalNote" class="capital">{{'FISCAL_YEAR.DESC' | translate}}</label>
-                    <input required id="fiscalNote" class="form-kapok" ng-model="new_model.note">
+                    <input required id="fiscalNote" class="form-bhima" ng-model="new_model.note">
                   </div>
 
                   <div class="form-group">
                     <label for="startMonth" class="capital">{{'FISCAL_YEAR.START_MONTH' | translate}}</label>
-                    <input required type="month" id="startMonth" class="form-kapok" ng-model="new_model.start">
+                    <input required type="month" id="startMonth" class="form-bhima" ng-model="new_model.start">
 
                   </div>
 
@@ -102,7 +102,7 @@
 
                   <div class="form-group">
                     <label for="endMonth" class="capital">{{'FISCAL_YEAR.END_MONTH' | translate}}</label>
-                    <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-kapok" ng-model="new_model.end">
+                    <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-bhima" ng-model="new_model.end">
                   </div>
                   <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-success">{{'UTIL.SUBMIT' | translate}}</button>
                 </form>
@@ -130,9 +130,9 @@
                 <div class="form-group">
                   <!--TODO: -->
                   <label for="fiscal-name" class="control-label">{{ 'FISCAL_YEAR.NAME' | translate }}</label>
-                  <input type="text" class="form-kapok" id="fiscal-name" ng-model="selected.fiscal_year_txt">
+                  <input type="text" class="form-bhima" id="fiscal-name" ng-model="selected.fiscal_year_txt">
                   <!--xs doesn't have offset for some reason?-->
-                  
+
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" ng-model="selected.locked"> {{'FISCAL_YEAR.LOCK' | translate}}
@@ -143,20 +143,20 @@
                 <div class="form-group">
                   <div class="form-group">
                     <label for="fiscal-months" class="control-label">{{'FISCAL_YEAR.TOTAL_MONTH' | translate}}</label>
-                    <input type="text" class="form-kapok" id="fiscal-months" ng-model="selected.number_of_months">
+                    <input type="text" class="form-bhima" id="fiscal-months" ng-model="selected.number_of_months">
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="form-group">
                     <label for="first-voucher" class="control-label">{{'FISCAL_YEAR.FIRST_VOUCHER' | translate}}</label>
 
-                    <input type="text" class="form-kapok" id="first-voucher"
+                    <input type="text" class="form-bhima" id="first-voucher"
                            ng-model="selected.transaction_start_number">
                   </div>
                   <div class="form-group">
                     <label for="last-voucher" class="control-label">{{'FISCAL_YEAR.LAST_VOUCHER' | translate}}</label>
 
-                      <input type="text" class="form-kapok" id="last-voucher"
+                      <input type="text" class="form-bhima" id="last-voucher"
                              ng-model="selected.transaction_stop_number">
                   </div>
                 </div>
@@ -166,13 +166,13 @@
 
                       <!--TODO: This is temporary data - logic should be implemented-->
                       <!--FIXME: Logic should all be taken care of in controller-->
-                      <input type="text" class="form-kapok" id="posting-from" readonly
+                      <input type="text" class="form-bhima" id="posting-from" readonly
                              value="{{getFiscalStart() | date:'dd/MM/yyyy'}}">
                   </div>
                   <div class="form-group">
                     <label for="posting-to" class="control-label">{{'FISCAL_YEAR.POSTING_TO' | translate}}</label>
 
-                      <input type="text" class="form-kapok" id="posting-to" readonly
+                      <input type="text" class="form-bhima" id="posting-to" readonly
                              value="{{getFiscalEnd() | date:'dd/MM/yyyy'}}">
                   </div>
                 </div>
@@ -219,7 +219,7 @@
     </div>
     <div class="modal-body" style="max-height: 300px; height:300px; overflow: auto;">
       <div c-data="accounts"></div>
-      <p ng-hide="accounts.length"> 
+      <p ng-hide="accounts.length">
         <b>{{ "OPENING_BALANCE.LOADING" | translate }}...</b>
       </p>
       <table ng-show="accounts.length" class="table table-condensed table-bordered">
@@ -235,11 +235,11 @@
           <tr ng-repeat="account in accounts | orderBy:'account_number'" ng-switch="account.type" ng-class="{'active' : account.type=='title'}">
             <td><b>{{ account.account_number }}</b>  <i>{{account.account_txt }}</i></td>
             <td>
-              <input ng-switch-default class="form-kapok" ng-model="account.debit" type="number">
+              <input ng-switch-default class="form-bhima" ng-model="account.debit" type="number">
               <p ng-switch-when="title"></p>
             </td>
             <td>
-              <input ng-switch-default class="form-kapok" ng-model="account.credit" type="number">
+              <input ng-switch-default class="form-bhima" ng-model="account.credit" type="number">
               <p ng-switch-when="title"> </p>
             </td>
             <td>
