@@ -35,31 +35,6 @@
       };
     }])
 
-    .directive('loadingIndicator', ['requestNotificationChannel', '$timeout', function (channel, $timeout) {
-      return {
-        restrict : 'EA',
-        link : function (scope, element, attrs) {
-          element.hide();
-
-          var startRequestHandler = function() {
-            // got the request start notification, show the element
-            element.show();
-          };
-
-          var endRequestHandler = function() {
-            // got the request start notification, show the element
-            //$timeout(function () {
-            //  element.hide();
-            //}, 5000);
-          };
-
-          channel.onRequestStarted(scope, startRequestHandler);
-
-          channel.onRequestEnded(scope, endRequestHandler);
-        }
-      };
-    }])
-
     .directive('reportGroupCompile', ['$compile', function($compile) {
 
       //TODO Currently tries too hard to use generic templating and ends up being a tightly coupled (slow) operation
