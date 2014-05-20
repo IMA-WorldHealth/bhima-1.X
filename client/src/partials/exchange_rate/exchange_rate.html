@@ -75,13 +75,13 @@
 
               <div class="form-group">
                 <div class="col-xs-5">
-                  <div class="form-kapok" style="text-align: center;" readonly>
+                  <div class="form-bhima" style="text-align: center;" readonly>
                     {{ currency.get(enterprise.currency_id).name }}
                   </div>
                 </div>
 
                 <div class="col-sm-offset-1 col-xs-5">
-                  <select class="form-kapok" ng-model="newRate.foreign_currency_id" ng-options="c.id as c.name for c in currency.data | filter:fcurrency" required>
+                  <select class="form-bhima" ng-model="newRate.foreign_currency_id" ng-options="c.id as c.name for c in currency.data | filter:fcurrency" required>
                     <option value="" disabled="disabled">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
                   </select>
                 </div>
@@ -89,7 +89,7 @@
 
               <div class="form-group">
                 <div class="col-xs-5 input-group">
-                  <input class="form-kapok" value="100" readonly>
+                  <input class="form-bhima" value="100" readonly>
                   <span class="input-group-addon">
                     {{ currency.get(enterprise.currency_id).symbol }}
                   </span>
@@ -98,7 +98,7 @@
                   <i class="glyphicon glyphicon-arrow-right"></i>
                 </label>
                 <div class="col-xs-5 input-group">
-                  <input class="form-kapok" ng-model="newRate.rate" min="0" required placeholder="1.00" type="number" required>
+                  <input class="form-bhima" ng-model="newRate.rate" min="0" required placeholder="1.00" type="number" required>
                   <span class="input-group-addon">
                     {{currency.get(newRate.foreign_currency_id).symbol}}
                   </span>

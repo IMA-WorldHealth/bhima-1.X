@@ -18,16 +18,16 @@
 
   <div>
     <div class="col-xs-2" style="padding-right: 0px;">
-      <input class="form-kapok" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
     </div> 
     <div class="col-xs-2">
-      <input class="form-kapok" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
     </div>
   </div>
 
   <span class="pull-right">
     <!-- <span class="glyphicon glyphicon&#45;home"></span> -->
-    <select class="form-kapok" ng-change="reset()" ng-model="session.project" ng-options="item.id as item.name for item in model.project.data">
+    <select class="form-bhima" ng-change="reset()" ng-model="session.project" ng-options="item.id as item.name for item in model.project.data">
       <option value="">{{ 'SALERECORD.ALL_PROJECTS' | translate }}</option>
     </select>
   </span>

@@ -2,7 +2,7 @@
   {{'INVOICE.TITLE' | translate}}
   <!-- FIXME hacks for meeting -->
   <div ng-if="origin==='sale'" class="pull-right">
-    <select class="form-kapok" ng-change="updateCost(session.currentCurrency.id)" ng-model="session.currentCurrency" ng-options="currency.symbol for currency in model.currency.data"></select>
+    <select class="form-bhima" ng-change="updateCost(session.currentCurrency.id)" ng-model="session.currentCurrency" ng-options="currency.symbol for currency in model.currency.data"></select>
   </div>
 </header>
 

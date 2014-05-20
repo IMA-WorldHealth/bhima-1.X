@@ -1,17 +1,17 @@
 /*This should be moved to cards own CSS file*/
-.kpk-card {
+.bhima-card {
 	background: rgb(255, 255, 56) ;
 	padding: 10px;
 }
 
-.kpk-card-id {
+.bhima-card-id {
 /*	float: left;	
 	clear: right;*/
 }
-.kpk-card-age { 
+.bhima-card-age { 
 	/*float: right;*/
 }
-.kpk-card-name { 
+.bhima-card-name { 
 	/*padding-bottom: 20px;*/
 }
 

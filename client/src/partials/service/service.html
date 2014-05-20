@@ -58,14 +58,14 @@
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
               <div class="col-xs-9">
-                <input class="form-kapok" ng-model="service.name" required>
+                <input class="form-bhima" ng-model="service.name" required>
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "SERVICE.COST_CENTER_SELECT" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-kapok" ng-model="service.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in model.cost_centers.data" required>
+                <select class="form-bhima" ng-model="service.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in model.cost_centers.data" required>
                   <option value="" disabled="disabled">--- {{ "SELECT.COST_CENTER" | translate }} ---</option>
                 </select>
               </div>
@@ -88,14 +88,14 @@
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
               <div class="col-xs-9">
-                <input class="form-kapok" ng-model="selected.name" required>
+                <input class="form-bhima" ng-model="selected.name" required>
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "SERVICE.COST_CENTER_SELECT" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-kapok" ng-model="selected.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in model.cost_centers.data" required>
+                <select class="form-bhima" ng-model="selected.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in model.cost_centers.data" required>
                   <option value="" disabled="disabled">--- {{ "SELECT.COST_CENTER" | translate }} ---</option>
                 </select>
               </div>

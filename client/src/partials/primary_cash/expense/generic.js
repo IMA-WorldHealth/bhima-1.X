@@ -1,4 +1,4 @@
-angular.module('kpk.controllers')
+angular.module('bhima.controllers')
 .controller('primaryCash.expense', [
   '$scope',
   '$routeParams',
@@ -139,7 +139,7 @@ angular.module('kpk.controllers')
         return connect.fetch('/journal/primary_cash/' + data.uuid);
       })
       .then(function () {
-        messenger.success("Posted data successfully.");
+        messenger.success('Posted data successfully.');
         session = $scope.session = { receipt : {} };
         session.receipt.date = new Date().toISOString().slice(0, 10);
         session.receipt.cost = 0.00;

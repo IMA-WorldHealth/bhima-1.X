@@ -45,7 +45,7 @@
 
                 <!-- <div class="panel&#45;body"> -->
                   <select 
-                    class="form-kapok"
+                    class="form-bhima"
                     ng-model="session.from" 
                     ng-options="depot as depot.text for depot in depotMap.from.model.data"
                     >
@@ -75,7 +75,7 @@
                   
                 <!-- <div class="panel&#45;body"> -->
                   <select 
-                    class="form-kapok"
+                    class="form-bhima"
                     ng-model="session.to"
                     ng-options="depot as depot.text for depot in depotMap.to.model.data"
                     >
@@ -106,11 +106,11 @@
                     <tr ng-repeat="row in session.rows">
                       <td>
                         <!-- <input  -->
-                        <!--   class="form&#45;kapok" -->
+                        <!--   class="form&#45;bhima" -->
                         <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
                         <!-- > -->
                         <select 
-                          class="form-kapok"
+                          class="form-bhima"
                           >
                           <option disabled>--Select lot from {{session.depotFrom.text}}--</option>
                         </select>
@@ -119,7 +119,7 @@
                         {{row.details || "..."}}
                       </td>
                       <td>
-                        <input class="form-kapok" ng-model="row.quantity" type="number" min="0" required>
+                        <input class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
                       </td>
                       <!-- <td> <input ng&#45;model="row.destination" required> -->
                       <!-- </td> -->
