@@ -1,5 +1,5 @@
 {
-  "static": "client/dest/",
+  "static": "client/dest",
   "port" : 8080,
   "db" : {
     "host"     : "localhost",
@@ -17,6 +17,7 @@
   },
   "auth" : {
     "paths" : [
+      "/",
       "/js",
       "/partials/invoice",
       "/assets",
