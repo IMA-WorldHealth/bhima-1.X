@@ -25,29 +25,23 @@ fieldset {
 }
 
 section {
-  position       : absolute;
-  left           : 0;
-  right          : 0;
-  min-height     : 37px;
-  padding-left   : 15px;
-  padding-right  : 15px;
-  padding-bottom : 3px;
-  padding-top    : 3px;
-  margin-top     : 0;
+  position   : absolute;
+  left       : 0;
+  right      : 0;
+  min-height : 37px;
+  padding    : 3px 15px;
+  margin-top : 0;
 }
 
 header {
-  position       : absolute;
-  top            : 0;
-  right          : 0;
-  left           : 0;
-  height         : 50px;
-  padding-top    : 7px;
-  padding-bottom : 7px;
-  font-size      : 2em;
-  border-bottom  : 1px solid #dddddd;
-  padding-left   : 15px;
-  padding-right  : 15px;
+  position      : absolute;
+  top           : 0;
+  right         : 0;
+  left          : 0;
+  height        : 50px;
+  padding       : 7px 15px;
+  font-size     : 2em;
+  border-bottom : 1px solid #dddddd;
 }
 
 header small {
@@ -56,6 +50,12 @@ header small {
   color       : #999999;
 }
 
+.visible-print,
+tr.visible-print,
+th.visible-print,
+td.visible-print {
+  display: none !important;
+}
 
 /* first viewport */
 .sidebar {
@@ -81,18 +81,16 @@ header small {
 
 /* second viewport */
 .viewport {
-  position: fixed;
-  width: 82%;
-  height: 100%;
-  /* background: url('../assets/UKAID1.jpg'); */
+  position : fixed;
+  width    : 82%;
+  height   : 100%;
 }
 
-
 .view {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  overflow: auto;
+  position : relative;
+  height   : 100%;
+  width    : 100%;
+  overflow : auto;
 }
 
 .content {
@@ -164,105 +162,9 @@ header small {
   text-transform: capitalize;
 }
 
-.form-bhima {
-  display          : block;
-  width            : 100%;
-  height           : 30px;
-  padding          : 6px 12px;
-  font-size        : 14px;
-  line-height      : 1.428571429;
-  color            : #555555;
-  vertical-align   : middle;
-  background-color : #ffffff;
-  border           : 1px solid #cccccc;
-}
-
-.form-bhima[disabled] {
-  background-color: #eeeeee;
-}
-
-textarea.form-bhima {
-  height: auto;
-}
-
 /* everything is bad */
 .hack-left {
   margin-left: -15px;
-}
-
-.report {
-  position : absolute;
-  top      : 85px;
-  left     : 0;
-  right    : 0;
-  overflow : auto;
-}
-
-.report-compressed {
-  bottom : 37px;
-}
-
-/*sfount, temporary printable table styling*/
-.reportTable {
-  border     : 1px solid #9F9F9F;  /*hack*/
-  border-top : 0;
-  width      : 100%;
-  /* page-break-inside : auto; */
-}
-
-.reportTable tr {
-  /* page-break-inside: avoid; */
-  /* page-break-after: auto; */
-}
-
-.reportTable thead > tr > th {
-  border       : 1px solid #9F9F9F;
-  padding-left : 5px;
-}
-
-.reportTable tbody > tr > td {
-  border         : 1px solid #9F9F9F;
-  vertical-align : right;
-}
-
-.reportTitle {
-  font-size   : 110%;
-  font-weight : bold;
-}
-
-@media print {
-  .report {
-    position   : initial;
-    min-height : 100%;
-  }
-
-  .reportFrame {
-    border: none !important;
-  }
-
-  .reportBody {
-    padding-left  : 15px;
-    padding-right : 15px;
-    padding-top   : 0;
-    margin-top    : 0 !important;
-  }
-
-  .report a[href]:after {
-    content: none;
-  }
-}
-
-div .reportBody {
-  padding     : 10px;
-  background  : #f3f3f3;
-  min-height  : 100%;
-}
-
-div .reportFrame {
-  padding    : 10px;
-  border     : 1px solid #DDD;
-  background : white;
-  overflow   : auto;
 }
 
 .excell {
@@ -286,12 +188,24 @@ div .reportFrame {
   padding     : 0;
 }
 
-/* experimental css */
-
 .top-nav {
   top           : 50px;
   border-bottom : 1px solid #ddd;
 }
+
+.top-nav .breadcrumb {
+  background-color : #fff;
+  margin: 0;
+}
+
+.top-nav .label {
+  vertical-align : middle;
+}
+
+header + .content {
+  top : 50px;
+}
+
 
 .bar-bottom {
   bottom: 0;
@@ -303,7 +217,7 @@ div .reportFrame {
 .message-box {
   right        : 18%;
   position     : absolute;
-  margin-right : 0.5%; /* .5 to pad nicely */
+  margin-right : 0.5%;
   width        : 25%;
   z-index      : 1175;
   top          : 0.5%;
@@ -364,21 +278,29 @@ a.danger {
   color: #d2322d;
 }
 
+.modal-content {
+  width   : 40%;
+  top     : 10em; /* to float vertically */
+  margin  : 0 auto;
+  height  : auto;
+  z-index : 1055; /* background is 1050 generally */
+}
+
 .modal-content.modal-lg {
   width: 60%;
 }
 
 .box-error {
-  padding: 8px;
-  width: 100%;
-  font-weight: bold;
-  color: #b94a48;
-  background-color: #f2dede;
-  border: 1px solid #eed3d7;
+  padding          : 8px;
+  width            : 100%;
+  font-weight      : bold;
+  color            : #b94a48;
+  background-color : #f2dede;
+  border           : 1px solid #eed3d7;
 }
 
 .square {
-  border-radius :0;
+  border-radius : 0;
 }
 
 .creditInvoice a {
@@ -395,19 +317,6 @@ a.danger {
 
 .bhima-msg {
   padding: 5px 15px;
-}
-
-.top-nav .breadcrumb {
-  background-color : #fff;
-  margin: 0;
-}
-
-.top-nav .label {
-  vertical-align : middle;
-}
-
-header + .content {
-  top : 50px;
 }
 
 .panel-input {
