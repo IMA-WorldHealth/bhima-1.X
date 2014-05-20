@@ -45,6 +45,7 @@
     "gulp-clean": "~0.2.4",
     "gulp-notify": "~1.2.6",
     "gulp-uglify": "~0.3.0",
-    "gulp-jshint": "~1.6.1"
+    "gulp-jshint": "~1.6.1",
+    "gulp-html-replace": "~1.1.0"
   }
 }
