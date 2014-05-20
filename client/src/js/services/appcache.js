@@ -4,7 +4,7 @@ angular.module('bhima.services')
   var db, cacheSupported, dbdefer = $q.defer();
 
   function cacheInstance(namespace) {
-    if(!namespace) throw new Error('Cannot register cache instance without namespace');
+    if (!namespace) { throw new Error('Cannot register cache instance without namespace'); }
     return {
       namespace: namespace,
       fetch: fetch,
@@ -17,19 +17,21 @@ angular.module('bhima.services')
   function init() {
     //also sets db - working on making it read better
     openDBConnection(DB_NAME, VERSION)
-    .then(function(connectionSuccess) {
+    .then(function () {
       dbdefer.resolve();
     }, function(error) {
       throw new Error(error);
     });
   }
 
+  /*
   //generic request method allow all calls to be queued if the database is not initialised
-  function request(method) {
+  function request (method) {
     console.log(method, arguments);
     if (!requestMap[method]) return false;
     requestMap[method](value);
   }
+  */
 
   //TODO This isn't readable, try common request (queue) method with accessor methods
   function fetch(key) {
@@ -140,7 +142,7 @@ angular.module('bhima.services')
   function openDBConnection(dbname, dbversion) {
     var deferred = $q.defer();
     var request = indexedDB.open(dbname, dbversion);
-    request.onupgradeneeded = function(event) {
+    request.onupgradeneeded = function (event) {
       db = event.target.result;
       //TODO naive implementation - one object store to contain all cached data, namespaced with feild
       //TODO possible implementation - create new object store for every module, maintain list of registered modules in master table
@@ -156,7 +158,7 @@ angular.module('bhima.services')
       objectStore.createIndex('key', 'key', {unique: false});
     };
 
-    request.onsuccess = function(event) {
+    request.onsuccess = function () {
       db = request.result;
       $rootScope.$apply(deferred.resolve());
     };

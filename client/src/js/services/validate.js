@@ -23,14 +23,14 @@ angular.module('bhima.services')
       packageModels(list, dependencies, model);
       validate = validateModels(list, dependencies);
       // console.log('ran tests', validate);
-      if(validate.success) return deferred.resolve(dependencies.model);
+      if (validate.success) { return deferred.resolve(dependencies.model); }
 
       console.info('%c[validate]', 'color: blue; font-weight: bold;', 'Reminder that models have been tested and results should be handled');
       console.group('Validation results');
-      console.log('Key Reference: '%s'', validate.reference);
-      console.log('Flag Reference: '%s'', validate.flag);
+      console.log('Key Reference: \'%s\'', validate.reference);
+      console.log('Flag Reference: \'%s\'', validate.flag);
       console.log('Passed: %s', validate.success);
-      console.log('Message: '%s'', validate.message);
+      console.log('Message: \'%s\'', validate.message);
       console.groupEnd();
       deferred.reject(validate);
 
@@ -42,9 +42,10 @@ angular.module('bhima.services')
   function filterList(list, dependencies) {
     var fList;
 
-    fList = list.filter(function(key, index) {
-      if(dependencies[key].processed) return false; //processed requests
-      if(key===modelLabel) return false; //model store
+    fList = list.filter(function(key) {
+      if (dependencies[key].processed ||  key === modelLabel) {
+        return false; //processed requests || model store
+      }
       return true;
     });
     return fList;
@@ -58,7 +59,9 @@ angular.module('bhima.services')
 
       //Check for standard test flags
       validateTests.forEach(function(testObject) {
-        if(details[testObject.flag]) modelTests.push(testObject);
+        if (details[testObject.flag]) {
+          modelTests.push(testObject);
+        }
       });
 
       //Run each test
@@ -87,7 +90,9 @@ angular.module('bhima.services')
       var dependency = dependencies[key], args = [dependency.query];
 
       //Hack to allow modelling reports with unique identifier - not properly supported by connect
-      if(dependency.identifier) args.push(dependency.identifier);
+      if (dependency.identifier) {
+        args.push(dependency.identifier);
+      }
       promiseList.push(connect.req.apply(connect.req, args));
     });
 
@@ -99,6 +104,8 @@ angular.module('bhima.services')
     return deferred.promise;
   }
 
+  // FIXME: unused
+  /*
   var testSuite = {
     'enterprise' : {method: testRequiredModel, args: ['enterprise'], result: null},
     'fiscal' : {method: testRequiredModel, args: ['fiscal_year'], result: null}
@@ -128,6 +135,7 @@ angular.module('bhima.services')
     });
     return deferred.promise;
   }
+  */
 
   function hasData(modelData) {
     return (modelData.length > 0);
