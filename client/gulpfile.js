@@ -73,7 +73,7 @@ gulp.task('watch', function () {
   gulp.watch(paths.styles, ['styles']);
   gulp.watch(paths.templates, ['templates']);
   gulp.watch(paths.scripts, ['scripts']);
-  gulp.watch(paths.structure, ['structure']);
+  gulp.watch(paths.static, ['static']);
 });
 
 gulp.task('default', [], function () {
