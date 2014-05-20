@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="col-xs-4 input-group">
-    <input class="form-kapok" ng-model="session.stockSearch" typeahead="stock as stock.text for stock in inventory.data | filter: $viewValue | limitTo:10" typeahead-on-select="loadStock(session.stockSearch.uuid)" typeahead-template-url="stockItem.html" placeholder="{{'UPDATE_STOCK.SEARCH_TEXT' | translate }}">
+    <input class="form-bhima" ng-model="session.stockSearch" typeahead="stock as stock.text for stock in inventory.data | filter: $viewValue | limitTo:10" typeahead-on-select="loadStock(session.stockSearch.uuid)" typeahead-template-url="stockItem.html" placeholder="{{'UPDATE_STOCK.SEARCH_TEXT' | translate }}">
   </div>
 </section>
 

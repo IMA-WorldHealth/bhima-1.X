@@ -28,21 +28,21 @@
         <div class="form-group">
           <label class="col-xs-3">{{ 'COLUMNS.DATE' | translate }}</label>
           <div class="col-xs-9">
-            <input class="form-kapok" type="date" ng-model="voucher.trans_date" max="{{ today }}">
+            <input class="form-bhima" type="date" ng-model="voucher.trans_date" max="{{ today }}">
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-xs-3">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
           <div class="col-xs-9">
-            <input type="text" ng-model="voucher.description" class="form-kapok" required>
+            <input type="text" ng-model="voucher.description" class="form-bhima" required>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-xs-3">{{'COLUMNS.INVPO_ID' | translate}}</label>
           <div class="col-xs-9">
-            <input type="text" ng-model="voucher.inv_po_id" class="form-kapok"  min="10" required>
+            <input type="text" ng-model="voucher.inv_po_id" class="form-bhima"  min="10" required>
           </div>
         </div>
     </form>
@@ -66,7 +66,7 @@
       <tbody>
         <tr ng-repeat="row in voucher.rows" ng-class="{ 'incomplete-outline': !row.description || !row.account_id, 'complete-outline' : !!row.account_id }">
           <td>
-            <select class="form-kapok" ng-model="row.account_id">
+            <select class="form-bhima" ng-model="row.account_id">
               <option value="{{ account.id }}" ng-repeat="account in accounts.data" ng-disabled="account.account_type_id==3">{{ account.account_number }} {{ account.account_txt }}</option>
             </select>
           </td>
@@ -75,7 +75,7 @@
           <td><input class="form-invoice" type="text" placeholder="{{ 'COLUMNS.DEBITOR' | translate }} / {{ 'COLUMNS.CREDITOR' | translate }}" ng-model="row.deb_cred_uuid" typeahead-template-url="debitorList.html" typeahead="debitor.text as debitor.uuid for debitor in debitors.data | filter:$viewValue | limitTo:8"></td>
           <td>
             <!--
-            <select class="form-kapok" ng-model="row.deb_cred_type" ng-options="option for option in options">
+            <select class="form-bhima" ng-model="row.deb_cred_type" ng-options="option for option in options">
               <option disabled>{{ "SELECT.DEB_CRED_TYPE" | translate }}</option>
             </select>
             -->

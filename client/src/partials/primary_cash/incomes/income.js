@@ -1,4 +1,4 @@
-angular.module('kpk.controllers')
+angular.module('bhima.controllers')
 .controller('income', [
   '$scope',
   '$q',

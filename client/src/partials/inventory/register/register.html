@@ -46,14 +46,14 @@
               <label for="inventory-reg-code" class="required">
                 {{ "INVENTORY_REGISTER.CODE" | translate }}
               </label>
-              <input name="code" id="inventory-reg-code" class="form-kapok" ng-model="item.code" required>
+              <input name="code" id="inventory-reg-code" class="form-bhima" ng-model="item.code" required>
             </div>
 
             <div class="form-group">
               <label for="inventory-reg-text">
                 {{ "INVENTORY_REGISTER.DESCRIPTION" | translate }}
               </label>
-              <textarea name="text" id="inventory-reg-text" class="form-kapok" rows="3" ng-model="item.text" required></textarea>
+              <textarea name="text" id="inventory-reg-text" class="form-bhima" rows="3" ng-model="item.text" required></textarea>
             </div>
 
             <hr />
@@ -62,7 +62,7 @@
               <label for="inventory-reg-group" class="required">
                 {{ "INVENTORY_REGISTER.GROUP" | translate }}
               </label>
-              <select id="inventory-reg-group" class="form-kapok" name="group_id" ng-model="item.group_uuid" ng-options="group.uuid as group.name for group in inventory_group.data | orderBy:'name'" required>
+              <select id="inventory-reg-group" class="form-bhima" name="group_id" ng-model="item.group_uuid" ng-options="group.uuid as group.name for group in inventory_group.data | orderBy:'name'" required>
                 <option value="" disabled="disabled">-- {{ "SELECT.INVENTORY_GROUP" | translate }} --</option>
               </select>
             </div>
@@ -100,7 +100,7 @@
               <label for="inventory-reg-unit" class="required">
                 {{ "INVENTORY_REGISTER.UNIT" | translate }}
               </label>
-              <select name="unit_id" id="inventory-reg-unit" class="form-kapok" ng-model="item.unit_id" ng-options="unit.id as unit.text for unit in inventory_unit.data | orderBy:'text'" required>
+              <select name="unit_id" id="inventory-reg-unit" class="form-bhima" ng-model="item.unit_id" ng-options="unit.id as unit.text for unit in inventory_unit.data | orderBy:'text'" required>
                 <option value="" disabled="disabled">-- {{ "SELECT.UNIT" | translate }} --</option>
               </select>
             </div>
@@ -109,28 +109,28 @@
               <label for="inventory-reg-purchase-price">
                 {{ "COLUMNS.PURCHASE_PRICE" | translate }}
               </label>
-              <input name="purchase_price" type="number" id="inventory-reg-purchase-price" class="form-kapok" ng-model="item.purchase_price" required>
+              <input name="purchase_price" type="number" id="inventory-reg-purchase-price" class="form-bhima" ng-model="item.purchase_price" required>
             </div>
 
             <div class="form-group" >
               <label for="inventory-reg-price">
                 {{ "COLUMNS.SALE_PRICE" | translate }}
               </label>
-              <input name="unit_price" type="number" id="inventory-reg-price" class="form-kapok" ng-model="item.price" required>
+              <input name="unit_price" type="number" id="inventory-reg-price" class="form-bhima" ng-model="item.price" required>
             </div>
 
             <div class="form-group" >
               <label for="inventory-reg-weight" class="required">
                 {{ "INVENTORY_REGISTER.UNIT_WEIGHT" | translate }}
               </label>
-              <input name="unit_weight" type="number" id="inventory-reg-weight" class="form-kapok" ng-model="item.unit_weight" required>
+              <input name="unit_weight" type="number" id="inventory-reg-weight" class="form-bhima" ng-model="item.unit_weight" required>
             </div>
 
             <div class="form-group" >
               <label for="inventory-reg-volume" class="required">
                 {{ "INVENTORY_REGISTER.UNIT_VOLUME" | translate }}
               </label>
-              <input name="unit_volume" type="number" id="inventory-reg-volume" class="form-kapok" ng-model="item.unit_volume" required>
+              <input name="unit_volume" type="number" id="inventory-reg-volume" class="form-bhima" ng-model="item.unit_volume" required>
             </div>
           </div>
         </div>
@@ -160,7 +160,7 @@
 
             <div class="form-group">
               <label>{{ "UNIT_TYPE.NEW" | translate }}</label>
-              <input id="unit-text" class="form-kapok" placeholder='{{ "UNIT_TYPE.PLACEHOLDER" | translate }}' ng-model="unit.text">
+              <input id="unit-text" class="form-bhima" placeholder='{{ "UNIT_TYPE.PLACEHOLDER" | translate }}' ng-model="unit.text">
             </div>
 
           </form>
@@ -211,7 +211,7 @@
             {{ "INVENTORY_GROUP.NAME" | translate }}:
           </label>
           <div class="col-xs-10">
-            <input id="group-name" class="form-kapok" placeholder="e.g. Products" ng-model="group.name" required>
+            <input id="group-name" class="form-bhima" placeholder="e.g. Products" ng-model="group.name" required>
           </div>
         </div>
         <div class="form-group">
@@ -219,7 +219,7 @@
             {{ "INVENTORY_GROUP.CODE" | translate }}
           </label>
           <div class="col-xs-10">
-            <input id="group-name" class="form-kapok" placeholder="010" ng-model="group.code">
+            <input id="group-name" class="form-bhima" placeholder="010" ng-model="group.code">
           </div>
         </div>
 
@@ -228,7 +228,7 @@
             {{ "INVENTORY_GROUP.SALES_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-sales-account" class="form-kapok" ng-model="group.sales_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'" required>
+            <select id="group-sales-account" class="form-bhima" ng-model="group.sales_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'" required>
               <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
@@ -239,7 +239,7 @@
             {{ "INVENTORY_GROUP.COGS" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-cogs-account" class="form-kapok" ng-model="group.cogs_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'">
+            <select id="group-cogs-account" class="form-bhima" ng-model="group.cogs_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'">
               <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
@@ -250,7 +250,7 @@
             {{ "INVENTORY_GROUP.STOCK" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-stock-account" class="form-kapok" ng-model="group.stock_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'">
+            <select id="group-stock-account" class="form-bhima" ng-model="group.stock_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'">
               <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
@@ -261,7 +261,7 @@
             {{ "INVENTORY_GROUP.TAX" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-tax-account" class="form-kapok" ng-model="group.tax_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'">
+            <select id="group-tax-account" class="form-bhima" ng-model="group.tax_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts | orderBy:'account_number'">
               <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>

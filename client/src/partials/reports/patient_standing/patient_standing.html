@@ -4,7 +4,7 @@
 
 <section class="top-nav">
   <div class="col-xs-3">
-    <input class="form-kapok" ng-model="selection" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+    <input class="form-bhima" ng-model="selection" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
   </div>
   <a class="btn btn-sm btn-primary" href="" ng-click="search()" ng-disabled="!selection">{{ "UTIL.SEARCH" | translate }}</a>
   <div class="pull-right">

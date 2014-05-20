@@ -1,6 +1,6 @@
 // TODO Global charges currently don't hit an invetory item || account,
 // no way of tracing this back to a reason for being
-angular.module('kpk.controllers')
+angular.module('bhima.controllers')
 .controller('sales', [
   '$scope',
   '$location',
