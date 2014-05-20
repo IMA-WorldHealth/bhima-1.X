@@ -109,7 +109,7 @@ angular.module('bhima.controllers')
       //FIXME This could be done in util.js - extra object (in this file) vs. the clarity of doing all set up in one place
       var utilCache = new Appcache('util');
       utilCache.fetch('language').then(function(res) {
-        if(res) $translate.uses(res.current);
+        if(res) $translate.use(res.current);
       });
     }
 

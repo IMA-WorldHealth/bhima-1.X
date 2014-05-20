@@ -4,8 +4,7 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     minifycss = require('gulp-minify-css'),
     htmlreplace = require('gulp-html-replace'),
-    jshint = require('gulp-jshint'),
-    header = require('gulp-header');
+    jshint = require('gulp-jshint');
 
 var jshintrcPath = '../.jshintrc';
 
@@ -25,7 +24,7 @@ gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
     // .pipe(jshint(jshintrcPath))
     // .pipe(jshint.reporter('default'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(destPath))
     .pipe(notify({ message : 'Completed compiling scripts.' }));
