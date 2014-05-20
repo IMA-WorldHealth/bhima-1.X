@@ -16,16 +16,16 @@ var paths = {
   templates : ['src/partials/**/*.html'],
   assets : ['src/assets/**/*'],
   static : ['src/index.html', 'src/login.html', 'src/error.html', 'src/project.html', 'src/js/app.js'],
-  vendor : ['vendor/*']
+  vendor : ['vendor/**/*']
 };
 
 var destPath = 'dest/';
 
 gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
-    .pipe(jshint(jshintrcPath))
+    // .pipe(jshint(jshintrcPath))
     // .pipe(jshint.reporter('default'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(concat('bhima.min.js'))
     .pipe(gulp.dest(destPath))
     .pipe(notify({ message : 'Completed compiling scripts.' }));
