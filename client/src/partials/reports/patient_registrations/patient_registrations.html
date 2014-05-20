@@ -17,13 +17,13 @@
 
   <div>
     <div class="col-xs-2">
-      <input class="form-kapok" type="date" ng-model="session.dateFrom" rows="20" ng-change="reset(1)">
+      <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" ng-change="reset(1)">
     </div>
     <div class="col-xs-2">
-      <input class="form-kapok" type="date" ng-model="session.dateTo" rows="20" ng-change="reset(1)">
+      <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" ng-change="reset(1)">
     </div>
     <div class="col-xs-3 pull-right">
-      <select class="form-kapok" ng-model="session.project" ng-change="reset()">
+      <select class="form-bhima" ng-model="session.project" ng-change="reset()">
         <option selected value="{{ allProjectIds }}">{{ 'CASH_PAYMENTS.ALL_PROJECTS' | translate }}</option>
         <option ng-repeat="project in projects.data" value="{{ project.id }}">{{ project.name }}</option>
       </select>

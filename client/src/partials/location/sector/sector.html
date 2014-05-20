@@ -58,7 +58,7 @@
               <div class="col-xs-10">
                 <select
                   required
-                  class="form-kapok"
+                  class="form-bhima"
                   name="provincename"
                   id="provinceUUID"
                   ng-model="add.province_uuid"
@@ -72,7 +72,7 @@
             <div class="form-group">
                <label class="col-xs-2 control-label">{{'SECTOR.NAME_SECTOR' | translate}}</label>
                <div class="col-xs-10">
-                  <input class="form-kapok" ng-model="add.name" required>
+                  <input class="form-bhima" ng-model="add.name" required>
                </div>
             </div>
           </fieldset>
@@ -88,7 +88,7 @@
             <div class="form-group">
               <label class="col-xs-2"> {{ 'SECTOR.PROVINCE' | translate }} </label>
               <div class="col-xs-10">
-                <select required class="form-kapok" id="provinceID" ng-model="sector.province_uuid" ng-options="pro.uuid as pro.name for pro in model.province.data | orderBy:'name'">
+                <select required class="form-bhima" id="provinceID" ng-model="sector.province_uuid" ng-options="pro.uuid as pro.name for pro in model.province.data | orderBy:'name'">
                   <option value="" disable="disabled">-- Selectionner un Province -- </option>
                 </select>
               </div>
@@ -97,7 +97,7 @@
             <div class="form-group">
                <label class="col-xs-2 control-label">{{ 'SECTOR.NAME_SECTOR' | translate }}</label>
                <div class="col-xs-10">
-                  <input class="form-kapok" ng-model="sector.sector" required>
+                  <input class="form-bhima" ng-model="sector.sector" required>
                </div>
             </div>
           </fieldset>

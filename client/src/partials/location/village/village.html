@@ -55,7 +55,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label"> {{ 'VILLAGE.SECTOR' | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-kapok" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in sectors.data | orderBy:'name'">
+                <select class="form-bhima" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in sectors.data | orderBy:'name'">
                   <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                 </select>
               </div>
@@ -64,7 +64,7 @@
             <div class="form-group">
                <label class="col-xs-2 control-label">{{'VILLAGE.NAME_VILLAGE' | translate}}</label>
                <div class="col-xs-10">
-                  <input class="form-kapok" ng-model="add.name" required>
+                  <input class="form-bhima" ng-model="add.name" required>
                </div>
             </div>
           </fieldset>
@@ -81,7 +81,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{'VILLAGE.SECTOR' | translate}}</label>
               <div class="col-xs-10">
-                <select class="form-kapok" ng-model="village.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data | orderBy:'name'" required>
+                <select class="form-bhima" ng-model="village.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data | orderBy:'name'" required>
                   <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                 </select>
               </div>
@@ -90,7 +90,7 @@
             <div class="form-group">
                 <label class="col-xs-2 control-label">{{'VILLAGE.NAME_VILLAGE' | translate}}</label>
                 <div class="col-xs-10">
-                  <input class="form-kapok" ng-model="village.village" required>
+                  <input class="form-bhima" ng-model="village.village" required>
                 </div>
             </div>
           </fieldset>

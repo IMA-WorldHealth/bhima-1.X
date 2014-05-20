@@ -30,14 +30,14 @@
                   <div class="form-group">
                     <label for="first-name" class="control-label col-xs-3">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                     <div class="col-xs-9">
-                      <input type="text" class="form-kapok" id="first-name" ng-model="patient.first_name">
+                      <input type="text" class="form-bhima" id="first-name" ng-model="patient.first_name">
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label for="second-name" class="control-label col-xs-3">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                     <div class="col-xs-9">
-                      <input type="text" class="form-kapok" id="second-name" ng-model="patient.last_name" required>
+                      <input type="text" class="form-bhima" id="second-name" ng-model="patient.last_name" required>
                     </div>
                   </div>
 
@@ -45,7 +45,7 @@
                     <label for="yob" class="control-label col-xs-3"> {{ "PATIENT_REG.YOB" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="input-group">
-                        <input type="text" class="form-kapok" id="yob" ng-model="sessionProperties.yob">
+                        <input type="text" class="form-bhima" id="yob" ng-model="sessionProperties.yob">
                         <span class="input-group-btn">
                           <button ng-click="enableFullDate()" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span>{{ "PATIENT_REG.ENTER_FULL_DATE" | translate }}</button>
                         </span>
@@ -57,7 +57,7 @@
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input id="patient-dob" type="date" class="form-kapok" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob">
+                      <input id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob">
                     </div>
                   </div>
 
@@ -111,7 +111,7 @@
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-country" ng-model="origin.country" ng-options="country as country.country_fr for country in country.data">
+                        <select required class="form-bhima" id="location-country" ng-model="origin.country" ng-options="country as country.country_fr for country in country.data">
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
                       </div>
@@ -120,7 +120,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-province" ng-model="origin.province" ng-options="province as province.name for province in province.data | filter:{country_id:origin.country.id}">
+                        <select required class="form-bhima" id="location-province" ng-model="origin.province" ng-options="province as province.name for province in province.data | filter:{country_id:origin.country.id}">
                           <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -129,7 +129,7 @@
                         <label for="location-sector" class="control-label">
                           {{ "LOCATION.VILLE" | translate }}
                         </label>
-                        <select class="form-kapok" id="location-sector" ng-model="origin.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:origin.province.id}" required>
+                        <select class="form-bhima" id="location-sector" ng-model="origin.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:origin.province.id}" required>
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
                         </select>
                       </div>
@@ -138,7 +138,7 @@
                         <label for="location-village" class="control-label">
                           {{ "LOCATION.LOCALITY" | translate }}
                         </label>
-                        <input class="form-kapok" id="location-country" ng-model="origin.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
+                        <input class="form-bhima" id="location-country" ng-model="origin.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
                     </fieldset>
                   </div>
 
@@ -149,7 +149,7 @@
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-country" ng-model="current.country" ng-options="country as country.country_fr for country in country.data">
+                        <select required class="form-bhima" id="location-country" ng-model="current.country" ng-options="country as country.country_fr for country in country.data">
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
                       </div>
@@ -158,7 +158,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-province" ng-model="current.province" ng-options="province as province.name for province in province.data | filter:{country_id:current.country.id}">
+                        <select required class="form-bhima" id="location-province" ng-model="current.province" ng-options="province as province.name for province in province.data | filter:{country_id:current.country.id}">
                           <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -167,7 +167,7 @@
                         <label for="location-sector" class="control-label">
                           {{ "LOCATION.VILLE" | translate }}
                         </label>
-                        <select required class="form-kapok" id="location-sector" ng-model="current.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:current.province.id}">
+                        <select required class="form-bhima" id="location-sector" ng-model="current.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:current.province.id}">
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
                         </select>
                       </div>
@@ -176,7 +176,7 @@
                         <label for="location-village" class="control-label">
                           {{ "LOCATION.LOCALITY" | translate }}
                         </label>
-                        <input class="form-kapok" id="location-country" ng-model="current.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
+                        <input class="form-bhima" id="location-country" ng-model="current.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
                       </div>
                     </fieldset>
                   </div>
@@ -187,7 +187,7 @@
                   <div class="form-group">
                     <label for="debtor-group" class="col-xs-3 control-label">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
                     <div class="col-xs-9">
-                      <select required class="form-kapok" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
+                      <select required class="form-bhima" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
                         <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
                       </select>
                     </div>
@@ -206,62 +206,62 @@
 
                 <div class="form-group">
                   <label for="phone">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
-                  <input type="text" class="form-kapok" id="phone" ng-model="patient.phone">
+                  <input type="text" class="form-bhima" id="phone" ng-model="patient.phone">
                 </div>
 
                 <div class="form-group">
                   <label for="email">{{ "PATIENT_REG.EMAIL" | translate }}</label>
-                  <input type="email" class="form-kapok" id="email" ng-model="patient.email">
+                  <input type="email" class="form-bhima" id="email" ng-model="patient.email">
                 </div>
 
                 <div class="form-group">
                   <label for="email">{{ "PATIENT_REG.AVENUE" | translate }}</label>
-                  <input type="email" class="form-kapok" id="avenue" ng-model="patient.address_1">
+                  <input type="email" class="form-bhima" id="avenue" ng-model="patient.address_1">
                 </div>
 
                 <div class="form-group">
                   <label for="parent">{{ "PATIENT_REG.PARENT_NAME" | translate }}</label>
-                  <input type="text" class="form-kapok" id="father_name" ng-model="patient.father_name">
+                  <input type="text" class="form-bhima" id="father_name" ng-model="patient.father_name">
                 </div>
 
                 <div class="form-group">
                   <label>{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
-                  <input class="form-kapok" id="mother_name" ng-model="patient.mother_name">
+                  <input class="form-bhima" id="mother_name" ng-model="patient.mother_name">
                 </div>
 
                 <div class="form-group">
                   <label for="religion">{{ "PATIENT_REG.RELIGION" | translate }}</label>
-                  <input type="text" class="form-kapok" id="religion" ng-model="patient.religion">
+                  <input type="text" class="form-bhima" id="religion" ng-model="patient.religion">
                 </div>
 
                 <div class="form-group">
                   <label for="marital">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
-                  <input class="form-kapok" id="marital" ng-model="patient.marital_status">
+                  <input class="form-bhima" id="marital" ng-model="patient.marital_status">
                 </div>
 
                 <div class="form-group">
                   <label>{{ "PATIENT_REG.PROFESSION" | translate }}</label>
-                  <input class="form-kapok" id="profession" ng-model="patient.profession">
+                  <input class="form-bhima" id="profession" ng-model="patient.profession">
                 </div>
 
                 <div class="form-group">
                   <label>{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
-                  <input class="form-kapok" id="employer" ng-model="patient.employer">
+                  <input class="form-bhima" id="employer" ng-model="patient.employer">
                 </div>
 
                 <div class="form-group">
                   <label>{{ "PATIENT_REG.SPOUSE" | translate }}</label>
-                  <input class="form-kapok" id="spouse" ng-model="patient.spouse">
+                  <input class="form-bhima" id="spouse" ng-model="patient.spouse">
                 </div>
 
                 <div class="form-group">
                   <label>{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
-                  <input class="form-kapok" id="spouse_profession" ng-model="patient.spouse_profession">
+                  <input class="form-bhima" id="spouse_profession" ng-model="patient.spouse_profession">
                 </div>
 
                 <div class="form-group">
                   <label>{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
-                  <input class="form-kapok" id="spouse_employer" ng-model="patient.spouse_employer">
+                  <input class="form-bhima" id="spouse_employer" ng-model="patient.spouse_employer">
                 </div>
 
               </form>
@@ -291,7 +291,7 @@
             <div class="panel panel-default">
               <div class="panel-heading"><span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.PATIENT_NOTES" | translate }}</div>
               <!-- <div class="panel&#45;body"> -->
-                <textarea type="text" multiline class="form-kapok note"></textarea>
+                <textarea type="text" multiline class="form-bhima note"></textarea>
               <!-- </div> -->
             </div> <!-- End panel -->
           </div> <!-- End column 5 row -->

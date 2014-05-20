@@ -14,7 +14,7 @@
         <div ng-if="!!find.active">
           <div class="form-group" style="margin-bottom:0;">
             <div class="input-group">
-              <input type="text" class="form-kapok" ng-model="session.order" typeahead="order as order.label for order in names.data | filter:$viewValue | limitTo: 8">
+              <input type="text" class="form-bhima" ng-model="session.order" typeahead="order as order.label for order in names.data | filter:$viewValue | limitTo: 8">
               <span class="input-group-btn btn btn-sm btn-default square" ng-click="find.fn.commit(session.order)">
                 <span class="glyphicon glyphicon-find"></span>
                 {{ "STOCK.ENTRY.SELECT" | translate }}

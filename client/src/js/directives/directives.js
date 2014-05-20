@@ -317,7 +317,7 @@
           '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
           '          typeahead-on-select="loadDebitor(debitor.id)" '+
           '          typeahead-template-url="debtorListItem.html"'+
-          '          class="form-kapok" '+
+          '          class="form-bhima" '+
           '          size="25">'+
           '          <span class="input-group-btn"> '+
           '            <button id="submitSearch" ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }}</button>'+
@@ -329,7 +329,7 @@
           '          <input '+
           '            type="text"'+
           '            ng-model="findPatient.debtorId"'+
-          '            class="form-kapok"'+
+          '            class="form-bhima"'+
           '            placeholder=\'{{ "FIND.PATIENT_ID" | translate }}\'>'+
           '          <span class="input-group-btn">'+
           '            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }} </button>'+
@@ -592,7 +592,7 @@
             '          placeholder=\'{{ "CFIND.PLACEHOLDER" | translate }}\' ' +
             '          typeahead-on-select="loadDebitorGroup(debitor_group.uuid)" '+
             '          typeahead-template-url="debitorGroupListItem.html"'+
-            '          class="form-kapok" '+
+            '          class="form-bhima" '+
             '          size="25">'+
             '          <span class="input-group-btn"> '+
             '            <button id="submitSearch" ng-disabled="validateNameSearch(findConvention.selectedConvention)" ng-click="submitDebitorGroup(findConvention.selectedConvention)" class="btn btn-default btn-sm"> {{ "FORM.SUBMIT" | translate }}</button>'+

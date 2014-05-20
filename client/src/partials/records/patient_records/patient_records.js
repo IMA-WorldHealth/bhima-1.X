@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('patientRecords', [
+angular.module('bhima.controllers').controller('patientRecords', [
   '$scope',
   '$routeParams',
   'validate',
