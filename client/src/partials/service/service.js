@@ -1,5 +1,4 @@
-angular.module('kpk.controllers').controller('service',
-[
+angular.module('bhima.controllers').controller('service', [
   '$scope',
   '$q',
   '$translate',

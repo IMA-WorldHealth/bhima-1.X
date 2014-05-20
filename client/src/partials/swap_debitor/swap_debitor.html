@@ -61,7 +61,7 @@
           <div class="form-group">
             <label>{{ "SWAPDEBITOR.DEBTOR_GROUP" | translate }}</label>
             <div class="input-group">
-              <select required class="form-kapok" id="debtor-group" ng-model="debitor.debitor_group_uuid" ng-options="g.uuid as g.name for g in model.debtorGroup.data | orderBy:'name'">
+              <select required class="form-bhima" id="debtor-group" ng-model="debitor.debitor_group_uuid" ng-options="g.uuid as g.name for g in model.debtorGroup.data | orderBy:'name'">
                 <option value="" disabled="disabled">-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
               </select>
               <span class="input-group-btn">

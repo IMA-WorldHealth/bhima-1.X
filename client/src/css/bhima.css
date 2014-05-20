@@ -1,0 +1,356 @@
+* {
+  outline: none;
+}
+
+/* Hide in webkit the number spinners
+ * for both date and number.
+ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: none;
+}
+
+body {
+  font-size: 12px;
+}
+
+button {
+  text-transform: capitalize;
+}
+
+/* For some reason, minification broke this... */
+fieldset {
+  width: 100%;
+}
+
+section {
+  position   : absolute;
+  left       : 0;
+  right      : 0;
+  min-height : 37px;
+  padding    : 3px 15px;
+  margin-top : 0;
+}
+
+header {
+  position      : absolute;
+  top           : 0;
+  right         : 0;
+  left          : 0;
+  height        : 50px;
+  padding       : 7px 15px;
+  font-size     : 2em;
+  border-bottom : 1px solid #dddddd;
+}
+
+header small {
+  font-weight : normal;
+  line-height : 1;
+  color       : #999999;
+}
+
+.visible-print,
+tr.visible-print,
+th.visible-print,
+td.visible-print {
+  display: none !important;
+}
+
+/* first viewport */
+.sidebar {
+  position: fixed;
+  right: 0;
+  width: 18%;
+  height: 100%;
+  border-left: 1px solid #DADADA;
+  background: #F3F3F3;
+}
+
+.sidebar h2 {
+  font-family    : "Lucida Sans Unicode";
+  padding-left   : 0;
+  font-size      : 4em;
+  letter-spacing : 0.2em;
+  text-align     : center;
+}
+
+.sidebar h2 span {
+   color: #01AC07;
+}
+
+/* second viewport */
+.viewport {
+  position : fixed;
+  width    : 82%;
+  height   : 100%;
+}
+
+.view {
+  position : relative;
+  height   : 100%;
+  width    : 100%;
+  overflow : auto;
+}
+
+.content {
+  position      : absolute;
+  bottom        : 37px;
+  top           : 87px;
+  right         : 0;
+  left          : 0;
+  overflow      : auto;
+  margin-right  : auto;
+  margin-left   : auto;
+  padding-left  : 15px;
+  padding-right : 15px;
+  padding-top   : 5px;
+  font-size     : 12px;
+}
+
+.content.extend {
+  bottom: 0;
+}
+
+#logo  {
+  box-shadow: 0 2px 6px -3px black;
+  height: 140px;
+}
+
+#bhima-util {
+  position : absolute;
+  bottom   : 0;
+  width    : 100%;
+}
+
+#bhima-tree {
+  padding-top: 20px;
+}
+
+/* temp :: used in reporting account_balances */
+.pad-left td:first-child  {
+  padding-left: 15px !important;
+}
+
+.pad-right td:first-child  {
+  padding-right: 15px !important;
+}
+
+/* used in login.html */
+.center {
+  width        : 75%;
+  text-align   : center;
+  float        : none;
+  margin-left  : auto;
+  margin-right : auto;
+}
+
+/* undo effect on panel-heading */
+.center .panel-heading {
+  text-align: left;
+}
+
+.underline {
+  border-bottom: 1px solid #dddddd;
+}
+
+.overline {
+  border-top: 1px solid #dddddd;
+}
+
+.capital {
+  text-transform: capitalize;
+}
+
+/* everything is bad */
+.hack-left {
+  margin-left: -15px;
+}
+
+.excell {
+  padding : 0;
+  margin  : 1px;
+}
+
+.excell tr {
+  padding : 0;
+  margin  : 0;
+}
+
+.excell td {
+  margin  : 0;
+  padding : 0;
+}
+
+.list-plain {
+  list-style  : none;
+  margin-left : 15px;
+  padding     : 0;
+}
+
+.top-nav {
+  top           : 50px;
+  border-bottom : 1px solid #ddd;
+}
+
+.top-nav .breadcrumb {
+  background-color : #fff;
+  margin: 0;
+}
+
+.top-nav .label {
+  vertical-align : middle;
+}
+
+header + .content {
+  top : 50px;
+}
+
+
+.bar-bottom {
+  bottom: 0;
+  border-top: 1px solid #ddd;
+}
+
+/* positioned relative to the entire window */
+/* FIXME : it would be ideal if this were not the case */
+.message-box {
+  right        : 18%;
+  position     : absolute;
+  margin-right : 0.5%;
+  width        : 25%;
+  z-index      : 1175;
+  top          : 0.5%;
+}
+
+.message-box > .alert {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+/*haaack*/
+.btn-primary a {
+  color: white;
+}
+
+.menu-item {
+  margin-left: 10px;
+}
+
+.menu-item:hover {
+  cursor: pointer;
+}
+
+.menu-item.disabled {
+  cursor          : default;
+  text-decoration : none;
+  color           : #cecece;
+}
+
+.panel-primary .panel-heading .menu-item {
+  color: white;
+}
+
+.selected-primary {
+  color            : #ffffff;
+  background-color : #428bca;
+  border-color     : #357ebd;
+
+}
+
+.selected-success {
+  color            : #468847;
+  background-color : #dff0d8;
+  border-color     : #d6e9c6;
+}
+
+.caret::after {
+  content : attr(data-caret);
+}
+
+.creditInvoice {
+  /* color         : #ffffff; */
+  background-color : #d9534f;
+  color            : #000;
+  /* border-color  : #d43f3a; */
+}
+
+a.danger {
+  color: #d2322d;
+}
+
+.modal-content {
+  width   : 40%;
+  top     : 10em; /* to float vertically */
+  margin  : 0 auto;
+  height  : auto;
+  z-index : 1055; /* background is 1050 generally */
+}
+
+.modal-content.modal-lg {
+  width: 60%;
+}
+
+.box-error {
+  padding          : 8px;
+  width            : 100%;
+  font-weight      : bold;
+  color            : #b94a48;
+  background-color : #f2dede;
+  border           : 1px solid #eed3d7;
+}
+
+.square {
+  border-radius : 0;
+}
+
+.creditInvoice a {
+  color: #fff;
+}
+
+.priceReport {
+  border : none;
+}
+
+.priceReport .group-header th {
+  padding: 5px;
+}
+
+.bhima-msg {
+  padding: 5px 15px;
+}
+
+.panel-input {
+  margin-left: 15px;
+}
+
+.label-group {
+  margin: 0 5px;
+}
+
+.plain-list {
+  padding-left: 10px;
+  list-style : none;
+}
+
+.plain-list li {
+  margin-bottom : 10px;
+}
+
+.table > tbody > tr.row-collapse > td,
+.table > tbody > tr.row-collapse > th {
+  padding : 0;
+  border  : none;
+}
+
+.highlight-grey {
+  background-color: #F3F3F3;
+}
+
+.table > tbody > tr.success {
+  color            : #468847;
+  background-color : #dff0d8;
+}
+
+.error {
+  color : #b94a48;
+}

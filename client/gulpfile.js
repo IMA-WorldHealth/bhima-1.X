@@ -4,13 +4,14 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     minifycss = require('gulp-minify-css'),
     htmlreplace = require('gulp-html-replace'),
-    jshint = require('gulp-jshint');
+    jshint = require('gulp-jshint'),
+    header = require('gulp-header');
 
 var jshintrcPath = '../.jshintrc';
 
 var paths = {
   scripts : ['src/js/define.js', 'src/**/*.js', '!src/js/app.js'],
-  
+
   // FIXME You shouldn't need src/partials/**/**/*.css
   styles : ['src/partials/**/*.css', 'src/partials/**/**/*.css', 'src/css/*.css', '!src/css/*.min.css', 'src/css/grid/*.css'],
   assets : ['src/assets/**/*'],
@@ -61,7 +62,6 @@ gulp.task('static', function () {
 });
 
 gulp.task('watch', function () {
-
   // TODO Use gulp-changed/ gulp-newer
   gulp.watch(paths.styles, ['styles']);
   gulp.watch(paths.scripts, ['scripts']);

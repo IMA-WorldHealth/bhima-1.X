@@ -1,5 +1,5 @@
 //TODO Debtor table currently has no personal information - this strictly ties debtors to patients (or some existing table) - a reverse lookup from debtor/ creditor ID to recipient is needed
-angular.module('kpk.controllers')
+angular.module('bhima.controllers')
 .controller('invoice', [
   '$scope',
   '$routeParams',

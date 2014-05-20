@@ -1,4 +1,4 @@
-angular.module('kpk.controllers')
+angular.module('bhima.controllers')
 .controller('inventoryView', [
   '$scope',
   '$q',
@@ -112,7 +112,7 @@ angular.module('kpk.controllers')
         forceFitColumns      : true
       };
 
-      grid = new Slick.Grid("#kpk-inventory-grid", dataview, columns, options);
+      grid = new Slick.Grid("#bhima-inventory-grid", dataview, columns, options);
 
       // set up sorting
 

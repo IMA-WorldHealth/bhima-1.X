@@ -48,14 +48,14 @@
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
               <div class="col-xs-9">
-                <input class="form-kapok" ng-model="session.employee.name" required>
+                <input class="form-bhima" ng-model="session.employee.name" required>
               </div>
             </div> 
 
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "EMPLOYEE.CREDITOR_GROUP" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-kapok" ng-model="session.creditor.group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data" required> 
+                <select class="form-bhima" ng-model="session.creditor.group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data" required> 
                   <option value="" disabled="disabled">--- {{ "SELECT.CREDITOR_GROUP" | translate }} ---</option>
                   <!-- <option ng&#45;repeat="group in creditorGroup.data | orderBy:'name'" value="{{group.uuid}}"> -->
                   <!-- {{ group.name }} -->
@@ -67,14 +67,14 @@
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "COLUMNS.CODE" | translate }}:</label>
               <div class="col-xs-9">
-                <input class="form-kapok" ng-model="session.employee.code" required>
+                <input class="form-bhima" ng-model="session.employee.code" required>
               </div>
             </div> 
             
             <div class="form-group" >
               <label for="employee-dob" class="col-xs-3 control-label required">{{ "COLUMNS.DOB" | translate }}</label>
               <div class="col-xs-9">
-                <input id="employee-dob" required type="date" class="form-kapok"  ng-model="session.employee.dob">
+                <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.dob">
               </div>
             </div>
 

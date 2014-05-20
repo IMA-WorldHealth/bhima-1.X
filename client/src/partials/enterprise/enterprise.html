@@ -87,28 +87,28 @@
             <fieldset>
               <legend>{{ 'ENTERPRISE.CONFIGURATION' | translate }}</legend>
               <div class="form-group">
-                <label for="kpk-enterprise-name">{{ 'ENTERPRISE.NAME' | translate }} </label>
-                <input type="text" class="form-kapok" name="kpk-enterprise-name" id="kpk-enterprise-name" ng-model="add.name">
+                <label for="bhima-enterprise-name">{{ 'ENTERPRISE.NAME' | translate }} </label>
+                <input type="text" class="form-bhima" name="bhima-enterprise-name" id="bhima-enterprise-name" ng-model="add.name">
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
-                <input type="text" class="form-kapok" name="kpk-enterprise-abbr" id="kpk-enterprise-abbr" ng-model="add.abbr">
+                <label for="bhima-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
+                <input type="text" class="form-bhima" name="bhima-enterprise-abbr" id="bhima-enterprise-abbr" ng-model="add.abbr">
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-email">{{ 'ENTERPRISE.EMAIL' | translate }} </label>
-                <input type="email" class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="add.email">
+                <label for="bhima-enterprise-email">{{ 'ENTERPRISE.EMAIL' | translate }} </label>
+                <input type="email" class="form-bhima" name="bhima-enterprise-email" id="bhima-enterprise-email" ng-model="add.email">
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
-                <input type="tel" class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="add.phone">
+                <label for="bhima-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
+                <input type="tel" class="form-bhima" name="bhima-enterprise-phone" id="bhima-enterprise-phone" ng-model="add.phone">
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="add.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'">
+                <label for="bhima-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
+                <select class="form-bhima" name="bhima-enterprise-location" id="bhima-enterprise-location" ng-model="add.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'">
                   <option value="" disabled="disabled">-- {{ 'SELECT.LOCATION' | translate }}--</option>
                 </select>
               </div>
@@ -120,7 +120,7 @@
               <div class="radio" ng-repeat="currency in currency.data">
                 <label>
                   {{currency.name}}
-                  <input type="radio" value="{{currency.id}}" name="kpk-enterprise-currency" ng-model="add.currency_id">
+                  <input type="radio" value="{{currency.id}}" name="bhima-enterprise-currency" ng-model="add.currency_id">
                 </label>
               </div>
 
@@ -138,28 +138,28 @@
             <fieldset>
               <legend>{{ "ENTERPRISE.EDIT_ENTERPRISE" | translate }}</legend>
               <div class="form-group">
-                <label for="kpk-enterprise-name" class="required">{{ 'ENTERPRISE.NAME' | translate }} </label>
-                <input class="form-kapok" name="kpk-enterprise-name" id="kpk-enterprise-name" ng-model="edit.name" required>
+                <label for="bhima-enterprise-name" class="required">{{ 'ENTERPRISE.NAME' | translate }} </label>
+                <input class="form-bhima" name="bhima-enterprise-name" id="bhima-enterprise-name" ng-model="edit.name" required>
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
-                <input class="form-kapok" name="kpk-enterprise-abbr" id="kpk-enterprise-abbr" ng-model="edit.abbr">
+                <label for="bhima-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
+                <input class="form-bhima" name="bhima-enterprise-abbr" id="bhima-enterprise-abbr" ng-model="edit.abbr">
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-email" >{{ 'ENTERPRISE.EMAIL' | translate }} </label>
-                <input type="email" class="form-kapok" name="kpk-enterprise-email" id="kpk-enterprise-email" ng-model="edit.email">
+                <label for="bhima-enterprise-email" >{{ 'ENTERPRISE.EMAIL' | translate }} </label>
+                <input type="email" class="form-bhima" name="bhima-enterprise-email" id="bhima-enterprise-email" ng-model="edit.email">
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
-                <input type="tel" class="form-kapok" name="kpk-enterprise-phone" id="kpk-enterprise-phone" ng-model="edit.phone">
+                <label for="bhima-enterprise-phone" >{{ 'ENTERPRISE.PHONE' | translate }} </label>
+                <input type="tel" class="form-bhima" name="bhima-enterprise-phone" id="bhima-enterprise-phone" ng-model="edit.phone">
               </div>
 
               <div class="form-group">
-                <label for="kpk-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
-                <select class="form-kapok" name="kpk-enterprise-location" id="kpk-enterprise-location" ng-model="edit.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
+                <label for="bhima-enterprise-location" class="required">{{ 'ENTERPRISE.LOCATION' | translate }} </label>
+                <select class="form-bhima" name="bhima-enterprise-location" id="bhima-enterprise-location" ng-model="edit.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
                   <option value="" disabled="disabled">-- Select a Location --</option>
                 </select>
               </div>
@@ -171,7 +171,7 @@
               <div class="radio" ng-repeat="currency in currency.data">
                 <label>
                   {{currency.name}}
-                  <input type="radio" value="{{currency.id}}" name="kpk-enterprise-currency" ng-model="edit.currency_id">
+                  <input type="radio" value="{{currency.id}}" name="bhima-enterprise-currency" ng-model="edit.currency_id">
                 </label>
               </div>
 

@@ -1,4 +1,4 @@
-angular.module('kpk.controllers').controller('accountStatement',
+angular.module('bhima.controllers').controller('accountStatement',
 [
   '$scope',
   '$q',
