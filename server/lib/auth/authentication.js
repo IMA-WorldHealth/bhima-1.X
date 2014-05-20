@@ -85,7 +85,8 @@ module.exports = function (db) {
               req.session.project_id = results[0].id;
               res.redirect('/');
             } else {
-              return res.sendfile('./app/project.html');
+              // FIXME hardcoded routes
+              return res.sendfile('client/dest/project.html');
             }
           });
 

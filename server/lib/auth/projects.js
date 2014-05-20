@@ -31,7 +31,8 @@ module.exports = function (db) {
           });
         }
       } else {
-        return res.sendfile('./app/project.html');
+        // FIXME hardcoded routes
+        return res.sendfile('client/dest/project.html');
       }
     } else {
       return next();
