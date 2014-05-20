@@ -4,8 +4,7 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     minifycss = require('gulp-minify-css'),
     htmlreplace = require('gulp-html-replace'),
-    jshint = require('gulp-jshint'),
-    header = require('gulp-header');
+    jshint = require('gulp-jshint');
 
 var jshintrcPath = '../.jshintrc';
 

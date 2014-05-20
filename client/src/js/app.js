@@ -343,7 +343,7 @@
     });
 
     //TODO Try and assign the previous sessions language key here
-    $translateProvider.preferredLanguage('en');
+    $translateProvider.preferredLanguage('fr');
   }
 
   bhima.config(bhimaconfig);
