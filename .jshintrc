@@ -18,7 +18,6 @@
   "unused"        : "strict",
   "strict"        : false,
   "trailing"      : true,
-  /*Small function preferable - 15 statements max? */
   "maxstatements" : false,
   "asi"           : false,
   "boss"          : false,

@@ -1,1 +1,2 @@
-angular.module('kpk.controllers', []);
+angular.module('bhima.controllers', []);
+angular.module('bhima.services', []);
