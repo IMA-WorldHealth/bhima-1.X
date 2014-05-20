@@ -1,5 +1,5 @@
 //TODO Ensure sale exists (validation test implementation required)
-angular.module('kpk.controllers')
+angular.module('bhima.controllers')
 .controller('creditNote', [
   '$scope',
   '$routeParams',

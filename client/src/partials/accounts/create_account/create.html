@@ -43,12 +43,12 @@
 
                 <div class="form-group">
                   <label for="title">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
-                  <input required type="text" id="title" class="form-kapok" ng-model="newAccount.title">
+                  <input required type="text" id="title" class="form-bhima" ng-model="newAccount.title">
                 </div>
 
                 <div class="form-group">
                   <label for="type">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
-                  <select required  id="type" class="form-kapok" ng-options="c.type for c in model.accountType.data" ng-model="newAccount.type">
+                  <select required  id="type" class="form-bhima" ng-options="c.type for c in model.accountType.data" ng-model="newAccount.type">
                     <!--Placeholder options-->
                     <!-- <option>Title</option> -->
                     <!-- <option>Balance Account</option> -->
@@ -58,7 +58,7 @@
                 
                 <div class="form-group">
                   <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
-                  <input required type="text" id="number" class="form-kapok" ng-model="newAccount.number">
+                  <input required type="text" id="number" class="form-bhima" ng-model="newAccount.number">
                 </div>
 
                 <div class="form-group">
@@ -86,7 +86,7 @@
             <div class="panel-body">
               <div class="form-group">
                 <label for="parent" class="required">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
-                <select required  id="parent" class="form-kapok" ng-options="c.account_txt for c in model.account.data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
+                <select required  id="parent" class="form-bhima" ng-options="c.account_txt for c in model.account.data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
                   <!--Placeholder options-->
                   <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
                 </select>

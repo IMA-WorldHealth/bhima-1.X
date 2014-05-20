@@ -1,9 +1,9 @@
 (function (angular) {
   'use strict';
 
-  var kpk = angular.module('kpk', ['kpk.controllers', 'kpk.services', 'kpk.directives', 'kpk.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
+  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
 
-  function kpkconfig($routeProvider) {
+  function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
     when('/budgeting/:accountID?', {
@@ -346,53 +346,6 @@
     $translateProvider.preferredLanguage('en');
   }
 
-
-  function indicatorConfig($httpProvider) {
-    var $http;
-    var interceptor = ['$q', '$injector', function ($q, $injector) {
-      var notificationChannel;
-
-      function success(response) {
-        // get $http via $injector because of circular dependency problem
-        $http = $http || $injector.get('$http');
-        // don't send notification until all requests are complete
-        if ($http.pendingRequests.length < 1) {
-          // get requestNotificationChannel via $injector because of circular dependency problem
-          notificationChannel = notificationChannel || $injector.get('requestNotificationChannel');
-          // send a notification requests are complete
-          notificationChannel.requestEnded();
-        }
-        return response;
-      }
-
-      function error(response) {
-        // get $http via $injector because of circular dependency problem
-        $http = $http || $injector.get('$http');
-        // don't send notification until all requests are complete
-        if ($http.pendingRequests.length < 1) {
-          // get requestNotificationChannel via $injector because of circular dependency problem
-          notificationChannel = notificationChannel || $injector.get('requestNotificationChannel');
-          // send a notification requests are complete
-          notificationChannel.requestEnded();
-        }
-        return $q.reject(response);
-      }
-
-      return function (promise) {
-        // get requestNotificationChannel via $injector because of circular dependency problem
-        notificationChannel = notificationChannel || $injector.get('requestNotificationChannel');
-        // send a notification requests are complete
-        notificationChannel.requestStarted();
-        return promise.then(success, error);
-      };
-    }];
-
-    $httpProvider.responseInterceptors.push(interceptor);
-  }
-
-
-
-  kpk.config(kpkconfig);
-  kpk.config(translateConfig);
-  kpk.config(indicatorConfig);
+  bhima.config(bhimaconfig);
+  bhima.config(translateConfig);
 })(angular);

@@ -1,8 +1,8 @@
-#kpk-units-budget { 
+#bhima-units-budget { 
 	margin-top: 10px;
 }
 
-.kpk-scrollable { 
+.bhima-scrollable { 
   /*This shouldn't be a forced number - differing screen sizes etc.*/
   max-height: 600px;
   overflow-y: scroll;
@@ -17,7 +17,7 @@
   width: 33%;
 }
 
-.kpk-header { 
+.bhima-header { 
   padding-bottom: 9px;
   margin: 0px 0 45px;
   border-bottom: 1px solid #eeeeee;

@@ -41,7 +41,7 @@
             <div class="form-group col-xs-6 hack-left">
               <label>Reference Document ID</label>
               <div class="input-group">
-                <input class="form-kapok" ng-model="session.receipt.reference_uuid" required>
+                <input class="form-bhima" ng-model="session.receipt.reference_uuid" required>
                 <span class="input-group-btn">
                   <button type="button" class="btn btn-sm btn-default square" ng-click="generate()">
                     <span class="glyphicon glyphicon-refresh"></span>
@@ -52,17 +52,17 @@
 
             <div class="form-group col-xs-6 pull-right" style="padding-right: 0;">
               <label>Expense Date</label>
-              <input type="date" class="form-kapok" ng-model="session.receipt.date" max="{{ session.today }}" required>
+              <input type="date" class="form-bhima" ng-model="session.receipt.date" max="{{ session.today }}" required>
             </div>
 
             <div class="form-group">
               <label>Purpose of Expense</label>
-              <input class="form-kapok" ng-model="session.receipt.description" required>
+              <input class="form-bhima" ng-model="session.receipt.description" required>
             </div>
 
             <div class="form-group">
               <label>Receipient</label>
-              <select type="text" class="form-kapok" ng-model="session.receipt.recipient" ng-options="supplier as supplier.text for supplier in suppliers.data">
+              <select type="text" class="form-bhima" ng-model="session.receipt.recipient" ng-options="supplier as supplier.text for supplier in suppliers.data">
               </select>
             </div>
 
@@ -72,7 +72,7 @@
                 <span class="input-group-addon square">
                   {{ session.currency.symbol || "..." }}
                 </span>
-                <input type="number" class="form-kapok" ng-model="session.receipt.cost">
+                <input type="number" class="form-bhima" ng-model="session.receipt.cost">
               </div>
             </div>
           </form>

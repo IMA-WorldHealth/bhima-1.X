@@ -21,17 +21,17 @@
 
           <div class="form-group">
             <label for="saledate">{{ 'PURCHASE.SALE_DATE' | translate }}</label>
-            <input type="date" id="purchaseDate" class="form-kapok" ng-model="session.purchase.purchase_date">
+            <input type="date" id="purchaseDate" class="form-bhima" ng-model="session.purchase.purchase_date">
           </div>
           <div class="form-group">
             <label for="select-cred">{{ 'PURCHASE.SUPPLIER' | translate }}</label>
-            <select id="select-cred" ng-change="selectCreditor(session.creditor)" ng-model="session.creditor" ng-options="c as c.name for c in creditor.data" class="form-kapok">
+            <select id="select-cred" ng-change="selectCreditor(session.creditor)" ng-model="session.creditor" ng-options="c as c.name for c in creditor.data" class="form-bhima">
               <option value="" disabled="disabled">--Select Creditor--</option>
             </select>
           </div>
           <div class="form-group">
             <label for="select-employee">{{ 'PURCHASE.RESPONSABLE' | translate}}</label>
-            <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-kapok">
+            <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-bhima">
               <option value="" disabled="disabled">--Select Employee--</option>
             </select>
           </div>
@@ -54,7 +54,7 @@
           <!--     </label> -->
           <!--   </div>
           <!--   <div class="input&#45;group"> -->
-          <!--     <select id="payable" class="form&#45;kapok" ng&#45;disabled="isPayable()"> -->
+          <!--     <select id="payable" class="form&#45;bhima" ng&#45;disabled="isPayable()"> -->
           <!--       <!&#45;&#45;FIXME Currently hardcoded &#45; should these be pulled from a data set?&#45;&#45;> -->
           <!--       <option>14</option> -->
           <!--       <option>30</option> -->

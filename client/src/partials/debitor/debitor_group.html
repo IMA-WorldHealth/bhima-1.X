@@ -1,10 +1,10 @@
 <header data-header>
-  <span>{{ "DEBITOR_GRP.TITLE" | translate }}</span>
+  {{ "DEBITOR_GRP.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
   <div class="pull-left">
-    <input type="search" class="form-kapok" ng-model="data.search" placeholder="{{ 'DEBITOR_GRP.FILTER' | translate }}" size="25">
+    <input type="search" class="form-bhima" ng-model="data.search" placeholder="{{ 'DEBITOR_GRP.FILTER' | translate }}" size="25">
   </div>
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="new()">
@@ -64,7 +64,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.NAME" | translate }}</label>
               <div class="col-xs-10">
-                <input name="group-name" class="form-kapok" ng-model="newGroup.name" required>
+                <input name="group-name" class="form-bhima" ng-model="newGroup.name" required>
               </div>
             </div>
 
@@ -83,7 +83,7 @@
               <label class="col-xs-2 control-label required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-kapok" ng-model="newGroup.account_id" required>
+                <select name="group-account" class="form-bhima" ng-model="newGroup.account_id" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                   <option ng-repeat="acc in account.data | orderBy:'account_number'" value='{{acc.id}}' ng-disabled="acc.account_type_id==3">{{formatAccount(acc)}}</option>
                 </select>
@@ -96,7 +96,7 @@
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-kapok" ng-model="newGroup.price_list_uuid">
+                <select name="group-account" class="form-bhima" ng-model="newGroup.price_list_uuid">
                   <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
                   <option ng-repeat="pl in price_list.data | orderBy:'title'" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
                 </select>
@@ -106,7 +106,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-location" class="form-kapok" ng-model="newGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
+                <select name="group-location" class="form-bhima" ng-model="newGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
                 </select>
               </div>
@@ -115,7 +115,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.PAYMENT" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-payment" class="form-kapok" ng-model="newGroup.payment_id" ng-options="pay.id as pay.text for pay in payment.data">
+                <select name="group-payment" class="form-bhima" ng-model="newGroup.payment_id" ng-options="pay.id as pay.text for pay in payment.data">
                   <option value="" disabled="disabled">-- {{ "SELECT.PAYMENT" | translate }} --</option>
                 </select>
               </div>
@@ -124,28 +124,28 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.PHONE" | translate }}</label>
               <div class="col-xs-10">
-                <input type="tel" name="group-phone" class="form-kapok" ng-model="newGroup.phone">
+                <input type="tel" name="group-phone" class="form-bhima" ng-model="newGroup.phone">
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
               <div class="col-xs-10">
-                <input type="email" name="group-email" class="form-kapok" ng-model="newGroup.email">
+                <input type="email" name="group-email" class="form-bhima" ng-model="newGroup.email">
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.MAX_CREDIT" | translate }}</label>
               <div class="col-xs-10">
-                <input type="number" min="0" name="group-maxcredit" class="form-kapok" ng-model="newGroup.max_credit" required>
+                <input type="number" min="0" name="group-maxcredit" class="form-bhima" ng-model="newGroup.max_credit" required>
               </div>
             </div>
 
             <!-- <div class="form&#45;group"> -->
             <!--   <label class="col&#45;xs&#45;2 control&#45;label required">{{ "COLUMNS.TYPE" | translate }}</label> -->
             <!--   <div class="col&#45;xs&#45;10"> -->
-            <!--     <select name="group&#45;type" class="form&#45;kapok" ng&#45;model="newGroup.type_id" ng&#45;options="t.id as t.type for t in types.data" required> -->
+            <!--     <select name="group&#45;type" class="form&#45;bhima" ng&#45;model="newGroup.type_id" ng&#45;options="t.id as t.type for t in types.data" required> -->
             <!--       <option value="" disabled="disabled">&#45;&#45; {{"SELECT.GROUP_TYPE" | translate }} &#45;&#45; </option> -->
             <!--     </select> -->
             <!--   </div> -->
@@ -172,7 +172,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">Name</label>
               <div class="col-xs-10">
-                <input name="group-name" class="form-kapok" ng-model="editGroup.name" required>
+                <input name="group-name" class="form-bhima" ng-model="editGroup.name" required>
               </div>
             </div>
 
@@ -191,7 +191,7 @@
               <label class="col-xs-2 control-label required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-kapok" ng-model="editGroup.account_id" ng-options="acc.id as formatAccount(acc) for acc in account.data | orderBy:'account_number'" required>
+                <select name="group-account" class="form-bhima" ng-model="editGroup.account_id" ng-options="acc.id as formatAccount(acc) for acc in account.data | orderBy:'account_number'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                 </select>
               </div>
@@ -201,7 +201,7 @@
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-kapok" ng-model="editGroup.price_list_uuid">
+                <select name="group-account" class="form-bhima" ng-model="editGroup.price_list_uuid">
                   <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
                   <option ng-repeat="pl in price_list.data | orderBy:'title'" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
                 </select>
@@ -211,7 +211,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.LOCATION" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-location" class="form-kapok" ng-model="editGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
+                <select name="group-location" class="form-bhima" ng-model="editGroup.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
                 </select>
                </div>
@@ -220,7 +220,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.PAYMENT" | translate }}</label>
               <div class="col-xs-10">
-                <select name="group-payment" class="form-kapok" ng-model="editGroup.payment_id" ng-options="pay.id as pay.text for pay in payment.data" required>
+                <select name="group-payment" class="form-bhima" ng-model="editGroup.payment_id" ng-options="pay.id as pay.text for pay in payment.data" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.PAYMENT" | translate }} --</option>
                 </select>
               </div>
@@ -229,28 +229,28 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.PHONE" | translate }}</label>
               <div class="col-xs-10">
-                <input type="tel" name="group-phone" class="form-kapok" ng-model="editGroup.phone">
+                <input type="tel" name="group-phone" class="form-bhima" ng-model="editGroup.phone">
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
               <div class="col-xs-10">
-                <input type="email" name="group-email" class="form-kapok" ng-model="editGroup.email">
+                <input type="email" name="group-email" class="form-bhima" ng-model="editGroup.email">
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-xs-2 control-label required" for="maxcredit">{{ "COLUMNS.MAX_CREDIT" | translate }}</label>
               <div class="col-xs-10">
-                <input type="number" min="0" name="group-maxcredit" class="form-kapok" ng-model="editGroup.max_credit" required>
+                <input type="number" min="0" name="group-maxcredit" class="form-bhima" ng-model="editGroup.max_credit" required>
               </div>
             </div>
 <!--  -->
 <!--             <div class="form&#45;group"> -->
 <!--               <label class="col&#45;xs&#45;2 control&#45;label required">{{ "COLUMNS.TYPE" | translate }}</label> -->
 <!--               <div class="col&#45;xs&#45;10"> -->
-<!--                 <select name="group&#45;type" class="form&#45;kapok" ng&#45;model="editGroup.type_id" ng&#45;options="t.id as t.type for t in types.data" required> -->
+<!--                 <select name="group&#45;type" class="form&#45;bhima" ng&#45;model="editGroup.type_id" ng&#45;options="t.id as t.type for t in types.data" required> -->
 <!--                   <option value="" disabled="disabled">&#45;&#45; {{ "SELECT.GROUP_TYPE" | translate }} &#45;&#45; </option> -->
 <!--                 </select> -->
 <!--               </div> -->
