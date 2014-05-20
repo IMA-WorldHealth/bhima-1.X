@@ -13,7 +13,6 @@ var paths = {
 
   // FIXME You shouldn't need src/partials/**/**/*.css
   styles : ['src/partials/**/*.css', 'src/partials/**/**/*.css', 'src/css/*.css', '!src/css/*.min.css', 'src/css/grid/*.css'],
-  // templates : ['src/partials/**/*.html'],
   assets : ['src/assets/**/*'],
   static : ['src/index.html', 'src/login.html', 'src/error.html', 'src/project.html', 'src/js/app.js', 'src/i18n/*', 'src/css/fonts/*', 'src/partials/**/*.html'],
   vendor : ['vendor/**/*']
@@ -25,7 +24,7 @@ gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
     // .pipe(jshint(jshintrcPath))
     // .pipe(jshint.reporter('default'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(destPath))
     .pipe(notify({ message : 'Completed compiling scripts.' }));
@@ -48,13 +47,6 @@ gulp.task('assets', function () {
     .pipe(notify({ message : 'Completed optimizing and transfering assets' }));
 });
 
-// gulp.task('templates', function () {
-//   return gulp.src(paths.templates)
-//     // TODO rename partials -> templates/
-//     .pipe(gulp.dest(destPath + 'partials/'))
-//     .pipe(notify({message : 'Completed transfering templates.' }));
-// });
-
 gulp.task('vendor', function () {
   return gulp.src(paths.vendor)
     .pipe(gulp.dest(destPath + 'lib/'))
@@ -71,7 +63,6 @@ gulp.task('static', function () {
 gulp.task('watch', function () {
   // TODO Use gulp-changed/ gulp-newer
   gulp.watch(paths.styles, ['styles']);
-  // gulp.watch(paths.templates, ['templates']);
   gulp.watch(paths.scripts, ['scripts']);
   gulp.watch(paths.static, ['static']);
 });
