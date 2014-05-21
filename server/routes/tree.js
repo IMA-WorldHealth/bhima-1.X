@@ -1,9 +1,8 @@
 // Module: scripts/tree.js
 
-var parser = require('./database/parser')();
 var q = require('q');
 
-module.exports = function (db) {
+module.exports = function (db, parser) {
   // This module is responsible for constructing each
   // person's tree based on their permissions in the
   // database.

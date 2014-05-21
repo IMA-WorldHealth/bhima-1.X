@@ -1,7 +1,7 @@
 // builds the sql queries that a store will use
 
-var sanitize = require('../util/sanitize.js'),
-    util = require('../util/util');
+var sanitize = require('./sanitize'),
+    util = require('./util');
 
 //module: Parser
 module.exports = function (options) {

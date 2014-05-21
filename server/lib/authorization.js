@@ -2,10 +2,10 @@
 
 // Middleware: authorize
 
-module.exports = function (db, global_paths) {
+module.exports = function (globalPaths) {
   'use strict';
-  
-  // This middleware concerns itself only with 
+
+  // This middleware concerns itself only with
   // validating each request with the appropriate
   // session data.  It should naturally be placed high
   // in the middleware stack, but after authentication.
@@ -30,7 +30,7 @@ module.exports = function (db, global_paths) {
     if (req.session.authenticated) {
 
       // all paths for this user
-      var paths = [].concat(global_paths, req.session.paths);
+      var paths = [].concat(globalPaths, req.session.paths);
 
       // check if url in allowable path
       return match(req.url, paths) ?
@@ -41,13 +41,13 @@ module.exports = function (db, global_paths) {
           fix: 'Change config.json or paths in the database'
         });
     }
-    
+
     // FIXME harcoded routes
     if (req.url === '/login') {
       return res.sendfile('client/dest/login.html');
     } else {
       return res.redirect('/login');
     }
-    
+
   };
 };

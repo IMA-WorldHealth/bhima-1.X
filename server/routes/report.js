@@ -9,11 +9,9 @@
  */
 
 var q = require('q'),
-    querystring = require('querystring'),
-    util = require('../util/util'),
-    sanitize = require('../util/sanitize');
+    querystring = require('querystring');
 
-module.exports = function (db) {
+module.exports = function (db, sanitize, util) {
   'use strict';
 
   function buildFinanceQuery(requiredFiscalYears) {

@@ -2,17 +2,16 @@
 
 // Module: db.js
 
-// TODO EVERY query to the DB is currently handled on it's own connection, one 
-// HTTP request can result in tens of connections. Performance checks for 
-// sharing connections between request sessions (also allowing for shraring a 
+// TODO EVERY query to the DB is currently handled on it's own connection, one
+// HTTP request can result in tens of connections. Performance checks for
+// sharing connections between request sessions (also allowing for shraring a
 // transaction between unrelated components)
 
 // The purpose of this module is managing client connections
 // and disconnections to a variety of database management systems.
 // All query formatting is expected to happen elsewhere.
 
-var u = require('../util/util'),
-    q = require('q');
+var q = require('q');
 
 function mysqlInit (config) {
   'use strict';
@@ -31,14 +30,14 @@ function flushUsers (db_con) {
 
   // Mwahahahaha
   db_con.getConnection(function (err, con) {
-    if (err) throw err;
+    if (err) { throw err; }
     con.query(permissions, function (err, res) {
-      if (err) throw err;
+      if (err) { throw err; }
       con.release();
       db_con.getConnection(function (err, con) {
-        if (err) throw err;
+        if (err) { throw err; }
         con.query(reset, function (err) {
-          if (err) throw err;
+          if (err) { throw err; }
           console.log('[db.js] (*) user . logged_in set to 0');
         });
       });
@@ -46,30 +45,32 @@ function flushUsers (db_con) {
   });
 }
 
+/*
 // TODO: impliment PostgreSQL support
 function postgresInit(config) {
-  db = require('pg');
+  var db = require('pg');
   return true;
 }
 
 // TODO: impliment Firebird support
 function firebirdInit(config) {
-  db = require('node-firebird');
+  var db = require('node-firebird');
   return true;
 }
 
 // TODO: impliment sqlite support
 function sqliteInit(config) {
-  db = require('sqlite3');
+  var db = require('sqlite3');
   return true;
 }
+*/
 
 // Utility methods
-function promiseQuery(connection, sql) { 
+function promiseQuery(connection, sql) {
   var deferred = q.defer();
-  
+
   console.log('[db] [Transaction Query]', sql);
-  connection.query(sql, function (error, result) { 
+  connection.query(sql, function (error, result) {
     console.log('resultssss', error, result);
     if (error) return deferred.reject(error);
     return deferred.resolve(result);
@@ -87,10 +88,10 @@ module.exports = function (cfg, logger) {
 
   // All supported dabases and their initializations
   var supported_databases = {
-    mysql    : mysqlInit,
-    postgres : postgresInit,
-    firebird : firebirdInit,
-    sqlite   : sqliteInit
+    mysql    : mysqlInit
+    // postgres : postgresInit,
+    // firebird : firebirdInit,
+    // sqlite   : sqliteInit
   };
 
   // The database connection for all data interactions
@@ -139,32 +140,32 @@ module.exports = function (cfg, logger) {
       return defer.promise;
     },
 
-    executeAsTransaction : function (querries) { 
+    executeAsTransaction : function (querries) {
       var deferred = q.defer(), queryStatus = [];
       querries = querries.length ? querries : [querries];
-      
-      con.getConnection(function (error, connection) { 
-        if (error) return deferred.reject(error);
-        
-        connection.beginTransaction(function (error) { 
-          if (error) return deferred.reject(error);
-           
-          queryStatus = querries.map(function (query) { 
+
+      con.getConnection(function (error, connection) {
+        if (error) { return deferred.reject(error); }
+
+        connection.beginTransaction(function (error) {
+          if (error) { return deferred.reject(error); }
+
+          queryStatus = querries.map(function (query) {
             return promiseQuery(connection, query);
           });
-          
+
           q.all(queryStatus)
-          .then(function (result) { 
-            connection.commit(function (error) { 
-              if (error) connection.rollback(function () { 
-                return deferred.reject(error); 
+          .then(function (result) {
+            connection.commit(function (error) {
+              if (error) connection.rollback(function () {
+                return deferred.reject(error);
               });
               console.log('[db][executeAsTransaction] Commited');
               return deferred.resolve(result);
             });
           })
-          .catch(function (error) { 
-            connection.rollback(function () { 
+          .catch(function (error) {
+            connection.rollback(function () {
               console.log('[db][executeAsTransaction] Rolling back...');
               return deferred.reject(error);
             });
@@ -173,23 +174,23 @@ module.exports = function (cfg, logger) {
       });
       return deferred.promise;
     },
-    
-    requestTransactionConnection : function() { 
+
+    requestTransactionConnection : function() {
       var __connection__;
       var __connectionReady__ = q.defer();
 
-      con.getConnection(function (error, connection) { 
+      con.getConnection(function (error, connection) {
         if (error) return; // FIXME hadle error
         __connection__ = connection;
-        
-        __connection__.beginTransaction(function (error) { 
+
+        __connection__.beginTransaction(function (error) {
           if (error) return __connectionReady__.reject();
           __connectionReady__.resolve();
         });
       });
 
       /*Each method should return a promise to be chained
-        i.e 
+        i.e
           transaction.execute(first)
           .then(transaction.execute(second))
           .then(unrelatedMethod)
@@ -198,15 +199,15 @@ module.exports = function (cfg, logger) {
           .catch(transaction.cancel);
       */
 
-      function execute(query) { 
+      function execute(query) {
         var deferred = q.defer();
 
-        __connectionReady__.promise.then(function () { 
+        __connectionReady__.promise.then(function () {
           promiseQuery(__connection__, query)
-          .then(function (result) { 
-            deferred.resolve(result); 
+          .then(function (result) {
+            deferred.resolve(result);
           })
-          .catch(function (error) { 
+          .catch(function (error) {
             deferred.reject(error);
           });
         });
@@ -214,10 +215,10 @@ module.exports = function (cfg, logger) {
         return deferred.promise;
       }
 
-      function commit() { 
+      function commit() {
         var deferred = q.defer();
-        __connectionReady__.promise.then(function () { 
-          __connection__.commit(function (error) { 
+        __connectionReady__.promise.then(function () {
+          __connection__.commit(function (error) {
             if (error) return deferred.reject(error);
             deferred.resolve();
           });
@@ -226,10 +227,10 @@ module.exports = function (cfg, logger) {
         return deferred.promise;
       }
 
-      function cancel() { 
+      function cancel() {
         var deferred = q.defer();
-        __connectionReady__.promise.then(function () { 
-          __connection__.rollback(function () { 
+        __connectionReady__.promise.then(function () {
+          __connection__.rollback(function () {
             return deferred.resolve();
           });
         });
@@ -237,7 +238,7 @@ module.exports = function (cfg, logger) {
         return deferred.promise;
       }
 
-      return { 
+      return {
         execute : execute,
         commit : commit,
         cancel : cancel
