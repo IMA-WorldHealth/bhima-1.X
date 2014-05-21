@@ -6,14 +6,16 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   'validate',
-  function ($scope, $q, connect, appstate, messenger, validate) {
+  'util',
+  '$translate',
+  function ($scope, $q, connect, appstate, messenger, validate, util, $translate) {
     var dependencies = {};
     $scope.configuration = {};
     dependencies.aux_cost_centers = {
       query : {
         tables : {
           'cost_center' : {
-            columns : ['id', 'text', 'note', 'cost']
+            columns : ['id', 'text', 'note']
           },
           'project' : {
             columns :['name']
@@ -28,7 +30,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'cost_center' : {
-            columns : ['id', 'text', 'note', 'cost']
+            columns : ['id', 'text', 'note']
           },
           'project' : {
             columns :['name']
@@ -70,7 +72,6 @@ angular.module('bhima.controllers')
 
     function setAction (action){
       $scope.action = action;
-
     }
 
     function processSelectedCost (cc){
@@ -128,7 +129,6 @@ angular.module('bhima.controllers')
       $scope.model.selected_pri_cost_centers.forEach(function (item){
         item.allocatedCost = $scope.selected_aux_cost_center.cost * (item.criteriaValue / somCritereValue);
         item.allocatedCost = item.allocatedCost || 0;
-        console.log('initial cost is :', item.initial_cost);
         item.totalCost = item.initial_cost + item.allocatedCost;
       });
     }
@@ -149,6 +149,57 @@ angular.module('bhima.controllers')
       return som;
     }
 
+    function apply (){
+      console.log('apply');
+      sanitize()
+      .then(writeAssignation)
+      .then(writeAssignationItem);
+      .then(handleSucess)
+      .catch(handleApplyError);
+
+    }
+
+    function sanitize (){
+      $scope.assignation = {
+        project_id : $scope.project.id,
+        auxi_cc_id : $scope.selected_aux_cost_center.id,
+        cost : $scope.selected_aux_cost_center.cost,
+        date : util.convertToMysqlDate(new Date()),
+        note : 'Assignation/'+$scope.selected_aux_cost_center.text+'/'+new Date().toString()
+      }
+
+      $scope.assignation_items = [];
+      $scope.model.selected_pri_cost_centers.forEach(function (pc){
+        var ass_item = {
+          pri_cc_id : pc.id,
+          init_cost : pc.initial_cost,
+          value_criteria : pc.criteriaValue
+        }
+        $scope.assignation_items.push(ass_item);
+      });
+      return $q.when();
+    }
+
+    function writeAssignation (){
+      return connect.basicPut('cost_center_assignation', [$scope.assignation]);
+    }
+
+    function writeAssignationItem (model){
+      $scope.assignation_items.forEach(function (item){
+        item.cost_center_assignation_id = model.data.insertId;
+      });
+      return connect.basicPut('cost_center_assignation_items', $scope.assignation_items);
+    }
+
+    function handleSucess () {
+      messenger.success($filter('translate')('ASSIGNING.INSERT_SUCCES_MESSAGE'));
+    }
+
+    function handleApplyError () {
+      messenger.danger($filter('translate')('ASSIGNING.INSERT_FAIL_MESSAGE'));
+    }
+
+
     appstate.register('project', function (project){
       $scope.project = project;
       validate.process(dependencies)
@@ -162,5 +213,6 @@ angular.module('bhima.controllers')
     $scope.calculate = calculate;
     $scope.getTotalAllocatedCost = getTotalAllocatedCost;
     $scope.getTotal = getTotal;
+    $scope.apply = apply;
   }
 ]);

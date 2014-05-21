@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'cost_center' : {
-            columns : ['id', 'text', 'note', 'cost']
+            columns : ['id', 'text', 'note']
           },
           'project' : {
             columns :['name']
