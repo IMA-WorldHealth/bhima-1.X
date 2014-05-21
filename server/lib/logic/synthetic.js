@@ -79,17 +79,16 @@ module.exports = function (db, sanitize) {
     });
 
     var sql =
-      'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit '+
+      'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit, cc_id '+
       'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `cc_id` FROM `posting_journal`)'+
       ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `cc_id` FROM `general_ledger`)) as `t` LEFT JOIN `cost_center` ON `cost_center`.`id` = `t`.`cc_id`'+
-      ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`account_id` IN ('+ids.join(',')+') GROUP BY `t`.`account_id`';
+      ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`account_id` IN ('+ids.join(',')+') AND (`t`.`cc_id` IS NULL OR `t`.`cc_id`='+sanitize.escape(request.cc_id)+') GROUP BY `t`.`account_id`';
 
     db.execute(sql, function(err, ans){
       if(err) return callback(err, null)
-        console.log('les resultats a retourner', ans);
+      console.log('les resultats a retourner', ans);
       return callback(null, ans);
     });
-
   }
 
   return function menu (goal, project_id, request, callback) {
