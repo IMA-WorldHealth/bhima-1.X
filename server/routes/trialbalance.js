@@ -11,10 +11,7 @@
 // If there are no errors, the module proceeds to post
 // rows from the journal into the general ledger.
 
-var q = require('q'),
-    sanitize = require('../util/sanitize'),
-    util = require('../util/util'),
-    uuid = require('../util/guid');
+var q = require('q');
 
 var error = (function () {
 
@@ -30,7 +27,7 @@ var error = (function () {
   return _error;
 })();
 
-function KeyRing () {
+function KeyRing (uuid) {
   var keyStore = {};
 
   this.generate = function generate (userId) {
@@ -48,18 +45,17 @@ function KeyRing () {
   };
 }
 
-module.exports = function (db) {
+module.exports = function (db, sanitize, util, uuid) {
   'use strict';
 
-  var keys = new KeyRing();
+  var keys = new KeyRing(uuid);
 
   function trialBalance (userId, callback) {
     // Takes in a callback function which is
     // only fired when all test are complete.
 
     var results = {},
-        errors,
-        data;
+        errors;
 
     q.allSettled([
       areAccountsLocked(),
@@ -96,7 +92,7 @@ module.exports = function (db) {
       results.errors = errors;
 
       var sql =
-        "SELECT COUNT(`uuid`) AS `lines`, `trans_id`, `trans_date` FROM posting_journal GROUP BY trans_id;";
+        'SELECT COUNT(`uuid`) AS `lines`, `trans_id`, `trans_date` FROM posting_journal GROUP BY trans_id;';
       return db.exec(sql);
     })
     .then(function (rows) {
@@ -228,7 +224,7 @@ module.exports = function (db) {
     // First thing we need to do is make sure that this posting request
     // is not an error and comes from a valid user.
     return checkPermission(userId, key)
-    .then(function (res) {
+    .then(function () {
 
       // Next, we need to generate a posting session id.
       sql =
@@ -255,7 +251,7 @@ module.exports = function (db) {
         'FROM `posting_journal`;';
       return db.exec(sql);
     })
-    .then(function (res) {
+    .then(function () {
       // Sum all transactions for a given period from the PJ
       // into `period_total`, updating old values if necessary.
       sql =
@@ -267,11 +263,12 @@ module.exports = function (db) {
 
       db.exec(sql);
     })
-    .then(function (res) {
+    .then(function () {
       // Finally, we can remove the data from the posting journal
       sql = 'DELETE FROM `posting_journal` WHERE 1;';
       return db.exec(sql);
-    });
+    })
+    .done();
   }
 
   return {

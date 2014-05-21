@@ -1,13 +1,8 @@
 // scripts/lib/logic/journal.js
 
-var sanitize = require('../util/sanitize'),
-    util = require('../util/util'),
-    validate = require('../util/validate')(),
-    Store = require('../util/store'),
-    q = require('q'),
-    uuid = require('../util/guid');
+var q = require('q');
 
-module.exports = function (db, synthetic) {
+module.exports = function (db, sanitize, util, validate, Store, uuid) {
   'use strict';
 
   var table_router, check, get;
@@ -32,7 +27,7 @@ module.exports = function (db, synthetic) {
       });
     },
 
-    validDebitorOrCreditor : function (id, errback) {
+    validDebitorOrCreditor : function (id) {
       // NOTE: This is NOT STRICT. It may find a debitor when a creditor was
       // requested, or vice versa.  This is fine for the checks here, but not
       // for posting to the general ledger.

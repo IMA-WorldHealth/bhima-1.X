@@ -1,5 +1,3 @@
-
-util = require('../util/util');
 module.exports = function (db, sanitize) {
   //aB : accountBalance
   //pcR : principal caisse balance report by date
@@ -26,7 +24,7 @@ module.exports = function (db, sanitize) {
       ' WHERE '+portion+' AND `t`.`project_id`='+sanitize.escape(project_id)+' GROUP BY `account_id`';
 
     db.execute(sql, function(err, ans){
-      if(err) return callback(err, null)
+      if (err) { return callback(err, null); }
       return callback(null, ans);
     });
   }

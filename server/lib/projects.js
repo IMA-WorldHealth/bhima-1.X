@@ -1,6 +1,6 @@
 
-var url = require("url");
-var querystring = require("querystring");
+var url = require('url'),
+    querystring = require('querystring');
 
 module.exports = function (db) {
   'use strict';
@@ -20,10 +20,10 @@ module.exports = function (db) {
           return res.send();
         } else {
           sql =
-            "SELECT `project`.`id`, `project`.`name`, `project`.`abbr` " +
-            "FROM `project` JOIN `project_permission` " +
-            "ON `project`.`id` = `project_permission`.`project_id` " +
-            "WHERE `project_permission`.`user_id` = \"" + req.session.user_id + "\";";
+            'SELECT `project`.`id`, `project`.`name`, `project`.`abbr` ' +
+            'FROM `project` JOIN `project_permission` ' +
+            'ON `project`.`id` = `project_permission`.`project_id` ' +
+            'WHERE `project_permission`.`user_id` = \'' + req.session.user_id + '\';';
 
           db.execute(sql, function (err, rows) {
             if (err) { return next(err); }

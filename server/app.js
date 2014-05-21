@@ -7,43 +7,46 @@ var express      = require('express'),
 // import configuration
 var cfg = require('./config.json');
 
-// import app dependencies
-var parser       = require('./lib/database/parser')(),
-    dblogger     = require('./lib/database/logger')(cfg.log),
-    db           = require('./lib/database/db')(cfg.db, dblogger),
-    sanitize     = require('./lib/util/sanitize'),
-    util         = require('./lib/util/util'),
-    tree         = require('./lib/tree')(db),
-    app          = express();
-
+// import lib dependencies
+var parser       = require('./lib/parser')(),
+    logger     = require('./lib/logger')(cfg.log),
+    db           = require('./lib/db')(cfg.db, logger),
+    sanitize     = require('./lib/sanitize'),
+    util         = require('./lib/util'),
+    uuid         = require('./lib/guid'),
+    validate     = require('./lib/validate')(),
+    store        = require('./lib/store');
+   
 // import middleware
-var authorize    = require('./lib/auth/authorization')(db, cfg.auth.paths),
-    authenticate = require('./lib/auth/authentication')(db),
-    projects     = require('./lib/auth/projects')(db),
-    errorHandler = require('./lib/error/handler');
+var authorize    = require('./lib/authorization')(cfg.auth.paths),
+    authenticate = require('./lib/authentication')(db, sanitize),
+    projects     = require('./lib/projects')(db),
+    errorHandler = require('./lib/errorHandler');
 
 // import routes
 var report         = require('./routes/report')(db),
     trialbalance   = require('./routes/trialbalance')(db),
-    ledger         = require('./routes/ledger')(db),
+    ledger         = require('./routes/ledger')(db, sanitize),
     fiscal         = require('./routes/fiscal')(db),
     synthetic      = require('./routes/synthetic')(db, sanitize),
-    journal        = require('./routes/journal')(db, synthetic),
-    createSale     = require('./routes/createSale')(db, parser, journal),
-    createPurchase = require('./routes/createPurchase')(db, parser, journal),
-    depotRouter    = require('./routes/depot')(db),
+    journal        = require('./routes/journal')(db, sanitize, util, validate, store, uuid),
+    createSale     = require('./routes/createSale')(db, parser, journal, uuid),
+    createPurchase = require('./routes/createPurchase')(db, parser, uuid),
+    depotRouter    = require('./routes/depot')(db, sanitize, store),
+    tree           = require('./routes/tree')(db, parser),
     drugRouter     = require('./routes/drug')(db);
 
-var uuid         = require('./lib/util/guid');
+// create app
+var app = express();
 
 app.configure(function () {
   app.use(express.compress());
   app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
   app.use(express.cookieParser());
   app.use(express.session(cfg.session));
-  app.use('/css', express.static('client/dest/css', {maxAge:10000})); // FIXME Hardcoded routes to static folder, seperate static and authenticate
-  app.use('/lib', express.static('client/dest/lib', {maxAge:10000}));
-  app.use('/i18n', express.static('client/dest/i18n', {maxAge:100000}));
+  app.use('/css', express.static('client/dest/css', { maxAge : 10000 })); // FIXME Hardcoded routes to static folder, seperate static and authenticate
+  app.use('/lib', express.static('client/dest/lib', { maxAge : 10000 }));
+  app.use('/i18n', express.static('client/dest/i18n', { maxAge : 10000 }));
   // app.use('/assets', express.static('client/dest/assets', {maxAge:10000}));
   app.use(authenticate);
   app.use(authorize);

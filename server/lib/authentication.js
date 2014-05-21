@@ -2,9 +2,7 @@
 
 // Middleware: authenticate
 
-var sanitize = require('../util/sanitize');
-
-module.exports = function (db) {
+module.exports = function (db, sanitize) {
   'use strict';
 
   // This is the first middleware hit by any incoming
@@ -47,14 +45,14 @@ module.exports = function (db) {
         //return next(new Error ('User already logged in.'));
       }
       */
-   
+
       id = sanitize.escape(user.id);
       sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=' + id;
-     
+
 
       db.execute(sql, function (err, results) {
         if (err) { return next(err); }
-      
+
         sql = 'SELECT `unit`.`url` ' +
               'FROM `unit`, `permission`, `user` WHERE ' +
                 '`permission`.`user_id` = `user`.`id` AND ' +
@@ -74,11 +72,11 @@ module.exports = function (db) {
           });
 
           sql =
-            "SELECT `project`.`id`, `project`.`name`, `project`.`abbr` " +
-            "FROM `project` JOIN `project_permission` " +
-            "ON `project`.`id` = `project_permission`.`project_id` " +
-            "WHERE `project_permission`.`user_id` = " + sanitize.escape(req.session.user_id) + ";";
-         
+            'SELECT `project`.`id`, `project`.`name`, `project`.`abbr` ' +
+            'FROM `project` JOIN `project_permission` ' +
+            'ON `project`.`id` = `project_permission`.`project_id` ' +
+            'WHERE `project_permission`.`user_id` = ' + sanitize.escape(req.session.user_id) + ';';
+
           db.execute(sql, function (err, results) {
             if (err) { return next(err); }
             if (results.length === 1) {
@@ -114,11 +112,11 @@ module.exports = function (db) {
       });
       req.session = null; // see: http://expressjs.com/api.html#cookieSession
     });
- 
+
   }
 
   return function authenticate(req, res, next) {
- 
+
     var router = {
       '/logout' : logout,
       '/login' : login
@@ -126,7 +124,7 @@ module.exports = function (db) {
 
     var fn = router[req.url];
     return fn ? fn(req, res, next) : next();
- 
+
   };
 
 };

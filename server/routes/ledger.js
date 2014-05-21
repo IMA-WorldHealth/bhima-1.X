@@ -9,11 +9,9 @@
 // which encapsulate reporting the ledgers
 // for each group, respectively.
 
-var sanitize = require('../util/sanitize'),
-    q =  require('q'),
-    util = require('../util/util');
+var q =  require('q');
 
-module.exports = function (db) {
+module.exports = function (db, sanitize) {
   'use strict';
 
   function debitor (id) {
@@ -91,8 +89,6 @@ module.exports = function (db) {
 
     return defer.promise;
   }
-
-  function creditor (id, res) {}
 
   function general () {}
 
@@ -246,14 +242,11 @@ module.exports = function (db) {
     .catch(function (error) {
       defer.reject(error);
     });
-
     return defer.promise;
-
   }
 
   return {
     debitor: debitor,
-    creditor: creditor,
     general: general,
     debitor_group : debitorGroup,
     distributableSale : distributableSale
