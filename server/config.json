@@ -56,7 +56,8 @@
       "/availableAccounts/",
       "/costCenterAccount/",
       "/removeFromCostCenter/",
-      "/cost/"
+      "/cost/",
+      "/profit/"
     ]
   }
 }
