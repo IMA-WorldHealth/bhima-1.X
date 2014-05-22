@@ -9,12 +9,20 @@
   </div>
   
   <div class="pull-right" style="margin-top: 6px;">
-    {{session.depot.text}} <b>[{{session.depot.reference}}]</b>
+    {{session.depot.text}} <b>{{session.depot.reference ? '[' + session.depot.reference + ']' : ''}}</b>
   </div>
 </section>
   
 <div class="content">
-  <div class="row">
+  
+  <div class="row" ng-if="session.invalid">
+    <div class="col-xs-12">
+      <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-remove-sign"></span> The page received invalid configuration data, please try again via Stock Management or contact the system administrator.
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-if="session.configured">
     
     <div class="col-xs-12">
       
@@ -112,7 +120,7 @@
                         <select 
                           class="form-bhima"
                           >
-                          <option disabled>--Select lot from {{session.depotFrom.text}}--</option>
+                          <option disabled>--Select lot from {{session.from.text}}--</option>
                         </select>
                       </td>
                       <td>
