@@ -9,7 +9,10 @@ angular.module('bhima.controllers')
   'appcache',
   function ($scope, $location, $translate, appstate, validate, messenger, AppCache) {
     var config, dependencies = {};
-
+    var session = $scope.session = {
+      configured : false,
+      configure : true
+    };
     var cache = new AppCache('stock.in');
 
     config = $scope.config = {};
@@ -68,12 +71,12 @@ angular.module('bhima.controllers')
       }
     };
 
+    cache.fetch('depot').then(loadDefaultDepot);
+    
     function loadDefaultDepot (depot) {
       if (!depot) { return; }
       $scope.setDepot(depot);
     }
-
-    cache.fetch('depot').then(loadDefaultDepot);
 
     function startup (models) {
       angular.extend($scope, models);
@@ -103,6 +106,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.setDepot = function setDepot (depot) {
+      confirm('Select depot \'' + depot.text + '\' for managing stock?');
       $scope.depot = depot;
       cache.put('depot', depot);
     };

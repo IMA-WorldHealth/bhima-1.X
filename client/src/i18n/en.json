@@ -1103,7 +1103,11 @@
     "MAIN" : {
       "TITLE" : "Stock Management",
       "MODULES" : "Available Modules",
-      "UTILITIES" : "Stock Utilities"
+      "UTILITIES" : "Stock Utilities",
+      "CONFIGURE_WAREHOUSE" : "Select Depot",
+      "WAREHOUSE_INFO_1" : "Configure the depot to be used for stock management.",
+      "WAREHOUSE_INFO_2" : "All Stock operations (entry, exit and reports) will be assigned to this depot.",
+      "WAREHOUSE_INFO_3" : "This setting can be changed at a later date."
     },
     "ENTRY" : {
       "KEY"                 : "Stock Entry",
@@ -1129,8 +1133,7 @@
       "KEY" : "Stock Distribution"
     },
     "LOSS" : {
-      "KEY" : "Stock Loss"
-    },
+      "KEY" : "Stock Loss" },
     "MOVEMENT" : {
       "KEY"   : "Stock Movement",
       "TITLE" : "Stock Movements",

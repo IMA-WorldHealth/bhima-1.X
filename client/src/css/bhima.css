@@ -354,3 +354,19 @@ a.danger {
 .error {
   color : #b94a48;
 }
+
+.configure { 
+  text-align : center;
+}
+
+.configure-item { 
+  margin : 0.5em 1.5em;
+  display : inline-block;
+  cursor : pointer;
+}
+
+.configure-item:hover { 
+  color            : #468847;
+  background-color : #dff0d8;
+  border-color     : #d6e9c6;
+}
