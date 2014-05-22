@@ -346,6 +346,6 @@
     $translateProvider.preferredLanguage('fr');
   }
 
-  bhima.config(bhimaconfig);
-  bhima.config(translateConfig);
+  bhima.config(['$routeProvider', bhimaconfig]);
+  bhima.config(['$translateProvider', translateConfig]);
 })(angular);

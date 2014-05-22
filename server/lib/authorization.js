@@ -35,10 +35,11 @@ module.exports = function (globalPaths) {
       // check if url in allowable path
       return match(req.url, paths) ?
         next() :
-        res.send(403, {
-          error: 'Access prohibited.',
-          url : req.url,
-          fix: 'Change config.json or paths in the database'
+        next({
+          httpCode : 403,
+          error    : 'Access prohibited.',
+          url      : req.url,
+          fix      : 'Change config.json or paths in the database'
         });
     }
 

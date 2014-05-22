@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.factory('connect', [ '$http', '$q', 'store', function ($http, $q, Store) {
+.factory('connect', [ '$http', '$q', '$log', 'liberror', 'store', function ($http, $q, $log, liberror, Store) {
   //summary:
   //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
   //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
@@ -10,11 +10,11 @@ angular.module('bhima.services')
   //  TODO anonymous functions make for bad stack traces - name those bad boys
 
   //keep track of requests, model can use connect API without re-stating request
-  //  model : request
   var requests = {};
+  var httpError = liberror.namespace('HTTP');
 
   //FIXME remove identifier without breaking functionality (passing direct strings to req)
-  function req (defn, stringIdentifier) {
+  function req(defn, stringIdentifier) {
     //summary:
     //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
     //
@@ -34,35 +34,33 @@ angular.module('bhima.services')
     //
     //  where conditions can also be specified:
     //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
-    var handle, table, deferred = $q.defer();
+    var query, handle, dfd = $q.defer();
 
-    if (angular.isString(defn)) {
-      $http.get(defn)
-      .then(function (res) {
-        res.identifier = stringIdentifier || 'id';
-        deferred.resolve(new Store(res));
-      }, function (err) {
-        throw err;
-      });
-      return deferred.promise;
-    }
+    query = angular.isString(defn) ? defn : '/data/?' + JSON.stringify(defn);
 
+    handle = $http.get(query);
+
+    handle.success(function (data) {
+      var model = new Store({ data : data, identifier : defn.identifier || stringIdentifier });
+      dfd.resolve(model);
+    })
+    .error(httpError.capture);
+
+    /*
     table = defn.primary || Object.keys(defn.tables)[0];
 
     handle = $http.get('/data/?' + JSON.stringify(defn));
     handle.then(function (returned) {
-
-      //massive hack so I can use an identifier - set default identifier
+      // massive hack so I can use an identifier - set default identifier
       returned.identifier = defn.identifier || 'id';
       var m = new Store(returned, table);
       requests[m] = defn;
-      deferred.resolve(m);
-    }, function(err) {
-      //package error object with request parameters for error routing
-      deferred.reject(packageError(err, table));
+      dfd.resolve(m);
     });
+    //.catch(httpError.throw(1));
+    */
 
-    return deferred.promise;
+    return dfd.promise;
   }
 
   function getModel(getRequest, identifier) {
@@ -73,7 +71,8 @@ angular.module('bhima.services')
       res.identifier = identifier || 'id';
       var m = new Store(res, getRequest);
       deferred.resolve(m);
-    });
+    })
+    //.catch(httpError.throw(1));
     return deferred.promise;
   }
 
@@ -83,12 +82,13 @@ angular.module('bhima.services')
     //  data.  Think of it as a `readonly` store.
     var handle, deferred = $q.defer();
 
-    if (angular.isString(defn)) return $http.get(defn);
+    if (angular.isString(defn)) { return $http.get(defn); }
 
     handle = $http.get('/data/?' + JSON.stringify(defn));
     handle.then(function (returned) {
       deferred.resolve(returned.data);
-    });
+    })
+    .error(httpError.throw(1));
 
     return deferred.promise;
   }
@@ -103,27 +103,14 @@ angular.module('bhima.services')
     return $http.post('data/', {table : table, data : data});
   }
 
-  function delet (table, column, id) {
+  function del (table, column, id) {
     return $http.delete(['/data', table, column, id].join('/'));
   }
 
   // old API
-  function basicGet(url) { // TODO: deprecate this
-    console.warn('connect.basicGet is deprecated.  Please refactor your code to use either fetch() or req().');
-    return $http.get(url);
-  }
-
-  function MyBasicGet(target){
-    console.warn('connect.MyBasicGet is deprecated.  Please refactor your code to use either fetch() or req().');
-    var promise = $http.get(target).then(function(result) {
-      return result.data;
-    });
-    return promise;
-  }
-
   function basicDelete (table, id, column) {
     console.warn('connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().');
-    if (!column) column = 'id';
+    if (!column) { column = 'id'; }
     return $http.delete(['/data/', table, '/', column, '/', id].join(''));
   }
 
@@ -143,7 +130,7 @@ angular.module('bhima.services')
     // clean off the $$hashKey and other angular bits and delete undefined
     var cleaned = {};
     for (var k in obj) {
-      if (k !== '$$hashKey' && angular.isDefined(obj[k]) && obj[k] !== '' && obj[k] !== null) cleaned[k] = obj[k];
+      if (k !== '$$hashKey' && angular.isDefined(obj[k]) && obj[k] !== '' && obj[k] !== null) { cleaned[k] = obj[k]; }
     }
     return cleaned;
   }
@@ -164,7 +151,7 @@ angular.module('bhima.services')
     basicDelete: basicDelete,
     put : put,
     post : post,
-    delete : delet,
+    delete : del,
     getModel: getModel // deprecate this.
   };
 }]);
