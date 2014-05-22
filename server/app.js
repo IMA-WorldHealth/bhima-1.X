@@ -2,7 +2,12 @@
 
 // import node dependencies
 var express      = require('express'),
-    url          = require('url');
+    url          = require('url'),
+    compress     = require('compression'),
+    bodyParser   = require('body-parser'),
+    session      = require('express-session'),
+    cookieParser = require('cookie-parser');
+
 
 // import configuration
 var cfg = require('./config.json');
@@ -16,7 +21,7 @@ var parser       = require('./lib/parser')(),
     uuid         = require('./lib/guid'),
     validate     = require('./lib/validate')(),
     store        = require('./lib/store');
-   
+
 // import middleware
 var authorize    = require('./lib/authorization')(cfg.auth.paths),
     authenticate = require('./lib/authentication')(db, sanitize),
@@ -39,26 +44,24 @@ var report         = require('./routes/report')(db),
 // create app
 var app = express();
 
-app.configure(function () {
-  app.use(express.compress());
-  app.use(express.bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
-  app.use(express.cookieParser());
-  app.use(express.session(cfg.session));
-  app.use('/css', express.static('client/dest/css', { maxAge : 10000 })); // FIXME Hardcoded routes to static folder, seperate static and authenticate
-  app.use('/lib', express.static('client/dest/lib', { maxAge : 10000 }));
-  app.use('/i18n', express.static('client/dest/i18n', { maxAge : 10000 }));
-  // app.use('/assets', express.static('client/dest/assets', {maxAge:10000}));
-  app.use(authenticate);
-  app.use(authorize);
-  app.use(projects);
-  app.use(express.static(cfg.static, {maxAge : 10000}));
-  app.use(app.router);
-  app.use(errorHandler);
-});
+// configuration
+
+app.use(compress());
+app.use(bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
+app.use(cookieParser());
+app.use(session(cfg.session));
+app.use('/css', express.static('client/dest/css', { maxAge : 10000 })); // FIXME Hardcoded routes to static folder, seperate static and authenticate
+app.use('/lib', express.static('client/dest/lib', { maxAge : 10000 }));
+app.use('/i18n', express.static('client/dest/i18n', { maxAge : 10000 }));
+// app.use('/assets', express.static('client/dest/assets', {maxAge:10000}));
+app.use(authenticate);
+app.use(authorize);
+app.use(projects);
+app.use(express.static(cfg.static, {maxAge : 10000}));
 
 app.get('/', function (req, res, next) {
   /*jshint unused : false*/
- 
+
   // This is to preserve the /#/ path in the url
   res.sendfile('/index.html');
 });
@@ -408,7 +411,7 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
 });
 
 app.get('/tree', function (req, res, next) {
-  
+
   /*jshint unused : false*/
   tree.load(req.session.user_id)
   .then(function (treeData) {
@@ -619,7 +622,7 @@ app.get('/max_trans/:project_id', function (req, res, next) {
 });
 
 app.get('/print/journal', function (req, res, next) {
-  
+
   /*jshint unused : false*/
   res.send('Under Contruction');
 });
@@ -645,6 +648,8 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   })
   .done();
 });
+
+app.use(errorHandler);
 
 app.listen(cfg.port, console.log('Application running on localhost:' + cfg.port));
 
