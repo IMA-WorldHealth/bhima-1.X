@@ -16,22 +16,22 @@ angular.module('bhima.controllers')
 
     config.modules = [
       {
-        key : $translate('STOCK.ENTRY.KEY'),
+        key : 'STOCK.ENTRY.KEY',
         ico : 'glyphicon-import',
         link : '/stock/entry/start'
       },
       {
-        key : $translate('STOCK.EXIT.KEY'),
+        key : 'STOCK.EXIT.KEY',
         ico : 'glyphicon-export',
         link : '/stock/distribution'
       },
       {
-        key : $translate('STOCK.LOSS.KEY'),
+        key : 'STOCK.LOSS.KEY',
         ico : 'glyphicon-cloud',
         link : '/stock/loss'
       },
       {
-        key : $translate('STOCK.MOVEMENT.KEY'),
+        key : 'STOCK.MOVEMENT.KEY',
         ico : 'glyphicon-transfer',
         link : '/stock/movement'
       }
@@ -39,12 +39,12 @@ angular.module('bhima.controllers')
 
     config.utilities = [
       {
-        key : $translate('STOCK.SEARCH.KEY'),
+        key : 'STOCK.SEARCH.KEY',
         ico : 'glyphicon-search',
         link : '/stock/search'
       },
       {
-        key : $translate('STOCK.EXPIRE.KEY'),
+        key : 'STOCK.EXPIRE.KEY',
         ico : 'glyphicon-exclamation-sign',
         link : '/stock/expiring'
       }
@@ -52,7 +52,7 @@ angular.module('bhima.controllers')
 
     config.reports = [
       {
-        key : $translate('STOCK.REPORT.STOCK_COUNT'),
+        key : 'STOCK.REPORT.STOCK_COUNT',
         link : '/report/stock_count'
       }
     ];
