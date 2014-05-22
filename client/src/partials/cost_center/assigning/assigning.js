@@ -8,7 +8,8 @@ angular.module('bhima.controllers')
   'validate',
   'util',
   '$translate',
-  function ($scope, $q, connect, appstate, messenger, validate, util, $translate) {
+  '$filter',
+  function ($scope, $q, connect, appstate, messenger, validate, util, $translate, $filter) {
     var dependencies = {};
     $scope.configuration = {};
     dependencies.aux_cost_centers = {
@@ -153,7 +154,7 @@ angular.module('bhima.controllers')
       console.log('apply');
       sanitize()
       .then(writeAssignation)
-      .then(writeAssignationItem);
+      .then(writeAssignationItem)
       .then(handleSucess)
       .catch(handleApplyError);
 
@@ -188,7 +189,7 @@ angular.module('bhima.controllers')
       $scope.assignation_items.forEach(function (item){
         item.cost_center_assignation_id = model.data.insertId;
       });
-      return connect.basicPut('cost_center_assignation_items', $scope.assignation_items);
+      return connect.basicPut('cost_center_assignation_item', $scope.assignation_items);
     }
 
     function handleSucess () {
@@ -196,7 +197,7 @@ angular.module('bhima.controllers')
     }
 
     function handleApplyError () {
-      messenger.danger($filter('translate')('ASSIGNING.INSERT_FAIL_MESSAGE'));
+      messenger.danger($filter('translate')('SERVICE.INSERT_FAIL_MESSAGE'));
     }
 
 
