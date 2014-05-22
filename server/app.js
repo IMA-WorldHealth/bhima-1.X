@@ -58,7 +58,7 @@ app.configure(function () {
 
 app.get('/', function (req, res, next) {
   /*jshint unused : false*/
- 
+
   // This is to preserve the /#/ path in the url
   res.sendfile('/index.html');
 });
@@ -327,20 +327,25 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
   db.execute(sql, function (err, ans) {
     if (err) return next(err);
-    synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
-      if (err) { return next(err); }
-      console.log('[synthetic a retourner data]', data);
-      res.send(data);
-    });
+    if(ans.length>0){
+      synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
+        if (err) { return next(err); }
+        console.log('[synthetic a retourner data]', data);
+        res.send(process(data));
+      });
+    }else{
+      res.send({cost : 0});
+    }
   });
 
-  function process (){
-
-
-
+  function process (values){
+    var som = 0;
+    var current_value;
+    values.forEach(function (value){
+      som+= (value.debit > 0)? value.debit : value.credit;
+    });
+    return {cost:som};
   }
-
-  //res.send(20);
 });
 
 
@@ -408,7 +413,7 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
 });
 
 app.get('/tree', function (req, res, next) {
-  
+
   /*jshint unused : false*/
   tree.load(req.session.user_id)
   .then(function (treeData) {
@@ -619,7 +624,7 @@ app.get('/max_trans/:project_id', function (req, res, next) {
 });
 
 app.get('/print/journal', function (req, res, next) {
-  
+
   /*jshint unused : false*/
   res.send('Under Contruction');
 });
