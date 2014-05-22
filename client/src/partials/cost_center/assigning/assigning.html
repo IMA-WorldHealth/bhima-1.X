@@ -40,7 +40,26 @@
 		          <span> {{'ASSIGNING.INFO_COST_CENTER' | translate}} {{selected.text}} </span>
 		        </div>
 		        <div class="panel-body assigning-header">
-		          Info sur cost center
+		        	<div ng-if="selected_aux_cost_center">
+			        	<div class="form-group">
+							<label class="control-label">{{ "ASSIGNING.LABEL_CC" | translate }}</label>
+							<br>
+							{{selected_aux_cost_center.text}}
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">{{ "ASSIGNING.TYPE_CC" | translate }}</label>
+							<br>
+							{{'ASSIGNING.AUX_CC' | translate}}
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">{{ "ASSIGNING.NOTE" | translate }}</label>
+							<br>
+							{{selected_aux_cost_center.note}}
+						</div>
+					</div>
+					<div ng-if="!selected_aux_cost_center" class="alert alert-warning square"> {{'ASSIGNING.NO_CHOOSEN' | translate}}</div>
 		        </div>
 		      </div>
 		    </div>
