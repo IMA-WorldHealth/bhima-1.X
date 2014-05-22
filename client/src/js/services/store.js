@@ -1,6 +1,5 @@
 angular.module('bhima.services')
-.factory('store', ['$http', function ($http) {
-  // store service
+.factory('store', function () {
 
   return function (options, target) {
 
@@ -13,7 +12,6 @@ angular.module('bhima.services')
     // locals
     var queue = [];
     var identifier = options.identifier || 'id'; // id property
-    var refreshrate = options.refreshrate || 500;
 
     // set an array of data
     this.setData = function (data) {
@@ -32,8 +30,8 @@ angular.module('bhima.services')
         self[k] = options[k];
       }
       // set data if it is defined
-      if (options.data) self.setData(options.data);
-      // set up refreshrate
+      if (options.data) { self.setData(options.data); }
+      self.identifier = identifier;
     })();
 
     // get an item from the local store
@@ -47,14 +45,14 @@ angular.module('bhima.services')
           index = this.index,
           id = object[identifier] = (opts && 'id' in opts) ? opts.id : identifier in object ?  object[identifier] : false;
 
-      if (!id) throw 'No id property in the object.  Expected property: ' + identifier;
+      if (!id) { throw 'No id property in the object.  Expected property: ' + identifier; }
 
       // merge or overwrite
       if (opts && opts.overwrite) {
         data[index[id]] = object; // overwrite
       } else {
         var ref = data[index[id]];
-        if(!ref) ref = {};
+        if (!ref) { ref = {}; }
         for (var k in object) {
           ref[k] = object[k]; // merge
         }
@@ -90,6 +88,8 @@ angular.module('bhima.services')
       return !!this.get(id);
     };
 
+    /*
+     *  TODO : Impliment sync when using websockets
     this.sync = function () {
       // sync the data from the client to the server
       var fail = [];
@@ -104,6 +104,7 @@ angular.module('bhima.services')
       });
       queue = fail;
     };
+    */
 
     this.recalculateIndex = function () {
       var data = this.data, index = this.index;
@@ -114,4 +115,4 @@ angular.module('bhima.services')
 
     return this;
   };
-}]);
+});

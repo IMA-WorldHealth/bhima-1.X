@@ -11,7 +11,8 @@ var express      = require('express'),
 
 
 // import configuration
-var cfg = require('./config.json');
+var cfg = require('./config.json'),
+    errorCodes = require('./lib/errors.json');
 
 // import lib dependencies
 var parser       = require('./lib/parser')(),
@@ -21,13 +22,13 @@ var parser       = require('./lib/parser')(),
     util         = require('./lib/util'),
     uuid         = require('./lib/guid'),
     validate     = require('./lib/validate')(),
-    store        = require('./lib/store');
+    store        = require('./lib/store'),
+    liberror     = require('./lib/liberror')();
 
 // import middleware
 var authorize    = require('./lib/authorization')(cfg.auth.paths),
     authenticate = require('./lib/authentication')(db, sanitize),
-    projects     = require('./lib/projects')(db),
-    errorHandler = require('./lib/errorHandler');
+    projects     = require('./lib/projects')(db);
 
 // import routes
 var report         = require('./routes/report')(db),
@@ -111,7 +112,7 @@ app.post('/data/', function (req, res, next) {
 app.delete('/data/:table/:column/:value', function (req, res, next) {
   var sql = parser.delete(req.params.table, req.params.column, req.params.value);
   db.exec(sql)
-  .then(function (ans) {
+  .then(function () {
     res.send(200);
   })
   .catch(function (err) {
@@ -122,16 +123,15 @@ app.delete('/data/:table/:column/:value', function (req, res, next) {
 
 app.post('/purchase', function(req, res, next) {
   // TODO duplicated methods
-
   createPurchase.execute(req.body, req.session.user_id, function (err, ans) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(200, {purchaseId: ans});
   });
 });
 
 app.post('/sale/', function (req, res, next) {
   createSale.execute(req.body, req.session.user_id, function (err, ans) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(200, {saleId: ans});
   });
 });
@@ -139,9 +139,9 @@ app.post('/sale/', function (req, res, next) {
 app.get('/currentProject', function (req, res, next) {
   // TODO sorry
   var sql =
-    "SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as 'enterprise_name', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as 'village', `sector`.`name` as 'sector' " +
-    "FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` " +
-    "WHERE `project`.`id`=" + req.session.project_id + ";";
+    'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as "enterprise_name", `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as "village", `sector`.`name` as "sector" ' +
+    'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
+    'WHERE `project`.`id`=' + req.session.project_id + ';';
   db.execute(sql, function (err, result) {
     if (err) { return next(err); }
     res.send(result[0]);
@@ -149,16 +149,16 @@ app.get('/currentProject', function (req, res, next) {
 });
 
 // FIXME: this is terribly insecure.  Please remove
-app.get('/user_session', function (req, res, next) {
+app.get('/user_session', function (req, res) {
   res.send(200, {id: req.session.user_id});
 });
 
 app.get('/pcash_transfert_summers', function (req, res, next) {
   var sql =
-    "SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` "+
-    "FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` "+
-    "WHERE `primary_cash_module`.`text`='transfert') ORDER BY date, reference DESC LIMIT 20;"; //FIX ME : this request doesn't sort
-  db.execute(sql, function (err, result) {
+    'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
+    'FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` '+
+    'WHERE `primary_cash_module`.`text`="transfert") ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
+  db.execute(sql, function (err) {
     if (err) { return next(err); }
     var d = []; //for now
     res.send(d);
@@ -174,7 +174,7 @@ app.get('/trialbalance/initialize', function (req, res, next) {
 
 app.get('/trialbalance/submit/:key/', function (req, res, next) {
   trialbalance.postToGeneralLedger(req.session.user_id, req.params.key)
-  .then(function (result) {
+  .then(function () {
     res.send(200);
   })
   .catch(function (err) {
@@ -185,8 +185,8 @@ app.get('/trialbalance/submit/:key/', function (req, res, next) {
 
 app.get('/editsession/authenticate/:pin', function (req, res, next) {
   var decrypt = req.params.pin >> 5;
-  var sql = "SELECT pin FROM user WHERE user.id = " + req.session.user_id +
-    " AND pin = '" + decrypt + "';";
+  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user_id +
+    ' AND pin = "' + decrypt + '";';
   db.exec(sql)
   .then(function (rows) {
     res.send({ authenticated : !!rows.length });
@@ -199,28 +199,28 @@ app.get('/editsession/authenticate/:pin', function (req, res, next) {
 
 app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
-  journal.request(req.params.table, req.params.id, req.session.user_id, function (err, success) {
-    if (err) return next(err);
+  journal.request(req.params.table, req.params.id, req.session.user_id, function (err) {
+    if (err) { return next(err); }
     res.send(200);
   });
 });
 
 //FIXME receive any number of tables using regex
-app.get('/max/:id/:table/:join?', function(req, res, next) {
+app.get('/max/:id/:table/:join?', function (req, res) {
   var id = req.params.id, table = req.params.table, join = req.params.join;
 
-  var max_request = "SELECT MAX(" + id + ") FROM ";
+  var max_request = 'SELECT MAX(' + id + ') FROM ';
 
-  max_request += "(SELECT MAX(" + id + ") AS `" + id + "` FROM " + table;
+  max_request += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
   if(join) {
-    max_request += " UNION ALL SELECT MAX(" + id + ") AS `" + id + "` FROM " + join + ")a;";
+    max_request += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
   } else {
-    max_request += ")a;";
+    max_request += ')a;';
   }
 
   db.execute(max_request, function(err, ans) {
     if (err) {
-      res.send(500, {info: "SQL", detail: err});
+      res.send(500, {info: 'SQL', detail: err});
       console.error(err);
       return;
     }
@@ -262,7 +262,7 @@ app.get('/ledgers/distributableSale/:id', function (req, res, next) {
 });
 
 
-app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, res, next) {
+app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function (req, res) {
   var enterprise = req.params.enterprise;
   var startDate = req.params.startDate;
   var endDate = req.params.endDate;
@@ -270,7 +270,7 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function(req, re
 
   //function(err, status);
   fiscal.create(enterprise, startDate, endDate, description, function(err, status) {
-    if(err) return res.send(500, err);
+    if (err) { return res.send(500, err); }
     res.send(200, status);
   });
 });
@@ -288,32 +288,26 @@ app.get('/reports/:route/', function(req, res, next) {
 });
 
 app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
-  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
-  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
-  var sql = "SELECT account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'";
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
-    res.send(process(rows));
-  });
-
-  function process(accounts){
+  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
+  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
+  var sql = 'SELECT account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = "'+req.params.id_enterprise+'"';
+  function process(accounts) {
     var InExAccounts = accounts.filter(function(item){
       return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
     });
     return InExAccounts;
   }
 
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
 });
 
 app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account"+
-  " WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 "+
-  "AND account.cc_id IS NULL AND account.account_type_id<>3";
-
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
-    res.send(process(rows));
-  });
+  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account'+
+  ' WHERE account.enterprise_id = "'+req.params.id_enterprise+'" AND account.parent <> 0 '+
+  'AND account.cc_id IS NULL AND account.account_type_id<>3';
 
   function process(accounts){
     var availablechargeAccounts = accounts.filter(function(item){
@@ -322,12 +316,16 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
     return availablechargeAccounts;
   }
 
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
 });
 
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account"+
-  " WHERE account.cc_id ='"+req.params.cc_id+"' AND account.account_type_id<>3";
+  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account'+
+  ' WHERE account.cc_id ="'+req.params.cc_id+'" AND account.account_type_id<>3';
 
   db.execute(sql, function (err, ans) {
     if (err) return next(err);
@@ -354,44 +352,43 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
 
 app.get('/profit/:id_project/:service_id', function(req, res, next) {
-  synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
-    if (err) { return next(err); }
-    console.log('[synthetic a retourner data]', data);
-    res.send(process(data));
-  });
-
   function process (values){
-    if(!values.length>0) return {profit : 0};
+    if (values.length <= 0) { return {profit : 0}; }
     var som = 0;
     values.forEach(function (value){
       som+= value.credit;
     });
     return {profit:som};
   }
+
+  synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
+    if (err) { return next(err); }
+    console.log('[synthetic a retourner data]', data);
+    res.send(process(data));
+  });
 });
 
 
 
 app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
-  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
-  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
-  // var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id "+
-  //           "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id='"+req.params.cost_center_id+"'";
+  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
+  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
+  // var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id '+
+  //           'AND account.enterprise_id = ''+req.params.id_enterprise+'' AND account.parent <> 0 AND account.cc_id=''+req.params.cost_center_id+''';
+  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account JOIN cost_center ON account.cc_id = cost_center.id '+
+            'WHERE account.enterprise_id = "'+req.params.id_enterprise+'" AND account.parent <> 0 AND account.cc_id="'+req.params.cost_center_id+'";';
 
-
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account JOIN cost_center ON account.cc_id = cost_center.id "+
-            "WHERE account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.cc_id='"+req.params.cost_center_id+"'";
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
-    res.send(rows);
-  });
-
-  var process = function(accounts){
+  function process(accounts){
     var availablechargeAccounts = accounts.filter(function(item){
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
-  };
+  }
+
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
 });
 
 //
@@ -402,13 +399,13 @@ app.get('/removeFromCostCenter/:tab', function(req, res, next) {
 
   tabs = tabs.map(function (item){
     return item.id;
-  })
+  });
 
-  var sql = "UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ("+tabs.join(',')+")";
+  var sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
   console.log('la requette est  ', sql);
 
   db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     console.log('la reponse est ', rows);
     res.send(rows);
   });
@@ -416,15 +413,10 @@ app.get('/removeFromCostCenter/:tab', function(req, res, next) {
 
 
 app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
-  // var sql = "SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = '"+req.params.id_enterprise+"'"+
-  // " AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'";
-  var sql = "SELECT account.id, account.account_number, account.account_txt FROM account, auxiliairy_center WHERE account.auxiliairy_center_id = auxiliairy_center.id "+
-            "AND account.enterprise_id = '"+req.params.id_enterprise+"' AND account.parent <> 0 AND account.auxiliairy_center_id='"+req.params.auxiliairy_center_id+"'";
-
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
-    res.send(process(rows));
-  });
+  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
+  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
+  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account, auxiliairy_center WHERE account.auxiliairy_center_id = auxiliairy_center.id '+
+            'AND account.enterprise_id = "'+req.params.id_enterprise+'" AND account.parent <> 0 AND account.auxiliairy_center_id="'+req.params.auxiliairy_center_id+'"';
 
   function process(accounts){
     var availablechargeAccounts = accounts.filter(function(item){
@@ -432,6 +424,12 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
     });
     return availablechargeAccounts;
   }
+
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
+
 });
 
 app.get('/tree', function (req, res, next) {
@@ -448,7 +446,7 @@ app.get('/tree', function (req, res, next) {
 });
 
 app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\"' + req.params.villageId + '\"' : '';
+  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
 
   var sql =
     'SELECT `village`.`uuid` as `uuid`,  `village`.`name` as `village`, ' +
@@ -482,7 +480,7 @@ app.get('/village/', function (req, res, next) {
     'WHERE village.`sector_uuid` = sector.uuid';
 
   db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(rows);
   });
 });
@@ -490,11 +488,11 @@ app.get('/village/', function (req, res, next) {
 app.get('/sector/', function (req, res, next) {
 
   /*jshint unused : false*/
-  var sql = "SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` "+
-            "as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` "+
-            "WHERE `sector`.`province_uuid` = `province`.`uuid`";
+  var sql = 'SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` '+
+            'as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` '+
+            'WHERE `sector`.`province_uuid` = `province`.`uuid`';
   db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(rows);
   });
 });
@@ -503,11 +501,11 @@ app.get('/province/', function (req, res, next) {
 
   /*jshint unused : false*/
   var sql =
-    "SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` "+
-    "AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
-    "WHERE `province`.`country_uuid` = `country`.`uuid`";
+    'SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` '+
+    'AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` '+
+    'WHERE `province`.`country_uuid` = `country`.`uuid`';
   db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(rows);
   });
 });
@@ -516,10 +514,10 @@ app.get('/province/', function (req, res, next) {
 app.get('/visit/:patient_id', function (req, res, next) {
   var patient_id = req.params.patient_id;
   var sql =
-    "INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES " +
-    "(\"" + uuid() + "\"," + [patient_id, req.session.user_id].join(', ') + ");";
-  db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES ' +
+    '(\'' + uuid() + '\',' + [patient_id, req.session.user_id].join(', ') + ');';
+  db.execute(sql, function (err) {
+    if (err) { return next(err); }
     res.send();
   });
 });
@@ -581,7 +579,7 @@ app.get('/account_balance/:id', function (req, res, next) {
     'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
 
   db.execute(sql, function (err, rows) {
-    if (err) return next(err);
+    if (err) { return next(err); }
     res.send(rows);
   });
 });
@@ -599,8 +597,8 @@ app.get('/period/:date', function (req, res, next) {
   var date = sanitize.escape(util.toMysqlDate(new Date(Number(req.params.date))));
 
   var sql =
-    "SELECT id, fiscal_year_id FROM period " +
-    "WHERE period_start <= " + date + " AND period_stop >= " + date + " LIMIT 1";
+    'SELECT id, fiscal_year_id FROM period ' +
+    'WHERE period_start <= ' + date + ' AND period_stop >= ' + date + ' LIMIT 1';
 
   db.exec(sql)
   .then(function (ans) {
@@ -613,7 +611,7 @@ app.get('/period/:date', function (req, res, next) {
 });
 
 app.get('/lot/:inventory_uuid', function (req, res, next){
-  var sql = "SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid="+sanitize.escape(req.params.inventory_uuid);
+  var sql = 'SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid='+sanitize.escape(req.params.inventory_uuid);
   db.exec(sql)
   .then(function (ans) {
     res.send(ans);
@@ -673,7 +671,17 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   .done();
 });
 
-app.use(errorHandler);
+// FIXME : Testing
+app.get('/error', function (req, res, next) {
+  var TestErr = liberror.namespace('TestError');
+  next(new TestErr(300, 'This is a terrible error'));
+});
+
+app.get('/errorcodes', function (req, res, next) {
+  res.send(errorCodes);
+});
+
+app.use(liberror.middleware);
 
 app.listen(cfg.port, console.log('Application running on localhost:' + cfg.port));
 
