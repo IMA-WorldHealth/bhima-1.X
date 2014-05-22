@@ -897,7 +897,7 @@ create table `posting_journal` (
   `cost_ctrl_id`      varchar(10),
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
-  `cc_id`             smallint null,
+  `service_id`        smallint unsigned null,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -905,14 +905,14 @@ create table `posting_journal` (
   key `origin_id` (`origin_id`),
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
-  key `cc_id` (`cc_id`),
+  key `service_id` (`service_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
   constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
   constraint foreign key (`project_id`) references `project` (`id`) on update cascade,
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade,
-  constraint foreign key (`cc_id`) references `cost_center` (`id`) on update cascade
+  constraint foreign key (`service_id`) references `service` (`id`) on update cascade
 ) engine=innodb;
 
 drop table if exists `general_ledger`;
@@ -939,7 +939,7 @@ create table `general_ledger` (
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
   `session_id`        int unsigned not null,
-  `cc_id`             smallint null,
+  `service_id`        smallint unsigned null,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -948,7 +948,7 @@ create table `general_ledger` (
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
   key `session_id` (`session_id`),
-  key `cc_id` (`cc_id`),
+  key `service_id` (`service_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
   constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
@@ -956,7 +956,7 @@ create table `general_ledger` (
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade,
   constraint foreign key (`session_id`) references `posting_session` (`id`) on update cascade,
-  constraint foreign key (`cc_id`) references `cost_center` (`id`) on update cascade
+  constraint foreign key (`service_id`) references `service` (`id`) on update cascade
 ) engine=innodb;
 
 drop table if exists `kpk`.`period_total`;
