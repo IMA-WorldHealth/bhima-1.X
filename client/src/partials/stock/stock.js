@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
     var config, dependencies = {};
     var session = $scope.session = {
       configured : false,
-      configure : true
+      configure : false
     };
     var cache = new AppCache('stock.in');
 
@@ -65,17 +65,42 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'depot' : {
-            columns : [ 'id', 'text']
+            columns : [ 'uuid', 'reference', 'text']
           }
         }
       }
     };
 
-    cache.fetch('depot').then(loadDefaultDepot);
     
-    function loadDefaultDepot (depot) {
-      if (!depot) { return; }
-      $scope.setDepot(depot);
+    appstate.register('project', initialise);
+  
+    // FIXME functions doing 100 things at once
+    function initialise(project) {
+      $scope.project = project;
+      dependencies.depots.query.where = ['depot.enterprise_id=' + project.enterprise_id];
+      
+      validate.process(dependencies).then(loadDefaultDepot);
+    }
+
+    function loadDefaultDepot (model) {
+      angular.extend($scope, model);
+
+      cache.fetch('depot')
+      .then(function (depot) {
+        if (depot) {
+          var validDepot = model.depots.data.some(function (filterDepot) { return filterDepot.uuid === depot.uuid });
+          
+          if (!validDepot) {
+            messenger.warning('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
+            return session.configure = true;
+          }
+          $scope.depot = depot;
+          session.configured = true;
+        } else {
+          session.configure = true;
+        }
+      })
+      .catch(error);
     }
 
     function startup (models) {
@@ -107,8 +132,10 @@ angular.module('bhima.controllers')
 
     $scope.setDepot = function setDepot (depot) {
       confirm('Select depot \'' + depot.text + '\' for managing stock?');
-      $scope.depot = depot;
       cache.put('depot', depot);
+      $scope.depot = depot;
+      session.configured = true;
+      session.configure = false;
     };
 
   }
