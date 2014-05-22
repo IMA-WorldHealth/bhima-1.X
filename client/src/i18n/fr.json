@@ -1255,6 +1255,11 @@
     "TOTAL"                  : "Total",
     "TOTALS"                 : "TOTAUX",
     "INSERT_SUCCES_MESSAGE"  : "Insertion avec succes !",
-    "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion"
+    "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
+    "NO_CHOOSEN"             : "Aucun centredes couts selectionne !",
+    "AUX_CC"                 : "Centre Auxilliaire",
+    "LABEL_CC"               : "Designation",
+    "TYPE_CC"                : "Type",
+    "NOTE"                   : "Description"
 }
 }
