@@ -9,7 +9,13 @@
       <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
     </ol>
   </div>
+  
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
 
+    <button style="margin-left: 5px;" ng-disabled="session.configure" ng-click="reconfigure()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
+  </div>
   <!-- <div class="pull&#45;right dropdown"> -->
     <!-- <button class="btn btn&#45;sm btn&#45;primary square dropdown&#45;toggle"> -->
       <!-- {{ depot.text || "STOCK.ENTRY.SELECT_DEPOT" | translate }} -->

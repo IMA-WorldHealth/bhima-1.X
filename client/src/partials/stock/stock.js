@@ -94,8 +94,7 @@ angular.module('bhima.controllers')
             messenger.warning('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
             return session.configure = true;
           }
-          $scope.depot = depot;
-          session.configured = true;
+          $scope.depot = depot; session.configured = true;
         } else {
           session.configure = true;
         }
@@ -131,12 +130,23 @@ angular.module('bhima.controllers')
     };
 
     $scope.setDepot = function setDepot (depot) {
-      confirm('Select depot \'' + depot.text + '\' for managing stock?');
+      var verifySet = confirm('Select depot \'' + depot.text + '\' for managing stock?');
+      if (!verifySet) return;
+
       cache.put('depot', depot);
       $scope.depot = depot;
       session.configured = true;
       session.configure = false;
     };
+    
+    $scope.reconfigure = function () {
+      var verifyConfigure = confirm('Are you sure you want to change the depot being managed? The current depot is \'' + $scope.depot.text + '\'');
+      if (!verifyConfigure) return;
 
+      $scope.depot = null;
+      cache.remove('depot');
+      session.configured = false;
+      session.configure = true;
+    };
   }
 ]);
