@@ -37,9 +37,10 @@ angular.module('bhima.controllers')
 
     dependencies.depots = {
       query : {
+        identifier : 'uuid',
         tables : {
           'depot' : {
-            columns : ['id', 'text']
+            columns : ['uuid', 'reference', 'text']
           }
         }
       }
@@ -49,7 +50,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'stock_movement' : {
-            columns : ['document_id', 'tracking_number', 'direction', 'date', 'quantity', 'depot_id', 'destination']
+            columns : ['document_id', 'tracking_number', 'direction', 'date', 'quantity', 'depot_uuid', 'destination']
           }
         }
       }
@@ -91,7 +92,7 @@ angular.module('bhima.controllers')
     
     Object.keys(depotMap).forEach(function (key) {
       $scope.$watch('session.' + key, function(nval, oval) {
-        if (nval) selectDepot(key, nval.id, oval);
+        if (nval) selectDepot(key, nval.uuid, oval);
       }, false);
     });
 
@@ -111,14 +112,14 @@ angular.module('bhima.controllers')
       depotMap.to.model = angular.copy($scope.depots);
       
       // Assign default location 
-      session.from = depotMap.from.model.get(session.depot.id);
+      session.from = depotMap.from.model.get(session.depot.uuid);
       
       $scope.addRow();
     }
 
     function updateDocumentDepo() {
-      session.doc.depot_exit = session.depotFrom.id;
-      session.doc.depot_entry = session.depotTo.id;
+      session.doc.depot_exit = session.depotFrom.uuid;
+      session.doc.depot_entry = session.depotTo.uuid;
     }
     
     $scope.addRow = function addRow () {
@@ -165,7 +166,7 @@ angular.module('bhima.controllers')
       session.valid = validRows &&
         angular.isDefined(session.doc.document_id) &&
         angular.isDefined(session.doc.date) &&
-        angular.isDefined(session.doc.depot_id) &&
+        angular.isDefined(session.doc.depot_uuid) &&
         angular.isDefined(session.doc.direction);
 
     }, true);

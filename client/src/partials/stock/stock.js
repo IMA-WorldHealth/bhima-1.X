@@ -63,6 +63,7 @@ angular.module('bhima.controllers')
     dependencies.depots = {
       required : true,
       query : {
+        identifier : 'uuid',
         tables : {
           'depot' : {
             columns : [ 'uuid', 'reference', 'text']
@@ -88,8 +89,9 @@ angular.module('bhima.controllers')
       cache.fetch('depot')
       .then(function (depot) {
         if (depot) {
-          var validDepot = model.depots.data.some(function (filterDepot) { return filterDepot.uuid === depot.uuid });
-          
+          // var validDepot = model.depots.data.some(function (filterDepot) { return filterDepot.uuid === depot.uuid });
+          var validDepot = model.depots.get(depot.uuid);
+
           if (!validDepot) {
             messenger.warning('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
             return session.configure = true;
@@ -125,7 +127,7 @@ angular.module('bhima.controllers')
         return messenger.danger('NO_DEPOT_SELECTED');
       }
 
-      var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.id : defn.link;
+      var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
     };
 
@@ -140,7 +142,7 @@ angular.module('bhima.controllers')
     };
     
     $scope.reconfigure = function () {
-      var verifyConfigure = confirm('Are you sure you want to change the depot being managed? The current depot is \'' + $scope.depot.text + '\'');
+      var verifyConfigure = confirm('Are you sure you want to change the depot for Stock Management? The current depot is \'' + $scope.depot.text + '\'');
       if (!verifyConfigure) return;
 
       $scope.depot = null;
