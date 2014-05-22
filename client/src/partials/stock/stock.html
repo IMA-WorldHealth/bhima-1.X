@@ -34,7 +34,7 @@
         <div class="panel-body">
           <li ng-repeat="item in config.modules" class="plain-list">
             <span class="glyphicon {{ item.ico }}"></span>
-            <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+            <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
           </li>
         </div>
       </div>
@@ -49,7 +49,7 @@
         <div class="panel-body">
           <li ng-repeat="item in config.utilities" class="plain-list">
             <span class="glyphicon {{ item.ico }}"></span>
-            <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+            <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
           </li>
         </div>
       </div>
@@ -61,7 +61,7 @@
         </div>
         <div class="panel-body">
           <li ng-repeat="item in config.reports" class="plain-list">
-            <span class="glyphicon glyphicon-file"></span> <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+            <span class="glyphicon glyphicon-file"></span> <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
           </li>
         </div>
       </div>
