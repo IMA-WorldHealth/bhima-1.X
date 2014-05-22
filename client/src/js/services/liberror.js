@@ -101,6 +101,7 @@ angular.module('bhima.services')
           return new CustomError(code, module, message);
         },
         capture : function (err) {
+          console.log('Hello World');
           $log.debug('debugging', err);
         }
       };
