@@ -567,7 +567,10 @@
     "SALE_PRICE"          : "Prix Vente",
     "PROJECT"             : "Proget",
     "SERVICE"             : "Service",
-    "COST_CENTER"         : "Centre de frais"
+    "COST_CENTER"         : "Centre de frais",
+    "CHARGE"              : "Charge",
+    "PROFIT"              : "Profit",
+    "RESULT"              : "Resultat"
   },
 
   "REPORT"                  : {
@@ -1233,7 +1236,8 @@
     "NEW"                      :  "Nouveau Service",
     "INFO"                     :  "Information sur le service",
     "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
-    "MODIFYING"                :  "Modification"
+    "MODIFYING"                :  "Modification",
+    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
 },
 
 "ASSIGNING" : {

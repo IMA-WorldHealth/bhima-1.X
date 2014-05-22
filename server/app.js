@@ -311,7 +311,7 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
 
   function process(accounts){
     var availablechargeAccounts = accounts.filter(function(item){
-      return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
+      return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
   }
@@ -343,6 +343,24 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
       som+= (value.debit > 0)? value.debit : value.credit;
     });
     return {cost:som};
+  }
+});
+
+
+app.get('/profit/:id_project/:service_id', function(req, res, next) {
+  synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
+    if (err) { return next(err); }
+    console.log('[synthetic a retourner data]', data);
+    res.send(process(data));
+  });
+
+  function process (values){
+    if(!values.length>0) return {profit : 0};
+    var som = 0;
+    values.forEach(function (value){
+      som+= value.credit;
+    });
+    return {profit:som};
   }
 });
 

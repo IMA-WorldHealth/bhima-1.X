@@ -59,9 +59,53 @@ angular.module('bhima.controllers').controller('service', [
     }
 
     function setAction (value, service){
-      $scope.action = value;
       $scope.selected = angular.copy(service) || {};
-      console.log('selected', service);
+      if(value == 'more'){
+        getCost($scope.selected.cost_center_id)
+        .then(handleResultCost)
+        .then(getProfit)
+        .then(handleResultProfit)
+        .then(function (){
+          $scope.action = value;
+          console.log('object donne : ', $scope.selected);
+        })
+      }else{
+        $scope.action = value;
+      }
+    }
+
+    function getProfit (model){
+      var def = $q.defer();
+      connect.req('/profit/'+$scope.project.id+'/'+$scope.selected.id)
+      .then(function(values){
+        def.resolve(values);
+      });
+      return def.promise;
+    }
+
+    function handleResultProfit (){
+
+    }
+
+    function handleResultCost (value){
+      console.log('le centre de cout du service a donne', value)
+      $scope.selected.charge = value.data.cost;
+      return $q.when();
+    }
+
+    function handleResultProfit (value){
+      console.log('le profit du service a donne', value)
+      $scope.selected.profit = value.data.profit;
+      return $q.when();
+    }
+
+    function getCost (cc_id){
+      var def = $q.defer();
+      connect.req('/cost/'+$scope.project.id+'/'+cc_id)
+      .then(function(values){
+        def.resolve(values);
+      });
+      return def.promise;
     }
 
     appstate.register('project', function (project){
