@@ -14,12 +14,12 @@ angular.module('bhima.controllers')
       required : true,
       query : {
         tables : {
-          patient : {columns : ["uuid", "project_id", "reference", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id", "registration_date"]},
-          debitor : { columns : ["text"]},
+          patient : {columns : ['uuid', 'project_id', 'reference', 'debitor_uuid', 'first_name', 'last_name', 'sex', 'dob', 'origin_location_id', 'registration_date']},
+          debitor : { columns : ['text']},
           debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']},
           project : { columns : ['abbr']}
         },
-        join : ["patient.debitor_uuid=debitor.uuid", 'debitor.group_uuid=debitor_group.uuid', 'patient.project_id=project.id']
+        join : ['patient.debitor_uuid=debitor.uuid', 'debitor.group_uuid=debitor_group.uuid', 'patient.project_id=project.id']
       }
     };
 
@@ -51,7 +51,7 @@ angular.module('bhima.controllers')
       $scope.patient = $scope.selection;
       var id = $scope.patient.debitor_uuid;
       connect.fetch('/reports/patientStanding/?id=' + id)
-      .success(function (data) {
+      .then(function (data) {
         $scope.receipts = data.receipts || [];
 
         $scope.patient.last_payment_date = new Date(data.last_payment_date);

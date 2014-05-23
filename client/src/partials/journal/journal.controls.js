@@ -389,7 +389,7 @@ angular.module('bhima.controllers')
       });
 
       connect.fetch('/user_session')
-      .success(function (res) {
+      .then(function (res) {
         manager.session.userId = res.id;
         newRecords.forEach(function (rec) { rec.user_id = res.id; });
         editedRecords.forEach(function (rec) { rec.user_id = res.id; });

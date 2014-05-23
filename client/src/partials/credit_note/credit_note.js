@@ -5,13 +5,11 @@ angular.module('bhima.controllers')
   '$routeParams',
   '$filter',
   '$location',
-  '$timeout',
   'validate',
   'connect',
-  'appstate',
   'messenger',
   'uuid',
-  function ($scope, $routeParams, $filter, $location, $timeout, validate, connect, appstate, messenger, uuid) {
+  function ($scope, $routeParams, $filter, $location,  validate, connect, messenger, uuid) {
     var invoiceId = $routeParams.invoiceId, dependencies = {};
 
     dependencies.sale = {
@@ -52,7 +50,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    if(invoiceId) buildSaleQuery();
+    if (invoiceId) { buildSaleQuery(); }
 
     function buildSaleQuery() {
       dependencies.sale.query.where = ['sale.uuid=' + invoiceId];
@@ -68,7 +66,7 @@ angular.module('bhima.controllers')
     }
 
     function packageCreditNote() {
-      var defaultDescription = "Credit matching transaction #" + $scope.sale.uuid + " from " + $filter('date')($scope.sale.invoice_date);
+      var defaultDescription = 'Credit matching transaction #' + $scope.sale.uuid + ' from ' + $filter('date')($scope.sale.invoice_date);
       var noteObject = {
         uuid : uuid(),
         project_id: $scope.sale.project_id,
@@ -82,31 +80,28 @@ angular.module('bhima.controllers')
     }
 
     function submitNote(noteObject) {
-      var insertId;
       //TODO Test object before submitting to server
       //TODO ?Check there are no credit notes for this transaction and warn user
-   
+
       // connect.fetch('reports/saleRecords/?' + JSON.stringify({span: 'week'}))
       // .then(function (result) {
       //   console.log('result', result);
       // });
 
       noteObject.reference = 1;
-   
-      if($scope.model.creditNote.data.length >= 1) return messenger.danger("Invoice has already been reversed with credit");
+
+      if ($scope.model.creditNote.data.length >= 1) { return messenger.danger('Invoice has already been reversed with credit'); }
       connect.basicPut('credit_note', [noteObject])
-      .then(function (creditResult) {
+      .then(function () {
         return connect.fetch('journal/credit_note/' + noteObject.uuid);
       })
-      .then(function (postResult) {
+      .then(function () {
         $location.path('/invoice/credit/' + noteObject.uuid);
-      }, function(error) {
-        messenger.danger('submission failed ' + error.status);
       });
 
       validate.refresh(dependencies, ['creditNote']);
     }
- 
+
     $scope.submitNote = submitNote;
   }
 ]);
