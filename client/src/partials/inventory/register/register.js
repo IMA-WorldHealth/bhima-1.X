@@ -101,7 +101,7 @@ angular.module('bhima.controllers')
       packaged.enterprise_id = $scope.enterprise.id;
       // if ($scope.inventory.$valid) {
       connect.basicPut('inventory', [packaged])
-      .then(function (result) {
+      .then(function () {
         // $scope.item.uuid = packated.uuid;
         // $scope.inventory.post($scope.item);
         messenger.success('Posted item successfully');
