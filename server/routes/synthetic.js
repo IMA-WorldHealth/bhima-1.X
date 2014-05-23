@@ -3,11 +3,14 @@ module.exports = function (db, sanitize) {
   //pcR : principal caisse balance report by date
   //pcRI : principal caisse total income by date
   //ccc  : cost center cost
+  //service profit
+
   var menu_map = {
     'aB'    : aB,
     'pcR'   : pcR,
     'pcRI'  : pcRI,
-    'ccc'   : ccc
+    'ccc'   : ccc,
+    'sp'    : sp
   };
 
   function aB (project_id, request, callback){
@@ -77,17 +80,33 @@ module.exports = function (db, sanitize) {
     });
 
     var sql =
-      'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit '+
+      'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit, service_id '+
       'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `posting_journal`)'+
       ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `general_ledger`)) as `t` LEFT JOIN `service` ON `service`.`id` = `t`.`service_id`'+
-      ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`account_id` IN ('+ids.join(',')+') GROUP BY `t`.`account_id`';
+      ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`account_id` IN ('+ids.join(',')+') AND (`t`.`service_id` IS NULL OR `service`.`cost_center_id`='+sanitize.escape(request.cc_id)+') GROUP BY `t`.`account_id`';
 
     db.execute(sql, function(err, ans){
       if(err) return callback(err, null)
-        console.log('les resultat a retourner', ans);
+      console.log('les resultats a retourner', ans);
       return callback(null, ans);
     });
+  }
 
+  function sp (project_id, request, callback){
+      var sql =
+      'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit, service_id, account_number '+
+      'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `posting_journal`)'+
+      ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `general_ledger`)) as `t` JOIN `account` ON `account`.`id`=`t`.`account_id` JOIN `service` ON `service`.`id` = `t`.`service_id`'+
+      ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`service_id`='+sanitize.escape(request.service_id)+' GROUP BY `t`.`account_id`';
+
+    db.execute(sql, function(err, ans){
+      if(err) return callback(err, null)
+      var ans = ans.filter(function(item){
+        return item.account_number.toString().indexOf('7') === 0;
+      });
+      console.log('les resultats a retourner [sp] :', ans);
+      return callback(null, ans);
+    });
   }
 
   return function menu (goal, project_id, request, callback) {
