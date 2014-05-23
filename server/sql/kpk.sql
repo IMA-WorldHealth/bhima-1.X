@@ -198,12 +198,42 @@ create table `cost_center` (
   `project_id`      smallint unsigned not null,
   `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
-  `cost`            float default 0,
   `note`            text,
   `is_principal`    boolean default 0,
   primary key (`id`),
   key `project_id` (`project_id`),
   constraint foreign key (`project_id`) references `project` (`id`) on delete cascade
+) engine=innodb;
+
+
+drop table if exists `cost_center_assignation`;
+create table `cost_center_assignation` (
+  `project_id`      smallint unsigned not null,
+  `id`              int unsigned not null auto_increment,
+  `auxi_cc_id`      smallint not null,
+  `cost`      float default 0,
+  `date`            date,
+  `note`            text,
+  primary key (`id`),
+  key `project_id` (`project_id`),
+  key `auxi_cc_id` (`auxi_cc_id`),
+  constraint foreign key (`project_id`) references `project` (`id`) on delete cascade,
+  constraint foreign key (`auxi_cc_id`) references `cost_center` (`id`) on delete cascade
+) engine=innodb;
+
+
+drop table if exists `cost_center_assignation_item`;
+create table `cost_center_assignation_item` (
+  `cost_center_assignation_id`      int unsigned not null,
+  `id`                              int unsigned not null auto_increment,
+  `pri_cc_id`                       smallint not null,
+  `init_cost`                       float default 0,
+  `value_criteria`                  float default 1,
+  primary key (`id`),
+  key `cost_center_assignation_id` (`cost_center_assignation_id`),
+  key `pri_cc_id` (`pri_cc_id`),
+  constraint foreign key (`cost_center_assignation_id`) references `cost_center_assignation` (`id`) on delete cascade,
+  constraint foreign key (`pri_cc_id`) references `cost_center` (`id`) on delete cascade
 ) engine=innodb;
 
 drop table if exists `account`;
@@ -664,10 +694,12 @@ create table `purchase` (
 
 drop table if exists `depot`;
 create table `depot` (
-  `id`                 smallint unsigned auto_increment not null,
+  `uuid`               char(36) not null,
+  `reference`          int unsigned not null auto_increment,
   `text`               text,
   `enterprise_id`      smallint unsigned not null,
-  primary key (`id`)
+  primary key (`uuid`),
+  key `reference` (`reference`)
 ) engine=innodb;
 
 drop table if exists `stock`;
@@ -690,8 +722,8 @@ drop table if exists `movement`;
 create table `movement` (
   `uuid`                    char(36) not null,
   `document_id`             char(36) not null,
-  `depot_entry`             smallint unsigned,
-  `depot_exit`              smallint unsigned,
+  `depot_entry`             char(36),
+  `depot_exit`              char(36),
   `tracking_number`         char(50) not null,
   `quantity`                int not null default 0,
   `date`                    date,
@@ -699,20 +731,20 @@ create table `movement` (
   key `tracking_number` (`tracking_number`),
   key `depot_exit` (`depot_exit`),
   constraint foreign key (`tracking_number`) references `stock` (`tracking_number`),
-  constraint foreign key (`depot_exit`) references `depot` (`id`)
+  constraint foreign key (`depot_exit`) references `depot` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `consumption`;
 create table `consumption` (
   `uuid`             char(36) not null,
-  `depot_id`         smallint unsigned not null,
+  `depot_uuid`       char(36) not null,
   `date`             date,
   `document_id`      char(36) not null,
   `tracking_number`  char(50) not null,
   `quantity`           int unsigned,
   primary key (`document_id`),
-  key `depot_id`   (`depot_id`),
-  constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade
+  key `depot_uuid`   (`depot_uuid`),
+  constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade
 ) engine=innodb;
 
 drop table if exists `consumption_patient`;
@@ -1156,5 +1188,7 @@ create table `caution` (
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
+
+
 
 

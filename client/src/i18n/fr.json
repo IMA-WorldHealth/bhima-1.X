@@ -567,7 +567,10 @@
     "SALE_PRICE"          : "Prix Vente",
     "PROJECT"             : "Proget",
     "SERVICE"             : "Service",
-    "COST_CENTER"         : "Centre de frais"
+    "COST_CENTER"         : "Centre de frais",
+    "CHARGE"              : "Charge",
+    "PROFIT"              : "Profit",
+    "RESULT"              : "Resultat"
   },
 
   "REPORT"                  : {
@@ -1233,26 +1236,34 @@
     "NEW"                      :  "Nouveau Service",
     "INFO"                     :  "Information sur le service",
     "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
-    "MODIFYING"                :  "Modification"
+    "MODIFYING"                :  "Modification",
+    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
 },
 
 "ASSIGNING" : {
-    "TITLE"                : "Assignation",
-    "NAVIG"                : "Navigation",
-    "PARENT"               : "Gestion de centre de couts",
-    "CHOOSE"               : "Selectionner un centre de couts secondaire",
-    "INFO_COST_CENTER"     : "Details sur le centre de couts",
-    "ASSOCIATED_TO"        : "Les centres correspondants a :",
-    "PLEASE_SELECT"        : "(Selectionner centre frais SVP!)",
-    "NEXT"                 : "Suivant",
-    "TEXT_COST"            : "Designation",
-    "AUX_CENTER"           : "Centre Auxilliaire",
-    "COST"                 : "Cout",
-    "PRI_CENTERS"          : "Centres des couts principaux",
-    "INITIAL_COST"         : "Cout initial",
-    "COEFF"                : "Coeffiscient de repartition",
-    "AL_COST"              : "Cout alloue",
-    "TOTAL"                : "Total",
-    "TOTALS"               : "TOTAUX"
+    "TITLE"                  : "Assignation",
+    "NAVIG"                  : "Navigation",
+    "PARENT"                 : "Gestion de centre de couts",
+    "CHOOSE"                 : "Selectionner un centre de couts secondaire",
+    "INFO_COST_CENTER"       : "Details sur le centre de couts",
+    "ASSOCIATED_TO"          : "Les centres correspondants a :",
+    "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)",
+    "NEXT"                   : "Suivant",
+    "TEXT_COST"              : "Designation",
+    "AUX_CENTER"             : "Centre Auxilliaire",
+    "COST"                   : "Cout",
+    "PRI_CENTERS"            : "Centres des couts principaux",
+    "INITIAL_COST"           : "Cout initial",
+    "COEFF"                  : "Coeffiscient de repartition",
+    "AL_COST"                : "Cout alloue",
+    "TOTAL"                  : "Total",
+    "TOTALS"                 : "TOTAUX",
+    "INSERT_SUCCES_MESSAGE"  : "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
+    "NO_CHOOSEN"             : "Aucun centredes couts selectionne !",
+    "AUX_CC"                 : "Centre Auxilliaire",
+    "LABEL_CC"               : "Designation",
+    "TYPE_CC"                : "Type",
+    "NOTE"                   : "Description"
 }
 }
