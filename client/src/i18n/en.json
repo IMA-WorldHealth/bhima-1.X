@@ -937,7 +937,8 @@
     "ADD_SUPPLIER"    : "Register Supplier",
     "PURCHASE_ITEM"   : "Purchase Items",
     "TOTAL_COST"      : "Total Cost",
-    "SUBMIT_ORDER"    : "Submit Purchase Request"
+    "SUBMIT_ORDER"    : "Submit Purchase Request",
+    "WRITE_SUCCESS"   : "Purchase order submitted successfully."
   },
 
   "SALE"              : {

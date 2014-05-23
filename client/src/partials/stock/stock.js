@@ -123,9 +123,10 @@ angular.module('bhima.controllers')
 
     $scope.loadPath = function (defn) {
 
-      if (!$scope.depot && config.modules.indexOf(defn) > -1) {
+      // User shouldn't be able to get here
+      /*if (!$scope.depot && config.modules.indexOf(defn) > -1) {
         return messenger.danger('NO_DEPOT_SELECTED');
-      }
+      }*/
 
       var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
