@@ -6,14 +6,17 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   'validate',
-  function ($scope, $q, connect, appstate, messenger, validate) {
+  'util',
+  '$translate',
+  '$filter',
+  function ($scope, $q, connect, appstate, messenger, validate, util, $translate, $filter) {
     var dependencies = {};
     $scope.configuration = {};
     dependencies.aux_cost_centers = {
       query : {
         tables : {
           'cost_center' : {
-            columns : ['id', 'text', 'note', 'cost']
+            columns : ['id', 'text', 'note']
           },
           'project' : {
             columns :['name']
@@ -28,7 +31,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'cost_center' : {
-            columns : ['id', 'text', 'note', 'cost']
+            columns : ['id', 'text', 'note']
           },
           'project' : {
             columns :['name']
@@ -70,12 +73,11 @@ angular.module('bhima.controllers')
 
     function setAction (action){
       $scope.action = action;
-
     }
 
-    function processSelectedCost (){
+    function processSelectedCost (cc){
       var def = $q.defer();
-      connect.req('/cost/'+$scope.project.id+'/'+$scope.selected_aux_cost_center.id)
+      connect.req('/cost/'+$scope.project.id+'/'+cc.id)
       .then(function(values){
         def.resolve(values);
       });
@@ -87,31 +89,37 @@ angular.module('bhima.controllers')
         return cc.checked;
       });
 
-      processSelectedCost()
-      .then(function (cout){
-
-        console.log('le cout obtenu', cout);
+      processSelectedCost($scope.selected_aux_cost_center)
+      .then(handleResult)
+      .then(processPrincipalsCenters)
+      .then(handleResults)
+      .then(function(){
         setAction('suivant');
         calculate();
       });
-
-      // $q.all(
-      //   $scope.model.selected_pri_cost_centers.map(function (cc){
-      //     cc.criteriaValue = 0;
-      //     return getCost(cc)
-      //   })
-      // ).then(function (results){
-
-      //   console.log('les resultats ...', results);
-      // })
-
-      // $scope.selected_aux_cost_center.cost = 100;
-
     }
 
-    function getCost (cc){
-      cc.initial_cost = 10;
-      return $q.when(10);
+    function processPrincipalsCenters() {
+      $scope.model.selected_pri_cost_centers.forEach(function (pc){
+        pc.criteriaValue = 1;
+      });
+      return $q.all(
+        $scope.model.selected_pri_cost_centers.map(function (pc) {
+          return processSelectedCost(pc);
+        })
+      );
+    }
+
+    function handleResult (cout){
+      $scope.selected_aux_cost_center.cost = cout.data.cost;
+      return $q.when();
+    }
+
+    function handleResults (couts){
+      couts.forEach(function (cout, index){
+        $scope.model.selected_pri_cost_centers[index].initial_cost = cout.data.cost;
+      });
+      return $q.when();
     }
 
     function calculate (){
@@ -142,6 +150,57 @@ angular.module('bhima.controllers')
       return som;
     }
 
+    function apply (){
+      console.log('apply');
+      sanitize()
+      .then(writeAssignation)
+      .then(writeAssignationItem)
+      .then(handleSucess)
+      .catch(handleApplyError);
+
+    }
+
+    function sanitize (){
+      $scope.assignation = {
+        project_id : $scope.project.id,
+        auxi_cc_id : $scope.selected_aux_cost_center.id,
+        cost : $scope.selected_aux_cost_center.cost,
+        date : util.convertToMysqlDate(new Date()),
+        note : 'Assignation/'+$scope.selected_aux_cost_center.text+'/'+new Date().toString()
+      }
+
+      $scope.assignation_items = [];
+      $scope.model.selected_pri_cost_centers.forEach(function (pc){
+        var ass_item = {
+          pri_cc_id : pc.id,
+          init_cost : pc.initial_cost,
+          value_criteria : pc.criteriaValue
+        }
+        $scope.assignation_items.push(ass_item);
+      });
+      return $q.when();
+    }
+
+    function writeAssignation (){
+      return connect.basicPut('cost_center_assignation', [$scope.assignation]);
+    }
+
+    function writeAssignationItem (model){
+      $scope.assignation_items.forEach(function (item){
+        item.cost_center_assignation_id = model.data.insertId;
+      });
+      return connect.basicPut('cost_center_assignation_item', $scope.assignation_items);
+    }
+
+    function handleSucess () {
+      messenger.success($filter('translate')('ASSIGNING.INSERT_SUCCES_MESSAGE'));
+    }
+
+    function handleApplyError () {
+      messenger.danger($filter('translate')('SERVICE.INSERT_FAIL_MESSAGE'));
+    }
+
+
     appstate.register('project', function (project){
       $scope.project = project;
       validate.process(dependencies)
@@ -155,182 +214,6 @@ angular.module('bhima.controllers')
     $scope.calculate = calculate;
     $scope.getTotalAllocatedCost = getTotalAllocatedCost;
     $scope.getTotal = getTotal;
+    $scope.apply = apply;
   }
 ]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//variables init
-    // var requettes = {},
-    //     auxiliairy_centers = [],
-    //     principal_centers = [],
-    //     enterprise = appstate.get('enterprise'), // FIXME: this is dangerous.  Enterprise may not exist
-    //     models = $scope.models = {};
-
-    // requettes.cost_centers = {
-    //   tables : {
-    //     'cost_center' : {
-    //       columns : ['id', 'text', 'note', 'cost', 'pc']
-    //     },
-    //     'enterprise' : {
-    //       columns : ['name']
-    //     }
-    //   },
-    //   join : ['cost_center.enterprise_id=enterprise.id']
-    // };
-
-    // requettes.criteres = {
-    //   tables : {'critere':{columns:['id', 'critere_txt', 'note']}}
-    // };
-
-    // $scope.selection={};
-    // $scope.auxiliairy_center_selected = {};
-    // $scope.go = {};
-
-    // //fonctions
-
-    // function run (){
-    //   $q.all([
-    //     connect.req(requettes.cost_centers),
-    //     connect.req(requettes.criteres)
-    //   ]).then(init);
-    // }
-
-    // function init (records){
-    //   models.cost_centers = records[0].data;
-    //   models.criteres = records[1].data;
-    //   groupCenters();
-    //   //defineTypeCenter(models.cost_centers);
-    //   updateChecks(false);
-    // }
-
-    // function defineTypeCenter(tbl){
-    //   tbl.map(function (item){
-    //     item.type = (item.pc)? "Principal Center" : "Auxiliairy Center";
-    //   });
-    // }
-
-    // function groupCenters (){
-    //   models.cost_centers.forEach(function (item){
-    //     if (item.pc) {
-    //       principal_centers.push(item);
-    //     } else {
-    //       auxiliairy_centers.push(item);
-    //     }
-    //   });
-    // }
-
-    // function checkAll (){
-    //   models.cost_centers.forEach(function (item){
-    //     if(item.pc) item.checked = $scope.selection.all;
-    //   });
-    // }
-
-    // function updateChecks (value){
-    //   principal_centers.map(function (item){
-    //     if(item.pc) item.checked = value;
-    //   });
-    // }
-
-    // function setAction(action, index){
-    //   $scope.action = action;
-    //   $scope.auxiliairy_center_selected = auxiliairy_centers[index];
-    // }
-
-    // function isChoosen(){
-    //   var choosen = false;
-    //   for(var i=0; i<principal_centers.length; i += 1){
-    //     if (principal_centers[i].checked){
-    //       choosen =true;
-    //       break;
-    //     }
-    //   }
-    //   return choosen;
-    // }
-
-    // function start() {
-    //   if(isChoosen()){
-    //     $scope.auxiliairy_center_selected.cost = getCost($scope.auxiliairy_center_selected.id);
-    //     $scope.principal_centers_selected = format(getPrincipalSelected());
-    //     $scope.go="ok";
-    //   }else{
-    //     $scope.go="";
-    //     messenger.danger('No principal center selected!');
-    //   }
-    // }
-
-    // function format(array){
-    //   array.map(function (item){
-    //     item.criteriaValue = 0;
-    //     item.initialCost = getCost(item.id);
-    //     item.allocatedCost = 0;
-    //     item.totalCost = item.initialCost + item.allocatedCost;
-    //   });
-    //   return array;
-    // }
-
-    // function getCost(center_id){
-    //   return 100;
-    // }
-
-    // function getPrincipalSelected(){
-    //   return principal_centers.filter(function (item){
-    //     return item.checked === true;
-    //   });
-    // }
-
-
-
-    // function apply(){
-
-    // }
-
-    // //exposition
-    // $scope.principal_centers = principal_centers;
-    // $scope.auxiliairy_centers = auxiliairy_centers;
-    // $scope.checkAll = checkAll;
-    // $scope.setAction = setAction;
-    // $scope.start = start;
-    // $scope.calculate = calculate;
-
-
-    // //invocation
-
-    // run();

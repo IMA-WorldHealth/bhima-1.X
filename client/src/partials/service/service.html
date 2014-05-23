@@ -29,7 +29,9 @@
               <td>{{ item.text }}</td>
               <td>
                 <button class="btn btn-sm btn-default" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></button>
+                <button class="btn btn-sm btn-default" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></button>
                 <button class="btn btn-sm btn-danger" ng-click="remove(item)"><i class="glyphicon glyphicon-trash"></i></button>
+
               </td>
             </tr>
             <tr ng-if="!model.services.data.length">
@@ -110,6 +112,31 @@
         </form>
       </div>
 
+      <div ng-switch-when="more">
+        <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
+          <div class="panel-heading">
+            {{ "SERVICE.OVERVIEW_SERVICE" | translate }}<b>{{selected.text}}</b>
+          </div>
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.SERVICE" | translate }}</th>
+                <th>{{ "COLUMNS.CHARGE" | translate }}</th>
+                <th>{{"COLUMNS.PROFIT" | translate}}</th>
+                <th>{{"COLUMNS.RESULT" | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{selected.name}}</td>
+                <td>{{selected.charge | currency }}</td>
+                <td>{{selected.profit | currency }}</td>
+                <td>{{(selected.profit-selected.charge) | currency}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>

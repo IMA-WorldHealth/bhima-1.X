@@ -198,12 +198,42 @@ create table `cost_center` (
   `project_id`      smallint unsigned not null,
   `id`              smallint not null auto_increment,
   `text`            varchar(100) not null,
-  `cost`            float default 0,
   `note`            text,
   `is_principal`    boolean default 0,
   primary key (`id`),
   key `project_id` (`project_id`),
   constraint foreign key (`project_id`) references `project` (`id`) on delete cascade
+) engine=innodb;
+
+
+drop table if exists `cost_center_assignation`;
+create table `cost_center_assignation` (
+  `project_id`      smallint unsigned not null,
+  `id`              int unsigned not null auto_increment,
+  `auxi_cc_id`      smallint not null,
+  `cost`      float default 0,
+  `date`            date,
+  `note`            text,
+  primary key (`id`),
+  key `project_id` (`project_id`),
+  key `auxi_cc_id` (`auxi_cc_id`),
+  constraint foreign key (`project_id`) references `project` (`id`) on delete cascade,
+  constraint foreign key (`auxi_cc_id`) references `cost_center` (`id`) on delete cascade
+) engine=innodb;
+
+
+drop table if exists `cost_center_assignation_item`;
+create table `cost_center_assignation_item` (
+  `cost_center_assignation_id`      int unsigned not null,
+  `id`                              int unsigned not null auto_increment,
+  `pri_cc_id`                       smallint not null,
+  `init_cost`                       float default 0,
+  `value_criteria`                  float default 1,
+  primary key (`id`),
+  key `cost_center_assignation_id` (`cost_center_assignation_id`),
+  key `pri_cc_id` (`pri_cc_id`),
+  constraint foreign key (`cost_center_assignation_id`) references `cost_center_assignation` (`id`) on delete cascade,
+  constraint foreign key (`pri_cc_id`) references `cost_center` (`id`) on delete cascade
 ) engine=innodb;
 
 drop table if exists `account`;
@@ -1158,5 +1188,7 @@ create table `caution` (
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
+
+
 
 
