@@ -30,5 +30,9 @@ angular.module('bhima.controllers')
     $scope.discard = function () {
       $modalInstance.dismiss();
     };
+
+    $scope.isSubmitable = function (){
+      console.log('[issubmittable]');
+    }
   }
 ]);
