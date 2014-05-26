@@ -12,9 +12,10 @@ angular.module('bhima.controllers')
 
     dependencies.depots = {
       query : {
+        idintifier : 'uuid',
         tables : {
           'depot' : {
-            columns : ['id', 'text']
+            columns : ['uuid', 'text', 'reference']
           }
         }
       }
@@ -25,7 +26,8 @@ angular.module('bhima.controllers')
     }
 
     function error (err) {
-      messenger.error(err);
+      throw err;
+      // messenger.error(err);
     }
 
     appstate.register('enterprise', function (enterprise) {
@@ -36,9 +38,9 @@ angular.module('bhima.controllers')
     });
 
     $scope.delete = function (depot) {
-      connect.basicDelete('depot', 'id', depot.id)
+      connect.basicDelete('depot', 'uuid', depot.uuid)
       .then(function () {
-        messenger.info($translate('DEPOT.DELETE_SUCCESS'));
+        messenger.info($translate.instant('DEPOT.DELETE_SUCCESS'));
       })
       .catch(error);
     };
@@ -58,7 +60,7 @@ angular.module('bhima.controllers')
     $scope.save.edit = function () {
       var record = connect.clean(session.edit);
       record.enterprise_id = $scope.enterprise.id;
-      connect.basicPost('depot', [record], ['id'])
+      connect.basicPost('depot', [record], ['uuid'])
       .then(function () {
         messenger.info('DEPOT.EDIT_SUCCESS');
         $scope.depots.put(record);
@@ -74,7 +76,7 @@ angular.module('bhima.controllers')
       connect.basicPut('depot', [record])
       .then(function (res) {
         messenger.info('DEPOT.NEW_SUCCESS');
-        record.id = res.data.insertId;
+        // record.id = res.data.insertId;
         $scope.depots.post(record);
         session.action = '';
         session.new = {};

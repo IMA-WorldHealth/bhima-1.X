@@ -20,14 +20,14 @@
         <table class="table table-condensed">
           <thead>
             <tr>
-              <th>{{ "COLUMNS.ID" | translate }}</th>
+              <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
               <th>{{ "COLUMNS.NAME" | translate }}</th>
               <th colspan="2" style="width:15%;">{{ "COLUMNS.ACTION" | translate }}</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="depot in depots.data">
-              <td>{{ depot.id }}</td>
+              <td>{{ depot.reference }}</td>
               <td>{{ depot.text }}</td>
               <td><a class="action" ng-click="edit(depot)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action danger" ng-click="delete(depot)"><span class="glyphicon glyphicon-trash"></span></a></td>
