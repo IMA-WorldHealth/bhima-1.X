@@ -4,7 +4,6 @@ angular.module('bhima.controllers')
   '$modalInstance',
   'connect',
   'uuid',
-  'messenger',
   function ($scope, $modalInstance, connect, uuid) {
     var session = $scope.session = {};
 

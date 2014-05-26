@@ -10,7 +10,9 @@ angular.module('bhima.controllers')
   'precision',
   function ($scope, $modalInstance, $location, connect, messenger, request, errorCodes, precision) {
     var session = $scope.session = {};
-    session.action = "hide";
+    session.action = 'hide';
+
+    console.log('request', request);
 
     $scope.transactions = request.transactions;
     $scope.balances = request.balances;
@@ -37,11 +39,12 @@ angular.module('bhima.controllers')
 
     $scope.submit = function submit () {
       connect.fetch('/trialbalance/submit/'+ request.key +'/')
-      .then(function (data) {
+      .then(function () {
         $modalInstance.close();
       })
       .catch(function (error) {
-        messenger.warning('Posting failed with ' +  JSON.stringify(error));
+        console.log(error);
+        messenger.error('Posting failed with ' +  JSON.stringify(error));
       });
     };
 

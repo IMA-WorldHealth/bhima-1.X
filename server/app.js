@@ -32,7 +32,7 @@ var authorize    = require('./lib/authorization')(cfg.auth.paths),
 
 // import routes
 var report         = require('./routes/report')(db),
-    trialbalance   = require('./routes/trialbalance')(db),
+    trialbalance   = require('./routes/trialbalance')(db, sanitize, util, uuid),
     ledger         = require('./routes/ledger')(db, sanitize),
     fiscal         = require('./routes/fiscal')(db),
     synthetic      = require('./routes/synthetic')(db, sanitize),
