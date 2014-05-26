@@ -9,6 +9,7 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $modalInstance, connect, groupStore, accountModel, messenger, uuid) {
     $scope.group = {};
+    console.log('[issubmittable]');
 
     accountModel.forEach(function (account) {
       account.account_number = String(account.account_number);

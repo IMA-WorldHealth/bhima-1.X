@@ -267,7 +267,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="addInventoryGroup.$invalid">
+      <input type="submit" class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="isSubmitable()">
         {{ "FORM.SAVE_CHANGES" | translate }}
       </button>
       <button type="button" class="btn btn-sm btn-default" ng-click="discard()">
