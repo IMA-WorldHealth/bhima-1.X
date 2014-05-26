@@ -96,6 +96,72 @@
           </div>
         </div> <!-- End Patient Invoice template -->
       </div>
+  
+      <div ng-switch-when="movement">
+        <!-- Patient Invoice template -->
+        <div class="row customer-details">
+          <div class="col-xs-12">
+
+            <small style="float: right; color: grey; font-size: 8px">{{ invoiceId }}</small>
+            <h4 class="invoice-header">{{ 'INVOICE.STOCK_MOVEMENT' | translate }}</h4>
+          </div>
+        </div>
+
+        <div class="row customer-details">
+          <div class="col-xs-6">
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th>Origin Depot</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+
+          <div class="col-xs-6">
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th>Destination Depot</th>
+                </tr>
+              </thead>
+            </table>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th>{{'COLUMNS.CODE' | translate}}</th>
+                  <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+                  <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+                  <th>{{'INVOICE.TRANSACTION_PRICE' | translate}}</th>
+                  <th>{{'INVOICE.AMOUNT' | translate}}</th>
+                </tr>
+              </thead>
+              <tbody class="items">
+                <tr ng-repeat="item in model['invoiceItem'].data | orderBy : 'code'">
+                  <td>{{ item.code }}</td>
+                  <td>{{ item.text }}</td>
+                  <td>{{ item.quantity }}</td>
+
+                  <td><span ng-bind-html="item.localeTransaction | intlcurrency:session.currentCurrency.id"></span></td>
+                  <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.id"></span></td>
+                </tr>
+              </tbody>
+              <tbody class="totals">
+                <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.id"></span></td></tr>
+                <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.id"></span></td></tr>
+                <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.id"></span></td></tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div> <!-- End Patient Invoice template -->
+      </div>
 
       <div ng-switch-when="purchase">
         <!-- Patient Invoice template -->

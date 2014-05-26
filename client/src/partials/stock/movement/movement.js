@@ -212,11 +212,18 @@ angular.module('bhima.controllers')
   
         console.log('validate quantity', row.quantity, row.lot.quantity);
         // validate quantity 
+        
+        // Error status
         if (row.quantity > row.lot.quantity) {
           row.error = {message : 'Invalid quantity'};
+          row.validQuantity = false;
 
+        // Warning status
+        } else if (row.quantity <= 0) {
+          row.validQuantity = false;
         } else {
           row.error = null;
+          row.validQuantity = true;
         }
       });
       
