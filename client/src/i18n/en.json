@@ -67,6 +67,10 @@
     "FILTER"      : "Filter Purchase Orders"
   },
 
+  "PLACEHOLDERS" : {
+    "PRODUCTS" : "e.g. Products"
+  },
+
   "PATIENT_RECORDS"     : {
     "TITLE"             : "Patient Records",
     "ADVANCED_SEARCH"   : "Advanced Search",
@@ -486,6 +490,17 @@
       "CONFIG_GROUPS" : "Configure Groups",
       "CONFIG_TYPES" : "Configure Item Types",
       "PRINT_MANIFEST" : "Print Inventory Manifest"
+    },
+    "GROUPS" : {
+      "TITLE" : "Inventory Group Management",
+      "CREATE_GROUP" : "Create Group",
+      "ALL_GROUPS" : "All Groups",
+      "SALES_ACCOUNT" : "Sales Accnt",
+      "COGS_ACCOUNT" : "COGS Accnt",
+      "STOCK_ACCOUNT" : "Stock Accnt",
+      "TAX_ACCOUNT" : "Tax Accnt",
+      "ADD" : "Creating Inventory Group",
+      "EDIT" : "Edit Inventory Group"
     }
   },
 
@@ -929,16 +944,6 @@
     "NEW"         : "New Unit",
     "PLACEHOLDER" : "e.g. 'Box'",
     "REGISTERED"  : "Registered"
-  },
-
-  "INVENTORY_GROUP" : {
-    "ADD"           : "Add Inventory Group",
-    "CODE"          : "Code",
-    "NAME"          : "Name",
-    "SALES_ACCOUNT" : "Sales Account",
-    "COGS"          : "COGS Account",
-    "STOCK"         : "Stock Account",
-    "TAX"           : "Tax Account"
   },
 
   "PURCHASE"          : {
