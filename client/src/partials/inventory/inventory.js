@@ -9,39 +9,37 @@ angular.module('bhima.controllers')
       {
         ico : 'glyphicon-list-alt',
         key : 'INVENTORY.MAIN.ADD_ITEM',
-        path : '/inventory/register'
+        path : 'register'
       },
       {
         ico : 'glyphicon-list-alt',
         key : 'INVENTORY.MAIN.UPDATE_ITEM',
-        path : '/inventory/update_stock'
+        path : 'update_stock'
       },
       {
         ico : 'glyphicon-list-alt',
         key : 'INVENTORY.MAIN.CONFIG_GROUPS',
-        path : '/inventory/groups'
+        path : 'groups'
       },
       {
         ico : 'glyphicon-list-alt',
         key : 'INVENTORY.MAIN.CONFIG_TYPES',
-        path : '/inventory/types'
+        path : 'types'
       },
       {
         ico : 'glyphicon-list-alt',
         key : 'INVENTORY.MAIN.VIEW',
-        path : '/inventory/view'
+        path : 'view'
       },
       {
         ico : 'glyphicon-print',
         key : 'INVENTORY.MAIN.PRINT_MANIFEST',
-        path : '/inventory/manifest'
+        path : 'manifest'
       },
     ];
 
     $scope.loadPath = function loadPath(item) {
-      console.log(item);
-      console.log($location.path());
-      $location.path(item.path);
+      $location.path($location.path() + '/' + item.path);
     };
   }
 ]);
