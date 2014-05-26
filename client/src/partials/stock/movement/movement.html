@@ -86,7 +86,7 @@
                     ng-model="session.to"
                     ng-options="depot as depot.text for depot in depotMap.to.model.data"
                     >
-                    <!-- <option value="" disabled>&#45;&#45;Select a depo&#45;&#45;</option> -->
+                    <option value="">--Select a depo--</option>
                   </select>
                 <!-- </div> -->
               </div>
@@ -128,7 +128,7 @@
                           ng-model="row.lot"
                           ng-options="lot as (lot.lot_number + ' (' + lot.code + ')') for lot in lots.data"
                           >
-                          <option value="" disabled>--Select lot from {{session.from.text}}--</option>
+                          <option value="">--Select lot from {{session.from.text}}--</option>
                         </select>
                       </td>
                       <td>

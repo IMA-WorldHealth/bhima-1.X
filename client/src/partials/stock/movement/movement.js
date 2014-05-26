@@ -90,7 +90,7 @@ angular.module('bhima.controllers')
       var reference = depotMap[target];
       var source = reference.model;
       var dependency = depotMap[reference.dependency].model;
-      
+
       // Update current target
       session[target] = source.get(newDepotId);
       
@@ -98,7 +98,7 @@ angular.module('bhima.controllers')
       dependency.remove(newDepotId);
       if (oldDepot) dependency.post(oldDepot);
       dependency.recalculateIndex();
-
+    
       // Call targets action (this could be conditional)
       if (reference.action) reference.action(newDepotId);
     }
@@ -108,6 +108,9 @@ angular.module('bhima.controllers')
         query : '/inventory/depot/' + depotId + '/lots'
       };
 
+      // Reset rows TODO
+      resetRows();
+
       console.log('fetch lots', dependencies.lots); 
       validate.process(dependencies, ['lots']).then(validateLots);
     }
@@ -116,6 +119,11 @@ angular.module('bhima.controllers')
       $scope.lots = model.lots;
 
       console.log('validateLots', model);
+    }
+
+    function resetRows() { 
+      session.rows = [];
+      $scope.addRow();
     }
     
     Object.keys(depotMap).forEach(function (key) {
@@ -146,7 +154,7 @@ angular.module('bhima.controllers')
       // Assign default location 
       selectDepot('from', session.depot.uuid);
       
-      $scope.addRow();
+      // resetRows();
     }
 
     function updateDocumentDepo() {
