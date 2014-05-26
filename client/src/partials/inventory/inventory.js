@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('inventoryController', [
   '$scope',
   function($scope) {
- 
+
     $scope.fields = {
       'stock'  : false,
       'admin'  : false,
