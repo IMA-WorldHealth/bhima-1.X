@@ -473,7 +473,8 @@
     "PURCHASE_PRICE"      : "Purchase Price",
     "BHIMA_STOCK_CODE"    : "Stock Reference",
     "DIRECTION"           : "Direction",
-    "DESTINATION"         : "Destination"
+    "DESTINATION"         : "Destination",
+    "REFERENCE"           : "Reference"
   },
 
   "TREE"                        : {
