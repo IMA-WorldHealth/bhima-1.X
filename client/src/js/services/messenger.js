@@ -2,56 +2,63 @@ angular.module('bhima.services')
 .service('messenger', [
   '$timeout',
   '$sce',
-  '$translate',
-  'errorCodes',
-  function ($timeout, $sce, $translate, errorCodes) {
-    var self = this;
-    self.messages = [];
-    var indicies = {};
+  function ($timeout, $sce) {
 
-    self.push = function (data, timer) {
+    // TODO : all fns should use enqueue() to add messages to
+    // queue.  There also should be no way to set a time limit.
+    // You can only NO LIMIT to allow messages to persist.
+
+    var self = this,
+      messages = self.messages = [],
+      indicies = {};
+
+    function enqueue(data, timer) {
       var id = Date.now();
       data.id = id;
       data.msg = $sce.trustAsHtml(data.msg); // allow html insertion
-      self.messages.push(data);
+      messages.push(data);
       indicies[id] = $timeout(function () {
-        var index, i = self.messages.length;
+        var i = messages.length;
 
         while (i--) {
-          if (self.messages[i].id === id) {
-            self.messages.splice(i, 1);
+          if (messages[i].id === id) {
+            messages.splice(i, 1);
             break;
           }
         }
 
       }, timer || 3000);
-    };
+    }
 
-    (function () {
+    (function init() {
       ['info', 'warning', 'danger', 'success']
       .forEach(function (type) {
         self[type] = function (message, timer) {
-          self.push({type: type, msg: message }, timer);
+          enqueue({type: type, msg: message }, timer);
         };
       });
     })();
 
-    self.close = function (idx) {
+    self.close = function close(idx) {
       // cancel timeout and splice out
       $timeout.cancel(indicies[idx]);
-      self.messages.splice(idx, 1);
+      messages.splice(idx, 1);
     };
 
-    // Future API
-    // A blocking modal
-    self.block = function (message, callback, errback) { };
-
-    var unknown_msg = "An unanticipated error occured.";
     // Appropriate error formatting
-    self.error = function (code, timer) {
-      var err = errorCodes[code];
-      // FIXME : translate doesn't work
-      self.push({ title : 'ERROR: ' + err.title , msg : err.description, type: 'danger'}, timer || 5000);
+    self.error = function error(err) {
+      angular.extend(err, { type : 'error', closable : true, error : true });
+      messages.push(err);
+    };
+
+    self.primary  = function primary(data) {
+      angular.extend(data, { type : 'primary', closable : true });
+      messages.push(data);
+    };
+
+    self.warn = function warn(data) {
+      angular.extend(data, { type : 'warning', closable : true });
+      messages.push(data);
     };
   }
 ]);

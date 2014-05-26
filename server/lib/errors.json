@@ -1,8 +1,13 @@
 {
   "ERR_TXN_IMBALANCE" : {
-    "title"             : "Transaction Imbalance",
-    "ref"               : "ERR_TXN_IMBALANCE",
-    "tmpl"       : "Imbalanced transaction(s) detected"
+    "title"           : "Transaction Imbalance",
+    "ref"             : "ERR_TXN_IMBALANCE",
+    "tmpl"            : "Transaction {0} has debits and credits which do not balance."
+  },
+  "ERR_TXN_SINGLE_ENTRY" : {
+    "title"       : "Single Entry Lines",
+    "ref"         : "ERR_TXN_SINGLE_ENTRY",
+    "tmpl"        : "Transaction contains both debits and credits on the same line."
   },
   "ERR_TXN_ZERO" : {
     "title"        : "Zero-Valued Lines",
@@ -69,10 +74,10 @@
     "ref"              : "ERR_SESS_EXPIRED",
     "tmpl"      : "Authenticated session has expired."
   },
-  "ERR_QUERY"   : {
+  "ERR_DATABASE"   : {
     "title"       : "Database Exception",
     "ref"         : "ERR_QUERY",
-    "tmpl" : "The database raised an exception to the query. {0}."
+    "tmpl" : "The database raised error code '{0}' for url {1}."
   },
   "ERR_ACCOUNT_LOCKED" : {
     "title"              : "Locked Accounts",

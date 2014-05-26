@@ -8,8 +8,6 @@ angular.module('bhima.controllers')
   'validate',
   function($location, $translate, Appcache, appstate, connect) {
 
-    window.connect = connect; // FIXME : for testing
-
     var moduleNamespace = 'application',
       dependencies = {},
       cache = new Appcache(moduleNamespace);

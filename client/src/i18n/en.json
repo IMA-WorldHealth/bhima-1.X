@@ -128,6 +128,10 @@
     "SUPER"       : "Super User"
   },
 
+  "ERROR" : {
+    "HTTP_STATUS_CODE" : "HTTP Status Code"
+  },
+
   "TRIAL_BALANCE"      : {
     "TITLE"            : "Trial Balance",
     "ERROR_TEXT"       : "Errors detected in the trial balance.",
