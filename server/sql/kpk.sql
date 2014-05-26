@@ -694,10 +694,12 @@ create table `purchase` (
 
 drop table if exists `depot`;
 create table `depot` (
-  `id`                 smallint unsigned auto_increment not null,
+  `uuid`               char(36) not null,
+  `reference`          int unsigned not null auto_increment,
   `text`               text,
   `enterprise_id`      smallint unsigned not null,
-  primary key (`id`)
+  primary key (`uuid`),
+  key `reference` (`reference`)
 ) engine=innodb;
 
 drop table if exists `stock`;
@@ -720,8 +722,8 @@ drop table if exists `movement`;
 create table `movement` (
   `uuid`                    char(36) not null,
   `document_id`             char(36) not null,
-  `depot_entry`             smallint unsigned,
-  `depot_exit`              smallint unsigned,
+  `depot_entry`             char(36),
+  `depot_exit`              char(36),
   `tracking_number`         char(50) not null,
   `quantity`                int not null default 0,
   `date`                    date,
@@ -729,20 +731,20 @@ create table `movement` (
   key `tracking_number` (`tracking_number`),
   key `depot_exit` (`depot_exit`),
   constraint foreign key (`tracking_number`) references `stock` (`tracking_number`),
-  constraint foreign key (`depot_exit`) references `depot` (`id`)
+  constraint foreign key (`depot_exit`) references `depot` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `consumption`;
 create table `consumption` (
   `uuid`             char(36) not null,
-  `depot_id`         smallint unsigned not null,
+  `depot_uuid`       char(36) not null,
   `date`             date,
   `document_id`      char(36) not null,
   `tracking_number`  char(50) not null,
   `quantity`           int unsigned,
   primary key (`document_id`),
-  key `depot_id`   (`depot_id`),
-  constraint foreign key (`depot_id`) references `depot` (`id`) on delete cascade on update cascade
+  key `depot_uuid`   (`depot_uuid`),
+  constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade
 ) engine=innodb;
 
 drop table if exists `consumption_patient`;
