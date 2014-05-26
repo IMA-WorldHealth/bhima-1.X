@@ -4,3 +4,9 @@
   width: 100%;
   font-size: 8pt;
 }
+
+#bhima-inventory-grid, #bhima-inventory-grid div {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}

@@ -17,6 +17,7 @@ body {
 
 button {
   text-transform: capitalize;
+  
 }
 
 /* For some reason, minification broke this... */
