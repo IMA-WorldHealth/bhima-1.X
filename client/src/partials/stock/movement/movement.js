@@ -188,6 +188,7 @@ angular.module('bhima.controllers')
       connect.basicPut('movement', rows)
       .then(function () {
         messenger.success('STOCK.MOVEMENT.SUCCESS');
+        $location.path('invoice/movement/' + session.doc.document_id);
       })
       .catch(function (err) {
         messenger.error(err);

@@ -154,7 +154,11 @@
                        </div>
                       </td>
                       <td>
-                        <input class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
+                        <!-- FIXME style hack -->
+                        <div class="input-group" style="max-width: 200px">
+                          <span class="input-group-addon"><span class="glyphicon glyphicon-remove-circle"></span></span>
+                          <input disabled class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
+                        </div>  
                       </td>
                       <!-- <td> <input ng&#45;model="row.destination" required> -->
                       <!-- </td> -->
