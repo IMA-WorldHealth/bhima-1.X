@@ -33,6 +33,11 @@ angular.module('bhima.controllers')
         action : null
       }
     };
+
+    // Temporary coupled solution 
+    var depotConditions = {
+      
+    };
   
     // This doesn't match the route, it should never happen
     /*if (!angular.isDefined($routeParams.depotId)) {
@@ -95,7 +100,7 @@ angular.module('bhima.controllers')
       dependency.recalculateIndex();
 
       // Call targets action (this could be conditional)
-      reference.action(newDepotId);
+      if (reference.action) reference.action(newDepotId);
     }
 
     function fetchLots(depotId) {
@@ -108,6 +113,8 @@ angular.module('bhima.controllers')
     }
 
     function validateLots(model) {
+      $scope.lots = model.lots;
+
       console.log('validateLots', model);
     }
     
@@ -143,8 +150,8 @@ angular.module('bhima.controllers')
     }
 
     function updateDocumentDepo() {
-      session.doc.depot_exit = session.depotFrom.uuid;
-      session.doc.depot_entry = session.depotTo.uuid;
+      session.doc.depot_exit = session.from.uuid;
+      session.doc.depot_entry = session.to.uuid;
     }
     
     $scope.addRow = function addRow () {
@@ -159,42 +166,63 @@ angular.module('bhima.controllers')
       var rows = [];
 
       updateDocumentDepo();
+      
+      console.log('submission', session.doc);
       session.rows.forEach(function (row) {
-        var item = angular.extend(row, session.doc);
-
-        rows.push(item);
+        var movement = angular.copy(session.doc);
+        movement.uuid = uuid();
+        movement.tracking_number = row.lot.tracking_number;
+        movement.quantity = row.quantity;
+        
+        rows.push(movement);
       });
       
-      connect.basicPut('stock_movement', rows)
-      .then(function (res) {
+      connect.basicPut('movement', rows)
+      .then(function () {
         messenger.success('STOCK.MOVEMENT.SUCCESS');
       })
       .catch(function (err) {
         messenger.error(err);
       });
     };
+  
 
-    
-    $scope.$watch('session', function () {
+    // FIXME literally called 1,000,000 times/s 
+    function verifyRows() {
+      var validRows = true;
+
       if (!session.rows) {
         session.valid = false;
         return;
       }
+      
+      // Validate row data
+      session.rows.forEach(function (row) {
+        var selected = angular.isDefined(row.lot);
+        if(!selected) return validRows = false;
+  
+        console.log('validate quantity', row.quantity, row.lot.quantity);
+        // validate quantity 
+        if (row.quantity > row.lot.quantity) {
+          row.error = {message : 'Invalid quantity'};
 
-      var validRows = session.rows.every(function (item) {
-        return angular.isDefined(item.tracking_number) &&
-          angular.isDefined(item.quantity) &&
-          item.quantity > 0 &&
-          angular.isDefined(item.destination);
+        } else {
+          row.error = null;
+        }
       });
+      
+      session.valid =true;
+      // session.valid = !validRows && session.from && session.to;
+      // Require data for posting
+      // session.valid = validRows &&
+      //   angular.isDefined(session.doc.document_id) &&
+      //   angular.isDefined(session.doc.date) &&
+      //   angular.isDefined(session.doc.depot_uuid) &&
+      //   angular.isDefined(session.doc.direction);
+      session.valid = validRows;
+    }
 
-      session.valid = validRows &&
-        angular.isDefined(session.doc.document_id) &&
-        angular.isDefined(session.doc.date) &&
-        angular.isDefined(session.doc.depot_uuid) &&
-        angular.isDefined(session.doc.direction);
-
-    }, true);
+    $scope.$watch('session', verifyRows, true);
 
     appstate.register('project', initialise);
 

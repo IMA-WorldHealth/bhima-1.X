@@ -99,31 +99,59 @@
                 <div class="panel-heading">
                   <span class="glyphicon glyphicon-list-alt"></span> Inventory
                 </div>
-
+          
                 <table class="table table-bordered table-condensed">
                   <thead>
                     <tr>
                       <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
                       <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th>
-                      <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                      <th>{{ "COLUMNS.TRANSFER_QUANTITY" | translate }}</th>
                       <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
-                      <!-- <th colspan="2">{{ "COLUMNS.DESTINATION" | translate }}</th> -->
                   </thead>
                   <tbody>
-                    <tr ng-repeat="row in session.rows">
-                      <td>
+                    <tr ng-if="row.error" ng-repeat-start="row in session.rows"
+                      >
+                      <td colspan="4">
+                        <div class="alert alert-danger" style="margin-bottom: 0">
+                          <span class="glyphicon glyphicon-remove-circle"></span> <b>[Lot {{row.lot.lot_number}}]</b> Invalid transfer quantity (max : {{row.lot.quantity}})
+                        </div>
+                      </td> 
+                    </tr>
+                    <tr ng-repeat-end>
+                      <td >
                         <!-- <input  -->
                         <!--   class="form&#45;bhima" -->
                         <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
                         <!-- > -->
                         <select 
                           class="form-bhima"
+                          ng-model="row.lot"
+                          ng-options="lot as (lot.lot_number + ' (' + lot.code + ')') for lot in lots.data"
                           >
-                          <option disabled>--Select lot from {{session.from.text}}--</option>
+                          <option value="" disabled>--Select lot from {{session.from.text}}--</option>
                         </select>
                       </td>
                       <td>
-                        {{row.details || "..."}}
+                        <div ng-if="!row.lot"><span style="color: red;" class="glyphicon glyphicon-remove-circle"></span></div>
+                        <div ng-if="row.lot">
+                          <span style="color: green;" class="glyphicon glyphicon-ok-circle"></span> <b>Lot {{row.lot.lot_number}}</b>
+                          <br>
+                      
+                          <table class="reportTable">
+                            <tbody>
+                              <tr>
+                                <td>Item</td><td>{{row.lot.stock_description}}</td>
+                              </tr>
+                              <tr>
+                                <td><b>Quantity</b></td><td><b>{{row.lot.quantity}}</b></td>
+                              </tr>
+                              <tr>
+                                <td>Expiration Date</td><td>{{row.lot.expiration_date | date}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          
+                       </div>
                       </td>
                       <td>
                         <input class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
