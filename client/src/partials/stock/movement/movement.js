@@ -24,11 +24,13 @@ angular.module('bhima.controllers')
     var depotMap = $scope.depotMap = {
       from : {
         model : {},
-        dependency : 'to'
+        dependency : 'to',
+        action : fetchLots
       },
       to : {
         model : {},
-        dependency : 'from'
+        dependency : 'from',
+        action : null
       }
     };
   
@@ -48,34 +50,33 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.movements = {
-      query : {
-        tables : {
-          'stock_movement' : {
-            columns : ['document_id', 'tracking_number', 'direction', 'date', 'quantity', 'depot_uuid', 'destination']
-          }
-        }
-      }
-    };
+    // dependencies.movements = {
+    //   query : {
+    //     tables : {
+    //       'stock_movement' : {
+    //         columns : ['document_id', 'tracking_number', 'direction', 'date', 'quantity', 'depot_uuid', 'destination']
+    //       }
+    //     }
+    //   }
+    // };
 
-    dependencies.stock = {
-      query : {
-        tables : {
-          'stock' : {
-            columns : ['tracking_number']
-          }
-        },
-        where : ['stock.quantity>0']
-      }
-    };
-
+    // dependencies.stock = {
+    //   query : {
+    //     tables : {
+    //       'stock' : {
+    //         columns : ['tracking_number']
+    //       }
+    //     },
+    //     where : ['stock.quantity>0']
+    //   }
+    // };
 
     function initialise(project) {
       $scope.project = project;
       dependencies.depots.query.where =
         ['depot.enterprise_id=' + project.enterprise_id];
 
-      validate.process(dependencies, ['depots', 'stock'])
+      validate.process(dependencies, ['depots'])
       .then(startup)
       .catch(error);
     }
@@ -85,11 +86,29 @@ angular.module('bhima.controllers')
       var source = reference.model;
       var dependency = depotMap[reference.dependency].model;
       
-      // session[target] = source.get(depotId);
+      // Update current target
+      session[target] = source.get(newDepotId);
       
+      // Remove value from dependency
       dependency.remove(newDepotId);
-      if(oldDepot) dependency.post(oldDepot);
+      if (oldDepot) dependency.post(oldDepot);
       dependency.recalculateIndex();
+
+      // Call targets action (this could be conditional)
+      reference.action(newDepotId);
+    }
+
+    function fetchLots(depotId) {
+      dependencies.lots = {
+        query : '/inventory/depot/' + depotId + '/lots'
+      };
+
+      console.log('fetch lots', dependencies.lots); 
+      validate.process(dependencies, ['lots']).then(validateLots);
+    }
+
+    function validateLots(model) {
+      console.log('validateLots', model);
     }
     
     Object.keys(depotMap).forEach(function (key) {
@@ -118,7 +137,7 @@ angular.module('bhima.controllers')
       depotMap.to.model = angular.copy($scope.depots);
       
       // Assign default location 
-      session.from = depotMap.from.model.get(session.depot.uuid);
+      selectDepot('from', session.depot.uuid);
       
       $scope.addRow();
     }
