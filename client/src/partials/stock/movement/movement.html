@@ -118,7 +118,7 @@
                       </td> 
                     </tr>
                     <tr ng-repeat-end>
-                      <td >
+                      <td width="30%">
                         <!-- <input  -->
                         <!--   class="form&#45;bhima" -->
                         <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
@@ -131,38 +131,46 @@
                           <option value="">--Select lot from {{session.from.text}}--</option>
                         </select>
                       </td>
-                      <td>
-                        <div ng-if="!row.lot"><span style="color: red;" class="glyphicon glyphicon-remove-circle"></span></div>
+                      <td width="55%">
+                        <div ng-if="!row.lot"><span class="glyphicon glyphicon-remove-circle error"></span></div>
                         <div ng-if="row.lot">
-                          <span style="color: green;" class="glyphicon glyphicon-ok-circle"></span> <b>Lot {{row.lot.lot_number}}</b>
+                          <span class="glyphicon glyphicon-ok-circle correct"></span> <b>Lot {{row.lot.lot_number}}</b>
                           <br>
                       
                           <table class="reportTable">
                             <tbody>
                               <tr>
-                                <td>Item</td><td>{{row.lot.stock_description}}</td>
+                                <td width="30%">Item</td><td>{{row.lot.stock_description}}</td>
                               </tr>
                               <tr>
-                                <td><b>Quantity</b></td><td><b>{{row.lot.quantity}}</b></td>
+                                <td width="30%"><b>Quantity</b></td><td><b>{{row.lot.quantity}}</b></td>
                               </tr>
                               <tr>
-                                <td>Expiration Date</td><td>{{row.lot.expiration_date | date}}</td>
+                                <td width="30%">Expiration Date</td><td>{{row.lot.expiration_date | date}}</td>
                               </tr>
                             </tbody>
                           </table>
                           
                        </div>
                       </td>
-                      <td>
+                      <td width="10%">
                         <!-- FIXME style hack -->
-                        <div class="input-group" style="max-width: 200px">
-                          <span class="input-group-addon"><span class="glyphicon glyphicon-remove-circle"></span></span>
-                          <input disabled class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
+                        <div class="input-group" >
+                          <span class="input-group-addon">
+                            <span 
+                              ng-class=
+                              "{
+                                'glyphicon-remove-circle error' : !row.validQuantity,
+                                'glyphicon-ok-circle correct' : row.validQuantity
+                              }"
+                              class="glyphicon"></span>
+                          </span>
+                          <input ng-disabled="!row.lot" class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
                         </div>  
                       </td>
                       <!-- <td> <input ng&#45;model="row.destination" required> -->
                       <!-- </td> -->
-                      <td><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                      <td width="5%"><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
                     </tr>
                   </tbody>
                   <tfoot>

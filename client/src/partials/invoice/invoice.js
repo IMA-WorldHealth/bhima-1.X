@@ -12,7 +12,7 @@ angular.module('bhima.controllers')
 
     var dependencies = {},
         origin       = $scope.origin = $routeParams.originId,
-        invoiceId    = $routeParams.invoiceId,
+        invoiceId    = $scope.invoiceId = $routeParams.invoiceId,
         process      = {},
         timestamp    = $scope.timestamp = new Date();
 
@@ -160,6 +160,32 @@ angular.module('bhima.controllers')
 
       validate.process(dependencies, ['cash'])
       .then(buildInvoiceQuery);
+    }
+    
+    function processMovement() {
+      dependencies = {};
+
+      dependencies.movement = {
+        query : {
+          tables : {
+            depot : {
+              columns : ['reference', 'text']
+            },
+            movement : {
+              columns : ['uuid', 'depot_entry', 'depot_exit', 'tracking_number', 'quantity', 'date']
+            }
+          },
+          where : ['movement.document_id='+invoiceId],
+          join : ['depot.uuid=movement.depot_exit']
+        }
+      };
+
+      validate.process(dependencies).then(fetchDepot);
+    }
+
+    function parseMovement(model) {
+      angular.extend($scope, model);
+      console.log('got', model);
     }
 
     function processSale() {
@@ -370,7 +396,7 @@ angular.module('bhima.controllers')
       dependencies.location.query = 'location/' + recipient_data.current_location_id;
       return validate.process(dependencies).then(invoice);
     }
-
+    
     function invoice(model) {
       console.log('[invoice method] appelle de la methode invoice le model est : ', model);
       var routeCurrencyId;
@@ -480,7 +506,8 @@ angular.module('bhima.controllers')
       'patient' : processPatient,
       'purchase': processPurchase,
       'pcash_transfert' : processTransfert,
-      'pcash_convention' : processConvention
+      'pcash_convention' : processConvention,
+      'movement' : processMovement
     };
 
     appstate.register('project', function (project) {
