@@ -43,7 +43,7 @@
   padding    : 10px;
   border     : 1px solid #DDD;
   background : white;
-  overflow   : auto;
+  /* overflow : auto; */
 }
 
 .report-compressed {

@@ -16,7 +16,7 @@ insert into employee (code, name, dob, creditor_uuid) values ("0100", "Employee 
 
 insert into supplier (uuid, creditor_uuid, name, location_id, international, locked) values (@supplier_uuid, @supplier_creditor_uuid, "Supplier A", @location_uuid, 0, 0);
 
-insert into depot (text, enterprise_id) values 
-  ("Warehouse", 200), 
-  ("Pharmacy 1", 200),
-  ("Pharmacy 2", 200);
+insert into depot (uuid, text, enterprise_id) values 
+  (UUID(), "Warehouse", 200), 
+  (UUID(), "Pharmacy 1", 200),
+  (UUID(), "Pharmacy 2", 200);

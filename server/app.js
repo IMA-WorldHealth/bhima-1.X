@@ -1,3 +1,4 @@
+#!/usr/local/bin/node
 // scripts/server.js
 
 // import node dependencies

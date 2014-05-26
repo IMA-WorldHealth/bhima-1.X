@@ -30,7 +30,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'depot' : {
-            columns : ['id', 'text']
+            columns : ['uuid', 'text']
           }
         }
       }

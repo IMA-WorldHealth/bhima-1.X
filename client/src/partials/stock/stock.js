@@ -9,29 +9,32 @@ angular.module('bhima.controllers')
   'appcache',
   function ($scope, $location, $translate, appstate, validate, messenger, AppCache) {
     var config, dependencies = {};
-
+    var session = $scope.session = {
+      configured : false,
+      configure : false
+    };
     var cache = new AppCache('stock.in');
 
     config = $scope.config = {};
 
     config.modules = [
       {
-        key : $translate('STOCK.ENTRY.KEY'),
+        key : 'STOCK.ENTRY.KEY',
         ico : 'glyphicon-import',
         link : '/stock/entry/start'
       },
       {
-        key : $translate('STOCK.EXIT.KEY'),
+        key : 'STOCK.EXIT.KEY',
         ico : 'glyphicon-export',
         link : '/stock/distribution'
       },
       {
-        key : $translate('STOCK.LOSS.KEY'),
+        key : 'STOCK.LOSS.KEY',
         ico : 'glyphicon-cloud',
         link : '/stock/loss'
       },
       {
-        key : $translate('STOCK.MOVEMENT.KEY'),
+        key : 'STOCK.MOVEMENT.KEY',
         ico : 'glyphicon-transfer',
         link : '/stock/movement'
       }
@@ -39,12 +42,12 @@ angular.module('bhima.controllers')
 
     config.utilities = [
       {
-        key : $translate('STOCK.SEARCH.KEY'),
+        key : 'STOCK.SEARCH.KEY',
         ico : 'glyphicon-search',
         link : '/stock/search'
       },
       {
-        key : $translate('STOCK.EXPIRE.KEY'),
+        key : 'STOCK.EXPIRE.KEY',
         ico : 'glyphicon-exclamation-sign',
         link : '/stock/expiring'
       }
@@ -52,7 +55,7 @@ angular.module('bhima.controllers')
 
     config.reports = [
       {
-        key : $translate('STOCK.REPORT.STOCK_COUNT'),
+        key : 'STOCK.REPORT.STOCK_COUNT',
         link : '/report/stock_count'
       }
     ];
@@ -60,20 +63,46 @@ angular.module('bhima.controllers')
     dependencies.depots = {
       required : true,
       query : {
+        identifier : 'uuid',
         tables : {
           'depot' : {
-            columns : [ 'id', 'text']
+            columns : [ 'uuid', 'reference', 'text']
           }
         }
       }
     };
 
-    function loadDefaultDepot (depot) {
-      if (!depot) { return; }
-      $scope.setDepot(depot);
+    
+    appstate.register('project', initialise);
+  
+    // FIXME functions doing 100 things at once
+    function initialise(project) {
+      $scope.project = project;
+      dependencies.depots.query.where = ['depot.enterprise_id=' + project.enterprise_id];
+      
+      validate.process(dependencies).then(loadDefaultDepot);
     }
 
-    cache.fetch('depot').then(loadDefaultDepot);
+    function loadDefaultDepot (model) {
+      angular.extend($scope, model);
+
+      cache.fetch('depot')
+      .then(function (depot) {
+        if (depot) {
+          // var validDepot = model.depots.data.some(function (filterDepot) { return filterDepot.uuid === depot.uuid });
+          var validDepot = model.depots.get(depot.uuid);
+
+          if (!validDepot) {
+            messenger.warning('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
+            return session.configure = true;
+          }
+          $scope.depot = depot; session.configured = true;
+        } else {
+          session.configure = true;
+        }
+      })
+      .catch(error);
+    }
 
     function startup (models) {
       angular.extend($scope, models);
@@ -94,18 +123,33 @@ angular.module('bhima.controllers')
 
     $scope.loadPath = function (defn) {
 
-      if (!$scope.depot && config.modules.indexOf(defn) > -1) {
+      // User shouldn't be able to get here
+      /*if (!$scope.depot && config.modules.indexOf(defn) > -1) {
         return messenger.danger('NO_DEPOT_SELECTED');
-      }
+      }*/
 
-      var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.id : defn.link;
+      var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
     };
 
     $scope.setDepot = function setDepot (depot) {
-      $scope.depot = depot;
-      cache.put('depot', depot);
-    };
+      var verifySet = confirm('Select depot \'' + depot.text + '\' for managing stock?');
+      if (!verifySet) return;
 
+      cache.put('depot', depot);
+      $scope.depot = depot;
+      session.configured = true;
+      session.configure = false;
+    };
+    
+    $scope.reconfigure = function () {
+      var verifyConfigure = confirm('Are you sure you want to change the depot for Stock Management? The current depot is \'' + $scope.depot.text + '\'');
+      if (!verifyConfigure) return;
+
+      $scope.depot = null;
+      cache.remove('depot');
+      session.configured = false;
+      session.configure = true;
+    };
   }
 ]);

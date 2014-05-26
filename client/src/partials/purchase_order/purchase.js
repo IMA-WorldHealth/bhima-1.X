@@ -235,13 +235,15 @@ angular.module('bhima.controllers')
       return deferred.promise;
     }
 
-    function writeSuccess(result) {
-      messenger.success($translate('PURCHASE.WRITE_SUCCESS'));
+    function writeSuccess() {
+  
+      // Inform user 
+      messenger.success($translate.instant('PURCHASE.WRITE_SUCCESS'));
       $location.path('/invoice/purchase/' + session.purchase.uuid);
     }
 
     function handleError(error) {
-      messenger.danger($translate('PURCHASE.WRITE_FAILED'));
+      messenger.danger($translate.instant('PURCHASE.WRITE_FAILED'));
       throw error;
     }
 

@@ -9,22 +9,77 @@
       <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
     </ol>
   </div>
+  
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
 
-  <div class="pull-right dropdown">
-    <button class="btn btn-sm btn-primary square dropdown-toggle">
-      {{ depot.text || "STOCK.ENTRY.SELECT_DEPOT" | translate }}
-      <span class="caret" data-caret="&#9660;"></span>
-    </button>
-    <ul class="dropdown-menu square">
-      <li ng-repeat="depot in depots.data">
-        <a ng-click="setDepot(depot)" class="action">{{ depot.text }}</a>
-      </li>
-    </ul>
+    <button style="margin-left: 5px;" ng-disabled="session.configure" ng-click="reconfigure()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
   </div>
+  <!-- <div class="pull&#45;right dropdown"> -->
+    <!-- <button class="btn btn&#45;sm btn&#45;primary square dropdown&#45;toggle"> -->
+      <!-- {{ depot.text || "STOCK.ENTRY.SELECT_DEPOT" | translate }} -->
+      <!-- <span class="caret" data&#45;caret="&#38;#9660;"></span> -->
+    <!-- </button> -->
+    <!-- <ul class="dropdown&#45;menu square"> -->
+      <!-- <li ng&#45;repeat="depot in depots.data"> -->
+        <!-- <a ng&#45;click="setDepot(depot)" class="action">{{ depot.text }}</a> -->
+      <!-- </li> -->
+    <!-- </ul> -->
+  <!-- </div> -->
 </section>
 
 <div class="content">
-  <div class="row" style="margin-top: 10px;">
+  
+  <div ng-if="session.configure">
+
+        
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="panel panel-default square">
+          <div class="panel-heading square">
+            {{ "STOCK.MAIN.CONFIGURE_WAREHOUSE" | translate }} 
+          </div>
+          <!-- TODO move styles to CSS  -->
+          <div class="panel-body">
+
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="alert alert-info">
+                  <span class="glyphicon glyphicon-exclamation-sign"></span> 
+                  {{ "STOCK.MAIN.WAREHOUSE_INFO_1" | translate}}
+                  <b>{{ "STOCK.MAIN.WAREHOUSE_INFO_2" | translate }}</b>
+                  {{ "STOCK.MAIN.WAREHOUSE_INFO_3" | translate }}
+                </div>
+              </div>
+            </div>
+
+            <div class="configure">
+              <div 
+                class="panel panel-default configure-item" 
+                ng-repeat="depot in depots.data"
+                ng-click="setDepot(depot)"
+              >
+                <div class="panel-body">
+                  <div class="row">
+                    <span style="font-size: 18px;" class="glyphicon glyphicon-home"></span>
+                  </div>
+                  <div class="row" style="margin-top: 0.5em">
+                    
+                    <div class="col-xs-12">
+                      [{{depot.reference}}] {{depot.text}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div ng-if="session.configured" class="row" style="margin-top: 10px;">
 
     <div class="col-xs-6">
       <div class="panel panel-primary square">
@@ -34,7 +89,7 @@
         <div class="panel-body">
           <li ng-repeat="item in config.modules" class="plain-list">
             <span class="glyphicon {{ item.ico }}"></span>
-            <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+            <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
           </li>
         </div>
       </div>
@@ -49,7 +104,7 @@
         <div class="panel-body">
           <li ng-repeat="item in config.utilities" class="plain-list">
             <span class="glyphicon {{ item.ico }}"></span>
-            <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+            <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
           </li>
         </div>
       </div>
@@ -61,7 +116,7 @@
         </div>
         <div class="panel-body">
           <li ng-repeat="item in config.reports" class="plain-list">
-            <span class="glyphicon glyphicon-file"></span> <a class="menu-item" ng-click="loadPath(item)">{{ item.key }}</a>
+            <span class="glyphicon glyphicon-file"></span> <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
           </li>
         </div>
       </div>
