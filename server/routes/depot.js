@@ -27,7 +27,10 @@ module.exports = function (db, sanitize, Store) {
     
     array
     .filter(function (transaction) {
-      return transaction.depot_entry === _depot || transaction.depot_exit === _depot;
+      var filterDepot = transaction.depot_entry === _depot || transaction.depot_exit === _depot;
+      var filterEmpty = transaction.quantity > 0;
+
+      return filterEmpty && filterDepot;
     })
     .forEach(function (transaction) {
       if (!store.get(transaction.tracking_number)) {
