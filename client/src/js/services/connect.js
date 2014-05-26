@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.factory('connect', [ '$http', '$q', 'liberror', 'store', function ($http, $q, liberror, Store) {
+.factory('connect', [ '$http', '$q', 'liberror', 'messenger', 'store', function ($http, $q, liberror, messenger, Store) {
   // Summary:
   //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
   //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
@@ -9,7 +9,7 @@ angular.module('bhima.services')
   //  TODO : All calls to the server should be ?q={} rather than ?{} for easy parsing
 
   // Error namespace
-  var httpError = liberror.namespace('HTTP');
+  var httpError = liberror.namespace('CONNECT');
 
   function req(defn, stringIdentifier) {
     //summary:
@@ -93,7 +93,7 @@ angular.module('bhima.services')
 
   // old API
   function basicDelete(table, id, column) {
-    console.warn('connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().');
+    messenger.warn({ namespace : 'CONNECT', description : 'connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().' });
     if (!column) { column = 'id'; }
     return $http.delete(['/data/', table, '/', column, '/', id].join(''));
   }

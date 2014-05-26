@@ -46,7 +46,7 @@ angular.module('bhima.services')
   function CustomError (code, namespace, message) {
     var args, err = Error.call(this, message);
     err.code = code;
-    err.namespace = namespace;
+    err.namesace = namespace;
     args = Array.prototype.slice.call(arguments);
     err.params = args.slice(3);
     return err;
@@ -71,8 +71,8 @@ angular.module('bhima.services')
     message = template.replace(/\{\d+\}/g, function (match) {
       var index = +match.slice(1, -1), arg;
 
-      if (index < templateArgs.length) {
-        arg = templateArgs[index];
+      if (index + 1 < templateArgs.length) {
+        arg = templateArgs[index + 1];
         if (typeof arg === 'function') {
           return arg.toString().replace(/ ?\{[\s\S]*$/, '');
         } else if (typeof arg === 'undefined') {
@@ -110,8 +110,30 @@ angular.module('bhima.services')
           return new CustomError(code, module, message);
         },
         capture : function (err) {
-          console.log('Hello World');
+          $log.debug('NameSpace', module);
           $log.debug('debugging', err);
+
+          if (err.status && err.data.sqlState) {
+            // This is a mysql error
+            // format error
+            var error = errorCodes.ERR_DATABASE;
+            var template = error.tmpl;
+
+            template = templateMessage(template, err.data.code, err.config.url);
+
+            $log.debug('template : ', template);
+
+            angular.extend(error, {
+              namespace   : module,
+              status      : err.status,
+              statusText  : err.statusText,
+              description : template
+            });
+
+            $log.debug('error is', error);
+
+            messenger.error(error);
+          }
         }
       };
     },

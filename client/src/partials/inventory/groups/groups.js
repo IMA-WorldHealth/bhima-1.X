@@ -5,7 +5,6 @@ angular.module('bhima.controllers')
   'connect',
   'uuid',
   function ($scope, validate, connect, uuid) {
-    console.log('Hello from inventory.groups');
     var dependencies = {};
 
     dependencies.groups = {
