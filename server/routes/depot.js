@@ -20,9 +20,11 @@ module.exports = function (db, sanitize, Store) {
 
     // contains { tracking_number, quantity, expiration_date }
     var _depot, store = new Store({ identifier : 'tracking_number' });
-
-    _depot = Number(depot);
-
+  
+    // depot ID is now a UUID
+    _depot = depot;
+    // _depot = Number(depot);
+    
     array
     .filter(function (transaction) {
       return transaction.depot_entry === _depot || transaction.depot_exit === _depot;
@@ -98,6 +100,7 @@ module.exports = function (db, sanitize, Store) {
 
     return db.exec(sql)
     .then(function (rows) {
+
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
     });
