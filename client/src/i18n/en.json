@@ -477,6 +477,18 @@
     "REFERENCE"           : "Reference"
   },
 
+  "INVENTORY" : {
+    "MAIN" : {
+      "TITLE" : "Inventory Management",
+      "OPTIONS" : "Options",
+      "ADD_ITEM" : "Register Item",
+      "UPDATE_ITEM" : "Update Item Registration",
+      "CONFIG_GROUPS" : "Configure Groups",
+      "CONFIG_TYPES" : "Configure Item Types",
+      "PRINT_MANIFEST" : "Print Inventory Manifest"
+    }
+  },
+
   "TREE"                        : {
     "ROOT"                      : "Root",
     "ADMIN"                     : "Admin",
@@ -538,7 +550,8 @@
     "PROJECT"                   : "Projects",
     "EMPLOYEE"                  : "Employee",
     "DEPOT"                     : "Depot",
-    "STOCK_MANAGEMENT"          : "Stock Management"
+    "STOCK_MANAGEMENT"          : "Stock Management",
+    "INVENTORY_MANAGEMENT"      : "Inventory Management"
   },
 
   "JOURNAL_VOUCHER"  : {

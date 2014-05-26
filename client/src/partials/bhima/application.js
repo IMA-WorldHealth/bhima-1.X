@@ -162,7 +162,7 @@ angular.module('bhima.controllers')
     }
 
     function setProject(result) {
-      if (result) { appstate.set('project', result.data); }
+      if (result) { appstate.set('project', result); }
       return connect.req(queryCurrency);
     }
 
