@@ -1,44 +1,23 @@
-<div class="top-bar">
-  <h2>Inventory Management</h2>
-</div>
-<div class="container inventory">
+<header data-header>
+  {{ "INVENTORY.MAIN.TITLE" | translate }}
+</header>
+
+<main>
   <div class="row">
-    <div class="col-xs-3 opt-box">
-      <div ng-click="slide('stock')" class="opt-header">
-        <h3>Stock</h3>
-        <i class="glyphicon" ng-class="{'glyphicon-chevron-down': fields['stock'], 'glyphicon-chevron-up': !fields['stock']}"></i>
+    <div class="col-xs-8">
+      <div class="panel panel-primary"> 
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-cog"></span> {{ "INVENTORY.MAIN.OPTIONS" | translate }}
+        </div>
+        <div class="panel-body">
+          <ul class="plain-list">
+            <li ng-repeat="item in config">
+              <span class="glyphicon {{ item.ico }}"></span>
+              <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <ul class="opt-content" ng-class="{hidden: fields['stock']}">
-        <li><a href="">Stock Entry</a></li>
-        <li><a href="">Stock Exit</a></li>
-        <li><a href="">Purchase Price List</a></li>
-        <li><a href="">Sales Price List</a></li>
-        <li><a href="">Availability</a></li>
-      </ul>
-    </div>
-    <div class="col-xs-3 opt-box">
-      <div ng-click="slide('admin')" class="opt-header">
-        <h3>Administration</h3>
-        <i class="glyphicon" ng-class="{'glyphicon-chevron-down': fields['admin'], 'glyphicon-chevron-up': !fields['admin']}"></i>
-      </div>
-      <ul class="opt-content" ng-class="{hidden: fields['admin']}" >
-        <li><a href="#/inventory/register">Register a New Item</a></li>
-        <li><a href="">Change Sales Price List</a></li>
-        <li><a href="">Manage Item Types</a></li>
-        <li><a href="">Destinations</a></li>
-      </ul>
-    </div>
-    <div class="col-xs-3 opt-box">
-      <div ng-click="slide('report')" class="opt-header">
-        <h3>Quick Report</h3>
-        <i class="glyphicon" ng-class="{'glyphicon-chevron-down': fields['report'], 'glyphicon-chevron-up': !fields['report']}"></i>
-      </div>
-      <ul class="opt-content" ng-class="{hidden: fields['report']}">
-        <li><a href="">Export Price List</a></li>
-        <li><a href="">Export Inventory</a></li>
-        <li><a href="">Import Inventory</a></li>
-        <li><a href="">Export Stock Analysis</a></li>
-      </ul>
     </div>
   </div>
-</div>
+</main>
