@@ -1159,7 +1159,8 @@
       "REQUESTED_BY"        : "Requested By",
       "ADD_LOT"             : "Add Lot",
       "ENTRY_DATE"          : "Entry Date",
-      "ENTER_STOCK"         : "Enter Stock"
+      "ENTER_STOCK"         : "Enter Stock",
+      "REPORT"              : "Entry Report"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -1197,6 +1198,13 @@
     "ERR_HTTP"             : "Error changing debtor group",
     "ERR_MISSING"          : "Error no debtor selected",
     "SUCCESS"              : "Changing successfully"
+  },
+
+  "SIGNATURES" : {
+    "WAREHOUSE_MANAGER" : "Warehouse Manager",
+    "CHIEF_ACCOUNTANT" : "Chief Accountant",
+    "FINANCE_OFFICER" : "Finance Officer",
+    "ADMINISTRATOR" : "Adminstrator"
   },
 
   "DASHBOARD" : {

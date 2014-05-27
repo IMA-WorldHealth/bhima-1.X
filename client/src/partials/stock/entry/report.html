@@ -2,20 +2,38 @@
   {{ "STOCK.ENTRY.REVIEW" | translate }}
 </header>
 
-<div class="report">
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a href="#/stock/entry/start/">{{ "STOCK.ENTRY.TITLE" | translate }}</a></li>
+      <li><a href="#/stock/entry/report/">{{ "STOCK.ENTRY.REPORT" | translate }}</a></li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="print()">
+      <span class="glyphicon glyphicon-print"></span>
+      {{ "UTIL.PRINT" | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report" style="height:calc(100% - 87px);">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }} <small> {{ session.cfg.document_id }}</small></h4>
+      <h4>{{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }} <small class="pull-right"> {{ session.documentId }}</small></h4>
 
       <label>{{ "STOCK.ENTRY.ENTRY_DATE" | translate }}</label>  {{ session.timestamp | date }}
 
       <table class="reportTable">
         <thead>
           <tr>
+            <th>{{ "COLUMNS.DEPOT" | translate }}</th>
             <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
             <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
             <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
-            <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
             <th>{{ "COLUMNS.PURCHASE_DATE" | translate }}</th>
             <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
             <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
@@ -23,22 +41,22 @@
         </thead>
         <tbody>
           <tr ng-repeat="movement in receipt.data | orderBy:'code'">
+            <td>{{ movement.text }}</td>
             <td>{{ movement.tracking_number }}</td>
             <td>{{ movement.lot_number }}</td>
             <td>{{ movement.code }}</td>
-            <td ng-bind-html="lot.purchase_price | intlcurrency:project.currency_id"></td>
-            <td>{{ lot.date | date }}</td>
-            <td>{{ lot.expiration_date | date }}</td>
-            <td>{{ lot.quantity }}</td>
+            <td>{{ movement.date | date }}</td>
+            <td>{{ movement.expiration_date | date }}</td>
+            <td>{{ movement.quantity }}</td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <th colspan="6">
               <span class="glyphicon glyphicon-list-alt"></span>
-              {{ session.lots.length }}
+              {{ receipt.data.length }}
             </th>
-            <th>{{ session.totals.quantity }}</th>
+            <th>{{ session.total }}</th>
           </tr>
         </tfoot>
       </table>
@@ -47,23 +65,11 @@
         <h5>{{ "TRIAL_BALANCE.SIGNATURES" | translate }}</h5>
 
         <div class="signature-box">
-          <label>{{ "TRIAL_BALANCE.CHIEF_ACCOUNTANT" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+          <label>{{ "SIGNATURES.WAREHOUSE_MANAGER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
           <div class="signature-line"></div>
         </div>
 
-        <div class="signature-box">
-          <label>{{ "TRIAL_BALANCE.FINANCE_OFFICER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
-          <div class="signature-line"></div>
-        </div>
       </div>
     </div>
   </div>
 </div>
-
-<section class="bar-bottom">
-  <div class="pull-right">
-    <button class="btn btn-sm btn-success" ng-click="submit()">
-      {{ "FORM.SIGN_AND_SUBMIT" | translate }}
-    </button>
-  </div>
-</section>
