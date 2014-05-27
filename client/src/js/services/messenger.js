@@ -31,7 +31,7 @@ angular.module('bhima.services')
     }
 
     (function init() {
-      ['info', 'warning', 'danger', 'success']
+      ['info', 'warning', 'danger']
       .forEach(function (type) {
         self[type] = function (message, timer) {
           enqueue({type: type, msg: message }, timer);
@@ -58,6 +58,21 @@ angular.module('bhima.services')
 
     self.warn = function warn(data) {
       angular.extend(data, { type : 'warning', closable : true });
+      messages.push(data);
+    };
+
+    self.success = function success(data) {
+      if (typeof data === 'object') {
+        angular.extend(data, { type : 'success', closable : true});
+      } else {
+        data = {
+          type : 'success',
+          closable : true,
+          namespace : 'MESSENGER',
+          description : data
+        };
+      }
+
       messages.push(data);
     };
   }

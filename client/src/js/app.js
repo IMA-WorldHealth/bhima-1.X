@@ -58,9 +58,9 @@
       controller: 'inventoryRegister',
       templateUrl: '/partials/inventory/register/register.html'
     })
-    .when('/inventory/update_stock', {
-      controller : 'updateStock',
-      templateUrl : 'partials/inventory/update_stock/update_stock.html'
+    .when('/inventory/update_item', {
+      controller : 'inventory.update',
+      templateUrl : 'partials/inventory/update_item/update_item.html'
     })
     .when('/inventory/groups', {
       controller : 'inventory.groups',
