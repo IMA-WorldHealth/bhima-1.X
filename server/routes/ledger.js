@@ -59,6 +59,8 @@ module.exports = function (db, sanitize) {
         'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
         '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
         '`t`.`comment`' +
+        // TODO Check if sale exists in consumption_sale table, validate if it has been distributed
+        // 'CASE(WHEN `t`.`consumption_id` THEN true ELSE false) as consumed ' +
         'FROM (' +
           '(' +
             'SELECT `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit`, ' +

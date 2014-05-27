@@ -2,19 +2,22 @@
   {{ "STOCK.MOVEMENT.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
-  
+<nav>
   <div class="pull-left">
-
+    <ol class="breadcrumb" style="float: right;">
+      <!-- <span class="label label&#45;success square">{{ "UTIL.NAVIGATION" | translate }}</span> -->
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a href="">{{ "STOCK.MOVEMENT" | translate }}</a></li>
+    </ol>
   </div>
   
   <div class="pull-right" style="margin-top: 6px;">
     {{session.depot.text}} <b>{{session.depot.reference ? '[' + session.depot.reference + ']' : ''}}</b>
   </div>
-</section>
+</nav>
   
-<div class="content">
-  
+<main>
   <div class="row" ng-if="session.invalid">
     <div class="col-xs-12">
       <div class="alert alert-danger">
@@ -204,12 +207,12 @@
 
     </div> <!-- End full width column -->
   </div> <!-- End row -->
-</div>
+</main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <button class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="!session.valid">
       {{ "FORM.SUBMIT" | translate }}
     </button>
   </div>
-</section>
+</footer>

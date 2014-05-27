@@ -2,22 +2,32 @@
   {{ "DISTRIBUTION.TITLE" | translate }}
 </header>
 
-<div class="content">
-    
-  <div class="row">
-    <div class="col-xs-12">
-    <p>TODO This is the begining of a redisign of stock distribution to patients, the original file
-    is still available at /inventory/distribution/. I've started updating this to use the new DB schema 
-    and stock management workflow. Business logic for retrieving lots and sales should be updated for the 
-    new API</p>
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <!-- <span class="label label&#45;success square">{{ "UTIL.NAVIGATION" | translate }}</span> -->
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a href="">{{ "STOCK.DISTRIBUTE" | translate }}</a></li>
+    </ol>
   </div>
+  
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
   </div>
+</nav>
 
+<main>
+    
+  <!-- Step 1 Header -->
   <div class="row">
-    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
+    <div class="col-xs-12"  style="padding-bottom : 5px; margin-bottom: 5px;">
+      <div class="underline">
       <span 
-        class="label label-success"
+        class="label label-primary"
         >1</span> Locate patient
+      </div>
     </div>
   </div>
 
@@ -27,16 +37,67 @@
     </div>
   </div>
 
+  <!-- Step 2 Header -->
   <div class="row">
-    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
+    <div class="col-xs-12"  style="padding-bottom : 5px; margin-bottom: 5px;">
+    <div class="underline">
       <span class="label label-primary">2</span> Select prescription sale
+    </div>
     </div>
   </div>
 
-
   <div class="row">
-    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
-      <span class="label label-primary">3</span> Allocate medicine
+    <div class="col-xs-12">
+      <div class="alert alert-info">
+        <span class="glyphicon glyphicon-info-sign"></span> Showing undistributed sales for Patient
+      </div>
+    </div>
+  </div>
+
+  <div class="row" ng-repeat="item in ledger.data">
+    <div class="col-xs-12">
+      <div class="panel panel-danger">
+        <div class="panel-body">
+          <div class="col-xs-3">
+            <span 
+              class="glyphicon"
+              ng-class="{
+                'glyphicon-remove-sign error' : true
+              }"
+              ></span> Invoice has not been payed
+          </div>
+          <div class="col-xs-3">
+            <span 
+              class="glyphicon"
+              ng-class="{
+                'glyphicon-ok-sign correct' : true
+              }"
+              ></span> Invoice has been fully payed
+          </div>
+          <div class="col-xs-3">
+            <span 
+              class="glyphicon"
+              ng-class="{
+                'glyphicon-minus-sign warn' : true
+              }"
+              ></span> Invoice has been partially payed
+          </div>
+
+          <!-- TODO get sale details from ledger -->
+          <div class="col-xs-3">
+            Sale {{item.inv_po_id}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 Header -->
+  <div class="row">
+    <div class="col-xs-12"  style="padding-bottom : 5px; margin-bottom: 5px;">
+      <div class="underline">
+        <span class="label label-primary">3</span> Allocate medicine
+      </div>
     </div>
   </div>
 
@@ -184,10 +245,10 @@
 <!--       </div> -->
 <!--     </div> -->
 <!--   </div> -->
-</div>
+</main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
   </div>
-</section>
+</footer>
