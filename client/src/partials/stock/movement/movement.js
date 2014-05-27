@@ -10,14 +10,12 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $location, $routeParams, validate, appstate, connect, messenger, uuid) {
    
-    // TODO Warnings, only one depot, zero depots?
-    // TODO Improve data verification
-    // TODO Receipts
-    
+    // TODO Generic requirements for module to load/ warn
     var dependencies = {};
     var session = $scope.session = {
       configured : false,
       invalid : false,
+      warn : false,
       doc : {},
       rows : [],
     };
@@ -34,16 +32,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    // Temporary coupled solution 
-    var depotConditions = {
-      
-    };
-  
-    // This doesn't match the route, it should never happen
-    /*if (!angular.isDefined($routeParams.depotId)) {
-       messenger.danger('ERR_NO_DEPOT');
-    }*/
-
     dependencies.depots = {
       query : {
         identifier : 'uuid',
@@ -54,28 +42,7 @@ angular.module('bhima.controllers')
         }
       }
     };
-
-    // dependencies.movements = {
-    //   query : {
-    //     tables : {
-    //       'stock_movement' : {
-    //         columns : ['document_id', 'tracking_number', 'direction', 'date', 'quantity', 'depot_uuid', 'destination']
-    //       }
-    //     }
-    //   }
-    // };
-
-    // dependencies.stock = {
-    //   query : {
-    //     tables : {
-    //       'stock' : {
-    //         columns : ['tracking_number']
-    //       }
-    //     },
-    //     where : ['stock.quantity>0']
-    //   }
-    // };
-
+    
     function initialise(project) {
       $scope.project = project;
       dependencies.depots.query.where =
@@ -105,6 +72,7 @@ angular.module('bhima.controllers')
 
     function fetchLots(depotId) {
       dependencies.lots = {
+        identifier : 'tracking_number',
         query : '/inventory/depot/' + depotId + '/lots'
       };
 
@@ -138,12 +106,13 @@ angular.module('bhima.controllers')
 
     function startup (models) {
       var validDepo = models.depots.get($routeParams.depotId);
+      var warnDepo = models.depots.data.length===1;
       if (!validDepo) return session.invalid = true;
-  
+      if (warnDepo) return session.warn = true;  
 
       session.configured = true;
       angular.extend($scope, models);
-      
+
       session.doc.document_id = uuid();
       session.doc.date = new Date();
 
@@ -163,10 +132,16 @@ angular.module('bhima.controllers')
     }
     
     $scope.addRow = function addRow () {
+      
+      // Ensure there are options left to select
+      if ($scope.lots && !$scope.lots.data.length) {
+        return messenger.info('There are no more lots available for movement in the current depot.'); 
+      }
       session.rows.push({quantity : 0});
     };
 
-    $scope.removeRow = function (idx) {
+    $scope.removeRow = function (idx, row) {
+      if (row.lot) $scope.lots.post(row.lot);
       session.rows.splice(idx, 1);
     };
 
@@ -197,15 +172,15 @@ angular.module('bhima.controllers')
   
 
     // FIXME literally called 1,000,000 times/s 
+    // configuration schema should be parsed and tested
     function verifyRows() {
       var validRows = true;
 
       if (!session.rows) {
-        session.valid = false;
-        return;
+        return session.valid = false;
       }
       
-      // Validate row data
+      // Validate row data, need to visit every row, checking for multiple errors
       session.rows.forEach(function (row) {
         var selected = angular.isDefined(row.lot);
         if(!selected) return validRows = false;
@@ -217,30 +192,38 @@ angular.module('bhima.controllers')
         if (row.quantity > row.lot.quantity) {
           row.error = {message : 'Invalid quantity'};
           row.validQuantity = false;
+          validRows = false;
 
         // Warning status
         } else if (row.quantity <= 0) {
           row.validQuantity = false;
+          validRows = false;
         } else {
           row.error = null;
           row.validQuantity = true;
         }
+
+        if (isNaN(Number(row.quantity))) {
+          row.validQuantity = false;
+          validRows = false;
+        }
       });
-      
-      session.valid =true;
-      // session.valid = !validRows && session.from && session.to;
-      // Require data for posting
-      // session.valid = validRows &&
-      //   angular.isDefined(session.doc.document_id) &&
-      //   angular.isDefined(session.doc.date) &&
-      //   angular.isDefined(session.doc.depot_uuid) &&
-      //   angular.isDefined(session.doc.direction);
+           
       session.valid = validRows;
     }
 
     $scope.$watch('session', verifyRows, true);
+   
+    $scope.stockSelected = function (row) {
+      if (row.oval) {
+        $scope.lots.push(row.lot);
+      }
+
+      row.oval = row.lot;
+      $scope.lots.remove(row.lot.tracking_number);
+      $scope.lots.recalculateIndex();
+    };
 
     appstate.register('project', initialise);
-
   }
 ]);
