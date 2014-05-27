@@ -1,13 +1,13 @@
 angular.module('bhima.controllers')
 .controller('app', [
-  '$scope',
   '$location',
   '$translate',
   'appcache',
   'appstate',
   'connect',
   'validate',
-  function($scope, $location, $translate, Appcache, appstate, connect) {
+  function($location, $translate, Appcache, appstate, connect) {
+
     var moduleNamespace = 'application',
       dependencies = {},
       cache = new Appcache(moduleNamespace);
@@ -34,7 +34,7 @@ angular.module('bhima.controllers')
           }
         },
         join : ['period.fiscal_year_id=fiscal_year.id'],
-        where : ["period.period_start<=" + mysqlDate(), "AND", "period.period_stop>=" + mysqlDate()]
+        where : ['period.period_start<=' + mysqlDate(), 'AND', 'period.period_stop>=' + mysqlDate()]
       }
     };
 
@@ -63,7 +63,7 @@ angular.module('bhima.controllers')
         'fiscal_year' : { 'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id'] }
       },
       join : ['period.fiscal_year_id=fiscal_year.id'],
-      where : ["period.period_start<=" + mysqlDate(), "AND", "period.period_stop>=" + mysqlDate()]
+      where : ['period.period_start<=' + mysqlDate(), 'AND', 'period.period_stop>=' + mysqlDate()]
     };
 
     var queryExchange = {
@@ -83,7 +83,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    var queryProject = "/currentProject";
+    var queryProject = '/currentProject';
 
     function settupApplication() {
       var url = $location.url();
@@ -100,7 +100,7 @@ angular.module('bhima.controllers')
 
     function loadCachedLocation() {
       cache.fetch('location').then(function(res) {
-        if(res) $location.path(res.path);
+        if (res) { $location.path(res.path); }
       }, handleError);
     }
 
@@ -109,7 +109,7 @@ angular.module('bhima.controllers')
       //FIXME This could be done in util.js - extra object (in this file) vs. the clarity of doing all set up in one place
       var utilCache = new Appcache('util');
       utilCache.fetch('language').then(function(res) {
-        if(res) $translate.use(res.current);
+        if (res) { $translate.use(res.current); }
       });
     }
 
@@ -160,7 +160,7 @@ angular.module('bhima.controllers')
     }
 
     function setProject(result) {
-      if (result) { appstate.set('project', result.data); }
+      if (result) { appstate.set('project', result); }
       return connect.req(queryCurrency);
     }
 

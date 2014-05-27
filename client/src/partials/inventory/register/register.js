@@ -101,7 +101,7 @@ angular.module('bhima.controllers')
       packaged.enterprise_id = $scope.enterprise.id;
       // if ($scope.inventory.$valid) {
       connect.basicPut('inventory', [packaged])
-      .then(function (result) {
+      .then(function () {
         // $scope.item.uuid = packated.uuid;
         // $scope.inventory.post($scope.item);
         messenger.success('Posted item successfully');
@@ -128,6 +128,20 @@ angular.module('bhima.controllers')
       });
 
     };
+
+    $scope.isSubmitable = function(){
+      if(!$scope.item) return false;
+      if(!$scope.item.type_id) return false;
+      if(!$scope.item.code) return false;
+      if(!$scope.item.text) return false;
+      if(!$scope.item.group_uuid) return false;
+      if(!$scope.item.consumable) return false;
+      if(!$scope.item.unit_id) return false;
+      if(!$scope.item.purchase_price) return false;
+      if(!$scope.item.price) return false;
+      return true
+
+    }
 
     $scope.newInventoryGroup = function () {
       var instance = $modal.open({

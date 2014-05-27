@@ -179,7 +179,7 @@ angular.module('bhima.controllers')
 
       if(defaultCurrency) {
         var verifyCurrency = $scope.cashbox_accounts.get(defaultCurrency.currency_id);
-        if(verifyCurrency) sessionDefault = verifyCurrency;
+        if (verifyCurrency)  { sessionDefault = verifyCurrency; }
       }
 
       // Everything sucks
@@ -198,13 +198,10 @@ angular.module('bhima.controllers')
       $scope.queue = [];
       $scope.patient = patient;
       connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
-      .success(function (data) {
+      .then(function (data) {
         $scope.ledger = data.filter(function (row) {
           return row.balance > 0;
         });
-      })
-      .error(function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };
 

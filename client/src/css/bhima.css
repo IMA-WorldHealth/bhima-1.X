@@ -17,6 +17,7 @@ body {
 
 button {
   text-transform: capitalize;
+  
 }
 
 /* For some reason, minification broke this... */
@@ -214,17 +215,63 @@ header + .content {
 
 /* positioned relative to the entire window */
 /* FIXME : it would be ideal if this were not the case */
-.message-box {
+.message-container {
   right        : 18%;
   position     : absolute;
   margin-right : 0.5%;
-  width        : 25%;
+  width        : 35%;
   z-index      : 1175;
   top          : 0.5%;
 }
 
-.message-box > .alert {
+.message-container > .message {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.message a {
+  font-weight: bold;
+  color : inherit;
+}
+
+.message > p,
+.message > ul {
+  margin-bottom: 0;
+}
+
+.message h4 {
+  margin-top: 0;
+  color: inherit;
+}
+
+.message.message-error {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  color: #b94a48;
+}
+
+.message.message-primary {
+  color            : #ffffff;
+  background-color : #428bca;
+  border-color     : #357ebd;
+}
+
+.message.message-success {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  color: #468847;
+}
+
+.message.message-warning {
+  background-color: #fcf8e3;
+  border-color: #fbeed5;
+  color: #c09853;
+}
+
+.message.message-primary a {
+  color : #fff;
 }
 
 /*haaack*/
@@ -254,7 +301,6 @@ header + .content {
   color            : #ffffff;
   background-color : #428bca;
   border-color     : #357ebd;
-
 }
 
 .selected-success {
@@ -288,6 +334,7 @@ a.danger {
 
 .modal-content.modal-lg {
   width: 60%;
+  border-radius : 0;
 }
 
 .box-error {
@@ -363,13 +410,13 @@ a.danger {
   text-align : center;
 }
 
-.configure-item { 
+.configure-item {
   margin : 0.5em 1.5em;
   display : inline-block;
   cursor : pointer;
 }
 
-.configure-item:hover { 
+.configure-item:hover {
   color            : #468847;
   background-color : #dff0d8;
   border-color     : #d6e9c6;

@@ -2,17 +2,14 @@ angular.module('bhima.controllers')
 .controller('locationCtrl', [
   '$scope',
   'connect',
-  'messenger',
   'store',
-  function ($scope, connect, messenger, Store) {
+  function ($scope, connect, Store) {
 
+    // TODO : This could be achieved with connect.req
     connect.fetch('/location/')
-    .success(function (data) {
+    .then(function (data) {
       $scope.locations = new Store({ identifier : 'uuid' });
       $scope.locations.setData(data);
-    })
-    .error(function (err) {
-      messenger.danger('Failed to load location data.' + err);
     });
 
   }

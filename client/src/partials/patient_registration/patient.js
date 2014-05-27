@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
   'appstate',
   'util',
   'uuid',
-  function($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
+  function ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
 
     var dependencies = {},
         defaultBirthMonth = '06-01';
@@ -79,6 +79,7 @@ angular.module('bhima.controllers')
 
     }
 
+    /*
     function handlePatientImage() {
 
       //FIXME This is super cheeky in angular - create a directive for this
@@ -100,6 +101,7 @@ angular.module('bhima.controllers')
       }
 
     }
+    */
 
     $scope.registerPatient = function registerPatient() {
 
@@ -142,23 +144,13 @@ angular.module('bhima.controllers')
     };
 
 
-    function createVillage(village, sector_uuid, writeTo) {
+    function createVillage(village, sector_uuid) {
 
       return connect.basicPut('village', [{
         uuid : uuid(),
         name : village,
         sector_uuid : sector_uuid
-      }])
-      .success(function(success) {
-        // $scope[writeTo].village = {
-        //   name : name,
-        //   sector_uuid : sector_uuid,
-        //   id : success.insertId
-        // };
-      })
-      .error(function(err) {
-        messenger.danger('An Error occured writing the village');
-      });
+      }]);
     }
 
     function writePatient(patient) {
@@ -175,36 +167,35 @@ angular.module('bhima.controllers')
       packagePatient.reference = 1; // FIXME/TODO : This is a hack
 
       connect.basicPut('debitor', [packageDebtor])
-      .then(function(result) {
+      .then(function () {
         packagePatient.debitor_uuid = debtorId;
         return connect.basicPut('patient', [packagePatient]);
       })
-      .then(function(result) {
-        return connect.fetch('/visit/\"' + patientId + '\"');
+      .then(function () {
+        return connect.fetch('/visit/\'' + patientId + '\'');
       })
-      .then(function (result) {
+      .then(function () {
         return connect.fetch('/user_session');
       })
-      .then(function (result) {
+      .then(function (data) {
         var packageHistory = {
           uuid : uuid(),
           debitor_uuid : packagePatient.debitor_uuid,
           debitor_group_uuid : $scope.debtor.debtor_group.uuid,
-          user_id : result.data.id // FIXME: can this be done on the server?
+          user_id : data.id // FIXME: can this be done on the server?
         };
         return connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]);
       })
-      .then(function (result) {
+      .then(function () {
         $location.path('invoice/patient/' + packagePatient.uuid);
-      })
-      .catch(function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
       });
     }
 
     //Utility methods
     $scope.$watch('sessionProperties.yob', function(nval) {
-      if(nval && nval.length===4) $scope.patient.dob = nval + '-' + defaultBirthMonth;
+      if (nval && nval.length === 4) {
+        $scope.patient.dob = nval + '-' + defaultBirthMonth;
+      }
     });
 
     $scope.enableFullDate = function enableFullDate() {

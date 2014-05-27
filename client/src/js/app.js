@@ -47,7 +47,7 @@
       templateUrl: 'partials/journal_voucher/journal_voucher.html'
     })
     .when('/inventory', {
-      controller: 'inventoryController',
+      controller: 'inventory',
       templateUrl: '/partials/inventory/inventory.html'
     })
     .when('/inventory/view', {
@@ -57,6 +57,22 @@
     .when('/inventory/register', {
       controller: 'inventoryRegister',
       templateUrl: '/partials/inventory/register/register.html'
+    })
+    .when('/inventory/update_item', {
+      controller : 'inventory.update',
+      templateUrl : 'partials/inventory/update_item/update_item.html'
+    })
+    .when('/inventory/groups', {
+      controller : 'inventory.groups',
+      templateUrl : 'partials/inventory/groups/groups.html'
+    })
+    .when('/inventory/types',  {
+      controller : 'inventory.types',
+      templateUrl : 'partials/inventory/types/types.html'
+    })
+    .when('/inventory/manifest', {
+      controller : 'inventory.manifest',
+      templateUrl : 'partials/inventory/manifest/manifest.html'
     })
     .when('/patient_records/:patientID?', {
       controller: 'patientRecords',
@@ -253,10 +269,6 @@
       controller : 'expense',
       templateUrl : 'partials/pcash/expense/expense.html'
     })
-    .when('/update_stock', {
-      controller : 'updateStock',
-      templateUrl : 'partials/update_stock/update_stock.html'
-    })
     .when('/primary_cash/transfert/:cashbox_id', {
       controller : 'transfert',
       templateUrl : 'partials/primary_cash/incomes/transfert/transfert.html'
@@ -346,6 +358,6 @@
     $translateProvider.preferredLanguage('fr');
   }
 
-  bhima.config(bhimaconfig);
-  bhima.config(translateConfig);
+  bhima.config(['$routeProvider', bhimaconfig]);
+  bhima.config(['$translateProvider', translateConfig]);
 })(angular);

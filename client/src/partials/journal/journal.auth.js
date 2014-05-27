@@ -4,8 +4,7 @@ angular.module('bhima.controllers')
   '$modalInstance',
   'connect',
   'uuid',
-  'messenger',
-  function ($scope, $modalInstance, connect, uuid, messenger) {
+  function ($scope, $modalInstance, connect, uuid) {
     var session = $scope.session = {};
 
     session.timestamp = new Date();
@@ -30,7 +29,7 @@ angular.module('bhima.controllers')
     $scope.submit = function () {
       var pin = session.pin << 5;
       connect.fetch('/editsession/authenticate/' + pin)
-      .success(function (data) {
+      .then(function (data) {
         if (!data.authenticated) {
           session.$error = true;
           session.attempts -= 1;
@@ -38,9 +37,6 @@ angular.module('bhima.controllers')
           session.authenticated = true;
           $modalInstance.close(session);
         }
-      })
-      .catch(function (error) {
-        messenger.danger('Session authentication failed because of : ' + JSON.stringify(error));
       });
     };
 
