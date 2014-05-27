@@ -67,7 +67,6 @@ INSERT INTO `unit` VALUES
 (54,'Chart of Accounts','TREE.CHART_OF_ACCOUNTS','',10,0,'/partials/reports/chart_of_accounts/','/reports/chart_of_accounts/'),
 (55,'Debitor Aging','TREE.DEBTOR_AGING','',10,0,'/partials/reports/debitor_aging/','/reports/debitor_aging/'),
 (57,'Income Expensive Balance','TREE.INCOME_EXPENSE','',10,0,'/partials/reports/income_expensive/','/reports/income_expensive/'),
-(58,'Credit Note','TREE.CREDIT_NOTE','',5,0,'/partials/credit_note/','/credit_note/'),
 (60,'Patient Group Assignment','TREE.PATIENT_GRP_ASSIGNMENT','',21,0,'/partials/patient_group_assignment/','/patient_group_assignment/'),
 (61,'Patient Group','TREE.PATIENT_GRP','',1,0,'/partials/patient_group/','/patient_group/'),
 (62,'Accounting','TREE.ACCOUNTING','',0,1,'/partials/accounting/index.html','/accounting/'),

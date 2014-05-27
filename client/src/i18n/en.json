@@ -144,16 +144,13 @@
     "AFTER"            : "After",
     "SHOW"             : "Show",
     "HIDE"             : "Hide",
-    "BTN_TEXT"         : "Post to General Ledger",
+    "POST_TO_LEDGER"   : "Post to General Ledger",
     "TRANSACTIONS"     : "Transactions",
     "ERRORS"           : "Errors",
     "ERROR"            : "Error",
     "DESCRIPTION"      : "Description",
     "AFFECTED_ROWS"    : "Affected Rows",
-    "SUMMARY"          : "Summary",
-    "SIGNATURES"       : "Signatures",
-    "CHIEF_ACCOUNTANT" : "Chief Accountant",
-    "FINANCE_OFFICER"  : "Finance Officer"
+    "SUMMARY"          : "Summary"
   },
 
   "ERROR"                 : {
@@ -169,6 +166,7 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
+    "SIGNATURES"        : "Signatures",
     "BACK"              : "Back",
     "NAVIGATION"        : "Navigation",
     "DATE"              : "Date",
@@ -565,7 +563,6 @@
     "DEBTOR_AGING"              : "Debitor Aging",
     "ACCOUNT_STATEMENT"         : "Account Statement",
     "INCOME_EXPENSE"            : "Income/Expense Report",
-    "CREDIT_NOTE"               : "Credit Note",
     "PATIENT_GRP_ASSIGNMENT"    : "Patient Group Assignment",
     "PATIENT_GRP"               : "Patient Groups",
     "ACCOUNTING"                : "Accounting",
@@ -588,7 +585,8 @@
     "EMPLOYEE"                  : "Employee",
     "DEPOT"                     : "Depot",
     "STOCK_MANAGEMENT"          : "Stock Management",
-    "INVENTORY_MANAGEMENT"      : "Inventory Management"
+    "INVENTORY_MANAGEMENT"      : "Inventory Management",
+    "STOCK_DISTRIBUTION"        : "Stock Distribution"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -1138,7 +1136,8 @@
       "CONFIGURE_WAREHOUSE" : "Select Depot",
       "WAREHOUSE_INFO_1" : "Configure the depot to be used for stock management.",
       "WAREHOUSE_INFO_2" : "All Stock operations (entry, exit and reports) will be assigned to this depot.",
-      "WAREHOUSE_INFO_3" : "This setting can be changed at a later date."
+      "WAREHOUSE_INFO_3" : "This setting can be changed at a later date.",
+      "REPORTS" : "Stock Reports"
     },
     "ENTRY" : {
       "KEY"                 : "Stock Entry",
