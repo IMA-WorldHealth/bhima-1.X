@@ -10,32 +10,27 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $location, $routeParams, validate, appstate, connect, messenger, uuid) {
    
-    // TODO Warnings, only one depot, zero depots?
-    // TODO Improve data verification
-    // TODO Receipts
-    
+    // TODO Generic requirements for module to load/ warn
     var dependencies = {};
     var session = $scope.session = {
       configured : false,
       invalid : false,
+      warn : false,
       doc : {},
       rows : [],
     };
     var depotMap = $scope.depotMap = {
       from : {
         model : {},
-        dependency : 'to'
+        dependency : 'to',
+        action : fetchLots
       },
       to : {
         model : {},
-        dependency : 'from'
+        dependency : 'from',
+        action : null
       }
     };
-  
-    // This doesn't match the route, it should never happen
-    /*if (!angular.isDefined($routeParams.depotId)) {
-       messenger.danger('ERR_NO_DEPOT');
-    }*/
 
     dependencies.depots = {
       query : {
@@ -47,35 +42,13 @@ angular.module('bhima.controllers')
         }
       }
     };
-
-    dependencies.movements = {
-      query : {
-        tables : {
-          'stock_movement' : {
-            columns : ['document_id', 'tracking_number', 'direction', 'date', 'quantity', 'depot_uuid', 'destination']
-          }
-        }
-      }
-    };
-
-    dependencies.stock = {
-      query : {
-        tables : {
-          'stock' : {
-            columns : ['tracking_number']
-          }
-        },
-        where : ['stock.quantity>0']
-      }
-    };
-
-
+    
     function initialise(project) {
       $scope.project = project;
       dependencies.depots.query.where =
         ['depot.enterprise_id=' + project.enterprise_id];
 
-      validate.process(dependencies, ['depots', 'stock'])
+      validate.process(dependencies, ['depots'])
       .then(startup)
       .catch(error);
     }
@@ -84,12 +57,41 @@ angular.module('bhima.controllers')
       var reference = depotMap[target];
       var source = reference.model;
       var dependency = depotMap[reference.dependency].model;
+
+      // Update current target
+      session[target] = source.get(newDepotId);
       
-      // session[target] = source.get(depotId);
-      
+      // Remove value from dependency
       dependency.remove(newDepotId);
-      if(oldDepot) dependency.post(oldDepot);
+      if (oldDepot) dependency.post(oldDepot);
       dependency.recalculateIndex();
+    
+      // Call targets action (this could be conditional)
+      if (reference.action) reference.action(newDepotId);
+    }
+
+    function fetchLots(depotId) {
+      dependencies.lots = {
+        identifier : 'tracking_number',
+        query : '/inventory/depot/' + depotId + '/lots'
+      };
+
+      // Reset rows TODO
+      resetRows();
+
+      console.log('fetch lots', dependencies.lots); 
+      validate.process(dependencies, ['lots']).then(validateLots);
+    }
+
+    function validateLots(model) {
+      $scope.lots = model.lots;
+
+      console.log('validateLots', model);
+    }
+
+    function resetRows() { 
+      session.rows = [];
+      $scope.addRow();
     }
     
     Object.keys(depotMap).forEach(function (key) {
@@ -104,12 +106,13 @@ angular.module('bhima.controllers')
 
     function startup (models) {
       var validDepo = models.depots.get($routeParams.depotId);
+      var warnDepo = models.depots.data.length===1;
       if (!validDepo) return session.invalid = true;
-  
+      if (warnDepo) return session.warn = true;  
 
       session.configured = true;
       angular.extend($scope, models);
-      
+
       session.doc.document_id = uuid();
       session.doc.date = new Date();
 
@@ -118,21 +121,27 @@ angular.module('bhima.controllers')
       depotMap.to.model = angular.copy($scope.depots);
       
       // Assign default location 
-      session.from = depotMap.from.model.get(session.depot.uuid);
+      selectDepot('from', session.depot.uuid);
       
-      $scope.addRow();
+      // resetRows();
     }
 
     function updateDocumentDepo() {
-      session.doc.depot_exit = session.depotFrom.uuid;
-      session.doc.depot_entry = session.depotTo.uuid;
+      session.doc.depot_exit = session.from.uuid;
+      session.doc.depot_entry = session.to.uuid;
     }
     
     $scope.addRow = function addRow () {
+      
+      // Ensure there are options left to select
+      if ($scope.lots && !$scope.lots.data.length) {
+        return messenger.info('There are no more lots available for movement in the current depot.'); 
+      }
       session.rows.push({quantity : 0});
     };
 
-    $scope.removeRow = function (idx) {
+    $scope.removeRow = function (idx, row) {
+      if (row.lot) $scope.lots.post(row.lot);
       session.rows.splice(idx, 1);
     };
 
@@ -140,44 +149,81 @@ angular.module('bhima.controllers')
       var rows = [];
 
       updateDocumentDepo();
+      
+      console.log('submission', session.doc);
       session.rows.forEach(function (row) {
-        var item = angular.extend(row, session.doc);
-
-        rows.push(item);
+        var movement = angular.copy(session.doc);
+        movement.uuid = uuid();
+        movement.tracking_number = row.lot.tracking_number;
+        movement.quantity = row.quantity;
+        
+        rows.push(movement);
       });
       
-      connect.basicPut('stock_movement', rows)
-      .then(function (res) {
+      connect.basicPut('movement', rows)
+      .then(function () {
         messenger.success('STOCK.MOVEMENT.SUCCESS');
+        $location.path('invoice/movement/' + session.doc.document_id);
       })
       .catch(function (err) {
         messenger.error(err);
       });
     };
+  
 
-    
-    $scope.$watch('session', function () {
+    // FIXME literally called 1,000,000 times/s 
+    // configuration schema should be parsed and tested
+    function verifyRows() {
+      var validRows = true;
+
       if (!session.rows) {
-        session.valid = false;
-        return;
+        return session.valid = false;
+      }
+      
+      // Validate row data, need to visit every row, checking for multiple errors
+      session.rows.forEach(function (row) {
+        var selected = angular.isDefined(row.lot);
+        if(!selected) return validRows = false;
+  
+        console.log('validate quantity', row.quantity, row.lot.quantity);
+        // validate quantity 
+        
+        // Error status
+        if (row.quantity > row.lot.quantity) {
+          row.error = {message : 'Invalid quantity'};
+          row.validQuantity = false;
+          validRows = false;
+
+        // Warning status
+        } else if (row.quantity <= 0) {
+          row.validQuantity = false;
+          validRows = false;
+        } else {
+          row.error = null;
+          row.validQuantity = true;
+        }
+
+        if (isNaN(Number(row.quantity))) {
+          row.validQuantity = false;
+          validRows = false;
+        }
+      });
+           
+      session.valid = validRows;
+    }
+
+    $scope.$watch('session', verifyRows, true);
+   
+    $scope.stockSelected = function (row) {
+      if (row.oval) {
+        $scope.lots.push(row.lot);
       }
 
-      var validRows = session.rows.every(function (item) {
-        return angular.isDefined(item.tracking_number) &&
-          angular.isDefined(item.quantity) &&
-          item.quantity > 0 &&
-          angular.isDefined(item.destination);
-      });
-
-      session.valid = validRows &&
-        angular.isDefined(session.doc.document_id) &&
-        angular.isDefined(session.doc.date) &&
-        angular.isDefined(session.doc.depot_uuid) &&
-        angular.isDefined(session.doc.direction);
-
-    }, true);
+      row.oval = row.lot;
+      $scope.lots.remove(row.lot.tracking_number);
+      $scope.lots.recalculateIndex();
+    };
 
     appstate.register('project', initialise);
-
   }
 ]);
