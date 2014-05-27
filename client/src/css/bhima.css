@@ -406,6 +406,10 @@ a.danger {
   color            : #468847;
 }
 
+.warn { 
+  color : #c09853;
+}
+
 .configure { 
   text-align : center;
 }
