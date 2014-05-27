@@ -382,7 +382,8 @@
     "DEPOT"                     : "Depot",
     "STOCK_DISTRIBUTION"        : "Distribution Stock",
     "EMPLOYEE"                  : "Gestion Employees",
-    "SERVICE"                   : "Gestion des Services"
+    "SERVICE"                   : "Gestion des Services",
+    "EXPIRING"                  : "Rapport Expiration Stocks"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -644,8 +645,8 @@
   "INVENTORY_REGISTER" : {
     "TITLE"            : "Enregistrement des Stocks",
     "VIEW"             : "Voire Stocks",
-    "ADD_TYPE"         : "Ajouter Type Unitaire",
-    "ADD_GROUP"        : "Ajourter Groupe Inventaire",
+    "ADD_TYPE"         : "Ajouter Type Unite",
+    "ADD_GROUP"        : "Ajourter Groupe Stock",
     "GENERAL"          : "General",
     "CODE"             : "Code",
     "DESCRIPTION"      : "Description",
@@ -965,7 +966,8 @@
     "SEARCH_TEXT"    : "Rechercher par code ou description",
     "UPDATE_SUCCESS" : "Les stocks sont mettre a jour",
     "UPDATE_FAILURE" : "La requette ne passe pas",
-    "INVALID_PRICE"  : "Le Prix est invalide"
+    "INVALID_PRICE"  : "Le Prix est invalide",
+    "EMPTY_HISTORY"  : "L'Historique n'est pas dispinible !"
   },
 
   "SWAPDEBITOR"            : {
@@ -1167,7 +1169,8 @@
     "TITLE" : "Gestionn des Depot",
     "NO_DEPOTS" : "Aucun depot trouve",
     "ADD" : "Ajouter",
-    "ALERT" : "Ce module vous permet de gerer vos depot"
+    "ALERT" : "Ce module vous permet de gerer vos depot",
+    "NEW"   : "Nouveau depot"
   },
 
   "EMPLOYEE" : {
