@@ -44,7 +44,7 @@ INSERT INTO `unit` VALUES
 (8,'Budgeting','TREE.BUDGETING','Plan your next move',0,10,'/partials/budget/index.html','/budget'),
 (9,'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',5,0,'/partials/journal/','/posting_journal'),
 (10,'Reports','TREE.REPORTS','Do stuff and tell people about it',0,1,'/partials/reports/summary/','reports/summary'),
-(11,'Inventory','TREE.INVENTORY','The Inventory Super-Category',0,1,'/partials/inventory/index.html','/inventory'),
+(11,'Inventory','TREE.INVENTORY','The Inventory Super-Category',0,1,'/partials/inventory/','/inv'),
 (21,'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,1,'/partials/hospital/index.html','/hospital'),
 (30,'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',1,0,'/partials/fiscal/','/fiscal'),
 (31,'Patient Registration','TREE.PATIENT_REG','Register patients',21,0,'/partials/patient_registration/','/patient'),
@@ -54,7 +54,6 @@ INSERT INTO `unit` VALUES
 (36,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
 (37,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/'),
 (38,'Cash Box','TREE.CASH','Pay invoices',5,0,'/partials/cash/','/cash'),
-(39,'Register Stock','TREE.REGISTER_STOCK','',11,0,'/partials/inventory/register/','/inventory/register'),
 (40,'Register Supplier','TREE.REGISTER_SUPPLIER','',11,0,'/partials/creditor/','/creditor'),
 (41,'Purchase Order Records','TREE.PURCHASE_ORDER_RECORDS','',5,0,'/partials/records/purchase_order_records','/purchase_records/'),
 (43,'Finance','TREE.REPORT_FINANCE','',10,0,'/partials/reports/finance/','/reports/finance'),
@@ -63,7 +62,6 @@ INSERT INTO `unit` VALUES
 (47,'Transaction Report','TREE.REPORT_TRANSACTION','',10,0,'/partials/reports/transaction_report/','/reports/transaction_report'),
 (48,'Creditor Groups','TREE.CREDITOR_GRP','',1,0,'/partials/creditor/group/','/creditors/creditor_group'),
 (49,'Debitor Groups','TREE.DEBTOR_GRP','',1,0,'/partials/debitor/','/debitor/debitor_group'),
-(50,'Inventory View','TREE.INVENTORY_VIEW','',11,0,'/partials/inventory/view/','/inventory/view'),
 (51,'General Ledger','TREE.GENERAL_LEDGER','',10,0,'/partials/reports/ledger/','/reports/ledger/general_ledger'),
 (52,'Location Manager','TREE.LOCATION','',1,0,'/partials/location/location.html','/location'),
 (54,'Chart of Accounts','TREE.CHART_OF_ACCOUNTS','',10,0,'/partials/reports/chart_of_accounts/','/reports/chart_of_accounts/'),
@@ -78,7 +76,6 @@ INSERT INTO `unit` VALUES
 (65,'Currency','TREE.CURRENCY','',1,0,'/partials/currency/','/currency'),
 (66,'Patient Renewal','TREE.RENEWAL','',21,0,'/partials/patient_renewal/','/renewal'),
 (67,'Patient Registrations','TREE.PATIENT_REGISTRATION','',10,0,'/partials/reports/patient_registrations/','/reports/patient_registrations'),
-(68,'Update Stock','TREE.UPDATE_STOCK','',11,0,'/partials/update_stock/','/update_stock/'),
 (69,'Change Patient Group','TREE.SWAP_DEBITOR','',21,0,'/partials/swap_debitor/','/swap_debitor/'),
 (70,'Cash Payments','TREE.CASH_PAYMENTS','',10,0,'/partials/reports/cash_payments/','/reports/cash_payments'),
 (71,'Report All Transactions','TREE.ALL_TRANSACTIONS','',10,0,'/partials/reports/all_transactions/','/reports/all_transactions'),
@@ -96,14 +93,15 @@ INSERT INTO `unit` VALUES
 (87,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
 (88,'Account Statement', 'TREE.ACCOUNT_STATEMENT', '', 10, 0, 'partials/reports/account_statement', '/reports/account_statement'),
 (89,'Service Management', 'TREE.SERVICE', '', 1, 0, 'partials/service/', '/service'),
-(90, 'Expiring Stock Report', 'TREE.EXPIRING', '', 10, 0, '/partials/reports/expiring_stock', '/reports/expiring');
+(90, 'Expiring Stock Report', 'TREE.EXPIRING', '', 10, 0, '/partials/reports/expiring_stock', '/reports/expiring'),
+(91,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
-(1,'admin','1','System','Administrato','kpkdeveloper@gmail.com',1),
-(2,'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
-(3,'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
-(4,'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
+(1, 'admin','1','System','Administrato','kpkdeveloper@gmail.com',1),
+(2, 'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
+(3, 'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
+(4, 'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
 (5, 'ima', '1', 'ima', 'ima', 'ima@ima.com', 0);
 
 INSERT INTO `permission` VALUES

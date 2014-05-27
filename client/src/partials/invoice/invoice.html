@@ -96,6 +96,104 @@
           </div>
         </div> <!-- End Patient Invoice template -->
       </div>
+  
+      <div ng-switch-when="movement">
+        <!-- Patient Invoice template -->
+        <div class="row customer-details">
+          <div class="col-xs-12">
+
+            <small style="float: right; color: grey; font-size: 8px">{{ invoiceId }}</small>
+            <h4 class="invoice-header">{{ 'INVOICE.STOCK_MOVEMENT' | translate }}</h4>
+          </div>
+        </div>
+        
+        <div class="row customer-details">
+          <div class="col-xs-6">
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th colspan="2">Origin Depot</th>
+                </tr>
+              </thead>
+              <tbody ng-if="depotEntry" class="items">
+                <tr>
+                  <td>Name</td><td>{{depotEntry.text}}</td>
+                </tr>
+
+                <tr>
+                  <td>Reference</td><td>{{depotEntry.reference}}</td>
+                </tr>
+
+                <tr>
+                  <td>Transfer Date</td><td>{{movement.data[0].date | date}}</td>
+                </tr>
+
+              </tbody>
+              <tbody ng-if="depotEntry===undefined" class="items">
+                <tr>
+                  <td colspan="2">[Initial stock entry]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-xs-6">
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th colspan="2">Destination Depot</th>
+                </tr>
+              </thead>
+              <tbody ng-if="depotEntry" class="items">
+                <tr>
+                  <td>Name</td><td>{{depotExit.text}}</td>
+                </tr>
+
+                <tr>
+                  <td>Reference</td><td>{{depotExit.reference}}</td>
+                </tr>
+                <tr>
+                  <td>Transfer Date</td><td>{{movement.data[0].date | date}}</td>
+                </tr>
+                
+              </tbody>
+              <tbody ng-if="depotEntry===undefined" class="items">
+                <tr>
+                  <td colspan="2">[...]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Lots -->
+        <div class="row" ng-repeat="item in movement.data" style="margin-bottom: 10px">
+          <div class="col-xs-12">
+            
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th colspan="2">Lot {{item.lot_number}}</th>
+                </tr>
+              </thead>
+              <tbody class="items">
+                <tr>
+                  <td>Item</td><td>{{item.text}} <i>({{item.code}})</i></td>
+                </tr>
+                <tr>
+                  <td>Expiration Date</td><td>{{item.expiration_date | date}}</td>
+                </tr>
+                <tr>
+                  <td>Quantity Transfered</td><td><b>{{item.quantity}}</b></td>
+                </tr>
+                <tr>
+                  <td>Tracking Number</td><td><small>{{item.tracking_number}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div> <!-- End Patient Invoice template -->
+      </div>
 
       <div ng-switch-when="purchase">
         <!-- Patient Invoice template -->

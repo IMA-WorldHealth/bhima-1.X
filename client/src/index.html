@@ -33,17 +33,36 @@
     </div>
   </div>
 
+  <!-- required for printing to work properly... -->
   <span class="visible-print">
     <span class="invisible">.</span>
   </span>
 
-  <!-- required for printing to work properly... -->
   <div class="hidden-print">
-    <div ng-controller="message" class="message-box" id="msg-box">
-      <alert id="message" ng-repeat="alert in messages" class="square bhima-msg" name="{{ alert.type }}" type="alert.type" close="close($index)" ng-cloak>
-        <h5><strong>{{ alert.title }}</strong></h5>
-        <p>{{ alert.msg }}</p>
-      </alert>
+    <div ng-controller="message" class="message-container" id="msg-box">
+
+      <div class="message message-{{message.type}}" ng-repeat="message in messages" ng-cloak>
+        <div ng-if="!message.error">
+          <h4>[{{ message.namespace }}] {{ message.title }} <a class="action pull-right" ng-if="message.closable" ng-click="close(message.id)"><span class="glyphicon glyphicon-remove-circle"></span></a></h4>
+          <div>
+            {{ message.description }}
+          </div>
+        </div>
+
+        <div ng-if="message.error">
+          <h4>[{{ message.namespace }}] {{ message.title }} <a class="action pull-right" ng-if="message.closable" ng-click="close(message.id)"><span class="error glyphicon glyphicon-remove-circle"></span></a></h4>
+          <div>
+            <!-- TODO : This should be translated -->
+            <b>Status Code</b>
+            <span>{{ message.status }} - "{{ message.statusText }}"</span>
+          </div>
+          <div>
+            <b>Description</b>
+            <div>{{ message.description }}</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 

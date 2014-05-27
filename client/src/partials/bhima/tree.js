@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
   'appcache',
   'connect',
   function($scope, $location, AppCache, connect) {
-    
+
     // TODO:
     //   Theoretically, the users and permissions depend on an
     //   enterprise, so do we need it or not?
@@ -15,15 +15,10 @@ angular.module('bhima.controllers')
     var originLocation, collapsedModel = [];
 
     $scope.treeData = [];
-    
+
     loadTreeOptions();
 
     function loadTreeOptions() {
-
-      var t = 5;
-
-      t = 5 & 1;
-
       cache.fetchAll()
       .then(function(res) {
         collapsedModel = res;
@@ -48,16 +43,16 @@ angular.module('bhima.controllers')
       });
     }
 
-    $scope.$watch('navtree.currentNode', function( newObj, oldObj ) {
+    $scope.$watch('navtree.currentNode', function () {
       if ($scope.navtree && angular.isObject($scope.navtree.currentNode)) {
         var path = $scope.navtree.currentNode.path;
-        if (path) $location.path(path);
+        if (path) { $location.path(path); }
       }
     }, true);
-  
-    $scope.$on('$locationChangeStart', function(e, n_url) {
+
+    $scope.$on('$locationChangeStart', function (e, n_url) {
       var target = n_url.split('/#')[1];
-    
+
       originLocation = target;
       if(target) {
         applicationCache.put('location', {path: target});
@@ -68,19 +63,20 @@ angular.module('bhima.controllers')
     function selectTreeNode(list, locationPath) {
       list.some(function (element) {
         var sanitiseElement = element.path.replace(/\//g, '');
-        var sanitiseLocation = locationPath ? locationPath.replace(/\//g, '') : "";
-  
-        if(sanitiseElement === sanitiseLocation) {
+        var sanitiseLocation = locationPath ? locationPath.replace(/\//g, '') : '';
+
+        if (sanitiseElement === sanitiseLocation) {
           $scope.navtree.selectNodeLabel(element);
         }
-        if(element.has_children) selectTreeNode(element.children, locationPath);
+        if (element.has_children) { selectTreeNode(element.children, locationPath); }
       });
     }
 
     (function init () {
       connect.fetch('/tree')
-      .then(function(res) {
-        $scope.treeData = res.data;
+      .then(function (data) {
+        $scope.treeData = data; // FIX: new connect.fetch() api
+        // $scope.treeData = res.data;
         loadTreeOptions();
       });
     })();
