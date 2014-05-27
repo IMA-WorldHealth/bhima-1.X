@@ -22,10 +22,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="lot in session.lots | orderBy:'code'">
-            <td>{{ lot.tracking_number }}</td>
-            <td>{{ lot.lot_number }}</td>
-            <td>{{ lot.code }}</td>
+          <tr ng-repeat="movement in receipt.data | orderBy:'code'">
+            <td>{{ movement.tracking_number }}</td>
+            <td>{{ movement.lot_number }}</td>
+            <td>{{ movement.code }}</td>
             <td ng-bind-html="lot.purchase_price | intlcurrency:project.currency_id"></td>
             <td>{{ lot.date | date }}</td>
             <td>{{ lot.expiration_date | date }}</td>
