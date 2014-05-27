@@ -34,4 +34,6 @@ angular.module('bhima.services')
     return date1 === date2;
   };
 
+  this.sqlDate = this.convertToMysqlDate;
+
 });

@@ -76,17 +76,13 @@ angular.module('bhima.controllers')
       voucher.rows = [new JournalRow(), new JournalRow()];
 
       connect.fetch('/max_trans/' + $scope.project.id)
-      .success(function (ids) {
+      .then(function (ids) {
         var id = ids.pop();
         voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
-      })
-      .catch(function (err) {
-        messenger.danger('An error occured : ' + JSON.stringify(err));
-        //console.error('An error occured : ' + JSON.stringify(err));
       });
     }
 
-    $scope.submit = function submit () {
+    $scope.submit = function submit() {
       // local variables to speed up calculation
       var prid, peid, fyid, description, transDate, invid, userId;
       prid = $scope.project.id;
@@ -96,7 +92,7 @@ angular.module('bhima.controllers')
 
       // serialize date
       connect.fetch('/period/' + new Date(voucher.trans_date).valueOf())
-      .success(function (periods) {
+      .then(function (periods) {
         if (!periods.length) { throw new Error('No periods for that trans_id'); }
         var period = periods.pop();
         peid = period.id;
@@ -104,7 +100,7 @@ angular.module('bhima.controllers')
 
         return connect.fetch('/user_session');
       })
-      .success(function (user) {
+      .then(function () {
         var records = [];
         userId = 1; // FIXME
         voucher.rows.forEach(function (row) {
@@ -148,10 +144,6 @@ angular.module('bhima.controllers')
       .then(function () {
         messenger.success('Data posted successfully');
         flush();
-      })
-      .catch(function (err) {
-        messenger.danger('An error occured : ' + JSON.stringify(err));
-        //console.error('An Error Occured.' + JSON.stringify(err));
       });
     };
 
@@ -161,13 +153,9 @@ angular.module('bhima.controllers')
       voucher.inv_po_id = null;
 
       connect.fetch('/max_trans/' + $scope.project.id)
-      .success(function (ids) {
+      .then(function (ids) {
         var id = ids.pop();
         voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
-      })
-      .catch(function (err) {
-        messenger.danger('An error occured : ' + JSON.stringify(err));
-        //console.error('An error occurred', JSON.stringify(err));
       });
     }
 

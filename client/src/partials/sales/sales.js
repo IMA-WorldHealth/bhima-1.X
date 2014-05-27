@@ -110,9 +110,9 @@ angular.module('bhima.controllers')
 
       getCaution(selectedDebtor)
       .then(function (caution){
-        if(caution.data.length > 0){
+        if(caution.length > 0){
           var somdebit = 0, somcredit = 0;
-          caution.data.forEach(function(item){
+          caution.forEach(function(item){
             somdebit = precision.add(precision.scale(item.debit),somdebit);
             somcredit = precision.add(precision.scale(item.credit),somcredit);
           });
@@ -210,7 +210,7 @@ angular.module('bhima.controllers')
     function submitInvoice() {
       var invoiceRequest = packageInvoiceRequest();
 
-      if (!validSaleProperties(invoiceRequest)) return;
+      if (!validSaleProperties(invoiceRequest)) { return; }
       $http.post('sale/', invoiceRequest).then(handleSaleResponse);
     }
 

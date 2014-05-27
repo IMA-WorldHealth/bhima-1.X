@@ -84,7 +84,7 @@ angular.module('bhima.controllers')
       });
 
       columns = [
-        {id: "COLUMNS.CODE"        , name: "Code"               , field: "code"        , sortable: true} ,
+        {id: "COLUMNS.CODE"        , name: "Code"               , field: "code"        , sortable: true  , resizable: true} ,
         {id: "COLUMNS.TEXT"        , name: "Text"               , field: "text"        , sortable: true} ,
         {id: "COLUMNS.STOCK"       , name: "Stock Count"        , field: "stock"       , sortable: true} ,
         {id: "COLUMNS.GROUP"       , name: "Inv. Group"         , field: "name"        , sortable: true} ,
@@ -98,14 +98,16 @@ angular.module('bhima.controllers')
 
       // FIXME : this for some reason doesn't always work.
       columns.forEach(function (col) {
-        col.name = $translate(col.id);
+         $translate(col.id).then(function(value){
+          col.name = value;
+        })
       });
 
-      $scope.$on('$translateChangeSuccess', function () {
-        columns.forEach(function (col) {
-          col.name = $translate(col.id);
-        });
-      });
+      // $scope.$on('$translateChangeSuccess', function () {
+      //   columns.forEach(function (col) {
+      //     col.name = $translate(col.id);
+      //   });
+      // });
 
       options = {
         enableCellNavigation : true,

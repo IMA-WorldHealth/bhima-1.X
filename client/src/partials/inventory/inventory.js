@@ -1,16 +1,45 @@
 angular.module('bhima.controllers')
-.controller('inventoryController', [
+.controller('inventory', [
   '$scope',
-  function($scope) {
- 
-    $scope.fields = {
-      'stock'  : false,
-      'admin'  : false,
-      'report' : false
-    };
+  '$location',
+  function ($scope, $location) {
+    var config;
 
-    $scope.slide = function (tag) {
-      $scope.fields[tag] = !$scope.fields[tag];
+    config = $scope.config = [
+      {
+        ico : 'glyphicon-list-alt',
+        key : 'INVENTORY.MAIN.ADD_ITEM',
+        path : 'register'
+      },
+      {
+        ico : 'glyphicon-list-alt',
+        key : 'INVENTORY.MAIN.UPDATE_ITEM',
+        path : 'update_item'
+      },
+      {
+        ico : 'glyphicon-list-alt',
+        key : 'INVENTORY.MAIN.CONFIG_GROUPS',
+        path : 'groups'
+      },
+      {
+        ico : 'glyphicon-list-alt',
+        key : 'INVENTORY.MAIN.CONFIG_TYPES',
+        path : 'types'
+      },
+      {
+        ico : 'glyphicon-list-alt',
+        key : 'INVENTORY.MAIN.VIEW',
+        path : 'view'
+      },
+      {
+        ico : 'glyphicon-print',
+        key : 'INVENTORY.MAIN.PRINT_MANIFEST',
+        path : 'manifest'
+      },
+    ];
+
+    $scope.loadPath = function loadPath(item) {
+      $location.path($location.path() + '/' + item.path);
     };
   }
 ]);

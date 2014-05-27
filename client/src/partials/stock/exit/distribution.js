@@ -1,7 +1,6 @@
 angular.module('bhima.controllers')
 .controller('stock.distribution', [
   '$scope',
-  '$translate',
   'validate',
   'connect',
   'messenger',
@@ -9,10 +8,7 @@ angular.module('bhima.controllers')
   'util',
   'uuid',
   '$q',
-  'precision',
-  '$http',
-  '$location',
-  function ($scope, $translate, validate, connect, messenger, appstate, util, uuid, $q, precision, $http, $location) {
+  function ($scope, validate, connect, messenger, appstate, util, uuid, $q) {
     var session = $scope.session = {};
     var dependencies = {};
 
@@ -66,18 +62,15 @@ angular.module('bhima.controllers')
 
     function initialiseDistributionDetails (selectedDebitor){
       if(!selectedDebitor) return;
-      distribution.noEmpty = true; $scope.ready = "ready";
+      distribution.noEmpty = true; $scope.ready = 'ready';
       distribution.selectedDebitor = selectedDebitor;
       connect.fetch('/ledgers/distributableSale/' + selectedDebitor.debitor_uuid)
-      .success(function (data) {
+      .then(function (data) {
         data.forEach(function (row) {
           row.reference = getAbbr(row.project_id)+row.reference;
           row.etat = getState(row);
         });
         distribution.sales = data;
-      })
-      .error(function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
       });
       window.distribution = distribution;
     }
@@ -91,7 +84,7 @@ angular.module('bhima.controllers')
     function getState (sale){
       return ($scope.model.debitor_group.data.filter(function (item) {
         return item.account_id == sale.account_id;
-      })[0].is_convention == 1)? "CONVENTION" : (sale.balance>0)? "NON PAYE" : "PAYE";
+      })[0].is_convention == 1)? 'CONVENTION' : (sale.balance>0)? 'NON PAYE' : 'PAYE';
     }
 
     function init (model){
@@ -234,25 +227,25 @@ angular.module('bhima.controllers')
     function remove (idx) {
       $scope.distribution.sales.push($scope.selectedSale);
       $scope.selectedSale= null;
-      $scope.selected = "null";
+      $scope.selected = 'null';
     }
 
     function initialiseProcess (model) {
-      $scope.selected = "selected";
+      $scope.selected = 'selected';
       //var items = ;
       var filtered;
       filtered = model.sale_items.data.filter(function (item) {
-        return item.code.substring(0,1) !== "8";
+        return item.code.substring(0,1) !== '8';
       });
       filtered.forEach(function (it) {
         it.tracking_number = null;
-        it.avail = (it.quantity <= it.stock) ? "YES" : "NO";
+        it.avail = (it.quantity <= it.stock) ? 'YES' : 'NO';
       });
       $scope.selectedSale.sale_items = filtered;
 
       $scope.selectedSale.sale_items.forEach(function (sale_item){
         connect.fetch('/lot/' +sale_item.inventory_uuid)
-        .success(function processLots (lots){
+        .then(function processLots (lots){
           if(!lots.length){
             distribution.hasLot = false;
             messenger.danger('Pas de lot recuperes');
@@ -286,10 +279,9 @@ angular.module('bhima.controllers')
               }else{
                 if((som - lot.quantity) < sale_item.quantity) lot.setted = true;
               }
-            })
+            });
             sale_item.lots = lots;
-        })
-        .error(handleError);
+        });
       });
     }
 
@@ -298,7 +290,7 @@ angular.module('bhima.controllers')
       if($scope.selectedSale){
          if($scope.selectedSale.sale_items){
           var availability = $scope.selectedSale.sale_items.some(function (sale_item) {
-            return sale_item.avail == "NO";
+            return sale_item.avail == 'NO';
           })
           if(availability) return availability
           return false;
