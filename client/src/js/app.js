@@ -321,10 +321,6 @@
       controller : 'stock.entry.partition',
       templateUrl : 'partials/stock/entry/partition.html'
     })
-    .when('/stock/entry/review/:depotId', {
-      controller : 'stock.entry.review',
-      templateUrl: 'partials/stock/entry/review.html'
-    })
     .when('/stock/movement/:depotId', {
       controller : 'stock.movement',
       templateUrl : 'partials/stock/movement/movement.html'
@@ -336,6 +332,10 @@
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
+    })
+    .when('/stock/entry/report/:documentId?', {
+      controller : 'stock.entry.report',
+      templateUrl : 'partials/stock/entry/report.html'
     })
     .when('/stock/search/', {
       controller : 'stock.search',

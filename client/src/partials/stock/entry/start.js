@@ -11,14 +11,13 @@ angular.module('bhima.controllers')
   'messenger',
   'appstate',
   'precision',
-  'appcache',
   'store',
   'uuid',
-  function ($scope, $translate, $q, $location, $routeParams, $filter, validate, connect, messenger, appstate, precision, AppCache, Store, uuid) {
+  'util',
+  function ($scope, $translate, $q, $location, $routeParams, $filter, validate, connect, messenger, appstate, precision, Store, uuid, util) {
     var dependencies = {},
         session = $scope.session = { cfg : {}, totals : [] },
-        find = $scope.find = { active : true, fn : {} },
-        cache = new AppCache('stock.entry');
+        find = $scope.find = { active : true, fn : {} };
 
     if (!angular.isDefined($routeParams.depotId)) {
       messenger.error('NO_DEPOT_ID');
@@ -28,9 +27,10 @@ angular.module('bhima.controllers')
 
     dependencies.depots = {
       query : {
+        identifier : 'uuid',
         tables : {
           'depot' : {
-            columns : ['uuid', 'text']
+            columns : ['uuid', 'reference', 'text']
           }
         }
       }
@@ -104,6 +104,7 @@ angular.module('bhima.controllers')
 
       session.cfg.purchase_uuid = order.uuid;
       session.cfg.label = order.label;
+
       var project = order.label.substr(0,3).toUpperCase();
       var reference = Number(order.label.substr(3));
 
@@ -131,22 +132,18 @@ angular.module('bhima.controllers')
     function startup (models) {
       angular.extend($scope, models);
 
+      console.log($routeParams);
+      console.log(models);
+      session.depot = $scope.depots.get($routeParams.depotId);
+
       $scope.names.data.forEach(function (order) {
         order.label = $scope.projects.get(order.project_id).abbr + order.reference;
       });
     }
 
     function error (err) {
-      messenger.danger(JSON.stringify(err));
+      messenger.error(JSON.stringify(err));
     }
-
-    function loadOrder (order) {
-      if (!order) { return; }
-    }
-
-    cache.fetch('order')
-    .then(loadOrder)
-    .catch(error);
 
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -183,12 +180,12 @@ angular.module('bhima.controllers')
       // set up session properties
       session.cfg.order_date = new Date(models.orders.data[0].purchase_date);
       session.cfg.employee_id = models.orders.data[0].employee_id;
-      session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || "") + " " + ($scope.employees.get(session.cfg.employee_id).name || "");
+      session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || '') + ' ' + ($scope.employees.get(session.cfg.employee_id).name || '');
 
       // modify paramters
       session.order.data.forEach(function (drug) {
         drug.lots = new Store({ identifier : 'tracking_number', data : [] });
-        angular.extend(drug, { isCollapsed : false, edittable : true });
+        angular.extend(drug, { isCollapsed : false });
         //drug.isCollapsed = false;
         //drug.edittable = true;
         $scope.addLot(drug);
@@ -199,10 +196,6 @@ angular.module('bhima.controllers')
 
     function sum (a, b) {
       return a + Number(b.quantity);
-    }
-
-    function formatDate (date) {
-      return $filter('date')(date, 'yyyy-MM-dd');
     }
 
     function calculateTotals () {
@@ -241,10 +234,6 @@ angular.module('bhima.controllers')
       find.fn.reset();
     };
 
-    $scope.toggleEdit = function toggleEdit (drug) {
-      drug.edittable = !drug.edittable;
-    };
-
     $scope.expand = function expand (drug) {
       drug.isCollapsed = !drug.isCollapsed;
     };
@@ -272,13 +261,68 @@ angular.module('bhima.controllers')
 
     $scope.review = function review () {
       // prepare object for cloning
-      var data = session.order.data;
+      session.review = true;
       var lots = [];
-      data.forEach(function (o) {
+      session.order.data.forEach(function (o) {
         lots = lots.concat(o.lots.data);
       });
-      cache.put('order', { data : lots, cfg : session.cfg, totals: session.totals } );
-      $location.path('/stock/entry/review/' + session.cfg.depot.id);
+      session.lots = lots;
+    };
+
+    function processStock () {
+      var stocks = [];
+      session.lots.forEach(function (stock) {
+        stocks.push({
+          inventory_uuid      : stock.inventory_uuid,
+          //purchase_price      : stock.purchase_price,
+          expiration_date     : util.sqlDate(stock.expiration_date),
+          entry_date          : util.sqlDate(new Date()),
+          lot_number          : stock.lot_number,
+          purchase_order_uuid : session.cfg.purchase_uuid,
+          tracking_number     : stock.tracking_number,
+          quantity            : stock.quantity
+        });
+      });
+
+      return stocks;
+    }
+
+    function processMovements (document_id) {
+      var movements = [];
+      session.lots.forEach(function (stock) {
+        movements.push({
+          uuid : uuid(),
+          document_id     : document_id,
+          tracking_number : stock.tracking_number,
+          date            : util.sqlDate(new Date()),
+          quantity        : stock.quantity,
+          depot_entry     : session.cfg.depot.id,
+        });
+      });
+
+      return movements;
+    }
+
+    $scope.accept = function () {
+      var document_id = uuid();
+      var stock = processStock();
+      var movements = processMovements(document_id);
+      connect.basicPut('stock', stock)
+      .then(function () {
+        return connect.basicPut('movement', movements);
+      })
+      .then(function () {
+        return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, paid : 1 }], ['uuid']);
+      })
+      .then(function () {
+        messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+      })
+      .catch(function () {
+        messenger.error('STOCK.ENTRY.WRITE_ERROR');
+      })
+      .finally(function () {
+        $location.path('/stock/entry/report/' + document_id);
+      });
     };
 
   }
