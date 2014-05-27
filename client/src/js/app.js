@@ -229,6 +229,10 @@
       controller : 'allTransactions',
       templateUrl : 'partials/reports/all_transactions/all_transactions.html'
     })
+    .when('/reports/expiring', {
+      controller : 'expiring',
+      templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
