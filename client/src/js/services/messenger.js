@@ -47,7 +47,16 @@ angular.module('bhima.services')
 
     // Appropriate error formatting
     self.error = function error(err) {
-      angular.extend(err, { type : 'error', closable : true, error : true });
+      if (typeof err === 'object') {
+        angular.extend(err, { type : 'error', closable : true, error : true });
+      } else {
+        err = {
+          type : 'success',
+          closable : true,
+          namespace : 'MESSENGER',
+          description : err
+        };
+      }
       messages.push(err);
     };
 

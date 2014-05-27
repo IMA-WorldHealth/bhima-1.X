@@ -68,7 +68,8 @@
   },
 
   "PLACEHOLDERS" : {
-    "PRODUCTS" : "e.g. Products"
+    "PRODUCTS" : "e.g. Products",
+    "PURCHASE_ORDER" : "Enter a purchase order ID."
   },
 
   "PATIENT_RECORDS"     : {
@@ -1157,7 +1158,8 @@
       "REVIEW"              : "Review Manifest",
       "REQUESTED_BY"        : "Requested By",
       "ADD_LOT"             : "Add Lot",
-      "ENTRY_DATE"          : "Entry Date"
+      "ENTRY_DATE"          : "Entry Date",
+      "ENTER_STOCK"         : "Enter Stock"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
