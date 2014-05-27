@@ -4,9 +4,8 @@ angular.module('bhima.controllers')
   'validate',
   'connect',
   'appstate',
-  'messenger',
   '$filter',
-  function ($scope, validate, connect, appstate, messenger, $filter) {
+  function ($scope, validate, connect, appstate, $filter) {
     var session = $scope.session = { count : {} };
     var dependencies = {};
     $scope.selected = null;
@@ -15,7 +14,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'project' : {
-            columns : ["id", "abbr", "name"]
+            columns : ['id', 'abbr', 'name']
           }
         }
       }
@@ -87,17 +86,10 @@ angular.module('bhima.controllers')
       url += '&end=' + req.dateTo;
 
       connect.fetch(url)
-      .success(function (model) {
+      .then(function (model) {
         $scope.patients = model;
         session.searching = false;
-      })
-      .error(function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
       });
-    }
-
-    function handleErrors (err) {
-      messenger.danger('An error occured.');
     }
 
     appstate.register('project', function (project) {
@@ -106,12 +98,11 @@ angular.module('bhima.controllers')
       .then(function (models) {
         $scope.projects = models.projects;
         $scope.allProjectIds =
-          models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, "")
+          models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, '')
           .substr(1);
         session.project = project.id;
         search($scope.options[0]);
-      })
-      .catch(handleErrors);
+      });
     });
 
     $scope.$watch('patients', function () {
@@ -119,7 +110,7 @@ angular.module('bhima.controllers')
       session.count.male = 0;
       session.count.female = 0;
       $scope.patients.forEach(function (p) {
-        session.count[p.sex === "M" ? "male" : "female" ] += 1;
+        session.count[p.sex === 'M' ? 'male' : 'female' ] += 1;
       });
     });
 

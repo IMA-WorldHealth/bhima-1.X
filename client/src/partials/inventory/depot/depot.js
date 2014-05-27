@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   'connect',
   'messenger',
   'appstate',
-  function ($scope, $translate, validate, connect, messenger, appstate) {
+  'uuid',
+  function ($scope, $translate, validate, connect, messenger, appstate, uuid) {
     var dependencies = {},
         session = $scope.session = {};
 
@@ -73,6 +74,7 @@ angular.module('bhima.controllers')
     $scope.save.new = function () {
       var record = connect.clean(session.new);
       record.enterprise_id = $scope.enterprise.id;
+      record.uuid = uuid();
       connect.basicPut('depot', [record])
       .then(function (res) {
         messenger.info('DEPOT.NEW_SUCCESS');

@@ -67,6 +67,12 @@ gulp.task('watch', function () {
   gulp.watch(paths.static, ['static']);
 });
 
+gulp.task('lint', function () {
+  return gulp.src(paths.scripts)
+    .pipe(jshint(jshintrcPath))
+    .pipe(jshint.reporter('default'));
+});
+
 gulp.task('default', [], function () {
   gulp.start('scripts', 'styles', 'assets', 'vendor', 'static');
 });

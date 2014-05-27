@@ -47,7 +47,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           project : {
-            columns : ["id", "abbr", "name"]
+            columns : ['id', 'abbr', 'name']
           }
         }
       }
@@ -88,13 +88,17 @@ angular.module('bhima.controllers')
         dateTo : session.param.dateTo,
       };
 
-      if (!isNaN(Number(session.project))) request.project = session.project;
+      if (!isNaN(Number(session.project))) {
+        request.project = session.project;
+      }
 
       session.searching = true;
       dependencies.sale.query = '/reports/saleRecords/?' + JSON.stringify(request);
 
       total.result = {};
-      if ($scope.model.sale) $scope.model.sale.data = [];
+      if ($scope.model.sale) {
+        $scope.model.sale.data = [];
+      }
       validate.refresh(dependencies, ['sale']).then(updateSession);
     }
 
@@ -120,7 +124,7 @@ angular.module('bhima.controllers')
     }
 
     function updateTotals() {
-      for (key in total.method) {
+      for (var key in total.method) {
         total.result[key] = total.method[key]();
       }
     }
@@ -133,7 +137,7 @@ angular.module('bhima.controllers')
       var total = 0, evaluated = {};
 
       $scope.model.sale.data.forEach(function (sale) {
-        if (evaluated[sale.debitor_uuid]) return;
+        if (evaluated[sale.debitor_uuid]) { return; }
         total++;
         evaluated[sale.debitor_uuid] = true;
       });

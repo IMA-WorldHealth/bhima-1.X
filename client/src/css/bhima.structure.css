@@ -1,0 +1,52 @@
+header + nav {
+  top           : 50px;
+  border-bottom : 1px solid #ddd;
+}
+
+header + nav .breadcrumb {
+  background-color : #fff;
+  margin: 0;
+}
+
+header + nav .label {
+  vertical-align : middle;
+}
+
+header + main {
+  top : 50px;
+}
+
+nav {
+  position   : absolute;
+  left       : 0;
+  right      : 0;
+  min-height : 37px;
+  padding    : 3px 15px;
+  margin-top : 0;
+}
+
+main {
+  position      : absolute;
+  bottom        : 37px;
+  top           : 87px;
+  right         : 0;
+  left          : 0;
+  overflow      : auto;
+  margin-right  : auto;
+  margin-left   : auto;
+  padding-left  : 15px;
+  padding-right : 15px;
+  padding-top   : 5px;
+  font-size     : 12px;
+}
+
+main + footer {
+  bottom: 0;
+  border-top: 1px solid #ddd;
+  position   : absolute;
+  left       : 0;
+  right      : 0;
+  min-height : 37px;
+  padding    : 3px 15px;
+  margin-top : 0;
+}

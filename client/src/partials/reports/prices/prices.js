@@ -3,9 +3,8 @@ angular.module('bhima.controllers')
   '$scope',
   '$window',
   'connect',
-  'messenger',
   'appstate',
-  function ($scope, $window, connect, messenger, appstate) {
+  function ($scope, $window, connect, appstate) {
 
     $scope.timestamp = new Date();
 
@@ -13,14 +12,11 @@ angular.module('bhima.controllers')
       $scope.enterprise = enterprise;
 
       connect.fetch('reports/prices/')
-      .success(function (data) {
+      .then(function (data) {
         for (var k in data) {
           data[k].code = Number(data[k].code);
         }
         $scope.groups = data;
-      })
-      .error(function (error) {
-        messenger.danger('An error occured.' + JSON.stringify(error));
       })
       .finally();
     });

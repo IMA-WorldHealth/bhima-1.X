@@ -5,10 +5,9 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   'validate',
-  'messenger',
   '$filter',
   'exchange',
-  function ($scope, $timeout, connect, appstate, validate, messenger, $filter, exchange) {
+  function ($scope, $timeout, connect, appstate, validate, $filter, exchange) {
     var session = $scope.session = {};
     $scope.selected = null;
 
@@ -101,15 +100,12 @@ angular.module('bhima.controllers')
       .replace('%end%', req.dateTo);
 
       connect.fetch(url)
-      .success(function (model) {
+      .then(function (model) {
         $scope.payments = model;
         $timeout(function () {
           convert();
           session.searching = false;
         }, exchange.hasExchange() ? 0 : 100);
-      })
-      .error(function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
       });
 
     }
@@ -122,11 +118,10 @@ angular.module('bhima.controllers')
         $scope.currencies = models.currencies;
         session.currency = $scope.currencies.data[0].id;
         $scope.allProjectIds =
-          models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, "")
+          models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, '')
           .substr(1);
         search($scope.options[0]);
-      })
-      .catch(function (error) { messenger.danger('An error occurred : ' + JSON.stringify(error)); });
+      });
     });
 
     function convert () {

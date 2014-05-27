@@ -127,7 +127,8 @@ angular.module('bhima.controllers')
       /*if (!$scope.depot && config.modules.indexOf(defn) > -1) {
         return messenger.danger('NO_DEPOT_SELECTED');
       }*/
-
+    
+      console.log($scope.depot);
       var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
     };

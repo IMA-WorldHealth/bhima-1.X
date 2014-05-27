@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
   '$translate',
   '$rootScope',
   '$q',
-  "$window",
+  '$window',
   'uuid',
   'store',
   'util',
@@ -12,12 +12,15 @@ angular.module('bhima.controllers')
   'precision',
   'validate',
   'appstate',
+  'liberror',
   'messenger',
-  function ($scope, $translate, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, messenger) {
+  function ($scope, $translate, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
     var dependencies = {};
     var columns, options, dataview, grid, manager;
     var sort_column;
 
+    var journalError =  liberror.namespace('JOURNAL');
+    
     $scope.editing = false;
 
     function isNull (t) { return t === null; }
@@ -126,7 +129,7 @@ angular.module('bhima.controllers')
       // set up editing
       grid.onBeforeEditCell.subscribe(function (e, args) {
         var item =  dataview.getItem(args.row),
-            canEdit = manager.session.mode === "edit";
+            canEdit = manager.session.mode === 'edit';
         if (!canEdit || manager.session.transactionId !== item.trans_id ) { return false; }
       });
     }
@@ -196,7 +199,7 @@ angular.module('bhima.controllers')
           templateRow = transaction.rows[0];
 
       manager.session.rowId = args.row;
-      manager.session.mode = "edit";
+      manager.session.mode = 'edit';
       manager.session.transactionId = transaction.groupingKey;
 
       if (!transactionId) { return $rootScope.$apply(messenger.danger('Invalid transaction provided')); }
@@ -220,7 +223,7 @@ angular.module('bhima.controllers')
         trans_date     : templateRow.trans_date,
         description    : templateRow.description,
         project_id     : templateRow.project_id,
-        account_number : "(Select Account)",
+        account_number : '(Select Account)',
         debit_equiv    : 0,
         credit_equiv   : 0,
         debit          : 0,
@@ -240,12 +243,8 @@ angular.module('bhima.controllers')
       $rootScope.$apply(messenger.success('Transaction #' + transactionId));
     }
 
-    function broadcastError (msg) {
-      $rootScope.$apply(messenger.danger("[ERROR] " + msg, 7000));
-    }
-
-    function broadcastSuccess (msg) {
-      $rootScope.$apply(messenger.success(msg));
+    function broadcastError (desc) {
+      journalError.throw(desc);
     }
 
     function packager (record) {
@@ -347,8 +346,8 @@ angular.module('bhima.controllers')
       totalDebits = precision.round(totalDebits);
       totalCredits = precision.round(totalCredits);
 
-      if (singleEntryError) { broadcastError('Transaction contains both debits and credits on the same line.'); }
-      if (!validTotals(totalDebits, totalCredits)) { broadcastError('Transaction debits and credits do not balance.'); }
+      if (singleEntryError) { journalError.throw('ERR_TXN_SINGLE_ENTRY'); }
+      if (!validTotals(totalDebits, totalCredits)) { journalError.throw('ERR_TXN_IMBALANCE'); }
       if (accountError) { broadcastError('Records contain invalid or nonexistant accounts.'); }
       if (dateError) { broadcastError('Transaction contains invalid dates.'); }
       if (multipleDatesError) { broadcastError('Transaction trans_date field has multiple dates.'); }
@@ -389,7 +388,7 @@ angular.module('bhima.controllers')
       });
 
       connect.fetch('/user_session')
-      .success(function (res) {
+      .then(function (res) {
         manager.session.userId = res.id;
         newRecords.forEach(function (rec) { rec.user_id = res.id; });
         editedRecords.forEach(function (rec) { rec.user_id = res.id; });
@@ -411,7 +410,7 @@ angular.module('bhima.controllers')
         grid.invalidate();
       })
       .catch(function (err) {
-        messenger.danger("Submission failed" + err);
+        messenger.danger('Submission failed' + err);
       })
       .finally();
     }
@@ -472,7 +471,7 @@ angular.module('bhima.controllers')
 
       this.init = function () {
         defaultValue = new Date(args.item.trans_date).toISOString().substring(0,10);
-        this.$input = $("<input class='editor-text' type='date'>");
+        this.$input = $('<input class="editor-text" type="date">');
         this.$input.appendTo(args.container);
         this.$input.focus();
       };
@@ -486,7 +485,7 @@ angular.module('bhima.controllers')
         item[args.column.field] = e;
       };
 
-      this.loadValue = function (item) { this.$input.val(defaultValue); };
+      this.loadValue = function () { this.$input.val(defaultValue); };
 
       this.init();
     }
@@ -494,31 +493,30 @@ angular.module('bhima.controllers')
     DateEditor.prototype = new BaseEditor();
 
     function InvoiceEditor(args) {
-      var clear = "<option value='clear'>Clear</option>",
-          cancel = "<option value='cancel'>Cancel</option>",
+      var clear = '<option value="clear">Clear</option>',
+          cancel = '<option value="cancel">Cancel</option>',
           defaultValue;
 
 
       this.init = function () {
         defaultValue = args.item.inv_po_id;
-        var options = "";
+        var options = '';
         $scope.invoice.data.forEach(function (invoice) {
           options += '<option value="' + invoice.uuid + '">' + invoice.uuid + ' ' + invoice.note + '</option>';
         });
 
-        var label = 'Invoice';
 
-        this.$input = $("<input type='text' class='editor-text' list='invoices'><datalist id='invoices'>" + options + "</datalist>");
+        this.$input = $('<input type="text" class="editor-text" list="invoices"><datalist id="invoices">' + options + '</datalist>');
         this.$input.appendTo(args.container);
         this.$input.focus();
       };
 
-      this.applyValue = function(item,state) {
+      this.applyValue = function(item, state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
 
-      this.loadValue = function (item) { this.$input.val(defaultValue); };
+      this.loadValue = function () { this.$input.val(defaultValue); };
 
       this.init();
     }
@@ -527,13 +525,13 @@ angular.module('bhima.controllers')
 
     function DebCredEditor (args) {
       var defaultValue;
-      var clear = "<option value='clear'>Clear</option>",
-          cancel = "<option value='cancel'>Cancel</option>";
+      var clear = '<option value="clear">Clear</option>',
+          cancel = '<option value="cancel">Cancel</option>';
 
       this.init = function () {
         defaultValue = isDefined(args.item.deb_cred_uuid) ? args.item.deb_cred_uuid : null;
         var deb_cred_type = args.item.deb_cred_type;
-        var options = "";
+        var options = '';
 
         // TODO : this is overly verbose
         if (deb_cred_type === 'D') {
@@ -567,9 +565,9 @@ angular.module('bhima.controllers')
         }
 
         var label = deb_cred_type === 'D' ? 'Debitor' : 'Creditor';
-        options += !!options.length ? cancel + clear : "<option value='' disabled>[No " + label + "s Found]</option>";
+        options += !!options.length ? cancel + clear : '<option value="" disabled>[No ' + label + 's Found]</option>';
 
-        this.$input= $("<SELECT class='editor-text'>" + options + "</SELECT>");
+        this.$input= $('<SELECT class="editor-text">' + options + '</SELECT>');
         this.$input.appendTo(args.container);
         this.$input.focus();
       };
@@ -579,7 +577,7 @@ angular.module('bhima.controllers')
         item[args.column.field] = state === 'clear' ? '' : state;
       };
 
-      this.loadValue = function (item) { this.$input.val(defaultValue); };
+      this.loadValue = function () { this.$input.val(defaultValue); };
 
       this.init();
     }
@@ -589,13 +587,13 @@ angular.module('bhima.controllers')
 
     function AccountEditor (args) {
       var defaultValue;
-      var clear = "<option value='clear'>Clear</option>",
-          cancel = "<option value='cancel'>Cancel</option>";
+      var clear = '<option value="clear">Clear</option>',
+          cancel = '<option value="cancel">Cancel</option>';
 
       this.init = function () {
         //default value - naive way of checking for previous value, default string is set, not value
         defaultValue = Number.isNaN(Number(args.item.account_number)) ? null : args.item.account_number;
-        var options = "";
+        var options = '';
         $scope.account.data.forEach(function(account) {
           var disabled = (account.account_type_id === 3) ? 'disabled' : '';
           options += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
@@ -606,12 +604,12 @@ angular.module('bhima.controllers')
 
         options += cancel;
 
-        this.$input = $("<SELECT class='editor-text'>" + options + "</SELECT>");
+        this.$input = $('<SELECT class="editor-text">' + options + '</SELECT>');
         this.$input.appendTo(args.container);
         this.$input.focus();
       };
 
-      this.loadValue = function (item) { this.$input.val(defaultValue); };
+      this.loadValue = function () { this.$input.val(defaultValue); };
 
       this.applyValue = function(item, state) {
         if (state === 'cancel') { return; }
@@ -626,29 +624,29 @@ angular.module('bhima.controllers')
 
     function DebCredTypeEditor (args) {
       var defaultValue;
-      var clear = "<option value='clear'>Clear</option>",
-          cancel = "<option value='cancel'>Cancel</option>";
+      var clear = '<option value="clear">Clear</option>',
+          cancel = '<option value="cancel">Cancel</option>';
 
 
       this.init = function () {
-        var options = ["D", "C"];
+        var options = ['D', 'C'];
 
         defaultValue = args.item.deb_cred_type;
-        var concatOptions = "";
+        var concatOptions = '';
 
         options.forEach(function(option) {
-          concatOptions += "<option value='" + option + "'>" + option + "</option>";
+          concatOptions += '<option value="' + option + '">' + option + '</option>';
         });
 
         concatOptions += clear + cancel;
 
-        this.$input = $('<select class="editor-text">' + concatOptions + "</select>");
+        this.$input = $('<select class="editor-text">' + concatOptions + '</select>');
         this.$input.appendTo(args.container);
         this.$input.focus();
       };
 
 
-      this.loadValue = function (item) { this.$input.val(defaultValue); };
+      this.loadValue = function () { this.$input.val(defaultValue); };
 
       this.applyValue = function(item,state) {
         if (state === 'cancel') { return; }

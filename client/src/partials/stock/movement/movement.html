@@ -22,6 +22,15 @@
       </div>
     </div>
   </div>
+
+  <div class="row" ng-if="session.warn">
+    <div class="col-xs-12">
+      <div class="alert alert-info">
+        <span class="glyphicon glyphicon-info-sign"></span> Only one depot has been registered with BHIMA. A stock movment requires both an origin and destination depot.
+      </div>
+    </div>
+  </div>
+
   <div class="row" ng-if="session.configured">
     
     <div class="col-xs-12">
@@ -80,14 +89,13 @@
                 <div class="panel-heading square">
                   Depo_To 
                 </div>
-                  
                 <!-- <div class="panel&#45;body"> -->
                   <select 
                     class="form-bhima"
                     ng-model="session.to"
                     ng-options="depot as depot.text for depot in depotMap.to.model.data"
                     >
-                    <option value="" disabled>--Select a depo--</option>
+                    <option value="">--Select a depo--</option>
                   </select>
                 <!-- </div> -->
               </div>
@@ -100,47 +108,93 @@
                 <div class="panel-heading">
                   <span class="glyphicon glyphicon-list-alt"></span> Inventory
                 </div>
+                
+                <div ng-if="session.from && session.to">
+                  <table class="table table-bordered table-condensed">
+                    <thead>
+                      <tr>
+                        <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th>
+                        <!-- <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th> -->
+                        <th>{{ "COLUMNS.TRANSFER_QUANTITY" | translate }}</th>
+                        <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+                    </thead>
+                    <tbody>
+                      <tr ng-if="row.error" ng-repeat-start="row in session.rows"
+                        >
+                        <td colspan="4">
+                          <div class="alert alert-danger" style="margin-bottom: 0">
+                            <span class="glyphicon glyphicon-remove-circle"></span> <b>[Lot {{row.lot.lot_number}}] ({{session.from.text}})</b> Invalid transfer quantity (max : {{row.lot.quantity}})
+                          </div>
+                        </td> 
+                      </tr>
+                      <tr ng-repeat-end>
+                        <!-- <td width="30%"> -->
+                          <!-- <input  -->
+                          <!--   class="form&#45;bhima" -->
+                          <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
+                          <!-- > -->
+     
+                          <!-- </td> -->
+                        <td width="55%">
+                          <div ng-if="!row.lot">
+                            <!-- <span class="glyphicon glyphicon&#45;remove&#45;circle error"></span> -->
+                            <select 
+                              class="form-bhima"
+                              ng-model="row.lot"
+                              ng-change="stockSelected(row)"
+                              ng-options="lot as (lot.lot_number + ' (' + lot.code + ')') for lot in lots.data"
+                              >
+                              <option value="">--Select lot from {{session.from.text}}-- {{$scope}}</option>
+                            </select>
 
-                <table class="table table-bordered table-condensed">
-                  <thead>
-                    <tr>
-                      <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
-                      <th>{{ "COLUMNS.LOT_DETAILS" | translate }}</th>
-                      <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-                      <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
-                      <!-- <th colspan="2">{{ "COLUMNS.DESTINATION" | translate }}</th> -->
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="row in session.rows">
-                      <td>
-                        <!-- <input  -->
-                        <!--   class="form&#45;bhima" -->
-                        <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
-                        <!-- > -->
-                        <select 
-                          class="form-bhima"
-                          >
-                          <option disabled>--Select lot from {{session.from.text}}--</option>
-                        </select>
-                      </td>
-                      <td>
-                        {{row.details || "..."}}
-                      </td>
-                      <td>
-                        <input class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
-                      </td>
-                      <!-- <td> <input ng&#45;model="row.destination" required> -->
-                      <!-- </td> -->
-                      <td><a class="danger action" ng-click="removeRow($index)"><span class="glyphicon glyphicon-trash"></span></a></td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colspan="4" style="text-align: right;"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
-                    </tr>
-                  </tfoot>
-                </table>
-
+                          </div>
+                          <div ng-if="row.lot">
+                            <span class="glyphicon glyphicon-ok-circle correct"></span> <b>Lot {{row.lot.lot_number}} ({{session.from.text}})</b>
+                            <br>
+                        
+                            <table class="reportTable">
+                              <tbody>
+                                <tr>
+                                  <td width="30%">Item</td><td>{{row.lot.stock_description}}</td>
+                                </tr>
+                                <tr>
+                                  <td width="30%"><b>Quantity</b></td><td><b>{{row.lot.quantity}}</b></td>
+                                </tr>
+                                <tr>
+                                  <td width="30%">Expiration Date</td><td>{{row.lot.expiration_date | date}}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            
+                        </div>
+                        </td>
+                        <td width="10%">
+                          <!-- FIXME style hack -->
+                          <div class="input-group" >
+                            <span class="input-group-addon">
+                              <span 
+                                ng-class=
+                                "{
+                                  'glyphicon-remove-circle error' : !row.validQuantity,
+                                  'glyphicon-ok-circle correct' : row.validQuantity
+                                }"
+                                class="glyphicon"></span>
+                            </span>
+                            <input ng-disabled="!row.lot" class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
+                          </div>  
+                        </td>
+                        <!-- <td> <input ng&#45;model="row.destination" required> -->
+                        <!-- </td> -->
+                        <td width="5%"><a class="danger action" ng-click="removeRow($index, row)"><span class="glyphicon glyphicon-trash"></span></a></td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="4" style="text-align: right;"><a ng-click="addRow()" class="action"><span class="glyphicon glyphicon-plus"></span></a></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

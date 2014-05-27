@@ -4,23 +4,20 @@ angular.module('bhima.controllers')
   '$translate',
   '$location',
   '$modal',
-  '$filter',
-  '$timeout',
-  'precision',
   'appcache',
   'connect',
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $translate, $location, $modal, $filter, $timeout, precision, Appcache, connect, validate, appstate, messenger) {
+  function ($scope, $translate, $location, $modal, Appcache, connect, validate, appstate, messenger) {
     var dependencies = {};
     var columns, options, dataview, grid, manager, deleteColumn;
     var cache = new Appcache('journal.utilities');
 
-    // Three modes : { "lock", "static", "edit" }
-    // "static" -> pj at rest, default
-    // "lock" -> pj locked, can still toggle edit mode, waiting orders
-    // "edit" -> editing: must save before unlocking, all features locked.
+    // Three modes : { 'lock', 'static', 'edit' }
+    // 'static' -> pj at rest, default
+    // 'lock' -> pj locked, can still toggle edit mode, waiting orders
+    // 'edit' -> editing: must save before unlocking, all features locked.
 
     $scope.aggregates = true;
     $scope.hasData = false;
@@ -70,7 +67,7 @@ angular.module('bhima.controllers')
 
       $scope.session = manager.session;
       manager.session.authenticated = false;
-      manager.session.mode = "static";
+      manager.session.mode = 'static';
 
       dataview.beginUpdate();
       dataview.setFilter(filter);
@@ -100,9 +97,9 @@ angular.module('bhima.controllers')
     function btnFormatter (row,cell,value,columnDef,dataContext) {
       var id = dataContext.trans_id;
       if (manager.session.transactionId === id) {
-        return "<div class='deleteRow' style='cursor: pointer;'><span class='glyphicon glyphicon-trash deleteRow'></span></div>";
+        return '<div class="deleteRow" style="cursor: pointer;"><span class="glyphicon glyphicon-trash deleteRow"></span></div>';
       }
-      return "";
+      return '';
     }
 
     deleteColumn = {
@@ -121,7 +118,7 @@ angular.module('bhima.controllers')
     }
 
     function handleErrors (error) {
-      messenger.danger('An error occured ' + JSON.stringify(error));
+      console.log(error);
     }
 
     $scope.removeGroup = function removeGroup () {
@@ -142,7 +139,7 @@ angular.module('bhima.controllers')
           controller: 'trialBalance',
           resolve : {
             request: function () {
-              return res.data;
+              return res;
             }
           }
         });
@@ -162,7 +159,7 @@ angular.module('bhima.controllers')
 
       function groupByTransaction() {
         dataview.setGrouping({
-          getter: "trans_id",
+          getter: 'trans_id',
           formatter: formatTransactionGroup,
           comparer : function (a, b) {
             var x =  parseFloat(a.groupingKey.substr(3));
@@ -170,10 +167,10 @@ angular.module('bhima.controllers')
             return x > y ? 1 : -1;
           },
           aggregators: [
-            new Slick.Data.Aggregators.Sum("debit"),
-            new Slick.Data.Aggregators.Sum("credit"),
-            new Slick.Data.Aggregators.Sum("debit_equiv"),
-            new Slick.Data.Aggregators.Sum("credit_equiv")
+            new Slick.Data.Aggregators.Sum('debit'),
+            new Slick.Data.Aggregators.Sum('credit'),
+            new Slick.Data.Aggregators.Sum('debit_equiv'),
+            new Slick.Data.Aggregators.Sum('credit_equiv')
           ],
           aggregateCollapsed: $scope.aggregates,
           lazyTotalsCalculation : true
@@ -182,16 +179,16 @@ angular.module('bhima.controllers')
 
       function groupByAccount () {
         dataview.setGrouping({
-          getter: "account_id",
+          getter: 'account_id',
           formatter: function(g) {
-            var account_txt = $scope.account.get(g.rows[0].account_number).account_txt || "";
-            return "<span style='font-weight: bold'>" + ( $scope.account ? account_txt : g.value) + "</span>";
+            var account_txt = $scope.account.get(g.rows[0].account_number).account_txt || '';
+            return '<span style="font-weight: bold">' + ( $scope.account ? account_txt : g.value) + '</span>';
           },
           aggregators: [
-            new Slick.Data.Aggregators.Sum("debit"),
-            new Slick.Data.Aggregators.Sum("credit"),
-            new Slick.Data.Aggregators.Sum("debit_equiv"),
-            new Slick.Data.Aggregators.Sum("credit_equiv")
+            new Slick.Data.Aggregators.Sum('debit'),
+            new Slick.Data.Aggregators.Sum('credit'),
+            new Slick.Data.Aggregators.Sum('debit_equiv'),
+            new Slick.Data.Aggregators.Sum('credit_equiv')
           ],
           lazyTotalsCalculation : true,
           aggregateCollapsed: $scope.aggregates
@@ -221,36 +218,36 @@ angular.module('bhima.controllers')
 
     function formatTransactionGroup(g) {
       var rowMarkup,
-          editTemplate = "";
+          editTemplate = '';
 
       var correctRow = g.rows.every(function (row) {
         return row.trans_id === manager.session.transactionId;
       });
 
-      if (manager.session.mode === "lock") {
-        editTemplate = "<div class='pull-right'><a class='editTransaction' style='color: white; cursor: pointer;'><span class='glyphicon glyphicon-pencil'></span> " + $translate("POSTING_JOURNAL.EDIT_TRANSACTION") + " </a></div>";
+      if (manager.session.mode === 'lock') {
+        editTemplate = '<div class="pull-right"><a class="editTransaction" style="color: white; cursor: pointer;"><span class="glyphicon glyphicon-pencil"></span> ' + $translate('POSTING_JOURNAL.EDIT_TRANSACTION') + ' </a></div>';
       }
 
-      if (manager.session.mode === "edit" && correctRow) {
+      if (manager.session.mode === 'edit' && correctRow) {
         rowMarkup =
-          "<span style='color: white;'>" +
-          "  <span style='color: white;' class='glyphicon glyphicon-warning-sign'> </span> " +
-          $translate("POSTING_JOURNAL.LIVE_TRANSACTION") + " <strong>"  + g.value + "</strong> (" + g.count + " records)" +
-          "</span> " +
-          "<span class='pull-right'>" +
-          //"  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus'></span>  " + $translate('POSTING_JOURNAL.ADD_ROW') + "</a>" +
-          "  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus addRow'></span>  " + "</a>" +
-          "  <span style='padding: 5px;'></span>" + // FIXME Hacked spacing;
-          //"  <a class='saveTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk'></span>  " + $translate('POSTING_JOURNAL.SAVE_TRANSACTION') + "</a>" +
-          "  <a class='save' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk saveTransaction'></span>  " + "</a>" +
-          "  <span style='padding: 5px;'></span>" + // FIXME Hacked spacing;
-          "  <a class='save' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-trash deleteTransaction'></span>  </a>" +
-          //"  <a class='deleteTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-trash'></span>  " + $translate('POSTING_JOURNAL.DELETE_TRANSACTION') + "</a>" +
-          "</span>";
+          '<span style="color: white;">' +
+          '  <span style="color: white;" class="glyphicon glyphicon-warning-sign"> </span> ' +
+          $translate('POSTING_JOURNAL.LIVE_TRANSACTION') + ' <strong>'  + g.value + '</strong> (' + g.count + ' records)' +
+          '</span> ' +
+          '<span class="pull-right">' +
+          //'  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus'></span>  ' + $translate('POSTING_JOURNAL.ADD_ROW') + '</a>' +
+          '  <a class="addRow" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-plus addRow"></span>  ' + '</a>' +
+          '  <span style="padding: 5px;"></span>' + // FIXME Hacked spacing;
+          //'  <a class='saveTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk'></span>  ' + $translate('POSTING_JOURNAL.SAVE_TRANSACTION') + '</a>' +
+          '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-floppy-disk saveTransaction"></span>  ' + '</a>' +
+          '  <span style="padding: 5px;"></span>' + // FIXME Hacked spacing;
+          '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-trash deleteTransaction"></span>  </a>' +
+          //'  <a class='deleteTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-trash'></span>  ' + $translate('POSTING_JOURNAL.DELETE_TRANSACTION') + '</a>' +
+          '</span>';
         return rowMarkup;
       }
 
-      rowMarkup = "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " records)</span>";
+      rowMarkup = '<span style="font-weight: bold">' + g.value + '</span> (' + g.count + ' records)</span>';
       rowMarkup += editTemplate;
       return rowMarkup;
     }
@@ -261,7 +258,7 @@ angular.module('bhima.controllers')
 
     // Toggle column visibility
     $scope.$watch('columns', function () {
-      if (!$scope.columns) return;
+      if (!$scope.columns) { return; }
       var columns = $scope.columns.filter(function (column) { return column.visible; });
       //cache.put('columns', columns);
       grid.setColumns(columns);
@@ -276,16 +273,16 @@ angular.module('bhima.controllers')
       });
     }
 
-    $scope.$watch('session.mode', function (nv, ov) {
+    $scope.$watch('session.mode', function () {
       if (!manager || !manager.session || !manager.session.mode) { return; }
-      var e = $("#journal_grid");
-      e[manager.session.mode === "static" ? 'removeClass' : 'addClass']('danger');
+      var e = $('#journal_grid');
+      e[manager.session.mode === 'static' ? 'removeClass' : 'addClass']('danger');
       manager.fn.regroup();
     });
 
     function beginEditMode () {
       if (manager.session.authenticated) {
-        manager.mode = $scope.mode = "lock";
+        manager.mode = $scope.mode = 'lock';
       } else {
         authenticate()
         .result
@@ -295,46 +292,32 @@ angular.module('bhima.controllers')
             manager.session.uuid = result.uuid;
             manager.session.start = result.timestamp;
             manager.session.justification = result.justification;
-            manager.session.mode = $scope.session.mode = "lock";
+            manager.session.mode = $scope.session.mode = 'lock';
           }
           manager.fn.regroup();
         })
-        .catch(function () { messenger.warning('Edit session closed.'); });
+        .catch(function () {
+          messenger.warn({ namespace : 'JOURNAL', description : 'Edit session closed.' });
+        });
       }
     }
 
     function endEditMode () {
-      $scope.session = manager.session = { authenticated : false, mode : "static" };
+      $scope.session = manager.session = { authenticated : false, mode : 'static' };
     }
 
     $scope.toggleEditMode = function () {
-      if (manager.session.mode === "edit") { return; }
-      return manager.session.mode === "static" ? beginEditMode() : endEditMode();
+      if (manager.session.mode === 'edit') { return; }
+      return manager.session.mode === 'static' ? beginEditMode() : endEditMode();
     };
 
     $scope.resetManagerSession = function resetManagerSession () {
-      $scope.session = manager.session = { authenticated : false, mode : "static" };
+      $scope.session = manager.session = { authenticated : false, mode : 'static' };
     };
 
     $scope.toggleAggregates = function toggleAggregates () {
       $scope.aggregates =! $scope.aggregates;
       manager.fn.regroup();
-    };
-
-    function genericFilter (item, args) {
-      if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
-        return true;
-      }
-      return false;
-    }
-
-    var filters =  {
-      'trans_id'       : genericFilter,
-      'id'             : genericFilter,
-      'fiscal_year_id' : genericFilter,
-      'period_id'      : genericFilter,
-      'description'    : genericFilter,
-      'account_number' : genericFilter
     };
 
     function filter (item, args) {

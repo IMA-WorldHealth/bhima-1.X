@@ -6,9 +6,8 @@ angular.module('bhima.controllers')
   '$q',
   'precision',
   'validate',
-  'messenger',
   'appstate',
-  function ($scope, $translate, $filter, $q, precision, validate, messenger, appstate) {
+  function ($scope, $translate, $filter, $q, precision, validate, appstate) {
     var dependencies = {}, ready = $q.defer();
     var columns, options, dataview, grid,
         manager = { session : {}, fn : {}, mode : {} };
@@ -20,11 +19,11 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'posting_journal' : {
-            'columns' : ["uuid", "fiscal_year_id", "period_id", "trans_id", "trans_date", "doc_num", "description", "account_id", "debit", "credit", "currency_id", "deb_cred_uuid", "deb_cred_type", "inv_po_id", "debit_equiv", "credit_equiv", "currency_id", "comment", "user_id"]
+            'columns' : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'debit_equiv', 'credit_equiv', 'currency_id', 'comment', 'user_id']
           },
-          'account' : { 'columns' : ["account_number"] }
+          'account' : { 'columns' : ['account_number'] }
         },
-        join: ["posting_journal.account_id=account.id"]
+        join: ['posting_journal.account_id=account.id']
       }
     };
 
@@ -33,19 +32,19 @@ angular.module('bhima.controllers')
 
       // set up grid properties
       columns = [
-        {id: 'uuid'          , name: $translate('COLUMNS.ID')             , field: 'uuid'           , sortable : true },
-        {id: 'fiscal_year_id', name: $translate('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true },
-        {id: 'period_id'     , name: $translate('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
-        {id: 'trans_id'      , name: $translate('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true },
-        {id: 'trans_date'    , name: $translate('COLUMNS.DATE')           , field: 'trans_date'     , formatter : formatDate, sortable: true},
-        {id: 'description'   , name: $translate('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110 , editor: Slick.Editors.Text},
-        {id: 'account_id'    , name: $translate('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true },
-        {id: 'debit_equiv'   , name: $translate('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
-        {id: 'credit_equiv'  , name: $translate('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        {id: 'uuid'          , name: $translate.instant('COLUMNS.ID')             , field: 'uuid'           , sortable : true },
+        {id: 'fiscal_year_id', name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true },
+        {id: 'period_id'     , name: $translate.instant('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
+        {id: 'trans_id'      , name: $translate.instant('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true },
+        {id: 'trans_date'    , name: $translate.instant('COLUMNS.DATE')           , field: 'trans_date'     , formatter : formatDate, sortable: true},
+        {id: 'description'   , name: $translate.instant('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110 , editor: Slick.Editors.Text},
+        {id: 'account_id'    , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true },
+        {id: 'debit_equiv'   , name: $translate.instant('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        {id: 'credit_equiv'  , name: $translate.instant('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
         {id: 'deb_cred_uuid' , name: 'AR/AP Account'                      , field: 'deb_cred_uuid'},
-        {id: 'deb_cred_type' , name: $translate('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
-        {id: 'inv_po_id'     , name: $translate('COLUMNS.INVPO_ID')       , field: 'inv_po_id'},
-        {id: 'comment'       , name: $translate('COLUMNS.COMMENT')        , field: 'comment', sortable : true, editor: Slick.Editors.Text}
+        {id: 'deb_cred_type' , name: $translate.instant('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
+        {id: 'inv_po_id'     , name: $translate.instant('COLUMNS.INVPO_ID')       , field: 'inv_po_id'},
+        {id: 'comment'       , name: $translate.instant('COLUMNS.COMMENT')        , field: 'comment', sortable : true, editor: Slick.Editors.Text}
       ];
 
       options = {
@@ -114,9 +113,9 @@ angular.module('bhima.controllers')
 
       var val = totals.sum && totals.sum[column.field];
       if (val !== null) {
-        return "<span style='font-weight: bold; color:" + fmt[column.id] + ";'>" + $filter('currency')(precision.round(val)) + "</span>";
+        return '<span style="font-weight: bold; color:' + fmt[column.id] + ';">' + $filter('currency')(precision.round(val)) + '</span>';
       }
-      return "";
+      return '';
     }
 
     validate.process(dependencies)
