@@ -334,6 +334,7 @@ a.danger {
 
 .modal-content.modal-lg {
   width: 60%;
+  border-radius : 0;
 }
 
 .box-error {

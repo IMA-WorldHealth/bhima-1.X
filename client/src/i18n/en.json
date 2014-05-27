@@ -403,6 +403,11 @@
     "DATE_REGISTERED"     : "Date Registered",
     "CREDIT"              : "Credit",
     "DEBIT"               : "Debit",
+    "INVENTORY_GROUP"     : "Inventory Group",
+    "UNIT_WEIGHT"         : "Unit Weight",
+    "UNIT_VOLUME"         : "Unit Volume",
+    "STOCK_MIN"           : "Min. Stock",
+    "STOCK_MAX"           : "Max. Stock",
     "DOB"                 : "Date of Birth",
     "GROUP_NAME"          : "Group Name",
     "ACCOUNT_NUMBER"      : "Account Number",
@@ -505,6 +510,19 @@
       "TAX_ACCOUNT" : "Tax Accnt",
       "ADD" : "Creating Inventory Group",
       "EDIT" : "Edit Inventory Group"
+    },
+    "UPDATE_ITEM"      : {
+      "TITLE"           : "Update Inventory Item",
+      "TIMESTAMP"       : "Timestamp",
+      "FIND_ITEM"      : "Find Inventory Item",
+      "STOCK_HISTORY"   : "Item History",
+      "SUBMIT"          : "Submit Update",
+      "SEARCH_TEXT"     : "Search by code or description",
+      "UPDATE_SUCCESS"  : "Item updated!",
+      "UPDATE_FAILURE"  : "Cannot update item.",
+      "INVALID_PRICE"   : "Invalid price provided",
+      "ITEM_DETAILS"    : "Item Details",
+      "NO_HISTORY"      : "No history available for selected item"
     }
   },
 
@@ -555,7 +573,6 @@
     "CURRENCY"                  : "Currency",
     "RENEWAL"                   : "Patient Renewal",
     "PATIENT_REGISTRATION"      : "Patient Registration Report",
-    "UPDATE_STOCK"              : "Update Stock",
     "CASH_PAYMENTS"             : "Cash Payments",
     "SWAP_DEBITOR"              : "Update Debtor",
     "PATIENT_STANDING"          : "Patient Standing Report",
@@ -1111,17 +1128,6 @@
     "CREDITOR_GROUP"  : "Creditor Group"
   },
 
-  "UPDATE_STOCK"      : {
-    "TITLE"           : "Update Stock",
-    "TIMESTAMP"       : "Timestamp",
-    "FIND_STOCK"      : "Find Stock",
-    "STOCK_HISTORY"   : "Stock History",
-    "SUBMIT"          : "Submit Update",
-    "SEARCH_TEXT"     : "Search by code or description",
-    "UPDATE_SUCCESS"  : "Stock updated!",
-    "UPDATE_FAILURE"  : "Cannot update stock",
-    "INVALID_PRICE"   : "Invalid price provided"
-  },
 
   "STOCK" : {
     "MAIN" : {

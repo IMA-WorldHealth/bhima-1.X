@@ -6,6 +6,7 @@
 
 .action {
   cursor: pointer;
+  color : inherit;
 }
 
 .form-condensed .form-group {

@@ -93,5 +93,20 @@
     "title" : "Record Not Found",
     "ref" : "ERR_RECORD_NOT_FOUND",
     "tmpl" : "The record you were looking for could not be retrieved"
+  },
+  "ERR_INVALID_PRICE" : {
+    "title" : "Invalid Price Detected",
+    "ref" : "ERR_INVALID_PRICE",
+    "tmpl" : "Items require a nonzero, positive price.  The price '{0}' is invalid or empty."
+  },
+  "ERR_INVALID_CODE" : {
+    "title" : "Invalid Code Detected",
+    "ref" : "ERR_INVALID_CODE",
+    "tmpl" : "An invalid code was detected in the input.  The code '{0}' is invalid or empty."
+  },
+  "ERR_INVALID_LABEL" : {
+    "title" : "Invalid Label Detected",
+    "ref" : "ERR_INVALID_LABEL",
+    "tmpl" : "An invalid label was detected in the input.  Labels must be alphanumeric positive length strings.  The label '{0}' is invalid or empty."
   }
 }

@@ -95,16 +95,21 @@ angular.module('bhima.services')
         throw : function () {
           var code = arguments[0],
             err = errorCodes[code] || errorCodes['0'],
-            prefix = '[' + (module ? module + ':' : '') + code + '] ',
-            args,
-            title, message;
+            prefix = (module ? module + ' : ' : '') + code,
+            args, message;
 
-          title = prefix + err.title;
           args = Array.prototype.slice.call(arguments);
-          message = templateMessage.call(this, args.slice(1));
+          args[0] = err.tmpl;
 
-          $log.debug('Title is: ', title);
-          $log.debug('Template is: ', message);
+          message = templateMessage.apply(this, args);
+
+          messenger.error({
+            namespace : prefix,
+            title : err.title,
+            description : message,
+            status: '900',
+            statusText : 'Client Error'
+          });
 
           // FIXME: this can be re-written as a custom error object
           return new CustomError(code, module, message);
