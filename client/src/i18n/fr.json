@@ -1268,5 +1268,13 @@
     "LABEL_CC"               : "Designation",
     "TYPE_CC"                : "Type",
     "NOTE"                   : "Description"
+},
+
+"EXPIRING" : {
+    "TITLE" : "Rapport d'Expiration de medicaments",
+    "ALL_DEPOTS" : "Tous les depots",
+    "DAY" : "Aujourd'ui",
+    "MONTH" : "Ce mois",
+    "WEEK"  : "Cette semaine"
 }
 }

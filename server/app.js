@@ -671,6 +671,11 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   .done();
 });
 
+app.get('/expiring/:depot_uuid/:df/:dt/:option/:flag', function (req, res, next){
+
+
+});
+
 // FIXME : Testing
 app.get('/error', function (req, res, next) {
   var TestErr = liberror.namespace('TestError');
