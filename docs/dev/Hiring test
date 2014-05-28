@@ -22,3 +22,55 @@ Questions Pratiques
 2.
 
 
+Jonathan's Ideas
+
+Theoretical Questions:
+
+1. Explain the respective roles of HTML, CSS, and JavaScript in creating a dynamic web site.
+
+  Best Answer) HTML provides the structure of the document, as well as content.  CSS layers on top of HTML to add
+    style and minimal interactivity.  JavaScript render the page dynamic, allowing for components to be loaded dynamically, or
+    upon user input, as well as editting the Document Object Model.
+
+2. What is a Version Control System (VCS) and why is it important?  Examples of VCS are Git, Subversion, Bazaar.
+
+  Best Answer) Version Control Systems are programs which add time-stamped versioning to documents in the file system, and support
+    rolling back changes on files.  In large teams, they are critical for collaborative development, to ensure that people can work
+    on the same code base and merge changes seamlessly.  Finally, they contain some advanced features such as branching, rebasing,
+    and remote repositories which protect your code by distributing copies of the files and allowing ease of collaborative development.
+
+3. What role does the server play in client/server web architecture?  What role does the client play?
+  
+  Best Answer) In the client/server web model, the server's primary job is to host the code and send it to the client upon request
+    (i.e. to serve), along with files, documents, images, and other data.  While some cacheing technologies allow the client to 
+    hold application code, the server generally must contain all code to allow new clients to connect.  In addition to holding the 
+    application, the server holds any shared data between clients, lists of client connections, manages the encryption of connections,
+    and permissions/security of the website.
+
+    The client is responsible for requesting, downloading, and executing code from the server.  Furthermore, the client is responsible
+    for rendering the application or files sent from the server, and presents a canvas for user interactivity.
+
+4. What advantages do RDBMS offer over a regular file system?
+  
+  Best Answer) Relational Database Management Systems are built to scale multiple users (or millions) reading, writing, and removing data 
+  from the same database.  In this respect, they are much better at resolving conflicts when multiple users wish to access or modify the 
+  same record, and maintain good performance even when lots of reads and writes are occuring simultaneously.  Databases also impose a data
+  model on the file system, allowing the database engine to reject certain data if they are do not fit the same type (INT or TEXT) and provide
+  a structured way to relate pieces of data together through use of keys.  Relational databases also support INDEXes which allow extremely
+  fast lookups of data, much faster than file systems.  Most RDBMSs support versioning natively, so that transactions can be "rolled back"
+  to their previous state before a modification or removal.  Finally, databases are often very portable.  For example, SQLite is composed of
+  a single flat file that runs almost all operating systems one can imagine.
+
+Practical Questions
+
+1. Write pseudo code to sort the following array in increasing order.  The code to generate the array of random numbers is included for reference.
+
+//
+// var array = Array.apply(null, { length : 100 }).map(Function.call, function () { return Math.round(100 * Math.random()); });
+// console.log(array);
+
+[ 7,79,52,26,84,16,60,84,27,3,83,46,82,83,68,13,83,
+  17,57,65,45,22,13,72,4,69,45,75,38,80,21,19,49,36,
+  96,89,37,51,31,93,97,25,79,4,22,85,24,42,21,
+  25,85,3,9,47,34,30,24,74,90,77
+]
