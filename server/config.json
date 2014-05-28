@@ -59,7 +59,8 @@
       "/costCenterAccount/",
       "/removeFromCostCenter/",
       "/cost/",
-      "/profit/"
+      "/profit/",
+      "/favicon.ico"
     ]
   }
 }

@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('expiring', [
+.controller('allTransactions', [
   '$scope',
   'connect',
   'appstate',
