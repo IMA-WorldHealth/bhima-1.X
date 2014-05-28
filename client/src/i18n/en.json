@@ -587,7 +587,8 @@
     "EMPLOYEE"                  : "Employee",
     "DEPOT"                     : "Depot",
     "STOCK_MANAGEMENT"          : "Stock Management",
-    "INVENTORY_MANAGEMENT"      : "Inventory Management"
+    "INVENTORY_MANAGEMENT"      : "Inventory Management",
+    "SERVICE"                   : "Services"
   },
 
   "JOURNAL_VOUCHER"  : {
