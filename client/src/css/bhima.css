@@ -258,6 +258,12 @@ header + .content {
   border-color     : #357ebd;
 }
 
+.message.message-info {
+  color: #ffffff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+
 .message.message-success {
   background-color: #dff0d8;
   border-color: #d6e9c6;

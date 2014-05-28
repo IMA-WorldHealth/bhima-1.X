@@ -26,16 +26,10 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
-    function error (err) {
-      throw err;
-      // messenger.error(err);
-    }
-
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       validate.process(dependencies)
-      .then(startup)
-      .catch(error);
+      .then(startup);
     });
 
     $scope.delete = function (depot) {
@@ -43,8 +37,7 @@ angular.module('bhima.controllers')
       .then(function () {
         $scope.depots.remove(depot.uuid);
         messenger.info($translate.instant('DEPOT.DELETE_SUCCESS'));
-      })
-      .catch(error);
+      });
     };
 
     $scope.edit = function (depot) {
@@ -69,8 +62,7 @@ angular.module('bhima.controllers')
         $scope.depots.put(record);
         session.action = '';
         session.edit = {};
-      })
-      .catch(error);
+      });
     };
 
     $scope.save.new = function () {
@@ -85,8 +77,7 @@ angular.module('bhima.controllers')
         $scope.depots.post(record);
         session.action = '';
         session.new = {};
-      })
-      .catch(error);
+      });
     };
 
     function generateReference () {
