@@ -56,39 +56,56 @@
 
   <div class="row" ng-repeat="item in ledger.data">
     <div class="col-xs-12">
-      <div class="panel panel-danger">
-        <div class="panel-body">
-          <div class="col-xs-3">
-            <span 
-              class="glyphicon"
-              ng-class="{
-                'glyphicon-remove-sign error' : true
-              }"
-              ></span> Invoice has not been payed
-          </div>
-          <div class="col-xs-3">
-            <span 
-              class="glyphicon"
-              ng-class="{
-                'glyphicon-ok-sign correct' : true
-              }"
-              ></span> Invoice has been fully payed
-          </div>
-          <div class="col-xs-3">
-            <span 
-              class="glyphicon"
-              ng-class="{
-                'glyphicon-minus-sign warn' : true
-              }"
-              ></span> Invoice has been partially payed
-          </div>
 
-          <!-- TODO get sale details from ledger -->
-          <div class="col-xs-3">
-            Sale {{item.inv_po_id}}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-th-list"></span> Available Prescriptions
+        </div>
+
+        <div class="panel-body">
+          <div class="panel panel-danger">
+            <div class="panel-body">
+              
+              <div class="col-xs-3">
+                <b>Sale '{{item.abbr}} {{item.reference}}'</b>
+              </div>
+              <div class="col-xs-3" ng-switch on="somevar=1">
+                
+
+                <div ng-switch-when="1">
+                  <span 
+                  class="glyphicon"
+                  ng-class="{
+                    'glyphicon-remove-sign error' : true
+                  }"
+                  ></span> Invoice has not been payed
+                </div>
+              
+                <div ng-switch-when="2">
+                  <span 
+                  class="glyphicon"
+                  ng-class="{
+                    'glyphicon-ok-sign correct' : true
+                  }"
+                  ></span> Invoice has been fully payed
+                </div>
+
+                <div ng-switch-when="3">
+                  <span 
+                  class="glyphicon"
+                  ng-class="{
+                    'glyphicon-minus-sign warn' : true
+                  }"
+                  ></span> Invoice has been partially payed
+                </div>
+              </div>
+                
+              
+            </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
