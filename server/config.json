@@ -60,7 +60,9 @@
       "/removeFromCostCenter/",
       "/cost/",
       "/profit/",
-      "/favicon.ico"
+      "/favicon.ico",
+      "/expiring/",
+      "/expiring_complete/"
     ]
   }
 }

@@ -571,7 +571,12 @@
     "COST_CENTER"         : "Centre de frais",
     "CHARGE"              : "Charge",
     "PROFIT"              : "Profit",
-    "RESULT"              : "Resultat"
+    "RESULT"              : "Resultat",
+    "LOT_NUMBER"          : "Numero Lot",
+    "DESIGNATION"         : "Designation",
+    "INITIAL_STOCK"       : "Stock Initial",
+    "CONSUMED_STOCK"      : "Stock Consomme",
+    "CURRENT_STOCK"       : "Stock Courrant"
   },
 
   "REPORT"                  : {
