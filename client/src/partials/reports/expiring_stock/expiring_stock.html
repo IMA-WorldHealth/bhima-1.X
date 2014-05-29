@@ -21,141 +21,62 @@
 
   <div>
     <div class="col-xs-2">
-      <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" ng-change="doSearching()">
+      <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" ng-change="doSearching(1)">
     </div>
     <div class="col-xs-2">
       <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" ng-change="doSearching(1)">
     </div>
     <div class="col-xs-4 pull-right">
-      <select class="form-bhima" ng-model="session.depot" ng-change="doSearching()">
+      <select class="form-bhima" ng-model="session.depot" ng-change="doSearching(1)">
         <option selected value="{{'*'}}">{{ 'EXPIRING.ALL_DEPOTS' | translate }}</option>
-        <option ng-repeat="depot in model.depots.data" value="{{depots.uuid}}">{{ depot.text}}</option>
+        <option ng-repeat="depot in model.depots.data" value="{{depot.uuid}}">{{ depot.text}}</option>
       </select>
     </div>
   </div>
 </section>
 
-<div class="report">
+<div class="report report-compressed">
   <div class="reportBody">
-    <div class="reportFrame" ng-switch="mode">
-
-        <div ng-switch-default>
-          <h4>{{ "ALLTRANSACTIONS.DEFAULT" | translate }}</small></h4>
-          <table id="transactionsTable" class="reportTable">
-            <thead>
-              <tr>
-                <th>{{ "COLUMNS.ID" | translate }}</th>
-                <th>{{ "COLUMNS.TRANS_ID" | translate }}</th>
-                <th>{{ "COLUMNS.TRANS_DATE" | translate }}</th>
-                <th>{{ "COLUMNS.DEBIT" | translate }}</th>
-                <th>{{ "COLUMNS.CREDIT" | translate }}</th>
-                <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
-                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                <th>{{ "COLUMNS.COMMENT" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat='record in records'>
-                <td> {{ record.id }} </td>
-                <td> {{ record.trans_id }} </td>
-                <td> {{ record.trans_date | date }} </td>
-                <td><span ng-bind-html="record.debit | intlcurrency:model.c"></span></td>
-                <td><span ng-bind-html="record.credit | intlcurrency:model.c"></span></td>
-                <td> {{ record.account_number }} </td>
-                <td> {{ record.description}} </td>
-                <td> {{ record.comment}} </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="7">
-                  {{ "COLUMNS.TOTAL" | translate }} : {{ records.length }} /
-                  {{"COLUMNS.DEBIT" | translate}} : <span ng-bind-html="somDebit | intlcurrency:model.c"></span> /
-                  {{"COLUMNS.CREDIT" | translate}} : <span ng-bind-html="somCredit | intlcurrency:model.c"></span>
-                </th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <div ng-switch-when="selected">
-          <h4>{{ "ALLTRANSACTIONS.SELECTED" | translate }} <small> {{model.account_number}}</small></h4>
-          <table id="transactionsTable" class="reportTable">
-            <thead>
-              <tr>
-                <th>{{ "COLUMNS.ID" | translate }}</th>
-                <th>{{ "COLUMNS.TRANS_ID" | translate }}</th>
-                <th>{{ "COLUMNS.TRANS_DATE" | translate }}</th>
-                <th>{{ "COLUMNS.DEBIT" | translate }}</th>
-                <th>{{ "COLUMNS.CREDIT" | translate }}</th>
-                <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
-                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                <th>{{ "COLUMNS.COMMENT" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat='record in records'>
-                <td> {{ record.id }} </td>
-                <td> {{ record.trans_id }} </td>
-                <td> {{ record.trans_date | date }} </td>
-                <td><span ng-bind-html="record.debit | intlcurrency:model.c"></span></td>
-                <td><span ng-bind-html="record.credit | intlcurrency:model.c"></span></td>
-                <td> {{ record.account_number }} </td>
-                <td> {{ record.description}} </td>
-                <td> {{ record.comment}} </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="7">
-                  {{ "COLUMNS.TOTAL" | translate }} : {{ records.length }} /
-                  {{"COLUMNS.DEBIT" | translate}} : <span ng-bind-html="somDebit | intlcurrency:model.c"></span> /
-                  {{"COLUMNS.CREDIT" | translate}} : <span ng-bind-html="somCredit | intlcurrency:model.c"></span>
-                </th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <div ng-switch-when="all">
-          <h4>{{ "ALLTRANSACTIONS.DEFAULT" | translate }}</small></h4>
-          <table id="transactionsTable" class="reportTable">
-            <thead>
-              <tr>
-                <th>{{ "COLUMNS.ID" | translate }}</th>
-                <th>{{ "COLUMNS.TRANS_ID" | translate }}</th>
-                <th>{{ "COLUMNS.TRANS_DATE" | translate }}</th>
-                <th>{{ "COLUMNS.DEBIT" | translate }}</th>
-                <th>{{ "COLUMNS.CREDIT" | translate }}</th>
-                <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
-                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                <th>{{ "COLUMNS.COMMENT" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat='record in records'>
-                <td> {{ record.id }} </td>
-                <td> {{ record.trans_id }} </td>
-                <td> {{ record.trans_date | date }} </td>
-                <td><span ng-bind-html="record.debit | intlcurrency:model.c"></span></td>
-                <td><span ng-bind-html="record.credit | intlcurrency:model.c"></span></td>
-                <td> {{ record.account_number }} </td>
-                <td> {{ record.description}} </td>
-                <td> {{ record.comment}} </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="7">
-                  {{ "COLUMNS.TOTAL" | translate }} : {{ records.length }} /
-                  {{"COLUMNS.DEBIT" | translate}} : <span ng-bind-html="somDebit | intlcurrency:model.c"></span> /
-                  {{"COLUMNS.CREDIT" | translate}} : <span ng-bind-html="somCredit | intlcurrency:model.c"></span>
-                </th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+    <div class="reportFrame">
+      <h4 class="visible-print">{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <table id="patientTable" class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.DESIGNATION" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+            <th>{{ "COLUMNS.INITIAL_STOCK" | translate }}</th>
+            <th>{{ "COLUMNS.CONSUMED_STOCK" | translate }}</th>
+            <th>{{ "COLUMNS.CURRENT_STOCK" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat='expiring in configuration.expirings'>
+            <td>{{expiring.tracking_number}}</td>
+            <td>{{expiring.lot_number}}</td>
+            <td>{{expiring.text}}</td>
+            <td>{{expiring.expiration_date | date}}</td>
+            <td>{{expiring.initial}}</td>
+            <td>{{expiring.consumed}}</td>
+            <td>{{expiring.initial - expiring.consumed}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
 
+<section class="bar-bottom" style="background-color:#fff">
+  <table style="width: 99%">
+    <tbody>
+      <td style="width:50%;">
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ payments.length }}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+        <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ session.unique_debitors }}</b>
+      </td>
+    </tbody>
+  </table>
+</section>

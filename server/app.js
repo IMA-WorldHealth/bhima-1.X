@@ -671,8 +671,40 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   .done();
 });
 
-app.get('/expiring/:depot_uuid/:df/:dt/:option/:flag', function (req, res, next){
+app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next){
+  console.log('le depot uuid est ', req.params.depot_uuid);
+  var condition = "WHERE stock.expiration_date>="+sanitize.escape(req.params.df)+" AND stock.expiration_date<="+sanitize.escape(req.params.dt);
+  condition+= (req.params.depot_uuid=='*')? "" : " AND consumption.depot_uuid="+sanitize.escape(req.params.depot_uuid)+" ";
+   var sql =
+      "SELECT stock.inventory_uuid, stock.tracking_number, stock.lot_number, SUM(consumption.quantity) AS consumed, " +
+        "stock.expiration_date, stock.quantity as initial " +
+      "FROM stock LEFT JOIN consumption ON " +
+        "stock.tracking_number=consumption.tracking_number "+condition+
+        "GROUP BY stock.tracking_number;";
+  db.exec(sql)
+  .then(function (ans){
+    console.log('core server on a : ', ans);
+    res.send(ans);
+  })
+  .catch(function (err){
+    next(err);
+  })
+  .done();
+});
 
+app.get('/expiring_complete/:inv_uuid', function (req, res, next){
+  var sql = "SELECT * FROM inventory WHERE inventory.uuid="+sanitize.escape(req.params.inv_uuid);
+  db.exec(sql)
+  .then(function (ans){
+    res.send(ans);
+  })
+  .catch(function (err){
+    next(err);
+  })
+  .done();
+})
+
+app.get('/allLots/:depot_uuid', function (req, res, next){
 
 });
 

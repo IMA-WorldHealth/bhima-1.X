@@ -7,7 +7,8 @@ angular.module('bhima.controllers')
   '$filter',
   'validate',
   'util',
-  function ($scope, connect, appstate, messenger, $filter, validate, util) {
+  '$q',
+  function ($scope, connect, appstate, messenger, $filter, validate, util, $q) {
 
     $scope.options = [
       {
@@ -49,20 +50,26 @@ angular.module('bhima.controllers')
       session.dateFrom = new Date();
       session.dateTo = new Date();
       formatDates();
+      $scope.configuration = getConfiguration();
+      doSearching();
     }
 
     function week () {
       session.dateFrom = new Date();
-      session.dateTo = new Date();
-      session.dateFrom.setDate(session.dateTo.getDate() - session.dateTo.getDay());
-      console.log('voici notre nouveaux dates ', session.dateFrom, 'et', session.dateTo);
+      session.dateFrom.setDate(session.dateFrom.getDate() - session.dateFrom.getDay());
+      session.dateTo = new Date(session.dateFrom.getTime()+(6*3600000));
+      formatDates();
+      $scope.configuration = getConfiguration();
+      doSearching();
     }
 
     function month () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
       session.dateFrom.setDate(1);
-      console.log('voici notre nouveaux dates ', session.dateFrom, 'et', session.dateTo);
+      formatDates();
+      $scope.configuration = getConfiguration();
+      doSearching();
     }
 
     function formatDates () {
@@ -70,8 +77,35 @@ angular.module('bhima.controllers')
       session.dateTo = $filter('date')(session.dateTo, 'yyyy-MM-dd');
     }
 
-    function doSearching (){
-      formatDates();
+    function doSearching (p){
+      if(p && p===1) $scope.configuration =getConfiguration();
+      console.log('configuration', $scope.configuration);
+      connect.fetch('expiring/'+$scope.configuration.depot_uuid+'/'+$scope.configuration.df+'/'+$scope.configuration.dt)
+      .then(complete)
+      .then(extendData)
+      .catch(function(err){
+      })
+    }
+
+    function complete (models){
+      $scope.uncompletedList = models;
+      return $q.all(models.map(function (m){
+        return connect.fetch('expiring_complete/'+m.inventory_uuid);
+      }))
+    }
+
+    function extendData (results){
+      results.forEach(function (item, index){
+        if(!$scope.uncompletedList[index].consumed) $scope.uncompletedList[index].consumed = 0;
+        $scope.uncompletedList[index].text = item[0].text;
+      })
+      $scope.configuration.expirings = $scope.uncompletedList;
+    }
+
+    function fillReport (res){
+    }
+
+    function handleError (){
     }
 
     function init (model){
@@ -79,12 +113,12 @@ angular.module('bhima.controllers')
       session.depot = '*';
       search($scope.options[0]);
       $scope.configuration = getConfiguration();
-      console.log('et la configuration est ',$scope.configuration);
+      doSearching();
     }
 
     function getConfiguration (){
       return {
-        depot_uuid : session.depot.uuid,
+        depot_uuid : session.depot,
         df         : session.dateFrom,
         dt         : session.dateTo
       }
@@ -95,8 +129,8 @@ angular.module('bhima.controllers')
       dependencies.depots.where=['depots.enterprise_id='+$scope.enterprise.id];
       validate.process(dependencies)
       .then(init)
-
     });
+
     $scope.search = search;
     $scope.doSearching = doSearching;
 

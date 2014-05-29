@@ -20,11 +20,11 @@ module.exports = function (db, sanitize, Store) {
 
     // contains { tracking_number, quantity, expiration_date }
     var _depot, store = new Store({ identifier : 'tracking_number' });
-  
+
     // depot ID is now a UUID
     _depot = depot;
     // _depot = Number(depot);
-    
+
     array
     .filter(function (transaction) {
       var filterDepot = transaction.depot_entry === _depot || transaction.depot_exit === _depot;
@@ -130,7 +130,7 @@ module.exports = function (db, sanitize, Store) {
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
     });
-  
+
   }
 
   return function router (url, depot) {
