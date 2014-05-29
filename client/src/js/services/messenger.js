@@ -25,9 +25,10 @@ angular.module('bhima.services')
       },  LIFESPAN_LIMIT);
     }
 
+
     function trust(data) {
-      console.log('trusting ...', data.toString());
-      return $sce.trustAsHtml(data.toString());
+      console.log('trusting ...', String(data));
+      return $sce.trustAsHtml(String(data));
     }
 
     function enqueue(message) {

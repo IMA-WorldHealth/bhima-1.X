@@ -51,13 +51,13 @@ module.exports = function (db, sanitize, Store) {
     _id = sanitize.escape(id);
 
     sql =
-      "SELECT stock.tracking_number, stock.lot_number, movement.depot_entry, movement.depot_exit, SUM(movement.quantity) AS quantity, " +
-        "stock.expiration_date, code, inventory.text as stock_description " +
-      "FROM inventory JOIN stock JOIN movement ON " +
-        "inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number " +
-      "WHERE (movement.depot_entry = " + _depot + " OR movement.depot_exit = " + _depot + ") " +
-      "AND stock.tracking_number = " + _id + " " +
-      "GROUP BY stock.tracking_number;";
+      'SELECT stock.tracking_number, stock.lot_number, movement.depot_entry, movement.depot_exit, SUM(movement.quantity) AS quantity, ' +
+        'stock.expiration_date, code, inventory.text as stock_description ' +
+      'FROM inventory JOIN stock JOIN movement ON ' +
+        'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
+      'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
+      'AND stock.tracking_number = ' + _id + ' ' +
+      'GROUP BY stock.tracking_number;';
 
     return db.exec(sql)
     .then(function (rows) {
@@ -73,13 +73,13 @@ module.exports = function (db, sanitize, Store) {
     _code = sanitize.escape(code);
 
     sql =
-      "SELECT stock.tracking_number, movement.depot_entry, movement.depot_exit, SUM(movement.quantity) AS quantity, " +
-        "stock.expiration_date, code " +
-      "FROM inventory JOIN stock JOIN movement ON " +
-        "inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number " +
-      "WHERE (movement.depot_entry = " + _depot + " OR movement.depot_exit = " + _depot + ") " +
-      "AND inventory.code = " + _code +
-      "GROUP BY stock.tracking_number;";
+      'SELECT stock.tracking_number, movement.depot_entry, movement.depot_exit, SUM(movement.quantity) AS quantity, ' +
+        'stock.expiration_date, code ' +
+      'FROM inventory JOIN stock JOIN movement ON ' +
+        'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
+      'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
+      'AND inventory.code = ' + _code +
+      'GROUP BY stock.tracking_number;';
 
     return db.exec(sql)
     .then(function (rows) {
@@ -117,13 +117,13 @@ module.exports = function (db, sanitize, Store) {
     _depot = sanitize.escape(depot);
 
     sql =
-      "SELECT stock.tracking_number, movement.depot_entry, movement.depot_exit, SUM(stock.quantity) AS quantity, " +
-        "stock.expiration_date, code " +
-      "FROM inventory JOIN stock JOIN movement ON " +
-        "inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number " +
-      "WHERE (movement.depot_entry = " + _depot + " OR movement.depot_exit = " + _depot + ") " +
-      "GROUP BY inventory.code " +
-      "ORDER BY inventory.code;";
+      'SELECT stock.tracking_number, movement.depot_entry, movement.depot_exit, SUM(stock.quantity) AS quantity, ' +
+        'stock.expiration_date, code ' +
+      'FROM inventory JOIN stock JOIN movement ON ' +
+        'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
+      'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
+      'GROUP BY inventory.code ' +
+      'ORDER BY inventory.code;';
 
     return db.exec(sql)
     .then(function (rows) {
