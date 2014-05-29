@@ -6,6 +6,10 @@
     box-shadow: none !important;
   }
 
+  nav {
+    display : none !important;
+  }
+
   body {
     width: 100%;
   }
