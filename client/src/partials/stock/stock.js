@@ -56,7 +56,7 @@ angular.module('bhima.controllers')
     config.reports = [
       {
         key : 'STOCK.REPORT.STOCK_COUNT',
-        link : '/report/stock_count'
+        link : '/count/'
       }
     ];
 
@@ -94,9 +94,11 @@ angular.module('bhima.controllers')
 
           if (!validDepot) {
             messenger.warning('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
-            return session.configure = true;
+            session.configure = true;
+            return;
           }
-          $scope.depot = depot; session.configured = true;
+          $scope.depot = depot;
+          session.configured = true;
         } else {
           session.configure = true;
         }
@@ -135,7 +137,7 @@ angular.module('bhima.controllers')
 
     $scope.setDepot = function setDepot (depot) {
       var verifySet = confirm('Select depot \'' + depot.text + '\' for managing stock?');
-      if (!verifySet) return;
+      if (!verifySet) { return; }
 
       cache.put('depot', depot);
       $scope.depot = depot;
@@ -145,7 +147,7 @@ angular.module('bhima.controllers')
     
     $scope.reconfigure = function () {
       var verifyConfigure = confirm('Are you sure you want to change the depot for Stock Management? The current depot is \'' + $scope.depot.text + '\'');
-      if (!verifyConfigure) return;
+      if (!verifyConfigure) { return; }
 
       $scope.depot = null;
       cache.remove('depot');
