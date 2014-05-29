@@ -5,13 +5,13 @@ angular.module('bhima.controllers')
   '$q',
   'validate',
   'appcache',
-  function ($scope, $location, $q, validate, appcache) {
+  function ($scope, $location, $q, validate, AppCache) {
     var dependencies = {}, configuration = $scope.configuration = {};
     var session = $scope.session = {
       configure : false,
       complete : false
     };
-    var cache = new appcache('primary_cash');
+    var cache = new AppCache('primary_cash');
 
     dependencies.cashBox = {
       query : {
@@ -63,20 +63,29 @@ angular.module('bhima.controllers')
       return cache.fetch('cash_box');
     }
 
-    function parseConfiguration(cashBox) {
-      if (!angular.isDefined(cashBox)) {
+    function parseConfiguration(cashbox) {
+      var currentModel = $scope.cashBox;
+      var configurationExists, validConfiguration;
+    
+      configurationExists = angular.isDefined(cashbox);
+      if (!configurationExists) {
+        session.configure = true;
+        return;
+      }
+
+      validConfiguration = angular.isDefined(currentModel.get(cashbox.id));
+      if (!validConfiguration) {
         session.configure = true;
         return;
       }
       
+      session.cashbox = cashbox;
       session.complete = true;
       return;
     }
 
     function initialise() {
-
-      // Select default cashbox
-      session.cashbox = $scope.cashBox.data[0].id;
+      // Initialise
     }
 
     function loadPath(path) {
@@ -85,6 +94,22 @@ angular.module('bhima.controllers')
       $location.path(path + session.cashbox);
     }
 
+    function setConfiguration (cashbox) {
+      cache.put('cash_box', cashbox);
+      session.configure = false;
+      session.complete = true;
+      session.cashbox = cashbox;
+    }
+
+    function reconfigure() {
+      cache.remove('cash_box');
+      session.cashbox = null;
+      session.configure = true;
+      session.complete = false;
+    }
+
     $scope.loadPath = loadPath;
+    $scope.setConfiguration = setConfiguration;
+    $scope.reconfigure = reconfigure;
   }
 ]);

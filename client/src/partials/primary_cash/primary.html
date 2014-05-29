@@ -13,11 +13,20 @@
   <div 
     class="pull-right"
     style="margin-top : 1px;">
-    <span ><b>{{session.cashbox.reference ? '[' + session.cashbox.reference + ']' : ''}} </b>
-      {{depot.text}}</span>
-
-    <button style="margin-left: 5px;" ng-disabled="session.configure" ng-click="reconfigure()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
-
+    <span>
+      <b>{{session.cashbox.id ? 
+        '[' + session.cashbox.id + ']' : 
+        ''}} 
+      </b>
+      {{session.cashbox.text}}</span>
+    
+    <button 
+      style="margin-left: 5px;" 
+      ng-disabled="session.configure" 
+      ng-click="reconfigure()" 
+      class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-repeat"></span>
+    </button>
   </div>
 </nav>
 
@@ -36,7 +45,7 @@
             <div 
               class="panel panel-default configure-item"
               ng-repeat="box in cashBox.data"
-              ng-click="">
+              ng-click="setConfiguration(box)">
 
               <div class="panel-body">
                 <div>
