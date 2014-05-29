@@ -382,7 +382,9 @@
     "DEPOT"                     : "Depot",
     "STOCK_DISTRIBUTION"        : "Distribution Stock",
     "EMPLOYEE"                  : "Gestion Employees",
-    "SERVICE"                   : "Gestion des Services"
+    "SERVICE"                   : "Gestion des Services",
+    "STOCK_MANAGEMENT"          : "Gestion de Stock",
+    "INVENTORY_MANAGEMENT"      : "Gestion de Inventaire"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -447,6 +449,64 @@
     "ALERT_TWO"             : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports.",
     "EDIT"                  : " Editer l'annee fiscale selectionnee; Bloquer et debloquer des periodes and voir l'ouverture des balances.",
     "CREATION"              : "Creer une nouvelle annee fiscale"
+  },
+
+  "STOCK" : {
+    "MAIN" : {
+      "TITLE"               : "Gestion de Stock",
+      "MODULES"             : "Modules Disponible",
+      "UTILITIES"           : "Utilitaires de Stock",
+      "CONFIGURE_WAREHOUSE" : "Selectionner depot",
+      "WAREHOUSE_INFO_1"    : "Configurer le depot utiliser par defaut dans ce module.",
+      "WAREHOUSE_INFO_2"    : "Toutes operations des stock sera affectee au depot selectionner.",
+      "WAREHOUSE_INFO_3"    : "Votre choix peut-etre changer quand vous voulez.",
+      "REPORTS"             : "Rapports Stock"
+    },
+    "ENTRY" : {
+      "KEY"                 : "Entree de Stock",
+      "TITLE"               : "Entree de Stock",
+      "SELECT"              : "Selectionner",
+      "NUM_ITEMS"           : "Numero Items",
+      "ENTRY_MANIFEST"      : "Document des Entrees",
+      "SELECT_DEPOT"        : "Selectionner un depot",
+      "FIND_PURCHASE_ORDER" : "Choisir une Ordre d'Achat",
+      "ORDER_DETAIL"        : "Details Ordre",
+      "ASSIGN_LOTS"         : "Affecter lots",
+      "CANCEL"              : "Annuler",
+      "LOT_NUMBER"          : "No. Lot",
+      "ORDER_DETAILS"       : "Details Ordre",
+      "REMAINING"           : "Rester",
+      "ASSIGNED"            : "Affectee",
+      "REVIEW"              : "Revoir les Affectations",
+      "REQUESTED_BY"        : "Demandee par",
+      "ADD_LOT"             : "Ajouter lot",
+      "ENTRY_DATE"          : "Date d'entree",
+      "ENTER_STOCK"         : "Faire entrer les Stock",
+      "REPORT"              : "Rapport d'entrer"
+    },
+    "EXIT" : {
+      "KEY" : "Stock Distribution"
+    },
+    "LOSS"     : {
+      "KEY"    : "Stock Loss"
+    },
+    "MOVEMENT" : {
+      "KEY"    : "Movements des Stock",
+      "TITLE"  : "Movements des Stock",
+      "FORM"   : "Documents des Movements"
+    },
+    "SEARCH" : {
+      "KEY"          : "Recherchers Items Stock",
+      "TITLE"        : "Recherchers Items Stock",
+      "NO_SELECTION" : "Aucune item selectonner.  S'il vous plait, choisissez une item en haut.",
+      "MANIFEST"     : "Documents des Stocks"
+    },
+    "EXPIRE" : {
+      "KEY" : "Expiring Stock"
+    },
+    "REPORT" : {
+      "STOCK_COUNT" : "Stock Count"
+    }
   },
 
   "COLUMNS"               : {
@@ -1109,65 +1169,62 @@
   },
 
   "PRIMARY_CASH" : {
-    "TITLE"                 : "Caisse Pricipale",
-    "EXPENSES"              : "Depenses",
-    "INCOMES"               : "Recettes",
-    "GENERIC"               : "Generique",
-    "NAVIGATION"            : "Naviguation",
-    "CONFIGURE"             : "Configuration",
-    "HOME"                  : "caisse principale",
-
-    "EXPENSE"               : {
-                                  "PURCHASE"                : "Achat",
-                                  "GENERIC_TITLE"           : "Depenses Generiques",
-                                  "GENERIC_RECEIPT"         : "Recettes Generiques"
-                              },
-    "INCOME"                : {
-                                  "TRANSFER"                : "Transfert",
-                                  "CONVENTION"              : "Convention",
-                                  "GENERIC_INCOME"          : "Recette generale"
-
-                              }
+    "TITLE"        : "Caisse Pricipale",
+    "EXPENSES"     : "Depenses",
+    "INCOMES"      : "Recettes",
+    "GENERIC"      : "Generique",
+    "NAVIGATION"   : "Naviguation",
+    "CONFIGURE"    : "Configuration",
+    "HOME"         : "caisse principale",
+    "EXPENSE" : {
+      "PURCHASE"        : "Achat",
+      "GENERIC_TITLE"   : "Depenses Generiques",
+      "GENERIC_RECEIPT" : "Recettes Generiques"
+    },
+    "INCOME" : {
+      "TRANSFER"        : "Transfert",
+      "CONVENTION"      : "Convention",
+      "GENERIC_INCOME"  : "Recette generale"
+    }
   },
 
-    "DISTRIBUTION" : {
-    "TITLE"            : "Distribution",
-    "SALE_DETAILS"      : "Details des ventes",
-    "ADD_ROW"          : "Ajouter Item",
-    "DESCRIPTION"      : "Description",
-    "SUBMIT"           : "Soumettre Note de Credit",
-    "SUBMIT"           : "Soumettre",
-    "PATIENT_COVERED"  : "Patient est couvert par la convention",
-    "APPLIES_GLOBALLY" : "Appliquer globalement",
-    "APPLIES_TO_ITEM"  : "Appliquer par item",
-    "TOTAL"            : "Total",
-    "SELECTED_SALE_DETAILS"  : "Detail de la vente",
-    "NUM_FACTURE"            : "Numero Facture ",
-    "SALE_DATE"              : "Date de Vente",
-    "COST"                   : "Cout",
-    "LOT_DETAILS"            : "Details des Lots",
-    "EMPTY_MESSAGE"          : "Aucune vente selectionnee !"
+  "DISTRIBUTION" : {
+    "TITLE"                 : "Distribution",
+    "SALE_DETAILS"          : "Details des ventes",
+    "ADD_ROW"               : "Ajouter Item",
+    "DESCRIPTION"           : "Description",
+    "SUBMIT"                : "Soumettre",
+    "PATIENT_COVERED"       : "Patient est couvert par la convention",
+    "APPLIES_GLOBALLY"      : "Appliquer globalement",
+    "APPLIES_TO_ITEM"       : "Appliquer par item",
+    "TOTAL"                 : "Total",
+    "SELECTED_SALE_DETAILS" : "Detail de la vente",
+    "NUM_FACTURE"           : "Numero Facture ",
+    "SALE_DATE"             : "Date de Vente",
+    "COST"                  : "Cout",
+    "LOT_DETAILS"           : "Details des Lots",
+    "EMPTY_MESSAGE"         : "Aucune vente selectionnee !"
   },
 
-  "SUPPLIER" :{
-    "TITLE" : "Fournisseur",
-    "CREATE" : "Groupe Crediteur",
+  "SUPPLIER" : {
+    "TITLE"            : "Fournisseur",
+    "CREATE"           : "Groupe Crediteur",
     "SUPPLIER_DETAILS" : "Details Fournisseur",
     "INTL"             : "Internationale",
-    "PHONE"           : "Telephone",
-    "EMAIL"           : "Email",
-    "ADDR_1"          : "Adresse 2",
-    "ADDR_2"          : "Adresse 2",
-    "FAX"             : "Fax",
+    "PHONE"            : "Telephone",
+    "EMAIL"            : "Email",
+    "ADDR_1"           : "Adresse 2",
+    "ADDR_2"           : "Adresse 2",
+    "FAX"              : "Fax",
     "CREATE_SUPPLIER"  : "Creer Fournisseur",
     "OPTIONAL_INFO"    : "Informations Optionnelles"
   },
 
   "DEPOT" : {
-    "TITLE" : "Gestionn des Depot",
+    "TITLE"     : "Gestionn des Depot",
     "NO_DEPOTS" : "Aucun depot trouve",
-    "ADD" : "Ajouter",
-    "ALERT" : "Ce module vous permet de gerer vos depot"
+    "ADD"       : "Ajouter",
+    "ALERT"     : "Ce module vous permet de gerer vos depot"
   },
 
   "EMPLOYEE" : {
@@ -1179,91 +1236,91 @@
   },
 
   "COST_CENTER" : {
-    "TITLE" : "Gestion de Centre de Couts",
-    "NAVIGATION" : "Naviguation",
-    "OPERATION"  : "operations",
+    "TITLE"         : "Gestion de Centre de Couts",
+    "NAVIGATION"    : "Naviguation",
+    "OPERATION"     : "operations",
     "OPERATIONS" : {
-        "CC" : "Centre de couts",
-        "ASSIGN" : "Assignation",
-        "VERSEMENT" : "Versement"
+      "CC"        : "Centre de couts",
+      "ASSIGN"    : "Assignation",
+      "VERSEMENT" : "Versement"
     }
   },
 
-"ANALYSIS_CENTER"              :{
-    "TITLE"                    :   "Centre de couts",
-    "PARENT"                   :   "Gestion de centre de couts",
-    "NAVIGATION"               :   "Naviguation",
-    "REGISTERED"               :   "Centre des cuts enregistres",
-    "INFO"                     :   "Information sur le centre des couts",
-    "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
-    "TEXT"                     :   "Text",
-    "COST"                     :   "Cout",
-    "IS_PROFIT"                :   "Centre de profit",
-    "NOTE"                     :   "Note",
-    "REGISTER"                 :   "Enregistrement",
-    "NEW"                      :   "Nouveau centre",
-    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
-    "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
-    "NONE_FOUND"               :   "Aucun centre de frais trouve !",
-    "MODIFYING"                :   "Modification",
-    "UPDATE_SUCCESS_MESSAGE"   :   "Mise a jour avec succes !",
-    "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
-    "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
-    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
-},
+  "ANALYSIS_CENTER" :{
+      "TITLE"                  :   "Centre de couts",
+      "PARENT"                 :   "Gestion de centre de couts",
+      "NAVIGATION"             :   "Naviguation",
+      "REGISTERED"             :   "Centre des cuts enregistres",
+      "INFO"                   :   "Information sur le centre des couts",
+      "INFO_DESCRIPTION"       :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
+      "TEXT"                   :   "Text",
+      "COST"                   :   "Cout",
+      "IS_PROFIT"              :   "Centre de profit",
+      "NOTE"                   :   "Note",
+      "REGISTER"               :   "Enregistrement",
+      "NEW"                    :   "Nouveau centre",
+      "INSERT_SUCCESS_MESSAGE" :   "Insertion avec succes !",
+      "INSERT_FAIL_MESSAGE"    :   "Erreur durant l'insertion !",
+      "NONE_FOUND"             :   "Aucun centre de frais trouve !",
+      "MODIFYING"              :   "Modification",
+      "UPDATE_SUCCESS_MESSAGE" :   "Mise a jour avec succes !",
+      "UPDATE_FAIL_MESSAGE"    :   "Erreur durant la mise a jour !",
+      "REMOVE_FAIL_MESSAGE"    :   "Erreur durant la suppression !",
+      "REMOVE_SUCCESS_MESSAGE" :   "Suppression avec succes !"
+  },
 
-"VERSEMENT" : {
-    "TITLE"                  : "Versement des comptes",
-    "PARENT"                 : "Gestion de centre de couts",
-    "CHOOSE"                 : "Selectionner centre de couts",
-    "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
-    "VERSER"                 : "Verser",
-    "REMOVE"                 : "Retirer",
-    "NAVIG"                  : "Navigation",
-    "ASSOCIATED_TO"          : "Les comptes associe a : ",
-    "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
-},
+  "VERSEMENT" : {
+      "TITLE"                  : "Versement des comptes",
+      "PARENT"                 : "Gestion de centre de couts",
+      "CHOOSE"                 : "Selectionner centre de couts",
+      "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
+      "VERSER"                 : "Verser",
+      "REMOVE"                 : "Retirer",
+      "NAVIG"                  : "Navigation",
+      "ASSOCIATED_TO"          : "Les comptes associe a : ",
+      "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
+  },
 
-"SERVICE" : {
-    "TITLE"                    : "Gestion des Services",
-    "REGISTERED"               : "Services enregistres",
-    "NONE_FOUND"               : "Aucun service trouve",
-    "REGISTER"                 : "Enregistrement",
-    "COST_CENTER_SELECT"       : "Centre de frais",
-    "SUCCESS_MESSAGE"          : "Insertion avec succes !",
-    "INSERT_FAIL_MESSAGE"      : "Erreur durant l'insertion",
-    "INSERT_SUCCESS_MESSAGE"   :  "Insertion avec succes !",
-    "NEW"                      :  "Nouveau Service",
-    "INFO"                     :  "Information sur le service",
-    "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
-    "MODIFYING"                :  "Modification",
-    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
-},
+  "SERVICE" : {
+      "TITLE"                    : "Gestion des Services",
+      "REGISTERED"               : "Services enregistres",
+      "NONE_FOUND"               : "Aucun service trouve",
+      "REGISTER"                 : "Enregistrement",
+      "COST_CENTER_SELECT"       : "Centre de frais",
+      "SUCCESS_MESSAGE"          : "Insertion avec succes !",
+      "INSERT_FAIL_MESSAGE"      : "Erreur durant l'insertion",
+      "INSERT_SUCCESS_MESSAGE"   :  "Insertion avec succes !",
+      "NEW"                      :  "Nouveau Service",
+      "INFO"                     :  "Information sur le service",
+      "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
+      "MODIFYING"                :  "Modification",
+      "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
+  },
 
-"ASSIGNING" : {
-    "TITLE"                  : "Assignation",
-    "NAVIG"                  : "Navigation",
-    "PARENT"                 : "Gestion de centre de couts",
-    "CHOOSE"                 : "Selectionner un centre de couts secondaire",
-    "INFO_COST_CENTER"       : "Details sur le centre de couts",
-    "ASSOCIATED_TO"          : "Les centres correspondants a :",
-    "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)",
-    "NEXT"                   : "Suivant",
-    "TEXT_COST"              : "Designation",
-    "AUX_CENTER"             : "Centre Auxilliaire",
-    "COST"                   : "Cout",
-    "PRI_CENTERS"            : "Centres des couts principaux",
-    "INITIAL_COST"           : "Cout initial",
-    "COEFF"                  : "Coeffiscient de repartition",
-    "AL_COST"                : "Cout alloue",
-    "TOTAL"                  : "Total",
-    "TOTALS"                 : "TOTAUX",
-    "INSERT_SUCCES_MESSAGE"  : "Insertion avec succes !",
-    "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
-    "NO_CHOOSEN"             : "Aucun centredes couts selectionne !",
-    "AUX_CC"                 : "Centre Auxilliaire",
-    "LABEL_CC"               : "Designation",
-    "TYPE_CC"                : "Type",
-    "NOTE"                   : "Description"
-}
+  "ASSIGNING" : {
+      "TITLE"                  : "Assignation",
+      "NAVIG"                  : "Navigation",
+      "PARENT"                 : "Gestion de centre de couts",
+      "CHOOSE"                 : "Selectionner un centre de couts secondaire",
+      "INFO_COST_CENTER"       : "Details sur le centre de couts",
+      "ASSOCIATED_TO"          : "Les centres correspondants a :",
+      "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)",
+      "NEXT"                   : "Suivant",
+      "TEXT_COST"              : "Designation",
+      "AUX_CENTER"             : "Centre Auxilliaire",
+      "COST"                   : "Cout",
+      "PRI_CENTERS"            : "Centres des couts principaux",
+      "INITIAL_COST"           : "Cout initial",
+      "COEFF"                  : "Coeffiscient de repartition",
+      "AL_COST"                : "Cout alloue",
+      "TOTAL"                  : "Total",
+      "TOTALS"                 : "TOTAUX",
+      "INSERT_SUCCES_MESSAGE"  : "Insertion avec succes !",
+      "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
+      "NO_CHOOSEN"             : "Aucun centredes couts selectionne !",
+      "AUX_CC"                 : "Centre Auxilliaire",
+      "LABEL_CC"               : "Designation",
+      "TYPE_CC"                : "Type",
+      "NOTE"                   : "Description"
+  }
 }
