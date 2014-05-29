@@ -26,7 +26,8 @@ angular.module('bhima.services')
     }
 
     function trust(data) {
-      return $sce.trustAsHtml(data);
+      console.log('trusting ...', data.toString());
+      return $sce.trustAsHtml(data.toString());
     }
 
     function enqueue(message) {
@@ -42,6 +43,11 @@ angular.module('bhima.services')
       messages.push(message);
     }
 
+    function isObject(o) {
+      return typeof o === 'object';
+    }
+
+
     self.close = function close(idx) {
       // cancel timeout and splice out
       if (timers[idx]) { $timeout.cancel(timers[idx]); }
@@ -50,7 +56,7 @@ angular.module('bhima.services')
 
     // Appropriate error formatting
     self.error = function error(err) {
-      if (typeof err === 'object') {
+      if (isObject(err)) {
         angular.extend(err, { type : 'error', closable : true, error : true });
       } else {
         err = {
@@ -74,7 +80,7 @@ angular.module('bhima.services')
     };
 
     self.success = function success(data, closable) {
-      if (typeof data === 'object') {
+      if (isObject(data)) {
         angular.extend(data, { type : 'success', closable : true});
       } else {
         data = {
@@ -89,7 +95,7 @@ angular.module('bhima.services')
     };
 
     self.info = function info(data, closable) {
-      if (typeof data === 'object') {
+      if (isObject(data)) {
         angular.extend(data, { type : 'info', closable : true});
       } else {
         data = {
@@ -103,6 +109,7 @@ angular.module('bhima.services')
       enqueue(data);
     };
 
+    // Deprecated
     self.danger = function danger(data, closable) {
       if (typeof data === 'object') {
         angular.extend(data, { type : 'error', closable : true});

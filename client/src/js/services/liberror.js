@@ -88,6 +88,52 @@ angular.module('bhima.services')
     return message;
   }
 
+  function urlParseHack(url) {
+    var parser = document.createElement('a');
+    parser.href = url;
+    return parser;
+  }
+
+  function trimUndefinedParameters(obj) {
+    for (var key in obj) {
+      if (!obj[key]) { delete obj[key]; }
+    }
+    return obj;
+  }
+
+  function queryStringParseHack(url) {
+    var re, qs = {};
+    re = /([^?=&]+)(=([^&]*))?/g;
+    url.replace(re, function($0, $1, $2, $3) {
+      qs[$1] = $3;
+    });
+    return trimUndefinedParameters(qs);
+  }
+
+
+  function compose500Error(namespace, response) {
+    var isSqlError = response.data.sqlState,
+      uri, params, error, status, template;
+
+    uri = urlParseHack(response.config.url);
+    params = queryStringParseHack(response.config.url);
+
+    error = isSqlError ? errorCodes.ERR_DATABASE : errorCodes.ERR_HTTP_INTERNAL;
+    status = isSqlError ? response.data.code : response.status;
+    template = templateMessage(error.tmpl, status, uri.pathname);
+
+    angular.extend(error, {
+      namespace   : namespace,
+      status      : response.status,
+      statusText  : response.statusText,
+      description : template,
+      params      : params
+    });
+
+    $log.debug('Composed Error : ', error);
+    return error;
+  }
+
   return {
     namespace : function (module) {
       // AngularJS style of formatting parameters
@@ -107,37 +153,17 @@ angular.module('bhima.services')
             namespace : prefix,
             title : err.title,
             description : message,
-            status: '900',
-            statusText : 'Client Error'
           });
 
           // FIXME: this can be re-written as a custom error object
           return new CustomError(code, module, message);
         },
         capture : function (err) {
-          $log.debug('NameSpace', module);
-          $log.debug('debugging', err);
+          $log.debug('Server Sent Error : ', err);
 
-          if (err.status && err.data.sqlState) {
-            // This is a mysql error
-            // format error
-            var error = errorCodes.ERR_DATABASE;
-            var template = error.tmpl;
-
-            template = templateMessage(template, err.data.code, err.config.url);
-
-            $log.debug('template : ', template);
-
-            angular.extend(error, {
-              namespace   : module,
-              status      : err.status,
-              statusText  : err.statusText,
-              description : template
-            });
-
-            $log.debug('error is', error);
-
-            messenger.error(error);
+          // route 500 error
+          if (err.status === 500) {
+            messenger.error(compose500Error(module, err));
           }
         }
       };
