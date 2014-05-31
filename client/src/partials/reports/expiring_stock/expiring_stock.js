@@ -78,28 +78,63 @@ angular.module('bhima.controllers')
     }
 
     function doSearching (p){
-      if(p && p===1) $scope.configuration =getConfiguration();
+      if(p && p===1) $scope.configuration = getConfiguration();
       console.log('configuration', $scope.configuration);
       connect.fetch('expiring/'+$scope.configuration.depot_uuid+'/'+$scope.configuration.df+'/'+$scope.configuration.dt)
       .then(complete)
       .then(extendData)
       .catch(function(err){
+        console.log('keba !', err)
       })
     }
 
     function complete (models){
+      window.model = models;
       $scope.uncompletedList = models;
       return $q.all(models.map(function (m){
-        return connect.fetch('expiring_complete/'+m.inventory_uuid);
+        return connect.fetch('expiring_complete/'+m.tracking_number+'/'+$scope.configuration.depot_uuid);
       }))
+    }
+
+    function cleanEnterpriseList (){
+      return $scope.uncompletedList.map(function (item){
+        return {
+          tracking_number : item.tracking_number,
+          lot_number      : item.lot_number,
+          text            : item.text,
+          expiration_date : item.expiration_date,
+          initial         : item.initial,
+          current        : item.initial - item.consumed
+        }
+      });
+    }
+
+    function cleanDepotList (){
+      console.log('voici la liste a soigner : ', $scope.uncompletedList);
+      return $scope.uncompletedList.map(function (item){
+        return {
+          tracking_number : item.tracking_number,
+          lot_number      : item.lot_number,
+          text            : item.text,
+          expiration_date : item.expiration_date,
+          initial         : item.initial,
+          current         : item.current
+        }
+      });
+
     }
 
     function extendData (results){
       results.forEach(function (item, index){
+        $scope.uncompletedList[index].consumed = item[0].consumed;
         if(!$scope.uncompletedList[index].consumed) $scope.uncompletedList[index].consumed = 0;
-        $scope.uncompletedList[index].text = item[0].text;
       })
-      $scope.configuration.expirings = $scope.uncompletedList;
+
+      if($scope.configuration.depot_uuid=='*')
+        $scope.configuration.expirings = cleanEnterpriseList();
+      else
+        $scope.configuration.expirings = cleanDepotList();
+     // $scope.configuration.expirings = $scope.uncompletedList;
     }
 
     function fillReport (res){
@@ -133,7 +168,5 @@ angular.module('bhima.controllers')
 
     $scope.search = search;
     $scope.doSearching = doSearching;
-
-
   }
 ]);

@@ -3,7 +3,7 @@
 </header>
 
 <section class="top-nav">
-  <div class="pull-left">
+  <!--div class="pull-left">
     <span class="btn-group">
       <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : true }">
         {{ (session.selected | translate) || "..." }}
@@ -17,7 +17,7 @@
         </li>
       </ul>
     </span>
-  </div>
+  </div-->
 
   <div>
     <div class="col-xs-2">
@@ -38,7 +38,7 @@
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4 class="visible-print">{{ "CASH_PAYMENTS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <h4 class="visible-print">{{ "EXPIRING.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
       <table id="patientTable" class="reportTable">
         <thead>
           <tr>
@@ -47,7 +47,6 @@
             <th>{{ "COLUMNS.DESIGNATION" | translate }}</th>
             <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
             <th>{{ "COLUMNS.INITIAL_STOCK" | translate }}</th>
-            <th>{{ "COLUMNS.CONSUMED_STOCK" | translate }}</th>
             <th>{{ "COLUMNS.CURRENT_STOCK" | translate }}</th>
           </tr>
         </thead>
@@ -58,8 +57,7 @@
             <td>{{expiring.text}}</td>
             <td>{{expiring.expiration_date | date}}</td>
             <td>{{expiring.initial}}</td>
-            <td>{{expiring.consumed}}</td>
-            <td>{{expiring.initial - expiring.consumed}}</td>
+            <td>{{expiring.current}}</td>
           </tr>
         </tbody>
       </table>
