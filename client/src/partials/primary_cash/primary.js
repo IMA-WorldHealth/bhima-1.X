@@ -52,7 +52,8 @@ angular.module('bhima.controllers')
       .then(parseDependenciesData)
       .then(readConfiguration)
       .then(parseConfiguration)
-      .then(initialise);
+      .then(initialise)
+      .then(handleError);
   
     function parseDependenciesData(model) {
       angular.extend($scope, model);
@@ -89,9 +90,7 @@ angular.module('bhima.controllers')
     }
 
     function loadPath(path) {
-
-      //TODO validate both correct path and cashbox
-      $location.path(path + session.cashbox);
+      $location.path(path + session.cashbox.id);
     }
 
     function setConfiguration (cashbox) {
@@ -106,6 +105,10 @@ angular.module('bhima.controllers')
       session.cashbox = null;
       session.configure = true;
       session.complete = false;
+    }
+
+    function handleError(error) {
+      throw error;
     }
 
     $scope.loadPath = loadPath;
