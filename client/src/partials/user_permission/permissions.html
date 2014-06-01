@@ -2,44 +2,42 @@
   {{ "PERMISSION.TITLE" | translate }}
 </header>
 
-<section class="top-nav hidden-print">
+<nav>
   <button class="btn btn-sm btn-default" ng-click="action='add'">
     <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
   </button>
   <div class="pull-right">
-    <a href="" class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+    <a class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
   </div>
-</section>
+</nav>
 
-<div class="visible-print">
-  <div class="report">
-    <div class="reportFrame">
-      <h4>{{ "PERMISSION.TITLE" | translate }} <small> {{ "REPORT.GENERATED_ON" | translate }} {{ timestamp | date }}</small></h4>
-      <table class="reportTable">
-        <thead>
-          <tr>
-            <th>{{ "COLUMNS.ID" | translate}}</th>
-            <th>{{ "COLUMNS.FIRST_NAME" | translate}}</th>
-            <th>{{ "COLUMNS.LAST_NAME" | translate}}</th>
-            <th>{{ "COLUMNS.USER_NAME" | translate}}</th>
-            <th>{{ "COLUMNS.EMAIL" | translate}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="user in users.data | orderBy:'username'">
-            <td>{{user.id}}</td>
-            <td>{{user.first}}</td>
-            <td>{{user.last}}</td>
-            <td>{{user.username}}</td>
-            <td>{{user.email}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<div class="report visible-print">
+  <div class="reportFrame">
+    <h4>{{ "PERMISSION.TITLE" | translate }} <small> {{ "REPORT.GENERATED_ON" | translate }} {{ timestamp | date }}</small></h4>
+    <table class="reportTable">
+      <thead>
+        <tr>
+          <th>{{ "COLUMNS.ID" | translate}}</th>
+          <th>{{ "COLUMNS.FIRST_NAME" | translate}}</th>
+          <th>{{ "COLUMNS.LAST_NAME" | translate}}</th>
+          <th>{{ "COLUMNS.USER_NAME" | translate}}</th>
+          <th>{{ "COLUMNS.EMAIL" | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="user in users.data | orderBy:'username'">
+          <td>{{ user.id }}</td>
+          <td>{{ user.first }}</td>
+          <td>{{ user.last }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</div> 
+</div>
 
-<div class="content hidden-print">
+<main class="hidden-print">
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-primary" style="overflow: auto">

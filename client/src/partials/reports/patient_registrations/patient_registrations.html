@@ -2,7 +2,7 @@
   {{ "PATIENT_REGISTRATIONS.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
     <span class="btn-group">
       <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" ng-click="search(session.selected)">{{ (session.selected.label | translate) || "..." }}</button>
@@ -29,9 +29,9 @@
       </select>
     </div>
   </div>
-</section>
+</nav>
 
-<div class="report report-compressed">
+<div class="report">
   <div class="reportBody">
     <div class="reportFrame">
       <h4 class="visible-print">{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
