@@ -79,7 +79,6 @@ angular.module('bhima.controllers')
 
     function doSearching (p){
       if(p && p===1) $scope.configuration = getConfiguration();
-      console.log('configuration', $scope.configuration);
       connect.fetch('expiring/'+$scope.configuration.depot_uuid+'/'+$scope.configuration.df+'/'+$scope.configuration.dt)
       .then(complete)
       .then(extendData)
@@ -134,7 +133,6 @@ angular.module('bhima.controllers')
         $scope.configuration.expirings = cleanEnterpriseList();
       else
         $scope.configuration.expirings = cleanDepotList();
-     // $scope.configuration.expirings = $scope.uncompletedList;
     }
 
     function fillReport (res){

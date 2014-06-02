@@ -461,7 +461,8 @@
       "WAREHOUSE_INFO_1"    : "Configurer le depot utiliser par defaut dans ce module.",
       "WAREHOUSE_INFO_2"    : "Toutes operations des stock sera affectee au depot selectionner.",
       "WAREHOUSE_INFO_3"    : "Votre choix peut-etre changer quand vous voulez.",
-      "REPORTS"             : "Rapports Stock"
+      "REPORTS"             : "Rapports Stock",
+      "CONFIRM"             : "Voulez-vous vraiment gerer le stock avec le depot : "
     },
     "ENTRY" : {
       "KEY"                 : "Entree de Stock",
@@ -1332,11 +1333,21 @@
     "NOTE"                   : "Description"
 },
 
-"EXPIRING" : {
+"EXPIRING_REPORT" : {
     "TITLE" : "Rapport d'Expiration de medicaments",
     "ALL_DEPOTS" : "Tous les depots",
     "DAY" : "Aujourd'ui",
     "MONTH" : "Ce mois",
-    "WEEK"  : "Cette semaine"
+    "WEEK"  : "Cette semaine",
+    "EMPTY_REPORT" : "Aucun enregistrement trouve !"
+},
+
+"EXPIRING_UTIL" : {
+    "TITLE" : "Liste des Lots Expirants",
+    "DAY" : "Aujourd'ui",
+    "MONTH" : "Ce mois",
+    "WEEK"  : "Cette semaine",
+    "EMPTY_REPORT" : "Aucun enregistrement trouve !",
+    "GROUP_BY" : "Grouper Par"
 }
 }
