@@ -1,0 +1,80 @@
+<header>
+  {{ "EXPIRING.TITLE" | translate }}
+</header>
+
+<section class="top-nav">
+  <!--div class="pull-left">
+    <span class="btn-group">
+      <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : true }">
+        {{ (session.selected | translate) || "..." }}
+      </button>
+      <button class="btn btn-sm btn-default dropdown-toggle btn-sq">
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu menu-sq">
+        <li ng-repeat="opt in options">
+          <a href="" ng-click="search(opt)">{{ opt.label | translate }}</a>
+        </li>
+      </ul>
+    </span>
+  </div-->
+
+  <div>
+    <div class="col-xs-2">
+      <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" ng-change="doSearching(1)">
+    </div>
+    <div class="col-xs-2">
+      <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" ng-change="doSearching(1)">
+    </div>
+    <div class="col-xs-4 pull-right">
+      <select class="form-bhima" ng-model="session.depot" ng-change="doSearching(1)">
+        <option selected value="{{'*'}}">{{ 'EXPIRING.ALL_DEPOTS' | translate }}</option>
+        <option ng-repeat="depot in model.depots.data" value="{{depot.uuid}}">{{ depot.text}}</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4 class="visible-print">{{ "EXPIRING.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <table id="patientTable" class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.DESIGNATION" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+            <th>{{ "COLUMNS.INITIAL_STOCK" | translate }}</th>
+            <th>{{ "COLUMNS.CURRENT_STOCK" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat='expiring in configuration.expirings'>
+            <td>{{expiring.tracking_number}}</td>
+            <td>{{expiring.lot_number}}</td>
+            <td>{{expiring.text}}</td>
+            <td>{{expiring.expiration_date | date}}</td>
+            <td>{{expiring.initial}}</td>
+            <td>{{expiring.current}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<section class="bar-bottom" style="background-color:#fff">
+  <table style="width: 99%">
+    <tbody>
+      <td style="width:50%;">
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ payments.length }}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+        <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ session.unique_debitors }}</b>
+      </td>
+    </tbody>
+  </table>
+</section>

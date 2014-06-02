@@ -384,7 +384,8 @@
     "EMPLOYEE"                  : "Gestion Employees",
     "SERVICE"                   : "Gestion des Services",
     "STOCK_MANAGEMENT"          : "Gestion de Stock",
-    "INVENTORY_MANAGEMENT"      : "Gestion de Inventaire"
+    "INVENTORY_MANAGEMENT"      : "Gestion de Inventaire",
+    "EXPIRING"                  : "Rapport Expiration Stocks"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -630,7 +631,12 @@
     "COST_CENTER"         : "Centre de frais",
     "CHARGE"              : "Charge",
     "PROFIT"              : "Profit",
-    "RESULT"              : "Resultat"
+    "RESULT"              : "Resultat",
+    "LOT_NUMBER"          : "Numero Lot",
+    "DESIGNATION"         : "Designation",
+    "INITIAL_STOCK"       : "Stock Initial",
+    "CONSUMED_STOCK"      : "Stock Consomme",
+    "CURRENT_STOCK"       : "Stock Courrant"
   },
 
   "REPORT"                  : {
@@ -704,8 +710,8 @@
   "INVENTORY_REGISTER" : {
     "TITLE"            : "Enregistrement des Stocks",
     "VIEW"             : "Voire Stocks",
-    "ADD_TYPE"         : "Ajouter Type Unitaire",
-    "ADD_GROUP"        : "Ajourter Groupe Inventaire",
+    "ADD_TYPE"         : "Ajouter Type Unite",
+    "ADD_GROUP"        : "Ajourter Groupe Stock",
     "GENERAL"          : "General",
     "CODE"             : "Code",
     "DESCRIPTION"      : "Description",
@@ -1025,7 +1031,8 @@
     "SEARCH_TEXT"    : "Rechercher par code ou description",
     "UPDATE_SUCCESS" : "Les stocks sont mettre a jour",
     "UPDATE_FAILURE" : "La requette ne passe pas",
-    "INVALID_PRICE"  : "Le Prix est invalide"
+    "INVALID_PRICE"  : "Le Prix est invalide",
+    "EMPTY_HISTORY"  : "L'Historique n'est pas dispinible !"
   },
 
   "SWAPDEBITOR"            : {
@@ -1223,8 +1230,9 @@
   "DEPOT" : {
     "TITLE"     : "Gestionn des Depot",
     "NO_DEPOTS" : "Aucun depot trouve",
-    "ADD"       : "Ajouter",
-    "ALERT"     : "Ce module vous permet de gerer vos depot"
+    "ADD" : "Ajouter",
+    "ALERT" : "Ce module vous permet de gerer vos depot",
+    "NEW"   : "Nouveau depot"
   },
 
   "EMPLOYEE" : {
@@ -1246,81 +1254,89 @@
     }
   },
 
-  "ANALYSIS_CENTER" :{
-      "TITLE"                  :   "Centre de couts",
-      "PARENT"                 :   "Gestion de centre de couts",
-      "NAVIGATION"             :   "Naviguation",
-      "REGISTERED"             :   "Centre des cuts enregistres",
-      "INFO"                   :   "Information sur le centre des couts",
-      "INFO_DESCRIPTION"       :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
-      "TEXT"                   :   "Text",
-      "COST"                   :   "Cout",
-      "IS_PROFIT"              :   "Centre de profit",
-      "NOTE"                   :   "Note",
-      "REGISTER"               :   "Enregistrement",
-      "NEW"                    :   "Nouveau centre",
-      "INSERT_SUCCESS_MESSAGE" :   "Insertion avec succes !",
-      "INSERT_FAIL_MESSAGE"    :   "Erreur durant l'insertion !",
-      "NONE_FOUND"             :   "Aucun centre de frais trouve !",
-      "MODIFYING"              :   "Modification",
-      "UPDATE_SUCCESS_MESSAGE" :   "Mise a jour avec succes !",
-      "UPDATE_FAIL_MESSAGE"    :   "Erreur durant la mise a jour !",
-      "REMOVE_FAIL_MESSAGE"    :   "Erreur durant la suppression !",
-      "REMOVE_SUCCESS_MESSAGE" :   "Suppression avec succes !"
-  },
+"ANALYSIS_CENTER"              :{
+    "TITLE"                    :   "Centre de couts",
+    "PARENT"                   :   "Gestion de centre de couts",
+    "NAVIGATION"               :   "Naviguation",
+    "REGISTERED"               :   "Centre des cuts enregistres",
+    "INFO"                     :   "Information sur le centre des couts",
+    "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "Cout",
+    "IS_PROFIT"                :   "Centre de profit",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Enregistrement",
+    "NEW"                      :   "Nouveau centre",
+    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
+    "NONE_FOUND"               :   "Aucun centre de frais trouve !",
+    "MODIFYING"                :   "Modification",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Mise a jour avec succes !",
+    "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
+    "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
+},
 
-  "VERSEMENT" : {
-      "TITLE"                  : "Versement des comptes",
-      "PARENT"                 : "Gestion de centre de couts",
-      "CHOOSE"                 : "Selectionner centre de couts",
-      "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
-      "VERSER"                 : "Verser",
-      "REMOVE"                 : "Retirer",
-      "NAVIG"                  : "Navigation",
-      "ASSOCIATED_TO"          : "Les comptes associe a : ",
-      "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
-  },
+"VERSEMENT" : {
+    "TITLE"                  : "Versement des comptes",
+    "PARENT"                 : "Gestion de centre de couts",
+    "CHOOSE"                 : "Selectionner centre de couts",
+    "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
+    "VERSER"                 : "Verser",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Navigation",
+    "ASSOCIATED_TO"          : "Les comptes associe a : ",
+    "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
+},
 
-  "SERVICE" : {
-      "TITLE"                    : "Gestion des Services",
-      "REGISTERED"               : "Services enregistres",
-      "NONE_FOUND"               : "Aucun service trouve",
-      "REGISTER"                 : "Enregistrement",
-      "COST_CENTER_SELECT"       : "Centre de frais",
-      "SUCCESS_MESSAGE"          : "Insertion avec succes !",
-      "INSERT_FAIL_MESSAGE"      : "Erreur durant l'insertion",
-      "INSERT_SUCCESS_MESSAGE"   :  "Insertion avec succes !",
-      "NEW"                      :  "Nouveau Service",
-      "INFO"                     :  "Information sur le service",
-      "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
-      "MODIFYING"                :  "Modification",
-      "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
-  },
+"SERVICE" : {
+    "TITLE"                    : "Gestion des Services",
+    "REGISTERED"               : "Services enregistres",
+    "NONE_FOUND"               : "Aucun service trouve",
+    "REGISTER"                 : "Enregistrement",
+    "COST_CENTER_SELECT"       : "Centre de frais",
+    "SUCCESS_MESSAGE"          : "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"      : "Erreur durant l'insertion",
+    "INSERT_SUCCESS_MESSAGE"   :  "Insertion avec succes !",
+    "NEW"                      :  "Nouveau Service",
+    "INFO"                     :  "Information sur le service",
+    "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
+    "MODIFYING"                :  "Modification",
+    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
+},
 
-  "ASSIGNING" : {
-      "TITLE"                  : "Assignation",
-      "NAVIG"                  : "Navigation",
-      "PARENT"                 : "Gestion de centre de couts",
-      "CHOOSE"                 : "Selectionner un centre de couts secondaire",
-      "INFO_COST_CENTER"       : "Details sur le centre de couts",
-      "ASSOCIATED_TO"          : "Les centres correspondants a :",
-      "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)",
-      "NEXT"                   : "Suivant",
-      "TEXT_COST"              : "Designation",
-      "AUX_CENTER"             : "Centre Auxilliaire",
-      "COST"                   : "Cout",
-      "PRI_CENTERS"            : "Centres des couts principaux",
-      "INITIAL_COST"           : "Cout initial",
-      "COEFF"                  : "Coeffiscient de repartition",
-      "AL_COST"                : "Cout alloue",
-      "TOTAL"                  : "Total",
-      "TOTALS"                 : "TOTAUX",
-      "INSERT_SUCCES_MESSAGE"  : "Insertion avec succes !",
-      "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
-      "NO_CHOOSEN"             : "Aucun centredes couts selectionne !",
-      "AUX_CC"                 : "Centre Auxilliaire",
-      "LABEL_CC"               : "Designation",
-      "TYPE_CC"                : "Type",
-      "NOTE"                   : "Description"
-  }
+"ASSIGNING" : {
+    "TITLE"                  : "Assignation",
+    "NAVIG"                  : "Navigation",
+    "PARENT"                 : "Gestion de centre de couts",
+    "CHOOSE"                 : "Selectionner un centre de couts secondaire",
+    "INFO_COST_CENTER"       : "Details sur le centre de couts",
+    "ASSOCIATED_TO"          : "Les centres correspondants a :",
+    "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)",
+    "NEXT"                   : "Suivant",
+    "TEXT_COST"              : "Designation",
+    "AUX_CENTER"             : "Centre Auxilliaire",
+    "COST"                   : "Cout",
+    "PRI_CENTERS"            : "Centres des couts principaux",
+    "INITIAL_COST"           : "Cout initial",
+    "COEFF"                  : "Coeffiscient de repartition",
+    "AL_COST"                : "Cout alloue",
+    "TOTAL"                  : "Total",
+    "TOTALS"                 : "TOTAUX",
+    "INSERT_SUCCES_MESSAGE"  : "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
+    "NO_CHOOSEN"             : "Aucun centredes couts selectionne !",
+    "AUX_CC"                 : "Centre Auxilliaire",
+    "LABEL_CC"               : "Designation",
+    "TYPE_CC"                : "Type",
+    "NOTE"                   : "Description"
+},
+
+"EXPIRING" : {
+    "TITLE" : "Rapport d'Expiration de medicaments",
+    "ALL_DEPOTS" : "Tous les depots",
+    "DAY" : "Aujourd'ui",
+    "MONTH" : "Ce mois",
+    "WEEK"  : "Cette semaine"
+}
 }
