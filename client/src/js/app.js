@@ -345,6 +345,10 @@
       controller : 'stock.search',
       templateUrl: 'partials/stock/search/search.html'
     })
+    .when('/stock/expiring/:depotId', {
+      controller : 'stock.expiring',
+      templateUrl : 'partials/stock/expiring/expiring.html'
+    })
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'

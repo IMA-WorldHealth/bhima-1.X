@@ -116,28 +116,6 @@ angular.module('bhima.controllers')
 
       })
 
-
-
-
-
-
-      // columns.forEach(function (col) {
-
-      //    $translate(col.id).then(function(value){
-      //     console.log('value', value);
-      //     col.name = value;
-      //   })
-      //    console.log($translate.instant(col.id));
-      // });
-
-      // $scope.$on('$translateChangeSuccess', function () {
-      //   columns.forEach(function (col) {
-      //     col.name = $translate(col.id);
-      //   });
-      // });
-
-
-
       // set up sorting
 
       function sorter (e, args) {

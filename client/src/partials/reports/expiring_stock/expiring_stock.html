@@ -1,5 +1,5 @@
 <header>
-  {{ "EXPIRING.TITLE" | translate }}
+  {{ "EXPIRING_REPORT.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
@@ -28,7 +28,7 @@
     </div>
     <div class="col-xs-4 pull-right">
       <select class="form-bhima" ng-model="session.depot" ng-change="doSearching(1)">
-        <option selected value="{{'*'}}">{{ 'EXPIRING.ALL_DEPOTS' | translate }}</option>
+        <option selected value="{{'*'}}">{{ 'EXPIRING_REPORT.ALL_DEPOTS' | translate }}</option>
         <option ng-repeat="depot in model.depots.data" value="{{depot.uuid}}">{{ depot.text}}</option>
       </select>
     </div>
@@ -38,7 +38,7 @@
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4 class="visible-print">{{ "EXPIRING.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <h4 class="visible-print">{{ "EXPIRING_REPORT.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
       <table id="patientTable" class="reportTable">
         <thead>
           <tr>
@@ -59,6 +59,7 @@
             <td>{{expiring.initial}}</td>
             <td>{{expiring.current}}</td>
           </tr>
+          <tr ng-if="!configuration.expirings.length"><td colspan="6"><span class="glyphicon glyphicon-stats"> {{ "EXPIRING_REPORT.EMPTY_REPORT" | translate }}</span></td></tr>
         </tbody>
       </table>
     </div>
