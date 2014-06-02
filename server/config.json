@@ -3,9 +3,9 @@
   "port" : 8080,
   "db" : {
     "host"     : "localhost",
-    "user"     : "kpk",
+    "user"     : "bhima",
     "password" : "HISCongo2013",
-    "database" : "kpk",
+    "database" : "bhima",
     "multipleStatements" : true
   },
   "log" : {

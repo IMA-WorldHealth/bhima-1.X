@@ -1,4 +1,4 @@
-use `kpk`;
+use `bhima`;
 
 delete from `posting_journal`;
 delete from `general_ledger`;
@@ -97,7 +97,7 @@ INSERT INTO `unit` VALUES
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
-(1, 'admin','1','System','Administrato','kpkdeveloper@gmail.com',1),
+(1, 'admin','1','System','Administrato','bhimadeveloper@gmail.com',1),
 (2, 'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 (3, 'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
 (4, 'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),
