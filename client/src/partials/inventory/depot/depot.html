@@ -46,14 +46,14 @@
         <p>{{ "DEPOT.ALERT" | translate }}</p>
       </div>
 
-      <form ng-switch-when="new">
+      <form name="depotNew" ng-switch-when="new" novalidate>
         <legend>{{ "DEPOT.NEW" | translate }}</legend>
         <div class="form-group">
           <label>{{ "COLUMNS.NAME" | translate }}</label>
           <input class="form-bhima" ng-model="session.new.text" required>
         </div>
 
-        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()">{{ "FORM.SUBMIT" | translate }}</button>
+        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()" ng-disabled="depotNew.$invalid">{{ "FORM.SUBMIT" | translate }}</button>
         <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
       </form>
 

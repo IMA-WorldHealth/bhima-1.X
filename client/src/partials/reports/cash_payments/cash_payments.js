@@ -53,7 +53,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    };
+    }
 
     $scope.options = [
       {
