@@ -39,7 +39,7 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <div ng-include src="newfile.html"></div>
+      <div ng-include src="'newfile.html'"></div>
 
       <div find-patient on-search-complete="initialiseDistributionDetails"></div>
     </div>
@@ -278,6 +278,6 @@
   </div>
 </footer>
 
-<script type="text/ng-template" id="/newfile.html">
-  <p>A thing</p>
+<script type="text/ng-template" id="newfile.html">
+  <p>Included</p>
 </script>
