@@ -152,5 +152,4 @@ module.exports = function (db, sanitize, Store) {
 
     return defer.promise;
   };
-
 };
