@@ -9,7 +9,6 @@ var express      = require('express'),
     session      = require('express-session'),
     cookieParser = require('cookie-parser');
 
-
 // import configuration
 var cfg = require('./config.json'),
     errorCodes = require('./lib/errors.json');

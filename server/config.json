@@ -5,8 +5,7 @@
     "host"     : "localhost",
     "user"     : "bhima",
     "password" : "HISCongo2013",
-    "database" : "bhima",
-    "multipleStatements" : true
+    "database" : "bhima"
   },
   "log" : {
     "file" : "scripts/lib/database/db.log",

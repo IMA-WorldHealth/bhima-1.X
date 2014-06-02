@@ -26,12 +26,12 @@ function flushUsers (db_con) {
 
   // Disable safe mode #420blazeit
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
-  reset = 'UPDATE `kpk`.`user` SET `logged_in`="0" WHERE `logged_in`="1";';
+  reset = 'UPDATE `user` SET `logged_in`=\'0\' WHERE `logged_in`=\'1\';';
 
   // Mwahahahaha
   db_con.getConnection(function (err, con) {
     if (err) { throw err; }
-    con.query(permissions, function (err, res) {
+    con.query(permissions, function (err) {
       if (err) { throw err; }
       con.release();
       db_con.getConnection(function (err, con) {
@@ -72,7 +72,7 @@ function promiseQuery(connection, sql) {
   console.log('[db] [Transaction Query]', sql);
   connection.query(sql, function (error, result) {
     console.log('resultssss', error, result);
-    if (error) return deferred.reject(error);
+    if (error) { return deferred.reject(error); }
     return deferred.resolve(result);
   });
   return deferred.promise;
@@ -109,7 +109,7 @@ module.exports = function (cfg, logger) {
 
     execute: function(sql, callback) {
       // This fxn is formated for mysql pooling, not in all generality
-      console.log("[db] [execute]: ", sql);
+      console.log('[db] [execute]: ', sql);
 
       con.getConnection(function (err, connection) {
         if (err) { return callback(err); }
@@ -125,7 +125,7 @@ module.exports = function (cfg, logger) {
       // this fxn is formatted for mysql pooling
       // uses promises
 
-      console.log("[db] [execute]: ", sql);
+      console.log('[db] [execute]: ', sql);
       var defer = q.defer();
 
       con.getConnection(function (err, connection) {
@@ -157,9 +157,11 @@ module.exports = function (cfg, logger) {
           q.all(queryStatus)
           .then(function (result) {
             connection.commit(function (error) {
-              if (error) connection.rollback(function () {
-                return deferred.reject(error);
-              });
+              if (error) {
+                connection.rollback(function () {
+                  return deferred.reject(error);
+                });
+              }
               console.log('[db][executeAsTransaction] Commited');
               return deferred.resolve(result);
             });
@@ -180,11 +182,11 @@ module.exports = function (cfg, logger) {
       var __connectionReady__ = q.defer();
 
       con.getConnection(function (error, connection) {
-        if (error) return; // FIXME hadle error
+        if (error) { return; } // FIXME hadle error
         __connection__ = connection;
 
         __connection__.beginTransaction(function (error) {
-          if (error) return __connectionReady__.reject();
+          if (error) { return __connectionReady__.reject(); }
           __connectionReady__.resolve();
         });
       });
@@ -219,7 +221,7 @@ module.exports = function (cfg, logger) {
         var deferred = q.defer();
         __connectionReady__.promise.then(function () {
           __connection__.commit(function (error) {
-            if (error) return deferred.reject(error);
+            if (error) { return deferred.reject(error); }
             deferred.resolve();
           });
         });
