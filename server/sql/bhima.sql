@@ -2,8 +2,11 @@ drop database if exists`bhima`;
 create database `bhima`;
 use `bhima`;
 
-grant all on `bhima`.* to 'bhima'@'%' identified by 'HISCongo2013';
-grant super on *.* to 'bhima'@'%';
+-- grant all on `bhima`.* to 'bhima'@'%' identified by 'HISCongo2013';
+-- grant all on `bhima`.* to 'bhima'@'localhost' identified by 'HISCongo2013';
+grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
+grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' with grant option;
+-- grant super on *.* to 'bhima'@'%';
 flush privileges;
 
 drop table if exists `currency`;
