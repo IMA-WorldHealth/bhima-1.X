@@ -1,3 +1,5 @@
+<!-- TODO -->
+
 <header data-header>
   {{ "DISTRIBUTION.TITLE" | translate }}
 </header>
@@ -19,13 +21,16 @@
 </nav>
 
 <main>
+
     
   <!-- Step 1 Header -->
   <div class="row">
     <div class="col-xs-12"  style="padding-bottom : 5px; margin-bottom: 5px;">
       <div class="underline">
       <span 
-        class="label label-primary"
+        class="label"
+        ng-class="{'label-primary' : session.state.key!=='init',
+                   'label-success' : session.state.key==='init'}"
         >1</span> Locate patient
       </div>
     </div>
@@ -33,6 +38,9 @@
 
   <div class="row">
     <div class="col-xs-12">
+
+      <div ng-include src="newfile.html"></div>
+
       <div find-patient on-search-complete="initialiseDistributionDetails"></div>
     </div>
   </div>
@@ -269,3 +277,7 @@
     <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
   </div>
 </footer>
+
+<script type="text/ng-template" id="/newfile.html">
+  <p>A thing</p>
+</script>
