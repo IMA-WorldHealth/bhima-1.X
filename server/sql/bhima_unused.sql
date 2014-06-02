@@ -1,7 +1,7 @@
--- This file contains unused sql tables from kpk.sql
+-- This file contains unused sql tables from bhima.sql
 
 --
--- Table structure for table `kpk`.`tax`
+-- Table structure for table `bhima`.`tax`
 --
 drop table if exists `tax`;
 create table `tax` (
@@ -12,7 +12,7 @@ create table `tax` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`price_group`
+-- Table structure for table `bhima`.`price_group`
 --
 drop table if exists `price_group`;
 create table `price_group` (
@@ -22,7 +22,7 @@ create table `price_group` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`account_category`
+-- Table structure for table `bhima`.`account_category`
 drop table if exists `account_category`;
 create table `account_category` (
   `id`        tinyint not null,
@@ -32,7 +32,7 @@ create table `account_category` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`account_collection`
+-- Table structure for table `bhima`.`account_collection`
 --
 drop table if exists `account_collection`;
 create table `account_collection` (
@@ -43,7 +43,7 @@ create table `account_collection` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`department`
+-- Table structure for table `bhima`.`department`
 --
 drop table if exists `department`;
 create table `department` (
@@ -57,7 +57,7 @@ create table `department` (
 ) engine=innodb;
 
 --
--- Table structure for table `kpk`.`employee`
+-- Table structure for table `bhima`.`employee`
 --
 drop table if exists `employee`;
 create table `employee` (
@@ -81,7 +81,7 @@ create table `employee` (
 ) engine=innodb;
 
 --
--- table `kpk`.`account_group`
+-- table `bhima`.`account_group`
 --
 -- TODO: when we can discuss this as a group
 -- drop table if exists `account_group`;
