@@ -99,6 +99,8 @@ module.exports = function (db, sanitize, Store) {
         'stock.expiration_date, code, inventory.text as stock_description ' +
       'FROM inventory JOIN stock ' +
       'JOIN ' +
+      
+      // Model consumption as a movement from nothing, would be useful to know the difference between moved and consumed
       '(SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
       'FROM movement ' +
       'UNION ' +
@@ -109,26 +111,8 @@ module.exports = function (db, sanitize, Store) {
       'GROUP BY stock.tracking_number ' +
       'ORDER BY stock.lot_number;';
 
-
-    // sql =
-    //   'SELECT stock.tracking_number, stock.lot_number, movement.depot_entry, movement.depot_exit, ' +
-    //     'SUM(CASE WHEN movement.depot_entry =' + _depot + ' THEN movement.quantity ELSE -movement.quantity END) AS quantity, ' +
-    //     'stock.expiration_date, code, inventory.text as stock_description ' +
-    //   'FROM (inventory JOIN stock JOIN movement ON ' +
-    //     'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number) ' +
-    //   // 'JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
-    //   'UNION ' +
-    //   //Convert consumption to movement format
-    //   'SELECT depot_uuid as depot_entry, tracking_number, quantity, uuid ' +
-    //   'FROM consumption ' +
-    //   'WHERE movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ' ' +
-    //   'GROUP BY stock.tracking_number ' +
-    //   'ORDER BY stock.lot_number;';
-
- 
-        return db.exec(sql)
+    return db.exec(sql)
     .then(function (rows) {
-
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
     });
