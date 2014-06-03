@@ -234,6 +234,7 @@
 
   "SELECT"            : {
     "ACCOUNT"         : "Selectionner Compte",
+    "ACCOUNT_TYPE"    : "Selectionner Type de Compte",
     "CURRENCY"        : "Selectionner Monnaie",
     "NAME"            : "Selectionner un Nom",
     "COUNTRY"         : "Selectionner un Pays",
