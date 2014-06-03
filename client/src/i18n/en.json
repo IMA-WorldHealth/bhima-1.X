@@ -290,6 +290,7 @@
 
   "SELECT"            : {
     "ACCOUNT"         : "Select Account",
+    "ACCOUNT_TYPE"    : "Select Account Type",
     "CURRENCY"        : "Select Currency",
     "NAME"            : "Select a Name",
     "COUNTRY"         : "Select a Country",

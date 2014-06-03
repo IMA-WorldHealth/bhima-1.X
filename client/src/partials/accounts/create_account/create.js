@@ -1,17 +1,18 @@
 angular.module('bhima.controllers')
 .controller('manageAccount', [
   '$scope',
-  '$q',
   'validate',
   'appstate',
-  'messenger',
   'connect',
   '$translate',
-  function($scope, $q, validate, appstate, messenger, connect, $translate) {
+  'liberror',
+  function($scope, validate, appstate, connect, $translate, liberror) {
     var dependencies = {}, titleAccount = 3;
-    var grid, columns, options, dataview, sortColumn = "account_number";
-    var financeGroups = {index: {}, store: []};
-    var session = $scope.session = {state: "display"};
+    var grid, columns, options, dataview, sortColumn = 'account_number';
+    // var financeGroups = {index: {}, store: []};
+    var session = $scope.session = {state: 'display'};
+
+    var accountError = liberror.namespace('ACCOUNT');
 
     $scope.newAccount = {};
 
@@ -20,7 +21,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ["id", "account_number", "account_txt", "account_type_id", "fixed", "parent"] }
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'fixed', 'parent'] }
         }
       },
     };
@@ -28,11 +29,10 @@ angular.module('bhima.controllers')
     dependencies.accountType = {
       query : {
         tables : {
-          account_type : { columns : ["id", "type"] }
+          account_type : { columns : ['id', 'type'] }
         }
       }
     };
-
 
     function manageAccount(model) {
       $scope.model = model;
@@ -58,7 +58,7 @@ angular.module('bhima.controllers')
       ];
 
       columns.forEach(function (col) {
-        col.name = $translate(col.id);
+        col.name = $translate.instant(col.id);
       });
 
       options = {
@@ -91,7 +91,7 @@ angular.module('bhima.controllers')
 
       //FIXME improve this function (redundant code) extract from main initialise)
       grid.onClick.subscribe(function(e, args) {
-        if ($(e.target).hasClass("toggle")) {
+        if ($(e.target).hasClass('toggle')) {
           var item = dataview.getItem(args.row);
           if (item) {
             if (!item._collapsed) {
@@ -102,6 +102,19 @@ angular.module('bhima.controllers')
             dataview.updateItem(item.id, item);
           }
           e.stopImmediatePropagation();
+        }
+
+        // FIXME: This could be formalized/encapsulated
+        if ($(e.target).hasClass('remove')) {
+          $scope.$apply(function () {
+            accountError.throw('ERR_CANNOT_REMOVE_ACCOUNT');
+          });
+        }
+
+        if ($(e.target).hasClass('edit')) {
+          $scope.$apply(function () {
+            accountError.throw('ERR_CANNOT_EDIT_ACCOUNT');
+          });
         }
       });
 
@@ -138,7 +151,7 @@ angular.module('bhima.controllers')
       if (item.parent !== null) {
         var parent = $scope.model.account.get(item.parent);
         while (parent) {
-          if (parent._collapsed) return false;
+          if (parent._collapsed) { return false; }
           parent = $scope.model.account.get(parent.parent);
         }
       }
@@ -147,10 +160,10 @@ angular.module('bhima.controllers')
 
     //runs in O(O(O(...)))
     function awfulIndentCrawl(data) {
-      data.forEach(function(item, index) {
+      data.forEach(function (item) {
         var indent = 0;
         var parent = $scope.model.account.get(item.parent);
-        while(parent) {
+        while (parent) {
           indent += 1;
           parent = $scope.model.account.get(parent.parent);
         }
@@ -161,28 +174,33 @@ angular.module('bhima.controllers')
     function submitAccount(account) {
       //do some kind of validation
       //kill if account exists for now
-      if($scope.model.account.get(account.number)) return messenger.push({type: 'danger', msg: 'Account number already exists'});
+      if ($scope.model.account.get(account.number)) {
+        return accountError.throw('ERR_ACCOUNT_EXISTS', account.number);
+      }
 
       //format account
       var formatAccount = {
         account_type_id: account.type.id,
         account_number: account.number,
         account_txt: account.title,
-        fixed: account.fixed === "true" ? 1 : 0,
+        fixed: account.fixed === 'true' ? 1 : 0,
         enterprise_id: appstate.get('enterprise').id,
         parent: 0 //set default parent (root)
       };
 
-      if(account.parent) formatAccount.parent = account.parent.account_number;
+      if (account.parent) {
+        formatAccount.parent = account.parent.account_number;
+      }
 
-      connect.basicPut("account", [formatAccount]).then(function(res) {
+      connect.basicPut('account', [formatAccount])
+      .then(function(res) {
         formatAccount.id = res.data.insertId;
         $scope.model.account.post(formatAccount);
         dataview.refresh();
 
         //reset form
-        $scope.newAccount.title = "";
-        $scope.newAccount.number = "";
+        $scope.newAccount.title = '';
+        $scope.newAccount.number = '';
 
         if(formatAccount.account_type_id === titleAccount) {
           //console.log('update parent');
@@ -190,33 +208,31 @@ angular.module('bhima.controllers')
           //console.log($scope.newAccount.parent);
         }
 
-      }, function(err) {
-        messenger.push({type: 'danger', msg: 'Could not insert account: ' + err});
       });
     }
 
     function updateState(newState) { session.state = newState; }
 
     function AccountFormatter(row, cell, value, columnDef, dataContext) {
-      var spacer = "<span style='display:inline-block;height:1px;width:" + (15 * dataContext.indent) + "px'></span>";
+      var spacer = '<span style="display:inline-block;height:1px;width:' + (15 * dataContext.indent) + 'px"></span>';
 
       if(dataContext.account_type_id === titleAccount) {
         if (dataContext._collapsed) {
-          return spacer + " <span class='toggle expanded glyphicon glyphicon-collapse-up'></span>&nbsp; <b>" + value + "</b>";
+          return spacer + ' <span class=\'toggle expanded glyphicon glyphicon-collapse-up\'></span>&nbsp; <b>' + value + '</b>';
         } else {
-          return spacer + " <span class='toggle collapsed glyphicon glyphicon-collapse-down'></span>&nbsp; <b>" + value + "</b>";
+          return spacer + ' <span class=\'toggle collapsed glyphicon glyphicon-collapse-down\'></span>&nbsp; <b>' + value + '</b>';
         }
       } else {
-        return spacer + " <span class='toggle'></span>&nbsp;" + value;
+        return spacer + ' <span class=\'toggle\'></span>&nbsp;' + value;
       }
     }
 
-    function EditFormatter(row, cell, value, columnDef, dataContext) {
-      return '<a class="grid_link"><span class="glyphicon glyphicon-pencil"></span></a>';
+    function EditFormatter() {
+      return '<a class=\'grid_link edit\'><span class=\'glyphicon glyphicon-pencil edit\'></span></a>';
     }
 
-    function DeleteFormatter(row, cell, value, columndDef, dataContext) {
-      return '<a class="grid_link"><span class="glyphicon glyphicon-trash"></span></a>';
+    function DeleteFormatter() {
+      return '<a class=\'grid_link remove\'><span class=\'glyphicon glyphicon-trash remove\'></span></a>';
     }
 
     $scope.updateState = updateState;

@@ -108,5 +108,25 @@
     "title" : "Invalid Label Detected",
     "ref" : "ERR_INVALID_LABEL",
     "tmpl" : "An invalid label was detected in the input.  Labels must be alphanumeric positive length strings.  The label '{0}' is invalid or empty."
+  },
+  "ERR_ACCOUNT_EXISTS" : {
+    "title" : "Account Already Exists",
+    "ref" : "ERR_ACCOUNT_EXISTS",
+    "tmpl" : "Account number '{0}' already exists in the chart of accounts.  Account numbers must be unique."
+  },
+  "ERR_CANNOT_INSERT_ACCOUNT" : {
+    "title" : "Account Insert Error",
+    "ref" : "ERR_CANNOT_INSERT_ACCOUNT",
+    "tmpl" : "A problem occurred writing account number '{0}' to the database.  Please refresh the page and try again."
+  },
+  "ERR_CANNOT_REMOVE_ACCOUNT" : {
+    "title" : "Cannot Remove Accounts",
+    "ref" : "ERR_CANNOT_REMOVE_ACCOUNT",
+    "tmpl" : "Users are not allowed to remove accounts.  Once an account has been created, it must remain in the chart of accounts to ensure data integrity."
+  },
+  "ERR_CANNOT_EDIT_ACCOUNT" : {
+    "title" : "Cannot Edit Accounts",
+    "ref" : "ERR_CANNOT_EDIT_ACCOUNT",
+    "tmpl" : "Users are not allowed to edit accounts.  Once an account has been created, it must remain intact in the chart of accounts to ensure data integrity."
   }
 }
