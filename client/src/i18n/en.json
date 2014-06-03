@@ -58,9 +58,15 @@
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
-      "GENERIC_TITLE"   : "Generic Expense",
-      "GENERIC_RECEIPT" : "Generic Receipt",
-      "PURCHASE"        : "Pay Purchase Order"
+      "GENERIC_TITLE"         : "Generic Expense",
+      "GENERIC_RECEIPT"       : "Generic Receipt",
+      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "PURCHASE"              : "Pay Purchase Order",
+      "EXPENSE_DATE"          : "Expense Date",
+      "RECIPIENT"             : "Recipient",
+      "AMOUNT"                : "Amount Dispensed",
+      "PURPOSE"               : "Purpose of Expense",
+      "EXPENSE_DATE"          : "Expense Date"
     },
 
     "INCOME" : {
@@ -300,6 +306,7 @@
     "CURRENCY"        : "Select Currency",
     "NAME"            : "Select a Name",
     "COUNTRY"         : "Select a Country",
+    "RECIPIENT"       : "Select a Recipient",
     "LANGUAGE"        : "Select a Language",
     "PROVINCE"        : "Select a Province",
     "SECTOR"          : "Select a Sector",
