@@ -135,7 +135,7 @@ angular.module('bhima.controllers')
       
       // Ensure there are options left to select
       if ($scope.lots && !$scope.lots.data.length) {
-        return messenger.info('There are no more lots available for movement in the current depot.'); 
+        return messenger.error('There are no more lots available for movement in the current depot.');
       }
       session.rows.push({quantity : 0});
     };
