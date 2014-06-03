@@ -9,11 +9,27 @@ angular.module('bhima.controllers')
   'uuid',
   '$q',
   function ($scope, validate, connect, messenger, appstate, util, uuid, $q) {
-    var session = $scope.session = {};
+    var session = $scope.session = {
+      state : null
+    };
     var distribution = {}, dependencies = {};
     
+    // Test for module organised into step structure
+    var moduleDefinition = [
+      {
+        key : 'init',
+        method : init
+      },
+      {
+        key : 'findPatient',
+        method : findPatient
+      }
+    ];
+
     dependencies.ledger = {};
     
+    moduleStep();
+
     function initialiseDistributionDetails(patient) {
       console.log(patient);
       dependencies.ledger.query = '/ledgers/debitor/' + patient.debitor_uuid;
@@ -24,9 +40,25 @@ angular.module('bhima.controllers')
     function startup(model) {
       angular.extend($scope, model);
       
-
       console.log(model);
     }
+
+    function moduleStep() { 
+      
+      // Derive index?
+      var currentIndex = moduleDefinition.indexOf(session.state) || 0;
+      session.state = moduleDefinition[currentIndex + 1];
+      session.state.method();
+    }
+
+    function init() { 
+
+    }
+
+    function findPatient() { 
+
+    }
+
 
     $scope.initialiseDistributionDetails = initialiseDistributionDetails;
     // distribution.visible = true;
