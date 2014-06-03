@@ -77,7 +77,7 @@ INSERT INTO `unit` VALUES
 (67,'Patient Registrations','TREE.PATIENT_REGISTRATION','',10,0,'/partials/reports/patient_registrations/','/reports/patient_registrations'),
 (69,'Change Patient Group','TREE.SWAP_DEBITOR','',21,0,'/partials/swap_debitor/','/swap_debitor/'),
 (70,'Cash Payments','TREE.CASH_PAYMENTS','',10,0,'/partials/reports/cash_payments/','/reports/cash_payments'),
-(71,'Report All Transactions','TREE.ALL_TRANSACTIONS','',10,0,'/partials/reports/all_transactions/','/reports/all_transactions'),
+(71,'Transactions by Account','TREE.TRANSACTIONS_BY_ACCOUNT','',10,0,'/partials/reports/transactions/','/reports/transactions/account'),
 (72,'Caution','TREE.CAUTION','',5,0,'/partials/caution/','/caution'),
 (73,'Extra','TREE.EXTRA','',0,1,'/partials/extra/','/extra'),
 (74,'Client','TREE.CLIENT','',73,0,'/partials/client/','/client'),

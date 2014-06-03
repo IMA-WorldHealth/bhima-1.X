@@ -289,7 +289,8 @@
     "CODE"            : "Select a Code",
     "DEPOT"           : "Select a Depot",
     "TRACKING_NUMBER" : "Select a Tracking Number",
-    "DIRECTION"       : "Select a Direction"
+    "DIRECTION"       : "Select a Direction",
+    "VALUE"           : "Select a value"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -314,6 +315,8 @@
     "REPORT_YEARS"          : "Report Years",
     "ACCOUNT"               : "Account",
     "TRANSACTION_REPORT"    : "Transaction Report",
+    "NO_TRANSACTIONS"       : "No transactions available for selected account.",
+    "ROWS"                  : "Rows",
     "BALANCED"              : "Balanced",
     "TOTAL_DEBIT"           : "Total Debit",
     "TOTAL_CREDIT"          : "Total Credit",
@@ -341,6 +344,7 @@
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
     "GENERATED_ON"          : "Generated on",
+    "TRANSACTIONS_BY_ACCOUNT" : "Transactions by Account",
 
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Account Summary Report",
@@ -375,6 +379,7 @@
     "TRACKING_NUMBER"     : "Tracking Number",
     "INVENTORY_CODE"      : "Inventory Code",
     "LINE_ID"             : "Line ID",
+    "LIMIT"               : "Limit",
     "LOT_NUMBER"          : "Lot Number",
     "PURCHASE_DATE"       : "Purchase Date",
     "EXPLANATION"         : "Explanation",
@@ -384,6 +389,7 @@
     "SALE_ID"             : "Sale ID",
     "PASSWORD"            : "Password",
     "ID"                  : "ID",
+    "TRANSACTION_DATE"    : "Transaction Date",
     "PURCHASE_ORDER"      : "Purchase Order",
     "USER_NAME"           : "User Name",
     "LAST_NAME"           : "Last Name",
@@ -581,7 +587,7 @@
     "CASH_PAYMENTS"             : "Cash Payments",
     "SWAP_DEBITOR"              : "Update Debtor",
     "PATIENT_STANDING"          : "Patient Standing Report",
-    "ALL_TRANSACTIONS"          : "Transactions by Account",
+    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
     "CAUTION"                   : "Caution",
     "EXTRA"                     : "Extra",
     "CLIENT"                    : "Clients",
