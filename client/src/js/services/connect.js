@@ -95,18 +95,21 @@ angular.module('bhima.services')
   function basicDelete(table, id, column) {
     messenger.warn({ namespace : 'CONNECT', description : 'connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().' });
     if (!column) { column = 'id'; }
-    return $http.delete(['/data/', table, '/', column, '/', id].join(''));
+    return $http.delete(['/data/', table, '/', column, '/', id].join(''))
+    .catch(httpError.capture);
   }
 
   //  TODO reverse these two methods? I have no idea how this happened
   function basicPut(table, data) {
     var format_object = {table: table, data: data};
-    return $http.post('data/', format_object);
+    return $http.post('data/', format_object)
+    .catch(httpError.capture);
   }
 
   function basicPost(table, data, pk) {
     var format_object = {table: table, data: data, pk: pk};
-    return $http.put('data/', format_object);
+    return $http.put('data/', format_object)
+    .catch(httpError.capture);
   }
 
   // utility function

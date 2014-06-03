@@ -53,7 +53,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    };
+    }
 
     $scope.options = [
       {
@@ -101,6 +101,7 @@ angular.module('bhima.controllers')
 
       connect.fetch(url)
       .then(function (model) {
+        if (!model) { return; }
         $scope.payments = model;
         $timeout(function () {
           convert();

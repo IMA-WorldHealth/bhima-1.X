@@ -68,7 +68,8 @@
   },
 
   "PLACEHOLDERS" : {
-    "PRODUCTS" : "e.g. Products"
+    "PRODUCTS" : "e.g. Products",
+    "PURCHASE_ORDER" : "Enter a purchase order ID."
   },
 
   "PATIENT_RECORDS"     : {
@@ -143,16 +144,13 @@
     "AFTER"            : "After",
     "SHOW"             : "Show",
     "HIDE"             : "Hide",
-    "BTN_TEXT"         : "Post to General Ledger",
+    "POST_TO_LEDGER"   : "Post to General Ledger",
     "TRANSACTIONS"     : "Transactions",
     "ERRORS"           : "Errors",
     "ERROR"            : "Error",
     "DESCRIPTION"      : "Description",
     "AFFECTED_ROWS"    : "Affected Rows",
-    "SUMMARY"          : "Summary",
-    "SIGNATURES"       : "Signatures",
-    "CHIEF_ACCOUNTANT" : "Chief Accountant",
-    "FINANCE_OFFICER"  : "Finance Officer"
+    "SUMMARY"          : "Summary"
   },
 
   "ERROR"                 : {
@@ -168,6 +166,7 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configure",
     "TOTAL"             : "Total",
+    "SIGNATURES"        : "Signatures",
     "BACK"              : "Back",
     "NAVIGATION"        : "Navigation",
     "DATE"              : "Date",
@@ -290,7 +289,8 @@
     "CODE"            : "Select a Code",
     "DEPOT"           : "Select a Depot",
     "TRACKING_NUMBER" : "Select a Tracking Number",
-    "DIRECTION"       : "Select a Direction"
+    "DIRECTION"       : "Select a Direction",
+    "VALUE"           : "Select a value"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -308,13 +308,15 @@
     "CHART_OF_ACCOUNTS"     : "Chart of Accounts",
     "NUMBER"                : "Number",
     "PRICES"                : "Prices",
-    "SIGNATURES" : "Signatures",
+    "SIGNATURES"            : "Signatures",
     "CREATED_ON"            : "Created on",
     "DESCRIPTION"           : "Description",
     "FINANCE_REPORT"        : "Finance Report",
     "REPORT_YEARS"          : "Report Years",
     "ACCOUNT"               : "Account",
     "TRANSACTION_REPORT"    : "Transaction Report",
+    "NO_TRANSACTIONS"       : "No transactions available for selected account.",
+    "ROWS"                  : "Rows",
     "BALANCED"              : "Balanced",
     "TOTAL_DEBIT"           : "Total Debit",
     "TOTAL_CREDIT"          : "Total Credit",
@@ -342,6 +344,7 @@
     "CHOOSE_PERIOD"         : "Choose A Period",
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
     "GENERATED_ON"          : "Generated on",
+    "TRANSACTIONS_BY_ACCOUNT" : "Transactions by Account",
 
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Account Summary Report",
@@ -376,6 +379,7 @@
     "TRACKING_NUMBER"     : "Tracking Number",
     "INVENTORY_CODE"      : "Inventory Code",
     "LINE_ID"             : "Line ID",
+    "LIMIT"               : "Limit",
     "LOT_NUMBER"          : "Lot Number",
     "PURCHASE_DATE"       : "Purchase Date",
     "EXPLANATION"         : "Explanation",
@@ -385,6 +389,7 @@
     "SALE_ID"             : "Sale ID",
     "PASSWORD"            : "Password",
     "ID"                  : "ID",
+    "TRANSACTION_DATE"    : "Transaction Date",
     "PURCHASE_ORDER"      : "Purchase Order",
     "USER_NAME"           : "User Name",
     "LAST_NAME"           : "Last Name",
@@ -487,7 +492,14 @@
     "BHIMA_STOCK_CODE"    : "Stock Reference",
     "DIRECTION"           : "Direction",
     "DESTINATION"         : "Destination",
-    "REFERENCE"           : "Reference"
+    "REFERENCE"           : "Reference",
+    "CODE_ITEM"           : "Medicine Code",
+    "LOT"                 : "Lot - Expiration Date - Quantity",
+    "STATE"               : "State",
+    "AVAILABLE"           : "Available",
+    "QTY_ASKED"           : "Quantity Requested",
+    "QTY_AVAIL"           : "Available Quantity",
+    "QTY_IN_LOT"          : "Quantity in a lot"
   },
 
   "INVENTORY" : {
@@ -564,7 +576,6 @@
     "DEBTOR_AGING"              : "Debitor Aging",
     "ACCOUNT_STATEMENT"         : "Account Statement",
     "INCOME_EXPENSE"            : "Income/Expense Report",
-    "CREDIT_NOTE"               : "Credit Note",
     "PATIENT_GRP_ASSIGNMENT"    : "Patient Group Assignment",
     "PATIENT_GRP"               : "Patient Groups",
     "ACCOUNTING"                : "Accounting",
@@ -576,7 +587,7 @@
     "CASH_PAYMENTS"             : "Cash Payments",
     "SWAP_DEBITOR"              : "Update Debtor",
     "PATIENT_STANDING"          : "Patient Standing Report",
-    "ALL_TRANSACTIONS"          : "Transactions by Account",
+    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
     "CAUTION"                   : "Caution",
     "EXTRA"                     : "Extra",
     "CLIENT"                    : "Clients",
@@ -589,6 +600,27 @@
     "STOCK_MANAGEMENT"          : "Stock Management",
     "INVENTORY_MANAGEMENT"      : "Inventory Management",
     "SERVICE"                   : "Services"
+    "STOCK_DISTRIBUTION"        : "Stock Distribution",
+    "EMPLOYEE"                  : "Employee Management",
+    "SERVICE"                   : "Service Management"
+  },
+
+  "DISTRIBUTION" : {
+    "TITLE"                  : "Stock Distribution",
+    "SALE_DETAILS"           : "Sale Details",
+    "ADD_ROW"                : "Add an Item",
+    "DESCRIPTION"            : "Description",
+    "SUBMIT"                 : "Submit",
+    "PATIENT_COVERED"        : "Patient is convered by a Convention",
+    "APPLIES_GLOBALLY"       : "Applies globally",
+    "APPLIES_TO_ITEM"        : "Applies to individual items",
+    "TOTAL"                  : "Total",
+    "SELECTED_SALE_DETAILS"  : "Details of selected sale",
+    "NUM_FACTURE"            : "Invoice Number",
+    "SALE_DATE"              : "Sale Date",
+    "COST"                   : "Cost",
+    "LOT_DETAILS"            : "Lot Details",
+    "EMPTY_MESSAGE"          : "No sale selected!"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -1138,7 +1170,8 @@
       "CONFIGURE_WAREHOUSE" : "Select Depot",
       "WAREHOUSE_INFO_1" : "Configure the depot to be used for stock management.",
       "WAREHOUSE_INFO_2" : "All Stock operations (entry, exit and reports) will be assigned to this depot.",
-      "WAREHOUSE_INFO_3" : "This setting can be changed at a later date."
+      "WAREHOUSE_INFO_3" : "This setting can be changed at a later date.",
+      "REPORTS" : "Stock Reports"
     },
     "ENTRY" : {
       "KEY"                 : "Stock Entry",
@@ -1158,13 +1191,16 @@
       "REVIEW"              : "Review Manifest",
       "REQUESTED_BY"        : "Requested By",
       "ADD_LOT"             : "Add Lot",
-      "ENTRY_DATE"          : "Entry Date"
+      "ENTRY_DATE"          : "Entry Date",
+      "ENTER_STOCK"         : "Enter Stock",
+      "REPORT"              : "Entry Report"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
     },
     "LOSS" : {
-      "KEY" : "Stock Loss" },
+      "KEY" : "Stock Loss"
+    },
     "MOVEMENT" : {
       "KEY"   : "Stock Movement",
       "TITLE" : "Stock Movements",
@@ -1196,6 +1232,13 @@
     "ERR_HTTP"             : "Error changing debtor group",
     "ERR_MISSING"          : "Error no debtor selected",
     "SUCCESS"              : "Changing successfully"
+  },
+
+  "SIGNATURES" : {
+    "WAREHOUSE_MANAGER" : "Warehouse Manager",
+    "CHIEF_ACCOUNTANT" : "Chief Accountant",
+    "FINANCE_OFFICER" : "Finance Officer",
+    "ADMINISTRATOR" : "Adminstrator"
   },
 
   "DASHBOARD" : {

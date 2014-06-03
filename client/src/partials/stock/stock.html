@@ -6,11 +6,14 @@
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
+<<<<<<< HEAD
       <!-- <span class="label label&#45;success square">{{ "UTIL.NAVIGATION" | translate }}</span> -->
+=======
+>>>>>>> 57a76872ab924c0d55a9e3d8c64a42b514855098
       <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
     </ol>
   </div>
-  
+
   <div class="pull-right" style="margin-top: 1px">
     <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
       {{depot.text}}</span>
@@ -31,15 +34,15 @@
 </section>
 
 <div class="content">
-  
+
   <div ng-if="session.configure">
 
-        
+
     <div class="row">
       <div class="col-xs-12">
         <div class="panel panel-default square">
           <div class="panel-heading square">
-            {{ "STOCK.MAIN.CONFIGURE_WAREHOUSE" | translate }} 
+            {{ "STOCK.MAIN.CONFIGURE_WAREHOUSE" | translate }}
           </div>
           <!-- TODO move styles to CSS  -->
           <div class="panel-body">
@@ -47,7 +50,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <div class="alert alert-info">
-                  <span class="glyphicon glyphicon-exclamation-sign"></span> 
+                  <span class="glyphicon glyphicon-exclamation-sign"></span>
                   {{ "STOCK.MAIN.WAREHOUSE_INFO_1" | translate}}
                   <b>{{ "STOCK.MAIN.WAREHOUSE_INFO_2" | translate }}</b>
                   {{ "STOCK.MAIN.WAREHOUSE_INFO_3" | translate }}
@@ -56,8 +59,8 @@
             </div>
 
             <div class="configure">
-              <div 
-                class="panel panel-default configure-item" 
+              <div
+                class="panel panel-default configure-item"
                 ng-repeat="depot in depots.data"
                 ng-click="setDepot(depot)"
               >
@@ -66,7 +69,7 @@
                     <span style="font-size: 18px;" class="glyphicon glyphicon-home"></span>
                   </div>
                   <div class="row" style="margin-top: 0.5em">
-                    
+
                     <div class="col-xs-12">
                       [{{depot.reference}}] {{depot.text}}
                     </div>
@@ -79,13 +82,13 @@
       </div>
     </div>
   </div>
-  
+
   <div ng-if="session.configured" class="row" style="margin-top: 10px;">
 
     <div class="col-xs-6">
       <div class="panel panel-primary square">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-home"></span> {{ "STOCK.MAIN.MODULES" | translate }}
+           {{ "STOCK.MAIN.MODULES" | translate }} <span class="glyphicon glyphicon-th-large pull-right"></span>
         </div>
         <div class="panel-body">
           <li ng-repeat="item in config.modules" class="plain-list">
@@ -100,7 +103,7 @@
 
       <div class="panel panel-default square">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-wrench"></span> {{ "STOCK.MAIN.UTILITIES" | translate }}
+           {{ "STOCK.MAIN.UTILITIES" | translate }} <span class="glyphicon glyphicon-wrench pull-right"></span>
         </div>
         <div class="panel-body">
           <li ng-repeat="item in config.utilities" class="plain-list">
@@ -110,10 +113,9 @@
         </div>
       </div>
 
-
       <div class="panel panel-default square">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-book"></span> {{ "STOCK.MAIN.REPORTS" | translate }}
+          {{ "STOCK.MAIN.REPORTS" | translate }} <span class="glyphicon glyphicon-book pull-right"></span> 
         </div>
         <div class="panel-body">
           <li ng-repeat="item in config.reports" class="plain-list">

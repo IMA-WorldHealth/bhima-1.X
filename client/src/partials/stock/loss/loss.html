@@ -1,0 +1,41 @@
+<header data-header>
+  {{ "STOCK.LOSS.TITLE" | translate }}
+</header>
+
+<nav>
+  <button ng-click="newLoss()" class="btn btn-sm btn-default">
+    {{ "STOCK.LOSS.NEW_LOSS" | translate }}
+  </button>
+</nav>
+
+<main>
+  <div class="row" ng-if="session.block">
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-warning-sign"></span>
+      {{ "STOCK.LOSS.NO_DEPOT" | translate }}
+    </div>
+  </div>
+
+  <div class="row" ng-if="!session.block">
+
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-list-alt"></span>
+        </div>
+        <form class="panel-body">
+
+          <legend>{{ "STOCK.LOSS.LOSS_FORM" | translate }}</legend>
+
+          <div class="form-group">
+            <label>{{ "COLUMNS.DOCUMENT_UUID" | }}</label>
+            <p class="form-control-static">{{ document.uuid }}</p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</main>
+

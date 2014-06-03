@@ -1,9 +1,12 @@
-drop database if exists`kpk`;
-create database `kpk`;
-use `kpk`;
+drop database if exists`bhima`;
+create database `bhima`;
+use `bhima`;
 
-grant all on `kpk`.* to 'kpk'@'%' identified by 'HISCongo2013';
-grant super on *.* to 'kpk'@'%';
+-- grant all on `bhima`.* to 'bhima'@'%' identified by 'HISCongo2013';
+-- grant all on `bhima`.* to 'bhima'@'localhost' identified by 'HISCongo2013';
+grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
+grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' with grant option;
+-- grant super on *.* to 'bhima'@'%';
 flush privileges;
 
 drop table if exists `currency`;
@@ -961,8 +964,8 @@ create table `general_ledger` (
   constraint foreign key (`service_id`) references `service` (`id`) on update cascade
 ) engine=innodb;
 
-drop table if exists `kpk`.`period_total`;
-create table `kpk`.`period_total` (
+drop table if exists `bhima`.`period_total`;
+create table `bhima`.`period_total` (
   `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,

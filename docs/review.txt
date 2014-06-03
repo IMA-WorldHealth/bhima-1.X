@@ -1,0 +1,54 @@
+Thoughts on Tshikaji
+
+I will try to break down what I believe are the project priorities and what are
+ Tshikaji's needs.
+
+I. Challenges
+
+  We faced a diverse set of challenges at Tshikaji.  These fall into three 
+categories: techinical, institutional, and unavoidable.  Techinical and 
+institutional challenges can and should be anticipated and avoided in future 
+installs in other hospitals.  Unavoidable challenges can only be anticipated.
+
+  Tshikaji already had a technology infrastructure which simplified quick 
+operations (installation, networking) but greatly complicated complex operations
+(port forwarding, location and responsibility of routers).  Since most of their
+technology was purchased through grants and projects, it was bought piece meal,
+resulting in a complete lack of uniformity in their hardware.
+
+  We found Microsoft Windows Server 2003 SP3, Windows Server 2008 R1, and a mix
+of Windows XP and Windows 7 Desktops.  The BHIMA server is currently running on 
+the Windows Server 2008 R1 without difficulty.  BHIMA is designed as a web 
+application, so once all clients were outfitted with the latest Chrome Browser,
+all clients had no trouble accessing and using the application.  However,
+because there was no uniformity in screen size, resolution, and type,
+accessibility became a large problem.  Furthermore, some computers had antivirus
+while others did not, and the array of software installed on a client varied
+from machine to machine, making it slightly harder to navigate the desktops and
+caused machines with similar specifications to run at very different speeds.  
+Unfortunately, our installation only exacerbated the problems of diverse
+hardware - we left a pentium 4 desktop running Debian as Tshikaji server, since
+both the hardware and software stack have been vetted as rock solid by our team
+and we did not wish to disturb the main Tshikaji server, for fear of changing
+sensitive system properties.
+
+  For the most part, diverse network hardware is not a problem.  In Tshikaji's 
+case, we found Belkin, Linksys, NewTec, and MikroTik routers and switches 
+connected by both CAT5 cabling and fiber. Disorganization was the main challenge
+of networking in Tshikaji.  Tshikaji does not have a system adminstrator.  Their
+network, with the exception of the fiber optic, is poorly planned and poorly
+maintained.  An inexcusable number of cables are strewn from the ceiling,
+cables wander from here to there around desks, printers, computers, and books.
+There is no rhyme or reason to the set up at PAX. About halfway through out time
+at Tshikaji, their network began experiencing connectivity issues.  We were able
+to fix it, but this process would have been much easier had dead cables been
+pruned, routers ports clearly marked, and better documentation about which
+router fed which computers.  From an adminstrative perspective, very few
+routers are password protected, even the gateway interfaces.
+
+  However, much of the network hardware is in dire need of replacement.  Very
+few switches had all working ports.  The Belkin wireless internet for the admin
+building died halfway through out tenure at Tshikaji and was never resurected.
+
+  Tshikaji had its fair share of adminstrative challenges.  Chief amoung those
+was reliable business hours, 

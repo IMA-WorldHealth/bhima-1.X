@@ -3,10 +3,9 @@
   "port" : 8080,
   "db" : {
     "host"     : "localhost",
-    "user"     : "kpk",
+    "user"     : "bhima",
     "password" : "HISCongo2013",
-    "database" : "kpk",
-    "multipleStatements" : true
+    "database" : "bhima"
   },
   "log" : {
     "file" : "scripts/lib/database/db.log",
@@ -22,6 +21,7 @@
       "/assets",
       "/data",
       "/print",
+      "/report",
       "/currentProject",
       "/trialbalance",
       "/reports",
@@ -59,7 +59,10 @@
       "/costCenterAccount/",
       "/removeFromCostCenter/",
       "/cost/",
-      "/profit/"
+      "/profit/",
+      "/favicon.ico",
+      "/expiring/",
+      "/expiring_complete/"
     ]
   }
 }

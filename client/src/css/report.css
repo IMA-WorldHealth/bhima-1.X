@@ -43,9 +43,6 @@
   padding    : 10px;
   border     : 1px solid #DDD;
   background : white;
-  /* overflow : auto; */
-}
-
-.report-compressed {
-  bottom : 37px;
+  overflow-y : auto;
+  overflow-x : hidden;
 }

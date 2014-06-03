@@ -97,24 +97,24 @@ angular.module('bhima.controllers')
       ];
 
       // FIXME : this for some reason doesn't always work.
-      columns.forEach(function (col) {
-         $translate(col.id).then(function(value){
-          col.name = value;
-        })
-      });
 
-      // $scope.$on('$translateChangeSuccess', function () {
-      //   columns.forEach(function (col) {
-      //     col.name = $translate(col.id);
-      //   });
-      // });
+      $q.all(columns.map(function (col){
+        return $translate(col.id);
+      }))
+      .then(function(values){
+        columns.forEach(function (col, i){
+          col.name = values[i];
+        });
 
-      options = {
+        options = {
         enableCellNavigation : true,
         forceFitColumns      : true
       };
 
       grid = new Slick.Grid("#bhima-inventory-grid", dataview, columns, options);
+      grid.onSort.subscribe(sorter);
+
+      })
 
       // set up sorting
 
@@ -125,7 +125,7 @@ angular.module('bhima.controllers')
         grid.invalidate();
       }
 
-      grid.onSort.subscribe(sorter);
+
 
       // set up filtering
 
