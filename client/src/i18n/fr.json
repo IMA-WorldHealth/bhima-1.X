@@ -232,12 +232,19 @@
     "PLACEHOLDER"     : "Chercher une convention"
   },
 
+  "LANGUAGES" : {
+    "ENGLISH" : "Anglais",
+    "FRENCH" : "Francais",
+    "LINGALA" : "Lingala"
+  },
+
   "SELECT"            : {
     "ACCOUNT"         : "Selectionner Compte",
     "ACCOUNT_TYPE"    : "Selectionner Type de Compte",
     "CURRENCY"        : "Selectionner Monnaie",
     "NAME"            : "Selectionner un Nom",
     "COUNTRY"         : "Selectionner un Pays",
+    "LANGUAGE"        : "Selectionner une lang",
     "PROVINCE"        : "Selectionner un Province",
     "SECTOR"          : "Selectionner une Secteur",
     "VILLAGE"         : "Selectionner une Village",

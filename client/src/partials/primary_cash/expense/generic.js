@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('primaryCash.expense', [
+.controller('primaryCash.expense.generic', [
   '$scope',
   '$routeParams',
   'validate',
@@ -9,7 +9,7 @@ angular.module('bhima.controllers')
   'uuid',
   'util',
   function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util) {
-    var dependencies = {};
+    var isDefined, dependencies = {};
     var session = $scope.session = { receipt : {} };
 
     // TODO
@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
       throw new Error('No cashbox selected');
     }
 
-    var isDefined = angular.isDefined;
+    isDefined = angular.isDefined;
 
     $scope.timestamp = new Date();
 
@@ -102,7 +102,6 @@ angular.module('bhima.controllers')
       var data, receipt = session.receipt;
       formatDates();
 
-
       connect.fetch('/user_session')
       .then(function (user) {
 
@@ -122,6 +121,8 @@ angular.module('bhima.controllers')
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 2
         };
+
+        console.log('[data]', data);
 
         return connect.basicPut('primary_cash', [data]);
       })
