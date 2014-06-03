@@ -44,6 +44,12 @@
     "REFRESH"               : "Refresh"
   },
 
+  "LANGUAGES" : {
+    "ENGLISH" : "English",
+    "FRENCH" : "French",
+    "LINGALA" : "Lingala"
+  },
+
   "PRIMARY_CASH"  : {
     "TITLE"       : "Primary Cash",
     "EXPENSES"    : "Expenses",
@@ -294,6 +300,7 @@
     "CURRENCY"        : "Select Currency",
     "NAME"            : "Select a Name",
     "COUNTRY"         : "Select a Country",
+    "LANGUAGE"        : "Select a Language",
     "PROVINCE"        : "Select a Province",
     "SECTOR"          : "Select a Sector",
     "VILLAGE"         : "Select a Village",
