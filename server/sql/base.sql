@@ -1714,7 +1714,9 @@ INSERT INTO `caution_box_account_currency` VALUES (1,2,1,249),(2,2,2,250),(3,1,1
 INSERT INTO `primary_cash_module` VALUES
 (1, "Purchase"),
 (2, "transfert"),
-(3, "convention");
+(3, "convention"),
+(4, "Generic Expense"),
+(5, "Generic Income");
 
 INSERT INTO `fiscal_year` VALUES (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014,NULL,0);
 

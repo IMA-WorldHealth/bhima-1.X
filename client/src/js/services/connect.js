@@ -11,6 +11,12 @@ angular.module('bhima.services')
   // Error namespace
   var httpError = liberror.namespace('CONNECT');
 
+  // TODO : this is kind of duplicating.  Make liberror propogate errors
+  function capture (err) {
+    httpError.capture(err);
+    return $q.reject(err);
+  }
+
   function req(defn, stringIdentifier) {
     //summary:
     //  Attempt at a more more managable API for modules requesting tables from the server, implementation finalized
@@ -44,7 +50,7 @@ angular.module('bhima.services')
         });
         return $q.when(model);
       })
-      .catch(httpError.capture);
+      .catch(capture);
   }
 
   function fetch(defn) {
@@ -64,7 +70,7 @@ angular.module('bhima.services')
       .then(function (res) {
         return $q.when(res.data);
       })
-      .catch(httpError.capture);
+      .catch(capture);
   }
 
   // Cleaner API functions to replace basicPut*Post*Delete
@@ -76,19 +82,19 @@ angular.module('bhima.services')
     };
     return $http
       .put('/data/', format_object)
-      .catch(httpError.capture);
+      .catch(capture);
   }
 
   function post(table, data) {
     return $http
       .post('data/', {table : table, data : data})
-      .catch(httpError.capture);
+      .catch(capture);
   }
 
   function del(table, column, id) {
     return $http
       .delete(['/data', table, column, id].join('/'))
-      .catch(httpError.capture);
+      .catch(capture);
   }
 
   // old API
@@ -96,20 +102,20 @@ angular.module('bhima.services')
     messenger.warn({ namespace : 'CONNECT', description : 'connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().' });
     if (!column) { column = 'id'; }
     return $http.delete(['/data/', table, '/', column, '/', id].join(''))
-    .catch(httpError.capture);
+    .catch(capture);
   }
 
   //  TODO reverse these two methods? I have no idea how this happened
   function basicPut(table, data) {
     var format_object = {table: table, data: data};
     return $http.post('data/', format_object)
-    .catch(httpError.capture);
+    .catch(capture);
   }
 
   function basicPost(table, data, pk) {
     var format_object = {table: table, data: data, pk: pk};
     return $http.put('data/', format_object)
-    .catch(httpError.capture);
+    .catch(capture);
   }
 
   // utility function
