@@ -1,4 +1,4 @@
-use kpk;
+use bhima;
 
 set @group_uuid = UUID();
 set @supplier_uuid = UUID();

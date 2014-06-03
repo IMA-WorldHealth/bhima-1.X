@@ -22,3 +22,180 @@ Questions Pratiques
 2.
 
 
+Jonathan's Ideas
+
+Theoretical Questions:
+
+1. Explain the respective roles of HTML, CSS, and JavaScript in creating a dynamic web site.
+
+  Best Answer) HTML provides the structure of the document, as well as content.  CSS layers on top of HTML to add
+    style and minimal interactivity.  JavaScript render the page dynamic, allowing for components to be loaded dynamically, or
+    upon user input, as well as editting the Document Object Model.
+
+2. What is a Version Control System (VCS) and why is it important?  Examples of VCS are Git, Subversion, Bazaar.
+
+  Best Answer) Version Control Systems are programs which add time-stamped versioning to documents in the file system, and support
+    rolling back changes on files.  In large teams, they are critical for collaborative development, to ensure that people can work
+    on the same code base and merge changes seamlessly.  Finally, they contain some advanced features such as branching, rebasing,
+    and remote repositories which protect your code by distributing copies of the files and allowing ease of collaborative development.
+
+3. What role does the server play in client/server web architecture?  What role does the client play?
+
+  Best Answer) In the client/server web model, the server's primary job is to host the code and send it to the client upon request
+    (i.e. to serve), along with files, documents, images, and other data.  While some cacheing technologies allow the client to
+    hold application code, the server generally must contain all code to allow new clients to connect.  In addition to holding the
+    application, the server holds any shared data between clients, lists of client connections, manages the encryption of connections,
+    and permissions/security of the website.
+
+    The client is responsible for requesting, downloading, and executing code from the server.  Furthermore, the client is responsible
+    for rendering the application or files sent from the server, and presents a canvas for user interactivity.
+
+4. What advantages do RDBMS offer over a regular file system?
+
+  Best Answer) Relational Database Management Systems are built to scale multiple users (or millions) reading, writing, and removing data
+  from the same database.  In this respect, they are much better at resolving conflicts when multiple users wish to access or modify the
+  same record, and maintain good performance even when lots of reads and writes are occuring simultaneously.  Databases also impose a data
+  model on the file system, allowing the database engine to reject certain data if they are do not fit the same type (INT or TEXT) and provide
+  a structured way to relate pieces of data together through use of keys.  Relational databases also support INDEXes which allow extremely
+  fast lookups of data, much faster than file systems.  Most RDBMSs support versioning natively, so that transactions can be "rolled back"
+  to their previous state before a modification or removal.  Finally, databases are often very portable.  For example, SQLite is composed of
+  a single flat file that runs almost all operating systems one can imagine.
+
+Practical Questions
+
+1. Write pseudo code to sort the following array in increasing order.  The code to generate the array of random numbers is included for reference.
+
+var one = [1, 2, 3, 4, 5] => [1, 2, 3, 4, 5];
+var two = [5, 4, 3, 2, 1] => [1, 2, 3, 4, 5];
+var three = [-1, -2, -3, -4, -5] => [-1, -2, -3, -4, -5];
+var four = [1, 5, 3, 8, 10] => [1, 3, 8, 5, 10];
+var five = [1] => [1];
+
+
+2. Find the trace of a given square (n x n) matrix.
+
+Expected Result)
+
+// generate a matrix
+function matrix(n) {
+  var c = 1;
+  var mat = new Array(n);
+  for (var i = 0; i < n; i++) {
+    mat[i] = new Array(n);
+    for (var j = 0; j < n; j++) {
+      mat[i][j] = c++;
+    }
+  }
+  return mat;
+}
+
+// Calculate the trace of a matrix
+function trace(matrix) {
+  var l = matrix.length,
+    counter = 0;
+
+  for (var i = 0; i < l; i++) {
+    counter += matrix[i][i];
+  }
+
+  return counter;
+}
+
+
+3. Find the nth Fibonacci number.
+
+// give the nth number of the Fibonacci sequence
+function fib(n) {
+  return (n === 0 || n === 1) ? 1 : fib(n-1) + fib(n-2);
+}
+
+// print the first n fibonacci sequence
+function printer (n) {
+   var s = '';
+   for (var i = 0; i < n; i++) {
+     s += fib(i) + ' ';
+   }
+   console.log(s);
+}
+
+
+3. SQL
+
+CLIENT
+-------------------------------------------------------
+| id | prenom        | nom        | date_de_naissance |
+-------------------------------------------------------
+| 1  | 'Jonathan'    | 'Niles'    | 07/06/1992        |
+| 2  | 'Steven'      | 'Fountain' | 08/02/1991        |
+| 3  | 'Jack'        | 'Bower'    | 02/01/2000        |
+| 4  | 'Christopher' | 'Niles'    | 12/12/1990        |
+| 5  | 'Carlos'      | 'Bemba'    | 21/02/1987        |
+| 6  | 'Hope'        | 'Watson'   | 17/09/1999        |
+-------------------------------------------------------
+
+ORDER
+------------------------------------------
+| id | client_id | livre_id | order_date |
+------------------------------------------
+| 1  | 1         | 5        | 01/01/2014 |
+| 2  | 6         | 3        | 01/01/2014 |
+| 3  | 3         | 2        | 01/01/2014 |
+| 4  | 4         | 1        | 02/01/2014 |
+| 5  | 1         | 5        | 03/01/2014 |
+| 6  | 1         | 6        | 03/01/2014 |
+| 7  | 5         | 3        | 03/01/2014 |
+| 8  | 2         | 8        | 04/01/2014 |
+| 9  | 4         | 1        | 05/01/2014 |
+| 10 | 2         | 5        | 05/01/2014 |
+| 11 | 5         | 6        | 05/01/2014 |
+| 12 | 6         | 3        | 05/01/2014 |
+| 13 | 1         | 8        | 05/01/2014 |
+------------------------------------------
+
+GENRE
+------------------
+| id | name      |
+------------------
+| 1  | 'Fiction' |
+| 2  | 'ScyFy'   |
+| 3  | 'Romance' |
+| 4  | 'Comedy'  |
+------------------
+
+LIVRE
+---------------------------------------------------------------------------------------------------------
+| id | name                                      | genre_id | author                 | publication_date |
+---------------------------------------------------------------------------------------------------------
+| 1  | 'Great Expectations'                      | 1        | 'Charles Dickens'      | 01/02/1861       |
+| 2  | 'Moby Dick'                               | 2        | 'Herman Melville'      | 03/01/1851       |
+| 3  | 'The Abyss'                               | 1        | 'Orson Scott Card'     | 01/01/1989       |
+| 4  | 'The Hitchhiker\'s Guide to the Universe' | 3        | 'Douglas Adams'        | 12/10/1979       |
+| 5  | 'Life, the Universe, and Everything'      | 4        | 'Douglas Adams'        | 01/01/1980       |
+| 6  | 'The Hangman\'s Curse'                    | 3        | 'Frank Peretti'        | 01/29/2001       |
+| 7  | 'Little Women'                            | 4        | 'Louisa May Alcott'    | 01/01/1868       |
+| 8  | 'Little House in the Big Woods'           | 1        | 'Laura Ingalls Wilder' | 01/01/1932       |
+---------------------------------------------------------------------------------------------------------
+
+Please write the SQL queries which would answer the following questions :
+
+(1) Find the ids and names of books in the genre 'Comedy'.
+
+ Best Answer) SELECT `id`, `name` FROM `livre` WHERE `genre_id` = 4;
+
+(2) Find the first and last names of clients who ordered books on 03/01/2014.
+
+ Best Answer) SELECT `prenom`, `nom` FROM `client` JOIN `order` ON `client`.`id`=`order`.`client_id` WHERE `order`.`order_date` = '03/01/2014';
+  or) SELECT `prenom`, `nom` FROM `client` JOIN `order` WHERE `client`.`id`=`order`.`client_id` AND `order`.`order_date` = '03/01/2014';
+
+(3) What is the first and last name of the oldest client?
+
+ Best Answer) SELECT `prenom`, `nom` FROM `client` ORDER BY `date_de_naissance` DESC LIMIT 1;
+
+(4) Which day had the most orders?
+
+ Best Answer) SELECT MAX(COUNT(`id`)), `id` FROM `order` GROUP BY `order_date`;
+
+(5) What are the names of books that were not ordered by a clients with last name 'Fountain'?
+
+ Best Answer) SELECT `name` FROM `livre` JOIN `order` ON `livre`.`id` = `order`.`livre_id` WHERE `livre`.`id` NOT IN (SELECT `order`.`livre_id` from `order` JOIN `client` ON `order`.`client_id` = `client`.`id` WHERE `client`.`nom` = 'Fountain');
+

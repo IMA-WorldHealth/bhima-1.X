@@ -1,0 +1,69 @@
+<header data-header>
+  {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left input-group col-xs-3">
+    <span class="input-group-addon">
+      {{ "COLUMNS.LIMIT" | translate }}
+    </span>
+    <select class="form-bhima" ng-model="session.limit" ng-options="limit as limit for limit in session.limits" ng-change="search()">
+      <option disabled="disabled" value="">-- {{ "SELECT.VALUE" | translate }} -- </option>
+    </select>
+  </div>
+
+  <div class="pull-left input-group col-xs-3">
+    <span class="input-group-addon">
+      {{ "COLUMNS.ACCOUNT_NUMBER" | translate }}
+    </span>
+    <select class="form-bhima" ng-model="session.account" ng-options="account as account.account_number+' - '+account.account_txt for account in accounts.data | orderBy:'account_number'" ng-change="search()">
+      <option disabled="disabled" value="">-- {{ "SELECT.ACCOUNT" | translate }} -- </option>
+    </select>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-print"></span>
+      {{ "UTIL.PRINT" | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div class="reportFrame">
+      <h4>{{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }} {{ session.account.account_number }}<small> {{ session.timestamp | date }}</small></h4>
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.TRANSACTION_DATE" | translate }}</th>
+            <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+            <th>{{ "COLUMNS.DEBIT" | translate }}</th>
+            <th>{{ "COLUMNS.CREDIT" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat='transaction in transactions'>
+            <td>{{ transaction.trans_date | date }}</td>
+            <td>{{ transaction.description }}</td>
+            <td ng-bind-html="transaction.debit_equiv | intlcurrency:transaction.currency_id"></td>
+            <td ng-bind-html="transaction.credit_equiv | intlcurrency:transaction.currency_id"></td>
+          </tr>
+        </tbody>
+        <tbody ng-if="!transactions.length && session.account">
+          <tr>
+            <td colspan="4">
+              <div class="alert alert-danger">
+                <h4>{{ "REPORT.NO_TRANSACTIONS" | translate }}</h4>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

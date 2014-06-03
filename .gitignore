@@ -4,6 +4,7 @@
 .idea/
 *.min.js
 *.min.css
+*.png
 
 node_modules/
 test/reports/

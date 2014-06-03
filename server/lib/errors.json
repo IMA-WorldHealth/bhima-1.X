@@ -52,12 +52,12 @@
   "ERR_HTTP_UNREACHABLE" : {
     "title"                : "Server Unreachable",
     "ref"                  : "ERR_HTTP_UNREACHABLE",
-    "tmpl"          : "Server returned a {0} unreachable response."
+    "tmpl"          : "Server returned a '{0}' unreachable response."
   },
   "ERR_HTTP_INTERNAL" : {
     "title"             : "Internal Server Error",
     "ref"               : "ERR_HTTP_INTERNAL",
-    "tmpl"       : "Server returned a {0} internal error response."
+    "tmpl"       : "Server returned a '{0}' internal error response for url '{1}'."
   },
   "ERR_AUTH_UNAUTHORIZED" : {
     "title"                 : "Authorized Access",

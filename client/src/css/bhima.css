@@ -17,7 +17,6 @@ body {
 
 button {
   text-transform: capitalize;
-  
 }
 
 /* For some reason, minification broke this... */
@@ -258,6 +257,12 @@ header + .content {
   border-color     : #357ebd;
 }
 
+.message.message-info {
+  color: #ffffff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+
 .message.message-success {
   background-color: #dff0d8;
   border-color: #d6e9c6;
@@ -424,4 +429,13 @@ a.danger {
   color            : #468847;
   background-color : #dff0d8;
   border-color     : #d6e9c6;
+}
+
+.parameter-table tbody th,
+.paramter-table tbody td {
+  padding: 5px;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }

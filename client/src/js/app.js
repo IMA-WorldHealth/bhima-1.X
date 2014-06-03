@@ -130,6 +130,10 @@
       controller : 'report.prices',
       templateUrl : 'partials/reports/prices/prices.html'
     })
+    .when('/reports/transactions/account', {
+      controller : 'report.transactions.account',
+      templateUrl : 'partials/reports/transactions/account.html'
+    })
     .when('/reports/transaction_report', {
       controller: 'reportTransactionController',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
@@ -245,6 +249,10 @@
       controller : 'allTransactions',
       templateUrl : 'partials/reports/all_transactions/all_transactions.html'
     })
+    .when('/reports/expiring', {
+      controller : 'expiring',
+      templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
@@ -321,10 +329,6 @@
       controller : 'stock.entry.partition',
       templateUrl : 'partials/stock/entry/partition.html'
     })
-    .when('/stock/entry/review/:depotId', {
-      controller : 'stock.entry.review',
-      templateUrl: 'partials/stock/entry/review.html'
-    })
     .when('/stock/movement/:depotId', {
       controller : 'stock.movement',
       templateUrl : 'partials/stock/movement/movement.html'
@@ -337,9 +341,21 @@
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
     })
+    .when('/stock/entry/report/:documentId?', {
+      controller : 'stock.entry.report',
+      templateUrl : 'partials/stock/entry/report.html'
+    })
     .when('/stock/search/', {
       controller : 'stock.search',
       templateUrl: 'partials/stock/search/search.html'
+    })
+    .when('/stock/count/', {
+      controller : 'stock.count',
+      templateUrl : 'partials/stock/count/count.html'
+    })
+    .when('/stock/expiring/:depotId', {
+      controller : 'stock.expiring',
+      templateUrl : 'partials/stock/expiring/expiring.html'
     })
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',

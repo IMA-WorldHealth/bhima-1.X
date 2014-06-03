@@ -1,4 +1,4 @@
-use `kpk`;
+use `bhima`;
 
 delete from `posting_journal`;
 delete from `general_ledger`;
@@ -67,7 +67,6 @@ INSERT INTO `unit` VALUES
 (54,'Chart of Accounts','TREE.CHART_OF_ACCOUNTS','',10,0,'/partials/reports/chart_of_accounts/','/reports/chart_of_accounts/'),
 (55,'Debitor Aging','TREE.DEBTOR_AGING','',10,0,'/partials/reports/debitor_aging/','/reports/debitor_aging/'),
 (57,'Income Expensive Balance','TREE.INCOME_EXPENSE','',10,0,'/partials/reports/income_expensive/','/reports/income_expensive/'),
-(58,'Credit Note','TREE.CREDIT_NOTE','',5,0,'/partials/credit_note/','/credit_note/'),
 (60,'Patient Group Assignment','TREE.PATIENT_GRP_ASSIGNMENT','',21,0,'/partials/patient_group_assignment/','/patient_group_assignment/'),
 (61,'Patient Group','TREE.PATIENT_GRP','',1,0,'/partials/patient_group/','/patient_group/'),
 (62,'Accounting','TREE.ACCOUNTING','',0,1,'/partials/accounting/index.html','/accounting/'),
@@ -78,7 +77,7 @@ INSERT INTO `unit` VALUES
 (67,'Patient Registrations','TREE.PATIENT_REGISTRATION','',10,0,'/partials/reports/patient_registrations/','/reports/patient_registrations'),
 (69,'Change Patient Group','TREE.SWAP_DEBITOR','',21,0,'/partials/swap_debitor/','/swap_debitor/'),
 (70,'Cash Payments','TREE.CASH_PAYMENTS','',10,0,'/partials/reports/cash_payments/','/reports/cash_payments'),
-(71,'Report All Transactions','TREE.ALL_TRANSACTIONS','',10,0,'/partials/reports/all_transactions/','/reports/all_transactions'),
+(71,'Transactions by Account','TREE.TRANSACTIONS_BY_ACCOUNT','',10,0,'/partials/reports/transactions/','/reports/transactions/account'),
 (72,'Caution','TREE.CAUTION','',5,0,'/partials/caution/','/caution'),
 -- (73,'Extra','TREE.EXTRA','',0,1,'/partials/extra/','/extra'),
 -- (74,'Client','TREE.CLIENT','',73,0,'/partials/client/','/client'),
@@ -93,11 +92,12 @@ INSERT INTO `unit` VALUES
 -- (87,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
 (88,'Account Statement', 'TREE.ACCOUNT_STATEMENT', '', 10, 0, 'partials/reports/account_statement', '/reports/account_statement'),
 (89,'Service Management', 'TREE.SERVICE', '', 1, 0, 'partials/service/', '/service'),
-(90,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/');
+(90, 'Expiring Stock Report', 'TREE.EXPIRING', '', 10, 0, '/partials/reports/expiring_stock', '/reports/expiring'),
+(91,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
-(1, 'admin','1','System','Administrato','kpkdeveloper@gmail.com',1),
+(1, 'admin','1','System','Administrato','bhimadeveloper@gmail.com',1),
 (2, 'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
 (3, 'delva','1','Dedrick','kitamuka','kitamuka@gmail.com',0),
 (4, 'sfount','1','Steven','Fountain','StevenFountain@live.co.uk',0),

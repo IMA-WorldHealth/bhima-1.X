@@ -60,6 +60,21 @@
             <b>Description</b>
             <div>{{ message.description }}</div>
           </div>
+          <div ng-if="message.params">
+            <table class="parameter-table">
+              <thead>
+                <tr>
+                  <th colspan="2">Parameters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="(k,v) in message.params">
+                  <th class="capitalize">{{ k }}</th>
+                  <td>{{ v }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
