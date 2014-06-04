@@ -361,7 +361,7 @@
     "INCOME_EXPENSE"            : "Rapport Recettes/Depense",
     "CREDIT_NOTE"               : "Note de Credit",
     "PATIENT_GRP_ASSIGNMENT"    : "Assignation Groupes des Malades",
-    "PATIENT_GRP"               : "Groupe des Malales",
+    "PATIENT_GRP"               : "Groupe des Malades",
     "ACCOUNTING"                : "Compatabilite",
     "COST_CENTER_MGMT"          : "Centres des couts",
     "GRP_INVOICING"             : "Facturation des Conventions",
