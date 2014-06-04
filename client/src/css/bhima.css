@@ -415,6 +415,11 @@ a.danger {
   color : #c09853;
 }
 
+.invalid { 
+  background-color : #ececec;
+  color : #9f9f9f;
+}
+
 .configure { 
   text-align : center;
 }
