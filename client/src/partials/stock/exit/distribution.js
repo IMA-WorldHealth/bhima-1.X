@@ -1,21 +1,23 @@
 angular.module('bhima.controllers')
 .controller('stock.distribution', [
   '$scope',
+  '$q',
+  '$routeParams',
   'validate',
   'connect',
   'messenger',
   'appstate',
   'util',
   'uuid',
-  '$q',
-  function ($scope, validate, connect, messenger, appstate, util, uuid, $q) {
+  function ($scope, $q, $routeParams, validate, connect, messenger, appstate, util, uuid) {
     var session = $scope.session = {
       // FIXME
       index : -1,
-      state : null
+      state : null,
+      depot : $routeParams.depotId
     };
     var distribution = {}, dependencies = {};
-    
+
     // Test for module organised into step structure
     var moduleDefinition = $scope.moduleDefinition = [
       {
@@ -65,6 +67,45 @@ angular.module('bhima.controllers')
       session.sale = sale;
 
       moduleStep();
+
+      getSaleDetails(sale).then(function (saleDetails) {
+        var detailsRequest = [];
+        session.sale.details = saleDetails.data;
+        
+        detailsRequest = session.sale.details.map(function (saleItem) {
+          return connect.req('inventory/depot/' + session.depot + '/drug/' + saleItem.code);
+        });
+
+        $q.all(detailsRequest).then(function (result) {
+          console.log('got all lot details');
+          session.sale.details.forEach(function (saleItem, index) {
+            console.log('assigning', result);
+            saleItem.lots = result[index];
+            console.log('si', saleItem);
+          });
+        })
+        .catch(function (error) {
+          messenger.error(error);
+        });
+      });
+    }
+
+    function getSaleDetails(sale) {
+      console.log('sale', sale);
+      var query = {
+        tables : {
+          sale_item : {
+            columns : ['sale_uuid', 'uuid', 'inventory_uuid', 'quantity']
+          },
+          inventory : {
+            columns : ['code', 'text', 'consumable']
+          }
+        },
+        where : ['sale_item.sale_uuid=' + sale.inv_po_id],
+        join : ['sale_item.inventory_uuid=inventory.uuid']
+      };
+
+      return connect.req(query);
     }
 
     function init() { 

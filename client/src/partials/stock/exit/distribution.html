@@ -8,8 +8,8 @@
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a href="">{{ "STOCK.DISTRIBUTE" | translate }}</a></li>
+      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="">{{ "STOCK.DISTRIBUTE" | translate }}</a></li>
     </ol>
   </div>
   
@@ -59,7 +59,7 @@
 <script type="text/ng-template" id="patientSearch.tmpl.html">
   <div class="row">
     <div class="col-xs-12">
-      <div find-patient on-search-complete="initialiseDistributionDetails"></div>
+      <div find-patient on-search-complete="initialiseDistributionDetails" data-enable-refresh="false"></div>
     </div>
   </div>
 </script>
@@ -212,7 +212,48 @@
 </script>
 
 <script type="text/ng-template" id="allocateLot.tmpl.html">
-  <p> Not implemented </p>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <span class="glyphicon glyphicon-list"></span> Assign lots
+    </div>
+
+    <div class="panel-body">
+      <table class="table table-bordered">
+        <thead>
+        </thead>
+
+        <tbody>
+          <tr 
+            ng-class="{'invalid' : !inventoryItem.consumable}"
+            ng-repeat-start="inventoryItem in session.sale.details | orderBy:'-consumable'">
+            <td>
+              <span class="glyphicon glyphicon-tag"></span> 
+              {{inventoryItem.text}} <span ng-if="!inventoryItem.consumable">(Not consumable)</span>
+            </td>
+          </tr>
+
+          <tr ng-repeat-end ng-if="inventoryItem.consumable">
+            <td>
+              <!-- Status message -->
+              <div ng-switch on="thisvar=1">
+                <div ng-switch-when="1">
+                  <span class="glyphicon glyphicon-remove-sign error"></span> This item is not in stock at the current depot
+                </div>
+              </div>
+            
+              <table class="table table-bordered table-condensed" ng-if="inventoryItem.consumable">
+                <tbody>
+                  <tr ng-repeat="lot in inventoryItem.lots.data">
+                    <td>{{lot.lot_number}}</td><td>{{lot.tracking_number}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </script>
 
 <script type="text/ng-template" id="newfile.html">

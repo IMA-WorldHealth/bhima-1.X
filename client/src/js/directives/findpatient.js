@@ -1,5 +1,5 @@
 angular.module('bhima.directives')
-.directive('findPatient', ['$compile', 'validate', 'messenger', 'connect', 'appcache', function($compile, validate, messenger, connect, Appcache) {
+.directive('findPatient', ['$compile', 'validate', 'messenger', 'appcache', function($compile, validate, messenger, Appcache) {
   return {
     restrict: 'A',
     link : function(scope, element, attrs) {
@@ -13,9 +13,9 @@ angular.module('bhima.directives')
         required : true,
         query : {
           tables : {
-            patient : {columns : ["uuid", "project_id", "debitor_uuid", "first_name", "last_name", "sex", "dob", "origin_location_id", "reference"]},
-            project : { columns : ["abbr"] },
-            debitor : { columns : ["text"]},
+            patient : {columns : ['uuid', 'project_id', 'debitor_uuid', 'first_name', 'last_name', 'sex', 'dob', 'origin_location_id', 'reference']},
+            project : { columns : ['abbr'] },
+            debitor : { columns : ['text']},
             debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
           },
           join : [
@@ -30,14 +30,15 @@ angular.module('bhima.directives')
         query : {
           identifier : 'abbr',
           tables : {
-            project : { columns : ["abbr", "id"] }
+            project : { columns : ['abbr', 'id'] }
           }
         }
       };
 
       scope.findPatient = {
-        state: 'id',
-        submitSuccess: false
+        state : 'id',
+        submitSuccess : false,
+        enableRefresh : attrs.enableRefresh || true
       };
 
       var template =
@@ -53,7 +54,7 @@ angular.module('bhima.directives')
       '     <div ng-switch-when="true">'+
       '       <!-- Style hack -->'+
       '       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>'+
-      '       <div class="pull-right">'+
+      '       <div class="pull-right" ng-if="findPatient.enableRefresh">'+
       '         <span ng-click="findPatient.refresh()" class="glyphicon glyphicon-repeat"></span>'+
       '       </div>'+
       '     </div>'+
