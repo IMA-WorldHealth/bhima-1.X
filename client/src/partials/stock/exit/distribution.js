@@ -10,18 +10,27 @@ angular.module('bhima.controllers')
   '$q',
   function ($scope, validate, connect, messenger, appstate, util, uuid, $q) {
     var session = $scope.session = {
+      // FIXME
+      index : -1,
       state : null
     };
     var distribution = {}, dependencies = {};
     
     // Test for module organised into step structure
-    var moduleDefinition = [
+    var moduleDefinition = $scope.moduleDefinition = [
       {
-        key : 'init',
-        method : init
+        title : 'Locate Patient',
+        template : 'patientSearch.tmpl.html',
+        method : findPatient
       },
       {
-        key : 'findPatient',
+        title : 'Select prescription sale',
+        template : 'selectSale.tmpl.html',
+        method : findPatient
+      },
+      {
+        title : 'Allocate medicine',
+        template : 'allocateLot.tmpl.html',
         method : findPatient
       }
     ];
@@ -33,22 +42,29 @@ angular.module('bhima.controllers')
     function initialiseDistributionDetails(patient) {
       console.log(patient);
       dependencies.ledger.query = '/ledgers/debitor/' + patient.debitor_uuid;
-
+      session.patient = patient;
       validate.process(dependencies).then(startup);
     }
     
     function startup(model) {
       angular.extend($scope, model);
       
+      moduleStep();
       console.log(model);
     }
 
     function moduleStep() { 
       
-      // Derive index?
-      var currentIndex = moduleDefinition.indexOf(session.state) || 0;
-      session.state = moduleDefinition[currentIndex + 1];
+      // FIXME
+      session.index += 1;
+      session.state = moduleDefinition[session.index];
       session.state.method();
+    }
+
+    function selectSale(sale) {
+      session.sale = sale;
+
+      moduleStep();
     }
 
     function init() { 
@@ -59,7 +75,7 @@ angular.module('bhima.controllers')
 
     }
 
-
+    $scope.selectSale = selectSale;
     $scope.initialiseDistributionDetails = initialiseDistributionDetails;
     // distribution.visible = true;
     // distribution.noEmpty = false;

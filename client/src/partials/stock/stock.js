@@ -9,6 +9,7 @@ angular.module('bhima.controllers')
   'appcache',
   function ($scope, $location, $translate, appstate, validate, messenger, AppCache) {
     var config, dependencies = {};
+    console.log('controller init');
     var session = $scope.session = {
       configured : false,
       configure : false
@@ -93,7 +94,7 @@ angular.module('bhima.controllers')
           var validDepot = model.depots.get(depot.uuid);
 
           if (!validDepot) {
-            messenger.warning('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
+            messenger.danger('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
             session.configure = true;
             return;
           }

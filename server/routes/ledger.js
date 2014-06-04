@@ -59,6 +59,7 @@ module.exports = function (db, sanitize) {
         'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
         '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
         '`t`.`comment`, `p`.`abbr` ' +
+        ', IF(c.document_id, true, false) as consumed ' +
         // TODO Check if sale exists in consumption_sale table, validate if it has been distributed
         // 'CASE(WHEN `t`.`consumption_id` THEN true ELSE false) as consumed ' +
         'FROM (' +
@@ -75,7 +76,7 @@ module.exports = function (db, sanitize) {
               '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
             'FROM `general_ledger` ' +
           ')' +
-        ') AS `t` JOIN sale AS s on t.inv_po_id = s.uuid JOIN project AS p on s.project_id = p.id ' +
+        ') AS `t` JOIN sale AS s on t.inv_po_id = s.uuid JOIN project AS p on s.project_id = p.id LEFT JOIN consumption as c on t.inv_po_id = c.document_id ' +
         'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +
         'AND t.account_id = ' + account_id + ' ' +
         'GROUP BY `t`.`inv_po_id`;\n';
