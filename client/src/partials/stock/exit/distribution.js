@@ -79,16 +79,42 @@ angular.module('bhima.controllers')
         $q.all(detailsRequest).then(function (result) {
           console.log('got all lot details');
           session.sale.details.forEach(function (saleItem, index) {
+            var itemModel = result[index];
+
             console.log('assigning', result);
-            saleItem.lots = result[index];
-            console.log('si', saleItem);
+            if (itemModel.data.length) saleItem.lots = itemModel;
           });
+
+          recomendLots(session.sale.details);
         })
         .catch(function (error) {
           messenger.error(error);
         });
       });
     }
+
+    function recomendLots(saleDetails) {
+      // Corner cases 
+      // - ! Lot exists but does not have enough quantity to provide medicine
+      // - No lots exist, warning status
+      // - ! Lot exists but is expired, stock administrator
+      // - Lot exists with both quantity and expiration date 
+      saleDetails.forEach(function (saleItem) { 
+        // Check to see if any lots exist (expired stock should be run through the stock loss process)
+        if (!saleItem.lots) return; 
+
+        // If lots exist, order them by experiation and quantity 
+        saleItem.lots.data.sort(orderLotsByUsability);
+         
+        // Validate candidates if none are suitable, update status
+
+      });
+    }
+
+    function orderLotsByUsability(a, b) {  
+      // Order first by expiration date, then by quantity
+      console.log('a', a, 'b', b);  
+    };
 
     function getSaleDetails(sale) {
       console.log('sale', sale);
