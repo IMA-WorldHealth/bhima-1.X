@@ -93,7 +93,8 @@ INSERT INTO `unit` VALUES
 (88,'Account Statement', 'TREE.ACCOUNT_STATEMENT', '', 10, 0, 'partials/reports/account_statement', '/reports/account_statement'),
 (89,'Service Management', 'TREE.SERVICE', '', 1, 0, 'partials/service/', '/service'),
 (90, 'Expiring Stock Report', 'TREE.EXPIRING', '', 10, 0, '/partials/reports/expiring_stock', '/reports/expiring'),
-(91,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/');
+(91,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/'),
+(92,'All transaction report', 'TREE.ALL_TRANSACTIONS', '', 10, 0, 'partials/reports/all_transactions', '/reports/all_transactions');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
