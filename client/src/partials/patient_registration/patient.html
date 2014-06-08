@@ -7,6 +7,11 @@
     <a href="#/debitor/debitor_group" class="capital btn btn-default btn-sm">
       <span class="glyphicon glyphicon-tag"></span> {{ "PATIENT_REG.CREATE_DEBTOR_GROUP" | translate }}
     </a>
+
+    <a href="#/location" class="capital btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-globe"></span> {{ "PATIENT_REG.LOCATION" | translate }}
+    </a>
+
     <a href='/#/patient_records/' class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-list"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }}
     </a>
@@ -111,7 +116,7 @@
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
                         </label>
-                        <select required class="form-bhima" id="location-country" ng-model="origin.country" ng-options="country as country.country_fr for country in country.data">
+                        <select required class="form-bhima" id="location-country" ng-model="origin.country" ng-options="country as country.country_fr for country in country.data | orderBy:country.country_fr" ng-change="updateProvinceO(origin.country)">
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
                       </div>
@@ -120,7 +125,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-bhima" id="location-province" ng-model="origin.province" ng-options="province as province.name for province in province.data | filter:{country_id:origin.country.id}">
+                        <select required class="form-bhima" id="location-province" ng-model="origin.province" ng-options="province as province.name for province in province.data | filter:{country_uuid:origin.country.uuid}" ng-change="updateSectorO(origin.province)">
                           <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -129,16 +134,19 @@
                         <label for="location-sector" class="control-label">
                           {{ "LOCATION.VILLE" | translate }}
                         </label>
-                        <select class="form-bhima" id="location-sector" ng-model="origin.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:origin.province.id}" required>
+                        <select class="form-bhima" id="location-sector" ng-model="origin.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_uuid:origin.province.uuid}" ng-change="updateVillageO(origin.sector)" required>
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
                         </select>
                       </div>
 
                       <div class="form-group">
                         <label for="location-village" class="control-label">
-                          {{ "LOCATION.LOCALITY" | translate }}
+                          {{ "LOCATION.VILLAGE" | translate }}
                         </label>
-                        <input class="form-bhima" id="location-country" ng-model="origin.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
+                        <select class="form-bhima" id="location-village" ng-model="origin.village" ng-options="village as village.name for village in village.data | filter:{sector_uuid:origin.sector.uuid}" required>
+                          <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
+                        </select>
+                      </div>
                     </fieldset>
                   </div>
 
@@ -149,7 +157,7 @@
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
                         </label>
-                        <select required class="form-bhima" id="location-country" ng-model="current.country" ng-options="country as country.country_fr for country in country.data">
+                        <select required class="form-bhima" id="location-country" ng-model="current.country" ng-options="country as country.country_fr for country in country.data | orderBy:country.country_fr" ng-change="updateProvinceC(current.country)">
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
                       </div>
@@ -158,7 +166,7 @@
                         <label for="location-province" class="control-label">
                           {{ "LOCATION.PROVINCE" | translate }}
                         </label>
-                        <select required class="form-bhima" id="location-province" ng-model="current.province" ng-options="province as province.name for province in province.data | filter:{country_id:current.country.id}">
+                        <select required class="form-bhima" id="location-province" ng-model="current.province" ng-options="province as province.name for province in province.data | filter:{country_uuid:current.country.uuid}" ng-change="updateSectorC(current.province)">
                           <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -167,16 +175,18 @@
                         <label for="location-sector" class="control-label">
                           {{ "LOCATION.VILLE" | translate }}
                         </label>
-                        <select required class="form-bhima" id="location-sector" ng-model="current.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:current.province.id}">
+                        <select required class="form-bhima" id="location-sector" ng-model="current.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_uuid:current.province.uuid}" ng-change="updateVillageC(current.sector)">
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
                         </select>
                       </div>
 
                       <div class="form-group">
                         <label for="location-village" class="control-label">
-                          {{ "LOCATION.LOCALITY" | translate }}
+                          {{ "LOCATION.VILLAGE" | translate }}
                         </label>
-                        <input class="form-bhima" id="location-country" ng-model="current.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
+                        <select class="form-bhima" id="location-village" ng-model="current.village" ng-options="village as village.name for village in village.data | filter:{sector_uuid:current.sector.uuid}" required>
+                          <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
+                        </select>
                       </div>
                     </fieldset>
                   </div>
