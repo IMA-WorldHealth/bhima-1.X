@@ -1720,13 +1720,15 @@ INSERT INTO `caution_box` VALUES (1,'IMCK HBB CAUTION ',1),(2,'IMCK PAX CAUTION'
 INSERT INTO `caution_box_account_currency` VALUES (1,2,1,249),(2,2,2,250),(3,1,1,249),(4,1,2,250);
 
 INSERT INTO `primary_cash_module` VALUES
-(1, "Purchase");
+(1, "Purchase"),
+(2, "transfert"),
+(3, "convention");
 
 INSERT INTO `fiscal_year` VALUES (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014,NULL,0);
 
 INSERT INTO `period` VALUES (1,1,0,'2014-01-01','2014-01-01',0),(2,1,1,'2014-01-01','2014-01-31',0),(3,1,11,'2014-02-01','2014-02-28',0),(4,1,21,'2014-03-01','2014-03-31',0),(5,1,31,'2014-04-01','2014-04-30',0),(6,1,41,'2014-05-01','2014-05-31',0),(7,1,51,'2014-06-01','2014-06-30',0),(8,1,61,'2014-07-01','2014-07-31',0),(9,1,71,'2014-08-01','2014-08-31',0),(10,1,81,'2014-09-01','2014-09-30',0),(11,1,91,'2014-10-01','2014-10-31',0),(12,1,101,'2014-11-01','2014-11-30',0),(13,1,111,'2014-12-01','2014-12-31',0);
 
-INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash'),(9,'autre'),(10, 'pcash_convention');
+INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash'),(9,'autre'),(10, 'pcash_convention'), (11, 'primary_cash');
 
 INSERT INTO `price_list` VALUES (200,'61dcf7f0-b4a8-4f45-8eac-cf41e56dce2b','Malade hospitalisé','Interné'),(200,'71b5b0ad-bffd-4d92-bc20-1cf961a804b8','Reduction IMA',NULL),(200,'82865bba-3800-4cfc-bf0a-8087b3463608','Riduction IMA pour hospitalise',NULL),(200,'d3728cfb-61c5-46b0-9afd-48ba807f0fe0','Convention',NULL);
 

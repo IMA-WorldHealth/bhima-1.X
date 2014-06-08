@@ -76,7 +76,7 @@ module.exports = function (db) {
 
   function createFiscalRecord(enterprise, startDate, endDate) {
     var deferred = q.defer();
-    var monthNo, startMonth, startYear, previousFiscal, fiscalSQL;
+    var monthNo, startMonth, startYear, previousFiscal;
 
     monthNo = monthDiff(startDate, endDate);
     startMonth = startDate.getMonth() + 1;
@@ -87,14 +87,17 @@ module.exports = function (db) {
     .then(function(res) {
       previousFiscal = res;
 
-      fiscalSQL = 'INSERT INTO `fiscal_year` (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
+      var fiscalSQL = 'INSERT INTO `fiscal_year` (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
                   '(' + enterprise + ',' + monthNo + ',"' + description + '",' + startMonth + ',' + startYear + ',' + previousFiscal + ');';
 
+     console.log('******************la requette est ', fiscalSQL);
       db.execute(fiscalSQL, function(err, ans) {
         if(err) return deferred.reject(err);
+        console.log('*****************************, nous voici');
         deferred.resolve(ans);
       });
     }, function(err) {
+      console.log('*****************************, nous voici');
       deferred.reject(err);
     });
 

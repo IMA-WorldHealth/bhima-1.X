@@ -25,10 +25,10 @@
     "TRANSACTION_NUMBER"    : "Numero de Transaction",
     "VERIFY_TRANSACTION"    : "Verifier Transaction",
     "SPLIT"                 : "Diviser",
-    "EDIT_MODE"             : "Mode Editter",
+    "EDIT_MODE"             : "Mode Edition",
     "EDIT_TRANSACTION"      : "Editter Transaction",
     "EDIT"                  : {
-      "TITLE"               : "Commencer Session de Editter",
+      "TITLE"               : "Commencer Session Edition",
       "JUSTIFICATION"       : "Enregistre une justification pour votre activites.",
       "MIN_CHARS"           : "Minimum 10 caracteres",
       "PIN"                 : "Confirmer votre identite avec votre PIN",
@@ -36,7 +36,8 @@
       "INVALID_PIN"         : "Ce PIN est invalide.",
       "ATTEMPTS_REMAINING"  : "essais restants.",
       "INVALID_SESSION"     : "La session  etait terminer a cause de authentification manquant. S'il vous plait, reessayer ou demander une administrateur remettre un place votre PIN."
-    }
+    },
+    "REFRESH"               : "Raffraichir"
   },
 
   "OPENING_BALANCE" : {
@@ -178,7 +179,8 @@
     "SIGNATURES" : "Signees",
     "SUMMARY" : "Summaire",
     "FINANCE_OFFICER" : "Chef Finance",
-    "CHIEF_ACCOUNTANT" : "Chef Comptable"
+    "CHIEF_ACCOUNTANT" : "Chef Comptable",
+    "POST_TO_LEDGER"   : "Poster dans le grand livre"
   },
 
   "ERROR"                 : {
@@ -318,7 +320,8 @@
     "SPOUSE"                   : "Nom de l'epoux(se)",
     "SPOUSE_EMPLOYER"          : "Employeur (epoux(se))",
     "SPOUSE_PROFESSION"        : "Profession (epoux(se))",
-    "AVENUE"                   : "Rue"
+    "AVENUE"                   : "Rue",
+    "LOCATION"                 : "Gestion Emplacement"
   },
 
   "TREE"                        : {
@@ -449,7 +452,8 @@
     "ALERT_ONE"             : "Il n\"y a aucune annee fiscale enregistree pour l\"entraprise ",
     "ALERT_TWO"             : ". Les annees fiscales sont requises pour grouper les transactions et produire les rapports.",
     "EDIT"                  : " Editer l'annee fiscale selectionnee; Bloquer et debloquer des periodes and voir l'ouverture des balances.",
-    "CREATION"              : "Creer une nouvelle annee fiscale"
+    "CREATION"              : "Creer une nouvelle annee fiscale",
+    "VIEW_BALANCE"          :"Voir Balance D'ouverture"
   },
 
   "STOCK" : {

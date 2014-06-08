@@ -1179,6 +1179,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.originId = originId;
       cfg.periodId = periodObject.id;
       cfg.fiscalYearId = periodObject.fiscal_year_id;
+      console.log('nous sommes ici', originId, periodObject);
 
       return get.transactionId(reference.project_id);
     })
@@ -1207,6 +1208,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       }));
     })
     .catch(function (err) {
+      console.log('***********************', err);
       var discard =
         "DELETE FROM primary_cash WHERE uuid= " + sanitize.escape(id);
       return db.exec(discard)

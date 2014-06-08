@@ -101,8 +101,8 @@ angular.module('bhima.controllers')
 
 
     $scope.generateFiscal = function generateFiscal(model) {
- 
-      messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
+
+      //messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
       connect.fetch('/fiscal/' + $scope.enterpriseId  + '/' + model.start + '/' + model.end + '/' + model.note)
       .then(function(res) {
 
@@ -126,7 +126,7 @@ angular.module('bhima.controllers')
               where : ['account.enterprise_id='+enterprise.id]
             })
             .then(function (model) {
-         
+
               model.forEach(function (row) {
                 row.account_number = "" + row.account_number; // for sorting to work
                 row.debit = 0;
@@ -160,7 +160,7 @@ angular.module('bhima.controllers')
                 o.enterprise_id = enterprise.id;
                 return o;
               });
-           
+
               connect.basicPut('period_total', data)
               .then(function (res) {
                 $modalInstance.close();
@@ -186,10 +186,10 @@ angular.module('bhima.controllers')
         instance.result.then(function () {
           //Reset model
           $scope.new_model = {'year':'true'};
-          messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start});
+          //messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start});
 
           // if(!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});
-     
+
           //TODO Hack
           buildFiscalQuery({id: $scope.enterpriseId});
           $scope.active = "select";
@@ -197,11 +197,12 @@ angular.module('bhima.controllers')
           messenger.danger('Error:' + JSON.stringify(err));
         });
       }, function(err) {
-        messenger.push({type: 'danger', msg:'Fiscal Year request failed, server returned [' + err.data.code + ']'});
+        //messenger.push({type: 'danger', msg:'Fiscal Year request failed, server returned [' + err.data.code + ']'});
       });
     };
 
     $scope.viewOpeningBalance =  function () {
+      console.log('nous sommes la ');
       var id = $scope.selected.id;
       connect.fetch({
         tables : {
@@ -224,7 +225,7 @@ angular.module('bhima.controllers')
       })
       .then(function (res) {
         if (!res.length)
-          return messenger.warning('No opening balances found for fiscal year');
+          return messenger.danger('No opening balances found for fiscal year');
 
         var instance = $modal.open({
           templateUrl: 'viewOpeningBalanceModal.html',

@@ -40,7 +40,8 @@
       "INVALID_PIN"         : "This PIN is invalid.",
       "ATTEMPTS_REMAINING"  : "attempts remaining.",
       "INVALID_SESSION"     : "This session has expired due to too many invalid attempts.  Please see an administrator to reset your PIN or try again."
-    }
+    },
+    "REFRESH"               : "Refresh"
   },
 
   "PRIMARY_CASH"  : {
@@ -55,11 +56,33 @@
       "GENERIC_RECEIPT" : "Generic Receipt",
       "PURCHASE"        : "Pay Purchase Order"
     },
-    "INCOME"      : {
-      "TRANSFER"        : "Cash Box Transfer",
-      "GENERIC_TITLE"   : "Generic Income"
+
+    "INCOME" : {
+      "TRANSFER"        : "Transfert",
+      "CONVENTION"      : "Convention",
+      "GENERIC_INCOME"  : "Generic Income"
     }
   },
+
+    "TRANSFERT"        : {
+    "TITLE"       : "Transfert",
+    "TRANSFER"    : "Transfert",
+    "CONVENTION"  : "Convention",
+    "PCASH"       : "Primary cash",
+    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
+    "OVERVIEW"    : "Primary cash : Receipts management",
+    "INFO"        : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfert, and so one",
+    "SOURCE"      : "Source",
+    "EXPECTED"    : "expected",
+    "AMOUNT"      : "amount",
+    "CRUMB_PCASH" : "primary cash",
+    "CRUMB_TRANSFERT" : "transfert",
+    "PROJECT"     : "Project",
+    "CAISSE"      : "Cash",
+    "CURRENCY"    : "currency",
+    "NAVIGATION"  : "Browsing"
+  },
+
 
   "CASH_PURCHASE" : {
     "TITLE"       : "Purchase Order Dispense",
@@ -228,7 +251,8 @@
     "ALERT_ONE"             : "There are no Fiscal Years recorded for the enterprise ",
     "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
-    "CREATION"              : "Create a new fiscal year "
+    "CREATION"              : "Create a new fiscal year ",
+    "VIEW_BALANCE"          :"View Opening Balance"
 
 
   },
@@ -290,7 +314,10 @@
     "DEPOT"           : "Select a Depot",
     "TRACKING_NUMBER" : "Select a Tracking Number",
     "DIRECTION"       : "Select a Direction",
-    "VALUE"           : "Select a value"
+    "VALUE"           : "Select a value",
+    "COST_CENTER"     : "Select the cost center",
+    "PROJECT"         : "Select a project",
+    "CASH"            : "Select a Cash"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -499,7 +526,13 @@
     "AVAILABLE"           : "Available",
     "QTY_ASKED"           : "Quantity Requested",
     "QTY_AVAIL"           : "Available Quantity",
-    "QTY_IN_LOT"          : "Quantity in a lot"
+    "QTY_IN_LOT"          : "Quantity in a lot",
+    "SERVICE"             : "Service",
+    "COST_CENTER"         : "Cost center",
+    "PROJECT"             : "Project",
+    "CHARGE"              : "Charge",
+    "PROFIT"              : "Profit",
+    "RESULT"              : "Result"
   },
 
   "INVENTORY" : {
@@ -744,7 +777,9 @@
     "SPOUSE"                   : "Spouse's Name",
     "SPOUSE_EMPLOYER"          : "Spouse's Employer",
     "SPOUSE_PROFESSION"        : "Spouse's Occupation",
-    "AVENUE"                   : "Avenue"
+    "AVENUE"                   : "Avenue",
+    "RUE"                      : "Rue",
+    "LOCATION"                 : "Location Management"
   },
 
   "CREDITOR_GRP" : {
@@ -851,7 +886,8 @@
     "EDIT"            : "Edit",
     "NEW_FORM"        : "New Form",
     "REVIEW"          : "Review",
-    "BACK"            : "Back"
+    "BACK"            : "Back",
+    "NEW_TRANSFER"   : "New transfert"
   },
 
   "CASH"                   : {
@@ -1119,7 +1155,15 @@
     "PURCHASE_DATE"     : "Purchase Date",
     "EMPLOYEE_CONTACT"  : "Employee Ref.",
     "EMPLOYEE_CODE"     : "Employee Code",
-    "PURCHASE_TOTAL"    : "Total Purchase Cost"
+    "PURCHASE_TOTAL"    : "Total Purchase Cost",
+    "TRANSFERT"         : "Transfert",
+    "BY"                : "By",
+    "LIBELLE_TRANSFERT_FROM" : "Transfert from ",
+    "PCASH"                  : "Primary cash",
+    "DESIGNATION"       : "Detail",
+    "TOTAL_TRANSFERT"   : "Transfert Total",
+    "CONVENTION"        : "Convention",
+    "NUM_CONVENTION_PAY" : "Number convention pay"
   },
 
   "SECTOR"             : {
@@ -1160,6 +1204,55 @@
     "CREDITOR_GROUP"  : "Creditor Group"
   },
 
+  "SERVICE" : {
+    "TITLE"                    : "Services Management",
+    "REGISTERED"               : "Registered Services",
+    "NONE_FOUND"               : "No service found !",
+    "REGISTER"                 : "Registering",
+    "COST_CENTER_SELECT"       : "Cost center",
+    "SUCCESS_MESSAGE"          : "Operation successfully !",
+    "INSERT_FAIL_MESSAGE"      : "Error during insertion !",
+    "INSERT_SUCCESS_MESSAGE"   :  "Operation successfully!",
+    "NEW"                      :  "New service",
+    "INFO"                     :  "Service informations",
+    "INFO_DESCRIPTION"         :  "This feature will help you to manage your services (creating, editing and suppressing as well as consulting)",
+    "MODIFYING"                :  "Editing",
+    "OVERVIEW_SERVICE"         : "Systhetic result of service"
+},
+
+"COST_CENTER" : {
+    "TITLE"         : "Cost center Management",
+    "NAVIGATION"    : "Browsing",
+    "OPERATION"     : "operations",
+    "OPERATIONS" : {
+      "CC"        : "Cost center",
+      "ASSIGN"    : "Assigning",
+      "VERSEMENT" : "Injection"
+    }
+},
+
+"ANALYSIS_CENTER"              :{
+    "TITLE"                    :   "Cost center",
+    "PARENT"                   :   "Cost center Management",
+    "NAVIGATION"               :   "Browsing",
+    "REGISTERED"               :   "Registered Cost center",
+    "INFO"                     :   "Cost center information",
+    "INFO_DESCRIPTION"         :   "This feature will help you to manage your cost center(creating, editing, deleting as well as consultating)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "Cost",
+    "IS_PROFIT"                :   "Profit center",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Registering",
+    "NEW"                      :   "New center",
+    "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
+    "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
+    "NONE_FOUND"               :   "No cost center found !",
+    "MODIFYING"                :   "Editing",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
+    "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",
+    "REMOVE_FAIL_MESSAGE"      :   "Error during deleting !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Deleting successfully !"
+},
 
   "STOCK" : {
     "MAIN" : {
@@ -1238,6 +1331,26 @@
     "CHIEF_ACCOUNTANT" : "Chief Accountant",
     "FINANCE_OFFICER" : "Finance Officer",
     "ADMINISTRATOR" : "Adminstrator"
+  },
+
+  "CONVENTION"            : {
+    "TITLE"              : "Convention",
+    "CASH"               : "Primary cash",
+    "INFO"               : "Financiary information Summary",
+    "PAYEMENT"           : "Pay Box",
+    "MONTANT"            : "Amount",
+    "SUCCES"             : "operation successfully !",
+    "DANGER"             : "error during posting !",
+    "TOT"                : "Total",
+    "CRUMB_PCASH"        : "Primary cash",
+    "CRUMB_CONVENTION"   : "convention",
+    "DEFAULT_CASHBOX"    : "Cash"
+  },
+
+ "CFIND"             : {
+    "TITLE"           : "Find convention",
+    "SEARCH"          : "search by name",
+    "PLACEHOLDER"     : "search a convention"
   },
 
   "DASHBOARD" : {
