@@ -200,16 +200,6 @@
     "REGISTERED" : "Enregistrees"
   },
 
-  "INVENTORY_GROUP" : {
-    "ADD"           : "Ajouter Groupe des Stocks",
-    "CODE"          : "Code",
-    "NAME"          : "Nom",
-    "SALES_ACCOUNT" : "Compte Produit",
-    "COGS"          : "Compte COGS",
-    "STOCK"         : "Compte Stock",
-    "TAX"           : "Compte Tax"
-  },
-
   "SALE"               : {
     "SALE"             : "Facture",
     "TITLE"            : "Facturation",
@@ -712,23 +702,6 @@
     "DETAILS"                : "Details Facture"
   },
 
-  "INVENTORY_REGISTER" : {
-    "TITLE"            : "Enregistrement des Stocks",
-    "VIEW"             : "Voire Stocks",
-    "ADD_TYPE"         : "Ajouter Type Unite",
-    "ADD_GROUP"        : "Ajourter Groupe Stock",
-    "GENERAL"          : "General",
-    "CODE"             : "Code",
-    "DESCRIPTION"      : "Description",
-    "GROUP"            : "Groupe Inventaire",
-    "BILLING"          : "Informations pour la Facturation et Stocks",
-    "DURABLE"          : "Durable",
-    "CONSUMABLE"       : "Nondurable",
-    "UNIT"             : "Unit",
-    "DEFAULT_PRICE"    : "Prix Unitaire",
-    "UNIT_WEIGHT"      : "Poids Unitaire",
-    "UNIT_VOLUME"      : "Volume Unitaire"
-  },
 
   "PRICE_LIST"       : {
     "TITLE"          : "Listes des Prixes",
@@ -761,6 +734,45 @@
     "TITLE"        : "Journales des Stocks",
     "GROUP_BY"     : "Groupe Par",
     "REGISTER"     : "Enregistre Stocks"
+  },
+
+  "INVENTORY" : {
+    "MAIN" : {
+      "TITLE"          : "Gestion des Inventaires",
+      "OPTIONS"        : "Options",
+      "ADD_ITEM"       : "Enregistrer Article",
+      "UPDATE_ITEM"    : "Mis a jour Article",
+      "CONFIG_GROUPS"  : "Configurer Groups des Articles",
+      "CONFIG_TYPES"   : "Configurer Type des Articles",
+      "PRINT_MANIFEST" : "Imprimer List des Articles"
+    },
+    "GROUPS" : {
+      "TITLE"         : "Gestions des Groupes des Stocks",
+      "ADD"           : "Ajouter Groupe des Stocks",
+      "EDIT"          : "Editter Groupe des Stocks",
+      "CODE"          : "Code",
+      "NAME"          : "Nom",
+      "SALES_ACCOUNT" : "Compte Produit",
+      "COGS_ACCOUNT"  : "Compte COGS",
+      "STOCK_ACCOUNT" : "Compte Stock",
+      "TAX_ACCOUNT"   : "Compte Tax",
+      "CREATE_GROUP"  : "Creer Groupe",
+      "ALL_GROUPS"    : "Tous"
+    },
+    "REGISTER" : {
+      "TITLE"            : "Enregistrement des Stocks",
+      "GENERAL"          : "General",
+      "CODE"             : "Code",
+      "DESCRIPTION"      : "Description",
+      "GROUP"            : "Groupe Inventaire",
+      "BILLING"          : "Informations pour la Facturation et Stocks",
+      "DURABLE"          : "Durable",
+      "CONSUMABLE"       : "Nondurable",
+      "UNIT"             : "Unit",
+      "DEFAULT_PRICE"    : "Prix Unitaire",
+      "UNIT_WEIGHT"      : "Poids Unitaire",
+      "UNIT_VOLUME"      : "Volume Unitaire"
+    }
   },
 
   "PROJECT"       : {
