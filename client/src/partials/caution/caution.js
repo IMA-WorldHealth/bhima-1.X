@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
   'util',
   'uuid',
   'appcache',
-  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache) {
+  '$filter',
+  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache, $filter) {
 
     var dependencies = {},
         caution_uuid = -1,
@@ -129,7 +130,7 @@ angular.module('bhima.controllers')
 
 
     function handleSucces(resp){
-      messenger.success($translate('CAUTION.SUCCES'));
+      messenger.success($filter('translate')('CAUTION.SUCCES'));
       $scope.selectedDebitor = {};
       $scope.data = {};
       $scope.noEmpty = false;
@@ -137,7 +138,7 @@ angular.module('bhima.controllers')
     }
 
     function handleError(){
-      messenger.danger($translate('CAUTION.DANGER'));
+      messenger.danger($filter('translate')('CAUTION.DANGER'));
     }
 
     function load (selectedItem) {
