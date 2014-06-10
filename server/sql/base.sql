@@ -85,9 +85,8 @@ INSERT INTO `unit` VALUES
 (49,'Service Management', 'TREE.SERVICE', '', 1, 0, 'partials/service/', '/service'),
 (50, 'Expiring Stock Report', 'TREE.EXPIRING', '', 10, 0, '/partials/reports/expiring_stock', '/reports/expiring'),
 (51,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/'),
-(52,'All transaction report', 'TREE.ALL_TRANSACTIONS', '', 10, 0, 'partials/reports/all_transactions', '/reports/all_transactions'),
-(53,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
-(54,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/');
+(52,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
+(53,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
