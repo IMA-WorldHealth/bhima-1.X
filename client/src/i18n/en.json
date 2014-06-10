@@ -556,6 +556,12 @@
       "ADD" : "Creating Inventory Group",
       "EDIT" : "Edit Inventory Group"
     },
+    "TYPES" : {
+      "TITLE"     : "Inventory Type Management",
+      "ALL_TYPES" : "All types",
+      "ADD"       : "Add a new type",
+      "ALERT"     : "Create and edit type classes for inventory items."
+    },
     "UPDATE_ITEM"      : {
       "TITLE"           : "Update Inventory Item",
       "TIMESTAMP"       : "Timestamp",
