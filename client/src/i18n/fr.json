@@ -759,6 +759,12 @@
       "CREATE_GROUP"  : "Creer Groupe",
       "ALL_GROUPS"    : "Tous"
     },
+    "TYPES" : {
+      "TITLE"     : "Gestion des Types",
+      "ALL_TYPES" : "Toutes types",
+      "ADD"       : "Ajouter une nouvelle type",
+      "ALERT"     : "Creer et editter les types des inventaires."
+    },
     "REGISTER" : {
       "TITLE"            : "Enregistrement des Stocks",
       "GENERAL"          : "General",
