@@ -82,7 +82,7 @@ angular.module('bhima.controllers')
 
       $scope.selected = {};
 
-      connect.req({'tables' : {'purchase' : {'columns' : ['id', 'cost', 'currency_id', 'creditor_id', 'discount', 'invoice_date', 'posted']}}})
+      connect.req({'tables' : {'purchase' : {'columns' : ['uuid', 'cost', 'currency_id', 'creditor_uuid', 'discount', 'purchase_date', 'paid']}}})
         .then(function(model) {
           deferred.resolve(model);
         });
