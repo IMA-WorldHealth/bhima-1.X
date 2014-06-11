@@ -93,6 +93,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // returns a mysql-compatible date
       // Note : this transforms things into a date, not date + time
       if (date) {
+        date = new Date(date);
         var year = String(date.getFullYear());
         var month = String(date.getMonth() + 1);
         month = month.length === 1 ? '0' + month : month;
@@ -116,21 +117,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           throw new Error('No period or fiscal year data for date: ' + date);
         }
         return q(rows.pop());
-      });
-    },
-
-    myPeriod : function (date, done) {
-      console.log('[myPeriod dit] Nous sommes appelE ');
-      // gets the currency period from a mysql-compatible date.
-      var sql =
-        'SELECT `id`, `fiscal_year_id` FROM `period` ' +
-        'WHERE `period_start` <= ' + sanitize.escape(date) + ' AND ' +
-        ' `period_stop` >= ' + sanitize.escape(date) + ';';
-
-      db.execute(sql, function (err, rows) {
-        if (err) return done(err);
-        if (rows.length === 0) return done(new Error('No period or fiscal year data for date: ' + date));
-        return done(null, { period_id :rows[0].id, fiscal_year_id : rows[0].fiscal_year_id });
       });
     },
 
@@ -1235,7 +1221,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .catch(handleError);
   }
 
-  function handlePrimaryExpense(id, user_id, done) {
+  function handleGenericExpense(id, user_id, done) {
     var sql, state = {}, data, reference, cfg = {};
 
     state.id = id;
@@ -1278,17 +1264,45 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     })
     .then(function (transId) {
       state.transId = transId;
-
+      var rate = state.store.get(reference.currency_id).rate;
+      // debit the creditor
       sql =
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT `project_id`, ' + [sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'' ].join(', ') +
-          '';
+        'SELECT `project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'' ].join(', ') + ', ' +
+          '`description`, `account_id`, `debit`, `credit`, `debit` / ' + rate + ', `credit` / ' + rate + ', ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `document_uuid`, `origin_id`, ' + user_id + ' ' +
+        'FROM `primary_cash` JOIN `primary_cash_item` ON ' +
+          '`primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` ' +
+        'WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ';';
       return db.exec(sql);
-    });
-
+    })
+    .then(function () {
+      // credit the primary cash account
+      var rate = state.store.get(reference.currency_id).rate;
+      sql =
+        'INSERT INTO `posting_journal` ' +
+          '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+        'SELECT `project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, state.transId, '\''+get.date()+'\'' ].join(', ') + ', ' +
+          '`description`, `cash_box_account_currency`.`account_id`, `credit`, `debit`, `credit` / ' + rate + ', `debit` / ' + rate + ', ' +
+          '`primary_cash`.`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `document_uuid`, `origin_id`, ' + user_id + ' ' +
+        'FROM `primary_cash` JOIN `primary_cash_item` JOIN `cash_box_account_currency` ON ' +
+          '`primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
+          '`primary_cash`.`cash_box_id` = `cash_box_account_currency`.`cash_box_id` ' +
+        'WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ' LIMIT 1;'; // FIXME : limit hack
+      return db.exec(sql);
+    })
+    .then(function () {
+      done();
+    })
+    .catch(function (err) {
+      done(err);
+    })
+    .done();
   }
 
   // router for incoming requests
@@ -1300,7 +1314,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     'credit_note'       : handleCreditNote,
     'caution'           : handleCaution,
     'transfert'         : handleTransfert,
-    'pcash_convention'  : handleConvention
+    'pcash_convention'  : handleConvention,
+    'primary_expense'   : handleGenericExpense
   };
 
   function request (table, id, user_id, done, debCaution) {
