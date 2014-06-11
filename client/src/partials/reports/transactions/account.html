@@ -52,11 +52,7 @@
         </tbody>
         <tbody ng-if="!transactions.length && session.account">
           <tr>
-            <td colspan="4">
-              <div class="alert alert-danger">
-                <h4>{{ "REPORT.NO_TRANSACTIONS" | translate }}</h4>
-              </div>
-            </td>
+            <td colspan="4">{{ "REPORT.NO_TRANSACTIONS" | translate }}</td>
           </tr>
         </tbody>
         <tfoot>

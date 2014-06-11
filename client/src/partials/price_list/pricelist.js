@@ -28,7 +28,7 @@ angular.module('bhima.controllers')
     dependencies.inventory = {
       query : {
         identifier : 'uuid',
-        tables : {'inventory' : {columns:['uuid', 'code', 'inventory_code', 'text', 'type_id']}},
+        tables : {'inventory' : {columns:['uuid', 'code', 'text', 'type_id']}},
 
       }
     };
