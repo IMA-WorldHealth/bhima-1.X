@@ -257,33 +257,17 @@
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
     })
-    .when('/client', {
-      controller : 'client',
-      templateUrl : 'partials/client/client.html'
-    })
-    .when('/beneficiary', {
-      controller : 'beneficiary',
-      templateUrl : 'partials/beneficiary/beneficiary.html'
-    })
-    .when('/main_cash', {
-      controller : 'mainCash',
-      templateUrl : 'partials/pcash/pcash.html'
-    })
-    .when('/main_cash/income', {
-      controller : 'income',
-      templateUrl : 'partials/pcash/income/income.html'
-    })
-    .when('/main_cash/expense', {
-      controller : 'expense',
-      templateUrl : 'partials/pcash/expense/expense.html'
-    })
     .when('/primary_cash/transfert/:cashbox_id', {
       controller : 'transfert',
-      templateUrl : 'partials/primary_cash/incomes/transfert/transfert.html'
+      templateUrl : 'partials/primary_cash/income/transfert/transfert.html'
     })
      .when('/primary_cash/convention/:cashbox_id', {
       controller : 'convention',
-      templateUrl : 'partials/primary_cash/incomes/convention/convention.html'
+      templateUrl : 'partials/primary_cash/income/convention/convention.html'
+    })
+    .when('/primary_cash/income/generic/:id', {
+      contoller : 'primaryCash.income.generic',
+      templateUrl : 'partials/primary_cash/income/generic/generic.html'
     })
     .when('/trialbalance/print', {
       controller : 'trialbalance.print',
