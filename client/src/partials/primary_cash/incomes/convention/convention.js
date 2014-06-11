@@ -3,18 +3,15 @@ angular.module('bhima.controllers')
   '$scope',
   '$q',
   '$location',
-  '$http',
   '$routeParams',
   'validate',
   'connect',
   'appstate',
   'messenger',
-  '$translate',
   'util',
   'uuid',
   'appcache',
-  '$filter',
-  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache, $filter) {
+  function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache) {
 
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
@@ -37,6 +34,9 @@ angular.module('bhima.controllers')
         join : [
           'cash_box_account_currency.currency_id=currency.id',
           'cash_box_account_currency.cash_box_id=cash_box.id'
+        ],
+        where : [
+          'cash_box_account_currency.cash_box_id=' + $scope.cashbox_id
         ]
       }
     };
@@ -76,7 +76,7 @@ angular.module('bhima.controllers')
             columns : ['id']
           }
         },
-        where : ['primary_cash_module.text='+'convention']
+        where : ['primary_cash_module.text=convention']
       }
     };
 
@@ -93,21 +93,25 @@ angular.module('bhima.controllers')
     function ready (model) {
       $scope.som = 0;
       $scope.overviews = model.situations.data.filter(function (situation){
-        if(situation.balance>0) $scope.som+=situation.balance;
+        if (situation.balance > 0)  {
+          $scope.som += situation.balance;
+        }
         return situation.balance>0;
       });
       $scope.noEmpty = true;
     }
 
     function initialiseConvention (selectedConvention) {
-      if(!selectedConvention) return messenger.danger('No convention selected!');
+      if(!selectedConvention) {
+        return messenger.danger('No convention selected!');
+      }
       $scope.selectedConvention = selectedConvention;
       dependencies.situations = { query : '/ledgers/debitor_group/' + $scope.selectedConvention.uuid};
       validate.process(dependencies, ['situations'])
       .then(ready);
     }
 
-    function pay (){
+    function pay () {
 
       var record = {
         uuid            : uuid(),
@@ -126,8 +130,7 @@ angular.module('bhima.controllers')
       writePay(record)
       .then(writeItem)
       .then(postToJournal)
-      .then(handleSucces)
-      .catch(handleError);
+      .then(handleSucces);
     }
 
     function postToJournal (resu) {
@@ -153,8 +156,8 @@ angular.module('bhima.controllers')
       var cost_received = max_amount;
 
       for (var i = 0; i < $scope.overviews.length; i += 1){
-        cost_received-=$scope.overviews[i].balance;
-        if(cost_received>=0){
+        cost_received -= $scope.overviews[i].balance;
+        if(cost_received >= 0) {
           items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : $scope.overviews[i].balance, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
         }else{
           cost_received+=$scope.overviews[i].balance;
@@ -166,23 +169,22 @@ angular.module('bhima.controllers')
     }
 
     function setCashAccount(cashAccount) {
-      if(cashAccount) {
+      console.log('cashAccount', cashAccount);
+      if (cashAccount) {
         $scope.selectedItem = cashAccount;
         cache.put('selectedItem', cashAccount);
       }
     }
 
-
-    function handleSucces(resp){
+    function handleSucces() {
       $scope.selectedConvention = {};
       $scope.data = {};
       $scope.noEmpty = false;
-      if(record_uuid !== -1) $location.path('/invoice/pcash_convention/' + record_uuid);
+      if (record_uuid !== -1) {
+        $location.path('/invoice/pcash_convention/' + record_uuid);
+      }
     }
 
-    function handleError(){
-      messenger.danger($filter('translate')('CONVENTION.DANGER'));
-    }
 
     function load (selectedItem) {
       if (!selectedItem) { return ; }
@@ -193,14 +195,15 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
-      dependencies.cash_box.query.where=['cash_box.project_id='+project.id, 'AND', 'cash_box.is_auxillary='+0];
-      validate.process(dependencies).then(init, handleError);
+      dependencies.accounts.query.where =
+        ['account.enterprise_id=' + project.enterprise_id];
+      validate.process(dependencies)
+      .then(init);
     });
 
 
     function check () {
-      if ($scope.data.payment){
+      if ($scope.data.payment) {
         return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
       }
       return true;
