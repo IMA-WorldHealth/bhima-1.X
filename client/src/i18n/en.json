@@ -253,8 +253,6 @@
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
     "VIEW_BALANCE"          :"View Opening Balance"
-
-
   },
 
   "OPENING_BALANCE" : {
@@ -655,7 +653,7 @@
     "DEPOT"                     : "Depot",
     "STOCK_MANAGEMENT"          : "Stock Management",
     "INVENTORY_MANAGEMENT"      : "Inventory Management",
-    "SERVICE"                   : "Services"
+    "SERVICE"                   : "Services",
     "STOCK_DISTRIBUTION"        : "Stock Distribution",
     "EMPLOYEE"                  : "Employee Management",
     "SERVICE"                   : "Service Management"
