@@ -2,30 +2,29 @@
   {{ "CONVENTION.TITLE" | translate }}
 </header>
 
-<section class="top-nav" style="max-height: 10px;">
-
+<nav>
     <div style="position: absolute; right: 5px;">
       <button class="btn btn-sm btn-primary dropdown-toggle">
         {{ model.accounts.get(selectedItem.account_id).account_txt || "CONVENTION.DEFAULT_CASHBOX" | translate }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
       <ul class="dropdown-menu pull-left">
-        <li ng-repeat="item in model.cash_box.data">
-          <a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.account_id).account_txt }} </a>
+        <li ng-repeat="box in model.cash_box.data">
+          <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
         </li>
       </ul>
     </div>
 
     <div class="pull-left">
-      <ol class="breadcrumb" style="float: right;">
-        <span class="label label-success square">{{ "PRIMARY_CASH.NAVIGATION" | translate }}</span>
+      <ol class="breadcrumb">
+        <li><span class="glyphicon glyphicon-home"></span></li>
         <li><a href="#/primary_cash/">{{'CONVENTION.CRUMB_PCASH' | translate}}</a></li>
-        <li><a href="" ng-click="loadPath('/primary_cash/convention/')">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</a></li>
+        <li class="active">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</li>
       </ol>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
 
   <div class="row">
     <div class="col-xs-6">
@@ -80,7 +79,7 @@
           <form >
             <div class="form-group">
               <div class="col-xs-4">
-                <label class="control-label">{{"CONVENTION.MONTANT" | translate}}</label>
+                <label>{{"CONVENTION.MONTANT" | translate}}</label>
               </div>
             </div>
             <div class="input-group col-xs-8">
@@ -98,7 +97,7 @@
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <script type="text/ng-template" id="debitorGroupListItem.html">
   <a>
