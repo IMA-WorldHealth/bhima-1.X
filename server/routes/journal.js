@@ -1111,12 +1111,14 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       done(null, rows);
     })
     .catch(function (err) {
-      console.error('[DEBUG] [ERROR]', err);
-      var discard = 'DELETE FROM primary_cash WHERE uuid = ' + sanitize.escape(id) + ';';
+      // FIXME: Need to delete the primary_cash_items before primary cash
+      var discard =
+        'DELETE FROM primary_cash WHERE uuid = ' + sanitize.escape(id) + ';';
       return db.exec(discard)
       .then(function () {
         done(err);
-      });
+      })
+      .done();
     })
     .done();
   }
