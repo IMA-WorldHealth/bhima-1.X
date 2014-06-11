@@ -368,7 +368,7 @@ create table `inventory_unit` (
 
 drop table if exists `inventory_type`;
 create table `inventory_type` (
-  `id`    tinyint unsigned not null,
+  `id`    tinyint unsigned not null auto_increment,
   `text`  varchar(150) not null,
   primary key (`id`)
 ) engine=innodb;
