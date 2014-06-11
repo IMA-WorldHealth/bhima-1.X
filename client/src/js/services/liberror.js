@@ -141,10 +141,12 @@ angular.module('bhima.services')
         throw : function () {
           var code = arguments[0],
             err = errorCodes[code] || errorCodes['0'],
-            prefix = (module ? module + ' : ' : '') + code,
+            //prefix = (module ? module + ' : ' : '') + code,
+            prefix = module,
             args, message;
 
           args = Array.prototype.slice.call(arguments);
+          // $log.debug(args, code, err, errorCodes);
           args[0] = err.tmpl;
 
           message = templateMessage.apply(this, args);

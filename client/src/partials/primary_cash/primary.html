@@ -1,65 +1,108 @@
-<header>
-  {{ 'PRIMARY_CASH.TITLE' | translate }}
-</header>
+<header>{{ 'PRIMARY_CASH.TITLE' | translate }}</header>
 
-
-<section class="top-nav underline">
-
+<nav>
   <div class="pull-left">
-    <ol class="breadcrumb" style="float: right;">
-      <span class="label label-success square">{{ "PRIMARY_CASH.NAVIGATION" | translate }}</span>
-      <li><a href="#/primary_cash/">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li class="active">{{ "PRIMARY_CASH.TITLE" | translate }}</li>
     </ol>
   </div>
 
-  <div class="pull-right">
-    <select class="form-bhima" ng-model="session.cashbox" ng-options="cashbox.id as cashbox.text for cashbox in cashBox.data">
-    </select>
+  <div class="pull-right" style="margin-top : 1px;">
+    <span>
+      <b>{{session.cashbox.id ?
+        '[' + session.cashbox.id + ']' :
+        ''}}
+      </b>
+      {{session.cashbox.text}}
+    </span>
+
+    <button
+      style="margin-left: 5px;"
+      ng-disabled="session.configure"
+      ng-click="reconfigure()"
+      class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-repeat"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <!-- Module configuration -->
+  <div ng-if="session.configure" class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "PRIMARY_CASH.SELECT_CASHBOX" | translate }}
+        </div>
+
+        <div class="panel-body">
+
+          <div class="configure">
+            <div
+              class="panel panel-default configure-item"
+              ng-repeat="box in cashBox.data"
+              ng-click="setConfiguration(box)">
+
+              <div class="panel-body">
+                <div>
+                  <span
+                    style="font-size: 70px"
+                    class="glyphicon glyphicon-briefcase"></span>
+                </div><br>
+                {{box.text}}
+              </div>
+            </div> <!-- End configure item -->
+          </div> <!-- End configure widget -->
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- FIXME style hack -->
-  <div class="pull-right" style="padding-right: 10px; margin-top: 7px;">
-    {{ 'PRIMARY_CASH.CONFIGURE' | translate }}
-  </div>
-
-</section>
-
-<div class="content">
-
-  <div class="row" style="margin-top: 10px">
+  <!-- Module content -->
+  <div ng-if="session.complete" class="row">
     <div class="col-xs-6">
-      
-      <div class="panel panel-default square">
-        <div class="panel-heading square">
-          <span class="glyphicon glyphicon-import"></span> {{ 'PRIMARY_CASH.INCOMES' | translate }}
+
+      <!-- Income links widget -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-import"></span>
+          {{ 'PRIMARY_CASH.INCOMES' | translate }}
         </div>
 
         <div class="panel-body">
           <ul class="primary_cash_list">
             <li ng-repeat="item in configuration.income">
-              <span style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-thumbs-up"></span>
-              <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
+              <span class="glyphicon glyphicon-thumbs-up"></span>
+              <a
+                class="menu-item"
+                ng-click="loadPath(item.link)">{{item.key | translate}}</a>
             </li>
           </ul>
         </div>
       </div>
-    </div>
+    </div> <!-- End Column 1 -->
 
     <div class="col-xs-6">
-      <div class="panel panel-default square">
-        <div class="panel-heading square">
-          <span class="glyphicon glyphicon-export"></span> {{ 'PRIMARY_CASH.EXPENSES' | translate }}
+
+      <!-- Expense links widget -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-export"></span>
+          {{ 'PRIMARY_CASH.EXPENSES' | translate }}
         </div>
 
         <div class="panel-body">
           <ul class="primary_cash_list">
             <li ng-repeat="item in configuration.expense">
-              <span style="color: rgb(179, 0, 0);" class="glyphicon glyphicon-thumbs-down"></span>
-              <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
+              <span class="glyphicon glyphicon-thumbs-down"></span>
+              <a
+                class="menu-item"
+                ng-click="loadPath(item.link)">{{item.key | translate}}</a>
             </li>
           </ul>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+    </div> <!-- End Column 2 -->
+  </div> <!-- End row -->
+</main>

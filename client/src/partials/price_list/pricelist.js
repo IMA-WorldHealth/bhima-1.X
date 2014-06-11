@@ -29,7 +29,6 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {'inventory' : {columns:['uuid', 'code', 'text', 'type_id']}},
-
       }
     };
 

@@ -306,7 +306,7 @@
       templateUrl : 'partials/journal/print.html'
     })
     .when('/primary_cash/expense/generic/:id?', {
-      controller : 'primaryCash.expense',
+      controller : 'primaryCash.expense.generic',
       templateUrl: 'partials/primary_cash/expense/generic.html'
     })
     .when('/primary_cash/expense/purchase/:cashbox', {

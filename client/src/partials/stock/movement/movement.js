@@ -76,17 +76,16 @@ angular.module('bhima.controllers')
         query : '/inventory/depot/' + depotId + '/lots'
       };
 
-      // Reset rows TODO
-      resetRows();
-
+      
       console.log('fetch lots', dependencies.lots); 
       validate.process(dependencies, ['lots']).then(validateLots);
     }
 
     function validateLots(model) {
       $scope.lots = model.lots;
-
-      console.log('validateLots', model);
+      
+      // Reset rows TODO
+      resetRows();
     }
 
     function resetRows() { 
@@ -135,7 +134,7 @@ angular.module('bhima.controllers')
       
       // Ensure there are options left to select
       if ($scope.lots && !$scope.lots.data.length) {
-        return messenger.info('There are no more lots available for movement in the current depot.'); 
+        return messenger.info('There are no more lots available for movement in the current depot.');
       }
       session.rows.push({quantity : 0});
     };

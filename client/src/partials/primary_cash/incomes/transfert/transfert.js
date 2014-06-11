@@ -1,7 +1,6 @@
 angular.module('bhima.controllers')
 .controller('transfert', [
   '$scope',
-  '$q',
   'connect',
   'messenger',
   'validate',
@@ -11,7 +10,7 @@ angular.module('bhima.controllers')
   'uuid',
   '$routeParams',
   '$location',
-  function ($scope, $q, connect, messenger, validate, appstate, util, exchange, uuid, $routeParams, $location) {
+  function ($scope, connect, messenger, validate, appstate, util, exchange, uuid, $routeParams, $location) {
 
     //inits and declarations
     var dependencies = {}, configuration = {};
