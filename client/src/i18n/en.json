@@ -556,10 +556,16 @@
       "ADD" : "Creating Inventory Group",
       "EDIT" : "Edit Inventory Group"
     },
+    "TYPES" : {
+      "TITLE"     : "Inventory Type Management",
+      "ALL_TYPES" : "All types",
+      "ADD"       : "Add a new type",
+      "ALERT"     : "Create and edit type classes for inventory items."
+    },
     "UPDATE_ITEM"      : {
       "TITLE"           : "Update Inventory Item",
       "TIMESTAMP"       : "Timestamp",
-      "FIND_ITEM"      : "Find Inventory Item",
+      "FIND_ITEM"       : "Find Inventory Item",
       "STOCK_HISTORY"   : "Item History",
       "SUBMIT"          : "Submit Update",
       "SEARCH_TEXT"     : "Search by code or description",
@@ -568,6 +574,23 @@
       "INVALID_PRICE"   : "Invalid price provided",
       "ITEM_DETAILS"    : "Item Details",
       "NO_HISTORY"      : "No history available for selected item"
+    },
+    "REGISTER" : {
+      "TITLE"            : "Stock Registration",
+      "VIEW"             : "View All Items",
+      "ADD_TYPE"         : "Add Unit Type",
+      "ADD_GROUP"        : "Add Inventory Group",
+      "GENERAL"          : "General",
+      "CODE"             : "Inventory Code",
+      "DESCRIPTION"      : "Description",
+      "GROUP"            : "Inventory Group",
+      "BILLING"          : "Billing & Stock Information",
+      "DURABLE"          : "Durable",
+      "CONSUMABLE"       : "Consumable",
+      "UNIT"             : "Unit",
+      "DEFAULT_PRICE"    : "Default Price",
+      "UNIT_WEIGHT"      : "Unit Weight",
+      "UNIT_VOLUME"      : "Unit Volume"
     }
   },
 
@@ -969,23 +992,6 @@
     "INFO"       : "Group Information"
   },
 
-  "INVENTORY_REGISTER" : {
-    "TITLE"            : "Stock Registration",
-    "VIEW"             : "View All Items",
-    "ADD_TYPE"         : "Add Unit Type",
-    "ADD_GROUP"        : "Add Inventory Group",
-    "GENERAL"          : "General",
-    "CODE"             : "Inventory Code",
-    "DESCRIPTION"      : "Description",
-    "GROUP"            : "Inventory Group",
-    "BILLING"          : "Billing & Stock Information",
-    "DURABLE"          : "Durable",
-    "CONSUMABLE"       : "Consumable",
-    "UNIT"             : "Unit",
-    "DEFAULT_PRICE"    : "Default Price",
-    "UNIT_WEIGHT"      : "Unit Weight",
-    "UNIT_VOLUME"      : "Unit Volume"
-  },
 
   "INVENTORY_VIEW" : {
     "TITLE"        : "Inventory View",

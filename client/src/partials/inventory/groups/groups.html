@@ -3,10 +3,20 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="add()">
-    <span class="glyphicon glyphicon-plus"></span>
-    {{ "INVENTORY.GROUPS.CREATE_GROUP" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ "INVENTORY.GROUPS.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="add()">
+      <span class="glyphicon glyphicon-plus"></span>
+      {{ "INVENTORY.GROUPS.CREATE_GROUP" | translate }}
+    </button>
+  </div>
 </nav>
 
 <main>

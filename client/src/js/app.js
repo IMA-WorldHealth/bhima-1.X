@@ -58,7 +58,7 @@
       controller: 'inventoryRegister',
       templateUrl: '/partials/inventory/register/register.html'
     })
-    .when('/inventory/update_item', {
+    .when('/inventory/update', {
       controller : 'inventory.update',
       templateUrl : 'partials/inventory/update_item/update_item.html'
     })
