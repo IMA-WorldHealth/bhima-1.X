@@ -415,6 +415,11 @@ a.danger {
   color : #c09853;
 }
 
+.invalid { 
+  background-color : #ececec;
+  color : #9f9f9f;
+}
+
 .configure { 
   text-align : center;
 }
@@ -438,4 +443,8 @@ a.danger {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+.strike { 
+  text-decoration : line-through;
 }
