@@ -631,7 +631,13 @@
     "DESIGNATION"         : "Designation",
     "INITIAL_STOCK"       : "Stock Initial",
     "CONSUMED_STOCK"      : "Stock Consomme",
-    "CURRENT_STOCK"       : "Stock Courrant"
+    "CURRENT_STOCK"       : "Stock Courrant",
+    "INVENTORY_GROUP"     : "Groupe inventaire",
+    "UNIT_WEIGHT"         : "Poids unitaire",
+    "UNIT_VOLUME"         : "Volume unitaire",
+    "STOCK_MIN"           : "Stock minimal",
+    "STOCK_MAX"           : "Stock maximal",
+    "EMPLOYEE"            : "Employe"
   },
 
   "REPORT"                  : {
@@ -744,7 +750,8 @@
       "UPDATE_ITEM"    : "Mis a jour Article",
       "CONFIG_GROUPS"  : "Configurer Groups des Articles",
       "CONFIG_TYPES"   : "Configurer Type des Articles",
-      "PRINT_MANIFEST" : "Imprimer List des Articles"
+      "PRINT_MANIFEST" : "Imprimer List des Articles",
+      "VIEW"           : "Voire la liste"
     },
     "GROUPS" : {
       "TITLE"         : "Gestions des Groupes des Stocks",
@@ -757,7 +764,8 @@
       "STOCK_ACCOUNT" : "Compte Stock",
       "TAX_ACCOUNT"   : "Compte Tax",
       "CREATE_GROUP"  : "Creer Groupe",
-      "ALL_GROUPS"    : "Tous"
+      "ALL_GROUPS"    : "Tous",
+      "ALERT"         : "Ce module vous aidera a creer des groupes pour vos inventaires"
     },
     "TYPES" : {
       "TITLE"     : "Gestion des Types",
@@ -765,6 +773,21 @@
       "ADD"       : "Ajouter une nouvelle type",
       "ALERT"     : "Creer et editter les types des inventaires."
     },
+
+     "UPDATE_ITEM"      : {
+      "TITLE"           : "Edition des inventaires",
+      "TIMESTAMP"       : "temps",
+      "FIND_ITEM"       : "Chercher inventaire",
+      "STOCK_HISTORY"   : "Historique stock",
+      "SUBMIT"          : "Soumettre",
+      "SEARCH_TEXT"     : "Chercher par code ou description",
+      "UPDATE_SUCCESS"  : "Item modifie!",
+      "UPDATE_FAILURE"  : "Ne peut pas modifier l'item.",
+      "INVALID_PRICE"   : "Prix fournit invalide",
+      "ITEM_DETAILS"    : "Details item",
+      "NO_HISTORY"      : "Pas d'historique disponible pour l'item selectionne"
+    },
+
     "REGISTER" : {
       "TITLE"            : "Enregistrement des Stocks",
       "GENERAL"          : "General",
@@ -1169,6 +1192,19 @@
     "CURRENCY"    : "Monnaie",
     "NAVIGATION"  : "Naviguation"
   },
+
+  "CASH_PURCHASE" : {
+    "TITLE"       : "Depense de l'ordre d'achat",
+    "NOT_FOUND"   : "Aucun ordre d'achat trouve !",
+    "FILTER"      : "Filtrer les ordres d'achats",
+    "SELECT_PURCHASE" : "Selectionner ordre d'achat",
+    "CONFIRM_PAY"  : "Confirmer payement",
+    "DETAILS"      : "Details",
+    "CONFIRM_PAY_OF" : "Confirmer payement de  ",
+    "TO"             : "a ",
+    "DISCARD"        : "Annuler l'ordre d'achat"
+  },
+
 
   "DASHBOARD" : {
     "TITLE" : "Tableau de bord"

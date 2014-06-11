@@ -87,7 +87,13 @@
   "CASH_PURCHASE" : {
     "TITLE"       : "Purchase Order Dispense",
     "NOT_FOUND"   : "No pending purchase order records found.",
-    "FILTER"      : "Filter Purchase Orders"
+    "FILTER"      : "Filter Purchase Orders",
+    "SELECT_PURCHASE" : "Select Purchase Order",
+    "CONFIRM_PAY"  : "Confirm payement",
+    "DETAILS"      : "Details",
+    "CONFIRM_PAY_OF" : "Confirm payment of ",
+    "TO"             : "to ",
+    "DISCARD"        : "Discard purchase order"
   },
 
   "PLACEHOLDERS" : {
@@ -317,7 +323,8 @@
     "VALUE"           : "Select a value",
     "COST_CENTER"     : "Select the cost center",
     "PROJECT"         : "Select a project",
-    "CASH"            : "Select a Cash"
+    "CASH"            : "Select a Cash",
+    "SOURCE"          : "Select source"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -532,7 +539,12 @@
     "PROJECT"             : "Project",
     "CHARGE"              : "Charge",
     "PROFIT"              : "Profit",
-    "RESULT"              : "Result"
+    "RESULT"              : "Result",
+    "EMPLOYEE"            : "Employee",
+    "DESIGNATION"         : "Description",
+    "INITIAL_STOCK"       : "initial stock",
+    "CURRENT_STOCK"       : "Current stock",
+    "TRANS_DATE"          : "Date"
   },
 
   "INVENTORY" : {
@@ -543,7 +555,8 @@
       "UPDATE_ITEM" : "Update Item Registration",
       "CONFIG_GROUPS" : "Configure Groups",
       "CONFIG_TYPES" : "Configure Item Types",
-      "PRINT_MANIFEST" : "Print Inventory Manifest"
+      "PRINT_MANIFEST" : "Print Inventory Manifest",
+      "VIEW"           : "See the list"
     },
     "GROUPS" : {
       "TITLE" : "Inventory Group Management",
@@ -554,7 +567,8 @@
       "STOCK_ACCOUNT" : "Stock Accnt",
       "TAX_ACCOUNT" : "Tax Accnt",
       "ADD" : "Creating Inventory Group",
-      "EDIT" : "Edit Inventory Group"
+      "EDIT" : "Edit Inventory Group",
+      "ALERT" : "This module will help you to create groupe for your inventories"
     },
     "TYPES" : {
       "TITLE"     : "Inventory Type Management",
@@ -657,7 +671,9 @@
     "INVENTORY_MANAGEMENT"      : "Inventory Management",
     "STOCK_DISTRIBUTION"        : "Stock Distribution",
     "EMPLOYEE"                  : "Employee Management",
-    "SERVICE"                   : "Service Management"
+    "SERVICE"                   : "Service Management",
+    "EXPIRING"                  : "Expiring stock report",
+    "ALL_TRANSACTIONS"           : "Toutes les transactions"
   },
 
   "DISTRIBUTION" : {
@@ -1052,7 +1068,10 @@
     "PURCHASE_ITEM"   : "Purchase Items",
     "TOTAL_COST"      : "Total Cost",
     "SUBMIT_ORDER"    : "Submit Purchase Request",
-    "WRITE_SUCCESS"   : "Purchase order submitted successfully."
+    "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
+    "ORDER"           : "Numero Ordre",
+    "DATE"            : "Date",
+    "NOTE"            : "Note"
   },
 
   "SALE"              : {
@@ -1243,6 +1262,46 @@
     }
 },
 
+"VERSEMENT" : {
+    "TITLE"                  : "Accounts deposit",
+    "PARENT"                 : "Cost center management",
+    "CHOOSE"                 : "Select cost center",
+    "AVAILABLE_ACCOUNT"      : "Availables accounts",
+    "VERSER"                 : "Deposit",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Browsing",
+    "ASSOCIATED_TO"          : "Accounts associated to : ",
+    "PLEASE_SELECT"          : "(choose cost center pleaase!)"
+},
+
+"ASSIGNING" : {
+    "TITLE"                  : "Assigning",
+    "NAVIG"                  : "Browsing",
+    "PARENT"                 : "Cost center Management",
+    "CHOOSE"                 : "Select a secondary cost center",
+    "INFO_COST_CENTER"       : "Cost center details",
+    "ASSOCIATED_TO"          : "Cost center for ",
+    "PLEASE_SELECT"          : "(choose cost center pleaase!)",
+    "NEXT"                   : "Next",
+    "TEXT_COST"              : "Designation",
+    "AUX_CENTER"             : "Auxilliairy center",
+    "COST"                   : "Cost",
+    "PRI_CENTERS"            : "Principle cost center",
+    "INITIAL_COST"           : "Initial cost",
+    "COEFF"                  : "Repartition repartition",
+    "AL_COST"                : "Allocated cost",
+    "TOTAL"                  : "Total",
+    "TOTALS"                 : "TOTALS",
+    "INSERT_SUCCES_MESSAGE"  : "insertion successfully !",
+    "INSERT_FAIL_MESSAGE"    : "Error during insertion",
+    "NO_CHOOSEN"             : "No cost center selected!",
+    "AUX_CC"                 : "Auxilliairy center",
+    "LABEL_CC"               : "Designation",
+    "TYPE_CC"                : "Type",
+    "NOTE"                   : "Description"
+},
+
+
 "ANALYSIS_CENTER"              :{
     "TITLE"                    :   "Cost center",
     "PARENT"                   :   "Cost center Management",
@@ -1359,6 +1418,18 @@
     "DEFAULT_CASHBOX"    : "Cash"
   },
 
+  "ALLTRANSACTIONS" : {
+    "TITLE"         : "ALL TRANSACTIONS STATE",
+    "SEARCH"        : "search",
+    "DAY"           : "Today",
+    "WEEK"          : "This week",
+    "MONTH"         : "This month",
+    "FISCAL_YEAR"   : "This fiscal year",
+    "FROMSTARTING"  : "Since the begining of the time",
+    "SELECTED"      : "TRANSACTIONS STATE FOR ACCOUNT : ",
+    "DEFAULT"       : "ALL TRANSACTIONS STATE"
+  },
+
  "CFIND"             : {
     "TITLE"           : "Find convention",
     "SEARCH"          : "search by name",
@@ -1368,6 +1439,16 @@
   "DASHBOARD" : {
     "TITLE" : "Dashboards"
   },
+
+  "EXPIRING_REPORT" : {
+    "TITLE" : "Medecines expiring report",
+    "ALL_DEPOTS" : "All depots",
+    "DAY" : "To day",
+    "MONTH" : "This Month",
+    "WEEK"  : "This week",
+    "EMPTY_REPORT" : "No record found!"
+},
+
 
   "SETTINGS" : {
     "TITLE" : "BHIMA Settings",
