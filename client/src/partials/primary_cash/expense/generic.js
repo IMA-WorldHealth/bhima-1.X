@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('primaryCash.expense', [
+.controller('primaryCash.expense.generic', [
   '$scope',
   '$routeParams',
   'validate',
@@ -9,7 +9,7 @@ angular.module('bhima.controllers')
   'uuid',
   'util',
   function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util) {
-    var dependencies = {};
+    var isDefined, dependencies = {};
     var session = $scope.session = { receipt : {} };
 
     // TODO
@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
       throw new Error('No cashbox selected');
     }
 
-    var isDefined = angular.isDefined;
+    isDefined = angular.isDefined;
 
     $scope.timestamp = new Date();
 
@@ -102,7 +102,6 @@ angular.module('bhima.controllers')
       var data, receipt = session.receipt;
       formatDates();
 
-
       connect.fetch('/user_session')
       .then(function (user) {
 
@@ -117,10 +116,10 @@ angular.module('bhima.controllers')
           account_id    : receipt.recipient.account_id,
           currency_id   : session.currency.id,
           cost          : receipt.cost,
-          user_id       : user.data.id,
+          user_id       : user.id,
           description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
           cash_box_id   : receipt.cash_box_id,
-          origin_id     : 2
+          origin_id     : 2,
         };
 
         return connect.basicPut('primary_cash', [data]);
@@ -136,7 +135,7 @@ angular.module('bhima.controllers')
         return connect.basicPut('primary_cash_item', [item]);
       })
       .then(function () {
-        return connect.fetch('/journal/primary_cash/' + data.uuid);
+        return connect.fetch('/journal/primary_expense/' + data.uuid);
       })
       .then(function () {
         messenger.success('Posted data successfully.');
@@ -144,9 +143,6 @@ angular.module('bhima.controllers')
         session.receipt.date = new Date().toISOString().slice(0, 10);
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
-      })
-      .catch(function (err) {
-        messenger.error(err);
       });
     };
   }

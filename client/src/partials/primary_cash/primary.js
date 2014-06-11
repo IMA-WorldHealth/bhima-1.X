@@ -2,11 +2,16 @@ angular.module('bhima.controllers')
 .controller('primaryCash', [
   '$scope',
   '$location',
+  '$q',
   'validate',
-  '$filter',
-  function ($scope, $location, validate, $filter) {
-    var dependencies = {}, session = $scope.session = {};
-    var configuration = $scope.configuration = {};
+  'appcache',
+  function ($scope, $location, $q, validate, AppCache) {
+    var dependencies = {}, configuration = $scope.configuration = {};
+    var session = $scope.session = {
+      configure : false,
+      complete : false
+    };
+    var cache = new AppCache('primary_cash');
 
     dependencies.cashBox = {
       query : {
@@ -18,49 +23,96 @@ angular.module('bhima.controllers')
     };
 
     configuration.income = [
-
       {
-        key : $filter('translate')('PRIMARY_CASH.INCOME.TRANSFER'),
+        key : 'PRIMARY_CASH.INCOME.TRANSFER',
         link : '/primary_cash/transfert/'
       },
-
       {
-        key : $filter('translate')('PRIMARY_CASH.INCOME.CONVENTION'),
+        key : 'PRIMARY_CASH.INCOME.CONVENTION',
         link : '/primary_cash/convention/'
       },
-
       {
-        key : $filter('translate')('PRIMARY_CASH.INCOME.GENERIC_INCOME'),
+        key : 'PRIMARY_CASH.INCOME.GENERIC_INCOME',
         link : '/primary_cash/income/generic/'
       }
     ];
 
     configuration.expense = [
       {
-        key : $filter('translate')('PRIMARY_CASH.EXPENSE.PURCHASE'),
+        key : 'PRIMARY_CASH.EXPENSE.PURCHASE',
         link : '/primary_cash/expense/purchase/'
       },
       {
-        key : $filter('translate')('PRIMARY_CASH.EXPENSE.GENERIC_TITLE'),
+        key : 'PRIMARY_CASH.EXPENSE.GENERIC_TITLE',
         link : '/primary_cash/expense/generic/'
       }
     ];
-
-    validate.process(dependencies).then(initialise);
-
-    function initialise(model) {
+    
+    validate.process(dependencies)
+      .then(parseDependenciesData)
+      .then(readConfiguration)
+      .then(parseConfiguration)
+      .then(initialise)
+      .then(handleError);
+  
+    function parseDependenciesData(model) {
       angular.extend($scope, model);
+      return $q;
+    }
 
-      // Select default cashbox
-      session.cashbox = model.cashBox.data[0].id;
+    function readConfiguration() {
+      return cache.fetch('cash_box');
+    }
+
+    function parseConfiguration(cashbox) {
+      var currentModel = $scope.cashBox;
+      var configurationExists, validConfiguration;
+    
+      configurationExists = angular.isDefined(cashbox);
+      if (!configurationExists) {
+        session.configure = true;
+        return;
+      }
+
+      validConfiguration = angular.isDefined(currentModel.get(cashbox.id));
+      if (!validConfiguration) {
+        session.configure = true;
+        return;
+      }
+      
+      session.cashbox = cashbox;
+      session.complete = true;
+      return;
+    }
+
+    function initialise() {
+      // Initialise
     }
 
     function loadPath(path) {
+      $location.path(path + session.cashbox.id);
+    }
 
-      //TODO validate both correct path and cashbox
-      $location.path(path + session.cashbox);
+    function setConfiguration (cashbox) {
+      cache.put('cash_box', cashbox);
+      session.configure = false;
+      session.complete = true;
+      session.cashbox = cashbox;
+    }
+
+    function reconfigure() {
+      cache.remove('cash_box');
+      session.cashbox = null;
+      session.configure = true;
+      session.complete = false;
+    }
+
+    function handleError(error) {
+      throw error;
     }
 
     $scope.loadPath = loadPath;
+    $scope.setConfiguration = setConfiguration;
+    $scope.reconfigure = reconfigure;
   }
 ]);

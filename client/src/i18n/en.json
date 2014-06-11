@@ -44,6 +44,12 @@
     "REFRESH"               : "Refresh"
   },
 
+  "LANGUAGES" : {
+    "ENGLISH" : "English",
+    "FRENCH" : "French",
+    "LINGALA" : "Lingala"
+  },
+
   "PRIMARY_CASH"  : {
     "TITLE"       : "Primary Cash",
     "EXPENSES"    : "Expenses",
@@ -52,9 +58,15 @@
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
-      "GENERIC_TITLE"   : "Generic Expense",
-      "GENERIC_RECEIPT" : "Generic Receipt",
-      "PURCHASE"        : "Pay Purchase Order"
+      "GENERIC_TITLE"         : "Generic Expense",
+      "GENERIC_RECEIPT"       : "Generic Receipt",
+      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "PURCHASE"              : "Pay Purchase Order",
+      "EXPENSE_DATE"          : "Expense Date",
+      "RECIPIENT"             : "Recipient",
+      "AMOUNT"                : "Amount Dispensed",
+      "PURPOSE"               : "Purpose of Expense",
+      "EXPENSE_DATE"          : "Expense Date"
     },
 
     "INCOME" : {
@@ -259,8 +271,6 @@
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
     "VIEW_BALANCE"          :"View Opening Balance"
-
-
   },
 
   "OPENING_BALANCE" : {
@@ -298,9 +308,12 @@
 
   "SELECT"            : {
     "ACCOUNT"         : "Select Account",
+    "ACCOUNT_TYPE"    : "Select Account Type",
     "CURRENCY"        : "Select Currency",
     "NAME"            : "Select a Name",
     "COUNTRY"         : "Select a Country",
+    "RECIPIENT"       : "Select a Recipient",
+    "LANGUAGE"        : "Select a Language",
     "PROVINCE"        : "Select a Province",
     "SECTOR"          : "Select a Sector",
     "VILLAGE"         : "Select a Village",
@@ -669,6 +682,7 @@
     "DEPOT"                     : "Depot",
     "STOCK_MANAGEMENT"          : "Stock Management",
     "INVENTORY_MANAGEMENT"      : "Inventory Management",
+    "SERVICE"                   : "Services",
     "STOCK_DISTRIBUTION"        : "Stock Distribution",
     "EMPLOYEE"                  : "Employee Management",
     "SERVICE"                   : "Service Management",
