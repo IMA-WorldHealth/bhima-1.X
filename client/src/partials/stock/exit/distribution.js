@@ -1,27 +1,38 @@
 angular.module('bhima.controllers')
 .controller('stock.distribution', [
   '$scope',
+  '$q',
+  '$routeParams',
   'validate',
   'connect',
   'messenger',
   'appstate',
   'util',
   'uuid',
-  '$q',
-  function ($scope, validate, connect, messenger, appstate, util, uuid, $q) {
+  function ($scope, $q, $routeParams, validate, connect, messenger, appstate, util, uuid) {
     var session = $scope.session = {
-      state : null
+      // FIXME
+      index : -1,
+      state : null,
+      depot : $routeParams.depotId
     };
     var distribution = {}, dependencies = {};
-    
+
     // Test for module organised into step structure
-    var moduleDefinition = [
+    var moduleDefinition = $scope.moduleDefinition = [
       {
-        key : 'init',
-        method : init
+        title : 'Locate Patient',
+        template : 'patientSearch.tmpl.html',
+        method : findPatient
       },
       {
-        key : 'findPatient',
+        title : 'Select prescription sale',
+        template : 'selectSale.tmpl.html',
+        method : findPatient
+      },
+      {
+        title : 'Allocate medicine',
+        template : 'allocateLot.tmpl.html',
         method : findPatient
       }
     ];
@@ -33,22 +44,94 @@ angular.module('bhima.controllers')
     function initialiseDistributionDetails(patient) {
       console.log(patient);
       dependencies.ledger.query = '/ledgers/debitor/' + patient.debitor_uuid;
-
+      session.patient = patient;
       validate.process(dependencies).then(startup);
     }
     
     function startup(model) {
       angular.extend($scope, model);
       
+      moduleStep();
       console.log(model);
     }
 
     function moduleStep() { 
       
-      // Derive index?
-      var currentIndex = moduleDefinition.indexOf(session.state) || 0;
-      session.state = moduleDefinition[currentIndex + 1];
+      // FIXME
+      session.index += 1;
+      session.state = moduleDefinition[session.index];
       session.state.method();
+    }
+
+    function selectSale(sale) {
+      session.sale = sale;
+
+      moduleStep();
+
+      getSaleDetails(sale).then(function (saleDetails) {
+        var detailsRequest = [];
+        session.sale.details = saleDetails.data;
+        
+        detailsRequest = session.sale.details.map(function (saleItem) {
+          return connect.req('inventory/depot/' + session.depot + '/drug/' + saleItem.code);
+        });
+
+        $q.all(detailsRequest).then(function (result) {
+          console.log('got all lot details');
+          session.sale.details.forEach(function (saleItem, index) {
+            var itemModel = result[index];
+
+            console.log('assigning', result);
+            if (itemModel.data.length) saleItem.lots = itemModel;
+          });
+
+          recomendLots(session.sale.details);
+        })
+        .catch(function (error) {
+          messenger.error(error);
+        });
+      });
+    }
+
+    function recomendLots(saleDetails) {
+      // Corner cases 
+      // - ! Lot exists but does not have enough quantity to provide medicine
+      // - No lots exist, warning status
+      // - ! Lot exists but is expired, stock administrator
+      // - Lot exists with both quantity and expiration date 
+      saleDetails.forEach(function (saleItem) { 
+        // Check to see if any lots exist (expired stock should be run through the stock loss process)
+        if (!saleItem.lots) return; 
+
+        // If lots exist, order them by experiation and quantity 
+        saleItem.lots.data.sort(orderLotsByUsability);
+         
+        // Validate candidates if none are suitable, update status
+
+      });
+    }
+
+    function orderLotsByUsability(a, b) {  
+      // Order first by expiration date, then by quantity
+      console.log('a', a, 'b', b);  
+    };
+
+    function getSaleDetails(sale) {
+      console.log('sale', sale);
+      var query = {
+        tables : {
+          sale_item : {
+            columns : ['sale_uuid', 'uuid', 'inventory_uuid', 'quantity']
+          },
+          inventory : {
+            columns : ['code', 'text', 'consumable']
+          }
+        },
+        where : ['sale_item.sale_uuid=' + sale.inv_po_id],
+        join : ['sale_item.inventory_uuid=inventory.uuid']
+      };
+
+      return connect.req(query);
     }
 
     function init() { 
@@ -59,7 +142,7 @@ angular.module('bhima.controllers')
 
     }
 
-
+    $scope.selectSale = selectSale;
     $scope.initialiseDistributionDetails = initialiseDistributionDetails;
     // distribution.visible = true;
     // distribution.noEmpty = false;
