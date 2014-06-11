@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
   'util',
   'uuid',
   'appcache',
-  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache) {
+  '$filter',
+  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache, $filter) {
 
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
@@ -180,7 +181,7 @@ angular.module('bhima.controllers')
     }
 
     function handleError(){
-      messenger.danger($translate('CONVENTION.DANGER'));
+      messenger.danger($filter('translate')('CONVENTION.DANGER'));
     }
 
     function load (selectedItem) {

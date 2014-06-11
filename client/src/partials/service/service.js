@@ -9,12 +9,13 @@ angular.module('bhima.controllers').controller('service', [
   'appstate',
   function ($scope, $q, $translate, validate, uuid, messenger, connect, appstate) {
     var dependencies = {}, cost_center = {}, service ={};
+    $scope.choosen = {};
 
     dependencies.services = {
       query : {
         tables : {
           'service' : {
-            columns : ['id', 'name']
+            columns : ['id', 'name', 'cost_center_id']
           },
           'cost_center' : {
             columns : ['text']
@@ -36,6 +37,7 @@ angular.module('bhima.controllers').controller('service', [
 
     function init (model){
       $scope.model = model;
+      console.log(model);
     }
 
     function save (){
@@ -44,13 +46,13 @@ angular.module('bhima.controllers').controller('service', [
         // FIXME just add service to model
         validate.refresh(dependencies, ['services']).then(function (model) {
           angular.extend($scope, model);
-          messenger.success($filter('translate')('SERVICE.INSERT_SUCCESS_MESSAGE'));
+          messenger.success($translate('SERVICE.INSERT_SUCCESS_MESSAGE'));
         });
 
         $scope.service = {};
       })
       .catch(function (err) {
-        messenger.danger($filter('translate')('SERVICE.INSERT_FAIL_MESSAGE'));
+        messenger.danger($translate('SERVICE.INSERT_FAIL_MESSAGE'));
       })
     }
 
@@ -59,24 +61,25 @@ angular.module('bhima.controllers').controller('service', [
     }
 
     function setAction (value, service){
-      $scope.selected = angular.copy(service) || {};
+      $scope.choosen = angular.copy(service) || {};
       if(value == 'more'){
-        getCost($scope.selected.cost_center_id)
+        getCost($scope.choosen.cost_center_id)
         .then(handleResultCost)
         .then(getProfit)
         .then(handleResultProfit)
         .then(function (){
           $scope.action = value;
-          console.log('object donne : ', $scope.selected);
+          console.log('object donne : ', $scope.choosen);
         })
       }else{
+        //$scope.choosen.cost_center_id = value.id;
         $scope.action = value;
       }
     }
 
     function getProfit (model){
       var def = $q.defer();
-      connect.req('/profit/'+$scope.project.id+'/'+$scope.selected.id)
+      connect.req('/profit/'+$scope.project.id+'/'+$scope.choosen.id)
       .then(function(values){
         def.resolve(values);
       });
@@ -87,15 +90,32 @@ angular.module('bhima.controllers').controller('service', [
 
     }
 
+    function edit (){
+      console.log('le voici', connect.clean($scope.choosen));
+      var data = {
+        id : $scope.choosen.id,
+        name : $scope.choosen.name,
+        cost_center_id : $scope.choosen.cost_center_id
+      }
+
+      connect.basicPost('service', [data], ['id'])
+      .then(function (res) {
+        $scope.model.services.put(connect.clean($scope.choosen));
+        $scope.action = '';
+        $scope.choosen = {}; // reset
+      })
+      .catch(function (err) {
+        messenger.danger('Error:' + JSON.stringify(err));
+      })
+    }
+
     function handleResultCost (value){
-      console.log('le centre de cout du service a donne', value)
-      $scope.selected.charge = value.data.cost;
+      $scope.choosen.charge = value.data.cost;
       return $q.when();
     }
 
     function handleResultProfit (value){
-      console.log('le profit du service a donne', value)
-      $scope.selected.profit = value.data.profit;
+      $scope.choosen.profit = value.data.profit;
       return $q.when();
     }
 
@@ -108,6 +128,22 @@ angular.module('bhima.controllers').controller('service', [
       return def.promise;
     }
 
+    function removeService (){
+      return connect.basicDelete('service', [$scope.choosen.id], 'id');
+    }
+
+    function remove (service){
+      $scope.choosen = angular.copy(service);
+      removeService()
+      .then(function (){
+        $scope.model.services.remove($scope.choosen.id);
+        messenger.success($translate('SERVICE.REMOVE_SUCCESS_MESSAGE'));
+      })
+      .catch(function (err){
+        messenger.danger($translate('SERVICE.REMOVE_FAIL_MESSAGE'));
+      });
+    }
+
     appstate.register('project', function (project){
       validate.process(dependencies)
       .then(init);
@@ -117,5 +153,7 @@ angular.module('bhima.controllers').controller('service', [
     $scope.service = service;
     $scope.cost_center = cost_center;
     $scope.setAction = setAction;
+    $scope.edit = edit;
+    $scope.remove = remove;
   }
 ]);
