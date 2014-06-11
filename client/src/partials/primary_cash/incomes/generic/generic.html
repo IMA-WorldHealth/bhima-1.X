@@ -1,0 +1,87 @@
+<header data-header>
+  {{ "PRIMARY_CASH.INCOME.GENERIC.TITLE" |  translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/primary_cash">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+      <li><a>{{ "PRIMARY_CASH.INCOME" | translate }}</a></li>
+      <li class="active">{{ "PRIMARY_CASH.INCOME.GENERIC.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+
+  <div class="pull-right dropdown">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ session.currency.symbol || "UTIL.CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li ng-repeat="currency in currencies.data">
+        <a href="" ng-click="session.currency=currency">{{ currency.symbol }}</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="row">
+    <div class="col-xs-8">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-list-alt"></span>
+          {{ "PRIMARY_CASH.EXPENSE.GENERIC_RECEIPT" | translate }}
+        </div>
+        <div class="panel-body">
+          <form>
+
+            <div class="form-group col-xs-6 hack-left">
+              <label>{{ "PRIMARY_CASH.EXPENSE.REFERENCE_DOCUMENT_ID" | translate }}</label>
+              <div class="input-group">
+                <input class="form-bhima" ng-model="session.receipt.reference_uuid" required>
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-sm btn-default" ng-click="generate()">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group col-xs-6 pull-right" style="padding-right: 0;">
+              <label>{{ "PRIMARY_CASH.EXPENSE.EXPENSE_DATE" | translate }}</label>
+              <input type="date" class="form-bhima" ng-model="session.receipt.date" max="{{ session.today }}" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ "PRIMARY_CASH.EXPENSE.PURPOSE" | translate }}</label>
+              <input class="form-bhima" ng-model="session.receipt.description" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ "PRIMARY_CASH.EXPENSE.RECIPIENT" | translate }}</label>
+              <select type="text" class="form-bhima" ng-model="session.receipt.recipient" ng-options="supplier as supplier.text for supplier in suppliers.data">
+                <option value="" disabled="disabled">-- {{ "SELECT.RECIPIENT" | translate }} --</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>{{ "PRIMARY_CASH.EXPENSE.AMOUNT" | translate }}</label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  {{ session.currency.symbol || "..." }}
+                </span>
+                <input type="number" class="form-bhima" ng-model="session.receipt.cost">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-sm btn-success" type="button" ng-click="submit()" ng-disabled="session.invalid"> {{ 'FORM.SUBMIT' | translate }} </button>
+          <button class="btn btn-sm btn-default" type="button" ng-click="clear()"> {{ 'FORM.CLEAR' | translate }} </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
