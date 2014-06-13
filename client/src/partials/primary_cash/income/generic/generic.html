@@ -1,14 +1,14 @@
 <header data-header>
-  {{ "PRIMARY_CASH.INCOME.GENERIC.TITLE" |  translate }}
+  {{ "PRIMARY_CASH.INCOME.GENERIC_TITLE" |  translate }}
 </header>
 
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a href="#/primary_cash">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
-      <li><a>{{ "PRIMARY_CASH.INCOME" | translate }}</a></li>
-      <li class="active">{{ "PRIMARY_CASH.INCOME.GENERIC.TITLE" | translate }}</li>
+      <li><a href="#/primary_cash/">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+      <li><a>{{ "PRIMARY_CASH.INCOMES" | translate }}</a></li>
+      <li class="active">{{ "PRIMARY_CASH.INCOME.GENERIC_TITLE" | translate }}</li>
     </ol>
   </div>
 
@@ -32,13 +32,13 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-list-alt"></span>
-          {{ "PRIMARY_CASH.EXPENSE.GENERIC_RECEIPT" | translate }}
+          {{ "PRIMARY_CASH.INCOME.GENERIC_RECEIPT" | translate }}
         </div>
         <div class="panel-body">
           <form>
 
             <div class="form-group col-xs-6 hack-left">
-              <label>{{ "PRIMARY_CASH.EXPENSE.REFERENCE_DOCUMENT_ID" | translate }}</label>
+              <label>{{ "PRIMARY_CASH.INCOME.REFERENCE_DOCUMENT_ID" | translate }}</label>
               <div class="input-group">
                 <input class="form-bhima" ng-model="session.receipt.reference_uuid" required>
                 <span class="input-group-btn">
@@ -50,24 +50,24 @@
             </div>
 
             <div class="form-group col-xs-6 pull-right" style="padding-right: 0;">
-              <label>{{ "PRIMARY_CASH.EXPENSE.EXPENSE_DATE" | translate }}</label>
+              <label>{{ "PRIMARY_CASH.INCOME.EXPENSE_DATE" | translate }}</label>
               <input type="date" class="form-bhima" ng-model="session.receipt.date" max="{{ session.today }}" required>
             </div>
 
             <div class="form-group">
-              <label>{{ "PRIMARY_CASH.EXPENSE.PURPOSE" | translate }}</label>
+              <label>{{ "PRIMARY_CASH.INCOME.PURPOSE" | translate }}</label>
               <input class="form-bhima" ng-model="session.receipt.description" required>
             </div>
 
             <div class="form-group">
-              <label>{{ "PRIMARY_CASH.EXPENSE.RECIPIENT" | translate }}</label>
+              <label>{{ "PRIMARY_CASH.INCOME.DEBTOR" | translate }}</label>
               <select type="text" class="form-bhima" ng-model="session.receipt.recipient" ng-options="supplier as supplier.text for supplier in suppliers.data">
                 <option value="" disabled="disabled">-- {{ "SELECT.RECIPIENT" | translate }} --</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label>{{ "PRIMARY_CASH.EXPENSE.AMOUNT" | translate }}</label>
+              <label>{{ "PRIMARY_CASH.INCOME.AMOUNT" | translate }}</label>
               <div class="input-group">
                 <span class="input-group-addon">
                   {{ session.currency.symbol || "..." }}

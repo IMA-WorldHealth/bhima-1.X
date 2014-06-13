@@ -68,33 +68,31 @@
       "PURPOSE"               : "Purpose of Expense",
       "EXPENSE_DATE"          : "Expense Date"
     },
-
     "INCOME" : {
       "TRANSFER"        : "Transfert",
       "CONVENTION"      : "Convention",
-      "GENERIC_INCOME"  : "Generic Income"
+      "GENERIC_TITLE"   : "Generic Income"
     }
   },
 
-    "TRANSFERT"        : {
-    "TITLE"       : "Transfert",
-    "TRANSFER"    : "Transfert",
-    "CONVENTION"  : "Convention",
-    "PCASH"       : "Primary cash",
-    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
-    "OVERVIEW"    : "Primary cash : Receipts management",
-    "INFO"        : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfert, and so one",
-    "SOURCE"      : "Source",
-    "EXPECTED"    : "expected",
-    "AMOUNT"      : "amount",
-    "CRUMB_PCASH" : "primary cash",
+  "TRANSFERT" : {
+    "TITLE"           : "Transfert",
+    "TRANSFER"        : "Transfert",
+    "CONVENTION"      : "Convention",
+    "PCASH"           : "Primary cash",
+    "SOME_REPORT"     : "Rapport Sommaire de Recettes (20 derniers)",
+    "OVERVIEW"        : "Primary cash                                                                                                                                  : Receipts management",
+    "INFO"            : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfert, and so one",
+    "SOURCE"          : "Source",
+    "EXPECTED"        : "expected",
+    "AMOUNT"          : "amount",
+    "CRUMB_PCASH"     : "primary cash",
     "CRUMB_TRANSFERT" : "transfert",
-    "PROJECT"     : "Project",
-    "CAISSE"      : "Cash",
-    "CURRENCY"    : "currency",
-    "NAVIGATION"  : "Browsing"
+    "PROJECT"         : "Project",
+    "CAISSE"          : "Cash",
+    "CURRENCY"        : "currency",
+    "NAVIGATION"      : "Browsing"
   },
-
 
   "CASH_PURCHASE" : {
     "TITLE"       : "Purchase Order Dispense",
