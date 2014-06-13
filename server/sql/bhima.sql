@@ -964,8 +964,8 @@ create table `general_ledger` (
   constraint foreign key (`service_id`) references `service` (`id`) on update cascade
 ) engine=innodb;
 
-drop table if exists `bhima`.`period_total`;
-create table `bhima`.`period_total` (
+drop table if exists `period_total`;
+create table `period_total` (
   `enterprise_id`     smallint unsigned not null,
   `fiscal_year_id`    mediumint unsigned not null,
   `period_id`         mediumint unsigned not null,
