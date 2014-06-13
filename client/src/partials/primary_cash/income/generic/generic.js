@@ -23,7 +23,7 @@ angular.module('bhima.controllers')
 
     session.today = $scope.timestamp.toISOString().slice(0, 10);
 
-    dependencies.suppliers = {
+    dependencies.debtors = {
       query : {
         tables : {
           'supplier' : {
