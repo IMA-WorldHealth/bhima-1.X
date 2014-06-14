@@ -1,13 +1,12 @@
 angular.module('bhima.controllers')
 .controller('groupInvoice', [
   '$scope',
-  '$routeParams',
   'connect',
   'validate',
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, $routeParams, connect, validate, appstate, messenger, uuid) {
+  function ($scope, connect, validate, appstate, messenger, uuid) {
 
     var dependencies = {};
     $scope.action = '';
@@ -138,26 +137,21 @@ angular.module('bhima.controllers')
     }, true);
 
     $scope.authorize = function () {
-      var payment = connect.clean($scope.payment);
+      var id, items, payment = connect.clean($scope.payment);
       payment.uuid = uuid();
-      console.log('[payemnt ]', $scope.payment);
       connect.basicPut('group_invoice', [payment])
-      .then(function (res) {
-        var id = payment.uuid;
-        var items = formatItems(id);
-        connect.basicPut('group_invoice_item', items)
-        .then(function (res) {
-          $scope.action = '';
-          $scope.paying = [];
-          connect.fetch('/journal/group_invoice/' + id)
-          .then(function () {
-            messenger.success('Data submitted successfully.');
-          });
-        }, function (err) {
-          messenger.danger(JSON.stringify(err));
-        });
-      }, function (err) {
-        messenger.danger(JSON.stringify(err));
+      .then(function () {
+        id = payment.uuid;
+        items = formatItems(id);
+        return connect.basicPut('group_invoice_item', items);
+      })
+      .then(function () {
+        $scope.action = '';
+        $scope.paying = [];
+        return connect.fetch('/journal/group_invoice/' + id);
+      })
+      .then(function () {
+        messenger.success('Data submitted successfully.');
       });
     };
 

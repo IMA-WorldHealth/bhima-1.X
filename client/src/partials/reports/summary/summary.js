@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('summaryController', [
+.controller('summary', [
   '$scope',
   function($scope) {
 

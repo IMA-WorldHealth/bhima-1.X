@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('creditorGroupCtrl', [
+.controller('creditorGroup', [
   '$scope',
   'connect',
   'appstate',

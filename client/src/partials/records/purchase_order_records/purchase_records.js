@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('purchaseRecordsController', [
+.controller('purchaseRecords', [
   '$scope',
   '$q',
   '$routeParams',

@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('settingsController', [
+.controller('settings', [
   '$scope',
   '$routeParams',
   '$translate',

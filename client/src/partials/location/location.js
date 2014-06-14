@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('locationCtrl', [
+.controller('location', [
   '$scope',
   'connect',
   'store',
