@@ -1,8 +1,8 @@
 <header>
-  <span>{{ "REPORT.INCOME_EXPENSE_REPORT" | translate }} <small> {{ today | date }}</small></span>
+  {{ "REPORT.INCOME_EXPENSE_REPORT" | translate }} <small> {{ today | date }}</small>
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
 
     <span class="dropdown">
@@ -30,7 +30,7 @@
     </span>
 
   </div>
-</section> 
+</nav> 
 
 <div class="report">
   <table class="table table-bordered">
