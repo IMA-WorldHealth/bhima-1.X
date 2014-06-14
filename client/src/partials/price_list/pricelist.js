@@ -2,15 +2,15 @@ angular.module('bhima.controllers')
 .controller('priceList', [
   '$scope',
   '$q',
-  '$filter',
+  '$translate',
   '$window',
   'connect',
   'messenger',
   'appstate',
   'validate',
   'uuid',
-  function ($scope, $q, $filter, $window, connect, messenger, appstate, validate, uuid) {
-    var dependencies = {}, stores = {};
+  function ($scope, $q, $translate, $window, connect, messenger, appstate, validate, uuid) {
+    var dependencies = {};
     var enterprise;
 
     $scope.session = {
@@ -76,7 +76,9 @@ angular.module('bhima.controllers')
       $scope.session.listCache = angular.copy($scope.session.listItems);
 
       $scope.session.listItems.sort(function (a, b) { return (a.item_order === b.item_order) ? 0 : (a.item_order > b.item_order ? 1 : -1); });
-      if($scope.session.listItems.length === 0) $scope.session.listItems.push(defaultItem);
+      if ($scope.session.listItems.length === 0) {
+        $scope.session.listItems.push(defaultItem);
+      }
     }
 
     function addItem() {
@@ -91,7 +93,7 @@ angular.module('bhima.controllers')
     function shiftDown(item) {
       var list = $scope.session.listItems, index = list.indexOf(item);
 
-      if(index < list.length - 1) {
+      if (index < list.length - 1) {
         list.splice(index, 1);
         list.splice(index + 1, 0, item);
       }
@@ -100,7 +102,7 @@ angular.module('bhima.controllers')
     function shiftUp(item) {
       var list = $scope.session.listItems, index = list.indexOf(item);
 
-      if(index > 0) {
+      if (index > 0) {
         list.splice(index, 1);
         list.splice(index - 1, 0, item);
       }
@@ -108,39 +110,47 @@ angular.module('bhima.controllers')
 
     function deleteItem(item) {
       var list = $scope.session.listItems;
-      if(list.length > 1) {
+      if (list.length > 1) {
         list.splice(list.indexOf(item), 1);
-        if(item.uuid) $scope.session.deleteQueue.push(item.uuid);
+        if (item.uuid) {
+          $scope.session.deleteQueue.push(item.uuid);
+        }
       } else {
-        messenger.warning($filter('translate')("PRICE_LIST.WARN"));
+        messenger.warning($translate.instant('PRICE_LIST.WARN'));
       }
     }
 
     function saveItems() {
-      var verify, priceList = $scope.session.selected;
-      var uploadPromise = [];
+      var priceList = $scope.session.selected,
+          uploadPromise = [];
 
       // Verify items
       var invalidData = $scope.session.listItems.some(function (item, index) {
-        if (!item.price_list_uuid) item.price_list_uuid = priceList.uuid;
+        if (!item.price_list_uuid) {
+          item.price_list_uuid = priceList.uuid;
+        }
         item.item_order = index;
 
 
-        if (isNaN(Number(item.value))) return true;
+        if (isNaN(Number(item.value))) {
+          return true;
+        }
 
-        if (!item.description || item.description.length===0) return true;
-        if (Number(item.is_global) && !item.inventory_uuid) return true;
+        if (!item.description || item.description.length === 0) { return true; }
+        if (Number(item.is_global) && !item.inventory_uuid) { return true; }
 
         return false;
       });
 
-      if(invalidData) return messenger.danger($filter('translate')('PRICE_LIST.INVALID_ITEMS'));
+      if (invalidData) {
+        return messenger.danger($translate.instant('PRICE_LIST.INVALID_ITEMS'));
+      }
 
       // FIXME single request for all items
       $scope.session.listItems.forEach(function (item) {
         var request, uploadItem = connect.clean(item);
         //console.log('UPDATING', item);
-        if(item.uuid) {
+        if (item.uuid) {
           request = connect.basicPost('price_list_item', [uploadItem], ['uuid']);
         } else {
           uploadItem.uuid = uuid();
@@ -154,19 +164,20 @@ angular.module('bhima.controllers')
         uploadPromise.push(connect.basicDelete('price_list_item', itemId, 'uuid'));
       });
 
-      $q.all(uploadPromise).then(function (result) {
-
+      $q.all(uploadPromise)
+      .then(function () {
         // FIXME Redownload to prove DB state - remove (horrible use of bandwidth)
         editItems(priceList);
-        messenger.success($filter('translate')('PRICE_LIST.LIST_SUCCESS'));
-      }, function (error) {
-        messenger.danger($filter('translate')('PRICE_LIST.LIST_FAILURE'));
+        messenger.success($translate.instant('PRICE_LIST.LIST_SUCCESS'));
+      })
+      .catch(function () {
+        messenger.danger($translate.instant('PRICE_LIST.LIST_FAILURE'));
       });
     }
 
     // Clear inventory uuid for non global items (on change)
     function clearInventory(item) {
-      if (!Number(item.is_global)) item.inventory_uuid = null;
+      if (!Number(item.is_global)) { item.inventory_uuid = null; }
     }
 
     function editMeta (list) {
@@ -178,8 +189,8 @@ angular.module('bhima.controllers')
 
     function saveMeta () {
       connect.basicPost('price_list', [connect.clean($scope.edit)], ['uuid'])
-      .then(function (res) {
-        messenger.success($filter('translate')('PRICE_LIST.EDITED_SUCCES'));
+      .then(function () {
+        messenger.success($translate.instant('PRICE_LIST.EDITED_SUCCES'));
         $scope.model.priceList.put($scope.edit);
 
         $scope.session.selected = null;
@@ -204,7 +215,7 @@ angular.module('bhima.controllers')
       $scope.add.enterprise_id = $scope.enterprise.id;
       $scope.add.uuid = uuid();
       connect.basicPut('price_list', [connect.clean($scope.add)])
-      .then(function (result) {
+      .then(function () {
         var finalList;
 
         finalList = connect.clean($scope.add);
@@ -212,7 +223,7 @@ angular.module('bhima.controllers')
         $scope.model.priceList.post(finalList);
         editItems(finalList);
 
-        messenger.success($filter('translate')('PRICE_LIST.POSTED'));
+        messenger.success($translate.instant('PRICE_LIST.POSTED'));
       }, function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
       });
@@ -223,19 +234,19 @@ angular.module('bhima.controllers')
     };
 
     function removeList (list){
-      var confirmed = $window.confirm($filter('translate')('PRICE_LIST.DELETE_CONFIRM'));
-      if(!confirmed) return;
+      var confirmed = $window.confirm($translate.instant('PRICE_LIST.DELETE_CONFIRM'));
+      if (!confirmed) { return; }
 
       connect.basicDelete('price_list', list.uuid, 'uuid')
       .then(function(v){
         if (v.status === 200){
           $scope.model.priceList.remove(list.uuid);
-          messenger.success($filter('translate')('PRICE_LIST.REMOVE_SUCCESS'));
+          messenger.success($translate.instant('PRICE_LIST.REMOVE_SUCCESS'));
         }
       }, function(error) {
         //FIXME Temporary
-        if (error.status===500) {
-          messenger.danger($filter('translate')('PRICE_LIST.UNABLE_TO_DELETE'), 6000);
+        if (error.status === 500) {
+          messenger.danger($translate.instant('PRICE_LIST.UNABLE_TO_DELETE'), 6000);
         }
       });
     }

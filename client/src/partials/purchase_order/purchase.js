@@ -82,9 +82,9 @@ angular.module('bhima.controllers')
     }
 
     function formatPurchaseDescription() {
-      if (!session.creditor) return "...";
+      if (!session.creditor) { return '...'; }
       return [
-        "PO",
+        'PO',
         session.hr_id,
         session.date,
         session.creditor.name
@@ -110,9 +110,9 @@ angular.module('bhima.controllers')
     // FIXME
     function getDate() {
 
-      //Format the current date according to RFC3339 (for HTML input[type=="date"])
+      //Format the current date according to RFC3339 (for HTML input[type=='date'])
       var now = new Date();
-      return now.getFullYear() + "-" + ('0' + (now.getMonth() + 1)).slice(-2) + "-" + ('0' + now.getDate()).slice(-2);
+      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
     }
 
     function addPurchaseItem() {
@@ -133,7 +133,7 @@ angular.module('bhima.controllers')
     }
 
     function updatePurchaseItem(purchaseItem, inventoryReference) {
-      if(purchaseItem.inventoryReference) {
+      if (purchaseItem.inventoryReference) {
         $scope.inventory.post(purchaseItem.inventoryReference);
         $scope.inventory.recalculateIndex();
       }
@@ -160,17 +160,21 @@ angular.module('bhima.controllers')
       var invalidKeys = [];
 
       // Ensure creditor selected and items initialised
-      if(!items || !items.length) return true;
+      if (!items || !items.length) { return true; }
 
       // Verfiy individual items
       invalid = items.some(function (purchaseItem) {
 
         // Iterate through conditions
         Object.keys(warnings).forEach(function (key) {
-          if (warnings[key].condition(purchaseItem)) invalidKeys.push(key);
+          if (warnings[key].condition(purchaseItem)) {
+            invalidKeys.push(key);
+          }
         });
 
-        if(!purchaseItem.code) return true;
+        if (!purchaseItem.code) {
+          return true;
+        }
         return false;
       });
 
@@ -178,7 +182,9 @@ angular.module('bhima.controllers')
       // FIXME
       Object.keys(warnings).forEach(function(key) {
         warnings[key].result = false;
-        if (invalidKeys.indexOf(key) >= 0) warnings[key].result = true;
+        if (invalidKeys.indexOf(key) >= 0) {
+          warnings[key].result = true;
+        }
       });
 
       return invalid;
@@ -236,8 +242,8 @@ angular.module('bhima.controllers')
     }
 
     function writeSuccess() {
-  
-      // Inform user 
+
+      // Inform user
       messenger.success($translate.instant('PURCHASE.WRITE_SUCCESS'));
       $location.path('/invoice/purchase/' + session.purchase.uuid);
     }
@@ -252,8 +258,6 @@ angular.module('bhima.controllers')
       var self = this;
 
       function set(inventoryReference) {
-        var defaultPrice = inventoryReference.purchase_price;
-
         self.quantity = self.quantity || 1;
         self.code = inventoryReference.code;
         self.text = inventoryReference.text;
@@ -261,7 +265,7 @@ angular.module('bhima.controllers')
         // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
         self.purchase_price = Number(inventoryReference.purchase_price.toFixed(4));
         self.inventoryId = inventoryReference.uuid;
-        self.note = "";
+        self.note = '';
         self.isSet = true;
       }
 

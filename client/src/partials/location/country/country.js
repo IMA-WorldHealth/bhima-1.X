@@ -2,13 +2,11 @@ angular.module('bhima.controllers')
 .controller('country', [
   '$scope',
   'connect',
-  'messenger',
   'validate',
   'uuid',
-  function ($scope, connect, messenger, validate, uuid) {
+  function ($scope, connect, validate, uuid) {
 
-    var dependencies = {},
-        flags = $scope.flags = {};
+    var dependencies = {};
 
     dependencies.countries = {
       identifer : 'uuid',
@@ -39,7 +37,7 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPut('country', [country])
-      .then(function (res) {
+      .then(function () {
         $scope.countries.post(country);
         obj = {};
       });
@@ -54,7 +52,7 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPost('country', [connect.clean(country)], ['uuid'])
-      .then(function (res) {
+      .then(function () {
         $scope.countries.put($scope.country);
         $scope.country = {};
       });

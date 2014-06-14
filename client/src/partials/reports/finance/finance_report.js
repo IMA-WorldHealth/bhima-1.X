@@ -2,17 +2,11 @@
 angular.module('bhima.controllers')
 .controller('reportFinance', [
   '$scope',
-  '$q',
-  'connect',
   'appstate',
   'validate',
-  'messenger',
-  'appcache',
-  function($scope, $q, connect, appstate, validate, messenger, Appcache) {
+  function($scope, appstate, validate) {
     var dependencies = {},
-        fiscalYears = [],
-        configuration = {},
-        cache = new Appcache('financeReport');
+        fiscalYears = [];
 
     var tableDefinition = {
       columns: [],
@@ -26,7 +20,7 @@ angular.module('bhima.controllers')
 
     dependencies.finance = {
       required : true,
-      identifier: "account_number"
+      identifier: 'account_number'
     };
 
     dependencies.fiscal = {
@@ -76,13 +70,13 @@ angular.module('bhima.controllers')
 
         //FIXME very temporary filter
         var filterVar = String(account.account_number);
-        if(filterVar.indexOf('6') !== 0 && filterVar.indexOf('7') !== 0) {
+        if (filterVar.indexOf('6') !== 0 && filterVar.indexOf('7') !== 0) {
           return;
         }
-  
-        if(account.account_type_id === TITLE) {
+
+        if (account.account_type_id === TITLE) {
           insertAccount.accounts = [];
-    
+
           //FIXME Grouping and totaling
           insertAccount.detail.total = {};
           tableDefinition.columns.forEach(function(column) {
@@ -91,15 +85,15 @@ angular.module('bhima.controllers')
 
           index[account.account_number] = insertAccount;
 
-          if(account.parent === ROOT) {
+          if (account.parent === ROOT) {
             store.push(insertAccount);
             return;
           }
-   
+
           index[account.parent].accounts.push(insertAccount);
           return;
         }
- 
+
         index[account.parent].accounts.push(insertAccount);
 
         //FIXME Grouping and totaling
@@ -131,7 +125,7 @@ angular.module('bhima.controllers')
         account.depth = depth;
 
         //FIXME very cheeky - calculate this with SQL
-  
+
       });
     }
 
@@ -146,24 +140,28 @@ angular.module('bhima.controllers')
 
     function toggleColumn(yearOption) {
       var active = yearOption.active = !yearOption.active;
-      if(active) return pushColumn(yearOption);
+      if (active) {
+        return pushColumn(yearOption);
+      }
       popColumn(yearOption);
     }
 
     //TODO Index relies on number of columns per iteration, this shouldn't be hardcoded
     //derive from table definition (customised in configuration)
     function pushColumn(year) {
-      var label = $scope.model.fiscal.get(year.id).start_year || "Year " + year.id;
-      tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Difference", key: "difference_" + year.id});
-      tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Budget", key: "budget_" + year.id});
-      tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + " Realisation", key: "realisation_" + year.id});
+      var label = $scope.model.fiscal.get(year.id).start_year || 'Year ' + year.id;
+      tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + ' Difference', key: 'difference_' + year.id});
+      tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + ' Budget', key: 'budget_' + year.id});
+      tableDefinition.columns.splice(year.index * 3, 0, {id: year.id, name: label + ' Realisation', key: 'realisation_' + year.id});
     }
 
     function popColumn(year) {
 
       //Avoid replacing the entire array, redrawing the DOM
       tableDefinition.columns.forEach(function(column, index) {
-        if(column.id === year.id) tableDefinition.columns.splice(index, 3);
+        if (column.id === year.id) {
+          tableDefinition.columns.splice(index, 3);
+        }
       });
     }
 
@@ -182,18 +180,18 @@ angular.module('bhima.controllers')
     cache.fetch('reportConfiguration').then(loadConfiguration);
 
     function loadConfiguration(configurationRecord) {
-      if(configurationRecord) {
+      if (configurationRecord) {
         console.log('[reportFinance] no config file found');
         initialiseConfiguration();
         return;
       }
 
-      $scope.reportState = "report";
+      $scope.reportState = 'report';
       validate.process(dependencies, ['fiscal']).then(buildReportQuery);
     }
 
     function initialiseConfiguration(configurationObject) {
-      $scope.reportState = "configure";
+      $scope.reportState = 'configure';
       configuration = {
         reportFiscal: [],
         totalAccounts: true,
