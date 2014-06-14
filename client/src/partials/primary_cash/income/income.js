@@ -1,14 +1,13 @@
 angular.module('bhima.controllers')
 .controller('income', [
   '$scope',
-  '$q',
   'connect',
   'messenger',
   'validate',
   'appstate',
   'util',
   'exchange',
-  function ($scope, $q, connect, messenger, validate, appstate, util, exchange) {
+  function ($scope, connect, messenger, validate, appstate, util, exchange) {
 
     //inits and declarations
     var dependencies = {},
@@ -151,11 +150,11 @@ angular.module('bhima.controllers')
     }
 
     function setCashAccount(cashAccount) {
-      if(cashAccount) $scope.selectedItem = cashAccount;
+      if (cashAccount) { $scope.selectedItem = cashAccount; }
     }
 
     function convert(value, currency_id){
-      if(!(value && currency_id)) return;
+      if (!(value && currency_id)) { return; }
       return exchange.myExchange(value, currency_id);
     }
 
@@ -191,8 +190,6 @@ angular.module('bhima.controllers')
       dependencies.pcash_accounts.query.where = ['currency_account.enterprise_id='+$scope.enterprise.id, 'AND', 'currency_account.currency_id='+$scope.enterprise.currency_id];
       validate.process(dependencies, ['pcash_accounts', 'currency_account', 'exchange_rate', 'cashier', 'accounts']).then(init, handlError);
     });
-
-
 
     //expositions
     $scope.setAction = setAction;
