@@ -1,20 +1,19 @@
 #!/usr/local/bin/node
 var q = require('q');
-var fs = require('fs');
 var childProcess = require('child_process');
 var util = require('util');
 
 var template = require('./lib/template.js');
 
-var addressSource = "./conf/address_list.json";
+var addressSource = './conf/address_list.json';
 var address = [];
 
 // Move to configuration? 
-var defaultLanguage = "en";
+var defaultLanguage = 'en';
 var compiledReference = {};
 
 // Should be passed by chron job
-var service = "daily";
+var service = 'daily';
 
 var reportDate = new Date();
 
@@ -42,9 +41,11 @@ function parseAddress(fileContent) {
   return q.resolve(address);
 }
 
-function sendMail(details) { 
-  var instructions = [], allRecipients = Object.keys(details), recipients = [];
-  var languages = [defaultLanguage];
+function sendMail(details) {
+  var allRecipients = Object.keys(details),
+      recipients = [],
+      languages = [defaultLanguage];
+
   var distributeStatus = [];
 
   allRecipients.forEach(function (recipient) {
@@ -52,18 +53,19 @@ function sendMail(details) {
     
     // Validate recipient is subscribed to this service
     var subscribed = details[recipient].subscription.some(function (subscribedService) {
-      if(subscribedService === service) return true;
-      return false;
+      return subscribedService === service;
     });
 
-    if (!subscribed) return util.log('[send.js] [WARNING] recipient ' + recipient + ' is not to subscribed to this service');
+    if (!subscribed) {
+      return util.log('[send.js] [WARNING] recipient ' + recipient + ' is not to subscribed to this service');
+    }
       
     // Add user and language preference
     recipients.push(recipient);
-    if (languages.indexOf(userLanguage) < 0) languages.push(userLanguage);
+    if (languages.indexOf(userLanguage) < 0) { languages.push(userLanguage); }
   });
   
-  compileReport(languages).then(function (compiledResult) {
+  compileReport(languages).then(function () {
     distributeStatus = recipients.map(function (recipient) {
       return distribute(recipient, details[recipient]);
     });
@@ -96,11 +98,11 @@ function compileReport(languages) {
 function distribute(recipient, details) {
   
   // Verification
-  if (!details.language) details.language = defaultLanguage;
-  if (!details.address) throw new Error("Recipient " + recipient + " has no assigned address");
+  if (!details.language) { details.language = defaultLanguage; }
+  if (!details.address) { throw new Error('Recipient ' + recipient + ' has no assigned address'); }
   
   // TODO improve send command, this is just a proof of concept 
-  var command = 'mail -a "Content-type: text/html;" -s "' + reportDate.toLocaleDateString() + '" ' + details.address + ' < ' + compiledReference[details.language];
+  var command = 'mail -a \'Content-type: text/html;\' -s \'' + reportDate.toLocaleDateString() + '\' ' + details.address + ' < ' + compiledReference[details.language];
   
   util.log('[send.js] [' + service + '] [' + details.language + '] -> ' + details.address);
   return exec(command);
@@ -111,8 +113,7 @@ function exec(command) {
   var deferred = q.defer();
     
   childProcess.exec(command, function (error, result) {
-    if (error) return deferred.reject(error);
-
+    if (error) { return deferred.reject(error); }
     deferred.resolve(result);
   });
   return deferred.promise;

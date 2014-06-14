@@ -20,7 +20,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    //@sfount - remove variables on scope
+    // @sfount - remove variables on scope
     $scope.new_model = {'year' : 'true'};
 
     appstate.register('enterprise', buildFiscalQuery);
@@ -105,18 +105,17 @@ angular.module('bhima.controllers')
 
 
     $scope.generateFiscal = function generateFiscal(model) {
-
       //messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
       connect.fetch('/fiscal/' + $scope.enterpriseId  + '/' + model.start + '/' + model.end + '/' + model.note)
-      .then(function(res) {
+      .then(function (res) {
 
         var instance = $modal.open({
           templateUrl: 'createOpeningBalanceModal.html',
           keyboard : false,
           backdrop: 'static',
-          controller : function ($scope, $modalInstance, fy_id, zero_id, enterprise) {
+          controller : function ($scope, $modalInstance, fiscalYearId, zero_id, enterprise) {
             $scope.enterprise = enterprise;
-            $scope.fy_id = fy_id;
+            $scope.fiscalYearId = fiscalYearId;
             connect.fetch({
               tables : {
                 'account' : {
@@ -156,10 +155,10 @@ angular.module('bhima.controllers')
               })
               .map(function (row) {
                 var o = {};
-                o.account_id  = row.id;
+                o.account_id = row.id;
                 o.debit = row.debit || 0; // default to 0
                 o.credit = row.credit || 0; // default to 0
-                o.fiscal_year_id = fy_id;
+                o.fiscal_year_id = fiscalYearId;
                 o.period_id = zero_id;
                 o.enterprise_id = enterprise.id;
                 return o;
@@ -176,7 +175,7 @@ angular.module('bhima.controllers')
 
           },
           resolve : {
-            fy_id : function () {
+            fiscalYearId : function () {
               return res.data.fiscalInsertId;
             },
             zero_id : function () {
@@ -205,7 +204,6 @@ angular.module('bhima.controllers')
     };
 
     $scope.viewOpeningBalance =  function () {
-      console.log('nous sommes la ');
       var id = $scope.selected.id;
       connect.fetch({
         tables : {
@@ -222,17 +220,26 @@ angular.module('bhima.controllers')
             columns : ['type']
           }
         },
-        join : ['period_total.account_id=account.id', 'period_total.period_id=period.id', 'account.account_type_id=account_type.id'],
-        where : ['period_total.fiscal_year_id='+id, 'AND', 'period.period_number=0',
-          'AND', 'period_total.enterprise_id='+$scope.enterpriseId]
+        join : [
+          'period_total.account_id=account.id',
+          'period_total.period_id=period.id',
+          'account.account_type_id=account_type.id'
+        ],
+        where : [
+          'period_total.fiscal_year_id=' + id,
+          'AND', 'period.period_number=0',
+          'AND', 'period_total.enterprise_id=' + $scope.enterpriseId
+        ]
       })
       .then(function (res) {
         if (!res.length) {
           return messenger.danger('No opening balances found for fiscal year');
         }
 
-        var instance = $modal.open({
+        $modal.open({
           templateUrl: 'viewOpeningBalanceModal.html',
+          keyboard : false,
+          backdrop: 'static',
           controller : function ($scope, $modalInstance, fiscal, accounts, enterprise) {
             $scope.enterprise = enterprise;
             accounts.forEach(function (row) {
@@ -257,10 +264,6 @@ angular.module('bhima.controllers')
           }
         });
 
-        instance.result.then(function () {
-        }, function () {
-        });
-
       }, function (err) {
         messenger.danger('An error occured : ' + JSON.stringify(err));
       });
@@ -268,14 +271,18 @@ angular.module('bhima.controllers')
 
     function fetchPeriods(fiscal_id) {
       var period_query = {
-        'tables' : {
-          'period' : {
-            'columns' : ['id', 'period_start', 'period_stop']
+        tables : {
+          period : {
+            columns : ['id', 'period_start', 'period_stop']
           }
         },
-        'where' : ['period.fiscal_year_id=' + fiscal_id, 'AND', 'period.period_number<>0']
+        where : [
+          'period.fiscal_year_id=' + fiscal_id,
+          'AND', 'period.period_number<>0'
+        ]
       };
-      connect.req(period_query).then(function(model) {
+      connect.req(period_query)
+      .then(function (model) {
         $scope.period_model = model.data;
       });
     }

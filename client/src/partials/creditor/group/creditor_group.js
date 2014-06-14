@@ -29,7 +29,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables: {
           'creditor_group' : {
-            columns: ["uuid", "name", "account_id", "locked"]
+            columns: ['uuid', 'name', 'account_id', 'locked']
           }
         }
       }
@@ -73,10 +73,11 @@ angular.module('bhima.controllers')
       data.enterprise_id = $scope.enterprise.id;
       data.uuid = uuid();
       connect.basicPut('creditor_group', [data])
-      .then(function (res) {
+      .then(function () {
         $scope.groups.post(data);
         $scope.action = '';
-      }, function (err) {
+      })
+      .catch(function (err) {
         messenger.danger('Error in putting: ' + JSON.stringify(err));
       });
     };
@@ -96,10 +97,11 @@ angular.module('bhima.controllers')
     $scope.saveEdit = function () {
       var data = connect.clean($scope.edit);
       connect.basicPost('creditor_group', [data], ['uuid'])
-      .then(function (res) {
+      .then(function () {
         $scope.groups.put(data);
         $scope.action = '';
-      }, function (err) {
+      })
+      .catch(function () {
         messenger.danger('Error in updating creditor group ' + data.uuid);
       });
     };
@@ -109,8 +111,8 @@ angular.module('bhima.controllers')
     };
 
     $scope.lock = function lock (group) {
-      connect.basicPost('creditor_group', [{uuid: group.uuid, locked: group.locked}], ["uuid"])
-      .error(function (err) {
+      connect.basicPost('creditor_group', [{uuid: group.uuid, locked: group.locked}], ['uuid'])
+      .catch(function () {
         group.locked = group.locked === 0 ? 1 : 0;
         messenger.danger('Lock operation failed');
       });
