@@ -1,7 +1,8 @@
 angular.module('bhima.services')
-.factory('appstate', function ($q, $rootScope) {
+.factory('appstate', function () {
   //TODO Use promise structure over callbacks, used throughout the application and enables error handling
-  var store = {}, queue = {};
+  var store = {},
+      queue = {};
 
   function set(storeKey, value) {
     store[storeKey] = value;

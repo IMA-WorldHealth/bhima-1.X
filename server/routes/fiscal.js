@@ -129,7 +129,8 @@ module.exports = function (db) {
       if (err) {
         return deferred.reject(err);
       }
-      var period_zero_sql = 'SELECT `id` FROM `period` WHERE `fiscal_year_id`='+fiscalYearId + ' AND `period_number`=0';
+      var period_zero_sql =
+        'SELECT `id` FROM `period` WHERE `fiscal_year_id` = ' + fiscalYearId + ' AND `period_number` = 0';
       db.execute(period_zero_sql, function (err, pz) {
         if (err) {
           return deferred.reject(err);
