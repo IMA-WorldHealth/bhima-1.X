@@ -1,18 +1,4 @@
-<header>
-  {{ "REPORT.TRANSACTION_REPORT" | translate }}
-</header>
-
-<!--
-<section class="top-nav">
-  <div class="capital pull-right visible-print">
-    {{ DC }} : {{model.selected.text}}
-    <br/>
-    {{data.dateFrom}} / {{data.dateTo}}
-  </div>
-</section>
--->
-
-<section class="top-nav">
+<nav>
   <div class="pull-left">
     <span class="dropdown">
       <button class="btn btn-default btn-sm dropdown-toggle" ng-class="{ 'btn-primary' : !!search.group }">
@@ -56,7 +42,7 @@
       <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
     </button>
   </div>
-</section>
+</nav>
 
 <div class="report" ng-switch="hasData">
 
