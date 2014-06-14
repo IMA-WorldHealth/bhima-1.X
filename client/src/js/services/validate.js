@@ -68,7 +68,9 @@ angular.module('bhima.services')
       modelTestStatus = modelTests.some(function(testObject) {
         var testFailed, testMethod = testObject.method;
         testFailed = !testMethod(model.data);
-        if(testFailed) validateStatus.setFailed(testObject, modelKey);
+        if (testFailed) {
+          validateStatus.setFailed(testObject, modelKey);
+        }
         return testFailed;
       });
       return modelTestStatus;

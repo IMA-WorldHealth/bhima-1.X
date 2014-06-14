@@ -14,16 +14,18 @@ angular.module('bhima.directives')
 
       var template =
         '<ul>' +
-          '<li data-ng-repeat="node in ' + treeModel + '">' +
-            '<i name="{{node.' + nodeLabel + '}}" ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed}" class="glyphicon" data-ng-click="' + treeId + '.selectNodeHead(node)"></i> ' +
-            '<i class="normal glyphicon glyphicon-file" data-ng-hide="node.' + nodeChildren + '.length" data-ng-click="' + treeId + '.selectNodeHead(node)"></i> ' +
-            '<span name="{{node.'  + nodeLabel + '}}" data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + ' | translate }}</span>' +
-            '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
+          '<li data-ng-repeat=\'node in ' + treeModel + '\'>' +
+            '<i name=\'{{node.' + nodeLabel + '}}\' ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed }" class=\'glyphicon\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
+            '<i class=\'normal glyphicon glyphicon-file\' data-ng-hide=\'node.' + nodeChildren + '.length\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
+            '<span name=\'{{node.'  + nodeLabel + '}}\' data-ng-class=\'node.selected\' data-ng-click=\'' + treeId + '.selectNodeLabel(node)\'>{{node.' + nodeLabel + ' | translate }}</span>' +
+            '<div data-ng-hide=\'node.collapsed\' data-tree-id=\'' + treeId + '\' data-tree-model=\'node.' + nodeChildren + '\' data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
           '</li>' +
         '</ul>';
 
       //Collapse by default
-      if (scope.node) scope.node.collapsed = true;
+      if (scope.node) {
+        scope.node.collapsed = true;
+      }
 
       //Assign select/ collapse methods - should only occur once
       if (treeId && treeModel) {
@@ -32,7 +34,9 @@ angular.module('bhima.directives')
           scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
 
             // Select nodes without children
-            if(!selectedNode.has_children) return scope[treeId].selectNodeLabel(selectedNode);
+            if (!selectedNode.has_children) {
+              return scope[treeId].selectNodeLabel(selectedNode);
+            }
 
             selectedNode.collapsed = !selectedNode.collapsed;
 
@@ -42,7 +46,9 @@ angular.module('bhima.directives')
           scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
 
             // Open nodes with children
-            if (selectedNode.has_children) return scope[treeId].selectNodeHead(selectedNode);
+            if (selectedNode.has_children) {
+              return scope[treeId].selectNodeHead(selectedNode);
+            }
 
             // Close previous node
             if (scope[treeId].currentNode && scope[treeId].currentNode.selected) {

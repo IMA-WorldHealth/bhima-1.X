@@ -64,11 +64,11 @@ module.exports = function (db) {
       };
     }
 
-  function verifyData(startDate, endDate, enterprise) {
+  function verifyData(startDate, endDate) {
     //Enterprise must exist
 
     //Start date must be before end date
-    if (!(startDate < endDate)) {
+    if (startDate > endDate) {
       return statusObject(false, 'Start date must be before end date');
     }
     return statusObject(true, 'Tests completed');
@@ -87,12 +87,13 @@ module.exports = function (db) {
     .then(function(res) {
       previousFiscal = res;
 
-      var fiscalSQL = 'INSERT INTO `fiscal_year` (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
-                  '(' + enterprise + ',' + monthNo + ',"' + description + '",' + startMonth + ',' + startYear + ',' + previousFiscal + ');';
+      var fiscalSQL =
+        'INSERT INTO `fiscal_year` (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
+        '(' + enterprise + ',' + monthNo + ',\'' + description + '\',' + startMonth + ',' + startYear + ',' + previousFiscal + ');';
 
-     console.log('******************la requette est ', fiscalSQL);
+      console.log('******************la requette est ', fiscalSQL);
       db.execute(fiscalSQL, function(err, ans) {
-        if(err) return deferred.reject(err);
+        if (err) { return deferred.reject(err); }
         console.log('*****************************, nous voici');
         deferred.resolve(ans);
       });
@@ -105,7 +106,7 @@ module.exports = function (db) {
   }
 
   function createPeriodRecords(fiscalYearId, startDate, endDate) {
-    var accountIdList, totalMonths, periodSQL;
+    var totalMonths, periodSQL;
     var deferred = q.defer();
     var periodSQLHead = 'INSERT INTO `period` (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
     var periodSQLBody = [];
@@ -113,14 +114,14 @@ module.exports = function (db) {
     // create an opening balances period
 
     var ps = new Date(startDate.getFullYear(), startDate.getMonth());
-    periodSQLBody.push('(' + fiscalYearId + ',' + 0 +', "' + formatMySQLDate(ps) + '" , "' + formatMySQLDate(ps) + '")');
+    periodSQLBody.push('(' + fiscalYearId + ',' + 0 +', \'' + formatMySQLDate(ps) + '\' , \'' + formatMySQLDate(ps) + '\')');
 
     totalMonths = monthDiff(startDate, endDate) + 1;
     for (var i = 0; i < totalMonths; i++) {
       var currentPeriodStart = new Date(startDate.getFullYear(), startDate.getMonth() + i);
       var currentPeriodStop = new Date(currentPeriodStart.getFullYear(), currentPeriodStart.getMonth() + 1, 0);
 
-      periodSQLBody.push('(' + fiscalYearId + ',' + Number(i) + 1 + ',"' + formatMySQLDate(currentPeriodStart) + '","' + formatMySQLDate(currentPeriodStop) + '")');
+      periodSQLBody.push('(' + fiscalYearId + ',' + Number(i) + 1 + ',\'' + formatMySQLDate(currentPeriodStart) + '\',\'' + formatMySQLDate(currentPeriodStop) + '\')');
     }
 
     periodSQL = periodSQLHead + periodSQLBody.join(',');
@@ -145,8 +146,7 @@ module.exports = function (db) {
     var deferred = q.defer();
     var periodIdList  = [];
     var budgetSQLHead = 'INSERT INTO `budget` (account_id, period_id, budget) VALUES ';
-    var budgetSQLBody = [], totalsSQLBody = [];
-    var DEFAULT_BUDGET = 0;
+    var budgetSQLBody = [];
 
     var budgetOptions = [0, 10, 20, 30, 50];
 
@@ -200,10 +200,10 @@ module.exports = function (db) {
     //find head of list (if it exists)
     db.execute(head_request, function (err, ans) {
       if (err) { deferred.reject(err); }
-      if(ans.length > 1) {
+      if (ans.length > 1) {
         return deferred.reject('too many null values - corrupt data');
       }
-      if(ans.length < 1) {
+      if (ans.length < 1) {
         //no fiscal years - create the first one
         return deferred.resolve(null);
       }

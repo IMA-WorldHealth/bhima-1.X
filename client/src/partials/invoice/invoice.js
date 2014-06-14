@@ -3,12 +3,11 @@ angular.module('bhima.controllers')
 .controller('invoice', [
   '$scope',
   '$routeParams',
-  '$q',
   'validate',
   'messenger',
   'exchange',
   'appstate',
-  function ($scope, $routeParams, $q, validate, messenger, exchange, appstate) {
+  function ($scope, $routeParams, validate, messenger, exchange, appstate) {
 
     var dependencies = {},
         origin       = $scope.origin = $routeParams.originId,
@@ -16,7 +15,7 @@ angular.module('bhima.controllers')
         process      = {},
         timestamp    = $scope.timestamp = new Date();
 
-    if(!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
+    if (!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
 
     dependencies.recipient = {
       required: true
@@ -74,7 +73,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    function processCaution (caution_uuid){
+    function processCaution (caution_uuid) {
       dependencies.caution = {
         required: true,
         query:  {
@@ -99,7 +98,7 @@ angular.module('bhima.controllers')
       .then(cautionInvoice);
     }
 
-    function buildPatientLocation(model) {
+    function buildPatientLocation() {
       dependencies.location = {
         required: false
       };
@@ -109,7 +108,7 @@ angular.module('bhima.controllers')
       };
     }
 
-    function processTransfert (transfert_uuid){
+    function processTransfert (transfert_uuid) {
       dependencies.transfert = {
         required: true,
         query:  {
@@ -125,7 +124,7 @@ angular.module('bhima.controllers')
       validate.process(dependencies, ['transfert']).then(transfertInvoice);
     }
 
-    function processConvention (convention_uuid){
+    function processConvention (convention_uuid) {
       dependencies.convention = {
         required: true,
         query:  {
@@ -161,7 +160,7 @@ angular.module('bhima.controllers')
       validate.process(dependencies, ['cash'])
       .then(buildInvoiceQuery);
     }
-    
+
     function processMovement() {
       dependencies = {};
 
@@ -192,12 +191,12 @@ angular.module('bhima.controllers')
 
       validate.process(dependencies).then(fetchDepot);
     }
-  
+
     // Hack to get around not being able to perform any join through connect
     function fetchDepot(model) {
       var depot_entry = model.movement.data[0].depot_entry;
       var depot_exit = model.movement.data[0].depot_exit;
-      
+
       dependencies.depots = {
         query : {
           identifier : 'uuid',
@@ -215,7 +214,7 @@ angular.module('bhima.controllers')
         angular.extend($scope, depotModel);
         $scope.depotEntry = depotModel.depots.get(depot_entry);
         $scope.depotExit = depotModel.depots.get(depot_exit);
-          
+
         console.log(depotModel);
       });
     }
@@ -354,7 +353,7 @@ angular.module('bhima.controllers')
       validate.process(dependencies, ['location']).then(patientReceipt);
     }
 
-    function buildConventionInvoice (model){
+    function buildConventionInvoice (model) {
       dependencies.location.query = 'location/' + model.convention.data[0].location_id;
       validate.process(dependencies, ['location']).then(conventionInvoice);
     }
@@ -367,14 +366,14 @@ angular.module('bhima.controllers')
       model.cash.data.forEach(function(invoiceRef, index) {
         console.log('invoice ref', invoiceRef);
 
-        if(index!==0) {
+        if (index!==0) {
           invoiceCondition.push('OR');
         }
 
-        invoiceCondition.push("sale.uuid=" + invoiceRef.invoice_uuid);
-        invoiceItemCondition.push("sale_item.sale_uuid=" + invoiceRef.invoice_uuid);
+        invoiceCondition.push('sale.uuid=' + invoiceRef.invoice_uuid);
+        invoiceItemCondition.push('sale_item.sale_uuid=' + invoiceRef.invoice_uuid);
         if (index !== model.cash.data.length - 1) {
-          invoiceItemCondition.push("OR");
+          invoiceItemCondition.push('OR');
         }
       });
 
@@ -433,7 +432,7 @@ angular.module('bhima.controllers')
       dependencies.location.query = 'location/' + recipient_data.current_location_id;
       return validate.process(dependencies).then(invoice);
     }
-    
+
     function invoice(model) {
       console.log('[invoice method] appelle de la methode invoice le model est : ', model);
       var routeCurrencyId;
@@ -448,7 +447,7 @@ angular.module('bhima.controllers')
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
       console.log('The Invoice is:', $scope.invoice);
       $scope.invoice.totalSum = 0;
-      console.log("[LEDGEER]", $scope.model.ledger);
+      console.log('[LEDGEER]', $scope.model.ledger);
       $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
       console.log('[get.invoice.id] a donnee :', $scope.invoice.ledger);
 
@@ -527,7 +526,7 @@ angular.module('bhima.controllers')
       console.log('notre transfert', $scope.transfert);
     }
 
-    function conventionInvoice (model){
+    function conventionInvoice (model) {
       $scope.model = model;
       $scope.conventions = $scope.model.convention.data;
       $scope.location = $scope.model.location.data[0];

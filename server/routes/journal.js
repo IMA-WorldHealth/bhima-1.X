@@ -614,7 +614,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         done(error);
       })
       .catch(function (err) {
-        done(error);
+        done(err);
       })
       .done();
     })
@@ -719,8 +719,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     // posting group invoice requests
     var references = {}, cfg = {};
 
-    function handleResult (results){
-      if(results.length === 0) throw new Error("no record found");
+    function handleResult (results) {
+      if (results.length === 0) {
+        throw new Error('no record found');
+      }
       references = results;
       cfg.enterprise_id = results[0].enterprise_id;
       cfg.project_id = results[0].project_id;
@@ -728,29 +730,33 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return check.validPeriod(cfg.enterprise_id, cfg.date);
     }
 
-    function handleValidPeriod (){
+    function handleValidPeriod () {
       var costPositive = references.every(function (row) {
         return validate.isPositive(row.cost);
       });
-      if (!costPositive) throw new Error('Negative cost detected for invoice id: ' + id);
+      if (!costPositive) {
+        throw new Error('Negative cost detected for invoice id: ' + id);
+      }
       var sum = 0;
       references.forEach(function (i) { sum += i.cost; });
       var totalEquality = validate.isEqual(references[0].total, sum);
-      if (!totalEquality) throw new Error('Individual costs do not match total cost for invoice id: ' + id);
+      if (!totalEquality) {
+        throw new Error('Individual costs do not match total cost for invoice id: ' + id);
+      }
       return get.origin('group_invoice');
     }
 
-    function handleOrigin (originId){
+    function handleOrigin (originId) {
       cfg.originId = originId;
       return get.period(cfg.date);
     }
 
-    function handlePeriod (periodObject){
+    function handlePeriod (periodObject) {
       cfg.period_id = periodObject.id;
       cfg.fiscal_year_id = periodObject.fiscal_year_id;
-      references.forEach(function (row){
+      references.forEach(function (row) {
         get.transactionId(cfg.project_id)
-          .then(function  (trans_id){
+          .then(function  (trans_id) {
             console.log('[trans_id]', trans_id);
             var debit_sql=
               'INSERT INTO `posting_journal` ' +
@@ -789,10 +795,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
               '  `group_invoice`.`project_id` = `project`.`id` AND ' +
               '  `project`.`enterprise_id` = `enterprise`.`id` ' +
               'WHERE `group_invoice_item`.`uuid` = ' + sanitize.escape(row.gid);
-              console.log('passe par ici');
             return q.all([db.exec(debit_sql), db.exec(credit_sql)]);
           })
-          .catch(function(err){
+          .catch(function(err) {
             console.log('erreur', err);
           });
       });
@@ -812,7 +817,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(handleValidPeriod)
     .then(handleOrigin)
     .then(handlePeriod)
-    .then(function (res){
+    .then(function (res) {
       //fixe me this is not the last called function, it should be in reality
       console.log('[le resultat]', res);
       done(null, res);
@@ -1109,24 +1114,24 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .done();
   }
 
-  function handleConvention (id, user_id, done){
+  function handleConvention (id, user_id, done) {
     var dayExchange = {}, reference = {}, cfg = {};
     var sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`='+sanitize.escape(id)+';';
-    function getRecord (records){
+    function getRecord (records) {
       if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference.reference_pcash = records[0];
       sql = 'SELECT * FROM `primary_cash_item` WHERE `primary_cash_item`.`primary_cash_uuid`='+sanitize.escape(id)+';';
       return db.exec(sql);
     }
 
-    function getItems (records){
-      if(records.length === 0) { throw new Error('pas enregistrement'); }
+    function getItems (records) {
+      if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference.reference_pcash_items = records;
       var date = util.toMysqlDate(reference.reference_pcash.date);
       return get.myExchangeRate(date);
     }
 
-    function getExchange (exchangeStore){
+    function getExchange (exchangeStore) {
       dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
       return q([get.origin('primary_cash'), get.period(reference.date)]);
     }
@@ -1138,17 +1143,17 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return get.transactionId(reference.reference_pcash.project_id);
     }
 
-    function getTransId (trans_id){
+    function getTransId (trans_id) {
       cfg.trans_id = trans_id;
       cfg.descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
       console.log('[cfg]', cfg);
       return q.when();
     }
 
-    function debit (){
+    function debit () {
       console.log('trans_is', cfg.trans_id);
       return q.all(
-                    reference.reference_pcash_items.map(function (ref_pcash_item){
+                    reference.reference_pcash_items.map(function (ref_pcash_item) {
                       var valueExchanged = parseFloat((1/dayExchange.rate) * ref_pcash_item.debit).toFixed(4);
                       var sql = 'INSERT INTO posting_journal '+
                                 '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -1174,9 +1179,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       );
     }
 
-    function credit (){
+    function credit () {
       return q.all(
-                    reference.reference_pcash_items.map(function (ref_pcash_item){
+                    reference.reference_pcash_items.map(function (ref_pcash_item) {
                       var valueExchanged = parseFloat((1/dayExchange.rate) * ref_pcash_item.debit).toFixed(4);
                       var credit_sql =
                         'INSERT INTO posting_journal '+
@@ -1215,7 +1220,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(getTransId)
     .then(debit)
     .then(credit)
-    .then(function (res){
+    .then(function (res) {
       return done(null, res);
     })
     .catch(handleError);

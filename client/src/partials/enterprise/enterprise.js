@@ -1,14 +1,12 @@
 angular.module('bhima.controllers')
 .controller('enterprise', [
   '$scope',
-  '$q',
   '$window',
   'connect',
   'validate',
-  'messenger',
   'appstate',
-  function ($scope, $q, $window, connect, validate, messenger, appstate) {
-    var dependencies = {}, model={};
+  function ($scope, $window, connect, validate, appstate) {
+    var dependencies = {};
 
     dependencies.enterprise = {
       required : true,
@@ -49,10 +47,6 @@ angular.module('bhima.controllers')
       $scope.newAccount = {};
     }
 
-    function handleError (error) {
-      messenger.danger('An error occured in fetching requests: ' + JSON.stringify(error));
-    }
-
     $scope.formatLocation = function fLocation (l) {
       return [l.village, l.sector, l.province, l.country].join(' -- ');
     };
@@ -72,7 +66,7 @@ angular.module('bhima.controllers')
       var data = connect.clean($scope.edit);
 
       connect.basicPost('enterprise', [data], ['id'])
-      .then(function (res) {
+      .then(function () {
         $scope.enterprise.put(data);
         $scope.action = '';
 
@@ -82,10 +76,7 @@ angular.module('bhima.controllers')
           appstate.set('enterprise', $scope.enterprise.get(data.id));
         }
 
-      }, function (err) {
-        messenger.danger('Error updating enterprise ' + data.id + ':' + JSON.stringify(err));
       });
-
     };
 
     $scope.resetEdit = function () {
@@ -100,8 +91,6 @@ angular.module('bhima.controllers')
         data.id = res.data.insertId;
         $scope.enterprise.post(data);
         $scope.action = '';
-      }, function (err) {
-        messenger.danger('Error in saving new enterprise:' + JSON.stringify(err));
       });
     };
 
