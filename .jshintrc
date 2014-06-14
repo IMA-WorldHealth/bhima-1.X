@@ -10,7 +10,6 @@
   "newcap"        : true,
   "noarg"         : true,
   "noempty"       : true,
-  "nobsp"         : true,
   "nonew"         : true,
   "plusplus"      : false,
   "quotmark"      : "single",

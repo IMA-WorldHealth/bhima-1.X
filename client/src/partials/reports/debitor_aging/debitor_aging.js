@@ -47,7 +47,9 @@ angular.module('bhima.controllers')
         var balance = 0;
         if(checkExisting(period.id, debitor.id)){
           $scope.models.debitorAgings.forEach(function(debitorAging){
-            if(debitorAging.id === period.id && debitorAging.idDebitor === debitor.id) balance+=debitorAging.credit - debitorAging.debit;
+            if (debitorAging.id === period.id && debitorAging.idDebitor === debitor.id) {
+              balance+=debitorAging.credit - debitorAging.debit;
+            }
           });
         }
         record.push(balance);
@@ -137,7 +139,9 @@ angular.module('bhima.controllers')
     var removePeriod = function(id){
       var periods = [];
       $scope.models.periods.forEach(function(period){
-        if (period.id !== id) periods.push(period);
+        if (period.id !== id) {
+          periods.push(period);
+        }
       });
       $scope.models.periods = periods;
       getDebitorRecord();

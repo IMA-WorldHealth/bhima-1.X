@@ -14,8 +14,9 @@ angular.module('bhima.controllers')
         grid,
         columns,
         options,
-        searchStr = "",
+        searchStr = '',
         dataview = $scope.dataview = new Slick.Data.DataView();
+
     var session = $scope.session = {};
     var configuration = $scope.configuration={};
     var flags = $scope.flags = {};
@@ -33,12 +34,12 @@ angular.module('bhima.controllers')
       });
 
       columns = [
-        {id: "COLUMNS.TRACKING_NUMBER"        , name: "Numero Tracking"               , field: "tracking_number"        , sortable: true  , resizable: true} ,
-        {id: "COLUMNS.LOT_NUMBER"        , name: "Numero Lot"               , field: "lot_number"        , sortable: true} ,
-        {id: "COLUMNS.DESIGNATION"       , name: "Designation"        , field: "text"       , sortable: true} ,
-        {id: "COLUMNS.EXPIRATION_DATE"       , name: "Date Expiration"         , field: "expiration_date"        , sortable: true} ,
-        {id: "COLUMNS.INITIAL_STOCK"        , name: "Stock initial"               , field: "initial"     , sortable: true },
-        {id: "COLUMNS.CURRENT_STOCK"        , name: "Stock courant"               , field: "current"     , sortable: true}
+        {id: 'COLUMNS.TRACKING_NUMBER' , name: 'Numero Tracking' , field: 'tracking_number' , sortable: true, resizable: true} ,
+        {id: 'COLUMNS.LOT_NUMBER'      , name: 'Numero Lot'      , field: 'lot_number'      , sortable: true},
+        {id: 'COLUMNS.DESIGNATION'     , name: 'Designation'     , field: 'text'            , sortable: true},
+        {id: 'COLUMNS.EXPIRATION_DATE' , name: 'Date Expiration' , field: 'expiration_date' , sortable: true},
+        {id: 'COLUMNS.INITIAL_STOCK'   , name: 'Stock initial'   , field: 'initial'         , sortable: true},
+        {id: 'COLUMNS.CURRENT_STOCK'   , name: 'Stock courant'   , field: 'current'         , sortable: true}
       ];
 
       // FIXME : this for some reason doesn't always work.
@@ -52,16 +53,16 @@ angular.module('bhima.controllers')
         });
 
         options = {
-        enableCellNavigation : true,
-        forceFitColumns      : true
-      };
+          enableCellNavigation : true,
+          forceFitColumns      : true
+        };
 
-      window.dataview = dataview;
-      grid = new Slick.Grid("#bhima-expiring-grid", dataview, columns, options);
-      grid.onSort.subscribe(sorter);
+        window.dataview = dataview;
+        grid = new Slick.Grid('#bhima-expiring-grid', dataview, columns, options);
+        grid.onSort.subscribe(sorter);
 
 
-      })
+      });
 
 
       // set up sorting
@@ -76,7 +77,7 @@ angular.module('bhima.controllers')
       // set up filtering
 
       // function search (item, args) {
-      //   if (item.searchStr !== "" && item.code.indexOf(args.searchStr) === -1 && item.text.indexOf(args.searchStr) === -1) {
+      //   if (item.searchStr !== '' && item.code.indexOf(args.searchStr) === -1 && item.text.indexOf(args.searchStr) === -1) {
       //     return false;
       //   }
       //   return true;
@@ -88,7 +89,7 @@ angular.module('bhima.controllers')
       // });
 
       // $scope.$watch('flags.search', function () {
-      //   if (!flags.search) flags.search = "";
+      //   if (!flags.search) flags.search = '';
       //   searchStr = flags.search;
       //   dataview.setFilterArgs({
       //     searchStr: searchStr
@@ -98,7 +99,9 @@ angular.module('bhima.controllers')
     }
 
     $scope.$watch('configuration', function () {
-      if ($scope.configuration.list) $scope.dataview.setItems($scope.configuration.list, 'tracking_number');
+      if ($scope.configuration.list) {
+        $scope.dataview.setItems($scope.configuration.list, 'tracking_number');
+      }
     }, true);
 
     function getInfo(cle) {
@@ -108,13 +111,13 @@ angular.module('bhima.controllers')
     var groupDefinitions = $scope.groupDefinitions = [
       {
         key : 'COLUMNS.EXPIRATION_DATE',
-        getter: "expiration_date",
+        getter: 'expiration_date',
         formatter: function (g) {
-          return "<span style='font-weight: bold'>" +getInfo(g.value) + "</span> (" + g.count + " members)</span>";
+          return '<span style=\'font-weight: bold\'>' +getInfo(g.value) + '</span> (' + g.count + ' members)</span>';
         },
-         aggregators : []
+        aggregators : []
       }
-    ]
+    ];
 
     //Utility method
     $scope.groupby = function groupby(groupDefinition) {
@@ -145,7 +148,7 @@ angular.module('bhima.controllers')
       formatDates();
       session.depot = $routeParams.depotId;
       $scope.configuration = getConfiguration();
-      doSearching()
+      doSearching();
     }
 
     function formatDates () {
@@ -158,19 +161,19 @@ angular.module('bhima.controllers')
         depot_uuid : session.depot,
         df         : session.dateFrom,
         dt         : session.dateTo
-      }
+      };
     }
 
     function doSearching (p){
       formatDates();
-      if(p && p===1) $scope.configuration = getConfiguration();
+      if (p === 1) { $scope.configuration = getConfiguration(); }
       connect.fetch('expiring/'+$scope.configuration.depot_uuid+'/'+$scope.configuration.df+'/'+$scope.configuration.dt)
       .then(complete)
       .then(extendData)
       .then(buildGrid)
       .catch(function(err){
-        console.log('keba !', err)
-      })
+        console.log('keba !', err);
+      });
     }
 
     function complete (models){
@@ -178,16 +181,18 @@ angular.module('bhima.controllers')
       $scope.uncompletedList = models;
       return $q.all(models.map(function (m){
         return connect.fetch('expiring_complete/'+m.tracking_number+'/'+$scope.configuration.depot_uuid);
-      }))
+      }));
     }
 
     function extendData (results){
       results.forEach(function (item, index){
         $scope.uncompletedList[index].consumed = item[0].consumed;
-        if(!$scope.uncompletedList[index].consumed) $scope.uncompletedList[index].consumed = 0;
-      })
+        if (!$scope.uncompletedList[index].consumed) {
+          $scope.uncompletedList[index].consumed = 0;
+        }
+      });
       $scope.configuration.list = cleanList();
-        console.log('on a ',$scope.configuration.list)
+      console.log('on a ',$scope.configuration.list);
       $q.when();
     }
 
@@ -200,7 +205,7 @@ angular.module('bhima.controllers')
           expiration_date : item.expiration_date,
           initial         : item.initial,
           current         : item.current
-        }
+        };
       });
     }
 

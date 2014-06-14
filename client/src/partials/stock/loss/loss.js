@@ -7,22 +7,22 @@ angular.module('bhima.controllers')
     var session = $scope.session = {};
     var depotId;
 
-    var depotId  = $routeParams.depotId;
+    depotId  = $routeParams.depotId;
     session.block = !depotId;
 
     var consumptionFields = {
-      uuid : '',
-      depot_uuid : '',
-      date : '',
-      document_id : '',
+      uuid            : '',
+      depot_uuid      : '',
+      date            : '',
+      document_id     : '',
       tracking_number : '',
-      quantity : ''
+      quantity        : ''
     };
 
     var consumptionLossFields = {
-      uuid : '',
+      uuid             : '',
       consumption_uuid : '',
-      document_uuid : ''
+      document_uuid    : ''
     };
  
   
