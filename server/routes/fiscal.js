@@ -1,7 +1,7 @@
 var q = require('q');
 
-//Singleton pattern of creating modules may not be required for utilities like this
-//instances should all be seperate from each other and it's not readable/ clear
+// Singleton pattern of creating modules may not be required for utilities like this
+// instances should all be seperate from each other and it's not readable/ clear
 module.exports = function (db) {
   'use strict';
   /*summary
@@ -9,7 +9,8 @@ module.exports = function (db) {
   *   Creates periods and their respective budgets for each account.
   *   Returns 200 success on complete entry of every part and 500 on failure indicating which stage the process failed.
   *
-  * TODO discuss: 3 seperate operations are currently executed, generating fiscal year, periods and budget, this is to report on exactly whent to the client
+  * TODO discuss: 3 seperate operations are currently executed, generating fiscal year, periods and budget,
+  * this is to report on exactly went to the client
   * but may not give optimal performance
   */
 
@@ -76,6 +77,7 @@ module.exports = function (db) {
 
   function createFiscalRecord(enterprise, startDate, endDate) {
     var deferred = q.defer();
+    var description;
     var monthNo, startMonth, startYear, previousFiscal;
 
     monthNo = monthDiff(startDate, endDate);
@@ -142,7 +144,7 @@ module.exports = function (db) {
     return deferred.promise;
   }
 
-  function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted, fiscalYearId) {
+  function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted) {
     var accountIdList, budgetSQL;
     var deferred = q.defer();
     var periodIdList  = [];

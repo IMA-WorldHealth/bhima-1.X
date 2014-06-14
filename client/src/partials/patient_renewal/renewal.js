@@ -1,11 +1,11 @@
 angular.module('bhima.controllers')
 .controller('renewal', [
   '$scope',
-  '$filter',
+  '$translate',
   'validate',
   'connect',
   'messenger',
-  function ($scope, $filter, validate, connect, messenger) {
+  function ($scope, $translate, validate, connect, messenger) {
     var sessionPatient, patientRenewed = $scope.patientRenewed = false;
     var dependencies = {};
 
@@ -22,14 +22,15 @@ angular.module('bhima.controllers')
     function submitRenewal(sessionPatient) {
       patientRenewed = $scope.patientRenewed = true;
      
-      connect.fetch('/visit/\"' + sessionPatient.uuid + '\"').then(function(res) {
-
+      connect.fetch('/visit/\"' + sessionPatient.uuid + '\"')
+      .then(function() {
         //Patient visit has been logged
-        messenger.success($filter('translate')('RENEWAL.SUCCESS_MESSAGE'));
-      }, function (err) {
+        messenger.success($translate.instant('RENEWAL.SUCCESS_MESSAGE'));
+      })
+      .then(function () {
      
         //Patient visit log failed
-        messenger.danger($filter('translate')('RENEWAL.FAILURE_MESSAGE'));
+        messenger.danger($translate.instant('RENEWAL.FAILURE_MESSAGE'));
       });
     }
 
