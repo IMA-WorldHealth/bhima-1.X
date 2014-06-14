@@ -14,8 +14,7 @@
       '$sce',
       'messenger',
       'validate',
-      'precision',
-      function ($filter, $sce, messenger, validate, precision) {
+      function ($filter, $sce, messenger, validate) {
         var dependencies = {},
             currency;
 
@@ -47,16 +46,18 @@
           // first, extract the decimal digits '0.xx'
           var decimalDigits = value.slice(value.indexOf('.')+1, value.indexOf('.') + 3);
 
-          if (decimalDigits)
+          if (decimalDigits) {
             value = value.slice(0, value.indexOf('.'));
-          var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1"+currency.get(id).separator);
+          }
+
+          var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1'+currency.get(id).separator);
           templ += '<span class="desc">' + currency.get(id).decimal + decimalDigits + '</span><span class="cur"> ' + currency.get(id).symbol +  '</span>';
 
           return $sce.trustAsHtml(templ);
         };
       }
     ])
-   
+
     .filter('exchange', ['appstate', 'precision', function (appstate, precision) {
       var map;
 

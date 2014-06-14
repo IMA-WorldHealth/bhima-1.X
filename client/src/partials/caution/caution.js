@@ -1,20 +1,16 @@
 angular.module('bhima.controllers')
 .controller('caution', [
   '$scope',
-  '$q',
   '$location',
-  '$http',
-  '$routeParams',
+  '$translate',
   'validate',
   'connect',
   'appstate',
   'messenger',
-  '$translate',
   'util',
   'uuid',
   'appcache',
-  '$filter',
-  function($scope, $q, $location, $http, $routeParams, validate, connect, appstate, messenger, $translate, util, uuid, Appcache, $filter) {
+  function($scope, $location, $translate, validate, connect, appstate, messenger, util, uuid, Appcache) {
 
     var dependencies = {},
         caution_uuid = -1,
@@ -87,14 +83,14 @@ angular.module('bhima.controllers')
     }
 
     function initialiseCaution (selectedDebitor) {
-      if(!selectedDebitor) return messenger.danger('No debtor selected');
+      if (!selectedDebitor) { return messenger.danger('No debtor selected'); }
       $scope.selectedDebitor = selectedDebitor;
       dependencies.location = { query : '/location/' + $scope.selectedDebitor.origin_location_id};
       validate.process(dependencies, ['location'])
       .then(ready);
     }
 
-    function payCaution (){
+    function payCaution () {
       var record = {
         uuid         : uuid(),
         reference    : 1, // FIXME                                                                                                                               : Workaround for dead triggers
@@ -117,28 +113,27 @@ angular.module('bhima.controllers')
       return connect.fetch('/journal/caution/' + caution_uuid);
     }
 
-    function writeCaution(record){
+    function writeCaution(record) {
       return connect.basicPut('caution', [record]);
     }
 
     function setCashAccount(cashAccount) {
-      if(cashAccount) {
+      if (cashAccount) {
         $scope.selectedItem = cashAccount;
         cache.put('selectedItem', cashAccount);
       }
     }
 
-
-    function handleSucces(resp){
-      messenger.success($filter('translate')('CAUTION.SUCCES'));
+    function handleSucces() {
+      messenger.success($translate.instant('CAUTION.SUCCES'));
       $scope.selectedDebitor = {};
       $scope.data = {};
       $scope.noEmpty = false;
       if (caution_uuid !== -1) { $location.path('/invoice/caution/' + caution_uuid); }
     }
 
-    function handleError(){
-      messenger.danger($filter('translate')('CAUTION.DANGER'));
+    function handleError() {
+      messenger.danger($translate.instant('CAUTION.DANGER'));
     }
 
     function load (selectedItem) {
@@ -155,8 +150,8 @@ angular.module('bhima.controllers')
       validate.process(dependencies).then(init, handleError);
     });
 
-    function check (){
-      if($scope.data.payment){
+    function check () {
+      if ($scope.data.payment) {
         return $scope.data.payment < $scope.selectedItem.min_monentary_unit;
       }else{
         return true;

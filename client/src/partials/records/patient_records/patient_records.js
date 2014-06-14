@@ -1,9 +1,9 @@
-angular.module('bhima.controllers').controller('patientRecords', [
+angular.module('bhima.controllers')
+.controller('patientRecords', [
   '$scope',
-  '$routeParams',
   'validate',
-  function($scope, $routeParams, validate) {
-    var dependencies = {}, patient = ($routeParams.patientID || -1);
+  function($scope, validate) {
+    var dependencies = {};
 
     dependencies.patient = {
       query : {
@@ -24,10 +24,13 @@ angular.module('bhima.controllers').controller('patientRecords', [
 
     function patientSearch(searchParams) {
       var condition = [];
-      if(!searchParams) return;
+      if (!searchParams) { return; }
 
-      Object.keys(searchParams).forEach(function(key) {
-        if(searchParams[key].length) condition.push('patient.' + key + '=' + searchParams[key], "AND");
+      Object.keys(searchParams)
+      .forEach(function(key) {
+        if (searchParams[key].length) {
+          condition.push('patient.' + key + '=' + searchParams[key], 'AND');
+        }
       });
       dependencies.patient.query.where = condition.slice(0, -1);
       validate.refresh(dependencies).then(patientRecords);
