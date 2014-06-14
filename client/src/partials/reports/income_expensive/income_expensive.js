@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
 
     $scope.models = {};
     $scope.today = new Date();
-    var incomeExpensiveStatements, accounts, periods;
+    var incomeExpensiveStatements, periods;
     var names = ['accounts', 'periods', 'fys'];
 
     //fonctions
@@ -54,7 +54,7 @@ angular.module('bhima.controllers')
 
     var setStatAccount = function (){
       $scope.models.accounts.map(function(account){
-        if(account.parent === 0) {
+        if (account.parent === 0) {
           account.stat = [];
         }else{
           account.stat = getPeriodStats(account.id);
@@ -67,7 +67,7 @@ angular.module('bhima.controllers')
       $scope.models.periods.forEach(function (period) {
         var balance = 0;
         incomeExpensiveStatements.forEach(function (incomeExpensiveStatements){
-          if(incomeExpensiveStatements.period_id === period.id && incomeExpensiveStatements.id === account_id) {
+          if (incomeExpensiveStatements.period_id === period.id && incomeExpensiveStatements.id === account_id) {
             balance+=(incomeExpensiveStatements.debit - incomeExpensiveStatements.credit);
           }
         });
@@ -105,7 +105,7 @@ angular.module('bhima.controllers')
     var removePeriod = function(id){
       var periods = [];
       $scope.models.periods.forEach(function(period){
-        if (period.id !== id) periods.push(period);
+        if (period.id !== id) { periods.push(period); }
       });
       $scope.models.periods = periods;
       setStatAccount();

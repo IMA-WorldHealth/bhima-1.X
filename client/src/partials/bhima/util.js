@@ -1,11 +1,8 @@
 angular.module('bhima.controllers')
 .controller('util', [
   '$scope',
-  '$translate',
-  'appcache',
-  'messenger',
   '$location',
-  function($scope, $translate, appcache, messenger, $location) {
+  function($scope, $location) {
     ////
     // summary: 
     //  Responsible for all utilities (buttons/ selects etc.) on the application side bar

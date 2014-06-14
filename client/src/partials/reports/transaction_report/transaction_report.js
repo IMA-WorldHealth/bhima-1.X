@@ -3,10 +3,9 @@ angular.module('bhima.controllers')
   '$scope',
   '$q',
   '$window',
-  'validate',
   'connect',
   'util',
-  function ($scope, $q, $window, validate, connect, util) {
+  function ($scope, $q, $window, connect, util) {
 
     $scope.print = function () {
       $window.print();
@@ -36,21 +35,21 @@ angular.module('bhima.controllers')
     }
 
     $scope.fill = function(chaine){
-      if(chaine === 'I') $scope.data.type = 'I';
-      if(chaine === 'G') $scope.data.type = 'G';
-      if(chaine === 'C') $scope.data.dc = 'C';
-      if(chaine === 'D') $scope.data.dc = 'D';
+      if (chaine === 'I') { $scope.data.type = 'I'; }
+      if (chaine === 'G') { $scope.data.type = 'G'; }
+      if (chaine === 'C') { $scope.data.dc = 'C'; }
+      if (chaine === 'D') { $scope.data.dc = 'D'; }
       loading();
     };
 
     var loading = function(){
-      if($scope.data.type === 'I'){
-        if($scope.data.dc === 'C') { loadCreditors(); }
-        if($scope.data.dc === 'D') { loadDebitors(); }
+      if ($scope.data.type === 'I'){
+        if ($scope.data.dc === 'C') { loadCreditors(); }
+        if ($scope.data.dc === 'D') { loadDebitors(); }
    
       } else if ($scope.data.type === 'G') {
-        if ($scope.data.dc === 'C') loadCreditorGroups();
-        if ($scope.data.dc === 'D') loadDebitorGroups();
+        if ($scope.data.dc === 'C') { loadCreditorGroups(); }
+        if ($scope.data.dc === 'D') { loadDebitorGroups(); }
       }
     };
 
@@ -61,13 +60,13 @@ angular.module('bhima.controllers')
     }
 
     $scope.populate = function (){
-      if($scope.data.dateFrom && $scope.data.dateTo &&
+      if ($scope.data.dateFrom && $scope.data.dateTo &&
         (util.isDateAfter($scope.data.dateTo, $scope.data.dateFrom) ||
          util.areDatesEqual($scope.data.dateTo, $scope.data.dateFrom))) {
         $scope.show = true;
         var qo;
         if ($scope.data.type === 'I') {
-          $scope.DC = $scope.data.dc === 'D'? "DEBITOR" : "CREDITOR";
+          $scope.DC = $scope.data.dc === 'D'? 'DEBITOR' : 'CREDITOR';
           qo = {
             id:$scope.model.selected.id,
             type:$scope.data.dc,
@@ -82,9 +81,9 @@ angular.module('bhima.controllers')
             doSummary(values);
           });
 
-        } else if($scope.data.type === 'G'){
+        } else if ($scope.data.type === 'G'){
 
-          $scope.DC = $scope.data.dc === 'D' ? "DEBITOR GROUP" : "CREDITOR GROUP";
+          $scope.DC = $scope.data.dc === 'D' ? 'DEBITOR GROUP' : 'CREDITOR GROUP';
 
           qo = {
             id:$scope.model.selected.id,
@@ -107,28 +106,28 @@ angular.module('bhima.controllers')
       }
     };
 
-    function doSummary(values){
+    function doSummary(){
       var sql;
       if ($scope.data.type === 'I') {
         sql = {
           tables : {
-            'general_ledger' : {columns: ["credit", "debit"]}
+            'general_ledger' : {columns: ['credit', 'debit']}
           },
           where: [
-            'general_ledger.deb_cred_id= '+$scope.model.selected.id, "AND",
-            'general_ledger.deb_cred_type='+$scope.data.dc, "AND",
-            "general_ledger.account_id="+$scope.model.selected.account_id
+            'general_ledger.deb_cred_id= '+$scope.model.selected.id, 'AND',
+            'general_ledger.deb_cred_type='+$scope.data.dc, 'AND',
+            'general_ledger.account_id='+$scope.model.selected.account_id
           ]
         };
 
       } else if ($scope.data.type === 'G') {
         sql = {
           tables : {
-            'general_ledger' : {columns: ["credit", "debit"]}
+            'general_ledger' : {columns: ['credit', 'debit']}
           },
           where: [
-            'general_ledger.deb_cred_type='+$scope.data.dc, "AND",
-            "general_ledger.account_id="+$scope.model.selected.account_id
+            'general_ledger.deb_cred_type='+$scope.data.dc, 'AND',
+            'general_ledger.account_id='+$scope.model.selected.account_id
           ]
         };
       }
@@ -141,7 +140,7 @@ angular.module('bhima.controllers')
           debitTotal+=item.debit;
         });
         var soldTotal = debitTotal-creditTotal;
-        $scope.isBalanced = (soldTotal === 0) ? "Yes" : "No";
+        $scope.isBalanced = (soldTotal === 0) ? 'Yes' : 'No';
         $scope.credit = creditTotal;
         $scope.debit = debitTotal;
         $scope.sold = (soldTotal < 0) ? soldTotal*(-1) : soldTotal;

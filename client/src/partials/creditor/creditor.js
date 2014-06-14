@@ -1,14 +1,13 @@
 angular.module('bhima.controllers')
 .controller('creditorsController', [
   '$scope',
-  '$q',
   '$translate',
   'validate',
   'connect',
   'appstate',
   'uuid',
   'messenger',
-  function ($scope, $q, $translate, validate, connect, appstate, uuid, messenger) {
+  function ($scope, $translate, validate, connect, appstate, uuid, messenger) {
     var dependencies = {}, session = $scope.session = {}, route = {};
 
     dependencies.creditGroup = {
@@ -122,7 +121,7 @@ angular.module('bhima.controllers')
 
       // Assign uuid and note to creditor
       session.creditor.uuid = creditor_uuid;
-      session.creditor.text = "Supplier [" + session.supplier.name + "]";
+      session.creditor.text = 'Supplier [' + session.supplier.name + ']';
 
       // Assign uuid, location and creditor id to supplier
       session.supplier.uuid = uuid();
@@ -143,8 +142,8 @@ angular.module('bhima.controllers')
       return connect.basicPut('supplier', [supplier]);
     }
 
-    function handleRegistration(success) {
-      messenger.success($translate('SUPPLIER.REGISTRATION_SUCCESS'));
+    function handleRegistration() {
+      messenger.success($translate.instant('SUPPLIER.REGISTRATION_SUCCESS'));
       $scope.supplier.post(session.supplier);
       createSupplier();
     }
@@ -160,8 +159,7 @@ angular.module('bhima.controllers')
       .catch(handleError);
     }
 
-    function requestCreditorUpdate(supplier) {
-      var deferred = $q.defer();
+    function requestCreditorUpdate() {
 
       dependencies.creditor = {
         query : {
@@ -172,27 +170,18 @@ angular.module('bhima.controllers')
         where : ['creditor.uuid=' + session.creditor.group_uuid]
       };
 
-      validate.process(dependencies, ['creditor']).then(function (model) {
-
+      return validate.process(dependencies, ['creditor'])
+      .then(function (model) {
         // Assuming one supplier will only ever have one creditor account
         var creditor = model.creditor.data[0];
         creditor.group_uuid = session.creditor.group_uuid;
-        connect.basicPost('creditor', [creditor], ['uuid'])
-        .then(function (res) {
-          deferred.resolve(res);
-        })
-        .catch(function (error) {
-          console.log('erm error', error);
-          deferred.reject(error);
-        });
+        return connect.basicPost('creditor', [creditor], ['uuid']);
       });
-
-      return deferred.promise;
     }
 
     function handleError(error) {
       // TODO reverse previous incorrect transactions
-      messenger.danger($translate('SUPPLIER.REGISTRATION_FAILURE'));
+      messenger.danger($translate.instant('SUPPLIER.REGISTRATION_FAILURE'));
       throw error;
     }
     $scope.registerSupplier = registerSupplier;

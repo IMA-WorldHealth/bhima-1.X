@@ -2,8 +2,6 @@ angular.module('bhima.controllers')
 .controller('cash', [
   '$scope',
   '$location',
-  '$translate',
-  '$window',
   '$modal',
   '$q',
   'connect',
@@ -16,7 +14,7 @@ angular.module('bhima.controllers')
   'precision',
   'calc',
   'uuid',
-  function($scope, $location, $translate, $window, $modal, $q, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
+  function($scope, $location, $modal, $q, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
     var defaultCashBox, defaultCurrency;
 
     var dependencies = {},
@@ -81,7 +79,7 @@ angular.module('bhima.controllers')
     };
 
     function loadDefaultCurrency(currency) {
-      if(!currency) return;
+      if (!currency) { return; }
       defaultCurrency = currency;
 
       // Fallback for slow IDB read
@@ -93,7 +91,7 @@ angular.module('bhima.controllers')
       defaultCashBox = cashBox;
 
       // Fallback for slow IDB read
-      if ($scope.cashbox) $scope.cashbox = cashBox;
+      if ($scope.cashbox) { $scope.cashbox = cashBox; }
     }
 
     cache.fetch('cashbox').then(loadDefaultCashBox);
@@ -115,7 +113,7 @@ angular.module('bhima.controllers')
         var sessionDefault =
           $scope.cashboxes.data[0];
 
-        if(defaultCashBox) {
+        if (defaultCashBox) {
           var verifyBox = $scope.cashboxes.get(defaultCashBox.id);
           if (verifyBox) { sessionDefault = verifyBox; }
         }
@@ -177,13 +175,13 @@ angular.module('bhima.controllers')
         $scope.cashbox_accounts.get($scope.project.currency_id) ||
         $scope.cashbox_accounts.data[0];
 
-      if(defaultCurrency) {
+      if (defaultCurrency) {
         var verifyCurrency = $scope.cashbox_accounts.get(defaultCurrency.currency_id);
         if (verifyCurrency)  { sessionDefault = verifyCurrency; }
       }
 
       // Everything sucks
-      if(!sessionDefault) { return messenger.danger('Cannot find accounts for cash box ' + $scope.cashbox.id); }
+      if (!sessionDefault) { return messenger.danger('Cannot find accounts for cash box ' + $scope.cashbox.id); }
 
       $scope.setCurrency(sessionDefault);
     }
@@ -257,7 +255,7 @@ angular.module('bhima.controllers')
     function initPayment () {
       var id, date, invoice, instance, defer = $q.defer();
 
-      date = util.convertToMysqlDate(new Date());
+      date = util.sqlDate(new Date());
       id = generateDocumentId($scope.cash.data, 'E');
 
       invoice = {
