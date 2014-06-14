@@ -2,13 +2,10 @@ angular.module('bhima.controllers')
 .controller('village', [
   '$scope',
   'connect',
-  'messenger',
   'validate',
   'uuid',
-  'store',
-  function ($scope, connect, messenger, validate, uuid, Store) {
-    var dependencies = {},
-        flags = $scope.flags = {};
+  function ($scope, connect, validate, uuid) {
+    var dependencies = {};
 
     dependencies.sectors = {
       query :  {
@@ -44,7 +41,7 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPut('village', [v])
-      .then(function (res) {
+      .then(function () {
         v.village = v.name;
         v.sector = $scope.sectors.get(v.sector_uuid).name;
         $scope.villages.post(v);

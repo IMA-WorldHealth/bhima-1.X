@@ -3,11 +3,10 @@ angular.module('bhima.controllers')
   '$scope',
   'connect',
   'appstate',
-  'messenger',
-  '$filter',
+  '$translate',
   'validate',
   'util',
-  function ($scope, connect, appstate, messenger, $filter, validate, util) {
+  function ($scope, connect, appstate, $translate, validate, util) {
 
     //variables inits
 
@@ -18,7 +17,7 @@ angular.module('bhima.controllers')
     dependencies.accounts = {
       required : true,
       query : {
-        tables : {'account' : {columns : ["id", "account_number", "account_txt", "account_type_id"]}}
+        tables : {'account' : {columns : ['id', 'account_number', 'account_txt', 'account_type_id']}}
       }
     };
 
@@ -46,7 +45,7 @@ angular.module('bhima.controllers')
     $scope.state = {};
     $scope.account = {};
     $scope.model = {};
-    $scope.model.sources = [$filter('translate')('SELECT.ALL'), $filter('translate')('SELECT.POSTING_JOURNAL'), $filter('translate')('SELECT.GENERAL_LEDGER')];
+    $scope.model.sources = [$translate.instant('SELECT.ALL'), $translate.instant('SELECT.POSTING_JOURNAL'), $translate.instant('SELECT.GENERAL_LEDGER')];
 
     //fonctions
 
@@ -64,14 +63,10 @@ angular.module('bhima.controllers')
       $scope.model.c = $scope.enterprise.currency_id;
       // console.log('enterprise id', $scope.model.c)
       $scope.exchange_rate.data.forEach(function (item){
-        map[util.convertToMysqlDate(item.date)] = {c_id : item.foreign_currency_id, rate : item.rate};
+        map[util.sqlDate(item.date)] = {c_id : item.foreign_currency_id, rate : item.rate};
       });
     }
 
-    function handlError (err){
-      //console.log('error');
-      //
-    }
 
     function fill (){
      // var f = (account_id && account_id != 0)? selective(account_id) : all ();
@@ -93,7 +88,7 @@ angular.module('bhima.controllers')
       };
 
       $scope.model.account_number = $scope.accounts.data.filter(function(value){
-        return value.id == $scope.model.account_id;
+        return value.id === $scope.model.account_id;
       })[0].account_number;
 
       connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
@@ -101,8 +96,8 @@ angular.module('bhima.controllers')
         if(res.length > 0){
           if(res.length > 0){
             res.map(function (item){
-              item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-              item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+              item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+              item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
             });
             $scope.records = res;
             getTotal(res);
@@ -128,8 +123,8 @@ angular.module('bhima.controllers')
       ).then(function(res){
           if(res.length > 0){
             res.map(function (item){
-              item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-              item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+              item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+              item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
             });
             $scope.records = res;
             getTotal(res);
@@ -141,17 +136,17 @@ angular.module('bhima.controllers')
     }
 
     function dateWatcher () {
-      $scope.state.from = util.convertToMysqlDate($scope.dates.from);
-      $scope.state.to = util.convertToMysqlDate($scope.dates.to);
+      $scope.state.from = util.sqlDate($scope.dates.from);
+      $scope.state.to = util.sqlDate($scope.dates.to);
     }
 
     function getValue (obj, val, cVal){
-      if(cVal === $scope.model.c) return val;
+      if(cVal === $scope.model.c) { return val; }
       return (obj.c_id === cVal)? 1 : (obj.rate)*val; //not good because it supporte only two currency, I will fix it very soon
     }
 
     function search (){
-      if(!$scope.model.account_id) return;
+      if(!$scope.model.account_id) { return; }
       $scope.mode = $scope.model.account_id !== 0 ? 'selected' : 'all';
       var qo = {
         source : $scope.model.source_id,
@@ -162,7 +157,7 @@ angular.module('bhima.controllers')
       };
 
       if ($scope.model.account_id && $scope.model.account_id == 0) {
-        $scope.model.account_number = "Tous";
+        $scope.model.account_number = 'Tous';
       } else {
         $scope.model.account_number = $scope.accounts.data.filter(function (value) {
           return value.id == $scope.model.account_id;
@@ -174,8 +169,8 @@ angular.module('bhima.controllers')
       .then(function(res) {
         if (res.length > 0) {
           res.map(function (item){
-            item.debit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-            item.credit = getValue(map[util.convertToMysqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+            item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+            item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
           });
           $scope.records = res;
           getTotal(res);

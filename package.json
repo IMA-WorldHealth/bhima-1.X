@@ -2,9 +2,9 @@
   "name": "bhima",
   "version": "0.0.1",
   "description": "A rural hospital information management system.",
-  "main": "scripts/server.js",
+  "main": "server/app.js",
   "scripts": {
-    "test": "node scripts/server.js"
+    "test": "node server/app.js"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
     "HIS",
     "hospital"
   ],
-  "author": "IMA World Health",
+  "author": "IMA World Health Web Development Team",
   "license": "Beerware",
   "bugs": {
     "url": "https://github.com/IMA-WorldHealth/bhima/issues"

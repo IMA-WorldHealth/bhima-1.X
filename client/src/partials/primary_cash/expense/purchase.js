@@ -1,6 +1,5 @@
 angular.module('bhima.controllers')
-.controller('purchaseOrderCash',
-  [
+.controller('purchaseOrderCash', [
   '$scope',
   '$routeParams',
   '$translate',
@@ -13,7 +12,9 @@ angular.module('bhima.controllers')
     var cashbox, cashboxReference = $routeParams.cashbox;
     var currency_id = 2; // FIXME
 
-    if (!cashboxReference) return messenger.info($translate('CASH_PURCHASE.CASHBOX_ASSIGN_ERROR'));
+    if (!cashboxReference) {
+      return messenger.info($translate.instant('CASH_PURCHASE.CASHBOX_ASSIGN_ERROR'));
+    }
     
     // TODO Don't download complete purchase orders
     dependencies.purchase = {
@@ -50,7 +51,7 @@ angular.module('bhima.controllers')
       session.selected = $scope.purchase.get(purchaseId);
     }
     
-    function payPurchase(purchaseId) {
+    function payPurchase() {
       dependencies.employee = {
         query : {
           tables : {
@@ -106,7 +107,7 @@ angular.module('bhima.controllers')
     function getDate() {
       //Format the current date according to RFC3339
       var currentDate = new Date();
-     return currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + ('0' + currentDate.getDate()).slice(-2);
+      return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
     }
     $scope.confirmPurchase = confirmPurchase;
     $scope.payPurchase = payPurchase;
