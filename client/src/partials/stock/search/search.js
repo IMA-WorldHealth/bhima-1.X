@@ -54,7 +54,7 @@ angular.module('bhima.controllers')
             row.total = 0;
             stock.post(row);
           }
-          stock.get(row.tracking_number).total += row.direction === "Enter" ? row.quantity : -1 * row.quantity;
+          stock.get(row.tracking_number).total += row.direction === 'Enter' ? row.quantity : -1 * row.quantity;
         });
 
         session.stock = stock;

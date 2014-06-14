@@ -18,12 +18,12 @@ angular.module('bhima.controllers')
           //expose scope
           $scope.purchase_model = model;
           //Select default
-          if(default_purchase>0) $scope.select(default_purchase);
+          if (default_purchase > 0) { $scope.select(default_purchase); }
 
         });
 
       $scope.post = function() {
-        console.log("Request for post");
+        console.log('Request for post');
   //      This could be an arry
         var selected = $scope.selected;
         var request = [];
@@ -35,17 +35,19 @@ angular.module('bhima.controllers')
         }
         });
         }*/
-        if(selected) request.push(selected.id);
+        if(selected) { request.push(selected.id); }
         //if(selected) request.push({transact ion_id:1, service_id:1, user_id:1});
 
         connect.journal(request)
           .then(function(res) {
             console.log(res);
   //          returns a promise
-            if(res.status==200) invoicePosted(request);
+            if (res.status === 200) {
+              invoicePosted(request);
+            }
           });
 
-        console.log("request should be made for", request);
+        console.log('request should be made for', request);
       };
     }
 
@@ -62,15 +64,15 @@ angular.module('bhima.controllers')
       */
       ids.forEach(function(invoice_id) {
         var current_invoice = $scope.invoice_model.get(invoice_id);
-        console.log("Updating 'posted'", invoice_id, current_invoice);
+        console.log('Updating \'posted\'', invoice_id, current_invoice);
         current_invoice.posted = 1;
-        promise_update.push(connect.basicPost("sale", [current_invoice], ["id"]));
+        promise_update.push(connect.basicPost('sale', [current_invoice], ['id']));
       });
 
       console.log(promise_update);
       $q.all(promise_update)
         .then(function(res) {
-          console.log("All ids posted");
+          console.log('All ids posted');
           deferred.resolve(res);
         });
 
