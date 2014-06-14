@@ -55,7 +55,7 @@ angular.module('bhima.directives')
           '          type=\'text\' '+
           '          ng-model=\'findConvention.selectedConvention\' '+
           '          typeahead=\'convention as convention.name for convention in conventionList | filter:$viewValue | limitTo:8\' '+
-          '          placeholder=\'{{ \'CFIND.PLACEHOLDER\' | translate }}\' ' +
+          '          placeholder=\'{{ "CFIND.PLACEHOLDER" | translate }}\' ' +
           '          typeahead-on-select=\'loadDebitorGroup(debitor_group.uuid)\' '+
           '          typeahead-template-url=\'debitorGroupListItem.html\''+
           '          class=\'form-bhima\' '+

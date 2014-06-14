@@ -43,7 +43,7 @@ angular.module('bhima.directives')
 
       var template =
       '<div id=\'findPatient\' class=\'panel panel-default square\' ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+ '  <div class=\'panel-heading square\'>'+
-      '    <div ng-switch on=\'findPatient.submitSuccess\'>'+
+      '    <div ng-switch=\'findPatient.submitSuccess\'>'+
       '     <div ng-switch-when=\'false\'>'+
       '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'FIND.TITLE\' | translate }}'+
       '       <div class=\'pull-right\'>'+
@@ -69,7 +69,7 @@ angular.module('bhima.directives')
       '          type=\'text\' '+
       '          ng-model=\'findPatient.selectedDebtor\' '+
       '          typeahead=\'patient as patient.name for patient in debtorList | filter:$viewValue | limitTo:8\' '+
-      '          placeholder=\'{{ \'FIND.PLACEHOLDER\' | translate }}\' ' +
+      '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
       '          typeahead-on-select=\'loadDebitor(debitor.id)\' '+
       '          typeahead-template-url=\'debtorListItem.html\''+
       '          class=\'form-bhima\' '+
@@ -85,7 +85,7 @@ angular.module('bhima.directives')
       '            type=\'text\''+
       '            ng-model=\'findPatient.debtorId\''+
       '            class=\'form-bhima\''+
-      '            placeholder=\'{{ \'FIND.PATIENT_ID\' | translate }}\'>'+
+      '            placeholder=\'{{ "FIND.PATIENT_ID" | translate }}\'>'+
       '          <span class=\'input-group-btn\'>'+
       '            <button ng-click=\'submitDebtor(findPatient.debtorId)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }} </button>'+
       '          </span>'+
