@@ -216,33 +216,31 @@ angular.module('bhima.controllers')
 
     function updateProvinceO (country) {
       $scope.origin.province = $scope.province.data.filter(function (province) {
-        return province.country_uuid == country.uuid
+        return province.country_uuid === country.uuid;
       })[0];
       updateSectorO($scope.origin.province);
     }
 
     function updateSectorO (province) {
-      console.log('call sector')
-      if(!province) {
+      if (!province) {
         $scope.origin.province = undefined;
         $scope.origin.sector = undefined;
         $scope.origin.village  = undefined;
       }else{
         $scope.origin.sector = $scope.sector.data.filter(function (sector) {
-          return sector.province_uuid == province.uuid
+          return sector.province_uuid === province.uuid;
         })[0];
       }
       updateVillageO($scope.origin.sector);
     }
 
     function updateVillageO (sector) {
-      console.log('call village', sector)
-      if(!sector){
+      if (!sector){
         $scope.origin.sector = undefined;
         $scope.origin.village = undefined;
       }else{
         $scope.origin.village = $scope.village.data.filter(function (village) {
-          return village.sector_uuid == sector.uuid
+          return village.sector_uuid === sector.uuid;
         })[0];
       }
     }
@@ -250,30 +248,28 @@ angular.module('bhima.controllers')
 
     function updateProvinceC (country) {
       $scope.current.province = $scope.province.data.filter(function (province) {
-        return province.country_uuid == country.uuid
+        return province.country_uuid === country.uuid;
       })[0];
       updateSectorC($scope.current.province);
     }
 
     function updateSectorC (province) {
-      console.log('call sector')
-      if(!province) {
+      if (!province) {
         $scope.current.sector = undefined;
       }else{
         $scope.current.sector = $scope.sector.data.filter(function (sector) {
-          return sector.province_uuid == province.uuid
+          return sector.province_uuid === province.uuid;
         })[0];
       }
       updateVillageC($scope.current.sector);
     }
 
     function updateVillageC (sector) {
-      console.log('call village', sector)
-      if(!sector){
+      if (!sector) {
         $scope.current.village = undefined;
-      }else{
+      } else {
         $scope.current.village = $scope.village.data.filter(function (village) {
-          return village.sector_uuid == sector.uuid
+          return village.sector_uuid === sector.uuid;
         })[0];
       }
     }

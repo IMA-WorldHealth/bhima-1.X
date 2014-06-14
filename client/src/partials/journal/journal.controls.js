@@ -1,7 +1,6 @@
 angular.module('bhima.controllers')
 .controller('journal.controls', [
   '$scope',
-  '$translate',
   '$rootScope',
   '$q',
   '$window',
@@ -14,7 +13,7 @@ angular.module('bhima.controllers')
   'appstate',
   'liberror',
   'messenger',
-  function ($scope, $translate, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
+  function ($scope, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
     var dependencies = {};
     var columns, options, dataview, grid, manager;
     var sort_column;
@@ -161,7 +160,7 @@ angular.module('bhima.controllers')
 
     function deleteTransaction (args) {
       var bool = $window.confirm('Are you sure you want to delete this transaction?');
-      if (!bool) return;
+      if (!bool) { return; }
       var item = dataview.getItem(args.row);
       item.rows.forEach(function (row) {
         manager.session.removed.post(row);
@@ -493,8 +492,8 @@ angular.module('bhima.controllers')
     DateEditor.prototype = new BaseEditor();
 
     function InvoiceEditor(args) {
-      var clear = '<option value="clear">Clear</option>',
-          cancel = '<option value="cancel">Cancel</option>',
+      var clear = '<option value=\'clear\'>Clear</option>',
+          cancel = '<option value=\'cancel\'>Cancel</option>',
           defaultValue;
 
 
@@ -544,21 +543,21 @@ angular.module('bhima.controllers')
         } else if (deb_cred_type === 'C') {
           $scope.creditor.data.forEach(function (creditor) {
             options += '<option value="' + creditor.uuid + '">[C] [' + creditor.text+ '] ' + creditor.name + '</option>';
-            if(!defaultValue) {
+            if (!defaultValue) {
               defaultValue = creditor.uuid;
             }
           });
         } else {
           $scope.debtor.data.forEach(function(debtor) {
             options += '<option value="' + debtor.uuid + '">[D] [' + debtor.name + '] ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
-            if(!defaultValue) {
+            if (!defaultValue) {
               defaultValue = debtor.uuid;
             }
           });
 
           $scope.creditor.data.forEach(function (creditor) {
             options += '<option value="' + creditor.uuid + '">[C] [' + creditor.text+ '] ' + creditor.name + '</option>';
-            if(!defaultValue) {
+            if (!defaultValue) {
               defaultValue = creditor.uuid;
             }
           });
@@ -597,7 +596,7 @@ angular.module('bhima.controllers')
         $scope.account.data.forEach(function(account) {
           var disabled = (account.account_type_id === 3) ? 'disabled' : '';
           options += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
-          if(!defaultValue && account.account_type_id!==3) {
+          if (!defaultValue && account.account_type_id!==3) {
             defaultValue = account.account_number;
           }
         });

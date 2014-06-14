@@ -386,7 +386,8 @@
     "SERVICE"                   : "Gestion des Services",
     "STOCK_MANAGEMENT"          : "Gestion de Stock",
     "INVENTORY_MANAGEMENT"      : "Gestion de Inventaire",
-    "EXPIRING"                  : "Rapport Expiration Stocks"
+    "EXPIRING"                  : "Rapport Expiration Stocks",
+    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte"
   },
 
   "PATIENT_REGISTRATIONS" : {
