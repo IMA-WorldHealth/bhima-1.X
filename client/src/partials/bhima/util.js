@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
 
     $scope.openSettings = function () {
       var last = $location.path();
-      $location.path('/settings/').search('q', last);
+      $location.path('/settings/').search('url', last);
     };
 
   }
