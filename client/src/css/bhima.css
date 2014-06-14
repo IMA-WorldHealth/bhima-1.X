@@ -57,6 +57,11 @@ td.visible-print {
   display: none !important;
 }
 
+/* ng-cloak fix */
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
 /* first viewport */
 .sidebar {
   position: fixed;
@@ -165,6 +170,10 @@ td.visible-print {
 /* everything is bad */
 .hack-left {
   margin-left: -15px;
+}
+
+.hack-right { 
+  margin-left: 5px !important;
 }
 
 .excell {
@@ -296,6 +305,10 @@ header + .content {
   cursor          : default;
   text-decoration : none;
   color           : #cecece;
+}
+
+[selected] { 
+  font-weight: bold;
 }
 
 .panel-primary .panel-heading .menu-item {
@@ -447,4 +460,8 @@ a.danger {
 
 .strike { 
   text-decoration : line-through;
+}
+
+.note { 
+  min-height: 10em;
 }

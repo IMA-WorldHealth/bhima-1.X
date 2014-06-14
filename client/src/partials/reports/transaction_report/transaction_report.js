@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('reportTransactionController', [
+.controller('reportTransaction', [
   '$scope',
   '$q',
   '$window',

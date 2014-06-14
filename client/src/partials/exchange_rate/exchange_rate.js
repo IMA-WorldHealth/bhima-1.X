@@ -1,12 +1,11 @@
 angular.module('bhima.controllers')
-.controller('exchangeRateController', [
+.controller('exchangeRate', [
   '$scope',
-  '$q',
   'connect',
   'messenger',
   'appstate',
   'validate',
-  function ($scope, $q, connect, messenger, appstate, validate) {
+  function ($scope, connect, messenger, appstate, validate) {
     var dependencies = {};
 
     dependencies.currency = {
@@ -49,7 +48,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.$watch('rates.data', function () {
-      if (!$scope.rates) return;
+      if (!$scope.rates) { return; }
       $scope.currentRates = $scope.rates.data.filter(function (rate) {
         return new Date(rate.date).setHours(0,0,0,0) === new Date().setHours(0,0,0,0);
       });

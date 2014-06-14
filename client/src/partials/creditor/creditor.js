@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('creditorsController', [
+.controller('creditors', [
   '$scope',
   '$translate',
   'validate',

@@ -7,7 +7,7 @@
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
     when('/budgeting/:accountID?', {
-      controller: 'budgetController',
+      controller: 'budget',
       templateUrl: 'partials/budget/budget.html'
     })
     .when('/project', {
@@ -91,11 +91,11 @@
       templateUrl: '/partials/cash/cash.html'
     })
     .when('/creditor', {
-      controller: 'creditorsController',
+      controller: 'creditors',
       templateUrl: '/partials/creditor/creditor.html'
     })
     .when('/creditors/creditor_group', {
-      controller: 'creditorGroupCtrl',
+      controller: 'creditorGroup',
       templateUrl: 'partials/creditor/group/creditor_group.html'
     }).
     when('/inventory/purchase', {
@@ -103,7 +103,7 @@
       templateUrl: 'partials/purchase_order/purchase.html'
     })
     .when('/purchase_records/:purchaseID?', {
-      controller: 'purchaseRecordsController',
+      controller: 'purchaseRecords',
       templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
     })
     .when('/inventory/price_list', {
@@ -111,7 +111,7 @@
       templateUrl: 'partials/price_list/pricelist.html'
     })
     .when('/exchange_rate', {
-      controller : 'exchangeRateController',
+      controller : 'exchangeRate',
       templateUrl: 'partials/exchange_rate/exchange_rate.html'
     })
     .when('/currency', {
@@ -135,7 +135,7 @@
       templateUrl : 'partials/reports/transactions/account.html'
     })
     .when('/reports/transaction_report', {
-      controller: 'reportTransactionController',
+      controller: 'reportTransaction',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
     })
     .when('/reports/patient_standing/', {
@@ -147,7 +147,7 @@
       templateUrl: '/partials/reports/ledger/general_ledger.html'
     })
     .when('/reports/summary', {
-      controller: 'summaryController',
+      controller: 'summary',
       templateUrl: 'partials/reports/summary/summary.html'
     })
     .when('/reports/debitor_aging/', {
@@ -163,7 +163,7 @@
       templateUrl: 'partials/reports/income_expensive/income_expensive.html'
     })
     .when('/location', {
-      controller : 'locationCtrl',
+      controller : 'location',
       templateUrl: 'partials/location/location.html'
     })
     .when('/location/village', {
@@ -186,7 +186,7 @@
       templateUrl: 'partials/print/test.html'
     })
     .when('/settings/:route?', {
-      controller: 'settingsController',
+      controller: 'settings',
       templateUrl: 'partials/settings/settings.html'
     })
     .when('/patient_group_assignment', {

@@ -3,13 +3,13 @@ angular.module('bhima.controllers')
   '$scope',
   '$location',
   '$translate',
+  '$window',
   'appstate',
   'validate',
   'messenger',
   'appcache',
-  function ($scope, $location, $translate, appstate, validate, messenger, AppCache) {
+  function ($scope, $location, $translate, $window, appstate, validate, messenger, AppCache) {
     var config, dependencies = {};
-    console.log('controller init');
     var session = $scope.session = {
       configured : false,
       configure : false
@@ -133,23 +133,19 @@ angular.module('bhima.controllers')
 
       console.log($scope.depot);
       var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid
-      : (config.utilities.indexOf(defn) > -1 )? defn.link+ '/' + $scope.depot.uuid : defn.link
+        : (config.utilities.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
     };
 
     $scope.setDepot = function setDepot (depot) {
-      console.log('mesage apres')
-      $translate('STOCK.MAIN.CONFIRM')
-      .then(function (message){
-        console.log('message est :', message);
-        var verifySet = confirm(message+depot.text);
-        if (!verifySet) { return; }
+      var message = $translate.instant('STOCK.MAIN.CONFIRM');
+      var verifySet = $window.confirm(message + ' ' + depot.text);
+      if (!verifySet) { return; }
 
-        cache.put('depot', depot);
-        $scope.depot = depot;
-        session.configured = true;
-        session.configure = false;
-      });
+      cache.put('depot', depot);
+      $scope.depot = depot;
+      session.configured = true;
+      session.configure = false;
     };
 
     $scope.reconfigure = function () {

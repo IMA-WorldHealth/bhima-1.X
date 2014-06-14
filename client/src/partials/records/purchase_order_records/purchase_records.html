@@ -1,15 +1,15 @@
-<header>
-  <span>Purchase Order Records</span>
+<header data-header>
+  Purchase Order Records
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="col-xs-4 hack-left">
     <input type="text" ng-model="purchase_filter.filter" class="form-bhima" placeholder="Filter Purchase Orders">
   </div>
   <div class="pull-right">
     <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
   </div>
-</section>
+</nav>
 
 <div class="content">
   <div class="row">
@@ -43,8 +43,8 @@
             <td>{{purchase.cost | currency}}</td>
             <td>{{purchase.creditor_id}}</td>
             <!--Multiple ng-shows - mutually exclusive but not good practice-->
-            <td><span ng-hide="purchase.posted" class="glyphicon glyphicon-minus"></span>
-
+            <td>
+              <span ng-hide="purchase.posted" class="glyphicon glyphicon-minus"></span>
               <div ng-show="purchase.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
             </td>
           </tr>

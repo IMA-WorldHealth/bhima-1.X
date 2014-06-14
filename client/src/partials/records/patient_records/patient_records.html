@@ -1,15 +1,15 @@
 <header>
-  <span>{{ "PATIENT_RECORDS.TITLE" | translate }}</span>
+  {{ "PATIENT_RECORDS.TITLE" | translate }}
 </header>
 
 
-<section class="top-nav underline">
+<nav>
   	<div class="pull-right">
       <a ng-click="fetchAll()" class="btn btn-default">
         <span class="glyphicon glyphicon-user"></span> {{ "PATIENT_RECORDS.VIEW_ALL" | translate }}
       </a>
   </div>
-</section>
+</nav>
 
 <div class="content">
   <!-- Advanced Search -->
