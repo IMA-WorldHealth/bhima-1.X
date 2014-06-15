@@ -555,7 +555,18 @@
     "DESIGNATION"         : "Description",
     "INITIAL_STOCK"       : "initial stock",
     "CURRENT_STOCK"       : "Current stock",
-    "TRANS_DATE"          : "Date"
+    "TRANS_DATE"          : "Date",
+    "PURCHASE_ORDER"      : "Purchase Order",
+    "ORDER_DATE"          : "Purchase Order Date",
+    "BHIMA_STOCK_CODE"    : "Code Stock",
+    "INVENTORY_CODE"      : "Inventory code",
+    "LABEL"               : "Designation",
+    "TOTAL_PRICE"         : "Total Price",
+    "SUMMARY"             : "Sommary",
+    "DEPOT"               : "Depot",
+    "PURCHASE_DATE"       : "Purchase Order Date",
+    "LOT_DETAILS"         : "Lot Detail",
+    "TRANSFER_QUANTITY"   : "Quantity to transfert"
   },
 
   "INVENTORY" : {
@@ -1083,7 +1094,8 @@
     "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
     "ORDER"           : "Numero Ordre",
     "DATE"            : "Date",
-    "NOTE"            : "Note"
+    "NOTE"            : "Note",
+    "TOTAL_COST"      : "Total cost"
   },
 
   "SALE"              : {
@@ -1210,7 +1222,13 @@
     "SIGN_HEADER_BILLING"          : "Head of Billing Signature",
     "SIGN_CLIENT"                  : "Customer Signature ",
     "SIGN_HEADER_AUXI"             : "Head of Auxilliairy Cash Signature",
-    "SIGN_HEADER_PRI"              : "Head of Principle Cash Signature"
+    "SIGN_HEADER_PRI"              : "Head of Principle Cash Signature",
+    "PURCHASE_ID"                  : "Purchase Order ID",
+    "PURCHASE_DATE"                : "Purchase Order Date",
+    "EMPLOYEE_CONTACT"             : "Employee Contact",
+    "EMPLOYEE_CODE"                : "Employee Code",
+    "PURCHASE_TOTAL"               : "Total",
+    "PURCHASE_ORDER"               : "Purchase Order"
   },
 
   "SECTOR"             : {
@@ -1383,7 +1401,14 @@
     "MOVEMENT" : {
       "KEY"   : "Stock Movement",
       "TITLE" : "Stock Movements",
-      "FORM" : "Stock Movement Form"
+      "FORM" : "Stock Movement Form",
+      "INVALID_SESSION"  : "The page received invalid configuration data, please try again via Stock Management or contact the system administrator.",
+      "ONLY_ONE_DEPOT"   : "Only one depot has been registered with BHIMA. A stock movment requires both an origin and destination depot.",
+      "DEPOT_FROM"       : "Source Depot",
+      "DEPOT_TO"       : "Destination Depot",
+      "INVENTORY"      : "Inventory",
+      "INVALID_TRANSFERT_QTE"  : "Invalid transfer quantity",
+      "SELECT_LOT" : "Select lot from"
     },
     "SEARCH" : {
       "KEY" : "Find Stock Items",
