@@ -40,11 +40,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.summers = {
-      query :'pcash_transfert_summers',
-      identifier : 'reference'
-    };
-
     dependencies.cash_box = {
       required : true,
       query : {
@@ -90,7 +85,6 @@ angular.module('bhima.controllers')
       configuration.enterprise = $scope.enterprise;
       configuration.currency = getCurrency(configuration.enterprise.currency_id);
       configuration.module_id = model.pcash_module.data[0].id;
-      window.model = $scope.model;
     }
 
     function commitCash (){
@@ -170,7 +164,6 @@ angular.module('bhima.controllers')
     }
 
     function writeItem (result){
-      window.result = result;
       var item = {
         uuid : uuid(),
         primary_cash_uuid : result.config.data.data.uuid,
@@ -182,9 +175,6 @@ angular.module('bhima.controllers')
 
     function refresh(){
       configuration = {};
-      validate.refresh(dependencies, ['summers'])
-      .then(init)
-      .catch(handleError);
     }
 
     function writeTransfer (){
@@ -202,6 +192,7 @@ angular.module('bhima.controllers')
         origin_id   : configuration.module_id
       };
       configuration.pcash=pcash;
+      window.configuration = configuration;
       return connect.basicPut('primary_cash', connect.clean(pcash));
     }
 
@@ -224,7 +215,7 @@ angular.module('bhima.controllers')
       appstate.register('enterprise', function (enterprise) {
         $scope.project = project;
         $scope.enterprise = enterprise;
-        validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'pcash_module', 'summers'])
+        validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'pcash_module'])
         .then(init)
         .catch(handleError);
       });

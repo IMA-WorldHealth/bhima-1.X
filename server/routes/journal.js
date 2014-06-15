@@ -1071,7 +1071,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(function (transId) {
       var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
       queries.credit =
-        'INSERT INTO posting_journal (`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
           'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descrip+'\'', reference.account_id].join(',') + ', ' +
