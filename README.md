@@ -30,17 +30,24 @@ To install, grab a copy of the latest build on the *dev* branch ([https://github
 
 Using git:
 ```bash
-$ git clone https://github.com/IMA-WorldHealth/Bhima bhima
+$ git clone https://github.com/IMA-WorldHealth/bhima.git bhima
 Cloning into 'bhima' ...
 $ cd bhima && npm install
 ...
 ```
 
-After npm has finished installing, set up your mysql user and permissions.  For the standard build, the user is `bhima` and password is `HISCongo2013`.
+After npm has finished installing, set up your mysql user and permissions.  For the standard build, the user is `bhima` and password is `HISCongo2013`.  Begin by building the database, by running the bhima.sql file located in the server folder.  To insert sample data, you can optionally build base.sql in the same folder.
+```sql
+mysql -u [username] -p[password]
+> source server/sql/bhima.sql; source server/sql/base.sql;
+> \q
+```
 
-Next, you need to build the project.  We use gulp as our build tool, so you'll need to run gulp with the following command: 
+Next, you need to build the project.  We use gulp as our build tool.  Run gulp with the following command: 
 ```bash
-$ gulp 
+$ npm install -g gulp
+$ cd client
+$ gulp
 Running "cssmin:combine" (cssmin) task
 
 Running "concat:bhima" (concat) task
