@@ -61,7 +61,6 @@
             {{invoice.invoice_date | date}}
             <br>
           </div>
-
         </div>
         <div class="row">
           <div class="col-xs-12">
@@ -94,9 +93,21 @@
 
             </table>
           </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="pull-right">
+              <b>{{"INVOICE.SIGN_HEADER_BILLING" | translate}}</b>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="pull-left">
+             <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
+            </div>
+          </div>
         </div> <!-- End Patient Invoice template -->
       </div>
-  
+
       <div ng-switch-when="movement">
         <!-- Patient Invoice template -->
         <div class="row customer-details">
@@ -106,7 +117,7 @@
             <h4 class="invoice-header">{{ 'INVOICE.STOCK_MOVEMENT' | translate }}</h4>
           </div>
         </div>
-        
+
         <div class="row customer-details">
           <div class="col-xs-6">
             <table class="invoiceTable">
@@ -155,7 +166,7 @@
                 <tr>
                   <td>Transfer Date</td><td>{{movement.data[0].date | date}}</td>
                 </tr>
-                
+
               </tbody>
               <tbody ng-if="depotEntry===undefined" class="items">
                 <tr>
@@ -165,11 +176,11 @@
             </table>
           </div>
         </div>
-        
+
         <!-- Lots -->
         <div class="row" ng-repeat="item in movement.data" style="margin-bottom: 10px">
           <div class="col-xs-12">
-            
+
             <table class="invoiceTable">
               <thead>
                 <tr>
@@ -391,8 +402,14 @@
               </tbody>
             </table>
           </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="pull-right">
+              <b>{{"INVOICE.SIGN_HEADER_BILLING" | translate}}</b>
+            </div>
+          </div>
         </div> <!-- End Patient Invoice template -->
-
       </div>
       <!-- Placholder debtor recipt, shows all transactions for given debtor, and the balance owed-->
       <div ng-switch-when="debtor">
@@ -497,6 +514,18 @@
             </table>
           </div>
         </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="pull-right">
+              <b>{{"INVOICE.SIGN_HEADER_AUXI" | translate}}</b>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="pull-left">
+             <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div ng-switch-when="caution">
@@ -554,7 +583,19 @@
               </tbody>
             </table>
           </div>
-        </div> <!-- End Patient Invoice template -->
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="pull-right">
+              <b>{{"INVOICE.SIGN_HEADER_AUXI" | translate}}</b>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="pull-left">
+             <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
+            </div>
+          </div>
+        </div><!-- End Patient Invoice template -->
       </div>
       <div ng-switch-when="pcash_transfert">
         <div class="row customer-details">
@@ -598,8 +639,20 @@
               </tbody>
             </table>
           </div>
-        </div> <!-- End Patient Invoice template -->
-      </div> 
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="pull-right">
+              <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="pull-left">
+             <b>{{"INVOICE.SIGN_HEADER_AUXI" | translate}}</b>
+            </div>
+          </div>
+        </div><!-- End Patient Invoice template -->
+      </div>
 
       <div ng-switch-when="pcash_convention">
         <div class="row customer-details">
@@ -636,10 +689,9 @@
           </div>
           <div class="col-xs-4">
             <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{conventions[0].reference}}</b>
-            <br>           
+            <br>
             <br>
           </div>
-
         </div>
         <div class="row">
           <div class="col-xs-12">
@@ -661,7 +713,19 @@
               </tbody>
             </table>
           </div>
-        </div> <!-- End Patient Invoice template -->
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="pull-right">
+              <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="pull-left">
+             <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
+            </div>
+          </div>
+        </div>
       </div><!-- end Cash receipt template  -->
     </div>
   </div>
