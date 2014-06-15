@@ -59,4 +59,4 @@ Congratulations!  Fire up node and navigate to [localhost] (http://localhost:808
 
 License
 ---------------
-See [License](./LICENSE.md)
+See [License](./docs/LICENSE.md)
