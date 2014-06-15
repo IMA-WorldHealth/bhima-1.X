@@ -1206,7 +1206,11 @@
     "CAUTION"           : "Caution",
     "CAUTION_ID"        : "# Caution",
     "LIBELLE_CAUTION"   : "Caution Reception",
-    "TOTAL_CAUTION"     : "Total"
+    "TOTAL_CAUTION"     : "Total",
+    "SIGN_HEADER_BILLING"          : "Head of Billing Signature",
+    "SIGN_CLIENT"                  : "Customer Signature ",
+    "SIGN_HEADER_AUXI"             : "Head of Auxilliairy Cash Signature",
+    "SIGN_HEADER_PRI"              : "Head of Principle Cash Signature"
   },
 
   "SECTOR"             : {

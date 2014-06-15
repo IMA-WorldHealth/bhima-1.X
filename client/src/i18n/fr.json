@@ -1028,7 +1028,11 @@
     "DESIGNATION"                  : "Designation",
     "LIBELLE_TRANSFERT_FROM"       : "Transfert de ",
     "PCASH"                        : "de caisse Principale",
-    "TOTAL_TRANSFERT"              : "Total Transfert"
+    "TOTAL_TRANSFERT"              : "Total Transfert",
+    "SIGN_HEADER_BILLING"          : "Signature Charge Facturation",
+    "SIGN_CLIENT"                  : "Signature Client",
+    "SIGN_HEADER_AUXI"             : "Signature Charge Caisse Auxilliaire",
+    "SIGN_HEADER_PRI"              : "Signature Charge Caisse Principale"
   },
 
   "SECTOR"             : {
