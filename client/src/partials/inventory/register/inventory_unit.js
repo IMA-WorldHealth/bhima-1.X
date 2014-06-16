@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
     $scope.units = unitStore.data;
 
     $scope.submit = function () {
-      if (!unit.text) return messenger.warning('No text field!');
+      if (!unit.text) { return messenger.warn('No text field!'); }
       // process
       var text = unit.text.toLowerCase();
       text = text[0].toUpperCase() + text.slice(1);

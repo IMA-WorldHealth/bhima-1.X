@@ -106,7 +106,7 @@ angular.module('bhima.controllers')
     $scope.registerPatient = function registerPatient() {
 
       if (util.isDateAfter($scope.patient.dob, new Date())) {
-        return messenger.warning($translate('PATIENT_REG.INVALID_DATE'), 6000);
+        return messenger.warn($translate('PATIENT_REG.INVALID_DATE'), 6000);
       }
 
       // This is overly verbose, but works and is clean
