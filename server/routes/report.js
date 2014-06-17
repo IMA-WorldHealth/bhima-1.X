@@ -372,7 +372,13 @@ module.exports = function (db, sanitize, util) {
 
     var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
         _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
-        _id = sanitize.escape(p.id);
+        _id;
+    
+    if (p.id.indexOf(',')) {
+      _id = p.id.split(',').map(function (id) { return sanitize.escape(id); }).join(',');
+    } else {
+      _id = p.id;
+    }
 
     var sql =
       'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, last_name, dob, father_name, ' +
