@@ -197,7 +197,7 @@ angular.module('bhima.controllers')
     // Utility methods
     $scope.$watch('sessionProperties.yob', function (nval) {
       // Angular 1.3.0-beta.3 fixes date issues, now works with raw object
-      $scope.patient.dob = nval.length === 4 ? new Date(nval + '-' + defaultBirthMonth) : undefined;
+      $scope.patient.dob = nval && nval.length === 4 ? new Date(nval + '-' + defaultBirthMonth) : undefined;
     });
 
     $scope.enableFullDate = function enableFullDate() {
