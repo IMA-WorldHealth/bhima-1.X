@@ -14,7 +14,7 @@ var q =  require('q');
 module.exports = function (db, sanitize) {
   'use strict';
 
-  function debitor (id) {
+  function debitor(id) {
     var defer = q.defer();
 
     // debtor query
@@ -93,9 +93,7 @@ module.exports = function (db, sanitize) {
     return defer.promise;
   }
 
-  function general () {}
-
-  function debitorGroup (id) {
+  function debitorGroup(id) {
     var defer = q.defer();
 
     // debtor query
@@ -169,7 +167,7 @@ module.exports = function (db, sanitize) {
     return defer.promise;
   }
 
-  function distributableSale (id){
+  function distributableSale(id) {
     var defer = q.defer();
 
     // debtor query
@@ -200,7 +198,6 @@ module.exports = function (db, sanitize) {
       return db.exec(query);
     })
     .then(function (ans) {
-      console.log("***************** le resultat :", ans);
       if (!ans.length) { defer.resolve([]); }
       ans = ans.filter(function (an){
         return !an.tracking_number;
@@ -245,14 +242,13 @@ module.exports = function (db, sanitize) {
     .catch(function (error) {
       defer.reject(error);
     });
+
     return defer.promise;
   }
 
   return {
     debitor: debitor,
-    general: general,
     debitor_group : debitorGroup,
     distributableSale : distributableSale
   };
-
 };

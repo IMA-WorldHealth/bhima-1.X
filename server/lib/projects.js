@@ -1,3 +1,4 @@
+// projects middleware
 
 var url = require('url'),
     querystring = require('querystring');
@@ -25,10 +26,11 @@ module.exports = function (db) {
             'ON `project`.`id` = `project_permission`.`project_id` ' +
             'WHERE `project_permission`.`user_id` = \'' + req.session.user_id + '\';';
 
-          db.execute(sql, function (err, rows) {
-            if (err) { return next(err); }
-            return res.send(rows);
-          });
+          db.exec(sql)
+          .then(function (rows) {
+            res.send(rows);
+          })
+          .catch(function (err) { next(err); });
         }
       } else {
         // FIXME hardcoded routes
