@@ -1,7 +1,12 @@
 angular.module('bhima.services')
-.service('util', function () {
-  this.formatDate = function(dateString) {
+.service('util', ['$filter', function ($filter) {
+
+  this.formatDate = function formatDate(dateString) {
     return new Date(dateString).toDateString();
+  };
+
+  this.htmlDate = function htmlDate (date) {
+    return $filter('date')(new Date(date), 'yyyy-MM-dd');
   };
 
   this.convertToMysqlDate = function (dateParam) {
@@ -36,4 +41,4 @@ angular.module('bhima.services')
 
   this.sqlDate = this.convertToMysqlDate;
 
-});
+}]);
