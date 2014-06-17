@@ -1,7 +1,7 @@
 // /scripts/lib/util/store.js
 // the data store, similar to Dojo's Memory Store.
 
-module.exports = function (options, target) {
+module.exports = function Store(options) {
   'use strict';
 
   // globals
@@ -29,7 +29,7 @@ module.exports = function (options, target) {
       self[k] = options[k];
     }
     // set data if it is defined
-    if (options.data) self.setData(options.data);
+    if (options.data) { self.setData(options.data); }
   })();
 
   // get an item from the local store
@@ -41,14 +41,13 @@ module.exports = function (options, target) {
   this.put = function (object, opts) {
     var data = this.data,
         index = this.index,
-        id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : false;
+        id = object[identifier] = (opts && 'id' in opts) ? opts.id : identifier in object ?  object[identifier] : false;
 
     // merge or overwrite
     if (opts && opts.overwrite) {
       data[index[id]] = object; // overwrite
     } else {
-      var ref = data[index[id]];
-      if(!ref) ref = {};
+      var ref = data[index[id]] || {};
       for (var k in object) {
         ref[k] = object[k]; // merge
       }
@@ -60,7 +59,7 @@ module.exports = function (options, target) {
 
     var data = this.data,
         index = this.index,
-        id = object[identifier] = (opts && "id" in opts) ? opts.id : identifier in object ?  object[identifier] : Math.random();
+        id = object[identifier] = (opts && 'id' in opts) ? opts.id : identifier in object ?  object[identifier] : Math.random();
     index[id] = data.push(object) - 1;
   };
 
@@ -86,5 +85,4 @@ module.exports = function (options, target) {
       index[data[i][identifier]] = i;
     }
   };
-
 };

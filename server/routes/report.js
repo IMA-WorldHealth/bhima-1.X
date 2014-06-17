@@ -373,7 +373,7 @@ module.exports = function (db, sanitize, util) {
     var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
         _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
         _id;
-    
+
     if (p.id.indexOf(',')) {
       _id = p.id.split(',').map(function (id) { return sanitize.escape(id); }).join(',');
     } else {
@@ -419,33 +419,6 @@ module.exports = function (db, sanitize, util) {
       'GROUP BY c.document_id;';
 
     return db.exec(sql);
-  }
-
-  function invoiceRecords(params) {
-    var p = querystring.parse(params),
-        deferred = q.defer();
-
-    var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
-        _id = sanitize.escape(p.id);
-
-    var sql =
-      'SELECT i.uuid, ig.code, ig.name, ig.sales_account, SUM(si.quantity) AS quantity, ' +
-        'SUM(si.transaction_price) AS total_price ' +
-      'FROM `sale` AS s JOIN `sale_item` as si JOIN `inventory` AS i JOIN `inventory_group` AS ig ' +
-      'ON s.uuid = si.sale_uuid AND si.inventory_uuid = i.uuid AND i.group_uuid = ig.uuid ' +
-      'WHERE s.invoice_date >= ' + _start + ' AND ' +
-        's.invoice_date < ' + _end + ' AND ' +
-        'i.enterprise_id = ' + _id + ' ' +
-      'ORDER BY i.code ' +
-      'GROUP BY i.id;';
-
-    db.execute(sql, function (err, res) {
-      if (err) { return deferred.reject(err); }
-      deferred.resolve(res);
-    });
-
-    return deferred.promise;
   }
 
   function patientStanding(params) {
