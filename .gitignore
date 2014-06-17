@@ -8,8 +8,8 @@
 
 node_modules/
 test/reports/
-scripts/sql/backup/
-scripts/mail/out/
+server/sql/backup/
+server/plugins/mail/out/
 
 #Ignore build
 client/dest/
@@ -19,6 +19,9 @@ client/dest/
 
 misc/migrate/out/
 
+server/plugins/mail/conf/address_list.json
+/server/plugins/mail/conf/address_list.json
+
 # ignore build tool generated files
 /*app/js/controllers/controllers.js*/
 /*./app/js/controllers/controllers.js*/
@@ -26,5 +29,4 @@ misc/migrate/out/
 
 # ignore log files
 *.log
-/scripts/sql/backup/*
 /symmetric/*
