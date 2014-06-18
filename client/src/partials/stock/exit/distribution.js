@@ -14,7 +14,8 @@ angular.module('bhima.controllers')
       // FIXME
       index : -1,
       state : null,
-      depot : $routeParams.depotId
+      depot : $routeParams.depotId,
+      lotSelectionSuccess : false
     };
     var distribution = {}, dependencies = {};
 
@@ -37,17 +38,19 @@ angular.module('bhima.controllers')
       }
     ];
 
-    var stock = { 
+    var stock = {
       NONE : {
         //TODO Replace with translatable key
-        alert : 'This item is not in stock in the depot.',
+        alert : 'This item is not in stock in the depot, contact the stock administrator',
         icon : 'glyphicon-remove-sign error'
       },
       LIMITED_STOCK : {
-        alert : 'There is not enough stock available to fulfill the order, contact the stock administrator."
+        alert : 'There is not valid enough stock available to fulfill the order, contact the stock administrator.',
+        icon : 'glyphicon-info-sign warn'
       },
       EXPIRED : {
-
+        alert : 'Available stock CANNOT be used as it has expired, contact the stock administrator.',
+        icon : 'glyphicon-info-sign error'
       }
     };
 
@@ -98,8 +101,11 @@ angular.module('bhima.controllers')
             console.log('assigning', result);
             if (itemModel.data.length) saleItem.lots = itemModel;
           });
+        
 
           recomendLots(session.sale.details);
+          
+          session.lotSelectionSuccess = verifyValidLots(session.sale.details);
         })
         .catch(function (error) {
           messenger.error(error);
@@ -115,14 +121,17 @@ angular.module('bhima.controllers')
       // - Lot exists with both quantity and expiration date 
       
       saleDetails.forEach(function (saleItem) { 
+        var validUnits = 0;   
+        var sessionLots = [];
 
         console.log('Determining lots for ', saleItem);
         
+        // Ignore non consumable items
+        if (!saleItem.consumable) return;
+
         // Check to see if any lots exist (expired stock should be run through the stock loss process)
-        if (!saleItem.lots) { 
-         // saleItem
-         saleItem.stockStatus = stock.NO_STOCK;
-         console.log('SALE ITEM NOT IN STOCK');
+        if (!saleItem.lots) {
+         saleItem.stockStatus = stock.NONE;
          return;
         }
       
@@ -130,16 +139,74 @@ angular.module('bhima.controllers')
 
         // If lots exist, order them by experiation and quantity 
         saleItem.lots.data.sort(orderLotsByUsability);
-         
-        // Validate candidates if none are suitable, update status
+        saleItem.lots.recalculateIndex();
 
+        // Iterate through ordered lots and determine if there are enough valid units
+        saleItem.lots.data.forEach(function (lot) {
+          var expired = new Date(lot.expiration_date) < new Date();
+
+          if (!expired) {
+
+            var unitsRequired = saleItem.quantity - validUnits;
+
+            if (unitsRequired > 0) {
+              // Add lot to recomended lots
+              var lotQuantity = (lot.quantity > unitsRequired) ? unitsRequired : lot.quantity;
+              sessionLots.push({details : lot, quantity : lotQuantity});
+              validUnits += lotQuantity;
+
+            }
+          } else {
+            console.log('EXPIRTED');
+            messenger.danger('Lot ' + lot.lot_number + ' has expired and cannot be used, contact the stock administrator.', true);
+          }
+        });
+
+        console.log('found ', validUnits, ' in', sessionLots);
+
+        if (validUnits < saleItem.quantity) {
+          console.log('LIMITED STOCK, ');
+          saleItem.stockStatus = stock.LIMITED_STOCK;
+        }
+
+        if (sessionLots.length) saleItem.recomendedLots = sessionLots;
       });
     }
 
-    function orderLotsByUsability(a, b) {  
+    function orderLotsByUsability(a, b) {
       // Order first by expiration date, then by quantity
-      console.log('a', a, 'b', b);  
-    };
+  
+      var aDate = new Date(a.expirationDate),
+          bDate = new Date(b.expirationDate);
+
+      if (aDate === bDate) {
+        return (a.quantity < b.quantity) ? -1 : (a.quantity > b.quantity) ? 1 : 0;
+      }
+
+      return (aDate < bDate) ? -1 : 1;
+    }
+
+    function verifyValidLots(saleDetails) {
+      var invalidLots = false;
+    
+      console.log('checking valid lots');
+
+      //Ensure each item has a lot
+      invalidLots = saleDetails.some(function (item) {
+        console.log('validating lot', item);
+
+        // ignore non consumables (FIXME better way tod do this across everything)
+        if (item.!consumable) return false;
+        if (!item.recomendedLots) return true;
+         
+        console.log('recomendedLots');
+        // console.log('item has lots assigned');
+      });
+
+      console.log('looped through lots, found invalid', invalidLots);
+
+      return !invalidLots;
+    }
 
     function getSaleDetails(sale) {
       console.log('sale', sale);
