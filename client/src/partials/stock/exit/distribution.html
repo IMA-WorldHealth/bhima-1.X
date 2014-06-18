@@ -9,7 +9,7 @@
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a tabindex="-1" href="">{{ "STOCK.DISTRIBUTE" | translate }}</a></li>
+      <li><a tabindex="-1" href="">{{ "STOCK.EXIT.KEY" | translate }}</a></li>
     </ol>
   </div>
   
@@ -52,7 +52,16 @@
 
 <footer>
   <div class="pull-right">
-    <a ng-disabled="!session.lotSelectionSuccess" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
+    <a 
+      ng-disabled="!session.lotSelectionSuccess" 
+      ng-click="submitConsumption()" 
+      class="btn btn-default">
+      <span class="glyphicon glyphicon-floppy-open"></span>
+      {{ "DISTRIBUTION.SUBMIT" | translate }}
+      <span 
+        class="glyphicon" 
+        ng-class="{'glyphicon-ok-sign correct' : session.lotSelectionSuccess, 'glyphicon-remove-sign error' : session.lotSelectionFailure}"></span>
+    </a>
   </div>
 </footer>
 
@@ -256,7 +265,7 @@
               <table class="reportTable">
                 <tbody>
                   <tr>
-                    <td width="30%">Lot Number</td><td>{{recomended.details.lot_number}}</td>
+                    <td width="30%">Lot Number</td><td><b>{{recomended.details.lot_number}}</b></td>
                   </tr>
                   <tr>
                     <td width="30%">Quantity Remaining</td><td>{{recomended.details.quantity}}</td>
@@ -266,7 +275,7 @@
                   </tr>
                 </tbody>
               </table>
-            <td>{{recomended.quantity}}</td>
+              <td><b>{{recomended.quantity}}</b></td>
           </tr>
         </tbody>
       </table>
