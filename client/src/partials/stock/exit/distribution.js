@@ -37,6 +37,20 @@ angular.module('bhima.controllers')
       }
     ];
 
+    var stock = { 
+      NONE : {
+        //TODO Replace with translatable key
+        alert : 'This item is not in stock in the depot.',
+        icon : 'glyphicon-remove-sign error'
+      },
+      LIMITED_STOCK : {
+        alert : 'There is not enough stock available to fulfill the order, contact the stock administrator."
+      },
+      EXPIRED : {
+
+      }
+    };
+
     dependencies.ledger = {};
     
     moduleStep();
@@ -99,9 +113,20 @@ angular.module('bhima.controllers')
       // - No lots exist, warning status
       // - ! Lot exists but is expired, stock administrator
       // - Lot exists with both quantity and expiration date 
+      
       saleDetails.forEach(function (saleItem) { 
+
+        console.log('Determining lots for ', saleItem);
+        
         // Check to see if any lots exist (expired stock should be run through the stock loss process)
-        if (!saleItem.lots) return; 
+        if (!saleItem.lots) { 
+         // saleItem
+         saleItem.stockStatus = stock.NO_STOCK;
+         console.log('SALE ITEM NOT IN STOCK');
+         return;
+        }
+      
+        console.log('Found lots for sale item');
 
         // If lots exist, order them by experiation and quantity 
         saleItem.lots.data.sort(orderLotsByUsability);
