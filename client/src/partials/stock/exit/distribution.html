@@ -52,7 +52,7 @@
 
 <footer>
   <div class="pull-right">
-    <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
+    <a ng-disabled="!session.lotSelectionSuccess" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
   </div>
 </footer>
 
@@ -199,7 +199,7 @@
                 <div ng-if="!item.consumed">
                   <button 
                     ng-click="selectSale(item)"
-                    class="btn btn-default btn-sm">Select sale for distribution</button>
+                    class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span> Select sale for distribution</button>
                   <button class="btn btn-default btn-sm">View sale details</button>
                 </div>
               </div>
@@ -218,37 +218,55 @@
     </div>
 
     <div class="panel-body">
-      <table class="table table-bordered">
+      <table 
+        class="table table-bordered"
+        ng-repeat="inventoryItem in session.sale.details | orderBy:'-consumable'">
         <thead>
         </thead>
 
         <tbody>
           <tr 
             ng-class="{'invalid' : !inventoryItem.consumable}"
-            ng-repeat-start="inventoryItem in session.sale.details | orderBy:'-consumable'">
-            <td>
+            >
+            <td colspan="2">
               <span class="glyphicon glyphicon-tag"></span> 
-              {{inventoryItem.text}} <span ng-if="!inventoryItem.consumable">(Not consumable)</span>
+              <span 
+                ng-if="inventoryItem.consumable"><b>{{inventoryItem.quantity}} x </b></span> 
+              <span>{{inventoryItem.text}} </span>
+              <span ng-if="!inventoryItem.consumable">(Not consumable)</span>
+            </td>
+          </tr>
+        
+          <tr ng-if="inventoryItem.stockStatus">
+            <td colspan="2">
+              <span class="glyphicon {{inventoryItem.stockStatus.icon}}"></span> {{inventoryItem.stockStatus.alert}}
             </td>
           </tr>
 
-          <tr ng-repeat-end ng-if="inventoryItem.consumable">
+          <tr 
+            ng-if="inventoryItem.recomendedLots">
+            <td><span class="glyphicon glyphicon-ok-sign correct"></span> <b>Recomended Lot</b></td> 
+            <td><b>Quantity <small>(Selected from lot)</small></b></td>
+          </tr>
+
+          <tr 
+            ng-if="inventoryItem.recomendedLots"
+            ng-repeat="recomended in inventoryItem.recomendedLots">
             <td>
-              <!-- Status message -->
-              <div ng-switch on="thisvar=1">
-                <div ng-switch-when="1">
-                  <span class="glyphicon glyphicon-remove-sign error"></span> This item is not in stock at the current depot
-                </div>
-              </div>
-            
-              <table class="table table-bordered table-condensed" ng-if="inventoryItem.consumable">
+              <table class="reportTable">
                 <tbody>
-                  <tr ng-repeat="lot in inventoryItem.lots.data">
-                    <td>{{lot.lot_number}}</td><td>{{lot.tracking_number}}</td>
+                  <tr>
+                    <td width="30%">Lot Number</td><td>{{recomended.details.lot_number}}</td>
+                  </tr>
+                  <tr>
+                    <td width="30%">Quantity Remaining</td><td>{{recomended.details.quantity}}</td>
+                  </tr>
+                  <tr>
+                    <td width="30%">Expiration Date</td><td>{{recomended.details.expiration_date | date}}</td>
                   </tr>
                 </tbody>
               </table>
-            </td>
+            <td>{{recomended.quantity}}</td>
           </tr>
         </tbody>
       </table>
