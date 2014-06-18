@@ -28,13 +28,26 @@ module.exports = function(db, parser, journal, uuid) {
     });
   }
 
+  /*
+   // FIXME: PATCH AT PAX
   function submitSaleRecords(saleRecord, saleItems, userId) {
     var querries = [
       generateSaleRecord(saleRecord, userId),
       generateSaleItems(saleRecord.uuid, saleItems)
     ];
 
-    return db.executeAsTransaction(querries);
+    return db.executeAsTransaction(querries); 
+  }
+  */
+
+  function submitSaleRecords(saleRecord, saleItems, userId) {
+    console.log('[SUBMITSALE]', saleRecord, saleItems, userId);
+    
+    return db.exec(generateSaleRecord(saleRecord))
+    .then(function (res) {
+      console.log('[ReS]', res);
+      return db.exec(generateSaleItems(saleRecord.uuid, saleItems));
+    });
   }
 
   function submitSaleJournal(saleRecordId, caution, userId) {
