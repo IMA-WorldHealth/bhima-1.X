@@ -41,11 +41,9 @@ module.exports = function(db, parser, journal, uuid) {
   */
 
   function submitSaleRecords(saleRecord, saleItems, userId) {
-    console.log('[SUBMITSALE]', saleRecord, saleItems, userId);
     
-    return db.exec(generateSaleRecord(saleRecord))
+    return db.exec(generateSaleRecord(saleRecord, userId))
     .then(function (res) {
-      console.log('[ReS]', res);
       return db.exec(generateSaleItems(saleRecord.uuid, saleItems));
     });
   }
