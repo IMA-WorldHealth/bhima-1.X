@@ -11,41 +11,66 @@
   </div>
 </nav>
 
-<div class="content">
-  <!-- Advanced Search -->
+<main>
+<!-- Advanced Search -->
   <div class="row">
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div ng-click="model.patient.data=[]" class="panel-heading">
-          {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }} {{searchParams}}
-          <div class="pull-right">
-            <a><span class="glyphicon glyphicon-search"></span></a>
-          </div>
+          <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }} {{searchParams}}
+          <!-- <div class="pull&#45;right"> -->
+            <!-- <a><span class="glyphicon glyphicon&#45;search"></span></a> -->
+          <!-- </div> -->
         </div>
         
         <div ng-show="!model.patient.data.length || model.patient.data.length===0" class="panel-body">
           <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-info">
+                <span class="glyphicon glyphicon-info-sign"></span> Any fields left blank will not be included in the search, <b>included fields will be marked with an</b> <span class="glyphicon glyphicon-saved error"></span>
+          </div>
+
+            </div>
+          </div>
+          <div class="row">
+          
           <div class="col-xs-6">
             <div class="form-group">
-              <label class="control-label">{{ "PATIENT_RECORDS.FIRST_NAME" | translate }}</label>
+              <span 
+                ng-if="searchParams.first_name.length"
+                class="glyphicon glyphicon-saved error"></span> 
+               <label class="control-label"> {{ "PATIENT_RECORDS.FIRST_NAME" | translate }}</label>
               <input class="form-bhima" ng-model="searchParams.first_name"></input>
             </div>
 
             <div class="form-group">
+              <span 
+                ng-if="searchParams.last_name.length"
+                class="glyphicon glyphicon-saved error"></span> 
+
               <label class="control-label">{{ "PATIENT_RECORDS.LAST_NAME" | translate }}</label>
               <input class="form-bhima" ng-model="searchParams.last_name"></input>
             </div>
             
             <!-- TODO Implement convert year to date / allow full date to be entered -->
             <div class="form-group">
+              <span 
+                ng-if="searchParams.yob.length"
+                class="glyphicon glyphicon-saved error"></span> 
+
               <label class="control-label">{{ "PATIENT_RECORDS.YOB" | translate }}</label>
-              <input class="form-bhima"></input>
+              <input class="form-bhima" ng-model="searchParams.yob"></input>
             </div>
 
             <div class="form-group">
+              <span 
+                    ng-if="searchParams.sex.length"
+                    class="glyphicon glyphicon-saved error"></span> 
+
               <label class="control-label">{{ "PATIENT_RECORDS.SEX" | translate }}</label>
               <div class="col-xs-12">
                 <div class="radio-inline">
+                  
                   <label>
                     <input
                       type="radio"
@@ -70,48 +95,71 @@
           </div>
         
           <div class="col-xs-6">
+            
+            <fieldset>
+              <legend>
+                Location Search
+                <div class="pull-right">
+                <button 
+                  class="btn btn-default btn-sm"
+                  ng-click="session.locationSearch=!session.locationSearch">
+                  <span class="glyphicon glyphicon-globe" ng-class="{'error' : !session.locationSearch, 'correct' : session.locationSearch}"></span> {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
+                </div>
 
+              </legend>
             <div class="form-group">
+              <span 
+                    ng-if="session.locationSearch"
+                    class="glyphicon glyphicon-saved error"></span> 
+
               <label for="location-country" class="control-label">
                 {{ "LOCATION.COUNTRY" | translate }}
               </label>
-              <select disabled class="form-bhima" id="location-country"> 
+              <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-country"> 
                 <!-- <option value="" disabled="disabled">&#45;&#45; Patient Country&#45;&#45;</option> -->
               </select>
             </div>
 
             <div class="form-group">
+              <span 
+                    ng-if="session.locationSearch"
+                    class="glyphicon glyphicon-saved error"></span> 
+
               <label for="location-province" class="control-label">
                 {{ "LOCATION.PROVINCE" | translate }}
               </label>
-              <select disabled class="form-bhima" id="location-province"> 
+              <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-province"> 
                 <!-- <option value="" disabled="disabled">&#45;&#45; Patient Province &#45;&#45;</option> -->
               </select>
             </div>
 
             <div class="form-group">
+              <span 
+                    ng-if="session.locationSearch"
+                    class="glyphicon glyphicon-saved error"></span> 
+
               <label for="location-sector" class="control-label">
                 {{ "LOCATION.SECTOR" | translate }}
               </label>
-                <select disabled class="form-bhima" id="location-sector">
+                <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-sector">
                   <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
                 </select>
             </div>
 
             <div class="form-group">
+              <span 
+                    ng-if="session.locationSearch"
+                    class="glyphicon glyphicon-saved error"></span> 
+
               <label for="location-village" class="control-label">
                 {{ "LOCATION.VILLAGE" | translate }}
               </label>
-                <input
-                  disabled
-                  class="form-bhima col-xs-9"
-                  id="location-country"
-                  ng-model="data.village_id"
-                  typeahead="v.id as v.name for v in model.village.data | filter:$viewValue | filter:villageFilter | limitTo: 10"
-                  typeahead-on-select="selectLocation()"
-                  typeahead-input-formatter="formatTypeAhead()"
-                  required >
+                <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-sector">
+                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
+                </select>
+            
               </div>
+            </fieldset>
             </div>
           </div>
           <div class="row">
@@ -168,4 +216,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

@@ -48,7 +48,7 @@ INSERT INTO `unit` VALUES
 (12,'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,1,'/partials/hospital/index.html','/hospital'),
 (13,'Fiscal Year','TREE.FISCAL_YEAR','Fiscal year configuration page',1,0,'/partials/fiscal/','/fiscal'),
 (14,'Patient Registration','TREE.PATIENT_REG','Register patients',12,0,'/partials/patient_registration/','/patient'),
-(15,'Patient Records','TREE.PATIENT_RECORDS','Search for patient',12,0,'/partials/records/patient_records/','/patient_records/'),
+(15,'Patient Search','TREE.PATIENT_SEARCH','Search for patient',12,0,'/partials/records/patient_records/','/patient_records/'),
 (16,'Sales','TREE.SALES','Create an invoice for a sale',5,0,'/partials/sales/','/sales/'),
 (17,'Sale Records','TREE.SALE_RECORDS','Search for a sale',5,0,'/partials/records/sales_records/','/sale_records/'),
 (18,'Cash Box','TREE.CASH','Pay invoices',5,0,'/partials/cash/','/cash'),
