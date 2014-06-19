@@ -131,7 +131,10 @@
     <div class="row">
       <div class="col-xs-12">
         <div class="alert alert-info">
-          <span class="glyphicon glyphicon-info-sign"></span> Showing all sales for patient <b>{{session.patient.name}}</b>
+          <span class="glyphicon glyphicon-info-sign"></span> 
+          {{ledger.data.length ? 'Showing all sales for patient ' : 'No sale data found for patient '}}
+           <b>{{session.patient.name}}
+          </b>
         </div>
       </div>
     </div>
@@ -140,7 +143,7 @@
       <div class="col-xs-12">
         
         
-        <div class="panel panel-default">
+        <div ng-if="ledger.data.length" class="panel panel-default">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-th-list"></span> Available Prescriptions
           </div>

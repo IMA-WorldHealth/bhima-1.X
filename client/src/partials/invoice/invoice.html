@@ -141,6 +141,7 @@
             <br>
             <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b>{{recipient.hr_id}}</b>
             <br>
+            <i>{{'INVOICE.DEPOT_REF' | translate}}</i> <b>{{depot.reference}}</b>
             <br>
             <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
             <br>
@@ -155,31 +156,40 @@
             <table class="invoiceTable">
               <thead>
                 <tr>
+                  <th>{{'COLUMNS.DESCRIPTION' | translate}}</th>
                   <th>{{'COLUMNS.CODE' | translate}}</th>
-                  <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+                  <th>{{'COLUMNS.DEPOT' | translate}}</th>
+                  <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>
                   <th>{{'COLUMNS.QUANTITY' | translate}}</th>
-                  <th>{{'INVOICE.TRANSACTION_PRICE' | translate}}</th>
-                  <th>{{'INVOICE.AMOUNT' | translate}}</th>
                 </tr>
               </thead>
               <tbody class="items">
-                <tr ng-repeat="item in model['invoiceItem'].data | orderBy : 'code'">
+                <tr ng-repeat="item in consumption.data | orderBy : 'code'">
+                  <td>'{{ item.text }}'</td>
                   <td>{{ item.code }}</td>
-                  <td>{{ item.text }}</td>
+                  <td>[{{depot.reference}}] {{ depot.text }}</td>
+                  <td>{{ item.lot_number }}</td>
                   <td>{{ item.quantity }}</td>
 
-                  <td><span ng-bind-html="item.localeTransaction | intlcurrency:session.currentCurrency.id"></span></td>
-                  <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.id"></span></td>
+                  <!-- <td><span ng&#45;bind&#45;html="item.localeTransaction | intlcurrency:session.currentCurrency.id"></span></td> -->
+                  <!-- <td><span ng&#45;bind&#45;html="item.localeCost | intlcurrency:session.currentCurrency.id"></span></td> -->
                 </tr>
               </tbody>
-              <tbody class="totals">
-                <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.id"></span></td></tr>
-                <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.id"></span></td></tr>
-                <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.id"></span></td></tr>
-              </tbody>
-
             </table>
+
+          <div class="signatures">
+            <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+            <div class="signature-box">
+              <label>{{ "SIGNATURES.CUSTOMER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+              <div class="signature-line"></div>
+            </div>
+
           </div>
+
+          </div>
+        
+          
         </div> <!-- End Patient Invoice template -->
       </div>
 
