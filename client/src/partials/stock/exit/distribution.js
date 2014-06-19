@@ -3,13 +3,14 @@ angular.module('bhima.controllers')
   '$scope',
   '$q',
   '$routeParams',
+  '$location',
   'validate',
   'connect',
   'messenger',
   'appstate',
   'util',
   'uuid',
-  function ($scope, $q, $routeParams, validate, connect, messenger, appstate, util, uuid) {
+  function ($scope, $q, $routeParams, $location, validate, connect, messenger, appstate, util, uuid) {
     var session = $scope.session = {
       // FIXME
       index : -1,
@@ -46,7 +47,7 @@ angular.module('bhima.controllers')
         icon : 'glyphicon-remove-sign error'
       },
       LIMITED_STOCK : {
-        alert : 'There is not valid enough stock available to fulfill the order, contact the stock administrator.',
+        alert : 'There is not enough valid stock available to fulfill the order, contact the stock administrator.',
         icon : 'glyphicon-info-sign warn'
       },
       EXPIRED : {
@@ -256,7 +257,9 @@ angular.module('bhima.controllers')
       console.log('items', submitItem);
       connect.basicPut('consumption', submitItem)
       .then(function () {
-        messenger.success('Consumption successfully written', true);
+        // messenger.success('Consumption successfully written', true);
+        console.log('sale', session.sale);
+        $location.path('/invoice/consumption/' + session.sale.inv_po_id);
       })
       .catch(function (error) {
         console.log(error);

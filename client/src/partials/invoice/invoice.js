@@ -198,9 +198,13 @@ angular.module('bhima.controllers')
           tables : {
             sale : {
               columns : ['reference', 'cost', 'debitor_uuid', 'invoice_date']
+            },
+            project : {
+              columns : ['abbr']
             }
           },
-          where : ['sale.uuid='+invoiceRef]
+          where : ['sale.uuid='+invoiceRef],
+          join : ['sale.project_id=project.id']
         }
       };
 
@@ -234,12 +238,16 @@ angular.module('bhima.controllers')
             },
             debitor_group : {
               columns : ['name', 'account_id']
+            },
+            project : {
+              columns : ['abbr']
             }
           },
           where : ['patient.debitor_uuid=' + debtorId],
           join : [
             'patient.debitor_uuid=debitor.uuid',
-            'debitor.group_uuid=debitor_group.uuid'
+            'debitor.group_uuid=debitor_group.uuid',
+            'patient.project_id=project.id'
           ]
         }
       };
@@ -247,7 +255,12 @@ angular.module('bhima.controllers')
       validate.process(dependencies).then(function (consumptionModel) {
         angular.extend($scope, consumptionModel);
 
-        $scope.recipient=consumptionModel.patient.data[0];
+        $scope.recipient = consumptionModel.patient.data[0];
+        $scope.recipient.hr_id = $scope.recipient.abbr + $scope.recipient.reference;
+        $scope.depot = consumptionModel.depot.data[0];
+
+        $scope.invoice = consumptionModel.invoice.data[0];
+        $scope.invoice.hr_id = $scope.invoice.abbr + $scope.invoice.reference;
       });
     }
  
