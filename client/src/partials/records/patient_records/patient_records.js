@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   'validate',
   'appstate',
-  'connect', 
+  'connect',
   function($scope, validate, appstate, connect) {
     var dependencies = {}, session = $scope.session = {};
   
@@ -27,25 +27,36 @@ angular.module('bhima.controllers')
     var locationDictionary = ['village', 'sector', 'province', 'country'];
     var locationRelationship = {
       village : {
-        dependency : 'sector',
+        value : null,
+        requires : 'sector',
+        dependency : null,
         columns : ['uuid', 'name', 'sector_uuid']
       },
       sector : {
+        value : null,
+        requires : 'village',
         dependency : 'province',
         columns : ['uuid', 'name', 'province_uuid']
       },
       province : {
-        dependency : 'country',
+        value : null,
+        dependency : 'sector',
+        requires : 'country',
         columns : ['uuid', 'name', 'country_uuid']
       },
       country : {
-        dependency : null,
+        value : null,
+        dependency : 'province',
+        requires : null,
         columns : ['uuid', 'country_en', 'country_fr']
       }
     };
-
-    defineLocationDependency();
-    refreshLocation(null);
+    var locationStore = {};
+  
+    appstate.register('project', function (project) {
+      defineLocationDependency();
+      initialiseLocation(project.location_id);
+    });
     
     function defineLocationDependency() {
       locationDictionary.forEach(function (key) {
@@ -57,17 +68,59 @@ angular.module('bhima.controllers')
         dependencies[key].query.tables[key] = {
           columns : locationRelationship[key].columns
         };
-        dependencies[key].query.where = [locationRelationship[key].dependency + '_uuid'];
+        // dependencies[key].query.where = [locationRelationship[key].dependency + '_uuid'];
       });
     }
 
-    function refreshLocation(locationId) { 
+    function initialiseLocation(locationId) {
       
-      validate.process(dependencies, locationDictionary).then(function (model) { 
-        console.log('got', model);
+      connect.fetch('/location/' + locationId).then(function (defaultLocation) {
+        defaultLocation = defaultLocation[0];
+
+        // Populate initial values
+        locationDictionary.forEach(function (key) {
+          locationRelationship[key].value = defaultLocation[key + '_uuid'];
+        });
+
+        updateLocation('country', null);
+
+        console.log(locationRelationship);
+        console.log('got defaultLocation', defaultLocation);
       });
+      // console.log(dependencies);
+      // validate.process(dependencies, locationDictionary).then(function (model) { 
+      //   console.log('got', model);
+      // });
     }
 
+    function updateLocation(key, uuidDependency) { 
+      var dependency = locationRelationship[key].dependency;
+      var currentValue;
+      
+      if (uuidDependency) {
+        dependencies[key].query.where = [locationRelationship[key].requires + '_uuid=' + uuidDependency];
+      }
+
+      validate.process(dependencies, [key]).then(function (result) {
+        locationStore[key] = result[key];
+      
+
+        // Check to see if current value exists in list
+        currentValue = locationStore[key].get(locationRelationship[key].value);
+        
+        if (!currentValue) { 
+          // TODO Should be sorted alphabetically, making this the first value
+          currentValue = locationRelationship[key].value = locationStore[key].data[0];
+        }
+        console.log('done', locationStore);
+        // Download new data, try and match current value to currently selected, if not select default
+        if (dependency) {
+          // updateLocation(dependency, currentValue);
+        }
+
+      });
+      
+    }
 
     // validate.process(dependencies).then(patientRecords);
     // function initialiseLocationParams() {
