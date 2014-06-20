@@ -2,7 +2,7 @@
   {{ "PATIENT_REG.TITLE" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
     <a href="#/debitor/debitor_group" class="capital btn btn-default btn-sm">
       <span class="glyphicon glyphicon-tag"></span> {{ "PATIENT_REG.CREATE_DEBTOR_GROUP" | translate }}
@@ -16,9 +16,9 @@
       <span class="glyphicon glyphicon-list"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }}
     </a>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="col-xs-12">
     <div class="row">
       <div class="col-xs-7">
@@ -62,7 +62,7 @@
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob">
+                      <input id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
                     </div>
                   </div>
 
@@ -299,22 +299,22 @@
           </div> <!-- End column 5 row -->
           <div class="row hack-right">
             <div class="panel panel-default">
-              <div class="panel-heading"><span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.PATIENT_NOTES" | translate }}</div>
-              <!-- <div class="panel&#45;body"> -->
-                <textarea type="text" multiline class="form-bhima note"></textarea>
-              <!-- </div> -->
+              <div class="panel-heading">
+                <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.PATIENT_NOTES" | translate }}
+              </div>
+              <textarea type="text" multiline class="form-bhima note"></textarea>
             </div> <!-- End panel -->
           </div> <!-- End column 5 row -->
         </div>
       <!-- </div> <!&#45;&#45;End main column 5 &#45;&#45;> -->
     </div><!-- End row -->
   </div>
-</div>
+</main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
     </a>
   </div>
-</section>
+</footer>

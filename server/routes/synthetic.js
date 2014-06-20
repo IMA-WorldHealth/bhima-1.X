@@ -27,7 +27,7 @@ module.exports = function (db, sanitize) {
       ' WHERE '+portion+' AND `t`.`project_id`='+sanitize.escape(project_id)+' GROUP BY `account_id`';
 
     db.execute(sql, function(err, ans){
-      if (err) { return callback(err, null); }
+      if (err) { return callback(err); }
       return callback(null, ans);
     });
   }
@@ -38,7 +38,7 @@ module.exports = function (db, sanitize) {
       return sanitize.escape(item);
     });
     var portion = '';
-    if(acIds.length === 1){
+    if (acIds.length === 1){
       portion = '`t`.`account_id`='+acIds[0];
     }else{
       portion = '`t`.`account_id`='+acIds.join(' OR `t`.`account_id`='); //I think it not important
@@ -48,7 +48,7 @@ module.exports = function (db, sanitize) {
       ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `currency_id`, `trans_date` FROM `general_ledger`)) as `t`'+
       ' WHERE '+portion+' AND `t`.`project_id`='+sanitize.escape(project_id)+' GROUP BY `trans_date` LIMIT 20;';
     db.execute(sql, function(err, ans){
-      if(err) return callback(err, null)
+      if (err) { return callback(err); }
       return callback(null, ans);
     });
   }
@@ -59,7 +59,7 @@ module.exports = function (db, sanitize) {
       return sanitize.escape(item);
     });
     var portion = '';
-    if(acIds.length === 1){
+    if (acIds.length === 1){
       portion = '`t`.`account_id`='+acIds[0];
     }else{
       portion = '`t`.`account_id`='+acIds.join(' OR `t`.`account_id`='); //I think it not important
@@ -68,8 +68,8 @@ module.exports = function (db, sanitize) {
       'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `currency_id`, `trans_date` FROM `posting_journal`)'+
       ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `currency_id`, `trans_date` FROM `general_ledger`)) as `t`'+
       ' WHERE '+portion+' AND `t`.`project_id`='+sanitize.escape(project_id)+' GROUP BY `trans_date` LIMIT 20;';
-    db.execute(sql, function(err, ans){
-      if(err) return callback(err, null)
+    db.execute(sql, function(err, ans) {
+      if (err) { return callback(err); }
       return callback(null, ans);
     });
   }
@@ -86,25 +86,24 @@ module.exports = function (db, sanitize) {
       ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`account_id` IN ('+ids.join(',')+') AND (`t`.`service_id` IS NULL OR `service`.`cost_center_id`='+sanitize.escape(request.cc_id)+') GROUP BY `t`.`account_id`';
 
     db.execute(sql, function(err, ans){
-      if(err) return callback(err, null)
+      if (err) { return callback(err); }
       console.log('les resultats a retourner', ans);
       return callback(null, ans);
     });
   }
 
   function sp (project_id, request, callback){
-      var sql =
+    var sql =
       'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit, service_id, account_number '+
       'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `posting_journal`)'+
       ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `general_ledger`)) as `t` JOIN `account` ON `account`.`id`=`t`.`account_id` JOIN `service` ON `service`.`id` = `t`.`service_id`'+
       ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`service_id`='+sanitize.escape(request.service_id)+' GROUP BY `t`.`account_id`';
 
     db.execute(sql, function(err, ans){
-      if(err) return callback(err, null)
-      var ans = ans.filter(function(item){
+      if (err) { return callback(err); }
+      ans = ans.filter(function (item) {
         return item.account_number.toString().indexOf('7') === 0;
       });
-      console.log('les resultats a retourner [sp] :', ans);
       return callback(null, ans);
     });
   }

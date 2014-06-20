@@ -629,6 +629,7 @@ create table `sale` (
   constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
 
+
 drop table if exists `credit_note`;
 create table `credit_note` (
   `project_id`    smallint unsigned not null,
@@ -1191,7 +1192,3 @@ create table `caution` (
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
 ) engine=innodb;
-
-
-
-
