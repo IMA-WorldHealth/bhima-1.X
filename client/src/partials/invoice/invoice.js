@@ -161,6 +161,109 @@ angular.module('bhima.controllers')
       .then(buildInvoiceQuery);
     }
 
+    function processConsumption() {
+      dependencies = {};
+
+      dependencies.consumption = {
+        query : {
+          tables : {
+            consumption : {
+              columns : ['uuid', 'depot_uuid', 'date', 'document_id', 'tracking_number', 'quantity']
+            },
+            stock : {
+              columns : ['inventory_uuid', 'expiration_date', 'lot_number']
+            },
+            inventory : {
+              columns : ['code', 'text', 'consumable']
+            }
+          },
+          where : ['consumption.document_id='+invoiceId],
+          join : [
+            'stock.tracking_number=consumption.tracking_number',
+            'stock.inventory_uuid=inventory.uuid'
+          ]
+        }
+      };
+
+      validate.process(dependencies).then(fetchReferences);
+    }
+
+    // FIXME All the hardcoded references
+    function fetchReferences(model) {
+      var depotId = model.consumption.data[0].depot_uuid;
+      var invoiceRef = model.consumption.data[0].document_id;
+
+      dependencies.invoice = {
+        query : {
+          tables : {
+            sale : {
+              columns : ['reference', 'cost', 'debitor_uuid', 'invoice_date']
+            },
+            project : {
+              columns : ['abbr']
+            }
+          },
+          where : ['sale.uuid='+invoiceRef],
+          join : ['sale.project_id=project.id']
+        }
+      };
+
+      dependencies.depot = {
+        query : {
+          tables : {
+            depot : {
+              columns : ['uuid', 'reference', 'text']
+            }
+          },
+          where : ['depot.uuid=' + depotId]
+        }
+      };
+
+      validate.process(dependencies).then(consumptionPatient);
+    }
+  
+    // FIXME De-couple methods with promises
+    function consumptionPatient(model) {
+      console.log('got', model);
+      var debtorId = model.invoice.data[0].debitor_uuid;
+
+      dependencies.patient = {
+        query : {
+          tables : {
+            patient : {
+              columns : ['reference', 'first_name', 'last_name', 'dob', 'current_location_id', 'registration_date']
+            },
+            debitor : {
+              columns : ['group_uuid']
+            },
+            debitor_group : {
+              columns : ['name', 'account_id']
+            },
+            project : {
+              columns : ['abbr']
+            }
+          },
+          where : ['patient.debitor_uuid=' + debtorId],
+          join : [
+            'patient.debitor_uuid=debitor.uuid',
+            'debitor.group_uuid=debitor_group.uuid',
+            'patient.project_id=project.id'
+          ]
+        }
+      };
+
+      validate.process(dependencies).then(function (consumptionModel) {
+        angular.extend($scope, consumptionModel);
+
+        $scope.recipient = consumptionModel.patient.data[0];
+        $scope.recipient.hr_id = $scope.recipient.abbr + $scope.recipient.reference;
+        $scope.depot = consumptionModel.depot.data[0];
+
+        $scope.invoice = consumptionModel.invoice.data[0];
+        $scope.invoice.hr_id = $scope.invoice.abbr + $scope.invoice.reference;
+      });
+    }
+ 
     function processMovement() {
       dependencies = {};
 
@@ -238,7 +341,7 @@ angular.module('bhima.controllers')
         },
         where : ['purchase.uuid=' + invoiceId]
       };
-
+ 
       dependencies.purchaseItem = {
         query : {
           tables : {
@@ -543,7 +646,8 @@ angular.module('bhima.controllers')
       'purchase': processPurchase,
       'pcash_transfert' : processTransfert,
       'pcash_convention' : processConvention,
-      'movement' : processMovement
+      'movement' : processMovement,
+      'consumption' : processConsumption
     };
 
     appstate.register('project', function (project) {
