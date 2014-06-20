@@ -14,18 +14,19 @@ Questions theoriques
 10. Parler du Javascript.
 
 Questions :
+
 (1) Parler l'architecture logicelle trois tierces pour le web.
     Par apport au model trois tierces, comment stockeriez-vous les donnees durable, et les donnees non-durable?
 
-(2) What was the largest development team you worked on?  How did you share code changes?
+(2) Quel Etait le plus grand project de developpement en equipe au quel vous avez participE? Comment avez vous partageE le code?
 
-(3) Why is client-side form validation important?  What other measures of validation would you take to ensure data integrity?
+(3) Pourquoi la validation de formulaire cote client est elle important?  Quelle autre mesure pouvez vous prendre pour assurer la validation des donnees?
 
-(4) What achievement are you most proud of as a dev?
+(4) Quelle realisation vous donne fierite etant que developpeur?
 
-(5) What tools have you worked with (for HTML, CSS, and SQL)?  What is your ideal development environment?
+(5) Quels outils utilsez - vous  (pour HTML, CSS, et SQL)?  Quel est votre envirronement de developpement ideal?
 
-(6) What is the DOM?  How does javascript interact with it?
+(6) Qu'est - ce que le DOM?  Comment javascript interagit avec?
 
 
 Jonathan's Ideas
