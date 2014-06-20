@@ -46,7 +46,6 @@ var report         = require('./routes/report')(db, sanitize, util),
 var app = express();
 
 // configuration
-
 app.use(compress());
 app.use(bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
 app.use(cookieParser());
@@ -58,7 +57,7 @@ app.use('/i18n', express.static('client/dest/i18n', { maxAge : 10000 }));
 app.use(authenticate);
 app.use(authorize);
 app.use(projects);
-app.use(express.static(cfg.static, {maxAge : 10000}));
+app.use(express.static(cfg.static, { maxAge : 10000 }));
 
 app.get('/', function (req, res, next) {
   /*jshint unused : false*/
@@ -67,6 +66,7 @@ app.get('/', function (req, res, next) {
   res.sendfile('/index.html');
 });
 
+// TODO : Change this to app.route('/data').get().post().delete() ..
 app.get('/data/', function (req, res, next) {
   var decode = JSON.parse(decodeURI(url.parse(req.url).query));
   var sql = parser.select(decode);
@@ -141,15 +141,17 @@ app.get('/currentProject', function (req, res, next) {
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as "enterprise_name", `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as "village", `sector`.`name` as "sector" ' +
     'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
     'WHERE `project`.`id`=' + req.session.project_id + ';';
-  db.execute(sql, function (err, result) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (result) {
     res.send(result[0]);
-  });
+  })
+  .catch(function (err) { next(err); })
+  .done();
 });
 
 // FIXME: this is terribly insecure.  Please remove
 app.get('/user_session', function (req, res) {
-  res.send(200, {id: req.session.user_id});
+  res.send(200, { id: req.session.user_id });
 });
 
 app.get('/pcash_transfert_summers', function (req, res, next) {
@@ -157,11 +159,15 @@ app.get('/pcash_transfert_summers', function (req, res, next) {
     'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
     'FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` '+
     'WHERE `primary_cash_module`.`text`="transfert") ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
-  db.execute(sql, function (err) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function () {
     var d = []; //for now
     res.send(d);
-  });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
 });
 
 app.get('/trialbalance/initialize', function (req, res, next) {

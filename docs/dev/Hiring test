@@ -1,25 +1,31 @@
 Questions theoriques
 ====================
 
-
-1.  Citez et parler des etapes du developpement logiciel.
-2.  Pourquoi modeliser un systeme informatique.
+# 1.  Citez et parler des etapes du developpement logiciel.
+# 2.  Pourquoi modeliser un systeme informatique.
 2.  Parler de la methode MERISE.
 3.  Quel avantage offre un SGBD (Systeme de gestion des base des donnees) par rapport a un SGF (Systeme de gestion des fichiers)?
 4.  Parler l'architecture trois tierces pour le web.
-5.  Parler du DOM.
+# 5.  Parler du DOM. (Familiarity in another question)
 6.  Parler des services web.
 7.  Parler des sous reseaux et leurs utilites.
 8.  Quelle est la diference entre un routeur et un switch?
 9.  Ecrire un pseudo code triant un tableau d'entier de taille n dans l'orde croissant.
 10. Parler du Javascript.
 
+Questions :
+(1) Parler l'architecture logicelle trois tierces pour le web.
+    Par apport au model trois tierces, comment stockeriez-vous les donnees durable, et les donnees non-durable?
 
-Questions Pratiques
-===================
+(2) What was the largest development team you worked on?  How did you share code changes?
 
-1.
-2.
+(3) Why is client-side form validation important?  What other measures of validation would you take to ensure data integrity?
+
+(4) What achievement are you most proud of as a dev?
+
+(5) What tools have you worked with (for HTML, CSS, and SQL)?  What is your ideal development environment?
+
+(6) What is the DOM?  How does javascript interact with it?
 
 
 Jonathan's Ideas

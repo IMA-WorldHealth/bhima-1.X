@@ -24,7 +24,7 @@ gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
     // .pipe(jshint(jshintrcPath))
     // .pipe(jshint.reporter('default'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(destPath))
     .pipe(notify({ message : 'Completed compiling scripts.' }));
