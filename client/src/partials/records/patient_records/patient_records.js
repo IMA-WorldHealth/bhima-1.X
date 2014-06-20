@@ -113,7 +113,6 @@ angular.module('bhima.controllers')
     
       // Not for country
       if (uuidDependency) {
-        console.log('flag', locationRelationship[key].requires, uuidDependency);
         dependencies[key].query.where = [key + '.' + locationRelationship[key].requires + '_uuid=' + uuidDependency];
       }
 

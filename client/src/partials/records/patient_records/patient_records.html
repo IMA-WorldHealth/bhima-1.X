@@ -95,18 +95,21 @@
           </div>
         
           <div class="col-xs-6">
-            
-            <fieldset>
-              <legend>
-                Location Search
-                <div class="pull-right">
-                <button 
+            <div class="form-group">
+            <button 
                   class="btn btn-default btn-sm"
                   ng-click="session.locationSearch=!session.locationSearch">
                   <span class="glyphicon glyphicon-globe" ng-class="{'error' : !session.locationSearch, 'correct' : session.locationSearch}"></span> {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
+            </div>
+            <fieldset ng-if="session.locationSearch">
+              <legend>
+                Location Search
+                <div class="pull-right">
+                
                 </div>
 
               </legend>
+
               <div class="form-group">
               <span 
                     ng-if="session.locationSearch"
@@ -122,6 +125,7 @@
                 ng-model="locationRelationship.country.value"
                 ng-options="country.uuid as country.country_en for country in locationStore.country.data | orderBy : 'country_en'"
                 ng-change="updateLocation('province', locationRelationship.country.value)"> 
+                
                 <!-- <option value="" disabled="disabled">&#45;&#45; Patient Country&#45;&#45;</option> -->
               </select>
             </div>
@@ -141,7 +145,7 @@
                 ng-model="locationRelationship.province.value"
                 ng-options="province.uuid as province.name for province in locationStore.province.data | orderBy : 'name'"
                 ng-change="updateLocation('sector', locationRelationship.province.value)"> 
-                <!-- <option value="" disabled="disabled">&#45;&#45; Patient Province &#45;&#45;</option> -->
+                <option value="" ng-if="!locationStore.province.data.length" disabled="disabled">-- No provinces found --</option>
               </select>
             </div>
 
@@ -159,7 +163,7 @@
                 ng-model="locationRelationship.sector.value"
                 ng-options="sector.uuid as sector.name for sector in locationStore.sector.data | orderBy : 'name'"
                 ng-change="updateLocation('village', locationRelationship.sector.value)"> 
-                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
+                <option value="" ng-if="!locationStore.sector.data.length" disabled="disabled">-- No sectors found --</option>
                 </select>
             </div>
 
@@ -177,7 +181,7 @@
                 id="location-sector"
                 ng-model="locationRelationship.village.value"
                 ng-options="village.uuid as village.name for village in locationStore.village.data | orderBy : 'name'">   
-                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
+                <option value="" ng-if="!locationStore.village.data.length" disabled="disabled">-- No villages found --</option>
                 </select>
             
               </div>
