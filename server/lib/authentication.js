@@ -28,11 +28,11 @@ module.exports = function (db, sanitize) {
       'FROM `user` WHERE `user`.`username`=' + sanitize.escape(usr) +
       ' AND `user`.`password`=' + sanitize.escape(pwd);
 
-    db.execute(sql, function (err, results) {
-      if (err) { return next(err); }
+    db.exec(sql)
+    .then(function (results) {
       // TODO: client-side logic not implimented for this.
       if (results.length < 1) {
-        return res.sendfile('app/error.html');
+        return res.sendfile('client/dest/error.html');
         //return next(new Error('Incorrect username/password combination.'));
       }
 
@@ -48,49 +48,49 @@ module.exports = function (db, sanitize) {
 
       id = sanitize.escape(user.id);
       sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=' + id;
-
-
-      db.execute(sql, function (err, results) {
-        if (err) { return next(err); }
-
-        sql = 'SELECT `unit`.`url` ' +
+   
+      return db.exec(sql);
+    })
+    .then(function () {
+      var sql = 'SELECT `unit`.`url` ' +
               'FROM `unit`, `permission`, `user` WHERE ' +
                 '`permission`.`user_id` = `user`.`id` AND ' +
                 '`permission`.`unit_id` = `unit`.`id` AND ' +
                 '`user`.`id`=' + id;
 
-        db.execute(sql, function (err, results) {
-          if (err) { return next(err); }
-          if (!results.length) {
-            return next(new Error('This user has no permissions, please contact your System Administrator.'));
-          }
-          req.session.authenticated = true;
-          req.session.user_id = user.id;
+      return db.exec(sql);
+    })
+    .then(function (results) {
+      if (!results.length) {
+        throw new Error('This user has no permissions, please contact your System Administrator.');
+      }
 
-          req.session.paths = results.map(function (row) {
-            return row.url;
-          });
+      req.session.authenticated = true;
+      req.session.user_id = user.id;
 
-          sql =
-            'SELECT `project`.`id`, `project`.`name`, `project`.`abbr` ' +
-            'FROM `project` JOIN `project_permission` ' +
-            'ON `project`.`id` = `project_permission`.`project_id` ' +
-            'WHERE `project_permission`.`user_id` = ' + sanitize.escape(req.session.user_id) + ';';
-
-          db.execute(sql, function (err, results) {
-            if (err) { return next(err); }
-            if (results.length === 1) {
-              req.session.project_id = results[0].id;
-              res.redirect('/');
-            } else {
-              // FIXME hardcoded routes
-              return res.sendfile('client/dest/project.html');
-            }
-          });
-
-        });
+      req.session.paths = results.map(function (row) {
+        return row.url;
       });
-    });
+
+      sql =
+        'SELECT `project`.`id`, `project`.`name`, `project`.`abbr` ' +
+        'FROM `project` JOIN `project_permission` ' +
+        'ON `project`.`id` = `project_permission`.`project_id` ' +
+        'WHERE `project_permission`.`user_id` = ' + sanitize.escape(req.session.user_id) + ';';
+
+      return db.exec(sql);
+    })
+    .then(function (results) {
+
+      if (results.length === 1) {
+        req.session.project_id = results[0].id;
+        res.redirect('/');
+      } else {
+        // FIXME hardcoded routes
+        return res.sendfile('client/dest/project.html');
+      }
+    })
+    .catch(function (err) { next(err); });
   }
 
   function logout(req, res, next) {
@@ -104,15 +104,15 @@ module.exports = function (db, sanitize) {
       'UPDATE `user` SET `user`.`logged_in`=0' +
       ' WHERE `user`.`id`=' + sanitize.escape(req.session.user_id);
 
-    db.execute(sql, function (err, result) {
-      if (err) { return next(err); }
+    db.exec(sql)
+    .then(function () {
       req.session.destroy(function () {
         res.clearCookie('connect.sid');
         res.redirect('/login');
       });
       req.session = null; // see: http://expressjs.com/api.html#cookieSession
-    });
-
+    })
+    .catch(function (err) { next(err); });
   }
 
   return function authenticate(req, res, next) {

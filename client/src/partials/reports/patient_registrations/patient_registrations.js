@@ -1,11 +1,12 @@
 angular.module('bhima.controllers')
 .controller('reportPatientRegistrations', [
   '$scope',
+  '$filter',
+  '$translate',
   'validate',
   'connect',
   'appstate',
-  '$filter',
-  function ($scope, validate, connect, appstate, $filter) {
+  function ($scope, $filter, $translate, validate, connect, appstate) {
     var session = $scope.session = { count : {} };
     var dependencies = {};
     $scope.selected = null;
@@ -55,11 +56,6 @@ angular.module('bhima.controllers')
       }
     ];
 
-    function formatDates () {
-      session.dateFrom = $filter('date')(session.dateFrom, 'yyyy-MM-dd');
-      session.dateTo = $filter('date')(session.dateTo, 'yyyy-MM-dd');
-    }
-
     function search (selection) {
       session.selected = selection;
       selection.fn();
@@ -72,14 +68,12 @@ angular.module('bhima.controllers')
       // toggle off active
       session.active = !p;
 
-      formatDates();
-
       req = {
-        dateFrom : session.dateFrom,
-        dateTo : session.dateTo
+        dateFrom : $filter('date')(session.dateFrom, 'yyyy-MM-dd'),
+        dateTo : $filter('date')(session.dateTo, 'yyyy-MM-dd')
       };
 
-      if (!session.project) {session.project = $scope.allProjectIds; }
+      console.log('session.project', session.project);
 
       url = '/reports/patients/?id=' + session.project;
       url += '&start=' + req.dateFrom;
@@ -97,9 +91,13 @@ angular.module('bhima.controllers')
       validate.process(dependencies)
       .then(function (models) {
         $scope.projects = models.projects;
-        $scope.allProjectIds =
+        var allProjectIds =
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, '')
           .substr(1);
+        $scope.projects.post({
+          id : allProjectIds,
+          name : $translate.instant('CASH_PAYMENTS.ALL_PROJECTS')
+        });
         session.project = project.id;
         search($scope.options[0]);
       });

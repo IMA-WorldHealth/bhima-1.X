@@ -116,7 +116,7 @@ angular.module('bhima.controllers')
           $scope.session.deleteQueue.push(item.uuid);
         }
       } else {
-        messenger.warning($translate.instant('PRICE_LIST.WARN'));
+        messenger.warn($translate.instant('PRICE_LIST.WARN'));
       }
     }
 

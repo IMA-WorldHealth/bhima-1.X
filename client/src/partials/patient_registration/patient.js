@@ -16,8 +16,9 @@ angular.module('bhima.controllers')
         defaultBirthMonth = '06-01';
 
     $scope.assignation = {};
-    $scope.sessionProperties = {};
+    $scope.sessionProperties = { timestamp : new Date() };
     $scope.patient = {};
+    window.patient = $scope.patient;
 
     dependencies.debtorGroup = {
       query : {
@@ -106,7 +107,7 @@ angular.module('bhima.controllers')
     $scope.registerPatient = function registerPatient() {
 
       if (util.isDateAfter($scope.patient.dob, new Date())) {
-        return messenger.warning($translate('PATIENT_REG.INVALID_DATE'), 6000);
+        return messenger.warn($translate('PATIENT_REG.INVALID_DATE'), 6000);
       }
 
       // This is overly verbose, but works and is clean
@@ -143,15 +144,17 @@ angular.module('bhima.controllers')
       });
     };
 
-
     function createVillage(village, sector_uuid) {
-
       return connect.basicPut('village', [{
         uuid : uuid(),
         name : village,
         sector_uuid : sector_uuid
       }]);
     }
+
+    $scope.getMaxDate = function getMaxDate () {
+      return util.htmlDate($scope.sessionProperties.timestamp);
+    };
 
     function writePatient(patient) {
       var debtorId = uuid(), patientId = uuid();
@@ -191,30 +194,30 @@ angular.module('bhima.controllers')
       });
     }
 
-    //Utility methods
-    $scope.$watch('sessionProperties.yob', function(nval) {
-      if (nval && nval.length === 4) {
-        $scope.patient.dob = nval + '-' + defaultBirthMonth;
-      }
+    // Utility methods
+    $scope.$watch('sessionProperties.yob', function (nval) {
+      // Angular 1.3.0-beta.3 fixes date issues, now works with raw object
+      $scope.patient.dob = nval && nval.length === 4 ? new Date(nval + '-' + defaultBirthMonth) : undefined;
     });
 
     $scope.enableFullDate = function enableFullDate() {
       $scope.sessionProperties.fullDateEnabled = true;
     };
 
-    function handleError (err) {
+    function handleError(err) {
       messenger.danger('An Error Occured : ' + JSON.stringify(err));
     }
 
     // invocation
 
-    appstate.register('project', function(project){
+    appstate.register('project', function (project){
       $scope.project = project;
       validate.process(dependencies)
-      .then(patientRegistration, handleError);
+      .then(patientRegistration)
+      .catch(handleError);
     });
 
-    function updateProvinceO (country) {
+    function updateProvinceO(country) {
       $scope.origin.province = $scope.province.data.filter(function (province) {
         return province.country_uuid === country.uuid;
       })[0];
