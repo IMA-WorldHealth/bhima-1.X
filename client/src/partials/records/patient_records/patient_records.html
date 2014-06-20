@@ -107,7 +107,7 @@
                 </div>
 
               </legend>
-            <div class="form-group">
+              <div class="form-group">
               <span 
                     ng-if="session.locationSearch"
                     class="glyphicon glyphicon-saved error"></span> 
@@ -115,7 +115,13 @@
               <label for="location-country" class="control-label">
                 {{ "LOCATION.COUNTRY" | translate }}
               </label>
-              <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-country"> 
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" 
+                id="location-country" 
+                ng-model="locationRelationship.country.value"
+                ng-options="country.uuid as country.country_en for country in locationStore.country.data | orderBy : 'country_en'"
+                ng-change="updateLocation('province', locationRelationship.country.value)"> 
                 <!-- <option value="" disabled="disabled">&#45;&#45; Patient Country&#45;&#45;</option> -->
               </select>
             </div>
@@ -128,7 +134,13 @@
               <label for="location-province" class="control-label">
                 {{ "LOCATION.PROVINCE" | translate }}
               </label>
-              <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-province"> 
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" 
+                id="location-province"
+                ng-model="locationRelationship.province.value"
+                ng-options="province.uuid as province.name for province in locationStore.province.data | orderBy : 'name'"
+                ng-change="updateLocation('sector', locationRelationship.province.value)"> 
                 <!-- <option value="" disabled="disabled">&#45;&#45; Patient Province &#45;&#45;</option> -->
               </select>
             </div>
@@ -141,7 +153,12 @@
               <label for="location-sector" class="control-label">
                 {{ "LOCATION.SECTOR" | translate }}
               </label>
-                <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-sector">
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" id="location-sector"
+                ng-model="locationRelationship.sector.value"
+                ng-options="sector.uuid as sector.name for sector in locationStore.sector.data | orderBy : 'name'"
+                ng-change="updateLocation('village', locationRelationship.sector.value)"> 
                   <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
                 </select>
             </div>
@@ -154,7 +171,12 @@
               <label for="location-village" class="control-label">
                 {{ "LOCATION.VILLAGE" | translate }}
               </label>
-                <select ng-disabled="!session.locationSearch" class="form-bhima" id="location-sector">
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" 
+                id="location-sector"
+                ng-model="locationRelationship.village.value"
+                ng-options="village.uuid as village.name for village in locationStore.village.data | orderBy : 'name'">   
                   <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
                 </select>
             
