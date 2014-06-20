@@ -78,7 +78,7 @@ INSERT INTO `unit` VALUES
 (42,'Project','TREE.PROJECT','',1,0,'/partials/projects/','/projects'),
 (43,'Patient Standing','TREE.PATIENT_STANDING','',10,0,'/partials/reports/patient_standing/','/reports/patient_standing'),
 (44,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee'),
-(45,'Depot Management','TREE.DEPOT','',11,0,'/partials/inventory/depot/','inventory/depot'),
+(45,'Depot Management','TREE.DEPOT','',1,0,'/partials/inventory/depot/','inventory/depot'),
 (46,'Stock Management','TREE.STOCK_MANAGEMENT','',11,0,'partials/stock','/stock'),
 (47,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
 (48,'Account Statement', 'TREE.ACCOUNT_STATEMENT', '', 10, 0, 'partials/reports/account_statement', '/reports/account_statement'),
