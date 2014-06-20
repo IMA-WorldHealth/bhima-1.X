@@ -25,17 +25,17 @@ angular.module('bhima.controllers')
     };
     
     var locationDictionary = ['village', 'sector', 'province', 'country'];
-    var locationRelationship = {
+    var locationRelationship = $scope.locationRelationship = {
       village : {
         value : null,
-        requires : 'sector',
         dependency : null,
+        requires : 'sector',
         columns : ['uuid', 'name', 'sector_uuid']
       },
       sector : {
         value : null,
-        requires : 'village',
-        dependency : 'province',
+        dependency : 'village',
+        requires : 'province',
         columns : ['uuid', 'name', 'province_uuid']
       },
       province : {
@@ -51,7 +51,7 @@ angular.module('bhima.controllers')
         columns : ['uuid', 'country_en', 'country_fr']
       }
     };
-    var locationStore = {};
+    var locationStore = $scope.locationStore = {};
   
     appstate.register('project', function (project) {
       defineLocationDependency();
@@ -62,6 +62,7 @@ angular.module('bhima.controllers')
       locationDictionary.forEach(function (key) {
         dependencies[key] = {
           query : {
+            identifier : 'uuid',
             tables : {}
           }
         };
@@ -82,10 +83,12 @@ angular.module('bhima.controllers')
           locationRelationship[key].value = defaultLocation[key + '_uuid'];
         });
 
-        updateLocation('country', null);
 
         console.log(locationRelationship);
         console.log('got defaultLocation', defaultLocation);
+
+
+        updateLocation('country', null);
       });
       // console.log(dependencies);
       // validate.process(dependencies, locationDictionary).then(function (model) { 
@@ -96,26 +99,51 @@ angular.module('bhima.controllers')
     function updateLocation(key, uuidDependency) { 
       var dependency = locationRelationship[key].dependency;
       var currentValue;
-      
+     
+      console.log('update location for ', key, 'given dependency', uuidDependency);
+      if (!uuidDependency && locationRelationship[key].requires) {
+        console.log('no dependency received', key, 'requires ', locationRelationship[key].requires);
+        locationStore[key] = { data : [] };
+        // locationStore[key].data = [];
+        // locationStore[key].recalculateIndex();
+
+        if (dependency) updateLocation(dependency, null);
+        return;
+      }
+    
+      // Not for country
       if (uuidDependency) {
-        dependencies[key].query.where = [locationRelationship[key].requires + '_uuid=' + uuidDependency];
+        console.log('flag', locationRelationship[key].requires, uuidDependency);
+        dependencies[key].query.where = [key + '.' + locationRelationship[key].requires + '_uuid=' + uuidDependency];
       }
 
-      validate.process(dependencies, [key]).then(function (result) {
+      validate.refresh(dependencies, [key]).then(function (result) {
         locationStore[key] = result[key];
       
+        // Check to see if there are any values - if there aren't all future dependencies will also be empty
 
         // Check to see if current value exists in list
+        console.log('checking default value', locationRelationship[key].value);
         currentValue = locationStore[key].get(locationRelationship[key].value);
-        
+
+        // FIXME 
+        if (currentValue) currentValue = currentValue.uuid;
+       
+        console.log('locationStore', locationStore[key]);
         if (!currentValue) { 
-          // TODO Should be sorted alphabetically, making this the first value
-          currentValue = locationRelationship[key].value = locationStore[key].data[0];
+          if (locationStore[key].data.length) {
+            // TODO Should be sorted alphabetically, making this the first value
+            currentValue = locationRelationship[key].value = locationStore[key].data[0].uuid;
+          }
         }
+      
+        locationRelationship[key].value = currentValue;
+
         console.log('done', locationStore);
         // Download new data, try and match current value to currently selected, if not select default
         if (dependency) {
-          // updateLocation(dependency, currentValue);
+          console.log('updating ', key, 'should now call update', dependency, 'with', currentValue);
+          updateLocation(dependency, currentValue);
         }
 
       });
@@ -174,5 +202,7 @@ angular.module('bhima.controllers')
     $scope.patientSearch = patientSearch;
     $scope.fetchAll = fetchAll;
     $scope.select = select;
+
+    $scope.updateLocation = updateLocation;
   }
 ]);
