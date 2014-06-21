@@ -154,8 +154,9 @@ angular.module('bhima.controllers')
 
     function patientSearch(searchParams) {
       var condition = [], params = angular.copy(searchParams);
-      if (!searchParams) { return; }
+      if (!params) { return; }
       
+      // Filter location search
       if (session.locationSearch) {
         var originId = locationRelationship.village.value;
       
@@ -164,11 +165,18 @@ angular.module('bhima.controllers')
           condition.push('patient.origin_location_id=' + originId, 'AND');
         }
       }
+      
+      // Filter yob search
+      if (params.yob) {
+        condition.push('patient.dob<=' + params.yob + '-12-31', 'AND');
+        condition.push('patient.dob>=' + params.yob + '-01-01', 'AND');
+        delete(params.yob); // FIXME
+      }
 
-      // Filter date search 
+      // Filter meta 
       Object.keys(params)
       .forEach(function(key) {
-        if (searchParams[key].length) {
+        if (params[key].length) {
           condition.push('patient.' + key + '=' + searchParams[key], 'AND');
         }
       });
@@ -177,8 +185,7 @@ angular.module('bhima.controllers')
       dependencies.patient.query.where = condition.slice(0, -1);
       validate.refresh(dependencies, ['patient']).then(patientRecords);
     }
-
-    function patientRecords(model) {
+function patientRecords(model) {
       // This is a hack to get date of birth displaying correctly
       $scope.model = model;
       filterNames(model.patient.data);
