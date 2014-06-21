@@ -2,28 +2,16 @@
   {{ "PATIENT_RECORDS.TITLE" | translate }}
 </header>
 
-
-<nav>
-  	<div class="pull-right">
-      <a ng-click="fetchAll()" class="btn btn-default">
-        <span class="glyphicon glyphicon-user"></span> {{ "PATIENT_RECORDS.VIEW_ALL" | translate }}
-      </a>
-  </div>
-</nav>
-
 <main>
 <!-- Advanced Search -->
   <div class="row">
     <div class="col-xs-12">
       <div class="panel panel-default">
-        <div ng-click="model.patient.data=[]" class="panel-heading">
-          <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }} {{searchParams}}
-          <!-- <div class="pull&#45;right"> -->
-            <!-- <a><span class="glyphicon glyphicon&#45;search"></span></a> -->
-          <!-- </div> -->
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }}
         </div>
         
-        <div ng-show="!model.patient.data.length || model.patient.data.length===0" class="panel-body">
+        <div class="panel-body">
           <div class="row">
             <div class="col-xs-12">
               <div class="alert alert-info">
@@ -95,13 +83,7 @@
           </div>
         
           <div class="col-xs-6">
-            <div class="form-group">
-            <button 
-                  class="btn btn-default btn-sm"
-                  ng-click="session.locationSearch=!session.locationSearch">
-                  {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
-              </div>
-            
+                        
             <!-- <fieldset ng&#45;if="session.locationSearch"> -->
               <!-- <legend> -->
                 <!-- <span  -->
@@ -192,13 +174,27 @@
             <!-- </fieldset> -->
             </div>
           </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">
-                {{ "PATIENT_RECORDS.SEARCH" | translate }} 
-              </button>
-            </div>  
+          <!-- <div class="row"> -->
+          <!--   <div class="col&#45;xs&#45;12"> -->
+          <!--     <button ng&#45;click="patientSearch(searchParams)" class="btn btn&#45;default btn&#45;sm"> -->
+          <!--       {{ "PATIENT_RECORDS.SEARCH" | translate }}  -->
+          <!--     </button> -->
+          <!--   </div>   -->
+          <!-- </div> -->
+        </div>
+        <div class="panel-footer">
+          <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">
+            {{ "PATIENT_RECORDS.SEARCH" | translate }} 
+          </button>
+          
+          <div class="pull-right">
+          <button 
+            class="btn btn-default btn-sm"
+            ng-click="session.locationSearch=!session.locationSearch">
+            {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
           </div>
+
+
         </div>
       </div>
     </div>
@@ -206,43 +202,44 @@
     
   <div class="row">
     <div class="col-xs-12">
-      <div class="panel panel-default" ng-class="{'panel-danger': model.patient.data.length<=0, 'panel-success': model.patient.data.length>0}">
-        <div class="panel-heading">
-          {{ "PATIENT_RECORDS.RESULTS" | translate }}
-          <div class="pull-right">
-            <span class="glyphicon" ng-class="{'glyphicon-eye-open': model.patient.data && model.patient.data.length!==0, 'glyphicon-eye-close': !model.patient.data.length}"></span>
-          </div>
+      <div 
+        class="alert" 
+        ng-class="{'alert-info' : session.searching, 'alert-success' : model.patient.data.length&&!session.searching, 'alert-danger' : !model.patient.data.length&&!session.searching}"
+        ng-if="session.searched||session.searching">
+        <div ng-if="session.searching">
+          <span class="glyphicon glyphicon-refresh"></span> Searching database...
         </div>
-        <div class="panel-body"> 
-          <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
-            <table class="table table-condensed table-bordered">
-              <thead>
-              <tr>
-                <th>#</th>
-                <th>{{ "COLUMNS.NAME" | translate }}</th>
-                <th>{{ "COLUMNS.DOB" | translate }}</th>
-                <th>{{ "COLUMNS.PARENT" | translate }}</th>
-                <th>{{ "COLUMNS.SEX" | translate }}</th>
-                <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
-                <th></th>
-              </tr>
-              </thead>
+        <div ng-if="!session.searching&&session.searched">
+          <span class="glyphicon glyphicon-info-sign"></span> Matched <b>{{model.patient.data.length}}</b> patients against the current search criteria
+        </div>
+      </div>
+      <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
+        <table class="table table-condensed table-bordered">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ "COLUMNS.NAME" | translate }}</th>
+            <th>{{ "COLUMNS.DOB" | translate }}</th>
+            <th>{{ "COLUMNS.PARENT" | translate }}</th>
+            <th>{{ "COLUMNS.SEX" | translate }}</th>
+            <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+            <th></th>
+          </tr>
+          </thead>
 
-              <tbody>
-                <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
-                  <td><b>{{patient.hr_id}}</b></td>
-                  <td>{{ patient.name }}</td>
-                  <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
-                  <td>{{ patient.father_name }}</td>
-                  <td>{{ patient.sex | uppercase }}</td>
-                  <!-- <td>{{ patient.email }}</td> -->
-                  <td>{{patient.registration_date | date}}</td>
-                  <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+          <tbody>
+            <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
+              <td><b>{{patient.hr_id}}</b></td>
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
+              <td>{{ patient.father_name }}</td>
+              <td>{{ patient.sex | uppercase }}</td>
+              <!-- <td>{{ patient.email }}</td> -->
+              <td>{{patient.registration_date | date}}</td>
+              <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
