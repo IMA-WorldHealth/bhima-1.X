@@ -30,25 +30,25 @@ angular.module('bhima.controllers')
         value : null,
         dependency : null,
         requires : 'sector',
-        columns : ['uuid', 'name', 'sector_uuid']
+        label : 'name'
       },
       sector : {
         value : null,
         dependency : 'village',
         requires : 'province',
-        columns : ['uuid', 'name', 'province_uuid']
+        label : 'name'
       },
       province : {
         value : null,
         dependency : 'sector',
         requires : 'country',
-        columns : ['uuid', 'name', 'country_uuid']
+        label : 'name'
       },
       country : {
         value : null,
         dependency : 'province',
         requires : null,
-        columns : ['uuid', 'country_en', 'country_fr']
+        label : 'country_en'
       }
     };
     var locationStore = $scope.locationStore = {};
@@ -60,43 +60,48 @@ angular.module('bhima.controllers')
     
     function defineLocationDependency() {
       locationDictionary.forEach(function (key) {
-        dependencies[key] = {
+        var locationQuery;
+        var label = locationRelationship[key].label;
+        var locationDetails = locationRelationship[key];
+
+        locationQuery = dependencies[key] = {
           query : {
             identifier : 'uuid',
-            tables : {}
+            tables : {},
+            order : [label]
           }
         };
-        dependencies[key].query.tables[key] = {
-          columns : locationRelationship[key].columns
+        locationQuery.query.tables[key] = {
+          columns : ['uuid', label]
         };
-        // dependencies[key].query.where = [locationRelationship[key].dependency + '_uuid'];
+
+        if (locationDetails.requires) {
+          locationQuery.query.tables[key].columns.push(
+            formatLocationIdString(locationDetails.requires)
+            );
+        }
       });
     }
 
+    function formatLocationIdString(target) {
+      var uuidTemplate = '_uuid';
+      return target.concat(uuidTemplate);
+    }
+
     function initialiseLocation(locationId) {
-      
       connect.fetch('/location/' + locationId).then(function (defaultLocation) {
         defaultLocation = defaultLocation[0];
 
         // Populate initial values
         locationDictionary.forEach(function (key) {
-          locationRelationship[key].value = defaultLocation[key + '_uuid'];
+          locationRelationship[key].value = defaultLocation[formatLocationIdString(key)];
         });
-
-
-        console.log(locationRelationship);
-        console.log('got defaultLocation', defaultLocation);
-
-
         updateLocation('country', null);
       });
-      // console.log(dependencies);
-      // validate.process(dependencies, locationDictionary).then(function (model) { 
-      //   console.log('got', model);
-      // });
     }
-
-    function updateLocation(key, uuidDependency) { 
+  
+    // TODO refactor / remove redundencies
+    function updateLocation(key, uuidDependency) {
       var dependency = locationRelationship[key].dependency;
       var currentValue;
      
@@ -104,8 +109,6 @@ angular.module('bhima.controllers')
       if (!uuidDependency && locationRelationship[key].requires) {
         console.log('no dependency received', key, 'requires ', locationRelationship[key].requires);
         locationStore[key] = { data : [] };
-        // locationStore[key].data = [];
-        // locationStore[key].recalculateIndex();
 
         if (dependency) updateLocation(dependency, null);
         return;
@@ -149,15 +152,19 @@ angular.module('bhima.controllers')
       
     }
 
-    // validate.process(dependencies).then(patientRecords);
-    // function initialiseLocationParams() {
-      // var 
-    // }
-
     function patientSearch(searchParams) {
       var condition = [], params = angular.copy(searchParams);
       if (!searchParams) { return; }
       
+      if (session.locationSearch) {
+        var originId = locationRelationship.village.value;
+      
+        console.log('originId', originId);
+        if (originId) {
+          condition.push('patient.origin_location_id=' + originId, 'AND');
+        }
+      }
+
       // Filter date search 
       Object.keys(params)
       .forEach(function(key) {
@@ -165,11 +172,10 @@ angular.module('bhima.controllers')
           condition.push('patient.' + key + '=' + searchParams[key], 'AND');
         }
       });
-      console.log('condition', condition);
 
       // FIXME Remove final AND 
       dependencies.patient.query.where = condition.slice(0, -1);
-      validate.refresh(dependencies).then(patientRecords);
+      validate.refresh(dependencies, ['patient']).then(patientRecords);
     }
 
     function patientRecords(model) {
