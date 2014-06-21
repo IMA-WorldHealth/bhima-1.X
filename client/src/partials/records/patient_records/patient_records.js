@@ -8,6 +8,8 @@ angular.module('bhima.controllers')
     var dependencies = {}, session = $scope.session = {};
   
     session.searchLocation = false;
+    session.searched = false;
+    session.searching = false;
 
     dependencies.patient = {
       query : {
@@ -155,6 +157,9 @@ angular.module('bhima.controllers')
     function patientSearch(searchParams) {
       var condition = [], params = angular.copy(searchParams);
       if (!params) { return; }
+  
+      if ($scope.model) $scope.model.patient.data.length = 0;
+      session.searching = true;
       
       // Filter location search
       if (session.locationSearch) {
@@ -185,10 +190,14 @@ angular.module('bhima.controllers')
       dependencies.patient.query.where = condition.slice(0, -1);
       validate.refresh(dependencies, ['patient']).then(patientRecords);
     }
-function patientRecords(model) {
+  
+    function patientRecords(model) {
       // This is a hack to get date of birth displaying correctly
       $scope.model = model;
       filterNames(model.patient.data);
+    
+      session.searching = false;
+      session.searched = true;
     }
 
     function filterNames(patientData) {
@@ -202,17 +211,11 @@ function patientRecords(model) {
       });
     }
 
-    function fetchAll() {
-      dependencies.patient.query.where = null;
-      validate.refresh(dependencies).then(patientRecords);
-    }
-
     function select(id) {
       $scope.selected = $scope.model.patient.get(id);
     }
 
     $scope.patientSearch = patientSearch;
-    $scope.fetchAll = fetchAll;
     $scope.select = select;
 
     $scope.updateLocation = updateLocation;
