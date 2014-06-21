@@ -99,25 +99,25 @@
             <button 
                   class="btn btn-default btn-sm"
                   ng-click="session.locationSearch=!session.locationSearch">
-                  <span class="glyphicon glyphicon-globe" ng-class="{'error' : !session.locationSearch, 'correct' : session.locationSearch}"></span> {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
-            </div>
-            <fieldset ng-if="session.locationSearch">
-              <legend>
-                Location Search
-                <div class="pull-right">
-                
-                </div>
-
-              </legend>
-
+                  {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
+              </div>
+            
+            <!-- <fieldset ng&#45;if="session.locationSearch"> -->
+              <!-- <legend> -->
+                <!-- <span  -->
+                  <!-- class="glyphicon glyphicon&#45;saved error"></span>  -->
+                <!-- Location Search -->
+              <!-- </legend> -->
+            <div ng-if="session.locationSearch">
               <div class="form-group">
-              <span 
-                    ng-if="session.locationSearch"
-                    class="glyphicon glyphicon-saved error"></span> 
-
+              
               <label for="location-country" class="control-label">
                 {{ "LOCATION.COUNTRY" | translate }}
               </label>
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.country.data.length}"></span>
+                {{locationStore.country.data.length}}
+              </div>
               <select 
                 ng-disabled="!session.locationSearch" 
                 class="form-bhima" 
@@ -131,13 +131,14 @@
             </div>
 
             <div class="form-group">
-              <span 
-                    ng-if="session.locationSearch"
-                    class="glyphicon glyphicon-saved error"></span> 
-
               <label for="location-province" class="control-label">
                 {{ "LOCATION.PROVINCE" | translate }}
               </label>
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.province.data.length}"></span>
+                {{locationStore.province.data.length}}
+              </div>
+
               <select 
                 ng-disabled="!session.locationSearch" 
                 class="form-bhima" 
@@ -150,13 +151,14 @@
             </div>
 
             <div class="form-group">
-              <span 
-                    ng-if="session.locationSearch"
-                    class="glyphicon glyphicon-saved error"></span> 
-
               <label for="location-sector" class="control-label">
                 {{ "LOCATION.SECTOR" | translate }}
               </label>
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.sector.data.length}"></span>
+                {{locationStore.sector.data.length}}
+              </div>
+
               <select 
                 ng-disabled="!session.locationSearch" 
                 class="form-bhima" id="location-sector"
@@ -168,13 +170,14 @@
             </div>
 
             <div class="form-group">
-              <span 
-                    ng-if="session.locationSearch"
-                    class="glyphicon glyphicon-saved error"></span> 
-
               <label for="location-village" class="control-label">
                 {{ "LOCATION.VILLAGE" | translate }}
               </label>
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.village.data.length}"></span>
+                {{locationStore.village.data.length}}
+              </div>
+
               <select 
                 ng-disabled="!session.locationSearch" 
                 class="form-bhima" 
@@ -185,7 +188,8 @@
                 </select>
             
               </div>
-            </fieldset>
+            </div>
+            <!-- </fieldset> -->
             </div>
           </div>
           <div class="row">
