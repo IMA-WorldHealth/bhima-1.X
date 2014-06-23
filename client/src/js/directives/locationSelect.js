@@ -1,10 +1,10 @@
 angular.module('bhima.directives')
-.directive('locationSelect', ['appstate', 'connect', function (appstate, connect) { 
+.directive('locationSelect', ['appstate', 'connect', function (appstate, connect) {
   return {
     restrict : 'A',
     replace : true,
     transclue : true,
-    template : '<div><div class="form-group" ng-repeat="config in locationSelect.locationConfig"><label for="location-select-{{config.id}}" class="control-label">{{config.label | translate}}</label><div class="pull-right"><span class="glyphicon glyphicon-globe"></span> 0</div><select ng-disabled="!locationSelect.session.locationSearch" class="form-bhima" id="location-select-{{config.id}}"></select></div></div>',
+    template : '<div><div class="form-group" ng-repeat="config in locationSelect.locationConfig"><label for="location-select-{{config.id}}" class="control-label">{{config.label | translate}}</label><div class="pull-right"><span class="glyphicon glyphicon-globe"></span> 0</div><select ng-disabled="locationSelect.session.locationSearch" class="form-bhima" id="location-select-{{config.id}}"></select></div></div>',
     link : function (scope) {
       
       // TODO replace with correct scope management
@@ -60,20 +60,21 @@ angular.module('bhima.directives')
 
         // Populate initial values (enterprise default)
         Object.keys(locationConfig).forEach(function (key) {
-          locationStore[key] = {model : {}, value : null};
+          locationStore[key] = {model : {}, value : {}};
+          modelMap.push(locationStore[key].value);
           locationStore[key].value = defaultLocation[formatKeyId(key)];
         });
 
         // Initial request, update config with no dependency
-        updateLocation(lookupDependency(null), null);
+        fetchLocationData(lookupDependency(null), null);
       }
 
-      function updateLocation(key, uuidDependency) {
-        fetchLocationData(key, uuidDependency)
-        .then(function (data) {
-          return assignLocationData(key, data);
-        });
-      }
+      // function updateLocation(key, uuidDependency) {
+        // fetchLocationData(key, uuidDependency)
+        // .then(function (data) {
+          // return assignLocationData(key, data);
+        // });
+      // }
 
       function fetchLocationData(key, uuidDependency) {
         var config = locationConfig[key];
@@ -93,9 +94,14 @@ angular.module('bhima.directives')
         }
         
         if (config.dependency) {
-          config.request.query.where = [key + '.' + formatKeyId(config.dependency) + '=' + uuidDependency];
+          config.request.where = [key + '.' + formatKeyId(config.dependency) + '=' + uuidDependency];
         }
-        return connect.fetch(config.request);
+
+        // TODO Refactor : fetch and assign data from one function, each method 
+        // responsible for only one thing
+        connect.req(config.request).then(function (result) {
+          return assignLocationData(key, result);
+        });
       }
 
       function assignLocationData(key, result) {
@@ -107,7 +113,7 @@ angular.module('bhima.directives')
         currentLocationValue = store.value;
 
         // Conditions 
-        invalidCurrentLocation = angular.isNull(store.model.get(store.value));
+        invalidCurrentLocation = !angular.isDefined(store.model.get(store.value));
         locationsFound = store.model.data.length;
 
         if (invalidCurrentLocation) {
@@ -117,10 +123,12 @@ angular.module('bhima.directives')
             currentLocationValue = store.value = store.model.data[0];
           }
         }
+
+        console.log('[assignLocationData][' + key + '] currentLocationValue', currentLocationValue);
         
         // Call any configuration that requires on this key
         if (requiresCurrentKey) {
-          updateLocation(requiresCurrentKey, currentLocationValue.uuid);
+          fetchLocationData(requiresCurrentKey, currentLocationValue);
         }
       }
 
@@ -134,18 +142,16 @@ angular.module('bhima.directives')
         Object.keys(locationConfig).forEach(function (key) {
           var config = locationConfig[key];
           var request = {
-            query : {
-              identifier : 'uuid',
-              tables : {},
-              order : [config.column]
-            }
+            identifier : 'uuid',
+            tables : {},
+            order : [config.column]
           };
-          request.query.tables[key] = {
+          request.tables[key] = {
             columns : ['uuid', config.column]
           };
           
           if (config.dependency) {
-            request.query.tables[key].columns.push(formatKeyId(config.dependency));
+            request.tables[key].columns.push(formatKeyId(config.dependency));
           }
           config.request = request;
         });
