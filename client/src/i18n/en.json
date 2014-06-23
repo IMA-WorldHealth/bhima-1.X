@@ -634,7 +634,7 @@
     "HOSPITAL"                  : "Hospital",
     "FISCAL_YEAR"               : "Fiscal Year",
     "PATIENT_REG"               : "Patient Registration",
-    "PATIENT_RECORDS"           : "Patient Records",
+    "PATIENT_SEARCH"            : "Patient Search",
     "SALES"                     : "Sales",
     "SALE_RECORDS"              : "Sale Records",
     "PURCHASE_ORDER"            : "Purchase Order",
