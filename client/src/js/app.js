@@ -266,7 +266,7 @@
       templateUrl : 'partials/primary_cash/income/convention/convention.html'
     })
     .when('/primary_cash/income/generic/:id', {
-      contoller : 'primaryCash.income.generic',
+      controller : 'primaryCash.income.generic',
       templateUrl : 'partials/primary_cash/income/generic/generic.html'
     })
     .when('/trialbalance/print', {

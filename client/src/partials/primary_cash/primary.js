@@ -11,6 +11,7 @@ angular.module('bhima.controllers')
       configure : false,
       complete : false
     };
+
     var cache = new AppCache('primary_cash');
 
     dependencies.cashBox = {
@@ -32,7 +33,7 @@ angular.module('bhima.controllers')
         link : '/primary_cash/convention/'
       },
       {
-        key : 'PRIMARY_CASH.INCOME.GENERIC_INCOME',
+        key : 'PRIMARY_CASH.INCOME.GENERIC.TITLE',
         link : '/primary_cash/income/generic/'
       }
     ];
@@ -53,11 +54,11 @@ angular.module('bhima.controllers')
       .then(readConfiguration)
       .then(parseConfiguration)
       .then(initialise)
-      .then(handleError);
+      .catch(handleError);
   
     function parseDependenciesData(model) {
       angular.extend($scope, model);
-      return $q;
+      return $q.when();
     }
 
     function readConfiguration() {

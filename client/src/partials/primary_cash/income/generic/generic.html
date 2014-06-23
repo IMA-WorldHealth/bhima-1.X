@@ -1,5 +1,5 @@
 <header data-header>
-  {{ "PRIMARY_CASH.INCOME.GENERIC_TITLE" |  translate }}
+  {{ "PRIMARY_CASH.INCOME.GENERIC.TITLE" |  translate }}
 </header>
 
 <nav>
@@ -8,7 +8,7 @@
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/primary_cash/">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
       <li><a>{{ "PRIMARY_CASH.INCOMES" | translate }}</a></li>
-      <li class="active">{{ "PRIMARY_CASH.INCOME.GENERIC_TITLE" | translate }}</li>
+      <li class="active">{{ "PRIMARY_CASH.INCOME.GENERIC.TITLE" | translate }}</li>
     </ol>
   </div>
 
@@ -32,7 +32,7 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-list-alt"></span>
-          {{ "PRIMARY_CASH.INCOME.GENERIC_RECEIPT" | translate }}
+          {{ "PRIMARY_CASH.INCOME.GENERIC.RECEIPT" | translate }}
         </div>
         <div class="panel-body">
           <form>
@@ -50,19 +50,19 @@
             </div>
 
             <div class="form-group col-xs-6 pull-right" style="padding-right: 0;">
-              <label>{{ "PRIMARY_CASH.INCOME.EXPENSE_DATE" | translate }}</label>
+              <label>{{ "PRIMARY_CASH.INCOME.DATE" | translate }}</label>
               <input type="date" class="form-bhima" ng-model="session.receipt.date" max="{{ session.today }}" required>
             </div>
 
             <div class="form-group">
-              <label>{{ "PRIMARY_CASH.INCOME.PURPOSE" | translate }}</label>
+              <label>{{ "PRIMARY_CASH.INCOME.LABEL" | translate }}</label>
               <input class="form-bhima" ng-model="session.receipt.description" required>
             </div>
 
             <div class="form-group">
               <label>{{ "PRIMARY_CASH.INCOME.DEBTOR" | translate }}</label>
-              <select type="text" class="form-bhima" ng-model="session.receipt.recipient" ng-options="supplier as supplier.text for supplier in suppliers.data">
-                <option value="" disabled="disabled">-- {{ "SELECT.RECIPIENT" | translate }} --</option>
+              <select type="text" class="form-bhima" ng-model="session.receipt.recipient" ng-options="debtor as formatDebtor(debtor) for debtor in debtors.data | orderBy : ['project_id', 'reference']">
+                <option value="" disabled="disabled">-- {{ "SELECT.DEBTOR" | translate }} --</option>
               </select>
             </div>
 
