@@ -2,50 +2,64 @@
   {{ "PATIENT_RECORDS.TITLE" | translate }}
 </header>
 
-
-<nav>
-  	<div class="pull-right">
-      <a ng-click="fetchAll()" class="btn btn-default">
-        <span class="glyphicon glyphicon-user"></span> {{ "PATIENT_RECORDS.VIEW_ALL" | translate }}
-      </a>
-  </div>
-</nav>
-
-<div class="content">
-  <!-- Advanced Search -->
+<main>
+<!-- Advanced Search -->
   <div class="row">
     <div class="col-xs-12">
       <div class="panel panel-default">
-        <div ng-click="model.patient.data=[]" class="panel-heading">
-          {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }} {{searchParams}}
-          <div class="pull-right">
-            <a><span class="glyphicon glyphicon-search"></span></a>
-          </div>
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }}
         </div>
         
-        <div ng-show="!model.patient.data.length || model.patient.data.length===0" class="panel-body">
+        <div class="panel-body">
           <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-info">
+                <span class="glyphicon glyphicon-info-sign"></span> Any fields left blank will not be included in the search, <b>included fields will be marked with an</b> <span class="glyphicon glyphicon-saved error"></span>
+          </div>
+
+            </div>
+          </div>
+          <div class="row">
+          
           <div class="col-xs-6">
+            
             <div class="form-group">
-              <label class="control-label">{{ "PATIENT_RECORDS.FIRST_NAME" | translate }}</label>
+              <span 
+                ng-if="searchParams.first_name.length"
+                class="glyphicon glyphicon-saved error"></span> 
+               <label class="control-label"> {{ "PATIENT_RECORDS.FIRST_NAME" | translate }}</label>
               <input class="form-bhima" ng-model="searchParams.first_name"></input>
             </div>
 
             <div class="form-group">
+              <span 
+                ng-if="searchParams.last_name.length"
+                class="glyphicon glyphicon-saved error"></span> 
+
               <label class="control-label">{{ "PATIENT_RECORDS.LAST_NAME" | translate }}</label>
               <input class="form-bhima" ng-model="searchParams.last_name"></input>
             </div>
             
             <!-- TODO Implement convert year to date / allow full date to be entered -->
             <div class="form-group">
+              <span 
+                ng-if="searchParams.yob.length"
+                class="glyphicon glyphicon-saved error"></span> 
+
               <label class="control-label">{{ "PATIENT_RECORDS.YOB" | translate }}</label>
-              <input class="form-bhima"></input>
+              <input class="form-bhima" ng-model="searchParams.yob"></input>
             </div>
 
             <div class="form-group">
+              <span 
+                    ng-if="searchParams.sex.length"
+                    class="glyphicon glyphicon-saved error"></span> 
+
               <label class="control-label">{{ "PATIENT_RECORDS.SEX" | translate }}</label>
               <div class="col-xs-12">
                 <div class="radio-inline">
+                  
                   <label>
                     <input
                       type="radio"
@@ -70,12 +84,25 @@
           </div>
         
           <div class="col-xs-6">
-
-            <div class="form-group">
+                        
+            <div ng-if="session.locationSearch">
+              <div class="form-group">
+              
               <label for="location-country" class="control-label">
                 {{ "LOCATION.COUNTRY" | translate }}
               </label>
-              <select disabled class="form-bhima" id="location-country"> 
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.country.data.length}"></span>
+                {{locationStore.country.data.length}}
+              </div>
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" 
+                id="location-country" 
+                ng-model="locationRelationship.country.value"
+                ng-options="country.uuid as country.country_en for country in locationStore.country.data | orderBy : 'country_en'"
+                ng-change="updateLocation('province', locationRelationship.country.value)"> 
+                
                 <!-- <option value="" disabled="disabled">&#45;&#45; Patient Country&#45;&#45;</option> -->
               </select>
             </div>
@@ -84,8 +111,19 @@
               <label for="location-province" class="control-label">
                 {{ "LOCATION.PROVINCE" | translate }}
               </label>
-              <select disabled class="form-bhima" id="location-province"> 
-                <!-- <option value="" disabled="disabled">&#45;&#45; Patient Province &#45;&#45;</option> -->
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.province.data.length}"></span>
+                {{locationStore.province.data.length}}
+              </div>
+
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" 
+                id="location-province"
+                ng-model="locationRelationship.province.value"
+                ng-options="province.uuid as province.name for province in locationStore.province.data | orderBy : 'name'"
+                ng-change="updateLocation('sector', locationRelationship.province.value)"> 
+                <option value="" ng-if="!locationStore.province.data.length" disabled="disabled">-- No provinces found --</option>
               </select>
             </div>
 
@@ -93,8 +131,18 @@
               <label for="location-sector" class="control-label">
                 {{ "LOCATION.SECTOR" | translate }}
               </label>
-                <select disabled class="form-bhima" id="location-sector">
-                  <!-- <option value="" disabled="disabled">&#45;&#45; Patient Sector &#45;&#45;</option> -->
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.sector.data.length}"></span>
+                {{locationStore.sector.data.length}}
+              </div>
+
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" id="location-sector"
+                ng-model="locationRelationship.sector.value"
+                ng-options="sector.uuid as sector.name for sector in locationStore.sector.data | orderBy : 'name'"
+                ng-change="updateLocation('village', locationRelationship.sector.value)"> 
+                <option value="" ng-if="!locationStore.sector.data.length" disabled="disabled">-- No sectors found --</option>
                 </select>
             </div>
 
@@ -102,25 +150,46 @@
               <label for="location-village" class="control-label">
                 {{ "LOCATION.VILLAGE" | translate }}
               </label>
-                <input
-                  disabled
-                  class="form-bhima col-xs-9"
-                  id="location-country"
-                  ng-model="data.village_id"
-                  typeahead="v.id as v.name for v in model.village.data | filter:$viewValue | filter:villageFilter | limitTo: 10"
-                  typeahead-on-select="selectLocation()"
-                  typeahead-input-formatter="formatTypeAhead()"
-                  required >
+              <div class="pull-right">
+                <span class="glyphicon glyphicon-globe" ng-class="{'error' : !locationStore.village.data.length}"></span>
+                {{locationStore.village.data.length}}
+              </div>
+
+              <select 
+                ng-disabled="!session.locationSearch" 
+                class="form-bhima" 
+                id="location-sector"
+                ng-model="locationRelationship.village.value"
+                ng-options="village.uuid as village.name for village in locationStore.village.data | orderBy : 'name'">   
+                <option value="" ng-if="!locationStore.village.data.length" disabled="disabled">-- No villages found --</option>
+                </select>
+            
               </div>
             </div>
+            <!-- </fieldset> -->
+            </div>
           </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">
-                {{ "PATIENT_RECORDS.SEARCH" | translate }} 
-              </button>
-            </div>  
+          <!-- <div class="row"> -->
+          <!--   <div class="col&#45;xs&#45;12"> -->
+          <!--     <button ng&#45;click="patientSearch(searchParams)" class="btn btn&#45;default btn&#45;sm"> -->
+          <!--       {{ "PATIENT_RECORDS.SEARCH" | translate }}  -->
+          <!--     </button> -->
+          <!--   </div>   -->
+          <!-- </div> -->
+        </div>
+        <div class="panel-footer">
+          <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">
+            {{ "PATIENT_RECORDS.SEARCH" | translate }} 
+          </button>
+          
+          <div class="pull-right">
+          <button 
+            class="btn btn-default btn-sm"
+            ng-click="session.locationSearch=!session.locationSearch">
+            {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
           </div>
+
+
         </div>
       </div>
     </div>
@@ -128,44 +197,45 @@
     
   <div class="row">
     <div class="col-xs-12">
-      <div class="panel panel-default" ng-class="{'panel-danger': model.patient.data.length<=0, 'panel-success': model.patient.data.length>0}">
-        <div class="panel-heading">
-          {{ "PATIENT_RECORDS.RESULTS" | translate }}
-          <div class="pull-right">
-            <span class="glyphicon" ng-class="{'glyphicon-eye-open': model.patient.data && model.patient.data.length!==0, 'glyphicon-eye-close': !model.patient.data.length}"></span>
-          </div>
+      <div 
+        class="alert" 
+        ng-class="{'alert-info' : session.searching, 'alert-success' : model.patient.data.length&&!session.searching, 'alert-danger' : !model.patient.data.length&&!session.searching}"
+        ng-if="session.searched||session.searching">
+        <div ng-if="session.searching">
+          <span class="glyphicon glyphicon-refresh"></span> Searching database...
         </div>
-        <div class="panel-body"> 
-          <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
-            <table class="table table-condensed table-bordered">
-              <thead>
-              <tr>
-                <th>#</th>
-                <th>{{ "COLUMNS.NAME" | translate }}</th>
-                <th>{{ "COLUMNS.DOB" | translate }}</th>
-                <th>{{ "COLUMNS.PARENT" | translate }}</th>
-                <th>{{ "COLUMNS.SEX" | translate }}</th>
-                <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
-                <th></th>
-              </tr>
-              </thead>
+        <div ng-if="!session.searching&&session.searched">
+          <span class="glyphicon glyphicon-info-sign"></span> Matched <b>{{model.patient.data.length}}</b> patients against the current search criteria
+        </div>
+      </div>
+      <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
+        <table class="table table-condensed table-bordered">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ "COLUMNS.NAME" | translate }}</th>
+            <th>{{ "COLUMNS.DOB" | translate }}</th>
+            <th>{{ "COLUMNS.PARENT" | translate }}</th>
+            <th>{{ "COLUMNS.SEX" | translate }}</th>
+            <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+            <th></th>
+          </tr>
+          </thead>
 
-              <tbody>
-                <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
-                  <td><b>{{patient.hr_id}}</b></td>
-                  <td>{{ patient.name }}</td>
-                  <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
-                  <td>{{ patient.father_name }}</td>
-                  <td>{{ patient.sex | uppercase }}</td>
-                  <!-- <td>{{ patient.email }}</td> -->
-                  <td>{{patient.registration_date | date}}</td>
-                  <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+          <tbody>
+            <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
+              <td><b>{{patient.hr_id}}</b></td>
+              <td>{{ patient.name }}</td>
+              <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
+              <td>{{ patient.father_name }}</td>
+              <td>{{ patient.sex | uppercase }}</td>
+              <!-- <td>{{ patient.email }}</td> -->
+              <td>{{patient.registration_date | date}}</td>
+              <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-</div>
+</main>

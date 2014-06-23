@@ -7,10 +7,9 @@ angular.module('bhima.controllers')
   'validate',
   'connect',
   'messenger',
-  'appstate',
   'util',
   'uuid',
-  function ($scope, $q, $routeParams, $location, validate, connect, messenger, appstate, util, uuid) {
+  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid) {
     var session = $scope.session = {
       // FIXME
       index : -1,
@@ -19,7 +18,7 @@ angular.module('bhima.controllers')
       lotSelectionSuccess : false,
       lotSelectionFailure : false
     };
-    var distribution = {}, dependencies = {};
+    var dependencies = {};
 
     // Test for module organised into step structure
     var moduleDefinition = $scope.moduleDefinition = [
@@ -159,15 +158,11 @@ angular.module('bhima.controllers')
 
             }
           } else {
-            console.log('EXPIRTED');
             messenger.danger('Lot ' + lot.lot_number + ' has expired and cannot be used, contact the stock administrator.', true);
           }
         });
 
-        console.log('found ', validUnits, ' in', sessionLots);
-      
         if (validUnits < saleItem.quantity) {
-          console.log('LIMITED STOCK, ');
           saleItem.stockStatus = stock.LIMITED_STOCK;
         }
 
@@ -231,18 +226,18 @@ angular.module('bhima.controllers')
       return connect.req(query);
     }
 
-    function submitConsumption() { 
+    function submitConsumption() {
       var submitItem = [];
       
       // Ensure validation is okay 
       if (!session.lotSelectionSuccess) return messenger.danger('Cannot verify lot allocation');
       
       // Iterate through items, write consumption line for each lot
-      session.sale.details.forEach(function (consumptionItem) { 
+      session.sale.details.forEach(function (consumptionItem) {
         
         if (!angular.isDefined(consumptionItem.recomendedLots)) return;
 
-        consumptionItem.recomendedLots.forEach(function (lot) { 
+        consumptionItem.recomendedLots.forEach(function (lot) {
           submitItem.push({
             uuid : uuid(),
             depot_uuid : session.depot,
@@ -269,6 +264,6 @@ angular.module('bhima.controllers')
 
     $scope.selectSale = selectSale;
     $scope.initialiseDistributionDetails = initialiseDistributionDetails;
-    $scope.submitConsumption = submitConsumption; 
+    $scope.submitConsumption = submitConsumption;
   }
 ]);
