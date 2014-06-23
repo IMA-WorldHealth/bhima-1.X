@@ -637,6 +637,9 @@
       "DEFAULT_PRICE"    : "Default Price",
       "UNIT_WEIGHT"      : "Unit Weight",
       "UNIT_VOLUME"      : "Unit Volume"
+    },
+    "MANIFEST" : {
+      "TITLE" : "Inventory Manifest"
     }
   },
 

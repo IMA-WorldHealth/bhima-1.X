@@ -67,6 +67,16 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currencies = {
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        }
+      }
+    };
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.inventory.query.where =

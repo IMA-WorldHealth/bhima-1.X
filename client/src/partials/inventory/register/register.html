@@ -98,14 +98,14 @@
 
             <div class="form-group" >
               <label for="inventory-reg-purchase-price">
-                {{ "COLUMNS.PURCHASE_PRICE" | translate }}
+                {{ "COLUMNS.PURCHASE_PRICE" | translate }} ({{ currencies.get(enterprise.currency_id).symbol }})
               </label>
               <input name="purchase_price" type="number" id="inventory-reg-purchase-price" class="form-bhima" ng-model="item.purchase_price" required>
             </div>
 
             <div class="form-group" >
               <label for="inventory-reg-price">
-                {{ "COLUMNS.SALE_PRICE" | translate }}
+                {{ "COLUMNS.SALE_PRICE" | translate }} ({{ currencies.get(enterprise.currency_id).symbol }})
               </label>
               <input name="unit_price" type="number" id="inventory-reg-price" class="form-bhima" ng-model="item.price" required>
             </div>
