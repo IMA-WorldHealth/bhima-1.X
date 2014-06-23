@@ -106,8 +106,16 @@ angular.module('bhima.controllers')
     function startup (models) {
       var validDepo = models.depots.get($routeParams.depotId);
       var warnDepo = models.depots.data.length===1;
-      if (!validDepo) { return session.invalid = true; }
-      if (warnDepo) { return session.warn = true; }
+
+      if (!validDepo) {
+        session.invalid = true;
+        return;
+      }
+
+      if (warnDepo) {
+        session.warn = true;
+        return;
+      }
 
       session.configured = true;
       angular.extend($scope, models);
@@ -157,7 +165,7 @@ angular.module('bhima.controllers')
         movement.uuid = uuid();
         movement.tracking_number = row.lot.tracking_number;
         movement.quantity = row.quantity;
- 
+
         rows.push(movement);
       });
 
@@ -178,7 +186,8 @@ angular.module('bhima.controllers')
       var validRows = true;
 
       if (!session.rows) {
-        return session.valid = false;
+        session.valid = false;
+        return;
       }
 
       // Validate row data, need to visit every row, checking for multiple errors
@@ -190,7 +199,7 @@ angular.module('bhima.controllers')
         }
 
         // validate quantity
- 
+
         // Error status
         if (row.quantity > row.lot.quantity) {
           row.error = {message : 'Invalid quantity'};
@@ -211,7 +220,7 @@ angular.module('bhima.controllers')
           validRows = false;
         }
       });
-    
+
       session.valid = validRows;
     }
 

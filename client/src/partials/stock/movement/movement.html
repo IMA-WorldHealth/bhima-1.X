@@ -8,20 +8,20 @@
       <!-- <span class="label label&#45;success square">{{ "UTIL.NAVIGATION" | translate }}</span> -->
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a href="">{{ "STOCK.MOVEMENT" | translate }}</a></li>
+      <li><a href="">{{ "STOCK.MOVEMENT.TITLE" | translate }}</a></li>
     </ol>
   </div>
-  
+
   <div class="pull-right" style="margin-top: 6px;">
     {{session.depot.text}} <b>{{session.depot.reference ? '[' + session.depot.reference + ']' : ''}}</b>
   </div>
 </nav>
-  
+
 <main>
   <div class="row" ng-if="session.invalid">
     <div class="col-xs-12">
       <div class="alert alert-danger">
-        <span class="glyphicon glyphicon-remove-sign"></span> The page received invalid configuration data, please try again via Stock Management or contact the system administrator.
+        <span class="glyphicon glyphicon-remove-sign"></span>{{"STOCK.MOVEMENT.INVALID_SESSION" | translate}}
       </div>
     </div>
   </div>
@@ -29,27 +29,27 @@
   <div class="row" ng-if="session.warn">
     <div class="col-xs-12">
       <div class="alert alert-info">
-        <span class="glyphicon glyphicon-info-sign"></span> Only one depot has been registered with BHIMA. A stock movment requires both an origin and destination depot.
+        <span class="glyphicon glyphicon-info-sign"></span> {{"STOCK.MOVEMENT.ONLY_ONE_DEPOT" | translate}}
       </div>
     </div>
   </div>
 
   <div class="row" ng-if="session.configured">
-    
+
     <div class="col-xs-12">
-      
+
       <!-- Warnings -->
       <!-- One || Zero depos registered -->
 
       <div class="panel panel-default square">
         <div class="panel-heading square">
-          <span class="glyphicon glyphicon-transfer"></span> {{ "STOCK.MOVEMENT.FORM" | translate }} 
+          <span class="glyphicon glyphicon-transfer"></span> {{ "STOCK.MOVEMENT.FORM" | translate }}
           <span class='pull-right'>{{ session.doc.document_id }} </span>
         </div>
-          
+
         <div class="panel-body">
           <!-- Main content area -->
-          
+
           <div class="row">
             <div class="col-xs-5">
               <div class="panel square"
@@ -58,18 +58,18 @@
                     'panel-success' : session.from,
                     'panel-warning' : !session.from
                    }"
-                > 
+                >
                 <div class="panel-heading square">
-                  Depo_From 
+                  {{ "STOCK.MOVEMENT.DEPOT_FROM" | translate }}
                 </div>
 
                 <!-- <div class="panel&#45;body"> -->
-                  <select 
+                  <select
                     class="form-bhima"
-                    ng-model="session.from" 
+                    ng-model="session.from"
                     ng-options="depot as depot.text for depot in depotMap.from.model.data"
                     >
-                    <option value="" disabled>--Select a depo--</option>
+                    <option value="" disabled>--{{"SELECT.DEPOT" | translate}}--</option>
                   </select>
                 <!-- </div> -->
               </div>
@@ -78,11 +78,11 @@
             <div class="col-xs-2">
               <div style="text-align: center; margin-top: 20px;">
                 <span style="font-size: 30px;" class="glyphicon glyphicon-arrow-right"></span>
-              </div> 
+              </div>
             </div>
 
             <div class="col-xs-5">
-              <div class="panel square" 
+              <div class="panel square"
                 ng-class=
                 "{
                   'panel-success' : session.to,
@@ -90,15 +90,15 @@
                 }"
                 >
                 <div class="panel-heading square">
-                  Depo_To 
+                  {{ "STOCK.MOVEMENT.DEPOT_TO" | translate }}
                 </div>
                 <!-- <div class="panel&#45;body"> -->
-                  <select 
+                  <select
                     class="form-bhima"
                     ng-model="session.to"
                     ng-options="depot as depot.text for depot in depotMap.to.model.data"
                     >
-                    <option value="">--Select a depo--</option>
+                    <option value="">--{{"SELECT.DEPOT" | translate}}--</option>
                   </select>
                 <!-- </div> -->
               </div>
@@ -109,9 +109,9 @@
             <div class="col-xs-12">
               <div class="panel panel-default square">
                 <div class="panel-heading">
-                  <span class="glyphicon glyphicon-list-alt"></span> Inventory
+                  <span class="glyphicon glyphicon-list-alt"></span> {{ "STOCK.MOVEMENT.INVENTORY" | translate }}
                 </div>
-                
+
                 <div ng-if="session.from && session.to">
                   <table class="table table-bordered table-condensed">
                     <thead>
@@ -126,9 +126,9 @@
                         >
                         <td colspan="4">
                           <div class="alert alert-danger" style="margin-bottom: 0">
-                            <span class="glyphicon glyphicon-remove-circle"></span> <b>[Lot {{row.lot.lot_number}}] ({{session.from.text}})</b> Invalid transfer quantity (max : {{row.lot.quantity}})
+                            <span class="glyphicon glyphicon-remove-circle"></span> <b>[Lot {{row.lot.lot_number}}] ({{session.from.text}})</b>{{"STOCK.MOVEMENT.INVALID_TRANSFERT_QTE" | translate}} (max : {{row.lot.quantity}})
                           </div>
-                        </td> 
+                        </td>
                       </tr>
                       <tr ng-repeat-end>
                         <!-- <td width="30%"> -->
@@ -136,46 +136,46 @@
                           <!--   class="form&#45;bhima" -->
                           <!--   placeholder="Search lots in {{session.depotFrom.text}}" -->
                           <!-- > -->
-     
+
                           <!-- </td> -->
                         <td width="55%">
                           <div ng-if="!row.lot">
                             <!-- <span class="glyphicon glyphicon&#45;remove&#45;circle error"></span> -->
-                            <select 
+                            <select
                               class="form-bhima"
                               ng-model="row.lot"
                               ng-change="stockSelected(row)"
                               ng-options="lot as (lot.lot_number + ' (' + lot.code + ')') for lot in lots.data"
                               >
-                              <option value="">--Select lot from {{session.from.text}}-- {{$scope}}</option>
+                              <option value="">--{{"STOCK.MOVEMENT.SELECT_LOT" | translate}} {{session.from.text}}-- {{$scope}}</option>
                             </select>
 
                           </div>
                           <div ng-if="row.lot">
                             <span class="glyphicon glyphicon-ok-circle correct"></span> <b>Lot {{row.lot.lot_number}} ({{session.from.text}})</b>
                             <br>
-                        
+
                             <table class="reportTable">
                               <tbody>
                                 <tr>
-                                  <td width="30%">Item</td><td>{{row.lot.stock_description}}</td>
+                                  <td width="30%">{{"COLUMNS.ITEM" | translate}}</td><td>{{row.lot.stock_description}}</td>
                                 </tr>
                                 <tr>
-                                  <td width="30%"><b>Quantity</b></td><td><b>{{row.lot.quantity}}</b></td>
+                                  <td width="30%"><b>{{"COLUMNS.QUANTITY" | translate}}</b></td><td><b>{{row.lot.quantity}}</b></td>
                                 </tr>
                                 <tr>
-                                  <td width="30%">Expiration Date</td><td>{{row.lot.expiration_date | date}}</td>
+                                  <td width="30%">{{"COLUMNS.EXPIRATION_DATE" | translate}}</td><td>{{row.lot.expiration_date | date}}</td>
                                 </tr>
                               </tbody>
                             </table>
-                            
+
                         </div>
                         </td>
                         <td width="10%">
                           <!-- FIXME style hack -->
                           <div class="input-group" >
                             <span class="input-group-addon">
-                              <span 
+                              <span
                                 ng-class=
                                 "{
                                   'glyphicon-remove-circle error' : !row.validQuantity,
@@ -184,7 +184,7 @@
                                 class="glyphicon"></span>
                             </span>
                             <input ng-disabled="!row.lot" class="form-bhima" ng-model="row.quantity" type="number" min="0" required>
-                          </div>  
+                          </div>
                         </td>
                         <!-- <td> <input ng&#45;model="row.destination" required> -->
                         <!-- </td> -->
@@ -201,7 +201,7 @@
               </div>
             </div>
           </div>
-          
+
         </div> <!-- End main content panel body -->
       </div> <!-- End main content panel -->
 
