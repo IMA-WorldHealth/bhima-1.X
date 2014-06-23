@@ -196,7 +196,7 @@ module.exports = function (options) {
       def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) :
       null;
 
-    var order;
+    var order = def.order;
     return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
       .replace('%columns%', columns.join(', '))
       .replace('%table%', table)

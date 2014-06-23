@@ -18,7 +18,6 @@ angular.module('bhima.controllers')
       lotSelectionSuccess : false,
       lotSelectionFailure : false
     };
-
     var dependencies = {};
 
     // Test for module organised into step structure
@@ -158,15 +157,11 @@ angular.module('bhima.controllers')
 
             }
           } else {
-            console.log('EXPIRTED');
             messenger.danger('Lot ' + lot.lot_number + ' has expired and cannot be used, contact the stock administrator.', true);
           }
         });
 
-        console.log('found ', validUnits, ' in', sessionLots);
-
         if (validUnits < saleItem.quantity) {
-          console.log('LIMITED STOCK, ');
           saleItem.stockStatus = stock.LIMITED_STOCK;
         }
 
@@ -238,7 +233,7 @@ angular.module('bhima.controllers')
 
       // Iterate through items, write consumption line for each lot
       session.sale.details.forEach(function (consumptionItem) {
-
+        
         if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
         consumptionItem.recomendedLots.forEach(function (lot) {
