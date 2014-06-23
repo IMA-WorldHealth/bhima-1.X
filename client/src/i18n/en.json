@@ -69,9 +69,18 @@
       "EXPENSE_DATE"          : "Expense Date"
     },
     "INCOME" : {
-      "TRANSFER"        : "Transfert",
-      "CONVENTION"      : "Convention",
-      "GENERIC_TITLE"   : "Generic Income"
+      "TRANSFER"              : "Transfert",
+      "CONVENTION"            : "Convention",
+      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "RECIPIENT"             : "Recipient",
+      "LABEL"                 : "Label",
+      "DEBTOR"                : "Debtor",
+      "DATE"                  : "Income Date",
+      "AMOUNT"                : "Amount",
+      "GENERIC" : {
+        "TITLE"   : "Generic Income",
+        "RECEIPT" : "Receipt"
+      }
     }
   },
 
@@ -335,7 +344,8 @@
     "COST_CENTER"     : "Select the cost center",
     "PROJECT"         : "Select a project",
     "CASH"            : "Select a Cash",
-    "SOURCE"          : "Select source"
+    "SOURCE"          : "Select a source",
+    "DEBTOR"          : "Select a debtor"
   },
 
   "PATIENT_REGISTRATIONS" : {

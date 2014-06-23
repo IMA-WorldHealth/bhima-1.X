@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
   'util',
   function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util) {
     var isDefined, dependencies = {};
-    var session = $scope.session = { receipt : {} };
+    var session = $scope.session = { receipt : { date : new Date() } };
 
     // TODO
     if (Number.isNaN(Number($routeParams.id))) {
@@ -60,7 +60,7 @@ angular.module('bhima.controllers')
         session.receipt.cash_box_id = $routeParams.id;
       })
       .catch(function (err) {
-        messenger.error(err);
+        messenger.danger(err);
       });
     });
 
