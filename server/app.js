@@ -407,9 +407,9 @@ app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
 
   var sql =
-    'SELECT `village`.`uuid` as `uuid`,  `village`.`name` as `village`, ' +
-      '`sector`.`name` as `sector`, `province`.`name` as `province`, ' +
-      '`country`.`country_en` as `country` ' +
+    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
+      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
+      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
     'FROM `village`, `sector`, `province`, `country` ' +
     'WHERE village.sector_uuid = sector.uuid AND ' +
       'sector.province_uuid = province.uuid AND ' +
