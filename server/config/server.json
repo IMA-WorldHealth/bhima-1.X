@@ -1,5 +1,5 @@
 {
-  "static": "client/dest",
+  "static": "client/dest/",
   "rootFile" : "/index.html",
   "port" : 8080,
   "db" : {
@@ -9,8 +9,8 @@
     "database" : "bhima"
   },
   "log" : {
-    "type" : "csv",
-    "file" : "test.log"
+    "type" : "html",
+    "file" : "log"
   },
   "session" : {
     "secret" : "xopen blowfish"

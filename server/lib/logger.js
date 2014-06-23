@@ -14,37 +14,108 @@
 var fs = require('fs'),
     os = require('os');
 
+/* Writers */
+function HtmlWriter(io, fields) {
+  'use strict';
 
-function writeCsvHeader(io, headers) {
-  io.write(headers.join(','));
+  this.writeHeader = function writeHeader() {
+    io.write('<table><thead>' + os.EOL);
+    io.write('<tr><th>' + fields.join('</th><th>') + '</th></tr>' + os.EOL);
+    io.write('</thead><tbody>' + os.EOL);
+  };
+
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join('</td><td>');
+    io.write('<tr><td>' + data + '</td></tr>' + os.EOL);
+  };
+
+  this.writeFooter = function writeFooter() {
+    io.write('</tbody></table>' + os.EOL);
+  };
 }
 
-function writeTabHeader(io, headers) {
-  io.write(headers.join('\t'));
+function CsvWriter(io, fields) {
+  'use strict';
+
+  this.writeHeader = function writeHeader() {
+    io.write(fields.join(','));
+  };
+
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join(',')
+      .concat(os.EOL);
+    io.write(data);
+  };
+
+  this.writeFooter = function writeFooter() {};
 }
 
-function writeMarkdownHeader(io, headers) {
-  
+function TabWriter(io, fields) {
+  'use strict';
+
+  this.writeHeader = function writeHeader() {
+    io.write(fields.join('\t'));
+  };
+
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join('\t')
+      .concat(os.EOL);
+    io.write(data);
+  };
+
+  this.writeFooter = function writeFooter() {};
+}
+
+function MarkdownWriter(io, fields) {
+  'use strict';
+
+  this.writeHeader = function writeHeader() {
+    var content = '| ' + fields.join(' | ') + ' |' + os.EOL;
+    var decoration = new Array(content.length)
+      .join('-')
+      .concat(os.EOL);
+
+    io.write(decoration);
+    io.write(content);
+    io.write(decoration);
+  };
+
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join(' | ');
+    io.write('| ' + data + ' |' + os.EOL);
+  };
+
+  this.writeFooter = function writeFooter() {
+    var content = '| ' + fields.join(' | ') + ' |';
+    var decoration = new Array(content.length)
+      .join('-')
+      .concat(os.EOL);
+    io.write(decoration);
+  };
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString();
 }
 
 module.exports = function Logger (cfg, uuid) {
   'use strict';
-  var types, headers, io, delimeter;
+  var types, headers, io, writer;
 
   if (!cfg) {
     throw new Error('No configuration file found!');
   }
 
   types = {
-    'csv' : {
-      delimiter : ','
-    },
-    'tsv' : {
-      delimiter : '\t'
-    },
-    'tab' : {
-      delimiter : '\t'
-    }
+    'csv'      : CsvWriter,
+    'html'     : HtmlWriter,
+    'markdown' : MarkdownWriter,
+    'tsv'      : TabWriter,
+    'tab'      : TabWriter,
   };
 
   headers = [
@@ -58,27 +129,16 @@ module.exports = function Logger (cfg, uuid) {
     'USER'
   ];
 
-
-  io = fs.createWriteStream(cfg.file);
-  delimiter = types[cfg.type].delimiter;
-
-  function write () {
-    var data = Array.prototype.slice.call(arguments)
-      .join(delimiter)
-      .concat(os.EOL);
-    io.write(data);
-  }
-
-  function getTime() {
-    return new Date().toLocaleTimeString();
-  }
+  io = fs.createWriteStream(cfg.file + '.' + cfg.type);
+  writer = new types[cfg.type](io, headers);
+  writer.writeHeader();
 
   function request() {
     var source = 'HTTP';
     return function (req, res, next) {
       req.uuid = uuid();
       var userId = req.session ? req.session.user_id : null;
-      write(source, req.ip, req.uuid, getTime(), req.method, req.url, null, userId);
+      writer.writeContent(source, req.ip, req.uuid, getTime(), req.method, decodeURI(req.url), null, userId);
       next();
     };
   }
@@ -88,7 +148,7 @@ module.exports = function Logger (cfg, uuid) {
       throw new Error('Must specify an external module in log.');
     }
     return function (uuid, desc, user_id) {
-      write(source, null, uuid, getTime(), null, desc, null, user_id);
+      writer.writeContent(source, null, uuid, getTime(), null, desc, null, user_id);
     };
   }
 
@@ -97,21 +157,18 @@ module.exports = function Logger (cfg, uuid) {
     return function (err, req, res, next) {
       var type = err.type || 404;
       var userId = req.session ? req.session.user_id : null;
-      write(source, req.ip, req.uuid, getTime(), req.method, err.message, type, userId);
+      writer.writeContent(source, req.ip, req.uuid, getTime(), req.method, err.message, type, userId);
       next(err);
     };
   }
 
-  write('SOURCE', 'IP', 'UUID', 'TIMESTAMP', 'METHOD', 'DESCRIPTION', 'TYPE', 'USER');
-
-  function generic() {
-    write(arguments);
+  function exit() {
+    console.log('Cleaning up logger files');
   }
 
   return {
     request  : request,
     external : external,
-    error    : error,
-    generic  : generic
+    error    : error
   };
 };
