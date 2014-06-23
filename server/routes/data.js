@@ -6,15 +6,20 @@
 // PUT/POST/GET/DELETE requests into database
 // requests along the /data/ route.
 
-var url = require('url');
+var url = require('url'),
+    qs = require('querystring');
 
 module.exports = function dataRouter(db, parser) {
+  'use strict';
 
   return {
 
     get :  function (req, res, next) {
-      var decode = JSON.parse(decodeURI(url.parse(req.url).query));
-      var sql = parser.select(decode);
+      var query, data, sql;
+
+      query = qs.parse(decodeURI(url.parse(req.url).query)).q;
+      data = JSON.parse(query);
+      sql = parser.select(data);
       db.exec(sql)
       .then(function (rows) {
         res.send(rows);
@@ -38,7 +43,7 @@ module.exports = function dataRouter(db, parser) {
       })
       .done();
     },
- 
+
     post : function (req, res, next) {
       // TODO: change the client to stop packaging data in an array...
       var sql = parser.insert(req.body.table, req.body.data);

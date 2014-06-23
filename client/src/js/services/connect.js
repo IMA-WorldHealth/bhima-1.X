@@ -40,13 +40,13 @@ angular.module('bhima.services')
     //    where: ['account.enterprise_id=101', 'AND', ['account.id<100', 'OR', 'account.id>110']]
     var query;
 
-    query = angular.isString(defn) ? defn : '/data/?' + JSON.stringify(defn);
+    query = angular.isString(defn) ? defn : '/data/?q=' + JSON.stringify(defn);
 
     return $http.get(query)
       .then(function (res) {
         var model = new Store({
-          data : res.data,
-          identifier : defn.identifier || stringIdentifier
+          data        : res.data,
+          identifier  : defn.identifier || stringIdentifier
         });
         return $q.when(model);
       })
@@ -57,11 +57,6 @@ angular.module('bhima.services')
     //summary:
     //  Exactly the same as req() but now returns only
     //  data.  Think of it as a `readonly` store.
-
-    // FIXME : Somehow, this function returns two different outputs,
-    // depending on if a string was called or an object.  We need to fix
-    // all the string code (such as the tree), so that we treat every
-    // condition the same.
     var query;
 
     query = angular.isString(defn) ? defn : '/data/?' + JSON.stringify(defn);
@@ -75,19 +70,19 @@ angular.module('bhima.services')
 
   // Cleaner API functions to replace basicPut*Post*Delete
   function put(table, data, pk) {
-    var format_object = {
+    var formatObject = {
       table : table,
       data  : data,
       pk    : pk
     };
     return $http
-      .put('/data/', format_object)
+      .put('/data/', formatObject)
       .catch(capture);
   }
 
   function post(table, data) {
     return $http
-      .post('data/', {table : table, data : data})
+      .post('/data/', {table : table, data : data})
       .catch(capture);
   }
 
@@ -101,42 +96,47 @@ angular.module('bhima.services')
   function basicDelete(table, id, column) {
     messenger.warn({ namespace : 'CONNECT', description : 'connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().' });
     if (!column) { column = 'id'; }
-    return $http.delete(['/data/', table, '/', column, '/', id].join(''))
-    .catch(capture);
+    return $http
+      .delete(['/data/', table, '/', column, '/', id].join(''))
+      .catch(capture);
   }
 
-  //  TODO reverse these two methods? I have no idea how this happened
+  // TODO reverse these two methods? I have no idea how this happened
   function basicPut(table, data) {
-    var format_object = {table: table, data: data};
-    return $http.post('data/', format_object)
-    .catch(capture);
+    var formatObject = { table : table, data : data};
+    return $http
+      .post('/data/', formatObject)
+      .catch(capture);
   }
 
   function basicPost(table, data, pk) {
-    var format_object = {table: table, data: data, pk: pk};
-    return $http.put('data/', format_object)
-    .catch(capture);
+    var formatObject = {table: table, data: data, pk: pk};
+    return $http
+      .put('/data/', formatObject)
+      .catch(capture);
   }
 
   // utility function
-  function clean(obj) {
+  function clean(o) {
     // clean off the $$hashKey and other angular bits and delete undefined
     var cleaned = {};
-    for (var k in obj) {
-      if (k !== '$$hashKey' && angular.isDefined(obj[k]) && obj[k] !== '' && obj[k] !== null) { cleaned[k] = obj[k]; }
+    for (var k in o) {
+      if (k !== '$$hashKey' && angular.isDefined(o[k]) && o[k] !== '' && o[k] !== null) {
+        cleaned[k] = o[k];
+      }
     }
     return cleaned;
   }
 
   return {
-    req: req,
-    fetch: fetch,
-    clean: clean,
-    basicPut: basicPut,
-    basicPost: basicPost,
-    basicDelete: basicDelete,
-    put : put,
-    post : post,
-    delete : del,
+    req         : req,
+    fetch       : fetch,
+    clean       : clean,
+    basicPut    : basicPut,
+    basicPost   : basicPost,
+    basicDelete : basicDelete,
+    put         : put,
+    post        : post,
+    delete      : del,
   };
 }]);
