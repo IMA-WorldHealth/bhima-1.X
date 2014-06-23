@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
       validate.process(dependencies)
       .then(function (models) {
         angular.extend($scope, models);
-        session.receipt.date = new Date().toISOString().slice(0, 10);
+        session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
       })
@@ -64,17 +64,13 @@ angular.module('bhima.controllers')
       });
     });
 
-    function formatDates () {
-      session.receipt.date = util.convertToMysqlDate(session.receipt.date);
-    }
-
     $scope.generate = function generate () {
       session.receipt.reference_uuid = uuid();
     };
 
     $scope.clear = function clear () {
       session.receipt = {};
-      session.receipt.date = new Date().toISOString().slice(0, 10);
+      session.receipt.date = new Date();
       session.receipt.value = 0.00;
       session.receipt.cash_box_id = $routeParams.id;
     };
@@ -100,7 +96,6 @@ angular.module('bhima.controllers')
 
     $scope.submit = function submit () {
       var data, receipt = session.receipt;
-      formatDates();
 
       connect.fetch('/user_session')
       .then(function (user) {
@@ -110,7 +105,7 @@ angular.module('bhima.controllers')
           reference     : 1,
           project_id    : $scope.project.id,
           type          : 'E',
-          date          : receipt.date,
+          date          : util.sqlDate(receipt.date),
           deb_cred_uuid : receipt.recipient.creditor_uuid,
           deb_cred_type : 'C',
           account_id    : receipt.recipient.account_id,
@@ -140,7 +135,7 @@ angular.module('bhima.controllers')
       .then(function () {
         messenger.success('Posted data successfully.');
         session = $scope.session = { receipt : {} };
-        session.receipt.date = new Date().toISOString().slice(0, 10);
+        session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
       });
