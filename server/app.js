@@ -1,5 +1,5 @@
 #!/usr/local/bin/node
-// scripts/server.js
+// server/app.js
 
 // import node dependencies
 var express      = require('express'),
