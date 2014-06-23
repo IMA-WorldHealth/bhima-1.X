@@ -1,5 +1,6 @@
 {
   "static": "client/dest",
+  "rootFile" : "/index.html",
   "port" : 8080,
   "db" : {
     "host"     : "localhost",

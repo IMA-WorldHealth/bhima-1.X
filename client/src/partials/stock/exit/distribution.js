@@ -56,7 +56,7 @@ angular.module('bhima.controllers')
     };
 
     dependencies.ledger = {};
-    
+
     moduleStep();
 
     function initialiseDistributionDetails(patient) {
@@ -65,16 +65,15 @@ angular.module('bhima.controllers')
       session.patient = patient;
       validate.process(dependencies).then(startup);
     }
-    
+
     function startup(model) {
       angular.extend($scope, model);
-      
+
       moduleStep();
       console.log(model);
     }
 
-    function moduleStep() { 
-      
+    function moduleStep() {
       // FIXME
       session.index += 1;
       session.state = moduleDefinition[session.index];
@@ -89,7 +88,7 @@ angular.module('bhima.controllers')
       getSaleDetails(sale).then(function (saleDetails) {
         var detailsRequest = [];
         session.sale.details = saleDetails.data;
-        
+
         detailsRequest = session.sale.details.map(function (saleItem) {
           return connect.req('inventory/depot/' + session.depot + '/drug/' + saleItem.code);
         });
@@ -100,12 +99,12 @@ angular.module('bhima.controllers')
             var itemModel = result[index];
 
             console.log('assigning', result);
-            if (itemModel.data.length) saleItem.lots = itemModel;
+            if (itemModel.data.length) { saleItem.lots = itemModel; }
           });
-        
+
 
           recomendLots(session.sale.details);
-          
+ 
           session.lotSelectionSuccess = verifyValidLots(session.sale.details);
         })
         .catch(function (error) {
@@ -115,30 +114,30 @@ angular.module('bhima.controllers')
     }
 
     function recomendLots(saleDetails) {
-      // Corner cases 
+      // Corner cases
       // - ! Lot exists but does not have enough quantity to provide medicine
       // - No lots exist, warning status
       // - ! Lot exists but is expired, stock administrator
-      // - Lot exists with both quantity and expiration date 
-      
-      saleDetails.forEach(function (saleItem) { 
-        var validUnits = 0;   
+      // - Lot exists with both quantity and expiration date
+
+      saleDetails.forEach(function (saleItem) {
+        var validUnits = 0;
         var sessionLots = [];
 
         console.log('Determining lots for ', saleItem);
-        
+
         // Ignore non consumable items
-        if (!saleItem.consumable) return;
+        if (!saleItem.consumable) { return; }
 
         // Check to see if any lots exist (expired stock should be run through the stock loss process)
         if (!saleItem.lots) {
-         saleItem.stockStatus = stock.NONE;
-         return;
+          saleItem.stockStatus = stock.NONE;
+          return;
         }
-      
+
         console.log('Found lots for sale item');
 
-        // If lots exist, order them by experiation and quantity 
+        // If lots exist, order them by experiation and quantity
         saleItem.lots.data.sort(orderLotsByUsability);
         saleItem.lots.recalculateIndex();
 
@@ -166,13 +165,13 @@ angular.module('bhima.controllers')
           saleItem.stockStatus = stock.LIMITED_STOCK;
         }
 
-        if (sessionLots.length) saleItem.recomendedLots = sessionLots;
+        if (sessionLots.length) { saleItem.recomendedLots = sessionLots; }
       });
     }
 
     function orderLotsByUsability(a, b) {
       // Order first by expiration date, then by quantity
-  
+
       var aDate = new Date(a.expirationDate),
           bDate = new Date(b.expirationDate);
 
@@ -185,7 +184,7 @@ angular.module('bhima.controllers')
 
     function verifyValidLots(saleDetails) {
       var invalidLots = false;
-    
+
       console.log('checking valid lots');
 
       //Ensure each item has a lot
@@ -193,17 +192,17 @@ angular.module('bhima.controllers')
         console.log('validating lot', item);
 
         // ignore non consumables (FIXME better way tod do this across everything)
-        if (!item.consumable) return false;
-        
+        if (!item.consumable) { return false; }
+
         // FIXME hack - if a status has been reported, cannot be submitted
-        if (item.stockStatus) return true;
+        if (item.stockStatus) { return true; }
 
         // console.log('item has lots assigned');
       });
 
       console.log('looped through lots, found invalid', invalidLots);
-      
-      // Update on failed attempt - EVERY validation 
+
+      // Update on failed attempt - EVERY validation
       session.lotSelectionFailure = invalidLots;
       return !invalidLots;
     }
@@ -228,14 +227,14 @@ angular.module('bhima.controllers')
 
     function submitConsumption() {
       var submitItem = [];
-      
-      // Ensure validation is okay 
-      if (!session.lotSelectionSuccess) return messenger.danger('Cannot verify lot allocation');
-      
+
+      // Ensure validation is okay
+      if (!session.lotSelectionSuccess) { return messenger.danger('Cannot verify lot allocation'); }
+
       // Iterate through items, write consumption line for each lot
       session.sale.details.forEach(function (consumptionItem) {
         
-        if (!angular.isDefined(consumptionItem.recomendedLots)) return;
+        if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
         consumptionItem.recomendedLots.forEach(function (lot) {
           submitItem.push({

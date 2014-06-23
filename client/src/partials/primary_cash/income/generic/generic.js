@@ -26,17 +26,20 @@ angular.module('bhima.controllers')
     dependencies.debtors = {
       query : {
         tables : {
-          'supplier' : {
-            columns : ['uuid', 'creditor_uuid', 'name', 'address_1', 'address_2', 'location_id', 'email']
+          'patient' : {
+            columns : ['uuid', 'debitor_uuid', 'project_id', 'reference', 'first_name', 'last_name']
           },
-          'creditor' : {
-            columns : ['text']
+          'debitor' : {
+            columns : ['group_uuid']
           },
-          'creditor_group' : {
+          'debitor_group' : {
             columns : ['account_id']
           }
         },
-        join : ['supplier.creditor_uuid=creditor.uuid', 'creditor.group_uuid=creditor_group.uuid']
+        join : [
+          'patient.debitor_uuid=debitor.uuid',
+          'debitor.group_uuid=debitor_group.uuid'
+        ]
       }
     };
 
@@ -49,13 +52,25 @@ angular.module('bhima.controllers')
         }
       }
     };
+ 
+    dependencies.projects = {
+      query : {
+        tables : {
+          'project' : {
+            columns : ['id', 'abbr']
+          }
+        }
+      }
+    };
 
     appstate.register('project', function (project) {
       $scope.project =  project;
+      dependencies.projects.query.where =
+        ['project.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies)
       .then(function (models) {
         angular.extend($scope, models);
-        session.receipt.date = new Date().toISOString().slice(0, 10);
+        session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
       })
@@ -64,9 +79,14 @@ angular.module('bhima.controllers')
       });
     });
 
-    function formatDates () {
-      session.receipt.date = util.convertToMysqlDate(session.receipt.date);
-    }
+    $scope.formatDebtor = function formatDebtor(debtor) {
+      return [
+        '[' + $scope.projects.get(debtor.project_id).abbr,
+        debtor.reference + ']',
+        debtor.first_name,
+        debtor.last_name
+      ].join(' ');
+    };
 
     $scope.generate = function generate () {
       session.receipt.reference_uuid = uuid();
@@ -74,7 +94,7 @@ angular.module('bhima.controllers')
 
     $scope.clear = function clear () {
       session.receipt = {};
-      session.receipt.date = new Date().toISOString().slice(0, 10);
+      session.receipt.date = new Date();
       session.receipt.value = 0.00;
       session.receipt.cash_box_id = $routeParams.id;
     };
@@ -100,7 +120,6 @@ angular.module('bhima.controllers')
 
     $scope.submit = function submit () {
       var data, receipt = session.receipt;
-      formatDates();
 
       connect.fetch('/user_session')
       .then(function (user) {
@@ -110,7 +129,7 @@ angular.module('bhima.controllers')
           reference     : 1,
           project_id    : $scope.project.id,
           type          : 'E',
-          date          : receipt.date,
+          date          : util.sqlDate(receipt.date),
           deb_cred_uuid : receipt.recipient.creditor_uuid,
           deb_cred_type : 'C',
           account_id    : receipt.recipient.account_id,
@@ -119,7 +138,7 @@ angular.module('bhima.controllers')
           user_id       : user.id,
           description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
           cash_box_id   : receipt.cash_box_id,
-          origin_id     : 2,
+          origin_id     : 3,
         };
 
         return connect.basicPut('primary_cash', [data]);
@@ -128,19 +147,19 @@ angular.module('bhima.controllers')
         var item = {
           uuid              : uuid(),
           primary_cash_uuid : data.uuid,
-          debit             : 0,
-          credit            : data.cost,
+          debit             : data.cost,
+          credit            : 0,
           document_uuid     : receipt.reference_uuid
         };
         return connect.basicPut('primary_cash_item', [item]);
       })
       .then(function () {
-        return connect.fetch('/journal/primary_expense/' + data.uuid);
+        return connect.fetch('/journal/primary_income/' + data.uuid);
       })
       .then(function () {
         messenger.success('Posted data successfully.');
         session = $scope.session = { receipt : {} };
-        session.receipt.date = new Date().toISOString().slice(0, 10);
+        session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
       });
