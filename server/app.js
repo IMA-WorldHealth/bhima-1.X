@@ -10,8 +10,8 @@ var express      = require('express'),
     cookieParser = require('cookie-parser');
 
 // import configuration
-var cfg = require('./config.json'),
-    errorCodes = require('./lib/errors.json');
+var cfg = require('./config/server.json'),
+    errorCodes = require('./config/errors.json');
 
 // import lib dependencies
 var parser       = require('./lib/parser')(),
@@ -25,9 +25,9 @@ var parser       = require('./lib/parser')(),
     liberror     = require('./lib/liberror')();
 
 // import middleware
-var authorize    = require('./lib/authorization')(cfg.auth.paths),
-    authenticate = require('./lib/authentication')(db, sanitize),
-    projects     = require('./lib/projects')(db);
+var authorize    = require('./middleware/authorization')(cfg.auth.paths),
+    authenticate = require('./middleware/authentication')(db, sanitize),
+    projects     = require('./middleware/projects')(db);
 
 // import routes
 var report         = require('./routes/report')(db, sanitize, util),
@@ -47,8 +47,8 @@ var report         = require('./routes/report')(db, sanitize, util),
 var app = express();
 
 // middleware configuration
-app.use(logger.request());
 app.use(compress());
+app.use(logger.request());
 app.use(bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
 app.use(cookieParser());
 app.use(session(cfg.session));
@@ -91,7 +91,7 @@ app.post('/sale/', function (req, res, next) {
 
 app.get('/currentProject', function (req, res, next) {
   var sql =
-    'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as "enterprise_name", `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as "village", `sector`.`name` as "sector" ' +
+    'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
     'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
     'WHERE `project`.`id`=' + req.session.project_id + ';';
   db.exec(sql)
@@ -111,7 +111,7 @@ app.get('/pcash_transfert_summers', function (req, res, next) {
   var sql =
     'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
     'FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` '+
-    'WHERE `primary_cash_module`.`text`="transfert") ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
+    'WHERE `primary_cash_module`.`text`=\'transfert\') ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
   db.exec(sql)
   .then(function () {
     var d = []; //for now
@@ -144,7 +144,7 @@ app.get('/trialbalance/submit/:key/', function (req, res, next) {
 app.get('/editsession/authenticate/:pin', function (req, res, next) {
   var decrypt = req.params.pin >> 5;
   var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user_id +
-    ' AND pin = "' + decrypt + '";';
+    ' AND pin = \'' + decrypt + '\';';
   db.exec(sql)
   .then(function (rows) {
     res.send({ authenticated : !!rows.length });
@@ -248,9 +248,12 @@ app.get('/reports/:route/', function(req, res, next) {
 app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
-  var sql = 'SELECT account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = "'+req.params.id_enterprise+'"';
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt, parent ' +
+    'FROM account ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ';';
   function process(accounts) {
-    var InExAccounts = accounts.filter(function(item){
+    var InExAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
     });
     return InExAccounts;
@@ -263,12 +266,15 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
 });
 
 app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
-  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account'+
-  ' WHERE account.enterprise_id = "'+req.params.id_enterprise+'" AND account.parent <> 0 '+
-  'AND account.cc_id IS NULL AND account.account_type_id<>3';
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.cc_id IS NULL ' +
+      'AND account.account_type_id <> 3';
 
-  function process(accounts){
-    var availablechargeAccounts = accounts.filter(function(item){
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
@@ -282,12 +288,14 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
 
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
-  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account'+
-  ' WHERE account.cc_id ="'+req.params.cc_id+'" AND account.account_type_id<>3';
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt FROM account '+
+    'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + ' ' +
+    'AND account.account_type_id <> 3';
 
   db.execute(sql, function (err, ans) {
-    if (err) return next(err);
-    if (ans.length>0){
+    if (err) { return next(err); }
+    if (ans.length > 0) {
       synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
         if (err) { return next(err); }
         console.log('[synthetic a retourner data]', data);
@@ -298,10 +306,10 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
     }
   });
 
-  function process (values){
+  function process (values) {
     var som = 0;
     var current_value;
-    values.forEach(function (value){
+    values.forEach(function (value) {
       som+= (value.debit > 0)? value.debit : value.credit;
     });
     return {cost:som};
@@ -310,10 +318,10 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
 
 app.get('/profit/:id_project/:service_id', function(req, res, next) {
-  function process (values){
+  function process (values) {
     if (values.length <= 0) { return {profit : 0}; }
     var som = 0;
-    values.forEach(function (value){
+    values.forEach(function (value) {
       som+= value.credit;
     });
     return {profit:som};
@@ -333,11 +341,16 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
   // var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id '+
   //           'AND account.enterprise_id = ''+req.params.id_enterprise+'' AND account.parent <> 0 AND account.cc_id=''+req.params.cost_center_id+''';
-  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account JOIN cost_center ON account.cc_id = cost_center.id '+
-            'WHERE account.enterprise_id = "'+req.params.id_enterprise+'" AND account.parent <> 0 AND account.cc_id="'+req.params.cost_center_id+'";';
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN cost_center ' +
+    'ON account.cc_id = cost_center.id '+
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.cc_id = ' + sanitize.escape(req.params.cost_center_id) + ';';
 
-  function process(accounts){
-    var availablechargeAccounts = accounts.filter(function(item){
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
@@ -355,7 +368,7 @@ app.get('/removeFromCostCenter/:tab', function(req, res, next) {
   var tabs = JSON.parse(req.params.tab);
   console.log('le tabs', tabs);
 
-  tabs = tabs.map(function (item){
+  tabs = tabs.map(function (item) {
     return item.id;
   });
 
@@ -373,11 +386,16 @@ app.get('/removeFromCostCenter/:tab', function(req, res, next) {
 app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
-  var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account, auxiliairy_center WHERE account.auxiliairy_center_id = auxiliairy_center.id '+
-            'AND account.enterprise_id = "'+req.params.id_enterprise+'" AND account.parent <> 0 AND account.auxiliairy_center_id="'+req.params.auxiliairy_center_id+'"';
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN auxiliairy_center ' +
+    'ON account.auxiliairy_center_id = auxiliairy_center.id ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.auxiliairy_center_id = ' + sanitize.escape(req.params.auxiliairy_center_id) + ';';
 
-  function process(accounts){
-    var availablechargeAccounts = accounts.filter(function(item){
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0;
     });
     return availablechargeAccounts;
@@ -391,8 +409,8 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
 });
 
 app.get('/tree', function (req, res, next) {
+  /* jshint unused : false*/
 
-  /*jshint unused : false*/
   tree.load(req.session.user_id)
   .then(function (treeData) {
     res.send(treeData);
@@ -569,7 +587,7 @@ app.get('/period/:date', function (req, res, next) {
   .done();
 });
 
-app.get('/lot/:inventory_uuid', function (req, res, next){
+app.get('/lot/:inventory_uuid', function (req, res, next) {
   var sql = 'SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid='+sanitize.escape(req.params.inventory_uuid);
   db.exec(sql)
   .then(function (ans) {
@@ -629,97 +647,92 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   .done();
 });
 
-app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next){
+app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
   console.log('le depot uuid est ', req.params.depot_uuid);
-  var condition = "WHERE stock.expiration_date>="+sanitize.escape(req.params.df)+" AND stock.expiration_date<="+sanitize.escape(req.params.dt);
-  condition+= (req.params.depot_uuid=='*')? "" : " AND consumption.depot_uuid="+sanitize.escape(req.params.depot_uuid)+" ";
-   var sql = "";
-   if (req.params.depot_uuid=='*'){
+  var sql;
+  var condition =
+    'WHERE stock.expiration_date >= ' + sanitize.escape(req.params.df) + ' ' +
+    'AND stock.expiration_date <= ' + sanitize.escape(req.params.dt);
+  condition += (req.params.depot_uuid === '*') ? '' : ' AND consumption.depot_uuid = ' + sanitize.escape(req.params.depot_uuid) + ' ';
+
+  if (req.params.depot_uuid === '*') {
     sql =
-      "SELECT stock.inventory_uuid, stock.tracking_number, stock.lot_number, SUM(consumption.quantity) AS consumed, " +
-        "stock.expiration_date, stock.quantity as initial " +
-      "FROM stock LEFT JOIN consumption ON " +
-        "stock.tracking_number=consumption.tracking_number "+condition+
-        "GROUP BY stock.tracking_number;";
+      'SELECT stock.inventory_uuid, stock.tracking_number, stock.lot_number, SUM(consumption.quantity) AS consumed, ' +
+        'stock.expiration_date, stock.quantity as initial ' +
+      'FROM stock LEFT JOIN consumption ON ' +
+        'stock.tracking_number=consumption.tracking_number '+condition+
+        'GROUP BY stock.tracking_number;';
 
-   }else{
-    sql="SELECT stock.inventory_uuid, stock.tracking_number, "+
-    "stock.lot_number, stock.quantity, SUM(consumption.quantity) AS consumed,"+
-    "movement.quantity, "
-
-
-   }
-
-
+  } else {
+    sql =
+      'SELECT stock.inventory_uuid, stock.tracking_number, '+
+      'stock.lot_number, stock.quantity, SUM(consumption.quantity) AS consumed,'+
+      'movement.quantity, ';
+  }
 
   db.exec(sql)
-  .then(function (ans){
+  .then(function (ans) {
     console.log('core server on a : ', ans);
     res.send(ans);
   })
-  .catch(function (err){
+  .catch(function (err) {
     next(err);
   })
   .done();
 });
 
 
-app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next){
+app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next) {
   //TODO : put it in a separate file
 
-  db.exec((req.params.depot_uuid=='*')? genSql() : speSql())
-  .then(function (ans){
+  db.exec(req.params.depot_uuid === '*' ? genSql() : speSql())
+  .then(function (ans) {
     res.send(process(ans));
   })
-  .catch(function (err){
+  .catch(function (err) {
     next(err);
   })
   .done();
 
-   function genSql (){
-    return "SELECT stock.inventory_uuid, stock.tracking_number, "+
-           "stock.lot_number, stock.quantity as initial, stock.expiration_date, inventory.text "+
-           "FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid "+
-           "WHERE stock.expiration_date>="+sanitize.escape(req.params.df)+
-           " AND stock.expiration_date<="+sanitize.escape(req.params.dt);
-   }
-
-   function speSql(){
-    return "SELECT stock.inventory_uuid, stock.tracking_number, "+
-           "stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
-           ", movement.quantity, (movement.quantity*-1))) as current, SUM(if (movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
-           ", movement.quantity, 0)) AS initial, inventory.text FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND "+
-           "stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
-           "OR movement.depot_exit="+sanitize.escape(req.params.depot_uuid)+") AND stock.expiration_date>="+sanitize.escape(req.params.df)+
-           " AND stock.expiration_date<="+sanitize.escape(req.params.dt)+" GROUP BY movement.tracking_number";
-   }
-
-   function process (records){
-    console.log('on a ', records);
-    return records;
-   }
-});
-
-app.get('/expiring_complete/:tracking_number/:depot_uuid', function (req, res, next){
-  //TODO : put it in a separate file
-  db.exec((req.params.depot_uuid=='*')? genSql() : speSql())
-  .then(function (ans){
-    res.send(ans);
-  })
-  .catch(function (err){
-    next(err);
-  })
-  .done();
-
-  function genSql (){
-    return "SELECT SUM(consumption.quantity) AS consumed FROM stock LEFT JOIN consumption "+
-           "ON stock.tracking_number = consumption.tracking_number WHERE stock.tracking_number="+sanitize.escape(req.params.tracking_number);
+  function genSql () {
+    return 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
+          'stock.lot_number, stock.quantity as initial, stock.expiration_date, inventory.text '+
+          'FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid '+
+          'WHERE stock.expiration_date>='+sanitize.escape(req.params.df)+
+          ' AND stock.expiration_date<='+sanitize.escape(req.params.dt);
   }
 
-  function speSql (){
-    return "SELECT SUM(consumption.quantity) AS consumed FROM stock LEFT JOIN consumption "+
-         "ON stock.tracking_number = consumption.tracking_number WHERE stock.tracking_number="+sanitize.escape(req.params.tracking_number)+
-         " AND consumption.depot_uuid="+sanitize.escape(req.params.depot_uuid);
+  function speSql() {
+    return 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
+          'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          ', movement.quantity, (movement.quantity*-1))) as current, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          ', movement.quantity, 0)) AS initial, inventory.text FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
+          'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') AND stock.expiration_date>='+sanitize.escape(req.params.df)+
+          ' AND stock.expiration_date<='+sanitize.escape(req.params.dt)+' GROUP BY movement.tracking_number';
+  }
+});
+
+app.get('/expiring_complete/:tracking_number/:depot_uuid', function (req, res, next) {
+  //TODO : put it in a separate file
+  db.exec(req.params.depot_uuid === '*' ? genSql() : speSql())
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+
+  function genSql () {
+    return 'SELECT SUM(consumption.quantity) AS consumed FROM stock LEFT JOIN consumption '+
+           'ON stock.tracking_number = consumption.tracking_number WHERE stock.tracking_number='+sanitize.escape(req.params.tracking_number);
+  }
+
+  function speSql () {
+    return 'SELECT SUM(consumption.quantity) AS consumed FROM stock LEFT JOIN consumption '+
+         'ON stock.tracking_number = consumption.tracking_number WHERE stock.tracking_number='+sanitize.escape(req.params.tracking_number)+
+         ' AND consumption.depot_uuid='+sanitize.escape(req.params.depot_uuid);
   }
 });
 

@@ -7,21 +7,35 @@
 // modules, such as the database connector.
 //
 // Logs look like:
-// ---------------------------------------------------------------------
-// | source | uuid | timestamp | type |  description | status | userID |
-// ---------------------------------------------------------------------
+// --------------------------------------------------------------------------
+// | source | ip | uuid | timestamp | type |  description | status | userID |
+// --------------------------------------------------------------------------
 
 var fs = require('fs'),
     os = require('os');
 
+
+function writeCsvHeader(io, headers) {
+  io.write(headers.join(','));
+}
+
+function writeTabHeader(io, headers) {
+  io.write(headers.join('\t'));
+}
+
+function writeMarkdownHeader(io, headers) {
+  
+}
+
 module.exports = function Logger (cfg, uuid) {
   'use strict';
+  var types, headers, io, delimeter;
 
   if (!cfg) {
     throw new Error('No configuration file found!');
   }
 
-  var types = {
+  types = {
     'csv' : {
       delimiter : ','
     },
@@ -33,8 +47,20 @@ module.exports = function Logger (cfg, uuid) {
     }
   };
 
-  var io = fs.createWriteStream(cfg.file);
-  var delimiter = types[cfg.type].delimiter;
+  headers = [
+    'SOURCE',
+    'IP',
+    'UUID',
+    'TIMESTAMP',
+    'METHOD',
+    'DESCRIPTION',
+    'TYPE',
+    'USER'
+  ];
+
+
+  io = fs.createWriteStream(cfg.file);
+  delimiter = types[cfg.type].delimiter;
 
   function write () {
     var data = Array.prototype.slice.call(arguments)
@@ -52,7 +78,7 @@ module.exports = function Logger (cfg, uuid) {
     return function (req, res, next) {
       req.uuid = uuid();
       var userId = req.session ? req.session.user_id : null;
-      write(source, req.uuid, getTime(), req.method, req.url, null, userId);
+      write(source, req.ip, req.uuid, getTime(), req.method, req.url, null, userId);
       next();
     };
   }
@@ -62,7 +88,7 @@ module.exports = function Logger (cfg, uuid) {
       throw new Error('Must specify an external module in log.');
     }
     return function (uuid, desc, user_id) {
-      write(source, uuid, getTime(), null, desc, null, user_id);
+      write(source, null, uuid, getTime(), null, desc, null, user_id);
     };
   }
 
@@ -71,12 +97,12 @@ module.exports = function Logger (cfg, uuid) {
     return function (err, req, res, next) {
       var type = err.type || 404;
       var userId = req.session ? req.session.user_id : null;
-      write(source, req.uuid, getTime(), req.method, err.message, type, userId);
+      write(source, req.ip, req.uuid, getTime(), req.method, err.message, type, userId);
       next(err);
     };
   }
 
-  write('SOURCE', 'UUID', 'TIMESTAMP', 'METHOD', 'DESCRIPTION', 'TYPE', 'USER');
+  write('SOURCE', 'IP', 'UUID', 'TIMESTAMP', 'METHOD', 'DESCRIPTION', 'TYPE', 'USER');
 
   function generic() {
     write(arguments);
