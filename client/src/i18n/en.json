@@ -714,7 +714,9 @@
     "SALE_DATE"              : "Sale Date",
     "COST"                   : "Cost",
     "LOT_DETAILS"            : "Lot Details",
-    "EMPTY_MESSAGE"          : "No sale selected!"
+    "EMPTY_MESSAGE"          : "No sale selected!",
+    "CONSUMED"               : "This prescription has already been consumed",
+    "NOT_CONSUMED"           : "This prescription is unfufilled"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -1228,7 +1230,10 @@
     "EMPLOYEE_CONTACT"             : "Employee Contact",
     "EMPLOYEE_CODE"                : "Employee Code",
     "PURCHASE_TOTAL"               : "Total",
-    "PURCHASE_ORDER"               : "Purchase Order"
+    "PURCHASE_ORDER"               : "Purchase Order",
+    "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
+    "DOCUMENT_REF"      : "Document Ref.",
+    "DEPOT_REF"         : "Depot Ref."
   },
 
   "SECTOR"             : {
@@ -1442,7 +1447,8 @@
     "WAREHOUSE_MANAGER" : "Warehouse Manager",
     "CHIEF_ACCOUNTANT" : "Chief Accountant",
     "FINANCE_OFFICER" : "Finance Officer",
-    "ADMINISTRATOR" : "Adminstrator"
+    "ADMINISTRATOR" : "Adminstrator",
+    "CUSTOMER"      : "Customer"
   },
 
   "CONVENTION"            : {
