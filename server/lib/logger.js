@@ -1,61 +1,91 @@
 // scripts/lib/database/logger.js
+/* jshint unused : false */
 
-// Module: logger
+// Module: Logger
+// This module is responsible for logging all requests to
+// the express server, plus requests to external (asynchronous)
+// modules, such as the database connector.
+//
+// Logs look like:
+// ---------------------------------------------------------------------
+// | source | uuid | timestamp | type |  description | status | userID |
+// ---------------------------------------------------------------------
 
-// This module is responsible for timestamping and logging
-// queries to the database.
+var fs = require('fs'),
+    os = require('os');
 
-var fs = require('fs');
-
-module.exports = (function (cfg) {
+module.exports = function Logger (cfg, uuid) {
   'use strict';
 
-  cfg = cfg || {};
+  if (!cfg) {
+    throw new Error('No configuration file found!');
+  }
 
-  var logFile = cfg.file || './scripts/lib/database/db.log',
-      delimiter = cfg.delimiter || '\t',
-      headers = cfg.headers || [];
+  var types = {
+    'csv' : {
+      delimiter : ','
+    },
+    'tsv' : {
+      delimiter : '\t'
+    },
+    'tab' : {
+      delimiter : '\t'
+    }
+  };
 
-  // create our logger
-  var io = fs.createWriteStream(logFile);
+  var io = fs.createWriteStream(cfg.file);
+  var delimiter = types[cfg.type].delimiter;
 
-  // write headers
-  io.on('open', function () {
-    io.write('/* =================================== */\n');
-    io.write('/* Logger opened at ' + new Date().toLocaleTimeString() + ' */\n'); 
-    io.write('/* Log file : ' + logFile + ' */\n');
-    io.write('/* HEADERS \n');
-    headers.forEach(function (header) {
-      io.write(' * ' + header + '\n'); 
-    });
-    io.write('*/\n');
-    io.write('/* =================================== */\n');
-    io.write(['TimeStamp', 'Query\n'].join(delimiter));
-  });
+  function write () {
+    var data = Array.prototype.slice.call(arguments)
+      .join(delimiter)
+      .concat(os.EOL);
+    io.write(data);
+  }
 
-  // logging
-  io.on('log', function (data) {
-    io.write([new Date().toLocaleTimeString(), data + '\n'].join(delimiter));
-  });
+  function getTime() {
+    return new Date().toLocaleTimeString();
+  }
 
-  // log connecting
-  io.on('connecting', function (credentials) {
-    var creds = Object.keys(credentials)
-      .map(function (cred) { return [cred, credentials[cred]].join(':'); });
-    io.write('Connection with creditentials:' + creds.toString() + '\n');
-  });
+  function request() {
+    var source = 'HTTP';
+    return function (req, res, next) {
+      req.uuid = uuid();
+      var userId = req.session ? req.session.user_id : null;
+      write(source, req.uuid, getTime(), req.method, req.url, null, userId);
+      next();
+    };
+  }
 
-  // final writes
-  io.on('close', function () {
-    io.write('/* =================================== */\n');
-    io.write('/* Log closed at ' + new Date().toLocaleTimeString() + ' */\n');
-  });
+  function external(source) {
+    if (!source) {
+      throw new Error('Must specify an external module in log.');
+    }
+    return function (uuid, desc, user_id) {
+      write(source, uuid, getTime(), null, desc, null, user_id);
+    };
+  }
 
-  // log errors
-  io.on('error', function (err) {
-    io.write('ERROR: ' + JSON.stringify(err));
-  });
+  function error() {
+    var source = 'ERROR';
+    return function (err, req, res, next) {
+      var type = err.type || 404;
+      var userId = req.session ? req.session.user_id : null;
+      write(source, req.uuid, getTime(), req.method, err.message, type, userId);
+      next(err);
+    };
+  }
 
-  return io;
+  write('SOURCE', 'UUID', 'TIMESTAMP', 'METHOD', 'DESCRIPTION', 'TYPE', 'USER');
 
-});
+  function generic() {
+    write(arguments);
+  }
+
+  return {
+    request  : request,
+    external : external,
+    error    : error,
+    generic  : generic
+  };
+};

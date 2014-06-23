@@ -9,11 +9,11 @@
     "database" : "bhima"
   },
   "log" : {
-    "file" : "scripts/lib/database/db.log",
-    "headers" : ["BHIMA Tshikaji Log"]
+    "type" : "csv",
+    "file" : "test.log"
   },
   "session" : {
-    "secret" : "open blowfish"
+    "secret" : "xopen blowfish"
   },
   "auth" : {
     "paths" : [

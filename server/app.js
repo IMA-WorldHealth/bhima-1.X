@@ -15,11 +15,11 @@ var cfg = require('./config.json'),
 
 // import lib dependencies
 var parser       = require('./lib/parser')(),
-    logger     = require('./lib/logger')(cfg.log),
-    db           = require('./lib/db')(cfg.db, logger),
+    uuid         = require('./lib/guid'),
+    logger       = require('./lib/logger')(cfg.log, uuid),
+    db           = require('./lib/db')(cfg.db, logger, uuid),
     sanitize     = require('./lib/sanitize'),
     util         = require('./lib/util'),
-    uuid         = require('./lib/guid'),
     validate     = require('./lib/validate')(),
     store        = require('./lib/store'),
     liberror     = require('./lib/liberror')();
@@ -46,7 +46,8 @@ var report         = require('./routes/report')(db, sanitize, util),
 // create app
 var app = express();
 
-// configuration
+// middleware configuration
+app.use(logger.request());
 app.use(compress());
 app.use(bodyParser()); // FIXME: Can we do better than body parser?  There seems to be /tmp file overflow risk.
 app.use(cookieParser());
@@ -77,7 +78,7 @@ app.post('/purchase', function(req, res, next) {
   // TODO duplicated methods
   createPurchase.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
-    res.send(200, {purchaseId: ans});
+    res.send(200, { purchaseId: ans });
   });
 });
 
@@ -89,7 +90,6 @@ app.post('/sale/', function (req, res, next) {
 });
 
 app.get('/currentProject', function (req, res, next) {
-  // TODO sorry
   var sql =
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as "enterprise_name", `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as "village", `sector`.`name` as "sector" ' +
     'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
@@ -170,7 +170,7 @@ app.get('/max/:id/:table/:join?', function (req, res) {
   var max_request = 'SELECT MAX(' + id + ') FROM ';
 
   max_request += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
-  if(join) {
+  if (join) {
     max_request += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
   } else {
     max_request += ')a;';
@@ -287,7 +287,7 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
   db.execute(sql, function (err, ans) {
     if (err) return next(err);
-    if(ans.length>0){
+    if (ans.length>0){
       synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
         if (err) { return next(err); }
         console.log('[synthetic a retourner data]', data);
@@ -429,8 +429,8 @@ app.get('/location/:type/:id?', function (req, res, next) {
 */
 
 app.get('/village/', function (req, res, next) {
-
   /*jshint unused : false*/
+
   var sql =
     'SELECT `village`.`uuid` AS `uuid`,  `village`.`name` AS `village`, ' +
     '`sector`.`uuid` AS `sector_uuid`, `sector`.`name` as `sector` ' +
@@ -526,12 +526,13 @@ app.get('/account_balance/:id', function (req, res, next) {
   // FIXME: put this in a module!
   var enterprise_id = req.params.id;
 
-  var sql = 'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
+  var sql =
+    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
     '(' +
       'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
       'FROM account LEFT JOIN period_total ' +
       'ON account.id=period_total.account_id ' +
-      'WHERE account.enterprise_id=' + sanitize.escape(enterprise_id) +
+      'WHERE account.enterprise_id = ' + sanitize.escape(enterprise_id) +
     ') ' +
     'AS temp JOIN account_type ' +
     'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
@@ -602,7 +603,6 @@ app.get('/max_trans/:project_id', function (req, res, next) {
 });
 
 app.get('/print/journal', function (req, res, next) {
-
   /*jshint unused : false*/
   res.send('Under Contruction');
 });
@@ -634,7 +634,7 @@ app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next){
   var condition = "WHERE stock.expiration_date>="+sanitize.escape(req.params.df)+" AND stock.expiration_date<="+sanitize.escape(req.params.dt);
   condition+= (req.params.depot_uuid=='*')? "" : " AND consumption.depot_uuid="+sanitize.escape(req.params.depot_uuid)+" ";
    var sql = "";
-   if(req.params.depot_uuid=='*'){
+   if (req.params.depot_uuid=='*'){
     sql =
       "SELECT stock.inventory_uuid, stock.tracking_number, stock.lot_number, SUM(consumption.quantity) AS consumed, " +
         "stock.expiration_date, stock.quantity as initial " +
@@ -686,8 +686,8 @@ app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next){
 
    function speSql(){
     return "SELECT stock.inventory_uuid, stock.tracking_number, "+
-           "stock.lot_number, stock.expiration_date, SUM(if(movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
-           ", movement.quantity, (movement.quantity*-1))) as current, SUM(if(movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
+           "stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
+           ", movement.quantity, (movement.quantity*-1))) as current, SUM(if (movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
            ", movement.quantity, 0)) AS initial, inventory.text FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND "+
            "stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry="+sanitize.escape(req.params.depot_uuid)+
            "OR movement.depot_exit="+sanitize.escape(req.params.depot_uuid)+") AND stock.expiration_date>="+sanitize.escape(req.params.df)+
@@ -721,27 +721,27 @@ app.get('/expiring_complete/:tracking_number/:depot_uuid', function (req, res, n
          "ON stock.tracking_number = consumption.tracking_number WHERE stock.tracking_number="+sanitize.escape(req.params.tracking_number)+
          " AND consumption.depot_uuid="+sanitize.escape(req.params.depot_uuid);
   }
-})
-
-// FIXME : Testing
-app.get('/error', function (req, res, next) {
-  var TestErr = liberror.namespace('TestError');
-  next(new TestErr(300, 'This is a terrible error'));
 });
 
 app.get('/errorcodes', function (req, res, next) {
+  /* jshint unused : false */
   res.send(errorCodes);
 });
 
+app.use(logger.error());
 app.use(liberror.middleware);
 
-app.listen(cfg.port, console.log('Application running on localhost:' + cfg.port));
+app.listen(cfg.port, function () {
+  console.log('Application running on localhost:' + cfg.port);
+});
 
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
-  console.log('uncaughtException:', err);
+  console.log('[uncaughtException]', err);
   process.exit();
 });
 
 // temporary debugging to see why the process terminates.
-process.on('exit', function () { console.log('Process Shutting Down...'); });
+process.on('exit', function () {
+  console.log('Process shutting down...');
+});
