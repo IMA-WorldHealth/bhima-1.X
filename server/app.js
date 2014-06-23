@@ -40,7 +40,8 @@ var report         = require('./routes/report')(db, sanitize, util),
     createPurchase = require('./routes/createPurchase')(db, parser, uuid),
     depotRouter    = require('./routes/depot')(db, sanitize, store),
     tree           = require('./routes/tree')(db, parser),
-    drugRouter     = require('./routes/drug')(db);
+    drugRouter     = require('./routes/drug')(db),
+    dataRouter     = require('./routes/data')(db, parser);
 
 // create app
 var app = express();
@@ -60,65 +61,17 @@ app.use(projects);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
 app.get('/', function (req, res, next) {
-  /*jshint unused : false*/
-
+  /* jshint unused : false */
   // This is to preserve the /#/ path in the url
-  res.sendfile('/index.html');
+  res.sendfile(cfg.rootFile);
 });
 
-// TODO : Change this to app.route('/data').get().post().delete() ..
-app.get('/data/', function (req, res, next) {
-  var decode = JSON.parse(decodeURI(url.parse(req.url).query));
-  var sql = parser.select(decode);
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-});
+app.route('/data/')
+  .get(dataRouter.get)
+  .put(dataRouter.put)
+  .post(dataRouter.post);
 
-app.put('/data/', function (req, res, next) {
-  // TODO: change the client to stop packaging data in an array...
-  var updatesql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
-
-  db.exec(updatesql)
-  .then(function (ans) {
-    res.send(200, {insertId: ans.insertId});
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-});
-
-app.post('/data/', function (req, res, next) {
-  // TODO: change the client to stop packaging data in an array...
-  var insertsql = parser.insert(req.body.table, req.body.data);
-
-  db.exec(insertsql)
-  .then(function (ans) {
-    res.send(200, {insertId: ans.insertId});
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-});
-
-app.delete('/data/:table/:column/:value', function (req, res, next) {
-  var sql = parser.delete(req.params.table, req.params.column, req.params.value);
-  db.exec(sql)
-  .then(function () {
-    res.send(200);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-});
+app.delete('/data/:table/:column/:value', dataRouter.delete);
 
 app.post('/purchase', function(req, res, next) {
   // TODO duplicated methods
