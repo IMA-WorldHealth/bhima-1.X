@@ -95,6 +95,7 @@ angular.module('bhima.controllers')
 
           if (!validDepot) {
             messenger.danger('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
+            cache.remove('depot', depot);
             session.configure = true;
             return;
           }
