@@ -2,7 +2,7 @@
   {{'SALERECORD.TITLE' | translate}}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
     <span class="btn-group">
       <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
@@ -19,55 +19,37 @@
   <div>
     <div class="col-xs-2" style="padding-right: 0px;">
       <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
-    </div> 
+    </div>
     <div class="col-xs-2">
       <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
     </div>
   </div>
 
   <span class="pull-right">
-    <!-- <span class="glyphicon glyphicon&#45;home"></span> -->
     <select class="form-bhima" ng-change="reset()" ng-model="session.project" ng-options="item.id as item.name for item in model.project.data">
       <option value="">{{ 'SALERECORD.ALL_PROJECTS' | translate }}</option>
     </select>
   </span>
-</section>
+</nav>
 
-<!-- <div class="content"> -->
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame" style="padding-top: 10px;">
-<!-- <div class="row" style="height: 99%; overflow&#45;y: scroll"> -->
-<!-- <div class="col&#45;xs&#45;12" style="height: 100%"> -->
-<!--  -->
-<!--       <div ng&#45;switch on="model.sale.data.length"> -->
-<!--         <div class="alert alert&#45;info" ng&#45;switch&#45;when="0"> -->
-<!--           {{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong>{{'SALERECORD.GENERATE'}}  -->
-<!--         </div> -->
-<!--         <div ng&#45;switch&#45;default></div> -->
-<!--       </div> -->
-<!--       <div> -->
-        
-  <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
-  <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
-        <!-- <table class="table table&#45;bordered table&#45;condensed"> -->
+      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
+      <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
         <table class="reportTable">
           <thead>
             <tr>
-            <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
-            <th width="10%">{{'COLUMNS.ID' | translate}}</th>
-            
-            <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
-            <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
-            <!-- <th>Debtor ID</th> -->
-            <!-- <th>{{'COLUMNS.POSTED' | translate}}</th> -->
-            <th  width="30%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
-            <!-- <th>Status</th> -->
-          </tr>
+              <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
+              <th width="10%">{{'COLUMNS.ID' | translate}}</th>
+
+              <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
+              <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
+              <th  width="30%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            </tr>
           </thead>
 
           <tbody>
-
             <tr ng-if="model.sale.data.length===0 && !session.searching">
               <td colspan="5">{{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong> {{'SALERECORD.GENERATE' | translate}}</td>
             </tr>
@@ -75,9 +57,8 @@
             <tr ng-if="session.searching">
               <td colspan="5"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
             </tr>
-          <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}"
-            ng-repeat="invoice in model.sale.data">
-              
+
+            <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-repeat="invoice in model.sale.data">
               <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td width="10%">{{invoice.hr_id}}</td>
               <td width="20%">[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
@@ -89,34 +70,34 @@
             </tr>
           </tbody>
         </table>
-
     </div>
   </div>
 </div>
 
 <section class="bar-bottom" style="background-color: #ffffff;">
-<div> 
   <table style="width: 99%" >
     <tbody>
       <td width="50%">
-        
         <span style="margin-right: 10px;">
-          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{total.result.sales}}</b>
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
+          <b>{{total.result.sales}}</b>
           <span ng-if="session.searching">...</span>
         </span>
-        <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{total.result.patients}}</b>
+
+        <span class="glyphicon glyphicon-user" style="color: #428bca"></span>
+        <b>{{total.result.patients}}</b>
         <span ng-if="session.searching">...</span>
 
-        <span style="float: right; margin-right: 5px;"><b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b></span>
+        <span style="float: right; margin-right: 5px;">
+          <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
+        </span>
       </td>
       <td width="20%">
         <b>{{total.result.cost | currency}}</b>
         <span ng-if="session.searching">...</span>
       </td>
-      <td width="20%"> </td>
-      <td ></td>
-
+      <td width="20%"></td>
+      <td></td>
     </tbody>
   </table>
-</div>
 </section>
