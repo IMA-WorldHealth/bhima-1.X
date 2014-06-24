@@ -41,7 +41,7 @@ var report         = require('./routes/report')(db, sanitize, util),
     depotRouter    = require('./routes/depot')(db, sanitize, store),
     tree           = require('./routes/tree')(db, parser),
     drugRouter     = require('./routes/drug')(db),
-    dataRouter     = require('./routes/data')(db, parser);
+    api            = require('./routes/data')(db, parser);
 
 // create app
 var app = express();
@@ -68,11 +68,11 @@ app.get('/', function (req, res, next) {
 });
 
 app.route('/data/')
-  .get(dataRouter.get)
-  .put(dataRouter.put)
-  .post(dataRouter.post);
+  .get(api.get)
+  .put(api.put)
+  .post(api.post);
 
-app.delete('/data/:table/:column/:value', dataRouter.delete);
+app.delete('/data/:table/:column/:value', api.delete);
 
 app.post('/purchase', function(req, res, next) {
   // TODO duplicated methods
@@ -487,15 +487,17 @@ app.get('/province/', function (req, res, next) {
 });
 
 // FIXME : make this code more modular
-app.get('/visit/:patient_id', function (req, res, next) {
-  var patient_id = req.params.patient_id;
+app.get('/visit/:patientId', function (req, res, next) {
+  var patientId = req.params.patientId;
   var sql =
     'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES ' +
-    '(\'' + uuid() + '\',' + [patient_id, req.session.user_id].join(', ') + ');';
-  db.execute(sql, function (err) {
-    if (err) { return next(err); }
+    '(' + [sanitize.escape(uuid()), patientId, req.session.user_id].join(', ') + ');';
+  db.exec(sql)
+  .then(function () {
     res.send();
-  });
+  })
+  .catch(function (err) { next(err); })
+  .done();
 });
 
 app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
@@ -541,7 +543,7 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
 });
 
 app.get('/account_balance/:id', function (req, res, next) {
-  // FIXME: put this in a module!
+  // TODO : put this in a module!
   var enterprise_id = req.params.id;
 
   var sql =
@@ -553,12 +555,15 @@ app.get('/account_balance/:id', function (req, res, next) {
       'WHERE account.enterprise_id = ' + sanitize.escape(enterprise_id) +
     ') ' +
     'AS temp JOIN account_type ' +
-    'ON temp.account_type_id=account_type.id ORDER BY temp.account_number;';
+    'ON temp.account_type_id = account_type.id ' +
+    'ORDER BY temp.account_number;';
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(function (err) { next(err); })
+  .done();
 });
 
 
