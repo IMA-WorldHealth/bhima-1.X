@@ -15,6 +15,10 @@
     width : 100%;
   }
 
+  header {
+    display: none !important;
+  }
+
   nav {
     display : none !important;
   }
@@ -25,10 +29,6 @@
     height   : 100% !important;
     width    : 100% !important;
     overflow : hidden !important;
-  }
-
-  header {
-    display: none !important;
   }
 
   .bar-bottom {

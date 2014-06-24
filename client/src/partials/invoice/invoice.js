@@ -98,6 +98,7 @@ angular.module('bhima.controllers')
       .then(cautionInvoice);
     }
 
+    /*
     function buildPatientLocation() {
       dependencies.location = {
         required: false
@@ -107,6 +108,7 @@ angular.module('bhima.controllers')
         identifier: 'inv_po_id'
       };
     }
+    */
 
     function processTransfert (transfert_uuid) {
       dependencies.transfert = {
@@ -221,7 +223,7 @@ angular.module('bhima.controllers')
 
       validate.process(dependencies).then(consumptionPatient);
     }
-  
+
     // FIXME De-couple methods with promises
     function consumptionPatient(model) {
       console.log('got', model);
@@ -263,7 +265,7 @@ angular.module('bhima.controllers')
         $scope.invoice.hr_id = $scope.invoice.abbr + $scope.invoice.reference;
       });
     }
- 
+
     function processMovement() {
       dependencies = {};
 
@@ -341,7 +343,7 @@ angular.module('bhima.controllers')
         },
         where : ['purchase.uuid=' + invoiceId]
       };
- 
+
       dependencies.purchaseItem = {
         query : {
           tables : {
@@ -444,7 +446,8 @@ angular.module('bhima.controllers')
 
       dependencies.recipient.query.join = ['patient.project_id=project.id'];
 
-      validate.process(dependencies, ['recipient']).then(buildPatientLocation);
+      validate.process(dependencies, ['recipient'])
+      .then(buildPatientLocation);
     }
 
     function buildPatientLocation(model) {
@@ -453,7 +456,8 @@ angular.module('bhima.controllers')
         query: '/location/' + model.recipient.data[0].current_location_id
       };
 
-      validate.process(dependencies, ['location']).then(patientReceipt);
+      validate.process(dependencies, ['location'])
+      .then(patientReceipt);
     }
 
     function buildConventionInvoice (model) {
@@ -637,17 +641,17 @@ angular.module('bhima.controllers')
     }
 
     process = {
-      'cash'    : processCash,
-      'caution' : processCaution,
-      'sale'    : processSale,
-      'credit'  : processCredit,
-      'debtor'  : processDebtor,
-      'patient' : processPatient,
-      'purchase': processPurchase,
-      'pcash_transfert' : processTransfert,
+      'cash'             : processCash,
+      'caution'          : processCaution,
+      'sale'             : processSale,
+      'credit'           : processCredit,
+      'debtor'           : processDebtor,
+      'patient'          : processPatient,
+      'purchase'         : processPurchase,
+      'pcash_transfert'  : processTransfert,
       'pcash_convention' : processConvention,
-      'movement' : processMovement,
-      'consumption' : processConsumption
+      'movement'         : processMovement,
+      'consumption'      : processConsumption
     };
 
     appstate.register('project', function (project) {

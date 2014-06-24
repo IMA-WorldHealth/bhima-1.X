@@ -58,14 +58,14 @@ angular.module('bhima.controllers')
 
     $scope.editEnterprise = function (enterprise) {
       $scope.edit = angular.copy(enterprise);
-      $scope.editing_enterprise = enterprise;
+      $scope.editingEnterprise = enterprise;
       $scope.action = 'edit';
     };
 
     $scope.saveEdit = function () {
       var data = connect.clean($scope.edit);
 
-      connect.basicPost('enterprise', [data], ['id'])
+      connect.put('enterprise', [data], ['id'])
       .then(function () {
         $scope.enterprise.put(data);
         $scope.action = '';
@@ -73,20 +73,20 @@ angular.module('bhima.controllers')
         // we should reset the global enterprise variable
         // if we have updated the global enterprise data
         if (data.id === $scope.globalEnterprise.id) {
-          appstate.set('enterprise', $scope.enterprise.get(data.id));
+          appstate.set('enterprise', data);
         }
 
       });
     };
 
     $scope.resetEdit = function () {
-      $scope.edit = angular.copy($scope.editing_enterprise);
+      $scope.edit = angular.copy($scope.editingEnterprise);
     };
 
     $scope.saveNew = function () {
       var data = connect.clean($scope.add);
 
-      connect.basicPut('enterprise', [data])
+      connect.post('enterprise', [data])
       .then(function (res) {
         data.id = res.data.insertId;
         $scope.enterprise.post(data);
@@ -98,7 +98,9 @@ angular.module('bhima.controllers')
       $scope.add = {};
     };
 
-    $scope.print = function () { $window.print(); };
+    $scope.print = function () {
+      $window.print();
+    };
 
   }
 ]);

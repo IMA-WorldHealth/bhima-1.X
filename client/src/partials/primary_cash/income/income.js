@@ -6,8 +6,7 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   'util',
-  'exchange',
-  function ($scope, connect, messenger, validate, appstate, util, exchange) {
+  function ($scope, connect, messenger, validate, appstate, util) {
 
     //inits and declarations
     var dependencies = {},
@@ -24,7 +23,7 @@ angular.module('bhima.controllers')
             columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
           }
         },
-        where : ['exchange_rate.date='+util.convertToMysqlDate(new Date().toISOString().slice(0,10))]
+        where : ['exchange_rate.date='+util.sqlDate(new Date())]
       }
     };
 
@@ -77,28 +76,30 @@ angular.module('bhima.controllers')
       //$scope.model = model;
       dependencies.summers.query = dependencies.summers.query+$scope.enterprise.id+'?'+JSON.stringify({accounts : formatTab(model)});
       $scope.selectedItem = model.currency_account.data[0];
-      cashAccountIds = model.currency_account.data.filter(function (item){
+      cashAccountIds = model.currency_account.data.filter(function (item) {
         return (item.cash_account);
       });
 
-      cashAccountIds = cashAccountIds.map(function(item){
+      cashAccountIds = cashAccountIds.map(function(item) {
         return item.cash_account;
       });
 
-      $scope.enterprise_symbole_currency = model.currency_account.data.filter(function (item){
+      $scope.enterprise_symbole_currency = model.currency_account.data.filter(function (item) {
         return (item.enterprise_id === $scope.enterprise.id && item.currency_id === $scope.enterprise.currency_id);
 
       })[0].symbol;
-      validate.process(dependencies, ['summers']).then(setUpModel, handlError);
+      validate.process(dependencies, ['summers'])
+      .then(setUpModel)
+      .catch(handlError);
     }
 
-    function formatTab (m){
-      return m.pcash_accounts.data.map(function (item){
+    function formatTab (m) {
+      return m.pcash_accounts.data.map(function (item) {
         return item.pcash_account;
       });
     }
 
-    function setUpModel (model){
+    function setUpModel (model) {
       $scope.model = model;
     }
 
@@ -107,7 +108,7 @@ angular.module('bhima.controllers')
       return;
     }
 
-    function setAction (action){
+    function setAction (action) {
       $scope.action = action;
     }
 
@@ -115,11 +116,12 @@ angular.module('bhima.controllers')
       map[$scope.data.source_id]();
     }
 
-    function transferCashAuxi (){
-      getExpectedAmount().then(handlResult);
+    function transferCashAuxi () {
+      getExpectedAmount()
+      .then(handlResult);
     }
 
-    function transferCashPax (){
+    function transferCashPax () {
       //console.log('cashPax');
     }
 
@@ -153,28 +155,24 @@ angular.module('bhima.controllers')
       if (cashAccount) { $scope.selectedItem = cashAccount; }
     }
 
-    function convert(value, currency_id){
-      if (!(value && currency_id)) { return; }
-      return exchange.myExchange(value, currency_id);
-    }
-
-    function ajouter (){
+    function ajouter() {
       //console.log('on ajoute');
-      writeTransfer().then(postToJournal);
+      writeTransfer()
+      .then(postToJournal);
       //.then(postToJournal).then(success, error);
     }
 
-    function writeTransfer (){
+    function writeTransfer() {
       var pcash = {
         enterprise_id : $scope.enterprise.id,
-        type : 'E',
-        date : util.convertToMysqlDate(new Date().toISOString().slice(0,10)),
-        currency_id : $scope.selectedItem.currency_id,
-        value : $scope.data.value,
-        cashier_id : $scope.model.cashier.data.id,
-        description : 'CT'+new Date().toString(),
-        istransfer : 1,
-        reference : 1,
+        type          : 'E',
+        date          : util.sqlDate(new Date()),
+        currency_id   : $scope.selectedItem.currency_id,
+        value         : $scope.data.value,
+        cashier_id    : $scope.model.cashier.data.id,
+        description   : 'CT ' + new Date().toString(),
+        istransfer    : 1,
+        reference     : 1,
       };
       return connect.basicPut('pcash', connect.clean(pcash));
     }
@@ -184,11 +182,18 @@ angular.module('bhima.controllers')
     }
 
     //invocations
-    appstate.register('enterprise', function(enterprise){
+    appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
-      dependencies.currency_account.query.where = ['currency_account.enterprise_id='+$scope.enterprise.id];
-      dependencies.pcash_accounts.query.where = ['currency_account.enterprise_id='+$scope.enterprise.id, 'AND', 'currency_account.currency_id='+$scope.enterprise.currency_id];
-      validate.process(dependencies, ['pcash_accounts', 'currency_account', 'exchange_rate', 'cashier', 'accounts']).then(init, handlError);
+      dependencies.currency_account.query.where =
+        ['currency_account.enterprise_id=' + $scope.enterprise.id];
+      dependencies.pcash_accounts.query.where = [
+        'currency_account.enterprise_id=' + $scope.enterprise.id,
+        'AND',
+        'currency_account.currency_id=' + $scope.enterprise.currency_id
+      ];
+      validate.process(dependencies, ['pcash_accounts', 'currency_account', 'exchange_rate', 'cashier', 'accounts'])
+      .then(init)
+      .catch(handlError);
     });
 
     //expositions
