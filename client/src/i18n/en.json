@@ -709,7 +709,8 @@
     "EMPLOYEE"                  : "Employee Management",
     "SERVICE"                   : "Service Management",
     "EXPIRING"                  : "Expiring stock report",
-    "ALL_TRANSACTIONS"           : "Toutes les transactions"
+    "ALL_TRANSACTIONS"          : "All Transactions",
+    "PATIENT_RECORDS"           : "Patient Records"
   },
 
   "DISTRIBUTION" : {
