@@ -179,11 +179,11 @@ angular.module('bhima.controllers')
       });
     }
 
-    function handleError(error) {
+    function handleError() {
       // TODO reverse previous incorrect transactions
       messenger.danger($translate.instant('SUPPLIER.REGISTRATION_FAILURE'));
-      throw error;
     }
+
     $scope.registerSupplier = registerSupplier;
     $scope.editSupplier = editSupplier;
     $scope.createSupplier = createSupplier;

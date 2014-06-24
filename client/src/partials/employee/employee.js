@@ -1,4 +1,5 @@
-angular.module('bhima.controllers').controller('employee', [
+angular.module('bhima.controllers')
+.controller('employee', [
   '$scope',
   '$translate',
   'validate',
@@ -44,10 +45,9 @@ angular.module('bhima.controllers').controller('employee', [
 
     function registerEmployee() {
       var creditor_uuid = uuid();
-      var employee_uuid = uuid();
 
       writeCreditor(creditor_uuid)
-      .then(writeEmployee(employee_uuid, creditor_uuid))
+      .then(writeEmployee(creditor_uuid))
       .then(registerSuccess)
       .catch(handleError);
     }
@@ -63,7 +63,7 @@ angular.module('bhima.controllers').controller('employee', [
       // return deferred.promise;
     }
 
-    function writeEmployee(employee_uuid, creditor_uuid) {
+    function writeEmployee(creditor_uuid) {
       session.employee.creditor_uuid = creditor_uuid;
       return connect.basicPut('employee', [session.employee], ['uuid']);
       // return deferred.promise;
