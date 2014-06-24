@@ -205,15 +205,12 @@
           <td ng-bind-html="drug.quantity * drug.unit_price | intlcurrency:drug.currency_id"></td>
           <td>
             <div ng-show="drug.validLots" class="pull-right">
-              <span class="glyphicon glyphicon-ok-circle"></span>
+              <span class="correct glyphicon glyphicon-ok-circle"></span>
             </div>
           </td>
         </tr>
       </tbody>
       <tbody ng-repeat-end>
-
-        <!-- header row -->
-
         <tr>
           <th colspan="3"></th>
           <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
@@ -223,18 +220,12 @@
             {{ "COLUMNS.EXPIRATION_DATE" | translate }}
           </th>
         </tr>
-
-        <!-- data rows -->
-
         <tr ng-repeat="lot in drug.lots.data">
           <td colspan="3"></td>
           <td>{{ lot.lot_number }}</td>
           <td>{{ lot.quantity }}</td>
           <td colspan="3">{{ lot.expiration_date | date }}</td>
         </tr>
-
-        <!-- footer row -->
-
       </tbody>
       <tfoot>
         <tr>

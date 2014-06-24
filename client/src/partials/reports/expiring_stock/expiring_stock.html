@@ -2,23 +2,7 @@
   {{ "EXPIRING_REPORT.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
-  <!--div class="pull-left">
-    <span class="btn-group">
-      <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : true }">
-        {{ (session.selected | translate) || "..." }}
-      </button>
-      <button class="btn btn-sm btn-default dropdown-toggle btn-sq">
-        <span class="caret" data-caret="&#9660;"></span>
-      </button>
-      <ul class="dropdown-menu menu-sq">
-        <li ng-repeat="opt in options">
-          <a href="" ng-click="search(opt)">{{ opt.label | translate }}</a>
-        </li>
-      </ul>
-    </span>
-  </div-->
-
+<nav>
   <div>
     <div class="col-xs-2">
       <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" ng-change="doSearching(1)">
@@ -29,11 +13,11 @@
     <div class="col-xs-4 pull-right">
       <select class="form-bhima" ng-model="session.depot" ng-change="doSearching(1)">
         <option selected value="{{'*'}}">{{ 'EXPIRING_REPORT.ALL_DEPOTS' | translate }}</option>
-        <option ng-repeat="depot in model.depots.data" value="{{depot.uuid}}">{{ depot.text}}</option>
+        <option ng-repeat="depot in model.depots.data" value="{{ depot.uuid }}">{{ depot.text}}</option>
       </select>
     </div>
   </div>
-</section>
+</nav>
 
 <div class="report report-compressed">
   <div class="reportBody">
@@ -52,14 +36,19 @@
         </thead>
         <tbody>
           <tr ng-repeat='expiring in configuration.expirings'>
-            <td>{{expiring.tracking_number}}</td>
-            <td>{{expiring.lot_number}}</td>
-            <td>{{expiring.text}}</td>
-            <td>{{expiring.expiration_date | date}}</td>
-            <td>{{expiring.initial}}</td>
-            <td>{{expiring.current}}</td>
+            <td>{{ expiring.tracking_number }}</td>
+            <td>{{ expiring.lot_number }}</td>
+            <td>{{ expiring.text }}</td>
+            <td>{{ expiring.expiration_date | date }}</td>
+            <td>{{ expiring.initial }}</td>
+            <td>{{ expiring.current }}</td>
           </tr>
-          <tr ng-if="!configuration.expirings.length"><td colspan="6"><span class="glyphicon glyphicon-stats"> {{ "EXPIRING_REPORT.EMPTY_REPORT" | translate }}</span></td></tr>
+          <tr ng-if="!configuration.expirings.length">
+            <td colspan="6">
+              <span class="glyphicon glyphicon-stats"></span>
+              {{ "EXPIRING_REPORT.EMPTY_REPORT" | translate }}
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

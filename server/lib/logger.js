@@ -1,61 +1,174 @@
 // scripts/lib/database/logger.js
+/* jshint unused : false */
 
-// Module: logger
+// Module: Logger
+// This module is responsible for logging all requests to
+// the express server, plus requests to external (asynchronous)
+// modules, such as the database connector.
+//
+// Logs look like:
+// --------------------------------------------------------------------------
+// | source | ip | uuid | timestamp | type |  description | status | userID |
+// --------------------------------------------------------------------------
 
-// This module is responsible for timestamping and logging
-// queries to the database.
+var fs = require('fs'),
+    os = require('os');
 
-var fs = require('fs');
-
-module.exports = (function (cfg) {
+/* Writers */
+function HtmlWriter(io, fields) {
   'use strict';
 
-  cfg = cfg || {};
+  this.writeHeader = function writeHeader() {
+    io.write('<table><thead>' + os.EOL);
+    io.write('<tr><th>' + fields.join('</th><th>') + '</th></tr>' + os.EOL);
+    io.write('</thead><tbody>' + os.EOL);
+  };
 
-  var logFile = cfg.file || './scripts/lib/database/db.log',
-      delimiter = cfg.delimiter || '\t',
-      headers = cfg.headers || [];
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join('</td><td>');
+    io.write('<tr><td>' + data + '</td></tr>' + os.EOL);
+  };
 
-  // create our logger
-  var io = fs.createWriteStream(logFile);
+  this.writeFooter = function writeFooter() {
+    io.write('</tbody></table>' + os.EOL);
+  };
+}
 
-  // write headers
-  io.on('open', function () {
-    io.write('/* =================================== */\n');
-    io.write('/* Logger opened at ' + new Date().toLocaleTimeString() + ' */\n'); 
-    io.write('/* Log file : ' + logFile + ' */\n');
-    io.write('/* HEADERS \n');
-    headers.forEach(function (header) {
-      io.write(' * ' + header + '\n'); 
-    });
-    io.write('*/\n');
-    io.write('/* =================================== */\n');
-    io.write(['TimeStamp', 'Query\n'].join(delimiter));
-  });
+function CsvWriter(io, fields) {
+  'use strict';
 
-  // logging
-  io.on('log', function (data) {
-    io.write([new Date().toLocaleTimeString(), data + '\n'].join(delimiter));
-  });
+  this.writeHeader = function writeHeader() {
+    io.write(fields.join(','));
+  };
 
-  // log connecting
-  io.on('connecting', function (credentials) {
-    var creds = Object.keys(credentials)
-      .map(function (cred) { return [cred, credentials[cred]].join(':'); });
-    io.write('Connection with creditentials:' + creds.toString() + '\n');
-  });
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join(',')
+      .concat(os.EOL);
+    io.write(data);
+  };
 
-  // final writes
-  io.on('close', function () {
-    io.write('/* =================================== */\n');
-    io.write('/* Log closed at ' + new Date().toLocaleTimeString() + ' */\n');
-  });
+  this.writeFooter = function writeFooter() {};
+}
 
-  // log errors
-  io.on('error', function (err) {
-    io.write('ERROR: ' + JSON.stringify(err));
-  });
+function TabWriter(io, fields) {
+  'use strict';
 
-  return io;
+  this.writeHeader = function writeHeader() {
+    io.write(fields.join('\t'));
+  };
 
-});
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join('\t')
+      .concat(os.EOL);
+    io.write(data);
+  };
+
+  this.writeFooter = function writeFooter() {};
+}
+
+function MarkdownWriter(io, fields) {
+  'use strict';
+
+  this.writeHeader = function writeHeader() {
+    var content = '| ' + fields.join(' | ') + ' |' + os.EOL;
+    var decoration = new Array(content.length)
+      .join('-')
+      .concat(os.EOL);
+
+    io.write(decoration);
+    io.write(content);
+    io.write(decoration);
+  };
+
+  this.writeContent = function writeContent() {
+    var data = Array.prototype.slice.call(arguments)
+      .join(' | ');
+    io.write('| ' + data + ' |' + os.EOL);
+  };
+
+  this.writeFooter = function writeFooter() {
+    var content = '| ' + fields.join(' | ') + ' |';
+    var decoration = new Array(content.length)
+      .join('-')
+      .concat(os.EOL);
+    io.write(decoration);
+  };
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString();
+}
+
+module.exports = function Logger (cfg, uuid) {
+  'use strict';
+  var types, headers, io, writer;
+
+  if (!cfg) {
+    throw new Error('No configuration file found!');
+  }
+
+  types = {
+    'csv'      : CsvWriter,
+    'html'     : HtmlWriter,
+    'markdown' : MarkdownWriter,
+    'tsv'      : TabWriter,
+    'tab'      : TabWriter,
+  };
+
+  headers = [
+    'SOURCE',
+    'IP',
+    'UUID',
+    'TIMESTAMP',
+    'METHOD',
+    'DESCRIPTION',
+    'TYPE',
+    'USER'
+  ];
+
+  io = fs.createWriteStream(cfg.file + '.' + cfg.type);
+  writer = new types[cfg.type](io, headers);
+  writer.writeHeader();
+
+  function request() {
+    var source = 'HTTP';
+    return function (req, res, next) {
+      req.uuid = uuid();
+      var userId = req.session ? req.session.user_id : null;
+      writer.writeContent(source, req.ip, req.uuid, getTime(), req.method, decodeURI(req.url), null, userId);
+      next();
+    };
+  }
+
+  function external(source) {
+    if (!source) {
+      throw new Error('Must specify an external module in log.');
+    }
+    return function (uuid, desc, user_id) {
+      writer.writeContent(source, null, uuid, getTime(), null, desc, null, user_id);
+    };
+  }
+
+  function error() {
+    var source = 'ERROR';
+    return function (err, req, res, next) {
+      var type = err.type || 404;
+      var userId = req.session ? req.session.user_id : null;
+      writer.writeContent(source, req.ip, req.uuid, getTime(), req.method, err.message, type, userId);
+      next(err);
+    };
+  }
+
+  function exit() {
+    console.log('Cleaning up logger files');
+  }
+
+  return {
+    request  : request,
+    external : external,
+    error    : error
+  };
+};
