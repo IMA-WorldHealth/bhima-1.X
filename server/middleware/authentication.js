@@ -47,16 +47,17 @@ module.exports = function (db, sanitize) {
       */
 
       id = sanitize.escape(user.id);
-      sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id`=' + id;
+      sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id` = ' + id;
    
       return db.exec(sql);
     })
     .then(function () {
-      var sql = 'SELECT `unit`.`url` ' +
-              'FROM `unit`, `permission`, `user` WHERE ' +
-                '`permission`.`user_id` = `user`.`id` AND ' +
-                '`permission`.`unit_id` = `unit`.`id` AND ' +
-                '`user`.`id`=' + id;
+      var sql =
+        'SELECT `unit`.`url` ' +
+        'FROM `unit`, `permission`, `user` WHERE ' +
+          '`permission`.`user_id` = `user`.`id` AND ' +
+          '`permission`.`unit_id` = `unit`.`id` AND ' +
+          '`user`.`id`=' + id;
 
       return db.exec(sql);
     })
@@ -66,7 +67,7 @@ module.exports = function (db, sanitize) {
       }
 
       req.session.authenticated = true;
-      req.session.user_id = user.id;
+      req.session.user_id = user.id; // TODO : Change all instances to userId
 
       req.session.paths = results.map(function (row) {
         return row.url;

@@ -637,6 +637,9 @@
       "DEFAULT_PRICE"    : "Default Price",
       "UNIT_WEIGHT"      : "Unit Weight",
       "UNIT_VOLUME"      : "Unit Volume"
+    },
+    "MANIFEST" : {
+      "TITLE" : "Inventory Manifest"
     }
   },
 
@@ -1383,7 +1386,8 @@
       "WAREHOUSE_INFO_1" : "Configure the depot to be used for stock management.",
       "WAREHOUSE_INFO_2" : "All Stock operations (entry, exit and reports) will be assigned to this depot.",
       "WAREHOUSE_INFO_3" : "This setting can be changed at a later date.",
-      "REPORTS" : "Stock Reports"
+      "REPORTS" : "Stock Reports",
+      "CONFIRM" : "Are you sure you want to select this warehouse?"
     },
     "ENTRY" : {
       "KEY"                 : "Stock Entry",

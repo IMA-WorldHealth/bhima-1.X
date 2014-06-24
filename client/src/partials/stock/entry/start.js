@@ -5,7 +5,6 @@ angular.module('bhima.controllers')
   '$q',
   '$location',
   '$routeParams',
-  '$filter',
   'validate',
   'connect',
   'messenger',
@@ -14,7 +13,7 @@ angular.module('bhima.controllers')
   'store',
   'uuid',
   'util',
-  function ($scope, $translate, $q, $location, $routeParams, $filter, validate, connect, messenger, appstate, precision, Store, uuid, util) {
+  function ($scope, $translate, $q, $location, $routeParams, validate, connect, messenger, appstate, precision, Store, uuid, util) {
     var dependencies = {},
         session = $scope.session = { cfg : {}, totals : [] },
         find = $scope.find = { active : true, fn : {} };
@@ -108,8 +107,11 @@ angular.module('bhima.controllers')
       var project = order.label.substr(0,3).toUpperCase();
       var reference = Number(order.label.substr(3));
 
-      dependencies.orders.query.where =
-        ['project.abbr=' + project, 'AND', 'purchase.reference=' + reference];
+      dependencies.orders.query.where = [
+        'project.abbr=' + project,
+        'AND',
+        'purchase.reference=' + reference
+      ];
 
       validate.refresh(dependencies, ['orders'])
       .then(setSessionProperties)
@@ -132,8 +134,6 @@ angular.module('bhima.controllers')
     function startup (models) {
       angular.extend($scope, models);
 
-      console.log($routeParams);
-      console.log(models);
       session.depot = $scope.depots.get($routeParams.depotId);
 
       $scope.names.data.forEach(function (order) {
@@ -142,7 +142,7 @@ angular.module('bhima.controllers')
     }
 
     function error (err) {
-      messenger.error(JSON.stringify(err));
+      messenger.danger(JSON.stringify(err));
     }
 
     appstate.register('project', function (project) {
@@ -241,8 +241,8 @@ angular.module('bhima.controllers')
     function Lot () {
       this.inventory_uuid = null;
       this.purchase_order_uuid = null;
-      this.expiration_date = $filter('date')(Date.now(), 'yyyy-MM-dd');
-      this.date = Date.now();
+      this.expiration_date = new Date();
+      this.date = new Date();
       this.lot_number = null;
       this.tracking_number = uuid();
       this.quantity = 0;
