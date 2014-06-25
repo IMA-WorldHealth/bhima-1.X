@@ -5,6 +5,7 @@
 *.min.js
 *.min.css
 *.png
+log.*
 
 node_modules/
 test/reports/
