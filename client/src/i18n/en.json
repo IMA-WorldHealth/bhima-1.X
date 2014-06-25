@@ -51,6 +51,7 @@
   },
 
   "PRIMARY_CASH"  : {
+    "SELECT_CASHBOX" : "Select a Cash box",
     "TITLE"       : "Primary Cash",
     "EXPENSES"    : "Expenses",
     "INCOMES"     : "Income",
@@ -71,7 +72,8 @@
     "INCOME" : {
       "TRANSFER"        : "Transfert",
       "CONVENTION"      : "Convention",
-      "GENERIC_TITLE"   : "Generic Income"
+      "GENERIC_TITLE"   : "Generic Income",
+      "GENERIC_RECEIPT" : "Generic Receipt"
     }
   },
 
