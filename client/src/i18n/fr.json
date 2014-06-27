@@ -666,7 +666,9 @@
     "DEPOT"               : "Depot",
     "PURCHASE_DATE"       : "Date Ordre Achat",
     "LOT_DETAILS"         : "Detail Lot",
-    "TRANSFER_QUANTITY"   : "Quantite a transferer"
+    "TRANSFER_QUANTITY"   : "Quantite a transferer",
+    "LIMIT"               : "Limit",
+    "TRANSACTION_DATE"    : "Date de Transaction"
   },
 
   "REPORT"                  : {
@@ -705,7 +707,8 @@
     "VISIBLE_FISCAL_YEAR"   : "Annee Fiscale Visible",
     "VISIBLE_PERIODS"       : "Periods Visible",
     "CHOOSE_PERIOD"         : "Choissir Period",
-    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense"
+    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
+    "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte"
   },
 
   "PATIENT_GRP_ASSIGNMENT" : {
