@@ -1276,6 +1276,7 @@
   },
 
   "PRIMARY_CASH" : {
+    "SELECT_CASHBOX" : "Selectionner une Caisse",
     "TITLE"        : "Caisse Pricipale",
     "EXPENSES"     : "Depenses",
     "INCOMES"      : "Recettes",
