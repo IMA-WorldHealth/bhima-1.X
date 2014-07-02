@@ -6,7 +6,7 @@ angular.module('bhima.controllers')
   'connect',
   function($scope, validate, appstate, connect) {
     var dependencies = {}, session = $scope.session = {};
-  
+
     session.searchLocation = false;
     session.searched = false;
     session.searching = false;
@@ -25,7 +25,7 @@ angular.module('bhima.controllers')
         join : ['patient.project_id=project.id']
       }
     };
-    
+
     var locationDictionary = ['village', 'sector', 'province', 'country'];
     var locationRelationship = $scope.locationRelationship = {
       village : {
@@ -54,12 +54,12 @@ angular.module('bhima.controllers')
       }
     };
     var locationStore = $scope.locationStore = {};
-  
+
     appstate.register('project', function (project) {
       defineLocationDependency();
       initialiseLocation(project.location_id);
     });
-    
+
     function defineLocationDependency() {
       locationDictionary.forEach(function (key) {
         var locationQuery;
@@ -101,21 +101,19 @@ angular.module('bhima.controllers')
         updateLocation('country', null);
       });
     }
-  
+
     // TODO refactor / remove redundencies
     function updateLocation(key, uuidDependency) {
       var dependency = locationRelationship[key].dependency;
       var currentValue;
-     
-      console.log('update location for ', key, 'given dependency', uuidDependency);
+
       if (!uuidDependency && locationRelationship[key].requires) {
-        console.log('no dependency received', key, 'requires ', locationRelationship[key].requires);
         locationStore[key] = { data : [] };
 
         if (dependency) updateLocation(dependency, null);
         return;
       }
-    
+
       // Not for country
       if (uuidDependency) {
         dependencies[key].query.where = [key + '.' + locationRelationship[key].requires + '_uuid=' + uuidDependency];
@@ -123,27 +121,21 @@ angular.module('bhima.controllers')
 
       validate.refresh(dependencies, [key]).then(function (result) {
         locationStore[key] = result[key];
-      
-        // Check to see if there are any values - if there aren't all future dependencies will also be empty
 
-        // Check to see if current value exists in list
-        console.log('checking default value', locationRelationship[key].value);
         currentValue = locationStore[key].get(locationRelationship[key].value);
 
-        // FIXME 
+        // FIXME
         if (currentValue) currentValue = currentValue.uuid;
-       
-        console.log('locationStore', locationStore[key]);
-        if (!currentValue) { 
+
+        if (!currentValue) {
           if (locationStore[key].data.length) {
             // TODO Should be sorted alphabetically, making this the first value
             currentValue = locationRelationship[key].value = locationStore[key].data[0].uuid;
           }
         }
-      
+
         locationRelationship[key].value = currentValue;
 
-        console.log('done', locationStore);
         // Download new data, try and match current value to currently selected, if not select default
         if (dependency) {
           console.log('updating ', key, 'should now call update', dependency, 'with', currentValue);
@@ -151,26 +143,26 @@ angular.module('bhima.controllers')
         }
 
       });
-      
+
     }
 
     function patientSearch(searchParams) {
       var condition = [], params = angular.copy(searchParams);
       if (!params) { return; }
-  
+
       if ($scope.model) $scope.model.patient.data.length = 0;
       session.searching = true;
-      
+
       // Filter location search
       if (session.locationSearch) {
         var originId = locationRelationship.village.value;
-      
+
         console.log('originId', originId);
         if (originId) {
           condition.push('patient.origin_location_id=' + originId, 'AND');
         }
       }
-      
+
       // Filter yob search
       if (params.yob) {
         condition.push('patient.dob<=' + params.yob + '-12-31', 'AND');
@@ -178,7 +170,7 @@ angular.module('bhima.controllers')
         delete(params.yob); // FIXME
       }
 
-      // Filter meta 
+      // Filter meta
       Object.keys(params)
       .forEach(function(key) {
         if (params[key].length) {
@@ -186,16 +178,16 @@ angular.module('bhima.controllers')
         }
       });
 
-      // FIXME Remove final AND 
+      // FIXME Remove final AND
       dependencies.patient.query.where = condition.slice(0, -1);
       validate.refresh(dependencies, ['patient']).then(patientRecords);
     }
-  
+
     function patientRecords(model) {
       // This is a hack to get date of birth displaying correctly
       $scope.model = model;
       filterNames(model.patient.data);
-    
+
       session.searching = false;
       session.searched = true;
     }
@@ -217,7 +209,6 @@ angular.module('bhima.controllers')
 
     $scope.patientSearch = patientSearch;
     $scope.select = select;
-
     $scope.updateLocation = updateLocation;
   }
 ]);
