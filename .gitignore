@@ -30,3 +30,4 @@ server/plugins/mail/conf/address_list.json
 # ignore log files
 *.log
 /symmetric/*
+/log.html
