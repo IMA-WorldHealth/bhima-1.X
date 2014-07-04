@@ -34,7 +34,34 @@ angular.module('bhima.controllers')
 
 
     var locationDictionary = ['village', 'sector', 'province', 'country'];
-    var locationRelationship = $scope.locationRelationship = {
+    var locationRelationship_origin = $scope.locationRelationship_origin = {
+      village : {
+        value : null,
+        dependency : null,
+        requires : 'sector',
+        label : 'name'
+      },
+      sector : {
+        value : null,
+        dependency : 'village',
+        requires : 'province',
+        label : 'name'
+      },
+      province : {
+        value : null,
+        dependency : 'sector',
+        requires : 'country',
+        label : 'name'
+      },
+      country : {
+        value : null,
+        dependency : 'province',
+        requires : null,
+        label : 'country_en'
+      }
+    };
+
+    var locationRelationship_current = $scope.locationRelationship_current = {
       village : {
         value : null,
         dependency : null,
@@ -63,34 +90,6 @@ angular.module('bhima.controllers')
     var locationStore_origin = $scope.locationStore_origin = {};
     var locationStore_current = $scope.locationStore_current = {};
 
-    // dependencies.village = {
-    //   query : {
-    //     identifier : 'uuid',
-    //     tables : { 'village' : { 'columns' : ['uuid', 'name', 'sector_uuid'] }}
-    //   }
-    // };
-
-    // dependencies.sector = {
-    //   query : {
-    //     identifier : 'uuid',
-    //     tables : { 'sector' : { 'columns' : ['uuid', 'name', 'province_uuid'] }}
-    //   }
-    // };
-
-    // dependencies.province = {
-    //   query : {
-    //     identifier : 'uuid',
-    //     tables : { 'province' : { 'columns' : ['uuid', 'name', 'country_uuid'] }}
-    //   }
-    // };
-
-    // dependencies.country = {
-    //   query : {
-    //     identifier : 'uuid',
-    //     tables : { 'country' : { 'columns' : ['uuid', 'country_en', 'country_fr'] }}
-    //   }
-    // };
-
 
 
     function patientRegistration(model) {
@@ -118,7 +117,6 @@ angular.module('bhima.controllers')
       if (navigator.getUserMedia) {
         navigator.getUserMedia(patientResolution, handleVideo, videoError);
       }
-
     }
     */
 
@@ -128,38 +126,10 @@ angular.module('bhima.controllers')
         return messenger.warn($translate('PATIENT_REG.INVALID_DATE'), 6000);
       }
 
-      // This is overly verbose, but works and is clean
-      var defer = $q.defer();
-      // if the villages are strings, create database entries for them
-      if (angular.isString($scope.origin.village) && angular.isString($scope.current.village)) {
-        createVillage($scope.origin.village, $scope.origin.sector.uuid, 'origin')
-        .then(function () {
-          return createVillage($scope.current.village, $scope.current.sector.uuid, 'current');
-        })
-        .then(function () {
-          defer.resolve();
-        });
-      } else if (angular.isString($scope.origin.village)) {
-        createVillage($scope.origin.village, $scope.origin.sector.uuid, 'origin')
-        .then(function () {
-          defer.resolve();
-        });
-      } else if (angular.isString($scope.current.village)) {
-        createVillage($scope.current.village, $scope.current.sector.uuid, 'current')
-        .then(function () {
-          defer.resolve();
-        });
-      } else {
-        defer.resolve();
-      }
-
-      defer.promise.then(function () {
-        var patient = $scope.patient;
-
-        patient.current_location_id = $scope.current.village.uuid;
-        patient.origin_location_id = $scope.origin.village.uuid;
+      var patient = $scope.patient;
+        patient.current_location_id = $scope.locationRelationship_current.village.value;
+        patient.origin_location_id = $scope.locationRelationship_origin.village.value;
         writePatient(patient);
-      });
     };
 
     function createVillage(village, sector_uuid) {
@@ -239,8 +209,8 @@ angular.module('bhima.controllers')
     function defineLocationDependency() {
       locationDictionary.forEach(function (key) {
         var locationQuery;
-        var label = locationRelationship[key].label;
-        var locationDetails = locationRelationship[key];
+        var label = locationRelationship_origin[key].label;
+        var locationDetails = locationRelationship_origin[key];
 
         locationQuery = dependencies[key] = {
           query : {
@@ -262,21 +232,14 @@ angular.module('bhima.controllers')
     }
 
     function initialiseLocation(locationId) {
-      connect.fetch('/location/' + locationId).then(function (defaultLocation) {
+      connect.fetch('/location/' + locationId)
+      .then(function (defaultLocation) {
         defaultLocation = defaultLocation[0];
-        console.log('voici notre defaultLocation', defaultLocation);
-        // Populate initial values
-        // locationDictionary.forEach(function (key) {
-        //   locationRelationship[key].value = defaultLocation[formatLocationIdString(key)];
-        // });
-
-        ['origin', 'current']
-        .forEach(function (param) {
-          $scope[param].village = {name : defaultLocation.village, uuid : defaultLocation.village_uuid};
-          $scope[param].sector = {name : defaultLocation.sector, uuid : defaultLocation.sector_uuid}
-          $scope[param].province = {name : defaultLocation.province, uuid:defaultLocation.province_uuid}
-          $scope[param].country = {country_en : defaultLocation.country, uuid : defaultLocation.country_uuid}
+        locationDictionary.forEach(function (key) {
+          locationRelationship_origin[key].value = defaultLocation[formatLocationIdString(key)];
+          locationRelationship_current[key].value = defaultLocation[formatLocationIdString(key)];
         });
+
         updateOriginLocation('country', null);
         updateCurrentLocation('country', null);
       });
@@ -284,26 +247,10 @@ angular.module('bhima.controllers')
 
 
     function handleLocation (){
-
-      // // set up location models
-      // $scope.current = {};
-      // $scope.origin = {};
-
       // // webcams for the win
       // // handlePatientImage();
-
-      // // set the $scope.origin and $scope.current location variables
-      // ['origin', 'current']
-      // .forEach(function (param) {
-      //   $scope[param].village = $scope.village.get($scope.project.location_id);
-      //   $scope[param].sector = $scope.sector.get($scope[param].village.sector_uuid);
-      //   $scope[param].province = $scope.province.get($scope[param].sector.province_uuid);
-      //   $scope[param].country = $scope.country.get($scope[param].province.country_uuid);
-      // });
-
       defineLocationDependency();
       initialiseLocation($scope.project.location_id);
-
     }
 
     function formatLocationIdString(target) {
@@ -311,18 +258,10 @@ angular.module('bhima.controllers')
       return target.concat(uuidTemplate);
     }
 
-    function refreshOriginModel (key) {
-       $scope.origin[key] = locationStore_origin[key].data[0];
-    }
-
-    function refreshCurrentModel (key) {
-       $scope.current[key] = locationStore_current[key].data[0];
-    }
-
     function updateOriginLocation (key, uuidDependency) {
-      var dependency = locationRelationship[key].dependency;
+      var dependency = locationRelationship_origin[key].dependency;
 
-      if (!uuidDependency && locationRelationship[key].requires) {
+      if (!uuidDependency && locationRelationship_origin[key].requires) {
         locationStore_origin[key] = { data : [] };
 
         if (dependency) updateOriginLocation(dependency, null);
@@ -330,15 +269,13 @@ angular.module('bhima.controllers')
       }
 
       if (uuidDependency) {
-        dependencies[key].query.where = [key + '.' + locationRelationship[key].requires + '_uuid=' + uuidDependency];
+        dependencies[key].query.where = [key + '.' + locationRelationship_origin[key].requires + '_uuid=' + uuidDependency];
       }
 
       validate.refresh(dependencies, [key])
       .then(function (result) {
         locationStore_origin[key] = result[key];
-        refreshOriginModel(key);
-
-        currentValue = locationStore_origin[key].get(locationRelationship[key].value);
+        currentValue = locationStore_origin[key].get(locationRelationship_origin[key].value);
 
         // FIXME
         if (currentValue) currentValue = currentValue.uuid;
@@ -346,11 +283,11 @@ angular.module('bhima.controllers')
         if (!currentValue) {
           if (locationStore_origin[key].data.length) {
             // TODO Should be sorted alphabetically, making this the first value
-            currentValue = locationRelationship[key].value = locationStore_origin[key].data[0].uuid;
+            currentValue = locationRelationship_origin[key].value = locationStore_origin[key].data[0].uuid;
           }
         }
 
-        locationRelationship[key].value = currentValue;
+        locationRelationship_origin[key].value = currentValue;
 
         // Download new data, try and match current value to currently selected, if not select default
         if (dependency) {
@@ -361,10 +298,9 @@ angular.module('bhima.controllers')
 
     function updateCurrentLocation (key, uuidDependency) {
       //we can have one method for orin and current, but for now it seems clear to separate them
-      console.log('appelle recue : key :', key, 'uuidDependency : ', uuidDependency);
-      var dependency = locationRelationship[key].dependency;
+      var dependency = locationRelationship_current[key].dependency;
 
-      if (!uuidDependency && locationRelationship[key].requires) {
+      if (!uuidDependency && locationRelationship_current[key].requires) {
         locationStore_current[key] = { data : [] };
 
         if (dependency) updateCurrentLocation(dependency, null);
@@ -372,15 +308,14 @@ angular.module('bhima.controllers')
       }
 
       if (uuidDependency) {
-        dependencies[key].query.where = [key + '.' + locationRelationship[key].requires + '_uuid=' + uuidDependency];
+        dependencies[key].query.where = [key + '.' + locationRelationship_current[key].requires + '_uuid=' + uuidDependency];
       }
 
       validate.refresh(dependencies, [key])
       .then(function (result) {
         locationStore_current[key] = result[key];
-        refreshCurrentModel(key);
 
-        currentValue = locationStore_current[key].get(locationRelationship[key].value);
+        currentValue = locationStore_current[key].get(locationRelationship_current[key].value);
 
         // FIXME
         if (currentValue) currentValue = currentValue.uuid;
@@ -388,11 +323,11 @@ angular.module('bhima.controllers')
         if (!currentValue) {
           if (locationStore_current[key].data.length) {
             // TODO Should be sorted alphabetically, making this the first value
-            currentValue = locationRelationship[key].value = locationStore_current[key].data[0].uuid;
+            currentValue = locationRelationship_current[key].value = locationStore_current[key].data[0].uuid;
           }
         }
 
-        locationRelationship[key].value = currentValue;
+        locationRelationship_current[key].value = currentValue;
 
         // Download new data, try and match current value to currently selected, if not select default
         if (dependency) {
