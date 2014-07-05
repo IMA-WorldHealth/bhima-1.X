@@ -17,8 +17,9 @@ angular.module('bhima.controllers')
 
     $scope.assignation = {};
     $scope.sessionProperties = { timestamp : new Date() };
-    $scope.patient = {};
-    window.patient = $scope.patient;
+    $scope.patient = {}; $scope.origin={}; $scope.current={};
+
+
 
     dependencies.debtorGroup = {
       query : {
@@ -27,57 +28,73 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.village = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'village' : { 'columns' : ['uuid', 'name', 'sector_uuid'] }}
-      }
-    };
-
-    dependencies.sector = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'sector' : { 'columns' : ['uuid', 'name', 'province_uuid'] }}
-      }
-    };
-
-    dependencies.province = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'province' : { 'columns' : ['uuid', 'name', 'country_uuid'] }}
-      }
-    };
-
-    dependencies.country = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'country' : { 'columns' : ['uuid', 'country_en', 'country_fr'] }}
-      }
-    };
-
     dependencies.register = {
       query : 'user_session'
     };
 
+
+    var locationDictionary = ['village', 'sector', 'province', 'country'];
+    var locationRelationship_origin = $scope.locationRelationship_origin = {
+      village : {
+        value : null,
+        dependency : null,
+        requires : 'sector',
+        label : 'name'
+      },
+      sector : {
+        value : null,
+        dependency : 'village',
+        requires : 'province',
+        label : 'name'
+      },
+      province : {
+        value : null,
+        dependency : 'sector',
+        requires : 'country',
+        label : 'name'
+      },
+      country : {
+        value : null,
+        dependency : 'province',
+        requires : null,
+        label : 'country_en'
+      }
+    };
+
+    var locationRelationship_current = $scope.locationRelationship_current = {
+      village : {
+        value : null,
+        dependency : null,
+        requires : 'sector',
+        label : 'name'
+      },
+      sector : {
+        value : null,
+        dependency : 'village',
+        requires : 'province',
+        label : 'name'
+      },
+      province : {
+        value : null,
+        dependency : 'sector',
+        requires : 'country',
+        label : 'name'
+      },
+      country : {
+        value : null,
+        dependency : 'province',
+        requires : null,
+        label : 'country_en'
+      }
+    };
+    var locationStore_origin = $scope.locationStore_origin = {};
+    var locationStore_current = $scope.locationStore_current = {};
+
+
+
     function patientRegistration(model) {
       angular.extend($scope, model);
-
-      // set up location models
-      $scope.current = {};
-      $scope.origin = {};
-
-      // webcams for the win
-      // handlePatientImage();
-
-      // set the $scope.origin and $scope.current location variables
-      ['origin', 'current']
-      .forEach(function (param) {
-        $scope[param].village = $scope.village.get($scope.project.location_id);
-        $scope[param].sector = $scope.sector.get($scope[param].village.sector_uuid);
-        $scope[param].province = $scope.province.get($scope[param].sector.province_uuid);
-        $scope[param].country = $scope.country.get($scope[param].province.country_uuid);
-      });
-
+      return $q.when();
     }
 
     /*
@@ -100,7 +117,6 @@ angular.module('bhima.controllers')
       if (navigator.getUserMedia) {
         navigator.getUserMedia(patientResolution, handleVideo, videoError);
       }
-
     }
     */
 
@@ -110,38 +126,10 @@ angular.module('bhima.controllers')
         return messenger.warn($translate('PATIENT_REG.INVALID_DATE'), 6000);
       }
 
-      // This is overly verbose, but works and is clean
-      var defer = $q.defer();
-      // if the villages are strings, create database entries for them
-      if (angular.isString($scope.origin.village) && angular.isString($scope.current.village)) {
-        createVillage($scope.origin.village, $scope.origin.sector.uuid, 'origin')
-        .then(function () {
-          return createVillage($scope.current.village, $scope.current.sector.uuid, 'current');
-        })
-        .then(function () {
-          defer.resolve();
-        });
-      } else if (angular.isString($scope.origin.village)) {
-        createVillage($scope.origin.village, $scope.origin.sector.uuid, 'origin')
-        .then(function () {
-          defer.resolve();
-        });
-      } else if (angular.isString($scope.current.village)) {
-        createVillage($scope.current.village, $scope.current.sector.uuid, 'current')
-        .then(function () {
-          defer.resolve();
-        });
-      } else {
-        defer.resolve();
-      }
-
-      defer.promise.then(function () {
-        var patient = $scope.patient;
-
-        patient.current_location_id = $scope.current.village.uuid;
-        patient.origin_location_id = $scope.origin.village.uuid;
+      var patient = $scope.patient;
+        patient.current_location_id = $scope.locationRelationship_current.village.value;
+        patient.origin_location_id = $scope.locationRelationship_origin.village.value;
         writePatient(patient);
-      });
     };
 
     function createVillage(village, sector_uuid) {
@@ -214,75 +202,141 @@ angular.module('bhima.controllers')
       $scope.project = project;
       validate.process(dependencies)
       .then(patientRegistration)
+      .then(handleLocation)
       .catch(handleError);
     });
 
-    function updateProvinceO(country) {
-      $scope.origin.province = $scope.province.data.filter(function (province) {
-        return province.country_uuid === country.uuid;
-      })[0];
-      updateSectorO($scope.origin.province);
+    function defineLocationDependency() {
+      locationDictionary.forEach(function (key) {
+        var locationQuery;
+        var label = locationRelationship_origin[key].label;
+        var locationDetails = locationRelationship_origin[key];
+
+        locationQuery = dependencies[key] = {
+          query : {
+            identifier : 'uuid',
+            tables : {},
+            order : [label]
+          }
+        };
+        locationQuery.query.tables[key] = {
+          columns : ['uuid', label]
+        };
+
+        if (locationDetails.requires) {
+          locationQuery.query.tables[key].columns.push(
+            formatLocationIdString(locationDetails.requires)
+            );
+        }
+      });
     }
 
-    function updateSectorO (province) {
-      if (!province) {
-        $scope.origin.province = undefined;
-        $scope.origin.sector = undefined;
-        $scope.origin.village  = undefined;
-      }else{
-        $scope.origin.sector = $scope.sector.data.filter(function (sector) {
-          return sector.province_uuid === province.uuid;
-        })[0];
+    function initialiseLocation(locationId) {
+      connect.fetch('/location/' + locationId)
+      .then(function (defaultLocation) {
+        defaultLocation = defaultLocation[0];
+        locationDictionary.forEach(function (key) {
+          locationRelationship_origin[key].value = defaultLocation[formatLocationIdString(key)];
+          locationRelationship_current[key].value = defaultLocation[formatLocationIdString(key)];
+        });
+
+        updateOriginLocation('country', null);
+        updateCurrentLocation('country', null);
+      });
+    }
+
+
+    function handleLocation (){
+      // // webcams for the win
+      // // handlePatientImage();
+      defineLocationDependency();
+      initialiseLocation($scope.project.location_id);
+    }
+
+    function formatLocationIdString(target) {
+      var uuidTemplate = '_uuid';
+      return target.concat(uuidTemplate);
+    }
+
+    function updateOriginLocation (key, uuidDependency) {
+      var dependency = locationRelationship_origin[key].dependency;
+
+      if (!uuidDependency && locationRelationship_origin[key].requires) {
+        locationStore_origin[key] = { data : [] };
+
+        if (dependency) updateOriginLocation(dependency, null);
+        return;
       }
-      updateVillageO($scope.origin.sector);
-    }
 
-    function updateVillageO (sector) {
-      if (!sector){
-        $scope.origin.sector = undefined;
-        $scope.origin.village = undefined;
-      }else{
-        $scope.origin.village = $scope.village.data.filter(function (village) {
-          return village.sector_uuid === sector.uuid;
-        })[0];
+      if (uuidDependency) {
+        dependencies[key].query.where = [key + '.' + locationRelationship_origin[key].requires + '_uuid=' + uuidDependency];
       }
+
+      validate.refresh(dependencies, [key])
+      .then(function (result) {
+        locationStore_origin[key] = result[key];
+        currentValue = locationStore_origin[key].get(locationRelationship_origin[key].value);
+
+        // FIXME
+        if (currentValue) currentValue = currentValue.uuid;
+
+        if (!currentValue) {
+          if (locationStore_origin[key].data.length) {
+            // TODO Should be sorted alphabetically, making this the first value
+            currentValue = locationRelationship_origin[key].value = locationStore_origin[key].data[0].uuid;
+          }
+        }
+
+        locationRelationship_origin[key].value = currentValue;
+
+        // Download new data, try and match current value to currently selected, if not select default
+        if (dependency) {
+          updateOriginLocation(dependency, currentValue);
+        }
+      });
     }
 
+    function updateCurrentLocation (key, uuidDependency) {
+      //we can have one method for orin and current, but for now it seems clear to separate them
+      var dependency = locationRelationship_current[key].dependency;
 
-    function updateProvinceC (country) {
-      $scope.current.province = $scope.province.data.filter(function (province) {
-        return province.country_uuid === country.uuid;
-      })[0];
-      updateSectorC($scope.current.province);
-    }
+      if (!uuidDependency && locationRelationship_current[key].requires) {
+        locationStore_current[key] = { data : [] };
 
-    function updateSectorC (province) {
-      if (!province) {
-        $scope.current.sector = undefined;
-      }else{
-        $scope.current.sector = $scope.sector.data.filter(function (sector) {
-          return sector.province_uuid === province.uuid;
-        })[0];
+        if (dependency) updateCurrentLocation(dependency, null);
+        return;
       }
-      updateVillageC($scope.current.sector);
-    }
 
-    function updateVillageC (sector) {
-      if (!sector) {
-        $scope.current.village = undefined;
-      } else {
-        $scope.current.village = $scope.village.data.filter(function (village) {
-          return village.sector_uuid === sector.uuid;
-        })[0];
+      if (uuidDependency) {
+        dependencies[key].query.where = [key + '.' + locationRelationship_current[key].requires + '_uuid=' + uuidDependency];
       }
+
+      validate.refresh(dependencies, [key])
+      .then(function (result) {
+        locationStore_current[key] = result[key];
+
+        currentValue = locationStore_current[key].get(locationRelationship_current[key].value);
+
+        // FIXME
+        if (currentValue) currentValue = currentValue.uuid;
+
+        if (!currentValue) {
+          if (locationStore_current[key].data.length) {
+            // TODO Should be sorted alphabetically, making this the first value
+            currentValue = locationRelationship_current[key].value = locationStore_current[key].data[0].uuid;
+          }
+        }
+
+        locationRelationship_current[key].value = currentValue;
+
+        // Download new data, try and match current value to currently selected, if not select default
+        if (dependency) {
+          updateCurrentLocation(dependency, currentValue);
+        }
+      });
     }
 
-    $scope.updateProvinceO = updateProvinceO;
-    $scope.updateSectorO = updateSectorO;
-    $scope.updateVillageO = updateVillageO;
-    $scope.updateProvinceC = updateProvinceC;
-    $scope.updateSectorC = updateSectorC;
-    $scope.updateVillageC = updateVillageC;
-
+    $scope.updateOriginLocation = updateOriginLocation;
+    $scope.updateCurrentLocation = updateCurrentLocation;
   }
 ]);
