@@ -10,7 +10,6 @@ var jshintrcPath = '../.jshintrc';
 
 var paths = {
   scripts : ['src/js/define.js', 'src/**/*.js', '!src/js/app.js'],
-
   // FIXME You shouldn't need src/partials/**/**/*.css
   styles : ['src/partials/**/*.css', 'src/partials/**/**/*.css', 'src/css/*.css', '!src/css/*.min.css', 'src/css/grid/*.css'],
   assets : ['src/assets/**/*'],
