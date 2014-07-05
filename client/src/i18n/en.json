@@ -51,6 +51,7 @@
   },
 
   "PRIMARY_CASH"  : {
+    "SELECT_CASHBOX" : "Select a Cash box",
     "TITLE"       : "Primary Cash",
     "EXPENSES"    : "Expenses",
     "INCOMES"     : "Income",
