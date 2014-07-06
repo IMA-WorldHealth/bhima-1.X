@@ -25,8 +25,8 @@ gulp.task('scripts', function () {
     // .pipe(jshint.reporter('default'))
     // .pipe(uglify())
     .pipe(concat('js/bhima.min.js'))
-    .pipe(gulp.dest(destPath))
-    .pipe(notify({ message : 'Completed compiling scripts.' }));
+    .pipe(gulp.dest(destPath));
+    //.pipe(notify({ message : 'Completed compiling scripts.' }));
 });
 
 // TODO Remove minification of other vendors CSS, only minify and compile bhima CSS
@@ -34,29 +34,29 @@ gulp.task('styles', function () {
   return gulp.src(paths.styles)
     .pipe(minifycss())
     .pipe(concat('style.min.css'))
-    .pipe(gulp.dest(destPath + 'css/'))
-    .pipe(notify({ message : 'Completed compliling styles.' }));
+    .pipe(gulp.dest(destPath + 'css/'));
+    //.pipe(notify({ message : 'Completed compliling styles.' }));
 });
 
 // TODO Not all assets will be images, this will have to be more specific
 gulp.task('assets', function () {
   return gulp.src(paths.assets)
     // .pipe(imagemin({ optimizationLevel : 3, progressive : true, interlaced : true}))
-    .pipe(gulp.dest(destPath + 'assets/'))
-    .pipe(notify({ message : 'Completed optimizing and transfering assets' }));
+    .pipe(gulp.dest(destPath + 'assets/'));
+    //.pipe(notify({ message : 'Completed optimizing and transfering assets' }));
 });
 
 gulp.task('vendor', function () {
   return gulp.src(paths.vendor)
-    .pipe(gulp.dest(destPath + 'lib/'))
-    .pipe(notify({ message : 'Completed transfering vendor files'}));
+    .pipe(gulp.dest(destPath + 'lib/'));
+    //.pipe(notify({ message : 'Completed transfering vendor files'}));
 });
 
 // TODO rename
 gulp.task('static', function () {
   return gulp.src(paths.static, { base : './src/' })
-    .pipe(gulp.dest(destPath))
-    .pipe(notify({ message : 'Completed compiling/ transfering structure files'}));
+    .pipe(gulp.dest(destPath));
+    //.pipe(notify({ message : 'Completed compiling/ transfering structure files'}));
 });
 
 gulp.task('watch', function () {
