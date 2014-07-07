@@ -577,7 +577,9 @@
     "DEPOT"               : "Depot",
     "PURCHASE_DATE"       : "Purchase Order Date",
     "LOT_DETAILS"         : "Lot Detail",
-    "TRANSFER_QUANTITY"   : "Quantity to transfert"
+    "TRANSFER_QUANTITY"   : "Quantity to transfert",
+    "PURCHASER"           : "Purchaser",
+    "EMPLOYER"            : "Made By"
   },
 
   "INVENTORY" : {
@@ -1518,5 +1520,15 @@
     "LANGUAGE" : "Language",
     "LAST_PAGE" : "Last Page Visited",
     "HOME_PAGE" : "Default Home Page"
+  },
+
+  "PURCHASE_RECORDS" : {
+    "TITLE" : "Pruchase Order Records",
+    "ADVANCE_SEARCH" : "Advanced Search",
+    "NO_PURCHASE_FOUND" : "No purchase orders found",
+    "REFERENCE" : "Reference",
+    "PURCHASE_ORDER" : "Purchase Orders",
+    "TO_REQUEST" : " to request a purchase order"
+
   }
 }
