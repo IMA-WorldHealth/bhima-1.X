@@ -1,5 +1,5 @@
 <header data-header>
-  Purchase Order Records
+  {{"PURCHASE_RECORDS.TITLE" | translate}}
 </header>
 
 <nav>
@@ -7,7 +7,7 @@
     <input type="text" ng-model="purchase_filter.filter" class="form-bhima" placeholder="Filter Purchase Orders">
   </div>
   <div class="pull-right">
-    <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-search"></span> Advanced Search</a>
+    <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-search"></span> {{"PURCHASE_RECORDS.ADVANCE_SEARCH" | translate}}</a>
   </div>
 </nav>
 
@@ -17,7 +17,7 @@
 
       <div ng-switch on="invoice_model.data.length">
         <div class="alert alert-info" ng-switch-when="0">
-          No purchase orders found. Reference <strong><a href="/#/inventory/purchase">Purchase Orders</a></strong> to request a purchase order.
+          {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. {{"PURCHASE_RECORDS.REFERENCE" | translate}}<strong><a href="/#/inventory/purchase">{{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}}</a></strong> {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
         </div>
         <div ng-switch-default></div>
       </div>
@@ -25,37 +25,37 @@
         <table class="table table-bordered">
 
           <thead>
-          <tr>
-            <th>{{ "COLUMNS.ID" | translate }}</th>
-            <th>{{ "COLUMNS.DATE" | translate }}</th>
-            <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
-            <th>{{ "COLUMNS.CREDITOR_ID" | translate }}</th>
-            <th>{{ "COLUMNS.PAID" | translate }}</th>
-          </tr>
+            <tr>
+              <th>{{ "COLUMNS.REFERENCE" | translate }}</th>
+              <th>{{ "COLUMNS.DATE" | translate }}</th>
+              <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+              <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
+              <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
+              <th>{{ "COLUMNS.PURCHASER" | translate }}</th>
+              <th>{{ "COLUMNS.EMPLOYER" | translate }}</th>
+              <th>{{ "COLUMNS.PAID" | translate }}</th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr ng-class='{rowSelected: selected.id==purchase.id}' ng-click="select(purchase.id)"
-              ng-repeat="purchase in purchase_model.data | filter: purchase_filter.filter">
+            <tr ng-class='{rowSelected: selected.id==purchase.id}' ng-click="select(purchase.id)"
+                ng-repeat="purchase in purchase_model.data | filter: purchase_filter.filter">
 
-            <td>{{purchase.id}}</td>
-            <td>{{purchase.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
-            <td>{{purchase.cost | currency}}</td>
-            <td>{{purchase.creditor_id}}</td>
-            <!--Multiple ng-shows - mutually exclusive but not good practice-->
-            <td>
-              <span ng-hide="purchase.posted" class="glyphicon glyphicon-minus"></span>
-              <div ng-show="purchase.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
-            </td>
-          </tr>
+              <td>{{purchase.id}}</td>
+              <td>{{purchase.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td>{{purchase.cost | currency}}</td>
+              <td>{{purchase.creditor_id}}</td>
+              <!--Multiple ng-shows - mutually exclusive but not good practice-->
+              <td>
+                <span ng-hide="purchase.posted" class="glyphicon glyphicon-minus"></span>
+                <div ng-show="purchase.posted"><span class="posting glyphicon glyphicon-book"></span> Posting Journal</div>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
 
     </div>
-    <!--div id="tableContent">
-      <div ng-grid="gridOptions" class="table table-default p-grid"></div>
-    </div-->
   </div>
 </div>
 

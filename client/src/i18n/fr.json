@@ -666,7 +666,9 @@
     "DEPOT"               : "Depot",
     "PURCHASE_DATE"       : "Date Ordre Achat",
     "LOT_DETAILS"         : "Detail Lot",
-    "TRANSFER_QUANTITY"   : "Quantite a transferer"
+    "TRANSFER_QUANTITY"   : "Quantite a transferer",
+    "PURCHASER"           : "Acheteur",
+    "EMPLOYER"            : "Creer par"
   },
 
   "REPORT"                  : {
