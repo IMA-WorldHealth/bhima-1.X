@@ -1528,7 +1528,8 @@
     "NO_PURCHASE_FOUND" : "No purchase orders found",
     "REFERENCE" : "Reference",
     "PURCHASE_ORDER" : "Purchase Orders",
-    "TO_REQUEST" : " to request a purchase order"
+    "TO_REQUEST" : " to request a purchase order",
+    "VIEW_PURCHASE_DETAIL" : "View Details"
 
   }
 }
