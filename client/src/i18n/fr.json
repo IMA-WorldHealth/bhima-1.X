@@ -668,7 +668,9 @@
     "LOT_DETAILS"         : "Detail Lot",
     "TRANSFER_QUANTITY"   : "Quantite a transferer",
     "LIMIT"               : "Limit",
-    "TRANSACTION_DATE"    : "Date de Transaction"
+    "TRANSACTION_DATE"    : "Date de Transaction",
+    "PURCHASER"           : "Acheteur",
+    "EMPLOYER"            : "Creer par"
   },
 
   "REPORT"                  : {
@@ -1459,5 +1461,16 @@
     "WEEK"  : "Cette semaine",
     "EMPTY_REPORT" : "Aucun enregistrement trouve !",
     "GROUP_BY" : "Grouper Par"
-}
+},
+
+  "PURCHASE_RECORDS" : {
+    "TITLE" : "Liste des Ordres d'Achats",
+    "ADVANCE_SEARCH" : "Recherche Avancee",
+    "NO_PURCHASE_FOUND" : "Aucun ordre d'Achat trouve",
+    "REFERENCE" : "Reference",
+    "PURCHASE_ORDER" : "Ordres des achats",
+    "TO_REQUEST" : " pour demander un ordre d'achat",
+    "VIEW_PURCHASE_DETAIL" : "Voir Details"
+
+  }
 }
