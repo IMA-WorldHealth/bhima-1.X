@@ -7,61 +7,40 @@ angular.module('bhima.controllers')
   function ($scope, $q, $routeParams, connect) {
 
     var default_purchase = ($routeParams.purchaseID || -1);
+    $scope.purchase_filter = {};
 
     function init() {
-
       $scope.selected = null;
-
       var promise = fetchRecords();
       promise
         .then(function(model) {
-          //expose scope
           $scope.purchase_model = model;
-          //Select default
-          if (default_purchase > 0) { $scope.select(default_purchase); }
+          //if (default_purchase > 0) { $scope.select(default_purchase); }
 
         });
 
       $scope.post = function() {
-        console.log('Request for post');
-  //      This could be an arry
         var selected = $scope.selected;
         var request = [];
-        /* support multiple rows selected
-        if(selected.length>0) {
-        selected.forEach(function(item) {
-        if(item.posted==0) {
-        request.push(item.id);
-        }
-        });
-        }*/
         if(selected) { request.push(selected.id); }
-        //if(selected) request.push({transact ion_id:1, service_id:1, user_id:1});
 
         connect.journal(request)
           .then(function(res) {
             console.log(res);
-  //          returns a promise
             if (res.status === 200) {
               invoicePosted(request);
             }
           });
-
-        console.log('request should be made for', request);
       };
     }
 
     $scope.select = function(id) {
       $scope.selected = $scope.purchase_model.get(id);
-      console.log('selected', $scope.selected);
     };
 
     function invoicePosted(ids) {
       var deferred = $q.defer();
       var promise_update = [];
-      /*summary
-      *   Updates all records in the database with posted flag set to true
-      */
       ids.forEach(function(invoice_id) {
         var current_invoice = $scope.invoice_model.get(invoice_id);
         console.log('Updating \'posted\'', invoice_id, current_invoice);
@@ -81,14 +60,32 @@ angular.module('bhima.controllers')
 
     function fetchRecords() {
       var deferred = $q.defer();
-
       $scope.selected = {};
-
-      connect.req({'tables' : {'purchase' : {'columns' : ['uuid', 'cost', 'currency_id', 'creditor_uuid', 'discount', 'purchase_date', 'paid']}}})
+      var requette = {
+        'tables' : {
+          'purchase' : {
+            'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'paid']
+          },
+          'creditor' : {
+            'columns' : ['text']
+          },
+          'employee' : {
+            'columns' : ['name', 'prenom']
+          },
+          'user' : {
+            'columns' : ['first', 'last']
+          }
+        },
+        join : [
+        'purchase.creditor_uuid=creditor.uuid',
+        'purchase.purchaser_id=user.id',
+        'purchase.employee_id=employee.id']
+      }
+      connect.req(requette)
         .then(function(model) {
+          console.log('voici notre model ', model)
           deferred.resolve(model);
         });
-
       return deferred.promise;
     }
 
