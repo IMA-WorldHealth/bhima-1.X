@@ -7,6 +7,7 @@ angular.module('bhima.controllers')
   function ($scope, $q, $routeParams, connect) {
 
     var default_purchase = ($routeParams.purchaseID || -1);
+    $scope.purchase_filter = {};
 
     function init() {
       $scope.selected = null;
@@ -14,12 +15,11 @@ angular.module('bhima.controllers')
       promise
         .then(function(model) {
           $scope.purchase_model = model;
-          if (default_purchase > 0) { $scope.select(default_purchase); }
+          //if (default_purchase > 0) { $scope.select(default_purchase); }
 
         });
 
       $scope.post = function() {
-        console.log('Request for post');
         var selected = $scope.selected;
         var request = [];
         if(selected) { request.push(selected.id); }
@@ -31,8 +31,6 @@ angular.module('bhima.controllers')
               invoicePosted(request);
             }
           });
-
-        console.log('request should be made for', request);
       };
     }
 
@@ -66,7 +64,7 @@ angular.module('bhima.controllers')
       var requette = {
         'tables' : {
           'purchase' : {
-            'columns' : ['reference', 'cost', 'discount', 'purchase_date', 'paid']
+            'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'paid']
           },
           'creditor' : {
             'columns' : ['text']
@@ -88,7 +86,6 @@ angular.module('bhima.controllers')
           console.log('voici notre model ', model)
           deferred.resolve(model);
         });
-
       return deferred.promise;
     }
 
