@@ -144,6 +144,7 @@ angular.module('bhima.controllers')
       };
 
       var packagePatient = connect.clean(patient);
+      packagePatient.dob = util.sqlDate(packagePatient.dob);
       packagePatient.uuid = patientId;
       packagePatient.project_id = $scope.project.id;
       packagePatient.reference = 1; // FIXME/TODO : This is a hack
