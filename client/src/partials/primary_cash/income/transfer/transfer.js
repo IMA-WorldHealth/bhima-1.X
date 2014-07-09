@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('primaryCash.income.transfert', [
+.controller('primaryCash.income.transfer', [
   '$scope',
   'connect',
   'messenger',
