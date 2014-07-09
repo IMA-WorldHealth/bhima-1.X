@@ -217,9 +217,9 @@
       controller: 'assigning',
       templateUrl: 'partials/cost_center/assigning/assigning.html'
     })
-    .when('/cost_center/versement/', {
-      controller: 'versement',
-      templateUrl: 'partials/cost_center/versement/versement.html'
+    .when('/cost_center/allocation/', {
+      controller: 'costCenter.allocation',
+      templateUrl: 'partials/cost_center/allocation/allocation.html'
     })
     .when('/patient_group', {
       controller: 'patientGroup',
