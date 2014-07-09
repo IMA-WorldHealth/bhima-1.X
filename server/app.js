@@ -107,11 +107,11 @@ app.get('/user_session', function (req, res) {
   res.send(200, { id: req.session.user_id });
 });
 
-app.get('/pcash_transfert_summers', function (req, res, next) {
+app.get('/pcash_transfer_summers', function (req, res, next) {
   var sql =
     'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
     'FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` '+
-    'WHERE `primary_cash_module`.`text`=\'transfert\') ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
+    'WHERE `primary_cash_module`.`text`=\'transfer\') ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
   db.exec(sql)
   .then(function () {
     var d = []; //for now
@@ -305,15 +305,6 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
       res.send({cost : 0});
     }
   });
-
-  function process (values) {
-    var som = 0;
-    var current_value;
-    values.forEach(function (value) {
-      som+= (value.debit > 0)? value.debit : value.credit;
-    });
-    return {cost:som};
-  }
 });
 
 
