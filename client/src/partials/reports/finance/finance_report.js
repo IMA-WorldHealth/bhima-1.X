@@ -34,7 +34,6 @@ angular.module('bhima.controllers')
       }
     };
 
-
     function buildReportQuery(model) {
       // fiscalYears.push(model.fiscal.data[0].id);
       model.fiscal.data.forEach(function(year) { fiscalYears.push(year.id); });
@@ -101,13 +100,17 @@ angular.module('bhima.controllers')
       });
     }
 
+    function sumKeyColumns(array, account, parent) {
+      array.forEach(function (column) {
+        parent.detail.total[column.key] += account[column.key];
+      });
+    }
+
     //TODO Total could be determined by inversing the sort and traversing the list linearly
     function updateTotal(account, index) {
       var parent = index[account.parent];
       while (parent) {
-        tableDefinition.columns.forEach(function(column) {
-          parent.detail.total[column.key] += account[column.key];
-        });
+        sumKeyColumns(tableDefinition.columns, account, parent);
         parent = index[parent.detail.parent];
       }
     }
@@ -123,9 +126,7 @@ angular.module('bhima.controllers')
           parent = accountModel.get(parent.parent);
         }
         account.depth = depth;
-
         //FIXME very cheeky - calculate this with SQL
-
       });
     }
 

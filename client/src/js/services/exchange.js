@@ -30,6 +30,7 @@ angular.module('bhima.services')
     }
 
     exchange.rate = function rate (value, currency_id, date) {
+      /* jshint unused : false */
       date = date || new Date();
       date = normalize(new Date(date));
       if (!exchange.store) { return 1; }

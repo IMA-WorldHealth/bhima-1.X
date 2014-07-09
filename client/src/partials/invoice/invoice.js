@@ -1,4 +1,5 @@
-//TODO Debtor table currently has no personal information - this strictly ties debtors to patients (or some existing table) - a reverse lookup from debtor/ creditor ID to recipient is needed
+//TODO Debtor table currently has no personal information - this strictly ties debtors to patients
+// (or some existing table) - a reverse lookup from debtor / creditor ID to recipient is needed.
 angular.module('bhima.controllers')
 .controller('invoice', [
   '$scope',
@@ -12,8 +13,7 @@ angular.module('bhima.controllers')
     var dependencies = {},
         origin       = $scope.origin = $routeParams.originId,
         invoiceId    = $scope.invoiceId = $routeParams.invoiceId,
-        process      = {},
-        timestamp    = $scope.timestamp = new Date();
+        process      = {};
 
     if (!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
 
@@ -226,7 +226,6 @@ angular.module('bhima.controllers')
 
     // FIXME De-couple methods with promises
     function consumptionPatient(model) {
-      console.log('got', model);
       var debtorId = model.invoice.data[0].debitor_uuid;
 
       dependencies.patient = {
@@ -320,13 +319,7 @@ angular.module('bhima.controllers')
         $scope.depotEntry = depotModel.depots.get(depot_entry);
         $scope.depotExit = depotModel.depots.get(depot_exit);
 
-        console.log(depotModel);
       });
-    }
-
-    function parseMovement(model) {
-      angular.extend($scope, model);
-      console.log('got', model);
     }
 
     function processSale() {
@@ -396,7 +389,6 @@ angular.module('bhima.controllers')
     }
 
     function initialisePurchase(model) {
-      //console.log('final', model);
       $scope.model = model;
 
       $scope.purchase = model.purchase.data[0];
@@ -466,12 +458,10 @@ angular.module('bhima.controllers')
     }
 
     function buildInvoiceQuery(model) {
-      var cash_data = [];
       var invoiceCondition = dependencies.invoice.query.where = [];
       var invoiceItemCondition = dependencies.invoiceItem.query.where = [];
 
       model.cash.data.forEach(function(invoiceRef, index) {
-        console.log('invoice ref', invoiceRef);
 
         if (index!==0) {
           invoiceCondition.push('OR');
@@ -552,11 +542,8 @@ angular.module('bhima.controllers')
 
       //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
-      console.log('The Invoice is:', $scope.invoice);
       $scope.invoice.totalSum = 0;
-      console.log('[LEDGEER]', $scope.model.ledger);
       $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
-      console.log('[get.invoice.id] a donnee :', $scope.invoice.ledger);
 
       $scope.recipient = $scope.model.recipient.data[0];
       $scope.recipient.location = $scope.model.location.data[0];
@@ -624,20 +611,17 @@ angular.module('bhima.controllers')
       $scope.model = model;
       $scope.location = $scope.model.location.data[0];
       $scope.caution = $scope.model.caution.data[0];
-      //console.log('notre caution', $scope.caution);
     }
 
     function transfertInvoice (model) {
       $scope.model = model;
       $scope.transfert = $scope.model.transfert.data[0];
-      console.log('notre transfert', $scope.transfert);
     }
 
     function conventionInvoice (model) {
       $scope.model = model;
       $scope.conventions = $scope.model.convention.data;
       $scope.location = $scope.model.location.data[0];
-      console.log('voici notre convention et location : ', $scope.conventions, $scope.location);
     }
 
     process = {
