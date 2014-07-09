@@ -7,8 +7,8 @@ angular.module('bhima.controllers')
   'validate',
   function ($scope, $q, connect, appstate,validate) {
 
-    var dependencies= {},
-        configuration = {};
+    var dependencies = {},
+        configuration = $scope.configuration = {};
 
     dependencies.cost_centers = {
       query : {
@@ -24,36 +24,34 @@ angular.module('bhima.controllers')
       }
     };
 
-    function init(model) {
-      $scope.model = model;
-      $scope.acc_1 = {};
-      $scope.acc_1.all = false;
-      $scope.acc_2 = {};
-      $scope.acc_2.all = false;
+    function init(models) {
+      angular.extend($scope, models);
+      $scope.acc_1 = { all : false };
+      $scope.acc_2 = { all : false };
 
       connect.req('/availableAccounts/' + $scope.project.enterprise_id + '/')
       .then(function (records) {
-        $scope.model.available_accounts = records;
+        $scope.availableAccounts = records;
       });
     }
 
     function checkAllAvailable() {
-      $scope.model.available_accounts.data.forEach(function (item) {
+      $scope.availableAccounts.data.forEach(function (item) {
         item.checked = $scope.acc_1.all;
       });
     }
 
     function checkAllAssociated() {
-      $scope.model.associatedAccounts.data.forEach(function (item) {
+      $scope.associatedAccounts.data.forEach(function (item) {
         item.checked = $scope.acc_2.all;
       });
     }
 
     function performChange() {
-      $scope.selected_cost_center = JSON.parse($scope.configuration.cost_center);
+      $scope.selectedCostCenter = JSON.parse(configuration.costCenter);
       loadCenterAccount()
       .then(function (results) {
-        $scope.model.associatedAccounts = results;
+        $scope.associatedAccounts = results;
       });
     }
 
@@ -62,20 +60,21 @@ angular.module('bhima.controllers')
       updateAccounts(accounts)
       .then(function () {
         $scope.selectedAccounts.forEach(function (item) {
-          $scope.model.available_accounts.remove(item.id);
+          $scope.availableAccounts.remove(item.id);
           item.checked = false;
-          $scope.model.associatedAccounts.post(item);
+          $scope.associatedAccounts.post(item);
         });
       });
     }
 
     function remove() {
       // finds all accounts marked for removal and removes them
-      var marked = filterSelectedInArray($scope.model.associatedAccounts.data);
+      var marked = filterSelectedInArray($scope.associatedAccounts.data);
       removeFromCostCenter(marked)
       .then(function () {
-        $scope.tabs.forEach(function (account) {
-          $scope.model.associatedAccounts.remove(account.id);
+        marked.forEach(function (account) {
+          $scope.associatedAccounts.remove(account.id);
+          $scope.availableAccounts.post(account);
         });
       });
     }
@@ -85,7 +84,6 @@ angular.module('bhima.controllers')
         return item.checked;
       });
     }
-
 
     function removeFromCostCenter(data) {
       return connect.req('/removeFromCostCenter/'+JSON.stringify(data));
@@ -100,14 +98,14 @@ angular.module('bhima.controllers')
     }
 
     function sanitize () {
-      $scope.selectedAccounts = filterSelectedInArray($scope.model.available_accounts.data);
+      $scope.selectedAccounts = filterSelectedInArray($scope.availableAccounts.data);
       return $scope.selectedAccounts.map(function (account) {
-        return { cc_id : $scope.selected_cost_center.id, id : account.id };
+        return { cc_id : $scope.selectedCostCenter.id, id : account.id };
       });
     }
 
     function loadCenterAccount () {
-      return connect.req('/costCenterAccount/'+ $scope.project.enterprise_id + '/'+$scope.selected_cost_center.id);
+      return connect.req('/costCenterAccount/'+ $scope.project.enterprise_id + '/'+$scope.selectedCostCenter.id);
     }
 
     function hasSelectedItems(array) {
@@ -117,16 +115,16 @@ angular.module('bhima.controllers')
     }
 
     function isAssignable () {
-      if (!configuration.cost_center) { return false; }
-      if (!$scope.model.available_accounts.data.length) { return false; }
-      return hasSelectedItems($scope.model.available_accounts.data);
+      if (!configuration.costCenter) { return false; }
+      if (!$scope.availableAccounts.data.length) { return false; }
+      return hasSelectedItems($scope.availableAccounts.data);
     }
 
     function isRemovable () {
-      if (!configuration.cost_center) { return false; }
-      if (!$scope.model.associatedAccounts) { return false; }
-      if (!$scope.model.associatedAccounts.data.length) { return false; }
-      return hasSelectedItems($scope.model.associatedAccounts.data);
+      if (!configuration.costCenter) { return false; }
+      if (!$scope.associatedAccounts) { return false; }
+      if (!$scope.associatedAccounts.data.length) { return false; }
+      return hasSelectedItems($scope.associatedAccounts.data);
     }
 
     appstate.register('project', function (project) {
@@ -138,7 +136,6 @@ angular.module('bhima.controllers')
     $scope.checkAllAvailable = checkAllAvailable;
     $scope.checkAllAssociated = checkAllAssociated;
     $scope.performChange = performChange;
-    $scope.configuration = configuration;
     $scope.assign = assign;
     $scope.remove = remove;
     $scope.isAssignable = isAssignable;
