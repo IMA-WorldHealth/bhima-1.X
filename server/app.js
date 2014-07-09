@@ -293,12 +293,18 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
     'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + ' ' +
     'AND account.account_type_id <> 3';
 
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
   db.execute(sql, function (err, ans) {
     if (err) { return next(err); }
     if (ans.length > 0) {
       synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
         if (err) { return next(err); }
-        console.log('[synthetic a retourner data]', data);
         res.send(process(data));
       });
     }else{
