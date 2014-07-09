@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   'connect',
-  function($scope, validate, appstate, connect) {
+  function ($scope, validate, appstate, connect) {
     var dependencies = {}, session = $scope.session = {};
 
     session.searchLocation = false;
@@ -110,7 +110,7 @@ angular.module('bhima.controllers')
       if (!uuidDependency && locationRelationship[key].requires) {
         locationStore[key] = { data : [] };
 
-        if (dependency) updateLocation(dependency, null);
+        if (dependency) { updateLocation(dependency, null); }
         return;
       }
 
@@ -125,7 +125,7 @@ angular.module('bhima.controllers')
         currentValue = locationStore[key].get(locationRelationship[key].value);
 
         // FIXME
-        if (currentValue) currentValue = currentValue.uuid;
+        if (currentValue) { currentValue = currentValue.uuid; }
 
         if (!currentValue) {
           if (locationStore[key].data.length) {
@@ -150,7 +150,7 @@ angular.module('bhima.controllers')
       var condition = [], params = angular.copy(searchParams);
       if (!params) { return; }
 
-      if ($scope.model) $scope.model.patient.data.length = 0;
+      if ($scope.model) { $scope.model.patient.data.length = 0; }
       session.searching = true;
 
       // Filter location search

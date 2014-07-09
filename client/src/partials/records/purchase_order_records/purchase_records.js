@@ -2,11 +2,9 @@ angular.module('bhima.controllers')
 .controller('purchaseRecords', [
   '$scope',
   '$q',
-  '$routeParams',
   'connect',
-  function ($scope, $q, $routeParams, connect) {
+  function ($scope, $q, connect) {
 
-    var default_purchase = ($routeParams.purchaseID || -1);
     $scope.purchase_filter = {};
 
     function init() {
@@ -26,7 +24,6 @@ angular.module('bhima.controllers')
 
         connect.journal(request)
           .then(function(res) {
-            console.log(res);
             if (res.status === 200) {
               invoicePosted(request);
             }
@@ -59,7 +56,6 @@ angular.module('bhima.controllers')
     }
 
     function fetchRecords() {
-      var deferred = $q.defer();
       $scope.selected = {};
       var requette = {
         'tables' : {
@@ -77,16 +73,13 @@ angular.module('bhima.controllers')
           }
         },
         join : [
-        'purchase.creditor_uuid=creditor.uuid',
-        'purchase.purchaser_id=user.id',
-        'purchase.employee_id=employee.id']
-      }
-      connect.req(requette)
-        .then(function(model) {
-          console.log('voici notre model ', model)
-          deferred.resolve(model);
-        });
-      return deferred.promise;
+          'purchase.creditor_uuid=creditor.uuid',
+          'purchase.purchaser_id=user.id',
+          'purchase.employee_id=employee.id'
+        ]
+      };
+      
+      return connect.req(requette);
     }
 
     init();

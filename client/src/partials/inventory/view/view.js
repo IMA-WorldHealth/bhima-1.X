@@ -7,6 +7,8 @@ angular.module('bhima.controllers')
   'appstate',
   '$translate',
   function ($scope, $q, $filter, validate, appstate, $translate) {
+    /* jshint unused : true */
+
     // This module provides a view into the inventory to see all registered items.
     // We display these with a slick grid to allow sorting and arbitrary
     // grouping without too much further issue.
@@ -72,7 +74,7 @@ angular.module('bhima.controllers')
 
     function buildGrid() {
 
-      dataview.onRowCountChanged.subscribe(function (e, args) {
+      dataview.onRowCountChanged.subscribe(function () {
         grid.updateRowCount();
         grid.render();
       });
@@ -173,7 +175,7 @@ angular.module('bhima.controllers')
       return item === 1 ? 'Consumable' : 'Durable';
     }
 
-    var groupDefinitions = $scope.groupDefinitions = [
+    $scope.groupDefinitions = [
       {
         key : 'COLUMNS.TYPE',
         getter: 'type_id',
