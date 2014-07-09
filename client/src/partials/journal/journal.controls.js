@@ -14,6 +14,7 @@ angular.module('bhima.controllers')
   'liberror',
   'messenger',
   function ($scope, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
+    /* jshint unused : true */
     var dependencies = {};
     var columns, options, dataview, grid, manager;
     var sort_column;
@@ -447,7 +448,7 @@ angular.module('bhima.controllers')
     // FIXME: Is there some way to include this in another file?
     // TODO: Move to a service
 
-    function BaseEditor () {
+    function BaseEditor() {
 
       this.destroy = function () { this.$input.remove(); };
 
@@ -465,7 +466,7 @@ angular.module('bhima.controllers')
       };
     }
 
-    function DateEditor (args) {
+    function DateEditor(args) {
       var defaultValue;
 
       this.init = function () {
@@ -492,10 +493,7 @@ angular.module('bhima.controllers')
     DateEditor.prototype = new BaseEditor();
 
     function InvoiceEditor(args) {
-      var clear = '<option value=\'clear\'>Clear</option>',
-          cancel = '<option value=\'cancel\'>Cancel</option>',
-          defaultValue;
-
+      var defaultValue;
 
       this.init = function () {
         defaultValue = args.item.inv_po_id;
@@ -522,7 +520,7 @@ angular.module('bhima.controllers')
 
     InvoiceEditor.prototype = new BaseEditor();
 
-    function DebCredEditor (args) {
+    function DebCredEditor(args) {
       var defaultValue;
       var clear = '<option value="clear">Clear</option>',
           cancel = '<option value="cancel">Cancel</option>';
@@ -584,9 +582,8 @@ angular.module('bhima.controllers')
     DebCredEditor.prototype = new BaseEditor();
 
 
-    function AccountEditor (args) {
-      var defaultValue;
-      var clear = '<option value="clear">Clear</option>',
+    function AccountEditor(args) {
+      var defaultValue,
           cancel = '<option value="cancel">Cancel</option>';
 
       this.init = function () {
@@ -621,7 +618,7 @@ angular.module('bhima.controllers')
 
     AccountEditor.prototype = new BaseEditor();
 
-    function DebCredTypeEditor (args) {
+    function DebCredTypeEditor(args) {
       var defaultValue;
       var clear = '<option value="clear">Clear</option>',
           cancel = '<option value="cancel">Cancel</option>';
