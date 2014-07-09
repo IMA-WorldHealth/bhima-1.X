@@ -1,104 +1,70 @@
-Install.md
-======================
+Bhima Installation Guide
+===========================
 
-This guide is intended to help you get up and running fast with BHIMA.
+This guide will get you up and running with bhima locally.  Please note that 
+bhima is under active development and should NOT be used commercially yet.
 
-The Repository Structure
-------------------------
+~Note: bhima depends on MySQL (or MariaDB) and NodeJS in order to function.  Be
+sure to grab the latest version for both before building the application.~
 
-BHIMA's repository structure is set up as follows:
-
+###### Getting the source
+Clone the source using git from the [bhima github repository]
+(https://github.com/IMA-WorldHealth/bhima).
 ```bash
-  - package.json
-  + app/
-    + assets/
-    + css/
-    + i18n/
-    + js/
-    + lib/
-    + partials/
-  + scripts/
-    - server.js
-    - config.json
-    + sql/
-    + lib/
-    + test/
-  + docs/
-    - INSTALL.md
+git clone https://github.com/IMA-WorldHealth/bhima bhima
+cd bhima
 ```
 
-The application is largely divided logically between client and server responsibilites.  The folder `app` and subfolders
-contain the HTML markup, CSS styling and JS logic which control the client side behavior.  The folder `scripts` and subfolders
-contain the server modules and logic.
-
-Prerequisite Dependencies
---------------------------
-
-The BHIMA server is powered by [Node.js](http://www.nodejs.org) .  Prior to installing the app, Node must be installed 
-on the server and executable from the system path.  Nodejs is available from [here](http://www.nodejs.org).  To test if 
-node is installed in your system, open the system terminal and type `node -v`.
-
+###### Building the source
+Bhima uses the [gulp](http://www.gulpjs.com) build tool to build from source.
+Install it globally with npm and install other all npm dependencies, then run
+the `gulp` command in the client directory as shown below.
 ```bash
-$ node -v
-v0.10.12
+> # Inside the bhima/ directory
+> npm install -g gulp
+> npm install
+> cd client
+> gulp 
+[gulp] [21:18:16] Warning: gulp version mismatch:
+[gulp] [21:18:16] Running gulp is 3.7.0
+[gulp] [21:18:16] Local gulp (installed in gulpfile dir) is 3.6.2
+[gulp] [21:18:18] Using gulpfile ~\proto\remote\client\gulpfile.js
+[gulp] [21:18:18] Starting 'default'...
+[gulp] [21:18:18] Starting 'scripts'...
+[gulp] [21:18:18] Starting 'styles'...
+[gulp] [21:18:18] Starting 'assets'...
+[gulp] [21:18:18] Starting 'vendor'...
+[gulp] [21:18:18] Starting 'static'...
+[gulp] [21:18:18] Finished 'default' after 23 ms
+[gulp] [21:18:19] Finished 'assets' after 609 ms
+[gulp] [21:18:19] Finished 'styles' after 626 ms
+[gulp] [21:18:19] Finished 'vendor' after 623 ms
+[gulp] [21:18:19] Finished 'scripts' after 642 ms
+[gulp] [21:18:19] Finished 'static' after 626 ms
 ```
 
-The BHIMA server stores all of the application data and state in a MySQL database instance.  If MySQL is not installed on
-the server, install it before proceeding with this installation guide.  For security reasons, we recommend choosing a strong
-root password that is not used elsewhere in the system.  The lastest MySQL Community Server is available from 
-[here](http://dev.mysql.com/downloads/).
-Make sure the mysql command is executable from the command line on Linux, or that MySQL is available in Windows (7) under Control Panel > 
-Programs and Features > MySQL.
+###### Creating a database
+Bhima database structure is contained in the file `server/sql/bhima.sql`.  For 
+an initial setup, bhima also includes a file `server/sql/base.sql` to get the 
+application up and running rapidly.  Build one or both, and customize further
+from within the running application.
+
+###### Running the application
+Bhima separates the client and server into separate directories.  The app is run
+from the top level directory.  Enter the top level directory, and run
+`node server/app.js`.
 
 ```bash
-$ mysql -v
-
+> node server/app.js
+Creating connection pool...
+Application running on localhost:8080
+[db.js] (*) user . logged_in set to 0
 ```
 
-Building the Application
----------------------------
+###### Verify the install
+Simply navigate to localhost:8080 in the browser to verify the installation!
 
-The application has one build file, `package.json` in the root directory.  Before building, make sure that Nodejs is installed
-and in your system path (see Prequisite Dependencies).  The basic Node installation comes with `npm` or "Node Package Manager".
-If the server has access to the internet, use NPM to grab the application build tool grunt.  In the terminal, type `npm install`
-to install all build dependencies.  The specific tool used to build BHIMA is called `grunt-cli`. Grab it first.
-
-```bash
-$ cd ~/path/to/bhima/
-# install grunt
-$ npm install -g grunt-cli
-# ...
-# Lastly, install all remaining dependencies
-$ npm install
-```
-
-In order to build BHIMA, execute `grunt build` in the application directory.
-
-```bash
-$ cd ~/path/to/bhima/
-$ grunt build
-```
-
-The grunt build tool assembles the application from source files in the `partials/` folder.  TODO : more on this later.
-
-TODO: Running the sql install scripts
-
-Running the Application
-----------------------------
-
-BHIMA's system variables can be adjusted by editing the `config.json` file in the `scripts/` directory.  The configuration file defines variables that the server reads in on startup. These include
-1. `static` : The static directory from which the server serves files.
-2. `port` : The system port on which the HTTP server will listen for incoming requests.
-3. `db` : A JSON with database configuration options.
-  3.1 `host` : The hostname of the database
-  3.2 `user` : The username of the database user
-  3.3 `password` : The database password
-  3.4 `database` : The name of the database schema used by the application
-4. `log` : A JSON with database logger configuration options.  This is not strictly required for building.
-5. `session` : Configures the HTTP session encyption information.
-6. `auth` : Speicifies a set of global url paths for client access.
-
-
-
-
-
+###### Advanced - configuring the application
+All configuration options are found in the configuration file located in
+`server/config.json`.  These options are straightforward and documented 
+elsewhere.
