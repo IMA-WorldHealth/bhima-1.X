@@ -1,7 +1,8 @@
 BHIMA
 =================
 
-~Bhima is alpha version software.  Please do not use this in a commerical context.~
+_Bhima is alpha version software. 
+Please do not use this in a commerical context._
 
 Bhima is a free, open source accounting and hospital information management system 
 (HIMS) tailored for rural hospitals in Africa.  We are an international team
@@ -25,9 +26,10 @@ accessing the server simultaneously.
 
 Contributing
 ---------------
-All contributions are welcome!  Our project is still in the alpha phase; we provide no guarantee on the
-build until our first releases (Spring 2014).  However, feel free to fork, send us a pull request, do some
-style or translation work!
+All contributions are welcome!  Our project is still in the alpha phase; we
+provide no guarantee on the build until our first releases (Spring 2014). 
+However, feel free to fork, send us a pull request, do some style or
+translation work!
 
 Installation
 -------------------
