@@ -258,7 +258,7 @@
       templateUrl : 'partials/caution/caution.html'
     })
     .when('/primary_cash/transfert/:cashbox_id', {
-      controller : 'transfert',
+      controller : 'primaryCash.income.transfert',
       templateUrl : 'partials/primary_cash/income/transfert/transfert.html'
     })
      .when('/primary_cash/convention/:cashbox_id', {
