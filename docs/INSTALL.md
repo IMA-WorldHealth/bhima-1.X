@@ -1,11 +1,11 @@
 Bhima Installation Guide
 ===========================
 
-This guide will get you up and running with bhima locally.  Please note that 
+This guide will get you up and running with bhima locally.  Please note that
 bhima is under active development and should NOT be used commercially yet.
 
-~Note: bhima depends on MySQL (or MariaDB) and NodeJS in order to function.  Be
-sure to grab the latest version for both before building the application.~
+_Note: bhima depends on MySQL (or MariaDB) and NodeJS in order to function.  Be
+sure to grab the latest version for both before building the application._
 
 ###### Getting the source
 Clone the source using git from the [bhima github repository]
@@ -24,7 +24,7 @@ the `gulp` command in the client directory as shown below.
 > npm install -g gulp
 > npm install
 > cd client
-> gulp 
+> gulp
 [gulp] [21:18:16] Warning: gulp version mismatch:
 [gulp] [21:18:16] Running gulp is 3.7.0
 [gulp] [21:18:16] Local gulp (installed in gulpfile dir) is 3.6.2
@@ -44,8 +44,8 @@ the `gulp` command in the client directory as shown below.
 ```
 
 ###### Creating a database
-Bhima database structure is contained in the file `server/sql/bhima.sql`.  For 
-an initial setup, bhima also includes a file `server/sql/base.sql` to get the 
+Bhima database structure is contained in the file `server/sql/bhima.sql`.  For
+an initial setup, bhima also includes a file `server/sql/base.sql` to get the
 application up and running rapidly.  Build one or both, and customize further
 from within the running application.
 
@@ -66,5 +66,5 @@ Simply navigate to localhost:8080 in the browser to verify the installation!
 
 ###### Advanced - configuring the application
 All configuration options are found in the configuration file located in
-`server/config.json`.  These options are straightforward and documented 
+`server/config.json`.  These options are straightforward and documented
 elsewhere.
