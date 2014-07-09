@@ -17,7 +17,9 @@ angular.module('bhima.controllers')
 
     $scope.assignation = {};
     $scope.sessionProperties = { timestamp : new Date() };
-    $scope.patient = {}; $scope.origin={}; $scope.current={};
+    $scope.patient = {};
+    $scope.origin = {};
+    $scope.current = {};
 
 
 
