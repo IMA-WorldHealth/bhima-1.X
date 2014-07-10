@@ -494,6 +494,9 @@
     "EXIT" : {
       "KEY" : "Stock Distribution"
     },
+    "EXIT_SERVICE" : {
+        "KEY" : "Distribution stock au services"
+    },
     "LOSS"     : {
       "KEY"    : "Stock Loss"
     },
@@ -630,7 +633,7 @@
     "REFERENCE"           : "Reference",
     "TRACKING_NUMBER"     : "Numero de Tracking",
     "EXPIRATION_DATE"     : "Date Expiration",
-    "LOT"                 : "Lot - Date Expiration - Quantite de Lot",
+    "LOT"                 : "Lot",
     "STATE"               : "Etat",
     "AVAILABLE"           : "Disponible",
     "QTY_ASKED"           : "Quantite Demandee",
@@ -1314,6 +1317,20 @@
     "COST"                  : "Cout",
     "LOT_DETAILS"           : "Details des Lots",
     "EMPTY_MESSAGE"         : "Aucune vente selectionnee !"
+  },
+
+    "DISTRIBUTION_SERVICE" : {
+    "TITLE"                 : "Distribution au service",
+    "ADD_ROW"               : "Ajouter Item",
+    "DESCRIPTION"           : "Description",
+    "SUBMIT"                : "Soumettre",
+    "APPLIES_GLOBALLY"      : "Appliquer globalement",
+    "APPLIES_TO_ITEM"       : "Appliquer par item",
+    "TOTAL"                 : "Total",
+    "COST"                  : "Cout",
+    "LOT_DETAILS"           : "Details des Lots",
+    "CHOOSE"                : "Selectionner le service",
+    "SUMMARY"               : "Sommaire"
   },
 
   "SUPPLIER" : {

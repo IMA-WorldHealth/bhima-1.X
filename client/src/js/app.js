@@ -321,6 +321,10 @@
       controller : 'stock.distribution',
       templateUrl : 'partials/stock/exit/distribution.html'
     })
+    .when('/stock/distribution_service/:depotId', {
+      controller : 'stock.distribution_service',
+      templateUrl : 'partials/stock/exit_service/distribution_service.html'
+    })
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'

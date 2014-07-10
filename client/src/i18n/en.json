@@ -550,7 +550,7 @@
     "DESTINATION"         : "Destination",
     "REFERENCE"           : "Reference",
     "CODE_ITEM"           : "Medicine Code",
-    "LOT"                 : "Lot - Expiration Date - Quantity",
+    "LOT"                 : "Lot",
     "STATE"               : "State",
     "AVAILABLE"           : "Available",
     "QTY_ASKED"           : "Quantity Requested",
@@ -734,6 +734,20 @@
     "EMPTY_MESSAGE"          : "No sale selected!",
     "CONSUMED"               : "This prescription has already been consumed",
     "NOT_CONSUMED"           : "This prescription is unfufilled"
+  },
+
+    "DISTRIBUTION_SERVICE" : {
+    "TITLE"                  : "Stock distribution to services",
+    "ADD_ROW"                : "Add an Item",
+    "DESCRIPTION"            : "Description",
+    "SUBMIT"                 : "Submit",
+    "APPLIES_GLOBALLY"       : "Applies globally",
+    "APPLIES_TO_ITEM"        : "Applies to individual items",
+    "TOTAL"                  : "Total",
+    "COST"                   : "Cost",
+    "LOT_DETAILS"            : "Lot Details",
+    "CHOOSE"                 : "Choose a service",
+    "SUMMARY"               : "Sommary"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -1417,6 +1431,9 @@
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
+    },
+    "EXIT_SERVICE" : {
+        "KEY" : "Stock distribution to services"
     },
     "LOSS" : {
       "KEY" : "Stock Loss"

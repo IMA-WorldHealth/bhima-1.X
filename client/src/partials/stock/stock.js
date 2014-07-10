@@ -29,6 +29,13 @@ angular.module('bhima.controllers')
         ico : 'glyphicon-export',
         link : '/stock/distribution'
       },
+
+      {
+        key : 'STOCK.EXIT_SERVICE.KEY',
+        ico : 'glyphicon-export',
+        link : '/stock/distribution_service'
+      },
+
       {
         key : 'STOCK.LOSS.KEY',
         ico : 'glyphicon-cloud',
