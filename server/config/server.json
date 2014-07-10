@@ -63,7 +63,8 @@
       "/profit/",
       "/favicon.ico",
       "/expiring/",
-      "/expiring_complete/"
+      "/expiring_complete/",
+      "/serv_dist_stock/"
     ]
   }
 }
