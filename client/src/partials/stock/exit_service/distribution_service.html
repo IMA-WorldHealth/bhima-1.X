@@ -1,0 +1,167 @@
+<!-- TODO -->
+
+<header data-header>
+  {{ "DISTRIBUTION_SERVICE.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="">{{ "STOCK.EXIT_SERVICE.KEY" | translate }}</a></li>
+    </ol>
+  </div>
+
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
+  </div>
+</nav>
+
+<main>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      {{'DISTRIBUTION_SERVICE.CHOOSE' | translate}}
+    </div>
+    <div class="panel-body">
+      <form class="form">
+        <div class="form-group">
+          <select
+            class="col-xs-2 form-bhima"
+            ng-model="configuration.service"
+            ng-options="serv as serv.name  for serv in model.services.data"
+            ng-change="preparDistribution()"
+          >
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-xs-12" ng-show="session.isServiceSelected">
+    <fieldset>
+      <legend>
+        {{ "DISTRIBUTION_SERVICE.SUMMARY" | translate}}
+      </legend>
+      <table class=' table-condensed table table-bordered'>
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.ID" | translate}}</th>
+            <th>{{ "COLUMNS.DATE" | translate}}</th>
+            <th>{{ "COLUMNS.SERVICE" | translate}}</th>
+            <th>{{ "COLUMNS.DEPOT" | translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{model.uuid}}</td>
+            <td>{{model.date | date}}</td>
+            <td>{{configuration.service.name}}</td>
+            <td>{{model.depot_name}}</td>
+          </tr>
+        </tbody>
+      </table>
+      </form>
+    </fieldset>
+  </div>
+
+  <div class="row" ng-show="session.isServiceSelected">
+    <div class="col-xs-12">
+      <div class="pull-right">
+        <a ng-click="addRow()" class="fieldset-util">
+          <span class="glyphicon glyphicon-plus"></span> {{ "SALE.ADD_LINE_ITEM" | translate }}
+        </a>
+      </div>
+      <table class=' table-condensed table'>
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.LABEL" | translate }}</th>
+            <th>{{ "COLUMNS.LOT" | translate }}</th>
+            <th>{{ "COLUMNS.PRICE" | translate }}</th>
+            <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th>
+            <th>{{ "COLUMNS.PRICE" | translate }}</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            ng-repeat="row in configuration.rows"
+            ng-class="{'incomplete-outline': !row.designation || !row.lot, 'complete-outline' : !!row.lot }"
+          >
+          <td>
+            <input
+              class="form-invoice"
+              type="text"
+              typeahead-template-url="invoiceListItem.html"
+              ng-model="row.designation"
+              typeahead="row as row.code for inventoryItem in inventory | filter:$viewValue | limitTo:8"
+              typeahead-on-select="updateInvoiceItem(invoiceItem, invoiceItem.selectedReference)"
+              placeholder="Search Inventory"
+            >
+          </td>
+          <td>
+            <input
+              ng-show="invoiceItem.isSet"
+              class="form-invoice"
+              disabled
+              value="{{invoiceItem.text}}"
+            >
+          </td>
+          <td>
+            <input
+              ng-change="cacheQuantity(invoiceItem)"
+              tabindex="{{session.tablock}}"
+              ng-show="invoiceItem.isSet"
+              class="form-invoice"
+              ng-model="invoiceItem.quantity"
+            >
+          </td>
+          <td>
+            <input
+              tabindex="{{session.tablock}}"
+              ng-show="invoiceItem.isSet"
+              class="form-invoice"
+              ng-model="invoiceItem.price"
+            >
+          </td>
+          <td>
+            <input
+              tabindex="{{session.tablock}}"
+              ng-show="invoiceItem.isSet"
+              class="form-invoice"
+              disabled
+              value="{{invoiceItem.quantity * invoiceItem.price | currency}}"
+            >
+          </td>
+          <td>
+            <a ng-click="removeInvoiceItem($index)">
+              <span class="glyphicon glyphicon-trash"></span>
+            </a>
+          </td>
+          </tr>
+
+          <tr>
+            <td
+              colspan="4"
+              style="margin-right = 50px; text-align: right;"
+            >
+              <b> {{ "SALE.TOTAL" | translate }}</b>
+            </td>
+            <td colspan="2">
+              <b>{{ calculateTotal().totalToPay | currency }}</b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script type="text/ng-template" id="listItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>

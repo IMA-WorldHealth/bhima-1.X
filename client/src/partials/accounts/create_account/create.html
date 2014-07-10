@@ -4,7 +4,7 @@
 </header>
 
 <section class="top-nav">
-<!-- <button class="btn btn-default btn-sm">antyhing</button> -->
+  <!-- <button class="btn btn-default btn-sm">antyhing</button> -->
   <button ng-click="updateState('edit')" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-plus"></span> {{ "ACCOUNT.ADD" | translate }}
   </button>
@@ -19,7 +19,6 @@
 </section>
 
 <div class="content">
-
   <!--Note that that column classes should be used with rows to ensure corred padding -->
   <div class="row">
 
@@ -50,10 +49,6 @@
                   <label for="type">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
                   <select required  id="type" class="form-bhima" ng-options="c.type for c in model.accountType.data" ng-model="newAccount.type">
                     <option value="" disabled="disabled"> --- {{ "SELECT.ACCOUNT_TYPE" | translate }} --- </option>
-                    <!--Placeholder options-->
-                    <!-- <option>Title</option> -->
-                    <!-- <option>Balance Account</option> -->
-                    <!-- <option>Income/Expense Account</option> -->
                   </select>
                 </div>
 
@@ -99,7 +94,8 @@
           </button>
         </div>
       </div>
-    </div> <!--ng-switch-->
+    </div>
+
     <div class="col-xs-9">
       <!--Accounts grid to be populated-->
       <div id="account_grid" class="grid" style="max-height: 480px"></div>
