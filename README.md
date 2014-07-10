@@ -1,62 +1,40 @@
 BHIMA
 =================
 
-Goals
----------------
-1. Free as in Manyok.  Runs anywhere with a decent web browser.
-2. Provide a robust accounting and managerial solution for rural hospitals.
-3. Flexible reporting system to allow hospital administrators, non-governmental agencies, and aid organizations
-    up to date access to utilization data.
-4. Designed for hospitals whose patrons live on less than a dollar a day.
+_Bhima is alpha version software. 
+Please do not use this in a commerical context._
 
-About
----------------
-Bhima is an open source accounting and hospital information management suite (HIMS).  We are an international
-team developing bhima in D.R. Congo.
+Bhima is a free, open source accounting and hospital information management system 
+(HIMS) tailored for rural hospitals in Africa.  We are an international team
+based in the Democratic Republic of the Congo.
+
+Project Goals
+--------------------
+
+Bhima aims to provide a flexible and robust accounting and managerial solution
+for rural hospitals.  This includes, but is not limited to, basic income/expense
+reporting, budgeting, patient and organisational billing, depreciation,
+inventory and pricing, and purchasing. 
+
+Additionally, bhima bundles reports and optional reporting plugins to aid 
+hospital administrators, aid organisations, and governmental/non-governmental 
+agencies access up to date utilization data.
+
+Finally, the entire project is designed to scale from a single, low cost device
+in a clinic, to a large multi-hundred bed institution with tens of users 
+accessing the server simultaneously.
 
 Contributing
 ---------------
-All contributions are welcome!  Our project is still in the alpha phase; we provide no guarantee on the
-build until our first releases (Spring 2014).  However, feel free to fork, send us a pull request, do some
-style or translation work!
+All contributions are welcome!  Our project is still in the alpha phase; we
+provide no guarantee on the build until our first releases (Spring 2014). 
+However, feel free to fork, send us a pull request, do some style or
+translation work!
 
 Installation
 -------------------
-Dependencies
- - Latest [MySQL] (dev.mysql.com/downloads/) or [MariaDB] (http://mariadb.org/) server 
- - [gulp] (www.gulpjs.com)
-
-To install, grab a copy of the latest build on the *dev* branch ([https://github.com/IMA-WorldHealth/Kapok] <https://github.com/IMA-WorldHealth/Kapok>)
-
-Using git:
-```bash
-$ git clone https://github.com/IMA-WorldHealth/bhima.git bhima
-Cloning into 'bhima' ...
-$ cd bhima && npm install
-...
-```
-
-After npm has finished installing, set up your mysql user and permissions.  For the standard build, the user is `bhima` and password is `HISCongo2013`.  Begin by building the database, by running the bhima.sql file located in the server folder.  To insert sample data, you can optionally build base.sql in the same folder.
-```sql
-mysql -u [username] -p[password]
-> source server/sql/bhima.sql; source server/sql/base.sql;
-> \q
-```
-
-Next, you need to build the project.  We use gulp as our build tool.  Run gulp with the following command: 
-```bash
-$ npm install -g gulp
-$ cd client
-$ gulp
-Running "cssmin:combine" (cssmin) task
-
-Running "concat:bhima" (concat) task
-
-Running "watch" task
-```
-
-Congratulations!  Fire up node and navigate to [localhost] (http://localhost:8080).  The default port is 8080.
+See [INSTALL.md](./docs/INSTALL.md).
 
 License
 ---------------
-See [License](./docs/LICENSE.md)
+See [License](./docs/LICENSE.md).
