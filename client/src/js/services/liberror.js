@@ -14,6 +14,7 @@
 
 angular.module('bhima.services')
 .factory('liberror', ['$http', '$log', 'messenger', function ($http, $log, messenger) {
+  /* jshint unused : false */
 
   var errorCodes = {
     0 : {

@@ -119,9 +119,9 @@
                         <select
                           required class="form-bhima"
                           id="location-country"
-                          ng-model="locationRelationship_origin.country.value"
-                          ng-options="country.uuid as country.country_en for country in locationStore_origin.country.data | orderBy: 'country_en'"
-                          ng-change="updateOriginLocation('province', locationRelationship_origin.country.value)"
+                          ng-model="locationRelationshipOrigin.country.value"
+                          ng-options="country.uuid as country.country_en for country in locationStoreOrigin.country.data | orderBy: 'country_en'"
+                          ng-change="updateOriginLocation('province', locationRelationshipOrigin.country.value)"
                           >
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
@@ -134,9 +134,9 @@
                         <select
                           required class="form-bhima"
                           id="location-province"
-                          ng-model="locationRelationship_origin.province.value"
-                          ng-options="province.uuid as province.name for province in locationStore_origin.province.data | orderBy: 'name'"
-                          ng-change="updateOriginLocation('sector', locationRelationship_origin.province.value)">
+                          ng-model="locationRelationshipOrigin.province.value"
+                          ng-options="province.uuid as province.name for province in locationStoreOrigin.province.data | orderBy: 'name'"
+                          ng-change="updateOriginLocation('sector', locationRelationshipOrigin.province.value)">
                           <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -148,9 +148,9 @@
                         <select
                           class="form-bhima"
                           id="location-sector"
-                          ng-model="locationRelationship_origin.sector.value"
-                          ng-options="sector.uuid as sector.name for sector in locationStore_origin.sector.data | orderBy:'name'"
-                          ng-change="updateOriginLocation('village', locationRelationship_origin.sector.value)"
+                          ng-model="locationRelationshipOrigin.sector.value"
+                          ng-options="sector.uuid as sector.name for sector in locationStoreOrigin.sector.data | orderBy:'name'"
+                          ng-change="updateOriginLocation('village', locationRelationshipOrigin.sector.value)"
                           required>
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
                         </select>
@@ -163,8 +163,8 @@
                         <select
                           class="form-bhima"
                           id="location-village"
-                          ng-model="locationRelationship_origin.village.value"
-                          ng-options="village.uuid as village.name for village in locationStore_origin.village.data | orderBy:'name'"
+                          ng-model="locationRelationshipOrigin.village.value"
+                          ng-options="village.uuid as village.name for village in locationStoreOrigin.village.data | orderBy:'name'"
                           required>
                           <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
                         </select>
@@ -183,9 +183,9 @@
                           required
                           class="form-bhima"
                           id="location-country"
-                          ng-model="locationRelationship_current.country.value"
-                          ng-options="country.uuid as country.country_en for country in locationStore_current.country.data | orderBy:'country_en'"
-                          ng-change="updateCurrentLocation('province', locationRelationship_current.country.value)">
+                          ng-model="locationRelationshipCurrent.country.value"
+                          ng-options="country.uuid as country.country_en for country in locationStoreCurrent.country.data | orderBy:'country_en'"
+                          ng-change="updateCurrentLocation('province', locationRelationshipCurrent.country.value)">
                           <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
                         </select>
                       </div>
@@ -198,9 +198,9 @@
                           required
                           class="form-bhima"
                           id="location-province"
-                          ng-model="locationRelationship_current.province.value"
-                          ng-options="province.uuid as province.name for province in locationStore_current.province.data | orderBy:'name'"
-                          ng-change="updateCurrentLocation('sector', locationRelationship_current.province.value)">
+                          ng-model="locationRelationshipCurrent.province.value"
+                          ng-options="province.uuid as province.name for province in locationStoreCurrent.province.data | orderBy:'name'"
+                          ng-change="updateCurrentLocation('sector', locationRelationshipCurrent.province.value)">
                           <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
                         </select>
                       </div>
@@ -213,9 +213,9 @@
                           required
                           class="form-bhima"
                           id="location-sector"
-                          ng-model="locationRelationship_current.sector.value"
-                          ng-options="sector.uuid as sector.name for sector in locationStore_current.sector.data | orderBy:'name'"
-                          ng-change="updateCurrentLocation('village', locationRelationship_current.sector.value)">
+                          ng-model="locationRelationshipCurrent.sector.value"
+                          ng-options="sector.uuid as sector.name for sector in locationStoreCurrent.sector.data | orderBy:'name'"
+                          ng-change="updateCurrentLocation('village', locationRelationshipCurrent.sector.value)">
                           <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
                         </select>
                       </div>
@@ -227,8 +227,8 @@
                         <select
                           class="form-bhima"
                           id="location-village"
-                          ng-model="locationRelationship_current.village.value"
-                          ng-options="village.uuid as village.name for village in locationStore_current.village.data | orderBy:'name'"
+                          ng-model="locationRelationshipCurrent.village.value"
+                          ng-options="village.uuid as village.name for village in locationStoreCurrent.village.data | orderBy:'name'"
                           required>
                           <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
                         </select>

@@ -1,19 +1,18 @@
-<header>
+<header data-header>
   {{ 'COST_CENTER.TITLE' | translate }}
 </header>
 
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
-    <ol class="breadcrumb" style="float: right;">
-      <span class="label label-success square">{{ "COST_CENTER.NAVIGATION" | translate }}</span>
-      <li><a href="#/cost_center">{{ "COST_CENTER.TITLE" | translate }}</a></li>
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li class="active">{{ "COST_CENTER.TITLE" | translate }}</li>
     </ol>
   </div>
-</section>
+</nav>
 
-<div class="content">
-
+<main>
   <div class="row" style="margin-top: 10px">
     <div class="col-xs-6">
 
@@ -32,13 +31,5 @@
         </div>
       </div>
     </div>
-
-    <div class="col-xs-6">
-    </div>
   </div>
-</div>
-
-
-
-
-
+</main>

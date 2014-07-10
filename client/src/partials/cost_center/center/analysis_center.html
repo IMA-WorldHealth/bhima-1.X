@@ -1,31 +1,34 @@
-
-<header>
-  <span>{{'ANALYSIS_CENTER.TITLE' | translate}}</span>
+<header data-header>
+  {{'ANALYSIS_CENTER.TITLE' | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
-    <ol class="breadcrumb" style="float: right;">
-      <span class="label label-success square">{{ "ANALYSIS_CENTER.NAVIGATION" | translate }}</span>
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/cost_center">{{ "ANALYSIS_CENTER.PARENT" | translate }}</a></li>
-      <li><a href="" ng-click="loadPath('/cost_center/center/')">{{ "ANALYSIS_CENTER.TITLE" | translate }}</a></li>
+      <li class="active">{{ "ANALYSIS_CENTER.TITLE" | translate }}</li>
     </ol>
   </div>
 
   <button ng-click="setAction('register')" class="btn btn-sm btn-default pull-right">
-    <i class="glyphicon glyphicon-file"></i>{{'ANALYSIS_CENTER.NEW' | translate}}
+    <span class="glyphicon glyphicon-file"></span> {{ 'ANALYSIS_CENTER.NEW' | translate }}
   </button>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="col-xs-6">
     <div class="panel panel-primary" style="height : 100%; overflow : auto;">
       <div class="panel-heading">
-        <span>{{'ANALYSIS_CENTER.REGISTERED' | translate}}</span>
+        {{ 'ANALYSIS_CENTER.REGISTERED' | translate }}
       </div>
       <table class="table table-condensed table-striped">
         <thead>
-          <tr><th>{{'COLUMNS.NAME' | translate}}</th><th>{{'COLUMNS.PROJECT' | translate}}</th><th>{{'COLUMNS.ACTIONS' | translate}}</th></tr>
+          <tr>
+            <th>{{ 'COLUMNS.NAME' | translate }}</th>
+            <th>{{ 'COLUMNS.PROJECT' | translate }}</th>
+            <th>{{ 'COLUMNS.ACTIONS' | translate }}</th>
+          </tr>
         </thead>
         <tbody>
           <tr ng-repeat="cc in model.cost_centers.data">
@@ -39,7 +42,9 @@
 
           <tr ng-if="!model.cost_centers.data.length">
             <td colspan="4">
-              <div class="alert alert-warning square">{{ 'ANALYSIS_CENTER.NONE_FOUND' | translate }}</div>
+              <div class="alert alert-warning square">
+                {{ 'ANALYSIS_CENTER.NONE_FOUND' | translate }}
+              </div>
             </td>
           </tr>
         </tbody>
@@ -50,10 +55,8 @@
   <div class="col-xs-6" ng-switch="action">
     <div ng-switch-default>
       <div class="alert alert-info">
-        <b>{{'ANALYSIS_CENTER.INFO' | translate}}</b>
-        <p>
-          {{'ANALYSIS_CENTER.INFO_DESCRIPTION' | translate}}
-        </p>
+        <b>{{ 'ANALYSIS_CENTER.INFO' | translate }}</b>
+        <p>{{ 'ANALYSIS_CENTER.INFO_DESCRIPTION' | translate }}</p>
       </div>
     </div>
 
@@ -62,17 +65,17 @@
         <fieldset>
           <legend>{{'ANALYSIS_CENTER.REGISTER' | translate}}</legend>
           <div class="form-group required">
-            <label class="col-xs-2 control-label">{{'ANALYSIS_CENTER.TEXT' | translate}}</label>
+            <label class="col-xs-2 control-label"> {{'ANALYSIS_CENTER.TEXT' | translate}} </label>
             <div class="col-xs-10">
               <input class="form-bhima" ng-model="register.text" required>
             </div>
           </div>
 
           <div class="form-group required">
-            <label class="col-xs-2 control-label">{{'ANALYSIS_CENTER.IS_PROFIT' | translate}}</label>
-            <div class="col-xs-10">
+            <label class="checkbox control-label">
+              {{'ANALYSIS_CENTER.IS_PROFIT' | translate}}
               <input type="checkbox" class="form-bhima" ng-model="register.is_principal">
-            </div>
+            </label>
           </div>
 
           <div class="form-group">
@@ -83,9 +86,9 @@
             </div>
           </div>
 
-          <div class="pull-right">
+          <div class="form-group pull-right">
             <input ng-click="saveRegistration()" ng-disabled="newForm.$invalid" class="btn btn-sm btn-success" type="submit" value="{{'FORM.SAVE' | translate}}">
-           <input class="btn btn-sm btn-default" type="reset" value="{{'FORM.RESET' | translate}}">
+            <input class="btn btn-sm btn-default" type="reset" value="{{'FORM.RESET' | translate}}">
           </div>
         </fieldset>
       </form>
@@ -127,4 +130,4 @@
       </form>
     </div>
   </div>
-</div>
+</main>

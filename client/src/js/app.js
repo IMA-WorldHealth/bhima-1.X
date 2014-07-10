@@ -217,9 +217,9 @@
       controller: 'assigning',
       templateUrl: 'partials/cost_center/assigning/assigning.html'
     })
-    .when('/cost_center/versement/', {
-      controller: 'versement',
-      templateUrl: 'partials/cost_center/versement/versement.html'
+    .when('/cost_center/allocation/', {
+      controller: 'costCenter.allocation',
+      templateUrl: 'partials/cost_center/allocation/allocation.html'
     })
     .when('/patient_group', {
       controller: 'patientGroup',
@@ -257,9 +257,9 @@
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
     })
-    .when('/primary_cash/transfert/:cashbox_id', {
-      controller : 'transfert',
-      templateUrl : 'partials/primary_cash/income/transfert/transfert.html'
+    .when('/primary_cash/transfer/:cashbox_id', {
+      controller : 'primaryCash.income.transfer',
+      templateUrl : 'partials/primary_cash/income/transfer/transfer.html'
     })
      .when('/primary_cash/convention/:cashbox_id', {
       controller : 'convention',

@@ -104,7 +104,7 @@ angular.module('bhima.controllers')
 
 
           recomendLots(session.sale.details);
- 
+
           session.lotSelectionSuccess = verifyValidLots(session.sale.details);
         })
         .catch(function (error) {
@@ -233,7 +233,7 @@ angular.module('bhima.controllers')
 
       // Iterate through items, write consumption line for each lot
       session.sale.details.forEach(function (consumptionItem) {
-        
+
         if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
         consumptionItem.recomendedLots.forEach(function (lot) {

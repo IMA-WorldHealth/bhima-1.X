@@ -9,21 +9,18 @@ angular.module('bhima.controllers')
   '$translate',
   '$routeParams',
   function ($scope, $q, $filter, validate, appstate, connect, $translate, $routeParams) {
+    /* jshint unused : true */
 
-    var dependencies = {},
-        grid,
+    var grid,
         columns,
         options,
-        searchStr = '',
         dataview = $scope.dataview = new Slick.Data.DataView();
 
     var session = $scope.session = {};
-    var configuration = $scope.configuration={};
-    var flags = $scope.flags = {};
 
     function buildGrid() {
 
-      dataview.onRowCountChanged.subscribe(function (e, args) {
+      dataview.onRowCountChanged.subscribe(function () {
         grid.updateRowCount();
         grid.render();
       });
@@ -44,11 +41,11 @@ angular.module('bhima.controllers')
 
       // FIXME : this for some reason doesn't always work.
 
-      $q.all(columns.map(function (col){
+      $q.all(columns.map(function (col) {
         return $translate(col.id);
       }))
-      .then(function(values){
-        columns.forEach(function (col, i){
+      .then(function(values) {
+        columns.forEach(function (col, i) {
           col.name = values[i];
         });
 
@@ -57,17 +54,14 @@ angular.module('bhima.controllers')
           forceFitColumns      : true
         };
 
-        window.dataview = dataview;
         grid = new Slick.Grid('#bhima-expiring-grid', dataview, columns, options);
         grid.onSort.subscribe(sorter);
-
-
       });
 
 
       // set up sorting
 
-      function sorter (e, args) {
+      function sorter(e, args) {
         var field = args.sortCol.field;
         function sort (a, b) { return (a[field] > b[field]) ? 1 : -1; }
         dataview.sort(sort, args.sortAsc);
@@ -104,16 +98,16 @@ angular.module('bhima.controllers')
       }
     }, true);
 
-    function getInfo(cle) {
-      return $filter('date')(cle);
+    function getDate(d) {
+      return $filter('date')(d);
     }
 
-    var groupDefinitions = $scope.groupDefinitions = [
+    $scope.groupDefinitions = [
       {
         key : 'COLUMNS.EXPIRATION_DATE',
         getter: 'expiration_date',
         formatter: function (g) {
-          return '<span style=\'font-weight: bold\'>' +getInfo(g.value) + '</span> (' + g.count + ' members)</span>';
+          return '<span style=\'font-weight: bold\'>' +getDate(g.value) + '</span> (' + g.count + ' members)</span>';
         },
         aggregators : []
       }
@@ -136,13 +130,7 @@ angular.module('bhima.controllers')
       dataview.setGrouping(groupInstance);
     };
 
-    function groupExists(targetGroup, groupList) {
-      return groupList.some(function(group) {
-        return group.getter === targetGroup.getter;
-      });
-    }
-
-    function init (){
+    function init() {
       session.dateFrom = new Date();
       session.dateTo = new Date();
       formatDates();
@@ -151,12 +139,12 @@ angular.module('bhima.controllers')
       doSearching();
     }
 
-    function formatDates () {
+    function formatDates() {
       session.dateFrom = $filter('date')(session.dateFrom, 'yyyy-MM-dd');
       session.dateTo = $filter('date')(session.dateTo, 'yyyy-MM-dd');
     }
 
-    function getConfiguration (){
+    function getConfiguration() {
       return {
         depot_uuid : session.depot,
         df         : session.dateFrom,
@@ -164,28 +152,28 @@ angular.module('bhima.controllers')
       };
     }
 
-    function doSearching (p){
+    function doSearching(p) {
       formatDates();
       if (p === 1) { $scope.configuration = getConfiguration(); }
       connect.fetch('expiring/'+$scope.configuration.depot_uuid+'/'+$scope.configuration.df+'/'+$scope.configuration.dt)
       .then(complete)
       .then(extendData)
       .then(buildGrid)
-      .catch(function(err){
+      .catch(function(err) {
         console.log('keba !', err);
       });
     }
 
-    function complete (models){
+    function complete (models) {
       window.model = models;
       $scope.uncompletedList = models;
-      return $q.all(models.map(function (m){
+      return $q.all(models.map(function (m) {
         return connect.fetch('expiring_complete/'+m.tracking_number+'/'+$scope.configuration.depot_uuid);
       }));
     }
 
-    function extendData (results){
-      results.forEach(function (item, index){
+    function extendData (results) {
+      results.forEach(function (item, index) {
         $scope.uncompletedList[index].consumed = item[0].consumed;
         if (!$scope.uncompletedList[index].consumed) {
           $scope.uncompletedList[index].consumed = 0;
@@ -196,8 +184,8 @@ angular.module('bhima.controllers')
       $q.when();
     }
 
-    function cleanList (){
-      return $scope.uncompletedList.map(function (item){
+    function cleanList() {
+      return $scope.uncompletedList.map(function (item) {
         return {
           tracking_number : item.tracking_number,
           lot_number      : item.lot_number,
@@ -209,7 +197,7 @@ angular.module('bhima.controllers')
       });
     }
 
-    appstate.register('enterprise', function(enterprise){
+    appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       init();
     });
