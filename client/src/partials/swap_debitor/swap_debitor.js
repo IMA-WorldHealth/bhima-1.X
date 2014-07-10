@@ -6,7 +6,7 @@ angular.module('bhima.controllers')
   'messenger',
   '$translate',
   'uuid',
-  function($scope, validate, connect, messenger, $translate, uuid) {
+  function ($scope, validate, connect, messenger, $translate, uuid) {
 
     var dependencies = {};
     $scope.noEmpty = false;
@@ -61,12 +61,12 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPost('debitor', [debitor], ['uuid'])
-      .then(function (res) {
+      .then(function () {
         var packageHistory = {
-          uuid : uuid(),
-          debitor_uuid : selectedDebitor.debitor_uuid,
+          uuid               : uuid(),
+          debitor_uuid       : selectedDebitor.debitor_uuid,
           debitor_group_uuid : $scope.debitor.debitor_group_uuid,
-          user_id : 1 // FIXME
+          user_id            : 1 // FIXME
         };
         return connect.basicPut('debitor_group_history', [packageHistory]);
       })

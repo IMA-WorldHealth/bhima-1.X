@@ -1,13 +1,13 @@
-angular.module('bhima.controllers').controller('service', [
+angular.module('bhima.controllers')
+.controller('service', [
   '$scope',
   '$q',
   '$translate',
   'validate',
-  'uuid',
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $q, $translate, validate, uuid, messenger, connect, appstate) {
+  function ($scope, $q, $translate, validate, messenger, connect, appstate) {
     var dependencies = {}, cost_center = {}, service ={};
     $scope.choosen = {};
 
@@ -23,7 +23,7 @@ angular.module('bhima.controllers').controller('service', [
         },
         join : ['service.cost_center_id=cost_center.id']
       }
-    }
+    };
 
     dependencies.cost_centers = {
       query : {
@@ -33,121 +33,101 @@ angular.module('bhima.controllers').controller('service', [
           }
         }
       }
-    }
+    };
 
-    function init (model){
+    function init(model) {
       $scope.model = model;
-      console.log(model);
     }
 
-    function save (){
+    function save() {
       writeService()
-      .then(function (result){
+      .then(function () {
         // FIXME just add service to model
-        validate.refresh(dependencies, ['services']).then(function (model) {
+        validate.refresh(dependencies, ['services'])
+        .then(function (model) {
           angular.extend($scope, model);
-          messenger.success($translate('SERVICE.INSERT_SUCCESS_MESSAGE'));
+          messenger.success($translate.instant('SERVICE.INSERT_SUCCESS_MESSAGE'));
         });
 
         $scope.service = {};
       })
-      .catch(function (err) {
-        messenger.danger($translate('SERVICE.INSERT_FAIL_MESSAGE'));
-      })
+      .catch(function () {
+        messenger.danger($translate.instant('SERVICE.INSERT_FAIL_MESSAGE'));
+      });
     }
 
     function writeService () {
       return connect.basicPut('service', [connect.clean($scope.service)]);
     }
 
-    function setAction (value, service){
+    function setAction (value, service) {
       $scope.choosen = angular.copy(service) || {};
-      if(value == 'more'){
+      if (value === 'more') {
         getCost($scope.choosen.cost_center_id)
         .then(handleResultCost)
         .then(getProfit)
-        .then(handleResultProfit)
-        .then(function (){
-          $scope.action = value;
-          console.log('object donne : ', $scope.choosen);
-        })
-      }else{
-        //$scope.choosen.cost_center_id = value.id;
-        $scope.action = value;
+        .then(handleResultProfit);
       }
+      $scope.action = value;
     }
 
-    function getProfit (model){
-      var def = $q.defer();
-      connect.req('/profit/'+$scope.project.id+'/'+$scope.choosen.id)
-      .then(function(values){
-        def.resolve(values);
-      });
-      return def.promise;
+    function getProfit() {
+      return connect.req('/profit/' + $scope.project.id + '/' + $scope.choosen.id);
     }
 
-    function handleResultProfit (){
-
-    }
-
-    function edit (){
-      console.log('le voici', connect.clean($scope.choosen));
+    function edit() {
       var data = {
-        id : $scope.choosen.id,
-        name : $scope.choosen.name,
+        id             : $scope.choosen.id,
+        name           : $scope.choosen.name,
         cost_center_id : $scope.choosen.cost_center_id
-      }
+      };
 
       connect.basicPost('service', [data], ['id'])
-      .then(function (res) {
+      .then(function () {
         $scope.model.services.put(connect.clean($scope.choosen));
         $scope.action = '';
         $scope.choosen = {}; // reset
       })
       .catch(function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
-      })
+      });
     }
 
-    function handleResultCost (value){
+    function handleResultCost(value) {
       $scope.choosen.charge = value.data.cost;
       return $q.when();
     }
 
-    function handleResultProfit (value){
+    function handleResultProfit(value) {
       $scope.choosen.profit = value.data.profit;
       return $q.when();
     }
 
-    function getCost (cc_id){
-      var def = $q.defer();
-      connect.req('/cost/'+$scope.project.id+'/'+cc_id)
-      .then(function(values){
-        def.resolve(values);
-      });
-      return def.promise;
+    function getCost(ccId) {
+      return connect.req('/cost/' + $scope.project.id + '/' + ccId);
     }
 
-    function removeService (){
+    function removeService() {
       return connect.basicDelete('service', [$scope.choosen.id], 'id');
     }
 
-    function remove (service){
+    function remove(service) {
       $scope.choosen = angular.copy(service);
       removeService()
-      .then(function (){
+      .then(function () {
         $scope.model.services.remove($scope.choosen.id);
-        messenger.success($translate('SERVICE.REMOVE_SUCCESS_MESSAGE'));
+        messenger.success($translate.instant('SERVICE.REMOVE_SUCCESS_MESSAGE'));
       })
-      .catch(function (err){
-        messenger.danger($translate('SERVICE.REMOVE_FAIL_MESSAGE'));
+      .catch(function () {
+        messenger.danger($translate.instant('SERVICE.REMOVE_FAIL_MESSAGE'));
       });
     }
 
-    appstate.register('project', function (project){
+    appstate.register('project', function (project) {
+      $scope.project = project;
       validate.process(dependencies)
       .then(init);
-    })
+    });
 
     $scope.save = save;
     $scope.service = service;

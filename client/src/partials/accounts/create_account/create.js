@@ -6,11 +6,12 @@ angular.module('bhima.controllers')
   'connect',
   '$translate',
   'liberror',
-  function($scope, validate, appstate, connect, $translate, liberror) {
+  function ($scope, validate, appstate, connect, $translate, liberror) {
+    /* jshint unused : false */
     var dependencies = {}, titleAccount = 3;
     var grid, columns, options, dataview, sortColumn = 'account_number';
     // var financeGroups = {index: {}, store: []};
-    var session = $scope.session = {state: 'display'};
+    var session = $scope.session = { state: 'display' };
 
     var accountError = liberror.namespace('ACCOUNT');
 

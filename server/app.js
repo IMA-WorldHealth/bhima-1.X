@@ -107,11 +107,11 @@ app.get('/user_session', function (req, res) {
   res.send(200, { id: req.session.user_id });
 });
 
-app.get('/pcash_transfert_summers', function (req, res, next) {
+app.get('/pcash_transfer_summers', function (req, res, next) {
   var sql =
     'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
     'FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` '+
-    'WHERE `primary_cash_module`.`text`=\'transfert\') ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
+    'WHERE `primary_cash_module`.`text`=\'transfer\') ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
   db.exec(sql)
   .then(function () {
     var d = []; //for now
@@ -293,27 +293,24 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
     'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + ' ' +
     'AND account.account_type_id <> 3';
 
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
   db.execute(sql, function (err, ans) {
     if (err) { return next(err); }
     if (ans.length > 0) {
       synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
         if (err) { return next(err); }
-        console.log('[synthetic a retourner data]', data);
         res.send(process(data));
       });
     }else{
       res.send({cost : 0});
     }
   });
-
-  function process (values) {
-    var som = 0;
-    var current_value;
-    values.forEach(function (value) {
-      som+= (value.debit > 0)? value.debit : value.credit;
-    });
-    return {cost:som};
-  }
 });
 
 

@@ -6,6 +6,7 @@ angular.module('bhima.controllers')
   'appstate',
   'validate',
   function ($scope, $translate, $filter, appstate, validate) {
+    /* jshint unused : false */
 
     var dependencies = {};
     var columns, dataview, options, grid, groups = $scope.groups = [];
@@ -132,7 +133,7 @@ angular.module('bhima.controllers')
     //Utility methods
     function groupby(groupDefinition) {
       var groupInstance = {};
-      if(groupExists(groupDefinition, groups)) return;
+      if (groupExists(groupDefinition, groups)) { return; }
 
       groupInstance = JSON.parse(JSON.stringify(groupDefinition));
       groupInstance.aggregateCollapsed = true;
@@ -147,7 +148,7 @@ angular.module('bhima.controllers')
       dataview.setGrouping(groups);
     }
 
-    function groupExists(targetGroup, groupList) {
+    function groupExists(targetGroup) {
       return groups.some(function(group) {
         return group.getter === targetGroup.getter;
       });
