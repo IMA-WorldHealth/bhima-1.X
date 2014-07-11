@@ -64,7 +64,8 @@
       "/favicon.ico",
       "/expiring/",
       "/expiring_complete/",
-      "/serv_dist_stock/"
+      "/serv_dist_stock/",
+      "/inv_in_depot/"
     ]
   }
 }

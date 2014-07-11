@@ -1333,7 +1333,11 @@
     "COST"                  : "Cout",
     "LOT_DETAILS"           : "Details des Lots",
     "CHOOSE"                : "Selectionner le service",
-    "SUMMARY"               : "Sommaire"
+    "SUMMARY"               : "Sommaire",
+    "TAPE"                  : "Taper code nom medicament",
+    "LOT_NUMBER"            : "Numero lot",
+    "EXPIRING_DATE"         : "Date expiration",
+    "REMAINING_QTY"         : "Quantite restante"
   },
 
   "SUPPLIER" : {
