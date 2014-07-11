@@ -747,7 +747,11 @@
     "COST"                   : "Cost",
     "LOT_DETAILS"            : "Lot Details",
     "CHOOSE"                 : "Choose a service",
-    "SUMMARY"               : "Sommary"
+    "SUMMARY"               : "Sommary",
+    "TAPE"                  : "Tape drug name or drug code",
+    "LOT_NUMBER"            : "Lot number",
+    "EXPIRING_DATE"         : "Expiring date",
+    "REMAINING_QTY"         : "Remaining quantity"
   },
 
   "JOURNAL_VOUCHER"  : {

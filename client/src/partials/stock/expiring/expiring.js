@@ -67,29 +67,6 @@ angular.module('bhima.controllers')
         dataview.sort(sort, args.sortAsc);
         grid.invalidate();
       }
-
-      // set up filtering
-
-      // function search (item, args) {
-      //   if (item.searchStr !== '' && item.code.indexOf(args.searchStr) === -1 && item.text.indexOf(args.searchStr) === -1) {
-      //     return false;
-      //   }
-      //   return true;
-      // }
-
-      // dataview.setFilter(search);
-      // dataview.setFilterArgs({
-      //   searchStr: searchStr
-      // });
-
-      // $scope.$watch('flags.search', function () {
-      //   if (!flags.search) flags.search = '';
-      //   searchStr = flags.search;
-      //   dataview.setFilterArgs({
-      //     searchStr: searchStr
-      //   });
-      //   dataview.refresh();
-      // });
     }
 
     $scope.$watch('configuration', function () {
@@ -165,7 +142,6 @@ angular.module('bhima.controllers')
     }
 
     function complete (models) {
-      window.model = models;
       $scope.uncompletedList = models;
       return $q.all(models.map(function (m) {
         return connect.fetch('expiring_complete/'+m.tracking_number+'/'+$scope.configuration.depot_uuid);
@@ -180,7 +156,6 @@ angular.module('bhima.controllers')
         }
       });
       $scope.configuration.list = cleanList();
-      console.log('on a ',$scope.configuration.list);
       $q.when();
     }
 
