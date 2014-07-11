@@ -390,7 +390,6 @@ app.get('/removeFromCostCenter/:tab', function (req, res, next) {
   .done();
 });
 
-
 app.get('/auxiliairyCenterAccount/:enterpriseId/:auxiliairy_center_id', function (req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.enterpriseId+'''+
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
@@ -422,7 +421,6 @@ app.get('/tree', function (req, res, next) {
 
   tree.load(req.session.user_id)
   .then(function (treeData) {
-    console.log('[TreeData] ', treeData);
     res.send(treeData);
   })
   .catch(next)
