@@ -422,6 +422,7 @@ app.get('/tree', function (req, res, next) {
 
   tree.load(req.session.user_id)
   .then(function (treeData) {
+    console.log('[TreeData] ', treeData);
     res.send(treeData);
   })
   .catch(next)
