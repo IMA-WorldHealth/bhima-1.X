@@ -12,6 +12,7 @@
 // All query formatting is expected to happen elsewhere.
 
 var q = require('q');
+var mysql = require('mysql');
 
 function mysqlInit (config) {
   'use strict';
@@ -123,14 +124,14 @@ module.exports = function (cfg, logger, uuid) {
       });
     },
 
-    exec : function (sql, uid) {
+    exec : function (sql, params) {
       var defer = q.defer();
-      console.log('[db] [execute]: ', sql);
-      log(uid, sql, null);
+      log(1, sql, null);
+      console.log('[db] [exec] : ', mysql.format(sql, params));
 
       con.getConnection(function (err, connection) {
         if (err) { return defer.reject(err); }
-        connection.query(sql, function (err, results) {
+        connection.query(sql, params, function (err, results) {
           connection.release();
           if (err) { return defer.reject(err); }
           defer.resolve(results);

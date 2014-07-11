@@ -68,23 +68,16 @@ module.exports = function (db, sanitize, util) {
   function finance(reportParameters) {
     var requiredFiscalYears,
         initialQuery,
-        deferred = q.defer(),
         financeParams = JSON.parse(reportParameters);
 
     if(!financeParams) {
-      deferred.reject(new Error('[finance.js] No fiscal years provided'));
-      return deferred.promise;
+      return q.reject(new Error('[finance.js] No fiscal years provided'));
     }
 
     requiredFiscalYears = financeParams.fiscal;
     initialQuery = buildFinanceQuery(requiredFiscalYears);
 
-    db.execute(initialQuery, function(err, ans) {
-      if (err) { return deferred.reject(err); }
-      deferred.resolve(ans);
-    });
-
-    return deferred.promise;
+    return db.exec(initialQuery);
   }
 
   /*
@@ -235,19 +228,13 @@ module.exports = function (db, sanitize, util) {
  */
 
   function debitorAging (params){
-    var def = q.defer();
     params = JSON.parse(params);
     var requette =
       'SELECT period.id, period.period_start, period.period_stop, debitor.uuid as idDebitor, debitor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id ' +
       'FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.uuid = debitor.group_uuid AND debitor.uuid = general_ledger.deb_cred_uuid ' +
       'AND general_ledger.`deb_cred_type`=\'D\' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`=\''+params.fiscal_id +'\'';
 
-    db.execute(requette, function(err, ans) {
-      if (err) { return def.reject(err); }
-      def.resolve(ans);
-    });
-
-    return def.promise;
+    return db.exec(requette);
   }
 
   function accountStatement(params){
@@ -335,7 +322,6 @@ module.exports = function (db, sanitize, util) {
   }
 
   function saleRecords(params) {
-    var deferred = q.defer();
     params = JSON.parse(params);
 
     if (!params.dateFrom || !params.dateTo) {
@@ -344,11 +330,11 @@ module.exports = function (db, sanitize, util) {
 
     var requestSql =
       'SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, ' +
-      'sale.note, sale.posted, credit_note.uuid as `creditId`, credit_note.description as `creditDescription`, ' +
-      'credit_note.posted as `creditPosted`, first_name, last_name, patient.reference as `patientReference`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
+        'sale.note, sale.posted, credit_note.uuid as `creditId`, credit_note.description as `creditDescription`, ' +
+        'credit_note.posted as `creditPosted`, first_name, last_name, patient.reference as `patientReference`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
       'FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid ' +
-      'LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid ' +
-      'LEFT JOIN project on sale.project_id = project.id ' +
+        'LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid ' +
+        'LEFT JOIN project on sale.project_id = project.id ' +
       'WHERE sale.invoice_date >=  \'' + params.dateTo + '\' AND sale.invoice_date <= \'' + params.dateFrom + '\' ';
 
     if (params.project) {
@@ -357,18 +343,11 @@ module.exports = function (db, sanitize, util) {
 
     requestSql += 'ORDER BY sale.timestamp DESC;';
 
-    db.execute(requestSql, function(error, result) {
-      if (error) {
-        return deferred.reject(error);
-      }
-      deferred.resolve(result);
-    });
-    return deferred.promise;
+    return db.exec(requestSql);
   }
 
   function patientRecords(params) {
-    var p = querystring.parse(params),
-        deferred = q.defer();
+    var p = querystring.parse(params);
 
     var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
         _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
@@ -389,12 +368,7 @@ module.exports = function (db, sanitize, util) {
           '`patient_visit`.`registered_by` = `user`.`id` ' +
         'WHERE `date` >= ' + _start + ' AND ' +
           ' `date` <= ' + _end + ' AND `project_id` IN (' + _id + ');';
-    db.execute(sql, function (err, res) {
-      if (err) { return deferred.reject(err); }
-      deferred.resolve(res);
-    });
-
-    return deferred.promise;
+    return db.exec(sql);
   }
 
   function paymentRecords(params) {
