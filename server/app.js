@@ -165,7 +165,9 @@ app.get('/journal/:table/:id', function (req, res, next) {
 
 //FIXME receive any number of tables using regex
 app.get('/max/:id/:table/:join?', function (req, res) {
-  var id = req.params.id, table = req.params.table, join = req.params.join;
+  var id = req.params.id,
+      table = req.params.table,
+      join = req.params.join;
 
   var max_request = 'SELECT MAX(' + id + ') FROM ';
 
@@ -176,13 +178,12 @@ app.get('/max/:id/:table/:join?', function (req, res) {
     max_request += ')a;';
   }
 
-  db.execute(max_request, function(err, ans) {
-    if (err) {
-      res.send(500, {info: 'SQL', detail: err});
-      console.error(err);
-      return;
-    }
+  db.exec(max_request)
+  .then( function(ans) {
     res.send({max: ans[0]['MAX(' + id + ')']});
+  })
+  .catch(function (err) {
+    res.send(500, {info: 'SQL', detail: err});
   });
 });
 
@@ -259,10 +260,11 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
     return InExAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next);
 });
 
 app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
@@ -280,10 +282,11 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next);
 });
 
 
@@ -293,15 +296,16 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
     'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + ' ' +
     'AND account.account_type_id <> 3';
 
-  function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+  function process(values) {
+    var som = 0;
+    values.forEach(function (value) {
+      som += value.debit > 0 ? value.debit : value.credit;
     });
-    return availablechargeAccounts;
+    return { cost : som };
   }
 
-  db.execute(sql, function (err, ans) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (ans) {
     if (ans.length > 0) {
       synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
         if (err) { return next(err); }
@@ -310,18 +314,19 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
     }else{
       res.send({cost : 0});
     }
-  });
+  })
+  .catch(next);
 });
 
 
 app.get('/profit/:id_project/:service_id', function(req, res, next) {
   function process (values) {
-    if (values.length <= 0) { return {profit : 0}; }
+    if (values.length <= 0) { return { profit : 0}; }
     var som = 0;
     values.forEach(function (value) {
-      som+= value.credit;
+      som += value.credit;
     });
-    return {profit:som};
+    return {profit : som };
   }
 
   synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
@@ -353,30 +358,30 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next);
 });
 
 //
 
 app.get('/removeFromCostCenter/:tab', function(req, res, next) {
-  var tabs = JSON.parse(req.params.tab);
+  var sql, tabs = JSON.parse(req.params.tab);
   console.log('le tabs', tabs);
 
   tabs = tabs.map(function (item) {
     return item.id;
   });
 
-  var sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
-  console.log('la requette est  ', sql);
+  sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
-    console.log('la reponse est ', rows);
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next);
 });
 
 
@@ -398,11 +403,11 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
-
+  })
+  .catch(next);
 });
 
 app.get('/tree', function (req, res, next) {
@@ -410,11 +415,10 @@ app.get('/tree', function (req, res, next) {
 
   tree.load(req.session.user_id)
   .then(function (treeData) {
+    console.log('[TreeData] ', treeData);
     res.send(treeData);
   })
-  .catch(function (err) {
-    res.send(301, err);
-  })
+  .catch(next)
   .done();
 });
 
@@ -430,10 +434,11 @@ app.get('/location/:villageId?', function (req, res, next) {
       'sector.province_uuid = province.uuid AND ' +
       'province.country_uuid=country.uuid ' + specifyVillage + ';';
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next);
 });
 
 // New API for locations
@@ -448,14 +453,15 @@ app.get('/village/', function (req, res, next) {
 
   var sql =
     'SELECT `village`.`uuid` AS `uuid`,  `village`.`name` AS `village`, ' +
-    '`sector`.`uuid` AS `sector_uuid`, `sector`.`name` as `sector` ' +
+      '`sector`.`uuid` AS `sector_uuid`, `sector`.`name` as `sector` ' +
     'FROM `village`, `sector` ' +
     'WHERE village.`sector_uuid` = sector.uuid';
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next);
 });
 
 app.get('/sector/', function (req, res, next) {
@@ -464,10 +470,11 @@ app.get('/sector/', function (req, res, next) {
   var sql = 'SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` '+
             'as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` '+
             'WHERE `sector`.`province_uuid` = `province`.`uuid`';
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next);
 });
 
 app.get('/province/', function (req, res, next) {
@@ -477,10 +484,11 @@ app.get('/province/', function (req, res, next) {
     'SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` '+
     'AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` '+
     'WHERE `province`.`country_uuid` = `country`.`uuid`';
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next);
 });
 
 // FIXME : make this code more modular

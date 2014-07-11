@@ -76,7 +76,6 @@ module.exports = function (db) {
   }
 
   function createFiscalRecord(enterprise, startDate, endDate) {
-    var deferred = q.defer();
     var description;
     var monthNo, startMonth, startYear, previousFiscal;
 
@@ -85,31 +84,21 @@ module.exports = function (db) {
     startYear = startDate.getFullYear();
 
     //Get previous fiscal year, then insert fiscal year into DB
-    getLatestFiscal()
-    .then(function(res) {
+    return getLatestFiscal()
+    .then(function (res) {
       previousFiscal = res;
 
       var fiscalSQL =
         'INSERT INTO `fiscal_year` (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
         '(' + enterprise + ',' + monthNo + ',\'' + description + '\',' + startMonth + ',' + startYear + ',' + previousFiscal + ');';
 
-      console.log('******************la requette est ', fiscalSQL);
-      db.execute(fiscalSQL, function(err, ans) {
-        if (err) { return deferred.reject(err); }
-        console.log('*****************************, nous voici');
-        deferred.resolve(ans);
-      });
-    }, function(err) {
-      console.log('*****************************, nous voici');
-      deferred.reject(err);
+      return db.exec(fiscalSQL);
     });
 
-    return deferred.promise;
   }
 
   function createPeriodRecords(fiscalYearId, startDate, endDate) {
     var totalMonths, periodSQL;
-    var deferred = q.defer();
     var periodSQLHead = 'INSERT INTO `period` (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
     var periodSQLBody = [];
 
@@ -127,26 +116,20 @@ module.exports = function (db) {
     }
 
     periodSQL = periodSQLHead + periodSQLBody.join(',');
-    db.execute(periodSQL, function(err, ans) {
-      if (err) {
-        return deferred.reject(err);
-      }
+    return db.exec(periodSQL)
+    .then(function (ans) {
       var period_zero_sql =
         'SELECT `id` FROM `period` WHERE `fiscal_year_id` = ' + fiscalYearId + ' AND `period_number` = 0';
-      db.execute(period_zero_sql, function (err, pz) {
-        if (err) {
-          return deferred.reject(err);
-        }
-        deferred.resolve({ insertId : ans.insertId, periodZeroId : pz[0].id, affectedRows: ans.affectedRows });
+
+      return db.exec(period_zero_sql)
+      .then(function (pz) {
+        return q.resolve({ insertId : ans.insertId, periodZeroId : pz[0].id, affectedRows: ans.affectedRows });
       });
     });
-
-    return deferred.promise;
   }
 
   function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted) {
     var accountIdList, budgetSQL;
-    var deferred = q.defer();
     var periodIdList  = [];
     var budgetSQLHead = 'INSERT INTO `budget` (account_id, period_id, budget) VALUES ';
     var budgetSQLBody = [];
@@ -158,7 +141,7 @@ module.exports = function (db) {
       periodIdList.push(i);
     }
 
-    getAccountList(enterprise)
+    return getAccountList(enterprise)
     .then(function (res) {
       accountIdList = res;
       accountIdList.forEach(function(account) {
@@ -168,30 +151,13 @@ module.exports = function (db) {
       });
 
       budgetSQL = budgetSQLHead + budgetSQLBody.join(',');
-      db.execute(budgetSQL, function(err, ans) {
-        if (err) {
-          return deferred.reject(err);
-        }
-        deferred.resolve(ans);
-      });
-
-    }, function(err) {
-      deferred.reject(err);
+      return db.exec(budgetSQL);
     });
-
-    return deferred.promise;
   }
 
   function getAccountList(enterprise) {
-    var deferred = q.defer();
-    var accountSQL = 'SELECT id FROM `account` WHERE enterprise_id=' + enterprise + ';';
-    db.execute(accountSQL, function (err, ans) {
-      if (err) {
-        return deferred.reject(err);
-      }
-      deferred.resolve(ans);
-    });
-    return deferred.promise;
+    var accountSQL = 'SELECT id FROM `account` WHERE enterprise_id = ' + enterprise + ';';
+    return db.exec(accountSQL);
   }
 
   function getLatestFiscal() {
@@ -215,12 +181,15 @@ module.exports = function (db) {
     });
 
     function iterateList(id) {
-      db.execute(iterate_request + id, function (err, ans) {
-        if (err) { return deferred.reject(err); }
+      db.exec(iterate_request + id)
+      .then(function (ans) {
         if (ans.length === 0) {
           return deferred.resolve(id);
         }
-        return iterateList(ans[0].id);
+        iterateList(ans[0].id);
+      })
+      .catch(function (err) {
+        return deferred.reject(err);
       });
     }
 

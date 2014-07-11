@@ -96,17 +96,15 @@ module.exports = function (db, sanitize, Store) {
   }
 
   function byAllLots (depot) {
-    var sql, _depot;
+    var sql;
 
-    _depot = sanitize.escape(depot);
-    
     sql =
       'SELECT stock.tracking_number, stock.lot_number, calculateMovement.depot_entry, calculateMovement.depot_exit, ' +
-        'SUM(CASE WHEN calculateMovement.depot_entry =' + _depot + ' THEN calculateMovement.quantity ELSE -calculateMovement.quantity END) AS quantity, ' +
+        'SUM(CASE WHEN calculateMovement.depot_entry = ? TcEN calculateMovement.quantity ELSE -calculateMovement.quantity END) AS quantity, ' +
         'stock.expiration_date, code, inventory.text as stock_description ' +
       'FROM inventory JOIN stock ' +
       'JOIN ' +
-      
+
       // Model consumption as a movement from nothing, would be useful to know the difference between moved and consumed
       '(SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
       'FROM movement ' +
@@ -114,11 +112,11 @@ module.exports = function (db, sanitize, Store) {
       'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, quantity, date  ' +
       'FROM consumption) as calculateMovement ON ' +
         'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = calculateMovement.tracking_number ' +
-      'WHERE calculateMovement.depot_entry = ' + _depot + ' OR calculateMovement.depot_exit = ' + _depot + ' ' +
+      'WHERE calculateMovement.depot_entry = ? OR calculateMovement.depot_exit = ? ' +
       'GROUP BY stock.tracking_number ' +
       'ORDER BY stock.lot_number;';
 
-    return db.exec(sql)
+    return db.exec(sql, [depot, depot])
     .then(function (rows) {
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
