@@ -11,7 +11,7 @@
 
 var q =  require('q');
 
-module.exports = function (db, sanitize) {
+module.exports = function (db) {
   'use strict';
 
   function debitor(id) {
@@ -19,15 +19,14 @@ module.exports = function (db, sanitize) {
 
     // debtor query
     if (!id) { defer.reject(new Error('No debtor id selected!')); }
-    else { id = sanitize.escape(id); }
 
     var query =
       'SELECT `account_id` ' +
       'FROM `debitor` JOIN `debitor_group` ON ' +
         '`debitor`.`group_uuid` = `debitor_group`.`uuid` ' +
-      'WHERE `debitor`.`uuid`=' + id +';';
+      'WHERE `debitor`.`uuid` = ?;';
 
-    db.exec(query)
+    db.exec(query, [id])
     .then(function (ans) {
 
       var account = ans.pop().account_id;
@@ -36,14 +35,14 @@ module.exports = function (db, sanitize) {
         'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
           'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
           'FROM posting_journal AS p ' +
-          'WHERE p.deb_cred_uuid = ' + id + ' AND p.account_id = ' + account + ' ' +
+          'WHERE p.deb_cred_uuid = ? AND p.account_id = ? ' +
         'UNION ' +
           'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
           'FROM general_ledger AS g ' +
-          'WHERE g.deb_cred_uuid = ' + id + ' AND g.account_id = ' + account + ') ' +
+          'WHERE g.deb_cred_uuid = ? AND g.account_id = ?) ' +
         ' AS c;';
 
-      return db.exec(query);
+      return db.exec(query, [id, account, id, account]);
     })
     .then(function (ans) {
       if (!ans.length) { defer.resolve([]); }
@@ -98,29 +97,28 @@ module.exports = function (db, sanitize) {
 
     // debtor query
     if (!id) { defer.reject(new Error('No debitor_group id selected!')); }
-    else { id = sanitize.escape(id); }
 
-    var query =
+    var sql =
       'SELECT `account_id` ' +
-      'FROM `debitor_group` WHERE `debitor_group`.`uuid`=' + id +';';
+      'FROM `debitor_group` WHERE `debitor_group`.`uuid` = ?;';
 
-    db.exec(query)
+    db.exec(sql, [id])
     .then(function (ans) {
 
-      var account = ans.pop().account_id;
+      var accountId = ans.pop().account_id;
 
       var query =
         'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
           'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
           'FROM posting_journal AS p ' +
-          'WHERE p.account_id = ' + account + ' ' +
+          'WHERE p.account_id = ? ' +
         'UNION ' +
           'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
           'FROM general_ledger AS g ' +
-          'WHERE g.account_id = ' + account + ') ' +
+          'WHERE g.account_id = ?) ' +
         ' AS c;';
 
-      return db.exec(query);
+      return db.exec(query, [accountId, accountId]);
     })
     .then(function (ans) {
       if (!ans.length) { defer.resolve([]); }
@@ -129,7 +127,7 @@ module.exports = function (db, sanitize) {
         return line.inv_po_id;
       });
 
-      var account_id = ans.pop().account_id;
+      var accountId = ans.pop().account_id;
 
       var sql =
         'SELECT s.reference, s.project_id, `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
@@ -152,7 +150,7 @@ module.exports = function (db, sanitize) {
           ')' +
         ') AS `t` JOIN sale AS s on t.inv_po_id = s.uuid ' +
         'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +
-        'AND t.account_id = ' + account_id + ' ' +
+        'AND t.account_id = ' + accountId + ' ' +
         'GROUP BY `t`.`inv_po_id`;\n';
 
       return db.exec(sql);
@@ -172,43 +170,41 @@ module.exports = function (db, sanitize) {
 
     // debtor query
     if (!id) { defer.reject(new Error('No debtor id selected!')); }
-    else { id = sanitize.escape(id); }
 
-    var query =
+    var sql =
       'SELECT `account_id` ' +
       'FROM `debitor` JOIN `debitor_group` ON ' +
         '`debitor`.`group_uuid` = `debitor_group`.`uuid` ' +
-      'WHERE `debitor`.`uuid`=' + id +';';
+      'WHERE `debitor`.`uuid` = ?';
 
-    db.exec(query)
+    db.exec(sql, [id])
     .then(function (ans) {
 
-      var account = ans.pop().account_id;
+      var accountId = ans.pop().account_id;
       var query =
         'SELECT c.inv_po_id, c.account_id, consumption.tracking_number FROM (' +
           'SELECT p.inv_po_id, p.account_id ' +
           'FROM posting_journal AS p ' +
-          'WHERE p.deb_cred_uuid = ' + id + ' AND p.account_id = ' + account + ' ' +
+          'WHERE p.deb_cred_uuid = ? AND p.account_id = ? ' +
         'UNION ' +
           'SELECT g.inv_po_id, g.account_id ' +
           'FROM general_ledger AS g ' +
-          'WHERE g.deb_cred_uuid = ' + id + ' AND g.account_id = ' + account + ') ' +
+          'WHERE g.deb_cred_uuid = ? AND g.account_id = ?) ' +
         ' AS c left join consumption on c.inv_po_id = consumption.sale_uuid';
 
-      return db.exec(query);
+      return db.exec(query, [id, accountId, id, accountId]);
     })
     .then(function (ans) {
       if (!ans.length) { defer.resolve([]); }
-      ans = ans.filter(function (an){
-        return !an.tracking_number;
-
+      ans = ans.filter(function (row) {
+        return !row.tracking_number;
       });
 
       var invoices = ans.map(function (line) {
         return line.inv_po_id;
       });
 
-      var account_id = ans.pop().account_id;
+      var accountId = ans.pop().account_id;
 
       var sql =
         'SELECT s.reference, s.project_id, `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
@@ -231,7 +227,7 @@ module.exports = function (db, sanitize) {
           ')' +
         ') AS `t` JOIN sale AS s on t.inv_po_id = s.uuid ' +
         'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +
-        'AND t.account_id = ' + account_id + ' ' +
+        'AND t.account_id = ' + accountId + ' ' +
         'GROUP BY `t`.`inv_po_id`;\n';
 
       return db.exec(sql);
@@ -248,7 +244,7 @@ module.exports = function (db, sanitize) {
 
   return {
     debitor: debitor,
-    debitor_group : debitorGroup,
+    debitorGroup : debitorGroup,
     distributableSale : distributableSale
   };
 };

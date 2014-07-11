@@ -5,7 +5,7 @@ module.exports = function (db, sanitize) {
   //ccc  : cost center cost
   //service profit
 
-  var menu_map = {
+  var menuMap = {
     'aB'    : aB,
     'pcR'   : pcR,
     'pcRI'  : pcRI,
@@ -109,6 +109,6 @@ module.exports = function (db, sanitize) {
   }
 
   return function menu (goal, project_id, request, callback) {
-    return menu_map[goal] ? menu_map[goal](project_id, request, callback) :  new Error('Incorrect/invalid route');
+    return menuMap[goal] ? menuMap[goal](project_id, request, callback) :  new Error('Incorrect/invalid route');
   };
 };

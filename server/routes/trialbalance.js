@@ -45,7 +45,7 @@ function KeyRing (uuid) {
   };
 }
 
-module.exports = function (db, sanitize, util, uuid) {
+module.exports = function (db, uuid) {
   'use strict';
 
   var keys = new KeyRing(uuid);
@@ -182,7 +182,7 @@ module.exports = function (db, sanitize, util, uuid) {
     return d.promise;
   }
 
-  function areDebitorCreditorDefined () {
+  function areDebitorCreditorDefined() {
     var d = q.defer();
     var sql =
       'SELECT `uuid`, `trans_id` ' +
@@ -229,15 +229,12 @@ module.exports = function (db, sanitize, util, uuid) {
       // Next, we need to generate a posting session id.
       sql =
         'INSERT INTO `posting_session` ' +
-        'SELECT max(`posting_session`.`id`) + 1, ' + sanitize.escape(userId) + ', ' +
-        sanitize.escape(util.toMysqlDate()) + ' ' +
-        'FROM `posting_session`;';
+          'SELECT MAX(`posting_session`.`id`) + 1, ?, ? FROM `posting_session`;';
 
-      return db.exec(sql);
+      return db.exec(sql, [userId, new Date()]);
     })
     .then(function (res) {
       // Next, we must move the data into the general ledger.
-      var session_id = res.insertId;
       sql =
         'INSERT INTO `general_ledger` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
@@ -246,10 +243,9 @@ module.exports = function (db, sanitize, util, uuid) {
           '`origin_id`, `user_id`, `session_id`) ' +
         'SELECT `project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
-          '`deb_cred_uuid`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`, ' +
-          session_id + ' ' +
+          '`deb_cred_uuid`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`, ? ' +
         'FROM `posting_journal`;';
-      return db.exec(sql);
+      return db.exec(sql, [res.insertId]);
     })
     .then(function () {
       // Sum all transactions for a given period from the PJ
@@ -267,8 +263,7 @@ module.exports = function (db, sanitize, util, uuid) {
       // Finally, we can remove the data from the posting journal
       sql = 'DELETE FROM `posting_journal` WHERE 1;';
       return db.exec(sql);
-    })
-    .done();
+    });
   }
 
   return {

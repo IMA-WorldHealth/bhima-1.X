@@ -10,7 +10,7 @@ module.exports = function(db, parser, journal, uuid) {
     var saleRecord = saleData.sale;
     var saleItems = saleData.saleItems;
 
-    if(!(saleRecord && saleItems)) {
+    if (!(saleRecord && saleItems)) {
       return callback(null, new Error('[createSale] Required data is invalid'));
     }
     saleRecord.uuid = uuid();
@@ -36,14 +36,14 @@ module.exports = function(db, parser, journal, uuid) {
       generateSaleItems(saleRecord.uuid, saleItems)
     ];
 
-    return db.executeAsTransaction(querries); 
+    return db.executeAsTransaction(querries);
   }
   */
 
   function submitSaleRecords(saleRecord, saleItems, userId) {
-    
+
     return db.exec(generateSaleRecord(saleRecord, userId))
-    .then(function (res) {
+    .then(function () {
       return db.exec(generateSaleItems(saleRecord.uuid, saleItems));
     });
   }

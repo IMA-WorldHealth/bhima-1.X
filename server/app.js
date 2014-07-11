@@ -34,15 +34,15 @@ var authorize    = require('./middleware/authorization')(cfg.auth.paths),
 
 // import routes
 var report         = require('./routes/report')(db, sanitize, util),
-    trialbalance   = require('./routes/trialbalance')(db, sanitize, util, uuid),
-    ledger         = require('./routes/ledger')(db, sanitize),
+    trialBalance   = require('./routes/trialbalance')(db, uuid),
+    ledger         = require('./routes/ledger')(db),
     fiscal         = require('./routes/fiscal')(db),
     synthetic      = require('./routes/synthetic')(db, sanitize),
     journal        = require('./routes/journal')(db, sanitize, util, validate, store, uuid),
     createSale     = require('./routes/createSale')(db, parser, journal, uuid),
     createPurchase = require('./routes/createPurchase')(db, parser, uuid),
-    depotRouter    = require('./routes/depot')(db, sanitize, store),
-    tree           = require('./routes/tree')(db, parser),
+    depotRouter    = require('./routes/depot')(db, store),
+    tree           = require('./routes/tree')(db),
     drugRouter     = require('./routes/drug')(db),
     api            = require('./routes/data')(db, parser);
 
@@ -77,7 +77,7 @@ app.route('/data/')
 
 app.delete('/data/:table/:column/:value', api.delete);
 
-app.post('/purchase', function(req, res, next) {
+app.post('/purchase', function (req, res, next) {
   // TODO duplicated methods
   createPurchase.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
@@ -94,14 +94,21 @@ app.post('/sale/', function (req, res, next) {
 
 app.get('/currentProject', function (req, res, next) {
   var sql =
-    'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
-    'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
-    'WHERE `project`.`id`=' + req.session.project_id + ';';
-  db.exec(sql)
+    'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, ' +
+      '`project`.`enterprise_id`, `enterprise`.`currency_id`, ' +
+      '`enterprise`.`location_id`, `enterprise`.`name` AS \'enterprise_name\', ' +
+      '`enterprise`.`phone`, `enterprise`.`email`, `village`.`name` AS \'village\', ' +
+      '`sector`.`name` AS \'sector\' ' +
+    'FROM `project` JOIN `enterprise` ON ' +
+      '`project`.`enterprise_id` = `enterprise`.`id` ' +
+    'JOIN `village` ON `enterprise`.`location_id` = `village`.`uuid` ' +
+    'JOIN `sector` ON `village`.`sector_uuid` = `sector`.`uuid` ' +
+    'WHERE `project`.`id` = ?;';
+  db.exec(sql, [req.session.project_id])
   .then(function (result) {
     res.send(result[0]);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 });
 
@@ -110,7 +117,8 @@ app.get('/user_session', function (req, res) {
   res.send(200, { id: req.session.user_id });
 });
 
-app.get('/pcash_transfer_summers', function (req, res, next) {
+app.get('/pcash_transfert_summers', function (req, res, next) {
+  /* jshint unused : false */
   var sql =
     'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
     'FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` '+
@@ -120,41 +128,35 @@ app.get('/pcash_transfer_summers', function (req, res, next) {
     var d = []; //for now
     res.send(d);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
 app.get('/trialbalance/initialize', function (req, res, next) {
-  trialbalance.run(req.session.user_id, function (err, result) {
+  trialBalance.run(req.session.user_id, function (err, result) {
     if (err) { return next(err); }
     res.send(200, result);
   });
 });
 
 app.get('/trialbalance/submit/:key/', function (req, res, next) {
-  trialbalance.postToGeneralLedger(req.session.user_id, req.params.key)
+  trialBalance.postToGeneralLedger(req.session.user_id, req.params.key)
   .then(function () {
     res.send(200);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
 app.get('/editsession/authenticate/:pin', function (req, res, next) {
-  var decrypt = req.params.pin >> 5;
-  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user_id +
-    ' AND pin = \'' + decrypt + '\';';
-  db.exec(sql)
+  var sql, decrypt = req.params.pin >> 5;
+  sql = 'SELECT pin FROM user WHERE user.id = ? AND pin = ?;';
+
+  db.exec(sql, [req.session.user_id, decrypt])
   .then(function (rows) {
     res.send({ authenticated : !!rows.length });
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
@@ -172,16 +174,16 @@ app.get('/max/:id/:table/:join?', function (req, res) {
       table = req.params.table,
       join = req.params.join;
 
-  var max_request = 'SELECT MAX(' + id + ') FROM ';
+  var maxRequest = 'SELECT MAX(' + id + ') FROM ';
 
-  max_request += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
+  maxRequest += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
   if (join) {
-    max_request += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
+    maxRequest += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
   } else {
-    max_request += ')a;';
+    maxRequest += ')a;';
   }
 
-  db.exec(max_request)
+  db.exec(maxRequest)
   .then( function(ans) {
     res.send({max: ans[0]['MAX(' + id + ')']});
   })
@@ -195,20 +197,16 @@ app.get('/ledgers/debitor/:id', function (req, res, next) {
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(function (error) {
-    next(error);
-  })
+  .catch(next)
   .done();
 });
 
 app.get('/ledgers/debitor_group/:id', function (req, res, next) {
-  ledger.debitor_group(req.params.id)
+  ledger.debitorGroup(req.params.id)
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(function (error) {
-    next(error);
-  })
+  .catch(next)
   .done();
 });
 
@@ -217,9 +215,7 @@ app.get('/ledgers/distributableSale/:id', function (req, res, next) {
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(function (error) {
-    next(error);
-  })
+  .catch(next)
   .done();
 });
 
@@ -237,7 +233,7 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function (req, r
   });
 });
 
-app.get('/reports/:route/', function(req, res, next) {
+app.get('/reports/:route/', function (req, res, next) {
   var route = req.params.route;
 
   //parse the URL for data following the '?' character
@@ -249,55 +245,57 @@ app.get('/reports/:route/', function(req, res, next) {
   });
 });
 
-app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
+app.get('/InExAccounts/:id_enterprise/', function (req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
   var sql =
     'SELECT account.id, account.account_number, account.account_txt, parent ' +
     'FROM account ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ';';
+    'WHERE account.enterprise_id = ?;';
+
   function process(accounts) {
-    var InExAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
+    return accounts.filter(function (account) {
+      var leadNumber = account.account_number.toString()[0];
+      return leadNumber === '6' || leadNumber === '7';
     });
-    return InExAccounts;
   }
 
-  db.exec(sql)
+  db.exec(sql, [req.params.id_enterprise])
   .then(function (rows) {
     res.send(process(rows));
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
-app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
+app.get('/availableAccounts/:id_enterprise/', function (req, res, next) {
   var sql =
     'SELECT account.id, account.account_number, account.account_txt FROM account ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+    'WHERE account.enterprise_id = ? ' +
       'AND account.parent <> 0 ' +
       'AND account.cc_id IS NULL ' +
       'AND account.account_type_id <> 3';
 
   function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+    return accounts.filter(function (account) {
+      var leadNumber = account.account_number.toString()[0];
+      return leadNumber === '6';
     });
-    return availablechargeAccounts;
   }
 
-  db.exec(sql)
+  db.exec(sql, [req.params.id_enterprise])
   .then(function (rows) {
     res.send(process(rows));
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 
-app.get('/cost/:id_project/:cc_id', function(req, res, next) {
+app.get('/cost/:id_project/:cc_id', function (req, res, next) {
   var sql =
     'SELECT account.id, account.account_number, account.account_txt FROM account '+
-    'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + ' ' +
-    'AND account.account_type_id <> 3';
+    'WHERE account.cc_id = ? AND account.account_type_id <> 3';
 
   function process(values) {
     var som = 0;
@@ -307,7 +305,7 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
     return { cost : som };
   }
 
-  db.exec(sql)
+  db.exec(sql, [req.params.cc_id])
   .then(function (ans) {
     if (ans.length > 0) {
       synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
@@ -318,11 +316,12 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
       res.send({cost : 0});
     }
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 
-app.get('/profit/:id_project/:service_id', function(req, res, next) {
+app.get('/profit/:id_project/:service_id', function (req, res, next) {
   function process (values) {
     if (values.length <= 0) { return { profit : 0}; }
     var som = 0;
@@ -341,76 +340,79 @@ app.get('/profit/:id_project/:service_id', function(req, res, next) {
 
 
 
-app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
+app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function (req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
   // var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id '+
   //           'AND account.enterprise_id = ''+req.params.id_enterprise+'' AND account.parent <> 0 AND account.cc_id=''+req.params.cost_center_id+''';
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
-    'FROM account JOIN cost_center ' +
-    'ON account.cc_id = cost_center.id '+
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+    'FROM account JOIN cost_center ON ' +
+      'account.cc_id = cost_center.id '+
+    'WHERE account.enterprise_id = ? ' +
       'AND account.parent <> 0 ' +
-      'AND account.cc_id = ' + sanitize.escape(req.params.cost_center_id) + ';';
+      'AND account.cc_id = ?;';
+
 
   function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+    return accounts.filter(function (account) {
+      var leadNumber = account.account_number.toString()[0];
+      return leadNumber === '6';
     });
-    return availablechargeAccounts;
   }
 
-  db.exec(sql)
+  db.exec(sql, [req.params.id_enterprise, req.params.cost_center_id])
   .then(function (rows) {
     res.send(process(rows));
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 //
 
-app.get('/removeFromCostCenter/:tab', function(req, res, next) {
+app.get('/removeFromCostCenter/:tab', function (req, res, next) {
   var sql, tabs = JSON.parse(req.params.tab);
-  console.log('le tabs', tabs);
 
   tabs = tabs.map(function (item) {
     return item.id;
   });
 
-  sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
+  sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN (' + tabs.join(',') + ')';
 
   db.exec(sql)
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 
-app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
+app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function (req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
     'FROM account JOIN auxiliairy_center ' +
     'ON account.auxiliairy_center_id = auxiliairy_center.id ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+    'WHERE account.enterprise_id = ? ' +
       'AND account.parent <> 0 ' +
-      'AND account.auxiliairy_center_id = ' + sanitize.escape(req.params.auxiliairy_center_id) + ';';
+      'AND account.auxiliairy_center_id = ?;';
 
   function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
+    return accounts.filter(function (account) {
+      var leadNumber = account.account_number.toString()[0];
+      return leadNumber === '6';
     });
-    return availablechargeAccounts;
   }
 
-  db.exec(sql)
+  db.exec(sql, [req.params.id_enterprise, req.params.auxiliairy_center_id])
   .then(function (rows) {
     res.send(process(rows));
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 app.get('/tree', function (req, res, next) {
@@ -418,7 +420,6 @@ app.get('/tree', function (req, res, next) {
 
   tree.load(req.session.user_id)
   .then(function (treeData) {
-    console.log('[TreeData] ', treeData);
     res.send(treeData);
   })
   .catch(next)
@@ -435,13 +436,14 @@ app.get('/location/:villageId?', function (req, res, next) {
     'FROM `village`, `sector`, `province`, `country` ' +
     'WHERE village.sector_uuid = sector.uuid AND ' +
       'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid=country.uuid ' + specifyVillage + ';';
+      'province.country_uuid = country.uuid ' + specifyVillage + ';';
 
   db.exec(sql)
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 // New API for locations
@@ -458,13 +460,14 @@ app.get('/village/', function (req, res, next) {
     'SELECT `village`.`uuid` AS `uuid`,  `village`.`name` AS `village`, ' +
       '`sector`.`uuid` AS `sector_uuid`, `sector`.`name` as `sector` ' +
     'FROM `village`, `sector` ' +
-    'WHERE village.`sector_uuid` = sector.uuid';
+    'WHERE village.`sector_uuid` = sector.uuid;';
 
   db.exec(sql)
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 app.get('/sector/', function (req, res, next) {
@@ -472,12 +475,14 @@ app.get('/sector/', function (req, res, next) {
   /*jshint unused : false*/
   var sql = 'SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` '+
             'as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` '+
-            'WHERE `sector`.`province_uuid` = `province`.`uuid`';
+            'WHERE `sector`.`province_uuid` = `province`.`uuid`;';
+
   db.exec(sql)
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 app.get('/province/', function (req, res, next) {
@@ -486,41 +491,43 @@ app.get('/province/', function (req, res, next) {
   var sql =
     'SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` '+
     'AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` '+
-    'WHERE `province`.`country_uuid` = `country`.`uuid`';
+    'WHERE `province`.`country_uuid` = `country`.`uuid`;';
+
   db.exec(sql)
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(next);
+  .catch(next)
+  .done();
 });
 
 // FIXME : make this code more modular
 app.get('/visit/:patientId', function (req, res, next) {
-  var patientId = req.params.patientId;
+
   var sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES ' +
-    '(' + [sanitize.escape(uuid()), patientId, req.session.user_id].join(', ') + ');';
-  db.exec(sql)
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES ( ?, ?, ?);';
+
+  db.exec(sql, [uuid(), req.params.patientId, req.session.user_id])
   .then(function () {
     res.send();
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 });
 
-app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
-  var sql, debitor_uuid = sanitize.escape(req.params.debitor_uuid),
-      project_id = sanitize.escape(req.params.project_id);
-  //prochaine enterprise_id sera obtenue par requette via debitor_id
+app.get('/caution/:debitorId/:projectId', function (req, res, next) {
+  var sql;
 
+  // prochaine enterprise_id sera obtenue par requette via debitor_id
   sql =
     'SELECT `enterprise`.`currency_id` ' +
-    'FROM `enterprise` ' +
-    'WHERE `enterprise`.`id` = (SELECT `project`.`enterprise_id` FROM `project` WHERE `project`.`id`='+project_id+')';
+    'FROM `enterprise` JOIN `project` ' +
+    'ON `project`.`enterprise_id` = `enterprise`.`id` ' +
+    'WHERE `project`.`id` = ?;';
 
-  db.exec(sql)
+  db.exec(sql, [req.params.projectId])
   .then(function (ans) {
-    var currency_id = ans.pop().currency_id;
+    var currencyId = ans.pop().currency_id;
     sql =
       'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
         '`t`.`credit_equiv` AS `credit`, `t`.`description`, `t`.`account_id` ' +
@@ -528,31 +535,28 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
           'SELECT `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
             '`posting_journal`.`credit_equiv`, `posting_journal`.`deb_cred_uuid`, ' +
             '`posting_journal`.`trans_id`, `posting_journal`.`description` ' +
-          'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid` = ' + debitor_uuid +
+          'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid` = ? ' +
         ' UNION ' +
           'SELECT `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
             '`general_ledger`.`credit_equiv`, `general_ledger`.`deb_cred_uuid`, ' +
             '`general_ledger`.`trans_id`, `general_ledger`.`description` ' +
-          'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` = ' + debitor_uuid +
+          'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` = ? ' +
         ') AS `t` JOIN `account` ON `t`.`account_id` = `account`.`id` ' +
         'WHERE `t`.`account_id` IN (' +
           'SELECT `caution_box_account_currency`.`account_id` FROM `caution_box_account_currency` ' +
-          'WHERE `caution_box_account_currency`.`currency_id`=' +currency_id +
-          ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ project_id +'));';
-    return db.exec(sql);
+          'WHERE `caution_box_account_currency`.`currency_id` = ? ' +
+          ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id` = ?));';
+    return db.exec(sql, [req.params.debitorId, req.params.debitorId, currencyId, req.params.projectId]);
   })
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
-app.get('/account_balance/:id', function (req, res, next) {
+app.get('/account_balance/:enterpriseId', function (req, res, next) {
   // TODO : put this in a module!
-  var enterprise_id = req.params.id;
 
   var sql =
     'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
@@ -560,17 +564,17 @@ app.get('/account_balance/:id', function (req, res, next) {
       'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
       'FROM account LEFT JOIN period_total ' +
       'ON account.id=period_total.account_id ' +
-      'WHERE account.enterprise_id = ' + sanitize.escape(enterprise_id) +
+      'WHERE account.enterprise_id = ? ' +
     ') ' +
     'AS temp JOIN account_type ' +
     'ON temp.account_type_id = account_type.id ' +
     'ORDER BY temp.account_number;';
 
-  db.exec(sql)
+  db.exec(sql, [req.params.enterpriseId])
   .then(function (rows) {
     res.send(rows);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 });
 
@@ -584,52 +588,48 @@ app.get('/synthetic/:goal/:project_id?', function (req, res, next) {
 });
 
 app.get('/period/:date', function (req, res, next) {
-  var date = sanitize.escape(util.toMysqlDate(new Date(Number(req.params.date))));
-
   var sql =
     'SELECT id, fiscal_year_id FROM period ' +
-    'WHERE period_start <= ' + date + ' AND period_stop >= ' + date + ' LIMIT 1';
+    'WHERE period_start <= ? AND period_stop >= ? LIMIT 1';
 
-  db.exec(sql)
+  db.exec(sql, [req.params.date, req.params.date])
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
-app.get('/lot/:inventory_uuid', function (req, res, next) {
-  var sql = 'SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid='+sanitize.escape(req.params.inventory_uuid);
-  db.exec(sql)
+app.get('/lot/:inventoryId', function (req, res, next) {
+  var sql =
+    'SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text ' +
+    'FROM stock JOIN inventory ON ' +
+      'inventory.uuid = stock.inventory_uuid ' +
+    'WHERE stock.inventory_uuid = ?;';
+
+  db.exec(sql, [req.params.inventoryId])
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
-app.get('/max_trans/:project_id', function (req, res, next) {
-  var project_id = sanitize.escape(req.params.project_id);
+app.get('/max_trans/:projectId', function (req, res, next) {
   var sql =
     'SELECT abbr, max(increment) AS increment FROM (' +
       'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
       'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-      'WHERE project_id = ' + project_id + ' ' +
+      'WHERE project_id = ? ' +
       'UNION ' +
       'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
       'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-      'WHERE project_id = ' + project_id + ')c;';
-  db.exec(sql)
+      'WHERE project_id = ?)c;';
+  db.exec(sql, [req.params.projectId, req.params.projectId])
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
@@ -643,9 +643,7 @@ app.get('/inventory/depot/:depot/*', function (req, res, next) {
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
@@ -654,9 +652,7 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
@@ -688,9 +684,7 @@ app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
     console.log('core server on a : ', ans);
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
@@ -702,9 +696,7 @@ app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next) {
   .then(function (ans) {
     res.send(process(ans));
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 
   function genSql () {
@@ -732,9 +724,7 @@ app.get('/expiring_complete/:tracking_number/:depot_uuid', function (req, res, n
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 
   function genSql () {
