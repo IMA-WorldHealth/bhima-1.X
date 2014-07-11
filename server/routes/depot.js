@@ -2,7 +2,7 @@
 
 var q = require('q');
 
-module.exports = function (db, sanitize, Store) {
+module.exports = function (db, Store) {
   'use strict';
 
   // These routes are to investigate drugs in particular depots (or all).
@@ -45,21 +45,18 @@ module.exports = function (db, sanitize, Store) {
   }
 
   function byLot (depot, id) {
-    var sql, _depot, _id;
-
-    _depot = sanitize.escape(depot);
-    _id = sanitize.escape(id);
+    var sql;
 
     sql =
       'SELECT stock.tracking_number, stock.lot_number, movement.depot_entry, movement.depot_exit, SUM(movement.quantity) AS quantity, ' +
         'stock.expiration_date, code, inventory.text as stock_description ' +
       'FROM inventory JOIN stock JOIN movement ON ' +
         'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
-      'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
-      'AND stock.tracking_number = ' + _id + ' ' +
+      'WHERE (movement.depot_entry = ? OR movement.depot_exit = ?) ' +
+      'AND stock.tracking_number = ? ' +
       'GROUP BY stock.tracking_number;';
 
-    return db.exec(sql)
+    return db.exec(sql, [depot, depot, id])
     .then(function (rows) {
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
@@ -67,14 +64,11 @@ module.exports = function (db, sanitize, Store) {
   }
 
   function byCode (depot, code) {
-    var sql, _depot, _code;
-
-    _depot = sanitize.escape(depot);
-    _code = sanitize.escape(code);
+    var sql;
 
     sql =
       'SELECT stock.tracking_number, stock.lot_number, calculateMovement.depot_entry, calculateMovement.depot_exit, ' +
-        'SUM(CASE WHEN calculateMovement.depot_entry =' + _depot + ' THEN calculateMovement.quantity ELSE -calculateMovement.quantity END) AS quantity, ' +
+        'SUM(CASE WHEN calculateMovement.depot_entry = ? THEN calculateMovement.quantity ELSE -calculateMovement.quantity END) AS quantity, ' +
         'stock.expiration_date, code ' +
       'FROM inventory JOIN stock JOIN ' +
       // ' movement ON ' +
@@ -84,11 +78,11 @@ module.exports = function (db, sanitize, Store) {
       'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, quantity, date  ' +
       'FROM consumption) as calculateMovement ON ' +
         'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = calculateMovement.tracking_number ' +
-      'WHERE (calculateMovement.depot_entry = ' + _depot + ' OR calculateMovement.depot_exit = ' + _depot + ') ' +
-      'AND inventory.code = ' + _code +
+      'WHERE (calculateMovement.depot_entry = ? OR calculateMovement.depot_exit = ?) ' +
+      'AND inventory.code = ? ' +
       'GROUP BY stock.tracking_number;';
 
-    return db.exec(sql)
+    return db.exec(sql, [depot, depot, depot, code])
     .then(function (rows) {
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
@@ -124,20 +118,18 @@ module.exports = function (db, sanitize, Store) {
   }
 
   function byAllDrugs (depot) {
-    var sql, _depot;
-
-    _depot = sanitize.escape(depot);
+    var sql;
 
     sql =
       'SELECT stock.tracking_number, movement.depot_entry, movement.depot_exit, SUM(stock.quantity) AS quantity, ' +
         'stock.expiration_date, code ' +
       'FROM inventory JOIN stock JOIN movement ON ' +
         'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
-      'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
+      'WHERE (movement.depot_entry = ? OR movement.depot_exit = ?) ' +
       'GROUP BY inventory.code ' +
       'ORDER BY inventory.code;';
 
-    return db.exec(sql)
+    return db.exec(sql, [depot, depot])
     .then(function (rows) {
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
