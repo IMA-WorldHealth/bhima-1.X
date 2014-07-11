@@ -1,84 +1,53 @@
 // Module: scripts/tree.js
-
+// This module is responsible for constructing each
+// person's tree based on their permissions in the
+// database.
+//
 var q = require('q');
 
-module.exports = function (db, parser) {
-  // This module is responsible for constructing each
-  // person's tree based on their permissions in the
-  // database.
-  //
-  // FIXME: there seems to be some code repetition.
-  // TODO : Use db.exec() instead of db.execute()
-
+module.exports = function (db) {
   'use strict';
 
-  function load (userid) {
+  function load(userId) {
+    var sql =
+      'SELECT `permission`.`id`, `name`, `description`, `parent`, `has_children`, ' +
+        '`unit`.`url`, `path`, `key` ' +
+      'FROM `permission` JOIN `unit` ON ' +
+        '`permission`.`unit_id` = `unit`.`id` ' +
+      'WHERE `permission`.`user_id` = ? AND `unit`.`parent` = 0;';
 
-    function getChildren (parent_id) {
-      var d = q.defer();
-      var sql = parser.select({
-        tables : {
-          'permission' : { columns : ['id', 'user_id'] },
-          'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
-        },
-        join : ['permission.unit_id=unit.id'],
-        where : ['permission.user_id='+userid, 'AND', 'unit.parent='+parent_id]
-      });
+    function getChildren(parentId) {
+      var sql =
+        'SELECT `permission`.`id`, `name`, `description`, `parent`, `has_children`, ' +
+          '`unit`.`url`, `path`, `key` ' +
+        'FROM `permission` JOIN `unit` ON ' +
+          '`permission`.`unit_id` = `unit`.`id` ' +
+        'WHERE `permission`.`user_id` = ? AND `unit`.`parent` = ?;';
 
-      db.execute(sql, function (err, result) {
-        if (err) { throw err; }
-        var have_children = result.filter(function (row) {
+      return db.exec(sql, [userId, parentId])
+      .then(function (result) {
+
+        var hasChildren = result.filter(function (row) {
           return row.has_children;
         });
-        if (have_children.length) {
-          var promises = have_children.map(function (row) {
-            return getChildren(row.unit_id);
-          });
-          d.resolve(q.all(promises));
-        } else {
-          d.resolve(result);
-        }
-      });
 
-      return d.promise;
+        return hasChildren.length > 0 ?
+            q.all(hasChildren.map(function (row) { return getChildren(row.id); })) :
+            q(result);
+      });
     }
 
-    function main () {
-      var d = q.defer();
-      var query = parser.select({
-        tables : {
-          'permission' : { columns : ['id', 'unit_id']},
-          'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
-        },
-        join : ['permission.unit_id=unit.id'],
-        where : ['permission.user_id=' + userid, 'AND', 'unit.parent=0'] // This assumes root is always "0"
-      });
-
-      // this is freakin' complex. DO NOT TOUCH.
-      db.execute(query, function (err, result) {
-        if (err) { throw err; }
-        d.resolve(q.all(result.map(function (row) {
-          var p = q.defer();
-          if (row.has_children) {
-            getChildren(row.unit_id)
-            .then(function (children) {
-              row.children = children;
-              p.resolve(row);
-            });
-          }
-          else { p.resolve(row); }
-          return p.promise;
-        })));
-      });
-
-      return d.promise;
-    }
-
-    return main();
+    return db.exec(sql, [userId])
+    .then(function (result) {
+      return q.all(result.map(function (row) {
+        return row.has_children ?
+          getChildren(row.id).then(function (children) { row.children = children; return q(row); }) :
+          q(row);
+      }));
+    });
   }
 
   return {
     load : load
   };
-
 };

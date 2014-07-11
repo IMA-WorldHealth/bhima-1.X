@@ -167,7 +167,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
       return defer.promise;
     }
-
   };
 
   function authorize (user_id, done) {
