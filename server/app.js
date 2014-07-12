@@ -14,7 +14,7 @@ var express      = require('express'),
 // import configuration
 var cfg = require('./config/server.json'),
     errorCodes = require('./config/errors.json'),
-    options = { key : fs.readFileSync(cfg.tls.key), cert : fs.readFileSync(cfg.tls.cert) };
+    options = { key : fs.readFileSync(cfg.tls.key, 'utf8'), cert : fs.readFileSync(cfg.tls.cert, 'utf8') };
 
 // import lib dependencies
 var parser       = require('./lib/parser')(),
