@@ -24,9 +24,7 @@ module.exports = function dataRouter(db, parser) {
       .then(function (rows) {
         res.send(rows);
       })
-      .catch(function (err) {
-        next(err);
-      })
+      .catch(next)
       .done();
     },
 
@@ -38,9 +36,7 @@ module.exports = function dataRouter(db, parser) {
       .then(function (ans) {
         res.send(200, {insertId: ans.insertId});
       })
-      .catch(function (err) {
-        next(err);
-      })
+      .catch(next)
       .done();
     },
 
@@ -52,9 +48,7 @@ module.exports = function dataRouter(db, parser) {
       .then(function (ans) {
         res.send(200, {insertId: ans.insertId});
       })
-      .catch(function (err) {
-        next(err);
-      })
+      .catch(next)
       .done();
     },
 
@@ -64,9 +58,7 @@ module.exports = function dataRouter(db, parser) {
       .then(function () {
         res.send(200);
       })
-      .catch(function (err) {
-        next(err);
-      })
+      .catch(next)
       .done();
     }
   };
