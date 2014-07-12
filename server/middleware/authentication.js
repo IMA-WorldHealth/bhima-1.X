@@ -30,11 +30,6 @@ module.exports = function (db) {
 
     db.exec(sql, [usr, pwd])
     .then(function (results) {
-      // TODO: client-side logic not implimented for this.
-      if (results.length < 1) {
-        return res.sendfile('client/dest/error.html');
-        //return next(new Error('Incorrect username/password combination.'));
-      }
 
       // FIXME : this is strange, but works. Ideally, you should
       // only have one user matching the given parameters.
@@ -90,7 +85,7 @@ module.exports = function (db) {
         return res.sendfile('client/dest/project.html');
       }
     })
-    .catch(function (err) { next(err); });
+    .catch(next);
   }
 
   function logout(req, res, next) {

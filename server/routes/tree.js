@@ -10,25 +10,25 @@ module.exports = function (db) {
 
   function load(userId) {
     var sql =
-      'SELECT `permission`.`id`, `name`, `description`, `parent`, `has_children`, ' +
-        '`unit`.`url`, `path`, `key` ' +
-      'FROM `permission` JOIN `unit` ON ' +
-        '`permission`.`unit_id` = `unit`.`id` ' +
-      'WHERE `permission`.`user_id` = ? AND `unit`.`parent` = 0;';
+      'SELECT permission.unit_id AS id, name, description, parent, has_children, ' +
+        'unit.url, path, `key` ' +
+      'FROM permission JOIN unit ON ' +
+        'permission.unit_id = unit.id ' +
+      'WHERE permission.user_id = ? AND unit.parent = 0;';
 
     function getChildren(parentId) {
       var sql =
-        'SELECT `permission`.`id`, `name`, `description`, `parent`, `has_children`, ' +
-          '`unit`.`url`, `path`, `key` ' +
-        'FROM `permission` JOIN `unit` ON ' +
-          '`permission`.`unit_id` = `unit`.`id` ' +
-        'WHERE `permission`.`user_id` = ? AND `unit`.`parent` = ?;';
+        'SELECT permission.unit_id AS id, name, description, parent, has_children, ' +
+          'unit.url, path, `key` ' +
+        'FROM permission JOIN unit ON ' +
+          'permission.unit_id = unit.id ' +
+        'WHERE permission.user_id = ? AND unit.parent = ?;';
 
       return db.exec(sql, [userId, parentId])
       .then(function (result) {
 
         var hasChildren = result.filter(function (row) {
-          return row.has_children;
+          return row.has_children !== 0;
         });
 
         return hasChildren.length > 0 ?
@@ -41,11 +41,12 @@ module.exports = function (db) {
     .then(function (result) {
       return q.all(result.map(function (row) {
         return row.has_children ?
-          getChildren(row.id).then(function (children) { row.children = children; return q(row); }) :
+          getChildren(row.id).then(function (children) { console.log('[row.id]', row); row.children = children; return q(row); }) :
           q(row);
       }));
     });
   }
+
 
   return {
     load : load
