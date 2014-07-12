@@ -3,6 +3,8 @@
 
 // import node dependencies
 var express      = require('express'),
+    https        = require('https'),
+    fs           = require('fs'),
     url          = require('url'),
     compress     = require('compression'),
     bodyParser   = require('body-parser'),
@@ -11,7 +13,8 @@ var express      = require('express'),
 
 // import configuration
 var cfg = require('./config/server.json'),
-    errorCodes = require('./config/errors.json');
+    errorCodes = require('./config/errors.json'),
+    options = { key : fs.readFileSync(cfg.tls.key), cert : fs.readFileSync(cfg.tls.cert) };
 
 // import lib dependencies
 var parser       = require('./lib/parser')(),
@@ -783,7 +786,8 @@ app.get('/errorcodes', function (req, res, next) {
 app.use(logger.error());
 app.use(liberror.middleware);
 
-app.listen(cfg.port, function () {
+https.createServer(options, app)
+.listen(cfg.port, function () {
   console.log('Application running on localhost:' + cfg.port);
 });
 
