@@ -15,14 +15,14 @@
 var q = require('q'),
     querystring = require('querystring');
 
-module.exports = function (db, sanitize, util) {
+module.exports = function (db, sanitize) {
   'use strict';
 
   function buildFinanceQuery(requiredFiscalYears) {
     //TODO currently joins two very seperate querries and just extracts columns from both, these should
     //be combined and calculations (SUM etc.) performed on the single joined table
 
-    var query = [],
+    var sql,
         budgetColumns = [],
         realisationColumns = [],
         selectColumns = [],
@@ -36,33 +36,26 @@ module.exports = function (db, sanitize, util) {
       differenceColumns.push('(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_' + fiscal_year + '`');
     });
 
-    query = [
-      'SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id,',
-      selectColumns.join(','),
-      ',',
-      differenceColumns.join(','),
-      // ',(SUM(budget_result.budget_1) - SUM(case when period_result.realisation_1 then period_result.realisation_1 else 0 end)) AS `difference_1`',
-      'FROM',
-      '(SELECT budget.account_id,',
-      budgetColumns.join(','),
-      'FROM budget inner join period ON',
-      'period.id = budget.period_id',
-      // 'fiscal_year_id = 1',
-      'GROUP BY budget.account_id)',
-      'AS `budget_result`',
-      'LEFT JOIN',
-      '(SELECT period_total.account_id,',
-      realisationColumns.join(','),
-      'FROM period_total',
-      'group by period_total.account_id)',
-      'AS `period_result`',
-      'ON budget_result.account_id = period_result.account_id',
-      'LEFT JOIN',
-      'account ON account.id = budget_result.account_id',
-      'GROUP BY account.id;'
-    ];
+    sql =
+      'SELECT budget_result.account_id, account.account_number, account.account_txt, account.parent, account.account_type_id, ' +
+      selectColumns.join(', ') + ', ' + differenceColumns.join(', ') + ' ' +
+      'FROM (' +
+        'SELECT budget.account_id, ' + budgetColumns.join(', ') + ' ' +
+        'FROM budget' +
+        'INNER JOIN period ON ' +
+          'period.id = budget.period_id ' +
+        'GROUP BY budget.account_id' +
+      ') AS `budget_result` ' +
+      'LEFT JOIN (' +
+        'SELECT period_total.account_id, ' + realisationColumns.join(', ') + ' ' +
+        'FROM period_total ' +
+        'GROUP BY period_total.account_id' +
+      ') AS `period_result` ' +
+      'ON budget_result.account_id = period_result.account_id ' +
+      'LEFT JOIN account ON account.id = budget_result.account_id ' +
+      'GROUP BY account.id;';
 
-    return query.join(' ');
+    return sql;
   }
 
   function finance(reportParameters) {
@@ -70,7 +63,7 @@ module.exports = function (db, sanitize, util) {
         initialQuery,
         financeParams = JSON.parse(reportParameters);
 
-    if(!financeParams) {
+    if (!financeParams) {
       return q.reject(new Error('[finance.js] No fiscal years provided'));
     }
 
@@ -86,19 +79,19 @@ module.exports = function (db, sanitize, util) {
     params = JSON.parse(params);
     var deferred = q.defer();
 
-    function getElementIds(id){
+    function getElementIds(id) {
       var table, cle, def = q.defer();
 
-      if(params.type.toUpperCase() === 'C'){
+      if (params.type.toUpperCase() === 'C') {
         table = 'creditor';
         cle = 'group_id';
-      }else if(params.type.toUpperCase() === 'D'){
+      }else if (params.type.toUpperCase() === 'D') {
         table = 'debitor';
         cle = 'group_id';
       }
       var sql = 'SELECT id FROM '+table+' Where '+cle+' =''+id+''';
-      db.execute(sql, function(err, ans){
-        if(err){
+      db.execute(sql, function(err, ans) {
+        if (err) {
           console.log('trans report, Query failed');
           throw err;
           return;
@@ -109,15 +102,15 @@ module.exports = function (db, sanitize, util) {
       return def.promise;
     }
 
-    function getArrayOf(obj){
+    function getArrayOf(obj) {
       var tab = [];
-      obj.forEach(function(item){
+      obj.forEach(function(item) {
         tab.push(item.id);
       });
       return tab;
     }
 
-    if(params.ig === 'I'){
+    if (params.ig === 'I') {
       var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
               'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
               'account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \'names\''+
@@ -127,7 +120,7 @@ module.exports = function (db, sanitize, util) {
               '' AND general_ledger.deb_cred_type = ''+params.type+'' AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
 
               db.execute(sql, function(err, ans) {
-                if(err) {
+                if (err) {
                   console.log('trans report, Query failed');
                   throw err;
                   // deferred.reject(err);
@@ -135,10 +128,10 @@ module.exports = function (db, sanitize, util) {
                 }
                 deferred.resolve(ans);
               });
-    }else if(params.ig == 'G'){
-      q.all([getElementIds(params.id)]).then(function(res){
+    }else if (params.ig == 'G') {
+      q.all([getElementIds(params.id)]).then(function(res) {
         var tabIds = getArrayOf(res[0]);
-        if(tabIds.length!=0){
+        if (tabIds.length!=0) {
         var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
                   'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
                   'account.account_number, currency.name, transaction_type.service_txt, '+
@@ -149,7 +142,7 @@ module.exports = function (db, sanitize, util) {
                   'general_ledger.deb_cred_uuid IN ('+tabIds.toString()+') AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
 
         db.execute(sql, function(err, ans) {
-          if(err) {
+          if (err) {
             console.log('trans report, Query failed');
             throw err;
             // deferred.reject(err);
@@ -167,7 +160,7 @@ module.exports = function (db, sanitize, util) {
     return deferred.promise;
   }
 
-  function allTrans (params){
+  function allTrans (params) {
     var source = {
       '1' : 'posting_journal',
       '2' : 'general_ledger'
@@ -227,17 +220,22 @@ module.exports = function (db, sanitize, util) {
   }
  */
 
-  function debitorAging (params){
-    params = JSON.parse(params);
-    var requette =
+  function debitorAging(params) {
+    var p, sql;
+    p = JSON.parse(params);
+    sql =
       'SELECT period.id, period.period_start, period.period_stop, debitor.uuid as idDebitor, debitor.text, general_ledger.debit, general_ledger.credit, general_ledger.account_id ' +
-      'FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.uuid = debitor.group_uuid AND debitor.uuid = general_ledger.deb_cred_uuid ' +
-      'AND general_ledger.`deb_cred_type`=\'D\' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`=\''+params.fiscal_id +'\'';
+      'FROM debitor JOIN debitor_group JOIN general_ledger JOIN period ON ' +
+        'debitor_group.uuid = debitor.group_uuid AND ' +
+        'debitor.uuid = general_ledger.deb_cred_uuid AND ' +
+        'general_ledger.period_id = period.id AND ' +
+        'general_ledger.account_id = debitor_group.account_id ' +
+      'WHERE general_ledger.deb_cred_type = \'D\' AND general_ledger.`fiscal_year_id` = ?';
 
-    return db.exec(requette);
+    return db.exec(sql, [p.fiscal_id]);
   }
 
-  function accountStatement(params){
+  function accountStatement(params) {
     var deferred = q.defer();
     var queryStatus, reportSections, report = {};
 
@@ -347,11 +345,7 @@ module.exports = function (db, sanitize, util) {
   }
 
   function patientRecords(params) {
-    var p = querystring.parse(params);
-
-    var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
-        _id;
+    var _id, p = querystring.parse(params);
 
     if (p.id.indexOf(',')) {
       _id = p.id.split(',').map(function (id) { return sanitize.escape(id); }).join(',');
@@ -366,16 +360,13 @@ module.exports = function (db, sanitize, util) {
           '`patient`.`uuid`=`patient_visit`.`patient_uuid` AND ' +
           '`patient`.`project_id`=`project`.`id` AND ' +
           '`patient_visit`.`registered_by` = `user`.`id` ' +
-        'WHERE `date` >= ' + _start + ' AND ' +
-          ' `date` <= ' + _end + ' AND `project_id` IN (' + _id + ');';
-    return db.exec(sql);
+        'WHERE `date` >= ? AND ' +
+          ' `date` <= ? AND `project_id` IN (' + _id + ');';
+    return db.exec(sql, [p.start, p.end]);
   }
 
   function paymentRecords(params) {
-    var p = querystring.parse(params);
-
-    var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
-        _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+    var p = querystring.parse(params),
         _id = sanitize.escape(p.id);
 
     var sql =
@@ -388,29 +379,30 @@ module.exports = function (db, sanitize, util) {
         'c.project_id = pr.id AND ' +
         'c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND ' +
         'ci.invoice_uuid = s.uuid ' +
-      'WHERE c.project_id IN (' + _id + ') AND c.date >= ' + _start + ' AND ' +
-        'c.date <= ' + _end + ' ' +
+      'WHERE c.project_id IN (' + _id + ') AND c.date >= ? AND ' +
+        'c.date <= ? ' +
       'GROUP BY c.document_id;';
 
-    return db.exec(sql);
+    return db.exec(sql, [p.start, p.end]);
   }
 
   function patientStanding(params) {
     params = querystring.parse(params);
-    var id = sanitize.escape(params.id),
+    var sql,
         patient = {},
-        defer = q.defer(),
-        sql =
-        'SELECT uuid, trans_id, trans_date, sum(credit_equiv) as credit, sum(debit_equiv) as debit, description, inv_po_id ' +
-        'FROM (' +
-          'SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id ' +
-          'FROM posting_journal WHERE deb_cred_uuid=' + id + ' AND deb_cred_type=\'D\' ' +
-        'UNION ' +
-          'SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id ' +
-          'FROM general_ledger WHERE deb_cred_uuid=' + id + ' AND deb_cred_type=\'D\') as aggregate ' +
-        'GROUP BY `inv_po_id` ORDER BY `trans_date` DESC;';
+        defer = q.defer();
 
-    db.exec(sql)
+    sql =
+      'SELECT uuid, trans_id, trans_date, sum(credit_equiv) as credit, sum(debit_equiv) as debit, description, inv_po_id ' +
+      'FROM (' +
+        'SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id ' +
+        'FROM posting_journal WHERE deb_cred_uuid = ? AND deb_cred_type=\'D\' ' +
+      'UNION ' +
+        'SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id ' +
+        'FROM general_ledger WHERE deb_cred_uuid = ? AND deb_cred_type=\'D\') as aggregate ' +
+      'GROUP BY `inv_po_id` ORDER BY `trans_date` DESC;';
+
+    db.exec(sql, [params.id, params.id])
     .then(function (rows) {
       if (!rows.length) { return defer.resolve([]); }
 
@@ -443,8 +435,7 @@ module.exports = function (db, sanitize, util) {
   }
 
   function stockLocation (params) {
-    var p = querystring.parse(params);
-    var sql, id = sanitize.escape(p.id);
+    var sql, p = querystring.parse(params);
 
     sql =
       'SELECT inventory_uuid, stock.tracking_number, direction, expiration_date, ' +
@@ -452,9 +443,9 @@ module.exports = function (db, sanitize, util) {
       'FROM stock_movement JOIN stock JOIN depot ' +
         'ON stock_movement.tracking_number = stock.tracking_number AND ' +
         'stock_movement.depot_id = depot.id ' +
-      'WHERE inventory_uuid = ' + id + ' ' +
+      'WHERE inventory_uuid = ? ' +
       'GROUP BY tracking_number, depot_id, direction;';
-    return db.exec(sql);
+    return db.exec(sql, [p.id]);
   }
 
   function stockCount () {
@@ -473,14 +464,14 @@ module.exports = function (db, sanitize, util) {
   }
 
   function priceReport () {
-    var sql, defer = q.defer();
+    var sql;
 
     sql =
       'SELECT inventory.code, text, price, inventory_group.code AS group_code, name, price ' +
       'FROM inventory JOIN inventory_group WHERE inventory.group_uuid = inventory_group.uuid ' +
       'ORDER BY inventory_group.code;';
 
-    db.exec(sql)
+    return db.exec(sql)
     .then(function (data) {
       var groups = {};
       data.forEach(function (row) {
@@ -493,19 +484,12 @@ module.exports = function (db, sanitize, util) {
         groups[row.group_code].rows.push(row);
       });
 
-      defer.resolve(groups);
-    })
-    .catch(function (error) { defer.reject(error); });
-
-    return defer.promise;
+      return q(groups);
+    });
   }
 
   function transactionsByAccount(params) {
-    var p, sql, _account, _limit;
-
-    p = querystring.parse(params);
-    _account = sanitize.escape(p.account);
-    _limit = p.limit;
+    var sql, p = querystring.parse(params);
 
     sql =
       'SELECT trans_date, description, account_number, debit_equiv, credit_equiv, currency_id ' +
@@ -517,10 +501,10 @@ module.exports = function (db, sanitize, util) {
         'FROM general_ledger' +
       ') AS journal JOIN account ON ' +
         'journal.account_id = account.id ' +
-      'WHERE account.id = ' + _account + ' ' +
-      'LIMIT ' + _limit + ';';
+      'WHERE account.id = ? ' +
+      'LIMIT ?;';
 
-    return db.exec(sql);
+    return db.exec(sql, [p.account, p.limit]);
   }
 
   // TODO: Revamp this code to do something like

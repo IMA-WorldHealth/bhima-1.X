@@ -9,16 +9,15 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
   // validity checks
   check = {
-    validPeriod : function (enterprise_id, date) {
-      var escaped_date, sql;
-      escaped_date = sanitize.escape(get.date(date));
+    validPeriod : function (date) {
+      var sql;
       sql =
         'SELECT `period`.`id`, `fiscal_year_id` ' +
         'FROM `period` ' +
-        'WHERE `period`.`period_start` <=' + escaped_date + ' AND ' +
-          '`period`.`period_stop` >=' + escaped_date + ' AND ' +
+        'WHERE `period`.`period_start` <= ? AND ' +
+          '`period`.`period_stop` >= ? AND ' +
           '`period`.`locked` = 0;\n';
-      return db.exec(sql)
+      return db.exec(sql, [date, date])
       .then(function (rows) {
         if (rows.length === 0) {
           throw new Error('No period found to match the posted date : ' + date);
@@ -32,15 +31,14 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // requested, or vice versa.  This is fine for the checks here, but not
       // for posting to the general ledger.
       var sql;
-      id = sanitize.escape(id);
       sql =
         'SELECT `uuid` ' +
         'FROM (' +
-          'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + id + ' ' +
+          'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid` = ? ' +
         'UNION ' +
-          'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + id +
+          'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid` = ? ' +
         ')c;';
-      return db.exec(sql)
+      return db.exec(sql, [id, id])
       .then(function (rows) {
         if (rows.length === 0) {
           throw new Error('No Debitor or Creditor found with id: ' + id);
@@ -57,8 +55,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // to post to the journal.  Returns the id.
       var sql =
         'SELECT `id`, `service_txt` FROM `transaction_type` ' +
-        'WHERE `service_txt` = ' + sanitize.escape(table) + ';';
-      return db.exec(sql)
+        'WHERE `service_txt` = ?;';
+      return db.exec(sql, [table])
       .then(function (rows) {
         if (rows.length === 0) {
           throw new Error('Cannot find origin for transaction type : ' + table);
@@ -67,7 +65,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       });
     },
 
-    transactionId : function (project_id) {
+    transactionId : function (projectId) {
       // get a new transaction id from the journal.
       // make sure it is the last thing fired in the
       // call stack before posting.
@@ -75,13 +73,13 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         'SELECT abbr, max(increment) AS increment FROM (' +
           'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
           'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-          'WHERE project_id = ' + project_id + ' ' +
+          'WHERE project_id = ? ' +
           'UNION ' +
           'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
           'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-          'WHERE project_id = ' + project_id + ')c;';
+          'WHERE project_id = ?)c;';
 
-      return db.exec(sql)
+      return db.exec(sql, [projectId, projectId])
       .then(function (rows) {
         var data = rows.pop();
         // catch a corner case where the posting journal has no data
@@ -93,11 +91,12 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // returns a mysql-compatible date
       // Note : this transforms things into a date, not date + time
       if (date) {
+        var year, month, day;
         date = new Date(date);
-        var year = String(date.getFullYear());
-        var month = String(date.getMonth() + 1);
+        year = String(date.getFullYear());
+        month = String(date.getMonth() + 1);
         month = month.length === 1 ? '0' + month : month;
-        var day = String(date.getDate()).length === 1 ? '0' + String(date.getDate()) : String(date.getDate());
+        day = String(date.getDate()).length === 1 ? '0' + String(date.getDate()) : String(date.getDate());
         return [year, month, day].join('-');
       } else {
         return new Date().toISOString().slice(0, 10);
@@ -108,10 +107,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // gets the currency period from a mysql-compatible date.
       var sql =
         'SELECT `id`, `fiscal_year_id` FROM `period` ' +
-        'WHERE `period_start` <= ' + sanitize.escape(get.date(date)) + ' AND ' +
-          '`period_stop` >= ' + sanitize.escape(get.date(date)) + ';';
+        'WHERE `period_start` <= ? AND ' +
+          '`period_stop` >= ?;';
 
-      return db.exec(sql)
+      return db.exec(sql, [date, date])
       .then(function (rows) {
         if (rows.length === 0) {
           throw new Error('No period or fiscal year data for date: ' + date);
@@ -123,14 +122,14 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     exchangeRate : function (date) {
       // expects a mysql-compatible date
       var sql;
-
       sql =
         'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, ' +
           '`min_monentary_unit` ' +
-        'FROM `exchange_rate` JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
-        'WHERE `exchange_rate`.`date`=\'' + this.date(date) + '\';';
+        'FROM `exchange_rate` ' +
+        'JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
+        'WHERE `exchange_rate`.`date` = ?;';
 
-      return db.exec(sql)
+      return db.exec(sql, [date])
       .then(function (rows) {
         if (rows.length === 0) {
           throw new Error('No exchange rate found for date : ' + date);
@@ -169,7 +168,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
   };
 
-  function authorize (user_id, done) {
+  function authorize (userId, done) {
     // TODO : This is a placeholder until we find out how to allow
     // users to post.  It is a permissions issue.
     return db.exec('SELECT 1+1 AS ans;')
@@ -192,10 +191,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         '`sale`.`uuid`=`sale_item`.`sale_uuid` AND ' +
         '`sale`.`project_id`=`project`.`id` AND ' +
         '`sale_item`.`inventory_uuid`=`inventory`.`uuid` ' +
-      'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ' ' +
+      'WHERE `sale`.`uuid` = ? ' +
       'ORDER BY `sale_item`.`credit`;';
 
-    db.exec(sql)
+    db.exec(sql, [id])
     .then(function (results) {
 
       if (results.length === 0) {
@@ -208,7 +207,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // first check - do we have a valid period?
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
-      return check.validPeriod(reference.enterprise_id, reference.invoice_date);
+      return check.validPeriod(reference.invoice_date);
     })
     .then(function () {
       // second check - are the debits (discounts) positive
@@ -343,12 +342,12 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .done();
   }
 
-  function precision (num, p) {
+  function precision(num, p) {
     return parseFloat(num.toFixed(p));
   }
 
   // handles rounding for cash
-  function handleRounding (cash_id) {
+  function handleRounding(cashId) {
     var sql, row;
 
     // find out what the current balance is on the invoice to find out if we are paying it all.
@@ -361,10 +360,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       'JOIN debitor AS d JOIN debitor_group as dg ' +
       'ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id AND p.deb_cred_uuid = s.debitor_uuid ' +
       'AND  p.account_id = dg.account_id ' +
-      'AND d.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid WHERE c.uuid = ' + sanitize.escape(cash_id) + ' ' +
+      'AND d.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid WHERE c.uuid = ? ' +
       'GROUP BY c.uuid;';
 
-    return db.exec(sql)
+    return db.exec(sql, [cashId])
     .then(function (rows) {
       row = rows.pop();
       if (!row) {
@@ -409,7 +408,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       state.items = results;
       state.reference = results[0];
 
-      return check.validPeriod(state.reference.enterprise_id, state.reference.date);
+      return check.validPeriod(state.reference.date);
     })
     .then(function () {
       var document_id_exist = validate.exists(state.reference.document_id);
@@ -438,7 +437,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         throw new Error('Invalid payment price for one invoice with cash id: ' + id);
       }
 
-      return check.validPeriod(state.reference.enterprise_id, state.reference.date);
+      return check.validPeriod(state.reference.date);
     })
     .then(function () {
       return check.validDebitorOrCreditor(state.reference.deb_cred_uuid);
@@ -640,7 +639,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // first check - do we have a validPeriod?
       // Also, implicit in this check is that a valid fiscal year
       // is in place.
-      return check.validPeriod(reference.enterprise_id, reference.invoice_date);
+      return check.validPeriod(reference.invoice_date);
     })
     .then(function () {
       // second check - is the cost positive for every transaction?
@@ -726,7 +725,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.enterprise_id = results[0].enterprise_id;
       cfg.project_id = results[0].project_id;
       cfg.date = results[0].date;
-      return check.validPeriod(cfg.enterprise_id, cfg.date);
+      return check.validPeriod(cfg.date);
     }
 
     function handleValidPeriod () {
@@ -850,7 +849,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       data = results;
       reference = results[0];
 
-      return check.validPeriod(reference.enterprise_id, reference.note_date);
+      return check.validPeriod(reference.note_date);
 
     })
     .then(function () {
