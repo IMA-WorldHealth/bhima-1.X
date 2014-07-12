@@ -15,6 +15,10 @@
   "session" : {
     "secret" : "xopen blowfish"
   },
+  "tls" : {
+    "key" : "server/keys/key.pem",
+    "cert" : "server/keys/ssl.crt"
+  },
   "auth" : {
     "paths" : [
       "/js",
