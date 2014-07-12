@@ -41,7 +41,7 @@ module.exports = function (db) {
     .then(function (result) {
       return q.all(result.map(function (row) {
         return row.has_children ?
-          getChildren(row.id).then(function (children) { row.children = children; return q(row); }) :
+          getChildren(row.id).then(function (children) { console.log('[row.id]', row); row.children = children; return q(row); }) :
           q(row);
       }));
     });

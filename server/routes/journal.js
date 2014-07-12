@@ -10,13 +10,12 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
   // validity checks
   check = {
     validPeriod : function (date) {
-      var sql;
-      sql =
-        'SELECT `period`.`id`, `fiscal_year_id` ' +
-        'FROM `period` ' +
-        'WHERE `period`.`period_start` <= ? AND ' +
-          '`period`.`period_stop` >= ? AND ' +
-          '`period`.`locked` = 0;\n';
+      var sql =
+        'SELECT period.id, fiscal_year_id ' +
+        'FROM period ' +
+        'WHERE period.period_start <= ? AND ' +
+          'period.period_stop >= ? AND ' +
+          'period.locked = 0;\n';
       return db.exec(sql, [date, date])
       .then(function (rows) {
         if (rows.length === 0) {
