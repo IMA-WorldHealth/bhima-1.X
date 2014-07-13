@@ -97,8 +97,8 @@ INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUE
 (5, 'ima', '1', 'ima', 'ima', 'ima@ima.com', 0);
 
 INSERT INTO `permission` VALUES
-(1,0,1),
-(2,1,1),
+(1,1,1),
+(2,2,1),
 (3,4,1);
 
 -- Configure base currencies

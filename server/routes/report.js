@@ -18,6 +18,10 @@ var q = require('q'),
 module.exports = function (db, sanitize) {
   'use strict';
 
+  function floorDate(date) {
+    return new Date(new Date(date).setHours(0,0,0,0));
+  }
+
   function buildFinanceQuery(requiredFiscalYears) {
     //TODO currently joins two very seperate querries and just extracts columns from both, these should
     //be combined and calculations (SUM etc.) performed on the single joined table
@@ -312,7 +316,6 @@ module.exports = function (db, sanitize) {
         deferred.resolve(packageResponse);
       })
       .catch(function (error) {
-        console.log('failed', error);
         deferred.reject(error);
       });
 
@@ -326,7 +329,7 @@ module.exports = function (db, sanitize) {
       return q.reject(new Error('Invalid date parameters'));
     }
 
-    var requestSql =
+    var sql =
       'SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, ' +
         'sale.note, sale.posted, credit_note.uuid as `creditId`, credit_note.description as `creditDescription`, ' +
         'credit_note.posted as `creditPosted`, first_name, last_name, patient.reference as `patientReference`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
@@ -336,12 +339,12 @@ module.exports = function (db, sanitize) {
       'WHERE sale.invoice_date >=  \'' + params.dateTo + '\' AND sale.invoice_date <= \'' + params.dateFrom + '\' ';
 
     if (params.project) {
-      requestSql += ('AND sale.project_id=' + params.project + ' ');
+      sql += 'AND sale.project_id = ' + params.project + ' ';
     }
 
-    requestSql += 'ORDER BY sale.timestamp DESC;';
+    sql += 'ORDER BY sale.timestamp DESC;';
 
-    return db.exec(requestSql);
+    return db.exec(sql);
   }
 
   function patientRecords(params) {
@@ -362,7 +365,7 @@ module.exports = function (db, sanitize) {
           '`patient_visit`.`registered_by` = `user`.`id` ' +
         'WHERE `date` >= ? AND ' +
           ' `date` <= ? AND `project_id` IN (' + _id + ');';
-    return db.exec(sql, [p.start, p.end]);
+    return db.exec(sql, [floorDate(p.start), floorDate(p.end)]);
   }
 
   function paymentRecords(params) {
@@ -383,7 +386,7 @@ module.exports = function (db, sanitize) {
         'c.date <= ? ' +
       'GROUP BY c.document_id;';
 
-    return db.exec(sql, [p.start, p.end]);
+    return db.exec(sql, [floorDate(p.start), floorDate(p.end)]);
   }
 
   function patientStanding(params) {
@@ -445,13 +448,12 @@ module.exports = function (db, sanitize) {
         'stock_movement.depot_id = depot.id ' +
       'WHERE inventory_uuid = ? ' +
       'GROUP BY tracking_number, depot_id, direction;';
+
     return db.exec(sql, [p.id]);
   }
 
   function stockCount () {
-    var sql;
-
-    sql =
+    var sql =
       'SELECT uuid, code, text, name, SUM(quantity) AS quantity FROM (' +
         'SELECT inventory.uuid, inventory.code, text, name ' +
         'FROM inventory JOIN inventory_group ON inventory.group_uuid = inventory_group.uuid ' +

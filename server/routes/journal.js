@@ -81,7 +81,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       .then(function (rows) {
         var data = rows.pop();
         // catch a corner case where the posting journal has no data
-        return q(data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'');
+        return q(data.abbr + (data.increment || 1));
       });
     },
 
@@ -458,7 +458,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       var account_type = state.reference.type !== 'E' ? 'credit_account' : 'debit_account' ;
 
       // Are they a debitor or a creditor?
-      state.deb_cred_type = state.reference.type === 'E' ? '\'D\'' : '\'C\'';
+      state.debCredType = state.reference.type === 'E' ? 'D' : 'C';
 
       // calculate exchange rate.  If money coming in, credit is cash.cost,
       // credit_equiv is rate*cash.cost and vice versa.
@@ -490,31 +490,27 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         '0, cash_item.allocated_cost, 0, ' + 1/state.store.get(state.reference.currency_id).rate + '*cash_item.allocated_cost, ' :
         'cash_item.allocated_cost, 0, '+ 1/state.store.get(state.reference.currency_id).rate + '*cash_item.allocated_cost, 0, ' ;
 
-      state.cash_item_account_id = state.reference.type !== 'E' ? 'debit_account' : 'credit_account';
-
-      var sqls = [];
+      state.cashItemAccountId = state.reference.type !== 'E' ? 'debit_account' : 'credit_account';
 
       state.itemUuids = [];
-      state.items.forEach(function (item) {
+
+      return q.all(state.items.map(function (item) {
         var id = uuid();
         state.itemUuids.push(id);
         var sql =
           'INSERT INTO posting_journal ' +
-          '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
-          'description, doc_num, account_id, debit, credit, debit_equiv, credit_equiv, ' +
-          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
-        'SELECT cash.project_id, ' + [sanitize.escape(id), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-          'cash.description, cash.document_id, cash.' + state.cash_item_account_id  + ', ' + cash_item_money +
-          'cash.currency_id, cash.deb_cred_uuid, ' + state.deb_cred_type + ', ' +
-          'cash_item.invoice_uuid, ' + [state.originId, state.userId].join(', ') + ' ' +
-        'FROM cash JOIN cash_item ON ' +
-          'cash.uuid=cash_item.cash_uuid '+
-        'WHERE cash_item.uuid=' + sanitize.escape(item.cash_item_uuid) + ';';
-        sqls.push(sql);
-      });
+            '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+            'description, doc_num, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+          'SELECT cash.project_id, ?, ?, ?, ?, ?, cash.description, cash.document_id, cash.' +
+            state.cashItemAccountId  + ', ' + cash_item_money +
+            'cash.currency_id, cash.deb_cred_uuid, ?, ' +
+            'cash_item.invoice_uuid, ?, ? ' +
+          'FROM cash JOIN cash_item ON ' +
+            'cash.uuid = cash_item.cash_uuid '+
+          'WHERE cash_item.uuid = ?;';
 
-      return q.all(sqls.map(function (sql) {
-        return db.exec(sql);
+        return db.exec(sql, [id, state.period.fiscal_year_id, state.period.id, state.transId, get.date(), state.debCredType, state.originId, state.userId, item.cash_item_uuid]);
       }));
     })
     .then(function () {
@@ -568,7 +564,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           'description, doc_num, account_id, debit, credit, debit_equiv, credit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
         'SELECT cash.project_id, ' + [sanitize.escape(state.roundingUuid2), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-          description +', cash.document_id, cash.' + state.cash_item_account_id  + ', ' + balance + ', ' +
+          description +', cash.document_id, cash.' + state.cashItemAccountId  + ', ' + balance + ', ' +
           'cash.currency_id, cash.deb_cred_uuid, cash.deb_cred_type, cash_item.invoice_uuid, ' +
           [state.originId, state.userId].join(', ') + ' ' +
         'FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid ' +
