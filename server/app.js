@@ -17,12 +17,12 @@ var cfg = require('./config/server.json'),
     options = { key : fs.readFileSync(cfg.tls.key, 'utf8'), cert : fs.readFileSync(cfg.tls.cert, 'utf8') };
 
 // import lib dependencies
-var parser       = require('./lib/parser')(),
+var sanitize     = require('./lib/sanitize'),
+    util         = require('./lib/util'),
+    parser       = require('./lib/parser')(sanitize, util),
     uuid         = require('./lib/guid'),
     logger       = require('./lib/logger')(cfg.log, uuid),
     db           = require('./lib/db')(cfg.db, logger, uuid),
-    sanitize     = require('./lib/sanitize'),
-    util         = require('./lib/util'),
     validate     = require('./lib/validate')(),
     store        = require('./lib/store'),
     liberror     = require('./lib/liberror')();

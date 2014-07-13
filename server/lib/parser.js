@@ -1,19 +1,15 @@
 // builds the sql queries that a store will use
 
-var sanitize = require('./sanitize'),
-    util = require('./util');
-
 //module: Parser
-module.exports = function (options) {
+module.exports = function (sanitize, util) {
   // The parser module is the composer for all SQL queries
   // to the backend.  Query objects are decoded from the URL
   // and passed into composer's methods.
   'use strict';
 
   var self = {};
-  options = options || {};
 
-  self.templates = options.templates || {
+  self.templates = {
     select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% ORDER BY %order% LIMIT %limit%;',
     update: 'UPDATE %table% SET %expressions% WHERE %key%;',
     delete: 'DELETE FROM %table% WHERE %key%;',
