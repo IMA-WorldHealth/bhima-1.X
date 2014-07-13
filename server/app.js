@@ -507,7 +507,7 @@ app.get('/province/', function (req, res, next) {
 app.get('/visit/:patientId', function (req, res, next) {
 
   var sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES ( ?, ?, ?);';
+    'INSERT INTO patient_visit (uuid, patient_uuid, registered_by) VALUES (?, ?, ?);';
 
   db.exec(sql, [uuid(), req.params.patientId, req.session.user_id])
   .then(function () {
