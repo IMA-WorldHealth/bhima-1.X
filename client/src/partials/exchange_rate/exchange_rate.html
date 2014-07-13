@@ -2,12 +2,12 @@
   {{ "EXCHANGE.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
-  <a href="" class="btn btn-sm btn-default" ng-click="action='new'"><i class="glyphicon glyphicon-file"></i>{{ "EXCHANGE.NEW" | translate }}</a>
-  <a href="" class="btn btn-sm btn-default" ng-click="action='review'"><i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
-</section>
+<nav>
+  <a class="btn btn-sm btn-default" ng-click="action='new'"><i class="glyphicon glyphicon-file"></i>{{ "EXCHANGE.NEW" | translate }}</a>
+  <a class="btn btn-sm btn-default" ng-click="action='review'"><i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
+<nav>
 
-<div class="content">
+<main>
   <div class="row">
     <div class="col-xs-6">
       <h3 style="margin-top:inherit;">{{ EXCHANGE.PREV | translate }}</h3>
@@ -107,10 +107,9 @@
             </fieldset>
 
             <input type="submit" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="exchangeForm.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
-
           </form>
         </div>
       </div>
     </div>
   </div>
-</div>
+</main>
