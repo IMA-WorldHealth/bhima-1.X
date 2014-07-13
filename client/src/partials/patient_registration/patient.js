@@ -155,7 +155,7 @@ angular.module('bhima.controllers')
         return connect.basicPut('patient', [packagePatient]);
       })
       .then(function () {
-        return connect.fetch('/visit/\'' + patientId + '\'');
+        return connect.fetch('/visit/' + patientId);
       })
       .then(function () {
         return connect.fetch('/user_session');
