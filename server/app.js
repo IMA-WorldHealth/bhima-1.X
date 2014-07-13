@@ -20,7 +20,7 @@ var sanitize     = require('./lib/sanitize'),
     uuid         = require('./lib/guid'),
     logger       = require('./lib/logger')(cfg.log, uuid),
     db           = require('./lib/db')(cfg.db, logger, uuid),
-    validate     = require('./lib/validate')(),
+    validate     = require('./lib/validate'),
     store        = require('./lib/store'),
     liberror     = require('./lib/liberror')();
 
