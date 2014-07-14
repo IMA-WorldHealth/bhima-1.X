@@ -770,12 +770,12 @@ app.get('/inv_in_depot/:depot_uuid', function (req, res, next){
 
   db.exec(sql)
   .then(function (ans) {
-    res.send(ans)
+    res.send(ans);
   })
   .catch(function (err) {
-      next(err)
+    next(err);
   })
-  .done()
+  .done();
 })
 
 app.get('/errorcodes', function (req, res, next) {
@@ -788,7 +788,7 @@ app.use(liberror.middleware);
 
 https.createServer(options, app)
 .listen(cfg.port, function () {
-  console.log('Application running on localhost:' + cfg.port);
+  console.log('Secure application running on localhost:' + cfg.port);
 });
 
 // temporary error handling for development!
