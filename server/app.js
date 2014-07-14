@@ -743,7 +743,7 @@ app.get('/serv_dist_stock/:depot_uuid', function (req, res, next) {
  var sql= 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
           'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
           ', movement.quantity, 0)) AS entered, SUM(if (movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+
-          ', movement.quantity, 0)) AS moved,  inventory.text, inventory.code FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
+          ', movement.quantity, 0)) AS moved,  inventory.text, inventory.code, inventory.purchase_price  FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
           'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
           'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') GROUP BY stock.tracking_number';
   db.exec(sql)

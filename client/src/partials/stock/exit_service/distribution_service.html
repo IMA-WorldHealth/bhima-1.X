@@ -81,7 +81,7 @@
               <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th>
               <th>{{ "COLUMNS.LOT" | translate }}</th>
               <th>{{ "COLUMNS.PRICE" | translate }}</th>
-              <th>{{ "COLUMNS.PRICE" | translate }}</th>
+              <th>{{ "COLUMNS.TOTAL" | translate }}</th>
               <th></th>
             </tr>
           </thead>
@@ -97,6 +97,7 @@
                   typeahead-template-url="lotList.html"
                   ng-model="row.code"
                   typeahead="inv.code for inv in model.inventory | filter:$viewValue | limitTo:8"
+                  typeahead-on-select="updateLigne(row.code, $index)"
                   placeholder="{{ 'DISTRIBUTION_SERVICE.TAPE' | translate }}"
                 >
               </td>
@@ -111,46 +112,48 @@
                         }"
                       class="glyphicon"></span>
                     </span>
-                    <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleChange($index)" required>
+                    <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleChange(row, $index)" required>
                 </div>
               </td>
               <td width="35%">
-                    <div ng-repeat="lot in configuration.rows[$index].lots">
-                        <table class="reportTable">
-                          <tbody>
-                            <tr width="100%">
-                              <td width="50%">
-                                {{"DISTRIBUTION_SERVICE.LOT_NUMBER" | translate }}
-                              </td>
-                              <td width="50%">
-                                {{lot.lot_number}}
-                              </td>
-                            </tr>
-                            <tr>
-                              <td width="50%">
-                                {{"DISTRIBUTION_SERVICE.REMAINING_QTY" | translate }}
-                              </td>
-                              <td>
-                                {{lot.entered - lot.moved - lot.consumed}}
-                              </td>
-                            </tr>
+                <div ng-repeat="lot in configuration.rows[$index].lots">
+                  <table class="reportTable">
+                    <tbody>
+                      <tr width="100%">
+                        <td width="50%">
+                          {{"DISTRIBUTION_SERVICE.LOT_NUMBER" | translate }}
+                        </td>
+                        <td width="50%">
+                          {{lot.lot_number}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="50%">
+                          {{"DISTRIBUTION_SERVICE.REMAINING_QTY" | translate }}
+                        </td>
+                        <td>
+                          {{lot.entered - lot.moved - lot.consumed}}
+                        </td>
+                      </tr>
 
-                            <tr>
-                              <td width="50%">
-                                {{"DISTRIBUTION_SERVICE.EXPIRING_DATE" | translate }}
-                              </td>
-                              <td>
-                                {{lot.expiration_date | date}}
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                      <tr>
+                        <td width="50%">
+                          {{"DISTRIBUTION_SERVICE.EXPIRING_DATE" | translate }}
+                        </td>
+                        <td>
+                          {{lot.expiration_date | date}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </td>
               <td>
+                {{row.price | currency}}
               </td>
 
               <td>
+                {{(row.price * row.quantity) | currency}}
               </td>
               <td>
                 <a ng-click="removeRow($index)">
