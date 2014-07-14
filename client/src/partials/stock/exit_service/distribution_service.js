@@ -58,8 +58,9 @@ angular.module('bhima.controllers')
       return $q.all(model.avail_stocks.data.map(function (stock) {
         return connect.fetch('expiring_complete/'+stock.tracking_number+'/'+session.depot);
       }))
-
     }
+
+
 
     function preparDistribution () {
       session.isServiceSelected = true
@@ -78,7 +79,9 @@ angular.module('bhima.controllers')
       this.lots = null
       this.price = null
       this.quantity = 0
-      this.validQuantity = false;
+      this.validQuantity = false
+      this.price = 0
+      //this.current_cost = 0
       return this
     }
 
@@ -139,58 +142,89 @@ angular.module('bhima.controllers')
         return items;
     }
 
-    function extractLot (index){
-      if(!configuration.rows[index].code || !configuration.rows[index].validQuantity) {
-        return
+    function handleChange (distribution_ligne, index) {
+      if(distribution_ligne.quantity<=0 || !distribution_ligne.quantity){
+        distribution_ligne.validQuantity = false
+        distribution_ligne.lots = []
+        configuration.rows[index].lots = []
+      }else{
+        distribution_ligne.validQuantity = true
+        selectLot(distribution_ligne)
+        configuration.rows[index] = distribution_ligne
+        //distribution_ligne.current_cost = getInventoryPrice(distribution_ligne)
+        //configuration.rows[index] = distribution_ligne
       }
-      return $scope.model.avail_stocks.data.filter(function (item){
-        return item.code == configuration.rows[index].code
-      });
     }
 
-    function selectLot (index){
-      configuration.rows[index].lots = extractLot(index)
-      for (var i = 0; i < configuration.rows[index].lots.length -1; i++) {
-        for (var j = i+1; j < configuration.rows[index].lots.length; j++) {
-          if (util.isDateAfter(configuration.rows[index].lots[i].expiration_date, configuration.rows[index].lots[j].expiration_date)) {
-            tapon_lot = configuration.rows[index].lots[i];
-            configuration.rows[index].lots[i] = configuration.rows[index].lots[j];
-            configuration.rows[index].lots[j] = tapon_lot;
+    function getInventoryPrice (distribution_ligne) {
+      if(!distribution_ligne.code) return 0;
+      return distribution_ligne.lots.filter(function (item){
+        return item.code == distribution_ligne.code
+      })[0].purchase_price * distribution_ligne.quantity
+    }
+
+    function selectLot (distribution_ligne){
+      distribution_ligne.lots = extractLot(distribution_ligne)
+      for (var i = 0; i < distribution_ligne.lots.length -1; i++) {
+        for (var j = i+1; j < distribution_ligne.lots.length; j++) {
+          if (util.isDateAfter(distribution_ligne.lots[i].expiration_date, distribution_ligne.lots[j].expiration_date)) {
+            tapon_lot = distribution_ligne.lots[i];
+            distribution_ligne.lots[i] = distribution_ligne.lots[j];
+            distribution_ligne.lots[j] = tapon_lot;
           }
         }
       }
-      configuration.rows[index].lots = getLots(index)
+      distribution_ligne.lots = getLots(distribution_ligne)
     }
 
-    function getLots (index) {
+    function extractLot (distribution_ligne){
+      if(!distribution_ligne.code || !distribution_ligne.validQuantity) {
+        return
+      }
+      return $scope.model.avail_stocks.data.filter(function (item){
+        return item.code == distribution_ligne.code
+      });
+    }
+
+    function getLots (distribution_ligne) {
       var som = 0;
-      configuration.rows[index].lots.forEach(function (item) {
+      distribution_ligne.lots.forEach(function (item) {
         som+=(item.entered - item.moved - item.consumed);
-        if (configuration.rows[index].quantity > som) {
+        if (distribution_ligne.quantity > som) {
             item.selected = true
         } else {
-            if (som - (item.entered - item.moved - item.consumed)< configuration.rows[index].quantity) { item.selected = true }
+            if (som - (item.entered - item.moved - item.consumed)< distribution_ligne.quantity) { item.selected = true } else{item.selected = false}
         }
       })
 
-      return configuration.rows[index].lots.filter(function (item){
+      if(distribution_ligne.quantity > som){
+        //overflow
+        distribution_ligne.validQuantity = false
+        return
+
+      }
+
+      console.log('notre somme est', som)
+
+
+      return distribution_ligne.lots.filter(function (item){
         return item.selected
       })
     }
 
-    function handleChange (index) {
-      if(configuration.rows[index].quantity<=0 || !configuration.rows[index].quantity){
-        configuration.rows[index].validQuantity = false
-        configuration.rows[index].lots = [];
-      }else{
-        configuration.rows[index].validQuantity = true
-        configuration.rows[index].lots = [];
-        selectLot(index)
-      }
+    function updateLigne (code, index){
+      if(!code) return 0;
+      configuration.rows[index].price = $scope.model.avail_stocks.data.filter(function (item){
+        return item.code == code
+      })[0].purchase_price
+
+      $scope.model.inventory = $scope.model.inventory.filter(function (item){return item.code != code});
     }
 
     $scope.preparDistribution = preparDistribution
     $scope.addRow = addRow
     $scope.removeRow = removeRow
     $scope.handleChange = handleChange
+    $scope.updateLigne = updateLigne
+
 }]);
