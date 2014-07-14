@@ -37,7 +37,7 @@ delete from `price_list`;
 INSERT INTO `unit` VALUES
 (1,'Root','TREE.ROOT','The unseen root node',NULL,1,'/partials/index.html','/root'),
 (2,'Admin','TREE.ADMIN','The Administration Super-Category',0,1,'/partials/admin/index.html','/admin'),
-(3,'Enterprise','TREE.ENTERPRISE','Manage the registered enterprises from here',2,0,'/partials/enterprise/','/enterprise'),
+(3,'Enterprise','TREE.ENTERPRISE','Manage the registered enterprises from here',1,0,'/partials/enterprise/','/enterprise'),
 (4,'Users & Permissions','TREE.PERMISSION','Manage user privileges and permissions',2,0,'/partials/user_permission/','/permission'),
 (5,'Finance','TREE.FINANCE','The Finance Super-Category',0,1,'/partials/finance/','/finance'),
 (6,'Account','TREE.ACCOUNT','Chart of Accounts management',2,0,'/partials/accounts/create_account/','/create_account'),
