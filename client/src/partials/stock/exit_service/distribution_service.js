@@ -212,13 +212,30 @@ angular.module('bhima.controllers')
       })
     }
 
+    // function duplicateProcessing (code, index ){
+    //   var item = $scope.model.inventory.filter(function (item){
+    //     return item.code = code
+    //   })[0]
+
+    //   if(item){
+    //     $scope.model.inventory.splice(index, 1)
+    //   }
+
+
+
+
+
+    // }
+
     function updateLigne (code, index){
       if(!code) return 0;
       configuration.rows[index].price = $scope.model.avail_stocks.data.filter(function (item){
         return item.code == code
       })[0].purchase_price
 
-      $scope.model.inventory = $scope.model.inventory.filter(function (item){return item.code != code});
+      //duplicateProcessing(code, index)
+
+     // $scope.model.inventory = $scope.model.inventory.filter(function (item){return item.code != code});
     }
 
     $scope.preparDistribution = preparDistribution
