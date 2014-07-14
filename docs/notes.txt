@@ -1,4 +1,4 @@
-Project Todos
+Project Notes
 
 1) Tshikaji had a series of requests that Dedrick/Steven wrote down.  We need to
   impliment those.
