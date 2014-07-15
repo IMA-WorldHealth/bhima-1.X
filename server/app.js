@@ -3,6 +3,8 @@
 
 // import node dependencies
 var express      = require('express'),
+    https        = require('https'),
+    fs           = require('fs'),
     url          = require('url'),
     compress     = require('compression'),
     bodyParser   = require('body-parser'),
@@ -11,7 +13,8 @@ var express      = require('express'),
 
 // import configuration
 var cfg = require('./config/server.json'),
-    errorCodes = require('./config/errors.json');
+    errorCodes = require('./config/errors.json'),
+    options = { key : fs.readFileSync(cfg.tls.key, 'utf8'), cert : fs.readFileSync(cfg.tls.cert, 'utf8') };
 
 // import lib dependencies
 var parser       = require('./lib/parser')(),
@@ -767,12 +770,12 @@ app.get('/inv_in_depot/:depot_uuid', function (req, res, next){
 
   db.exec(sql)
   .then(function (ans) {
-    res.send(ans)
+    res.send(ans);
   })
   .catch(function (err) {
-      next(err)
+    next(err);
   })
-  .done()
+  .done();
 })
 
 app.get('/errorcodes', function (req, res, next) {
@@ -783,8 +786,9 @@ app.get('/errorcodes', function (req, res, next) {
 app.use(logger.error());
 app.use(liberror.middleware);
 
-app.listen(cfg.port, function () {
-  console.log('Application running on localhost:' + cfg.port);
+https.createServer(options, app)
+.listen(cfg.port, function () {
+  console.log('Secure application running on localhost:' + cfg.port);
 });
 
 // temporary error handling for development!
