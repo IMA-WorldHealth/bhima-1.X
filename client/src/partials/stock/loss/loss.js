@@ -6,6 +6,7 @@ angular.module('bhima.controllers')
   'appstate',
   'uuid',
   function ($scope, $routeParams, validate, appstate, uuid) {
+    /* jshint unused : false */
     var session = $scope.session = {};
     var depotId;
 
