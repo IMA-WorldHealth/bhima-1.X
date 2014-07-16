@@ -71,7 +71,6 @@ angular.module('bhima.services')
         }
       });
     });
-
     return exchange;
   }
 ]);

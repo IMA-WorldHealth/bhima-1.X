@@ -32,3 +32,4 @@ server/plugins/mail/conf/address_list.json
 *.log
 /symmetric/*
 /log.html
+log.*

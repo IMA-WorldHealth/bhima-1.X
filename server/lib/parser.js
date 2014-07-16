@@ -1,19 +1,15 @@
 // builds the sql queries that a store will use
 
-var sanitize = require('./sanitize'),
-    util = require('./util');
-
 //module: Parser
-module.exports = function (options) {
+module.exports = function (sanitize, util) {
   // The parser module is the composer for all SQL queries
   // to the backend.  Query objects are decoded from the URL
   // and passed into composer's methods.
   'use strict';
 
   var self = {};
-  options = options || {};
 
-  self.templates = options.templates || {
+  self.templates = {
     select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% ORDER BY %order% LIMIT %limit%;',
     update: 'UPDATE %table% SET %expressions% WHERE %key%;',
     delete: 'DELETE FROM %table% WHERE %key%;',
@@ -69,16 +65,6 @@ module.exports = function (options) {
     }).join(operator);
   }
 
-  function arrayToIn (id, ids) {
-    var templ = ' %id% IN (%ids%) ';
-    ids = ids.map(function (v) {
-      return sanitize.escape(v);
-    });
-
-    return templ.replace('%id%', id)
-                .replace('%ids%', ids.toString());
-  }
-
   // delete
   self.delete = function (table, column, id) {
     var templ = self.templates.delete,
@@ -98,7 +84,7 @@ module.exports = function (options) {
     var expressions = [], templ = self.templates.update;
     var identifier = sanitize.escapeid(id); // temporarily defaults to 'id'
     for (var d in data) {
-      if (d != id) expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
+      if (d !== id) { expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join('')); }
     }
 
     return templ.replace('%table%', sanitize.escapeid(table))
@@ -114,7 +100,7 @@ module.exports = function (options) {
         templ = self.templates.insert;
 
     // FIXME HACK HACK HACK to make behavoir the same across everything
-    if (!dataList.length) dataList = [dataList];
+    if (!dataList.length) { dataList = [dataList]; }
 
     // find the maximum number of keys for a row object
     max = 0;
@@ -161,7 +147,7 @@ module.exports = function (options) {
 
   // select
   self.select = function (def) {
-    var identifier, table, conditions,
+    var table, conditions,
       columns = [],
       templ = self.templates.select,
       join = def.join,
@@ -207,5 +193,4 @@ module.exports = function (options) {
   };
 
   return self;
-
 };
