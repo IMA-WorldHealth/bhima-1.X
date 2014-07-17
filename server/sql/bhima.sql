@@ -209,6 +209,18 @@ create table `cost_center` (
 ) engine=innodb;
 
 
+drop table if exists `profit_center`;
+create table `profit_center` (
+  `project_id`      smallint unsigned not null,
+  `id`              smallint not null auto_increment,
+  `text`            varchar(100) not null,
+  `note`            text,
+  primary key (`id`),
+  key `project_id` (`project_id`),
+  constraint foreign key (`project_id`) references `project` (`id`) on delete cascade
+) engine=innodb;
+
+
 drop table if exists `cost_center_assignation`;
 create table `cost_center_assignation` (
   `project_id`      smallint unsigned not null,
@@ -456,7 +468,8 @@ drop table if exists `service`;
 create table `service` (
   `id`                smallint unsigned not null auto_increment,
   `name`              text not null,
-  `cost_center_id`    smallint unsigned not null,
+  `cost_center_id`    smallint unsigned null,
+  `profit_center_id`  smallint unsigned null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -612,7 +625,8 @@ create table `sale` (
   `uuid`          char(36) not null,
   `cost`          decimal(19,4) unsigned not null,
   `currency_id`   tinyint unsigned not null,
-  `debitor_uuid`  char(36) not null,
+  `debitor_uuid`  char(36),
+  `service_id`    smallint unsigned null,
   `seller_id`     smallint unsigned not null default 0,
   `discount`      mediumint unsigned default '0',
   `invoice_date`  date not null,
@@ -624,9 +638,11 @@ create table `sale` (
   key `project_id` (`project_id`),
   key `debitor_uuid` (`debitor_uuid`),
   key `currency_id` (`currency_id`),
+  key `service_id`  (`service_id`),
   constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
-  constraint foreign key (`currency_id`) references `currency` (`id`)
+  constraint foreign key (`currency_id`) references `currency` (`id`),
+  constraint foreign key (`service_id`) references `service` (`id`)
 ) engine=innodb;
 
 
@@ -746,8 +762,6 @@ create table `consumption` (
   `document_id`      char(36) not null,
   `tracking_number`  char(50) not null,
   `quantity`           int unsigned,
-  -- ??
-  -- primary key (`document_id`),
   primary key (`uuid`),
   key `depot_uuid`   (`depot_uuid`),
   constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade
@@ -844,7 +858,6 @@ create table `cash` (
   `cashbox_id`      smallint unsigned not null,
   `description`     text,
   primary key (`uuid`),
-  -- unique key (`document_id`, `type`),
   key `reference` (`reference`),
   key `project_id` (`project_id`),
   key `currency_id` (`currency_id`),
@@ -905,7 +918,8 @@ create table `posting_journal` (
   `cost_ctrl_id`      varchar(10),
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
-  `service_id`        smallint unsigned null,
+  `cc_id`             smallint,
+  `pc_id`             smallint,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -913,14 +927,16 @@ create table `posting_journal` (
   key `origin_id` (`origin_id`),
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
-  key `service_id` (`service_id`),
+  key `cc_id` (`cc_id`),
+  key `pc_id` (`pc_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
   constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
   constraint foreign key (`project_id`) references `project` (`id`) on update cascade,
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade,
-  constraint foreign key (`service_id`) references `service` (`id`) on update cascade
+  constraint foreign key (`cc_id`) references `cost_center` (`id`) on update cascade,
+  constraint foreign key (`pc_id`) references `profit_center` (`id`) on update cascade
 ) engine=innodb;
 
 drop table if exists `general_ledger`;
@@ -947,7 +963,8 @@ create table `general_ledger` (
   `origin_id`         tinyint unsigned not null,
   `user_id`           smallint unsigned not null,
   `session_id`        int unsigned not null,
-  `service_id`        smallint unsigned null,
+  `cc_id`             smallint,
+  `pc_id`             smallint,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `fiscal_year_id` (`fiscal_year_id`),
@@ -956,7 +973,8 @@ create table `general_ledger` (
   key `currency_id` (`currency_id`),
   key `user_id` (`user_id`),
   key `session_id` (`session_id`),
-  key `service_id` (`service_id`),
+  key `cc_id` (`cc_id`),
+  key `pc_id` (`pc_id`),
   constraint foreign key (`fiscal_year_id`) references `fiscal_year` (`id`),
   constraint foreign key (`period_id`) references `period` (`id`),
   constraint foreign key (`origin_id`) references `transaction_type` (`id`) on update cascade,
@@ -964,7 +982,8 @@ create table `general_ledger` (
   constraint foreign key (`currency_id`) references `currency` (`id`) on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on update cascade,
   constraint foreign key (`session_id`) references `posting_session` (`id`) on update cascade,
-  constraint foreign key (`service_id`) references `service` (`id`) on update cascade
+  constraint foreign key (`cc_id`) references `cost_center` (`id`) on update cascade,
+  constraint foreign key (`pc_id`) references `profit_center` (`id`) on update cascade
 ) engine=innodb;
 
 drop table if exists `period_total`;
