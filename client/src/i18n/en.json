@@ -713,7 +713,8 @@
     "SERVICE"                   : "Service Management",
     "EXPIRING"                  : "Expiring stock report",
     "ALL_TRANSACTIONS"          : "All Transactions",
-    "PATIENT_RECORDS"           : "Patient Records"
+    "PATIENT_RECORDS"           : "Patient Records",
+    "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management"
   },
 
   "DISTRIBUTION" : {
@@ -1552,5 +1553,13 @@
     "TO_REQUEST" : " to request a purchase order",
     "VIEW_PURCHASE_DETAIL" : "View Details"
 
+  },
+
+    "PURCHASE_MENU" : {
+    "TITLE" : "Purchase order management",
+    "OPERATION" : "Operations",
+    "PUCHASE_CREATION" : "Create purchase order",
+    "CONFIRM" : "Confirm payment",
+    "VIEW" : "View purchase order"
   }
 }
