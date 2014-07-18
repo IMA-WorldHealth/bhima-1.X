@@ -1246,7 +1246,7 @@ INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_ac
 ('b554ebf9-7a0f-4fd2-bdde-f902ebd96fee', 'Radiologie', 70, 969, 1089, NULL, NULL),
 ('c13da749-a9cd-4894-b39b-be0c26919304', 'Injectable', 120, 951, 1090, NULL, NULL),
 ('c673e6d2-a1fd-4bca-aa0e-92425fc099bb', 'Orl', 80, 975, 1091, NULL, NULL),
-('d66a0518-67ce-475c-b124-0bb78a65533f', 'Comprimes Medicam', 100, 954, 1092, NULL, NULL),
+('d66a0518-67ce-475c-b124-0bb78a65533f', 'Comprimes Medicam', 100, 954, 1092, 1065, NULL),
 ('d9f8daaa-22de-4a33-801e-4c07317b1983', 'Externe', 150, 958, 1093, NULL, NULL),
 ('f24e7325-67a8-48f1-aeb0-b7c4c89f2884', 'Perfusion', 130, 955, 1094, NULL, NULL);
 -- Add inventory items

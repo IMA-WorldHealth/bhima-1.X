@@ -1,4 +1,5 @@
-module.exports = function (db, parser, uuid) {
+var q = require('q');
+module.exports = function (db, parser, journal, uuid) {
   'use strict';
 
   // TODO Server side sale and purchase order are very similar, they should
@@ -18,10 +19,10 @@ module.exports = function (db, parser, uuid) {
 
   function execute(data, user, callback) {
     var primary_cash_uuid = uuid();
-  
+
     writeCash(primary_cash_uuid, user, data.details)
     .then(writeCashItems(primary_cash_uuid, data.transaction))
-    .then(postCash(primary_cash_uuid))
+    .then(postToJournal(primary_cash_uuid, user))
     .then(function (res) {
       callback(null, res);
     })
@@ -35,27 +36,34 @@ module.exports = function (db, parser, uuid) {
 
     details.uuid = uuid;
     details.user_id = user;
-  
+
     insertSQL = parser.insert('primary_cash', details);
-  
+
     return db.exec(insertSQL);
   }
 
   function writeCashItems(primary_cash_uuid, transactions) {
     var insertSQL;
-  
+
     transactions.forEach(function (transaction) {
       transaction.uuid = uuid();
       transaction.primary_cash_uuid = primary_cash_uuid;
     });
-  
+
     insertSQL = parser.insert('primary_cash_item', transactions);
 
     return db.exec(insertSQL);
   }
 
-  function postCash() {
-  
+  function postToJournal(primary_cash_uuid, userId) {
+    var deferred = q.defer()
+    journal.request('indirect_purchase', primary_cash_uuid, userId, function (error, result) {
+      if (error) {
+        return deferred.reject(error);
+      }
+      return deferred.resolve(result);
+    });
+    return deferred.promise;
   }
 
   return { execute : execute };

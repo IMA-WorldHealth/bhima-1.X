@@ -452,6 +452,65 @@ angular.module('bhima.controllers')
       .then(patientReceipt);
     }
 
+    function processIndirectPurchase (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      }
+
+      dependencies.purchase = {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+            employee : { columns : ['code', 'name'] },
+            project : { columns : ['abbr'] }
+          },
+          join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
+          where : ['purchase.uuid='+identifiant]
+        }
+      }
+
+      validate.process(dependencies)
+      .then(getLocation)
+      .then(polish)
+      .catch(function (err) {
+        console.log('error pendant la genaration de la facture');
+      })
+
+      function getLocation (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id
+        return validate.process(dependencies, ['location'])
+      }
+
+      function polish (model) {
+        $scope.invoice = {};
+        console.log('polish ', model);
+        $scope.invoice.uuid = identifiant
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name
+        $scope.invoice.village = model.location.data[0].village
+        $scope.invoice.sector = model.location.data[0].sector
+        $scope.invoice.phone = model.enterprise.data[0].phone
+        $scope.invoice.email = model.enterprise.data[0].email
+        $scope.invoice.name = model.purchase.data[0].name
+        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date
+        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference
+        $scope.invoice.employee_code = model.purchase.data[0].code
+        $scope.invoice.cost = model.purchase.data[0].cost
+
+
+
+      }
+
+    }
+
     function buildConventionInvoice (model) {
       dependencies.location.query = 'location/' + model.convention.data[0].location_id;
       validate.process(dependencies, ['location']).then(conventionInvoice);
@@ -531,7 +590,6 @@ angular.module('bhima.controllers')
     }
 
     function invoice(model) {
-      console.log('[invoice method] appelle de la methode invoice le model est : ', model);
       var routeCurrencyId;
       //Expose data to template
       $scope.model = model;
@@ -555,7 +613,6 @@ angular.module('bhima.controllers')
       $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
       $scope.invoice.hr_id = $scope.invoice.abbr.concat($scope.invoice.reference);
 
-      console.log('INVOICE', $scope.invoice);
 
       //FIXME hacks for meeting
       if (model.cash) {
@@ -588,7 +645,6 @@ angular.module('bhima.controllers')
         $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id, $scope.invoice.invoice_date);
         $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id, $scope.invoice.invoice_date);
       } else {
-        console.error('[invoice.js] Unable to find ledger - ledger returned nothing');
       }
 
       $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id, $scope.invoice.invoice_date);
@@ -625,17 +681,18 @@ angular.module('bhima.controllers')
     }
 
     process = {
-      'cash'             : processCash,
-      'caution'          : processCaution,
-      'sale'             : processSale,
-      'credit'           : processCredit,
-      'debtor'           : processDebtor,
-      'patient'          : processPatient,
-      'purchase'         : processPurchase,
-      'pcash_transfert'  : processTransfert,
-      'pcash_convention' : processConvention,
-      'movement'         : processMovement,
-      'consumption'      : processConsumption
+      'cash'                  : processCash,
+      'caution'               : processCaution,
+      'sale'                  : processSale,
+      'credit'                : processCredit,
+      'debtor'                : processDebtor,
+      'patient'               : processPatient,
+      'purchase'              : processPurchase,
+      'pcash_transfert'       : processTransfert,
+      'pcash_convention'      : processConvention,
+      'movement'              : processMovement,
+      'consumption'           : processConsumption,
+      'indirect_purchase'     : processIndirectPurchase
     };
 
     appstate.register('project', function (project) {
