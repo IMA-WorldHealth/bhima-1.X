@@ -389,7 +389,8 @@
     "STOCK_MANAGEMENT"          : "Gestion de Stock",
     "INVENTORY_MANAGEMENT"      : "Gestion de Inventaire",
     "EXPIRING"                  : "Rapport Expiration Stocks",
-    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte"
+    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
+    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1492,6 +1493,17 @@
     "PURCHASE_ORDER" : "Ordres des achats",
     "TO_REQUEST" : " pour demander un ordre d'achat",
     "VIEW_PURCHASE_DETAIL" : "Voir Details"
+
+  }
+  ,
+
+    "PURCHASE_MENU" : {
+    "TITLE" : "Gestion des ordres d'achats",
+    "OPERATION" : "Operations",
+    "PUCHASE_CREATION" : "Creer ordre achat",
+    "CONFIRM" : "Confirmer paiement",
+    "VIEW" : "Liste ordres achats"
+
 
   }
 }

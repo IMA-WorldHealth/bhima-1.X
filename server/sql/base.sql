@@ -53,7 +53,7 @@ INSERT INTO `unit` VALUES
 (17,'Sale Records','TREE.SALE_RECORDS','Search for a sale',5,0,'/partials/records/sales_records/','/sale_records/'),
 (18,'Cash Box','TREE.CASH','Pay invoices',5,0,'/partials/cash/','/cash'),
 (19,'Register Supplier','TREE.REGISTER_SUPPLIER','',11,0,'/partials/creditor/','/creditor'),
-(20,'Purchase Order Records','TREE.PURCHASE_ORDER_RECORDS','',5,0,'/partials/records/purchase_order_records','/purchase_records/'),
+-- (20,'Purchase Order Records','TREE.PURCHASE_ORDER_RECORDS','',5,0,'/partials/records/purchase_order_records','/purchase_records/'),
 (21,'Price List','TREE.PRICE_LIST','Configure price lists!',1,0,'/partials/price_list/','/inventory/price_list'),
 (22,'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,0,'/partials/exchange_rate/','/exchange_rate'),
 (23,'Creditor Groups','TREE.CREDITOR_GRP','',1,0,'/partials/creditor/group/','/creditors/creditor_group'),
@@ -80,13 +80,14 @@ INSERT INTO `unit` VALUES
 (44,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee'),
 (45,'Depot Management','TREE.DEPOT','',1,0,'/partials/inventory/depot/','inventory/depot'),
 (46,'Stock Management','TREE.STOCK_MANAGEMENT','',11,0,'partials/stock','/stock'),
-(47,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
+-- (47,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
 (48,'Account Statement', 'TREE.ACCOUNT_STATEMENT', '', 10, 0, 'partials/reports/account_statement', '/reports/account_statement'),
 (49,'Service Management', 'TREE.SERVICE', '', 1, 0, 'partials/service/', '/service'),
 (50, 'Expiring Stock Report', 'TREE.EXPIRING', '', 10, 0, '/partials/reports/expiring_stock', '/reports/expiring'),
 (51,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/'),
-(52,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
-(53,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/');
+-- (52,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
+(53,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/'),
+(54,'Purchase Order Management', 'TREE.PURCHASE_ORDER_MANAGEMENT', '', 11, 0, 'partials/purchase_order/', '/purchase_menu/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
