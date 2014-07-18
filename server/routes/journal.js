@@ -156,7 +156,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       db.execute(sql, function (err, rows) {
         if (err) { defer.reject(err); }
         if (rows.length === 0) { defer.reject(new Error('No exchange rate found for date : ' + date)); }
-
         var store = new Store();
         rows.forEach(function (line) {
           store.post({ id : line.foreign_currency_id, rate : line.rate });
@@ -1395,6 +1394,107 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .done();
   }
 
+  function handleIndirectPurchase (id, user_id, done){
+    var reference, dayExchange, cfg = {};
+    var sql = 'SELECT `primary_cash`.`reference`, `primary_cash`.`uuid`, `primary_cash`.`project_id`, `primary_cash`.`type`, `primary_cash`.`date`, `primary_cash`.`deb_cred_uuid`, '+
+              '`primary_cash`.`deb_cred_type`, `primary_cash`.`currency_id`, `primary_cash`.`account_id`, `primary_cash`.`cost`, `primary_cash`.`user_id`, `primary_cash`.`description`, '+
+              '`primary_cash`.`cash_box_id`, `primary_cash`.`origin_id`, `primary_cash_item`.`debit`, `primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid`, '+
+              '`creditor`.`group_uuid` FROM `primary_cash` JOIN `primary_cash_item` JOIN `creditor` JOIN `creditor_group` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND '+
+              '`primary_cash`.`deb_cred_uuid` = `creditor`.`uuid` AND `creditor`.`group_uuid` = `creditor_group`.`uuid` WHERE `primary_cash`.`uuid`='+sanitize.escape(id)+';'
+    db.exec(sql)
+    .then(getRecord)
+    .then(getExchange)
+    .spread(getDetails)
+    .then(getTransId)
+    .then(debit)
+    .then(credit)
+    .then(function (res){
+      return done(null, res)
+    })
+    .catch(function (err){
+      console.log('error', err)
+    })
+
+    function getRecord (records) {
+      if (records.length === 0) { throw new Error('pas enregistrement'); }
+      reference = records[0]
+      var date = util.toMysqlDate(reference.date)
+      return get.myExchangeRate(date)
+    }
+
+    function getExchange (exchangeStore){
+      console.log('notre exchange ratestore', exchangeStore)
+      dayExchange = exchangeStore.get(reference.currency_id)
+      return q([get.origin('primary_cash'), get.period(reference.date)])
+    }
+
+    function getDetails (originId, periodObject) {
+      console.log('object est ', periodObject)
+      cfg.originId = originId
+      cfg.periodId = periodObject.id
+      cfg.fiscalYearId = periodObject.fiscal_year_id
+      return get.transactionId(reference.project_id)
+    }
+
+    function getTransId (trans_id) {
+      cfg.trans_id = trans_id;
+      cfg.descrip =  'PP/'+new Date().toISOString().slice(0, 10).toString();
+      return q.when();
+    }
+
+    function debit () {
+      var valueExchanged = parseFloat((1/dayExchange.rate) * reference.debit).toFixed(4);
+      var sql = 'INSERT INTO posting_journal '+
+                '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                'SELECT '+
+                  [
+                    sanitize.escape(uuid()),
+                    reference.project_id,
+                    cfg.fiscalYearId,
+                    cfg.periodId,
+                    cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+                  ].join(',') + ', `account_id`, ' +
+                  [
+                    0, reference.debit,
+                    0, valueExchanged,
+                    reference.currency_id
+                  ].join(',') + ', ' + sanitize.escape(reference.deb_cred_uuid) + ', \'C\', '+
+                  [
+                    sanitize.escape(reference.inv_po_id),
+                    cfg.originId,
+                    user_id
+                  ].join(',') +
+                ' FROM `creditor_group` WHERE `creditor_group`.`uuid`=' + sanitize.escape(reference.group_uuid);
+      return db.exec(sql)
+    }
+
+    function credit () {
+      var valueExchanged = parseFloat((1/dayExchange.rate) * reference.debit).toFixed(4);
+      var credit_sql =
+        'INSERT INTO posting_journal '+
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+        'VALUES ('+
+          [
+            sanitize.escape(uuid()),
+            reference.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\''+get.date()+'\'', '\''+cfg.descrip+'\'', reference.account_id
+          ].join(',')+', '+
+          [
+            reference.debit,0,
+            valueExchanged,0,
+            reference.currency_id
+          ].join(',')+', null, null, '+[sanitize.escape(reference.inv_po_id), cfg.originId, user_id].join(',') +
+        ');'
+      return db.exec(credit_sql);
+    }
+  }
+
   // router for incoming requests
   table_router = {
     'sale'              : handleSales,
@@ -1406,7 +1506,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     'transfert'         : handleTransfert,
     'pcash_convention'  : handleConvention,
     'primary_expense'   : handleGenericExpense,
-    'primary_income'    : handleGenericIncome
+    'primary_income'    : handleGenericIncome,
+    'indirect_purchase' : handleIndirectPurchase
   };
 
   function request (table, id, user_id, done, debCaution) {
