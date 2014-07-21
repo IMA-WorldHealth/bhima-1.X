@@ -33,6 +33,17 @@ angular.module('bhima.controllers')
           }
         }
       }
+    }
+
+    dependencies.services = {
+      query: {
+        identifier : 'id',
+        tables: {
+          'service' : {
+            columns: ['id', 'name']
+          }
+        }
+      }
     };
 
     appstate.register('project', function (project) {
@@ -222,7 +233,8 @@ angular.module('bhima.controllers')
         currency_id  : $scope.project.currency_id,
         debitor_uuid : invoice.debtor.debitor_uuid,
         invoice_date : invoice.date,
-        note         : invoice.note
+        note         : invoice.note,
+        service_id   : invoice.service.id
       };
 
       requestContainer.saleItems = [];
