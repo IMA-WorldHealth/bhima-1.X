@@ -1561,5 +1561,9 @@
     "PUCHASE_CREATION" : "Create purchase order",
     "CONFIRM" : "Confirm payment",
     "VIEW" : "View purchase order"
+  },
+"CONFIRM" : {
+    "TITLE" : "Purchase order payment confirmation",
+    "PARENT" : "Purchase order management"
   }
 }

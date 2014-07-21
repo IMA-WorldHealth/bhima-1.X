@@ -687,31 +687,6 @@ create table `sale_item` (
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
-drop table if exists `purchase`;
-create table `purchase` (
-  `project_id`        smallint unsigned not null,
-  `reference`         int unsigned not null auto_increment,
-  `uuid`              char(36) not null,
-  `cost`              decimal(19,4) unsigned not null default '0',
-  `currency_id`       tinyint unsigned not null,
-  `creditor_uuid`     char(36) not null,
-  `purchaser_id`      smallint unsigned not null,
-  `employee_id`       int unsigned not null,
-  `discount`          mediumint unsigned default '0',
-  `purchase_date`     date not null,
-  `timestamp`         timestamp default current_timestamp,
-  `note`              text default null,
-  `paid`            boolean not null default 0,
-  primary key (`uuid`),
-  key `project_id` (`project_id`),
-  key `reference` (`reference`),
-  key `creditor_uuid` (`creditor_uuid`),
-  key `purchaser_id` (`purchaser_id`),
-  constraint foreign key (`project_id`) references `project` (`id`),
-  constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`),
-  constraint foreign key (`purchaser_id`) references `user` (`id`)
-) engine=innodb;
-
 drop table if exists `depot`;
 create table `depot` (
   `uuid`               char(36) not null,
@@ -720,38 +695,6 @@ create table `depot` (
   `enterprise_id`      smallint unsigned not null,
   primary key (`uuid`),
   key `reference` (`reference`)
-) engine=innodb;
-
-drop table if exists `stock`;
-create table `stock` (
-  `inventory_uuid`         char(36) not null,
-  `tracking_number`        char(50) not null,
-  `expiration_date`        date not null,
-  `entry_date`             date not null,
-  `lot_number`             varchar(70) not null,
-  `purchase_order_uuid`    char(36) not null,
-  `quantity`               int not null default 0,
-  primary key (`tracking_number`),
-  key `inventory_uuid` (`inventory_uuid`),
-  key `purchase_order_uuid` (`purchase_order_uuid`),
-  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`),
-  constraint foreign key (`purchase_order_uuid`) references `purchase` (`uuid`)
-) engine=innodb;
-
-drop table if exists `movement`;
-create table `movement` (
-  `uuid`                    char(36) not null,
-  `document_id`             char(36) not null,
-  `depot_entry`             char(36),
-  `depot_exit`              char(36),
-  `tracking_number`         char(50) not null,
-  `quantity`                int not null default 0,
-  `date`                    date,
-  primary key (`uuid`),
-  key `tracking_number` (`tracking_number`),
-  key `depot_exit` (`depot_exit`),
-  constraint foreign key (`tracking_number`) references `stock` (`tracking_number`),
-  constraint foreign key (`depot_exit`) references `depot` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `consumption`;
@@ -811,20 +754,8 @@ create table `consumption_rummage` (
   -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
 ) engine=innodb;
 
-drop table if exists `purchase_item`;
-create table `purchase_item` (
-  `purchase_uuid`     char(36) not null,
-  `uuid`              char(36) not null,
-  `inventory_uuid`    char(36) not null,
-  `quantity`          int unsigned default '0',
-  `unit_price`        decimal(10,4) unsigned not null,
-  `total`             decimal(10,4) unsigned,
-  primary key (`uuid`),
-  key `purchase_uuid` (`purchase_uuid`),
-  key `inventory_uuid` (`inventory_uuid`),
-  constraint foreign key (`purchase_uuid`) references `purchase` (`uuid`) on delete cascade,
-  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
-) engine=innodb;
+
+
 
 drop table if exists `transaction_type`;
 create table `transaction_type` (
@@ -1212,4 +1143,80 @@ create table `caution` (
   constraint foreign key (`currency_id`) references `currency` (`id`),
   constraint foreign key (`cash_box_id`) references `cash_box` (`id`),
   constraint foreign key (`user_id`) references `user` (`id`)
+) engine=innodb;
+
+drop table if exists `purchase`;
+create table `purchase` (
+  `project_id`        smallint unsigned not null,
+  `reference`         int unsigned not null auto_increment,
+  `uuid`              char(36) not null,
+  `cost`              decimal(19,4) unsigned not null default '0',
+  `currency_id`       tinyint unsigned not null,
+  `creditor_uuid`     char(36) not null,
+  `purchaser_id`      smallint unsigned not null,
+  `employee_id`       int unsigned not null,
+  `discount`          mediumint unsigned default '0',
+  `purchase_date`     date not null,
+  `timestamp`         timestamp default current_timestamp,
+  `note`              text default null,
+  `paid`              boolean not null default 0,
+  `paid_uuid`         char(36),
+  `confirmed`         boolean not null default 0,
+  primary key (`uuid`),
+  key `project_id` (`project_id`),
+  key `reference` (`reference`),
+  key `creditor_uuid` (`creditor_uuid`),
+  key `purchaser_id` (`purchaser_id`),
+  key `paid_uuid`    (`paid_uuid`),
+  constraint foreign key (`project_id`) references `project` (`id`),
+  constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`),
+  constraint foreign key (`purchaser_id`) references `user` (`id`),
+  constraint foreign key (`paid_uuid`)    references `primary_cash` (`uuid`)
+) engine=innodb;
+
+drop table if exists `purchase_item`;
+create table `purchase_item` (
+  `purchase_uuid`     char(36) not null,
+  `uuid`              char(36) not null,
+  `inventory_uuid`    char(36) not null,
+  `quantity`          int unsigned default '0',
+  `unit_price`        decimal(10,4) unsigned not null,
+  `total`             decimal(10,4) unsigned,
+  primary key (`uuid`),
+  key `purchase_uuid` (`purchase_uuid`),
+  key `inventory_uuid` (`inventory_uuid`),
+  constraint foreign key (`purchase_uuid`) references `purchase` (`uuid`) on delete cascade,
+  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
+) engine=innodb;
+
+drop table if exists `stock`;
+create table `stock` (
+  `inventory_uuid`         char(36) not null,
+  `tracking_number`        char(50) not null,
+  `expiration_date`        date not null,
+  `entry_date`             date not null,
+  `lot_number`             varchar(70) not null,
+  `purchase_order_uuid`    char(36) not null,
+  `quantity`               int not null default 0,
+  primary key (`tracking_number`),
+  key `inventory_uuid` (`inventory_uuid`),
+  key `purchase_order_uuid` (`purchase_order_uuid`),
+  constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`),
+  constraint foreign key (`purchase_order_uuid`) references `purchase` (`uuid`)
+) engine=innodb;
+
+drop table if exists `movement`;
+create table `movement` (
+  `uuid`                    char(36) not null,
+  `document_id`             char(36) not null,
+  `depot_entry`             char(36),
+  `depot_exit`              char(36),
+  `tracking_number`         char(50) not null,
+  `quantity`                int not null default 0,
+  `date`                    date,
+  primary key (`uuid`),
+  key `tracking_number` (`tracking_number`),
+  key `depot_exit` (`depot_exit`),
+  constraint foreign key (`tracking_number`) references `stock` (`tracking_number`),
+  constraint foreign key (`depot_exit`) references `depot` (`uuid`)
 ) engine=innodb;
