@@ -714,7 +714,8 @@
     "EXPIRING"                  : "Expiring stock report",
     "ALL_TRANSACTIONS"          : "All Transactions",
     "PATIENT_RECORDS"           : "Patient Records",
-    "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management"
+    "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
+    "PROFIT_CENTER_MGMNT"       : "Profit center management"
   },
 
   "DISTRIBUTION" : {
@@ -1338,6 +1339,17 @@
     }
 },
 
+"PROFIT_CENTER" : {
+    "TITLE"         : "Profit center Management",
+    "NAVIGATION"    : "Browsing",
+    "OPERATION"     : "operations",
+    "OPERATIONS" : {
+      "CC"        : "Profit center",
+      "ASSIGN"    : "Assigning",
+      "VERSEMENT" : "Injection"
+    }
+},
+
 "VERSEMENT" : {
     "TITLE"                  : "Accounts deposit",
     "PARENT"                 : "Cost center management",
@@ -1394,6 +1406,29 @@
     "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
     "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
     "NONE_FOUND"               :   "No cost center found !",
+    "MODIFYING"                :   "Editing",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
+    "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",
+    "REMOVE_FAIL_MESSAGE"      :   "Error during deleting !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Deleting successfully !"
+},
+
+"ANALYSIS_PROFIT_CENTER"              :{
+    "TITLE"                    :   "Profit center",
+    "PARENT"                   :   "Profit center Management",
+    "NAVIGATION"               :   "Browsing",
+    "REGISTERED"               :   "Registered profit center",
+    "INFO"                     :   "profit center information",
+    "INFO_DESCRIPTION"         :   "This feature will help you to manage your profit center(creating, editing, deleting as well as consultating)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "profit",
+    "IS_PROFIT"                :   "Profit center",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Registering",
+    "NEW"                      :   "New center",
+    "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
+    "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
+    "NONE_FOUND"               :   "No profit center found !",
     "MODIFYING"                :   "Editing",
     "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
     "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",

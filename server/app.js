@@ -289,6 +289,27 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
   });
 });
 
+app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.pc_id IS NULL ' +
+      'AND account.account_type_id <> 3';
+
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
+});
+
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =

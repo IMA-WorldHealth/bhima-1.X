@@ -392,7 +392,8 @@
     "EXPIRING"                  : "Rapport Expiration Stocks",
     "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
     "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat",
-    "PATIENT_SEARCH"            : "Recherche des Patients"
+    "PATIENT_SEARCH"            : "Recherche des Patients",
+    "PROFIT_CENTER_MGMNT"       : "Centre de profit"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1384,11 +1385,22 @@
     }
   },
 
+    "PROFIT_CENTER" : {
+    "TITLE"         : "Gestion de Centre de profits",
+    "NAVIGATION"    : "Naviguation",
+    "OPERATION"     : "operations",
+    "OPERATIONS" : {
+      "CC"        : "Centre de profit",
+      "ASSIGN"    : "Assignation",
+      "VERSEMENT" : "Versement"
+    }
+  },
+
 "ANALYSIS_CENTER"              :{
     "TITLE"                    :   "Centre de couts",
     "PARENT"                   :   "Gestion de centre de couts",
     "NAVIGATION"               :   "Naviguation",
-    "REGISTERED"               :   "Centre des cuts enregistres",
+    "REGISTERED"               :   "Centre des couts enregistres",
     "INFO"                     :   "Information sur le centre des couts",
     "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
     "TEXT"                     :   "Text",
@@ -1400,6 +1412,29 @@
     "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
     "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
     "NONE_FOUND"               :   "Aucun centre de frais trouve !",
+    "MODIFYING"                :   "Modification",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Mise a jour avec succes !",
+    "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
+    "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
+},
+
+"ANALYSIS_PROFIT_CENTER"              :{
+    "TITLE"                    :   "Centre de profits",
+    "PARENT"                   :   "Gestion de centre de profit",
+    "NAVIGATION"               :   "Naviguation",
+    "REGISTERED"               :   "Centre des profits enregistres",
+    "INFO"                     :   "Information sur le centre des profits",
+    "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des profits (leur creation, modification et suppression ainsi que leur consultation)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "profit",
+    "IS_PROFIT"                :   "Centre de profit",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Enregistrement",
+    "NEW"                      :   "Nouveau centre",
+    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
+    "NONE_FOUND"               :   "Aucun centre de profit trouve !",
     "MODIFYING"                :   "Modification",
     "UPDATE_SUCCESS_MESSAGE"   :   "Mise a jour avec succes !",
     "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
