@@ -442,7 +442,58 @@ angular.module('bhima.controllers')
       .then(buildPatientLocation);
     }
 
-    function processConfirmPurchase (){
+    function processConfirmPurchase (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      }
+
+      dependencies.purchase = {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+            employee : { columns : ['code', 'name'] },
+            project : { columns : ['abbr'] }
+          },
+          join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
+          where : ['purchase.uuid='+identifiant]
+        }
+      }
+
+      validate.process(dependencies)
+      .then(getLocation)
+      .then(polish)
+      .catch(function (err) {
+        console.log('error pendant la genaration de la facture');
+      })
+
+      function getLocation (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id
+        return validate.process(dependencies, ['location'])
+      }
+
+      function polish (model) {
+        $scope.invoice = {};
+        $scope.invoice.uuid = identifiant
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name
+        $scope.invoice.village = model.location.data[0].village
+        $scope.invoice.sector = model.location.data[0].sector
+        $scope.invoice.phone = model.enterprise.data[0].phone
+        $scope.invoice.email = model.enterprise.data[0].email
+        $scope.invoice.name = model.purchase.data[0].name
+        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date
+        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference
+        $scope.invoice.employee_code = model.purchase.data[0].code
+        $scope.invoice.cost = model.purchase.data[0].cost
+      }
 
     }
 
