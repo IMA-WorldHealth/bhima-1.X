@@ -213,6 +213,14 @@
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
     })
+    .when('/profit_center', {
+      controller: 'profitCenter',
+      templateUrl: 'partials/profit_center/profit_center.html'
+    })
+    .when('/profit_center/center/', {
+      controller: 'profitCenterAnalyse',
+      templateUrl: 'partials/profit_center/center/analysis_profit_center.html'
+    })
     .when('/cost_center/center/', {
       controller: 'analysisCenter',
       templateUrl: 'partials/cost_center/center/analysis_center.html'
@@ -224,6 +232,10 @@
     .when('/cost_center/allocation/', {
       controller: 'costCenter.allocation',
       templateUrl: 'partials/cost_center/allocation/allocation.html'
+    })
+    .when('/profit_center/allocation/', {
+      controller: 'profitCenter.allocation',
+      templateUrl: 'partials/profit_center/allocation/allocation.html'
     })
     .when('/patient_group', {
       controller: 'patientGroup',

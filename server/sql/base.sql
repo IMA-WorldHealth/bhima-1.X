@@ -42,7 +42,7 @@ INSERT INTO `unit` VALUES
 (5,'Finance','TREE.FINANCE','The Finance Super-Category',0,1,'/partials/finance/','/finance'),
 (6,'Account','TREE.ACCOUNT','Chart of Accounts management',1,0,'/partials/accounts/create_account/','/create_account'),
 (8,'Budgeting','TREE.BUDGETING','Plan your next move',0,10,'/partials/budget/index.html','/budget'),
-(9,'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',5,0,'/partials/journal/','/posting_journal'),
+(9,'Posting Journal','TREE.POSTING_JOURNAL','Daily Log',30,0,'/partials/journal/','/posting_journal'),
 (10,'Reports','TREE.REPORTS','Do stuff and tell people about it',0,1,'/partials/reports/summary/','reports/summary'),
 (11,'Inventory','TREE.INVENTORY','The Inventory Super-Category',0,1,'/partials/inventory/','/inv'),
 (12,'Hospital','TREE.HOSPITAL','The Hospital Super-Category',0,1,'/partials/hospital/index.html','/hospital'),
@@ -74,7 +74,7 @@ INSERT INTO `unit` VALUES
 (38,'Transactions by Account','TREE.TRANSACTIONS_BY_ACCOUNT','',10,0,'/partials/reports/transactions/','/reports/transactions/account'),
 (39,'Caution','TREE.CAUTION','',5,0,'/partials/caution/','/caution'),
 (40,'Main Cash','TREE.MAIN_CASH','',5,0,'/partials/primary_cash/','/primary_cash'),
-(41,'Journal Voucher','TREE.JOURNAL_VOUCHER','',5,0,'/partials/journal_voucher/','/journal_voucher'),
+(41,'Journal Voucher','TREE.JOURNAL_VOUCHER','',30,0,'/partials/journal_voucher/','/journal_voucher'),
 (42,'Project','TREE.PROJECT','',1,0,'/partials/projects/','/projects'),
 (43,'Patient Standing','TREE.PATIENT_STANDING','',10,0,'/partials/reports/patient_standing/','/reports/patient_standing'),
 (44,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee'),
@@ -87,7 +87,8 @@ INSERT INTO `unit` VALUES
 (51,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/'),
 -- (52,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
 (53,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/'),
-(54,'Purchase Order Management', 'TREE.PURCHASE_ORDER_MANAGEMENT', '', 11, 0, 'partials/purchase_order/', '/purchase_menu/');
+(54,'Purchase Order Management', 'TREE.PURCHASE_ORDER_MANAGEMENT', '', 11, 0, 'partials/purchase_order/', '/purchase_menu/'),
+(55,'Profit center management', 'TREE.PROFIT_CENTER_MGMNT', '', 30, 0, 'partials/profit_center/', '/profit_center/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
