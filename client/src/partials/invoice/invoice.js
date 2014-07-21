@@ -442,6 +442,10 @@ angular.module('bhima.controllers')
       .then(buildPatientLocation);
     }
 
+    function processConfirmPurchase (){
+
+    }
+
     function buildPatientLocation(model) {
       dependencies.location = {
         required: true,
@@ -692,7 +696,8 @@ angular.module('bhima.controllers')
       'pcash_convention'      : processConvention,
       'movement'              : processMovement,
       'consumption'           : processConsumption,
-      'indirect_purchase'     : processIndirectPurchase
+      'indirect_purchase'     : processIndirectPurchase,
+      'confirm_purchase'      : processConfirmPurchase
     };
 
     appstate.register('project', function (project) {

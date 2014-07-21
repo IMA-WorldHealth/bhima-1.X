@@ -390,7 +390,8 @@
     "INVENTORY_MANAGEMENT"      : "Gestion de Inventaire",
     "EXPIRING"                  : "Rapport Expiration Stocks",
     "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
-    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat"
+    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat",
+    "PATIENT_SEARCH"            : "Recherche des Patients"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1503,7 +1504,19 @@
     "PUCHASE_CREATION" : "Creer ordre achat",
     "CONFIRM" : "Confirmer paiement",
     "VIEW" : "Liste ordres achats"
+  },
 
-
+  "CONFIRM" : {
+    "TITLE" : "Confirmation paiement ordre achat",
+    "PARENT" : "Gestion des ordres d'achats",
+    "SELECT_PURCHASE" : "Selectionner ordre achat",
+    "FILTER" : "Filtrer les ordre d'achats",
+    "NOT_FOUND" : "Aucun ordre d'achat trouve",
+    "CONFIRM_PAY" : "Confirmer le paiement",
+    "DETAILS" : "Details",
+    "CONFIRM_PAY "  : "Confirmer payement",
+    "CONFIRM_PAY_OF" : "Confirmer payement de  ",
+    "BY"             : "par ",
+    "DISCARD"        : "Annuler l'ordre d'achat"
   }
 }

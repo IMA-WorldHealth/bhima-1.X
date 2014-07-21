@@ -96,7 +96,6 @@ angular.module('bhima.controllers')
     }
 
     function submitPayment(model) {
-      console.log('session', session, 'le model est ', model);
       var creditorId = model.employee.data[0].creditor_uuid;
       var request = {
         details : {
@@ -129,7 +128,8 @@ angular.module('bhima.controllers')
     function paymentSuccess(result) {
       var purchase = {
         uuid : session.selected.uuid,
-        paid : 1
+        paid : 1,
+        paid_uuid : result.data.purchaseId.primary_cash_uuid
       }
       return connect.basicPost('purchase', [purchase], ['uuid'])
     }
