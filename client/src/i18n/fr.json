@@ -1453,6 +1453,17 @@
     "ASSOCIATED_TO"          : "Les comptes associe a : ",
     "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
 },
+"VERSEMENT_PROFIT_CENTER" : {
+    "TITLE"                  : "Versement des comptes",
+    "PARENT"                 : "Gestion de centre de profits",
+    "CHOOSE"                 : "Selectionner centre de profit",
+    "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
+    "VERSER"                 : "Verser",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Navigation",
+    "ASSOCIATED_TO"          : "Les comptes associe a : ",
+    "PLEASE_SELECT"          : "(Selectionner centre profit SVP!)"
+},
 
 "SERVICE" : {
     "TITLE"                    : "Gestion des Services",

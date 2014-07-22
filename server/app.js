@@ -350,7 +350,6 @@ app.get('/profit/:id_project/:service_id', function(req, res, next) {
 
   synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
     if (err) { return next(err); }
-    console.log('[synthetic a retourner data]', data);
     res.send(process(data));
   });
 });
@@ -358,10 +357,6 @@ app.get('/profit/:id_project/:service_id', function(req, res, next) {
 
 
 app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
-  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
-  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
-  // var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id '+
-  //           'AND account.enterprise_id = ''+req.params.id_enterprise+'' AND account.parent <> 0 AND account.cc_id=''+req.params.cost_center_id+''';
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
     'FROM account JOIN cost_center ' +
@@ -383,30 +378,60 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
   });
 });
 
+app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', function(req, res, next) {
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN profit_center ' +
+    'ON account.pc_id = profit_center.id '+
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.pc_id = ' + sanitize.escape(req.params.profit_center_id) + ';';
+
+  function process(accounts) {
+    var availableprofitAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
+    });
+    return availableprofitAccounts;
+  }
+
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
+});
+
 //
 
 app.get('/removeFromCostCenter/:tab', function(req, res, next) {
   var tabs = JSON.parse(req.params.tab);
-  console.log('le tabs', tabs);
 
   tabs = tabs.map(function (item) {
     return item.id;
   });
 
   var sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
-  console.log('la requette est  ', sql);
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(rows);
+  });
+});
+
+app.get('/removeFromProfitCenter/:tab', function(req, res, next) {
+  var tabs = JSON.parse(req.params.tab);
+  tabs = tabs.map(function (item) {
+    return item.id;
+  });
+
+  var sql = 'UPDATE `account` SET `account`.`pc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
 
   db.execute(sql, function (err, rows) {
     if (err) { return next(err); }
-    console.log('la reponse est ', rows);
     res.send(rows);
   });
 });
 
 
 app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
-  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
-  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
     'FROM account JOIN auxiliairy_center ' +
@@ -426,7 +451,6 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
     if (err) { return next(err); }
     res.send(process(rows));
   });
-
 });
 
 app.get('/tree', function (req, res, next) {
@@ -674,7 +698,6 @@ app.get('/inventory/drug/:code', function (req, res, next) {
 });
 
 app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
-  console.log('le depot uuid est ', req.params.depot_uuid);
   var sql;
   var condition =
     'WHERE stock.expiration_date >= ' + sanitize.escape(req.params.df) + ' ' +
@@ -698,7 +721,6 @@ app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
 
   db.exec(sql)
   .then(function (ans) {
-    console.log('core server on a : ', ans);
     res.send(ans);
   })
   .catch(function (err) {
@@ -772,7 +794,6 @@ app.get('/serv_dist_stock/:depot_uuid', function (req, res, next) {
           'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') GROUP BY stock.tracking_number';
   db.exec(sql)
   .then(function (ans) {
-    console.log('les resultats sont : ', ans)
     res.send(ans)
   })
   .catch(function (err) {
