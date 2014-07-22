@@ -1362,6 +1362,18 @@
     "PLEASE_SELECT"          : "(choose cost center pleaase!)"
 },
 
+"VERSEMENT_PROFIT_CENTER" : {
+    "TITLE"                  : "Accounts deposit",
+    "PARENT"                 : "Cost center management",
+    "CHOOSE"                 : "Select cost center",
+    "AVAILABLE_ACCOUNT"      : "Availables accounts",
+    "VERSER"                 : "Deposit",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Browsing",
+    "ASSOCIATED_TO"          : "Accounts associated to : ",
+    "PLEASE_SELECT"          : "(choose cost center pleaase!)"
+},
+
 "ASSIGNING" : {
     "TITLE"                  : "Assigning",
     "NAVIG"                  : "Browsing",

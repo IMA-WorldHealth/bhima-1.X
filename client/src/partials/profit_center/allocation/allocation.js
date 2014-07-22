@@ -48,7 +48,7 @@ angular.module('bhima.controllers')
     }
 
     function performChange() {
-      $scope.selectedCostCenter = JSON.parse(configuration.costCenter);
+      $scope.selectedProfitCenter = JSON.parse(configuration.profitCenter);
       loadCenterAccount()
       .then(function (results) {
         $scope.associatedAccounts = results;
@@ -70,7 +70,7 @@ angular.module('bhima.controllers')
     function remove() {
       // finds all accounts marked for removal and removes them
       var marked = filterSelectedInArray($scope.associatedAccounts.data);
-      removeFromCostCenter(marked)
+      removeFromProfitCenter(marked)
       .then(function () {
         marked.forEach(function (account) {
           $scope.associatedAccounts.remove(account.id);
@@ -85,8 +85,8 @@ angular.module('bhima.controllers')
       });
     }
 
-    function removeFromCostCenter(data) {
-      return connect.req('/removeFromCostCenter/'+JSON.stringify(data));
+    function removeFromProfitCenter (data) {
+      return connect.req('/removeFromProfitCenter/'+JSON.stringify(data));
     }
 
     function updateAccounts(accounts) {
@@ -100,12 +100,12 @@ angular.module('bhima.controllers')
     function sanitize () {
       $scope.selectedAccounts = filterSelectedInArray($scope.availableAccounts.data);
       return $scope.selectedAccounts.map(function (account) {
-        return { cc_id : $scope.selectedCostCenter.id, id : account.id };
+        return { pc_id : $scope.selectedProfitCenter.id, id : account.id };
       });
     }
 
     function loadCenterAccount () {
-      return connect.req('/costCenterAccount/'+ $scope.project.enterprise_id + '/'+$scope.selectedCostCenter.id);
+      return connect.req('/profitCenterAccount/'+ $scope.project.enterprise_id + '/'+$scope.selectedProfitCenter.id);
     }
 
     function hasSelectedItems(array) {
@@ -115,13 +115,13 @@ angular.module('bhima.controllers')
     }
 
     function isAssignable () {
-      if (!configuration.costCenter) { return false; }
+      if (!configuration.profitCenter) { return false; }
       if (!$scope.availableAccounts.data.length) { return false; }
       return hasSelectedItems($scope.availableAccounts.data);
     }
 
     function isRemovable () {
-      if (!configuration.costCenter) { return false; }
+      if (!configuration.profitCenter) { return false; }
       if (!$scope.associatedAccounts) { return false; }
       if (!$scope.associatedAccounts.data.length) { return false; }
       return hasSelectedItems($scope.associatedAccounts.data);

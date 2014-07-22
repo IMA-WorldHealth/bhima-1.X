@@ -70,7 +70,9 @@
       "/expiring_complete/",
       "/serv_dist_stock/",
       "/inv_in_depot/",
-      "/availableAccounts_profit/"
+      "/availableAccounts_profit/",
+      "/profitCenterAccount/",
+      "/removeFromProfitCenter/"
     ]
   }
 }
