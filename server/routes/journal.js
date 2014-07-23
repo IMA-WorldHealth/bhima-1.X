@@ -187,11 +187,12 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       'SELECT `sale`.`project_id`, `project`.`enterprise_id`, `sale`.`uuid`, `sale`.`currency_id`, ' +
         '`sale`.`debitor_uuid`, `sale`.`seller_id`, `sale`.`discount`, `sale`.`invoice_date`, ' +
         '`sale`.`cost`, `sale`.`note`, `sale_item`.`uuid` as `item_uuid`, `sale_item`.`transaction_price`, `sale_item`.`debit`, ' +
-        '`sale_item`.`credit`, `sale_item`.`quantity`, `inventory`.`group_uuid` ' +
-      'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `project` ON ' +
+        '`sale_item`.`credit`, `sale_item`.`quantity`, `inventory`.`group_uuid`, `service`.`profit_center_id` ' +
+      'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `project` JOIN `service` ON ' +
         '`sale`.`uuid`=`sale_item`.`sale_uuid` AND ' +
         '`sale`.`project_id`=`project`.`id` AND ' +
-        '`sale_item`.`inventory_uuid`=`inventory`.`uuid` ' +
+        '`sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
+        '`sale`.`service_id`=`service`.`id` '+
       'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ' ' +
       'ORDER BY `sale_item`.`credit`;';
 
@@ -272,11 +273,11 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           'INSERT INTO `posting_journal` ' +
             '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
             '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `pc_id`) ' +
           'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
             '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
             '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-            ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
+            ' null, `sale`.`uuid`, ' + [cfg.originId, user_id, item.profit_center_id].join(', ') + ' ' +
           'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
             '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
             '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +

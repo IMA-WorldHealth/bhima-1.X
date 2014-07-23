@@ -677,7 +677,8 @@
     "LIMIT"               : "Limit",
     "TRANSACTION_DATE"    : "Date de Transaction",
     "PURCHASER"           : "Acheteur",
-    "EMPLOYER"            : "Creer par"
+    "EMPLOYER"            : "Creer par",
+    "PROFIT_CENTER"       : "Center profit"
   },
 
   "REPORT"                  : {

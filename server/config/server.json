@@ -72,7 +72,10 @@
       "/inv_in_depot/",
       "/availableAccounts_profit/",
       "/profitCenterAccount/",
-      "/removeFromProfitCenter/"
+      "/removeFromProfitCenter/",
+      "/services/",
+      "/available_cost_center/",
+      "/available_profit_center/"
     ]
   }
 }

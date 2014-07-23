@@ -470,10 +470,17 @@ create table `price_list_item` (
 drop table if exists `service`;
 create table `service` (
   `id`                smallint unsigned not null auto_increment,
+  `project_id`        smallint unsigned not null,
   `name`              text not null,
-  `cost_center_id`    smallint unsigned null,
-  `profit_center_id`  smallint unsigned null,
-  primary key (`id`)
+  `cost_center_id`    smallint  null,
+  `profit_center_id`  smallint  null,
+  primary key (`id`),
+  key `project_id` (`project_id`),
+  key `cost_center_id` (`cost_center_id`),
+  key `profit_center_id` (`profit_center_id`),
+  constraint foreign key (`project_id`) references `project` (`id`) on update cascade,
+  constraint foreign key (`cost_center_id`) references `cost_center` (`id`) on update cascade,
+  constraint foreign key (`profit_center_id`) references `profit_center` (`id`) on update cascade
 ) engine=innodb;
 
 drop table if exists `debitor_group`;
