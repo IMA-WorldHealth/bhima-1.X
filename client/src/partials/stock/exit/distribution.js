@@ -60,7 +60,7 @@ angular.module('bhima.controllers')
     moduleStep();
 
     function initialiseDistributionDetails(patient) {
-      console.log(patient);
+      console.log('patient', patient);
       dependencies.ledger.query = '/ledgers/debitor/' + patient.debitor_uuid;
       session.patient = patient;
       validate.process(dependencies).then(startup);
@@ -70,7 +70,7 @@ angular.module('bhima.controllers')
       angular.extend($scope, model);
 
       moduleStep();
-      console.log(model);
+      console.log('model', model);
     }
 
     function moduleStep() {
@@ -227,32 +227,40 @@ angular.module('bhima.controllers')
 
     function submitConsumption() {
       var submitItem = [];
-
-      // Ensure validation is okay
+      var consumption_patients = [];
       if (!session.lotSelectionSuccess) { return messenger.danger('Cannot verify lot allocation'); }
-
-      // Iterate through items, write consumption line for each lot
       session.sale.details.forEach(function (consumptionItem) {
+        console.log('session', session)
 
         if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
         consumptionItem.recomendedLots.forEach(function (lot) {
+          var consumption_uuid = uuid();
           submitItem.push({
-            uuid : uuid(),
+            uuid : consumption_uuid,
             depot_uuid : session.depot,
             date : util.convertToMysqlDate(new Date()),
             document_id : consumptionItem.sale_uuid,
             tracking_number : lot.details.tracking_number,
             quantity : lot.quantity
           });
+
+          consumption_patients.push({
+            uuid : uuid(),
+            consumption_uuid : consumption_uuid,
+            sale_uuid : session.sale.inv_po_id,
+            patient_uuid : session.patient.uuid
+          });
         });
       });
-
-      console.log('items', submitItem);
       connect.basicPut('consumption', submitItem)
+      .then(function (){
+        return connect.basicPut('consumption_patient', consumption_patients)
+      })
+      .then(function (res) {
+        return connect.fetch('/journal/distribution_patient/' + session.sale.inv_po_id);
+      })
       .then(function () {
-        // messenger.success('Consumption successfully written', true);
-        console.log('sale', session.sale);
         $location.path('/invoice/consumption/' + session.sale.inv_po_id);
       })
       .catch(function (error) {
