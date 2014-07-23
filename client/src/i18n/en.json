@@ -579,7 +579,8 @@
     "LOT_DETAILS"         : "Lot Detail",
     "TRANSFER_QUANTITY"   : "Quantity to transfert",
     "PURCHASER"           : "Purchaser",
-    "EMPLOYER"            : "Made By"
+    "EMPLOYER"            : "Made By",
+    "PROFIT_CENTER"       : "Profit center"
   },
 
   "INVENTORY" : {

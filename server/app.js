@@ -86,10 +86,65 @@ app.post('/purchase', function(req, res, next) {
 });
 
 app.post('/sale/', function (req, res, next) {
+
   createSale.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send(200, {saleId: ans});
   });
+});
+
+app.get('/services/', function (req, res, next) {
+  var sql =
+    'SELECT `service`.`id`, `service`.`name` AS `service`, `service`.`project_id`, `service`.`cost_center_id`, `service`.`profit_center_id`, `cost_center`.`text` AS `cost_center`, `profit_center`.`text` AS `profit_center`, `project`.`name` AS `project` '+
+    'FROM `service` JOIN `cost_center` JOIN `profit_center` JOIN `project` ON `service`.`cost_center_id`=`cost_center`.`id` AND `service`.`profit_center_id`=`profit_center`.`id` '+
+    'AND `service`.`project_id`=`project`.`id`'
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
+});
+
+app.get('/available_cost_center/', function (req, res, next) {
+  var sql =
+    'SELECT `cost_center`.`text`, `cost_center`.`id`, `cost_center`.`project_id`, `service`.`name` '+
+    'FROM `cost_center` LEFT JOIN `service` ON `service`.`cost_center_id`=`cost_center`.`id`'
+
+  function process(ccs) {
+    var costCenters = ccs.filter(function(item) {
+      return !item.name
+    });
+    return costCenters;
+  }
+  db.exec(sql)
+  .then(function (result) {
+    res.send(process(result));
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
+});
+
+app.get('/available_profit_center/', function (req, res, next) {
+  var sql =
+    'SELECT `profit_center`.`text`, `profit_center`.`id`, `profit_center`.`project_id`, `service`.`name` '+
+    'FROM `profit_center` LEFT JOIN `service` ON `service`.`profit_center_id`=`profit_center`.`id`'
+
+  function process(pcs) {
+    var profitCenters = pcs.filter(function(item) {
+      return !item.name
+    });
+    return profitCenters;
+  }
+  db.exec(sql)
+  .then(function (result) {
+    res.send(process(result));
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
 });
 
 app.get('/currentProject', function (req, res, next) {

@@ -11,21 +11,31 @@ angular.module('bhima.controllers')
     var dependencies = {}, cost_center = {}, service ={};
     $scope.choosen = {};
 
+    var configuration = $scope.configuration = {};
+
     dependencies.services = {
-      query : {
-        tables : {
-          'service' : {
-            columns : ['id', 'name', 'cost_center_id']
-          },
-          'cost_center' : {
-            columns : ['text']
-          }
-        },
-        join : ['service.cost_center_id=cost_center.id']
-      }
+      query :'/services/'
     };
 
     dependencies.cost_centers = {
+      query : '/available_cost_center/'
+    }
+
+    dependencies.profit_centers = {
+      query : '/available_profit_center/'
+    }
+
+    dependencies.projects = {
+      query : {
+        tables : {
+          'project' : {
+            columns : ['id', 'name', 'abbr', 'enterprise_id']
+          }
+        }
+      }
+    };
+
+    dependencies.costs = {
       query : {
         tables : {
           'cost_center' : {
@@ -33,10 +43,23 @@ angular.module('bhima.controllers')
           }
         }
       }
-    };
+    }
+
+    dependencies.profits = {
+      query : {
+        tables : {
+          'profit_center' : {
+            columns : ['id', 'text']
+          }
+        }
+      }
+    }
 
     function init(model) {
       $scope.model = model;
+      configuration.cost_centers = model.cost_centers.data;
+      configuration.profit_centers = model.profit_centers.data;
+      console.log(model)
     }
 
     function save() {
@@ -67,6 +90,9 @@ angular.module('bhima.controllers')
         .then(handleResultCost)
         .then(getProfit)
         .then(handleResultProfit);
+      }else if (value === 'edit'){
+        configuration.cost_centers = $scope.model.costs.data
+        configuration.profit_centers = $scope.model.profits.data
       }
       $scope.action = value;
     }
@@ -123,6 +149,18 @@ angular.module('bhima.controllers')
       });
     }
 
+    function filterCenters (id) {
+
+      configuration.cost_centers = $scope.model.cost_centers.data.filter(function (item) {
+        return item.project_id == id
+      });
+
+      configuration.profit_centers = $scope.model.profit_centers.data.filter(function (item) {
+        return item.project_id == id
+      });
+      console.log('ID recu', id)
+    }
+
     appstate.register('project', function (project) {
       $scope.project = project;
       validate.process(dependencies)
@@ -135,5 +173,6 @@ angular.module('bhima.controllers')
     $scope.setAction = setAction;
     $scope.edit = edit;
     $scope.remove = remove;
+    $scope.filterCenters = filterCenters;
   }
 ]);

@@ -1794,7 +1794,7 @@ INSERT INTO `profit_center` VALUES
 (1, 1, "Nursing profit center","note");
 
 INSERT INTO `service` VALUES
-(1, "Nursing Service", 1,1);
+(1, 1, "Nursing Service", 1,1);
 
 
 
