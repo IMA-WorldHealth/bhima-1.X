@@ -96,6 +96,7 @@ angular.module('bhima.controllers')
     }
 
     function submitPayment(model) {
+      console.log('selected', session.selected.cost)
       var creditorId = model.employee.data[0].creditor_uuid;
       var request = {
         details : {

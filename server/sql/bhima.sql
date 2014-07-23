@@ -725,11 +725,14 @@ create table `consumption_patient` (
   `uuid`                char(36) not null,
   `consumption_uuid`    char(36) not null,
   `sale_uuid`           char(36) not null,
-  primary key (`uuid`)
-  -- key `consumption_uuid` (`consumption_uuid`),
-  -- key `sale_uuid` (`sale_uuid`),
-  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
-  -- constraint foreign key (`sale_uuid`) references `sale` (`uuid`)
+  `patient_uuid`        char(36) not null,
+  primary key (`uuid`),
+  key `consumption_uuid` (`consumption_uuid`),
+  key `sale_uuid` (`sale_uuid`),
+  key `patient_uuid` (`patient_uuid`),
+  constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`),
+  constraint foreign key (`patient_uuid`) references `patient` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `consumption_service`;
@@ -737,11 +740,11 @@ create table `consumption_service` (
   `uuid`                char(36) not null,
   `consumption_uuid`    char(36) not null,
   `service_id`          smallint unsigned not null,
-  primary key (`uuid`)
-  -- key `consumption_uuid` (`consumption_uuid`),
-  -- key `service_id` (`service_id`),
-  -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
-  -- constraint foreign key (`service_id`) references `service` (`id`)
+  primary key (`uuid`),
+  key `consumption_uuid` (`consumption_uuid`),
+  key `service_id` (`service_id`),
+  constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
+  constraint foreign key (`service_id`) references `service` (`id`)
 ) engine=innodb;
 
 drop table if exists `consumption_loss`;
@@ -1172,6 +1175,7 @@ create table `purchase` (
   `paid`              boolean not null default 0,
   `paid_uuid`         char(36),
   `confirmed`         boolean not null default 0,
+  `closed`            boolean not null default 0,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
