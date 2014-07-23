@@ -1396,6 +1396,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
   }
 
   function handleIndirectPurchase (id, user_id, done){
+    console.log('je suis appeler')
     var reference, dayExchange, cfg = {};
     var sql = 'SELECT `primary_cash`.`reference`, `primary_cash`.`uuid`, `primary_cash`.`project_id`, `primary_cash`.`type`, `primary_cash`.`date`, `primary_cash`.`deb_cred_uuid`, '+
               '`primary_cash`.`deb_cred_type`, `primary_cash`.`currency_id`, `primary_cash`.`account_id`, `primary_cash`.`cost`, `primary_cash`.`user_id`, `primary_cash`.`description`, '+
