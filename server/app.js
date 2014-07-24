@@ -40,7 +40,7 @@ var report         = require('./routes/report')(db, sanitize, util),
     synthetic      = require('./routes/synthetic')(db, sanitize),
     journal        = require('./routes/journal')(db, sanitize, util, validate, store, uuid),
     createSale     = require('./routes/createSale')(db, parser, journal, uuid),
-    createPurchase = require('./routes/createPurchase')(db, parser, uuid),
+    createPurchase = require('./routes/createPurchase')(db, parser, journal, uuid),
     depotRouter    = require('./routes/depot')(db, sanitize, store),
     tree           = require('./routes/tree')(db, parser),
     drugRouter     = require('./routes/drug')(db),
@@ -86,10 +86,65 @@ app.post('/purchase', function(req, res, next) {
 });
 
 app.post('/sale/', function (req, res, next) {
+
   createSale.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send(200, {saleId: ans});
   });
+});
+
+app.get('/services/', function (req, res, next) {
+  var sql =
+    'SELECT `service`.`id`, `service`.`name` AS `service`, `service`.`project_id`, `service`.`cost_center_id`, `service`.`profit_center_id`, `cost_center`.`text` AS `cost_center`, `profit_center`.`text` AS `profit_center`, `project`.`name` AS `project` '+
+    'FROM `service` JOIN `cost_center` JOIN `profit_center` JOIN `project` ON `service`.`cost_center_id`=`cost_center`.`id` AND `service`.`profit_center_id`=`profit_center`.`id` '+
+    'AND `service`.`project_id`=`project`.`id`'
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
+});
+
+app.get('/available_cost_center/', function (req, res, next) {
+  var sql =
+    'SELECT `cost_center`.`text`, `cost_center`.`id`, `cost_center`.`project_id`, `service`.`name` '+
+    'FROM `cost_center` LEFT JOIN `service` ON `service`.`cost_center_id`=`cost_center`.`id`'
+
+  function process(ccs) {
+    var costCenters = ccs.filter(function(item) {
+      return !item.name
+    });
+    return costCenters;
+  }
+  db.exec(sql)
+  .then(function (result) {
+    res.send(process(result));
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
+});
+
+app.get('/available_profit_center/', function (req, res, next) {
+  var sql =
+    'SELECT `profit_center`.`text`, `profit_center`.`id`, `profit_center`.`project_id`, `service`.`name` '+
+    'FROM `profit_center` LEFT JOIN `service` ON `service`.`profit_center_id`=`profit_center`.`id`'
+
+  function process(pcs) {
+    var profitCenters = pcs.filter(function(item) {
+      return !item.name
+    });
+    return profitCenters;
+  }
+  db.exec(sql)
+  .then(function (result) {
+    res.send(process(result));
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
 });
 
 app.get('/currentProject', function (req, res, next) {
@@ -289,6 +344,27 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
   });
 });
 
+app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.pc_id IS NULL ' +
+      'AND account.account_type_id <> 3';
+
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
+});
+
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
@@ -329,7 +405,6 @@ app.get('/profit/:id_project/:service_id', function(req, res, next) {
 
   synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
     if (err) { return next(err); }
-    console.log('[synthetic a retourner data]', data);
     res.send(process(data));
   });
 });
@@ -337,10 +412,6 @@ app.get('/profit/:id_project/:service_id', function(req, res, next) {
 
 
 app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
-  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
-  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
-  // var sql = 'SELECT account.id, account.account_number, account.account_txt FROM account, cost_center WHERE account.cc_id = cost_center.id '+
-  //           'AND account.enterprise_id = ''+req.params.id_enterprise+'' AND account.parent <> 0 AND account.cc_id=''+req.params.cost_center_id+''';
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
     'FROM account JOIN cost_center ' +
@@ -362,30 +433,60 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
   });
 });
 
+app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', function(req, res, next) {
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN profit_center ' +
+    'ON account.pc_id = profit_center.id '+
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.pc_id = ' + sanitize.escape(req.params.profit_center_id) + ';';
+
+  function process(accounts) {
+    var availableprofitAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
+    });
+    return availableprofitAccounts;
+  }
+
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(process(rows));
+  });
+});
+
 //
 
 app.get('/removeFromCostCenter/:tab', function(req, res, next) {
   var tabs = JSON.parse(req.params.tab);
-  console.log('le tabs', tabs);
 
   tabs = tabs.map(function (item) {
     return item.id;
   });
 
   var sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
-  console.log('la requette est  ', sql);
+  db.execute(sql, function (err, rows) {
+    if (err) { return next(err); }
+    res.send(rows);
+  });
+});
+
+app.get('/removeFromProfitCenter/:tab', function(req, res, next) {
+  var tabs = JSON.parse(req.params.tab);
+  tabs = tabs.map(function (item) {
+    return item.id;
+  });
+
+  var sql = 'UPDATE `account` SET `account`.`pc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
 
   db.execute(sql, function (err, rows) {
     if (err) { return next(err); }
-    console.log('la reponse est ', rows);
     res.send(rows);
   });
 });
 
 
 app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
-  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
-  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
     'FROM account JOIN auxiliairy_center ' +
@@ -405,7 +506,6 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
     if (err) { return next(err); }
     res.send(process(rows));
   });
-
 });
 
 app.get('/tree', function (req, res, next) {
@@ -653,7 +753,6 @@ app.get('/inventory/drug/:code', function (req, res, next) {
 });
 
 app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
-  console.log('le depot uuid est ', req.params.depot_uuid);
   var sql;
   var condition =
     'WHERE stock.expiration_date >= ' + sanitize.escape(req.params.df) + ' ' +
@@ -677,7 +776,6 @@ app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
 
   db.exec(sql)
   .then(function (ans) {
-    console.log('core server on a : ', ans);
     res.send(ans);
   })
   .catch(function (err) {
@@ -751,7 +849,6 @@ app.get('/serv_dist_stock/:depot_uuid', function (req, res, next) {
           'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') GROUP BY stock.tracking_number';
   db.exec(sql)
   .then(function (ans) {
-    console.log('les resultats sont : ', ans)
     res.send(ans)
   })
   .catch(function (err) {

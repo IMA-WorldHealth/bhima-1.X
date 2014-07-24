@@ -98,13 +98,17 @@
       controller: 'creditorGroup',
       templateUrl: 'partials/creditor/group/creditor_group.html'
     }).
-    when('/inventory/purchase', {
+    when('/purchase/create/', {
       controller: 'purchaseOrder',
-      templateUrl: 'partials/purchase_order/purchase.html'
+      templateUrl: 'partials/purchase/create/purchase.html'
     })
-    .when('/purchase_records/:purchaseID?', {
+    .when('/purchase/view/', {
       controller: 'purchaseRecords',
-      templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
+      templateUrl: 'partials/purchase/view/purchase_records.html'
+    })
+    .when('/purchase/confirm/', {
+      controller: 'purchaseConfirm',
+      templateUrl: 'partials/purchase/confirm/confirm.html'
     })
     .when('/inventory/price_list', {
       controller: 'priceList',
@@ -209,6 +213,14 @@
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
     })
+    .when('/profit_center', {
+      controller: 'profitCenter',
+      templateUrl: 'partials/profit_center/profit_center.html'
+    })
+    .when('/profit_center/center/', {
+      controller: 'profitCenterAnalyse',
+      templateUrl: 'partials/profit_center/center/analysis_profit_center.html'
+    })
     .when('/cost_center/center/', {
       controller: 'analysisCenter',
       templateUrl: 'partials/cost_center/center/analysis_center.html'
@@ -220,6 +232,10 @@
     .when('/cost_center/allocation/', {
       controller: 'costCenter.allocation',
       templateUrl: 'partials/cost_center/allocation/allocation.html'
+    })
+    .when('/profit_center/allocation/', {
+      controller: 'profitCenter.allocation',
+      templateUrl: 'partials/profit_center/allocation/allocation.html'
     })
     .when('/patient_group', {
       controller: 'patientGroup',
@@ -348,6 +364,10 @@
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
+    })
+    .when('/purchase_menu/', {
+      controller : 'purchase.menu',
+      templateUrl : 'partials/purchase/purchase_menu.html'
     });
   }
 

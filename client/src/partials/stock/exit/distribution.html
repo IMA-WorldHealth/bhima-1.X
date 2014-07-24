@@ -12,7 +12,7 @@
       <li><a tabindex="-1" href="">{{ "STOCK.EXIT.KEY" | translate }}</a></li>
     </ol>
   </div>
-  
+
   <div class="pull-right" style="margin-top: 1px">
     <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
       {{depot.text}}</span>
@@ -20,31 +20,29 @@
 </nav>
 
 <main>
-
-<!-- Section Header -->
-  <div 
+  <!-- Section Header -->
+  <div
     class="row"
     ng-repeat-start="section in moduleDefinition">
-    <div 
-      class="col-xs-12"  
+    <div
+      class="col-xs-12"
       style="padding-bottom : 5px; margin-bottom: 5px;">
       <div class="underline">
-        <span 
+        <span
           class="label"
           ng-class="
             {'label-success' : session.index===$index,
              'label-primary' : session.index<$index,
              'label-default' : session.index>$index
             }">
-          {{$index + 1}}</span> 
+          {{$index + 1}}</span>
         <span ng-class="{'strike' : session.index>$index}">{{section.title}}</span>
       </div>
     </div>
   </div>
 
   <!-- Section Body -->
-  <!-- ng-if="session.currentModule > $index" -->
-  <ng-include 
+  <ng-include
     ng-if="session.index >= $index"
     ng-repeat-end
     src="section.template"></ng-include>
@@ -52,14 +50,14 @@
 
 <footer>
   <div class="pull-right">
-    <a 
-      ng-disabled="!session.lotSelectionSuccess" 
-      ng-click="submitConsumption()" 
+    <a
+      ng-disabled="!session.lotSelectionSuccess"
+      ng-click="submitConsumption()"
       class="btn btn-default">
       <span class="glyphicon glyphicon-floppy-open"></span>
       {{ "DISTRIBUTION.SUBMIT" | translate }}
-      <span 
-        class="glyphicon" 
+      <span
+        class="glyphicon"
         ng-class="{'glyphicon-ok-sign correct' : session.lotSelectionSuccess, 'glyphicon-remove-sign error' : session.lotSelectionFailure}"></span>
     </a>
   </div>
@@ -93,16 +91,16 @@
           <td width="50%">
             <div>
               <div ng-if="session.sale.balance===session.sale.debit">
-                <span 
+                <span
                 class="glyphicon"
                 ng-class="{
                   'glyphicon-remove-sign error' : true
                 }"
                 ></span> Invoice has not been payed
               </div>
-            
+
               <div ng-if="session.sale.balance===0">
-                <span 
+                <span
                 class="glyphicon"
                 ng-class="{
                   'glyphicon-ok-sign correct' : true
@@ -111,7 +109,7 @@
               </div>
 
               <div ng-if="session.sale.balance!==0&&session.sale.balance<session.sale.debit">
-                <span 
+                <span
                 class="glyphicon"
                 ng-class="{
                   'glyphicon-minus-sign warn' : true
@@ -131,7 +129,7 @@
     <div class="row">
       <div class="col-xs-12">
         <div class="alert alert-info">
-          <span class="glyphicon glyphicon-info-sign"></span> 
+          <span class="glyphicon glyphicon-info-sign"></span>
           {{ledger.data.length ? 'Showing all sales for patient ' : 'No sale data found for patient '}}
            <b>{{session.patient.name}}
           </b>
@@ -141,8 +139,8 @@
 
     <div class="row">
       <div class="col-xs-12">
-        
-        
+
+
         <div ng-if="ledger.data.length" class="panel panel-default">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-th-list"></span> Available Prescriptions
@@ -152,7 +150,7 @@
             <div class="panel panel-default" ng-repeat="item in ledger.data | orderBy:['consumed', '-trans_date']">
               <div class="panel-body">
                 <div class="pull-right">
-                <span 
+                <span
                   class="glyphicon"
                   ng-class="{
                     'glyphicon-ok-sign correct' : !item.consumed,
@@ -176,16 +174,16 @@
                       <td width="50%">
                         <div>
                           <div ng-if="item.balance===item.debit">
-                            <span 
+                            <span
                             class="glyphicon"
                             ng-class="{
                               'glyphicon-remove-sign error' : true
                             }"
                             ></span> Invoice has not been payed
                           </div>
-                        
+
                           <div ng-if="item.balance===0">
-                            <span 
+                            <span
                             class="glyphicon"
                             ng-class="{
                               'glyphicon-ok-sign correct' : true
@@ -194,7 +192,7 @@
                           </div>
 
                           <div ng-if="item.balance!==0&&item.balance<item.debit">
-                            <span 
+                            <span
                             class="glyphicon"
                             ng-class="{
                               'glyphicon-minus-sign warn' : true
@@ -207,9 +205,9 @@
                     </tr>
                   </tbody>
                 </table>
-              
+
                 <div ng-if="!item.consumed">
-                  <button 
+                  <button
                     ng-click="selectSale(item)"
                     class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span> Select sale for distribution</button>
                   <button class="btn btn-default btn-sm">View sale details</button>
@@ -230,38 +228,38 @@
     </div>
 
     <div class="panel-body">
-      <table 
+      <table
         class="table table-bordered"
         ng-repeat="inventoryItem in session.sale.details | orderBy:'-consumable'">
         <thead>
         </thead>
 
         <tbody>
-          <tr 
+          <tr
             ng-class="{'invalid' : !inventoryItem.consumable}"
             >
             <td colspan="2">
-              <span class="glyphicon glyphicon-tag"></span> 
-              <span 
-                ng-if="inventoryItem.consumable"><b>{{inventoryItem.quantity}} x </b></span> 
+              <span class="glyphicon glyphicon-tag"></span>
+              <span
+                ng-if="inventoryItem.consumable"><b>{{inventoryItem.quantity}} x </b></span>
               <span>{{inventoryItem.text}} </span>
               <span ng-if="!inventoryItem.consumable">(Not consumable)</span>
             </td>
           </tr>
-        
+
           <tr ng-if="inventoryItem.stockStatus">
             <td colspan="2">
               <span class="glyphicon {{inventoryItem.stockStatus.icon}}"></span> {{inventoryItem.stockStatus.alert}}
             </td>
           </tr>
 
-          <tr 
+          <tr
             ng-if="inventoryItem.recomendedLots">
-            <td><span class="glyphicon glyphicon-ok-sign correct"></span> <b>Recomended Lot</b></td> 
+            <td><span class="glyphicon glyphicon-ok-sign correct"></span> <b>Recomended Lot</b></td>
             <td><b>Quantity <small>(Selected from lot)</small></b></td>
           </tr>
 
-          <tr 
+          <tr
             ng-if="inventoryItem.recomendedLots"
             ng-repeat="recomended in inventoryItem.recomendedLots">
             <td>

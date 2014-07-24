@@ -7,7 +7,9 @@ angular.module('bhima.controllers')
   'messenger',
   'validate',
   'appstate',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate) {
+  'connect',
+  '$location',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location) {
     var dependencies = {}, session = $scope.session = {};
     var cashbox, cashboxReference = $routeParams.cashbox;
     var currency_id = 2; // FIXME
@@ -15,7 +17,7 @@ angular.module('bhima.controllers')
     if (!cashboxReference) {
       return messenger.info($translate.instant('CASH_PURCHASE.CASHBOX_ASSIGN_ERROR'));
     }
-    
+
     // TODO Don't download complete purchase orders
     dependencies.purchase = {
       query : {
@@ -25,7 +27,8 @@ angular.module('bhima.controllers')
           employee : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },
-        join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id']
+        join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
+        where : ['purchase.paid='+0]
       }
     };
 
@@ -40,7 +43,32 @@ angular.module('bhima.controllers')
       }
     };
 
-    validate.process(dependencies).then(initialise);
+    dependencies.enterprise = {
+      query : {
+        tables : {
+          enterprise : {columns : ['id', 'currency_id']}
+        }
+      }
+    }
+
+    dependencies.pcash_module = {
+      required : true,
+      query : {
+        tables : {
+          'primary_cash_module' : {
+            columns : ['id']
+          }
+        },
+        where : ['primary_cash_module.text=Purchase']
+      }
+    }
+
+    appstate.register('project', function (project){
+      $scope.project = project
+       validate.process(dependencies).then(initialise)
+    })
+
+
 
     function initialise(model) {
       angular.extend($scope, model);
@@ -49,8 +77,9 @@ angular.module('bhima.controllers')
 
     function confirmPurchase(purchaseId) {
       session.selected = $scope.purchase.get(purchaseId);
+
     }
-    
+
     function payPurchase() {
       dependencies.employee = {
         query : {
@@ -67,20 +96,20 @@ angular.module('bhima.controllers')
     }
 
     function submitPayment(model) {
-      console.log('session', session);
+      console.log('selected', session.selected.cost)
       var creditorId = model.employee.data[0].creditor_uuid;
       var request = {
         details : {
           project_id : appstate.get('project').id,
-          type : 'S', // Exit ? I don't know
+          type : 'S',
           date : getDate(),
           deb_cred_uuid : creditorId,
-          deb_cred_type : 'C', //?
-          currency_id : 2, //FIXME
+          deb_cred_type : 'C',
+          currency_id : model.enterprise.data[0].currency_id, //FIXME
           cash_box_id : cashbox.id,
           account_id : cashbox.account_id,
           description : 'PP/' + session.selected.uuid + '/',
-          origin_id : 1 //FIXME
+          origin_id : model.pcash_module.data[0].id
         },
         transaction : [
           {
@@ -93,17 +122,27 @@ angular.module('bhima.controllers')
 
       $http.post('purchase', request)
       .then(paymentSuccess)
+      .then(generateDocument)
       .catch(handleError);
     }
 
     function paymentSuccess(result) {
-      console.log('payment success', result);
+      var purchase = {
+        uuid : session.selected.uuid,
+        paid : 1,
+        paid_uuid : result.data.purchaseId.primary_cash_uuid
+      }
+      return connect.basicPost('purchase', [purchase], ['uuid'])
+    }
+
+    function generateDocument (res){
+       $location.path('/invoice/indirect_purchase/' + session.selected.uuid);
     }
 
     function handleError(error) {
       throw error;
     }
-    
+
     function getDate() {
       //Format the current date according to RFC3339
       var currentDate = new Date();

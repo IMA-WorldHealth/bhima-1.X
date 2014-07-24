@@ -3,7 +3,7 @@
 </header>
 
 <section class="top-nav underline">
-<div class="pull-right">
+  <div class="pull-right">
     <a ng-click="toggleTablock()" class="btn btn-default">
       <span ng-class="{'glyphicon-th': session.tablock===0, 'glyphicon-th-list' : session.tablock===-1}" class="glyphicon"></span> {{(session.tablock==-1) ? ("SALE.TAB_LOCK_LINE" | translate) : ("SALE.TAB_LOCK_ITEM" | translate)}}
     </a>
@@ -21,10 +21,28 @@
       <div find-patient on-search-complete="initialiseSaleDetails"></div>
     </div>
   </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      {{'SALE.CHOOSE' | translate}}
+    </div>
+    <div class="panel-body">
+      <form class="form">
+        <div class="form-group">
+          <select
+            class="col-xs-2 form-bhima"
+            ng-model="invoice.service"
+            ng-options="serv as serv.name  for serv in model.services.data"
+            ng-change="preparDistribution()"
+          >
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div class="row">
     <div class="col-xs-12">
-        <div ng-show="invoice.debtor">
+        <div ng-show="invoice.service && invoice.debtor">
           <div class="row">
             <div class="col-xs-12">
               <fieldset>
