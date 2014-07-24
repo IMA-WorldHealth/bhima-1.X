@@ -1,0 +1,94 @@
+<header data-header>
+  {{'VERSEMENT_PROFIT_CENTER.TITLE' | translate}}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/profit_center">{{ "VERSEMENT_PROFIT_CENTER.PARENT" | translate }}</a></li>
+      <li class="active">{{ "VERSEMENT_PROFIT_CENTER.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      {{'VERSEMENT_PROFIT_CENTER.CHOOSE' | translate}}
+    </div>
+    <div class="panel-body">
+      <form class="form">
+        <div class="form-group">
+          <select class="col-xs-2 form-bhima" ng-model="configuration.profitCenter" ng-change="performChange()">
+            <option value="{{pc}}" ng-repeat="pc in profit_centers.data">{{pc.text}}</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="height: 50px;">
+          <span> {{ 'VERSEMENT_PROFIT_CENTER.AVAILABLE_ACCOUNT' | translate}} {{ selected.text }}</span>
+          <span class="pull-right">
+            <button ng-disabled="!isAssignable()" class="btn btn-sm btn-default" type="submit" ng-click="assign()">{{'VERSEMENT_PROFIT_CENTER.VERSER' | translate}}</button>
+          </span>
+        </div>
+        <div class="panel-body versement-header">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th><input type="checkbox" ng-model="acc_1.all" ng-change="checkAllAvailable()"/></th>
+                <th>Account Number</th>
+                <th>Account Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="account in availableAccounts.data">
+                <td><input type="checkbox" ng-model="account.checked"/></td>
+                <td>{{ account.account_number }}</td>
+                <td>{{ account.account_txt }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading" style="height: 50px;">
+          {{ 'VERSEMENT_PROFIT_CENTER.ASSOCIATED_TO' | translate }} <b>{{ selectedCostCenter.text }}<span ng-if="!selectedCostCenter">{{'VERSEMENT_PROFIT_CENTER.PLEASE_SELECT' | translate}}</span></b>
+          <span class="pull-right">
+            <button ng-disabled="!isRemovable()" class="btn btn-sm btn-default" type="submit" ng-click="remove()">
+              {{ 'VERSEMENT_PROFIT_CENTER.REMOVE' | translate }}
+            </button>
+          </span>
+        </div>
+
+        <div class="panel-body versement-header">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th><input type="checkbox" ng-model="acc_2.all" ng-change="checkAllAssociated()"/></th>
+                <th>Account Number</th>
+                <th>Account Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="associatedAccount in associatedAccounts.data">
+              <td><input type="checkbox" ng-model="associatedAccount.checked"/></td>
+              <td>{{ associatedAccount.account_number }}</td>
+              <td>{{ associatedAccount.account_txt }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

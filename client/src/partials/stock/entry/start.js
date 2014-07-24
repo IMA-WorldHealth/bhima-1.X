@@ -53,7 +53,7 @@ angular.module('bhima.controllers')
             columns : ['uuid', 'reference', 'project_id']
           }
         },
-        where : ['purchase.paid=0']
+        where : ['purchase.closed=0']
       }
     };
 
@@ -312,7 +312,7 @@ angular.module('bhima.controllers')
         return connect.basicPut('movement', movements);
       })
       .then(function () {
-        return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, paid : 1 }], ['uuid']);
+        return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
       })
       .then(function () {
         messenger.success('STOCK.ENTRY.WRITE_SUCCESS');

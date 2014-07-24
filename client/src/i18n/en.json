@@ -579,7 +579,8 @@
     "LOT_DETAILS"         : "Lot Detail",
     "TRANSFER_QUANTITY"   : "Quantity to transfert",
     "PURCHASER"           : "Purchaser",
-    "EMPLOYER"            : "Made By"
+    "EMPLOYER"            : "Made By",
+    "PROFIT_CENTER"       : "Profit center"
   },
 
   "INVENTORY" : {
@@ -713,7 +714,9 @@
     "SERVICE"                   : "Service Management",
     "EXPIRING"                  : "Expiring stock report",
     "ALL_TRANSACTIONS"          : "All Transactions",
-    "PATIENT_RECORDS"           : "Patient Records"
+    "PATIENT_RECORDS"           : "Patient Records",
+    "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
+    "PROFIT_CENTER_MGMNT"       : "Profit center management"
   },
 
   "DISTRIBUTION" : {
@@ -1150,7 +1153,8 @@
     "RECOVER"         : "Recover Sale",
     "RECOVER_INFO"    : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default",
     "APPLIES_GLOBALLY" : "Appliquer globallemement",
-    "APPLIES_TO_ITEM"  : "Appliquer par item"
+    "APPLIES_TO_ITEM"  : "Appliquer par item",
+    "CHOOSE"           : "Choose the service"
   },
 
   "FIND"              : {
@@ -1336,7 +1340,30 @@
     }
 },
 
+"PROFIT_CENTER" : {
+    "TITLE"         : "Profit center Management",
+    "NAVIGATION"    : "Browsing",
+    "OPERATION"     : "operations",
+    "OPERATIONS" : {
+      "CC"        : "Profit center",
+      "ASSIGN"    : "Assigning",
+      "VERSEMENT" : "Injection"
+    }
+},
+
 "VERSEMENT" : {
+    "TITLE"                  : "Accounts deposit",
+    "PARENT"                 : "Cost center management",
+    "CHOOSE"                 : "Select cost center",
+    "AVAILABLE_ACCOUNT"      : "Availables accounts",
+    "VERSER"                 : "Deposit",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Browsing",
+    "ASSOCIATED_TO"          : "Accounts associated to : ",
+    "PLEASE_SELECT"          : "(choose cost center pleaase!)"
+},
+
+"VERSEMENT_PROFIT_CENTER" : {
     "TITLE"                  : "Accounts deposit",
     "PARENT"                 : "Cost center management",
     "CHOOSE"                 : "Select cost center",
@@ -1392,6 +1419,29 @@
     "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
     "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
     "NONE_FOUND"               :   "No cost center found !",
+    "MODIFYING"                :   "Editing",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
+    "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",
+    "REMOVE_FAIL_MESSAGE"      :   "Error during deleting !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Deleting successfully !"
+},
+
+"ANALYSIS_PROFIT_CENTER"              :{
+    "TITLE"                    :   "Profit center",
+    "PARENT"                   :   "Profit center Management",
+    "NAVIGATION"               :   "Browsing",
+    "REGISTERED"               :   "Registered profit center",
+    "INFO"                     :   "profit center information",
+    "INFO_DESCRIPTION"         :   "This feature will help you to manage your profit center(creating, editing, deleting as well as consultating)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "profit",
+    "IS_PROFIT"                :   "Profit center",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Registering",
+    "NEW"                      :   "New center",
+    "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
+    "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
+    "NONE_FOUND"               :   "No profit center found !",
     "MODIFYING"                :   "Editing",
     "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
     "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",
@@ -1552,5 +1602,17 @@
     "TO_REQUEST" : " to request a purchase order",
     "VIEW_PURCHASE_DETAIL" : "View Details"
 
+  },
+
+    "PURCHASE_MENU" : {
+    "TITLE" : "Purchase order management",
+    "OPERATION" : "Operations",
+    "PUCHASE_CREATION" : "Create purchase order",
+    "CONFIRM" : "Confirm payment",
+    "VIEW" : "View purchase order"
+  },
+"CONFIRM" : {
+    "TITLE" : "Purchase order payment confirmation",
+    "PARENT" : "Purchase order management"
   }
 }

@@ -69,7 +69,13 @@
       "/expiring/",
       "/expiring_complete/",
       "/serv_dist_stock/",
-      "/inv_in_depot/"
+      "/inv_in_depot/",
+      "/availableAccounts_profit/",
+      "/profitCenterAccount/",
+      "/removeFromProfitCenter/",
+      "/services/",
+      "/available_cost_center/",
+      "/available_profit_center/"
     ]
   }
 }
