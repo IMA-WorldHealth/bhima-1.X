@@ -14,7 +14,7 @@
   "plusplus"      : false,
   "quotmark"      : "single",
   "undef"         : true,
-  "unused"        : "strict",
+  "unused"        : "false",
   "strict"        : false,
   "trailing"      : true,
   "maxstatements" : false,
