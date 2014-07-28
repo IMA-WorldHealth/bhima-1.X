@@ -1,5 +1,6 @@
 angular.module('bhima.directives')
 .directive('locationSelect', ['appstate', 'connect', function (appstate, connect) {
+  /* jshint unused : false */
   return {
     restrict : 'A',
     replace : true,
@@ -61,7 +62,7 @@ angular.module('bhima.directives')
         // Populate initial values (enterprise default)
         Object.keys(locationConfig).forEach(function (key) {
           locationStore[key] = {model : {}, value : {}};
-          modelMap.push(locationStore[key].value);
+          // modelMap.push(locationStore[key].value);
           locationStore[key].value = defaultLocation[formatKeyId(key)];
         });
 

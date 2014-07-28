@@ -1,9 +1,8 @@
 var gulp = require('gulp'),
-    notify  = require('gulp-notify'),
+    // notify  = require('gulp-notify'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     minifycss = require('gulp-minify-css'),
-    htmlreplace = require('gulp-html-replace'),
     jshint = require('gulp-jshint');
 
 var jshintrcPath = '../.jshintrc';
@@ -23,7 +22,7 @@ gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
     // .pipe(jshint(jshintrcPath))
     // .pipe(jshint.reporter('default'))
-    // .pipe(uglify())
+    .pipe(uglify())
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(destPath));
     //.pipe(notify({ message : 'Completed compiling scripts.' }));
@@ -73,5 +72,5 @@ gulp.task('lint', function () {
 });
 
 gulp.task('default', [], function () {
-  gulp.start('scripts', 'styles', 'assets', 'vendor', 'static');
+  gulp.start('lint', 'scripts', 'styles', 'assets', 'vendor', 'static');
 });
