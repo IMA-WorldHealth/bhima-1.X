@@ -33,7 +33,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.services = {
       query: {

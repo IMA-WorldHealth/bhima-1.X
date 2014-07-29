@@ -452,7 +452,7 @@ angular.module('bhima.controllers')
           },
           join : ['enterprise.id=project.enterprise_id']
         }
-      }
+      };
 
       dependencies.purchase = {
         query : {
@@ -465,34 +465,34 @@ angular.module('bhima.controllers')
           join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
           where : ['purchase.uuid='+identifiant]
         }
-      }
+      };
 
       validate.process(dependencies)
       .then(getLocation)
       .then(polish)
       .catch(function (err) {
         console.log('error pendant la genaration de la facture');
-      })
+      });
 
       function getLocation (model) {
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id
-        return validate.process(dependencies, ['location'])
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
       }
 
       function polish (model) {
         $scope.invoice = {};
-        $scope.invoice.uuid = identifiant
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name
-        $scope.invoice.village = model.location.data[0].village
-        $scope.invoice.sector = model.location.data[0].sector
-        $scope.invoice.phone = model.enterprise.data[0].phone
-        $scope.invoice.email = model.enterprise.data[0].email
-        $scope.invoice.name = model.purchase.data[0].name
-        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date
-        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference
-        $scope.invoice.employee_code = model.purchase.data[0].code
-        $scope.invoice.cost = model.purchase.data[0].cost
+        $scope.invoice.uuid = identifiant;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.invoice.name = model.purchase.data[0].name;
+        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date;
+        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference;
+        $scope.invoice.employee_code = model.purchase.data[0].code;
+        $scope.invoice.cost = model.purchase.data[0].cost;
       }
 
     }
@@ -517,7 +517,7 @@ angular.module('bhima.controllers')
           },
           join : ['enterprise.id=project.enterprise_id']
         }
-      }
+      };
 
       dependencies.purchase = {
         query : {
@@ -530,38 +530,35 @@ angular.module('bhima.controllers')
           join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
           where : ['purchase.uuid='+identifiant]
         }
-      }
+      };
 
       validate.process(dependencies)
       .then(getLocation)
       .then(polish)
       .catch(function (err) {
         console.log('error pendant la genaration de la facture');
-      })
+      });
 
       function getLocation (model) {
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id
-        return validate.process(dependencies, ['location'])
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
       }
 
       function polish (model) {
         $scope.invoice = {};
         console.log('polish ', model);
-        $scope.invoice.uuid = identifiant
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name
-        $scope.invoice.village = model.location.data[0].village
-        $scope.invoice.sector = model.location.data[0].sector
-        $scope.invoice.phone = model.enterprise.data[0].phone
-        $scope.invoice.email = model.enterprise.data[0].email
-        $scope.invoice.name = model.purchase.data[0].name
-        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date
-        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference
-        $scope.invoice.employee_code = model.purchase.data[0].code
-        $scope.invoice.cost = model.purchase.data[0].cost
-
-
-
+        $scope.invoice.uuid = identifiant;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.invoice.name = model.purchase.data[0].name;
+        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date;
+        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference;
+        $scope.invoice.employee_code = model.purchase.data[0].code;
+        $scope.invoice.cost = model.purchase.data[0].cost;
       }
 
     }
@@ -699,7 +696,6 @@ angular.module('bhima.controllers')
       if ($scope.invoice.ledger)  {
         $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id, $scope.invoice.invoice_date);
         $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id, $scope.invoice.invoice_date);
-      } else {
       }
 
       $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id, $scope.invoice.invoice_date);
