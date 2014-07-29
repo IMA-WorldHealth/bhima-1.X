@@ -97,7 +97,7 @@ app.get('/services/', function (req, res, next) {
   var sql =
     'SELECT `service`.`id`, `service`.`name` AS `service`, `service`.`project_id`, `service`.`cost_center_id`, `service`.`profit_center_id`, `cost_center`.`text` AS `cost_center`, `profit_center`.`text` AS `profit_center`, `project`.`name` AS `project` '+
     'FROM `service` JOIN `cost_center` JOIN `profit_center` JOIN `project` ON `service`.`cost_center_id`=`cost_center`.`id` AND `service`.`profit_center_id`=`profit_center`.`id` '+
-    'AND `service`.`project_id`=`project`.`id`'
+    'AND `service`.`project_id`=`project`.`id`';
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -108,33 +108,16 @@ app.get('/services/', function (req, res, next) {
 });
 
 app.get('/available_cost_center/', function (req, res, next) {
-  var sql =
-    'SELECT `cost_center`.`text`, `cost_center`.`id`, `cost_center`.`project_id`, `service`.`name` '+
-    'FROM `cost_center` LEFT JOIN `service` ON `service`.`cost_center_id`=`cost_center`.`id`'
-
-  function process(ccs) {
-    var costCenters = ccs.filter(function(item) {
-      return !item.name
-    });
-    return costCenters;
-  }
-  db.exec(sql)
-  .then(function (result) {
-    res.send(process(result));
-  })
-  .catch(function (err) { next(err); })
-  .done();
-
 });
 
 app.get('/available_profit_center/', function (req, res, next) {
   var sql =
     'SELECT `profit_center`.`text`, `profit_center`.`id`, `profit_center`.`project_id`, `service`.`name` '+
-    'FROM `profit_center` LEFT JOIN `service` ON `service`.`profit_center_id`=`profit_center`.`id`'
+    'FROM `profit_center` LEFT JOIN `service` ON `service`.`profit_center_id`=`profit_center`.`id`';
 
   function process(pcs) {
     var profitCenters = pcs.filter(function(item) {
-      return !item.name
+      return !item.name;
     });
     return profitCenters;
   }
@@ -849,21 +832,21 @@ app.get('/serv_dist_stock/:depot_uuid', function (req, res, next) {
           'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') GROUP BY stock.tracking_number';
   db.exec(sql)
   .then(function (ans) {
-    res.send(ans)
+    res.send(ans);
   })
   .catch(function (err) {
-      next(err)
+      next(err);
   })
-  .done()
+  .done();
 });
 
 app.get('/inv_in_depot/:depot_uuid', function (req, res, next){
-  var sql = "SELECT "+
-            "distinct inventory.text, "+
-            "inventory.uuid, "+
-            "inventory.code "+
-            "FROM stock JOIN inventory JOIN ON stock.inventory_uuid = inventory.uuid "+
-            "WHERE stock.depot_uuid="+sanitize.escape(req.params.depot_uuid);
+  var sql = 'SELECT '+
+            'distinct inventory.text, '+
+            'inventory.uuid, '+
+            'inventory.code '+
+            'FROM stock JOIN inventory JOIN ON stock.inventory_uuid = inventory.uuid '+
+            'WHERE stock.depot_uuid='+sanitize.escape(req.params.depot_uuid);
 
   db.exec(sql)
   .then(function (ans) {
@@ -873,7 +856,7 @@ app.get('/inv_in_depot/:depot_uuid', function (req, res, next){
     next(err);
   })
   .done();
-})
+});
 
 app.get('/errorcodes', function (req, res, next) {
   /* jshint unused : false */

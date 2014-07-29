@@ -24,6 +24,7 @@ module.exports = function (db, parser, journal, uuid) {
     .then(writeCashItems(primary_cash_uuid, data.transaction))
     .then(postToJournal(primary_cash_uuid, user))
     .then(function (res) {
+      console.log('value returned by posting purchase', res)
       res.primary_cash_uuid = primary_cash_uuid
       callback(null, res);
     })
