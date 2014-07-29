@@ -754,7 +754,8 @@
     "TAPE"                  : "Tape drug name or drug code",
     "LOT_NUMBER"            : "Lot number",
     "EXPIRING_DATE"         : "Expiring date",
-    "REMAINING_QTY"         : "Remaining quantity"
+    "REMAINING_QTY"         : "Remaining quantity",
+    "DISTRIBUTE"            : "Distribute"
   },
 
   "JOURNAL_VOUCHER"  : {

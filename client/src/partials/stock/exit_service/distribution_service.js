@@ -55,7 +55,19 @@ angular.module('bhima.controllers')
       }));
     }
 
-
+    function extendData (results) {
+      results.forEach(function (item, index) {
+        if (!item[0].consumed) {
+          $scope.model.avail_stocks.data[index].consumed = 0;
+        }else{
+          $scope.model.avail_stocks.data[index].consumed = item[0].consumed;
+        }
+      });
+      $scope.model.avail_stocks.data = $scope.model.avail_stocks.data.filter(function (item){
+        return (item.entered - item.consumed - item.moved) > 0;
+      });
+      $q.when();
+    }
 
     function preparDistribution () {
       session.isServiceSelected = true;
@@ -85,20 +97,6 @@ angular.module('bhima.controllers')
 
     function removeRow (index) {
       configuration.rows.splice(index, 1);
-    }
-
-    function extendData (results) {
-      results.forEach(function (item, index) {
-        if (!item[0].consumed) {
-          $scope.model.avail_stocks.data[index].consumed = 0;
-        }else{
-          $scope.model.avail_stocks.data[index].consumed = item[0].consumed;
-        }
-      });
-      $scope.model.avail_stocks.data = $scope.model.avail_stocks.data.filter(function (item){
-        return (item.entered - item.consumed - item.moved) > 0;
-      });
-      $q.when();
     }
 
     function filtrer (items, filterOn) {
@@ -209,10 +207,15 @@ angular.module('bhima.controllers')
       })[0].purchase_price;
     }
 
+    function verifyDistribution () {
+      return true;
+    }
+
     $scope.preparDistribution = preparDistribution;
     $scope.addRow = addRow;
     $scope.removeRow = removeRow;
     $scope.handleChange = handleChange;
     $scope.updateLigne = updateLigne;
+    $scope.verifyDistribution = verifyDistribution;
 
 }]);
