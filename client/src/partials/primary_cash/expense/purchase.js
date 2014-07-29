@@ -49,7 +49,7 @@ angular.module('bhima.controllers')
           enterprise : {columns : ['id', 'currency_id']}
         }
       }
-    }
+    };
 
     dependencies.pcash_module = {
       required : true,
@@ -61,12 +61,12 @@ angular.module('bhima.controllers')
         },
         where : ['primary_cash_module.text=Purchase']
       }
-    }
+    };
 
     appstate.register('project', function (project){
-      $scope.project = project
-       validate.process(dependencies).then(initialise)
-    })
+      $scope.project = project;
+       validate.process(dependencies).then(initialise);
+    });
 
 
 
@@ -96,7 +96,6 @@ angular.module('bhima.controllers')
     }
 
     function submitPayment(model) {
-      console.log('selected', session.selected.cost)
       var creditorId = model.employee.data[0].creditor_uuid;
       var request = {
         details : {
@@ -131,8 +130,8 @@ angular.module('bhima.controllers')
         uuid : session.selected.uuid,
         paid : 1,
         paid_uuid : result.data.purchaseId.primary_cash_uuid
-      }
-      return connect.basicPost('purchase', [purchase], ['uuid'])
+      };
+      return connect.basicPost('purchase', [purchase], ['uuid']);
     }
 
     function generateDocument (res){

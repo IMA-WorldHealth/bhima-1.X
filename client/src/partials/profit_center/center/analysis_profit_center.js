@@ -22,7 +22,7 @@ angular.module('bhima.controllers')
         },
         join : ['profit_center.project_id=project.id']
       }
-    }
+    };
 
     $scope.register = {};
     $scope.selected = {};
