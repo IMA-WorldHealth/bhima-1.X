@@ -19,11 +19,11 @@ angular.module('bhima.controllers')
 
     dependencies.cost_centers = {
       query : '/available_cost_center/'
-    }
+    };
 
     dependencies.profit_centers = {
       query : '/available_profit_center/'
-    }
+    };
 
     dependencies.projects = {
       query : {
@@ -43,7 +43,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.profits = {
       query : {
@@ -53,13 +53,12 @@ angular.module('bhima.controllers')
           }
         }
       }
-    }
+    };
 
     function init(model) {
       $scope.model = model;
       configuration.cost_centers = model.cost_centers.data;
       configuration.profit_centers = model.profit_centers.data;
-      console.log(model)
     }
 
     function save() {
@@ -91,8 +90,8 @@ angular.module('bhima.controllers')
         .then(getProfit)
         .then(handleResultProfit);
       }else if (value === 'edit'){
-        configuration.cost_centers = $scope.model.costs.data
-        configuration.profit_centers = $scope.model.profits.data
+        configuration.cost_centers = $scope.model.costs.data;
+        configuration.profit_centers = $scope.model.profits.data;
       }
       $scope.action = value;
     }
@@ -152,13 +151,12 @@ angular.module('bhima.controllers')
     function filterCenters (id) {
 
       configuration.cost_centers = $scope.model.cost_centers.data.filter(function (item) {
-        return item.project_id == id
+        return item.project_id === id;
       });
 
       configuration.profit_centers = $scope.model.profit_centers.data.filter(function (item) {
-        return item.project_id == id
+        return item.project_id === id;
       });
-      console.log('ID recu', id)
     }
 
     appstate.register('project', function (project) {

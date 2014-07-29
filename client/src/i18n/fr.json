@@ -1342,7 +1342,8 @@
     "TAPE"                  : "Taper code nom medicament",
     "LOT_NUMBER"            : "Numero lot",
     "EXPIRING_DATE"         : "Date expiration",
-    "REMAINING_QTY"         : "Quantite restante"
+    "REMAINING_QTY"         : "Quantite restante",
+    "DISTRIBUTE"            : "Distribuer"
   },
 
   "SUPPLIER" : {
