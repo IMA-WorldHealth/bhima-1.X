@@ -31,48 +31,46 @@ angular.module('bhima.controllers')
           enterprise : {columns : ['id', 'currency_id']}
         }
       }
-    }
+    };
 
     appstate.register('project', function (project){
-      $scope.project = project
-       validate.process(dependencies).then(initialise)
-    })
-
-
+      $scope.project = project;
+       validate.process(dependencies).then(initialise);
+    });
 
     function initialise(model) {
       angular.extend($scope, model);
     }
 
     function confirmPurchase(purchaseId) {
-      session.selected = $scope.purchase.get(purchaseId)
+      session.selected = $scope.purchase.get(purchaseId);
     }
 
     function confirmPayment () {
     	updatePurchase()
     	.then(writeToJournal)
     	.then(generateDocument)
-    	.catch(handleError)
+    	.catch(handleError);
     }
 
     function updatePurchase () {
     	var purchase = {
         	uuid : session.selected.uuid,
         	confirmed : 1
-      	}
-      	return connect.basicPost('purchase', [purchase], ['uuid'])
+      };
+      return connect.basicPost('purchase', [purchase], ['uuid']);
     }
 
     function writeToJournal () {
-    	return connect.fetch('/journal/confirm/' + session.selected.paid_uuid)
+    	return connect.fetch('/journal/confirm/' + session.selected.paid_uuid);
     }
 
     function paymentSuccess(result) {
       var purchase = {
         uuid : session.selected.uuid,
         paid : 1
-      }
-      return connect.basicPost('purchase', [purchase], ['uuid'])
+      };
+      return connect.basicPost('purchase', [purchase], ['uuid']);
     }
 
     function generateDocument (res){
@@ -87,8 +85,8 @@ angular.module('bhima.controllers')
       var currentDate = new Date();
       return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
     }
-    $scope.confirmPurchase = confirmPurchase
-    $scope.confirmPayment = confirmPayment
+    $scope.confirmPurchase = confirmPurchase;
+    $scope.confirmPayment = confirmPayment;
   }
 ]);
 

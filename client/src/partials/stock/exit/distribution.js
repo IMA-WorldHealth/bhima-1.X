@@ -230,7 +230,6 @@ angular.module('bhima.controllers')
       var consumption_patients = [];
       if (!session.lotSelectionSuccess) { return messenger.danger('Cannot verify lot allocation'); }
       session.sale.details.forEach(function (consumptionItem) {
-        console.log('session', session)
 
         if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
@@ -255,7 +254,7 @@ angular.module('bhima.controllers')
       });
       connect.basicPut('consumption', submitItem)
       .then(function (){
-        return connect.basicPut('consumption_patient', consumption_patients)
+        return connect.basicPut('consumption_patient', consumption_patients);
       })
       .then(function (res) {
         return connect.fetch('/journal/distribution_patient/' + session.sale.inv_po_id);
@@ -264,7 +263,6 @@ angular.module('bhima.controllers')
         $location.path('/invoice/consumption/' + session.sale.inv_po_id);
       })
       .catch(function (error) {
-        console.log(error);
         messenger.error(error);
       });
     }
