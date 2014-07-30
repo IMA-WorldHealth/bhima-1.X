@@ -75,7 +75,8 @@
       "/removeFromProfitCenter/",
       "/services/",
       "/available_cost_center/",
-      "/available_profit_center/"
+      "/available_profit_center/",
+      "/service_dist/"
     ]
   }
 }

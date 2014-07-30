@@ -757,7 +757,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       references.forEach(function (row) {
         get.transactionId(cfg.project_id)
           .then(function  (trans_id) {
-            console.log('[trans_id]', trans_id);
             var debit_sql=
               'INSERT INTO `posting_journal` ' +
               '  (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -819,7 +818,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(handlePeriod)
     .then(function (res) {
       //fixe me this is not the last called function, it should be in reality
-      console.log('[le resultat]', res);
       done(null, res);
     })
     .catch(function (err) {
@@ -1146,12 +1144,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
       cfg.descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
-      console.log('[cfg]', cfg);
       return q.when();
     }
 
     function debit () {
-      console.log('trans_is', cfg.trans_id);
       return q.all(
                     reference.reference_pcash_items.map(function (ref_pcash_item) {
                       var valueExchanged = parseFloat((1/dayExchange.rate) * ref_pcash_item.debit).toFixed(4);
@@ -1429,7 +1425,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
 
     function getTransId (trans_id) {
-      console.log('gettransId');
       cfg.trans_id = trans_id;
       cfg.descrip =  'PP/' + new Date().toISOString().slice(0, 10).toString();
       return q.when();
@@ -1700,14 +1695,14 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
   }
 
-  function handleDistributionService (id, user_id, done) {
+  function handleDistributionService (id, user_id, details, done) {
 
     var references, dayExchange, cfg = {};
     var sql =
-      'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`quantity`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
-      '`inventory_group`.`cogs_account`, `inventory_group`.`stock_account`, `sale`.`project_id`, `sale`.`service_id` FROM `consumption`, `stock`, `inventory`,`inventory_group`, `sale` ' +
-      'WHERE `consumption`.`tracking_number`=`stock`.`tracking_number` AND `stock`.`inventory_uuid`=`inventory`.`uuid` AND `inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
-      'AND `sale`.`uuid`=`consumption`.`document_id` AND `consumption`.`document_id` =' + sanitize.escape(id) + ';';
+      'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`quantity`, `consumption_service`.`service_id`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
+      '`inventory_group`.`cogs_account`, `inventory_group`.`stock_account` FROM `consumption`, `consumption_service`, `stock`, `inventory`,`inventory_group` ' +
+      'WHERE `consumption`.`tracking_number`=`stock`.`tracking_number` AND `consumption_service`.`consumption_uuid`=`consumption`.`uuid` AND `stock`.`inventory_uuid`=`inventory`.`uuid` AND `inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+      'AND `consumption`.`document_id` =' + sanitize.escape(id) + ';';
 
     db.exec(sql)
     .then(getRecord)
@@ -1733,12 +1728,12 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.originId = originId;
       cfg.periodId = periodObject.id;
       cfg.fiscalYearId = periodObject.fiscal_year_id;
-      return get.transactionId(references[0].project_id); // fix me, ID of project
+      return get.transactionId(details.id);
     }
 
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
-      cfg.descrip =  'DP/'+new Date().toISOString().slice(0, 10).toString();
+      cfg.descrip =  'DS/'+new Date().toISOString().slice(0, 10).toString();
       return q.when();
     }
 
@@ -1748,11 +1743,11 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           var sql = 'INSERT INTO posting_journal ' +
                     '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                     '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `cc_id` ) ' +
+                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `cc_id`) ' +
                     'SELECT ' +
                       [
                         sanitize.escape(uuid()),
-                        reference.project_id,
+                        details.id,
                         cfg.fiscalYearId,
                         cfg.periodId,
                         cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
@@ -1760,7 +1755,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         0, (reference.quantity * reference.purchase_price).toFixed(4),
                         0, (reference.quantity * reference.purchase_price).toFixed(4),
-                        2
+                        details.currency_id
                       ].join(',') +
                       ', null, null, ' +
                       [
@@ -1785,7 +1780,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                     'SELECT ' +
                       [
                         sanitize.escape(uuid()),
-                        reference.project_id,
+                        details.id,
                         cfg.fiscalYearId,
                         cfg.periodId,
                         cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
@@ -1793,7 +1788,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
-                        2
+                        details.currency_id
                       ].join(',') +
                       ', null, null, ' +
                       [
@@ -1826,16 +1821,13 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     'distribution_service'  : handleDistributionService
   };
 
-  function request (table, id, user_id, done, debCaution) {
+  function request (table, id, user_id, done, debCaution, details) {
     // handles all requests coming from the client
     if (debCaution >= 0) {
       table_router[table](id, user_id, done, debCaution);
-    }
-    // else if() {
-            //consumption service here
-
-    // }
-    else {
+    }else if(details) {
+      table_router[table](id, user_id, details, done);
+    }else {
       table_router[table](id, user_id, done);
     }
     return;
