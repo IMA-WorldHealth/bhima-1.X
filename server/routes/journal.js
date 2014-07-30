@@ -1700,6 +1700,114 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
   }
 
+  function handleDistributionService (id, user_id, done) {
+
+    var references, dayExchange, cfg = {};
+    var sql =
+      'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`quantity`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
+      '`inventory_group`.`cogs_account`, `inventory_group`.`stock_account`, `sale`.`project_id`, `sale`.`service_id` FROM `consumption`, `stock`, `inventory`,`inventory_group`, `sale` ' +
+      'WHERE `consumption`.`tracking_number`=`stock`.`tracking_number` AND `stock`.`inventory_uuid`=`inventory`.`uuid` AND `inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+      'AND `sale`.`uuid`=`consumption`.`document_id` AND `consumption`.`document_id` =' + sanitize.escape(id) + ';';
+
+    db.exec(sql)
+    .then(getRecord)
+    .spread(getDetails)
+    .then(getTransId)
+    .then(debit)
+    .then(credit)
+    .then(function (res){
+      return done(null, res);
+    })
+    .catch(function (err){
+      return done(err, null);
+    });
+
+    function getRecord (records) {
+      if (records.length === 0) { throw new Error('pas enregistrement'); }
+      references = records;
+      var date = util.toMysqlDate(get.date());
+      return q([get.origin('distribution'), get.period(get.date())]);
+    }
+
+    function getDetails (originId, periodObject) {
+      cfg.originId = originId;
+      cfg.periodId = periodObject.id;
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
+      return get.transactionId(references[0].project_id); // fix me, ID of project
+    }
+
+    function getTransId (trans_id) {
+      cfg.trans_id = trans_id;
+      cfg.descrip =  'DP/'+new Date().toISOString().slice(0, 10).toString();
+      return q.when();
+    }
+
+    function debit () {
+      return q.all(
+        references.map(function (reference) {
+          var sql = 'INSERT INTO posting_journal ' +
+                    '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `cc_id` ) ' +
+                    'SELECT ' +
+                      [
+                        sanitize.escape(uuid()),
+                        reference.project_id,
+                        cfg.fiscalYearId,
+                        cfg.periodId,
+                        cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
+                      ].join(',') + ', ' +
+                      [
+                        0, (reference.quantity * reference.purchase_price).toFixed(4),
+                        0, (reference.quantity * reference.purchase_price).toFixed(4),
+                        2
+                      ].join(',') +
+                      ', null, null, ' +
+                      [
+                        sanitize.escape(id),
+                        cfg.originId,
+                        user_id,
+                        reference.service_id
+                      ].join(',') +
+                    ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' + sanitize.escape(reference.group_uuid) + ';';
+          return db.exec(sql);
+        })
+      );
+    }
+
+    function credit () {
+      return q.all(
+        references.map(function (reference) {
+          var sql = 'INSERT INTO posting_journal ' +
+                    '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                    '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                    '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+                    'SELECT ' +
+                      [
+                        sanitize.escape(uuid()),
+                        reference.project_id,
+                        cfg.fiscalYearId,
+                        cfg.periodId,
+                        cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
+                      ].join(',') + ', ' +
+                      [
+                        (reference.quantity * reference.purchase_price).toFixed(4), 0,
+                        (reference.quantity * reference.purchase_price).toFixed(4), 0,
+                        2
+                      ].join(',') +
+                      ', null, null, ' +
+                      [
+                        sanitize.escape(id),
+                        cfg.originId,
+                        user_id,
+                      ].join(',') +
+                    ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= '+ sanitize.escape(reference.group_uuid) +';';
+          return db.exec(sql);
+        })
+      );
+    }
+  }
+
   // router for incoming requests
   table_router = {
     'sale'                  : handleSales,
@@ -1714,14 +1822,20 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     'primary_income'        : handleGenericIncome,
     'indirect_purchase'     : handleIndirectPurchase,
     'confirm'               : handleConfirm,
-    'distribution_patient'  : handleDistributionPatient
+    'distribution_patient'  : handleDistributionPatient,
+    'distribution_service'  : handleDistributionService
   };
 
   function request (table, id, user_id, done, debCaution) {
     // handles all requests coming from the client
     if (debCaution >= 0) {
       table_router[table](id, user_id, done, debCaution);
-    }else{
+    }
+    // else if() {
+            //consumption service here
+
+    // }
+    else {
       table_router[table](id, user_id, done);
     }
     return;
