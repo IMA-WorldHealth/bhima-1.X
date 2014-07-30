@@ -9,7 +9,9 @@ angular.module('bhima.controllers')
   'messenger',
   'util',
   'uuid',
-  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid) {
+  'appstate',
+  '$http',
+  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid, appstate, $http) {
     var session = $scope.session = {
       depot : $routeParams.depotId,
       isServiceSelected : false
@@ -43,10 +45,27 @@ angular.module('bhima.controllers')
       query : '/serv_dist_stock/' + session.depot
     };
 
-    validate.process(dependencies)
-    .then(complet)
-    .then(extendData)
-    .then(finalize);
+    dependencies.project = {
+      query : {
+        tables : {
+          'project' : {
+            columns : ['id', 'name']
+          },
+          'enterprise' : {
+            columns : ['currency_id']
+          }
+        },
+        join : ['project.enterprise_id=enterprise.id']
+      }
+    };
+
+    appstate.register('project', function (project){
+      dependencies.project.query.where = ['project.id='+project.id];
+      validate.process(dependencies)
+      .then(complet)
+      .then(extendData)
+      .then(finalize);
+    });
 
     function complet (model) {
       $scope.model = model;
@@ -79,6 +98,7 @@ angular.module('bhima.controllers')
     function finalize () {
       $scope.model.inventory = filtrer($scope.model.avail_stocks.data, 'inventory_uuid');
       configuration.rows = [new DistributionRow()];
+      console.log('model', $scope.model);
     }
 
     function DistributionRow (){
@@ -208,7 +228,7 @@ angular.module('bhima.controllers')
     }
 
     function verifyDistribution () {
-      if (!configuration.rows) {return true;}
+      if (!configuration.rows || configuration.rows.length < 1) {return true;}
       return !configuration.rows.every(function (row){
         return row.code && row.validQuantity;
       });
@@ -216,25 +236,12 @@ angular.module('bhima.controllers')
 
     function Distribute (){
       var consumption = buildConsumptions();
-      writeMainConsumption(consumption.main_consumptions)
-      .then(writeServiceConsumption(consumption.service_consumptions))
-      .then(writeToJournal(consumption.main_consumptions[0].document_id))
-      .then(function(){
-        console.log('hello!');
+      consumption.details = $scope.model.project.data[0];
+      console.log(consumption.details);
+      $http.post('service_dist/', consumption)
+      .then(function (res){
+        console.log('ok', res);
       });
-
-    }
-
-    function writeMainConsumption (main_consumptions) {
-      return connect.basicPut('consumption', main_consumptions);
-    }
-
-    function writeServiceConsumption (service_consumptions) {
-      return connect.basicPut('consumption_service', service_consumptions);
-    }
-
-    function postToJournal (document_id) {
-      return connect.fetch('/journal/distribution_service/' + document_id);
     }
 
     function buildConsumptions () {
