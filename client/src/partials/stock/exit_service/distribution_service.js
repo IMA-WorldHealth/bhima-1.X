@@ -98,7 +98,6 @@ angular.module('bhima.controllers')
     function finalize () {
       $scope.model.inventory = filtrer($scope.model.avail_stocks.data, 'inventory_uuid');
       configuration.rows = [new DistributionRow()];
-      console.log('model', $scope.model);
     }
 
     function DistributionRow (){
@@ -237,7 +236,6 @@ angular.module('bhima.controllers')
     function Distribute (){
       var consumption = buildConsumptions();
       consumption.details = $scope.model.project.data[0];
-      console.log(consumption.details);
       $http.post('service_dist/', consumption)
       .then(function (res){
         console.log('ok', res);
