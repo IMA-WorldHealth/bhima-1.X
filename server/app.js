@@ -44,7 +44,8 @@ var report         = require('./routes/report')(db, sanitize, util),
     depotRouter    = require('./routes/depot')(db, sanitize, store),
     tree           = require('./routes/tree')(db, parser),
     drugRouter     = require('./routes/drug')(db),
-    api            = require('./routes/data')(db, parser);
+    api            = require('./routes/data')(db, parser),
+    serviceDist    = require('./routes/serviceDist')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -90,6 +91,13 @@ app.post('/sale/', function (req, res, next) {
   createSale.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send(200, {saleId: ans});
+  });
+});
+
+app.post('/service_dist/', function (req, res, next) {
+  serviceDist.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send(200, {distId: ans});
   });
 });
 
