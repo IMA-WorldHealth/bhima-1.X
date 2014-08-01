@@ -9,7 +9,9 @@ angular.module('bhima.controllers')
   'messenger',
   'util',
   'uuid',
-  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid) {
+  'appstate',
+  '$http',
+  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid, appstate, $http) {
     var session = $scope.session = {
       depot : $routeParams.depotId,
       isServiceSelected : false
@@ -43,10 +45,27 @@ angular.module('bhima.controllers')
       query : '/serv_dist_stock/' + session.depot
     };
 
-    validate.process(dependencies)
-    .then(complet)
-    .then(extendData)
-    .then(finalize);
+    dependencies.project = {
+      query : {
+        tables : {
+          'project' : {
+            columns : ['id', 'name']
+          },
+          'enterprise' : {
+            columns : ['currency_id']
+          }
+        },
+        join : ['project.enterprise_id=enterprise.id']
+      }
+    };
+
+    appstate.register('project', function (project){
+      dependencies.project.query.where = ['project.id='+project.id];
+      validate.process(dependencies)
+      .then(complet)
+      .then(extendData)
+      .then(finalize);
+    });
 
     function complet (model) {
       $scope.model = model;
@@ -208,8 +227,62 @@ angular.module('bhima.controllers')
     }
 
     function verifyDistribution () {
-      return true;
+      if (!configuration.rows || configuration.rows.length < 1) {return true;}
+      return !configuration.rows.every(function (row){
+        return row.code && row.validQuantity;
+      });
     }
+
+    function Distribute (){
+      var consumption = buildConsumptions();
+      consumption.details = $scope.model.project.data[0];
+      $http.post('service_dist/', consumption)
+      .then(function (res){
+        console.log('ok', res);
+      });
+    }
+
+    function buildConsumptions () {
+      var consumptions = {};
+      consumptions.main_consumptions = [];
+      consumptions.service_consumptions = [];
+
+      configuration.rows.forEach(function (row) {
+        var qte = 0, asked_qte = row.quantity;
+        row.lots.forEach(function (lot) {
+          var current_qte = (lot.entered - lot.moved - lot.consumed);
+          if(asked_qte <= current_qte) {
+            qte = asked_qte;
+          }else{
+            qte = current_qte;
+          }
+          var main_consumption_item = {
+            uuid                : uuid(),
+            depot_uuid          : session.depot,
+            date                : $scope.model.date,
+            document_id         : $scope.model.uuid,
+            tracking_number     : lot.tracking_number,
+            quantity            : qte
+          };
+
+          var service_consumption_item = {
+            uuid               : uuid(),
+            consumption_uuid   : main_consumption_item.uuid,
+            service_id         : configuration.service.id
+          };
+
+          consumptions.main_consumptions.push(main_consumption_item);
+          consumptions.service_consumptions.push(service_consumption_item);
+
+          asked_qte = asked_qte - qte;
+
+        });
+      });
+
+      return consumptions;
+    }
+
+
 
     $scope.preparDistribution = preparDistribution;
     $scope.addRow = addRow;
@@ -217,5 +290,6 @@ angular.module('bhima.controllers')
     $scope.handleChange = handleChange;
     $scope.updateLigne = updateLigne;
     $scope.verifyDistribution = verifyDistribution;
+    $scope.Distribute = Distribute;
 
 }]);
