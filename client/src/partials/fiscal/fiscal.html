@@ -70,12 +70,12 @@
                     <label for="fiscalNote">
                       {{ 'FISCAL_YEAR.DESC' | translate }}
                     </label>
-                    <input required id="fiscalNote" class="form-bhima" ng-model="newModel.note">
+                    <input id="fiscalDescription" class="form-bhima" ng-model="newModel.description" required >
                   </div>
 
                   <div class="form-group">
                     <label for="startMonth">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
-                    <input required type="month" id="startMonth" class="form-bhima" ng-model="newModel.start" ng-change="update()">
+                    <input type="month" id="startMonth" class="form-bhima" ng-model="newModel.start" ng-change="updateDates()" required >
                   </div>
 
                   <div class="form-group">
@@ -95,10 +95,10 @@
 
                   <div class="form-group">
                     <label for="endMonth">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
-                    <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-bhima" ng-model="newModel.end">
+                    <input ng-disabled="isFullYear()" type="month" id="endMonth" class="form-bhima" ng-model="newModel.end" required >
                   </div>
 
-                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal(newModel)" class="btn btn-sm btn-success">
+                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal()" class="btn btn-sm btn-success">
                     {{ 'UTIL.SUBMIT' | translate }}
                   </button>
                 </form>
