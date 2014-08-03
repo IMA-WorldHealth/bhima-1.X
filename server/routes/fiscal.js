@@ -15,21 +15,23 @@ module.exports = function (db) {
   */
 
   //This is a pretty gross function declaration, too many parameters etc. pass a JSON object through?
-  function create(enterprise, start, end, description, callback) {
+  function create(enterprise, start, end, description) {
 
     //TODO discuss: Passing variables down through all the functions vs. declaring them at the top, testing/ coupling vs. readability/ clarity?
     //              this version seems very tightly coupled
-    var fiscalInsertId;
-    var periodZeroId;
-    var startObj = new Date(start);
-    var endObj = new Date(end);
-    var validData = verifyData(startObj, endObj, enterprise);
+    var fiscalInsertId,
+        periodZeroId,
+        defer = q.defer(),
+        startObj = new Date(start),
+        endObj = new Date(end),
+        validData = verifyData(startObj, endObj, enterprise);
+
     if (!validData.valid) {
-      return callback(validData, null);
+      return q.reject(validData);
     }
 
     //Create line in fiscal_year
-    createFiscalRecord(enterprise, startObj, endObj, description)
+    return createFiscalRecord(enterprise, startObj, endObj, description)
     .then(function (fiscalSuccess) {
       fiscalInsertId = fiscalSuccess.insertId;
       return createPeriodRecords(fiscalInsertId, startObj, endObj);
@@ -39,12 +41,12 @@ module.exports = function (db) {
       return createBudgetRecords(enterprise, periodSuccess.insertId, periodSuccess.affectedRows, fiscalInsertId);
     })
     .then(function () {
-      callback(null, {'fiscalInsertId' : fiscalInsertId, 'periodZeroId': periodZeroId, 'message' : 'Fiscal year, Periods and Budget items generated'});
-    })
-    .catch(function (err) {
-      callback(err);
-    })
-    .done();
+      return q.when({
+        'fiscalInsertId' : fiscalInsertId,
+        'periodZeroId'   : periodZeroId,
+        'message'        : 'Fiscal year, Periods and Budget items generated'
+      });
+    });
   }
 
   function statusObject(valid, message) {
@@ -74,8 +76,7 @@ module.exports = function (db) {
 
     //Get previous fiscal year, then insert fiscal year into DB
     return getLatestFiscal()
-    .then(function (res) {
-      previousFiscal = res;
+    .then(function (previousFiscal) {
 
       var fiscalSql =
         'INSERT INTO fiscal_year (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
@@ -86,40 +87,32 @@ module.exports = function (db) {
   }
 
   function createPeriodRecords(fiscalYearId, start, end) {
-    var totalMonths, periodSQL;
-    var deferred = q.defer();
-    var periodSQLHead = 'INSERT INTO period (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
-    var periodSQLBody = [];
+    var totalMonths, periodSql;
+    var periodSqlHead =
+      'INSERT INTO period (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
+    var periodSqlBody = [];
 
     // create an opening balances period
 
     var ps = new Date(start.getFullYear(), start.getMonth());
-    periodSQLBody.push('(' + fiscalYearId + ',' + 0 +', \'' + formatMySQLDate(ps) + '\' , \'' + formatMySQLDate(ps) + '\')');
-
+    periodSqlBody.push('(' + fiscalYearId + ',' + 0 +', \'' + sqlDate(ps) + '\' , \'' + sqlDate(ps) + '\')');
     totalMonths = monthDiff(start, end) + 1;
+
     for (var i = 0; i < totalMonths; i++) {
       var currentPeriodStart = new Date(start.getFullYear(), start.getMonth() + i);
       var currentPeriodStop = new Date(currentPeriodStart.getFullYear(), currentPeriodStart.getMonth() + 1, 0);
-
-      periodSQLBody.push('(' + fiscalYearId + ',' + Number(i) + 1 + ',\'' + formatMySQLDate(currentPeriodStart) + '\',\'' + formatMySQLDate(currentPeriodStop) + '\')');
+      periodSqlBody.push('(' + fiscalYearId + ',' + Number(i) + 1 + ',\'' + sqlDate(currentPeriodStart) + '\',\'' + sqlDate(currentPeriodStop) + '\')');
     }
 
-    periodSQL = periodSQLHead + periodSQLBody.join(',');
-    db.execute(periodSQL, function (err, rows) {
-      if (err) {
-        return deferred.reject(err);
-      }
-      var period_zero_sql =
+    periodSql = periodSqlHead + periodSqlBody.join(',');
+    return db.exec(periodSql)
+    .then(function (rows) {
+      var periodZeroSql =
         'SELECT id FROM period WHERE fiscal_year_id = ' + fiscalYearId + ' AND period_number = 0';
-      db.execute(period_zero_sql, function (err, pz) {
-        if (err) {
-          return deferred.reject(err);
-        }
-        deferred.resolve({ insertId : rows.insertId, periodZeroId : pz[0].id, affectedRows: rows.affectedRows });
+      db.exec(periodZeroSql)
+      .then(function (pz) {
       });
     });
-
-    return deferred.promise;
   }
 
   function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted) {
@@ -204,7 +197,7 @@ module.exports = function (db) {
     return diff <= 0 ? 0 : diff; // FIXME : This should throw an error if diff <= 0.
   }
 
-  function formatMySQLDate(date) {
+  function sqlDate(date) {
     return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
   }
 
