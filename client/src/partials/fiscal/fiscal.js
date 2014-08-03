@@ -20,8 +20,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    // @sfount - remove variables on scope
-    $scope.new_model = {'year' : 'true'};
+    $scope.newModel = {'year' : 'true'};
 
     appstate.register('enterprise', buildFiscalQuery);
 
@@ -29,7 +28,8 @@ angular.module('bhima.controllers')
       var enterpriseId = $scope.enterpriseId = enterprise.id;
       $scope.enterprise = enterprise;
       dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterpriseId];
-      validate.refresh(dependencies).then(fiscal);
+      validate.refresh(dependencies)
+      .then(fiscal);
     }
 
     function fiscal(model) {
@@ -52,26 +52,22 @@ angular.module('bhima.controllers')
     };
 
     $scope.isSelected = function() {
-      return !!($scope.selected);
+      return !!$scope.selected;
     };
 
     $scope.isFullYear = function() {
-      return $scope.new_model.year === 'true';
+      return $scope.newModel.year === 'true';
     };
 
-    $scope.$watch('new_model.start', function() {
-      if ($scope.isFullYear()) {
-        updateEnd();
-      }
+    $scope.$watch('newModel.start', function() {
     });
+
     function updateEnd() {
-      var s = $scope.new_model.start;
-      if (s) {
-  //        Pretty gross
-        var ds = new Date(s);
+      var start = $scope.newModel.start;
+      if (start) {
+        var ds = new Date(start);
         var iterate = new Date(ds.getFullYear() + 1, ds.getMonth() - 1);
-  //        Correct format for HTML5 date element
-        $scope.new_model.end = inputDate(iterate);
+        $scope.newModel.end = iterate;
       }
     }
 
@@ -85,8 +81,8 @@ angular.module('bhima.controllers')
     };
 
     $scope.getFiscalStart = function() {
-      if ($scope.period_model) {
-        var t = $scope.period_model[0];
+      if ($scope.periodModel) {
+        var t = $scope.periodModel[0];
         if (t) {
           return t.period_start;
         }
@@ -94,15 +90,20 @@ angular.module('bhima.controllers')
     };
 
     $scope.getFiscalEnd = function() {
-      if ($scope.period_model) {
-        var l = $scope.period_model;
+      if ($scope.periodModel) {
+        var l = $scope.periodModel;
         var t = l[l.length-1];
         if (t) {
           return t.period_stop;
         }
       }
     };
-
+    
+    $scope.update = function () {
+      if ($scope.isFullYear()) {
+        updateEnd();
+      }
+    };
 
     $scope.generateFiscal = function generateFiscal(model) {
       //messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
@@ -113,7 +114,7 @@ angular.module('bhima.controllers')
           templateUrl: 'createOpeningBalanceModal.html',
           keyboard : false,
           backdrop: 'static',
-          controller : function ($scope, $modalInstance, fiscalYearId, zero_id, enterprise) {
+          controller : function ($scope, $modalInstance, fiscalYearId, zeroId, enterprise) {
             $scope.enterprise = enterprise;
             $scope.fiscalYearId = fiscalYearId;
             connect.fetch({
@@ -159,7 +160,7 @@ angular.module('bhima.controllers')
                 o.debit = row.debit || 0; // default to 0
                 o.credit = row.credit || 0; // default to 0
                 o.fiscal_year_id = fiscalYearId;
-                o.period_id = zero_id;
+                o.period_id = zeroId;
                 o.enterprise_id = enterprise.id;
                 return o;
               });
@@ -178,7 +179,7 @@ angular.module('bhima.controllers')
             fiscalYearId : function () {
               return res.data.fiscalInsertId;
             },
-            zero_id : function () {
+            zeroId : function () {
               return res.data.periodZeroId;
             },
             enterprise : function () {
@@ -189,7 +190,7 @@ angular.module('bhima.controllers')
 
         instance.result.then(function () {
           //Reset model
-          $scope.new_model = {'year':'true'};
+          $scope.newModel = {'year':'true'};
           //messenger.push({type: 'success', msg:'Fiscal Year generated successfully ' + model.start});
 
           // if (!fiscal_set) appstate.set('fiscal', {id: res.data.fiscalInsertId, fiscal_year_txt: model.note});
@@ -283,7 +284,7 @@ angular.module('bhima.controllers')
       };
       connect.req(period_query)
       .then(function (model) {
-        $scope.period_model = model.data;
+        $scope.periodModel = model.data;
       });
     }
 

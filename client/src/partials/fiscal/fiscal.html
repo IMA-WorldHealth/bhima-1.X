@@ -70,24 +70,24 @@
                     <label for="fiscalNote">
                       {{ 'FISCAL_YEAR.DESC' | translate }}
                     </label>
-                    <input required id="fiscalNote" class="form-bhima" ng-model="new_model.note">
+                    <input required id="fiscalNote" class="form-bhima" ng-model="newModel.note">
                   </div>
 
                   <div class="form-group">
                     <label for="startMonth">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
-                    <input required type="month" id="startMonth" class="form-bhima" ng-model="new_model.start">
+                    <input required type="month" id="startMonth" class="form-bhima" ng-model="newModel.start" ng-change="update()">
                   </div>
 
                   <div class="form-group">
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_year" id="one" value="true" ng-model="new_model.year" checked>
+                        <input type="radio" name="option_year" id="one" value="true" ng-model="newModel.year" checked>
                         {{ 'FISCAL_YEAR.ONE_YEAR' | translate }}
                       </label>
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_year" id="custom" value="false" ng-model="new_model.year">
+                        <input type="radio" name="option_year" id="custom" value="false" ng-model="newModel.year">
                         {{ 'FISCAL_YEAR.SPECIFY' | translate }}
                       </label>
                     </div>
@@ -95,10 +95,10 @@
 
                   <div class="form-group">
                     <label for="endMonth">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
-                    <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-bhima" ng-model="new_model.end">
+                    <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-bhima" ng-model="newModel.end">
                   </div>
 
-                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-sm btn-success">
+                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal(newModel)" class="btn btn-sm btn-success">
                     {{ 'UTIL.SUBMIT' | translate }}
                   </button>
                 </form>
@@ -176,7 +176,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="period in period_model" class="primary">
+                    <tr ng-repeat="period in periodModel" class="primary">
                       <!--FIXME: passing full date object to each table data seems extravagant (read: fabulous)-->
                       <td>{{ period.period_start | date: 'MMM' }}</td>
                       <td>{{ period.period_start | date:'dd/MM/yyyy' }}</td>
