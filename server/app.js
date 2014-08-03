@@ -275,13 +275,14 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function (req, r
   var endDate = req.params.endDate;
   var description = req.params.description;
 
-  console.log('[DEBUG] ', enterprise, startDate, endDate, description);
-
-  //function(err, status);
-  fiscal.create(enterprise, startDate, endDate, description, function (err, status) {
-    if (err) { return res.send(500, err); }
-    res.send(200, status);
-  });
+  fiscal.create(enterprise, startDate, endDate, description)
+  .then(function (status) {
+    res.status(200).send(status);
+  })
+  .catch(function (err) {
+    res.status(500).send(err);
+  })
+  .done();
 });
 
 app.get('/reports/:route/', function(req, res, next) {
