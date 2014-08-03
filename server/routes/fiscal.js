@@ -36,14 +36,10 @@ module.exports = function (db) {
       fiscalInsertId = fiscalSuccess.insertId;
       return createPeriodRecords(fiscalInsertId, startObj, endObj);
     })
-    .then(function (periodSuccess) {
-      periodZeroId = periodSuccess.periodZeroId;
-      return createBudgetRecords(enterprise, periodSuccess.insertId, periodSuccess.affectedRows, fiscalInsertId);
-    })
-    .then(function () {
-      return q.when({
+    .then(function (records) {
+      return q({
         'fiscalInsertId' : fiscalInsertId,
-        'periodZeroId'   : periodZeroId,
+        'periodZeroId'   : records[0].id,
         'message'        : 'Fiscal year, Periods and Budget items generated'
       });
     });
@@ -109,9 +105,7 @@ module.exports = function (db) {
     .then(function (rows) {
       var periodZeroSql =
         'SELECT id FROM period WHERE fiscal_year_id = ' + fiscalYearId + ' AND period_number = 0';
-      db.exec(periodZeroSql)
-      .then(function (pz) {
-      });
+      return db.exec(periodZeroSql);
     });
   }
 
@@ -124,14 +118,15 @@ module.exports = function (db) {
 
     var budgetOptions = [0, 10, 20, 30, 50];
 
-    //FIXME - this is so Bad. Periods are inserted as a group returning the inital insert value, extrapolating period Ids from this and number of rows affected
+    //FIXME - this is so Bad. Periods are inserted as a group returning the inital insert value,
+    // extrapolating period Ids from this and number of rows affected
     for (var i = insertedPeriodId, l = (totalPeriodsInserted + insertedPeriodId); i < l; i++) {
+      console.log('[DEBUG]', 'Pushing value of i:', i);
       periodIdList.push(i);
     }
 
     return getAccountList(enterprise)
-    .then(function (res) {
-      accountIdList = res;
+    .then(function (accountIdList) {
       accountIdList.forEach(function (account) {
         periodIdList.forEach(function (period) {
           budgetSqlBody.push('(' + account.id + ',' + period + ',' + budgetOptions[(Math.round(Math.random() * (budgetOptions.length - 1)))] + ')');
@@ -150,12 +145,13 @@ module.exports = function (db) {
   }
 
   function getLatestFiscal() {
-    //Recersively determine latest fiscal year - should be swapped for simple maxId request if generation time is too long
+    // Recursively determine latest fiscal year
+    // Can be swapped for simple maxId request if generation time is too long
     var deferred = q.defer();
     var initialRequest =
       'SELECT id FROM fiscal_year WHERE previous_fiscal_year IS NULL';
     var iterateRequest =
-      'SELECT id, previous_fiscal_year FROM fiscal_year WHERE previous_fiscal_year=';
+      'SELECT id, previous_fiscal_year FROM fiscal_year WHERE previous_fiscal_year = ';
 
     // find head of list (if it exists)
     db.exec(initialRequest)
