@@ -239,6 +239,7 @@ angular.module('bhima.controllers')
       $http.post('service_dist/', consumption)
       .then(function (res){
         console.log('ok', res);
+        $location.path('/invoice/service_distribution/' + res.data.dist.docId);
       });
     }
 

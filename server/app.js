@@ -97,7 +97,7 @@ app.post('/sale/', function (req, res, next) {
 app.post('/service_dist/', function (req, res, next) {
   serviceDist.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
-    res.send(200, {distId: ans});
+    res.send(200, {dist: ans});
   });
 });
 
