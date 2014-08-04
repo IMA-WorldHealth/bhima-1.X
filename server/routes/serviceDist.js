@@ -3,15 +3,13 @@ var q = require('q');
 module.exports = function(db, parser, journal, uuid) {
   'use strict';
 
-  //TODO Rollback logic can be implemented by sharing a transaction instance
-  //(db.requestTransactionConnection) across multiple modules: generic top level
-  //rollback.
   function execute(data, userId, callback) {
     writeMainConsumption(data.main_consumptions)
     .then(writeServiceConsumption(data.service_consumptions))
     .then(writeToJournal(data.main_consumptions[0].document_id, userId, data.details))
     .then(function(res){
-      console.log('c fait');
+      res.docId = data.main_consumptions[0].document_id;
+      console.log('c fait', res);
       callback(null, res);
     })
     .catch(function (err) {
