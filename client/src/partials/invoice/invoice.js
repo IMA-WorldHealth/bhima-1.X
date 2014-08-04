@@ -509,16 +509,19 @@ angular.module('bhima.controllers')
         }
       };
 
-      dependencies.purchase = {
+      dependencies.distribution= {
         query : {
           identifier : 'uuid',
           tables : {
-            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
-            employee : { columns : ['code', 'name'] },
+            consumption : { columns : ['quantity', 'date', 'uuid'] },
+            consumption_service : { columns : ['service_id'] },
+            service : {columns : ['name']},
+            stock : {columns : ['tracking_number']},
+            inventory : {columns : ['text', 'purchase_price']},
             project : { columns : ['abbr'] }
           },
-          join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
-          where : ['purchase.uuid='+identifiant]
+          join : ['consumption.uuid=consumption_service.consumption_uuid', 'consumption_service.service_id=service.id', 'consumption.tracking_number=stock.tracking_number', 'stock.inventory_uuid=inventory.uuid', 'service.project_id=project.id'],
+          where : ['consumption.document_id='+identifiant]
         }
       };
 
@@ -530,12 +533,14 @@ angular.module('bhima.controllers')
       });
 
       function getLocation (model) {
+        console.log('notre model', model);
         dependencies.location = {};
         dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
       function polish (model) {
+        $scope.records = model.distribution.data;
         $scope.invoice = {};
         $scope.invoice.uuid = identifiant;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
@@ -543,11 +548,8 @@ angular.module('bhima.controllers')
         $scope.invoice.sector = model.location.data[0].sector;
         $scope.invoice.phone = model.enterprise.data[0].phone;
         $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.purchase.data[0].name;
-        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date;
-        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference;
-        $scope.invoice.employee_code = model.purchase.data[0].code;
-        $scope.invoice.cost = model.purchase.data[0].cost;
+        $scope.invoice.name = model.distribution.data[0].name;
+        $scope.invoice.date = model.distribution.data[0].date;
       }
 
     }

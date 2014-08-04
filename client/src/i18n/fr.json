@@ -678,7 +678,9 @@
     "TRANSACTION_DATE"    : "Date de Transaction",
     "PURCHASER"           : "Acheteur",
     "EMPLOYER"            : "Creer par",
-    "PROFIT_CENTER"       : "Center profit"
+    "PROFIT_CENTER"       : "Center profit",
+    "MEDECINE"             : "Medicement",
+    "QTY"                  : "Quantite"
   },
 
   "REPORT"                  : {
@@ -1072,7 +1074,9 @@
     "EMPLOYEE_CONTACT"             : "Contact Employe",
     "EMPLOYEE_CODE"                : "Code Employe",
     "PURCHASE_TOTAL"               : "Total",
-    "PURCHASE_ORDER"               : "Ordre D'Achat"
+    "PURCHASE_ORDER"               : "Ordre D'Achat",
+    "DISTRIBUTION_SERVICE" : "Distribution Service"
+
   },
 
   "SECTOR"             : {
@@ -1523,7 +1527,9 @@
     "WAREHOUSE_MANAGER" : "Gerant de l'entrepot",
     "CHIEF_ACCOUNTANT" : "Chef comptable",
     "FINANCE_OFFICER" : "Officier Finance",
-    "ADMINISTRATOR" : "Adminstrateur"
+    "ADMINISTRATOR" : "Adminstrateur",
+    "RESPONSABLE"   : "Responsable",
+    "BENEFICIARY"   : "Beneficiare"
   },
 
 "EXPIRING_UTIL" : {
