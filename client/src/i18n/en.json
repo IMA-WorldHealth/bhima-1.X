@@ -580,7 +580,9 @@
     "TRANSFER_QUANTITY"   : "Quantity to transfert",
     "PURCHASER"           : "Purchaser",
     "EMPLOYER"            : "Made By",
-    "PROFIT_CENTER"       : "Profit center"
+    "PROFIT_CENTER"       : "Profit center",
+    "MEDECINE"             : "Medecine",
+    "QTY"                  : "Quantity"
   },
 
   "INVENTORY" : {
@@ -1273,7 +1275,9 @@
     "PURCHASE_ORDER"               : "Purchase Order",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
     "DOCUMENT_REF"      : "Document Ref.",
-    "DEPOT_REF"         : "Depot Ref."
+    "DEPOT_REF"         : "Depot Ref.",
+    "DISTRIBUTION_SERVICE" : "Service Distribution"
+
   },
 
   "SECTOR"             : {
@@ -1538,7 +1542,9 @@
     "CHIEF_ACCOUNTANT" : "Chief Accountant",
     "FINANCE_OFFICER" : "Finance Officer",
     "ADMINISTRATOR" : "Adminstrator",
-    "CUSTOMER"      : "Customer"
+    "CUSTOMER"      : "Customer",
+    "RESPONSABLE"   : "Responsable",
+    "BENEFICIARY"   : "Beneficiary"
   },
 
   "CONVENTION"            : {
