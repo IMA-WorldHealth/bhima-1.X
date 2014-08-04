@@ -6,7 +6,7 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   'validate',
-  function($scope, $modal, connect, appstate, messenger, validate) {
+  function ($scope, $modal, connect, appstate, messenger, validate) {
     var dependencies = {};
 
     dependencies.fiscal = {
@@ -36,7 +36,7 @@ angular.module('bhima.controllers')
       $scope.model = model;
     }
 
-    $scope.select = function(fiscalId) {
+    $scope.select = function (fiscalId) {
       if ($scope.model.fiscal) {
         fetchPeriods(fiscalId);
         $scope.selected = $scope.model.fiscal.get(fiscalId);
@@ -44,23 +44,20 @@ angular.module('bhima.controllers')
       }
     };
 
-    $scope.delete = function(fiscalId) {
-      //validate deletion before performing
+    $scope.delete = function (fiscalId) {
+      // validate deletion before performing
       $scope.active = 'select';
       $scope.selected = null;
       $scope.model.fiscal.delete(fiscalId);
     };
 
-    $scope.isSelected = function() {
+    $scope.isSelected = function isSelected() {
       return !!$scope.selected;
     };
 
-    $scope.isFullYear = function() {
+    $scope.isFullYear = function isFullYear() {
       return $scope.newModel.year === 'true';
     };
-
-    $scope.$watch('newModel.start', function() {
-    });
 
     $scope.createFiscal = function createFiscal() {
       //Do some session checking to see if any values need to be saved/ flushed to server
@@ -74,7 +71,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    $scope.getFiscalEnd = function() {
+    $scope.getFiscalEnd = function () {
       if ($scope.periodModel) {
         var l = $scope.periodModel;
         var t = l[l.length-1];
@@ -97,7 +94,6 @@ angular.module('bhima.controllers')
 
     $scope.generateFiscal = function generateFiscal() {
       var model = $scope.newModel;
-      //messenger.push({type: 'info', msg: 'Requesting Fiscal Year ' + model.start});
       connect.fetch('/fiscal/' + $scope.enterpriseId  + '/' + Number(model.start) + '/' + Number(model.end) + '/' + model.description)
       .then(function (res) {
 
@@ -105,77 +101,14 @@ angular.module('bhima.controllers')
           templateUrl: 'createOpeningBalanceModal.html',
           keyboard : false,
           backdrop: 'static',
-          controller : ['$scope', '$modalInstance', 'fiscalYearId', 'zeroId', 'enterprise', function ($scope, $modalInstance, fiscalYearId, zeroId, enterprise) {
-            $scope.enterprise = enterprise;
-            $scope.fiscalYearId = fiscalYearId;
-            connect.fetch({
-              tables : {
-                'account' : {
-                  columns : ['id', 'account_txt', 'account_number']
-                },
-                'account_type' : {
-                  columns : ['type']
-                }
-              },
-              join : ['account.account_type_id=account_type.id'],
-              where : ['account.enterprise_id='+enterprise.id]
-            })
-            .then(function (model) {
-
-              model.forEach(function (row) {
-                row.account_number = '' + row.account_number; // for sorting to work
-                row.debit = 0;
-                row.credit = 0;
-              });
-
-              $scope.accounts = model;
-
-            });
-
-            $scope.reset = function () {
-              $scope.accounts.forEach(function (row) {
-                row.credit = 0;
-                row.debit = 0;
-              });
-            };
-
-            $scope.submit = function () {
-
-              var data = $scope.accounts
-              .filter(function (row) {
-                return row.type !== 'title';
-              })
-              .map(function (row) {
-                return {
-                  account_id     : row.id,
-                  debit          : row.debit || 0, // default to 0
-                  credit         : row.credit || 0, // default to 0
-                  fiscal_year_id : fiscalYearId,
-                  period_id      : zeroId,
-                  enterprise_id  : enterprise.id,
-                };
-              });
-
-              connect.basicPut('period_total', data)
-              .then(function () {
-                $modalInstance.close();
-              })
-              .catch(function (err) {
-                $modalInstance.dismiss(err);
-              })
-              .finally();
-            };
-          }],
-
+          controller : 'fiscal.balance',
           resolve : {
-            fiscalYearId : function () {
-              return res.fiscalInsertId;
-            },
-            zeroId : function () {
-              return res.periodZeroId;
-            },
-            enterprise : function () {
-              return $scope.enterprise;
+            params : function () {
+              return {
+                fiscalYearId : res.fiscalInsertId,
+                zeroId  : res.periodZeroId,
+                enterprise : $scope.enterprise
+              };
             }
           }
         });
@@ -188,9 +121,11 @@ angular.module('bhima.controllers')
           //TODO Hack
           buildFiscalQuery({id: $scope.enterpriseId});
           $scope.active = 'select';
-        }, function (err) {
+        })
+        .catc(function (err) {
           messenger.danger('Error:' + JSON.stringify(err));
-        });
+        })
+        .finally();
       });
     };
 
@@ -231,33 +166,22 @@ angular.module('bhima.controllers')
           templateUrl: 'viewOpeningBalanceModal.html',
           keyboard : false,
           backdrop: 'static',
-          controller : ['$scope', '$modalInstance', 'fiscal', 'accounts', 'enterprise', function ($scope, $modalInstance, fiscal, accounts, enterprise) {
-            $scope.enterprise = enterprise;
-            accounts.forEach(function (row) {
-              row.account_number = '' + row.account_number;
-            });
-            $scope.accounts = accounts;
-            $scope.fiscal = fiscal;
-            $scope.dismiss = function () {
-              $modalInstance.close();
-            };
-          }],
+          controller : 'fiscal.period',
           resolve : {
-            accounts : function () {
-              return res;
-            },
-            fiscal : function () {
-              return $scope.selected;
-            },
-            enterprise : function () {
-              return $scope.enterprise;
+            params : function () {
+              return {
+                accounts: res,
+                fiscal : $scope.selected,
+                enterprise : $scope.enterprise
+              };
             }
           }
         });
-
-      }, function (err) {
+      })
+      .catch(function (err) {
         messenger.danger('An error occured : ' + JSON.stringify(err));
-      });
+      })
+      .finally();
     };
 
     function fetchPeriods(fiscalId) {
