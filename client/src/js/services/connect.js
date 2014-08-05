@@ -59,7 +59,7 @@ angular.module('bhima.services')
     //  data.  Think of it as a `readonly` store.
     var query;
 
-    query = angular.isString(defn) ? defn : '/data/?' + JSON.stringify(defn);
+    query = angular.isString(defn) ? defn : '/data/?q=' + JSON.stringify(defn);
 
     return $http.get(query)
       .then(function (res) {
