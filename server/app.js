@@ -116,6 +116,22 @@ app.get('/services/', function (req, res, next) {
 });
 
 app.get('/available_cost_center/', function (req, res, next) {
+  var sql =
+    'SELECT `cost_center`.`text`, `cost_center`.`id`, `cost_center`.`project_id`, `service`.`name` '+
+    'FROM `cost_center` LEFT JOIN `service` ON `service`.`cost_center_id`=`cost_center`.`id`';
+
+  function process(ccs) {
+    var costCenters = ccs.filter(function(item) {
+      return !item.name;
+    });
+    return costCenters;
+  }
+  db.exec(sql)
+  .then(function (result) {
+    res.send(process(result));
+  })
+  .catch(function (err) { next(err); })
+  .done();
 });
 
 app.get('/available_profit_center/', function (req, res, next) {
