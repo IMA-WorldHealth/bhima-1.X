@@ -13,17 +13,6 @@ angular.module('bhima.controllers')
 
     var configuration = $scope.configuration = {};
 
-    dependencies.services = {
-      query :'/services/'
-    };
-
-    dependencies.cost_centers = {
-      query : '/available_cost_center/'
-    };
-
-    dependencies.profit_centers = {
-      query : '/available_profit_center/'
-    };
 
     dependencies.projects = {
       query : {
@@ -55,7 +44,20 @@ angular.module('bhima.controllers')
       }
     };
 
-    function init(model) {
+    dependencies.services = {
+      query :'/services/'
+    };
+
+    dependencies.cost_centers = {
+      query : '/available_cost_center/'
+    };
+
+    dependencies.profit_centers = {
+      query : '/available_profit_center/'
+    };
+
+    function init (model) {
+      console.log(model);
       $scope.model = model;
       configuration.cost_centers = model.cost_centers.data;
       configuration.profit_centers = model.profit_centers.data;
@@ -162,7 +164,10 @@ angular.module('bhima.controllers')
     appstate.register('project', function (project) {
       $scope.project = project;
       validate.process(dependencies)
-      .then(init);
+      .then(init)
+      .catch(function (err) {
+        console.log('Error', err);
+      });
     });
 
     $scope.save = save;

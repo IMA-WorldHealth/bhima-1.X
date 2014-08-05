@@ -112,7 +112,6 @@ app.get('/services/', function (req, res, next) {
   })
   .catch(function (err) { next(err); })
   .done();
-
 });
 
 app.get('/available_cost_center/', function (req, res, next) {
