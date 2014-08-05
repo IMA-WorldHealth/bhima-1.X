@@ -1401,7 +1401,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(getRecord)
     .spread(getDetails)
     .then(getTransId)
-    .then(debit)
     .then(credit)
     .then(function (res){
       //return done(null, res); because it causes problems with promesses
@@ -1427,7 +1426,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
       cfg.descrip =  'PP/' + new Date().toISOString().slice(0, 10).toString();
-      return q.when();
+      return debit();
     }
 
     function debit () {
@@ -1494,7 +1493,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(getRecord)
     .spread(getDetails)
     .then(getTransId)
-    .then(debit)
     .then(credit)
     .then(function (res){
       return done(null, res);
@@ -1520,7 +1518,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
       cfg.descrip =  'PP/'+new Date().toISOString().slice(0, 10).toString();
-      return q.when();
+      return debit();
     }
 
     function debit () {
@@ -1600,7 +1598,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(getRecord)
     .spread(getDetails)
     .then(getTransId)
-    .then(debit)
     .then(credit)
     .then(function (res){
       return done(null, res);
@@ -1626,7 +1623,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
       cfg.descrip =  'DP/'+new Date().toISOString().slice(0, 10).toString();
-      return q.when();
+      return debit();
     }
 
     function debit () {
@@ -1708,7 +1705,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(getRecord)
     .spread(getDetails)
     .then(getTransId)
-    .then(debit)
     .then(credit)
     .then(function (res){
       return done(null, res);
@@ -1734,7 +1730,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
       cfg.descrip =  'DS/'+new Date().toISOString().slice(0, 10).toString();
-      return q.when();
+      return debit();
     }
 
     function debit () {
