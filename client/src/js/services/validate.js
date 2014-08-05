@@ -16,11 +16,13 @@ angular.module('bhima.services')
   }
 
   function process(dependencies, limit) {
+
     var validate, deferred = $q.defer(), list = filterList((limit || Object.keys(dependencies)), dependencies);
     dependencies[modelLabel] = dependencies[modelLabel] || {};
 
     fetchModels(list, dependencies).then(function(model) {
       packageModels(list, dependencies, model);
+
       validate = validateModels(list, dependencies);
       // console.log('ran tests', validate);
       if (validate.success) { return deferred.resolve(dependencies.model); }
@@ -88,17 +90,22 @@ angular.module('bhima.services')
   function fetchModels(list, dependencies) {
     var deferred = $q.defer(), promiseList = [];
 
+
     list.forEach(function(key) {
       var dependency = dependencies[key], args = [dependency.query];
+
 
       //Hack to allow modelling reports with unique identifier - not properly supported by connect
       if (dependency.identifier) {
         args.push(dependency.identifier);
       }
+
       promiseList.push(connect.req.apply(connect.req, args));
     });
 
-    $q.all(promiseList).then(function(populatedQuerry) {
+    $q.all(promiseList).then(function (populatedQuerry) {
+      console.log('ok', populatedQuerry)
+
       deferred.resolve(populatedQuerry);
     }, function(error) {
       deferred.reject(error);
