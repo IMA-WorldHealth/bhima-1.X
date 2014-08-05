@@ -4,7 +4,7 @@
 
 <nav>
   <div class="pull-right">
-    <button id="createFiscal" ng-click="createFiscal()" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-file"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
+    <button id="createFiscal" ng-click="createFiscal()" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
   </div>
 </nav>
 
@@ -14,7 +14,7 @@
       <div class="row">
         <div class="panel panel-default" style="overflow-x: auto;">
           <div class="panel-heading">
-            <span class="glyphicon glyphicon-list-alt"></span> {{ "FISCAL_YEAR.RECORDS" | translate }}
+            <span class="glyphicon glyphicon-calendar"></span> {{ 'FISCAL_YEAR.RECORDS' | translate }}
           </div>
 
           <table class="table">
@@ -51,8 +51,7 @@
             <h4>{{ "FISCAL_YEAR.TITLE" | translate }}</h4>
             <p>{{ "FISCAL_YEAR.HELP_TXT" | translate }}</p>
             <ul class="list-plain">
-              <li><i class="glyphicon glyphicon-pencil"></i>{{ 'FISCAL_YEAR.EDIT' | translate }}</li>
-              <li><i class="glyphicon glyphicon-file"></i>{{ 'FISCAL_YEAR.CREATION' | translate }}</li>
+              <li><i class="glyphicon glyphicon-pencil"></i> {{ 'FISCAL_YEAR.EDIT' | translate }}</li>
             </ul>
           </div>
         </div>
@@ -67,27 +66,25 @@
               <div class="panel-body">
                 <form novalidate name="form" class="col-xs-6">
                   <div class="form-group">
-                    <label for="fiscalNote">
-                      {{ 'FISCAL_YEAR.DESC' | translate }}
-                    </label>
-                    <input required id="fiscalNote" class="form-bhima" ng-model="new_model.note">
+                    <label for="fiscalNote">{{ 'FISCAL_YEAR.DESC' | translate }}</label>
+                    <input id="fiscalDescription" class="form-bhima" ng-model="newModel.description" required >
                   </div>
 
                   <div class="form-group">
                     <label for="startMonth">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
-                    <input required type="month" id="startMonth" class="form-bhima" ng-model="new_model.start">
+                    <input type="month" id="startMonth" class="form-bhima" ng-model="newModel.start" ng-change="updateDates()" required >
                   </div>
 
                   <div class="form-group">
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_year" id="one" value="true" ng-model="new_model.year" checked>
+                        <input type="radio" name="option_year" id="one" value="true" ng-model="newModel.year" checked>
                         {{ 'FISCAL_YEAR.ONE_YEAR' | translate }}
                       </label>
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_year" id="custom" value="false" ng-model="new_model.year">
+                        <input type="radio" name="option_year" id="custom" value="false" ng-model="newModel.year">
                         {{ 'FISCAL_YEAR.SPECIFY' | translate }}
                       </label>
                     </div>
@@ -95,10 +92,10 @@
 
                   <div class="form-group">
                     <label for="endMonth">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
-                    <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-bhima" ng-model="new_model.end">
+                    <input ng-disabled="isFullYear()" type="month" id="endMonth" class="form-bhima" ng-model="newModel.end" required >
                   </div>
 
-                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-sm btn-success">
+                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal()" class="btn btn-sm btn-success">
                     {{ 'UTIL.SUBMIT' | translate }}
                   </button>
                 </form>
@@ -176,7 +173,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="period in period_model" class="primary">
+                    <tr ng-repeat="period in periodModel" class="primary">
                       <!--FIXME: passing full date object to each table data seems extravagant (read: fabulous)-->
                       <td>{{ period.period_start | date: 'MMM' }}</td>
                       <td>{{ period.period_start | date:'dd/MM/yyyy' }}</td>
