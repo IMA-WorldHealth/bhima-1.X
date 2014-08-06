@@ -582,7 +582,9 @@
     "EMPLOYER"            : "Made By",
     "PROFIT_CENTER"       : "Profit center",
     "MEDECINE"             : "Medecine",
-    "QTY"                  : "Quantity"
+    "QTY"                  : "Quantity",
+    "QTY_LOSS"           : "Loss quantity",
+    "DOCUMENT_UUID"      : " Document number"
   },
 
   "INVENTORY" : {
@@ -1494,8 +1496,13 @@
     "EXIT_SERVICE" : {
         "KEY" : "Stock distribution to services"
     },
-    "LOSS" : {
-      "KEY" : "Stock Loss"
+    "LOSS"     : {
+      "KEY"    : "Stock loss",
+      "TITLE"  : "Stock loss",
+      "KEY"    : "Stock loss",
+      "NO_DEPOT" : "No depot",
+      "LOSS_GENERAL_INFO" : "Summary",
+      "SUBMIT"              : "Submit"
     },
     "MOVEMENT" : {
       "KEY"   : "Stock Movement",

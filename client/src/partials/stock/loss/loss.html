@@ -35,17 +35,28 @@
 
           <legend>{{ "STOCK.LOSS.LOSS_GENERAL_INFO" | translate }}</legend>
 
-          <div class="form-group">
-            <label>{{ "COLUMNS.DOCUMENT_UUID" | translate }}</label>
-            <p class="form-control-static">{{ document.uuid }}</p>
-          </div>
+          <div class="row">
+            <div class="col-xs-3">
+              <span>
+                <label>{{ "COLUMNS.DOCUMENT_UUID" | translate }}</label>
+                <p class="form-control-static"><b>{{ session.document_id }}</b></p>
+              </span>
+            </div>
 
-          <div class="form-group">
-            <label>{{ "COLUMNS.DATE" | translate }}</label>
-            <input class="form-bhima" type="date" ng-model="document.date">
-          </div>
+            <div class="col-xs-3">
+              <span>
+                <label>{{ "COLUMNS.DEPOT" | translate }}</label>
+                <p class="form-control-static"><b>[{{ model.depots.data[0].reference }}] {{ model.depots.data[0].text }}</b></p>
+              </sapn>
+            </div>
 
-          <legend>{{ "STOCK.LOSS.LOSS_DETAIL_INFO" | translate }}</legend>
+            <div class="col-xs-3">
+              <span>
+                <label>{{ "COLUMNS.DATE" | translate }}</label>
+                <p class="form-control-static"><b>{{session.date | date}}</b></p>
+              </sapn>
+            </div>
+          </div>
 
           <div class="row">
             <div class="col-xs-12">
@@ -59,8 +70,8 @@
                   <thead>
                     <tr>
                       <th>{{ "COLUMNS.LABEL" | translate }}</th>
-                      <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th>
                       <th>{{ "COLUMNS.LOT" | translate }}</th>
+                      <th>{{ "COLUMNS.QTY_LOSS" | translate }}</th>
                       <th>{{ "COLUMNS.PRICE" | translate }}</th>
                       <th>{{ "COLUMNS.TOTAL" | translate }}</th>
                       <th></th>
@@ -81,6 +92,16 @@
                           placeholder="{{ 'DISTRIBUTION_SERVICE.TAPE' | translate }}"
                         >
                       </td>
+                      <td width="35%">
+                        <div class="form-group">
+                          <select
+                            class="col-xs-2 form-bhima"
+                            ng-model="row.lot"
+                            ng-options="lot as '(' + lot.lot_number + ')' + '  ' + lot.text  for lot in configuration.rows[$index].lots"
+                          >
+                          </select>
+                        </div>
+                      </td>
                       <td width="15%">
                         <div class="input-group" >
                           <span class="input-group-addon">
@@ -92,40 +113,7 @@
                                 }"
                               class="glyphicon"></span>
                             </span>
-                            <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleChange(row, $index)" required>
-                        </div>
-                      </td>
-                      <td width="35%">
-                        <div ng-repeat="lot in configuration.rows[$index].lots">
-                          <table class="reportTable">
-                            <tbody>
-                              <tr width="100%">
-                                <td width="50%">
-                                  {{"DISTRIBUTION_SERVICE.LOT_NUMBER" | translate }}
-                                </td>
-                                <td width="50%">
-                                  <b>{{lot.lot_number}}</b>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td width="50%">
-                                  {{"DISTRIBUTION_SERVICE.REMAINING_QTY" | translate }}
-                                </td>
-                                <td>
-                                  {{lot.entered - lot.moved - lot.consumed}}
-                                </td>
-                              </tr>
-
-                              <tr>
-                                <td width="50%">
-                                  {{"DISTRIBUTION_SERVICE.EXPIRING_DATE" | translate }}
-                                </td>
-                                <td>
-                                  {{lot.expiration_date | date}}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                            <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleQuantity(row, $index)" required>
                         </div>
                       </td>
                       <td>
@@ -148,7 +136,7 @@
                         <b> {{ "DISTRIBUTION_SERVICE.TOTAL" | translate }}</b>
                       </td>
                       <td colspan="2">
-                        <b>{{ calculateTotal().totalToPay | currency }}</b>
+                        <b>{{ calculateTotal() | currency }}</b>
                       </td>
                     </tr>
                   </tbody>
@@ -164,7 +152,7 @@
 
 <section class="bar-bottom">
   <div class="pull-right">
-    <a ng-disabled="verifyDistribution()" ng-click="Distribute()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION_SERVICE.DISTRIBUTE" | translate }}</a>
+    <a ng-disabled="verifyLoss()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "STOCK.LOSS.SUBMIT" | translate }}</a>
   </div>
 </section>
 

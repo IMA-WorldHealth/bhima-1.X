@@ -506,8 +506,8 @@
       "TITLE"  : "Perte stock",
       "KEY"    : "Perte stock",
       "NO_DEPOT" : "Pas de depot",
-      "LOSS_GENERAL_INFO" : "Information Generale",
-      "LOSS_DETAIL_INFO"  : "Informations Detaillees"
+      "LOSS_GENERAL_INFO" : "Sommaire",
+      "SUBMIT"              : "Soumettre"
     },
     "MOVEMENT" : {
       "KEY"    : "Movements des Stock",
@@ -686,7 +686,8 @@
     "PROFIT_CENTER"       : "Center profit",
     "MEDECINE"             : "Medicement",
     "QTY"                  : "Quantite",
-    "DOCUMENT_UUID"      : "Numero Document"
+    "DOCUMENT_UUID"      : "Numero Document",
+    "QTY_LOSS"           : "Quantite perdue"
   },
 
   "REPORT"                  : {
