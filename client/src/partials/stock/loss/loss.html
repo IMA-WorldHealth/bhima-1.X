@@ -3,9 +3,18 @@
 </header>
 
 <nav>
-  <button ng-click="newLoss()" class="btn btn-sm btn-default">
-    {{ "STOCK.LOSS.NEW_LOSS" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="">{{ "STOCK.LOSS.KEY" | translate }}</a></li>
+    </ol>
+  </div>
+
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
+  </div>
 </nav>
 
 <main>
@@ -17,15 +26,14 @@
   </div>
 
   <div class="row" ng-if="!session.block">
-
-    <div class="col-xs-6">
+    <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-list-alt"></span>
         </div>
         <form class="panel-body">
 
-          <legend>{{ "STOCK.LOSS.LOSS_FORM" | translate }}</legend>
+          <legend>{{ "STOCK.LOSS.LOSS_GENERAL_INFO" | translate }}</legend>
 
           <div class="form-group">
             <label>{{ "COLUMNS.DOCUMENT_UUID" | translate }}</label>
@@ -33,25 +41,137 @@
           </div>
 
           <div class="form-group">
-            <label>{{ "COLUMNS.DOCUMENT_ID" | translate }}</label>
-            <input class="form-bhima" type="text" ng-model="document.document_id">
-          </div>
-
-          <div class="form-group">
             <label>{{ "COLUMNS.DATE" | translate }}</label>
             <input class="form-bhima" type="date" ng-model="document.date">
           </div>
 
-          <legend>{{ "COLUMNS.ITEMS" | translate }}</legend>
+          <legend>{{ "STOCK.LOSS.LOSS_DETAIL_INFO" | translate }}</legend>
 
-          <div class="form-group" ng-repeat="item in items">
-            <label>{{ "COLUMNS.ITEM" | translate }}</label>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="pull-right">
+                <a ng-click="addRow()" class="fieldset-util">
+                  <span class="glyphicon glyphicon-plus"></span> {{ "DISTRIBUTION_SERVICE.ADD_ROW" | translate }}
+                </a>
+              </div>
+              <div class="panel-body">
+                <table class='table table-bordered'>
+                  <thead>
+                    <tr>
+                      <th>{{ "COLUMNS.LABEL" | translate }}</th>
+                      <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th>
+                      <th>{{ "COLUMNS.LOT" | translate }}</th>
+                      <th>{{ "COLUMNS.PRICE" | translate }}</th>
+                      <th>{{ "COLUMNS.TOTAL" | translate }}</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      ng-repeat="row in configuration.rows"
+                      ng-class="{'incomplete-outline': !row.code || !row.validQuantity, 'complete-outline' : !(!row.code || !row.validQuantity)  }">
+                      <td width="20%">
+                        <input
+                          class="form-invoice"
+                          type="text"
+                          typeahead-template-url="lotList.html"
+                          ng-model="row.code"
+                          typeahead="inv.code for inv in model.inventory | filter:$viewValue | limitTo:8"
+                          typeahead-on-select="updateLigne(row.code, $index)"
+                          placeholder="{{ 'DISTRIBUTION_SERVICE.TAPE' | translate }}"
+                        >
+                      </td>
+                      <td width="15%">
+                        <div class="input-group" >
+                          <span class="input-group-addon">
+                            <span
+                              ng-class=
+                                "{
+                                  'glyphicon-remove-circle error' : !row.validQuantity,
+                                  'glyphicon-ok-circle correct' : row.validQuantity
+                                }"
+                              class="glyphicon"></span>
+                            </span>
+                            <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleChange(row, $index)" required>
+                        </div>
+                      </td>
+                      <td width="35%">
+                        <div ng-repeat="lot in configuration.rows[$index].lots">
+                          <table class="reportTable">
+                            <tbody>
+                              <tr width="100%">
+                                <td width="50%">
+                                  {{"DISTRIBUTION_SERVICE.LOT_NUMBER" | translate }}
+                                </td>
+                                <td width="50%">
+                                  <b>{{lot.lot_number}}</b>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td width="50%">
+                                  {{"DISTRIBUTION_SERVICE.REMAINING_QTY" | translate }}
+                                </td>
+                                <td>
+                                  {{lot.entered - lot.moved - lot.consumed}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td width="50%">
+                                  {{"DISTRIBUTION_SERVICE.EXPIRING_DATE" | translate }}
+                                </td>
+                                <td>
+                                  {{lot.expiration_date | date}}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                      <td>
+                        {{row.price | currency}}
+                      </td>
+
+                      <td>
+                        {{(row.price * row.quantity) | currency}}
+                      </td>
+                      <td>
+                        <a ng-click="removeRow($index)">
+                          <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        colspan="4"
+                        style="margin-right = 50px; text-align: right;">
+                        <b> {{ "DISTRIBUTION_SERVICE.TOTAL" | translate }}</b>
+                      </td>
+                      <td colspan="2">
+                        <b>{{ calculateTotal().totalToPay | currency }}</b>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-
         </form>
       </div>
     </div>
-
   </div>
 </main>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <a ng-disabled="verifyDistribution()" ng-click="Distribute()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION_SERVICE.DISTRIBUTE" | translate }}</a>
+  </div>
+</section>
+
+<script type="text/ng-template" id="lotList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>
 

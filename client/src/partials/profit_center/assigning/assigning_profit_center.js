@@ -44,7 +44,6 @@ angular.module('bhima.controllers')
 
     function init(model) {
       $scope.model = model;
-      console.log(model)
       $scope.cc = {};
       $scope.cc.all = false;
     }
