@@ -283,6 +283,18 @@ angular.module('bhima.controllers')
       return consumptions;
     }
 
+    function calculateTotal () {
+      var total = 0;
+      if (!configuration.rows) {
+        total = 0;
+        return total;
+      }
+      configuration.rows.forEach(function (item) {
+        total = total + (item.price * item.quantity);
+      });
+      return total;
+    }
+
 
 
     $scope.preparDistribution = preparDistribution;
@@ -292,5 +304,6 @@ angular.module('bhima.controllers')
     $scope.updateLigne = updateLigne;
     $scope.verifyDistribution = verifyDistribution;
     $scope.Distribute = Distribute;
+    $scope.calculateTotal = calculateTotal;
 
 }]);

@@ -104,8 +104,6 @@ angular.module('bhima.services')
     });
 
     $q.all(promiseList).then(function (populatedQuerry) {
-      console.log('ok', populatedQuerry)
-
       deferred.resolve(populatedQuerry);
     }, function(error) {
       deferred.reject(error);

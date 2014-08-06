@@ -448,7 +448,7 @@
     "FIRST_VOUCHER"         : "Premier No Voucher",
     "LAST_VOUCHER"          : "Dernier No Voucher",
     "POSTING_FROM"          : "Poster De",
-    "NO_RECORDS"            : "No Fiscal Year Records Found.",
+    "NO_RECORDS"            : "fNo Fiscal Year Records Found.",
     "POSTING_TO"            : "Poster jusqu'au",
     "PERIODS"               : "Periodes",
     "FISCAL_YEAR_SELECTION" : "Selection de l\"Annee Fiscale",
@@ -502,7 +502,12 @@
         "KEY" : "Distribution stock au services"
     },
     "LOSS"     : {
-      "KEY"    : "Stock Loss"
+      "KEY"    : "Perte stock",
+      "TITLE"  : "Perte stock",
+      "KEY"    : "Perte stock",
+      "NO_DEPOT" : "Pas de depot",
+      "LOSS_GENERAL_INFO" : "Information Generale",
+      "LOSS_DETAIL_INFO"  : "Informations Detaillees"
     },
     "MOVEMENT" : {
       "KEY"    : "Movements des Stock",
@@ -680,7 +685,8 @@
     "EMPLOYER"            : "Creer par",
     "PROFIT_CENTER"       : "Center profit",
     "MEDECINE"             : "Medicement",
-    "QTY"                  : "Quantite"
+    "QTY"                  : "Quantite",
+    "DOCUMENT_UUID"      : "Numero Document"
   },
 
   "REPORT"                  : {
