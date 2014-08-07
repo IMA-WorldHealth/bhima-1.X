@@ -268,11 +268,11 @@ create table `account` (
   key `account_type_id` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
   key `cc_id`         (`cc_id`),
-  key `pc_id`         (`pc_id`),
+  -- key `pc_id`         (`pc_id`),
   constraint foreign key (`account_type_id`) references `account_type` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`cc_id`)         references `cost_center` (`id`),
-  constraint foreign key (`pc_id`)         references `profit_center` (`id`)
+  constraint foreign key (`cc_id`)         references `cost_center` (`id`)
+  -- constraint foreign key (`pc_id`)         references `profit_center` (`id`)
 ) engine=innodb;
 
 drop table if exists `creditor_group`;
