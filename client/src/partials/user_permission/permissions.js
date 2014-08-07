@@ -1,3 +1,13 @@
+// This module is responsible for handling the creation
+// of users and assigning permissions to existing modules.
+
+// The philosophy of this module is a fast startup.  We load
+// the permissions associated with a user AFTER loading the
+// users, and we load them dynamically.  If this takes too
+// long, we can very easily do a join at the beginning and
+// take a performance hit at startup rather than a potentially
+// confusing halt when a user tries to load permissions.
+
 angular.module('bhima.controllers')
 .controller('permission', [
   '$scope',
@@ -7,16 +17,6 @@ angular.module('bhima.controllers')
   'messenger',
   'validate',
   function($scope, $q, $window, connect, messenger, validate) {
-    // This module is responsible for handling the creation
-    // of users and assigning permissions to existing modules.
-
-    // The philosophy of this module is a fast startup.  We load
-    // the permissions associated with a user AFTER loading the
-    // users, and we load them dynamically.  If this takes too
-    // long, we can very easily do a join at the beginning and
-    // take a performance hit at startup rather than a potentially
-    // confusing halt when a user tries to load permissions.
-
     var dependencies = {};
 
     dependencies.units = {
@@ -69,7 +69,7 @@ angular.module('bhima.controllers')
     $scope.addSubmit = function () {
       delete $scope.add.password_verify;
       delete $scope.add.validPassword;
-      connect.basicPut('user', [connect.clean($scope.add)])
+      connect.post('user', [connect.clean($scope.add)])
       .then(function (res) {
         messenger.info('Successfully posted new user with id: ' + res.data.insertId);
         var data = $scope.add;
@@ -77,7 +77,8 @@ angular.module('bhima.controllers')
         $scope.users.post(data);
         $scope.add = {};
         $scope.action = '';
-      }, function (err) {
+      })
+      .catch(function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
       });
     };
@@ -92,13 +93,14 @@ angular.module('bhima.controllers')
     $scope.editSubmit = function () {
       delete $scope.edit.password_verify;
       delete $scope.edit.validPassword;
-      connect.basicPost('user', [connect.clean($scope.edit)], ['id'])
+      connect.put('user', [connect.clean($scope.edit)], ['id'])
       .then(function (res) {
         messenger.info('Successfully edited user : ' + res.data.insertId);
         $scope.users.put($scope.edit);
         $scope.editInfo($scope.edit);
         $scope.action = '';
-      }, function (err) {
+      })
+      .catch(function (err) {
         messenger.danger('Error:' + JSON.stringify(err));
       });
     };
@@ -113,7 +115,7 @@ angular.module('bhima.controllers')
       $scope.edit.validPassword = angular.isDefined($scope.edit.password) && $scope.edit.password === $scope.edit.password_verify;
     }, true);
 
-    $scope.clearPass = function () {
+    $scope.clearPass = function clearPass() {
       // when a user attempts a new password, clear the old one.
       $scope.edit.password_verify = '';
     };
@@ -122,7 +124,7 @@ angular.module('bhima.controllers')
     $scope.removeUser = function (user) {
       var result = $window.confirm('Are you sure you want to delete user: '  + user.first +' ' +user.last);
       if (result) {
-        connect.basicDelete('user', user.id)
+        connect.delete('user', 'id', user.id)
         .then(function () {
           messenger.success('Deleted user id: ' + user.id);
           $scope.users.remove(user.id);
@@ -175,6 +177,7 @@ angular.module('bhima.controllers')
       var savedPermissions = $scope.permissions;
       var toSave = [],
           toRemove = [];
+
       units.forEach(function (unit) {
         if (unit.checked && !savedPermissions.get(unit.id)) {
           toSave.push({ unit_id : unit.id, user_id : user_id });
@@ -185,30 +188,29 @@ angular.module('bhima.controllers')
       });
 
       // TODO / FIXME : This is terrible coding.
-
       var promises = toRemove.map(function (id) {
-        return connect.basicDelete('permission', [id]);
+        return connect.delete('permission', 'id', id);
       });
 
       $q.all(promises)
       .then(function () {
-        if (!toSave.length) {
-          return messenger.success('Successfully updated permission for user ' + user_id);
-        }
-        return !toSave.length ? $q.when() : connect.basicPut('permission', toSave);
+        return !toSave.length ? $q.when() : connect.post('permission', toSave);
       })
       .then(function () {
         messenger.success('Successfully updated permissions for user ' + user_id);
+      })
+      .catch(function (err) {
+        console.log('An error occurred in batch processing', err);
       });
     };
 
-    function getChildren (id) {
+    function getChildren(id) {
       return $scope.units.data.filter(function (unit) {
         return unit.parent === id;
       });
     }
 
-    $scope.toggleParents = function toggleParents (unit) {
+    $scope.toggleParents = function toggleParents(unit) {
       var parent = $scope.units.get(unit.parent);
       if (!parent) { return; }
       parent.checked = true;
@@ -225,10 +227,19 @@ angular.module('bhima.controllers')
       });
     };
 
-    $scope.filterChildren = function (unit) {
+    $scope.filterChildren = function filterChildren(unit) {
       return unit.parent === 0;
     };
 
+    $scope.changeAllChecked = function changeAll() {
+      if (!$scope.units || !$scope.units.data) { return; }
+      $scope.data.permission_change = true;
+      $scope.units.data.forEach(function (unit) {
+        unit.checked = $scope.all.checked;
+      });
+    };
+
+    /*
     $scope.$watch('all', function () {
       if (!$scope.units || !$scope.units.data) { return; }
       $scope.data.permission_change = true;
@@ -236,6 +247,7 @@ angular.module('bhima.controllers')
         unit.checked = $scope.all.checked;
       });
     }, true);
+    */
 
     validate.process(dependencies)
     .then(function (models) {
@@ -249,7 +261,7 @@ angular.module('bhima.controllers')
 
     // project settings
 
-    $scope.editProjects = function (user) {
+    $scope.editProjects = function editProjects(user) {
       $scope.data.user_id = user.id;
       $scope.projects.data.forEach(function (project) {
         project.checked = false;
@@ -273,20 +285,20 @@ angular.module('bhima.controllers')
         $scope.action = 'project';
       });
     };
-
-    $scope.$watch('all.projects', function () {
+  
+    $scope.changeAllProjects = function changeAllProjects() {
       if (!$scope.projects) { return; }
       $scope.projects.data.forEach(function (project) {
         project.checked = $scope.all.projects;
       });
-    });
+    }
 
     $scope.print = function () {
       $window.print();
     };
 
     $scope.saveProjects = function () {
-      var user_id = $scope.data.user_id;
+      var userId = $scope.data.user_id;
       var projects = $scope.projects.data;
       var toSave = [],
           toRemove = [];
@@ -295,30 +307,29 @@ angular.module('bhima.controllers')
         var isOld = !!$scope.loadedProjects.get(project.id);
 
         if (project.checked && !isOld) {
-          toSave.push({ project_id : project.id, user_id : user_id});
+          toSave.push({ project_id : project.id, user_id : userId });
         }
 
         if (!project.checked && isOld) {
           toRemove.push($scope.loadedProjects.get(project.id).id);
         }
-
       });
 
       // TODO / FIXME : This is terrible coding.
 
       var promises = toRemove.map(function (id) {
-        return connect.basicDelete('project_permission', [id]);
+        return connect.delete('project_permission', 'id', id);
       });
       $q.all(promises)
       .then(function () {
-        if (!toSave.length) {
-          messenger.success('Successfully updated permission for user ' + user_id);
-        }
-        return !toSave.length ? $q.when() : connect.basicPut('project_permission', toSave);
+        return !toSave.length ? $q.when() : connect.post('project_permission', toSave);
       })
       .then(function () {
-        messenger.success('Successfully updated permissions for user ' + user_id);
-      });
+        messenger.success('Successfully updated permissions for user ' + userId);
+      })
+      .catch(function (err) {
+        console.log('Error in batch processing');
+      });;
     };
   }
 ]);

@@ -221,7 +221,7 @@
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
-              <input type="checkbox" ng-model="all.projects">
+              <input type="checkbox" ng-model="all.projects" ng-change="changeAllProjects()">
               {{ "PERMISSION.ALL" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
@@ -248,7 +248,7 @@
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
-              <input type="checkbox" ng-model="all.checked">
+              <input type="checkbox" ng-model="all.checked" ng-change="changeAllChecked()">
               {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
