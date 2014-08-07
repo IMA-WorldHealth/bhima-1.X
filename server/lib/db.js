@@ -111,7 +111,7 @@ module.exports = function (cfg, logger, uuid) {
 
     execute: function(sql, callback) {
       // This fxn is formated for mysql pooling, not in all generality
-      console.log('[db] [execute]: ', sql);
+      console.log('[DEPRECATED] db] [execute]: ', sql);
 
       con.getConnection(function (err, connection) {
         if (err) { return callback(err); }
@@ -123,14 +123,14 @@ module.exports = function (cfg, logger, uuid) {
       });
     },
 
-    exec : function (sql, uid) {
+    exec : function (sql, params) {
       var defer = q.defer();
-      console.log('[db] [execute]: ', sql);
-      log(uid, sql, null);
+      console.log('[db] [exec]: ', sql, params);
+      log('NULL', sql, null);
 
       con.getConnection(function (err, connection) {
         if (err) { return defer.reject(err); }
-        connection.query(sql, function (err, results) {
+        connection.query(sql, params, function (err, results) {
           connection.release();
           if (err) { return defer.reject(err); }
           defer.resolve(results);

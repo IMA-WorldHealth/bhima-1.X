@@ -207,9 +207,9 @@ app.get('/trialbalance/submit/:key/', function (req, res, next) {
 
 app.get('/editsession/authenticate/:pin', function (req, res, next) {
   var decrypt = req.params.pin >> 5;
-  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user_id +
-    ' AND pin = \'' + decrypt + '\';';
-  db.exec(sql)
+  var sql = 'SELECT pin FROM user WHERE user.id = ? AND pin = ?;';
+
+  db.exec(sql, [req.session.user_id, decrypt])
   .then(function (rows) {
     res.send({ authenticated : !!rows.length });
   })

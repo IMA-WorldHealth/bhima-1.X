@@ -20,15 +20,15 @@ module.exports = function (db, sanitize) {
   function login(req, res, next) {
     // FIXME: find a better way to structure this.
     if (req.method !== 'POST') { return next(); }
-    var sql, id, user,
+    var sql, user,
         usr = req.body.username,
         pwd = req.body.password;
 
     sql = 'SELECT `user`.`id`, `user`.`logged_in` ' +
-      'FROM `user` WHERE `user`.`username`=' + sanitize.escape(usr) +
-      ' AND `user`.`password`=' + sanitize.escape(pwd);
+      'FROM `user` WHERE `user`.`username` = ? ' +
+      ' AND `user`.`password` = ?;';
 
-    db.exec(sql)
+    db.exec(sql, [usr, pwd])
     .then(function (results) {
       // TODO: client-side logic not implimented for this.
       if (results.length < 1) {
@@ -46,10 +46,9 @@ module.exports = function (db, sanitize) {
       }
       */
 
-      id = sanitize.escape(user.id);
-      sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id` = ' + id;
+      sql = 'UPDATE `user` SET `user`.`logged_in` = 1 WHERE `user`.`id` = ?;';
    
-      return db.exec(sql);
+      return db.exec(sql, [user.id]);
     })
     .then(function () {
       var sql =
@@ -57,9 +56,9 @@ module.exports = function (db, sanitize) {
         'FROM `unit`, `permission`, `user` WHERE ' +
           '`permission`.`user_id` = `user`.`id` AND ' +
           '`permission`.`unit_id` = `unit`.`id` AND ' +
-          '`user`.`id`=' + id;
+          '`user`.`id` = ?;';
 
-      return db.exec(sql);
+      return db.exec(sql, [user.id]);
     })
     .then(function (results) {
       if (!results.length) {
@@ -77,9 +76,9 @@ module.exports = function (db, sanitize) {
         'SELECT `project`.`id`, `project`.`name`, `project`.`abbr` ' +
         'FROM `project` JOIN `project_permission` ' +
         'ON `project`.`id` = `project_permission`.`project_id` ' +
-        'WHERE `project_permission`.`user_id` = ' + sanitize.escape(req.session.user_id) + ';';
+        'WHERE `project_permission`.`user_id` = ?;';
 
-      return db.exec(sql);
+      return db.exec(sql, [req.session.user_id]);
     })
     .then(function (results) {
 
@@ -102,10 +101,10 @@ module.exports = function (db, sanitize) {
     }
 
     sql =
-      'UPDATE `user` SET `user`.`logged_in`=0' +
-      ' WHERE `user`.`id`=' + sanitize.escape(req.session.user_id);
+      'UPDATE `user` SET `user`.`logged_in` = 0 ' +
+      'WHERE `user`.`id` = ?;';
 
-    db.exec(sql)
+    db.exec(sql, [req.session.user_id])
     .then(function () {
       req.session.destroy(function () {
         res.clearCookie('connect.sid');
@@ -125,7 +124,5 @@ module.exports = function (db, sanitize) {
 
     var fn = router[req.url];
     return fn ? fn(req, res, next) : next();
-
   };
-
 };
