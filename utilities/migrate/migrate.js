@@ -64,6 +64,15 @@ function rip (key, dataset) {
     count += 1;
     var end = dataset.indexOf(');', idx + query.length + 3);
     var statement = dataset.substring(idx, end+2);
+    if (key === '`posting_journal`') { 
+      statement = statement.replace('VALUES', "(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`, `cc_id`) VALUES ");
+    }
+    if (key === '`sale`') {
+      statement = statement.replace('VALUES', "(`project_id`, `reference`, `uuid`, `cost`, `currency_id`, `debitor_uuid`, `seller_id`, `discount`, `invoice_date`, `note`, `posted`, `timestamp`) VALUES ");
+    }
+    if (key === '`account`') {
+      statement = statement.replace('VALUES', "(`id`, `account_type_id`, `enterprise_id`, `account_number`, `account_txt`, `parent`, `fixed`, `locked`, `cc_id`, `pc_id`) VALUES");
+    }
     statements.push(statement);
     idx = dataset.indexOf(query, idx+1);
   }
