@@ -18,6 +18,7 @@ angular.module('bhima.controllers')
   'validate',
   function($scope, $q, $window, connect, messenger, validate) {
     var dependencies = {};
+    var isDefined = angular.isDefined;
 
     dependencies.units = {
       query : {
@@ -59,7 +60,7 @@ angular.module('bhima.controllers')
     $scope.timestamp = new Date();
 
     $scope.$watch('add', function () {
-      $scope.add.validPassword = angular.isDefined($scope.add.password) && $scope.add.password === $scope.add.password_verify;
+      $scope.add.validPassword = isDefined($scope.add.password) && $scope.add.password === $scope.add.password_verify;
     }, true);
 
     $scope.addReset = function () {
@@ -112,7 +113,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.$watch('edit', function () {
-      $scope.edit.validPassword = angular.isDefined($scope.edit.password) && $scope.edit.password === $scope.edit.password_verify;
+      $scope.edit.validPassword = isDefined($scope.edit.password) && $scope.edit.password === $scope.edit.password_verify;
     }, true);
 
     $scope.clearPass = function clearPass() {
@@ -121,7 +122,7 @@ angular.module('bhima.controllers')
     };
 
     // deleting a user
-    $scope.removeUser = function (user) {
+    $scope.removeUser = function removeUser(user) {
       var result = $window.confirm('Are you sure you want to delete user: '  + user.first +' ' +user.last);
       if (result) {
         connect.delete('user', 'id', user.id)
@@ -141,7 +142,7 @@ angular.module('bhima.controllers')
     // permissions data
 
     $scope.data = {};
-    $scope.data.permission_change = false;
+    $scope.data.permissionChange = false;
 
     $scope.editPermission = function (user) {
       $scope.data.user_id = user.id;
@@ -214,14 +215,15 @@ angular.module('bhima.controllers')
       var parent = $scope.units.get(unit.parent);
       if (!parent) { return; }
       parent.checked = true;
-      if (angular.isDefined(parent.parent)) {
+      if (isDefined(parent.parent)) {
         $scope.toggleParents(parent);
       }
     };
 
     $scope.toggleChildren = function toggleChildren(unit) {
+      if (!unit.checked) { $scope.all.checked = false; }
       $scope.toggleParents(unit); // traverse upwards, toggling parents
-      $scope.data.permission_change = true;
+      $scope.data.permissionChange = true;
       unit.children.forEach(function (child) {
         child.checked = unit.checked;
       });
@@ -231,23 +233,12 @@ angular.module('bhima.controllers')
       return unit.parent === 0;
     };
 
-    $scope.changeAllChecked = function changeAll() {
-      if (!$scope.units || !$scope.units.data) { return; }
-      $scope.data.permission_change = true;
+    $scope.toggleAllChecked = function toggleAllChecked(bool) {
+      $scope.data.permissionChange = true;
       $scope.units.data.forEach(function (unit) {
-        unit.checked = $scope.all.checked;
+        unit.checked = bool;
       });
     };
-
-    /*
-    $scope.$watch('all', function () {
-      if (!$scope.units || !$scope.units.data) { return; }
-      $scope.data.permission_change = true;
-      $scope.units.data.forEach(function (unit) {
-        unit.checked = $scope.all.checked;
-      });
-    }, true);
-    */
 
     validate.process(dependencies)
     .then(function (models) {
@@ -286,12 +277,15 @@ angular.module('bhima.controllers')
       });
     };
   
-    $scope.changeAllProjects = function changeAllProjects() {
-      if (!$scope.projects) { return; }
+    $scope.toggleAllProjects = function toggleAllProjects(bool) {
       $scope.projects.data.forEach(function (project) {
-        project.checked = $scope.all.projects;
+        project.checked = bool;
       });
     }
+
+    $scope.deselectAllProjects = function deselectAllProjects(bool) {
+      if (!bool) { $scope.all.projects = false; }
+    };
 
     $scope.print = function () {
       $window.print();
@@ -320,6 +314,7 @@ angular.module('bhima.controllers')
       var promises = toRemove.map(function (id) {
         return connect.delete('project_permission', 'id', id);
       });
+
       $q.all(promises)
       .then(function () {
         return !toSave.length ? $q.when() : connect.post('project_permission', toSave);
@@ -328,7 +323,7 @@ angular.module('bhima.controllers')
         messenger.success('Successfully updated permissions for user ' + userId);
       })
       .catch(function (err) {
-        console.log('Error in batch processing');
+        console.log('Error in batch processing', err);
       });;
     };
   }

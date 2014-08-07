@@ -221,13 +221,13 @@
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
-              <input type="checkbox" ng-model="all.projects" ng-change="changeAllProjects()">
+              <input type="checkbox" ng-model="all.projects" ng-change="toggleAllProjects(all.projects)">
               {{ "PERMISSION.ALL" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
               <li ng-repeat="project in projects.data">
                 <label class="checkbox">
-                  <input type="checkbox" ng-model="project.checked">
+                  <input type="checkbox" ng-model="project.checked" ng-change="deselectAllProjects(project.checked)">
                   {{ project.name }}
                 </label>
               </li>
@@ -242,13 +242,13 @@
             <div class="panel-heading">
               <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
-                <a href="" ng-disabled="!data.permission_change" ng-click="savePermissions()">
+                <a href="" ng-disabled="!data.permissionChange" ng-click="savePermissions()">
                   <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
                 </a>
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
-              <input type="checkbox" ng-model="all.checked" ng-change="changeAllChecked()">
+              <input type="checkbox" ng-model="all.checked" ng-change="toggleAllChecked(all.checked)">
               {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
