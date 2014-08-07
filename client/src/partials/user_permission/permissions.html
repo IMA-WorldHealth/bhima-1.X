@@ -58,10 +58,10 @@
               <td>{{user.first}}</td>
               <td>{{user.username}}</td>
               <td>{{user.email}}</td>
-              <td><a href="" ng-click="editInfo(user)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a href="" ng-click="editPermission(user)"><i class="glyphicon glyphicon-cog"></i></a></td>
-              <td><a href="" ng-click="editProjects(user)"><i class="glyphicon glyphicon-home"></i></a></td>
-              <td><a href="" ng-click="removeUser(user)"><i class="glyphicon glyphicon-trash"></i></a></td>
+              <td><a  ng-click="editInfo(user)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a  ng-click="editPermission(user)"><i class="glyphicon glyphicon-cog"></i></a></td>
+              <td><a  ng-click="editProjects(user)"><i class="glyphicon glyphicon-home"></i></a></td>
+              <td><a  ng-click="removeUser(user)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -215,13 +215,13 @@
             <div class="panel-heading">
               <span>{{ "PERMISSION.PROJECTS" | translate }}</span>
               <span class="pull-right">
-                <a href="" ng-click="saveProjects()">
+                <a ng-click="saveProjects()">
                   <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
                 </a>
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
-              <input type="checkbox" ng-model="all.projects" ng-change="toggleAllProjects(all.projects)">
+              <input type="checkbox" ng-model="super.projects" ng-change="toggleSuperProjects(super.projects)">
               {{ "PERMISSION.ALL" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
@@ -242,13 +242,13 @@
             <div class="panel-heading">
               <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
-                <a href="" ng-disabled="!data.permissionChange" ng-click="savePermissions()">
+                <a ng-disabled="!data.permissionChange" ng-click="savePermissions()">
                   <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
                 </a>
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
-              <input type="checkbox" ng-model="all.checked" ng-change="toggleAllChecked(all.checked)">
+              <input type="checkbox" ng-model="super.checked" ng-change="toggleSuperUnits(super.checked)">
               {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
@@ -278,8 +278,6 @@
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 </div>

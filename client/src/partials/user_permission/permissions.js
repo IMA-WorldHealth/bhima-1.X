@@ -54,8 +54,10 @@ angular.module('bhima.controllers')
 
     // The add namespace
     $scope.add = {};
+    // the edit namespace
+    $scope.edit = {};
     // for registration of 'super user privileges'
-    $scope.all = {};
+    $scope.super = {};
     // for printing
     $scope.timestamp = new Date();
 
@@ -84,8 +86,7 @@ angular.module('bhima.controllers')
       });
     };
 
-    // the edit namespace
-    $scope.edit = {};
+    // edit stuff
 
     $scope.editReset = function () {
       $scope.editInfo($scope.users.get($scope.edit.id));
@@ -221,7 +222,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.toggleChildren = function toggleChildren(unit) {
-      if (!unit.checked) { $scope.all.checked = false; }
+      if (!unit.checked) { $scope.super.checked = false; }
       $scope.toggleParents(unit); // traverse upwards, toggling parents
       $scope.data.permissionChange = true;
       unit.children.forEach(function (child) {
@@ -233,7 +234,7 @@ angular.module('bhima.controllers')
       return unit.parent === 0;
     };
 
-    $scope.toggleAllChecked = function toggleAllChecked(bool) {
+    $scope.toggleSuperUnits = function toggleSuperUnits(bool) {
       $scope.data.permissionChange = true;
       $scope.units.data.forEach(function (unit) {
         unit.checked = bool;
@@ -257,7 +258,7 @@ angular.module('bhima.controllers')
       $scope.projects.data.forEach(function (project) {
         project.checked = false;
       });
-      $scope.all.projects = false;
+      $scope.super.projects = false;
       connect.req({
         tables : {
           'project_permission' : { columns : ['id', 'project_id'] },
@@ -277,14 +278,14 @@ angular.module('bhima.controllers')
       });
     };
   
-    $scope.toggleAllProjects = function toggleAllProjects(bool) {
+    $scope.toggleSuperProjects = function toggleSuperProjects(bool) {
       $scope.projects.data.forEach(function (project) {
         project.checked = bool;
       });
     }
 
     $scope.deselectAllProjects = function deselectAllProjects(bool) {
-      if (!bool) { $scope.all.projects = false; }
+      if (!bool) { $scope.super.projects = false; }
     };
 
     $scope.print = function () {
