@@ -28,7 +28,6 @@ function flushUsers (db_con) {
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
   reset = 'UPDATE `user` SET `logged_in`=\'0\' WHERE `logged_in`=\'1\';';
 
-  // Mwahahahaha
   db_con.getConnection(function (err, con) {
     if (err) { throw err; }
     con.query(permissions, function (err) {
@@ -78,16 +77,19 @@ function promiseQuery(connection, sql) {
   return deferred.promise;
 }
 
-module.exports = function (cfg, logger) {
+module.exports = function (cfg, logger, uuid) {
   'use strict';
+  var log, dbms, supportedDatabases, con;
 
   cfg = cfg || {};
+  log = logger.external('DB');
 
   // Select the system's database with this variable.
-  var dbms = cfg.dbms || 'mysql';
+  dbms = cfg.dbms || 'mysql';
+
 
   // All supported dabases and their initializations
-  var supported_databases = {
+  supportedDatabases = {
     mysql    : mysqlInit
     // postgres : postgresInit,
     // firebird : firebirdInit,
@@ -95,8 +97,8 @@ module.exports = function (cfg, logger) {
   };
 
   // The database connection for all data interactions
-  var con = supported_databases[dbms](cfg);
-  logger.emit('credentials', cfg);
+  log(uuid(), 'Creating connection pool', null);
+  con = supportedDatabases[dbms](cfg);
 
   //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
   flushUsers(con);
@@ -104,7 +106,7 @@ module.exports = function (cfg, logger) {
   return {
     // return all supported databases
     getSupportedDatabases : function() {
-      return Object.keys(supported_databases);
+      return Object.keys(supportedDatabases);
     },
 
     execute: function(sql, callback) {
@@ -121,12 +123,10 @@ module.exports = function (cfg, logger) {
       });
     },
 
-    exec : function (sql) {
-      // this fxn is formatted for mysql pooling
-      // uses promises
-
-      console.log('[db] [execute]: ', sql);
+    exec : function (sql, uid) {
       var defer = q.defer();
+      console.log('[db] [execute]: ', sql);
+      log(uid, sql, null);
 
       con.getConnection(function (err, connection) {
         if (err) { return defer.reject(err); }

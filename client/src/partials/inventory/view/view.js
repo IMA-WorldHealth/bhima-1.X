@@ -5,9 +5,10 @@ angular.module('bhima.controllers')
   '$filter',
   'validate',
   'appstate',
-  'connect',
   '$translate',
-  function ($scope, $q, $filter, validate, appstate, connect, $translate) {
+  function ($scope, $q, $filter, validate, appstate, $translate) {
+    /* jshint unused : true */
+
     // This module provides a view into the inventory to see all registered items.
     // We display these with a slick grid to allow sorting and arbitrary
     // grouping without too much further issue.
@@ -16,7 +17,7 @@ angular.module('bhima.controllers')
         grid,
         columns,
         options,
-        searchStr = "",
+        searchStr = '',
         dataview = $scope.dataview = new Slick.Data.DataView();
 
     // FIXME: Cannot do a join with inventory_unit because inventory.text and inventory_unit.text clash.
@@ -73,7 +74,7 @@ angular.module('bhima.controllers')
 
     function buildGrid() {
 
-      dataview.onRowCountChanged.subscribe(function (e, args) {
+      dataview.onRowCountChanged.subscribe(function () {
         grid.updateRowCount();
         grid.render();
       });
@@ -84,16 +85,16 @@ angular.module('bhima.controllers')
       });
 
       columns = [
-        {id: "COLUMNS.CODE"        , name: "Code"               , field: "code"        , sortable: true  , resizable: true} ,
-        {id: "COLUMNS.TEXT"        , name: "Text"               , field: "text"        , sortable: true} ,
-        {id: "COLUMNS.STOCK"       , name: "Stock Count"        , field: "stock"       , sortable: true} ,
-        {id: "COLUMNS.GROUP"       , name: "Inv. Group"         , field: "name"        , sortable: true} ,
-        {id: "COLUMNS.TYPE"        , name: "Type"               , field: "type_id"     , sortable: true  , formatter: formatType},
-        {id: "COLUMNS.UNIT"        , name: "Unit"               , field: "unit_id"     , sortable: true  , formatter: formatUnit},
-        {id: "COLUMNS.WEIGHT"      , name: "Unit Weight"        , field: "unit_weight" , sortable: true} ,
-        {id: "COLUMNS.VOLUME"      , name: "Unit Volume"        , field: "unit_volume" , sortable: true} ,
-        {id: "COLUMNS.CONSUMABLE"  , name: "Consumable/Durable" , field: "consumble"   , sortable: true  , formatter: formatConsumable},
-        {id: "COLUMNS.PRICE"       , name: "Base Price"         , field: "price"       , sortable: true  , formatter: formatCurrency}
+        {id: 'COLUMNS.CODE'        , name: 'Code'               , field: 'code'        , sortable: true  , resizable: true} ,
+        {id: 'COLUMNS.TEXT'        , name: 'Text'               , field: 'text'        , sortable: true} ,
+        {id: 'COLUMNS.STOCK'       , name: 'Stock Count'        , field: 'stock'       , sortable: true} ,
+        {id: 'COLUMNS.GROUP'       , name: 'Inv. Group'         , field: 'name'        , sortable: true} ,
+        {id: 'COLUMNS.TYPE'        , name: 'Type'               , field: 'type_id'     , sortable: true  , formatter: formatType},
+        {id: 'COLUMNS.UNIT'        , name: 'Unit'               , field: 'unit_id'     , sortable: true  , formatter: formatUnit},
+        {id: 'COLUMNS.WEIGHT'      , name: 'Unit Weight'        , field: 'unit_weight' , sortable: true} ,
+        {id: 'COLUMNS.VOLUME'      , name: 'Unit Volume'        , field: 'unit_volume' , sortable: true} ,
+        {id: 'COLUMNS.CONSUMABLE'  , name: 'Consumable/Durable' , field: 'consumble'   , sortable: true  , formatter: formatConsumable},
+        {id: 'COLUMNS.PRICE'       , name: 'Base Price'         , field: 'price'       , sortable: true  , formatter: formatCurrency}
       ];
 
       // FIXME : this for some reason doesn't always work.
@@ -107,14 +108,14 @@ angular.module('bhima.controllers')
         });
 
         options = {
-        enableCellNavigation : true,
-        forceFitColumns      : true
-      };
+          enableCellNavigation : true,
+          forceFitColumns      : true
+        };
 
-      grid = new Slick.Grid("#bhima-inventory-grid", dataview, columns, options);
-      grid.onSort.subscribe(sorter);
+        grid = new Slick.Grid('#bhima-inventory-grid', dataview, columns, options);
+        grid.onSort.subscribe(sorter);
 
-      })
+      });
 
       // set up sorting
 
@@ -125,12 +126,10 @@ angular.module('bhima.controllers')
         grid.invalidate();
       }
 
-
-
       // set up filtering
 
       function search (item, args) {
-        if (item.searchStr !== "" && item.code.indexOf(args.searchStr) === -1 && item.text.indexOf(args.searchStr) === -1) {
+        if (item.searchStr !== '' && item.code.indexOf(args.searchStr) === -1 && item.text.indexOf(args.searchStr) === -1) {
           return false;
         }
         return true;
@@ -142,7 +141,9 @@ angular.module('bhima.controllers')
       });
 
       $scope.$watch('flags.search', function () {
-        if (!flags.search) flags.search = "";
+        if (!flags.search) {
+          flags.search = '';
+        }
         searchStr = flags.search;
         dataview.setFilterArgs({
           searchStr: searchStr
@@ -153,7 +154,9 @@ angular.module('bhima.controllers')
     }
 
     $scope.$watch('inventory.data', function () {
-      if ($scope.dataview && $scope.inventory) $scope.dataview.setItems($scope.inventory.data, 'uuid');
+      if ($scope.dataview && $scope.inventory) {
+        $scope.dataview.setItems($scope.inventory.data, 'uuid');
+      }
     }, true);
 
     function formatCurrency (row, col, item) {
@@ -169,48 +172,47 @@ angular.module('bhima.controllers')
     }
 
     function formatConsumable (row, col, item) {
-      return item === 1 ? "Consumable" : "Durable";
+      return item === 1 ? 'Consumable' : 'Durable';
     }
 
-
-    var groupDefinitions = $scope.groupDefinitions = [
+    $scope.groupDefinitions = [
       {
         key : 'COLUMNS.TYPE',
-        getter: "type_id",
+        getter: 'type_id',
         formatter: function (g) {
-          return "<span style='font-weight: bold'>" + $scope.inventory_type.get(g.value).text + "</span> (" + g.count + " members)</span>";
+          return '<span style=\'font-weight: bold\'>' + $scope.inventory_type.get(g.value).text + '</span> (' + g.count + ' members)</span>';
         },
         aggregators : []
       },
       {
         key : 'COLUMNS.NAME',
-        getter: "name",
+        getter: 'name',
         formatter: function (g) {
-          return "<span style='font-weight: bold'>" + g.value + "</span> (" + g.count + " members)</span>";
+          return '<span style=\'font-weight: bold\'>' + g.value + '</span> (' + g.count + ' members)</span>';
         },
         aggregators : []
       },
       {
         key : 'COLUMNS.UNIT',
-        getter: "unit_id",
+        getter: 'unit_id',
         formatter: function (g) {
-          return "<span style='font-weight: bold'>" + $scope.inventory_unit.get(g.value).text + "</span> (" + g.count + " members)</span>";
+          return '<span style=\'font-weight: bold\'>' + $scope.inventory_unit.get(g.value).text + '</span> (' + g.count + ' members)</span>';
         },
         aggregators : []
       },
       {
         key : 'COLUMNS.CONSUMABLE',
-        getter: "consumable",
+        getter: 'consumable',
         formatter: function (g) {
-          return "<span style='font-weight: bold'>" + formatConsumable(null, null, g.value) + "</span> (" + g.count + " members)</span>";
+          return '<span style=\'font-weight: bold\'>' + formatConsumable(null, null, g.value) + '</span> (' + g.count + ' members)</span>';
         },
         aggregators : []
       },
       {
         key : 'COLUMNS.PRICE',
-        getter: "price",
+        getter: 'price',
         formatter: function (g) {
-          return "<span style='font-weight: bold'>" + formatCurrency(null, null, g.value) + "</span> (" + g.count + " members)</span>";
+          return '<span style=\'font-weight: bold\'>' + formatCurrency(null, null, g.value) + '</span> (' + g.count + ' members)</span>';
         },
         aggregators : []
       }
@@ -231,12 +233,6 @@ angular.module('bhima.controllers')
       groupInstance.formatter = groupDefinition.formatter;
       dataview.setGrouping(groupInstance);
     };
-
-    function groupExists(targetGroup, groupList) {
-      return groupList.some(function(group) {
-        return group.getter === targetGroup.getter;
-      });
-    }
 
   }
 ]);

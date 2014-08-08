@@ -1,13 +1,11 @@
 angular.module('bhima.controllers')
 .controller('debitorGroup', [
   '$scope',
-  '$q',
   'connect',
   'appstate',
-  'messenger',
   'validate',
   'uuid',
-  function ($scope, $q, connect, appstate, messenger, validate, uuid) {
+  function ($scope, connect, appstate, validate, uuid) {
     var dependencies = {};
     $scope.data = {};
 
@@ -66,12 +64,9 @@ angular.module('bhima.controllers')
         ['price_list.enterprise_id=' + enterprise.id];
       dependencies.account.query.where =
         ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id];
-      validate.process(dependencies).then(setUpModels, handleErrors);
+      validate.process(dependencies)
+      .then(setUpModels);
     });
-
-    function handleErrors (err) {
-      messenger.danger('Error:' + JSON.stringify(err));
-    }
 
     function setUpModels (models) {
       angular.extend($scope, models);
@@ -105,10 +100,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.lock = function (group) {
-      connect.basicPost('debitor_group', [{uuid: group.uuid, locked: group.locked}], ["uuid"])
-      .catch(function (err) {
-        messenger.danger('Error : ', JSON.stringify(err));
-      });
+      connect.basicPost('debitor_group', [{uuid: group.uuid, locked: group.locked}], ['uuid']);
     };
 
     $scope.submitNew = function () {
@@ -116,13 +108,10 @@ angular.module('bhima.controllers')
       $scope.newGroup.uuid = uuid();
       var data = connect.clean($scope.newGroup);
       connect.basicPut('debitor_group', [data])
-      .success(function (res) {
-        data.id = res.insertId;
+      .then(function (res) {
+        data.id = res.data.insertId;
         $scope.debitor_group.post(data);
         $scope.action = '';
-      })
-      .catch(function (err) {
-        messenger.danger('Error :' + JSON.stringify(err));
       });
     };
 
@@ -133,13 +122,10 @@ angular.module('bhima.controllers')
     $scope.submitEdit =  function () {
       var data = connect.clean($scope.editGroup);
       connect.basicPost('debitor_group', [data], ['uuid'])
-      .success(function (res) {
+      .then(function () {
         $scope.debitor_group.put(data);
         $scope.action = '';
         $scope.editGroup = {}; // reset
-      })
-      .catch(function (err) {
-        messenger.danger('Error:' + JSON.stringify(err));
       });
     };
 

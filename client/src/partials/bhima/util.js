@@ -1,11 +1,8 @@
 angular.module('bhima.controllers')
 .controller('util', [
   '$scope',
-  '$translate',
-  'appcache',
-  'messenger',
   '$location',
-  function($scope, $translate, appcache, messenger, $location) {
+  function($scope, $location) {
     ////
     // summary: 
     //  Responsible for all utilities (buttons/ selects etc.) on the application side bar
@@ -13,7 +10,7 @@ angular.module('bhima.controllers')
 
     $scope.openSettings = function () {
       var last = $location.path();
-      $location.path('/settings/').search('q', last);
+      $location.path('/settings/').search('url', last);
     };
 
   }

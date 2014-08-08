@@ -10,12 +10,11 @@
   "newcap"        : true,
   "noarg"         : true,
   "noempty"       : true,
-  "nobsp"         : true,
   "nonew"         : true,
   "plusplus"      : false,
   "quotmark"      : "single",
   "undef"         : true,
-  "unused"        : "strict",
+  "unused"        : "false",
   "strict"        : false,
   "trailing"      : true,
   "maxstatements" : false,
@@ -67,7 +66,8 @@
     "process",
     "require",
     "module",
-    "exports"
+    "exports",
+    "indexedDB"
   ],
   "indent"        : 2
 }

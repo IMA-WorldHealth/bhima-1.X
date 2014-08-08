@@ -1,0 +1,107 @@
+<header>
+  {{ "CONVENTION.TITLE" | translate }}
+</header>
+
+<nav>
+    <div style="position: absolute; right: 5px;">
+      <button class="btn btn-sm btn-primary dropdown-toggle">
+        {{ model.accounts.get(selectedItem.account_id).account_txt || "CONVENTION.DEFAULT_CASHBOX" | translate }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu pull-left">
+        <li ng-repeat="box in model.cash_box.data">
+          <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="pull-left">
+      <ol class="breadcrumb">
+        <li><span class="glyphicon glyphicon-home"></span></li>
+        <li><a href="#/primary_cash/">{{'CONVENTION.CRUMB_PCASH' | translate}}</a></li>
+        <li class="active">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</li>
+      </ol>
+  </div>
+</nav>
+
+<main>
+
+  <div class="row">
+    <div class="col-xs-6">
+      <div find-convention on-search-complete="initialiseConvention"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          {{ "CONVENTION.INFO" | translate }}
+        </div>
+
+        <div ng-show="noEmpty" class="panel-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{'COLUMNS.REFERENCE' | translate}}</th>
+                <th>{{'COLUMNS.DESCRIPTION' | translate}}</th>
+                <th>{{'COLUMNS.AMOUNT' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="overview in overviews">
+                <td>{{overview.reference}}</td>
+                <td>{{overview.description}}</td>
+                <td  align="right"><span ng-bind-html="overview.balance | intlcurrency:overview.currency_id"></span></td>
+              </tr>
+              <tr>
+                <td align="left">{{'CONVENTION.TOT' | translate}}</td>
+                <td colspan="2" align="right">{{som | currency}}</td>
+              </tr>
+            </tbody>
+          </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer" ng-show="noEmpty">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading" >
+          {{ "CONVENTION.PAYEMENT" | translate}}
+        </div>
+        <div class="panel-body" ng-show="noEmpty">
+          <form >
+            <div class="form-group">
+              <div class="col-xs-4">
+                <label>{{"CONVENTION.MONTANT" | translate}}</label>
+              </div>
+            </div>
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="data.payment"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ selectedItem.symbol }} </span>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel-footer" ng-show="noEmpty">
+            <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.payment < selectedItem.min_monentary_unit || data.payment > som, 'btn-success':  data.payment >= selectedItem.min_monentary_unit }" ng-click="pay()" ng-disabled="check()">
+              {{ "FORM.SUBMIT" | translate }}
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script type="text/ng-template" id="debitorGroupListItem.html">
+  <a>
+    <span><b>[{{ match.model.uuid }}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>

@@ -1,0 +1,82 @@
+{
+  "static": "client/dest/",
+  "rootFile" : "/index.html",
+  "port" : 8080,
+  "db" : {
+    "host"     : "localhost",
+    "user"     : "bhima",
+    "password" : "HISCongo2013",
+    "database" : "bhima"
+  },
+  "log" : {
+    "type" : "html",
+    "file" : "log"
+  },
+  "session" : {
+    "secret" : "xopen blowfish"
+  },
+  "tls" : {
+    "key" : "server/keys/key.pem",
+    "cert" : "server/keys/ssl.crt"
+  },
+  "auth" : {
+    "paths" : [
+      "/js",
+      "/partials/invoice",
+      "/assets",
+      "/data",
+      "/print",
+      "/report",
+      "/currentProject",
+      "/trialbalance",
+      "/reports",
+      "/tree",
+      "/credit_note",
+      "/finance",
+      "/settings",
+      "/journal",
+      "/editsession",
+      "/visit",
+      "/location",
+      "/province",
+      "/sector",
+      "/village",
+      "/project",
+      "/error",
+      "/max",
+      "/inventory",
+      "/account_balance",
+      "/ledger",
+      "/sale",
+      "/purchase",
+      "/user_session",
+      "/some",
+      "/fiscal",
+      "/caution/",
+      "/synthetic/",
+      "/InExAccounts/",
+      "/period",
+      "/max_trans/",
+      "/max_log/",
+      "/pcash_transfert_summers",
+      "/lot/",
+      "/availableAccounts/",
+      "/costCenterAccount/",
+      "/removeFromCostCenter/",
+      "/cost/",
+      "/profit/",
+      "/favicon.ico",
+      "/expiring/",
+      "/expiring_complete/",
+      "/serv_dist_stock/",
+      "/inv_in_depot/",
+      "/availableAccounts_profit/",
+      "/profitCenterAccount/",
+      "/removeFromProfitCenter/",
+      "/services/",
+      "/available_cost_center/",
+      "/available_profit_center/",
+      "/service_dist/"
+    ]
+  }
+}

@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
 .controller('groupInvoice', [
   '$scope',
-  '$routeParams',
   'connect',
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $routeParams, connect, validate, appstate, messenger) {
+  'uuid',
+  function ($scope, connect, validate, appstate, messenger, uuid) {
 
     var dependencies = {};
     $scope.action = '';
@@ -51,7 +51,7 @@ angular.module('bhima.controllers')
       dependencies.invoices.query.where =
         ['posting_journal.project_id=' + project.id];
       dependencies.conventions.query.where.push(
-        'debitor_group.enterprise_id=' + project.id
+        'debitor_group.enterprise_id=' + project.enterprise_id
       );
       validate.process(dependencies, ['debitors', 'conventions']).then(setUpModels);
     });
@@ -60,7 +60,9 @@ angular.module('bhima.controllers')
       if (!$scope.selected.debitor) {
         return messenger.danger('Error: No debitor selected');
       }
-      dependencies.invoices.query += $scope.selected.debitor.id;
+
+      console.log('[selected debitor]', $scope.selected.debitor);
+      dependencies.invoices.query += $scope.selected.debitor.uuid;
       validate.process(dependencies).then(setUpModels);
       $scope.hasDebitor = true;
       $scope.action = 'info';
@@ -119,8 +121,8 @@ angular.module('bhima.controllers')
     $scope.pay = function () {
       var payment = $scope.payment;
       payment.project_id = $scope.project.id;
-      payment.group_id = $scope.selected.convention.id;
-      payment.debitor_id  = $scope.selected.debitor.id;
+      payment.group_uuid = $scope.selected.convention.uuid;
+      payment.debitor_uuid  = $scope.selected.debitor.uuid;
       payment.total = $scope.paymentBalance;
       payment.date = new Date().toISOString().slice(0,10);
       $scope.action = 'confirm';
@@ -135,24 +137,21 @@ angular.module('bhima.controllers')
     }, true);
 
     $scope.authorize = function () {
-      var payment = connect.clean($scope.payment);
+      var id, items, payment = connect.clean($scope.payment);
+      payment.uuid = uuid();
       connect.basicPut('group_invoice', [payment])
-      .then(function (res) {
-        var id = res.data.insertId;
-        var items = formatItems(id);
-        connect.basicPut('group_invoice_item', items)
-        .then(function (res) {
-          $scope.action = '';
-          $scope.paying = [];
-          connect.fetch('/journal/group_invoice/' + id)
-          .then(function () {
-            messenger.success('Data submitted successfully.');
-          });
-        }, function (err) {
-          messenger.danger(JSON.stringify(err));
-        });
-      }, function (err) {
-        messenger.danger(JSON.stringify(err));
+      .then(function () {
+        id = payment.uuid;
+        items = formatItems(id);
+        return connect.basicPut('group_invoice_item', items);
+      })
+      .then(function () {
+        $scope.action = '';
+        $scope.paying = [];
+        return connect.fetch('/journal/group_invoice/' + id);
+      })
+      .then(function () {
+        messenger.success('Data submitted successfully.');
       });
     };
 
@@ -160,10 +159,12 @@ angular.module('bhima.controllers')
       var items = [];
       $scope.paying.forEach(function (i) {
         var item = {};
+        item.uuid = uuid();
         item.cost = i.payment;
-        item.invoice_id = i.inv_po_id;
-        item.payment_id = id;
+        item.invoice_uuid = i.inv_po_id;
+        item.payment_uuid = id;
         items.push(item);
+        console.log('[inserted item]', item);
       });
 
       return items;

@@ -8,11 +8,11 @@ module.exports = function (db, parser) {
   // database.
   //
   // FIXME: there seems to be some code repetition.
+  // TODO : Use db.exec() instead of db.execute()
 
   'use strict';
 
   function load (userid) {
-    var defer = q.defer();
 
     function getChildren (parent_id) {
       var d = q.defer();
@@ -26,7 +26,7 @@ module.exports = function (db, parser) {
       });
 
       db.execute(sql, function (err, result) {
-        if (err) throw err;
+        if (err) { throw err; }
         var have_children = result.filter(function (row) {
           return row.has_children;
         });
@@ -56,7 +56,7 @@ module.exports = function (db, parser) {
 
       // this is freakin' complex. DO NOT TOUCH.
       db.execute(query, function (err, result) {
-        if (err) throw err;
+        if (err) { throw err; }
         d.resolve(q.all(result.map(function (row) {
           var p = q.defer();
           if (row.has_children) {

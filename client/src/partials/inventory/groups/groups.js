@@ -27,7 +27,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    function startup (models) {
+    function startup(models) {
       models.accounts.data.forEach(function (accnt) {
         accnt.account_number =  String(accnt.account_number);
       });

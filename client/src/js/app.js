@@ -7,7 +7,7 @@
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider.
     when('/budgeting/:accountID?', {
-      controller: 'budgetController',
+      controller: 'budget',
       templateUrl: 'partials/budget/budget.html'
     })
     .when('/project', {
@@ -58,7 +58,7 @@
       controller: 'inventoryRegister',
       templateUrl: '/partials/inventory/register/register.html'
     })
-    .when('/inventory/update_item', {
+    .when('/inventory/update', {
       controller : 'inventory.update',
       templateUrl : 'partials/inventory/update_item/update_item.html'
     })
@@ -91,27 +91,31 @@
       templateUrl: '/partials/cash/cash.html'
     })
     .when('/creditor', {
-      controller: 'creditorsController',
+      controller: 'creditors',
       templateUrl: '/partials/creditor/creditor.html'
     })
     .when('/creditors/creditor_group', {
-      controller: 'creditorGroupCtrl',
+      controller: 'creditorGroup',
       templateUrl: 'partials/creditor/group/creditor_group.html'
     }).
-    when('/inventory/purchase', {
+    when('/purchase/create/', {
       controller: 'purchaseOrder',
-      templateUrl: 'partials/purchase_order/purchase.html'
+      templateUrl: 'partials/purchase/create/purchase.html'
     })
-    .when('/purchase_records/:purchaseID?', {
-      controller: 'purchaseRecordsController',
-      templateUrl: 'partials/records/purchase_order_records/purchase_records.html'
+    .when('/purchase/view/', {
+      controller: 'purchaseRecords',
+      templateUrl: 'partials/purchase/view/purchase_records.html'
+    })
+    .when('/purchase/confirm/', {
+      controller: 'purchaseConfirm',
+      templateUrl: 'partials/purchase/confirm/confirm.html'
     })
     .when('/inventory/price_list', {
       controller: 'priceList',
       templateUrl: 'partials/price_list/pricelist.html'
     })
     .when('/exchange_rate', {
-      controller : 'exchangeRateController',
+      controller : 'exchangeRate',
       templateUrl: 'partials/exchange_rate/exchange_rate.html'
     })
     .when('/currency', {
@@ -135,7 +139,7 @@
       templateUrl : 'partials/reports/transactions/account.html'
     })
     .when('/reports/transaction_report', {
-      controller: 'reportTransactionController',
+      controller: 'reportTransaction',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
     })
     .when('/reports/patient_standing/', {
@@ -147,7 +151,7 @@
       templateUrl: '/partials/reports/ledger/general_ledger.html'
     })
     .when('/reports/summary', {
-      controller: 'summaryController',
+      controller: 'summary',
       templateUrl: 'partials/reports/summary/summary.html'
     })
     .when('/reports/debitor_aging/', {
@@ -163,7 +167,7 @@
       templateUrl: 'partials/reports/income_expensive/income_expensive.html'
     })
     .when('/location', {
-      controller : 'locationCtrl',
+      controller : 'location',
       templateUrl: 'partials/location/location.html'
     })
     .when('/location/village', {
@@ -186,7 +190,7 @@
       templateUrl: 'partials/print/test.html'
     })
     .when('/settings/:route?', {
-      controller: 'settingsController',
+      controller: 'settings',
       templateUrl: 'partials/settings/settings.html'
     })
     .when('/patient_group_assignment', {
@@ -209,6 +213,14 @@
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
     })
+    .when('/profit_center', {
+      controller: 'profitCenter',
+      templateUrl: 'partials/profit_center/profit_center.html'
+    })
+    .when('/profit_center/center/', {
+      controller: 'profitCenterAnalyse',
+      templateUrl: 'partials/profit_center/center/analysis_profit_center.html'
+    })
     .when('/cost_center/center/', {
       controller: 'analysisCenter',
       templateUrl: 'partials/cost_center/center/analysis_center.html'
@@ -217,9 +229,13 @@
       controller: 'assigning',
       templateUrl: 'partials/cost_center/assigning/assigning.html'
     })
-    .when('/cost_center/versement/', {
-      controller: 'versement',
-      templateUrl: 'partials/cost_center/versement/versement.html'
+    .when('/cost_center/allocation/', {
+      controller: 'costCenter.allocation',
+      templateUrl: 'partials/cost_center/allocation/allocation.html'
+    })
+    .when('/profit_center/allocation/', {
+      controller: 'profitCenter.allocation',
+      templateUrl: 'partials/profit_center/allocation/allocation.html'
     })
     .when('/patient_group', {
       controller: 'patientGroup',
@@ -257,33 +273,17 @@
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
     })
-    .when('/client', {
-      controller : 'client',
-      templateUrl : 'partials/client/client.html'
-    })
-    .when('/beneficiary', {
-      controller : 'beneficiary',
-      templateUrl : 'partials/beneficiary/beneficiary.html'
-    })
-    .when('/main_cash', {
-      controller : 'mainCash',
-      templateUrl : 'partials/pcash/pcash.html'
-    })
-    .when('/main_cash/income', {
-      controller : 'income',
-      templateUrl : 'partials/pcash/income/income.html'
-    })
-    .when('/main_cash/expense', {
-      controller : 'expense',
-      templateUrl : 'partials/pcash/expense/expense.html'
-    })
-    .when('/primary_cash/transfert/:cashbox_id', {
-      controller : 'transfert',
-      templateUrl : 'partials/primary_cash/incomes/transfert/transfert.html'
+    .when('/primary_cash/transfer/:cashbox_id', {
+      controller : 'primaryCash.income.transfer',
+      templateUrl : 'partials/primary_cash/income/transfer/transfer.html'
     })
      .when('/primary_cash/convention/:cashbox_id', {
       controller : 'convention',
-      templateUrl : 'partials/primary_cash/incomes/convention/convention.html'
+      templateUrl : 'partials/primary_cash/income/convention/convention.html'
+    })
+    .when('/primary_cash/income/generic/:id', {
+      controller : 'primaryCash.income.generic',
+      templateUrl : 'partials/primary_cash/income/generic/generic.html'
     })
     .when('/trialbalance/print', {
       controller : 'trialbalance.print',
@@ -306,7 +306,7 @@
       templateUrl : 'partials/journal/print.html'
     })
     .when('/primary_cash/expense/generic/:id?', {
-      controller : 'primaryCash.expense',
+      controller : 'primaryCash.expense.generic',
       templateUrl: 'partials/primary_cash/expense/generic.html'
     })
     .when('/primary_cash/expense/purchase/:cashbox', {
@@ -337,6 +337,10 @@
       controller : 'stock.distribution',
       templateUrl : 'partials/stock/exit/distribution.html'
     })
+    .when('/stock/distribution_service/:depotId', {
+      controller : 'stock.distribution_service',
+      templateUrl : 'partials/stock/exit_service/distribution_service.html'
+    })
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
@@ -360,6 +364,10 @@
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
+    })
+    .when('/purchase_menu/', {
+      controller : 'purchase.menu',
+      templateUrl : 'partials/purchase/purchase_menu.html'
     });
   }
 

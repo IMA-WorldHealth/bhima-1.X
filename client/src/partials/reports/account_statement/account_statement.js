@@ -1,5 +1,5 @@
-angular.module('bhima.controllers').controller('accountStatement',
-[
+angular.module('bhima.controllers')
+.controller('accountStatement', [
   '$scope',
   '$q',
   '$http',
@@ -26,13 +26,17 @@ angular.module('bhima.controllers').controller('accountStatement',
     dependencies.report = {
       // query : '/report/account_statement/'
     };
-    
+   
     parseParams();
 
     function parseParams() {
       session.requestId = $routeParams.id;
 
-      if (!session.requestId) return session.select = true;
+      if (!session.requestId) {
+        session.select = true;
+        return;
+      }
+
       return fetchReport(session.requestId);
     }
 
@@ -48,7 +52,7 @@ angular.module('bhima.controllers').controller('accountStatement',
         handleError
       );
     }
-    
+   
     function initialise(model) {
       session.loaded = true;
       session.select = false;
@@ -70,14 +74,14 @@ angular.module('bhima.controllers').controller('accountStatement',
       dependencies.report.query =
         '/reports/accountStatement/?' +
         JSON.stringify(statementParams);
-    
+   
       console.log('requesting', statementParams);
       return $http.get(dependencies.report.query);
     }
 
     function processProject() {
       var deferred = $q.defer();
-      
+     
       appstate.register('project', function (result) {
         $scope.project = result;
         deferred.resolve(result);
@@ -86,14 +90,14 @@ angular.module('bhima.controllers').controller('accountStatement',
     }
 
     function handleError(error) {
-      messenger.danger($translate('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);
+      messenger.danger($translate.instant('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);
       session.loaded = false;
       session.select = true;
-      throw error; 
+      throw error;
     }
 
     function requestAccount(accountId) {
-      if (accountId) fetchReport(accountId);
+      if (accountId) { fetchReport(accountId); }
       console.log('requestId', accountId);
     }
 

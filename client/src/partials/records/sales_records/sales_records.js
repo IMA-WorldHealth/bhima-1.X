@@ -1,15 +1,13 @@
 angular.module('bhima.controllers')
 .controller('salesRecords', [
   '$scope',
-  '$routeParams',
   '$timeout',
-  '$filter',
+  'util',
   'validate',
-  function($scope, $routeParams, $timeout, $filter, validate) {
+  function ($scope, $timeout, util, validate) {
     // TODO add search (filter)
     // TODO add sortable (clickable) columns
-    var defaultInvoice = ($routeParams.recordID || -1),
-        dependencies = {};
+    var dependencies = {};
 
     var period = $scope.period = [
       {
@@ -39,8 +37,6 @@ angular.module('bhima.controllers')
       },
       result : {}
     };
-
-    // $scope.$watch('session.param', formatDates, true);
 
     dependencies.sale = {};
     dependencies.project = {
@@ -81,11 +77,9 @@ angular.module('bhima.controllers')
     function reset() {
       var request;
 
-      formatDates();
-
       request = {
-        dateFrom : session.param.dateFrom,
-        dateTo : session.param.dateTo,
+        dateFrom : util.sqlDate(session.param.dateFrom),
+        dateTo : util.sqlDate(session.param.dateTo),
       };
 
       if (!isNaN(Number(session.project))) {
@@ -149,11 +143,6 @@ angular.module('bhima.controllers')
       return $scope.model.sale.data.reduce(function (a, b) {
         return a + b.cost;
       }, 0);
-    }
-
-    function formatDates() {
-      session.param.dateFrom = $filter('date')(session.param.dateFrom, 'yyyy-MM-dd');
-      session.param.dateTo = $filter('date')(session.param.dateTo, 'yyyy-MM-dd');
     }
 
     $scope.select = select;

@@ -1,17 +1,17 @@
 <!--Create Account Markup-->
 <header>
-  {{ "ACCOUNT.TITLE" | translate }} 
+  {{ "ACCOUNT.TITLE" | translate }}
 </header>
 
 <section class="top-nav">
-<!-- <button class="btn btn-default btn-sm">antyhing</button> -->
+  <!-- <button class="btn btn-default btn-sm">antyhing</button> -->
   <button ng-click="updateState('edit')" class="btn btn-default btn-sm">
     <span class="glyphicon glyphicon-plus"></span> {{ "ACCOUNT.ADD" | translate }}
   </button>
   <div class="pull-right">
       <button disabled class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-pencil"></span> {{ "ACCOUNT.CREATE" | translate }} 
-      </button> 
+        <span class="glyphicon glyphicon-pencil"></span> {{ "ACCOUNT.CREATE" | translate }}
+      </button>
       <a ng-href="#/reports/chart_of_accounts" class="btn btn-default btn-sm">
         <span class="glyphicon glyphicon-list"></span> {{ "ACCOUNT.GENERATE" | translate }}
       </a>
@@ -19,7 +19,6 @@
 </section>
 
 <div class="content">
-
   <!--Note that that column classes should be used with rows to ensure corred padding -->
   <div class="row">
 
@@ -28,12 +27,12 @@
         <div ng-switch-default>
           <div class="alert alert-info">
             <p>{{ "ACCOUNT.HELP_TXT_1" | translate }} <b>{{enterprise.name}}</b></p>
-            <p>{{ "ACCOUNT.HELP_TXT_2" | translate }}.</p> 
+            <p>{{ "ACCOUNT.HELP_TXT_2" | translate }}.</p>
             <p>{{ "ACCOUNT.HELP_TXT_3" | translate }}.</p>
-          </div> 
+          </div>
         </div>
 
-        <div ng-switch-when='edit'> 
+        <div ng-switch-when='edit'>
           <div class="panel panel-default">
             <div class="panel-heading">
               {{ "ACCOUNT.NEW" | translate }}
@@ -49,13 +48,10 @@
                 <div class="form-group">
                   <label for="type">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
                   <select required  id="type" class="form-bhima" ng-options="c.type for c in model.accountType.data" ng-model="newAccount.type">
-                    <!--Placeholder options-->
-                    <!-- <option>Title</option> -->
-                    <!-- <option>Balance Account</option> -->
-                    <!-- <option>Income/Expense Account</option> -->
+                    <option value="" disabled="disabled"> --- {{ "SELECT.ACCOUNT_TYPE" | translate }} --- </option>
                   </select>
                 </div>
-                
+
                 <div class="form-group">
                   <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
                   <input required type="text" id="number" class="form-bhima" ng-model="newAccount.number">
@@ -71,10 +67,10 @@
                   <div class="radio">
                     <label>
                       <input type="radio" name="option_variable" id="variable" value="false" ng-model="newAccount.fixed">
-                      {{ "ACCOUNT.VARIABLE" | translate }} 
+                      {{ "ACCOUNT.VARIABLE" | translate }}
                     </label>
                   </div>
-                </div> 
+                </div>
               </form>
             </div> <!--panel body-->
           </div> <!-- panel-->
@@ -90,15 +86,16 @@
                   <!--Placeholder options-->
                   <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
                 </select>
-              </div> 
+              </div>
             </div>
-          </div> 
+          </div>
           <button ng-disabled="form.$invalid" ng-click="submitAccount(newAccount)" class="btn btn-success">
-            {{ "FORM.SUBMIT" | translate }} 
+            {{ "FORM.SUBMIT" | translate }}
           </button>
         </div>
       </div>
-    </div> <!--ng-switch-->
+    </div>
+
     <div class="col-xs-9">
       <!--Accounts grid to be populated-->
       <div id="account_grid" class="grid" style="max-height: 480px"></div>

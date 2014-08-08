@@ -1,61 +1,92 @@
 // scripts/lib/database/logger.js
+/* jshint unused : false */
 
-// Module: logger
+// Module: Logger
+// This module is responsible for logging all requests to
+// the express server, plus requests to external (asynchronous)
+// modules, such as the database connector.
+//
+// Logs look like:
+// --------------------------------------------------------------------------
+// | source | ip | uuid | timestamp | type |  description | status | userID |
+// --------------------------------------------------------------------------
 
-// This module is responsible for timestamping and logging
-// queries to the database.
+var fs = require('fs'),
+    os = require('os');
 
-var fs = require('fs');
+/* Writers */
+function getTime() {
+  return new Date().toLocaleTimeString();
+}
 
-module.exports = (function (cfg) {
+module.exports = function Logger (cfg, uuid) {
   'use strict';
+  var types, headers, io, writer;
 
-  cfg = cfg || {};
+  if (!cfg) {
+    throw new Error('No configuration file found!');
+  }
 
-  var logFile = cfg.file || './scripts/lib/database/db.log',
-      delimiter = cfg.delimiter || '\t',
-      headers = cfg.headers || [];
+  /* import loggers */
+  types = {
+    'csv'      : require('./loggers/csv'),
+    'html'     : require('./loggers/html'),
+    'markdown' : require('./loggers/markdown'),
+    'tsv'      : require('./loggers/tab'),
+    'tab'      : require('./loggers/tab'),
+  };
 
-  // create our logger
-  var io = fs.createWriteStream(logFile);
+  headers = [
+    'SOURCE',
+    'IP',
+    'UUID',
+    'TIMESTAMP',
+    'METHOD',
+    'DESCRIPTION',
+    'TYPE',
+    'USER'
+  ];
 
-  // write headers
-  io.on('open', function () {
-    io.write('/* =================================== */\n');
-    io.write('/* Logger opened at ' + new Date().toLocaleTimeString() + ' */\n'); 
-    io.write('/* Log file : ' + logFile + ' */\n');
-    io.write('/* HEADERS \n');
-    headers.forEach(function (header) {
-      io.write(' * ' + header + '\n'); 
-    });
-    io.write('*/\n');
-    io.write('/* =================================== */\n');
-    io.write(['TimeStamp', 'Query\n'].join(delimiter));
-  });
+  io = fs.createWriteStream(cfg.file + '.' + cfg.type);
+  writer = new types[cfg.type](io, headers);
+  writer.writeHeader();
 
-  // logging
-  io.on('log', function (data) {
-    io.write([new Date().toLocaleTimeString(), data + '\n'].join(delimiter));
-  });
+  function request() {
+    var source = 'HTTP';
+    return function (req, res, next) {
+      req.uuid = uuid();
+      var userId = req.session ? req.session.user_id : null;
+      writer.writeContent(source, req.ip, req.uuid, getTime(), req.method, decodeURI(req.url), null, userId);
+      next();
+    };
+  }
 
-  // log connecting
-  io.on('connecting', function (credentials) {
-    var creds = Object.keys(credentials)
-      .map(function (cred) { return [cred, credentials[cred]].join(':'); });
-    io.write('Connection with creditentials:' + creds.toString() + '\n');
-  });
+  function external(source) {
+    if (!source) {
+      throw new Error('Must specify an external module in log.');
+    }
+    return function (uuid, desc, user_id) {
+      writer.writeContent(source, null, uuid, getTime(), null, desc, null, user_id);
+    };
+  }
 
-  // final writes
-  io.on('close', function () {
-    io.write('/* =================================== */\n');
-    io.write('/* Log closed at ' + new Date().toLocaleTimeString() + ' */\n');
-  });
+  function error() {
+    var source = 'ERROR';
+    return function (err, req, res, next) {
+      var type = err.type || 404;
+      var userId = req.session ? req.session.user_id : null;
+      writer.writeContent(source, req.ip, req.uuid, getTime(), req.method, err.message, type, userId);
+      next(err);
+    };
+  }
 
-  // log errors
-  io.on('error', function (err) {
-    io.write('ERROR: ' + JSON.stringify(err));
-  });
+  function exit() {
+    console.log('Cleaning up logger files');
+  }
 
-  return io;
-
-});
+  return {
+    request  : request,
+    external : external,
+    error    : error
+  };
+};

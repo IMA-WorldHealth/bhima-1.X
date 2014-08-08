@@ -1,224 +1,208 @@
-<header>
-  {{'FISCAL_YEAR.MANAGEMENT' | translate}} {{'FISCAL_YEAR.TITLE' | translate}}
+<header data-header>
+  {{ 'FISCAL_YEAR.MANAGEMENT' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
-    <button id="createFiscal" ng-click="createFiscal()" class="capital btn btn-success btn-sm"><span class="glyphicon glyphicon-file"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
+    <button id="createFiscal" ng-click="createFiscal()" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
   </div>
-</section>
+</nav>
 
-<div class="content">
-  <div class="row">
-
+<main>
+  <div class="row col-xs-12">
     <div class="col-xs-4">
       <div class="row">
-        <div class="col-xs-12">
-          <!-- <h3>{{enterprise.name}} <small>{{'FISCAL_YEAR.FISCAL_YEAR_SELECTION' | translate}}</small></h3> -->
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="panel panel-default" style="overflow-x: auto;">
-            <div class="panel-heading">
-              <span class="glyphicon glyphicon-list-alt"></span> {{ "FISCAL_YEAR.RECORDS" | translate }}
-            </div>
-
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th>
-                  <th>{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-if="model.fiscal.data.length===0">
-                  <td colspan=2><i>{{ 'FISCAL_YEAR.NO_RECORDS' | translate }}</i></tr>
-                </tr>
-                <tr ng-repeat="year in model.fiscal.data" ng-class="{'btn-primary': year.id==selected.id}">
-                  <td>{{year.fiscal_year_txt}}</td>
-                  <td>{{year.start_month}}/{{year.start_year}}</td>
-                  <td><a ng-click="select(year.id)" href=""><span class="glyphicon glyphicon-pencil"></span></a></td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="panel panel-default" style="overflow-x: auto;">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-calendar"></span> {{ 'FISCAL_YEAR.RECORDS' | translate }}
           </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th>
+                <th colspan="2">{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="model.fiscal.data.length===0">
+                <td colspan="3">
+                  <i>{{ 'FISCAL_YEAR.NO_RECORDS' | translate }}</i>
+                </tr>
+              </tr>
+              <tr ng-repeat="year in model.fiscal.data" ng-class="{'btn-primary': year.id==selected.id}">
+                <td>{{ year.fiscal_year_txt }}</td>
+                <td>{{ year.start_month}}/{{year.start_year }}</td>
+                <td>
+                  <a ng-click="select(year.id)"><span class="glyphicon glyphicon-pencil"></span></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div> <!-- End columns 4 -->
+    </div><!-- End columns 4 -->
+
     <div class="col-xs-8">
       <div ng-switch="active">
+
         <div ng-switch-default>
           <div class="alert alert-info">
             <h4>{{ "FISCAL_YEAR.TITLE" | translate }}</h4>
-            <p>{{ "FISCAL_YEAR.HELP_TXT" | translate }} :</p>
-            <br/>
+            <p>{{ "FISCAL_YEAR.HELP_TXT" | translate }}</p>
             <ul class="list-plain">
-              <li><i class="glyphicon glyphicon-pencil"></i>{{ 'FISCAL_YEAR.EDIT' | translate }}</li>
-              <li><i class="glyphicon glyphicon-file"></i>{{ 'FISCAL_YEAR.CREATION' | translate }}</li>
+              <li><i class="glyphicon glyphicon-pencil"></i> {{ 'FISCAL_YEAR.EDIT' | translate }}</li>
             </ul>
           </div>
-
         </div>
+
         <div ng-switch-when="create">
-          <div class="row">
-            <div class="col-xs-12">
-              <div id="createPanel" class="panel panel-success">
-                <div class="panel-heading">
-                  <span class="capital">{{ 'FISCAL_YEAR.NEW' | translate }}</span>
-                </div>
+          <div class="row col-xs-12">
+            <div id="createPanel" class="panel panel-success">
+              <div class="panel-heading">
+                {{ 'FISCAL_YEAR.NEW' | translate }}
+              </div>
 
-                <div class="panel-body">
-            <div class="col-xs-6">
-
-                <form novalidate name="form">
+              <div class="panel-body">
+                <form novalidate name="form" class="col-xs-6">
                   <div class="form-group">
-                    <label for="fiscalNote" class="capital">{{'FISCAL_YEAR.DESC' | translate}}</label>
-                    <input required id="fiscalNote" class="form-bhima" ng-model="new_model.note">
+                    <label for="fiscalNote">{{ 'FISCAL_YEAR.DESC' | translate }}</label>
+                    <input id="fiscalDescription" class="form-bhima" ng-model="newModel.description" required >
                   </div>
 
                   <div class="form-group">
-                    <label for="startMonth" class="capital">{{'FISCAL_YEAR.START_MONTH' | translate}}</label>
-                    <input required type="month" id="startMonth" class="form-bhima" ng-model="new_model.start">
-
+                    <label for="startMonth">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
+                    <input type="month" id="startMonth" class="form-bhima" ng-model="newModel.start" ng-change="updateDates()" required >
                   </div>
 
                   <div class="form-group">
                     <div class="radio">
-                      <label class="capital">
-                        <input type="radio" name="option_year" id="one" value="true" ng-model="new_model.year" checked>
-                        {{'FISCAL_YEAR.ONE_YEAR' | translate}}
+                      <label>
+                        <input type="radio" name="option_year" id="one" value="true" ng-model="newModel.year" checked>
+                        {{ 'FISCAL_YEAR.ONE_YEAR' | translate }}
                       </label>
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_year" id="custom" value="false" ng-model="new_model.year">
-                        {{'FISCAL_YEAR.SPECIFY' | translate}}
+                        <input type="radio" name="option_year" id="custom" value="false" ng-model="newModel.year">
+                        {{ 'FISCAL_YEAR.SPECIFY' | translate }}
                       </label>
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="endMonth" class="capital">{{'FISCAL_YEAR.END_MONTH' | translate}}</label>
-                    <input ng-disabled="isFullYear()" required type="month" id="endMonth" class="form-bhima" ng-model="new_model.end">
+                    <label for="endMonth">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
+                    <input ng-disabled="isFullYear()" type="month" id="endMonth" class="form-bhima" ng-model="newModel.end" required >
                   </div>
-                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal(new_model)" class="btn btn-success">{{'UTIL.SUBMIT' | translate}}</button>
+
+                  <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="generateFiscal()" class="btn btn-sm btn-success">
+                    {{ 'UTIL.SUBMIT' | translate }}
+                  </button>
                 </form>
-            </div>
-            <div class="col-xs-6">
-              <code ng-repeat="item in progress">{{item}}<br></code>
             </div>
           </div>
         </div>
       </div>
-        </div>
-      </div>
 
       <div ng-switch-when="update">
-        <div class="row">
-          <div class="col-xs-12">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <span class="capital">{{selected.fiscal_year_txt}}</span>
-              </div>
-              <div class="panel-body">
-          <div class="col-xs-6">
+        <div class="row col-xs-12">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              {{ selected.fiscal_year_txt }}
+            </div>
+            <div class="panel-body">
               <!--Fiscal year form-->
-              <form role="form">
-                <div class="form-group">
-                  <!--TODO: -->
-                  <label for="fiscal-name" class="control-label">{{ 'FISCAL_YEAR.NAME' | translate }}</label>
-                  <input type="text" class="form-bhima" id="fiscal-name" ng-model="selected.fiscal_year_txt">
-                  <!--xs doesn't have offset for some reason?-->
+              <form role="form" class="col-xs-6">
 
+                <div class="form-group">
+                  <label for="fiscal-name">
+                    {{ 'FISCAL_YEAR.NAME' | translate }}
+                  </label>
+                  <input type="text" class="form-bhima" id="fiscal-name" ng-model="selected.fiscal_year_txt">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" ng-model="selected.locked"> {{'FISCAL_YEAR.LOCK' | translate}}
+                      <input type="checkbox" ng-model="selected.locked">
+                      {{ 'FISCAL_YEAR.LOCK' | translate }}
                     </label>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <div class="form-group">
-                    <label for="fiscal-months" class="control-label">{{'FISCAL_YEAR.TOTAL_MONTH' | translate}}</label>
-                    <input type="text" class="form-bhima" id="fiscal-months" ng-model="selected.number_of_months">
-                  </div>
+                  <label for="fiscal-months">
+                    {{ 'FISCAL_YEAR.TOTAL_MONTH' | translate }}
+                  </label>
+                  <input type="text" class="form-bhima" id="fiscal-months" ng-model="selected.number_of_months">
                 </div>
+
                 <div class="form-group">
-                  <div class="form-group">
-                    <label for="first-voucher" class="control-label">{{'FISCAL_YEAR.FIRST_VOUCHER' | translate}}</label>
-
-                    <input type="text" class="form-bhima" id="first-voucher"
-                           ng-model="selected.transaction_start_number">
-                  </div>
-                  <div class="form-group">
-                    <label for="last-voucher" class="control-label">{{'FISCAL_YEAR.LAST_VOUCHER' | translate}}</label>
-
-                      <input type="text" class="form-bhima" id="last-voucher"
-                             ng-model="selected.transaction_stop_number">
-                  </div>
+                  <label for="first-voucher">
+                    {{ 'FISCAL_YEAR.FIRST_VOUCHER' | translate }}
+                  </label>
+                  <input type="text" class="form-bhima" id="first-voucher" ng-model="selected.transaction_start_number">
                 </div>
+
                 <div class="form-group">
-                  <div class="form-group">
-                    <label for="posting-from" class="control-label">{{'FISCAL_YEAR.POSTING_FROM' | translate}}</label>
+                  <label for="last-voucher">
+                    {{ 'FISCAL_YEAR.LAST_VOUCHER' | translate }}
+                  </label>
+                  <input type="text" class="form-bhima" id="last-voucher" ng-model="selected.transaction_stop_number">
+                </div>
 
-                      <!--TODO: This is temporary data - logic should be implemented-->
-                      <!--FIXME: Logic should all be taken care of in controller-->
-                      <input type="text" class="form-bhima" id="posting-from" readonly
-                             value="{{getFiscalStart() | date:'dd/MM/yyyy'}}">
-                  </div>
-                  <div class="form-group">
-                    <label for="posting-to" class="control-label">{{'FISCAL_YEAR.POSTING_TO' | translate}}</label>
+                <div class="form-group">
+                  <label for="posting-from">
+                    {{ 'FISCAL_YEAR.POSTING_FROM' | translate }}
+                  </label>
+                  <!-- TODO: This is temporary data - logic should be implemented -->
+                  <!-- FIXME: Logic should all be taken care of in controller -->
+                  <input type="text" class="form-bhima" id="posting-from" readonly value="{{ getFiscalStart() | date:'dd/MM/yyyy' }}">
+                </div>
 
-                      <input type="text" class="form-bhima" id="posting-to" readonly
-                             value="{{getFiscalEnd() | date:'dd/MM/yyyy'}}">
-                  </div>
+                <div class="form-group">
+                  <label for="posting-to">
+                    {{ 'FISCAL_YEAR.POSTING_TO' | translate }}
+                  </label>
+                  <input type="text" class="form-bhima" id="posting-to" readonly value="{{ getFiscalEnd() | date:'dd/MM/yyyy' }}">
                 </div>
               </form>
-            </div>
 
-        <div class="col-xs-6">
-          <table class="table table-hover table-bordered">
-            <thead>
-              <tr>
-               <th colspan="3">{{'FISCAL_YEAR.PERIODS' | translate}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="period in period_model" class="primary">
-                <!--FIXME: passing full date object to each table data seems extravagant (read: fabulous)-->
-                <td>{{period.period_start | date: 'MMM'}}</td>
-                <td>{{period.period_start | date:'dd/MM/yyyy'}}</td>
-                <td>{{period.period_stop | date:'dd/MM/yyyy'}}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="3"><button class="btn btn-sm btn-default" ng-click="viewOpeningBalance()">{{'FISCAL_YEAR.VIEW_BALANCE' | translate}}</button></td>
-              </tr>
-            </tfoot>
-          </table>
+              <div class="col-xs-6">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th colspan="3">{{ 'FISCAL_YEAR.PERIODS' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="period in periodModel" class="primary">
+                      <!--FIXME: passing full date object to each table data seems extravagant (read: fabulous)-->
+                      <td>{{ period.period_start | date: 'MMM' }}</td>
+                      <td>{{ period.period_start | date:'dd/MM/yyyy' }}</td>
+                      <td>{{ period.period_stop | date:'dd/MM/yyyy' }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="3">
+                        <button class="btn btn-sm btn-default" ng-click="viewOpeningBalance()">{{ 'FISCAL_YEAR.VIEW_BALANCE' | translate }}</button>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
-       </div>
-      </div>
       </div>
     </div>
   </div>
-</div>
-</div>
-
-  </div>
-</div>
+</main>
 
 <script type="text/ng-template" id="createOpeningBalanceModal.html">
-  <div class="modal-content">
+  <div class="modal-content modal-lg">
     <div class="modal-header">
-      <h3>{{ "OPENING_BALANCE.TITLE" | translate }} {{ fy_id }}</h3>
+      <h3>{{ "OPENING_BALANCE.TITLE" | translate }} {{ fiscalYearId }}</h3>
     </div>
-    <div class="modal-body" style="max-height: 300px; height:300px; overflow: auto;">
-      <div c-data="accounts"></div>
+    <div class="modal-table" style="max-height: 300px; overflow: auto;">
       <p ng-hide="accounts.length">
         <b>{{ "OPENING_BALANCE.LOADING" | translate }}...</b>
       </p>
@@ -265,11 +249,13 @@
 </script>
 
 <script type="text/ng-template" id="viewOpeningBalanceModal.html">
-  <div class="modal-content">
+  <div class="modal-content modal-lg">
+
     <div class="modal-header">
-      <h3> {{ "OPENING_BALANCE.TITLE" | translate }} {{ fiscal.fiscal_txt }}</h3>
+      <h3>{{ "OPENING_BALANCE.TITLE" | translate }} {{ fiscal.fiscal_txt }}</h3>
     </div>
-    <div class="modal-body" style="max-height:300px; overflow: auto;">
+
+    <div class="modal-table" style="max-height: 300px; overflow: auto;">
       <table ng-show="accounts.length" class="table table-condensed table-bordered">
         <thead>
           <tr>
@@ -291,7 +277,7 @@
     </div>
 
     <div class="modal-footer">
-      <button class="btn btn-primary btn-sm" ng-click="dismiss()">
+      <button class="btn btn-sm btn-primary" ng-click="dismiss()">
         {{ "FORM.OK" | translate }}
       </button>
     </div>

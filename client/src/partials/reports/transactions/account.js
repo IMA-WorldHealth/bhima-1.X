@@ -46,5 +46,9 @@ angular.module('bhima.controllers')
       .then(startup);
     });
 
+    $scope.print = function print() {
+      window.print();
+    };
+
   }
 ]);

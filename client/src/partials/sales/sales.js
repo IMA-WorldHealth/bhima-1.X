@@ -5,7 +5,6 @@ angular.module('bhima.controllers')
   '$scope',
   '$location',
   '$http',
-  '$routeParams',
   'validate',
   'connect',
   'appstate',
@@ -13,11 +12,10 @@ angular.module('bhima.controllers')
   'appcache',
   'precision',
   'uuid',
-  function ($scope, $location, $http, $routeParams, validate, connect, appstate, messenger, Appcache, precision, uuid) {
+  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, uuid) {
     var dependencies = {},
         invoice = {},
-        inventory = [],
-        selectedInventory = {};
+        inventory = [];
 
     var recoverCache = new Appcache('sale'),
         priceListSource = [];
@@ -30,8 +28,19 @@ angular.module('bhima.controllers')
       query: {
         identifier : 'uuid',
         tables: {
-          "inventory" : {
-            columns: ["uuid", "code", "text", "price"]
+          'inventory' : {
+            columns: ['uuid', 'code', 'text', 'price']
+          }
+        }
+      }
+    };
+
+    dependencies.services = {
+      query: {
+        identifier : 'id',
+        tables: {
+          'service' : {
+            columns: ['id', 'name']
           }
         }
       }
@@ -51,12 +60,12 @@ angular.module('bhima.controllers')
     validate.process(dependencies).then(sales);
 
     function initialiseSaleDetails(selectedDebtor) {
-      if(!selectedDebtor) { return messenger.danger('No invoice debtor selected'); }
+      if (!selectedDebtor) { return messenger.danger('No invoice debtor selected'); }
 
       // Release previous session items - if they exist
-      if(invoice.items) {
+      if (invoice.items) {
         invoice.items.forEach(function (item, index) {
-          if(item.code) {
+          if (item.code) {
             removeInvoiceItem(index);
           }
         });
@@ -110,7 +119,7 @@ angular.module('bhima.controllers')
 
       getCaution(selectedDebtor)
       .then(function (caution){
-        if(caution.length > 0){
+        if (caution.length > 0){
           var somdebit = 0, somcredit = 0;
           caution.forEach(function(item){
             somdebit = precision.add(precision.scale(item.debit),somdebit);
@@ -181,7 +190,7 @@ angular.module('bhima.controllers')
 
     //TODO rename legacy (previous) reference from inventoryReference
     function updateInvoiceItem(invoiceItem, inventoryReference) {
-      if(invoiceItem.inventoryReference) {
+      if (invoiceItem.inventoryReference) {
         $scope.model.inventory.post(invoiceItem.inventoryReference);
         $scope.model.inventory.recalculateIndex();
       }
@@ -200,7 +209,7 @@ angular.module('bhima.controllers')
     function removeInvoiceItem(index) {
       var selectedItem = invoice.items[index];
 
-      if(selectedItem.inventoryReference) {
+      if (selectedItem.inventoryReference) {
         $scope.model.inventory.post(selectedItem.inventoryReference);
         $scope.model.inventory.recalculateIndex();
       }
@@ -211,20 +220,21 @@ angular.module('bhima.controllers')
       var invoiceRequest = packageInvoiceRequest();
 
       if (!validSaleProperties(invoiceRequest)) { return; }
-      $http.post('sale/', invoiceRequest).then(handleSaleResponse);
+      $http.post('sale/', invoiceRequest).then(handleSaleResponse); // FIXME: refactor to using connect
     }
 
     function packageInvoiceRequest() {
-      var requestContainer = {}, netDiscountPrice, totalCost;
+      var requestContainer = {};
 
       //Seller ID will be inserted on the server
       requestContainer.sale = {
-        project_id : $scope.project.id,
-        cost : calculateTotal().total,
-        currency_id : $scope.project.currency_id,
+        project_id   : $scope.project.id,
+        cost         : calculateTotal().total,
+        currency_id  : $scope.project.currency_id,
         debitor_uuid : invoice.debtor.debitor_uuid,
         invoice_date : invoice.date,
-        note : invoice.note
+        note         : invoice.note,
+        service_id   : invoice.service.id
       };
 
       requestContainer.saleItems = [];
@@ -232,19 +242,19 @@ angular.module('bhima.controllers')
       invoice.items.forEach(function(saleItem) {
         var formatSaleItem;
         formatSaleItem = {
-          inventory_uuid : saleItem.inventoryId,
-          quantity : saleItem.quantity,
-          inventory_price : saleItem.inventoryReference.price,
+          inventory_uuid    : saleItem.inventoryId,
+          quantity          : saleItem.quantity,
+          inventory_price   : saleItem.inventoryReference.price,
           transaction_price : saleItem.price,
-          credit : Number((saleItem.price * saleItem.quantity).toFixed(4)),
-          debit : 0
+          credit            : Number((saleItem.price * saleItem.quantity).toFixed(4)),
+          debit             : 0
         };
 
         requestContainer.saleItems.push(formatSaleItem);
       });
 
       // Patient Groups
-      // if(invoice.priceList) {
+      // if (invoice.priceList) {
       //   //TODO Placeholder discount item select, this should be in enterprise settings
       //   var formatDiscountItem, enterpriseDiscountId=12;
       //   formatDiscountItem = {
@@ -257,7 +267,6 @@ angular.module('bhima.controllers')
       //   };
 
       invoice.applyGlobal.forEach(function (listItem) {
-        var applyCost, formatListItem; // FIXME Derive this from enterprise
 
         var formatDiscountItem = {
           inventory_uuid : listItem.inventory_uuid,
@@ -285,26 +294,25 @@ angular.module('bhima.controllers')
     }
 
     function validSaleProperties(saleRequest) {
-      var sale = saleRequest.sale, saleItems = saleRequest.saleItems;
-      var validItems;
+      var saleItems = saleRequest.saleItems;
 
       //Check sale item properties
-      if(saleItems.length===0) {
-        messenger.danger("[Invalid Sale] No sale items found");
+      if (saleItems.length===0) {
+        messenger.danger('[Invalid Sale] No sale items found');
         return false;
       }
 
       var invalidItems = saleItems.some(function(saleItem) {
         for (var property in saleItem) {
-          if(angular.isUndefined(saleItem[property]) || saleItem[property]===null) return true;
+          if (angular.isUndefined(saleItem[property]) || saleItem[property] === null) { return true; }
         }
-        if(isNaN(Number(saleItem.quantity))) return true;
-        if(isNaN(Number(saleItem.transaction_price))) return true;
+        if (isNaN(Number(saleItem.quantity))) { return true; }
+        if (isNaN(Number(saleItem.transaction_price))) { return true; }
         return false;
       });
 
       if (invalidItems) {
-        messenger.danger("[Invalid Sale] Sale items contain null values");
+        messenger.danger('[Invalid Sale] Sale items contain null values');
         return false;
       }
       return true;
@@ -314,12 +322,12 @@ angular.module('bhima.controllers')
     function getDate() {
       //Format the current date according to RFC3339
       var currentDate = new Date();
-      return currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + ('0' + currentDate.getDate()).slice(-2);
+      return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
     }
 
     function formatNote(invoice) {
-      var noteDebtor = invoice.debtor || "";
-      return "PI" + "/" + invoice.date + "/" + noteDebtor.name;
+      var noteDebtor = invoice.debtor || '';
+      return 'PI' + '/' + invoice.date + '/' + noteDebtor.name;
     }
 
     //TODO Refactor code
@@ -327,9 +335,9 @@ angular.module('bhima.controllers')
       var total = 0;
       includeDiscount = angular.isDefined(includeDiscount) ? includeDiscount : true;
 
-      if(!invoice.items) return;
+      if (!invoice.items) { return; }
       invoice.items.forEach(function(item) {
-        if(item.quantity && item.price && item.code) {
+        if (item.quantity && item.price && item.code) {
           //FIXME this could probably be calculated less somewhere else (only when they change)
 
           total += (item.quantity * item.price);
@@ -354,7 +362,7 @@ angular.module('bhima.controllers')
       var totalToPay;
 
       // Apply caution
-      if(invoice.debitorCaution){
+      if (invoice.debitorCaution){
         var remaining = 0;
         remaining = total - invoice.debitorCaution;
         totalToPay = remaining < 0 ? 0 : remaining;
@@ -369,13 +377,11 @@ angular.module('bhima.controllers')
     }
 
     $scope.isPayable = function() {
-      if($scope.invoice.payable==="true") return true;
-      return false;
+      return $scope.invoice.payable === 'true';
     };
 
     $scope.itemsInInv = function() {
-      if($scope.inventory.length>0) return true;
-      return false;
+      return $scope.inventory.length > 0;
     };
 
     //TODO clean up invoice item set properties
@@ -392,14 +398,14 @@ angular.module('bhima.controllers')
         // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
         self.price = Number(inventoryReference.price.toFixed(4));
         self.inventoryId = inventoryReference.uuid;
-        self.note = "";
+        self.note = '';
 
         // Temporary price list logic
-        if(invoice.priceList) {
+        if (invoice.priceList) {
           invoice.priceList.forEach(function (list) {
 
-            if(!list.is_global) {
-              if(list.is_discount) {
+            if (!list.is_global) {
+              if (list.is_discount) {
                 self.price -= Math.round((defaultPrice * list.value) / 100);
 
                 // FIXME naive rounding - ensure all entries/ exits to data are rounded to 4 DP
@@ -430,7 +436,7 @@ angular.module('bhima.controllers')
     }
 
     function processRecover(recoveredSession) {
-      if(!session) return;
+      if (!session) { return; }
       $scope.session.recovered = recoveredSession;
     }
 
@@ -462,7 +468,7 @@ angular.module('bhima.controllers')
       };
 
       invoice.items.forEach(function (item) {
-        if(item.code && item.quantity) {
+        if (item.code && item.quantity) {
           recoverObject.items.push({
             uuid : item.inventoryId,
             quantity : item.quantity
@@ -478,8 +484,8 @@ angular.module('bhima.controllers')
 
     function cacheQuantity(invoiceItem) {
 
-      if (invoiceItem.quantity==='') return;
-      if (isNaN(Number(invoiceItem.quantity))) return;
+      if (invoiceItem.quantity === '') { return; }
+      if (isNaN(Number(invoiceItem.quantity))) { return; }
       updateSessionRecover();
     }
 
@@ -487,12 +493,12 @@ angular.module('bhima.controllers')
     function verifySubmission() {
       var invalidItems = false;
 
-      if (!invoice.items) return true;
-      if (!invoice.items.length) return true;
+      if (!invoice.items) { return true; }
+      if (!invoice.items.length) { return true; }
 
       // FIXME This is a very expensive operation
       invalidItems = invoice.items.some(function (item) {
-        if (!item.code && !item.quantity) return true;
+        if (!item.code && !item.quantity) { return true; }
       });
 
       return invalidItems;

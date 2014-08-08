@@ -49,10 +49,12 @@ angular.module('bhima.controllers')
     }
 
     $scope.remove = function (grp) {
-      if (!$window.confirm($translate('PATIENT_GRP.CONFIRM_MESSAGE'))) return;
+      if (!$window.confirm($translate.instant('PATIENT_GRP.CONFIRM_MESSAGE'))) {
+        return;
+      }
 
       connect.basicDelete('patient_group', grp.uuid, 'uuid')
-      .then(function (result) {
+      .then(function () {
         $scope.group.remove(grp.uuid);
       }, function (err) {
         messenger.danger('error:' + JSON.stringify(err));
@@ -75,12 +77,9 @@ angular.module('bhima.controllers')
 
       // validate that register is complete.
       connect.basicPut('patient_group', packaged)
-      .then(function (res) {
-
+      .then(function () {
         $scope.group.post(packaged);
         $scope.edit(packaged);
-      }, function (err) {
-        messenger.danger('An error occured.');
       });
     };
 
@@ -105,10 +104,8 @@ angular.module('bhima.controllers')
     $scope.saveModification = function () {
       // validate that modification is complete
       connect.basicPost('patient_group', [connect.clean($scope.modify)], ['uuid'])
-      .then(function (res) {
+      .then(function () {
         messenger.success('Successfully modified the group.');
-      }, function (err) {
-        messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };
 

@@ -8,12 +8,14 @@ angular.module('bhima.directives')
     link: function(scope, element, attrs) {
       var built = false, template = [];
       var groupModel = attrs.groupModel, tableDefinition = attrs.tableDefinition;
-      var accountRowTemplate = "<tr><td style='text-align: right;'>%d</td><td %s>%s</td>%s</tr>";
-      var accountTotalTemplate = "<tr><td></td><td %s'>%s</td>%s</tr>";
+      var accountRowTemplate = '<tr><td style=\'text-align: right;\'>%d</td><td %s>%s</td>%s</tr>';
+      var accountTotalTemplate = '<tr><td></td><td %s\'>%s</td>%s</tr>';
 
-      if(groupModel && tableDefinition) {
-        scope.$watch(groupModel, function(nval, oval) {
-          if(!built && nval.length > 0) buildTable(nval); //Remove directive $watch
+      if (groupModel && tableDefinition) {
+        scope.$watch(groupModel, function(nval) {
+          if (!built && nval.length > 0) {
+            buildTable(nval); //Remove directive $watch
+          }
         }, true);
       }
 
@@ -31,31 +33,36 @@ angular.module('bhima.directives')
 
           //Row for group detail
           template.push(printf(accountRowTemplate, detail.account_number, style, detail.account_txt, buildAccountColumns(detail, false)));
-          if(!account.accounts) return;
+          if (!account.accounts) { return; }
 
           //Group children
           parseGroup(account.accounts);
 
           //Total row
-          template.push(printf(accountTotalTemplate, printf('style="padding-left: %dpx; font-weight: bold;"', detail.depth * 30), "Total " + detail.account_txt, buildAccountColumns(detail, true)));
+          template.push(printf(accountTotalTemplate, printf('style=\'padding-left: %dpx; font-weight: bold;\'', detail.depth * 30), 'Total ' + detail.account_txt, buildAccountColumns(detail, true)));
         });
       }
 
       function buildAccountStyle(detail) {
 
         //FIXME hardcoded account type definition
-        var styleTemplate = "", colspanTemplate = "", classTemplate = "", title = (detail.account_type_id === 3);
+        var styleTemplate = '',
+            colspanTemplate = '',
+            classTemplate = '',
+            title = (detail.account_type_id === 3);
 
-        styleTemplate = printf('style="padding-left: %dpx;"', detail.depth * 30);
-        if(title) {
-          colspanTemplate = printf('colspan="%d"', scope[tableDefinition].columns.length + 1);
+        styleTemplate = printf('style=\'padding-left: %dpx;\'', detail.depth * 30);
+        if (title) {
+          colspanTemplate = printf('colspan=\'%d\'', scope[tableDefinition].columns.length + 1);
           classTemplate = 'class="reportTitle"';
         }
         return printf('%s %s %s', styleTemplate, colspanTemplate, classTemplate);
       }
 
       function buildAccountColumns(detail, isTotal) {
-        if(detail.account_type_id === 3 && !isTotal) return "";
+        if (detail.account_type_id === 3 && !isTotal) {
+          return '';
+        }
 
         var columnTemplate = [], data = isTotal ? detail.total : detail;
         scope[tableDefinition].columns.forEach(function(column) {
@@ -90,8 +97,10 @@ angular.module('bhima.directives')
 
         typeIndex.sort(function(a, b) { return a.index > b.index; });
         typeIndex.forEach(function(replaceObj, index) {
-          var targetArg = replaceArguments[index], replaceIndex = replaceObj.index + shift, matchKey = typeIndex[replaceIndex];
-          if(Object.prototype.toString.call(targetArg) !== types[replaceObj.matchKey]) throw new Error("Argument " + targetArg + " is not " + types[replaceObj.matchKey]);
+          var targetArg = replaceArguments[index];
+          if (Object.prototype.toString.call(targetArg) !== types[replaceObj.matchKey]) {
+            throw new Error('Argument ' + targetArg + ' is not ' + types[replaceObj.matchKey]);
+          }
           template = template.replace(replaceObj.matchKey, targetArg);
           shift += targetArg.length;
         });

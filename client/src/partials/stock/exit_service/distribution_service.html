@@ -1,0 +1,189 @@
+<header data-header>
+  {{ "DISTRIBUTION_SERVICE.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="">{{ "STOCK.EXIT_SERVICE.KEY" | translate }}</a></li>
+    </ol>
+  </div>
+
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
+  </div>
+</nav>
+
+<main>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      {{'DISTRIBUTION_SERVICE.CHOOSE' | translate}}
+    </div>
+    <div class="panel-body">
+      <form class="form">
+        <div class="form-group">
+          <select
+            class="col-xs-2 form-bhima"
+            ng-model="configuration.service"
+            ng-options="serv as serv.name  for serv in model.services.data"
+            ng-change="preparDistribution()"
+          >
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-xs-12" ng-show="session.isServiceSelected">
+    <fieldset>
+      <legend>
+        {{ "DISTRIBUTION_SERVICE.SUMMARY" | translate}}
+      </legend>
+      <table class=' table-condensed table table-bordered'>
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.ID" | translate}}</th>
+            <th>{{ "COLUMNS.DATE" | translate}}</th>
+            <th>{{ "COLUMNS.SERVICE" | translate}}</th>
+            <th>{{ "COLUMNS.DEPOT" | translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{model.uuid}}</td>
+            <td>{{model.date | date}}</td>
+            <td>{{configuration.service.name}}</td>
+            <td>{{model.depot_name}}</td>
+          </tr>
+        </tbody>
+      </table>
+      </form>
+    </fieldset>
+  </div>
+
+  <div class="row" ng-show="session.isServiceSelected">
+    <div class="col-xs-12">
+      <div class="pull-right">
+        <a ng-click="addRow()" class="fieldset-util">
+          <span class="glyphicon glyphicon-plus"></span> {{ "DISTRIBUTION_SERVICE.ADD_ROW" | translate }}
+        </a>
+      </div>
+      <div class="panel-body">
+        <table class='table table-bordered'>
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.LABEL" | translate }}</th>
+              <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th>
+              <th>{{ "COLUMNS.LOT" | translate }}</th>
+              <th>{{ "COLUMNS.PRICE" | translate }}</th>
+              <th>{{ "COLUMNS.TOTAL" | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              ng-repeat="row in configuration.rows"
+              ng-class="{'incomplete-outline': !row.code || !row.validQuantity, 'complete-outline' : !(!row.code || !row.validQuantity)  }">
+              <td width="20%">
+                <input
+                  class="form-invoice"
+                  type="text"
+                  typeahead-template-url="lotList.html"
+                  ng-model="row.code"
+                  typeahead="inv.code for inv in model.inventory | filter:$viewValue | limitTo:8"
+                  typeahead-on-select="updateLigne(row.code, $index)"
+                  placeholder="{{ 'DISTRIBUTION_SERVICE.TAPE' | translate }}"
+                >
+              </td>
+              <td width="15%">
+                <div class="input-group" >
+                  <span class="input-group-addon">
+                    <span
+                      ng-class=
+                        "{
+                          'glyphicon-remove-circle error' : !row.validQuantity,
+                          'glyphicon-ok-circle correct' : row.validQuantity
+                        }"
+                      class="glyphicon"></span>
+                    </span>
+                    <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleChange(row, $index)" required>
+                </div>
+              </td>
+              <td width="35%">
+                <div ng-repeat="lot in configuration.rows[$index].lots">
+                  <table class="reportTable">
+                    <tbody>
+                      <tr width="100%">
+                        <td width="50%">
+                          {{"DISTRIBUTION_SERVICE.LOT_NUMBER" | translate }}
+                        </td>
+                        <td width="50%">
+                          <b>{{lot.lot_number}}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="50%">
+                          {{"DISTRIBUTION_SERVICE.REMAINING_QTY" | translate }}
+                        </td>
+                        <td>
+                          {{lot.entered - lot.moved - lot.consumed}}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td width="50%">
+                          {{"DISTRIBUTION_SERVICE.EXPIRING_DATE" | translate }}
+                        </td>
+                        <td>
+                          {{lot.expiration_date | date}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+              <td>
+                {{row.price | currency}}
+              </td>
+
+              <td>
+                {{(row.price * row.quantity) | currency}}
+              </td>
+              <td>
+                <a ng-click="removeRow($index)">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td
+                colspan="4"
+                style="margin-right = 50px; text-align: right;">
+                <b> {{ "DISTRIBUTION_SERVICE.TOTAL" | translate }}</b>
+              </td>
+              <td colspan="2">
+                <b>{{ calculateTotal() | currency }}</b>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section class="bar-bottom">
+  <div class="pull-right">
+    <a ng-disabled="verifyDistribution()" ng-click="Distribute()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION_SERVICE.DISTRIBUTE" | translate }}</a>
+  </div>
+</section>
+
+<script type="text/ng-template" id="lotList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>

@@ -1,10 +1,9 @@
 angular.module('bhima.controllers')
 .controller('accountsReport', [
   '$scope',
-  'messenger',
   'appstate',
   'validate',
-  function($scope, messenger, appstate, validate) {
+  function($scope, appstate, validate) {
     var dependencies = {};
 
     dependencies.account = {
@@ -13,7 +12,7 @@ angular.module('bhima.controllers')
         identifier: 'account_number',
         tables: {
           'account': {
-            columns: ["id", "account_txt", "account_number", "parent", "account_type_id"]
+            columns: ['id', 'account_txt', 'account_number', 'parent', 'account_type_id']
           }
         }
       }
@@ -39,7 +38,7 @@ angular.module('bhima.controllers')
       });
       accountModel.recalculateIndex();
     }
- 
+
     function parseAccountDepth(accountData, accountModel) {
       accountData.forEach(function (account) {
         var parent, depth = 0;

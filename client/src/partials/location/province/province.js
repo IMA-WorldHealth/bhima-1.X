@@ -5,10 +5,8 @@ angular.module('bhima.controllers')
   'messenger',
   'validate',
   'uuid',
-  'store',
-  function ($scope, connect, messenger, validate, uuid, Store) {
-    var dependencies = {},
-        flags = $scope.flags = {};
+  function ($scope, connect, messenger, validate, uuid) {
+    var dependencies = {};
 
     dependencies.countries = {
       query : {
@@ -58,7 +56,7 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPut('province', [prov])
-      .then(function (res) {
+      .then(function () {
         var clientSideProv = {};
         clientSideProv.uuid = prov.uuid;
         clientSideProv.province = prov.name;

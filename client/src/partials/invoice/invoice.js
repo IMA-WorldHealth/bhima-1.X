@@ -1,22 +1,21 @@
-//TODO Debtor table currently has no personal information - this strictly ties debtors to patients (or some existing table) - a reverse lookup from debtor/ creditor ID to recipient is needed
+//TODO Debtor table currently has no personal information - this strictly ties debtors to patients
+// (or some existing table) - a reverse lookup from debtor / creditor ID to recipient is needed.
 angular.module('bhima.controllers')
 .controller('invoice', [
   '$scope',
   '$routeParams',
-  '$q',
   'validate',
   'messenger',
   'exchange',
   'appstate',
-  function ($scope, $routeParams, $q, validate, messenger, exchange, appstate) {
+  function ($scope, $routeParams, validate, messenger, exchange, appstate) {
 
     var dependencies = {},
         origin       = $scope.origin = $routeParams.originId,
         invoiceId    = $scope.invoiceId = $routeParams.invoiceId,
-        process      = {},
-        timestamp    = $scope.timestamp = new Date();
+        process      = {};
 
-    if(!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
+    if (!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
 
     dependencies.recipient = {
       required: true
@@ -74,7 +73,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    function processCaution (caution_uuid){
+    function processCaution (caution_uuid) {
       dependencies.caution = {
         required: true,
         query:  {
@@ -99,7 +98,8 @@ angular.module('bhima.controllers')
       .then(cautionInvoice);
     }
 
-    function buildPatientLocation(model) {
+    /*
+    function buildPatientLocation() {
       dependencies.location = {
         required: false
       };
@@ -108,8 +108,9 @@ angular.module('bhima.controllers')
         identifier: 'inv_po_id'
       };
     }
+    */
 
-    function processTransfert (transfert_uuid){
+    function processTransfert (transfert_uuid) {
       dependencies.transfert = {
         required: true,
         query:  {
@@ -125,7 +126,7 @@ angular.module('bhima.controllers')
       validate.process(dependencies, ['transfert']).then(transfertInvoice);
     }
 
-    function processConvention (convention_uuid){
+    function processConvention (convention_uuid) {
       dependencies.convention = {
         required: true,
         query:  {
@@ -161,7 +162,109 @@ angular.module('bhima.controllers')
       validate.process(dependencies, ['cash'])
       .then(buildInvoiceQuery);
     }
-    
+
+    function processConsumption() {
+      dependencies = {};
+
+      dependencies.consumption = {
+        query : {
+          tables : {
+            consumption : {
+              columns : ['uuid', 'depot_uuid', 'date', 'document_id', 'tracking_number', 'quantity']
+            },
+            stock : {
+              columns : ['inventory_uuid', 'expiration_date', 'lot_number']
+            },
+            inventory : {
+              columns : ['code', 'text', 'consumable']
+            }
+          },
+          where : ['consumption.document_id='+invoiceId],
+          join : [
+            'stock.tracking_number=consumption.tracking_number',
+            'stock.inventory_uuid=inventory.uuid'
+          ]
+        }
+      };
+
+      validate.process(dependencies).then(fetchReferences);
+    }
+
+    // FIXME All the hardcoded references
+    function fetchReferences(model) {
+      var depotId = model.consumption.data[0].depot_uuid;
+      var invoiceRef = model.consumption.data[0].document_id;
+
+      dependencies.invoice = {
+        query : {
+          tables : {
+            sale : {
+              columns : ['reference', 'cost', 'debitor_uuid', 'invoice_date']
+            },
+            project : {
+              columns : ['abbr']
+            }
+          },
+          where : ['sale.uuid='+invoiceRef],
+          join : ['sale.project_id=project.id']
+        }
+      };
+
+      dependencies.depot = {
+        query : {
+          tables : {
+            depot : {
+              columns : ['uuid', 'reference', 'text']
+            }
+          },
+          where : ['depot.uuid=' + depotId]
+        }
+      };
+
+      validate.process(dependencies).then(consumptionPatient);
+    }
+
+    // FIXME De-couple methods with promises
+    function consumptionPatient(model) {
+      var debtorId = model.invoice.data[0].debitor_uuid;
+
+      dependencies.patient = {
+        query : {
+          tables : {
+            patient : {
+              columns : ['reference', 'first_name', 'last_name', 'dob', 'current_location_id', 'registration_date']
+            },
+            debitor : {
+              columns : ['group_uuid']
+            },
+            debitor_group : {
+              columns : ['name', 'account_id']
+            },
+            project : {
+              columns : ['abbr']
+            }
+          },
+          where : ['patient.debitor_uuid=' + debtorId],
+          join : [
+            'patient.debitor_uuid=debitor.uuid',
+            'debitor.group_uuid=debitor_group.uuid',
+            'patient.project_id=project.id'
+          ]
+        }
+      };
+
+      validate.process(dependencies).then(function (consumptionModel) {
+        angular.extend($scope, consumptionModel);
+
+        $scope.recipient = consumptionModel.patient.data[0];
+        $scope.recipient.hr_id = $scope.recipient.abbr + $scope.recipient.reference;
+        $scope.depot = consumptionModel.depot.data[0];
+
+        $scope.invoice = consumptionModel.invoice.data[0];
+        $scope.invoice.hr_id = $scope.invoice.abbr + $scope.invoice.reference;
+      });
+    }
+
     function processMovement() {
       dependencies = {};
 
@@ -192,12 +295,12 @@ angular.module('bhima.controllers')
 
       validate.process(dependencies).then(fetchDepot);
     }
-  
+
     // Hack to get around not being able to perform any join through connect
     function fetchDepot(model) {
       var depot_entry = model.movement.data[0].depot_entry;
       var depot_exit = model.movement.data[0].depot_exit;
-      
+
       dependencies.depots = {
         query : {
           identifier : 'uuid',
@@ -215,14 +318,8 @@ angular.module('bhima.controllers')
         angular.extend($scope, depotModel);
         $scope.depotEntry = depotModel.depots.get(depot_entry);
         $scope.depotExit = depotModel.depots.get(depot_exit);
-          
-        console.log(depotModel);
-      });
-    }
 
-    function parseMovement(model) {
-      angular.extend($scope, model);
-      console.log('got', model);
+      });
     }
 
     function processSale() {
@@ -292,7 +389,6 @@ angular.module('bhima.controllers')
     }
 
     function initialisePurchase(model) {
-      //console.log('final', model);
       $scope.model = model;
 
       $scope.purchase = model.purchase.data[0];
@@ -342,7 +438,120 @@ angular.module('bhima.controllers')
 
       dependencies.recipient.query.join = ['patient.project_id=project.id'];
 
-      validate.process(dependencies, ['recipient']).then(buildPatientLocation);
+      validate.process(dependencies, ['recipient'])
+      .then(buildPatientLocation);
+    }
+
+    function processConfirmPurchase (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      };
+
+      dependencies.purchase = {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+            employee : { columns : ['code', 'name'] },
+            project : { columns : ['abbr'] }
+          },
+          join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
+          where : ['purchase.uuid='+identifiant]
+        }
+      };
+
+      validate.process(dependencies)
+      .then(getLocation)
+      .then(polish)
+      .catch(function (err) {
+        console.log('error pendant la genaration de la facture');
+      });
+
+      function getLocation (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
+
+      function polish (model) {
+        $scope.invoice = {};
+        $scope.invoice.uuid = identifiant;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.invoice.name = model.purchase.data[0].name;
+        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date;
+        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference;
+        $scope.invoice.employee_code = model.purchase.data[0].code;
+        $scope.invoice.cost = model.purchase.data[0].cost;
+      }
+
+    }
+
+    function processServiceDist (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      };
+
+      dependencies.distribution= {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            consumption : { columns : ['quantity', 'date', 'uuid'] },
+            consumption_service : { columns : ['service_id'] },
+            service : {columns : ['name']},
+            stock : {columns : ['tracking_number']},
+            inventory : {columns : ['text', 'purchase_price']},
+            project : { columns : ['abbr'] }
+          },
+          join : ['consumption.uuid=consumption_service.consumption_uuid', 'consumption_service.service_id=service.id', 'consumption.tracking_number=stock.tracking_number', 'stock.inventory_uuid=inventory.uuid', 'service.project_id=project.id'],
+          where : ['consumption.document_id='+identifiant]
+        }
+      };
+
+      validate.process(dependencies)
+      .then(getLocation)
+      .then(polish)
+      .catch(function (err) {
+        console.log('error pendant la genaration de la facture');
+      });
+
+      function getLocation (model) {
+        console.log('notre model', model);
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
+
+      function polish (model) {
+        $scope.records = model.distribution.data;
+        $scope.invoice = {};
+        $scope.invoice.uuid = identifiant;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.invoice.name = model.distribution.data[0].name;
+        $scope.invoice.date = model.distribution.data[0].date;
+      }
+
     }
 
     function buildPatientLocation(model) {
@@ -351,30 +560,85 @@ angular.module('bhima.controllers')
         query: '/location/' + model.recipient.data[0].current_location_id
       };
 
-      validate.process(dependencies, ['location']).then(patientReceipt);
+      validate.process(dependencies, ['location'])
+      .then(patientReceipt);
     }
 
-    function buildConventionInvoice (model){
+    function processIndirectPurchase (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      };
+
+      dependencies.purchase = {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+            employee : { columns : ['code', 'name'] },
+            project : { columns : ['abbr'] }
+          },
+          join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
+          where : ['purchase.uuid='+identifiant]
+        }
+      };
+
+      validate.process(dependencies)
+      .then(getLocation)
+      .then(polish)
+      .catch(function (err) {
+        console.log('error pendant la genaration de la facture');
+      });
+
+      function getLocation (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
+
+      function polish (model) {
+        $scope.invoice = {};
+        console.log('polish ', model);
+        $scope.invoice.uuid = identifiant;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.invoice.name = model.purchase.data[0].name;
+        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date;
+        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference;
+        $scope.invoice.employee_code = model.purchase.data[0].code;
+        $scope.invoice.cost = model.purchase.data[0].cost;
+      }
+
+    }
+
+    function buildConventionInvoice (model) {
       dependencies.location.query = 'location/' + model.convention.data[0].location_id;
       validate.process(dependencies, ['location']).then(conventionInvoice);
     }
 
     function buildInvoiceQuery(model) {
-      var cash_data = [];
       var invoiceCondition = dependencies.invoice.query.where = [];
       var invoiceItemCondition = dependencies.invoiceItem.query.where = [];
 
       model.cash.data.forEach(function(invoiceRef, index) {
-        console.log('invoice ref', invoiceRef);
 
-        if(index!==0) {
+        if (index!==0) {
           invoiceCondition.push('OR');
         }
 
-        invoiceCondition.push("sale.uuid=" + invoiceRef.invoice_uuid);
-        invoiceItemCondition.push("sale_item.sale_uuid=" + invoiceRef.invoice_uuid);
+        invoiceCondition.push('sale.uuid=' + invoiceRef.invoice_uuid);
+        invoiceItemCondition.push('sale_item.sale_uuid=' + invoiceRef.invoice_uuid);
         if (index !== model.cash.data.length - 1) {
-          invoiceItemCondition.push("OR");
+          invoiceItemCondition.push('OR');
         }
       });
 
@@ -433,9 +697,8 @@ angular.module('bhima.controllers')
       dependencies.location.query = 'location/' + recipient_data.current_location_id;
       return validate.process(dependencies).then(invoice);
     }
-    
+
     function invoice(model) {
-      console.log('[invoice method] appelle de la methode invoice le model est : ', model);
       var routeCurrencyId;
       //Expose data to template
       $scope.model = model;
@@ -446,11 +709,8 @@ angular.module('bhima.controllers')
 
       //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
       $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
-      console.log('The Invoice is:', $scope.invoice);
       $scope.invoice.totalSum = 0;
-      console.log("[LEDGEER]", $scope.model.ledger);
       $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
-      console.log('[get.invoice.id] a donnee :', $scope.invoice.ledger);
 
       $scope.recipient = $scope.model.recipient.data[0];
       $scope.recipient.location = $scope.model.location.data[0];
@@ -462,7 +722,6 @@ angular.module('bhima.controllers')
       $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
       $scope.invoice.hr_id = $scope.invoice.abbr.concat($scope.invoice.reference);
 
-      console.log('INVOICE', $scope.invoice);
 
       //FIXME hacks for meeting
       if (model.cash) {
@@ -494,8 +753,6 @@ angular.module('bhima.controllers')
       if ($scope.invoice.ledger)  {
         $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id, $scope.invoice.invoice_date);
         $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id, $scope.invoice.invoice_date);
-      } else {
-        console.error('[invoice.js] Unable to find ledger - ledger returned nothing');
       }
 
       $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id, $scope.invoice.invoice_date);
@@ -518,33 +775,34 @@ angular.module('bhima.controllers')
       $scope.model = model;
       $scope.location = $scope.model.location.data[0];
       $scope.caution = $scope.model.caution.data[0];
-      //console.log('notre caution', $scope.caution);
     }
 
     function transfertInvoice (model) {
       $scope.model = model;
       $scope.transfert = $scope.model.transfert.data[0];
-      console.log('notre transfert', $scope.transfert);
     }
 
-    function conventionInvoice (model){
+    function conventionInvoice (model) {
       $scope.model = model;
       $scope.conventions = $scope.model.convention.data;
       $scope.location = $scope.model.location.data[0];
-      console.log('voici notre convention et location : ', $scope.conventions, $scope.location);
     }
 
     process = {
-      'cash'    : processCash,
-      'caution' : processCaution,
-      'sale'    : processSale,
-      'credit'  : processCredit,
-      'debtor'  : processDebtor,
-      'patient' : processPatient,
-      'purchase': processPurchase,
-      'pcash_transfert' : processTransfert,
-      'pcash_convention' : processConvention,
-      'movement' : processMovement
+      'cash'                  : processCash,
+      'caution'               : processCaution,
+      'sale'                  : processSale,
+      'credit'                : processCredit,
+      'debtor'                : processDebtor,
+      'patient'               : processPatient,
+      'purchase'              : processPurchase,
+      'pcash_transfert'       : processTransfert,
+      'pcash_convention'      : processConvention,
+      'movement'              : processMovement,
+      'consumption'           : processConsumption,
+      'indirect_purchase'     : processIndirectPurchase,
+      'confirm_purchase'      : processConfirmPurchase,
+      'service_distribution'  : processServiceDist
     };
 
     appstate.register('project', function (project) {

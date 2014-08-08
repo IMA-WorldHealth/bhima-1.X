@@ -51,12 +51,12 @@ angular.module('bhima.controllers')
     $scope.submitNew = function submitNew() {
       var clean = connect.clean($scope.newProject);
       connect.basicPut('project', [clean])
-      .success(function (res) {
-        clean.id = res.insertId;
+      .then(function (res) {
+        clean.id = res.data.insertId;
         $scope.projects.post(clean);
         $scope.action = 'default';
       })
-      .error(handleErrors);
+      .catch(handleErrors);
     };
 
     $scope.cancelNew = function canceNew() {
@@ -72,11 +72,11 @@ angular.module('bhima.controllers')
     $scope.submitEdit = function submitEdit() {
       var clean = connect.clean($scope.editProject);
       connect.basicPost('project', [clean], ['id'])
-      .success(function () {
+      .then(function () {
         $scope.projects.put(clean);
         $scope.action = 'default';
       })
-      .error(handleErrors);
+      .catch(handleErrors);
     };
 
     $scope.cancelEdit = function cancelEdit() {
@@ -86,10 +86,10 @@ angular.module('bhima.controllers')
 
     $scope.delete = function d(project) {
       connect.basicDelete('project', project.id, 'id')
-      .success(function () {
+      .then(function () {
         $scope.projects.remove(project.id);
       })
-      .error(function (error) {
+      .catch(function (error) {
         messenger.danger('An error occurred : ' + error);
       });
     };

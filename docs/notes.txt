@@ -1,0 +1,43 @@
+Project Notes
+
+1) Tshikaji had a series of requests that Dedrick/Steven wrote down.  We need to
+  impliment those.
+2) Both the code and program need documentation.  In particular, every scenario 
+  must be considered and the steps to model the scenario recorded in our app. It
+  would be very helpful to have Mr. Manunga's input and create a part accounting
+  and part user manual for BHIMA.
+3) A project web site needs to be mapped out, with the project vision stated
+  formally and succinctly, the goals/roadmap planned out, and tools to contact
+  and download the code provided.
+4) A new developer needs to be found to accompany Dedrick next year.  We need to
+  plan for both Steven and I being away, since that looks most likely at this
+  point.
+5) We need to outline very clearly the project's relationship with the
+  institutions in which we will install.  How much projectt budget will go
+  towards equipment purchases?  How large a team needs to go to install?  What 
+  are the protocols for follow up?
+6) We need to formalize our budget a bit more.  How much have we spent?  Do we
+  expect an influx of funds from another project?  Will we try to tackle more
+  goals sooner, and therefore rearrange our timeline, in order to acquire more
+  funding?
+
+
+Things on the Agenda
+1) In June (23rd - 24th), a government demonstration of their new system.
+a) What is the vision for the government, what is the reason?  They are
+  piggybacking on the management of the hospital, they are using it as
+  an iface for DHIS2.
+b) The SNIS report is very important!  We need to crack down and do this.
+  We must demonstrate how the hospital management system is going to work,
+  and how it might interface with the SNIS.
+c) Crank this out, finish and install at Tshikaji for one week in June, do 
+  this presentation, then Dedrick can do follow up at Tshikaji.
+d) If there is a major crash, send one person up for a couple days.
+e) Ben Mambo's financial forms and stuff are all coming out at the end of this
+  month.  
+f) Manunga's relationship was a faith-based coordinator, but now he is becoming
+  a capacity builder and making them report correctly and strengthening their
+  programs.  Governance and accountability component of our project, helping the
+  government respond to equality and issues at the population level.
+g) On the 28th DHIS2 training, led by the development team of the government's 
+  programmers.  
