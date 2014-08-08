@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
 .controller('reportGeneralLedger', [
   '$scope',
-  '$q',
+  '$translate',
   '$filter',
-  'connect',
   'appstate',
   'validate',
-  function ($scope, $q, $filter, connect, appstate, validate) {
+  function ($scope, $translate, $filter, appstate, validate) {
+    /* jshint unused : false */
 
     var dependencies = {};
     var columns, dataview, options, grid, groups = $scope.groups = [];
@@ -40,25 +40,25 @@ angular.module('bhima.controllers')
 
     function setupGridOptions() {
       columns = [
-        {id: 'uuid'           , name: $filter('translate')('COLUMNS.ID')             , field:'uuid'           , visible : false} ,
-        {id: 'fiscal_year_id' , name: $filter('translate')('COLUMNS.FISCAL_YEAR_ID') , field:'fiscal_year_id' , visible : true } ,
-        {id: 'period_id'      , name: $filter('translate')('COLUMNS.PERIOD_ID')      , field:'period_id'      , visible : true } ,
-        {id: 'trans_id'       , name: $filter('translate')('COLUMNS.TRANS_ID')       , field:'trans_id'       , visible : true } ,
-        {id: 'trans_date'     , name: $filter('translate')('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate}  ,
-        {id: 'doc_num'        , name: $filter('translate')('COLUMNS.DOCUMENT_ID')    , field:'doc_num'        , visible : true } ,
-        {id: 'description'    , name: $filter('translate')('COLUMNS.DESCRIPTION')    , field:'description'    , visible : true } ,
-        {id: 'account_number' , name: $filter('translate')('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true } ,
-        {id: 'debit'          , name: $filter('translate')('COLUMNS.DEBIT')          , field:'debit'          , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
-        {id: 'credit'         , name: $filter('translate')('COLUMNS.CREDIT')         , field:'credit'         , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
-        {id: 'debit_equiv'    , name: $filter('translate')('COLUMNS.DEB_EQUIV')      , field:'debit_equiv'    , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow } ,
-        {id: 'credit_equiv'   , name: $filter('translate')('COLUMNS.CRE_EQUIV')      , field:'credit_equiv'   , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow}  ,
-        {id: 'currency_id'    , name: $filter('translate')('COLUMNS.CURRENCY')       , field:'currency_id'    , visible : false} ,
-        {id: 'deb_cred_uuid'  , name: $filter('translate')('COLUMNS.DEBCRED_ID')     , field:'deb_cred_uuid'  , visible : true } ,
-        {id: 'deb_cred_type'  , name: $filter('translate')('COLUMNS.DC_TYPE')        , field:'deb_cred_type'  , visible : true } ,
-        {id: 'inv_po_id'      , name: $filter('translate')('COLUMNS.INVPO_ID')       , field:'inv_po_id'      , visible : true } ,
-        {id: 'comment'        , name: $filter('translate')('COLUMNS.COMMENT')        , field:'comment'        , visible : false} ,
-        {id: 'origin_id'      , name: $filter('translate')('COLUMNS.ORIGIN_ID')      , field:'origin_id'      , visible : false} ,
-        {id: 'user_id'        , name: $filter('translate')('COLUMNS.USER_ID')        , field:'user_id'        , visible : false}
+        {id: 'uuid'           , name: $translate.instant('COLUMNS.ID')             , field:'uuid'           , visible : false} ,
+        {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field:'fiscal_year_id' , visible : true } ,
+        {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field:'period_id'      , visible : true } ,
+        {id: 'trans_id'       , name: $translate.instant('COLUMNS.TRANS_ID')       , field:'trans_id'       , visible : true } ,
+        {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate}  ,
+        {id: 'doc_num'        , name: $translate.instant('COLUMNS.DOCUMENT_ID')    , field:'doc_num'        , visible : true } ,
+        {id: 'description'    , name: $translate.instant('COLUMNS.DESCRIPTION')    , field:'description'    , visible : true } ,
+        {id: 'account_number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true } ,
+        {id: 'debit'          , name: $translate.instant('COLUMNS.DEBIT')          , field:'debit'          , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
+        {id: 'credit'         , name: $translate.instant('COLUMNS.CREDIT')         , field:'credit'         , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
+        {id: 'debit_equiv'    , name: $translate.instant('COLUMNS.DEB_EQUIV')      , field:'debit_equiv'    , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow } ,
+        {id: 'credit_equiv'   , name: $translate.instant('COLUMNS.CRE_EQUIV')      , field:'credit_equiv'   , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow}  ,
+        {id: 'currency_id'    , name: $translate.instant('COLUMNS.CURRENCY')       , field:'currency_id'    , visible : false} ,
+        {id: 'deb_cred_uuid'  , name: $translate.instant('COLUMNS.DEBCRED_ID')     , field:'deb_cred_uuid'  , visible : true } ,
+        {id: 'deb_cred_type'  , name: $translate.instant('COLUMNS.DC_TYPE')        , field:'deb_cred_type'  , visible : true } ,
+        {id: 'inv_po_id'      , name: $translate.instant('COLUMNS.INVPO_ID')       , field:'inv_po_id'      , visible : true } ,
+        {id: 'comment'        , name: $translate.instant('COLUMNS.COMMENT')        , field:'comment'        , visible : false} ,
+        {id: 'origin_id'      , name: $translate.instant('COLUMNS.ORIGIN_ID')      , field:'origin_id'      , visible : false} ,
+        {id: 'user_id'        , name: $translate.instant('COLUMNS.USER_ID')        , field:'user_id'        , visible : false}
       ];
 
       $scope.columns = angular.copy(columns);
@@ -111,20 +111,20 @@ angular.module('bhima.controllers')
 
     var groupDefinitions = [
       {
-        title : "Transaction",
-        getter : "trans_id",
+        title : 'Transaction',
+        getter : 'trans_id',
         formatter : formatTransactionGroup,
-        aggregators : ["debit_equiv", "credit_equiv"]
+        aggregators : ['debit_equiv', 'credit_equiv']
       },
       {
-        title : "Account",
-        getter : "account_id",
+        title : 'Account',
+        getter : 'account_id',
         formatter : formatAccountGroup,
         aggregators : []
       },
       {
-        title : "Period",
-        getter : "period_id",
+        title : 'Period',
+        getter : 'period_id',
         formatter : formatPeriodGroup,
         aggregators : []
       }
@@ -133,7 +133,7 @@ angular.module('bhima.controllers')
     //Utility methods
     function groupby(groupDefinition) {
       var groupInstance = {};
-      if(groupExists(groupDefinition, groups)) return;
+      if (groupExists(groupDefinition, groups)) { return; }
 
       groupInstance = JSON.parse(JSON.stringify(groupDefinition));
       groupInstance.aggregateCollapsed = true;
@@ -148,45 +148,36 @@ angular.module('bhima.controllers')
       dataview.setGrouping(groups);
     }
 
-    function groupExists(targetGroup, groupList) {
+    function groupExists(targetGroup) {
       return groups.some(function(group) {
         return group.getter === targetGroup.getter;
       });
     }
 
     function formatTransactionGroup(g) {
-      return "<span>TRANSACTION(" + g.value + ")</span>";
+      return '<span>TRANSACTION(' + g.value + ')</span>';
     }
 
     function formatAccountGroup(g) {
-      return "<span>ACCOUNT(" + g.value + ")</span>";
+      return '<span>ACCOUNT(' + g.value + ')</span>';
     }
 
     function formatPeriodGroup(g) {
-      return "<span>PERIOD(" + g.value + ")</span>";
+      return '<span>PERIOD(' + g.value + ')</span>';
     }
 
     function formatGroupTotalRow(totals, column) {
       var val = totals.sum && totals.sum[column.field];
-      if(val!==null) return "<span style='font-weight: bold'>" + $filter('currency')(Math.round(parseFloat(val)*100/100)) + "</span>";
-      return "";
+      if (val !== null) {
+        return '<span style=\'font-weight: bold\'>' + $filter('currency')(Math.round(parseFloat(val)*100/100)) + '</span>';
+      }
+      return '';
     }
 
     //Grid sort methods
     function compareSort(a, b) {
       var x = a[sort_column], y = b[sort_column];
       return (x === y) ? 0 : (x > y ? 1 : -1);
-    }
-
-    function search (item, args) {
-      if (item.searchStr !== "" &&
-          String(item.account_number).indexOf(args.searchStr) === -1 &&
-          String(item.trans_id).indexOf(args.searchStr) === -1 &&
-          String(item.deb_cred_uuid).indexOf(args.searchStr) === -1
-          ) {
-        return false;
-      }
-      return true;
     }
 
     //Grid formats
@@ -203,7 +194,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.$watch('columns', function () {
-      if (!$scope.columns) return;
+      if (!$scope.columns) { return; }
       var columns = $scope.columns.filter(function (column) {
         return column.visible;
       });

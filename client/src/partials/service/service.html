@@ -10,7 +10,7 @@
 
 <div class="content">
   <div class="row">
-    <div class="col-xs-5" style="height: 100%">
+    <div class="col-xs-6" style="height: 100%">
       <div class="panel panel-default" style="height: 100%; overflow-y: auto;">
         <div class="panel-heading">
           {{ "SERVICE.REGISTERED" | translate }}
@@ -19,19 +19,22 @@
           <thead>
             <tr>
               <th>{{ "COLUMNS.SERVICE" | translate }}</th>
+              <th>{{ "COLUMNS.PROJECT" | translate }}</th>
               <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
+              <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
               <th>{{"COLUMNS.ACTIONS" | translate}}</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="item in model.services.data">
-              <td>{{ item.name }}</td>
-              <td>{{ item.text }}</td>
+              <td>{{ item.service }}</td>
+              <td>{{ item.project }}</td>
+              <td>{{ item.cost_center }}</td>
+              <td>{{ item.profit_center }}</td>
               <td>
                 <button class="btn btn-sm btn-default" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></button>
                 <button class="btn btn-sm btn-default" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></button>
                 <button class="btn btn-sm btn-danger" ng-click="remove(item)"><i class="glyphicon glyphicon-trash"></i></button>
-
               </td>
             </tr>
             <tr ng-if="!model.services.data.length">
@@ -65,10 +68,28 @@
             </div>
 
             <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "SERVICE.PROJECT_SELECT" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="service.project_id" ng-options="project.id as project.name for project in model.projects.data" ng-change="filterCenters(service.project_id)" required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.PROJECT" | translate }} ---</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "SERVICE.COST_CENTER_SELECT" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-bhima" ng-model="service.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in model.cost_centers.data" required>
+                <select class="form-bhima" ng-model="service.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in configuration.cost_centers" required>
                   <option value="" disabled="disabled">--- {{ "SELECT.COST_CENTER" | translate }} ---</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "SERVICE.PROFIT_CENTER_SELECT" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="service.profit_center_id" ng-options="profit_center.id as profit_center.text for profit_center in configuration.profit_centers" required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.PROFIT_CENTER" | translate }} ---</option>
                 </select>
               </div>
             </div>
@@ -90,15 +111,33 @@
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
               <div class="col-xs-9">
-                <input class="form-bhima" ng-model="choosen.name" required>
+                <input class="form-bhima" ng-model="choosen.service" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "SERVICE.PROJECT_SELECT" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" name="project_name" ng-model="choosen.project_id" ng-options="project.id as project.name for project in model.projects.data" ng-change="filterCenters(choosen.project_id)"required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.PROJECT" | translate }} ---</option>
+                </select>
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-xs-3 control-label required">{{ "SERVICE.COST_CENTER_SELECT" | translate }}:</label>
               <div class="col-xs-9">
-                <select class="form-bhima" name="cost_name" ng-model="choosen.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in model.cost_centers.data" required>
+                <select class="form-bhima" name="cost_name" ng-model="choosen.cost_center_id" ng-options="cost_center.id as cost_center.text for cost_center in configuration.cost_centers" required>
                   <option value="" disabled="disabled">--- {{ "SELECT.COST_CENTER" | translate }} ---</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "SERVICE.PROFIT_CENTER_SELECT" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" name="profit_name" ng-model="choosen.profit_center_id" ng-options="profit_center.id as profit_center.text for profit_center in configuration.profit_centers" required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.PROFIT_CENTER" | translate }} ---</option>
                 </select>
               </div>
             </div>

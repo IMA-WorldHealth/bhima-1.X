@@ -44,7 +44,14 @@
     "REFRESH"               : "Refresh"
   },
 
+  "LANGUAGES" : {
+    "ENGLISH" : "English",
+    "FRENCH" : "French",
+    "LINGALA" : "Lingala"
+  },
+
   "PRIMARY_CASH"  : {
+    "SELECT_CASHBOX" : "Select a Cash box",
     "TITLE"       : "Primary Cash",
     "EXPENSES"    : "Expenses",
     "INCOMES"     : "Income",
@@ -52,42 +59,61 @@
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
-      "GENERIC_TITLE"   : "Generic Expense",
-      "GENERIC_RECEIPT" : "Generic Receipt",
-      "PURCHASE"        : "Pay Purchase Order"
+      "GENERIC_TITLE"         : "Generic Expense",
+      "GENERIC_RECEIPT"       : "Generic Receipt",
+      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "PURCHASE"              : "Pay Purchase Order",
+      "EXPENSE_DATE"          : "Expense Date",
+      "RECIPIENT"             : "Recipient",
+      "AMOUNT"                : "Amount Dispensed",
+      "PURPOSE"               : "Purpose of Expense",
+      "EXPENSE_DATE"          : "Expense Date"
     },
-
     "INCOME" : {
-      "TRANSFER"        : "Transfert",
-      "CONVENTION"      : "Convention",
-      "GENERIC_INCOME"  : "Generic Income"
+      "TRANSFER"              : "Transfert",
+      "CONVENTION"            : "Convention",
+      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "RECIPIENT"             : "Recipient",
+      "LABEL"                 : "Label",
+      "DEBTOR"                : "Debtor",
+      "DATE"                  : "Income Date",
+      "AMOUNT"                : "Amount",
+      "GENERIC" : {
+        "TITLE"   : "Generic Income",
+        "RECEIPT" : "Receipt"
+      }
     }
   },
 
-    "TRANSFERT"        : {
-    "TITLE"       : "Transfert",
-    "TRANSFER"    : "Transfert",
-    "CONVENTION"  : "Convention",
-    "PCASH"       : "Primary cash",
-    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
-    "OVERVIEW"    : "Primary cash : Receipts management",
-    "INFO"        : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfert, and so one",
-    "SOURCE"      : "Source",
-    "EXPECTED"    : "expected",
-    "AMOUNT"      : "amount",
-    "CRUMB_PCASH" : "primary cash",
+  "TRANSFERT" : {
+    "TITLE"           : "Transfert",
+    "TRANSFER"        : "Transfert",
+    "CONVENTION"      : "Convention",
+    "PCASH"           : "Primary cash",
+    "SOME_REPORT"     : "Rapport Sommaire de Recettes (20 derniers)",
+    "OVERVIEW"        : "Primary cash                                                                                                                                  : Receipts management",
+    "INFO"            : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfert, and so one",
+    "SOURCE"          : "Source",
+    "EXPECTED"        : "expected",
+    "AMOUNT"          : "amount",
+    "CRUMB_PCASH"     : "primary cash",
     "CRUMB_TRANSFERT" : "transfert",
-    "PROJECT"     : "Project",
-    "CAISSE"      : "Cash",
-    "CURRENCY"    : "currency",
-    "NAVIGATION"  : "Browsing"
+    "PROJECT"         : "Project",
+    "CAISSE"          : "Cash",
+    "CURRENCY"        : "currency",
+    "NAVIGATION"      : "Browsing"
   },
-
 
   "CASH_PURCHASE" : {
     "TITLE"       : "Purchase Order Dispense",
     "NOT_FOUND"   : "No pending purchase order records found.",
-    "FILTER"      : "Filter Purchase Orders"
+    "FILTER"      : "Filter Purchase Orders",
+    "SELECT_PURCHASE" : "Select Purchase Order",
+    "CONFIRM_PAY"  : "Confirm payement",
+    "DETAILS"      : "Details",
+    "CONFIRM_PAY_OF" : "Confirm payment of ",
+    "TO"             : "to ",
+    "DISCARD"        : "Discard purchase order"
   },
 
   "PLACEHOLDERS" : {
@@ -253,8 +279,6 @@
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
     "VIEW_BALANCE"          :"View Opening Balance"
-
-
   },
 
   "OPENING_BALANCE" : {
@@ -292,9 +316,12 @@
 
   "SELECT"            : {
     "ACCOUNT"         : "Select Account",
+    "ACCOUNT_TYPE"    : "Select Account Type",
     "CURRENCY"        : "Select Currency",
     "NAME"            : "Select a Name",
     "COUNTRY"         : "Select a Country",
+    "RECIPIENT"       : "Select a Recipient",
+    "LANGUAGE"        : "Select a Language",
     "PROVINCE"        : "Select a Province",
     "SECTOR"          : "Select a Sector",
     "VILLAGE"         : "Select a Village",
@@ -317,7 +344,9 @@
     "VALUE"           : "Select a value",
     "COST_CENTER"     : "Select the cost center",
     "PROJECT"         : "Select a project",
-    "CASH"            : "Select a Cash"
+    "CASH"            : "Select a Cash",
+    "SOURCE"          : "Select a source",
+    "DEBTOR"          : "Select a debtor"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -521,7 +550,7 @@
     "DESTINATION"         : "Destination",
     "REFERENCE"           : "Reference",
     "CODE_ITEM"           : "Medicine Code",
-    "LOT"                 : "Lot - Expiration Date - Quantity",
+    "LOT"                 : "Lot",
     "STATE"               : "State",
     "AVAILABLE"           : "Available",
     "QTY_ASKED"           : "Quantity Requested",
@@ -532,7 +561,30 @@
     "PROJECT"             : "Project",
     "CHARGE"              : "Charge",
     "PROFIT"              : "Profit",
-    "RESULT"              : "Result"
+    "RESULT"              : "Result",
+    "EMPLOYEE"            : "Employee",
+    "DESIGNATION"         : "Description",
+    "INITIAL_STOCK"       : "initial stock",
+    "CURRENT_STOCK"       : "Current stock",
+    "TRANS_DATE"          : "Date",
+    "PURCHASE_ORDER"      : "Purchase Order",
+    "ORDER_DATE"          : "Purchase Order Date",
+    "BHIMA_STOCK_CODE"    : "Code Stock",
+    "INVENTORY_CODE"      : "Inventory code",
+    "LABEL"               : "Designation",
+    "TOTAL_PRICE"         : "Total Price",
+    "SUMMARY"             : "Sommary",
+    "DEPOT"               : "Depot",
+    "PURCHASE_DATE"       : "Purchase Order Date",
+    "LOT_DETAILS"         : "Lot Detail",
+    "TRANSFER_QUANTITY"   : "Quantity to transfert",
+    "PURCHASER"           : "Purchaser",
+    "EMPLOYER"            : "Made By",
+    "PROFIT_CENTER"       : "Profit center",
+    "MEDECINE"             : "Medecine",
+    "QTY"                  : "Quantity",
+    "QTY_LOSS"           : "Loss quantity",
+    "DOCUMENT_UUID"      : " Document number"
   },
 
   "INVENTORY" : {
@@ -543,7 +595,8 @@
       "UPDATE_ITEM" : "Update Item Registration",
       "CONFIG_GROUPS" : "Configure Groups",
       "CONFIG_TYPES" : "Configure Item Types",
-      "PRINT_MANIFEST" : "Print Inventory Manifest"
+      "PRINT_MANIFEST" : "Print Inventory Manifest",
+      "VIEW"           : "See the list"
     },
     "GROUPS" : {
       "TITLE" : "Inventory Group Management",
@@ -554,12 +607,19 @@
       "STOCK_ACCOUNT" : "Stock Accnt",
       "TAX_ACCOUNT" : "Tax Accnt",
       "ADD" : "Creating Inventory Group",
-      "EDIT" : "Edit Inventory Group"
+      "EDIT" : "Edit Inventory Group",
+      "ALERT" : "This module will help you to create groupe for your inventories"
+    },
+    "TYPES" : {
+      "TITLE"     : "Inventory Type Management",
+      "ALL_TYPES" : "All types",
+      "ADD"       : "Add a new type",
+      "ALERT"     : "Create and edit type classes for inventory items."
     },
     "UPDATE_ITEM"      : {
       "TITLE"           : "Update Inventory Item",
       "TIMESTAMP"       : "Timestamp",
-      "FIND_ITEM"      : "Find Inventory Item",
+      "FIND_ITEM"       : "Find Inventory Item",
       "STOCK_HISTORY"   : "Item History",
       "SUBMIT"          : "Submit Update",
       "SEARCH_TEXT"     : "Search by code or description",
@@ -568,6 +628,26 @@
       "INVALID_PRICE"   : "Invalid price provided",
       "ITEM_DETAILS"    : "Item Details",
       "NO_HISTORY"      : "No history available for selected item"
+    },
+    "REGISTER" : {
+      "TITLE"            : "Stock Registration",
+      "VIEW"             : "View All Items",
+      "ADD_TYPE"         : "Add Unit Type",
+      "ADD_GROUP"        : "Add Inventory Group",
+      "GENERAL"          : "General",
+      "CODE"             : "Inventory Code",
+      "DESCRIPTION"      : "Description",
+      "GROUP"            : "Inventory Group",
+      "BILLING"          : "Billing & Stock Information",
+      "DURABLE"          : "Durable",
+      "CONSUMABLE"       : "Consumable",
+      "UNIT"             : "Unit",
+      "DEFAULT_PRICE"    : "Default Price",
+      "UNIT_WEIGHT"      : "Unit Weight",
+      "UNIT_VOLUME"      : "Unit Volume"
+    },
+    "MANIFEST" : {
+      "TITLE" : "Inventory Manifest"
     }
   },
 
@@ -586,7 +666,7 @@
     "HOSPITAL"                  : "Hospital",
     "FISCAL_YEAR"               : "Fiscal Year",
     "PATIENT_REG"               : "Patient Registration",
-    "PATIENT_RECORDS"           : "Patient Records",
+    "PATIENT_SEARCH"            : "Patient Search",
     "SALES"                     : "Sales",
     "SALE_RECORDS"              : "Sale Records",
     "PURCHASE_ORDER"            : "Purchase Order",
@@ -632,9 +712,15 @@
     "DEPOT"                     : "Depot",
     "STOCK_MANAGEMENT"          : "Stock Management",
     "INVENTORY_MANAGEMENT"      : "Inventory Management",
+    "SERVICE"                   : "Services",
     "STOCK_DISTRIBUTION"        : "Stock Distribution",
     "EMPLOYEE"                  : "Employee Management",
-    "SERVICE"                   : "Service Management"
+    "SERVICE"                   : "Service Management",
+    "EXPIRING"                  : "Expiring stock report",
+    "ALL_TRANSACTIONS"          : "All Transactions",
+    "PATIENT_RECORDS"           : "Patient Records",
+    "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
+    "PROFIT_CENTER_MGMNT"       : "Profit center management"
   },
 
   "DISTRIBUTION" : {
@@ -652,7 +738,28 @@
     "SALE_DATE"              : "Sale Date",
     "COST"                   : "Cost",
     "LOT_DETAILS"            : "Lot Details",
-    "EMPTY_MESSAGE"          : "No sale selected!"
+    "EMPTY_MESSAGE"          : "No sale selected!",
+    "CONSUMED"               : "This prescription has already been consumed",
+    "NOT_CONSUMED"           : "This prescription is unfufilled"
+  },
+
+    "DISTRIBUTION_SERVICE" : {
+    "TITLE"                  : "Stock distribution to services",
+    "ADD_ROW"                : "Add an Item",
+    "DESCRIPTION"            : "Description",
+    "SUBMIT"                 : "Submit",
+    "APPLIES_GLOBALLY"       : "Applies globally",
+    "APPLIES_TO_ITEM"        : "Applies to individual items",
+    "TOTAL"                  : "Total",
+    "COST"                   : "Cost",
+    "LOT_DETAILS"            : "Lot Details",
+    "CHOOSE"                 : "Choose a service",
+    "SUMMARY"               : "Sommary",
+    "TAPE"                  : "Tape drug name or drug code",
+    "LOT_NUMBER"            : "Lot number",
+    "EXPIRING_DATE"         : "Expiring date",
+    "REMAINING_QTY"         : "Remaining quantity",
+    "DISTRIBUTE"            : "Distribute"
   },
 
   "JOURNAL_VOUCHER"  : {
@@ -969,23 +1076,6 @@
     "INFO"       : "Group Information"
   },
 
-  "INVENTORY_REGISTER" : {
-    "TITLE"            : "Stock Registration",
-    "VIEW"             : "View All Items",
-    "ADD_TYPE"         : "Add Unit Type",
-    "ADD_GROUP"        : "Add Inventory Group",
-    "GENERAL"          : "General",
-    "CODE"             : "Inventory Code",
-    "DESCRIPTION"      : "Description",
-    "GROUP"            : "Inventory Group",
-    "BILLING"          : "Billing & Stock Information",
-    "DURABLE"          : "Durable",
-    "CONSUMABLE"       : "Consumable",
-    "UNIT"             : "Unit",
-    "DEFAULT_PRICE"    : "Default Price",
-    "UNIT_WEIGHT"      : "Unit Weight",
-    "UNIT_VOLUME"      : "Unit Volume"
-  },
 
   "INVENTORY_VIEW" : {
     "TITLE"        : "Inventory View",
@@ -1046,7 +1136,11 @@
     "PURCHASE_ITEM"   : "Purchase Items",
     "TOTAL_COST"      : "Total Cost",
     "SUBMIT_ORDER"    : "Submit Purchase Request",
-    "WRITE_SUCCESS"   : "Purchase order submitted successfully."
+    "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
+    "ORDER"           : "Numero Ordre",
+    "DATE"            : "Date",
+    "NOTE"            : "Note",
+    "TOTAL_COST"      : "Total cost"
   },
 
   "SALE"              : {
@@ -1062,7 +1156,10 @@
     "TAB_LOCK_LINE"   : "Tab lock Line",
     "TAB_LOCK_ITEM"   : "Tab lock Item",
     "RECOVER"         : "Recover Sale",
-    "RECOVER_INFO"    : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default"
+    "RECOVER_INFO"    : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default",
+    "APPLIES_GLOBALLY" : "Appliquer globallemement",
+    "APPLIES_TO_ITEM"  : "Appliquer par item",
+    "CHOOSE"           : "Choose the service"
   },
 
   "FIND"              : {
@@ -1163,7 +1260,26 @@
     "DESIGNATION"       : "Detail",
     "TOTAL_TRANSFERT"   : "Transfert Total",
     "CONVENTION"        : "Convention",
-    "NUM_CONVENTION_PAY" : "Number convention pay"
+    "NUM_CONVENTION_PAY" : "Number convention pay",
+    "CAUTION"           : "Caution",
+    "CAUTION_ID"        : "# Caution",
+    "LIBELLE_CAUTION"   : "Caution Reception",
+    "TOTAL_CAUTION"     : "Total",
+    "SIGN_HEADER_BILLING"          : "Head of Billing Signature",
+    "SIGN_CLIENT"                  : "Customer Signature ",
+    "SIGN_HEADER_AUXI"             : "Head of Auxilliairy Cash Signature",
+    "SIGN_HEADER_PRI"              : "Head of Principle Cash Signature",
+    "PURCHASE_ID"                  : "Purchase Order ID",
+    "PURCHASE_DATE"                : "Purchase Order Date",
+    "EMPLOYEE_CONTACT"             : "Employee Contact",
+    "EMPLOYEE_CODE"                : "Employee Code",
+    "PURCHASE_TOTAL"               : "Total",
+    "PURCHASE_ORDER"               : "Purchase Order",
+    "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
+    "DOCUMENT_REF"      : "Document Ref.",
+    "DEPOT_REF"         : "Depot Ref.",
+    "DISTRIBUTION_SERVICE" : "Service Distribution"
+
   },
 
   "SECTOR"             : {
@@ -1231,6 +1347,69 @@
     }
 },
 
+"PROFIT_CENTER" : {
+    "TITLE"         : "Profit center Management",
+    "NAVIGATION"    : "Browsing",
+    "OPERATION"     : "operations",
+    "OPERATIONS" : {
+      "CC"        : "Profit center",
+      "ASSIGN"    : "Assigning",
+      "VERSEMENT" : "Injection"
+    }
+},
+
+"VERSEMENT" : {
+    "TITLE"                  : "Accounts deposit",
+    "PARENT"                 : "Cost center management",
+    "CHOOSE"                 : "Select cost center",
+    "AVAILABLE_ACCOUNT"      : "Availables accounts",
+    "VERSER"                 : "Deposit",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Browsing",
+    "ASSOCIATED_TO"          : "Accounts associated to : ",
+    "PLEASE_SELECT"          : "(choose cost center pleaase!)"
+},
+
+"VERSEMENT_PROFIT_CENTER" : {
+    "TITLE"                  : "Accounts deposit",
+    "PARENT"                 : "Cost center management",
+    "CHOOSE"                 : "Select cost center",
+    "AVAILABLE_ACCOUNT"      : "Availables accounts",
+    "VERSER"                 : "Deposit",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Browsing",
+    "ASSOCIATED_TO"          : "Accounts associated to : ",
+    "PLEASE_SELECT"          : "(choose cost center pleaase!)"
+},
+
+"ASSIGNING" : {
+    "TITLE"                  : "Assigning",
+    "NAVIG"                  : "Browsing",
+    "PARENT"                 : "Cost center Management",
+    "CHOOSE"                 : "Select a secondary cost center",
+    "INFO_COST_CENTER"       : "Cost center details",
+    "ASSOCIATED_TO"          : "Cost center for ",
+    "PLEASE_SELECT"          : "(choose cost center pleaase!)",
+    "NEXT"                   : "Next",
+    "TEXT_COST"              : "Designation",
+    "AUX_CENTER"             : "Auxilliairy center",
+    "COST"                   : "Cost",
+    "PRI_CENTERS"            : "Principle cost center",
+    "INITIAL_COST"           : "Initial cost",
+    "COEFF"                  : "Repartition repartition",
+    "AL_COST"                : "Allocated cost",
+    "TOTAL"                  : "Total",
+    "TOTALS"                 : "TOTALS",
+    "INSERT_SUCCES_MESSAGE"  : "insertion successfully !",
+    "INSERT_FAIL_MESSAGE"    : "Error during insertion",
+    "NO_CHOOSEN"             : "No cost center selected!",
+    "AUX_CC"                 : "Auxilliairy center",
+    "LABEL_CC"               : "Designation",
+    "TYPE_CC"                : "Type",
+    "NOTE"                   : "Description"
+},
+
+
 "ANALYSIS_CENTER"              :{
     "TITLE"                    :   "Cost center",
     "PARENT"                   :   "Cost center Management",
@@ -1254,6 +1433,29 @@
     "REMOVE_SUCCESS_MESSAGE"   :   "Deleting successfully !"
 },
 
+"ANALYSIS_PROFIT_CENTER"              :{
+    "TITLE"                    :   "Profit center",
+    "PARENT"                   :   "Profit center Management",
+    "NAVIGATION"               :   "Browsing",
+    "REGISTERED"               :   "Registered profit center",
+    "INFO"                     :   "profit center information",
+    "INFO_DESCRIPTION"         :   "This feature will help you to manage your profit center(creating, editing, deleting as well as consultating)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "profit",
+    "IS_PROFIT"                :   "Profit center",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Registering",
+    "NEW"                      :   "New center",
+    "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
+    "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
+    "NONE_FOUND"               :   "No profit center found !",
+    "MODIFYING"                :   "Editing",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
+    "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",
+    "REMOVE_FAIL_MESSAGE"      :   "Error during deleting !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Deleting successfully !"
+},
+
   "STOCK" : {
     "MAIN" : {
       "TITLE" : "Stock Management",
@@ -1263,7 +1465,8 @@
       "WAREHOUSE_INFO_1" : "Configure the depot to be used for stock management.",
       "WAREHOUSE_INFO_2" : "All Stock operations (entry, exit and reports) will be assigned to this depot.",
       "WAREHOUSE_INFO_3" : "This setting can be changed at a later date.",
-      "REPORTS" : "Stock Reports"
+      "REPORTS" : "Stock Reports",
+      "CONFIRM" : "Are you sure you want to select this warehouse?"
     },
     "ENTRY" : {
       "KEY"                 : "Stock Entry",
@@ -1290,13 +1493,28 @@
     "EXIT" : {
       "KEY" : "Stock Distribution"
     },
-    "LOSS" : {
-      "KEY" : "Stock Loss"
+    "EXIT_SERVICE" : {
+        "KEY" : "Stock distribution to services"
+    },
+    "LOSS"     : {
+      "KEY"    : "Stock loss",
+      "TITLE"  : "Stock loss",
+      "KEY"    : "Stock loss",
+      "NO_DEPOT" : "No depot",
+      "LOSS_GENERAL_INFO" : "Summary",
+      "SUBMIT"              : "Submit"
     },
     "MOVEMENT" : {
       "KEY"   : "Stock Movement",
       "TITLE" : "Stock Movements",
-      "FORM" : "Stock Movement Form"
+      "FORM" : "Stock Movement Form",
+      "INVALID_SESSION"  : "The page received invalid configuration data, please try again via Stock Management or contact the system administrator.",
+      "ONLY_ONE_DEPOT"   : "Only one depot has been registered with BHIMA. A stock movment requires both an origin and destination depot.",
+      "DEPOT_FROM"       : "Source Depot",
+      "DEPOT_TO"       : "Destination Depot",
+      "INVENTORY"      : "Inventory",
+      "INVALID_TRANSFERT_QTE"  : "Invalid transfer quantity",
+      "SELECT_LOT" : "Select lot from"
     },
     "SEARCH" : {
       "KEY" : "Find Stock Items",
@@ -1330,7 +1548,10 @@
     "WAREHOUSE_MANAGER" : "Warehouse Manager",
     "CHIEF_ACCOUNTANT" : "Chief Accountant",
     "FINANCE_OFFICER" : "Finance Officer",
-    "ADMINISTRATOR" : "Adminstrator"
+    "ADMINISTRATOR" : "Adminstrator",
+    "CUSTOMER"      : "Customer",
+    "RESPONSABLE"   : "Responsable",
+    "BENEFICIARY"   : "Beneficiary"
   },
 
   "CONVENTION"            : {
@@ -1347,6 +1568,18 @@
     "DEFAULT_CASHBOX"    : "Cash"
   },
 
+  "ALLTRANSACTIONS" : {
+    "TITLE"         : "ALL TRANSACTIONS STATE",
+    "SEARCH"        : "search",
+    "DAY"           : "Today",
+    "WEEK"          : "This week",
+    "MONTH"         : "This month",
+    "FISCAL_YEAR"   : "This fiscal year",
+    "FROMSTARTING"  : "Since the begining of the time",
+    "SELECTED"      : "TRANSACTIONS STATE FOR ACCOUNT : ",
+    "DEFAULT"       : "ALL TRANSACTIONS STATE"
+  },
+
  "CFIND"             : {
     "TITLE"           : "Find convention",
     "SEARCH"          : "search by name",
@@ -1357,10 +1590,43 @@
     "TITLE" : "Dashboards"
   },
 
+  "EXPIRING_REPORT" : {
+    "TITLE" : "Medecines expiring report",
+    "ALL_DEPOTS" : "All depots",
+    "DAY" : "To day",
+    "MONTH" : "This Month",
+    "WEEK"  : "This week",
+    "EMPTY_REPORT" : "No record found!"
+},
+
+
   "SETTINGS" : {
     "TITLE" : "BHIMA Settings",
     "LANGUAGE" : "Language",
     "LAST_PAGE" : "Last Page Visited",
     "HOME_PAGE" : "Default Home Page"
+  },
+
+  "PURCHASE_RECORDS" : {
+    "TITLE" : "Pruchase Order Records",
+    "ADVANCE_SEARCH" : "Advanced Search",
+    "NO_PURCHASE_FOUND" : "No purchase orders found",
+    "REFERENCE" : "Reference",
+    "PURCHASE_ORDER" : "Purchase Orders",
+    "TO_REQUEST" : " to request a purchase order",
+    "VIEW_PURCHASE_DETAIL" : "View Details"
+
+  },
+
+    "PURCHASE_MENU" : {
+    "TITLE" : "Purchase order management",
+    "OPERATION" : "Operations",
+    "PUCHASE_CREATION" : "Create purchase order",
+    "CONFIRM" : "Confirm payment",
+    "VIEW" : "View purchase order"
+  },
+"CONFIRM" : {
+    "TITLE" : "Purchase order payment confirmation",
+    "PARENT" : "Purchase order management"
   }
 }

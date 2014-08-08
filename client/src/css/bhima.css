@@ -57,6 +57,11 @@ td.visible-print {
   display: none !important;
 }
 
+/* ng-cloak fix */
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
 /* first viewport */
 .sidebar {
   position: fixed;
@@ -165,6 +170,10 @@ td.visible-print {
 /* everything is bad */
 .hack-left {
   margin-left: -15px;
+}
+
+.hack-right { 
+  margin-left: 5px !important;
 }
 
 .excell {
@@ -298,6 +307,10 @@ header + .content {
   color           : #cecece;
 }
 
+[selected] { 
+  font-weight: bold;
+}
+
 .panel-primary .panel-heading .menu-item {
   color: white;
 }
@@ -411,6 +424,15 @@ a.danger {
   color            : #468847;
 }
 
+.warn { 
+  color : #c09853;
+}
+
+.invalid { 
+  background-color : #ececec;
+  color : #9f9f9f;
+}
+
 .configure { 
   text-align : center;
 }
@@ -434,4 +456,12 @@ a.danger {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+.strike { 
+  text-decoration : line-through;
+}
+
+.note { 
+  min-height: 10em;
 }

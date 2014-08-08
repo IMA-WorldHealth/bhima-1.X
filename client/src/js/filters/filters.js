@@ -14,8 +14,7 @@
       '$sce',
       'messenger',
       'validate',
-      'precision',
-      function ($filter, $sce, messenger, validate, precision) {
+      function ($filter, $sce, messenger, validate) {
         var dependencies = {},
             currency;
 
@@ -47,16 +46,54 @@
           // first, extract the decimal digits '0.xx'
           var decimalDigits = value.slice(value.indexOf('.')+1, value.indexOf('.') + 3);
 
-          if (decimalDigits)
+          if (decimalDigits) {
             value = value.slice(0, value.indexOf('.'));
-          var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1"+currency.get(id).separator);
+          }
+
+          var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1'+currency.get(id).separator);
           templ += '<span class="desc">' + currency.get(id).decimal + decimalDigits + '</span><span class="cur"> ' + currency.get(id).symbol +  '</span>';
 
           return $sce.trustAsHtml(templ);
         };
       }
     ])
-   
+    .filter('unique', function () {
+      return function (items, filterOn) {
+        console.log('item est : ', items, 'filteron est ', filterOn);
+
+        if (filterOn === false) {
+          return items;
+        }
+
+        if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
+          var newItems = [];
+
+          var extractValueToCompare = function (item) {
+            if (angular.isObject(item) && angular.isString(filterOn)) {
+              return item[filterOn];
+            } else {
+              return item;
+            }
+          };
+
+          angular.forEach(items, function (item) {
+            var isDuplicate = false;
+
+            for (var i = 0; i < newItems.length; i++) {
+              if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
+                isDuplicate = true;
+                break;
+              }
+            }
+            if (!isDuplicate) {
+              newItems.push(item);
+            }
+          });
+          items = newItems;
+        }
+        return items;
+      };
+    })
     .filter('exchange', ['appstate', 'precision', function (appstate, precision) {
       var map;
 

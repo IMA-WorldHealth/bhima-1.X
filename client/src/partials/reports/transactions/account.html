@@ -22,7 +22,7 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-default">
+    <button class="btn btn-sm btn-default" ng-click="print()">
       <span class="glyphicon glyphicon-print"></span>
       {{ "UTIL.PRINT" | translate }}
     </button>
@@ -52,11 +52,7 @@
         </tbody>
         <tbody ng-if="!transactions.length && session.account">
           <tr>
-            <td colspan="4">
-              <div class="alert alert-danger">
-                <h4>{{ "REPORT.NO_TRANSACTIONS" | translate }}</h4>
-              </div>
-            </td>
+            <td colspan="4">{{ "REPORT.NO_TRANSACTIONS" | translate }}</td>
           </tr>
         </tbody>
         <tfoot>

@@ -9,7 +9,7 @@
       <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
       <ul class="dropdown-menu menu-sq">
         <li ng-repeat="opt in options">
-          <a href="" ng-click="search(opt)">{{ opt.label | translate }}</a>
+          <a ng-click="search(opt)">{{ opt.label | translate }}</a>
         </li>
       </ul>
     </span>
@@ -23,9 +23,7 @@
       <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" ng-change="reset(1)">
     </div>
     <div class="col-xs-3 pull-right">
-      <select class="form-bhima" ng-model="session.project" ng-change="reset()">
-        <option selected value="{{ allProjectIds }}">{{ 'CASH_PAYMENTS.ALL_PROJECTS' | translate }}</option>
-        <option ng-repeat="project in projects.data" value="{{ project.id }}">{{ project.name }}</option>
+      <select class="form-bhima" ng-model="session.project" ng-change="reset()" ng-options="project.id as project.name for project in projects.data">
       </select>
     </div>
   </div>

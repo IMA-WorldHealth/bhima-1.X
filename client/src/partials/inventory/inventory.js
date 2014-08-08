@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
       {
         ico : 'glyphicon-list-alt',
         key : 'INVENTORY.MAIN.UPDATE_ITEM',
-        path : 'update_item'
+        path : 'update'
       },
       {
         ico : 'glyphicon-list-alt',

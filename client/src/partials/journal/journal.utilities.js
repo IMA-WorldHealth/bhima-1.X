@@ -10,6 +10,7 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   function ($scope, $translate, $location, $modal, Appcache, connect, validate, appstate, messenger) {
+    /* jshint unused : false */
     var dependencies = {};
     var columns, options, dataview, grid, manager, deleteColumn;
     var cache = new Appcache('journal.utilities');

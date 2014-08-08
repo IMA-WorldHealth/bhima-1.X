@@ -1,4 +1,4 @@
 angular.module('bhima.controllers')
-.controller('budgetController', ['$scope', function($scope) {
-   
+.controller('budget', ['$scope', function($scope) {
+  /* jshint unused : false */
 }]);

@@ -9,8 +9,8 @@ angular.module('bhima.controllers')
   function($location, $translate, Appcache, appstate, connect) {
 
     var moduleNamespace = 'application',
-      dependencies = {},
-      cache = new Appcache(moduleNamespace);
+        dependencies = {},
+        cache = new Appcache(moduleNamespace);
 
     dependencies.enterprise = {
       required : true,
@@ -67,7 +67,7 @@ angular.module('bhima.controllers')
     };
 
     var queryExchange = {
-      'tables' : {
+      tables : {
         'exchange_rate' : {
           'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
         }
@@ -92,7 +92,7 @@ angular.module('bhima.controllers')
       loadLanguage();
 
       //Initial page load assumed be navigating to nothing
-      if(url==='' || url==='/') { loadCachedLocation(); }
+      if (url === '' || url === '/') { loadCachedLocation(); }
       fetchSessionState();
     }
 
@@ -146,7 +146,7 @@ angular.module('bhima.controllers')
       var currentFiscal = result.data[0];
 
       //TODO improve mini hack with aliasing in query etc.
-      if(currentFiscal) {
+      if (currentFiscal) {
         currentFiscal.period_id = currentFiscal.id;
         currentFiscal.id = currentFiscal.fiscal_year_id;
         appstate.set('fiscal', currentFiscal);
@@ -155,7 +155,7 @@ angular.module('bhima.controllers')
     }
 
     function setExchange(result) {
-      if(result) { appstate.set('exchange_rate', result.data); }
+      if (result) { appstate.set('exchange_rate', result.data); }
       return connect.fetch(queryProject);
     }
 

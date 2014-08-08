@@ -1,31 +1,24 @@
 <header>
-  {{ "INVENTORY_REGISTER.TITLE" | translate }}
+  {{ "INVENTORY.REGISTER.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
-    <a href="#/inventory/view" class="btn btn-default btn-sm">
-      <i class="glyphicon glyphicon-qrcode"></i> {{ "INVENTORY_REGISTER.VIEW" | translate }}
-    </a>
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ "INVENTORY.REGISTER.TITLE" | translate }}</li>
+    </ol>
   </div>
-  <div class="pull-right">
-    <!-- TODO: normalize these -->
-    <button type="button" ng-click="newInventoryGroup()" class="btn btn-default btn-sm">
-      <i class="glyphicon glyphicon-barcode"></i> {{ "INVENTORY_REGISTER.ADD_GROUP" | translate }}
-    </button>
-    <button type="button" ng-click="newUnitType()" class="btn btn-default btn-sm">
-      <i class="glyphicon glyphicon-list-alt"></i> {{ "INVENTORY_REGISTER.ADD_TYPE" | translate }}
-    </button>
-  </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <form name="inventory" novalidate>
     <div class="row">
       <div class="col-xs-6">
         <div class="panel panel-default">
           <div class="panel-heading">
-            {{ "INVENTORY_REGISTER.GENERAL" | translate }}
+            {{ "INVENTORY.REGISTER.GENERAL" | translate }}
           </div>
           <div class="panel-body">
 
@@ -42,14 +35,14 @@
 
             <div class="form-group">
               <label for="inventory-reg-code" class="required">
-                {{ "INVENTORY_REGISTER.CODE" | translate }}
+                {{ "INVENTORY.REGISTER.CODE" | translate }}
               </label>
               <input name="code" id="inventory-reg-code" class="form-bhima" ng-model="item.code" required>
             </div>
 
             <div class="form-group">
               <label for="inventory-reg-text">
-                {{ "INVENTORY_REGISTER.DESCRIPTION" | translate }}
+                {{ "INVENTORY.REGISTER.DESCRIPTION" | translate }}
               </label>
               <textarea name="text" id="inventory-reg-text" class="form-bhima" rows="3" ng-model="item.text" required></textarea>
             </div>
@@ -58,7 +51,7 @@
 
             <div class="form-group">
               <label for="inventory-reg-group" class="required">
-                {{ "INVENTORY_REGISTER.GROUP" | translate }}
+                {{ "INVENTORY.REGISTER.GROUP" | translate }}
               </label>
               <select id="inventory-reg-group" class="form-bhima" name="group_id" ng-model="item.group_uuid" ng-options="group.uuid as group.name for group in inventory_group.data | orderBy:'name'" required>
                 <option value="" disabled="disabled">-- {{ "SELECT.INVENTORY_GROUP" | translate }} --</option>
@@ -71,7 +64,7 @@
       <div class="col-xs-6">
         <div class="panel panel-default">
           <div class="panel-heading">
-            {{ "INVENTORY_REGISTER.BILLING" | translate }}
+            {{ "INVENTORY.REGISTER.BILLING" | translate }}
           </div>
           <div class="panel-body">
             <fieldset>
@@ -79,7 +72,7 @@
                 <div class="radio">
                   <label>
                     <input name="consumable" type="radio" id="inventory-reg-consumable" value="1" ng-model="item.consumable" ng-required="!item.consumable">
-                    {{ "INVENTORY_REGISTER.CONSUMABLE" | translate }}
+                    {{ "INVENTORY.REGISTER.CONSUMABLE" | translate }}
                   </label>
                 </div>
               </div>
@@ -88,7 +81,7 @@
                 <div class="radio">
                   <label for="inventory-reg-durable">
                     <input name="consumable" type="radio" id="inventory-reg-durable" value="0" ng-model="item.consumable" ng-required="!item.consumable">
-                    {{ "INVENTORY_REGISTER.DURABLE" | translate }}
+                    {{ "INVENTORY.REGISTER.DURABLE" | translate }}
                   </label>
                 </div>
               </div>
@@ -96,7 +89,7 @@
 
             <div class="form-group" >
               <label for="inventory-reg-unit" class="required">
-                {{ "INVENTORY_REGISTER.UNIT" | translate }}
+                {{ "INVENTORY.REGISTER.UNIT" | translate }}
               </label>
               <select name="unit_id" id="inventory-reg-unit" class="form-bhima" ng-model="item.unit_id" ng-options="unit.id as unit.text for unit in inventory_unit.data | orderBy:'text'" required>
                 <option value="" disabled="disabled">-- {{ "SELECT.UNIT" | translate }} --</option>
@@ -105,28 +98,28 @@
 
             <div class="form-group" >
               <label for="inventory-reg-purchase-price">
-                {{ "COLUMNS.PURCHASE_PRICE" | translate }}
+                {{ "COLUMNS.PURCHASE_PRICE" | translate }} ({{ currencies.get(enterprise.currency_id).symbol }})
               </label>
               <input name="purchase_price" type="number" id="inventory-reg-purchase-price" class="form-bhima" ng-model="item.purchase_price" required>
             </div>
 
             <div class="form-group" >
               <label for="inventory-reg-price">
-                {{ "COLUMNS.SALE_PRICE" | translate }}
+                {{ "COLUMNS.SALE_PRICE" | translate }} ({{ currencies.get(enterprise.currency_id).symbol }})
               </label>
               <input name="unit_price" type="number" id="inventory-reg-price" class="form-bhima" ng-model="item.price" required>
             </div>
 
             <div class="form-group" >
               <label for="inventory-reg-weight" class="required">
-                {{ "INVENTORY_REGISTER.UNIT_WEIGHT" | translate }}
+                {{ "INVENTORY.REGISTER.UNIT_WEIGHT" | translate }}
               </label>
               <input name="unit_weight" type="number" id="inventory-reg-weight" class="form-bhima" ng-model="item.unit_weight">
             </div>
 
             <div class="form-group" >
               <label for="inventory-reg-volume" class="required">
-                {{ "INVENTORY_REGISTER.UNIT_VOLUME" | translate }}
+                {{ "INVENTORY.REGISTER.UNIT_VOLUME" | translate }}
               </label>
               <input name="unit_volume" type="number" id="inventory-reg-volume" class="form-bhima" ng-model="item.unit_volume">
             </div>
@@ -135,62 +128,11 @@
       </div>
     </div>
   </form>
-</div>
+</main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <input type="submit" class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="!isSubmitable()" value="{{ 'FORM.SUBMIT' | translate }}"/>
     <input type="reset" class="btn btn-sm btn-default" ng-click="reset()" value="{{ 'FORM.RESET' | translate }}"/>
   </div>
-</section>
-
-<!-- Unit Modal -->
-<script type="text/ng-template" id="unitmodal.html">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h4>{{ "UNIT_TYPE.ADD" | translate }}</h4>
-    </div>
-    <div class="modal-body">
-      <div class="row">
-        <div class="col-xs-8">
-          <form novalidate>
-
-            <div class="form-group">
-              <label>{{ "UNIT_TYPE.NEW" | translate }}</label>
-              <input id="unit-text" class="form-bhima" placeholder='{{ "UNIT_TYPE.PLACEHOLDER" | translate }}' ng-model="unit.text">
-            </div>
-
-          </form>
-        </div>
-
-        <div class="col-xs-4">
-          <div class="panel panel-warning">
-            <div class="panel-heading">
-              {{ "UNIT_TYPE.REGISTERED" | translate }}
-            </div>
-            <div class="panel-body" style="max-height: 100px; overflow: auto; padding:0;">
-              <table class="table table-bordered table-hover">
-                <tbody>
-                  <tr ng-repeat="unit in units">
-                    <td>{{unit.text}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-default btn-success" ng-click="submit()">
-        {{ "FORM.SAVE_CHANGES" | translate }}
-      </button>
-      <button class="btn btn-default" ng-click="discard()">
-        {{ "FORM.DISCARD" | translate }}
-      </button>
-    </div>
-
-  </div>
-</script>
+</footer>

@@ -11,7 +11,7 @@
 
 <div class="visible-print" style="margin: 15px;">
   <h3>{{ 'ENTERPRISE.REGISTERED_ENTERPRISE' | translate }}</h3>
-  <table class="table table-bordered">
+  <table class="table table-condensed table-bordered">
     <thead>
       <tr>
         <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
@@ -35,7 +35,7 @@
   </table>
 </div>
 
-<main>
+<main class="hidden-print">
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
@@ -58,7 +58,7 @@
               <td>{{ e.abbr }}</td>
               <td>{{ e.email }}</td>
               <td>{{ e.phone }}</td>
-              <td><a ng-click="editEnterprise(e)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a class="action" ng-click="editEnterprise(e)"><i class="glyphicon glyphicon-pencil"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -171,7 +171,6 @@
                 <input type="radio" value="{{currency.id}}" name="bhima-enterprise-currency" ng-model="edit.currency_id">
               </label>
             </div>
-
           </fieldset>
 
           <input type="submit" class="btn btn-sm btn-success" ng-click="saveEdit()" value="{{ 'FORM.SAVE_CHANGES' | translate }}" ng-disabled="editForm.$invalid">
@@ -181,4 +180,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

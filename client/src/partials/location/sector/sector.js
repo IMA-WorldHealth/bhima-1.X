@@ -1,15 +1,11 @@
 angular.module('bhima.controllers')
 .controller('sector', [
   '$scope',
-  '$q',
   'connect',
-  'messenger',
   'validate',
-  'store',
   'uuid',
-  function ($scope, $q, connect, messenger, validate, Store, uuid) {
-    var dependencies = {},
-        flags = $scope.flags = {};
+  function ($scope, connect, validate, uuid) {
+    var dependencies = {};
 
     dependencies.provinces = {
       query :  {
@@ -44,7 +40,7 @@ angular.module('bhima.controllers')
       newObject.name = obj.name;
       newObject.province_uuid = obj.province_uuid;
       connect.basicPut('sector', [connect.clean(newObject)])
-      .then(function (res) {
+      .then(function () {
         newObject.uuid = newObject.uuid;
         newObject.sector = newObject.name;
         newObject.province = $scope.provinces.get(obj.province_uuid).name;
@@ -61,9 +57,9 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPost('sector', [connect.clean(sector)], ['uuid'])
-      .then(function (res) {
+      .then(function () {
         $scope.sectors.put(sector);
-        $scope.op='';
+        $scope.op = '';
       });
     }
 

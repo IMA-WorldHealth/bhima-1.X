@@ -80,7 +80,8 @@
     "TOGGLE_AGGREGATES" : "Montrer Agregats",
     "ON"                : "On",
     "OFF"               : "Off",
-    "AGGREGATES"        : "Agregats"
+    "AGGREGATES"        : "Agregats",
+    "SIGNATURES"        : "Signature"
   },
 
   "ENTERPRISE"                 : {
@@ -200,16 +201,6 @@
     "REGISTERED" : "Enregistrees"
   },
 
-  "INVENTORY_GROUP" : {
-    "ADD"           : "Ajouter Groupe des Stocks",
-    "CODE"          : "Code",
-    "NAME"          : "Nom",
-    "SALES_ACCOUNT" : "Compte Produit",
-    "COGS"          : "Compte COGS",
-    "STOCK"         : "Compte Stock",
-    "TAX"           : "Compte Tax"
-  },
-
   "SALE"               : {
     "SALE"             : "Facture",
     "TITLE"            : "Facturation",
@@ -225,7 +216,8 @@
     "TAB_LOCK_LINE"    : "Tabuler par ligne",
     "TAB_LOCK_ITEM"    : "Tabuler par item",
     "RECOVER"          : "Retrouver Vente",
-    "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantities sont retrouve, les pries sont reinitialises au prix par defaut des items"
+    "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantities sont retrouve, les pries sont reinitialises au prix par defaut des items",
+    "CHOOSE"           : "Choisir le service"
   },
 
   "FIND"              : {
@@ -242,11 +234,19 @@
     "PLACEHOLDER"     : "Chercher une convention"
   },
 
+  "LANGUAGES" : {
+    "ENGLISH" : "Anglais",
+    "FRENCH" : "Francais",
+    "LINGALA" : "Lingala"
+  },
+
   "SELECT"            : {
     "ACCOUNT"         : "Selectionner Compte",
+    "ACCOUNT_TYPE"    : "Selectionner Type de Compte",
     "CURRENCY"        : "Selectionner Monnaie",
     "NAME"            : "Selectionner un Nom",
     "COUNTRY"         : "Selectionner un Pays",
+    "LANGUAGE"        : "Selectionner une lang",
     "PROVINCE"        : "Selectionner un Province",
     "SECTOR"          : "Selectionner une Secteur",
     "VILLAGE"         : "Selectionner une Village",
@@ -269,7 +269,8 @@
     "OTHER"           : "Autre Source",
     "ENTERPRISE"      : "Selectionner Enterprise",
     "PROJECT"         : "Proget",
-    "COST_CENTER"     : "Selectionner Centre des frais"
+    "COST_CENTER"     : "Selectionner Centre des frais",
+    "DEPOT"           : "Selectionner un Depot"
   },
 
   "RENEWAL"           : {
@@ -388,7 +389,11 @@
     "SERVICE"                   : "Gestion des Services",
     "STOCK_MANAGEMENT"          : "Gestion de Stock",
     "INVENTORY_MANAGEMENT"      : "Gestion de Inventaire",
-    "EXPIRING"                  : "Rapport Expiration Stocks"
+    "EXPIRING"                  : "Rapport Expiration Stocks",
+    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
+    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat",
+    "PATIENT_SEARCH"            : "Recherche des Patients",
+    "PROFIT_CENTER_MGMNT"       : "Centre de profit"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -443,7 +448,7 @@
     "FIRST_VOUCHER"         : "Premier No Voucher",
     "LAST_VOUCHER"          : "Dernier No Voucher",
     "POSTING_FROM"          : "Poster De",
-    "NO_RECORDS"            : "No Fiscal Year Records Found.",
+    "NO_RECORDS"            : "fNo Fiscal Year Records Found.",
     "POSTING_TO"            : "Poster jusqu'au",
     "PERIODS"               : "Periodes",
     "FISCAL_YEAR_SELECTION" : "Selection de l\"Annee Fiscale",
@@ -472,7 +477,7 @@
       "KEY"                 : "Entree de Stock",
       "TITLE"               : "Entree de Stock",
       "SELECT"              : "Selectionner",
-      "NUM_ITEMS"           : "Numero Items",
+      "NUM_ITEMS"           : "Nombre Items",
       "ENTRY_MANIFEST"      : "Document des Entrees",
       "SELECT_DEPOT"        : "Selectionner un depot",
       "FIND_PURCHASE_ORDER" : "Choisir une Ordre d'Achat",
@@ -493,13 +498,28 @@
     "EXIT" : {
       "KEY" : "Stock Distribution"
     },
+    "EXIT_SERVICE" : {
+        "KEY" : "Distribution stock au services"
+    },
     "LOSS"     : {
-      "KEY"    : "Stock Loss"
+      "KEY"    : "Perte stock",
+      "TITLE"  : "Perte stock",
+      "KEY"    : "Perte stock",
+      "NO_DEPOT" : "Pas de depot",
+      "LOSS_GENERAL_INFO" : "Sommaire",
+      "SUBMIT"              : "Soumettre"
     },
     "MOVEMENT" : {
       "KEY"    : "Movements des Stock",
       "TITLE"  : "Movements des Stock",
-      "FORM"   : "Documents des Movements"
+      "FORM"   : "Documents des Movements",
+      "INVALID_SESSION" : "La page a recu une configuartion des donnees invalide, Essayer via la gestion de stock ou contacter l'administrateur systeme.",
+      "ONLY_ONE_DEPOT"   : "Un depot seulemet etait enregistrement avec BHIMA. Le movement de stock necessite un depot source et un depot destination",
+      "DEPOT_FROM"       : "Depo Source",
+      "DEPOT_TO"       : "Depot Destination",
+      "INVENTORY"      : "Inventaire",
+      "INVALID_TRANSFERT_QTE"  : "Quantite transferee invalide",
+      "SELECT_LOT" : "Select lot from"
     },
     "SEARCH" : {
       "KEY"          : "Recherchers Items Stock",
@@ -622,7 +642,7 @@
     "REFERENCE"           : "Reference",
     "TRACKING_NUMBER"     : "Numero de Tracking",
     "EXPIRATION_DATE"     : "Date Expiration",
-    "LOT"                 : "Lot - Date Expiration - Quantite de Lot",
+    "LOT"                 : "Lot",
     "STATE"               : "Etat",
     "AVAILABLE"           : "Disponible",
     "QTY_ASKED"           : "Quantite Demandee",
@@ -641,7 +661,33 @@
     "DESIGNATION"         : "Designation",
     "INITIAL_STOCK"       : "Stock Initial",
     "CONSUMED_STOCK"      : "Stock Consomme",
-    "CURRENT_STOCK"       : "Stock Courrant"
+    "CURRENT_STOCK"       : "Stock Courrant",
+    "INVENTORY_GROUP"     : "Groupe inventaire",
+    "UNIT_WEIGHT"         : "Poids unitaire",
+    "UNIT_VOLUME"         : "Volume unitaire",
+    "STOCK_MIN"           : "Stock minimal",
+    "STOCK_MAX"           : "Stock maximal",
+    "EMPLOYEE"            : "Employe",
+    "PURCHASE_ORDER"      : "Ordre Achat",
+    "ORDER_DATE"          : "Date Ordre Achat",
+    "BHIMA_STOCK_CODE"    : "Code Stock",
+    "INVENTORY_CODE"      : "Code Inventaire",
+    "LABEL"               : "Designation",
+    "TOTAL_PRICE"         : "Prix Total",
+    "SUMMARY"             : "Sommaire",
+    "DEPOT"               : "Depot",
+    "PURCHASE_DATE"       : "Date Ordre Achat",
+    "LOT_DETAILS"         : "Detail Lot",
+    "TRANSFER_QUANTITY"   : "Quantite a transferer",
+    "LIMIT"               : "Limit",
+    "TRANSACTION_DATE"    : "Date de Transaction",
+    "PURCHASER"           : "Acheteur",
+    "EMPLOYER"            : "Creer par",
+    "PROFIT_CENTER"       : "Center profit",
+    "MEDECINE"             : "Medicement",
+    "QTY"                  : "Quantite",
+    "DOCUMENT_UUID"      : "Numero Document",
+    "QTY_LOSS"           : "Quantite perdue"
   },
 
   "REPORT"                  : {
@@ -680,7 +726,8 @@
     "VISIBLE_FISCAL_YEAR"   : "Annee Fiscale Visible",
     "VISIBLE_PERIODS"       : "Periods Visible",
     "CHOOSE_PERIOD"         : "Choissir Period",
-    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense"
+    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
+    "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte"
   },
 
   "PATIENT_GRP_ASSIGNMENT" : {
@@ -712,23 +759,6 @@
     "DETAILS"                : "Details Facture"
   },
 
-  "INVENTORY_REGISTER" : {
-    "TITLE"            : "Enregistrement des Stocks",
-    "VIEW"             : "Voire Stocks",
-    "ADD_TYPE"         : "Ajouter Type Unite",
-    "ADD_GROUP"        : "Ajourter Groupe Stock",
-    "GENERAL"          : "General",
-    "CODE"             : "Code",
-    "DESCRIPTION"      : "Description",
-    "GROUP"            : "Groupe Inventaire",
-    "BILLING"          : "Informations pour la Facturation et Stocks",
-    "DURABLE"          : "Durable",
-    "CONSUMABLE"       : "Nondurable",
-    "UNIT"             : "Unit",
-    "DEFAULT_PRICE"    : "Prix Unitaire",
-    "UNIT_WEIGHT"      : "Poids Unitaire",
-    "UNIT_VOLUME"      : "Volume Unitaire"
-  },
 
   "PRICE_LIST"       : {
     "TITLE"          : "Listes des Prixes",
@@ -761,6 +791,68 @@
     "TITLE"        : "Journales des Stocks",
     "GROUP_BY"     : "Groupe Par",
     "REGISTER"     : "Enregistre Stocks"
+  },
+
+  "INVENTORY" : {
+    "MAIN" : {
+      "TITLE"          : "Gestion des Inventaires",
+      "OPTIONS"        : "Options",
+      "ADD_ITEM"       : "Enregistrer Article",
+      "UPDATE_ITEM"    : "Mis a jour Article",
+      "CONFIG_GROUPS"  : "Configurer Groups des Articles",
+      "CONFIG_TYPES"   : "Configurer Type des Articles",
+      "PRINT_MANIFEST" : "Imprimer List des Articles",
+      "VIEW"           : "Voire la liste"
+    },
+    "GROUPS" : {
+      "TITLE"         : "Gestions des Groupes des Stocks",
+      "ADD"           : "Ajouter Groupe des Stocks",
+      "EDIT"          : "Editter Groupe des Stocks",
+      "CODE"          : "Code",
+      "NAME"          : "Nom",
+      "SALES_ACCOUNT" : "Compte Produit",
+      "COGS_ACCOUNT"  : "Compte COGS",
+      "STOCK_ACCOUNT" : "Compte Stock",
+      "TAX_ACCOUNT"   : "Compte Tax",
+      "CREATE_GROUP"  : "Creer Groupe",
+      "ALL_GROUPS"    : "Tous",
+      "ALERT"         : "Ce module vous aidera a creer des groupes pour vos inventaires"
+    },
+    "TYPES" : {
+      "TITLE"     : "Gestion des Types",
+      "ALL_TYPES" : "Toutes types",
+      "ADD"       : "Ajouter une nouvelle type",
+      "ALERT"     : "Creer et editter les types des inventaires."
+    },
+
+     "UPDATE_ITEM"      : {
+      "TITLE"           : "Edition des inventaires",
+      "TIMESTAMP"       : "temps",
+      "FIND_ITEM"       : "Chercher inventaire",
+      "STOCK_HISTORY"   : "Historique stock",
+      "SUBMIT"          : "Soumettre",
+      "SEARCH_TEXT"     : "Chercher par code ou description",
+      "UPDATE_SUCCESS"  : "Item modifie!",
+      "UPDATE_FAILURE"  : "Ne peut pas modifier l'item.",
+      "INVALID_PRICE"   : "Prix fournit invalide",
+      "ITEM_DETAILS"    : "Details item",
+      "NO_HISTORY"      : "Pas d'historique disponible pour l'item selectionne"
+    },
+
+    "REGISTER" : {
+      "TITLE"            : "Enregistrement des Stocks",
+      "GENERAL"          : "General",
+      "CODE"             : "Code",
+      "DESCRIPTION"      : "Description",
+      "GROUP"            : "Groupe Inventaire",
+      "BILLING"          : "Informations pour la Facturation et Stocks",
+      "DURABLE"          : "Durable",
+      "CONSUMABLE"       : "Nondurable",
+      "UNIT"             : "Unit",
+      "DEFAULT_PRICE"    : "Prix Unitaire",
+      "UNIT_WEIGHT"      : "Poids Unitaire",
+      "UNIT_VOLUME"      : "Volume Unitaire"
+    }
   },
 
   "PROJECT"       : {
@@ -979,7 +1071,19 @@
     "DESIGNATION"                  : "Designation",
     "LIBELLE_TRANSFERT_FROM"       : "Transfert de ",
     "PCASH"                        : "de caisse Principale",
-    "TOTAL_TRANSFERT"              : "Total Transfert"
+    "TOTAL_TRANSFERT"              : "Total Transfert",
+    "SIGN_HEADER_BILLING"          : "Signature Charge Facturation",
+    "SIGN_CLIENT"                  : "Signature Client",
+    "SIGN_HEADER_AUXI"             : "Signature Charge Caisse Auxilliaire",
+    "SIGN_HEADER_PRI"              : "Signature Charge Caisse Principale",
+    "PURCHASE_ID"                  : "ID Ordre Achat",
+    "PURCHASE_DATE"                : "Date ordre achat",
+    "EMPLOYEE_CONTACT"             : "Contact Employe",
+    "EMPLOYEE_CODE"                : "Code Employe",
+    "PURCHASE_TOTAL"               : "Total",
+    "PURCHASE_ORDER"               : "Ordre D'Achat",
+    "DISTRIBUTION_SERVICE" : "Distribution Service"
+
   },
 
   "SECTOR"             : {
@@ -1152,6 +1256,19 @@
     "NAVIGATION"  : "Naviguation"
   },
 
+  "CASH_PURCHASE" : {
+    "TITLE"       : "Depense de l'ordre d'achat",
+    "NOT_FOUND"   : "Aucun ordre d'achat trouve !",
+    "FILTER"      : "Filtrer les ordres d'achats",
+    "SELECT_PURCHASE" : "Selectionner ordre d'achat",
+    "CONFIRM_PAY"  : "Confirmer payement",
+    "DETAILS"      : "Details",
+    "CONFIRM_PAY_OF" : "Confirmer payement de  ",
+    "TO"             : "a ",
+    "DISCARD"        : "Annuler l'ordre d'achat"
+  },
+
+
   "DASHBOARD" : {
     "TITLE" : "Tableau de bord"
   },
@@ -1177,10 +1294,13 @@
     "TOTAL"         : "Total",
     "SUBMIT"        : "Soumettre",
     "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
-    "RESPONSABLE"   : "Responsable"
+    "RESPONSABLE"   : "Responsable",
+    "TOTAL_COST"    : "Cout total"
+
   },
 
   "PRIMARY_CASH" : {
+    "SELECT_CASHBOX" : "Selectionner une Caisse",
     "TITLE"        : "Caisse Pricipale",
     "EXPENSES"     : "Depenses",
     "INCOMES"      : "Recettes",
@@ -1216,6 +1336,25 @@
     "COST"                  : "Cout",
     "LOT_DETAILS"           : "Details des Lots",
     "EMPTY_MESSAGE"         : "Aucune vente selectionnee !"
+  },
+
+    "DISTRIBUTION_SERVICE" : {
+    "TITLE"                 : "Distribution au service",
+    "ADD_ROW"               : "Ajouter Item",
+    "DESCRIPTION"           : "Description",
+    "SUBMIT"                : "Soumettre",
+    "APPLIES_GLOBALLY"      : "Appliquer globalement",
+    "APPLIES_TO_ITEM"       : "Appliquer par item",
+    "TOTAL"                 : "Total",
+    "COST"                  : "Cout",
+    "LOT_DETAILS"           : "Details des Lots",
+    "CHOOSE"                : "Selectionner le service",
+    "SUMMARY"               : "Sommaire",
+    "TAPE"                  : "Taper code nom medicament",
+    "LOT_NUMBER"            : "Numero lot",
+    "EXPIRING_DATE"         : "Date expiration",
+    "REMAINING_QTY"         : "Quantite restante",
+    "DISTRIBUTE"            : "Distribuer"
   },
 
   "SUPPLIER" : {
@@ -1259,11 +1398,22 @@
     }
   },
 
+    "PROFIT_CENTER" : {
+    "TITLE"         : "Gestion de Centre de profits",
+    "NAVIGATION"    : "Naviguation",
+    "OPERATION"     : "operations",
+    "OPERATIONS" : {
+      "CC"        : "Centre de profit",
+      "ASSIGN"    : "Assignation",
+      "VERSEMENT" : "Versement"
+    }
+  },
+
 "ANALYSIS_CENTER"              :{
     "TITLE"                    :   "Centre de couts",
     "PARENT"                   :   "Gestion de centre de couts",
     "NAVIGATION"               :   "Naviguation",
-    "REGISTERED"               :   "Centre des cuts enregistres",
+    "REGISTERED"               :   "Centre des couts enregistres",
     "INFO"                     :   "Information sur le centre des couts",
     "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
     "TEXT"                     :   "Text",
@@ -1282,6 +1432,29 @@
     "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
 },
 
+"ANALYSIS_PROFIT_CENTER"              :{
+    "TITLE"                    :   "Centre de profits",
+    "PARENT"                   :   "Gestion de centre de profit",
+    "NAVIGATION"               :   "Naviguation",
+    "REGISTERED"               :   "Centre des profits enregistres",
+    "INFO"                     :   "Information sur le centre des profits",
+    "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des profits (leur creation, modification et suppression ainsi que leur consultation)",
+    "TEXT"                     :   "Text",
+    "COST"                     :   "profit",
+    "IS_PROFIT"                :   "Centre de profit",
+    "NOTE"                     :   "Note",
+    "REGISTER"                 :   "Enregistrement",
+    "NEW"                      :   "Nouveau centre",
+    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
+    "NONE_FOUND"               :   "Aucun centre de profit trouve !",
+    "MODIFYING"                :   "Modification",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Mise a jour avec succes !",
+    "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
+    "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
+    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
+},
+
 "VERSEMENT" : {
     "TITLE"                  : "Versement des comptes",
     "PARENT"                 : "Gestion de centre de couts",
@@ -1292,6 +1465,17 @@
     "NAVIG"                  : "Navigation",
     "ASSOCIATED_TO"          : "Les comptes associe a : ",
     "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
+},
+"VERSEMENT_PROFIT_CENTER" : {
+    "TITLE"                  : "Versement des comptes",
+    "PARENT"                 : "Gestion de centre de profits",
+    "CHOOSE"                 : "Selectionner centre de profit",
+    "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
+    "VERSER"                 : "Verser",
+    "REMOVE"                 : "Retirer",
+    "NAVIG"                  : "Navigation",
+    "ASSOCIATED_TO"          : "Les comptes associe a : ",
+    "PLEASE_SELECT"          : "(Selectionner centre profit SVP!)"
 },
 
 "SERVICE" : {
@@ -1346,6 +1530,15 @@
     "EMPTY_REPORT" : "Aucun enregistrement trouve !"
 },
 
+"SIGNATURES" : {
+    "WAREHOUSE_MANAGER" : "Gerant de l'entrepot",
+    "CHIEF_ACCOUNTANT" : "Chef comptable",
+    "FINANCE_OFFICER" : "Officier Finance",
+    "ADMINISTRATOR" : "Adminstrateur",
+    "RESPONSABLE"   : "Responsable",
+    "BENEFICIARY"   : "Beneficiare"
+  },
+
 "EXPIRING_UTIL" : {
     "TITLE" : "Liste des Lots Expirants",
     "DAY" : "Aujourd'ui",
@@ -1353,5 +1546,39 @@
     "WEEK"  : "Cette semaine",
     "EMPTY_REPORT" : "Aucun enregistrement trouve !",
     "GROUP_BY" : "Grouper Par"
-}
+},
+
+  "PURCHASE_RECORDS" : {
+    "TITLE" : "Liste des Ordres d'Achats",
+    "ADVANCE_SEARCH" : "Recherche Avancee",
+    "NO_PURCHASE_FOUND" : "Aucun ordre d'Achat trouve",
+    "REFERENCE" : "Reference",
+    "PURCHASE_ORDER" : "Ordres des achats",
+    "TO_REQUEST" : " pour demander un ordre d'achat",
+    "VIEW_PURCHASE_DETAIL" : "Voir Details"
+
+  }
+  ,
+
+    "PURCHASE_MENU" : {
+    "TITLE" : "Gestion des ordres d'achats",
+    "OPERATION" : "Operations",
+    "PUCHASE_CREATION" : "Creer ordre achat",
+    "CONFIRM" : "Confirmer paiement",
+    "VIEW" : "Liste ordres achats"
+  },
+
+  "CONFIRM" : {
+    "TITLE" : "Confirmation paiement ordre achat",
+    "PARENT" : "Gestion des ordres d'achats",
+    "SELECT_PURCHASE" : "Selectionner ordre achat",
+    "FILTER" : "Filtrer les ordre d'achats",
+    "NOT_FOUND" : "Aucun ordre d'achat trouve",
+    "CONFIRM_PAY" : "Confirmer le paiement",
+    "DETAILS" : "Details",
+    "CONFIRM_PAY "  : "Confirmer payement",
+    "CONFIRM_PAY_OF" : "Confirmer payement de  ",
+    "BY"             : "par ",
+    "DISCARD"        : "Annuler l'ordre d'achat"
+  }
 }

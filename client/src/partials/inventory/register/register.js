@@ -67,6 +67,16 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currencies = {
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        }
+      }
+    };
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.inventory.query.where =
@@ -129,19 +139,19 @@ angular.module('bhima.controllers')
 
     };
 
+    // FIXME : Refactor
     $scope.isSubmitable = function(){
-      if(!$scope.item) return false;
-      if(!$scope.item.type_id) return false;
-      if(!$scope.item.code) return false;
-      if(!$scope.item.text) return false;
-      if(!$scope.item.group_uuid) return false;
-      if(!$scope.item.consumable) return false;
-      if(!$scope.item.unit_id) return false;
-      if(!$scope.item.purchase_price) return false;
-      if(!$scope.item.price) return false;
-      return true
-
-    }
+      if (!$scope.item) { return false; }
+      if (!$scope.item.type_id) { return false; }
+      if (!$scope.item.code) { return false; }
+      if (!$scope.item.text) { return false; }
+      if (!$scope.item.group_uuid) { return false; }
+      if (!$scope.item.consumable) { return false; }
+      if (!$scope.item.unit_id) { return false; }
+      if (!$scope.item.purchase_price) { return false; }
+      if (!$scope.item.price) { return false; }
+      return true;
+    };
 
     $scope.newInventoryGroup = function () {
       var instance = $modal.open({

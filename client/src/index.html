@@ -41,7 +41,7 @@
   <div class="hidden-print">
     <div ng-controller="message" class="message-container" id="msg-box">
 
-      <div class="message message-{{message.type}}" ng-repeat="message in messages" ng-cloak>
+      <div class="message message-{{message.type}}" ng-repeat="message in messages track by $index" ng-cloak>
         <div ng-if="!message.error">
           <h4>[{{ message.namespace }}] {{ message.title }} <a class="action pull-right" ng-if="message.closable" ng-click="close(message.id)"><span class="glyphicon glyphicon-remove-circle"></span></a></h4>
           <div>
@@ -51,7 +51,7 @@
 
         <div ng-if="message.error">
           <h4>[{{ message.namespace }}] {{ message.title }} <a class="action pull-right" ng-if="message.closable" ng-click="close(message.id)"><span class="error glyphicon glyphicon-remove-circle"></span></a></h4>
-          <div>
+          <div ng-if="!!message.statusText">
             <!-- TODO : This should be translated -->
             <b>Status Code</b>
             <span>{{ message.status }} - "{{ message.statusText }}"</span>

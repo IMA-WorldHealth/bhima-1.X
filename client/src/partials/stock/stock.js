@@ -3,11 +3,12 @@ angular.module('bhima.controllers')
   '$scope',
   '$location',
   '$translate',
+  '$window',
   'appstate',
   'validate',
   'messenger',
   'appcache',
-  function ($scope, $location, $translate, appstate, validate, messenger, AppCache) {
+  function ($scope, $location, $translate, $window, appstate, validate, messenger, AppCache) {
     var config, dependencies = {};
     var session = $scope.session = {
       configured : false,
@@ -28,6 +29,13 @@ angular.module('bhima.controllers')
         ico : 'glyphicon-export',
         link : '/stock/distribution'
       },
+
+      {
+        key : 'STOCK.EXIT_SERVICE.KEY',
+        ico : 'glyphicon-export',
+        link : '/stock/distribution_service'
+      },
+
       {
         key : 'STOCK.LOSS.KEY',
         ico : 'glyphicon-cloud',
@@ -93,7 +101,8 @@ angular.module('bhima.controllers')
           var validDepot = model.depots.get(depot.uuid);
 
           if (!validDepot) {
-            messenger.warning('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
+            messenger.danger('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
+            cache.remove('depot', depot);
             session.configure = true;
             return;
           }
@@ -132,23 +141,19 @@ angular.module('bhima.controllers')
 
       console.log($scope.depot);
       var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid
-      : (config.utilities.indexOf(defn) > -1 )? defn.link+ '/' + $scope.depot.uuid : defn.link
+        : (config.utilities.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
     };
 
     $scope.setDepot = function setDepot (depot) {
-      console.log('mesage apres')
-      $translate('STOCK.MAIN.CONFIRM')
-      .then(function (message){
-        console.log('message est :', message);
-        var verifySet = confirm(message+depot.text);
-        if (!verifySet) { return; }
+      var message = $translate.instant('STOCK.MAIN.CONFIRM');
+      var verifySet = $window.confirm(message + ' ' + depot.text);
+      if (!verifySet) { return; }
 
-        cache.put('depot', depot);
-        $scope.depot = depot;
-        session.configured = true;
-        session.configure = false;
-      });
+      cache.put('depot', depot);
+      $scope.depot = depot;
+      session.configured = true;
+      session.configure = false;
     };
 
     $scope.reconfigure = function () {

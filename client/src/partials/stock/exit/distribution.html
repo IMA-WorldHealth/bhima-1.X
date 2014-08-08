@@ -1,193 +1,296 @@
+<!-- TODO -->
+
 <header data-header>
   {{ "DISTRIBUTION.TITLE" | translate }}
 </header>
 
-<div class="content">
-    
-  <div class="row">
-    <div class="col-xs-12">
-    <p>TODO This is the begining of a redisign of stock distribution to patients, the original file
-    is still available at /inventory/distribution/. I've started updating this to use the new DB schema 
-    and stock management workflow. Business logic for retrieving lots and sales should be updated for the 
-    new API</p>
-  </div>
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="">{{ "STOCK.EXIT.KEY" | translate }}</a></li>
+    </ol>
   </div>
 
-  <div class="row">
-    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
-      <span 
-        class="label label-success"
-        >1</span> Locate patient
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
+  </div>
+</nav>
+
+<main>
+  <!-- Section Header -->
+  <div
+    class="row"
+    ng-repeat-start="section in moduleDefinition">
+    <div
+      class="col-xs-12"
+      style="padding-bottom : 5px; margin-bottom: 5px;">
+      <div class="underline">
+        <span
+          class="label"
+          ng-class="
+            {'label-success' : session.index===$index,
+             'label-primary' : session.index<$index,
+             'label-default' : session.index>$index
+            }">
+          {{$index + 1}}</span>
+        <span ng-class="{'strike' : session.index>$index}">{{section.title}}</span>
+      </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-12">
-      <div find-patient on-search-complete="initialiseDistributionDetails"></div>
-    </div>
-  </div>
+  <!-- Section Body -->
+  <ng-include
+    ng-if="session.index >= $index"
+    ng-repeat-end
+    src="section.template"></ng-include>
+</main>
 
-  <div class="row">
-    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
-      <span class="label label-primary">2</span> Select prescription sale
-    </div>
-  </div>
-
-
-  <div class="row">
-    <div class="col-xs-12 underline"  style="padding-bottom : 5px; margin-bottom: 5px;">
-      <span class="label label-primary">3</span> Allocate medicine
-    </div>
-  </div>
-
-<!--  -->
-<!--   <div class="row"> -->
-<!--     <div class="col&#45;xs&#45;6" ng&#45;switch="ready"> -->
-<!--       <div ng&#45;switch&#45;default> -->
-<!--         <div class="alert alert&#45;info"> -->
-<!--           <b>Information Generale sur la distribution des medicaments</b> -->
-<!--           <p> -->
-<!--             Les ventes aparaittront ici -->
-<!--           </p> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--  -->
-<!--       <div class="panel panel&#45;primary" ng&#45;switch&#45;when="ready"> -->
-<!--         <div class="panel&#45;heading"> -->
-<!--           {{ "DISTRIBUTION.SALE_DETAILS" | translate }} -->
-<!--         </div> -->
-<!--         <div class="row panel&#45;body" style="height: 180px; overflow: auto;"> -->
-<!--           <div class="col&#45;xs&#45;12"> -->
-<!--             <table class="table table&#45;bordered table&#45;condensed"> -->
-<!--               <thead> -->
-<!--                 <tr> -->
-<!--                   <th>{{ "COLUMNS.REFERENCE" | translate }}</th> -->
-<!--                   <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th> -->
-<!--                   <th>{{ "COLUMNS.DATE" | translate }}</th> -->
-<!--                   <th>{{ "COLUMNS.STATE" | translate }}</th> -->
-<!--                 </tr> -->
-<!--               </thead> -->
-<!--               <tbody> -->
-<!--                 <tr ng&#45;repeat="sale in distribution.sales" ng&#45;click="add($index)" style="cursor : pointer;"> -->
-<!--                   <td>{{sale.reference}}</td> -->
-<!--                   <td>{{sale.description}}</td> -->
-<!--                   <td>{{sale.trans_date | date}}</td> -->
-<!--                   <td>{{sale.etat}}</td> -->
-<!--                 </tr> -->
-<!--               </tbody> -->
-<!--             </table> -->
-<!--           </div> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--     <div class="col&#45;xs&#45;6"> -->
-<!--       <div class="panel panel&#45;primary"> -->
-<!--           <div class="panel&#45;heading" > -->
-<!--             {{ "DISTRIBUTION.SELECTED_SALE_DETAILS" | translate }} <b>:{{selectedSale.reference}}</b><span ng&#45;click="remove()" class="glyphicon glyphicon&#45;repeat pull&#45;right" style="cursor : pointer;"></span> -->
-<!--           </div> -->
-<!--  -->
-<!--           <div class="col&#45;xs&#45;12 panel&#45;body" style="height: 180px; overflow: auto;"> -->
-<!--             <table class="table table&#45;bordered table&#45;condensed"> -->
-<!--               <thead> -->
-<!--                 <tr> -->
-<!--                   <th>{{ "COLUMNS.CODE" | translate }}</th> -->
-<!--                   <th>{{ "COLUMNS.ITEM" | translate }}</th> -->
-<!--                   <th>{{ "COLUMNS.QTY_ASKED" | translate }}</th> -->
-<!--                   <th>{{ "COLUMNS.QTY_AVAIL" | translate }}</th> -->
-<!--                   <th>{{ "COLUMNS.AVAILABLE" | translate }}</th> -->
-<!--                 </tr> -->
-<!--               </thead> -->
-<!--               <tbody> -->
-<!--                 <tr -->
-<!--                   ng&#45;repeat="item in selectedSale.sale_items" -->
-<!--                   ng&#45;click="add($index)" -->
-<!--                   style="cursor : pointer;" -->
-<!--                   ng&#45;class="{'incomplete&#45;outline': item.avail=='NO', 'complete&#45;outline': item.avail=='YES'}"> -->
-<!--                   <td>{{item.code}}</td> -->
-<!--                   <td>{{item.text}}</td> -->
-<!--                   <td>{{item.quantity}}</td> -->
-<!--                   <td>{{item.stock}}</td> -->
-<!--                   <td><b>{{item.avail}}</b></td> -->
-<!--                 </tr> -->
-<!--               </tbody> -->
-<!--             </table> -->
-<!--           </div> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--   </div> -->
-<!--  -->
-<!--   <div class="panel panel&#45;primary"> -->
-<!--     <div ng&#45;click="distribution.visible=!distribution.visible" class="panel&#45;heading"> -->
-<!--       {{ "DISTRIBUTION.LOT_DETAILS" | translate }} -->
-<!--       <div class="pull&#45;right"> -->
-<!--         <span  class="glyphicon" ng&#45;class="{'glyphicon&#45;eye&#45;close': !distribution.visible, 'glyphicon&#45;eye&#45;open': distribution.visible}"></span> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--     <div ng&#45;show="distribution.visible"> -->
-<!--       <div class="row"> -->
-<!--         <div class="col&#45;xs&#45;12"> -->
-<!--           <table class="table table&#45;bordered table&#45;condensed"> -->
-<!--             <thead> -->
-<!--               <tr ng&#45;show="resolve()"> -->
-<!--                 <th colspan="4"><small style="color : red;"><b>{{'DISTRIBUTION.EMPTY_MESSAGE' | translate}}</b></small></th> -->
-<!--               </tr> -->
-<!--               <tr> -->
-<!--                 <th>{{ "COLUMNS.CODE_ITEM" | translate }}</th> -->
-<!--                 <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th> -->
-<!--                 <th>{{ "COLUMNS.LOT" | translate }}</th> -->
-<!--               </tr> -->
-<!--             </thead> -->
-<!--             <tbody> -->
-<!--               <tr ng&#45;repeat="item in selectedSale.sale_items"> -->
-<!--                 <td>{{item.code}}</td> -->
-<!--                 <td>{{item.text}}</td> -->
-<!--                 <td> -->
-<!--                   <!&#45;&#45;select -->
-<!--                     required -->
-<!--                     class="form&#45;bhima" -->
-<!--                     name="lotname" -->
-<!--                     id="lotID" -->
-<!--                     ng&#45;model="item.tracking_number" -->
-<!--                   > -->
-<!--                   <option ng&#45;repeat="lot in item.lots" value='{{lot.tracking_number}}' ng&#45;selected="{{lot.setted==true}}">{{lot.tracking_number}} &#45; {{lot.expiration_date | date}} &#45; {{lot.quantity}}<input type"checkbox"/></option> -->
-<!--                   </select&#45;&#45;> -->
-<!--  -->
-<!--                   <div id="checkboxlistID" style="border:0px; background&#45;color:#fff; color:#000; width:100%; height: 80px; overflow&#45;y: scroll;"> -->
-<!--                     <div ng&#45;repeat="lot in item.lots"> -->
-<!--                       <label> -->
-<!--                       <input type="checkbox" ng&#45;model="lot.setted" ng&#45;change="checkStockAvailability(lot)"/> -->
-<!--                         <span>{{lot.tracking_number}} &#45; {{lot.expiration_date | date}} &#45; {{lot.quantity}}</span> -->
-<!--                       </label> -->
-<!--                     </div> -->
-<!--                   </div> -->
-<!--  -->
-<!--                   <!&#45;&#45;div class="col&#45;xs&#45;12"  > -->
-<!--  -->
-<!--                     <button class="btn btn&#45;sm btn&#45;primary dropdown&#45;toggle"> -->
-<!--                       {{ item.lots[0].tracking_number || "S" | translate }} -->
-<!--                       <span class="caret" data&#45;caret="&#38;#9660;"></span> -->
-<!--                     </button> -->
-<!--                     <ul class="dropdown&#45;menu"> -->
-<!--                       <li ng&#45;repeat="lot in item.lots"> -->
-<!--                         <label> -->
-<!--                           <input type="checkbox" ng&#45;model="lot.isSelected"> -->
-<!--                             <span>{{lot.tracking_number}} &#45; {{lot.expiration_date | date}} &#45; {{lot.quantity}}</span> -->
-<!--                         </label> -->
-<!--                       </li> -->
-<!--                     </ul> -->
-<!--                   </div&#45;&#45;> -->
-<!--                 </td> -->
-<!--               </tr> -->
-<!--             </tbody> -->
-<!--           </table> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--   </div> -->
-</div>
-
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
-    <a ng-disabled="verifySubmission()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION.SUBMIT" | translate }}</a>
+    <a
+      ng-disabled="!session.lotSelectionSuccess"
+      ng-click="submitConsumption()"
+      class="btn btn-default">
+      <span class="glyphicon glyphicon-floppy-open"></span>
+      {{ "DISTRIBUTION.SUBMIT" | translate }}
+      <span
+        class="glyphicon"
+        ng-class="{'glyphicon-ok-sign correct' : session.lotSelectionSuccess, 'glyphicon-remove-sign error' : session.lotSelectionFailure}"></span>
+    </a>
   </div>
-</section>
+</footer>
+
+<script type="text/ng-template" id="patientSearch.tmpl.html">
+  <div class="row">
+    <div class="col-xs-12">
+      <div find-patient on-search-complete="initialiseDistributionDetails" data-enable-refresh="false"></div>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="selectSale.tmpl.html">
+  <!-- Section complete -->
+  <div ng-if="session.index>$index">
+    <table class="table table-condensed table-bordered">
+      <thead>
+        <tr>
+          <th>Sale</th>
+          <th>Date</th>
+          <th>Sale Status</th>
+          <th>Sale Balance</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td width="10%"><b>'{{session.sale.abbr}} {{session.sale.reference}}'</b></td>
+          <td width="20%">{{session.sale.trans_date | date}}</td>
+          <td width="50%">
+            <div>
+              <div ng-if="session.sale.balance===session.sale.debit">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-remove-sign error' : true
+                }"
+                ></span> Invoice has not been payed
+              </div>
+
+              <div ng-if="session.sale.balance===0">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-ok-sign correct' : true
+                }"
+                ></span> Invoice has been fully payed
+              </div>
+
+              <div ng-if="session.sale.balance!==0&&session.sale.balance<session.sale.debit">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-minus-sign warn' : true
+                }"
+                ></span> Invoice has been partially payed
+              </div>
+            </div>
+          </td>
+          <td width="20%">{{session.sale.balance | currency}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section active -->
+  <div ng-if="session.index===$index">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="alert alert-info">
+          <span class="glyphicon glyphicon-info-sign"></span>
+          {{ledger.data.length ? 'Showing all sales for patient ' : 'No sale data found for patient '}}
+           <b>{{session.patient.name}}
+          </b>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+
+
+        <div ng-if="ledger.data.length" class="panel panel-default">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-th-list"></span> Available Prescriptions
+          </div>
+
+          <div class="panel-body">
+            <div class="panel panel-default" ng-repeat="item in ledger.data | orderBy:['consumed', '-trans_date']">
+              <div class="panel-body">
+                <div class="pull-right">
+                <span
+                  class="glyphicon"
+                  ng-class="{
+                    'glyphicon-ok-sign correct' : !item.consumed,
+                    'glyphicon-minus-sign warn' : item.consumed}"></span>
+                  <span>{{(item.consumed ? 'DISTRIBUTION.CONSUMED' : 'DISTRIBUTION.NOT_CONSUMED') | translate}}</span>
+                </div>
+                <table class="table table-condensed table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Sale</th>
+                      <th>Date</th>
+                      <th>Sale Status</th>
+                      <th>Sale Balance</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td width="10%"><b>'{{item.abbr}} {{item.reference}}'</b></td>
+                      <td width="20%">{{item.trans_date | date}}</td>
+                      <td width="50%">
+                        <div>
+                          <div ng-if="item.balance===item.debit">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-remove-sign error' : true
+                            }"
+                            ></span> Invoice has not been payed
+                          </div>
+
+                          <div ng-if="item.balance===0">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-ok-sign correct' : true
+                            }"
+                            ></span> Invoice has been fully payed
+                          </div>
+
+                          <div ng-if="item.balance!==0&&item.balance<item.debit">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-minus-sign warn' : true
+                            }"
+                            ></span> Invoice has been partially payed
+                          </div>
+                        </div>
+                      </td>
+                      <td width="20%">{{item.balance | currency}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div ng-if="!item.consumed">
+                  <button
+                    ng-click="selectSale(item)"
+                    class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span> Select sale for distribution</button>
+                  <button class="btn btn-default btn-sm">View sale details</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="allocateLot.tmpl.html">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <span class="glyphicon glyphicon-list"></span> Assign lots
+    </div>
+
+    <div class="panel-body">
+      <table
+        class="table table-bordered"
+        ng-repeat="inventoryItem in session.sale.details | orderBy:'-consumable'">
+        <thead>
+        </thead>
+
+        <tbody>
+          <tr
+            ng-class="{'invalid' : !inventoryItem.consumable}"
+            >
+            <td colspan="2">
+              <span class="glyphicon glyphicon-tag"></span>
+              <span
+                ng-if="inventoryItem.consumable"><b>{{inventoryItem.quantity}} x </b></span>
+              <span>{{inventoryItem.text}} </span>
+              <span ng-if="!inventoryItem.consumable">(Not consumable)</span>
+            </td>
+          </tr>
+
+          <tr ng-if="inventoryItem.stockStatus">
+            <td colspan="2">
+              <span class="glyphicon {{inventoryItem.stockStatus.icon}}"></span> {{inventoryItem.stockStatus.alert}}
+            </td>
+          </tr>
+
+          <tr
+            ng-if="inventoryItem.recomendedLots">
+            <td><span class="glyphicon glyphicon-ok-sign correct"></span> <b>Recomended Lot</b></td>
+            <td><b>Quantity <small>(Selected from lot)</small></b></td>
+          </tr>
+
+          <tr
+            ng-if="inventoryItem.recomendedLots"
+            ng-repeat="recomended in inventoryItem.recomendedLots">
+            <td>
+              <table class="reportTable">
+                <tbody>
+                  <tr>
+                    <td width="30%">Lot Number</td><td><b>{{recomended.details.lot_number}}</b></td>
+                  </tr>
+                  <tr>
+                    <td width="30%">Quantity Remaining</td><td>{{recomended.details.quantity}}</td>
+                  </tr>
+                  <tr>
+                    <td width="30%">Expiration Date</td><td>{{recomended.details.expiration_date | date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <td><b>{{recomended.quantity}}</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="newfile.html">
+  <p>Included</p>
+</script>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{match.model.uuid}}]</b></span>
+  </a>
+</script>

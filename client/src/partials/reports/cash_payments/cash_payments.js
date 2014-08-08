@@ -5,9 +5,8 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   'validate',
-  '$filter',
   'exchange',
-  function ($scope, $timeout, connect, appstate, validate, $filter, exchange) {
+  function ($scope, $timeout, connect, appstate, validate, exchange) {
     var session = $scope.session = {};
     $scope.selected = null;
 
@@ -53,7 +52,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    }
+    };
 
     $scope.options = [
       {
@@ -70,11 +69,6 @@ angular.module('bhima.controllers')
       }
     ];
 
-    function formatDates () {
-      session.dateFrom = $filter('date')(session.dateFrom, 'yyyy-MM-dd');
-      session.dateTo = $filter('date')(session.dateTo, 'yyyy-MM-dd');
-    }
-
     function search (selection) {
       session.selected = selection.label;
       selection.fn();
@@ -86,8 +80,6 @@ angular.module('bhima.controllers')
 
       // toggle off active
       session.active = !p;
-
-      formatDates();
 
       req = {
         dateFrom : session.dateFrom,

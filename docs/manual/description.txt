@@ -1,0 +1,320 @@
+
+DESCRIPTION FONCTIONNELLE SOMMAIRES DE L'APPLICATION
+
+
+Les modules sont :
+
+- Admi9nistration
+-Finance
+-Budget
+-Rapport
+-stock
+-Hopital
+-comptabilite
+
+
+
+
+
+
+
+* Administration
+
+ces modules contient plusieurs unites a savoir :
+
+1. Entreprise
+	Desc       :  un unite pour gerer les entreprises, preciser leurs monnaie et leurs localisation
+	Statut     : stable
+	Achevement : Complet
+
+2. utilisateur et Permission
+
+	Desc       : un unite pour gerer les droit d'acces des utilisateurs dans le projet et dans les unites fonctionnelles de l'application	           ainsi que la creation des utilisaterurs
+
+	Statut     : instable
+	Achevement : complet
+
+3. Compte
+
+	Desc       : une unite pour la gestion des comp-tes de l'entreprise
+	Statut     : stable
+	Achevement : incomplet
+
+
+4. Annee Fiscale
+
+    Desc        : une 8unite de gestion des annee fiscale, ouverture des balances et creations des periodes
+    Statut      : instable
+    Achevement  : incomplet
+
+5. Liste des prix
+
+	Desc : une unite des creation des configurations tarifaire pour les patients en tenant comptes des certaines 							   caracteristiques qu'ils presentent
+	Statur : stable
+	Achevement : Complet
+
+
+6. Taux d'echange
+
+	Desc : une4 unite de gestion de taux d'echange
+	Statut : Stable
+	Achevement : Complet
+
+
+7. Groupe de Debiteur
+
+	   Desc : une unite de gestion des debiteur, repartition des debiteurs en groupe enfin de bien differencier les clients du point de vue 	   comptable.
+	   Statut : Stable
+	   Achevement : Conmplet
+
+8. Groupe de crediteur
+	   Desc : une unite de gestion des crediteur, repartition des crediteurs en groupe enfin de bien differencier les fournisseurs du point de vue 	   comptable.
+	   Statut : Stable
+	   Achevement : Conmplet
+
+
+9. Localisation
+
+   Desc : une unite de gestion des localisation, creation de pays, provinces, secteur ...
+   Statut : Stable
+   Achevement : complet
+
+9. Grouper de Malade
+
+	Desc : une unite de groupement de patient de point de vue sanitaire, pouvant impliquer une tarification particuliere par l'intermediare de liste de prix (voir le unite numero 5)
+	Statut : Stable
+	Achevement : Complet
+
+10. Monnaie
+
+	Desc : ubne unite de gestion de monnaie pour l'entreprise en pricisant ses caracteristiques
+	Statut : stable
+	Achevement : Complet
+
+
+11. Projet
+
+	Desc : une unite de gestion des projets, et leurs liaison a l'entreprise
+	Statut : stable
+	Achevement : Complet
+
+12. Gestion Employees
+
+	Desc : un unite de gestion des employee
+	Statut : stable
+	Achevemnt : incomplet
+
+13. Gestion des services
+
+	Desc : une unite de gestion de service de l'entreprise, leurs laison au centre des couts
+	Statut : instable
+	Achevement L incomplet
+
+
+
+* Finance
+
+Les unites dans ce modules sont :
+
+1. Journal de saisie
+
+  Desc : une unite charge de l'affichage du journal des operations comptable et possede quelques outils pour amender des transaction, 		   recherche affinee ...
+  Statut : instable
+  Achevement : incomplet
+
+
+ 2. Vente
+
+ 	Desc : une unite charge de la facturastion des clients
+ 	Statut : stable
+ 	Achevement : complet
+
+3. Historique de vente
+
+   Desc : une unite listant les ventes effectuie durant une date donnee et donnant la possibilite de l'annulation
+   Statut : stable
+   Achevement : complet
+
+4. Caisse Auxilliaire
+
+    Desc : une unite charge de l'enciassement de fond a la caisse auxillaire, essentiellement payement des patients
+    Statut : stable
+    Achevement : complet
+
+
+5. Historique de demande de fond
+
+    Desc : Lieste les demandes des fond effectue dans l'entreprise
+    Statut : inconnue
+    Achevement : inconnue
+
+
+6. Facturation des conventions
+
+     Desc : Gere la prise en charge des patient par des conventions ou organisation des charite
+     Statut : stable
+     Achevement : incomplet
+
+
+7. Caution
+
+    Desc : une unite de gestionn de paiement avant facturation
+    Statut : stable
+    Achevement : complet
+
+8. Caisse pricipale
+
+    Desc : une grande unite composee, pour la gestion de la caisse principale, recette et depense, paiement de ordre d'achat ...
+    Statut : stable
+    Achevement : incomplet
+
+
+9. Ajout des transaction
+
+  	Desc : un outil pyuissant reserver au chef comptable pour l'ajout des transactions dan sle but d'amender le journal de saisienet 			   corriger des erreurs.
+  	Statut : stable
+  	Achevement : complet
+
+
+
+
+
+
+ * Budget
+
+ Vide pour l'instant
+
+
+ * Rapport
+
+ les unites dans ce modules sont :
+
+ 1. Grand livre
+
+    Desc : une unite faisant rapport du grand livre, une sorte de copie du journal de saisie. les donnee sont dispo une fois le posting 		du journal de saisie vers le grand livre effectue
+    Statut : inconue
+    Achevement : inconnue
+
+ 2. Plan Comptable
+
+     Dec : une unite affichant le plan comptable de l'entreprise
+     statut : stable
+     Achevement : Complet
+
+ 3. Rapport d'enregisrememnt des malades
+
+    Desc : une unite affichant la liste des malades enregisre durant une date donnee
+    Statut : stable
+    AChevement : complet
+
+
+ 4. Rapport de paiement
+
+    Desc : une unite montrant la situation a la cauisse principale excepte pour les caution versee
+    Statut : stable
+    Achevement : complet
+
+ 5. Transaction par compte
+
+    Desc : une unite affichant la situation de chaque compte
+    statut : instable
+    Achevemnt : incomplet
+
+ 6. Rapport par patient
+
+   Desc : un eunite affichant la situatio finaciere du patient
+   statut : instable
+   Achevement : incomplet
+
+
+ 7. Rapport par compte
+
+     Desc : une unite affichant l'etat du compte selectionne
+     Statut : instable
+     Achevemnt : incomplet
+
+
+ 8. Rapport expiration du stock
+
+      Dec : une unite adffichant l'etat du stock du poit de vue quantite et expiration
+      Staut : instable
+      Achevemnt : complet
+
+
+
+* Stock
+
+1. Enregistrement des maison
+
+		Desc : une unite permettent d'enregistrer des fournisseurs
+		Statut : stable
+		Achevement : complet
+
+2. Depot
+
+   Desc : uneunite gestion des depot de l'entreprise
+   Statut : stable
+   Achevement : complet
+
+3. Gestionn des stock
+
+    Desc : une grande unite composee, permettant de f=gerer le stock, leurs entree, mouvement, distribution perte ...
+    Statut : instable
+    Achevement : incomplet
+
+4. Gestion des inventaires
+
+     Desc : une grande unite composee, chargee dela gestion des items (medicament, service, et autres item specifiques)
+     Statut : stable
+     Achevement : complet
+
+5. Demande des Fonds
+
+    Desc : une unite permettant de faire l'ordre d'achat des marchandise
+    statut : stable
+    Achevement : complet
+
+
+
+* Hopital
+
+1. Enregistrement des malades
+       Desc : une unite pour l'enreguistrement des malades
+       statut : stable
+       Achevemnt : complet
+
+
+2. Historique
+
+    Desc : une unite pour la visualisation de l'historique d'enregistrement des malades et une recherche affinee.
+    statut : stable
+    Achevement : complet
+
+3. Assignation groupes des malades
+
+    Desc : une unite pour assignations des malades a des groupe, qui sont prealablement lie a des listes des prix.
+    statut : stable
+    Achevement : complet
+
+
+4. Renouveler fiche
+
+    Desc : une unite chargee du renouvelement de fiche
+    statut : stable
+    Achevement : complet
+
+5. Changer Groupe debiteur
+
+     Desc : une unite chergee du changement des groupe des debiteurs
+     statut : stable
+     Achevement : complet
+
+
+
+* Comptabilite
+
+1. Centre des couts
+
+   Desc : une grande unite composee pour la gestion des centres des couts, leurs creations, et manipulation
+   statut : instable
+   Achevemnt : complet

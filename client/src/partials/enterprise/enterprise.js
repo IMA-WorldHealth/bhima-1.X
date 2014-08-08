@@ -1,14 +1,12 @@
 angular.module('bhima.controllers')
 .controller('enterprise', [
   '$scope',
-  '$q',
   '$window',
   'connect',
   'validate',
-  'messenger',
   'appstate',
-  function ($scope, $q, $window, connect, validate, messenger, appstate) {
-    var dependencies = {}, model={};
+  function ($scope, $window, connect, validate, appstate) {
+    var dependencies = {};
 
     dependencies.enterprise = {
       required : true,
@@ -49,10 +47,6 @@ angular.module('bhima.controllers')
       $scope.newAccount = {};
     }
 
-    function handleError (error) {
-      messenger.danger('An error occured in fetching requests: ' + JSON.stringify(error));
-    }
-
     $scope.formatLocation = function fLocation (l) {
       return [l.village, l.sector, l.province, l.country].join(' -- ');
     };
@@ -64,44 +58,39 @@ angular.module('bhima.controllers')
 
     $scope.editEnterprise = function (enterprise) {
       $scope.edit = angular.copy(enterprise);
-      $scope.editing_enterprise = enterprise;
+      $scope.editingEnterprise = enterprise;
       $scope.action = 'edit';
     };
 
     $scope.saveEdit = function () {
       var data = connect.clean($scope.edit);
 
-      connect.basicPost('enterprise', [data], ['id'])
-      .then(function (res) {
+      connect.put('enterprise', [data], ['id'])
+      .then(function () {
         $scope.enterprise.put(data);
         $scope.action = '';
 
         // we should reset the global enterprise variable
         // if we have updated the global enterprise data
         if (data.id === $scope.globalEnterprise.id) {
-          appstate.set('enterprise', $scope.enterprise.get(data.id));
+          appstate.set('enterprise', data);
         }
 
-      }, function (err) {
-        messenger.danger('Error updating enterprise ' + data.id + ':' + JSON.stringify(err));
       });
-
     };
 
     $scope.resetEdit = function () {
-      $scope.edit = angular.copy($scope.editing_enterprise);
+      $scope.edit = angular.copy($scope.editingEnterprise);
     };
 
     $scope.saveNew = function () {
       var data = connect.clean($scope.add);
 
-      connect.basicPut('enterprise', [data])
+      connect.post('enterprise', [data])
       .then(function (res) {
         data.id = res.data.insertId;
         $scope.enterprise.post(data);
         $scope.action = '';
-      }, function (err) {
-        messenger.danger('Error in saving new enterprise:' + JSON.stringify(err));
       });
     };
 
@@ -109,7 +98,9 @@ angular.module('bhima.controllers')
       $scope.add = {};
     };
 
-    $scope.print = function () { $window.print(); };
+    $scope.print = function () {
+      $window.print();
+    };
 
   }
 ]);

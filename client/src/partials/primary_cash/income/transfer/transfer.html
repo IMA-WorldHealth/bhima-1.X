@@ -1,0 +1,64 @@
+<header data-header>
+  {{ 'TRANSFERT.TITLE' | translate }}
+</header>
+
+<nav>
+   <div class="pull-left">
+      <ol class="breadcrumb">
+        <li><span class="glyphicon glyphicon-home"></span></li>
+        <li><a href="#/primary_cash/">{{'TRANSFERT.CRUMB_PCASH' | translate}}</a></li>
+        <li class="active">{{'TRANSFERT.CRUMB_TRANSFERT' | translate}}</li>
+      </ol>
+    </div>
+</nav>
+
+<main>
+  <div class="row">
+    <div class="col-xs-8">
+      <div class="panel panel-primary" style="max-height: 525px;">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-share-alt"></span>
+          {{ "TRANSFERT.TRANSFER" | translate }}
+        </div>
+        <div class="panel-body">
+          <form>
+
+          <div class="form-group">
+            <label> {{ 'TRANSFERT.PROJECT' | translate }}</label>
+            <select class="form-bhima" name="projectname" id="projectID" ng-model="data.project_id" ng-change="commitCash()">
+              <option value="" disabled="disabled">-- {{ 'SELECT.PROJECT' | translate }} -- </option>
+              <option ng-repeat="project in view.project.data" value='{{project.id}}'>{{project.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label> {{'TRANSFERT.CAISSE' | translate}}</label>
+            <select class="form-bhima" name="caissename" id="caisseID" ng-model="data.cash_box_id" ng-change="commitConfig()">
+              <option value="" disabled="disabled">-- {{ 'SELECT.CASH' | translate }} -- </option>
+              <option ng-repeat="cash in view.cash_box.data" value='{{cash.id}}'>{{cash.text}}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label> {{'TRANSFERT.CURRENCY' | translate}}</label>
+            <select class="form-bhima" name="currencyname" id="currencyID" ng-model="data.currency">
+                <option ng-repeat="currency in model.currency.data" value='{{currency}}' ng-selected="{{currency.id==configuration.enterprise.currency_id}}">{{currency.symbol}}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label> {{'TRANSFERT.AMOUNT' | translate}}</label>
+            <div class="input-group">
+              <input type="number" ng-model="data.value" class="form-bhima"  min="0" required>
+              <span class="input-group-addon">{{configuration.currency.symbol}}</span>
+            </div>
+          </div>
+
+          <button class="btn btn-default btn-success" ng-click="ajouter()" type="button">{{'FORM.ADD' | translate}}</button>
+          <button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_TRANSFER' | translate}}</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

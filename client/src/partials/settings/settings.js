@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('settingsController', [
+.controller('settings', [
   '$scope',
   '$routeParams',
   '$translate',
@@ -8,14 +8,16 @@ angular.module('bhima.controllers')
   'messenger',
   function($scope, $routeParams, $translate, $location, Appcache, messenger) {
 
-    $scope.q = $routeParams.q || '';
+    $scope.url = $routeParams.url || '';
 
     var MODULE_NAMESPACE = 'util';
     var cache = new Appcache(MODULE_NAMESPACE);
 
     cache.fetch('language')
     .then(function (res) {
-      if (res) { $scope.settings = {language: res.current}; }
+      if (res) {
+        $scope.settings = {language: res.current};
+      }
     });
 
     $scope.updateLanguage = function updateLanuage(key) {
@@ -26,7 +28,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.back = function () {
-      $location.path($scope.q).search('q', '');
+      $location.url($scope.url);
     };
 
   }

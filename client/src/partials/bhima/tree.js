@@ -51,6 +51,7 @@ angular.module('bhima.controllers')
     }, true);
 
     $scope.$on('$locationChangeStart', function (e, n_url) {
+      /* jshint unused : false */
       var target = n_url.split('/#')[1];
 
       originLocation = target;

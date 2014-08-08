@@ -8,6 +8,7 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   function ($scope, $translate, $filter, $q, precision, validate, appstate) {
+    /* jshint unused : false */
     var dependencies = {}, ready = $q.defer();
     var columns, options, dataview, grid,
         manager = { session : {}, fn : {}, mode : {} };

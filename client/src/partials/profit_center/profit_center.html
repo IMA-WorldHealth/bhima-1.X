@@ -1,0 +1,35 @@
+<header data-header>
+  {{ 'PROFIT_CENTER.TITLE' | translate }}
+</header>
+
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li class="active">{{ "PROFIT_CENTER.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="row" style="margin-top: 10px">
+    <div class="col-xs-6">
+
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-cog"></span> {{ 'PROFIT_CENTER.OPERATION' | translate }}
+        </div>
+
+        <div class="panel-body">
+          <ul class="primary_cash_list">
+            <li ng-repeat="item in configuration.operations">
+              <span style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-asterisk"></span>
+              <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

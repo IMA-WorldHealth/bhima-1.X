@@ -6,7 +6,7 @@ module.exports = function (db) {
 
   function location (villageId) {
     var fragment, sql;
-    fragment = villageId ? ' AND `village`.`uuid`=\"' + villageId + '\"' : '';
+    fragment = villageId ? ' AND `village`.`uuid`=\'' + villageId + '\'' : '';
     sql =
       'SELECT `village`.`uuid` as `uuid`,  `village`.`name` as `village`, ' +
         '`sector`.`name` as `sector`, `province`.`name` as `province`, ' +
@@ -30,17 +30,17 @@ module.exports = function (db) {
 
   function sector () {
     var sql =
-      "SELECT `sector`.`uuid` as `uuid`, `sector`.`name` AS `sector`, `province`.`uuid` "+
-      "AS `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` "+
-      "WHERE `sector`.`province_uuid` = `province`.`uuid`";
+      'SELECT `sector`.`uuid` as `uuid`, `sector`.`name` AS `sector`, `province`.`uuid` '+
+      'AS `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` '+
+      'WHERE `sector`.`province_uuid` = `province`.`uuid`';
     return db.exec(sql);
   }
 
   function province () {
     var sql =
-      "SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` "+
-      "AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` "+
-      "WHERE `province`.`country_uuid` = `country`.`uuid`";
+      'SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` '+
+      'AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` '+
+      'WHERE `province`.`country_uuid` = `country`.`uuid`';
     return db.exec(sql);
   }
 

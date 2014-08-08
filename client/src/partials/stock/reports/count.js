@@ -5,6 +5,7 @@ angular.module('bhima.controllers')
   'connect',
   'messenger',
   function ($scope, connect, validate, messenger) {
+    /* jshint unused : false */
     var dependencies = {};
     var session = $scope.session = {};
 
