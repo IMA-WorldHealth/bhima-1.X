@@ -3,7 +3,7 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="action='add'">
+  <button class="btn btn-sm btn-default" ng-click="addUser()">
     <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
   </button>
   <div class="pull-right">
@@ -41,7 +41,7 @@
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-primary" style="overflow: auto">
-        <div class="panel-heading"> 
+        <div class="panel-heading">
           {{ "PERMISSION.REGISTERED" | translate }}
         </div>
         <table class="table table-hover table-condensed">
@@ -55,20 +55,20 @@
           </thead>
           <tbody>
             <tr ng-repeat="user in users.data | orderBy:'username'">
-              <td>{{user.first}}</td>
-              <td>{{user.username}}</td>
-              <td>{{user.email}}</td>
-              <td><a  ng-click="editInfo(user)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a  ng-click="editPermission(user)"><i class="glyphicon glyphicon-cog"></i></a></td>
-              <td><a  ng-click="editProjects(user)"><i class="glyphicon glyphicon-home"></i></a></td>
-              <td><a  ng-click="removeUser(user)"><i class="glyphicon glyphicon-trash"></i></a></td>
+              <td>{{ user.first }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td><a class="clk" ng-click="editUser(user)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a class="clk" ng-click="editPermission(user)"><i class="glyphicon glyphicon-cog"></i></a></td>
+              <td><a class="clk" ng-click="editProjects(user)"><i class="glyphicon glyphicon-home"></i></a></td>
+              <td><a class="clk" ng-click="removeUser(user)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div class="col-xs-6" ng-switch="action">
+    <div class="col-xs-6" ng-switch="current.state">
       <div ng-switch-default>
         <div class="alert alert-info">
           <h4>{{ "PERMISSION.TITLE" | translate }}</h4>
@@ -83,42 +83,42 @@
 
       <div ng-switch-when="add">
         <form novalidate class="form-horizontal">
-          <legend><h3>{{ "PERMISSION.ADDING" | translate }} <small>{{add.first}} {{add.last}}</small></h3></legend>
+          <legend><h3>{{ "PERMISSION.ADDING" | translate }} <small>{{ current.user.first }} {{ current.user.last }}</small></h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="add.first" class="form-bhima" required="required">
+              <input ng-model="current.user.first" class="form-bhima" required="required">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="add.last" class="form-bhima" required="required">
+              <input ng-model="current.user.last" class="form-bhima" required="required">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="add.username" class="form-bhima" required="required">
+              <input ng-model="current.user.username" class="form-bhima" required="required">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2">{{ "COLUMNS.EMAIL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="add.email" class="form-bhima" type="email">
+              <input ng-model="current.user.email" class="form-bhima" type="email">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
-            <div class="col-xs-7 input-group"> 
-              <input ng-model="add.password" class="form-bhima" required="required" type="password">
-              <span class="input-group-btn" ng-switch="add.validPassword">
-                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !add.validPassword, 'btn-success' : !!add.validPassword }" disabled="disabled">
+            <div class="col-xs-7 input-group">
+              <input ng-model="current.user.password" class="form-bhima" required="required" type="password">
+              <span class="input-group-btn" ng-switch="valid.password">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !valid.password, 'btn-success' : !!valid.password }" disabled="disabled">
                   <span ng-switch-default class="glyphicon glyphicon-remove"></span>
                   <span ng-switch-when="true" class="glyphicon glyphicon-check"></span>
                 </button>
@@ -129,9 +129,9 @@
           <div class="form-group">
             <label class="control-label col-xs-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
             <div class="col-xs-7 input-group">
-              <input ng-model="add.password_verify" class="form-bhima" required="required" type="password">
-              <span class="input-group-btn" ng-switch="add.validPassword">
-                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !add.validPassword, 'btn-success' : !!add.validPassword }" disabled="disabled">
+              <input ng-model="current.user.passwordVerify" class="form-bhima" required="required" type="password">
+              <span class="input-group-btn" ng-switch="valid.password">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !valid.password, 'btn-success' : !!valid.password }" disabled="disabled">
                   <i ng-switch-default class="glyphicon glyphicon-remove"></i>
                   <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
                 </button>
@@ -139,50 +139,50 @@
             </div>
           </div>
 
-          <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="addSubmit()">
-          <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="addReset()">
+          <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
+          <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
 
         </form>
       </div>
 
       <div ng-switch-when="edit">
         <form novalidate class="form-horizontal">
-          <legend><h3>{{ "PERMISSION.EDITTING" | translate }} <small>{{edit.first}} {{edit.last}}</small></h3></legend>
+          <legend><h3>{{ "PERMISSION.EDITTING" | translate }} <small>{{current.user.first}} {{current.user.last}}</small></h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="edit.first" class="form-bhima" required="required">
+              <input ng-model="current.user.first" class="form-bhima" required="required">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="edit.last" class="form-bhima" required="required">
+              <input ng-model="current.user.last" class="form-bhima" required="required">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="edit.username" class="form-bhima" required="required">
+              <input ng-model="current.user.username" class="form-bhima" required="required">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2">{{ "COLUMNS.EMAIL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="edit.email" class="form-bhima" type="email">
+              <input ng-model="current.user.email" class="form-bhima" type="email">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
-            <div class="col-xs-7 input-group"> 
-              <input ng-model="edit.password" class="form-bhima" required="required" type="password" ng-change="clearPass()">
-              <span class="input-group-btn" ng-switch="edit.validPassword">
-                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !edit.validPassword, 'btn-success' : !!edit.validPassword }" disabled="disabled">
+            <div class="col-xs-7 input-group">
+              <input ng-model="current.user.password" class="form-bhima" required="required" type="password" ng-change="clearPass()">
+              <span class="input-group-btn" ng-switch="valid.password">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !valid.password, 'btn-success' : !!valid.password }" disabled="disabled">
                   <i ng-switch-default class="glyphicon glyphicon-remove"></i>
                   <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
                 </button>
@@ -193,9 +193,9 @@
           <div class="form-group">
             <label class="control-label col-xs-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
             <div class="col-xs-7 input-group">
-              <input ng-model="edit.password_verify" class="form-bhima" required="required" type="password">
-              <span class="input-group-btn" ng-switch="edit.validPassword">
-                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !edit.validPassword, 'btn-success' : !!edit.validPassword }" disabled="disabled">
+              <input ng-model="current.user.passwordVerify" class="form-bhima" required="required" type="password">
+              <span class="input-group-btn" ng-switch="valid.password">
+                <button class="btn btn-sm" ng-class="{ 'btn-danger' : !valid.password, 'btn-success' : !!valid.password }" disabled="disabled">
                   <i ng-switch-default class="glyphicon glyphicon-remove"></i>
                   <i ng-switch-when="true" class="glyphicon glyphicon-check"></i>
                 </button>
@@ -203,8 +203,8 @@
             </div>
           </div>
 
-          <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="editSubmit()">
-          <input type="button" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="editReset()">
+          <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
+          <input type="button" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
 
         </form>
       </div>
