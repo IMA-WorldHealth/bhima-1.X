@@ -19,7 +19,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$q',
   '$window',
-  'Store',
+  'store',
   'connect',
   'messenger',
   'validate',
@@ -30,7 +30,7 @@ angular.module('bhima.controllers')
     // keeps track of state
     var current = $scope.current = {
       state : null,
-      user : null,
+      user : {},
       permissions : [],
       projects : [],
       _backup : null
@@ -95,6 +95,7 @@ angular.module('bhima.controllers')
     $scope.timestamp = new Date();
 
     $scope.editUser = function editUser(user) {
+      console.log(user);
       current.user = user;
       current._backup = angular.copy(user);
       current.state = 'edit';
@@ -169,6 +170,7 @@ angular.module('bhima.controllers')
 
       projects.forEach(function (project) {
         var isOld = !!current.projects.get(project.id);
+        console.log('[Project]', project, 'isOld', isOld);
 
         if (!!project.checked && !current.projects.get(project.id)) {
           additions.push({ project_id : project.id, user_id : current.user.id });
@@ -195,6 +197,7 @@ angular.module('bhima.controllers')
     $scope.clearPass = function clearPass() {
       // when a user attempts a new password, clear the old one.
       current.user.passwordVerify = '';
+      $scope.validatePassword();
     };
 
     // deleting a user
@@ -212,9 +215,10 @@ angular.module('bhima.controllers')
     };
 
     $scope.editUnitPermissions = function editUnitPermissions(user) {
-      current.state = 'permission';
+      current.state = 'permissions';
+      $scope.super.units = false;
       current.user = user;
-      dependencies.unitPermissions.query.where =
+      dependencies.unitPermissions.where =
         ['permission.user_id=' + user.id];
 
       connect.req(dependencies.unitPermissions)
@@ -226,13 +230,15 @@ angular.module('bhima.controllers')
     };
 
     $scope.editProjectPermissions = function editProjectPermissions(user) {
-      current.state = 'project';
+      current.state = 'projects';
+      $scope.super.projects = false;
       current.user = user;
-      dependencies.projectPermissions.query.where =
-        ['project_permission.user_id=' + user.ids];
+      dependencies.projectPermissions.where =
+        ['project_permission.user_id=' + user.id];
 
       connect.req(dependencies.projectPermissions)
       .then(function (store) {
+        console.log(store);
         current.projects = store;
         current._backup = angular.copy(store.data);
         setSavedProjectPermissions();
@@ -273,31 +279,35 @@ angular.module('bhima.controllers')
       $window.print();
     };
 
-    $scope.$watch('current.user', function () {
-      valid.password = isDefined(current.user.password) && current.user.password === $scope.user.passwordVerify;
-    }, true);
+    $scope.validatePassword = function validatePassword() {
+      // ensure the password is not undefined, empty or null.
+      valid.password = isDefined(current.user.password) &&
+        current.user.password !== null &&
+        current.user.password !== '' &&
+        current.user.password === current.user.passwordVerify;
+    };
 
-    function submit() {
+    $scope.submit = function submit() {
       switch (current.state) {
-        case 'edit':
+        case 'edit' :
           submitEdit();
           break;
-        case 'add':
+        case 'add' :
           submitAdd();
           break;
-        case 'projects':
-          submitProjects();
+        case 'projects' :
+          submitProjectPermissions();
           break;
-        case 'permissions':
-          submitPermissions():
+        case 'permissions' :
+          submitUnitPermissions();
           break;
         default:
-          console.log('I don\'t know what I\'m doing!');
-          break;
+          console.log('current.state', current.state);
+          console.log('[ERR]', 'I don\'t know what I\'m doing!');
       }
-    }
+    };
 
-    function reset() {
+    $scope.reset = function reset() {
       switch (current.state) {
         case 'edit':
           current.user = current._backup;
@@ -313,11 +323,11 @@ angular.module('bhima.controllers')
           current.permissions = new Store({ identifier : 'unit_id', data : current._backup });
           break;
         default:
-          console.log('I don\'t know what I\'m doing!');
+          console.log('current.state', current.state);
+          console.log('[ERR]', 'I don\'t know what I\'m doing!');
           break;
       }
-    }
-
+    };
 
     $scope.toggleParents = function toggleParents(unit) {
       var parent = $scope.units.get(unit.parent);
@@ -329,9 +339,8 @@ angular.module('bhima.controllers')
     };
 
     $scope.toggleChildren = function toggleChildren(unit) {
-      if (!unit.checked) { $scope.super.checked = false; }
+      if (!unit.checked) { $scope.super.units = false; }
       $scope.toggleParents(unit); // traverse upwards, toggling parents
-      $scope.data.permissionChange = true;
       unit.children.forEach(function (child) {
         child.checked = unit.checked;
       });
@@ -348,16 +357,13 @@ angular.module('bhima.controllers')
     }
 
     $scope.toggleSuperUnits = function toggleSuperUnits(bool) {
-      $scope.data.permissionChange = true;
       $scope.units.data.forEach(function (unit) {
         unit.checked = bool;
       });
     };
 
- 
     // startup
-
-    validate.process(dependencies, ['units', 'users' 'projects'])
+    validate.process(dependencies, ['units', 'users', 'projects'])
     .then(function (models) {
       angular.extend($scope, models);
 
@@ -366,7 +372,5 @@ angular.module('bhima.controllers')
         unit.children = getChildren(unit.id);
       });
     });
-
-
   }
-]
+]);

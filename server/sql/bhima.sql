@@ -70,6 +70,7 @@ create table `permission` (
   primary key (`id`),
   key `unit_id` (`unit_id`),
   key `user_id` (`user_id`),
+  constraint unique key (`unit_id`, `user_id`),
   constraint foreign key (`unit_id`) references `unit` (`id`) on delete cascade on update cascade,
   constraint foreign key (`user_id`) references `user` (`id`) on delete cascade on update cascade
 ) engine=innodb;
@@ -151,6 +152,7 @@ create table `project_permission` (
   primary key (`id`),
   key `user_id` (`user_id`),
   key `project_id` (`project_id`),
+  constraint unique key (`user_id`, `project_id`),
   constraint foreign key (`project_id`) references `project` (`id`)
 ) engine=innodb;
 
