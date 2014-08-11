@@ -1,23 +1,44 @@
+// This module is responsible for handling the creation
+// of users and assigning permissions to existing modules.
+
+// The philosophy of this module is a fast startup.  We load
+// the permissions associated with a user AFTER loading the
+// users, and we load them dynamically.  If this takes too
+// long, we can very easily do a join at the beginning and
+// take a performance hit at startup rather than a potentially
+// confusing halt when a user tries to load permissions.
+
+// TODOs:
+//  - Print
+//    - User list
+//    - Current User data sheet
+// - Password Insecure alert or not
+
 angular.module('bhima.controllers')
 .controller('permission', [
   '$scope',
   '$q',
   '$window',
+  'store',
   'connect',
   'messenger',
   'validate',
-  function($scope, $q, $window, connect, messenger, validate) {
-    // This module is responsible for handling the creation
-    // of users and assigning permissions to existing modules.
-
-    // The philosophy of this module is a fast startup.  We load
-    // the permissions associated with a user AFTER loading the
-    // users, and we load them dynamically.  If this takes too
-    // long, we can very easily do a join at the beginning and
-    // take a performance hit at startup rather than a potentially
-    // confusing halt when a user tries to load permissions.
-
+  function($scope, $q, $window, Store, connect, messenger, validate) {
     var dependencies = {};
+    var isDefined = angular.isDefined;
+
+    // keeps track of state
+    var current = $scope.current = {
+      state : null,
+      user : {},
+      permissions : [],
+      projects : [],
+      _backup : null
+    };
+
+    var valid = $scope.valid = {
+      password : false
+    };
 
     dependencies.units = {
       query : {
@@ -51,193 +72,303 @@ angular.module('bhima.controllers')
       }
     };
 
-    // The add namespace
-    $scope.add = {};
+    dependencies.unitPermissions = {
+      identifier : 'unit_id',
+      tables : {
+        'permission' : {
+          columns : ['id', 'unit_id']
+        }
+      }
+    };
+
+    dependencies.projectPermissions = {
+      identifier : 'project_id',
+      tables : {
+        'project_permission' : {
+          columns : ['id', 'project_id']
+        }
+      }
+    };
+
     // for registration of 'super user privileges'
-    $scope.all = {};
+    $scope.super = {};
     // for printing
     $scope.timestamp = new Date();
 
-    $scope.$watch('add', function () {
-      $scope.add.validPassword = angular.isDefined($scope.add.password) && $scope.add.password === $scope.add.password_verify;
-    }, true);
-
-    $scope.addReset = function () {
-      $scope.add = {};
+    $scope.editUser = function editUser(user) {
+      current.user = user;
+      current._backup = angular.copy(user);
+      current.state = 'edit';
+      current.user.passwordVerify = current.user.password;
     };
 
-    $scope.addSubmit = function () {
-      delete $scope.add.password_verify;
-      delete $scope.add.validPassword;
-      connect.basicPut('user', [connect.clean($scope.add)])
+    $scope.addUser = function addUser() {
+      current.user = {};
+      current.state = 'add';
+    };
+
+    function submitAdd() {
+      delete current.user.passwordVerify;
+      connect.post('user', [connect.clean(current.user)])
       .then(function (res) {
         messenger.info('Successfully posted new user with id: ' + res.data.insertId);
-        var data = $scope.add;
-        data.id = res.data.insertId;
-        $scope.users.post(data);
-        $scope.add = {};
-        $scope.action = '';
-      }, function (err) {
-        messenger.danger('Error:' + JSON.stringify(err));
+        current.user.id = res.data.insertId;
+        $scope.users.post(current.user);
+        $scope.editUser(current.user);
       });
-    };
+    }
 
-    // the edit namespace
-    $scope.edit = {};
-
-    $scope.editReset = function () {
-      $scope.editInfo($scope.users.get($scope.edit.id));
-    };
-
-    $scope.editSubmit = function () {
-      delete $scope.edit.password_verify;
-      delete $scope.edit.validPassword;
-      connect.basicPost('user', [connect.clean($scope.edit)], ['id'])
+    function submitEdit() {
+      delete current.user.passwordVerify;
+      connect.put('user', [connect.clean(current.user)], ['id'])
       .then(function (res) {
         messenger.info('Successfully edited user : ' + res.data.insertId);
-        $scope.users.put($scope.edit);
-        $scope.editInfo($scope.edit);
-        $scope.action = '';
-      }, function (err) {
-        messenger.danger('Error:' + JSON.stringify(err));
+        $scope.users.put(current.user);
+        $scope.editUser(current.user);
       });
-    };
+    }
 
-    $scope.editInfo = function (user) {
-      $scope.edit = angular.copy(user);
-      $scope.edit.password_verify = user.password;
-      $scope.action = 'edit';
-    };
+    function submitUnitPermissions() {
+      var units = $scope.units.data,
+          removals  = [],
+          additions = [];
 
-    $scope.$watch('edit', function () {
-      $scope.edit.validPassword = angular.isDefined($scope.edit.password) && $scope.edit.password === $scope.edit.password_verify;
-    }, true);
+   
+      // current.permission is acting as a hash of
+      // the permission for the current.user.
+      // Checking current.permission.get(unit) tells
+      // if the user has permission to this module.
+      units.forEach(function (unit) {
+        // add permissions that have not been saved yet.
+        if (unit.checked && !current.permissions.get(unit.id)) {
+          additions.push({ unit_id : unit.id, user_id : current.user.id });
+        }
 
-    $scope.clearPass = function () {
+        if (!unit.checked && !!current.permissions.get(unit.id)) {
+          var id = current.permissions.get(unit.id).id;
+          removals.push(id);
+        }
+      });
+
+      // delete the unchecked permissions
+      var promises = removals.map(function (id) {
+        return connect.delete('permission', 'id', id);
+      });
+
+
+      // add the (newly) checked unit permissions
+      if (additions.length > 0) { promises.push(connect.post('permission', additions)); }
+
+      $q.all(promises)
+      .then(function () {
+        $scope.editUnitPermissions(current.user);
+        messenger.info('Submitted ' + promises.length + ' changes to the database.');
+      });
+    }
+
+    function submitProjectPermissions() {
+      var projects = $scope.projects.data,
+          removals  = [],
+          additions = [];
+
+      projects.forEach(function (project) {
+        var isOld = !!current.projects.get(project.id);
+
+        if (!!project.checked && !current.projects.get(project.id)) {
+          additions.push({ project_id : project.id, user_id : current.user.id });
+        }
+
+        if (!project.checked && !!current.projects.get(project.id)) {
+          // id here is the project_permission id, indexed by the
+          // project.id.  It is confusing, I know.
+          var id = current.projects.get(project.id).id;
+          removals.push(id);
+        }
+      });
+
+      var promises = removals.map(function (id) {
+        return connect.delete('project_permission', 'id', id);
+      });
+     
+      // add the (newly) checked project permissions
+      if (additions.length > 0) { promises.push(connect.post('project_permission', additions)); }
+
+      $q.all(promises)
+      .then(function () {
+        $scope.editProjectPermissions(current.user);
+        messenger.info('Submitted ' + promises.length + ' changes to the database.');
+      });
+    }
+
+    $scope.clearPass = function clearPass() {
       // when a user attempts a new password, clear the old one.
-      $scope.edit.password_verify = '';
+      current.user.passwordVerify = '';
+      $scope.validatePassword();
     };
 
     // deleting a user
-    $scope.removeUser = function (user) {
+    $scope.removeUser = function removeUser(user) {
       var result = $window.confirm('Are you sure you want to delete user: '  + user.first +' ' +user.last);
       if (result) {
-        connect.basicDelete('user', user.id)
+        connect.delete('user', 'id', user.id)
         .then(function () {
           messenger.success('Deleted user id: ' + user.id);
           $scope.users.remove(user.id);
           //  Check if we are looking at a users permissions,
           //  or editing them, we should clear our view
-          $scope.action = $scope.action !== 'add' ? '' : $scope.action;
-        })
-        .catch(function (err) {
-          messenger.danger('Error:' + JSON.stringify(err));
         });
       }
     };
 
-    // permissions data
+    $scope.editUnitPermissions = function editUnitPermissions(user) {
+      current.state = 'permissions';
+      $scope.super.units = false;
+      current.user = user;
+      dependencies.unitPermissions.where =
+        ['permission.user_id=' + user.id];
 
-    $scope.data = {};
-    $scope.data.permission_change = false;
-
-    $scope.editPermission = function (user) {
-      $scope.data.user_id = user.id;
-      connect.req({
-        identifier : 'unit_id',
-        tables : { 'permission' : { columns : ['id', 'unit_id'] }},
-        where : ['permission.user_id='+user.id]
-      })
+      connect.req(dependencies.unitPermissions)
       .then(function (store) {
-        $scope.permissions = store;
-        setSavedPermissions();
-        $scope.action = 'permission';
-      })
-      .catch(function () {
-        messenger.danger('Error: Failed to load permission data for user' + user.id);
-        $scope.action = 'permission';
+        current.permissions = store;
+        current._backup = angular.copy(store.data);
+        setSavedUnitPermissions();
       });
     };
 
-    function setSavedPermissions () {
-      if (!$scope.permissions.data || !$scope.units) { return; }
+    $scope.editProjectPermissions = function editProjectPermissions(user) {
+      current.state = 'projects';
+      $scope.super.projects = false;
+      current.user = user;
+      dependencies.projectPermissions.where =
+        ['project_permission.user_id=' + user.id];
+
+      connect.req(dependencies.projectPermissions)
+      .then(function (store) {
+        current.projects = store;
+        current._backup = angular.copy(store.data);
+        setSavedProjectPermissions();
+      });
+    };
+
+    function setSavedUnitPermissions() {
+      if (!current.permissions.data || !$scope.units) { return; }
       var units = $scope.units.data;
       units.forEach(function (unit) {
         // loop through permissions and check each module that
         // the user has permission to.
-        unit.checked = !!$scope.permissions.get(unit.id);
+        unit.checked = !!current.permissions.get(unit.id);
       });
     }
 
-    $scope.savePermissions = function () {
-      var user_id = $scope.data.user_id;
-      var units = $scope.units.data;
-      var savedPermissions = $scope.permissions;
-      var toSave = [],
-          toRemove = [];
-      units.forEach(function (unit) {
-        if (unit.checked && !savedPermissions.get(unit.id)) {
-          toSave.push({ unit_id : unit.id, user_id : user_id });
-        }
-        if (!unit.checked && !!savedPermissions.get(unit.id)) {
-          toRemove.push(savedPermissions.get(unit.id).id);
-        }
+    function setSavedProjectPermissions() {
+      if (!current.projects.data || !$scope.projects) { return; }
+      var projects = $scope.projects.data;
+      projects.forEach(function (proj) {
+        // loop through permissions and check each project that
+        // the user has permission to.
+        proj.checked = !!current.projects.get(proj.id);
       });
+    }
 
-      // TODO / FIXME : This is terrible coding.
-
-      var promises = toRemove.map(function (id) {
-        return connect.basicDelete('permission', [id]);
-      });
-
-      $q.all(promises)
-      .then(function () {
-        if (!toSave.length) {
-          return messenger.success('Successfully updated permission for user ' + user_id);
-        }
-        return !toSave.length ? $q.when() : connect.basicPut('permission', toSave);
-      })
-      .then(function () {
-        messenger.success('Successfully updated permissions for user ' + user_id);
+    $scope.toggleSuperProjects = function toggleSuperProjects(bool) {
+      $scope.projects.data.forEach(function (project) {
+        project.checked = bool;
       });
     };
 
-    function getChildren (id) {
-      return $scope.units.data.filter(function (unit) {
-        return unit.parent === id;
-      });
-    }
+    $scope.deselectAllProjects = function deselectAllProjects(bool) {
+      if (!bool) { $scope.super.projects = false; }
+    };
 
-    $scope.toggleParents = function toggleParents (unit) {
+    $scope.print = function print() {
+      $window.print();
+    };
+
+    $scope.validatePassword = function validatePassword() {
+      // ensure the password is not undefined, empty or null.
+      valid.password = isDefined(current.user.password) &&
+        current.user.password !== null &&
+        current.user.password !== '' &&
+        current.user.password === current.user.passwordVerify;
+    };
+
+    $scope.submit = function submit() {
+      switch (current.state) {
+        case 'edit' :
+          submitEdit();
+          break;
+        case 'add' :
+          submitAdd();
+          break;
+        case 'projects' :
+          submitProjectPermissions();
+          break;
+        case 'permissions' :
+          submitUnitPermissions();
+          break;
+        default:
+          console.log('current.state', current.state);
+          console.log('[ERR]', 'I don\'t know what I\'m doing!');
+      }
+    };
+
+    $scope.reset = function reset() {
+      switch (current.state) {
+        case 'edit':
+          current.user = current._backup;
+          break;
+        case 'add':
+          current.user = {};
+          current._backup = {};
+          break;
+        case 'projects':
+          current.projects = current._backup;
+          break;
+        case 'permissions':
+          current.permissions = new Store({ identifier : 'unit_id', data : current._backup });
+          break;
+        default:
+          console.log('current.state', current.state);
+          console.log('[ERR]', 'I don\'t know what I\'m doing!');
+          break;
+      }
+    };
+
+    $scope.toggleParents = function toggleParents(unit) {
       var parent = $scope.units.get(unit.parent);
       if (!parent) { return; }
       parent.checked = true;
-      if (angular.isDefined(parent.parent)) {
+      if (isDefined(parent.parent)) {
         $scope.toggleParents(parent);
       }
     };
 
     $scope.toggleChildren = function toggleChildren(unit) {
+      if (!unit.checked) { $scope.super.units = false; }
       $scope.toggleParents(unit); // traverse upwards, toggling parents
-      $scope.data.permission_change = true;
       unit.children.forEach(function (child) {
         child.checked = unit.checked;
       });
     };
 
-    $scope.filterChildren = function (unit) {
+    $scope.filterChildren = function filterChildren(unit) {
       return unit.parent === 0;
     };
 
-    $scope.$watch('all', function () {
-      if (!$scope.units || !$scope.units.data) { return; }
-      $scope.data.permission_change = true;
-      $scope.units.data.forEach(function (unit) {
-        unit.checked = $scope.all.checked;
+    function getChildren(id) {
+      return $scope.units.data.filter(function (unit) {
+        return unit.parent === id;
       });
-    }, true);
+    }
 
-    validate.process(dependencies)
+    $scope.toggleSuperUnits = function toggleSuperUnits(bool) {
+      $scope.units.data.forEach(function (unit) {
+        unit.checked = bool;
+      });
+    };
+
+    // startup
+    validate.process(dependencies, ['units', 'users', 'projects'])
     .then(function (models) {
       angular.extend($scope, models);
 
@@ -246,79 +377,5 @@ angular.module('bhima.controllers')
         unit.children = getChildren(unit.id);
       });
     });
-
-    // project settings
-
-    $scope.editProjects = function (user) {
-      $scope.data.user_id = user.id;
-      $scope.projects.data.forEach(function (project) {
-        project.checked = false;
-      });
-      $scope.all.projects = false;
-      connect.req({
-        tables : {
-          'project_permission' : { columns : ['id', 'project_id'] },
-        },
-        where : ['project_permission.user_id=' + user.id]
-      })
-      .then(function (store) {
-        store.data.forEach(function (perm) {
-          $scope.projects.get(perm.project_id).checked = true;
-        });
-        $scope.loadedProjects = store;
-        $scope.action = 'project';
-      })
-      .catch(function () {
-        messenger.danger('Error: Failed to load project data for user' + user.id);
-        $scope.action = 'project';
-      });
-    };
-
-    $scope.$watch('all.projects', function () {
-      if (!$scope.projects) { return; }
-      $scope.projects.data.forEach(function (project) {
-        project.checked = $scope.all.projects;
-      });
-    });
-
-    $scope.print = function () {
-      $window.print();
-    };
-
-    $scope.saveProjects = function () {
-      var user_id = $scope.data.user_id;
-      var projects = $scope.projects.data;
-      var toSave = [],
-          toRemove = [];
-
-      projects.forEach(function (project) {
-        var isOld = !!$scope.loadedProjects.get(project.id);
-
-        if (project.checked && !isOld) {
-          toSave.push({ project_id : project.id, user_id : user_id});
-        }
-
-        if (!project.checked && isOld) {
-          toRemove.push($scope.loadedProjects.get(project.id).id);
-        }
-
-      });
-
-      // TODO / FIXME : This is terrible coding.
-
-      var promises = toRemove.map(function (id) {
-        return connect.basicDelete('project_permission', [id]);
-      });
-      $q.all(promises)
-      .then(function () {
-        if (!toSave.length) {
-          messenger.success('Successfully updated permission for user ' + user_id);
-        }
-        return !toSave.length ? $q.when() : connect.basicPut('project_permission', toSave);
-      })
-      .then(function () {
-        messenger.success('Successfully updated permissions for user ' + user_id);
-      });
-    };
   }
 ]);
