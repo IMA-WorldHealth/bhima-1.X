@@ -7,7 +7,8 @@
     <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
   </button>
   <div class="pull-right">
-    <a class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+    <a class="btn btn-sm btn-default" ng-click="print()">
+      <span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
   </div>
 </nav>
 
@@ -59,8 +60,8 @@
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
               <td><a class="clk" ng-click="editUser(user)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a class="clk" ng-click="editPermission(user)"><i class="glyphicon glyphicon-cog"></i></a></td>
-              <td><a class="clk" ng-click="editProjects(user)"><i class="glyphicon glyphicon-home"></i></a></td>
+              <td><a class="clk" ng-click="editUnitPermissions(user)"><i class="glyphicon glyphicon-cog"></i></a></td>
+              <td><a class="clk" ng-click="editProjectPermissions(user)"><i class="glyphicon glyphicon-home"></i></a></td>
               <td><a class="clk" ng-click="removeUser(user)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
@@ -116,7 +117,7 @@
           <div class="form-group">
             <label class="control-label col-xs-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
             <div class="col-xs-7 input-group">
-              <input ng-model="current.user.password" class="form-bhima" required="required" type="password">
+              <input ng-model="current.user.password" class="form-bhima" required="required" type="password" ng-change="validatePassword()">
               <span class="input-group-btn" ng-switch="valid.password">
                 <button class="btn btn-sm" ng-class="{ 'btn-danger' : !valid.password, 'btn-success' : !!valid.password }" disabled="disabled">
                   <span ng-switch-default class="glyphicon glyphicon-remove"></span>
@@ -129,7 +130,7 @@
           <div class="form-group">
             <label class="control-label col-xs-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
             <div class="col-xs-7 input-group">
-              <input ng-model="current.user.passwordVerify" class="form-bhima" required="required" type="password">
+              <input ng-model="current.user.passwordVerify" class="form-bhima" required="required" type="password" ng-change="validatePassword()">
               <span class="input-group-btn" ng-switch="valid.password">
                 <button class="btn btn-sm" ng-class="{ 'btn-danger' : !valid.password, 'btn-success' : !!valid.password }" disabled="disabled">
                   <i ng-switch-default class="glyphicon glyphicon-remove"></i>
@@ -193,7 +194,7 @@
           <div class="form-group">
             <label class="control-label col-xs-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
             <div class="col-xs-7 input-group">
-              <input ng-model="current.user.passwordVerify" class="form-bhima" required="required" type="password">
+              <input ng-model="current.user.passwordVerify" class="form-bhima" required="required" type="password" ng-change="validatePassword()">
               <span class="input-group-btn" ng-switch="valid.password">
                 <button class="btn btn-sm" ng-class="{ 'btn-danger' : !valid.password, 'btn-success' : !!valid.password }" disabled="disabled">
                   <i ng-switch-default class="glyphicon glyphicon-remove"></i>
@@ -209,13 +210,13 @@
         </form>
       </div>
 
-      <div ng-switch-when="project">
+      <div ng-switch-when="projects">
         <div class="col-xs-6">
           <div class="panel panel-default">
             <div class="panel-heading">
               <span>{{ "PERMISSION.PROJECTS" | translate }}</span>
               <span class="pull-right">
-                <a ng-click="saveProjects()">
+                <a ng-click="submit()" class="clk">
                   <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
                 </a>
               </span>
@@ -236,19 +237,19 @@
         </div>
       </div>
 
-      <div ng-switch-when="permission">
+      <div ng-switch-when="permissions">
         <div class="col-xs-10">
           <div class="panel panel-default">
             <div class="panel-heading">
               <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
               <span class="pull-right">
-                <a ng-disabled="!data.permissionChange" ng-click="savePermissions()">
+                <a ng-click="submit()" class="clk">
                   <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
                 </a>
               </span>
             </div>
             <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
-              <input type="checkbox" ng-model="super.checked" ng-change="toggleSuperUnits(super.checked)">
+              <input type="checkbox" ng-model="super.units" ng-change="toggleSuperUnits(super.units)">
               {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
