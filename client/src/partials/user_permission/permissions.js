@@ -82,6 +82,7 @@ angular.module('bhima.controllers')
     };
 
     dependencies.projectPermissions = {
+      identifier : 'project_id',
       tables : {
         'project_permission' : {
           columns : ['id', 'project_id']
@@ -95,7 +96,6 @@ angular.module('bhima.controllers')
     $scope.timestamp = new Date();
 
     $scope.editUser = function editUser(user) {
-      console.log(user);
       current.user = user;
       current._backup = angular.copy(user);
       current.state = 'edit';
@@ -132,6 +132,7 @@ angular.module('bhima.controllers')
       var units = $scope.units.data,
           removals  = [],
           additions = [];
+
    
       // current.permission is acting as a hash of
       // the permission for the current.user.
@@ -143,8 +144,9 @@ angular.module('bhima.controllers')
           additions.push({ unit_id : unit.id, user_id : current.user.id });
         }
 
-        if (!unit.checked && !!current.permission.get(unit.id)) {
-          removals.push(unit.id);
+        if (!unit.checked && !!current.permissions.get(unit.id)) {
+          var id = current.permissions.get(unit.id).id;
+          removals.push(id);
         }
       });
 
@@ -155,11 +157,12 @@ angular.module('bhima.controllers')
 
 
       // add the (newly) checked unit permissions
-      promises.push(connect.post('permission', additions));
+      if (additions.length > 0) { promises.push(connect.post('permission', additions)); }
 
       $q.all(promises)
       .then(function () {
         $scope.editUnitPermissions(current.user);
+        messenger.info('Submitted ' + promises.length + ' changes to the database.');
       });
     }
 
@@ -170,14 +173,16 @@ angular.module('bhima.controllers')
 
       projects.forEach(function (project) {
         var isOld = !!current.projects.get(project.id);
-        console.log('[Project]', project, 'isOld', isOld);
 
         if (!!project.checked && !current.projects.get(project.id)) {
           additions.push({ project_id : project.id, user_id : current.user.id });
         }
 
         if (!project.checked && !!current.projects.get(project.id)) {
-          removals.push(project.id);
+          // id here is the project_permission id, indexed by the
+          // project.id.  It is confusing, I know.
+          var id = current.projects.get(project.id).id;
+          removals.push(id);
         }
       });
 
@@ -186,11 +191,12 @@ angular.module('bhima.controllers')
       });
      
       // add the (newly) checked project permissions
-      promises.push(connect.post('project_permission', additions));
+      if (additions.length > 0) { promises.push(connect.post('project_permission', additions)); }
 
       $q.all(promises)
       .then(function () {
         $scope.editProjectPermissions(current.user);
+        messenger.info('Submitted ' + promises.length + ' changes to the database.');
       });
     }
 
@@ -238,7 +244,6 @@ angular.module('bhima.controllers')
 
       connect.req(dependencies.projectPermissions)
       .then(function (store) {
-        console.log(store);
         current.projects = store;
         current._backup = angular.copy(store.data);
         setSavedProjectPermissions();
