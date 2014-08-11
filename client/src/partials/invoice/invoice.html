@@ -693,30 +693,52 @@
           </div>
         </div>
       </div>
+
       <div ng-switch-when="pcash_transfert">
+
         <div class="row customer-details">
           <div class="col-xs-12">
             <h4 class="invoice-header">{{'INVOICE.TRANSFERT' | translate}}</h4>
           </div>
         </div>
+
         <div class="row customer-details">
-          <div class="col-xs-2">
-            <b>{{'INVOICE.BY' | translate}}</b>
+          <div class="col-xs-4">
+            <span>
+              <b>{{invoice.enterprise_name}}</b>
+            </span>
+            <br>
+            {{invoice.village}}
+            <br>
+            <!-- hah -->
+            {{ invoice.postal || 'B.P. 205'}}
+            <br>
+            {{invoice.sector}}
+            <br>
+            <i>TEL</i> {{invoice.phone}}
+            <br>
+            <i>FAX</i> {{invoice.email}}
           </div>
-          <div class="col-xs-6">
-            <div class="row">
-              <b>{{transfert.first}} {{transfert.last}}</b>
-            </div>
+
+          <div class="col-xs-4">
+
+            <i>{{ 'INVOICE.BY' | translate }}</i>
+            <br>
+            {{transfert.first}} {{transfert.last}}
+            <br>
+            <i>{{ 'INVOICE.DATE' | translate }}</i>
+            <br>
+            {{transfert.date | date}}
           </div>
-          <div style="text-align: left;" class="col-xs-4">
-            <div class="row">
-              <b>{{'INVOICE.DATE' | translate}}</b>
-            </div>
-            <div class="row">
-              {{transfert.date | date}}
-            </div>
+
+          <div class="col-xs-4">
+            <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
+            <br>
+            {{transfert.date | date}}
+            <br>
           </div>
         </div>
+
         <div class="row">
           <div class="col-xs-12">
             <table class="invoiceTable">
@@ -736,6 +758,7 @@
             </table>
           </div>
         </div>
+
         <div class="row">
           <div class="col-xs-6">
             <div class="pull-right">
@@ -747,7 +770,7 @@
              <b>{{"INVOICE.SIGN_HEADER_AUXI" | translate}}</b>
             </div>
           </div>
-        </div><!-- End Patient Invoice template -->
+        </div>
       </div>
 
       <div ng-switch-when="pcash_convention">
@@ -1064,8 +1087,6 @@
           </div>
         </div>
       </div>
-
-
       <!-- end Cash receipt template  -->
     </div>
   </div>

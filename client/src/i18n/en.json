@@ -101,7 +101,9 @@
     "PROJECT"         : "Project",
     "CAISSE"          : "Cash",
     "CURRENCY"        : "currency",
-    "NAVIGATION"      : "Browsing"
+    "NAVIGATION"      : "Browsing",
+    "NO_CURRENCY"     : "No currency selected",
+    "DATA_ERROR"      : "Incorrect Data"
   },
 
   "CASH_PURCHASE" : {

@@ -1045,6 +1045,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
     // TODO : Formalize this
     sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ';';
+    console.log('nous sommes la oooooo')
 
     db.exec(sql)
     .then(function (results) {
