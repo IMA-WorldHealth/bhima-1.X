@@ -130,6 +130,8 @@ td.visible-print {
 
 #bhima-tree {
   padding-top: 20px;
+  height: 400px;
+  overflow: auto;
 }
 
 /* temp :: used in reporting account_balances */
