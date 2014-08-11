@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'uuid',
   '$routeParams',
   '$location',
-  function ($scope, connect, messenger, validate, appstate, util, uuid, $routeParams, $location) {
+  '$translate',
+  function ($scope, connect, messenger, validate, appstate, util, uuid, $routeParams, $location, $translate) {
 
     //inits and declarations
     var dependencies = {}, configuration = {};
@@ -86,14 +87,14 @@ angular.module('bhima.controllers')
       configuration.module_id = model.pcash_module.data[0].id;
     }
 
-    function commitCash() {
+    function commitCash() {      
       validate.refresh(dependencies, ['cash_box'])
       .then(function (model) {
         $scope.view.cash_box.data = model.cash_box.data.filter(function (item) {
-          return item.project_id === $scope.data.project_id;
+          return item.project_id == $scope.data.project_id;
         });
         configuration.project_id = $scope.data.project_id;
-      });
+      });     
     }
 
     function getCurrency(value) {
@@ -114,12 +115,12 @@ angular.module('bhima.controllers')
 
     function updateInfoCashBox(cash_box_source_id, currency_id) {
       if (!cash_box_source_id || !currency_id) {
-        messenger.danger('Erreur pendant le chargement');
+        messenger.danger();
         return;
       }
       configuration.cash_account_currency = $scope.model.cashAccounCurrency.data.filter(function (item) {
-        return item.cash_box_id === configuration.cash_box_source_id &&
-          item.currency_id === configuration.currency.id;
+        return item.cash_box_id == configuration.cash_box_source_id &&
+          item.currency_id == configuration.currency.id;
       });
     }
 
@@ -144,7 +145,7 @@ angular.module('bhima.controllers')
     function ajouter () {
       configuration.value = $scope.data.value;
 
-      if (!isValid()) { return; }
+      if (!isValid()) { return  messenger.danger($translate.instant('TRANSFERT.NO_CURRENCY')); }
 
       writeTransfer()
       .then(writeItem)

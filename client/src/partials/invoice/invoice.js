@@ -111,6 +111,18 @@ angular.module('bhima.controllers')
     */
 
     function processTransfert (transfert_uuid) {
+
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      };
+
       dependencies.transfert = {
         required: true,
         query:  {
@@ -123,7 +135,13 @@ angular.module('bhima.controllers')
           where: ['primary_cash.uuid=' + transfert_uuid]
         }
       };
-      validate.process(dependencies, ['transfert']).then(transfertInvoice);
+      validate.process(dependencies).then(getLocation).then(transfertInvoice);
+
+      function getLocation (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
     }
 
     function processConvention (convention_uuid) {
@@ -778,7 +796,14 @@ angular.module('bhima.controllers')
     }
 
     function transfertInvoice (model) {
+
+      $scope.invoice = {};
       $scope.model = model;
+      $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+      $scope.invoice.village = model.location.data[0].village;
+      $scope.invoice.sector = model.location.data[0].sector;
+      $scope.invoice.phone = model.enterprise.data[0].phone;
+      $scope.invoice.email = model.enterprise.data[0].email;
       $scope.transfert = $scope.model.transfert.data[0];
     }
 

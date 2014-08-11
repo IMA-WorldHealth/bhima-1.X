@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   '$http',
   '$location',
   'connect',
-  function ($scope, $routeParams, validate, appstate, uuid, $q, $http, $location, connect) {
+  'util',
+  function ($scope, $routeParams, validate, appstate, uuid, $q, $http, $location, connect, util) {
     /* jshint unused : false */
     var session = $scope.session = {},
       depotId, dependencies = {}, configuration = $scope.configuration = {};
@@ -202,7 +203,8 @@ angular.module('bhima.controllers')
           }
         }
       }
-      loss_ligne.lots = getLots(loss_ligne);
+      return;
+      //loss_ligne.lots = getLots(loss_ligne);
     }
 
     function verifyLoss () {

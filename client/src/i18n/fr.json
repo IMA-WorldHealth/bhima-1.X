@@ -1035,7 +1035,7 @@
   },
 
   "INVOICE"             : {
-    "TITLE"             : "Recette",
+    "TITLE"             : "Recit",
     "PATIENT"           : "Patient",
     "PATIENT_ID"        : "# Patient",
     "DATE_REGISTRATION" : "Date d'enregistrement",
@@ -1070,7 +1070,7 @@
     "TRANSFERT"                    : "Transfert caisse principal",
     "DESIGNATION"                  : "Designation",
     "LIBELLE_TRANSFERT_FROM"       : "Transfert de ",
-    "PCASH"                        : "de caisse Principale",
+    "PCASH"                        : "caisse Principale",
     "TOTAL_TRANSFERT"              : "Total Transfert",
     "SIGN_HEADER_BILLING"          : "Signature Charge Facturation",
     "SIGN_CLIENT"                  : "Signature Client",
@@ -1253,7 +1253,9 @@
     "PROJECT"     : "Proget",
     "CAISSE"      : "Caisse",
     "CURRENCY"    : "Monnaie",
-    "NAVIGATION"  : "Naviguation"
+    "NAVIGATION"  : "Naviguation",
+    "NO_CURRENCY" : "Pas de monnaie selectionnee",
+    "DATA_ERROR"  : "Erreur des donnees"
   },
 
   "CASH_PURCHASE" : {
