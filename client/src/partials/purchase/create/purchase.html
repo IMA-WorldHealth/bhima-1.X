@@ -1,16 +1,15 @@
-<header>
-  <span>{{ 'PURCHASE.TITLE' | translate }}</span>
+<header data-header>
+  {{ 'PURCHASE.TITLE' | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
     <a class="btn btn-sm btn-default square" ng-href="/#/creditor/">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</a>
   </div>
-</section>
+</nav>
 
-<div class="content">
-<div class="row">
-
+<main>
+  <div class="row">
     <div class="col-xs-5">
       <div class="panel panel-default square">
         <div class="panel-heading square">
@@ -185,8 +184,7 @@
       </div>
     </div>
   </div>
-
-</div>
+</main>
 
 <section class="bar-bottom">
   <div class="pull-right">

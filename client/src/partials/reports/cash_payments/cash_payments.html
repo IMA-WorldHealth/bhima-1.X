@@ -2,14 +2,14 @@
   {{ "CASH_PAYMENTS.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
     <span class="btn-group">
       <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
       <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
       <ul class="dropdown-menu menu-sq">
         <li ng-repeat="opt in options">
-          <a href="" ng-click="search(opt)">{{ opt.label | translate }}</a>
+          <a class="clk" ng-click="search(opt)">{{ opt.label | translate }}</a>
         </li>
       </ul>
     </span>
@@ -29,7 +29,7 @@
       </select>
     </div>
   </div>
-</section>
+</nav>
 
 <div class="report report-compressed">
   <div class="reportBody">
