@@ -2,8 +2,8 @@
   {{ 'SECTOR.TITLE' | translate }}
 </header>
 
-<section class="top-nav">
-  <a href="" class="btn btn-default btn-sm" ng-click="setOp('Add')">
+<nav>
+  <a class="btn btn-default btn-sm" ng-click="setOp('Add')">
     <span class="glyphicon glyphicon-plus"></span> {{'SECTOR.NEW_SECTOR' | translate}}
   </a>
 
@@ -12,9 +12,9 @@
       <span class="glyphicon glyphicon-globe"></span> {{'SECTOR.LOCATION_MANAGER' | translate}}
     </a>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-default" style="max-height: 40em; overflow: auto;">
@@ -33,8 +33,8 @@
             <tr ng-repeat="sector in sectors.data | orderBy:'sector'">
               <td>{{ sector.sector }}</td>
               <td>{{ sector.province }}</td>
-              <td><a href="" ng-click="setOp('Edit', sector)"><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a href="" class="danger" ng-click="removeSector(sector.uuid)"><i class="glyphicon glyphicon-trash"></i></a></td>
+              <td><a ng-click="setOp('Edit', sector)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a class="danger" ng-click="removeSector(sector.uuid)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -107,4 +107,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

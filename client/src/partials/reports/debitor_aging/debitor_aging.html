@@ -5,11 +5,11 @@
 <nav>
   <div class="pull-right">
     <span class="dropdown">
-      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span>{{ "REPORT.VISIBLE_FISCAL_YEAR" | translate }}</a>
+      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span>{{ "REPORT.VISIBLE_FISCAL_YEAR" | translate }}</a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">{{ "REPORT.CHOOSE_FISCAL_YEAR" | translate }}</li>
         <li ng-repeat="fy in models.fys">
-          <a class="capital" ng-click="reload(fy)" href="">
+          <a class="clk" ng-click="reload(fy)">
             <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !fy.checked, 'glyphicon-check' : !!fy.checked}"></i>{{fy.fiscal_year_txt}}
           </a>
         </li>
@@ -17,11 +17,11 @@
     </span> 
 
     <span class="dropdown">
-      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{ "REPORT.VISIBLE_PERIODS" | translate }}</a>
+      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> {{ "REPORT.VISIBLE_PERIODS" | translate }}</a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">{{ "REPORT.CHOOSE_PERIOD" | translate }}</li>
         <li ng-repeat="p in models.periods">
-          <a class="capital" ng-click="adjust(p)" href="">
+          <a class="clk" ng-click="adjust(p)">
             <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !p.checked, 'glyphicon-check' : !!p.checked}"></i>{{p.period_start | date}}
           </a>
         </li>
@@ -35,13 +35,13 @@
     <thead>
       <tr>
         <th>{{ "COLUMNS.DEBITOR_NAME" | translate }}</th>
-        <th ng-repeat="period in models.periods"> {{period.period_start | date}} /  {{period.period_stop | date}}</th>
+        <th ng-repeat="period in models.periods"> {{ period.period_start | date }} /  {{ period.period_stop | date }}</th>
       </tr>
     </thead> 
     <tbody>
       <tr ng-repeat="debitor in results">
-         <th>{{debitor.debitorName}}</th>
-         <td ng-repeat="debitorBalance in debitor.balances track by $index">{{debitorBalance | currency}}</td>
+         <th>{{ debitor.debitorName }}</th>
+         <td ng-repeat="debitorBalance in debitor.balances track by $index">{{ debitorBalance | currency }}</td>
       </tr>
     </tbody>
   </table>

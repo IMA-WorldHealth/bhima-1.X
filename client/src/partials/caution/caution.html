@@ -1,29 +1,27 @@
-<header>
+<header data-header>
   {{ "CAUTION.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
-    <div class="pull-right">
-      <a href="#/cash" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-tag"></span>
-          {{'CAUTION.CASH' | translate}}
-      </a>
-    </div>
+<nav>
+  <div class="pull-right">
+    <a href="#/cash" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-tag"></span>{{'CAUTION.CASH' | translate}}</a>
+  </div>
 
-    <div style="position: absolute; left: 5px;">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
-        {{ model.accounts.get(selectedItem.account_id).account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
-        <span class="caret" data-caret="&#9660;"></span>
-      </button>
-      <ul class="dropdown-menu pull-left">
-        <li ng-repeat="item in model.cash_box.data">
-          <a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.account_id).account_txt }} </a>
-        </li>
-      </ul>
-    </div>
-</section>
+  <div style="position: absolute; left: 5px;">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ model.accounts.get(selectedItem.account_id).account_txt || "CASH.DEFAULT_CASHBOX" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu pull-left">
+      <li ng-repeat="item in model.cash_box.data">
+        <a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.account_id).account_txt }} </a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
-<div class="content">
+<main>
 
   <div class="row">
     <div class="col-xs-6">
@@ -106,7 +104,7 @@
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <script type="text/ng-template" id="debtorListItem.html">
   <a>

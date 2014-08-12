@@ -9,7 +9,6 @@
     </button>
     <ul class="dropdown-menu">
       <li class="dropdown-header">{{ "REPORT.GROUPING" | translate }}</li>
-
       <li ng-repeat="groupDefinition in groupDefinitions">
         <a ng-click="groupby(groupDefinition)">{{ groupDefinition.title }}</a>
       </li>
@@ -31,7 +30,7 @@
         {{ "REPORT.VISIBLE_COLUMNS" | translate }}
       </li>
       <li ng-repeat="column in columns">
-        <a class="capital" ng-click="column.visible=!column.visible" href="">
+        <a class="clk" ng-click="column.visible=!column.visible">
           <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{column.name || column.id}}
         </a>
       </li>
@@ -39,10 +38,10 @@
   </div>
 </nav>
 
-<div class="content extend">
+<main class="extend">
   <div class="row" style="height:99%;">
     <div class="col-xs-12" style="height:100%;">
       <div id="general_ledger" class="grid" style="height: 100%; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"></div>
     </div>
   </div>
-</div>
+</main>

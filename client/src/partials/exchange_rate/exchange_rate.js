@@ -34,7 +34,7 @@ angular.module('bhima.controllers')
     });
 
     appstate.register('exchange_rate', function (rates) {
-      $scope.global_rates = rates;
+      $scope.globalRates = rates;
     });
 
     function handleError(err) {
@@ -58,21 +58,21 @@ angular.module('bhima.controllers')
 
       var data = {
         enterprise_currency_id : $scope.enterprise.currency_id,
-        foreign_currency_id : $scope.newRate.foreign_currency_id,
-        rate : $scope.newRate.rate / 100.0,
-        date : $scope.today
+        foreign_currency_id    : $scope.newRate.foreign_currency_id,
+        rate                   : $scope.newRate.rate / 100.0,
+        date                   : $scope.today
       };
 
       connect.basicPut('exchange_rate', [data])
       .then(function (result) {
         // set global exchange rate
-        if ($scope.global_rates.length) {
-          $scope.global_rates.push(data);
+        if ($scope.globalRates.length) {
+          $scope.globalRates.push(data);
         } else {
-          $scope.global_rates = [data];
+          $scope.globalRates = [data];
         }
 
-        appstate.set('exchange_rate', $scope.global_rates);
+        appstate.set('exchange_rate', $scope.globalRates);
 
         // add to store
         data.id = result.data.insertId;
