@@ -11,7 +11,8 @@ angular.module('bhima.controllers')
   'util',
   'uuid',
   'appcache',
-  function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache) {
+  '$translate',
+  function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate) {
 
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
@@ -80,6 +81,16 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.enterprise = {
+      query : {
+        tables : {
+          'enterprise' : {
+          columns : ['currency_id']
+        }
+        }
+      }
+    }
+
     $scope.noEmpty = false;
     $scope.som = 0;
     $scope.convention = {};
@@ -103,7 +114,10 @@ angular.module('bhima.controllers')
 
     function initialiseConvention (selectedConvention) {
       if(!selectedConvention) {
-        return messenger.danger('No convention selected!');
+        $translate('CONVENTION.NO_CONVENTION')
+        .then(function (value) {
+          return messenger.danger(value);
+        });        
       }
       $scope.selectedConvention = selectedConvention;
       dependencies.situations = { query : '/ledgers/debitor_group/' + $scope.selectedConvention.uuid};
@@ -112,6 +126,14 @@ angular.module('bhima.controllers')
     }
 
     function pay () {
+     //  $scope.data.amount = 0;
+     // if($scope.selectedItem.currency_id !== $scope.model.enterprise.data[0].currency_id) {
+     //    var rate = $scope.model.exchange_rate.data[0];
+     //    $scope.data.amount = $scope.data.payment / rate.rate;
+     //  }else{
+     //    $scope.data.amount = $scope.data.payment;
+     //  }
+
 
       var record = {
         uuid            : uuid(),
@@ -169,11 +191,14 @@ angular.module('bhima.controllers')
     }
 
     function setCashAccount(cashAccount) {
-      console.log('cashAccount', cashAccount);
       if (cashAccount) {
         $scope.selectedItem = cashAccount;
         cache.put('selectedItem', cashAccount);
       }
+
+      // if($scope.overviews){
+      //   convert();
+      // }
     }
 
     function handleSucces() {
@@ -198,16 +223,43 @@ angular.module('bhima.controllers')
       dependencies.accounts.query.where =
         ['account.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies)
-      .then(init);
+      .then(init)
+      .catch(function (err) {
+        $translate('CONVENTION.LOADING_ERROR')
+        .then(function (value) {
+          messenger.danger(value);
+        })        
+      });
     });
 
 
     function check () {
       if ($scope.data.payment) {
-        return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
-      }
-      return true;
+        if($scope.selectedItem.currency_id !== $scope.model.enterprise.data[0].currency_id) {
+          var rate = $scope.model.exchange_rate.data[0];
+          var amount = $scope.data.payment / rate.rate;
+          var min = $scope.selectedItem.min_monentary_unit / rate.rate;
+          return amount < min || amount > $scope.som;
+        }else{
+          return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
+        }        
+      }else{
+         return true;
+       }     
     }
+
+    // function convert () {
+    //   var rate = $scope.model.exchange_rate.data[0];
+    //   if($scope.selectedItem.currency_id !== $scope.model.enterprise.data[0].currency_id) {
+    //     $scope.overviews.forEach(function (item) {
+    //     if(item.currency_id !== $scope.selectedItem.currency_id) {
+    //       item.credit = (item.credit * rate.rate);
+    //     }
+    //   });
+    //   }
+      
+    //   console.log($scope.overviews);
+    // }
 
     $scope.initialiseConvention = initialiseConvention;
     $scope.pay = pay;

@@ -1082,7 +1082,9 @@
     "EMPLOYEE_CODE"                : "Code Employe",
     "PURCHASE_TOTAL"               : "Total",
     "PURCHASE_ORDER"               : "Ordre D'Achat",
-    "DISTRIBUTION_SERVICE" : "Distribution Service"
+    "DISTRIBUTION_SERVICE" : "Distribution Service",
+    "CONVENTION"                   : "Recit pour convention",
+    "NUM_CONVENTION_PAY"           : "Reference"
 
   },
 
@@ -1197,7 +1199,12 @@
     "TOT"                : "Total",
     "CRUMB_PCASH"        : "caisse principale",
     "CRUMB_CONVENTION"   : "convention",
-    "DEFAULT_CASHBOX"    : "Caisse"
+    "DEFAULT_CASHBOX"    : "Caisse",
+    "EXCHANGE_RATE_OPT"  : "Voulez - vous definir le taux ?",
+    "LOADING_ERROR"      : "Erreur durant le chargement, verifier que le taux d'echange est defini, si lprobleme persiste constacter l'administrateur",
+    "DEFAULT_CURRENCY"   : "Monnaie",
+    "NO_CONVENTION"      : "Pas des convention selectionnee",
+    "NO_RECORD"          : "Pas d'enregistrement pour cette convention"
   },
 
   "PCASH"                   : {
