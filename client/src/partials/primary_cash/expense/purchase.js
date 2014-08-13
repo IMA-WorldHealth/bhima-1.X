@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'appstate',
   'connect',
   '$location',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location) {
+  'util',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util) {
     var dependencies = {}, session = $scope.session = {};
     var cashbox, cashboxReference = $routeParams.cashbox;
     var currency_id = 2; // FIXME
@@ -145,7 +146,11 @@ angular.module('bhima.controllers')
     function getDate() {
       //Format the current date according to RFC3339
       var currentDate = new Date();
-      return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
+      console.log('la date', util.sqlDate(currentDate));
+
+      return util.sqlDate(currentDate);
+
+      // return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
     }
     $scope.confirmPurchase = confirmPurchase;
     $scope.payPurchase = payPurchase;
