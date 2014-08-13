@@ -1,8 +1,8 @@
-<header>
-  <span>{{ "GROUP_INVOICE.TITLE" | translate }}</span>
+<header data-header>
+  {{ "GROUP_INVOICE.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <!-- split button -->
   <!--
   <div class="btn-group">
@@ -17,9 +17,9 @@
   -->
 
   <span class="btn btn-sm btn-default" ng-show="!!selected.convention">{{ selected.convention.name }}</span>
-</section>
+</nav>
 
-<div class="content">
+<main>
 
   <div class="row">
 
@@ -239,4 +239,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

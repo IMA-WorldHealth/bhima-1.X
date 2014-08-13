@@ -2,12 +2,12 @@
   {{ "EXCHANGE.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
-  <a href="" class="btn btn-sm btn-default" ng-click="action='new'"><i class="glyphicon glyphicon-file"></i>{{ "EXCHANGE.NEW" | translate }}</a>
-  <a href="" class="btn btn-sm btn-default" ng-click="action='review'"><i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
-</section>
+<nav>
+  <class="btn btn-sm btn-default" ng-click="action='new'"><i class="glyphicon glyphicon-file"></i>{{ "EXCHANGE.NEW" | translate }}</a>
+  <class="btn btn-sm btn-default" ng-click="action='review'"><i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
+</nav>
 
-<div class="content">
+<main>
   <div class="row">
     <div class="col-xs-6">
       <h3 style="margin-top:inherit;">{{ EXCHANGE.PREV | translate }}</h3>
@@ -35,7 +35,7 @@
 
       <div ng-switch-default>
         <div class="alert alert-info">
-          <h4> {{ "EXCHANGE.TITLE" | translate }} </h4>
+          <h4>{{ "EXCHANGE.TITLE" | translate }}</h4>
           <p>{{ "EXCHANGE.HELP_TXT_1" | translate }}</p>
         </div>
       </div>
@@ -100,7 +100,7 @@
                 <div class="col-xs-5 input-group">
                   <input class="form-bhima" ng-model="newRate.rate" min="0" required placeholder="1.00" type="number" required>
                   <span class="input-group-addon">
-                    {{currency.get(newRate.foreign_currency_id).symbol}}
+                    {{ currency.get(newRate.foreign_currency_id).symbol }}
                   </span>
                 </div>
               </div>
@@ -113,4 +113,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

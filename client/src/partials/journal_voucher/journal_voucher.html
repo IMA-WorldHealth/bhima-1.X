@@ -2,7 +2,7 @@
   {{ "JOURNAL_VOUCHER.TITLE" | translate }}
 </header>
 
-<section class="top-nav underline">
+<nav>
   <div class="pull-left dropdown">
     <button class="btn btn-sm btn-primary dropdown-toggle square">
       {{ currencies.get(voucher.currency_id).symbol || "JOURNAL_VOUCHER.DEFAULT_CURRENCY" | translate }}
@@ -10,7 +10,7 @@
     </button>
     <ul class="dropdown-menu square">
       <li ng-repeat="currency in currencies.data">
-        <a href="" ng-click="voucher.currency_id=currency.id">{{ currency.symbol }}</a>
+        <a class="clk" ng-click="voucher.currency_id=currency.id">{{ currency.symbol }}</a>
       </li>
     </ul>
   </div>
@@ -20,9 +20,9 @@
       <span class="glyphicon glyphicon-tag"></span> {{ "JOURNAL_VOUCHER.POSTING_JOURNAL" | translate}}
     </a>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="row col-xs-12">
     <form class="form-horizontal">
         <div class="form-group">
@@ -94,7 +94,7 @@
       </tfoot>
     </table>
   </div>
-</div>
+</main>
 
 <section class="bar-bottom">
   <div class="pull-right">

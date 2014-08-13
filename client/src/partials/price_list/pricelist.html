@@ -1,15 +1,14 @@
-<header>
+<header data-header>
   {{ "PRICE_LIST.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <button class="btn btn-sm btn-default" ng-click="addList()">
     <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
   </button>
-</section>
+</nav>
 
-<div class="content">
-
+<main>
   <div class="row">
     <div class="col-xs-4">
       <div class="panel panel-default">
@@ -38,10 +37,8 @@
             </tr>
 
             <tr ng-if="model.priceList.data.length===0">
-                  <td colspan=2><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
+              <td colspan=2><i>{{ 'PRICE_LIST.NO_RECORDS' | translate }}</i></tr>
             </tr>
-
-
           </tbody>
         </table>
       </div>
@@ -194,4 +191,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>
