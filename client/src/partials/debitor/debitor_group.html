@@ -2,7 +2,7 @@
   {{ "DEBITOR_GRP.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
     <input type="search" class="form-bhima" ng-model="data.search" placeholder="{{ 'DEBITOR_GRP.FILTER' | translate }}" size="25">
   </div>
@@ -11,9 +11,9 @@
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "DEBITOR_GRP.NEW" | translate }}
     </button>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
@@ -36,7 +36,7 @@
               <td>{{ account.get(group.account_id).account_number }}</td>
               <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!group.is_convention}"></span></td>
               <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>
-              <td><a href="" ng-click="edit(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a ng-click="edit(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -246,15 +246,6 @@
                 <input type="number" min="0" name="group-maxcredit" class="form-bhima" ng-model="editGroup.max_credit" required>
               </div>
             </div>
-<!--  -->
-<!--             <div class="form&#45;group"> -->
-<!--               <label class="col&#45;xs&#45;2 control&#45;label required">{{ "COLUMNS.TYPE" | translate }}</label> -->
-<!--               <div class="col&#45;xs&#45;10"> -->
-<!--                 <select name="group&#45;type" class="form&#45;bhima" ng&#45;model="editGroup.type_id" ng&#45;options="t.id as t.type for t in types.data" required> -->
-<!--                   <option value="" disabled="disabled">&#45;&#45; {{ "SELECT.GROUP_TYPE" | translate }} &#45;&#45; </option> -->
-<!--                 </select> -->
-<!--               </div> -->
-<!--             </div> -->
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
@@ -271,4 +262,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

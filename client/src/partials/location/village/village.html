@@ -2,16 +2,16 @@
   {{ 'VILLAGE.TITLE' | translate }}
 </header>
 
-<section class="top-nav">
-  <a href="" class="btn btn-default btn-sm" ng-click="op='add'"><span class="glyphicon glyphicon-plus"></span> {{'VILLAGE.NEW_VILLAGE' | translate}}</a>
+<nav>
+  <a class="btn btn-default btn-sm" ng-click="op='add'"><span class="glyphicon glyphicon-plus"></span> {{'VILLAGE.NEW_VILLAGE' | translate}}</a>
   <div class="pull-right">
     <a href="#/location/" class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{ 'VILLAGE.LOCATION_MANAGER' | translate }}
     </a>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-default" style="max-height: 40em; overflow: auto;">
@@ -100,4 +100,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

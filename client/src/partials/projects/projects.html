@@ -2,17 +2,17 @@
   {{ 'PROJECT.TITLE' | translate }}
 </header>
 
-<section class='top-nav'>
-  <a href="" class="btn btn-sm btn-default" ng-click="new()">
+<nav>
+  <a class="btn btn-sm btn-default" ng-click="new()">
     <span class="glyphicon glyphicon-file"></span> {{ 'PROJECT.NEW' | translate }}
   </a>
 
   <div class="pull-right">
-    <a href="" class="btn btn-sm btn-default" ng-click="print()">
+    <a class="btn btn-sm btn-default" ng-click="print()">
       <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
     </a>
   </div>
-</section>
+</nav>
 
 <div class="report visible-print">
   <div class="reportBody">
@@ -41,7 +41,7 @@
   </div>
 </div>
 
-<div class="content hidden-print">
+<main class="hidden-print">
   <div class="row">
 
     <div class="col-xs-6">
@@ -65,8 +65,8 @@
               <td>{{ project.name }}</td>
               <td>{{ project.abbr }}</td>
               <td>{{ project.enterprise_id }}</td>
-              <td><a href="" ng-click="edit(project)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a href="" ng-click="delete(project)" disabled class="danger"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td><a ng-click="edit(project)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a ng-click="delete(project)" disabled class="danger"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
           </tbody>
         </table>
@@ -139,4 +139,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

@@ -1,8 +1,8 @@
-<header>
+<header data-header>
   {{ "SALE.TITLE" | translate }}
 </header>
 
-<section class="top-nav underline">
+<nav>
   <div class="pull-right">
     <a ng-click="toggleTablock()" class="btn btn-default">
       <span ng-class="{'glyphicon-th': session.tablock===0, 'glyphicon-th-list' : session.tablock===-1}" class="glyphicon"></span> {{(session.tablock==-1) ? ("SALE.TAB_LOCK_LINE" | translate) : ("SALE.TAB_LOCK_ITEM" | translate)}}
@@ -12,9 +12,9 @@
       <span class="glyphicon glyphicon-refresh"></span> {{ "SALE.RECOVER" | translate}}
     </a>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
 
   <div class="row">
     <div class="col-xs-12">
@@ -157,7 +157,7 @@
     <!-- </div> -->
     </div>
   </div>
-</div>
+</main>
 
 <section class="bar-bottom">
   <div class="pull-right">

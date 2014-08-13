@@ -2,7 +2,7 @@
   {{ 'CASH.TITLE' | translate}}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
 
     <span class="dropdown pull-right">
@@ -13,7 +13,7 @@
 
       <ul class="dropdown-menu ">
         <li ng-repeat="currency in cashbox_accounts.data">
-        <a href="" ng-click="setCurrency(currency)">  ({{ currency.cash_box_id }}) {{currency.symbol}} </a>
+        <a class="clk" ng-click="setCurrency(currency)">  ({{ currency.cash_box_id }}) {{currency.symbol}} </a>
         </li>
       </ul>
     </span>
@@ -26,16 +26,15 @@
 
       <ul class="dropdown-menu">
         <li ng-repeat="box in cashboxes.data">
-          <a href="" ng-click="setCashBox(box)"> {{box.text}} - {{box.symbol}} </a>
+          <a class="clk" ng-click="setCashBox(box)"> {{box.text}} - {{box.symbol}} </a>
         </li>
       </ul>
     </span>
 
   </div>
-</section>
+</nav>
 
-<div class="content">
-
+<main>
   <div class="row">
     <div class="col-xs-6" ng-switch="!!patient">
 
@@ -48,7 +47,6 @@
           <p>{{ "CASH.HELP_TXT_1" | translate }}.</p>
           <p>{{ "CASH.HELP_TXT_2" | translate }}.</p>
         </div>
-
       </div>
 
       <div class="panel panel-primary" ng-switch-when="true">
@@ -98,7 +96,7 @@
               <td ng-bind-html="invoice.locale | intlcurrency:currency.currency_id"></td>
               <td ng-bind-html="invoice.allocated | intlcurrency:currency.currency_id"></td>
               <td ng-bind-html="invoice.remaining | intlcurrency:currency.currency_id"></td>
-              <td><a href="" ng-click="remove($index)" class="glyphicon glyphicon-trash"></a></td>
+              <td><a ng-click="remove($index)" class="glyphicon glyphicon-trash clk"></a></td>
             </tr>
           </tbody>
           <tfoot>
@@ -170,7 +168,7 @@
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <script type="text/ng-template" id="debtorListItem.html">
   <a>

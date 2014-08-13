@@ -2,7 +2,7 @@
   {{ "RENEWAL.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <!-- <div class="pull&#45;right"> -->
   <!--   <a href="#/debitor/debitor_group" class="capital btn btn&#45;default btn&#45;sm"> -->
   <!--     <span class="glyphicon glyphicon&#45;tag"></span> {{ "PATIENT_REG.CREATE_DEBTOR_GROUP" | translate }} -->
@@ -11,9 +11,9 @@
   <!--     <span class="glyphicon glyphicon&#45;list"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }} -->
   <!--   </a> -->
   <!-- </div> -->
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="row">
     <div class="col-xs-6">
       <div find-patient on-search-complete="loadPatient"></div>
@@ -68,7 +68,7 @@
     </div>
     </div>
   </div>
-</div>
+</main>
 
 <script type="text/ng-template" id="debtorListItem.html">
   <a>
