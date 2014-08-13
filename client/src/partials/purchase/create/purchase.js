@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   'uuid',
-  function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid) {
+  'util',
+  function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid, util) {
     // TODO Module should only continue with selection of both employee and
     // supplier, currently just hides everything to look like this
     // TODO Currently downloads every location - should only download the
@@ -196,6 +197,7 @@ angular.module('bhima.controllers')
       purchase.cost = purchaseTotal();
 
       // FIXME
+      purchase.purchase_date = util.sqlDate(purchase.purchase_date);
       purchase.currency_id = appstate.get('enterprise').currency_id;
       purchase.creditor_uuid = session.creditor.creditor_uuid;
       purchase.purchaser_id = $scope.user.data.id;
