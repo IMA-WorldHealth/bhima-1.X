@@ -8,10 +8,12 @@
   </div>
 </nav>
 
+
 <main>
   <div class="row">
     <div class="col-xs-5">
       <div class="panel panel-default square">
+
         <div class="panel-heading square">
           <span class="glyphicon glyphicon-cog"></span> {{ 'PURCHASE.CONFIGURE' | translate }}
         </div>
@@ -34,8 +36,6 @@
               <option value="" disabled="disabled">--Select Employee--</option>
             </select>
           </div>
-
-
           <!-- Determine validity period of payment -->
 
           <!-- <div class="form&#45;group"> -->
@@ -61,8 +61,7 @@
           <!--     <span class="input&#45;group&#45;addon">days</span> -->
           <!--   </div> -->
           <!-- </div> -->
-        </div>
-
+        </div>        
       </div>
     </div>
     <div class="col-xs-7">
@@ -93,7 +92,6 @@
                 </tbody>
               </table>
             </div>
-
           </div>
 
           <div class="row">
@@ -116,15 +114,12 @@
               </table>
             </div>
           </div>
-
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="row">
-
     <div class="col-xs-12">
 
       <!-- Item Warnings -->
@@ -135,7 +130,6 @@
           <span class="glyphicon glyphicon-list"></span> {{ 'PURCHASE.PURCHASE_ITEM' | translate }}
           <!-- FIXME style hack -->
           <a ng-class="{'disabled' : !(session.creditor && session.employee)}" class="pull-right menu-item" ng-click="addPurchaseItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.ADD_LINE_ITEM" | translate }}</a>
-
         </div>
 
 
@@ -185,6 +179,7 @@
     </div>
   </div>
 </main>
+
 
 <section class="bar-bottom">
   <div class="pull-right">

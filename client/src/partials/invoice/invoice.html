@@ -303,7 +303,6 @@
       </div>
 
       <div ng-switch-when="purchase">
-        <!-- Patient Invoice template -->
         <div class="row customer-details">
           <div class="col-xs-12">
 
@@ -312,7 +311,6 @@
           </div>
         </div>
         <div class="row customer-details">
-          <!-- Temporary style; needs official markup and CSS -->
           <div class="col-xs-4">
             <span>
               <b>{{project.enterprise_name}}</b>
@@ -328,7 +326,6 @@
             <i>TEL</i> {{project.phone}}
             <br>
             <i>FAX</i> {{project.email}}
-
           </div>
           <div class="col-xs-4">
             <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i>
@@ -346,7 +343,6 @@
             <i>TEL</i> {{supplier.phone}}
             <br>
             <i>FAX</i> {{supplier.email}}
-
           </div>
           <div class="col-xs-4">
             <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{purchase.reference}}</b>
@@ -362,11 +358,9 @@
             <br>
             {{ 'INVOICE.EMPLOYEE_CODE' | translate }}</i> <b>{{employee.code}}</b>
           </div>
-
         </div>
         <div class="row">
           <div class="col-xs-12">
-
             <table class="invoiceTable">
               <thead>
                 <tr>
@@ -388,14 +382,15 @@
                 </tr>
               </tbody>
               <tbody class="totals">
-                <tr><td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td><td><span ng-bind-html="purchase.cost | intlcurrency:session.currentCurrency.id"></span></td></tr>
-                <!-- <tr><td colspan="4" class="no&#45;border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng&#45;bind&#45;html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.id"></span></td></tr> -->
-                <!-- <tr><td colspan="4" class="no&#45;border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng&#45;bind&#45;html="invoice.localeBalance | intlcurrency:session.currentCurrency.id"></span></td></tr> -->
+                <tr>
+                  <td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td><td>
+                    <span ng-bind-html="purchase.cost | intlcurrency:session.currentCurrency.id"></span>
+                  </td>
+                </tr>
               </tbody>
-
             </table>
           </div>
-        </div> <!-- End Patient Invoice template -->
+        </div>
       </div>
 
       <div ng-switch-when="patient">
@@ -507,7 +502,7 @@
           </div>
         </div> <!-- End Patient Invoice template -->
       </div>
-      <!-- Placholder debtor recipt, shows all transactions for given debtor, and the balance owed-->
+
       <div ng-switch-when="debtor">
         <div class="row customer-details">
           <div class="col-xs-12">
