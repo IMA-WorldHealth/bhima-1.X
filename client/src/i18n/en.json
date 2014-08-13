@@ -1280,7 +1280,9 @@
     "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
     "DOCUMENT_REF"      : "Document Ref.",
     "DEPOT_REF"         : "Depot Ref.",
-    "DISTRIBUTION_SERVICE" : "Service Distribution"
+    "DISTRIBUTION_SERVICE" : "Service Distribution",
+    "CONVENTION"                   : "Receipt for convention",
+    "NUM_CONVENTION_PAY"           : "Reference"
 
   },
 
@@ -1567,7 +1569,12 @@
     "TOT"                : "Total",
     "CRUMB_PCASH"        : "Primary cash",
     "CRUMB_CONVENTION"   : "convention",
-    "DEFAULT_CASHBOX"    : "Cash"
+    "DEFAULT_CASHBOX"    : "Cash",
+     "EXCHANGE_RATE_OPT"  : "Do you need to set the exchange rate ?",
+    "LOADING_ERROR"      : "Eror during loading, check if the exchange rate is setted, if the problem persists contact the administrator",
+    "DEFAULT_CURRENCY"   : "Currency",
+    "NO_CONVENTION"      : "No convention selected",
+    "NO_RECORD" : "No record for this convention"
   },
 
   "ALLTRANSACTIONS" : {

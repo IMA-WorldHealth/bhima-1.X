@@ -3,24 +3,24 @@
 </header>
 
 <nav>
-    <div style="position: absolute; right: 5px;">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
-        {{ model.accounts.get(selectedItem.account_id).account_txt || "CONVENTION.DEFAULT_CASHBOX" | translate }}
-        <span class="caret" data-caret="&#9660;"></span>
-      </button>
-      <ul class="dropdown-menu pull-left">
-        <li ng-repeat="box in model.cash_box.data">
-          <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
-        </li>
-      </ul>
-    </div>
+  <div style="position: absolute; right: 5px;">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ selectedItem.symbol || "CONVENTION.DEFAULT_CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu pull-left">
+      <li ng-repeat="box in model.cash_box.data">
+        <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+      </li>
+    </ul>
+  </div>
 
-    <div class="pull-left">
-      <ol class="breadcrumb">
-        <li><span class="glyphicon glyphicon-home"></span></li>
-        <li><a href="#/primary_cash/">{{'CONVENTION.CRUMB_PCASH' | translate}}</a></li>
-        <li class="active">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</li>
-      </ol>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/primary_cash/">{{'CONVENTION.CRUMB_PCASH' | translate}}</a></li>
+      <li class="active">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</li>
+    </ol>
   </div>
 </nav>
 
@@ -31,6 +31,7 @@
       <div find-convention on-search-complete="initialiseConvention"></div>
     </div>
   </div>
+
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-primary">
@@ -42,25 +43,32 @@
           <div class="row">
             <div class="col-xs-12">
               <table class="table table-condensed">
-            <thead>
-              <tr>
-                <th>{{'COLUMNS.REFERENCE' | translate}}</th>
-                <th>{{'COLUMNS.DESCRIPTION' | translate}}</th>
-                <th>{{'COLUMNS.AMOUNT' | translate}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="overview in overviews">
-                <td>{{overview.reference}}</td>
-                <td>{{overview.description}}</td>
-                <td  align="right"><span ng-bind-html="overview.balance | intlcurrency:overview.currency_id"></span></td>
-              </tr>
-              <tr>
-                <td align="left">{{'CONVENTION.TOT' | translate}}</td>
-                <td colspan="2" align="right">{{som | currency}}</td>
-              </tr>
-            </tbody>
-          </table>
+                <thead>
+                  <tr>
+                    <th>{{'COLUMNS.REFERENCE' | translate}}</th>
+                    <th>{{'COLUMNS.DESCRIPTION' | translate}}</th>
+                    <th>{{'COLUMNS.AMOUNT' | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="overview in overviews">
+                    <td>{{overview.reference}}</td>
+                    <td>{{overview.description}}</td>
+                    <td  align="right"> {{overview.balance | number:4 | currency}}</td>
+                  </tr>
+                  <tr ng-if="overviews.length">
+                    <td align="left">{{'CONVENTION.TOT' | translate}}</td>
+                    <td colspan="2" align="right">{{som | number:4 | currency}}</td>
+                  </tr>
+                  <tr ng-if="!overviews.length">
+                    <td colspan="3">
+                      <div class="alert alert-warning square">
+                        {{ 'CONVENTION.NO_RECORD' | translate }}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

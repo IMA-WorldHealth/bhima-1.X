@@ -32,10 +32,7 @@ angular.module('bhima.directives')
           '<div id=\'findConvention\' class=\'panel panel-default\' ng-class="{\'panel-success\': findConvention.valid, \'panel-danger\': findConvention.valid===false}">'+ '  <div class=\'panel-heading\'>'+
           '    <div ng-switch=\'findConvention.submitSuccess\'>'+
           '     <div ng-switch-when=\'false\'>'+
-          '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'CFIND.TITLE\' | translate }}'+
-          '       <div class=\'pull-right\'>'+
-          '         <a id=\'findByName\' ng-class="{\'link-selected\': findConvention.state===\'name\'}" ng-click=\'findConvention.updateState("name")\' class=\'patient-find\'><span class=\'glyphicon glyphicon-user\'></span> {{ \'CFIND.SEARCH\' | translate }} </a>'+
-          '       </div>'+
+          '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'CFIND.TITLE\' | translate }}'+         
           '     </div>'+
           '     <div ng-switch-when=\'true\'>'+
           '       <!-- Style hack -->'+
