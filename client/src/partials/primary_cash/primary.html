@@ -1,4 +1,4 @@
-<header>{{ 'PRIMARY_CASH.TITLE' | translate }}</header>
+<header data-header>{{ 'PRIMARY_CASH.TITLE' | translate }}</header>
 
 <nav>
   <div class="pull-left">
@@ -10,11 +10,8 @@
 
   <div class="pull-right" style="margin-top : 1px;">
     <span>
-      <b>{{session.cashbox.id ?
-        '[' + session.cashbox.id + ']' :
-        ''}}
-      </b>
-      {{session.cashbox.text}}
+      <b>{{ session.cashbox.id ? '[' + session.cashbox.id + ']' : '' }}</b>
+      {{ session.cashbox.text }}
     </span>
 
     <button
