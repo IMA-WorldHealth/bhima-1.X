@@ -126,15 +126,6 @@ angular.module('bhima.controllers')
     }
 
     function pay () {
-     //  $scope.data.amount = 0;
-     // if($scope.selectedItem.currency_id !== $scope.model.enterprise.data[0].currency_id) {
-     //    var rate = $scope.model.exchange_rate.data[0];
-     //    $scope.data.amount = $scope.data.payment / rate.rate;
-     //  }else{
-     //    $scope.data.amount = $scope.data.payment;
-     //  }
-
-
       var record = {
         uuid            : uuid(),
         project_id      : $scope.project.id,
@@ -156,7 +147,6 @@ angular.module('bhima.controllers')
     }
 
     function postToJournal (resu) {
-      //console.log('[resu]', resu);
       record_uuid = resu[0].config.data.data[0].primary_cash_uuid;
       return connect.fetch('/journal/pcash_convention/' + record_uuid);
     }
@@ -177,14 +167,29 @@ angular.module('bhima.controllers')
       var items = [];
       var cost_received = max_amount;
 
-      for (var i = 0; i < $scope.overviews.length; i += 1){
-        cost_received -= $scope.overviews[i].balance;
-        if(cost_received >= 0) {
-          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : $scope.overviews[i].balance, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
-        }else{
-          cost_received+=$scope.overviews[i].balance;
-          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
-          break;
+      if ($scope.selectedItem.currency_id == $scope.model.enterprise.data[0].currency_id) {
+        for (var i = 0; i < $scope.overviews.length; i += 1){
+          cost_received -= $scope.overviews[i].balance;
+          if(cost_received >= 0) {
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : $scope.overviews[i].balance, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+          }else{
+            cost_received+=$scope.overviews[i].balance;
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+            break;
+          }
+        }
+      }else{
+        var rate = $scope.model.exchange_rate.data[0];
+        for (var i = 0; i < $scope.overviews.length; i += 1){
+          var value = ($scope.overviews[i].balance * rate.rate);
+          cost_received -= value;
+          if(cost_received >= 0) {
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : value, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+          }else{
+            cost_received += value;
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+            break;
+          }
         }
       }
       return items;
@@ -237,9 +242,7 @@ angular.module('bhima.controllers')
       if ($scope.data.payment) {
         if($scope.selectedItem.currency_id !== $scope.model.enterprise.data[0].currency_id) {
           var rate = $scope.model.exchange_rate.data[0];
-          var amount = $scope.data.payment / rate.rate;
-          var min = $scope.selectedItem.min_monentary_unit / rate.rate;
-          return amount < min || amount > $scope.som;
+          return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som * rate.rate;
         }else{
           return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
         }        
@@ -247,19 +250,6 @@ angular.module('bhima.controllers')
          return true;
        }     
     }
-
-    // function convert () {
-    //   var rate = $scope.model.exchange_rate.data[0];
-    //   if($scope.selectedItem.currency_id !== $scope.model.enterprise.data[0].currency_id) {
-    //     $scope.overviews.forEach(function (item) {
-    //     if(item.currency_id !== $scope.selectedItem.currency_id) {
-    //       item.credit = (item.credit * rate.rate);
-    //     }
-    //   });
-    //   }
-      
-    //   console.log($scope.overviews);
-    // }
 
     $scope.initialiseConvention = initialiseConvention;
     $scope.pay = pay;
