@@ -1,156 +1,155 @@
-<header>
-  <span>{{ "CURRENCY.TITLE" | translate }}</span>
+<header data-header>
+  {{ "CURRENCY.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="new()">
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "CURRENCY.ADD" | translate }}
     </button>
   </div>
-</section>
+</nav>
 
-<div class="content">
-
+<main>
   <div class="row">
-  <div class="col-xs-6">
-    <table class="table table-condensed">
-      <thead>
-        <tr>
-          <th>{{ "COLUMNS.NAME" | translate }}</th>
-          <th>{{ "COLUMNS.SYMBOL" | translate }}</th>
-          <th>{{ "COLUMNS.SEPARATOR" | translate }}</th>
-          <th>{{ "COLUMNS.DECIMAL" | translate }}</th>
-          <th colspan="2" style="width:10%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="currency in currency.data">
-          <td> {{ currency.name }} </td>
-          <td style="font-size: 14px;">{{ currency.symbol }}</td>
-          <td style="font-size: 14px;"> <b>{{ currency.separator }}</b> </td>
-          <td style="font-size: 14px;"> <b>{{ currency.decimal }}</b> </td>
-          <td><a ng-click="edit(currency.id)" href=""><i class="glyphicon glyphicon-pencil"></i></a></td>
-          <td><a class="danger" ng-click="remove(currency.id)" href="" disabled><i class="glyphicon glyphicon-trash"></i></button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="col-xs-6">
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.NAME" | translate }}</th>
+            <th>{{ "COLUMNS.SYMBOL" | translate }}</th>
+            <th>{{ "COLUMNS.SEPARATOR" | translate }}</th>
+            <th>{{ "COLUMNS.DECIMAL" | translate }}</th>
+            <th colspan="2" style="width:10%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="currency in currency.data">
+            <td> {{ currency.name }} </td>
+            <td style="font-size: 14px;">{{ currency.symbol }}</td>
+            <td style="font-size: 14px;"> <b>{{ currency.separator }}</b> </td>
+            <td style="font-size: 14px;"> <b>{{ currency.decimal }}</b> </td>
+            <td><a class="clk" ng-click="edit(currency.id)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+            <td><a class="clk danger" ng-click="remove(currency.id)" disabled="disabled"><i class="glyphicon glyphicon-trash"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="col-xs-6" ng-switch="action">
+    <div class="col-xs-6" ng-switch="action">
 
-    <div ng-switch-default>
-      <div class="alert alert-info">
-        <h4>{{ "CURRENCY.TITLE" | translate }}</h4>
-        <p>{{ "CURRENCY.HELP_TXT_1" | translate }}.</p>
-        <p><b>{{ "CURRENCY.DEFN" | translate }}</b></p>
-        <ul class="list-plain">
-          <li><b>{{ "CURRENCY.SYMBOL" | translate }}</b>: {{ "CURRENCY.SYMBOL_TXT" | translate }}.</li>
-          <li><b>{{ "CURRENCY.SEPARATOR" | translate }}</b>: {{ "CURRENCY.SEPARATOR_TXT" | translate }}.</li>
-          <li><b>{{ "CURRENCY.DECIMAL" | translate }}</b>: {{ "CURRENCY.DECIMAL_TXT" | translate }}.</li>
-        </ul>
-        <p><b>{{ "CURRENCY.ACTIONS" | translate }}</b></p>
-        <ul class="list-plain">
-          <li> <i class="glyphicon glyphicon-pencil"></i> {{ "CURRENCY.ACTION_TXT_1" | translate }}.</li>
-          <li> <i class="glyphicon glyphicon-trash"></i> {{ "CURRENCY.ACTION_TXT_2" | translate }}.</li>
-        </ul>
+      <div ng-switch-default>
+        <div class="alert alert-info">
+          <h4>{{ "CURRENCY.TITLE" | translate }}</h4>
+          <p>{{ "CURRENCY.HELP_TXT_1" | translate }}.</p>
+          <p><b>{{ "CURRENCY.DEFN" | translate }}</b></p>
+          <ul class="list-plain">
+            <li><b>{{ "CURRENCY.SYMBOL" | translate }}</b>: {{ "CURRENCY.SYMBOL_TXT" | translate }}.</li>
+            <li><b>{{ "CURRENCY.SEPARATOR" | translate }}</b>: {{ "CURRENCY.SEPARATOR_TXT" | translate }}.</li>
+            <li><b>{{ "CURRENCY.DECIMAL" | translate }}</b>: {{ "CURRENCY.DECIMAL_TXT" | translate }}.</li>
+          </ul>
+          <p><b>{{ "CURRENCY.ACTIONS" | translate }}</b></p>
+          <ul class="list-plain">
+            <li> <i class="glyphicon glyphicon-pencil"></i> {{ "CURRENCY.ACTION_TXT_1" | translate }}.</li>
+            <li> <i class="glyphicon glyphicon-trash"></i> {{ "CURRENCY.ACTION_TXT_2" | translate }}.</li>
+          </ul>
+        </div>
       </div>
+
+      <div ng-switch-when="new">
+        <form class="form-horizontal" name="newForm" novalidate ng-controller="currency">
+          <fieldset>
+            <legend>{{ "CURRENCY.CURRENCY_DEFN" | translate }}</legend>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.NAME" | translate }}</label>
+              <div class="col-xs-10">
+                <input name="name" ng-model="newCurrency.name" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.SYMBOL" | translate }}</label>
+              <div class="col-xs-10">
+                <input name="symbol" ng-model="newCurrency.symbol" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.SEPARATOR" | translate }}</label>
+              <div class="col-xs-10">
+                <input name="separator" ng-model="newCurrency.separator" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.DECIMAL" | translate }}</label>
+              <div class="col-xs-10">
+                <input name="decimal" ng-model="newCurrency.decimal" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2">{{ "COLUMNS.NOTE" | translate }}</label>
+              <div class="col-xs-10">
+                <textarea name="note" ng-model="newCurrency.note" class="form-control"></textarea>
+              </div>
+            </div>
+
+          </fieldset>
+
+          <input class="btn btn-sm btn-success" type="submit" ng-click="submitNew()" value="{{ 'FORM.SAVE' | translate }}">
+          <input class="btn btn-sm btn-default" type="reset" ng-click="resetNew()" value="{{ 'FORM.RESET_FORM' | translate }}">
+        </form>
+      </div>
+
+      <div ng-switch-when="edit">
+        <form class="form-horizontal" name="editForm" ng-controller="currency" novalidate>
+          <fieldset>
+            <legend>{{ "CURRENCY.CURRENCY_DEFN" | translate }}</legend>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.NAME" | translate }}</label>
+              <div class="col-xs-10">
+                <input ng-model="editCurrency.name" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.SYMBOL" | translate }}</label>
+              <div class="col-xs-10">
+                <input ng-model="editCurrency.symbol" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.SEPARATOR" | translate }}</label>
+              <div class="col-xs-10">
+                <input ng-model="editCurrency.separator" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2 required">{{ "COLUMNS.DECIMAL" | translate }}</label>
+              <div class="col-xs-10">
+                <input ng-model="editCurrency.decimal" class="form-bhima" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-2">{{ "COLUMNS.NOTE" | translate }}</label>
+              <div class="col-xs-10">
+                <textarea ng-model="editCurrency.note" class="form-control"></textarea>
+              </div>
+            </div>
+
+          </fieldset>
+
+          <input class="btn btn-sm btn-success" type="submit" ng-click="submitEdit()" value="{{ 'FORM.SAVE' | translate }}">
+          <input class="btn btn-sm btn-default" type="button" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
+        </form>
+      </div>
+
     </div>
-
-    <div ng-switch-when="new">
-      <form class="form-horizontal" name="newForm" novalidate ng-controller="currency">
-        <fieldset>
-          <legend>{{ "CURRENCY.CURRENCY_DEFN" | translate }}</legend>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.NAME" | translate }}</label>
-            <div class="col-xs-10">
-              <input name="name" ng-model="newCurrency.name" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.SYMBOL" | translate }}</label>
-            <div class="col-xs-10">
-              <input name="symbol" ng-model="newCurrency.symbol" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.SEPARATOR" | translate }}</label>
-            <div class="col-xs-10">
-              <input name="separator" ng-model="newCurrency.separator" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.DECIMAL" | translate }}</label>
-            <div class="col-xs-10">
-              <input name="decimal" ng-model="newCurrency.decimal" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2">{{ "COLUMNS.NOTE" | translate }}</label>
-            <div class="col-xs-10">
-              <textarea name="note" ng-model="newCurrency.note" class="form-control"></textarea>
-            </div>
-          </div>
-
-        </fieldset>
-
-        <input class="btn btn-sm btn-success" type="submit" ng-click="submitNew()" value="{{ 'FORM.SAVE' | translate }}">
-        <input class="btn btn-sm btn-default" type="reset" ng-click="resetNew()" value="{{ 'FORM.RESET_FORM' | translate }}">
-      </form>
-    </div>
-
-    <div ng-switch-when="edit">
-      <form class="form-horizontal" name="editForm" ng-controller="currency" novalidate>
-        <fieldset>
-          <legend>{{ "CURRENCY.CURRENCY_DEFN" | translate }}</legend>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.NAME" | translate }}</label>
-            <div class="col-xs-10">
-              <input ng-model="editCurrency.name" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.SYMBOL" | translate }}</label>
-            <div class="col-xs-10">
-              <input ng-model="editCurrency.symbol" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.SEPARATOR" | translate }}</label>
-            <div class="col-xs-10">
-              <input ng-model="editCurrency.separator" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2 required">{{ "COLUMNS.DECIMAL" | translate }}</label>
-            <div class="col-xs-10">
-              <input ng-model="editCurrency.decimal" class="form-bhima" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-2">{{ "COLUMNS.NOTE" | translate }}</label>
-            <div class="col-xs-10">
-              <textarea ng-model="editCurrency.note" class="form-control"></textarea>
-            </div>
-          </div>
-
-        </fieldset>
-
-        <input class="btn btn-sm btn-success" type="submit" ng-click="submitEdit()" value="{{ 'FORM.SAVE' | translate }}">
-        <input class="btn btn-sm btn-default" type="button" ng-click="resetEdit()" value="{{ 'FORM.RESET_FORM' | translate }}">
-      </form>
-    </div>
-
   </div>
-  </div>
-</div>
+</main>

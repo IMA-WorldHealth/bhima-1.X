@@ -11,7 +11,7 @@
   </div>
 </nav>
 
-<div class="content">
+<main>
   <div class="row">
     <div class="col-xs-12">
 
@@ -52,7 +52,7 @@
                 <span ng-show="purchase.paid==1" class="glyphicon glyphicon-hand-right"></span>
                 <span ng-show="purchase.paid==0" class="glyphicon glyphicon-hand-down"></span>
               </td>
-              <td><a href="#/invoice/purchase/{{purchase.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PURCHASE_RECORDS.VIEW_PURCHASE_DETAIL" | translate}}</a></td>
+              <td><a ng-href="#/invoice/purchase/{{purchase.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PURCHASE_RECORDS.VIEW_PURCHASE_DETAIL" | translate}}</a></td>
             </tr>
           </tbody>
         </table>
@@ -60,4 +60,4 @@
 
     </div>
   </div>
-</div>
+</main>
