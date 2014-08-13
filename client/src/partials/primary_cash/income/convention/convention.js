@@ -89,7 +89,7 @@ angular.module('bhima.controllers')
         }
         }
       }
-    }
+    };
 
     $scope.noEmpty = false;
     $scope.som = 0;
@@ -157,7 +157,6 @@ angular.module('bhima.controllers')
 
     function writeItem (result){
       var pcashItems = getPcashItems($scope.data.payment, result);
-      //console.log('[pcashitems]', pcashItems);
       return $q.all(pcashItems.map(function (pcash_item){
         return connect.basicPut('primary_cash_item', [pcash_item]);
       }));
@@ -180,14 +179,14 @@ angular.module('bhima.controllers')
         }
       }else{
         var rate = $scope.model.exchange_rate.data[0];
-        for (var i = 0; i < $scope.overviews.length; i += 1){
-          var value = ($scope.overviews[i].balance * rate.rate);
+        for (var j = 0; j < $scope.overviews.length; j += 1){
+          var value = ($scope.overviews[j].balance * rate.rate);
           cost_received -= value;
           if(cost_received >= 0) {
-            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : value, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : value, credit : 0, inv_po_id : $scope.overviews[j].inv_po_id});
           }else{
             cost_received += value;
-            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[j].inv_po_id});
             break;
           }
         }
@@ -233,7 +232,7 @@ angular.module('bhima.controllers')
         $translate('CONVENTION.LOADING_ERROR')
         .then(function (value) {
           messenger.danger(value);
-        })        
+        });       
       });
     });
 

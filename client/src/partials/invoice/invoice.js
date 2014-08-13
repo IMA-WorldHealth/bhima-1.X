@@ -98,18 +98,6 @@ angular.module('bhima.controllers')
       .then(cautionInvoice);
     }
 
-    /*
-    function buildPatientLocation() {
-      dependencies.location = {
-        required: false
-      };
-
-      dependencies.ledger = {
-        identifier: 'inv_po_id'
-      };
-    }
-    */
-
     function processTransfert (transfert_uuid) {
 
       var dependencies = {};
@@ -345,7 +333,8 @@ angular.module('bhima.controllers')
       .then(buildRecipientQuery);
     }
 
-    function processPurchase() {
+    function processPurchase (invoiceId) {
+      var dependencies = {};
       dependencies.purchase = {
         query : {
           tables : {
@@ -362,60 +351,60 @@ angular.module('bhima.controllers')
             inventory : { columns : ['code', 'text'] }
           },
           join : ['purchase_item.inventory_uuid=inventory.uuid'],
-          where : ['purchase_item.purchase_uuid=' + invoiceId + '']
+          where : ['purchase_item.purchase_uuid=' + invoiceId]
         }
       };
 
-      validate.process(dependencies, ['purchase', 'purchaseItem']).then(processPurchaseParties);
+      validate.process(dependencies).then(processPurchaseParties);
+
+      function processPurchaseParties(model) {
+        var creditor = model.purchase.data[0].creditor_uuid;
+        var employee = model.purchase.data[0].employee_id;
+
+        dependencies.supplier = {
+          query : {
+            tables : {
+              creditor : { columns : ['group_uuid'] },
+              supplier : { columns : ['uuid', 'name', 'location_id', 'email', 'fax', 'note', 'phone', 'international'] }
+            },
+            join : ['creditor.uuid=supplier.creditor_uuid'],
+            where : ['creditor.uuid=' + creditor]
+          }
+        };
+
+        dependencies.employee = {
+          query : {
+            tables : {
+              employee : { columns : ['name', 'code', 'dob', 'creditor_uuid'] }
+            },
+            where : ['employee.id=' + employee]
+          }
+        };
+
+        validate.process(dependencies, ['supplier', 'employee']).then(processPurchaseDetails);
+      }
+
+      function processPurchaseDetails(model) {
+        var locationId = model.supplier.data[0].location_id;
+
+        dependencies.supplierLocation = {
+          query : '/location/' + locationId
+        };
+
+        validate.process(dependencies, ['supplierLocation']).then(initialisePurchase);
+      }
+
+      function initialisePurchase(model) {
+        $scope.model = model;
+        console.log('tout ce quo a', model);
+        $scope.purchase = model.purchase.data[0];
+        $scope.supplier = model.supplier.data[0];
+        $scope.employee = model.employee.data[0];
+        $scope.supplierLocation = model.supplierLocation.data[0];
+      }
     }
+    
 
-    function processPurchaseParties(model) {
-      var creditor = model.purchase.data[0].creditor_uuid;
-      var employee = model.purchase.data[0].employee_id;
-
-      dependencies.supplier = {
-        query : {
-          tables : {
-            creditor : { columns : ['group_uuid'] },
-            supplier : { columns : ['uuid', 'name', 'location_id', 'email', 'fax', 'note', 'phone', 'international'] }
-          },
-          join : ['creditor.uuid=supplier.creditor_uuid'],
-          where : ['creditor.uuid=' + creditor]
-        }
-      };
-
-      dependencies.employee = {
-        query : {
-          tables : {
-            employee : { columns : ['name', 'code', 'dob', 'creditor_uuid'] }
-          },
-          where : ['employee.id=' + employee]
-        }
-      };
-
-      validate.process(dependencies, ['supplier', 'employee']).then(processPurchaseDetails);
-    }
-
-    function processPurchaseDetails(model) {
-      var locationId = model.supplier.data[0].location_id;
-
-      dependencies.supplierLocation = {
-        query : '/location/' + locationId
-      };
-
-      validate.process(dependencies, ['supplierLocation']).then(initialisePurchase);
-    }
-
-    function initialisePurchase(model) {
-      $scope.model = model;
-
-      $scope.purchase = model.purchase.data[0];
-      $scope.supplier = model.supplier.data[0];
-      $scope.employee = model.employee.data[0];
-      $scope.supplierLocation = model.supplierLocation.data[0];
-    }
-
-    //TODO this process is kind of a hack
     function processCredit(invoiceId) {
       dependencies = {};
       dependencies.credit = {
