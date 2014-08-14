@@ -335,25 +335,44 @@ angular.module('bhima.controllers')
 
     function processPurchase (invoiceId) {
       var dependencies = {};
+
       dependencies.purchase = {
         query : {
           tables : {
-            purchase : { columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id'] }
-          }
-        },
-        where : ['purchase.uuid=' + invoiceId]
-      };
-
-      dependencies.purchaseItem = {
-        query : {
-          tables : {
-            purchase_item : { columns : ['uuid', 'inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total'] },
-            inventory : { columns : ['code', 'text'] }
+            'purchase' : {
+              columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id']
+            },
+            'purchase_item' : {
+              columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
+            },
+            'inventory' : {
+              columns : ['code', 'text']
+            }
           },
-          join : ['purchase_item.inventory_uuid=inventory.uuid'],
+          join : ['purchase.uuid=purchase_item.purchase_uuid', 'purchase_item.inventory_uuid=inventory.uuid'],
           where : ['purchase_item.purchase_uuid=' + invoiceId]
         }
       };
+
+      // dependencies.purchase = {
+      //   query : {
+      //     tables : {
+      //       purchase : { columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id'] }
+      //     }
+      //   },
+      //   where : ['purchase.uuid=' + invoiceId]
+      // };
+
+      // dependencies.purchaseItem = {
+      //   query : {
+      //     tables : {
+      //       purchase_item : { columns : ['uuid', 'inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total'] },
+      //       inventory : { columns : ['code', 'text'] }
+      //     },
+      //     join : ['purchase_item.inventory_uuid=inventory.uuid'],
+      //     where : ['purchase_item.purchase_uuid=' + invoiceId]
+      //   }
+      // };
 
       validate.process(dependencies).then(processPurchaseParties);
 
@@ -397,7 +416,7 @@ angular.module('bhima.controllers')
       function initialisePurchase(model) {
         $scope.model = model;
         console.log('tout ce quo a', model);
-        $scope.purchase = model.purchase.data[0];
+        $scope.purchase = model.purchase.data;
         $scope.supplier = model.supplier.data[0];
         $scope.employee = model.employee.data[0];
         $scope.supplierLocation = model.supplierLocation.data[0];
