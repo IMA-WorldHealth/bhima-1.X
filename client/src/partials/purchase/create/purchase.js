@@ -252,11 +252,14 @@ angular.module('bhima.controllers')
     }
 
     function writeSuccess() {
-       $translate('PURCHASE.WRITE_SUCCESS')
-      .then(function (value) {
-         messenger.success(value);
-          $location.path('/invoice/purchase/' + session.purchase.uuid);
-      });
+       $location.path('/invoice/purchase/' + session.purchase.uuid);
+
+      //  $translate('PURCHASE.WRITE_SUCCESS')
+      // .then(function (value) {
+      //   console.log('nous sommes la', value);
+      //    messenger.success(value);
+         
+      // });
       //messenger.success($translate.instant('PURCHASE.WRITE_SUCCESS'));
      
     }
