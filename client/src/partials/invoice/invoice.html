@@ -372,7 +372,7 @@
                 </tr>
               </thead>
               <tbody class="items">
-                <tr ng-repeat="item in model.purchaseItem.data | orderBy : 'code'">
+                <tr ng-repeat="item in model.purchase.data | orderBy : 'code'">
                   <td>{{ item.code }}</td>
                   <td>{{ item.text }}</td>
                   <td>{{ item.quantity }}</td>
@@ -384,7 +384,7 @@
               <tbody class="totals">
                 <tr>
                   <td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td><td>
-                    <span ng-bind-html="purchase.cost | intlcurrency:session.currentCurrency.id"></span>
+                    <span ng-bind-html="model.purchase.data[0].cost | intlcurrency:session.currentCurrency.id"></span>
                   </td>
                 </tr>
               </tbody>
