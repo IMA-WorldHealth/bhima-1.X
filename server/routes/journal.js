@@ -1404,15 +1404,15 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(getTransId)
     .then(credit)
     .then(function (res){
-      //return done(null, res); because it causes problems with promesses
-      return q.when(res);
+      return done(null, res); 
+      //return q.when(res);
     })
     .catch(function (err){
       return done(err, null);
     });
 
     function getRecord (records) {
-      if (records.length === 0) { throw new Error('pas enregistrement'); }
+      if (records.length <1) { throw new Error('pas enregistrement'); }
       reference = records[0];
       return q([get.origin('primary_cash'), get.period(reference.date)]);
     }
