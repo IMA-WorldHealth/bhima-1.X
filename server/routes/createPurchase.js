@@ -24,7 +24,6 @@ module.exports = function (db, parser, journal, uuid) {
     .then(writeCashItems(primary_cash_uuid, data.transaction))
     .then(postToJournal(primary_cash_uuid, user))
     .then(function (res) {
-      console.log('value returned by posting purchase', res)
       res.primary_cash_uuid = primary_cash_uuid
       callback(null, res);
     })
@@ -46,19 +45,21 @@ module.exports = function (db, parser, journal, uuid) {
 
   function writeCashItems(primary_cash_uuid, transactions) {
     var insertSQL;
+    var requests_item = [];
 
     transactions.forEach(function (transaction) {
       transaction.uuid = uuid();
       transaction.primary_cash_uuid = primary_cash_uuid;
+      requests_item.push(parser.insert('primary_cash_item', transaction));
     });
 
-    insertSQL = parser.insert('primary_cash_item', transactions);
-
-    return db.exec(insertSQL);
+    return requests_item.map(function (item) {
+      return db.exec(item);
+    });
   }
 
   function postToJournal(primary_cash_uuid, userId) {
-    var deferred = q.defer()
+    var deferred = q.defer();
     journal.request('indirect_purchase', primary_cash_uuid, userId, function (error, result) {
       if (error) {
         return deferred.reject(error);

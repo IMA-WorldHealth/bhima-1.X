@@ -108,6 +108,7 @@ angular.module('bhima.controllers')
           currency_id : model.enterprise.data[0].currency_id, //FIXME
           cash_box_id : cashbox.id,
           account_id : cashbox.account_id,
+          cost : session.selected.cost,
           description : 'PP/' + session.selected.uuid + '/',
           origin_id : model.pcash_module.data[0].id
         },

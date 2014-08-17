@@ -354,8 +354,6 @@ angular.module('bhima.controllers')
         }
       };
 
-      validate.process(dependencies).then(processPurchaseParties);
-
       function processPurchaseParties(model) {
         var creditor = model.purchase.data[0].creditor_uuid;
         var employee = model.purchase.data[0].employee_id;
@@ -400,6 +398,7 @@ angular.module('bhima.controllers')
         $scope.employee = model.employee.data[0];
         $scope.supplierLocation = model.supplierLocation.data[0];
       }
+      validate.process(dependencies).then(processPurchaseParties);      
     }
     
 
