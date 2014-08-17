@@ -1396,8 +1396,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     var sql = 'SELECT `primary_cash`.`reference`, `primary_cash`.`uuid`, `primary_cash`.`project_id`, `primary_cash`.`type`, `primary_cash`.`date`, `primary_cash`.`deb_cred_uuid`, ' +
               '`primary_cash`.`deb_cred_type`, `primary_cash`.`currency_id`, `primary_cash`.`account_id`, `primary_cash`.`cost`, `primary_cash`.`user_id`, `primary_cash`.`description`, ' +
               '`primary_cash`.`cash_box_id`, `primary_cash`.`origin_id`, `primary_cash_item`.`debit`, `primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid`, ' +
-              '`creditor`.`group_uuid` FROM `primary_cash` JOIN `primary_cash_item` JOIN `creditor` JOIN `creditor_group` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
-              '`primary_cash`.`deb_cred_uuid` = `creditor`.`uuid` AND `creditor`.`group_uuid` = `creditor_group`.`uuid` WHERE `primary_cash`.`uuid`=' + sanitize.escape(id) + ';';
+              '`creditor`.`group_uuid` FROM `primary_cash` JOIN `primary_cash_item` JOIN `creditor` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
+              '`primary_cash`.`deb_cred_uuid` = `creditor`.`uuid` WHERE `primary_cash`.`uuid`=' + sanitize.escape(id) + ';';
+              
     db.exec(sql)
     .then(getRecord)
     .spread(getDetails)
@@ -1405,14 +1406,14 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(credit)
     .then(function (res){
       return done(null, res); 
-      //return q.when(res);
     })
     .catch(function (err){
       return done(err, null);
     });
 
     function getRecord (records) {
-      if (records.length <1) { throw new Error('pas enregistrement'); }
+      console.log('le data est ', records);
+      if (records.length === 0) { console.log('pas des records'); throw new Error('pas enregistrement'); }
       reference = records[0];
       return q([get.origin('primary_cash'), get.period(reference.date)]);
     }

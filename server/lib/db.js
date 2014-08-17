@@ -131,8 +131,8 @@ module.exports = function (cfg, logger, uuid) {
       con.getConnection(function (err, connection) {
         if (err) { return defer.reject(err); }
         connection.query(sql, function (err, results) {
-          connection.release();
           if (err) { return defer.reject(err); }
+          connection.release();          
           defer.resolve(results);
         });
       });
