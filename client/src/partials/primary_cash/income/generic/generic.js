@@ -75,6 +75,7 @@ angular.module('bhima.controllers')
         session.receipt.cash_box_id = $routeParams.id;
       })
       .catch(function (err) {
+        console.log('un problem');
         messenger.error(err);
       });
     });
@@ -113,6 +114,10 @@ angular.module('bhima.controllers')
         isDefined(r.description) &&
         isDefined(r.date) &&
         isDefined(r.cash_box_id));
+    }
+
+    function update (value) {
+      session.receipt.recipient = value;
     }
 
     $scope.$watch('session.receipt', valid, true);
@@ -164,5 +169,7 @@ angular.module('bhima.controllers')
         session.receipt.cash_box_id = $routeParams.id;
       });
     };
+
+    $scope.update = update;
   }
 ]);
