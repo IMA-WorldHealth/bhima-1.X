@@ -1045,7 +1045,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
     // TODO : Formalize this
     sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ';';
-    console.log('nous sommes la oooooo')
 
     db.exec(sql)
     .then(function (results) {
@@ -1398,7 +1397,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
               '`primary_cash`.`cash_box_id`, `primary_cash`.`origin_id`, `primary_cash_item`.`debit`, `primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid`, ' +
               '`creditor`.`group_uuid` FROM `primary_cash` JOIN `primary_cash_item` JOIN `creditor` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
               '`primary_cash`.`deb_cred_uuid` = `creditor`.`uuid` WHERE `primary_cash`.`uuid`=' + sanitize.escape(id) + ';';
-              
+
     db.exec(sql)
     .then(getRecord)
     .spread(getDetails)
@@ -1408,6 +1407,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return done(null, res); 
     })
     .catch(function (err){
+      console.log('erreur ', err);
       return done(err, null);
     });
 

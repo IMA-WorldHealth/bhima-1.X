@@ -81,7 +81,8 @@
     "ON"                : "On",
     "OFF"               : "Off",
     "AGGREGATES"        : "Agregats",
-    "SIGNATURES"        : "Signature"
+    "SIGNATURES"        : "Signature",
+    "CURRENCY"          : "Monnaie"
   },
 
   "ENTERPRISE"                 : {
@@ -270,7 +271,8 @@
     "ENTERPRISE"      : "Selectionner Enterprise",
     "PROJECT"         : "Proget",
     "COST_CENTER"     : "Selectionner Centre des frais",
-    "DEPOT"           : "Selectionner un Depot"
+    "DEPOT"           : "Selectionner un Depot",
+    "DEBTOR"          : "Selectionner un debiteur"
   },
 
   "RENEWAL"           : {
@@ -1323,9 +1325,18 @@
       "GENERIC_RECEIPT" : "Recettes Generiques"
     },
     "INCOME" : {
-      "TRANSFER"        : "Transfert",
-      "CONVENTION"      : "Convention",
-      "GENERIC_INCOME"  : "Recette generale"
+      "TRANSFER"              : "Transfert",
+      "CONVENTION"            : "Convention",
+      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "RECIPIENT"             : "Destinataire",
+      "LABEL"                 : "Label",
+      "DEBTOR"                : "Debiteur",
+      "DATE"                  : "Date recette",
+      "AMOUNT"                : "Montant",
+      "GENERIC" : {
+        "TITLE"   : "Recette Generique",
+        "RECEIPT" : "Reception"
+      }
     }
   },
 
