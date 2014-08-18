@@ -16,48 +16,49 @@
   <div class="row" style="margin-top: 10px">
     <div class="col-xs-5">
 
-	  <div class="panel panel-default square">
-	    <div class="panel-heading square">
-	      {{ "CONFIRM.SELECT_PURCHASE" | translate }}
-	    </div>
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          {{ "CONFIRM.SELECT_PURCHASE" | translate }}
+        </div>
 
-	    <div class="panel-body">
-	      <div class="input-group" style="margin-bottom: 15px">
-	        <span class="input-group-btn">
-	        	<button disabled class="square btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
-	        </span>
-	         <input class="form-bhima" placeholder="{{'CONFIRM.FILTER' | translate }}" ng-model="session.filter">
-	      </div>
+        <div class="panel-body">
+          <div class="input-group" style="margin-bottom: 15px">
+            <span class="input-group-btn">
+              <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+             <input class="form-bhima" placeholder="{{'CONFIRM.FILTER' | translate }}" ng-model="session.filter">
+          </div>
 
-	      <table class="table table-bordered table-condensed">
-	        <thead>
-	          <tr>
-	            <th>{{"COLUMNS.DATE" | translate}}</th>
-	            <th>{{"COLUMNS.REFERENCE" | translate}}</th>
-	            <th>{{"COLUMNS.EMPLOYEE" | translate}}</th>
-	            <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
-	          </tr>
-	        </thead>
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>{{"COLUMNS.DATE" | translate}}</th>
+                <th>{{"COLUMNS.REFERENCE" | translate}}</th>
+                <th>{{"COLUMNS.EMPLOYEE" | translate}}</th>
+                <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
 
-	        <tr ng-if="!purchase.data.length">
-	          <td colspan="4">
-	            <div class="alert alert-warning square">{{ "CONFIRM.NOT_FOUND" | translate }}</div>
-	          </td>
-	        </tr>
+            <tr ng-if="!purchase.data.length">
+              <td colspan="4">
+                <div class="alert alert-warning square">{{ "CONFIRM.NOT_FOUND" | translate }}</div>
+              </td>
+            </tr>
 
-	        <tr ng-repeat="item in purchase.data | filter : session.filter"
-	            ng-class="{'selected-success': session.selected.uuid===item.uuid}">
-	            <td>{{item.purchase_date | date}}</td>
-	            <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
-	            <td>{{item.name}}</td>
-	            <td><a class="menu-item" ng-click="confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
-	        </tr>
-	        <tbody>
-	        </tbody>
-	      </table>
-	    </div>
-	  </div>
+            <tr ng-repeat="item in purchase.data | filter : session.filter"
+                ng-class="{'selected-success': session.selected.uuid===item.uuid}">
+                <td>{{item.purchase_date | date}}</td>
+                <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
+                <td>{{item.name}}</td>
+                <td><a class="menu-item" ng-click="confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
+            </tr>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
     <div class="col-xs-7">
       <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
         <div class="panel-heading square">
