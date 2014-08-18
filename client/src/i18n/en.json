@@ -1132,7 +1132,7 @@
     "CONFIGURE"       : "Configure",
     "SUPPLIER"        : "Supplier",
     "RESPONSABLE"     : "Employee Responsable",
-    "SALE_DATE"       : "Sale Date",
+    "SALE_DATE"       : "Creation Date",
     "ADD_LINE_ITEM"   : "Add line Item",
     "ADD_SUPPLIER"    : "Register Supplier",
     "PURCHASE_ITEM"   : "Purchase Items",

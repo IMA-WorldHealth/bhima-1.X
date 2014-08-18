@@ -131,11 +131,10 @@ angular.module('bhima.controllers')
 
         data = {
           uuid          : uuid(),
-          reference     : 1,
           project_id    : $scope.project.id,
           type          : 'E',
           date          : util.sqlDate(receipt.date),
-          deb_cred_uuid : receipt.recipient.creditor_uuid,
+          deb_cred_uuid : receipt.recipient.debitor_uuid,
           deb_cred_type : 'C',
           account_id    : receipt.recipient.account_id,
           currency_id   : session.currency.id,

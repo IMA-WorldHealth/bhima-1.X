@@ -1294,7 +1294,7 @@
     "TITLE"         : "Ordre Achat",
     "ADD_SUPPLIER"  : "Ajouter Fournisseur",
     "CONFIGURE"     : "Parametrage",
-    "SALE_DATE"     : "Date de vente",
+    "SALE_DATE"     : "Date de creation",
     "SUPPLIER"      : "Fournisseur",
     "RESPONSIBLE"   : "Employe Responsable",
     "ORDER"         : "Ordre",
