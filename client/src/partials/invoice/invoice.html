@@ -885,7 +885,7 @@
             <br>
             <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
             <br>
-            {{invoice.purchase_date | date}}
+            {{ invoice.purchase_date | date }}
             <br>
           </div>
         </div>
@@ -894,10 +894,10 @@
             <table class="invoiceTable">
               <thead>
                 <tr>
-                  <th>{{'COLUMNS.REFERENCE_PURCHASE' | translate}}</th>
-                  <th>{{'INVOICE.COST' | translate}}</th>
-                  <th>{{'COLUMNS.GIVEN_AMOUNT' | translate}}</th>
-                  <th>{{'INVOICE.RECEIVED_BY' | translate}}</th>
+                  <th>{{ 'COLUMNS.REFERENCE_PURCHASE' | translate }}</th>
+                  <th>{{ 'INVOICE.COST' | translate}}</th>
+                  <th>{{ 'COLUMNS.GIVEN_AMOUNT' | translate }}</th>
+                  <th>{{ 'INVOICE.RECIPIENT' | translate }}</th>
                 </tr>
               </thead>
               <tbody class="items">
