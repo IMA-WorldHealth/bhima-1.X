@@ -126,6 +126,7 @@ module.exports = function (cfg, logger, uuid) {
     exec : function (sql, params) {
       var defer = q.defer();
       console.log('[db] [execute]: ', sql);
+      if (params) { console.log('[db] [parameters]', params); }
 
       con.getConnection(function (err, connection) {
         if (err) { return defer.reject(err); }

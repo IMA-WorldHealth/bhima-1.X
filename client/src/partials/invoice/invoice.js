@@ -15,6 +15,8 @@ angular.module('bhima.controllers')
         invoiceId    = $scope.invoiceId = $routeParams.invoiceId,
         process      = {};
 
+    $scope.timestamp = new Date();
+
     if (!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
 
     dependencies.recipient = {
@@ -333,23 +335,44 @@ angular.module('bhima.controllers')
       .then(buildRecipientQuery);
     }
 
+    // TODO
+    //   Many of these fns return validate.process(x, y)
+    // which is a promise.  For this reason, it makes 
+    // sense to change these functions from processPurchase calling
+    // the next function, calling the next function, calling the next,
+    // etc, to something like :
+    //   wrapper(invoiceID)
+    //   .then(downloadPurchase)
+    //   .then(processPurhcaseParties)
+    //   .then(otherFunction)
+    //   .catch(handler)
+    //   .finally();
+
     function processPurchase (invoiceId) {
       var dependencies = {};
 
       dependencies.purchase = {
         query : {
+          identifier : 'uuid',
           tables : {
             'purchase' : {
-              columns : ['uuid', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id']
+              columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id']
             },
             'purchase_item' : {
               columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
             },
             'inventory' : {
               columns : ['code', 'text']
+            },
+            'project' : {
+              columns : ['abbr']
             }
           },
-          join : ['purchase.uuid=purchase_item.purchase_uuid', 'purchase_item.inventory_uuid=inventory.uuid'],
+          join : [
+            'purchase.uuid=purchase_item.purchase_uuid',
+            'purchase_item.inventory_uuid=inventory.uuid',
+            'purchase.project_id=project.id'
+          ],
           where : ['purchase_item.purchase_uuid=' + invoiceId]
         }
       };
@@ -394,8 +417,11 @@ angular.module('bhima.controllers')
       function initialisePurchase(model) {
         $scope.model = model;
         console.log('tout ce quo a', model);
+        // FIXME : This is not ideal  Why download all data
+        // if we are only going to use data[0]?
         $scope.supplier = model.supplier.data[0];
         $scope.employee = model.employee.data[0];
+        $scope.purchase = model.purchase.data[0];
         $scope.supplierLocation = model.supplierLocation.data[0];
       }
       validate.process(dependencies).then(processPurchaseParties);      

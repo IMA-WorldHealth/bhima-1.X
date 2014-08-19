@@ -40,8 +40,7 @@
       "INVALID_PIN"         : "This PIN is invalid.",
       "ATTEMPTS_REMAINING"  : "attempts remaining.",
       "INVALID_SESSION"     : "This session has expired due to too many invalid attempts.  Please see an administrator to reset your PIN or try again."
-    },
-    "REFRESH"               : "Refresh"
+    }
   },
 
   "LANGUAGES" : {
@@ -66,8 +65,7 @@
       "EXPENSE_DATE"          : "Expense Date",
       "RECIPIENT"             : "Recipient",
       "AMOUNT"                : "Amount Dispensed",
-      "PURPOSE"               : "Purpose of Expense",
-      "EXPENSE_DATE"          : "Expense Date"
+      "PURPOSE"               : "Purpose of Expense"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -180,10 +178,6 @@
     "SUPER"       : "Super User"
   },
 
-  "ERROR" : {
-    "HTTP_STATUS_CODE" : "HTTP Status Code"
-  },
-
   "TRIAL_BALANCE"      : {
     "TITLE"            : "Trial Balance",
     "ERROR_TEXT"       : "Errors detected in the trial balance.",
@@ -205,6 +199,7 @@
   },
 
   "ERROR"                 : {
+    "HTTP_STATUS_CODE" : "HTTP Status Code",
     "ERR_IMBALANCE"       : "Imbalancing Error",
     "ERR_SQL"             : "SQL Error",
     "ERR_ACCNT_LOCKED"    : "Locked Account Error",
@@ -427,7 +422,7 @@
     "ENTERPRISE"          : "Enterprise",
     "NUM"                 : "Number",
     "REGISTERED_BY"       : "Registered By",
-    "ORDER_DATE"          : "Date of Order",
+    "ORDER_DATE"          : "Order Date",
     "LABEL"               : "Label",
     "SUMMARY"             : "Summary",
     "CREDITOR"            : "Creditor",
@@ -557,7 +552,7 @@
     "AVAILABLE"           : "Available",
     "QTY_ASKED"           : "Quantity Requested",
     "QTY_AVAIL"           : "Available Quantity",
-    "QTY_IN_LOT"          : "Quantity in a lot",
+    "QTY_IN_LOT"          : "Quantity in Lot",
     "SERVICE"             : "Service",
     "COST_CENTER"         : "Cost center",
     "PROJECT"             : "Project",
@@ -566,27 +561,18 @@
     "RESULT"              : "Result",
     "EMPLOYEE"            : "Employee",
     "DESIGNATION"         : "Description",
-    "INITIAL_STOCK"       : "initial stock",
+    "INITIAL_STOCK"       : "Initial stock",
     "CURRENT_STOCK"       : "Current stock",
     "TRANS_DATE"          : "Date",
-    "PURCHASE_ORDER"      : "Purchase Order",
-    "ORDER_DATE"          : "Purchase Order Date",
-    "BHIMA_STOCK_CODE"    : "Code Stock",
-    "INVENTORY_CODE"      : "Inventory code",
-    "LABEL"               : "Designation",
-    "TOTAL_PRICE"         : "Total Price",
-    "SUMMARY"             : "Sommary",
-    "DEPOT"               : "Depot",
-    "PURCHASE_DATE"       : "Purchase Order Date",
     "LOT_DETAILS"         : "Lot Detail",
-    "TRANSFER_QUANTITY"   : "Quantity to transfert",
+    "TRANSFER_QUANTITY"   : "Quantity to Transfer",
     "PURCHASER"           : "Purchaser",
     "EMPLOYER"            : "Made By",
     "PROFIT_CENTER"       : "Profit center",
-    "MEDECINE"             : "Medecine",
-    "QTY"                  : "Quantity",
-    "QTY_LOSS"           : "Loss quantity",
-    "DOCUMENT_UUID"      : " Document number"
+    "MEDECINE"            : "Medecine",
+    "QTY_LOSS"            : "Loss Quantity",
+    "DOCUMENT_UUID"       : "Document Number",
+    "REFERENCE_PURCHASE"  : "Purchase Order Reference"
   },
 
   "INVENTORY" : {
@@ -716,8 +702,6 @@
     "INVENTORY_MANAGEMENT"      : "Inventory Management",
     "SERVICE"                   : "Services",
     "STOCK_DISTRIBUTION"        : "Stock Distribution",
-    "EMPLOYEE"                  : "Employee Management",
-    "SERVICE"                   : "Service Management",
     "EXPIRING"                  : "Expiring stock report",
     "ALL_TRANSACTIONS"          : "All Transactions",
     "PATIENT_RECORDS"           : "Patient Records",
@@ -1141,8 +1125,7 @@
     "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
     "ORDER"           : "Numero Ordre",
     "DATE"            : "Date",
-    "NOTE"            : "Note",
-    "TOTAL_COST"      : "Total cost"
+    "NOTE"            : "Note"
   },
 
   "SALE"              : {
@@ -1202,88 +1185,82 @@
     "EDIT"             : "Edit a Province"
     },
 
-  "SALERECORD"     : {
-    "TITLE"        : "Patient Invoice Records",
-    "SHOWING"      : "Showing latest records",
-    "ADVANCE"      : "Advanced Search",
-    "UNFOUND"      : "No patient transactions found. Reference",
-    "PATIENT_SALE" : "Patient Sales",
-    "GENERATE"     : "to generate an invoice.",
-    "RECEIPT"      : "Receipt",
-    "POSTING"      : "Posting Journal",
-    "CREDIT_NOTE"  : "Credit Note",
-    "POST"         : "Post to Journal",
-    "ALL_PROJECTS" : "All Projects",
-    "TOTAL_OF"     : "Total of",
-    "INVOICES"     : "invoices",
+  "SALERECORD"        : {
+    "TITLE"           : "Patient Invoice Records",
+    "SHOWING"         : "Showing latest records",
+    "ADVANCE"         : "Advanced Search",
+    "UNFOUND"         : "No patient transactions found. Reference",
+    "PATIENT_SALE"    : "Patient Sales",
+    "GENERATE"        : "to generate an invoice.",
+    "RECEIPT"         : "Receipt",
+    "POSTING"         : "Posting Journal",
+    "CREDIT_NOTE"     : "Credit Note",
+    "POST"            : "Post to Journal",
+    "ALL_PROJECTS"    : "All Projects",
+    "TOTAL_OF"        : "Total of",
+    "INVOICES"        : "invoices",
     "CHARGED_AGAINST" : "charged against",
-    "PATIENTS"     : "patients"
+    "PATIENTS"        : "patients"
   },
 
-  "INVOICE"             : {
-    "TITLE"             : "Receipts",
-    "PATIENT"           : "Patient",
-    "PATIENT_ID"        : "Patient #",
-    "DATE_REGISTRATION" : "Date of registration",
-    "DATE_RECEIPT"      : "Date of receipt",
-    "PATIENT_INVOICE"   : "Patient Invoice",
-    "TO"                : "To",
-    "INVOICE_ID"        : "Invoice No.",
-    "CLIENT_ID"         : "Client Code",
-    "DATE"              : "Date",
-    "DESCRIPTION"       : "Description",
-    "AMOUNT"            : "Amount",
-    "TOTAL"             : "Total",
-    "AMOUNT_RECEIVE"    : "Amount Received",
-    "BALANCE_DUE"       : "Balance Due",
-    "CREDIT_NOTE"       : "Credit Note",
-    "NOTE_ID"           : "Note #",
-    "NOTE"              : "Note",
-    "DEBTOR_ID"         : "# Debtor",
-    "TOTAL_CREDITED"    : "Total Credited",
-    "ADDRESS"           : "Address",
-    "ID"                : "Id",
-    "PHONE"             : "Phone",
-    "CASH_RECEIPT"      : "Cash Receipt",
-    "CASH_ID"           : "Cash transaction #",
-    "AMOUNT_RECEIVED"   : "Amount Recieved",
-    "TRANSACTION_PRICE" : "Transaction Price",
-    "PURCHASE_ORDER"    : "Purchase Order",
-    "PURCHASE_RECIPIENT": "Supplier",
-    "PURCHASE_ID"       : "Purchase No.",
-    "PURCHASE_DATE"     : "Purchase Date",
-    "EMPLOYEE_CONTACT"  : "Employee Ref.",
-    "EMPLOYEE_CODE"     : "Employee Code",
-    "PURCHASE_TOTAL"    : "Total Purchase Cost",
-    "TRANSFERT"         : "Transfert",
-    "BY"                : "By",
-    "LIBELLE_TRANSFERT_FROM" : "Transfert from ",
-    "PCASH"                  : "Primary cash",
-    "DESIGNATION"       : "Detail",
-    "TOTAL_TRANSFERT"   : "Transfert Total",
-    "CONVENTION"        : "Convention",
-    "NUM_CONVENTION_PAY" : "Number convention pay",
-    "CAUTION"           : "Caution",
-    "CAUTION_ID"        : "# Caution",
-    "LIBELLE_CAUTION"   : "Caution Reception",
-    "TOTAL_CAUTION"     : "Total",
+  "INVOICE"                        : {
+    "TITLE"                        : "Receipts",
+    "PATIENT"                      : "Patient",
+    "PATIENT_ID"                   : "Patient #",
+    "DATE_REGISTRATION"            : "Date of registration",
+    "DATE_RECEIPT"                 : "Date of receipt",
+    "PATIENT_INVOICE"              : "Patient Invoice",
+    "TO"                           : "To",
+    "GIVEN_AMOUNT"                 : "Given Amount",
+    "RECIPIENT"                    : "Recipient",
+    "COST"                         : "Cost",
+    "INVOICE_ID"                   : "Invoice No.",
+    "CLIENT_ID"                    : "Client Code",
+    "DATE"                         : "Date",
+    "DESCRIPTION"                  : "Description",
+    "AMOUNT"                       : "Amount",
+    "TOTAL"                        : "Total",
+    "AMOUNT_RECEIVE"               : "Amount Received",
+    "BALANCE_DUE"                  : "Balance Due",
+    "CREDIT_NOTE"                  : "Credit Note",
+    "NOTE_ID"                      : "Note #",
+    "NOTE"                         : "Note",
+    "DEBTOR_ID"                    : "# Debtor",
+    "TOTAL_CREDITED"               : "Total Credited",
+    "ADDRESS"                      : "Address",
+    "ID"                           : "Id",
+    "PHONE"                        : "Phone",
+    "CASH_RECEIPT"                 : "Cash Receipt",
+    "CASH_ID"                      : "Cash transaction #",
+    "AMOUNT_RECEIVED"              : "Amount Recieved",
+    "TRANSACTION_PRICE"            : "Transaction Price",
+    "PURCHASE_ORDER"               : "Purchase Order",
+    "PURCHASE_RECIPIENT"           : "Supplier",
+    "PURCHASE_ID"                  : "Purchase No.",
+    "PURCHASE_DATE"                : "Purchase Date",
+    "EMPLOYEE_CONTACT"             : "Employee Ref.",
+    "EMPLOYEE_CODE"                : "Employee Code",
+    "PURCHASE_TOTAL"               : "Total Purchase Cost",
+    "TRANSFERT"                    : "Transfert",
+    "BY"                           : "By",
+    "LIBELLE_TRANSFERT_FROM"       : "Transfert from ",
+    "PCASH"                        : "Primary cash",
+    "DESIGNATION"                  : "Detail",
+    "TOTAL_TRANSFERT"              : "Transfert Total",
+    "CONVENTION"                   : "Convention",
+    "NUM_CONVENTION_PAY"           : "Reference",
+    "CAUTION"                      : "Caution",
+    "CAUTION_ID"                   : "# Caution",
+    "LIBELLE_CAUTION"              : "Caution Reception",
+    "TOTAL_CAUTION"                : "Total",
     "SIGN_HEADER_BILLING"          : "Head of Billing Signature",
     "SIGN_CLIENT"                  : "Customer Signature ",
     "SIGN_HEADER_AUXI"             : "Head of Auxilliairy Cash Signature",
     "SIGN_HEADER_PRI"              : "Head of Principle Cash Signature",
-    "PURCHASE_ID"                  : "Purchase Order ID",
-    "PURCHASE_DATE"                : "Purchase Order Date",
-    "EMPLOYEE_CONTACT"             : "Employee Contact",
-    "EMPLOYEE_CODE"                : "Employee Code",
-    "PURCHASE_TOTAL"               : "Total",
-    "PURCHASE_ORDER"               : "Purchase Order",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
-    "DOCUMENT_REF"      : "Document Ref.",
-    "DEPOT_REF"         : "Depot Ref.",
-    "DISTRIBUTION_SERVICE" : "Service Distribution",
-    "CONVENTION"                   : "Receipt for convention",
-    "NUM_CONVENTION_PAY"           : "Reference"
-
+    "DOCUMENT_REF"                 : "Document Ref.",
+    "DEPOT_REF"                    : "Depot Ref.",
+    "DISTRIBUTION_SERVICE"         : "Service Distribution"
   },
 
   "SECTOR"             : {
@@ -1338,9 +1315,9 @@
     "INFO_DESCRIPTION"         :  "This feature will help you to manage your services (creating, editing and suppressing as well as consulting)",
     "MODIFYING"                :  "Editing",
     "OVERVIEW_SERVICE"         : "Systhetic result of service"
-},
+  },
 
-"COST_CENTER" : {
+  "COST_CENTER" : {
     "TITLE"         : "Cost center Management",
     "NAVIGATION"    : "Browsing",
     "OPERATION"     : "operations",
@@ -1349,116 +1326,116 @@
       "ASSIGN"    : "Assigning",
       "VERSEMENT" : "Injection"
     }
-},
+  },
 
-"PROFIT_CENTER" : {
-    "TITLE"         : "Profit center Management",
-    "NAVIGATION"    : "Browsing",
-    "OPERATION"     : "operations",
-    "OPERATIONS" : {
+  "PROFIT_CENTER" : {
+    "TITLE"       : "Profit center Management",
+    "NAVIGATION"  : "Browsing",
+    "OPERATION"   : "operations",
+    "OPERATIONS"  : {
       "CC"        : "Profit center",
       "ASSIGN"    : "Assigning",
       "VERSEMENT" : "Injection"
     }
-},
+  },
 
-"VERSEMENT" : {
-    "TITLE"                  : "Accounts deposit",
-    "PARENT"                 : "Cost center management",
-    "CHOOSE"                 : "Select cost center",
-    "AVAILABLE_ACCOUNT"      : "Availables accounts",
-    "VERSER"                 : "Deposit",
-    "REMOVE"                 : "Retirer",
-    "NAVIG"                  : "Browsing",
-    "ASSOCIATED_TO"          : "Accounts associated to : ",
-    "PLEASE_SELECT"          : "(choose cost center pleaase!)"
-},
+  "VERSEMENT" : {
+    "TITLE"             : "Accounts deposit",
+    "PARENT"            : "Cost center management",
+    "CHOOSE"            : "Select cost center",
+    "AVAILABLE_ACCOUNT" : "Availables accounts",
+    "VERSER"            : "Deposit",
+    "REMOVE"            : "Retirer",
+    "NAVIG"             : "Browsing",
+    "ASSOCIATED_TO"     : "Accounts associated to         : ",
+    "PLEASE_SELECT"     : "(choose cost center pleaase!)"
+  },
 
-"VERSEMENT_PROFIT_CENTER" : {
-    "TITLE"                  : "Accounts deposit",
-    "PARENT"                 : "Cost center management",
-    "CHOOSE"                 : "Select cost center",
-    "AVAILABLE_ACCOUNT"      : "Availables accounts",
-    "VERSER"                 : "Deposit",
-    "REMOVE"                 : "Retirer",
-    "NAVIG"                  : "Browsing",
-    "ASSOCIATED_TO"          : "Accounts associated to : ",
-    "PLEASE_SELECT"          : "(choose cost center pleaase!)"
-},
+  "VERSEMENT_PROFIT_CENTER" : {
+    "TITLE"             : "Accounts deposit",
+    "PARENT"            : "Cost center management",
+    "CHOOSE"            : "Select cost center",
+    "AVAILABLE_ACCOUNT" : "Availables accounts",
+    "VERSER"            : "Deposit",
+    "REMOVE"            : "Retirer",
+    "NAVIG"             : "Browsing",
+    "ASSOCIATED_TO"     : "Accounts associated to         : ",
+    "PLEASE_SELECT"     : "(choose cost center pleaase!)"
+  },
 
-"ASSIGNING" : {
-    "TITLE"                  : "Assigning",
-    "NAVIG"                  : "Browsing",
+  "ASSIGNING" : {
+    "TITLE"                 : "Assigning",
+    "NAVIG"                 : "Browsing",
+    "PARENT"                : "Cost center Management",
+    "CHOOSE"                : "Select a secondary cost center",
+    "INFO_COST_CENTER"      : "Cost center details",
+    "ASSOCIATED_TO"         : "Cost center for ",
+    "PLEASE_SELECT"         : "(choose cost center pleaase!)",
+    "NEXT"                  : "Next",
+    "TEXT_COST"             : "Designation",
+    "AUX_CENTER"            : "Auxilliairy center",
+    "COST"                  : "Cost",
+    "PRI_CENTERS"           : "Principle cost center",
+    "INITIAL_COST"          : "Initial cost",
+    "COEFF"                 : "Repartition repartition",
+    "AL_COST"               : "Allocated cost",
+    "TOTAL"                 : "Total",
+    "TOTALS"                : "TOTALS",
+    "INSERT_SUCCES_MESSAGE" : "insertion successfully !",
+    "INSERT_FAIL_MESSAGE"   : "Error during insertion",
+    "NO_CHOOSEN"            : "No cost center selected!",
+    "AUX_CC"                : "Auxilliairy center",
+    "LABEL_CC"              : "Designation",
+    "TYPE_CC"               : "Type",
+    "NOTE"                  : "Description"
+    },
+
+
+  "ANALYSIS_CENTER" : {
+    "TITLE"                  : "Cost center",
     "PARENT"                 : "Cost center Management",
-    "CHOOSE"                 : "Select a secondary cost center",
-    "INFO_COST_CENTER"       : "Cost center details",
-    "ASSOCIATED_TO"          : "Cost center for ",
-    "PLEASE_SELECT"          : "(choose cost center pleaase!)",
-    "NEXT"                   : "Next",
-    "TEXT_COST"              : "Designation",
-    "AUX_CENTER"             : "Auxilliairy center",
+    "NAVIGATION"             : "Browsing",
+    "REGISTERED"             : "Registered Cost center",
+    "INFO"                   : "Cost center information",
+    "INFO_DESCRIPTION"       : "This feature will help you to manage your cost center(creating, editing, deleting as well as consultating)",
+    "TEXT"                   : "Text",
     "COST"                   : "Cost",
-    "PRI_CENTERS"            : "Principle cost center",
-    "INITIAL_COST"           : "Initial cost",
-    "COEFF"                  : "Repartition repartition",
-    "AL_COST"                : "Allocated cost",
-    "TOTAL"                  : "Total",
-    "TOTALS"                 : "TOTALS",
-    "INSERT_SUCCES_MESSAGE"  : "insertion successfully !",
-    "INSERT_FAIL_MESSAGE"    : "Error during insertion",
-    "NO_CHOOSEN"             : "No cost center selected!",
-    "AUX_CC"                 : "Auxilliairy center",
-    "LABEL_CC"               : "Designation",
-    "TYPE_CC"                : "Type",
-    "NOTE"                   : "Description"
-},
+    "IS_PROFIT"              : "Profit center",
+    "NOTE"                   : "Note",
+    "REGISTER"               : "Registering",
+    "NEW"                    : "New center",
+    "INSERT_SUCCESS_MESSAGE" : "operation successfully !",
+    "INSERT_FAIL_MESSAGE"    : "Error during insertion !",
+    "NONE_FOUND"             : "No cost center found !",
+    "MODIFYING"              : "Editing",
+    "UPDATE_SUCCESS_MESSAGE" : "Update successfully !",
+    "UPDATE_FAIL_MESSAGE"    : "Error during updating !",
+    "REMOVE_FAIL_MESSAGE"    : "Error during deleting !",
+    "REMOVE_SUCCESS_MESSAGE" : "Deleting successfully !"
+  },
 
-
-"ANALYSIS_CENTER"              :{
-    "TITLE"                    :   "Cost center",
-    "PARENT"                   :   "Cost center Management",
-    "NAVIGATION"               :   "Browsing",
-    "REGISTERED"               :   "Registered Cost center",
-    "INFO"                     :   "Cost center information",
-    "INFO_DESCRIPTION"         :   "This feature will help you to manage your cost center(creating, editing, deleting as well as consultating)",
-    "TEXT"                     :   "Text",
-    "COST"                     :   "Cost",
-    "IS_PROFIT"                :   "Profit center",
-    "NOTE"                     :   "Note",
-    "REGISTER"                 :   "Registering",
-    "NEW"                      :   "New center",
-    "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
-    "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
-    "NONE_FOUND"               :   "No cost center found !",
-    "MODIFYING"                :   "Editing",
-    "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
-    "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",
-    "REMOVE_FAIL_MESSAGE"      :   "Error during deleting !",
-    "REMOVE_SUCCESS_MESSAGE"   :   "Deleting successfully !"
-},
-
-"ANALYSIS_PROFIT_CENTER"              :{
-    "TITLE"                    :   "Profit center",
-    "PARENT"                   :   "Profit center Management",
-    "NAVIGATION"               :   "Browsing",
-    "REGISTERED"               :   "Registered profit center",
-    "INFO"                     :   "profit center information",
-    "INFO_DESCRIPTION"         :   "This feature will help you to manage your profit center(creating, editing, deleting as well as consultating)",
-    "TEXT"                     :   "Text",
-    "COST"                     :   "profit",
-    "IS_PROFIT"                :   "Profit center",
-    "NOTE"                     :   "Note",
-    "REGISTER"                 :   "Registering",
-    "NEW"                      :   "New center",
-    "INSERT_SUCCESS_MESSAGE"   :   "operation successfully !",
-    "INSERT_FAIL_MESSAGE"      :   "Error during insertion !",
-    "NONE_FOUND"               :   "No profit center found !",
-    "MODIFYING"                :   "Editing",
-    "UPDATE_SUCCESS_MESSAGE"   :   "Update successfully !",
-    "UPDATE_FAIL_MESSAGE"      :   "Error during updating !",
-    "REMOVE_FAIL_MESSAGE"      :   "Error during deleting !",
-    "REMOVE_SUCCESS_MESSAGE"   :   "Deleting successfully !"
-},
+  "ANALYSIS_PROFIT_CENTER" : {
+    "TITLE"                  : "Profit center",
+    "PARENT"                 : "Profit center Management",
+    "NAVIGATION"             : "Browsing",
+    "REGISTERED"             : "Registered profit center",
+    "INFO"                   : "profit center information",
+    "INFO_DESCRIPTION"       : "This feature will help you to manage your profit center(creating, editing, deleting as well as consultating)",
+    "TEXT"                   : "Text",
+    "COST"                   : "profit",
+    "IS_PROFIT"              : "Profit center",
+    "NOTE"                   : "Note",
+    "REGISTER"               : "Registering",
+    "NEW"                    : "New center",
+    "INSERT_SUCCESS_MESSAGE" : "operation successfully !",
+    "INSERT_FAIL_MESSAGE"    : "Error during insertion !",
+    "NONE_FOUND"             : "No profit center found !",
+    "MODIFYING"              : "Editing",
+    "UPDATE_SUCCESS_MESSAGE" : "Update successfully !",
+    "UPDATE_FAIL_MESSAGE"    : "Error during updating !",
+    "REMOVE_FAIL_MESSAGE"    : "Error during deleting !",
+    "REMOVE_SUCCESS_MESSAGE" : "Deleting successfully !"
+  },
 
   "STOCK" : {
     "MAIN" : {
@@ -1503,22 +1480,21 @@
     "LOSS"     : {
       "KEY"    : "Stock loss",
       "TITLE"  : "Stock loss",
-      "KEY"    : "Stock loss",
       "NO_DEPOT" : "No depot",
       "LOSS_GENERAL_INFO" : "Summary",
       "SUBMIT"              : "Submit"
     },
     "MOVEMENT" : {
-      "KEY"   : "Stock Movement",
-      "TITLE" : "Stock Movements",
-      "FORM" : "Stock Movement Form",
-      "INVALID_SESSION"  : "The page received invalid configuration data, please try again via Stock Management or contact the system administrator.",
-      "ONLY_ONE_DEPOT"   : "Only one depot has been registered with BHIMA. A stock movment requires both an origin and destination depot.",
-      "DEPOT_FROM"       : "Source Depot",
-      "DEPOT_TO"       : "Destination Depot",
-      "INVENTORY"      : "Inventory",
-      "INVALID_TRANSFERT_QTE"  : "Invalid transfer quantity",
-      "SELECT_LOT" : "Select lot from"
+      "KEY"                   : "Stock Movement",
+      "TITLE"                 : "Stock Movements",
+      "FORM"                  : "Stock Movement Form",
+      "INVALID_SESSION"       : "The page received invalid configuration data, please try again via Stock Management or contact the system administrator.",
+      "ONLY_ONE_DEPOT"        : "Only one depot has been registered with BHIMA. A stock movment requires both an origin and destination depot.",
+      "DEPOT_FROM"            : "Source Depot",
+      "DEPOT_TO"              : "Destination Depot",
+      "INVENTORY"             : "Inventory",
+      "INVALID_TRANSFERT_QTE" : "Invalid transfer quantity",
+      "SELECT_LOT"            : "Select lot from"
     },
     "SEARCH" : {
       "KEY" : "Find Stock Items",
@@ -1550,15 +1526,16 @@
 
   "SIGNATURES" : {
     "WAREHOUSE_MANAGER" : "Warehouse Manager",
-    "CHIEF_ACCOUNTANT" : "Chief Accountant",
-    "FINANCE_OFFICER" : "Finance Officer",
-    "ADMINISTRATOR" : "Adminstrator",
-    "CUSTOMER"      : "Customer",
-    "RESPONSABLE"   : "Responsable",
-    "BENEFICIARY"   : "Beneficiary"
+    "CHIEF_ACCOUNTANT"  : "Chief Accountant",
+    "FINANCE_OFFICER"   : "Finance Officer",
+    "ADMINISTRATOR"     : "Adminstrator",
+    "CUSTOMER"          : "Customer",
+    "RESPONSABLE"       : "Responsable",
+    "BENEFICIARY"       : "Beneficiary",
+    "EMPLOYEE"          : "Employee"
   },
 
-  "CONVENTION"            : {
+  "CONVENTION" : {
     "TITLE"              : "Convention",
     "CASH"               : "Primary cash",
     "INFO"               : "Financiary information Summary",
@@ -1570,11 +1547,11 @@
     "CRUMB_PCASH"        : "Primary cash",
     "CRUMB_CONVENTION"   : "convention",
     "DEFAULT_CASHBOX"    : "Cash",
-     "EXCHANGE_RATE_OPT"  : "Do you need to set the exchange rate ?",
+     "EXCHANGE_RATE_OPT" : "Do you need to set the exchange rate ?",
     "LOADING_ERROR"      : "Eror during loading, check if the exchange rate is setted, if the problem persists contact the administrator",
     "DEFAULT_CURRENCY"   : "Currency",
     "NO_CONVENTION"      : "No convention selected",
-    "NO_RECORD" : "No record for this convention"
+    "NO_RECORD"          : "No record for this convention"
   },
 
   "ALLTRANSACTIONS" : {
@@ -1600,41 +1577,42 @@
   },
 
   "EXPIRING_REPORT" : {
-    "TITLE" : "Medecines expiring report",
-    "ALL_DEPOTS" : "All depots",
-    "DAY" : "To day",
-    "MONTH" : "This Month",
-    "WEEK"  : "This week",
+    "TITLE"        : "Medecines expiring report",
+    "ALL_DEPOTS"   : "All depots",
+    "DAY"          : "To day",
+    "MONTH"        : "This Month",
+    "WEEK"         : "This week",
     "EMPTY_REPORT" : "No record found!"
-},
+  },
 
 
   "SETTINGS" : {
-    "TITLE" : "BHIMA Settings",
-    "LANGUAGE" : "Language",
+    "TITLE"     : "BHIMA Settings",
+    "LANGUAGE"  : "Language",
     "LAST_PAGE" : "Last Page Visited",
     "HOME_PAGE" : "Default Home Page"
   },
 
   "PURCHASE_RECORDS" : {
-    "TITLE" : "Pruchase Order Records",
-    "ADVANCE_SEARCH" : "Advanced Search",
-    "NO_PURCHASE_FOUND" : "No purchase orders found",
-    "REFERENCE" : "Reference",
-    "PURCHASE_ORDER" : "Purchase Orders",
-    "TO_REQUEST" : " to request a purchase order",
+    "TITLE"                : "Pruchase Order Records",
+    "ADVANCE_SEARCH"       : "Advanced Search",
+    "NO_PURCHASE_FOUND"    : "No purchase orders found",
+    "REFERENCE"            : "Reference",
+    "PURCHASE_ORDER"       : "Purchase Orders",
+    "TO_REQUEST"           : " to request a purchase order",
     "VIEW_PURCHASE_DETAIL" : "View Details"
 
   },
 
-    "PURCHASE_MENU" : {
-    "TITLE" : "Purchase order management",
-    "OPERATION" : "Operations",
+  "PURCHASE_MENU" : {
+    "TITLE"            : "Purchase order management",
+    "OPERATION"        : "Operations",
     "PUCHASE_CREATION" : "Create purchase order",
-    "CONFIRM" : "Confirm payment",
-    "VIEW" : "View purchase order"
+    "CONFIRM"          : "Confirm payment",
+    "VIEW"             : "View purchase order"
   },
-"CONFIRM" : {
+
+  "CONFIRM" : {
     "TITLE" : "Purchase order payment confirmation",
     "PARENT" : "Purchase order management"
   }
