@@ -647,7 +647,63 @@ angular.module('bhima.controllers')
         $scope.invoice.employee_code = model.purchase.data[0].code;
         $scope.invoice.cost = model.purchase.data[0].cost;
       }
+    }
 
+    function processGenericIncome (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      };
+
+      dependencies.record = {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            primary_cash : { columns : ['reference', 'description', 'cost', 'currency_id', 'date'] },
+            user : { columns : ['first', 'last'] },
+            debitor : { columns : ['text'] }
+          },
+          join : ['primary_cash.user_id=user.id', 'primary_cash.deb_cred_uuid=debitor.uuid'],
+          where : ['primary_cash.uuid='+identifiant]
+        }
+      };
+
+      validate.process(dependencies)
+      .then(getLocation)
+      .then(polish)
+      .catch(function (err) {
+        console.log('error ');
+      });
+
+      function getLocation (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
+
+      function polish (model) {
+        $scope.invoice = {};
+        console.log('polish ', model);
+        $scope.invoice.uuid = identifiant;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.invoice.name = model.record.data[0].text;
+        $scope.invoice.date = model.record.data[0].date;
+        $scope.invoice.reference = model.enterprise.data[0].abbr + model.record.data[0].reference;
+        $scope.invoice.cost = model.record.data[0].cost;
+        $scope.invoice.description = model.record.data[0].description;
+        $scope.invoice.currency_id = model.record.data[0].currency_id;
+        $scope.invoice.by = model.record.data[0].first + '  ' + model.record.data[0].last;
+      }
     }
 
     function buildConventionInvoice (model) {
@@ -839,7 +895,8 @@ angular.module('bhima.controllers')
       'consumption'           : processConsumption,
       'indirect_purchase'     : processIndirectPurchase,
       'confirm_purchase'      : processConfirmPurchase,
-      'service_distribution'  : processServiceDist
+      'service_distribution'  : processServiceDist,
+      'generic_income'        : processGenericIncome
     };
 
     appstate.register('project', function (project) {

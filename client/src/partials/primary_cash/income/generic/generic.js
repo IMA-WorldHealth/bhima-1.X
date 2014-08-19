@@ -8,9 +8,12 @@ angular.module('bhima.controllers')
   'connect',
   'uuid',
   'util',
-  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util) {
+  '$location',
+  'appcache',
+  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, $location, Appcache) {
     var isDefined, dependencies = {};
     var session = $scope.session = { receipt : {} };
+    var cache = new Appcache('income');
 
     // TODO
     if (Number.isNaN(Number($routeParams.id))) {
@@ -62,6 +65,13 @@ angular.module('bhima.controllers')
         }
       }
     };
+
+    cache.fetch('currency').then(load);
+
+    function load (currency) {
+      if (!currency) { return; }
+       $scope.session.currency = currency;
+    }
 
     appstate.register('project', function (project) {
       $scope.project =  project;
@@ -161,14 +171,26 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/primary_income/' + data.uuid);
       })
       .then(function () {
+        // invoice
         messenger.success('Posted data successfully.');
-        session = $scope.session = { receipt : {} };
-        session.receipt.date = new Date();
-        session.receipt.cost = 0.00;
-        session.receipt.cash_box_id = $routeParams.id;
+        $location.path('/invoice/generic_income/' + data.uuid);
       });
+      // .then(function () {
+      //   messenger.success('Posted data successfully.');
+      //   session = $scope.session = { receipt : {} };
+      //   session.receipt.date = new Date();
+      //   session.receipt.cost = 0.00;
+      //   session.receipt.cash_box_id = $routeParams.id;
+      // });
     };
 
+    function setCurrency (obj) {
+      console.log('currency', obj)
+      $scope.session.currency=obj;
+      cache.put('currency', obj);
+    }  
+
     $scope.update = update;
+    $scope.setCurrency = setCurrency;
   }
 ]);

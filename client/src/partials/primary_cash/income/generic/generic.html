@@ -20,7 +20,7 @@
     </button>
     <ul class="dropdown-menu">
       <li ng-repeat="currency in currencies.data">
-        <a href="" ng-click="session.currency=currency">{{ currency.symbol }}</a>
+        <a href="" ng-click="setCurrency(currency)">{{ currency.symbol }}</a>
       </li>
     </ul>
   </div>
