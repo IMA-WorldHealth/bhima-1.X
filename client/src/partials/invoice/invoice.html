@@ -345,11 +345,11 @@
             <i>FAX</i> {{supplier.email}}
           </div>
           <div class="col-xs-4">
-            <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{purchase.reference}}</b>
+            <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{ purchase.abbr + purchase.reference}}</b>
             <br>
-            <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{purchase.purchase_date | date}}</b>
+            <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{ purchase.purchase_date | date }}</b>
             <br>
-            <i>{{ 'INVOICE.DATE_RECEIPT' | translate}}</i> <b>{{timestamp | date}}</b>
+            <i>{{ 'INVOICE.DATE_RECEIPT' | translate}}</i> <b>{{ timestamp | date }}</b>
             <br>
             {{ 'INVOICE.EMPLOYEE_CONTACT' | translate }}</i>
             <br>
@@ -359,6 +359,7 @@
             {{ 'INVOICE.EMPLOYEE_CODE' | translate }}</i> <b>{{employee.code}}</b>
           </div>
         </div>
+
         <div class="row">
           <div class="col-xs-12">
             <table class="invoiceTable">
@@ -884,7 +885,7 @@
             <br>
             <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
             <br>
-            {{invoice.purchase_date | date}}
+            {{ invoice.purchase_date | date }}
             <br>
           </div>
         </div>
@@ -893,10 +894,10 @@
             <table class="invoiceTable">
               <thead>
                 <tr>
-                  <th>{{'COLUMNS.REFERENCE_PURCHASE' | translate}}</th>
-                  <th>{{'INVOICE.COST' | translate}}</th>
-                  <th>{{'COLUMNS.GIVEN_AMOUNT' | translate}}</th>
-                  <th>{{'INVOICE.RECEIVED_BY' | translate}}</th>
+                  <th>{{ 'COLUMNS.REFERENCE_PURCHASE' | translate }}</th>
+                  <th>{{ 'INVOICE.COST' | translate}}</th>
+                  <th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
+                  <th>{{ 'INVOICE.RECIPIENT' | translate }}</th>
                 </tr>
               </thead>
               <tbody class="items">
@@ -918,7 +919,7 @@
           </div>
           <div class="col-xs-6">
             <div class="pull-left">
-             <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
+             <b>{{"SIGNATURES.EMPLOYEE" | translate}}</b>
             </div>
           </div>
         </div>

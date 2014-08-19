@@ -21,7 +21,7 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
-        where : ['purchase.paid=' + 1, 'AND' ,'purchase.confirmed=' + 0]
+        where : ['purchase.paid=1', 'AND' ,'purchase.confirmed=' + 0]
       }
     };
 
@@ -35,23 +35,24 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project){
       $scope.project = project;
-       validate.process(dependencies).then(initialise);
+       validate.process(dependencies)
+      .then(initialise);
     });
 
     function initialise(model) {
       angular.extend($scope, model);
     }
 
-    function confirmPurchase(purchaseId) {
+    $scope.confirmPurchase = function confirmPurchase(purchaseId) {
       session.selected = $scope.purchase.get(purchaseId);
-    }
+    };
 
-    function confirmPayment () {
+    $scope.confirmPayment = function confirmPayment () {
     	updatePurchase()
     	.then(writeToJournal)
     	.then(generateDocument)
     	.catch(handleError);
-    }
+    };
 
     function updatePurchase () {
     	var purchase = {
@@ -73,7 +74,7 @@ angular.module('bhima.controllers')
       return connect.basicPost('purchase', [purchase], ['uuid']);
     }
 
-    function generateDocument (res){
+    function generateDocument(res) {
        $location.path('/invoice/confirm_purchase/' + session.selected.uuid);
     }
 
@@ -85,8 +86,6 @@ angular.module('bhima.controllers')
       var currentDate = new Date();
       return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
     }
-    $scope.confirmPurchase = confirmPurchase;
-    $scope.confirmPayment = confirmPayment;
   }
 ]);
 

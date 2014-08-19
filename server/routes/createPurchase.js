@@ -1,4 +1,5 @@
 var q = require('q');
+
 module.exports = function (db, parser, journal, uuid) {
   'use strict';
 
@@ -16,58 +17,78 @@ module.exports = function (db, parser, journal, uuid) {
   //  - Move money from cash balance account to asset account (on authorisation of purchase)
   //  - On sale move money from asset account to expense account,
   //    credit sale account
-
-  function execute(data, user, callback) {
-    var primary_cash_uuid = uuid();
-
-    writeCash(primary_cash_uuid, user, data.details)
-    .then(writeCashItems(primary_cash_uuid, data.transaction))
-    .then(postToJournal(primary_cash_uuid, user))
-    .then(function (res) {
-      res.primary_cash_uuid = primary_cash_uuid
-      callback(null, res);
-    })
-    .catch(function (err) {
-      return callback(err, null);
-    });
+  
+  function values(obj) {
+    // get an array of an object's values
+    // cannot wait for es6's Object.values(o);
+    return Object.keys(obj).map(function (k) { return obj[k]; });
   }
 
-  function writeCash(uuid, user, details) {
-    var insertSQL;
+  var mod = {};
 
-    details.uuid = uuid;
-    details.user_id = user;
+  mod.run = function run(userId, data) {
+    // Writes data to the primary_cash table
+    // then the primary_cash_items table and
+    // finally the posting_journal
+    var primaryCashId = uuid();
 
-    insertSQL = parser.insert('primary_cash', details);
+    return writeCash(primaryCashId, userId, data.details)
+      .then(function () {
+        return writeCashItems(primaryCashId, data.transaction);
+      })
+      .then(function () {
+        return postToJournal(primaryCashId, userId);
+      })
+      .then(function () {
+        return q(primaryCashId);
+      });
+  };
 
-    return db.exec(insertSQL);
+  function writeCash(primaryCashId, userId, data) {
+    // write items to the primary_cash table
+    var sql, params;
+
+    sql =
+      'INSERT INTO primary_cash ' +
+        '(project_id, type, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
+        'cash_box_id, account_id, cost, description, origin_id, uuid, user_id) ' +
+      'VALUES ' +
+        '(?,?,?,?,?,?,?,?,?,?,?,?,?);';
+
+    params = values(data);
+    params.push(primaryCashId);
+    params.push(userId);
+
+    return db.exec(sql, params);
   }
 
-  function writeCashItems(primary_cash_uuid, transactions) {
-    var insertSQL;
-    var requests_item = [];
+  function writeCashItems(primaryCashId, data) {
+    var sql, queries, params;
 
-    transactions.forEach(function (transaction) {
-      transaction.uuid = uuid();
-      transaction.primary_cash_uuid = primary_cash_uuid;
-      requests_item.push(parser.insert('primary_cash_item', transaction));
+    sql =
+      'INSERT INTO `primary_cash_item` ' +
+        '(inv_po_id, debit, credit, uuid, primary_cash_uuid) ' +
+      'VALUES ' +
+        '(?, ?, ?, ?, ?)';
+
+    queries = data.map(function (item) {
+      params = values(item);
+      params.push(uuid());
+      params.push(primaryCashId);
+      return db.exec(sql, params);
     });
 
-    return requests_item.map(function (item) {
-      return db.exec(item);
-    });
+    return q.all(queries);
   }
 
-  function postToJournal(primary_cash_uuid, userId) {
-    var deferred = q.defer();
-    journal.request('indirect_purchase', primary_cash_uuid, userId, function (error, result) {
-      if (error) {
-        return deferred.reject(error);
-      }
-      return deferred.resolve(result);
+  function postToJournal(primaryCashId, userId) {
+    var dfd = q.defer();
+    journal.request('indirect_purchase', primaryCashId, userId, function (err, result) {
+      if (err) { return dfd.reject(err); }
+      dfd.resolve(result);
     });
-    return deferred.promise;
+    return dfd.promise;
   }
 
-  return { execute : execute };
+  return mod;
 };
