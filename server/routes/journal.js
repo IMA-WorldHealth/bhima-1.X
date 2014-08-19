@@ -698,10 +698,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inventory_group` ON ' +
           '`purchase_item`.`purchase_id`=`purchase`.`id` AND `purchase_item`.`inventory_id`=`inventory`.`id` AND ' +
           '`inventory`.`group_id`=`inventory_group`.`id` ' +
-        'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
+        'WHERE `purchase`.`id` = ' + sanitize.escape(id) + ';';
 
       return db.exec(queries.purchase);
-    })
+    }) 
     .then(function () {
       return db.exec(queries.purchase_item);
     })
@@ -1393,6 +1393,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
               '`primary_cash`.`deb_cred_uuid` = `creditor`.`uuid` WHERE `primary_cash`.`uuid`=' + sanitize.escape(id) + ';';
 
     db.exec(sql)
+    .then(function (s) { console.log('\nARGS', arguments, '\n'); return q(arguments);})
     .then(getRecord)
     .spread(getDetails)
     .then(getTransId)
@@ -1402,8 +1403,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     })
     .catch(function (err){
       console.log('erreur ', err);
-      return done(err, null);
-    });
+      return done(err);
+    })
+    .done();
 
     function getRecord (records) {
       console.log('le data est ', records);
