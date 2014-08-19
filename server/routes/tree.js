@@ -12,7 +12,9 @@ module.exports = function (db, parser) {
 
   'use strict';
 
-  function load (userid) {
+  var mod = {};
+
+  mod.load = function load (userid) {
 
     function getChildren (parent_id) {
       var d = q.defer();
@@ -75,10 +77,7 @@ module.exports = function (db, parser) {
     }
 
     return main();
-  }
-
-  return {
-    load : load
   };
 
+  return mod;
 };
