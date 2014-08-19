@@ -26,11 +26,15 @@ module.exports = function (db, parser, journal, uuid) {
     // finally the posting_journal
     var primaryCashId = uuid();
 
-    return _writeCash(primaryCashId, userId, data)
+    console.log('[DEBUG] Running createSale.run()');
+    console.log('[DBG] [data]', data);
+
+    return _writeCash(primaryCashId, userId, data.details)
       .then(function () {
-        return _writeCashItems(primaryCashId, userId, data);
+        return _writeCashItems(primaryCashId, data.transaction);
       })
       .then(function () {
+        console.log('[DEBUG] Posting to Journal..');
         return postToJournal(primaryCashId, userId);
       })
       .then(function () {
@@ -47,6 +51,7 @@ module.exports = function (db, parser, journal, uuid) {
   function _writeCash(primaryCashId, userId, data) {
     // write items to the primary_cash table
     var sql, params;
+
     sql =
       'INSERT INTO primary_cash ' +
         '(project_id, type, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
@@ -54,7 +59,7 @@ module.exports = function (db, parser, journal, uuid) {
       'VALUES ' +
         '(?,?,?,?,?,?,?,?,?,?,?,?,?);';
 
-    params = Object.keys(data).map(function (k) { return data[k]; });
+    params = values(data);
     params.push(primaryCashId);
     params.push(userId);
 
@@ -63,6 +68,8 @@ module.exports = function (db, parser, journal, uuid) {
 
   function _writeCashItems(primaryCashId, data) {
     var sql, queries, params;
+
+    console.log('[DBG] [TXNS]', data);
     sql =
       'INSERT INTO `primary_cash_item` ' +
         '(inv_po_id, debit, credit, uuid, primary_cash_uuid) ' +
@@ -76,7 +83,7 @@ module.exports = function (db, parser, journal, uuid) {
       return db.exec(sql, params);
     });
 
-    return queries;
+    return q.all(queries);
   }
 
   mod.execute = function execute(data, user, callback) {
