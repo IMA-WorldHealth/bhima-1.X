@@ -91,14 +91,14 @@ app.post('/sale/', function (req, res, next) {
 
   createSale.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
-    res.send(200, {saleId: ans});
+    res.send({saleId: ans});
   });
 });
 
 app.post('/service_dist/', function (req, res, next) {
   serviceDist.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
-    res.send(200, {dist: ans});
+    res.send({dist: ans});
   });
 });
 
@@ -169,7 +169,7 @@ app.get('/currentProject', function (req, res, next) {
 
 // FIXME: this is terribly insecure.  Please remove
 app.get('/user_session', function (req, res) {
-  res.send(200, { id: req.session.user_id });
+  res.send({ id: req.session.user_id });
 });
 
 app.get('/pcash_transfer_summers', function (req, res, next) {
@@ -230,25 +230,29 @@ app.get('/journal/:table/:id', function (req, res, next) {
 
 //FIXME receive any number of tables using regex
 app.get('/max/:id/:table/:join?', function (req, res) {
-  var id = req.params.id, table = req.params.table, join = req.params.join;
+  var maxRequest, id = req.params.id,
+      table = req.params.table,
+      join = req.params.join;
 
-  var max_request = 'SELECT MAX(' + id + ') FROM ';
+  maxRequest = 'SELECT MAX(' + id + ') FROM ';
 
-  max_request += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
+  maxRequest += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
   if (join) {
-    max_request += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
+    maxRequest += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
   } else {
-    max_request += ')a;';
+    maxRequest += ')a;';
   }
 
-  db.execute(max_request, function(err, ans) {
-    if (err) {
-      res.send(500, {info: 'SQL', detail: err});
-      console.error(err);
-      return;
-    }
+  db.exec(maxRequest)
+  .then(function (ans) {
     res.send({max: ans[0]['MAX(' + id + ')']});
-  });
+  })
+  .catch(function (err) {
+    res.send(500, {info: 'SQL', detail: err});
+    console.error(err);
+    return;
+  })
+  .done();
 });
 
 app.get('/ledgers/debitor/:id', function (req, res, next) {
@@ -329,10 +333,12 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
     return InExAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
@@ -350,10 +356,12 @@ app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
@@ -371,10 +379,12 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 
@@ -382,7 +392,7 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
     'SELECT account.id, account.account_number, account.account_txt FROM account '+
     'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + ' ' +
-    'AND account.account_type_id <> 3';
+      'AND account.account_type_id <> 3';
 
   function process(accounts) {
     var availablechargeAccounts = accounts.filter(function(item) {
@@ -391,17 +401,19 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, ans) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (ans) {
     if (ans.length > 0) {
       synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
         if (err) { return next(err); }
         res.send(process(data));
       });
-    }else{
+    } else {
       res.send({cost : 0});
     }
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 
@@ -421,8 +433,6 @@ app.get('/profit/:id_project/:service_id', function(req, res, next) {
   });
 });
 
-
-
 app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
@@ -439,10 +449,12 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', function(req, res, next) {
@@ -461,13 +473,13 @@ app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', function(req, r
     return availableprofitAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next)
+  .done();
 });
-
-//
 
 app.get('/removeFromCostCenter/:tab', function(req, res, next) {
   var tabs = JSON.parse(req.params.tab);
@@ -476,11 +488,15 @@ app.get('/removeFromCostCenter/:tab', function(req, res, next) {
     return item.id;
   });
 
-  var sql = 'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  var sql =
+    'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
+
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/removeFromProfitCenter/:tab', function(req, res, next) {
@@ -489,12 +505,15 @@ app.get('/removeFromProfitCenter/:tab', function(req, res, next) {
     return item.id;
   });
 
-  var sql = 'UPDATE `account` SET `account`.`pc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
+  var sql =
+    'UPDATE `account` SET `account`.`pc_id` = NULL WHERE `account`.`id` IN (' + tabs.join(',') + ')';
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 
@@ -514,10 +533,12 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
     return availablechargeAccounts;
   }
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(process(rows));
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/tree', function (req, res, next) {
@@ -545,18 +566,13 @@ app.get('/location/:villageId?', function (req, res, next) {
       'sector.province_uuid = province.uuid AND ' +
       'province.country_uuid=country.uuid ' + specifyVillage + ';';
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next)
+  .done();
 });
-
-// New API for locations
-/*
-app.get('/location/:type/:id?', function (req, res, next) {
-
-});
-*/
 
 app.get('/village/', function (req, res, next) {
   /*jshint unused : false*/
@@ -567,10 +583,12 @@ app.get('/village/', function (req, res, next) {
     'FROM `village`, `sector` ' +
     'WHERE village.`sector_uuid` = sector.uuid';
 
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/sector/', function (req, res, next) {
@@ -579,23 +597,28 @@ app.get('/sector/', function (req, res, next) {
   var sql = 'SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` '+
             'as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` '+
             'WHERE `sector`.`province_uuid` = `province`.`uuid`';
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/province/', function (req, res, next) {
-
   /*jshint unused : false*/
   var sql =
     'SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` '+
-    'AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` FROM `province`, `country` '+
+      'AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` ' +
+    'FROM `province`, `country` '+
     'WHERE `province`.`country_uuid` = `country`.`uuid`';
-  db.execute(sql, function (err, rows) {
-    if (err) { return next(err); }
+  db.exec(sql)
+  .then(function (rows) {
     res.send(rows);
-  });
+  })
+  .catch(next)
+  .done();
 });
 
 // FIXME : make this code more modular
