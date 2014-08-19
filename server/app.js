@@ -77,16 +77,6 @@ app.route('/data/')
 
 app.delete('/data/:table/:column/:value', api.delete);
 
-/*
-app.post('/purchase', function(req, res, next) {
-  // TODO duplicated methods
-  createPurchase.execute(req.body, req.session.user_id, function (err, ans) {
-    if (err) { return next(err); }
-    res.send(200, { purchaseId: ans });
-  });
-});
-*/
-
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
   .then(function (id) {
