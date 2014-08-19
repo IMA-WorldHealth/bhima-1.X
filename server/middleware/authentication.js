@@ -91,7 +91,8 @@ module.exports = function (db, sanitize) {
         return res.sendfile('client/dest/project.html');
       }
     })
-    .catch(function (err) { next(err); });
+    .catch(function (err) { next(err); })
+    .done();
   }
 
   function logout(req, res, next) {
@@ -113,7 +114,8 @@ module.exports = function (db, sanitize) {
       });
       req.session = null; // see: http://expressjs.com/api.html#cookieSession
     })
-    .catch(function (err) { next(err); });
+    .catch(function (err) { next(err); })
+    .done();
   }
 
   return function authenticate(req, res, next) {
