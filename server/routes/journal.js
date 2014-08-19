@@ -71,6 +71,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // get a new transaction id from the journal.
       // make sure it is the last thing fired in the
       // call stack before posting.
+
+      console.log('received project_id', project_id);
       var sql =
         'SELECT abbr, max(increment) AS increment FROM (' +
           'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
@@ -1393,7 +1395,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
               '`primary_cash`.`deb_cred_uuid` = `creditor`.`uuid` WHERE `primary_cash`.`uuid`=' + sanitize.escape(id) + ';';
 
     db.exec(sql)
-    .then(function (s) { console.log('\nARGS', arguments, '\n'); return q(arguments);})
+   // .then(function (s) { return q(arguments);})
     .then(getRecord)
     .spread(getDetails)
     .then(getTransId)
@@ -1408,8 +1410,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .done();
 
     function getRecord (records) {
-      console.log('le data est ', records);
-      if (records.length === 0) { console.log('pas des records'); throw new Error('pas enregistrement'); }
+      if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference = records[0];
       return q([get.origin('primary_cash'), get.period(reference.date)]);
     }
