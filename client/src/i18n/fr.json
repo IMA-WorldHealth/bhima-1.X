@@ -689,7 +689,9 @@
     "MEDECINE"             : "Medicement",
     "QTY"                  : "Quantite",
     "DOCUMENT_UUID"      : "Numero Document",
-    "QTY_LOSS"           : "Quantite perdue"
+    "QTY_LOSS"           : "Quantite perdue",
+    "REFERENCE"          : "Reference",
+    "BY"                 : "Par"
   },
 
   "REPORT"                  : {
@@ -1086,7 +1088,8 @@
     "PURCHASE_ORDER"               : "Ordre D'Achat",
     "DISTRIBUTION_SERVICE" : "Distribution Service",
     "CONVENTION"                   : "Recit pour convention",
-    "NUM_CONVENTION_PAY"           : "Reference"
+    "NUM_CONVENTION_PAY"           : "Reference",
+    "GENERIC_INCOME"               : "Recette Genarale"
 
   },
 
@@ -1556,7 +1559,9 @@
     "FINANCE_OFFICER" : "Officier Finance",
     "ADMINISTRATOR" : "Adminstrateur",
     "RESPONSABLE"   : "Responsable",
-    "BENEFICIARY"   : "Beneficiare"
+    "BENEFICIARY"   : "Beneficiare",
+    "EMPLOYEE"      : "Employee",
+    "CLIENT"        : "Client"
   },
 
 "EXPIRING_UTIL" : {

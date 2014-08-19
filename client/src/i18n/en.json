@@ -1260,7 +1260,8 @@
     "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
     "DOCUMENT_REF"                 : "Document Ref.",
     "DEPOT_REF"                    : "Depot Ref.",
-    "DISTRIBUTION_SERVICE"         : "Service Distribution"
+    "DISTRIBUTION_SERVICE"         : "Service Distribution",
+    "GENERIC_INCOME"               : "Generic Income"
   },
 
   "SECTOR"             : {
