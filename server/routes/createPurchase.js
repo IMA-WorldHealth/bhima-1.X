@@ -1,4 +1,5 @@
 var q = require('q');
+
 module.exports = function (db, parser, journal, uuid) {
   'use strict';
 
@@ -16,21 +17,84 @@ module.exports = function (db, parser, journal, uuid) {
   //  - Move money from cash balance account to asset account (on authorisation of purchase)
   //  - On sale move money from asset account to expense account,
   //    credit sale account
+  
+  var mod = {};
 
-  function execute(data, user, callback) {
-    var primary_cash_uuid = uuid();
+  mod.run = function run(userId, data) {
+    // Writes data to the primary_cash table
+    // then the primary_cash_items table and
+    // finally the posting_journal
+    var primaryCashId = uuid();
 
-    writeCash(primary_cash_uuid, user, data.details)
-    .then(writeCashItems(primary_cash_uuid, data.transaction))
-    .then(postToJournal(primary_cash_uuid, user))
+    return _writeCash(primaryCashId, userId, data)
+      .then(function () {
+        return _writeCashItems(primaryCashId, userId, data);
+      })
+      .then(function () {
+        return postToJournal(primaryCashId, userId);
+      })
+      .then(function () {
+        return q(primaryCashId);
+      });
+  };
+
+  function values(obj) {
+    // get an array of an object's values
+    // cannot wait for es6's Object.values(o);
+    return Object.keys(obj).map(function (k) { return obj[k]; });
+  }
+
+  function _writeCash(primaryCashId, userId, data) {
+    // write items to the primary_cash table
+    var sql, params;
+    sql =
+      'INSERT INTO primary_cash ' +
+        '(project_id, type, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
+        'cash_box_id, account_id, cost, description, origin_id, uuid, user_id) ' +
+      'VALUES ' +
+        '(?,?,?,?,?,?,?,?,?,?,?,?,?);';
+
+    params = Object.keys(data).map(function (k) { return data[k]; });
+    params.push(primaryCashId);
+    params.push(userId);
+
+    return db.exec(sql, params);
+  }
+
+  function _writeCashItems(primaryCashId, data) {
+    var sql, queries, params;
+    sql =
+      'INSERT INTO `primary_cash_item` ' +
+        '(inv_po_id, debit, credit, uuid, primary_cash_uuid) ' +
+      'VALUES ' +
+        '(?, ?, ?, ?, ?)';
+
+    queries = data.map(function (item) {
+      params = values(item);
+      params.push(uuid());
+      params.push(primaryCashId);
+      return db.exec(sql, params);
+    });
+
+    return queries;
+  }
+
+  mod.execute = function execute(data, user, callback) {
+    var primaryCashId = uuid();
+
+    console.log('[DEBUG]', data);
+    console.log('[DEBUG]', user);
+
+    writeCash(primaryCashId, user, data.details)
+    .then(writeCashItems(primaryCashId, data.transaction))
+    .then(postToJournal(primaryCashId, user))
     .then(function (res) {
-      res.primary_cash_uuid = primary_cash_uuid
+      console.log('[DEBUG]', res);
+      res.primaryCashId = primaryCashId;
       callback(null, res);
     })
-    .catch(function (err) {
-      return callback(err, null);
-    });
-  }
+    .catch(callback);
+  };
 
   function writeCash(uuid, user, details) {
     var insertSQL;
@@ -43,13 +107,14 @@ module.exports = function (db, parser, journal, uuid) {
     return db.exec(insertSQL);
   }
 
-  function writeCashItems(primary_cash_uuid, transactions) {
+
+  function writeCashItems(primaryCashId, transactions) {
     var insertSQL;
     var requests_item = [];
 
     transactions.forEach(function (transaction) {
       transaction.uuid = uuid();
-      transaction.primary_cash_uuid = primary_cash_uuid;
+      transaction.primaryCashId = primaryCashId;
       requests_item.push(parser.insert('primary_cash_item', transaction));
     });
 
@@ -58,9 +123,9 @@ module.exports = function (db, parser, journal, uuid) {
     });
   }
 
-  function postToJournal(primary_cash_uuid, userId) {
+  function postToJournal(primaryCashId, userId) {
     var deferred = q.defer();
-    journal.request('indirect_purchase', primary_cash_uuid, userId, function (error, result) {
+    journal.request('indirect_purchase', primaryCashId, userId, function (error, result) {
       if (error) {
         return deferred.reject(error);
       }
@@ -69,5 +134,5 @@ module.exports = function (db, parser, journal, uuid) {
     return deferred.promise;
   }
 
-  return { execute : execute };
+  return mod;
 };

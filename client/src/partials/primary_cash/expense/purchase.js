@@ -69,8 +69,6 @@ angular.module('bhima.controllers')
        validate.process(dependencies).then(initialise);
     });
 
-
-
     function initialise(model) {
       angular.extend($scope, model);
       cashbox = $scope.cashbox = model.cashbox.data[0];
@@ -99,18 +97,18 @@ angular.module('bhima.controllers')
     function submitPayment(model) {
       var creditorId = model.employee.data[0].creditor_uuid;
       var request = {
-        details : {
-          project_id : appstate.get('project').id,
-          type : 'S',
-          date : getDate(),
+        details         : {
+          project_id    : appstate.get('project').id,
+          type          : 'S',
+          date          : util.sqlDate(new Date()),
           deb_cred_uuid : creditorId,
           deb_cred_type : 'C',
-          currency_id : model.enterprise.data[0].currency_id, //FIXME
-          cash_box_id : cashbox.id,
-          account_id : cashbox.account_id,
-          cost : session.selected.cost,
-          description : 'PP/' + session.selected.uuid + '/',
-          origin_id : model.pcash_module.data[0].id
+          currency_id   : model.enterprise.data[0].currency_id, //FIXME
+          cash_box_id   : cashbox.id,
+          account_id    : cashbox.account_id,
+          cost          : session.selected.cost,
+          description   : 'PP/' + session.selected.uuid + '/',
+          origin_id     : model.pcash_module.data[0].id
         },
         transaction : [
           {
@@ -144,15 +142,6 @@ angular.module('bhima.controllers')
       throw error;
     }
 
-    function getDate() {
-      //Format the current date according to RFC3339
-      var currentDate = new Date();
-      console.log('la date', util.sqlDate(currentDate));
-
-      return util.sqlDate(currentDate);
-
-      // return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
-    }
     $scope.confirmPurchase = confirmPurchase;
     $scope.payPurchase = payPurchase;
   }

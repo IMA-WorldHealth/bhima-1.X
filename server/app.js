@@ -1,5 +1,4 @@
 #!/usr/local/bin/node
-// server/app.js
 
 // import node dependencies
 var express      = require('express'),
@@ -78,6 +77,7 @@ app.route('/data/')
 
 app.delete('/data/:table/:column/:value', api.delete);
 
+/*
 app.post('/purchase', function(req, res, next) {
   // TODO duplicated methods
   createPurchase.execute(req.body, req.session.user_id, function (err, ans) {
@@ -85,6 +85,17 @@ app.post('/purchase', function(req, res, next) {
     res.send(200, { purchaseId: ans });
   });
 });
+*/
+
+app.post('/purchase', function (req, res, next) {
+  createPurchase.run(req.session.user_id, req.body)
+  .then(function (id) {
+    res.status(200).send({ purchaseId : id });
+  })
+  .catch(next)
+  .done();
+});
+
 
 app.post('/sale/', function (req, res, next) {
 
