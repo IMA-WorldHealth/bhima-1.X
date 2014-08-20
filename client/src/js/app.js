@@ -368,6 +368,10 @@
     .when('/purchase_menu/', {
       controller : 'purchase.menu',
       templateUrl : 'partials/purchase/purchase_menu.html'
+    })
+    .when('/reports/income_report/', {
+      controller : 'primary_cash.incomeReport',
+      templateUrl : 'partials/reports/primary_cash/income/income_report.html'
     });
   }
 

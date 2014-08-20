@@ -91,7 +91,8 @@ INSERT INTO `unit` VALUES
 -- (52,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
 (53,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/'),
 (54,'Purchase Order Management', 'TREE.PURCHASE_ORDER_MANAGEMENT', '', 11, 0, 'partials/purchase_order/', '/purchase_menu/'),
-(55,'Profit center management', 'TREE.PROFIT_CENTER_MGMNT', '', 30, 0, 'partials/profit_center/', '/profit_center/');
+(55,'Profit center management', 'TREE.PROFIT_CENTER_MGMNT', '', 30, 0, 'partials/profit_center/', '/profit_center/'),
+(56,'Income Report','TREE.INCOME_REPORT','',10,0,'/partials/reports/primary_cash/income/','/reports/income_report/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES

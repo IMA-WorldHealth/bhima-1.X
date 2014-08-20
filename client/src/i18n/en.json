@@ -80,6 +80,11 @@
         "TITLE"   : "Generic Income",
         "RECEIPT" : "Receipt"
       }
+    },
+    "REPORT" : {
+        "INCOME" : {
+            "TITLE" : "Incomes Reports"
+        }
     }
   },
 
@@ -707,7 +712,8 @@
     "ALL_TRANSACTIONS"          : "All Transactions",
     "PATIENT_RECORDS"           : "Patient Records",
     "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
-    "PROFIT_CENTER_MGMNT"       : "Profit center management"
+    "PROFIT_CENTER_MGMNT"       : "Profit center management",
+    "INCOME_REPORT"             : "Incomes Reports"
   },
 
   "DISTRIBUTION" : {
