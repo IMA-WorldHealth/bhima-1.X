@@ -396,7 +396,8 @@
     "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
     "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat",
     "PATIENT_SEARCH"            : "Recherche des Patients",
-    "PROFIT_CENTER_MGMNT"       : "Centre de profit"
+    "PROFIT_CENTER_MGMNT"       : "Centre de profit",
+    "INCOME_REPORT"             : "Rapport des Recettes"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1348,6 +1349,11 @@
         "TITLE"   : "Recette Generique",
         "RECEIPT" : "Reception"
       }
+    },
+    "REPORT" : {
+        "INCOME" : {
+            "TITLE" : "Rapport des Recettes"
+        }
     }
   },
 
