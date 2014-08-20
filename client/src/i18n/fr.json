@@ -272,7 +272,8 @@
     "PROJECT"         : "Proget",
     "COST_CENTER"     : "Selectionner Centre des frais",
     "DEPOT"           : "Selectionner un Depot",
-    "DEBTOR"          : "Selectionner un debiteur"
+    "DEBTOR"          : "Selectionner un debiteur",
+    "CREDITOR"          : "Selectionner un Crediteur"
   },
 
   "RENEWAL"           : {
@@ -335,7 +336,7 @@
     "FINANCE"                   : "Finance",
     "ACCOUNT"                   : "Compte",
     "BUDGETING"                 : "Budget",
-    "POSTING_JOURNAL"           : "Journal De Saisie",
+    "POSTING_JOURNAL"           : "Journal de Saisie",
     "REPORTS"                   : "Rapports",
     "INVENTORY"                 : "Stock",
     "HOSPITAL"                  : "Hopitale",
@@ -1089,7 +1090,8 @@
     "DISTRIBUTION_SERVICE" : "Distribution Service",
     "CONVENTION"                   : "Recit pour convention",
     "NUM_CONVENTION_PAY"           : "Reference",
-    "GENERIC_INCOME"               : "Recette Genarale"
+    "GENERIC_INCOME"               : "Recette Genarale",
+    "GENERIC_EXPENSE"              : "Depense Generale"
 
   },
 
@@ -1325,7 +1327,13 @@
     "EXPENSE" : {
       "PURCHASE"        : "Achat",
       "GENERIC_TITLE"   : "Depenses Generiques",
-      "GENERIC_RECEIPT" : "Recettes Generiques"
+      "GENERIC_RECEIPT" : "Recettes Generiques",
+       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "RECIPIENT"             : "Destinataire",
+      "PURPOSE"                 : "Motif",
+      "CREDITOR"                : "Crediteur",
+      "EXPENSE_DATE"                  : "Date",
+      "AMOUNT" : "Montant"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -1561,7 +1569,8 @@
     "RESPONSABLE"   : "Responsable",
     "BENEFICIARY"   : "Beneficiare",
     "EMPLOYEE"      : "Employee",
-    "CLIENT"        : "Client"
+    "CLIENT"        : "Client",
+    "CREDITOR"      : "Crediteur"
   },
 
 "EXPIRING_UTIL" : {
