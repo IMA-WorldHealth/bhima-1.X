@@ -8,9 +8,12 @@ angular.module('bhima.controllers')
   'connect',
   'uuid',
   'util',
-  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util) {
+  'appcache',
+  '$location',
+  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
     var isDefined, dependencies = {};
     var session = $scope.session = { receipt : { date : new Date() } };
+    var cache = new Appcache('expense');
 
     // TODO
     if (Number.isNaN(Number($routeParams.id))) {
@@ -49,6 +52,13 @@ angular.module('bhima.controllers')
         }
       }
     };
+
+    cache.fetch('currency').then(load);
+
+    function load (currency) {
+      if (!currency) { return; }
+      session.currency = currency;
+    }
 
     appstate.register('project', function (project) {
       $scope.project =  project;
@@ -114,7 +124,7 @@ angular.module('bhima.controllers')
           user_id       : user.id,
           description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
           cash_box_id   : receipt.cash_box_id,
-          origin_id     : 2,
+          origin_id     : 4,
         };
 
         return connect.basicPut('primary_cash', [data]);
@@ -132,13 +142,23 @@ angular.module('bhima.controllers')
       .then(function () {
         return connect.fetch('/journal/primary_expense/' + data.uuid);
       })
-      .then(function () {
+       .then(function () {
+        // invoice
         messenger.success('Posted data successfully.');
-        session = $scope.session = { receipt : {} };
-        session.receipt.date = new Date();
-        session.receipt.cost = 0.00;
-        session.receipt.cash_box_id = $routeParams.id;
+        $location.path('/invoice/generic_expense/' + data.uuid);
       });
     };
+
+    function setCurrency (obj) {
+      session.currency=obj;
+      cache.put('currency', obj);
+    }  
+
+    function update (value) {
+      session.receipt.recipient = value;
+    }
+
+    $scope.update = update;
+    $scope.setCurrency = setCurrency;
   }
 ]);

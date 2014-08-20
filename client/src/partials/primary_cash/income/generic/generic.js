@@ -85,7 +85,6 @@ angular.module('bhima.controllers')
         session.receipt.cash_box_id = $routeParams.id;
       })
       .catch(function (err) {
-        console.log('un problem');
         messenger.error(err);
       });
     });
@@ -152,7 +151,7 @@ angular.module('bhima.controllers')
           user_id       : user.id,
           description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
           cash_box_id   : receipt.cash_box_id,
-          origin_id     : 3,
+          origin_id     : 5,
         };
 
         return connect.basicPut('primary_cash', [data]);
@@ -185,7 +184,6 @@ angular.module('bhima.controllers')
     };
 
     function setCurrency (obj) {
-      console.log('currency', obj)
       $scope.session.currency=obj;
       cache.put('currency', obj);
     }  

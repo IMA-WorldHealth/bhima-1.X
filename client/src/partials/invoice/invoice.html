@@ -999,6 +999,79 @@
         </div>
       </div>
 
+      <div ng-switch-when="generic_expense">
+        <div class="row customer-details">
+          <div class="col-xs-12">
+            <small style="float: right; color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+            <h4 class="invoice-header">{{ 'INVOICE.GENERIC_EXPENSE' | translate }}</h4>
+          </div>
+        </div>
+
+        <div class="row customer-details">
+          <!-- Temporary style; needs official markup and CSS -->
+          <div class="col-xs-6">
+            <span>
+              <b>{{invoice.enterprise_name}}</b>
+            </span>
+            <br>
+            {{invoice.village}}
+            <br>
+            <!-- hah -->
+            {{ invoice.postal || 'B.P. 205'}}
+            <br>
+            {{invoice.sector}}
+            <br>
+            <i>TEL</i> {{invoice.phone}}
+            <br>
+            <i>FAX</i> {{invoice.email}}
+          </div>
+
+          <div class="col-xs-6">
+            <b>{{invoice.name}} </b>
+            <br>
+            <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+            <br>
+            {{invoice.date | date}}
+          </div>          
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12">
+            <table class="invoiceTable">
+              <thead>
+                <tr>
+                  <th>{{ 'COLUMNS.REFERENCE' | translate }}</th>
+                  <th>{{ 'INVOICE.DESCRIPTION' | translate}}</th>
+                  <th>{{ 'COLUMNS.COST' | translate }}</th>
+                  <th>{{ 'COLUMNS.BY' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody class="items">
+                <tr>
+                  <td>{{ invoice.reference }}</td>
+                  <td>{{ invoice.description }}</td>
+                  <td><span ng-bind-html="invoice.cost | intlcurrency:invoice.currency_id"></span></td>
+                  <td>{{ invoice.by}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="pull-right">
+              <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="pull-left">
+             <b>{{"SIGNATURES.CREDITOR" | translate}}</b>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div ng-switch-when="confirm_purchase">
         <div class="row customer-details">
           <div class="col-xs-12">

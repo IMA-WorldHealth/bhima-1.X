@@ -343,7 +343,8 @@
     "PROJECT"         : "Select a project",
     "CASH"            : "Select a Cash",
     "SOURCE"          : "Select a source",
-    "DEBTOR"          : "Select a debtor"
+    "DEBTOR"          : "Select a debtor",
+    "CREDITOR"        : "Select a creditor"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1261,7 +1262,8 @@
     "DOCUMENT_REF"                 : "Document Ref.",
     "DEPOT_REF"                    : "Depot Ref.",
     "DISTRIBUTION_SERVICE"         : "Service Distribution",
-    "GENERIC_INCOME"               : "Generic Income"
+    "GENERIC_INCOME"               : "Generic Income",
+    "GENERIC_EXPENSE"              : "Generic Expense"
   },
 
   "SECTOR"             : {
@@ -1533,7 +1535,8 @@
     "CUSTOMER"          : "Customer",
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Beneficiary",
-    "EMPLOYEE"          : "Employee"
+    "EMPLOYEE"          : "Employee",
+    "CREDITOR"          : "Creditor"
   },
 
   "CONVENTION" : {
