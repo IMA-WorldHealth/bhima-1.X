@@ -1,16 +1,3 @@
-// scripts/lib/logic/report.js
-
-/*
- * TODISCUSS
- *   Reports currently joining accounts with account group and collection to
- *    get account group information, two things:
- *     -should the client download these two table seperately and filter on
- *        the grid, this avoids 3 joins
- *     -should the entire string of the account group titles be sent and
- *        grouped on - or just the ID (with a further look up for the title),
- *        grouping may be more expensive with large strings
- *
- */
 
 var q = require('q'),
     querystring = require('querystring');
@@ -86,153 +73,6 @@ module.exports = function (db, sanitize, util) {
 
     return deferred.promise;
   }
-
-  /*
-  function transReport(params) {
-    console.log('[transReport] params', params);
-    params = JSON.parse(params);
-    var deferred = q.defer();
-
-    function getElementIds(id){
-      var table, cle, def = q.defer();
-
-      if(params.type.toUpperCase() === 'C'){
-        table = 'creditor';
-        cle = 'group_id';
-      }else if(params.type.toUpperCase() === 'D'){
-        table = 'debitor';
-        cle = 'group_id';
-      }
-      var sql = 'SELECT id FROM '+table+' Where '+cle+' =''+id+''';
-      db.execute(sql, function(err, ans){
-        if(err){
-          console.log('trans report, Query failed');
-          throw err;
-          return;
-        }else{
-          def.resolve(ans);
-        }
-      });
-      return def.promise;
-    }
-
-    function getArrayOf(obj){
-      var tab = [];
-      obj.forEach(function(item){
-        tab.push(item.id);
-      });
-      return tab;
-    }
-
-    if(params.ig === 'I'){
-      var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
-              'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
-              'account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \'names\''+
-              'FROM general_ledger, account, currency, transaction_type, user '+
-              'WHERE general_ledger.account_id = account.id AND currency.id = general_ledger.currency_id AND'+
-              ' transaction_type.id = general_ledger.origin_id and user.id = general_ledger.user_id AND general_ledger.deb_cred_uuid = ''+params.id+
-              '' AND general_ledger.deb_cred_type = ''+params.type+'' AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
-
-              db.execute(sql, function(err, ans) {
-                if(err) {
-                  console.log('trans report, Query failed');
-                  throw err;
-                  // deferred.reject(err);
-                  return;
-                }
-                deferred.resolve(ans);
-              });
-    }else if(params.ig == 'G'){
-      q.all([getElementIds(params.id)]).then(function(res){
-        var tabIds = getArrayOf(res[0]);
-        if(tabIds.length!=0){
-        var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
-                  'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
-                  'account.account_number, currency.name, transaction_type.service_txt, '+
-                  'CONCAT(user.first, ' ', user.last) as \'names\' FROM general_ledger, '+
-                  'account, currency, transaction_type, user WHERE general_ledger.account_id = '+
-                  'account.id AND currency.id = general_ledger.currency_id AND transaction_type.id = '+
-                  ' general_ledger.origin_id AND user.id = general_ledger.user_id AND general_ledger.deb_cred_type = ''+params.type+'' AND '+
-                  'general_ledger.deb_cred_uuid IN ('+tabIds.toString()+') AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
-
-        db.execute(sql, function(err, ans) {
-          if(err) {
-            console.log('trans report, Query failed');
-            throw err;
-            // deferred.reject(err);
-            return;
-          }
-          deferred.resolve(ans);
-        });
-
-        } else {
-          console.log('groupe vide');
-          deffered.resolve(tabIds); //un tableau vide
-        }
-      });
-    }
-    return deferred.promise;
-  }
-
-  function allTrans (params){
-    var source = {
-      '1' : 'posting_journal',
-      '2' : 'general_ledger'
-    };
-    var def = q.defer();
-    params = JSON.parse(params);
-    var requette;
-    var suite_account = (params.account_id && params.account_id !== 0)? ' AND `t`.`account_id`=''+params.account_id+''' : '';
-    var suite_dates   = (params.datef && params.datet)? ' AND `t`.`trans_date`>= ''+params.datef+'' AND `t`.`trans_date` <= ''+params.datet+''' : '';
-    //var suite_enterprise = ' AND `t`.`enterprise_id`=''+params.enterprise_id+''';
-
-    if (!params.source || params.source === 0) {
-      requette =
-        'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
-        '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
-        'FROM (' +
-          '(' +
-            'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
-              '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
-              '`posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment` ' +
-            'FROM `posting_journal` ' +
-          ') UNION (' +
-            'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
-              '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
-              '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
-            'FROM `general_ledger` ' +
-          ')' +
-        ') AS `t`, account AS ac WHERE `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
-
-    } else {
-      var sub_chaine = [
-        '`enterprise_id`, ','`id`, ', '`inv_po_id`, ',
-        '`trans_date`, ', '`debit_equiv`, ',
-        '`credit_equiv`, ', '`account_id`, ',
-        '`deb_cred_uuid`, ', '`currency_id`, ', '`doc_num`, ',
-        '`trans_id`, ', '`description`, ', '`comment` '
-      ].join(source[params.source] + '.');
-      sub_chaine = source[params.source] + '.' + sub_chaine;
-      requette =
-        'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
-        '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
-        'FROM (' +
-          'SELECT '+sub_chaine+'FROM '+source[params.source]+
-        ') AS `t`, account AS ac WHERE `AND `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
-    }
-
-    db.execute(requette, function(err, ans) {
-      if (err) {
-        console.log('account statement, Query failed');
-        throw err;
-      }
-      console.log('on a les resultats', ans);
-      def.resolve(ans);
-    });
-
-    return def.promise;
-  }
- */
 
   function debitorAging (params){
     var def = q.defer();
@@ -549,15 +389,187 @@ module.exports = function (db, sanitize, util) {
     return db.exec(sql);
   }
 
-  // TODO: Revamp this code to do something like
-  // var params = Array.prototype.slice.call(arguements)
-  // var request = params.unshift();
-  // route[request](params);
-  //
-  // This will increase the power of the function.
-  //
-  // Also consider doing some error catching (in case route doesn't exist)
-  // by wrapping route[request](params) in q();
+  function incomeReport (params) {
+    params = JSON.parse(params);
+    var defer = q.defer(),
+    requette =
+      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`account_number`, `t`.`debit_equiv`,  ' +
+      '`t`.`credit_equiv`, `t`.`debit`, `t`.`credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
+      'FROM (' +
+        '(' +
+          'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+            '`posting_journal`.`credit_equiv`, `posting_journal`.`debit`, `posting_journal`.`credit`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, '+
+            '`posting_journal`.`currency_id`, `posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id`, `posting_journal`.`user_id` ' +
+          'FROM `posting_journal` ' +
+        ') UNION (' +
+          'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+            '`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+            '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
+          'FROM `general_ledger` ' +
+        ')' +
+      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`=' + sanitize.escape(params.account_id) + 
+      ' AND `t`.`trans_date` >=' + sanitize.escape(params.dateFrom) + ' AND `t`.`trans_date` <= ' + sanitize.escape(params.dateTo) + ';';
+
+    db.exec(requette)
+     .then(function (results) {
+      results = results.filter(function (item) {
+        return item.debit > 0;
+      });
+      defer.resolve(results);
+     })
+     .catch(function (err) {
+      defer.reject(err);
+    });
+    return defer.promise;
+  }
+
+  /*
+  function transReport(params) {
+    console.log('[transReport] params', params);
+    params = JSON.parse(params);
+    var deferred = q.defer();
+
+    function getElementIds(id){
+      var table, cle, def = q.defer();
+
+      if(params.type.toUpperCase() === 'C'){
+        table = 'creditor';
+        cle = 'group_id';
+      }else if(params.type.toUpperCase() === 'D'){
+        table = 'debitor';
+        cle = 'group_id';
+      }
+      var sql = 'SELECT id FROM '+table+' Where '+cle+' =''+id+''';
+      db.execute(sql, function(err, ans){
+        if(err){
+          console.log('trans report, Query failed');
+          throw err;
+          return;
+        }else{
+          def.resolve(ans);
+        }
+      });
+      return def.promise;
+    }
+
+    function getArrayOf(obj){
+      var tab = [];
+      obj.forEach(function(item){
+        tab.push(item.id);
+      });
+      return tab;
+    }
+
+    if(params.ig === 'I'){
+      var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
+              'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
+              'account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \'names\''+
+              'FROM general_ledger, account, currency, transaction_type, user '+
+              'WHERE general_ledger.account_id = account.id AND currency.id = general_ledger.currency_id AND'+
+              ' transaction_type.id = general_ledger.origin_id and user.id = general_ledger.user_id AND general_ledger.deb_cred_uuid = ''+params.id+
+              '' AND general_ledger.deb_cred_type = ''+params.type+'' AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
+
+              db.execute(sql, function(err, ans) {
+                if(err) {
+                  console.log('trans report, Query failed');
+                  throw err;
+                  // deferred.reject(err);
+                  return;
+                }
+                deferred.resolve(ans);
+              });
+    }else if(params.ig == 'G'){
+      q.all([getElementIds(params.id)]).then(function(res){
+        var tabIds = getArrayOf(res[0]);
+        if(tabIds.length!=0){
+        var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
+                  'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
+                  'account.account_number, currency.name, transaction_type.service_txt, '+
+                  'CONCAT(user.first, ' ', user.last) as \'names\' FROM general_ledger, '+
+                  'account, currency, transaction_type, user WHERE general_ledger.account_id = '+
+                  'account.id AND currency.id = general_ledger.currency_id AND transaction_type.id = '+
+                  ' general_ledger.origin_id AND user.id = general_ledger.user_id AND general_ledger.deb_cred_type = ''+params.type+'' AND '+
+                  'general_ledger.deb_cred_uuid IN ('+tabIds.toString()+') AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
+
+        db.execute(sql, function(err, ans) {
+          if(err) {
+            console.log('trans report, Query failed');
+            throw err;
+            // deferred.reject(err);
+            return;
+          }
+          deferred.resolve(ans);
+        });
+
+        } else {
+          console.log('groupe vide');
+          deffered.resolve(tabIds); //un tableau vide
+        }
+      });
+    }
+    return deferred.promise;
+  }
+
+  function allTrans (params){
+    var source = {
+      '1' : 'posting_journal',
+      '2' : 'general_ledger'
+    };
+    var def = q.defer();
+    params = JSON.parse(params);
+    var requette;
+    var suite_account = (params.account_id && params.account_id !== 0)? ' AND `t`.`account_id`=''+params.account_id+''' : '';
+    var suite_dates   = (params.datef && params.datet)? ' AND `t`.`trans_date`>= ''+params.datef+'' AND `t`.`trans_date` <= ''+params.datet+''' : '';
+    //var suite_enterprise = ' AND `t`.`enterprise_id`=''+params.enterprise_id+''';
+
+    if (!params.source || params.source === 0) {
+      requette =
+        'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
+        '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
+        'FROM (' +
+          '(' +
+            'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+              '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
+              '`posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+            'FROM `posting_journal` ' +
+          ') UNION (' +
+            'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+              '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+              '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+            'FROM `general_ledger` ' +
+          ')' +
+        ') AS `t`, account AS ac WHERE `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
+
+    } else {
+      var sub_chaine = [
+        '`enterprise_id`, ','`id`, ', '`inv_po_id`, ',
+        '`trans_date`, ', '`debit_equiv`, ',
+        '`credit_equiv`, ', '`account_id`, ',
+        '`deb_cred_uuid`, ', '`currency_id`, ', '`doc_num`, ',
+        '`trans_id`, ', '`description`, ', '`comment` '
+      ].join(source[params.source] + '.');
+      sub_chaine = source[params.source] + '.' + sub_chaine;
+      requette =
+        'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
+        '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
+        'FROM (' +
+          'SELECT '+sub_chaine+'FROM '+source[params.source]+
+        ') AS `t`, account AS ac WHERE `AND `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
+    }
+
+    db.execute(requette, function(err, ans) {
+      if (err) {
+        console.log('account statement, Query failed');
+        throw err;
+      }
+      console.log('on a les resultats', ans);
+      def.resolve(ans);
+    });
+
+    return def.promise;
+  }
+ */
+
   return function generate(request, params, done) {
     /*summary
     *   Route request for reports, if no report matches given request, return null
@@ -575,7 +587,8 @@ module.exports = function (db, sanitize, util) {
       'prices'           : priceReport,
       'stock_location'   : stockLocation,
       'stock_count'      : stockCount,
-      'transactions'     : transactionsByAccount
+      'transactions'     : transactionsByAccount,
+      'income_report'    : incomeReport
     };
 
     route[request](params)

@@ -273,7 +273,8 @@
     "COST_CENTER"     : "Selectionner Centre des frais",
     "DEPOT"           : "Selectionner un Depot",
     "DEBTOR"          : "Selectionner un debiteur",
-    "CREDITOR"          : "Selectionner un Crediteur"
+    "CREDITOR"          : "Selectionner un Crediteur",
+    "PRIMARY_CASH"    : "Selectionner Caisse principale"
   },
 
   "RENEWAL"           : {
@@ -626,7 +627,7 @@
     "DEBCRED_ID"          : "ID Deb/Cred",
     "ORIGIN_ID"           : "ID Origine",
     "USER_ID"             : "ID Utilisateur",
-    "AMOUNT"              : "Mountant",
+    "AMOUNT"              : "Montant",
     "QTY"                 : "Quantite",
     "ITEM"                : "Item",
     "CODE"                : "Code",
@@ -693,7 +694,9 @@
     "DOCUMENT_UUID"      : "Numero Document",
     "QTY_LOSS"           : "Quantite perdue",
     "REFERENCE"          : "Reference",
-    "BY"                 : "Par"
+    "BY"                 : "Par",
+    "TRANSACTION_NUMBER" : "Numero Transaction",
+    "SOURCE"                : "Source"
   },
 
   "REPORT"                  : {
@@ -734,6 +737,7 @@
     "CHOOSE_PERIOD"         : "Choissir Period",
     "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte"
+
   },
 
   "PATIENT_GRP_ASSIGNMENT" : {
@@ -1352,7 +1356,8 @@
     },
     "REPORT" : {
         "INCOME" : {
-            "TITLE" : "Rapport des Recettes"
+            "TITLE" : "Rapport des Recettes",
+            "EMPTY_REPORT" : "Aucun enregistrement trouve !"
         }
     }
   },
