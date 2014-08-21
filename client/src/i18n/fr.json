@@ -398,7 +398,8 @@
     "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat",
     "PATIENT_SEARCH"            : "Recherche des Patients",
     "PROFIT_CENTER_MGMNT"       : "Centre de profit",
-    "INCOME_REPORT"             : "Rapport des Recettes"
+    "INCOME_REPORT"             : "Rapport des Recettes",
+    "EXPENSE_REPORT"            : "Rapport des Depenses"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1357,6 +1358,10 @@
     "REPORT" : {
         "INCOME" : {
             "TITLE" : "Rapport des Recettes",
+            "EMPTY_REPORT" : "Aucun enregistrement trouve !"
+        },
+        "EXPENSE" : {
+            "TITLE" : "Rapport des Depenses",
             "EMPTY_REPORT" : "Aucun enregistrement trouve !"
         }
     }

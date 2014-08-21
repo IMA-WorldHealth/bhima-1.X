@@ -84,6 +84,9 @@
     "REPORT" : {
         "INCOME" : {
             "TITLE" : "Incomes Reports"
+        },
+        "INCOME" : {
+            "TITLE" : "Expenses Reports"
         }
     }
   },
@@ -715,7 +718,8 @@
     "PATIENT_RECORDS"           : "Patient Records",
     "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
     "PROFIT_CENTER_MGMNT"       : "Profit center management",
-    "INCOME_REPORT"             : "Incomes Reports"
+    "INCOME_REPORT"             : "Incomes Report",
+    "EXPENSE_REPORT"             : "Expenses Report"
   },
 
   "DISTRIBUTION" : {
