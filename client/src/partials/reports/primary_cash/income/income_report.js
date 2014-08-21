@@ -7,111 +7,85 @@ angular.module('bhima.controllers')
   'validate',
   'messenger',
   'util',
-  function ($scope, $q, connect, appstate, validate, messenger, util) {
+  'appcache',
+  function ($scope, $q, connect, appstate, validate, messenger, util, Appcache) {
     var session = $scope.session = {};
     var dependencies = {};
+    var cache = new Appcache('income_report');
+    session.dateFrom = new Date();
+    session.dateTo = new Date();
 
-    $scope.selected = null;
-
-    dependencies.depots = {
+    dependencies.cashes = {
       required: true,
       query : {
         tables : {
-          'depot' : {
-            columns : ['uuid', 'text', 'reference', 'enterprise_id']
+          'cash_box' : {
+            columns : ['text', 'project_id']
+          },
+          'cash_box_account_currency' : {
+            columns : ['id', 'currency_id', 'cash_box_id', 'account_id']
+          },
+          'currency' : {
+            columns : ['symbol']
           }
-        }
+        },
+        join : ['cash_box.id=cash_box_account_currency.cash_box_id', 'currency.id=cash_box_account_currency.currency_id' ]
       }
     };
+    dependencies.records = {};    
 
+    cache.fetch('selectedCash').then(load);
 
-    function doSearching (p) {
-      if (p && p===1) {
-        $scope.configuration = getConfiguration();
-      }
-
-      var dateFrom = util.sqlDate($scope.configuration.df),
-          dateTo = util.sqlDate($scope.configuration.dt);
-
-      connect.fetch('expiring/'+$scope.configuration.depot_uuid+'/'+dateFrom+'/'+dateTo)
-      .then(complete)
-      .then(extendData)
-      .catch(function (err) {
-        messenger.danger(err);
+    function load (selectedCash) {
+      if (selectedCash) { session.selectedCash = selectedCash; }
+      
+      appstate.register('project', function(project) {
+        session.project = project;
+        dependencies.cashes.query.where = ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=0'];
+        validate.process(dependencies, ['cashes'])
+        .then(init)
+        .catch(function (err) {
+          messenger.danger(err.toString());
+        });
       });
-    }
-
-    function complete (models) {
-      $scope.uncompletedList = models;
-      return $q.all(models.map(function (m) {
-        return connect.fetch('expiring_complete/'+m.tracking_number+'/'+$scope.configuration.depot_uuid);
-      }));
-    }
-
-    function cleanEnterpriseList () {
-      return $scope.uncompletedList.map(function (item) {
-        return {
-          tracking_number  : item.tracking_number,
-          lot_number       : item.lot_number,
-          text             : item.text,
-          expiration_date  : item.expiration_date,
-          initial          : item.initial,
-          current          : item.initial - item.consumed
-        };
-      });
-    }
-
-    function cleanDepotList () {
-      console.log('voici la liste a soigner : ', $scope.uncompletedList);
-      return $scope.uncompletedList.map(function (item) {
-        return {
-          tracking_number : item.tracking_number,
-          lot_number      : item.lot_number,
-          text            : item.text,
-          expiration_date : item.expiration_date,
-          initial         : item.initial,
-          current         : item.current
-        };
-      });
-
-    }
-
-    function extendData (results) {
-      results.forEach(function (item, index) {
-        $scope.uncompletedList[index].consumed = item[0].consumed;
-        if (!$scope.uncompletedList[index].consumed) {
-          $scope.uncompletedList[index].consumed = 0;
-        }
-      });
-
-      $scope.configuration.expirings = $scope.configuration.depot_uuid === '*' ?
-        cleanEnterpriseList() :
-        cleanDepotList();
     }
 
     function init (model) {
-      $scope.model = model;
-      session.depot = '*';
-      search($scope.options[0]);
-      $scope.configuration = getConfiguration();
-      doSearching();
+      $scope.session.model = model;
+      if(session.selectedCash){
+        fill();
+      }
     }
 
-    function getConfiguration () {
-      return {
-        depot_uuid : session.depot,
-        df         : session.dateFrom,
-        dt         : session.dateTo
+    function setSelectedCash (obj) {
+      session.selectedCash = obj;
+      cache.put('selectedCash', obj);
+      fill();
+    }
+
+    function fill () {
+      var request;
+
+      request = {
+        dateFrom : util.sqlDate(session.dateFrom),
+        dateTo : util.sqlDate(session.dateTo),
+        account_id : session.selectedCash.account_id
       };
+
+      dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
+      validate.refresh(dependencies, ['records'])
+      .then(prepareReport)
+      .catch(function (err) {
+       messenger.danger(err.toString());
+
+      });
     }
 
-    // appstate.register('enterprise', function(enterprise) {
-    //   $scope.enterprise = enterprise;
-    //   dependencies.depots.where =
-    //     ['depots.enterprise_id=' + enterprise.id];
-    //   validate.process(dependencies)
-    //   .then(init);
-    // });
+    function prepareReport (model) {
+      session.model = model;
+    }
 
+    $scope.setSelectedCash = setSelectedCash;
+    $scope.fill = fill;
   }
 ]);

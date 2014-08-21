@@ -349,7 +349,8 @@
     "CASH"            : "Select a Cash",
     "SOURCE"          : "Select a source",
     "DEBTOR"          : "Select a debtor",
-    "CREDITOR"        : "Select a creditor"
+    "CREDITOR"        : "Select a creditor",
+    "PRIMARY_CASH"    : "Select a Primary cash"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -578,7 +579,8 @@
     "MEDECINE"            : "Medecine",
     "QTY_LOSS"            : "Loss Quantity",
     "DOCUMENT_UUID"       : "Document Number",
-    "REFERENCE_PURCHASE"  : "Purchase Order Reference"
+    "REFERENCE_PURCHASE"  : "Purchase Order Reference",
+    "SOURCE"                : "Source"
   },
 
   "INVENTORY" : {
