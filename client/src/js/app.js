@@ -372,6 +372,10 @@
     .when('/reports/income_report/', {
       controller : 'primary_cash.incomeReport',
       templateUrl : 'partials/reports/primary_cash/income/income_report.html'
+    })
+    .when('/reports/expense_report/', {
+      controller : 'primary_cash.expenseReport',
+      templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
     });
   }
 

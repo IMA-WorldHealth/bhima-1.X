@@ -423,6 +423,40 @@ module.exports = function (db, sanitize, util) {
     return defer.promise;
   }
 
+  function expenseReport (params) {
+    params = JSON.parse(params);
+    var defer = q.defer(),
+    requette =
+      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`account_number`, `t`.`debit_equiv`,  ' +
+      '`t`.`credit_equiv`, `t`.`debit`, `t`.`credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
+      'FROM (' +
+        '(' +
+          'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+            '`posting_journal`.`credit_equiv`, `posting_journal`.`debit`, `posting_journal`.`credit`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, '+
+            '`posting_journal`.`currency_id`, `posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id`, `posting_journal`.`user_id` ' +
+          'FROM `posting_journal` ' +
+        ') UNION (' +
+          'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+            '`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+            '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
+          'FROM `general_ledger` ' +
+        ')' +
+      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`=' + sanitize.escape(params.account_id) + 
+      ' AND `t`.`trans_date` >=' + sanitize.escape(params.dateFrom) + ' AND `t`.`trans_date` <= ' + sanitize.escape(params.dateTo) + ';';
+
+    db.exec(requette)
+     .then(function (results) {
+      results = results.filter(function (item) {
+        return item.credit > 0;
+      });
+      defer.resolve(results);
+     })
+     .catch(function (err) {
+      defer.reject(err);
+    });
+    return defer.promise;
+  }
+
   /*
   function transReport(params) {
     console.log('[transReport] params', params);
@@ -588,7 +622,8 @@ module.exports = function (db, sanitize, util) {
       'stock_location'   : stockLocation,
       'stock_count'      : stockCount,
       'transactions'     : transactionsByAccount,
-      'income_report'    : incomeReport
+      'income_report'    : incomeReport,
+      'expense_report'   : expenseReport
     };
 
     route[request](params)
