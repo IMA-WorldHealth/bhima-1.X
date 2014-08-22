@@ -7,6 +7,7 @@ angular.module('bhima.services')
   'precision',
   function ($timeout, Store, appstate, messenger, precision) {
     var called = false;
+    var cfg = {};
 
     function normalize (date) {
       return date.setHours(0,0,0,0);
@@ -49,7 +50,24 @@ angular.module('bhima.services')
       return !!exchange.store && !!exchange.store.get(date);
     };
 
+    exchange.convertir = function convertir (value, from_currency_id, to_currency_id, date) {
+      date = date || new Date();
+      date = normalize(new Date(date));
+      var converter = exchange.store.get(date);
+
+      var from = converter.rateStore.data.filter(function (item) {
+        return item.id === from_currency_id;
+      })[0];
+
+      var to = converter.rateStore.data.filter(function (item) {
+        return item.id === to_currency_id;
+      })[0];
+
+      return (value * to.rate) / from.rate;
+    };
+
     appstate.register('exchange_rate', function (rates) {
+      cfg.rates = rates;
       $timeout(function () { exchange.hasExchange(); }); // Force refresh
 
       var store = exchange.store = new Store({ identifier : 'date', data : [] });
@@ -71,7 +89,6 @@ angular.module('bhima.services')
         }
       });
     });
-
     return exchange;
   }
 ]);

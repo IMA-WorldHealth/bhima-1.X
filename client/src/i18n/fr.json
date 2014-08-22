@@ -697,7 +697,9 @@
     "REFERENCE"          : "Reference",
     "BY"                 : "Par",
     "TRANSACTION_NUMBER" : "Numero Transaction",
-    "SOURCE"                : "Source"
+    "SOURCE"                : "Source",
+    "TOTAL_DEBIT"         : "Debit total",
+    "TOTAL_CREDIT"         : "Credit total"
   },
 
   "REPORT"                  : {

@@ -583,7 +583,9 @@
     "QTY_LOSS"            : "Loss Quantity",
     "DOCUMENT_UUID"       : "Document Number",
     "REFERENCE_PURCHASE"  : "Purchase Order Reference",
-    "SOURCE"                : "Source"
+    "SOURCE"                : "Source",
+    "TOTAL_DEBIT"        : "Total debit",
+    "TOTAL_CREDIT"         : "Total credit"
   },
 
   "INVENTORY" : {

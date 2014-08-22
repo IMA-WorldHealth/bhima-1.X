@@ -374,12 +374,12 @@ module.exports = function (db, sanitize, util) {
     _limit = p.limit;
 
     sql =
-      'SELECT trans_date, description, account_number, debit_equiv, credit_equiv, currency_id ' +
+      'SELECT trans_date, description, account_number, debit, credit, currency_id ' +
       'FROM (' +
-        'SELECT trans_date, description, account_id, debit_equiv, credit_equiv, currency_id ' +
+        'SELECT trans_date, description, account_id, debit, credit, currency_id ' +
         'FROM posting_journal ' +
       'UNION ' +
-        'SELECT trans_date, description, account_id, debit_equiv, credit_equiv, currency_id ' +
+        'SELECT trans_date, description, account_id, debit, credit, currency_id ' +
         'FROM general_ledger' +
       ') AS journal JOIN account ON ' +
         'journal.account_id = account.id ' +
