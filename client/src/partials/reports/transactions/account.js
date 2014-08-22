@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
   'validate',
   'connect',
   'appstate',
-  function ($scope, validate, connect, appstate) {
+  'exchange',
+  function ($scope, validate, connect, appstate, exchange) {
     var session = $scope.session = {};
     var dependencies = {};
 
@@ -18,15 +19,28 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currencies = {
+      required : true,
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        }
+      }
+    };
+
     session.timestamp = new Date();
 
-    session.limits = [10, 25, 50, 75, 100];
+    session.limits = [10, 25, 50, 75, 100, 500, 1000, 5000, 10000];
 
     function startup(models) {
+      $scope.currencies = models.currencies;
+      session.currency = session.enterprise.currency_id;
       models.accounts.data.forEach(function (acc) {
         acc.account_number = String(acc.account_number);
       });
-      session.limit = 25;
+      session.limit = 10;
       angular.extend($scope, models);
     }
 
@@ -37,6 +51,7 @@ angular.module('bhima.controllers')
       connect.fetch('/reports/transactions/' + query)
       .then(function (data) {
         $scope.transactions = data;
+        convert();
       });
     };
 
@@ -50,5 +65,17 @@ angular.module('bhima.controllers')
       window.print();
     };
 
+    function convert () {
+      if($scope.transactions) {
+        session.sum_debit = 0;
+        session.sum_credit = 0;      
+        $scope.transactions.forEach(function (transaction) {
+          session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, transaction.trans_date);
+          session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, transaction.trans_date);
+        });        
+      }
+    }
+
+    $scope.convert = convert;
   }
 ]);
