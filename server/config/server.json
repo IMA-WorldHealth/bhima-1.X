@@ -22,7 +22,7 @@
   "auth" : {
     "paths" : [
       "/js",
-      "/partials/invoice",
+      "/partials/receipts",
       "/assets",
       "/data",
       "/print",
@@ -65,6 +65,7 @@
       "/removeFromCostCenter/",
       "/cost/",
       "/profit/",
+      "/receipts",
       "/favicon.ico",
       "/expiring/",
       "/expiring_complete/",
