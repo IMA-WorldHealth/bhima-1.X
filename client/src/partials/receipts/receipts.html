@@ -1,0 +1,12 @@
+<header>
+  {{'INVOICE.TITLE' | translate}}
+  <div ng-if="origin==='sale'" class="pull-right">
+    <select class="form-bhima" ng-change="updateCost(session.currentCurrency.id)" ng-model="session.currentCurrency" ng-options="currency.symbol for currency in model.currency.data"></select>
+  </div>
+</header>
+
+<div class="reportBody" style="margin-top: 50px;">
+  <div class="reportFrame">
+    <div ng-include="template.url"></div>
+  </div>
+</div>

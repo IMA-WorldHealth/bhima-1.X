@@ -1,7 +1,7 @@
 //TODO Debtor table currently has no personal information - this strictly ties debtors to patients
 // (or some existing table) - a reverse lookup from debtor / creditor ID to recipient is needed.
 angular.module('bhima.controllers')
-.controller('invoice', [
+.controller('receipts', [
   '$scope',
   '$routeParams',
   'validate',
@@ -10,14 +10,14 @@ angular.module('bhima.controllers')
   'appstate',
   function ($scope, $routeParams, validate, messenger, exchange, appstate) {
 
-    var dependencies = {},
+    var templates, dependencies = {},
         origin       = $scope.origin = $routeParams.originId,
         invoiceId    = $scope.invoiceId = $routeParams.invoiceId,
         process      = {};
 
-    $scope.timestamp = new Date();
-
     if (!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
+
+    $scope.timestamp = new Date();
 
     dependencies.recipient = {
       required: true
@@ -524,7 +524,6 @@ angular.module('bhima.controllers')
         $scope.invoice.employee_code = model.purchase.data[0].code;
         $scope.invoice.cost = model.purchase.data[0].cost;
       }
-
     }
 
     function processServiceDist (identifiant){
@@ -938,29 +937,77 @@ angular.module('bhima.controllers')
       $scope.location = $scope.model.location.data[0];
     }
 
-    process = {
-      'cash'                  : processCash,
-      'caution'               : processCaution,
-      'sale'                  : processSale,
-      'credit'                : processCredit,
-      'debtor'                : processDebtor,
-      'patient'               : processPatient,
-      'purchase'              : processPurchase,
-      'pcash_transfert'       : processTransfert,
-      'pcash_convention'      : processConvention,
-      'movement'              : processMovement,
-      'consumption'           : processConsumption,
-      'indirect_purchase'     : processIndirectPurchase,
-      'confirm_purchase'      : processConfirmPurchase,
-      'service_distribution'  : processServiceDist,
-      'generic_income'        : processGenericIncome,
-      'generic_expense'       : processGenericExpense
-
+    templates = {
+      'cash' : {
+        fn   : processCash,
+        url  : '/partials/receipts/templates/cash.html'
+      },
+      'caution' : {
+        fn      : processCaution,
+        url     : '/partials/receipts/templates/caution.html'
+      },
+      'sale' : {
+        fn       : processSale,
+        url : '/partials/receipts/templates/sale.html'
+      },
+      'credit' : {
+        fn       : processCredit,
+        url : '/partials/receipts/templates/credit.html'
+      },
+      'debtor' : {
+        fn     : processDebtor,
+        url    : '/partials/receipts/templates/debtor.html'
+      },
+      'patient' : {
+        fn      : processPatient,
+        url     : '/partials/receipts/templates/patient.html'
+      },
+      'purchase' : {
+        fn       : processPurchase,
+        url      : '/partials/receipts/templates/purchase.html'
+      },
+      'pcash_transfert' : {
+        fn              : processTransfert,
+        url             : '/partials/receipts/templates/transfer.html'
+      },
+      'pcash_convention' : {
+        fn               : processConvention,
+        url              : '/partials/receipts/templates/convention.html'
+      },
+      'movement' : {
+        fn       : processMovement,
+        url      : '/partials/receipts/templates/movement.html'
+      },
+      'consumption' : {
+        fn          : processConsumption,
+        url         : '/partials/receipts/templates/consumption.html'
+      },
+      'indirect_purchase' : {
+        fn                : processIndirectPurchase,
+        url               : '/partials/receipts/templates/indirect.purchase.html'
+      },
+      'confirm_purchase' : {
+        fn               : processConfirmPurchase,
+        url              : '/partials/receipts/templates/confirm.purchase.html'
+      },
+      'service_distribution' : {
+        fn                   : processServiceDist,
+        url                  : '/partials/receipts/templates/distribution.html'
+      },
+      'generic_income' : {
+        fn             : processGenericIncome,
+        url            : '/partials/receipts/templates/generic.income.html'
+      },
+      'generic_expense' : {
+        fn              : processGenericExpense,
+        url             : '/partials/receipts/templates/generic.income.html'
+      }
     };
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      process[origin](invoiceId);
+      $scope.template = templates[origin];
+      templates[origin].fn(invoiceId);
     });
 
     $scope.convert = convert;
