@@ -27,17 +27,17 @@
 
     <i>{{ 'INVOICE.BY' | translate }}</i>
     <br>
-    {{transfert.first}} {{transfert.last}}
+    {{transfer.first}} {{transfer.last}}
     <br>
     <i>{{ 'INVOICE.DATE' | translate }}</i>
     <br>
-    {{transfert.date | date}}
+    {{transfer.date | date}}
   </div>
 
   <div class="col-xs-4">
     <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
     <br>
-    {{transfert.date | date}}
+    {{transfer.date | date}}
     <br>
   </div>
 </div>
@@ -51,12 +51,12 @@
       </thead>
       <tbody class="items">
         <tr>
-          <td>{{'INVOICE.LIBELLE_TRANSFERT_FROM' | translate}}{{transfert.account_txt}} {{'INVOICE.TO' | translate}} {{'INVOICE.PCASH' | translate}}</td>
-          <td><span ng-bind-html="transfert.cost  | intlcurrency:transfert.currency_id"></span></td>
+          <td>{{'INVOICE.LIBELLE_TRANSFERT_FROM' | translate}}{{transfer.account_txt}} {{'INVOICE.TO' | translate}} {{'INVOICE.PCASH' | translate}}</td>
+          <td><span ng-bind-html="transfer.cost  | intlcurrency:transfer.currency_id"></span></td>
         </tr>
       </tbody>
       <tbody class="totals">
-        <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_TRANSFERT' | translate}}</td><td><span ng-bind-html="transfert.cost  | intlcurrency:transfert.currency_id"></span></td></tr>
+        <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_TRANSFERT' | translate}}</td><td><span ng-bind-html="transfer.cost  | intlcurrency:transfer.currency_id"></span></td></tr>
       </tbody>
     </table>
   </div>
