@@ -431,7 +431,7 @@
     "ACCOUNT_BALANCE"    : "Balance Compte",
     "LAST_PURCHASE_DATE" : "Dernier date d'achat",
     "LAST_PAYMENT_DATE"  : "Dernier date payement",
-    "OUTSTANDING_BILLS"  : "Factures impayees",
+    "OUTSTANDING_BILLS"  : "Factures impayees et autres paiements",
     "IMG"                : "Photo du patient",
     "NO_TRANSACTION"     : "pas des transaction"
   },
